@@ -8,6 +8,7 @@ package com.junbo.catalog.db.dao;
 
 import com.junbo.catalog.db.entity.EntitlementDefinitionEntity;
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,7 +23,7 @@ public interface EntitlementDefinitionDao {
 
     List<EntitlementDefinitionEntity> getByParams(Long developerId, String clientId,
                                                   String group, String tag,
-                                                  String type, PageableGetOptions pageableGetOptions);
+                                                  EntitlementType type, PageableGetOptions pageableGetOptions);
 
     EntitlementDefinitionEntity getByTrackingUuid(UUID trackingUuid);
 }

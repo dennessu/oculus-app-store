@@ -5,9 +5,10 @@
  */
 package com.junbo.catalog.core.entitlementdef;
 
-import com.junbo.catalog.core.BaseTest;
 import com.junbo.catalog.core.EntitlementDefinitionService;
+import com.junbo.catalog.core.BaseTest;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import junit.framework.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
@@ -34,6 +35,7 @@ public class EntitlementDefinitionServiceTest extends BaseTest {
         definition.setTag("TEST");
         definition.setGroup("TEST");
         definition.setConsumable(true);
+        definition.setType(EntitlementType.DEFAULT.toString());
         return definition;
     }
 

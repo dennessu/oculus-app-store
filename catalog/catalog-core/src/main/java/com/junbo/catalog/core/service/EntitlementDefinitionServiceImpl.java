@@ -8,11 +8,9 @@ package com.junbo.catalog.core.service;
 
 import com.junbo.catalog.core.EntitlementDefinitionService;
 import com.junbo.catalog.db.repo.EntitlementDefinitionRepository;
-import com.junbo.catalog.db.repo.EntitlementTypeRepository;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +25,6 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
     private static final Logger LOGGER = LoggerFactory.getLogger(EntitlementDefinitionService.class);
     @Autowired
     private EntitlementDefinitionRepository entitlementDefinitionRepository;
-    @Autowired
-    private EntitlementTypeRepository entitlementTypeRepository;
 
     @Override
     public EntitlementDefinition getEntitlementDefinition(Long entitlementDefinitionId) {
@@ -50,33 +46,19 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
 
     @Override
     public Long createEntitlementDefinition(EntitlementDefinition entitlementDefinition) {
-        if (entitlementDefinition.getType() != null) {
-            if (entitlementTypeRepository.getByName(entitlementDefinition.getType()) == null) {
-                throw AppErrors.INSTANCE.fieldNotCorrect("type",
-                        "type [" + entitlementDefinition.getType() + "] not found.").exception();
-            }
-        }
-        if (entitlementDefinition.getGroup() == null) {
+        validateNotNull(entitlementDefinition.getType(), "type");
+        if(entitlementDefinition.getGroup() == null){
             entitlementDefinition.setGroup("");
         }
-        if (entitlementDefinition.getTag() == null) {
+        if(entitlementDefinition.getTag() == null){
             entitlementDefinition.setTag("");
         }
-        if (entitlementDefinition.getConsumable() == null) {
+        if(entitlementDefinition.getConsumable() == null){
             entitlementDefinition.setConsumable(false);
         }
         checkDeveloper(entitlementDefinition.getDeveloperId());
         checkInAppContext(entitlementDefinition.getInAppContext());
         return entitlementDefinitionRepository.create(entitlementDefinition);
-    }
-
-    @Override
-    public EntitlementType getEntitlementType(String name) {
-        EntitlementType result = entitlementTypeRepository.getByName(name);
-        if (result == null) {
-            throw AppErrors.INSTANCE.notFound("entitlementType", name).exception();
-        }
-        return result;
     }
 
     private void checkInAppContext(List<String> inAppContext) {

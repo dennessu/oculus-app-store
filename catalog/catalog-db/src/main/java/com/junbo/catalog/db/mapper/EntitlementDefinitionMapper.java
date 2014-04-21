@@ -7,7 +7,6 @@
 package com.junbo.catalog.db.mapper;
 
 import com.junbo.catalog.db.entity.EntitlementDefinitionEntity;
-import com.junbo.catalog.db.entity.EntitlementTypeEntity;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import org.springframework.stereotype.Component;
@@ -33,7 +32,7 @@ public class EntitlementDefinitionMapper {
         entitlementDefinition.setDeveloperId(entitlementDefinitionEntity.getDeveloperId());
         entitlementDefinition.setRev(entitlementDefinitionEntity.getRev());
         entitlementDefinition.setInAppContext(entitlementDefinitionEntity.getInAppContext());
-        entitlementDefinition.setType(entitlementDefinitionEntity.getType());
+        entitlementDefinition.setType(entitlementDefinitionEntity.getType().toString());
         entitlementDefinition.setGroup(entitlementDefinitionEntity.getGroup());
         entitlementDefinition.setTag(entitlementDefinitionEntity.getTag());
         entitlementDefinition.setConsumable(entitlementDefinitionEntity.getConsumable());
@@ -49,7 +48,7 @@ public class EntitlementDefinitionMapper {
         entitlementDefinitionEntity.setRev(entitlementDefinition.getRev());
         entitlementDefinitionEntity.setInAppContext(entitlementDefinition.getInAppContext());
         entitlementDefinitionEntity.setDeveloperId(entitlementDefinition.getDeveloperId());
-        entitlementDefinitionEntity.setType(entitlementDefinition.getType());
+        entitlementDefinitionEntity.setType(EntitlementType.valueOf(entitlementDefinition.getType()));
         entitlementDefinitionEntity.setGroup(entitlementDefinition.getGroup());
         entitlementDefinitionEntity.setTag(entitlementDefinition.getTag());
         entitlementDefinitionEntity.setConsumable(entitlementDefinition.getConsumable());
@@ -64,12 +63,5 @@ public class EntitlementDefinitionMapper {
             entitlementDefinitions.add(toEntitlementDefinition(entitlementDefinitionEntity));
         }
         return entitlementDefinitions;
-    }
-
-    public static EntitlementType toEntitlementType(EntitlementTypeEntity entitlementTypeEntity){
-        EntitlementType type = new EntitlementType();
-        type.setIsSubscription(entitlementTypeEntity.getIsSubscription());
-        type.setName(entitlementTypeEntity.getName());
-        return type;
     }
 }

@@ -8,6 +8,7 @@ package com.junbo.catalog.db.repo;
 import com.junbo.catalog.db.BaseTest;
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -45,6 +46,7 @@ public class EntitlementDefinitionRepoTest extends BaseTest {
         inAppContext.add("123");
         inAppContext.add("234");
         definition.setInAppContext(inAppContext);
+        definition.setType(EntitlementType.DEFAULT.toString());
         return definition;
     }
 }

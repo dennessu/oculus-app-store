@@ -9,6 +9,7 @@ package com.junbo.catalog.db.dao.impl;
 import com.junbo.catalog.db.dao.EntitlementDefinitionDao;
 import com.junbo.catalog.db.entity.EntitlementDefinitionEntity;
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import org.hibernate.Query;
 import org.springframework.util.StringUtils;
 
@@ -24,7 +25,7 @@ public class EntitlementDefinitionDaoImpl extends BaseDaoImpl<EntitlementDefinit
         implements EntitlementDefinitionDao {
     @Override
     public List<EntitlementDefinitionEntity> getByParams(Long developerId, String clientId, String group, String tag,
-                                                         String type, PageableGetOptions pageableGetOptions) {
+                                                         EntitlementType type, PageableGetOptions pageableGetOptions) {
         StringBuilder queryString = new StringBuilder("select * from entitlement_definition" +
                 " where developer_id = (:developerId)");
         Map<String, Object> params = new HashMap<String, Object>();

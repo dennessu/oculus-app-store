@@ -11,7 +11,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.junbo.common.jackson.annotation.ClientId;
 import com.junbo.common.jackson.annotation.EntitlementDefinitionId;
-import com.junbo.common.jackson.annotation.EntitlementTypeId;
 import com.junbo.common.jackson.annotation.UserId;
 
 import java.util.List;
@@ -42,7 +41,6 @@ public class EntitlementDefinition {
     @ClientId
     @JsonProperty("checkClients")
     private List<String> inAppContext;
-    @EntitlementTypeId
     private String type;
     private String group;
     private String tag;

@@ -10,7 +10,9 @@ import com.junbo.catalog.db.dao.EntitlementDefinitionDao;
 import com.junbo.catalog.db.mapper.EntitlementDefinitionMapper;
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.UUID;
@@ -37,7 +39,8 @@ public class EntitlementDefinitionRepository {
                                                    String type, PageableGetOptions pageMetadata) {
 
         return EntitlementDefinitionMapper.toEntitlementDefinitionList(
-                entitlementDefinitionDao.getByParams(developerId,clientId, group, tag, type,
+                entitlementDefinitionDao.getByParams(developerId,clientId, group, tag,
+                        StringUtils.isEmpty(type) ? null : EntitlementType.valueOf(type),
                         pageMetadata == null ? new PageableGetOptions() : pageMetadata));
     }
 

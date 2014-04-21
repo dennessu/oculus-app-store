@@ -110,7 +110,6 @@
     <bean id="entitlementDefinitionDao" class="com.junbo.catalog.db.dao.impl.EntitlementDefinitionDaoImpl" parent="baseDao">
         <property name="entityType" value="com.junbo.catalog.db.entity.EntitlementDefinitionEntity"/>
     </bean>
-    <bean id="entitlementTypeDao" class="com.junbo.catalog.db.dao.impl.EntitlementTypeDaoImpl"/>
 
     <bean id="attributeDao" class="com.junbo.catalog.db.dao.impl.AttributeDaoImpl" parent="baseDao">
         <property name="entityType" value="com.junbo.catalog.db.entity.AttributeEntity"/>
@@ -127,7 +126,6 @@
     <bean id="promotionRevisionRepository" class="com.junbo.catalog.db.repo.PromotionRevisionRepository"/>
     <bean id="promotionRepository" class="com.junbo.catalog.db.repo.PromotionRepository"/>
     <bean id="entitlementDefinitionRepository" class="com.junbo.catalog.db.repo.EntitlementDefinitionRepository"/>
-    <bean id="entitlementTypeRepository" class="com.junbo.catalog.db.repo.EntitlementTypeRepository"/>
 
     <bean id="attributeRepository" class="com.junbo.catalog.db.repo.AttributeRepository"/>
     <bean id="priceTierRepository" class="com.junbo.catalog.db.repo.PriceTierRepository"/>

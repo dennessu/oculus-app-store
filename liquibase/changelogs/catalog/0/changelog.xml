@@ -151,11 +151,10 @@
               entitlement_definition_id       bigint       not null,
               developer_id                    bigint       not null,
               rev                             int          not null,
-              in_app_context                  json         default null,
-              type                            varchar(128) default null,
+              in_app_context                  json default null,
+              type                            smallint     not null,
               entitlement_group               varchar(64)  default null,
               tag                             varchar(64)  not null,
-              deleted                         boolean      not null default false,
               consumable                      boolean      not null,
               created_by                      varchar(32)  not null,
               updated_by                      varchar(32)  default null,
@@ -173,27 +172,6 @@
             LANGUAGE sql IMMUTABLE;
             CREATE INDEX entitlement_definition_in_app_context_gin_idx ON entitlement_definition
             USING GIN (json_val_arr(in_app_context));
-        ]]>
-        </sql>
-    </changeSet>
-    <changeSet id="4" author='nanxin' context="PREDEPLOY">
-        <sql><![CDATA[
-            create table entitlement_type(
-              entitlement_type_id             bigint       not null,
-              name                            varchar(128) not null,
-              is_subscription                 boolean      not null,
-              created_by                      varchar(32)  not null,
-              created_time                    timestamp    not null,
-              primary key (entitlement_type_id)
-            );
-            insert into entitlement_type values 
-            (0, 'DOWNLOAD', false, 'nanxin', '2014-02-10'),
-            (1, 'DOWNLOAD_SUBSCRIPTION', true, 'nanxin', '2014-02-10'),
-            (2, 'ONLINE_ACCESS', false, 'nanxin', '2014-02-10'),
-            (3, 'ONLINE_ACCESS_SUBSCRIPTION', true, 'nanxin', '2014-02-10'),
-            (4, 'DEVELOPER', false, 'nanxin', '2014-02-10'),
-            (5, 'DEVELOPER_SUBSCRIPTION', true, 'nanxin', '2014-02-10'),
-            (6, 'SUBSCRIPTION', true, 'nanxin', '2014-02-10');
         ]]>
         </sql>
     </changeSet>
