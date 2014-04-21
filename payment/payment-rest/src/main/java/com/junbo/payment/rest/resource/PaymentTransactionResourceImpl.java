@@ -51,7 +51,7 @@ public class PaymentTransactionResourceImpl implements PaymentTransactionResourc
 
     @Override
     public Promise<PaymentTransaction> getPayment(Long paymentId) {
-        return paymentService.getById(paymentId);
+        return paymentService.getUpdatedTransaction(paymentId);
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.PaymentInstrumentId;
 import com.junbo.common.jackson.annotation.PaymentInstrumentTypeId;
 import com.junbo.common.jackson.annotation.UserId;
+import com.junbo.payment.common.FilterIn;
 import com.junbo.payment.common.InnerFilter;
 
 import javax.validation.constraints.NotNull;
@@ -52,6 +53,8 @@ public class PaymentInstrument {
     //response:
     @JsonIgnore
     private Boolean isActive;
+    @FilterIn
+    private String externalToken;
 
     public Long getId() {
         return id;
@@ -191,5 +194,13 @@ public class PaymentInstrument {
 
     public void setWalletRequest(WalletRequest walletRequest) {
         this.walletRequest = walletRequest;
+    }
+
+    public String getExternalToken() {
+        return externalToken;
+    }
+
+    public void setExternalToken(String externalToken) {
+        this.externalToken = externalToken;
     }
 }

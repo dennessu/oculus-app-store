@@ -42,7 +42,7 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
 
     @Override
     public void clonePIResult(PaymentInstrument source, PaymentInstrument target) {
-        target.setAccountNum(source.getAccountNum());
+        target.setExternalToken(source.getExternalToken());
     }
 
     @Override
@@ -71,7 +71,7 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
         }).then(new Promise.Func<Wallet, Promise<PaymentInstrument>>() {
             @Override
             public Promise<PaymentInstrument> apply(Wallet wallet) {
-                request.setAccountNum(wallet.getWalletId().toString());
+                request.setExternalToken(wallet.getWalletId().toString());
                 return Promise.pure(request);
             }
         });

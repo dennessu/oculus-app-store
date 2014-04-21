@@ -74,6 +74,9 @@ public class PaymentInstrumentEntity extends GenericEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastValidatedTime;
 
+    @Column(name = "external_token")
+    private String externalToken;
+
     public Long getId() {
         return id;
     }
@@ -189,6 +192,14 @@ public class PaymentInstrumentEntity extends GenericEntity {
 
     public void setLastValidatedTime(Date lastValidatedTime) {
         this.lastValidatedTime = lastValidatedTime;
+    }
+
+    public String getExternalToken() {
+        return externalToken;
+    }
+
+    public void setExternalToken(String externalToken) {
+        this.externalToken = externalToken;
     }
 
     public String toString() {
