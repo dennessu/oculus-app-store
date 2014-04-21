@@ -83,7 +83,7 @@ class BalanceServiceImpl implements BalanceService {
                 validateBalanceType(balance)
                 validateCurrency(balance)
                 validateCountry(balance)
-                validateBalance(balance)
+                validateBalance(balance, false)
 
                 return taxService.calculateTax(balance).then { Balance taxedBalance ->
                     computeTotal(taxedBalance)
@@ -117,7 +117,7 @@ class BalanceServiceImpl implements BalanceService {
                 validateBalanceType(balance)
                 validateCurrency(balance)
                 validateCountry(balance)
-                validateBalance(balance)
+                validateBalance(balance, true)
 
                 return taxService.calculateTax(balance).then { Balance taxedBalance ->
                     computeTotal(taxedBalance)
@@ -294,7 +294,7 @@ class BalanceServiceImpl implements BalanceService {
         }
     }
 
-    private void validateBalance(Balance balance) {
+    private void validateBalance(Balance balance, Boolean isQuote) {
         if (balance.orderId == null) {
             throw AppErrors.INSTANCE.fieldMissingValue('orderId').exception()
         }
@@ -302,11 +302,13 @@ class BalanceServiceImpl implements BalanceService {
             throw AppErrors.INSTANCE.fieldMissingValue('balanceItems').exception()
         }
         balance.balanceItems.each { BalanceItem balanceItem ->
-            if (balanceItem.orderItemId == null) {
-                throw AppErrors.INSTANCE.fieldMissingValue('balanceItem.orderItemId').exception()
-            }
-            if (balanceItem.orderId == null) {
-                balanceItem.orderId = balance.orderId
+            if (!isQuote) {
+                if (balanceItem.orderItemId == null) {
+                    throw AppErrors.INSTANCE.fieldMissingValue('balanceItem.orderItemId').exception()
+                }
+                if (balanceItem.orderId == null) {
+                    balanceItem.orderId = balance.orderId
+                }
             }
             if (balanceItem.amount == null) {
                 throw AppErrors.INSTANCE.fieldMissingValue('balanceItem.amount').exception()
@@ -357,7 +359,8 @@ class BalanceServiceImpl implements BalanceService {
         if (balance.taxStatus == TaxStatus.TAXED.name() && !balance.taxIncluded) {
             amount = amount + taxTotal
         }
-        amount = amount - discountTotal
+        //does not subtract the discount from amount, because the item amount has been discounted
+        //amount = amount - discountTotal
 
         balance.setTaxAmount(taxTotal)
         balance.setDiscountAmount(discountTotal)
@@ -389,9 +392,15 @@ class BalanceServiceImpl implements BalanceService {
             if (savedItem == null) {
                 throw AppErrors.INSTANCE.balanceItemNotFound(item.balanceItemId.toString()).exception()
             }
-
+            savedItem.setAmount(item.amount)
+            savedItem.getDiscountItems().clear()
+            if (item.discountItems) {
+                savedItem.getDiscountItems().addAll(item.discountItems)
+            }
         }
-
-        return Promise.pure(balance)
+        return taxService.calculateTax(savedBalance).then { Balance taxedBalance ->
+            computeTotal(taxedBalance)
+            validateBalanceTotal(taxedBalance)
+        }
     }
 }
