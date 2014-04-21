@@ -140,7 +140,7 @@ class OrderServiceContextBuilder {
         }
 
         if (context.offers != null) {
-            return Promise.pure(new ArrayList<OrderOfferRevision>(context.offers))
+            return Promise.pure(context.offers)
         }
 
         List<OrderOfferRevision> offers = []
