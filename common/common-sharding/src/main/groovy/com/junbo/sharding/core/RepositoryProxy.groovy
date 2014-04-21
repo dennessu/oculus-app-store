@@ -102,9 +102,9 @@ class RepositoryProxy implements InvocationHandler {
                         return ((Promise<?>) method.invoke(this.secondaryWriteRepository, args)).then {
                             return Promise.pure(result)
                         }
-                    } else {
-                        return Promise.pure(result)
                     }
+
+                    return Promise.pure(result)
                 }
             }
         }
