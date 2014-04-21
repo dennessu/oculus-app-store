@@ -100,7 +100,7 @@
     <bean id="shippingAddressRepository" class="com.junbo.billing.db.repository.ShippingAddressRepositoryImpl"/>
     <bean id="balanceRepository" class="com.junbo.billing.db.repository.BalanceRepositoryImpl"/>
     <bean id="currencyRepository" class="com.junbo.billing.db.repository.CurrencyRepositoryImpl"/>
-    <bean id="transactionRepository" class="com.junbo.billing.db.repository.TransactionRepositoryImpl"/>
+    <bean id="billingTransactionRepository" class="com.junbo.billing.db.repository.TransactionRepositoryImpl"/>
 
     <!--INDEX VIEW-->
     <bean id="billingEntityViewRepository" class="com.junbo.sharding.view.DefaultEntityViewRepository">

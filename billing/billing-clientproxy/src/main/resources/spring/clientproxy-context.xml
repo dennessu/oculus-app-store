@@ -13,10 +13,10 @@
     <!-- using mock for development
     <bean id="ascynHttpClient" class="com.ning.http.client.AsyncHttpClient" />
     -->
-    <bean id="identityFacade" class="com.junbo.billing.clientproxy.impl.IdentityFacadeImpl">
+    <bean id="billingIdentityFacade" class="com.junbo.billing.clientproxy.impl.IdentityFacadeImpl">
         <property name="url" value="${clientproxy.identity.url}"/>
     </bean>
-    <bean id="paymentFacade" class="com.junbo.billing.clientproxy.impl.PaymentFacadeImpl">
+    <bean id="billingPaymentFacade" class="com.junbo.billing.clientproxy.impl.PaymentFacadeImpl">
         <property name="url" value="${clientproxy.payment.url}"/>
     </bean>
 
@@ -35,6 +35,6 @@
         <property name="shipFromPostalCode" value="${shipFrom.address.postal.code}"/>
         <property name="shipFromCountry" value="${shipFrom.address.country}"/>
     </bean>
-    <bean id="asyncHttpClient" class="com.ning.http.client.AsyncHttpClient"/>
+    <bean id="billingAsyncHttpClient" class="com.ning.http.client.AsyncHttpClient"/>
     <bean id="transcoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
 </beans>

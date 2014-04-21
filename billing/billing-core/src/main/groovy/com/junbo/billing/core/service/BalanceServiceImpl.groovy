@@ -25,6 +25,7 @@ import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
 
 /**
@@ -47,9 +48,11 @@ class BalanceServiceImpl implements BalanceService {
     TransactionService transactionService
 
     @Autowired
+    @Qualifier(value='billingIdentityFacade')
     IdentityFacade identityFacade
 
     @Autowired
+    @Qualifier(value='billingPaymentFacade')
     PaymentFacade paymentFacade
 
     @Autowired
