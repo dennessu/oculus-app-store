@@ -54,6 +54,9 @@
     <bean id="validateTentativeOrderAction" class="com.junbo.order.core.impl.orderaction.ValidateOrderAction">
     </bean>
 
+    <bean id="createSubledgerItemAction" class="com.junbo.order.core.impl.orderaction.CreateSubledgerItemAction">
+    </bean>
+
     <bean id="webPaymentChargeAction" class="com.junbo.order.core.impl.orderaction.WebPaymentChargeAction">
         <property name="orderActionType" value="CHARGE"/>
     </bean>

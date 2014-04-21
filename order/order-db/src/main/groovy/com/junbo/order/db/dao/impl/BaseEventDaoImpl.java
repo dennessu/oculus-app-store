@@ -24,7 +24,7 @@ import java.lang.reflect.Type;
  *
  * @param <T> the type of entity to work with
  */
-@Repository("baseEventDao")
+@Repository("orderBaseEventDao")
 public class BaseEventDaoImpl<T extends CommonEventEntity> implements BaseEventDao<T> {
     @Autowired
     @Qualifier("orderSessionFactory")

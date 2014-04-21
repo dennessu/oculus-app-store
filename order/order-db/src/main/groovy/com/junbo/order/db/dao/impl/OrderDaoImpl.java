@@ -44,7 +44,7 @@ public class OrderDaoImpl extends BaseDaoImpl<OrderEntity> implements OrderDao {
                                           Integer start, Integer count) {
         Criteria criteria = this.getSession(shardKey).createCriteria(OrderEntity.class);
 
-        criteria.add(Restrictions.in("status", statusList));
+        criteria.add(Restrictions.in("orderStatusId", statusList));
         pageCriteria(criteria, start, count);
 
         if (updatedByAscending) {

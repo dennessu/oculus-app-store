@@ -1,6 +1,6 @@
 package com.junbo.order.core.impl.orderaction
 
-import com.junbo.common.id.OfferId
+import com.junbo.common.id.OfferRevisionId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
@@ -12,8 +12,10 @@ import com.junbo.order.db.entity.enums.SubledgerItemAction
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.order.spec.model.SubledgerItem
+import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.Resource
+
 /**
  * Created by fzhang on 4/10/2014.
  */
@@ -29,14 +31,17 @@ class CreateSubledgerItemAction extends BaseOrderEventAwareAction {
     OrderServiceContextBuilder builder
 
     @Override
+    @Transactional
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def serviceContext = context.orderServiceContext
         def order = serviceContext.order
 
         builder.getOffers(serviceContext).syncThen {
-            serviceContext.order.orderItems?.each { OrderItem orderItem ->
-                def offer = serviceContext.offers[orderItem.offer]
+            serviceContext.order.orderItems?.eachWithIndex
+                    { OrderItem orderItem, int index ->
+                // todo ignore first party item
+                def offer = serviceContext.offersMap[orderItem.offer]
                 def subledgerItem = buildSubledgerItem(order, orderItem, offer)
                 def subledger = subledgerHelper.getMatchingSubledger(offer, order.country, order.currency, new Date())
                 if (subledger != null) {
@@ -55,9 +60,10 @@ class CreateSubledgerItemAction extends BaseOrderEventAwareAction {
         def subledgerItem = new SubledgerItem(
                 totalAmount: order.isTaxInclusive ? orderItem.totalAmount - orderItem.totalTax : orderItem.totalAmount,
                 orderItemId: orderItem.orderItemId,
-                offerId: new OfferId(offer.catalogOfferRevision.offerId),
+                offerRevisionId: new OfferRevisionId(offer.catalogOfferRevision.revisionId),
                 subledgerItemAction: SubledgerItemAction.CHARGE
         )
         return subledgerItem
     }
+
 }

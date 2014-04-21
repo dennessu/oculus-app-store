@@ -27,7 +27,7 @@ import java.util.Date;
  *
  * @param <T> the type of entity to work with
  */
-@Repository("baseDao")
+@Repository("orderBaseDao")
 public class BaseDaoImpl<T extends CommonDbEntityWithDate> implements BaseDao<T> {
     @Autowired
     @Qualifier("orderSessionFactory")

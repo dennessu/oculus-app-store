@@ -11,12 +11,13 @@ import com.junbo.common.id.UserId;
 import com.junbo.order.db.common.TestHelper;
 import com.junbo.order.db.dao.OrderDao;
 import com.junbo.order.db.entity.OrderEntity;
-import com.junbo.sharding.IdGenerator;
+import com.junbo.order.db.entity.enums.OrderStatus;
 import com.junbo.sharding.IdGeneratorFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -99,5 +100,30 @@ public class OrderDaoTest extends BaseTest {
         int totalSize = orderDao.readByUserId(userId, null, null, null).size();
         Assert.assertTrue(orderDao.readByUserId(userId, true, null, null).size() < totalSize);
         Assert.assertTrue(orderDao.readByUserId(userId, false, null, null).size() < totalSize);
+    }
+
+    @Test
+    public void testReadByStatus() throws InterruptedException {
+        Long userId = idGenerator.nextId(UserId.class);
+        OrderStatus orderStatus = TestHelper.randEnum(OrderStatus.class);
+
+        for (int i = 0;i < 3; ++i) {
+            OrderEntity entity = TestHelper.generateOrder();
+            entity.setOrderId(idGenerator.nextId(OrderId.class, userId));
+            entity.setUserId(userId);
+            entity.setOrderStatusId(orderStatus);
+            Thread.sleep(10L);
+            orderDao.create(entity);
+        }
+
+        List<OrderEntity> orders = orderDao.readByStatus(userId, Arrays.asList(orderStatus), true, 0, 1000);
+        for (int i = 0;i < orders.size(); ++i) {
+            Assert.assertEquals(orders.get(i).getOrderStatusId(), orderStatus);
+            if (i > 0) {
+                Assert.assertTrue(!orders.get(i).getUpdatedTime().before(orders.get(i - 1).getUpdatedTime()));
+            }
+        }
+
+        Assert.assertEquals(orderDao.readByStatus(userId, Arrays.asList(orderStatus), true, 0, 3).size(), 3);
     }
 }
