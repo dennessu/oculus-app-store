@@ -295,7 +295,7 @@ class BalanceServiceImpl implements BalanceService {
     }
 
     private void validateBalance(Balance balance, Boolean isQuote) {
-        if (balance.orderId == null) {
+        if (!isQuote && balance.orderId == null) {
             throw AppErrors.INSTANCE.fieldMissingValue('orderId').exception()
         }
         if (balance.balanceItems == null || balance.balanceItems.size() == 0) {
@@ -367,40 +367,5 @@ class BalanceServiceImpl implements BalanceService {
 
         amount = currency.getValueByBaseUnits(amount)
         balance.setTotalAmount(amount)
-    }
-
-    @Override
-    Promise<Balance> adjustItems(Balance balance) {
-
-        if (balance.balanceId == null) {
-            throw AppErrors.INSTANCE.fieldMissingValue('balanceId').exception()
-        }
-        if (balance.balanceItems == null || balance.balanceItems.size() == 0) {
-            throw AppErrors.INSTANCE.fieldMissingValue('balanceItems').exception()
-        }
-
-        Balance savedBalance = balanceRepository.getBalance(balance.balanceId.value)
-        if (savedBalance == null) {
-            throw AppErrors.INSTANCE.balanceNotFound(balance.balanceId.value.toString()).exception()
-        }
-
-        balance.balanceItems.each { BalanceItem item ->
-            if (item.balanceItemId == null) {
-                throw AppErrors.INSTANCE.fieldMissingValue('balanceItems.balanceItemId').exception()
-            }
-            BalanceItem savedItem = savedBalance.getBalanceItem(item.balanceItemId)
-            if (savedItem == null) {
-                throw AppErrors.INSTANCE.balanceItemNotFound(item.balanceItemId.toString()).exception()
-            }
-            savedItem.setAmount(item.amount)
-            savedItem.discountItems.clear()
-            if (item.discountItems) {
-                savedItem.discountItems.addAll(item.discountItems)
-            }
-        }
-        return taxService.calculateTax(savedBalance).then { Balance taxedBalance ->
-            computeTotal(taxedBalance)
-            validateBalanceTotal(taxedBalance)
-        }
     }
 }
