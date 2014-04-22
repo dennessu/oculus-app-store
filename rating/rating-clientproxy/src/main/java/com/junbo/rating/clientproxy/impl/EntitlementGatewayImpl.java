@@ -34,7 +34,7 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
 
     public List<Entitlement> retrieve(Long userId, Set<String> groups) {
         EntitlementSearchParam param = new EntitlementSearchParam();
-        param.setGroups(groups);
+//        param.setGroups(groups); TODO:
 
         PageMetadata pagingOption = new PageMetadata();
         pagingOption.setStart(Constants.DEFAULT_PAGE_START);
@@ -63,7 +63,7 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
     public Set<String> format(List<Entitlement> entitlements) {
         Set<String> results = new HashSet<String>();
         for (Entitlement entitlement : entitlements) {
-            results.add(entitlement.getGroup() + Constants.ENTITLEMENT_SEPARATOR + entitlement.getTag());
+//            results.add(entitlement.getGroup() + Constants.ENTITLEMENT_SEPARATOR + entitlement.getTag()); TODO:
         }
 
         return results;
