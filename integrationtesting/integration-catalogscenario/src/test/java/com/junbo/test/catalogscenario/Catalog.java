@@ -41,7 +41,7 @@ public class Catalog extends TestClass {
     private final String defaultItemFileName = "defaultItem";
     private final String defaultItemRevisionFileName = "defaultItemRevision";
     private final String defaultOfferFileName = "defaultOffer";
-    private final String defaultOfferRevisionFileName = "defaultOfferRevision";
+    private final String defaultDigitalOfferRevisionFileName = "defaultDigitalOfferRevision";
 
     @Property(
             priority = Priority.BVT,
@@ -225,7 +225,7 @@ public class Catalog extends TestClass {
         Assert.assertNotNull(offerResultList);
 
         //Attach offer revision to the offer
-        OfferRevision offerRevision = offerRevisionServiceAPI.prepareOfferRevisionEntity(defaultOfferRevisionFileName, EnumHelper.CatalogItemType.DIGITAL);
+        OfferRevision offerRevision = offerRevisionServiceAPI.prepareOfferRevisionEntity(defaultDigitalOfferRevisionFileName, EnumHelper.CatalogItemType.DIGITAL);
         offerRevision.setOfferId(IdConverter.hexStringToId(OfferId.class, offerId));
         offerRevision.setOwnerId(offer.getOwnerId());
         String offerRevisionId = offerRevisionServiceAPI.postOfferRevision(offerRevision);
@@ -238,7 +238,49 @@ public class Catalog extends TestClass {
         //The offer curated should be true now
         offerServiceAPI.getOffer(offerId);
         Assert.assertEquals(Master.getInstance().getOffer(offerId).getCurated(), Boolean.TRUE);
+    }
 
+    @Property(
+            priority = Priority.BVT,
+            features = "CatalogScenarios",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Incomplete,
+            description = "Test EntitlementDefinition Post/Get",
+            steps = {
+                    "1. Post an EntitlementDefinition",
+                    "2. Get the EntitlementDefinition by EntitlementDefinition ID",
+                    "3. Get EntitlementDefinition by some search conditions",
+                    "4. Get all EntitlementDefinition without any search condition"
+            }
+    )
+    @Test
+    public void testEntitlementDefinitionManagement() throws Exception {
+
+        HashMap<String, String> paraMap = new HashMap();
+        EntitlementDefinitionService entitlementDefinitionService = EntitlementDefinitionServiceImpl.instance();
+
+        ///Post an attribute and verify it got posted
+        entitlementDefinitionService.postDefaultEntitlementDefinition(EnumHelper.EntitlementType.DOWNLOAD);
+
+/*        //Get the attribute by its id and assert the return value is not null
+        logger.LogSample("Get the attribute by its id");
+        String attributeGetId = attributeServiceAPI.getAttribute(attributeId);
+        Assert.assertNotNull(Master.getInstance().getAttribute(attributeGetId));
+
+        //Get attributes by some get conditions, like type and id.
+        logger.LogSample("Get attributes by its id and type");
+        paraMap.put("type", attributeRtn.getType());
+        paraMap.put("id", attributeId);
+        List<String> attributeResultList = attributeServiceAPI.getAttribute(paraMap);
+        Assert.assertNotNull(attributeResultList);
+
+        //Get all attributes without any search condition
+        logger.LogSample("Get all attributes(without any search condition)");
+        paraMap.clear();
+        attributeResultList.clear();
+        attributeResultList = attributeServiceAPI.getAttribute(paraMap);
+        Assert.assertNotNull(attributeResultList);*/
     }
 
     @Property(
