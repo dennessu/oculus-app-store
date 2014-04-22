@@ -7,6 +7,8 @@
 package com.junbo.entitlement.rest.resource;
 
 import com.junbo.common.id.EntitlementId;
+import com.junbo.common.id.ItemId;
+import com.junbo.common.id.UserId;
 import com.junbo.entitlement.core.EntitlementService;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementTransfer;
@@ -56,6 +58,26 @@ public class EntitlementResourceImpl implements EntitlementResource {
                 entitlementTransfer.getTrackingUuid());
         return Promise.pure(existing != null ? existing :
                 entitlementService.transferEntitlement(entitlementTransfer));
+    }
+
+    @Override
+    public Promise<Boolean> isDeveloper(UserId userId) {
+        return Promise.pure(entitlementService.isDeveloper(userId.getValue()));
+    }
+
+    @Override
+    public Promise<Entitlement> grantDeveloperEntitlement(UserId userId) {
+        return Promise.pure(entitlementService.grantDeveloperEntitlement(userId.getValue()));
+    }
+
+    @Override
+    public Promise<Boolean> canDownload(UserId userId, ItemId itemId) {
+        return Promise.pure(entitlementService.canDownload(userId.getValue(), itemId.getValue()));
+    }
+
+    @Override
+    public Promise<Boolean> canAccess(UserId userId, ItemId itemId) {
+        return Promise.pure(entitlementService.canAccess(userId.getValue(), itemId.getValue()));
     }
 
     private Entitlement getByTrackingUuid(Long shardMasterId, UUID trackingUuid) {

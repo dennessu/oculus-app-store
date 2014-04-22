@@ -29,7 +29,7 @@ import java.util.concurrent.Callable;
 public class BaseService {
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseService.class);
     @Autowired
-    private EntitlementDefinitionFacade definitionFacade;
+    protected EntitlementDefinitionFacade definitionFacade;
 
     protected void fillCreate(Entitlement entitlement) {
         if (entitlement.getIsBanned() == null) {
@@ -146,7 +146,7 @@ public class BaseService {
 
     protected void checkOauth(final Entitlement entitlement) {
         EntitlementDefinition definition = (EntitlementDefinition) PermanentCache.ENTITLEMENT_DEFINITION.get(
-                entitlement.getEntitlementDefinitionId(), new Callable<Object>() {
+                "id#" + entitlement.getEntitlementDefinitionId().toString(), new Callable<Object>() {
             @Override
             public Object call() throws Exception {
                 return definitionFacade.getDefinition(entitlement.getEntitlementDefinitionId());
