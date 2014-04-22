@@ -14,9 +14,8 @@ public class Item {
     private Long itemId;
     private String sku;
 
-    private String ewalletCurrencyType;
-    private BigDecimal ewalletAmount;
-    private String ewalletCurrency;
+    private BigDecimal walletAmount;
+    private String walletCurrency;
 
     public Long getItemId() {
         return itemId;
@@ -34,27 +33,19 @@ public class Item {
         this.sku = sku;
     }
 
-    public String getEwalletCurrencyType() {
-        return ewalletCurrencyType;
+    public BigDecimal getWalletAmount() {
+        return walletAmount;
     }
 
-    public void setEwalletCurrencyType(String ewalletCurrencyType) {
-        this.ewalletCurrencyType = ewalletCurrencyType;
+    public void setWalletAmount(BigDecimal walletAmount) {
+        this.walletAmount = walletAmount;
     }
 
-    public BigDecimal getEwalletAmount() {
-        return ewalletAmount;
+    public String getWalletCurrency() {
+        return walletCurrency;
     }
 
-    public void setEwalletAmount(BigDecimal ewalletAmount) {
-        this.ewalletAmount = ewalletAmount;
-    }
-
-    public String getEwalletCurrency() {
-        return ewalletCurrency;
-    }
-
-    public void setEwalletCurrency(String ewalletCurrency) {
-        this.ewalletCurrency = ewalletCurrency;
+    public void setWalletCurrency(String walletCurrency) {
+        this.walletCurrency = walletCurrency;
     }
 }

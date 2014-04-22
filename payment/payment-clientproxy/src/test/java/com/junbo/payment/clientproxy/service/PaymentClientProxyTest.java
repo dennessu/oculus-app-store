@@ -29,10 +29,10 @@ public class PaymentClientProxyTest extends BaseTest {
         PaymentInstrument pi = getPaymentInstrument();
 
         final PaymentInstrument result = piClient.postPaymentInstrument(pi).wrapped().get();
-        Assert.assertNotNull(result.getCreditCardRequest().getExternalToken());
+        Assert.assertNotNull(result.getExternalToken());
         Assert.assertNotNull(result.getId());
         final PaymentInstrument getResult = piClient.getById(new PaymentInstrumentId(result.getId())).wrapped().get();
-        Assert.assertEquals(result.getCreditCardRequest().getExternalToken(), getResult.getCreditCardRequest().getExternalToken());
+        Assert.assertEquals(result.getExternalToken(), getResult.getExternalToken());
         Assert.assertEquals(result.getUserId(), getResult.getUserId());
         Assert.assertEquals(result.getId(), getResult.getId());
         PaymentTransaction trx = new PaymentTransaction(){
@@ -100,7 +100,7 @@ public class PaymentClientProxyTest extends BaseTest {
         PaymentInstrument pi = getPaymentInstrument();
 
         final PaymentInstrument result = piClient.postPaymentInstrument(pi).wrapped().get();
-        Assert.assertNotNull(result.getCreditCardRequest().getExternalToken());
+        Assert.assertNotNull(result.getExternalToken());
         Assert.assertNotNull(result.getId());
         PaymentTransaction trx = new PaymentTransaction(){
             {
@@ -142,7 +142,7 @@ public class PaymentClientProxyTest extends BaseTest {
         PaymentInstrument pi = getPaymentInstrument();
 
         final PaymentInstrument result = piClient.postPaymentInstrument(pi).wrapped().get();
-        Assert.assertNotNull(result.getCreditCardRequest().getExternalToken());
+        Assert.assertNotNull(result.getExternalToken());
         Assert.assertNotNull(result.getId());
         PaymentTransaction trx = new PaymentTransaction(){
             {
@@ -178,7 +178,7 @@ public class PaymentClientProxyTest extends BaseTest {
         PaymentInstrument pi = getPaymentInstrument();
 
         final PaymentInstrument result = piClient.postPaymentInstrument(pi).wrapped().get();
-        Assert.assertNotNull(result.getCreditCardRequest().getExternalToken());
+        Assert.assertNotNull(result.getExternalToken());
         Assert.assertNotNull(result.getId());
         PaymentTransaction trx = new PaymentTransaction(){
             {
@@ -214,7 +214,7 @@ public class PaymentClientProxyTest extends BaseTest {
         PaymentInstrument pi = getPaymentInstrument();
 
         final PaymentInstrument result = piClient.postPaymentInstrument(pi).wrapped().get();
-        Assert.assertNotNull(result.getCreditCardRequest().getExternalToken());
+        Assert.assertNotNull(result.getExternalToken());
         Assert.assertNotNull(result.getId());
         PaymentTransaction trx = new PaymentTransaction(){
             {
@@ -240,12 +240,12 @@ public class PaymentClientProxyTest extends BaseTest {
     }
 
     @Test(enabled = false)
-    public void addPIAndAuthCaptureFailed() throws ExecutionException, InterruptedException {
+    public void addPIAndAuthCaptureFailed() throws Exception {
         final UserId userId = new UserId(getLongId());
         PaymentInstrument pi = getPaymentInstrument();
 
         final PaymentInstrument result = piClient.postPaymentInstrument(pi).wrapped().get();
-        Assert.assertNotNull(result.getCreditCardRequest().getExternalToken());
+        Assert.assertNotNull(result.getExternalToken());
         Assert.assertNotNull(result.getId());
         PaymentTransaction trx = new PaymentTransaction(){
             {
@@ -283,10 +283,10 @@ public class PaymentClientProxyTest extends BaseTest {
         }catch (Exception ex){
             Assert.assertNull(captureResult);
             PaymentTransaction revertResult = paymentClient.getPayment(paymentResult.getId()).wrapped().get();
-            Assert.assertEquals(revertResult.getStatus().toUpperCase(), PaymentStatus.SETTLEMENT_DECLINED.toString());
+            Assert.assertEquals(revertResult.getStatus().toUpperCase(), PaymentStatus.SETTLEMENT_SUBMIT_DECLINED.toString());
             for(PaymentEvent event : revertResult.getPaymentEvents()){
                 if(event.getType().equalsIgnoreCase(PaymentEventType.SUBMIT_SETTLE.toString())
-                        && event.getStatus().equalsIgnoreCase(PaymentStatus.SETTLEMENT_DECLINED.toString())){
+                        && event.getStatus().equalsIgnoreCase(PaymentStatus.SETTLEMENT_SUBMIT_DECLINED.toString())){
                     return;
                 }
             }
@@ -295,12 +295,12 @@ public class PaymentClientProxyTest extends BaseTest {
     }
 
     @Test(enabled = false)
-    public void addPIAndAuthReverseFailed() throws ExecutionException, InterruptedException {
+    public void addPIAndAuthReverseFailed() throws Exception {
         final UserId userId = new UserId(getLongId());
         PaymentInstrument pi = getPaymentInstrument();
 
         final PaymentInstrument result = piClient.postPaymentInstrument(pi).wrapped().get();
-        Assert.assertNotNull(result.getCreditCardRequest().getExternalToken());
+        Assert.assertNotNull(result.getExternalToken());
         Assert.assertNotNull(result.getId());
         PaymentTransaction trx = new PaymentTransaction(){
             {

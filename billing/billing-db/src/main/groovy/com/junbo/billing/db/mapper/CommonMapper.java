@@ -109,6 +109,10 @@ public class CommonMapper {
         return id == null ? null : id.getValue();
     }
 
+    public Long toOrderIdLong(OrderId id) {
+        return id == null ? null : id.getValue();
+    }
+
     public Long toOrderItemIdLong(OrderItemId id) {
         return id == null ? null : id.getValue();
     }
@@ -131,6 +135,10 @@ public class CommonMapper {
 
     public UserId toUserId(Long id) {
         return id == null ? null : new UserId(id);
+    }
+
+    public OrderId toOrderId(Long id) {
+        return id == null ? null : new OrderId(id);
     }
 
     public OrderItemId toOrderItemId(Long id) {

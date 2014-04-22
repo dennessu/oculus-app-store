@@ -36,15 +36,15 @@ class GroupRepositoryCloudantImpl extends CloudantClient<Group> implements Group
 
     @Override
     Promise<Group> create(Group group) {
-        group.id = new GroupId(idGenerator.nextIdByShardId(shardAlgorithm.shardId()))
-        super.cloudantPost(group)
-        return get((GroupId)group.id)
+        if (group.id == null) {
+            group.id = new GroupId(idGenerator.nextIdByShardId(shardAlgorithm.shardId()))
+        }
+        return Promise.pure((Group)super.cloudantPost(group))
     }
 
     @Override
     Promise<Group> update(Group group) {
-        super.cloudantPut(group)
-        return get((GroupId)group.id)
+        return Promise.pure((Group)super.cloudantPut(group))
     }
 
     @Override
@@ -53,6 +53,10 @@ class GroupRepositoryCloudantImpl extends CloudantClient<Group> implements Group
         return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)
     }
 
+    @Override
+    Promise<Void> delete(GroupId id) {
+        throw new IllegalStateException('delete group not support')
+    }
     protected CloudantViews views = new CloudantViews(
             views: [
                     'by_name': new CloudantViews.CloudantView(

@@ -1,0 +1,11 @@
+common-testlib
+billing-integration
+cart-integration
+catalog-integration
+identity-integration
+oauth-integration
+payment-integration
+integration-buyerscenario
+integration-catalogscenario
+integration-csrscenario
+integration-developerscenario

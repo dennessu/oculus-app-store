@@ -7,6 +7,8 @@
 package com.junbo.entitlement.spec.resource;
 
 import com.junbo.common.id.EntitlementId;
+import com.junbo.common.id.ItemId;
+import com.junbo.common.id.UserId;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementTransfer;
 import com.junbo.langur.core.RestResource;
@@ -55,4 +57,20 @@ public interface EntitlementResource {
     @Path("/transfer")
     @Consumes({MediaType.APPLICATION_JSON})
     Promise<Entitlement> transferEntitlement(@Valid EntitlementTransfer entitlementTransfer);
+
+    @GET
+    @Path("/developer/{userId}")
+    Promise<Boolean> isDeveloper(@PathParam("userId") UserId userId);
+
+    @POST
+    @Path("/developer/{userId}")
+    Promise<Entitlement> grantDeveloperEntitlement(@PathParam("userId") UserId userId);
+
+    @GET
+    @Path("/download/{userId}/{itemId}")
+    Promise<Boolean> canDownload(@PathParam("userId") UserId userId, @PathParam("itemId") ItemId itemId);
+
+    @GET
+    @Path("/access/{userId}/{itemId}")
+    Promise<Boolean> canAccess(@PathParam("userId") UserId userId, @PathParam("itemId") ItemId itemId);
 }

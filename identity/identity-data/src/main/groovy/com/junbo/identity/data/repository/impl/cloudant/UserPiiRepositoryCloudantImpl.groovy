@@ -35,15 +35,15 @@ class UserPiiRepositoryCloudantImpl extends CloudantClient<UserPii> implements U
 
     @Override
     Promise<UserPii> create(UserPii userPii) {
-        userPii.id = new UserPiiId(idGenerator.nextId(userPii.userId.value))
-        super.cloudantPost(userPii)
-        return get((UserPiiId)userPii.id)
+        if (userPii.id == null) {
+            userPii.id = new UserPiiId(idGenerator.nextId(userPii.userId.value))
+        }
+        return Promise.pure((UserPii)super.cloudantPost(userPii))
     }
 
     @Override
     Promise<UserPii> update(UserPii userPii) {
-        super.cloudantPut(userPii)
-        return get((UserPiiId)userPii.id)
+        return Promise.pure((UserPii)super.cloudantPut(userPii))
     }
 
     @Override

@@ -6,6 +6,7 @@
 package com.junbo.ewallet.db;
 
 import com.junbo.ewallet.db.entity.def.NotEnoughMoneyException;
+import com.junbo.ewallet.db.repo.TransactionRepository;
 import com.junbo.ewallet.db.repo.WalletRepository;
 import com.junbo.ewallet.spec.def.Currency;
 import com.junbo.ewallet.spec.def.Status;
@@ -29,6 +30,8 @@ import java.util.List;
 public class WalletRepoTest extends BaseTest {
     @Autowired
     private WalletRepository walletRepo;
+    @Autowired
+    private TransactionRepository transactionRepo;
 
     @Test
     public void testCreate() {
@@ -88,7 +91,7 @@ public class WalletRepoTest extends BaseTest {
         walletRepo.credit(wallet, creditRequest);
         DebitRequest debitRequest = buildADebitRequest();
         walletRepo.debit(wallet, debitRequest);
-        List<Transaction> transactions = walletRepo.getTransactions(wallet.getWalletId());
+        List<Transaction> transactions = transactionRepo.getTransactions(wallet.getWalletId());
         Assert.assertEquals(transactions.size(), 2);
     }
 

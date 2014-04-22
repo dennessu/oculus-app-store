@@ -1,10 +1,182 @@
 <!DOCTYPE html>
 <html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title><%=title%></title>
+<head>
+    <meta charset="utf-8">
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/css/style.css' />
+    <link rel='stylesheet' href='/css/ember-animated-outlet.css' />
+    <script type="text/javascript" src="<%=global.AppConfig.ProviderHost%>/libs/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="<%=global.AppConfig.ProviderHost%>/libs/jquery.metadata.js"></script>
+    <script type="text/javascript" src="<%=global.AppConfig.ProviderHost%>/libs/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="<%=global.AppConfig.ProviderHost%>/libs/handlebars-v1.3.0.js"></script>
+    <%if(process.env.NAME == "development"){%>
+    <script type="text/javascript" src="<%=global.AppConfig.ProviderHost%>/libs/ember.js"></script>
+    <%}else{%>
+    <script type="text/javascript" src="<%=global.AppConfig.ProviderHost%>/libs/ember.min.js"></script>
+    <%}%>
+    <script type="text/javascript" src="<%=global.AppConfig.ProviderHost%>/libs/ember-animated-outlet.js"></script>
+    <script type="text/javascript" src="<%=global.AppConfig.ProviderHost%>/libs/ember-data.js"></script>
+    <script type="text/javascript" src="/scripts/libs/recaptcha_ajax.js"></script>
 </head>
 <body>
 
+<script type="text/x-handlebars">
+    {{animated-outlet name="main"}}
+</script>
+
+<script type="text/x-handlebars" data-template-name="login">
+    <form id="Login" class="box1 login" method="POST" action="<%=authUrl%>">
+        <h2>Login</h2>
+        <p>No Account,&nbsp;{{#link-to-animated "register" animations="main:flip"}}Create an Account{{/link-to-animated}}</p>
+        {{#if content.errMessage}}
+        <p class="error">{{content.errMessage}}</p>
+        {{/if}}
+        <dl>
+            <dt>Username</dt>
+            <dd>{{input type="text" class="{required:true}" id="Username" name="Username" autofocus="true" value=content.username}}</dd>
+        </dl>
+        <dl>
+            <dt>Password</dt>
+            <dd>{{input type="password" class="{required:true,maxlength:20}" id="Password" name="Password" value=content.password}}</dd>
+        </dl>
+        <div class="actions">
+            {{input type="hidden" name="cid" value=content.cid}}
+            {{input type="hidden" name="event" value=content.event}}
+            <button id="BtnLogin" type="button" class="btn btn-primary" {{action "Submit"}}>Login</button>
+            <button type="button" class="btn btn-cancel" {{action "Cancel"}}>Cancel</button>
+        </div>
+    </form>
+</script>
+
+<script type="text/x-handlebars" data-template-name="register">
+<form class="box1 register" {{action "Submit" on="submit"}}>
+    <h2>Create an Account</h2>
+    <p>I already have an account,&nbsp;{{#link-to-animated "login" animations="main:flip"}}Login{{/link-to-animated}}</p>
+    {{#if errMessage}}
+    <p class="error">{{errMessage}}</p>
+    {{/if}}
+    <dl>
+        <dt>Email</dt>
+        <dd>{{input type="email" class="{required:true,email:true}" name="REmail" id="REmail" value=content.email}}</dd>
+    </dl>
+    <dl>
+        <dt>Password</dt>
+        <dd>{{input type="password" class="{required:true,maxlength:20}" name="RPassword" id="RPassword" value=content.password}}</dd>
+    </dl>
+    <dl>
+        <dt>Re-type Password</dt>
+        <dd>{{input type="password" class="{required:true,equalTo:'#RPassword'}" id="RConfirmPassword"}}</dd>
+    </dl>
+    <dl>
+        <dt>Phone Number</dt>
+        <dd>{{input type="text" class="{required:true,maxlength:20}" name="RPhone" id="RPhone" value=content.phone}}</dd>
+    </dl>
+    <dl>
+        <dt>Enter Birth Date</dt>
+        <dd>
+            {{view Ember.Select content=months optionValuePath="content.v" optionLabelPath="content.t" value=month id="RMonth" name="RMonth" class="month {required:true, VerifyNumberValue:true}"}}
+            {{view Ember.Select content=days optionValuePath="content.v" optionLabelPath="content.t" value=day id="RDay" name="RDay" class="day {required:true, VerifyNumberValue:true}"}}
+            {{view Ember.Select content=years optionValuePath="content.v" optionLabelPath="content.t" value=year id="RYear" name="RYear" class="year {required:true, VerifyNumberValue:true}"}}
+        </dd>
+    </dl>
+    <dl>
+        <dt>Country of Residence</dt>
+        <dd>{{view Ember.Select content=countries optionValuePath="content.v" optionLabelPath="content.t" value=country id="RCountry" name="RCountry" class="{required:true, ValidEmpty:true}"}}</dd>
+    </dl>
+    <dl class="agreement">
+        <dd><label>{{input type="checkbox" id="RIsAgree" name="RIsAgree" class="{required:true}" checked=content.isAgree}}<span>I have read and agree to Store Terms of Service and Privacy Policy.</span></label></dd>
+        <dd><label>{{input type="checkbox" id="RIsReceive" name="RIsReceive" checked=content.isReceive}}<span>I would like to receive totally sweet promotions, news, and offers form Store.</span></label></dd>
+    </dl>
+    <div class="actions">
+        <button id="BtnRegister" type="submit" class="btn btn-primary">Continue</button>
+        <button type="button" class="btn btn-cancel" {{action "Cancel"}}>Cancel</button>
+    </div>
+</form>
+</script>
+
+<script type="text/x-handlebars" data-template-name="captcha">
+<form id="Captcha" class="box1 captcha" {{action "Submit" on="submit"}}>
+    <h2>Enter the letters you see in the field below</h2>
+    {{#if content.errMessage}}
+    <p class="error">{{content.errMessage}}</p>
+    {{/if}}
+    <div id="captchadiv"></div>
+    <div class="actions">
+        <input type="submit" class="btn btn-primary" value="Continue"/>
+        <button type="button" class="btn btn-cancel" {{action "Cancel"}}>Cancel</button>
+    </div>
+</form>
+</script>
+
+<script type="text/x-handlebars" data-template-name="tfa">
+<form class="box1 verification_code" {{action "Submit" on="submit"}}>
+    <h2>New Device Detected!</h2>
+    <p>We don't recognize this device! Please enter the code sent to your email to login.</p>
+    {{#if content.errMessage}}
+    <p class="error">{{content.errMessage}}</p>
+    {{/if}}
+    <dl>
+        <dt>Enter Verification Code</dt>
+        <dd>{{input type="text" class="{required:true}" id="Code" name="Code" autofocus="true" value=content.code}}</dd>
+    </dl>
+    <dl class="agreement">
+        <dd><label>{{input type="checkbox" id="Remember" checked=content.remember }} Remember this computer</label></dd>
+    </dl>
+    <div class="actions">
+        <input type="submit" class="btn btn-primary" value="Verify"/>
+        <button type="button" class="btn btn-cancel" {{action "Cancel"}}>Cancel</button>
+    </div>
+
+    <section class="helper">
+        <hgroup><h3>Didn't receive a code?</h3></hgroup>
+        {{#if isSend}}
+        <p class="message"><span>Verification sent!</span></p>
+        {{/if}}
+        <p><a href="#">Re-send code to Email Address</a></p>
+        <p><a href="#">Re-send code to SMS</a></p>
+    </section>
+
+</form>
+</script>
+
+<script type="text/x-handlebars" data-template-name="pin">
+<form class="box1" {{action "Submit" on="submit"}}>
+    <h2>Please Set a PIN for VR</h2>
+    <p>Your PIN will be used to authenticate purchase through the Store Wallet. This will make purchasing content in VR easier.</p>
+    {{#if content.errMessage}}
+    <p class="error">{{content.errMessage}}</p>
+    {{/if}}
+    <dl>
+        <dt>PIN #</dt>
+        <dd>{{input type="text" class="{required:true}" id="Code" name="Code" autofocus="true" value=content.code}}</dd>
+    </dl>
+    <dl>
+        <dt>Re-Confirm PIN #</dt>
+        <dd>{{input type="text" class="{required:true,equalTo:'#Code'}" id="ConfirmCode" name="ConfirmCode"}}</dd>
+    </dl>
+    <div class="actions">
+        <input type="submit" class="btn btn-primary" value="Continue"/>
+        <button type="button" class="btn btn-cancel" {{action "Cancel"}}>Cancel</button>
+    </div>
+</form>
+</script>
+
+<script type="text/x-handlebars" data-template-name="my">
+<section class="box1 verification_code">
+    <h2>Welcome</h2>
+
+    <div class="actions">
+        <input type="submit" class="btn btn-primary" value="Log Out" {{action "Logout"}}/>
+    </div>
+</section>
+</script>
+
+<script type="text/javascript" src="<%=global.AppConfig.ProviderHost%>/scripts/module.js"></script>
+<script type="text/javascript" src="<%=global.AppConfig.ProviderHost%>/scripts/utils.js"></script>
+<script type="text/javascript" src="<%=global.AppConfig.ProviderHost%>/scripts/app_config.js"></script>
+<script type="text/javascript" src="<%=global.AppConfig.ProviderHost%>/scripts/ajax_client.js"></script>
+<script type="text/javascript" src="<%=global.AppConfig.ProviderHost%>/scripts/data_provider.js"></script>
+<script type="text/javascript" src="<%=global.AppConfig.ProviderHost%>/models/identity.js"></script>
+<script type="text/javascript" src="/scripts/app/app.js"></script>
 </body>
 </html>

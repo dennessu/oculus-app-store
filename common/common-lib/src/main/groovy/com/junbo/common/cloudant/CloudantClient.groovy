@@ -11,7 +11,6 @@ import com.junbo.common.util.JsonMarshaller
 import com.junbo.common.util.Utils
 import com.ning.http.client.AsyncHttpClient
 import com.ning.http.client.Response
-import junit.framework.Assert
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.http.HttpMethod
@@ -52,15 +51,27 @@ abstract class CloudantClient<T> implements  InitializingBean {
         def id = Utils.tryObtainGetterMethod(entityClass, 'id')
         def cloudantId = Utils.tryObtainGetterMethod(entityClass, '_id')
         def cloudantRev = Utils.tryObtainGetterMethod(entityClass, '_rev')
-        if (id == null || cloudantId == null || cloudantRev == null) {
+
+        def resourceAge = Utils.tryObtainGetterMethod(entityClass, 'resourceAge')
+        def createdTime = Utils.tryObtainGetterMethod(entityClass, 'createdTime')
+        def updatedTime = Utils.tryObtainGetterMethod(entityClass, 'updatedTime')
+        def createdBy = Utils.tryObtainGetterMethod(entityClass, 'createdBy')
+        def updatedBy = Utils.tryObtainGetterMethod(entityClass, 'updatedBy')
+
+        if (id == null || cloudantId == null || cloudantRev == null || resourceAge == null || createdTime == null
+        || updatedTime == null || createdBy == null || updatedBy == null) {
             throw new CloudantException("Failed to init cloudant client with entityClass: $entityClass, " +
-                    'one of properties[id, _id, _rev] not found')
+           'some of properties[id, _id, _rev, resourceAge, createdTime, updatedTime, createdBy, updatedby] not found')
         }
     }
 
     T cloudantPost(T entity) {
         entity._id = entity.id.toString()
         entity._rev = ''
+        entity.createdTime = new Date()
+        entity.createdBy = 'todo-cloudant'
+        entity.resourceAge = '0'
+
         def response = executeRequest(HttpMethod.POST, '', [:], entity, true)
         if (response.statusCode != HttpStatus.CREATED.value()) {
             CloudantError cloudantError = JsonMarshaller.unmarshall(response.responseBody, CloudantError)
@@ -77,7 +88,8 @@ abstract class CloudantClient<T> implements  InitializingBean {
 
         def cloudantResponse = JsonMarshaller.unmarshall(response.responseBody, CloudantResponse)
 
-        Assert.assertTrue(cloudantResponse.ok)
+        assert cloudantResponse.ok == true
+        entity._rev = cloudantResponse.revision
 
         return entity
     }
@@ -100,7 +112,13 @@ abstract class CloudantClient<T> implements  InitializingBean {
         def cloudantDoc = getCloudantDocument(entity.id.toString())
         entity._id = entity.id.toString()
         entity._rev = cloudantDoc._rev
+        entity.updatedTime = new Date()
+        entity.updatedBy = 'todo-cloudant'
+        def originalResourceAge = entity.resourceAge
+        entity.resourceAge = ((String)entity._rev).split('-')[0]
+
         def response = executeRequest(HttpMethod.PUT, entity.id.toString(), [:], entity, true)
+        entity.resourceAge = originalResourceAge
 
         if (response.statusCode != HttpStatus.CREATED.value()) {
             CloudantError cloudantError = JsonMarshaller.unmarshall(response.responseBody, CloudantError)
@@ -117,7 +135,8 @@ abstract class CloudantClient<T> implements  InitializingBean {
 
         def cloudantResponse = JsonMarshaller.unmarshall(response.responseBody, CloudantResponse)
 
-        Assert.assertTrue(cloudantResponse.ok)
+        assert cloudantResponse.ok == true
+        entity._rev = cloudantResponse.revision
 
         return entity
     }
@@ -135,7 +154,6 @@ abstract class CloudantClient<T> implements  InitializingBean {
 
     List<T> cloudantGetAll() {
         def response = executeRequest(HttpMethod.GET, '_all_docs', [:], null)
-
         if (response.statusCode != HttpStatus.OK.value()) {
             CloudantError cloudantError = JsonMarshaller.unmarshall(response.responseBody, CloudantError)
 
@@ -184,7 +202,6 @@ abstract class CloudantClient<T> implements  InitializingBean {
 
     private T getCloudantDocument(String id) {
         def response = executeRequest(HttpMethod.GET, id, [:], null)
-
         if (response.statusCode != HttpStatus.OK.value()) {
             return null
         }

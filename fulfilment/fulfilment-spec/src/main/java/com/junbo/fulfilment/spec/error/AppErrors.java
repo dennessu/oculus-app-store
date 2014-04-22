@@ -18,7 +18,7 @@ public interface AppErrors {
     com.junbo.fulfilment.spec.error.AppErrors INSTANCE =
             ErrorProxy.newProxyInstance(com.junbo.fulfilment.spec.error.AppErrors.class);
 
-    @ErrorDef(httpStatusCode = 400, code = "30000", description = "{0}")
+    @ErrorDef(httpStatusCode = 500, code = "30000", description = "{0}")
     AppError common(String msg);
 
     @ErrorDef(httpStatusCode = 400, code = "30001", description = "Missing Input field.", field = "{0}")

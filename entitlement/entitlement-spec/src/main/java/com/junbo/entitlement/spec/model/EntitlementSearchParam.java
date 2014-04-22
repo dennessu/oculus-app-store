@@ -7,11 +7,9 @@
 package com.junbo.entitlement.spec.model;
 
 import com.junbo.common.id.EntitlementDefinitionId;
-import com.junbo.common.id.OfferId;
 import com.junbo.common.id.UserId;
 
 import javax.ws.rs.QueryParam;
-import java.util.Date;
 import java.util.Set;
 
 /**
@@ -20,32 +18,24 @@ import java.util.Set;
 public class EntitlementSearchParam {
     @QueryParam("userId")
     private UserId userId;
-    @QueryParam("developerId")
-    private UserId developerId;
-    @QueryParam("offerIds")
-    private Set<OfferId> offerIds;
-    @QueryParam("type")
-    private String type;
-    @QueryParam("status")
-    private String status;
+    @QueryParam("isActive")
+    private Boolean isActive;
+    @QueryParam("isSuspended")
+    private Boolean isBanned;
 
-    @QueryParam("groups")
-    private Set<String> groups;
-    @QueryParam("tags")
-    private Set<String> tags;
     @QueryParam("definitionIds")
     private Set<EntitlementDefinitionId> definitionIds;
 
     @QueryParam("startGrantTime")
-    private Date startGrantTime;
+    private String startGrantTime;
     @QueryParam("endGrantTime")
-    private Date endGrantTime;
+    private String endGrantTime;
     @QueryParam("startExpirationTime")
-    private Date startExpirationTime;
+    private String startExpirationTime;
     @QueryParam("endExpirationTime")
-    private Date endExpirationTime;
+    private String endExpirationTime;
     @QueryParam("lastModifiedTime")
-    private Date lastModifiedTime;
+    private String lastModifiedTime;
 
     public EntitlementSearchParam() {
     }
@@ -58,21 +48,6 @@ public class EntitlementSearchParam {
         this.userId = userId;
     }
 
-    public UserId getDeveloperId() {
-        return developerId;
-    }
-
-    public void setDeveloperId(UserId developerId) {
-        this.developerId = developerId;
-    }
-
-    public Set<OfferId> getOfferIds() {
-        return offerIds;
-    }
-
-    public void setOfferIds(Set<OfferId> offerIds) {
-        this.offerIds = offerIds;
-    }
 
     public Set<EntitlementDefinitionId> getDefinitionIds() {
         return definitionIds;
@@ -82,75 +57,59 @@ public class EntitlementSearchParam {
         this.definitionIds = definitionIds;
     }
 
-    public String getType() {
-        return type;
+    public Boolean getIsActive() {
+        return isActive;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
     }
 
-    public String getStatus() {
-        return status;
+    public Boolean getIsBanned() {
+        return isBanned;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setIsBanned(Boolean isBanned) {
+        this.isBanned = isBanned;
     }
 
-    public Set<String> getGroups() {
-        return groups;
-    }
-
-    public void setGroups(Set<String> groups) {
-        this.groups = groups;
-    }
-
-    public Set<String> getTags() {
-        return tags;
-    }
-
-    public void setTags(Set<String> tags) {
-        this.tags = tags;
-    }
-
-    public Date getStartGrantTime() {
+    public String getStartGrantTime() {
         return startGrantTime;
     }
 
-    public void setStartGrantTime(Date startGrantTime) {
+    public void setStartGrantTime(String startGrantTime) {
         this.startGrantTime = startGrantTime;
     }
 
-    public Date getEndGrantTime() {
+    public String getEndGrantTime() {
         return endGrantTime;
     }
 
-    public void setEndGrantTime(Date endGrantTime) {
+    public void setEndGrantTime(String endGrantTime) {
         this.endGrantTime = endGrantTime;
     }
 
-    public Date getStartExpirationTime() {
+    public String getStartExpirationTime() {
         return startExpirationTime;
     }
 
-    public void setStartExpirationTime(Date startExpirationTime) {
+    public void setStartExpirationTime(String startExpirationTime) {
         this.startExpirationTime = startExpirationTime;
     }
 
-    public Date getEndExpirationTime() {
+    public String getEndExpirationTime() {
         return endExpirationTime;
     }
 
-    public void setEndExpirationTime(Date endExpirationTime) {
+    public void setEndExpirationTime(String endExpirationTime) {
         this.endExpirationTime = endExpirationTime;
     }
 
-    public Date getLastModifiedTime() {
+    public String getLastModifiedTime() {
         return lastModifiedTime;
     }
 
-    public void setLastModifiedTime(Date lastModifiedTime) {
+    public void setLastModifiedTime(String lastModifiedTime) {
         this.lastModifiedTime = lastModifiedTime;
     }
 
@@ -160,73 +119,53 @@ public class EntitlementSearchParam {
      */
     public static class Builder {
         private UserId userId;
-        private UserId developerId;
-        private Set<OfferId> offerIds;
-        private String type;
-        private String status;
+        private Boolean isActive;
+        private Boolean isBanned;
 
-        private Set<String> groups;
-        private Set<String> tags;
         private Set<EntitlementDefinitionId> definitionIds;
 
-        private Date startGrantTime;
-        private Date endGrantTime;
-        private Date startExpirationTime;
-        private Date endExpirationTime;
+        private String startGrantTime;
+        private String endGrantTime;
+        private String startExpirationTime;
+        private String endExpirationTime;
 
-        private Date lastModifiedTime;
+        private String lastModifiedTime;
 
-        public Builder(UserId userId, UserId developerId) {
+        public Builder(UserId userId) {
             this.userId = userId;
-            this.developerId = developerId;
         }
 
-        public Builder offerIds(Set<OfferId> val) {
-            offerIds = val;
+        public Builder isActive(Boolean val) {
+            isActive = val;
             return this;
         }
 
-        public Builder type(String val) {
-            type = val;
+        public Builder isBanned(Boolean val) {
+            isBanned = val;
             return this;
         }
 
-        public Builder status(String val) {
-            status = val;
-            return this;
-        }
-
-        public Builder groups(Set<String> val) {
-            groups = val;
-            return this;
-        }
-
-        public Builder tags(Set<String> val) {
-            tags = val;
-            return this;
-        }
-
-        public Builder startGrantTime(Date val) {
+        public Builder startGrantTime(String val) {
             startGrantTime = val;
             return this;
         }
 
-        public Builder endGrantTime(Date val) {
+        public Builder endGrantTime(String val) {
             endGrantTime = val;
             return this;
         }
 
-        public Builder startExpirationTime(Date val) {
+        public Builder startExpirationTime(String val) {
             startExpirationTime = val;
             return this;
         }
 
-        public Builder endExpirationTime(Date val) {
+        public Builder endExpirationTime(String val) {
             endExpirationTime = val;
             return this;
         }
 
-        public Builder lastModifiedTime(Date val) {
+        public Builder lastModifiedTime(String val) {
             lastModifiedTime = val;
             return this;
         }
@@ -243,13 +182,9 @@ public class EntitlementSearchParam {
 
     private EntitlementSearchParam(Builder builder) {
         userId = builder.userId;
-        developerId = builder.developerId;
-        offerIds = builder.offerIds;
-        type = builder.type;
-        status = builder.status;
+        isActive = builder.isActive;
+        isBanned = builder.isBanned;
         definitionIds = builder.definitionIds;
-        groups = builder.groups;
-        tags = builder.tags;
         startGrantTime = builder.startGrantTime;
         endGrantTime = builder.endGrantTime;
         startExpirationTime = builder.startExpirationTime;

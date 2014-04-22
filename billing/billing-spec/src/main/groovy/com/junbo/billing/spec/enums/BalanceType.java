@@ -8,13 +8,14 @@ package com.junbo.billing.spec.enums;
 
 import com.junbo.common.util.Identifiable;
 
+import javax.ws.rs.NotSupportedException;
+
 /**
  * Created by xmchen on 14-2-27.
  */
 public enum BalanceType implements Identifiable<Short> {
     DEBIT((short)1),
-    DELAY_DEBIT((short)2),
-    MANUAL_CAPTURE((short)3),
+    MANUAL_CAPTURE((short)2),
     CREDIT((short)4),
     REFUND((short)8);
 
@@ -27,5 +28,10 @@ public enum BalanceType implements Identifiable<Short> {
     @Override
     public Short getId() {
         return id;
+    }
+
+    @Override
+    public void setId(Short id) {
+        throw new NotSupportedException("enum BalanceType not settable");
     }
 }

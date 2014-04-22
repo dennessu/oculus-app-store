@@ -8,16 +8,19 @@ package com.junbo.catalog.rest.resource;
 
 import com.junbo.catalog.core.EntitlementDefinitionService;
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefSearchParams;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.resource.EntitlementDefinitionResource;
 import com.junbo.common.id.EntitlementDefinitionId;
-import com.junbo.common.id.UserId;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
+import com.junbo.common.util.IdFormatter;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
@@ -40,15 +43,17 @@ public class EntitlementDefinitionResourceImpl implements EntitlementDefinitionR
     }
 
     @Override
-    public Promise<Results<EntitlementDefinition>> getEntitlementDefinitionDefinitions(
-            UserId developerId, String type, String group, String tag, PageableGetOptions pageMetadata) {
+    public Promise<Results<EntitlementDefinition>> getEntitlementDefinitions(
+            EntitlementDefSearchParams searchParams, PageableGetOptions pageMetadata) {
         pageMetadata.ensurePagingValid();
         List<EntitlementDefinition> entitlementDefinitions =
                 entitlementDefinitionService.getEntitlementDefinitions(
-                        developerId.getValue(), group, tag, type, pageMetadata);
+                        searchParams.getDeveloperId() == null ? null : searchParams.getDeveloperId().getValue(),
+                        searchParams.getClientId(), searchParams.getGroups(), searchParams.getTags(),
+                        searchParams.getTypes(), searchParams.getIsConsumable(), pageMetadata);
         Results<EntitlementDefinition> result = new Results<EntitlementDefinition>();
         result.setItems(entitlementDefinitions);
-        result.setNext(buildNextUrl(developerId.getValue(), type, group, tag, pageMetadata));
+        result.setNext(buildNextUrl(searchParams, pageMetadata));
         return Promise.pure(result);
     }
 
@@ -67,19 +72,50 @@ public class EntitlementDefinitionResourceImpl implements EntitlementDefinitionR
         return Promise.pure(entitlementDefinitionService.getEntitlementDefinition(id));
     }
 
-    private Link buildNextUrl(Long developerId,
-                                String type, String group,
-                                String tag, PageableGetOptions pageMetadata) {
-        UriBuilder builder = uriInfo.getBaseUriBuilder()
-                .path("entitlementDefinitions").queryParam("developerId", developerId);
-        if (!StringUtils.isEmpty(type)) {
-            builder = builder.queryParam("type", type);
+    @Override
+    public Promise<Response> deleteEntitlementDefinition(EntitlementDefinitionId entitlementDefinitionId) {
+        entitlementDefinitionService.deleteEntitlement(entitlementDefinitionId.getValue());
+        return Promise.pure(Response.status(204).build());
+
+    }
+
+    @Override
+    public Promise<EntitlementDefinition> updateEntitlementDefinition(EntitlementDefinitionId entitlementDefinitionId, EntitlementDefinition entitlementDefinition) {
+        UUID trackingUuid = entitlementDefinition.getTrackingUuid();
+        if (trackingUuid != null) {
+            EntitlementDefinition existingEntitlementDefinition
+                    = entitlementDefinitionService.getByTrackingUuid(trackingUuid);
+            if (existingEntitlementDefinition != null) {
+                return Promise.pure(existingEntitlementDefinition);
+            }
         }
-        if (!StringUtils.isEmpty(group)) {
-            builder = builder.queryParam("group", group);
+        Long id = entitlementDefinitionService
+                .updateEntitlementDefinition(entitlementDefinitionId.getValue(), entitlementDefinition);
+        return Promise.pure(entitlementDefinitionService.getEntitlementDefinition(id));
+    }
+
+    private Link buildNextUrl(EntitlementDefSearchParams searchParams, PageableGetOptions pageMetadata) {
+        UriBuilder builder = uriInfo.getBaseUriBuilder().path("entitlement-definitions");
+        if (searchParams.getDeveloperId() != null) {
+            builder = builder.queryParam("developerId", IdFormatter.encodeId(searchParams.getDeveloperId()));
         }
-        if (!StringUtils.isEmpty(tag)) {
-            builder = builder.queryParam("tag", tag);
+        if (!StringUtils.isEmpty(searchParams.getClientId())) {
+            builder = builder.queryParam("clientId", searchParams.getClientId());
+        }
+        if (!CollectionUtils.isEmpty(searchParams.getTypes())) {
+            for (String type : searchParams.getTypes()) {
+                builder = builder.queryParam("types", type);
+            }
+        }
+        if (!CollectionUtils.isEmpty(searchParams.getGroups())) {
+            for (String group : searchParams.getGroups()) {
+                builder = builder.queryParam("groups", group);
+            }
+        }
+        if (!CollectionUtils.isEmpty(searchParams.getTags())) {
+            for (String tag : searchParams.getTags()) {
+                builder = builder.queryParam("tags", tag);
+            }
         }
         builder = buildPageParams(builder, pageMetadata);
 

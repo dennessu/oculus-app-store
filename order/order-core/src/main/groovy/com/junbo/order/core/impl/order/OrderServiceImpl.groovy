@@ -181,32 +181,26 @@ class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    Promise<OrderEvent> updateOrderBillingStatus(OrderEvent event) {
-        return null
-    }
-
-    @Override
-    Promise<OrderEvent> updateOrderFulfillmentStatus(OrderEvent event) {
-        return null
-    }
-
-    @Override
-    Promise<Order> completeChargeOrder(Long orderId, ApiContext context) {
-        LOGGER.info('name=Complete_Charge_Order. orderId: {}', orderId)
-        return getOrderByOrderId(orderId).then { Order order ->
+    @Transactional
+    Promise<OrderEvent> updateOrderByOrderEvent(OrderEvent event) {
+        LOGGER.info('name=Update_Order_By_Order_Event. orderId: {}', event.order.value)
+        return getOrderByOrderId(event.order.value).then { Order order ->
             def orderServiceContext = initOrderServiceContext(order)
-            flowSelector.select(orderServiceContext, OrderServiceOperation.COMPLETE_CHARGE).then { String flowName ->
+            orderServiceContext.orderEvent = event
+            return flowSelector.select(orderServiceContext, OrderServiceOperation.UPDATE).then { String flowName ->
                 // Prepare Flow Request
                 assert (flowName != null)
-                LOGGER.info('name=Complete_Charge_Order. flowName: {}', flowName)
                 Map<String, Object> requestScope = [:]
                 def orderActionContext = new OrderActionContext()
                 orderActionContext.orderServiceContext = orderServiceContext
                 orderActionContext.trackingUuid = UUID.randomUUID()
+                event.trackingUuid = orderActionContext.trackingUuid
+                event.eventTrackingUuid = UUID.randomUUID()
+                orderRepository.createOrderEvent(event)
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
                 executeFlow(flowName, orderServiceContext, requestScope)
             }.syncThen {
-                return orderServiceContext.order
+                return orderServiceContext.orderEvent
             }
         }
     }

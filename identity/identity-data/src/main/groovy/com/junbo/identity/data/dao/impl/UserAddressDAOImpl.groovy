@@ -20,8 +20,9 @@ class UserAddressDAOImpl extends BaseDAO implements UserAddressDAO  {
 
     @Override
     UserAddressEntity save(UserAddressEntity entity) {
-        entity.id = idGenerator.nextId(entity.userPiiId)
-
+        if (entity.id == null) {
+            entity.id = idGenerator.nextId(entity.userPiiId)
+        }
         def currentSession = currentSession(entity.id)
         currentSession.save(entity)
         currentSession.flush()

@@ -7,6 +7,7 @@
 package com.junbo.order.db.dao;
 
 import com.junbo.order.db.entity.OrderEntity;
+import com.junbo.order.db.entity.enums.OrderStatus;
 
 import java.util.List;
 
@@ -15,4 +16,7 @@ import java.util.List;
  */
 public interface OrderDao extends BaseDao<OrderEntity> {
     List<OrderEntity> readByUserId(final Long userId,  Boolean tentative, Integer start, Integer count);
+
+    List<OrderEntity> readByStatus(Integer shardId,  List<OrderStatus> statusList, boolean updatedByAscending,
+                                   Integer start, Integer count);
 }

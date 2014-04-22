@@ -9,6 +9,7 @@ import com.junbo.common.id.UserAuthenticatorId
 import com.junbo.identity.spec.v1.model.UserAuthenticator
 import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
 import com.junbo.langur.core.promise.Promise
+import com.junbo.sharding.core.annotations.ReadMethod
 import groovy.transform.CompileStatic
 
 /**
@@ -16,15 +17,7 @@ import groovy.transform.CompileStatic
  * federation data(such as google account, facebook account) from the database
  */
 @CompileStatic
-interface UserAuthenticatorRepository {
-
-    Promise<UserAuthenticator> create(UserAuthenticator entity)
-
-    Promise<UserAuthenticator> update(UserAuthenticator entity)
-
-    Promise<UserAuthenticator> get(UserAuthenticatorId id)
-
+interface UserAuthenticatorRepository extends IdentityBaseRepository<UserAuthenticator, UserAuthenticatorId> {
+    @ReadMethod
     Promise<List<UserAuthenticator>> search(AuthenticatorListOptions getOption)
-
-    Promise<Void> delete(UserAuthenticatorId id)
 }

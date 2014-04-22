@@ -2,8 +2,10 @@ package com.junbo.payment.core.mock;
 
 
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.spec.enums.CreditCardType;
+import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
 
@@ -26,7 +28,7 @@ public class MockPaymentProviderServiceImpl extends AbstractPaymentProviderServi
     @Override
     public void clonePIResult(PaymentInstrument source, PaymentInstrument target) {
         target.setAccountNum(source.getAccountNum());
-        target.getCreditCardRequest().setExternalToken(source.getCreditCardRequest().getExternalToken());
+        target.setExternalToken(source.getExternalToken());
         target.getCreditCardRequest().setType(source.getCreditCardRequest().getType());
         target.getCreditCardRequest().setCommercial(source.getCreditCardRequest().getCommercial());
         target.getCreditCardRequest().setDebit(source.getCreditCardRequest().getDebit());
@@ -37,13 +39,16 @@ public class MockPaymentProviderServiceImpl extends AbstractPaymentProviderServi
     @Override
     public void cloneTransactionResult(PaymentTransaction source, PaymentTransaction target) {
         target.setExternalToken(source.getExternalToken());
+        if(!CommonUtil.isNullOrEmpty(source.getStatus())){
+            target.setStatus(source.getStatus());
+        }
     }
 
     @Override
     public Promise<PaymentInstrument> add(PaymentInstrument request) {
         request.setAccountNum("1111");
         request.setIsActive(true);
-        request.getCreditCardRequest().setExternalToken(piExternalToken);
+        request.setExternalToken(piExternalToken);
         request.getCreditCardRequest().setType(CreditCardType.VISA.toString());
         request.getCreditCardRequest().setCommercial("UNKNOW");
         request.getCreditCardRequest().setDebit("UNKNOW");
@@ -64,11 +69,13 @@ public class MockPaymentProviderServiceImpl extends AbstractPaymentProviderServi
     @Override
     public Promise<PaymentTransaction> authorize(PaymentInstrument request, PaymentTransaction paymentRequest) {
         paymentRequest.setExternalToken(authExternalToken);
+        paymentRequest.setStatus(PaymentStatus.AUTHORIZED.toString());
         return Promise.pure(paymentRequest);
     }
 
     @Override
     public Promise<PaymentTransaction> capture(String transactionId, PaymentTransaction paymentRequest) {
+        paymentRequest.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString());
         return Promise.pure(paymentRequest);
 
     }
@@ -76,11 +83,13 @@ public class MockPaymentProviderServiceImpl extends AbstractPaymentProviderServi
     @Override
     public Promise<PaymentTransaction> charge(PaymentInstrument request, PaymentTransaction paymentRequest) {
         paymentRequest.setExternalToken(chargeExternalToken);
+        paymentRequest.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString());
         return Promise.pure(paymentRequest);
     }
 
     @Override
     public Promise<PaymentTransaction> reverse(String transactionId, PaymentTransaction request) {
+        request.setStatus(PaymentStatus.REVERSED.toString());
         return Promise.pure(request);
     }
 
@@ -96,6 +105,6 @@ public class MockPaymentProviderServiceImpl extends AbstractPaymentProviderServi
 
     @Override
     public Promise<PaymentTransaction> getByTransactionToken(String token) {
-        return null;
+        return Promise.pure(null);
     }
 }

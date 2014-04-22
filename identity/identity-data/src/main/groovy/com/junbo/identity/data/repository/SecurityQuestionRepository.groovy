@@ -8,18 +8,12 @@ import com.junbo.common.id.SecurityQuestionId
 import com.junbo.identity.spec.model.domaindata.SecurityQuestion
 import com.junbo.identity.spec.options.list.SecurityQuestionListOptions
 import com.junbo.langur.core.promise.Promise
+import com.junbo.sharding.core.annotations.ReadMethod
+
 /**
  * Created by liangfu on 3/16/14.
  */
-interface SecurityQuestionRepository {
-
-    Promise<SecurityQuestion> create(SecurityQuestion entity)
-
-    Promise<SecurityQuestion> update(SecurityQuestion entity)
-
-    Promise<SecurityQuestion> get(SecurityQuestionId id)
-
-    Promise<Void> delete(SecurityQuestionId id)
-
+interface SecurityQuestionRepository extends IdentityBaseRepository<SecurityQuestion, SecurityQuestionId> {
+    @ReadMethod
     Promise<List<SecurityQuestion>> search(SecurityQuestionListOptions getOption)
 }

@@ -99,7 +99,7 @@ ruleset {
         AbstractClassWithPublicConstructor
         // AbstractClassWithoutAbstractMethod
         BooleanMethodReturnsNull
-        BuilderMethodWithSideEffects
+        // BuilderMethodWithSideEffects
         CloneableWithoutClone
         CloseWithoutCloseable
         CompareToWithoutComparable
@@ -129,7 +129,7 @@ ruleset {
         // rulesets/exceptions.xml
         CatchArrayIndexOutOfBoundsException
         CatchError
-        CatchException
+        // CatchException
         CatchIllegalMonitorStateException
         CatchIndexOutOfBoundsException
         CatchNullPointerException
@@ -220,7 +220,7 @@ ruleset {
         ExplicitStackInstantiation
         ExplicitTreeSetInstantiation
         GStringAsMapKey
-        GStringExpressionWithinString
+        //GStringExpressionWithinString
         GetterMethodCouldBeProperty
         GroovyLangImmutable
         // UseCollectMany

@@ -4,9 +4,12 @@ dependencies {
     compile (libraries.common_configuration)
 
     compile (libraries.rs_api)
+
     compile (libraries.spring_context)
     compile (libraries.spring_core)
     compile (libraries.spring_beans)
+    compile (libraries.spring_web)
+
     compile (libraries.jackson_jaxrs_json_provider)
     compile (libraries.jackson_core)
     compile (libraries.jackson_annotations)

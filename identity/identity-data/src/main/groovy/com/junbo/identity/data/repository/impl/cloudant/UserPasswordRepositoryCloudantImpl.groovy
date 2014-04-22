@@ -37,15 +37,15 @@ class UserPasswordRepositoryCloudantImpl extends CloudantClient<UserPassword> im
 
     @Override
     Promise<UserPassword> create(UserPassword userPassword) {
-        userPassword.id = new UserPasswordId(idGenerator.nextId(userPassword.userId.value))
-        super.cloudantPost(userPassword)
-        return get((UserPasswordId)userPassword.id)
+        if (userPassword.id == null) {
+            userPassword.id = new UserPasswordId(idGenerator.nextId(userPassword.userId.value))
+        }
+        return Promise.pure((UserPassword)super.cloudantPost(userPassword))
     }
 
     @Override
     Promise<UserPassword> update(UserPassword userPassword) {
-        super.cloudantPut(userPassword)
-        return get((UserPasswordId)userPassword.id)
+        return Promise.pure((UserPassword)super.cloudantPut(userPassword))
     }
 
     @Override

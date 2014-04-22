@@ -8,6 +8,8 @@ package com.junbo.billing.spec.enums;
 
 import com.junbo.common.util.Identifiable;
 
+import javax.ws.rs.NotSupportedException;
+
 /**
  * Created by xmchen on 14-2-17.
  */
@@ -52,5 +54,10 @@ public enum TaxAuthority implements Identifiable<Short> {
     @Override
     public Short getId() {
         return id;
+    }
+
+    @Override
+    public void setId(Short id) {
+        throw new NotSupportedException("enum TaxAuthority not settable");
     }
 }

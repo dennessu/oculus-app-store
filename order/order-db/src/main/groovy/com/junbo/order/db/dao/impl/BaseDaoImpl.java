@@ -27,7 +27,7 @@ import java.util.Date;
  *
  * @param <T> the type of entity to work with
  */
-@Repository("baseDao")
+@Repository("orderBaseDao")
 public class BaseDaoImpl<T extends CommonDbEntityWithDate> implements BaseDao<T> {
     @Autowired
     @Qualifier("orderSessionFactory")
@@ -55,6 +55,15 @@ public class BaseDaoImpl<T extends CommonDbEntityWithDate> implements BaseDao<T>
 
     protected Session getSession(Object key) {
         ShardScope shardScope = new ShardScope(shardAlgorithm.shardId(key));
+        try {
+            return sessionFactory.getCurrentSession();
+        } finally {
+            shardScope.close();
+        }
+    }
+
+    protected Session getSessionByShardId(int shardId) {
+        ShardScope shardScope = new ShardScope(shardId);
         try {
             return sessionFactory.getCurrentSession();
         } finally {

@@ -39,7 +39,8 @@ import java.util.List;
 public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRevisionService {
 
     private final String catalogServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.CATALOG) + "offer-revisions";
-    private final String defaultOfferRevisionFileName = "defaultOfferRevision";
+    private final String defaultDigitalOfferRevisionFileName = "defaultDigitalOfferRevision";
+    private final String defaultPhysicalOfferRevisionFileName = "defaultPhysicalOfferRevision";
     private final String defaultItemRevisionFileName = "defaultItemRevision";
     private final String defaultOfferFileName = "defaultOffer";
     private LogHelper logger = new LogHelper(OfferRevisionServiceImpl.class);
@@ -123,7 +124,14 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
     }
 
     public String postDefaultOfferRevision(EnumHelper.CatalogItemType itemType) throws Exception {
-        OfferRevision offerRevisionForPost = prepareOfferRevisionEntity(defaultOfferRevisionFileName, itemType);
+        OfferRevision offerRevisionForPost;
+        if (itemType.equals(EnumHelper.CatalogItemType.PHYSICAL)) {
+            offerRevisionForPost = prepareOfferRevisionEntity(defaultPhysicalOfferRevisionFileName, itemType);
+        }
+        else {
+            offerRevisionForPost = prepareOfferRevisionEntity(defaultDigitalOfferRevisionFileName, itemType);
+        }
+
         return postOfferRevision(offerRevisionForPost);
     }
 

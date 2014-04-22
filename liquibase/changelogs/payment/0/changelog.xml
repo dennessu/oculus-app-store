@@ -112,6 +112,7 @@
                   active                            boolean             not null,
                   deleted                           boolean                 null,
 				  last_validated_time               date                    null,
+				  external_token                    varchar(64)             null,
                   created_time                      date                not null,
                   created_by                        varchar(50)             null,
                   updated_time                      date                    null,
@@ -140,7 +141,6 @@
                   credit_card_type_id               smallint            not null,
                   expire_time                       varchar(16)         not null,
                   last_billing_time                 date                not null,
-                  external_token                    varchar(64)         not null,
 				  prepaid                           varchar(16)             null,
 				  debit                             varchar(16)             null,
 				  commercial                        varchar(16)             null,
@@ -782,15 +782,21 @@
                  ,(2,'AUTH_DECLINED', 'Authorize declined by provider', '2014-02-10', 'wenhongzhu')
                  ,(3,'AUTHORIZATION_EXPIRED', 'Authorize is expired', '2014-02-10', 'wenhongzhu')
                  ,(4,'AUTHORIZING', 'Authorize is processing', '2014-02-10', 'wenhongzhu')
-                 ,(5,'SETTLE_CREATED', 'Settlement created', '2014-02-10', 'wenhongzhu')
+                 ,(5,'SETTLEMENT_SUBMIT_CREATED', 'Settlement submit created', '2014-02-10', 'wenhongzhu')
                  ,(6,'SETTLEMENT_SUBMITTED', 'Settlement is submitted', '2014-02-10', 'wenhongzhu')
-                 ,(7,'SETTLEMENT_DECLINED', 'Settlement is declined by provider', '2014-02-10', 'wenhongzhu')
+                 ,(7,'SETTLEMENT_SUBMIT_DECLINED', 'Settlement submit is declined by provider', '2014-02-10', 'wenhongzhu')
                  ,(8,'REVERSE_CREATED', 'Reverse created', '2014-02-10', 'wenhongzhu')
                  ,(9,'REVERSED', 'Reverse successfully', '2014-02-10', 'wenhongzhu')
                  ,(10,'REVERSE_DECLINED', 'Reverse is declined by provider', '2014-02-10', 'wenhongzhu')
-                 ,(11,'SETTLED', 'Settlement is completed', '2014-02-10', 'wenhongzhu')
-                 ,(12,'SETTLING', 'Settlement is processing', '2014-02-10', 'wenhongzhu')
-                 ,(13,'UNRECOGNIZED', 'Unkonw status', '2014-02-10', 'wenhongzhu');
+                 ,(11,'SETTLE_CREATED', 'Settlement is created', '2014-02-10', 'wenhongzhu')
+                 ,(12,'SETTLED', 'Settlement is completed', '2014-02-10', 'wenhongzhu')
+                 ,(13,'SETTLE_DECLINED', 'Settlement is processing', '2014-02-10', 'wenhongzhu')
+                 ,(14,'SETTLING', 'Settlement is processing', '2014-02-10', 'wenhongzhu')
+                 ,(15,'REFUND_CREATED', 'Refund is created', '2014-02-10', 'wenhongzhu')
+                 ,(16,'REFUNDED', 'Refund is completed', '2014-02-10', 'wenhongzhu')
+                 ,(17,'REFUND_DECLINED', 'Refund is declined', '2014-02-10', 'wenhongzhu')
+                 ,(18,'UNCONFIRMED', 'the transaction is unconfirmed by payer', '2014-02-10', 'wenhongzhu')
+                 ,(19,'UNRECOGNIZED', 'Unkonw status', '2014-02-10', 'wenhongzhu');
         ]]>
         </sql>
     </changeSet>
@@ -805,7 +811,12 @@
                   ,(3,'SUBMIT_SETTLE', 'submit a settlement.', '2014-02-14', 'wenhongzhu')
                   ,(4,'REVERSE_CREATE','create a reverse transaction.', '2014-02-14', 'wenhongzhu')
                   ,(5,'AUTH_REVERSE','reverse an authorize transaction', '2014-02-14', 'wenhongzhu')
-				  ,(6,'SUBMIT_SETTLE_REVERSE','reverse a settlement_submit transaction', '2014-02-14', 'wenhongzhu');
+				  ,(6,'SUBMIT_SETTLE_REVERSE','reverse a settlement_submit transaction', '2014-02-14', 'wenhongzhu')
+				  ,(7,'IMMEDIATE_SETTLE_CREATE','create a transaction settlement immediately', '2014-02-14', 'wenhongzhu')
+				  ,(8,'IMMEDIATE_SETTLE','settle a transaction immediately', '2014-02-14', 'wenhongzhu')
+				  ,(9,'REFUND_CREATE','create a transaction refund', '2014-02-14', 'wenhongzhu')
+				  ,(10,'REFUND','refund a transaction', '2014-02-14', 'wenhongzhu')
+				  ,(11,'REPORT_EVENT','provider reports a new event', '2014-02-14', 'wenhongzhu');
         ]]>
         </sql>
     </changeSet>
@@ -891,5 +902,27 @@
         </sql>
     </changeSet>
 
+    <changeSet id="32" author='WenhongZhu' context="PREDEPLOY">
+        <sql>
+            <![CDATA[
+            create table payment_property
+                (
+                  payment_property_id        bigint           not null,
+                  payment_id                 bigint           not null,
+                  property_name              varchar(64)      not null,
+                  property_value             varchar(64)      not null,
+                  created_time               date             not null,
+                  created_by                 varchar(50)          null,
+				  updated_time               date                 null,
+                  updated_by                 varchar(50)          null,
+
+                  constraint payment_property_id_pk primary key (payment_property_id),
+                  constraint payment_id_fk foreign key (payment_id)
+                      references payment (payment_id) match simple
+                      on update no action on delete no action
+                );
+        ]]>
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>

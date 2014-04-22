@@ -24,8 +24,9 @@ class UserNameDAOImpl extends BaseDAO implements UserNameDAO {
 
     @Override
     UserNameEntity create(UserNameEntity entity) {
-        entity.id = idGenerator.nextId(entity.userPiiId)
-
+        if (entity.id == null) {
+            entity.id = idGenerator.nextId(entity.userPiiId)
+        }
         Session session = currentSession(entity.id)
         session.save(entity)
         session.flush()

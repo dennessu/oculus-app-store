@@ -33,6 +33,9 @@ public class TaxItemEntity extends BaseEntity {
     @Column(name = "tax_rate")
     private BigDecimal taxRate;
 
+    @Column(name = "deleted")
+    private Boolean isDeleted = false;
+
     public Long getTaxItemId() {
         return taxItemId;
     }
@@ -66,5 +69,12 @@ public class TaxItemEntity extends BaseEntity {
     }
     public void setTaxRate(BigDecimal taxRate) {
         this.taxRate = taxRate;
+    }
+
+    public Boolean getIsDeleted() {
+        return isDeleted;
+    }
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 }

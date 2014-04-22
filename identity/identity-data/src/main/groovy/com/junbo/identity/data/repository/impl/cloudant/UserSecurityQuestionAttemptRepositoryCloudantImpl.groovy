@@ -36,14 +36,25 @@ class UserSecurityQuestionAttemptRepositoryCloudantImpl extends CloudantClient<U
 
     @Override
     Promise<UserSecurityQuestionVerifyAttempt> create(UserSecurityQuestionVerifyAttempt entity) {
-        entity.id = new UserSecurityQuestionVerifyAttemptId(idGenerator.nextId(entity.userId.value))
-        super.cloudantPost(entity)
-        return get((UserSecurityQuestionVerifyAttemptId)entity.id)
+        if (entity.id == null) {
+            entity.id = new UserSecurityQuestionVerifyAttemptId(idGenerator.nextId(entity.userId.value))
+        }
+        return Promise.pure((UserSecurityQuestionVerifyAttempt)super.cloudantPost(entity))
     }
 
     @Override
     Promise<UserSecurityQuestionVerifyAttempt> get(UserSecurityQuestionVerifyAttemptId id) {
         return Promise.pure((UserSecurityQuestionVerifyAttempt)super.cloudantGet(id.toString()))
+    }
+
+    @Override
+    Promise<UserSecurityQuestionVerifyAttempt> update(UserSecurityQuestionVerifyAttempt model) {
+        throw new IllegalStateException('update user security question attempt not support')
+    }
+
+    @Override
+    Promise<Void> delete(UserSecurityQuestionVerifyAttemptId id) {
+        throw new IllegalStateException('delete user security question attempt not support')
     }
 
     @Override

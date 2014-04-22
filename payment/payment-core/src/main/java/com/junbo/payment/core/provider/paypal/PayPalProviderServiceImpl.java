@@ -7,44 +7,55 @@
 package com.junbo.payment.core.provider.paypal;
 
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.core.util.PaymentUtil;
+import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.Item;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
-import com.paypal.exception.*;
-import com.paypal.sdk.exceptions.OAuthException;
+import com.junbo.payment.spec.model.WebPaymentInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.xml.sax.SAXException;
 import urn.ebay.api.PayPalAPI.*;
 import urn.ebay.apis.CoreComponentTypes.BasicAmountType;
 import urn.ebay.apis.eBLBaseComponents.*;
 
 import javax.ws.rs.core.Response;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+
+import com.junbo.common.util.PromiseFacade;
 
 /**
  * PayPal .
  */
 public class PayPalProviderServiceImpl extends AbstractPaymentProviderService implements InitializingBean {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PayPalProviderServiceImpl.class);
     private static final String PROVIDER_NAME = "PayPal";
-    private static final String API_VERSION = "104.0";
     private static final PaymentActionCodeType ACTION = PaymentActionCodeType.fromValue("Sale");
     private static PayPalAPIInterfaceServiceService service;
+    private String apiVersion;
+    private String redirectURL;
+    private String mode;
+    private String userName;
+    private String password;
+    private String signature;
+    private static final String REDIRECT_URL_PATH = "?cmd=_express-checkout&token=";
 
     @Override
     public void afterPropertiesSet() throws Exception {
         Map<String, String> sdkConfig = new HashMap<String, String>();
-        sdkConfig.put("mode", "sandbox");
-        sdkConfig.put("acct1.UserName", "jb-us-seller_api1.paypal.com");
-        sdkConfig.put("acct1.Password", "WX4WTU3S8MY44S7F");
-        sdkConfig.put("acct1.Signature","AFcWxV21C7fd0v3bYYYRCpSSRl31A7yDhhsPUU2XhtMoZXsWHFxu-RWy");
+        sdkConfig.put("mode", mode);
+        sdkConfig.put("acct1.UserName", userName);
+        sdkConfig.put("acct1.Password", password);
+        sdkConfig.put("acct1.Signature",signature);
         service = new PayPalAPIInterfaceServiceService(sdkConfig);
     }
 
@@ -60,17 +71,27 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
 
     @Override
     public void cloneTransactionResult(PaymentTransaction source, PaymentTransaction target) {
-        target.setBillingRefId(source.getExternalToken());
+        if(source.getWebPaymentInfo() != null){
+            if(target.getWebPaymentInfo() == null){
+                target.setWebPaymentInfo(new WebPaymentInfo());
+            }
+            target.getWebPaymentInfo().setToken(source.getWebPaymentInfo().getToken());
+            target.getWebPaymentInfo().setRedirectURL(source.getWebPaymentInfo().getRedirectURL());
+        }
+        if(!CommonUtil.isNullOrEmpty(source.getStatus())){
+            target.setStatus(source.getStatus());
+        }
+        target.setExternalToken(source.getExternalToken());
     }
 
     @Override
     public Promise<PaymentInstrument> add(PaymentInstrument request) {
-        return null;
+        return Promise.pure(request);
     }
 
     @Override
     public Promise<Response> delete(PaymentInstrument pi) {
-        return null;
+        return Promise.pure(null);
     }
 
     @Override
@@ -84,49 +105,62 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
     }
 
     @Override
-    public Promise<PaymentTransaction> charge(PaymentInstrument pi, PaymentTransaction paymentRequest) {
-        CurrencyCodeType currency = CurrencyCodeType.fromValue(paymentRequest.getChargeInfo().getCurrency());
-        PaymentDetailsType paymentDetails = new PaymentDetailsType();
-        paymentDetails.setPaymentAction(ACTION);
-        List<PaymentDetailsItemType> lineItems = new ArrayList<PaymentDetailsItemType>();
-        for(Item item : paymentRequest.getChargeInfo().getItems()){
-            PaymentDetailsItemType payPalItem = new PaymentDetailsItemType();
-            BasicAmountType amt = new BasicAmountType();
-            amt.setCurrencyID(currency);
-            amt.setValue(item.getAmount());
-            payPalItem.setQuantity(item.getQuantity());
-            payPalItem.setName(item.getName());
-            payPalItem.setAmount(amt);
-            lineItems.add(payPalItem);
-        }
-        paymentDetails.setPaymentDetailsItem(lineItems);
-        BasicAmountType orderTotal = new BasicAmountType();
-        orderTotal.setCurrencyID(currency);
-        orderTotal.setValue(paymentRequest.getChargeInfo().getAmount().toString());
-        paymentDetails.setOrderTotal(orderTotal);
-        List<PaymentDetailsType> paymentDetailsList = new ArrayList<PaymentDetailsType>();
-        paymentDetailsList.add(paymentDetails);
+    public Promise<PaymentTransaction> charge(final PaymentInstrument pi, final PaymentTransaction paymentRequest) {
+        return PromiseFacade.PAYMENT.decorate(new Callable<PaymentTransaction>() {
+            @Override
+            public PaymentTransaction call() throws Exception {
+                CurrencyCodeType currency = CurrencyCodeType.fromValue(paymentRequest.getChargeInfo().getCurrency());
+                PaymentDetailsType paymentDetails = new PaymentDetailsType();
+                paymentDetails.setPaymentAction(ACTION);
+                if(paymentRequest.getChargeInfo().getItems() != null){
+                    List<PaymentDetailsItemType> lineItems = new ArrayList<PaymentDetailsItemType>();
+                    for(Item item : paymentRequest.getChargeInfo().getItems()){
+                        PaymentDetailsItemType payPalItem = new PaymentDetailsItemType();
+                        BasicAmountType amt = new BasicAmountType();
+                        amt.setCurrencyID(currency);
+                        amt.setValue(item.getAmount());
+                        payPalItem.setQuantity(item.getQuantity());
+                        payPalItem.setName(item.getName());
+                        payPalItem.setAmount(amt);
+                        lineItems.add(payPalItem);
+                    }
+                    paymentDetails.setPaymentDetailsItem(lineItems);
+                }
+                BasicAmountType orderTotal = new BasicAmountType();
+                orderTotal.setCurrencyID(currency);
+                orderTotal.setValue(paymentRequest.getChargeInfo().getAmount().toString());
+                paymentDetails.setOrderTotal(orderTotal);
+                List<PaymentDetailsType> paymentDetailsList = new ArrayList<PaymentDetailsType>();
+                paymentDetailsList.add(paymentDetails);
 
-        SetExpressCheckoutRequestDetailsType requestDetails = new SetExpressCheckoutRequestDetailsType();
-        requestDetails.setReturnURL(paymentRequest.getWebPaymentInfo().getReturnURL());
-        requestDetails.setCancelURL(paymentRequest.getWebPaymentInfo().getCancelURL());
+                SetExpressCheckoutRequestDetailsType requestDetails = new SetExpressCheckoutRequestDetailsType();
+                requestDetails.setReturnURL(paymentRequest.getWebPaymentInfo().getReturnURL());
+                requestDetails.setCancelURL(paymentRequest.getWebPaymentInfo().getCancelURL());
 
-        requestDetails.setPaymentDetails(paymentDetailsList);
+                requestDetails.setPaymentDetails(paymentDetailsList);
 
-        SetExpressCheckoutRequestType setExpressCheckoutRequest = new SetExpressCheckoutRequestType(requestDetails);
-        setExpressCheckoutRequest.setVersion(API_VERSION);
+                SetExpressCheckoutRequestType setRequest = new SetExpressCheckoutRequestType(requestDetails);
+                setRequest.setVersion(apiVersion);
 
-        SetExpressCheckoutReq setExpressCheckoutReq = new SetExpressCheckoutReq();
-        setExpressCheckoutReq.setSetExpressCheckoutRequest(setExpressCheckoutRequest);
+                SetExpressCheckoutReq setExpressCheckoutReq = new SetExpressCheckoutReq();
+                setExpressCheckoutReq.setSetExpressCheckoutRequest(setRequest);
 
-        SetExpressCheckoutResponseType setExpressCheckoutResponse = null;
-        try {
-            setExpressCheckoutResponse = service.setExpressCheckout(setExpressCheckoutReq);
-            paymentRequest.setExternalToken(setExpressCheckoutResponse.getToken());
-        } catch (Exception ex){
-            handleException(ex);
-        }
-        return Promise.pure(paymentRequest);
+                SetExpressCheckoutResponseType setResponse = null;
+                try {
+                    setResponse = service.setExpressCheckout(setExpressCheckoutReq);
+                } catch (Exception ex){
+                    handleException(ex);
+                }
+                if(isSuccessAck(setResponse.getAck())){
+                    paymentRequest.getWebPaymentInfo().setToken(setResponse.getToken());
+                    paymentRequest.getWebPaymentInfo().setRedirectURL(redirectURL + REDIRECT_URL_PATH + setResponse.getToken());
+                    paymentRequest.setStatus(PaymentStatus.UNCONFIRMED.toString());
+                }else{
+                    handleErrorResponse(setResponse);
+                }
+                return paymentRequest;
+            }
+        });
     }
 
     @Override
@@ -145,82 +179,151 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
     }
 
     @Override
-    public Promise<PaymentTransaction> getByTransactionToken(String token) {
-        GetExpressCheckoutDetailsRequestType getExpressCheckoutDetailsRequest =
-                new GetExpressCheckoutDetailsRequestType(token);
-        getExpressCheckoutDetailsRequest.setVersion(API_VERSION);
+    public Promise<PaymentTransaction> getByTransactionToken(final String token) {
+        return PromiseFacade.PAYMENT.decorate(new Callable<PaymentTransaction>() {
+            @Override
+            public PaymentTransaction call() throws Exception {
+                GetExpressCheckoutDetailsRequestType getExpressCheckoutDetailsRequest =
+                        new GetExpressCheckoutDetailsRequestType(token);
+                getExpressCheckoutDetailsRequest.setVersion(apiVersion);
 
-        GetExpressCheckoutDetailsReq getExpressCheckoutDetailsReq = new GetExpressCheckoutDetailsReq();
-        getExpressCheckoutDetailsReq.setGetExpressCheckoutDetailsRequest(getExpressCheckoutDetailsRequest);
-        GetExpressCheckoutDetailsResponseType responseType = null;
-        try {
-            responseType = service.getExpressCheckoutDetails(getExpressCheckoutDetailsReq);
-        } catch (Exception ex){
-            handleException(ex);
+                GetExpressCheckoutDetailsReq getExpressCheckoutDetailsReq = new GetExpressCheckoutDetailsReq();
+                getExpressCheckoutDetailsReq.setGetExpressCheckoutDetailsRequest(getExpressCheckoutDetailsRequest);
+                GetExpressCheckoutDetailsResponseType responseType = null;
+                try {
+                    responseType = service.getExpressCheckoutDetails(getExpressCheckoutDetailsReq);
+                } catch (Exception ex){
+                    handleException(ex);
+                }
+                PaymentTransaction transaction = new PaymentTransaction();
+                if(isSuccessAck(responseType.getAck())){
+                    transaction.setStatus(PaymentUtil.mapPayPalPaymentStatus(responseType
+                            .getGetExpressCheckoutDetailsResponseDetails().getCheckoutStatus()).toString());
+                }else{
+                    handleErrorResponse(responseType);
+                }
+                return transaction;
+            }
+        });
+    }
+
+    private Promise<PaymentTransaction> handleErrorResponse(AbstractResponseType responseType) {
+        StringBuffer sb = new StringBuffer();
+        if(responseType.getErrors() != null){
+            for(ErrorType error : responseType.getErrors()){
+                sb.append(error.getLongMessage() + "&");
+            }
         }
-        PaymentTransaction transaction = new PaymentTransaction();
-        transaction.setStatus(PaymentUtil.mapPayPalPaymentStatus(
-                responseType.getGetExpressCheckoutDetailsResponseDetails().getCheckoutStatus()).toString());
-        return Promise.pure(transaction);
+        LOGGER.error("paypal get error ack:" + responseType.getAck());
+        LOGGER.error("paypal get error message:" + sb.toString());
+        throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, sb.toString()).exception();
     }
 
     @Override
-    public Promise<PaymentTransaction> confirm(String transactionId, PaymentTransaction paymentRequest){
-        PaymentDetailsType paymentDetail = new PaymentDetailsType();
-        paymentDetail.setNotifyURL("http://replaceIpnUrl.com");
-        BasicAmountType orderTotal = new BasicAmountType();
-        orderTotal.setValue(paymentRequest.getChargeInfo().getAmount().toString());
-        orderTotal.setCurrencyID(CurrencyCodeType.fromValue(paymentRequest.getChargeInfo().getCurrency()));
-        paymentDetail.setOrderTotal(orderTotal);
-        paymentDetail.setPaymentAction(ACTION);
-        List<PaymentDetailsType> paymentDetails = new ArrayList<PaymentDetailsType>();
-        paymentDetails.add(paymentDetail);
+    public Promise<PaymentTransaction> confirm(final String transactionId, final PaymentTransaction paymentRequest){
+        return PromiseFacade.PAYMENT.decorate(new Callable<PaymentTransaction>() {
+            @Override
+            public PaymentTransaction call() throws Exception {
+                PaymentDetailsType paymentDetail = new PaymentDetailsType();
+                paymentDetail.setNotifyURL("http://replaceIpnUrl.com");
+                BasicAmountType orderTotal = new BasicAmountType();
+                orderTotal.setValue(paymentRequest.getChargeInfo().getAmount().toString());
+                orderTotal.setCurrencyID(CurrencyCodeType.fromValue(paymentRequest.getChargeInfo().getCurrency()));
+                paymentDetail.setOrderTotal(orderTotal);
+                paymentDetail.setPaymentAction(ACTION);
+                List<PaymentDetailsType> paymentDetails = new ArrayList<PaymentDetailsType>();
+                paymentDetails.add(paymentDetail);
 
-        DoExpressCheckoutPaymentRequestDetailsType doExpressCheckoutPaymentRequestDetails =
-                new DoExpressCheckoutPaymentRequestDetailsType();
-        doExpressCheckoutPaymentRequestDetails.setToken("EC-5KT838080T2886727");
-        doExpressCheckoutPaymentRequestDetails.setPayerID("CCZA9BJT9NKTS");
-        doExpressCheckoutPaymentRequestDetails.setPaymentDetails(paymentDetails);
+                DoExpressCheckoutPaymentRequestDetailsType doExpressCheckoutPaymentRequestDetails =
+                        new DoExpressCheckoutPaymentRequestDetailsType();
+                doExpressCheckoutPaymentRequestDetails.setToken(paymentRequest.getWebPaymentInfo().getToken());
+                doExpressCheckoutPaymentRequestDetails.setPayerID(paymentRequest.getWebPaymentInfo().getPayerId());
+                doExpressCheckoutPaymentRequestDetails.setPaymentDetails(paymentDetails);
 
-        DoExpressCheckoutPaymentRequestType doExpressCheckoutPaymentRequest =
-                new DoExpressCheckoutPaymentRequestType(doExpressCheckoutPaymentRequestDetails);
-        doExpressCheckoutPaymentRequest.setVersion(API_VERSION);
+                DoExpressCheckoutPaymentRequestType doExpressCheckoutPaymentRequest =
+                        new DoExpressCheckoutPaymentRequestType(doExpressCheckoutPaymentRequestDetails);
+                doExpressCheckoutPaymentRequest.setVersion(apiVersion);
 
-        DoExpressCheckoutPaymentReq doExpressCheckoutPaymentReq = new DoExpressCheckoutPaymentReq();
-        doExpressCheckoutPaymentReq.setDoExpressCheckoutPaymentRequest(doExpressCheckoutPaymentRequest);
-
-        try {
-            DoExpressCheckoutPaymentResponseType doExpressCheckoutPaymentResponse =
-                    service.doExpressCheckoutPayment(doExpressCheckoutPaymentReq);
-        } catch (Exception ex){
-            handleException(ex);
-        }
-        return Promise.pure(paymentRequest);
+                DoExpressCheckoutPaymentReq doExpressCheckoutPaymentReq = new DoExpressCheckoutPaymentReq();
+                doExpressCheckoutPaymentReq.setDoExpressCheckoutPaymentRequest(doExpressCheckoutPaymentRequest);
+                DoExpressCheckoutPaymentResponseType doExpressCheckoutPaymentResponse = null;
+                try {
+                    doExpressCheckoutPaymentResponse = service.doExpressCheckoutPayment(doExpressCheckoutPaymentReq);
+                } catch (Exception ex){
+                    handleException(ex);
+                }
+                if(isSuccessAck(doExpressCheckoutPaymentResponse.getAck())){
+                    paymentRequest.setExternalToken(doExpressCheckoutPaymentResponse
+                            .getDoExpressCheckoutPaymentResponseDetails().getPaymentInfo().get(0).getTransactionID());
+                    paymentRequest.setStatus(PaymentStatus.SETTLED.toString());
+                }else{
+                    handleErrorResponse(doExpressCheckoutPaymentResponse);
+                }
+                return paymentRequest;
+            }
+        });
     }
 
     private void handleException(Exception e){
-        if(e instanceof SSLConfigurationException) {
-            e.printStackTrace();
-        } else if (e instanceof InvalidCredentialException) {
-            e.printStackTrace();
-        } else if (e instanceof IOException) {
-            e.printStackTrace();
-        } else if (e instanceof HttpErrorException) {
-            e.printStackTrace();
-        } else if (e instanceof InvalidResponseDataException) {
-            e.printStackTrace();
-        } else if (e instanceof ClientActionRequiredException) {
-            e.printStackTrace();
-        } else if (e instanceof MissingCredentialException) {
-            e.printStackTrace();
-        } else if (e instanceof InterruptedException) {
-            e.printStackTrace();
-        } else if (e instanceof OAuthException) {
-            e.printStackTrace();
-        } else if (e instanceof ParserConfigurationException) {
-            e.printStackTrace();
-        } else if (e instanceof SAXException) {
-            e.printStackTrace();
+        if(e instanceof SocketTimeoutException){
+            LOGGER.error("provider:" + PROVIDER_NAME + " gateway timeout exception: " + e.toString());
+            throw AppServerExceptions.INSTANCE.providerGatewayTimeout(PROVIDER_NAME).exception();
+        }else{
+            LOGGER.error("provider:" + PROVIDER_NAME + " gateway exception: " + e.toString());
+            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, e.toString()).exception();
         }
     }
+
+    private boolean isSuccessAck(AckCodeType ack){
+        return ack.equals(AckCodeType.SUCCESS) || ack.equals(AckCodeType.SUCCESSWITHWARNING);
+    }
+
+    public String getApiVersion() {
+        return apiVersion;
+    }
+
+    public void setApiVersion(String apiVersion) {
+        this.apiVersion = apiVersion;
+    }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
+    }
+
+    public String getRedirectURL() {
+        return redirectURL;
+    }
+
+    public void setRedirectURL(String redirectURL) {
+        this.redirectURL = redirectURL;
+    }
+
 }

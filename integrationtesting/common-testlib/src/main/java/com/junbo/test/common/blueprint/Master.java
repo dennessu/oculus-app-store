@@ -8,6 +8,7 @@ package com.junbo.test.common.blueprint;
 import com.junbo.billing.spec.model.Balance;
 import com.junbo.billing.spec.model.ShippingAddress;
 import com.junbo.cart.spec.model.Cart;
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.item.Item;
@@ -45,6 +46,7 @@ public class Master {
     private Map<String, Offer> offers;
     private Map<String, ItemRevision> itemRevisions;
     private Map<String, OfferRevision> offerRevisions;
+    private Map<String, EntitlementDefinition> entitlementDefinitions;
     private Map<String, Order> orders;
     private Map<String, ShippingAddress> shippingAddresses;
     private Map<String, Attribute> attributes;
@@ -59,6 +61,7 @@ public class Master {
         this.initializeItemRevisions();
         this.initializeOffers();
         this.initializeOfferRevisions();
+        this.initializeEntitlementDefinitions();
         this.initializeOrders();
         this.initializeAttributes();
         this.initializeEntitlements();
@@ -80,7 +83,6 @@ public class Master {
         }
         this.carts.clear();
     }
-
 
     public void initializeItems() {
         if (this.items == null) {
@@ -108,6 +110,13 @@ public class Master {
             this.offerRevisions = new HashMap<>();
         }
         this.offerRevisions.clear();
+    }
+
+    public void initializeEntitlementDefinitions() {
+        if (this.entitlementDefinitions == null) {
+            this.entitlementDefinitions = new HashMap<>();
+        }
+        this.entitlementDefinitions.clear();
     }
 
     public void initializeOrders() {
@@ -194,6 +203,13 @@ public class Master {
         this.offerRevisions.put(offerRevisionId, offerRevision);
     }
 
+    public void addEntitlementDefinition(String entitlementDefinitionId, EntitlementDefinition entitlementDefinition) {
+        if (this.entitlementDefinitions.containsKey(entitlementDefinitionId)) {
+            this.entitlementDefinitions.remove(entitlementDefinitionId);
+        }
+        this.entitlementDefinitions.put(entitlementDefinitionId, entitlementDefinition);
+    }
+
     public void addOrder(String orderId, Order order) {
         if (this.orders.containsKey(orderId)) {
             this.orders.remove(orderId);
@@ -264,7 +280,7 @@ public class Master {
         for (Map.Entry<String, Offer> entry : offers.entrySet()) {
             String key = entry.getKey();
             Offer offer = entry.getValue();
-            if (offer.getName().equals(offerName)) {
+            if (offer.getName().getLocales().containsValue(offerName)) {
                 return key;
             }
         }
@@ -276,7 +292,7 @@ public class Master {
         for (Map.Entry<String, Item> entry : items.entrySet()) {
             String key = entry.getKey();
             Item item = entry.getValue();
-            if (item.getName().equals(itemName)) {
+            if (item.getName().getLocales().containsValue(itemName)) {
                 return key;
             }
         }
@@ -303,6 +319,10 @@ public class Master {
         return this.attributes.get(attributeId);
     }
 
+    public EntitlementDefinition getEntitlementDefinition(String entitlementDefinitionId) {
+        return this.entitlementDefinitions.get(entitlementDefinitionId);
+    }
+
     public Entitlement getEntitlement(String entitlementId) {
         return this.entitlements.get(entitlementId);
     }
@@ -326,6 +346,24 @@ public class Master {
     public void removeBalance(String balanceId) {
         if (this.balances.containsKey(balanceId)) {
             this.balances.remove(balanceId);
+        }
+    }
+
+    public void removeEntitlementDefinition(String entitlementDefinitionId) {
+        if (this.entitlementDefinitions.containsKey(entitlementDefinitionId)) {
+            this.entitlementDefinitions.remove(entitlementDefinitionId);
+        }
+    }
+
+    public void removeItem(String itemId) {
+        if (this.items.containsKey(itemId)) {
+            this.items.remove(itemId);
+        }
+    }
+
+    public void removeOffer(String offerId) {
+        if (this.offers.containsKey(offerId)) {
+            this.offers.remove(offerId);
         }
     }
 

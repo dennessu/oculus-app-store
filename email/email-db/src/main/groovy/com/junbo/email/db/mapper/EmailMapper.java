@@ -8,7 +8,10 @@ package com.junbo.email.db.mapper;
 import com.junbo.common.id.EmailId;
 import com.junbo.common.util.EnumRegistry;
 import com.junbo.email.common.util.Utils;
-import com.junbo.email.db.entity.*;
+import com.junbo.email.db.entity.BaseEntity;
+import com.junbo.email.db.entity.EmailHistoryEntity;
+import com.junbo.email.db.entity.EmailScheduleEntity;
+import com.junbo.email.db.entity.EmailTemplateEntity;
 import com.junbo.email.spec.error.AppErrors;
 import com.junbo.email.spec.model.*;
 import org.springframework.stereotype.Component;
@@ -27,11 +30,10 @@ public class EmailMapper {
             return null;
         }
         Email email =Utils.toObject(entity.getPayload(),Email.class);
-        email.setSentDate(entity.getSentDate());
+        email.setSentTime(entity.getSentTime());
         email.setId(new EmailId(entity.getId()));
         email.setPriority(entity.getPriority());
         email.setRetryCount(entity.getRetryCount());
-        email.setType(fromEmailType(entity.getType()));
         email.setStatus(fromEmailStatus(entity.getStatus()));
         email.setStatusReason(entity.getStatusReason());
         email.setIsResend(entity.getIsResend());
@@ -57,11 +59,10 @@ public class EmailMapper {
         entity.setLocale(email.getLocale());
         entity.setPayload(Utils.toJson(email));
         entity.setPriority(email.getPriority());
-        entity.setRecipient(email.getRecipient());
-        entity.setType(StringUtils.isEmpty(email.getType()) ? EmailType.COMMERCE.getId():toEmailType(email.getType()));
         entity.setStatus(toEmailStatus(email.getStatus()));
+        entity.setRecipients(Utils.toJson(email.getRecipients()));
         entity.setStatusReason(email.getStatusReason());
-        entity.setSentDate(email.getSentDate());
+        entity.setSentTime(email.getSentTime());
         entity.setRetryCount(email.getRetryCount());
         entity.setIsResend(email.getIsResend());
 
@@ -83,9 +84,9 @@ public class EmailMapper {
         entity.setAction(email.getAction());
         entity.setLocale(email.getLocale());
         entity.setPayload(Utils.toJson(email));
-        entity.setRecipient(email.getRecipient());
+        entity.setRecipients(Utils.toJson(email.getRecipients()));
         entity.setPriority(email.getPriority());
-        entity.setScheduleDate(email.getScheduleDate());
+        entity.setScheduleTime(email.getScheduleTime());
 
         return entity;
     }
@@ -97,7 +98,8 @@ public class EmailMapper {
         Email email = Utils.toObject(entity.getPayload(),Email.class);
         email.setId(new EmailId(entity.getId()));
         email.setIsResend(false);
-        email.setScheduleDate(entity.getScheduleDate());
+        email.setRecipients(Utils.toObject(entity.getRecipients(), List.class));
+        email.setScheduleTime(entity.getScheduleTime());
         email.setCreatedTime(entity.getCreatedTime());
         email.setModifiedTime(entity.getUpdatedTime());
 
@@ -151,17 +153,6 @@ public class EmailMapper {
 
         return entity;
     }
-    private Short toEmailType(String emailType) {
-        if(!StringUtils.isEmpty(emailType)) {
-            try {
-                return EmailType.valueOf(EmailType.class,emailType).getId();
-            }
-            catch (Exception e) {
-                throw AppErrors.INSTANCE.invalidField(emailType).exception();
-            }
-        }
-        return null;
-    }
 
     private Short toEmailStatus(String emailStatus) {
         if(!StringUtils.isEmpty(emailStatus)) {
@@ -175,11 +166,10 @@ public class EmailMapper {
         return null;
     }
 
-    private String fromEmailType(Short id) {
-        return EnumRegistry.resolve(id, EmailType.class).toString();
-    }
-
     private String fromEmailStatus(Short id) {
+        if (id == null) {
+            return null;
+        }
         return EnumRegistry.resolve(id, EmailStatus.class).toString();
 
     }

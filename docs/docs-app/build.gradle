@@ -16,10 +16,12 @@ dependencies {
     compile "com.junbo.order:order-spec:${junboVersion}"
     compile "com.junbo.payment:payment-spec:${junboVersion}"
     compile "com.junbo.rating:rating-spec:${junboVersion}"
+    compile "com.junbo.restriction:restriction-spec:${junboVersion}"
     compile "com.junbo.email:email-spec:${junboVersion}"
 
     compile("com.wordnik:swagger-jersey2-jaxrs_2.10:${swaggerVersion}") {
         exclude group: "javax.ws.rs", module: "jsr311-api"
+        changing = true
     }
 
     compile "javax.ws.rs:javax.ws.rs-api:2.0"

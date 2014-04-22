@@ -4,11 +4,9 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:component-scan base-package="com.junbo.oom" />
-    <context:component-scan base-package="com.junbo.common" />
-
-    <bean id="__builtinMapper" class="com.junbo.oom.core.builtin.BuiltinMapper" />
-    <bean id="__commonMapper" class="com.junbo.identity.data.mapper.CommonMapper" />
-
-    <import resource="classpath*:spring/*-context.xml"/>
+    <import resource="classpath*:spring/common-context.xml"/>
+    <import resource="classpath*:spring/transaction.xml"/>
+    <import resource="cloudant-context.xml"/>
+    <import resource="db-context.xml"/>
+    <import resource="repo-context.xml"/>
 </beans>

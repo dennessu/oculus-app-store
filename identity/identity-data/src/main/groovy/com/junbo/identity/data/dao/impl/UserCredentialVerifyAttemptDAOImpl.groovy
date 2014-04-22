@@ -21,8 +21,9 @@ import org.springframework.util.StringUtils
 class UserCredentialVerifyAttemptDAOImpl extends BaseDAO implements UserCredentialVerifyAttemptDAO {
     @Override
     UserCredentialVerifyAttemptEntity save(UserCredentialVerifyAttemptEntity entity) {
-        entity.id = idGenerator.nextId(entity.userId)
-
+        if (entity.id == null) {
+            entity.id = idGenerator.nextId(entity.userId)
+        }
         Session session = currentSession(entity.id)
         session.save(entity)
         session.flush()

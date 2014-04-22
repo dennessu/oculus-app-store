@@ -7,6 +7,12 @@
     <import resource="classpath*:spring/sharding-context.xml"/>
     <import resource="classpath*:spring/common-lib-context.xml"/>
 
+    <bean id="cloudantAddressRepository" class="com.junbo.identity.data.repository.impl.cloudant.AddressRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="address"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
     <bean id="cloudantDeviceRepository" class="com.junbo.identity.data.repository.impl.cloudant.DeviceRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="device"/>
         <property name="shardAlgorithm" ref="userShardAlgorithm"/>
@@ -21,6 +27,18 @@
 
     <bean id="cloudantGroupRepository" class="com.junbo.identity.data.repository.impl.cloudant.GroupRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="group"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="cloudantRoleAssignmentRepository" class="com.junbo.identity.data.repository.impl.cloudant.RoleAssignmentRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="role_assignment"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="cloudantRoleRepository" class="com.junbo.identity.data.repository.impl.cloudant.RoleRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="role"/>
         <property name="shardAlgorithm" ref="userShardAlgorithm"/>
         <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>

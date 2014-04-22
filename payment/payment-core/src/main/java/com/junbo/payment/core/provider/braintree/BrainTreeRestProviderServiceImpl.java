@@ -7,6 +7,7 @@
 package com.junbo.payment.core.provider.braintree;
 
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.spec.internal.BrainTreeResource;
 import com.junbo.payment.spec.model.PaymentInstrument;
@@ -30,7 +31,7 @@ public class BrainTreeRestProviderServiceImpl extends AbstractPaymentProviderSer
     @Override
     public void clonePIResult(PaymentInstrument source, PaymentInstrument target) {
         target.setAccountNum(source.getAccountNum());
-        target.getCreditCardRequest().setExternalToken(source.getCreditCardRequest().getExternalToken());
+        target.setExternalToken(source.getExternalToken());
         target.getCreditCardRequest().setType(source.getCreditCardRequest().getType());
         target.getCreditCardRequest().setCommercial(source.getCreditCardRequest().getCommercial());
         target.getCreditCardRequest().setDebit(source.getCreditCardRequest().getDebit());
@@ -41,6 +42,9 @@ public class BrainTreeRestProviderServiceImpl extends AbstractPaymentProviderSer
     @Override
     public void cloneTransactionResult(PaymentTransaction source, PaymentTransaction target) {
         target.setExternalToken(source.getExternalToken());
+        if(!CommonUtil.isNullOrEmpty(source.getStatus())){
+            target.setStatus(source.getStatus());
+        }
     }
 
     @Override
@@ -50,12 +54,12 @@ public class BrainTreeRestProviderServiceImpl extends AbstractPaymentProviderSer
 
     @Override
     public Promise<Response> delete(PaymentInstrument pi) {
-        return brainTreeResource.deletePaymentInstrument(pi.getCreditCardRequest().getExternalToken());
+        return brainTreeResource.deletePaymentInstrument(pi.getExternalToken());
     }
 
     @Override
     public Promise<PaymentTransaction> authorize(PaymentInstrument pi, PaymentTransaction paymentRequest) {
-        return brainTreeResource.postAuthorization(pi.getCreditCardRequest().getExternalToken(), paymentRequest);
+        return brainTreeResource.postAuthorization(pi.getExternalToken(), paymentRequest);
     }
 
     @Override
@@ -65,7 +69,7 @@ public class BrainTreeRestProviderServiceImpl extends AbstractPaymentProviderSer
 
     @Override
     public Promise<PaymentTransaction> charge(PaymentInstrument pi, PaymentTransaction paymentRequest) {
-        return brainTreeResource.postCharge(pi.getCreditCardRequest().getExternalToken(), paymentRequest);
+        return brainTreeResource.postCharge(pi.getExternalToken(), paymentRequest);
     }
 
     @Override
@@ -85,7 +89,7 @@ public class BrainTreeRestProviderServiceImpl extends AbstractPaymentProviderSer
 
     @Override
     public Promise<PaymentTransaction> getByTransactionToken(String token) {
-        return null;
+        return Promise.pure(null);
     }
 
     public void setBrainTreeResource(BrainTreeResource brainTreeResource) {

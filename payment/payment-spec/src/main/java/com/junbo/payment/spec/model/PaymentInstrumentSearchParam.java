@@ -12,6 +12,8 @@ import javax.ws.rs.QueryParam;
  * payment instrument search model.
  */
 public class PaymentInstrumentSearchParam {
+    @QueryParam("userId")
+    private Long userId;
     @QueryParam("type")
     private String type;
     @QueryParam("status")
@@ -22,8 +24,17 @@ public class PaymentInstrumentSearchParam {
     }
 
     public PaymentInstrumentSearchParam(Long userId, String type, String status) {
+        this.userId = userId;
         this.type = type;
         this.status = status;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getType() {

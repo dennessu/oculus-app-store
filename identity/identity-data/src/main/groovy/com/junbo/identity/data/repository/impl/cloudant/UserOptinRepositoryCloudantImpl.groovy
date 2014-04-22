@@ -35,15 +35,15 @@ class UserOptinRepositoryCloudantImpl extends CloudantClient<UserOptin> implemen
 
     @Override
     Promise<UserOptin> create(UserOptin entity) {
-        entity.id = new UserOptinId(idGenerator.nextId(entity.userId.value))
-        super.cloudantPost(entity)
-        return get((UserOptinId)entity.id)
+        if (entity.id == null) {
+            entity.id = new UserOptinId(idGenerator.nextId(entity.userId.value))
+        }
+        return Promise.pure((UserOptin)super.cloudantPost(entity))
     }
 
     @Override
     Promise<UserOptin> update(UserOptin entity) {
-        super.cloudantPut(entity)
-        return get((UserOptinId)entity.id)
+        return Promise.pure((UserOptin)super.cloudantPut(entity))
     }
 
     @Override

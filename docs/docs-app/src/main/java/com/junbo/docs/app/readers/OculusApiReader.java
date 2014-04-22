@@ -12,12 +12,15 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.core.util.ClassWrapper;
 import com.wordnik.swagger.jersey.JerseyApiReader;
 import com.wordnik.swagger.model.Operation;
+import groovy.lang.MetaClass;
 import org.glassfish.hk2.utilities.reflection.ReflectionHelper;
 
 import javax.ws.rs.core.Response;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * The hook to change API parameter types when reading API.
@@ -50,11 +53,9 @@ public class OculusApiReader extends JerseyApiReader {
 
     @Override
     public String processDataType(Class<?> paramType, Type genericParamType) {
-        if (Id.class.isAssignableFrom(paramType)) {
-            // simply replace with string, since it's in parameters
-            return "string";
-        }
-        return super.processDataType(paramType, genericParamType);
+        Class actualParamType = (Class)getParamType(ClassWrapper.apply(paramType));
+        Type actualGenericType = getParamType(ClassWrapper.apply(genericParamType));
+        return super.processDataType(actualParamType, actualGenericType);
     }
 
     private Type getActualType(Type wrapperType) {
@@ -69,5 +70,51 @@ public class OculusApiReader extends JerseyApiReader {
         } else {
             return wrapperType;
         }
+    }
+
+    private Type getParamType(ClassWrapper cls) {
+        if (MetaClass.class.isAssignableFrom(cls.getRawClass())) {
+            return null;
+        }
+        if (Response.class.isAssignableFrom(cls.getRawClass())) {
+            return null;
+        }
+        if (UUID.class.isAssignableFrom(cls.getRawClass())) {
+            return String.class;
+        }
+        if (BigDecimal.class.isAssignableFrom(cls.getRawClass())) {
+            return String.class;
+        }
+        if (Id.class.isAssignableFrom(cls.getRawClass())) {
+            return String.class;
+        }
+
+        // recursion
+        if (cls.getRawClass().isArray()) {
+            if (cls.getRawType() instanceof GenericArrayType) {
+                return new GenericArrayTypeImpl(safeGetParamType(cls.getArrayComponent()));
+            }
+            return cls.getRawClass();
+        } else if (cls.getRawType() instanceof ParameterizedType) {
+            TypeVariable[] types = cls.getRawClass().getTypeParameters();
+
+            List<Type> newTypes = new ArrayList<>();
+            for (TypeVariable argType : types) {
+                ClassWrapper actualClassWrapper = cls.getTypeArgument(argType.getName());
+                Type actualType = safeGetParamType(actualClassWrapper);
+                newTypes.add(actualType);
+            }
+            return new ParameterizedTypeImpl(cls.getRawClass(), newTypes.toArray(new Type[0]));
+        } else {
+            return cls.getRawClass();
+        }
+    }
+
+    private Type safeGetParamType(ClassWrapper cls) {
+        Type type = getParamType(cls);
+        if (type == null) {
+            return Object.class;
+        }
+        return type;
     }
 }

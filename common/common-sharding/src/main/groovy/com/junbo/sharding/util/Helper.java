@@ -49,14 +49,12 @@ public class Helper {
         else if(cls == String.class) {
             String strKey = (String) obj;
 
-            int h = 0;
+            Long h = 0L;
             for (int i = 0; i < strKey.length(); i++) {
                 h = 31 * h + ((int) strKey.charAt(i));
             }
 
-            h = h & 0xff;
-            // todo:    Liangfu:    When kgu's sharding ready, remove this hack
-            return h % 2;
+            return calcShardId(h, Long.class);
         }
         else {
             throw new RuntimeException("current shardId only support Long and String");

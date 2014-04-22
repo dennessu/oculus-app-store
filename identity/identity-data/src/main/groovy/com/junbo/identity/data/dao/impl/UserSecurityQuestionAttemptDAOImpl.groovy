@@ -22,7 +22,9 @@ class UserSecurityQuestionAttemptDAOImpl extends BaseDAO implements UserSecurity
 
     @Override
     UserSecurityQuestionAttemptEntity save(UserSecurityQuestionAttemptEntity entity) {
-        entity.id = idGenerator.nextId(entity.userId)
+        if (entity.id == null) {
+            entity.id = idGenerator.nextId(entity.userId)
+        }
         Session session = currentSession(entity.id)
         session.save(entity)
         session.flush()

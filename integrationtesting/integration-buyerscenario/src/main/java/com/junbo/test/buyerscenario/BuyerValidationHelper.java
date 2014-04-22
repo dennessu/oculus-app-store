@@ -5,23 +5,24 @@
  */
 package com.junbo.test.buyerscenario;
 
-//import com.junbo.cart.spec.model.item.OfferItem;
+import com.junbo.cart.spec.model.item.OfferItem;
+
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.ShippingAddressId;
 import com.junbo.common.id.UserId;
-//import com.junbo.order.spec.model.OrderItem;
+import com.junbo.order.spec.model.OrderItem;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.Utility.BaseValidationHelper;
 import com.junbo.test.common.blueprint.Master;
-//import com.junbo.test.common.exception.TestException;
+import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.DBHelper;
 import com.junbo.order.spec.model.Order;
 import com.junbo.cart.spec.model.Cart;
 import com.junbo.test.common.libs.IdConverter;
 
-//import java.math.BigDecimal;
-//import java.math.RoundingMode;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * Created by Yunlong on 3/27/14.
@@ -34,16 +35,25 @@ public class BuyerValidationHelper extends BaseValidationHelper {
         super();
     }
 
-    public void validateOrderInfoByCartId(String uid, String orderId,
-                                          String cartId, Country country, Currency currency,
+    public void validateOrderInfoByCartId(String uid, String orderId, String cartId, Country country, Currency currency,
                                           String paymentInstrumentId, String shippingAddressId) {
+        validateOrderInfoByCartId(uid, orderId, cartId, country, currency, paymentInstrumentId,
+                shippingAddressId, false);
+    }
+
+    public void validateOrderInfoByCartId(String uid, String orderId, String cartId, Country country, Currency currency,
+                                          String paymentInstrumentId, String shippingAddressId, boolean hasPhysicalGood) {
         Order order = Master.getInstance().getOrder(orderId);
         Cart cart = Master.getInstance().getCart(cartId);
 
         //verifyEqual(order.getTentative(), false, "verify tentative after order complete");
         verifyEqual(order.getCountry(), country.toString(), "verify country field in order");
         verifyEqual(order.getCurrency(), currency.toString(), "verify currency field in order");
-        verifyEqual(order.getStatus(), "COMPLETED", "verify order status");
+        if (hasPhysicalGood) {
+            verifyEqual(order.getStatus(), "PENDING_FULFILLED", "verify order status");
+        } else {
+            verifyEqual(order.getStatus(), "COMPLETED", "verify order status");
+        }
 
         verifyEqual(order.getOrderItems().size(), cart.getOffers().size(), "verify offer items in order");
         if (shippingAddressId != null) {
@@ -58,7 +68,7 @@ public class BuyerValidationHelper extends BaseValidationHelper {
                 paymentInstrumentId,
                 "verify payment instrument id"
         );
-        /*
+
         BigDecimal expectedTotalAmount = new BigDecimal(0);
         BigDecimal expectedTotalTaxAmount = new BigDecimal(0);
         for (int i = 0; i < cart.getOffers().size(); i++) {
@@ -68,9 +78,10 @@ public class BuyerValidationHelper extends BaseValidationHelper {
                     verifyEqual(orderItem.getQuantity(), Integer.valueOf(
                             offerItem.getQuantity().toString()), "verify offer quantity");
 
-                    BigDecimal unitPrice = Master.getInstance().getOffer(
-                            IdConverter.idToHexString(offerItem.getOffer()))
-                            .getCategories().get(country.toString()).getAmount();
+                    String currentOfferRevisionId = IdConverter.idToHexString(offerItem.getOffer());
+                    BigDecimal unitPrice = Master.getInstance().getOfferRevision(currentOfferRevisionId).getPrice()
+                            .getPrices().get(currency.toString());
+
                     BigDecimal expectedOrderItemAmount = unitPrice.multiply(new BigDecimal(offerItem.getQuantity()));
                     verifyEqual(orderItem.getTotalAmount().toString(),
                             expectedOrderItemAmount.toString(), "verify order item amount");
@@ -91,14 +102,17 @@ public class BuyerValidationHelper extends BaseValidationHelper {
 
         verifyEqual(order.getTotalAmount(), expectedTotalAmount, "verify order total amount");
         verifyEqual(order.getTotalTax(), expectedTotalTaxAmount, "verify order total tax");
-        */
+
     }
 
     public void validateEmailHistory(String uid, String orderId) throws Exception {
         String id = IdConverter.hexStringToId(UserId.class, uid).toString();
-        String sql = String.format("select payload from email_history where user_id=\'%s\'", id);
+        String sql = String.format("select payload from shard_0.email_history where user_id=\'%s\'", id);
         String resultString = dbHelper.executeScalar(sql, DBHelper.DBName.EMAIL);
-
+        if (resultString.isEmpty() || resultString == null) {
+            sql = String.format("select payload from shard_1.email_history where user_id=\'%s\'", id);
+            resultString = dbHelper.executeScalar(sql, DBHelper.DBName.EMAIL);
+        }
         verifyEqual(resultString.indexOf("OrderConfirmation") >= 0, true, "Verify email type");
         verifyEqual(resultString.indexOf(orderId) >= 0, true, "verify order Id");
         verifyEqual(resultString.indexOf("SUCCEED") >= 0, true, "Verify email sent status");

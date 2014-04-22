@@ -6,10 +6,7 @@
 package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.common.id.OfferId;
-import com.junbo.common.id.OrderItemId;
-import com.junbo.common.id.SubledgerId;
-import com.junbo.common.id.SubledgerItemId;
+import com.junbo.common.id.*;
 
 import java.math.BigDecimal;
 

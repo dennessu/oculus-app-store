@@ -19,8 +19,9 @@ class DeviceDAOImpl extends BaseDAO implements DeviceDAO {
 
     @Override
     DeviceEntity create(DeviceEntity device) {
-        device.id = idGenerator.nextIdByShardId(shardAlgorithm.shardId())
-
+        if (device.id == null) {
+            device.id = idGenerator.nextIdByShardId(shardAlgorithm.shardId())
+        }
         Session session = currentSession(device.id)
         session.save(device)
         session.flush()

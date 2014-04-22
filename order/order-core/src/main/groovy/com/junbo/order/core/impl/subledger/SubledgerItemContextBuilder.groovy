@@ -10,6 +10,8 @@ import com.junbo.order.spec.model.SubledgerItem
 import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
 
+import javax.annotation.Resource
+
 /**
  * Created by fzhang on 4/10/2014.
  */
@@ -17,8 +19,10 @@ import org.springframework.stereotype.Component
 @Component('subledgerItemContextBuilder')
 class SubledgerItemContextBuilder {
 
+    @Resource(name = 'orderRepository')
     OrderRepository orderRepository
 
+    @Resource(name = 'cachedCatalogFacade')
     CatalogFacade catalogFacade
 
     SubledgerItemContext buildContext(OrderOfferRevision offer, String country, String currency, Date createdTime) {
@@ -42,7 +46,7 @@ class SubledgerItemContextBuilder {
             throw AppErrors.INSTANCE.orderNotFound().exception()
         }
 
-        def offer = catalogFacade.getOfferRevision(subledgerItem.offerId.value).wrapped().get()
+        def offer = catalogFacade.getOfferRevision(subledgerItem.offerId.value, orderItem.honoredTime).wrapped().get()
         return buildContext(offer, order.country, order.currency, subledgerItem.createdTime)
     }
 }

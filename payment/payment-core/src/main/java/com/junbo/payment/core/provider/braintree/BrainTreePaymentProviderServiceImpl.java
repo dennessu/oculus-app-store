@@ -9,6 +9,7 @@ package com.junbo.payment.core.provider.braintree;
 import com.braintreegateway.*;
 import com.braintreegateway.exceptions.DownForMaintenanceException;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.AbstractPaymentProviderService;
@@ -58,7 +59,7 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
     @Override
     public void clonePIResult(PaymentInstrument source, PaymentInstrument target) {
         target.setAccountNum(source.getAccountNum());
-        target.getCreditCardRequest().setExternalToken(source.getCreditCardRequest().getExternalToken());
+        target.setExternalToken(source.getExternalToken());
         target.getCreditCardRequest().setType(source.getCreditCardRequest().getType());
         target.getCreditCardRequest().setCommercial(source.getCreditCardRequest().getCommercial());
         target.getCreditCardRequest().setDebit(source.getCreditCardRequest().getDebit());
@@ -69,6 +70,9 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
     @Override
     public void cloneTransactionResult(PaymentTransaction source, PaymentTransaction target) {
         target.setExternalToken(source.getExternalToken());
+        if(!CommonUtil.isNullOrEmpty(source.getStatus())){
+            target.setStatus(source.getStatus());
+        }
     }
 
     @Override
@@ -108,7 +112,7 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
         }
         if(result.isSuccess()){
             request.setAccountNum(result.getTarget().getMaskedNumber());
-            request.getCreditCardRequest().setExternalToken(result.getTarget().getToken());
+            request.setExternalToken(result.getTarget().getToken());
             request.getCreditCardRequest().setType(
                     PaymentUtil.getCreditCardType(result.getTarget().getCardType()).toString());
             request.getCreditCardRequest().setCommercial(result.getTarget().getCommercial().toString());
@@ -123,7 +127,7 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
 
     @Override
     public Promise<Response> delete(PaymentInstrument pi) {
-        String token = pi.getCreditCardRequest().getExternalToken();
+        String token = pi.getExternalToken();
         Result<CreditCard> result = null;
         LOGGER.info("delete credit card :" + token);
         try{
@@ -139,7 +143,7 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
 
     @Override
     public Promise<PaymentTransaction> authorize(PaymentInstrument pi, PaymentTransaction paymentRequest) {
-        String piToken = pi.getCreditCardRequest().getExternalToken();
+        String piToken = pi.getExternalToken();
         TransactionRequest request = getTransactionRequest(piToken, paymentRequest);
         Result<Transaction> result = null;
         LOGGER.info("authorize credit card :" + piToken);
@@ -150,6 +154,7 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
         }
         if(result.isSuccess()){
             paymentRequest.setExternalToken(result.getTarget().getId());
+            paymentRequest.setStatus(PaymentStatus.AUTHORIZED.toString());
         }else{
             handleProviderError(result);
         }
@@ -172,6 +177,7 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
         }
         if (result.isSuccess()) {
             // transaction successfully submitted for settlement
+            request.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString());
         } else {
             handleProviderError(result);
         }
@@ -180,7 +186,7 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
 
     @Override
     public Promise<PaymentTransaction> charge(PaymentInstrument pi, PaymentTransaction paymentRequest) {
-        String piToken = pi.getCreditCardRequest().getExternalToken();
+        String piToken = pi.getExternalToken();
         TransactionRequest request = getTransactionRequest(piToken, paymentRequest);
         request.options()
                 .submitForSettlement(true)
@@ -194,6 +200,7 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
         }
         if(result.isSuccess()){
             paymentRequest.setExternalToken(result.getTarget().getId());
+            paymentRequest.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString());
         }else{
             handleProviderError(result);
         }
@@ -243,6 +250,24 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
 
     @Override
     public Promise<PaymentTransaction> refund(String transactionId, PaymentTransaction request) {
+        Result<Transaction> result = null;
+        LOGGER.info("refund transaction :" + transactionId);
+        try{
+            if(request.getChargeInfo() == null || request.getChargeInfo().getAmount() == null){
+                result = gateway.transaction().refund(transactionId);
+            }else{
+                //Partial Refund
+                result = gateway.transaction().refund(transactionId, request.getChargeInfo().getAmount());
+            }
+        }catch (Exception ex){
+            handleProviderException(ex, "Refund", "transaction", transactionId);
+        }
+        if (result.isSuccess()) {
+            // transaction successfully submitted for settlement
+            request.setStatus(PaymentStatus.REFUNDED.toString());
+        } else {
+            handleProviderError(result);
+        }
         return Promise.pure(request);
     }
 
@@ -279,7 +304,7 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
             handleProviderException(ex, "Search", "token", token);
         }
         if(transaction == null){
-            return null;
+            return Promise.pure(null);
         }
         PaymentTransaction result = new PaymentTransaction();
         result.setStatus(PaymentUtil.mapBraintreePaymentStatus(PaymentStatus.BrainTreeStatus.valueOf(

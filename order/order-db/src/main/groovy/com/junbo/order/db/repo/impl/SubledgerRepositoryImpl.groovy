@@ -21,10 +21,13 @@ import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.IdGeneratorFacade
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
+
 /**
  * Created by fzhang on 4/11/2014.
  */
 @CompileStatic
+@Component('subledgerRepository')
 class SubledgerRepositoryImpl implements SubledgerRepository {
 
     @Autowired
@@ -43,6 +46,7 @@ class SubledgerRepositoryImpl implements SubledgerRepository {
         def subledgerEntity = modelMapper.toSubledgerEntity(subledger, new MappingContext())
         subledgerEntity.subledgerId = idGeneratorFacade.nextId(SubledgerId, subledger.sellerId.value)
         subledgerDao.create(subledgerEntity)
+        subledger.subledgerId = new SubledgerId(subledgerEntity.subledgerId)
         Utils.fillDateInfo(subledger, subledgerEntity)
         return subledger
     }
@@ -97,14 +101,15 @@ class SubledgerRepositoryImpl implements SubledgerRepository {
         def subledgerItemEntity = modelMapper.toSubledgerItemEntity(subledgerItem, new MappingContext())
         subledgerItemEntity.subledgerItemId = idGeneratorFacade.nextId(SubledgerItemId, subledgerItem.orderItemId.value)
         subledgerItemDao.create(subledgerItemEntity)
+        subledgerItem.subledgerItemId = new SubledgerItemId(subledgerItemEntity.subledgerItemId)
         Utils.fillDateInfo(subledgerItem, subledgerItemEntity)
         return subledgerItem
     }
 
     @Override
-    List<SubledgerItem> getSubledgerItem(String status, PageParam pageParam) {
+    List<SubledgerItem> getSubledgerItem(Object shardKey, String status, PageParam pageParam) {
         List<SubledgerItem> result = []
-        subledgerItemDao.getByStatus(0, // todo iterate all the shard
+        subledgerItemDao.getByStatus((Integer) shardKey,
                 SubledgerItemStatus.valueOf(status),
                 pageParam.start, pageParam.count).each { SubledgerItemEntity entity ->
             result << modelMapper.toSubledgerItemModel(entity, new MappingContext())

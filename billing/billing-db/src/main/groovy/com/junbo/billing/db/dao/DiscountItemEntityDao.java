@@ -17,5 +17,6 @@ public interface DiscountItemEntityDao {
     DiscountItemEntity get(Long discountItemId);
     DiscountItemEntity save(DiscountItemEntity discountItem);
     DiscountItemEntity update(DiscountItemEntity discountItem);
+    void softDelete(Long discountItemId);
     List<DiscountItemEntity> findByBalanceItemId(Long balanceItemId);
 }

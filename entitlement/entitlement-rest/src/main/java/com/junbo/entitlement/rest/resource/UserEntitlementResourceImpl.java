@@ -6,7 +6,6 @@
 package com.junbo.entitlement.rest.resource;
 
 import com.junbo.common.id.EntitlementDefinitionId;
-import com.junbo.common.id.OfferId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
@@ -21,7 +20,6 @@ import com.junbo.entitlement.spec.resource.UserEntitlementResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -61,28 +59,12 @@ public class UserEntitlementResourceImpl implements UserEntitlementResource {
             EntitlementSearchParam searchParam, PageMetadata pageMetadata) {
         UriBuilder builder = uriInfo.getBaseUriBuilder().path("users")
                 .path(IdFormatter.encodeId(searchParam.getUserId()))
-                .path("entitlements")
-                .queryParam("developerId", IdFormatter.encodeId(searchParam.getDeveloperId()));
-        if (!StringUtils.isEmpty(searchParam.getType())) {
-            builder = builder.queryParam("type", searchParam.getType());
+                .path("entitlements");
+        if (searchParam.getIsActive() != null) {
+            builder = builder.queryParam("isActive", searchParam.getIsActive());
         }
-        if (!StringUtils.isEmpty(searchParam.getStatus())) {
-            builder = builder.queryParam("status", searchParam.getStatus());
-        }
-        if (!CollectionUtils.isEmpty(searchParam.getOfferIds())) {
-            for (OfferId offerId : searchParam.getOfferIds()) {
-                builder = builder.queryParam("offerIds", IdFormatter.encodeId(offerId));
-            }
-        }
-        if (!CollectionUtils.isEmpty(searchParam.getGroups())) {
-            for (String group : searchParam.getGroups()) {
-                builder = builder.queryParam("groups", group);
-            }
-        }
-        if (!CollectionUtils.isEmpty(searchParam.getTags())) {
-            for (String tag : searchParam.getTags()) {
-                builder = builder.queryParam("tags", tag);
-            }
+        if (searchParam.getIsBanned() != null) {
+            builder = builder.queryParam("isBanned", searchParam.getIsBanned());
         }
         if (!CollectionUtils.isEmpty(searchParam.getDefinitionIds())) {
             for (EntitlementDefinitionId definitionId : searchParam.getDefinitionIds()) {

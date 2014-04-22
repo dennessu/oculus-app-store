@@ -9,20 +9,14 @@ import com.junbo.common.id.UserSecurityQuestionId
 import com.junbo.identity.spec.v1.model.UserSecurityQuestion
 import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionListOptions
 import com.junbo.langur.core.promise.Promise
+import com.junbo.sharding.core.annotations.ReadMethod
 import groovy.transform.CompileStatic
 
 /**
  * Created by liangfu on 3/17/14.
  */
 @CompileStatic
-interface UserSecurityQuestionRepository {
-    Promise<UserSecurityQuestion> create(UserSecurityQuestion entity)
-
-    Promise<UserSecurityQuestion> update(UserSecurityQuestion entity)
-
-    Promise<UserSecurityQuestion> get(UserSecurityQuestionId id)
-
+interface UserSecurityQuestionRepository extends IdentityBaseRepository<UserSecurityQuestion, UserSecurityQuestionId> {
+    @ReadMethod
     Promise<List<UserSecurityQuestion>> search(UserSecurityQuestionListOptions getOption)
-
-    Promise<Void> delete(UserSecurityQuestionId id)
 }

@@ -5,7 +5,6 @@
  */
 package com.junbo.fulfilment.spec.fusion;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,8 +14,6 @@ public class OfferAction {
     private String type;
 
     private Map<String, Object> properties;
-
-    private List<LinkedEntry> items;
 
     public String getType() {
         return type;
@@ -32,13 +29,5 @@ public class OfferAction {
 
     public void setProperties(Map<String, Object> properties) {
         this.properties = properties;
-    }
-
-    public List<LinkedEntry> getItems() {
-        return items;
-    }
-
-    public void setItems(List<LinkedEntry> items) {
-        this.items = items;
     }
 }

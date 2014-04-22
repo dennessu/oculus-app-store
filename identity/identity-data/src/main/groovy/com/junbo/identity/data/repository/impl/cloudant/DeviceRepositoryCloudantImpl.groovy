@@ -36,15 +36,20 @@ class DeviceRepositoryCloudantImpl extends CloudantClient<Device> implements Dev
 
     @Override
     Promise<Device> create(Device device) {
-        device.id = new DeviceId(idGenerator.nextIdByShardId(shardAlgorithm.shardId()))
-        super.cloudantPost(device)
-        return get((DeviceId)device.id)
+        if (device.id == null) {
+            device.id = new DeviceId(idGenerator.nextIdByShardId(shardAlgorithm.shardId()))
+        }
+        return Promise.pure((Device)super.cloudantPost(device))
     }
 
     @Override
     Promise<Device> update(Device device) {
-        super.cloudantPut(device)
-        return get((DeviceId)device.id)
+        return Promise.pure((Device)super.cloudantPut(device))
+    }
+
+    @Override
+    Promise<Void> delete(DeviceId id) {
+        throw new IllegalStateException('delete device not support')
     }
 
     @Override
