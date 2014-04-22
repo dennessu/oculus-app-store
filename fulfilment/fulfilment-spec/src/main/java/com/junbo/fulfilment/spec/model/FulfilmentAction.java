@@ -38,6 +38,8 @@ public class FulfilmentAction {
 
     private Integer copyCount;
 
+    private Long timestamp;
+
     public Long getActionId() {
         return actionId;
     }
@@ -100,5 +102,13 @@ public class FulfilmentAction {
 
     public void setFulfilmentId(Long fulfilmentId) {
         this.fulfilmentId = fulfilmentId;
+    }
+
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
     }
 }
