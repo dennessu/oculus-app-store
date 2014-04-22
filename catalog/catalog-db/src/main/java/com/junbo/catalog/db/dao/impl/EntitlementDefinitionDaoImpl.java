@@ -27,9 +27,13 @@ public class EntitlementDefinitionDaoImpl extends BaseDaoImpl<EntitlementDefinit
     public List<EntitlementDefinitionEntity> getByParams(Long developerId, String clientId, Set<String> groups, Set<String> tags,
                                                          EntitlementType type, Boolean isConsumable, PageableGetOptions pageableGetOptions) {
         StringBuilder queryString = new StringBuilder("select * from entitlement_definition" +
-                " where developer_id = (:developerId)");
+                " where deleted = false");
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("developerId", developerId);
+
+        if (developerId != null) {
+            queryString.append(" and developer_id = (:developerId)");
+            params.put("developerId", developerId);
+        }
 
         if (!StringUtils.isEmpty(clientId)) {
             queryString.append(" and '{\"\\\"" +
@@ -52,8 +56,6 @@ public class EntitlementDefinitionDaoImpl extends BaseDaoImpl<EntitlementDefinit
             queryString.append(" and consumable = (:isConsumable)");
             params.put("isConsumable", isConsumable);
         }
-
-        queryString.append(" and deleted = false");
 
         Query q = currentSession().createSQLQuery(queryString.toString()).addEntity(this.getEntityType());
         for (Map.Entry<String, Object> entry : params.entrySet()) {

@@ -7,9 +7,9 @@
 package com.junbo.catalog.spec.resource;
 
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefSearchParams;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.common.id.EntitlementDefinitionId;
-import com.junbo.common.id.UserId;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -19,7 +19,6 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Set;
 
 /**
  * API for entitlementDefinition.
@@ -40,12 +39,7 @@ public interface EntitlementDefinitionResource {
     @GET
     Promise<Results<EntitlementDefinition>>
     getEntitlementDefinitions(
-            @QueryParam("developerId") UserId developerId,
-            @QueryParam("clientId") String clientId,
-            @QueryParam("type") String type,
-            @QueryParam("groups") Set<String> groups,
-            @QueryParam("tags") Set<String> tags,
-            @QueryParam("isConsumable") Boolean isConsumable,
+            @BeanParam EntitlementDefSearchParams searchParams,
             @BeanParam PageableGetOptions pageMetadata);
 
     @ApiOperation("Create an entitlement definitions")
