@@ -277,7 +277,6 @@
 
             return resultMessage;
         }
-
     };
 
     if(typeof(window) != "undefined"){

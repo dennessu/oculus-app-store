@@ -1,5 +1,4 @@
 
-
 var App = Ember.App = Ember.Application.create();
 
 App.Router.map(function(){
@@ -107,60 +106,59 @@ App.MyView = Ember.View.extend({
 });
 
 App.LoginController = Ember.ObjectController.extend({
+    errMessage: null,
     content: {
         username: "",
         password: "",
-
-        errMessage: null
+        cid: Utils.Cookies.Get(AppConfig.CookiesName.ConversationId),
+        event: Utils.Cookies.Get(AppConfig.CookiesName.Event)
     },
 
     actions: {
         Submit: function(){
             console.log("[LoginController:Submit] Click Login");
-            if($("#BtnLogin").hasClass('load')) return;
-            $("#BtnLogin").addClass('load');
+            $("#Login").validate();
+            if(!$("#Login").valid()) return;
 
-            /*
+            if($("#Login .btn-primary").hasClass('load')) return;
+            $("#Login .btn-primary").addClass('load');
+
             var _self = this;
-            var provider = new IdentityProvider();
+            var loginType = Utils.Cookies.Get(AppConfig.CookiesName.LoginType);
 
-            var model = new IdentityModels.LoginModel();
-            model.event = Utils.Cookies.Get(AppConfig.CookiesName.Event);
-            model.cid = Utils.Cookies.Get(AppConfig.CookiesName.ConversationId);
-            model.username = this.get("content.username");
-            model.password = this.get("content.password");
+            if(loginType == "code"){
+                var model = this.get("content");
 
-            provider.Login(Utils.GenerateRequestModel(model), function(data){
-                var resultModel = data.data;
-                if(resultModel.status == 200){
-                    _self.set("content.errMessage", null);
+                $.ajax({
+                    url: "/api/login",
+                    type: "POST",
+                    cache: false,
+                    async: false,
+                    dataType: "json",
+                    data: {"model": model},
+                    success: function(data, textStatus, jqXHR){
+                        _self.set("errMessage", null);
+                        var result = data.data;
 
-                    var redirectUrl = Utils.Cookies.Get(AppConfig.CookiesName.RedirectUrl);
-
-                    // show captcha
-                    if(AppConfig.Feature.Captcha){
-                        _self.transitionToRouteAnimated('captcha', {main: 'flip'});
-                        return;
-                    }else if(AppConfig.Feature.TFA){
-                        _self.transitionToRouteAnimated('tfa', {main: 'flip'});
-                        return;
-                    }else if(redirectUrl != null && redirectUrl != ""){
-                        location.href = redirectUrl;
-                        return;
-                    }else{
-                        this.transitionToRouteAnimated('my', {main: 'flip'});
-                        return;
+                        if(result.status == 200){
+                            var redirectUrl = Utils.Cookies.Get(AppConfig.CookiesName.RedirectUrl);
+                            //location.href = redirectUrl;
+                        }else if(result.status == 302){
+                            //location.href = result.data.url;
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        _self.set("errMessage", Utils.GetErrorMessage(textStatus));
+                        $("#Login .btn-primary").removeClass('load');
                     }
-                }else if(resultModel.status == 302){
-                    // redirect back
-                    location.href = resultModel.data.url;
-                }else{
-                    // error
-                    _self.set("content.errMessage", Utils.GetErrorMessage(resultModel));
-                    $("#BtnLogin").removeClass('load');
-                }
-            });
-            */
+                });
+
+                return false;
+            }else{
+                console.log("[LoginController:Submit] submit form");
+                // submit form
+                $("#Login").submit();
+            }
         },
         Cancel: function(){
             console.log("[LoginController:Cancel] Click Cancel");

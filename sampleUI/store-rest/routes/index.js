@@ -4,23 +4,29 @@ var Utils = require('./utils');
 module.exports = function (app) {
 
     app.get("/", function (req, res) {
-
-        res.render("index", {title: "Redirect Test"});
+        res.render("index", {title: "Rest Service"});
     });
     app.get("/rest/oauth2/authorize", function (req, res) {
-
         var redirect_url = req.query["redirect_uri"];
 
-        res.redirect("http://localhost:3100/identity?event=TestEvent&cid=12345&redirect_url="+redirect_url+"?code=123");
+        res.redirect("http://passport.oculusvr-demo.com:2900/?login_type=token%20idtoken&event=TestEvent&cid=12345&redirect_url="+redirect_url+"?code=123");
+        //res.redirect("http://passport.oculusvr-demo.com:2900/?login_type=code&event=TestEvent&cid=12345&redirect_url="+redirect_url+"?code=123");
         res.end();
     });
-    app.get("/rest/oauth2/end-session", function (req, res) {
 
-        var redirect_url = req.query["post_logout_redirect_uri"];
-
+    app.post("/rest/oauth2/authorize", function (req, res) {
+        var redirect_url = "http://localhost:3100/callback/login?code=1234";
         res.redirect(redirect_url);
         res.end();
     });
+
+
+    app.get("/rest/oauth2/end-session", function (req, res) {
+        var redirect_url = req.query["post_logout_redirect_uri"];
+        res.redirect(redirect_url);
+        res.end();
+    });
+
 
     for (var p in C) {
         var gateway = C[p];
