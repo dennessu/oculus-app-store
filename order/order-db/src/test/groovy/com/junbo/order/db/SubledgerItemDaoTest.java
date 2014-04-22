@@ -11,7 +11,9 @@ import com.junbo.common.id.SubledgerItemId;
 import com.junbo.order.db.common.TestHelper;
 import com.junbo.order.db.dao.SubledgerItemDao;
 import com.junbo.order.db.entity.SubledgerItemEntity;
+import com.junbo.sharding.ShardAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -21,6 +23,10 @@ import org.testng.annotations.Test;
 public class SubledgerItemDaoTest extends BaseTest {
     @Autowired
     private SubledgerItemDao subledgerItemDao;
+
+    @Autowired
+    @Qualifier("userShardAlgorithm")
+    private ShardAlgorithm shardAlgorithm;
 
     @Test
     public void testCreateAndRead() {
@@ -57,8 +63,10 @@ public class SubledgerItemDaoTest extends BaseTest {
         entity.setSubledgerId(idGenerator.nextId(SubledgerId.class));
         entity.setSubledgerItemId(idGenerator.nextId(SubledgerItemId.class, entity.getSubledgerId()));
         subledgerItemDao.create(entity);
-        Assert.assertEquals(subledgerItemDao.getByStatus(entity.getId(), entity.getStatus(), 0, 1).size(), 1);
-        for (SubledgerItemEntity itemEntity : subledgerItemDao.getByStatus(entity.getId(), entity.getStatus(), 0, 1)) {
+        Assert.assertEquals(subledgerItemDao.getByStatus(shardAlgorithm.shardId(entity.getId()),
+                entity.getStatus(), 0, 1).size(), 1);
+        for (SubledgerItemEntity itemEntity : subledgerItemDao.getByStatus(shardAlgorithm.shardId(entity.getId()),
+                entity.getStatus(), 0, 1)) {
             Assert.assertEquals(itemEntity.getStatus(), entity.getStatus());
         }
     }

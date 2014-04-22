@@ -62,6 +62,15 @@ public class BaseDaoImpl<T extends CommonDbEntityWithDate> implements BaseDao<T>
         }
     }
 
+    protected Session getSessionByShardId(int shardId) {
+        ShardScope shardScope = new ShardScope(shardId);
+        try {
+            return sessionFactory.getCurrentSession();
+        } finally {
+            shardScope.close();
+        }
+    }
+
     public Long create(T t) {
         // TODO Honor passed-in clientId
         t.setUpdatedBy("dev");
