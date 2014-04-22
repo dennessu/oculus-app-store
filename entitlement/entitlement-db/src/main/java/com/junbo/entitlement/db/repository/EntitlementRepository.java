@@ -10,8 +10,6 @@ import com.junbo.entitlement.db.dao.EntitlementDao;
 import com.junbo.entitlement.db.dao.EntitlementHistoryDao;
 import com.junbo.entitlement.db.entity.EntitlementEntity;
 import com.junbo.entitlement.db.entity.EntitlementHistoryEntity;
-import com.junbo.entitlement.spec.def.EntitlementStatus;
-import com.junbo.entitlement.spec.def.EntitlementType;
 import com.junbo.entitlement.db.mapper.EntitlementMapper;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
@@ -60,33 +58,14 @@ public class EntitlementRepository {
                         searchParam, pageMetadata == null ? new PageMetadata() : pageMetadata));
     }
 
-    public List<Entitlement> getBySearchParam(EntitlementSearchParam searchParam) {
-        return entitlementMapper.toEntitlementList(entitlementDao.getBySearchParam(searchParam, new PageMetadata()));
-    }
-
-    public void delete(Entitlement entitlement, String reason) {
-        EntitlementEntity entitlementEntity = entitlementMapper.toEntitlementEntity(entitlement);
-        entitlementEntity.setStatus(EntitlementStatus.DELETED);
-        entitlementEntity.setStatusReason(reason);
-        entitlementEntity.setManagedLifecycle(false);
-        entitlementEntity.setConsumable(false);
-        entitlementEntity.setUseCount(0);
+    public void delete(Long entitlementId) {
+        EntitlementEntity entitlementEntity = entitlementDao.get(entitlementId);
+        entitlementEntity.setIsDeleted(true);
         entitlementHistoryDao.insert(new EntitlementHistoryEntity(DELETE, entitlementEntity));
         entitlementDao.update(entitlementEntity);
     }
 
     public Entitlement getByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
         return entitlementMapper.toEntitlement(entitlementDao.getByTrackingUuid(shardMasterId, trackingUuid));
-    }
-
-    public Entitlement getExistingManagedEntitlement(Long userId, Long definitionId) {
-        return entitlementMapper.toEntitlement(entitlementDao.getExistingManagedEntitlement(userId, definitionId));
-    }
-
-    public Entitlement getExistingManagedEntitlement(
-            Long userId, String type, Long developerId, String group, String tag) {
-        return entitlementMapper.toEntitlement(
-                entitlementDao.getExistingManagedEntitlement(
-                        userId, EntitlementType.valueOf(type.toUpperCase()), developerId, group, tag));
     }
 }

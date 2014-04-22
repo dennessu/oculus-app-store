@@ -15,18 +15,25 @@ import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by liangfu on 3/16/14.
  */
 @CompileStatic
 class UserPasswordRepositorySqlImpl implements UserPasswordRepository {
-    @Autowired
     private UserPasswordDAO userPasswordDAO
-
-    @Autowired
     private ModelMapper modelMapper
+
+    @Required
+    void setUserPasswordDAO(UserPasswordDAO userPasswordDAO) {
+        this.userPasswordDAO = userPasswordDAO
+    }
+
+    @Required
+    void setModelMapper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper
+    }
 
     @Override
     Promise<UserPassword> create(UserPassword entity) {

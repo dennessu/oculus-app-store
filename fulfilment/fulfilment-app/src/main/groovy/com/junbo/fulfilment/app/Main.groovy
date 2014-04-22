@@ -34,7 +34,7 @@ class Main {
                 .register(RestExceptionMapper)
                 .register(IdTypeFromStringProvider)
 
-        def uri = URI.create('http://localhost:8090/rest')
+        def uri = URI.create('http://localhost:8090/v1')
         return GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig)
     }
 

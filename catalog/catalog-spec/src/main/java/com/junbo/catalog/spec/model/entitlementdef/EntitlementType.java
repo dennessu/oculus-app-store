@@ -10,5 +10,8 @@ package com.junbo.catalog.spec.model.entitlementdef;
  * EntitlementType enum.
  */
 public enum EntitlementType {
-    DEFAULT, DEVELOPER, DOWNLOAD, ONLINE_ACCESS, IAP, SUBSCRIPTIONS;
+    DEVELOPER, DEVELOPER_SUBSCRIPTION,
+    DOWNLOAD, DOWNLOAD_SUBSCRIPTION,
+    ONLINE_ACCESS, ONLINE_ACCESS_SUBSCRIPTION,
+    SUBSCRIPTION;
 }

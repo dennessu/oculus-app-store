@@ -5,7 +5,7 @@ API about entitlement. trackingUuid is only used for post and put.
 + self...only appears in response.
 + trackingUuid(optional)...to track and retry in post and put actions.
 + user(required)
-+ developer(optional)...will be replaced by owner in future. Should not be null if entitlementDefinition is null.
++ owner(optional)...Should not be null if entitlementDefinition is null.
 + offer(opitional)...default is null.
 + entitlementDefinition(optional)...default is null. Should not be null if developer is null. Will help to fill group, tag, type and developer when developer is null.
 + status(optional)...ACTIVE, DISABLED, PENDING, DELETED, BANNED. Should not be be null if managedLifcycle is false. If managedLifecycle is true, status will be determined by comsumable, useCount, grantTime, expirationTime and now.
@@ -29,10 +29,7 @@ API about entitlement. trackingUuid is only used for post and put.
                 "href": "https://data.oculusvr.com/v1/users/123",
                 "id": 123
             },
-            "developer": {
-                "href": "https://data.oculusvr.com/v1/users/123456",
-                "id": 123456
-            },
+            "owner": "1234656",
             "offer": {
                 "href": "https://data.oculusvr.com/v1/offers/12345",
                 "id": 12345
@@ -70,10 +67,7 @@ API about entitlement. trackingUuid is only used for post and put.
                     "href": "https://data.oculusvr.com/v1/users/123",
                     "id": 123
                 },
-                "developer": {
-                    "href": "https://data.oculusvr.com/v1/users/123456",
-                    "id": 123456
-                },
+                "owner": "1234656",
                 "offer": {
                     "href": "https://data.oculusvr.com/v1/offers/12345",
                     "id": 12345
@@ -101,10 +95,7 @@ API about entitlement. trackingUuid is only used for post and put.
                     "href": "https://data.oculusvr.com/v1/users/123",
                     "id": 123
                 },
-                "developer": {
-                    "href": "https://data.oculusvr.com/v1/users/123456",
-                    "id": 123456
-                },
+                "owner": "1234656",
                 "offer": {
                     "href": "https://data.oculusvr.com/v1/offers/123456",
                     "id": 123456

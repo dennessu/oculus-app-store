@@ -7,15 +7,8 @@
 package com.junbo.entitlement.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.junbo.entitlement.spec.def.EntitlementStatus;
-import com.junbo.entitlement.spec.def.EntitlementType;
-import com.junbo.entitlement.db.entity.def.IdentifiableType;
-import org.hibernate.annotations.Type;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -25,20 +18,13 @@ import java.util.Date;
 @Table(name = "entitlement")
 public class EntitlementEntity extends Entity {
     private Long entitlementId;
+    private Integer rev;
     private Long userId;
-    private Long developerId;
-    private EntitlementStatus status;
-    private String statusReason;
+    private Boolean isBanned;
     private Long entitlementDefinitionId;
-    private EntitlementType type;
-    private String group;
-    private String tag;
     private Date grantTime;
     private Date expirationTime;
-    private Long offerId;
-    private Boolean consumable;
     private Integer useCount;
-    private Boolean managedLifecycle;
 
     @Id
     @Column(name = "entitlement_id")
@@ -50,6 +36,16 @@ public class EntitlementEntity extends Entity {
         this.entitlementId = entitlementId;
     }
 
+    @Version
+    @Column(name = "rev")
+    public Integer getRev() {
+        return rev;
+    }
+
+    public void setRev(Integer rev) {
+        this.rev = rev;
+    }
+
     @Column(name = "user_id")
     public Long getUserId() {
         return userId;
@@ -57,34 +53,6 @@ public class EntitlementEntity extends Entity {
 
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    @Column(name = "managed_lifecycle")
-    public Boolean getManagedLifecycle() {
-        return managedLifecycle;
-    }
-
-    public void setManagedLifecycle(Boolean managedLifecycle) {
-        this.managedLifecycle = managedLifecycle;
-    }
-
-    @Column(name = "status")
-    @Type(type = IdentifiableType.TYPE)
-    public EntitlementStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(EntitlementStatus status) {
-        this.status = status;
-    }
-
-    @Column(name = "status_reason")
-    public String getStatusReason() {
-        return statusReason;
-    }
-
-    public void setStatusReason(String statusReason) {
-        this.statusReason = statusReason;
     }
 
     @Column(name = "entitlement_definition_id")
@@ -114,24 +82,6 @@ public class EntitlementEntity extends Entity {
         this.expirationTime = expirationTime;
     }
 
-    @Column(name = "offer_id")
-    public Long getOfferId() {
-        return offerId;
-    }
-
-    public void setOfferId(Long itemId) {
-        this.offerId = itemId;
-    }
-
-    @Column(name = "consumable")
-    public Boolean getConsumable() {
-        return consumable;
-    }
-
-    public void setConsumable(Boolean consumable) {
-        this.consumable = consumable;
-    }
-
     @Column(name = "use_count")
     public Integer getUseCount() {
         return useCount;
@@ -141,41 +91,13 @@ public class EntitlementEntity extends Entity {
         this.useCount = useCount;
     }
 
-    @Column(name = "developer_id")
-    public Long getDeveloperId() {
-        return developerId;
+    @Column(name = "is_banned")
+    public Boolean getIsBanned() {
+        return isBanned;
     }
 
-    public void setDeveloperId(Long developerId) {
-        this.developerId = developerId;
-    }
-
-    @Column(name = "type")
-    @Type(type = IdentifiableType.TYPE)
-    public EntitlementType getType() {
-        return type;
-    }
-
-    public void setType(EntitlementType type) {
-        this.type = type;
-    }
-
-    @Column(name = "entitlement_group")
-    public String getGroup() {
-        return group;
-    }
-
-    public void setGroup(String group) {
-        this.group = group;
-    }
-
-    @Column(name = "tag")
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
+    public void setIsBanned(Boolean isBanned) {
+        this.isBanned = isBanned;
     }
 
     @JsonIgnore

@@ -110,6 +110,7 @@ class FacadeBuilder {
                 }
             }
         }
+
         email.replacements = properties
         return email
     }

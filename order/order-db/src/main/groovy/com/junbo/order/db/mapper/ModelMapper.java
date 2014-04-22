@@ -143,22 +143,22 @@ public interface ModelMapper {
                                                                MappingContext context);
 
     @Mappings({
-            @Mapping(source = "totalAmount", target = "totalAmount", excluded = false, bidirectional = false)
+            @Mapping(source = "productItemId", target = "offerId", excluded = false, bidirectional = false)
     })
     Subledger toSubledgerModel(SubledgerEntity subledgerEntity, MappingContext context);
 
     @Mappings({
-            @Mapping(source = "totalAmount", target = "totalAmount", excluded = false, bidirectional = false)
+            @Mapping(source = "offerId", target = "productItemId", excluded = false, bidirectional = false)
     })
     SubledgerEntity toSubledgerEntity(Subledger subledger, MappingContext context);
 
     @Mappings({
-            @Mapping(source = "productItemId", target = "offerRevisionId", excluded = false, bidirectional = false)
+            @Mapping(source = "productItemId", target = "offerId", excluded = false, bidirectional = false)
     })
     SubledgerItem toSubledgerItemModel(SubledgerItemEntity subledgerItemEntity, MappingContext context);
 
     @Mappings({
-            @Mapping(source = "offerRevisionId", target = "productItemId", excluded = false, bidirectional = false)
+            @Mapping(source = "offerId", target = "productItemId", excluded = false, bidirectional = false)
     })
     SubledgerItemEntity toSubledgerItemEntity(SubledgerItem subledgerItem, MappingContext context);
 }

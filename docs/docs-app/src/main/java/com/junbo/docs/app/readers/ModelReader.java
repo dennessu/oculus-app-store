@@ -8,7 +8,6 @@ package com.junbo.docs.app.readers;
 
 import com.junbo.common.id.Id;
 import com.junbo.common.model.Link;
-import com.wordnik.swagger.core.SwaggerContext;
 import com.wordnik.swagger.core.util.ClassWrapper;
 import com.wordnik.swagger.model.Model;
 import com.wordnik.swagger.model.ModelProperty;
@@ -17,14 +16,12 @@ import com.wordnik.swagger.reader.PropertyMetaInfo;
 import groovy.lang.MetaClass;
 import scala.Option;
 import scala.collection.immutable.Map;
-import sun.reflect.generics.reflectiveObjects.GenericArrayTypeImpl;
 
 import javax.ws.rs.core.Response;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -62,27 +59,19 @@ public class ModelReader implements com.wordnik.swagger.reader.ModelReader {
     public ModelProperty processModelProperty(ModelProperty modelProperty, ClassWrapper cls,
             Annotation[] propertyAnnotations, Annotation[] fieldAnnotations) {
         if (hasIdAnnotation(propertyAnnotations) || hasIdAnnotation(fieldAnnotations)) {
-            ClassWrapper classWrapper = SwaggerContext.loadClass(modelProperty.qualifiedType());
-            if (Collection.class.isAssignableFrom(classWrapper.getRawClass())) {
-                if (classWrapper.getRawType() instanceof ParameterizedType) {
-                    ParameterizedType type = (ParameterizedType)classWrapper.getRawType();
-                    Type[] types = type.getActualTypeArguments();
-
-                    if (types.length == 1) {
-                        // We only support List[Link]
-                        return new ModelProperty(
-                                List.class.getSimpleName(),
-                                List.class.getName(),
-                                modelProperty.position(),
-                                modelProperty.required(),
-                                modelProperty.description(),
-                                modelProperty.allowableValues(),
-                                Option.apply(new ModelRef(
-                                        null,
-                                        Option.apply(Link.class.getSimpleName()),
-                                        Option.apply(Link.class.getName()))));
-                    }
-                }
+            if (!modelProperty.items().equals(Option.apply(null))) {
+                // Convert to Array[Link]
+                return new ModelProperty(
+                        List.class.getSimpleName(),
+                        List.class.getName(),
+                        modelProperty.position(),
+                        modelProperty.required(),
+                        modelProperty.description(),
+                        modelProperty.allowableValues(),
+                        Option.apply(new ModelRef(
+                                null,
+                                Option.apply(Link.class.getSimpleName()),
+                                Option.apply(Link.class.getName()))));
             }
             return new ModelProperty(
                     Link.class.getSimpleName(),
@@ -129,7 +118,7 @@ public class ModelReader implements com.wordnik.swagger.reader.ModelReader {
         // recursion
         if (cls.getRawClass().isArray()) {
             if (cls.getRawType() instanceof GenericArrayType) {
-                return GenericArrayTypeImpl.make(safeGetType(cls.getArrayComponent()));
+                return new GenericArrayTypeImpl(safeGetType(cls.getArrayComponent()));
             }
             return cls.getRawClass();
         } else if (cls.getRawType() instanceof ParameterizedType) {

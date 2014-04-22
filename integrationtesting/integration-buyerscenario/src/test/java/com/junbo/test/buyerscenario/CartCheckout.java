@@ -37,6 +37,7 @@ public class CartCheckout extends BaseTestClass {
     @Test
     public void testDigitalGoodCheckout() throws Exception {
         String uid = testDataProvider.createUser();
+        //String uid = "6B54FD213C9F";
 
         ArrayList<String> offerList = new ArrayList<>();
         offerList.add(offer_digital_normal1);
@@ -46,6 +47,8 @@ public class CartCheckout extends BaseTestClass {
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         String creditCardId = testDataProvider.postCreditCardToUser(uid, creditCardInfo);
+        //String creditCardId = "6B54FF0CBC9F";
+
 
         String orderId = testDataProvider.postOrderByCartId(
                 uid, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, null);
@@ -57,7 +60,7 @@ public class CartCheckout extends BaseTestClass {
 
         testDataProvider.emptyCartByCartId(uid, cartId);
 
-        validationHelper.validateEmailHistory(uid , orderId);
+        validationHelper.validateEmailHistory(uid, orderId);
     }
 
     @Property(
@@ -81,6 +84,7 @@ public class CartCheckout extends BaseTestClass {
     @Test
     public void testPhysicalGoodCheckout() throws Exception {
         String uid = testDataProvider.createUser();
+        //String uid = "6B54FD213C9F";
 
         ArrayList<String> offerList = new ArrayList<>();
         offerList.add(offer_physical_normal1);
@@ -90,21 +94,22 @@ public class CartCheckout extends BaseTestClass {
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         String creditCardId = testDataProvider.postCreditCardToUser(uid, creditCardInfo);
+        //String creditCardId = "6B54FF0CBC9F";
 
-        ShippingAddressInfo   shippingAddressInfo = ShippingAddressInfo.getRandomShippingAddress(Country.DEFAULT);
+        ShippingAddressInfo shippingAddressInfo = ShippingAddressInfo.getRandomShippingAddress(Country.DEFAULT);
         String shippingAddressId = testDataProvider.postShippingAddressToUser(uid, shippingAddressInfo);
 
         String orderId = testDataProvider.postOrderByCartId(
-                uid, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, shippingAddressId);
+                uid, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, shippingAddressId, true);
 
         orderId = testDataProvider.updateOrderTentative(orderId, false);
 
         validationHelper.validateOrderInfoByCartId(
-                uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, shippingAddressId);
+                uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, shippingAddressId, true);
 
         testDataProvider.emptyCartByCartId(uid, cartId);
 
-        validationHelper.validateEmailHistory(uid , orderId);
+        validationHelper.validateEmailHistory(uid, orderId);
     }
 
 }
