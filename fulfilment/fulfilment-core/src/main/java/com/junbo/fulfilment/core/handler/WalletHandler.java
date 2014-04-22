@@ -26,7 +26,7 @@ public class WalletHandler extends HandlerSupport<WalletContext> {
         List<Long> success = new ArrayList<>();
 
         for (LinkedEntry entry : action.getItems()) {
-            Item item = catalogGateway.getItem(entry.getId(), entry.getTimestamp());
+            Item item = catalogGateway.getItem(entry.getId(), action.getTimestamp());
 
             CreditRequest request = new CreditRequest();
 

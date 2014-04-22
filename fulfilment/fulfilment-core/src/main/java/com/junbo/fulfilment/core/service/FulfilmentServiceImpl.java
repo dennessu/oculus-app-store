@@ -240,9 +240,6 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
 
             // copy offer level items to fulfilment action
             fulfilmentAction.setItems(offer.getItems());
-            for (LinkedEntry entry : fulfilmentAction.getItems()) {
-                entry.setTimestamp(fulfilmentItem.getTimestamp());
-            }
 
             fulfilmentItem.addFulfilmentAction(fulfilmentAction);
         }
