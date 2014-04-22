@@ -81,7 +81,7 @@ public class EnumHelper {
     }
 
     /**
-     * Enum for catalog item type
+     * Enum for catalog item type.
      *
      * @author Jason
      */

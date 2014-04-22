@@ -6,9 +6,6 @@
 package com.junbo.test.common.apihelper.cart.impl;
 
 import com.junbo.cart.spec.model.Cart;
-import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.common.id.CartId;
-import com.junbo.common.id.ItemId;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.client.TypeReference;
