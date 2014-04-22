@@ -23,7 +23,7 @@ public interface EntitlementService {
 
     Entitlement updateEntitlement(Long entitlementId, Entitlement entitlement);
 
-    void deleteEntitlement(Long entitlementId, String reason);
+    void deleteEntitlement(Long entitlementId);
 
     List<Entitlement> searchEntitlement(EntitlementSearchParam entitlementSearchParam,
                                         PageMetadata pageMetadata);

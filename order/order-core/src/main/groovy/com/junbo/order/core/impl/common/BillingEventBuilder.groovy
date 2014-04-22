@@ -42,7 +42,7 @@ class BillingEventBuilder {
     static String buildEventAction(Balance balance) {
         def balanceType = BalanceType.valueOf(balance.type)
         switch (balanceType) {
-            case BalanceType.DELAY_DEBIT:
+            case BalanceType.CREDIT:
                 return BillingAction.AUTHORIZE.name()
             case BalanceType.DEBIT:
                 return BillingAction.CHARGE.name()

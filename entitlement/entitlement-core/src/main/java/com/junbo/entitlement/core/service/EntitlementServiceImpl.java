@@ -6,7 +6,6 @@
 
 package com.junbo.entitlement.core.service;
 
-import com.junbo.entitlement.common.def.EntitlementStatusReason;
 import com.junbo.entitlement.common.lib.CloneUtils;
 import com.junbo.entitlement.core.EntitlementService;
 import com.junbo.entitlement.db.repository.EntitlementRepository;
@@ -20,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,8 +45,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     public Entitlement addEntitlement(Entitlement entitlement) {
         fillCreate(entitlement);
         validateCreate(entitlement);
-        //if managedLifecycle is true, try to merge the added entitlement into existing entitlement
-        return merge(entitlement);
+        return entitlementRepository.insert(entitlement);
     }
 
     @Override
@@ -66,13 +63,13 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
     @Override
     @Transactional
-    public void deleteEntitlement(Long entitlementId, String reason) {
+    public void deleteEntitlement(Long entitlementId) {
         Entitlement existingEntitlement = entitlementRepository.get(entitlementId);
         if (existingEntitlement == null) {
             throw AppErrors.INSTANCE.notFound("entitlement", entitlementId).exception();
         }
         checkUser(existingEntitlement.getUserId());
-        entitlementRepository.delete(existingEntitlement, reason);
+        entitlementRepository.delete(entitlementId);
     }
 
     @Override
@@ -80,11 +77,6 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     public List<Entitlement> searchEntitlement(EntitlementSearchParam entitlementSearchParam,
                                                PageMetadata pageMetadata) {
         validateNotNull(entitlementSearchParam.getUserId(), "user");
-        if (entitlementSearchParam.getDeveloperId() == null) {
-            //TODO: check if clientId is admin
-        } else {
-            CheckDeveloper(entitlementSearchParam.getDeveloperId().getValue());
-        }
         checkUser(entitlementSearchParam.getUserId().getValue());
         checkSearchDateFormat(entitlementSearchParam);
         List<Entitlement> entitlementEntities = entitlementRepository.getBySearchParam(
@@ -110,8 +102,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         validateTransfer(entitlementTransfer, existingEntitlement);
 
         Entitlement newEntitlement = CloneUtils.clone(existingEntitlement);
-        deleteEntitlement(entitlementTransfer.getEntitlementId(),
-                EntitlementStatusReason.TRANSFERRED);
+        deleteEntitlement(entitlementTransfer.getEntitlementId());
         LOGGER.info("Entitlement [{}] is deleted for transferring.", existingEntitlement.getEntitlementId());
         newEntitlement.setTrackingUuid(entitlementTransfer.getTrackingUuid());
         newEntitlement.setEntitlementId(null);
@@ -123,37 +114,5 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     @Transactional
     public Entitlement getByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
         return entitlementRepository.getByTrackingUuid(shardMasterId, trackingUuid);
-    }
-
-    private Entitlement merge(Entitlement entitlement) {
-        if (Boolean.TRUE.equals(entitlement.getManagedLifecycle())) {
-            Entitlement existingEntitlement;
-            if (entitlement.getEntitlementDefinitionId() != null) {
-                existingEntitlement = entitlementRepository.getExistingManagedEntitlement(
-                        entitlement.getUserId(), entitlement.getEntitlementDefinitionId());
-            } else {
-                existingEntitlement = entitlementRepository.getExistingManagedEntitlement(
-                        entitlement.getUserId(), entitlement.getType(),
-                        entitlement.getDeveloperId(), entitlement.getGroup(), entitlement.getTag());
-            }
-            if (existingEntitlement != null) {
-                LOGGER.info("Merge added entitlement into existing entitlement [{}].",
-                        existingEntitlement.getEntitlementId());
-                if (entitlement.getExpirationTime() != null) {
-                    if (existingEntitlement.getExpirationTime() != null) {
-                        existingEntitlement.setExpirationTime(new Date(existingEntitlement.getExpirationTime().getTime()
-                                + entitlement.getExpirationTime().getTime()
-                                - entitlement.getGrantTime().getTime()));
-                    }
-                } else {
-                    existingEntitlement.setExpirationTime(null);
-                }
-                if (entitlement.getConsumable()) {
-                    existingEntitlement.setUseCount(existingEntitlement.getUseCount() + entitlement.getUseCount());
-                }
-                return entitlementRepository.update(existingEntitlement);
-            }
-        }
-        return entitlementRepository.insert(entitlement);
     }
 }

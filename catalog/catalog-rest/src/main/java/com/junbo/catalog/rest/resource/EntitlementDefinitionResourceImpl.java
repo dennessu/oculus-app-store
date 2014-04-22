@@ -18,6 +18,7 @@ import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
@@ -40,15 +41,16 @@ public class EntitlementDefinitionResourceImpl implements EntitlementDefinitionR
     }
 
     @Override
-    public Promise<Results<EntitlementDefinition>> getEntitlementDefinitionDefinitions(
-            UserId developerId, String type, String group, String tag, PageableGetOptions pageMetadata) {
+    public Promise<Results<EntitlementDefinition>> getEntitlementDefinitions(
+            UserId developerId, String clientId, String type,
+            String group, String tag, Boolean isConsumable, PageableGetOptions pageMetadata) {
         pageMetadata.ensurePagingValid();
         List<EntitlementDefinition> entitlementDefinitions =
                 entitlementDefinitionService.getEntitlementDefinitions(
-                        developerId.getValue(), group, tag, type, pageMetadata);
+                        developerId.getValue(), clientId, group, tag, type, isConsumable, pageMetadata);
         Results<EntitlementDefinition> result = new Results<EntitlementDefinition>();
         result.setItems(entitlementDefinitions);
-        result.setNext(buildNextUrl(developerId.getValue(), type, group, tag, pageMetadata));
+        result.setNext(buildNextUrl(developerId.getValue(), clientId, type, group, tag, pageMetadata));
         return Promise.pure(result);
     }
 
@@ -67,11 +69,36 @@ public class EntitlementDefinitionResourceImpl implements EntitlementDefinitionR
         return Promise.pure(entitlementDefinitionService.getEntitlementDefinition(id));
     }
 
-    private Link buildNextUrl(Long developerId,
-                                String type, String group,
-                                String tag, PageableGetOptions pageMetadata) {
+    @Override
+    public Promise<Response> deleteEntitlementDefinition(EntitlementDefinitionId entitlementDefinitionId) {
+        entitlementDefinitionService.deleteEntitlement(entitlementDefinitionId.getValue());
+        return Promise.pure(Response.status(204).build());
+
+    }
+
+    @Override
+    public Promise<EntitlementDefinition> updateEntitlementDefinition(EntitlementDefinitionId entitlementDefinitionId, EntitlementDefinition entitlementDefinition) {
+        UUID trackingUuid = entitlementDefinition.getTrackingUuid();
+        if (trackingUuid != null) {
+            EntitlementDefinition existingEntitlementDefinition
+                    = entitlementDefinitionService.getByTrackingUuid(trackingUuid);
+            if (existingEntitlementDefinition != null) {
+                return Promise.pure(existingEntitlementDefinition);
+            }
+        }
+        Long id = entitlementDefinitionService
+                .updateEntitlementDefinition(entitlementDefinitionId.getValue(), entitlementDefinition);
+        return Promise.pure(entitlementDefinitionService.getEntitlementDefinition(id));
+    }
+
+    private Link buildNextUrl(Long developerId, String clientId,
+                              String type, String group,
+                              String tag, PageableGetOptions pageMetadata) {
         UriBuilder builder = uriInfo.getBaseUriBuilder()
-                .path("entitlementDefinitions").queryParam("developerId", developerId);
+                .path("entitlement-definitions").queryParam("developerId", developerId);
+        if (!StringUtils.isEmpty(clientId)) {
+            builder = builder.queryParam("clientId", clientId);
+        }
         if (!StringUtils.isEmpty(type)) {
             builder = builder.queryParam("type", type);
         }

@@ -10,8 +10,6 @@ import com.junbo.common.id.UserId;
 import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.db.repository.EntitlementRepository;
-import com.junbo.entitlement.spec.def.EntitlementStatus;
-import com.junbo.entitlement.spec.def.EntitlementType;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
@@ -27,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -39,7 +36,7 @@ import java.util.Random;
 @TransactionConfiguration(defaultRollback = true)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
 @Transactional("transactionManager")
-public class EntitlementDaoTest extends AbstractTestNGSpringContextTests {
+public class EntitlementRepoTest extends AbstractTestNGSpringContextTests {
     @Autowired
     @Qualifier("oculus48IdGenerator")
     private IdGenerator idGenerator;
@@ -50,34 +47,31 @@ public class EntitlementDaoTest extends AbstractTestNGSpringContextTests {
     public void testInsert() {
         Entitlement entitlement = buildAnEntitlement();
         Entitlement insertedEntitlement = entitlementRepository.insert(entitlement);
-        Assert.assertEquals(insertedEntitlement.getOfferId(), entitlement.getOfferId());
+        Assert.assertEquals(insertedEntitlement.getUseCount(), entitlement.getUseCount());
     }
 
     @Test
     public void testUpdate() {
         Entitlement entitlement = buildAnEntitlement();
         Entitlement updatedEntitlement = entitlementRepository.insert(entitlement);
-        updatedEntitlement.setStatus("BANNED");
-        updatedEntitlement.setStatusReason("CHEAT");
+        updatedEntitlement.setIsBanned(true);
         updatedEntitlement = entitlementRepository.update(updatedEntitlement);
-        Assert.assertEquals(updatedEntitlement.getStatus(), EntitlementStatus.BANNED.toString());
-        Assert.assertEquals(updatedEntitlement.getStatusReason(), "CHEAT");
+        Assert.assertEquals(updatedEntitlement.getIsBanned(), Boolean.TRUE);
+        Assert.assertEquals(updatedEntitlement.getIsActive(), Boolean.FALSE);
     }
 
     @Test
     public void testSearch() {
         Long userId = idGenerator.nextId();
-        Long developerId = idGenerator.nextId();
         for (int i = 0; i < 48; i++) {
             Entitlement entitlementEntity = buildAnEntitlement();
             entitlementEntity.setUserId(userId);
-            entitlementEntity.setDeveloperId(developerId);
             entitlementRepository.insert(entitlementEntity);
         }
 
         EntitlementSearchParam searchParam = new EntitlementSearchParam();
         searchParam.setUserId(new UserId(userId));
-        searchParam.setDeveloperId(new UserId(developerId));
+        searchParam.setIsActive(false);
 
         PageMetadata pageMetadata = new PageMetadata();
         pageMetadata.setStart(0);
@@ -97,9 +91,6 @@ public class EntitlementDaoTest extends AbstractTestNGSpringContextTests {
         List<Entitlement> list3 = entitlementRepository.getBySearchParam(searchParam, pageMetadata);
         Assert.assertEquals(list3.size(), 48);
 
-        searchParam.setGroups(Collections.singleton("TEST"));
-        searchParam.setType(EntitlementType.DEFAULT.toString());
-        searchParam.setTags(Collections.singleton("TEST"));
         List<Entitlement> list4 = entitlementRepository.getBySearchParam(searchParam, pageMetadata);
         Assert.assertEquals(list4.size(), 48);
 
@@ -112,17 +103,15 @@ public class EntitlementDaoTest extends AbstractTestNGSpringContextTests {
     @Test
     public void testSearchManagedEntitlements() {
         Long userId = idGenerator.nextId();
-        Long developerId = idGenerator.nextId();
+        String ownerId = String.valueOf(idGenerator.nextId());
         for (int i = 0; i < 48; i++) {
             Entitlement entitlement = buildAnEntitlement();
             entitlement.setUserId(userId);
-            entitlement.setDeveloperId(developerId);
-            entitlement.setManagedLifecycle(true);
             entitlementRepository.insert(entitlement);
         }
 
-        EntitlementSearchParam searchParam = new EntitlementSearchParam.Builder(new UserId(userId), new UserId(developerId))
-                .status(EntitlementStatus.ACTIVE.toString()).build();
+        EntitlementSearchParam searchParam = new EntitlementSearchParam.Builder(new UserId(userId))
+                .isActive(true).build();
 
         PageMetadata pageMetadata = new PageMetadata();
         pageMetadata.setStart(0);
@@ -131,19 +120,18 @@ public class EntitlementDaoTest extends AbstractTestNGSpringContextTests {
         List<Entitlement> list1 = entitlementRepository.getBySearchParam(searchParam, pageMetadata);
         Assert.assertEquals(list1.size(), 0);
 
-        searchParam.setStatus(EntitlementStatus.DISABLED.toString());
+        searchParam.setIsActive(false);
         List<Entitlement> list2 = entitlementRepository.getBySearchParam(searchParam, pageMetadata);
         Assert.assertEquals(list2.size(), 48);
 
         EntitlementContext.current().setNow(new Date(114, 0, 25));
-        searchParam.setStatus(EntitlementStatus.ACTIVE.toString());
+        searchParam.setIsActive(true);
         List<Entitlement> list3 = entitlementRepository.getBySearchParam(searchParam, pageMetadata);
         Assert.assertEquals(list3.size(), 48);
 
-        EntitlementContext.current().setNow(new Date(114, 0, 1));
-        searchParam.setStatus(EntitlementStatus.PENDING.toString());
+        searchParam.setIsBanned(true);
         List<Entitlement> list4 = entitlementRepository.getBySearchParam(searchParam, pageMetadata);
-        Assert.assertEquals(list4.size(), 48);
+        Assert.assertEquals(list4.size(), 0);
     }
 
     private Entitlement buildAnEntitlement() {
@@ -151,19 +139,11 @@ public class EntitlementDaoTest extends AbstractTestNGSpringContextTests {
 
         entitlement.setEntitlementId(new Random().nextLong());
         entitlement.setUserId(idGenerator.nextId());
-        entitlement.setConsumable(false);
         entitlement.setGrantTime(new Date(114, 0, 22));
         entitlement.setExpirationTime(new Date(114, 0, 28));
+        entitlement.setIsBanned(false);
 
         entitlement.setEntitlementDefinitionId(idGenerator.nextId());
-        entitlement.setGroup("TEST");
-        entitlement.setTag("TEST");
-        entitlement.setType(EntitlementType.DEFAULT.toString());
-        entitlement.setDeveloperId(idGenerator.nextId());
-        entitlement.setOfferId(idGenerator.nextId());
-        entitlement.setStatus(EntitlementStatus.ACTIVE.toString());
-        entitlement.setUseCount(0);
-        entitlement.setManagedLifecycle(false);
         return entitlement;
     }
 }

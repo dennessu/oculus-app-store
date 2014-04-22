@@ -7,7 +7,6 @@
 package com.junbo.entitlement.spec.model;
 
 import com.junbo.common.id.EntitlementDefinitionId;
-import com.junbo.common.id.OfferId;
 import com.junbo.common.id.UserId;
 
 import javax.ws.rs.QueryParam;
@@ -19,19 +18,11 @@ import java.util.Set;
 public class EntitlementSearchParam {
     @QueryParam("userId")
     private UserId userId;
-    @QueryParam("developerId")
-    private UserId developerId;
-    @QueryParam("offerIds")
-    private Set<OfferId> offerIds;
-    @QueryParam("type")
-    private String type;
-    @QueryParam("status")
-    private String status;
+    @QueryParam("isActive")
+    private Boolean isActive;
+    @QueryParam("isSuspended")
+    private Boolean isBanned;
 
-    @QueryParam("groups")
-    private Set<String> groups;
-    @QueryParam("tags")
-    private Set<String> tags;
     @QueryParam("definitionIds")
     private Set<EntitlementDefinitionId> definitionIds;
 
@@ -57,21 +48,6 @@ public class EntitlementSearchParam {
         this.userId = userId;
     }
 
-    public UserId getDeveloperId() {
-        return developerId;
-    }
-
-    public void setDeveloperId(UserId developerId) {
-        this.developerId = developerId;
-    }
-
-    public Set<OfferId> getOfferIds() {
-        return offerIds;
-    }
-
-    public void setOfferIds(Set<OfferId> offerIds) {
-        this.offerIds = offerIds;
-    }
 
     public Set<EntitlementDefinitionId> getDefinitionIds() {
         return definitionIds;
@@ -81,36 +57,20 @@ public class EntitlementSearchParam {
         this.definitionIds = definitionIds;
     }
 
-    public String getType() {
-        return type;
+    public Boolean getIsActive() {
+        return isActive;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
     }
 
-    public String getStatus() {
-        return status;
+    public Boolean getIsBanned() {
+        return isBanned;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Set<String> getGroups() {
-        return groups;
-    }
-
-    public void setGroups(Set<String> groups) {
-        this.groups = groups;
-    }
-
-    public Set<String> getTags() {
-        return tags;
-    }
-
-    public void setTags(Set<String> tags) {
-        this.tags = tags;
+    public void setIsBanned(Boolean isBanned) {
+        this.isBanned = isBanned;
     }
 
     public String getStartGrantTime() {
@@ -159,13 +119,9 @@ public class EntitlementSearchParam {
      */
     public static class Builder {
         private UserId userId;
-        private UserId developerId;
-        private Set<OfferId> offerIds;
-        private String type;
-        private String status;
+        private Boolean isActive;
+        private Boolean isBanned;
 
-        private Set<String> groups;
-        private Set<String> tags;
         private Set<EntitlementDefinitionId> definitionIds;
 
         private String startGrantTime;
@@ -175,33 +131,17 @@ public class EntitlementSearchParam {
 
         private String lastModifiedTime;
 
-        public Builder(UserId userId, UserId developerId) {
+        public Builder(UserId userId) {
             this.userId = userId;
-            this.developerId = developerId;
         }
 
-        public Builder offerIds(Set<OfferId> val) {
-            offerIds = val;
+        public Builder isActive(Boolean val) {
+            isActive = val;
             return this;
         }
 
-        public Builder type(String val) {
-            type = val;
-            return this;
-        }
-
-        public Builder status(String val) {
-            status = val;
-            return this;
-        }
-
-        public Builder groups(Set<String> val) {
-            groups = val;
-            return this;
-        }
-
-        public Builder tags(Set<String> val) {
-            tags = val;
+        public Builder isBanned(Boolean val) {
+            isBanned = val;
             return this;
         }
 
@@ -242,13 +182,9 @@ public class EntitlementSearchParam {
 
     private EntitlementSearchParam(Builder builder) {
         userId = builder.userId;
-        developerId = builder.developerId;
-        offerIds = builder.offerIds;
-        type = builder.type;
-        status = builder.status;
+        isActive = builder.isActive;
+        isBanned = builder.isBanned;
         definitionIds = builder.definitionIds;
-        groups = builder.groups;
-        tags = builder.tags;
         startGrantTime = builder.startGrantTime;
         endGrantTime = builder.endGrantTime;
         startExpirationTime = builder.startExpirationTime;

@@ -16,10 +16,9 @@ import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * API for entitlementDefinition.
@@ -39,16 +38,30 @@ public interface EntitlementDefinitionResource {
     @ApiOperation("Get or search entitlement definitions")
     @GET
     Promise<Results<EntitlementDefinition>>
-    getEntitlementDefinitionDefinitions(
-            @NotNull @QueryParam("developerId") UserId developerId,
+    getEntitlementDefinitions(
+            @QueryParam("developerId") UserId developerId,
+            @QueryParam("clientId") String clientId,
             @QueryParam("type") String type,
             @QueryParam("group") String group,
             @QueryParam("tag") String tag,
+            @QueryParam("isConsumable") Boolean isConsumable,
             @BeanParam PageableGetOptions pageMetadata);
 
     @ApiOperation("Create an entitlement definitions")
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
     Promise<EntitlementDefinition> postEntitlementDefinition(
-            @Valid EntitlementDefinition entitlementDefinition);
+            EntitlementDefinition entitlementDefinition);
+
+    @ApiOperation("Delete an entitlement definitions")
+    @DELETE
+    @Path("/{entitlementDefinitionId}")
+    Promise<Response> deleteEntitlementDefinition(
+            @PathParam("entitlementDefinitionId") EntitlementDefinitionId entitlementDefinitionId);
+
+    @ApiOperation("Update an entitlement definitions")
+    @PUT
+    @Path("/{entitlementDefinitionId}")
+    Promise<EntitlementDefinition> updateEntitlementDefinition(
+            @PathParam("entitlementDefinitionId") EntitlementDefinitionId entitlementDefinitionId, EntitlementDefinition entitlementDefinition);
 }
