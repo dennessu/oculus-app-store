@@ -129,10 +129,7 @@ public class CatalogGatewayTest extends BaseTest {
                 setName(Constant.EVENT_PURCHASE);
                 setActions(new ArrayList<Action>() {{
                     add(new Action() {{
-                        setType(Constant.ACTION_GRANT_ENTITLEMENT);
-                        setProperties(new HashMap<String, Object>() {{
-                            put(Constant.ENTITLEMENT_DEF_ID, "12345");
-                        }});
+                        setType(Constant.ACTION_CREDIT_WALLET);
                     }});
                 }});
             }});

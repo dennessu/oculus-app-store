@@ -32,8 +32,8 @@ public class WalletHandler extends HandlerSupport<WalletContext> {
 
             request.setTrackingUuid(UUID.randomUUID());
             request.setUserId(context.getUserId());
-            request.setAmount(item.getEwalletAmount());
-            request.setCurrency(item.getEwalletCurrency());
+            request.setAmount(item.getWalletAmount());
+            request.setCurrency(item.getWalletCurrency());
 
             Transaction transaction = walletGateway.credit(request);
             success.add(transaction.getTransactionId());

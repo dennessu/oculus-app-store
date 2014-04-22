@@ -157,9 +157,8 @@ public class CatalogGatewayImpl implements CatalogGateway {
         item.setItemId(itemRevision.getItemId());
         item.setSku(itemRevision.getSku());
 
-        item.setEwalletAmount(item.getEwalletAmount());
-        item.setEwalletCurrency(item.getEwalletCurrency());
-        item.setEntitlmentDefId(item.getEntitlmentDefId());
+        item.setWalletAmount(itemRevision.getWalletAmount());
+        item.setWalletCurrency(itemRevision.getWalletCurrency());
 
         return item;
     }
