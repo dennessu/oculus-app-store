@@ -14,14 +14,16 @@ import org.springframework.util.StopWatch
  * Created by kg on 4/21/2014.
  */
 @CompileStatic
+@SuppressWarnings('UnnecessaryGetter')
+@SuppressWarnings('LoggingSwallowsStacktrace')
 class JunboApplication {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(JunboApplication)
+    private static final Logger LOGGER = LoggerFactory.getLogger(JunboApplication)
 
     static void main(String[] args) {
 
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
+        StopWatch stopWatch = new StopWatch()
+        stopWatch.start()
 
         Banner.write(System.out)
 
@@ -46,10 +48,10 @@ ${getClasspath().join(System.lineSeparator())}""")
                 ctx.close()
             }
 
+            LOGGER.error('Application failed with exception:', ex)
+
             LOGGER.error("""Application failed with classpath:
 ${getClasspath().join(System.lineSeparator())}""")
-
-            LOGGER.error("Application failed with exception:", ex)
 
             LoggerInitializer.stop()
 
@@ -58,13 +60,13 @@ ${getClasspath().join(System.lineSeparator())}""")
     }
 
     private static List<String> getClasspath() {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader()
+        ClassLoader classLoader = Thread.currentThread().contextClassLoader
 
         if (classLoader instanceof URLClassLoader) {
-            return ((URLClassLoader) classLoader).getURLs().collect { URL it -> it.toString() }
+            return ((URLClassLoader) classLoader).URLs.collect { URL it -> it.toString() }
         }
 
-        return ["unknown"]
+        return ['unknown']
     }
 
     private static class JunboApplicationContext extends ClassPathXmlApplicationContext {

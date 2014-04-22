@@ -1,17 +1,13 @@
 package com.junbo.apphost.core.logging
 
-import groovy.transform.CompileStatic
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.springframework.util.StopWatch
-
 import static com.junbo.apphost.core.logging.AnsiElement.*
-
+import groovy.transform.CompileStatic
 
 /**
  * Created by kg on 4/21/2014.
  */
 @CompileStatic
+@SuppressWarnings('LineLength')
 class Banner {
 
     private static final String BANNER = """
@@ -25,22 +21,22 @@ class Banner {
  \\______/ \\__|\\__|\\__|  \\__| \\______/ \\__| \\______/  \\______/ \\__|  \\__| \\_______|
 """
 
-    private static final String HEADER = " :: Junbo Application Host :: ";
+    private static final String HEADER = ' :: Junbo Application Host :: '
 
-    public static void write(PrintStream printStream) {
+    static void write(PrintStream printStream) {
 
         printStream.println(BANNER)
 
         int width = 0
         BANNER.eachLine { String line -> width = Math.max(width, line.length()) }
 
-        String version = Banner.class.package.implementationVersion
+        String version = Banner.package.implementationVersion
 
-        version = (version == null ? "(vUndefined)" : " (v" + version + ")")
+        version = (version == null ? '(vUndefined)' : ' (v' + version + ')')
 
-        String padding = "";
+        String padding = ''
         while (padding.length() < width - (version.length() + HEADER.length())) {
-            padding += " ";
+            padding += ' '
         }
 
         printStream.println(AnsiOutput.toString(GREEN, HEADER, DEFAULT, padding, YELLOW, version))

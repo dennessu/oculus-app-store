@@ -33,11 +33,11 @@ abstract class AnsiOutput {
             if (element instanceof AnsiElement) {
                 containsEncoding = true
 
-                if (!writingAnsi) {
+                if (writingAnsi) {
+                    sb.append(ENCODE_JOIN)
+                } else {
                     sb.append(ENCODE_START)
                     writingAnsi = true
-                } else {
-                    sb.append(ENCODE_JOIN)
                 }
             } else {
                 if (writingAnsi) {

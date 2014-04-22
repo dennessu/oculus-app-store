@@ -4,7 +4,6 @@ import groovy.transform.CompileStatic
 import org.glassfish.grizzly.http.server.HttpHandler
 import org.glassfish.grizzly.http.server.HttpServer
 import org.glassfish.grizzly.http.server.NetworkListener
-import org.glassfish.grizzly.http.server.ServerConfiguration
 import org.glassfish.hk2.api.InjectionResolver
 import org.glassfish.hk2.api.ServiceLocator
 import org.glassfish.hk2.api.TypeLiteral
@@ -34,7 +33,7 @@ import org.springframework.util.ClassUtils
 @CompileStatic
 class GrizzlyHttpServerBean implements InitializingBean, DisposableBean, ApplicationContextAware {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(GrizzlyHttpServerBean)
+    private static final Logger LOGGER = LoggerFactory.getLogger(GrizzlyHttpServerBean)
 
     private URI uri
 
@@ -57,14 +56,14 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean, Applica
     @Override
     void afterPropertiesSet() throws Exception {
 
-        String host = (uri.getHost() == null) ? NetworkListener.DEFAULT_NETWORK_HOST : uri.getHost()
-        int port = (uri.getPort() == -1) ? 80 : uri.getPort()
+        String host = (uri.host == null) ? NetworkListener.DEFAULT_NETWORK_HOST : uri.host
+        int port = (uri.port == -1) ? 80 : uri.port
 
         httpServer = new HttpServer()
 
         // configure listener
-        NetworkListener listener = new NetworkListener("grizzly", host, port)
-        httpServer.addListener(listener);
+        NetworkListener listener = new NetworkListener('grizzly', host, port)
+        httpServer.addListener(listener)
 
         // configure resourceConfig
         def resourceConfig = new ResourceConfig()
@@ -86,14 +85,17 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean, Applica
             @Override
             protected void configure() {
                 bind(new AutowiredInjectResolver(applicationContext)).
-                        to(new TypeLiteral<InjectionResolver<Autowired>>() {})
+                        to(new TypeLiteral<InjectionResolver<Autowired>>() {
+
+                        }
+                        )
             }
         }
 
         // create handler
         ApplicationHandler applicationHandler = new ApplicationHandler(resourceConfig, customBinder)
 
-        serviceLocator = applicationHandler.getServiceLocator()
+        serviceLocator = applicationHandler.serviceLocator
 
         HttpHandler handler = null
         for (ContainerProvider cp : Providers.getProviders(serviceLocator, ContainerProvider)) {
@@ -108,9 +110,9 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean, Applica
         }
 
         // configure serverConfiguration
-        def ServerConfiguration config = httpServer.getServerConfiguration()
+        def config = httpServer.serverConfiguration
 
-        config.addHttpHandler(handler, uri.getPath())
+        config.addHttpHandler(handler, uri.path)
         config.setPassTraceRequest(true)
 
         // start

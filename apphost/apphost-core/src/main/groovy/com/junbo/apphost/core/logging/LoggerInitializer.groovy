@@ -22,11 +22,13 @@ import java.util.concurrent.Callable
  * Created by kg on 4/21/2014.
  */
 @CompileStatic
+@SuppressWarnings('UnnecessaryGetter')
+@SuppressWarnings('CatchThrowable')
 class LoggerInitializer {
 
     static final String PID_KEY = 'PID'
 
-    private static Logger LOGGER = LoggerFactory.getLogger(LoggerInitializer)
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoggerInitializer)
 
     static {
         SLF4JBridgeHandler.removeHandlersForRootLogger()
@@ -61,7 +63,7 @@ class LoggerInitializer {
             URL url = ResourceUtils.getURL(location)
             new ContextInitializer(context).configureByResource(url)
         } catch (Exception ex) {
-            throw new IllegalStateException("Could not initialize logging from $location", ex)
+            throw new IllegalStateException('Could not initialize logging from $location', ex)
         }
     }
 
@@ -94,7 +96,7 @@ class LoggerInitializer {
     static private String getStartingMessage() {
         StringBuilder message = new StringBuilder()
 
-        message.append("Starting ");
+        message.append('Starting ')
         message.append(getApplicationName())
         message.append(getVersion())
         message.append(getOn())
@@ -108,13 +110,13 @@ class LoggerInitializer {
 
         StringBuilder message = new StringBuilder()
 
-        message.append("Started ")
+        message.append('Started ')
         message.append(getApplicationName())
-        message.append(" in ");
-        message.append(stopWatch.getTotalTimeSeconds());
+        message.append(' in ')
+        message.append(stopWatch.totalTimeSeconds)
 
-        double uptime = ManagementFactory.getRuntimeMXBean().getUptime() / 1000.0
-        message.append(" seconds (JVM running for " + uptime + ")")
+        double uptime = ManagementFactory.runtimeMXBean.uptime / 1000.0
+        message.append(' seconds (JVM running for ' + uptime + ')')
 
         return message.toString()
     }
@@ -122,7 +124,7 @@ class LoggerInitializer {
     static private String getClosedMessage() {
         StringBuilder message = new StringBuilder()
 
-        message.append("Closed ");
+        message.append('Closed ')
         message.append(getApplicationName())
         message.append(getVersion())
         message.append(getOn())
@@ -137,52 +139,52 @@ class LoggerInitializer {
     }
 
     static  private String getVersion() {
-        return getValue(" v", new Callable<Object>() {
+        return getValue(' v', new Callable<Object>() {
             @Override
-            public Object call() throws Exception {
+            Object call() throws Exception {
                 return JunboApplication.package.implementationVersion
             }
-        }, " vUndefined")
+        } , ' vUndefined')
     }
 
     static  private String getOn() {
-        return getValue(" on ", new Callable<Object>() {
+        return getValue(' on ', new Callable<Object>() {
             @Override
-            public Object call() throws Exception {
+            Object call() throws Exception {
                 return InetAddress.localHost.hostName
             }
-        })
+        } )
     }
 
     static  private String getPid() {
-        return getValue(" with PID ", new Callable<Object>() {
+        return getValue(' with PID ', new Callable<Object>() {
             @Override
-            public Object call() throws Exception {
-                return System.getProperty("PID")
+            Object call() throws Exception {
+                return System.getProperty('PID')
             }
-        });
+        } )
     }
 
     static  private String getContext() {
-        String startedBy = getValue("started by ", new Callable<Object>() {
+        getValue('started by ', new Callable<Object>() {
             @Override
-            public Object call() throws Exception {
-                return System.getProperty("user.name")
+            Object call() throws Exception {
+                return System.getProperty('user.name')
             }
-        })
+        } )
 
-        String dir = getValue("in ", new Callable<Object>() {
+        getValue('in ', new Callable<Object>() {
             @Override
-            public Object call() throws Exception {
-                return System.getProperty("user.dir")
+            Object call() throws Exception {
+                return System.getProperty('user.dir')
             }
-        });
+        } )
 
-        return " ($startedBy $dir)"
+        return ' ($startedBy $dir)'
     }
 
     private static String getValue(String prefix, Callable<Object> call) {
-        return getValue(prefix, call, "");
+        return getValue(prefix, call, '')
     }
 
     private static String getValue(String prefix, Callable<Object> call, String defaultValue) {
@@ -210,21 +212,21 @@ class LoggerInitializer {
             String jvmName = runtimeBean.getName()
 
             if (StringUtils.isEmpty(jvmName)) {
-                LOGGER.warn("Cannot get JVM name")
+                LOGGER.warn('Cannot get JVM name')
             }
 
-            if (!jvmName.contains("@")) {
-                LOGGER.warn("JVM name doesn't contain process id")
+            if (!jvmName.contains('@')) {
+                LOGGER.warn('JVM name doesn\'t contain process id')
             }
 
-            pid = jvmName.split("@")[0]
+            pid = jvmName.split('@')[0]
 
         } catch (Throwable e) {
-            LOGGER.warn("Cannot get RuntimeMXBean", e)
+            LOGGER.warn('Cannot get RuntimeMXBean', e)
         }
 
         if (pid == null) {
-            throw new IllegalStateException("Application PID not found")
+            throw new IllegalStateException('Application PID not found')
         }
 
         return pid
