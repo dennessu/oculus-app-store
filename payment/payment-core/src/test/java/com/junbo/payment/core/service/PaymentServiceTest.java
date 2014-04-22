@@ -129,7 +129,7 @@ public class PaymentServiceTest extends BaseTest {
         request.setType(PIType.WALLET.toString());
         request.setWalletRequest(new WalletRequest() {
             {
-                setType("StoredValue");
+                setType("STORED_VALUE");
                 setCurrency("USD");
             }
         });

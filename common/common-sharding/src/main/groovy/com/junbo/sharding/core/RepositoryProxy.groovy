@@ -1,12 +1,13 @@
 package com.junbo.sharding.core
 
+import com.junbo.common.util.Utils
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.ShardAlgorithm
 import com.junbo.sharding.core.annotations.ReadMethod
 import com.junbo.sharding.core.annotations.WriteMethod
 import groovy.transform.CompileStatic
-import junit.framework.Assert
+// import junit.framework.Assert
 
 import java.lang.annotation.Annotation
 import java.lang.reflect.InvocationHandler
@@ -90,7 +91,7 @@ class RepositoryProxy implements InvocationHandler {
     @Override
     Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Annotation[] annotations = method.declaredAnnotations
-        Assert.assertNotNull(annotations)
+        // Assert.assertNotNull(annotations)
 
         for (Annotation annotation : annotations) {
             if (annotation instanceof ReadMethod) {
@@ -99,6 +100,23 @@ class RepositoryProxy implements InvocationHandler {
             else if (annotation instanceof WriteMethod) {
                 return ((Promise<?>) method.invoke(this.primaryWriteRepository, args)).then { Object result ->
                     if (this.secondaryWriteRepository != null) {
+                        if (args.length != 1) {
+                            throw new RuntimeException('WriteMethod should have only one parameter, ' +
+                                    'please check write methods of Class:' + interfaceClass.canonicalName)
+                        }
+                        def idGetter = Utils.tryObtainGetterMethod(args[0].class, 'id')
+                        def idSetter = Utils.tryObtainSetterMethod(args[0].class, 'id')
+                        def resultIdGetter = Utils.tryObtainGetterMethod(result.class, 'id')
+
+                        if (idGetter == null || idSetter == null || resultIdGetter == null) {
+                            throw new RuntimeException('WriteMethod parameter should have id property' +
+                                    'please check write methods of Class:' + interfaceClass.canonicalName)
+                        }
+                        if (idGetter.invoke(args[0]) == null) {
+                            // set id
+                            idSetter.invoke(args[0], resultIdGetter.invoke(result))
+                        }
+
                         return ((Promise<?>) method.invoke(this.secondaryWriteRepository, args)).then {
                             return Promise.pure(result)
                         }
@@ -109,7 +127,6 @@ class RepositoryProxy implements InvocationHandler {
             }
         }
 
-        throw new RuntimeException('Unspecified Read/Write annotation on methods of Class:'
-                + interfaceClass.canonicalName)
+        return method.invoke(this, args)
     }
 }

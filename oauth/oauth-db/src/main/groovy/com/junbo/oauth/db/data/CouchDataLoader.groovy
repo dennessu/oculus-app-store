@@ -24,7 +24,7 @@ import com.junbo.oauth.spec.model.Client
 import com.junbo.oauth.spec.model.Scope
 import com.ning.http.client.AsyncHttpClient
 import groovy.transform.CompileStatic
-import junit.framework.Assert
+//import junit.framework.Assert
 import org.apache.commons.io.FileUtils
 
 /**
@@ -102,7 +102,7 @@ class CouchDataLoader {
         for (String record : records) {
             String[] tokens = record.split('\t')
 
-            Assert.assertTrue(tokens.length == 3)
+            //Assert.assertTrue(tokens.length == 3)
 
             if (tokens[ENTITY_TYPE_INDEX] == 'client') {
                 populateClient(tokens[ENTITY_KEY_INDEX], tokens[ENTITY_BODY_INDEX])

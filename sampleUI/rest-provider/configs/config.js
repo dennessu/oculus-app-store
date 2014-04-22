@@ -17,7 +17,9 @@
 
             UserId: "user_id",
             Username: "username",
-            CustomerId: "customer_id"
+            CustomerId: "customer_id",
+
+            LoginType: "login_type" // code or token
         },
         QueryStrings: {
             Code: "code",
@@ -31,6 +33,13 @@
         },
         SaveQueryStrings: ["cid", "event", "id_token", "access_token", "redirect_url", "login_type"],
 
+        // Enum
+        ResultStatusEnum: {
+            Normal: 200,
+            Redirect: 302, // return '{target: _blank or _self, url: '' }'
+            APIError: 1000, // API throw an error
+            Exception: 2000  // code throw an exception
+        },
         SettingTypeEnum:{
             Cookie: 'cookie'
         },

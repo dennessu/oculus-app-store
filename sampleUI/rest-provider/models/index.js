@@ -7,6 +7,7 @@ var Billing          = require('./billing');
 var Payment          = require('./payment');
 var Email            = require('./email');
 var Entitlement      = require('./entitlement');
+var SiteDomain       = require('./site_domain');
 
 exports.Identity     = Identity;
 exports.Cart         = Cart;
@@ -15,3 +16,4 @@ exports.Billing      = Billing;
 exports.Payment      = Payment;
 exports.Entitlement  = Entitlement;
 exports.Email        = Email;
+exports.SiteDomain   = SiteDomain;

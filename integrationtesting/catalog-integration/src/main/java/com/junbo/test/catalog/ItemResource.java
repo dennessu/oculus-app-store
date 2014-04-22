@@ -6,6 +6,7 @@
 package com.junbo.test.catalog;
 
 import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.RestUrl;
 
 /**
@@ -35,5 +36,6 @@ public class ItemResource extends HttpClientBase {
     public void deleteItem(String itemId, int expectedResponseCode) throws Exception {
         String url = catalogServerURL + "/" + itemId;
         restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode);
+        Master.getInstance().removeItem(itemId);
     }
 }

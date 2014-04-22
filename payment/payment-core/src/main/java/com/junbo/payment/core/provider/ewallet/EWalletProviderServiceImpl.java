@@ -79,7 +79,7 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
 
     @Override
     public Promise<Response> delete(PaymentInstrument pi) {
-        return null;
+        return Promise.pure(null);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
     public Promise<PaymentTransaction> charge(PaymentInstrument pi, final PaymentTransaction paymentRequest) {
         DebitRequest debitRequest = new DebitRequest();
         debitRequest.setAmount(paymentRequest.getChargeInfo().getAmount());
-        return walletClient.debit(new WalletId(Long.parseLong(pi.getAccountNum())), debitRequest).
+        return walletClient.debit(new WalletId(Long.parseLong(pi.getExternalToken())), debitRequest).
                 recover(new Promise.Func<Throwable, Promise<Transaction>>() {
                     @Override
                     public Promise<Transaction> apply(Throwable throwable) {

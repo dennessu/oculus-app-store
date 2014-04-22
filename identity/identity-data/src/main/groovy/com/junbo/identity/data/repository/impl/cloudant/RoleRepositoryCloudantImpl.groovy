@@ -37,8 +37,7 @@ class RoleRepositoryCloudantImpl extends CloudantClient<Role> implements RoleRep
         if (role.id == null) {
             role.id = new RoleId(idGenerator.nextIdByShardId(shardAlgorithm.shardId()))
         }
-        super.cloudantPost(role)
-        return get((RoleId)role.id)
+        return Promise.pure((Role)super.cloudantPost(role))
     }
 
     @Override
@@ -48,8 +47,7 @@ class RoleRepositoryCloudantImpl extends CloudantClient<Role> implements RoleRep
 
     @Override
     Promise<Role> update(Role role) {
-        super.cloudantPut(role)
-        return get((RoleId)role.id)
+        return Promise.pure((Role)super.cloudantPut(role))
     }
 
     @Override

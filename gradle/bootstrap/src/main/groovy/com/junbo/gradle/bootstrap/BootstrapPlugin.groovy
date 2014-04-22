@@ -1,6 +1,7 @@
 package com.junbo.gradle.bootstrap
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.ApplicationPlugin
 import org.gradle.api.plugins.GroovyPlugin
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.quality.Checkstyle
@@ -138,7 +139,7 @@ class BootstrapPlugin implements Plugin<Project> {
 
                 checkstyle {
                     configFile = file("$buildDir/config/checkstyle/checkstyle.xml")
-                    configProperties = ["headerFile" : "$buildDir/config/checkstyle/javaHeader.txt"]
+                    configProperties = ["headerFile": "$buildDir/config/checkstyle/javaHeader.txt"]
                 }
 
                 checkstyleTest {
@@ -167,6 +168,15 @@ class BootstrapPlugin implements Plugin<Project> {
 
                 tasks.withType(Checkstyle) {
                     it.dependsOn 'unzipCheckstyleConfigFile'
+                }
+
+                jar {
+                    manifest {
+                        attributes(
+                                'Implementation-Title': "${subProject.name}",
+                                'Implementation-Version': "${subProject.version}"
+                        )
+                    }
                 }
             }
 
@@ -222,8 +232,23 @@ class BootstrapPlugin implements Plugin<Project> {
                     it.dependsOn 'unzipCodenarcConfigFile'
                 }
             }
+
+            plugins.withType(ApplicationPlugin) {
+                jar {
+                    doFirst {
+                        manifest {
+                            attributes "Class-Path": configurations.runtime.files*.name.join(" ")
+                        }
+                    }
+                }
+
+                startScripts {
+                    // clear up the classpath because the launcher jar has it.
+                    classpath = files(jar.archivePath)
+                }
+            }
         }
-        
+
         rootProject.apply plugin: "sonar-runner"
         rootProject.sonarRunner {
             sonarProperties {

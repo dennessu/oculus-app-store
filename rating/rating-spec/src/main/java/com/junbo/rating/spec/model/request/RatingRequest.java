@@ -25,6 +25,8 @@ public class RatingRequest {
     @UserId
     @JsonProperty("user")
     private Long userId;
+
+    @NotNull
     private String currency;
 
     private Set<String> couponCodes = new HashSet<>();

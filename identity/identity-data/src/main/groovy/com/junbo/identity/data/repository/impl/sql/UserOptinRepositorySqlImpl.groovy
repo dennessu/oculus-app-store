@@ -15,18 +15,25 @@ import com.junbo.identity.spec.v1.option.list.UserOptinListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Required
 
 /**
  * Implementation for UserOptinDAO.
  */
 @CompileStatic
 class UserOptinRepositorySqlImpl implements UserOptinRepository {
-    @Autowired
     private UserOptinDAO userOptinDAO
-
-    @Autowired
     private ModelMapper modelMapper
+
+    @Required
+    void setUserOptinDAO(UserOptinDAO userOptinDAO) {
+        this.userOptinDAO = userOptinDAO
+    }
+
+    @Required
+    void setModelMapper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper
+    }
 
     @Override
     Promise<UserOptin> create(UserOptin entity) {

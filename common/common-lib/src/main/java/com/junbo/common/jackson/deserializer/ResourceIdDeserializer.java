@@ -13,7 +13,7 @@ import com.junbo.common.jackson.common.ResourceAware;
 import com.junbo.common.jackson.common.ResourceCollectionAware;
 import com.junbo.common.jackson.model.ResourceRef;
 import com.junbo.common.shuffle.Oculus48Id;
-import junit.framework.Assert;
+// import junit.framework.Assert;
 
 import java.io.IOException;
 import java.util.*;
@@ -49,7 +49,7 @@ public class ResourceIdDeserializer extends JsonDeserializer<Object> implements 
     @Override
     public Object deserialize(JsonParser jsonParser, DeserializationContext context)
             throws IOException {
-        Assert.assertNotNull("IdClassType", idClassType);
+        // Assert.assertNotNull("IdClassType", idClassType);
 
         return isCollection() ? handleCollection(jsonParser) : handleSingle(jsonParser);
     }

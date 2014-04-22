@@ -15,18 +15,25 @@ import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by liangfu on 3/17/14.
  */
 @CompileStatic
 class UserCredentialVerifyAttemptRepositorySqlImpl implements UserCredentialVerifyAttemptRepository {
-    @Autowired
     private UserCredentialVerifyAttemptDAO credentialVerifyAttemptDAO
-
-    @Autowired
     private ModelMapper modelMapper
+
+    @Required
+    void setCredentialVerifyAttemptDAO(UserCredentialVerifyAttemptDAO credentialVerifyAttemptDAO) {
+        this.credentialVerifyAttemptDAO = credentialVerifyAttemptDAO
+    }
+
+    @Required
+    void setModelMapper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper
+    }
 
     @Override
     Promise<UserCredentialVerifyAttempt> create(UserCredentialVerifyAttempt entity) {

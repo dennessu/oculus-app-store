@@ -16,19 +16,15 @@ import com.junbo.payment.spec.model.Item;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import com.junbo.payment.spec.model.WebPaymentInfo;
-import com.paypal.exception.*;
-import com.paypal.sdk.exceptions.OAuthException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.xml.sax.SAXException;
 import urn.ebay.api.PayPalAPI.*;
 import urn.ebay.apis.CoreComponentTypes.BasicAmountType;
 import urn.ebay.apis.eBLBaseComponents.*;
 
 import javax.ws.rs.core.Response;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,19 +39,23 @@ import com.junbo.common.util.PromiseFacade;
 public class PayPalProviderServiceImpl extends AbstractPaymentProviderService implements InitializingBean {
     private static final Logger LOGGER = LoggerFactory.getLogger(PayPalProviderServiceImpl.class);
     private static final String PROVIDER_NAME = "PayPal";
-    private static final String API_VERSION = "104.0";
     private static final PaymentActionCodeType ACTION = PaymentActionCodeType.fromValue("Sale");
     private static PayPalAPIInterfaceServiceService service;
-    private static final String REDIRECT_URL =
-            "https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=";
+    private String apiVersion;
+    private String redirectURL;
+    private String mode;
+    private String userName;
+    private String password;
+    private String signature;
+    private static final String REDIRECT_URL_PATH = "?cmd=_express-checkout&token=";
 
     @Override
     public void afterPropertiesSet() throws Exception {
         Map<String, String> sdkConfig = new HashMap<String, String>();
-        sdkConfig.put("mode", "sandbox");
-        sdkConfig.put("acct1.UserName", "jb-us-seller_api1.paypal.com");
-        sdkConfig.put("acct1.Password", "WX4WTU3S8MY44S7F");
-        sdkConfig.put("acct1.Signature","AFcWxV21C7fd0v3bYYYRCpSSRl31A7yDhhsPUU2XhtMoZXsWHFxu-RWy");
+        sdkConfig.put("mode", mode);
+        sdkConfig.put("acct1.UserName", userName);
+        sdkConfig.put("acct1.Password", password);
+        sdkConfig.put("acct1.Signature",signature);
         service = new PayPalAPIInterfaceServiceService(sdkConfig);
     }
 
@@ -81,6 +81,7 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
         if(!CommonUtil.isNullOrEmpty(source.getStatus())){
             target.setStatus(source.getStatus());
         }
+        target.setExternalToken(source.getExternalToken());
     }
 
     @Override
@@ -90,7 +91,7 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
 
     @Override
     public Promise<Response> delete(PaymentInstrument pi) {
-        return null;
+        return Promise.pure(null);
     }
 
     @Override
@@ -139,7 +140,7 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
                 requestDetails.setPaymentDetails(paymentDetailsList);
 
                 SetExpressCheckoutRequestType setRequest = new SetExpressCheckoutRequestType(requestDetails);
-                setRequest.setVersion(API_VERSION);
+                setRequest.setVersion(apiVersion);
 
                 SetExpressCheckoutReq setExpressCheckoutReq = new SetExpressCheckoutReq();
                 setExpressCheckoutReq.setSetExpressCheckoutRequest(setRequest);
@@ -152,7 +153,7 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
                 }
                 if(isSuccessAck(setResponse.getAck())){
                     paymentRequest.getWebPaymentInfo().setToken(setResponse.getToken());
-                    paymentRequest.getWebPaymentInfo().setRedirectURL(REDIRECT_URL + setResponse.getToken());
+                    paymentRequest.getWebPaymentInfo().setRedirectURL(redirectURL + REDIRECT_URL_PATH + setResponse.getToken());
                     paymentRequest.setStatus(PaymentStatus.UNCONFIRMED.toString());
                 }else{
                     handleErrorResponse(setResponse);
@@ -184,7 +185,7 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
             public PaymentTransaction call() throws Exception {
                 GetExpressCheckoutDetailsRequestType getExpressCheckoutDetailsRequest =
                         new GetExpressCheckoutDetailsRequestType(token);
-                getExpressCheckoutDetailsRequest.setVersion(API_VERSION);
+                getExpressCheckoutDetailsRequest.setVersion(apiVersion);
 
                 GetExpressCheckoutDetailsReq getExpressCheckoutDetailsReq = new GetExpressCheckoutDetailsReq();
                 getExpressCheckoutDetailsReq.setGetExpressCheckoutDetailsRequest(getExpressCheckoutDetailsRequest);
@@ -241,7 +242,7 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
 
                 DoExpressCheckoutPaymentRequestType doExpressCheckoutPaymentRequest =
                         new DoExpressCheckoutPaymentRequestType(doExpressCheckoutPaymentRequestDetails);
-                doExpressCheckoutPaymentRequest.setVersion(API_VERSION);
+                doExpressCheckoutPaymentRequest.setVersion(apiVersion);
 
                 DoExpressCheckoutPaymentReq doExpressCheckoutPaymentReq = new DoExpressCheckoutPaymentReq();
                 doExpressCheckoutPaymentReq.setDoExpressCheckoutPaymentRequest(doExpressCheckoutPaymentRequest);
@@ -263,34 +264,66 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
         });
     }
 
-    //TODO: need to handle specific exceptions with more details
     private void handleException(Exception e){
-        if(e instanceof SSLConfigurationException) {
-            LOGGER.error(e.toString());
-        } else if (e instanceof InvalidCredentialException) {
-            LOGGER.error(e.toString());
-        } else if (e instanceof IOException) {
-            LOGGER.error(e.toString());
-        } else if (e instanceof HttpErrorException) {
-            LOGGER.error(e.toString());
-        } else if (e instanceof InvalidResponseDataException) {
-            LOGGER.error(e.toString());
-        } else if (e instanceof ClientActionRequiredException) {
-            LOGGER.error(e.toString());
-        } else if (e instanceof MissingCredentialException) {
-            LOGGER.error(e.toString());
-        } else if (e instanceof InterruptedException) {
-            LOGGER.error(e.toString());
-        } else if (e instanceof OAuthException) {
-            LOGGER.error(e.toString());
-        } else if (e instanceof ParserConfigurationException) {
-            LOGGER.error(e.toString());
-        } else if (e instanceof SAXException) {
-            LOGGER.error(e.toString());
+        if(e instanceof SocketTimeoutException){
+            LOGGER.error("provider:" + PROVIDER_NAME + " gateway timeout exception: " + e.toString());
+            throw AppServerExceptions.INSTANCE.providerGatewayTimeout(PROVIDER_NAME).exception();
+        }else{
+            LOGGER.error("provider:" + PROVIDER_NAME + " gateway exception: " + e.toString());
+            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, e.toString()).exception();
         }
     }
 
     private boolean isSuccessAck(AckCodeType ack){
         return ack.equals(AckCodeType.SUCCESS) || ack.equals(AckCodeType.SUCCESSWITHWARNING);
     }
+
+    public String getApiVersion() {
+        return apiVersion;
+    }
+
+    public void setApiVersion(String apiVersion) {
+        this.apiVersion = apiVersion;
+    }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
+    }
+
+    public String getRedirectURL() {
+        return redirectURL;
+    }
+
+    public void setRedirectURL(String redirectURL) {
+        this.redirectURL = redirectURL;
+    }
+
 }

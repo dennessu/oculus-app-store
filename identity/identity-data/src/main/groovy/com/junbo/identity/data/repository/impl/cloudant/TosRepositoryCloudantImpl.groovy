@@ -40,8 +40,7 @@ class TosRepositoryCloudantImpl extends CloudantClient<Tos> implements TosReposi
         if (tos.id == null) {
             tos.id = new TosId(idGenerator.nextIdByShardId(shardAlgorithm.shardId()))
         }
-        super.cloudantPost(tos)
-        return get((TosId)tos.id)
+        return Promise.pure((Tos)super.cloudantPost(tos))
     }
 
     @Override

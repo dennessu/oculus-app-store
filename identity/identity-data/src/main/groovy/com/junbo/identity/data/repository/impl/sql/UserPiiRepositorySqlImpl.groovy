@@ -1,18 +1,9 @@
 package com.junbo.identity.data.repository.impl.sql
 
 import com.junbo.common.id.AddressId
-import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPiiId
-import com.junbo.identity.data.dao.UserAddressDAO
-import com.junbo.identity.data.dao.UserEmailDAO
-import com.junbo.identity.data.dao.UserNameDAO
-import com.junbo.identity.data.dao.UserPhoneNumberDAO
-import com.junbo.identity.data.dao.UserPiiDAO
-import com.junbo.identity.data.entity.user.UserAddressEntity
-import com.junbo.identity.data.entity.user.UserEmailEntity
-import com.junbo.identity.data.entity.user.UserNameEntity
-import com.junbo.identity.data.entity.user.UserPhoneNumberEntity
-import com.junbo.identity.data.entity.user.UserPiiEntity
+import com.junbo.identity.data.dao.*
+import com.junbo.identity.data.entity.user.*
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.UserPiiRepository
 import com.junbo.identity.spec.options.list.UserEmailListOptions
@@ -25,31 +16,49 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by liangfu on 4/10/14.
  */
 @CompileStatic
 class UserPiiRepositorySqlImpl implements UserPiiRepository {
-
-    @Autowired
     private ModelMapper modelMapper
-
-    @Autowired
     private UserPiiDAO userPiiDAO
-
-    @Autowired
     private UserPhoneNumberDAO userPhoneNumberDAO
-
-    @Autowired
     private UserEmailDAO userEmailDAO
-
-    @Autowired
     private UserAddressDAO userAddressDAO
-
-    @Autowired
     private UserNameDAO userNameDAO
+
+    @Required
+    void setModelMapper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper
+    }
+
+    @Required
+    void setUserPiiDAO(UserPiiDAO userPiiDAO) {
+        this.userPiiDAO = userPiiDAO
+    }
+
+    @Required
+    void setUserPhoneNumberDAO(UserPhoneNumberDAO userPhoneNumberDAO) {
+        this.userPhoneNumberDAO = userPhoneNumberDAO
+    }
+
+    @Required
+    void setUserEmailDAO(UserEmailDAO userEmailDAO) {
+        this.userEmailDAO = userEmailDAO
+    }
+
+    @Required
+    void setUserAddressDAO(UserAddressDAO userAddressDAO) {
+        this.userAddressDAO = userAddressDAO
+    }
+
+    @Required
+    void setUserNameDAO(UserNameDAO userNameDAO) {
+        this.userNameDAO = userNameDAO
+    }
 
     @Override
     Promise<UserPii> create(UserPii userPii) {

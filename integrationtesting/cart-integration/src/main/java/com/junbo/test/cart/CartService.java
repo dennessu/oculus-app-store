@@ -7,6 +7,7 @@ package com.junbo.test.cart;
 
 import com.junbo.cart.spec.model.Cart;
 import com.junbo.common.json.JsonMessageTranscoder;
+import com.junbo.common.model.Results;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
@@ -19,6 +20,8 @@ import com.ning.http.client.RequestBuilder;
 import com.ning.http.client.providers.netty.NettyResponse;
 import junit.framework.Assert;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Future;
 
 /**
@@ -134,11 +137,11 @@ public class CartService {
         return null;
     }
 
-    public static String getCartByName(String userId, String cartName) throws Exception {
-        return getCartByName(userId, cartName, 302);
+    public static List<String> getCartByName(String userId, String cartName) throws Exception {
+        return getCartByName(userId, cartName, 200);
     }
 
-    public static String getCartByName(String userId, String cartName, int expectedResponseCode) throws Exception {
+    public static List<String> getCartByName(String userId, String cartName, int expectedResponseCode) throws Exception {
 
         String cartEndpointUrl = cartUrl + "users/" + userId + "/carts?cartName=" + cartName;
 
@@ -152,24 +155,17 @@ public class CartService {
         NettyResponse nettyResponse = (NettyResponse) future.get();
         logger.LogResponse(nettyResponse);
         Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
-        if (nettyResponse.getStatusCode() == 302) {
-            String redirectUrl = nettyResponse.getHeaders().get("Location").get(0);
-            req = new RequestBuilder("GET")
-                    .setUrl(redirectUrl)
-                    .addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue)
-                    .build();
-            future = asyncClient.prepareRequest(req).execute();
-            NettyResponse redirectResponse = (NettyResponse) future.get();
-            logger.LogResponse(redirectResponse);
-            Assert.assertEquals(200, redirectResponse.getStatusCode());
-            Cart rtnCart = new JsonMessageTranscoder().decode(new TypeReference<Cart>() {
-            }, redirectResponse.getResponseBody());
 
-            String rtnCartId = IdConverter.idToHexString(rtnCart.getId());
-            Master.getInstance().addCart(rtnCartId, rtnCart);
-            return rtnCartId;
+        Results<Cart> cartGet = new JsonMessageTranscoder().decode(new TypeReference<Results<Cart>>() {},
+                nettyResponse.getResponseBody());
+        List<String> listCartId = new ArrayList<>();
+        for (Cart cart : cartGet.getItems()){
+            String cartRtnId = IdConverter.idToHexString(cart.getId());
+            Master.getInstance().addCart(cartRtnId, cart);
+            listCartId.add(cartRtnId);
         }
-        return null;
+
+        return listCartId;
     }
 
     public static String updateCart(String userId, String cartId, Cart cart) throws Exception {

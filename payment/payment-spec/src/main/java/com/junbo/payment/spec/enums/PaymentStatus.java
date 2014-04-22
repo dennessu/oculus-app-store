@@ -25,6 +25,9 @@ public enum PaymentStatus {
     SETTLED,
     SETTLE_DECLINED,
     SETTLING,
+    REFUND_CREATED,
+    REFUNDED,
+    REFUND_DECLINED,
     UNCONFIRMED,
     UNRECOGNIZED;
 

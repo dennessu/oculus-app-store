@@ -17,10 +17,10 @@ import java.util.Set;
 public final class ItemType {
     public static final String PHYSICAL = "PHYSICAL";
     public static final String DIGITAL = "DIGITAL";
-    public static final String EWALLET = "EWALLET";
+    public static final String WALLET = "WALLET";
     public static final String SUBSCRIPTION = "SUBSCRIPTION";
     public static final Set<String> ALL_TYPES =
-            Collections.unmodifiableSet(new HashSet<>(Arrays.asList(PHYSICAL, DIGITAL, EWALLET, SUBSCRIPTION)));
+            Collections.unmodifiableSet(new HashSet<>(Arrays.asList(PHYSICAL, DIGITAL, WALLET, SUBSCRIPTION)));
 
     private ItemType() {}
 }

@@ -38,7 +38,7 @@ public class TestGetItem extends BaseTestClass {
             description = "Test Get an Item by itemId(valid, invalid scenarios)",
             steps = {
                     "1. Prepare an item",
-                    "2. Get the item by Id, check its status",
+                    "2. Get the item by Id, check its curated status",
                     "3. Verify not able to get the item by invalid Id",
                     "4. Release the item",
                     "5. Get the item by Id again, verify the behavior is successful"
@@ -47,19 +47,19 @@ public class TestGetItem extends BaseTestClass {
     @Test
     public void testGetAnItemById() throws Exception {
 
-        String itemId = itemService.postDefaultItem(EnumHelper.CatalogItemType.DIGITAL);
-
-        //Just get the item by Id, check its status
-        verifyValidScenarios(itemId, EnumHelper.CatalogEntityStatus.DRAFT);
-
+        //Prepare an item
+        String itemId = itemService.postDefaultItem(EnumHelper.CatalogItemType.getRandom());
         String invalidId = "000000000";
+
+        //get the item by Id, check its status
+        verifyValidScenarios(itemId, false);
         verifyInvalidScenarios(invalidId);
 
         //Release the item and then try to get the item
         Item item = Master.getInstance().getItem(itemId);
-        itemId = releaseItem(item);
+        releaseItem(item);
 
-        verifyValidScenarios(itemId, EnumHelper.CatalogEntityStatus.APPROVED);
+        verifyValidScenarios(itemId, true);
         verifyInvalidScenarios(invalidId);
     }
 
@@ -69,106 +69,109 @@ public class TestGetItem extends BaseTestClass {
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
-            description = "Test Get item(s) by Id(s), status(valid, invalid scenarios)",
+            description = "Test Get item(s) by Id(s)(valid, invalid scenarios)",
             steps = {
                     "1. Prepare some items",
                     "2. Get the items by their ids",
-                    "3. Release the item",
+                    "3. Release the items",
                     "4. Get the items by their ids again"
             }
     )
     @Test
     public void testGetItemsByIds() throws Exception {
 
-        //prepare 3 items for later use
+        //prepare 4 items for later use
         String itemId1 = itemService.postDefaultItem(EnumHelper.CatalogItemType.DIGITAL);
         String itemId2 = itemService.postDefaultItem(EnumHelper.CatalogItemType.PHYSICAL);
         String itemId3 = itemService.postDefaultItem(EnumHelper.CatalogItemType.EWALLET);
+        String itemId4 = itemService.postDefaultItem(EnumHelper.CatalogItemType.SUBSCRIPTION);
 
-        //Search the 3 items by their Ids, verify only return the 3 items
-        verifyItemsValidScenarios(null, null, itemId1, itemId2, itemId3);
-
-        //Set 2 items by their Ids, verify 2 items could be gotten
-        verifyItemsValidScenarios(null, null, itemId1, itemId2);
-
-        //Set 1 item by its Id, verify 1 item could be gotten
-        verifyItemsValidScenarios(null, null, itemId1);
-
-        //Set all to invalid string
         HashMap<String, String> paraMap = new HashMap();
 
+        //Set 1 item by its Id, verify 1 item could be gotten
+        paraMap.put("id1", itemId1);
+        verifyGetItemsScenarios(paraMap, 1, itemId1);
+
+        //Set 2 items by their Ids, verify 2 items could be gotten
+        paraMap.put("id2", itemId2);
+        verifyGetItemsScenarios(paraMap, 2, itemId1, itemId2);
+
+        //Search the 4 items by their Ids, verify only return the 4 items
+        paraMap.put("id3", itemId3);
+        paraMap.put("id4", itemId4);
+        verifyGetItemsScenarios(paraMap, 4, itemId1, itemId2, itemId3, itemId4);
+
+        //Set 2 of 4 to invalid string
         paraMap.put("id1", "0000000000");
         paraMap.put("id2", "0000000001");
-        paraMap.put("id3", "0000000002");
-        verifyItemsInvalidScenarios(paraMap);
+        verifyGetItemsScenarios(paraMap, 2, itemId3, itemId4);
 
-        //Release the 3 items
+        //Release the 4 items
         releaseItem(Master.getInstance().getItem(itemId1));
         releaseItem(Master.getInstance().getItem(itemId2));
         releaseItem(Master.getInstance().getItem(itemId3));
-
-        //Search the 3 items by their Ids, verify only return the 3 items
-        verifyItemsValidScenarios(null, null, itemId1, itemId2, itemId3);
-
-        //Set 2 items by their Ids, verify 2 items could be gotten
-        verifyItemsValidScenarios(null, null, itemId1, itemId2);
+        releaseItem(Master.getInstance().getItem(itemId4));
 
         //Set 1 item by its Id, verify 1 item could be gotten
-        verifyItemsValidScenarios(null, null, itemId1);
+        paraMap.clear();
+        paraMap.put("id1", itemId1);
+        verifyGetItemsScenarios(paraMap, 1, itemId1);
+
+        //Set 2 items by their Ids, verify 2 items could be gotten
+        paraMap.put("id2", itemId2);
+        verifyGetItemsScenarios(paraMap, 2, itemId1, itemId2);
+
+        //Search the 4 items by their Ids, verify only return the 4 items
+        paraMap.put("id3", itemId3);
+        paraMap.put("id4", itemId4);
+        verifyGetItemsScenarios(paraMap, 4, itemId1, itemId2, itemId3, itemId4);
 
         //Set all to invalid string
         paraMap.put("id1", "0000000000");
         paraMap.put("id2", "0000000001");
         paraMap.put("id3", "0000000002");
-        verifyItemsInvalidScenarios(paraMap);
+        paraMap.put("id4", "0000000003");
+        verifyGetItemsScenarios(paraMap, 0);
     }
 
     @Property(
-            priority = Priority.Dailies,
+            priority = Priority.Comprehensive,
             features = "CatalogIntegration",
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
-            description = "Test Get item(s) by Id(s), status(valid, invalid scenarios)",
+            description = "Test Get item(s) by Id(s), curated, type and genre(valid, invalid scenarios)",
             steps = {
                     "1. Prepare some items",
-                    "2. Get the items by their ids",
-                    "3. Release the item",
-                    "4. Get the items by their ids again"
+                    "2. Get the items by their ids, curated, type and genre(valid, invalid scenarios)",
+                    "3. Release the items",
+                    "4. Get the items by their ids, curated, type and genre(valid, invalid scenarios) again"
             }
     )
     @Test
-    public void testGetItemsByIdsStatusTimeStamp() throws Exception {
+    public void testGetItemsByIdTypeGenre() throws Exception {
 
-        //prepare 3 items for later use
+        //prepare 4 items for later use
         String itemId1 = itemService.postDefaultItem(EnumHelper.CatalogItemType.DIGITAL);
         String itemId2 = itemService.postDefaultItem(EnumHelper.CatalogItemType.PHYSICAL);
         String itemId3 = itemService.postDefaultItem(EnumHelper.CatalogItemType.EWALLET);
+        String itemId4 = itemService.postDefaultItem(EnumHelper.CatalogItemType.SUBSCRIPTION);
 
-        //Release the 3 items
+        performVerification(itemId1, itemId2, itemId3, itemId4);
+
+        //Release the 4 items
         releaseItem(Master.getInstance().getItem(itemId1));
         releaseItem(Master.getInstance().getItem(itemId2));
         releaseItem(Master.getInstance().getItem(itemId3));
+        releaseItem(Master.getInstance().getItem(itemId4));
 
-        //Verify the 3 items
-        String status = EnumHelper.CatalogEntityStatus.APPROVED.getEntityStatus();
-        Long currentTime = Calendar.getInstance().getTimeInMillis();
-        verifyItemsValidScenarios(status, currentTime.toString(), itemId1, itemId2, itemId3);
-
-        //Verify the invalid scenarios
-        currentTime = 1L;
-
-        HashMap<String, String> paraMap = new HashMap();
-        paraMap.put("status", status);
-        paraMap.put("timestamp", currentTime.toString());
-
-        verifyItemsInvalidScenarios(paraMap);
+        performVerification(itemId1, itemId2, itemId3, itemId4);
     }
 
-    private void verifyValidScenarios(String itemId, EnumHelper.CatalogEntityStatus expectedStatus) throws Exception {
+    private void verifyValidScenarios(String itemId, boolean status) throws Exception {
         String itemRtnId = itemService.getItem(itemId);
         Assert.assertNotNull("Can't get items", itemRtnId);
-        Assert.assertEquals(expectedStatus.getEntityStatus(), Master.getInstance().getItem(itemRtnId).getCurated());
+        Assert.assertTrue(status == Master.getInstance().getItem(itemRtnId).getCurated());
     }
 
     private void verifyInvalidScenarios(String itemId) throws Exception {
@@ -181,35 +184,57 @@ public class TestGetItem extends BaseTestClass {
         }
     }
 
-    private void verifyItemsValidScenarios(String status, String timestamp, String... itemId) throws Exception{
+    private void performVerification(String itemId1, String itemId2, String itemId3, String itemId4)  throws Exception {
 
         HashMap<String, String> paraMap = new HashMap();
 
-        paraMap.put("id1", "0000000000");
-        paraMap.put("id2", "0000000001");
-        paraMap.put("id3", "0000000002");
+        //Set item ids
+        paraMap.put("id1", itemId1);
+        paraMap.put("id2", itemId2);
+        paraMap.put("id3", itemId3);
+        paraMap.put("id4", itemId4);
 
-        for (int i = 0; i < itemId.length; i++) {
-            paraMap.put("id" + (i + 1), itemId[i]);
-        }
+        //set curated false
+        paraMap.put("curated", "false");
+        verifyGetItemsScenarios(paraMap, 4, itemId1, itemId2, itemId3, itemId4);
 
-        if (status != null && !status.isEmpty()){
-            paraMap.put("status", status);
-        }
+        //set type Digital firstly
+        paraMap.put("type", "DIGITAL");
+        verifyGetItemsScenarios(paraMap, 1, itemId1);
 
-        if (timestamp != null && !timestamp.isEmpty()){
-            paraMap.put("timestamp", timestamp);
-        }
+        //set type to physical
+        paraMap.put("type", "PHYSICAL");
+        verifyGetItemsScenarios(paraMap, 1, itemId2);
 
-        List<String> itemRtnId = itemService.getItem(paraMap);
-        Assert.assertEquals(itemRtnId.size(), itemId.length);
-        for (int i = 0; i < itemId.length; i++) {
-            Assert.assertTrue(itemRtnId.contains(itemId[i]));
-        }
+        //set type to physical
+        paraMap.put("type", "invalidType");
+        verifyGetItemsScenarios(paraMap, 0);
+
+        paraMap.remove("type");
+
+        //Set curated true
+        paraMap.put("curated", "true");
+        verifyGetItemsScenarios(paraMap, 0);
+
+        paraMap.put("curated", "invalidStatus");
+        verifyGetItemsScenarios(paraMap, 0);
+
+        paraMap.put("type", "DIGITAL");
+        paraMap.put("curated", "false");
+        paraMap.put("genre", Master.getInstance().getItem(itemId1).getGenres().get(0).toString());
+        verifyGetItemsScenarios(paraMap, 1, itemId1);
+
+        paraMap.put("genre", "1111111");
+        verifyGetItemsScenarios(paraMap, 0);
     }
 
-    private void verifyItemsInvalidScenarios(HashMap<String, String> paraMap) throws Exception{
+    private void verifyGetItemsScenarios(HashMap<String, String> paraMap, int expectedRtnSize, String... itemId) throws Exception{
         List<String> itemRtnId = itemService.getItem(paraMap);
-        Assert.assertEquals(itemRtnId.size(), 0);
+
+        Assert.assertEquals(itemRtnId.size(), expectedRtnSize);
+
+        for (int i = 0; i < itemId.length; i++) {
+            itemRtnId.contains(itemId[i]);
+        }
     }
 }

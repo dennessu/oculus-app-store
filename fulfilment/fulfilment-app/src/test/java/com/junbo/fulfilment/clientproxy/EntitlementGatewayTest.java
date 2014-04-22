@@ -5,7 +5,6 @@
  */
 package com.junbo.fulfilment.clientproxy;
 
-import com.junbo.fulfilment.common.util.Utils;
 import com.junbo.fulfilment.spec.fusion.Entitlement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
@@ -22,13 +21,7 @@ public class EntitlementGatewayTest extends BaseTest {
     public void testBVT() {
         Entitlement entitlement = new Entitlement();
         entitlement.setUserId(33570816L);
-        entitlement.setOfferId(99999L);
-        entitlement.setGrantDate(Utils.now());
-        entitlement.setGroup("TEST_GROUP");
-        entitlement.setType("DOWNLOAD");
-        entitlement.setTag("TEST_TAG");
         entitlement.setEntitlementDefinitionId(12345L);
-        entitlement.setDeveloperId(99999L);
 
         String entitlementId = gateway.grant(entitlement);
         Assert.assertNotNull(entitlementId, "entitlementId should not be null.");

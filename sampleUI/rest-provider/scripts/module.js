@@ -12,6 +12,8 @@ var Module = {
         if(parent == undefined || parent == null) parent = {};
         if(namespace == undefined || namespace == null) return;
 
+        //console.log("Register: ", namespace);
+
         if(namespace.indexOf('.') == -1){
             parent[namespace] = v;
         }else{
