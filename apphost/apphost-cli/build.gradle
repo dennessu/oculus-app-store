@@ -4,11 +4,11 @@ apply plugin: 'application'
 mainClassName = "com.junbo.apphost.core.JunboApplication"
 
 dependencies {
-    runtime project(':apphost-core')
-    runtime (libraries.common_configuration_data)
+    compile project(':apphost-core')
+    compile (libraries.common_configuration_data)
 
-    runtime "com.junbo.identity:identity-rest:${junboVersion}"
-    runtime "com.junbo.oauth:oauth-api:${junboVersion}"
+    compile "com.junbo.identity:identity-rest:${junboVersion}"
+    compile "com.junbo.oauth:oauth-api:${junboVersion}"
 
     // more to add
 }

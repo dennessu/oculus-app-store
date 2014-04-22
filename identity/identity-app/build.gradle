@@ -4,8 +4,8 @@ apply plugin: 'application'
 mainClassName = "com.junbo.apphost.core.JunboApplication"
 
 dependencies {
-    runtime (libraries.apphost_core)
-    runtime (libraries.common_configuration_data)
+    compile (libraries.apphost_core)
+    compile (libraries.common_configuration_data)
 
-    runtime project(':identity-rest')
+    compile project(':identity-rest')
 }
