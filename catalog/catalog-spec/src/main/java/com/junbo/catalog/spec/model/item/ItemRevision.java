@@ -15,6 +15,8 @@ import com.junbo.common.jackson.annotation.ItemRevisionId;
 import com.junbo.common.jackson.annotation.OfferId;
 import com.junbo.common.jackson.annotation.UserId;
 
+import java.math.BigDecimal;
+
 
 /**
  * Item revision.
@@ -36,7 +38,7 @@ public class ItemRevision extends BaseRevisionModel {
     private Price msrp;
     private String walletCurrencyType;
     private String walletCurrency;
-    private String walletAmount;
+    private BigDecimal walletAmount;
     private ExtensibleProperties digitalProperties;
     private ExtensibleProperties ewalletProperties;
     private ExtensibleProperties physicalProperties;
@@ -105,11 +107,11 @@ public class ItemRevision extends BaseRevisionModel {
         this.walletCurrency = walletCurrency;
     }
 
-    public String getWalletAmount() {
+    public BigDecimal getWalletAmount() {
         return walletAmount;
     }
 
-    public void setWalletAmount(String walletAmount) {
+    public void setWalletAmount(BigDecimal walletAmount) {
         this.walletAmount = walletAmount;
     }
 
