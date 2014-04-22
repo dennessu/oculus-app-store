@@ -6,6 +6,7 @@ import org.gradle.api.plugins.GroovyPlugin
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.api.plugins.quality.CodeNarc
+import org.gradle.api.tasks.Upload
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.wrapper.Wrapper
 
@@ -168,6 +169,10 @@ class BootstrapPlugin implements Plugin<Project> {
 
                 tasks.withType(Checkstyle) {
                     it.dependsOn 'unzipCheckstyleConfigFile'
+                }
+
+                tasks.withType(Upload) {
+                    it.dependsOn 'build'
                 }
 
                 jar {
