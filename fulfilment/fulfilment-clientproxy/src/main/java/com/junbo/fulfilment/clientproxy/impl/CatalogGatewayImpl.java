@@ -160,6 +160,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
         //TODO
         item.setEwalletAmount(null);
         item.setEwalletCurrency(null);
+        item.setEntitlmentDefId(null);
 
         return item;
     }
@@ -167,7 +168,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
     private Map<String, Object> buildActionProperties(Action action) {
         Map<String, Object> result = new HashMap<>();
         result.put(Constant.ENTITLEMENT_DEF_ID, action.getEntitlementDefId());
-        result.put(Constant.ITEM_ID, null);
+        result.put(Constant.ITEM_ID, action.getItemId());
 
         return result;
     }

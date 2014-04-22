@@ -16,6 +16,7 @@ public class Item {
 
     private BigDecimal ewalletAmount;
     private String ewalletCurrency;
+    private Long entitlmentDefId;
 
     public Long getItemId() {
         return itemId;
@@ -47,5 +48,13 @@ public class Item {
 
     public void setEwalletCurrency(String ewalletCurrency) {
         this.ewalletCurrency = ewalletCurrency;
+    }
+
+    public Long getEntitlmentDefId() {
+        return entitlmentDefId;
+    }
+
+    public void setEntitlmentDefId(Long entitlmentDefId) {
+        this.entitlmentDefId = entitlmentDefId;
     }
 }

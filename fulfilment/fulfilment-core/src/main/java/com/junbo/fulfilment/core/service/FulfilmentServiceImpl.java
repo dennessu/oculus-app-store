@@ -236,6 +236,7 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
             fulfilmentAction.setStatus(FulfilmentStatus.PENDING);
             fulfilmentAction.setProperties(action.getProperties());
             fulfilmentAction.setCopyCount(copyCount);
+            fulfilmentAction.setTimestamp(fulfilmentItem.getTimestamp());
 
             // copy offer level items to fulfilment action
             fulfilmentAction.setItems(offer.getItems());
