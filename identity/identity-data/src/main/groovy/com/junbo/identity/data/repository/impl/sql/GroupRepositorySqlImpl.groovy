@@ -15,18 +15,25 @@ import com.junbo.identity.spec.v1.model.Group
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by liangfu on 3/14/14.
  */
 @CompileStatic
 class GroupRepositorySqlImpl implements GroupRepository {
-    @Autowired
     private GroupDAO groupDAO
-
-    @Autowired
     private ModelMapper modelMapper
+
+    @Required
+    void setGroupDAO(GroupDAO groupDAO) {
+        this.groupDAO = groupDAO
+    }
+
+    @Required
+    void setModelMapper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper
+    }
 
     @Override
     Promise<Group> get(GroupId groupId) {
@@ -37,9 +44,7 @@ class GroupRepositorySqlImpl implements GroupRepository {
     @Override
     Promise<Group> create(Group group) {
         GroupEntity groupEntity = modelMapper.toGroup(group, new MappingContext())
-
         groupDAO.save(groupEntity)
-
         return get(new GroupId((Long)groupEntity.id))
     }
 

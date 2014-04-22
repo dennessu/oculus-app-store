@@ -15,18 +15,25 @@ import com.junbo.identity.spec.v1.option.list.UserDeviceListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Required
 
 /**
  * Implementation for UserDeviceDAO.
  */
 @CompileStatic
 class UserDeviceRepositorySqlImpl implements UserDeviceRepository {
-    @Autowired
     private UserDeviceDAO userDeviceDAO
-
-    @Autowired
     private ModelMapper modelMapper
+
+    @Required
+    void setUserDeviceDAO(UserDeviceDAO userDeviceDAO) {
+        this.userDeviceDAO = userDeviceDAO
+    }
+
+    @Required
+    void setModelMapper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper
+    }
 
     @Override
     Promise<UserDevice> create(UserDevice entity) {

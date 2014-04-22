@@ -14,7 +14,7 @@ import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 
 /**
@@ -22,11 +22,18 @@ import org.springframework.util.StringUtils
  */
 @CompileStatic
 class UserRepositorySqlImpl implements UserRepository {
-    @Autowired
     private ModelMapper modelMapper
-
-    @Autowired
     private UserDAO userDAO
+
+    @Required
+    void setModelMapper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper
+    }
+
+    @Required
+    void setUserDAO(UserDAO userDAO) {
+        this.userDAO = userDAO
+    }
 
     @Override
     Promise<User> create(User user) {

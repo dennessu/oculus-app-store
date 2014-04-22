@@ -9,19 +9,25 @@ import com.junbo.identity.spec.v1.model.Address
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by xmchen on 14-4-15.
  */
 @CompileStatic
 class AddressRepositorySqlImpl implements AddressRepository {
-
-    @Autowired
     private AddressDAO addressDAO
-
-    @Autowired
     private ModelMapper modelMapper
+
+    @Required
+    void setAddressDAO(AddressDAO addressDAO) {
+        this.addressDAO = addressDAO
+    }
+
+    @Required
+    void setModelMapper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper
+    }
 
     @Override
     Promise<Address> get(AddressId addressId) {
