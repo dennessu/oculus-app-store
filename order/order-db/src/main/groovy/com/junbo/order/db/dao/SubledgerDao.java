@@ -21,5 +21,5 @@ public interface SubledgerDao extends BaseDao<SubledgerEntity> {
                                                int start, int count);
 
     SubledgerEntity find(long sellerId, PayoutStatus payoutStatus, Date startTime,
-                                               String productItemId, String country, String currency);
+                                               String productItemId, String currency, String country);
 }

@@ -44,7 +44,6 @@ public class SubledgerItemEntity extends CommonDbEntityWithDate implements Ident
     }
 
     @Column(name = "ORIGINAL_SUBLEDGER_ITEM_ID")
-    @NotNull(message = ValidationMessages.MISSING_VALUE)
     public Long getOriginalSubledgerItemId() {
         return originalSubledgerItemId;
     }
@@ -94,7 +93,7 @@ public class SubledgerItemEntity extends CommonDbEntityWithDate implements Ident
 
     @Column (name = "subledger_item_action")
     @NotNull (message = ValidationMessages.MISSING_VALUE)
-    @Type(type = "com.junbo.order.db.entity.type.EventStatusType")
+    @Type(type = "com.junbo.order.db.entity.type.SubledgerItemActionType")
     public SubledgerItemAction getSubledgerItemAction() {
         return subledgerItemAction;
     }

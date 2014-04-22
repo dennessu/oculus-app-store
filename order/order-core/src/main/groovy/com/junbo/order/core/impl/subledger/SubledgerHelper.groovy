@@ -1,19 +1,17 @@
 package com.junbo.order.core.impl.subledger
-
 import com.google.common.math.IntMath
 import com.junbo.order.clientproxy.model.OrderOfferRevision
 import com.junbo.order.db.entity.enums.PayoutStatus
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.db.repo.SubledgerRepository
 import com.junbo.order.spec.model.Subledger
-import com.junbo.order.spec.model.SubledgerItem
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
+import javax.annotation.Resource
 import java.math.RoundingMode
 import java.text.SimpleDateFormat
-
 /**
  * Created by fzhang on 4/10/2014.
  */
@@ -23,10 +21,13 @@ class SubledgerHelper {
 
     private static final int MONTH_A_YEAR = 12
 
+    @Resource(name = 'subledgerRepository')
     SubledgerRepository subledgerRepository
 
+    @Resource(name = 'orderRepository')
     OrderRepository orderRepository
 
+    @Resource(name = 'subledgerItemContextBuilder')
     SubledgerItemContextBuilder subledgerItemContextBuilder
 
     private Date startTime
@@ -62,17 +63,21 @@ class SubledgerHelper {
         return result.time
     }
 
-    Subledger getMatchingSubledger(SubledgerItem subledgerItem) {
-        return getMatchingSubledgerByContext(subledgerItemContextBuilder.buildContext(subledgerItem))
+    Subledger getMatchingSubledger(SubledgerItemContext subledgerItemContext) {
+        def sellerId = subledgerItemContext.sellerId
+        def startTime = getSubledgerStartTime(subledgerItemContext.createdTime)
+
+        return subledgerRepository.findSubledger(sellerId, PayoutStatus.PENDING.name(),
+                subledgerItemContext.offerId, startTime, subledgerItemContext.currency,
+                subledgerItemContext.country)
     }
 
     Subledger getMatchingSubledger(OrderOfferRevision offer, String country, String currency, Date createdTime) {
-        return getMatchingSubledgerByContext(
+        return getMatchingSubledger(
                 subledgerItemContextBuilder.buildContext(offer, country, currency, createdTime))
     }
 
-    Subledger subledgerForItem(SubledgerItem subledgerItem) {
-        def context = subledgerItemContextBuilder.buildContext(subledgerItem)
+    Subledger subledgerForSubledgerItemContext(SubledgerItemContext context) {
         Subledger subledger = new Subledger(
                 sellerId: context.sellerId,
                 offerId: context.offerId,
@@ -83,16 +88,6 @@ class SubledgerHelper {
         )
         return subledger
     }
-
-    private Subledger getMatchingSubledgerByContext(SubledgerItemContext subledgerItemContext) {
-        def sellerId = subledgerItemContext.sellerId
-        def startTime = getSubledgerStartTime(subledgerItemContext.createdTime)
-
-        return subledgerRepository.findSubledger(sellerId, PayoutStatus.PENDING.name(),
-                subledgerItemContext.offerId, startTime, subledgerItemContext.currency,
-                subledgerItemContext.country)
-    }
-
 
     private static int diffMonth(Date left, Date right) {
         (left.year * MONTH_A_YEAR + left.month) - (right.year * MONTH_A_YEAR + right.month)
