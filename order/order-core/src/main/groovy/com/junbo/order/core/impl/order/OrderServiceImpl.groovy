@@ -181,6 +181,7 @@ class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     Promise<OrderEvent> updateOrderByOrderEvent(OrderEvent event) {
         LOGGER.info('name=Update_Order_By_Order_Event. orderId: {}', event.order.value)
         return getOrderByOrderId(event.order.value).then { Order order ->
@@ -189,11 +190,13 @@ class OrderServiceImpl implements OrderService {
             return flowSelector.select(orderServiceContext, OrderServiceOperation.UPDATE).then { String flowName ->
                 // Prepare Flow Request
                 assert (flowName != null)
-                orderRepository.createOrderEvent(event)
                 Map<String, Object> requestScope = [:]
                 def orderActionContext = new OrderActionContext()
                 orderActionContext.orderServiceContext = orderServiceContext
                 orderActionContext.trackingUuid = UUID.randomUUID()
+                event.trackingUuid = orderActionContext.trackingUuid
+                event.eventTrackingUuid = UUID.randomUUID()
+                orderRepository.createOrderEvent(event)
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
                 executeFlow(flowName, orderServiceContext, requestScope)
             }.syncThen {
