@@ -91,7 +91,7 @@ class DefaultFlowSelector implements FlowSelector {
             case OrderActionType.FULFILL.name():
                 if (event.status == EventStatus.COMPLETED.name()
                         && CoreUtils.hasPhysicalOffer(context.order)
-                        && context.order.status == OrderStatus.PENDING_FULFILL) {
+                        && context.order.status == OrderStatus.PENDING_FULFILL.name()) {
                     LOGGER.info('name=Complete_Charge_Order. orderId: {}', event.order.value)
                     return Promise.pure(FlowType.COMPLETE_CHARGE.name())
                 }
