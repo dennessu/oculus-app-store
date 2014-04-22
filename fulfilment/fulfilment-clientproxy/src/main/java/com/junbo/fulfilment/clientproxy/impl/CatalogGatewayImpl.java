@@ -5,14 +5,12 @@
  */
 package com.junbo.fulfilment.clientproxy.impl;
 
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
 import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.catalog.spec.resource.EntitlementDefinitionResource;
 import com.junbo.catalog.spec.resource.ItemRevisionResource;
 import com.junbo.catalog.spec.resource.OfferRevisionResource;
-import com.junbo.common.id.EntitlementDefinitionId;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.model.Results;
@@ -174,30 +172,8 @@ public class CatalogGatewayImpl implements CatalogGateway {
 
     protected Map<String, Object> getEntitlementDef(Action action) {
         Map<String, Object> result = new HashMap<>();
+        result.put(Constant.ENTITLEMENT_DEF_ID, action.getEntitlementDefId());
 
-        Long entitlementDefId = action.getEntitlementDefId();
-        if (entitlementDefId == null) {
-            return result;
-        }
-
-        try {
-            EntitlementDefinition entitlementDef = entitlementDefClient.getEntitlementDefinition(
-                    new EntitlementDefinitionId(entitlementDefId)).wrapped().get();
-
-            if (entitlementDef == null) {
-                throw AppErrors.INSTANCE.notFound("EntitlementDefinition", entitlementDefId).exception();
-            }
-
-            result.put(Constant.ENTITLEMENT_GROUP, entitlementDef.getGroup());
-            result.put(Constant.ENTITLEMENT_TAG, entitlementDef.getTag());
-            result.put(Constant.ENTITLEMENT_TYPE, entitlementDef.getType());
-            result.put(Constant.ENTITLEMENT_DEVELOPER, entitlementDef.getDeveloperId());
-            result.put(Constant.ENTITLEMENT_DEF_ID, entitlementDefId);
-
-            return result;
-        } catch (Exception e) {
-            LOGGER.error("Error occurred during calling [Catalog] component.", e);
-            throw AppErrors.INSTANCE.gatewayFailure("catalog").exception();
-        }
+        return result;
     }
 }

@@ -5,13 +5,14 @@
  */
 package com.junbo.catalog.core.entitlementdef;
 
-import com.junbo.catalog.core.EntitlementDefinitionService;
 import com.junbo.catalog.core.BaseTest;
+import com.junbo.catalog.core.EntitlementDefinitionService;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 //import junit.framework.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
+
+import java.util.Collections;
 
 public class EntitlementDefinitionServiceTest extends BaseTest {
     @Autowired
@@ -29,9 +30,10 @@ public class EntitlementDefinitionServiceTest extends BaseTest {
     private EntitlementDefinition buildADefinition() {
         EntitlementDefinition definition = new EntitlementDefinition();
         definition.setDeveloperId(generateId());
+        definition.setInAppContext(Collections.singletonList(String.valueOf(generateId())));
         definition.setTag("TEST");
         definition.setGroup("TEST");
-        definition.setType(EntitlementType.DEFAULT.toString());
+        definition.setConsumable(true);
         return definition;
     }
 

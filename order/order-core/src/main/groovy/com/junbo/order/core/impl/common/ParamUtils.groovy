@@ -1,9 +1,13 @@
 package com.junbo.order.core.impl.common
 
+import com.junbo.order.db.entity.enums.PayoutStatus
+import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.OrderQueryParam
 import com.junbo.order.spec.model.PageParam
 import com.junbo.order.spec.model.SubledgerParam
 import groovy.transform.CompileStatic
+import org.springframework.util.StringUtils
+
 /**
  * Created by fzhang on 4/1/2014.
  */
@@ -37,6 +41,19 @@ class ParamUtils {
     }
 
     static SubledgerParam processSubledgerParam(SubledgerParam subledgerParam) {
-        return subledgerParam // todo implement this
+        def param =  subledgerParam
+        if (param == null) {
+            param = new SubledgerParam()
+        }
+
+        if (StringUtils.isEmpty(param.payOutStatus)) {
+            param.payOutStatus = PayoutStatus.PENDING.name()
+        }
+
+        if (param.sellerId == null) {
+            throw AppErrors.INSTANCE.fieldInvalid('sellerId', 'sellerId is missing').exception()
+        }
+
+        return param
     }
 }

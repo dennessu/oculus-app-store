@@ -123,12 +123,10 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private void grantEntitlement(Subscription subscription) {
         Entitlement entitlement = new Entitlement();
         entitlement.setUserId(subscription.getUserId());
-        entitlement.setOfferId(subscription.getOfferId());
         entitlement.setTrackingUuid(UUID.randomUUID());
         entitlement.setExpirationTime(subscription.getSubsEndDate());
-        entitlement.setType("SUBSCRIPTIONS");
-        entitlement.setTag("SUBS_TAG");
-        entitlement.setGroup("SUBS_TAG");
+        //entitlement.getEntitlementDefinitionId();
+
         Long entitlementId = entitlementGateway.grantEntitlement(entitlement);
 
         SubscriptionEntitlement subscriptionEntitlement = new SubscriptionEntitlement();

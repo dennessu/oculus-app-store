@@ -57,7 +57,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         }
         Assert.assertNotNull(request, "fulfilmentRequest should not be null.");
 
-        FulfilmentAction action = request.getItems().get(0).getActions().get(0);
+        FulfilmentAction action = request.getItems().get(Constant.UNIQUE_RESULT).getActions().get(Constant.UNIQUE_RESULT);
         Assert.assertNotNull(action.getResult(), "Action result should not be null.");
         Assert.assertEquals(action.getStatus(), FulfilmentStatus.SUCCEED, "Fulfilment status should match.");
 
@@ -74,7 +74,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(retrievedRequest.getRequestId(), request.getRequestId(), "Request id should match.");
 
         // retrieve fulfilment item by fulfilment id
-        Long fulfilmentId = request.getItems().get(0).getFulfilmentId();
+        Long fulfilmentId = request.getItems().get(Constant.UNIQUE_RESULT).getFulfilmentId();
 
         FulfilmentItem retrievedFulfilmentItem = null;
         try {

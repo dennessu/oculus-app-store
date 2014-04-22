@@ -587,6 +587,9 @@ var SwaggerModelProperty = function(name, obj) {
   }
   this.isCollection = this.dataType && (this.dataType.toLowerCase() === 'array' || this.dataType.toLowerCase() === 'list' || this.dataType.toLowerCase() === 'set');
   this.descr = obj.description;
+  if (this.descr) {
+    this.descr = this.descr.replace(/\.$/, "");
+  }
   this.required = obj.required;
   if (obj.items != null) {
     if (obj.items.type != null) {

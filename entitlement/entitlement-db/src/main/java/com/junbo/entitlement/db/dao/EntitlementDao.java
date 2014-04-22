@@ -7,7 +7,6 @@
 package com.junbo.entitlement.db.dao;
 
 import com.junbo.entitlement.db.entity.EntitlementEntity;
-import com.junbo.entitlement.spec.def.EntitlementType;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
 
@@ -28,9 +27,4 @@ public interface EntitlementDao {
                                              PageMetadata pageMetadata);
 
     EntitlementEntity getByTrackingUuid(Long shardMasterId, UUID trackingUuid);
-
-    EntitlementEntity getExistingManagedEntitlement(Long userId, Long definitionId);
-
-    EntitlementEntity getExistingManagedEntitlement(
-            Long userId, EntitlementType type, Long developerId, String group, String tag);
 }

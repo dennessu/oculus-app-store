@@ -15,18 +15,25 @@ import com.junbo.identity.spec.v1.option.list.UserTosAgreementListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Required
 
 /**
  * Implementation for User Tos Acceptance DAO interface.
  */
 @CompileStatic
 class UserTosRepositorySqlImpl implements UserTosRepository {
-    @Autowired
     private UserTosDAO userTosDAO
-
-    @Autowired
     private ModelMapper modelMapper
+
+    @Required
+    void setUserTosDAO(UserTosDAO userTosDAO) {
+        this.userTosDAO = userTosDAO
+    }
+
+    @Required
+    void setModelMapper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper
+    }
 
     @Override
     Promise<UserTosAgreement> create(UserTosAgreement entity) {

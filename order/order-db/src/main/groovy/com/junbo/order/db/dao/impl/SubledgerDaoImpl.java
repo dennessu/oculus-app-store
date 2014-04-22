@@ -44,7 +44,7 @@ public class SubledgerDaoImpl extends BaseDaoImpl<SubledgerEntity> implements Su
 
     @Override
     public SubledgerEntity find(long sellerId, PayoutStatus payoutStatus, Date startTime,
-                                String productItemId, String country, String currency) {
+                                String productItemId, String currency, String country) {
         Criteria criteria = this.getSession(sellerId).createCriteria(SubledgerEntity.class);
 
         criteria.add(Restrictions.eq("sellerId", sellerId));

@@ -19,6 +19,9 @@ import com.junbo.payment.db.repository.MerchantAccountRepository;
 import com.junbo.payment.db.repository.PaymentProviderRepository;
 import com.junbo.payment.db.repository.PaymentRepository;
 import com.junbo.payment.db.repository.TrackingUuidRepository;
+import com.junbo.payment.spec.enums.PIType;
+import com.junbo.payment.spec.enums.PaymentStatus;
+import com.junbo.payment.spec.model.PaymentEvent;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import org.slf4j.Logger;
@@ -28,6 +31,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
+
+import java.util.List;
 
 /**
  * Abstract Payment Transaction Service Implementation.
@@ -106,5 +111,64 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
             throw AppServerExceptions.INSTANCE.invalidPI().exception();
         }
         return pi;
+    }
+
+    protected String getMerchantRef(PaymentInstrument pi, PaymentTransaction request, String providerName){
+        if(pi.getType().equalsIgnoreCase(PIType.CREDITCARD.toString())){
+            String merchantRef = merchantAccountRepository.getMerchantAccountRef(
+                    paymentProviderRepository.getProviderId(providerName), request.getChargeInfo().getCurrency());
+            if(CommonUtil.isNullOrEmpty(merchantRef)){
+                throw AppServerExceptions.INSTANCE.merchantRefNotAvailable(
+                        request.getChargeInfo().getCurrency()).exception();
+            }
+            return merchantRef;
+        }
+        return null;
+    }
+
+    //use new transaction for business data to avoid hibernate cache in the service level transaction
+    protected PaymentTransaction getPaymentById(final Long paymentId){
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
+        template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
+        return template.execute(new TransactionCallback<PaymentTransaction>() {
+            public PaymentTransaction doInTransaction(TransactionStatus txnStatus) {
+                PaymentTransaction existedTransaction = paymentRepository.getByPaymentId(paymentId);
+                if(existedTransaction == null){
+                    LOGGER.error("the payment id is invalid for the event.");
+                    throw AppClientExceptions.INSTANCE.invalidPaymentId(paymentId.toString()).exception();
+                }
+                return existedTransaction;
+            }
+        });
+    }
+
+    protected PaymentTransaction saveAndCommitPayment(final PaymentTransaction request) {
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
+        template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
+        return template.execute(new TransactionCallback<PaymentTransaction>() {
+            public PaymentTransaction doInTransaction(TransactionStatus txnStatus) {
+                paymentRepository.save(request);
+                return request;
+            }
+        });
+    }
+
+    protected List<PaymentEvent> updatePaymentAndSaveEvent(final PaymentTransaction payment,
+                                                         final List<PaymentEvent> events, final PaymentAPI api, final PaymentStatus status, final boolean saveUuid){
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
+        template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
+        return template.execute(new TransactionCallback<List<PaymentEvent>>() {
+            public List<PaymentEvent> doInTransaction(TransactionStatus txnStatus) {
+                if(status != null){
+                    paymentRepository.updatePayment(payment.getId()
+                            , status, payment.getExternalToken());
+                }
+                paymentRepository.savePaymentEvent(payment.getId(), events);
+                if(saveUuid){
+                    saveTrackingUuid(payment, api);
+                }
+                return events;
+            }
+        });
     }
 }

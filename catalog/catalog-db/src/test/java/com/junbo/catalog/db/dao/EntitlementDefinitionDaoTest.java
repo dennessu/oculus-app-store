@@ -7,10 +7,11 @@ package com.junbo.catalog.db.dao;
 
 import com.junbo.catalog.db.BaseTest;
 import com.junbo.catalog.db.entity.EntitlementDefinitionEntity;
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import java.util.Collections;
 
 public class EntitlementDefinitionDaoTest extends BaseTest {
     @Autowired
@@ -30,7 +31,8 @@ public class EntitlementDefinitionDaoTest extends BaseTest {
         definitionEntity.setDeveloperId(generateId());
         definitionEntity.setTag("TEST");
         definitionEntity.setGroup("TEST");
-        definitionEntity.setType(EntitlementType.DEFAULT);
+        definitionEntity.setConsumable(true);
+        definitionEntity.setInAppContext(Collections.singletonList(String.valueOf(generateId())));
         return definitionEntity;
     }
 }

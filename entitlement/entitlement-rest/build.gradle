@@ -20,4 +20,7 @@ dependencies {
     compile (libraries.oom_processor)
     compile (libraries.oom)
     compile (libraries.jersey_common)
+
+    testCompile (libraries.guava)
+    testCompile (libraries.spring_test)
 }

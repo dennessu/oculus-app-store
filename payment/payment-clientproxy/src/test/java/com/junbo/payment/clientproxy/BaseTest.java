@@ -14,7 +14,7 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
 
     protected long getLongId() {
         //shard id
-        return 50937856L;
+        return 520142848L;
     }
 
     protected UUID generateUUID() {

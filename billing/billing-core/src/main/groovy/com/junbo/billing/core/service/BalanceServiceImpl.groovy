@@ -8,6 +8,7 @@ package com.junbo.billing.core.service
 
 import com.junbo.billing.clientproxy.IdentityFacade
 import com.junbo.billing.clientproxy.PaymentFacade
+import com.junbo.billing.core.publisher.AsyncChargePublisher
 import com.junbo.billing.db.repository.BalanceRepository
 import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
@@ -58,6 +59,9 @@ class BalanceServiceImpl implements BalanceService {
     @Autowired
     TaxService taxService
 
+    //@Autowired
+    //AsyncChargePublisher asyncChargePublisher
+
     private static final Logger LOGGER = LoggerFactory.getLogger(BalanceServiceImpl)
 
     private static final Set<String> SUPPORT_ASYNC_CHARGE_PI_TYPE
@@ -99,6 +103,7 @@ class BalanceServiceImpl implements BalanceService {
 
                     if (savedBalance.isAsyncCharge) {
                         LOGGER.info('name=Async_Charge_Balance. balance id: ' + savedBalance.balanceId.value)
+                        //asyncChargePublisher.publish(savedBalance.balanceId.toString())
                         return Promise.pure(savedBalance)
                     }
                     return transactionService.processBalance(savedBalance).then { Balance returnedBalance ->

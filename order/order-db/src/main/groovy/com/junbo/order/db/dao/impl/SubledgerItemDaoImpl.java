@@ -22,8 +22,8 @@ import java.util.List;
 public class SubledgerItemDaoImpl extends BaseDaoImpl<SubledgerItemEntity> implements SubledgerItemDao {
     @Override
     @SuppressWarnings("unchecked")
-    public List<SubledgerItemEntity> getByStatus(Object shardKey, SubledgerItemStatus status, int start, int count) {
-        Criteria criteria = this.getSession(shardKey).createCriteria(SubledgerItemEntity.class);
+    public List<SubledgerItemEntity> getByStatus(Integer shardId, SubledgerItemStatus status, int start, int count) {
+        Criteria criteria = this.getSessionByShardId(shardId).createCriteria(SubledgerItemEntity.class);
 
         criteria.add(Restrictions.eq("status", status));
 

@@ -31,6 +31,18 @@
         <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
 
+    <bean id="cloudantRoleAssignmentRepository" class="com.junbo.identity.data.repository.impl.cloudant.RoleAssignmentRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="role_assignment"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="cloudantRoleRepository" class="com.junbo.identity.data.repository.impl.cloudant.RoleRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="role"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
     <bean id="cloudantTosRepository" class="com.junbo.identity.data.repository.impl.cloudant.TosRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="tos"/>
         <property name="shardAlgorithm" ref="userShardAlgorithm"/>
