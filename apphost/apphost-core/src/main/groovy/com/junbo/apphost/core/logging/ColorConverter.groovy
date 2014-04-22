@@ -24,6 +24,8 @@ class ColorConverter extends CompositeConverter<ILoggingEvent> {
         elements.put('blue', AnsiElement.BLUE)
         elements.put('magenta', AnsiElement.MAGENTA)
         elements.put('cyan', AnsiElement.CYAN)
+        elements.put('white', AnsiElement.WHITE)
+        elements.put('bold', AnsiElement.BOLD)
 
         ELEMENTS = Collections.unmodifiableMap(elements)
     }
