@@ -62,4 +62,26 @@ public class OrderRatingServiceTest extends BaseTest {
 
         Assert.assertEquals(result.getShippingBenefit().getShippingFee(), new BigDecimal("16.00"));
     }
+
+    @Test
+    public void testEntitlement() {
+        RatingContext context = new RatingContext();
+        context.setUserId(generateId());
+        context.setCurrency(Currency.findByCode("USD"));
+        RatableItem item = new RatableItem();
+        item.setOfferId(107L);
+        item.setQuantity(1);
+        context.setItems(new HashSet<RatableItem>());
+        context.getItems().add(item);
+
+        orderRatingService.orderRating(context);
+        RatingRequest result = RatingResultBuilder.buildForOrder(context);
+
+        Assert.assertNotNull(result);
+        Assert.assertEquals(result.getLineItems().size(), 1);
+
+        Assert.assertEquals(result.getOrderBenefit().getFinalAmount(), new BigDecimal("0.99"));
+
+        Assert.assertEquals(result.getShippingBenefit().getShippingFee(), BigDecimal.ZERO);
+    }
 }

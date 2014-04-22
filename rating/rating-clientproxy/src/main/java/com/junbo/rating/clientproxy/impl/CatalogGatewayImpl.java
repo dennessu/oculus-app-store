@@ -6,7 +6,10 @@
 
 package com.junbo.rating.clientproxy.impl;
 
+import com.junbo.catalog.spec.model.common.PageableGetOptions;
 import com.junbo.catalog.spec.model.domaindata.ShippingMethod;
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefSearchParams;
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.ItemEntry;
 import com.junbo.catalog.spec.model.offer.Offer;
@@ -56,6 +59,9 @@ public class CatalogGatewayImpl implements CatalogGateway{
 
     @Autowired
     private PromotionRevisionResource promotionRevisionResource;
+
+    @Autowired
+    private EntitlementDefinitionResource entitlementDefinitionResource;
 
     @Override
     public Item getItem(Long itemId) {
@@ -154,10 +160,10 @@ public class CatalogGatewayImpl implements CatalogGateway{
                 revisionIds.add(new PromotionRevisionId(promotion.getCurrentRevisionId()));
             }
 
-            options.setStart(options.getSize() + options.getSize());
-            if (promotions.size()<Constants.DEFAULT_PAGE_SIZE) {
+            if (promotions.size() < Constants.DEFAULT_PAGE_SIZE) {
                 break;
             }
+            options.setStart(options.getSize() + Constants.DEFAULT_PAGE_SIZE);
         }
 
         if (revisionIds.isEmpty()) {
@@ -196,5 +202,40 @@ public class CatalogGatewayImpl implements CatalogGateway{
         }
 
         return revisions.get(Constants.UNIQUE);
+    }
+
+    @Override
+    public Map<Long, String> getEntitlementDefinitions(Set<String> groups) {
+        Map<Long, String> result = new HashMap<>();
+
+        EntitlementDefSearchParams searchParams = new EntitlementDefSearchParams();
+        searchParams.setGroups(groups);
+
+        PageableGetOptions options = new PageableGetOptions();
+        options.setStart(Constants.DEFAULT_PAGE_START);
+        options.setSize(Constants.DEFAULT_PAGE_SIZE);
+
+        while(true) {
+            List<EntitlementDefinition> entitlementDefinitions = new ArrayList<>();
+            try {
+                 entitlementDefinitions.addAll(
+                         entitlementDefinitionResource.getEntitlementDefinitions(
+                                 searchParams, options).wrapped().get().getItems());
+            } catch (Exception e) {
+                throw AppErrors.INSTANCE.catalogGatewayError().exception();
+            }
+
+            for (EntitlementDefinition entitlementDef : entitlementDefinitions) {
+                result.put(entitlementDef.getEntitlementDefId(),
+                        entitlementDef.getGroup() + Constants.ENTITLEMENT_SEPARATOR + entitlementDef.getTag());
+            }
+
+            if (entitlementDefinitions.size() < Constants.DEFAULT_PAGE_SIZE) {
+                break;
+            }
+            options.setStart(options.getStart() + Constants.DEFAULT_PAGE_SIZE);
+        }
+
+        return result;
     }
 }

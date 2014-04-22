@@ -12,6 +12,8 @@ import com.junbo.catalog.spec.model.promotion.PromotionRevision;
 import com.junbo.rating.spec.fusion.RatingOffer;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Catalog gateway interface.
@@ -21,4 +23,5 @@ public interface CatalogGateway {
     RatingOffer getOffer(Long offerId, Long timestamp);
     List<PromotionRevision> getPromotions();
     ShippingMethod getShippingMethod(Long shippingMethodId);
+    Map<Long, String> getEntitlementDefinitions(Set<String> groups);
 }
