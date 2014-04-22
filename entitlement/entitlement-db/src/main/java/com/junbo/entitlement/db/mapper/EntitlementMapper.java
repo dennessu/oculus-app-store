@@ -8,8 +8,6 @@ package com.junbo.entitlement.db.mapper;
 
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.db.entity.EntitlementEntity;
-import com.junbo.entitlement.spec.def.EntitlementStatus;
-import com.junbo.entitlement.spec.def.EntitlementType;
 import com.junbo.entitlement.spec.model.Entitlement;
 import org.springframework.stereotype.Component;
 
@@ -28,20 +26,14 @@ public class EntitlementMapper {
         }
         Entitlement entitlement = new Entitlement();
         entitlement.setEntitlementId(entitlementEntity.getEntitlementId());
+        entitlement.setRev(entitlementEntity.getRev());
         entitlement.setUserId(entitlementEntity.getUserId());
-        entitlement.setType(entitlementEntity.getType().toString());
-        entitlement.setGroup(entitlementEntity.getGroup());
-        entitlement.setTag(entitlementEntity.getTag());
-        entitlement.setDeveloperId(entitlementEntity.getDeveloperId());
         entitlement.setEntitlementDefinitionId(entitlementEntity.getEntitlementDefinitionId());
-        entitlement.setStatus(getStatus(entitlementEntity).toString());
-        entitlement.setStatusReason(entitlementEntity.getStatusReason());
-        entitlement.setOfferId(entitlementEntity.getOfferId());
+        entitlement.setIsActive(isActive(entitlementEntity));
+        entitlement.setIsBanned(entitlementEntity.getIsBanned());
         entitlement.setGrantTime(entitlementEntity.getGrantTime());
         entitlement.setExpirationTime(entitlementEntity.getExpirationTime());
-        entitlement.setConsumable(entitlementEntity.getConsumable());
         entitlement.setUseCount(entitlementEntity.getUseCount());
-        entitlement.setManagedLifecycle(entitlementEntity.getManagedLifecycle());
         return entitlement;
     }
 
@@ -49,22 +41,13 @@ public class EntitlementMapper {
         EntitlementEntity entitlementEntity = new EntitlementEntity();
         entitlementEntity.setTrackingUuid(entitlement.getTrackingUuid());
         entitlementEntity.setEntitlementId(entitlement.getEntitlementId());
-
+        entitlementEntity.setRev(entitlement.getRev());
         entitlementEntity.setEntitlementDefinitionId(
                 entitlement.getEntitlementDefinitionId());
-        entitlementEntity.setDeveloperId(entitlement.getDeveloperId());
-        entitlementEntity.setType(EntitlementType.valueOf(entitlement.getType().toUpperCase()));
-        entitlementEntity.setGroup(entitlement.getGroup());
-        entitlementEntity.setTag(entitlement.getTag());
-
         entitlementEntity.setUserId(entitlement.getUserId());
-        entitlementEntity.setManagedLifecycle(entitlement.getManagedLifecycle());
-        entitlementEntity.setStatus(getStatus(entitlement));
-        entitlementEntity.setStatusReason(entitlement.getStatusReason());
-        entitlementEntity.setOfferId(entitlement.getOfferId());
+        entitlementEntity.setIsBanned(entitlement.getIsBanned());
         entitlementEntity.setGrantTime(entitlement.getGrantTime());
         entitlementEntity.setExpirationTime(entitlement.getExpirationTime());
-        entitlementEntity.setConsumable(entitlement.getConsumable());
         entitlementEntity.setUseCount(entitlement.getUseCount());
         return entitlementEntity;
     }
@@ -78,33 +61,18 @@ public class EntitlementMapper {
         return entitlements;
     }
 
-    private EntitlementStatus getStatus(EntitlementEntity entitlementEntity) {
-        if (EntitlementStatus.LIFECYCLE_NOT_MANAGED_STATUS
-                .contains(entitlementEntity.getStatus())) {
-            return entitlementEntity.getStatus();
+    private Boolean isActive(EntitlementEntity entitlementEntity) {
+        if(entitlementEntity.getIsBanned()){
+            return false;
         }
-        if (entitlementEntity.getManagedLifecycle() != null
-                && entitlementEntity.getManagedLifecycle()) {
-            Date now = EntitlementContext.current().getNow();
-            if (entitlementEntity.getConsumable()
-                    && entitlementEntity.getUseCount() < 1) {
-                return EntitlementStatus.DISABLED;
-            } else if (now.before(entitlementEntity.getGrantTime())) {
-                return EntitlementStatus.PENDING;
-            } else if (entitlementEntity.getExpirationTime() == null
-                    || now.before(entitlementEntity.getExpirationTime())) {
-                return EntitlementStatus.ACTIVE;
-            } else {
-                return EntitlementStatus.DISABLED;
-            }
+        Date now = EntitlementContext.current().getNow();
+        Date expirationDate = entitlementEntity.getExpirationTime();
+        Integer useCount = entitlementEntity.getUseCount();
+        if (entitlementEntity.getGrantTime().before(now) &&
+                (expirationDate == null || expirationDate.after(now)) &&
+                (useCount == null || useCount > 0)) {
+            return true;
         }
-        return entitlementEntity.getStatus();
-    }
-
-    private EntitlementStatus getStatus(Entitlement entitlement) {
-        if (entitlement.getManagedLifecycle()) {
-            return EntitlementStatus.MANAGED;
-        }
-        return EntitlementStatus.valueOf(entitlement.getStatus().toUpperCase());
+        return false;
     }
 }

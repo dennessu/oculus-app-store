@@ -6,12 +6,12 @@
 
 package com.junbo.entitlement.spec.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.junbo.common.jackson.annotation.EntitlementDefinitionId;
 import com.junbo.common.jackson.annotation.EntitlementId;
-import com.junbo.common.jackson.annotation.OfferId;
 import com.junbo.common.jackson.annotation.UserId;
 
 import java.util.Date;
@@ -20,38 +20,28 @@ import java.util.UUID;
 /**
  * Entitlement Model.
  */
-@JsonPropertyOrder(value = {"entitlementId", "userId", "developerId", "offerId", "status", "statusReason",
-        "type", "group", "tag", "entitlementDefinitionId", "grantTime", "expirationTime",
-        "consumable", "useCount", "managedLifecycle"})
+@JsonPropertyOrder(value = {"entitlementId", "rev", "userId", "isActive", "isBanned",
+        "entitlementDefinitionId", "grantTime", "expirationTime", "useCount"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Entitlement{
+    @JsonIgnore
     private UUID trackingUuid;
     @JsonProperty("self")
     @EntitlementId
     private Long entitlementId;
+    private Integer rev;
     @UserId
     @JsonProperty("user")
     private Long userId;
-    @UserId
-    @JsonProperty("developer")
-    private Long developerId;
-    private String type;
-    private String status;
-    private String statusReason;
+    private Boolean isActive;
+    @JsonProperty("isSuspended")
+    private Boolean isBanned;
     @EntitlementDefinitionId
     @JsonProperty("entitlementDefinition")
     private Long entitlementDefinitionId;
     private Date grantTime;
     private Date expirationTime;
-    private Long period;
-    @OfferId
-    @JsonProperty("offer")
-    private Long offerId;
-    private String group;
-    private String tag;
-    private Boolean consumable;
     private Integer useCount;
-    private Boolean managedLifecycle;
 
     public UUID getTrackingUuid() {
         return trackingUuid;
@@ -69,28 +59,20 @@ public class Entitlement{
         this.entitlementId = entitlementId;
     }
 
+    public Integer getRev() {
+        return rev;
+    }
+
+    public void setRev(Integer rev) {
+        this.rev = rev;
+    }
+
     public Long getUserId() {
         return userId;
     }
 
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getStatusReason() {
-        return statusReason;
-    }
-
-    public void setStatusReason(String statusReason) {
-        this.statusReason = statusReason;
     }
 
     public Long getEntitlementDefinitionId() {
@@ -117,22 +99,6 @@ public class Entitlement{
         this.expirationTime = expirationTime;
     }
 
-    public Long getOfferId() {
-        return offerId;
-    }
-
-    public void setOfferId(Long offerId) {
-        this.offerId = offerId;
-    }
-
-    public Boolean getConsumable() {
-        return consumable;
-    }
-
-    public void setConsumable(Boolean consumable) {
-        this.consumable = consumable;
-    }
-
     public Integer getUseCount() {
         return useCount;
     }
@@ -141,51 +107,19 @@ public class Entitlement{
         this.useCount = useCount;
     }
 
-    public Boolean getManagedLifecycle() {
-        return managedLifecycle;
+    public Boolean getIsActive() {
+        return isActive;
     }
 
-    public void setManagedLifecycle(Boolean managedLifecycle) {
-        this.managedLifecycle = managedLifecycle;
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
     }
 
-    public String getType() {
-        return type;
+    public Boolean getIsBanned() {
+        return isBanned;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getGroup() {
-        return group;
-    }
-
-    public void setGroup(String group) {
-        this.group = group;
-    }
-
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
-    public Long getDeveloperId() {
-        return developerId;
-    }
-
-    public void setDeveloperId(Long developerId) {
-        this.developerId = developerId;
-    }
-
-    public void setPeriod(Long period) {
-        this.period = period;
-    }
-
-    public Long getPeriod() {
-        return period;
+    public void setIsBanned(Boolean isBanned) {
+        this.isBanned = isBanned;
     }
 }

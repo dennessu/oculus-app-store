@@ -6,11 +6,7 @@
 
 package com.junbo.entitlement.db.entity;
 
-import com.junbo.entitlement.spec.def.EntitlementStatus;
-import com.junbo.entitlement.spec.def.EntitlementType;
-import com.junbo.entitlement.db.entity.def.IdentifiableType;
 import com.junbo.entitlement.db.entity.def.Shardable;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -24,26 +20,17 @@ import java.util.Date;
 @javax.persistence.Entity
 @Table(name = "entitlement_history")
 public class EntitlementHistoryEntity implements Shardable {
-    public static final String CREATE_ACTION = "CREATE";
-    public static final String UPDATE_ACTION = "UPDATE";
-
     private Long entitlementHistoryId;
     private String action;
     private Long entitlementId;
+    private Integer rev;
     private Long userId;
-    private Long developerId;
-    private String group;
-    private String tag;
-    private EntitlementType type;
     private Long entitlementDefinitionId;
-    private EntitlementStatus status;
-    private String statusReason;
+    private Boolean isBanned;
     private Date grantTime;
     private Date expirationTime;
-    private Long offerId;
-    private Boolean consumable;
     private Integer useCount;
-    private Boolean managedLifecycle;
+    private Boolean isDeleted;
     private Date createdTime;
     private String createdBy;
     private Date modifiedTime;
@@ -55,20 +42,15 @@ public class EntitlementHistoryEntity implements Shardable {
     public EntitlementHistoryEntity(String action, EntitlementEntity entitlementEntity) {
         this.action = action;
         this.entitlementId = entitlementEntity.getEntitlementId();
+        this.rev = entitlementEntity.getRev();
         this.entitlementDefinitionId = entitlementEntity.getEntitlementDefinitionId();
-        this.developerId = entitlementEntity.getDeveloperId();
-        this.group = entitlementEntity.getGroup();
-        this.tag = entitlementEntity.getTag();
-        this.type = entitlementEntity.getType();
         this.userId = entitlementEntity.getUserId();
-        this.status = entitlementEntity.getStatus();
-        this.statusReason = entitlementEntity.getStatusReason();
+        this.isBanned = entitlementEntity.getIsBanned();
         this.entitlementDefinitionId = entitlementEntity.getEntitlementDefinitionId();
         this.grantTime = entitlementEntity.getGrantTime();
         this.expirationTime = entitlementEntity.getExpirationTime();
-        this.offerId = entitlementEntity.getOfferId();
-        this.consumable = entitlementEntity.getConsumable();
         this.useCount = entitlementEntity.getUseCount();
+        this.isDeleted = entitlementEntity.getIsDeleted();
         this.setCreatedBy(entitlementEntity.getCreatedBy());
         this.setCreatedTime(entitlementEntity.getCreatedTime());
         this.setModifiedBy(entitlementEntity.getModifiedBy());
@@ -103,6 +85,15 @@ public class EntitlementHistoryEntity implements Shardable {
         this.entitlementId = entitlementId;
     }
 
+    @Column(name = "rev")
+    public Integer getRev() {
+        return rev;
+    }
+
+    public void setRev(Integer rev) {
+        this.rev = rev;
+    }
+
     @Column(name = "user_id")
     public Long getUserId() {
         return userId;
@@ -121,23 +112,13 @@ public class EntitlementHistoryEntity implements Shardable {
         this.entitlementDefinitionId = entitlementDefinitionId;
     }
 
-    @Column(name = "status")
-    @Type(type = IdentifiableType.TYPE)
-    public EntitlementStatus getStatus() {
-        return status;
+    @Column(name = "is_banned")
+    public Boolean getIsBanned() {
+        return isBanned;
     }
 
-    public void setStatus(EntitlementStatus status) {
-        this.status = status;
-    }
-
-    @Column(name = "status_reason")
-    public String getStatusReason() {
-        return statusReason;
-    }
-
-    public void setStatusReason(String statusReason) {
-        this.statusReason = statusReason;
+    public void setIsBanned(Boolean isBanned) {
+        this.isBanned = isBanned;
     }
 
     @Column(name = "grant_time")
@@ -158,24 +139,6 @@ public class EntitlementHistoryEntity implements Shardable {
         this.expirationTime = expirationTime;
     }
 
-    @Column(name = "offer_id")
-    public Long getOfferId() {
-        return offerId;
-    }
-
-    public void setOfferId(Long itemId) {
-        this.offerId = itemId;
-    }
-
-    @Column(name = "consumable")
-    public Boolean getConsumable() {
-        return consumable;
-    }
-
-    public void setConsumable(Boolean consumable) {
-        this.consumable = consumable;
-    }
-
     @Column(name = "use_count")
     public Integer getUseCount() {
         return useCount;
@@ -183,15 +146,6 @@ public class EntitlementHistoryEntity implements Shardable {
 
     public void setUseCount(Integer useCount) {
         this.useCount = useCount;
-    }
-
-    @Column(name = "managed_lifecycle")
-    public Boolean getManagedLifecycle() {
-        return managedLifecycle;
-    }
-
-    public void setManagedLifecycle(Boolean managedLifecycle) {
-        this.managedLifecycle = managedLifecycle;
     }
 
     @Column(name = "created_time")
@@ -230,41 +184,13 @@ public class EntitlementHistoryEntity implements Shardable {
         this.modifiedBy = modifiedBy;
     }
 
-    @Column(name = "developer_id")
-    public Long getDeveloperId() {
-        return developerId;
+    @Column(name = "is_deleted")
+    public Boolean getIsDeleted() {
+        return isDeleted;
     }
 
-    public void setDeveloperId(Long developerId) {
-        this.developerId = developerId;
-    }
-
-    @Column(name = "entitlement_group")
-    public String getGroup() {
-        return group;
-    }
-
-    public void setGroup(String group) {
-        this.group = group;
-    }
-
-    @Column(name = "tag")
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
-    @Column(name = "type")
-    @Type(type = IdentifiableType.TYPE)
-    public EntitlementType getType() {
-        return type;
-    }
-
-    public void setType(EntitlementType type) {
-        this.type = type;
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
     @Transient

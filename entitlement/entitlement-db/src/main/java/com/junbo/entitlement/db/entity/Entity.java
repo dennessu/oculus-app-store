@@ -20,11 +20,21 @@ import java.util.UUID;
  */
 @MappedSuperclass
 public abstract class Entity implements Shardable {
+    private Boolean isDeleted;
     private Date createdTime;
     private String createdBy;
     private Date modifiedTime;
     private String modifiedBy;
     private UUID trackingUuid;
+
+    @Column(name = "is_deleted")
+    public Boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 
     @Column(name = "created_time")
     public Date getCreatedTime() {

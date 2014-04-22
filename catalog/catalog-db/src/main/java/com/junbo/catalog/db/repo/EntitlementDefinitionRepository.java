@@ -7,6 +7,7 @@
 package com.junbo.catalog.db.repo;
 
 import com.junbo.catalog.db.dao.EntitlementDefinitionDao;
+import com.junbo.catalog.db.entity.EntitlementDefinitionEntity;
 import com.junbo.catalog.db.mapper.EntitlementDefinitionMapper;
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
@@ -34,13 +35,29 @@ public class EntitlementDefinitionRepository {
                 EntitlementDefinitionMapper.toEntitlementDefinitionEntity(entitlementDefinition));
     }
 
-    public List<EntitlementDefinition> getByParams(Long developerId,
-                                                   String group, String tag,
-                                                   String type, PageableGetOptions pageMetadata) {
+    public Long update(EntitlementDefinition entitlementDefinition) {
+
+        return entitlementDefinitionDao.update(
+                EntitlementDefinitionMapper.toEntitlementDefinitionEntity(entitlementDefinition));
+    }
+
+    public void delete(EntitlementDefinition entitlementDefinition) {
+        EntitlementDefinitionEntity entitlementDefinitionEntity =
+                EntitlementDefinitionMapper.toEntitlementDefinitionEntity(entitlementDefinition);
+        entitlementDefinitionEntity.setDeleted(true);
+        entitlementDefinitionDao.update(entitlementDefinitionEntity);
+    }
+
+
+    public List<EntitlementDefinition> getByParams(Long developerId, String clientId,
+                                                   String group, String tag, String type,
+                                                   Boolean isConsumable, PageableGetOptions pageMetadata) {
+
         return EntitlementDefinitionMapper.toEntitlementDefinitionList(
-                entitlementDefinitionDao.getByParams(developerId, group, tag,
+                entitlementDefinitionDao.getByParams(developerId, clientId, group, tag,
                         StringUtils.isEmpty(type) ? null : EntitlementType.valueOf(type),
-                        pageMetadata == null ? new PageableGetOptions() : pageMetadata));
+                        isConsumable,
+                        pageMetadata == null ? new PageableGetOptions().ensurePagingValid() : pageMetadata));
     }
 
     public EntitlementDefinition getByTrackingUuid(UUID trackingUuid) {

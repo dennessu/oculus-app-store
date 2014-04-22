@@ -21,9 +21,11 @@ public interface EntitlementDefinitionDao {
 
     EntitlementDefinitionEntity get(Long entitlementDefinitionId);
 
-    List<EntitlementDefinitionEntity> getByParams(Long developerId,
-                                                  String group, String tag,
-                                                  EntitlementType type, PageableGetOptions pageableGetOptions);
+    List<EntitlementDefinitionEntity> getByParams(Long developerId, String clientId,
+                                                  String group, String tag, EntitlementType type,
+                                                  Boolean isConsumable, PageableGetOptions pageableGetOptions);
+
+    Long update(EntitlementDefinitionEntity entitlementDefinition);
 
     EntitlementDefinitionEntity getByTrackingUuid(UUID trackingUuid);
 }
