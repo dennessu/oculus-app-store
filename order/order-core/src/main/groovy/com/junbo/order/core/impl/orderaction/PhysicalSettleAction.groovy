@@ -53,17 +53,31 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
             return facadeContainer.billingFacade.quoteBalance(
                     CoreBuilder.buildBalance(context.orderServiceContext.order, BalanceType.DEBIT)).syncRecover {
                 Throwable throwable ->
-                    LOGGER.error('name=Fail_To_Calculate_Tax', throwable)
+                    LOGGER.error('name=Fail_To_Quote_Balance', throwable)
                     throw AppErrors.INSTANCE.billingConnectionError().exception()
             }.then { Balance taxedBalance ->
                 if (taxedBalance == null) {
                     LOGGER.info('name=Fail_To_Calculate_Tax_Balance_Not_Found')
                     throw AppErrors.INSTANCE.balanceNotFound().exception()
                 }
-                CoreBuilder.buildPartialChargeBalance(context.orderServiceContext.order,
+                Balance balance = CoreBuilder.buildPartialChargeBalance(context.orderServiceContext.order,
                         BalanceType.DEBIT, taxedBalance)
-                // TODO: put balance when BILLING is ready
-                return Promise.pure(null)
+                // post balance with tax info
+                return facadeContainer.billingFacade.createBalance(balance).syncRecover { Throwable throwable ->
+                    LOGGER.error('name=Order_PhysicalSettle_CompleteCharge_Error', throwable)
+                    // TODO: retry/refund when failing to charge the remaining amount
+                    throw AppErrors.INSTANCE.billingConnectionError(CoreUtils.toAppErrors(throwable)).exception()
+                }.then { Balance resultBalance ->
+                    if (resultBalance == null) {
+                        LOGGER.error('name=Order_PhysicalSettle_CompleteCharge_Error_Balance_Null')
+                        throw AppErrors.INSTANCE.billingConnectionError().exception()
+                    }
+                    def billingEvent = BillingEventBuilder.buildBillingEvent(resultBalance)
+                    orderRepository.createBillingEvent(context.orderServiceContext.order.id.value, billingEvent)
+                    orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
+                        return CoreBuilder.buildActionResultForOrderEventAwareAction(context, billingEvent.status)
+                    }
+                }
             }
         }
         orderInternalService.markSettlement(context.orderServiceContext.order)
@@ -82,11 +96,6 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
                 throw AppErrors.INSTANCE.
                         billingConnectionError().exception()
             }
-            //            if (resultBalance.status != BalanceStatus.AWAITING_PAYMENT.name()) {
-            //                LOGGER.error('name=Order_PhysicalSettle_Failed')
-            //                throw AppErrors.INSTANCE.
-            //                        billingChargeFailed().exception()
-            //            }
             def billingEvent = BillingEventBuilder.buildBillingEvent(resultBalance)
             orderRepository.createBillingEvent(context.orderServiceContext.order.id.value, billingEvent)
             orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
