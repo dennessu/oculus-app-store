@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -50,11 +51,11 @@ public class EntitlementDefinitionRepository {
 
 
     public List<EntitlementDefinition> getByParams(Long developerId, String clientId,
-                                                   String group, String tag, String type,
+                                                   Set<String> groups, Set<String> tags, String type,
                                                    Boolean isConsumable, PageableGetOptions pageMetadata) {
 
         return EntitlementDefinitionMapper.toEntitlementDefinitionList(
-                entitlementDefinitionDao.getByParams(developerId, clientId, group, tag,
+                entitlementDefinitionDao.getByParams(developerId, clientId, groups, tags,
                         StringUtils.isEmpty(type) ? null : EntitlementType.valueOf(type),
                         isConsumable,
                         pageMetadata == null ? new PageableGetOptions().ensurePagingValid() : pageMetadata));
