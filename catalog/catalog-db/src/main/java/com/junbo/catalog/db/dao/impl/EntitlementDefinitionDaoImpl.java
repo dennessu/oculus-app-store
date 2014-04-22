@@ -13,12 +13,10 @@ import com.junbo.catalog.db.entity.EntitlementDefinitionEntity;
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import org.hibernate.Query;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Hibernate Impl of EntitlementDefinition Dao.
@@ -26,7 +24,7 @@ import java.util.UUID;
 public class EntitlementDefinitionDaoImpl extends BaseDaoImpl<EntitlementDefinitionEntity>
         implements EntitlementDefinitionDao {
     @Override
-    public List<EntitlementDefinitionEntity> getByParams(Long developerId, String clientId, String group, String tag,
+    public List<EntitlementDefinitionEntity> getByParams(Long developerId, String clientId, Set<String> groups, Set<String> tags,
                                                          EntitlementType type, Boolean isConsumable, PageableGetOptions pageableGetOptions) {
         StringBuilder queryString = new StringBuilder("select * from entitlement_definition" +
                 " where developer_id = (:developerId)");
@@ -42,13 +40,13 @@ public class EntitlementDefinitionDaoImpl extends BaseDaoImpl<EntitlementDefinit
             queryString.append(" and type = (:type)");
             params.put("type", type);
         }
-        if (!StringUtils.isEmpty(group)) {
-            queryString.append(" and entitlement_group = (:group)");
-            params.put("group", group);
+        if (!CollectionUtils.isEmpty(groups)) {
+            queryString.append(" and entitlement_group in (:groups)");
+            params.put("groups", groups);
         }
-        if (!StringUtils.isEmpty(tag)) {
-            queryString.append(" and tag = (:tag)");
-            params.put("tag", tag);
+        if (!CollectionUtils.isEmpty(tags)) {
+            queryString.append(" and tag in (:tags)");
+            params.put("tags", tags);
         }
         if (isConsumable != null) {
             queryString.append(" and consumable = (:isConsumable)");
@@ -59,7 +57,11 @@ public class EntitlementDefinitionDaoImpl extends BaseDaoImpl<EntitlementDefinit
 
         Query q = currentSession().createSQLQuery(queryString.toString()).addEntity(this.getEntityType());
         for (Map.Entry<String, Object> entry : params.entrySet()) {
-            q.setParameter(entry.getKey(), entry.getValue());
+            if (entry.getValue() instanceof Collection) {
+                q.setParameterList(entry.getKey(), (Collection) entry.getValue());
+            } else {
+                q.setParameter(entry.getKey(), entry.getValue());
+            }
         }
         q.setMaxResults(pageableGetOptions.getSize()).setFirstResult(pageableGetOptions.getStart());
 

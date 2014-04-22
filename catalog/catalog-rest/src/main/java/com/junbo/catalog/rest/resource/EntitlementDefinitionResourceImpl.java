@@ -16,12 +16,14 @@ import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -43,14 +45,14 @@ public class EntitlementDefinitionResourceImpl implements EntitlementDefinitionR
     @Override
     public Promise<Results<EntitlementDefinition>> getEntitlementDefinitions(
             UserId developerId, String clientId, String type,
-            String group, String tag, Boolean isConsumable, PageableGetOptions pageMetadata) {
+            Set<String> groups, Set<String> tags, Boolean isConsumable, PageableGetOptions pageMetadata) {
         pageMetadata.ensurePagingValid();
         List<EntitlementDefinition> entitlementDefinitions =
                 entitlementDefinitionService.getEntitlementDefinitions(
-                        developerId.getValue(), clientId, group, tag, type, isConsumable, pageMetadata);
+                        developerId.getValue(), clientId, groups, tags, type, isConsumable, pageMetadata);
         Results<EntitlementDefinition> result = new Results<EntitlementDefinition>();
         result.setItems(entitlementDefinitions);
-        result.setNext(buildNextUrl(developerId.getValue(), clientId, type, group, tag, pageMetadata));
+        result.setNext(buildNextUrl(developerId.getValue(), clientId, type, groups, tags, pageMetadata));
         return Promise.pure(result);
     }
 
@@ -92,8 +94,8 @@ public class EntitlementDefinitionResourceImpl implements EntitlementDefinitionR
     }
 
     private Link buildNextUrl(Long developerId, String clientId,
-                              String type, String group,
-                              String tag, PageableGetOptions pageMetadata) {
+                              String type, Set<String> groups,
+                              Set<String> tags, PageableGetOptions pageMetadata) {
         UriBuilder builder = uriInfo.getBaseUriBuilder()
                 .path("entitlement-definitions").queryParam("developerId", developerId);
         if (!StringUtils.isEmpty(clientId)) {
@@ -102,11 +104,15 @@ public class EntitlementDefinitionResourceImpl implements EntitlementDefinitionR
         if (!StringUtils.isEmpty(type)) {
             builder = builder.queryParam("type", type);
         }
-        if (!StringUtils.isEmpty(group)) {
-            builder = builder.queryParam("group", group);
+        if (!CollectionUtils.isEmpty(groups)) {
+            for (String group : groups){
+                builder = builder.queryParam("groups", group);
+            }
         }
-        if (!StringUtils.isEmpty(tag)) {
-            builder = builder.queryParam("tag", tag);
+        if (!CollectionUtils.isEmpty(tags)) {
+            for (String tag : tags){
+                builder = builder.queryParam("tags", tag);
+            }
         }
         builder = buildPageParams(builder, pageMetadata);
 

@@ -7,29 +7,37 @@
 package com.junbo.notification.core;
 
 import javax.jms.*;
-import java.util.UUID;
 
 /**
- * Created by xmchen on 14-1-21.
+ * BaseListener.
  */
 public abstract class BaseListener implements MessageListener {
-
     public BaseListener() {
 
     }
 
     public void onMessage(Message message) {
-        if (message instanceof TextMessage) {
-            try {
-                onTextMessage(UUID.randomUUID().toString(), ((TextMessage) message).getText());
-            } catch (JMSException ex) {
-                throw new NotificationException(ex);
+        try {
+            String eventId = message.getStringProperty(Constant.EVENT_ID);
+
+            if (message instanceof TextMessage) {
+                onMessage(eventId, ((TextMessage) message).getText());
+            } else if (message instanceof ObjectMessage) {
+                onMessage(eventId, ((ObjectMessage) message).getObject());
+            } else {
+                throw new NotificationException("Unrecognized message type.");
             }
-        } else  {
-            throw new NotificationException("Message should be a TextMessage");
+        } catch (JMSException e) {
+            throw new NotificationException(e);
         }
     }
 
-    protected abstract void onTextMessage(final String eventId, final String message);
+    protected void onMessage(final String eventId, final String content) {
+        throw new NotificationException("Unimplemented.");
+    }
+
+    protected void onMessage(final String eventId, final Object content) {
+        throw new NotificationException("Unimplemented.");
+    }
 }
 
