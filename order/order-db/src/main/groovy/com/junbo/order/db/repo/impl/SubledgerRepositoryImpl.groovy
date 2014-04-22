@@ -46,6 +46,7 @@ class SubledgerRepositoryImpl implements SubledgerRepository {
         def subledgerEntity = modelMapper.toSubledgerEntity(subledger, new MappingContext())
         subledgerEntity.subledgerId = idGeneratorFacade.nextId(SubledgerId, subledger.sellerId.value)
         subledgerDao.create(subledgerEntity)
+        subledger.subledgerId = new SubledgerId(subledgerEntity.subledgerId)
         Utils.fillDateInfo(subledger, subledgerEntity)
         return subledger
     }
@@ -100,6 +101,7 @@ class SubledgerRepositoryImpl implements SubledgerRepository {
         def subledgerItemEntity = modelMapper.toSubledgerItemEntity(subledgerItem, new MappingContext())
         subledgerItemEntity.subledgerItemId = idGeneratorFacade.nextId(SubledgerItemId, subledgerItem.orderItemId.value)
         subledgerItemDao.create(subledgerItemEntity)
+        subledgerItem.subledgerItemId = new SubledgerItemId(subledgerItemEntity.subledgerItemId)
         Utils.fillDateInfo(subledgerItem, subledgerItemEntity)
         return subledgerItem
     }
@@ -107,7 +109,7 @@ class SubledgerRepositoryImpl implements SubledgerRepository {
     @Override
     List<SubledgerItem> getSubledgerItem(Object shardKey, String status, PageParam pageParam) {
         List<SubledgerItem> result = []
-        subledgerItemDao.getByStatus(shardKey,
+        subledgerItemDao.getByStatus((Integer) shardKey,
                 SubledgerItemStatus.valueOf(status),
                 pageParam.start, pageParam.count).each { SubledgerItemEntity entity ->
             result << modelMapper.toSubledgerItemModel(entity, new MappingContext())

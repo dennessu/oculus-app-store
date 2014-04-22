@@ -111,7 +111,8 @@ class OrderRepositoryImpl implements OrderRepository {
     @Override
     List<Order> getOrdersByStatus(Object shardKey, List<String> statusList,
                                   boolean updatedByAscending, PageParam pageParam) {
-        return orderDao.readByStatus(shardKey, statusList.collect { String status -> OrderStatus.valueOf(status) },
+        return orderDao.readByStatus((Integer) shardKey,
+                statusList.collect { String status -> OrderStatus.valueOf(status) },
                 updatedByAscending, pageParam?.start, pageParam?.count).collect { OrderEntity entity ->
             modelMapper.toOrderModel(entity, new MappingContext())
         }
