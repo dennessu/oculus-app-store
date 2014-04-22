@@ -12,6 +12,7 @@ import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -21,7 +22,7 @@ import java.util.UUID;
 public interface EntitlementDefinitionService {
     EntitlementDefinition getEntitlementDefinition(Long entitlementDefinitionId);
 
-    List<EntitlementDefinition> getEntitlementDefinitions(Long developerId, String clientId, String group, String tag,
+    List<EntitlementDefinition> getEntitlementDefinitions(Long developerId, String clientId, Set<String> groups, Set<String> tags,
                                                           String type, Boolean isConsumable, PageableGetOptions pageMetadata);
 
     Long createEntitlementDefinition(EntitlementDefinition entitlementDefinition);
