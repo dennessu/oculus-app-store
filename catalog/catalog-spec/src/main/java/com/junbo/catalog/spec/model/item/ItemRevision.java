@@ -34,6 +34,9 @@ public class ItemRevision extends BaseRevisionModel {
     private String type;
     private String sku;
     private Price msrp;
+    private String walletCurrencyType;
+    private String walletCurrency;
+    private String walletAmount;
     private ExtensibleProperties digitalProperties;
     private ExtensibleProperties ewalletProperties;
     private ExtensibleProperties physicalProperties;
@@ -84,6 +87,30 @@ public class ItemRevision extends BaseRevisionModel {
 
     public void setMsrp(Price msrp) {
         this.msrp = msrp;
+    }
+
+    public String getWalletCurrencyType() {
+        return walletCurrencyType;
+    }
+
+    public void setWalletCurrencyType(String walletCurrencyType) {
+        this.walletCurrencyType = walletCurrencyType;
+    }
+
+    public String getWalletCurrency() {
+        return walletCurrency;
+    }
+
+    public void setWalletCurrency(String walletCurrency) {
+        this.walletCurrency = walletCurrency;
+    }
+
+    public String getWalletAmount() {
+        return walletAmount;
+    }
+
+    public void setWalletAmount(String walletAmount) {
+        this.walletAmount = walletAmount;
     }
 
     public ExtensibleProperties getDigitalProperties() {
