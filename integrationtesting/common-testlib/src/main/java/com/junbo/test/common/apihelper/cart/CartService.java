@@ -7,6 +7,7 @@
 package com.junbo.test.common.apihelper.cart;
 
 import com.junbo.cart.spec.model.Cart;
+import java.util.List;
 
 /**
  * Created by jiefeng on 14-3-19.
@@ -25,9 +26,9 @@ public interface CartService {
 
     String getCartPrimary(String userId, int expectedResponseCode) throws Exception;
 
-    String  getCartByName(String userId, String cartName) throws Exception;
+    List<String> getCartByName(String userId, String cartName) throws Exception;
 
-    String  getCartByName(String userId, String cartName, int expectedResponseCode) throws Exception;
+    List<String> getCartByName(String userId, String cartName, int expectedResponseCode) throws Exception;
 
     String  updateCart(String userId, String cartId, Cart cart) throws Exception;
 

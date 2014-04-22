@@ -42,7 +42,8 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     private final String catalogServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.CATALOG) + "offers";
     private final String defaultOfferFileName = "defaultOffer";
     private final String defaultItemRevisionFileName = "defaultItemRevision";
-    private final String defaultOfferRevisionFileName = "defaultOfferRevision";
+    private final String defaultDigitalOfferRevisionFileName = "defaultDigitalOfferRevision";
+    private final String defaultPhysicalOfferRevisionFileName = "defaultPhysicalOfferRevision";
     private LogHelper logger = new LogHelper(OfferServiceImpl.class);
     private static OfferService instance;
     private boolean offerLoaded;
@@ -143,7 +144,9 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
         if (!offerLoaded){
             this.loadAllOffers();
+            this.loadAllOfferRevisions();
             this.loadAllItems();
+            this.loadAllItemRevisions();
             this.postPredefinedOffer();
             offerLoaded = true;
         }
@@ -156,9 +159,19 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         this.getOffer(paraMap);
     }
 
+    private void loadAllOfferRevisions() throws Exception {
+        HashMap<String, String> paraMap = new HashMap<>();
+        OfferRevisionServiceImpl.instance().getOfferRevisions(paraMap);
+    }
+
     private void loadAllItems() throws Exception {
         HashMap<String, String> paraMap = new HashMap<>();
         itemService.getItem(paraMap);
+    }
+
+    private void loadAllItemRevisions() throws Exception {
+        HashMap<String, String> paraMap = new HashMap<>();
+        ItemRevisionServiceImpl.instance().getItemRevisions(paraMap);
     }
 
     private void postPredefinedOffer() throws Exception {
@@ -212,8 +225,16 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         String offerId = this.postOffer(offerForPost);
 
         //Post offer revision
-        String strOfferRevisionContent = readFileContent(String.format("testOfferRevisions/%s.json",
-                defaultOfferRevisionFileName));
+        String strOfferRevisionContent;
+        if (offerType.equalsIgnoreCase("physical")) {
+            strOfferRevisionContent = readFileContent(String.format("testOfferRevisions/%s.json",
+                    defaultPhysicalOfferRevisionFileName));
+        }
+        else {
+            strOfferRevisionContent = readFileContent(String.format("testOfferRevisions/%s.json",
+                    defaultDigitalOfferRevisionFileName));
+        }
+
         OfferRevision offerRevisionForPost = new JsonMessageTranscoder().decode(
                 new TypeReference<OfferRevision>() {}, strOfferRevisionContent);
 
