@@ -1,6 +1,6 @@
 package com.junbo.fulfilment.rest.interceptor;
 
-import junit.framework.Assert;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class RequestInterceptorTest {

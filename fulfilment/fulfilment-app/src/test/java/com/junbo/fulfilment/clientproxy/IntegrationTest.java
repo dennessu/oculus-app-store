@@ -198,7 +198,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         name.set("en_US", "test_offer_name");
         offer.setName(name);
         Long offerId = megaGateway.createOffer(offer);
-        junit.framework.Assert.assertNotNull(offerId);
+        Assert.assertNotNull(offerId);
 
         OfferRevision offerRevision = new OfferRevision();
         offerRevision.setOfferId(offerId);
@@ -221,7 +221,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         }});
 
         Long offerRevisionId = megaGateway.createOfferRevision(offerRevision);
-        junit.framework.Assert.assertNotNull(offerRevisionId);
+        Assert.assertNotNull(offerRevisionId);
 
         OfferRevision retrievedRevision = megaGateway.getOfferRevision(offerRevisionId);
         retrievedRevision.setStatus(Status.APPROVED);
@@ -243,7 +243,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         item.setSku("test_sku");
 
         final Long itemId = megaGateway.createItem(item);
-        junit.framework.Assert.assertNotNull(itemId);
+        Assert.assertNotNull(itemId);
 
         // create item revision
         ItemRevision itemRevision = new ItemRevision();
@@ -257,7 +257,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         itemRevision.setStatus(Status.DRAFT);
 
         Long itemRevisionId = megaGateway.createItemRevision(itemRevision);
-        junit.framework.Assert.assertNotNull(itemRevisionId);
+        Assert.assertNotNull(itemRevisionId);
 
         // approve item
         ItemRevision retrievedItemRevision = megaGateway.getItemRevision(itemRevisionId);
@@ -270,7 +270,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
 
         offer.setName(name);
         Long offerId = megaGateway.createOffer(offer);
-        junit.framework.Assert.assertNotNull(offerId);
+        Assert.assertNotNull(offerId);
 
         // create offer revision
         OfferRevision offerRevision = new OfferRevision();
@@ -300,7 +300,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         }});
 
         Long offerRevisionId = megaGateway.createOfferRevision(offerRevision);
-        junit.framework.Assert.assertNotNull(offerRevisionId);
+        Assert.assertNotNull(offerRevisionId);
 
         OfferRevision retrievedOfferRevision = megaGateway.getOfferRevision(offerRevisionId);
         retrievedOfferRevision.setStatus(Status.APPROVED);
