@@ -7,7 +7,7 @@ import com.junbo.sharding.ShardAlgorithm
 import com.junbo.sharding.core.annotations.ReadMethod
 import com.junbo.sharding.core.annotations.WriteMethod
 import groovy.transform.CompileStatic
-import junit.framework.Assert
+// import junit.framework.Assert
 
 import java.lang.annotation.Annotation
 import java.lang.reflect.InvocationHandler
@@ -91,7 +91,7 @@ class RepositoryProxy implements InvocationHandler {
     @Override
     Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Annotation[] annotations = method.declaredAnnotations
-        Assert.assertNotNull(annotations)
+        // Assert.assertNotNull(annotations)
 
         for (Annotation annotation : annotations) {
             if (annotation instanceof ReadMethod) {

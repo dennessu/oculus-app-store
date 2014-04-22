@@ -15,7 +15,7 @@ import com.ning.http.client.AsyncHttpClient
 import com.ning.http.client.AsyncHttpClient.BoundRequestBuilder
 import com.ning.http.client.Response
 import groovy.transform.CompileStatic
-import junit.framework.Assert
+//import junit.framework.Assert
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.http.HttpMethod
@@ -72,7 +72,7 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
 
         def couchResponse = JsonMarshaller.unmarshall(response.responseBody, CouchResponse)
 
-        Assert.assertTrue(couchResponse.ok)
+        //Assert.assertTrue(couchResponse.ok)
         entity.id = couchResponse.id
         entity.revision = couchResponse.revision
 
@@ -131,7 +131,7 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
 
         def couchResponse = JsonMarshaller.unmarshall(response.responseBody, CouchResponse)
 
-        Assert.assertTrue(couchResponse.ok)
+        //Assert.assertTrue(couchResponse.ok)
         entity.revision = couchResponse.revision
 
         return entity

@@ -7,7 +7,7 @@
 package com.junbo.common.jackson.serializer;
 
 import com.junbo.common.jackson.model.ResourceRef;
-import junit.framework.Assert;
+//import junit.framework.Assert;
 
 /**
  * ResourceIdSerializer.
@@ -18,14 +18,14 @@ import junit.framework.Assert;
 public class CascadeResourceIdSerializer extends ResourceIdSerializer {
     @Override
     protected Object unwrap(Object value) {
-        Assert.assertTrue(value instanceof CascadeResource);
+       // Assert.assertTrue(value instanceof CascadeResource);
 
         return ((CascadeResource) value).getPrimaryId();
     }
 
     @Override
     protected ResourceRef handleSingle(Object value) {
-        Assert.assertTrue(value instanceof CascadeResource);
+       // Assert.assertTrue(value instanceof CascadeResource);
 
         Object primaryId = ((CascadeResource) value).getPrimaryId();
         ResourceRef ref = new ResourceRef();
@@ -37,7 +37,7 @@ public class CascadeResourceIdSerializer extends ResourceIdSerializer {
 
     @Override
     protected String getResourceHref(Object value) {
-        Assert.assertTrue(value instanceof CascadeResource);
+      //  Assert.assertTrue(value instanceof CascadeResource);
         CascadeResource resource = (CascadeResource) value;
 
         Object[] encodedIds = new String[resource.getCascadeIds().length];

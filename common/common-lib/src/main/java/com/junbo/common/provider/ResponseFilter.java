@@ -35,7 +35,7 @@ public class ResponseFilter implements ContainerResponseFilter {
     @Override
     public void filter(ContainerRequestContext requestContext,
                        ContainerResponseContext responseContext) throws IOException {
-        final MultivaluedMap<String,Object> headers = responseContext.getHeaders();
+        final MultivaluedMap<String, Object> headers = responseContext.getHeaders();
 
         headers.add("Access-Control-Allow-Origin", configService.getConfigValue(ACCESS_CONTROL_ALLOW_ORIGIN_NAME));
         headers.add("Access-Control-Allow-Headers", configService.getConfigValue(ACCESS_CONTROL_ALLOW_HEADER_NAME));
