@@ -8,12 +8,13 @@ package com.junbo.catalog.rest.resource;
 
 import com.junbo.catalog.core.EntitlementDefinitionService;
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefSearchParams;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.resource.EntitlementDefinitionResource;
 import com.junbo.common.id.EntitlementDefinitionId;
-import com.junbo.common.id.UserId;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
+import com.junbo.common.util.IdFormatter;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -23,7 +24,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -44,15 +44,16 @@ public class EntitlementDefinitionResourceImpl implements EntitlementDefinitionR
 
     @Override
     public Promise<Results<EntitlementDefinition>> getEntitlementDefinitions(
-            UserId developerId, String clientId, String type,
-            Set<String> groups, Set<String> tags, Boolean isConsumable, PageableGetOptions pageMetadata) {
+            EntitlementDefSearchParams searchParams, PageableGetOptions pageMetadata) {
         pageMetadata.ensurePagingValid();
         List<EntitlementDefinition> entitlementDefinitions =
                 entitlementDefinitionService.getEntitlementDefinitions(
-                        developerId.getValue(), clientId, groups, tags, type, isConsumable, pageMetadata);
+                        searchParams.getDeveloperId() == null ? null : searchParams.getDeveloperId().getValue(),
+                        searchParams.getClientId(), searchParams.getGroups(), searchParams.getTags(),
+                        searchParams.getType(), searchParams.getIsConsumable(), pageMetadata);
         Results<EntitlementDefinition> result = new Results<EntitlementDefinition>();
         result.setItems(entitlementDefinitions);
-        result.setNext(buildNextUrl(developerId.getValue(), clientId, type, groups, tags, pageMetadata));
+        result.setNext(buildNextUrl(searchParams, pageMetadata));
         return Promise.pure(result);
     }
 
@@ -93,24 +94,24 @@ public class EntitlementDefinitionResourceImpl implements EntitlementDefinitionR
         return Promise.pure(entitlementDefinitionService.getEntitlementDefinition(id));
     }
 
-    private Link buildNextUrl(Long developerId, String clientId,
-                              String type, Set<String> groups,
-                              Set<String> tags, PageableGetOptions pageMetadata) {
-        UriBuilder builder = uriInfo.getBaseUriBuilder()
-                .path("entitlement-definitions").queryParam("developerId", developerId);
-        if (!StringUtils.isEmpty(clientId)) {
-            builder = builder.queryParam("clientId", clientId);
+    private Link buildNextUrl(EntitlementDefSearchParams searchParams, PageableGetOptions pageMetadata) {
+        UriBuilder builder = uriInfo.getBaseUriBuilder().path("entitlement-definitions");
+        if (searchParams.getDeveloperId() != null) {
+            builder = builder.queryParam("developerId", IdFormatter.encodeId(searchParams.getDeveloperId()));
         }
-        if (!StringUtils.isEmpty(type)) {
-            builder = builder.queryParam("type", type);
+        if (!StringUtils.isEmpty(searchParams.getClientId())) {
+            builder = builder.queryParam("clientId", searchParams.getClientId());
         }
-        if (!CollectionUtils.isEmpty(groups)) {
-            for (String group : groups){
+        if (!StringUtils.isEmpty(searchParams.getType())) {
+            builder = builder.queryParam("type", searchParams.getType());
+        }
+        if (!CollectionUtils.isEmpty(searchParams.getGroups())) {
+            for (String group : searchParams.getGroups()) {
                 builder = builder.queryParam("groups", group);
             }
         }
-        if (!CollectionUtils.isEmpty(tags)) {
-            for (String tag : tags){
+        if (!CollectionUtils.isEmpty(searchParams.getTags())) {
+            for (String tag : searchParams.getTags()) {
                 builder = builder.queryParam("tags", tag);
             }
         }

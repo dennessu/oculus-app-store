@@ -142,7 +142,6 @@ public class BaseService {
     }
 
     protected void checkOauth(Entitlement entitlement) {
-
     }
 
     protected void checkDateFormat(String date) {

@@ -9,4 +9,5 @@ dependencies {
     compile (libraries.spring_expression)
     compile (libraries.spring_tx)
     compile (libraries.langur)
+    compile (libraries.guava)
 }
