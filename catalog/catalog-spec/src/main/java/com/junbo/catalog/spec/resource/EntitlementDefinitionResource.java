@@ -19,6 +19,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Set;
 
 /**
  * API for entitlementDefinition.
@@ -42,8 +43,8 @@ public interface EntitlementDefinitionResource {
             @QueryParam("developerId") UserId developerId,
             @QueryParam("clientId") String clientId,
             @QueryParam("type") String type,
-            @QueryParam("group") String group,
-            @QueryParam("tag") String tag,
+            @QueryParam("groups") Set<String> groups,
+            @QueryParam("tags") Set<String> tags,
             @QueryParam("isConsumable") Boolean isConsumable,
             @BeanParam PageableGetOptions pageMetadata);
 

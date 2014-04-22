@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -39,10 +40,10 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
 
     @Override
     public List<EntitlementDefinition> getEntitlementDefinitions(Long developerId, String clientId,
-                                                                 String group, String tag, String type,
+                                                                 Set<String> groups, Set<String> tags, String type,
                                                                  Boolean isConsumable, PageableGetOptions pageMetadata) {
         checkDeveloper(developerId);
-        return entitlementDefinitionRepository.getByParams(developerId, clientId, group, tag, type, isConsumable, pageMetadata);
+        return entitlementDefinitionRepository.getByParams(developerId, clientId, groups, tags, type, isConsumable, pageMetadata);
     }
 
     @Override
