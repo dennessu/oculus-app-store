@@ -22,8 +22,8 @@ public class EntitlementDefSearchParams {
     private String clientId;
     @QueryParam("developerId")
     private UserId developerId;
-    @QueryParam("type")
-    private String type;
+    @QueryParam("types")
+    private Set<String> types;
     @QueryParam("isConsumable")
     private Boolean isConsumable;
 
@@ -59,12 +59,12 @@ public class EntitlementDefSearchParams {
         this.developerId = developerId;
     }
 
-    public String getType() {
-        return type;
+    public Set<String> getTypes() {
+        return types;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setTypes(Set<String> types) {
+        this.types = types;
     }
 
     public Boolean getIsConsumable() {

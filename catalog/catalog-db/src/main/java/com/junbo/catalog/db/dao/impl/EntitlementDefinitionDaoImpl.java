@@ -25,7 +25,7 @@ public class EntitlementDefinitionDaoImpl extends BaseDaoImpl<EntitlementDefinit
         implements EntitlementDefinitionDao {
     @Override
     public List<EntitlementDefinitionEntity> getByParams(Long developerId, String clientId, Set<String> groups, Set<String> tags,
-                                                         EntitlementType type, Boolean isConsumable, PageableGetOptions pageableGetOptions) {
+                                                         Set<EntitlementType> types, Boolean isConsumable, PageableGetOptions pageableGetOptions) {
         StringBuilder queryString = new StringBuilder("select * from entitlement_definition" +
                 " where deleted = false");
         Map<String, Object> params = new HashMap<String, Object>();
@@ -40,9 +40,9 @@ public class EntitlementDefinitionDaoImpl extends BaseDaoImpl<EntitlementDefinit
                     clientId +
                     "\\\"\"}'\\:\\:text[] <@ (json_val_arr(in_app_context))");
         }
-        if (type != null) {
-            queryString.append(" and type = (:type)");
-            params.put("type", type);
+        if (!CollectionUtils.isEmpty(types)) {
+            queryString.append(" and type in (:types)");
+            params.put("types", types);
         }
         if (!CollectionUtils.isEmpty(groups)) {
             queryString.append(" and entitlement_group in (:groups)");

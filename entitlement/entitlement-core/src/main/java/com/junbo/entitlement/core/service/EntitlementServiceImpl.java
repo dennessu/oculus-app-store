@@ -183,18 +183,18 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             @Override
             public Object call() throws Exception {
                 EntitlementDefSearchParams params = new EntitlementDefSearchParams();
-                params.setType(EntitlementType.DEVELOPER.toString());
+                params.setTypes(Collections.singleton(EntitlementType.DEVELOPER.toString()));
                 return definitionFacade.getDefinitions(params).get(0);
             }
         });
     }
 
-    private EntitlementDefinition getDownloadDef(final Long itemId){
+    private EntitlementDefinition getDownloadDef(final Long itemId) {
         return (EntitlementDefinition) PermanentCache.ENTITLEMENT_DEFINITION.get("download#" + itemId.toString(), new Callable<Object>() {
             @Override
             public Object call() throws Exception {
                 EntitlementDefSearchParams params = new EntitlementDefSearchParams();
-                params.setType(EntitlementType.DOWNLOAD.toString());
+                params.setTypes(Collections.singleton(EntitlementType.DOWNLOAD.toString()));
                 params.setGroups(Collections.singleton(itemId.toString()));
                 List<EntitlementDefinition> result = definitionFacade.getDefinitions(params);
                 return CollectionUtils.isEmpty(result) ? null : result.get(0);
@@ -202,12 +202,12 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         });
     }
 
-    private EntitlementDefinition getAccessDef(final Long itemId){
+    private EntitlementDefinition getAccessDef(final Long itemId) {
         return (EntitlementDefinition) PermanentCache.ENTITLEMENT_DEFINITION.get("access#" + itemId.toString(), new Callable<Object>() {
             @Override
             public Object call() throws Exception {
                 EntitlementDefSearchParams params = new EntitlementDefSearchParams();
-                params.setType(EntitlementType.ONLINE_ACCESS.toString());
+                params.setTypes(Collections.singleton(EntitlementType.ONLINE_ACCESS.toString()));
                 params.setGroups(Collections.singleton(itemId.toString()));
                 List<EntitlementDefinition> result = definitionFacade.getDefinitions(params);
                 return CollectionUtils.isEmpty(result) ? null : result.get(0);
