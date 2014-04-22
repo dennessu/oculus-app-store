@@ -38,14 +38,12 @@ class UserTosRepositoryCloudantImpl extends CloudantClient<UserTosAgreement> imp
         if (entity.id == null) {
             entity.id = new UserTosAgreementId(idGenerator.nextId(entity.userId.value))
         }
-        super.cloudantPost(entity)
-        return get((UserTosAgreementId)entity.id)
+        return Promise.pure((UserTosAgreement)super.cloudantPost(entity))
     }
 
     @Override
     Promise<UserTosAgreement> update(UserTosAgreement entity) {
-        super.cloudantPut(entity)
-        return get((UserTosAgreementId)entity.id)
+        return Promise.pure((UserTosAgreement)super.cloudantPut(entity))
     }
 
     @Override

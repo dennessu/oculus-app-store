@@ -90,6 +90,7 @@ abstract class CloudantClient<T> implements  InitializingBean {
         def cloudantResponse = JsonMarshaller.unmarshall(response.responseBody, CloudantResponse)
 
         Assert.assertTrue(cloudantResponse.ok)
+        entity._rev = cloudantResponse.revision
 
         return entity
     }
@@ -136,6 +137,7 @@ abstract class CloudantClient<T> implements  InitializingBean {
         def cloudantResponse = JsonMarshaller.unmarshall(response.responseBody, CloudantResponse)
 
         Assert.assertTrue(cloudantResponse.ok)
+        entity._rev = cloudantResponse.revision
 
         return entity
     }
