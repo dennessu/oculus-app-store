@@ -4,6 +4,7 @@ import com.junbo.payment.core.BaseTest;
 import com.junbo.payment.core.PaymentCallbackService;
 import com.junbo.payment.core.provider.paypal.PayPalProviderServiceImpl;
 import com.junbo.payment.spec.enums.PIType;
+import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.enums.PropertyField;
 import com.junbo.payment.spec.model.*;
 import junit.framework.Assert;
@@ -48,22 +49,25 @@ public class PayPalProviderServiceTest extends BaseTest {
         });
         payment.setWebPaymentInfo(new WebPaymentInfo() {
             {
-                setReturnURL("http://www.abc.com");
+                setReturnURL("http://www.abc.com/?orderId=1234567");
                 setCancelURL("http://www.abc.com/cancel");
             }
         });
 
         PaymentTransaction result = paymentService.charge(payment).wrapped().get();
         Assert.assertNotNull(result.getWebPaymentInfo().getToken());
+        PaymentTransaction newStatus = paymentService.getUpdatedTransaction(result.getId()).wrapped().get();
+        Assert.assertEquals(newStatus.getStatus(), PaymentStatus.UNCONFIRMED.toString());
         Map<PropertyField, String> properties = new HashMap<>();
         properties.put(PropertyField.EXTERNAL_ACCESS_TOKEN, result.getWebPaymentInfo().getToken());
         properties.put(PropertyField.EXTERNAL_PAYER_ID, "zwh@123.com");
-
-        paymentService.getProviderTransaction(result.getId()).wrapped().get();
         //manual step: goo to the redirectRUL and save the PAYER_ID and token
         //paymentCallbackService.addPaymentProperties(result.getId(), properties);
         result = paymentService.confirm(result.getId(), payment).wrapped().get();
-        paymentService.getProviderTransaction(result.getId()).wrapped().get();
+        Assert.assertNotNull(result.getExternalToken());
+        Assert.assertNotNull(result.getStatus(), PaymentStatus.SETTLED.toString());
+        newStatus = paymentService.getUpdatedTransaction(result.getId()).wrapped().get();
+        Assert.assertEquals(newStatus.getStatus(), PaymentStatus.SETTLED.toString());
     }
 
     private PaymentInstrument buildPayPalRequest(){
