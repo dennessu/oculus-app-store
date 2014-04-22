@@ -8,6 +8,7 @@ import com.junbo.common.id.UserPasswordId
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
 import com.junbo.langur.core.promise.Promise
+import com.junbo.sharding.core.annotations.ReadMethod
 import groovy.transform.CompileStatic
 
 /**
@@ -15,5 +16,6 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface UserPasswordRepository extends IdentityBaseRepository<UserPassword, UserPasswordId> {
+    @ReadMethod
     Promise<List<UserPassword>> search(UserPasswordListOptions getOption)
 }

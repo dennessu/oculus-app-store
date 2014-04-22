@@ -33,7 +33,14 @@ class OrderServiceContext {
     List<PaymentInstrument> paymentInstruments
     List<Balance> balances
     ShippingAddress shippingAddress
-    Map<OfferId, OrderOfferRevision> offers
+    /**
+     * Offers in order in map structure
+     */
+    Map<OfferId, OrderOfferRevision> offersMap
+    /**
+     * Offers in order in list structure with the same sequence of order items
+     */
+    List<OrderOfferRevision> offers
     OrderEvent orderEvent
 
     OrderServiceContext(Order o) {

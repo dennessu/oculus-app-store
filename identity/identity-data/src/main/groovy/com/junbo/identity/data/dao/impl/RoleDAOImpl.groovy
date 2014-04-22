@@ -17,8 +17,9 @@ import org.hibernate.Session
 class RoleDAOImpl extends BaseDAO implements RoleDAO {
     @Override
     RoleEntity create(RoleEntity entity) {
-        entity.id = idGenerator.nextIdByShardId(shardAlgorithm.shardId())
-
+        if (entity.id == null) {
+            entity.id = idGenerator.nextIdByShardId(shardAlgorithm.shardId())
+        }
         Session session = currentSession(entity.id)
         session.save(entity)
         session.flush()

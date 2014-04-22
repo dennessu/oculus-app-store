@@ -139,6 +139,10 @@ class OrderServiceContextBuilder {
             return Promise.pure(Collections.emptyList())
         }
 
+        if (context.offers != null) {
+            return Promise.pure(context.offers)
+        }
+
         List<OrderOfferRevision> offers = []
         return Promise.each(context.order.orderItems.iterator()) { OrderItem oi ->
             facadeContainer.catalogFacade.getOfferRevision(oi.offer.value).syncThen { OrderOfferRevision of ->
@@ -149,7 +153,8 @@ class OrderServiceContextBuilder {
             offers?.each { OrderOfferRevision offer ->
                 offerMap.put(new OfferId(offer.catalogOfferRevision.offerId), offer)
             }
-            context.offers = offerMap
+            context.offersMap = offerMap
+            context.offers = offers
             return offers
         }
     }

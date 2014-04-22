@@ -49,8 +49,4 @@ public interface BalanceResource {
 
     @PUT
     Promise<Balance> putBalance(Balance balance);
-
-    @POST
-    @Path("/items-adjustment")
-    Promise<Balance> adjustItems(Balance balance);
 }

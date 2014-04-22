@@ -8,6 +8,7 @@ package com.junbo.identity.data.repository
 import com.junbo.common.id.UserId
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
+import com.junbo.sharding.core.annotations.ReadMethod
 import groovy.transform.CompileStatic
 
 /**
@@ -15,5 +16,6 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface UserRepository extends IdentityBaseRepository<User, UserId> {
+    @ReadMethod
     Promise<User> getUserByCanonicalUsername(String canonicalUsername)
 }

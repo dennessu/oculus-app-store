@@ -19,8 +19,9 @@ import org.hibernate.criterion.Restrictions
 class UserPinDAOImpl extends BaseDAO implements UserPinDAO {
     @Override
     UserPinEntity save(UserPinEntity entity) {
-        entity.id = idGenerator.nextId(entity.userId)
-
+        if (entity.id == null) {
+            entity.id = idGenerator.nextId(entity.userId)
+        }
         Session session = currentSession(entity.id)
         session.save(entity)
         session.flush()

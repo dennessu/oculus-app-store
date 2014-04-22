@@ -8,6 +8,7 @@ package com.junbo.billing.core.service
 
 import com.junbo.billing.clientproxy.IdentityFacade
 import com.junbo.billing.clientproxy.PaymentFacade
+import com.junbo.billing.core.publisher.AsyncChargePublisher
 import com.junbo.billing.db.repository.BalanceRepository
 import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
@@ -58,6 +59,9 @@ class BalanceServiceImpl implements BalanceService {
     @Autowired
     TaxService taxService
 
+    //@Autowired
+    //AsyncChargePublisher asyncChargePublisher
+
     private static final Logger LOGGER = LoggerFactory.getLogger(BalanceServiceImpl)
 
     private static final Set<String> SUPPORT_ASYNC_CHARGE_PI_TYPE
@@ -83,7 +87,7 @@ class BalanceServiceImpl implements BalanceService {
                 validateBalanceType(balance)
                 validateCurrency(balance)
                 validateCountry(balance)
-                validateBalance(balance)
+                validateBalance(balance, false)
 
                 return taxService.calculateTax(balance).then { Balance taxedBalance ->
                     computeTotal(taxedBalance)
@@ -99,6 +103,7 @@ class BalanceServiceImpl implements BalanceService {
 
                     if (savedBalance.isAsyncCharge) {
                         LOGGER.info('name=Async_Charge_Balance. balance id: ' + savedBalance.balanceId.value)
+                        //asyncChargePublisher.publish(savedBalance.balanceId.toString())
                         return Promise.pure(savedBalance)
                     }
                     return transactionService.processBalance(savedBalance).then { Balance returnedBalance ->
@@ -117,7 +122,7 @@ class BalanceServiceImpl implements BalanceService {
                 validateBalanceType(balance)
                 validateCurrency(balance)
                 validateCountry(balance)
-                validateBalance(balance)
+                validateBalance(balance, true)
 
                 return taxService.calculateTax(balance).then { Balance taxedBalance ->
                     computeTotal(taxedBalance)
@@ -294,19 +299,21 @@ class BalanceServiceImpl implements BalanceService {
         }
     }
 
-    private void validateBalance(Balance balance) {
-        if (balance.orderId == null) {
+    private void validateBalance(Balance balance, Boolean isQuote) {
+        if (!isQuote && balance.orderId == null) {
             throw AppErrors.INSTANCE.fieldMissingValue('orderId').exception()
         }
         if (balance.balanceItems == null || balance.balanceItems.size() == 0) {
             throw AppErrors.INSTANCE.fieldMissingValue('balanceItems').exception()
         }
         balance.balanceItems.each { BalanceItem balanceItem ->
-            if (balanceItem.orderItemId == null) {
-                throw AppErrors.INSTANCE.fieldMissingValue('balanceItem.orderItemId').exception()
-            }
-            if (balanceItem.orderId == null) {
-                balanceItem.orderId = balance.orderId
+            if (!isQuote) {
+                if (balanceItem.orderItemId == null) {
+                    throw AppErrors.INSTANCE.fieldMissingValue('balanceItem.orderItemId').exception()
+                }
+                if (balanceItem.orderId == null) {
+                    balanceItem.orderId = balance.orderId
+                }
             }
             if (balanceItem.amount == null) {
                 throw AppErrors.INSTANCE.fieldMissingValue('balanceItem.amount').exception()
@@ -357,41 +364,13 @@ class BalanceServiceImpl implements BalanceService {
         if (balance.taxStatus == TaxStatus.TAXED.name() && !balance.taxIncluded) {
             amount = amount + taxTotal
         }
-        amount = amount - discountTotal
+        //does not subtract the discount from amount, because the item amount has been discounted
+        //amount = amount - discountTotal
 
         balance.setTaxAmount(taxTotal)
         balance.setDiscountAmount(discountTotal)
 
         amount = currency.getValueByBaseUnits(amount)
         balance.setTotalAmount(amount)
-    }
-
-    @Override
-    Promise<Balance> adjustItems(Balance balance) {
-
-        if (balance.balanceId == null) {
-            throw AppErrors.INSTANCE.fieldMissingValue('balanceId').exception()
-        }
-        if (balance.balanceItems == null || balance.balanceItems.size() == 0) {
-            throw AppErrors.INSTANCE.fieldMissingValue('balanceItems').exception()
-        }
-
-        Balance savedBalance = balanceRepository.getBalance(balance.balanceId.value)
-        if (savedBalance == null) {
-            throw AppErrors.INSTANCE.balanceNotFound(balance.balanceId.value.toString()).exception()
-        }
-
-        balance.balanceItems.each { BalanceItem item ->
-            if (item.balanceItemId == null) {
-                throw AppErrors.INSTANCE.fieldMissingValue('balanceItems.balanceItemId').exception()
-            }
-            BalanceItem savedItem = savedBalance.getBalanceItem(item.balanceItemId)
-            if (savedItem == null) {
-                throw AppErrors.INSTANCE.balanceItemNotFound(item.balanceItemId.toString()).exception()
-            }
-
-        }
-
-        return Promise.pure(balance)
     }
 }

@@ -1,0 +1,112 @@
+
+body { margin: 0 auto; padding: 0; font: 11px Helvetica,Arial,Verdana,sans-serif; color: #333;}
+a{ text-decoration: none; color: #3b5998;}
+a:hover{ text-decoration: underline;}
+h3{ margin: 0;}
+
+input[type=text],
+input[type=number],
+input[type=email],
+input[type=password],
+select{ border: solid 1px #AFAFAF; height: 20px; line-height: 20px; border-right-color: #797979; border-bottom-color: #797979;}
+select{ height: 22px;}
+
+header,.container{ margin: 0 auto; width: 960px;}
+
+body header > nav{ line-height: 25px; color: #CCC; border-bottom: solid 1px #BCBCBC;}
+
+.clear{ clear: both; height: 0; overflow: hidden;}
+.line1{ margin: 5px 0 5px 0; border-top:solid 1px #CCC; height: 0; overflow: hidden;}
+
+.btn{ display: inline-block; padding: 0px 8px; line-height: 25px; min-width: 50px; border-radius:3px; border:solid 1px transparent;}
+.btn:active{box-shadow: inset 0 3px 5px rgba(0,0,0,0.125);}
+.btn-large{padding: 0px 10px; line-height: 30px; border-radius:4px;}
+.btn-small{padding: 0px 5px; line-height: 18px; min-width: 30px; border-radius:3px;}
+
+.btn-primary{ background-color:#428bca; border-color: #357ebd; color: #FFF; }
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active{ background-color: #3276b1; border-color: #285e8e; }
+.btn-orange{ background-color: #FF8A3C; border-color: #FF7920; color: #FFF;}
+.btn-orange:hover, .btn-orange:focus, .btn-orange:active, .btn-orange.active{ background-color: #FF6600; border-color: #E85C00; }
+.btn-cancel{ background-color: #fff; border-color: #ccc; color: #333;}
+.btn-cancel:hover, .btn-cancel:focus, .btn-cancel:active, .btn-cancel.active{ background-color: #ebebeb; border-color: #adadad; }
+.btn-primary.load,.btn-orange.load,.btn-cancel.load{ color: transparent; background: #FFF url("/images/loader.gif") no-repeat center center;}
+
+.box1, .box2{ padding: 15px; border: solid 1px #ccc; background-color: #fff;}
+.box1{ margin: 0 auto; width: 250px;}
+.box1 > h2, .box2 > h2{ margin: 0 0 10px 0;}
+.box1 p, .box2 p{ margin: 0 0 25px 0;}
+.box1 p.error, .box2 p.error{ margin: 0 0 10px 0; padding: 4px 0px 4px 2px; color: #f00;  border: solid 1px #C4AC09; background-color: #FCF8E3;}
+.box1 dl dt, .box2 dl dt{ line-height: 20px; font-weight: bold;}
+.box1 dl dd, .box2 dl dd{ margin: 0;}
+.box1 dl > dd > .error,
+.box2 dl > dd > .error{ display:block; line-height: 20px; color: #f00;}
+.box1 dl.radio dt lable{ display: inline-block; position: relative; padding-left: 22px; line-height: 18px;}
+.box1 dl.radio dt lable input{ position: absolute; left: 0px; top: 0px;}
+.box1 input[type=text],
+.box1 input[type=number],
+.box1 input[type=email],
+.box1 input[type=password]{ padding-left: 2px; width: 245px }
+.box1 button, .box1 input[type=submit]{ width: 248px }
+.box1 select{ width: 248px; height: 24px; }
+.box1 > dl.agreement > dd,
+.box1 > dl.agreement > dt,
+.box2 > dl.agreement > dd,
+.box2 > dl.agreement > dt{ margin-bottom: 10px; line-height: 16px;  }
+.box1 > dl.agreement > dd input,
+.box2 > dl.agreement > dd input{ float: left; }
+.box1 dl.agreement .error, .box2 dl.agreement .error{ display: block; color: #f00;}
+.box1 > .actions, .box2 > .actions{ margin: 20px 0 0 0;}
+.box1 > .actions > button,
+.box1 > .actions > input[type=submit],
+.box2 > .actions > button,
+.box2 > .actions > input[type=submit]{ display: block; margin-bottom: 20px;}
+.box1 > .actions > button:last-child,
+.box2 > .actions > button:last-child{  margin-bottom: 0px;}
+
+.box1 > .helper, .box2 > .helper{ margin: 40px 0 0 0;}
+.box1 > .helper > .message,
+.box2 > .helper > .message{ font-size: 16px; font-weight: bold; color: #f00;}
+
+.box1 .month{ width: 60px;}
+.box1 .day{ margin-left: 20px; width: 60px;}
+.box1 .year{margin-left: 20px; width: 83px;}
+.box1 .month.error, .box1 .day.error,.box1 .year.error{ display: inline-block;}
+.box1 .line1{ margin: 10px 0;}
+
+.alert{ padding: 15px 15px 10px 15px; min-width: 200px; width: 200px; border: solid 1px #CCC; background-color: #F7F7F7; box-shadow: 0 2px 20px rgba(0,0,0, .5); z-index: 9999;}
+.alert div{ margin-top: 30px; text-align: center;}
+.alert .error{margin: 0 0 10px 0; padding: 4px 0px 4px 2px; color: #f00;  border: solid 1px #C4AC09; background-color: #FCF8E3;}
+.alert dl.agreement > dd,
+.alert dl.agreement > dt,
+.alert dl.agreement > dd,
+.alert dl.agreement > dt{ margin: 0; margin-bottom: 10px; line-height: 16px;  }
+.alert dl.agreement > dd input,
+.alert dl.agreement > dd input{ float: left; }
+.alert dl.agreement .error{ display: block;}
+
+#ShadowLayer{ position: absolute; top: 0; left: 0; margin: 0 auto; padding: 0; width: 100%; height: 100%; visibility: visible; background-color: rgba(0,0,0,.5); z-index:9998; }
+.container{ margin: 0 auto; padding-top: 30px; background-color: #FFF;}
+.container > .categories{ float: left; width: 168px;}
+.container > .product_list{}
+.container .ember-animated-container{ margin: 0 auto; width: auto; height: auto;}
+
+.categories > ul{ margin: 15px 0 0 0; padding-left: 0px;}
+.categories > ul >  li{ display: block; padding-left: 10px; line-height: 22px;}
+
+
+/* Login */
+.login, .register{ margin: 30px auto 0 auto;}
+.register .month{ width: 60px;}
+.register .day{ margin-left: 20px; width: 60px;}
+.register .year{margin-left: 20px; width: 83px;}
+.captcha{ width: 450px;}
+
+/* modules */
+.modules{ padding-top: 30px;}
+
+.dev_center .sidebar{ float: left; width: 200px;}
+.dev_center .content{ float: right; width: 690px; position: relative; }
+
+.dev_center .alert{ display: none; position: absolute; top: 0px; left: 10px; width: 350px; min-height: 150px;}
+.dev_center .alert p{ min-height: 50px;}
+.dev_center .alert div{ text-align: right;}

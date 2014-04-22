@@ -21,6 +21,7 @@ dependencies {
 
     compile("com.wordnik:swagger-jersey2-jaxrs_2.10:${swaggerVersion}") {
         exclude group: "javax.ws.rs", module: "jsr311-api"
+        changing = true
     }
 
     compile "javax.ws.rs:javax.ws.rs-api:2.0"

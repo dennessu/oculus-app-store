@@ -11,7 +11,6 @@ import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.core.provider.braintree.BrainTreePaymentProviderServiceImpl;
 import com.junbo.payment.spec.internal.BrainTreeResource;
-import com.junbo.payment.spec.model.CreditCardRequest;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,31 +32,17 @@ public class BrainTreeResourceImpl implements BrainTreeResource {
     }
 
     @Override
-    public Promise<Response> deletePaymentInstrument(final String externalToken) {
-        PaymentInstrument pi = new PaymentInstrument(){
-            {
-                setCreditCardRequest(new CreditCardRequest(){
-                    {
-                        setExternalToken(externalToken);
-                    }
-                });
-            }
-        };
+    public Promise<Response> deletePaymentInstrument(String externalToken) {
+        PaymentInstrument pi = new PaymentInstrument();
+        pi.setExternalToken(externalToken);
         brainTreePaymentProviderService.delete(pi);
         return Promise.pure(Response.status(204).build());
     }
 
     @Override
-    public Promise<PaymentTransaction> postAuthorization(final String piToken, PaymentTransaction request) {
-        PaymentInstrument pi = new PaymentInstrument(){
-            {
-                setCreditCardRequest(new CreditCardRequest(){
-                    {
-                        setExternalToken(piToken);
-                    }
-                });
-            }
-        };
+    public Promise<PaymentTransaction> postAuthorization(String piToken, PaymentTransaction request) {
+        PaymentInstrument pi = new PaymentInstrument();
+        pi.setExternalToken(piToken);
         return brainTreePaymentProviderService.authorize(pi, request);
     }
 
@@ -67,16 +52,9 @@ public class BrainTreeResourceImpl implements BrainTreeResource {
     }
 
     @Override
-    public Promise<PaymentTransaction> postCharge(final String piToken,PaymentTransaction request) {
-        PaymentInstrument pi = new PaymentInstrument(){
-            {
-                setCreditCardRequest(new CreditCardRequest(){
-                    {
-                        setExternalToken(piToken);
-                    }
-                });
-            }
-        };
+    public Promise<PaymentTransaction> postCharge(String piToken,PaymentTransaction request) {
+        PaymentInstrument pi = new PaymentInstrument();
+        pi.setExternalToken(piToken);
         return brainTreePaymentProviderService.charge(pi, request);
     }
 

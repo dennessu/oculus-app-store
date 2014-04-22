@@ -47,9 +47,17 @@ public class TaxItemEntityDaoImpl extends BaseDao implements TaxItemEntityDao {
     }
 
     public List<TaxItemEntity> findByBalanceItemId(Long balanceItemId) {
-        Criteria criteria = currentSession(balanceItemId).createCriteria(TaxItemEntity.class).
-                add(Restrictions.eq("balanceItemId", balanceItemId));
+        Criteria criteria = currentSession(balanceItemId).createCriteria(TaxItemEntity.class);
+        criteria.add(Restrictions.eq("balanceItemId", balanceItemId));
+        criteria.add(Restrictions.eq("isDeleted", false));
         return criteria.list();
 
+    }
+
+    @Override
+    public void softDelete(Long taxItem) {
+        TaxItemEntity entity = this.get(taxItem);
+        entity.setIsDeleted(Boolean.TRUE);
+        this.update(entity);
     }
 }

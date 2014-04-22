@@ -46,8 +46,16 @@ public class DiscountItemEntityDaoImpl extends BaseDao implements DiscountItemEn
     }
 
     public List<DiscountItemEntity> findByBalanceItemId(Long balanceItemId) {
-        Criteria criteria = currentSession(balanceItemId).createCriteria(DiscountItemEntity.class).
-                add(Restrictions.eq("balanceItemId", balanceItemId));
+        Criteria criteria = currentSession(balanceItemId).createCriteria(DiscountItemEntity.class);
+        criteria.add(Restrictions.eq("balanceItemId", balanceItemId));
+        criteria.add(Restrictions.eq("isDeleted", false));
         return criteria.list();
+    }
+
+    @Override
+    public void softDelete(Long discountItemId) {
+        DiscountItemEntity entity = this.get(discountItemId);
+        entity.setIsDeleted(Boolean.TRUE);
+        this.update(entity);
     }
 }

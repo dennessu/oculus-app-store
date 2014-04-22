@@ -179,5 +179,6 @@ class MapperTest extends BaseTest {
                 'The order item id should not be different.'
         assert subledgerItem.orderItemId.value == returnedSubledgerItemEntity.orderItemId :
                 'The order item id should not be different.'
+        assert subledgerItemEntity.productItemId == returnedSubledgerItemEntity.productItemId
     }
 }

@@ -5,6 +5,8 @@
  */
 
 package com.junbo.order.jobs
+
+import com.junbo.order.core.impl.common.TransactionHelper
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.PageParam
@@ -13,6 +15,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 
+import javax.annotation.Resource
 import java.util.concurrent.Callable
 import java.util.concurrent.Future
 import java.util.concurrent.atomic.AtomicInteger
@@ -37,6 +40,9 @@ class OrderJob {
     ThreadPoolTaskExecutor  threadPoolTaskExecutor
 
     OrderProcessor orderProcessor
+
+    @Resource(name ='orderTransactionHelper')
+    TransactionHelper transactionHelper
 
     void execute() {
         LOGGER.info('name=OrderProcessJobStart')
@@ -82,9 +88,11 @@ class OrderJob {
     private List<Order> readOrdersForProcess() {
         List<Order> ordersAllShard = []
         allShards.each { Integer shardKey ->
-            def orders = orderRepository.getOrdersByStatus(shardKey, statusToProcess, true, new PageParam(
-                    start: 0, count: pageSizePerShard
-            ))
+            def orders = transactionHelper.executeInTransaction {
+                orderRepository.getOrdersByStatus(shardKey, statusToProcess, true, new PageParam(
+                        start: 0, count: pageSizePerShard
+                ))
+            }
             ordersAllShard.addAll(orders)
         }
         return shuffle(ordersAllShard)
@@ -105,9 +113,10 @@ class OrderJob {
 
     private void appendFuture(List<Future> futures, Future future) {
         futures.add(future)
-        if (futures.size() >= 2 * numOfFuturesToTrack) {
+        if (futures.size() >= numOfFuturesToTrack) {
+            def numOfFutureToRemove = numOfFuturesToTrack / 2
             Iterator<Future> iterator = futures.iterator()
-            for (int i = 0; i < numOfFuturesToTrack; ++i) {
+            for (int i = 0; i < numOfFutureToRemove; ++i) {
                 iterator.next().get()
                 iterator.remove()
             }

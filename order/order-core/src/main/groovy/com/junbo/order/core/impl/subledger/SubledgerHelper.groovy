@@ -8,13 +8,17 @@ import com.junbo.order.db.repo.SubledgerRepository
 import com.junbo.order.spec.model.Subledger
 import com.junbo.order.spec.model.SubledgerItem
 import groovy.transform.CompileStatic
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
 
 import java.math.RoundingMode
+import java.text.SimpleDateFormat
 
 /**
  * Created by fzhang on 4/10/2014.
  */
 @CompileStatic
+@Component('orderSubledgerHelper')
 class SubledgerHelper {
 
     private static final int MONTH_A_YEAR = 12
@@ -25,16 +29,22 @@ class SubledgerHelper {
 
     SubledgerItemContextBuilder subledgerItemContextBuilder
 
-    private Date originTime
+    private Date startTime
 
+    @Value('${order.subledger.duration}')
     private int durationInMonth
+
+    @Value('${order.subledger.starttime}')
+    void setStartTime(String originTime) {
+        this.startTime = new SimpleDateFormat('yyyy-MM-dd', Locale.US).parse(originTime)
+    }
 
     Date getSubledgerStartTime(Date sampleTime) {
         def result = Calendar.instance
-        def monthDiff = diffMonth(sampleTime, originTime)
+        def monthDiff = diffMonth(sampleTime, startTime)
 
         def deltaMonth = IntMath.divide(monthDiff, durationInMonth, RoundingMode.FLOOR) * durationInMonth
-        result.setTime(originTime)
+        result.setTime(startTime)
         result.add(Calendar.MONTH, deltaMonth)
 
         if (sampleTime.before(result.time)) {

@@ -2,6 +2,11 @@
     var Configs = {
 
         CookiesTimeout: 600 * 60 * 1000,
+        Google_Captcha_PublicKey: "6LeKhO4SAAAAAL53gitVTB5ddevC59wE-6usFCnT",
+        Feature: {
+            Captcha: false,
+            TFA: false
+        },
         CookiesName: {
             Code: "code",
             AccessToken: "access_token",
@@ -20,8 +25,12 @@
             AccessToken: "access_token",
             ConversationId: "cid",
             Event: "event",
-            RedirectUrl: "redirect_url"
+            RedirectUrl: "redirect_url",
+
+            LoginType: "login_type"   // [use login] code or token_idtoken
         },
+        SaveQueryStrings: ["cid", "event", "id_token", "access_token", "redirect_url", "login_type"],
+
         SettingTypeEnum:{
             Cookie: 'cookie'
         },
@@ -83,7 +92,6 @@
 
             Results: "results"
         },
-        SaveQueryStrings: ["cid", "event", "id_token", "access_token", "redirect_url"],
 
         /*
          Rules:{

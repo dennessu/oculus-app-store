@@ -31,6 +31,4 @@ public interface BalanceService {
     Promise<List<Balance>> getBalances(OrderId orderId);
 
     Promise<Balance> putBalance(Balance balance);
-
-    Promise<Balance> adjustItems(Balance balance);
 }

@@ -25,8 +25,6 @@ public class CreditCardRequest {
     @FilterIn
     private Date lastBillingDate;
     @FilterIn
-    private String externalToken;
-    @FilterIn
     private String type;
     @FilterIn
     private String prepaid;
@@ -59,14 +57,6 @@ public class CreditCardRequest {
 
     public void setEncryptedCvmCode(String encryptedCvmCode) {
         this.encryptedCvmCode = encryptedCvmCode;
-    }
-
-    public String getExternalToken() {
-        return externalToken;
-    }
-
-    public void setExternalToken(String externalToken) {
-        this.externalToken = externalToken;
     }
 
     public String getType() {
