@@ -57,7 +57,7 @@ public class CartCheckout extends BaseTestClass {
 
         testDataProvider.emptyCartByCartId(uid, cartId);
 
-        validationHelper.validateEmailHistory(uid , orderId);
+        validationHelper.validateEmailHistory(uid, orderId);
     }
 
     @Property(
@@ -91,11 +91,11 @@ public class CartCheckout extends BaseTestClass {
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         String creditCardId = testDataProvider.postCreditCardToUser(uid, creditCardInfo);
 
-        ShippingAddressInfo   shippingAddressInfo = ShippingAddressInfo.getRandomShippingAddress(Country.DEFAULT);
+        ShippingAddressInfo shippingAddressInfo = ShippingAddressInfo.getRandomShippingAddress(Country.DEFAULT);
         String shippingAddressId = testDataProvider.postShippingAddressToUser(uid, shippingAddressInfo);
 
         String orderId = testDataProvider.postOrderByCartId(
-                uid, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, shippingAddressId);
+                uid, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, shippingAddressId, true);
 
         orderId = testDataProvider.updateOrderTentative(orderId, false);
 
@@ -104,7 +104,7 @@ public class CartCheckout extends BaseTestClass {
 
         testDataProvider.emptyCartByCartId(uid, cartId);
 
-        validationHelper.validateEmailHistory(uid , orderId);
+        validationHelper.validateEmailHistory(uid, orderId);
     }
 
 }
