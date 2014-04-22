@@ -39,8 +39,7 @@ class UserSecurityQuestionAttemptRepositoryCloudantImpl extends CloudantClient<U
         if (entity.id == null) {
             entity.id = new UserSecurityQuestionVerifyAttemptId(idGenerator.nextId(entity.userId.value))
         }
-        super.cloudantPost(entity)
-        return get((UserSecurityQuestionVerifyAttemptId)entity.id)
+        return Promise.pure((UserSecurityQuestionVerifyAttempt)super.cloudantPost(entity))
     }
 
     @Override

@@ -11,7 +11,7 @@ import com.junbo.common.util.JsonMarshaller
 import com.junbo.common.util.Utils
 import com.ning.http.client.AsyncHttpClient
 import com.ning.http.client.Response
-import junit.framework.Assert
+//import junit.framework.Assert
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.http.HttpMethod
@@ -90,6 +90,7 @@ abstract class CloudantClient<T> implements  InitializingBean {
         def cloudantResponse = JsonMarshaller.unmarshall(response.responseBody, CloudantResponse)
 
         Assert.assertTrue(cloudantResponse.ok)
+        entity._rev = cloudantResponse.revision
 
         return entity
     }
@@ -136,6 +137,7 @@ abstract class CloudantClient<T> implements  InitializingBean {
         def cloudantResponse = JsonMarshaller.unmarshall(response.responseBody, CloudantResponse)
 
         Assert.assertTrue(cloudantResponse.ok)
+        entity._rev = cloudantResponse.revision
 
         return entity
     }

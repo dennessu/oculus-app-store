@@ -254,8 +254,8 @@ public class CartTesting extends TestClass {
 
         //get offer by name
         logger.LogSample("Get user's cart according to cart name");
-        String rtnCartId = CartService.getCartByName(user, cartName);
-        Cart rtnCart = Master.getInstance().getCart(rtnCartId);
+        List<String> rtnCartId = CartService.getCartByName(user, cartName);
+        Cart rtnCart = Master.getInstance().getCart(rtnCartId.get(0));
         //validation
         Assert.assertEquals(rtnCart.getCartName(), cartName);
         checkOfferQuantity(rtnCart, testOffer1, 3L);

@@ -39,14 +39,12 @@ class DeviceRepositoryCloudantImpl extends CloudantClient<Device> implements Dev
         if (device.id == null) {
             device.id = new DeviceId(idGenerator.nextIdByShardId(shardAlgorithm.shardId()))
         }
-        super.cloudantPost(device)
-        return get((DeviceId)device.id)
+        return Promise.pure((Device)super.cloudantPost(device))
     }
 
     @Override
     Promise<Device> update(Device device) {
-        super.cloudantPut(device)
-        return get((DeviceId)device.id)
+        return Promise.pure((Device)super.cloudantPut(device))
     }
 
     @Override
