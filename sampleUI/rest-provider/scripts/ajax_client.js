@@ -1,9 +1,9 @@
 /**
  * Created by Haiwei on 2014/4/18.
  */
-var AJAXClient = function(){};
+var RestClient = function(){};
 
-AJAXClient.prototype.Request = function(options, data, cb){
+RestClient.prototype.Request = function(options, data, cb){
 
     var async = true;
     var cache = false;

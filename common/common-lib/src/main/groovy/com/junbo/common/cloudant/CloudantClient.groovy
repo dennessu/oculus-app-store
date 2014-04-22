@@ -114,9 +114,11 @@ abstract class CloudantClient<T> implements  InitializingBean {
         entity._rev = cloudantDoc._rev
         entity.updatedTime = new Date()
         entity.updatedBy = 'todo-cloudant'
+        def originalResourceAge = entity.resourceAge
         entity.resourceAge = ((String)entity._rev).split('-')[0]
 
         def response = executeRequest(HttpMethod.PUT, entity.id.toString(), [:], entity, true)
+        entity.resourceAge = originalResourceAge
 
         if (response.statusCode != HttpStatus.CREATED.value()) {
             CloudantError cloudantError = JsonMarshaller.unmarshall(response.responseBody, CloudantError)

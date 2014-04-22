@@ -95,11 +95,15 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
     }
 
     private void generateEntitlementDef(Item item) {
-        if (ItemType.DIGITAL.equalsIgnoreCase(item.getType())) {
+        if (ItemType.DIGITAL.equals(item.getType())||ItemType.SUBSCRIPTION.equals(item.getType())) {
             EntitlementDefinition entitlementDef = new EntitlementDefinition();
             entitlementDef.setDeveloperId(item.getOwnerId());
             entitlementDef.setGroup(item.getItemId().toString());
-            entitlementDef.setType(EntitlementType.DOWNLOAD.name());
+            if (ItemType.DIGITAL.equals(item.getType())) {
+                entitlementDef.setType(EntitlementType.DOWNLOAD.name());
+            } else {
+                entitlementDef.setType(EntitlementType.SUBSCRIPTIONS.name());
+            }
             entitlementDef.setTag(item.getItemId().toString());
             Long entitlementDefId = entitlementDefService.createEntitlementDefinition(entitlementDef);
             item.setEntitlementDefId(entitlementDefId);

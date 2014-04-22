@@ -13,7 +13,9 @@ import com.junbo.order.db.dao.OrderDao;
 import com.junbo.order.db.entity.OrderEntity;
 import com.junbo.order.db.entity.enums.OrderStatus;
 import com.junbo.sharding.IdGeneratorFacade;
+import com.junbo.sharding.ShardAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -29,6 +31,10 @@ public class OrderDaoTest extends BaseTest {
 
     @Autowired
     protected IdGeneratorFacade idGenerator;
+
+    @Autowired
+    @Qualifier("userShardAlgorithm")
+    private ShardAlgorithm shardAlgorithm;
 
     @Test
     public void testCreateAndRead() {
@@ -116,7 +122,8 @@ public class OrderDaoTest extends BaseTest {
             orderDao.create(entity);
         }
 
-        List<OrderEntity> orders = orderDao.readByStatus(userId, Arrays.asList(orderStatus), true, 0, 1000);
+        List<OrderEntity> orders = orderDao.readByStatus(shardAlgorithm.shardId(userId),
+                Arrays.asList(orderStatus), true, 0, 1000);
         for (int i = 0;i < orders.size(); ++i) {
             Assert.assertEquals(orders.get(i).getOrderStatusId(), orderStatus);
             if (i > 0) {
@@ -124,6 +131,7 @@ public class OrderDaoTest extends BaseTest {
             }
         }
 
-        Assert.assertEquals(orderDao.readByStatus(userId, Arrays.asList(orderStatus), true, 0, 3).size(), 3);
+        Assert.assertEquals(orderDao.readByStatus(shardAlgorithm.shardId(userId),
+                Arrays.asList(orderStatus), true, 0, 3).size(), 3);
     }
 }

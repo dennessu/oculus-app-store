@@ -25,20 +25,24 @@ public class EntitlementDefinitionDaoImpl extends BaseDaoImpl<EntitlementDefinit
         implements EntitlementDefinitionDao {
     @Override
     public List<EntitlementDefinitionEntity> getByParams(Long developerId, String clientId, Set<String> groups, Set<String> tags,
-                                                         EntitlementType type, Boolean isConsumable, PageableGetOptions pageableGetOptions) {
+                                                         Set<EntitlementType> types, Boolean isConsumable, PageableGetOptions pageableGetOptions) {
         StringBuilder queryString = new StringBuilder("select * from entitlement_definition" +
-                " where developer_id = (:developerId)");
+                " where deleted = false");
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("developerId", developerId);
+
+        if (developerId != null) {
+            queryString.append(" and developer_id = (:developerId)");
+            params.put("developerId", developerId);
+        }
 
         if (!StringUtils.isEmpty(clientId)) {
             queryString.append(" and '{\"\\\"" +
                     clientId +
                     "\\\"\"}'\\:\\:text[] <@ (json_val_arr(in_app_context))");
         }
-        if (type != null) {
-            queryString.append(" and type = (:type)");
-            params.put("type", type);
+        if (!CollectionUtils.isEmpty(types)) {
+            queryString.append(" and type in (:types)");
+            params.put("types", types);
         }
         if (!CollectionUtils.isEmpty(groups)) {
             queryString.append(" and entitlement_group in (:groups)");
@@ -52,8 +56,6 @@ public class EntitlementDefinitionDaoImpl extends BaseDaoImpl<EntitlementDefinit
             queryString.append(" and consumable = (:isConsumable)");
             params.put("isConsumable", isConsumable);
         }
-
-        queryString.append(" and deleted = false");
 
         Query q = currentSession().createSQLQuery(queryString.toString()).addEntity(this.getEntityType());
         for (Map.Entry<String, Object> entry : params.entrySet()) {

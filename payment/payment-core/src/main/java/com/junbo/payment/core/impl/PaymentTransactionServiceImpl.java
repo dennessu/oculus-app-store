@@ -7,7 +7,6 @@
 package com.junbo.payment.core.impl;
 
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
@@ -21,9 +20,6 @@ import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -98,7 +94,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         addPaymentEvent(existedTransaction, submitCreateEvent);
         //commit the payment event
         updatePaymentAndSaveEvent(existedTransaction, Arrays.asList(submitCreateEvent),
-                api, PaymentStatus.SETTLEMENT_SUBMIT_CREATED, false);
+                api, createStatus, false);
         PaymentInstrument pi = getPaymentInstrument(existedTransaction);
         final PaymentProviderService provider = getPaymentProviderService(pi);
         return provider.capture(existedTransaction.getExternalToken(), request).
@@ -343,8 +339,48 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
     }
 
     @Override
-    public Promise<PaymentTransaction> refund(Long paymentId, PaymentTransaction request) {
-        return null;
+    public Promise<PaymentTransaction> refund(Long paymentId, final PaymentTransaction request) {
+        validateRequest(request, false, true);
+        final PaymentAPI api = PaymentAPI.Refund;
+        LOGGER.info("capture for payment:" + paymentId);
+        PaymentTransaction trackingResult = getResultByTrackingUuid(request, api);
+        if(trackingResult != null){
+            return Promise.pure(trackingResult);
+        }
+        final PaymentTransaction existedTransaction = getPaymentById(paymentId);
+        validateTransactionRequest(paymentId, request, existedTransaction);
+
+        CloneRequest(request, existedTransaction);
+        PaymentStatus createStatus = PaymentStatus.REFUND_CREATED;
+        existedTransaction.setStatus(createStatus.toString());
+        PaymentEvent submitCreateEvent = createPaymentEvent(request,
+                PaymentEventType.REFUND_CREATE, createStatus, SUCCESS_EVENT_RESPONSE);
+        addPaymentEvent(existedTransaction, submitCreateEvent);
+        //commit the payment event
+        updatePaymentAndSaveEvent(existedTransaction, Arrays.asList(submitCreateEvent),
+                api, createStatus, false);
+        PaymentInstrument pi = getPaymentInstrument(existedTransaction);
+        final PaymentProviderService provider = getPaymentProviderService(pi);
+        return provider.refund(existedTransaction.getExternalToken(), request).
+                recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
+                    @Override
+                    public Promise<PaymentTransaction> apply(Throwable throwable) {
+                        return handleProviderException(throwable, provider, request, api,
+                                PaymentStatus.REFUND_DECLINED, PaymentEventType.REFUND);
+                    }
+                }).then(new Promise.Func<PaymentTransaction, Promise<PaymentTransaction>>() {
+            @Override
+            public Promise<PaymentTransaction> apply(PaymentTransaction paymentTransaction) {
+                provider.cloneTransactionResult(paymentTransaction, existedTransaction);
+                PaymentStatus settleStatus = PaymentStatus.valueOf(existedTransaction.getStatus());
+                PaymentEvent submitEvent = createPaymentEvent(request, PaymentEventType.REFUND,
+                        settleStatus, SUCCESS_EVENT_RESPONSE);
+                addPaymentEvent(existedTransaction, submitEvent);
+                updatePaymentAndSaveEvent(existedTransaction, Arrays.asList(submitEvent), api, settleStatus, true);
+                return Promise.pure(existedTransaction);
+            }
+        });
+
     }
 
     private Promise<PaymentTransaction> handleProviderException(Throwable throwable,
@@ -362,6 +398,14 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
     }
 
     private void validateCapturable(Long paymentId, PaymentTransaction request, PaymentTransaction existed) {
+        validateTransactionRequest(paymentId, request, existed);
+        if(!PaymentStatus.valueOf(existed.getStatus()).equals(PaymentStatus.AUTHORIZED)){
+            LOGGER.error("the payment status is not allowed to be captured.");
+            throw AppServerExceptions.INSTANCE.invalidPaymentStatus(existed.getStatus()).exception();
+        }
+    }
+
+    private void validateTransactionRequest(Long paymentId, PaymentTransaction request, PaymentTransaction existed){
         if(existed == null){
             LOGGER.error("the payment id is invalid for the event." + paymentId);
             throw AppClientExceptions.INSTANCE.invalidPaymentId(paymentId.toString()).exception();
@@ -375,12 +419,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
             throw AppClientExceptions.INSTANCE.invalidAmount(
                     request.getChargeInfo().getAmount().toString()).exception();
         }
-        if(!PaymentStatus.valueOf(existed.getStatus()).equals(PaymentStatus.AUTHORIZED)){
-            LOGGER.error("the payment status is not allowed to be captured.");
-            throw AppServerExceptions.INSTANCE.invalidPaymentStatus(existed.getStatus()).exception();
-        }
     }
-
 
     private PaymentProviderService getPaymentProviderService(PaymentInstrument pi) {
         PaymentProviderService provider = providerRoutingService.getPaymentProvider(
@@ -427,22 +466,6 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         return event;
     }
 
-    //use new transaction for business data to avoid hibernate cache in the service level transaction
-    private PaymentTransaction getPaymentById(final Long paymentId){
-        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
-        template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
-        return template.execute(new TransactionCallback<PaymentTransaction>() {
-            public PaymentTransaction doInTransaction(TransactionStatus txnStatus) {
-                PaymentTransaction existedTransaction = paymentRepository.getByPaymentId(paymentId);
-                if(existedTransaction == null){
-                    LOGGER.error("the payment id is invalid for the event.");
-                    throw AppClientExceptions.INSTANCE.invalidPaymentId(paymentId.toString()).exception();
-                }
-                return existedTransaction;
-            }
-        });
-    }
-
     private void validateRequest(PaymentTransaction request, boolean needChargeInfo, boolean supportChargeInfo){
         if(request.getUserId() == null){
             throw AppClientExceptions.INSTANCE.missingUserId().exception();
@@ -468,48 +491,4 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
             throw AppClientExceptions.INSTANCE.fieldNotNeeded("chargeInfo").exception();
         }
     }
-
-    private PaymentTransaction saveAndCommitPayment(final PaymentTransaction request) {
-        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
-        template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
-        return template.execute(new TransactionCallback<PaymentTransaction>() {
-            public PaymentTransaction doInTransaction(TransactionStatus txnStatus) {
-                paymentRepository.save(request);
-                return request;
-            }
-        });
-    }
-
-    private List<PaymentEvent> updatePaymentAndSaveEvent(final PaymentTransaction payment,
-        final List<PaymentEvent> events, final PaymentAPI api, final PaymentStatus status, final boolean saveUuid){
-        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
-        template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
-        return template.execute(new TransactionCallback<List<PaymentEvent>>() {
-            public List<PaymentEvent> doInTransaction(TransactionStatus txnStatus) {
-                if(status != null){
-                    paymentRepository.updatePayment(payment.getId()
-                            , status, payment.getExternalToken());
-                }
-                paymentRepository.savePaymentEvent(payment.getId(), events);
-                if(saveUuid){
-                    saveTrackingUuid(payment, api);
-                }
-                return events;
-            }
-        });
-    }
-
-    private String getMerchantRef(PaymentInstrument pi, PaymentTransaction request, String providerName){
-        if(pi.getType().equalsIgnoreCase(PIType.CREDITCARD.toString())){
-            String merchantRef = merchantAccountRepository.getMerchantAccountRef(
-                    paymentProviderRepository.getProviderId(providerName), request.getChargeInfo().getCurrency());
-            if(CommonUtil.isNullOrEmpty(merchantRef)){
-                throw AppServerExceptions.INSTANCE.merchantRefNotAvailable(
-                        request.getChargeInfo().getCurrency()).exception();
-            }
-            return merchantRef;
-        }
-        return null;
-    }
-
 }

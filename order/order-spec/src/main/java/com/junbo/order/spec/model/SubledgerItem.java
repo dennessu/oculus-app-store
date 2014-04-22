@@ -20,7 +20,7 @@ public class SubledgerItem extends BaseModelWithDate {
     private SubledgerItemId originalSubledgerItemId;
     private BigDecimal totalAmount;
     private OrderItemId orderItemId;
-    private OfferRevisionId offerRevisionId;
+    private OfferId offerId;
     private String subledgerItemAction;
     private String status;
     private Integer resourceAge;
@@ -65,12 +65,12 @@ public class SubledgerItem extends BaseModelWithDate {
         this.orderItemId = orderItemId;
     }
 
-    public OfferRevisionId getOfferRevisionId() {
-        return offerRevisionId;
+    public OfferId getOfferId() {
+        return offerId;
     }
 
-    public void setOfferRevisionId(OfferRevisionId offerRevisionId) {
-        this.offerRevisionId = offerRevisionId;
+    public void setOfferId(OfferId offerId) {
+        this.offerId = offerId;
     }
 
     public String getSubledgerItemAction() {
