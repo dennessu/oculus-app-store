@@ -3,9 +3,9 @@ apply plugin: 'groovy'
 dependencies {
     compile (libraries.spring_beans)
     compile (libraries.spring_context)
+    compile (libraries.spring_bridge)
 
     compile (libraries.jersey_container_grizzly2_http)
-
 
     compile (libraries.slf4j_api)
     compile (libraries.log4j_over_slf4j)

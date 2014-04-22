@@ -30,15 +30,17 @@ class JunboApplication {
         ConfigurableApplicationContext ctx = null
 
         try {
-            ctx = new JunboApplicationContext(['classpath*:/spring/*.xml'] as String[], false)
+            ctx = new JunboApplicationContext(['classpath*:/spring/**/*.xml'] as String[], false)
 
             ctx.registerShutdownHook()
             ctx.refresh()
 
-            LoggerInitializer.logStarted(LOGGER, stopWatch)
-
             LOGGER.info("""Application started with classpath:
 ${getClasspath().join(System.lineSeparator())}""")
+
+            stopWatch.stop()
+            LoggerInitializer.logStarted(LOGGER, stopWatch)
+
         } catch (Exception ex) {
             if (ctx != null) {
                 ctx.close()
@@ -46,9 +48,11 @@ ${getClasspath().join(System.lineSeparator())}""")
 
             LOGGER.error("""Application failed with classpath:
 ${getClasspath().join(System.lineSeparator())}""")
+
             LOGGER.error("Application failed with exception:", ex)
 
             LoggerInitializer.stop()
+
             throw ex
         }
     }
@@ -71,6 +75,8 @@ ${getClasspath().join(System.lineSeparator())}""")
 
         @Override
         protected void onClose() {
+            LoggerInitializer.logClosed(LOGGER)
+
             LoggerInitializer.stop()
         }
     }

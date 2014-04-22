@@ -3,6 +3,7 @@ package com.junbo.apphost.core.logging
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.util.ContextInitializer
+import com.junbo.apphost.core.JunboApplication
 import groovy.transform.CompileStatic
 import org.slf4j.ILoggerFactory
 import org.slf4j.Logger
@@ -72,6 +73,10 @@ class LoggerInitializer {
         logger.info(getStartedMessage(stopWatch))
     }
 
+    static void logClosed(Logger logger) {
+        logger.info(getClosedMessage())
+    }
+
     static void setLogLevel(String loggerName, String level) {
         ILoggerFactory factory = StaticLoggerBinder.singleton.loggerFactory
 
@@ -114,6 +119,19 @@ class LoggerInitializer {
         return message.toString()
     }
 
+    static private String getClosedMessage() {
+        StringBuilder message = new StringBuilder()
+
+        message.append("Closed ");
+        message.append(getApplicationName())
+        message.append(getVersion())
+        message.append(getOn())
+        message.append(getPid())
+        message.append(getContext())
+
+        return message.toString()
+    }
+
     static  private String getApplicationName() {
         return 'Junbo Application Host'
     }
@@ -122,7 +140,7 @@ class LoggerInitializer {
         return getValue(" v", new Callable<Object>() {
             @Override
             public Object call() throws Exception {
-                return this.class.package.implementationVersion
+                return JunboApplication.package.implementationVersion
             }
         }, " vUndefined")
     }

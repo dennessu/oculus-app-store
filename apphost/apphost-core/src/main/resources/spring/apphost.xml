@@ -5,19 +5,37 @@
 
     <bean id="httpServer" class="com.junbo.apphost.core.GrizzlyHttpServerBean">
         <property name="uri">
-            <value type="java.net.URI">http://0.0.0.0:8080/v1</value>
-        </property>
-        <property name="componentClasses">
-            <list>
-                <value type="java.lang.Class">com.junbo.common.json.JacksonFeature</value>
-                <value type="java.lang.Class">com.junbo.common.json.ObjectMapperProvider</value>
-                <value type="java.lang.Class">com.junbo.common.json.InvalidJsonReaderInterceptor</value>
-                <value type="java.lang.Class">com.junbo.common.error.RestExceptionMapper</value>
-                <value type="java.lang.Class">com.junbo.common.id.provider.IdTypeFromStringProvider</value>
-                <value type="java.lang.Class">com.junbo.identity.spec.filter.ResultsInterceptor</value>
-                <value type="java.lang.Class">com.junbo.common.provider.ResponseFilter</value>
-            </list>
+            <value type="java.net.URI">${apphost.server.uri}</value>
         </property>
     </bean>
 
+    <bean id="serviceLocator" factory-bean="httpServer" factory-method="getServiceLocator"
+          destroy-method="shutdown"/>
+
+    <bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
+        <property name="scopes">
+            <map>
+                <entry key="hk2">
+                    <bean class="org.jvnet.hk2.spring.bridge.api.SpringScopeImpl">
+                        <property name="serviceLocator" ref="serviceLocator"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="javax.ws.rs.core.UriInfo"
+          class="javax.ws.rs.core.UriInfo" scope="hk2"/>
+
+    <bean id="javax.ws.rs.core.HttpHeaders"
+          class="javax.ws.rs.core.HttpHeaders" scope="hk2"/>
+
+    <bean id="javax.ws.rs.core.Request"
+          class="javax.ws.rs.core.Request" scope="hk2"/>
+
+    <bean id="javax.ws.rs.container.ContainerRequestContext"
+          class="javax.ws.rs.container.ContainerRequestContext" scope="hk2"/>
+
+    <bean id="org.glassfish.jersey.server.internal.process.RespondingContext"
+          class="org.glassfish.jersey.server.internal.process.RespondingContext" scope="hk2"/>
 </beans>
