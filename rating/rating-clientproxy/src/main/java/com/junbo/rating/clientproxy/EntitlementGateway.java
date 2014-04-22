@@ -6,11 +6,12 @@
 
 package com.junbo.rating.clientproxy;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
  * Entitlement gateway interface.
  */
 public interface EntitlementGateway {
-    Set<String> getEntitlements(Long userId, Set<String> groups);
+    Map<Long, Long> getEntitlements(Long userId, Set<Long> entitlementDefinitionIds);
 }
