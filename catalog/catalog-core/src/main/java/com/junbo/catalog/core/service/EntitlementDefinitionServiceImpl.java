@@ -11,11 +11,14 @@ import com.junbo.catalog.db.repo.EntitlementDefinitionRepository;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -40,10 +43,20 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
 
     @Override
     public List<EntitlementDefinition> getEntitlementDefinitions(Long developerId, String clientId,
-                                                                 Set<String> groups, Set<String> tags, String type,
+                                                                 Set<String> groups, Set<String> tags, Set<String> types,
                                                                  Boolean isConsumable, PageableGetOptions pageMetadata) {
         checkDeveloper(developerId);
-        return entitlementDefinitionRepository.getByParams(developerId, clientId, groups, tags, type, isConsumable, pageMetadata);
+        Set<EntitlementType> typeSet = new HashSet<>();
+        if(!CollectionUtils.isEmpty(types)){
+            for(String type : types){
+                try{
+                    typeSet.add(EntitlementType.valueOf(type));
+                } catch (Exception e){
+                    throw AppErrors.INSTANCE.fieldNotCorrect("types", "type " +  type + " not supported").exception();
+                }
+            }
+        }
+        return entitlementDefinitionRepository.getByParams(developerId, clientId, groups, tags, typeSet, isConsumable, pageMetadata);
     }
 
     @Override

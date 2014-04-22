@@ -6,7 +6,9 @@
 
 package com.junbo.entitlement.core.service;
 
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.entitlement.clientproxy.catalog.EntitlementDefinitionFacade;
+import com.junbo.entitlement.common.cache.PermanentCache;
 import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.spec.error.AppErrors;
@@ -19,6 +21,7 @@ import org.springframework.util.StringUtils;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.concurrent.Callable;
 
 /**
  * Base service.
@@ -26,7 +29,7 @@ import java.util.Date;
 public class BaseService {
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseService.class);
     @Autowired
-    private EntitlementDefinitionFacade definitionFacade;
+    protected EntitlementDefinitionFacade definitionFacade;
 
     protected void fillCreate(Entitlement entitlement) {
         if (entitlement.getIsBanned() == null) {
@@ -141,7 +144,15 @@ public class BaseService {
         validateNotNull(userId, "targetUser");
     }
 
-    protected void checkOauth(Entitlement entitlement) {
+    protected void checkOauth(final Entitlement entitlement) {
+        EntitlementDefinition definition = (EntitlementDefinition) PermanentCache.ENTITLEMENT_DEFINITION.get(
+                "id#" + entitlement.getEntitlementDefinitionId().toString(), new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                return definitionFacade.getDefinition(entitlement.getEntitlementDefinitionId());
+            }
+        });
+        //TODO: check clientId
     }
 
     protected void checkDateFormat(String date) {

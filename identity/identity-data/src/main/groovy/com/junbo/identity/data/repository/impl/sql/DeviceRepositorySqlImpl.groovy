@@ -14,19 +14,25 @@ import com.junbo.identity.spec.v1.model.Device
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by xiali_000 on 4/8/2014.
  */
 @CompileStatic
 class DeviceRepositorySqlImpl implements DeviceRepository {
-
-    @Autowired
     private DeviceDAO deviceDAO
-
-    @Autowired
     private ModelMapper modelMapper
+
+    @Required
+    void setDeviceDAO(DeviceDAO deviceDAO) {
+        this.deviceDAO = deviceDAO
+    }
+
+    @Required
+    void setModelMapper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper
+    }
 
     @Override
     Promise<Device> get(DeviceId groupId) {

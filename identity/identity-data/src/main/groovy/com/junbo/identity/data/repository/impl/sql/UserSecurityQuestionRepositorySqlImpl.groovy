@@ -15,18 +15,24 @@ import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by liangfu on 3/17/14.
  */
 @CompileStatic
 class UserSecurityQuestionRepositorySqlImpl implements UserSecurityQuestionRepository {
-    @Autowired
     private UserSecurityQuestionDAO userSecurityQuestionDAO
-
-    @Autowired
     private ModelMapper modelMapper
+    @Required
+    void setUserSecurityQuestionDAO(UserSecurityQuestionDAO userSecurityQuestionDAO) {
+        this.userSecurityQuestionDAO = userSecurityQuestionDAO
+    }
+
+    @Required
+    void setModelMapper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper
+    }
 
     @Override
     Promise<UserSecurityQuestion> create(UserSecurityQuestion entity) {

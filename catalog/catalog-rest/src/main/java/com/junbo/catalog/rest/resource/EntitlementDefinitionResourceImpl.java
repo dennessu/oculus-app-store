@@ -50,7 +50,7 @@ public class EntitlementDefinitionResourceImpl implements EntitlementDefinitionR
                 entitlementDefinitionService.getEntitlementDefinitions(
                         searchParams.getDeveloperId() == null ? null : searchParams.getDeveloperId().getValue(),
                         searchParams.getClientId(), searchParams.getGroups(), searchParams.getTags(),
-                        searchParams.getType(), searchParams.getIsConsumable(), pageMetadata);
+                        searchParams.getTypes(), searchParams.getIsConsumable(), pageMetadata);
         Results<EntitlementDefinition> result = new Results<EntitlementDefinition>();
         result.setItems(entitlementDefinitions);
         result.setNext(buildNextUrl(searchParams, pageMetadata));
@@ -102,8 +102,10 @@ public class EntitlementDefinitionResourceImpl implements EntitlementDefinitionR
         if (!StringUtils.isEmpty(searchParams.getClientId())) {
             builder = builder.queryParam("clientId", searchParams.getClientId());
         }
-        if (!StringUtils.isEmpty(searchParams.getType())) {
-            builder = builder.queryParam("type", searchParams.getType());
+        if (!CollectionUtils.isEmpty(searchParams.getTypes())) {
+            for (String type : searchParams.getTypes()) {
+                builder = builder.queryParam("types", type);
+            }
         }
         if (!CollectionUtils.isEmpty(searchParams.getGroups())) {
             for (String group : searchParams.getGroups()) {

@@ -1,10 +1,130 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
-       xmlns:context="http://www.springframework.org/schema/context"
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        ">
+
     <import resource="classpath*:spring/sharding-context.xml"/>
 
+    <bean id="identityBaseRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" abstract="true">
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+        <property name="persistentMode" value="${identity.conf.persistentMode}"/>
+    </bean>
+
+    <bean id="addressRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.AddressRepository"/>
+        <property name="cloudantRepositoryTarget" ref="cloudantAddressRepository" />
+        <property name="sqlRepositoryTarget" ref="sqlAddressRepository" />
+    </bean>
+
+    <bean id="deviceRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.DeviceRepository"/>
+        <property name="cloudantRepositoryTarget" ref="cloudantDeviceRepository" />
+        <property name="sqlRepositoryTarget" ref="sqlDeviceRepository" />
+    </bean>
+
+    <bean id="groupRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.GroupRepository"/>
+        <property name="cloudantRepositoryTarget" ref="cloudantGroupRepository" />
+        <property name="sqlRepositoryTarget" ref="sqlGroupRepository" />
+    </bean>
+
+    <bean id="userAuthenticatorRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserAuthenticatorRepository"/>
+        <property name="cloudantRepositoryTarget" ref="cloudantUserAuthenticatorRepository" />
+        <property name="sqlRepositoryTarget" ref="sqlUserAuthenticatorRepository" />
+    </bean>
+
+    <bean id="userPasswordRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserPasswordRepository"/>
+        <property name="cloudantRepositoryTarget" ref="cloudantUserPasswordRepository" />
+        <property name="sqlRepositoryTarget" ref="sqlUserPasswordRepository" />
+    </bean>
+
+    <bean id="userPinRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserPinRepository"/>
+        <property name="cloudantRepositoryTarget" ref="cloudantUserPinRepository" />
+        <property name="sqlRepositoryTarget" ref="sqlUserPinRepository" />
+    </bean>
+
+    <bean id="userCredentialVerifyAttemptRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserCredentialVerifyAttemptRepository"/>
+        <property name="cloudantRepositoryTarget" ref="cloudantUserCredentialVerifyAttemptRepository" />
+        <property name="sqlRepositoryTarget" ref="sqlUserCredentialVerifyAttemptRepository" />
+    </bean>
+
+    <bean id="userDeviceRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserDeviceRepository"/>
+        <property name="cloudantRepositoryTarget" ref="cloudantUserDeviceRepository" />
+        <property name="sqlRepositoryTarget" ref="sqlUserDeviceRepository" />
+    </bean>
+
+    <bean id="userGroupRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserGroupRepository"/>
+        <property name="cloudantRepositoryTarget" ref="cloudantUserGroupRepository" />
+        <property name="sqlRepositoryTarget" ref="sqlUserGroupRepository" />
+    </bean>
+
+    <bean id="userOptinRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserOptinRepository"/>
+        <property name="cloudantRepositoryTarget" ref="cloudantUserOptinRepository" />
+        <property name="sqlRepositoryTarget" ref="sqlUserOptinRepository" />
+    </bean>
+
+    <bean id="userPiiRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserPiiRepository"/>
+        <property name="cloudantRepositoryTarget" ref="cloudantUserPiiRepository" />
+        <property name="sqlRepositoryTarget" ref="sqlUserPiiRepository" />
+    </bean>
+
+    <bean id="userRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserRepository"/>
+        <property name="cloudantRepositoryTarget" ref="cloudantUserRepository" />
+        <property name="sqlRepositoryTarget" ref="sqlUserRepository" />
+    </bean>
+
+    <bean id="userSecurityQuestionAttemptRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserSecurityQuestionAttemptRepository"/>
+        <property name="cloudantRepositoryTarget" ref="cloudantUserSecurityQuestionAttemptRepository" />
+        <property name="sqlRepositoryTarget" ref="sqlUserSecurityQuestionAttemptRepository" />
+    </bean>
+
+    <bean id="userSecurityQuestionRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserSecurityQuestionRepository"/>
+        <property name="cloudantRepositoryTarget" ref="cloudantUserSecurityQuestionRepository" />
+        <property name="sqlRepositoryTarget" ref="sqlUserSecurityQuestionRepository" />
+    </bean>
+
+    <bean id="userTosRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTosRepository"/>
+        <property name="cloudantRepositoryTarget" ref="cloudantUserTosRepository" />
+        <property name="sqlRepositoryTarget" ref="sqlUserTosRepository" />
+    </bean>
+
+    <bean id="roleAssignmentRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.RoleAssignmentRepository"/>
+        <property name="cloudantRepositoryTarget" ref="cloudantRoleAssignmentRepository" />
+        <property name="sqlRepositoryTarget" ref="sqlRoleAssignmentRepository" />
+    </bean>
+
+    <bean id="roleRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.RoleRepository"/>
+        <property name="cloudantRepositoryTarget" ref="cloudantRoleRepository" />
+        <property name="sqlRepositoryTarget" ref="sqlRoleRepository" />
+    </bean>
+
+    <bean id="tosRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.TosRepository"/>
+        <property name="cloudantRepositoryTarget" ref="cloudantTosRepository" />
+        <property name="sqlRepositoryTarget" ref="sqlTosRepository" />
+    </bean>
+
+    <bean id="securityQuestionRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
+        <property name="persistentMode" value="SQL_READ_WRITE"/>
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.SecurityQuestionRepository"/>
+        <property name="sqlRepositoryTarget" ref="sqlSecurityQuestionRepository" />
+    </bean>
 
 </beans>

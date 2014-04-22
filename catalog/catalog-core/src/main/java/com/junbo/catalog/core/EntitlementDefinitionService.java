@@ -23,7 +23,7 @@ public interface EntitlementDefinitionService {
     EntitlementDefinition getEntitlementDefinition(Long entitlementDefinitionId);
 
     List<EntitlementDefinition> getEntitlementDefinitions(Long developerId, String clientId, Set<String> groups, Set<String> tags,
-                                                          String type, Boolean isConsumable, PageableGetOptions pageMetadata);
+                                                          Set<String> types, Boolean isConsumable, PageableGetOptions pageMetadata);
 
     Long createEntitlementDefinition(EntitlementDefinition entitlementDefinition);
 
