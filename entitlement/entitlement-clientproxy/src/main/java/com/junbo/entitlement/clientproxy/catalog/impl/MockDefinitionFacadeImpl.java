@@ -14,6 +14,6 @@ import com.junbo.entitlement.clientproxy.catalog.EntitlementDefinitionFacade;
 public class MockDefinitionFacadeImpl implements EntitlementDefinitionFacade{
     @Override
     public EntitlementDefinition getDefinition(Long definitionId) {
-        return null;
+        return new EntitlementDefinition();
     }
 }

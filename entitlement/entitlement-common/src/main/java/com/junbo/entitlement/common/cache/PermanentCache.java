@@ -22,11 +22,11 @@ public enum PermanentCache {
     private static final Logger LOGGER = LoggerFactory.getLogger(PermanentCache.class);
     private Cache<Object, Object> cache = CacheBuilder.newBuilder().build();
 
-    public Object get(String key) {
+    public Object get(Object key) {
         return cache.getIfPresent(key);
     }
 
-    public Object get(String key, Callable<String> loader) {
+    public Object get(Object key, Callable<Object> loader) {
         try {
             return cache.get(key, loader);
         } catch (ExecutionException e) {
@@ -35,7 +35,7 @@ public enum PermanentCache {
         }
     }
 
-    public void put(String key, Object value) {
+    public void put(Object key, Object value) {
         cache.put(key, value);
     }
 }
