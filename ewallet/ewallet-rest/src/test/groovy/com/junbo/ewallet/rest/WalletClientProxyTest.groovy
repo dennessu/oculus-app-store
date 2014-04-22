@@ -13,11 +13,11 @@ import com.junbo.ewallet.spec.model.Transaction
 import com.junbo.ewallet.spec.model.Wallet
 import com.junbo.ewallet.spec.resource.proxy.WalletResourceClientProxy
 import com.junbo.sharding.IdGenerator
-import junit.framework.Assert
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests
+import org.testng.Assert
 import org.testng.annotations.Test
 
 /**
