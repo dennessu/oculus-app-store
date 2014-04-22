@@ -9,20 +9,21 @@ import groovy.transform.CompileStatic
  * Created by kg on 4/21/2014.
  */
 @CompileStatic
+@SuppressWarnings('UnnecessaryGetter')
 class ColorConverter extends CompositeConverter<ILoggingEvent> {
 
-    private static final Map<String, AnsiElement> ELEMENTS;
+    private static final Map<String, AnsiElement> ELEMENTS
 
     static {
         Map<String, AnsiElement> elements = new HashMap<String, AnsiElement>()
 
-        elements.put("faint", AnsiElement.FAINT)
-        elements.put("red", AnsiElement.RED)
-        elements.put("green", AnsiElement.GREEN)
-        elements.put("yellow", AnsiElement.YELLOW)
-        elements.put("blue", AnsiElement.BLUE)
-        elements.put("magenta", AnsiElement.MAGENTA)
-        elements.put("cyan", AnsiElement.CYAN)
+        elements.put('faint', AnsiElement.FAINT)
+        elements.put('red', AnsiElement.RED)
+        elements.put('green', AnsiElement.GREEN)
+        elements.put('yellow', AnsiElement.YELLOW)
+        elements.put('blue', AnsiElement.BLUE)
+        elements.put('magenta', AnsiElement.MAGENTA)
+        elements.put('cyan', AnsiElement.CYAN)
 
         ELEMENTS = Collections.unmodifiableMap(elements)
     }
@@ -45,7 +46,7 @@ class ColorConverter extends CompositeConverter<ILoggingEvent> {
 
         if (element == null) {
             // Assume highlighting
-            element = LEVELS.get(event.getLevel().toInteger())
+            element = LEVELS.get(event.level.toInteger())
             element = (element == null ? AnsiElement.GREEN : element)
         }
 

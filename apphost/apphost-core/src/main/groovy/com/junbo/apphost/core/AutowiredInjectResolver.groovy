@@ -19,9 +19,9 @@ import java.lang.reflect.Type
 @javax.inject.Singleton
 class AutowiredInjectResolver implements InjectionResolver<Autowired> {
 
-    private ApplicationContext ctx
+    private final ApplicationContext ctx
 
-    public AutowiredInjectResolver(ApplicationContext ctx) {
+    AutowiredInjectResolver(ApplicationContext ctx) {
         this.ctx = ctx
     }
 
@@ -55,7 +55,7 @@ class AutowiredInjectResolver implements InjectionResolver<Autowired> {
             throw new IllegalArgumentException("No (or multiple) beans found. Resolution failed for type ${beanType}.")
         }
 
-        return beans.values().iterator().next();
+        return beans.values().iterator().next()
     }
 
     private static Class<?> getClassFromType(Type type) {
@@ -67,7 +67,7 @@ class AutowiredInjectResolver implements InjectionResolver<Autowired> {
         if (type instanceof ParameterizedType) {
             ParameterizedType pt = (ParameterizedType) type
 
-            return (Class<?>) pt.getRawType()
+            return (Class<?>) pt.rawType
         }
 
         return null
