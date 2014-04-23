@@ -19,7 +19,6 @@ dependencies {
 	compile(libraries.spring_jdbc)
 	compile(libraries.spring_orm)
 
-    compile (libraries.oom_processor)
     compile (libraries.oom)
 	
 	compile(libraries.hibernate_core)
@@ -31,6 +30,8 @@ dependencies {
 	compile(libraries.postgresql)
     compile (libraries.bonecp_spring)
     compile (libraries.btm)
+
+    processor (libraries.oom_processor)
 
     testCompile(libraries.spring_test)
 }
