@@ -39,7 +39,10 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Reso
     public ResourceIdSerializer() {
         ConfigService configService = ConfigServiceManager.instance();
         if (configService != null) {
-            this.resourceUrlPrefix = configService.getConfigValue("resourceUrlPrefix");
+            String prefixFromConfig = configService.getConfigValue("common.conf.resourceUrlPrefix");
+            if (prefixFromConfig != null) {
+                resourceUrlPrefix = prefixFromConfig;
+            }
         }
     }
 

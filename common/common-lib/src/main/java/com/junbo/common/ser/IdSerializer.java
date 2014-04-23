@@ -38,7 +38,10 @@ public class IdSerializer extends JsonSerializer<Id> {
     public IdSerializer() {
         ConfigService configService = ConfigServiceManager.instance();
         if (configService != null) {
-            this.selfHrefPrfix = configService.getConfigValue("resourceUrlPrefix");
+            String prefixFromConfig = configService.getConfigValue("common.conf.resourceUrlPrefix");
+            if (prefixFromConfig != null) {
+                selfHrefPrfix = prefixFromConfig;
+            }
         }
     }
 

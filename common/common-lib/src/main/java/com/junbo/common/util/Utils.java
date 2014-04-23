@@ -20,6 +20,7 @@ public class Utils {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < urls.length; ++i) {
             String url = urls[i];
+            if (url == null) continue;
 
             if (i != 0 && !url.startsWith("/")) {
                 // Append an extra "/" if the current url part doesn't contain one.
