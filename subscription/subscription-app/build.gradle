@@ -7,5 +7,7 @@ dependencies {
     runtime (libraries.apphost_core)
     runtime (libraries.common_configuration_data)
 
+    //runtime "com.junbo.catalog:catalog-rest:${junboVersion}"
+
     compile project(':subscription-rest')
 }
