@@ -6,9 +6,9 @@
 
     <import resource="classpath*:spring/common-context.xml"/>
     <import resource="classpath*:spring/transaction.xml"/>
-    <import resource="cloudant-context.xml"/>
-    <import resource="db-context.xml"/>
-    <import resource="repo-context.xml"/>
+    <import resource="classpath*:spring/cloudant-context.xml"/>
+    <import resource="classpath*:spring/db-context.xml"/>
+    <import resource="classpath*:spring/repo-context.xml"/>
     <import resource="classpath*:spring/sharding-context.xml"/>
     <import resource="classpath*:spring/common-lib-context.xml" />
 </beans>

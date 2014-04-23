@@ -11,27 +11,20 @@ import com.junbo.identity.data.repository.UserPasswordRepository
 import com.junbo.identity.data.repository.UserPinRepository
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.UserPin
-import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
-import com.junbo.identity.spec.v1.option.list.UserPinListOptions
 import com.junbo.identity.spec.v1.model.UserCredential
 import com.junbo.identity.spec.v1.option.list.UserCredentialListOptions
+import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
+import com.junbo.identity.spec.v1.option.list.UserPinListOptions
 import com.junbo.identity.spec.v1.resource.UserCredentialResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Scope
-import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-
-import javax.ws.rs.ext.Provider
 
 /**
  * Created by liangfu on 4/9/14.
  */
-@Provider
-@Component
-@Scope('prototype')
 @Transactional
 @CompileStatic
 class UserCredentialResourceImpl implements UserCredentialResource {
