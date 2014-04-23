@@ -1,7 +1,7 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile (libraries.common_configuration)
+    compile project(':common-configuration')
 
     compile (libraries.rs_api)
 
