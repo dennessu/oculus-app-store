@@ -22,7 +22,7 @@ import java.lang.reflect.ParameterizedType
 /**
  * CloudantClient.
  */
-abstract class CloudantClient<T> implements  InitializingBean {
+abstract class CloudantClient<T extends CloudantEntity> implements  InitializingBean {
     protected static final String VIEW_PATH = '/_design/views/_view/'
     protected final Class<T> entityClass
     protected AsyncHttpClient asyncHttpClient

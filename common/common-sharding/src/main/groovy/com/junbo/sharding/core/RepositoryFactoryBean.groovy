@@ -2,12 +2,14 @@ package com.junbo.sharding.core
 
 import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.ShardAlgorithm
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.FactoryBean
 import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by minhao on 4/20/14.
  */
+@CompileStatic
 class RepositoryFactoryBean<T> implements FactoryBean<T> {
     private Class<T> repositoryInterface
     private ShardAlgorithm shardAlgorithm

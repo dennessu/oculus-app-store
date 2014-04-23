@@ -1,10 +1,12 @@
 package com.junbo.sharding.view
 
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by kg on 3/28/2014.
  */
+@CompileStatic
 class DefaultEntityViewRepository implements EntityViewRepository {
 
     private Map<Class, List<EntityView>> multimap
