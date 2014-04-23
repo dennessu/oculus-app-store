@@ -36,7 +36,6 @@ class MockBalanceResource extends BaseMock implements BalanceResource {
         balance.taxIncluded = false
         balance.balanceItems.each { BalanceItem bi ->
             bi.taxAmount = 1.00G
-            bi.isTaxExempt = false
         }
         return Promise.pure(balance)
     }
