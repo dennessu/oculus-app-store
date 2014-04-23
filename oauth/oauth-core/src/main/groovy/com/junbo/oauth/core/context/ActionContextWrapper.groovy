@@ -46,6 +46,9 @@ class ActionContextWrapper {
     public static final String USER_PII = 'user_pii'
     public static final String DOB = 'dob'
     public static final String GENDER = 'gender'
+    public static final String REMOTE_ADDRESS = 'remote_address'
+    public static final String CAPTCHA_REQUIRED = 'captcha_required'
+    public static final String CAPTCHA_SUCCEED = 'captcha_succeed'
 
     @Delegate
     private final ActionContext actionContext
@@ -272,5 +275,37 @@ class ActionContextWrapper {
 
     void setGender(Gender gender) {
         actionContext.requestScope[GENDER] = gender
+    }
+
+    String getRemoteAddress() {
+        return (String) actionContext.requestScope[REMOTE_ADDRESS]
+    }
+
+    void setRemoteAddress(String remoteAddress) {
+        actionContext.requestScope[REMOTE_ADDRESS] = remoteAddress
+    }
+
+    Boolean getCaptchaRequired() {
+        if (actionContext.flowScope[CAPTCHA_REQUIRED] == null) {
+            actionContext.flowScope[CAPTCHA_REQUIRED] = false
+        }
+
+        return (Boolean) actionContext.flowScope[CAPTCHA_REQUIRED]
+    }
+
+    void setCaptchaRequired(Boolean captchaRequired) {
+        actionContext.flowScope[CAPTCHA_REQUIRED] = captchaRequired
+    }
+
+    Boolean getCaptchaSucceed() {
+        if (actionContext.requestScope[CAPTCHA_SUCCEED] == null) {
+            actionContext.requestScope[CAPTCHA_SUCCEED] = false
+        }
+
+        return (Boolean) actionContext.requestScope[CAPTCHA_SUCCEED]
+    }
+
+    void setCaptchaSucceed(Boolean captchaRequired) {
+        actionContext.requestScope[CAPTCHA_SUCCEED] = captchaRequired
     }
 }

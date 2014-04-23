@@ -25,6 +25,8 @@ dependencies {
     compile (libraries.logback_core)
     compile (libraries.common_collection)
 
+    compile (libraries.jersey_container_grizzly2_http)
+
     compile (libraries.spy_memcached)
 
     compile (libraries.swagger_annotations)
