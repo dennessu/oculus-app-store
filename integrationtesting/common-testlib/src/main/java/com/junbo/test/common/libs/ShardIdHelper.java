@@ -19,6 +19,7 @@ public class ShardIdHelper {
 
     public static int getShardIdByUid(String uid) {
         DefaultShardAlgorithm shardAlgorithm = new DefaultShardAlgorithm();
+        shardAlgorithm.setAvailableShards(2);
         if (uid != null && !uid.isEmpty()) {
             return shardAlgorithm.shardId(IdConverter.hexStringToId(UserId.class, uid));
         } else {
