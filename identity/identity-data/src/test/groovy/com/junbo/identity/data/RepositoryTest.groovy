@@ -113,6 +113,14 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     @Qualifier('userTeleAttemptRepository')
     private UserTeleAttemptRepository userTeleAttemptRepository
 
+    @Autowired
+    @Qualifier('userTeleBackupCodeRepository')
+    private UserTeleBackupCodeRepository userTeleBackupCodeRepository
+
+    @Autowired
+    @Qualifier('userTeleBackupCodeAttemptRepository')
+    private UserTeleBackupCodeAttemptRepository userTeleBackupCodeAttemptRepository
+
     @Test
     public void testUserRepository() throws Exception {
         User user = new User()
@@ -534,6 +542,70 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
                 offset: 0,
                 limit: 100
         )).wrapped().get()
+        assert results.size() != 0
+    }
+
+    @Test
+    public void testUserTeleBackupCodeRepository() {
+        def after30000Mins = new Date()
+        use( TimeCategory ) {
+            after30000Mins = (new Date()) + 30000.minutes
+        }
+        def userId = new UserId(idGenerator.nextId())
+        UserTeleBackupCode userTeleBackupCode = new UserTeleBackupCode()
+        userTeleBackupCode.setUserId(userId)
+        userTeleBackupCode.setVerifyCode(UUID.randomUUID().toString())
+        userTeleBackupCode.setActive(true)
+        userTeleBackupCode.setExpiresBy(after30000Mins)
+        UserTeleBackupCode newUserTeleBackupCode =
+                userTeleBackupCodeRepository.create(userTeleBackupCode).wrapped().get()
+        newUserTeleBackupCode =
+                userTeleBackupCodeRepository.get((UserTeleBackupCodeId)newUserTeleBackupCode.id).wrapped().get()
+
+        assert userTeleBackupCode.verifyCode == newUserTeleBackupCode.verifyCode
+
+        String newVerifyCode = UUID.randomUUID().toString()
+        newUserTeleBackupCode.setVerifyCode(newVerifyCode)
+        userTeleBackupCode = userTeleBackupCodeRepository.update(newUserTeleBackupCode).wrapped().get()
+
+        assert userTeleBackupCode.verifyCode == newVerifyCode
+
+        List<UserTeleBackupCode> results = userTeleBackupCodeRepository.search(new UserTeleBackupCodeListOptions(
+                userId: userId,
+                offset: 0,
+                limit: 100
+        )).wrapped().get()
+        assert results.size() != 0
+    }
+
+    @Test
+    public void testUserTeleBackupCodeAttemptRepository() {
+        def userId = new UserId(idGenerator.nextId())
+        UserTeleBackupCodeAttempt attempt = new UserTeleBackupCodeAttempt()
+        attempt.setUserId(userId)
+        attempt.setVerifyCode(UUID.randomUUID().toString())
+        attempt.setUserAgent(UUID.randomUUID().toString())
+        attempt.setClientId(UUID.randomUUID().toString())
+        attempt.setIpAddress(UUID.randomUUID().toString())
+        attempt.setSucceeded(true)
+
+        UserTeleBackupCodeAttempt newAttempt = userTeleBackupCodeAttemptRepository.create(attempt).wrapped().get()
+        newAttempt = userTeleBackupCodeAttemptRepository.get(newAttempt.id).wrapped().get()
+
+        assert newAttempt.verifyCode == attempt.verifyCode
+
+        String newVerifyCode = UUID.randomUUID().toString()
+        newAttempt.setVerifyCode(newVerifyCode)
+        attempt = userTeleBackupCodeAttemptRepository.update(newAttempt).wrapped().get()
+
+        assert attempt.verifyCode == newVerifyCode
+
+        List<UserTeleBackupCodeAttempt> results = userTeleBackupCodeAttemptRepository.search(
+                new UserTeleBackupCodeAttemptListOptions(
+                        userId: userId,
+                        offset: 0,
+                        limit: 100
+                )).wrapped().get()
         assert results.size() != 0
     }
 }

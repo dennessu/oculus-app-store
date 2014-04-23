@@ -131,6 +131,18 @@
         <property name="sqlRepositoryTarget" ref="sqlUserTeleAttemptRepository" />
     </bean>
 
+    <bean id="userTeleBackupCodeRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTeleBackupCodeRepository" />
+        <property name="cloudantRepositoryTarget" ref="cloudantUserTeleBackupCodeRepository" />
+        <property name="sqlRepositoryTarget" ref="sqlUserTeleBackupCodeRepository" />
+    </bean>
+
+    <bean id="userTeleBackupCodeAttemptRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTeleBackupCodeAttemptRepository" />
+        <property name="cloudantRepositoryTarget" ref="cloudantUserTeleBackupCodeAttemptRepository" />
+        <property name="sqlRepositoryTarget" ref="sqlUserTeleBackupCodeAttemptRepository" />
+    </bean>
+
     <bean id="securityQuestionRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
         <property name="persistentMode" value="SQL_READ_WRITE"/>
         <property name="repositoryInterface" value="com.junbo.identity.data.repository.SecurityQuestionRepository"/>
