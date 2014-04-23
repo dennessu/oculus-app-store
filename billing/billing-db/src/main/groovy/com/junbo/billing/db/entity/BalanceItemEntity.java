@@ -45,9 +45,6 @@ public class BalanceItemEntity extends BaseEntity {
     @Column(name = "finance_id")
     private String financeId;
 
-    @Column(name = "is_tax_exempt")
-    private Boolean isTaxExempt;
-
     @Column(name = "original_balance_item_id")
     private Long originalBalanceItemId;
 
@@ -98,13 +95,6 @@ public class BalanceItemEntity extends BaseEntity {
     }
     public void setFinanceId(String financeId) {
         this.financeId = financeId;
-    }
-
-    public Boolean getIsTaxExempt() {
-        return isTaxExempt;
-    }
-    public void setIsTaxExempt(Boolean isTaxExempt) {
-        this.isTaxExempt = isTaxExempt;
     }
 
     public Long getOriginalBalanceItemId() {

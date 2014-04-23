@@ -33,6 +33,9 @@ public class TaxItemEntity extends BaseEntity {
     @Column(name = "tax_rate")
     private BigDecimal taxRate;
 
+    @Column(name = "is_tax_exempt")
+    private Boolean isTaxExempt;
+
     @Column(name = "deleted")
     private Boolean isDeleted = false;
 
@@ -69,6 +72,13 @@ public class TaxItemEntity extends BaseEntity {
     }
     public void setTaxRate(BigDecimal taxRate) {
         this.taxRate = taxRate;
+    }
+
+    public Boolean getIsTaxExempt() {
+        return isTaxExempt;
+    }
+    public void setIsTaxExempt(Boolean isTaxExempt) {
+        this.isTaxExempt = isTaxExempt;
     }
 
     public Boolean getIsDeleted() {

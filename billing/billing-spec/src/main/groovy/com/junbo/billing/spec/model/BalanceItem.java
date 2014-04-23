@@ -24,7 +24,6 @@ public class BalanceItem {
     private BigDecimal taxAmount;
     private BigDecimal discountAmount;
     private String financeId;
-    private Boolean isTaxExempt;
     private Long originalBalanceItemId;
 
     private List<TaxItem> taxItems;
@@ -97,14 +96,6 @@ public class BalanceItem {
 
     public void addDiscountItem(DiscountItem discountItem) {
         discountItems.add(discountItem);
-    }
-
-    public Boolean getIsTaxExempt() {
-        return isTaxExempt;
-    }
-
-    public void setIsTaxExempt(Boolean isTaxExempt) {
-        this.isTaxExempt = isTaxExempt;
     }
 
     public Long getOriginalBalanceItemId() {

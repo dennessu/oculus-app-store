@@ -68,4 +68,10 @@ class PaymentFacadeImpl implements PaymentFacade {
         return new PaymentTransactionResourceClientProxy(asyncHttpClient, new JsonMessageTranscoder(),
                 new IdPathParamTranscoder(), new QueryParamTranscoderImpl(), url).postPaymentCapture(paymentId, request)
     }
+
+    @Override
+    Promise<PaymentTransaction> postPaymentConfirm(Long paymentId, PaymentTransaction request) {
+        return new PaymentTransactionResourceClientProxy(asyncHttpClient, new JsonMessageTranscoder(),
+                new IdPathParamTranscoder(), new QueryParamTranscoderImpl(), url).postPaymentConfirm(paymentId, request)
+    }
 }
