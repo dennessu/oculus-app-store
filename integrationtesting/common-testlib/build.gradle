@@ -23,6 +23,8 @@ dependencies {
     compile(libraries.spring_beans)
     compile(libraries.spring_context)
     compile(libraries.testng)
+    compile(libraries.common_sharding)
+
 
     compile 'com.junbo.billing:billing-spec:0.0.1-SNAPSHOT'
     compile 'com.junbo.cart:cart-spec:0.0.1-SNAPSHOT'
