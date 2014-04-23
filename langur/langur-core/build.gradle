@@ -6,7 +6,7 @@ dependencies {
 
     compile (libraries.jersey_server)
 
-    compile (libraries.swagger_annotations)
+    //compile (libraries.swagger_annotations)
 
     compile (libraries.spring_aop)
     compile (libraries.spring_context)
