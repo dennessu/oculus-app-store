@@ -1,17 +1,15 @@
 package com.junbo.sharding.core
 
-import com.junbo.sharding.IdGenerator
-import com.junbo.sharding.ShardAlgorithm
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.FactoryBean
 import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by minhao on 4/20/14.
  */
+@CompileStatic
 class RepositoryFactoryBean<T> implements FactoryBean<T> {
     private Class<T> repositoryInterface
-    private ShardAlgorithm shardAlgorithm
-    private IdGenerator idGenerator
     private PersistentMode persistentMode
     private Object sqlRepositoryTarget
     private Object cloudantRepositoryTarget
@@ -19,16 +17,6 @@ class RepositoryFactoryBean<T> implements FactoryBean<T> {
     @Required
     void setRepositoryInterface(Class<T> repositoryInterface) {
         this.repositoryInterface = repositoryInterface
-    }
-
-    @Required
-    void setShardAlgorithm(ShardAlgorithm shardAlgorithm) {
-        this.shardAlgorithm = shardAlgorithm
-    }
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
     }
 
     @Required
@@ -47,7 +35,7 @@ class RepositoryFactoryBean<T> implements FactoryBean<T> {
     @Override
     T getObject() throws Exception {
         return RepositoryProxy.newProxyInstance(this.repositoryInterface, this.sqlRepositoryTarget,
-                this.cloudantRepositoryTarget, this.persistentMode, this.shardAlgorithm, this.idGenerator)
+                this.cloudantRepositoryTarget, this.persistentMode)
     }
 
     @Override

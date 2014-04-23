@@ -2,13 +2,9 @@ package com.junbo.sharding.core
 
 import com.junbo.common.util.Utils
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.IdGenerator
-import com.junbo.sharding.ShardAlgorithm
 import com.junbo.sharding.core.annotations.ReadMethod
 import com.junbo.sharding.core.annotations.WriteMethod
 import groovy.transform.CompileStatic
-// import junit.framework.Assert
-
 import java.lang.annotation.Annotation
 import java.lang.reflect.InvocationHandler
 import java.lang.reflect.Method
@@ -19,8 +15,6 @@ import java.lang.reflect.Proxy
  */
 @CompileStatic
 class RepositoryProxy implements InvocationHandler {
-    private final ShardAlgorithm shardAlgorithm
-    private final IdGenerator idGenerator
     private final PersistentMode persistentMode
     private final Class<?> interfaceClass
     private final Object sqlRepositoryTarget
@@ -31,21 +25,17 @@ class RepositoryProxy implements InvocationHandler {
 
     static <T> T newProxyInstance(Class<T> interfaceClass,
                                          Object sqlRepositoryTarget, Object cloudantRepositoryTarget,
-                                         PersistentMode persistentMode, ShardAlgorithm shardAlgorithm,
-                                         IdGenerator idGenerator) {
+                                         PersistentMode persistentMode) {
         return (T)Proxy.newProxyInstance(interfaceClass.classLoader, [interfaceClass].toArray(new Class[0]),
                 new RepositoryProxy(sqlRepositoryTarget, cloudantRepositoryTarget,
-                        persistentMode, shardAlgorithm, idGenerator, interfaceClass))
+                        persistentMode, interfaceClass))
     }
 
     private RepositoryProxy(Object sqlRepositoryTarget, Object cloudantRepositoryTarget,
-                                PersistentMode persistentMode, ShardAlgorithm shardAlgorithm,
-                                IdGenerator idGenerator, Class interfaceClass) {
+                                PersistentMode persistentMode, Class interfaceClass) {
         this.sqlRepositoryTarget = sqlRepositoryTarget
         this.cloudantRepositoryTarget = cloudantRepositoryTarget
         this.persistentMode = persistentMode
-        this.shardAlgorithm = shardAlgorithm
-        this.idGenerator = idGenerator
         this.interfaceClass = interfaceClass
 
         if (persistentMode == PersistentMode.SQL_READ_WRITE) {
@@ -91,7 +81,6 @@ class RepositoryProxy implements InvocationHandler {
     @Override
     Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Annotation[] annotations = method.declaredAnnotations
-        // Assert.assertNotNull(annotations)
 
         for (Annotation annotation : annotations) {
             if (annotation instanceof ReadMethod) {

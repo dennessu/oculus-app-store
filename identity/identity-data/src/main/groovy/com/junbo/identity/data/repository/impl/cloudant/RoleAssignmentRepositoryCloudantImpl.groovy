@@ -9,11 +9,13 @@ import com.junbo.identity.spec.v1.model.RoleAssignment
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.ShardAlgorithm
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by minhao on 4/13/14.
  */
+@CompileStatic
 class RoleAssignmentRepositoryCloudantImpl extends CloudantClient<RoleAssignment> implements RoleAssignmentRepository {
     private ShardAlgorithm shardAlgorithm
     private IdGenerator idGenerator

@@ -9,11 +9,13 @@ import com.junbo.identity.spec.v1.option.list.UserDeviceListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.ShardAlgorithm
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by haomin on 14-4-11.
  */
+@CompileStatic
 class UserDeviceRepositoryCloudantImpl extends CloudantClient<UserDevice> implements UserDeviceRepository {
     private ShardAlgorithm shardAlgorithm
     private IdGenerator idGenerator

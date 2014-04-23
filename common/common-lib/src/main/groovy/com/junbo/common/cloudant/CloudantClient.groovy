@@ -235,10 +235,10 @@ abstract class CloudantClient<T> implements  InitializingBean {
             query.put('key', "\"$key\"")
         }
         if (limit != null) {
-            query.put('limit', limit)
+            query.put('limit', limit.toString())
         }
         if (skip != null) {
-            query.put('skip', skip)
+            query.put('skip', skip.toString())
         }
         if (descending) {
             query.put('descending', 'true')

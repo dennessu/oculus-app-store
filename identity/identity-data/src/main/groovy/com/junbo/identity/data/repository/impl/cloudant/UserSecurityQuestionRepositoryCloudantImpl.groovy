@@ -9,11 +9,13 @@ import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.ShardAlgorithm
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by minhao on 4/12/14.
  */
+@CompileStatic
 class UserSecurityQuestionRepositoryCloudantImpl extends CloudantClient<UserSecurityQuestion>
         implements UserSecurityQuestionRepository {
     private ShardAlgorithm shardAlgorithm

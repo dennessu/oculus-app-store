@@ -367,7 +367,28 @@
 				address_id bigint not null,
 				
 				primary key (id)
-			)
+			);
+			
+			create table user_tele_code (
+				id bigint not null,
+				
+				user_id bigint not null,
+				phone_number VARCHAR(512),
+				sent_language VARCHAR(512),
+				verify_code VARCHAR(512),
+				template VARCHAR(512),
+				verify_type VARCHAR(128),
+				expires_by timestamp,
+				active BOOLEAN not null,
+				
+				version bigint not null,
+				created_time timestamp,
+				created_by varchar(255),
+				modified_time timestamp,
+				modified_by varchar(255),
+				
+				primary key (id)
+			);
         ]]></sql>
     </changeSet>
 
