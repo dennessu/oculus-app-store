@@ -7,7 +7,7 @@ package com.junbo.common.jackson.serializer;
 
 import com.junbo.common.jackson.model.ResourceRef;
 import com.junbo.common.util.Utils;
-// import junit.framework.Assert;
+import org.springframework.util.Assert;
 
 import java.lang.reflect.Field;
 
@@ -17,7 +17,7 @@ import java.lang.reflect.Field;
 public class CompoundIdSerializer extends ResourceIdSerializer {
     @Override
     protected ResourceRef handleSingle(Object value) {
-       // Assert.assertTrue(value instanceof CompoundAware);
+        Assert.isTrue(value instanceof CompoundAware);
 
         Object primaryId = ((CompoundAware) value).getPrimaryId();
         ResourceRef ref = new ResourceRef();
@@ -29,7 +29,7 @@ public class CompoundIdSerializer extends ResourceIdSerializer {
 
     @Override
     protected String getResourceHref(Object value) {
-       // Assert.assertTrue(value instanceof CompoundAware);
+        Assert.isTrue(value instanceof CompoundAware);
 
         String path = resourcePath;
         try {

@@ -15,9 +15,9 @@ import com.junbo.common.jackson.model.ResourceRef;
 import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.common.shuffle.Oculus48Id;
 import com.junbo.common.util.Utils;
-// import junit.framework.Assert;
 import com.junbo.configuration.ConfigService;
 import com.junbo.configuration.ConfigServiceManager;
+import org.springframework.util.Assert;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,7 +51,7 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Reso
     @Override
     public void serialize(Object value, JsonGenerator jgen, SerializerProvider provider)
             throws IOException {
-        //Assert.assertNotNull("resourcePath", resourcePath);
+        Assert.notNull(resourcePath);
 
         if (unwrap(value) == null) {
             mapper.writeValue(jgen, null);
