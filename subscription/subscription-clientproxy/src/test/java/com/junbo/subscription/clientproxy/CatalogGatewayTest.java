@@ -17,7 +17,7 @@ import com.junbo.catalog.spec.resource.ItemResource;
 import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.catalog.spec.resource.OfferRevisionResource;
 import com.junbo.common.id.OfferRevisionId;
-import junit.framework.Assert;
+import org.testng.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
