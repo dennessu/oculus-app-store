@@ -8,11 +8,13 @@ import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.ShardAlgorithm
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by haomin on 14-4-11.
  */
+@CompileStatic
 class UserRepositoryCloudantImpl extends CloudantClient<User> implements UserRepository {
     private ShardAlgorithm shardAlgorithm
     private IdGenerator idGenerator
@@ -44,6 +46,7 @@ class UserRepositoryCloudantImpl extends CloudantClient<User> implements UserRep
 
     @Override
     Promise<User> create(User user) {
+
         if (user.id == null) {
             user.id = new UserId(idGenerator.nextIdByShardId(shardAlgorithm.shardId()))
         }

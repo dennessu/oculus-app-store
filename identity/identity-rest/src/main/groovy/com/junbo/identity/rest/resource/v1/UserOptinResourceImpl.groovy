@@ -15,18 +15,11 @@ import com.junbo.identity.spec.v1.resource.UserOptinResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Scope
-import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-
-import javax.ws.rs.ext.Provider
 
 /**
  * Created by liangfu on 4/11/14.
  */
-@Provider
-@Component
-@Scope('prototype')
 @Transactional
 @CompileStatic
 class UserOptinResourceImpl implements UserOptinResource {

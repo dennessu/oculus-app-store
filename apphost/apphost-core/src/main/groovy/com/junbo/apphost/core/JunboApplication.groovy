@@ -45,7 +45,11 @@ ${getClasspath().join(System.lineSeparator())}""")
 
         } catch (Exception ex) {
             if (ctx != null) {
-                ctx.close()
+                try {
+                    ctx.close()
+                } catch (Exception innerEx) {
+                    LOGGER.error('Failed to close application:', innerEx)
+                }
             }
 
             LOGGER.error('Application failed with exception:', ex)

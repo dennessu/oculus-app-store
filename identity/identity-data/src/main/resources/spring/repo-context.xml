@@ -4,12 +4,7 @@
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        ">
-
-    <import resource="classpath*:spring/sharding-context.xml"/>
-
     <bean id="identityBaseRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" abstract="true">
-        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
-        <property name="idGenerator" ref="oculus48IdGenerator"/>
         <property name="persistentMode" value="${identity.conf.persistentMode}"/>
     </bean>
 
@@ -119,6 +114,30 @@
         <property name="repositoryInterface" value="com.junbo.identity.data.repository.TosRepository"/>
         <property name="cloudantRepositoryTarget" ref="cloudantTosRepository" />
         <property name="sqlRepositoryTarget" ref="sqlTosRepository" />
+    </bean>
+
+    <bean id="userTeleRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTeleRepository" />
+        <property name="cloudantRepositoryTarget" ref="cloudantUserTeleRepository" />
+        <property name="sqlRepositoryTarget" ref="sqlUserTeleRepository" />
+    </bean>
+
+    <bean id="userTeleAttemptRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTeleAttemptRepository" />
+        <property name="cloudantRepositoryTarget" ref="cloudantUserTeleAttemptRepository" />
+        <property name="sqlRepositoryTarget" ref="sqlUserTeleAttemptRepository" />
+    </bean>
+
+    <bean id="userTeleBackupCodeRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTeleBackupCodeRepository" />
+        <property name="cloudantRepositoryTarget" ref="cloudantUserTeleBackupCodeRepository" />
+        <property name="sqlRepositoryTarget" ref="sqlUserTeleBackupCodeRepository" />
+    </bean>
+
+    <bean id="userTeleBackupCodeAttemptRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTeleBackupCodeAttemptRepository" />
+        <property name="cloudantRepositoryTarget" ref="cloudantUserTeleBackupCodeAttemptRepository" />
+        <property name="sqlRepositoryTarget" ref="sqlUserTeleBackupCodeAttemptRepository" />
     </bean>
 
     <bean id="securityQuestionRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">

@@ -20,6 +20,7 @@ public enum EventActionType implements Identifiable<Short> {
     ASYNC_CHARGE((short)11),
     CAPTURE((short)12),
     ADDRESS_CHANGE((short)13),
+    CONFIRM((short)14),
 
     ADJUSTMENT((short)20);
 

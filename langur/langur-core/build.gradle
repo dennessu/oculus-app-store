@@ -5,10 +5,9 @@ dependencies {
     compile (libraries.async_http_client)
 
     compile (libraries.jersey_server)
-
     compile (libraries.jersey_container_grizzly2_http)
 
-    compile (libraries.swagger_annotations)
+    //compile (libraries.swagger_annotations)
 
     compile (libraries.spring_aop)
     compile (libraries.spring_context)

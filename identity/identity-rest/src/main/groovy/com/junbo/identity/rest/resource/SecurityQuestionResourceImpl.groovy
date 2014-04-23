@@ -20,19 +20,13 @@ import com.junbo.identity.spec.resource.SecurityQuestionResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Scope
-import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
 import javax.ws.rs.BeanParam
-import javax.ws.rs.ext.Provider
 
 /**
  * Created by liangfu on 3/14/14.
  */
-@Provider
-@Component
-@Scope('prototype')
 @Transactional
 @CompileStatic
 class SecurityQuestionResourceImpl implements SecurityQuestionResource {

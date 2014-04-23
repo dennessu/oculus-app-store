@@ -31,16 +31,8 @@ class LoggerInitializer {
     private static final Logger LOGGER = LoggerFactory.getLogger(LoggerInitializer)
 
     static {
-        SLF4JBridgeHandler.removeHandlersForRootLogger()
-        SLF4JBridgeHandler.install()
-
-        System.setProperty('net.spy.log.LoggerImpl', 'net.spy.memcached.compat.log.SLF4JLogger')
-    }
-
-    static {
 
         if (System.getProperty(PID_KEY) == null) {
-
             String applicationPid
             try {
                 applicationPid = getApplicationPid()
@@ -51,19 +43,22 @@ class LoggerInitializer {
             System.setProperty(PID_KEY, applicationPid)
         }
 
+        SLF4JBridgeHandler.removeHandlersForRootLogger()
+        SLF4JBridgeHandler.install()
 
-        ILoggerFactory factory = StaticLoggerBinder.singleton.loggerFactory
-        LoggerContext context = (LoggerContext) factory
+        System.setProperty('net.spy.log.LoggerImpl', 'net.spy.memcached.compat.log.SLF4JLogger')
+        if (System.getProperty('logback.configurationFile') == null) {
+            ILoggerFactory factory = StaticLoggerBinder.singleton.loggerFactory
+            LoggerContext context = (LoggerContext) factory
+            context.stop()
+            String location = 'classpath:logging/logback-apphost.xml'
 
-        context.stop()
-
-        String location = 'classpath:logging/logback-apphost.xml'
-
-        try {
-            URL url = ResourceUtils.getURL(location)
-            new ContextInitializer(context).configureByResource(url)
-        } catch (Exception ex) {
-            throw new IllegalStateException('Could not initialize logging from $location', ex)
+            try {
+                URL url = ResourceUtils.getURL(location)
+                new ContextInitializer(context).configureByResource(url)
+            } catch (Exception ex) {
+                throw new IllegalStateException('Could not initialize logging from $location', ex)
+            }
         }
     }
 

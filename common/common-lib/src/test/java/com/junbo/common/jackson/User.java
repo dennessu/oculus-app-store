@@ -52,8 +52,7 @@ public class User implements PropertyAssignedAware {
     }
 
     public User(Long userId) {
-        this.userId = userId;
-        support.setPropertyAssigned("userId");
+        setUserId(userId);
     }
 
     public Long getUserId() {
@@ -63,6 +62,7 @@ public class User implements PropertyAssignedAware {
     public void setUserId(Long userId) {
         this.userId = userId;
         support.setPropertyAssigned("userId");
+        support.setPropertyAssigned("self");
     }
 
     public Long getSpouseId() {

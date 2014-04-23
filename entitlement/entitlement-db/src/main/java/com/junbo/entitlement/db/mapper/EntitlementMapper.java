@@ -49,6 +49,7 @@ public class EntitlementMapper {
         entitlementEntity.setGrantTime(entitlement.getGrantTime());
         entitlementEntity.setExpirationTime(entitlement.getExpirationTime());
         entitlementEntity.setUseCount(entitlement.getUseCount());
+        entitlementEntity.setType(entitlement.getType());
         return entitlementEntity;
     }
 

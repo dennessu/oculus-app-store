@@ -1,11 +1,12 @@
 package com.junbo.cart.rest.util
 
+import com.google.common.reflect.AbstractInvocationHandler
 import com.junbo.cart.core.service.CartService
 import com.junbo.cart.spec.model.Cart
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 
-import java.lang.reflect.InvocationHandler
+import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.lang.reflect.Proxy
 
@@ -21,7 +22,7 @@ class CartServiceAdapterFactory {
                 new CartIdPropertyHandler(adaptee))
     }
 
-    static class CartIdPropertyHandler implements InvocationHandler {
+    static class CartIdPropertyHandler extends AbstractInvocationHandler {
 
         private final CartService cartService
 
@@ -30,9 +31,18 @@ class CartServiceAdapterFactory {
         }
 
         @Override
-        Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        protected Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable {
+            assert method.declaringClass == CartService
             assert Promise.isAssignableFrom(method.returnType)
-            return ((Promise) method.invoke(cartService, args)).syncThen { Cart cart ->
+
+            Promise result
+            try {
+                result = (Promise) method.invoke(cartService, args)
+            } catch (InvocationTargetException ex) {
+                throw ex.cause
+            }
+
+            return result.syncThen { Cart cart ->
                 if (cart != null) {
                     cart.id.resourcePathPlaceHolder['userId'] = cart.user
                 }

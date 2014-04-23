@@ -47,12 +47,12 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
                                                                  Boolean isConsumable, PageableGetOptions pageMetadata) {
         checkDeveloper(developerId);
         Set<EntitlementType> typeSet = new HashSet<>();
-        if(!CollectionUtils.isEmpty(types)){
-            for(String type : types){
-                try{
+        if (!CollectionUtils.isEmpty(types)) {
+            for (String type : types) {
+                try {
                     typeSet.add(EntitlementType.valueOf(type));
-                } catch (Exception e){
-                    throw AppErrors.INSTANCE.fieldNotCorrect("types", "type " +  type + " not supported").exception();
+                } catch (Exception e) {
+                    throw AppErrors.INSTANCE.fieldNotCorrect("types", "type " + type + " not supported").exception();
                 }
             }
         }
@@ -106,9 +106,15 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
                     .exception();
         }
 
+        if (!existingEntitlementDefinition.getType().equalsIgnoreCase(entitlementDefinition.getType())) {
+            throw AppErrors.INSTANCE.fieldNotMatch("type",
+                    entitlementDefinition.getType(),
+                    existingEntitlementDefinition.getType())
+                    .exception();
+        }
+
         existingEntitlementDefinition.setTag(entitlementDefinition.getTag());
         existingEntitlementDefinition.setGroup(entitlementDefinition.getGroup());
-        existingEntitlementDefinition.setType(entitlementDefinition.getType());
         existingEntitlementDefinition.setConsumable(entitlementDefinition.getConsumable());
         existingEntitlementDefinition.setInAppContext(entitlementDefinition.getInAppContext());
 

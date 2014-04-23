@@ -88,10 +88,15 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
                                                PageMetadata pageMetadata) {
         validateNotNull(entitlementSearchParam.getUserId(), "user");
         checkUser(entitlementSearchParam.getUserId().getValue());
+        fillClient(entitlementSearchParam);
         checkSearchDateFormat(entitlementSearchParam);
         List<Entitlement> entitlementEntities = entitlementRepository.getBySearchParam(
                 entitlementSearchParam, pageMetadata);
         return entitlementEntities;
+    }
+
+    private void fillClient(EntitlementSearchParam entitlementSearchParam) {
+        //TODO: get entitlementDef by clientId and then set the defIds to entitlementSearchParam.
     }
 
     private void checkSearchDateFormat(EntitlementSearchParam entitlementSearchParam) {
@@ -128,6 +133,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         entitlement.setUserId(userId);
         entitlement.setGrantTime(EntitlementContext.current().getNow());
         entitlement.setEntitlementDefinitionId(getDevDef().getEntitlementDefId());
+        entitlement.setType("DEVELOPER");
         return entitlementRepository.insert(entitlement);
     }
 

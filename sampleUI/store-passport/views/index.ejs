@@ -25,7 +25,7 @@
 </script>
 
 <script type="text/x-handlebars" data-template-name="login">
-    <form id="Login" class="box1 login" method="POST" action="<%=authUrl%>">
+    <form id="Login" class="box1 login" {{action "Submit" on="submit"}}>
         <h2>Login</h2>
         <p>No Account,&nbsp;{{#link-to-animated "register" animations="main:flip"}}Create an Account{{/link-to-animated}}</p>
         {{#if content.errMessage}}
@@ -42,7 +42,7 @@
         <div class="actions">
             {{input type="hidden" name="cid" value=content.cid}}
             {{input type="hidden" name="event" value=content.event}}
-            <button id="BtnLogin" type="button" class="btn btn-primary" {{action "Submit"}}>Login</button>
+            <button id="BtnLogin" type="submit" class="btn btn-primary">Login</button>
             <button type="button" class="btn btn-cancel" {{action "Cancel"}}>Cancel</button>
         </div>
     </form>

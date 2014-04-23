@@ -1,26 +1,16 @@
 apply plugin: 'groovy'
+apply plugin: 'application'
+
+mainClassName = "com.junbo.apphost.core.JunboApplication"
 
 dependencies {
+    runtime (libraries.apphost_core)
+    runtime (libraries.common_configuration_data)
+
     compile project(':order-rest')
     compile project(':order-jobs')
 
-    compile "com.junbo.billing:billing-app:${junboVersion}"
-    compile "com.junbo.identity:identity-app:${junboVersion}"
-    compile "com.junbo.payment:payment-app:${junboVersion}"
-//    compile "com.junbo.catalog:catalog-spec:${junboVersion}"
-
-//    compile "com.junbo.domaindata:domaindata-app:${junboVersion}"
-//    compile "com.junbo.rating:rating-app:${junboVersion}"
-//    compile "com.junbo.entitlement:entitlement-app:${junboVersion}"
-//    compile "com.junbo.fulfilment:fulfilment-app:${junboVersion}"
-//    compile "com.junbo.cart:cart-app:${junboVersion}"
-//    compile "com.junbo.billing:billing-app:${junboVersion}"
-//    compile "com.junbo.order:order-app:${junboVerison}"
-
-
-    compile (libraries.common_lib)
-    compile (libraries.common_configuration)
-    compile (libraries.jersey_container_grizzly2_http)
-    compile (libraries.jersey_spring3)
-    runtime (libraries.common_configuration_data)
+    runtime "com.junbo.billing:billing-rest:${junboVersion}"
+    runtime "com.junbo.identity:identity-rest:${junboVersion}"
+    runtime "com.junbo.payment:payment-rest:${junboVersion}"
 }

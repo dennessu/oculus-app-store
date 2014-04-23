@@ -37,5 +37,4 @@ module.exports = function(req, res){
 
         res.json(200, responseModel);
     });
-
 };

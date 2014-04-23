@@ -7,10 +7,8 @@ package com.junbo.common.filter;
 
 import org.slf4j.MDC;
 
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
+import javax.annotation.Priority;
+import javax.ws.rs.container.*;
 import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -18,6 +16,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * SequenceIdFilter.
  */
+@PreMatching
+@Priority(Integer.MIN_VALUE)
 public class SequenceIdFilter implements ContainerRequestFilter, ContainerResponseFilter {
     public static final String X_REQUEST_ID = "X-Request-Id";
 

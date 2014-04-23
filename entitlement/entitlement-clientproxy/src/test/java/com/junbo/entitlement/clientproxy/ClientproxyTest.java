@@ -25,7 +25,7 @@ public class ClientproxyTest extends AbstractTestNGSpringContextTests {
     private EntitlementDefinitionFacade definitionFacade;
 
     @Test(enabled = false)
-    public void testUserFacade() {
+    public void testDefinitionFacade() {
         EntitlementDefinition definition = definitionFacade.getDefinition(new Random().nextLong());
         Assert.assertNull(definition);
     }

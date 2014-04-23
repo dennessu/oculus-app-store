@@ -1,10 +1,12 @@
 package com.junbo.sharding.view
 
 import com.junbo.common.util.Identifiable
+import groovy.transform.CompileStatic
 
 /**
  * Created by kg on 3/30/2014.
  */
+@CompileStatic
 class DefaultViewQuery<ID, E extends Identifiable<ID>> implements ViewQuery<ID> {
 
     private final MultimapDAO multimapDAO

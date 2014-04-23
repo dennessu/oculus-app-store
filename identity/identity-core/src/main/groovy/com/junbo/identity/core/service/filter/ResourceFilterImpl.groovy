@@ -9,11 +9,10 @@ import com.junbo.oom.core.filter.WritablePropertiesFilter
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Required
-import org.springframework.stereotype.Component
+
 /**
  * Created by kg on 3/19/2014.
  */
-@Component
 @CompileStatic
 abstract class ResourceFilterImpl<T> implements ResourceFilter<T> {
 

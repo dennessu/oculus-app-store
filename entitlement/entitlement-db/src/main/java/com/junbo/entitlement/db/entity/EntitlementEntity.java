@@ -25,6 +25,7 @@ public class EntitlementEntity extends Entity {
     private Date grantTime;
     private Date expirationTime;
     private Integer useCount;
+    private String type;
 
     @Id
     @Column(name = "entitlement_id")
@@ -98,6 +99,15 @@ public class EntitlementEntity extends Entity {
 
     public void setIsBanned(Boolean isBanned) {
         this.isBanned = isBanned;
+    }
+
+    @Column(name = "type")
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     @JsonIgnore

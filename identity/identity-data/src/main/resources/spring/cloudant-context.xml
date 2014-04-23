@@ -4,9 +4,6 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        ">
-    <import resource="classpath*:spring/sharding-context.xml"/>
-    <import resource="classpath*:spring/common-lib-context.xml"/>
-
     <bean id="cloudantAddressRepository" class="com.junbo.identity.data.repository.impl.cloudant.AddressRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="address"/>
         <property name="shardAlgorithm" ref="userShardAlgorithm"/>
@@ -115,4 +112,27 @@
         <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
 
+    <bean id="cloudantUserTeleRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserTeleRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_tele" />
+        <property name="shardAlgorithm" ref="userShardAlgorithm" />
+        <property name="idGenerator" ref="oculus48IdGenerator" />
+    </bean>
+
+    <bean id="cloudantUserTeleAttemptRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserTeleAttemptRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_tele_code_attempt" />
+        <property name="shardAlgorithm" ref="userShardAlgorithm" />
+        <property name="idGenerator" ref="oculus48IdGenerator" />
+    </bean>
+
+    <bean id="cloudantUserTeleBackupCodeRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserTeleBackupCodeRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_tele_back_up_code" />
+        <property name="shardAlgorithm" ref="userShardAlgorithm" />
+        <property name="idGenerator" ref="oculus48IdGenerator" />
+    </bean>
+
+    <bean id="cloudantUserTeleBackupCodeAttemptRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserTeleBackupCodeAttemptRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_tele_back_up_code_attempt" />
+        <property name="shardAlgorithm" ref="userShardAlgorithm" />
+        <property name="idGenerator" ref="oculus48IdGenerator" />
+    </bean>
 </beans>

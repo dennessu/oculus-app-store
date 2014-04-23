@@ -105,7 +105,9 @@ public class BalanceRepositoryImpl implements BalanceRepository {
         // create balance event
         saveBalanceEventEntity(balanceEntity, EventActionType.CREATE);
 
-        return getBalance(balanceEntity.getBalanceId());
+        Balance result = getBalance(balanceEntity.getBalanceId());
+
+        return setBackNonPersistAttributes(result, balance);
     }
 
     @Override
@@ -189,7 +191,7 @@ public class BalanceRepositoryImpl implements BalanceRepository {
         // create balance event
         saveBalanceEventEntity(savedEntity, eventActionType);
 
-        return getBalance(balanceEntity.getBalanceId());
+        return setBackNonPersistAttributes(getBalance(balanceEntity.getBalanceId()), balance);
     }
 
     @Override
@@ -226,6 +228,13 @@ public class BalanceRepositoryImpl implements BalanceRepository {
         balanceItemEventEntity.setDiscountAmount(balanceItemEntity.getDiscountAmount());
         balanceItemEventEntity.setActionTypeId(eventActionType.getId());
         balanceItemEventEntity.setEventDate(new Date());
+    }
 
+    private Balance setBackNonPersistAttributes(Balance saved, Balance origin) {
+        // set back the attributes which are not saved in DB
+        saved.setSuccessRedirectUrl(origin.getSuccessRedirectUrl());
+        saved.setCancelRedirectUrl(origin.getCancelRedirectUrl());
+        saved.setProviderConfirmUrl(origin.getProviderConfirmUrl());
+        return saved;
     }
 }

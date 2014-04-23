@@ -13,7 +13,6 @@ import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionId
 import com.junbo.identity.data.identifiable.UserPasswordStrength
 import com.junbo.identity.data.repository.*
-import com.junbo.identity.data.repository.impl.cloudant.AddressRepositoryCloudantImpl
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.*
 import com.junbo.identity.spec.v1.model.Address
@@ -53,7 +52,7 @@ import org.testng.annotations.Test
 /**
  * Unittest.
  */
-@ContextConfiguration(locations = ['classpath:spring/context-test.xml'])
+@ContextConfiguration(locations = ['classpath:test/spring/context-test.xml'])
 @TransactionConfiguration(defaultRollback = false)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
 @Transactional('transactionManager')

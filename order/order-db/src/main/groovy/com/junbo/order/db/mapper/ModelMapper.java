@@ -6,14 +6,13 @@
 
 package com.junbo.order.db.mapper;
 
+import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.oom.core.Mapper;
 import com.junbo.oom.core.Mapping;
 import com.junbo.oom.core.MappingContext;
 import com.junbo.oom.core.Mappings;
-import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.order.db.entity.*;
 import com.junbo.order.spec.model.*;
-import org.springframework.stereotype.Component;
 
 /**
  * Created by linyi on 14-2-12.
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Component;
 @Mapper(uses = {
         CommonMapper.class
 })
-@Component("modelMapper")
 public interface ModelMapper {
 
     @Mappings({

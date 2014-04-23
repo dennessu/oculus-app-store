@@ -5,11 +5,13 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JavaType
 import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.ObjectMapper
+import groovy.transform.CompileStatic
 
 /**
  * Json Marshaller implementation.
  * Used internally for entity persistence and other.
  */
+@CompileStatic
 class NoAnnotationsJsonMarshaller {
     private NoAnnotationsJsonMarshaller() { }
     /**
@@ -21,6 +23,7 @@ class NoAnnotationsJsonMarshaller {
      * Initialize the objectMapper here.
      */
     static {
+        // Intentionally not using ObjectMapperProvider to get the raw serialization result
         objectMapper = new ObjectMapper()
         objectMapper.disable(MapperFeature.USE_ANNOTATIONS)
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)

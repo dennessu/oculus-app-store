@@ -19,7 +19,7 @@ import com.ning.http.client.AsyncHttpClientConfig;
 import com.ning.http.client.Request;
 import com.ning.http.client.RequestBuilder;
 import com.ning.http.client.providers.netty.NettyResponse;
-import junit.framework.Assert;
+import org.testng.Assert;
 
 import java.util.ArrayList;
 import java.util.List;

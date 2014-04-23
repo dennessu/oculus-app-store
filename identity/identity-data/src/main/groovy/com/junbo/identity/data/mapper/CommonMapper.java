@@ -363,4 +363,60 @@ public class CommonMapper {
         }
         return value.toString();
     }
+
+    public Long toUserTeleId(UserTeleId id) {
+        if (id == null) {
+            return null;
+        }
+        return id.getValue();
+    }
+
+    public UserTeleId toUserTeleId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        return new UserTeleId(id);
+    }
+
+    public Long toUserTeleAttemptId(UserTeleAttemptId id) {
+        if (id == null) {
+            return null;
+        }
+        return id.getValue();
+    }
+
+    public UserTeleAttemptId toUserTeleAttemptId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        return new UserTeleAttemptId(id);
+    }
+
+    public Long toUserTeleBackupCodeId(UserTeleBackupCodeId id) {
+        if (id == null) {
+            return null;
+        }
+        return id.getValue();
+    }
+
+    public UserTeleBackupCodeId toUserTeleBackupCodeId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        return new UserTeleBackupCodeId(id);
+    }
+
+    public Long toUserTeleBackupCodeAttemptId(UserTeleBackupCodeAttemptId id) {
+        if (id == null) {
+            return null;
+        }
+        return id.getValue();
+    }
+
+    public UserTeleBackupCodeAttemptId toUserTeleBackupCodeAttemptId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        return new UserTeleBackupCodeAttemptId(id);
+    }
 }

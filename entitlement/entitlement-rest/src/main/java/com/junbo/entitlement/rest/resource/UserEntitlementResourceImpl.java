@@ -20,6 +20,7 @@ import com.junbo.entitlement.spec.resource.UserEntitlementResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -60,6 +61,9 @@ public class UserEntitlementResourceImpl implements UserEntitlementResource {
         UriBuilder builder = uriInfo.getBaseUriBuilder().path("users")
                 .path(IdFormatter.encodeId(searchParam.getUserId()))
                 .path("entitlements");
+        if (!StringUtils.isEmpty(searchParam.getType())) {
+            builder = builder.queryParam("type", searchParam.getType());
+        }
         if (searchParam.getIsActive() != null) {
             builder = builder.queryParam("isActive", searchParam.getIsActive());
         }

@@ -7,10 +7,11 @@ import com.junbo.common.cloudant.model.CloudantError
 import com.junbo.common.cloudant.model.CloudantResponse
 import com.junbo.common.cloudant.model.CloudantSearchResult
 import com.junbo.common.cloudant.model.CloudantViews
+import com.junbo.common.util.Identifiable
 import com.junbo.common.util.JsonMarshaller
-import com.junbo.common.util.Utils
 import com.ning.http.client.AsyncHttpClient
 import com.ning.http.client.Response
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.http.HttpMethod
@@ -22,7 +23,8 @@ import java.lang.reflect.ParameterizedType
 /**
  * CloudantClient.
  */
-abstract class CloudantClient<T> implements  InitializingBean {
+@CompileStatic
+abstract class CloudantClient<T extends CloudantEntity> implements InitializingBean {
     protected static final String VIEW_PATH = '/_design/views/_view/'
     protected final Class<T> entityClass
     protected AsyncHttpClient asyncHttpClient
@@ -48,25 +50,10 @@ abstract class CloudantClient<T> implements  InitializingBean {
 
     protected CloudantClient() {
         entityClass = (Class<T>) ((ParameterizedType) getClass().genericSuperclass).actualTypeArguments[0]
-        def id = Utils.tryObtainGetterMethod(entityClass, 'id')
-        def cloudantId = Utils.tryObtainGetterMethod(entityClass, '_id')
-        def cloudantRev = Utils.tryObtainGetterMethod(entityClass, '_rev')
-
-        def resourceAge = Utils.tryObtainGetterMethod(entityClass, 'resourceAge')
-        def createdTime = Utils.tryObtainGetterMethod(entityClass, 'createdTime')
-        def updatedTime = Utils.tryObtainGetterMethod(entityClass, 'updatedTime')
-        def createdBy = Utils.tryObtainGetterMethod(entityClass, 'createdBy')
-        def updatedBy = Utils.tryObtainGetterMethod(entityClass, 'updatedBy')
-
-        if (id == null || cloudantId == null || cloudantRev == null || resourceAge == null || createdTime == null
-        || updatedTime == null || createdBy == null || updatedBy == null) {
-            throw new CloudantException("Failed to init cloudant client with entityClass: $entityClass, " +
-           'some of properties[id, _id, _rev, resourceAge, createdTime, updatedTime, createdBy, updatedby] not found')
-        }
     }
 
     T cloudantPost(T entity) {
-        entity._id = entity.id.toString()
+        entity._id = ((Identifiable)entity).id.toString()
         entity._rev = ''
         entity.createdTime = new Date()
         entity.createdBy = 'todo-cloudant'
@@ -109,15 +96,15 @@ abstract class CloudantClient<T> implements  InitializingBean {
     }
 
     T cloudantPut(T entity) {
-        def cloudantDoc = getCloudantDocument(entity.id.toString())
-        entity._id = entity.id.toString()
+        def cloudantDoc = getCloudantDocument(((Identifiable)entity).id.toString())
+        entity._id = ((Identifiable)entity).id.toString()
         entity._rev = cloudantDoc._rev
         entity.updatedTime = new Date()
         entity.updatedBy = 'todo-cloudant'
         def originalResourceAge = entity.resourceAge
         entity.resourceAge = ((String)entity._rev).split('-')[0]
 
-        def response = executeRequest(HttpMethod.PUT, entity.id.toString(), [:], entity, true)
+        def response = executeRequest(HttpMethod.PUT, ((Identifiable)entity).id.toString(), [:], entity, true)
         entity.resourceAge = originalResourceAge
 
         if (response.statusCode != HttpStatus.CREATED.value()) {
@@ -235,10 +222,10 @@ abstract class CloudantClient<T> implements  InitializingBean {
             query.put('key', "\"$key\"")
         }
         if (limit != null) {
-            query.put('limit', limit)
+            query.put('limit', limit.toString())
         }
         if (skip != null) {
-            query.put('skip', skip)
+            query.put('skip', skip.toString())
         }
         if (descending) {
             query.put('descending', 'true')

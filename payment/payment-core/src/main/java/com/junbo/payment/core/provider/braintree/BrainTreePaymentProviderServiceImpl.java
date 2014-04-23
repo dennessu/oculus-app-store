@@ -8,6 +8,7 @@ package com.junbo.payment.core.provider.braintree;
 
 import com.braintreegateway.*;
 import com.braintreegateway.exceptions.DownForMaintenanceException;
+import com.junbo.common.util.PromiseFacade;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
@@ -25,6 +26,7 @@ import javax.ws.rs.core.Response;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 
 /**
@@ -76,152 +78,182 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
     }
 
     @Override
-    public Promise<PaymentInstrument> add(PaymentInstrument request) {
-        String expireDate = request.getCreditCardRequest().getExpireDate();
-        String[] tokens = expireDate.split("-");
-        if(tokens == null || tokens.length < 2){
-            throw AppClientExceptions.INSTANCE.invalidExpireDateFormat(expireDate).exception();
-        }
-        CreditCardRequest ccRequest = new CreditCardRequest()
-                .customerId(getOrCreateCustomerId(request.getUserId().toString()))
-                .number(request.getAccountNum())
-                .expirationMonth(String.valueOf(tokens[1]))
-                .expirationYear(String.valueOf(tokens[0]))
-                .cardholderName(request.getAccountName())
-                .cvv(request.getCreditCardRequest().getEncryptedCvmCode())
-                .options()
-                    .failOnDuplicatePaymentMethod(false)
-                    .verifyCard(request.getIsValidated())
-                    .done();
-        //Add billing Address
-        if(request.getAddress() != null){
-            ccRequest.billingAddress()
-                    .postalCode(request.getAddress().getPostalCode())
-                    .streetAddress(request.getAddress().getAddressLine1())
-                    .locality(request.getAddress().getCity())
-                    .region(request.getAddress().getState())
-                    .countryCodeAlpha2(request.getAddress().getCountry())
-                    .done();
-        }
-        Result<CreditCard> result = null;
-        LOGGER.info("add credit card for customer:" + request.getUserId().toString());
-        try {
-            result = gateway.creditCard().create(ccRequest);
-        }catch (Exception ex){
-            handleProviderException(ex, "Add", "User", request.getUserId().toString());
-        }
-        if(result.isSuccess()){
-            request.setAccountNum(result.getTarget().getMaskedNumber());
-            request.setExternalToken(result.getTarget().getToken());
-            request.getCreditCardRequest().setType(
-                    PaymentUtil.getCreditCardType(result.getTarget().getCardType()).toString());
-            request.getCreditCardRequest().setCommercial(result.getTarget().getCommercial().toString());
-            request.getCreditCardRequest().setDebit(result.getTarget().getDebit().toString());
-            request.getCreditCardRequest().setPrepaid(result.getTarget().getPrepaid().toString());
-            request.getCreditCardRequest().setIssueCountry(result.getTarget().getCountryOfIssuance());
-        }else{
-            handleProviderError(result);
-        }
-        return Promise.pure(request);
-    }
-
-    @Override
-    public Promise<Response> delete(PaymentInstrument pi) {
-        String token = pi.getExternalToken();
-        Result<CreditCard> result = null;
-        LOGGER.info("delete credit card :" + token);
-        try{
-            result = gateway.creditCard().delete(token);
-        }catch(Exception ex){
-            handleProviderException(ex, "Delete", "token", token);
-        }
-        if(!result.isSuccess()){
-            handleProviderError(result);
-        }
-        return Promise.pure(Response.status(204).build());
-    }
-
-    @Override
-    public Promise<PaymentTransaction> authorize(PaymentInstrument pi, PaymentTransaction paymentRequest) {
-        String piToken = pi.getExternalToken();
-        TransactionRequest request = getTransactionRequest(piToken, paymentRequest);
-        Result<Transaction> result = null;
-        LOGGER.info("authorize credit card :" + piToken);
-        try{
-            result = gateway.transaction().sale(request);
-        }catch (Exception ex){
-            handleProviderException(ex, "Authorize", "order", paymentRequest.getId().toString());
-        }
-        if(result.isSuccess()){
-            paymentRequest.setExternalToken(result.getTarget().getId());
-            paymentRequest.setStatus(PaymentStatus.AUTHORIZED.toString());
-        }else{
-            handleProviderError(result);
-        }
-        return Promise.pure(paymentRequest);
-    }
-
-    @Override
-    public Promise<PaymentTransaction> capture(String transactionId, PaymentTransaction request) {
-        Result<Transaction> result = null;
-        LOGGER.info("capture transaction :" + transactionId);
-        try{
-            if(request.getChargeInfo() == null || request.getChargeInfo().getAmount() == null){
-                result = gateway.transaction().submitForSettlement(transactionId);
-            }else{
-                //Partial Settle
-                result = gateway.transaction().submitForSettlement(transactionId, request.getChargeInfo().getAmount());
+    public Promise<PaymentInstrument> add(final PaymentInstrument request) {
+        return PromiseFacade.PAYMENT.decorate(new Callable<PaymentInstrument>() {
+            @Override
+            public PaymentInstrument call() throws Exception {
+                String expireDate = request.getCreditCardRequest().getExpireDate();
+                String[] tokens = expireDate.split("-");
+                if(tokens == null || tokens.length < 2){
+                    throw AppClientExceptions.INSTANCE.invalidExpireDateFormat(expireDate).exception();
+                }
+                CreditCardRequest ccRequest = new CreditCardRequest()
+                        .customerId(getOrCreateCustomerId(request.getUserId().toString()))
+                        .number(request.getAccountNum())
+                        .expirationMonth(String.valueOf(tokens[1]))
+                        .expirationYear(String.valueOf(tokens[0]))
+                        .cardholderName(request.getAccountName())
+                        .cvv(request.getCreditCardRequest().getEncryptedCvmCode())
+                        .options()
+                        .failOnDuplicatePaymentMethod(false)
+                        .verifyCard(request.getIsValidated())
+                        .done();
+                //Add billing Address
+                if(request.getAddress() != null){
+                    ccRequest.billingAddress()
+                            .postalCode(request.getAddress().getPostalCode())
+                            .streetAddress(request.getAddress().getAddressLine1())
+                            .locality(request.getAddress().getCity())
+                            .region(request.getAddress().getState())
+                            .countryCodeAlpha2(request.getAddress().getCountry())
+                            .done();
+                }
+                Result<CreditCard> result = null;
+                LOGGER.info("add credit card for customer:" + request.getUserId().toString());
+                try {
+                    result = gateway.creditCard().create(ccRequest);
+                }catch (Exception ex){
+                    handleProviderException(ex, "Add", "User", request.getUserId().toString());
+                }
+                if(result.isSuccess()){
+                    request.setAccountNum(result.getTarget().getMaskedNumber());
+                    request.setExternalToken(result.getTarget().getToken());
+                    request.getCreditCardRequest().setType(
+                            PaymentUtil.getCreditCardType(result.getTarget().getCardType()).toString());
+                    request.getCreditCardRequest().setCommercial(result.getTarget().getCommercial().toString());
+                    request.getCreditCardRequest().setDebit(result.getTarget().getDebit().toString());
+                    request.getCreditCardRequest().setPrepaid(result.getTarget().getPrepaid().toString());
+                    request.getCreditCardRequest().setIssueCountry(result.getTarget().getCountryOfIssuance());
+                }else{
+                    handleProviderError(result);
+                }
+                return request;
             }
-        }catch (Exception ex){
-            handleProviderException(ex, "Capture", "transaction", transactionId);
-        }
-        if (result.isSuccess()) {
-            // transaction successfully submitted for settlement
-            request.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString());
-        } else {
-            handleProviderError(result);
-        }
-        return Promise.pure(request);
+        });
     }
 
     @Override
-    public Promise<PaymentTransaction> charge(PaymentInstrument pi, PaymentTransaction paymentRequest) {
-        String piToken = pi.getExternalToken();
-        TransactionRequest request = getTransactionRequest(piToken, paymentRequest);
-        request.options()
-                .submitForSettlement(true)
-                .done();
-        Result<Transaction> result = null;
-        LOGGER.info("charge credit card :" + piToken);
-        try{
-            result = gateway.transaction().sale(request);
-        }catch (Exception ex){
-            handleProviderException(ex, "Charge", "order", paymentRequest.getId().toString());
-        }
-        if(result.isSuccess()){
-            paymentRequest.setExternalToken(result.getTarget().getId());
-            paymentRequest.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString());
-        }else{
-            handleProviderError(result);
-        }
-        return Promise.pure(paymentRequest);
+    public Promise<Response> delete(final PaymentInstrument pi) {
+        return PromiseFacade.PAYMENT.decorate(new Callable<Response>() {
+            @Override
+            public Response call() throws Exception {
+                String token = pi.getExternalToken();
+                Result<CreditCard> result = null;
+                LOGGER.info("delete credit card :" + token);
+                try{
+                    result = gateway.creditCard().delete(token);
+                }catch(Exception ex){
+                    handleProviderException(ex, "Delete", "token", token);
+                }
+                if(!result.isSuccess()){
+                    handleProviderError(result);
+                }
+                return Response.status(204).build();
+            }
+        });
     }
 
     @Override
-    public Promise<PaymentTransaction> reverse(String transactionId, PaymentTransaction paymentRequest) {
-        Result<Transaction> result = null;
-        LOGGER.info("reverse transaction :" + transactionId);
-        try{
-            result = gateway.transaction().voidTransaction(transactionId);
-        }catch(Exception ex){
-            handleProviderException(ex, "Void", "transaction", transactionId);
-        }
-        if (result.isSuccess()) {
-            // transaction successfully voided
-        } else {
-            handleProviderError(result);
-        }
-        return Promise.pure(paymentRequest);
+    public Promise<PaymentTransaction> authorize(final PaymentInstrument pi, final PaymentTransaction paymentRequest) {
+        return PromiseFacade.PAYMENT.decorate(new Callable<PaymentTransaction>() {
+            @Override
+            public PaymentTransaction call() throws Exception {
+                String piToken = pi.getExternalToken();
+                TransactionRequest request = getTransactionRequest(piToken, paymentRequest);
+                Result<Transaction> result = null;
+                LOGGER.info("authorize credit card :" + piToken);
+                try{
+                    result = gateway.transaction().sale(request);
+                }catch (Exception ex){
+                    handleProviderException(ex, "Authorize", "order", paymentRequest.getId().toString());
+                }
+                if(result.isSuccess()){
+                    paymentRequest.setExternalToken(result.getTarget().getId());
+                    paymentRequest.setStatus(PaymentStatus.AUTHORIZED.toString());
+                }else{
+                    handleProviderError(result);
+                }
+                return paymentRequest;
+            }
+        });
+    }
+
+    @Override
+    public Promise<PaymentTransaction> capture(final String transactionId, final PaymentTransaction request) {
+        return PromiseFacade.PAYMENT.decorate(new Callable<PaymentTransaction>() {
+            @Override
+            public PaymentTransaction call() throws Exception {
+                Result<Transaction> result = null;
+                LOGGER.info("capture transaction :" + transactionId);
+                try{
+                    if(request.getChargeInfo() == null || request.getChargeInfo().getAmount() == null){
+                        result = gateway.transaction().submitForSettlement(transactionId);
+                    }else{
+                        //Partial Settle
+                        result = gateway.transaction().submitForSettlement(transactionId, request.getChargeInfo().getAmount());
+                    }
+                }catch (Exception ex){
+                    handleProviderException(ex, "Capture", "transaction", transactionId);
+                }
+                if (result.isSuccess()) {
+                    // transaction successfully submitted for settlement
+                    request.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString());
+                } else {
+                    handleProviderError(result);
+                }
+                return request;
+            }
+        });
+    }
+
+    @Override
+    public Promise<PaymentTransaction> charge(final PaymentInstrument pi, final PaymentTransaction paymentRequest) {
+        return PromiseFacade.PAYMENT.decorate(new Callable<PaymentTransaction>() {
+            @Override
+            public PaymentTransaction call() throws Exception {
+                String piToken = pi.getExternalToken();
+                TransactionRequest request = getTransactionRequest(piToken, paymentRequest);
+                request.options()
+                        .submitForSettlement(true)
+                        .done();
+                Result<Transaction> result = null;
+                LOGGER.info("charge credit card :" + piToken);
+                try{
+                    result = gateway.transaction().sale(request);
+                }catch (Exception ex){
+                    handleProviderException(ex, "Charge", "order", paymentRequest.getId().toString());
+                }
+                if(result.isSuccess()){
+                    paymentRequest.setExternalToken(result.getTarget().getId());
+                    paymentRequest.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString());
+                }else{
+                    handleProviderError(result);
+                }
+                return paymentRequest;
+            }
+        });
+    }
+
+    @Override
+    public Promise<PaymentTransaction> reverse(final String transactionId, final PaymentTransaction paymentRequest) {
+        return PromiseFacade.PAYMENT.decorate(new Callable<PaymentTransaction>() {
+            @Override
+            public PaymentTransaction call() throws Exception {
+                Result<Transaction> result = null;
+                LOGGER.info("reverse transaction :" + transactionId);
+                try{
+                    result = gateway.transaction().voidTransaction(transactionId);
+                }catch(Exception ex){
+                    handleProviderException(ex, "Void", "transaction", transactionId);
+                }
+                if (result.isSuccess()) {
+                    // transaction successfully voided
+                } else {
+                    handleProviderError(result);
+                }
+                return paymentRequest;
+            }
+        });
     }
 
     private <T> void handleProviderError(Result<T> result) {
@@ -249,26 +281,32 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
     }
 
     @Override
-    public Promise<PaymentTransaction> refund(String transactionId, PaymentTransaction request) {
-        Result<Transaction> result = null;
-        LOGGER.info("refund transaction :" + transactionId);
-        try{
-            if(request.getChargeInfo() == null || request.getChargeInfo().getAmount() == null){
-                result = gateway.transaction().refund(transactionId);
-            }else{
-                //Partial Refund
-                result = gateway.transaction().refund(transactionId, request.getChargeInfo().getAmount());
+    public Promise<PaymentTransaction> refund(final String transactionId, final PaymentTransaction request) {
+        return PromiseFacade.PAYMENT.decorate(new Callable<PaymentTransaction>() {
+            @Override
+            public PaymentTransaction call() throws Exception {
+                Result<Transaction> result = null;
+                LOGGER.info("refund transaction :" + transactionId);
+                try{
+                    if(request.getChargeInfo() == null || request.getChargeInfo().getAmount() == null){
+                        result = gateway.transaction().refund(transactionId);
+                    }else{
+                        //Partial Refund
+                        result = gateway.transaction().refund(transactionId, request.getChargeInfo().getAmount());
+                    }
+                }catch (Exception ex){
+                    handleProviderException(ex, "Refund", "transaction", transactionId);
+                }
+                if (result.isSuccess()) {
+                    // transaction successfully submitted for settlement
+                    request.setStatus(PaymentStatus.REFUNDED.toString());
+                } else {
+                    handleProviderError(result);
+                }
+                return request;
             }
-        }catch (Exception ex){
-            handleProviderException(ex, "Refund", "transaction", transactionId);
-        }
-        if (result.isSuccess()) {
-            // transaction successfully submitted for settlement
-            request.setStatus(PaymentStatus.REFUNDED.toString());
-        } else {
-            handleProviderError(result);
-        }
-        return Promise.pure(request);
+        });
+
     }
 
     @Override
@@ -296,21 +334,26 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
     }
 
     @Override
-    public Promise<PaymentTransaction> getByTransactionToken(String token) {
-        Transaction transaction = null;
-        try{
-            transaction = gateway.transaction().find(token);
-        }catch(Exception ex){
-            handleProviderException(ex, "Search", "token", token);
-        }
-        if(transaction == null){
-            return Promise.pure(null);
-        }
-        PaymentTransaction result = new PaymentTransaction();
-        result.setStatus(PaymentUtil.mapBraintreePaymentStatus(PaymentStatus.BrainTreeStatus.valueOf(
-                transaction.getStatus().toString())).toString());
-        //TODO: need add transaction.getSettlementBatchId(); for the batch job processing
-        return Promise.pure(result);
+    public Promise<PaymentTransaction> getByTransactionToken(final String token) {
+        return PromiseFacade.PAYMENT.decorate(new Callable<PaymentTransaction>() {
+            @Override
+            public PaymentTransaction call() throws Exception {
+                Transaction transaction = null;
+                try{
+                    transaction = gateway.transaction().find(token);
+                }catch(Exception ex){
+                    handleProviderException(ex, "Search", "token", token);
+                }
+                if(transaction == null){
+                    return null;
+                }
+                PaymentTransaction result = new PaymentTransaction();
+                result.setStatus(PaymentUtil.mapBraintreePaymentStatus(PaymentStatus.BrainTreeStatus.valueOf(
+                        transaction.getStatus().toString())).toString());
+                //TODO: need add transaction.getSettlementBatchId(); for the batch job processing
+                return result;
+            }
+        });
     }
 
     private TransactionRequest getTransactionRequest(String piToken, PaymentTransaction paymentRequest) {

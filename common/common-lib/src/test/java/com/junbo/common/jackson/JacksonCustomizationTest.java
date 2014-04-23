@@ -6,12 +6,9 @@
 
 package com.junbo.common.jackson;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.junbo.common.jackson.deserializer.ResourceAwareDeserializationContext;
-import com.junbo.common.jackson.serializer.ResourceAwareSerializerProvider;
+import com.junbo.common.json.ObjectMapperProvider;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
@@ -23,13 +20,7 @@ import java.util.Set;
  * JacksonCustomizationTest.
  */
 public class JacksonCustomizationTest {
-    private ObjectMapper mapper =
-            new ObjectMapper(null, new ResourceAwareSerializerProvider(), new ResourceAwareDeserializationContext());
-
-    @BeforeClass
-    public void setUp() {
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-    }
+    private ObjectMapper mapper = ObjectMapperProvider.instance();
 
     @Test
     public void testBVT() throws Exception {

@@ -301,8 +301,6 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
     @Override
     public Promise<PaymentTransaction> getProviderTransaction(Long paymentId) {
         PaymentTransaction payment = paymentRepository.getByPaymentId(paymentId);
-        PaymentInstrument pi = getPaymentInstrument(payment);
-        final PaymentProviderService provider = getPaymentProviderService(pi);
         String externalToken = payment.getExternalToken();
         if(CommonUtil.isNullOrEmpty(externalToken)){
             Map<PropertyField, String> properties = paymentRepository.getPaymentProperties(paymentId);
@@ -311,8 +309,10 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
             }
         }
         if(CommonUtil.isNullOrEmpty(externalToken)){
-            throw AppServerExceptions.INSTANCE.noExternalTokenFoundForPayment(paymentId.toString()).exception();
+            return Promise.pure(null);
         }
+        PaymentInstrument pi = getPaymentInstrument(payment);
+        final PaymentProviderService provider = getPaymentProviderService(pi);
         return provider.getByTransactionToken(externalToken)
                 .recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
                     @Override

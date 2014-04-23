@@ -34,7 +34,7 @@ public class JsonMarshaller {
      * @param object The object to be marshaled.
      * @return The json string of the input object.
      */
-    static String marshall(Object object) throws JsonProcessingException {
+    public static String marshall(Object object) throws JsonProcessingException {
         return objectMapper.writeValueAsString(object);
     }
 
@@ -44,7 +44,7 @@ public class JsonMarshaller {
      * @param clazz The target class of the unmarshalled object.
      * @return The unmashalled Object of the given class.
      */
-    static <T> T unmarshall(String string, Class<T> clazz) throws IOException {
+    public static <T> T unmarshall(String string, Class<T> clazz) throws IOException {
         return objectMapper.readValue(string, clazz);
     }
 
@@ -55,7 +55,7 @@ public class JsonMarshaller {
      * @param parameterClass The generic class generic part.
      * @return The unmashalled Object of the given generic class.
      */
-    static <T> T unmarshall(String string, Class<?> parametrized, Class<?> parameterClass) throws IOException {
+    public static <T> T unmarshall(String string, Class<?> parametrized, Class<?> parameterClass) throws IOException {
         // Construct the JavaType with the given parametrized class and generic type.
         JavaType javaType = objectMapper.getTypeFactory().constructParametricType(parametrized, parameterClass);
         return objectMapper.readValue(string, javaType);

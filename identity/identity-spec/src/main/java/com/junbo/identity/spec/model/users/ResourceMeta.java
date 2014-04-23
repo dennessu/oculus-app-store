@@ -9,6 +9,7 @@ package com.junbo.identity.spec.model.users;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.cloudant.CloudantEntity;
 import com.junbo.common.json.PropertyAssignedAware;
 import com.junbo.common.json.PropertyAssignedAwareSupport;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -20,7 +21,7 @@ import java.util.Date;
  * Per resource will have those attributes.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public abstract class ResourceMeta implements PropertyAssignedAware {
+public abstract class ResourceMeta implements PropertyAssignedAware, CloudantEntity {
 
     protected final PropertyAssignedAwareSupport support = new PropertyAssignedAwareSupport();
 

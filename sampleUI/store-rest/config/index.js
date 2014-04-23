@@ -5,7 +5,7 @@ module.exports = {
         PostAuthenticate: {
             Method: 'POST',
             Path: '/rest/oauth2/authorize',
-            ResponseItem: 'SucceedCSR',
+            ResponseItem: 'Succeed',
             Items: {
 
                 'Succeed': {

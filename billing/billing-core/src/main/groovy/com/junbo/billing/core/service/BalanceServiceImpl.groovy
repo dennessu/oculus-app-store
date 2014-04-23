@@ -78,7 +78,7 @@ class BalanceServiceImpl implements BalanceService {
 
         Balance tmpBalance = checkTrackingUUID(balance.trackingUuid)
         if (tmpBalance != null) {
-            LOGGER.info('name=Add_Balance_Same_UUID. tracking uuid: {0}', balance.trackingUuid)
+            LOGGER.info('name=Add_Balance_Same_UUID. tracking uuid: {}', balance.trackingUuid)
             return Promise.pure(tmpBalance)
         }
 
@@ -139,7 +139,7 @@ class BalanceServiceImpl implements BalanceService {
 
         Balance tmpBalance = checkTrackingUUID(balance.trackingUuid)
         if (tmpBalance != null) {
-            LOGGER.info('name=Capture_Balance_Same_UUID. tracking uuid: {0}', balance.trackingUuid)
+            LOGGER.info('name=Capture_Balance_Same_UUID. tracking uuid: {}', balance.trackingUuid)
             return Promise.pure(tmpBalance)
         }
 
@@ -163,6 +163,29 @@ class BalanceServiceImpl implements BalanceService {
         return transactionService.captureBalance(savedBalance, balance.totalAmount).then {
             //persist the balance entity
             Balance resultBalance = balanceRepository.updateBalance(savedBalance, EventActionType.CAPTURE)
+            return Promise.pure(resultBalance)
+        }
+    }
+
+    @Override
+    Promise<Balance> confirmBalance(Balance balance) {
+
+        if (balance.balanceId == null) {
+            throw AppErrors.INSTANCE.fieldMissingValue('balanceId').exception()
+        }
+        Balance savedBalance = balanceRepository.getBalance(balance.balanceId.value)
+        if (savedBalance == null) {
+            throw AppErrors.INSTANCE.balanceNotFound(balance.balanceId.value.toString()).exception()
+        }
+        if (savedBalance.status != BalanceStatus.UNCONFIRMED.name()) {
+            throw AppErrors.INSTANCE.invalidBalanceStatus(savedBalance.status).exception()
+        }
+        if (savedBalance.transactions.size() == 0) {
+            throw AppErrors.INSTANCE.transactionNotFound(savedBalance.balanceId.value.toString()).exception()
+        }
+        return transactionService.confirmBalance(savedBalance).then {
+            //persist the balance entity
+            Balance resultBalance = balanceRepository.updateBalance(savedBalance, EventActionType.CONFIRM)
             return Promise.pure(resultBalance)
         }
     }
@@ -241,11 +264,11 @@ class BalanceServiceImpl implements BalanceService {
             throw AppErrors.INSTANCE.userNotFound(userId.toString()).exception()
         }.then { User user ->
             if (user == null) {
-                LOGGER.error('name=Error_Get_User. Get null for the user id: {0}', userId)
+                LOGGER.error('name=Error_Get_User. Get null for the user id: {}', userId)
                 throw AppErrors.INSTANCE.userNotFound(userId.toString()).exception()
             }
             if (user.active == null || !user.active) {
-                LOGGER.error('name=Error_Get_User. User not active with id: {0}', userId)
+                LOGGER.error('name=Error_Get_User. User not active with id: {}', userId)
                 throw AppErrors.INSTANCE.userStatusInvalid(userId.toString()).exception()
             }
             return Promise.pure(null)

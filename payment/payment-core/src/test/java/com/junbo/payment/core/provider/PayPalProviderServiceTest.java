@@ -7,8 +7,9 @@ import com.junbo.payment.spec.enums.PIType;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.enums.PropertyField;
 import com.junbo.payment.spec.model.*;
-import junit.framework.Assert;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
@@ -37,13 +38,13 @@ public class PayPalProviderServiceTest extends BaseTest {
             {
                 setAmount("1.5");
                 setName("ut item");
-                setQuantity(2);
+                setQuantity(1000);
             }
         };
         payment.setChargeInfo(new ChargeInfo() {
             {
                 setCurrency("USD");
-                setAmount(new BigDecimal(3.00));
+                setAmount(new BigDecimal(1500.00));
                 setItems(Arrays.asList(item));
             }
         });
@@ -56,13 +57,14 @@ public class PayPalProviderServiceTest extends BaseTest {
 
         PaymentTransaction result = paymentService.charge(payment).wrapped().get();
         Assert.assertNotNull(result.getWebPaymentInfo().getToken());
-        PaymentTransaction newStatus = paymentService.getUpdatedTransaction(result.getId()).wrapped().get();
-        Assert.assertEquals(newStatus.getStatus(), PaymentStatus.UNCONFIRMED.toString());
         Map<PropertyField, String> properties = new HashMap<>();
         properties.put(PropertyField.EXTERNAL_ACCESS_TOKEN, result.getWebPaymentInfo().getToken());
-        properties.put(PropertyField.EXTERNAL_PAYER_ID, "zwh@123.com");
-        //manual step: goo to the redirectRUL and save the PAYER_ID and token
-        //paymentCallbackService.addPaymentProperties(result.getId(), properties);
+        properties.put(PropertyField.EXTERNAL_PAYER_ID, "CCZA9BJT9NKTS");
+        //manual step: should go to the redirectRUL and save the PAYER_ID and token
+        paymentCallbackService.addPaymentProperties(result.getId(), properties);
+        PaymentTransaction newStatus = paymentService.getUpdatedTransaction(result.getId()).wrapped().get();
+        Assert.assertEquals(newStatus.getStatus(), PaymentStatus.UNCONFIRMED.toString());
+        //manual step: should go to the redirectRUL and save the PAYER_ID and token
         result = paymentService.confirm(result.getId(), payment).wrapped().get();
         Assert.assertNotNull(result.getExternalToken());
         Assert.assertNotNull(result.getStatus(), PaymentStatus.SETTLED.toString());

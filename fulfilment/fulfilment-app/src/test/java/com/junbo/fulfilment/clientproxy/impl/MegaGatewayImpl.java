@@ -18,27 +18,34 @@ import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.resource.EntitlementResource;
 import com.junbo.fulfilment.clientproxy.MegaGateway;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  * MegaGatewayImpl.
  */
 public class MegaGatewayImpl implements MegaGateway {
     @Autowired
+    @Qualifier("offerClient")
     private OfferResource offerResource;
 
     @Autowired
+    @Qualifier("offerRevisionClient")
     private OfferRevisionResource offerRevisionResource;
 
     @Autowired
+    @Qualifier("itemClient")
     private ItemResource itemResource;
 
     @Autowired
+    @Qualifier("itemRevisionClient")
     private ItemRevisionResource itemRevisionResource;
 
     @Autowired
+    @Qualifier("entitlementClient")
     private EntitlementResource entitlementResource;
 
     @Autowired
+    @Qualifier("entitlementDefClient")
     private EntitlementDefinitionResource entitlementDefResource;
 
     @Override

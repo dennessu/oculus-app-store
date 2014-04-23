@@ -1,5 +1,6 @@
 package com.junbo.apphost.core
 
+import com.junbo.apphost.core.logging.AccessLogProbe
 import groovy.transform.CompileStatic
 import org.glassfish.grizzly.http.server.HttpHandler
 import org.glassfish.grizzly.http.server.HttpServer
@@ -85,10 +86,7 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean, Applica
             @Override
             protected void configure() {
                 bind(new AutowiredInjectResolver(applicationContext)).
-                        to(new TypeLiteral<InjectionResolver<Autowired>>() {
-
-                        }
-                        )
+                        to(new TypeLiteral<InjectionResolver<Autowired>>() {})
             }
         }
 
@@ -114,6 +112,8 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean, Applica
 
         config.addHttpHandler(handler, uri.path)
         config.setPassTraceRequest(true)
+
+        config.monitoringConfig.webServerConfig.addProbes(new AccessLogProbe())
 
         // start
         httpServer.start()

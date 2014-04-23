@@ -5,41 +5,14 @@
  */
 package com.junbo.identity.data
 
-import com.junbo.common.id.DeviceId
-import com.junbo.common.id.GroupId
-import com.junbo.common.id.TosId
-import com.junbo.common.id.UserDeviceId
-import com.junbo.common.id.UserId
-import com.junbo.common.id.UserSecurityQuestionId
+import com.junbo.common.id.*
 import com.junbo.identity.data.identifiable.UserPasswordStrength
 import com.junbo.identity.data.repository.*
-import com.junbo.identity.data.repository.impl.cloudant.AddressRepositoryCloudantImpl
 import com.junbo.identity.spec.model.users.UserPassword
-import com.junbo.identity.spec.model.users.*
-import com.junbo.identity.spec.v1.model.Address
-import com.junbo.identity.spec.v1.model.Device
-import com.junbo.identity.spec.v1.model.Group
-import com.junbo.identity.spec.v1.model.Tos
-import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserAuthenticator
-import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
-import com.junbo.identity.spec.v1.model.UserDevice
-import com.junbo.identity.spec.v1.model.UserGroup
-import com.junbo.identity.spec.v1.model.UserOptin
-import com.junbo.identity.spec.v1.model.UserSecurityQuestion
-import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt
-import com.junbo.identity.spec.v1.model.UserTosAgreement
-import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
-import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
-import com.junbo.identity.spec.v1.option.list.UserDeviceListOptions
-import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
-import com.junbo.identity.spec.v1.option.list.UserOptinListOptions
-import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
-import com.junbo.identity.spec.v1.option.list.UserPinListOptions
-import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionAttemptListOptions
-import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionListOptions
-import com.junbo.identity.spec.v1.option.list.UserTosAgreementListOptions
-import groovy.transform.CompileStatic
+import com.junbo.identity.spec.model.users.UserPin
+import com.junbo.identity.spec.v1.model.*
+import com.junbo.identity.spec.v1.option.list.*
+import com.junbo.sharding.IdGenerator
 import org.glassfish.jersey.internal.util.Base64
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -51,17 +24,22 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 import org.springframework.transaction.annotation.Transactional
 import org.testng.Assert
 import org.testng.annotations.Test
+import groovy.time.TimeCategory
+
 /**
  * Unittest.
  */
-@ContextConfiguration(locations = ['classpath:spring/context-test.xml'])
+@ContextConfiguration(locations = ['classpath:test/spring/context-test.xml'])
 @TransactionConfiguration(defaultRollback = false)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
 @Transactional('transactionManager')
-@CompileStatic
 public class RepositoryTest extends AbstractTestNGSpringContextTests {
     // This is the fake value to meet current requirement.
     private final long userId = 1493188608L
+
+    @Autowired
+    @Qualifier('oculus48IdGenerator')
+    private IdGenerator idGenerator
 
     @Autowired
     @Qualifier('addressRepository')
@@ -122,6 +100,22 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     @Autowired
     @Qualifier('deviceRepository')
     private DeviceRepository deviceRepository
+
+    @Autowired
+    @Qualifier('userTeleRepository')
+    private UserTeleRepository userTeleRepository
+
+    @Autowired
+    @Qualifier('userTeleAttemptRepository')
+    private UserTeleAttemptRepository userTeleAttemptRepository
+
+    @Autowired
+    @Qualifier('userTeleBackupCodeRepository')
+    private UserTeleBackupCodeRepository userTeleBackupCodeRepository
+
+    @Autowired
+    @Qualifier('userTeleBackupCodeAttemptRepository')
+    private UserTeleBackupCodeAttemptRepository userTeleBackupCodeAttemptRepository
 
     @Test
     public void testUserRepository() throws Exception {
@@ -484,5 +478,130 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         device = deviceRepository.searchByExternalRef(device.externalRef).wrapped().get()
         assert device.description == newDescription
+    }
+
+    @Test
+    public void testUserTeleRepository() {
+        def after30Mins = new Date()
+        use( TimeCategory ) {
+            after30Mins = (new Date()) + 30.minutes
+        }
+        def id = idGenerator.nextId()
+        UserTeleCode userTeleCode = new UserTeleCode()
+        userTeleCode.setUserId(new UserId(id))
+        userTeleCode.setActive(true)
+        userTeleCode.setExpiresBy(after30Mins)
+        userTeleCode.setPhoneNumber(UUID.randomUUID().toString())
+        userTeleCode.setSentLanguage('en_US')
+        userTeleCode.setTemplate('xxxxx')
+        userTeleCode.setVerifyCode(UUID.randomUUID().toString())
+        userTeleCode.setVerifyType('CALL')
+
+        UserTeleCode newUserTeleCode = userTeleRepository.create(userTeleCode).wrapped().get()
+        newUserTeleCode = userTeleRepository.get((UserTeleId)newUserTeleCode.id).wrapped().get()
+
+        assert userTeleCode.phoneNumber == newUserTeleCode.phoneNumber
+
+        String newPhoneNumber = UUID.randomUUID().toString()
+        newUserTeleCode.setPhoneNumber(newPhoneNumber)
+        userTeleCode = userTeleRepository.update(newUserTeleCode).wrapped().get()
+        assert userTeleCode.phoneNumber == newPhoneNumber
+
+        userTeleCode = userTeleRepository.findActiveTeleCode(id, newPhoneNumber).wrapped().get()
+        assert userTeleCode.phoneNumber == newPhoneNumber
+    }
+
+    @Test
+    public void testUserTeleAttemptRepository() {
+        def userId = new UserId(idGenerator.nextId())
+        UserTeleAttempt userTeleAttempt = new UserTeleAttempt()
+        userTeleAttempt.setVerifyCode(UUID.randomUUID().toString())
+        userTeleAttempt.setClientId(UUID.randomUUID().toString())
+        userTeleAttempt.setUserId(userId)
+        userTeleAttempt.setIpAddress(UUID.randomUUID().toString())
+        userTeleAttempt.setSucceeded(true)
+        userTeleAttempt.setUserAgent(UUID.randomUUID().toString())
+        userTeleAttempt.setUserTeleId(new UserTeleId(idGenerator.nextId()))
+
+        UserTeleAttempt newUserTeleAttempt = userTeleAttemptRepository.create(userTeleAttempt).wrapped().get()
+        newUserTeleAttempt = userTeleAttemptRepository.get((UserTeleAttemptId)newUserTeleAttempt.id).wrapped().get()
+
+        assert userTeleAttempt.ipAddress == newUserTeleAttempt.ipAddress
+
+        String newIpAddress = UUID.randomUUID().toString()
+        newUserTeleAttempt.setIpAddress(newIpAddress)
+        userTeleAttempt = userTeleAttemptRepository.update(newUserTeleAttempt).wrapped().get()
+        assert userTeleAttempt.ipAddress == newIpAddress
+
+        List<UserTeleAttempt> results = userTeleAttemptRepository.search(new UserTeleAttemptListOptions(
+                userId: userId,
+                offset: 0,
+                limit: 100
+        )).wrapped().get()
+        assert results.size() != 0
+    }
+
+    @Test
+    public void testUserTeleBackupCodeRepository() {
+        def after30000Mins = new Date()
+        use( TimeCategory ) {
+            after30000Mins = (new Date()) + 30000.minutes
+        }
+        def userId = new UserId(idGenerator.nextId())
+        UserTeleBackupCode userTeleBackupCode = new UserTeleBackupCode()
+        userTeleBackupCode.setUserId(userId)
+        userTeleBackupCode.setVerifyCode(UUID.randomUUID().toString())
+        userTeleBackupCode.setActive(true)
+        userTeleBackupCode.setExpiresBy(after30000Mins)
+        UserTeleBackupCode newUserTeleBackupCode =
+                userTeleBackupCodeRepository.create(userTeleBackupCode).wrapped().get()
+        newUserTeleBackupCode =
+                userTeleBackupCodeRepository.get((UserTeleBackupCodeId)newUserTeleBackupCode.id).wrapped().get()
+
+        assert userTeleBackupCode.verifyCode == newUserTeleBackupCode.verifyCode
+
+        String newVerifyCode = UUID.randomUUID().toString()
+        newUserTeleBackupCode.setVerifyCode(newVerifyCode)
+        userTeleBackupCode = userTeleBackupCodeRepository.update(newUserTeleBackupCode).wrapped().get()
+
+        assert userTeleBackupCode.verifyCode == newVerifyCode
+
+        List<UserTeleBackupCode> results = userTeleBackupCodeRepository.search(new UserTeleBackupCodeListOptions(
+                userId: userId,
+                offset: 0,
+                limit: 100
+        )).wrapped().get()
+        assert results.size() != 0
+    }
+
+    @Test
+    public void testUserTeleBackupCodeAttemptRepository() {
+        def userId = new UserId(idGenerator.nextId())
+        UserTeleBackupCodeAttempt attempt = new UserTeleBackupCodeAttempt()
+        attempt.setUserId(userId)
+        attempt.setVerifyCode(UUID.randomUUID().toString())
+        attempt.setUserAgent(UUID.randomUUID().toString())
+        attempt.setClientId(UUID.randomUUID().toString())
+        attempt.setIpAddress(UUID.randomUUID().toString())
+        attempt.setSucceeded(true)
+
+        UserTeleBackupCodeAttempt newAttempt = userTeleBackupCodeAttemptRepository.create(attempt).wrapped().get()
+        newAttempt = userTeleBackupCodeAttemptRepository.get(newAttempt.id).wrapped().get()
+
+        assert newAttempt.verifyCode == attempt.verifyCode
+
+        String newVerifyCode = UUID.randomUUID().toString()
+        newAttempt.setVerifyCode(newVerifyCode)
+        attempt = userTeleBackupCodeAttemptRepository.update(newAttempt).wrapped().get()
+
+        assert attempt.verifyCode == newVerifyCode
+
+        List<UserTeleBackupCodeAttempt> results = userTeleBackupCodeAttemptRepository.search(
+                new UserTeleBackupCodeAttemptListOptions(
+                        userId: userId,
+                        offset: 0,
+                        limit: 100
+                )).wrapped().get()
+        assert results.size() != 0
     }
 }

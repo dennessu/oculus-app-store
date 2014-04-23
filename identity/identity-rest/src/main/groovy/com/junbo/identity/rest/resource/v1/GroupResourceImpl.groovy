@@ -20,18 +20,11 @@ import com.junbo.identity.spec.v1.resource.GroupResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Scope
-import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-
-import javax.ws.rs.ext.Provider
 
 /**
  * Created by xiali_000 on 4/8/2014.
  */
-@Provider
-@Component
-@Scope('prototype')
 @Transactional
 @CompileStatic
 class GroupResourceImpl implements GroupResource {

@@ -1,8 +1,13 @@
 apply plugin: 'groovy'
+apply plugin: 'application'
+
+mainClassName = "com.junbo.apphost.core.JunboApplication"
 
 dependencies {
-    compile project(':subscription-rest')
+    runtime (libraries.apphost_core)
+    runtime (libraries.common_configuration_data)
 
-    compile(libraries.jersey_container_grizzly2_http)
-    compile(libraries.jersey_spring3)
+    //runtime "com.junbo.catalog:catalog-rest:${junboVersion}"
+
+    compile project(':subscription-rest')
 }

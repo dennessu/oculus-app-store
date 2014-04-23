@@ -7,7 +7,8 @@
 package com.junbo.common.jackson.serializer;
 
 import com.junbo.common.jackson.model.ResourceRef;
-//import junit.framework.Assert;
+import com.junbo.common.util.Utils;
+import org.springframework.util.Assert;
 
 /**
  * ResourceIdSerializer.
@@ -18,14 +19,14 @@ import com.junbo.common.jackson.model.ResourceRef;
 public class CascadeResourceIdSerializer extends ResourceIdSerializer {
     @Override
     protected Object unwrap(Object value) {
-       // Assert.assertTrue(value instanceof CascadeResource);
+        Assert.isTrue(value instanceof CascadeResource);
 
         return ((CascadeResource) value).getPrimaryId();
     }
 
     @Override
     protected ResourceRef handleSingle(Object value) {
-       // Assert.assertTrue(value instanceof CascadeResource);
+        Assert.isTrue(value instanceof CascadeResource);
 
         Object primaryId = ((CascadeResource) value).getPrimaryId();
         ResourceRef ref = new ResourceRef();
@@ -37,7 +38,7 @@ public class CascadeResourceIdSerializer extends ResourceIdSerializer {
 
     @Override
     protected String getResourceHref(Object value) {
-      //  Assert.assertTrue(value instanceof CascadeResource);
+        Assert.isTrue(value instanceof CascadeResource);
         CascadeResource resource = (CascadeResource) value;
 
         Object[] encodedIds = new String[resource.getCascadeIds().length];
@@ -45,6 +46,6 @@ public class CascadeResourceIdSerializer extends ResourceIdSerializer {
             encodedIds[i] = encode(resource.getCascadeIds()[i]);
         }
 
-        return RESOURCE_URL_PREFIX + String.format(resourcePath, encodedIds);
+        return Utils.combineUrl(resourceUrlPrefix, String.format(resourcePath, encodedIds));
     }
 }

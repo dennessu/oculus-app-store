@@ -13,11 +13,14 @@ import com.junbo.catalog.db.dao.BaseDao;
 import com.junbo.catalog.db.entity.BaseEntity;
 import com.junbo.common.id.Id;
 import com.junbo.sharding.IdGenerator;
+import com.junbo.sharding.ShardAlgorithm;
+import com.junbo.sharding.hibernate.ShardScope;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -29,6 +32,11 @@ import java.util.List;
  */
 public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
     @Autowired
+    @Qualifier("userShardAlgorithm")
+    private ShardAlgorithm shardAlgorithm;
+
+    @Autowired
+    @Qualifier("catalogSessionFactory")
     private SessionFactory sessionFactory;
 
     private Class<T> entityType;
@@ -36,7 +44,12 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
     private IdGenerator idGenerator;
 
     protected Session currentSession() {
-        return sessionFactory.getCurrentSession();
+        ShardScope shardScope = new ShardScope(shardAlgorithm.shardId(0));
+        try {
+            return sessionFactory.getCurrentSession();
+        } finally {
+            shardScope.close();
+        }
     }
 
     public Long create(T entity) {
