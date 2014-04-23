@@ -12,8 +12,8 @@ import com.junbo.rating.core.context.RatingContext;
 import com.junbo.rating.spec.model.Currency;
 import com.junbo.rating.spec.model.RatableItem;
 import com.junbo.rating.spec.model.request.RatingRequest;
-import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;

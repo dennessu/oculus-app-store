@@ -1,7 +1,8 @@
 package com.junbo.fulfilment.common;
 
 import com.junbo.fulfilment.common.util.Utils;
-import junit.framework.Assert;
+
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class UtilsTest {

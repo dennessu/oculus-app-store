@@ -5,6 +5,9 @@ dependencies {
 
     compile (libraries.rs_api)
     compile (libraries.freemarker)
+
+
+    testCompile (libraries.slf4j_api)
     testCompile (libraries.spring_beans)
     testCompile (libraries.spring_context)
 }

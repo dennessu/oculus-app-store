@@ -21,6 +21,11 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]${par
     __requestBuilder.addHeader("Content-Type", "${contentType}");
     [/#if]
 
+    String __requestId = org.slf4j.MDC.get("X-Request-Id");
+    if (__requestId != null) {
+        __requestBuilder.addHeader("X-Request-Id", __requestId);
+    }
+
     [#list parameters as parameter]
         [@includeModel model=parameter indent=true/]
     [/#list]
