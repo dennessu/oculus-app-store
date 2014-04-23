@@ -24,6 +24,8 @@ public interface BalanceService {
 
     Promise<Balance> captureBalance(Balance balance);
 
+    Promise<Balance> confirmBalance(Balance balance);
+
     Promise<Balance> processAsyncBalance(Balance balance);
 
     Promise<Balance> getBalance(BalanceId balanceId);

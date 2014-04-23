@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  * CompoundIdDeserializer.
  */
 public class CompoundIdDeserializer extends ResourceIdDeserializer {
-    private static final Pattern FIELD_PATTERN = Pattern.compile("\\{(.*?)\\}");
+    private static final Pattern FIELD_PATTERN = Pattern.compile("/?\\{([^}]*)\\}");
 
     private List<String> fields;
     private Pattern pathPattern;
@@ -28,13 +28,24 @@ public class CompoundIdDeserializer extends ResourceIdDeserializer {
 
         // distill fields
         fields = new ArrayList<>();
+        StringBuffer pathPatternBuilder = new StringBuffer();
+
+        // Make the fields optional
+        // for example: /users(/(?<id>[^/]*))?/test-id(/(?<id>[^/]*))?
         Matcher matcher = FIELD_PATTERN.matcher(resourcePath);
         while (matcher.find()) {
-            fields.add(matcher.group(1));
-        }
+            String field = matcher.group(1);
+            fields.add(field);
 
-        // prepare resource path pattern
-        pathPattern = Pattern.compile(resourcePath.replaceAll("\\{(.*?)}", "(.*?)") + "$");
+            if (matcher.group(0).startsWith("/")) {
+                matcher.appendReplacement(pathPatternBuilder, String.format("(/(?<%s>[^/]*))?", field));
+            } else {
+                matcher.appendReplacement(pathPatternBuilder, String.format("(?<%s>[^/]*)", field));
+            }
+        }
+        matcher.appendTail(pathPatternBuilder);
+
+        pathPattern = Pattern.compile(pathPatternBuilder + "$");
     }
 
     @Override
@@ -49,9 +60,8 @@ public class CompoundIdDeserializer extends ResourceIdDeserializer {
             Matcher matcher = pathPattern.matcher(resourceRef.getHref());
 
             if (matcher.find()) {
-                for (int i = 0; i < matcher.groupCount(); i++) {
-                    String fieldValue = matcher.group(i + 1);
-                    String fieldName = fields.get(i);
+                for (String fieldName : fields) {
+                    String fieldValue = matcher.group(fieldName);
 
                     Field field = result.getClass().getDeclaredField(fieldName);
                     field.setAccessible(true);

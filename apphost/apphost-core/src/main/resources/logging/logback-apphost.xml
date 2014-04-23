@@ -5,8 +5,8 @@
     <conversionRule conversionWord="clr" converterClass="com.junbo.apphost.core.logging.ColorConverter"/>
     <conversionRule conversionWord="wex" converterClass="com.junbo.apphost.core.logging.WhitespaceThrowableProxyConverter"/>
 
-    <property name="CONSOLE_LOG_PATTERN" value="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t{14}]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n%wex"/>
-    <property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${PID:- } [%t] --- %-40.40logger{39} : %m%n%wex"/>
+    <property name="CONSOLE_LOG_PATTERN" value="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID:- }){magenta} %clr([%15.15t{14}]){faint} %clr([REQID:%8.8X{X-Request-Id:- }]){faint} %clr(---){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n%wex"/>
+    <property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${PID:- } [%15.15t{14}] [REQID:%8.8X{X-Request-Id:- }] --- %-40.40logger{39} : %m%n%wex"/>
 
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">

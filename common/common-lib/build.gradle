@@ -1,7 +1,7 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile (libraries.common_configuration)
+    compile project(':common-configuration')
 
     compile (libraries.rs_api)
 
@@ -26,4 +26,6 @@ dependencies {
     compile (libraries.common_collection)
 
     compile (libraries.spy_memcached)
+
+    compile (libraries.swagger_annotations)
 }

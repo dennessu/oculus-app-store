@@ -20,6 +20,7 @@ import com.junbo.test.common.libs.DBHelper;
 import com.junbo.order.spec.model.Order;
 import com.junbo.cart.spec.model.Cart;
 import com.junbo.test.common.libs.IdConverter;
+import com.junbo.test.common.libs.ShardIdHelper;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -107,12 +108,10 @@ public class BuyerValidationHelper extends BaseValidationHelper {
 
     public void validateEmailHistory(String uid, String orderId) throws Exception {
         String id = IdConverter.hexStringToId(UserId.class, uid).toString();
-        String sql = String.format("select payload from shard_0.email_history where user_id=\'%s\'", id);
+        String sql = String.format("select payload from shard_%s.email_history where user_id=\'%s\'",
+                ShardIdHelper.getShardIdByUid(uid), id);
         String resultString = dbHelper.executeScalar(sql, DBHelper.DBName.EMAIL);
-        if (resultString.isEmpty() || resultString == null) {
-            sql = String.format("select payload from shard_1.email_history where user_id=\'%s\'", id);
-            resultString = dbHelper.executeScalar(sql, DBHelper.DBName.EMAIL);
-        }
+
         verifyEqual(resultString.indexOf("OrderConfirmation") >= 0, true, "Verify email type");
         verifyEqual(resultString.indexOf(orderId) >= 0, true, "verify order Id");
         verifyEqual(resultString.indexOf("SUCCEED") >= 0, true, "Verify email sent status");

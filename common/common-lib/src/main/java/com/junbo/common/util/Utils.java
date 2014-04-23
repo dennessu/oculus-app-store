@@ -15,6 +15,28 @@ import java.util.Locale;
  */
 public class Utils {
     private Utils() { }
+
+    public static String combineUrl(String... urls) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < urls.length; ++i) {
+            String url = urls[i];
+
+            if (i != 0 && !url.startsWith("/")) {
+                // Append an extra "/" if the current url part doesn't contain one.
+                // Don't append the "/" before the first url component to keep urls relative or absolute
+                result.append("/");
+            }
+
+            if (url.endsWith("/")) {
+                // always omit the tailing "/" when appending url component
+                result.append(url.substring(0, url.length() - 1));
+            } else {
+                result.append(url);
+            }
+        }
+        return result.toString();
+    }
+
     public static Method tryObtainGetterMethod(Class<?> clazz, final String propertyName) {
         Assert.notNull(propertyName);
         Assert.isTrue(propertyName.length() > 1);

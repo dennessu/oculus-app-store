@@ -8,6 +8,7 @@ package com.junbo.common.json;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -32,19 +33,21 @@ import java.util.Set;
 @Provider
 public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
 
-    private final ObjectMapper objectMapper;
+    // thread safe
+    private static ObjectMapper objectMapper = createObjectMapper();
 
-    public ObjectMapperProvider() {
-        objectMapper = new ObjectMapper(null,
+    private static ObjectMapper createObjectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper(null,
                 new ResourceAwareSerializerProvider(),
                 new ResourceAwareDeserializationContext());
 
         objectMapper.setDateFormat(new ISO8601DateFormat());
 
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.ALWAYS);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
 
-        SimpleModule module = new SimpleModule(getClass().getName(), new Version(1, 0, 0, null));
+        SimpleModule module = new SimpleModule(ObjectMapperProvider.class.getName(), new Version(1, 0, 0, null, null, null));
 
         ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(true);
         provider.addIncludeFilter(new AssignableTypeFilter(Id.class));
@@ -68,6 +71,15 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
         objectMapper.setFilters(filterProvider);
 
         objectMapper.setAnnotationIntrospector(new PropertyAssignedAwareIntrospector());
+        return objectMapper;
+    }
+
+    public static ObjectMapper instance() {
+        return objectMapper;
+    }
+
+    public static void setInstance(ObjectMapper objectMapper) {
+        ObjectMapperProvider.objectMapper = objectMapper;
     }
 
     @Override

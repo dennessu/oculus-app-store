@@ -101,7 +101,7 @@ class DefaultFlowSelector implements FlowSelector {
                 return orderServiceContextBuilder.refreshBalances(context).then { List<Balance> balances ->
                     if (event.status == EventStatus.COMPLETED.name()
                             && CoreUtils.isChargeCompleted(balances)
-                            && context.order.status == OrderStatus.PENDING_CHARGE) {
+                            && context.order.status == OrderStatus.PENDING_CHARGE.name()) {
                         LOGGER.info('name=Settle_Web_Payment_Order. orderId: {}', event.order.value)
                         return Promise.pure(FlowType.WEB_PAYMENT_SETTLE.name())
                     }

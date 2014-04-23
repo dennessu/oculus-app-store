@@ -8,8 +8,8 @@ import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.*;
 import com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy;
 import com.junbo.payment.spec.resource.proxy.PaymentTransactionResourceClientProxy;
-import junit.framework.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;

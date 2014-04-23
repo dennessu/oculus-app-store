@@ -15,7 +15,6 @@ import com.junbo.common.id.ItemId;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.model.Results;
 import com.junbo.fulfilment.clientproxy.CatalogGateway;
-import com.junbo.fulfilment.common.collection.SevereMap;
 import com.junbo.fulfilment.common.util.Constant;
 import com.junbo.fulfilment.spec.error.AppErrors;
 import com.junbo.fulfilment.spec.fusion.*;
@@ -143,12 +142,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
                 for (Action action : purchaseEvent.getActions()) {
                     OfferAction offerAction = new OfferAction();
                     offerAction.setType(action.getType());
-
-                    Map<String, Object> entitlementDef = getEntitlementDef(action);
-                    offerAction.setProperties(new SevereMap<>(entitlementDef));
-
-                    // fill item info for physical delivery action
-                    offerAction.setItems(result.getItems());
+                    offerAction.setProperties(buildActionProperties(action));
 
                     result.addFulfilmentAction(offerAction);
                 }
@@ -163,16 +157,16 @@ public class CatalogGatewayImpl implements CatalogGateway {
         item.setItemId(itemRevision.getItemId());
         item.setSku(itemRevision.getSku());
 
-        //TODO
-        item.setEwalletAmount(null);
-        item.setEwalletCurrency(null);
+        item.setWalletAmount(itemRevision.getWalletAmount());
+        item.setWalletCurrency(itemRevision.getWalletCurrency());
 
         return item;
     }
 
-    protected Map<String, Object> getEntitlementDef(Action action) {
+    private Map<String, Object> buildActionProperties(Action action) {
         Map<String, Object> result = new HashMap<>();
         result.put(Constant.ENTITLEMENT_DEF_ID, action.getEntitlementDefId());
+        result.put(Constant.ITEM_ID, action.getItemId());
 
         return result;
     }

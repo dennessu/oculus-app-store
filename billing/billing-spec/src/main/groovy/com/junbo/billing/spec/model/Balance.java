@@ -41,6 +41,10 @@ public class Balance {
     private BalanceId originalBalanceId;
     private Boolean skipTaxCalculation;
 
+    private String successRedirectUrl;
+    private String cancelRedirectUrl;
+    private String providerConfirmUrl;
+
     private List<BalanceItem> balanceItems;
 
     private List<Transaction> transactions;
@@ -225,5 +229,29 @@ public class Balance {
 
     public void setSkipTaxCalculation(Boolean skipTaxCalculation) {
         this.skipTaxCalculation = skipTaxCalculation;
+    }
+
+    public String getSuccessRedirectUrl() {
+        return successRedirectUrl;
+    }
+
+    public void setSuccessRedirectUrl(String successRedirectUrl) {
+        this.successRedirectUrl = successRedirectUrl;
+    }
+
+    public String getCancelRedirectUrl() {
+        return cancelRedirectUrl;
+    }
+
+    public void setCancelRedirectUrl(String cancelRedirectUrl) {
+        this.cancelRedirectUrl = cancelRedirectUrl;
+    }
+
+    public String getProviderConfirmUrl() {
+        return providerConfirmUrl;
+    }
+
+    public void setProviderConfirmUrl(String providerConfirmUrl) {
+        this.providerConfirmUrl = providerConfirmUrl;
     }
 }

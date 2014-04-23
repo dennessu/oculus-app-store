@@ -19,6 +19,9 @@
             </list>
         </property>
     </bean>
+    <bean class="com.junbo.configuration.ConfigServiceManager">
+        <property name="configService" ref="configService" />
+    </bean>
 
     <context:component-scan base-package="com.junbo.configuration" />
 </beans>

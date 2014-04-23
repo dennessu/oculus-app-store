@@ -7,8 +7,9 @@ import com.junbo.payment.spec.enums.PIType;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.enums.PropertyField;
 import com.junbo.payment.spec.model.*;
-import junit.framework.Assert;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;

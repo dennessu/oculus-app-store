@@ -4,24 +4,6 @@
        xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-    <import resource="classpath*:spring/transaction.xml"/>
-    <import resource="classpath*:spring/sharding-context.xml"/>
-
-    <!-- Config service -->
-    <bean id="configService" class="com.junbo.configuration.impl.ConfigServiceImpl" />
-    <bean id="configPropertyPlaceholderConfigurer" class="com.junbo.configuration.impl.ConfigPropertyPlaceholderConfigurer">
-        <property name="configService" ref="configService" />
-    </bean>
-    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
-        <property name="converters">
-            <set>
-                <bean class="com.junbo.configuration.reloadable.impl.ReloadableConfigConverterFactory">
-                    <property name="configService" ref="configService" />
-                </bean>
-            </set>
-        </property>
-    </bean>
-
     <bean id="cartPersistService" class="com.junbo.cart.db.persist.CartPersistServiceImpl">
         <property name="couponItemDao" ref="couponItemDao"/>
         <property name="cartDao" ref="cartDao"/>
@@ -84,8 +66,6 @@
     </bean>
 
     <bean id="dataMapper" class="com.junbo.cart.db.mapper.CartMapperImpl"/>
-
-    <bean id="systemOperation" class="com.junbo.cart.common.util.SystemOperationImpl"/>
 
     <context:component-scan base-package="com.junbo.cart.db, com.junbo.oom.core.builtin"/>
 </beans>

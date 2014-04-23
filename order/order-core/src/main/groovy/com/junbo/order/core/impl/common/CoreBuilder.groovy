@@ -214,7 +214,6 @@ class CoreBuilder {
             }
             if (balanceItem != null) {
                 orderItem.totalTax = balanceItem.taxAmount
-                orderItem.isTaxExempted = balanceItem.isTaxExempt
                 if (orderItem.isTaxExempted == null) { // todo : remove this, this is a temporary workaround
                     orderItem.isTaxExempted = false
                 }

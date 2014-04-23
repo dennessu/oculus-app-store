@@ -17,6 +17,7 @@ public enum TransactionStatus implements Identifiable<Short> {
 
     SUCCESS((short)1),
     DECLINE((short)2),
+    UNCONFIRMED((short)3),
 
     ERROR((short)999);
 

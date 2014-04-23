@@ -13,7 +13,7 @@ import com.junbo.test.common.libs.EnumHelper;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.*;
 
-import junit.framework.Assert;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**

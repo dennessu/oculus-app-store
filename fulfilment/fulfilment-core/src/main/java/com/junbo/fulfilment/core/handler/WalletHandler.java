@@ -26,14 +26,14 @@ public class WalletHandler extends HandlerSupport<WalletContext> {
         List<Long> success = new ArrayList<>();
 
         for (LinkedEntry entry : action.getItems()) {
-            Item item = catalogGateway.getItem(entry.getId(), entry.getTimestamp());
+            Item item = catalogGateway.getItem(entry.getId(), action.getTimestamp());
 
             CreditRequest request = new CreditRequest();
 
             request.setTrackingUuid(UUID.randomUUID());
             request.setUserId(context.getUserId());
-            request.setAmount(item.getEwalletAmount());
-            request.setCurrency(item.getEwalletCurrency());
+            request.setAmount(item.getWalletAmount());
+            request.setCurrency(item.getWalletCurrency());
 
             Transaction transaction = walletGateway.credit(request);
             success.add(transaction.getTransactionId());

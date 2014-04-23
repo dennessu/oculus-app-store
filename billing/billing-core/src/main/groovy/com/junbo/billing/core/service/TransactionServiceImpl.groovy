@@ -19,6 +19,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.enums.PaymentStatus
 import com.junbo.payment.spec.model.ChargeInfo
 import com.junbo.payment.spec.model.PaymentTransaction
+import com.junbo.payment.spec.model.WebPaymentInfo
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -60,13 +61,7 @@ class TransactionServiceImpl implements TransactionService {
         if (amount != null) {
             paymentTransaction.chargeInfo.setAmount(amount)
         }
-        String paymentRefId = balance.transactions[0].paymentRefId
-        Long paymentId
-        try {
-            paymentId = Long.parseLong(paymentRefId)
-        } catch (NumberFormatException ex) {
-            throw AppErrors.INSTANCE.invalidPaymentId(paymentRefId).exception()
-        }
+        Long paymentId = getPaymentIdByRef(balance.transactions[0].paymentRefId)
 
         def newTransaction = new Transaction()
         newTransaction.setAmount(amount)
@@ -87,7 +82,7 @@ class TransactionServiceImpl implements TransactionService {
                 return Promise.pure(balance)
             }
 
-            LOGGER.info('name=Capture_Balance. payment id: {0}, amount: {1}, status: {2}',
+            LOGGER.info('name=Capture_Balance_Response. payment id: {0}, amount: {1}, status: {2}',
                     pt.id, pt.chargeInfo.amount, pt.status)
             newTransaction.setPaymentRefId(pt.id.toString())
             newTransaction.setAmount(pt.chargeInfo.amount)
@@ -100,6 +95,59 @@ class TransactionServiceImpl implements TransactionService {
             } else {
                 newTransaction.setStatus(TransactionStatus.ERROR.name())
                 balance.setStatus(BalanceStatus.ERROR.name())
+            }
+            balance.addTransaction(newTransaction)
+            return Promise.pure(balance)
+        }
+    }
+
+    @Override
+    Promise<Balance> confirmBalance(Balance balance) {
+        def paymentTransaction = generatePaymentTransaction(balance)
+        Long paymentId = getPaymentIdByRef(balance.transactions[0].paymentRefId)
+
+        def newTransaction = new Transaction()
+        newTransaction.setAmount(balance.totalAmount)
+        newTransaction.setCurrency(balance.currency)
+        newTransaction.setType(TransactionType.CONFIRM.name())
+        newTransaction.setPiId(balance.piId)
+
+        LOGGER.info('name=Confirm_Balance. balance currency: {0}, amount: {1}, pi id: {2}',
+                balance.currency, balance.totalAmount, balance.piId)
+        return paymentFacade.postPaymentConfirm(paymentId, paymentTransaction).recover { Throwable throwable ->
+            LOGGER.error('name=Confirm_Balance_Error. error in post payment confirm', throwable)
+            newTransaction.setStatus(TransactionStatus.ERROR.name())
+            balance.addTransaction(newTransaction)
+            balance.setStatus(BalanceStatus.ERROR.name())
+            return Promise.pure(null)
+        }.then { PaymentTransaction pt ->
+            if (pt == null) {
+                return Promise.pure(balance)
+            }
+
+            LOGGER.info('name=Confirm_Balance_Response. payment id: {0}, amount: {1}, status: {2}',
+                    pt.id, pt.chargeInfo.amount, pt.status)
+            newTransaction.setPaymentRefId(pt.id.toString())
+            newTransaction.setAmount(pt.chargeInfo.amount)
+            switch (pt.status) {
+                case PaymentStatus.SETTLEMENT_SUBMITTED.name():
+                    newTransaction.setStatus(TransactionStatus.SUCCESS.name())
+                    balance.setStatus(BalanceStatus.AWAITING_PAYMENT.name())
+                    break
+                case PaymentStatus.SETTLEMENT_SUBMIT_DECLINED.name():
+                    newTransaction.setStatus(TransactionStatus.DECLINE.name())
+                    balance.setStatus(BalanceStatus.FAILED.name())
+                    break
+                case PaymentStatus.SETTLED.name():
+                    newTransaction.setStatus(TransactionStatus.SUCCESS.name())
+                    balance.setStatus(BalanceStatus.COMPLETED.name())
+                    break
+                case PaymentStatus.UNCONFIRMED.name():
+                    newTransaction.setStatus(TransactionStatus.DECLINE.name())
+                    break
+                default:
+                    newTransaction.setStatus(TransactionStatus.ERROR.name())
+                    balance.setStatus(BalanceStatus.ERROR.name())
             }
             balance.addTransaction(newTransaction)
             return Promise.pure(balance)
@@ -140,6 +188,12 @@ class TransactionServiceImpl implements TransactionService {
                     transaction.setStatus(TransactionStatus.DECLINE.name())
                     balance.setStatus(BalanceStatus.FAILED.name())
                     break
+                case PaymentStatus.UNCONFIRMED:
+                    transaction.setStatus(TransactionStatus.UNCONFIRMED.name())
+                    balance.setStatus(BalanceStatus.UNCONFIRMED.name())
+                    if (pt.webPaymentInfo != null && pt.webPaymentInfo.returnURL != null) {
+                        balance.setProviderConfirmUrl(pt.webPaymentInfo.returnURL)
+                    }
                 default:
                     transaction.setStatus(TransactionStatus.ERROR.name())
                     balance.setStatus(BalanceStatus.ERROR.name())
@@ -208,6 +262,24 @@ class TransactionServiceImpl implements TransactionService {
         chargeInfo.setCountry(balance.country)
         paymentTransaction.setChargeInfo(chargeInfo)
 
+        if (balance.successRedirectUrl != null && balance.cancelRedirectUrl != null) {
+            def webPaymentInfo = new WebPaymentInfo()
+            webPaymentInfo.setReturnURL(balance.successRedirectUrl)
+            webPaymentInfo.setCancelURL(balance.cancelRedirectUrl)
+            paymentTransaction.setWebPaymentInfo(webPaymentInfo)
+        }
+
         return paymentTransaction
+    }
+
+    private Long getPaymentIdByRef(String refId) {
+        String paymentRefId = refId
+        Long paymentId
+        try {
+            paymentId = Long.parseLong(paymentRefId)
+        } catch (NumberFormatException ex) {
+            throw AppErrors.INSTANCE.invalidPaymentId(paymentRefId).exception()
+        }
+        return paymentId
     }
 }

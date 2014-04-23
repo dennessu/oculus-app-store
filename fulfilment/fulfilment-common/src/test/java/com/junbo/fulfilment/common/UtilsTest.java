@@ -1,7 +1,8 @@
 package com.junbo.fulfilment.common;
 
 import com.junbo.fulfilment.common.util.Utils;
-import junit.framework.Assert;
+
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class UtilsTest {
@@ -19,6 +20,6 @@ public class UtilsTest {
         person1.setName("sharkmao");
 
         Person2 person2 = Utils.map(person1, Person2.class);
-        Assert.assertEquals("Person name should match", person1.getName(), person2.getName());
+        Assert.assertEquals(person1.getName(), person2.getName());
     }
 }

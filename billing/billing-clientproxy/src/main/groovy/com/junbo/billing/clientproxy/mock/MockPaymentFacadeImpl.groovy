@@ -63,4 +63,14 @@ class MockPaymentFacadeImpl implements PaymentFacade {
         request.setPaymentProvider('MOCK')
         return Promise.pure(request)
     }
+
+    @Override
+    Promise<PaymentTransaction> postPaymentConfirm(Long paymentId, PaymentTransaction request) {
+        request.setPaymentId(paymentId)
+        request.setMerchantAccount('JUNBO')
+        request.setStatus(PaymentStatus.SETTLED.name())
+        request.setType(PaymentType.CHARGE.name())
+        request.setPaymentProvider('MOCK')
+        return Promise.pure(request)
+    }
 }

@@ -5,6 +5,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.core.annotations.ReadMethod
 import com.junbo.sharding.core.annotations.WriteMethod
 import groovy.transform.CompileStatic
+
 import java.lang.annotation.Annotation
 import java.lang.reflect.InvocationHandler
 import java.lang.reflect.Method

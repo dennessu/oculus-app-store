@@ -129,4 +129,18 @@
             <bean class="com.junbo.common.json.QueryParamTranscoderImpl" />
         </constructor-arg>
     </bean>
+
+    <bean id="entitlementDefinitionClient" class="com.junbo.catalog.spec.resource.proxy.EntitlementDefinitionResourceClientProxy">
+        <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="target" value="${clientproxy.entitlement.url}"/>
+        <constructor-arg name="transcoder">
+            <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
+        </constructor-arg>
+        <constructor-arg name="pathParamTranscoder">
+            <bean class="com.junbo.common.json.IdPathParamTranscoder" />
+        </constructor-arg>
+        <constructor-arg name="queryParamTranscoder">
+            <bean class="com.junbo.common.json.QueryParamTranscoderImpl" />
+        </constructor-arg>
+    </bean>
 </beans>

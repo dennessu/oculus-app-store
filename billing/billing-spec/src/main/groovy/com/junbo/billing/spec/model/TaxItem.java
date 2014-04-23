@@ -16,6 +16,7 @@ public class TaxItem {
     private String taxAuthority;
     private BigDecimal taxAmount;
     private BigDecimal taxRate;
+    private Boolean isTaxExempt;
 
     public String getTaxAuthority() {
         return taxAuthority;
@@ -39,5 +40,13 @@ public class TaxItem {
 
     public void setTaxRate(BigDecimal taxRate) {
         this.taxRate = taxRate;
+    }
+
+    public Boolean getIsTaxExempt() {
+        return isTaxExempt;
+    }
+
+    public void setIsTaxExempt(Boolean isTaxExempt) {
+        this.isTaxExempt = isTaxExempt;
     }
 }

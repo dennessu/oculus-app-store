@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.id.Id;
+import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.common.model.Link;
 import com.junbo.common.util.IdFormatter;
 import org.slf4j.Logger;
@@ -35,7 +36,7 @@ public class IdDeserializer<T extends Id>
 
     @Override
     public T deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = ObjectMapperProvider.instance();
         Link ref = mapper.readValue(jp, Link.class);
 
         T id = null;
