@@ -4,9 +4,6 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        ">
-    <import resource="classpath*:spring/sharding-context.xml"/>
-    <import resource="classpath*:spring/common-lib-context.xml"/>
-
     <bean id="cloudantAddressRepository" class="com.junbo.identity.data.repository.impl.cloudant.AddressRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="address"/>
         <property name="shardAlgorithm" ref="userShardAlgorithm"/>
