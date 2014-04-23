@@ -117,6 +117,20 @@ class RepositoryProxy implements InvocationHandler {
             }
         }
 
-        return method.invoke(this, args)
+        final String METHOD_NAME = method.name
+        final int ARG_COUNT = method.parameterTypes.length
+
+        if ( 'toString' == METHOD_NAME && ARG_COUNT == 0 ) {
+            return this.toString()
+        }
+        if ( 'equals' == METHOD_NAME && ARG_COUNT == 1 ) {
+            return proxy.is(args[0])
+        }
+        if ( 'hashCode' == METHOD_NAME && ARG_COUNT == 0 ) {
+            return this.hashCode()
+        }
+
+        throw new RuntimeException('Unspecified Read/Write annotation on methods of Class:'
+                + interfaceClass.canonicalName)
     }
 }
