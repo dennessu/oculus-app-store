@@ -21,4 +21,6 @@ public interface PaymentFacade {
     Promise<PaymentTransaction> postPaymentAuthorization(PaymentTransaction request);
 
     Promise<PaymentTransaction> postPaymentCapture(Long paymentId, PaymentTransaction request);
+
+    Promise<PaymentTransaction> postPaymentConfirm(Long paymentId, PaymentTransaction request);
 }

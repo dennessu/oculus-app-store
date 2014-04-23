@@ -168,6 +168,29 @@ class BalanceServiceImpl implements BalanceService {
     }
 
     @Override
+    Promise<Balance> confirmBalance(Balance balance) {
+
+        if (balance.balanceId == null) {
+            throw AppErrors.INSTANCE.fieldMissingValue('balanceId').exception()
+        }
+        Balance savedBalance = balanceRepository.getBalance(balance.balanceId.value)
+        if (savedBalance == null) {
+            throw AppErrors.INSTANCE.balanceNotFound(balance.balanceId.value.toString()).exception()
+        }
+        if (savedBalance.status != BalanceStatus.UNCONFIRMED.name()) {
+            throw AppErrors.INSTANCE.invalidBalanceStatus(savedBalance.status).exception()
+        }
+        if (savedBalance.transactions.size() == 0) {
+            throw AppErrors.INSTANCE.transactionNotFound(savedBalance.balanceId.value.toString()).exception()
+        }
+        return transactionService.confirmBalance(savedBalance).then {
+            //persist the balance entity
+            Balance resultBalance = balanceRepository.updateBalance(savedBalance, EventActionType.CONFIRM)
+            return Promise.pure(resultBalance)
+        }
+    }
+
+    @Override
     Promise<Balance> processAsyncBalance(Balance balance) {
 
         if (balance.balanceId == null) {

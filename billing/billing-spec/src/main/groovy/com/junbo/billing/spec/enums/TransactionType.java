@@ -18,7 +18,8 @@ public enum TransactionType implements Identifiable<Short> {
     CAPTURE((short)2),
     CHARGE((short)3),
     REVERSE((short)4),
-    REFUND((short)5);
+    REFUND((short)5),
+    CONFIRM((short)6);
 
     private final Short id;
 
