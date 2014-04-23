@@ -37,8 +37,7 @@ class AddressRepositoryCloudantImpl extends CloudantClient<Address> implements A
         if (model.id == null) {
             model.id = new AddressId(idGenerator.nextId(model.userId.value))
         }
-        super.cloudantPost(model)
-        return get((AddressId)model.id)
+        return Promise.pure((Address)super.cloudantPost(model))
     }
 
     @Override

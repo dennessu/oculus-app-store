@@ -4,10 +4,10 @@ import com.junbo.catalog.spec.model.common.LocalizableProperty;
 import com.junbo.catalog.spec.model.common.Price;
 import com.junbo.catalog.spec.model.common.Status;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
-import com.junbo.catalog.spec.model.offer.Action;
-import com.junbo.catalog.spec.model.offer.Event;
-import com.junbo.catalog.spec.model.offer.Offer;
-import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.catalog.spec.model.item.ItemType;
+import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.common.id.FulfilmentId;
 import com.junbo.common.id.OrderId;
 import com.junbo.fulfilment.common.util.Constant;
@@ -25,6 +25,7 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
@@ -48,6 +49,18 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         Long offerId = prepareOffer();
         Assert.assertNotNull(offerId, "offerId should not be null.");
 
+        internalBVT(offerId);
+    }
+
+    @Test(enabled = false)
+    public void testEwalletBVT() {
+        Long offerId = prepareEwalletOffer();
+        Assert.assertNotNull(offerId, "offerId should not be null.");
+
+        internalBVT(offerId);
+    }
+
+    private void internalBVT(Long offerId) {
         FulfilmentRequest request = prepareFulfilmentRequest(offerId);
 
         try {
@@ -57,7 +70,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         }
         Assert.assertNotNull(request, "fulfilmentRequest should not be null.");
 
-        FulfilmentAction action = request.getItems().get(0).getActions().get(0);
+        FulfilmentAction action = request.getItems().get(Constant.UNIQUE_RESULT).getActions().get(Constant.UNIQUE_RESULT);
         Assert.assertNotNull(action.getResult(), "Action result should not be null.");
         Assert.assertEquals(action.getStatus(), FulfilmentStatus.SUCCEED, "Fulfilment status should match.");
 
@@ -74,7 +87,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(retrievedRequest.getRequestId(), request.getRequestId(), "Request id should match.");
 
         // retrieve fulfilment item by fulfilment id
-        Long fulfilmentId = request.getItems().get(0).getFulfilmentId();
+        Long fulfilmentId = request.getItems().get(Constant.UNIQUE_RESULT).getFulfilmentId();
 
         FulfilmentItem retrievedFulfilmentItem = null;
         try {
@@ -185,7 +198,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         name.set("en_US", "test_offer_name");
         offer.setName(name);
         Long offerId = megaGateway.createOffer(offer);
-        junit.framework.Assert.assertNotNull(offerId);
+        Assert.assertNotNull(offerId);
 
         OfferRevision offerRevision = new OfferRevision();
         offerRevision.setOfferId(offerId);
@@ -208,11 +221,90 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         }});
 
         Long offerRevisionId = megaGateway.createOfferRevision(offerRevision);
-        junit.framework.Assert.assertNotNull(offerRevisionId);
+        Assert.assertNotNull(offerRevisionId);
 
         OfferRevision retrievedRevision = megaGateway.getOfferRevision(offerRevisionId);
         retrievedRevision.setStatus(Status.APPROVED);
         megaGateway.updateOfferRevision(retrievedRevision);
+
+        return offerId;
+    }
+
+    private Long prepareEwalletOffer() {
+        LocalizableProperty name = new LocalizableProperty();
+        name.set("DEFAULT", "test_offer_name");
+        Long ownerId = 123L;
+
+        // create item
+        Item item = new Item();
+        item.setName(name);
+        item.setType(ItemType.WALLET);
+        item.setOwnerId(ownerId);
+        item.setSku("test_sku");
+
+        final Long itemId = megaGateway.createItem(item);
+        Assert.assertNotNull(itemId);
+
+        // create item revision
+        ItemRevision itemRevision = new ItemRevision();
+        itemRevision.setItemId(itemId);
+        itemRevision.setName(name);
+        itemRevision.setOwnerId(ownerId);
+        itemRevision.setType(ItemType.WALLET);
+        itemRevision.setWalletAmount(new BigDecimal(123.45));
+        itemRevision.setWalletCurrency("USD");
+        itemRevision.setWalletCurrencyType("REAL_CURRENCY");
+        itemRevision.setStatus(Status.DRAFT);
+
+        Long itemRevisionId = megaGateway.createItemRevision(itemRevision);
+        Assert.assertNotNull(itemRevisionId);
+
+        // approve item
+        ItemRevision retrievedItemRevision = megaGateway.getItemRevision(itemRevisionId);
+        retrievedItemRevision.setStatus(Status.APPROVED);
+        megaGateway.updateItemRevision(retrievedItemRevision);
+
+        // create offer
+        Offer offer = new Offer();
+        offer.setOwnerId(ownerId);
+
+        offer.setName(name);
+        Long offerId = megaGateway.createOffer(offer);
+        Assert.assertNotNull(offerId);
+
+        // create offer revision
+        OfferRevision offerRevision = new OfferRevision();
+        offerRevision.setOfferId(offerId);
+        offerRevision.setOwnerId(ownerId);
+        offerRevision.setStatus(Status.DRAFT);
+
+        Price price = new Price();
+        price.setPriceType(Price.FREE);
+        offerRevision.setPrice(price);
+        offerRevision.setEvents(new HashMap<String, Event>() {{
+            put(Constant.EVENT_PURCHASE.toLowerCase(), new Event() {{
+                setName(Constant.EVENT_PURCHASE);
+                setActions(new ArrayList<Action>() {{
+                    add(new Action() {{
+                        setType(Constant.ACTION_CREDIT_WALLET);
+                    }});
+                }});
+            }});
+        }});
+
+        offerRevision.setItems(new ArrayList<ItemEntry>() {{
+            add(new ItemEntry() {{
+                setItemId(itemId);
+                setQuantity(1);
+            }});
+        }});
+
+        Long offerRevisionId = megaGateway.createOfferRevision(offerRevision);
+        Assert.assertNotNull(offerRevisionId);
+
+        OfferRevision retrievedOfferRevision = megaGateway.getOfferRevision(offerRevisionId);
+        retrievedOfferRevision.setStatus(Status.APPROVED);
+        megaGateway.updateOfferRevision(retrievedOfferRevision);
 
         return offerId;
     }

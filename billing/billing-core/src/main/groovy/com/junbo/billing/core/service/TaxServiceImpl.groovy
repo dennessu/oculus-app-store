@@ -11,6 +11,7 @@ import com.junbo.billing.clientproxy.TaxFacade
 import com.junbo.billing.spec.enums.TaxStatus
 import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.Balance
+import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.model.Address
@@ -59,6 +60,13 @@ class TaxServiceImpl implements TaxService {
 
     @Override
     Promise<Balance> calculateTax(Balance balance) {
+        if (balance.balanceItems?.any { BalanceItem item ->
+            item.taxItems != null && item.taxItems?.size() > 0
+        }) {
+            // tax already calculated
+            balance.taxStatus = TaxStatus.TAXED.name()
+            return Promise.pure(balance)
+        }
         if (balance.skipTaxCalculation) {
             balance.taxStatus = TaxStatus.NOT_TAXED.name()
             return Promise.pure(balance)

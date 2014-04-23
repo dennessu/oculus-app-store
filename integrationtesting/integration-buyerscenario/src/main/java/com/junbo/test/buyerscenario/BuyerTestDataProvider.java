@@ -52,7 +52,7 @@ import java.util.UUID;
 /**
  * Created by Yunlong on 3/20/14.
  */
-public class BuyerTestDataProvider extends BaseTestDataProvider{
+public class BuyerTestDataProvider extends BaseTestDataProvider {
     private UserService identityClient = UserServiceImpl.instance();
     private ItemService itemClient = ItemServiceImpl.instance();
     private OfferService offerClient = OfferServiceImpl.instance();
@@ -148,7 +148,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider{
         address.setPostalCode(creditCardInfo.getAddress().getPostalCode());
 
         ArrayList<Long> admins = new ArrayList<>();
-        admins.add(IdConverter.hexStringToId(UserId.class,uid));
+        admins.add(IdConverter.hexStringToId(UserId.class, uid));
         paymentInstrument.setAdmins(admins);
         paymentInstrument.setAccountName(creditCardInfo.getAccountName());
         paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
@@ -184,6 +184,12 @@ public class BuyerTestDataProvider extends BaseTestDataProvider{
 
     public String postOrderByCartId(String uid, String cartId, Country country, Currency currency,
                                     String paymentInstrumentId, String shippingAddressId) throws Exception {
+        return this.postOrderByCartId(uid, cartId, country, currency, paymentInstrumentId, shippingAddressId, false);
+    }
+
+    public String postOrderByCartId(String uid, String cartId, Country country, Currency currency,
+                                    String paymentInstrumentId, String shippingAddressId, boolean hasPhysicalGood)
+            throws Exception {
         if (cartId == null) {
             cartId = cartClient.getCartPrimary(uid);
         }
@@ -212,6 +218,9 @@ public class BuyerTestDataProvider extends BaseTestDataProvider{
             orderItem.setOffer(offerId);
             orderItemList.add(orderItem);
         }
+        if (hasPhysicalGood) {
+            order.setShippingMethod(01L);
+        }
         order.setOrderItems(orderItemList);
         order.setTentative(true);
         order.setType("PAY_IN");
@@ -219,6 +228,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider{
         logger.LogSample("Post an order");
         return orderClient.postOrder(order);
     }
+
 
     public String updateOrderTentative(String orderId, boolean isTentative) throws Exception {
         Order order = Master.getInstance().getOrder(orderClient.getOrderByOrderId(orderId));

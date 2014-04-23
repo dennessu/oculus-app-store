@@ -20,6 +20,7 @@ ext {
         langur_processor:       "com.junbo.langur:langur-processor:${junboVersion}",
         oom:                    "com.junbo.oom:oom-core:${junboVersion}",
         oom_processor:          "com.junbo.oom:oom-processor:${junboVersion}",
+        apphost_core:           "com.junbo.apphost:apphost-core:${junboVersion}",
 
         // jersey
         jersey_container_grizzly2_http:     "org.glassfish.jersey.containers:jersey-container-grizzly2-http:${jerseyVersion}",
@@ -27,6 +28,8 @@ ext {
         jersey_common:           "org.glassfish.jersey.core:jersey-common:${jerseyVersion}",
         jersey_server:           "org.glassfish.jersey.core:jersey-server:${jerseyVersion}",
         jersey_bean_validation:  "org.glassfish.jersey.ext:jersey-bean-validation:${jerseyVersion}",
+
+        spring_bridge:           'org.glassfish.hk2:spring-bridge:2.2.0',
 
         // swagger
         swagger_annotations:    "com.wordnik:swagger-annotations:${swaggerVersion}",

@@ -6,6 +6,7 @@
 package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.SubledgerId;
 import com.junbo.common.id.UserId;
@@ -16,6 +17,10 @@ import java.util.Date;
 /**
  * Created by chriszhu on 2/10/14.
  */
+@JsonPropertyOrder(value = {
+        "subledgerId", "sellerId", "offerId", "country", "currency",
+        "payoutStatus", "totalAmount", "startTime", "endTime", "resourceAge"
+})
 public class Subledger extends BaseModelWithDate {
     @JsonProperty("self")
     private SubledgerId subledgerId;

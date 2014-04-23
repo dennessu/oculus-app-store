@@ -11,7 +11,6 @@ import com.junbo.common.util.JsonMarshaller
 import com.junbo.common.util.Utils
 import com.ning.http.client.AsyncHttpClient
 import com.ning.http.client.Response
-import junit.framework.Assert
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.http.HttpMethod
@@ -89,7 +88,8 @@ abstract class CloudantClient<T> implements  InitializingBean {
 
         def cloudantResponse = JsonMarshaller.unmarshall(response.responseBody, CloudantResponse)
 
-        Assert.assertTrue(cloudantResponse.ok)
+        assert cloudantResponse.ok == true
+        entity._rev = cloudantResponse.revision
 
         return entity
     }
@@ -114,9 +114,11 @@ abstract class CloudantClient<T> implements  InitializingBean {
         entity._rev = cloudantDoc._rev
         entity.updatedTime = new Date()
         entity.updatedBy = 'todo-cloudant'
+        def originalResourceAge = entity.resourceAge
         entity.resourceAge = ((String)entity._rev).split('-')[0]
 
         def response = executeRequest(HttpMethod.PUT, entity.id.toString(), [:], entity, true)
+        entity.resourceAge = originalResourceAge
 
         if (response.statusCode != HttpStatus.CREATED.value()) {
             CloudantError cloudantError = JsonMarshaller.unmarshall(response.responseBody, CloudantError)
@@ -133,7 +135,8 @@ abstract class CloudantClient<T> implements  InitializingBean {
 
         def cloudantResponse = JsonMarshaller.unmarshall(response.responseBody, CloudantResponse)
 
-        Assert.assertTrue(cloudantResponse.ok)
+        assert cloudantResponse.ok == true
+        entity._rev = cloudantResponse.revision
 
         return entity
     }

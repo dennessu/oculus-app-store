@@ -15,22 +15,27 @@ import com.junbo.identity.spec.v1.option.list.TosListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by liangfu on 4/9/14.
  */
 @CompileStatic
 class TosRepositorySqlImpl implements TosRepository {
-
     // todo:    Liangfu:    In fact here we don't want any db, we just want to use cdn to store tos
     // So we just implement the simplest case here
-
-    @Autowired
     private TosDAO tosDAO
-
-    @Autowired
     private ModelMapper modelMapper
+
+    @Required
+    void setTosDAO(TosDAO tosDAO) {
+        this.tosDAO = tosDAO
+    }
+
+    @Required
+    void setModelMapper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper
+    }
 
     @Override
     Promise<Tos> get(TosId tosId) {

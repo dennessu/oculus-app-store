@@ -40,14 +40,12 @@ class UserPinRepositoryCloudantImpl extends CloudantClient<UserPin> implements U
         if (userPin.id == null) {
             userPin.id = new UserPinId(idGenerator.nextId(userPin.userId.value))
         }
-        super.cloudantPost(userPin)
-        return get((UserPinId)userPin.id)
+        return Promise.pure((UserPin)super.cloudantPost(userPin))
     }
 
     @Override
     Promise<UserPin> update(UserPin userPin) {
-        super.cloudantPut(userPin)
-        return get((UserPinId)userPin.id)
+        return Promise.pure((UserPin)super.cloudantPut(userPin))
     }
 
     @Override

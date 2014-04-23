@@ -6,8 +6,6 @@
 
 package com.junbo.docs.app.readers;
 
-import org.glassfish.hk2.utilities.reflection.Pretty;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -76,7 +74,16 @@ class ParameterizedTypeImpl implements ParameterizedType {
     }
 
     public String toString() {
-        return Pretty.pType(this);
+        StringBuilder builder = new StringBuilder();
+        builder.append(((Class)rawType).getName() + "<");
+        for (int i = 0; i < actualTypeArguments.length; ++i) {
+            Type p = actualTypeArguments[i];
+            builder.append(p.toString());
+            if (i < actualTypeArguments.length - 1) {
+                builder.append(", ");
+            }
+        }
+        builder.append(">");
+        return builder.toString();
     }
-
 }

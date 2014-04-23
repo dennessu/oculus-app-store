@@ -32,6 +32,12 @@
     </bean>
 
     <bean id="paypalProviderService" class="com.junbo.payment.core.provider.paypal.PayPalProviderServiceImpl">
+        <property name="apiVersion" value="${payment.provider.paypal.apiversion}"/>
+        <property name="redirectURL" value="${payment.provider.paypal.redirecturl}"/>
+        <property name="mode" value="${payment.provider.paypal.mode}"/>
+        <property name="userName" value="${payment.provider.paypal.username}"/>
+        <property name="password" value="${payment.provider.paypal.password}"/>
+        <property name="signature" value="${payment.provider.paypal.signature}"/>
     </bean>
 
     <bean id="providerRoutingService" class="com.junbo.payment.core.provider.impl.ProviderRoutingServiceImpl"/>

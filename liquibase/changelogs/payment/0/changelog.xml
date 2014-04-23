@@ -792,8 +792,11 @@
                  ,(12,'SETTLED', 'Settlement is completed', '2014-02-10', 'wenhongzhu')
                  ,(13,'SETTLE_DECLINED', 'Settlement is processing', '2014-02-10', 'wenhongzhu')
                  ,(14,'SETTLING', 'Settlement is processing', '2014-02-10', 'wenhongzhu')
-                 ,(15,'UNCONFIRMED', 'Unkonw status', '2014-02-10', 'wenhongzhu')
-                 ,(16,'UNRECOGNIZED', 'Unkonw status', '2014-02-10', 'wenhongzhu');
+                 ,(15,'REFUND_CREATED', 'Refund is created', '2014-02-10', 'wenhongzhu')
+                 ,(16,'REFUNDED', 'Refund is completed', '2014-02-10', 'wenhongzhu')
+                 ,(17,'REFUND_DECLINED', 'Refund is declined', '2014-02-10', 'wenhongzhu')
+                 ,(18,'UNCONFIRMED', 'the transaction is unconfirmed by payer', '2014-02-10', 'wenhongzhu')
+                 ,(19,'UNRECOGNIZED', 'Unkonw status', '2014-02-10', 'wenhongzhu');
         ]]>
         </sql>
     </changeSet>
@@ -811,7 +814,9 @@
 				  ,(6,'SUBMIT_SETTLE_REVERSE','reverse a settlement_submit transaction', '2014-02-14', 'wenhongzhu')
 				  ,(7,'IMMEDIATE_SETTLE_CREATE','create a transaction settlement immediately', '2014-02-14', 'wenhongzhu')
 				  ,(8,'IMMEDIATE_SETTLE','settle a transaction immediately', '2014-02-14', 'wenhongzhu')
-				  ,(9,'REPORT_EVENT','provider reports a new event', '2014-02-14', 'wenhongzhu');
+				  ,(9,'REFUND_CREATE','create a transaction refund', '2014-02-14', 'wenhongzhu')
+				  ,(10,'REFUND','refund a transaction', '2014-02-14', 'wenhongzhu')
+				  ,(11,'REPORT_EVENT','provider reports a new event', '2014-02-14', 'wenhongzhu');
         ]]>
         </sql>
     </changeSet>

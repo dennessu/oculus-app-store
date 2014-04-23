@@ -24,16 +24,9 @@ public class EntitlementHandler extends HandlerSupport<EntitlementContext> {
         Map<String, Object> prop = action.getProperties();
 
         entitlement.setUserId(context.getUserId());
-        entitlement.setOfferId(context.getItems().get(action.getFulfilmentId()).getOfferId());
-
-        // fetch from entitlement definition
         entitlement.setUseCount(action.getCopyCount());
-        entitlement.setType((String) prop.get(Constant.ENTITLEMENT_TYPE));
-        entitlement.setTag((String) prop.get(Constant.ENTITLEMENT_TAG));
-        entitlement.setGroup((String) prop.get(Constant.ENTITLEMENT_GROUP));
-        entitlement.setDeveloperId((Long) prop.get(Constant.ENTITLEMENT_DEVELOPER));
         entitlement.setEntitlementDefinitionId((Long) prop.get(Constant.ENTITLEMENT_DEF_ID));
-        entitlement.setGrantDate(Utils.now());
+        entitlement.setGrantTime(Utils.now());
 
         return entitlementGateway.grant(entitlement);
     }

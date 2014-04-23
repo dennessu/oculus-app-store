@@ -12,7 +12,7 @@ import com.junbo.sharding.core.annotations.SeedId;
 import com.junbo.sharding.core.annotations.SeedParam;
 import com.junbo.sharding.util.Helper;
 import com.junbo.common.util.Utils;
-import junit.framework.Assert;
+// import junit.framework.Assert;
 import org.springframework.core.annotation.AnnotationUtils;
 
 import javax.persistence.Entity;
@@ -53,7 +53,7 @@ public class ShardAwareDaoProxy implements InvocationHandler {
     private int tryGetShardIdAndSetEntityId(Method mtd, Object[] args) throws Throwable {
         // @SeedParam processing
         Annotation[][] a = mtd.getParameterAnnotations();
-        Assert.assertEquals(a.length, args.length);
+        // Assert.assertEquals(a.length, args.length);
 
         for (int i = 0; i < a.length; i++) {
             for (Annotation annotation : a[i]) {

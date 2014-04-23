@@ -207,16 +207,4 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
 
         return result;
     }
-
-    @Override
-    protected Map<String, Object> getEntitlementDef(Action action) {
-        Map<String, Object> result = new HashMap<>();
-
-        result.put(Constant.ENTITLEMENT_GROUP, "TEST_GROUP");
-        result.put(Constant.ENTITLEMENT_TAG, "TEST_TAG");
-        result.put(Constant.ENTITLEMENT_TYPE, "DOWNLOAD");
-        result.put(Constant.ENTITLEMENT_DEVELOPER, "TEST_DEVELOPER");
-
-        return result;
-    }
 }

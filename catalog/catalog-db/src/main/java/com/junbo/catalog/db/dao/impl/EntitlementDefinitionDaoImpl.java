@@ -6,17 +6,17 @@
 
 package com.junbo.catalog.db.dao.impl;
 
+import com.junbo.catalog.common.util.Constants;
+import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.dao.EntitlementDefinitionDao;
 import com.junbo.catalog.db.entity.EntitlementDefinitionEntity;
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import org.hibernate.Query;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Hibernate Impl of EntitlementDefinition Dao.
@@ -24,29 +24,46 @@ import java.util.UUID;
 public class EntitlementDefinitionDaoImpl extends BaseDaoImpl<EntitlementDefinitionEntity>
         implements EntitlementDefinitionDao {
     @Override
-    public List<EntitlementDefinitionEntity> getByParams(Long developerId, String group, String tag,
-                                                         EntitlementType type, PageableGetOptions pageableGetOptions) {
-        StringBuilder queryString = new StringBuilder("from EntitlementDefinitionEntity" +
-                " where developerId = (:developerId)");
+    public List<EntitlementDefinitionEntity> getByParams(Long developerId, String clientId, Set<String> groups, Set<String> tags,
+                                                         Set<EntitlementType> types, Boolean isConsumable, PageableGetOptions pageableGetOptions) {
+        StringBuilder queryString = new StringBuilder("select * from entitlement_definition" +
+                " where deleted = false");
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("developerId", developerId);
 
-        if (type != null) {
-            queryString.append(" and type = (:type)");
-            params.put("type", type);
-        }
-        if (!StringUtils.isEmpty(group)) {
-            queryString.append(" and group = (:group)");
-            params.put("group", group);
-        }
-        if (!StringUtils.isEmpty(tag)) {
-            queryString.append(" and tag = (:tag)");
-            params.put("tag", tag);
+        if (developerId != null) {
+            queryString.append(" and developer_id = (:developerId)");
+            params.put("developerId", developerId);
         }
 
-        Query q = currentSession().createQuery(queryString.toString());
+        if (!StringUtils.isEmpty(clientId)) {
+            queryString.append(" and '{\"\\\"" +
+                    clientId +
+                    "\\\"\"}'\\:\\:text[] <@ (json_val_arr(in_app_context))");
+        }
+        if (!CollectionUtils.isEmpty(types)) {
+            queryString.append(" and type in (:types)");
+            params.put("types", types);
+        }
+        if (!CollectionUtils.isEmpty(groups)) {
+            queryString.append(" and entitlement_group in (:groups)");
+            params.put("groups", groups);
+        }
+        if (!CollectionUtils.isEmpty(tags)) {
+            queryString.append(" and tag in (:tags)");
+            params.put("tags", tags);
+        }
+        if (isConsumable != null) {
+            queryString.append(" and consumable = (:isConsumable)");
+            params.put("isConsumable", isConsumable);
+        }
+
+        Query q = currentSession().createSQLQuery(queryString.toString()).addEntity(this.getEntityType());
         for (Map.Entry<String, Object> entry : params.entrySet()) {
-            q.setParameter(entry.getKey(), entry.getValue());
+            if (entry.getValue() instanceof Collection) {
+                q.setParameterList(entry.getKey(), (Collection) entry.getValue());
+            } else {
+                q.setParameter(entry.getKey(), entry.getValue());
+            }
         }
         q.setMaxResults(pageableGetOptions.getSize()).setFirstResult(pageableGetOptions.getStart());
 
@@ -58,5 +75,17 @@ public class EntitlementDefinitionDaoImpl extends BaseDaoImpl<EntitlementDefinit
         String queryString = "from EntitlementDefinitionEntity where trackingUuid = (:trackingUuid)";
         Query q = currentSession().createQuery(queryString).setParameter("trackingUuid", trackingUuid);
         return (EntitlementDefinitionEntity) q.uniqueResult();
+    }
+
+    @Override
+    public Long update(EntitlementDefinitionEntity entity) {
+        EntitlementDefinitionEntity existed = (EntitlementDefinitionEntity)
+                currentSession().load(EntitlementDefinitionEntity.class, entity.getId());
+        entity.setCreatedTime(existed.getCreatedTime());
+        entity.setCreatedBy(existed.getCreatedBy());
+        entity.setUpdatedBy(Constants.SYSTEM_INTERNAL); //TODO
+        entity.setUpdatedTime(Utils.now());
+        currentSession().merge(entity);
+        return entity.getId();
     }
 }

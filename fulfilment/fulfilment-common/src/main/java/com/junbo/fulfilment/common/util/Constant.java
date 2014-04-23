@@ -14,12 +14,9 @@ public final class Constant {
     // constant number
     public static final int UNIQUE_RESULT = 0;
 
-    // entitlement definition
+    // offer action properties
     public static final String ENTITLEMENT_DEF_ID = "ENTITLEMENT_DEF_ID";
-    public static final String ENTITLEMENT_TAG = "ENTITLEMENT_TAG";
-    public static final String ENTITLEMENT_GROUP = "ENTITLEMENT_GROUP";
-    public static final String ENTITLEMENT_TYPE = "ENTITLEMENT_TYPE";
-    public static final String ENTITLEMENT_DEVELOPER = "ENTITLEMENT_DEVELOPER";
+    public static final String ITEM_ID = "ITEM_ID";
 
     // event name
     public static final String EVENT_PURCHASE = "PURCHASE";

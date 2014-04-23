@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.junbo.common.jackson.common.ResourceAware;
 import com.junbo.common.jackson.model.ResourceRef;
 import com.junbo.common.shuffle.Oculus48Id;
-import junit.framework.Assert;
+// import junit.framework.Assert;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Reso
     @Override
     public void serialize(Object value, JsonGenerator jgen, SerializerProvider provider)
             throws IOException {
-        Assert.assertNotNull("resourcePath", resourcePath);
+        //Assert.assertNotNull("resourcePath", resourcePath);
 
         if (unwrap(value) == null) {
             MAPPER.writeValue(jgen, null);

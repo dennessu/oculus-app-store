@@ -15,18 +15,25 @@ import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by liangfu on 3/17/14.
  */
 @CompileStatic
 class UserGroupRepositorySqlImpl implements UserGroupRepository {
-    @Autowired
     private UserGroupDAO userGroupDAO
-
-    @Autowired
     private ModelMapper modelMapper
+
+    @Required
+    void setUserGroupDAO(UserGroupDAO userGroupDAO) {
+        this.userGroupDAO = userGroupDAO
+    }
+
+    @Required
+    void setModelMapper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper
+    }
 
     @Override
     Promise<UserGroup> create(UserGroup entity) {

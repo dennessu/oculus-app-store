@@ -4,7 +4,7 @@ dependencies {
     compile project(':entitlement-core')
 
     compile (libraries.servlet_api)
-    compile (libraries.jersey_spring3)
+    //compile (libraries.jersey_spring3)
     compile (libraries.jackson_jaxrs_json_provider)
     compile (libraries.jackson_annotations)
     compile (libraries.common_beanutils)
@@ -20,4 +20,7 @@ dependencies {
     compile (libraries.oom_processor)
     compile (libraries.oom)
     compile (libraries.jersey_common)
+
+    testCompile (libraries.guava)
+    testCompile (libraries.spring_test)
 }

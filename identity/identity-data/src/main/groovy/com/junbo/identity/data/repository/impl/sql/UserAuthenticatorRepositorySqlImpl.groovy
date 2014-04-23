@@ -15,18 +15,25 @@ import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Required
 
 /**
  * Implementation for UserAuthenticatorDAO.
  */
 @CompileStatic
 class UserAuthenticatorRepositorySqlImpl implements UserAuthenticatorRepository {
-    @Autowired
     private UserAuthenticatorDAO authenticatorDAO
-
-    @Autowired
     private ModelMapper modelMapper
+
+    @Required
+    void setAuthenticatorDAO(UserAuthenticatorDAO authenticatorDAO) {
+        this.authenticatorDAO = authenticatorDAO
+    }
+
+    @Required
+    void setModelMapper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper
+    }
 
     @Override
     Promise<UserAuthenticator> create(UserAuthenticator entity) {

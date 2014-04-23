@@ -50,6 +50,7 @@ var Configs = {
         RegisterCallbackUrl: "{1}/callback/register",
         LogoutCallbackUrl: "{1}/callback/logout",
         LoginUrl: "{1}/rest/oauth2/authorize?client_id=client&response_type=code&redirect_uri={2}&scope=openid%20identity&nonce=123",
+        //LoginUrl: "{1}/rest/oauth2/authorize?client_id=client&response_type=token%20idtoken&redirect_uri={2}&scope=openid%20identity&nonce=123",
         LogoutUrl: "{1}/rest/oauth2/end-session?post_logout_redirect_uri={2}&id_token_hint={3}",
         RegisterUrl: "{1}/identity?redirect_url={2}#/register"
     },

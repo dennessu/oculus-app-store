@@ -21,7 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Map;
 
 /**
  * Base dao for hibernate Dao.
@@ -53,6 +56,7 @@ public class BaseDao<T extends Entity> {
     public T insert(T t) {
         t.setId(generateId(t.getShardMasterId()));
         Date now = EntitlementContext.current().getNow();
+        t.setIsDeleted(false);
         t.setCreatedBy("DEFAULT");  //TODO
         t.setCreatedTime(now);
         t.setModifiedBy("DEFAULT"); //TODO
@@ -61,7 +65,8 @@ public class BaseDao<T extends Entity> {
     }
 
     public T get(Long id) {
-        return (T) currentSession(id).get(entityType, id);
+        T result = (T) currentSession(id).get(entityType, id);
+        return (result == null || result.getIsDeleted()) ? null : result;
     }
 
     public T update(T t) {

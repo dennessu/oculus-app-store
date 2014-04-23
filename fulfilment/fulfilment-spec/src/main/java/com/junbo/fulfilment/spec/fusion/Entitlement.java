@@ -12,14 +12,9 @@ import java.util.Date;
  */
 public class Entitlement {
     private Long userId;
-    private String type;
-    private String group;
-    private String tag;
-    private Date grantDate;
-    private Date expirationDate;
-    private Long offerId;
+    private Date grantTime;
+    private Date expirationTime;
     private Long entitlementDefinitionId;
-    private Long developerId;
     private Integer useCount;
 
     public Long getUserId() {
@@ -30,52 +25,20 @@ public class Entitlement {
         this.userId = userId;
     }
 
-    public String getType() {
-        return type;
+    public Date getGrantTime() {
+        return grantTime;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setGrantTime(Date grantTime) {
+        this.grantTime = grantTime;
     }
 
-    public String getGroup() {
-        return group;
+    public Date getExpirationTime() {
+        return expirationTime;
     }
 
-    public void setGroup(String group) {
-        this.group = group;
-    }
-
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
-    public Date getGrantDate() {
-        return grantDate;
-    }
-
-    public void setGrantDate(Date grantDate) {
-        this.grantDate = grantDate;
-    }
-
-    public Date getExpirationDate() {
-        return expirationDate;
-    }
-
-    public void setExpirationDate(Date expirationDate) {
-        this.expirationDate = expirationDate;
-    }
-
-    public Long getOfferId() {
-        return offerId;
-    }
-
-    public void setOfferId(Long offerId) {
-        this.offerId = offerId;
+    public void setExpirationTime(Date expirationTime) {
+        this.expirationTime = expirationTime;
     }
 
     public Long getEntitlementDefinitionId() {
@@ -84,14 +47,6 @@ public class Entitlement {
 
     public void setEntitlementDefinitionId(Long entitlementDefinitionId) {
         this.entitlementDefinitionId = entitlementDefinitionId;
-    }
-
-    public Long getDeveloperId() {
-        return developerId;
-    }
-
-    public void setDeveloperId(Long developerId) {
-        this.developerId = developerId;
     }
 
     public Integer getUseCount() {
