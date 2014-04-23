@@ -391,4 +391,32 @@ public class CommonMapper {
         }
         return new UserTeleAttemptId(id);
     }
+
+    public Long toUserTeleBackupCodeId(UserTeleBackupCodeId id) {
+        if (id == null) {
+            return null;
+        }
+        return id.getValue();
+    }
+
+    public UserTeleBackupCodeId toUserTeleBackupCodeId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        return new UserTeleBackupCodeId(id);
+    }
+
+    public Long toUserTeleBackupCodeAttemptId(UserTeleBackupCodeAttemptId id) {
+        if (id == null) {
+            return null;
+        }
+        return id.getValue();
+    }
+
+    public UserTeleBackupCodeAttemptId toUserTeleBackupCodeAttemptId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        return new UserTeleBackupCodeAttemptId(id);
+    }
 }

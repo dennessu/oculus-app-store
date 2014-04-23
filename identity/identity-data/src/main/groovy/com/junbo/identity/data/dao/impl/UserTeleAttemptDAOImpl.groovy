@@ -16,7 +16,7 @@ class UserTeleAttemptDAOImpl extends BaseDAO implements UserTeleAttemptDAO {
 
     @Override
     UserTeleAttemptEntity create(UserTeleAttemptEntity entity) {
-        entity.id = idGenerator.nextId()
+        entity.id = idGenerator.nextId(entity.userId)
 
         def currentSession = currentSession(entity.id)
         currentSession.save(entity)

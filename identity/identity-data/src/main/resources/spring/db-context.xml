@@ -50,6 +50,8 @@
     <bean id="userAddressDAO" class="com.junbo.identity.data.dao.impl.UserAddressDAOImpl" parent="identityBaseDAO" />
     <bean id="userTeleDAO" class="com.junbo.identity.data.dao.impl.UserTeleDAOImpl" parent="identityBaseDAO" />
     <bean id="userTeleAttemptDAO" class="com.junbo.identity.data.dao.impl.UserTeleAttemptDAOImpl" parent="identityBaseDAO" />
+    <bean id="userTeleBackupCodeDAO" class="com.junbo.identity.data.dao.impl.UserTeleBackupCodeDAOImpl" parent="identityBaseDAO" />
+    <bean id="userTeleBackupCodeAttemptDAO" class="com.junbo.identity.data.dao.impl.UserTeleBackupCodeAttemptDAOImpl" parent="identityBaseDAO" />
 
     <bean id="sqlUserAuthenticatorRepository" class="com.junbo.identity.data.repository.impl.sql.UserAuthenticatorRepositorySqlImpl">
         <property name="modelMapper" ref="modelMapper"/>
@@ -139,6 +141,16 @@
     
     <bean id="sqlUserTeleAttemptRepository" class="com.junbo.identity.data.repository.impl.sql.UserTeleAttemptRepositorySqlImpl">
         <property name="userTeleAttemptDAO" ref="userTeleAttemptDAO" />
+        <property name="modelMapper" ref="modelMapper" />
+    </bean>
+    
+    <bean id="sqlUserTeleBackupCodeRepository" class="com.junbo.identity.data.repository.impl.sql.UserTeleBackupCodeRepositorySqlImpl">
+        <property name="userTeleBackupCodeDAO" ref="userTeleBackupCodeDAO" />
+        <property name="modelMapper" ref="modelMapper" />
+    </bean>
+
+    <bean id="sqlUserTeleBackupCodeAttemptRepository" class="com.junbo.identity.data.repository.impl.sql.UserTeleBackupCodeAttemptRepositorySqlImpl">
+        <property name="userTeleBackupCodeAttemptDAO" ref="userTeleBackupCodeAttemptDAO" />
         <property name="modelMapper" ref="modelMapper" />
     </bean>
     

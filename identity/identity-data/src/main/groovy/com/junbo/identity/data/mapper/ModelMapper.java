@@ -109,4 +109,12 @@ public interface ModelMapper {
 
     UserTeleAttempt toUserTeleAttempt(UserTeleAttemptEntity entity, MappingContext context);
     UserTeleAttemptEntity toUserTeleAttempt(UserTeleAttempt entity, MappingContext context);
+
+    UserTeleBackupCode toUserTeleBackupCode(UserTeleBackupCodeEntity entity, MappingContext context);
+    UserTeleBackupCodeEntity toUserTeleBackupCode(UserTeleBackupCode entity, MappingContext context);
+
+    UserTeleBackupCodeAttempt toUserTeleBackupCodeAttempt(UserTeleBackupCodeAttemptEntity entity,
+                                                          MappingContext context);
+    UserTeleBackupCodeAttemptEntity toUserTeleBackupCodeAttempt(UserTeleBackupCodeAttempt entity,
+                                                          MappingContext context);
 }
