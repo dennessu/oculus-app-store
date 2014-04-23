@@ -2,6 +2,7 @@ com.junbo.common.json.JacksonFeature
 com.junbo.common.json.ObjectMapperProvider
 com.junbo.common.json.InvalidJsonReaderInterceptor
 com.junbo.common.error.RestExceptionMapper
+com.junbo.configuration.ConfigResource
 com.junbo.common.id.provider.IdTypeFromStringProvider
 com.junbo.common.provider.ResponseFilter
 com.junbo.common.filter.SequenceIdFilter
