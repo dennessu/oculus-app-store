@@ -5,40 +5,14 @@
  */
 package com.junbo.identity.data
 
-import com.junbo.common.id.DeviceId
-import com.junbo.common.id.GroupId
-import com.junbo.common.id.TosId
-import com.junbo.common.id.UserDeviceId
-import com.junbo.common.id.UserId
-import com.junbo.common.id.UserSecurityQuestionId
+import com.junbo.common.id.*
 import com.junbo.identity.data.identifiable.UserPasswordStrength
 import com.junbo.identity.data.repository.*
-import com.junbo.identity.data.repository.impl.cloudant.AddressRepositoryCloudantImpl
 import com.junbo.identity.spec.model.users.UserPassword
-import com.junbo.identity.spec.model.users.*
-import com.junbo.identity.spec.v1.model.Address
-import com.junbo.identity.spec.v1.model.Device
-import com.junbo.identity.spec.v1.model.Group
-import com.junbo.identity.spec.v1.model.Tos
-import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserAuthenticator
-import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
-import com.junbo.identity.spec.v1.model.UserDevice
-import com.junbo.identity.spec.v1.model.UserGroup
-import com.junbo.identity.spec.v1.model.UserOptin
-import com.junbo.identity.spec.v1.model.UserSecurityQuestion
-import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt
-import com.junbo.identity.spec.v1.model.UserTosAgreement
-import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
-import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
-import com.junbo.identity.spec.v1.option.list.UserDeviceListOptions
-import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
-import com.junbo.identity.spec.v1.option.list.UserOptinListOptions
-import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
-import com.junbo.identity.spec.v1.option.list.UserPinListOptions
-import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionAttemptListOptions
-import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionListOptions
-import com.junbo.identity.spec.v1.option.list.UserTosAgreementListOptions
+import com.junbo.identity.spec.model.users.UserPin
+import com.junbo.identity.spec.v1.model.*
+import com.junbo.identity.spec.v1.option.list.*
+import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import org.glassfish.jersey.internal.util.Base64
 import org.springframework.beans.factory.annotation.Autowired
@@ -51,6 +25,11 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 import org.springframework.transaction.annotation.Transactional
 import org.testng.Assert
 import org.testng.annotations.Test
+import groovy.time.TimeCategory
+
+import java.security.SecureRandom
+
+
 /**
  * Unittest.
  */
@@ -58,10 +37,13 @@ import org.testng.annotations.Test
 @TransactionConfiguration(defaultRollback = false)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
 @Transactional('transactionManager')
-@CompileStatic
 public class RepositoryTest extends AbstractTestNGSpringContextTests {
     // This is the fake value to meet current requirement.
     private final long userId = 1493188608L
+
+    @Autowired
+    @Qualifier('oculus48IdGenerator')
+    private IdGenerator idGenerator
 
     @Autowired
     @Qualifier('addressRepository')
@@ -122,6 +104,12 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     @Autowired
     @Qualifier('deviceRepository')
     private DeviceRepository deviceRepository
+
+    @Autowired
+    @Qualifier('userTeleRepository')
+    private UserTeleRepository userTeleRepository
+
+    private SecureRandom random = new SecureRandom()
 
     @Test
     public void testUserRepository() throws Exception {
@@ -484,5 +472,36 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         device = deviceRepository.searchByExternalRef(device.externalRef).wrapped().get()
         assert device.description == newDescription
+    }
+
+    @Test
+    public void testUserTeleRepository() {
+        def after30Mins = new Date()
+        use( TimeCategory ) {
+            after30Mins = (new Date()) + 30.minutes
+        }
+        def id = idGenerator.nextId()
+        UserTeleCode userTeleCode = new UserTeleCode()
+        userTeleCode.setUserId(new UserId(id))
+        userTeleCode.setActive(true)
+        userTeleCode.setExpiresBy(after30Mins)
+        userTeleCode.setPhoneNumber(UUID.randomUUID().toString())
+        userTeleCode.setSentLanguage('en_US')
+        userTeleCode.setTemplate('xxxxx')
+        userTeleCode.setVerifyCode(UUID.randomUUID().toString())
+        userTeleCode.setVerifyType('CALL')
+
+        UserTeleCode newUserTeleCode = userTeleRepository.create(userTeleCode).wrapped().get()
+        newUserTeleCode = userTeleRepository.get((UserTeleId)newUserTeleCode.id).wrapped().get()
+
+        assert userTeleCode.phoneNumber == newUserTeleCode.phoneNumber
+
+        String newPhoneNumber = UUID.randomUUID().toString()
+        newUserTeleCode.setPhoneNumber(newPhoneNumber)
+        userTeleCode = userTeleRepository.update(newUserTeleCode).wrapped().get()
+        assert userTeleCode.phoneNumber == newPhoneNumber
+
+        userTeleCode = userTeleRepository.findActiveTeleCode(id, newPhoneNumber).wrapped().get()
+        assert userTeleCode.phoneNumber == newPhoneNumber
     }
 }

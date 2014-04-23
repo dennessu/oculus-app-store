@@ -115,4 +115,9 @@
         <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
 
+    <bean id="cloudantUserTeleRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserTeleRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_tele" />
+        <property name="shardAlgorithm" ref="userShardAlgorithm" />
+        <property name="idGenerator" ref="oculus48IdGenerator" />
+    </bean>
 </beans>

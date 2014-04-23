@@ -103,4 +103,7 @@ public interface ModelMapper {
 
     Address toAddress(AddressEntity entity, MappingContext context);
     AddressEntity toAddress(Address entity, MappingContext context);
+
+    UserTeleCode toUserTeleCode(UserTeleCodeEntity entity, MappingContext context);
+    UserTeleCodeEntity toUserTeleCode(UserTeleCode entity, MappingContext context);
 }

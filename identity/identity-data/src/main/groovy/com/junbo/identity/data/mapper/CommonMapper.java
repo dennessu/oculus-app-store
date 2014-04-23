@@ -363,4 +363,18 @@ public class CommonMapper {
         }
         return value.toString();
     }
+
+    public Long toUserTeleId(UserTeleId id) {
+        if (id == null) {
+            return null;
+        }
+        return id.getValue();
+    }
+
+    public UserTeleId toUserTeleId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        return new UserTeleId(id);
+    }
 }
