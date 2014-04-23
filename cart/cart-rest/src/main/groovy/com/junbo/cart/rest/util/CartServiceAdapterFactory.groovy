@@ -32,6 +32,10 @@ class CartServiceAdapterFactory {
 
         @Override
         Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            if (method.declaringClass != CartService) {
+                return method.invoke(proxy, args)
+            }
+
             assert Promise.isAssignableFrom(method.returnType)
 
             Promise result
