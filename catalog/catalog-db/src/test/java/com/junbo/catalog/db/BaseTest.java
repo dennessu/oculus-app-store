@@ -6,38 +6,33 @@
 
 package com.junbo.catalog.db;
 
+import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
-
-import javax.sql.DataSource;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by baojing on 2/18/14.
  */
 @ContextConfiguration(locations = {"classpath:spring/context-test.xml"})
 @TransactionConfiguration(defaultRollback = false)
-public class BaseTest extends AbstractTransactionalTestNGSpringContextTests {
-    @Override
+@TestExecutionListeners(TransactionalTestExecutionListener.class)
+@Transactional("transactionManager")
+public class BaseTest extends AbstractTestNGSpringContextTests {
     @Autowired
-    @Qualifier("catalogDataSource")
-    public void setDataSource(DataSource dataSource) {
-        super.setDataSource(dataSource);
-    }
+    @Qualifier("oculus48IdGenerator")
+    private IdGenerator idGenerator;
     /**
      * <p>Simple entity id generator.</p>
      *
      * @return new generated entity id
      */
     protected long generateId() {
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            //ignore
-        }
-
-        return System.currentTimeMillis();
+        return idGenerator.nextId(0);
     }
 }
