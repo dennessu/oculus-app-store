@@ -6,7 +6,6 @@ dependencies {
 
     compile (libraries.jersey_server)
 
-    compile (libraries.jersey_spring3)
     compile (libraries.jersey_container_grizzly2_http)
 
     compile (libraries.swagger_annotations)
