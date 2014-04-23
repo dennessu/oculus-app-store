@@ -13,7 +13,6 @@ import com.junbo.identity.spec.model.users.UserPin
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.*
 import com.junbo.sharding.IdGenerator
-import groovy.transform.CompileStatic
 import org.glassfish.jersey.internal.util.Base64
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -27,13 +26,10 @@ import org.testng.Assert
 import org.testng.annotations.Test
 import groovy.time.TimeCategory
 
-import java.security.SecureRandom
-
-
 /**
  * Unittest.
  */
-@ContextConfiguration(locations = ['classpath:spring/context-test.xml'])
+@ContextConfiguration(locations = ['classpath:test/spring/context-test.xml'])
 @TransactionConfiguration(defaultRollback = false)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
 @Transactional('transactionManager')

@@ -16,7 +16,6 @@ import org.springframework.util.StopWatch
 @CompileStatic
 @SuppressWarnings('UnnecessaryGetter')
 @SuppressWarnings('LoggingSwallowsStacktrace')
-@SuppressWarnings('CatchThrowable')
 class JunboApplication {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JunboApplication)
@@ -44,9 +43,13 @@ ${getClasspath().join(System.lineSeparator())}""")
             stopWatch.stop()
             LoggerInitializer.logStarted(LOGGER, stopWatch)
 
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             if (ctx != null) {
-                ctx.close()
+                try {
+                    ctx.close()
+                } catch (Exception innerEx) {
+                    LOGGER.error('Failed to close application:', innerEx)
+                }
             }
 
             LOGGER.error('Application failed with exception:', ex)

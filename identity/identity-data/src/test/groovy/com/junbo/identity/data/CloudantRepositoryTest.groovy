@@ -58,7 +58,7 @@ import org.testng.annotations.Test
 /**
  * Unittest.
  */
-@ContextConfiguration(locations = ['classpath:spring/context-test.xml'])
+@ContextConfiguration(locations = ['classpath:test/spring/context-test.xml'])
 @TransactionConfiguration(defaultRollback = false)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
 @Transactional('transactionManager')
