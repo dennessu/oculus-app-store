@@ -27,11 +27,9 @@
             AccessToken: "access_token",
             ConversationId: "cid",
             Event: "event",
-            RedirectUrl: "redirect_url",
-
-            LoginType: "login_type"   // [use login] code or token_idtoken
+            RedirectUrl: "redirect_url"
         },
-        SaveQueryStrings: ["cid", "event", "id_token", "access_token", "redirect_url", "login_type"],
+        SaveQueryStrings: ["cid", "event", "id_token", "access_token", "redirect_url"],
 
         // Enum
         ResultStatusEnum: {

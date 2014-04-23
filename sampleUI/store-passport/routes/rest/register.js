@@ -1,6 +1,3 @@
-/**
- * Created by Haiwei on 2014/4/22.
- */
 var DataProvider = require('rest-provider').DataProvider;
 var Models = require('rest-provider').Models;
 
@@ -15,7 +12,7 @@ module.exports = function(req, res){
         var settingArray = new Array();
 
         if (result.status == 200) {
-                resultModel.status = global.AppConfig.ResultStatusEnum.Normal;
+            resultModel.status = global.AppConfig.ResultStatusEnum.Normal;
 
         } else if (result.status == 302) { // need redirect, only user login
 

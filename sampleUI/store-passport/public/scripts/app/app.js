@@ -117,48 +117,36 @@ App.LoginController = Ember.ObjectController.extend({
     actions: {
         Submit: function(){
             console.log("[LoginController:Submit] Click Login");
-            $("#Login").validate();
-            if(!$("#Login").valid()) return;
 
             if($("#Login .btn-primary").hasClass('load')) return;
             $("#Login .btn-primary").addClass('load');
 
             var _self = this;
-            var loginType = Utils.Cookies.Get(AppConfig.CookiesName.LoginType);
+            var model = this.get("content");
 
-            if(loginType == "code"){
-                var model = this.get("content");
+            $.ajax({
+                url: "/api/login",
+                type: "POST",
+                cache: false,
+                async: false,
+                dataType: "json",
+                data: {"model": model},
+                success: function (data, textStatus, jqXHR) {
+                    _self.set("errMessage", null);
+                    var result = data.data;
 
-                $.ajax({
-                    url: "/api/login",
-                    type: "POST",
-                    cache: false,
-                    async: false,
-                    dataType: "json",
-                    data: {"model": model},
-                    success: function(data, textStatus, jqXHR){
-                        _self.set("errMessage", null);
-                        var result = data.data;
-
-                        if(result.status == 200){
-                            var redirectUrl = Utils.Cookies.Get(AppConfig.CookiesName.RedirectUrl);
-                            //location.href = redirectUrl;
-                        }else if(result.status == 302){
-                            //location.href = result.data.url;
-                        }
-                    },
-                    error: function (XMLHttpRequest, textStatus, errorThrown) {
-                        _self.set("errMessage", Utils.GetErrorMessage(textStatus));
+                    if (result.status == 302) {
+                        location.href = result.data.url;
+                    }else{
+                        _self.set("errMessage", "Please try again later!");
                         $("#Login .btn-primary").removeClass('load');
                     }
-                });
-
-                return false;
-            }else{
-                console.log("[LoginController:Submit] submit form");
-                // submit form
-                $("#Login").submit();
-            }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    _self.set("errMessage", Utils.GetErrorMessage(textStatus));
+                    $("#Login .btn-primary").removeClass('load');
+                }
+            });
         },
         Cancel: function(){
             console.log("[LoginController:Cancel] Click Cancel");
