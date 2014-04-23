@@ -182,7 +182,6 @@
         <property name="dao" ref="paymentInstrumentTypeDao"/>
     </bean>
 
-    <bean class="com.junbo.payment.db.mapper.CommonMapper" />
-    <bean id="paymentMapperImpl" class="com.junbo.payment.db.mapper.PaymentMapperImpl" />
+    <bean id="paymentCommonMapper" class="com.junbo.payment.db.mapper.CommonMapper" />
     <bean id="paymentMapperExtension" class="com.junbo.payment.db.mapper.PaymentMapperExtension" />
 </beans>

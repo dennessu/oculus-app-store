@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component;
 @Mapper(uses = {
         CommonMapper.class
 })
-@Component("modelMapper")
 public interface ModelMapper {
 
     @Mappings({
