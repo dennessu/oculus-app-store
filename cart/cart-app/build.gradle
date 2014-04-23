@@ -8,4 +8,5 @@ dependencies {
     runtime (libraries.common_configuration_data)
 
     compile project(':cart-rest')
+    compile "com.junbo.identity:identity-rest:${junboVersion}"
 }
