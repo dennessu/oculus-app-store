@@ -109,7 +109,9 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     @Qualifier('userTeleRepository')
     private UserTeleRepository userTeleRepository
 
-    private SecureRandom random = new SecureRandom()
+    @Autowired
+    @Qualifier('userTeleAttemptRepository')
+    private UserTeleAttemptRepository userTeleAttemptRepository
 
     @Test
     public void testUserRepository() throws Exception {
@@ -503,5 +505,35 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         userTeleCode = userTeleRepository.findActiveTeleCode(id, newPhoneNumber).wrapped().get()
         assert userTeleCode.phoneNumber == newPhoneNumber
+    }
+
+    @Test
+    public void testUserTeleAttemptRepository() {
+        def userId = new UserId(idGenerator.nextId())
+        UserTeleAttempt userTeleAttempt = new UserTeleAttempt()
+        userTeleAttempt.setVerifyCode(UUID.randomUUID().toString())
+        userTeleAttempt.setClientId(UUID.randomUUID().toString())
+        userTeleAttempt.setUserId(userId)
+        userTeleAttempt.setIpAddress(UUID.randomUUID().toString())
+        userTeleAttempt.setSucceeded(true)
+        userTeleAttempt.setUserAgent(UUID.randomUUID().toString())
+        userTeleAttempt.setUserTeleId(new UserTeleId(idGenerator.nextId()))
+
+        UserTeleAttempt newUserTeleAttempt = userTeleAttemptRepository.create(userTeleAttempt).wrapped().get()
+        newUserTeleAttempt = userTeleAttemptRepository.get((UserTeleAttemptId)newUserTeleAttempt.id).wrapped().get()
+
+        assert userTeleAttempt.ipAddress == newUserTeleAttempt.ipAddress
+
+        String newIpAddress = UUID.randomUUID().toString()
+        newUserTeleAttempt.setIpAddress(newIpAddress)
+        userTeleAttempt = userTeleAttemptRepository.update(newUserTeleAttempt).wrapped().get()
+        assert userTeleAttempt.ipAddress == newIpAddress
+
+        List<UserTeleAttempt> results = userTeleAttemptRepository.search(new UserTeleAttemptListOptions(
+                userId: userId,
+                offset: 0,
+                limit: 100
+        )).wrapped().get()
+        assert results.size() != 0
     }
 }

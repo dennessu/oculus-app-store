@@ -389,6 +389,25 @@
 				
 				primary key (id)
 			);
+			
+			create table user_tele_code_attempt (
+				id bigint not null,
+				
+				user_tele_id bigint not null,
+				user_id bigint not null,
+				ip_address VARCHAR(512),
+				user_agent VARCHAR(512),
+				client_id VARCHAR(512),
+				succeeded BOOLEAN not null,
+				
+				version bigint not null,
+				created_time timestamp,
+				created_by varchar(255),
+				modified_time timestamp,
+				modified_by varchar(255),
+				
+				primary key (id)
+			);
         ]]></sql>
     </changeSet>
 

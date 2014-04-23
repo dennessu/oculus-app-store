@@ -377,4 +377,18 @@ public class CommonMapper {
         }
         return new UserTeleId(id);
     }
+
+    public Long toUserTeleAttemptId(UserTeleAttemptId id) {
+        if (id == null) {
+            return null;
+        }
+        return id.getValue();
+    }
+
+    public UserTeleAttemptId toUserTeleAttemptId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        return new UserTeleAttemptId(id);
+    }
 }
