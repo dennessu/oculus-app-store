@@ -11,7 +11,7 @@
 
     <bean id="fulfilmentClient" class="com.junbo.fulfilment.spec.resource.proxy.FulfilmentResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="target" value="http://localhost:8090/v1"/>
+        <constructor-arg name="target" value="${clientproxy.fulfilment.url}"/>
         <constructor-arg name="transcoder">
             <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
         </constructor-arg>
