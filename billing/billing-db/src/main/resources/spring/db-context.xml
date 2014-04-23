@@ -93,8 +93,7 @@
           class="com.junbo.billing.db.dao.impl.TransactionEntityDaoImpl" parent="billingBaseDao" />
 
     <!--Mapper-->
-    <bean id="commonMapper" class="com.junbo.billing.db.mapper.CommonMapper" />
-    <bean id="modelMapper" class="com.junbo.billing.db.mapper.ModelMapperImpl"/>
+    <bean id="billingCommonMapper" class="com.junbo.billing.db.mapper.CommonMapper" />
 
     <!--repository-->
     <bean id="shippingAddressRepository" class="com.junbo.billing.db.repository.ShippingAddressRepositoryImpl"/>
