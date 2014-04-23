@@ -26,6 +26,8 @@ import java.util.UUID;
 public class Entitlement{
     @JsonIgnore
     private UUID trackingUuid;
+    @JsonIgnore
+    private String type;
     @JsonProperty("self")
     @EntitlementId
     private Long entitlementId;
@@ -49,6 +51,14 @@ public class Entitlement{
 
     public void setTrackingUuid(UUID trackingUuid) {
         this.trackingUuid = trackingUuid;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public Long getEntitlementId() {

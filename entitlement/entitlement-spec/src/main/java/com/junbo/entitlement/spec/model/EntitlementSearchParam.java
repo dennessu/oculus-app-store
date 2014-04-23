@@ -18,6 +18,8 @@ import java.util.Set;
 public class EntitlementSearchParam {
     @QueryParam("userId")
     private UserId userId;
+    @QueryParam("type")
+    private String type;
     @QueryParam("isActive")
     private Boolean isActive;
     @QueryParam("isSuspended")
@@ -113,12 +115,20 @@ public class EntitlementSearchParam {
         this.lastModifiedTime = lastModifiedTime;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     /**
      * a builder for SearchParam.
      */
     public static class Builder {
         private UserId userId;
+        private String type;
         private Boolean isActive;
         private Boolean isBanned;
 
@@ -175,6 +185,11 @@ public class EntitlementSearchParam {
             return this;
         }
 
+        public Builder type(String val) {
+            type = val;
+            return this;
+        }
+
         public EntitlementSearchParam build() {
             return new EntitlementSearchParam(this);
         }
@@ -190,5 +205,6 @@ public class EntitlementSearchParam {
         startExpirationTime = builder.startExpirationTime;
         endExpirationTime = builder.endExpirationTime;
         lastModifiedTime = builder.lastModifiedTime;
+        type = builder.type;
     }
 }

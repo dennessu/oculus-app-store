@@ -53,6 +53,12 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
             addSingleParam("is_banned", "isBanned",
                     entitlementSearchParam.getIsBanned(), "=", queryStringBuilder, params);
         }
+
+        if (!StringUtils.isEmpty(entitlementSearchParam.getType() != null)) {
+            addSingleParam("type", "type",
+                    entitlementSearchParam.getType(), "=", queryStringBuilder, params);
+        }
+
         if (!Boolean.TRUE.equals(entitlementSearchParam.getIsBanned())) {
             Date now = EntitlementContext.current().getNow();
             if (Boolean.FALSE.equals(entitlementSearchParam.getIsActive())) {

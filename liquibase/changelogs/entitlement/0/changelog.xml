@@ -21,6 +21,7 @@
               modified_by varchar(32) default null,
               created_time timestamp not null,
               modified_time timestamp not null,
+              type varchar(128),
               tracking_uuid uuid UNIQUE,
               is_deleted boolean default false,
               primary key (entitlement_id)

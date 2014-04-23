@@ -38,6 +38,25 @@ public class BaseService {
         if (entitlement.getGrantTime() == null) {
             entitlement.setGrantTime(EntitlementContext.current().getNow());
         }
+        fillType(entitlement);
+    }
+
+    private void fillType(final Entitlement entitlement) {
+        if (entitlement.getEntitlementDefinitionId() == null) {
+            entitlement.setType(EntitlementConsts.NO_TYPE);
+        }
+        EntitlementDefinition def = (EntitlementDefinition) PermanentCache.ENTITLEMENT_DEFINITION.get(
+                "id#" + entitlement.getEntitlementDefinitionId(), new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                return definitionFacade.getDefinition(entitlement.getEntitlementDefinitionId());
+            }
+        });
+        if (def == null || StringUtils.isEmpty(def.getType())) {
+            entitlement.setType(EntitlementConsts.NO_TYPE);
+        } else {
+            entitlement.setType(def.getType());
+        }
     }
 
     protected void fillUpdate(Entitlement entitlement, Entitlement existingEntitlement) {

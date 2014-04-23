@@ -20,6 +20,7 @@ public class EntitlementConsts {
     public static final int DEFAULT_PAGE_SIZE = 50;
     public static final int DEFAULT_PAGE_NUMBER = 0;
     public static final String NEXT_END = "END";
+    public static final String NO_TYPE = "NO_TYPE";
 
     public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 }
