@@ -13,8 +13,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.junbo.common.id.Id;
 import com.junbo.common.id.IdResourcePath;
+import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.common.model.Link;
 import com.junbo.common.util.IdFormatter;
+import com.junbo.common.util.Utils;
+import com.junbo.configuration.ConfigService;
+import com.junbo.configuration.ConfigServiceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -27,13 +31,21 @@ import java.util.Properties;
  * Created by minhao on 2/14/14.
  */
 public class IdSerializer extends JsonSerializer<Id> {
-    private static final String SELF_HREF_PREFIX = "http://api.oculusvr.com/v1";
     private static Logger logger = LoggerFactory.getLogger(IdSerializer.class);
+
+    private String selfHrefPrfix = "https://api.oculusvr.com/v1";
+
+    public IdSerializer() {
+        ConfigService configService = ConfigServiceManager.instance();
+        if (configService != null) {
+            this.selfHrefPrfix = configService.getConfigValue("resourceUrlPrefix");
+        }
+    }
 
     @Override
     public void serialize(Id value, JsonGenerator jgen, SerializerProvider provider)
             throws IOException, JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = ObjectMapperProvider.instance();
 
         IdResourcePath pathAnno = AnnotationUtils.findAnnotation(value.getClass(), IdResourcePath.class);
         if (pathAnno == null) {
@@ -50,7 +62,7 @@ public class IdSerializer extends JsonSerializer<Id> {
     }
 
     protected String getHref(Id value, String path) {
-        String href = this.formatIndexPlaceHolder(SELF_HREF_PREFIX + path, new String[]{IdFormatter.encodeId(value)});
+        String href = this.formatIndexPlaceHolder(Utils.combineUrl(selfHrefPrfix, path), new String[]{IdFormatter.encodeId(value)});
         href = this.formatPropertyPlaceHolder(href, value.getResourcePathPlaceHolder());
         return href;
     }

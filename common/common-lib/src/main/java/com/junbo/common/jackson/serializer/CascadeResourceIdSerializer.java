@@ -7,6 +7,7 @@
 package com.junbo.common.jackson.serializer;
 
 import com.junbo.common.jackson.model.ResourceRef;
+import com.junbo.common.util.Utils;
 //import junit.framework.Assert;
 
 /**
@@ -45,6 +46,6 @@ public class CascadeResourceIdSerializer extends ResourceIdSerializer {
             encodedIds[i] = encode(resource.getCascadeIds()[i]);
         }
 
-        return RESOURCE_URL_PREFIX + String.format(resourcePath, encodedIds);
+        return Utils.combineUrl(resourceUrlPrefix, String.format(resourcePath, encodedIds));
     }
 }

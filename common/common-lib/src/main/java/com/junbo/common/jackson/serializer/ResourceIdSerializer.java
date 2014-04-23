@@ -12,8 +12,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.junbo.common.jackson.common.ResourceAware;
 import com.junbo.common.jackson.model.ResourceRef;
+import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.common.shuffle.Oculus48Id;
+import com.junbo.common.util.Utils;
 // import junit.framework.Assert;
+import com.junbo.configuration.ConfigService;
+import com.junbo.configuration.ConfigServiceManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,14 +29,18 @@ import java.util.List;
  * ResourceIdSerializer.
  */
 public class ResourceIdSerializer extends JsonSerializer<Object> implements ResourceAware {
-    // thread safe
-    private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    protected static final String RESOURCE_URL_PREFIX = "http://api.oculusvr.com/v1";
+    private ObjectMapper mapper = ObjectMapperProvider.instance();
+
+    protected String resourceUrlPrefix = "https://api.oculusvr.com/v1";
 
     protected String resourcePath;
 
     public ResourceIdSerializer() {
+        ConfigService configService = ConfigServiceManager.instance();
+        if (configService != null) {
+            this.resourceUrlPrefix = configService.getConfigValue("resourceUrlPrefix");
+        }
     }
 
     @Override
@@ -46,12 +54,12 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Reso
         //Assert.assertNotNull("resourcePath", resourcePath);
 
         if (unwrap(value) == null) {
-            MAPPER.writeValue(jgen, null);
+            mapper.writeValue(jgen, null);
             return;
         }
 
         Object results = isCollection(value) ? handleCollection(value) : handleSingle(value);
-        MAPPER.writeValue(jgen, results);
+        mapper.writeValue(jgen, results);
     }
 
     protected Object unwrap(Object value) {
@@ -68,7 +76,7 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Reso
     }
 
     protected String getResourceHref(Object value) {
-        return RESOURCE_URL_PREFIX + resourcePath + "/" + encode(value);
+        return Utils.combineUrl(resourceUrlPrefix, resourcePath, encode(value));
     }
 
     protected List<ResourceRef> handleCollection(Object value) {

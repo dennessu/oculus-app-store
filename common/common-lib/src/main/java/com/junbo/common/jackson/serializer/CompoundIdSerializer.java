@@ -6,6 +6,7 @@
 package com.junbo.common.jackson.serializer;
 
 import com.junbo.common.jackson.model.ResourceRef;
+import com.junbo.common.util.Utils;
 // import junit.framework.Assert;
 
 import java.lang.reflect.Field;
@@ -41,6 +42,6 @@ public class CompoundIdSerializer extends ResourceIdSerializer {
             throw new RuntimeException("Error occurred during serializing CompoundId.");
         }
 
-        return RESOURCE_URL_PREFIX + path;
+        return Utils.combineUrl(resourceUrlPrefix, path);
     }
 }

@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.jackson.common.ResourceAware;
 import com.junbo.common.jackson.common.ResourceCollectionAware;
 import com.junbo.common.jackson.model.ResourceRef;
+import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.common.shuffle.Oculus48Id;
 // import junit.framework.Assert;
 
@@ -22,8 +23,8 @@ import java.util.*;
  * ResourceIdDeserializer.
  */
 public class ResourceIdDeserializer extends JsonDeserializer<Object> implements ResourceCollectionAware, ResourceAware {
-    // thread safe
-    protected static final ObjectMapper MAPPER = new ObjectMapper();
+
+    protected ObjectMapper mapper = ObjectMapperProvider.instance();
 
     protected Class<? extends Collection> collectionType;
 
@@ -83,15 +84,15 @@ public class ResourceIdDeserializer extends JsonDeserializer<Object> implements 
     }
 
     private Object handleSingle(JsonParser jsonParser) throws IOException {
-        ResourceRef resourceRef = MAPPER.readValue(jsonParser, ResourceRef.class);
+        ResourceRef resourceRef = mapper.readValue(jsonParser, ResourceRef.class);
 
         return process(resourceRef);
     }
 
     private Object handleCollection(JsonParser jsonParser) throws IOException {
         Collection<Object> results = createEmptyCollection(collectionType);
-        Collection<ResourceRef> references = MAPPER.readValue(jsonParser,
-                MAPPER.getTypeFactory().constructCollectionType(collectionType, ResourceRef.class));
+        Collection<ResourceRef> references = mapper.readValue(jsonParser,
+                mapper.getTypeFactory().constructCollectionType(collectionType, ResourceRef.class));
 
         for (ResourceRef ref : references) {
             results.add(process(ref));

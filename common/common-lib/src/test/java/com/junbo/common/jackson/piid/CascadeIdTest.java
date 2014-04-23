@@ -7,8 +7,7 @@ package com.junbo.common.jackson.piid;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.junbo.common.jackson.deserializer.ResourceAwareDeserializationContext;
-import com.junbo.common.jackson.serializer.ResourceAwareSerializerProvider;
+import com.junbo.common.json.ObjectMapperProvider;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -19,8 +18,7 @@ import java.util.Arrays;
  * CascadeIdTest.
  */
 public class CascadeIdTest {
-    private ObjectMapper mapper =
-            new ObjectMapper(null, new ResourceAwareSerializerProvider(), new ResourceAwareDeserializationContext());
+    private ObjectMapper mapper = ObjectMapperProvider.instance();
 
     @BeforeClass
     public void setUp() {
