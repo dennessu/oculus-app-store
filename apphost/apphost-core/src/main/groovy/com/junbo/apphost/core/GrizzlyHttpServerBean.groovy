@@ -86,7 +86,7 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean, Applica
             @Override
             protected void configure() {
                 bind(new AutowiredInjectResolver(applicationContext)).
-                        to(new TypeLiteral<InjectionResolver<Autowired>>() {})
+                        to(new TypeLiteral<InjectionResolver<Autowired>>() { } )
             }
         }
 

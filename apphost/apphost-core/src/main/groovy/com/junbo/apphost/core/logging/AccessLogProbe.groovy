@@ -20,7 +20,7 @@ class AccessLogProbe extends HttpServerProbe.Adapter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccessLogProbe)
 
-    private static final String ATTRIBUTE_TIME_STAMP = AccessLogProbe.class.getName() + '.timeStamp'
+    private static final String ATTRIBUTE_TIME_STAMP = AccessLogProbe.name + '.timeStamp'
 
     private static final SimpleDateFormatThreadLocal DATE_FORMAT =
             new SimpleDateFormatThreadLocal('[yyyy-MM-dd HH:mm:ss.SSS Z]')
@@ -121,7 +121,7 @@ class AccessLogProbe extends HttpServerProbe.Adapter {
         private final SimpleDateFormat format
 
         SimpleDateFormatThreadLocal(String format) {
-            this.format = new SimpleDateFormat(format)
+            this.format = new SimpleDateFormat(format, Locale.ENGLISH)
         }
 
         @Override
