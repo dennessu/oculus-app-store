@@ -78,7 +78,7 @@ class BalanceServiceImpl implements BalanceService {
 
         Balance tmpBalance = checkTrackingUUID(balance.trackingUuid)
         if (tmpBalance != null) {
-            LOGGER.info('name=Add_Balance_Same_UUID. tracking uuid: {0}', balance.trackingUuid)
+            LOGGER.info('name=Add_Balance_Same_UUID. tracking uuid: {}', balance.trackingUuid)
             return Promise.pure(tmpBalance)
         }
 
@@ -139,7 +139,7 @@ class BalanceServiceImpl implements BalanceService {
 
         Balance tmpBalance = checkTrackingUUID(balance.trackingUuid)
         if (tmpBalance != null) {
-            LOGGER.info('name=Capture_Balance_Same_UUID. tracking uuid: {0}', balance.trackingUuid)
+            LOGGER.info('name=Capture_Balance_Same_UUID. tracking uuid: {}', balance.trackingUuid)
             return Promise.pure(tmpBalance)
         }
 
@@ -264,11 +264,11 @@ class BalanceServiceImpl implements BalanceService {
             throw AppErrors.INSTANCE.userNotFound(userId.toString()).exception()
         }.then { User user ->
             if (user == null) {
-                LOGGER.error('name=Error_Get_User. Get null for the user id: {0}', userId)
+                LOGGER.error('name=Error_Get_User. Get null for the user id: {}', userId)
                 throw AppErrors.INSTANCE.userNotFound(userId.toString()).exception()
             }
             if (user.active == null || !user.active) {
-                LOGGER.error('name=Error_Get_User. User not active with id: {0}', userId)
+                LOGGER.error('name=Error_Get_User. User not active with id: {}', userId)
                 throw AppErrors.INSTANCE.userStatusInvalid(userId.toString()).exception()
             }
             return Promise.pure(null)

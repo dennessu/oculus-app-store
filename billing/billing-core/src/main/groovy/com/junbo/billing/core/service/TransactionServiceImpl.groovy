@@ -69,7 +69,7 @@ class TransactionServiceImpl implements TransactionService {
         newTransaction.setType(TransactionType.CAPTURE.name())
         newTransaction.setPiId(balance.piId)
 
-        LOGGER.info('name=Capture_Balance. balance currency: {0}, authed amount: {1}, settled amount: {1}, pi id: {3}',
+        LOGGER.info('name=Capture_Balance. balance currency: {}, authed amount: {}, settled amount: {}, pi id: {}',
                 balance.currency, balance.totalAmount, amount, balance.piId)
         return paymentFacade.postPaymentCapture(paymentId, paymentTransaction).recover { Throwable throwable ->
             LOGGER.error('name=Capture_Balance_Error. error in post payment capture', throwable)
@@ -82,7 +82,7 @@ class TransactionServiceImpl implements TransactionService {
                 return Promise.pure(balance)
             }
 
-            LOGGER.info('name=Capture_Balance_Response. payment id: {0}, amount: {1}, status: {2}',
+            LOGGER.info('name=Capture_Balance_Response. payment id: {}, amount: {}, status: {}',
                     pt.id, pt.chargeInfo.amount, pt.status)
             newTransaction.setPaymentRefId(pt.id.toString())
             newTransaction.setAmount(pt.chargeInfo.amount)
@@ -112,7 +112,7 @@ class TransactionServiceImpl implements TransactionService {
         newTransaction.setType(TransactionType.CONFIRM.name())
         newTransaction.setPiId(balance.piId)
 
-        LOGGER.info('name=Confirm_Balance. balance currency: {0}, amount: {1}, pi id: {2}',
+        LOGGER.info('name=Confirm_Balance. balance currency: {}, amount: {}, pi id: {}',
                 balance.currency, balance.totalAmount, balance.piId)
         return paymentFacade.postPaymentConfirm(paymentId, paymentTransaction).recover { Throwable throwable ->
             LOGGER.error('name=Confirm_Balance_Error. error in post payment confirm', throwable)
@@ -125,7 +125,7 @@ class TransactionServiceImpl implements TransactionService {
                 return Promise.pure(balance)
             }
 
-            LOGGER.info('name=Confirm_Balance_Response. payment id: {0}, amount: {1}, status: {2}',
+            LOGGER.info('name=Confirm_Balance_Response. payment id: {}, amount: {}, status: {}',
                     pt.id, pt.chargeInfo.amount, pt.status)
             newTransaction.setPaymentRefId(pt.id.toString())
             newTransaction.setAmount(pt.chargeInfo.amount)
@@ -163,7 +163,7 @@ class TransactionServiceImpl implements TransactionService {
         transaction.setPiId(balance.piId)
 
         def paymentTransaction = generatePaymentTransaction(balance)
-        LOGGER.info('name=Charge_Balance. balance currency: {0}, amount: {1}, pi id: {2}',
+        LOGGER.info('name=Charge_Balance. balance currency: {}, amount: {}, pi id: {}',
                 balance.currency, balance.totalAmount, balance.piId)
         return paymentFacade.postPaymentCharge(paymentTransaction).recover { Throwable throwable ->
             LOGGER.error('name=Charge_Balance_Error. error in post payment charge', throwable)
@@ -176,7 +176,7 @@ class TransactionServiceImpl implements TransactionService {
                 return Promise.pure(balance)
             }
 
-            LOGGER.info('name=Charge_Balance. payment id: {0}, status: {1}', pt.id, pt.status)
+            LOGGER.info('name=Charge_Balance. payment id: {}, status: {}', pt.id, pt.status)
             transaction.setPaymentRefId(pt.id.toString())
             PaymentStatus paymentStatus = PaymentStatus.valueOf(pt.status)
             switch (paymentStatus) {
@@ -191,13 +191,13 @@ class TransactionServiceImpl implements TransactionService {
                 case PaymentStatus.UNCONFIRMED:
                     transaction.setStatus(TransactionStatus.UNCONFIRMED.name())
                     balance.setStatus(BalanceStatus.UNCONFIRMED.name())
-                    if (pt.webPaymentInfo != null && pt.webPaymentInfo.returnURL != null) {
-                        balance.setProviderConfirmUrl(pt.webPaymentInfo.returnURL)
+                    if (pt.webPaymentInfo != null && pt.webPaymentInfo.redirectURL != null) {
+                        balance.setProviderConfirmUrl(pt.webPaymentInfo.redirectURL)
                     }
+                    break
                 default:
                     transaction.setStatus(TransactionStatus.ERROR.name())
                     balance.setStatus(BalanceStatus.ERROR.name())
-                    break
             }
             balance.addTransaction(transaction)
             return Promise.pure(balance)
@@ -213,7 +213,7 @@ class TransactionServiceImpl implements TransactionService {
         transaction.setPiId(balance.piId)
 
         def paymentTransaction = generatePaymentTransaction(balance)
-        LOGGER.info('name=Authorize_Balance. balance currency: {0}, amount: {1}, pi id: {2}',
+        LOGGER.info('name=Authorize_Balance. balance currency: {}, amount: {}, pi id: {}',
                 balance.currency, balance.totalAmount, balance.piId)
         return paymentFacade.postPaymentAuthorization(paymentTransaction).recover { Throwable throwable ->
             LOGGER.error('name=Authorize_Balance_Error. error in post payment authorization', throwable)
@@ -226,7 +226,7 @@ class TransactionServiceImpl implements TransactionService {
                 return Promise.pure(balance)
             }
 
-            LOGGER.info('name=Authorize_Balance. payment id: {0}, status: {1}', pt.id, pt.status)
+            LOGGER.info('name=Authorize_Balance. payment id: {}, status: {}', pt.id, pt.status)
             transaction.setPaymentRefId(pt.id.toString())
             PaymentStatus paymentStatus = PaymentStatus.valueOf(pt.status)
             switch (paymentStatus) {
@@ -262,12 +262,12 @@ class TransactionServiceImpl implements TransactionService {
         chargeInfo.setCountry(balance.country)
         paymentTransaction.setChargeInfo(chargeInfo)
 
-        if (balance.successRedirectUrl != null && balance.cancelRedirectUrl != null) {
-            def webPaymentInfo = new WebPaymentInfo()
+        def webPaymentInfo = new WebPaymentInfo()
+        if (balance.successRedirectUrl != null || balance.cancelRedirectUrl != null) {
             webPaymentInfo.setReturnURL(balance.successRedirectUrl)
             webPaymentInfo.setCancelURL(balance.cancelRedirectUrl)
-            paymentTransaction.setWebPaymentInfo(webPaymentInfo)
         }
+        paymentTransaction.setWebPaymentInfo(webPaymentInfo)
 
         return paymentTransaction
     }
