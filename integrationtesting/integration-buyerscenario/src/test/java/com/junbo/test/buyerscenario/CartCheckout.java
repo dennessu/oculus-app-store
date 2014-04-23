@@ -54,10 +54,10 @@ public class CartCheckout extends BaseTestClass {
                 uid, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, null);
 
         orderId = testDataProvider.updateOrderTentative(orderId, false);
-        /*
+
         validationHelper.validateOrderInfoByCartId(
                 uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, null);
-                */
+
 
         testDataProvider.emptyCartByCartId(uid, cartId);
 
