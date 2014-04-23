@@ -5,7 +5,7 @@
  */
 
 package com.junbo.rating.clientproxy.impl;
-
+import com.junbo.common.id.EntitlementDefinitionId;
 import com.junbo.common.id.UserId;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
@@ -28,19 +28,19 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
     private UserEntitlementResource userEntitlementResource;
 
     @Override
-    public Set<String> getEntitlements(Long userId, Set<String> groups) {
-        return format(retrieve(userId, groups));
-    }
-
-    public List<Entitlement> retrieve(Long userId, Set<String> groups) {
+    public Map<Long, Long> getEntitlements(Long userId, Set<Long> definitionIds) {
+        Set<EntitlementDefinitionId> entitlementDefinitionIds = new HashSet<>();
+        for (Long definitionId : definitionIds) {
+            entitlementDefinitionIds.add(new EntitlementDefinitionId(definitionId));
+        }
         EntitlementSearchParam param = new EntitlementSearchParam();
-//        param.setGroups(groups); TODO:
+        param.setDefinitionIds(entitlementDefinitionIds);
 
         PageMetadata pagingOption = new PageMetadata();
         pagingOption.setStart(Constants.DEFAULT_PAGE_START);
         pagingOption.setCount(Constants.DEFAULT_PAGE_SIZE);
 
-        List<Entitlement> results = new ArrayList<Entitlement>();
+        Map<Long, Long> result = new HashMap<>();
         while(true) {
             List<Entitlement> entitlements = new ArrayList<Entitlement>();
             try {
@@ -50,22 +50,15 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
             } catch (Exception e) {
                 throw AppErrors.INSTANCE.entitlementGatewayError().exception();
             }
-            results.addAll(entitlements);
+            for (Entitlement entitlement : entitlements) {
+                result.put(entitlement.getEntitlementDefinitionId(), entitlement.getEntitlementId());
+            }
             pagingOption.setStart(pagingOption.getStart() + Constants.DEFAULT_PAGE_SIZE);
             if (entitlements.size() < Constants.DEFAULT_PAGE_SIZE) {
                 break;
             }
         }
 
-        return results;
-    }
-
-    public Set<String> format(List<Entitlement> entitlements) {
-        Set<String> results = new HashSet<String>();
-        for (Entitlement entitlement : entitlements) {
-//            results.add(entitlement.getGroup() + Constants.ENTITLEMENT_SEPARATOR + entitlement.getTag()); TODO:
-        }
-
-        return results;
+        return result;
     }
 }

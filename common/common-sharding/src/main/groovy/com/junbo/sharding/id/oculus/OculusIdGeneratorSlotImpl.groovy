@@ -53,7 +53,7 @@ class OculusIdGeneratorSlotImpl implements OculusIdGeneratorSlot {
 
             if (current <= idSchema.masksInLocalCounter) {
                 if (slotData.localCounter.compareAndSet(current, current + 1)) {
-                    return generateId(slotData)
+                    return generateId(slotData, current)
                 }
             }
             else {
@@ -70,10 +70,10 @@ class OculusIdGeneratorSlotImpl implements OculusIdGeneratorSlot {
         }
     }
 
-    private long generateId(SlotData slotData) {
+    private long generateId(SlotData slotData, int localCounter) {
         long value = 0
         value = (value << idSchema.bitsInGlobalCounter) + slotData.globalCounter
-        value = (value << idSchema.bitsInLocalCounter) + slotData.localCounter.intValue()
+        value = (value << idSchema.bitsInLocalCounter) + localCounter
         value = (value << idSchema.bitsInShard) + shardId
         value = (value << idSchema.bitsInDataCenterId) + idSchema.dataCenterId
         value = (value << idSchema.bitsInIdVersion) + idSchema.idVersion

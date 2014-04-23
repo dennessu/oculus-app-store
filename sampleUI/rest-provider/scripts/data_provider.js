@@ -1,10 +1,10 @@
-var Configs         = null;
-var Utils           = null;
-var RestClient      = null;
+var Configs;
+var Utils;
+var RestClient;
 
 if(typeof(window) != "undefined"){
-    Utils = window.Lib.Utils;
-    RestClient = window.Lib.RestClient;
+    Utils = window.Utils;
+    RestClient = window.RestClient;
     Configs = window.AppConfig.RestConfigs;
 }else{
     Utils = require('./utils');
@@ -86,9 +86,9 @@ DataProvider._Exec = function(provider, propertyName, args){
 
     var httpUrl = "";
     if(options.port == 80){
-        httpUrl = Utils.Format("http://{1}{2}", options["host"], options["path"]);
+        httpUrl = Utils.Format.StringFormat("http://{1}{2}", options["host"], options["path"]);
     }else{
-        httpUrl = Utils.Format("http://{1}:{2}{3}", options["host"], options["port"], options["path"]);
+        httpUrl = Utils.Format.StringFormat("http://{1}:{2}{3}", options["host"], options["port"], options["path"]);
     }
     options["url"] = httpUrl;
 

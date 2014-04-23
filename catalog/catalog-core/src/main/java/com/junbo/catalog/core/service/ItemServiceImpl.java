@@ -102,7 +102,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
             if (ItemType.DIGITAL.equals(item.getType())) {
                 entitlementDef.setType(EntitlementType.DOWNLOAD.name());
             } else {
-                entitlementDef.setType(EntitlementType.SUBSCRIPTIONS.name());
+                entitlementDef.setType(EntitlementType.SUBSCRIPTION.name());
             }
             entitlementDef.setTag(item.getItemId().toString());
             Long entitlementDefId = entitlementDefService.createEntitlementDefinition(entitlementDef);

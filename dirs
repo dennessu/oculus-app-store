@@ -2,6 +2,7 @@ gradle/bootstrap
 langur
 common
 oom
+apphost/apphost-core
 identity/identity-spec
 oauth/oauth-spec
 authorization

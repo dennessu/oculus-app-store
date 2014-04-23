@@ -47,14 +47,12 @@ class UserRepositoryCloudantImpl extends CloudantClient<User> implements UserRep
         if (user.id == null) {
             user.id = new UserId(idGenerator.nextIdByShardId(shardAlgorithm.shardId()))
         }
-        super.cloudantPost(user)
-        return get((UserId)user.id)
+        return Promise.pure((User)super.cloudantPost(user))
     }
 
     @Override
     Promise<User> update(User user) {
-        super.cloudantPut(user)
-        return get((UserId)user.id)
+        return Promise.pure((User)super.cloudantPut(user))
     }
 
     @Override

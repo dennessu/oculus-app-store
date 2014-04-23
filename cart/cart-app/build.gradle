@@ -1,10 +1,11 @@
 apply plugin: 'groovy'
+apply plugin: 'application'
+
+mainClassName = "com.junbo.apphost.core.JunboApplication"
 
 dependencies {
-    compile project(':cart-rest')
-
-    compile (libraries.jersey_container_grizzly2_http)
-    compile (libraries.jersey_spring3)
-    compile (libraries.common_lib)
+    runtime (libraries.apphost_core)
     runtime (libraries.common_configuration_data)
+
+    compile project(':cart-rest')
 }

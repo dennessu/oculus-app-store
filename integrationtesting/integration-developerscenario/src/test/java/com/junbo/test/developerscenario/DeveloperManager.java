@@ -5,11 +5,14 @@
  */
 package com.junbo.test.developerscenario;
 
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.common.id.EntitlementDefinitionId;
 import com.junbo.common.id.UserId;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.test.common.Utility.TestClass;
 import com.junbo.test.common.apihelper.catalog.OfferService;
+import com.junbo.test.common.apihelper.catalog.impl.EntitlementDefinitionServiceImpl;
 import com.junbo.test.common.apihelper.catalog.impl.OfferServiceImpl;
 import com.junbo.test.common.apihelper.entitlement.EntitlementService;
 import com.junbo.test.common.apihelper.entitlement.impl.EntitlementServiceImpl;
@@ -68,8 +71,16 @@ public class DeveloperManager extends TestClass {
         //register user1 as a developer of user2 by granting entitlement
         Entitlement developerEntitlement = new Entitlement();
         developerEntitlement.setUserId(Master.getInstance().getUser(developerUser).getId().getValue());
-        developerEntitlement.setDeveloperId(Master.getInstance().getUser(partnerUser).getId().getValue());
-        developerEntitlement.setType(entitlementType);
+        EntitlementDefinition entitlementDefinition = new EntitlementDefinition();
+        entitlementDefinition.setDeveloperId(Master.getInstance().getUser(partnerUser).getId().getValue());
+        entitlementDefinition.setType(entitlementType);
+        entitlementDefinition.setTag("");
+        entitlementDefinition.setGroup("");
+        String entitlementDefinitionId = EntitlementDefinitionServiceImpl.instance().postEntitlementDefinition(entitlementDefinition);
+        developerEntitlement.setEntitlementDefinitionId(IdConverter.hexStringToId(EntitlementDefinitionId.class, entitlementDefinitionId));
+
+        //developerEntitlement.setDeveloperId(Master.getInstance().getUser(partnerUser).getId().getValue());
+        //developerEntitlement.setType(entitlementType);
 
         logger.LogSample("grant Developer entitlement for user");
         String entitlementId = es.grantEntitlement(developerEntitlement);
@@ -80,8 +91,12 @@ public class DeveloperManager extends TestClass {
         Entitlement rtnEntitlement = Master.getInstance().getEntitlement(rtnEntitlements.get(0));
 
         Assert.assertTrue(rtnEntitlement.getUserId().equals(Master.getInstance().getUser(developerUser).getId().getValue()));
-        Assert.assertTrue(rtnEntitlement.getDeveloperId().equals(Master.getInstance().getUser(partnerUser).getId().getValue()));
-        Assert.assertEquals(rtnEntitlement.getType(), entitlementType);
+        EntitlementDefinition entitlementDefinitionGet = Master.getInstance().getEntitlementDefinition(
+                IdConverter.idLongToHexString(EntitlementDefinitionId.class, rtnEntitlement.getEntitlementDefinitionId()));
+        Assert.assertTrue(entitlementDefinitionGet.getDeveloperId().equals(Master.getInstance().getUser(partnerUser).getId().getValue()));
+        Assert.assertEquals(entitlementDefinitionGet.getType(), entitlementType);
+        //Assert.assertTrue(rtnEntitlement.getDeveloperId().equals(Master.getInstance().getUser(partnerUser).getId().getValue()));
+        //Assert.assertEquals(rtnEntitlement.getType(), entitlementType);
         //user1 upload an offer as a developer
 
         String offerName = "defaultOffer";

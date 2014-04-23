@@ -38,14 +38,12 @@ class UserGroupRepositoryCloudantImpl extends CloudantClient<UserGroup> implemen
         if (entity.id == null) {
             entity.id = new UserGroupId(idGenerator.nextId(entity.userId.value))
         }
-        super.cloudantPost(entity)
-        return get((UserGroupId)entity.id)
+        return Promise.pure((UserGroup)super.cloudantPost(entity))
     }
 
     @Override
     Promise<UserGroup> update(UserGroup entity) {
-        super.cloudantPut(entity)
-        return get((UserGroupId)entity.id)
+        return Promise.pure((UserGroup)super.cloudantPut(entity))
     }
 
     @Override

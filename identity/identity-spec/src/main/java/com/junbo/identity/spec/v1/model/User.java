@@ -44,6 +44,9 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
     @ApiModelProperty(position = 8, required = false, value = "The nick name of the user.")
     private String nickName;
 
+    @ApiModelProperty(position = 9, required = false, value = "Whether the user needs two factor authenticator.")
+    private Boolean isTwoFactorAuthenticator;
+
     @JsonIgnore
     private String canonicalUsername;
 
@@ -129,5 +132,14 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
     public void setCanonicalUsername(String canonicalUsername) {
         this.canonicalUsername = canonicalUsername;
         support.setPropertyAssigned("canonicalUsername");
+    }
+
+    public Boolean getIsTwoFactorAuthenticator() {
+        return isTwoFactorAuthenticator;
+    }
+
+    public void setIsTwoFactorAuthenticator(Boolean isTwoFactorAuthenticator) {
+        this.isTwoFactorAuthenticator = isTwoFactorAuthenticator;
+        support.setPropertyAssigned("isTwoFactorAuthenticator");
     }
 }

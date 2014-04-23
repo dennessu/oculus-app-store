@@ -250,6 +250,24 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
 
     @Override
     public Promise<PaymentTransaction> refund(String transactionId, PaymentTransaction request) {
+        Result<Transaction> result = null;
+        LOGGER.info("refund transaction :" + transactionId);
+        try{
+            if(request.getChargeInfo() == null || request.getChargeInfo().getAmount() == null){
+                result = gateway.transaction().refund(transactionId);
+            }else{
+                //Partial Refund
+                result = gateway.transaction().refund(transactionId, request.getChargeInfo().getAmount());
+            }
+        }catch (Exception ex){
+            handleProviderException(ex, "Refund", "transaction", transactionId);
+        }
+        if (result.isSuccess()) {
+            // transaction successfully submitted for settlement
+            request.setStatus(PaymentStatus.REFUNDED.toString());
+        } else {
+            handleProviderError(result);
+        }
         return Promise.pure(request);
     }
 

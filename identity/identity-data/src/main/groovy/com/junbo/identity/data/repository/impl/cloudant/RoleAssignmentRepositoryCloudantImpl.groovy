@@ -38,8 +38,7 @@ class RoleAssignmentRepositoryCloudantImpl extends CloudantClient<RoleAssignment
         if (roleAssignment.id == null) {
             roleAssignment.id = new RoleAssignmentId(idGenerator.nextIdByShardId(shardAlgorithm.shardId()))
         }
-        super.cloudantPost(roleAssignment)
-        return get((RoleAssignmentId)roleAssignment.id)
+        return Promise.pure((RoleAssignment)super.cloudantPost(roleAssignment))
     }
 
     @Override
@@ -49,8 +48,7 @@ class RoleAssignmentRepositoryCloudantImpl extends CloudantClient<RoleAssignment
 
     @Override
     Promise<RoleAssignment> update(RoleAssignment roleAssignment) {
-        super.cloudantPut(roleAssignment)
-        return get((RoleAssignmentId)roleAssignment.id)
+        return Promise.pure((RoleAssignment)super.cloudantPut(roleAssignment))
     }
 
     @Override

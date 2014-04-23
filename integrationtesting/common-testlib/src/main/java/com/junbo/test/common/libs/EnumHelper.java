@@ -56,7 +56,7 @@ public class EnumHelper {
     }
 
     /**
-     * Enum for user status.
+     * Enum for catalog attribute type.
      *
      * @author Jason
      */
@@ -81,14 +81,15 @@ public class EnumHelper {
     }
 
     /**
-     * Enum for user status.
+     * Enum for catalog item type.
      *
      * @author Jason
      */
     public enum CatalogItemType {
         PHYSICAL("PHYSICAL"),
         DIGITAL("DIGITAL"),
-        EWALLET("EWALLET");
+        EWALLET("EWALLET"),
+        SUBSCRIPTION("SUBSCRIPTION");
 
         private String itemType;
 
@@ -99,10 +100,14 @@ public class EnumHelper {
         public String getItemType() {
             return itemType;
         }
+
+        public static CatalogItemType getRandom(){
+            return values()[(int) (Math.random() * values().length)];
+        }
     }
 
     /**
-     * Enum for user status.
+     * Enum for catalog entity status.
      *
      * @author Jason
      */
@@ -121,6 +126,35 @@ public class EnumHelper {
 
         public String getEntityStatus() {
             return entityStatus;
+        }
+    }
+
+    /**
+     * Enum for entitlement type.
+     *
+     * @author Jason
+     */
+    public enum EntitlementType {
+        DEVELOPER("DEVELOPER"),
+        DEVELOPER_SUBSCRIPTION("DEVELOPER_SUBSCRIPTION"),
+        DOWNLOAD("DOWNLOAD"),
+        DOWNLOAD_SUBSCRIPTION("DOWNLOAD_SUBSCRIPTION"),
+        ONLINE_ACCESS("ONLINE_ACCESS"),
+        ONLINE_ACCESS_SUBSCRIPTION("ONLINE_ACCESS_SUBSCRIPTION"),
+        SUBSCRIPTION("SUBSCRIPTION");
+
+        private String type;
+
+        private EntitlementType(String type) {
+            this.type = type;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public static String getRandom(){
+            return values()[(int) (Math.random() * values().length)].getType();
         }
     }
 
