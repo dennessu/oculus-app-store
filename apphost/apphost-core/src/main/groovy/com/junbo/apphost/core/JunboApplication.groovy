@@ -43,7 +43,7 @@ ${getClasspath().join(System.lineSeparator())}""")
             stopWatch.stop()
             LoggerInitializer.logStarted(LOGGER, stopWatch)
 
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             if (ctx != null) {
                 ctx.close()
             }
