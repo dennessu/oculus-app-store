@@ -20,6 +20,6 @@ public class UtilsTest {
         person1.setName("sharkmao");
 
         Person2 person2 = Utils.map(person1, Person2.class);
-        Assert.assertEquals("Person name should match", person1.getName(), person2.getName());
+        Assert.assertEquals(person1.getName(), person2.getName());
     }
 }
