@@ -7,8 +7,6 @@
 
     <context:component-scan base-package="com.junbo.payment.core"/>
 
-    <tx:annotation-driven/>
-
     <!-- payment method serivce -->
     <bean id="paymentInstrumentService" class="com.junbo.payment.core.impl.PaymentInstrumentServiceImpl"></bean>
 
@@ -46,7 +44,7 @@
     <bean id="paymentHandlerRegistry" class="com.junbo.payment.core.provider.impl.PaymentProviderRegistry">
         <property name="registry">
             <util:map id="handlerRegistryMap">
-                <entry key="BrainTree" value-ref="brainTreeRestProviderService"/>
+                <entry key="BrainTree" value-ref="brainTreePaymentProviderService"/>
                 <entry key="Wallet" value-ref="walletProviderService"/>
                 <entry key="PayPal" value-ref="paypalProviderService"/>
             </util:map>

@@ -134,7 +134,7 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
                 paymentDetailsList.add(paymentDetails);
 
                 SetExpressCheckoutRequestDetailsType requestDetails = new SetExpressCheckoutRequestDetailsType();
-                requestDetails.setReturnURL(paymentRequest.getWebPaymentInfo().getReturnURL());
+                requestDetails.setReturnURL(getFullReturnUrl(paymentRequest));
                 requestDetails.setCancelURL(paymentRequest.getWebPaymentInfo().getCancelURL());
 
                 requestDetails.setPaymentDetails(paymentDetailsList);
@@ -276,6 +276,17 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
 
     private boolean isSuccessAck(AckCodeType ack){
         return ack.equals(AckCodeType.SUCCESS) || ack.equals(AckCodeType.SUCCESSWITHWARNING);
+    }
+
+    private String getFullReturnUrl(PaymentTransaction transaction){
+        String returnURL = transaction.getWebPaymentInfo().getReturnURL();
+        String transactionDetail = "transactionId=" + transaction.getId() +
+                "&billingId=" + transaction.getBillingRefId();
+        if(returnURL.contains("?")){
+            return returnURL + "&" + transactionDetail;
+        }else{
+            return returnURL + "?" + transactionDetail;
+        }
     }
 
     public String getApiVersion() {
