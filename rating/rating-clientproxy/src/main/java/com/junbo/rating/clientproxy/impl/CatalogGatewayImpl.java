@@ -52,15 +52,19 @@ public class CatalogGatewayImpl implements CatalogGateway{
     private OfferRevisionResource offerRevisionResource;
 
     @Autowired
+    @Qualifier("priceTierClient")
     private PriceTierResource priceTierResource;
 
     @Autowired
+    @Qualifier("promotionClient")
     private PromotionResource promotionResource;
 
     @Autowired
+    @Qualifier("promotionRevisionClient")
     private PromotionRevisionResource promotionRevisionResource;
 
     @Autowired
+    @Qualifier("entitlementDefinitionClient")
     private EntitlementDefinitionResource entitlementDefinitionResource;
 
     @Override

@@ -10,5 +10,16 @@ dependencies {
     runtime "com.junbo.identity:identity-rest:${junboVersion}"
     runtime "com.junbo.oauth:oauth-api:${junboVersion}"
 
+    compile "com.junbo.rating:rating-rest:${junboVersion}"
+    compile "com.junbo.entitlement:entitlement-rest:${junboVersion}"
+    compile "com.junbo.fulfilment:fulfilment-rest:${junboVersion}"
+    compile "com.junbo.cart:cart-rest:${junboVersion}"
+    compile "com.junbo.billing:billing-rest:${junboVersion}"
+    compile "com.junbo.order:order-rest:${junboVersion}"
+    compile "com.junbo.payment:payment-rest:${junboVersion}"
+    compile "com.junbo.email:email-rest:${junboVersion}"
+    compile "com.junbo.ewallet:ewallet-rest:${junboVersion}"
+
+    compile "com.junbo.catalog:catalog-rest:${junboVersion}"
     // more to add
 }
