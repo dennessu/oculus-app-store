@@ -6,6 +6,10 @@
     <import resource="classpath*:spring/clientproxy-context.xml"/>
     <import resource="classpath*:spring/transaction.xml"/>
     <import resource="classpath*:spring/sharding-context.xml"/>
+    <import resource="classpath*:spring/common-lib-context.xml"/>
+    <import resource="classpath*:spring/common-context.xml"/>
+
+    <import resource="classpath*:spring/*-context.xml"/>
 
     <bean id="megaGatway" class="com.junbo.fulfilment.clientproxy.impl.MegaGatewayImpl"/>
 
