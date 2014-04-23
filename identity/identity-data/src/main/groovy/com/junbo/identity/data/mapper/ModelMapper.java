@@ -106,4 +106,7 @@ public interface ModelMapper {
 
     UserTeleCode toUserTeleCode(UserTeleCodeEntity entity, MappingContext context);
     UserTeleCodeEntity toUserTeleCode(UserTeleCode entity, MappingContext context);
+
+    UserTeleAttempt toUserTeleAttempt(UserTeleAttemptEntity entity, MappingContext context);
+    UserTeleAttemptEntity toUserTeleAttempt(UserTeleAttempt entity, MappingContext context);
 }

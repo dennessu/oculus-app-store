@@ -125,6 +125,12 @@
         <property name="sqlRepositoryTarget" ref="sqlUserTeleRepository" />
     </bean>
 
+    <bean id="userTeleAttemptRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTeleAttemptRepository" />
+        <property name="cloudantRepositoryTarget" ref="cloudantUserTeleAttemptRepository" />
+        <property name="sqlRepositoryTarget" ref="sqlUserTeleAttemptRepository" />
+    </bean>
+
     <bean id="securityQuestionRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
         <property name="persistentMode" value="SQL_READ_WRITE"/>
         <property name="repositoryInterface" value="com.junbo.identity.data.repository.SecurityQuestionRepository"/>
