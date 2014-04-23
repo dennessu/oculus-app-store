@@ -13,7 +13,7 @@ import com.ning.http.client.FluentCaseInsensitiveStringsMap;
 import com.ning.http.client.Request;
 import com.ning.http.client.RequestBuilder;
 import com.ning.http.client.providers.netty.NettyResponse;
-import junit.framework.Assert;
+import org.testng.Assert;
 
 import java.io.BufferedReader;
 import java.io.IOException;
