@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.cart.common.validate.Group;
 import com.junbo.cart.spec.model.item.OfferItem;
 import com.junbo.common.id.CartId;
+import com.junbo.common.id.CouponId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -25,12 +26,12 @@ import java.util.List;
  */
 public class Cart extends ResourceMeta {
 
-    @ApiModelProperty(required = true, position = 1, value = "[Readonly] The shopping cart ID.")
+    @ApiModelProperty(required = true, position = 1, value = "[Client Immutable] The shopping cart ID.")
     @JsonProperty("self")
     @NotNull(groups = Group.CartMerge.class)
     private CartId id;
 
-    @ApiModelProperty(required = true, position = 2, value = "[Readonly] The user of the shopping cart.")
+    @ApiModelProperty(required = true, position = 2, value = "[Client Immutable] The user of the shopping cart.")
     @JsonProperty("user")
     @NotNull(groups = Group.CartMerge.class)
     private UserId user;
@@ -54,9 +55,9 @@ public class Cart extends ResourceMeta {
     @Valid
     private List<OfferItem> offers;
 
-    @ApiModelProperty(required = true, position = 5, value = "The coupon codes in the shopping cart.")
+    @ApiModelProperty(required = true, position = 5, value = "The coupons in the shopping cart.")
     @Valid
-    private List<String> couponCodes;
+    private List<CouponId> coupons;
 
     public CartId getId() {
         return id;
@@ -111,12 +112,12 @@ public class Cart extends ResourceMeta {
         support.setPropertyAssigned("offers");
     }
 
-    public List<String> getCouponCodes() {
-        return couponCodes;
+    public List<CouponId> getCoupons() {
+        return coupons;
     }
 
-    public void setCouponCodes(List<String> couponCodes) {
-        this.couponCodes = couponCodes;
-        support.setPropertyAssigned("couponCodes");
+    public void setCoupons(List<CouponId> coupons) {
+        this.coupons = coupons;
+        support.setPropertyAssigned("coupons");
     }
 }

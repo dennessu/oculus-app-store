@@ -8,4 +8,9 @@ dependencies {
     runtime (libraries.common_configuration_data)
 
     compile project(':entitlement-rest')
+    compile 'com.junbo.catalog:catalog-rest:0.0.1-SNAPSHOT'
+
+    runtime (libraries.common_configuration_data)
+
+    testCompile (libraries.spring_test)
 }

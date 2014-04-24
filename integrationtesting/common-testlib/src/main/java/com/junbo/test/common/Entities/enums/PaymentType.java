@@ -9,7 +9,10 @@ package com.junbo.test.common.Entities.enums;
  * Created by Yunlong on 3/25/14.
  */
 public enum PaymentType {
-    CREDITCARD("CREDITCARD");
+    CREDITCARD("CREDITCARD"),
+    DIRECTDEBIT("DIRECTDEBIT"),
+    PAYPAL("PAYPAL"),
+    EWALLET("WALLET");
 
     private String name;
 
