@@ -110,4 +110,8 @@ public interface SelfMapper {
     Address filterAddress(Address address, MappingContext context);
 
     Address mergeAddress(Address source, Address base, MappingContext context);
+
+    UserTeleCode filterUserTeleCode(UserTeleCode userTeleCode, MappingContext context);
+
+    UserTeleCode mergeUserTeleCode(UserTeleCode source, UserTeleCode base, MappingContext context);
 }

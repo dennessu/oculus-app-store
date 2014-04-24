@@ -768,4 +768,53 @@
             </list>
         </property>
     </bean>
+
+    <bean id="userTeleFilter" class="com.junbo.identity.core.service.filter.UserTeleFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>userId</value>
+                <value>phoneNumber</value>
+                <value>sentLanguage</value>
+                <value>verifyCode</value>
+                <value>template</value>
+                <value>verifyType</value>
+                <value>expiresBy</value>
+                <value>active</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>userId</value>
+                <value>phoneNumber</value>
+                <value>sentLanguage</value>
+                <value>verifyCode</value>
+                <value>template</value>
+                <value>verifyType</value>
+                <value>expiresBy</value>
+                <value>active</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>userId</value>
+                <value>phoneNumber</value>
+                <value>sentLanguage</value>
+                <value>verifyCode</value>
+                <value>template</value>
+                <value>verifyType</value>
+                <value>expiresBy</value>
+                <value>active</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+    </bean>
 </beans>

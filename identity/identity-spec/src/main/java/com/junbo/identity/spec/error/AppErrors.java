@@ -149,4 +149,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 409, code = "2000038", description = "Address {0} not found.", field = "{0}")
     AppError addressNotFound(AddressId addressId);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000039", description = "User Tele code {0} not found.", field = "{0}")
+    AppError userTeleCodeNotFound(UserTeleId userTeleId);
 }
