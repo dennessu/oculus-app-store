@@ -7,12 +7,12 @@ package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.common.id.OrderItemId;
-import com.junbo.common.model.BaseResource;
+import com.junbo.common.model.ResourceMeta;
 
 /**
  * Created by LinYi on 2/10/14.
  */
-public class PreorderUpdateHistory extends BaseResource {
+public class PreorderUpdateHistory extends ResourceMeta {
     private String updatedType;
     private String updatedColumn;
     private String beforeValue;

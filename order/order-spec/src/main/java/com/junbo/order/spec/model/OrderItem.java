@@ -14,7 +14,7 @@ import com.junbo.common.id.OrderId;
 import com.junbo.common.id.OrderItemId;
 import com.junbo.common.id.ShippingAddressId;
 import com.junbo.common.jackson.annotation.ShippingMethodId;
-import com.junbo.common.model.BaseResource;
+import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
@@ -30,7 +30,7 @@ import java.util.Date;
         "fulfillmentIds", "preorderInfo", "properties"
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class OrderItem extends BaseResource {
+public class OrderItem extends ResourceMeta {
     @JsonIgnore
     private OrderItemId orderItemId;
     @JsonIgnore

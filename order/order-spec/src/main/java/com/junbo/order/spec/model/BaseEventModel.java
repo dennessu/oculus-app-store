@@ -6,7 +6,7 @@
 package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.junbo.common.model.BaseResource;
+import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.UUID;
@@ -14,7 +14,7 @@ import java.util.UUID;
 /**
  * Created by chriszhu on 2/26/14.
  */
-public class BaseEventModel extends BaseResource {
+public class BaseEventModel extends ResourceMeta {
     @ApiModelProperty(required = true, position = 100, value = "The order-event action. " +
             "RATE: rate the order, " +
             "CHARGE: charge the order, " +

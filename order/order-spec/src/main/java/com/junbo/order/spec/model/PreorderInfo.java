@@ -8,7 +8,7 @@ package com.junbo.order.spec.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.common.id.OrderItemId;
 import com.junbo.common.id.PreorderId;
-import com.junbo.common.model.BaseResource;
+import com.junbo.common.model.ResourceMeta;
 
 import java.util.Date;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by LinYi on 2/10/14.
  */
-public class PreorderInfo extends BaseResource {
+public class PreorderInfo extends ResourceMeta {
     @JsonIgnore
     private PreorderId preorderInfoId;
     private Date billingTime;

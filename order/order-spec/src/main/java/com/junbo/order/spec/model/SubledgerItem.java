@@ -10,14 +10,14 @@ import com.junbo.common.id.OfferId;
 import com.junbo.common.id.OrderItemId;
 import com.junbo.common.id.SubledgerId;
 import com.junbo.common.id.SubledgerItemId;
-import com.junbo.common.model.BaseResource;
+import com.junbo.common.model.ResourceMeta;
 
 import java.math.BigDecimal;
 
 /**
  * Created by chriszhu on 2/10/14.
  */
-public class SubledgerItem extends BaseResource {
+public class SubledgerItem extends ResourceMeta {
     @JsonProperty("self")
     private SubledgerItemId subledgerItemId;
     private SubledgerId subledgerId;
