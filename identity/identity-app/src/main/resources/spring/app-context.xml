@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="httpServer" class="com.junbo.apphost.core.GrizzlyHttpServerBean">
+        <property name="uri">
+            <value type="java.net.URI">http://0.0.0.0:8080/v1</value>
+        </property>
+    </bean>
+</beans>
