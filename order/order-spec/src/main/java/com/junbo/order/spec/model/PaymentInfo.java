@@ -19,12 +19,8 @@ public class PaymentInfo {
     private PaymentInstrumentId paymentInstrument;
 
     @ApiModelProperty(required = false, position = 20,
-            value = "The distributed amount to this payment instrument.")
+            value = "[Client Immutable]The distributed amount to this payment instrument.")
     private BigDecimal paymentAmount;
-
-    @ApiModelProperty(required = false, position = 30,
-            value = "The distributed percentage to this payment instrument.")
-    private BigDecimal paymentPercentage;
 
     public PaymentInstrumentId getPaymentInstrument() {
         return paymentInstrument;
@@ -40,13 +36,5 @@ public class PaymentInfo {
 
     public void setPaymentAmount(BigDecimal paymentAmount) {
         this.paymentAmount = paymentAmount;
-    }
-
-    public BigDecimal getPaymentPercentage() {
-        return paymentPercentage;
-    }
-
-    public void setPaymentPercentage(BigDecimal paymentPercentage) {
-        this.paymentPercentage = paymentPercentage;
     }
 }

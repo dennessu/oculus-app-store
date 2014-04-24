@@ -6,14 +6,18 @@
 package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.common.id.*;
+import com.junbo.common.id.OfferId;
+import com.junbo.common.id.OrderItemId;
+import com.junbo.common.id.SubledgerId;
+import com.junbo.common.id.SubledgerItemId;
+import com.junbo.common.model.BaseResource;
 
 import java.math.BigDecimal;
 
 /**
  * Created by chriszhu on 2/10/14.
  */
-public class SubledgerItem extends BaseModelWithDate {
+public class SubledgerItem extends BaseResource {
     @JsonProperty("self")
     private SubledgerItemId subledgerItemId;
     private SubledgerId subledgerId;

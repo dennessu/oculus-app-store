@@ -10,13 +10,16 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.junbo.common.id.OrderId;
+import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.ShippingAddressId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.jackson.annotation.ShippingMethodId;
+import com.junbo.common.model.BaseResource;
 import com.junbo.common.model.Link;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -24,21 +27,18 @@ import java.util.List;
  * Created by chriszhu on 2/7/14.
  */
 @JsonPropertyOrder(value = {
-        "id", "user", "type", "status", "country", "currency",
+        "id", "user", "status", "country", "currency", "locale",
         "tentative", "resourceAge", "ratingInfo", "shippingMethod",
         "shippingAddress", "paymentInstruments", "refundOrders", "discounts", "orderItems"
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Order extends BaseModelWithDate {
+public class Order extends BaseResource {
     @ApiModelProperty(required = true, position = 10, value = "[Client Immutable] The order id.")
     @JsonProperty("self")
     private OrderId id;
 
     @ApiModelProperty(required = true, position = 20, value = "The user id.")
     private UserId user;
-
-    @JsonIgnore
-    private String type;
 
     @ApiModelProperty(required = true, position = 30, value = "Whether it's a tentative order.")
     private Boolean tentative;
@@ -71,9 +71,6 @@ public class Order extends BaseModelWithDate {
             "is included in the total amount.")
     private Boolean isTaxInclusive;
 
-    @ApiModelProperty(required = true, position = 105, value = "[Client Immutable] Whether the tax is exempted. ")
-    private Boolean isTaxExempted;
-
     @ApiModelProperty(required = true, position = 110, value = "[Client Immutable] The order total discount amount.")
     private BigDecimal totalDiscount;
 
@@ -101,10 +98,16 @@ public class Order extends BaseModelWithDate {
     private ShippingAddressId shippingAddress;
     // end of shippingInfo
 
-    @ApiModelProperty(required = true, position = 150, value = "The payment instruments. " +
+    @ApiModelProperty(required = true, position = 150, value = "The payments instruments. " +
             "Required if the order is not free. " +
-            "It might be empty if there is no payment instruments at this time.")
-    private List<PaymentInfo> paymentInfos;
+            "It might be empty if there is no payments instruments at this time.")
+    private List<PaymentInfo> payments;
+    @ApiModelProperty(required = true, position = 160, value = "The discounts. " +
+            "It might be empty if there is no discounts at this time.")
+
+    @JsonIgnore
+    private List<PaymentInstrumentId> paymentInstruments;
+
     @ApiModelProperty(required = true, position = 160, value = "The discounts. " +
             "It might be empty if there is no discounts at this time.")
     private List<Discount> discounts;
@@ -112,7 +115,10 @@ public class Order extends BaseModelWithDate {
     private List<OrderItem> orderItems;
 
     @ApiModelProperty(required = true, position = 170, value = "[Client Immutable]]The link to the order events. ")
-    private Link orderEventsLink;
+    private Link orderEvents;
+
+    @ApiModelProperty(required = true, position = 180, value = "[Client Immutable]]The link to the balances. ")
+    private Link balances;
 
     public OrderId getId() {
         return id;
@@ -128,14 +134,6 @@ public class Order extends BaseModelWithDate {
 
     public void setUser(UserId user) {
         this.user = user;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getStatus() {
@@ -250,14 +248,6 @@ public class Order extends BaseModelWithDate {
         this.shippingAddress = shippingAddress;
     }
 
-    public List<PaymentInfo> getPaymentInfos() {
-        return paymentInfos;
-    }
-
-    public void setPaymentInfos(List<PaymentInfo> paymentInfos) {
-        this.paymentInfos = paymentInfos;
-    }
-
     public List<Discount> getDiscounts() {
         return discounts;
     }
@@ -282,19 +272,43 @@ public class Order extends BaseModelWithDate {
         this.locale = locale;
     }
 
-    public Link getOrderEventsLink() {
-        return orderEventsLink;
+
+    public List<PaymentInfo> getPayments() {
+        return payments;
     }
 
-    public void setOrderEventsLink(Link orderEventsLink) {
-        this.orderEventsLink = orderEventsLink;
+    public void setPayments(List<PaymentInfo> payments) {
+        this.payments = payments;
+        if(payments != null) {
+            this.paymentInstruments = new ArrayList<>();
+            for (PaymentInfo paymentInfo : payments) {
+                this.paymentInstruments.add(paymentInfo.getPaymentInstrument());
+            }
+        }
     }
 
-    public Boolean getIsTaxExempted() {
-        return isTaxExempted;
+    public Link getOrderEvents() {
+        return orderEvents;
     }
 
-    public void setIsTaxExempted(Boolean isTaxExempted) {
-        this.isTaxExempted = isTaxExempted;
+    public void setOrderEvents(Link orderEvents) {
+        this.orderEvents = orderEvents;
     }
+
+    public Link getBalances() {
+        return balances;
+    }
+
+    public void setBalances(Link balances) {
+        this.balances = balances;
+    }
+
+    public List<PaymentInstrumentId> getPaymentInstruments() {
+        return paymentInstruments;
+    }
+
+    public void setPaymentInstruments(List<PaymentInstrumentId> paymentInstruments) {
+        this.paymentInstruments = paymentInstruments;
+    }
+
 }
