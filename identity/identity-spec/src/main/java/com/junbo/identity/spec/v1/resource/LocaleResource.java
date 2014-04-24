@@ -5,7 +5,7 @@
  */
 package com.junbo.identity.spec.v1.resource;
 
-import com.junbo.common.id.LocaleId;
+import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.option.list.LocaleListOptions;
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions;

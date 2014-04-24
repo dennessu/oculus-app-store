@@ -3,19 +3,18 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
+package com.junbo.common.enumid;
 
-package com.junbo.common.id;
+import com.junbo.common.id.IdResourcePath;
 
 /**
- * Created by minhao on 2/13/14.
+ * Created by haomin on 14-4-24.
  */
 @IdResourcePath("/countries/{0}")
-public class CountryId extends Id {
-
+public class CountryId extends EnumId {
     public CountryId() {}
 
-    public CountryId(long value) {
+    public CountryId(String value) {
         super(value);
     }
 }
-

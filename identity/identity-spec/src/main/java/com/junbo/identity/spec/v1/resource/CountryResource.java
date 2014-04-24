@@ -5,7 +5,7 @@
  */
 package com.junbo.identity.spec.v1.resource;
 
-import com.junbo.common.id.CountryId;
+import com.junbo.common.enumid.CountryId;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.Country;
 import com.junbo.identity.spec.v1.option.list.CountryListOptions;
