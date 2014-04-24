@@ -2,6 +2,7 @@ package com.junbo.apphost.core
 
 import com.junbo.apphost.core.logging.AccessLogProbe
 import groovy.transform.CompileStatic
+import org.glassfish.grizzly.http.server.CLStaticHttpHandler
 import org.glassfish.grizzly.http.server.HttpHandler
 import org.glassfish.grizzly.http.server.HttpServer
 import org.glassfish.grizzly.http.server.NetworkListener
@@ -23,6 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
+import org.springframework.context.ApplicationListener
+import org.springframework.context.event.ContextRefreshedEvent
 import org.springframework.core.io.Resource
 import org.springframework.core.io.support.EncodedResource
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
@@ -32,7 +35,7 @@ import org.springframework.util.ClassUtils
  * Created by kg on 4/21/2014.
  */
 @CompileStatic
-class GrizzlyHttpServerBean implements InitializingBean, DisposableBean, ApplicationContextAware {
+class GrizzlyHttpServerBean implements InitializingBean, DisposableBean, ApplicationContextAware, ApplicationListener<ContextRefreshedEvent> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GrizzlyHttpServerBean)
 
@@ -115,13 +118,20 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean, Applica
 
         config.monitoringConfig.webServerConfig.addProbes(new AccessLogProbe())
 
-        // start
+        // handle static resources
+        def staticHandler = new CLStaticHttpHandler(ClassUtils.defaultClassLoader, "static/files/")
+        config.addHttpHandler(staticHandler, "/static")
+    }
+
+    @Override
+    void onApplicationEvent(ContextRefreshedEvent event) {
+        LOGGER.info('Starting GrizzlyHttpServer...')
         httpServer.start()
     }
 
     @Override
     void destroy() throws Exception {
-
+        LOGGER.info('Shutting down GrizzlyHttpServer...')
         httpServer.shutdown()
     }
 
