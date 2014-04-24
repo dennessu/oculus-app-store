@@ -16,7 +16,10 @@
     <bean id="oculus48IdShuffle" class="com.junbo.common.shuffle.Oculus48Id" />
 
     <bean id="cloudantClient" class="com.junbo.common.cloudant.CloudantClient" abstract="true">
-        <property name="asyncHttpClient" ref="commonAsyncHttpClient"/>
+        <property name="asyncHttpClient" ref="commonAsyncHttpClient" />
         <property name="cloudantDBUri" value="${identity.cloudant.url}" />
+        <property name="marshaller">
+            <bean class="com.junbo.common.cloudant.CloudantDefaultMarshaller" />
+        </property>
     </bean>
 </beans>

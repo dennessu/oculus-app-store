@@ -34,6 +34,7 @@ import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.DBHelper;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.RandomFactory;
+import com.junbo.test.common.libs.ShardIdHelper;
 import com.junbo.test.payment.apihelper.PaymentService;
 import com.junbo.test.payment.apihelper.impl.PaymentServiceImpl;
 
@@ -79,7 +80,7 @@ public class BillingTestDataProvider extends BaseTestDataProvider {
                 address.setCountry(creditCardInfo.getAddress().getCountry());
                 address.setPostalCode(creditCardInfo.getAddress().getPostalCode());
                 ArrayList<Long> admins = new ArrayList<>();
-                admins.add(IdConverter.hexStringToId(UserId.class,uid));
+                admins.add(IdConverter.hexStringToId(UserId.class, uid));
                 paymentInstrument.setAdmins(admins);
                 paymentInstrument.setAccountName(creditCardInfo.getAccountName());
                 paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
@@ -153,7 +154,7 @@ public class BillingTestDataProvider extends BaseTestDataProvider {
             OrderItem orderItem = order.getOrderItems().get(i);
             BalanceItem balanceItem = new BalanceItem();
             balanceItem.setAmount(orderItem.getTotalAmount());
-            String orderItemId = getOrderItemId(IdConverter.hexStringToId(OrderId.class, orderId),
+            String orderItemId = getOrderItemId(uid, IdConverter.hexStringToId(OrderId.class, orderId),
                     orderItem.getOffer().getValue());
             balanceItem.setOrderItemId(new OrderItemId(Long.valueOf(orderItemId)));
             //balanceItem.setDiscountAmount(orderItem.getTotalDiscount());
@@ -164,9 +165,10 @@ public class BillingTestDataProvider extends BaseTestDataProvider {
         return balanceClient.postBalance(uid, balance);
     }
 
-    private String getOrderItemId(Long orderId, Long offerId) throws Exception {
+    private String getOrderItemId(String uid, Long orderId, Long offerId) throws Exception {
         String sqlStr = String.format(
-                "select order_item_id from order_item where order_id='%s' and product_item_id='%s'", orderId, offerId);
+                "select order_item_id from shard_%s.order_item where order_id='%s' and product_item_id='%s'",
+                ShardIdHelper.getShardIdByUid(uid), orderId, offerId);
         return dbHelper.executeScalar(sqlStr, DBHelper.DBName.ORDER);
     }
 
@@ -180,7 +182,7 @@ public class BillingTestDataProvider extends BaseTestDataProvider {
         return balanceClient.getBalanceByOrderId(uid, orderId);
     }
 
-    public String getBalanceByBalanceId(String uid, String balanceId) throws Exception{
+    public String getBalanceByBalanceId(String uid, String balanceId) throws Exception {
         return balanceClient.getBalanceByBalanceId(uid, balanceId);
     }
 

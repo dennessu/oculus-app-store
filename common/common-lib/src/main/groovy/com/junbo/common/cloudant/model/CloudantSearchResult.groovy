@@ -8,7 +8,7 @@ import groovy.transform.CompileStatic
  */
 
 @CompileStatic
-class CloudantSearchResult<T> {
+class CloudantSearchResult<T> implements CloudantModel {
     @JsonProperty('total_rows')
     Long totalRows
     Long offset

@@ -10,7 +10,7 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserTeleAttemptId;
 import com.junbo.common.id.UserTeleId;
 import com.junbo.common.util.Identifiable;
-import com.junbo.identity.spec.model.users.ResourceMeta;
+import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**

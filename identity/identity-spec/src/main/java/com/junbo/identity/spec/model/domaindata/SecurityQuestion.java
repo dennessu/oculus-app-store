@@ -8,7 +8,7 @@ package com.junbo.identity.spec.model.domaindata;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.SecurityQuestionId;
 import com.junbo.common.util.Identifiable;
-import com.junbo.identity.spec.model.users.ResourceMeta;
+import com.junbo.common.model.ResourceMeta;
 
 /**
  * Created by kg on 3/12/14.

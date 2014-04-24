@@ -11,7 +11,7 @@ import com.junbo.cart.common.validate.Group;
 import com.junbo.cart.spec.model.item.OfferItem;
 import com.junbo.common.id.CartId;
 import com.junbo.common.id.UserId;
-import com.junbo.common.model.BaseResource;
+import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Created by fzhang@wan-san.com on 14-1-17.
  */
-public class Cart extends BaseResource {
+public class Cart extends ResourceMeta {
 
     @ApiModelProperty(required = true, position = 1, value = "[Readonly] The shopping cart ID.")
     @JsonProperty("self")
@@ -64,6 +64,8 @@ public class Cart extends BaseResource {
 
     public void setId(CartId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("self");
     }
 
     public UserId getUser() {
@@ -72,6 +74,7 @@ public class Cart extends BaseResource {
 
     public void setUser(UserId user) {
         this.user = user;
+        support.setPropertyAssigned("user");
     }
 
     public String getClientId() {
@@ -96,6 +99,7 @@ public class Cart extends BaseResource {
 
     public void setCartName(String cartName) {
         this.cartName = cartName;
+        support.setPropertyAssigned("cartName");
     }
 
     public List<OfferItem> getOffers() {
@@ -104,6 +108,7 @@ public class Cart extends BaseResource {
 
     public void setOffers(List<OfferItem> offers) {
         this.offers = offers;
+        support.setPropertyAssigned("offers");
     }
 
     public List<String> getCouponCodes() {
@@ -112,5 +117,6 @@ public class Cart extends BaseResource {
 
     public void setCouponCodes(List<String> couponCodes) {
         this.couponCodes = couponCodes;
+        support.setPropertyAssigned("couponCodes");
     }
 }

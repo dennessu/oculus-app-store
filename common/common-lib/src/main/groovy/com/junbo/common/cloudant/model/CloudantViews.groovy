@@ -9,8 +9,7 @@ import groovy.transform.CompileStatic
  * CloudantViews.
  */
 @CompileStatic
-@JsonInclude(JsonInclude.Include.NON_NULL)
-class CloudantViews {
+class CloudantViews implements CloudantModel {
     @JsonProperty('_id')
     String id
 

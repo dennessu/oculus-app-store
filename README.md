@@ -322,6 +322,13 @@ cd ~/owp-main/identity
 gradle clean build install -x test
 ```
 
+If you want to run the build using locally cached jar packages:
+
+```bash
+cdo ~/owp-main/identity
+gradle clean build install --offline
+```
+
 ### Run the servers
 After the build, run the servers using the following command:
 

@@ -155,7 +155,7 @@ ruleset {
         BracesForTryCatchFinally
         ClassJavadoc
         ClosureStatementOnOpeningLineOfMultipleLineClosure
-        LineLength
+        // LineLength
         SpaceAfterCatch
         SpaceAfterClosingBrace
         SpaceAfterComma
@@ -335,10 +335,10 @@ ruleset {
         UnnecessaryDefInVariableDeclaration
         UnnecessaryDotClass
         UnnecessaryDoubleInstantiation
-        UnnecessaryElseStatement
+        // UnnecessaryElseStatement
         UnnecessaryFinalOnPrivateMethod
         UnnecessaryFloatInstantiation
-        UnnecessaryGString
+        // UnnecessaryGString
         UnnecessaryGetter
         // UnnecessaryIfStatement
         UnnecessaryInstanceOfCheck
@@ -352,12 +352,12 @@ ruleset {
         // UnnecessaryOverridingMethod
         // UnnecessaryPackageReference
         UnnecessaryParenthesesForMethodCallWithClosure
-        UnnecessaryPublicModifier
+        // UnnecessaryPublicModifier
 
         // UnnecessaryReturnKeyword
 
         UnnecessarySelfAssignment
-        UnnecessarySemicolon
+        // UnnecessarySemicolon
         UnnecessaryStringInstantiation
         UnnecessarySubstring
         UnnecessaryTernaryExpression

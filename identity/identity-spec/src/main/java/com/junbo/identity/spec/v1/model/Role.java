@@ -8,7 +8,7 @@ package com.junbo.identity.spec.v1.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.RoleId;
 import com.junbo.common.util.Identifiable;
-import com.junbo.identity.spec.model.users.ResourceMeta;
+import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**

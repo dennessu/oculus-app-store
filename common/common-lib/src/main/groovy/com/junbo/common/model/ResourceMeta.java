@@ -8,6 +8,9 @@ package com.junbo.common.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.cloudant.CloudantEntity;
+import com.junbo.common.json.PropertyAssignedAware;
+import com.junbo.common.json.PropertyAssignedAwareSupport;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
@@ -15,7 +18,10 @@ import java.util.Date;
 /**
  * The base class for all resource with system properties.
  */
-public abstract class BaseResource {
+public abstract class ResourceMeta implements CloudantEntity, PropertyAssignedAware {
+
+    protected final PropertyAssignedAwareSupport support = new PropertyAssignedAwareSupport();
+
     @ApiModelProperty(position = 1000, required = true,
             value = "[Readonly] The revision of the resource. Used for optimistic locking.")
     @JsonProperty("rev")
@@ -29,17 +35,23 @@ public abstract class BaseResource {
             value = "[Readonly] The updated datetime of the resource.")
     private Date updatedTime;
 
-    /**
-     * The user and OAuth client who created the resource. Stored in format [userId]:[clientId].
-     */
     @JsonIgnore
     private String createdBy;
 
-    /**
-     * The user and OAuth client who updated the resource. Stored in format [userId]:[clientId].
-     */
     @JsonIgnore
     private String updatedBy;
+
+    @JsonIgnore
+    private String createdByClient;
+
+    @JsonIgnore
+    private String updatedByClient;
+
+    @JsonIgnore
+    private String cloudantId;
+
+    @JsonIgnore
+    private String cloudantRev;
 
     public String getResourceAge() {
         return resourceAge;
@@ -47,6 +59,8 @@ public abstract class BaseResource {
 
     public void setResourceAge(String resourceAge) {
         this.resourceAge = resourceAge;
+        support.setPropertyAssigned("resourceAge");
+        support.setPropertyAssigned("rev");
     }
 
     public Date getCreatedTime() {
@@ -55,6 +69,7 @@ public abstract class BaseResource {
 
     public void setCreatedTime(Date createdTime) {
         this.createdTime = createdTime;
+        support.setPropertyAssigned("createdTime");
     }
 
     public Date getUpdatedTime() {
@@ -63,6 +78,7 @@ public abstract class BaseResource {
 
     public void setUpdatedTime(Date updatedTime) {
         this.updatedTime = updatedTime;
+        support.setPropertyAssigned("updatedTime");
     }
 
     public String getCreatedBy() {
@@ -71,6 +87,7 @@ public abstract class BaseResource {
 
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
+        support.setPropertyAssigned("createdBy");
     }
 
     public String getUpdatedBy() {
@@ -79,5 +96,45 @@ public abstract class BaseResource {
 
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
+        support.setPropertyAssigned("updatedBy");
+    }
+
+    public String getCreatedByClient() {
+        return createdByClient;
+    }
+
+    public void setCreatedByClient(String createdByClient) {
+        this.createdByClient = createdByClient;
+        support.setPropertyAssigned("createdByClient");
+    }
+
+    public String getUpdatedByClient() {
+        return updatedByClient;
+    }
+
+    public void setUpdatedByClient(String updatedByClient) {
+        this.updatedByClient = updatedByClient;
+        support.setPropertyAssigned("updatedByClient");
+    }
+
+    public String getCloudantId() {
+        return cloudantId;
+    }
+
+    public void setCloudantId(String cloudantId) {
+        this.cloudantId = cloudantId;
+    }
+
+    public String getCloudantRev() {
+        return cloudantRev;
+    }
+
+    public void setCloudantRev(String cloudantRev) {
+        this.cloudantRev = cloudantRev;
+    }
+
+    @Override
+    public boolean isPropertyAssigned(String propertyName) {
+        return support.isPropertyAssigned(propertyName);
     }
 }
