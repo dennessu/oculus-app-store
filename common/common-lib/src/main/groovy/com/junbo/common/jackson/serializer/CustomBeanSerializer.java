@@ -120,7 +120,7 @@ public class CustomBeanSerializer extends BeanSerializerBase {
 
     private static class HateoasLinkField {
         private static final Pattern FIELD_PATTERN = Pattern.compile("\\{([^}]*)\\}");
-        private static String resourceUrlPrefix = null;
+        private static String resourceUrlPrefix;
 
         private static String readResourceUrlPrefix() {
             String result = "https://api.oculusvr.com/v1";
