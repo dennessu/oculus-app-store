@@ -4,7 +4,7 @@ module.exports = {
         /* [POST]  Authenticate ----------------------------------------------------------- */
         PostAuthenticate: {
             Method: 'POST',
-            Path: '/rest/oauth2/authorize',
+            Path: '/v1/oauth2/authorize',
             ResponseItem: 'Succeed',
             Items: {
 
@@ -41,7 +41,7 @@ module.exports = {
 
         PostToken: {
             Method: 'POST',
-            Path: '/rest/oauth2/token',
+            Path: '/v1/oauth2/token',
             ResponseItem: 'Succeed',
             Items: {
 
@@ -65,7 +65,7 @@ module.exports = {
 
         GetTokenInfo: {
             Method: 'GET',
-            Path: '/rest/oauth2/tokeninfo',
+            Path: '/v1/oauth2/tokeninfo',
             ResponseItem: 'Succeed',
             Items: {
 
@@ -94,7 +94,7 @@ module.exports = {
         /* [POST]  Users -------------------------------------------------------------- */
         PostUsers: {
             Method: 'POST',
-            Path: '/rest/Users',
+            Path: '/v1/Users',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
@@ -113,7 +113,7 @@ module.exports = {
 
         PutUsers: {
             Method: 'PUT',
-            Path: '/rest/users/:userId',
+            Path: '/v1/users/:userId',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
@@ -133,7 +133,7 @@ module.exports = {
         /* [Get]  Users -------------------------------------------------------------- */
         GetUsers: {
             Method: 'GET',
-            Path: '/rest/Users/:userId',
+            Path: '/v1/Users/:userId',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
@@ -153,7 +153,7 @@ module.exports = {
         /* [POST]  Profiles ----------------------------------------------------------- */
         PostProfiles: {
             Method: 'POST',
-            Path: '/rest/Users/:userId/Profiles',
+            Path: '/v1/Users/:userId/Profiles',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
@@ -172,7 +172,7 @@ module.exports = {
 
         GetProfiles: {
             Method: 'GET',
-            Path: '/rest/users/:userId/profiles',
+            Path: '/v1/users/:userId/profiles',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
@@ -213,7 +213,7 @@ module.exports = {
 
         PutProfiles: {
             Method: 'PUT',
-            Path: '/rest/users/:userId/profiles/:profileId',
+            Path: '/v1/users/:userId/profiles/:profileId',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
@@ -250,7 +250,7 @@ module.exports = {
 
         GetOptIns: {
             Method: 'GET',
-            Path: '/rest/users/:userId/opt-ins',
+            Path: '/v1/users/:userId/opt-ins',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
@@ -290,7 +290,7 @@ module.exports = {
         /* [Get]  Offers -------------------------------------------------------------- */
         GetOffers: {
             Method: 'GET',
-            Path: '/rest/offers',
+            Path: '/v1/offers',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
@@ -448,7 +448,7 @@ module.exports = {
 
         GetItemById: {
             Method: 'GET',
-            Path: '/rest/items/:itemId',
+            Path: '/v1/items/:itemId',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
@@ -472,7 +472,7 @@ module.exports = {
 
         GetOfferById: {
             Method: 'GET',
-            Path: '/rest/offers/:offerId',
+            Path: '/v1/offers/:offerId',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
@@ -568,13 +568,13 @@ module.exports = {
     Cart:{
         GetPrimaryCart: {
             Method: 'GET',
-            Path: '/rest/users/:userId/carts/primary',
+            Path: '/v1/users/:userId/carts/primary',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
                     statusCode: 302,
                     headers: {
-                        location: "http://localhost:8000/rest/users/10000/carts/21232"
+                        location: "http://localhost:8000/v1/users/10000/carts/21232"
                     },
                     data: null
                 },
@@ -589,7 +589,7 @@ module.exports = {
 
         GetCartById: {
             Method: 'GET',
-            Path: '/rest/users/:userId/carts/:cardId',
+            Path: '/v1/users/:userId/carts/:cardId',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
@@ -651,7 +651,7 @@ module.exports = {
 
         PutCart: {
             Method: 'PUT',
-            Path: '/rest/users/:userId/carts/:cardId',
+            Path: '/v1/users/:userId/carts/:cardId',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
@@ -713,7 +713,7 @@ module.exports = {
 
         PostCartMerge: {
             Method: 'POST',
-            Path: '/rest/users/:userId/carts/:cardId/merge',
+            Path: '/v1/users/:userId/carts/:cardId/merge',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
@@ -777,7 +777,7 @@ module.exports = {
     Billing:{
         GetShippingInfo: {
             Method: 'GET',
-            Path: '/rest/users/:userId/ship-to-info',
+            Path: '/v1/users/:userId/ship-to-info',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
@@ -835,7 +835,7 @@ module.exports = {
         },
         GetShippingInfoById: {
             Method: 'GET',
-            Path: '/rest/users/:userId/ship-to-info/:shippingAddressId',
+            Path: '/v1/users/:userId/ship-to-info/:shippingAddressId',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
@@ -871,7 +871,7 @@ module.exports = {
 
         PostShippingInfo: {
             Method: 'POST',
-            Path: '/rest/users/:userId/ship-to-info',
+            Path: '/v1/users/:userId/ship-to-info',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
@@ -911,7 +911,7 @@ module.exports = {
     Order: {
         GetOrders: {
             Method: 'GET',
-            Path: '/rest/orders',
+            Path: '/v1/orders',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
@@ -1060,7 +1060,7 @@ module.exports = {
 
         GetOrdersById: {
             Method: 'GET',
-            Path: '/rest/orders/:orderId',
+            Path: '/v1/orders/:orderId',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
@@ -1229,7 +1229,7 @@ module.exports = {
 
         PostOrders: {
             Method: 'POST',
-            Path: '/rest/orders',
+            Path: '/v1/orders',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
@@ -1397,7 +1397,7 @@ module.exports = {
 
         PutOrders: {
             Method: 'PUT',
-            Path: '/rest/orders/:orderId',
+            Path: '/v1/orders/:orderId',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
@@ -1489,7 +1489,7 @@ module.exports = {
     PaymentInstruments:{
         GetPaymentInstruments: {
             Method: 'GET',
-            Path: '/rest/users/:userId/payment-instruments', //'/rest/users/:userId/payment-instruments/search',
+            Path: '/v1/users/:userId/payment-instruments', //'/v1/users/:userId/payment-instruments/search',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
@@ -1573,7 +1573,7 @@ module.exports = {
 
         GetPaymentInstrumentsById: {
             Method: 'GET',
-            Path: '/rest/users/:userId/payment-instruments/:paymentInstrumentId',
+            Path: '/v1/users/:userId/payment-instruments/:paymentInstrumentId',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
@@ -1622,7 +1622,7 @@ module.exports = {
 
         PostPaymentInstruments: {
             Method: 'POST',
-            Path: '/rest/users/:userId/payment-instruments',
+            Path: '/v1/users/:userId/payment-instruments',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
@@ -1670,7 +1670,7 @@ module.exports = {
 
         PutPaymentInstruments: {
             Method: 'PUT',
-            Path: '/rest/users/:userId/payment-instruments ',
+            Path: '/v1/users/:userId/payment-instruments ',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
@@ -1718,7 +1718,7 @@ module.exports = {
 
         DeletePaymentInstrumentsById: {
             Method: 'GET', // TODO: DELETE
-            Path: '/rest/users/:userId/payment-instruments/:paymentInstrumentId',
+            Path: '/v1/users/:userId/payment-instruments/:paymentInstrumentId',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
@@ -1739,7 +1739,7 @@ module.exports = {
     Entitlement:{
         GetEntitlements: {
             Method: 'GET',
-            Path: '/rest/users/:userId/entitlements', //'/rest/users/:userId/payment-instruments/search',
+            Path: '/v1/users/:userId/entitlements', //'/v1/users/:userId/payment-instruments/search',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {
@@ -1820,7 +1820,7 @@ module.exports = {
 
         PostEntitlement: {
             Method: 'POST',
-            Path: '/rest/users/:userId/entitlements', //?developerId=1234',
+            Path: '/v1/users/:userId/entitlements', //?developerId=1234',
             ResponseItem: 'Succeed',
             Items: {
                 'Succeed': {

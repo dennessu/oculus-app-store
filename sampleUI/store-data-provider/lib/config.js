@@ -15,7 +15,7 @@ module.exports = {
     Identity: {
         Config: {
             name: "Idtntity",
-            namespace: "/rest"
+            namespace: "/v1"
         },
 
         PostAuthorize: {
@@ -221,7 +221,7 @@ module.exports = {
     Billing:{
         Config: {
             name: "Billing",
-            namespace: "/rest"
+            namespace: "/v1"
         },
 
         GetShippingInfosByUserId:{
@@ -318,7 +318,7 @@ module.exports = {
     Catalog:{
         Config: {
             name: "Catalog",
-            namespace: "/rest"
+            namespace: "/v1"
         },
 
         GetOffers: {
@@ -375,7 +375,7 @@ module.exports = {
     Emails:{
         Config: {
             name: "Emails",
-            namespace: "/rest"
+            namespace: "/v1"
         },
 
         Send: {
@@ -399,7 +399,7 @@ module.exports = {
     Entitlements: {
         Config: {
             name: "Entitlements",
-            namespace: "/rest"
+            namespace: "/v1"
         },
 
         GetEntitlementsByUserId: {
@@ -440,7 +440,7 @@ module.exports = {
     Cart: {
         Config: {
             name: "Cart",
-            namespace: "/rest"
+            namespace: "/v1"
         },
 
         GetPrimaryCartByUserId: {
@@ -537,7 +537,7 @@ module.exports = {
     Order: {
         Config: {
             name: "Order",
-            namespace: "/rest"
+            namespace: "/v1"
         },
 
         GetOrdersByUserId: {
@@ -613,7 +613,7 @@ module.exports = {
     Payment: {
         Config: {
             name: "Payment",
-            namespace: "/rest"
+            namespace: "/v1"
         },
 
         GetPaymentInstrumentsByUserId: {
