@@ -17,13 +17,16 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * PriceTierEntity.
+ * ItemAttributeEntity.
  */
 @Entity
-@Table(name="price_tiers")
+@Table(name="item_attribute")
 @TypeDefs(@TypeDef(name="json-string", typeClass=StringJsonUserType.class))
-public class PriceTierEntity extends BaseEntity {
+public class ItemAttributeEntity extends BaseEntity {
     private Long id;
+    private String name;
+    private String type;
+    private Long parentId;
     private String payload;
 
     @Id
@@ -34,6 +37,34 @@ public class PriceTierEntity extends BaseEntity {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @Column(name = "name")
+    @Type(type = "json-string")
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Column(name = "type")
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    @Column(name = "parent_id")
+    public Long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
     }
 
     @Column(name = "payload")

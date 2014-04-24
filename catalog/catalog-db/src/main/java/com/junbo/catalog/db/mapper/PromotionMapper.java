@@ -8,7 +8,6 @@ package com.junbo.catalog.db.mapper;
 
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.entity.PromotionEntity;
-import com.junbo.catalog.spec.model.common.LocalizableProperty;
 import com.junbo.catalog.spec.model.promotion.Promotion;
 
 /**
@@ -28,8 +27,6 @@ public class PromotionMapper {
 
     public static void fillDBEntity(Promotion model, PromotionEntity entity) {
         entity.setPromotionId(model.getPromotionId());
-        entity.setName(Utils.toJson(model.getName()));
-        entity.setCurated(model.getCurated()==null?false:model.getCurated());
         entity.setOwnerId(model.getOwnerId());
         entity.setType(model.getType());
         entity.setCurrentRevisionId(model.getCurrentRevisionId());
@@ -44,8 +41,6 @@ public class PromotionMapper {
         }
         Promotion model = Utils.fromJson(entity.getPayload(), Promotion.class);
         model.setPromotionId(entity.getPromotionId());
-        model.setName(Utils.fromJson(entity.getName(), LocalizableProperty.class));
-        model.setCurated(entity.isCurated());
         model.setCurrentRevisionId(entity.getCurrentRevisionId());
         model.setOwnerId(entity.getOwnerId());
         model.setStartDate(entity.getStartDate());

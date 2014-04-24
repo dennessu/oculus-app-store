@@ -44,6 +44,11 @@ public interface PriceTierResource {
     @Path("/")
     Promise<PriceTier> createPriceTier(PriceTier attribute);
 
+    @ApiOperation("Put an price tier")
+    @PUT
+    @Path("/{tierId}")
+    Promise<PriceTier> update(@PathParam("tierId") PriceTierId tierId, PriceTier priceTier);
+
     @ApiOperation("Delete an price tier")
     @DELETE
     @Path("/{tierId}")

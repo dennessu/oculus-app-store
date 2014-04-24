@@ -6,9 +6,7 @@
 
 package com.junbo.catalog.db.mapper;
 
-import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.entity.OfferEntity;
-import com.junbo.catalog.spec.model.common.LocalizableProperty;
 import com.junbo.catalog.spec.model.offer.Offer;
 
 /**
@@ -28,8 +26,7 @@ public class OfferMapper {
 
     public static void fillDBEntity(Offer model, OfferEntity entity) {
         entity.setOfferId(model.getOfferId());
-        entity.setOfferName(Utils.toJson(model.getName()));
-        entity.setCurated(model.getCurated()==null?false:model.getCurated());
+        entity.setPublished(model.getPublished()==null?false:model.getPublished());
         entity.setOwnerId(model.getOwnerId());
         entity.setCurrentRevisionId(model.getCurrentRevisionId());
         //entity.setCategories(Utils.toJson(model.getCategories()));
@@ -42,8 +39,7 @@ public class OfferMapper {
         }
         Offer model = new Offer();
         model.setOfferId(entity.getOfferId());
-        model.setName(Utils.fromJson(entity.getOfferName(), LocalizableProperty.class));
-        model.setCurated(entity.isCurated());
+        model.setPublished(entity.isPublished());
         model.setCurrentRevisionId(entity.getCurrentRevisionId());
         model.setOwnerId(entity.getOwnerId());
         //model.setCategories(Utils.fromJson(entity.getCategories(), List.class));

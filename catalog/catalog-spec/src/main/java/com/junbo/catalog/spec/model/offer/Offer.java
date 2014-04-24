@@ -38,7 +38,7 @@ public class Offer extends BaseEntityModel {
 
     @ApiModelProperty(position = 23, required = true, value = "Whether the offer is published")
     @JsonProperty("isPublished")
-    private Boolean active;
+    private Boolean published;
 
     @ItemId
     @JsonProperty("soldWithinItem")
@@ -84,12 +84,13 @@ public class Offer extends BaseEntityModel {
         this.ownerId = ownerId;
     }
 
-    public Boolean getActive() {
-        return active;
+
+    public Boolean getPublished() {
+        return published;
     }
 
-    public void setActive(Boolean active) {
-        this.active = active;
+    public void setPublished(Boolean published) {
+        this.published = published;
     }
 
     public Long getIapItemId() {

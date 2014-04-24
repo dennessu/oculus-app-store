@@ -25,8 +25,8 @@ public class ItemRevisionsGetOptions extends PageableGetOptions {
     private String type;
     @QueryParam("status")
     private String status;
-    //@QueryParam("timestamp")
-    //private Long timestamp;
+    @QueryParam("timestamp")
+    private Long timestamp;
 
     public List<ItemId> getItemIds() {
         return itemIds;
@@ -60,12 +60,11 @@ public class ItemRevisionsGetOptions extends PageableGetOptions {
         this.status = status;
     }
 
-   /* public Long getTimestamp() {
+    public Long getTimestamp() {
         return timestamp;
     }
 
     public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
-    */
 }

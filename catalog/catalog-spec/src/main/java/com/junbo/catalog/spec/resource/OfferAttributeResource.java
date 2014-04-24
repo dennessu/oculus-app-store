@@ -32,17 +32,17 @@ public interface OfferAttributeResource {
     @ApiOperation("Get an offer attribute")
     @GET
     @Path("/{attributeId}")
-    Promise<OfferAttribute> getOfferAttribute(@PathParam("attributeId") OfferAttributeId attributeId);
+    Promise<OfferAttribute> getAttribute(@PathParam("attributeId") OfferAttributeId attributeId);
 
     @ApiOperation("Get all offer attributes")
     @GET
     @Path("/")
-    Promise<Results<OfferAttribute>> getOfferAttributes(@BeanParam OfferAttributesGetOptions options);
+    Promise<Results<OfferAttribute>> getAttributes(@BeanParam OfferAttributesGetOptions options);
 
     @ApiOperation("Create an offer attribute")
     @POST
     @Path("/")
-    Promise<OfferAttribute> createOfferAttribute(OfferAttribute attribute);
+    Promise<OfferAttribute> createAttribute(OfferAttribute attribute);
 
     @ApiOperation("Put an item attribute")
     @PUT

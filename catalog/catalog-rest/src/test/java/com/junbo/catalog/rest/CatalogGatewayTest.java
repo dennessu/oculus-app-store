@@ -36,7 +36,6 @@ public class CatalogGatewayTest extends BaseTest {
         for (OfferRevision revision : revisionResults.getItems()) {
             System.out.println(revision.getOfferId());
             System.out.println(revision.getRevisionId());
-            System.out.println(revision.getName());
         }
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++");
     }

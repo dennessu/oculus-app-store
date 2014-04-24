@@ -24,9 +24,8 @@ import java.util.List;
         @TypeDef(name="long-array", typeClass=LongArrayUserType.class)})
 public class OfferEntity extends BaseEntity {
     private Long offerId;
-    private String offerName;
     private Long ownerId;
-    private boolean curated;
+    private boolean published;
     private Long currentRevisionId;
     private List<Long> categories;
 
@@ -40,16 +39,6 @@ public class OfferEntity extends BaseEntity {
         this.offerId = offerId;
     }
 
-    @Column(name = "offer_name")
-    @Type(type = "json-string")
-    public String getOfferName() {
-        return offerName;
-    }
-
-    public void setOfferName(String offerName) {
-        this.offerName = offerName;
-    }
-
     @Column(name = "owner_id")
     public Long getOwnerId() {
         return ownerId;
@@ -59,13 +48,13 @@ public class OfferEntity extends BaseEntity {
         this.ownerId = ownerId;
     }
 
-    @Column(name = "curated")
-    public boolean isCurated() {
-        return curated;
+    @Column(name = "published")
+    public boolean isPublished() {
+        return published;
     }
 
-    public void setCurated(boolean curated) {
-        this.curated = curated;
+    public void setPublished(boolean published) {
+        this.published = published;
     }
 
     @Column(name = "current_revision_id")

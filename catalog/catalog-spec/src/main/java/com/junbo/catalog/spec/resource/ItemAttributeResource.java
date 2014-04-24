@@ -32,17 +32,17 @@ public interface ItemAttributeResource {
     @ApiOperation("Get an item attribute")
     @GET
     @Path("/{attributeId}")
-    Promise<ItemAttribute> getItemAttribute(@PathParam("attributeId") ItemAttributeId attributeId);
+    Promise<ItemAttribute> getAttribute(@PathParam("attributeId") ItemAttributeId attributeId);
 
     @ApiOperation("Get all item attributes")
     @GET
     @Path("/")
-    Promise<Results<ItemAttribute>> getItemAttributes(@BeanParam ItemAttributesGetOptions options);
+    Promise<Results<ItemAttribute>> getAttributes(@BeanParam ItemAttributesGetOptions options);
 
     @ApiOperation("Create an item attribute")
     @POST
     @Path("/")
-    Promise<ItemAttribute> createItemAttribute(ItemAttribute attribute);
+    Promise<ItemAttribute> createAttribute(ItemAttribute attribute);
 
     @ApiOperation("Put an item attribute")
     @PUT
