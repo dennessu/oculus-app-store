@@ -30,7 +30,7 @@ public class PaymentServiceTest extends BaseTest {
         PaymentInstrument result = null;
         result = piService.add(request).wrapped().get();
         Assert.assertNotNull(result);
-        Assert.assertEquals(result.getCreditCardRequest().getType(), CreditCardType.VISA.toString());
+        Assert.assertEquals(result.getTypeSpecificDetails().getCreditCardType(), CreditCardType.VISA.toString());
         Assert.assertEquals(result.getExternalToken(), MockPaymentProviderServiceImpl.piExternalToken);
         PaymentInstrument getResult = piService.getById(result.getId());
         Assert.assertEquals(getResult.getAccountName(), result.getAccountName());
@@ -127,10 +127,10 @@ public class PaymentServiceTest extends BaseTest {
         PaymentInstrument request = buildBasePIRequest();
         request.setAccountNum(null);
         request.setType(PIType.WALLET.toString());
-        request.setWalletRequest(new WalletRequest() {
+        request.setTypeSpecificDetails(new TypeSpecificDetails() {
             {
-                setType("STORED_VALUE");
-                setCurrency("USD");
+                setWalletType("STORED_VALUE");
+                setWalletCurrency("USD");
             }
         });
         return request;

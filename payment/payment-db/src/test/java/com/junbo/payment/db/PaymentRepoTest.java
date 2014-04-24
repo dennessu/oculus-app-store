@@ -41,10 +41,10 @@ public class PaymentRepoTest extends BaseTest {
             }
         });
         pi.setPhoneNum("12345676");
-        pi.setCreditCardRequest(new CreditCardRequest(){
+        pi.setTypeSpecificDetails(new TypeSpecificDetails() {
             {
                 setExpireDate("2025-10-12");
-                setType(CreditCardType.VISA.toString());
+                setCreditCardType(CreditCardType.VISA.toString());
                 setLastBillingDate(new Date());
             }
         });
