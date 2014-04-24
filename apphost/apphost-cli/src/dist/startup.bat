@@ -1,3 +1,3 @@
 @echo off
-set APPHOST_CLI_OPTS=-DconfigDir=./conf -DactiveEnv=onebox -Dlogback.configurationFile=./conf/logback-apphost.xml
+set APPHOST_CLI_OPTS=-DconfigDir=./conf -DactiveEnv=onebox
 ./bin/apphost-cli.bat
