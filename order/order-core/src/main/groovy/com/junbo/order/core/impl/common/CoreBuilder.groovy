@@ -93,6 +93,9 @@ class CoreBuilder {
         balance.piId = order.paymentInstruments?.get(0)
         balance.trackingUuid = UUID.randomUUID()
         balance.shippingAddressId = order.shippingAddress
+        balance.providerConfirmUrl = order.providerConfirmUrl
+        balance.successRedirectUrl = order.successRedirectUrl
+        balance.cancelRedirectUrl = order.cancelRedirectUrl
 
         return balance
     }

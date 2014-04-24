@@ -92,4 +92,9 @@ class BillingFacadeImpl implements BillingFacade {
             return currencyMap.get(name)
         }
     }
+
+    @Override
+    Promise<Balance> confirmBalance(Balance balance) {
+        return balanceResource.confirmBalance(balance)
+    }
 }

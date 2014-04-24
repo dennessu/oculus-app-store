@@ -62,6 +62,12 @@ public class Order extends BaseModelWithDate {
     private List<Discount> discounts;
     private List<OrderItem> orderItems;
 
+    // urls for web payment
+    private String successRedirectUrl;
+    private String cancelRedirectUrl;
+    private String providerConfirmUrl;
+    // end of urls
+
     public OrderId getId() {
         return id;
     }
@@ -228,5 +234,29 @@ public class Order extends BaseModelWithDate {
 
     public void setLocale(String locale) {
         this.locale = locale;
+    }
+
+    public String getSuccessRedirectUrl() {
+        return successRedirectUrl;
+    }
+
+    public void setSuccessRedirectUrl(String successRedirectUrl) {
+        this.successRedirectUrl = successRedirectUrl;
+    }
+
+    public String getCancelRedirectUrl() {
+        return cancelRedirectUrl;
+    }
+
+    public void setCancelRedirectUrl(String cancelRedirectUrl) {
+        this.cancelRedirectUrl = cancelRedirectUrl;
+    }
+
+    public String getProviderConfirmUrl() {
+        return providerConfirmUrl;
+    }
+
+    public void setProviderConfirmUrl(String providerConfirmUrl) {
+        this.providerConfirmUrl = providerConfirmUrl;
     }
 }

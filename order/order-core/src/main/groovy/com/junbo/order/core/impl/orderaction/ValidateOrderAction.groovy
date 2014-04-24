@@ -31,6 +31,8 @@ class ValidateOrderAction implements Action {
 
         // todo validate country
         orderValidator.validCurrency(order.currency, 'currency')
+//        orderValidator.validWebPaymentUrls(order.paymentInstruments,
+//                order.successRedirectUrl, order.cancelRedirectUrl)
 
         order.orderItems?.eachWithIndex { OrderItem item, int index ->
             orderValidator.notNull(item.offer, "orderItems[${index}].offer")

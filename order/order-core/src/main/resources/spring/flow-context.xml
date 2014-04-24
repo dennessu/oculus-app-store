@@ -42,9 +42,6 @@
     <bean id="ratingAction" class="com.junbo.order.core.impl.orderaction.RatingAction">
     </bean>
 
-    <bean id="updateFulfillmentAction" class="com.junbo.order.core.impl.orderaction.UpdateFulfillmentAction">
-    </bean>
-
     <bean id="sendEmailAction" class="com.junbo.order.core.impl.orderaction.SendEmailAction">
     </bean>
 
@@ -59,5 +56,12 @@
 
     <bean id="webPaymentChargeAction" class="com.junbo.order.core.impl.orderaction.WebPaymentChargeAction">
         <property name="orderActionType" value="CHARGE"/>
+    </bean>
+
+    <bean id="confirmBalanceAction" class="com.junbo.order.core.impl.orderaction.ConfirmBalanceAction">
+    </bean>
+
+    <bean id="updateOrderAction" class="com.junbo.order.core.impl.orderaction.SaveOrderAction">
+        <property name="newOrder" value="false"/>
     </bean>
 </beans>

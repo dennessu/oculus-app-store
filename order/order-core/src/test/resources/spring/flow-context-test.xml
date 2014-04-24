@@ -29,9 +29,6 @@
         <property name="orderInternalService" ref="mockOrderInternalService"/>
     </bean>
 
-    <bean id="mockUpdateFulfillmentAction" class="com.junbo.order.core.impl.orderaction.UpdateFulfillmentAction">
-    </bean>
-
     <bean id="mockValidateUserAction" class="com.junbo.order.core.impl.orderaction.ValidateUserAction">
         <property name="orderServiceContextBuilder" ref="mockOrderServiceContextBuilder"/>
     </bean>

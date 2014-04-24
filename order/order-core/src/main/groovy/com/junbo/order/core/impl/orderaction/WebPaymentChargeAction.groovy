@@ -46,6 +46,12 @@ class WebPaymentChargeAction extends BaseOrderEventAwareAction {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def order = context.orderServiceContext.order
         orderInternalService.markSettlement(order)
+        if (order.successRedirectUrl == null) {
+            throw AppErrors.INSTANCE.missingParameterField('successRedirectUrl').exception()
+        }
+        if (order.cancelRedirectUrl == null) {
+            throw AppErrors.INSTANCE.missingParameterField('cancelRedirectUrl').exception()
+        }
         Promise promise =
                 facadeContainer.billingFacade.createBalance(
                         CoreBuilder.buildBalance(context.orderServiceContext.order, BalanceType.DEBIT))
@@ -64,6 +70,11 @@ class WebPaymentChargeAction extends BaseOrderEventAwareAction {
                 throw AppErrors.INSTANCE.
                         billingChargeFailed().exception()
             }
+            if (balance.providerConfirmUrl == null) {
+                LOGGER.error('name=Order_WebPaymentCharge_Empty_ProviderConfirmUrl')
+                throw AppErrors.INSTANCE.billingChargeFailed().exception()
+            }
+            order.providerConfirmUrl = balance.providerConfirmUrl
             def billingEvent = BillingEventBuilder.buildBillingEvent(balance)
             orderRepository.createBillingEvent(order.id.value, billingEvent)
             orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
