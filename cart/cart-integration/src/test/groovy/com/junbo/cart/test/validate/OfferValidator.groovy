@@ -30,4 +30,9 @@ class OfferValidator {
         assert selected == result.selected
         return this
     }
+
+    OfferValidator approved (Boolean approved) {
+        assert approved == result.approved
+        return this
+    }
 }

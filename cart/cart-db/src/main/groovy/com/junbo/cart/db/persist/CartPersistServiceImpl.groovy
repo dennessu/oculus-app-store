@@ -18,6 +18,7 @@ import com.junbo.cart.spec.model.Cart
 import com.junbo.cart.spec.model.item.OfferItem
 import com.junbo.common.id.CartId
 import com.junbo.common.id.CartItemId
+import com.junbo.common.id.CouponId
 import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
 import com.junbo.oom.core.MappingContext
@@ -106,7 +107,7 @@ class CartPersistServiceImpl implements CartPersistService {
         // add offer
         saveOffers(newCart, newCart.offers, [], currentTime)
         // add coupon
-        saveCouponCodes(newCart, newCart.couponCodes, [], currentTime)
+        saveCoupons(newCart, newCart.coupons, [], currentTime)
     }
 
     @Override
@@ -124,7 +125,7 @@ class CartPersistServiceImpl implements CartPersistService {
 
         // update items
         cart.offers = saveOffers(cart, cart.offers, oldCart.offers, currentTime)
-        cart.couponCodes = saveCouponCodes(cart, cart.couponCodes, oldCart.couponCodes, currentTime)
+        cart.coupons = saveCoupons(cart, cart.coupons, oldCart.coupons, currentTime)
     }
 
     private List<OfferItem> saveOffers(Cart cart, List<OfferItem> newItems,
@@ -157,7 +158,7 @@ class CartPersistServiceImpl implements CartPersistService {
         return newItems
     }
 
-    private List<String> saveCouponCodes(Cart cart, List<String> newCouponCodes, List<String> oldCouponCodes,
+    private List<CouponId> saveCoupons(Cart cart, List<CouponId> newCoupons, List<CouponId> oldCoupons,
                                          Date currentTime) {
 
         Map<String, Long> couponCodesToId = new HashMap<>()
@@ -167,29 +168,29 @@ class CartPersistServiceImpl implements CartPersistService {
 
         def couponPersistFuncSet = new ItemPersistFuncSet()
 
-        couponPersistFuncSet.create =  { String couponCode ->
-            return addCoupon(couponCode, currentTime, cart)
+        couponPersistFuncSet.create =  { CouponId coupon ->
+            return addCoupon(coupon.value.toString(), currentTime, cart)
         }
 
-        couponPersistFuncSet.delete = { String couponCode ->
-            Long couponId = couponCodesToId[couponCode]
+        couponPersistFuncSet.delete = { CouponId coupon ->
+            Long couponId = couponCodesToId[coupon.value.toString()]
             if (couponId != null) {
                 return couponItemDao.markDelete(couponId, currentTime)
             }
             return false
         }
 
-        couponPersistFuncSet.update = { String oldCoupon, String newCoupon ->
+        couponPersistFuncSet.update = { CouponId oldCoupon, CouponId newCoupon ->
             assert oldCoupon == newCoupon
             return false
         }
 
-        def keyFunc = { String couponCode ->
-            return couponCode
+        def keyFunc = { CouponId coupon ->
+            return coupon
         }
 
-        saveCartItems(newCouponCodes, oldCouponCodes, couponPersistFuncSet, keyFunc, 'coupon')
-        return newCouponCodes
+        saveCartItems(newCoupons, oldCoupons, couponPersistFuncSet, keyFunc, 'coupon')
+        return newCoupons
     }
 
     private void saveCartItems(List newItems, List oldItems, ItemPersistFuncSet itemPersistFuncSet, Closure keyFunc,
@@ -273,7 +274,7 @@ class CartPersistServiceImpl implements CartPersistService {
     private Cart toCart(CartEntity cartEntity, includeItems) {
         Cart result = dataMapper.toCartModel(cartEntity, new MappingContext())
         result.offers = []
-        result.couponCodes = []
+        result.coupons = []
         if (includeItems) {
             List<OfferItemEntity> offerItemEntities = offerItemDao.getItems(cartEntity.id, ItemStatus.OPEN)
             List<CouponItemEntity> couponItemEntities = couponItemDao.getItems(cartEntity.id, ItemStatus.OPEN)
@@ -284,7 +285,7 @@ class CartPersistServiceImpl implements CartPersistService {
             }
             if (!CollectionUtils.isEmpty(couponItemEntities)) {
                 couponItemEntities.each { CouponItemEntity couponItemEntity ->
-                    result.couponCodes << couponItemEntity.couponCode
+                    result.coupons << new CouponId(Long.parseLong(couponItemEntity.couponCode))
                 }
             }
         }

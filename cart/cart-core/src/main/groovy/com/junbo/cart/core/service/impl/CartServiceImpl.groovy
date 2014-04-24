@@ -14,6 +14,7 @@ import com.junbo.cart.spec.model.item.CartItem
 import com.junbo.cart.spec.model.item.OfferItem
 import com.junbo.common.id.CartId
 import com.junbo.common.id.CartItemId
+import com.junbo.common.id.CouponId
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.UserId
 import com.junbo.identity.spec.v1.model.User
@@ -142,9 +143,9 @@ class CartServiceImpl implements CartService {
                 cart.offers.each {
                     ((CartItem) it).id = null
                 }
-                addCartItems(destCart, cart.offers, cart.couponCodes)
+                addCartItems(destCart, cart.offers, cart.coupons)
                 cart.offers = Collections.EMPTY_LIST
-                cart.couponCodes = Collections.EMPTY_LIST
+                cart.coupons = Collections.EMPTY_LIST
                 cartPersistService.updateCart(cart)
                 cartPersistService.updateCart(destCart)
                 return destCart
@@ -215,23 +216,23 @@ class CartServiceImpl implements CartService {
         return removeZeroQuantityOffer(new ArrayList<OfferItem>(offersMap.values()))
     }
 
-    private static List<String> mergeCoupons(List<String> couponCodes) {
-        Set<String> couponCodesSet = [] as SortedSet
-        couponCodes.each { String couponCode ->
-            couponCodesSet.add(couponCode)
+    private static List<CouponId> mergeCoupons(List<CouponId> coupons) {
+        Set<CouponId> couponsSet = [] as HashSet
+        coupons.each { CouponId coupon ->
+            couponsSet.add(coupon)
         }
-        return new ArrayList<String>(couponCodesSet)
+        return new ArrayList<CouponId>(couponsSet)
     }
 
-    private void addCartItems(Cart cart, List<OfferItem> offers, List<String> couponCodes) {
+    private void addCartItems(Cart cart, List<OfferItem> offers, List<CouponId> coupons) {
         if (offers != null) {
             cart.offers.addAll(offers)
         }
         cart.offers = mergeOffers(cart.offers)
-        if (couponCodes != null) {
-            cart.couponCodes.addAll(couponCodes)
+        if (coupons != null) {
+            cart.coupons.addAll(coupons)
         }
-        cart.couponCodes = mergeCoupons(cart.couponCodes)
+        cart.coupons = mergeCoupons(cart.coupons)
     }
 
     private static List<OfferItem> removeZeroQuantityOffer(List<OfferItem> offers) {
@@ -261,7 +262,7 @@ class CartServiceImpl implements CartService {
     private Cart processCartForAddOrUpdate(Cart cart) {
         cart.offers = mergeOffers(cart.offers)
         removeZeroQuantityOffer(cart.offers)
-        cart.couponCodes = mergeCoupons(cart.couponCodes)
+        cart.coupons = mergeCoupons(cart.coupons)
         return cart
     }
 }
