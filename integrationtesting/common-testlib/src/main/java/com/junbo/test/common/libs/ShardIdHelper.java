@@ -19,6 +19,7 @@ public class ShardIdHelper {
 
     public static int getShardIdByUid(String uid) {
         DefaultShardAlgorithm shardAlgorithm = new DefaultShardAlgorithm();
+        //Get AvailableShards value from common\common-sharding\src\main\resources\spring\sharding-context.xml
         shardAlgorithm.setAvailableShards(2);
         if (uid != null && !uid.isEmpty()) {
             return shardAlgorithm.shardId(IdConverter.hexStringToId(UserId.class, uid));
