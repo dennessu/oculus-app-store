@@ -3,10 +3,8 @@ package com.junbo.common.cloudant.model
 import groovy.transform.CompileStatic
 
 /**
- * CloudantError.
+ * A flag interface used only to mark Cloudant related models
  */
 @CompileStatic
-class CloudantError implements CloudantModel {
-    String error
-    String reason
+interface CloudantModel {
 }

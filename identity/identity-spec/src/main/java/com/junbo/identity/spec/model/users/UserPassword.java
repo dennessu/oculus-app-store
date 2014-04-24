@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPasswordId;
+import com.junbo.common.model.ResourceMeta;
 import com.junbo.common.util.Identifiable;
 
 import java.util.Date;

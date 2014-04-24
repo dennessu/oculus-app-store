@@ -11,7 +11,7 @@ import com.junbo.common.id.AddressId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPiiId;
 import com.junbo.common.util.Identifiable;
-import com.junbo.identity.spec.model.users.ResourceMeta;
+import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;

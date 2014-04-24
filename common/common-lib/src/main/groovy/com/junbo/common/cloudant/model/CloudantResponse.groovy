@@ -7,7 +7,7 @@ import groovy.transform.CompileStatic
  * CloudantResponse.
  */
 @CompileStatic
-class CloudantResponse {
+class CloudantResponse implements CloudantModel {
     Boolean ok
     String id
     @JsonProperty('rev')

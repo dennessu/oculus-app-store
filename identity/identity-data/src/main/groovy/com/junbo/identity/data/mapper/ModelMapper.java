@@ -26,6 +26,7 @@ import com.junbo.oom.core.Mappings;
         CommonMapper.class
 })
 public interface ModelMapper {
+
     Group toGroup(GroupEntity entity, MappingContext context);
     GroupEntity toGroup(Group entity, MappingContext context);
 

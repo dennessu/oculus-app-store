@@ -1,19 +1,18 @@
 package com.junbo.common.cloudant
-
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JavaType
 import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.transform.CompileStatic
-
 /**
  * Json Marshaller implementation.
  * Used internally for entity persistence and other.
  */
 @CompileStatic
-class NoAnnotationsJsonMarshaller {
-    private NoAnnotationsJsonMarshaller() { }
+class CloudantDefaultMarshaller implements CloudantMarshaller {
+    private CloudantDefaultMarshaller() { }
     /**
      * static Fastxml jackson ObjectMapper used for marshall and unmarshall.
      */
@@ -26,6 +25,7 @@ class NoAnnotationsJsonMarshaller {
         // Intentionally not using ObjectMapperProvider to get the raw serialization result
         objectMapper = new ObjectMapper()
         objectMapper.disable(MapperFeature.USE_ANNOTATIONS)
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     }
 
@@ -34,8 +34,11 @@ class NoAnnotationsJsonMarshaller {
      * @param object The object to be marshaled.
      * @return The json string of the input object.
      */
-    static String marshall(Object object) throws JsonProcessingException {
+    @Override
+    String marshall(CloudantEntity object) throws JsonProcessingException {
         return objectMapper.writeValueAsString(object)
+                .replace('"cloudantId":', '"_id":')
+                .replace('"cloudantRev":', '"_rev":')
     }
 
     /**
@@ -44,7 +47,10 @@ class NoAnnotationsJsonMarshaller {
      * @param clazz The target class of the unmarshalled object.
      * @return The unmashalled Object of the given class.
      */
-    static <T> T unmarshall(String string, Class<T> clazz) throws IOException {
+    @Override
+    <T extends CloudantEntity> T unmarshall(String string, Class<T> clazz) throws IOException {
+        string = string.replace('"_id":', '"cloudantId":')
+                       .replace('"_rev":', '"cloudantRev":')
         return objectMapper.readValue(string, clazz)
     }
 
@@ -55,7 +61,10 @@ class NoAnnotationsJsonMarshaller {
      * @param parameterClass The generic class generic part.
      * @return The unmashalled Object of the given generic class.
      */
-    static <T> T unmarshall(String string, Class<?> parametrized, Class<?> parameterClass) throws IOException {
+    @Override
+    <T extends CloudantEntity> T unmarshall(String string, Class<?> parametrized, Class<?> parameterClass) throws IOException {
+        string = string.replace('"_id":', '"cloudantId":')
+                       .replace('"_rev":', '"cloudantRev":')
         // Construct the JavaType with the given parametrized class and generic type.
         JavaType javaType = objectMapper.typeFactory.constructParametricType(parametrized, parameterClass)
         return objectMapper.readValue(string, javaType)
