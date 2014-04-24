@@ -6,7 +6,11 @@
 
 package com.junbo.entitlement.core.service;
 
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefSearchParams;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
+import com.junbo.common.id.EntitlementId;
+import com.junbo.common.util.IdFormatter;
 import com.junbo.entitlement.clientproxy.catalog.EntitlementDefinitionFacade;
 import com.junbo.entitlement.common.cache.PermanentCache;
 import com.junbo.entitlement.common.def.EntitlementConsts;
@@ -17,10 +21,13 @@ import com.junbo.entitlement.spec.model.EntitlementTransfer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.text.ParseException;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 /**
@@ -45,13 +52,7 @@ public class BaseService {
         if (entitlement.getEntitlementDefinitionId() == null) {
             entitlement.setType(EntitlementConsts.NO_TYPE);
         }
-        EntitlementDefinition def = (EntitlementDefinition) PermanentCache.ENTITLEMENT_DEFINITION.get(
-                "id#" + entitlement.getEntitlementDefinitionId(), new Callable<Object>() {
-            @Override
-            public Object call() throws Exception {
-                return definitionFacade.getDefinition(entitlement.getEntitlementDefinitionId());
-            }
-        });
+        EntitlementDefinition def = getDef(entitlement.getEntitlementId());
         if (def == null || StringUtils.isEmpty(def.getType())) {
             entitlement.setType(EntitlementConsts.NO_TYPE);
         } else {
@@ -68,6 +69,7 @@ public class BaseService {
 
     protected void validateCreate(Entitlement entitlement) {
         checkOauth(entitlement);
+        checkDefinition(entitlement.getEntitlementDefinitionId());
         if (Boolean.TRUE.equals(entitlement.getIsBanned())) {
             throw AppErrors.INSTANCE.fieldNotCorrect("isSuspended",
                     "isSuspended can not be true when created").exception();
@@ -84,16 +86,17 @@ public class BaseService {
             throw AppErrors.INSTANCE.missingField("id").exception();
         }
         if (!entitlementId.equals(entitlement.getEntitlementId())) {
-            throw AppErrors.INSTANCE.fieldNotMatch("id", entitlement.getEntitlementId(),
-                    entitlementId).exception();
+            throw AppErrors.INSTANCE.fieldNotMatch("id",
+                    formatId(entitlement.getEntitlementId()),
+                    formatId(entitlementId)).exception();
         }
     }
 
     protected void validateUpdate(Entitlement entitlement, Entitlement existingEntitlement) {
         checkOauth(existingEntitlement);
-        validateEquals(existingEntitlement.getUserId(), entitlement.getUserId(), "user");
-        validateEquals(existingEntitlement.getEntitlementDefinitionId(),
-                entitlement.getEntitlementDefinitionId(), "definition");
+        validateEquals(formatId(existingEntitlement.getUserId()), formatId(entitlement.getUserId()), "user");
+        validateEquals(formatId(existingEntitlement.getEntitlementDefinitionId()),
+                formatId(entitlement.getEntitlementDefinitionId()), "definition");
         validateEquals(existingEntitlement.getGrantTime(), entitlement.getGrantTime(), "grantTime");
         if (entitlement.getUseCount() != null && entitlement.getUseCount() < 1) {
             throw AppErrors.INSTANCE.fieldNotCorrect("useCount", "useCount should not be negative").exception();
@@ -104,13 +107,15 @@ public class BaseService {
     protected void validateTransfer(EntitlementTransfer transfer, Entitlement existingEntitlement) {
         validateNotNull(transfer.getEntitlementId(), "entitlement");
         if (existingEntitlement == null) {
-            throw AppErrors.INSTANCE.notFound("entitlement", transfer.getEntitlementId()).exception();
+            throw AppErrors.INSTANCE.notFound("entitlement",
+                    formatId(transfer.getEntitlementId())).exception();
         }
         checkUser(existingEntitlement.getUserId());
         checkTargetUser(transfer.getTargetUserId());
         if (existingEntitlement.getIsBanned()) {
             LOGGER.error("Entitlement [{}] can not be transferred.", existingEntitlement.getEntitlementId());
-            throw AppErrors.INSTANCE.notTransferable(existingEntitlement.getEntitlementId(),
+            throw AppErrors.INSTANCE.notTransferable(
+                    formatId(existingEntitlement.getEntitlementId()),
                     "Banned entitlement can not be transferred.")
                     .exception();
         }
@@ -183,5 +188,69 @@ public class BaseService {
                         common("date should be in yyyy-MM-ddTHH:mm:ssZ format").exception();
             }
         }
+    }
+
+    protected void checkDefinition(Long entitlementDefinitionId) {
+        EntitlementDefinition def = getDef(entitlementDefinitionId);
+        if (def == null) {
+            throw AppErrors.INSTANCE.fieldNotCorrect("entitlementDefinition",
+                    "entitlementDefinition [" +
+                            formatId(entitlementDefinitionId) +
+                            "] not found").exception();
+        }
+    }
+
+    protected EntitlementDefinition getDef(final Long entitlementDefId) {
+        if (entitlementDefId == null) {
+            return null;
+        }
+        return (EntitlementDefinition) PermanentCache.ENTITLEMENT_DEFINITION.get(
+                "id#" + entitlementDefId, new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                return definitionFacade.getDefinition(entitlementDefId);
+            }
+        });
+    }
+
+    protected EntitlementDefinition getDevDef() {
+        return (EntitlementDefinition) PermanentCache.ENTITLEMENT_DEFINITION.get("developer", new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                EntitlementDefSearchParams params = new EntitlementDefSearchParams();
+                params.setTypes(Collections.singleton(EntitlementType.DEVELOPER.toString()));
+                return definitionFacade.getDefinitions(params).get(0);
+            }
+        });
+    }
+
+    protected EntitlementDefinition getDownloadDef(final Long itemId) {
+        return (EntitlementDefinition) PermanentCache.ENTITLEMENT_DEFINITION.get("download#" + itemId.toString(), new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                EntitlementDefSearchParams params = new EntitlementDefSearchParams();
+                params.setTypes(Collections.singleton(EntitlementType.DOWNLOAD.toString()));
+                params.setGroups(Collections.singleton(itemId.toString()));
+                List<EntitlementDefinition> result = definitionFacade.getDefinitions(params);
+                return CollectionUtils.isEmpty(result) ? null : result.get(0);
+            }
+        });
+    }
+
+    protected EntitlementDefinition getAccessDef(final Long itemId) {
+        return (EntitlementDefinition) PermanentCache.ENTITLEMENT_DEFINITION.get("access#" + itemId.toString(), new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                EntitlementDefSearchParams params = new EntitlementDefSearchParams();
+                params.setTypes(Collections.singleton(EntitlementType.ONLINE_ACCESS.toString()));
+                params.setGroups(Collections.singleton(itemId.toString()));
+                List<EntitlementDefinition> result = definitionFacade.getDefinitions(params);
+                return CollectionUtils.isEmpty(result) ? null : result.get(0);
+            }
+        });
+    }
+
+    protected String formatId(Long id) {
+        return IdFormatter.encodeId(new EntitlementId(id));
     }
 }

@@ -6,12 +6,8 @@
 
 package com.junbo.entitlement.core.service;
 
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefSearchParams;
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import com.junbo.common.id.EntitlementDefinitionId;
 import com.junbo.common.id.UserId;
-import com.junbo.entitlement.common.cache.PermanentCache;
 import com.junbo.entitlement.common.lib.CloneUtils;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.core.EntitlementService;
@@ -30,7 +26,6 @@ import org.springframework.util.CollectionUtils;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.Callable;
 
 /**
  * Service of Entitlement.
@@ -45,7 +40,8 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     public Entitlement getEntitlement(Long entitlementId) {
         Entitlement entitlement = entitlementRepository.get(entitlementId);
         if (entitlement == null) {
-            throw AppErrors.INSTANCE.notFound("entitlement", entitlementId).exception();
+            throw AppErrors.INSTANCE.notFound("entitlement",
+                    formatId(entitlementId)).exception();
         }
         return entitlement;
     }
@@ -64,7 +60,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         validateUpdateId(entitlementId, entitlement);
         Entitlement existingEntitlement = entitlementRepository.get(entitlementId);
         if (existingEntitlement == null) {
-            throw AppErrors.INSTANCE.notFound("entitlement", entitlementId).exception();
+            throw AppErrors.INSTANCE.notFound("entitlement", formatId(entitlementId)).exception();
         }
         fillUpdate(entitlement, existingEntitlement);
         validateUpdate(entitlement, existingEntitlement);
@@ -76,7 +72,8 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     public void deleteEntitlement(Long entitlementId) {
         Entitlement existingEntitlement = entitlementRepository.get(entitlementId);
         if (existingEntitlement == null) {
-            throw AppErrors.INSTANCE.notFound("entitlement", entitlementId).exception();
+            throw AppErrors.INSTANCE.notFound("entitlement",
+                    formatId(entitlementId)).exception();
         }
         checkUser(existingEntitlement.getUserId());
         entitlementRepository.delete(entitlementId);
@@ -112,7 +109,8 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     public Entitlement transferEntitlement(EntitlementTransfer entitlementTransfer) {
         Entitlement existingEntitlement = getEntitlement(entitlementTransfer.getEntitlementId());
         if (existingEntitlement == null) {
-            throw AppErrors.INSTANCE.notFound("entitlement", entitlementTransfer.getEntitlementId()).exception();
+            throw AppErrors.INSTANCE.notFound("entitlement",
+                    formatId(entitlementTransfer.getEntitlementId())).exception();
         }
         validateTransfer(entitlementTransfer, existingEntitlement);
 
@@ -177,47 +175,5 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     @Transactional
     public Entitlement getByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
         return entitlementRepository.getByTrackingUuid(shardMasterId, trackingUuid);
-    }
-
-    private EntitlementDefinition getDevDef() {
-        //just mock it
-        EntitlementDefinition devDef = new EntitlementDefinition();
-        devDef.setEntitlementDefId(123L);
-        PermanentCache.ENTITLEMENT_DEFINITION.put("developer", devDef);
-        //end mock
-        return (EntitlementDefinition) PermanentCache.ENTITLEMENT_DEFINITION.get("developer", new Callable<Object>() {
-            @Override
-            public Object call() throws Exception {
-                EntitlementDefSearchParams params = new EntitlementDefSearchParams();
-                params.setTypes(Collections.singleton(EntitlementType.DEVELOPER.toString()));
-                return definitionFacade.getDefinitions(params).get(0);
-            }
-        });
-    }
-
-    private EntitlementDefinition getDownloadDef(final Long itemId) {
-        return (EntitlementDefinition) PermanentCache.ENTITLEMENT_DEFINITION.get("download#" + itemId.toString(), new Callable<Object>() {
-            @Override
-            public Object call() throws Exception {
-                EntitlementDefSearchParams params = new EntitlementDefSearchParams();
-                params.setTypes(Collections.singleton(EntitlementType.DOWNLOAD.toString()));
-                params.setGroups(Collections.singleton(itemId.toString()));
-                List<EntitlementDefinition> result = definitionFacade.getDefinitions(params);
-                return CollectionUtils.isEmpty(result) ? null : result.get(0);
-            }
-        });
-    }
-
-    private EntitlementDefinition getAccessDef(final Long itemId) {
-        return (EntitlementDefinition) PermanentCache.ENTITLEMENT_DEFINITION.get("access#" + itemId.toString(), new Callable<Object>() {
-            @Override
-            public Object call() throws Exception {
-                EntitlementDefSearchParams params = new EntitlementDefSearchParams();
-                params.setTypes(Collections.singleton(EntitlementType.ONLINE_ACCESS.toString()));
-                params.setGroups(Collections.singleton(itemId.toString()));
-                List<EntitlementDefinition> result = definitionFacade.getDefinitions(params);
-                return CollectionUtils.isEmpty(result) ? null : result.get(0);
-            }
-        });
     }
 }
