@@ -64,7 +64,7 @@ class UserTeleAttemptRepositoryCloudantImpl  extends CloudantClient<UserTeleAtte
 
     @Override
     Promise<Void> delete(UserTeleAttemptId id) {
-        super.cloudantDelete(id.value)
+        super.cloudantDelete(id.toString())
         return Promise.pure(null)
     }
 

@@ -75,7 +75,7 @@ class UserCommunicationRepositoryCloudantImpl extends CloudantClient<UserCommuni
 
     @Override
     Promise<Void> delete(UserOptinId id) {
-        super.cloudantDelete(id.value)
+        super.cloudantDelete(id.toString())
         return Promise.pure(null)
     }
 

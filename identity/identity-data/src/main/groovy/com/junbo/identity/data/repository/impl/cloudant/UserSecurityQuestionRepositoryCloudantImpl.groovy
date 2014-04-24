@@ -65,7 +65,7 @@ class UserSecurityQuestionRepositoryCloudantImpl extends CloudantClient<UserSecu
 
     @Override
     Promise<Void> delete(UserSecurityQuestionId id) {
-        super.cloudantDelete(id.value)
+        super.cloudantDelete(id.toString())
         return Promise.pure(null)
     }
 

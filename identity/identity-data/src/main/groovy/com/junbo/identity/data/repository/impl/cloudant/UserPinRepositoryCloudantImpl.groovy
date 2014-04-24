@@ -69,7 +69,7 @@ class UserPinRepositoryCloudantImpl extends CloudantClient<UserPin> implements U
 
     @Override
     Promise<Void> delete(UserPinId id) {
-        super.cloudantDelete(id.value)
+        super.cloudantDelete(id.toString())
         return Promise.pure(null)
     }
 

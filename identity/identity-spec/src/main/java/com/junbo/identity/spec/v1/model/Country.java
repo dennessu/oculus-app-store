@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
@@ -25,7 +26,7 @@ public class Country extends ResourceMeta implements Identifiable<CountryId> {
     private CountryId id;
 
     @ApiModelProperty(position = 2, required = true,
-            value = "[Nullable]The country code of the country resource, must be same with id.")
+            value = "[Nullable]The country code of the country resource, must be same with id. Client immutable; for query-convenience")
     private String countryCode;
 
     @ApiModelProperty(position = 3, required = true, value = "The default locale of the country resource.")

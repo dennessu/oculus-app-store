@@ -62,7 +62,7 @@ class UserTeleRepositoryCloudantImpl extends CloudantClient<UserTeleCode> implem
 
     @Override
     Promise<Void> delete(UserTeleId id) {
-        super.cloudantDelete(id.value)
+        super.cloudantDelete(id.toString())
         return Promise.pure(null)
     }
 

@@ -6,12 +6,14 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.junbo.common.enumid.LocaleId;
+import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by xiali_000 on 4/21/2014.
  */
-public class Locale {
+public class Locale extends ResourceMeta implements Identifiable<LocaleId> {
 
     @ApiModelProperty(position = 1, required = true, value = "[Nullable]The id of the locale resource.")
     private LocaleId id;

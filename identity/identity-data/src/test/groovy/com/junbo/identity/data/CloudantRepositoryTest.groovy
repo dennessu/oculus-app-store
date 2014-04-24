@@ -5,6 +5,9 @@
  */
 package com.junbo.identity.data
 
+import com.junbo.common.enumid.CountryId
+import com.junbo.common.enumid.CurrencyId
+import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.ClientId
 import com.junbo.common.id.CommunicationId
 import com.junbo.common.id.DeviceId
@@ -19,6 +22,8 @@ import com.junbo.identity.data.repository.*
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.UserPin
 import com.junbo.identity.spec.v1.model.Address
+import com.junbo.identity.spec.v1.model.Country
+import com.junbo.identity.spec.v1.model.Currency
 import com.junbo.identity.spec.v1.model.Device
 import com.junbo.identity.spec.v1.model.Group
 import com.junbo.identity.spec.v1.model.Tos
@@ -125,6 +130,56 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     @Autowired
     @Qualifier('cloudantUserTosRepository')
     private UserTosRepository userTosRepository
+
+    @Autowired
+    @Qualifier('cloudantCountryRepository')
+    private CountryRepository countryRepository
+
+    @Autowired
+    @Qualifier('cloudantCurrencyRepository')
+    private CurrencyRepository currencyRepository
+
+    @Autowired
+    @Qualifier('cloudantLocaleRepository')
+    private LocaleRepository localeRepository
+
+    @Test
+    public void testCountryRepository() {
+        countryRepository.delete(new CountryId('US')).wrapped().get()
+
+        Country country = new Country()
+        country.setId(new CountryId('US'))
+        country.setCountryCode('US')
+        country.setDefaultLocale(new LocaleId('en_US'))
+        country.setDefaultCurrency(new CurrencyId('USD'))
+        Country newCountry = countryRepository.create(country).wrapped().get()
+        assert  country.countryCode == newCountry.countryCode
+    }
+
+    @Test
+    public void testCurrencyRepository() {
+        currencyRepository.delete(new CurrencyId('USD')).wrapped().get()
+
+        Currency currency = new Currency()
+        currency.setId(new CurrencyId('USD'))
+        currency.setCurrencyCode('USD')
+
+        Currency newCurrency = currencyRepository.create(currency).wrapped().get()
+        assert  currency.currencyCode == newCurrency.currencyCode
+    }
+
+    @Test
+    public void testLocaleRepository() {
+        localeRepository.delete(new LocaleId('en_US')).wrapped().get()
+
+        com.junbo.identity.spec.v1.model.Locale locale = new com.junbo.identity.spec.v1.model.Locale()
+        locale.setId(new LocaleId('en_US'))
+        locale.setLocaleCode('en_US')
+
+        com.junbo.identity.spec.v1.model.Locale newLocale = localeRepository.create(locale).wrapped().get()
+        assert  locale.localeCode == newLocale.localeCode
+    }
+
 
     @Test
     public void test() {

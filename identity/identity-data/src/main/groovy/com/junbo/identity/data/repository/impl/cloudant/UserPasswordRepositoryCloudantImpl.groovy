@@ -69,7 +69,7 @@ class UserPasswordRepositoryCloudantImpl extends CloudantClient<UserPassword> im
 
     @Override
     Promise<Void> delete(UserPasswordId id) {
-        super.cloudantDelete(id.value)
+        super.cloudantDelete(id.toString())
         return Promise.pure(null)
     }
 

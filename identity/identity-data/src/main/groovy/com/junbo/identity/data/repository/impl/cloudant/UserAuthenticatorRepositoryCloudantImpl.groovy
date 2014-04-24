@@ -51,7 +51,7 @@ class UserAuthenticatorRepositoryCloudantImpl extends CloudantClient<UserAuthent
 
     @Override
     Promise<Void> delete(UserAuthenticatorId authenticatorId) {
-        super.cloudantDelete(authenticatorId.value)
+        super.cloudantDelete(authenticatorId.toString())
         return Promise.pure(null)
     }
 
