@@ -25,6 +25,8 @@ public class OfferItemEntity extends CartItemEntity {
 
     private Boolean selected;
 
+    private Boolean approved;
+
     @Column(name = "OFFER_ID")
     public Long getOfferId() {
         return offerId;
@@ -52,4 +54,12 @@ public class OfferItemEntity extends CartItemEntity {
         this.selected = selected;
     }
 
+    @Column(name = "APPROVED")
+    public Boolean getApproved() {
+        return approved;
+    }
+
+    public void setApproved(Boolean approved) {
+        this.approved = approved;
+    }
 }
