@@ -13,8 +13,11 @@ import java.util.regex.Pattern;
  * IpUtil.
  */
 public class IpUtil {
-    public static final String _255 = "(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
-    public static final Pattern pattern = Pattern.compile("^(?:" + _255 + "\\.){3}" + _255 + "$");
+    private IpUtil() {
+    }
+
+    public static final String STRING_255 = "(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
+    public static final Pattern PATTERN = Pattern.compile("^(?:" + STRING_255 + "\\.){3}" + STRING_255 + "$");
 
     public static long ipV4ToLong(String ip) {
         String[] octets = ip.split("\\.");
@@ -30,7 +33,7 @@ public class IpUtil {
     }
 
     public static boolean isIPv4Valid(String ip) {
-        return pattern.matcher(ip).matches();
+        return PATTERN.matcher(ip).matches();
     }
 
     public static String getClientIpFromRequest(Request request) {
