@@ -39,8 +39,8 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
     }
 
     @Override
-    public String postPaymentInstrumentToUser(String uid, PaymentInstrument paymentInstrument) throws Exception {
-        return postPaymentInstrumentToUser(uid, paymentInstrument, 200);
+    public String postPaymentInstrument(PaymentInstrument paymentInstrument) throws Exception {
+        return postPaymentInstrument(paymentInstrument, 200);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
     }
 
     @Override
-    public String postPaymentInstrumentToUser(String uid, PaymentInstrument paymentInstrument,
+    public String postPaymentInstrument(PaymentInstrument paymentInstrument,
                                               int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.POST, paymentInstrumentUrl
                + "payment-instruments", paymentInstrument, expectedResponseCode);
