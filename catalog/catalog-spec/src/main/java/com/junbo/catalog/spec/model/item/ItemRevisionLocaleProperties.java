@@ -6,7 +6,11 @@
 
 package com.junbo.catalog.spec.model.item;
 
+import com.junbo.catalog.spec.model.common.Images;
+import com.junbo.catalog.spec.model.common.Video;
 import com.wordnik.swagger.annotations.ApiModelProperty;
+
+import java.util.List;
 
 /**
  * Locale properties for item revision.
@@ -32,6 +36,16 @@ public class ItemRevisionLocaleProperties {
     String copyright;
     @ApiModelProperty(position = 13, required = true, value = "known bugs")
     String knownBugs;
+    @ApiModelProperty(position = 27, required = false, value = "Support email")
+    private String supportEmail;
+    @ApiModelProperty(position = 31, required = false, value = "Manual document for the item revision resource")
+    private String manualDocument;
+    @ApiModelProperty(position = 32, required = false, value = "Community forum link of the item revision resource")
+    private String communityForumLink;
+    @ApiModelProperty(position = 29, required = false, value = "Images to describe the item revision resource")
+    private Images images;
+    @ApiModelProperty(position = 30, required = false, value = "Videos to describe the item revision resource")
+    private List<Video> videos;
     @ApiModelProperty(position = 14, required = true, value = "color")
     String color;
     @ApiModelProperty(position = 15, required = true, value = "size")
@@ -115,6 +129,46 @@ public class ItemRevisionLocaleProperties {
 
     public void setKnownBugs(String knownBugs) {
         this.knownBugs = knownBugs;
+    }
+
+    public String getSupportEmail() {
+        return supportEmail;
+    }
+
+    public void setSupportEmail(String supportEmail) {
+        this.supportEmail = supportEmail;
+    }
+
+    public String getManualDocument() {
+        return manualDocument;
+    }
+
+    public void setManualDocument(String manualDocument) {
+        this.manualDocument = manualDocument;
+    }
+
+    public String getCommunityForumLink() {
+        return communityForumLink;
+    }
+
+    public void setCommunityForumLink(String communityForumLink) {
+        this.communityForumLink = communityForumLink;
+    }
+
+    public Images getImages() {
+        return images;
+    }
+
+    public void setImages(Images images) {
+        this.images = images;
+    }
+
+    public List<Video> getVideos() {
+        return videos;
+    }
+
+    public void setVideos(List<Video> videos) {
+        this.videos = videos;
     }
 
     public String getColor() {

@@ -50,11 +50,15 @@ public class Item extends BaseEntityModel {
             value = "Used to identify the item (app), used mainly for android")
     private String packageName;
 
+    @ApiModelProperty(position = 25, required = true, value = "The platform name, for digital goods only",
+            allowableValues = "PC, MAC, LINUX, ANDROID")
+    private List<String> platforms;
+
     @ItemAttributeId
-    @ApiModelProperty(position = 25, required = true, value = "Genres")
+    @ApiModelProperty(position = 26, required = true, value = "Genres")
     private List<Long> genres;
 
-    @ApiModelProperty(position = 26, required = true, value = "Sku")
+    @ApiModelProperty(position = 27, required = true, value = "Sku")
     private String sku;
 
     @JsonIgnore
@@ -66,6 +70,14 @@ public class Item extends BaseEntityModel {
 
     public void setItemId(Long itemId) {
         this.itemId = itemId;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public Long getCurrentRevisionId() {
@@ -92,14 +104,6 @@ public class Item extends BaseEntityModel {
         this.ownerId = ownerId;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public String getRollupPackageName() {
         return rollupPackageName;
     }
@@ -114,6 +118,14 @@ public class Item extends BaseEntityModel {
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;
+    }
+
+    public List<String> getPlatforms() {
+        return platforms;
+    }
+
+    public void setPlatforms(List<String> platforms) {
+        this.platforms = platforms;
     }
 
     public List<Long> getGenres() {

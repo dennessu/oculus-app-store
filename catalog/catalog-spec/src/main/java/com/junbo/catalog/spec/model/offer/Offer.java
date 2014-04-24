@@ -49,6 +49,9 @@ public class Offer extends BaseEntityModel {
     @ApiModelProperty(position = 25, required = true, value = "Categories of the offer.")
     private List<Long> categories;
 
+    @ApiModelProperty(position = 26, required = true, value = "Environment", allowableValues = "DEV, STAGING, PROD")
+    private String environment;
+
     public Long getOfferId() {
         return offerId;
     }
@@ -103,5 +106,13 @@ public class Offer extends BaseEntityModel {
 
     public void setCategories(List<Long> categories) {
         this.categories = categories;
+    }
+
+    public String getEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(String environment) {
+        this.environment = environment;
     }
 }

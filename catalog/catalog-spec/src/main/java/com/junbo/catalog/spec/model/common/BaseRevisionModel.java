@@ -13,7 +13,8 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  * Base entity revision model.
  */
 public abstract class BaseRevisionModel extends BaseModel {
-    @ApiModelProperty(position = 10, required = true, value = "Status of the item revision")
+    @ApiModelProperty(position = 10, required = true, value = "Status of the revision",
+            allowableValues = "DRAFT, PENDING_REVIEW, APPROVED, REJECTED")
     private String status;
 
     @JsonIgnore

@@ -51,15 +51,7 @@ public class OfferRevision extends BaseRevisionModel {
     private List<String> eligibleCountries;
     @ApiModelProperty(position = 27, required = true, value = "Event actions")
     private Map<String, List<Action>> eventActions;
-    //private TypedProperties<Interval> startEndTime;
 
-    @ApiModelProperty(position = 28, required = true, value = "Images to describe the offer revision resource")
-    private Images images;
-    @ApiModelProperty(position = 29, required = true, value = "Videos to describe the offer revision resource")
-    private List<Video> videos;
-
-    @ApiModelProperty(position = 30, required = true, value = "Start end time for the offer revision resource")
-    private Map<String, Interval> startEndTime;
     @ApiModelProperty(position = 31, required = true, value = "Locale properties of the offer revision resource")
     private Map<String, OfferRevisionLocaleProperties> locales;
 
@@ -133,30 +125,6 @@ public class OfferRevision extends BaseRevisionModel {
 
     public void setEventActions(Map<String, List<Action>> eventActions) {
         this.eventActions = eventActions;
-    }
-
-    public Images getImages() {
-        return images;
-    }
-
-    public void setImages(Images images) {
-        this.images = images;
-    }
-
-    public List<Video> getVideos() {
-        return videos;
-    }
-
-    public void setVideos(List<Video> videos) {
-        this.videos = videos;
-    }
-
-    public Map<String, Interval> getStartEndTime() {
-        return startEndTime;
-    }
-
-    public void setStartEndTime(Map<String, Interval> startEndTime) {
-        this.startEndTime = startEndTime;
     }
 
     public Map<String, OfferRevisionLocaleProperties> getLocales() {
