@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.SubledgerId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.model.BaseResource;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -21,7 +22,7 @@ import java.util.Date;
         "subledgerId", "sellerId", "offerId", "country", "currency",
         "payoutStatus", "totalAmount", "startTime", "endTime", "resourceAge"
 })
-public class Subledger extends BaseModelWithDate {
+public class Subledger extends BaseResource {
     @JsonProperty("self")
     private SubledgerId subledgerId;
     private UserId sellerId;
@@ -32,7 +33,6 @@ public class Subledger extends BaseModelWithDate {
     private String country;
     private String currency;
     private BigDecimal totalAmount;
-    private Integer resourceAge;
 
     public SubledgerId getSubledgerId() {
         return subledgerId;
@@ -82,14 +82,6 @@ public class Subledger extends BaseModelWithDate {
         this.endTime = endTime;
     }
 
-    public Integer getResourceAge() {
-        return resourceAge;
-    }
-
-    public void setResourceAge(Integer resourceAge) {
-        this.resourceAge = resourceAge;
-    }
-
     public String getCountry() {
         return country;
     }
@@ -112,13 +104,5 @@ public class Subledger extends BaseModelWithDate {
 
     public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
-    }
-
-    public Integer getRev() {
-        return resourceAge;
-    }
-
-    public void setRev(Integer resourceAge) {
-        this.resourceAge = resourceAge;
     }
 }
