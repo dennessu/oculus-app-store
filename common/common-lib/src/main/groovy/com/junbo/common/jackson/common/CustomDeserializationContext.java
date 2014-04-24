@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.common.jackson.deserializer;
+package com.junbo.common.jackson.common;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationConfig;
@@ -17,48 +17,47 @@ import com.fasterxml.jackson.databind.deser.DeserializerFactory;
 import com.fasterxml.jackson.databind.introspect.Annotated;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 import com.fasterxml.jackson.databind.introspect.AnnotatedWithParams;
-import com.junbo.common.jackson.annotation.ResourcePath;
-import com.junbo.common.jackson.common.ResourceAware;
-import com.junbo.common.jackson.common.ResourceCollectionAware;
+import com.junbo.common.jackson.aware.AnnotationsAware;
+import com.junbo.common.jackson.aware.ResourceCollectionAware;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 
 /**
- * ResourceAwareDeserializationContext.
+ * CustomDeserializationContext.
  */
-public class ResourceAwareDeserializationContext extends DefaultDeserializationContext {
+public class CustomDeserializationContext extends DefaultDeserializationContext {
     private static final int UNIQUE_PARAM_INDEX = 0;
     private static final int UNIQUE_GENERIC_TYPE_INDEX = 0;
 
-    public ResourceAwareDeserializationContext() {
+    public CustomDeserializationContext() {
         super(BeanDeserializerFactory.instance, null);
     }
 
-    protected ResourceAwareDeserializationContext(DeserializerFactory df, DeserializerCache cache) {
+    protected CustomDeserializationContext(DeserializerFactory df, DeserializerCache cache) {
         super(df, cache);
     }
 
-    protected ResourceAwareDeserializationContext(
+    protected CustomDeserializationContext(
             DefaultDeserializationContext src,
             DeserializationConfig config, JsonParser jp, InjectableValues values) {
         super(src, config, jp, values);
     }
 
-    protected ResourceAwareDeserializationContext(DefaultDeserializationContext src, DeserializerFactory factory) {
+    protected CustomDeserializationContext(DefaultDeserializationContext src, DeserializerFactory factory) {
         super(src, factory);
     }
 
     @Override
-    public ResourceAwareDeserializationContext with(DeserializerFactory factory) {
-        return new ResourceAwareDeserializationContext(this, factory);
+    public CustomDeserializationContext with(DeserializerFactory factory) {
+        return new CustomDeserializationContext(this, factory);
     }
 
     @Override
-    public ResourceAwareDeserializationContext createInstance(DeserializationConfig config,
+    public CustomDeserializationContext createInstance(DeserializationConfig config,
                                                               JsonParser jp, InjectableValues values) {
-        return new ResourceAwareDeserializationContext(this, config, jp, values);
+        return new CustomDeserializationContext(this, config, jp, values);
     }
 
     @Override
@@ -96,13 +95,8 @@ public class ResourceAwareDeserializationContext extends DefaultDeserializationC
             ((ResourceCollectionAware) deser).injectIdClassType(idClassType);
         }
 
-        if (deser instanceof ResourceAware) {
-            ResourcePath typeAnno = annotated.getAnnotation(ResourcePath.class);
-            if (typeAnno == null) {
-                throw new IllegalStateException("ResourcePath annotation is missing.");
-            }
-
-            ((ResourceAware) deser).injectResourcePath(typeAnno.value());
+        if (deser instanceof AnnotationsAware) {
+            ((AnnotationsAware) deser).injectAnnotations(annotated);
         }
 
         return deser;

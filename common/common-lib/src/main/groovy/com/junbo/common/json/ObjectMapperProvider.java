@@ -7,7 +7,6 @@
 package com.junbo.common.json;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -16,8 +15,9 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.junbo.common.deser.IdDeserializer;
 import com.junbo.common.id.Id;
-import com.junbo.common.jackson.deserializer.ResourceAwareDeserializationContext;
-import com.junbo.common.jackson.serializer.ResourceAwareSerializerProvider;
+import com.junbo.common.jackson.common.CustomDeserializationContext;
+import com.junbo.common.jackson.common.CustomSerializerModifier;
+import com.junbo.common.jackson.common.CustomSerializerProvider;
 import com.junbo.common.ser.IdSerializer;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
@@ -38,8 +38,8 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
 
     private static ObjectMapper createObjectMapper() {
         ObjectMapper objectMapper = new ObjectMapper(null,
-                new ResourceAwareSerializerProvider(),
-                new ResourceAwareDeserializationContext());
+                new CustomSerializerProvider(),
+                new CustomDeserializationContext());
 
         objectMapper.setDateFormat(new ISO8601DateFormat());
 
@@ -47,7 +47,12 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
         objectMapper.setSerializationInclusion(JsonInclude.Include.ALWAYS);
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
 
-        SimpleModule module = new SimpleModule(ObjectMapperProvider.class.getName(), new Version(1, 0, 0, null, null, null));
+        SimpleModule module = new SimpleModule(ObjectMapperProvider.class.getName()) {
+            public void setupModule(SetupContext context) {
+                super.setupModule(context);
+                context.addBeanSerializerModifier(new CustomSerializerModifier());
+            }
+        };
 
         ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(true);
         provider.addIncludeFilter(new AssignableTypeFilter(Id.class));

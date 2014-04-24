@@ -5,10 +5,8 @@
  */
 package com.junbo.common.jackson;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.FulfilmentRequestId;
 import com.junbo.common.jackson.annotation.OrderId;
-import com.junbo.common.jackson.serializer.CascadeResource;
 
 /**
  * FulfilmentRequest.
