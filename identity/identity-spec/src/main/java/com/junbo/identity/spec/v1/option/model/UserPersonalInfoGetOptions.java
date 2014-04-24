@@ -10,7 +10,7 @@ import javax.ws.rs.QueryParam;
 /**
  * Created by liangfu on 4/3/14.
  */
-public class UserPiiGetOptions {
+public class UserPersonalInfoGetOptions {
     @QueryParam("properties")
     private String properties;
 

@@ -37,7 +37,6 @@ public interface DeviceResource {
     @Path("/{deviceId}")
     Promise<Device> put(@PathParam("deviceId") DeviceId deviceId, Device device);
 
-    @ApiOperation("Partial update a device info")
     @POST
     @Path("/{deviceId}")
     Promise<Device> patch(@PathParam("deviceId") DeviceId deviceId, Device device);

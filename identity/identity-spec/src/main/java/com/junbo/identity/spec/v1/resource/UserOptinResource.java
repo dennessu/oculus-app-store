@@ -37,7 +37,6 @@ public interface UserOptinResource {
     Promise<UserOptin> get(@PathParam("userOptinId") UserOptinId userOptinId,
                            @BeanParam UserOptinGetOptions getOptions);
 
-    @ApiOperation("Partial update one user optin")
     @POST
     @Path("/{userOptinId}")
     Promise<UserOptin> patch(@PathParam("userOptinId") UserOptinId userOptinId,

@@ -5,47 +5,50 @@
  */
 package com.junbo.identity.spec.v1.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.id.ClientId;
 import com.junbo.common.id.UserCredentialVerifyAttemptId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.util.Identifiable;
-import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by liangfu on 4/3/14.
  */
-public class UserCredentialVerifyAttempt extends ResourceMeta implements Identifiable<UserCredentialVerifyAttemptId> {
+public class UserCredentialVerifyAttempt implements Identifiable<UserCredentialVerifyAttemptId> {
 
-    // Only support search, post. No Get method is supported.
-    @JsonIgnore
+    @ApiModelProperty(position = 1, required = true,
+            value = "[Nullable]The id of user credential attempt resource.")
+    @JsonProperty("self")
     private UserCredentialVerifyAttemptId id;
 
-    @ApiModelProperty(position = 1, required = false, value = "The user resource for the credential attempt.")
+    @ApiModelProperty(position = 2, required = false,
+            value = "[Nullable]The user resource for the credential attempt.")
     @JsonProperty("user")
     private UserId userId;
 
-    @ApiModelProperty(position = 2, required = true, value = "The credential type, must be password or pin.")
-    private String type;
+    @ApiModelProperty(position = 3, required = false, value = "User name.")
+    private String username;
 
-    // base 64
-    @ApiModelProperty(position = 3, required = true,
-            value = "The credential require string, must be base64 encode of username:password")
+    @ApiModelProperty(position = 4, required = true,
+            value = "The credential require string, must be password or pin in raw format.")
     private String value;
 
-    @ApiModelProperty(position = 4, required = false, value = "The client ip of the verify attempt caller.")
+    @ApiModelProperty(position = 5, required = true, value = "The credential type, must be in [PASSWORD, PIN].")
+    private String type;
+
+    @ApiModelProperty(position = 6, required = false, value = "The client ip of the verify attempt caller.")
     private String ipAddress;
 
-    @ApiModelProperty(position = 5, required = false, value = "The user agent of the verify attempt caller.")
+    @ApiModelProperty(position = 7, required = false, value = "The user agent of the verify attempt caller.")
     private String userAgent;
 
-    @ApiModelProperty(position = 6, required = false, value = "The client id of the verify attempt caller.")
-    private String clientId;
+    @ApiModelProperty(position = 8, required = false, value = "The client id of the verify attempt caller.")
+    private ClientId clientId;
 
-    // read only
-    @ApiModelProperty(position = 7, required = false, value = "Whether the verify attempt is succeed.")
-    @JsonProperty("isSuccess")
+    @ApiModelProperty(position = 9, required = false,
+            value = "[Nullable]Whether the verify attempt is succeed.")
+    @JsonProperty("wasSuccessful")
     private Boolean succeeded;
 
     public UserCredentialVerifyAttemptId getId() {
@@ -54,7 +57,6 @@ public class UserCredentialVerifyAttempt extends ResourceMeta implements Identif
 
     public void setId(UserCredentialVerifyAttemptId id) {
         this.id = id;
-        support.setPropertyAssigned("id");
     }
 
     public UserId getUserId() {
@@ -63,17 +65,14 @@ public class UserCredentialVerifyAttempt extends ResourceMeta implements Identif
 
     public void setUserId(UserId userId) {
         this.userId = userId;
-        support.setPropertyAssigned("userId");
-        support.setPropertyAssigned("user");
     }
 
-    public String getType() {
-        return type;
+    public String getUsername() {
+        return username;
     }
 
-    public void setType(String type) {
-        this.type = type;
-        support.setPropertyAssigned("type");
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getValue() {
@@ -82,7 +81,14 @@ public class UserCredentialVerifyAttempt extends ResourceMeta implements Identif
 
     public void setValue(String value) {
         this.value = value;
-        support.setPropertyAssigned("value");
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getIpAddress() {
@@ -91,7 +97,6 @@ public class UserCredentialVerifyAttempt extends ResourceMeta implements Identif
 
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
-        support.setPropertyAssigned("ipAddress");
     }
 
     public String getUserAgent() {
@@ -100,16 +105,14 @@ public class UserCredentialVerifyAttempt extends ResourceMeta implements Identif
 
     public void setUserAgent(String userAgent) {
         this.userAgent = userAgent;
-        support.setPropertyAssigned("userAgent");
     }
 
-    public String getClientId() {
+    public ClientId getClientId() {
         return clientId;
     }
 
-    public void setClientId(String clientId) {
+    public void setClientId(ClientId clientId) {
         this.clientId = clientId;
-        support.setPropertyAssigned("clientId");
     }
 
     public Boolean getSucceeded() {
@@ -118,7 +121,5 @@ public class UserCredentialVerifyAttempt extends ResourceMeta implements Identif
 
     public void setSucceeded(Boolean succeeded) {
         this.succeeded = succeeded;
-        support.setPropertyAssigned("succeeded");
-        support.setPropertyAssigned("isSuccess");
     }
 }

@@ -13,12 +13,14 @@ import com.junbo.common.util.Identifiable;
 import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
+import java.util.Date;
+
 /**
  * Created by liangfu on 4/3/14.
  */
 public class UserTosAgreement extends ResourceMeta implements Identifiable<UserTosAgreementId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "The id of the user agreement resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Nullable]The id of the user agreement resource.")
     @JsonProperty("self")
     private UserTosAgreementId id;
 
@@ -29,6 +31,9 @@ public class UserTosAgreement extends ResourceMeta implements Identifiable<UserT
     @ApiModelProperty(position = 3, required = true, value = "The tos resource.")
     @JsonProperty("tos")
     private TosId tosId;
+
+    @ApiModelProperty(position = 4, required = false, value = "[Nullable]The tos accept time.")
+    private Date agreementTime;
 
     public UserTosAgreementId getId() {
         return id;
@@ -58,5 +63,13 @@ public class UserTosAgreement extends ResourceMeta implements Identifiable<UserT
         this.tosId = tosId;
         support.setPropertyAssigned("tosId");
         support.setPropertyAssigned("tos");
+    }
+
+    public Date getAgreementTime() {
+        return agreementTime;
+    }
+
+    public void setAgreementTime(Date agreementTime) {
+        this.agreementTime = agreementTime;
     }
 }

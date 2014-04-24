@@ -35,4 +35,5 @@ public interface AddressResource {
     @Path("/{addressId}")
     Promise<Address> get(@PathParam("addressId") AddressId addressId);
 
+
 }
