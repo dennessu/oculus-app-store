@@ -64,6 +64,8 @@ public class Cart extends ResourceMeta {
 
     public void setId(CartId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("self");
     }
 
     public UserId getUser() {
@@ -72,6 +74,7 @@ public class Cart extends ResourceMeta {
 
     public void setUser(UserId user) {
         this.user = user;
+        support.setPropertyAssigned("user");
     }
 
     public String getClientId() {
@@ -96,6 +99,7 @@ public class Cart extends ResourceMeta {
 
     public void setCartName(String cartName) {
         this.cartName = cartName;
+        support.setPropertyAssigned("cartName");
     }
 
     public List<OfferItem> getOffers() {
@@ -104,6 +108,7 @@ public class Cart extends ResourceMeta {
 
     public void setOffers(List<OfferItem> offers) {
         this.offers = offers;
+        support.setPropertyAssigned("offers");
     }
 
     public List<String> getCouponCodes() {
@@ -112,5 +117,6 @@ public class Cart extends ResourceMeta {
 
     public void setCouponCodes(List<String> couponCodes) {
         this.couponCodes = couponCodes;
+        support.setPropertyAssigned("couponCodes");
     }
 }
