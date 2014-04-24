@@ -37,13 +37,12 @@ class JunboApplication {
             ctx.registerShutdownHook()
             ctx.refresh()
 
-            LOGGER.info("""Application started with classpath:
-${getClasspath().join(System.lineSeparator())}""")
-
             stopWatch.stop()
             LoggerInitializer.logStarted(LOGGER, stopWatch)
 
         } catch (Exception ex) {
+            LOGGER.error('Application failed with exception:', ex)
+
             if (ctx != null) {
                 try {
                     ctx.close()
@@ -52,25 +51,10 @@ ${getClasspath().join(System.lineSeparator())}""")
                 }
             }
 
-            LOGGER.error('Application failed with exception:', ex)
-
-            LOGGER.error("""Application failed with classpath:
-${getClasspath().join(System.lineSeparator())}""")
-
             LoggerInitializer.stop()
 
-            throw ex
+            System.exit(-1)
         }
-    }
-
-    private static List<String> getClasspath() {
-        ClassLoader classLoader = Thread.currentThread().contextClassLoader
-
-        if (classLoader instanceof URLClassLoader) {
-            return ((URLClassLoader) classLoader).URLs.collect { URL it -> it.toString() }
-        }
-
-        return ['unknown']
     }
 
     private static class JunboApplicationContext extends ClassPathXmlApplicationContext {

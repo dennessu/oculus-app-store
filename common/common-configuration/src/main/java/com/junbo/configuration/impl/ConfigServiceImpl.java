@@ -227,7 +227,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
     private void loadConfig() {
         String environment = System.getProperty(ACTIVE_ENV_OPTS);
         if (StringUtils.isEmpty(environment)) {
-            logger.info("No environment configured, will use default environment=onebox.\n");
+            logger.info("No environment configured, will use default environment=onebox.");
             configContext = new ConfigContext(DEFAULT_ENVIRONMENT);
         }
         else {
