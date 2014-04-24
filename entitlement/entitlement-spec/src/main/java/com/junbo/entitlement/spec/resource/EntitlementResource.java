@@ -52,7 +52,6 @@ public interface EntitlementResource {
     @Path("/{entitlementId}")
     Promise<Response> deleteEntitlement(@PathParam("entitlementId") EntitlementId entitlementId);
 
-    @ApiOperation("Transfer an entitlement")
     @POST
     @Path("/transfer")
     @Consumes({MediaType.APPLICATION_JSON})

@@ -64,7 +64,11 @@ public class BaseService {
         existingEntitlement.setUseCount(entitlement.getUseCount());
         existingEntitlement.setExpirationTime(entitlement.getExpirationTime());
         existingEntitlement.setRev(entitlement.getRev());
-        existingEntitlement.setIsBanned(entitlement.getIsBanned());
+        if (entitlement.getIsBanned() != null) {
+            existingEntitlement.setIsBanned(entitlement.getIsBanned());
+        } else {
+            existingEntitlement.setIsBanned(false);
+        }
     }
 
     protected void validateCreate(Entitlement entitlement) {
