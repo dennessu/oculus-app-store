@@ -16,6 +16,7 @@ import org.springframework.util.StopWatch
 @CompileStatic
 @SuppressWarnings('UnnecessaryGetter')
 @SuppressWarnings('LoggingSwallowsStacktrace')
+@SuppressWarnings('SystemExit')
 class JunboApplication {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JunboApplication)
