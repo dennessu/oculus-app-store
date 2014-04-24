@@ -23,7 +23,7 @@ import com.junbo.identity.spec.v1.model.UserAuthenticator
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.identity.spec.v1.model.UserDevice
 import com.junbo.identity.spec.v1.model.UserGroup
-import com.junbo.identity.spec.v1.model.UserOptin
+import com.junbo.identity.spec.v1.model.UserCommunication
 import com.junbo.identity.spec.v1.model.UserSecurityQuestion
 import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt
 import com.junbo.identity.spec.v1.model.UserTosAgreement
@@ -95,7 +95,7 @@ public class SqlRepositoryTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     @Qualifier('sqlUserOptinRepository')
-    private UserOptinRepository userOptinRepository
+    private UserCommunicationRepository userOptinRepository
 
     @Autowired
     @Qualifier('sqlUserPasswordRepository')
@@ -346,14 +346,14 @@ public class SqlRepositoryTest extends AbstractTestNGSpringContextTests {
 
     @Test(enabled = true)
     public void testUserOptinRepository() {
-        UserOptin userOptin = new UserOptin()
+        UserCommunication userOptin = new UserCommunication()
         userOptin.setUserId(new UserId(userId))
         userOptin.setType(UUID.randomUUID().toString())
         userOptin.setCreatedBy('lixia')
         userOptin.setCreatedTime(new Date())
         userOptin = userOptinRepository.create(userOptin).wrapped().get()
 
-        UserOptin newUserOptin = userOptinRepository.get(userOptin.getId()).wrapped().get()
+        UserCommunication newUserOptin = userOptinRepository.get(userOptin.getId()).wrapped().get()
         Assert.assertEquals(userOptin.getType(), newUserOptin.getType())
 
         String value = UUID.randomUUID().toString()
@@ -365,7 +365,7 @@ public class SqlRepositoryTest extends AbstractTestNGSpringContextTests {
 
         UserOptinListOptions getOption = new UserOptinListOptions()
         getOption.setUserId(new UserId(userId))
-        List<UserOptin> userOptins = userOptinRepository.search(getOption).wrapped().get()
+        List<UserCommunication> userOptins = userOptinRepository.search(getOption).wrapped().get()
         assert userOptins.size() != 0
     }
 
@@ -478,7 +478,7 @@ public class SqlRepositoryTest extends AbstractTestNGSpringContextTests {
         device = deviceRepository.get((DeviceId)newDevice.id).wrapped().get()
         assert device.description == newDescription
 
-        device = deviceRepository.searchByExternalRef(device.externalRef).wrapped().get()
+        device = deviceRepository.searchBySerialNumber(device.externalRef).wrapped().get()
         assert device.description == newDescription
     }
 }

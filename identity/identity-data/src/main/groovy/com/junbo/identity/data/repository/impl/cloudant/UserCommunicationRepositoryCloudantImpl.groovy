@@ -4,7 +4,7 @@ import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.UserOptinId
 import com.junbo.identity.data.repository.UserCommunicationRepository
-import com.junbo.identity.spec.v1.model.UserOptin
+import com.junbo.identity.spec.v1.model.UserCommunication
 import com.junbo.identity.spec.v1.option.list.UserOptinListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Required
  * Created by haomin on 14-4-11.
  */
 @CompileStatic
-class UserCommunicationRepositoryCloudantImpl extends CloudantClient<UserOptin> implements UserCommunicationRepository {
+class UserCommunicationRepositoryCloudantImpl extends CloudantClient<UserCommunication> implements UserCommunicationRepository {
     private ShardAlgorithm shardAlgorithm
     private IdGenerator idGenerator
 
@@ -36,25 +36,25 @@ class UserCommunicationRepositoryCloudantImpl extends CloudantClient<UserOptin> 
     }
 
     @Override
-    Promise<UserOptin> create(UserOptin entity) {
+    Promise<UserCommunication> create(UserCommunication entity) {
         if (entity.id == null) {
             entity.id = new UserOptinId(idGenerator.nextId(entity.userId.value))
         }
-        return Promise.pure((UserOptin)super.cloudantPost(entity))
+        return Promise.pure((UserCommunication)super.cloudantPost(entity))
     }
 
     @Override
-    Promise<UserOptin> update(UserOptin entity) {
-        return Promise.pure((UserOptin)super.cloudantPut(entity))
+    Promise<UserCommunication> update(UserCommunication entity) {
+        return Promise.pure((UserCommunication)super.cloudantPut(entity))
     }
 
     @Override
-    Promise<UserOptin> get(UserOptinId id) {
-        return Promise.pure((UserOptin)super.cloudantGet(id.toString()))
+    Promise<UserCommunication> get(UserOptinId id) {
+        return Promise.pure((UserCommunication)super.cloudantGet(id.toString()))
     }
 
     @Override
-    Promise<List<UserOptin>> search(UserOptinListOptions getOption) {
+    Promise<List<UserCommunication>> search(UserOptinListOptions getOption) {
         def result = []
         if (getOption.userId != null) {
             if (getOption.communicationId != null) {

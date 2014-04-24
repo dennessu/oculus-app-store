@@ -53,7 +53,7 @@ class DeviceRepositoryCloudantImpl extends CloudantClient<Device> implements Dev
     }
 
     @Override
-    Promise<Device> searchByExternalRef(String externalRef) {
+    Promise<Device> searchBySerialNumber(String externalRef) {
         def list = super.queryView('by_external_ref', externalRef)
         return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)
     }

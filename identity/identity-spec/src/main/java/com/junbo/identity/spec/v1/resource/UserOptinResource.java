@@ -7,7 +7,7 @@ package com.junbo.identity.spec.v1.resource;
 
 import com.junbo.common.id.UserOptinId;
 import com.junbo.common.model.Results;
-import com.junbo.identity.spec.v1.model.UserOptin;
+import com.junbo.identity.spec.v1.model.UserCommunication;
 import com.junbo.identity.spec.v1.option.list.UserOptinListOptions;
 import com.junbo.identity.spec.v1.option.model.UserOptinGetOptions;
 import com.junbo.langur.core.RestResource;
@@ -29,24 +29,24 @@ import javax.ws.rs.core.MediaType;
 public interface UserOptinResource {
     @ApiOperation("Create one user optin")
     @POST
-    Promise<UserOptin> create(UserOptin userOptin);
+    Promise<UserCommunication> create(UserCommunication userOptin);
 
     @ApiOperation("Get one user optin")
     @GET
     @Path("/{userOptinId}")
-    Promise<UserOptin> get(@PathParam("userOptinId") UserOptinId userOptinId,
+    Promise<UserCommunication> get(@PathParam("userOptinId") UserOptinId userOptinId,
                            @BeanParam UserOptinGetOptions getOptions);
 
     @POST
     @Path("/{userOptinId}")
-    Promise<UserOptin> patch(@PathParam("userOptinId") UserOptinId userOptinId,
-                              UserOptin userOptin);
+    Promise<UserCommunication> patch(@PathParam("userOptinId") UserOptinId userOptinId,
+                              UserCommunication userOptin);
 
     @ApiOperation("Update one user optin")
     @PUT
     @Path("/{userOptinId}")
-    Promise<UserOptin> put(@PathParam("userOptinId") UserOptinId userOptinId,
-                            UserOptin userOptin);
+    Promise<UserCommunication> put(@PathParam("userOptinId") UserOptinId userOptinId,
+                            UserCommunication userOptin);
 
     @ApiOperation("Delete one user optin")
     @DELETE
@@ -55,5 +55,5 @@ public interface UserOptinResource {
 
     @ApiOperation("Search user optins")
     @GET
-    Promise<Results<UserOptin>> list(@BeanParam UserOptinListOptions listOptions);
+    Promise<Results<UserCommunication>> list(@BeanParam UserOptinListOptions listOptions);
 }

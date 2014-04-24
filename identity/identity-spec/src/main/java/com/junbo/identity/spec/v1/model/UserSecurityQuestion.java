@@ -30,7 +30,8 @@ public class UserSecurityQuestion extends ResourceMeta implements Identifiable<U
     private String answer;
 
     @ApiModelProperty(position = 4, required = true, value = "[Nullable]Users")
-    private UserId user;
+    @JsonProperty("user")
+    private UserId userId;
 
     @JsonIgnore
     private String answerHash;
@@ -73,11 +74,11 @@ public class UserSecurityQuestion extends ResourceMeta implements Identifiable<U
         support.setPropertyAssigned("answerHash");
     }
 
-    public UserId getUser() {
-        return user;
+    public UserId getUserId() {
+        return userId;
     }
 
-    public void setUser(UserId user) {
-        this.user = user;
+    public void setUserId(UserId userId) {
+        this.userId = userId;
     }
 }

@@ -10,13 +10,15 @@ import com.junbo.common.id.ClientId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserSecurityQuestionId;
 import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId;
+import com.junbo.common.model.ResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by liangfu on 4/3/14.
  */
-public class UserSecurityQuestionVerifyAttempt implements Identifiable<UserSecurityQuestionVerifyAttemptId> {
+public class UserSecurityQuestionVerifyAttempt extends ResourceMeta
+        implements Identifiable<UserSecurityQuestionVerifyAttemptId> {
 
     @ApiModelProperty(position = 1, required = true,
             value = "[Nullable]The id of user security question attempt.")

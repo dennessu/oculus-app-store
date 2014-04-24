@@ -66,10 +66,6 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     private UserAuthenticatorRepository userAuthenticatorRepository
 
     @Autowired
-    @Qualifier('userDeviceRepository')
-    private UserDeviceRepository userDeviceRepository
-
-    @Autowired
     @Qualifier('userGroupRepository')
     private UserGroupRepository userGroupRepository
 
@@ -79,7 +75,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     @Qualifier('userOptinRepository')
-    private UserOptinRepository userOptinRepository
+    private UserCommunicationRepository userOptinRepository
 
     @Autowired
     @Qualifier('userPasswordRepository')
@@ -274,30 +270,6 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void testUserDeviceRepository() {
-        UserDevice userDevice = new UserDevice()
-        userDevice.setDeviceId(new DeviceId(123L))
-        userDevice.setUserId(new UserId(userId))
-        userDevice.setCreatedBy('lixia')
-        userDevice.setCreatedTime(new Date())
-
-        userDevice = userDeviceRepository.create(userDevice).wrapped().get()
-
-        UserDevice newUserDevice = userDeviceRepository.get((UserDeviceId)userDevice.id).wrapped().get()
-        Assert.assertEquals(userDevice.deviceId, newUserDevice.deviceId)
-
-        DeviceId newDeviceId = new DeviceId(345L)
-        newUserDevice.setDeviceId(newDeviceId)
-        newUserDevice = userDeviceRepository.update(newUserDevice).wrapped().get()
-        Assert.assertEquals(newDeviceId, newUserDevice.deviceId)
-
-        UserDeviceListOptions getOption = new UserDeviceListOptions()
-        getOption.setUserId(new UserId(userId))
-        List<UserDevice> userDevices = userDeviceRepository.search(getOption).wrapped().get()
-        assert userDevices.size() != 0
-    }
-
-    @Test
     public void testUserGroupRepository() {
         UserGroup userGroup = new UserGroup()
         userGroup.setUserId(new UserId(userId))
@@ -350,14 +322,14 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void testUserOptinRepository() {
-        UserOptin userOptin = new UserOptin()
+        UserCommunication userOptin = new UserCommunication()
         userOptin.setUserId(new UserId(userId))
         userOptin.setType(UUID.randomUUID().toString())
         userOptin.setCreatedBy('lixia')
         userOptin.setCreatedTime(new Date())
         userOptin = userOptinRepository.create(userOptin).wrapped().get()
 
-        UserOptin newUserOptin = userOptinRepository.get(userOptin.getId()).wrapped().get()
+        UserCommunication newUserOptin = userOptinRepository.get(userOptin.getId()).wrapped().get()
         Assert.assertEquals(userOptin.getType(), newUserOptin.getType())
 
         String value = UUID.randomUUID().toString()
@@ -367,7 +339,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         UserOptinListOptions getOption = new UserOptinListOptions()
         getOption.setUserId(new UserId(userId))
-        List<UserOptin> userOptins = userOptinRepository.search(getOption).wrapped().get()
+        List<UserCommunication> userOptins = userOptinRepository.search(getOption).wrapped().get()
         assert userOptins.size() != 0
     }
 
@@ -476,7 +448,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         device = deviceRepository.update(newDevice).wrapped().get()
         assert device.description == newDescription
 
-        device = deviceRepository.searchByExternalRef(device.externalRef).wrapped().get()
+        device = deviceRepository.searchBySerialNumber(device.externalRef).wrapped().get()
         assert device.description == newDescription
     }
 

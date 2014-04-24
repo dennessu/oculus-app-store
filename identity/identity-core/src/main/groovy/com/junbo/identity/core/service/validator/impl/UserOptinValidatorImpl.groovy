@@ -2,11 +2,11 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.id.UserOptinId
 import com.junbo.identity.core.service.validator.UserOptinValidator
-import com.junbo.identity.data.repository.UserOptinRepository
+import com.junbo.identity.data.repository.UserCommunicationRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserOptin
+import com.junbo.identity.spec.v1.model.UserCommunication
 import com.junbo.identity.spec.v1.option.list.UserOptinListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -21,18 +21,18 @@ class UserOptinValidatorImpl implements UserOptinValidator {
 
     private UserRepository userRepository
 
-    private UserOptinRepository userOptinRepository
+    private UserCommunicationRepository userOptinRepository
 
     private List<String> allowedTypes
 
     @Override
-    Promise<UserOptin> validateForGet(UserOptinId userOptinId) {
+    Promise<UserCommunication> validateForGet(UserOptinId userOptinId) {
 
         if (userOptinId == null) {
             throw AppErrors.INSTANCE.parameterRequired('userOptinId').exception()
         }
 
-        return userOptinRepository.get(userOptinId).then { UserOptin userOptin ->
+        return userOptinRepository.get(userOptinId).then { UserCommunication userOptin ->
             if (userOptin == null) {
                 throw AppErrors.INSTANCE.userOptinNotFound(userOptinId).exception()
             }
@@ -59,7 +59,7 @@ class UserOptinValidatorImpl implements UserOptinValidator {
     }
 
     @Override
-    Promise<Void> validateForCreate(UserOptin userOptin) {
+    Promise<Void> validateForCreate(UserCommunication userOptin) {
         checkBasicUserOptinInfo(userOptin).then {
             if (userOptin.id != null) {
                 throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
@@ -68,7 +68,7 @@ class UserOptinValidatorImpl implements UserOptinValidator {
             return userOptinRepository.search(new UserOptinListOptions(
                     userId: userOptin.userId,
                     type: userOptin.type
-            )).then { List<UserOptin> existing ->
+            )).then { List<UserCommunication> existing ->
                 if (!CollectionUtils.isEmpty(existing)) {
                     throw AppErrors.INSTANCE.fieldDuplicate('type').exception()
                 }
@@ -79,9 +79,9 @@ class UserOptinValidatorImpl implements UserOptinValidator {
     }
 
     @Override
-    Promise<Void> validateForUpdate(UserOptinId userOptinId, UserOptin userOptin, UserOptin oldUserOptin) {
+    Promise<Void> validateForUpdate(UserOptinId userOptinId, UserCommunication userOptin, UserCommunication oldUserOptin) {
 
-        return validateForGet(userOptinId).then { UserOptin existingUserOptin ->
+        return validateForGet(userOptinId).then { UserCommunication existingUserOptin ->
             if (existingUserOptin.userId != userOptin.userId) {
                 throw AppErrors.INSTANCE.fieldInvalid('userId').exception()
             }
@@ -108,7 +108,7 @@ class UserOptinValidatorImpl implements UserOptinValidator {
                 return userOptinRepository.search(new UserOptinListOptions(
                         userId: userOptin.userId,
                         type: userOptin.type
-                )).then { List<UserOptin> existing ->
+                )).then { List<UserCommunication> existing ->
                     if (!CollectionUtils.isEmpty(existing)) {
                         throw AppErrors.INSTANCE.fieldDuplicate('type').exception()
                     }
@@ -127,7 +127,7 @@ class UserOptinValidatorImpl implements UserOptinValidator {
     }
 
     @Required
-    void setUserOptinRepository(UserOptinRepository userOptinRepository) {
+    void setUserOptinRepository(UserCommunicationRepository userOptinRepository) {
         this.userOptinRepository = userOptinRepository
     }
 
@@ -136,7 +136,7 @@ class UserOptinValidatorImpl implements UserOptinValidator {
         this.allowedTypes = allowedTypes
     }
 
-    private Promise<Void> checkBasicUserOptinInfo(UserOptin userOptin) {
+    private Promise<Void> checkBasicUserOptinInfo(UserCommunication userOptin) {
         if (userOptin == null) {
             throw new IllegalArgumentException('userOptin is null')
         }

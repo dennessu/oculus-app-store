@@ -1,6 +1,6 @@
 package com.junbo.identity.data.view
 
-import com.junbo.identity.data.entity.user.UserOptinEntity
+import com.junbo.identity.data.entity.user.UserCommunicationEntity
 import com.junbo.sharding.view.EntityView
 import groovy.transform.CompileStatic
 
@@ -9,11 +9,11 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 @SuppressWarnings('GetterMethodCouldBeProperty')
-class UserOptinCommunicationView implements EntityView<Long, UserOptinEntity, String> {
+class UserOptinCommunicationView implements EntityView<Long, UserCommunicationEntity, Long> {
 
     @Override
     String getName() {
-        return 'user_optin_type_ref'
+        return 'user_communication_ref'
     }
 
     @Override
@@ -22,30 +22,30 @@ class UserOptinCommunicationView implements EntityView<Long, UserOptinEntity, St
     }
 
     @Override
-    Class<UserOptinEntity> getEntityType() {
-        return UserOptinEntity
+    Class<UserCommunicationEntity> getEntityType() {
+        return UserCommunicationEntity
     }
 
     @Override
-    Class<String> getKeyType() {
-        return String
+    Class<Long> getKeyType() {
+        return Long
     }
 
     @Override
-    boolean handlesEntity(UserOptinEntity entity) {
+    boolean handlesEntity(UserCommunicationEntity entity) {
         if (entity == null) {
             throw new IllegalArgumentException('entity is null')
         }
 
-        return entity.type != null
+        return entity.communicationId != null
     }
 
     @Override
-    List<String> mapEntity(UserOptinEntity entity) {
+    List<Long> mapEntity(UserCommunicationEntity entity) {
         if (entity == null) {
             throw new IllegalArgumentException('entity is null')
         }
 
-        return [entity.type]
+        return [entity.communicationId]
     }
 }

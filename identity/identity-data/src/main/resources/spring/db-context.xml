@@ -28,7 +28,7 @@
     <bean id="userEmailDAO" class="com.junbo.identity.data.dao.impl.UserEmailDAOImpl" parent="identityBaseDAO" />
     <bean id="userGroupDAO" class="com.junbo.identity.data.dao.impl.UserGroupDAOImpl" parent="identityBaseDAO" />
     <bean id="userCredentialVerifyAttemptDAO" class="com.junbo.identity.data.dao.impl.UserCredentialVerifyAttemptDAOImpl" parent="identityBaseDAO" />
-    <bean id="userOptinDAO" class="com.junbo.identity.data.dao.impl.UserOptinDAOImpl" parent="identityBaseDAO" />
+    <bean id="userOptinDAO" class="com.junbo.identity.data.dao.impl.UserCommunicationDAOImpl" parent="identityBaseDAO" />
     <bean id="userPasswordDAO" class="com.junbo.identity.data.dao.impl.UserPasswordDAOImpl" parent="identityBaseDAO" />
     <bean id="userPhoneNumberDAO" class="com.junbo.identity.data.dao.impl.UserPhoneNumberDAOImpl" parent="identityBaseDAO" />
     <bean id="userPinDAO" class="com.junbo.identity.data.dao.impl.UserPinDAOImpl" parent="identityBaseDAO" />
@@ -70,7 +70,7 @@
         <property name="modelMapper" ref="modelMapper"/>
         <property name="credentialVerifyAttemptDAO" ref="userCredentialVerifyAttemptDAO"/>
     </bean>
-    <bean id="sqlUserOptinRepository" class="com.junbo.identity.data.repository.impl.sql.UserOptinRepositorySqlImpl" >
+    <bean id="sqlUserOptinRepository" class="com.junbo.identity.data.repository.impl.sql.UserCommunicationRepositorySqlImpl" >
         <property name="userOptinDAO" ref="userOptinDAO"/>
         <property name="modelMapper" ref="modelMapper"/>
     </bean>
@@ -161,7 +161,8 @@
                 <bean class="com.junbo.identity.data.view.UserGroupIdView"/>
                 <bean class="com.junbo.identity.data.view.RoleNameView"/>
                 <bean class="com.junbo.identity.data.view.RoleAssignmentRoleIdAssigneeView"/>
-                <bean class="com.junbo.identity.data.view.UserOptinTypeView" />
+                <bean class="com.junbo.identity.data.view.UserOptinCommunicationView" />
+                <bean class="com.junbo.identity.data.view.CommunicationNameView" />
             </list>
         </property>
     </bean>

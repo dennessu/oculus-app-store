@@ -6,9 +6,9 @@ import com.junbo.common.model.Results
 import com.junbo.identity.core.service.Created201Marker
 import com.junbo.identity.core.service.filter.UserOptinFilter
 import com.junbo.identity.core.service.validator.UserOptinValidator
-import com.junbo.identity.data.repository.UserOptinRepository
+import com.junbo.identity.data.repository.UserCommunicationRepository
 import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.v1.model.UserOptin
+import com.junbo.identity.spec.v1.model.UserCommunication
 import com.junbo.identity.spec.v1.option.list.UserOptinListOptions
 import com.junbo.identity.spec.v1.option.model.UserOptinGetOptions
 import com.junbo.identity.spec.v1.resource.UserOptinResource
@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional
 class UserOptinResourceImpl implements UserOptinResource {
 
     @Autowired
-    private UserOptinRepository userOptinRepository
+    private UserCommunicationRepository userOptinRepository
 
     @Autowired
     private Created201Marker created201Marker
@@ -37,7 +37,7 @@ class UserOptinResourceImpl implements UserOptinResource {
     private UserOptinValidator userOptinValidator
 
     @Override
-    Promise<UserOptin> create(UserOptin userOptin) {
+    Promise<UserCommunication> create(UserCommunication userOptin) {
         if (userOptin == null) {
             throw new IllegalArgumentException('userOptin is null')
         }
@@ -45,7 +45,7 @@ class UserOptinResourceImpl implements UserOptinResource {
         userOptin = userOptinFilter.filterForCreate(userOptin)
 
         userOptinValidator.validateForCreate(userOptin).then {
-            userOptinRepository.create(userOptin).then { UserOptin newUserOptin ->
+            userOptinRepository.create(userOptin).then { UserCommunication newUserOptin ->
                 created201Marker.mark((Id)newUserOptin.id)
 
                 newUserOptin = userOptinFilter.filterForGet(newUserOptin, null)
@@ -55,12 +55,12 @@ class UserOptinResourceImpl implements UserOptinResource {
     }
 
     @Override
-    Promise<UserOptin> get(UserOptinId userOptinId, UserOptinGetOptions getOptions) {
+    Promise<UserCommunication> get(UserOptinId userOptinId, UserOptinGetOptions getOptions) {
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        userOptinValidator.validateForGet(userOptinId).then { UserOptin newUserOptin ->
+        userOptinValidator.validateForGet(userOptinId).then { UserCommunication newUserOptin ->
             newUserOptin = userOptinFilter.filterForGet(newUserOptin,
                     getOptions.properties?.split(',') as List<String>)
 
@@ -69,7 +69,7 @@ class UserOptinResourceImpl implements UserOptinResource {
     }
 
     @Override
-    Promise<UserOptin> patch(UserOptinId userOptinId, UserOptin userOptin) {
+    Promise<UserCommunication> patch(UserOptinId userOptinId, UserCommunication userOptin) {
         if (userOptinId == null) {
             throw new IllegalArgumentException('userOptinId is null')
         }
@@ -78,7 +78,7 @@ class UserOptinResourceImpl implements UserOptinResource {
             throw new IllegalArgumentException('userOptin is null')
         }
 
-        return userOptinRepository.get(userOptinId).then { UserOptin oldUserOptin ->
+        return userOptinRepository.get(userOptinId).then { UserCommunication oldUserOptin ->
             if (oldUserOptin == null) {
                 throw AppErrors.INSTANCE.userOptinNotFound(userOptinId).exception()
             }
@@ -87,7 +87,7 @@ class UserOptinResourceImpl implements UserOptinResource {
 
             userOptinValidator.validateForUpdate(userOptinId, userOptin, oldUserOptin).then {
 
-                userOptinRepository.update(userOptin).then { UserOptin newUserOptin ->
+                userOptinRepository.update(userOptin).then { UserCommunication newUserOptin ->
                     newUserOptin = userOptinFilter.filterForGet(newUserOptin, null)
                     return Promise.pure(newUserOptin)
                 }
@@ -96,7 +96,7 @@ class UserOptinResourceImpl implements UserOptinResource {
     }
 
     @Override
-    Promise<UserOptin> put(UserOptinId userOptinId, UserOptin userOptin) {
+    Promise<UserCommunication> put(UserOptinId userOptinId, UserCommunication userOptin) {
         if (userOptinId == null) {
             throw new IllegalArgumentException('userOptinId is null')
         }
@@ -105,7 +105,7 @@ class UserOptinResourceImpl implements UserOptinResource {
             throw new IllegalArgumentException('userOptin is null')
         }
 
-        return userOptinRepository.get(userOptinId).then { UserOptin oldUserOptin ->
+        return userOptinRepository.get(userOptinId).then { UserCommunication oldUserOptin ->
             if (oldUserOptin == null) {
                 throw AppErrors.INSTANCE.userOptinNotFound(userOptinId).exception()
             }
@@ -113,7 +113,7 @@ class UserOptinResourceImpl implements UserOptinResource {
             userOptin = userOptinFilter.filterForPut(userOptin, oldUserOptin)
 
             return userOptinValidator.validateForUpdate(userOptinId, userOptin, oldUserOptin).then {
-                userOptinRepository.update(userOptin).then { UserOptin newUserOptin ->
+                userOptinRepository.update(userOptin).then { UserCommunication newUserOptin ->
                     newUserOptin = userOptinFilter.filterForGet(newUserOptin, null)
                     return Promise.pure(newUserOptin)
                 }
@@ -131,12 +131,12 @@ class UserOptinResourceImpl implements UserOptinResource {
     }
 
     @Override
-    Promise<Results<UserOptin>> list(UserOptinListOptions listOptions) {
+    Promise<Results<UserCommunication>> list(UserOptinListOptions listOptions) {
         return userOptinValidator.validateForSearch(listOptions).then {
-            userOptinRepository.search(listOptions).then { List<UserOptin> userOptinList ->
-                def result = new Results<UserOptin>(items: [])
+            userOptinRepository.search(listOptions).then { List<UserCommunication> userOptinList ->
+                def result = new Results<UserCommunication>(items: [])
 
-                userOptinList.each { UserOptin newUserOptin ->
+                userOptinList.each { UserCommunication newUserOptin ->
                     if (newUserOptin != null) {
                         newUserOptin = userOptinFilter.filterForGet(newUserOptin,
                                 listOptions.properties?.split(',') as List<String>)

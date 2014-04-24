@@ -68,7 +68,7 @@ class UserAuthenticatorDAOImpl extends BaseDAO implements UserAuthenticatorDAO {
     @Override
     UserAuthenticatorEntity getIdByAuthenticatorValue(String value) {
         UserAuthenticatorEntity example = new UserAuthenticatorEntity()
-        example.setValue(value)
+        example.setExternalId(value)
 
         def viewQuery = viewQueryFactory.from(example)
         if (viewQuery != null) {

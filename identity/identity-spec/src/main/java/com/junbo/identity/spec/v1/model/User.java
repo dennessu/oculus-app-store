@@ -9,8 +9,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
 import com.junbo.common.model.Link;
-import com.junbo.common.util.Identifiable;
 import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
@@ -34,6 +34,9 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
     @ApiModelProperty(position = 4, required = false,
             value = "The preferred timezone of the user, must be the format as UTC+08:00.")
     private String preferredTimezone;
+
+    @ApiModelProperty(position = 5, required = true, value = "Is Anonymous.")
+    private Boolean isAnonymous;
 
     @ApiModelProperty(position = 5, required = false, value = "User status.")
     private String status;
@@ -275,5 +278,13 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setCanonicalUsername(String canonicalUsername) {
         this.canonicalUsername = canonicalUsername;
+    }
+
+    public Boolean getIsAnonymous() {
+        return isAnonymous;
+    }
+
+    public void setIsAnonymous(Boolean isAnonymous) {
+        this.isAnonymous = isAnonymous;
     }
 }

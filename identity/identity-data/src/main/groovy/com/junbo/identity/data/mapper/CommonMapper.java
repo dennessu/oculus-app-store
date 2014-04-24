@@ -13,6 +13,7 @@ import com.junbo.common.id.*;
 import com.junbo.common.util.EnumRegistry;
 import com.junbo.identity.data.identifiable.UserPasswordStrength;
 import com.junbo.identity.spec.error.AppErrors;
+import com.junbo.identity.spec.v1.model.Communication;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -418,5 +419,19 @@ public class CommonMapper {
             return null;
         }
         return new UserTeleBackupCodeAttemptId(id);
+    }
+
+    public Long toCommunicationId(CommunicationId id) {
+        if (id == null) {
+            return null;
+        }
+        return id.getValue();
+    }
+
+    public CommunicationId toCommunicationId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        return new CommunicationId(id);
     }
 }

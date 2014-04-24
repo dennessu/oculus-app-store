@@ -60,7 +60,7 @@ class DeviceValidatorImpl implements DeviceValidator {
             throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
         }
 
-        return deviceRepository.searchByExternalRef(device.externalRef).then { Device existing ->
+        return deviceRepository.searchBySerialNumber(device.externalRef).then { Device existing ->
             if (existing != null) {
                 throw AppErrors.INSTANCE.fieldInvalid('externalRef').exception()
             }
@@ -89,7 +89,7 @@ class DeviceValidatorImpl implements DeviceValidator {
 
         checkBasicDeviceInfo(device)
         if (device.externalRef != oldDevice.externalRef) {
-            return deviceRepository.searchByExternalRef(device.externalRef).then { Device newDevice ->
+            return deviceRepository.searchBySerialNumber(device.externalRef).then { Device newDevice ->
                 if (newDevice != null) {
                     throw AppErrors.INSTANCE.fieldInvalid('externalRef').exception()
                 }

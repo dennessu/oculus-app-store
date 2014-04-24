@@ -41,6 +41,7 @@ class UserCredentialVerifyAttemptRepositoryCloudantImpl extends CloudantClient<U
         if (entity.id == null) {
             entity.id = new UserCredentialVerifyAttemptId(idGenerator.nextId(entity.userId.value))
         }
+        entity.setValue(null)
         return Promise.pure((UserCredentialVerifyAttempt)super.cloudantPost(entity))
     }
 
