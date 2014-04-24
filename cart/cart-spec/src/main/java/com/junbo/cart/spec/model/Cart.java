@@ -11,7 +11,7 @@ import com.junbo.cart.common.validate.Group;
 import com.junbo.cart.spec.model.item.OfferItem;
 import com.junbo.common.id.CartId;
 import com.junbo.common.id.UserId;
-import com.junbo.common.model.BaseResource;
+import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Created by fzhang@wan-san.com on 14-1-17.
  */
-public class Cart extends BaseResource {
+public class Cart extends ResourceMeta {
 
     @ApiModelProperty(required = true, position = 1, value = "[Readonly] The shopping cart ID.")
     @JsonProperty("self")
