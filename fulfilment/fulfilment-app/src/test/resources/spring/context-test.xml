@@ -26,4 +26,17 @@
             <bean class="com.junbo.common.json.QueryParamTranscoderImpl"/>
         </constructor-arg>
     </bean>
+
+    <bean id="emailPublisher" class="com.junbo.fulfilment.notification.EmailPublisher" parent="basePublisher">
+        <property name="template" ref="emailJmsTemplate"/>
+        <property name="destination" ref="emailQueue"/>
+    </bean>
+
+    <bean id="emailListener" class="com.junbo.fulfilment.notification.EmailListener"/>
+
+    <bean id="emailListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer"
+          parent="baseListenerContainer">
+        <property name="destination" ref="emailQueue"/>
+        <property name="messageListener" ref="emailListener"/>
+    </bean>
 </beans>
