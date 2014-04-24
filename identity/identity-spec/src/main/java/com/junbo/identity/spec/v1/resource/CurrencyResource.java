@@ -5,7 +5,7 @@
  */
 package com.junbo.identity.spec.v1.resource;
 
-import com.junbo.common.id.CurrencyId;
+import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.Currency;
 import com.junbo.identity.spec.v1.option.list.CurrencyListOptions;

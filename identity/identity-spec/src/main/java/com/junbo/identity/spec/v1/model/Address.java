@@ -8,7 +8,7 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.AddressId;
-import com.junbo.common.id.CountryId;
+import com.junbo.common.enumid.CountryId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.model.ResourceMeta;
 import com.junbo.common.util.Identifiable;
