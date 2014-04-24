@@ -118,7 +118,9 @@ class CartPersistServiceImpl implements CartPersistService {
         // update cart
         Date currentTime = systemOperation.currentTime()
         cart.updatedTime = currentTime
-        cart.resourceAge = oldCart.resourceAge
+        if (cart.resourceAge == null) {
+            cart.resourceAge = oldCart.resourceAge
+        }
         CartEntity cartEntity = dataMapper.toCartEntity(cart, new MappingContext())
         cartEntity = cartDao.update(cartEntity)
         cart.resourceAge = cartEntity.resourceAge
