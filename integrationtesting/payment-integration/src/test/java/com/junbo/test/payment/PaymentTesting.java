@@ -7,7 +7,9 @@ package com.junbo.test.payment;
 
 
 import com.junbo.test.common.Entities.enums.Country;
+import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
+import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
@@ -36,7 +38,7 @@ public class PaymentTesting extends BaseTestClass {
             component = Component.Payment,
             owner = "Yunlongzhao",
             status = Status.Enable,
-            description = "post payment instrument",
+            description = "post credit card",
             steps = {
                     "1. Create an user",
                     "2. Post a credit card to user",
@@ -151,8 +153,8 @@ public class PaymentTesting extends BaseTestClass {
             steps = {
                     "1. Create an user",
                     "2. Post two credit cards to user",
-                    "3  Search all payment instruments",
-                    "3, Validation: response "
+                    "3. Search all payment instruments",
+                    "4. Validation: response "
             }
     )
     @Test
@@ -175,5 +177,31 @@ public class PaymentTesting extends BaseTestClass {
         validationHelper.validatePaymentInstrument(creditCardId1, creditCardInfo1);
         validationHelper.validatePaymentInstrument(creditCardId2, creditCardInfo2);
     }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "POST /users/{userId}/payment-instruments",
+            component = Component.Payment,
+            owner = "Yunlongzhao",
+            status = Status.Enable,
+            description = "post ewallet",
+            steps = {
+                    "1. Create an user",
+                    "2. Post ewallet to user",
+                    "3, Validation: response "
+            }
+    )
+    @Test
+    public void testPostEwallet() throws Exception {
+        String randomUid = testDataProvider.CreateUser();
+
+        EwalletInfo ewalletInfo = EwalletInfo.getEwalletInfo(Country.DEFAULT, Currency.DEFAULT);
+        String ewalletId = testDataProvider.postPaymentInstrument(randomUid, ewalletInfo);
+
+        logHelper.LogSample("Post ewallet");
+
+        validationHelper.validatePaymentInstrument(ewalletId, ewalletInfo);
+    }
+
 
 }

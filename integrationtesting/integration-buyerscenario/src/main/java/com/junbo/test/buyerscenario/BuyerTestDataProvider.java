@@ -160,7 +160,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         paymentInstrument.setType(creditCardInfo.getType().toString());
         paymentInstrument.setTrackingUuid(UUID.randomUUID());
         logger.LogSample("Post a new credit card to user");
-        return paymentClient.postPaymentInstrumentToUser(uid, paymentInstrument);
+        return paymentClient.postPaymentInstrument(paymentInstrument);
     }
 
     public String postShippingAddressToUser(String uid, ShippingAddressInfo shippingAddressInfo) throws Exception {

@@ -55,7 +55,6 @@ public class PaymentValidationHelper extends BaseValidationHelper {
                         "verify billing address - PostalCode");
 
                 //verify phone
-
                 verifyEqual(actualPI.getPhoneNum(), expectedCreditCard.getPhone().getNumber(),
                         "verify phone number");
 
@@ -65,6 +64,10 @@ public class PaymentValidationHelper extends BaseValidationHelper {
                 //        "verify payment is default");
 
                 break;
+
+            case EWALLET:
+                break;
+
             default:
                 throw new TestException(String.format("%s : %s is not supported",
                         expectedPaymentInfo.getAccountName(), expectedPaymentInfo.getAccountNum()));

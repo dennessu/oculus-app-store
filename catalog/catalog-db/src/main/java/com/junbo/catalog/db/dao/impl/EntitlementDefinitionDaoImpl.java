@@ -42,7 +42,11 @@ public class EntitlementDefinitionDaoImpl extends BaseDaoImpl<EntitlementDefinit
         }
         if (!CollectionUtils.isEmpty(types)) {
             queryString.append(" and type in (:types)");
-            params.put("types", types);
+            Set<Integer> typeOrdinals = new HashSet<>();
+            for (EntitlementType type : types) {
+                typeOrdinals.add(type.ordinal());
+            }
+            params.put("types", typeOrdinals);
         }
         if (!CollectionUtils.isEmpty(groups)) {
             queryString.append(" and entitlement_group in (:groups)");

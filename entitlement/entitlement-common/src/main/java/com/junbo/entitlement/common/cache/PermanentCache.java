@@ -7,6 +7,7 @@ package com.junbo.entitlement.common.cache;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +32,9 @@ public enum PermanentCache {
             return cache.get(key, loader);
         } catch (ExecutionException e) {
             LOGGER.error("ExecutionException during  get " + this.name() + " [" + key + "]", e);
+            return null;
+        } catch (CacheLoader.InvalidCacheLoadException e) {
+            LOGGER.error("InvalidCacheLoadException during  get " + this.name() + " [" + key + "]", e);
             return null;
         }
     }

@@ -1,7 +1,7 @@
 package com.junbo.order.db.repo.impl
 
+import com.junbo.common.model.BaseResource
 import com.junbo.order.db.entity.CommonDbEntityWithDate
-import com.junbo.order.spec.model.BaseModelWithDate
 import groovy.transform.CompileStatic
 
 /**
@@ -10,7 +10,7 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class Utils {
 
-    static void fillDateInfo(BaseModelWithDate baseModelWithDate, CommonDbEntityWithDate commonDbEntityWithDate) {
+    static void fillDateInfo(BaseResource baseModelWithDate, CommonDbEntityWithDate commonDbEntityWithDate) {
         baseModelWithDate.createdBy = commonDbEntityWithDate.createdBy
         baseModelWithDate.createdTime = commonDbEntityWithDate.createdTime
         baseModelWithDate.updatedBy = commonDbEntityWithDate.updatedBy
