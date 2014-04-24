@@ -15,9 +15,8 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by liangfu on 4/3/14.
- * This won't be supported in v0.5. And it should be first level resource.
  */
-public class UserOptin extends ResourceMeta implements Identifiable<UserOptinId> {
+public class UserCommunication extends ResourceMeta implements Identifiable<UserOptinId> {
 
     @ApiModelProperty(position = 1, required = true, value = "[Nullable]The id of user optin resource.")
     @JsonProperty("self")

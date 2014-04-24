@@ -18,7 +18,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "user_optin")
-public class UserOptinEntity extends ResourceMetaEntity implements Identifiable<Long> {
+public class UserCommunicationEntity extends ResourceMetaEntity implements Identifiable<Long> {
     @Id
     @Column(name = "id")
     private Long id;
@@ -26,8 +26,8 @@ public class UserOptinEntity extends ResourceMetaEntity implements Identifiable<
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "type")
-    private String type;
+    @Column(name = "communication_id")
+    private Long communicationId;
 
     public Long getId() {
         return id;
@@ -45,11 +45,11 @@ public class UserOptinEntity extends ResourceMetaEntity implements Identifiable<
         this.userId = userId;
     }
 
-    public String getType() {
-        return type;
+    public Long getCommunicationId() {
+        return communicationId;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setCommunicationId(Long communicationId) {
+        this.communicationId = communicationId;
     }
 }

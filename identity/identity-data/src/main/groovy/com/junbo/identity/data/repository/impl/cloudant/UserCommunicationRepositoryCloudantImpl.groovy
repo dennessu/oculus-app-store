@@ -3,7 +3,7 @@ package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.UserOptinId
-import com.junbo.identity.data.repository.UserOptinRepository
+import com.junbo.identity.data.repository.UserCommunicationRepository
 import com.junbo.identity.spec.v1.model.UserOptin
 import com.junbo.identity.spec.v1.option.list.UserOptinListOptions
 import com.junbo.langur.core.promise.Promise
@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Required
  * Created by haomin on 14-4-11.
  */
 @CompileStatic
-class UserOptinRepositoryCloudantImpl extends CloudantClient<UserOptin> implements UserOptinRepository {
+class UserCommunicationRepositoryCloudantImpl extends CloudantClient<UserOptin> implements UserCommunicationRepository {
     private ShardAlgorithm shardAlgorithm
     private IdGenerator idGenerator
 
@@ -57,16 +57,16 @@ class UserOptinRepositoryCloudantImpl extends CloudantClient<UserOptin> implemen
     Promise<List<UserOptin>> search(UserOptinListOptions getOption) {
         def result = []
         if (getOption.userId != null) {
-            if (getOption.type != null) {
-                result = super.queryView('by_user_id_type',
-                        "${getOption.userId.value}:${getOption.type}",
+            if (getOption.communicationId != null) {
+                result = super.queryView('by_user_id_communication_id',
+                        "${getOption.userId.value}:${getOption.communicationId.value}",
                         getOption.limit, getOption.offset, false)
             } else {
-                result = super.queryView('by_user_id', getOption.userId.toString(),
+                result = super.queryView('by_user_id', getOption.userId.value.toString(),
                         getOption.limit, getOption.offset, false)
             }
-        } else if (getOption.type != null) {
-            result = super.queryView('by_type', getOption.type,
+        } else if (getOption.communicationId != null) {
+            result = super.queryView('by_communication_id', getOption.communicationId.value.toString(),
                     getOption.limit, getOption.offset, false)
         }
 
@@ -86,15 +86,16 @@ class UserOptinRepositoryCloudantImpl extends CloudantClient<UserOptin> implemen
                                     '  emit(doc.userId.value.toString(), doc._id)' +
                                     '}',
                             resultClass: String),
-                    'by_type': new CloudantViews.CloudantView(
+                    'by_communication_id': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.type, doc._id)' +
+                                    '  emit(doc.communicationId.value.toString(), doc._id)' +
                                     '}',
                             resultClass: String),
-                    'by_user_id_type': new CloudantViews.CloudantView(
+                    'by_user_id_communication_id': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.userId.value.toString() + \':\' + doc.type, doc._id)' +
-                                    '}',
+                                '  emit(doc.userId.value.toString() + \':\' + doc.communicationId.value.toString(), ' +
+                                'doc._id)' +
+                                '}',
                             resultClass: String)
             ]
     )

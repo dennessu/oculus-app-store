@@ -9,7 +9,7 @@ import com.junbo.common.id.UserOptinId
 import com.junbo.identity.data.dao.UserOptinDAO
 import com.junbo.identity.data.entity.user.UserOptinEntity
 import com.junbo.identity.data.mapper.ModelMapper
-import com.junbo.identity.data.repository.UserOptinRepository
+import com.junbo.identity.data.repository.UserCommunicationRepository
 import com.junbo.identity.spec.v1.model.UserOptin
 import com.junbo.identity.spec.v1.option.list.UserOptinListOptions
 import com.junbo.langur.core.promise.Promise
@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Required
  * Implementation for UserOptinDAO.
  */
 @CompileStatic
-class UserOptinRepositorySqlImpl implements UserOptinRepository {
+class UserCommunicationRepositorySqlImpl implements UserCommunicationRepository {
     private UserOptinDAO userOptinDAO
     private ModelMapper modelMapper
 
@@ -60,16 +60,15 @@ class UserOptinRepositorySqlImpl implements UserOptinRepository {
     Promise<List<UserOptin>> search(UserOptinListOptions getOption) {
         def result = []
         def entities = []
-        // todo:    Need to discuss with kevin about paging in view query
         if (getOption.userId != null) {
             entities = userOptinDAO.searchByUserId(getOption.userId.value)
-            if (getOption.type != null) {
+            if (getOption.communicationId != null) {
                 entities.removeAll { UserOptinEntity entity ->
-                    entity.type != getOption.type
+                    entity.communicationId != getOption.communicationId
                 }
             }
-        } else if (getOption.type != null) {
-            entities = userOptinDAO.searchByType(getOption.type)
+        } else if (getOption.communicationId != null) {
+            entities = userOptinDAO.searchByCommunicationId(getOption.communicationId)
         }
 
         entities.each { UserOptinEntity i ->

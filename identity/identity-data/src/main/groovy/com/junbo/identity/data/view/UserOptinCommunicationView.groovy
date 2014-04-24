@@ -9,7 +9,7 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 @SuppressWarnings('GetterMethodCouldBeProperty')
-class UserOptinTypeView implements EntityView<Long, UserOptinEntity, String> {
+class UserOptinCommunicationView implements EntityView<Long, UserOptinEntity, String> {
 
     @Override
     String getName() {

@@ -5,21 +5,21 @@
  */
 package com.junbo.identity.data.dao.impl
 
-import com.junbo.identity.data.dao.UserOptinDAO
-import com.junbo.identity.data.entity.user.UserOptinEntity
+import com.junbo.identity.data.dao.UserCommunicationDAO
+import com.junbo.identity.data.entity.user.UserCommunicationEntity
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
 import org.hibernate.Session
 import org.hibernate.criterion.Restrictions
 
 /**
- * Implementation for UserOptinDAO.
+ * Implementation for UserCommunicationDAO.
  */
 @CompileStatic
-class UserOptinDAOImpl extends BaseDAO implements UserOptinDAO {
+class UserCommunicationDAOImpl extends BaseDAO implements UserCommunicationDAO {
 
     @Override
-    UserOptinEntity save(UserOptinEntity entity) {
+    UserCommunicationEntity save(UserCommunicationEntity entity) {
         if (entity.id == null) {
             entity.id = idGenerator.nextId(entity.userId)
         }
@@ -31,7 +31,7 @@ class UserOptinDAOImpl extends BaseDAO implements UserOptinDAO {
     }
 
     @Override
-    UserOptinEntity update(UserOptinEntity entity) {
+    UserCommunicationEntity update(UserCommunicationEntity entity) {
         Session session = currentSession(entity.id)
         session.merge(entity)
         session.flush()
@@ -40,21 +40,21 @@ class UserOptinDAOImpl extends BaseDAO implements UserOptinDAO {
     }
 
     @Override
-    UserOptinEntity get(Long id) {
-        return (UserOptinEntity)currentSession(id).get(UserOptinEntity, id)
+    UserCommunicationEntity get(Long id) {
+        return (UserCommunicationEntity)currentSession(id).get(UserCommunicationEntity, id)
     }
 
     @Override
-    List<UserOptinEntity> searchByUserId(Long userId) {
-        Criteria criteria = currentSession(userId).createCriteria(UserOptinEntity)
+    List<UserCommunicationEntity> searchByUserId(Long userId) {
+        Criteria criteria = currentSession(userId).createCriteria(UserCommunicationEntity)
         criteria.add(Restrictions.eq('userId', userId))
         return criteria.list()
     }
 
     @Override
-    List<UserOptinEntity> searchByType(String type) {
-        UserOptinEntity example = new UserOptinEntity()
-        example.setType(type)
+    List<UserCommunicationEntity> searchByCommunicationId(Long communicationId) {
+        UserCommunicationEntity example = new UserCommunicationEntity()
+        example.setCommunicationId(communicationId)
 
         def result = []
         def viewQuery = viewQueryFactory.from(example)
@@ -72,7 +72,7 @@ class UserOptinDAOImpl extends BaseDAO implements UserOptinDAO {
     @Override
     void delete(Long id) {
         Session session = currentSession(id)
-        UserOptinEntity entity = (UserOptinEntity)session.get(UserOptinEntity, id)
+        UserCommunicationEntity entity = (UserCommunicationEntity)session.get(UserCommunicationEntity, id)
         session.delete(entity)
         session.flush()
     }
