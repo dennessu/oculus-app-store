@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.data
 
+import com.junbo.common.enumid.CountryId
 import com.junbo.common.id.*
 import com.junbo.identity.data.identifiable.UserPasswordStrength
 import com.junbo.identity.data.repository.*
@@ -13,6 +14,8 @@ import com.junbo.identity.spec.model.users.UserPin
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.*
 import com.junbo.sharding.IdGenerator
+import groovy.time.TimeCategory
+import groovy.transform.CompileStatic
 import org.glassfish.jersey.internal.util.Base64
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -24,7 +27,6 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 import org.springframework.transaction.annotation.Transactional
 import org.testng.Assert
 import org.testng.annotations.Test
-import groovy.time.TimeCategory
 
 /**
  * Unittest.
@@ -116,26 +118,23 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     @Test
     public void testUserRepository() throws Exception {
         User user = new User()
-        user.setActive(true)
-        user.setLocale('en_US')
-        user.setNickName(UUID.randomUUID().toString())
-        user.setPreferredLanguage(UUID.randomUUID().toString())
-        user.setTimezone(UUID.randomUUID().toString())
-        user.setType(UUID.randomUUID().toString())
-        def name = UUID.randomUUID().toString()
-        user.setUsername(name)
+        user.setIsAnonymous(true)
+        def random = UUID.randomUUID().toString()
+        user.setCanonicalUsername(random)
+        user.setUsername(random)
+        user.setPreferredLocale(UUID.randomUUID().toString())
+        user.setPreferredTimezone(UUID.randomUUID().toString())
         user.setCreatedTime(new Date())
         user.setCreatedBy('lixia')
-        user.setCanonicalUsername(name)
         user = userRepository.create(user).wrapped().get()
 
         User newUser = userRepository.get(user.getId()).wrapped().get()
-        Assert.assertEquals(user.getType(), newUser.getType())
+        Assert.assertEquals(user.getPreferredLocale(), newUser.getPreferredLocale())
 
-        String newType = UUID.randomUUID().toString()
-        newUser.setType(newType)
+        String newPreferredLocale = UUID.randomUUID().toString()
+        newUser.setPreferredLocale(newPreferredLocale)
         newUser = userRepository.update(newUser).wrapped().get()
-        Assert.assertEquals(newUser.getType(), newType)
+        Assert.assertEquals(newUser.getPreferredLocale(), newPreferredLocale)
 
         User findUser = userRepository.getUserByCanonicalUsername(newUser.getUsername()).wrapped().get()
         Assert.assertNotNull(findUser)
@@ -158,7 +157,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     public void testAddressRepository() {
         Address address = new Address()
         address.city = 'shanghai'
-        address.country = 'CN'
+        address.countryId = new CountryId("usd")
         address.postalCode = '201102'
         address.userId = new UserId(userId)
         address = addressRepository.create(address).wrapped().get()
@@ -249,19 +248,19 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         UserAuthenticator authenticator = new UserAuthenticator()
         authenticator.setUserId(new UserId(userId))
         authenticator.setType('Google_account')
-        authenticator.setValue(UUID.randomUUID().toString())
+        authenticator.setExternalId(UUID.randomUUID().toString())
         authenticator.setCreatedTime(new Date())
         authenticator.setCreatedBy('lixia')
         authenticator = userAuthenticatorRepository.create(authenticator).wrapped().get()
 
         UserAuthenticator newUserAuthenticator = userAuthenticatorRepository.get(authenticator.getId()).wrapped().get()
-        Assert.assertEquals(authenticator.getValue(), newUserAuthenticator.getValue())
+        Assert.assertEquals(authenticator.getExternalId(), newUserAuthenticator.getExternalId())
 
         String newValue = UUID.randomUUID().toString()
-        newUserAuthenticator.setValue(newValue)
+        newUserAuthenticator.setExternalId(newValue)
         newUserAuthenticator = userAuthenticatorRepository.update(newUserAuthenticator).wrapped().get()
 
-        Assert.assertEquals(newValue, newUserAuthenticator.getValue())
+        Assert.assertEquals(newValue, newUserAuthenticator.getExternalId())
 
         AuthenticatorListOptions getOption = new AuthenticatorListOptions()
         getOption.setValue(newValue)
@@ -295,7 +294,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userLoginAttempt.setUserId(new UserId(userId))
         userLoginAttempt.setType('pin')
         userLoginAttempt.setValue(UUID.randomUUID().toString())
-        userLoginAttempt.setClientId(UUID.randomUUID().toString())
+        userLoginAttempt.setClientId(new ClientId(idGenerator.nextId()))
         userLoginAttempt.setIpAddress(UUID.randomUUID().toString())
         userLoginAttempt.setUserAgent(UUID.randomUUID().toString())
         userLoginAttempt.setSucceeded(true)
@@ -324,18 +323,18 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     public void testUserOptinRepository() {
         UserCommunication userOptin = new UserCommunication()
         userOptin.setUserId(new UserId(userId))
-        userOptin.setType(UUID.randomUUID().toString())
+        userOptin.setCommunicationId(new CommunicationId(idGenerator.nextId()))
         userOptin.setCreatedBy('lixia')
         userOptin.setCreatedTime(new Date())
         userOptin = userOptinRepository.create(userOptin).wrapped().get()
 
         UserCommunication newUserOptin = userOptinRepository.get(userOptin.getId()).wrapped().get()
-        Assert.assertEquals(userOptin.getType(), newUserOptin.getType())
+        Assert.assertEquals(userOptin.getCommunicationId(), newUserOptin.getCommunicationId())
 
-        String value = UUID.randomUUID().toString()
-        userOptin.setType(value)
+        CommunicationId value = new CommunicationId(idGenerator.nextId())
+        userOptin.setCommunicationId(value)
         newUserOptin = userOptinRepository.update(userOptin).wrapped().get()
-        Assert.assertEquals(value, newUserOptin.getType())
+        Assert.assertEquals(value, newUserOptin.getCommunicationId())
 
         UserOptinListOptions getOption = new UserOptinListOptions()
         getOption.setUserId(new UserId(userId))
@@ -399,7 +398,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         attempt.setUserId(new UserId(userId))
         attempt.setSucceeded(true)
         attempt.setValue(UUID.randomUUID().toString())
-        attempt.setClientId(UUID.randomUUID().toString())
+        attempt.setClientId(new ClientId(idGenerator.nextId()))
         attempt.setIpAddress(UUID.randomUUID().toString())
         attempt.setUserSecurityQuestionId(new UserSecurityQuestionId(123L))
         attempt.setUserAgent(UUID.randomUUID().toString())
@@ -435,21 +434,22 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     @Test
     public void testDeviceRepository() {
         Device device = new Device()
-        device.setExternalRef(UUID.randomUUID().toString())
-        device.setDescription(UUID.randomUUID().toString())
+        device.setSerialNumber(UUID.randomUUID().toString())
+        device.setType(new DeviceTypeId(idGenerator.nextId()))
+        device.setFirmwareVersion(UUID.randomUUID().toString())
 
         Device newDevice = deviceRepository.create(device).wrapped().get()
         newDevice = deviceRepository.get((DeviceId)newDevice.id).wrapped().get()
 
-        assert  device.externalRef == newDevice.externalRef
+        assert  device.serialNumber == newDevice.serialNumber
 
-        String newDescription = UUID.randomUUID().toString()
-        newDevice.setDescription(newDescription)
+        String newSerialNumber = UUID.randomUUID().toString()
+        newDevice.setSerialNumber(newSerialNumber)
         device = deviceRepository.update(newDevice).wrapped().get()
-        assert device.description == newDescription
+        assert device.serialNumber == newSerialNumber
 
-        device = deviceRepository.searchBySerialNumber(device.externalRef).wrapped().get()
-        assert device.description == newDescription
+        device = deviceRepository.searchBySerialNumber(device.serialNumber).wrapped().get()
+        assert device.serialNumber == newSerialNumber
     }
 
     @Test
