@@ -287,4 +287,8 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
     public void setPersonalInfo(List<UserPersonalInfoLink> personalInfo) {
         this.personalInfo = personalInfo;
     }
+
+    public List<UserPersonalInfoLink> getPersonalInfo() {
+        return personalInfo;
+    }
 }
