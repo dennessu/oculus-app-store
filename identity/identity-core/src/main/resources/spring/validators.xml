@@ -3,6 +3,20 @@
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+    <bean id="userAuthenticatorValidator" class="com.junbo.identity.core.service.validator.impl.UserAuthenticatorValidatorImpl">
+        <property name="userRepository" ref="userRepository"/>
+        <property name="userAuthenticatorRepository" ref="userAuthenticatorRepository"/>
+        <property name="allowedTypes">
+            <list>
+                <value>hotmail</value>
+                <value>google</value>
+                <value>facebook</value>
+            </list>
+        </property>
+    </bean>
+
+
+
     <bean id="usernameValidator" class="com.junbo.identity.core.service.validator.impl.UsernameValidatorImpl">
         <property name="minLength" value="4"/>
         <property name="maxLength" value="30"/>
@@ -126,19 +140,6 @@
         <property name="securityQuestionRepository" ref="securityQuestionRepository"/>
         <property name="securityQuestionValueMinLength" value="10"/>
         <property name="securityQuestionValueMaxLength" value="1000"/>
-    </bean>
-
-    <bean id="userAuthenticatorValidator"
-          class="com.junbo.identity.core.service.validator.impl.UserAuthenticatorValidatorImpl">
-        <property name="userRepository" ref="userRepository"/>
-        <property name="userAuthenticatorRepository" ref="userAuthenticatorRepository"/>
-        <property name="allowedTypes">
-            <list>
-                <value>hotmail</value>
-                <value>google</value>
-                <value>facebook</value>
-            </list>
-        </property>
     </bean>
 
     <bean id="userDeviceValidator" class="com.junbo.identity.core.service.validator.impl.UserDeviceValidatorImpl">

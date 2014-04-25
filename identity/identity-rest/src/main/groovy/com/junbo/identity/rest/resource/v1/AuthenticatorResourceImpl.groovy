@@ -159,6 +159,10 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
 
     @Override
     Promise<Void> delete(UserAuthenticatorId userAuthenticatorId) {
+        if (userAuthenticatorId == null) {
+            throw new IllegalArgumentException('userAuthenticatorId is null')
+        }
+
         return userAuthenticatorValidator.validateForGet(userAuthenticatorId).then { UserAuthenticator authenticator ->
             userAuthenticatorRepository.delete(userAuthenticatorId)
 

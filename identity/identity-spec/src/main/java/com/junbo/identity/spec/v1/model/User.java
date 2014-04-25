@@ -36,10 +36,13 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
             value = "The preferred timezone of the user, must be the format as UTC+08:00.")
     private String preferredTimezone;
 
-    @ApiModelProperty(position = 5, required = true, value = "Is Anonymous.")
+    @ApiModelProperty(position = 5, required = true, value = "Is Anonymous. " +
+            "If username is null and authenticator isn't null, the value will be true;" +
+            "else, the value is false. Anonymous user can't have authenticator.")
     private Boolean isAnonymous;
 
-    @ApiModelProperty(position = 5, required = false, value = "User status.")
+    @ApiModelProperty(position = 5, required = false, value = "User status. " +
+            "It must be in [ACTIVE, SUSPEND, BANNED DELETED].")
     private String status;
 
     @ApiModelProperty(position = 5, required = false, value = "The address book.")
