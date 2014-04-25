@@ -173,6 +173,7 @@
             LANGUAGE sql IMMUTABLE;
             CREATE INDEX entitlement_definition_in_app_context_gin_idx ON entitlement_definition
             USING GIN (json_val_arr(in_app_context));
+            insert into entitlement_definition values (177536427572383, 177536427572383, 0, null, 0, '', '', false, 'nanxin', null, '2014-02-10', null, null, false);
         ]]>
         </sql>
     </changeSet>

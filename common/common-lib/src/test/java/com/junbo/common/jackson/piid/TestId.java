@@ -5,7 +5,7 @@
  */
 package com.junbo.common.jackson.piid;
 
-import com.junbo.common.jackson.serializer.CompoundAware;
+import com.junbo.common.jackson.aware.CompoundAware;
 
 /**
  * TestId.

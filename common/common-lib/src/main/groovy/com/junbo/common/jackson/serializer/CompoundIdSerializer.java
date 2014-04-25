@@ -5,6 +5,7 @@
  */
 package com.junbo.common.jackson.serializer;
 
+import com.junbo.common.jackson.aware.CompoundAware;
 import com.junbo.common.jackson.model.ResourceRef;
 import com.junbo.common.util.Utils;
 import org.springframework.util.Assert;

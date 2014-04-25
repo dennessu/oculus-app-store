@@ -26,7 +26,7 @@ import java.util.List;
 public class EntitlementDefinitionFacadeImpl implements EntitlementDefinitionFacade {
     private static final Logger LOGGER = LoggerFactory.getLogger(EntitlementDefinitionFacadeImpl.class);
     @Autowired
-    @Qualifier("definitionClient")
+    @Qualifier("entitlementDefinitionClient")
     private EntitlementDefinitionResourceClientProxy definitionClientProxy;
 
     @Override

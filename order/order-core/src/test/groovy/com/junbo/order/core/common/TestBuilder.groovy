@@ -35,7 +35,6 @@ class TestBuilder {
         def order = new Order()
         def orderItem = buildOrderItem()
         order.setOrderItems([orderItem])
-        order.setType(OrderType.PAY_IN.toString())
         order.setCountry('US')
         order.setCurrency('USD')
         def userId = new UserId()

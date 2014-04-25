@@ -4,12 +4,12 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.payment.spec.model;
+package com.junbo.payment.db.mapper;
 
 /**
  * wallet model.
  */
-public class WalletRequest {
+public class WalletDetail {
     private String type;
     private String currency;
 

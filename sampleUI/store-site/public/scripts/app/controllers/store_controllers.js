@@ -67,6 +67,13 @@ var StoreControllers = {
                         }
                     });
                 });
+            },
+
+            Buy: function(){
+                if($("#BtnBuy").hasClass('load')) return;
+                $("#BtnBuy").addClass('load');
+
+                console.log("[DetailController:Buy]");
             }
         }
     }),

@@ -12,6 +12,7 @@ import com.junbo.common.jackson.annotation.PaymentInstrumentTypeId;
 import com.junbo.common.jackson.annotation.UserId;
 import com.junbo.payment.common.FilterIn;
 import com.junbo.payment.common.InnerFilter;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
@@ -23,37 +24,51 @@ import java.util.UUID;
  * payment instrument model.
  */
 public class PaymentInstrument {
+    @ApiModelProperty(position = 1, required = true, value = "The id of payment instrument resource.")
     @PaymentInstrumentId
     @JsonProperty("self")
     private Long id;
+    @ApiModelProperty(position = 2, required = true, value = "The ids of owner resource.")
     @UserId
-    @JsonIgnore
+    @JsonProperty("user")
     private Long userId;
     @NotNull
     @UserId
+    @JsonIgnore
     private List<Long> admins;
     @JsonIgnore
     private UUID trackingUuid;
+    @ApiModelProperty(position = 3, required = true, value = "Whether the PI is validated or not.")
     private boolean isValidated;
+    @ApiModelProperty(position = 4, required = true, value = "[Client Immutable] Last validated time of the PI.")
     private Date lastValidatedTime;
+    @ApiModelProperty(position = 5, required = true, value = "The payment instrument type resource.")
     @PaymentInstrumentTypeId
     private String type;
+    @ApiModelProperty(position = 6, required = true, value = "The type specific details of the PI.")
+    @InnerFilter
+    private TypeSpecificDetails typeSpecificDetails;
+    @ApiModelProperty(position = 7, required = true, value = "The account name of the payment instrument.")
     private String accountName;
+    @ApiModelProperty(position = 8, required = true, value = "The account of the payment instrument.")
     private String accountNum;
-    private Integer rev;
+    @ApiModelProperty(position = 9, required = true, value = "The label of the PI.")
+    private String label;
+    @ApiModelProperty(position = 10, required = true, value = "The id of the billing address resource.")
     private Address address;
+    @ApiModelProperty(position = 11, required = true, value = "The phone number resource of the PI.")
     private String phoneNum;
-    @JsonIgnore
+    @ApiModelProperty(position = 12, required = true, value = "The email resource of the PI.")
     private String email;
+    @ApiModelProperty(position = 13, required = true, value = "[Client Immutable]The current revision of the PI.")
+    private String rev;
     @JsonIgnore
     private String relationToHolder;
-    @InnerFilter
-    private CreditCardRequest creditCardRequest;
-    private WalletRequest walletRequest;
     //response:
     @JsonIgnore
     private Boolean isActive;
     @FilterIn
+    @JsonIgnore
     private String externalToken;
 
     public Long getId() {
@@ -64,21 +79,19 @@ public class PaymentInstrument {
         this.id = id;
     }
 
-    @JsonIgnore
     public Long getUserId() {
         return userId;
     }
 
-    @JsonIgnore
     public void setUserId(Long userId) {
         this.userId = userId;
         this.setAdmins(Arrays.asList(userId));
     }
-
+    @JsonIgnore
     public List<Long> getAdmins() {
         return admins;
     }
-
+    @JsonIgnore
     public void setAdmins(List<Long> admins) {
         this.admins = admins;
         this.userId = admins.get(0);
@@ -90,14 +103,6 @@ public class PaymentInstrument {
 
     public void setTrackingUuid(UUID trackingUuid) {
         this.trackingUuid = trackingUuid;
-    }
-
-    public CreditCardRequest getCreditCardRequest() {
-        return creditCardRequest;
-    }
-
-    public void setCreditCardRequest(CreditCardRequest creditCardRequest) {
-        this.creditCardRequest = creditCardRequest;
     }
 
     public boolean getIsValidated() {
@@ -116,6 +121,14 @@ public class PaymentInstrument {
         this.type = type;
     }
 
+    public TypeSpecificDetails getTypeSpecificDetails() {
+        return typeSpecificDetails;
+    }
+
+    public void setTypeSpecificDetails(TypeSpecificDetails typeSpecificDetails) {
+        this.typeSpecificDetails = typeSpecificDetails;
+    }
+
     public String getAccountName() {
         return accountName;
     }
@@ -132,11 +145,19 @@ public class PaymentInstrument {
         this.accountNum = accountNum;
     }
 
-    public Integer getRev() {
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public String getRev() {
         return rev;
     }
 
-    public void setRev(Integer rev) {
+    public void setRev(String rev) {
         this.rev = rev;
     }
 
@@ -186,14 +207,6 @@ public class PaymentInstrument {
 
     public void setLastValidatedTime(Date lastValidatedTime) {
         this.lastValidatedTime = lastValidatedTime;
-    }
-
-    public WalletRequest getWalletRequest() {
-        return walletRequest;
-    }
-
-    public void setWalletRequest(WalletRequest walletRequest) {
-        this.walletRequest = walletRequest;
     }
 
     public String getExternalToken() {

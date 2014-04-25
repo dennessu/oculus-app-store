@@ -37,7 +37,7 @@ class CartValidator {
     }
 
     CartValidator couponNumber(int couponNum) {
-        assert couponNum == result.couponCodes.size()
+        assert couponNum == result.coupons.size()
         return this
     }
 }

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * User.
+ * TestEntity.
  */
 public class User implements PropertyAssignedAware {
 

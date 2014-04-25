@@ -32,11 +32,11 @@ public class BrainTreeRestProviderServiceImpl extends AbstractPaymentProviderSer
     public void clonePIResult(PaymentInstrument source, PaymentInstrument target) {
         target.setAccountNum(source.getAccountNum());
         target.setExternalToken(source.getExternalToken());
-        target.getCreditCardRequest().setType(source.getCreditCardRequest().getType());
-        target.getCreditCardRequest().setCommercial(source.getCreditCardRequest().getCommercial());
-        target.getCreditCardRequest().setDebit(source.getCreditCardRequest().getDebit());
-        target.getCreditCardRequest().setPrepaid(source.getCreditCardRequest().getPrepaid());
-        target.getCreditCardRequest().setIssueCountry(source.getCreditCardRequest().getIssueCountry());
+        target.getTypeSpecificDetails().setCreditCardType(source.getTypeSpecificDetails().getCreditCardType());
+        target.getTypeSpecificDetails().setCommercial(source.getTypeSpecificDetails().getCommercial());
+        target.getTypeSpecificDetails().setDebit(source.getTypeSpecificDetails().getDebit());
+        target.getTypeSpecificDetails().setPrepaid(source.getTypeSpecificDetails().getPrepaid());
+        target.getTypeSpecificDetails().setIssueCountry(source.getTypeSpecificDetails().getIssueCountry());
     }
 
     @Override

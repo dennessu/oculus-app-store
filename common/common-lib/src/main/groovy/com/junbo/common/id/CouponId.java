@@ -6,12 +6,12 @@
 package com.junbo.common.id;
 
 /**
- * Created by chriszhu on 4/21/14.
+ * Created by fzhang on 4/24/2014.
  */
 @IdResourcePath("/coupons/{0}")
 public class CouponId extends Id {
-
-    public CouponId() {}
+    public CouponId(){
+    }
 
     public CouponId(Long value) {
         super(value);

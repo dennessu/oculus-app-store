@@ -4,8 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.payment.spec.model;
-
+package com.junbo.payment.db.mapper;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.payment.common.FilterIn;
@@ -16,7 +15,8 @@ import java.util.Date;
 /**
  * credit card model.
  */
-public class CreditCardRequest {
+public class CreditCardDetail {
+
     private Long id;
     private String expireDate;
     @FilterOut
@@ -27,11 +27,11 @@ public class CreditCardRequest {
     @FilterIn
     private String type;
     @FilterIn
-    private String prepaid;
+    private Boolean isPrepaid;
     @FilterIn
-    private String debit;
+    private Boolean isDebit;
     @FilterIn
-    private String commercial;
+    private Boolean isCommercial;
     @FilterIn
     private String issueCountry;
     @JsonIgnore
@@ -67,28 +67,28 @@ public class CreditCardRequest {
         this.type = type;
     }
 
-    public String getPrepaid() {
-        return prepaid;
+    public Boolean getIsPrepaid() {
+        return isPrepaid;
     }
 
-    public void setPrepaid(String prepaid) {
-        this.prepaid = prepaid;
+    public void setIsPrepaid(Boolean prepaid) {
+        this.isPrepaid = prepaid;
     }
 
-    public String getDebit() {
-        return debit;
+    public Boolean getIsDebit() {
+        return isDebit;
     }
 
-    public void setDebit(String debit) {
-        this.debit = debit;
+    public void setIsDebit(Boolean debit) {
+        this.isDebit = debit;
     }
 
-    public String getCommercial() {
-        return commercial;
+    public Boolean getIsCommercial() {
+        return isCommercial;
     }
 
-    public void setCommercial(String commercial) {
-        this.commercial = commercial;
+    public void setIsCommercial(Boolean commercial) {
+        this.isCommercial = commercial;
     }
 
     public String getIssueCountry() {

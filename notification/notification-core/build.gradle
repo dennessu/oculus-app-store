@@ -20,13 +20,11 @@ dependencies {
     compile(libraries.slf4j_api)
 
     compile 'org.springframework:spring-jms:4.0.2.RELEASE'
-    compile ('org.apache.activemq:activemq-all:5.7.0') {
-        exclude group: 'org.slf4j'
-        exclude group: 'log4j'
-    }
     compile 'org.apache.xbean:xbean-spring:3.16'
     compile 'javax:javaee-api:7.0'
+    compile 'org.apache.activemq:activemq-core:5.7.0'
 
     testCompile(libraries.spring_test)
+    testCompile 'org.apache.activemq:activemq-all:5.7.0'
 }
 
