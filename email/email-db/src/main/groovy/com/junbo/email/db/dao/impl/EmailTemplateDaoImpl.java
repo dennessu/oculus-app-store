@@ -86,7 +86,10 @@ public class EmailTemplateDaoImpl implements EmailTemplateDao, BaseDao<EmailTemp
         return findAllBy(new Action<Criteria>() {
             public void apply(Criteria criteria) {
                 if(queries != null) {
-                    criteria.add(Restrictions.allEq(queries));
+                    //criteria.add(Restrictions.allEq(queries));
+                    for(String key : queries.keySet()) {
+                        criteria.add(Restrictions.eq(key, queries.get(key)).ignoreCase());
+                    }
                 }
                 if(paging != null) {
                     criteria.setFirstResult((paging.getPage()-1)*paging.getSize());

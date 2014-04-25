@@ -12,8 +12,6 @@ import com.junbo.sharding.hibernate.ShardScope;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
-import java.util.Date;
-
 /**
  * Impl of BaseDao.
  * @param <T> Entity Type
@@ -69,11 +67,7 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
     }
 
     public Long update(T entity) {
-        T merge = (T) currentSession(entity.getId()).merge(entity);
-        if (merge.getUpdatedTime() == null) {
-            merge.setUpdatedTime(new Date());
-        }
-        currentSession(entity.getId()).update(merge);
+        currentSession(entity.getId()).merge(entity);
         currentSession(entity.getId()).flush();
         return entity.getId();
     }

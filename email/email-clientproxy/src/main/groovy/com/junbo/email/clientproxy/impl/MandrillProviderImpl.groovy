@@ -1,10 +1,9 @@
 package com.junbo.email.clientproxy.impl
 
-import com.junbo.email.spec.model.EmailTemplate
-import org.springframework.util.StringUtils
-
 import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
 
+import com.junbo.email.spec.model.EmailTemplate
+import org.springframework.util.StringUtils
 import com.junbo.common.id.Id
 import com.junbo.common.util.IdFormatter
 
@@ -140,10 +139,10 @@ class MandrillProviderImpl implements EmailProvider {
         if (!StringUtils.isEmpty(template.fromAddress)) {
             message.fromEmail = template.fromAddress
         }
-        if(!StringUtils.isEmpty(template.fromName)) {
+        if (!StringUtils.isEmpty(template.fromName)) {
             message.fromName = template.fromName
         }
-        if(!StringUtils.isEmpty(template.subject)) {
+        if (!StringUtils.isEmpty(template.subject)) {
             message.subject = template.subject
         }
         request.message = message

@@ -8,7 +8,6 @@ package com.junbo.email.spec.error;
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.ErrorDef;
 import com.junbo.common.error.ErrorProxy;
-import com.junbo.common.id.EmailId;
 
 /**
  * AppErrors.

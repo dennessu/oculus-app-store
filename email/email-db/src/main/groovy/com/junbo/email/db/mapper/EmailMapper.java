@@ -96,6 +96,7 @@ public class EmailMapper {
         email.setId(new EmailId(entity.getId()));
         email.setIsResend(false);
         email.setTemplateId(new EmailTemplateId(entity.getTemplateId()));
+        email.setStatus(EmailStatus.PENDING.toString());
         email.setRecipients(Utils.toObject(entity.getRecipients(), List.class));
         email.setScheduleTime(entity.getScheduleTime());
         email.setCreatedTime(entity.getCreatedTime());
