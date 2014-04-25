@@ -96,6 +96,6 @@ class LocaleResourceImpl implements LocaleResource {
 
     @Override
     Promise<Void> delete(LocaleId localeId) {
-        return localeRepository.delete(LocaleId)
+        return localeRepository.delete(localeId)
     }
 }

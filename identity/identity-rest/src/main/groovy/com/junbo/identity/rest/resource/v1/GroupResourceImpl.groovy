@@ -130,6 +130,7 @@ class GroupResourceImpl implements GroupResource {
     }
 
     @Override
+
     Promise<Void> delete(GroupId groupId) {
         return groupValidator.validateForGet(groupId).then {
             groupRepository.delete(groupId)
