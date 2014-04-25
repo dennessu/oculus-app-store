@@ -49,4 +49,9 @@
         <property name="apiService" ref="apiService"/>
     </bean>
 
+    <bean id="defaultEmailVerifyEndpoint" class="com.junbo.oauth.api.endpoint.EmailVerifyEndpointImpl">
+        <property name="flowExecutor" ref="flowExecutor"/>
+        <property name="emailVerifyFlow" value="emailVerifyFlow"/>
+    </bean>
+
 </beans>

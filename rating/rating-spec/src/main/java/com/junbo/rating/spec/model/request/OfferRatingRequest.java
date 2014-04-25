@@ -21,7 +21,7 @@ public class OfferRatingRequest {
     private String currency;
 
     private Set<OfferRatingItem> offers;
-    private Long timestamp;
+    private String time;
 
     public Long getUserId() {
         return userId;
@@ -47,11 +47,11 @@ public class OfferRatingRequest {
         this.offers = offers;
     }
 
-    public Long getTimestamp() {
-        return timestamp;
+    public String getTime() {
+        return time;
     }
 
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
+    public void setTime(String time) {
+        this.time = time;
     }
 }

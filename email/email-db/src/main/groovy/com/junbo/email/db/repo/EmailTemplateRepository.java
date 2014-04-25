@@ -43,12 +43,10 @@ public class EmailTemplateRepository extends EmailBaseRepository {
     public EmailTemplate updateEmailTemplate(EmailTemplate template) {
         EmailTemplateEntity entity = emailMapper.toEmailTemplateEntity(template);
         EmailTemplateEntity savedEntity = emailTemplateDao.get(template.getId().getValue());
-        entity.setName(savedEntity.getName());
-        entity.setCreatedTime(savedEntity.getCreatedTime());
-        entity.setCreatedBy(savedEntity.getCreatedBy());
-        entity.setUpdatedTime(new Date());
-        entity.setUpdatedBy("internal system");
-        Long id = emailTemplateDao.update(entity);
+        this.merge(entity, savedEntity);
+        savedEntity.setUpdatedTime(new Date());
+        savedEntity.setUpdatedBy("internal system");
+        Long id = emailTemplateDao.update(savedEntity);
         return emailMapper.toEmailTemplate(emailTemplateDao.get(id));
     }
 
@@ -67,5 +65,18 @@ public class EmailTemplateRepository extends EmailBaseRepository {
     public List<EmailTemplate> getEmailTemplates(Map<String, String> queries, Paging paging) {
         List<EmailTemplateEntity> entities = emailTemplateDao.getEmailTemplatesByQuery(queries, paging);
         return emailMapper.toEmailTemplates(entities);
+    }
+
+    private void merge(EmailTemplateEntity updateEntity, EmailTemplateEntity savedEntity) {
+        savedEntity.setName(updateEntity.getName());
+        savedEntity.setSource(updateEntity.getSource());
+        savedEntity.setAction(updateEntity.getAction());
+        savedEntity.setLocale(updateEntity.getLocale());
+        savedEntity.setPlaceholderNames(updateEntity.getPlaceholderNames());
+        savedEntity.setProviderIndex(updateEntity.getProviderIndex());
+        savedEntity.setProviderName(updateEntity.getProviderName());
+        savedEntity.setFromAddress(updateEntity.getFromAddress());
+        savedEntity.setFromName(updateEntity.getFromName());
+        savedEntity.setSubject(updateEntity.getSubject());
     }
 }

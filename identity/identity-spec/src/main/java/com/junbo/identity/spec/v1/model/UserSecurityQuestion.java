@@ -18,22 +18,23 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  */
 public class UserSecurityQuestion extends ResourceMeta implements Identifiable<UserSecurityQuestionId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "The id of user security question resource.")
+    @ApiModelProperty(position = 1, required = true,
+            value = "[Nullable]The id of user security question resource.")
     @JsonProperty("self")
     private UserSecurityQuestionId id;
 
     @ApiModelProperty(position = 2, required = true, value = "The security question.")
     private String securityQuestion;
 
-    // This is the write only field
-    @ApiModelProperty(position = 3, required = true, value = "The security question answer.")
+    @ApiModelProperty(position = 3, required = true, value = "The security question answer, this is write only field.")
     private String answer;
+
+    @ApiModelProperty(position = 4, required = true, value = "[Nullable]Users")
+    @JsonProperty("user")
+    private UserId userId;
 
     @JsonIgnore
     private String answerHash;
-
-    @JsonIgnore
-    private UserId userId;
 
     @Override
     public UserSecurityQuestionId getId() {
@@ -80,5 +81,6 @@ public class UserSecurityQuestion extends ResourceMeta implements Identifiable<U
     public void setUserId(UserId userId) {
         this.userId = userId;
         support.setPropertyAssigned("userId");
+        support.setPropertyAssigned("user");
     }
 }

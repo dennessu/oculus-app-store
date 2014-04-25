@@ -8,4 +8,5 @@ dependencies {
     compile(libraries.spring_beans)
 
     compile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
+    compile 'com.junbo.email:email-spec:0.0.1-SNAPSHOT'
 }

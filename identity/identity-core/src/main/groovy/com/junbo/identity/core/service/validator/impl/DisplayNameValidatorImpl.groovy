@@ -1,17 +1,16 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.identity.core.service.validator.DisplayNameValidator
-import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserPii
 import groovy.transform.CompileStatic
 
 /**
  * Created by kg on 3/17/14.
  */
 @CompileStatic
+@SuppressWarnings('EmptyMethod')
 class DisplayNameValidatorImpl implements DisplayNameValidator {
-
+/*
     public static final int FIRSTNAME_LASTNAME_THEN_USERNAME = 1
 
     public static final int LASTNAME_FIRSTNAME_THEN_USERNAME = 2
@@ -21,8 +20,9 @@ class DisplayNameValidatorImpl implements DisplayNameValidator {
     public static final int LASTNAME_MIDDLENAME_FIRSTNAME_THEN_USERNAME = 4
 
     public static final int USERNAME = 5
-
-    Integer getDisplayNameType(User user, UserPii userPii) {
+*/
+    Integer getDisplayNameType(User user) {
+        /*
         if (user == null) {
             throw new IllegalArgumentException('user is null')
         }
@@ -78,9 +78,12 @@ class DisplayNameValidatorImpl implements DisplayNameValidator {
 
 
         throw AppErrors.INSTANCE.fieldInvalid('displayName', possibleValues.join(', ')).exception()
+        */
+        return null
     }
 
-    String getDisplayName(User user, UserPii userPii) {
+    String getDisplayName(User user) {
+        /*
         if (user == null) {
             throw new IllegalArgumentException('user is null')
         }
@@ -154,5 +157,6 @@ class DisplayNameValidatorImpl implements DisplayNameValidator {
         }
 
         return null
+        */
     }
 }

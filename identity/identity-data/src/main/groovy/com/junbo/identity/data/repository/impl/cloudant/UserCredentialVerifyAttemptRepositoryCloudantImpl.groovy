@@ -41,6 +41,7 @@ class UserCredentialVerifyAttemptRepositoryCloudantImpl extends CloudantClient<U
         if (entity.id == null) {
             entity.id = new UserCredentialVerifyAttemptId(idGenerator.nextId(entity.userId.value))
         }
+        entity.setValue(null)
         return Promise.pure((UserCredentialVerifyAttempt)super.cloudantPost(entity))
     }
 
@@ -68,7 +69,7 @@ class UserCredentialVerifyAttemptRepositoryCloudantImpl extends CloudantClient<U
 
     @Override
     Promise<Void> delete(UserCredentialVerifyAttemptId id) {
-        super.cloudantDelete(id.value)
+        super.cloudantDelete(id.toString())
         return Promise.pure(null)
     }
 

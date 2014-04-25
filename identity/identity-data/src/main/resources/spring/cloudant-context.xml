@@ -64,11 +64,6 @@
         <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
 
-    <bean id="cloudantUserDeviceRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserDeviceRepositoryCloudantImpl" parent="cloudantClient">
-        <property name="dbName" value="user_device"/>
-        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
-        <property name="idGenerator" ref="oculus48IdGenerator"/>
-    </bean>
 
     <bean id="cloudantUserGroupRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserGroupRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="user_group"/>
@@ -76,14 +71,8 @@
         <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
 
-    <bean id="cloudantUserOptinRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserOptinRepositoryCloudantImpl" parent="cloudantClient">
+    <bean id="cloudantUserOptinRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserCommunicationRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="user_optin"/>
-        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
-        <property name="idGenerator" ref="oculus48IdGenerator"/>
-    </bean>
-
-    <bean id="cloudantUserPiiRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserPiiRepositoryCloudantImpl" parent="cloudantClient">
-        <property name="dbName" value="user_pii"/>
         <property name="shardAlgorithm" ref="userShardAlgorithm"/>
         <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
@@ -135,4 +124,27 @@
         <property name="shardAlgorithm" ref="userShardAlgorithm" />
         <property name="idGenerator" ref="oculus48IdGenerator" />
     </bean>
+
+    <bean id="cloudantUserPersonalInfoRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserPersonalInfoRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_personal_info" />
+        <property name="idGenerator" ref="oculus48IdGenerator" />
+    </bean>
+
+    <bean id="cloudantCountryRepository" class="com.junbo.identity.data.repository.impl.cloudant.CountryRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="country"/>
+    </bean>
+
+    <bean id="cloudantCurrencyRepository" class="com.junbo.identity.data.repository.impl.cloudant.CurrencyRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="currency"/>
+    </bean>
+
+    <bean id="cloudantLocaleRepository" class="com.junbo.identity.data.repository.impl.cloudant.LocaleRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="locale"/>
+    </bean>
+
+    <bean id="cloudantPITypeRepository" class="com.junbo.identity.data.repository.impl.cloudant.PITypeRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="pitype"/>
+    </bean>
+
+
 </beans>

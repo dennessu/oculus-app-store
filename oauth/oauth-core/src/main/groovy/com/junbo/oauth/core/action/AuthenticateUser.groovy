@@ -117,6 +117,7 @@ class AuthenticateUser implements Action {
                         break
                 }
             } else {
+                LOGGER.error('Error calling the identity service.', e)
                 handleAppError(contextWrapper, AppExceptions.INSTANCE.errorCallingIdentity())
             }
 

@@ -1,28 +1,14 @@
 package com.junbo.identity.core.service.validator.impl
 
-import com.junbo.common.id.AddressId
-import com.junbo.common.id.UserPiiId
-import com.junbo.identity.core.service.validator.*
-import com.junbo.identity.data.repository.UserPiiRepository
-import com.junbo.identity.data.repository.UserRepository
-import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.v1.model.Address
-import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserEmail
-import com.junbo.identity.spec.v1.model.UserPhoneNumber
-import com.junbo.identity.spec.v1.model.UserPii
-import com.junbo.identity.spec.v1.option.list.UserPiiListOptions
-import com.junbo.langur.core.promise.Promise
+import com.junbo.identity.core.service.validator.UserPiiValidator
 import groovy.transform.CompileStatic
-import org.apache.commons.collections.CollectionUtils
-import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by liangfu on 4/10/14.
  */
 @CompileStatic
 class UserPiiValidatorImpl implements UserPiiValidator {
-
+    /*
     private UserRepository userRepository
     private UserPiiRepository userPiiRepository
 
@@ -284,5 +270,11 @@ class UserPiiValidatorImpl implements UserPiiValidator {
     @Required
     void setAllowedGenders(List<String> allowedGenders) {
         this.allowedGenders = allowedGenders
+    }
+    */
+
+    @Override
+    void test() {
+
     }
 }

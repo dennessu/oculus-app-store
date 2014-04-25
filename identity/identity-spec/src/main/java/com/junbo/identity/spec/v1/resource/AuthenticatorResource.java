@@ -38,7 +38,6 @@ public interface AuthenticatorResource {
     Promise<UserAuthenticator> put(@PathParam("authenticatorId") UserAuthenticatorId userAuthenticatorId,
                                    UserAuthenticator userAuthenticator);
 
-    @ApiOperation("Partial update an existing user authenticator")
     @POST
     @Path("/{authenticatorId}")
     Promise<UserAuthenticator> patch(@PathParam("authenticatorId") UserAuthenticatorId userAuthenticatorId,
@@ -53,5 +52,10 @@ public interface AuthenticatorResource {
     @ApiOperation("Search user authenticator")
     @GET
     Promise<Results<UserAuthenticator>> list(@BeanParam AuthenticatorListOptions listOptions);
+
+    @ApiOperation("Delete user authenticator")
+    @DELETE
+    @Path("/{authenticatorId}")
+    Promise<Void> delete(@PathParam("authenticatorId") UserAuthenticatorId userAuthenticatorId);
 }
 

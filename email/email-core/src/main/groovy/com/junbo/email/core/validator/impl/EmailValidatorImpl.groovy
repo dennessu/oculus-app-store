@@ -9,11 +9,11 @@ import com.junbo.email.core.validator.EmailValidator
 import com.junbo.email.db.repo.EmailScheduleRepository
 import com.junbo.email.spec.error.AppErrors
 import com.junbo.email.spec.model.Email
-import com.junbo.email.spec.model.EmailTemplate
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserPii
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import org.springframework.util.StringUtils
 
 /**
  * Impl of EmailValidator.
@@ -26,18 +26,19 @@ class EmailValidatorImpl extends CommonValidator implements EmailValidator {
 
     void validateCreate(Email email) {
         this.validateEmailId(email)
-        super.validateCommonField(email)
-        super.validateProhibitedFields(email)
+        this.validateCommonField(email)
+        this.validateProhibitedFields(email)
         super.validateScheduleTime(email, false)
-        super.validateAuditDate(email)
+        super.validateEmailTemplate(email)
     }
 
     void validateUpdate(Email email) {
-        super.validateCommonField(email)
-        super.validateProhibitedFields(email)
+        this.validateCommonField(email)
+        this.validateProhibitedFields(email)
         super.validateScheduleTime(email, true)
         super.validateAuditDate(email)
-        validateExistEmailSchedule(email.id.value)
+        super.validateEmailTemplate(email)
+        this.validateEmailSchedule(email)
     }
 
     void validateDelete(Long id) {
@@ -49,27 +50,6 @@ class EmailValidatorImpl extends CommonValidator implements EmailValidator {
         }
     }
 
-    void validateReplacements(Email email) {
-        String templateName = "${email.source}.${email.action}.${email.locale}"
-
-        EmailTemplate template = emailTemplateRepository.getEmailTemplateByName(templateName)
-
-        if (template == null) {
-            throw AppErrors.INSTANCE.templateNotFound(templateName).exception()
-        }
-        if (template.listOfVariables != null && email.replacements == null) {
-            throw AppErrors.INSTANCE.invalidProperty('replacements').exception()
-        }
-        if (template.listOfVariables != null) {
-            List<String> variables = toLowerCase(template.listOfVariables)
-            for (String key : email.replacements.keySet()) {
-                if (!variables.contains(key.replaceAll('\\d*(:\\w*)?$','').toLowerCase())) {
-                    throw AppErrors.INSTANCE.invalidProperty(key).exception()
-                }
-            }
-        }
-    }
-
     void validateUser(User user) {
         super.validateUser(user)
     }
@@ -78,24 +58,46 @@ class EmailValidatorImpl extends CommonValidator implements EmailValidator {
         super.validateUserPii(userPii)
     }
 
-    private void validateExistEmailSchedule(Long id) {
-        Email email = emailScheduleRepository.getEmailSchedule(id)
-        if (email == null) {
+    private void validateEmailSchedule(Email email) {
+        Email schedule = emailScheduleRepository.getEmailSchedule(email.id.value)
+        if (schedule == null) {
             throw AppErrors.INSTANCE.emailScheduleNotFound('').exception()
         }
     }
 
-    private List<String> toLowerCase(List<String> properties) {
-        List<String> list = new ArrayList<>()
-        for (String property: properties) {
-            list.add(property.toLowerCase())
-        }
-        return list
-    }
-
     private void validateEmailId(Email email) {
         if (email.id != null) {
-            throw AppErrors.INSTANCE.invalidEmailId('').exception()
+            throw AppErrors.INSTANCE.invalidEmailId(email.id.value).exception()
+        }
+    }
+
+    private void validateCommonField(Email email) {
+        if (email == null) {
+            throw AppErrors.INSTANCE.invalidPayload().exception()
+        }
+        if (email.userId == null && email.recipients == null) {
+            throw AppErrors.INSTANCE.missingField('user or recipients').exception()
+        }
+        if (email.templateId == null) {
+            throw AppErrors.INSTANCE.missingField('template').exception()
+        }
+    }
+
+    private void validateProhibitedFields(Email email) {
+        if (!StringUtils.isEmpty(email.status)) {
+            throw AppErrors.INSTANCE.unnecessaryField('status').exception()
+        }
+        if (!StringUtils.isEmpty(email.statusReason)) {
+            throw AppErrors.INSTANCE.unnecessaryField('statusReason').exception()
+        }
+        if (email.sentTime != null) {
+            throw AppErrors.INSTANCE.unnecessaryField('sentTime').exception()
+        }
+        if (email.retryCount != null) {
+            throw AppErrors.INSTANCE.unnecessaryField('retryCount').exception()
+        }
+        if (email.isResend != null) {
+            throw AppErrors.INSTANCE.unnecessaryField('isResend').exception()
         }
     }
 }

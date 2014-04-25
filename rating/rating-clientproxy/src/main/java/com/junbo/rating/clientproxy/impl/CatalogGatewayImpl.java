@@ -190,24 +190,6 @@ public class CatalogGatewayImpl implements CatalogGateway{
         return null;
     }
 
-    private OfferRevision getOfferRevisionByTimestamp(Long offerId, Long timestamp) {
-        List<OfferRevision> revisions;
-        OfferRevisionsGetOptions options = new OfferRevisionsGetOptions();
-        options.setOfferIds(Arrays.asList(new OfferId(offerId)));
-        options.setTimestamp(timestamp);
-        try {
-            revisions = offerRevisionResource.getOfferRevisions(options).wrapped().get().getItems();
-        } catch (Exception e) {
-            throw AppErrors.INSTANCE.catalogGatewayError().exception();
-        }
-
-        if (revisions.isEmpty()) {
-            throw AppErrors.INSTANCE.offerRevisionNotFound(offerId.toString()).exception();
-        }
-
-        return revisions.get(Constants.UNIQUE);
-    }
-
     @Override
     public Map<Long, String> getEntitlementDefinitions(Set<String> groups) {
         Map<Long, String> result = new HashMap<>();
@@ -241,5 +223,23 @@ public class CatalogGatewayImpl implements CatalogGateway{
         }
 
         return result;
+    }
+
+    private OfferRevision getOfferRevisionByTimestamp(Long offerId, Long timestamp) {
+        List<OfferRevision> revisions;
+        OfferRevisionsGetOptions options = new OfferRevisionsGetOptions();
+        options.setOfferIds(Arrays.asList(new OfferId(offerId)));
+        options.setTimestamp(timestamp);
+        try {
+            revisions = offerRevisionResource.getOfferRevisions(options).wrapped().get().getItems();
+        } catch (Exception e) {
+            throw AppErrors.INSTANCE.catalogGatewayError().exception();
+        }
+
+        if (revisions.isEmpty()) {
+            throw AppErrors.INSTANCE.offerRevisionNotFound(offerId.toString()).exception();
+        }
+
+        return revisions.get(Constants.UNIQUE);
     }
 }

@@ -8,6 +8,7 @@ package com.junbo.rating.core.context;
 
 import com.junbo.catalog.spec.model.promotion.PromotionRevision;
 import com.junbo.catalog.spec.model.promotion.PromotionType;
+import com.junbo.rating.common.util.Utils;
 import com.junbo.rating.spec.error.AppErrors;
 import com.junbo.rating.spec.model.*;
 import com.junbo.rating.spec.model.Currency;
@@ -49,7 +50,7 @@ public class RatingContext {
 
     public void fromRequest(OfferRatingRequest request) {
         this.userId = request.getUserId();
-        this.timestamp = request.getTimestamp();
+        this.timestamp = request.getTime() == null? null : Utils.parseDateTime(request.getTime());
 
         Currency currency = Currency.findByCode(request.getCurrency());
         if (currency == null) {
@@ -67,7 +68,7 @@ public class RatingContext {
 
     public void fromRequest(RatingRequest request) {
         this.userId = request.getUserId();
-        this.timestamp = request.getTimestamp();
+        this.timestamp = request.getTime() == null? null : Utils.parseDateTime(request.getTime());
         this.defaultShippingMethod = request.getShippingMethodId();
 
         Currency currency = Currency.findByCode(request.getCurrency());
@@ -77,7 +78,7 @@ public class RatingContext {
 
         this.currency = currency;
 
-        for (String coupon : request.getCouponCodes()) {
+        for (String coupon : request.getCoupons()) {
             couponCodes.put(coupon, null);
         }
 

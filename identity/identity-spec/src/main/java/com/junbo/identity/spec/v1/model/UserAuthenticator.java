@@ -17,7 +17,7 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  */
 public class UserAuthenticator extends ResourceMeta implements Identifiable<UserAuthenticatorId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "The id of the resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Nullable]The id of the resource.")
     @JsonProperty("self")
     private UserAuthenticatorId id;
 
@@ -25,11 +25,12 @@ public class UserAuthenticator extends ResourceMeta implements Identifiable<User
     @JsonProperty("user")
     private UserId userId;
 
-    @ApiModelProperty(position = 3, required = true, value = "External authenticator type.")
+    @ApiModelProperty(position = 3, required = true,
+            value = "External authenticator type, must be in [GOOGLE, FACEBOOK, TWITTER].")
     private String type;
 
-    @ApiModelProperty(position = 4, required = true, value = "External authenticator value.")
-    private String value;
+    @ApiModelProperty(position = 4, required = true, value = "External authenticator id.")
+    private String externalId;
 
     @Override
     public UserAuthenticatorId getId() {
@@ -61,12 +62,12 @@ public class UserAuthenticator extends ResourceMeta implements Identifiable<User
         support.setPropertyAssigned("type");
     }
 
-    public String getValue() {
-        return value;
+    public String getExternalId() {
+        return externalId;
     }
 
-    public void setValue(String value) {
-        this.value = value;
-        support.setPropertyAssigned("value");
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
+        support.setPropertyAssigned("externalId");
     }
 }
