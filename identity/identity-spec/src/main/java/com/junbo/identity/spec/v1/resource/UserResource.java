@@ -36,7 +36,6 @@ public interface UserResource {
     @Path("/{userId}")
     Promise<User> put(@PathParam("userId") UserId userId, User user);
 
-    @ApiOperation("Partial update one user")
     @POST
     @Path("/{userId}")
     Promise<User> patch(@PathParam("userId") UserId userId, User user);
@@ -49,5 +48,10 @@ public interface UserResource {
     @ApiOperation("Search users")
     @GET
     Promise<Results<User>> list(@BeanParam UserListOptions listOptions);
+
+    @ApiOperation("Delete one user")
+    @DELETE
+    @Path("/{userId}")
+    Promise<Void> delete(@PathParam("userId") UserId userId);
 }
 

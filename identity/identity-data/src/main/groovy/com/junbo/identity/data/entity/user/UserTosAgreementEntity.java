@@ -7,10 +7,8 @@ package com.junbo.identity.data.entity.user;
 
 import com.junbo.identity.data.entity.common.ResourceMetaEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  * UserEntity list for user_device_profile table.
@@ -27,6 +25,10 @@ public class UserTosAgreementEntity extends ResourceMetaEntity {
 
     @Column(name = "tos_id")
     private Long tosId;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "agreement_time")
+    private Date agreementTime;
 
     public Long getId() {
         return id;
@@ -50,5 +52,13 @@ public class UserTosAgreementEntity extends ResourceMetaEntity {
 
     public void setTosId(Long tosId) {
         this.tosId = tosId;
+    }
+
+    public Date getAgreementTime() {
+        return agreementTime;
+    }
+
+    public void setAgreementTime(Date agreementTime) {
+        this.agreementTime = agreementTime;
     }
 }

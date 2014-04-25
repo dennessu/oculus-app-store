@@ -5,10 +5,14 @@
  */
 package com.junbo.email.spec.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.junbo.common.id.EmailTemplateId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.EmailId;
+//import com.junbo.common.model.ResourceMeta;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
 import java.util.List;
@@ -17,37 +21,46 @@ import java.util.Map;
 /**
  * Email model.
  */
-@JsonPropertyOrder(value = {"self","user","source","action","locale","type","recipients","status","statusReason",
-        "retryCount","priority","sentTime","isResend","scheduleTime","replacements","createdTime","modifiedTime"})
-public class Email extends Model{
+@JsonPropertyOrder(value = {"self","user","template","recipients","status",
+        "priority","sentTime","scheduleTime","replacements"})
+public class Email extends Model {
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The id of email resource.")
     @JsonProperty("self")
     private EmailId id;
 
+    @ApiModelProperty(position = 2, required = true, value = "The user resource.")
     @JsonProperty("user")
     private UserId userId;
 
-    private String source;
+    @ApiModelProperty(position = 3, required = true, value = "The template id of the email.")
+    @JsonProperty("template")
+    private EmailTemplateId templateId;
 
-    private String action;
-
-    private String locale;
-
+    @ApiModelProperty(position = 5, required = true, value = "The recipients of the email.")
     private List<String> recipients;
 
+    @ApiModelProperty(position = 6, required = true, value = "[Client Immutable] The status of the email.")
     private String status;
 
+    @JsonIgnore
     private String statusReason;
 
+    @JsonIgnore
     private Integer retryCount;
 
+    @ApiModelProperty(position = 7, required = true, value = "The priority of the email.")
     private Integer priority;
 
+    @ApiModelProperty(position = 8, required = true, value = "[Client Immutable] The sentTime of the email.")
     private Date sentTime;
 
+    @JsonIgnore
     private Boolean isResend;
 
+    @ApiModelProperty(position = 9, required = true, value = "The scheduleTime of the email.")
     private Date scheduleTime;
 
+    @ApiModelProperty(position = 10, required = true, value = "The replacements of the email.")
     private Map<String,String> replacements;
 
     public EmailId getId() {
@@ -66,36 +79,12 @@ public class Email extends Model{
         this.userId = userId;
     }
 
-    public String getSource() {
-        return source;
+    public EmailTemplateId getTemplateId() {
+        return templateId;
     }
 
-    public void setSource(String source) {
-        this.source = source;
-    }
-
-    public String getAction() {
-        return action;
-    }
-
-    public void setAction(String action) {
-        this.action = action;
-    }
-
-    public String getLocale() {
-        return locale;
-    }
-
-    public void setLocale(String locale) {
-        this.locale = locale;
-    }
-
-    public List<String> getRecipients() {
-        return recipients;
-    }
-
-    public void setRecipients(List<String> recipients) {
-        this.recipients = recipients;
+    public void setTemplateId(EmailTemplateId templateId) {
+        this.templateId = templateId;
     }
 
     public String getStatus() {
@@ -130,20 +119,28 @@ public class Email extends Model{
         this.priority = priority;
     }
 
-    public Date getSentTime() {
-        return sentTime;
-    }
-
-    public void setSentTime(Date sentTime) {
-        this.sentTime = sentTime;
-    }
-
     public Boolean getIsResend() {
         return isResend;
     }
 
     public void setIsResend(Boolean isResend) {
         this.isResend = isResend;
+    }
+
+    public List<String> getRecipients() {
+        return recipients;
+    }
+
+    public void setRecipients(List<String> recipients) {
+        this.recipients = recipients;
+    }
+
+    public Date getSentTime() {
+        return sentTime;
+    }
+
+    public void setSentTime(Date sentTime) {
+        this.sentTime = sentTime;
     }
 
     public Date getScheduleTime() {

@@ -24,11 +24,10 @@
     <bean id="userDAO" class="com.junbo.identity.data.dao.impl.UserDAOImpl" parent="identityBaseDAO" />
     <bean id="groupDAO" class="com.junbo.identity.data.dao.impl.GroupDAOImpl" parent="identityBaseDAO" />
     <bean id="userAuthenticatorDAO" class="com.junbo.identity.data.dao.impl.UserAuthenticatorDAOImpl" parent="identityBaseDAO" />
-    <bean id="userDeviceDAO" class="com.junbo.identity.data.dao.impl.UserDeviceDAOImpl" parent="identityBaseDAO" />
     <bean id="userEmailDAO" class="com.junbo.identity.data.dao.impl.UserEmailDAOImpl" parent="identityBaseDAO" />
     <bean id="userGroupDAO" class="com.junbo.identity.data.dao.impl.UserGroupDAOImpl" parent="identityBaseDAO" />
     <bean id="userCredentialVerifyAttemptDAO" class="com.junbo.identity.data.dao.impl.UserCredentialVerifyAttemptDAOImpl" parent="identityBaseDAO" />
-    <bean id="userOptinDAO" class="com.junbo.identity.data.dao.impl.UserOptinDAOImpl" parent="identityBaseDAO" />
+    <bean id="userOptinDAO" class="com.junbo.identity.data.dao.impl.UserCommunicationDAOImpl" parent="identityBaseDAO" />
     <bean id="userPasswordDAO" class="com.junbo.identity.data.dao.impl.UserPasswordDAOImpl" parent="identityBaseDAO" />
     <bean id="userPhoneNumberDAO" class="com.junbo.identity.data.dao.impl.UserPhoneNumberDAOImpl" parent="identityBaseDAO" />
     <bean id="userPinDAO" class="com.junbo.identity.data.dao.impl.UserPinDAOImpl" parent="identityBaseDAO" />
@@ -40,7 +39,6 @@
     <bean id="tosDAO" class="com.junbo.identity.data.dao.impl.TosDAOImpl" parent="identityBaseDAO" />
     <bean id="roleDAO" class="com.junbo.identity.data.dao.impl.RoleDAOImpl" parent="identityBaseDAO"/>
     <bean id="roleAssignmentDAO" class="com.junbo.identity.data.dao.impl.RoleAssignmentDAOImpl" parent="identityBaseDAO"/>
-    <bean id="userPiiDAO" class="com.junbo.identity.data.dao.impl.UserPiiDAOImpl" parent="identityBaseDAO" />
     <bean id="addressDAO" class="com.junbo.identity.data.dao.impl.AddressDAOImpl" parent="identityBaseDAO" />
     <bean id="userAddressDAO" class="com.junbo.identity.data.dao.impl.UserAddressDAOImpl" parent="identityBaseDAO" />
     <bean id="userTeleDAO" class="com.junbo.identity.data.dao.impl.UserTeleDAOImpl" parent="identityBaseDAO" />
@@ -58,19 +56,16 @@
         <property name="groupDAO" ref="groupDAO"/>
     </bean>
 
-    <bean id="sqlUserDeviceRepository" class="com.junbo.identity.data.repository.impl.sql.UserDeviceRepositorySqlImpl" >
-        <property name="modelMapper" ref="modelMapper"/>
-        <property name="userDeviceDAO" ref="userDeviceDAO"/>
-    </bean>
     <bean id="sqlUserGroupRepository" class="com.junbo.identity.data.repository.impl.sql.UserGroupRepositorySqlImpl" >
         <property name="userGroupDAO" ref="userGroupDAO"/>
         <property name="modelMapper" ref="modelMapper"/>
     </bean>
+
     <bean id="sqlUserCredentialVerifyAttemptRepository" class="com.junbo.identity.data.repository.impl.sql.UserCredentialVerifyAttemptRepositorySqlImpl" >
         <property name="modelMapper" ref="modelMapper"/>
         <property name="credentialVerifyAttemptDAO" ref="userCredentialVerifyAttemptDAO"/>
     </bean>
-    <bean id="sqlUserOptinRepository" class="com.junbo.identity.data.repository.impl.sql.UserOptinRepositorySqlImpl" >
+    <bean id="sqlUserOptinRepository" class="com.junbo.identity.data.repository.impl.sql.UserCommunicationRepositorySqlImpl" >
         <property name="userOptinDAO" ref="userOptinDAO"/>
         <property name="modelMapper" ref="modelMapper"/>
     </bean>
@@ -90,40 +85,40 @@
         <property name="userSecurityQuestionDAO" ref="userSecurityQuestionDAO"/>
         <property name="modelMapper" ref="modelMapper"/>
     </bean>
+
     <bean id="sqlUserTosRepository" class="com.junbo.identity.data.repository.impl.sql.UserTosRepositorySqlImpl" >
         <property name="modelMapper" ref="modelMapper"/>
         <property name="userTosDAO" ref="userTosDAO"/>
     </bean>
+
     <bean id="sqlSecurityQuestionRepository" class="com.junbo.identity.data.repository.impl.sql.SecurityQuestionRepositorySqlImpl">
         <property name="securityQuestionDAO" ref="securityQuestionDAO"/>
         <property name="modelMapper" ref="modelMapper"/>
     </bean>
+
     <bean id="sqlUserSecurityQuestionAttemptRepository" class="com.junbo.identity.data.repository.impl.sql.UserSecurityQuestionAttemptRepositorySqlImpl" >
         <property name="modelMapper" ref="modelMapper"/>
         <property name="userSecurityQuestionAttemptDAO" ref="userSecurityQuestionAttemptDAO"/>
     </bean>
+
     <bean id="sqlDeviceRepository" class="com.junbo.identity.data.repository.impl.sql.DeviceRepositorySqlImpl" >
         <property name="modelMapper" ref="modelMapper"/>
         <property name="deviceDAO" ref="deviceDAO"/>
     </bean>
+
     <bean id="sqlTosRepository" class="com.junbo.identity.data.repository.impl.sql.TosRepositorySqlImpl" >
         <property name="modelMapper" ref="modelMapper"/>
         <property name="tosDAO" ref="tosDAO"/>
     </bean>
+
     <bean id="sqlRoleRepository" class="com.junbo.identity.data.repository.impl.sql.RoleRepositorySqlImpl">
         <property name="roleDAO" ref="roleDAO"/>
     </bean>
+
     <bean id="sqlRoleAssignmentRepository" class="com.junbo.identity.data.repository.impl.sql.RoleAssignmentRepositorySqlImpl">
         <property name="roleAssignmentDAO" ref="roleAssignmentDAO"/>
     </bean>
-    <bean id="sqlUserPiiRepository" class="com.junbo.identity.data.repository.impl.sql.UserPiiRepositorySqlImpl" >
-        <property name="userEmailDAO" ref="userEmailDAO"/>
-        <property name="userPiiDAO" ref="userPiiDAO"/>
-        <property name="modelMapper" ref="modelMapper"/>
-        <property name="userAddressDAO" ref="userAddressDAO"/>
-        <property name="userPhoneNumberDAO" ref="userPhoneNumberDAO"/>
-        <property name="userNameDAO" ref="userNameDAO"/>
-    </bean>
+
     <bean id="sqlAddressRepository" class="com.junbo.identity.data.repository.impl.sql.AddressRepositorySqlImpl" >
         <property name="addressDAO" ref="addressDAO"/>
         <property name="modelMapper" ref="modelMapper"/>
@@ -161,7 +156,8 @@
                 <bean class="com.junbo.identity.data.view.UserGroupIdView"/>
                 <bean class="com.junbo.identity.data.view.RoleNameView"/>
                 <bean class="com.junbo.identity.data.view.RoleAssignmentRoleIdAssigneeView"/>
-                <bean class="com.junbo.identity.data.view.UserOptinTypeView" />
+                <bean class="com.junbo.identity.data.view.UserOptinCommunicationView" />
+                <bean class="com.junbo.identity.data.view.CommunicationNameView" />
             </list>
         </property>
     </bean>
@@ -251,7 +247,7 @@
                 <entry key="hibernate.multiTenancy" value="SCHEMA"/>
                 <entry key="hibernate.current_session_context_class" value="com.junbo.sharding.hibernate.MultiTenantJTASessionContext"/>
                 <entry key="hibernate.tenant_identifier_resolver" value="com.junbo.sharding.hibernate.ShardCurrentTenantIdentifierResolver"/>
-                <entry key="hibernate.multi_tenant_connection_provider" value-ref="indexDataSource"/>
+                <entry key="hibernate.multi_tenant_connection_provider" value-ref="configDataSource"/>
                 <entry key="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
             </map>
         </property>

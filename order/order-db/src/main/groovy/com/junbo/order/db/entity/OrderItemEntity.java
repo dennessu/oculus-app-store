@@ -37,7 +37,6 @@ public class OrderItemEntity extends CommonDbEntityDeletable {
     // expand ratingInfo to simplify oom
     private BigDecimal totalAmount;
     private BigDecimal totalTax;
-    private Boolean isTaxExempted;
     private BigDecimal totalDiscount;
     private Date honorUntilTime;
     private Date honoredTime;
@@ -142,16 +141,6 @@ public class OrderItemEntity extends CommonDbEntityDeletable {
 
     public void setTotalTax(BigDecimal totalTax) {
         this.totalTax = totalTax;
-    }
-
-    @Column(name = "IS_TAX_EXEMPTED")
-    @NotNull(message = ValidationMessages.MISSING_VALUE)
-    public Boolean getIsTaxExempted() {
-        return isTaxExempted;
-    }
-
-    public void setIsTaxExempted(Boolean isTaxExempted) {
-        this.isTaxExempted = isTaxExempted;
     }
 
     @Column(name = "TOTAL_DISCOUNT")

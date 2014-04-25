@@ -3,9 +3,12 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <import resource="classpath*:spring/context-jobs.xml"/>
-    <import resource="classpath*:spring/*-context.xml"/>
-    <import resource="classpath*:spring/transaction.xml"/>
-    <!--<import resource="classpath*:spring/flow-context-test.xml"/>
-    <import resource="classpath*:spring/orderflow/*.xml"/>-->
+    <bean id="orderJobAsyncTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="10" />
+        <property name="maxPoolSize" value="10" />
+        <property name="queueCapacity" value="1000" />
+        <property name="rejectedExecutionHandler">
+            <bean class="java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy"/>
+        </property>
+    </bean>
 </beans>

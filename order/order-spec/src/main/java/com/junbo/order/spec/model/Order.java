@@ -14,8 +14,11 @@ import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.ShippingAddressId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.jackson.annotation.ShippingMethodId;
+import com.junbo.common.model.Link;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,50 +26,98 @@ import java.util.List;
  * Created by chriszhu on 2/7/14.
  */
 @JsonPropertyOrder(value = {
-        "id", "user", "type", "status", "country", "currency",
-        "tentative", "resourceAge", "originalOrder", "ratingInfo", "shippingMethod",
+        "id", "user", "status", "country", "currency", "locale",
+        "tentative", "resourceAge", "ratingInfo", "shippingMethod",
         "shippingAddress", "paymentInstruments", "refundOrders", "discounts", "orderItems"
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Order extends BaseModelWithDate {
+public class Order extends BaseOrderResource {
+    @ApiModelProperty(required = true, position = 10, value = "[Client Immutable] The order id.")
     @JsonProperty("self")
     private OrderId id;
+
+    @ApiModelProperty(required = true, position = 20, value = "The user id.")
     private UserId user;
-    private String type;
-    private String status;
-    private String country;
-    private String currency;
-    private String locale;
+
+    @ApiModelProperty(required = true, position = 30, value = "Whether it's a tentative order.")
     private Boolean tentative;
 
+    @ApiModelProperty(required = true, position = 40, value = "[Client Immutable] The Order Status. " +
+            "The state diagram is here: https://www.lucidchart.com/documents/edit/4bf4b274-532a-b700-bdd9-6da00a009107",
+            allowableValues = "OPEN, PENDING_CHARGE, PENDING_FULFILL, CHARGED, FULFILLED, " +
+                    "COMPLETED, FAILED, CANCELED, REFUNDED, PREORDERED, ERROR")
+    private String status;
+
+    @ApiModelProperty(required = true, position = 50, value = "The order purchased country.")
+    @JsonProperty("countryOfPurchase")
+    private String country;
+
+    @ApiModelProperty(required = true, position = 60, value = "The order currency.")
+    private String currency;
+
+    @ApiModelProperty(required = true, position = 70, value = "The order locale.")
+    private String locale;
+
     // expand ratingInfo to simplify oom
+    @ApiModelProperty(required = true, position = 80, value = "[Client Immutable] The order total amount.")
     private BigDecimal totalAmount;
+
+    @ApiModelProperty(required = true, position = 90, value = "[Client Immutable] The order total tax.")
     private BigDecimal totalTax;
+
+    @JsonProperty("isTaxIncluded")
+    @ApiModelProperty(required = true, position = 100, value = "[Client Immutable] Whether the tax " +
+            "is included in the total amount.")
     private Boolean isTaxInclusive;
+
+    @ApiModelProperty(required = true, position = 110, value = "[Client Immutable] The order total discount amount.")
     private BigDecimal totalDiscount;
+
+    @ApiModelProperty(required = true, position = 120, value = "[Client Immutable] The order total shipping fee.")
+
     private BigDecimal totalShippingFee;
+    @ApiModelProperty(required = true, position = 130, value = "[Client Immutable] The order total shipping " +
+            "fee discount amount.")
     private BigDecimal totalShippingFeeDiscount;
+
     @JsonIgnore
     private Date honorUntilTime;
+
     @JsonIgnore
     private Date honoredTime;
     // end of ratingInfo
 
     // expand shippingInfo to simplify oom
     @ShippingMethodId
+    @ApiModelProperty(required = true, position = 75, value = "The shipping method. Required for physical goods. " +
+            "It might be null if there is no shipping method at this time.")
     private Long shippingMethod;
+    @ApiModelProperty(required = true, position = 76, value = "The shipping address. Required for physical goods. " +
+            "It might be null if there is no shipping address at this time.")
     private ShippingAddressId shippingAddress;
     // end of shippingInfo
 
+    @ApiModelProperty(required = true, position = 150, value = "The payments instruments. " +
+            "Required if the order is not free. " +
+            "It might be empty if there is no payments instruments at this time.")
+    private List<PaymentInfo> payments;
+    @ApiModelProperty(required = true, position = 160, value = "The discounts. " +
+            "It might be empty if there is no discounts at this time.")
+
+    @JsonIgnore
     private List<PaymentInstrumentId> paymentInstruments;
+
+    @ApiModelProperty(required = true, position = 160, value = "The discounts. " +
+            "It might be empty if there is no discounts at this time.")
     private List<Discount> discounts;
+    @ApiModelProperty(required = true, position = 140, value = "The order items. ")
     private List<OrderItem> orderItems;
 
-    // urls for web payment
-    private String successRedirectUrl;
-    private String cancelRedirectUrl;
-    private String providerConfirmUrl;
-    // end of urls
+    @ApiModelProperty(required = true, position = 170, value = "[Client Immutable]]The link to the order events. ")
+    private Link orderEvents;
+
+    @ApiModelProperty(required = true, position = 180, value = "[Client Immutable]]The link to the balances. ")
+    private Link balances;
 
     public OrderId getId() {
         return id;
@@ -82,14 +133,6 @@ public class Order extends BaseModelWithDate {
 
     public void setUser(UserId user) {
         this.user = user;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getStatus() {
@@ -204,14 +247,6 @@ public class Order extends BaseModelWithDate {
         this.shippingAddress = shippingAddress;
     }
 
-    public List<PaymentInstrumentId> getPaymentInstruments() {
-        return paymentInstruments;
-    }
-
-    public void setPaymentInstruments(List<PaymentInstrumentId> paymentInstruments) {
-        this.paymentInstruments = paymentInstruments;
-    }
-
     public List<Discount> getDiscounts() {
         return discounts;
     }
@@ -236,27 +271,43 @@ public class Order extends BaseModelWithDate {
         this.locale = locale;
     }
 
-    public String getSuccessRedirectUrl() {
-        return successRedirectUrl;
+
+    public List<PaymentInfo> getPayments() {
+        return payments;
     }
 
-    public void setSuccessRedirectUrl(String successRedirectUrl) {
-        this.successRedirectUrl = successRedirectUrl;
+    public void setPayments(List<PaymentInfo> payments) {
+        this.payments = payments;
+        if(payments != null) {
+            this.paymentInstruments = new ArrayList<>();
+            for (PaymentInfo paymentInfo : payments) {
+                this.paymentInstruments.add(paymentInfo.getPaymentInstrument());
+            }
+        }
     }
 
-    public String getCancelRedirectUrl() {
-        return cancelRedirectUrl;
+    public Link getOrderEvents() {
+        return orderEvents;
     }
 
-    public void setCancelRedirectUrl(String cancelRedirectUrl) {
-        this.cancelRedirectUrl = cancelRedirectUrl;
+    public void setOrderEvents(Link orderEvents) {
+        this.orderEvents = orderEvents;
     }
 
-    public String getProviderConfirmUrl() {
-        return providerConfirmUrl;
+    public Link getBalances() {
+        return balances;
     }
 
-    public void setProviderConfirmUrl(String providerConfirmUrl) {
-        this.providerConfirmUrl = providerConfirmUrl;
+    public void setBalances(Link balances) {
+        this.balances = balances;
     }
+
+    public List<PaymentInstrumentId> getPaymentInstruments() {
+        return paymentInstruments;
+    }
+
+    public void setPaymentInstruments(List<PaymentInstrumentId> paymentInstruments) {
+        this.paymentInstruments = paymentInstruments;
+    }
+
 }

@@ -7,7 +7,6 @@
 package com.junbo.catalog.db.mapper;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.entity.ItemEntity;
-import com.junbo.catalog.spec.model.common.LocalizableProperty;
 import com.junbo.catalog.spec.model.item.Item;
 
 /**
@@ -27,13 +26,12 @@ public class ItemMapper {
 
     public static void fillDBEntity(Item model, ItemEntity entity) {
         entity.setItemId(model.getItemId());
-        entity.setName(Utils.toJson(model.getName()));
-        entity.setCurated(model.getCurated() == null ? false : model.getCurated());
         entity.setType(model.getType());
         entity.setGenres(model.getGenres());
         entity.setOwnerId(model.getOwnerId());
         entity.setCurrentRevisionId(model.getCurrentRevisionId());
         entity.setPayload(Utils.toJson(model));
+        entity.setRev(model.getRev()==null ? null : Integer.valueOf(model.getRev()));
     }
 
     public static Item toModel(ItemEntity entity) {
@@ -42,8 +40,6 @@ public class ItemMapper {
         }
         Item model = Utils.fromJson(entity.getPayload(), Item.class);
         model.setItemId(entity.getItemId());
-        model.setName(Utils.fromJson(entity.getName(), LocalizableProperty.class));
-        model.setCurated(entity.isCurated());
         model.setType(entity.getType());
         model.setCurrentRevisionId(entity.getCurrentRevisionId());
         model.setOwnerId(entity.getOwnerId());
@@ -52,6 +48,7 @@ public class ItemMapper {
         model.setCreatedTime(entity.getCreatedTime());
         model.setUpdatedBy(entity.getUpdatedBy());
         model.setUpdatedTime(entity.getUpdatedTime());
+        model.setRev(entity.getRev().toString());
         return model;
     }
 }

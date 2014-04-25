@@ -38,6 +38,8 @@ class TransactionServiceImpl implements TransactionService {
     @Autowired
     PaymentFacade paymentFacade
 
+    final static Long UNCONFIRMED_TIMEOUT_HOURS = 3 * 60 * 60 * 1000L
+
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionServiceImpl)
 
     @Override
@@ -68,6 +70,7 @@ class TransactionServiceImpl implements TransactionService {
         newTransaction.setCurrency(balance.currency)
         newTransaction.setType(TransactionType.CAPTURE.name())
         newTransaction.setPiId(balance.piId)
+        newTransaction.setTransactionTime(new Date())
 
         LOGGER.info('name=Capture_Balance. balance currency: {}, authed amount: {}, settled amount: {}, pi id: {}',
                 balance.currency, balance.totalAmount, amount, balance.piId)
@@ -86,16 +89,9 @@ class TransactionServiceImpl implements TransactionService {
                     pt.id, pt.chargeInfo.amount, pt.status)
             newTransaction.setPaymentRefId(pt.id.toString())
             newTransaction.setAmount(pt.chargeInfo.amount)
-            if (pt.status == PaymentStatus.SETTLEMENT_SUBMITTED.name()) {
-                newTransaction.setStatus(TransactionStatus.SUCCESS.name())
-                balance.setStatus(BalanceStatus.AWAITING_PAYMENT.name())
-            } else if (pt.status == PaymentStatus.SETTLEMENT_SUBMIT_DECLINED.name()) {
-                newTransaction.setStatus(TransactionStatus.DECLINE.name())
-                balance.setStatus(BalanceStatus.FAILED.name())
-            } else {
-                newTransaction.setStatus(TransactionStatus.ERROR.name())
-                balance.setStatus(BalanceStatus.ERROR.name())
-            }
+            newTransaction.setStatus(getTransactionStatusByPaymentStatus(pt.status).name())
+            balance.setStatus(getBalanceStatusByPaymentStatus(pt.status).name())
+
             balance.addTransaction(newTransaction)
             return Promise.pure(balance)
         }
@@ -103,64 +99,73 @@ class TransactionServiceImpl implements TransactionService {
 
     @Override
     Promise<Balance> confirmBalance(Balance balance) {
-        def paymentTransaction = generatePaymentTransaction(balance)
+
         Long paymentId = getPaymentIdByRef(balance.transactions[0].paymentRefId)
 
-        def newTransaction = new Transaction()
-        newTransaction.setAmount(balance.totalAmount)
-        newTransaction.setCurrency(balance.currency)
-        newTransaction.setType(TransactionType.CONFIRM.name())
-        newTransaction.setPiId(balance.piId)
-
-        LOGGER.info('name=Confirm_Balance. balance currency: {}, amount: {}, pi id: {}',
-                balance.currency, balance.totalAmount, balance.piId)
-        return paymentFacade.postPaymentConfirm(paymentId, paymentTransaction).recover { Throwable throwable ->
-            LOGGER.error('name=Confirm_Balance_Error. error in post payment confirm', throwable)
-            newTransaction.setStatus(TransactionStatus.ERROR.name())
-            balance.addTransaction(newTransaction)
+        return paymentFacade.getPayment(paymentId).recover { Throwable throwable ->
+            LOGGER.error('name=Confirm_Balance_Error. error in get payment', throwable)
             balance.setStatus(BalanceStatus.ERROR.name())
             return Promise.pure(null)
-        }.then { PaymentTransaction pt ->
-            if (pt == null) {
+        }.then { PaymentTransaction getPt ->
+            if (getPt == null) {
                 return Promise.pure(balance)
             }
 
-            LOGGER.info('name=Confirm_Balance_Response. payment id: {}, amount: {}, status: {}',
-                    pt.id, pt.chargeInfo.amount, pt.status)
-            newTransaction.setPaymentRefId(pt.id.toString())
-            newTransaction.setAmount(pt.chargeInfo.amount)
-            switch (pt.status) {
-                case PaymentStatus.SETTLEMENT_SUBMITTED.name():
-                    newTransaction.setStatus(TransactionStatus.SUCCESS.name())
-                    balance.setStatus(BalanceStatus.AWAITING_PAYMENT.name())
-                    break
-                case PaymentStatus.SETTLEMENT_SUBMIT_DECLINED.name():
-                    newTransaction.setStatus(TransactionStatus.DECLINE.name())
-                    balance.setStatus(BalanceStatus.FAILED.name())
-                    break
-                case PaymentStatus.SETTLED.name():
-                    newTransaction.setStatus(TransactionStatus.SUCCESS.name())
-                    balance.setStatus(BalanceStatus.COMPLETED.name())
-                    break
-                case PaymentStatus.UNCONFIRMED.name():
-                    newTransaction.setStatus(TransactionStatus.DECLINE.name())
-                    break
-                default:
-                    newTransaction.setStatus(TransactionStatus.ERROR.name())
-                    balance.setStatus(BalanceStatus.ERROR.name())
+            LOGGER.info('name=Confirm_Balance_Get_Payment. payment id: {}, amount: {}, status: {}',
+                    getPt.id, getPt.chargeInfo.amount, getPt.status)
+
+            balance.setStatus(getBalanceStatusByPaymentStatus(getPt.status).name())
+            if (getPt.status != PaymentStatus.UNCONFIRMED) {
+                return Promise.pure(balance)
             }
-            balance.addTransaction(newTransaction)
-            return Promise.pure(balance)
+
+            if (isTimeLimitReached(balance.transactions[0].transactionTime)) {
+                LOGGER.info('name=Confirm_Balance_Timeout. ')
+                balance.setStatus(BalanceStatus.FAILED.name())
+                return Promise.pure(balance)
+            }
+
+            def paymentTransaction = generatePaymentTransaction(balance)
+
+            def newTransaction = new Transaction()
+            newTransaction.setAmount(balance.totalAmount)
+            newTransaction.setCurrency(balance.currency)
+            newTransaction.setType(TransactionType.CONFIRM.name())
+            newTransaction.setPiId(balance.piId)
+            newTransaction.setTransactionTime(new Date())
+
+            LOGGER.info('name=Confirm_Balance. balance currency: {}, amount: {}, pi id: {}',
+                    balance.currency, balance.totalAmount, balance.piId)
+            return paymentFacade.postPaymentConfirm(paymentId, paymentTransaction).recover { Throwable throwable ->
+                LOGGER.error('name=Confirm_Balance_Error. error in post payment confirm', throwable)
+                newTransaction.setStatus(TransactionStatus.ERROR.name())
+                balance.addTransaction(newTransaction)
+                return Promise.pure(null)
+            }.then { PaymentTransaction pt ->
+                if (pt == null) {
+                    return Promise.pure(balance)
+                }
+
+                LOGGER.info('name=Confirm_Balance_Response. payment id: {}, amount: {}, status: {}',
+                        pt.id, pt.chargeInfo.amount, pt.status)
+                newTransaction.setPaymentRefId(pt.id.toString())
+                newTransaction.setAmount(pt.chargeInfo.amount)
+                newTransaction.setStatus(getTransactionStatusByPaymentStatus(pt.status).name())
+                balance.setStatus(getBalanceStatusByPaymentStatus(pt.status).name())
+
+                balance.addTransaction(newTransaction)
+                return Promise.pure(balance)
+            }
         }
     }
 
     private Promise<Balance> charge(Balance balance) {
-
         def transaction = new Transaction()
         transaction.setAmount(balance.totalAmount)
         transaction.setCurrency(balance.currency)
         transaction.setType(TransactionType.CHARGE.name())
         transaction.setPiId(balance.piId)
+        transaction.setTransactionTime(new Date())
 
         def paymentTransaction = generatePaymentTransaction(balance)
         LOGGER.info('name=Charge_Balance. balance currency: {}, amount: {}, pi id: {}',
@@ -178,27 +183,12 @@ class TransactionServiceImpl implements TransactionService {
 
             LOGGER.info('name=Charge_Balance. payment id: {}, status: {}', pt.id, pt.status)
             transaction.setPaymentRefId(pt.id.toString())
-            PaymentStatus paymentStatus = PaymentStatus.valueOf(pt.status)
-            switch (paymentStatus) {
-                case PaymentStatus.SETTLEMENT_SUBMITTED:
-                    transaction.setStatus(TransactionStatus.SUCCESS.name())
-                    balance.setStatus(BalanceStatus.AWAITING_PAYMENT.name())
-                    break
-                case PaymentStatus.SETTLEMENT_SUBMIT_DECLINED:
-                    transaction.setStatus(TransactionStatus.DECLINE.name())
-                    balance.setStatus(BalanceStatus.FAILED.name())
-                    break
-                case PaymentStatus.UNCONFIRMED:
-                    transaction.setStatus(TransactionStatus.UNCONFIRMED.name())
-                    balance.setStatus(BalanceStatus.UNCONFIRMED.name())
-                    if (pt.webPaymentInfo != null && pt.webPaymentInfo.redirectURL != null) {
-                        balance.setProviderConfirmUrl(pt.webPaymentInfo.redirectURL)
-                    }
-                    break
-                default:
-                    transaction.setStatus(TransactionStatus.ERROR.name())
-                    balance.setStatus(BalanceStatus.ERROR.name())
+            transaction.setStatus(getTransactionStatusByPaymentStatus(pt.status).name())
+            balance.setStatus(getBalanceStatusByPaymentStatus(pt.status).name())
+            if (pt.status == PaymentStatus.UNCONFIRMED.name() && pt.webPaymentInfo != null) {
+                balance.setProviderConfirmUrl(pt.webPaymentInfo.redirectURL)
             }
+
             balance.addTransaction(transaction)
             return Promise.pure(balance)
         }
@@ -211,6 +201,7 @@ class TransactionServiceImpl implements TransactionService {
         transaction.setCurrency(balance.currency)
         transaction.setType(TransactionType.AUTHORIZE.name())
         transaction.setPiId(balance.piId)
+        transaction.setTransactionTime(new Date())
 
         def paymentTransaction = generatePaymentTransaction(balance)
         LOGGER.info('name=Authorize_Balance. balance currency: {}, amount: {}, pi id: {}',
@@ -228,21 +219,9 @@ class TransactionServiceImpl implements TransactionService {
 
             LOGGER.info('name=Authorize_Balance. payment id: {}, status: {}', pt.id, pt.status)
             transaction.setPaymentRefId(pt.id.toString())
-            PaymentStatus paymentStatus = PaymentStatus.valueOf(pt.status)
-            switch (paymentStatus) {
-                case PaymentStatus.AUTHORIZED:
-                    transaction.setStatus(TransactionStatus.SUCCESS.name())
-                    balance.setStatus(BalanceStatus.PENDING_CAPTURE.name())
-                    break
-                case PaymentStatus.AUTH_DECLINED:
-                    transaction.setStatus(TransactionStatus.DECLINE.name())
-                    balance.setStatus(BalanceStatus.FAILED.name())
-                    break
-                default:
-                    transaction.setStatus(TransactionStatus.ERROR.name())
-                    balance.setStatus(BalanceStatus.ERROR.name())
-                    break
-            }
+            transaction.setStatus(getTransactionStatusByPaymentStatus(pt.status).name())
+            balance.setStatus(getBalanceStatusByPaymentStatus(pt.status).name())
+
             balance.addTransaction(transaction)
             return Promise.pure(balance)
         }
@@ -281,5 +260,45 @@ class TransactionServiceImpl implements TransactionService {
             throw AppErrors.INSTANCE.invalidPaymentId(paymentRefId).exception()
         }
         return paymentId
+    }
+
+    private TransactionStatus getTransactionStatusByPaymentStatus(String paymentStatus) {
+        switch (paymentStatus) {
+            case PaymentStatus.AUTHORIZED.name():
+            case PaymentStatus.SETTLEMENT_SUBMITTED.name():
+            case PaymentStatus.SETTLING.name():
+            case PaymentStatus.SETTLED.name():
+                return TransactionStatus.SUCCESS
+            case PaymentStatus.SETTLEMENT_SUBMIT_DECLINED.name():
+            case PaymentStatus.AUTH_DECLINED.name():
+                return TransactionStatus.DECLINE
+            case PaymentStatus.UNCONFIRMED.name():
+                return TransactionStatus.UNCONFIRMED
+            default:
+                return TransactionStatus.ERROR
+        }
+    }
+
+    private BalanceStatus getBalanceStatusByPaymentStatus(String paymentStatus) {
+        switch (paymentStatus) {
+            case PaymentStatus.SETTLEMENT_SUBMITTED.name():
+            case PaymentStatus.SETTLING.name():
+                return BalanceStatus.AWAITING_PAYMENT
+            case PaymentStatus.SETTLEMENT_SUBMIT_DECLINED.name():
+            case PaymentStatus.AUTH_DECLINED.name():
+                return BalanceStatus.FAILED
+            case PaymentStatus.UNCONFIRMED.name():
+                return BalanceStatus.UNCONFIRMED
+            case PaymentStatus.SETTLED.name():
+                return BalanceStatus.COMPLETED
+            case PaymentStatus.AUTHORIZED.name():
+                return BalanceStatus.PENDING_CAPTURE
+            default:
+                return BalanceStatus.ERROR
+        }
+    }
+
+    private Boolean isTimeLimitReached(Date referenceDate) {
+        return System.currentTimeMillis() - referenceDate.time >= UNCONFIRMED_TIMEOUT_HOURS
     }
 }

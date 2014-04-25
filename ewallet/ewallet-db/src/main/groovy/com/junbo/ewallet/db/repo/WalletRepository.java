@@ -189,4 +189,8 @@ public class WalletRepository {
         lotTransaction.setAmount(lotEntity.getRemainingAmount());
         return lotTransaction;
     }
+
+    public List<Wallet> getAll(long userId) {
+        return mapper.toWallets(walletDao.getAll(userId));
+    }
 }

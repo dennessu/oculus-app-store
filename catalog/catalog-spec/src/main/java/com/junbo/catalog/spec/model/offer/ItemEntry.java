@@ -8,6 +8,7 @@ package com.junbo.catalog.spec.model.offer;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.ItemId;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Item entry in offer.
@@ -15,7 +16,9 @@ import com.junbo.common.jackson.annotation.ItemId;
 public class ItemEntry {
     @ItemId
     @JsonProperty("item")
+    @ApiModelProperty(position = 1, required = true, value = "item")
     private Long itemId;
+    @ApiModelProperty(position = 2, required = true, value = "item quantity")
     private Integer quantity;
 
     public Long getItemId() {

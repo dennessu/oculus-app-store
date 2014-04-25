@@ -7,6 +7,7 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.GroupId;
+import com.junbo.common.model.Link;
 import com.junbo.common.util.Identifiable;
 import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -16,7 +17,7 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  */
 public class Group extends ResourceMeta implements Identifiable<GroupId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "The id of the group resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Nullable]The id of the group resource.")
     @JsonProperty("self")
     private GroupId id;
 
@@ -26,6 +27,12 @@ public class Group extends ResourceMeta implements Identifiable<GroupId> {
     @ApiModelProperty(position = 3, required = false, value = "The status of the group.")
     @JsonProperty("isActive")
     private Boolean active;
+
+    @ApiModelProperty(position = 5, required = false, value = "[Nullable]The membership in this group")
+    private Link userMemberships;
+
+    @ApiModelProperty(position = 4, required = false, value = "[Nullable]Users in this group.")
+    private Link users;
 
     @Override
     public GroupId getId() {
@@ -55,5 +62,23 @@ public class Group extends ResourceMeta implements Identifiable<GroupId> {
         this.active = active;
         support.setPropertyAssigned("active");
         support.setPropertyAssigned("isActive");
+    }
+
+    public Link getUserMemberships() {
+        return userMemberships;
+    }
+
+    public void setUserMemberships(Link userMemberships) {
+        this.userMemberships = userMemberships;
+        support.setPropertyAssigned("userMemberships");
+    }
+
+    public Link getUsers() {
+        return users;
+    }
+
+    public void setUsers(Link users) {
+        this.users = users;
+        support.setPropertyAssigned("users");
     }
 }

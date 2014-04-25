@@ -10,8 +10,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
-import com.junbo.common.jackson.deserializer.ResourceAwareDeserializationContext;
-import com.junbo.common.jackson.serializer.ResourceAwareSerializerProvider;
+import com.junbo.common.jackson.common.CustomDeserializationContext;
+import com.junbo.common.jackson.common.CustomSerializerProvider;
 
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
@@ -25,8 +25,8 @@ public class MapperConfigurator implements ContextResolver<ObjectMapper> {
 
     public MapperConfigurator() {
         mapper = new ObjectMapper(null,
-                new ResourceAwareSerializerProvider(),
-                new ResourceAwareDeserializationContext());
+                new CustomSerializerProvider(),
+                new CustomDeserializationContext());
 
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         mapper.enable(SerializationFeature.INDENT_OUTPUT);

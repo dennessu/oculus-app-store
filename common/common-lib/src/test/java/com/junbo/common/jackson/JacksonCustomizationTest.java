@@ -108,22 +108,6 @@ public class JacksonCustomizationTest {
     }
 
     @Test
-    public void testCascadeId() throws Exception {
-        PaymentInstrument paymentInstrument = new PaymentInstrument();
-        paymentInstrument.setUserId(12345L);
-        paymentInstrument.setPaymentInstrumentId(99999L);
-
-        String json = mapper.writeValueAsString(paymentInstrument);
-        PaymentInstrument paymentInstrument2 = mapper.readValue(json, PaymentInstrument.class);
-
-        Assert.assertEquals(paymentInstrument.getUserId(), paymentInstrument2.getUserId(), "user id should match.");
-
-        Assert.assertEquals(paymentInstrument.getPaymentInstrumentId(),
-                paymentInstrument2.getPaymentInstrumentId(),
-                "user id should match.");
-    }
-
-    @Test
     public void testFulfilmentId() throws Exception {
         FulfilmentRequest fulfilmentRequest = new FulfilmentRequest();
         fulfilmentRequest.setOrderId(12345L);
@@ -132,35 +116,6 @@ public class JacksonCustomizationTest {
         String json = mapper.writeValueAsString(fulfilmentRequest);
         Assert.assertNotNull(json);
     }
-
-    @Test
-    public void testNullCascadeId() throws Exception {
-        PaymentInstrument paymentInstrument = new PaymentInstrument();
-        paymentInstrument.setUserId(123L);
-        paymentInstrument.setPaymentInstrumentId(null);
-
-        String json = mapper.writeValueAsString(paymentInstrument);
-        PaymentInstrument paymentInstrument2 = mapper.readValue(json, PaymentInstrument.class);
-
-        Assert.assertEquals(paymentInstrument.getPaymentInstrumentId(),
-                paymentInstrument2.getPaymentInstrumentId(),
-                "paymentInstrument id should match.");
-    }
-
-    @Test
-    public void testNullCascadeId2() throws Exception {
-        PaymentInstrument paymentInstrument = new PaymentInstrument();
-        paymentInstrument.setUserId(123L);
-        paymentInstrument.setPaymentInstrumentId2(null);
-
-        String json = mapper.writeValueAsString(paymentInstrument);
-        PaymentInstrument paymentInstrument2 = mapper.readValue(json, PaymentInstrument.class);
-
-        Assert.assertEquals(paymentInstrument.getPaymentInstrumentId2(),
-                paymentInstrument2.getPaymentInstrumentId2(),
-                "paymentInstrument2 id should match.");
-    }
-
 
     @Test
     public void testSetIgnore() throws Exception {

@@ -13,6 +13,7 @@ import com.junbo.ewallet.spec.model.Wallet;
 import com.junbo.ewallet.spec.resource.WalletResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.common.CommonUtil;
+import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.core.util.ProxyExceptionResponse;
@@ -55,10 +56,11 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
 
     @Override
     public Promise<PaymentInstrument> add(final PaymentInstrument request) {
+        validateWallet(request);
         Wallet wallet = new Wallet();
         wallet.setUserId(request.getUserId());
-        wallet.setCurrency(request.getWalletRequest().getCurrency());
-        wallet.setType(request.getWalletRequest().getType());
+        wallet.setCurrency(request.getTypeSpecificDetails().getWalletCurrency());
+        wallet.setType(request.getTypeSpecificDetails().getWalletType());
         return walletClient.postWallet(wallet).recover(new Promise.Func<Throwable, Promise<Wallet>>() {
             @Override
             public Promise<Wallet> apply(Throwable throwable) {
@@ -141,5 +143,17 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
     public Promise<PaymentTransaction> getByTransactionToken(String token) {
         throw AppServerExceptions.INSTANCE.serviceNotImplemented(
                 getProviderName() + "_getByTransactionToken").exception();
+    }
+
+    private void validateWallet(PaymentInstrument request){
+        if(request.getTypeSpecificDetails() == null){
+            throw AppClientExceptions.INSTANCE.missingCurrency().exception();
+        }
+        if(CommonUtil.isNullOrEmpty(request.getTypeSpecificDetails().getWalletCurrency())){
+            throw AppClientExceptions.INSTANCE.missingCurrency().exception();
+        }
+        if(CommonUtil.isNullOrEmpty(request.getTypeSpecificDetails().getWalletCurrency())){
+            throw AppClientExceptions.INSTANCE.missingWalletType().exception();
+        }
     }
 }

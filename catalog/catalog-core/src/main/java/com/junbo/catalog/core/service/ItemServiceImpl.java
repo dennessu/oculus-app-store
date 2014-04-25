@@ -11,8 +11,6 @@ import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.db.repo.ItemRepository;
 import com.junbo.catalog.db.repo.ItemRevisionRepository;
 import com.junbo.catalog.spec.error.AppErrors;
-import com.junbo.catalog.spec.model.common.ExtensibleProperties;
-import com.junbo.catalog.spec.model.common.LocalizableProperty;
 import com.junbo.catalog.spec.model.common.Status;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
@@ -22,6 +20,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Item service implementation.
@@ -36,8 +35,8 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
 
     @Override
     public Item createEntity(Item item) {
-        if (Boolean.TRUE.equals(item.getCurated())) {
-            throw AppErrors.INSTANCE.fieldNotCorrect("curated", "Cannot create an item with curated true.").exception();
+        if (!StringUtils.isEmpty(item.getRev())) {
+            throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
         }
         validateItem(item);
 
@@ -56,6 +55,13 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
 
     @Override
     public ItemRevision createRevision(ItemRevision revision) {
+        if (!StringUtils.isEmpty(revision.getRev())) {
+            throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
+        }
+        if (!Status.DRAFT.equals(revision.getStatus())) {
+            throw AppErrors.INSTANCE
+                    .fieldNotCorrect("status", "status should be 'DRAFT' at item revision creation.").exception();
+        }
         validateRevision(revision);
         return super.createRevision(revision);
     }
@@ -70,7 +76,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
             return itemRevisionRepo.getRevisions(options.getItemIds(), options.getTimestamp());
 
         } else {
-        return itemRevisionRepo.getRevisions(options);
+            return itemRevisionRepo.getRevisions(options);
         }
     }
 
@@ -112,7 +118,6 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
 
     private void validateItem(Item item) {
         checkFieldNotEmpty(item.getType(), "type");
-        checkFieldNotNull(item.getName(), "name");
         checkFieldNotNull(item.getOwnerId(), "developer");
 
         if (!ItemType.ALL_TYPES.contains(item.getType())) {
@@ -126,6 +131,9 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
         if (item.getCurrentRevisionId() != null) {
             ItemRevision revision = itemRevisionRepo.get(item.getCurrentRevisionId());
             checkEntityNotNull(item.getCurrentRevisionId(), revision, "item-revision");
+            if (!item.getItemId().equals(item.getItemId())) {
+                throw AppErrors.INSTANCE.validation("Current revision doesn't belong to this item").exception();
+            }
             if (!Status.APPROVED.equals(revision.getStatus())) {
                 throw AppErrors.INSTANCE.validation("Cannot set current revision to unapproved revision").exception();
             }
@@ -133,31 +141,27 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
     }
 
     private void validateRevision(ItemRevision revision) {
-        checkFieldNotEmpty(revision.getType(), "type");
         checkFieldNotNull(revision.getItemId(), "item");
         checkFieldNotNull(revision.getOwnerId(), "developer");
 
         Item item = itemRepo.get(revision.getItemId());
         checkEntityNotNull(revision.getItemId(), item, "item");
-        if (!revision.getType().equals(item.getType())) {
-            throw AppErrors.INSTANCE.fieldNotMatch("type", revision.getType(), item.getType()).exception();
+
+        if (ItemType.DIGITAL.equals(item.getType())) {
+            checkFieldNotNull(revision.getBinaries(), "binaries");
+        } else if (ItemType.WALLET.equals(item.getType())) {
+            checkFieldNotNull(revision.getWalletCurrencyType(), "walletCurrencyType");
+            checkFieldNotNull(revision.getWalletCurrency(), "walletCurrency");
+            checkFieldNotNull(revision.getWalletAmount(), "walletAmount");
         }
 
-        if (ItemType.DIGITAL.equals(revision.getType())) {
-            ExtensibleProperties digitalProps = revision.getDigitalProperties();
-            if (digitalProps == null) {
-                throw AppErrors.INSTANCE.missingField("digitalProperties").exception();
-            }
-            if (StringUtils.isEmpty(revision.getDigitalProperties().get("downloadLink"))) {
-                throw AppErrors.INSTANCE.missingField("digitalProperties.downloadLink").exception();
-            }
-        }
-
-        if (revision.getName()==null || CollectionUtils.isEmpty(revision.getName().getLocales())) {
-            throw AppErrors.INSTANCE.missingField("displayName").exception();
-        }
-        if (StringUtils.isEmpty(revision.getName().locale(LocalizableProperty.DEFAULT))) {
-            throw AppErrors.INSTANCE.validation("displayName should have value for 'DEFAULT' locale.").exception();
+        checkFieldNotNull(revision.getLocales(), "locales");
+        for (Map.Entry<String, ItemRevisionLocaleProperties> entry : revision.getLocales().entrySet()) {
+            String locale = entry.getKey();
+            ItemRevisionLocaleProperties properties = entry.getValue();
+            // TODO: check locale is a valid locale
+            checkFieldNotNull(properties, "Properties should not be null for locale " + locale);
+            checkFieldNotNull(properties.getName(), locale + ".name");
         }
 
         if (revision.getMsrp()!=null) {

@@ -5,7 +5,14 @@
  */
 package com.junbo.identity.data
 
+import com.junbo.common.enumid.CountryId
+import com.junbo.common.enumid.CurrencyId
+import com.junbo.common.enumid.LocaleId
+import com.junbo.common.enumid.PITypeId
+import com.junbo.common.id.ClientId
+import com.junbo.common.id.CommunicationId
 import com.junbo.common.id.DeviceId
+import com.junbo.common.id.DeviceTypeId
 import com.junbo.common.id.GroupId
 import com.junbo.common.id.TosId
 import com.junbo.common.id.UserDeviceId
@@ -16,32 +23,30 @@ import com.junbo.identity.data.repository.*
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.UserPin
 import com.junbo.identity.spec.v1.model.Address
+import com.junbo.identity.spec.v1.model.Country
+import com.junbo.identity.spec.v1.model.Currency
 import com.junbo.identity.spec.v1.model.Device
 import com.junbo.identity.spec.v1.model.Group
+import com.junbo.identity.spec.v1.model.PIType
 import com.junbo.identity.spec.v1.model.Tos
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserAuthenticator
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
-import com.junbo.identity.spec.v1.model.UserDevice
-import com.junbo.identity.spec.v1.model.UserEmail
 import com.junbo.identity.spec.v1.model.UserGroup
-import com.junbo.identity.spec.v1.model.UserName
-import com.junbo.identity.spec.v1.model.UserOptin
-import com.junbo.identity.spec.v1.model.UserPii
+import com.junbo.identity.spec.v1.model.UserCommunication
 import com.junbo.identity.spec.v1.model.UserSecurityQuestion
 import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt
 import com.junbo.identity.spec.v1.model.UserTosAgreement
 import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
 import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
-import com.junbo.identity.spec.v1.option.list.UserDeviceListOptions
 import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
 import com.junbo.identity.spec.v1.option.list.UserOptinListOptions
 import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
-import com.junbo.identity.spec.v1.option.list.UserPiiListOptions
 import com.junbo.identity.spec.v1.option.list.UserPinListOptions
 import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionAttemptListOptions
 import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionListOptions
 import com.junbo.identity.spec.v1.option.list.UserTosAgreementListOptions
+import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import org.glassfish.jersey.internal.util.Base64
 import org.springframework.beans.factory.annotation.Autowired
@@ -66,6 +71,10 @@ import org.testng.annotations.Test
 public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     // This is the fake value to meet current requirement.
     private final long userId = 1493188608L
+
+    @Autowired
+    @Qualifier('oculus48IdGenerator')
+    private IdGenerator idGenerator
 
     @Autowired
     @Qualifier('cloudantAddressRepository')
@@ -100,20 +109,12 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     private UserCredentialVerifyAttemptRepository userCredentialVerifyAttemptRepository
 
     @Autowired
-    @Qualifier('cloudantUserDeviceRepository')
-    private UserDeviceRepository userDeviceRepository
-
-    @Autowired
     @Qualifier('cloudantUserGroupRepository')
     private UserGroupRepository userGroupRepository
 
     @Autowired
     @Qualifier('cloudantUserOptinRepository')
-    private UserOptinRepository userOptinRepository
-
-    @Autowired
-    @Qualifier('cloudantUserPiiRepository')
-    private UserPiiRepository userPiiRepository
+    private UserCommunicationRepository userOptinRepository
 
     @Autowired
     @Qualifier('cloudantUserRepository')
@@ -132,6 +133,72 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     @Qualifier('cloudantUserTosRepository')
     private UserTosRepository userTosRepository
 
+    @Autowired
+    @Qualifier('cloudantCountryRepository')
+    private CountryRepository countryRepository
+
+    @Autowired
+    @Qualifier('cloudantCurrencyRepository')
+    private CurrencyRepository currencyRepository
+
+    @Autowired
+    @Qualifier('cloudantLocaleRepository')
+    private LocaleRepository localeRepository
+
+    @Autowired
+    @Qualifier('cloudantPITypeRepository')
+    private PITypeRepository piTypeRepository
+
+
+    @Test
+    public void testCountryRepository() {
+        countryRepository.delete(new CountryId('US')).wrapped().get()
+
+        Country country = new Country()
+        country.setId(new CountryId('US'))
+        country.setCountryCode('US')
+        country.setDefaultLocale(new LocaleId('en_US'))
+        country.setDefaultCurrency(new CurrencyId('USD'))
+        Country newCountry = countryRepository.create(country).wrapped().get()
+        assert  country.countryCode == newCountry.countryCode
+    }
+
+    @Test
+    public void testCurrencyRepository() {
+        currencyRepository.delete(new CurrencyId('USD')).wrapped().get()
+
+        Currency currency = new Currency()
+        currency.setId(new CurrencyId('USD'))
+        currency.setCurrencyCode('USD')
+
+        Currency newCurrency = currencyRepository.create(currency).wrapped().get()
+        assert  currency.currencyCode == newCurrency.currencyCode
+    }
+
+    @Test
+    public void testLocaleRepository() {
+        localeRepository.delete(new LocaleId('en_US')).wrapped().get()
+
+        com.junbo.identity.spec.v1.model.Locale locale = new com.junbo.identity.spec.v1.model.Locale()
+        locale.setId(new LocaleId('en_US'))
+        locale.setLocaleCode('en_US')
+
+        com.junbo.identity.spec.v1.model.Locale newLocale = localeRepository.create(locale).wrapped().get()
+        assert  locale.localeCode == newLocale.localeCode
+    }
+
+    @Test
+    public void testPITypeRepository() {
+        piTypeRepository.delete(new PITypeId('1234')).wrapped().get()
+
+        PIType piType = new PIType()
+        piType.setId(new PITypeId('1234'))
+
+        PIType newPIType = piTypeRepository.create(piType).wrapped().get()
+        assert  piType.id.toString() == newPIType.id.toString()
+    }
+
+
     @Test
     public void test() {
         String userName = 'liangfuxia'
@@ -149,31 +216,31 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     @Test
     public void testDeviceRepository() {
         Device device = new Device()
-        device.setExternalRef(UUID.randomUUID().toString())
-        device.setDescription(UUID.randomUUID().toString())
+        device.setFirmwareVersion(UUID.randomUUID().toString())
+        device.setSerialNumber(UUID.randomUUID().toString())
+        device.setType(new DeviceTypeId(123L))
 
         Device newDevice = deviceRepository.create(device).wrapped().get()
         newDevice = deviceRepository.get((DeviceId)newDevice.id).wrapped().get()
 
+        assert  device.serialNumber == newDevice.serialNumber
 
-        assert  device.externalRef == newDevice.externalRef
-
-        String newDescription = UUID.randomUUID().toString()
-        newDevice.setDescription(newDescription)
+        String newSerialNumber = UUID.randomUUID().toString()
+        newDevice.setSerialNumber(newSerialNumber)
         deviceRepository.update(newDevice)
 
         device = deviceRepository.get((DeviceId)newDevice.id).wrapped().get()
-        assert device.description == newDescription
+        assert device.serialNumber == newSerialNumber
 
-        device = deviceRepository.searchByExternalRef(device.externalRef).wrapped().get()
-        assert device.description == newDescription
+        device = deviceRepository.searchBySerialNumber(device.serialNumber).wrapped().get()
+        assert device.serialNumber == newSerialNumber
     }
 
     @Test(enabled = true)
     public void testAddressRepository() {
         Address address = new Address()
         address.city = 'shanghai'
-        address.country = 'CN'
+        address.street1 = UUID.randomUUID().toString()
         address.postalCode = '201102'
         address.userId = new UserId(userId)
         address = addressRepository.create(address).wrapped().get()
@@ -289,23 +356,23 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         UserAuthenticator authenticator = new UserAuthenticator()
         authenticator.setUserId(new UserId(userId))
         authenticator.setType('Google_account')
-        authenticator.setValue(UUID.randomUUID().toString())
+        authenticator.setExternalId(UUID.randomUUID().toString())
         authenticator.setCreatedTime(new Date())
         authenticator.setCreatedBy('lixia')
         authenticator = userAuthenticatorRepository.create(authenticator).wrapped().get()
 
         UserAuthenticator newUserAuthenticator = userAuthenticatorRepository.get(authenticator.getId()).wrapped().get()
-        Assert.assertEquals(authenticator.getValue(), newUserAuthenticator.getValue())
+        Assert.assertEquals(authenticator.externalId, newUserAuthenticator.externalId)
 
         String newValue = UUID.randomUUID().toString()
-        newUserAuthenticator.setValue(newValue)
+        newUserAuthenticator.setExternalId(newValue)
         userAuthenticatorRepository.update(newUserAuthenticator)
         newUserAuthenticator = userAuthenticatorRepository.get(authenticator.getId()).wrapped().get()
 
-        Assert.assertEquals(newValue, newUserAuthenticator.getValue())
+        Assert.assertEquals(newValue, newUserAuthenticator.externalId)
 
         AuthenticatorListOptions getOption = new AuthenticatorListOptions()
-        getOption.setValue(newValue)
+        getOption.setExternalId(newValue)
         List<UserAuthenticator> userAuthenticators = userAuthenticatorRepository.search(getOption).wrapped().get()
         assert userAuthenticators.size() != 0
     }
@@ -316,7 +383,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         userLoginAttempt.setUserId(new UserId(userId))
         userLoginAttempt.setType('pin')
         userLoginAttempt.setValue(UUID.randomUUID().toString())
-        userLoginAttempt.setClientId(UUID.randomUUID().toString())
+        userLoginAttempt.setClientId(new ClientId(234L))
         userLoginAttempt.setIpAddress(UUID.randomUUID().toString())
         userLoginAttempt.setUserAgent(UUID.randomUUID().toString())
         userLoginAttempt.setSucceeded(true)
@@ -331,40 +398,6 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         List<UserCredentialVerifyAttempt> userLoginAttempts =
                 userCredentialVerifyAttemptRepository.search(getOption).wrapped().get()
         assert  userLoginAttempts.size() != 0
-    }
-
-    @Test
-    public void testUserDeviceRepository() {
-        UserDevice userDevice = new UserDevice()
-        userDevice.setDeviceId(new DeviceId(123L))
-        userDevice.setUserId(new UserId(userId))
-        userDevice.setCreatedBy('lixia')
-        userDevice.setCreatedTime(new Date())
-
-        userDevice = userDeviceRepository.create(userDevice).wrapped().get()
-
-        UserDevice newUserDevice = userDeviceRepository.get((UserDeviceId)userDevice.id).wrapped().get()
-        Assert.assertEquals(userDevice.deviceId, newUserDevice.deviceId)
-
-        DeviceId newDeviceId = new DeviceId(345L)
-        newUserDevice.setDeviceId(newDeviceId)
-        userDeviceRepository.update(newUserDevice)
-
-        newUserDevice = userDeviceRepository.get(userDevice.getId()).wrapped().get()
-        Assert.assertEquals(newDeviceId, newUserDevice.deviceId)
-
-        UserDeviceListOptions getOption = new UserDeviceListOptions()
-        getOption.setUserId(new UserId(userId))
-        List<UserDevice> userDevices = userDeviceRepository.search(getOption).wrapped().get()
-        assert userDevices.size() != 0
-
-        getOption.setDeviceId(newUserDevice.deviceId)
-        userDevices = userDeviceRepository.search(getOption).wrapped().get()
-        assert userDevices.size() != 0
-
-        getOption.setUserId(null)
-        userDevices = userDeviceRepository.search(getOption).wrapped().get()
-        assert userDevices.size() != 0
     }
 
     @Test
@@ -396,88 +429,50 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void testUserOptinRepository() {
-        UserOptin userOptin = new UserOptin()
+        UserCommunication userOptin = new UserCommunication()
         userOptin.setUserId(new UserId(userId))
-        userOptin.setType(UUID.randomUUID().toString())
+        userOptin.setCommunicationId(new CommunicationId(idGenerator.nextId()))
         userOptin.setCreatedBy('lixia')
         userOptin.setCreatedTime(new Date())
         userOptin = userOptinRepository.create(userOptin).wrapped().get()
 
-        UserOptin newUserOptin = userOptinRepository.get(userOptin.getId()).wrapped().get()
-        Assert.assertEquals(userOptin.getType(), newUserOptin.getType())
+        UserCommunication newUserOptin = userOptinRepository.get(userOptin.getId()).wrapped().get()
+        Assert.assertEquals(userOptin.communicationId, newUserOptin.communicationId)
 
-        String value = UUID.randomUUID().toString()
-        userOptin.setType(value)
+        CommunicationId newCommunicationId = new CommunicationId(idGenerator.nextId())
+        userOptin.setCommunicationId(newCommunicationId)
         userOptinRepository.update(userOptin)
 
         newUserOptin = userOptinRepository.get(userOptin.getId()).wrapped().get()
-        Assert.assertEquals(value, newUserOptin.getType())
+        Assert.assertEquals(newCommunicationId, newUserOptin.getCommunicationId())
 
         UserOptinListOptions getOption = new UserOptinListOptions()
         getOption.setUserId(new UserId(userId))
-        List<UserOptin> userOptins = userOptinRepository.search(getOption).wrapped().get()
+        List<UserCommunication> userOptins = userOptinRepository.search(getOption).wrapped().get()
         assert userOptins.size() != 0
-    }
-
-    @Test
-    public void testUserPiiRepository() {
-        UserPii userPii = new UserPii()
-        userPii.setUserId(new UserId(userId))
-        userPii.setBirthday(new Date())
-        userPii.setDisplayName('hao')
-        userPii.setDisplayNameType(0)
-        userPii.setGender('male')
-        userPii.setName(new UserName(firstName: 'first_name', lastName: 'last_name'))
-        def search = UUID.randomUUID().toString()
-        userPii.setEmails(['primary': new UserEmail(value: 'primary@silkcloud.com', verified: false),
-                           'secondary': new UserEmail(value: search, verified: false)])
-        userPii.setCreatedBy('lixia')
-        userPii.setCreatedTime(new Date())
-        userPii = userPiiRepository.create(userPii).wrapped().get()
-
-        UserPii newUserPii = userPiiRepository.get(userPii.getId()).wrapped().get()
-        Assert.assertEquals(userPii.getBirthday(), newUserPii.getBirthday())
-
-        userPii.setGender('female')
-        userPiiRepository.update(userPii)
-
-        newUserPii = userPiiRepository.get(userPii.getId()).wrapped().get()
-        Assert.assertEquals(userPii.getGender(), newUserPii.getGender())
-
-        UserPiiListOptions options = new UserPiiListOptions()
-        options.setUserId(new UserId(userId))
-        List<UserPii> userPiiList = userPiiRepository.search(options).wrapped().get()
-        assert userPiiList.size() != 0
-
-        options.setUserId(null)
-        options.setEmail(search)
-        userPiiList = userPiiRepository.search(options).wrapped().get()
-        assert userPiiList.size() != 0
     }
 
     @Test
     public void testUserRepository() throws Exception {
         User user = new User()
-        user.setActive(true)
-        user.setLocale('en_US')
+        user.setStatus('ACTIVE')
+        user.setIsAnonymous(false)
         def random = UUID.randomUUID().toString()
-        user.setNickName(random)
-        user.setPreferredLanguage(random)
-        user.setTimezone(random)
-        user.setType(random)
         user.setUsername(random)
+        user.setPreferredLocale(UUID.randomUUID().toString())
+        user.setPreferredTimezone(UUID.randomUUID().toString())
         user.setCanonicalUsername(random)
         user.setCreatedTime(new Date())
         user.setCreatedBy('lixia')
         user = userRepository.create(user).wrapped().get()
 
         User newUser = userRepository.get(user.getId()).wrapped().get()
-        Assert.assertEquals(user.getType(), newUser.getType())
+        Assert.assertEquals(user.preferredLocale, newUser.preferredLocale)
 
-        String newType = UUID.randomUUID().toString()
-        newUser.setType(newType)
+        String newPreferredTimeZone = UUID.randomUUID().toString()
+        newUser.setPreferredTimezone(newPreferredTimeZone)
         newUser = userRepository.update(newUser).wrapped().get()
-        Assert.assertEquals(newUser.getType(), newType)
+        Assert.assertEquals(newUser.getPreferredTimezone(), newPreferredTimeZone)
 
         User findUser = userRepository.getUserByCanonicalUsername(newUser.getUsername()).wrapped().get()
         Assert.assertNotNull(findUser)
@@ -489,7 +484,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         attempt.setUserId(new UserId(userId))
         attempt.setSucceeded(true)
         attempt.setValue(UUID.randomUUID().toString())
-        attempt.setClientId(UUID.randomUUID().toString())
+        attempt.setClientId(new ClientId(idGenerator.nextId()))
         attempt.setIpAddress(UUID.randomUUID().toString())
         attempt.setUserSecurityQuestionId(new UserSecurityQuestionId(123L))
         attempt.setUserAgent(UUID.randomUUID().toString())

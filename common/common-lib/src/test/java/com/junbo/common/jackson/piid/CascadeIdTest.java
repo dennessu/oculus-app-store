@@ -5,11 +5,9 @@
  */
 package com.junbo.common.jackson.piid;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.json.ObjectMapperProvider;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
@@ -19,11 +17,6 @@ import java.util.Arrays;
  */
 public class CascadeIdTest {
     private ObjectMapper mapper = ObjectMapperProvider.instance();
-
-    @BeforeClass
-    public void setUp() {
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-    }
 
     @Test
     public void testBVT() throws Exception {

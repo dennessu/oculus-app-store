@@ -11,6 +11,8 @@ package com.junbo.catalog.spec.model.offer;
  */
 public final class EventType {
     public static final String PURCHASE = "PURCHASE";
+    public static final String CYCLE = "CYCLE";
+    public static final String CANCEL = "CANCEL";
 
     private EventType(){ }
 }

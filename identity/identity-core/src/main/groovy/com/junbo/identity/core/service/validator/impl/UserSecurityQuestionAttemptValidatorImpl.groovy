@@ -145,7 +145,7 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
         if (attempt.value.size() < valueMinLength) {
             throw AppErrors.INSTANCE.fieldTooShort('value', valueMinLength).exception()
         }
-
+        /*
         if (attempt.clientId != null) {
             if (attempt.clientId.size() > clientIdMaxLength) {
                 throw AppErrors.INSTANCE.fieldTooLong('clientId', clientIdMaxLength).exception()
@@ -154,6 +154,7 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
                 throw AppErrors.INSTANCE.fieldTooShort('clientId', clientIdMinLength).exception()
             }
         }
+        */
 
         if (attempt.ipAddress != null) {
             if (!allowedIPPatterns.any {

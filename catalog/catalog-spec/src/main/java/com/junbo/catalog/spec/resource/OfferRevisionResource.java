@@ -17,6 +17,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Offer revisions resource definition.
@@ -47,4 +48,9 @@ public interface OfferRevisionResource {
     @Path("/{revisionId}")
     Promise<OfferRevision> updateOfferRevision(@PathParam("revisionId") OfferRevisionId revisionId,
                                                OfferRevision offerRevision);
+
+    @ApiOperation("Delete an item revision")
+    @DELETE
+    @Path("/{revisionId}")
+    Promise<Response> delete(@PathParam("revisionId") OfferRevisionId revisionId);
 }

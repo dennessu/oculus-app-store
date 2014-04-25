@@ -53,9 +53,12 @@ public final class CommonUtil {
         return JSON.parseObject(json, classType);
     }
 
-    public static boolean toBool(String value){
+    public static Boolean toBool(String value){
         if(value == null){
-            return false;
+            return null;
+        }
+        if(value.equalsIgnoreCase("Unknown")){
+            return null;
         }
         return value.equalsIgnoreCase("Yes") || value.equalsIgnoreCase("True");
     }

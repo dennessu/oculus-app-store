@@ -17,6 +17,7 @@ import com.junbo.catalog.spec.model.promotion.PromotionRevision;
 import com.junbo.catalog.spec.model.promotion.PromotionRevisionsGetOptions;
 import com.junbo.catalog.spec.model.promotion.PromotionsGetOptions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -32,9 +33,8 @@ public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, P
 
     @Override
     public Promotion createEntity(Promotion promotion) {
-        if (Boolean.TRUE.equals(promotion.getCurated())) {
-            throw AppErrors.INSTANCE
-                    .fieldNotCorrect("curated", "Cannot create an promotion with curated true.").exception();
+        if (!StringUtils.isEmpty(promotion.getRev())) {
+            throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
         }
         validatePromotion(promotion);
         return super.createEntity(promotion);
@@ -49,6 +49,9 @@ public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, P
 
     @Override
     public PromotionRevision createRevision(PromotionRevision revision) {
+        if (!StringUtils.isEmpty(revision.getRev())) {
+            throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
+        }
         validateRevision(revision);
         return super.createRevision(revision);
     }
@@ -67,7 +70,6 @@ public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, P
         if (Status.APPROVED.equals(revision.getStatus())) {
             Promotion existingPromotion = promotionRepo.get(revision.getEntityId());
             checkEntityNotNull(revision.getEntityId(), existingPromotion, getEntityType());
-            existingPromotion.setCurated(Boolean.TRUE);
             existingPromotion.setCurrentRevisionId(revisionId);
             existingPromotion.setStartDate(revision.getStartDate());
             existingPromotion.setEndDate(revision.getEndDate());
@@ -109,7 +111,6 @@ public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, P
     }
 
     private void validatePromotion(Promotion promotion) {
-        checkFieldNotNull(promotion.getName(), "name");
         checkFieldNotNull(promotion.getOwnerId(), "publisher");
         checkFieldNotNull(promotion.getType(), "type");
     }

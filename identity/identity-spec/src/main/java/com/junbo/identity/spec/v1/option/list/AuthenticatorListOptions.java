@@ -15,8 +15,8 @@ import javax.ws.rs.QueryParam;
  */
 public class AuthenticatorListOptions extends PagingGetOptions {
 
-    @QueryParam("value")
-    private String value;
+    @QueryParam("externalId")
+    private String externalId;
 
     @QueryParam("type")
     private String type;
@@ -27,12 +27,12 @@ public class AuthenticatorListOptions extends PagingGetOptions {
     @QueryParam("properties")
     private String properties;
 
-    public String getValue() {
-        return value;
+    public String getExternalId() {
+        return externalId;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
     }
 
     public String getType() {

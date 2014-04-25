@@ -202,7 +202,6 @@ class CoreBuilder {
         item.unitPrice = ratingItem.originalUnitPrice
         item.honorUntilTime = null
         item.totalTax = item.totalTax ?: BigDecimal.ZERO
-        item.isTaxExempted = item.isTaxExempted ?: false
         return item
     }
 
@@ -220,9 +219,6 @@ class CoreBuilder {
             }
             if (balanceItem != null) {
                 orderItem.totalTax = balanceItem.taxAmount
-                if (orderItem.isTaxExempted == null) { // todo : remove this, this is a temporary workaround
-                    orderItem.isTaxExempted = false
-                }
                 fillTaxItem(orderItem, balanceItem)
             }
         }

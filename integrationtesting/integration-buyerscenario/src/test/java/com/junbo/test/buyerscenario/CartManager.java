@@ -158,9 +158,36 @@ public class CartManager extends TestClass {
         cs.updateCart(user2, primaryCartId2, primaryCart2);
 
         //merge user2's cart to user1's primary cart
-        cs.mergeCart(user1, primaryCartId1, primaryCart2);
+        //Merging is actually put now.
+        List<OfferItem> offerItems = new ArrayList<>();
 
+        for (OfferItem item : primaryCart1.getOffers()) {
+            offerItems.add(item);
+        }
 
+        for (OfferItem oi : primaryCart2.getOffers()) {
+            boolean isFound = false;
+            for (OfferItem oi2 : primaryCart1.getOffers()) {
+                if (oi.getOffer().equals(oi2.getOffer())) {
+                    offerItems.remove(oi2);
+                    oi2.setQuantity(oi2.getQuantity() + oi.getQuantity());
+                    offerItems.add(oi2);
+                    isFound = true;
+                    break;
+                }
+                else {
+                    continue;
+                }
+            }
+            if(!isFound) {
+                offerItems.add(oi);
+            }
+        }
+
+        primaryCart1.setOffers(offerItems);
+        primaryCart1.getCouponCodes().addAll(primaryCart2.getCouponCodes());
+
+        cs.updateCart(user1, primaryCartId1, primaryCart1);
         //verify merge result
         //5 testOffer1 + 2 testOffer2 + 3 testOffer3 + testCoupon1 + testCoupon2
         //check updated items returned correctly

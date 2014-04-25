@@ -1,5 +1,6 @@
 package com.junbo.order.jobs
 import com.junbo.common.id.OrderId
+import com.junbo.order.core.impl.common.TransactionHelper
 import com.junbo.order.db.entity.enums.OrderStatus
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.model.Order
@@ -16,11 +17,23 @@ import org.testng.annotations.Test
 /**
  * Created by fzhang on 4/18/2014.
  */
-@ContextConfiguration(locations = ['classpath:spring/context-job-test.xml'])
+@ContextConfiguration(locations = ['classpath*:spring/context-job-test.xml'])
 @CompileStatic
 class TestOrderJob extends AbstractTestNGSpringContextTests {
 
     OrderJob orderJob
+
+    TransactionHelper transactionHelper = new TransactionHelper() {
+        @Override
+        def <T> T executeInNewTransaction(Closure<T> closure) {
+            return closure.call()
+        }
+
+        @Override
+        def <T> T executeInTransaction(Closure<T> closure) {
+            return closure.call()
+        }
+    }
 
     long nextId = System.currentTimeMillis()
 
@@ -36,6 +49,7 @@ class TestOrderJob extends AbstractTestNGSpringContextTests {
         orderRepository = EasyMock.createMock(OrderRepository)
 
         orderJob = new OrderJob(
+                transactionHelper: transactionHelper,
                 threadPoolTaskExecutor: threadPoolTaskExecutor,
                 orderRepository: orderRepository,
                 orderProcessor: new OrderProcessor() {
@@ -51,7 +65,7 @@ class TestOrderJob extends AbstractTestNGSpringContextTests {
         )
     }
 
-    @Test(enabled = false) // todo : enable the test
+    @Test(enabled = true) // todo : enable the test
     public void testJob() {
         def shards = [0, 1]
         shards.each { Integer shardKey ->

@@ -3,14 +3,12 @@ package com.junbo.payment.core;
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
 import com.junbo.payment.spec.enums.PIType;
 import com.junbo.payment.spec.model.Address;
-import com.junbo.payment.spec.model.CreditCardRequest;
-import com.junbo.payment.spec.model.PIId;
 import com.junbo.payment.spec.model.PaymentInstrument;
+import com.junbo.payment.spec.model.TypeSpecificDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
@@ -18,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.sql.DataSource;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -69,7 +66,7 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
     public PaymentInstrument buildPIRequest() {
         PaymentInstrument request = buildBasePIRequest();
         request.setType(PIType.CREDITCARD.toString());
-        request.setCreditCardRequest(new CreditCardRequest(){
+        request.setTypeSpecificDetails(new TypeSpecificDetails() {
             {
                 setEncryptedCvmCode("111");
                 setExpireDate("2025-11");

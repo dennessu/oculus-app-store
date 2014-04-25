@@ -9,8 +9,10 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.junbo.common.jackson.common.ResourceAware;
-import com.junbo.common.jackson.common.ResourceCollectionAware;
+import com.fasterxml.jackson.databind.introspect.Annotated;
+import com.junbo.common.jackson.annotation.ResourcePath;
+import com.junbo.common.jackson.aware.AnnotationsAware;
+import com.junbo.common.jackson.aware.ResourceCollectionAware;
 import com.junbo.common.jackson.model.ResourceRef;
 import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.common.shuffle.Oculus48Id;
@@ -22,7 +24,7 @@ import java.util.*;
 /**
  * ResourceIdDeserializer.
  */
-public class ResourceIdDeserializer extends JsonDeserializer<Object> implements ResourceCollectionAware, ResourceAware {
+public class ResourceIdDeserializer extends JsonDeserializer<Object> implements ResourceCollectionAware, AnnotationsAware {
 
     protected ObjectMapper mapper = ObjectMapperProvider.instance();
 
@@ -43,8 +45,12 @@ public class ResourceIdDeserializer extends JsonDeserializer<Object> implements 
     }
 
     @Override
-    public void injectResourcePath(String resourcePath) {
-        this.resourcePath = resourcePath;
+    public void injectAnnotations(Annotated annotations) {
+        ResourcePath typeAnno = annotations.getAnnotation(ResourcePath.class);
+        if (typeAnno == null) {
+            throw new IllegalStateException("ResourcePath annotation is missing.");
+        }
+        this.resourcePath = typeAnno.value();
     }
 
     @Override

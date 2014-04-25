@@ -76,7 +76,7 @@ class UserGroupRepositoryCloudantImpl extends CloudantClient<UserGroup> implemen
 
     @Override
     Promise<Void> delete(UserGroupId id) {
-        super.cloudantDelete(id.value)
+        super.cloudantDelete(id.toString())
         return Promise.pure(null)
     }
 

@@ -20,7 +20,6 @@ import com.junbo.identity.spec.v1.resource.AuthenticatorResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
 
 /**
@@ -31,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional
 class AuthenticatorResourceImpl implements AuthenticatorResource {
 
     @Autowired
-    @Qualifier('userAuthenticatorRepository')
     private UserAuthenticatorRepository userAuthenticatorRepository
 
     @Autowired
@@ -156,6 +154,15 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
 
                 return Promise.pure(result)
             }
+        }
+    }
+
+    @Override
+    Promise<Void> delete(UserAuthenticatorId userAuthenticatorId) {
+        return userAuthenticatorValidator.validateForGet(userAuthenticatorId).then { UserAuthenticator authenticator ->
+            userAuthenticatorRepository.delete(userAuthenticatorId)
+
+            return Promise.pure(null)
         }
     }
 }

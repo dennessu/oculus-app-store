@@ -65,7 +65,7 @@ class UserRepositoryCloudantImpl extends CloudantClient<User> implements UserRep
 
     @Override
     Promise<Void> delete(UserId userId) {
-        super.cloudantDelete(userId.value)
+        super.cloudantDelete(userId.toString())
         return Promise.pure(null)
     }
 

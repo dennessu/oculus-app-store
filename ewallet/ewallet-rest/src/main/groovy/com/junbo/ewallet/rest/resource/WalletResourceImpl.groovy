@@ -6,6 +6,7 @@
 
 package com.junbo.ewallet.rest.resource
 
+import com.junbo.common.id.UserId
 import com.junbo.common.id.WalletId
 import com.junbo.common.model.Results
 import com.junbo.ewallet.service.WalletService
@@ -29,6 +30,14 @@ class WalletResourceImpl implements WalletResource {
     @Override
     Promise<Wallet> getWallet(WalletId walletId) {
         Wallet result = walletService.get(walletId.value)
+        return Promise.pure(result)
+    }
+
+    @Override
+    Promise<Results<Wallet>> getWallets(UserId userId) {
+        List<Wallet> wallets = walletService.getWallets(userId)
+        Results<Wallet> result = new Results<>()
+        result.items = wallets
         return Promise.pure(result)
     }
 

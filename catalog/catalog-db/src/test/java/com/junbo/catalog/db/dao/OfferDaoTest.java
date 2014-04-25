@@ -50,8 +50,7 @@ public class OfferDaoTest extends BaseTest {
     private OfferEntity buildOfferEntity() {
         OfferEntity entity = new OfferEntity();
         entity.setOfferId(generateId());
-        entity.setOfferName("{\"locales\":{\"DEFAULT\":\"test\"}}");
-        entity.setCurated(false);
+        entity.setPublished(false);
         entity.setOwnerId(generateId());
         entity.setCurrentRevisionId(1L);
         entity.setCategories(Arrays.asList(1L, 2L, 8L));

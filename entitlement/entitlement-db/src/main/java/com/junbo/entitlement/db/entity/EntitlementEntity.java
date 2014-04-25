@@ -18,7 +18,6 @@ import java.util.Date;
 @Table(name = "entitlement")
 public class EntitlementEntity extends Entity {
     private Long entitlementId;
-    private Integer rev;
     private Long userId;
     private Boolean isBanned;
     private Long entitlementDefinitionId;
@@ -35,16 +34,6 @@ public class EntitlementEntity extends Entity {
 
     public void setEntitlementId(Long entitlementId) {
         this.entitlementId = entitlementId;
-    }
-
-    @Version
-    @Column(name = "rev")
-    public Integer getRev() {
-        return rev;
-    }
-
-    public void setRev(Integer rev) {
-        this.rev = rev;
     }
 
     @Column(name = "user_id")

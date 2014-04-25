@@ -163,7 +163,7 @@ public class PaymentDaoTest extends BaseTest {
         entity.setAccountName("David");
         entity.setAddressId(address.getId());
         entity.setIsActive(true);
-        entity.setRev(1);
+        entity.setRev("1");
         entity.setType(PIType.CREDITCARD);
         entity.setUserId(userId);
         entity.setUpdatedBy("ut");

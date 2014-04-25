@@ -46,6 +46,13 @@ public class WalletMapper {
         return walletEntity;
     }
 
+    public List<Wallet> toWallets(List<WalletEntity> walletEntities) {
+        List<Wallet> wallets = new ArrayList<>(walletEntities.size());
+        for (WalletEntity entity : walletEntities) {
+            wallets.add(toWallet(entity));
+        }
+        return wallets;
+    }
 
     public List<Transaction> toTransactions(List<TransactionEntity> transactionEntities) {
         List<Transaction> transactions = new ArrayList<Transaction>(transactionEntities.size());
