@@ -63,7 +63,6 @@ public class BaseService {
     protected void fillUpdate(Entitlement entitlement, Entitlement existingEntitlement) {
         existingEntitlement.setUseCount(entitlement.getUseCount());
         existingEntitlement.setExpirationTime(entitlement.getExpirationTime());
-        existingEntitlement.setRev(entitlement.getRev());
         if (entitlement.getIsBanned() != null) {
             existingEntitlement.setIsBanned(entitlement.getIsBanned());
         } else {
@@ -74,6 +73,10 @@ public class BaseService {
     protected void validateCreate(Entitlement entitlement) {
         checkOauth(entitlement);
         checkDefinition(entitlement.getEntitlementDefinitionId());
+        if(entitlement.getRev() != null){
+            throw AppErrors.INSTANCE.fieldNotCorrect("rev",
+                    "rev can not be set when created").exception();
+        }
         if (Boolean.TRUE.equals(entitlement.getIsBanned())) {
             throw AppErrors.INSTANCE.fieldNotCorrect("isSuspended",
                     "isSuspended can not be true when created").exception();
@@ -98,10 +101,11 @@ public class BaseService {
 
     protected void validateUpdate(Entitlement entitlement, Entitlement existingEntitlement) {
         checkOauth(existingEntitlement);
-        validateEquals(formatId(existingEntitlement.getUserId()), formatId(entitlement.getUserId()), "user");
-        validateEquals(formatId(existingEntitlement.getEntitlementDefinitionId()),
-                formatId(entitlement.getEntitlementDefinitionId()), "definition");
-        validateEquals(existingEntitlement.getGrantTime(), entitlement.getGrantTime(), "grantTime");
+        validateEquals(entitlement.getRev(), existingEntitlement.getRev(), "rev");
+        validateEquals(formatId(entitlement.getUserId()), formatId(existingEntitlement.getUserId()), "user");
+        validateEquals(formatId(entitlement.getEntitlementDefinitionId()),
+                formatId(existingEntitlement.getEntitlementDefinitionId()), "definition");
+        validateEquals(entitlement.getGrantTime(), existingEntitlement.getGrantTime(), "grantTime");
         if (entitlement.getUseCount() != null && entitlement.getUseCount() < 1) {
             throw AppErrors.INSTANCE.fieldNotCorrect("useCount", "useCount should not be negative").exception();
         }
