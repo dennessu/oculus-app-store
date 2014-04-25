@@ -151,5 +151,8 @@
         <property name="dbName" value="pitype"/>
     </bean>
 
-
+    <bean id="cloudantDeviceTypeRepository" class="com.junbo.identity.data.repository.impl.cloudant.DeviceTypeRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="device_type" />
+        <property name="idGenerator" ref="oculus48IdGenerator" />
+    </bean>
 </beans>
