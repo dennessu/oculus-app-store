@@ -5,8 +5,8 @@
  */
 package com.junbo.identity.data
 
-import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.node.ObjectNode
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
@@ -194,7 +194,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         def random = UUID.randomUUID().toString()
         user.setCanonicalUsername(random)
         user.setUsername(random)
-        user.setPreferredLocale(UUID.randomUUID().toString())
+        user.setPreferredLocale(new LocaleId(UUID.randomUUID().toString()))
         user.setPreferredTimezone(UUID.randomUUID().toString())
         user.setCreatedTime(new Date())
         user.setCreatedBy('lixia')
@@ -217,7 +217,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         assert newUser.addressBook != null
         assert newUser.addressBook.size() == 1
 
-        String newPreferredLocale = UUID.randomUUID().toString()
+        LocaleId newPreferredLocale = new LocaleId(UUID.randomUUID().toString())
         newUser.setPreferredLocale(newPreferredLocale)
         newUser = userRepository.update(newUser).wrapped().get()
         Assert.assertEquals(newUser.getPreferredLocale(), newPreferredLocale)
@@ -657,8 +657,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userPersonalInfo.setIsNormalized(true)
         userPersonalInfo.setLastValidateTime(new Date())
         userPersonalInfo.setUserId(userId)
-        ObjectMapper mapper = new ObjectMapper()
-        userPersonalInfo.setValue(mapper.convertValue(UUID.randomUUID().toString(), JsonNode.class))
+        userPersonalInfo.setValue(UUID.randomUUID().toString())
 
         UserPersonalInfo newUserPersonalInfo = userPersonalInfoRepository.create(userPersonalInfo).wrapped().get()
         newUserPersonalInfo = userPersonalInfoRepository.get(newUserPersonalInfo.id).wrapped().get()

@@ -7,6 +7,7 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.model.Link;
@@ -30,7 +31,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
     private String username;
 
     @ApiModelProperty(position = 3, required = false, value = "The preferred locale of the user.")
-    private String preferredLocale;
+    private LocaleId preferredLocale;
 
     @ApiModelProperty(position = 4, required = false,
             value = "The preferred timezone of the user, must be the format as UTC+08:00.")
@@ -130,11 +131,11 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
         support.setPropertyAssigned("username");
     }
 
-    public String getPreferredLocale() {
+    public LocaleId getPreferredLocale() {
         return preferredLocale;
     }
 
-    public void setPreferredLocale(String preferredLocale) {
+    public void setPreferredLocale(LocaleId preferredLocale) {
         this.preferredLocale = preferredLocale;
         support.setPropertyAssigned("preferredLocale");
     }

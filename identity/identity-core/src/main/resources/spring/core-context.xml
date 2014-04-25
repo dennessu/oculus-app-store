@@ -174,22 +174,18 @@
         </property>
     </bean>
 
-
-
     <bean id="userFilter" class="com.junbo.identity.core.service.filter.UserFilter">
 
         <property name="readableProperties">
             <list>
                 <value>id</value>
                 <value>username</value>
-                <value>displayName</value>
-                <value>name</value>
-                <value>nickName</value>
-                <value>preferredLanguage</value>
-                <value>locale</value>
-                <value>timezone</value>
-                <value>active</value>
-                <value>type</value>
+                <value>preferredLocale</value>
+                <value>preferredTimezone</value>
+                <value>isAnonymous</value>
+                <value>status</value>
+                <value>addressBook</value>
+                <value>personalInfo</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -199,26 +195,25 @@
         <property name="writablePropertiesForCreate">
             <list>
                 <value>username</value>
-                <value>displayName</value>
-                <value>name</value>
-                <value>nickName</value>
-                <value>preferredLanguage</value>
-                <value>canonicalUsername</value>
-                <value>locale</value>
-                <value>timezone</value>
-                <value>type</value>
+                <value>preferredLocale</value>
+                <value>preferredTimezone</value>
+                <value>isAnonymous</value>
+                <value>status</value>
+                <value>addressBook</value>
+                <value>personalInfo</value>
             </list>
         </property>
 
         <property name="writablePropertiesForUpdate">
             <list>
-                <value>displayName</value>
-                <value>name</value>
-                <value>nickName</value>
-                <value>canonicalUsername</value>
-                <value>preferredLanguage</value>
-                <value>locale</value>
-                <value>timezone</value>
+                <value>id</value>
+                <value>username</value>
+                <value>preferredLocale</value>
+                <value>preferredTimezone</value>
+                <value>isAnonymous</value>
+                <value>status</value>
+                <value>addressBook</value>
+                <value>personalInfo</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -226,6 +221,9 @@
         </property>
 
     </bean>
+
+
+
 
     <bean id="groupFilter" class="com.junbo.identity.core.service.filter.GroupFilter">
         <property name="readableProperties">

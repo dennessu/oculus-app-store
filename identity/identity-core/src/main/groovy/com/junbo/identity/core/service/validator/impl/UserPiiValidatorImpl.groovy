@@ -29,7 +29,7 @@ class UserPiiValidatorImpl implements UserPiiValidator {
 
         return userPiiRepository.get(userPiiId).then { UserPii userPii ->
             if (userPii == null) {
-                throw AppErrors.INSTANCE.userPiiNotFound(userPiiId).exception()
+                throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPiiId).exception()
             }
 
             return userRepository.get(userPii.userId).then { User user ->

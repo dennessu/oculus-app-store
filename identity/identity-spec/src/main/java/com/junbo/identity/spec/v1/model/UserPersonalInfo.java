@@ -7,7 +7,6 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.common.model.ResourceMeta;
@@ -42,7 +41,7 @@ public class UserPersonalInfo  extends ResourceMeta implements Identifiable<User
     private String type;
 
     @ApiModelProperty(position = 3, required = true, value = "The userPersonal information, it must be json structure.")
-    private JsonNode value;
+    private String value;
 
     @ApiModelProperty(position = 4, required = false, value = "Last validated time, if null, it isn't validated.")
     private Date lastValidateTime;
@@ -74,11 +73,11 @@ public class UserPersonalInfo  extends ResourceMeta implements Identifiable<User
         support.setPropertyAssigned("type");
     }
 
-    public JsonNode getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(JsonNode value) {
+    public void setValue(String value) {
         this.value = value;
         support.setPropertyAssigned("value");
     }
