@@ -4,10 +4,10 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.catalog.spec.model.attribute;
+package com.junbo.catalog.spec.model.item;
 
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
-import com.junbo.common.id.AttributeId;
+import com.junbo.common.id.ItemAttributeId;
 
 import javax.ws.rs.QueryParam;
 import java.util.List;
@@ -15,18 +15,18 @@ import java.util.List;
 /**
  * Attributes get options.
  */
-public class AttributesGetOptions extends PageableGetOptions {
+public class ItemAttributesGetOptions extends PageableGetOptions {
     @QueryParam("id")
-    private List<AttributeId> attributeIds;
+    private List<ItemAttributeId> attributeIds;
 
     @QueryParam("type")
     private String attributeType;
 
-    public List<AttributeId> getAttributeIds() {
+    public List<ItemAttributeId> getAttributeIds() {
         return attributeIds;
     }
 
-    public void setAttributeIds(List<AttributeId> attributeIds) {
+    public void setAttributeIds(List<ItemAttributeId> attributeIds) {
         this.attributeIds = attributeIds;
     }
 

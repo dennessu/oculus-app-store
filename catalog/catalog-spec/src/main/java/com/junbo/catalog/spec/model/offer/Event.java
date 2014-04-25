@@ -6,21 +6,26 @@
 
 package com.junbo.catalog.spec.model.offer;
 
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
 import java.util.List;
 
 /**
  * Event.
  */
 public class Event {
-    private String name;
+    @ApiModelProperty(position = 1, required = true, value = "event name",
+            allowableValues = "PURCHASE, CYCLE, CANCEL")
+    private String type;
+    @ApiModelProperty(position = 2, required = true, value = "actions")
     private List<Action> actions;
 
-    public String getName() {
-        return name;
+    public String getType() {
+        return type;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public List<Action> getActions() {
