@@ -16,7 +16,6 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.TransactionDefinition
 import org.springframework.transaction.TransactionStatus
@@ -31,8 +30,7 @@ import org.springframework.transaction.support.TransactionCallback
 class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAttemptResource {
 
     @Autowired
-    @Qualifier('userCredentialVerifyAttemptRepository')
-    private UserCredentialVerifyAttemptRepository userLoginAttemptRepository
+    private UserCredentialVerifyAttemptRepository userCredentialVerifyAttemptRepository
 
     @Autowired
     private Created201Marker created201Marker
@@ -77,7 +75,7 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
     @Override
     Promise<Results<UserCredentialVerifyAttempt>> list(UserCredentialAttemptListOptions listOptions) {
         credentialVerifyAttemptValidator.validateForSearch(listOptions).then {
-            userLoginAttemptRepository.search(listOptions).then { List<UserCredentialVerifyAttempt> attempts ->
+            userCredentialVerifyAttemptRepository.search(listOptions).then { List<UserCredentialVerifyAttempt> attempts ->
                 def result = new Results<UserCredentialVerifyAttempt>(items: [])
 
                 attempts.each { UserCredentialVerifyAttempt attempt ->
@@ -94,7 +92,16 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
     @Override
     Promise<UserCredentialVerifyAttempt> get(UserCredentialVerifyAttemptId id,
                                              UserCredentialAttemptGetOptions getOptions) {
-        return Promise.pure(null)
+        if (getOptions == null) {
+            throw new IllegalArgumentException('getOptions is null')
+        }
+
+        return credentialVerifyAttemptValidator.validateForGet(id).then { UserCredentialVerifyAttempt attempt ->
+            attempt = userCredentialVerifyAttemptFilter.filterForGet(attempt,
+                    getOptions.properties?.split(',') as List<String>)
+
+            return Promise.pure(attempt)
+        }
     }
 
     Promise<UserCredentialVerifyAttempt> createInNewTran(UserCredentialVerifyAttempt userLoginAttempt) {
@@ -102,7 +109,7 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
         template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
         return template.execute(new TransactionCallback<Promise<UserCredentialVerifyAttempt>>() {
             Promise<UserCredentialVerifyAttempt> doInTransaction(TransactionStatus txnStatus) {
-                return userLoginAttemptRepository.create(userLoginAttempt)
+                return userCredentialVerifyAttemptRepository.create(userLoginAttempt)
             }
         }
         )
