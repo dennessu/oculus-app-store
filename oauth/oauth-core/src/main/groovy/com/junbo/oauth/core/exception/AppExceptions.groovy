@@ -275,4 +275,24 @@ interface AppExceptions {
     @ErrorDef(httpStatusCode = 400, code = '20066',
             description = 'Invalid recaptcha, error message: {0}', field = 'recaptcha')
     AppError invalidRecaptcha(String message)
+
+    @ErrorDef(httpStatusCode = 400, code = '20067',
+            description = 'The email verify code is missing', field = 'code')
+    AppError missingEmailVerifyCode()
+
+    @ErrorDef(httpStatusCode = 400, code = '20068',
+            description = 'Invalid email verify code: {0}', field = 'code')
+    AppError invalidEmailVerifyCode(String code)
+
+    @ErrorDef(httpStatusCode = 500, code = '20065',
+            description = 'Error happened when calling email server', field = 'email')
+    AppError errorCallingEmail()
+
+    @ErrorDef(httpStatusCode = 400, code = '20067',
+            description = 'The email is missing', field = 'email')
+    AppError missingEmail()
+
+    @ErrorDef(httpStatusCode = 400, code = '20068',
+            description = 'Invalid email format: {0}', field = 'email')
+    AppError invalidEmail(String email)
 }
