@@ -26,6 +26,8 @@ public class OfferEntity extends BaseEntity {
     private Long offerId;
     private Long ownerId;
     private boolean published;
+    private Long iapItemId;
+    private String environment;
     private Long currentRevisionId;
     private List<Long> categories;
 
@@ -55,6 +57,24 @@ public class OfferEntity extends BaseEntity {
 
     public void setPublished(boolean published) {
         this.published = published;
+    }
+
+    @Column(name = "iap_item_id")
+    public Long getIapItemId() {
+        return iapItemId;
+    }
+
+    public void setIapItemId(Long iapItemId) {
+        this.iapItemId = iapItemId;
+    }
+
+    @Column(name = "environment")
+    public String getEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(String environment) {
+        this.environment = environment;
     }
 
     @Column(name = "current_revision_id")
