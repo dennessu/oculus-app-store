@@ -42,10 +42,13 @@
         <sql><![CDATA[
             create table email_template(
                 id bigint not null,
+                source varchar(64) not null,
+                action varchar(64) not null,
+                locale varchar(64) not null,
                 name varchar(128) not null,
                 provider_name varchar(256),
                 provider_index varchar(256),
-                list_of_variables varchar(4000),
+                placeholder_names varchar(4000),
                 subject varchar(256),
                 from_address varchar(256),
                 from_name varchar(256),
@@ -60,9 +63,9 @@
 
             create index email_template_name_idx on  email_template (name);
 
-            insert into email_template(id,name,provider_name,list_of_variables) values(0,'SilkCloud.OrderConfirmation.en_US','mandrill.com','["ordernumber","orderdate","name","offername","qty","price","subtotal","tax","grandtotal"]');
-            insert into email_template(id,name,provider_name,list_of_variables) values(1,'Oculus.Welcome.en_US','mandrill.com','["accountname"]');
-            insert into email_template(id,name,provider_name,list_of_variables) values(2,'Oculus.ActiveDevAccount.en_US','mandrill.com','["devname","publishername"]');
+            insert into email_template(id,source,action,locale,name,provider_name,placeholder_names) values(0,'Oculus','OrderConfirmation','en_US','SilkCloud.OrderConfirmation.en_US','mandrill.com','["ordernumber","orderdate","name","offername","qty","price","subtotal","tax","grandtotal"]');
+            insert into email_template(id,source,action,locale,name,provider_name,placeholder_names) values(1,'Oculus','Welcome','en_US','Oculus.Welcome.en_US','mandrill.com','["accountname"]');
+            insert into email_template(id,source,action,locale,name,provider_name,placeholder_names) values(2,'Oculus','ActiveDevAccount','en_US','Oculus.ActiveDevAccount.en_US','mandrill.com','["devname","publishername"]');
         ]]>
         </sql>
     </changeSet>

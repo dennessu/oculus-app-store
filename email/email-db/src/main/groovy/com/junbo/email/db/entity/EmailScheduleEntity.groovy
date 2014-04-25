@@ -23,14 +23,8 @@ class EmailScheduleEntity extends BaseEntity {
     @Column(name = 'user_id')
     private Long userId
 
-    @Column(name = 'source')
-    private String source
-
-    @Column(name = 'action')
-    private String action
-
-    @Column(name = 'locale')
-    private String locale
+    @Column(name = 'template_id')
+    private Long templateId
 
     @Column(name = 'payload')
     private String payload
@@ -60,28 +54,12 @@ class EmailScheduleEntity extends BaseEntity {
         this.userId = userId
     }
 
-    String getSource() {
-        return source
+    Long getTemplateId() {
+        return templateId
     }
 
-    void setSource(String source) {
-        this.source = source
-    }
-
-    String getAction() {
-        return action
-    }
-
-    void setAction(String action) {
-        this.action = action
-    }
-
-    String getLocale() {
-        return locale
-    }
-
-    void setLocale(String locale) {
-        this.locale = locale
+    void setTemplateId(Long templateId) {
+        this.templateId = templateId
     }
 
     String getPayload() {

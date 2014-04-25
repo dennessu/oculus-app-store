@@ -5,7 +5,7 @@
  */
 package com.junbo.email.core.service
 
-import com.junbo.common.id.EmailId
+import com.junbo.common.id.EmailTemplateId
 import com.junbo.common.model.Link
 import com.junbo.common.model.Results
 import com.junbo.email.common.constant.PagingConstants
@@ -37,6 +37,7 @@ import javax.ws.rs.core.UriInfo
     private UriInfo uriInfo
 
     Promise<EmailTemplate> postEmailTemplate(EmailTemplate template) {
+        this.build(template)
         templateValidator.validateCreate(template)
         Long id = templateRepository.saveEmailTemplate(template)
         return Promise.pure(templateRepository.getEmailTemplate(id))
@@ -48,8 +49,9 @@ import javax.ws.rs.core.UriInfo
     }
 
     Promise<EmailTemplate> putEmailTemplate(Long id, EmailTemplate template) {
-        template.setId(new EmailId(id))
         templateValidator.validateUpdate(template)
+        template.setId(new EmailTemplateId(id))
+        this.build(template)
         return Promise.pure(templateRepository.updateEmailTemplate(template))
     }
 
@@ -100,5 +102,11 @@ import javax.ws.rs.core.UriInfo
         uri.queryParam('size', paging.size)
         link.setHref(uri.toTemplate())
         return link
+    }
+
+    private void build(EmailTemplate template) {
+        if (template != null) {
+           template.name = "${template.source}.${template.action}.${template.locale}"
+        }
     }
 }

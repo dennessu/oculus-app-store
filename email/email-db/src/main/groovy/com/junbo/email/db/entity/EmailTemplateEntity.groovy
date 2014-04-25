@@ -9,7 +9,6 @@ import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.Table
-import javax.persistence.Transient
 
 /**
  * Entity of EmailTemplate
@@ -24,14 +23,23 @@ class EmailTemplateEntity extends BaseEntity {
     @Column(name='name')
     private String name
 
+    @Column(name='source')
+    private String source
+
+    @Column(name='action')
+    private String action
+
+    @Column(name='locale')
+    private String locale
+
     @Column(name='provider_name')
     private String providerName
 
     @Column(name='provider_index')
     private String providerIndex
 
-    @Column(name='list_of_variables')
-    private String vars
+    @Column(name='placeholder_names')
+    private String placeholderNames
 
     @Column(name='subject')
     private String subject
@@ -58,6 +66,30 @@ class EmailTemplateEntity extends BaseEntity {
         this.name = name
     }
 
+    String getSource() {
+        return source
+    }
+
+    void setSource(String source) {
+        this.source = source
+    }
+
+    String getAction() {
+        return action
+    }
+
+    void setAction(String action) {
+        this.action = action
+    }
+
+    String getLocale() {
+        return locale
+    }
+
+    void setLocale(String locale) {
+        this.locale = locale
+    }
+
     String getProviderName() {
         return providerName
     }
@@ -74,12 +106,12 @@ class EmailTemplateEntity extends BaseEntity {
         this.providerIndex = providerIndex
     }
 
-    String getVars() {
-        return vars
+    String getPlaceholderNames() {
+        return placeholderNames
     }
 
-    void setVars(String vars) {
-        this.vars = vars
+    void setPlaceholderNames(String placeholderNames) {
+        this.placeholderNames = placeholderNames
     }
 
     String getSubject() {
@@ -104,16 +136,5 @@ class EmailTemplateEntity extends BaseEntity {
 
     void setFromName(String fromName) {
         this.fromName = fromName
-    }
-
-    @Transient
-    private List<String> varList
-
-    List<String> getVarList() {
-        return varList
-    }
-
-    void setVarList(List<String> varList) {
-        this.varList = varList
     }
 }

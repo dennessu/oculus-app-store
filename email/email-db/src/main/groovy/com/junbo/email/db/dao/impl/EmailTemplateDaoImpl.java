@@ -11,8 +11,6 @@ import com.junbo.email.db.dao.EmailTemplateDao;
 import com.junbo.email.db.entity.EmailTemplateEntity;
 import com.junbo.email.spec.model.Paging;
 import com.junbo.sharding.hibernate.ShardScope;
-import groovy.lang.Closure;
-import org.codehaus.groovy.runtime.MethodClosure;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -37,8 +35,13 @@ public class EmailTemplateDaoImpl implements EmailTemplateDao, BaseDao<EmailTemp
     }
 
     protected Session currentSession() {
-        Closure mc = new MethodClosure(this,"getCurrentSession");
-        return (Session) ShardScope.with(0, mc);
+        ShardScope shardScope = new ShardScope(0);
+        try {
+            return sessionFactory.getCurrentSession();
+        } finally {
+            shardScope.close();
+        }
+
     }
 
     public Long save(EmailTemplateEntity entity) {
@@ -46,7 +49,9 @@ public class EmailTemplateDaoImpl implements EmailTemplateDao, BaseDao<EmailTemp
     }
 
     public Long update(EmailTemplateEntity entity) {
-        return null;
+        currentSession().merge(entity);
+        currentSession().flush();
+        return entity.getId();
 
     }
 

@@ -9,8 +9,6 @@ import com.junbo.email.db.dao.BaseDao;
 import com.junbo.email.db.entity.BaseEntity;
 import com.junbo.sharding.ShardAlgorithm;
 import com.junbo.sharding.hibernate.ShardScope;
-import groovy.lang.Closure;
-import org.codehaus.groovy.runtime.MethodClosure;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
@@ -29,8 +27,13 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
     private ShardAlgorithm shardAlgorithm;
 
     protected Session currentSession(Object id) {
-        Closure mc = new MethodClosure(this,"getCurrentSession");
-        return (Session) ShardScope.with(shardAlgorithm.shardId(id), mc);
+        ShardScope shardScope = new ShardScope(shardAlgorithm.shardId(id));
+        try {
+            return sessionFactory.getCurrentSession();
+        } finally {
+            shardScope.close();
+        }
+
     }
     protected Session getCurrentSession() {
         return sessionFactory.getCurrentSession();

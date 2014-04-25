@@ -1,5 +1,8 @@
 package com.junbo.email.clientproxy.impl
 
+import com.junbo.email.spec.model.EmailTemplate
+import org.springframework.util.StringUtils
+
 import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
 
 import com.junbo.common.id.Id
@@ -51,11 +54,11 @@ class MandrillProviderImpl implements EmailProvider {
         }
     }
 
-    Promise<Email> sendEmail(Email email) {
+    Promise<Email> sendEmail(Email email, EmailTemplate template) {
         def requestBuilder = asyncHttpClient.preparePost(configuration.url)
         requestBuilder.addHeader(CONTENT_TYPE, APPLICATION_JSON)
         encoder(email)
-        def request = populateRequest(email)
+        def request = populateRequest(email, template)
         requestBuilder.setBody(toJson(request))
         Promise<Response> future = Promise.wrap(asGuavaFuture(requestBuilder.execute()))
 
@@ -111,7 +114,7 @@ class MandrillProviderImpl implements EmailProvider {
         return returnEmail
     }
 
-    MandrillRequest populateRequest(Email email) {
+    MandrillRequest populateRequest(Email email, EmailTemplate template) {
         def request = new MandrillRequest()
         request.key = configuration.key
         def toList = []
@@ -134,8 +137,17 @@ class MandrillProviderImpl implements EmailProvider {
             }
             message.properties = properties
         }
+        if (!StringUtils.isEmpty(template.fromAddress)) {
+            message.fromEmail = template.fromAddress
+        }
+        if(!StringUtils.isEmpty(template.fromName)) {
+            message.fromName = template.fromName
+        }
+        if(!StringUtils.isEmpty(template.subject)) {
+            message.subject = template.subject
+        }
         request.message = message
-        request.templateName = "${email.source}.${email.action}.${email.locale}"
+        request.templateName = template.name
         request.templateContent = [:]
 
         return request

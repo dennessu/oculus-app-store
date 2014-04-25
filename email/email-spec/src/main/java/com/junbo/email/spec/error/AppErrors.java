@@ -8,6 +8,7 @@ package com.junbo.email.spec.error;
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.ErrorDef;
 import com.junbo.common.error.ErrorProxy;
+import com.junbo.common.id.EmailId;
 
 /**
  * AppErrors.
@@ -61,7 +62,7 @@ public interface AppErrors {
     AppError templateNotFound(String template);
 
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.TEMPLATE_NAME_ALREADY_EXIST,
-            description ="Template with name {0} is already exists")
+            description ="Template is already exists")
     AppError emailTemplateAlreadyExist(String id);
 
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_PROPERTIES,
