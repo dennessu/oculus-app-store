@@ -95,7 +95,7 @@ class LocaleResourceImpl implements LocaleResource {
     }
 
     @Override
-    Promise<Void> delete(@PathParam("LocaleId") LocaleId LocaleId) {
+    Promise<Void> delete(LocaleId localeId) {
         return localeRepository.delete(LocaleId)
     }
 }

@@ -1,7 +1,6 @@
 package com.junbo.identity.data.repository
 
 import com.junbo.common.enumid.CurrencyId
-import com.junbo.identity.spec.v1.option.list.CountryListOptions
 import com.junbo.identity.spec.v1.option.list.CurrencyListOptions
 import com.junbo.langur.core.promise.Promise
 

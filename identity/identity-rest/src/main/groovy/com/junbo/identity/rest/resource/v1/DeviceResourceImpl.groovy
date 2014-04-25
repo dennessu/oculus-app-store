@@ -132,4 +132,13 @@ class DeviceResourceImpl implements DeviceResource {
             return Promise.pure(resultList)
         }    
     }
+
+    @Override
+    Promise<Void> delete(DeviceId deviceId) {
+        return deviceValidator.validateForGet(deviceId).then {
+            deviceRepository.delete(deviceId)
+
+            return Promise.pure(null)
+        }
+    }
 }

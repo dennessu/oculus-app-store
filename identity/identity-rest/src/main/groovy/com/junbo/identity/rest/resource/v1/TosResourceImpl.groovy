@@ -95,4 +95,14 @@ class TosResourceImpl implements TosResource {
             return Promise.pure(resultList)
         }
     }
+
+    @Override
+    Promise<Tos> put(TosId tosId, Tos tos) {
+        return Promise.pure(null)
+    }
+
+    @Override
+    Promise<Void> delete(TosId tosId) {
+        return Promise.pure(null)
+    }
 }

@@ -14,7 +14,6 @@ import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.HashMap;
-import java.util.Properties;
 
 /**
  * Created by liangfu on 4/3/14.

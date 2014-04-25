@@ -52,5 +52,5 @@ public interface LocaleResource {
     @ApiOperation("Delete a locale")
     @DELETE
     @Path("/{LocaleId}")
-    Promise<Void> delete(@PathParam("LocaleId") LocaleId LocaleId);
+    Promise<Void> delete(@PathParam("LocaleId") LocaleId localeId);
 }

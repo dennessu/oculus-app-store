@@ -10,8 +10,6 @@ import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.transaction.annotation.Transactional
 
-import javax.ws.rs.BeanParam
-
 /**
  * Created by liangfu on 4/24/14.
  */

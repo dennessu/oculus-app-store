@@ -9,13 +9,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.model.Link;
-import com.junbo.common.util.Identifiable;
 import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Created by xiali_000 on 4/21/2014.
