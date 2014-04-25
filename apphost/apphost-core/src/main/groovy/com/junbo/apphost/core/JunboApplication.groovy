@@ -38,7 +38,7 @@ class JunboApplication {
             ctx.registerShutdownHook()
             ctx.refresh()
 
-            stopWatch .stop()
+            stopWatch.stop()
             LoggerInitializer.logStarted(LOGGER, stopWatch)
 
         } catch (Exception ex) {
