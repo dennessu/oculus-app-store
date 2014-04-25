@@ -9,6 +9,7 @@ package com.junbo.catalog.spec.model.item;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.*;
+import com.junbo.common.jackson.annotation.CurrencyId;
 import com.junbo.common.jackson.annotation.ItemRevisionId;
 import com.junbo.common.jackson.annotation.OfferId;
 import com.junbo.common.jackson.annotation.UserId;
@@ -26,9 +27,6 @@ public class ItemRevision extends BaseRevisionModel {
     @JsonProperty("self")
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The id of item revision resource")
     private Long revisionId;
-
-    @JsonIgnore
-    private String type;
 
     @UserId
     @JsonProperty("developer")
@@ -58,6 +56,7 @@ public class ItemRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 30, required = true, value = "Wallet currency type",
             allowableValues = "REAL_CURRENCY, VIRTUAL_CURRENCY")
     private String walletCurrencyType;
+    @CurrencyId
     @ApiModelProperty(position = 31, required = true, value = "Wallet currency")
     private String walletCurrency;
     @ApiModelProperty(position = 32, required = true, value = "Wallet amount")
@@ -74,14 +73,6 @@ public class ItemRevision extends BaseRevisionModel {
 
     public void setRevisionId(Long revisionId) {
         this.revisionId = revisionId;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public Long getOwnerId() {

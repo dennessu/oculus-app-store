@@ -39,6 +39,9 @@ public class OfferAttributeServiceImpl implements OfferAttributeService {
 
     @Override
     public OfferAttribute create(OfferAttribute attribute) {
+        if (!StringUtils.isEmpty(attribute.getRev())) {
+            throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
+        }
         Long attributeId = attributeRepo.create(attribute);
         return attributeRepo.get(attributeId);
     }
@@ -54,6 +57,9 @@ public class OfferAttributeServiceImpl implements OfferAttributeService {
         OfferAttribute existingAttribute = attributeRepo.get(attributeId);
         if (existingAttribute==null) {
             throw AppErrors.INSTANCE.notFound("offer-attribute", attributeId).exception();
+        }
+        if (!existingAttribute.getRev().equals(attribute.getRev())) {
+            throw AppErrors.INSTANCE.fieldNotMatch("rev", attribute.getRev(), existingAttribute.getRev()).exception();
         }
 
         attributeRepo.update(attribute);

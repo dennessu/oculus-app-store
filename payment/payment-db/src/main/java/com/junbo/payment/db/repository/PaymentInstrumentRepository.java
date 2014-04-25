@@ -47,12 +47,6 @@ public class PaymentInstrumentRepository {
         request.setRev("1");
         PaymentInstrumentEntity piEntity = paymentMapperExtension.toPIEntity(request);
         Long piId = idGenerator.nextId(piEntity.getUserId());
-        if(request.getAddress() != null){
-            AddressEntity address = paymentMapperImpl.toAddressEntity(request.getAddress(), new MappingContext());
-            address.setId(piId);
-            addressDao.save(address);
-            piEntity.setAddressId(piId);
-        }
         piEntity.setId(piId);
         paymentInstrumentDao.save(piEntity);
         if(request.getType().equals(PIType.CREDITCARD.toString())){
@@ -73,11 +67,7 @@ public class PaymentInstrumentRepository {
     }
 
     public void update(PaymentInstrument request){
-        if(request.getAddress().getId() != null){
-            addressDao.update(paymentMapperImpl.toAddressEntity(request.getAddress(), new MappingContext()));
-        }
         PaymentInstrumentEntity pi = paymentMapperExtension.toPIEntity(request);
-        pi.setAddressId(request.getAddress().getId());
         Long currentRev = Long.parseLong(request.getRev()) + 1;
         pi.setRev(currentRev.toString());
         paymentInstrumentDao.update(pi);
@@ -99,10 +89,6 @@ public class PaymentInstrumentRepository {
     }
 
     private void setAdditionalInfo(PaymentInstrumentEntity pi, PaymentInstrument request) {
-        if(pi.getAddressId() != null){
-            AddressEntity address = addressDao.get(pi.getAddressId());
-            request.setAddress(paymentMapperImpl.toAddress(address, new MappingContext()));
-        }
         if(pi.getType().equals(PIType.CREDITCARD)){
             CreditCardPaymentInstrumentEntity ccPi = ccPaymentInstrumentDao.get(pi.getId());
             request.setTypeSpecificDetails(paymentMapperExtension.toTypeSpecificDetails(

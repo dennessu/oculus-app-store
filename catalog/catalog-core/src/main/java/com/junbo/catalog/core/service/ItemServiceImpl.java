@@ -17,6 +17,7 @@ import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import com.junbo.catalog.spec.model.item.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,9 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
 
     @Override
     public Item createEntity(Item item) {
+        if (!StringUtils.isEmpty(item.getRev())) {
+            throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
+        }
         validateItem(item);
 
         Long itemId = itemRepo.create(item);
@@ -51,6 +55,13 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
 
     @Override
     public ItemRevision createRevision(ItemRevision revision) {
+        if (!StringUtils.isEmpty(revision.getRev())) {
+            throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
+        }
+        if (!Status.DRAFT.equals(revision.getStatus())) {
+            throw AppErrors.INSTANCE
+                    .fieldNotCorrect("status", "status should be 'DRAFT' at item revision creation.").exception();
+        }
         validateRevision(revision);
         return super.createRevision(revision);
     }
@@ -65,7 +76,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
             return itemRevisionRepo.getRevisions(options.getItemIds(), options.getTimestamp());
 
         } else {
-        return itemRevisionRepo.getRevisions(options);
+            return itemRevisionRepo.getRevisions(options);
         }
     }
 
@@ -130,15 +141,11 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
     }
 
     private void validateRevision(ItemRevision revision) {
-        checkFieldNotEmpty(revision.getType(), "type");
         checkFieldNotNull(revision.getItemId(), "item");
         checkFieldNotNull(revision.getOwnerId(), "developer");
 
         Item item = itemRepo.get(revision.getItemId());
         checkEntityNotNull(revision.getItemId(), item, "item");
-        if (!revision.getType().equals(item.getType())) {
-            throw AppErrors.INSTANCE.fieldNotMatch("type", revision.getType(), item.getType()).exception();
-        }
 
         if (ItemType.DIGITAL.equals(item.getType())) {
             checkFieldNotNull(revision.getBinaries(), "binaries");
@@ -154,7 +161,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
             ItemRevisionLocaleProperties properties = entry.getValue();
             // TODO: check locale is a valid locale
             checkFieldNotNull(properties, "Properties should not be null for locale " + locale);
-            checkFieldNotNull(properties.getName(), "Name in locale " + locale);
+            checkFieldNotNull(properties.getName(), locale + ".name");
         }
 
         if (revision.getMsrp()!=null) {

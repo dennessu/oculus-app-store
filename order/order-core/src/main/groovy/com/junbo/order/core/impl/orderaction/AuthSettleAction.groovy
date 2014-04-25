@@ -46,8 +46,9 @@ class AuthSettleAction extends BaseOrderEventAwareAction {
     @Transactional
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
-        orderInternalService.markSettlement(context.orderServiceContext.order)
-        Balance balance = CoreBuilder.buildBalance(context.orderServiceContext.order, BalanceType.CREDIT)
+        def order = context.orderServiceContext.order
+        orderInternalService.markSettlement(order)
+        Balance balance = CoreBuilder.buildBalance(order, BalanceType.MANUAL_CAPTURE)
         Promise promise = facadeContainer.billingFacade.createBalance(balance)
         promise.syncRecover { Throwable throwable ->
             LOGGER.error('name=Order_AuthSettle_Error', throwable)
@@ -67,6 +68,7 @@ class AuthSettleAction extends BaseOrderEventAwareAction {
                         billingChargeFailed().exception()
             }
             context.orderServiceContext.order.tentative = false
+            CoreBuilder.fillTaxInfo(order, resultBalance)
             def billingEvent = BillingEventBuilder.buildBillingEvent(resultBalance)
             orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
                 // TODO: save order level tax

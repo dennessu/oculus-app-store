@@ -6,26 +6,32 @@
 
 package com.junbo.payment.spec.resource;
 
-import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.spec.model.PaymentInstrumentType;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 
-/**
- * payment instrument type resource interface.
- */
+import java.util.List;
+
+//comment the rest resource here as we have cloudant ones:
+/*
 @Api("payment-instrument-types")
 @Path("/payment-instrument-types")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
+*/
+/**
+ * payment instrument type resource interface.
+ */
 public interface PaymentInstrumentTypeResource {
+    /*
     @ApiOperation("Get payment instrument type info")
     @GET
-    @Path("/{paymentInstrumentType}")
-    Promise<PaymentInstrumentType> getById(@PathParam("paymentInstrumentType") String paymentInstrumentType);
+    @Path("/{paymentInstrumentTypeId}")*/
+    Promise<PaymentInstrumentType> getById(@PathParam("paymentInstrumentTypeId") String paymentInstrumentTypeId);
+
+    /*@ApiOperation("Get all the payment instrument types info")
+    @GET*/
+    Promise<List<PaymentInstrumentType>> getAllTypes();
 }

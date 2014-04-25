@@ -1,5 +1,6 @@
 package com.junbo.order.core.impl.orderaction
 
+import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.email.spec.model.Email
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
@@ -8,8 +9,10 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.clientproxy.model.OrderOfferRevision
-import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
+import com.junbo.order.spec.model.Order
+import com.junbo.payment.spec.enums.PIType
+import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
@@ -21,7 +24,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 import javax.annotation.Resource
 
 /**
- * Created by LinYi on 14-3-14.
+ * Action of Email Sending.
  */
 @CompileStatic
 @TypeChecked
@@ -53,10 +56,30 @@ class SendEmailAction implements Action {
                 LOGGER.error('name=SendEmail_Action_Fail_On_Fetch_User', ex)
                 return Promise.pure(null)
             }.then { User u ->
-                if (CoreUtils.hasPhysicalOffer(order)) {
-                    // TODO: send partial charge email
-                    return Promise.pure(null)
+                return orderServiceContextBuilder.getPaymentInstruments(context.orderServiceContext)
+                        .then { List<PaymentInstrument> pis ->
+                    // select email type per pi & per item
+                    String emailType = null
+                    switch (pis[0].type) {
+                        case PIType.CREDITCARD.name():
+                        case PIType.WALLET.name():
+                            emailType = 'ORDER_CONFIRMATION'
+                            break
+                        default:
+                            emailType = null
+                    }
+                    return sendEmail(emailType, order, u, catalogOffers)
                 }
+            }
+        }
+    }
+
+    Promise<ActionResult> sendEmail(String emailType, Order order, User u, List<OfferRevision> catalogOffers) {
+        if (emailType == null) {
+            return Promise.pure(null)
+        }
+        switch (emailType) {
+            case 'ORDER_CONFIRMATION':
                 return facadeContainer.emailFacade.sendOrderConfirmationEMail(
                         order, u, catalogOffers).recover { Throwable ex ->
                     LOGGER.error('name=SendEmail_Action_Fail', ex)
@@ -69,7 +92,8 @@ class SendEmailAction implements Action {
                     LOGGER.info('name=SendEmail_Action_Success, id={}, userId={}', email.id, email.userId)
                     return Promise.pure(null)
                 }
-            }
+            default:
+                return Promise.pure(null)
         }
     }
 }

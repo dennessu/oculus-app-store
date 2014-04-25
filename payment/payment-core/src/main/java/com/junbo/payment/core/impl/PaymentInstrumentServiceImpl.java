@@ -21,10 +21,7 @@ import com.junbo.payment.db.mapper.PaymentAPI;
 import com.junbo.payment.db.mapper.TrackingUuid;
 import com.junbo.payment.db.repository.PaymentInstrumentRepository;
 import com.junbo.payment.db.repository.TrackingUuidRepository;
-import com.junbo.payment.spec.model.PageMetaData;
-import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.payment.spec.model.PaymentInstrumentSearchParam;
-import com.junbo.payment.spec.model.PaymentInstrumentType;
+import com.junbo.payment.spec.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,11 +57,10 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
             }
         }
         final PaymentProviderService provider = providerRoutingService.getPaymentProvider(
-                PaymentUtil.getPIType(request.getType()));
+                PIType.get(request.getType()));
         if(provider == null){
-            throw AppServerExceptions.INSTANCE.providerNotFound("request.getType()").exception();
+            throw AppServerExceptions.INSTANCE.providerNotFound(PIType.get(request.getType()).toString()).exception();
         }
-        //call provider and set result
         return provider.add(request).recover(new Promise.Func<Throwable, Promise<PaymentInstrument>>() {
             @Override
             public Promise<PaymentInstrument> apply(Throwable throwable) {
@@ -75,8 +71,9 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
             public Promise<PaymentInstrument> apply(PaymentInstrument paymentInstrument) {
                 provider.clonePIResult(paymentInstrument, request);
                 request.setIsActive(true);
-                if(request.getIsValidated()){
+                if(request.getLastValidatedTime() != null){
                     request.setLastValidatedTime(new Date());
+                    request.setIsValidated(true);
                 }
                 saveAndCommitPI(request);
                 return Promise.pure(request);
@@ -118,12 +115,10 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
                 || !piTarget.getAccountNum().equals(request.getAccountNum())){
             throw AppClientExceptions.INSTANCE.invalidPaymentInstrumentId(request.getId().toString()).exception();
         }
-        if(request.getAddress().getId() == null){
-            request.getAddress().setId(piTarget.getAddress().getId());
-        }
         if(request.getType().equals(PIType.CREDITCARD.toString())){
             request.getTypeSpecificDetails().setId(request.getId());
         }
+        //TODO: need re-validate the PI according to the lastValidatedTime
         paymentInstrumentRepository.update(request);
     }
 
@@ -190,30 +185,15 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         if(request.getUserId() == null){
             throw AppClientExceptions.INSTANCE.missingUserId().exception();
         }
-        if(CommonUtil.isNullOrEmpty(request.getType())){
+        if(request.getType() == null){
             throw AppClientExceptions.INSTANCE.missingPIType().exception();
         }
         PaymentUtil.getPIType(request.getType());
-        validateAddress(request);
         validateCreditCard(request);
     }
 
-    private void validateAddress(PaymentInstrument request) {
-        if(request.getAddress() != null){
-            if(CommonUtil.isNullOrEmpty(request.getAddress().getCountry())){
-                throw AppClientExceptions.INSTANCE.missingCountry().exception();
-            }
-            if(CommonUtil.isNullOrEmpty(request.getAddress().getAddressLine1())){
-                throw AppClientExceptions.INSTANCE.missingAddressLine().exception();
-            }
-            if(CommonUtil.isNullOrEmpty(request.getAddress().getPostalCode())){
-                throw AppClientExceptions.INSTANCE.missingPostalCode().exception();
-            }
-        }
-    }
-
     private void validateCreditCard(PaymentInstrument request){
-        if(request.getType().equalsIgnoreCase(PIType.CREDITCARD.toString())){
+        if(PaymentUtil.getPIType(request.getType()).equals(PIType.CREDITCARD)){
             if(CommonUtil.isNullOrEmpty(request.getAccountName())){
                 throw AppClientExceptions.INSTANCE.missingAccountName().exception();
             }

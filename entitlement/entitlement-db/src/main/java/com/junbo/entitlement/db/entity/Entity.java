@@ -26,6 +26,7 @@ public abstract class Entity implements Shardable {
     private Date modifiedTime;
     private String modifiedBy;
     private UUID trackingUuid;
+    private Integer rev;
 
     @Column(name = "is_deleted")
     public Boolean getIsDeleted() {
@@ -80,6 +81,15 @@ public abstract class Entity implements Shardable {
 
     public void setTrackingUuid(UUID trackingUuid) {
         this.trackingUuid = trackingUuid;
+    }
+
+    @Column(name = "rev")
+    public Integer getRev() {
+        return rev;
+    }
+
+    public void setRev(Integer rev) {
+        this.rev = rev;
     }
 
     @Transient

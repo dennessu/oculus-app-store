@@ -425,7 +425,8 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         PaymentProviderService provider = providerRoutingService.getPaymentProvider(
                 PaymentUtil.getPIType(pi.getType()));
         if(provider == null){
-            throw AppServerExceptions.INSTANCE.providerNotFound(pi.getType()).exception();
+            throw AppServerExceptions.INSTANCE.providerNotFound(
+                    PaymentUtil.getPIType(pi.getType()).toString()).exception();
         }
         return provider;
     }

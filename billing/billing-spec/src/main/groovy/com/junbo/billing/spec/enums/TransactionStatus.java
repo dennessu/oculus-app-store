@@ -19,6 +19,8 @@ public enum TransactionStatus implements Identifiable<Short> {
     DECLINE((short)2),
     UNCONFIRMED((short)3),
 
+    TIMEOUT((short)4),
+
     ERROR((short)999);
 
     private final Short id;

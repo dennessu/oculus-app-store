@@ -31,6 +31,7 @@ public class OfferMapper {
         entity.setCurrentRevisionId(model.getCurrentRevisionId());
         //entity.setCategories(Utils.toJson(model.getCategories()));
         entity.setCategories(model.getCategories());
+        entity.setRev(model.getRev()==null ? null : Integer.valueOf(model.getRev()));
     }
 
     public static Offer toModel(OfferEntity entity) {
@@ -48,6 +49,7 @@ public class OfferMapper {
         model.setCreatedTime(entity.getCreatedTime());
         model.setUpdatedBy(entity.getUpdatedBy());
         model.setUpdatedTime(entity.getUpdatedTime());
+        model.setRev(entity.getRev().toString());
         return model;
     }
 }
