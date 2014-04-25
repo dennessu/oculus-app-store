@@ -4,11 +4,8 @@ import com.junbo.common.id.CommunicationId
 import com.junbo.common.model.Results
 import com.junbo.identity.core.service.Created201Marker
 import com.junbo.identity.core.service.filter.CommunicationFilter
-import com.junbo.identity.core.service.filter.UserAuthenticatorFilter
 import com.junbo.identity.core.service.validator.CommunicationValidator
-import com.junbo.identity.core.service.validator.UserAuthenticatorValidator
 import com.junbo.identity.data.repository.CommunicationRepository
-import com.junbo.identity.data.repository.UserAuthenticatorRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Communication
 import com.junbo.identity.spec.v1.option.list.CommunicationListOptions
@@ -126,11 +123,11 @@ class CommunicationResourceImpl implements CommunicationResource {
             throw new IllegalArgumentException('listOptions is null')
         }
 
-        communicationRepository.search(listOptions).then { List<Communication> countryList ->
+        communicationRepository.search(listOptions).then { List<Communication> communicationList ->
             def result = new Results<Communication>(items: [])
 
-            countryList.each { Communication newCountry ->
-                result.items.add(newCountry)
+            communicationList.each { Communication newCommunication ->
+                result.items.add(newCommunication)
             }
 
             return Promise.pure(result)
