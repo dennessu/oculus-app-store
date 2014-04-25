@@ -5,18 +5,18 @@
  */
 package com.junbo.email.core.service
 
-import com.junbo.common.id.EmailId
+import com.junbo.common.id.EmailTemplateId
 import com.junbo.common.model.Link
 import com.junbo.common.model.Results
-import com.junbo.email.common.constant.PagingConstants
 import com.junbo.email.core.EmailTemplateService
 import com.junbo.email.core.validator.EmailTemplateValidator
 import com.junbo.email.db.repo.EmailTemplateRepository
 import com.junbo.email.spec.model.EmailTemplate
-import com.junbo.email.spec.model.Paging
+import com.junbo.email.spec.model.QueryParam
 import com.junbo.langur.core.promise.Promise
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import org.springframework.util.StringUtils
 
 import javax.ws.rs.core.UriBuilder
 import javax.ws.rs.core.UriInfo
@@ -37,6 +37,7 @@ import javax.ws.rs.core.UriInfo
     private UriInfo uriInfo
 
     Promise<EmailTemplate> postEmailTemplate(EmailTemplate template) {
+        this.build(template)
         templateValidator.validateCreate(template)
         Long id = templateRepository.saveEmailTemplate(template)
         return Promise.pure(templateRepository.getEmailTemplate(id))
@@ -48,8 +49,9 @@ import javax.ws.rs.core.UriInfo
     }
 
     Promise<EmailTemplate> putEmailTemplate(Long id, EmailTemplate template) {
-        template.setId(new EmailId(id))
         templateValidator.validateUpdate(template)
+        template.setId(new EmailTemplateId(id))
+        this.build(template)
         return Promise.pure(templateRepository.updateEmailTemplate(template))
     }
 
@@ -59,46 +61,56 @@ import javax.ws.rs.core.UriInfo
         return null
     }
 
-    Promise<Results<EmailTemplate>> getEmailTemplates(Paging paging) {
-        templateValidator.validateGet(paging)
-        setupPaging(paging)
-        List<EmailTemplate> templates = templateRepository.getEmailTemplates(null, paging)
-        Results<EmailTemplate> results = buildResults(templates, paging)
+    Promise<Results<EmailTemplate>> getEmailTemplates(QueryParam queryParam) {
+        def queries = this.buildQueryParam(queryParam)
+        List<EmailTemplate> templates = templateRepository.getEmailTemplates(queries, null)
+        Results<EmailTemplate> results = buildResults(templates, queryParam)
         return Promise.pure(results)
     }
 
-    private Results<EmailTemplate> buildResults(List<EmailTemplate> templates, Paging paging) {
+    private Results<EmailTemplate> buildResults(List<EmailTemplate> templates, QueryParam queryParam) {
         Results<EmailTemplate> results = new Results<>()
         if (templates != null) {
             results.setItems(templates)
-            results.setSelf(buildLink(paging, false))
+            results.setSelf(buildLink(queryParam))
             results.setHasNext(false)
-            if (templates.size() == paging.size) {
-                results.setNext(buildLink(paging, true))
-                results.setHasNext(true)
-            }
         }
         return  results
     }
 
-    private void setupPaging(Paging paging) {
-        if (paging.size == null) {
-            paging.setSize(PagingConstants.DEFAULT_PAGE_SIZE)
+    private Link buildLink(QueryParam queryParam) {
+        Link link = new Link()
+        UriBuilder uri = uriInfo.baseUriBuilder.path('email-templates')
+        if (queryParam.source != null) {
+            uri.queryParam('source', queryParam.source)
         }
-        if (paging.page == null) {
-            paging.setPage(PagingConstants.DEFAULT_PAGE_NUMBER)
+        if (queryParam.action != null) {
+            uri.queryParam('action', queryParam.action)
         }
-        if (paging.size > PagingConstants.MAX_PAGE_SIZE) {
-            paging.setSize(PagingConstants.MAX_PAGE_SIZE)
+        if (queryParam.locale != null) {
+            uri.queryParam('locale', queryParam.locale)
+        }
+        link.setHref(uri.toTemplate())
+        return link
+    }
+
+    private void build(EmailTemplate template) {
+        if (template != null) {
+           template.name = "${template.source}.${template.action}.${template.locale}"
         }
     }
 
-    private Link buildLink(Paging paging, boolean isNext) {
-        Link link = new Link()
-        UriBuilder uri = uriInfo.baseUriBuilder.path('email-templates')
-        uri.queryParam('page', isNext ? paging.page + 1 : paging.page)
-        uri.queryParam('size', paging.size)
-        link.setHref(uri.toTemplate())
-        return link
+    private Map<String, String> buildQueryParam(QueryParam queryParam) {
+        def map = [:]
+        if (!StringUtils.isEmpty(queryParam?.action)) {
+            map.put('action', queryParam.action)
+        }
+        if (!StringUtils.isEmpty(queryParam?.source)) {
+            map.put('source', queryParam.source)
+        }
+        if (!StringUtils.isEmpty(queryParam?.locale)) {
+            map.put('locale', queryParam.locale)
+        }
+        return map
     }
 }

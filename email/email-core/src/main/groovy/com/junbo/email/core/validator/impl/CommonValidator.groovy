@@ -8,12 +8,12 @@ package com.junbo.email.core.validator.impl
 import com.junbo.email.db.repo.EmailTemplateRepository
 import com.junbo.email.spec.error.AppErrors
 import com.junbo.email.spec.model.Email
+import com.junbo.email.spec.model.EmailTemplate
 import com.junbo.email.spec.model.Model
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserPii
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import org.springframework.util.StringUtils
 
 /**
  * Common Validator.
@@ -33,44 +33,8 @@ class CommonValidator {
     }
 
     protected void validateUserPii(UserPii userPii) {
-        if ( userPii?.emails?.keySet()?.first() == null) {
+        if ( userPii?.emails?.values()?.first() == null) {
             throw AppErrors.INSTANCE.emptyUserEmail().exception()
-        }
-    }
-
-    protected void validateCommonField(Email email) {
-        if (email == null) {
-            throw AppErrors.INSTANCE.invalidPayload().exception()
-        }
-        if (email.userId == null && email.recipients == null) {
-            throw AppErrors.INSTANCE.missingField('user or recipients').exception()
-        }
-        if (StringUtils.isEmpty(email.source)) {
-            throw AppErrors.INSTANCE.missingField('source').exception()
-        }
-        if (StringUtils.isEmpty(email.action)) {
-            throw AppErrors.INSTANCE.missingField('action').exception()
-        }
-        if (StringUtils.isEmpty(email.locale) && email.userId == null) {
-            throw AppErrors.INSTANCE.missingField('locale').exception()
-        }
-    }
-
-    protected void validateProhibitedFields(Email email) {
-        if (email.status != null) {
-            throw AppErrors.INSTANCE.unnecessaryField('status').exception()
-        }
-        if (email.statusReason != null) {
-            throw AppErrors.INSTANCE.unnecessaryField('statusReason').exception()
-        }
-        if (email.sentTime != null) {
-            throw AppErrors.INSTANCE.unnecessaryField('sentTime').exception()
-        }
-        if (email.retryCount != null) {
-            throw AppErrors.INSTANCE.unnecessaryField('retryCount').exception()
-        }
-        if (email.isResend != null) {
-            throw AppErrors.INSTANCE.unnecessaryField('isResend').exception()
         }
     }
 
@@ -98,5 +62,24 @@ class CommonValidator {
             return false
         }
         return true
+    }
+
+    protected void validateEmailTemplate(Email email) {
+        EmailTemplate template = emailTemplateRepository.getEmailTemplate(email.templateId.value)
+
+        if (template == null) {
+            throw AppErrors.INSTANCE.templateNotFound('').exception()
+        }
+        if (template.placeholderNames != null && email.replacements == null) {
+            throw AppErrors.INSTANCE.invalidProperty('replacements').exception()
+        }
+        if (template.placeholderNames != null) {
+            List<String> placeholderNames = template.placeholderNames.collect { it.toLowerCase() }
+            for (String key : email.replacements.keySet()) {
+                if (!placeholderNames.contains(key.replaceAll('\\d*(:\\w*)?$','').toLowerCase())) {
+                    throw AppErrors.INSTANCE.invalidProperty(key).exception()
+                }
+            }
+        }
     }
 }

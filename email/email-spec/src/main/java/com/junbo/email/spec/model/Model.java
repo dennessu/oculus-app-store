@@ -14,11 +14,13 @@ import java.util.Date;
  */
 public class Model {
 
+    @JsonIgnore
     private Date createdTime;
 
     @JsonIgnore
     private String createdBy;
 
+    @JsonIgnore
     private Date modifiedTime;
 
     @JsonIgnore
