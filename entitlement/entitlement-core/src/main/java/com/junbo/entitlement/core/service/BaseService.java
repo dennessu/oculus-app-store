@@ -73,6 +73,10 @@ public class BaseService {
     protected void validateCreate(Entitlement entitlement) {
         checkOauth(entitlement);
         checkDefinition(entitlement.getEntitlementDefinitionId());
+        if(entitlement.getRev() != null){
+            throw AppErrors.INSTANCE.fieldNotCorrect("rev",
+                    "rev can not be set when created").exception();
+        }
         if (Boolean.TRUE.equals(entitlement.getIsBanned())) {
             throw AppErrors.INSTANCE.fieldNotCorrect("isSuspended",
                     "isSuspended can not be true when created").exception();
