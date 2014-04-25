@@ -48,9 +48,6 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     private Integer userAgentMinLength
     private Integer userAgentMaxLength
 
-    private Integer clientIdMinLength
-    private Integer clientIdMaxLength
-
     private NormalizeService normalizeService
 
     @Override
@@ -69,7 +66,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     throw AppErrors.INSTANCE.userNotFound(userLoginAttempt.userId).exception()
                 }
 
-                if (user.active == false) {
+                if (user.status != 'ACTIVE') {
                     throw AppErrors.INSTANCE.userInInvalidStatus(userLoginAttempt.userId).exception()
                 }
 
@@ -113,7 +110,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                 throw AppErrors.INSTANCE.userNotFound(split[0]).exception()
             }
 
-            if (user.active == false) {
+            if (user.status != 'Active') {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userLoginAttempt.userId).exception()
             }
 
@@ -179,16 +176,6 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     private void checkBasicUserLoginAttemptInfo(UserCredentialVerifyAttempt userLoginAttempt) {
         if (userLoginAttempt == null) {
             throw new IllegalArgumentException('userLoginAttempt is null')
-        }
-
-        if (userLoginAttempt.clientId != null) {
-            if (userLoginAttempt.clientId.length() > clientIdMaxLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('clientId', clientIdMaxLength).exception()
-            }
-
-            if (userLoginAttempt.clientId.length() < clientIdMinLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('clientId', clientIdMinLength).exception()
-            }
         }
 
         if (userLoginAttempt.ipAddress != null) {
@@ -257,16 +244,6 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     @Required
     void setUserAgentMaxLength(Integer userAgentMaxLength) {
         this.userAgentMaxLength = userAgentMaxLength
-    }
-
-    @Required
-    void setClientIdMinLength(Integer clientIdMinLength) {
-        this.clientIdMinLength = clientIdMinLength
-    }
-
-    @Required
-    void setClientIdMaxLength(Integer clientIdMaxLength) {
-        this.clientIdMaxLength = clientIdMaxLength
     }
 
     @Required

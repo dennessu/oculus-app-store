@@ -59,9 +59,11 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
                         throw AppErrors.INSTANCE.userNotFound(userAuthenticator.userId).exception()
                     }
 
+                    /*
                     if (user.active == null || user.active == false) {
                         throw AppErrors.INSTANCE.userInInvalidStatus(userAuthenticator.userId).exception()
                     }
+                    */
 
                     return Promise.pure(userAuthenticator)
                 }
@@ -74,9 +76,11 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
             throw new IllegalArgumentException('options is null')
         }
 
+        /*
         if (options.userId == null && options.value == null) {
             throw AppErrors.INSTANCE.parameterRequired('userId or value').exception()
         }
+        */
 
         return Promise.pure(null)
     }
@@ -90,8 +94,8 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
 
             return userAuthenticatorRepository.search(new AuthenticatorListOptions(
                     userId: userAuthenticator.userId,
-                    type: userAuthenticator.type,
-                    value: userAuthenticator.value
+                    type: userAuthenticator.type
+                    //value: userAuthenticator.value
             )).then { List<UserAuthenticator> existing ->
                 if (existing != null && existing.size() != 0) {
                     throw AppErrors.INSTANCE.fieldDuplicate('value').exception()
@@ -123,7 +127,7 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
             if (authenticator.userId != oldAuthenticator.userId) {
                 throw AppErrors.INSTANCE.fieldInvalid('userId', oldAuthenticator.userId.toString()).exception()
             }
-
+            /*
             if (authenticator.value != oldAuthenticator.value || authenticator.type != oldAuthenticator.type) {
                 userAuthenticatorRepository.search(new AuthenticatorListOptions(
                         userId: authenticator.userId,
@@ -137,6 +141,7 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
                 }
                 return Promise.pure(null)
             }
+            */
 
             return Promise.pure(null)
         }
@@ -155,7 +160,7 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
             if (user == null) {
                 throw AppErrors.INSTANCE.userNotFound(userAuthenticator.userId).exception()
             }
-
+            /*
             if (user.active == false || user.active == false) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userAuthenticator.userId).exception()
             }
@@ -163,6 +168,7 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
             if (userAuthenticator.value == null) {
                 throw AppErrors.INSTANCE.fieldRequired('value').exception()
             }
+            */
 
             if (userAuthenticator.type == null) {
                 throw AppErrors.INSTANCE.fieldRequired('type').exception()

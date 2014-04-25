@@ -17,5 +17,5 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface DeviceRepository extends IdentityBaseRepository<Device, DeviceId> {
     @ReadMethod
-    Promise<Device> searchByExternalRef(String externalRef)
+    Promise<Device> searchBySerialNumber(String externalRef)
 }

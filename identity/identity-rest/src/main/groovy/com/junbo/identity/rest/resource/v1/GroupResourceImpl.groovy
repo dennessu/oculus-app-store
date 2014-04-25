@@ -128,4 +128,14 @@ class GroupResourceImpl implements GroupResource {
             return Promise.pure(resultList)
         }
     }
+
+    @Override
+
+    Promise<Void> delete(GroupId groupId) {
+        return groupValidator.validateForGet(groupId).then {
+            groupRepository.delete(groupId)
+
+            return Promise.pure(null)
+        }
+    }
 }

@@ -41,6 +41,8 @@ public class UserTeleBackupCode extends ResourceMeta implements Identifiable<Use
 
     public void setId(UserTeleBackupCodeId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("self");
     }
 
     public UserId getUserId() {
@@ -49,6 +51,8 @@ public class UserTeleBackupCode extends ResourceMeta implements Identifiable<Use
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+        support.setPropertyAssigned("userId");
+        support.setPropertyAssigned("user");
     }
 
     public String getVerifyCode() {
@@ -57,6 +61,7 @@ public class UserTeleBackupCode extends ResourceMeta implements Identifiable<Use
 
     public void setVerifyCode(String verifyCode) {
         this.verifyCode = verifyCode;
+        support.setPropertyAssigned("verifyCode");
     }
 
     public Date getExpiresBy() {
@@ -65,6 +70,7 @@ public class UserTeleBackupCode extends ResourceMeta implements Identifiable<Use
 
     public void setExpiresBy(Date expiresBy) {
         this.expiresBy = expiresBy;
+        support.setPropertyAssigned("expiresBy");
     }
 
     public Boolean getActive() {
@@ -73,5 +79,6 @@ public class UserTeleBackupCode extends ResourceMeta implements Identifiable<Use
 
     public void setActive(Boolean active) {
         this.active = active;
+        support.setPropertyAssigned("active");
     }
 }

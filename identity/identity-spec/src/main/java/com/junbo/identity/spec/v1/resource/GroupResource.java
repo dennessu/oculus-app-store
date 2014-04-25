@@ -37,7 +37,6 @@ public interface GroupResource {
     @Path("/{groupId}")
     Promise<Group> put(@PathParam("groupId") GroupId groupId, Group group);
 
-    @ApiOperation("Partial update a group")
     @POST
     @Path("/{groupId}")
     Promise<Group> patch(@PathParam("groupId") GroupId groupId, Group group);
@@ -50,4 +49,9 @@ public interface GroupResource {
     @ApiOperation("Search groups")
     @GET
     Promise<Results<Group>> list(@BeanParam GroupListOptions listOptions);
+
+    @ApiOperation("Delete a group")
+    @DELETE
+    @Path("/{groupId}")
+    Promise<Void> delete(@PathParam("groupId") GroupId groupId);
 }

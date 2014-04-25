@@ -19,6 +19,19 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "user_authenticator")
 public class UserAuthenticatorEntity extends ResourceMetaEntity implements Identifiable<Long> {
+    @Id
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "type")
+    private String type;
+
+    @Column(name = "value")
+    private String externalId;
+
     @Override
     public Long getId() {
         return id;
@@ -44,21 +57,11 @@ public class UserAuthenticatorEntity extends ResourceMetaEntity implements Ident
         this.type = type;
     }
 
-    public String getValue() {
-        return value;
+    public String getExternalId() {
+        return externalId;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
     }
-
-    @Id
-    @Column(name = "id")
-    private Long id;
-    @Column(name = "user_id")
-    private Long userId;
-    @Column(name = "type")
-    private String type;
-    @Column(name = "value")
-    private String value;
 }

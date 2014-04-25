@@ -39,7 +39,6 @@ public interface UserTosAgreementResource {
                                   @PathParam("tosAgreementId") UserTosAgreementId userTosAgreementId,
                                   @BeanParam UserTosAgreementGetOptions getOptions);
 
-    @ApiOperation("Partial update one user tos agreement")
     @POST
     @Path("/{tosAgreementId}")
     Promise<UserTosAgreement> patch(@PathParam("userId") UserId userId,

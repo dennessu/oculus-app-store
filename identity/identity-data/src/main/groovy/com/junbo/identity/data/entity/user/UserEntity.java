@@ -26,23 +26,17 @@ public class UserEntity extends ResourceMetaEntity implements Identifiable<Long>
     @Column(name = "user_name")
     private String username;
 
-    @Column(name = "type")
-    private String type;
+    @Column(name = "preferred_locale")
+    private String preferredLocale;
 
-    @Column(name = "preferred_language")
-    private String preferredLanguage;
+    @Column(name = "preferred_timezone")
+    private String preferredTimezone;
 
-    @Column(name = "locale")
-    private String locale;
+    @Column(name = "status")
+    private String status;
 
-    @Column(name = "time_zone")
-    private String timezone;
-
-    @Column(name = "is_active")
-    private Boolean active;
-
-    @Column(name = "nick_name")
-    private String nickName;
+    @Column(name = "is_anonymous")
+    private Boolean isAnonymous;
 
     @Column(name = "canonical_username")
     private String canonicalUsername;
@@ -62,54 +56,6 @@ public class UserEntity extends ResourceMetaEntity implements Identifiable<Long>
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getPreferredLanguage() {
-        return preferredLanguage;
-    }
-
-    public void setPreferredLanguage(String preferredLanguage) {
-        this.preferredLanguage = preferredLanguage;
-    }
-
-    public String getLocale() {
-        return locale;
-    }
-
-    public void setLocale(String locale) {
-        this.locale = locale;
-    }
-
-    public String getTimezone() {
-        return timezone;
-    }
-
-    public void setTimezone(String timezone) {
-        this.timezone = timezone;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
-
-    public String getNickName() {
-        return nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
     }
 
     public String getCanonicalUsername() {

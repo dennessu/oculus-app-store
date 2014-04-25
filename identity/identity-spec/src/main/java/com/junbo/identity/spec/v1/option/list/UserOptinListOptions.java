@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.spec.v1.option.list;
 
+import com.junbo.common.id.CommunicationId;
 import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.options.list.PagingGetOptions;
 
@@ -14,21 +15,21 @@ import javax.ws.rs.QueryParam;
  * Created by liangfu on 4/3/14.
  */
 public class UserOptinListOptions extends PagingGetOptions {
-    @QueryParam("type")
-    private String type;
+    @QueryParam("properties")
+    private String properties;
 
     @QueryParam("userId")
     private UserId userId;
 
-    @QueryParam("properties")
-    private String properties;
+    @QueryParam("communicationId")
+    private CommunicationId communicationId;
 
-    public String getType() {
-        return type;
+    public String getProperties() {
+        return properties;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setProperties(String properties) {
+        this.properties = properties;
     }
 
     public UserId getUserId() {
@@ -39,11 +40,11 @@ public class UserOptinListOptions extends PagingGetOptions {
         this.userId = userId;
     }
 
-    public String getProperties() {
-        return properties;
+    public CommunicationId getCommunicationId() {
+        return communicationId;
     }
 
-    public void setProperties(String properties) {
-        this.properties = properties;
+    public void setCommunicationId(CommunicationId communicationId) {
+        this.communicationId = communicationId;
     }
 }
