@@ -3,6 +3,8 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.model.Results
 import com.junbo.identity.core.service.Created201Marker
+import com.junbo.identity.core.service.filter.LocaleFilter
+import com.junbo.identity.core.service.validator.LocaleValidator
 import com.junbo.identity.data.repository.LocaleRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Locale
@@ -26,6 +28,12 @@ class LocaleResourceImpl implements LocaleResource {
     @Autowired
     private Created201Marker created201Marker
 
+    @Autowired
+    private LocaleFilter localeFilter
+
+    @Autowired
+    private LocaleValidator localeValidator
+
 
     @Override
     Promise<Locale> create(Locale locale) {
@@ -33,9 +41,14 @@ class LocaleResourceImpl implements LocaleResource {
             throw new IllegalArgumentException('locale is null')
         }
 
-        localeRepository.create(locale).then { Locale newLocale ->
-            created201Marker.mark(newLocale.id)
-            return Promise.pure(newLocale)
+        locale = localeFilter.filterForCreate(locale)
+
+        return localeValidator.validateForCreate(locale).then {
+            return localeRepository.create(locale).then { Locale newLocale ->
+                created201Marker.mark(newLocale.id)
+                newLocale = localeFilter.filterForGet(newLocale, null)
+                return Promise.pure(newLocale)
+            }
         }
     }
 
@@ -54,15 +67,41 @@ class LocaleResourceImpl implements LocaleResource {
                 throw AppErrors.INSTANCE.localeNotFound(localeId).exception()
             }
 
-            localeRepository.update(locale).then { Locale newLocale ->
-                return Promise.pure(newLocale)
+            locale = localeFilter.filterForPut(locale, oldLocale)
+
+            return localeValidator.validateForUpdate(localeId, locale, oldLocale).then {
+                return localeRepository.update(locale).then { Locale newLocale ->
+                    newLocale = localeFilter.filterForGet(newLocale, null)
+                    return Promise.pure(newLocale)
+                }
             }
         }
     }
 
     @Override
     Promise<Locale> patch(LocaleId localeId, Locale locale) {
-        return null
+        if (localeId == null) {
+            throw new IllegalArgumentException('localeId is null')
+        }
+
+        if (locale == null) {
+            throw new IllegalArgumentException('locale is null')
+        }
+
+        return localeRepository.get(localeId).then { Locale oldLocale ->
+            if (oldLocale == null) {
+                throw AppErrors.INSTANCE.localeNotFound(localeId).exception()
+            }
+
+            locale = localeFilter.filterForPatch(locale, oldLocale)
+
+            return localeValidator.validateForUpdate(localeId, locale, oldLocale).then {
+                return localeRepository.update(locale).then { Locale newLocale ->
+                    newLocale = localeFilter.filterForGet(newLocale, null)
+                    return Promise.pure(newLocale)
+                }
+            }
+        }
     }
 
     @Override
@@ -80,19 +119,31 @@ class LocaleResourceImpl implements LocaleResource {
             throw new IllegalArgumentException('listOptions is null')
         }
 
-        localeRepository.search(listOptions).then { List<Locale> localeList ->
-            def result = new Results<Locale>(items: [])
+        return localeValidator.validateForSearch(listOptions).then {
+            return localeRepository.search(listOptions).then { List<Locale> localeList ->
+                def result = new Results<Locale>(items: [])
 
-            localeList.each { Locale newLocale ->
-                result.items.add(newLocale)
+                localeList.each { Locale newLocale ->
+                    newLocale = localeFilter.filterForGet(newLocale, null)
+
+                    if (newLocale != null) {
+                        result.items.add(newLocale)
+                    }
+                }
+
+                return Promise.pure(result)
             }
-
-            return Promise.pure(result)
         }
     }
 
     @Override
     Promise<Void> delete(LocaleId localeId) {
-        return localeRepository.delete(localeId)
+        if (localeId != null) {
+            throw new IllegalArgumentException('localeId is null')
+        }
+
+        return localeValidator.validateForGet(localeId).then {
+            return localeRepository.delete(localeId)
+        }
     }
 }

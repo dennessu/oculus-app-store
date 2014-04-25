@@ -122,19 +122,31 @@ class CountryResourceImpl implements CountryResource {
             throw new IllegalArgumentException('listOptions is null')
         }
 
-        countryRepository.search(listOptions).then { List<Country> countryList ->
-            def result = new Results<Country>(items: [])
+        return countryValidator.validateForSearch(listOptions).then {
+            return countryRepository.search(listOptions).then { List<Country> countryList ->
+                def result = new Results<Country>(items: [])
 
-            countryList.each { Country newCountry ->
-                    result.items.add(newCountry)
+                countryList.each { Country newCountry ->
+                    newCountry = countryFilter.filterForGet(newCountry, null)
+
+                    if (newCountry != null) {
+                        result.items.add(newCountry)
+                    }
+                }
+
+                return Promise.pure(result)
             }
-
-            return Promise.pure(result)
         }
     }
 
     @Override
     Promise<Void> delete(CountryId countryId) {
-        return countryRepository.delete(countryId)
+        if (countryId == null) {
+            throw new IllegalArgumentException('countryId is null')
+        }
+
+        return countryValidator.validateForGet(countryId).then {
+            return countryRepository.delete(countryId)
+        }
     }
 }
