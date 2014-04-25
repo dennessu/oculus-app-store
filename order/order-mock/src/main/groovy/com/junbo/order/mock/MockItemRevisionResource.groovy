@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component
 
 import javax.ws.rs.BeanParam
 import javax.ws.rs.PathParam
+import javax.ws.rs.core.Response
+
 /**
  * Created by chriszhu on 4/16/14.
  */
@@ -41,13 +43,17 @@ class MockItemRevisionResource extends BaseMock implements ItemRevisionResource 
         return null
     }
 
+    @Override
+    Promise<Response> delete(@PathParam("revisionId") ItemRevisionId revisionId) {
+        return Promise.pure(null)
+    }
+
     private generateItemRevision() {
         return new ItemRevision(
                 revisionId: generateLong(),
                 ownerId: generateLong(),
                 itemId: generateLong(),
                 type: 'DIGITAL',
-                sku: '123',
                 msrp: new Price(
                         priceType: 'CUSTOM',
                         prices: ['USD': 9.99G, 'CNY': 19.99G]

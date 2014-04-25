@@ -102,7 +102,7 @@ class FacadeBuilder {
         properties.put(GRAND_TOTAL, grandTotal.toString())
         offers.eachWithIndex { OfferRevision offer, int index ->
             // TODO update the l10n logic per catalog change
-            properties.put(OFFER_NAME + index, offer.name.locales['DEFAULT'])
+            properties.put(OFFER_NAME + index, offer.locales['DEFAULT'].name)
             order.orderItems.each { OrderItem item ->
                 if (item.offer.value == offer.offerId) {
                     properties.put(QUANTITY + index, item.quantity.toString())
