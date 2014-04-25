@@ -10,6 +10,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.payment.PaymentFacade
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.resource.PaymentInstrumentResource
+import com.junbo.payment.spec.resource.PaymentInstrumentTypeResource
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.springframework.stereotype.Component
@@ -25,6 +26,9 @@ class PaymentFacadeImpl implements PaymentFacade {
 
     @Resource(name='order.paymentInstrumentClient')
     PaymentInstrumentResource paymentInstrumentResource
+
+    @Resource(name='order.paymentInstrumentTypeClient')
+    PaymentInstrumentTypeResource paymentInstrumentTypeResource
 
     @Override
     Promise<PaymentInstrument> getPaymentInstrument(Long paymentInstrumentId) {
