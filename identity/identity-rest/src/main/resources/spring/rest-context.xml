@@ -13,11 +13,11 @@
     <bean id="defaultUserCommunicationResource" class="com.junbo.identity.rest.resource.v1.UserCommunicationResourceImpl" scope="prototype" />
     <bean id="defaultUserCredentialResource" class="com.junbo.identity.rest.resource.v1.UserCredentialResourceImpl" scope="prototype" />
     <bean id="defaultUserCredentialVerifyAttemptResource" class="com.junbo.identity.rest.resource.v1.UserCredentialVerifyAttemptResourceImpl" scope="prototype" />
+    <bean id="defaultGroupResource" class="com.junbo.identity.rest.resource.v1.GroupResourceImpl" scope="prototype" />
 
 
     <bean id="defaultSecurityQuestionResource" class="com.junbo.identity.rest.resource.SecurityQuestionResourceImpl" scope="prototype" />
     <bean id="defaultDeviceResource" class="com.junbo.identity.rest.resource.v1.DeviceResourceImpl" scope="prototype" />
-    <bean id="defaultGroupResource" class="com.junbo.identity.rest.resource.v1.GroupResourceImpl" scope="prototype" />
     <bean id="defaultTosResource" class="com.junbo.identity.rest.resource.v1.TosResourceImpl" scope="prototype" />
     <bean id="defaultUserGroupMembershipResource" class="com.junbo.identity.rest.resource.v1.UserGroupMembershipResourceImpl" scope="prototype"/>
     <bean id="defaultUserResource" class="com.junbo.identity.rest.resource.v1.UserResourceImpl" scope="prototype" />

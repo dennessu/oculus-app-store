@@ -81,6 +81,13 @@
         <property name="userAgentMaxLength" value="255"/>
     </bean>
 
+    <bean id="userGroupValidator" class="com.junbo.identity.core.service.validator.impl.UserGroupValidatorImpl">
+        <property name="groupRepository" ref="groupRepository"/>
+        <property name="userGroupRepository" ref="userGroupRepository"/>
+        <property name="userRepository" ref="userRepository"/>
+    </bean>
+
+
 
 
 
@@ -212,12 +219,6 @@
     </bean>
 
     <bean id="userDeviceValidator" class="com.junbo.identity.core.service.validator.impl.UserDeviceValidatorImpl">
-    </bean>
-
-    <bean id="userGroupValidator" class="com.junbo.identity.core.service.validator.impl.UserGroupValidatorImpl">
-        <property name="groupRepository" ref="groupRepository"/>
-        <property name="userGroupRepository" ref="userGroupRepository"/>
-        <property name="userRepository" ref="userRepository"/>
     </bean>
 
     <bean id="userPhoneNumberValidator"
