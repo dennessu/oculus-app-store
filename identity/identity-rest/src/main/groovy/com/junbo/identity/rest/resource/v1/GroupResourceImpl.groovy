@@ -22,6 +22,8 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
+import javax.ws.rs.PathParam
+
 /**
  * Created by xiali_000 on 4/8/2014.
  */
@@ -126,6 +128,13 @@ class GroupResourceImpl implements GroupResource {
             }
 
             return Promise.pure(resultList)
+        }
+    }
+
+    @Override
+    Promise<Void> delete(@PathParam("groupId") GroupId groupId) {
+        groupValidator.validateForGet(groupId).then { Group group ->
+            return groupRepository.delete(groupId)
         }
     }
 }

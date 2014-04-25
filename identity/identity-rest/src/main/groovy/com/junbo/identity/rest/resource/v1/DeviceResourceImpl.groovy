@@ -22,6 +22,8 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
+import javax.ws.rs.PathParam
+
 /**
  * Created by xiali_000 on 4/8/2014.
  */
@@ -131,5 +133,12 @@ class DeviceResourceImpl implements DeviceResource {
 
             return Promise.pure(resultList)
         }    
+    }
+
+    @Override
+    Promise<Void> delete(@PathParam("deviceId") DeviceId deviceId) {
+        deviceValidator.validateForGet(deviceId).then {Device device ->
+            return deviceRepository.delete(deviceId)
+        }
     }
 }

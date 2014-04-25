@@ -22,6 +22,8 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
+import javax.ws.rs.PathParam
+
 /**
  * Created by liangfu on 4/9/14.
  */
@@ -93,6 +95,37 @@ class TosResourceImpl implements TosResource {
             }
 
             return Promise.pure(resultList)
+        }
+    }
+
+    @Override
+    Promise<Tos> put(@PathParam("tosId") TosId tosId, Tos tos) {
+        if (tosId == null) {
+            throw new IllegalArgumentException('tosId is null')
+        }
+
+        if (tos == null) {
+            throw new IllegalArgumentException('tos is null')
+        }
+
+        return tosRepository.get(tosId).then { Tos oldTos ->
+            if (oldTos == null) {
+                throw AppErrors.INSTANCE.tosNotFound(tosId).exception()
+            }
+
+            tos = tosFilter.filterForPut(tos, oldTos)
+
+            tosRepository.update(tos).then { Tos newTos ->
+                newTos = tosFilter.filterForGet(newTos, null)
+                return Promise.pure(newTos)
+            }
+        }
+    }
+
+    @Override
+    Promise<Void> delete(@PathParam("tosId") TosId tosId) {
+        tosValidator.validateForGet(tosId).then {
+            return tosRepository.delete(tosId)
         }
     }
 }
