@@ -174,4 +174,9 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
             }
         }
     }
+
+    @Override
+    Promise<Void> get(UserId userId, UserSecurityQuestionId userSecurityQuestionId) {
+        return Promise.pure(null)
+    }
 }

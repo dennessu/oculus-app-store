@@ -5,6 +5,10 @@
  */
 package com.junbo.identity.spec.error;
 
+import com.junbo.common.enumid.CountryId;
+import com.junbo.common.enumid.CurrencyId;
+import com.junbo.common.enumid.LocaleId;
+import com.junbo.common.enumid.PITypeId;
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.ErrorDef;
 import com.junbo.common.error.ErrorProxy;
@@ -97,7 +101,7 @@ public interface AppErrors {
     AppError userTosAgreementNotFound(UserTosAgreementId userTosId);
 
     @ErrorDef(httpStatusCode = 409, code = "2000022", description = "User Optin {0} not found.", field = "{0}")
-    AppError userOptinNotFound(UserOptinId userOptinId);
+    AppError userOptinNotFound(UserCommunicationId userOptinId);
 
     @ErrorDef(httpStatusCode = 409, code = "2000023", description = "User Password {0} not found.", field = "{0}")
     AppError userPasswordNotFound(UserPasswordId userPasswordId);
@@ -149,4 +153,19 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 409, code = "2000038", description = "Address {0} not found.", field = "{0}")
     AppError addressNotFound(AddressId addressId);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000039", description = "User Tele code {0} not found.", field = "{0}")
+    AppError userTeleCodeNotFound(UserTeleId userTeleId);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000040", description = "Country {0} not found.", field = "{0}")
+    AppError CountryNotFound(CountryId countryId);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000041", description = "Currency {0} not found.", field = "{0}")
+    AppError CurrencyNotFound(CurrencyId countryId);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000042", description = "Locale {0} not found.", field = "{0}")
+    AppError LocaleNotFound(LocaleId localeId);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000043", description = "Payment instrument type {0} not found.", field = "{0}")
+    AppError PITypeNotFound(PITypeId piTypeId);
 }

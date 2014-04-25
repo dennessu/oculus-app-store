@@ -8,9 +8,10 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.AddressId;
+import com.junbo.common.enumid.CountryId;
 import com.junbo.common.id.UserId;
-import com.junbo.common.util.Identifiable;
 import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
@@ -18,7 +19,7 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  */
 public class Address extends ResourceMeta implements Identifiable<AddressId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "The id of address resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Nullable] The id of address resource.")
     @JsonProperty("self")
     private AddressId id;
 
@@ -26,35 +27,48 @@ public class Address extends ResourceMeta implements Identifiable<AddressId> {
     @JsonProperty("user")
     private UserId userId;
 
-    @ApiModelProperty(position = 3, required = false, value = "The street of address resource.")
-    private String street;
-
-    @ApiModelProperty(position = 4, required = false, value = "The street1 of address resource.")
+    @ApiModelProperty(position = 3, required = false, value = "[Required]The street1 of address.")
     private String street1;
 
-    @ApiModelProperty(position = 5, required = false, value = "The street2 of address resource.")
+    @ApiModelProperty(position = 4, required = false, value = "[Nullable]The street2 of address.")
     private String street2;
 
-    @ApiModelProperty(position = 6, required = false, value = "The city of address resource.")
+    @ApiModelProperty(position = 5, required = false, value = "[Nullable]The street3 of address.")
+    private String street3;
+
+    @ApiModelProperty(position = 6, required = false, value = "The city of address.")
     private String city;
 
-    @ApiModelProperty(position = 7, required = false, value = "The state of address resource.")
-    private String state;
-
-    @ApiModelProperty(position = 8, required = true, value = "The postalCode of address resource.")
+    @ApiModelProperty(position = 8, required = true, value = "The postalCode of address.")
     private String postalCode;
 
-    @ApiModelProperty(position = 9, required = true, value = "The country of address resource.")
-    private String country;
+    @ApiModelProperty(position = 9, required = false, value = "The country name of address. ")
+    private String countryName;
 
-    @ApiModelProperty(position = 10, required = false, value = "The firstName of address resource.")
+    @ApiModelProperty(position = 10, required = true, value = "The country resource link.")
+    @JsonProperty("country")
+    private CountryId countryId;
+
+    @ApiModelProperty(position = 11, required = false, value = "The firstName of address.")
     private String firstName;
 
-    @ApiModelProperty(position = 11, required = false, value = "The lastName of address resource.")
+    @ApiModelProperty(position = 12, required = false, value = "The lastName of address.")
     private String lastName;
 
-    @ApiModelProperty(position = 12, required = false, value = "The phoneNumber of address resource.")
+    @ApiModelProperty(position = 13, required = false, value = "The phoneNumber of address.")
     private String phoneNumber;
+
+    @ApiModelProperty(position = 14, required = false, value = "Whether the address is well formed.")
+    private Boolean isWellFormed;
+
+    @ApiModelProperty(position = 15, required = false, value = "Whether the address is normalized.")
+    private Boolean isNormalized;
+
+    @ApiModelProperty(position = 17, required = false, value = "SubCountry code.")
+    private String subCountryCode;
+
+    @ApiModelProperty(position = 18, required = false, value = "SubCountry name.")
+    private String subCountryName;
 
     public AddressId getId() {
         return id;
@@ -74,15 +88,6 @@ public class Address extends ResourceMeta implements Identifiable<AddressId> {
         this.userId = userId;
         support.setPropertyAssigned("userId");
         support.setPropertyAssigned("user");
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-        support.setPropertyAssigned("street");
     }
 
     public String getStreet1() {
@@ -112,15 +117,6 @@ public class Address extends ResourceMeta implements Identifiable<AddressId> {
         support.setPropertyAssigned("city");
     }
 
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-        support.setPropertyAssigned("state");
-    }
-
     public String getPostalCode() {
         return postalCode;
     }
@@ -130,13 +126,40 @@ public class Address extends ResourceMeta implements Identifiable<AddressId> {
         support.setPropertyAssigned("postalCode");
     }
 
-    public String getCountry() {
-        return country;
+    public String getCountryName() {
+        return countryName;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
-        support.setPropertyAssigned("country");
+    public void setCountryName(String countryName) {
+        this.countryName = countryName;
+        support.setPropertyAssigned("countryName");
+    }
+
+    public CountryId getCountryId() {
+        return countryId;
+    }
+
+    public void setCountryId(CountryId countryId) {
+        this.countryId = countryId;
+        support.setPropertyAssigned("countryId");
+    }
+
+    public String getSubCountryCode() {
+        return subCountryCode;
+    }
+
+    public void setSubCountryCode(String subCountryCode) {
+        this.subCountryCode = subCountryCode;
+        support.setPropertyAssigned("subCountryCode");
+    }
+
+    public String getSubCountryName() {
+        return subCountryName;
+    }
+
+    public void setSubCountryName(String subCountryName) {
+        this.subCountryName = subCountryName;
+        support.setPropertyAssigned("subCountryName");
     }
 
     public String getFirstName() {
@@ -164,5 +187,32 @@ public class Address extends ResourceMeta implements Identifiable<AddressId> {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
         support.setPropertyAssigned("phoneNumber");
+    }
+
+    public Boolean getIsWellFormed() {
+        return isWellFormed;
+    }
+
+    public void setIsWellFormed(Boolean isWellFormed) {
+        this.isWellFormed = isWellFormed;
+        support.setPropertyAssigned("isWellFormed");
+    }
+
+    public Boolean getIsNormalized() {
+        return isNormalized;
+    }
+
+    public void setIsNormalized(Boolean isNormalized) {
+        this.isNormalized = isNormalized;
+        support.setPropertyAssigned("isNormalized");
+    }
+
+    public String getStreet3() {
+        return street3;
+    }
+
+    public void setStreet3(String street3) {
+        this.street3 = street3;
+        support.setPropertyAssigned("street3");
     }
 }

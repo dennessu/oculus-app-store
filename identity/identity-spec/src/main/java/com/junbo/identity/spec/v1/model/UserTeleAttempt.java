@@ -52,6 +52,8 @@ public class UserTeleAttempt extends ResourceMeta implements Identifiable<UserTe
 
     public void setId(UserTeleAttemptId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("self");
     }
 
     public UserTeleId getUserTeleId() {
@@ -60,6 +62,8 @@ public class UserTeleAttempt extends ResourceMeta implements Identifiable<UserTe
 
     public void setUserTeleId(UserTeleId userTeleId) {
         this.userTeleId = userTeleId;
+        support.setPropertyAssigned("userTeleId");
+        support.setPropertyAssigned("userTele");
     }
 
     public UserId getUserId() {
@@ -68,6 +72,8 @@ public class UserTeleAttempt extends ResourceMeta implements Identifiable<UserTe
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+        support.setPropertyAssigned("userId");
+        support.setPropertyAssigned("user");
     }
 
     public String getVerifyCode() {
@@ -76,6 +82,7 @@ public class UserTeleAttempt extends ResourceMeta implements Identifiable<UserTe
 
     public void setVerifyCode(String verifyCode) {
         this.verifyCode = verifyCode;
+        support.setPropertyAssigned("verifyCode");
     }
 
     public String getIpAddress() {
@@ -84,6 +91,7 @@ public class UserTeleAttempt extends ResourceMeta implements Identifiable<UserTe
 
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
+        support.setPropertyAssigned("ipAddress");
     }
 
     public String getUserAgent() {
@@ -92,6 +100,7 @@ public class UserTeleAttempt extends ResourceMeta implements Identifiable<UserTe
 
     public void setUserAgent(String userAgent) {
         this.userAgent = userAgent;
+        support.setPropertyAssigned("userAgent");
     }
 
     public String getClientId() {
@@ -100,6 +109,7 @@ public class UserTeleAttempt extends ResourceMeta implements Identifiable<UserTe
 
     public void setClientId(String clientId) {
         this.clientId = clientId;
+        support.setPropertyAssigned("clientId");
     }
 
     public Boolean getSucceeded() {
@@ -108,5 +118,6 @@ public class UserTeleAttempt extends ResourceMeta implements Identifiable<UserTe
 
     public void setSucceeded(Boolean succeeded) {
         this.succeeded = succeeded;
+        support.setPropertyAssigned("succeeded");
     }
 }

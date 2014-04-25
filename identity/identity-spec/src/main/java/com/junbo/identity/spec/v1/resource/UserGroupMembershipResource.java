@@ -21,7 +21,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * Created by liangfu on 4/3/14.
  */
-@Api(value = "user-group-memberships")
+@Api(value = "userGroupMemberships")
 @RestResource
 @Path("/user-group-memberships")
 @Produces({MediaType.APPLICATION_JSON})
@@ -37,7 +37,6 @@ public interface UserGroupMembershipResource {
     Promise<UserGroup> get(@PathParam("userGroupMembershipId") UserGroupId userGroupId,
                             @BeanParam UserGroupGetOptions getOptions);
 
-    @ApiOperation("Partial update one user group membership")
     @POST
     @Path("/{userGroupMembershipId}")
     Promise<UserGroup> patch(@PathParam("userGroupMembershipId") UserGroupId userGroupId,

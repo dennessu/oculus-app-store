@@ -18,7 +18,8 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  */
 public class UserGroup extends ResourceMeta implements Identifiable<UserGroupId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "The id of the user group membership resource.")
+    @ApiModelProperty(position = 1, required = true,
+            value = "[Nullable]The id of the user group membership resource.")
     @JsonProperty("self")
     private UserGroupId id;
 

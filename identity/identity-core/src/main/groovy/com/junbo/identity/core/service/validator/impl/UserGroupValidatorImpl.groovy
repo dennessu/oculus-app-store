@@ -133,9 +133,11 @@ class UserGroupValidatorImpl implements UserGroupValidator {
                 throw AppErrors.INSTANCE.userNotFound(userGroup.userId).exception()
             }
 
+            /*
             if (existingUser.active == null || existingUser.active == false) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userGroup.userId).exception()
             }
+            */
 
             return groupRepository.get(userGroup.groupId).then { Group existingGroup ->
                 if (existingGroup == null) {

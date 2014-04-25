@@ -119,7 +119,7 @@ class DeviceResourceImpl implements DeviceResource {
     Promise<Results<Device>> list(DeviceListOptions listOptions) {
         deviceValidator.validateForSearch(listOptions).then {
             def resultList = new Results<Device>(items: [])
-            deviceRepository.searchByExternalRef(listOptions.externalRef).then { Device newDevice ->
+            deviceRepository.searchBySerialNumber(listOptions.externalRef).then { Device newDevice ->
                 if (newDevice != null) {
                     newDevice = deviceFilter.filterForGet(newDevice, listOptions.properties?.split(',') as List<String>)
                 }
@@ -131,5 +131,14 @@ class DeviceResourceImpl implements DeviceResource {
 
             return Promise.pure(resultList)
         }    
+    }
+
+    @Override
+    Promise<Void> delete(DeviceId deviceId) {
+        return deviceValidator.validateForGet(deviceId).then {
+            deviceRepository.delete(deviceId)
+
+            return Promise.pure(null)
+        }
     }
 }

@@ -37,7 +37,6 @@ public interface DeviceResource {
     @Path("/{deviceId}")
     Promise<Device> put(@PathParam("deviceId") DeviceId deviceId, Device device);
 
-    @ApiOperation("Partial update a device info")
     @POST
     @Path("/{deviceId}")
     Promise<Device> patch(@PathParam("deviceId") DeviceId deviceId, Device device);
@@ -50,4 +49,9 @@ public interface DeviceResource {
     @ApiOperation("Search device info")
     @GET
     Promise<Results<Device>> list(@BeanParam DeviceListOptions listOptions);
+
+    @ApiOperation("Delete a device")
+    @DELETE
+    @Path("/{deviceId}")
+    Promise<Void> delete(@PathParam("deviceId") DeviceId deviceId);
 }

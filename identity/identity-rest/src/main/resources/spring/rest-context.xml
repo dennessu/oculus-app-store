@@ -23,7 +23,7 @@
     <bean id="defaultUserGroupMembershipResource" class="com.junbo.identity.rest.resource.v1.UserGroupMembershipResourceImpl" scope="prototype"/>
     <bean id="defaultUserResource" class="com.junbo.identity.rest.resource.v1.UserResourceImpl" scope="prototype" />
     <bean id="defaultUserPiiResource" class="com.junbo.identity.rest.resource.v1.UserPiiResourceImpl" scope="prototype" />
-    <bean id="defaultUserOptinResource" class="com.junbo.identity.rest.resource.v1.UserOptinResourceImpl" scope="prototype" />
+    <bean id="defaultUserOptinResource" class="com.junbo.identity.rest.resource.v1.UserCommunicationResourceImpl" scope="prototype" />
     <bean id="defaultUserSecurityQuestionResource" class="com.junbo.identity.rest.resource.v1.UserSecurityQuestionResourceImpl" scope="prototype" />
     <bean id="defaultUserSecurityQuestionVerifyAttemptResource" class="com.junbo.identity.rest.resource.v1.UserSecurityQuestionVerifyAttemptResourceImpl" scope="prototype" />
     <bean id="defaultUserTosAgreementResource" class="com.junbo.identity.rest.resource.v1.UserTosAgreementResourceImpl" scope="prototype" />
