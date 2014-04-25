@@ -1,4 +1,6 @@
 package com.junbo.ewallet.service
+
+import com.junbo.common.id.UserId
 import com.junbo.ewallet.spec.model.CreditRequest
 import com.junbo.ewallet.spec.model.DebitRequest
 import com.junbo.ewallet.spec.model.Transaction
@@ -30,4 +32,6 @@ interface WalletService {
     Wallet getWalletByTrackingUuid(Long shardMasterId, UUID trackingUuid)
 
     Transaction getTransactionByTrackingUuid(Long shardMasterId, UUID trackingUuid)
+
+    List<Wallet> getWallets(UserId userId)
 }
