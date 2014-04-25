@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.UserId;
@@ -50,6 +51,7 @@ public class UserPersonalInfo  extends ResourceMeta implements Identifiable<User
     private Boolean isNormalized;
 
     @ApiModelProperty(position = 6, required = true, value = "User resource link.")
+    @JsonIgnore
     @JsonProperty("user")
     private UserId userId;
 

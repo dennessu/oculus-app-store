@@ -64,8 +64,8 @@ public class Address extends ResourceMeta implements Identifiable<AddressId> {
     @ApiModelProperty(position = 15, required = false, value = "Whether the address is normalized.")
     private Boolean isNormalized;
 
-    @ApiModelProperty(position = 17, required = false, value = "SubCountry.")
-    private SubCountry subCountry;
+    @ApiModelProperty(position = 17, required = false, value = "SubCountry code.")
+    private String subCountryCode;
 
     @ApiModelProperty(position = 18, required = false, value = "SubCountry name.")
     private String subCountryName;
@@ -142,12 +142,12 @@ public class Address extends ResourceMeta implements Identifiable<AddressId> {
         this.countryId = countryId;
     }
 
-    public SubCountry getSubCountry() {
-        return subCountry;
+    public String getSubCountryCode() {
+        return subCountryCode;
     }
 
-    public void setSubCountry(SubCountry subCountry) {
-        this.subCountry = subCountry;
+    public void setSubCountryCode(String subCountryCode) {
+        this.subCountryCode = subCountryCode;
     }
 
     public String getSubCountryName() {

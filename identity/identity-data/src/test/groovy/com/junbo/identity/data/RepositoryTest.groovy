@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.data
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.id.*
 import com.junbo.identity.data.identifiable.UserPasswordStrength
@@ -115,6 +117,10 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     @Qualifier('userTeleBackupCodeAttemptRepository')
     private UserTeleBackupCodeAttemptRepository userTeleBackupCodeAttemptRepository
 
+    @Autowired
+    @Qualifier('userPersonalInfoRepository')
+    private UserPersonalInfoRepository userPersonalInfoRepository
+
     @Test
     public void testUserRepository() throws Exception {
         User user = new User()
@@ -126,6 +132,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         user.setPreferredTimezone(UUID.randomUUID().toString())
         user.setCreatedTime(new Date())
         user.setCreatedBy('lixia')
+
         user = userRepository.create(user).wrapped().get()
 
         User newUser = userRepository.get(user.getId()).wrapped().get()
@@ -263,7 +270,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(newValue, newUserAuthenticator.getExternalId())
 
         AuthenticatorListOptions getOption = new AuthenticatorListOptions()
-        getOption.setValue(newValue)
+        getOption.setExternalId(newValue)
         List<UserAuthenticator> userAuthenticators = userAuthenticatorRepository.search(getOption).wrapped().get()
         assert userAuthenticators.size() != 0
     }
@@ -574,6 +581,32 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
                         offset: 0,
                         limit: 100
                 )).wrapped().get()
+        assert results.size() != 0
+    }
+
+    @Test
+    public void testUserPersonalInfoRepository() {
+        UserId userId = new UserId(idGenerator.nextId())
+        UserPersonalInfo userPersonalInfo = new UserPersonalInfo()
+        userPersonalInfo.setType(UUID.randomUUID().toString())
+        userPersonalInfo.setIsNormalized(true)
+        userPersonalInfo.setLastValidateTime(new Date())
+        userPersonalInfo.setUserId(userId)
+        ObjectMapper mapper = new ObjectMapper()
+        userPersonalInfo.setValue(mapper.convertValue(UUID.randomUUID().toString(), JsonNode.class))
+
+        UserPersonalInfo newUserPersonalInfo = userPersonalInfoRepository.create(userPersonalInfo).wrapped().get()
+        newUserPersonalInfo = userPersonalInfoRepository.get(newUserPersonalInfo.id).wrapped().get()
+
+        assert newUserPersonalInfo.type == userPersonalInfo.type
+
+        String newType = UUID.randomUUID().toString()
+        newUserPersonalInfo.setType(newType)
+        userPersonalInfo = userPersonalInfoRepository.update(newUserPersonalInfo).wrapped().get()
+
+        assert userPersonalInfo.type == newType
+
+        List<UserPersonalInfo> results = userPersonalInfoRepository.search(userId).wrapped().get()
         assert results.size() != 0
     }
 }

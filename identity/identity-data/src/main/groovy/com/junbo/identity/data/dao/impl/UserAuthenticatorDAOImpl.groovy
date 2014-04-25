@@ -52,8 +52,8 @@ class UserAuthenticatorDAOImpl extends BaseDAO implements UserAuthenticatorDAO {
         if (getOption.type != null) {
             criteria.add(Restrictions.eq('type', getOption.type))
         }
-        if (getOption.value != null) {
-            criteria.add(Restrictions.eq('value', getOption.value))
+        if (getOption.externalId != null) {
+            criteria.add(Restrictions.eq('externalId', getOption.externalId))
         }
         criteria.addOrder(Order.asc('id'))
         if (getOption.limit != null) {

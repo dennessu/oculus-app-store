@@ -247,7 +247,7 @@
                 <entry key="hibernate.multiTenancy" value="SCHEMA"/>
                 <entry key="hibernate.current_session_context_class" value="com.junbo.sharding.hibernate.MultiTenantJTASessionContext"/>
                 <entry key="hibernate.tenant_identifier_resolver" value="com.junbo.sharding.hibernate.ShardCurrentTenantIdentifierResolver"/>
-                <entry key="hibernate.multi_tenant_connection_provider" value-ref="indexDataSource"/>
+                <entry key="hibernate.multi_tenant_connection_provider" value-ref="configDataSource"/>
                 <entry key="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
             </map>
         </property>

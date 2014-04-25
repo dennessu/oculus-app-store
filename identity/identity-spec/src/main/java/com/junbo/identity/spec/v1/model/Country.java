@@ -5,13 +5,12 @@
  */
 package com.junbo.identity.spec.v1.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.enumid.LocaleId;
-import com.junbo.common.util.Identifiable;
 import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.*;

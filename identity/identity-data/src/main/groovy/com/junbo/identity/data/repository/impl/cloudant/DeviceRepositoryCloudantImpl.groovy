@@ -54,15 +54,15 @@ class DeviceRepositoryCloudantImpl extends CloudantClient<Device> implements Dev
 
     @Override
     Promise<Device> searchBySerialNumber(String externalRef) {
-        def list = super.queryView('by_external_ref', externalRef)
+        def list = super.queryView('by_serial_number', externalRef)
         return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)
     }
 
     protected CloudantViews views = new CloudantViews(
             views: [
-                    'by_external_ref': new CloudantViews.CloudantView(
+                    'by_serial_number': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.externalRef, doc._id)' +
+                                    '  emit(doc.serialNumber, doc._id)' +
                                     '}',
                             resultClass: String)
             ]

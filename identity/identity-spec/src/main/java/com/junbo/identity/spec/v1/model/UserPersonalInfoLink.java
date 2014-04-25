@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPersonalInfoId;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -21,6 +23,9 @@ public class UserPersonalInfoLink {
 
     @ApiModelProperty(position = 3, required = true, value = "Resource Link.")
     private UserPersonalInfoId resourceLink;
+
+    @JsonIgnore
+    private UserId userId;
 
     public String getType() {
         return type;
@@ -44,5 +49,13 @@ public class UserPersonalInfoLink {
 
     public void setResourceLink(UserPersonalInfoId resourceLink) {
         this.resourceLink = resourceLink;
+    }
+
+    public UserId getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UserId userId) {
+        this.userId = userId;
     }
 }

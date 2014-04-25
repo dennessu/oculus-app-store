@@ -45,6 +45,9 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
     @ApiModelProperty(position = 5, required = false, value = "The address book.")
     private List<UserPersonalInfoLink> addressBook = new ArrayList<>();
 
+    @ApiModelProperty(position = 5, required = false, value = "The personal Info")
+    private List<UserPersonalInfoLink> personalInfo = new ArrayList<>();
+
     @ApiModelProperty(position = 6, required = false, value = "[Nullable]User Group memberships.")
     @HateoasLink("/user-group-memberships?userId={id}")
     private Link groupMemeberships;
@@ -77,10 +80,6 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
     @ApiModelProperty(position = 13, required = false, value = "[Nullable]User selecting optins")
     @HateoasLink("/opt-ins?userId={id}")
     private Link optins;
-
-    @ApiModelProperty(position = 14, required = false, value = "[Nullable]User personal info")
-    @HateoasLink("/personal-info?userId={id}")
-    private Link personalInfo;
 
     @ApiModelProperty(position = 15, required = false, value = "[Nullable]User Security questions")
     @HateoasLink("/users/{id}/security-questions")
@@ -221,14 +220,6 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
         this.optins = optins;
     }
 
-    public Link getPersonalInfo() {
-        return personalInfo;
-    }
-
-    public void setPersonalInfo(Link personalInfo) {
-        this.personalInfo = personalInfo;
-    }
-
     public Link getSecurityQuestions() {
         return securityQuestions;
     }
@@ -291,5 +282,9 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setIsAnonymous(Boolean isAnonymous) {
         this.isAnonymous = isAnonymous;
+    }
+
+    public void setPersonalInfo(List<UserPersonalInfoLink> personalInfo) {
+        this.personalInfo = personalInfo;
     }
 }

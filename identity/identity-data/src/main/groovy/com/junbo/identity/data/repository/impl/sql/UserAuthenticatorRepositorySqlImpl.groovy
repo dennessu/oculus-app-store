@@ -66,8 +66,8 @@ class UserAuthenticatorRepositorySqlImpl implements UserAuthenticatorRepository 
                 result.add(modelMapper.toUserAuthenticator((UserAuthenticatorEntity)i, new MappingContext()))
             }
         }
-        else if (getOption != null && getOption.value != null) {
-            def entity = searchByAuthenticatorValue(getOption.value)
+        else if (getOption != null && getOption.externalId != null) {
+            def entity = searchByAuthenticatorExternalId(getOption.externalId)
             if (entity != null) {
                 result.add(entity)
             }
@@ -76,7 +76,7 @@ class UserAuthenticatorRepositorySqlImpl implements UserAuthenticatorRepository 
         return Promise.pure(result)
     }
 
-    private UserAuthenticator searchByAuthenticatorValue(String value) {
+    private UserAuthenticator searchByAuthenticatorExternalId(String value) {
         def userAuthenticator = authenticatorDAO.getIdByAuthenticatorValue(value)
 
         return modelMapper.toUserAuthenticator(userAuthenticator, new MappingContext())

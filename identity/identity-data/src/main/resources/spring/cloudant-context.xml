@@ -125,6 +125,11 @@
         <property name="idGenerator" ref="oculus48IdGenerator" />
     </bean>
 
+    <bean id="cloudantUserPersonalInfoRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserPersonalInfoRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_personal_info" />
+        <property name="idGenerator" ref="oculus48IdGenerator" />
+    </bean>
+
     <bean id="cloudantCountryRepository" class="com.junbo.identity.data.repository.impl.cloudant.CountryRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="country"/>
     </bean>
