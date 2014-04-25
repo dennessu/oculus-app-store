@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.SubledgerId;
 import com.junbo.common.id.UserId;
-import com.junbo.common.model.ResourceMeta;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -22,7 +21,7 @@ import java.util.Date;
         "subledgerId", "sellerId", "offerId", "country", "currency",
         "payoutStatus", "totalAmount", "startTime", "endTime", "resourceAge"
 })
-public class Subledger extends ResourceMeta {
+public class Subledger extends BaseOrderResource {
     @JsonProperty("self")
     private SubledgerId subledgerId;
     private UserId sellerId;

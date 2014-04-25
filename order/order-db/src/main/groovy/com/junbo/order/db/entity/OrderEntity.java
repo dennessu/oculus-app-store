@@ -8,7 +8,6 @@ package com.junbo.order.db.entity;
 
 import com.junbo.order.db.ValidationMessages;
 import com.junbo.order.db.entity.enums.OrderStatus;
-import com.junbo.order.db.entity.enums.OrderType;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Length;
 
@@ -27,7 +26,6 @@ public class OrderEntity extends CommonDbEntityWithDate {
     private Long userId;
     private OrderStatus orderStatusId;
     private Boolean tentative;
-    private OrderType orderTypeId;
     private String currency;
     private String country;
     private String locale;
@@ -63,17 +61,6 @@ public class OrderEntity extends CommonDbEntityWithDate {
     }
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-
-    @Column(name = "ORDER_TYPE_ID")
-    @NotNull(message = ValidationMessages.MISSING_VALUE)
-    @Type(type = "com.junbo.order.db.entity.type.OrderEnumType")
-    public OrderType getOrderTypeId() {
-        return orderTypeId;
-    }
-    public void setOrderTypeId(OrderType orderTypeId) {
-        this.orderTypeId = orderTypeId;
     }
 
     @Column(name = "CURRENCY")

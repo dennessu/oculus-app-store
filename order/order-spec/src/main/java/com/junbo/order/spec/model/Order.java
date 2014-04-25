@@ -15,7 +15,6 @@ import com.junbo.common.id.ShippingAddressId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.jackson.annotation.ShippingMethodId;
 import com.junbo.common.model.Link;
-import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
@@ -32,7 +31,7 @@ import java.util.List;
         "shippingAddress", "paymentInstruments", "refundOrders", "discounts", "orderItems"
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Order extends ResourceMeta {
+public class Order extends BaseOrderResource {
     @ApiModelProperty(required = true, position = 10, value = "[Client Immutable] The order id.")
     @JsonProperty("self")
     private OrderId id;
