@@ -61,6 +61,10 @@ public class Item extends BaseEntityModel {
     @ApiModelProperty(position = 27, required = true, value = "Sku")
     private String sku;
 
+    @OfferId
+    @ApiModelProperty(position = 28, required = true, value = "Default offer")
+    private Long defaultOffer;
+
     @JsonIgnore
     private Long entitlementDefId;
 
@@ -150,5 +154,13 @@ public class Item extends BaseEntityModel {
 
     public void setEntitlementDefId(Long entitlementDefId) {
         this.entitlementDefId = entitlementDefId;
+    }
+
+    public Long getDefaultOffer() {
+        return defaultOffer;
+    }
+
+    public void setDefaultOffer(Long defaultOffer) {
+        this.defaultOffer = defaultOffer;
     }
 }

@@ -31,7 +31,7 @@ public class OfferMapper {
         entity.setCurrentRevisionId(model.getCurrentRevisionId());
         //entity.setCategories(Utils.toJson(model.getCategories()));
         entity.setCategories(model.getCategories());
-        entity.setRev(Integer.valueOf(model.getRev()));
+        entity.setRev(model.getRev()==null ? null : Integer.valueOf(model.getRev()));
     }
 
     public static Offer toModel(OfferEntity entity) {

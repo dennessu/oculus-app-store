@@ -29,7 +29,7 @@ public class OfferAttributeMapper {
         dbEntity.setType(attribute.getType());
         dbEntity.setParentId(attribute.getParentId());
         dbEntity.setPayload(Utils.toJson(attribute));
-        dbEntity.setRev(Integer.valueOf(attribute.getRev()));
+        dbEntity.setRev(attribute.getRev()==null ? null : Integer.valueOf(attribute.getRev()));
     }
 
     public static OfferAttribute toModel(OfferAttributeEntity dbEntity) {

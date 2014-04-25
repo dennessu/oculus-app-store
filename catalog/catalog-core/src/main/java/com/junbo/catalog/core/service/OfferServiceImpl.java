@@ -17,6 +17,7 @@ import com.junbo.catalog.spec.model.item.ItemType;
 import com.junbo.catalog.spec.model.offer.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +36,9 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
 
     @Override
     public Offer createEntity(Offer offer) {
+        if (!StringUtils.isEmpty(offer.getRev())) {
+            throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
+        }
         if (Boolean.TRUE.equals(offer.getPublished())) {
             throw AppErrors.INSTANCE
                     .fieldNotCorrect("isPublished", "Cannot create an offer with isPublished true.").exception();
@@ -71,6 +75,9 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
 
     @Override
     public OfferRevision createRevision(OfferRevision revision) {
+        if (!StringUtils.isEmpty(revision.getRev())) {
+            throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
+        }
         if (!Status.DRAFT.equals(revision.getStatus())) {
             throw AppErrors.INSTANCE.fieldNotMatch("status", revision.getStatus(), Status.DRAFT).exception();
         }

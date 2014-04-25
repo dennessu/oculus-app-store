@@ -31,7 +31,7 @@ public class ItemMapper {
         entity.setOwnerId(model.getOwnerId());
         entity.setCurrentRevisionId(model.getCurrentRevisionId());
         entity.setPayload(Utils.toJson(model));
-        entity.setRev(Integer.valueOf(model.getRev()));
+        entity.setRev(model.getRev()==null ? null : Integer.valueOf(model.getRev()));
     }
 
     public static Item toModel(ItemEntity entity) {

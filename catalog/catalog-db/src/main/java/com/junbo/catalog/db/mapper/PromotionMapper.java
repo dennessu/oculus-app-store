@@ -33,7 +33,7 @@ public class PromotionMapper {
         entity.setStartDate(model.getStartDate()==null?Utils.minDate():model.getStartDate());
         entity.setEndDate(model.getEndDate()==null?Utils.maxDate():model.getEndDate());
         entity.setPayload(Utils.toJsonWithType(model));
-        entity.setRev(Integer.valueOf(model.getRev()));
+        entity.setRev(model.getRev()==null ? null : Integer.valueOf(model.getRev()));
     }
 
     public static Promotion toModel(PromotionEntity entity) {
