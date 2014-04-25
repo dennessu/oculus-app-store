@@ -6,7 +6,6 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.enumid.PITypeId;
 import com.junbo.common.model.ResourceMeta;
 import com.junbo.common.util.Identifiable;
@@ -27,7 +26,7 @@ public class PIType extends ResourceMeta implements Identifiable<PITypeId> {
     private String typeCode;
 
     @ApiModelProperty(position = 3, required = true, value = "The description of payment instrument resource.")
-    private Map<String, JsonNode> locales = new HashMap<>();
+    private Map<String, Object> locales = new HashMap<>();
 
     @ApiModelProperty(position = 4, required = true, value = "whether the PI is recurring-able or not.")
     private Boolean capableOfRecurring;
@@ -43,11 +42,11 @@ public class PIType extends ResourceMeta implements Identifiable<PITypeId> {
         this.typeCode = typeCode;
     }
 
-    public Map<String, JsonNode> getLocales() {
+    public Map<String, Object> getLocales() {
         return locales;
     }
 
-    public void setLocales(Map<String, JsonNode> locales) {
+    public void setLocales(Map<String, Object> locales) {
         this.locales = locales;
     }
 

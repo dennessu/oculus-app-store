@@ -24,7 +24,7 @@ public class Group extends ResourceMeta implements Identifiable<GroupId> {
     @ApiModelProperty(position = 2, required = true, value = "The name of the group resource.")
     private String name;
 
-    @ApiModelProperty(position = 3, required = false, value = "The status of the group.")
+    @ApiModelProperty(position = 3, required = false, value = "[Nullable]The status of the group.")
     @JsonProperty("isActive")
     private Boolean active;
 

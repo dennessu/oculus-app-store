@@ -149,7 +149,7 @@ abstract class ResourceFilterImpl<T> implements ResourceFilter<T> {
         return filter(obj, context)
     }
 
-    protected abstract T filter(T user, MappingContext context)
+    protected abstract T filter(T model, MappingContext context)
 
     protected abstract T merge(T source, T base, MappingContext context)
 }

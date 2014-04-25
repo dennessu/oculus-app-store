@@ -20,8 +20,6 @@ import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.*
 import com.junbo.sharding.IdGenerator
 import groovy.time.TimeCategory
-import groovy.transform.CompileStatic
-import org.glassfish.jersey.internal.util.Base64
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.test.context.ContextConfiguration
@@ -503,20 +501,6 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         List<UserSecurityQuestionVerifyAttempt> attempts =
                 userSecurityQuestionAttemptRepository.search(option).wrapped().get()
         assert attempts.size() != 0
-    }
-
-    @Test
-    public void test() {
-        String userName = 'liangfuxia23'
-        String password = '#Bugsfor$'
-
-        String original = userName + ':' + password
-        String encode = Base64.encodeAsString(original)
-        String decode = Base64.decodeAsString(encode)
-
-        String[] split = decode.split(':')
-        Assert.assertEquals(userName, split[0])
-        Assert.assertEquals(password, split[1])
     }
 
     @Test

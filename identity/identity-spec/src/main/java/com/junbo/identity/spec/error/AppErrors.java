@@ -168,4 +168,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 409, code = "2000043", description = "Payment instrument type {0} not found.", field = "{0}")
     AppError PITypeNotFound(PITypeId piTypeId);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000044", description = "Communication {0} not found.", field = "{0}")
+    AppError communicationNotFound(CommunicationId id);
 }

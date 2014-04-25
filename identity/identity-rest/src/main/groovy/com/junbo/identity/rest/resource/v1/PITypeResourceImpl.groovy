@@ -14,9 +14,6 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
-import javax.ws.rs.BeanParam
-import javax.ws.rs.PathParam
-
 /**
  * Created by haomin on 14-4-25.
  */
@@ -43,7 +40,7 @@ class PITypeResourceImpl implements PITypeResource {
     }
 
     @Override
-    Promise<PIType> put(@PathParam("piTypeId") PITypeId piTypeId, PIType piType) {
+    Promise<PIType> put(PITypeId piTypeId, PIType piType) {
         if (piTypeId == null) {
             throw new IllegalArgumentException('piTypeId is null')
         }
@@ -64,7 +61,7 @@ class PITypeResourceImpl implements PITypeResource {
     }
 
     @Override
-    Promise<PIType> get(@PathParam("piTypeId") PITypeId piTypeId, @BeanParam PITypeGetOptions getOptions) {
+    Promise<PIType> get(PITypeId piTypeId, PITypeGetOptions getOptions) {
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')
         }
@@ -73,7 +70,7 @@ class PITypeResourceImpl implements PITypeResource {
     }
 
     @Override
-    Promise<Results<PIType>> list(@BeanParam PITypeListOptions listOptions) {
+    Promise<Results<PIType>> list(PITypeListOptions listOptions) {
         if (listOptions == null) {
             throw new IllegalArgumentException('listOptions is null')
         }
@@ -90,7 +87,7 @@ class PITypeResourceImpl implements PITypeResource {
     }
 
     @Override
-    Promise<Void> delete(@PathParam("piTypeId") PITypeId piTypeId) {
+    Promise<Void> delete(PITypeId piTypeId) {
         return piTypeRepository.delete(piTypeId)
     }
 }

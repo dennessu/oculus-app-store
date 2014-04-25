@@ -3,6 +3,7 @@ package com.junbo.identity.data.repository.impl.sql
 import com.junbo.common.id.CommunicationId
 import com.junbo.identity.data.repository.CommunicationRepository
 import com.junbo.identity.spec.v1.model.Communication
+import com.junbo.identity.spec.v1.option.list.CommunicationListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 
@@ -11,8 +12,9 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class CommunicationRepositorySqlImpl implements CommunicationRepository {
+
     @Override
-    Promise<Communication> searchByName(String name) {
+    Promise<List<Communication>> search(CommunicationListOptions options) {
         return null
     }
 

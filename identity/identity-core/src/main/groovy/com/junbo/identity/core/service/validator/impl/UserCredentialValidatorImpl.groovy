@@ -4,6 +4,7 @@ import com.junbo.common.id.UserId
 import com.junbo.identity.core.service.validator.UserCredentialValidator
 import com.junbo.identity.core.service.validator.UserPasswordValidator
 import com.junbo.identity.core.service.validator.UserPinValidator
+import com.junbo.identity.data.identifiable.CredentialType
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.UserPassword
@@ -13,7 +14,6 @@ import com.junbo.identity.spec.v1.option.list.UserCredentialListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
-import org.glassfish.jersey.internal.util.Base64
 import org.springframework.beans.factory.annotation.Required
 
 /**
@@ -72,10 +72,9 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
             throw AppErrors.INSTANCE.fieldInvalid('type', allowedTypes.join(',')).exception()
         }
 
-        if (userCredential.type == 'password') {
+        if (userCredential.type == CredentialType.PASSWORD) {
             return userPasswordValidator.validateForOldPassword(userId, userCredential.oldValue).then {
                 UserPassword userPassword = modelMapper.credentialToPassword(userCredential, new MappingContext())
-                userPassword.value = Base64.decodeAsString(userCredential.value)
                 if (userPassword == null) {
                     throw new IllegalArgumentException('mapping to password exception')
                 }
@@ -83,10 +82,9 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
                     return Promise.pure(userPassword)
                 }
             }
-        } else if (userCredential.type == 'pin') {
+        } else if (userCredential.type == CredentialType.PIN) {
             return userPinValidator.validateForOldPassword(userId, userCredential.oldValue).then {
                 UserPin userPin = modelMapper.credentialToPin(userCredential, new MappingContext())
-                userPin.value = Base64.decodeAsString(userCredential.value)
                 if (userPin == null) {
                     throw new IllegalArgumentException('mapping to pin exception')
                 }
