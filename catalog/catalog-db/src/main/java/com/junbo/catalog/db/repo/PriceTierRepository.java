@@ -24,7 +24,6 @@ public class PriceTierRepository {
 
     public Long create(PriceTier priceTier) {
         PriceTierEntity entity = new PriceTierEntity();
-        entity.setName(priceTier.getName());
         entity.setPayload(Utils.toJson(priceTier));
         return priceTierDao.create(entity);
     }
@@ -33,7 +32,6 @@ public class PriceTierRepository {
         PriceTierEntity entity = priceTierDao.get(id);
         PriceTier priceTier = Utils.fromJson(entity.getPayload(), PriceTier.class);
         priceTier.setId(entity.getId());
-        priceTier.setName(entity.getName());
         return priceTier;
     }
 
@@ -43,7 +41,6 @@ public class PriceTierRepository {
         for (PriceTierEntity tierEntity : tierEntities) {
             PriceTier priceTier = Utils.fromJson(tierEntity.getPayload(), PriceTier.class);
             priceTier.setId(tierEntity.getId());
-            priceTier.setName(tierEntity.getName());
 
             priceTiers.add(priceTier);
         }

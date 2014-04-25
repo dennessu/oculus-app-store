@@ -12,9 +12,7 @@
             create table email_history(
                 id bigint not null,
                 user_id bigint,
-                source varchar(64) not null,
-                action varchar(64) not null,
-                locale varchar(32),
+                template_id bigint,
                 payload varchar(4000),
                 recipients varchar(512),
                 status smallint,
@@ -37,9 +35,7 @@
             create table email_schedule(
                 id bigint not null,
                 user_id bigint,
-                source varchar(64),
-                action varchar(64),
-                locale varchar(64),
+                template_id bigint,
                 payload varchar(4000),
                 recipients varchar(512),
                 priority smallint,

@@ -153,14 +153,16 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
         return entity
     }
 
-    void cloudantDelete(Long id) {
-        def cloudantDoc = getCloudantDocument(id.toString())
-        def response = executeRequest(HttpMethod.DELETE, id.toString(), ['rev': cloudantDoc.cloudantRev], null)
+    void cloudantDelete(String id) {
+        def cloudantDoc = getCloudantDocument(id)
+        if (cloudantDoc != null) {
+            def response = executeRequest(HttpMethod.DELETE, id.toString(), ['rev': cloudantDoc.cloudantRev], null)
 
-        if (response.statusCode != HttpStatus.OK.value() && response.statusCode != HttpStatus.NOT_FOUND.value()) {
-            CloudantError cloudantError = unmarshall(response.responseBody, CloudantError)
-            throw new CloudantException("Failed to delete object from Cloudant, error: $cloudantError.error," +
-                    " reason: $cloudantError.reason")
+            if (response.statusCode != HttpStatus.OK.value() && response.statusCode != HttpStatus.NOT_FOUND.value()) {
+                CloudantError cloudantError = unmarshall(response.responseBody, CloudantError)
+                throw new CloudantException("Failed to delete object from Cloudant, error: $cloudantError.error," +
+                        " reason: $cloudantError.reason")
+            }
         }
     }
 

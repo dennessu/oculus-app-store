@@ -7,8 +7,10 @@
 package com.junbo.catalog.spec.model.pricetier;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.catalog.spec.model.common.BaseModel;
 import com.junbo.common.jackson.annotation.AttributeId;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -20,11 +22,14 @@ import java.util.Map;
 public class PriceTier extends BaseModel {
     @AttributeId
     @JsonProperty("self")
+    @ApiModelProperty(position = 1, required = true, value = "Price tier id")
     private Long id;
     @NotNull
-    private String name;
-    @NotNull
+    @ApiModelProperty(position = 2, required = true, value = "Prices")
     private Map<String, BigDecimal> prices;
+    @NotNull
+    @ApiModelProperty(position = 3, required = true, value = "Locale properties")
+    private Map<String, SimpleLocaleProperties> locales;
 
     public Long getId() {
         return id;
@@ -34,19 +39,19 @@ public class PriceTier extends BaseModel {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Map<String, BigDecimal> getPrices() {
         return prices;
     }
 
     public void setPrices(Map<String, BigDecimal> prices) {
         this.prices = prices;
+    }
+
+    public Map<String, SimpleLocaleProperties> getLocales() {
+        return locales;
+    }
+
+    public void setLocales(Map<String, SimpleLocaleProperties> locales) {
+        this.locales = locales;
     }
 }

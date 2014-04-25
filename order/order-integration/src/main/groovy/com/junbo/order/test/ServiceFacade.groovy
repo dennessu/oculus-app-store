@@ -22,7 +22,7 @@ import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.resource.OrderResource
 import com.junbo.payment.spec.model.Address
-import com.junbo.payment.spec.model.CreditCardRequest
+//import com.junbo.payment.spec.model.CreditCardRequest
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.resource.PaymentInstrumentResource
 import org.apache.commons.lang.RandomStringUtils
@@ -84,11 +84,11 @@ class ServiceFacade {
             accountNum = '4111111111111111'
             trackingUuid = UUID.randomUUID()
             type = 'CREDITCARD'
-            creditCardRequest = new CreditCardRequest().with {
-                expireDate = '2050-11-27'
-                encryptedCvmCode = '111'
-                it
-            }
+//            creditCardRequest = new CreditCardRequest().with {
+//                expireDate = '2050-11-27'
+//                encryptedCvmCode = '111'
+//                it
+//            }
 
             address = new Address().with {
                 addressLine1 = '19800 MacArthur Blvd'

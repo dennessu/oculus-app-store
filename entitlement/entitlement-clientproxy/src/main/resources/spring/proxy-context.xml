@@ -6,6 +6,6 @@
 
     <context:component-scan base-package="com.junbo.entitlement.clientproxy"/>
 
-    <bean id="definitionFacade" class="com.junbo.entitlement.clientproxy.catalog.impl.MockDefinitionFacadeImpl"/>
+    <bean id="definitionFacade" class="com.junbo.entitlement.clientproxy.catalog.impl.EntitlementDefinitionFacadeImpl"/>
 
 </beans>

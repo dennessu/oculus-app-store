@@ -7,26 +7,25 @@
 package com.junbo.catalog.db.dao;
 
 import com.junbo.catalog.db.BaseTest;
-import com.junbo.catalog.db.entity.AttributeEntity;
+import com.junbo.catalog.db.entity.ItemAttributeEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class AttributeDaoTest extends BaseTest {
     @Autowired
-    private AttributeDao attributeDao;
+    private ItemAttributeDao attributeDao;
 
     @Test
     public void testCreateAndGet() {
-        AttributeEntity entity = buildAttributeEntity();
+        ItemAttributeEntity entity = buildAttributeEntity();
         Long id = attributeDao.create(entity);
         Assert.assertNotNull(attributeDao.get(id), "Entity should not be null.");
     }
 
-    private AttributeEntity buildAttributeEntity() {
-        AttributeEntity entity = new AttributeEntity();
+    private ItemAttributeEntity buildAttributeEntity() {
+        ItemAttributeEntity entity = new ItemAttributeEntity();
         entity.setId(generateId());
-        entity.setName("{\"locales\":{\"DEFAULT\":\"test\"}}");
         entity.setType("Color");
         entity.setPayload("{}");
 

@@ -5,25 +5,13 @@
  */
 
 package com.junbo.order.db.common
-
 import com.junbo.order.db.entity.*
-import com.junbo.order.db.entity.enums.BillingAction
-import com.junbo.order.db.entity.enums.DiscountType
-import com.junbo.order.db.entity.enums.EventStatus
-import com.junbo.order.db.entity.enums.FulfillmentAction
-import com.junbo.order.db.entity.enums.ItemType
-import com.junbo.order.db.entity.enums.OrderActionType
-import com.junbo.order.db.entity.enums.OrderStatus
-import com.junbo.order.db.entity.enums.OrderType
-import com.junbo.order.db.entity.enums.PayoutStatus
-import com.junbo.order.db.entity.enums.SubledgerItemAction
-import com.junbo.order.db.entity.enums.SubledgerItemStatus
+import com.junbo.order.db.entity.enums.*
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.apache.commons.lang.RandomStringUtils
 
 import java.security.SecureRandom
-
 /**
  * Created by LinYi on 14-2-25.
  */
@@ -65,7 +53,6 @@ class TestHelper {
         order.setUserId(generateLong())
         order.setCountry('US')
         order.setCurrency('USD')
-        order.setOrderTypeId(OrderType.PAY_IN)
         order.setCreatedTime(new Date())
         order.setCreatedBy('Test')
         order.setUpdatedBy('Test')
@@ -99,7 +86,6 @@ class TestHelper {
         entity.setTotalAmount(BigDecimal.valueOf(DEFAULT_PRICE))
         entity.setTotalDiscount(BigDecimal.valueOf(DEFAULT_PRICE))
         entity.setTotalTax(BigDecimal.valueOf(DEFAULT_PRICE))
-        entity.setIsTaxExempted(false)
         entity.setHonoredTime(new Date())
         return entity
     }

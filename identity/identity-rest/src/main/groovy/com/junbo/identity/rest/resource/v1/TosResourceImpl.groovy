@@ -95,4 +95,35 @@ class TosResourceImpl implements TosResource {
             return Promise.pure(resultList)
         }
     }
+
+    @Override
+    Promise<Tos> put(TosId tosId, Tos tos) {
+        if (tosId == null) {
+            throw new IllegalArgumentException('tosId is null')
+        }
+
+        if (tos == null) {
+            throw new IllegalArgumentException('tos is null')
+        }
+
+        return tosRepository.get(tosId).then { Tos oldTos ->
+            if (oldTos == null) {
+                throw AppErrors.INSTANCE.tosNotFound(tosId).exception()
+            }
+
+            tos = tosFilter.filterForPut(tos, oldTos)
+
+            tosRepository.update(tos).then { Tos newTos ->
+                newTos = tosFilter.filterForGet(newTos, null)
+                return Promise.pure(newTos)
+            }
+        }
+    }
+
+    @Override
+    Promise<Void> delete(TosId tosId) {
+        tosValidator.validateForGet(tosId).then {
+            return tosRepository.delete(tosId)
+        }
+    }
 }

@@ -159,4 +159,9 @@ class UserResourceImpl implements UserResource {
             return Promise.pure(resultList)
         }
     }
+
+    @Override
+    Promise<Void> delete(UserId userId) {
+        return Promise.pure(null)
+    }
 }

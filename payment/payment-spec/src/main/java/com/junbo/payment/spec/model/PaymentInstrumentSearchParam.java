@@ -16,9 +16,6 @@ public class PaymentInstrumentSearchParam {
     private Long userId;
     @QueryParam("type")
     private String type;
-    @QueryParam("status")
-    private String status;
-
 
     public PaymentInstrumentSearchParam() {
     }
@@ -26,7 +23,6 @@ public class PaymentInstrumentSearchParam {
     public PaymentInstrumentSearchParam(Long userId, String type, String status) {
         this.userId = userId;
         this.type = type;
-        this.status = status;
     }
 
     public Long getUserId() {
@@ -43,13 +39,5 @@ public class PaymentInstrumentSearchParam {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 }

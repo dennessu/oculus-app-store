@@ -9,6 +9,7 @@ package com.junbo.ewallet.db.dao;
 import com.junbo.ewallet.db.entity.WalletEntity;
 import com.junbo.ewallet.spec.def.WalletType;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -24,4 +25,6 @@ public interface WalletDao {
     WalletEntity getByTrackingUuid(Long shardMasterId, UUID uuid);
 
     WalletEntity get(Long userId, WalletType type, String currency);
+
+    List<WalletEntity> getAll(long userId);
 }

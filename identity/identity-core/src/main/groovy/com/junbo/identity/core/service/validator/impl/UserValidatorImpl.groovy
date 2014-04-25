@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Required
  * Created by kg on 3/17/14.
  */
 @CompileStatic
+@SuppressWarnings('EmptyMethod')
+@SuppressWarnings('UnusedPrivateMethodParameter')
 class UserValidatorImpl implements UserValidator {
 
     private UserRepository userRepository
@@ -40,12 +42,13 @@ class UserValidatorImpl implements UserValidator {
         }
 
         validateUserInfo(user)
-
+        /*
         if (user.active == null) {
             user.active = true
         } else if (!user.active) {
             throw AppErrors.INSTANCE.fieldInvalid('active', 'true').exception()
         }
+        */
 
         if (user.username != null) {
             usernameValidator.validateUsername(user.username)
@@ -78,9 +81,11 @@ class UserValidatorImpl implements UserValidator {
             throw new IllegalArgumentException('user.id mismatch')
         }
 
+        /*
         if (user.active == null) {
             throw AppErrors.INSTANCE.fieldRequired('active').exception()
         }
+        */
 
         validateUserInfo(user)
 
@@ -100,6 +105,7 @@ class UserValidatorImpl implements UserValidator {
     }
 
     private void validateUserInfo(User user) {
+        /*
         if (!(user.type in ['user', 'anonymousUser'])) {
             throw AppErrors.INSTANCE.fieldInvalid('type', 'user, anonymousUser').exception()
         }
@@ -131,6 +137,7 @@ class UserValidatorImpl implements UserValidator {
         if (user.nickName != null) {
             nickNameValidator.validateNickName(user.nickName)
         }
+        */
     }
 
     @Required

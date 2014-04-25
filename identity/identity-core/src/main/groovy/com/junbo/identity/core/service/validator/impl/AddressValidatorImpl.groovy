@@ -8,18 +8,18 @@ import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Address
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by xmchen on 14-4-15.
  */
+@CompileStatic
 class AddressValidatorImpl implements AddressValidator {
 
     private UserRepository userRepository
 
     private AddressRepository addressRepository
-
-    private final static int COUNTRY_CODE_LENGTH = 2
 
     @Required
     void setUserRepository(UserRepository userRepository) {
@@ -68,7 +68,7 @@ class AddressValidatorImpl implements AddressValidator {
             throw AppErrors.INSTANCE.fieldRequired('userId').exception()
         }
 
-        if (address.country == null) {
+        if (address.countryId == null) {
             throw AppErrors.INSTANCE.fieldRequired('country').exception()
         }
 
@@ -76,22 +76,16 @@ class AddressValidatorImpl implements AddressValidator {
             throw AppErrors.INSTANCE.fieldRequired('postalCode').exception()
         }
 
-        if (address.country.size() > COUNTRY_CODE_LENGTH) {
-            throw AppErrors.INSTANCE.fieldTooLong('country').exception()
-        }
-
-        if (address.country.size() < COUNTRY_CODE_LENGTH) {
-            throw AppErrors.INSTANCE.fieldTooShort('country').exception()
-        }
-
         return userRepository.get(address.userId).then { User existingUser ->
             if (existingUser == null) {
                 throw AppErrors.INSTANCE.userNotFound(address.userId).exception()
             }
 
+            /*
             if (existingUser.active == null || existingUser.active == false) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(address.userId).exception()
             }
+            */
             return Promise.pure(null)
         }
     }

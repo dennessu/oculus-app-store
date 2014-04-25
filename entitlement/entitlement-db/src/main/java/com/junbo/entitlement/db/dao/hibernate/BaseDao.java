@@ -61,6 +61,7 @@ public class BaseDao<T extends Entity> {
         t.setCreatedTime(now);
         t.setModifiedBy("DEFAULT"); //TODO
         t.setModifiedTime(now);
+        t.setIsDeleted(false);
         return get((Long) currentSession(t.getShardMasterId()).save(t));
     }
 
@@ -75,6 +76,9 @@ public class BaseDao<T extends Entity> {
         t.setCreatedBy(existed.getCreatedBy());
         t.setModifiedBy("DEFAULT"); //TODO
         t.setModifiedTime(EntitlementContext.current().getNow());
+        if (t.getIsDeleted() == null || !t.getIsDeleted()) {
+            t.setIsDeleted(false);
+        }
         return (T) currentSession(t.getShardMasterId()).merge(t);
     }
 

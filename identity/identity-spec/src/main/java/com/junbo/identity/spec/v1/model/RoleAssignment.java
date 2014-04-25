@@ -16,7 +16,8 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  * RoleAssignment.
  */
 public class RoleAssignment extends ResourceMeta implements Identifiable<RoleAssignmentId> {
-    @ApiModelProperty(position = 1, required = true, value = "The id of the role assignment resource.")
+    @ApiModelProperty(position = 1, required = true,
+            value = "[Nullable]The id of the role assignment resource.")
     @JsonProperty("self")
     private RoleAssignmentId id;
 

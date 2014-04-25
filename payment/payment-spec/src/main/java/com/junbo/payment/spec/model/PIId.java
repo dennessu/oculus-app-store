@@ -6,7 +6,7 @@
 
 package com.junbo.payment.spec.model;
 
-import com.junbo.common.jackson.serializer.CompoundAware;
+import com.junbo.common.jackson.aware.CompoundAware;
 
 /**
  * compound PI id.

@@ -21,7 +21,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * RoleAssignmentResource.
  */
-@Api("role-assignments")
+@Api("roleAssignments")
 @RestResource
 @Path("/role-assignments")
 @Produces({MediaType.APPLICATION_JSON})
@@ -36,7 +36,6 @@ public interface RoleAssignmentResource {
     @Path("/{roleAssignmentId}")
     Promise<Role> get(@PathParam("roleAssignmentId") RoleAssignmentId roleAssignmentId);
 
-    @ApiOperation("Partial update one role assignment")
     @POST
     @Path("/{roleAssignmentId}")
     Promise<Role> patch(@PathParam("roleAssignmentId") RoleAssignmentId roleAssignmentId,

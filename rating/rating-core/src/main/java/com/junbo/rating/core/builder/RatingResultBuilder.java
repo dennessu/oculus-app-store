@@ -40,19 +40,19 @@ public class RatingResultBuilder {
         }
 
         //build order level results
-        OrderBenefit orderBenefit = new OrderBenefit();
-        orderBenefit.setDiscountAmount(context.getOrderResult().getDiscountAmount().getValue());
+        RatingSummary ratingSummary = new RatingSummary();
+        ratingSummary.setDiscountAmount(context.getOrderResult().getDiscountAmount().getValue());
         BigDecimal finalTotalAmount = context.getOrderResult().getOriginalAmount().subtract(
                 context.getOrderResult().getDiscountAmount()).getValue();
-        orderBenefit.setFinalAmount(finalTotalAmount);
-        orderBenefit.setPromotion(context.getOrderResult().getAppliedPromotion());
-        result.setOrderBenefit(orderBenefit);
+        ratingSummary.setFinalAmount(finalTotalAmount);
+        ratingSummary.setPromotion(context.getOrderResult().getAppliedPromotion());
+        result.setRatingSummary(ratingSummary);
 
         //build shipping fee calculation results
-        ShippingBenefit shippingBenefit = new ShippingBenefit();
-        shippingBenefit.setShippingFee(context.getShippingResult().getShippingFee());
-        shippingBenefit.setPromotion(context.getShippingResult().getAppliedPromotion());
-        result.setShippingBenefit(shippingBenefit);
+        ShippingSummary shippingSummary = new ShippingSummary();
+        shippingSummary.setTotalShippingFee(context.getShippingResult().getShippingFee());
+        shippingSummary.setPromotion(context.getShippingResult().getAppliedPromotion());
+        result.setShippingSummary(shippingSummary);
 
         return result;
     }

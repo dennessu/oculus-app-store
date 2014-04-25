@@ -21,6 +21,7 @@ import org.springframework.util.StringUtils
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.util.regex.Pattern
 
 /**
  * ValidateRegister.
@@ -28,6 +29,10 @@ import java.text.SimpleDateFormat
 @CompileStatic
 class ValidateRegister implements Action {
     private static final Logger LOGGER = LoggerFactory.getLogger(ValidateRegister)
+
+    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
+            Pattern.compile('^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$', Pattern.CASE_INSENSITIVE);
+
 
     @Override
     Promise<ActionResult> execute(ActionContext context) {
@@ -49,6 +54,16 @@ class ValidateRegister implements Action {
 
         if (StringUtils.isEmpty(password)) {
             contextWrapper.errors.add(AppExceptions.INSTANCE.missingPassword().error())
+        }
+
+        String email = parameterMap.getFirst(OAuthParameters.EMAIL)
+
+        if (StringUtils.isEmpty(email)) {
+            contextWrapper.errors.add(AppExceptions.INSTANCE.missingEmail().error())
+        } else {
+            if (!VALID_EMAIL_ADDRESS_REGEX.matcher(email).find()) {
+                contextWrapper.errors.add(AppExceptions.INSTANCE.invalidEmail(email).error())
+            }
         }
 
         String firstName = parameterMap.getFirst(OAuthParameters.FIRST_NAME)

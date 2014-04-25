@@ -45,7 +45,7 @@ class TosRepositoryCloudantImpl extends CloudantClient<Tos> implements TosReposi
 
     @Override
     Promise<Void> delete(TosId tosId) {
-        super.cloudantDelete(tosId.value)
+        super.cloudantDelete(tosId.toString())
         return Promise.pure(null)
     }
 

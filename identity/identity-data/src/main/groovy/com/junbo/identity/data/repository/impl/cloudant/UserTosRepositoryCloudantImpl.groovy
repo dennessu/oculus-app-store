@@ -67,7 +67,7 @@ class UserTosRepositoryCloudantImpl extends CloudantClient<UserTosAgreement> imp
 
     @Override
     Promise<Void> delete(UserTosAgreementId id) {
-        super.cloudantDelete(id.value)
+        super.cloudantDelete(id.toString())
         return Promise.pure(null)
     }
 

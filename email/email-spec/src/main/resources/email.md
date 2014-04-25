@@ -188,7 +188,7 @@ The API operating on the email template. The template is associated with email s
 * providerName ... The provider name of the email template.
 * providerIndex ... The provider index of the email template.
 * name ... The unique name of the email, made up of **source**,**source**,**locale**. The format is **"source"."action"."locale"**.
-* listOfVariables ... The variables of the template defined.
+* placeholderNames ... The variables of the template defined.
 * subject ... The subject of email.
 * fromAddress ... The from address of email.
 * fromName ... The from name of email.
@@ -216,7 +216,7 @@ All the email templates are returned.
                     "name":"source.action.en_US",
                     "providerName":"mandrill",
                     "providerIndex":"123456789",
-                    "listOfVariables":["var1","var2","var3","var4"],
+                    "placeholderNames":["var1","var2","var3","var4"],
                     "subject":"welcome123",
                     "fromAddress":"from@example.com",
                     "fromName":"from name",
@@ -246,7 +246,7 @@ Get a specific email template.
 			"name":"source.action.en_US",
 			"providerName":"mandrill",
 			"providerIndex":"123456789",
-			"listOfVariables":["var1","var2","var3","var4"],
+			"placeholderNames":["var1","var2","var3","var4"],
 			"subject":"welcome123",
 			"fromAddress":"from@example.com",
 			"fromName":"from name",
@@ -263,7 +263,7 @@ Create a new email template.
         	"name":"source.action.en_US",
 		    "providerName":"mandrill",
 		    "providerIndex":"123456789",
-			"listOfVariables":["var1","var2","var3","var4"],
+			"placeholderNames":["var1","var2","var3","var4"],
 			"subject":"welcome123",
 			"fromAddress":"from@example.com",
 			"fromName":"from name"
@@ -279,7 +279,7 @@ Create a new email template.
 			"name":"source.action.en_US",
 			"providerName":"mandrill",
 		    "providerIndex":"123456789",
-			"listOfVariables":["var1","var2","var3","var4"],
+			"placeholderNames":["var1","var2","var3","var4"],
 			"subject":"welcome123",
 			"fromAddress":"from@example.com",
 			"fromName":"from name",
@@ -300,7 +300,7 @@ Update an existing templates. Only the attribute include the hash will be update
 			"name":"source.action.en_US",
 			"providerName":"mandrill",
 			"providerIndex":"123456789",
-			"listOfVariables":["var1","var2","var3","var4"],
+			"placeholderNames":["var1","var2","var3","var4"],
 			"subject":"welcome",
 			"fromAddress":"from@example.com",
 			"fromName":"from name"
@@ -317,7 +317,7 @@ Update an existing templates. Only the attribute include the hash will be update
 			"name":"source.action.en_US",
 			"providerName":"mandrill",
 			"providerIndex":"1234567890",
-			"listOfVariables":["var1","var2","var3","var4"],
+			"placeholderNames":["var1","var2","var3","var4"],
 			"subject":"welcome",
 			"fromAddress":"from@example.com",
 			"fromName":"from name",

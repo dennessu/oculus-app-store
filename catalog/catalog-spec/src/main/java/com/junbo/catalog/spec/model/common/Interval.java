@@ -5,13 +5,17 @@
  */
 package com.junbo.catalog.spec.model.common;
 
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
 
 /**
  * Interval.
  */
 public class Interval {
+    @ApiModelProperty(position = 1, required = true, value = "start time")
     private Date start;
+    @ApiModelProperty(position = 2, required = true, value = "end time")
     private Date end;
 
     public Date getStart() {

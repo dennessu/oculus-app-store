@@ -35,7 +35,6 @@ public interface RoleResource {
     @Path("/{roleId}")
     Promise<Role> get(@PathParam("roleId") RoleId roleId);
 
-    @ApiOperation("Partial update one role")
     @POST
     @Path("/{roleId}")
     Promise<Role> patch(@PathParam("roleId") RoleId roleId, Role role);

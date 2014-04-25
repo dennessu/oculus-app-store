@@ -39,13 +39,13 @@ public class CreditCardPaymentInstrumentEntity extends GenericEntity {
     private Date lastBillingDate;
 
     @Column(name = "prepaid")
-    private String prepaid;
+    private Boolean isPrepaid;
 
     @Column(name = "debit")
-    private String debit;
+    private Boolean isDebit;
 
     @Column(name = "commercial")
-    private String commercial;
+    private Boolean isCommercial;
 
     @Column(name = "issue_country")
     private String issueCountry;
@@ -87,28 +87,28 @@ public class CreditCardPaymentInstrumentEntity extends GenericEntity {
         this.lastBillingDate = lastBillingDate;
     }
 
-    public String getPrepaid() {
-        return prepaid;
+    public Boolean getIsPrepaid() {
+        return isPrepaid;
     }
 
-    public void setPrepaid(String prepaid) {
-        this.prepaid = prepaid;
+    public void setIsPrepaid(Boolean prepaid) {
+        this.isPrepaid = prepaid;
     }
 
-    public String getDebit() {
-        return debit;
+    public Boolean getIsDebit() {
+        return isDebit;
     }
 
-    public void setDebit(String debit) {
-        this.debit = debit;
+    public void setIsDebit(Boolean debit) {
+        this.isDebit = debit;
     }
 
-    public String getCommercial() {
-        return commercial;
+    public Boolean getIsCommercial() {
+        return isCommercial;
     }
 
-    public void setCommercial(String commercial) {
-        this.commercial = commercial;
+    public void setIsCommercial(Boolean commercial) {
+        this.isCommercial = commercial;
     }
 
     public String getIssueCountry() {

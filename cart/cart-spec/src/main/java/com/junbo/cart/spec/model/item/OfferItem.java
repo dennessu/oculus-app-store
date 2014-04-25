@@ -32,6 +32,10 @@ public class OfferItem extends CartItem {
     @NotNull(groups = {Group.CartItem.class})
     private Boolean selected;
 
+    @ApiModelProperty(required = true, position = 3, value = "Whether the item is approved or not for checkout.")
+    @NotNull(groups = {Group.CartItem.class})
+    private Boolean approved;
+
     public OfferId getOffer() {
         return offer;
     }
@@ -54,5 +58,13 @@ public class OfferItem extends CartItem {
 
     public void setSelected(Boolean selected) {
         this.selected = selected;
+    }
+
+    public Boolean getApproved() {
+        return approved;
+    }
+
+    public void setApproved(Boolean approved) {
+        this.approved = approved;
     }
 }

@@ -5,6 +5,7 @@
  */
 package com.junbo.common.jackson.deserializer;
 
+import com.fasterxml.jackson.databind.introspect.Annotated;
 import com.junbo.common.jackson.model.ResourceRef;
 
 import java.lang.reflect.Field;
@@ -23,8 +24,8 @@ public class CompoundIdDeserializer extends ResourceIdDeserializer {
     private Pattern pathPattern;
 
     @Override
-    public void injectResourcePath(String resourcePath) {
-        this.resourcePath = resourcePath;
+    public void injectAnnotations(Annotated annotations) {
+        super.injectAnnotations(annotations);
 
         // distill fields
         fields = new ArrayList<>();
