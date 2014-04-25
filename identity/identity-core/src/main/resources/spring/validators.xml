@@ -142,9 +142,6 @@
     </bean>
 
     <bean id="userDeviceValidator" class="com.junbo.identity.core.service.validator.impl.UserDeviceValidatorImpl">
-        <property name="userRepository" ref="userRepository"/>
-        <property name="userDeviceRepository" ref="userDeviceRepository"/>
-        <property name="deviceRepository" ref="deviceRepository"/>
     </bean>
 
     <bean id="userGroupValidator" class="com.junbo.identity.core.service.validator.impl.UserGroupValidatorImpl">
@@ -182,8 +179,6 @@
                 <value>password</value>
             </list>
         </property>
-        <property name="clientIdMinLength" value="1"/>
-        <property name="clientIdMaxLength" value="255"/>
         <property name="userAgentMinLength" value="1"/>
         <property name="userAgentMaxLength" value="255"/>
     </bean>
@@ -206,18 +201,6 @@
 
     <bean id="userPhoneNumberValidator"
           class="com.junbo.identity.core.service.validator.impl.UserPhoneNumberValidatorImpl">
-        <property name="allowedValuePatterns">
-            <list>
-                <!-- http://regexlib.com/Search.aspx?k=phone+number&c=0&m=0&ps=20&p=12
-                    it should be the above configuration. Currently hard code it to 11 digital
-                -->
-                <value>[1-9][0-9]{10}</value>
-            </list>
-        </property>
-        <property name="typeMinLength" value="1"/>
-        <property name="typeMaxLength" value="255"/>
-        <property name="valueMinLength" value="1"/>
-        <property name="valueMaxLength" value="255"/>
     </bean>
 
     <bean id="userPinValidator" class="com.junbo.identity.core.service.validator.impl.UserPinValidatorImpl">
@@ -271,21 +254,6 @@
     </bean>
 
     <bean id="userEmailValidator" class="com.junbo.identity.core.service.validator.impl.UserEmailValidatorImpl">
-        <property name="allowedEmailPatterns">
-            <list>
-                <!--  todo: need to refactor this -->
-                <value>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}</value>
-            </list>
-        </property>
-        <property name="allowedEmailTypes">
-            <list>
-                <value>google</value>
-                <value>hotmail</value>
-                <value>qq</value>
-            </list>
-        </property>
-        <property name="emailMinLength" value="5"/>
-        <property name="emailMaxLength" value="255"/>
     </bean>
 
     <bean id="deviceValidator" class="com.junbo.identity.core.service.validator.impl.DeviceValidatorImpl">
@@ -336,20 +304,6 @@
     </bean>
 
     <bean id="userPiiValidator" class="com.junbo.identity.core.service.validator.impl.UserPiiValidatorImpl">
-        <property name="allowedGenders">
-            <list>
-                <value>male</value>
-                <value>female</value>
-            </list>
-        </property>
-        <property name="birthdayValidator" ref="birthdayValidator" />
-        <property name="displayNameValidator" ref="displayNameValidator" />
-        <property name="nameValidator" ref="nameValidator" />
-        <property name="userEmailValidator" ref="userEmailValidator" />
-        <property name="userPhoneNumberValidator" ref="userPhoneNumberValidator" />
-        <property name="userPiiRepository" ref="userPiiRepository" />
-        <property name="userRepository" ref="userRepository" />
-        <property name="addressValidator" ref="addressValidator" />
     </bean>
 
     <bean id="addressValidator" class="com.junbo.identity.core.service.validator.impl.AddressValidatorImpl">

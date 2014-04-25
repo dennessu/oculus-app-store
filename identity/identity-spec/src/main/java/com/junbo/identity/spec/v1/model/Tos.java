@@ -76,5 +76,6 @@ public class Tos extends ResourceMeta implements Identifiable<TosId> {
 
     public void setState(String state) {
         this.state = state;
+        support.setPropertyAssigned("state");
     }
 }

@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.model.ResourceMeta;
 import com.junbo.common.util.Identifiable;
@@ -16,6 +17,7 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 public class Locale extends ResourceMeta implements Identifiable<LocaleId> {
 
     @ApiModelProperty(position = 1, required = true, value = "[Nullable]The id of the locale resource.")
+    @JsonProperty("self")
     private LocaleId id;
 
     @ApiModelProperty(position = 2, required = true, value = "The locale code of the locale.")
@@ -39,6 +41,7 @@ public class Locale extends ResourceMeta implements Identifiable<LocaleId> {
 
     public void setShortName(String shortName) {
         this.shortName = shortName;
+        support.setPropertyAssigned("shortName");
     }
 
     public String getLongName() {
@@ -47,6 +50,7 @@ public class Locale extends ResourceMeta implements Identifiable<LocaleId> {
 
     public void setLongName(String longName) {
         this.longName = longName;
+        support.setPropertyAssigned("longName");
     }
 
     public LocaleId getId() {
@@ -55,6 +59,8 @@ public class Locale extends ResourceMeta implements Identifiable<LocaleId> {
 
     public void setId(LocaleId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("self");
     }
 
     public String getLocaleCode() {
@@ -63,6 +69,7 @@ public class Locale extends ResourceMeta implements Identifiable<LocaleId> {
 
     public void setLocaleCode(String localeCode) {
         this.localeCode = localeCode;
+        support.setPropertyAssigned("localeCode");
     }
 
     public String getLocaleName() {
@@ -71,6 +78,7 @@ public class Locale extends ResourceMeta implements Identifiable<LocaleId> {
 
     public void setLocaleName(String localeName) {
         this.localeName = localeName;
+        support.setPropertyAssigned("localeName");
     }
 
     public LocaleId getFallbackLocale() {
@@ -79,5 +87,6 @@ public class Locale extends ResourceMeta implements Identifiable<LocaleId> {
 
     public void setFallbackLocale(LocaleId fallbackLocale) {
         this.fallbackLocale = fallbackLocale;
+        support.setPropertyAssigned("fallbackLocale");
     }
 }

@@ -55,6 +55,8 @@ public class UserSecurityQuestionVerifyAttempt extends ResourceMeta
 
     public void setId(UserSecurityQuestionVerifyAttemptId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("self");
     }
 
     public String getIpAddress() {
@@ -63,6 +65,7 @@ public class UserSecurityQuestionVerifyAttempt extends ResourceMeta
 
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
+        support.setPropertyAssigned("ipAddress");
     }
 
     public String getUserAgent() {
@@ -71,6 +74,7 @@ public class UserSecurityQuestionVerifyAttempt extends ResourceMeta
 
     public void setUserAgent(String userAgent) {
         this.userAgent = userAgent;
+        support.setPropertyAssigned("userAgent");
     }
 
     public ClientId getClientId() {
@@ -79,6 +83,7 @@ public class UserSecurityQuestionVerifyAttempt extends ResourceMeta
 
     public void setClientId(ClientId clientId) {
         this.clientId = clientId;
+        support.setPropertyAssigned("clientId");
     }
 
     public Boolean getSucceeded() {
@@ -87,6 +92,8 @@ public class UserSecurityQuestionVerifyAttempt extends ResourceMeta
 
     public void setSucceeded(Boolean succeeded) {
         this.succeeded = succeeded;
+        support.setPropertyAssigned("succeeded");
+        support.setPropertyAssigned("wasSuccessful");
     }
 
     public String getValue() {
@@ -95,6 +102,7 @@ public class UserSecurityQuestionVerifyAttempt extends ResourceMeta
 
     public void setValue(String value) {
         this.value = value;
+        support.setPropertyAssigned("value");
     }
 
     public UserSecurityQuestionId getUserSecurityQuestionId() {
@@ -103,6 +111,8 @@ public class UserSecurityQuestionVerifyAttempt extends ResourceMeta
 
     public void setUserSecurityQuestionId(UserSecurityQuestionId userSecurityQuestionId) {
         this.userSecurityQuestionId = userSecurityQuestionId;
+        support.setPropertyAssigned("userSecurityQuestionId");
+        support.setPropertyAssigned("userSecurityQuestion");
     }
 
     public UserId getUserId() {
@@ -111,5 +121,7 @@ public class UserSecurityQuestionVerifyAttempt extends ResourceMeta
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+        support.setPropertyAssigned("userId");
+        support.setPropertyAssigned("user");
     }
 }

@@ -58,6 +58,8 @@ public class UserCredentialVerifyAttempt extends ResourceMeta implements Identif
 
     public void setId(UserCredentialVerifyAttemptId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("self");
     }
 
     public UserId getUserId() {
@@ -66,6 +68,8 @@ public class UserCredentialVerifyAttempt extends ResourceMeta implements Identif
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+        support.setPropertyAssigned("userId");
+        support.setPropertyAssigned("user");
     }
 
     public String getUsername() {
@@ -74,6 +78,7 @@ public class UserCredentialVerifyAttempt extends ResourceMeta implements Identif
 
     public void setUsername(String username) {
         this.username = username;
+        support.setPropertyAssigned("username");
     }
 
     public String getValue() {
@@ -82,6 +87,7 @@ public class UserCredentialVerifyAttempt extends ResourceMeta implements Identif
 
     public void setValue(String value) {
         this.value = value;
+        support.setPropertyAssigned("value");
     }
 
     public String getType() {
@@ -90,6 +96,7 @@ public class UserCredentialVerifyAttempt extends ResourceMeta implements Identif
 
     public void setType(String type) {
         this.type = type;
+        support.setPropertyAssigned("type");
     }
 
     public String getIpAddress() {
@@ -98,6 +105,7 @@ public class UserCredentialVerifyAttempt extends ResourceMeta implements Identif
 
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
+        support.setPropertyAssigned("ipAddress");
     }
 
     public String getUserAgent() {
@@ -106,6 +114,8 @@ public class UserCredentialVerifyAttempt extends ResourceMeta implements Identif
 
     public void setUserAgent(String userAgent) {
         this.userAgent = userAgent;
+        support.setPropertyAssigned("userAgent");
+        support.setPropertyAssigned("wasSuccessful");
     }
 
     public ClientId getClientId() {
@@ -114,6 +124,7 @@ public class UserCredentialVerifyAttempt extends ResourceMeta implements Identif
 
     public void setClientId(ClientId clientId) {
         this.clientId = clientId;
+        support.setPropertyAssigned("clientId");
     }
 
     public Boolean getSucceeded() {
@@ -122,5 +133,6 @@ public class UserCredentialVerifyAttempt extends ResourceMeta implements Identif
 
     public void setSucceeded(Boolean succeeded) {
         this.succeeded = succeeded;
+        support.setPropertyAssigned("succeeded");
     }
 }

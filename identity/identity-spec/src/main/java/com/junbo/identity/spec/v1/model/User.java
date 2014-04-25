@@ -114,6 +114,8 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setId(UserId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("self");
     }
 
     public String getUsername() {
@@ -122,6 +124,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setUsername(String username) {
         this.username = username;
+        support.setPropertyAssigned("username");
     }
 
     public String getPreferredLocale() {
@@ -130,6 +133,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setPreferredLocale(String preferredLocale) {
         this.preferredLocale = preferredLocale;
+        support.setPropertyAssigned("preferredLocale");
     }
 
     public String getPreferredTimezone() {
@@ -138,6 +142,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setPreferredTimezone(String preferredTimezone) {
         this.preferredTimezone = preferredTimezone;
+        support.setPropertyAssigned("preferredTimezone");
     }
 
     public String getStatus() {
@@ -146,6 +151,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setStatus(String status) {
         this.status = status;
+        support.setPropertyAssigned("status");
     }
 
     public List<UserPersonalInfoLink> getAddressBook() {
@@ -154,6 +160,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setAddressBook(List<UserPersonalInfoLink> addressBook) {
         this.addressBook = addressBook;
+        support.setPropertyAssigned("addressBook");
     }
 
     public Link getGroupMemeberships() {
@@ -162,6 +169,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setGroupMemeberships(Link groupMemeberships) {
         this.groupMemeberships = groupMemeberships;
+        support.setPropertyAssigned("groupMemeberships");
     }
 
     public Link getGroups() {
@@ -170,6 +178,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setGroups(Link groups) {
         this.groups = groups;
+        support.setPropertyAssigned("groups");
     }
 
     public Link getDevices() {
@@ -178,6 +187,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setDevices(Link devices) {
         this.devices = devices;
+        support.setPropertyAssigned("devices");
     }
 
     public Link getAuthenticators() {
@@ -186,6 +196,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setAuthenticators(Link authenticators) {
         this.authenticators = authenticators;
+        support.setPropertyAssigned("authenticators");
     }
 
     public Link getTosAgreements() {
@@ -194,6 +205,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setTosAgreements(Link tosAgreements) {
         this.tosAgreements = tosAgreements;
+        support.setPropertyAssigned("tosAgreements");
     }
 
     public Link getCredentials() {
@@ -202,6 +214,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setCredentials(Link credentials) {
         this.credentials = credentials;
+        support.setPropertyAssigned("credentials");
     }
 
     public Link getCredentialAttempts() {
@@ -210,6 +223,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setCredentialAttempts(Link credentialAttempts) {
         this.credentialAttempts = credentialAttempts;
+        support.setPropertyAssigned("credentialAttempts");
     }
 
     public Link getOptins() {
@@ -218,6 +232,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setOptins(Link optins) {
         this.optins = optins;
+        support.setPropertyAssigned("optins");
     }
 
     public Link getSecurityQuestions() {
@@ -226,6 +241,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setSecurityQuestions(Link securityQuestions) {
         this.securityQuestions = securityQuestions;
+        support.setPropertyAssigned("securityQuestions");
     }
 
     public Link getSecurityQuestionAttempts() {
@@ -234,6 +250,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setSecurityQuestionAttempts(Link securityQuestionAttempts) {
         this.securityQuestionAttempts = securityQuestionAttempts;
+        support.setPropertyAssigned("securityQuestionAttempts");
     }
 
     public Link getPaymentInstruments() {
@@ -242,6 +259,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setPaymentInstruments(Link paymentInstruments) {
         this.paymentInstruments = paymentInstruments;
+        support.setPropertyAssigned("paymentInstruments");
     }
 
     public Link getOrders() {
@@ -250,6 +268,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setOrders(Link orders) {
         this.orders = orders;
+        support.setPropertyAssigned("orders");
     }
 
     public Link getCart() {
@@ -258,6 +277,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setCart(Link cart) {
         this.cart = cart;
+        support.setPropertyAssigned("cart");
     }
 
     public Link getEntitlements() {
@@ -266,6 +286,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setEntitlements(Link entitlements) {
         this.entitlements = entitlements;
+        support.setPropertyAssigned("entitlements");
     }
 
     public String getCanonicalUsername() {
@@ -274,6 +295,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setCanonicalUsername(String canonicalUsername) {
         this.canonicalUsername = canonicalUsername;
+        support.setPropertyAssigned("canonicalUsername");
     }
 
     public Boolean getIsAnonymous() {
@@ -282,10 +304,12 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setIsAnonymous(Boolean isAnonymous) {
         this.isAnonymous = isAnonymous;
+        support.setPropertyAssigned("isAnonymous");
     }
 
     public void setPersonalInfo(List<UserPersonalInfoLink> personalInfo) {
         this.personalInfo = personalInfo;
+        support.setPropertyAssigned("personalInfo");
     }
 
     public List<UserPersonalInfoLink> getPersonalInfo() {

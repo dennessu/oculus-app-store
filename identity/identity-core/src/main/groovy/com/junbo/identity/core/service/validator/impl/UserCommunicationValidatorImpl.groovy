@@ -46,7 +46,7 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
         if (options == null) {
             throw new IllegalArgumentException('options is null')
         }
-
+        /*
         if (options.userId == null && options.type == null) {
             throw AppErrors.INSTANCE.parameterRequired('userId or type').exception()
         }
@@ -54,6 +54,7 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
         if (options.userId != null && options.type != null) {
             throw AppErrors.INSTANCE.parameterInvalid('userId and type can\'t set at the same time').exception()
         }
+        */
 
         return Promise.pure(null)
     }
@@ -66,8 +67,8 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
             }
 
             return userCommunicationRepository.search(new UserOptinListOptions(
-                    userId: userOptin.userId,
-                    type: userOptin.type
+                    userId: userOptin.userId
+                    // type: userOptin.type
             )).then { List<UserCommunication> existing ->
                 if (!CollectionUtils.isEmpty(existing)) {
                     throw AppErrors.INSTANCE.fieldDuplicate('type').exception()
@@ -103,7 +104,7 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
             if (userOptin.id != oldUserOptin.id) {
                 throw AppErrors.INSTANCE.fieldInvalid('id', oldUserOptin.id.toString()).exception()
             }
-
+            /*
             if (userOptin.type != oldUserOptin.type) {
                 return userCommunicationRepository.search(new UserOptinListOptions(
                         userId: userOptin.userId,
@@ -116,7 +117,7 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
                     return Promise.pure(null)
                 }
             }
-
+            */
             return Promise.pure(null)
         }
     }
@@ -140,7 +141,7 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
         if (userOptin == null) {
             throw new IllegalArgumentException('userOptin is null')
         }
-
+        /*
         if (userOptin.type == null) {
             throw new IllegalArgumentException('type is null')
         }
@@ -148,6 +149,7 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
         if (!(userOptin.type in allowedTypes)) {
             throw AppErrors.INSTANCE.fieldInvalid('type', allowedTypes.join(',')).exception()
         }
+        */
 
         if (userOptin.userId == null) {
             throw AppErrors.INSTANCE.fieldRequired('userId').exception()
@@ -157,10 +159,11 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
             if (existingUser == null) {
                 throw AppErrors.INSTANCE.userNotFound(userOptin.userId).exception()
             }
-
+            /*
             if (existingUser.active == null || existingUser.active == false) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userOptin.userId).exception()
             }
+            */
             return Promise.pure(null)
         }
     }

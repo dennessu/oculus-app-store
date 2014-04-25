@@ -9,10 +9,12 @@ import com.junbo.common.id.RoleAssignmentId
 import com.junbo.identity.spec.v1.model.RoleAssignment
 import com.junbo.identity.spec.v1.option.list.RoleAssignmentListOptions
 import com.junbo.langur.core.promise.Promise
+import groovy.transform.CompileStatic
 
 /**
  * RoleAssignmentValidator.
  */
+@CompileStatic
 interface RoleAssignmentValidator {
     Promise<Void> validateForCreate(RoleAssignment roleAssignment)
 

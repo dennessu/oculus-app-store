@@ -13,7 +13,10 @@ import com.junbo.common.model.ResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by xiali_000 on 4/21/2014.
@@ -35,7 +38,7 @@ public class Country extends ResourceMeta implements Identifiable<CountryId> {
     private CurrencyId defaultCurrency;
 
     @ApiModelProperty(position = 5, required = true, value = "The future expansion of the country resource.")
-    private Properties futureExpansion;
+    private Map<String, String> futureExpansion = new HashMap<>();
 
     @ApiModelProperty(position = 6, required = true, value = "Array for supported locales in the country resource.")
     private List<LocaleId> supportedLocales = new ArrayList<>();
@@ -52,6 +55,8 @@ public class Country extends ResourceMeta implements Identifiable<CountryId> {
 
     public void setId(CountryId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("self");
     }
 
     public String getCountryCode() {
@@ -60,6 +65,7 @@ public class Country extends ResourceMeta implements Identifiable<CountryId> {
 
     public void setCountryCode(String countryCode) {
         this.countryCode = countryCode;
+        support.setPropertyAssigned("countryCode");
     }
 
     public LocaleId getDefaultLocale() {
@@ -68,6 +74,7 @@ public class Country extends ResourceMeta implements Identifiable<CountryId> {
 
     public void setDefaultLocale(LocaleId defaultLocale) {
         this.defaultLocale = defaultLocale;
+        support.setPropertyAssigned("defaultLocale");
     }
 
     public CurrencyId getDefaultCurrency() {
@@ -76,14 +83,16 @@ public class Country extends ResourceMeta implements Identifiable<CountryId> {
 
     public void setDefaultCurrency(CurrencyId defaultCurrency) {
         this.defaultCurrency = defaultCurrency;
+        support.setPropertyAssigned("defaultCurrency");
     }
 
-    public Properties getFutureExpansion() {
+    public Map<String, String> getFutureExpansion() {
         return futureExpansion;
     }
 
-    public void setFutureExpansion(Properties futureExpansion) {
+    public void setFutureExpansion(Map<String, String> futureExpansion) {
         this.futureExpansion = futureExpansion;
+        support.setPropertyAssigned("futureExpansion");
     }
 
     public List<LocaleId> getSupportedLocales() {
@@ -92,6 +101,7 @@ public class Country extends ResourceMeta implements Identifiable<CountryId> {
 
     public void setSupportedLocales(List<LocaleId> supportedLocales) {
         this.supportedLocales = supportedLocales;
+        support.setPropertyAssigned("supportedLocales");
     }
 
     public Map<String, SubCountry> getSubCountries() {
@@ -100,6 +110,7 @@ public class Country extends ResourceMeta implements Identifiable<CountryId> {
 
     public void setSubCountries(Map<String, SubCountry> subCountries) {
         this.subCountries = subCountries;
+        support.setPropertyAssigned("subCountries");
     }
 
     public Map<String, LocaleKey> getLocalekeys() {
@@ -108,5 +119,6 @@ public class Country extends ResourceMeta implements Identifiable<CountryId> {
 
     public void setLocalekeys(Map<String, LocaleKey> localekeys) {
         this.localekeys = localekeys;
+        support.setPropertyAssigned("localekeys");
     }
 }

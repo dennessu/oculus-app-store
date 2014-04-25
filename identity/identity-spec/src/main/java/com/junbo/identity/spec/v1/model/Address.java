@@ -132,6 +132,7 @@ public class Address extends ResourceMeta implements Identifiable<AddressId> {
 
     public void setCountryName(String countryName) {
         this.countryName = countryName;
+        support.setPropertyAssigned("countryName");
     }
 
     public CountryId getCountryId() {
@@ -140,6 +141,7 @@ public class Address extends ResourceMeta implements Identifiable<AddressId> {
 
     public void setCountryId(CountryId countryId) {
         this.countryId = countryId;
+        support.setPropertyAssigned("countryId");
     }
 
     public String getSubCountryCode() {
@@ -148,6 +150,7 @@ public class Address extends ResourceMeta implements Identifiable<AddressId> {
 
     public void setSubCountryCode(String subCountryCode) {
         this.subCountryCode = subCountryCode;
+        support.setPropertyAssigned("subCountryCode");
     }
 
     public String getSubCountryName() {
@@ -156,6 +159,7 @@ public class Address extends ResourceMeta implements Identifiable<AddressId> {
 
     public void setSubCountryName(String subCountryName) {
         this.subCountryName = subCountryName;
+        support.setPropertyAssigned("subCountryName");
     }
 
     public String getFirstName() {

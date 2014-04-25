@@ -9,10 +9,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.DeviceId;
 import com.junbo.common.id.DeviceTypeId;
 import com.junbo.common.model.Link;
-import com.junbo.common.util.Identifiable;
 import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
+import java.util.HashMap;
 import java.util.Properties;
 
 /**
@@ -34,11 +35,10 @@ public class Device extends ResourceMeta implements Identifiable<DeviceId> {
     private String firmwareVersion;
 
     @ApiModelProperty(position = 5, required = false, value = "[Nullable]The users linked with this device")
-    @JsonProperty("users")
     private Link users;
 
     @ApiModelProperty(position = 6, required = false, value = "Feature expansion of the device resource.")
-    private Properties futureExpansion;
+    private HashMap<String, String> futureExpansion;
 
     public DeviceId getId() {
         return id;
@@ -46,6 +46,8 @@ public class Device extends ResourceMeta implements Identifiable<DeviceId> {
 
     public void setId(DeviceId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("self");
     }
 
     public String getSerialNumber() {
@@ -54,6 +56,7 @@ public class Device extends ResourceMeta implements Identifiable<DeviceId> {
 
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
+        support.setPropertyAssigned("serialNumber");
     }
 
     public String getFirmwareVersion() {
@@ -62,6 +65,7 @@ public class Device extends ResourceMeta implements Identifiable<DeviceId> {
 
     public void setFirmwareVersion(String firmwareVersion) {
         this.firmwareVersion = firmwareVersion;
+        support.setPropertyAssigned("firmwareVersion");
     }
 
     public Link getUsers() {
@@ -70,6 +74,7 @@ public class Device extends ResourceMeta implements Identifiable<DeviceId> {
 
     public void setUsers(Link users) {
         this.users = users;
+        support.setPropertyAssigned("users");
     }
 
     public DeviceTypeId getType() {
@@ -78,13 +83,15 @@ public class Device extends ResourceMeta implements Identifiable<DeviceId> {
 
     public void setType(DeviceTypeId type) {
         this.type = type;
+        support.setPropertyAssigned("type");
     }
 
-    public Properties getFutureExpansion() {
+    public HashMap<String, String> getFutureExpansion() {
         return futureExpansion;
     }
 
-    public void setFutureExpansion(Properties futureExpansion) {
+    public void setFutureExpansion(HashMap<String, String> futureExpansion) {
         this.futureExpansion = futureExpansion;
+        support.setPropertyAssigned("futureExpansion");
     }
 }

@@ -35,11 +35,11 @@ class UserTeleValidatorImpl implements UserTeleValidator {
             if (existing == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
-
+            /*
             if (existing.active == false) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
-
+            */
             return userTeleRepository.get(userTeleId).then { UserTeleCode existingUserTeleCode ->
                 if (existingUserTeleCode == null) {
                     throw AppErrors.INSTANCE.userTeleCodeNotFound(userTeleId).exception()

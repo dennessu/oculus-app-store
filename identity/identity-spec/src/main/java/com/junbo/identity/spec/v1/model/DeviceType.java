@@ -29,6 +29,8 @@ public class DeviceType extends ResourceMeta implements Identifiable<DeviceTypeI
 
     public void setId(DeviceTypeId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("self");
     }
 
     public String getDescription() {
@@ -37,5 +39,6 @@ public class DeviceType extends ResourceMeta implements Identifiable<DeviceTypeI
 
     public void setDescription(String description) {
         this.description = description;
+        support.setPropertyAssigned("description");
     }
 }

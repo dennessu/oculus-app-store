@@ -71,5 +71,6 @@ public class UserTosAgreement extends ResourceMeta implements Identifiable<UserT
 
     public void setAgreementTime(Date agreementTime) {
         this.agreementTime = agreementTime;
+        support.setPropertyAssigned("agreementTime");
     }
 }

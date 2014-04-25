@@ -57,5 +57,7 @@ public class UserCommunication extends ResourceMeta implements Identifiable<User
 
     public void setCommunicationId(CommunicationId communicationId) {
         this.communicationId = communicationId;
+        support.setPropertyAssigned("communication");
+        support.setPropertyAssigned("communicationId");
     }
 }

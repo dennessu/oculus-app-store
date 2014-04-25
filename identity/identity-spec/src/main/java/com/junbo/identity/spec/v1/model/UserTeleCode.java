@@ -54,6 +54,8 @@ public class UserTeleCode extends ResourceMeta implements Identifiable<UserTeleI
 
     public void setId(UserTeleId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("self");
     }
 
     public UserId getUserId() {
@@ -62,6 +64,8 @@ public class UserTeleCode extends ResourceMeta implements Identifiable<UserTeleI
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+        support.setPropertyAssigned("userId");
+        support.setPropertyAssigned("user");
     }
 
     public String getPhoneNumber() {
@@ -70,6 +74,7 @@ public class UserTeleCode extends ResourceMeta implements Identifiable<UserTeleI
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+        support.setPropertyAssigned("phoneNumber");
     }
 
     public String getSentLanguage() {
@@ -78,6 +83,7 @@ public class UserTeleCode extends ResourceMeta implements Identifiable<UserTeleI
 
     public void setSentLanguage(String sentLanguage) {
         this.sentLanguage = sentLanguage;
+        support.setPropertyAssigned("sentLanguage");
     }
 
     public String getVerifyCode() {
@@ -86,6 +92,7 @@ public class UserTeleCode extends ResourceMeta implements Identifiable<UserTeleI
 
     public void setVerifyCode(String verifyCode) {
         this.verifyCode = verifyCode;
+        support.setPropertyAssigned("verifyCode");
     }
 
     public String getTemplate() {
@@ -94,6 +101,7 @@ public class UserTeleCode extends ResourceMeta implements Identifiable<UserTeleI
 
     public void setTemplate(String template) {
         this.template = template;
+        support.setPropertyAssigned("template");
     }
 
     public String getVerifyType() {
@@ -102,6 +110,7 @@ public class UserTeleCode extends ResourceMeta implements Identifiable<UserTeleI
 
     public void setVerifyType(String verifyType) {
         this.verifyType = verifyType;
+        support.setPropertyAssigned("verifyType");
     }
 
     public Date getExpiresBy() {
@@ -110,6 +119,7 @@ public class UserTeleCode extends ResourceMeta implements Identifiable<UserTeleI
 
     public void setExpiresBy(Date expiresBy) {
         this.expiresBy = expiresBy;
+        support.setPropertyAssigned("expiresBy");
     }
 
     public Boolean getActive() {
@@ -118,5 +128,6 @@ public class UserTeleCode extends ResourceMeta implements Identifiable<UserTeleI
 
     public void setActive(Boolean active) {
         this.active = active;
+        support.setPropertyAssigned("active");
     }
 }

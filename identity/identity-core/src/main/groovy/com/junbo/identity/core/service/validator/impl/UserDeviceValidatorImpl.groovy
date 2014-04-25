@@ -5,27 +5,21 @@
  */
 package com.junbo.identity.core.service.validator.impl
 
-import com.junbo.common.id.UserDeviceId
 import com.junbo.identity.core.service.validator.UserDeviceValidator
-import com.junbo.identity.data.repository.DeviceRepository
-import com.junbo.identity.data.repository.UserDeviceRepository
-import com.junbo.identity.data.repository.UserRepository
-import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.v1.model.Device
-import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserDevice
-import com.junbo.identity.spec.v1.option.list.UserDeviceListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required
-import org.springframework.util.CollectionUtils
 
 /**
  * Created by liangfu on 3/27/14.
  */
 @CompileStatic
 class UserDeviceValidatorImpl implements UserDeviceValidator {
+    @Override
+    Promise<Void> test() {
+        return null
+    }
 
+    /*
     private UserDeviceRepository userDeviceRepository
 
     private UserRepository userRepository
@@ -171,4 +165,5 @@ class UserDeviceValidatorImpl implements UserDeviceValidator {
     void setDeviceRepository(DeviceRepository deviceRepository) {
         this.deviceRepository = deviceRepository
     }
+    */
 }

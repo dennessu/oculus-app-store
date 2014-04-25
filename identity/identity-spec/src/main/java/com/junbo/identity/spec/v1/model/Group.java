@@ -32,7 +32,6 @@ public class Group extends ResourceMeta implements Identifiable<GroupId> {
     private Link userMemberships;
 
     @ApiModelProperty(position = 4, required = false, value = "[Nullable]Users in this group.")
-    @JsonProperty("users")
     private Link users;
 
     @Override
@@ -71,6 +70,7 @@ public class Group extends ResourceMeta implements Identifiable<GroupId> {
 
     public void setUserMemberships(Link userMemberships) {
         this.userMemberships = userMemberships;
+        support.setPropertyAssigned("userMemberships");
     }
 
     public Link getUsers() {
@@ -79,5 +79,6 @@ public class Group extends ResourceMeta implements Identifiable<GroupId> {
 
     public void setUsers(Link users) {
         this.users = users;
+        support.setPropertyAssigned("users");
     }
 }

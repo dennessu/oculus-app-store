@@ -60,7 +60,7 @@ class DeviceValidatorImpl implements DeviceValidator {
             throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
         }
 
-        return deviceRepository.searchBySerialNumber(device.externalRef).then { Device existing ->
+        return deviceRepository.searchBySerialNumber(device.serialNumber).then { Device existing ->
             if (existing != null) {
                 throw AppErrors.INSTANCE.fieldInvalid('externalRef').exception()
             }
@@ -88,8 +88,8 @@ class DeviceValidatorImpl implements DeviceValidator {
         }
 
         checkBasicDeviceInfo(device)
-        if (device.externalRef != oldDevice.externalRef) {
-            return deviceRepository.searchBySerialNumber(device.externalRef).then { Device newDevice ->
+        if (device.serialNumber != oldDevice.serialNumber) {
+            return deviceRepository.searchBySerialNumber(device.serialNumber).then { Device newDevice ->
                 if (newDevice != null) {
                     throw AppErrors.INSTANCE.fieldInvalid('externalRef').exception()
                 }
@@ -105,24 +105,14 @@ class DeviceValidatorImpl implements DeviceValidator {
             throw new IllegalArgumentException('device id null')
         }
 
-        if (device.externalRef == null) {
-            throw AppErrors.INSTANCE.fieldRequired('externalRef').exception()
+        if (device.serialNumber == null) {
+            throw AppErrors.INSTANCE.fieldRequired('serialNumber').exception()
         }
-        if (device.externalRef.size() > deviceExternalRefMaxLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('externalRef', deviceExternalRefMaxLength).exception()
+        if (device.serialNumber.size() > deviceExternalRefMaxLength) {
+            throw AppErrors.INSTANCE.fieldTooLong('serialNumber', deviceExternalRefMaxLength).exception()
         }
-        if (device.externalRef.size() < deviceExternalRefMinLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('externalRef', deviceExternalRefMinLength).exception()
-        }
-
-        if (device.description == null) {
-            throw AppErrors.INSTANCE.fieldRequired('description').exception()
-        }
-        if (device.description.size() > deviceDescriptionMaxLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('description', deviceDescriptionMaxLength).exception()
-        }
-        if (device.description.size() < deviceDescriptionMinLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('description', deviceDescriptionMinLength).exception()
+        if (device.serialNumber.size() < deviceExternalRefMinLength) {
+            throw AppErrors.INSTANCE.fieldTooShort('serialNumber', deviceExternalRefMinLength).exception()
         }
     }
 

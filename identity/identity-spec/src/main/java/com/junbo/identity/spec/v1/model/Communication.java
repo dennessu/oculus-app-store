@@ -49,6 +49,8 @@ public class Communication extends ResourceMeta implements Identifiable<Communic
 
     public void setId(CommunicationId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("self");
     }
 
     public String getName() {
@@ -57,6 +59,7 @@ public class Communication extends ResourceMeta implements Identifiable<Communic
 
     public void setName(String name) {
         this.name = name;
+        support.setPropertyAssigned("name");
     }
 
     public String getDescription() {
@@ -65,6 +68,7 @@ public class Communication extends ResourceMeta implements Identifiable<Communic
 
     public void setDescription(String description) {
         this.description = description;
+        support.setPropertyAssigned("description");
     }
 
     public CountryId getAllowedIn() {
@@ -73,6 +77,7 @@ public class Communication extends ResourceMeta implements Identifiable<Communic
 
     public void setAllowedIn(CountryId allowedIn) {
         this.allowedIn = allowedIn;
+        support.setPropertyAssigned("allowedIn");
     }
 
     public List<LocaleId> getLocales() {
@@ -81,6 +86,7 @@ public class Communication extends ResourceMeta implements Identifiable<Communic
 
     public void setLocales(List<LocaleId> locales) {
         this.locales = locales;
+        support.setPropertyAssigned("locales");
     }
 
     public List<String> getRegions() {
@@ -89,6 +95,7 @@ public class Communication extends ResourceMeta implements Identifiable<Communic
 
     public void setRegions(List<String> regions) {
         this.regions = regions;
+        support.setPropertyAssigned("regions");
     }
 
     public List<String> getTranslations() {
@@ -97,5 +104,6 @@ public class Communication extends ResourceMeta implements Identifiable<Communic
 
     public void setTranslations(List<String> translations) {
         this.translations = translations;
+        support.setPropertyAssigned("translations");
     }
 }

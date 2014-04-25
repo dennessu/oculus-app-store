@@ -1,8 +1,6 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.identity.core.service.validator.NameValidator
-import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.v1.model.UserName
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
@@ -10,6 +8,7 @@ import org.springframework.beans.factory.annotation.Required
  * Created by kg on 3/17/14.
  */
 @CompileStatic
+@SuppressWarnings('EmptyMethod')
 class NameValidatorImpl implements NameValidator {
 
     private Integer firstNameMinLength
@@ -82,7 +81,8 @@ class NameValidatorImpl implements NameValidator {
         this.honorificSuffixMaxLength = honorificSuffixMaxLength
     }
 
-    void validateName(UserName name) {
+    void validateName() {
+        /*
         if (name == null) {
             throw new IllegalArgumentException('name is null')
         }
@@ -140,5 +140,6 @@ class NameValidatorImpl implements NameValidator {
                 throw AppErrors.INSTANCE.fieldTooLong('name.honorificSuffix', honorificSuffixMaxLength).exception()
             }
         }
+        */
     }
 }

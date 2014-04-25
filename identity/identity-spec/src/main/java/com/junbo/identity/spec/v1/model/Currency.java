@@ -40,7 +40,7 @@ public class Currency extends ResourceMeta implements Identifiable<CurrencyId> {
     private Map<String, LocaleId> locales = new HashMap<>();
 
     @ApiModelProperty(position = 6, required = true, value = "The future expansion of the currency resource.")
-    private Properties futureExpansion;
+    private Map<String, String> futureExpansion = new HashMap<>();
 
     public CurrencyId getId() {
         return id;
@@ -48,6 +48,8 @@ public class Currency extends ResourceMeta implements Identifiable<CurrencyId> {
 
     public void setId(CurrencyId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("self");
     }
 
     public String getCurrencyCode() {
@@ -56,6 +58,7 @@ public class Currency extends ResourceMeta implements Identifiable<CurrencyId> {
 
     public void setCurrencyCode(String currencyCode) {
         this.currencyCode = currencyCode;
+        support.setPropertyAssigned("currencyCode");
     }
 
     public Link getCountries() {
@@ -64,6 +67,7 @@ public class Currency extends ResourceMeta implements Identifiable<CurrencyId> {
 
     public void setCountries(Link countries) {
         this.countries = countries;
+        support.setPropertyAssigned("countries");
     }
 
     public String getSymbol() {
@@ -72,6 +76,7 @@ public class Currency extends ResourceMeta implements Identifiable<CurrencyId> {
 
     public void setSymbol(String symbol) {
         this.symbol = symbol;
+        support.setPropertyAssigned("symbol");
     }
 
     public Map<String, LocaleId> getLocales() {
@@ -80,13 +85,15 @@ public class Currency extends ResourceMeta implements Identifiable<CurrencyId> {
 
     public void setLocales(Map<String, LocaleId> locales) {
         this.locales = locales;
+        support.setPropertyAssigned("locales");
     }
 
-    public Properties getFutureExpansion() {
+    public Map<String, String> getFutureExpansion() {
         return futureExpansion;
     }
 
-    public void setFutureExpansion(Properties futureExpansion) {
+    public void setFutureExpansion(Map<String, String> futureExpansion) {
         this.futureExpansion = futureExpansion;
+        support.setPropertyAssigned("futureExpansion");
     }
 }

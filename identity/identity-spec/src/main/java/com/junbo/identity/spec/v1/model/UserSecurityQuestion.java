@@ -80,5 +80,7 @@ public class UserSecurityQuestion extends ResourceMeta implements Identifiable<U
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+        support.setPropertyAssigned("userId");
+        support.setPropertyAssigned("user");
     }
 }
