@@ -102,4 +102,20 @@ public interface SelfMapper {
     DeviceType filterDeviceType(DeviceType deviceType, MappingContext context);
 
     DeviceType mergeDeviceType(DeviceType source, DeviceType base, MappingContext context);
+
+    Country filterCountry(Country country, MappingContext context);
+
+    Country mergeCountry(Country country, MappingContext context);
+
+    Currency filterCurrency(Currency currency, MappingContext context);
+
+    Currency mergeCurrency(Currency source, Currency base, MappingContext context);
+
+    Locale filterLocale(Locale locale, MappingContext context);
+
+    Locale mergeLocale(Locale source, Locale base, MappingContext context);
+
+    PIType filterPIType(PIType piType, MappingContext context);
+
+    PIType mergePIType(PIType source, PIType base, MappingContext context);
 }
