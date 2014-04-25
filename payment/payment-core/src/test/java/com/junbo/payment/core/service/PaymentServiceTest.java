@@ -48,11 +48,11 @@ public class PaymentServiceTest extends BaseTest {
         PaymentInstrument request = buildPIRequest();
         PaymentInstrument result = piService.add(request).wrapped().get();
         result.setIsActive(false);
-        result.getAddress().setPostalCode("123");
+        result.setBillingAddressId(123L);
         piService.update(result);
         PaymentInstrument resultUpdate = piService.getById(result.getId());
         Assert.assertEquals(resultUpdate.getIsActive(), Boolean.FALSE);
-        Assert.assertEquals(resultUpdate.getAddress().getPostalCode(), "123");
+        Assert.assertEquals(resultUpdate.getBillingAddressId().longValue(), 123L);
     }
 
     @Test
@@ -126,7 +126,7 @@ public class PaymentServiceTest extends BaseTest {
     private PaymentInstrument buildWalletPIRequest() {
         PaymentInstrument request = buildBasePIRequest();
         request.setAccountNum(null);
-        request.setType(PIType.WALLET.toString());
+        request.setType(PIType.WALLET.getId());
         request.setTypeSpecificDetails(new TypeSpecificDetails() {
             {
                 setWalletType("STORED_VALUE");

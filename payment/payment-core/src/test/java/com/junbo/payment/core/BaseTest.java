@@ -65,7 +65,7 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
 
     public PaymentInstrument buildPIRequest() {
         PaymentInstrument request = buildBasePIRequest();
-        request.setType(PIType.CREDITCARD.toString());
+        request.setType(PIType.CREDITCARD.getId());
         request.setTypeSpecificDetails(new TypeSpecificDetails() {
             {
                 setEncryptedCvmCode("111");
@@ -82,15 +82,8 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
         request.setAccountName("ut");
         request.setIsValidated(true);
         request.setAccountNum("4111111111111111");
-        request.setAddress(new Address() {
-            {
-                setAddressLine1("3rd street");
-                setCity("LA");
-                setCountry("US");
-                setPostalCode("12345");
-            }
-        });
-        request.setPhoneNum("12344555");
+        request.setBillingAddressId(123L);
+        request.setPhoneNumber(12344555L);
         return request;
     }
 }

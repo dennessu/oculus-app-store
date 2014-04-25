@@ -20,20 +20,12 @@ public class PaymentInstrumentType {
     private Long id;
     @ApiModelProperty(position = 2, required = true, value = "The type code of payment instrument resource.")
     private String typeCode;
-    @ApiModelProperty(position = 3, required = true, value = "The description of payment instrument resource.")
-    private String description;
+    @ApiModelProperty(position = 3, required = true, value = "The description of payment instrument resource with different locales.")
+    private String locales;
     @ApiModelProperty(position = 4, required = true, value = "whether the PI is recurring-able or not.")
     private Boolean capableOfRecurring;
     @ApiModelProperty(position = 5, required = true, value = "whether the PI is refund-able or not.")
     private Boolean isRefundable;
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public Long getId() {
         return id;
@@ -41,6 +33,14 @@ public class PaymentInstrumentType {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getLocales() {
+        return locales;
+    }
+
+    public void setLocales(String locales) {
+        this.locales = locales;
     }
 
     public String getTypeCode() {

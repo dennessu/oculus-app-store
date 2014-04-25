@@ -10,17 +10,19 @@ import com.braintreegateway.*;
 import com.braintreegateway.exceptions.DownForMaintenanceException;
 import com.junbo.common.util.PromiseFacade;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.payment.clientproxy.PersonalInfoFacade;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.spec.enums.PaymentStatus;
-import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.payment.spec.model.PaymentTransaction;
+import com.junbo.payment.spec.model.*;
+import com.junbo.payment.spec.model.Address;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.core.Response;
 import java.net.SocketTimeoutException;
@@ -33,6 +35,8 @@ import java.util.concurrent.Callable;
  * brain tree sdk implementation.
  */
 public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProviderService implements InitializingBean {
+    @Autowired
+    private PersonalInfoFacade personalInfoFacade;
     private static final String PROVIDER_NAME = "BrainTree";
     private static final Logger LOGGER = LoggerFactory.getLogger(BrainTreePaymentProviderServiceImpl.class);
     private static BraintreeGateway gateway;
@@ -79,63 +83,70 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
 
     @Override
     public Promise<PaymentInstrument> add(final PaymentInstrument request) {
-        return PromiseFacade.PAYMENT.decorate(new Callable<PaymentInstrument>() {
+        return personalInfoFacade.getBillingAddress(request.getBillingAddressId())
+            .then(new Promise.Func<com.junbo.payment.spec.model.Address, Promise<PaymentInstrument>>() {
             @Override
-            public PaymentInstrument call() throws Exception {
-                String expireDate = request.getTypeSpecificDetails().getExpireDate();
-                String[] tokens = expireDate.split("-");
-                if(tokens == null || tokens.length < 2){
-                    throw AppClientExceptions.INSTANCE.invalidExpireDateFormat(expireDate).exception();
-                }
-                CreditCardRequest ccRequest = new CreditCardRequest()
-                        .customerId(getOrCreateCustomerId(request.getUserId().toString()))
-                        .number(request.getAccountNum())
-                        .expirationMonth(String.valueOf(tokens[1]))
-                        .expirationYear(String.valueOf(tokens[0]))
-                        .cardholderName(request.getAccountName())
-                        .cvv(request.getTypeSpecificDetails().getEncryptedCvmCode())
-                        .options()
-                        .failOnDuplicatePaymentMethod(false)
-                        .verifyCard(request.getIsValidated())
-                        .done();
-                //Add billing Address
-                if(request.getAddress() != null){
-                    ccRequest.billingAddress()
-                            .postalCode(request.getAddress().getPostalCode())
-                            .streetAddress(request.getAddress().getAddressLine1())
-                            .locality(request.getAddress().getCity())
-                            .region(request.getAddress().getState())
-                            .countryCodeAlpha2(request.getAddress().getCountry())
-                            .done();
-                }
-                Result<CreditCard> result = null;
-                LOGGER.info("add credit card for customer:" + request.getUserId().toString());
-                try {
-                    result = gateway.creditCard().create(ccRequest);
-                }catch (Exception ex){
-                    handleProviderException(ex, "Add", "User", request.getUserId().toString());
-                }
-                if(result.isSuccess()){
-                    request.setAccountNum(result.getTarget().getMaskedNumber());
-                    request.setExternalToken(result.getTarget().getToken());
-                    request.getTypeSpecificDetails().setCreditCardType(
-                            PaymentUtil.getCreditCardType(result.getTarget().getCardType()).toString());
-                    request.getTypeSpecificDetails().setCommercial(
-                            CommonUtil.toBool(result.getTarget().getCommercial().toString()));
-                    request.getTypeSpecificDetails().setDebit(
-                            CommonUtil.toBool(result.getTarget().getDebit().toString()));
-                    request.getTypeSpecificDetails().setPrepaid(
-                            CommonUtil.toBool(result.getTarget().getPrepaid().toString()));
-                    String issueCountry = result.getTarget().getCountryOfIssuance();
-                    if(issueCountry.equalsIgnoreCase("Unknown")){
-                        request.getTypeSpecificDetails().setIssueCountry(null);
-                    }else{
-                        request.getTypeSpecificDetails().setIssueCountry(issueCountry);
+            public Promise<PaymentInstrument> apply(Address address) {
+                request.setAddress(address);
+                return PromiseFacade.PAYMENT.decorate(new Callable<PaymentInstrument>() {
+                    @Override
+                    public PaymentInstrument call() throws Exception {
+                        String expireDate = request.getTypeSpecificDetails().getExpireDate();
+                        String[] tokens = expireDate.split("-");
+                        if (tokens == null || tokens.length < 2) {
+                            throw AppClientExceptions.INSTANCE.invalidExpireDateFormat(expireDate).exception();
+                        }
+                        CreditCardRequest ccRequest = new CreditCardRequest()
+                                .customerId(getOrCreateCustomerId(request.getUserId().toString()))
+                                .number(request.getAccountNum())
+                                .expirationMonth(String.valueOf(tokens[1]))
+                                .expirationYear(String.valueOf(tokens[0]))
+                                .cardholderName(request.getAccountName())
+                                .cvv(request.getTypeSpecificDetails().getEncryptedCvmCode())
+                                .options()
+                                .failOnDuplicatePaymentMethod(false)
+                                .verifyCard(request.getIsValidated())
+                                .done();
+                        //Add billing Address
+                        if (request.getAddress() != null) {
+                            ccRequest.billingAddress()
+                                    .postalCode(request.getAddress().getPostalCode())
+                                    .streetAddress(request.getAddress().getAddressLine1())
+                                    .locality(request.getAddress().getCity())
+                                    .region(request.getAddress().getState())
+                                    .countryCodeAlpha2(request.getAddress().getCountry())
+                                    .done();
+                        }
+                        Result<CreditCard> result = null;
+                        LOGGER.info("add credit card for customer:" + request.getUserId().toString());
+                        try {
+                            result = gateway.creditCard().create(ccRequest);
+                        } catch (Exception ex) {
+                            handleProviderException(ex, "Add", "User", request.getUserId().toString());
+                        }
+                        if (result.isSuccess()) {
+                            request.setAccountNum(result.getTarget().getMaskedNumber());
+                            request.setExternalToken(result.getTarget().getToken());
+                            request.getTypeSpecificDetails().setCreditCardType(
+                                    PaymentUtil.getCreditCardType(result.getTarget().getCardType()).toString());
+                            request.getTypeSpecificDetails().setCommercial(
+                                    CommonUtil.toBool(result.getTarget().getCommercial().toString()));
+                            request.getTypeSpecificDetails().setDebit(
+                                    CommonUtil.toBool(result.getTarget().getDebit().toString()));
+                            request.getTypeSpecificDetails().setPrepaid(
+                                    CommonUtil.toBool(result.getTarget().getPrepaid().toString()));
+                            String issueCountry = result.getTarget().getCountryOfIssuance();
+                            if (issueCountry.equalsIgnoreCase("Unknown")) {
+                                request.getTypeSpecificDetails().setIssueCountry(null);
+                            } else {
+                                request.getTypeSpecificDetails().setIssueCountry(issueCountry);
+                            }
+                        } else {
+                            handleProviderError(result);
+                        }
+                        return request;
                     }
-                }else{
-                    handleProviderError(result);
-                }
-                return request;
+                });
             }
         });
     }
