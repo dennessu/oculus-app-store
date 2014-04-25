@@ -184,15 +184,10 @@
         <property name="userAgentMaxLength" value="255"/>
     </bean>
 
-    <bean id="userOptinValidator" class="com.junbo.identity.core.service.validator.impl.UserCommunicationValidatorImpl">
+    <bean id="userCommunicationValidator" class="com.junbo.identity.core.service.validator.impl.UserCommunicationValidatorImpl">
         <property name="userRepository" ref="userRepository"/>
-        <property name="userOptinRepository" ref="userOptinRepository"/>
-        <property name="allowedTypes">
-            <list>
-                <value>news</value>
-                <value>sports</value>
-            </list>
-        </property>
+        <property name="userCommunicationRepository" ref="userOptinRepository"/>
+        <property name="communicationRepository" ref="communicationRepository" />
     </bean>
 
     <bean id="userPasswordValidator" class="com.junbo.identity.core.service.validator.impl.UserPasswordValidatorImpl">

@@ -44,9 +44,9 @@ public interface SelfMapper {
     UserCredentialVerifyAttempt mergeUserCredentialVerifyAttempt(
             UserCredentialVerifyAttempt source, UserCredentialVerifyAttempt base, MappingContext context);
 
-    UserCommunication filterUserOptin(UserCommunication userOptin, MappingContext context);
+    UserCommunication filterUserCommunication(UserCommunication userOptin, MappingContext context);
 
-    UserCommunication mergeUserOptin(UserCommunication source, UserCommunication base, MappingContext context);
+    UserCommunication mergeUserCommunication(UserCommunication source, UserCommunication base, MappingContext context);
 
     UserPassword filterUserPassword(UserPassword userPassword, MappingContext context);
 
