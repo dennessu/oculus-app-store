@@ -51,7 +51,7 @@ class PITypeResourceImpl implements PITypeResource {
 
         return piTypeRepository.get(piTypeId).then { PIType oldPIType ->
             if (oldPIType == null) {
-                throw AppErrors.INSTANCE.PITypeNotFound(piTypeId).exception()
+                throw AppErrors.INSTANCE.piTypeNotFound(piTypeId).exception()
             }
 
             piTypeRepository.update(piType).then { PIType newPIType ->

@@ -51,7 +51,7 @@ class LocaleResourceImpl implements LocaleResource {
 
         return localeRepository.get(localeId).then { Locale oldLocale ->
             if (oldLocale == null) {
-                throw AppErrors.INSTANCE.LocaleNotFound(localeId).exception()
+                throw AppErrors.INSTANCE.localeNotFound(localeId).exception()
             }
 
             localeRepository.update(locale).then { Locale newLocale ->

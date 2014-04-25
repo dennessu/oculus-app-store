@@ -50,7 +50,7 @@ class CurrencyResourceImpl implements CurrencyResource {
 
         return currencyRepository.get(currencyId).then { Currency oldCurrency ->
             if (oldCurrency == null) {
-                throw AppErrors.INSTANCE.CurrencyNotFound(currencyId).exception()
+                throw AppErrors.INSTANCE.currencyNotFound(currencyId).exception()
             }
             currencyRepository.update(currency).then { Currency newCurrency ->
                 return Promise.pure(newCurrency)
