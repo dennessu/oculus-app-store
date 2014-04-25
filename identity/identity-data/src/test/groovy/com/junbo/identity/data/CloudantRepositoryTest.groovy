@@ -9,46 +9,15 @@ import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.enumid.PITypeId
-import com.junbo.common.id.ClientId
-import com.junbo.common.id.CommunicationId
-import com.junbo.common.id.DeviceId
-import com.junbo.common.id.DeviceTypeId
-import com.junbo.common.id.GroupId
-import com.junbo.common.id.TosId
-import com.junbo.common.id.UserDeviceId
-import com.junbo.common.id.UserId
-import com.junbo.common.id.UserSecurityQuestionId
+import com.junbo.common.id.*
 import com.junbo.identity.data.identifiable.UserPasswordStrength
 import com.junbo.identity.data.repository.*
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.UserPin
-import com.junbo.identity.spec.v1.model.Address
-import com.junbo.identity.spec.v1.model.Country
-import com.junbo.identity.spec.v1.model.Currency
-import com.junbo.identity.spec.v1.model.Device
-import com.junbo.identity.spec.v1.model.Group
-import com.junbo.identity.spec.v1.model.PIType
-import com.junbo.identity.spec.v1.model.Tos
-import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserAuthenticator
-import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
-import com.junbo.identity.spec.v1.model.UserGroup
-import com.junbo.identity.spec.v1.model.UserCommunication
-import com.junbo.identity.spec.v1.model.UserSecurityQuestion
-import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt
-import com.junbo.identity.spec.v1.model.UserTosAgreement
-import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
-import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
-import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
-import com.junbo.identity.spec.v1.option.list.UserOptinListOptions
-import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
-import com.junbo.identity.spec.v1.option.list.UserPinListOptions
-import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionAttemptListOptions
-import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionListOptions
-import com.junbo.identity.spec.v1.option.list.UserTosAgreementListOptions
+import com.junbo.identity.spec.v1.model.*
+import com.junbo.identity.spec.v1.option.list.*
 import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
-import org.glassfish.jersey.internal.util.Base64
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.test.context.ContextConfiguration
@@ -196,21 +165,6 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         PIType newPIType = piTypeRepository.create(piType).wrapped().get()
         assert  piType.id.toString() == newPIType.id.toString()
-    }
-
-
-    @Test
-    public void test() {
-        String userName = 'liangfuxia'
-        String password = '#Bugsfor$4'
-
-        String original = userName + ':' + password
-        String encode = Base64.encodeAsString(original)
-        String decode = Base64.decodeAsString(encode)
-
-        String[] split = decode.split(':')
-        Assert.assertEquals(userName, split[0])
-        Assert.assertEquals(password, split[1])
     }
 
     @Test

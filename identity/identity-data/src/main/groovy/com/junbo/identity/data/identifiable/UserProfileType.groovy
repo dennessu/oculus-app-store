@@ -6,12 +6,14 @@
 package com.junbo.identity.data.identifiable
 
 import com.junbo.common.util.Identifiable
+import groovy.transform.CompileStatic
 
 import javax.ws.rs.NotSupportedException
 
 /**
  * User profileType enum
  */
+@CompileStatic
 enum UserProfileType implements Identifiable<Short> {
     PAYIN((short)1),
     PAYOUT((short)2)
