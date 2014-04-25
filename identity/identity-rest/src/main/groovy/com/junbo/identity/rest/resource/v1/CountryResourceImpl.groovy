@@ -14,9 +14,6 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
-import javax.ws.rs.BeanParam
-import javax.ws.rs.PathParam
-
 /**
  * Created by haomin on 14-4-25.
  */
@@ -43,7 +40,7 @@ class CountryResourceImpl implements CountryResource {
     }
 
     @Override
-    Promise<Country> put(@PathParam("countryId") CountryId countryId, Country country) {
+    Promise<Country> put(CountryId countryId, Country country) {
         if (countryId == null) {
             throw new IllegalArgumentException('countryId is null')
         }
@@ -62,12 +59,12 @@ class CountryResourceImpl implements CountryResource {
     }
 
     @Override
-    Promise<Country> patch(@PathParam("countryId") CountryId countryId, Country country) {
+    Promise<Country> patch(CountryId countryId, Country country) {
         return null
     }
 
     @Override
-    Promise<Country> get(@PathParam("countryId") CountryId countryId, @BeanParam CountryGetOptions getOptions) {
+    Promise<Country> get(CountryId countryId, CountryGetOptions getOptions) {
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')
         }
@@ -76,7 +73,7 @@ class CountryResourceImpl implements CountryResource {
     }
 
     @Override
-    Promise<Results<Country>> list(@BeanParam CountryListOptions listOptions) {
+    Promise<Results<Country>> list(CountryListOptions listOptions) {
         if (listOptions == null) {
             throw new IllegalArgumentException('listOptions is null')
         }
@@ -93,7 +90,7 @@ class CountryResourceImpl implements CountryResource {
     }
 
     @Override
-    Promise<Void> delete(@PathParam("countryId") CountryId countryId) {
+    Promise<Void> delete(CountryId countryId) {
         return countryRepository.delete(countryId)
     }
 }

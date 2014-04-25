@@ -14,9 +14,6 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
-import javax.ws.rs.BeanParam
-import javax.ws.rs.PathParam
-
 /**
  * Created by haomin on 14-4-25.
  */
@@ -42,7 +39,7 @@ class CurrencyResourceImpl implements CurrencyResource {
     }
 
     @Override
-    Promise<Currency> put(@PathParam("currencyId") CurrencyId currencyId, Currency currency) {
+    Promise<Currency> put(CurrencyId currencyId, Currency currency) {
         if (currencyId == null) {
             throw new IllegalArgumentException('currencyId is null')
         }
@@ -62,12 +59,12 @@ class CurrencyResourceImpl implements CurrencyResource {
     }
 
     @Override
-    Promise<Currency> patch(@PathParam("currencyId") CurrencyId currencyId, Currency currency) {
+    Promise<Currency> patch(CurrencyId currencyId, Currency currency) {
         return null
     }
 
     @Override
-    Promise<Currency> get(@PathParam("currencyId") CurrencyId currencyId, @BeanParam CurrencyGetOptions getOptions) {
+    Promise<Currency> get(CurrencyId currencyId, CurrencyGetOptions getOptions) {
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')
         }
@@ -76,7 +73,7 @@ class CurrencyResourceImpl implements CurrencyResource {
     }
 
     @Override
-    Promise<Results<Currency>> list(@BeanParam CurrencyListOptions listOptions) {
+    Promise<Results<Currency>> list(CurrencyListOptions listOptions) {
         if (listOptions == null) {
             throw new IllegalArgumentException('listOptions is null')
         }
@@ -93,7 +90,7 @@ class CurrencyResourceImpl implements CurrencyResource {
     }
 
     @Override
-    Promise<Void> delete(@PathParam("currencyId") CurrencyId currencyId) {
+    Promise<Void> delete(CurrencyId currencyId) {
         return currencyRepository.delete(currencyId)
     }
 }

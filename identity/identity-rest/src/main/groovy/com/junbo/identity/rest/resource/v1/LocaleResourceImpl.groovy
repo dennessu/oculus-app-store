@@ -14,9 +14,6 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
-import javax.ws.rs.BeanParam
-import javax.ws.rs.PathParam
-
 /**
  * Created by haomin on 14-4-25.
  */
@@ -43,7 +40,7 @@ class LocaleResourceImpl implements LocaleResource {
     }
 
     @Override
-    Promise<Locale> put(@PathParam("localeId") LocaleId localeId, Locale locale) {
+    Promise<Locale> put(LocaleId localeId, Locale locale) {
         if (localeId == null) {
             throw new IllegalArgumentException('localeId is null')
         }
@@ -64,12 +61,12 @@ class LocaleResourceImpl implements LocaleResource {
     }
 
     @Override
-    Promise<Locale> patch(@PathParam("localeId") LocaleId localeId, Locale locale) {
+    Promise<Locale> patch(LocaleId localeId, Locale locale) {
         return null
     }
 
     @Override
-    Promise<Locale> get(@PathParam("LocaleId") LocaleId localeId, @BeanParam LocaleGetOptions getOptions) {
+    Promise<Locale> get(LocaleId localeId, LocaleGetOptions getOptions) {
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')
         }
@@ -78,7 +75,7 @@ class LocaleResourceImpl implements LocaleResource {
     }
 
     @Override
-    Promise<Results<Locale>> list(@BeanParam LocaleListOptions listOptions) {
+    Promise<Results<Locale>> list(LocaleListOptions listOptions) {
         if (listOptions == null) {
             throw new IllegalArgumentException('listOptions is null')
         }

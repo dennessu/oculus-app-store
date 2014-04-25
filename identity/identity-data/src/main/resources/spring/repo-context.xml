@@ -160,4 +160,8 @@
         <property name="cloudantRepositoryTarget" ref="cloudantPITypeRepository"/>
     </bean>
 
+    <bean id="deviceTypeRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.DeviceTypeRepository" />
+        <property name="cloudantRepositoryTarget" ref="cloudantDeviceTypeRepository" />
+    </bean>
 </beans>
