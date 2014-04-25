@@ -32,12 +32,16 @@ class SubledgerHelper {
 
     private Date startTime
 
-    @Value('${order.subledger.duration}')
     private int durationInMonth
 
     @Value('${order.subledger.starttime}')
     void setStartTime(String originTime) {
         this.startTime = new SimpleDateFormat('yyyy-MM-dd', Locale.US).parse(originTime)
+    }
+
+    @Value('${order.subledger.duration}')
+    void setDurationInMonth(int durationInMonth) {
+        this.durationInMonth = durationInMonth
     }
 
     Date getSubledgerStartTime(Date sampleTime) {
