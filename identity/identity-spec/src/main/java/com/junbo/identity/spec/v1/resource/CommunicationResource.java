@@ -54,5 +54,8 @@ public interface CommunicationResource {
     @GET
     Promise<Results<Communication>> list(@BeanParam CommunicationListOptions listOptions);
 
-    // Delete operation won't be supported.
+    @ApiOperation("Delete communication info")
+    @DELETE
+    @Path("/{communicationId}")
+    Promise<Void> delete(@PathParam("communicationId") CommunicationId communicationId);
 }

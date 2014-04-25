@@ -34,6 +34,7 @@ class DeviceTypeRepositoryCloudantImpl extends CloudantClient<DeviceType> implem
     @Override
     Promise<DeviceType> create(DeviceType deviceType) {
         if (deviceType.id == null) {
+            // hard code to shard 0 for all device type
             deviceType.id = new DeviceTypeId(idGenerator.nextIdByShardId(0))
         }
 

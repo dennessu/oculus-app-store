@@ -118,4 +118,8 @@ public interface SelfMapper {
     PIType filterPIType(PIType piType, MappingContext context);
 
     PIType mergePIType(PIType source, PIType base, MappingContext context);
+
+    Communication filterCommunication(Communication communication, MappingContext context);
+
+    Communication mergeCommunication(Communication source, Communication base, MappingContext context);
 }

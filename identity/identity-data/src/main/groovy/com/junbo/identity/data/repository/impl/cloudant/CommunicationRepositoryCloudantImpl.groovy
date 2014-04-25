@@ -5,9 +5,9 @@ import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.CommunicationId
 import com.junbo.identity.data.repository.CommunicationRepository
 import com.junbo.identity.spec.v1.model.Communication
+import com.junbo.identity.spec.v1.option.list.CommunicationListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
-import com.junbo.sharding.ShardAlgorithm
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
@@ -16,24 +16,29 @@ import org.springframework.beans.factory.annotation.Required
  */
 @CompileStatic
 class CommunicationRepositoryCloudantImpl extends CloudantClient<Communication> implements CommunicationRepository {
-
-    private ShardAlgorithm shardAlgorithm
     private IdGenerator idGenerator
 
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return views
+    @Required
+    void setIdGenerator(IdGenerator idGenerator) {
+        this.idGenerator = idGenerator
     }
 
     @Override
-    Promise<Communication> searchByName(String name) {
-        def list = super.queryView('by_name', name)
-        return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)
+    protected CloudantViews getCloudantViews() {
+        return null
+    }
+
+    @Override
+    Promise<List<Communication>> search(CommunicationListOptions options) {
+        return Promise.pure(super.cloudantGetAll())
     }
 
     @Override
     Promise<Communication> create(Communication model) {
-        model.id = new CommunicationId(idGenerator.nextIdByShardId(shardAlgorithm.shardId()))
+        if (model.id == null) {
+            // hard code to shard 0 for all communication resource
+            model.id = new CommunicationId(idGenerator.nextIdByShardId(0))
+        }
 
         return Promise.pure((Communication)super.cloudantPost(model))
     }
@@ -52,25 +57,5 @@ class CommunicationRepositoryCloudantImpl extends CloudantClient<Communication> 
     Promise<Void> delete(CommunicationId id) {
         super.cloudantDelete(id.toString())
         return Promise.pure(null)
-    }
-
-    protected CloudantViews views = new CloudantViews(
-            views: [
-                    'by_name': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.name, doc._id)' +
-                                    '}',
-                            resultClass: String)
-            ]
-    )
-
-    @Required
-    void setShardAlgorithm(ShardAlgorithm shardAlgorithm) {
-        this.shardAlgorithm = shardAlgorithm
-    }
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
     }
 }
