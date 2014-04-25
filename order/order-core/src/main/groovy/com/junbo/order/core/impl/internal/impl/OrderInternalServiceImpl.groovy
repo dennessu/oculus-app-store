@@ -116,7 +116,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
         if (order == null) {
             throw AppErrors.INSTANCE.orderNotFound().exception()
         }
-        return Promise.pure(completeOrder(order))
+        return completeOrder(order)
     }
 
     @Override
@@ -130,13 +130,14 @@ class OrderInternalServiceImpl implements OrderInternalService {
         def orders = orderRepository.getOrdersByUserId(userId,
                 ParamUtils.processOrderQueryParam(orderQueryParam),
                 ParamUtils.processPageParam(pageParam))
-        orders.each { Order order ->
+        Promise.each(orders) { Order order ->
             completeOrder(order)
+        }.then {
+            return Promise.pure(orders)
         }
-        return Promise.pure(orders)
     }
 
-    private Order completeOrder(Order order) {
+    Promise<Order> completeOrder(Order order) {
         // order items
         order.orderItems = orderRepository.getOrderItems(order.id.value)
         if (order.orderItems == null) {
@@ -152,7 +153,17 @@ class OrderInternalServiceImpl implements OrderInternalService {
         order.setPaymentInstruments(orderRepository.getPaymentInstrumentIds(order.id.value))
         // discount
         order.setDiscounts(orderRepository.getDiscounts(order.id.value))
-        return refreshOrderStatus(order)
+        // tax
+        return facadeContainer.billingFacade.getBalancesByOrderId(order.id.value).then { List<Balance> balances ->
+            // TODO: handle the case when the size of taxed balances > 1
+            def taxedBalance = balances.find { Balance balance ->
+                balance.balanceItems?.taxItems?.size() > 0
+            }
+            if (taxedBalance != null) {
+                CoreBuilder.fillTaxInfo(order, taxedBalance)
+            }
+            return Promise.pure(refreshOrderStatus(order))
+        }
     }
 
     @Override

@@ -3,6 +3,7 @@ import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.DiscountItem
+import com.junbo.billing.spec.model.TaxItem
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.OrderItemId
 import com.junbo.common.id.PromotionId
@@ -17,6 +18,7 @@ import com.junbo.order.spec.model.Discount
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.OrderItem
+import com.junbo.order.spec.model.OrderTaxItem
 import com.junbo.rating.spec.model.request.RatingItem
 import com.junbo.rating.spec.model.request.RatingRequest
 import groovy.transform.CompileStatic
@@ -50,6 +52,7 @@ class CoreBuilder {
             balance.addBalanceItem(balanceItem)
         }
 
+        // TODO: confirm whether tax calculation of shipping fee is necessary
         return balance
     }
 
@@ -93,6 +96,9 @@ class CoreBuilder {
         balance.piId = order.paymentInstruments?.get(0)
         balance.trackingUuid = UUID.randomUUID()
         balance.shippingAddressId = order.shippingAddress
+        balance.providerConfirmUrl = order.providerConfirmUrl
+        balance.successRedirectUrl = order.successRedirectUrl
+        balance.cancelRedirectUrl = order.cancelRedirectUrl
 
         return balance
     }
@@ -213,10 +219,24 @@ class CoreBuilder {
             }
             if (balanceItem != null) {
                 orderItem.totalTax = balanceItem.taxAmount
+                fillTaxItem(orderItem, balanceItem)
             }
         }
     }
 
+    static void fillTaxItem(OrderItem orderItem, BalanceItem balanceItem) {
+        def taxes = []
+        balanceItem.taxItems.each { TaxItem taxItem ->
+            def orderTaxItem = new OrderTaxItem()
+            orderTaxItem.taxAmount = taxItem.taxAmount
+            orderTaxItem.taxRate = taxItem.taxRate
+            orderTaxItem.taxType = taxItem.taxAuthority
+            orderTaxItem.isTaxExempted = taxItem.isTaxExempt ?: false
+
+            taxes << orderTaxItem
+        }
+        orderItem.taxes = taxes
+    }
     static OrderEvent buildOrderEvent(OrderId orderId, OrderActionType action,
                                       EventStatus status, String flowName, UUID trackingUuid) {
         def event = new OrderEvent()
