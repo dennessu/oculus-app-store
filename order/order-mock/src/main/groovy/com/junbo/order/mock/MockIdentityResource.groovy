@@ -26,7 +26,6 @@ class MockIdentityResource implements UserResource {
     static Promise<User> generateUser() {
         User user = new User()
         user.username = 'fake_user'
-        user.active = true
         return Promise.pure(user)
     }
 
@@ -52,6 +51,11 @@ class MockIdentityResource implements UserResource {
 
     @Override
     Promise<Results<User>> list(@BeanParam UserListOptions listOptions) {
+        return null
+    }
+
+    @Override
+    Promise<Void> delete(@PathParam("userId") UserId userId) {
         return null
     }
 }
