@@ -27,6 +27,7 @@ public class BaseModel {
     @Null
     @JsonIgnore
     private String updatedBy;
+    private String rev;
 
     public Date getCreatedTime() {
         return createdTime;
@@ -58,5 +59,13 @@ public class BaseModel {
 
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    public String getRev() {
+        return rev;
+    }
+
+    public void setRev(String rev) {
+        this.rev = rev;
     }
 }

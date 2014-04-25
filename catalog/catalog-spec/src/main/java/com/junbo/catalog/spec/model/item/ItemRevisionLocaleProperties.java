@@ -47,9 +47,9 @@ public class ItemRevisionLocaleProperties {
     @ApiModelProperty(position = 30, required = false, value = "Videos to describe the item revision resource")
     private List<Video> videos;
     @ApiModelProperty(position = 14, required = true, value = "color")
-    String color;
+    private String color;
     @ApiModelProperty(position = 15, required = true, value = "size")
-    String size;
+    private String size;
 
     public String getName() {
         return name;
