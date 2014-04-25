@@ -7,6 +7,7 @@
 package com.junbo.rating.spec.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.jackson.annotation.CurrencyId;
 import com.junbo.common.jackson.annotation.ShippingMethodId;
 import com.junbo.common.jackson.annotation.UserId;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -31,6 +32,7 @@ public class RatingRequest {
 
     @ApiModelProperty(position = 3, required = true, value = "Currency code.")
     @NotNull
+    @CurrencyId
     private String currency;
 
     @ApiModelProperty(position = 4, required = true, value = "Coupon codes.")
