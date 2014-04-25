@@ -16,6 +16,7 @@ import com.junbo.common.jackson.annotation.ShippingMethodId;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by chriszhu on 2/7/14.
@@ -51,6 +52,7 @@ public class OrderItem extends BaseModelWithDate {
     private Date honoredTime;
     // end of ratingInfo
 
+    private List<OrderTaxItem> taxes;
     private PreorderInfo preorderInfo;
     private String properties;
 
@@ -180,5 +182,13 @@ public class OrderItem extends BaseModelWithDate {
 
     public void setProperties(String properties) {
         this.properties = properties;
+    }
+
+    public List<OrderTaxItem> getTaxes() {
+        return taxes;
+    }
+
+    public void setTaxes(List<OrderTaxItem> taxes) {
+        this.taxes = taxes;
     }
 }
