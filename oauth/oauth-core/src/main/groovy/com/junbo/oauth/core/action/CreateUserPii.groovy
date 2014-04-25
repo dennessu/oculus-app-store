@@ -7,6 +7,7 @@ package com.junbo.oauth.core.action
 
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserId
+import com.junbo.identity.spec.v1.model.UserEmail
 import com.junbo.identity.spec.v1.model.UserName
 import com.junbo.identity.spec.v1.model.UserPii
 import com.junbo.identity.spec.v1.resource.UserPiiResource
@@ -47,6 +48,8 @@ class CreateUserPii implements Action {
 
         String lastName = parameterMap.getFirst(OAuthParameters.LAST_NAME)
 
+        String email = parameterMap.getFirst(OAuthParameters.EMAIL)
+
         Gender gender = contextWrapper.gender
 
         Date dob = contextWrapper.dob
@@ -56,7 +59,8 @@ class CreateUserPii implements Action {
                 name: new UserName(firstName: firstName, lastName: lastName),
                 birthday: dob,
                 gender: gender.name(),
-                displayName: "$firstName $lastName"
+                displayName: "$firstName $lastName",
+                emails: ['google': new UserEmail(value: email, verified: false, type: 'google')]
         )
 
         userPiiResource.create(userPii).recover { Throwable throwable ->

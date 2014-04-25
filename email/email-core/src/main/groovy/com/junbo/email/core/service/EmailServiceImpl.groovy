@@ -13,9 +13,9 @@ import com.junbo.email.core.EmailService
 import com.junbo.email.core.validator.EmailValidator
 import com.junbo.email.db.repo.EmailHistoryRepository
 import com.junbo.email.db.repo.EmailScheduleRepository
+import com.junbo.email.db.repo.EmailTemplateRepository
 import com.junbo.email.spec.model.Email
 import com.junbo.email.spec.model.EmailStatus
-import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserPii
 import com.junbo.langur.core.promise.Promise
 import org.springframework.beans.factory.annotation.Autowired
@@ -33,6 +33,9 @@ class EmailServiceImpl implements EmailService {
 
     @Autowired
     private EmailScheduleRepository emailScheduleRepository
+
+    @Autowired
+    private EmailTemplateRepository emailTemplateRepository
 
     @Autowired
     private EmailValidator emailValidator
@@ -80,22 +83,6 @@ class EmailServiceImpl implements EmailService {
     }
 
     private Promise<Email> handle(Email email) {
-        if (StringUtils.isEmpty(email.locale)) {
-            identityFacade.getUser(email.userId.value).then {
-                def user = it as User
-                emailValidator.validateUser(user)
-                email.setLocale(user.locale)
-                emailValidator.validateReplacements(email)
-                return this.proceed(email)
-            }
-        }
-        else {
-            emailValidator.validateReplacements(email)
-            return this.proceed(email)
-        }
-    }
-
-    private Promise<Email> proceed(Email email) {
         if (email.recipients == null) {
             identityFacade.getUserPii(email.userId.value).then {
                 def userPii = it as UserPii
@@ -114,11 +101,8 @@ class EmailServiceImpl implements EmailService {
             def scheduleEmail = emailScheduleRepository.saveEmailSchedule(email)
             return Promise.pure(scheduleEmail)
         }
-//        Long id = emailHistoryRepository.createEmailHistory(email)
-//        def retEmail = emailHistoryRepository.getEmail(id)
-//        return Promise.pure(retEmail)
-
-        return emailProvider.sendEmail(email).then {
+        def template = emailTemplateRepository.getEmailTemplate(email.templateId.value)
+        return emailProvider.sendEmail(email, template).then {
             Long id = emailHistoryRepository.createEmailHistory(it as Email)
             return Promise.pure(emailHistoryRepository.getEmail(id))
         }

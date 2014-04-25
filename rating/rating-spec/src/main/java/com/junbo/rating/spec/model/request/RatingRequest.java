@@ -9,6 +9,7 @@ package com.junbo.rating.spec.model.request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.ShippingMethodId;
 import com.junbo.common.jackson.annotation.UserId;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
@@ -19,30 +20,42 @@ import java.util.Set;
  * Created by lizwu on 2/12/14.
  */
 public class RatingRequest {
+    @ApiModelProperty(position = 1, required = true, value = "represent whether request is from order service.")
     @NotNull
     private Boolean includeCrossOfferPromos;
 
+    @ApiModelProperty(position = 2, required = true, value = "The id of user resource.")
     @UserId
     @JsonProperty("user")
     private Long userId;
 
+    @ApiModelProperty(position = 3, required = true, value = "Currency code.")
     @NotNull
     private String currency;
 
-    private Set<String> couponCodes = new HashSet<>();
+    @ApiModelProperty(position = 4, required = true, value = "Coupon codes.")
+    private Set<String> coupons = new HashSet<>();
 
+    @ApiModelProperty(position = 5, required = true, value = "Line items to be rated.")
     private Set<RatingItem> lineItems;
-    private Long timestamp;
 
+    @ApiModelProperty(position = 6, required = true, value = "Get offers by specific timestamp.")
+    private String time;
+
+    @ApiModelProperty(position = 7, required = true,
+            value = "Default shipping method " +
+                    "for physical goods which have no specified shipping method.")
     @ShippingMethodId
     @JsonProperty("defaultShippingMethod")
     private Long shippingMethodId;
 
+    @ApiModelProperty(position = 8, required = true, value = "[Client Immutable] Details about calculation result of an order.")
     @Null
-    private OrderBenefit orderBenefit;
+    private RatingSummary ratingSummary;
 
+    @ApiModelProperty(position = 9, required = true, value = "[Client Immutable] Details about calculation result of shipping fee.")
     @Null
-    private ShippingBenefit shippingBenefit;
+    private ShippingSummary shippingSummary;
 
     public Boolean getIncludeCrossOfferPromos() {
         return includeCrossOfferPromos;
@@ -68,12 +81,12 @@ public class RatingRequest {
         this.currency = currency;
     }
 
-    public Set<String> getCouponCodes() {
-        return couponCodes;
+    public Set<String> getCoupons() {
+        return coupons;
     }
 
-    public void setCouponCodes(Set<String> couponCodes) {
-        this.couponCodes = couponCodes;
+    public void setCoupons(Set<String> coupons) {
+        this.coupons = coupons;
     }
 
     public Set<RatingItem> getLineItems() {
@@ -84,12 +97,12 @@ public class RatingRequest {
         this.lineItems = lineItems;
     }
 
-    public Long getTimestamp() {
-        return timestamp;
+    public String getTime() {
+        return time;
     }
 
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public Long getShippingMethodId() {
@@ -100,19 +113,19 @@ public class RatingRequest {
         this.shippingMethodId = shippingMethodId;
     }
 
-    public OrderBenefit getOrderBenefit() {
-        return orderBenefit;
+    public RatingSummary getRatingSummary() {
+        return ratingSummary;
     }
 
-    public void setOrderBenefit(OrderBenefit orderBenefit) {
-        this.orderBenefit = orderBenefit;
+    public void setRatingSummary(RatingSummary ratingSummary) {
+        this.ratingSummary = ratingSummary;
     }
 
-    public ShippingBenefit getShippingBenefit() {
-        return shippingBenefit;
+    public ShippingSummary getShippingSummary() {
+        return shippingSummary;
     }
 
-    public void setShippingBenefit(ShippingBenefit shippingBenefit) {
-        this.shippingBenefit = shippingBenefit;
+    public void setShippingSummary(ShippingSummary shippingSummary) {
+        this.shippingSummary = shippingSummary;
     }
 }
