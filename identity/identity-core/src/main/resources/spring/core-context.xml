@@ -222,6 +222,40 @@
 
     </bean>
 
+    <bean id="userSecurityQuestionFilter" class="com.junbo.identity.core.service.filter.UserSecurityQuestionFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>userId</value>
+                <value>securityQuestion</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>securityQuestion</value>
+                <value>userId</value>
+                <value>answer</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>userId</value>
+                <value>securityQuestion</value>
+                <value>answer</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+    </bean>
+
+
 
 
 
@@ -405,38 +439,6 @@
                 <value>value</value>
                 <value>primary</value>
                 <value>verified</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="userSecurityQuestionFilter" class="com.junbo.identity.core.service.filter.UserSecurityQuestionFilter">
-        <property name="readableProperties">
-            <list>
-                <value>id</value>
-                <value>securityQuestion</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForCreate">
-            <list>
-                <value>securityQuestion</value>
-                <value>userId</value>
-                <value>answer</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForUpdate">
-            <list>
-                <value>id</value>
-                <value>userId</value>
-                <value>securityQuestion</value>
-                <value>answer</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
