@@ -109,7 +109,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
             throw AppClientExceptions.INSTANCE.missingRevision().exception();
         }
         PaymentInstrument piTarget = getById(request.getId());
-        if(request.getRev() != piTarget.getRev()){
+        if(!request.getRev().equals(piTarget.getRev())){
             throw AppClientExceptions.INSTANCE.invalidRevision().exception();
         }
         //Validate the info:
@@ -122,7 +122,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
             request.getAddress().setId(piTarget.getAddress().getId());
         }
         if(request.getType().equals(PIType.CREDITCARD.toString())){
-            request.getCreditCardRequest().setId(request.getId());
+            request.getTypeSpecificDetails().setId(request.getId());
         }
         paymentInstrumentRepository.update(request);
     }
@@ -220,10 +220,13 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
             if(CommonUtil.isNullOrEmpty(request.getAccountNum())){
                 throw AppClientExceptions.INSTANCE.missingAccountNum().exception();
             }
-            if(request.getCreditCardRequest() == null){
+            if(request.getTypeSpecificDetails() == null){
                 throw AppClientExceptions.INSTANCE.missingExpireDate().exception();
             }
-            String expireDate = request.getCreditCardRequest().getExpireDate();
+            String expireDate = request.getTypeSpecificDetails().getExpireDate();
+            if(CommonUtil.isNullOrEmpty(expireDate)){
+                throw AppClientExceptions.INSTANCE.missingExpireDate().exception();
+            }
             if (!expireDate.matches("\\d{4}-\\d{2}-\\d{2}")
                     && !expireDate.matches("\\d{4}-\\d{2}")) {
                 throw AppClientExceptions.INSTANCE.invalidExpireDateFormat(expireDate).exception();

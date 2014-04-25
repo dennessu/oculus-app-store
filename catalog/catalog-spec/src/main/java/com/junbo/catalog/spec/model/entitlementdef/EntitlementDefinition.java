@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.junbo.common.jackson.annotation.ClientId;
 import com.junbo.common.jackson.annotation.EntitlementDefinitionId;
 import com.junbo.common.jackson.annotation.UserId;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
 import java.util.UUID;
@@ -30,31 +31,49 @@ import java.util.UUID;
         "consumable"
 })
 public class EntitlementDefinition {
-    @JsonIgnore
-    private UUID trackingUuid;
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] entitlementDefinition id")
     @JsonProperty("self")
     @EntitlementDefinitionId
     private Long entitlementDefId;
-    private Integer rev;
+    @ApiModelProperty(position = 2, required = true, value = "[Client Immutable]")
+    private String rev;
+    @ApiModelProperty(position = 3, required = true, value = "the developer this entitlementDefinition belongs to")
     @UserId
     @JsonProperty("developer")
     private Long developerId;
+    @ApiModelProperty(position = 4, required = true,
+            value = "clients which entitlementDefinition can be allowed to use in")
     @ClientId
     @JsonProperty("checkClients")
     private List<String> inAppContext;
+    @ApiModelProperty(position = 5, required = true,
+            value = "type of entitlementDefinition.\n" +
+                    "If having no type, it will be set to null.\n" +
+                    "DEVELOPER is granted to a user when a user is upgraded to a developer.\n" +
+                    "DEVELOPER_SUBSCRIPTION is DEVELOPER entitlement with subscription.\n" +
+                    "DOWNLOAD is granted when a user buys an APP and shows the user can download the APP.\n" +
+                    "DOWNLOAD_SUBSCRIPTION is DOWNLOAD entitlement with subscription.\n" +
+                    "ONLINE_ACCESS shows whether a user can access some online games.\n" +
+                    "ONLINE_ACCESS_SUBSCRIPTION is ONLINE_ACCESS entitlement with subscription.\n" +
+                    "SUBSCRIPTION is subscription entitlements\n",
+            allowableValues = "DOWNLOAD, DOWNLOAD_SUBSCRIPTION," +
+                    " DEVELOPER, DEVELOPER_SUBSCRIPTION, ONLINE_ACCESS," +
+                    " ONLINE_ACCESS_SUBSCRIPTION, SUBSCRIPTIONS")
+    @JsonProperty("type")
     private String type;
-    private String group;
-    private String tag;
+    @ApiModelProperty(position = 6, required = true,
+            value = "whether the entitlement with the entitlementDefinition can be consumable")
     @JsonProperty("isConsumable")
     private Boolean consumable;
+    @ApiModelProperty(position = 7, required = true,
+            value = "group of entitlementDefinition, for example, ARMOR_HELM or WEAPON_AXE")
+    private String group;
+    @ApiModelProperty(position = 8, required = true,
+            value = "tag of entitlementDefinition, for example, LEATHER_HOOD or HAND_AXE")
+    private String tag;
 
-    public UUID getTrackingUuid() {
-        return trackingUuid;
-    }
-
-    public void setTrackingUuid(UUID trackingUuid) {
-        this.trackingUuid = trackingUuid;
-    }
+    @JsonIgnore
+    private UUID trackingUuid;
 
     public Long getEntitlementDefId() {
         return entitlementDefId;
@@ -62,14 +81,6 @@ public class EntitlementDefinition {
 
     public void setEntitlementDefId(Long entitlementDefId) {
         this.entitlementDefId = entitlementDefId;
-    }
-
-    public Integer getRev() {
-        return rev;
-    }
-
-    public void setRev(Integer rev) {
-        this.rev = rev;
     }
 
     public Long getDeveloperId() {
@@ -104,6 +115,22 @@ public class EntitlementDefinition {
         this.tag = tag;
     }
 
+    public List<String> getInAppContext() {
+        return inAppContext;
+    }
+
+    public void setInAppContext(List<String> inAppContext) {
+        this.inAppContext = inAppContext;
+    }
+
+    public String getRev() {
+        return rev;
+    }
+
+    public void setRev(String rev) {
+        this.rev = rev;
+    }
+
     public Boolean getConsumable() {
         return consumable;
     }
@@ -112,11 +139,11 @@ public class EntitlementDefinition {
         this.consumable = consumable;
     }
 
-    public List<String> getInAppContext() {
-        return inAppContext;
+    public UUID getTrackingUuid() {
+        return trackingUuid;
     }
 
-    public void setInAppContext(List<String> inAppContext) {
-        this.inAppContext = inAppContext;
+    public void setTrackingUuid(UUID trackingUuid) {
+        this.trackingUuid = trackingUuid;
     }
 }

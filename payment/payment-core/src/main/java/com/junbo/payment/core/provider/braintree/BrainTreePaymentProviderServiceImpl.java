@@ -62,11 +62,11 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
     public void clonePIResult(PaymentInstrument source, PaymentInstrument target) {
         target.setAccountNum(source.getAccountNum());
         target.setExternalToken(source.getExternalToken());
-        target.getCreditCardRequest().setType(source.getCreditCardRequest().getType());
-        target.getCreditCardRequest().setCommercial(source.getCreditCardRequest().getCommercial());
-        target.getCreditCardRequest().setDebit(source.getCreditCardRequest().getDebit());
-        target.getCreditCardRequest().setPrepaid(source.getCreditCardRequest().getPrepaid());
-        target.getCreditCardRequest().setIssueCountry(source.getCreditCardRequest().getIssueCountry());
+        target.getTypeSpecificDetails().setCreditCardType(source.getTypeSpecificDetails().getCreditCardType());
+        target.getTypeSpecificDetails().setCommercial(source.getTypeSpecificDetails().getCommercial());
+        target.getTypeSpecificDetails().setDebit(source.getTypeSpecificDetails().getDebit());
+        target.getTypeSpecificDetails().setPrepaid(source.getTypeSpecificDetails().getPrepaid());
+        target.getTypeSpecificDetails().setIssueCountry(source.getTypeSpecificDetails().getIssueCountry());
     }
 
     @Override
@@ -82,7 +82,7 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
         return PromiseFacade.PAYMENT.decorate(new Callable<PaymentInstrument>() {
             @Override
             public PaymentInstrument call() throws Exception {
-                String expireDate = request.getCreditCardRequest().getExpireDate();
+                String expireDate = request.getTypeSpecificDetails().getExpireDate();
                 String[] tokens = expireDate.split("-");
                 if(tokens == null || tokens.length < 2){
                     throw AppClientExceptions.INSTANCE.invalidExpireDateFormat(expireDate).exception();
@@ -93,7 +93,7 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
                         .expirationMonth(String.valueOf(tokens[1]))
                         .expirationYear(String.valueOf(tokens[0]))
                         .cardholderName(request.getAccountName())
-                        .cvv(request.getCreditCardRequest().getEncryptedCvmCode())
+                        .cvv(request.getTypeSpecificDetails().getEncryptedCvmCode())
                         .options()
                         .failOnDuplicatePaymentMethod(false)
                         .verifyCard(request.getIsValidated())
@@ -118,12 +118,20 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
                 if(result.isSuccess()){
                     request.setAccountNum(result.getTarget().getMaskedNumber());
                     request.setExternalToken(result.getTarget().getToken());
-                    request.getCreditCardRequest().setType(
+                    request.getTypeSpecificDetails().setCreditCardType(
                             PaymentUtil.getCreditCardType(result.getTarget().getCardType()).toString());
-                    request.getCreditCardRequest().setCommercial(result.getTarget().getCommercial().toString());
-                    request.getCreditCardRequest().setDebit(result.getTarget().getDebit().toString());
-                    request.getCreditCardRequest().setPrepaid(result.getTarget().getPrepaid().toString());
-                    request.getCreditCardRequest().setIssueCountry(result.getTarget().getCountryOfIssuance());
+                    request.getTypeSpecificDetails().setCommercial(
+                            CommonUtil.toBool(result.getTarget().getCommercial().toString()));
+                    request.getTypeSpecificDetails().setDebit(
+                            CommonUtil.toBool(result.getTarget().getDebit().toString()));
+                    request.getTypeSpecificDetails().setPrepaid(
+                            CommonUtil.toBool(result.getTarget().getPrepaid().toString()));
+                    String issueCountry = result.getTarget().getCountryOfIssuance();
+                    if(issueCountry.equalsIgnoreCase("Unknown")){
+                        request.getTypeSpecificDetails().setIssueCountry(null);
+                    }else{
+                        request.getTypeSpecificDetails().setIssueCountry(issueCountry);
+                    }
                 }else{
                     handleProviderError(result);
                 }

@@ -14,7 +14,7 @@ import com.junbo.test.common.exception.TestException;
  */
 public class ShardIdHelper {
 
-    public ShardIdHelper() {
+    private ShardIdHelper() {
     }
 
     public static int getShardIdByUid(String uid) {

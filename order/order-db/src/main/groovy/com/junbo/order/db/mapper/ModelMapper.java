@@ -24,7 +24,6 @@ import com.junbo.order.spec.model.*;
 public interface ModelMapper {
 
     @Mappings({
-            @Mapping(source = "type", target = "orderTypeId", excluded = false, bidirectional = false),
             @Mapping(source = "status", target = "orderStatusId", excluded = false, bidirectional = false),
             @Mapping(source = "user", target = "userId", excluded = false, bidirectional = false),
             @Mapping(source = "id", target = "orderId", excluded = false, bidirectional = false),
@@ -34,7 +33,6 @@ public interface ModelMapper {
     OrderEntity toOrderEntity(Order order, MappingContext context);
 
     @Mappings({
-            @Mapping(source = "orderTypeId", target = "type", excluded = false, bidirectional = false),
             @Mapping(source = "orderStatusId", target = "status", excluded = false, bidirectional = false),
             @Mapping(source = "userId", target = "user", excluded = false, bidirectional = false),
             @Mapping(source = "orderId", target = "id", excluded = false, bidirectional = false),

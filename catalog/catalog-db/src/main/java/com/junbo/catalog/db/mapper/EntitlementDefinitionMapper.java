@@ -32,7 +32,7 @@ public class EntitlementDefinitionMapper {
         entitlementDefinition.setEntitlementDefId(
                 entitlementDefinitionEntity.getEntitlementDefinitionId());
         entitlementDefinition.setDeveloperId(entitlementDefinitionEntity.getDeveloperId());
-        entitlementDefinition.setRev(entitlementDefinitionEntity.getRev());
+        entitlementDefinition.setRev(entitlementDefinitionEntity.getRev().toString());
         entitlementDefinition.setInAppContext(entitlementDefinitionEntity.getInAppContext());
         entitlementDefinition.setType(
                 entitlementDefinitionEntity.getType() == null ?
@@ -50,7 +50,9 @@ public class EntitlementDefinitionMapper {
         entitlementDefinitionEntity.setTrackingUuid(entitlementDefinition.getTrackingUuid());
         entitlementDefinitionEntity.setEntitlementDefinitionId(
                 entitlementDefinition.getEntitlementDefId());
-        entitlementDefinitionEntity.setRev(entitlementDefinition.getRev());
+        if (entitlementDefinition.getRev() != null) {
+            entitlementDefinitionEntity.setRev(Integer.valueOf(entitlementDefinition.getRev()));
+        }
         entitlementDefinitionEntity.setInAppContext(entitlementDefinition.getInAppContext());
         entitlementDefinitionEntity.setDeveloperId(entitlementDefinition.getDeveloperId());
         entitlementDefinitionEntity.setType(

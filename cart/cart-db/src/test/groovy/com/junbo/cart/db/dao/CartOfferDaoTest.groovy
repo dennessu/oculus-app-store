@@ -56,6 +56,7 @@ class CartOfferDaoTest extends DaoTestBase {
         assert updatedEntity.cartItemId == entity.cartItemId
         assert updatedEntity.quantity == entity.quantity
         assert updatedEntity.selected == entity.selected
+        assert updatedEntity.approved == entity.approved
         assert updatedEntity.offerId == entity.offerId
         assert updatedEntity.cartId == entity.cartId
         assert updatedEntity.properties == entity.properties

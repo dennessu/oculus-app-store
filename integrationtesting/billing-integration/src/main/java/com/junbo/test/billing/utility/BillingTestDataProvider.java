@@ -92,7 +92,7 @@ public class BillingTestDataProvider extends BaseTestDataProvider {
                 paymentInstrument.setType(creditCardInfo.getType().toString());
                 paymentInstrument.setTrackingUuid(UUID.randomUUID());
 
-                return paymentClient.postPaymentInstrumentToUser(uid, paymentInstrument);
+                return paymentClient.postPaymentInstrument(paymentInstrument);
             default:
                 throw new TestException(String.format("%s is not supported", paymentInfo.getType().toString()));
         }

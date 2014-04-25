@@ -11,7 +11,7 @@ import com.junbo.common.jackson.piid.annotation.TestCompoundId;
 import java.util.List;
 
 /**
- * Person.
+ * TestEntity.
  */
 public class Person {
     @TestCompoundId
