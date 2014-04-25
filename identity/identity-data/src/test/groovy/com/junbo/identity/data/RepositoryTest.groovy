@@ -8,6 +8,9 @@ package com.junbo.identity.data
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.junbo.common.enumid.CountryId
+import com.junbo.common.enumid.CurrencyId
+import com.junbo.common.enumid.LocaleId
+import com.junbo.common.enumid.PITypeId
 import com.junbo.common.id.*
 import com.junbo.identity.data.identifiable.UserPasswordStrength
 import com.junbo.identity.data.repository.*
@@ -120,6 +123,71 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     @Autowired
     @Qualifier('userPersonalInfoRepository')
     private UserPersonalInfoRepository userPersonalInfoRepository
+
+    @Autowired
+    @Qualifier('countryRepository')
+    private CountryRepository countryRepository
+
+    @Autowired
+    @Qualifier('currencyRepository')
+    private CurrencyRepository currencyRepository
+
+    @Autowired
+    @Qualifier('localeRepository')
+    private LocaleRepository localeRepository
+
+    @Autowired
+    @Qualifier('pitypeRepository')
+    private PITypeRepository piTypeRepository
+
+
+    @Test
+    public void testCountryRepository() {
+        countryRepository.delete(new CountryId('US')).wrapped().get()
+
+        Country country = new Country()
+        country.setId(new CountryId('US'))
+        country.setCountryCode('US')
+        country.setDefaultLocale(new LocaleId('en_US'))
+        country.setDefaultCurrency(new CurrencyId('USD'))
+        Country newCountry = countryRepository.create(country).wrapped().get()
+        assert  country.countryCode == newCountry.countryCode
+    }
+
+    @Test
+    public void testCurrencyRepository() {
+        currencyRepository.delete(new CurrencyId('USD')).wrapped().get()
+
+        Currency currency = new Currency()
+        currency.setId(new CurrencyId('USD'))
+        currency.setCurrencyCode('USD')
+
+        Currency newCurrency = currencyRepository.create(currency).wrapped().get()
+        assert  currency.currencyCode == newCurrency.currencyCode
+    }
+
+    @Test
+    public void testLocaleRepository() {
+        localeRepository.delete(new LocaleId('en_US')).wrapped().get()
+
+        com.junbo.identity.spec.v1.model.Locale locale = new com.junbo.identity.spec.v1.model.Locale()
+        locale.setId(new LocaleId('en_US'))
+        locale.setLocaleCode('en_US')
+
+        com.junbo.identity.spec.v1.model.Locale newLocale = localeRepository.create(locale).wrapped().get()
+        assert  locale.localeCode == newLocale.localeCode
+    }
+
+    @Test
+    public void testPITypeRepository() {
+        piTypeRepository.delete(new PITypeId('1234')).wrapped().get()
+
+        PIType piType = new PIType()
+        piType.setId(new PITypeId('1234'))
+
+        PIType newPIType = piTypeRepository.create(piType).wrapped().get()
+        assert  piType.id.toString() == newPIType.id.toString()
+    }
 
     @Test
     public void testUserRepository() throws Exception {

@@ -154,7 +154,7 @@
         <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserPersonalInfoRepository" />
         <property name="cloudantRepositoryTarget" ref="cloudantUserPersonalInfoRepository" />
     </bean>
-    
+
     <bean id="pitypeRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
         <property name="repositoryInterface" value="com.junbo.identity.data.repository.PITypeRepository" />
         <property name="cloudantRepositoryTarget" ref="cloudantPITypeRepository"/>
