@@ -55,6 +55,9 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
 
     @Override
     public ItemRevision createRevision(ItemRevision revision) {
+        if (!StringUtils.isEmpty(revision.getRev())) {
+            throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
+        }
         if (!Status.DRAFT.equals(revision.getStatus())) {
             throw AppErrors.INSTANCE
                     .fieldNotCorrect("status", "status should be 'DRAFT' at item revision creation.").exception();

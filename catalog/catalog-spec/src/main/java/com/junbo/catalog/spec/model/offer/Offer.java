@@ -84,7 +84,6 @@ public class Offer extends BaseEntityModel {
         this.ownerId = ownerId;
     }
 
-
     public Boolean getPublished() {
         return published;
     }

@@ -32,7 +32,7 @@ public class OfferRevisionMapper {
         entity.setOwnerId(model.getOwnerId());
         entity.setTimestamp(model.getTimestamp());
         entity.setPayload(Utils.toJson(model));
-        entity.setRev(Integer.valueOf(model.getRev()));
+        entity.setRev(model.getRev()==null ? null : Integer.valueOf(model.getRev()));
     }
 
     public static OfferRevision toModel(OfferRevisionEntity entity) {
