@@ -24,7 +24,6 @@ import java.util.UUID;
 @TypeDefs(@TypeDef(name="json-list", typeClass=ListJsonUserType.class))
 public class EntitlementDefinitionEntity extends BaseEntity {
     private Long entitlementDefinitionId;
-    private Integer rev;
     private Long developerId;
     private EntitlementType type;
     private String group;
@@ -41,16 +40,6 @@ public class EntitlementDefinitionEntity extends BaseEntity {
 
     public void setEntitlementDefinitionId(Long entitlementDefinitionId) {
         this.entitlementDefinitionId = entitlementDefinitionId;
-    }
-
-    @Version
-    @Column(name = "rev")
-    public Integer getRev() {
-        return rev;
-    }
-
-    public void setRev(Integer rev) {
-        this.rev = rev;
     }
 
     @Column(name = "in_app_context")

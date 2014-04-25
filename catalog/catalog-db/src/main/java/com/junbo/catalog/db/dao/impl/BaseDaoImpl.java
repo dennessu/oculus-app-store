@@ -58,6 +58,7 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
         entity.setCreatedBy(Constants.SYSTEM_INTERNAL);
         entity.setUpdatedTime(Utils.now());
         entity.setUpdatedBy(Constants.SYSTEM_INTERNAL);
+        entity.setRev(1);
 
         return (Long) currentSession().save(entity);
     }
@@ -70,7 +71,7 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
     public Long update(T entity) {
         entity.setUpdatedTime(Utils.now());
         entity.setUpdatedBy(Constants.SYSTEM_INTERNAL);
-
+        entity.setRev(entity.getRev() + 1);
         currentSession().update(entity);
         return entity.getId();
     }
