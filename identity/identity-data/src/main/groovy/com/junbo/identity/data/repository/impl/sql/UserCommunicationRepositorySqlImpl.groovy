@@ -5,7 +5,7 @@
  */
 package com.junbo.identity.data.repository.impl.sql
 
-import com.junbo.common.id.UserOptinId
+import com.junbo.common.id.UserCommunicationId
 import com.junbo.identity.data.dao.UserCommunicationDAO
 import com.junbo.identity.data.entity.user.UserCommunicationEntity
 import com.junbo.identity.data.mapper.ModelMapper
@@ -40,7 +40,7 @@ class UserCommunicationRepositorySqlImpl implements UserCommunicationRepository 
         UserCommunicationEntity userOptInEntity = modelMapper.toUserOptin(entity, new MappingContext())
         userOptinDAO.save(userOptInEntity)
 
-        return get(new UserOptinId((Long)userOptInEntity.id))
+        return get(new UserCommunicationId((Long)userOptInEntity.id))
     }
 
     @Override
@@ -48,11 +48,11 @@ class UserCommunicationRepositorySqlImpl implements UserCommunicationRepository 
         UserCommunicationEntity userOptInEntity = modelMapper.toUserOptin(entity, new MappingContext())
         userOptinDAO.update(userOptInEntity)
 
-        return get((UserOptinId)entity.id)
+        return get((UserCommunicationId)entity.id)
     }
 
     @Override
-    Promise<UserCommunication> get(UserOptinId id) {
+    Promise<UserCommunication> get(UserCommunicationId id) {
         return Promise.pure(modelMapper.toUserOptin(userOptinDAO.get(id.value), new MappingContext()))
     }
 
@@ -78,7 +78,7 @@ class UserCommunicationRepositorySqlImpl implements UserCommunicationRepository 
     }
 
     @Override
-    Promise<Void> delete(UserOptinId id) {
+    Promise<Void> delete(UserCommunicationId id) {
         userOptinDAO.delete(id.value)
         return Promise.pure(null)
     }

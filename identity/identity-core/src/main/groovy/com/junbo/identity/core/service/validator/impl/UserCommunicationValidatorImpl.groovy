@@ -1,7 +1,7 @@
 package com.junbo.identity.core.service.validator.impl
 
-import com.junbo.common.id.UserOptinId
-import com.junbo.identity.core.service.validator.UserOptinValidator
+import com.junbo.common.id.UserCommunicationId
+import com.junbo.identity.core.service.validator.UserCommunicationValidator
 import com.junbo.identity.data.repository.UserCommunicationRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
@@ -17,22 +17,22 @@ import org.springframework.util.CollectionUtils
  * Created by liangfu on 3/31/14.
  */
 @CompileStatic
-class UserOptinValidatorImpl implements UserOptinValidator {
+class UserCommunicationValidatorImpl implements UserCommunicationValidator {
 
     private UserRepository userRepository
 
-    private UserCommunicationRepository userOptinRepository
+    private UserCommunicationRepository userCommunicationRepository
 
     private List<String> allowedTypes
 
     @Override
-    Promise<UserCommunication> validateForGet(UserOptinId userOptinId) {
+    Promise<UserCommunication> validateForGet(UserCommunicationId userOptinId) {
 
         if (userOptinId == null) {
             throw AppErrors.INSTANCE.parameterRequired('userOptinId').exception()
         }
 
-        return userOptinRepository.get(userOptinId).then { UserCommunication userOptin ->
+        return userCommunicationRepository.get(userOptinId).then { UserCommunication userOptin ->
             if (userOptin == null) {
                 throw AppErrors.INSTANCE.userOptinNotFound(userOptinId).exception()
             }
@@ -65,7 +65,7 @@ class UserOptinValidatorImpl implements UserOptinValidator {
                 throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
             }
 
-            return userOptinRepository.search(new UserOptinListOptions(
+            return userCommunicationRepository.search(new UserOptinListOptions(
                     userId: userOptin.userId,
                     type: userOptin.type
             )).then { List<UserCommunication> existing ->
@@ -79,7 +79,7 @@ class UserOptinValidatorImpl implements UserOptinValidator {
     }
 
     @Override
-    Promise<Void> validateForUpdate(UserOptinId userOptinId, UserCommunication userOptin, UserCommunication oldUserOptin) {
+    Promise<Void> validateForUpdate(UserCommunicationId userOptinId, UserCommunication userOptin, UserCommunication oldUserOptin) {
 
         return validateForGet(userOptinId).then { UserCommunication existingUserOptin ->
             if (existingUserOptin.userId != userOptin.userId) {
@@ -105,7 +105,7 @@ class UserOptinValidatorImpl implements UserOptinValidator {
             }
 
             if (userOptin.type != oldUserOptin.type) {
-                return userOptinRepository.search(new UserOptinListOptions(
+                return userCommunicationRepository.search(new UserOptinListOptions(
                         userId: userOptin.userId,
                         type: userOptin.type
                 )).then { List<UserCommunication> existing ->
@@ -128,7 +128,7 @@ class UserOptinValidatorImpl implements UserOptinValidator {
 
     @Required
     void setUserOptinRepository(UserCommunicationRepository userOptinRepository) {
-        this.userOptinRepository = userOptinRepository
+        this.userCommunicationRepository = userOptinRepository
     }
 
     @Required

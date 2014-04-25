@@ -219,14 +219,14 @@ public class CommonMapper {
         return id.getValue();
     }
 
-    public UserOptinId toUserOptinId(Long id) {
+    public UserCommunicationId toUserOptinId(Long id) {
         if(id == null) {
             return null;
         }
-        return new UserOptinId(id);
+        return new UserCommunicationId(id);
     }
 
-    public Long toUserOptInId(UserOptinId id) {
+    public Long toUserOptInId(UserCommunicationId id) {
         if(id == null) {
             return null;
         }

@@ -5,7 +5,7 @@
  */
 package com.junbo.identity.spec.v1.resource;
 
-import com.junbo.common.id.UserOptinId;
+import com.junbo.common.id.UserCommunicationId;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.UserCommunication;
 import com.junbo.identity.spec.v1.option.list.UserOptinListOptions;
@@ -26,7 +26,7 @@ import javax.ws.rs.core.MediaType;
 @Path("/opt-ins")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-public interface UserOptinResource {
+public interface UserCommunicationResource {
     @ApiOperation("Create one user optin")
     @POST
     Promise<UserCommunication> create(UserCommunication userOptin);
@@ -34,24 +34,24 @@ public interface UserOptinResource {
     @ApiOperation("Get one user optin")
     @GET
     @Path("/{userOptinId}")
-    Promise<UserCommunication> get(@PathParam("userOptinId") UserOptinId userOptinId,
+    Promise<UserCommunication> get(@PathParam("userOptinId") UserCommunicationId userOptinId,
                            @BeanParam UserOptinGetOptions getOptions);
 
     @POST
     @Path("/{userOptinId}")
-    Promise<UserCommunication> patch(@PathParam("userOptinId") UserOptinId userOptinId,
+    Promise<UserCommunication> patch(@PathParam("userOptinId") UserCommunicationId userOptinId,
                               UserCommunication userOptin);
 
     @ApiOperation("Update one user optin")
     @PUT
     @Path("/{userOptinId}")
-    Promise<UserCommunication> put(@PathParam("userOptinId") UserOptinId userOptinId,
+    Promise<UserCommunication> put(@PathParam("userOptinId") UserCommunicationId userOptinId,
                             UserCommunication userOptin);
 
     @ApiOperation("Delete one user optin")
     @DELETE
     @Path("/{userOptinId}")
-    Promise<Void> delete(@PathParam("userOptinId") UserOptinId userOptinId);
+    Promise<Void> delete(@PathParam("userOptinId") UserCommunicationId userOptinId);
 
     @ApiOperation("Search user optins")
     @GET

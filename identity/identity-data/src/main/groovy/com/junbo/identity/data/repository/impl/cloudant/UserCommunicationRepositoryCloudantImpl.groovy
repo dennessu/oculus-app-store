@@ -2,7 +2,7 @@ package com.junbo.identity.data.repository.impl.cloudant
 
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
-import com.junbo.common.id.UserOptinId
+import com.junbo.common.id.UserCommunicationId
 import com.junbo.identity.data.repository.UserCommunicationRepository
 import com.junbo.identity.spec.v1.model.UserCommunication
 import com.junbo.identity.spec.v1.option.list.UserOptinListOptions
@@ -38,7 +38,7 @@ class UserCommunicationRepositoryCloudantImpl extends CloudantClient<UserCommuni
     @Override
     Promise<UserCommunication> create(UserCommunication entity) {
         if (entity.id == null) {
-            entity.id = new UserOptinId(idGenerator.nextId(entity.userId.value))
+            entity.id = new UserCommunicationId(idGenerator.nextId(entity.userId.value))
         }
         return Promise.pure((UserCommunication)super.cloudantPost(entity))
     }
@@ -49,7 +49,7 @@ class UserCommunicationRepositoryCloudantImpl extends CloudantClient<UserCommuni
     }
 
     @Override
-    Promise<UserCommunication> get(UserOptinId id) {
+    Promise<UserCommunication> get(UserCommunicationId id) {
         return Promise.pure((UserCommunication)super.cloudantGet(id.toString()))
     }
 
@@ -74,7 +74,7 @@ class UserCommunicationRepositoryCloudantImpl extends CloudantClient<UserCommuni
     }
 
     @Override
-    Promise<Void> delete(UserOptinId id) {
+    Promise<Void> delete(UserCommunicationId id) {
         super.cloudantDelete(id.toString())
         return Promise.pure(null)
     }

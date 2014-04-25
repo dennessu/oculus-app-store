@@ -7,7 +7,7 @@ import groovy.transform.CompileStatic
  * Created by liangfu on 3/31/14.
  */
 @CompileStatic
-class UserOptinFilter extends ResourceFilterImpl<UserCommunication> {
+class UserCommunicationFilter extends ResourceFilterImpl<UserCommunication> {
     @Override
     protected UserCommunication filter(UserCommunication userOptin, MappingContext context) {
         return selfMapper.filterUserOptin(userOptin, context)

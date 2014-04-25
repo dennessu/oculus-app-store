@@ -97,7 +97,7 @@ public interface AppErrors {
     AppError userTosAgreementNotFound(UserTosAgreementId userTosId);
 
     @ErrorDef(httpStatusCode = 409, code = "2000022", description = "User Optin {0} not found.", field = "{0}")
-    AppError userOptinNotFound(UserOptinId userOptinId);
+    AppError userOptinNotFound(UserCommunicationId userOptinId);
 
     @ErrorDef(httpStatusCode = 409, code = "2000023", description = "User Password {0} not found.", field = "{0}")
     AppError userPasswordNotFound(UserPasswordId userPasswordId);

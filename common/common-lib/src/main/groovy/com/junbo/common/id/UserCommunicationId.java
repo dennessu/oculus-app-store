@@ -10,10 +10,10 @@ package com.junbo.common.id;
  * Created by minhao on 2/13/14.
  */
 @IdResourcePath("/opt-ins/{0}")
-public class UserOptinId extends Id {
+public class UserCommunicationId extends Id {
 
-    public UserOptinId() {}
-    public UserOptinId(long value) {
+    public UserCommunicationId() {}
+    public UserCommunicationId(long value) {
         super(value);
     }
 }

@@ -253,7 +253,7 @@
         </property>
     </bean>
 
-    <bean id="userOptinFilter" class="com.junbo.identity.core.service.filter.UserOptinFilter">
+    <bean id="userOptinFilter" class="com.junbo.identity.core.service.filter.UserCommunicationFilter">
         <property name="readableProperties">
             <list>
                 <value>id</value>
