@@ -24,6 +24,7 @@ import com.junbo.catalog.spec.resource.*;
 import com.junbo.common.id.*;
 import com.junbo.rating.clientproxy.CatalogGateway;
 import com.junbo.rating.common.util.Constants;
+import com.junbo.rating.common.util.Utils;
 import com.junbo.rating.spec.error.AppErrors;
 import com.junbo.rating.spec.fusion.EntryType;
 import com.junbo.rating.spec.fusion.LinkedEntry;
@@ -77,7 +78,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
     }
 
     @Override
-    public RatingOffer getOffer(Long offerId, Long timestamp) {
+    public RatingOffer getOffer(Long offerId, String timestamp) {
         Offer offer;
         try {
             offer = offerResource.getOffer(new OfferId(offerId)).wrapped().get();
@@ -101,7 +102,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
                 throw AppErrors.INSTANCE.catalogGatewayError().exception();
             }
         } else {
-            offerRevision = getOfferRevisionByTimestamp(offerId, timestamp);
+            offerRevision = getOfferRevisionByTimestamp(offerId, Utils.parseDateTime(timestamp));
         }
 
         Map<String, BigDecimal> prices = new HashMap<>();

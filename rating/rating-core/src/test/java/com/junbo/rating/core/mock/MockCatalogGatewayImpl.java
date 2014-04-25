@@ -50,7 +50,7 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
     }
 
     @Override
-    public RatingOffer getOffer(Long offerId, Long timestamp) {
+    public RatingOffer getOffer(Long offerId, String timestamp) {
         return mockOffers.get(offerId);
     }
 
