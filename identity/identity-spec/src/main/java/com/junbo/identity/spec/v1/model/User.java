@@ -8,6 +8,7 @@ package com.junbo.identity.spec.v1.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
+import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.ResourceMeta;
 import com.junbo.common.util.Identifiable;
@@ -45,52 +46,64 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
     private List<UserPersonalInfoLink> addressBook = new ArrayList<>();
 
     @ApiModelProperty(position = 6, required = false, value = "[Nullable]User Group memberships.")
+    @HateoasLink("/user-group-memberships?userId={id}")
     private Link groupMemeberships;
 
     @ApiModelProperty(position = 7, required = false, value = "[Nullable]Groups containing the user.")
+    @HateoasLink("/groups?userId={id}")
     private Link groups;
 
     @ApiModelProperty(position = 8, required = false, value = "[Nullable]Devices attaching to the user.")
+    @HateoasLink("/devices?userId={id}")
     private Link devices;
 
     @ApiModelProperty(position = 9, required = false,
             value = "[Nullable]Authenticators attaching to the user.")
+    @HateoasLink("/authenticators?userId={id}")
     private Link authenticators;
 
     @ApiModelProperty(position = 10, required = false, value = "[Nullable]Tos user agree.")
+    @HateoasLink("/users/{id}/tos-agreements")
     private Link tosAgreements;
 
     @ApiModelProperty(position = 11, required = false, value = "[Nullable]User Credential history.")
+    @HateoasLink("/users/{id}/credentials")
     private Link credentials;
 
     @ApiModelProperty(position = 12, required = false, value = "[Nullable]User Credential Attempt history.")
+    @HateoasLink("/credential-attempts?userId={id}")
     private Link credentialAttempts;
 
     @ApiModelProperty(position = 13, required = false, value = "[Nullable]User selecting optins")
+    @HateoasLink("/opt-ins?userId={id}")
     private Link optins;
 
-    @ApiModelProperty(position = 14, required = false, value = "[Nullable]User Pii")
+    @ApiModelProperty(position = 14, required = false, value = "[Nullable]User personal info")
+    @HateoasLink("/personal-info?userId={id}")
     private Link personalInfo;
 
     @ApiModelProperty(position = 15, required = false, value = "[Nullable]User Security questions")
+    @HateoasLink("/users/{id}/security-questions")
     private Link securityQuestions;
 
-    @ApiModelProperty(position = 16, required = false, value = "[Nullable]User Security quesitons attempts.")
+    @ApiModelProperty(position = 16, required = false, value = "[Nullable]User Security quesiton attempts.")
+    @HateoasLink("/users/{id}/security-question-attempts")
     private Link securityQuestionAttempts;
 
     @ApiModelProperty(position = 17, required = false, value = "[Nullable]User Payment Instruments.")
+    @HateoasLink("/payment-instruments?userId={id}")
     private Link paymentInstruments;
 
-    @ApiModelProperty(position = 18, required = false, value = "[Nullable]User default payment instrument.")
-    private Link defaultPaymentInstrument;
-
     @ApiModelProperty(position = 19, required = false, value = "[Nullable]User orders.")
+    @HateoasLink("/orders?userId={id}")
     private Link orders;
 
     @ApiModelProperty(position = 20, required = false, value = "[Nullable]User cart.")
+    @HateoasLink("/users/{id}/carts/primary")
     private Link cart;
 
     @ApiModelProperty(position = 21, required = false, value = "[Nullable]User entitlements.")
+    @HateoasLink("/entitlements?userId={id}")
     private Link entitlements;
 
     @JsonIgnore
@@ -238,14 +251,6 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
 
     public void setPaymentInstruments(Link paymentInstruments) {
         this.paymentInstruments = paymentInstruments;
-    }
-
-    public Link getDefaultPaymentInstrument() {
-        return defaultPaymentInstrument;
-    }
-
-    public void setDefaultPaymentInstrument(Link defaultPaymentInstrument) {
-        this.defaultPaymentInstrument = defaultPaymentInstrument;
     }
 
     public Link getOrders() {
