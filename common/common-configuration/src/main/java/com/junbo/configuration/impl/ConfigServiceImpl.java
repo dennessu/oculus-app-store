@@ -246,9 +246,12 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
             overrideProperties = readProperties(configFilePath);
         }
 
+        Properties commandLineProperties = System.getProperties();
+
         finalProperties = new Properties();
         finalProperties.putAll(jarProperties);
         finalProperties.putAll(overrideProperties);
+        finalProperties.putAll(commandLineProperties);
     }
 
     private void watch(){
