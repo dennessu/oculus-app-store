@@ -15,6 +15,7 @@ import com.junbo.entitlement.clientproxy.catalog.EntitlementDefinitionFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.List;
 public class EntitlementDefinitionFacadeImpl implements EntitlementDefinitionFacade {
     private static final Logger LOGGER = LoggerFactory.getLogger(EntitlementDefinitionFacadeImpl.class);
     @Autowired
+    @Qualifier("entitlementDefinitionClient")
     private EntitlementDefinitionResourceClientProxy definitionClientProxy;
 
     @Override

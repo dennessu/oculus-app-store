@@ -26,9 +26,8 @@ import javax.ws.rs.core.MediaType;
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public interface UserCredentialResource {
-    @ApiOperation("Change current credential")
     @POST
-    @Path("/{userId}/change-credential")
+    @Path("/{userId}/change-credentials")
     Promise<UserCredential> create(@PathParam("userId") UserId userId,
                                    UserCredential userCredential);
 

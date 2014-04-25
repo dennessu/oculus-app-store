@@ -25,9 +25,8 @@ import java.util.List;
 public class ItemEntity extends BaseEntity {
     private String type;
     private Long itemId;
-    private String name;
     private Long ownerId;
-    private boolean curated;
+    //private boolean published;
     private List<Long> genres;
     private Long currentRevisionId;
     private String payload;
@@ -51,16 +50,6 @@ public class ItemEntity extends BaseEntity {
         this.type = type;
     }
 
-    @Column(name = "item_name")
-    @Type(type = "json-string")
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     @Column(name = "owner_id")
     public Long getOwnerId() {
         return ownerId;
@@ -68,15 +57,6 @@ public class ItemEntity extends BaseEntity {
 
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
-    }
-
-    @Column(name = "curated")
-    public boolean isCurated() {
-        return curated;
-    }
-
-    public void setCurated(boolean curated) {
-        this.curated = curated;
     }
 
     @Column(name = "genres")

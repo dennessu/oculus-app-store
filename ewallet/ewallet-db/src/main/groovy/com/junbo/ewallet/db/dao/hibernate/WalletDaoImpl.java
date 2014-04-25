@@ -11,6 +11,7 @@ import com.junbo.ewallet.db.entity.WalletEntity;
 import com.junbo.ewallet.spec.def.WalletType;
 import org.hibernate.Query;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -32,5 +33,12 @@ public class WalletDaoImpl extends BaseDao<WalletEntity> implements WalletDao {
                 .setInteger("type", type.getId())
                 .setString("currency", currency);
         return (WalletEntity) q.uniqueResult();
+    }
+
+    @Override
+    public List<WalletEntity> getAll(long userId) {
+        String queryString = "from WalletEntity where userId = (:userId)";
+        Query q = currentSession(userId).createQuery(queryString).setParameter("userId", userId);
+        return q.list();
     }
 }

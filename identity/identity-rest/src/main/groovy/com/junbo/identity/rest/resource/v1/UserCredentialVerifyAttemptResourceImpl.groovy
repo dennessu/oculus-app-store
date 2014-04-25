@@ -1,6 +1,7 @@
 package com.junbo.identity.rest.resource.v1
 
 import com.junbo.common.id.Id
+import com.junbo.common.id.UserCredentialVerifyAttemptId
 import com.junbo.common.model.Results
 import com.junbo.identity.core.service.Created201Marker
 import com.junbo.identity.core.service.filter.UserCredentialVerifyAttemptFilter
@@ -9,6 +10,7 @@ import com.junbo.identity.data.repository.UserCredentialVerifyAttemptRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
+import com.junbo.identity.spec.v1.option.model.UserCredentialAttemptGetOptions
 import com.junbo.identity.spec.v1.resource.UserCredentialVerifyAttemptResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate
@@ -87,6 +89,12 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
                 return Promise.pure(result)
             }
         }
+    }
+
+    @Override
+    Promise<UserCredentialVerifyAttempt> get(UserCredentialVerifyAttemptId id,
+                                             UserCredentialAttemptGetOptions getOptions) {
+        return Promise.pure(null)
     }
 
     Promise<UserCredentialVerifyAttempt> createInNewTran(UserCredentialVerifyAttempt userLoginAttempt) {

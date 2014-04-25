@@ -1,18 +1,14 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.identity.core.service.validator.UserPhoneNumberValidator
-import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.v1.model.UserPhoneNumber
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required
-
-import java.util.regex.Pattern
 
 /**
  * Created by liangfu on 3/31/14.
  */
 @CompileStatic
 class UserPhoneNumberValidatorImpl implements UserPhoneNumberValidator {
+    /*
     private Integer typeMinLength
     private Integer typeMaxLength
 
@@ -81,5 +77,11 @@ class UserPhoneNumberValidatorImpl implements UserPhoneNumberValidator {
         this.allowedValuePatterns = allowedValuePatterns.collect {
             String allowedValuePattern -> Pattern.compile(allowedValuePattern)
         }
+    }
+    */
+
+    @Override
+    void test() {
+
     }
 }

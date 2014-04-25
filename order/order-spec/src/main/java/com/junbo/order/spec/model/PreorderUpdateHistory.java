@@ -11,7 +11,7 @@ import com.junbo.common.id.OrderItemId;
 /**
  * Created by LinYi on 2/10/14.
  */
-public class PreorderUpdateHistory extends BaseModelWithDate {
+public class PreorderUpdateHistory extends BaseOrderResource {
     private String updatedType;
     private String updatedColumn;
     private String beforeValue;

@@ -10,6 +10,7 @@ dependencies {
 
     testCompile(libraries.spring_test)
     testCompile(libraries.common_configuration_data)
+    testCompile (libraries.common_sharding)
 
     processor (libraries.langur_processor)
     processor (libraries.log4j)

@@ -50,10 +50,13 @@ public class PaymentInstrumentEntity extends GenericEntity {
     private String accountNum;
 
     @Column(name = "revision")
-    private Integer rev;
+    private String rev;
 
     @Column(name = "address_id")
     private Long addressId;
+
+    @Column(name = "label")
+    private String label;
 
     @Column(name = "phone_num")
     private String phoneNum;
@@ -130,11 +133,11 @@ public class PaymentInstrumentEntity extends GenericEntity {
         this.accountNum = accountNum;
     }
 
-    public Integer getRev() {
+    public String getRev() {
         return rev;
     }
 
-    public void setRev(Integer rev) {
+    public void setRev(String rev) {
         this.rev = rev;
     }
 
@@ -144,6 +147,14 @@ public class PaymentInstrumentEntity extends GenericEntity {
 
     public void setAddressId(Long addressId) {
         this.addressId = addressId;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public String getPhoneNum() {

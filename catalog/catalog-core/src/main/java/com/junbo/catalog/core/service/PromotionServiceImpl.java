@@ -32,10 +32,6 @@ public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, P
 
     @Override
     public Promotion createEntity(Promotion promotion) {
-        if (Boolean.TRUE.equals(promotion.getCurated())) {
-            throw AppErrors.INSTANCE
-                    .fieldNotCorrect("curated", "Cannot create an promotion with curated true.").exception();
-        }
         validatePromotion(promotion);
         return super.createEntity(promotion);
     }
@@ -67,7 +63,6 @@ public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, P
         if (Status.APPROVED.equals(revision.getStatus())) {
             Promotion existingPromotion = promotionRepo.get(revision.getEntityId());
             checkEntityNotNull(revision.getEntityId(), existingPromotion, getEntityType());
-            existingPromotion.setCurated(Boolean.TRUE);
             existingPromotion.setCurrentRevisionId(revisionId);
             existingPromotion.setStartDate(revision.getStartDate());
             existingPromotion.setEndDate(revision.getEndDate());
@@ -109,7 +104,6 @@ public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, P
     }
 
     private void validatePromotion(Promotion promotion) {
-        checkFieldNotNull(promotion.getName(), "name");
         checkFieldNotNull(promotion.getOwnerId(), "publisher");
         checkFieldNotNull(promotion.getType(), "type");
     }

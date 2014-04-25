@@ -66,7 +66,7 @@ class DeviceRepositorySqlImpl implements DeviceRepository {
     }
 
     @Override
-    Promise<Device> searchByExternalRef(String externalRef) {
+    Promise<Device> searchBySerialNumber(String externalRef) {
         DeviceEntity entity = deviceDAO.findIdByExternalRef(externalRef)
         if (entity == null) {
             return Promise.pure(null)

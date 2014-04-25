@@ -35,9 +35,9 @@ public interface PaymentMapper {
     })
     Address toAddress(AddressEntity addressEntity, MappingContext context);
 
-    CreditCardPaymentInstrumentEntity toCreditCardEntity(CreditCardRequest ccRequest, MappingContext context);
+    CreditCardPaymentInstrumentEntity toCreditCardEntity(CreditCardDetail ccRequest, MappingContext context);
 
-    CreditCardRequest toCreditCardRequest(CreditCardPaymentInstrumentEntity ccEntity, MappingContext context);
+    CreditCardDetail toCreditCardDetail(CreditCardPaymentInstrumentEntity ccEntity, MappingContext context);
 
     CountryTypeEntity toCountryEntity(Country country, MappingContext context);
 

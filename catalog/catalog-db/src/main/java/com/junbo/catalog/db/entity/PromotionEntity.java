@@ -23,9 +23,7 @@ import java.util.Date;
 @TypeDefs(@TypeDef(name="json-string", typeClass=StringJsonUserType.class))
 public class PromotionEntity extends BaseEntity {
     private Long promotionId;
-    private String name;
     private PromotionType type;
-    private boolean curated;
     private Long currentRevisionId;
     private Long ownerId;
     private Date startDate;
@@ -42,16 +40,6 @@ public class PromotionEntity extends BaseEntity {
         this.promotionId = promotionId;
     }
 
-    @Column(name = "promotion_name")
-    @Type(type = "json-string")
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     @Column(name = "type")
     public PromotionType getType() {
         return type;
@@ -59,15 +47,6 @@ public class PromotionEntity extends BaseEntity {
 
     public void setType(PromotionType type) {
         this.type = type;
-    }
-
-    @Column(name = "curated")
-    public boolean isCurated() {
-        return curated;
-    }
-
-    public void setCurated(boolean curated) {
-        this.curated = curated;
     }
 
     @Column(name = "current_revision_id")

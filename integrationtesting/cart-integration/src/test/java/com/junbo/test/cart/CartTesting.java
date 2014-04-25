@@ -80,7 +80,6 @@ public class CartTesting extends TestClass {
         Assert.assertTrue(primaryCart.getCartName().contains("primary"), "Primary cart name should include primary");
     }
 
-
     @Property(
             priority = Priority.Dailies,
             features = "POST /users/{key}/carts",
@@ -118,7 +117,6 @@ public class CartTesting extends TestClass {
         checkOfferQuantity(rtnCart, testOffer2, 1L);
         checkCouponExist(rtnCart, testCoupon1);
     }
-
 
     @Property(
             priority = Priority.Dailies,
@@ -164,8 +162,38 @@ public class CartTesting extends TestClass {
         CartService.updateCart(user2, primaryCartId2, primaryCart2);
 
         //merge user2's cart to user1's primary cart
+        //Merging is actually put now.
+        List<OfferItem> offerItems = new ArrayList<>();
+
+        for (OfferItem item : primaryCart1.getOffers()) {
+            offerItems.add(item);
+        }
+
+        for (OfferItem oi : primaryCart2.getOffers()) {
+            boolean isFound = false;
+            for (OfferItem oi2 : primaryCart1.getOffers()) {
+                if (oi.getOffer().equals(oi2.getOffer())) {
+                    offerItems.remove(oi2);
+                    oi2.setQuantity(oi2.getQuantity() + oi.getQuantity());
+                    offerItems.add(oi2);
+                    isFound = true;
+                    break;
+                }
+                else {
+                    continue;
+                }
+            }
+            if(!isFound) {
+                offerItems.add(oi);
+            }
+        }
+
+        primaryCart1.setOffers(offerItems);
+        primaryCart1.getCouponCodes().addAll(primaryCart2.getCouponCodes());
+
         logger.LogSample("Merge cart included in request body to an user's cart in URI");
-        CartService.mergeCart(user1, primaryCartId1, primaryCart2);
+        CartService.updateCart(user1, primaryCartId1, primaryCart1);
+
         //verify merge result
         //5 testOffer1 + 2 testOffer2 + 3 testOffer3 + testCoupon1 + testCoupon2
         //check updated items returned correctly

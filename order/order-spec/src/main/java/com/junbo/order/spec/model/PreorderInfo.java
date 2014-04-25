@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by LinYi on 2/10/14.
  */
-public class PreorderInfo extends BaseModelWithDate {
+public class PreorderInfo extends BaseOrderResource {
     @JsonIgnore
     private PreorderId preorderInfoId;
     private Date billingTime;

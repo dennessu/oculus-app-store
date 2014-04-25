@@ -42,7 +42,7 @@ class AuthenticatorValueView implements EntityView<Long, UserAuthenticatorEntity
             throw new IllegalArgumentException('entity is null')
         }
 
-        return entity.value != null
+        return entity.externalId != null
     }
 
     @Override
@@ -51,6 +51,6 @@ class AuthenticatorValueView implements EntityView<Long, UserAuthenticatorEntity
             throw new IllegalArgumentException('entity is null')
         }
 
-        return [entity.value]
+        return [entity.externalId]
     }
 }

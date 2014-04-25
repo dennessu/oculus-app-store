@@ -6,26 +6,26 @@
 package com.junbo.oom.processor.model.users;
 
 import com.junbo.common.id.UserId;
-import com.junbo.common.id.UserOptinId;
+import com.junbo.common.id.UserCommunicationId;
 import com.junbo.common.util.Identifiable;
 
 /**
  * Created by kg on 3/10/14.
  */
-public class UserOptin extends ResourceMeta implements Identifiable<UserOptinId> {
+public class UserOptin extends ResourceMeta implements Identifiable<UserCommunicationId> {
 
-    private UserOptinId id;
+    private UserCommunicationId id;
 
     private String value;
 
     // Won't return
     private UserId userId;
 
-    public UserOptinId getId() {
+    public UserCommunicationId getId() {
         return id;
     }
 
-    public void setId(UserOptinId id) {
+    public void setId(UserCommunicationId id) {
         this.id = id;
     }
 

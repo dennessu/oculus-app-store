@@ -40,11 +40,13 @@ class UserPasswordRepositoryCloudantImpl extends CloudantClient<UserPassword> im
         if (userPassword.id == null) {
             userPassword.id = new UserPasswordId(idGenerator.nextId(userPassword.userId.value))
         }
+        userPassword.value = null
         return Promise.pure((UserPassword)super.cloudantPost(userPassword))
     }
 
     @Override
     Promise<UserPassword> update(UserPassword userPassword) {
+        userPassword.value = null
         return Promise.pure((UserPassword)super.cloudantPut(userPassword))
     }
 
@@ -67,7 +69,7 @@ class UserPasswordRepositoryCloudantImpl extends CloudantClient<UserPassword> im
 
     @Override
     Promise<Void> delete(UserPasswordId id) {
-        super.cloudantDelete(id.value)
+        super.cloudantDelete(id.toString())
         return Promise.pure(null)
     }
 

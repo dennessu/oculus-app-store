@@ -49,14 +49,8 @@ public interface ModelMapper {
     UserEntity toUser(User user, MappingContext context);
     User toUser(UserEntity userEntity, MappingContext context);
 
-    UserDevice toUserDevice(UserDeviceEntity entity, MappingContext context);
-    UserDeviceEntity toUserDevice(UserDevice entity, MappingContext context);
-
     UserAuthenticator toUserAuthenticator(UserAuthenticatorEntity entity, MappingContext context);
     UserAuthenticatorEntity toUserAuthenticator(UserAuthenticator userFederation, MappingContext context);
-
-    UserEmail toUserEmail(UserEmailEntity entity, MappingContext context);
-    UserEmailEntity toUserEmail(UserEmail entity, MappingContext context);
 
     UserGroup toUserGroup(UserGroupEntity entity, MappingContext context);
     UserGroupEntity toUserGroup(UserGroup entity, MappingContext context);
@@ -66,20 +60,14 @@ public interface ModelMapper {
     UserCredentialVerifyAttemptEntity toUserCredentialVerifyAttempt(
             UserCredentialVerifyAttempt entity, MappingContext context);
 
-    UserOptin toUserOptin(UserOptinEntity entity, MappingContext context);
-    UserOptinEntity toUserOptin(UserOptin entity, MappingContext context);
-
-    UserPhoneNumber toUserPhoneNumber(UserPhoneNumberEntity entity, MappingContext context);
-    UserPhoneNumberEntity toUserPhoneNumber(UserPhoneNumber entity, MappingContext context);
+    UserCommunication toUserOptin(UserCommunicationEntity entity, MappingContext context);
+    UserCommunicationEntity toUserOptin(UserCommunication entity, MappingContext context);
 
     UserSecurityQuestion toUserSecurityQuestion(UserSecurityQuestionEntity entity, MappingContext context);
     UserSecurityQuestionEntity toUserSecurityQuestion(UserSecurityQuestion entity, MappingContext context);
 
     UserTosAgreement toUserTos(UserTosAgreementEntity entity, MappingContext context);
     UserTosAgreementEntity toUserTos(UserTosAgreement entity, MappingContext context);
-
-    UserName toUserName(UserNameEntity entity, MappingContext context);
-    UserNameEntity toUserName(UserName entity, MappingContext context);
 
     UserSecurityQuestionVerifyAttempt toUserSecurityQuestionAttempt(UserSecurityQuestionAttemptEntity entity,
                                                               MappingContext context);
@@ -98,9 +86,6 @@ public interface ModelMapper {
 
     UserPin credentialToPin(UserCredential userCredential, MappingContext context);
     UserCredential pinToCredential(UserPin userPin, MappingContext context);
-
-    UserPii toUserPii(UserPiiEntity entity, MappingContext context);
-    UserPiiEntity toUserPii(UserPii entity, MappingContext context);
 
     Address toAddress(AddressEntity entity, MappingContext context);
     AddressEntity toAddress(Address entity, MappingContext context);

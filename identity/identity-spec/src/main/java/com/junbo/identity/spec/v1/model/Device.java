@@ -7,30 +7,38 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.DeviceId;
-import com.junbo.common.util.Identifiable;
+import com.junbo.common.id.DeviceTypeId;
+import com.junbo.common.model.Link;
 import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
+
+import java.util.HashMap;
 
 /**
  * Created by liangfu on 4/3/14.
  */
 public class Device extends ResourceMeta implements Identifiable<DeviceId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "The id of device resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Nullable]The id of device resource.")
     @JsonProperty("self")
     private DeviceId id;
 
-    // This is the unique external reference to device
-    // such as device sequence id or something like that
-    @ApiModelProperty(position = 2, required = true, value = "The external reference of the device.")
-    private String externalRef;
+    @ApiModelProperty(position = 2, required = true, value = "The type of the device.")
+    private DeviceTypeId type;
 
-    @ApiModelProperty(position = 3, required = true, value = "The description of the device.")
-    private String description;
+    @ApiModelProperty(position = 3, required = true, value = "The serial number of the device.")
+    private String serialNumber;
 
-    // todo:    We may implement a lot of other fields
+    @ApiModelProperty(position = 4, required = true, value = "The description of the device.")
+    private String firmwareVersion;
 
-    @Override
+    @ApiModelProperty(position = 5, required = false, value = "[Nullable]The users linked with this device")
+    private Link users;
+
+    @ApiModelProperty(position = 6, required = false, value = "Feature expansion of the device resource.")
+    private HashMap<String, String> futureExpansion;
+
     public DeviceId getId() {
         return id;
     }
@@ -41,21 +49,48 @@ public class Device extends ResourceMeta implements Identifiable<DeviceId> {
         support.setPropertyAssigned("self");
     }
 
-    public String getExternalRef() {
-        return externalRef;
+    public String getSerialNumber() {
+        return serialNumber;
     }
 
-    public void setExternalRef(String externalRef) {
-        this.externalRef = externalRef;
-        support.setPropertyAssigned("externalRef");
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
+        support.setPropertyAssigned("serialNumber");
     }
 
-    public String getDescription() {
-        return description;
+    public String getFirmwareVersion() {
+        return firmwareVersion;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-        support.setPropertyAssigned("description");
+    public void setFirmwareVersion(String firmwareVersion) {
+        this.firmwareVersion = firmwareVersion;
+        support.setPropertyAssigned("firmwareVersion");
+    }
+
+    public Link getUsers() {
+        return users;
+    }
+
+    public void setUsers(Link users) {
+        this.users = users;
+        support.setPropertyAssigned("users");
+    }
+
+    public DeviceTypeId getType() {
+        return type;
+    }
+
+    public void setType(DeviceTypeId type) {
+        this.type = type;
+        support.setPropertyAssigned("type");
+    }
+
+    public HashMap<String, String> getFutureExpansion() {
+        return futureExpansion;
+    }
+
+    public void setFutureExpansion(HashMap<String, String> futureExpansion) {
+        this.futureExpansion = futureExpansion;
+        support.setPropertyAssigned("futureExpansion");
     }
 }

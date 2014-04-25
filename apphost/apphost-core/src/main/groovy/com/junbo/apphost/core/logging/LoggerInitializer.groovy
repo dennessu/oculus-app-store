@@ -57,13 +57,17 @@ class LoggerInitializer {
                 URL url = ResourceUtils.getURL(location)
                 new ContextInitializer(context).configureByResource(url)
             } catch (Exception ex) {
-                throw new IllegalStateException('Could not initialize logging from $location', ex)
+                throw new IllegalStateException("Could not initialize logging from $location", ex)
             }
         }
     }
 
     static void logStarting(Logger logger) {
         logger.info(getStartingMessage())
+        logger.info("""Starting ${getApplicationName()} with classpath:
+
+${getClasspath().join(System.lineSeparator())}
+""")
     }
 
     static void logStarted(Logger logger, StopWatch stopWatch) {
@@ -86,6 +90,16 @@ class LoggerInitializer {
         LoggerContext context = (LoggerContext) factory
 
         context.stop()
+    }
+
+    private static List<String> getClasspath() {
+        ClassLoader classLoader = Thread.currentThread().contextClassLoader
+
+        if (classLoader instanceof URLClassLoader) {
+            return ((URLClassLoader) classLoader).URLs.collect { URL it -> it.toString() }
+        }
+
+        return ['unknown']
     }
 
     static private String getStartingMessage() {
@@ -161,21 +175,21 @@ class LoggerInitializer {
     }
 
     static  private String getContext() {
-        getValue('started by ', new Callable<Object>() {
+        def startedBy = getValue('started by ', new Callable<Object>() {
             @Override
             Object call() throws Exception {
                 return System.getProperty('user.name')
             }
         } )
 
-        getValue('in ', new Callable<Object>() {
+        def dir = getValue('in ', new Callable<Object>() {
             @Override
             Object call() throws Exception {
                 return System.getProperty('user.dir')
             }
         } )
 
-        return ' ($startedBy $dir)'
+        return " ($startedBy $dir)"
     }
 
     private static String getValue(String prefix, Callable<Object> call) {

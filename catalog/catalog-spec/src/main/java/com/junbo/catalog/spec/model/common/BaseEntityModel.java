@@ -6,46 +6,32 @@
 
 package com.junbo.catalog.spec.model.common;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import javax.validation.constraints.NotNull;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Base entity model.
  */
 public abstract class BaseEntityModel extends BaseModel {
-    @NotNull
-    private LocalizableProperty name;
+   /* @NotNull
+    @ApiModelProperty(position = 10, required = true, value = "Friendly identifier")
+    @JsonProperty("friendlyIdentifier")
+    private String name;
+*/
+    //@ApiModelProperty(position = 11, required = true, value = "Curated")
+   // @JsonProperty("isCurated")
+   // private Boolean curated;
 
-    @JsonProperty("isCurated")
-    private Boolean curated;
-
-    private Integer rev;
-
-    public LocalizableProperty getName() {
-        return name;
-    }
-
-    public void setName(LocalizableProperty name) {
-        this.name = name;
-    }
-
-    public Boolean getCurated() {
-        return curated;
-    }
-
-    public void setCurated(Boolean curated) {
-        this.curated = curated;
-    }
+    @ApiModelProperty(position = 1003, required = true, value = "[Client Immutable] rev")
+    private String rev;
 
     public abstract Long getCurrentRevisionId();
     public abstract void setCurrentRevisionId(Long currentRevisionId);
 
-    public Integer getRev() {
+    public String getRev() {
         return rev;
     }
 
-    public void setRev(Integer rev) {
+    public void setRev(String rev) {
         this.rev = rev;
     }
 }

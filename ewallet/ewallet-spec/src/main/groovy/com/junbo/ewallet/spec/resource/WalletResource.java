@@ -6,6 +6,7 @@
 
 package com.junbo.ewallet.spec.resource;
 
+import com.junbo.common.id.UserId;
 import com.junbo.common.id.WalletId;
 import com.junbo.common.model.Results;
 import com.junbo.ewallet.spec.model.CreditRequest;
@@ -29,31 +30,35 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public interface WalletResource {
-    @ApiOperation("Get a wallet by id")
+//    @ApiOperation("Get a wallet by id")
     @GET
     @Path("/{walletId}")
     Promise<Wallet> getWallet(@PathParam("walletId") WalletId walletId);
 
-    @ApiOperation("Create a new wallet")
+    @ApiOperation("Get all wallets for a user")
+    @GET
+    Promise<Results<Wallet>> getWallets(@QueryParam("userId") UserId userId);
+
+//    @ApiOperation("Create a new wallet")
     @POST
     Promise<Wallet> postWallet(Wallet wallet);
 
-    @ApiOperation("Update a wallet")
+//    @ApiOperation("Update a wallet")
     @PUT
     @Path("/{walletId}")
     Promise<Wallet> updateWallet(@PathParam("walletId") WalletId walletId, Wallet wallet);
 
-    @ApiOperation("Credit a wallet")
+//    @ApiOperation("Credit a wallet")
     @POST
     @Path("/credit")
     Promise<Transaction> credit(CreditRequest creditRequest);
 
-    @ApiOperation("Debit a wallet")
+//    @ApiOperation("Debit a wallet")
     @POST
     @Path("/{walletId}/debit")
     Promise<Transaction> debit(@PathParam("walletId") WalletId walletId, DebitRequest debitRequest);
 
-    @ApiOperation("Get transactions of a wallet")
+//    @ApiOperation("Get transactions of a wallet")
     @GET
     @Path("/{walletId}/transactions")
     Promise<Results<Transaction>> getTransactions(@PathParam("walletId") WalletId walletId);
