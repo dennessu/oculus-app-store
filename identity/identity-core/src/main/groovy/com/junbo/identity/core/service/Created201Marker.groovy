@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.core.service
 import com.google.common.base.Function
+import com.junbo.common.enumid.EnumId
 import com.junbo.common.id.Id
 import groovy.transform.CompileStatic
 import org.glassfish.jersey.server.ContainerResponse
@@ -31,14 +32,14 @@ class Created201Marker {
     @Autowired
     private RespondingContext respondingContext
 
-    void mark(Id resourceId) {
+    void mark(Object resourceId) {
         if (resourceId == null) {
             throw new IllegalArgumentException('resourceId is null')
         }
 
         // process response header
         if (requestContext != null && respondingContext != null) {
-            def location = requestContext.uriInfo.absolutePath.toString() + '/' + resourceId.value
+            def location = requestContext.uriInfo.absolutePath.toString() + '/' + resourceId.toString()
 
             respondingContext.push(
                     { ContainerResponse response ->

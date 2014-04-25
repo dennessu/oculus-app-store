@@ -49,4 +49,9 @@ public interface DeviceResource {
     @ApiOperation("Search device info")
     @GET
     Promise<Results<Device>> list(@BeanParam DeviceListOptions listOptions);
+
+    @ApiOperation("Delete a device")
+    @DELETE
+    @Path("/{deviceId}")
+    Promise<Void> delete(@PathParam("deviceId") DeviceId deviceId);
 }

@@ -45,4 +45,9 @@ public interface TosResource {
     @ApiOperation("Search tos info")
     @GET
     Promise<Results<Tos>> list(@BeanParam TosListOptions listOptions);
+
+    @ApiOperation("Delete a tos")
+    @DELETE
+    @Path("/{tosId}")
+    Promise<Void> delete(@PathParam("tosId") TosId tosId);
 }

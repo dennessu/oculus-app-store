@@ -5,6 +5,7 @@ import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.enumid.CountryId
 import com.junbo.identity.data.repository.CountryRepository
 import com.junbo.identity.spec.v1.model.Country
+import com.junbo.identity.spec.v1.option.list.CountryListOptions
 import com.junbo.langur.core.promise.Promise
 
 /**
@@ -35,5 +36,10 @@ class CountryRepositoryCloudantImpl extends CloudantClient<Country> implements C
     Promise<Void> delete(CountryId id) {
         super.cloudantDelete(id.value)
         return Promise.pure(null)
+    }
+
+    @Override
+    Promise<List<Country>> search(CountryListOptions options) {
+        return Promise.pure(super.cloudantGetAll())
     }
 }

@@ -4,6 +4,7 @@ import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.identity.data.repository.CurrencyRepository
+import com.junbo.identity.spec.v1.option.list.CurrencyListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.identity.spec.v1.model.Currency
 
@@ -35,5 +36,10 @@ class CurrencyRepositoryCloudantImpl extends CloudantClient<Currency> implements
     Promise<Void> delete(CurrencyId id) {
         super.cloudantDelete(id.value)
         return Promise.pure(null)
+    }
+
+    @Override
+    Promise<List<Currency>> search(CurrencyListOptions options) {
+        return Promise.pure(super.cloudantGetAll())
     }
 }

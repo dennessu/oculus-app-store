@@ -46,9 +46,12 @@ public interface CountryResource {
     @Path("/{countryId}")
     Promise<Country> get(@PathParam("countryId") CountryId countryId, @BeanParam CountryGetOptions getOptions);
 
-    @ApiOperation("Search country info")
+    @ApiOperation("Get all countries")
     @GET
     Promise<Results<Country>> list(@BeanParam CountryListOptions listOptions);
 
-    // Delete operation won't be supported.
+    @ApiOperation("Delete a country")
+    @DELETE
+    @Path("/{countryId}")
+    Promise<Void> delete(@PathParam("countryId") CountryId countryId);
 }

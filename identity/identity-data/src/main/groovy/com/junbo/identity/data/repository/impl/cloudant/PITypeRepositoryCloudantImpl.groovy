@@ -5,6 +5,7 @@ import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.enumid.PITypeId
 import com.junbo.identity.data.repository.PITypeRepository
 import com.junbo.identity.spec.v1.model.PIType
+import com.junbo.identity.spec.v1.option.list.PITypeListOptions
 import com.junbo.langur.core.promise.Promise
 
 /**
@@ -40,5 +41,10 @@ class PITypeRepositoryCloudantImpl extends CloudantClient<PIType> implements PIT
     Promise<Void> delete(PITypeId id) {
         super.cloudantDelete(id.value)
         return Promise.pure(null)
+    }
+
+    @Override
+    Promise<List<PIType>> search(PITypeListOptions options) {
+        return Promise.pure(super.cloudantGetAll())
     }
 }

@@ -7,6 +7,7 @@ package com.junbo.identity.spec.v1.resource;
 
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.model.Results;
+import com.junbo.identity.spec.v1.model.Locale;
 import com.junbo.identity.spec.v1.option.list.LocaleListOptions;
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions;
 import com.junbo.langur.core.RestResource;
@@ -16,7 +17,6 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.Locale;
 
 /**
  * Created by liangfu on 4/24/14.
@@ -27,11 +27,11 @@ import java.util.Locale;
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public interface LocaleResource {
-    @ApiOperation("Create a Locale info")
+    @ApiOperation("Create a locale info")
     @POST
     Promise<Locale> create(Locale locale);
 
-    @ApiOperation("Update a Locale info")
+    @ApiOperation("Update a locale info")
     @PUT
     @Path("/{localeId}")
     Promise<Locale> put(@PathParam("localeId") LocaleId localeId, Locale locale);
@@ -40,12 +40,17 @@ public interface LocaleResource {
     @Path("/{localeId}")
     Promise<Locale> patch(@PathParam("localeId") LocaleId localeId, Locale locale);
 
-    @ApiOperation("Get a Locale info")
+    @ApiOperation("Get a locale info")
     @GET
     @Path("/{LocaleId}")
     Promise<Locale> get(@PathParam("LocaleId") LocaleId localeId, @BeanParam LocaleGetOptions getOptions);
 
-    @ApiOperation("Search Locale info")
+    @ApiOperation("Get all locales")
     @GET
     Promise<Results<Locale>> list(@BeanParam LocaleListOptions listOptions);
+
+    @ApiOperation("Delete a locale")
+    @DELETE
+    @Path("/{LocaleId}")
+    Promise<Void> delete(@PathParam("LocaleId") LocaleId LocaleId);
 }

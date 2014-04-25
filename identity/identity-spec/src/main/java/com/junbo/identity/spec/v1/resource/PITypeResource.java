@@ -44,4 +44,9 @@ public interface PITypeResource {
     @ApiOperation("Get all payment instrument type")
     @GET
     Promise<Results<PIType>> list(@BeanParam PITypeListOptions listOptions);
+
+    @ApiOperation("Delete a payment instrument type")
+    @DELETE
+    @Path("/{piTypeId}")
+    Promise<Void> delete(@PathParam("piTypeId") PITypeId piTypeId);
 }

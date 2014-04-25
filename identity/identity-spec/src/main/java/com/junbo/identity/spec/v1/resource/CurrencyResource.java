@@ -46,9 +46,12 @@ public interface CurrencyResource {
     @Path("/{currencyId}")
     Promise<Currency> get(@PathParam("currencyId") CurrencyId currencyId, @BeanParam CurrencyGetOptions getOptions);
 
-    @ApiOperation("Search currency info")
+    @ApiOperation("Get all currencies")
     @GET
     Promise<Results<Currency>> list(@BeanParam CurrencyListOptions listOptions);
 
-    // Delete operation won't be supported.
+    @ApiOperation("Delete a currency")
+    @DELETE
+    @Path("/{currencyId}")
+    Promise<Void> delete(@PathParam("currencyId") CurrencyId currencyId);
 }

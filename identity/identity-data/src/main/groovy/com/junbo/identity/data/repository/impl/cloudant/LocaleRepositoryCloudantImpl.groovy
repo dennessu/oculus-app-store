@@ -5,6 +5,7 @@ import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.enumid.LocaleId
 import com.junbo.identity.data.repository.LocaleRepository
 import com.junbo.identity.spec.v1.model.Locale
+import com.junbo.identity.spec.v1.option.list.LocaleListOptions
 import com.junbo.langur.core.promise.Promise
 
 /**
@@ -35,5 +36,10 @@ class LocaleRepositoryCloudantImpl extends CloudantClient<Locale> implements Loc
     Promise<Void> delete(LocaleId id) {
         super.cloudantDelete(id.value)
         return Promise.pure(null)
+    }
+
+    @Override
+    Promise<List<Locale>> search(LocaleListOptions options) {
+        return Promise.pure(super.cloudantGetAll())
     }
 }

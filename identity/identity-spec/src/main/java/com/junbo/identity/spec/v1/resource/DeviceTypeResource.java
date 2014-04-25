@@ -50,5 +50,8 @@ public interface DeviceTypeResource {
     @GET
     Promise<Results<DeviceType>> list(@BeanParam DeviceTypeListOptions listOptions);
 
-    // Delete operation won't be supported.
+    @ApiOperation("Delete a device type")
+    @DELETE
+    @Path("/{deviceTypeId}")
+    Promise<Void> delete(@PathParam("deviceTypeId") DeviceTypeId deviceTypeId);
 }
