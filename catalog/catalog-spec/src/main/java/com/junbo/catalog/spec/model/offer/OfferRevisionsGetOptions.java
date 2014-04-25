@@ -23,7 +23,7 @@ public class OfferRevisionsGetOptions extends PageableGetOptions {
     private List<OfferRevisionId> revisionIds;
     @QueryParam("status")
     private String status;
-    @QueryParam("timestamp")
+    @QueryParam("timeInMillis")
     private Long timestamp;
 
     public List<OfferId> getOfferIds() {

@@ -9,7 +9,8 @@
     <context:annotation-config/>
     <tx:annotation-driven/>
 
-    <bean id="attributeService" class="com.junbo.catalog.core.service.AttributeServiceImpl"/>
+    <bean id="itemAttributeService" class="com.junbo.catalog.core.service.ItemAttributeServiceImpl"/>
+    <bean id="offerAttributeService" class="com.junbo.catalog.core.service.OfferAttributeServiceImpl"/>
     <bean id="itemService" class="com.junbo.catalog.core.service.ItemServiceImpl"/>
     <bean id="offerService" class="com.junbo.catalog.core.service.OfferServiceImpl"/>
     <bean id="promotionService" class="com.junbo.catalog.core.service.PromotionServiceImpl"/>

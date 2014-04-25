@@ -16,6 +16,7 @@ import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.BeanParam;
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 /**
@@ -41,5 +42,15 @@ public class PriceTierResourceImpl implements PriceTierResource {
     @Override
     public Promise<PriceTier> createPriceTier(PriceTier priceTier) {
         return Promise.pure(priceTierService.create(priceTier));
+    }
+
+    @Override
+    public Promise<PriceTier> update(PriceTierId tierId, PriceTier priceTier) {
+        return null;
+    }
+
+    @Override
+    public Promise<Response> delete(PriceTierId tierId) {
+        return null;
     }
 }

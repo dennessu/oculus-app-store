@@ -17,15 +17,15 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * AttributeEntity.
+ * OfferAttributeEntity.
  */
 @Entity
-@Table(name="attribute")
+@Table(name="offer_attribute")
 @TypeDefs(@TypeDef(name="json-string", typeClass=StringJsonUserType.class))
-public class AttributeEntity extends BaseEntity {
+public class OfferAttributeEntity extends BaseEntity {
     private Long id;
-    private String name;
     private String type;
+    private Long parentId;
     private String payload;
 
     @Id
@@ -38,16 +38,6 @@ public class AttributeEntity extends BaseEntity {
         this.id = id;
     }
 
-    @Column(name = "name")
-    @Type(type = "json-string")
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     @Column(name = "type")
     public String getType() {
         return type;
@@ -55,6 +45,15 @@ public class AttributeEntity extends BaseEntity {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Column(name = "parent_id")
+    public Long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
     }
 
     @Column(name = "payload")

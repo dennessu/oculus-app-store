@@ -12,6 +12,7 @@ import com.junbo.catalog.db.repo.BaseEntityRepository;
 import com.junbo.catalog.db.repo.BaseRevisionRepository;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.common.*;
+import com.junbo.catalog.spec.model.offer.Offer;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -44,12 +45,9 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
         E existingEntity = getEntityRepo().get(entityId);
         checkEntityNotNull(entityId, existingEntity, getEntityType());
 
-        if (existingEntity.getCurrentRevisionId() != entity.getCurrentRevisionId()) {
+        if (!isEqual(existingEntity.getCurrentRevisionId(), entity.getCurrentRevisionId())) {
             throw AppErrors.INSTANCE.fieldNotCorrect("currentRevision", "The field should not be explicitly updated.")
                     .exception();
-        }
-        if (Boolean.TRUE.equals(entity.getCurated())){
-            checkFieldNotNull(entity.getCurrentRevisionId(), "currentRevision");
         }
 
         getEntityRepo().update(entity);
@@ -86,7 +84,9 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
         if (Status.APPROVED.equals(revision.getStatus())) {
             E existingEntity = getEntityRepo().get(revision.getEntityId());
             checkEntityNotNull(revision.getEntityId(), existingEntity, getEntityType());
-            existingEntity.setCurated(Boolean.TRUE);
+            if (existingEntity instanceof Offer) {
+                ((Offer) existingEntity).setPublished(Boolean.TRUE);
+            }
             existingEntity.setCurrentRevisionId(revisionId);
             getEntityRepo().update(existingEntity);
             revision.setTimestamp(Utils.currentTimestamp());
@@ -169,6 +169,13 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
         } else if (Price.CUSTOM.equals(price.getPriceType())) {
             checkFieldShouldNull(price.getPriceTier(), "priceTier");
         }
+    }
+
+    private boolean isEqual(Long v1, Long v2) {
+        if (v1==null) {
+            return v2==null;
+        }
+        return v1.equals(v2);
     }
 
     protected abstract <RE extends BaseEntityRepository<E>> RE getEntityRepo();

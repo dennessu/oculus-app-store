@@ -8,13 +8,11 @@ package com.junbo.catalog.spec.model.offer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.catalog.spec.model.common.BaseRevisionModel;
-import com.junbo.catalog.spec.model.common.Interval;
-import com.junbo.catalog.spec.model.common.Price;
-import com.junbo.catalog.spec.model.common.TypedProperties;
+import com.junbo.catalog.spec.model.common.*;
 import com.junbo.common.jackson.annotation.OfferId;
 import com.junbo.common.jackson.annotation.OfferRevisionId;
 import com.junbo.common.jackson.annotation.UserId;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,25 +24,36 @@ import java.util.Map;
 public class OfferRevision extends BaseRevisionModel {
     @OfferRevisionId
     @JsonProperty("self")
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The id of offer revision resource")
     private Long revisionId;
 
     @UserId
     @JsonProperty("publisher")
+    @ApiModelProperty(position = 20, required = true, value = "Publisher of the offer revision resource")
     private Long ownerId;
 
     @OfferId
     @JsonProperty("offer")
+    @ApiModelProperty(position = 21, required = true, value = "Offer of the offer revision")
     private Long offerId;
 
+    @ApiModelProperty(position = 22, required = true, value = "Offer price")
     private Price price;
 
+    @ApiModelProperty(position = 23, required = true, value = "Offer restrictions")
     private Restriction restrictions;
     @OfferId
+    @ApiModelProperty(position = 24, required = true, value = "Sub-offers")
     private List<Long> subOffers;
+    @ApiModelProperty(position = 25, required = true, value = "Items")
     private List<ItemEntry> items = new ArrayList<>();
+    @ApiModelProperty(position = 26, required = true, value = "Eligible countries")
     private List<String> eligibleCountries;
-    private Map<String, Event> events;
-    private TypedProperties<Interval> startEndTime;
+    @ApiModelProperty(position = 27, required = true, value = "Event actions")
+    private Map<String, List<Action>> eventActions;
+
+    @ApiModelProperty(position = 31, required = true, value = "Locale properties of the offer revision resource")
+    private Map<String, OfferRevisionLocaleProperties> locales;
 
     public Long getRevisionId() {
         return revisionId;
@@ -110,20 +119,20 @@ public class OfferRevision extends BaseRevisionModel {
         this.eligibleCountries = eligibleCountries;
     }
 
-    public Map<String, Event> getEvents() {
-        return events;
+    public Map<String, List<Action>> getEventActions() {
+        return eventActions;
     }
 
-    public void setEvents(Map<String, Event> events) {
-        this.events = events;
+    public void setEventActions(Map<String, List<Action>> eventActions) {
+        this.eventActions = eventActions;
     }
 
-    public TypedProperties<Interval> getStartEndTime() {
-        return startEndTime;
+    public Map<String, OfferRevisionLocaleProperties> getLocales() {
+        return locales;
     }
 
-    public void setStartEndTime(TypedProperties<Interval> startEndTime) {
-        this.startEndTime = startEndTime;
+    public void setLocales(Map<String, OfferRevisionLocaleProperties> locales) {
+        this.locales = locales;
     }
 
     @Override
