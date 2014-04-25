@@ -25,7 +25,7 @@ public class Item extends BaseEntityModel {
     private Long itemId;
 
     @ApiModelProperty(position = 2, required = true, value = "Item type",
-            allowableValues = "PHYSICAL, DIGITAL, WALLET, SUBSCRIPTION")
+            allowableValues = "PHYSICAL, DIGITAL, WALLET, SUBSCRIPTION, VIRTUAL")
     private String type;
 
     @ItemRevisionId

@@ -20,6 +20,7 @@
               created_time            timestamp         not null,
               updated_by              varchar(64)       default null,
               updated_time            timestamp         default null,
+              rev                     int               not null,
 
               primary key (item_id)
             );
@@ -27,7 +28,6 @@
             create table item_revision (
               revision_id             bigint            not null,
               item_id                 bigint            not null,
-              type                    varchar(64)       not null,
               status                  varchar(64)       not null,
               owner_id                bigint            not null,
               payload                 json              not null,
@@ -37,6 +37,7 @@
               created_time            timestamp         not null,
               updated_by              varchar(64)       default null,
               updated_time            timestamp         default null,
+              rev                     int               not null,
 
               primary key (revision_id)
             );
@@ -54,6 +55,7 @@
               created_time            timestamp         not null,
               updated_by              varchar(64)       default null,
               updated_time            timestamp         default null,
+              rev                     int               not null,
 
               primary key (offer_id)
             );
@@ -70,6 +72,7 @@
               created_time            timestamp         not null,
               updated_by              varchar(64)       default null,
               updated_time            timestamp         default null,
+              rev                     int               not null,
 
               primary key (revision_id)
             );
@@ -84,6 +87,7 @@
               created_time            timestamp         not null,
               updated_by              varchar(64)       default null,
               updated_time            timestamp         default null,
+              rev                     int               not null,
 
               primary key (id)
             );
@@ -98,6 +102,7 @@
               created_time            timestamp         not null,
               updated_by              varchar(64)       default null,
               updated_time            timestamp         default null,
+              rev                     int               not null,
 
               primary key (id)
             );
@@ -110,6 +115,7 @@
               created_time            timestamp         not null,
               updated_by              varchar(64)       default null,
               updated_time            timestamp         default null,
+              rev                     int               not null,
 
               primary key (id)
             );
@@ -132,6 +138,7 @@
                 created_time            timestamp         not null,
                 updated_by              varchar(64)       default null,
                 updated_time            timestamp         default null,
+                rev                     int               not null,
 
                 primary key (promotion_id)
             );
@@ -150,6 +157,7 @@
                 created_time            timestamp         not null,
                 updated_by              varchar(64)       default null,
                 updated_time            timestamp         default null,
+                rev                     int               not null,
 
                 primary key (revision_id)
             );

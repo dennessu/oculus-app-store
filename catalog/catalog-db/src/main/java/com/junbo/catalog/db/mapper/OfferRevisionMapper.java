@@ -32,6 +32,7 @@ public class OfferRevisionMapper {
         entity.setOwnerId(model.getOwnerId());
         entity.setTimestamp(model.getTimestamp());
         entity.setPayload(Utils.toJson(model));
+        entity.setRev(Integer.valueOf(model.getRev()));
     }
 
     public static OfferRevision toModel(OfferRevisionEntity entity) {
@@ -48,6 +49,7 @@ public class OfferRevisionMapper {
         model.setCreatedTime(entity.getCreatedTime());
         model.setUpdatedBy(entity.getUpdatedBy());
         model.setUpdatedTime(entity.getUpdatedTime());
+        model.setRev(entity.getRev().toString());
         return model;
     }
 }

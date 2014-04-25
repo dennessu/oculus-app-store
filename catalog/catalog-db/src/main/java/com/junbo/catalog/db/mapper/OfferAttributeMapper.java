@@ -29,6 +29,7 @@ public class OfferAttributeMapper {
         dbEntity.setType(attribute.getType());
         dbEntity.setParentId(attribute.getParentId());
         dbEntity.setPayload(Utils.toJson(attribute));
+        dbEntity.setRev(Integer.valueOf(attribute.getRev()));
     }
 
     public static OfferAttribute toModel(OfferAttributeEntity dbEntity) {
@@ -43,6 +44,7 @@ public class OfferAttributeMapper {
         attribute.setCreatedTime(dbEntity.getCreatedTime());
         attribute.setUpdatedBy(dbEntity.getUpdatedBy());
         attribute.setUpdatedTime(dbEntity.getUpdatedTime());
+        attribute.setRev(dbEntity.getRev().toString());
         return attribute;
     }
 }

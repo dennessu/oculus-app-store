@@ -20,7 +20,7 @@ import java.util.Set;
  */
 public interface CatalogGateway {
     Item getItem(Long itemId);
-    RatingOffer getOffer(Long offerId, Long timestamp);
+    RatingOffer getOffer(Long offerId, String timestamp);
     List<PromotionRevision> getPromotions();
     ShippingMethod getShippingMethod(Long shippingMethodId);
     Map<Long, String> getEntitlementDefinitions(Set<String> groups);

@@ -19,8 +19,9 @@ public final class ItemType {
     public static final String DIGITAL = "DIGITAL";
     public static final String WALLET = "WALLET";
     public static final String SUBSCRIPTION = "SUBSCRIPTION";
+    public static final String VIRTUAL = "VIRTUAL";
     public static final Set<String> ALL_TYPES =
-            Collections.unmodifiableSet(new HashSet<>(Arrays.asList(PHYSICAL, DIGITAL, WALLET, SUBSCRIPTION)));
+            Collections.unmodifiableSet(new HashSet<>(Arrays.asList(PHYSICAL, DIGITAL, WALLET, SUBSCRIPTION, VIRTUAL)));
 
     private ItemType() {}
 }

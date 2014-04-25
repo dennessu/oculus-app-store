@@ -37,7 +37,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     public Offer createEntity(Offer offer) {
         if (Boolean.TRUE.equals(offer.getPublished())) {
             throw AppErrors.INSTANCE
-                    .fieldNotCorrect("curated", "Cannot create an offer with curated true.").exception();
+                    .fieldNotCorrect("isPublished", "Cannot create an offer with isPublished true.").exception();
         }
         validateOffer(offer);
         return super.createEntity(offer);

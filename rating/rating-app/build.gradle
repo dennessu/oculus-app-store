@@ -8,4 +8,6 @@ dependencies {
     runtime (libraries.common_configuration_data)
 
     compile project(':rating-rest')
+    compile 'com.junbo.entitlement:entitlement-rest:0.0.1-SNAPSHOT'
+    compile 'com.junbo.catalog:catalog-rest:0.0.1-SNAPSHOT'
 }
