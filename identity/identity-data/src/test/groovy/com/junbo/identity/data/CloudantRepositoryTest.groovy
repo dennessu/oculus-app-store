@@ -8,6 +8,7 @@ package com.junbo.identity.data
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.enumid.PITypeId
 import com.junbo.common.id.ClientId
 import com.junbo.common.id.CommunicationId
 import com.junbo.common.id.DeviceId
@@ -26,6 +27,7 @@ import com.junbo.identity.spec.v1.model.Country
 import com.junbo.identity.spec.v1.model.Currency
 import com.junbo.identity.spec.v1.model.Device
 import com.junbo.identity.spec.v1.model.Group
+import com.junbo.identity.spec.v1.model.PIType
 import com.junbo.identity.spec.v1.model.Tos
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserAuthenticator
@@ -143,6 +145,11 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     @Qualifier('cloudantLocaleRepository')
     private LocaleRepository localeRepository
 
+    @Autowired
+    @Qualifier('cloudantPITypeRepository')
+    private PITypeRepository piTypeRepository
+
+
     @Test
     public void testCountryRepository() {
         countryRepository.delete(new CountryId('US')).wrapped().get()
@@ -178,6 +185,17 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         com.junbo.identity.spec.v1.model.Locale newLocale = localeRepository.create(locale).wrapped().get()
         assert  locale.localeCode == newLocale.localeCode
+    }
+
+    @Test
+    public void testPITypeRepository() {
+        piTypeRepository.delete(new PITypeId('1234')).wrapped().get()
+
+        PIType piType = new PIType()
+        piType.setId(new PITypeId('1234'))
+
+        PIType newPIType = piTypeRepository.create(piType).wrapped().get()
+        assert  piType.id.toString() == newPIType.id.toString()
     }
 
 

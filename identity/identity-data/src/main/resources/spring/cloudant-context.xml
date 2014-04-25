@@ -141,4 +141,10 @@
     <bean id="cloudantLocaleRepository" class="com.junbo.identity.data.repository.impl.cloudant.LocaleRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="locale"/>
     </bean>
+
+    <bean id="cloudantPITypeRepository" class="com.junbo.identity.data.repository.impl.cloudant.PITypeRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="pitype"/>
+    </bean>
+
+
 </beans>
