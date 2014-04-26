@@ -10,7 +10,7 @@ import com.junbo.billing.jobs.BillingFacade;
 import com.junbo.billing.spec.model.Balance;
 import com.junbo.common.id.BalanceId;
 import com.junbo.langur.core.promise.Promise;
-//import com.junbo.notification.core.BaseListener;
+import com.junbo.notification.core.BaseListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * Created by xmchen on 14-4-21.
  */
-public class AsyncChargeListener {//extends BaseListener {
+public class AsyncChargeListener extends BaseListener {
 
     @Autowired
     private BillingFacade billingFacade;
