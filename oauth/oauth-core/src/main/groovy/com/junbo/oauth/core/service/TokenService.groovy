@@ -43,4 +43,6 @@ interface TokenService {
     boolean isValidAccessToken(String tokenValue)
 
     boolean isValidRefreshToken(String tokenValue)
+
+    String generateSessionState(String clientId, String redirectUri, String sessionId)
 }

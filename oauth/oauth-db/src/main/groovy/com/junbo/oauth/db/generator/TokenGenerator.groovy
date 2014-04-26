@@ -34,6 +34,8 @@ interface TokenGenerator {
 
     String generateClientSecret()
 
+    String generateSalt()
+
     boolean isValidAccessToken(String tokenValue)
 
     boolean isValidRefreshToken(String tokenValue)

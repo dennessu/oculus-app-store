@@ -46,7 +46,7 @@ class GrantRememberMeToken implements Action {
         def needRememberMe = contextWrapper.needRememberMe
 
         if (!needRememberMe) {
-            return Promise.pure(null)
+            return Promise.pure(new ActionResult('success'))
         }
 
         def loginState = contextWrapper.loginState
@@ -67,9 +67,9 @@ class GrantRememberMeToken implements Action {
 
         newToken = rememberMeTokenRepository.save(newToken)
 
-        CookieUtil.setCookie(OAuthParameters.REMEMBER_ME, newToken.tokenValue,
-                defaultRememberMeTokenExpiration, context)
+        CookieUtil.setCookie(context, OAuthParameters.COOKIE_REMEMBER_ME, newToken.tokenValue,
+                defaultRememberMeTokenExpiration)
 
-        return Promise.pure(null)
+        return Promise.pure(new ActionResult('success'))
     }
 }

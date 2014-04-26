@@ -15,7 +15,7 @@ import groovy.transform.CompileStatic
 interface LoginStateRepository {
     LoginState get(String id)
 
-    void saveOrUpdate(LoginState loginState)
+    LoginState saveOrUpdate(LoginState loginState)
 
     void delete(String id)
 }

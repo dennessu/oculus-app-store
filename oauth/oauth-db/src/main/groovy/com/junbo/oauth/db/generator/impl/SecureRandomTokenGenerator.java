@@ -51,6 +51,8 @@ public class
     private int clientIdLength;
     private int clientSecretLength;
 
+    private int saltLength;
+
     @Required
     public void setLoginStateLength(int loginStateLength) {
         this.loginStateLength = loginStateLength;
@@ -141,6 +143,11 @@ public class
         this.clientSecretLength = clientSecretLength;
     }
 
+    @Required
+    public void setSaltLength(int saltLength) {
+        this.saltLength = saltLength;
+    }
+
     private String generate(int length) {
         byte[] bytes = new byte[length];
         random.nextBytes(bytes);
@@ -214,6 +221,11 @@ public class
     @Override
     public String generateClientSecret() {
         return generate(clientSecretLength);
+    }
+
+    @Override
+    public String generateSalt() {
+        return generate(saltLength);
     }
 
     @Override
