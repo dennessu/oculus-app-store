@@ -138,6 +138,8 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
                 throw AppErrors.INSTANCE.validation("Cannot set current revision to unapproved revision").exception();
             }
         }
+
+        //TODO: check defaultOffer
     }
 
     private void validateRevision(ItemRevision revision) {

@@ -13,6 +13,7 @@ import com.junbo.catalog.spec.model.offer.OffersGetOptions;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -25,14 +26,24 @@ public class OfferDaoImpl extends BaseDaoImpl<OfferEntity> implements OfferDao {
             @Override
             public void apply(Criteria criteria) {
                 addIdRestriction("offerId", options.getOfferIds(), criteria);
-                if (options.getCurated() != null) {
-                    criteria.add(Restrictions.eq("curated", options.getCurated()));
+                if (options.getPublished() != null) {
+                    criteria.add(Restrictions.eq("published", options.getPublished()));
                 }
                 if (options.getCategory() != null) {
                     criteria.add(Restrictions.sqlRestriction(options.getCategory() + "=ANY(categories)"));
                 }
                 options.ensurePagingValid();
                 criteria.setFirstResult(options.getStart()).setMaxResults(options.getSize());
+            }
+        });
+    }
+
+    @Override
+    public List<OfferEntity> getOffers(final Collection<Long> offerIds) {
+        return findAllBy(new Action<Criteria>() {
+            @Override
+            public void apply(Criteria criteria) {
+                criteria.add(Restrictions.in("offerId", offerIds));
             }
         });
     }

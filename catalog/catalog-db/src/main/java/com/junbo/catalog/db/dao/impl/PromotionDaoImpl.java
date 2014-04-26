@@ -27,9 +27,6 @@ public class PromotionDaoImpl extends BaseDaoImpl<PromotionEntity> implements Pr
             @Override
             public void apply(Criteria criteria) {
                 addIdRestriction("promotionId", options.getPromotionIds(), criteria);
-                if (options.getCurated() != null) {
-                    criteria.add(Restrictions.eq("curated", options.getCurated()));
-                }
                 Date now = Utils.now();
                 criteria.add(Restrictions.and(Restrictions.lt("startDate", now), Restrictions.gt("endDate", now)));
                 options.ensurePagingValid();
