@@ -25,7 +25,8 @@ public class UserPersonalInfo  extends ResourceMeta implements Identifiable<User
     private UserPersonalInfoId id;
 
     @ApiModelProperty(position = 2, required = true, value = "The type of user personal info resource, it must be in " +
-            "[EMAIL, " +
+            "[ADDRESS, " +
+            "EMAIL, " +
             "PHONE, " +
             "GIVEN_NAME, " +
             "FAMILY_NAME, " +
@@ -49,7 +50,7 @@ public class UserPersonalInfo  extends ResourceMeta implements Identifiable<User
     @ApiModelProperty(position = 5, required = false, value = "Whether the value is normalized or not.")
     private Boolean isNormalized;
 
-    @ApiModelProperty(position = 6, required = true, value = "User resource link.")
+    @ApiModelProperty(position = 6, required = false, value = "User resource link.")
     private String label;
 
     @JsonIgnore
