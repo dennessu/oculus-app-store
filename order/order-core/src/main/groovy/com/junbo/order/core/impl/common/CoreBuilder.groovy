@@ -3,6 +3,7 @@ import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.DiscountItem
+import com.junbo.billing.spec.model.TaxItem
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.OrderItemId
 import com.junbo.common.id.PromotionId
@@ -17,6 +18,7 @@ import com.junbo.order.spec.model.Discount
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.OrderItem
+import com.junbo.order.spec.model.OrderTaxItem
 import com.junbo.rating.spec.model.request.RatingItem
 import com.junbo.rating.spec.model.request.RatingRequest
 import groovy.transform.CompileStatic
@@ -50,6 +52,7 @@ class CoreBuilder {
             balance.addBalanceItem(balanceItem)
         }
 
+        // TODO: confirm whether tax calculation of shipping fee is necessary
         return balance
     }
 
@@ -93,6 +96,9 @@ class CoreBuilder {
         balance.piId = order.paymentInstruments?.get(0)
         balance.trackingUuid = UUID.randomUUID()
         balance.shippingAddressId = order.shippingAddress
+        balance.providerConfirmUrl = order.providerConfirmUrl
+        balance.successRedirectUrl = order.successRedirectUrl
+        balance.cancelRedirectUrl = order.cancelRedirectUrl
 
         return balance
     }
@@ -137,9 +143,9 @@ class CoreBuilder {
     }
 
     static void fillRatingInfo(Order order, RatingRequest ratingRequest) {
-        order.totalAmount = ratingRequest.orderBenefit.finalAmount
-        order.totalDiscount = ratingRequest.orderBenefit.discountAmount
-        order.totalShippingFee = ratingRequest.shippingBenefit.shippingFee
+        order.totalAmount = ratingRequest.ratingSummary.finalAmount
+        order.totalDiscount = ratingRequest.ratingSummary.discountAmount
+        order.totalShippingFee = ratingRequest.shippingSummary.totalShippingFee
         // TODO the shipping discount is not exposed by rating yet
         order.totalShippingFeeDiscount = BigDecimal.ZERO
         // TODO the honorUntilTime is not exposed by rating yet
@@ -149,11 +155,11 @@ class CoreBuilder {
             buildItemRatingInfo(i, ratingRequest)
         }
         order.discounts = []
-        ratingRequest.couponCodes?.each { String couponCode ->
+        ratingRequest.coupons?.each { String couponCode ->
             def discount = new Discount()
-            discount.discountAmount = ratingRequest.orderBenefit.discountAmount
+            discount.discountAmount = ratingRequest.ratingSummary.discountAmount
             discount.discountType = DiscountType.ORDER_DISCOUNT
-            discount.promotion = new PromotionId(ratingRequest.orderBenefit.promotion)
+            discount.promotion = new PromotionId(ratingRequest.ratingSummary.promotion)
             order.discounts.add(discount)
             // TODO: need to discuss the coupon logic
             discount.coupon = couponCode
@@ -213,10 +219,24 @@ class CoreBuilder {
             }
             if (balanceItem != null) {
                 orderItem.totalTax = balanceItem.taxAmount
+                fillTaxItem(orderItem, balanceItem)
             }
         }
     }
 
+    static void fillTaxItem(OrderItem orderItem, BalanceItem balanceItem) {
+        def taxes = []
+        balanceItem.taxItems.each { TaxItem taxItem ->
+            def orderTaxItem = new OrderTaxItem()
+            orderTaxItem.taxAmount = taxItem.taxAmount
+            orderTaxItem.taxRate = taxItem.taxRate
+            orderTaxItem.taxType = taxItem.taxAuthority
+            orderTaxItem.isTaxExempted = taxItem.isTaxExempt ?: false
+
+            taxes << orderTaxItem
+        }
+        orderItem.taxes = taxes
+    }
     static OrderEvent buildOrderEvent(OrderId orderId, OrderActionType action,
                                       EventStatus status, String flowName, UUID trackingUuid) {
         def event = new OrderEvent()

@@ -73,16 +73,11 @@ public class PaymentClientProxyTest extends BaseTest {
                     setAccountName("ut");
                     setAccountNum("4111111111111111");
                     setIsValidated(false);
-                    setType("CREDITCARD");
+                    setType(0L);
                     setTrackingUuid(generateUUID());
                     setAdmins(Arrays.asList(getLongId()));
-                    setAddress(new Address() {
-                        {
-                            setAddressLine1("3rd street");
-                            setPostalCode("12345");
-                            setCountry("US");
-                        }
-                    });
+                    setLabel("my first card");
+                    setBillingAddressId(123L);
                     setTypeSpecificDetails(new TypeSpecificDetails() {
                         {
                             setExpireDate("2025-12");

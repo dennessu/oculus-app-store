@@ -10,11 +10,11 @@ import groovy.transform.CompileStatic
 class UserCommunicationFilter extends ResourceFilterImpl<UserCommunication> {
     @Override
     protected UserCommunication filter(UserCommunication userOptin, MappingContext context) {
-        return selfMapper.filterUserOptin(userOptin, context)
+        return selfMapper.filterUserCommunication(userOptin, context)
     }
 
     @Override
     protected UserCommunication merge(UserCommunication source, UserCommunication base, MappingContext context) {
-        return selfMapper.mergeUserOptin(source, base, context)
+        return selfMapper.mergeUserCommunication(source, base, context)
     }
 }

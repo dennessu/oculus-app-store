@@ -2,6 +2,7 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.id.UserAuthenticatorId
 import com.junbo.identity.core.service.validator.UserAuthenticatorValidator
+import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.UserAuthenticatorRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
@@ -11,6 +12,7 @@ import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.CollectionUtils
 
 /**
  * Created by liangfu on 3/27/14.
@@ -40,7 +42,7 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
     }
 
     @Override
-    Promise<Void> validateForGet(UserAuthenticatorId userAuthenticatorId) {
+    Promise<UserAuthenticator> validateForGet(UserAuthenticatorId userAuthenticatorId) {
         if (userAuthenticatorId == null) {
             throw AppErrors.INSTANCE.parameterRequired('userAuthenticatorId').exception()
         }
@@ -59,11 +61,13 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
                         throw AppErrors.INSTANCE.userNotFound(userAuthenticator.userId).exception()
                     }
 
-                    /*
-                    if (user.active == null || user.active == false) {
+                    if (user.isAnonymous == false) {
                         throw AppErrors.INSTANCE.userInInvalidStatus(userAuthenticator.userId).exception()
                     }
-                    */
+
+                    if (user.status != UserStatus.ACTIVE.toString()) {
+                        throw AppErrors.INSTANCE.userInInvalidStatus(userAuthenticator.userId).exception()
+                    }
 
                     return Promise.pure(userAuthenticator)
                 }
@@ -76,11 +80,9 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
             throw new IllegalArgumentException('options is null')
         }
 
-        /*
-        if (options.userId == null && options.value == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userId or value').exception()
+        if (options.userId == null && options.externalId == null) {
+            throw AppErrors.INSTANCE.parameterRequired('userId or externalId').exception()
         }
-        */
 
         return Promise.pure(null)
     }
@@ -94,11 +96,11 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
 
             return userAuthenticatorRepository.search(new AuthenticatorListOptions(
                     userId: userAuthenticator.userId,
-                    type: userAuthenticator.type
-                    //value: userAuthenticator.value
+                    type: userAuthenticator.type,
+                    externalId: userAuthenticator.externalId
             )).then { List<UserAuthenticator> existing ->
-                if (existing != null && existing.size() != 0) {
-                    throw AppErrors.INSTANCE.fieldDuplicate('value').exception()
+                if (!CollectionUtils.isEmpty(existing)) {
+                    throw AppErrors.INSTANCE.fieldDuplicate('externalId').exception()
                 }
 
                 return Promise.pure(null)
@@ -109,7 +111,7 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
     @Override
     Promise<Void> validateForUpdate(UserAuthenticatorId userAuthenticatorId, UserAuthenticator authenticator,
                                     UserAuthenticator oldAuthenticator) {
-        validateForGet(userAuthenticatorId).then {
+        return validateForGet(userAuthenticatorId).then {
             return basicCheckUserAuthenticator(authenticator)
         }.then {
             if (authenticator.id == null) {
@@ -127,21 +129,21 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
             if (authenticator.userId != oldAuthenticator.userId) {
                 throw AppErrors.INSTANCE.fieldInvalid('userId', oldAuthenticator.userId.toString()).exception()
             }
-            /*
-            if (authenticator.value != oldAuthenticator.value || authenticator.type != oldAuthenticator.type) {
+
+            if (authenticator.externalId != oldAuthenticator.externalId
+             || authenticator.type != oldAuthenticator.type) {
                 userAuthenticatorRepository.search(new AuthenticatorListOptions(
                         userId: authenticator.userId,
-                        value: authenticator.value,
+                        externalId: authenticator.externalId,
                         type: authenticator.type
                 )).then {
                     List<UserAuthenticator> existing ->
-                        if (existing != null && existing.size() != 0) {
-                            throw AppErrors.INSTANCE.fieldDuplicate('type & value').exception()
+                        if (!CollectionUtils.isEmpty(existing)) {
+                            throw AppErrors.INSTANCE.fieldDuplicate('type or externalId').exception()
                         }
                 }
                 return Promise.pure(null)
             }
-            */
 
             return Promise.pure(null)
         }
@@ -160,15 +162,22 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
             if (user == null) {
                 throw AppErrors.INSTANCE.userNotFound(userAuthenticator.userId).exception()
             }
-            /*
-            if (user.active == false || user.active == false) {
+
+            if (user.isAnonymous == null) {
+                throw AppErrors.INSTANCE.fieldRequired('isAnonymous').exception()
+            }
+
+            if (user.isAnonymous == false) {
+                throw AppErrors.INSTANCE.fieldInvalid('isAnonymous', 'true').exception()
+            }
+
+            if (user.status != UserStatus.ACTIVE.toString()) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userAuthenticator.userId).exception()
             }
 
-            if (userAuthenticator.value == null) {
-                throw AppErrors.INSTANCE.fieldRequired('value').exception()
+            if (userAuthenticator.externalId == null) {
+                throw AppErrors.INSTANCE.fieldRequired('externalId').exception()
             }
-            */
 
             if (userAuthenticator.type == null) {
                 throw AppErrors.INSTANCE.fieldRequired('type').exception()

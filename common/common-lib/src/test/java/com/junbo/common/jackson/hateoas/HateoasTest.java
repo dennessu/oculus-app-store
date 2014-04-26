@@ -34,6 +34,7 @@ public class HateoasTest {
         // only partially set, the serialized object should not contain link
         String json = mapper.writeValueAsString(testEntity);
         JsonNode jsonNode = parseJson(json);
+        assertAllLinksNull(testEntity);
 
         assertEquals(
                 jsonNode.get("subLink1").get("href").asText(),
@@ -42,9 +43,7 @@ public class HateoasTest {
         assertEquals(jsonNode.get("subLink2").getNodeType(), JsonNodeType.NULL);
         assertEquals(jsonNode.get("superSuperLink").getNodeType(), JsonNodeType.NULL);
 
-        TestEntity testEntity2 = mapper.readValue(json, TestEntity.class);
-        assertEquals(testEntity2.getUserId().getValue(), testEntity.getUserId().getValue());
-        assertEquals(testEntity2.getOrderId().getValue(), testEntity.getOrderId().getValue());
+        testDeserialize(testEntity, json);
 
         testEntity.setFriendUserId(204783934L);
         testEntity.setFriendOrderId(4102394596L);
@@ -63,6 +62,9 @@ public class HateoasTest {
                 jsonNode.get("superSuperLink").get("href").asText(),
                 "https://api.oculusvr.com/v1/users/6B54FFB0BC9E/orders/3650-6702-5565/friends/6355EF9DBDA1/3687-3240-1275/end");
 
+        assertAllLinksNull(testEntity);
+        testDeserialize(testEntity, json);
+
         testEntity.setFriendUserId(1L);
         testEntity.setFriendOrderId(2L);
         testEntity.setUserId(null);
@@ -78,6 +80,9 @@ public class HateoasTest {
 
         assertEquals(jsonNode.get("superSuperLink").getNodeType(), JsonNodeType.NULL);
 
+        assertAllLinksNull(testEntity);
+        testDeserialize(testEntity, json);
+
         testEntity.setFriendOrderId(null);
         json = mapper.writeValueAsString(testEntity);
         jsonNode = parseJson(json);
@@ -86,6 +91,9 @@ public class HateoasTest {
         assertEquals(jsonNode.get("subLink1").getNodeType(), JsonNodeType.NULL);
         assertEquals(jsonNode.get("subLink2").getNodeType(), JsonNodeType.NULL);
         assertEquals(jsonNode.get("superSuperLink").getNodeType(), JsonNodeType.NULL);
+
+        assertAllLinksNull(testEntity);
+        testDeserialize(testEntity, json);
     }
 
     private JsonNode parseJson(String json) {
@@ -97,5 +105,20 @@ public class HateoasTest {
         } catch (Exception ex) {
             throw new RuntimeException("Failed to parse json: " + json, ex);
         }
+    }
+
+    private void assertAllLinksNull(TestEntity testEntity) {
+        assertNull(testEntity.getSubLink1());
+        assertNull(testEntity.getSubLink2());
+        assertNull(testEntity.getSuperLink());
+    }
+
+    private void testDeserialize(TestEntity testEntity, String json) throws Exception {
+        TestEntity testEntity2 = mapper.readValue(json, TestEntity.class);
+        assertEquals(testEntity2.getUserId(), testEntity.getUserId());
+        assertEquals(testEntity2.getOrderId(), testEntity.getOrderId());
+        assertEquals(testEntity2.getFriendUserId(), testEntity.getFriendUserId());
+        assertEquals(testEntity2.getFriendOrderId(), testEntity.getFriendOrderId());
+        assertAllLinksNull(testEntity2);
     }
 }

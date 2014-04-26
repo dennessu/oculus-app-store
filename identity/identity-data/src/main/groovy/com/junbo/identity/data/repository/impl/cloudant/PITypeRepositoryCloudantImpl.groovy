@@ -18,11 +18,6 @@ class PITypeRepositoryCloudantImpl extends CloudantClient<PIType> implements PIT
     }
 
     @Override
-    Promise<List<PIType>> getAllPIType() {
-        return Promise.pure(super.cloudantGetAll())
-    }
-
-    @Override
     Promise<PIType> create(PIType model) {
         return Promise.pure((PIType)super.cloudantPost(model))
     }

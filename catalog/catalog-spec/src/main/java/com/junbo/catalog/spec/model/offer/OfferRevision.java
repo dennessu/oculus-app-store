@@ -9,12 +9,14 @@ package com.junbo.catalog.spec.model.offer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.*;
+import com.junbo.common.jackson.annotation.CountryId;
 import com.junbo.common.jackson.annotation.OfferId;
 import com.junbo.common.jackson.annotation.OfferRevisionId;
 import com.junbo.common.jackson.annotation.UserId;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -47,10 +49,15 @@ public class OfferRevision extends BaseRevisionModel {
     private List<Long> subOffers;
     @ApiModelProperty(position = 25, required = true, value = "Items")
     private List<ItemEntry> items = new ArrayList<>();
+    @CountryId
     @ApiModelProperty(position = 26, required = true, value = "Eligible countries")
     private List<String> eligibleCountries;
     @ApiModelProperty(position = 27, required = true, value = "Event actions")
     private Map<String, List<Action>> eventActions;
+    @ApiModelProperty(position = 28, required = true, value = "Start effective time")
+    private Date startTime;
+    @ApiModelProperty(position = 29, required = true, value = "End effective time")
+    private Date endTIme;
 
     @ApiModelProperty(position = 31, required = true, value = "Locale properties of the offer revision resource")
     private Map<String, OfferRevisionLocaleProperties> locales;
@@ -125,6 +132,22 @@ public class OfferRevision extends BaseRevisionModel {
 
     public void setEventActions(Map<String, List<Action>> eventActions) {
         this.eventActions = eventActions;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getEndTIme() {
+        return endTIme;
+    }
+
+    public void setEndTIme(Date endTIme) {
+        this.endTIme = endTIme;
     }
 
     public Map<String, OfferRevisionLocaleProperties> getLocales() {

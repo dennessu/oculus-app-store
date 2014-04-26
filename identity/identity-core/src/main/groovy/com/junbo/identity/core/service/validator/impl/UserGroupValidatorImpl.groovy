@@ -7,6 +7,7 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.id.UserGroupId
 import com.junbo.identity.core.service.validator.UserGroupValidator
+import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.GroupRepository
 import com.junbo.identity.data.repository.UserGroupRepository
 import com.junbo.identity.data.repository.UserRepository
@@ -99,13 +100,13 @@ class UserGroupValidatorImpl implements UserGroupValidator {
                 throw AppErrors.INSTANCE.fieldInvalid('id', oldUserGroup.id.toString()).exception()
             }
 
-            if (userGroup.groupId != oldUserGroup.groupId) {
+            if (userGroup.groupId != oldUserGroup.groupId || userGroup.userId != oldUserGroup.userId) {
                 return userGroupRepository.search(new UserGroupListOptions(
                         userId: userGroup.userId,
                         groupId: userGroup.groupId
                 )).then { List<UserGroup> existing ->
                     if (!CollectionUtils.isEmpty(existing)) {
-                        throw AppErrors.INSTANCE.fieldDuplicate('groupId').exception()
+                        throw AppErrors.INSTANCE.fieldDuplicate('groupId or userId').exception()
                     }
 
                     return Promise.pure(null)
@@ -133,14 +134,16 @@ class UserGroupValidatorImpl implements UserGroupValidator {
                 throw AppErrors.INSTANCE.userNotFound(userGroup.userId).exception()
             }
 
-            /*
-            if (existingUser.active == null || existingUser.active == false) {
+            if (existingUser.isAnonymous == false) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userGroup.userId).exception()
             }
-            */
+
+            if (existingUser.status == UserStatus.ACTIVE.toString()) {
+                throw AppErrors.INSTANCE.userInInvalidStatus(userGroup.userId).exception()
+            }
 
             return groupRepository.get(userGroup.groupId).then { Group existingGroup ->
-                if (existingGroup == null) {
+                if (existingGroup == null || existingGroup.active == false) {
                     throw AppErrors.INSTANCE.groupNotFound(userGroup.groupId).exception()
                 }
 

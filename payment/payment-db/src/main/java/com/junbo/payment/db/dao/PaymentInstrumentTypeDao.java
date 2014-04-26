@@ -6,13 +6,13 @@
 
 package com.junbo.payment.db.dao;
 
-import com.junbo.payment.spec.model.PaymentInstrumentType;
+import com.junbo.payment.db.entity.PaymentInstrumentTypeEntity;
 
 /**
  * PI Type Dao.
  */
-public class PaymentInstrumentTypeDao extends GenericDAOImpl<PaymentInstrumentType, Integer> {
+public class PaymentInstrumentTypeDao extends GenericDAOImpl<PaymentInstrumentTypeEntity, Integer> {
     public PaymentInstrumentTypeDao(){
-        super(PaymentInstrumentType.class);
+        super(PaymentInstrumentTypeEntity.class);
     }
 }

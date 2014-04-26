@@ -280,8 +280,8 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
 
     private String getFullReturnUrl(PaymentTransaction transaction){
         String returnURL = transaction.getWebPaymentInfo().getReturnURL();
-        String transactionDetail = "transactionId=" + transaction.getId() +
-                "&billingId=" + transaction.getBillingRefId();
+        String transactionDetail = "paymentId=" + CommonUtil.encode(transaction.getId()) +
+                "&billingId=" + CommonUtil.encode(transaction.getBillingRefId());
         if(returnURL.contains("?")){
             return returnURL + "&" + transactionDetail;
         }else{

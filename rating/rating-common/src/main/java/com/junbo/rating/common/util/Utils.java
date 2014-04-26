@@ -23,6 +23,4 @@ public class Utils {
     public static Long parseDateTime(String time) {
         return DatatypeConverter.parseDateTime(time).getTimeInMillis();
     }
-
-
 }

@@ -3,6 +3,96 @@
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+    <bean id="userAuthenticatorValidator" class="com.junbo.identity.core.service.validator.impl.UserAuthenticatorValidatorImpl">
+        <property name="userRepository" ref="userRepository"/>
+        <property name="userAuthenticatorRepository" ref="userAuthenticatorRepository"/>
+        <property name="allowedTypes">
+            <list>
+                <value>hotmail</value>
+                <value>google</value>
+                <value>facebook</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="userCommunicationValidator" class="com.junbo.identity.core.service.validator.impl.UserCommunicationValidatorImpl">
+        <property name="userRepository" ref="userRepository"/>
+        <property name="userCommunicationRepository" ref="userOptinRepository"/>
+        <property name="communicationRepository" ref="communicationRepository" />
+    </bean>
+
+    <bean id="userPasswordValidator" class="com.junbo.identity.core.service.validator.impl.UserPasswordValidatorImpl">
+        <property name="userRepository" ref="userRepository"/>
+        <property name="userPasswordRepository" ref="userPasswordRepository"/>
+    </bean>
+
+    <bean id="userPinValidator" class="com.junbo.identity.core.service.validator.impl.UserPinValidatorImpl">
+        <property name="userRepository" ref="userRepository"/>
+        <property name="userPinRepository" ref="userPinRepository"/>
+        <property name="valueMinLength" value="4"/>
+        <property name="valueMaxLength" value="255"/>
+    </bean>
+
+    <bean id="userCredentialValidator"
+          class="com.junbo.identity.core.service.validator.impl.UserCredentialValidatorImpl">
+        <property name="allowedTypes">
+            <list>
+                <value>PIN</value>
+                <value>PASSWORD</value>
+            </list>
+        </property>
+        <property name="modelMapper">
+            <bean class="com.junbo.identity.data.mapper.ModelMapperImpl"/>
+        </property>
+        <property name="userPinValidator" ref="userPinValidator"/>
+        <property name="userPasswordValidator" ref="userPasswordValidator"/>
+    </bean>
+
+    <bean id="userCredentialVerifyAttemptValidator"
+          class="com.junbo.identity.core.service.validator.impl.UserCredentialVerifyAttemptValidatorImpl">
+        <property name="userRepository" ref="userRepository"/>
+        <property name="userLoginAttemptRepository" ref="userCredentialVerifyAttemptRepository"/>
+        <property name="userPasswordRepository" ref="userPasswordRepository"/>
+        <property name="userPinRepository" ref="userPinRepository"/>
+        <property name="normalizeService" ref="normalizeService" />
+        <property name="usernameValidator" ref="usernameValidator"/>
+        <property name="allowedIpAddressPatterns">
+            <list>
+                <!-- IPv4Pattern -->
+                <value>(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}</value>
+                <!-- IPv6Pattern -->
+                <value>(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}</value>
+                <!-- IPv6Pattern_HEXCompressed -->
+                <value>((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)::((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)
+                </value>
+                <!-- IPv6Pattern_6Hex4Dec -->
+                <value>((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)
+                    ::((?:[0-9A-Fa-f]{1,4}:)*)(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}
+                </value>
+            </list>
+        </property>
+        <property name="allowedTypes">
+            <list>
+                <value>PIN</value>
+                <value>PASSWORD</value>
+            </list>
+        </property>
+        <property name="userAgentMinLength" value="1"/>
+        <property name="userAgentMaxLength" value="255"/>
+    </bean>
+
+    <bean id="userGroupValidator" class="com.junbo.identity.core.service.validator.impl.UserGroupValidatorImpl">
+        <property name="groupRepository" ref="groupRepository"/>
+        <property name="userGroupRepository" ref="userGroupRepository"/>
+        <property name="userRepository" ref="userRepository"/>
+    </bean>
+
+
+
+
+
+
+
     <bean id="usernameValidator" class="com.junbo.identity.core.service.validator.impl.UsernameValidatorImpl">
         <property name="minLength" value="4"/>
         <property name="maxLength" value="30"/>
@@ -128,86 +218,11 @@
         <property name="securityQuestionValueMaxLength" value="1000"/>
     </bean>
 
-    <bean id="userAuthenticatorValidator"
-          class="com.junbo.identity.core.service.validator.impl.UserAuthenticatorValidatorImpl">
-        <property name="userRepository" ref="userRepository"/>
-        <property name="userAuthenticatorRepository" ref="userAuthenticatorRepository"/>
-        <property name="allowedTypes">
-            <list>
-                <value>hotmail</value>
-                <value>google</value>
-                <value>facebook</value>
-            </list>
-        </property>
-    </bean>
-
     <bean id="userDeviceValidator" class="com.junbo.identity.core.service.validator.impl.UserDeviceValidatorImpl">
-    </bean>
-
-    <bean id="userGroupValidator" class="com.junbo.identity.core.service.validator.impl.UserGroupValidatorImpl">
-        <property name="groupRepository" ref="groupRepository"/>
-        <property name="userGroupRepository" ref="userGroupRepository"/>
-        <property name="userRepository" ref="userRepository"/>
-    </bean>
-
-    <bean id="userCredentialVerifyAttemptValidator"
-          class="com.junbo.identity.core.service.validator.impl.UserCredentialVerifyAttemptValidatorImpl">
-        <property name="userRepository" ref="userRepository"/>
-        <property name="userLoginAttemptRepository" ref="userCredentialVerifyAttemptRepository"/>
-        <property name="userPasswordRepository" ref="userPasswordRepository"/>
-        <property name="userPinRepository" ref="userPinRepository"/>
-        <property name="normalizeService" ref="normalizeService" />
-        <property name="usernameValidator" ref="usernameValidator"/>
-        <property name="allowedIpAddressPatterns">
-            <list>
-                <!-- IPv4Pattern -->
-                <value>(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}</value>
-                <!-- IPv6Pattern -->
-                <value>(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}</value>
-                <!-- IPv6Pattern_HEXCompressed -->
-                <value>((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)::((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)
-                </value>
-                <!-- IPv6Pattern_6Hex4Dec -->
-                <value>((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)
-                    ::((?:[0-9A-Fa-f]{1,4}:)*)(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}
-                </value>
-            </list>
-        </property>
-        <property name="allowedTypes">
-            <list>
-                <value>pin</value>
-                <value>password</value>
-            </list>
-        </property>
-        <property name="userAgentMinLength" value="1"/>
-        <property name="userAgentMaxLength" value="255"/>
-    </bean>
-
-    <bean id="userOptinValidator" class="com.junbo.identity.core.service.validator.impl.UserCommunicationValidatorImpl">
-        <property name="userRepository" ref="userRepository"/>
-        <property name="userOptinRepository" ref="userOptinRepository"/>
-        <property name="allowedTypes">
-            <list>
-                <value>news</value>
-                <value>sports</value>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="userPasswordValidator" class="com.junbo.identity.core.service.validator.impl.UserPasswordValidatorImpl">
-        <property name="userRepository" ref="userRepository"/>
-        <property name="userPasswordRepository" ref="userPasswordRepository"/>
     </bean>
 
     <bean id="userPhoneNumberValidator"
           class="com.junbo.identity.core.service.validator.impl.UserPhoneNumberValidatorImpl">
-    </bean>
-
-    <bean id="userPinValidator" class="com.junbo.identity.core.service.validator.impl.UserPinValidatorImpl">
-        <property name="userRepository" ref="userRepository"/>
-        <property name="userPinRepository" ref="userPinRepository"/>
-        <property name="valueMinLength" value="4"/>
-        <property name="valueMaxLength" value="255"/>
     </bean>
 
     <bean id="userSecurityQuestionValidator"
@@ -276,21 +291,6 @@
         <property name="titleMaxLength" value="255"/>
         <property name="contentMinLength" value="1"/>
         <property name="contentMaxLength" value="1073741824"/>
-    </bean>
-
-    <bean id="userCredentialValidator"
-          class="com.junbo.identity.core.service.validator.impl.UserCredentialValidatorImpl">
-        <property name="allowedTypes">
-            <list>
-                <value>pin</value>
-                <value>password</value>
-            </list>
-        </property>
-        <property name="modelMapper">
-            <bean class="com.junbo.identity.data.mapper.ModelMapperImpl"/>
-        </property>
-        <property name="userPinValidator" ref="userPinValidator"/>
-        <property name="userPasswordValidator" ref="userPasswordValidator"/>
     </bean>
 
     <bean id="roleValidator" class="com.junbo.identity.core.service.validator.impl.RoleValidatorImpl">

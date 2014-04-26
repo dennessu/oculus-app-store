@@ -152,4 +152,8 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 412, code = ErrorCode.EVENT_NOT_SUPPORTED,
             description = "Event(action:{0}, status:{1}) is not supported")
     AppError eventNotSupported(String action, String status);
+
+    @ErrorDef(httpStatusCode = 400, code = BillingErrorCode.BILLING_CONFIRM_BALANCE_FAILED,
+            description = "Fail to confirm balance")
+    AppError balanceConfirmFailed();
 }

@@ -50,7 +50,7 @@ public class PayPalProviderServiceTest extends BaseTest {
         });
         payment.setWebPaymentInfo(new WebPaymentInfo() {
             {
-                setReturnURL("http://www.abc.com/?orderId=1234567");
+                setReturnURL("http://www.abc.com/");
                 setCancelURL("http://www.abc.com/cancel");
             }
         });
@@ -74,7 +74,7 @@ public class PayPalProviderServiceTest extends BaseTest {
 
     private PaymentInstrument buildPayPalRequest(){
         PaymentInstrument request = buildBasePIRequest();
-        request.setType(PIType.PAYPAL.toString());
+        request.setType(PIType.PAYPAL.getId());
         request.setAccountNum("zwh@123.com");
         return request;
     }

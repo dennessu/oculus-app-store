@@ -24,4 +24,7 @@
         <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder" />
     </bean>
 
+    <bean id="personalInfoFacade" class="com.junbo.payment.clientproxy.impl.PersonalInfoFacadeImpl"/>
+    <bean id="mockPersonalInfoClientProxy" class="com.junbo.payment.clientproxy.MockPersonalInfoClientProxy"/>
+
 </beans>

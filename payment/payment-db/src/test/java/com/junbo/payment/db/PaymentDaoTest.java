@@ -161,7 +161,7 @@ public class PaymentDaoTest extends BaseTest {
     protected PaymentInstrumentEntity buildRequest(AddressEntity address, Long userId) {
         PaymentInstrumentEntity entity = new PaymentInstrumentEntity();
         entity.setAccountName("David");
-        entity.setAddressId(address.getId());
+        entity.setBillingAddressId(123L);
         entity.setIsActive(true);
         entity.setRev("1");
         entity.setType(PIType.CREDITCARD);

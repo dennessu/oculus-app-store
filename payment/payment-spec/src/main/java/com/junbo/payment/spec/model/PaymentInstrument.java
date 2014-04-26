@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.PaymentInstrumentId;
 import com.junbo.common.jackson.annotation.PaymentInstrumentTypeId;
+import com.junbo.common.jackson.annotation.PersonalInfoId;
 import com.junbo.common.jackson.annotation.UserId;
 import com.junbo.payment.common.FilterIn;
 import com.junbo.payment.common.InnerFilter;
@@ -38,13 +39,13 @@ public class PaymentInstrument {
     private List<Long> admins;
     @JsonIgnore
     private UUID trackingUuid;
-    @ApiModelProperty(position = 3, required = true, value = "Whether the PI is validated or not.")
+    @ApiModelProperty(position = 3, required = true, value = "[Client Immutable] Whether the PI is validated or not.")
     private boolean isValidated;
-    @ApiModelProperty(position = 4, required = true, value = "[Client Immutable] Last validated time of the PI.")
+    @ApiModelProperty(position = 4, required = true, value = "Last validated time of the PI.")
     private Date lastValidatedTime;
     @ApiModelProperty(position = 5, required = true, value = "The payment instrument type resource.")
     @PaymentInstrumentTypeId
-    private String type;
+    private Long type;
     @ApiModelProperty(position = 6, required = true, value = "The type specific details of the PI.")
     @InnerFilter
     private TypeSpecificDetails typeSpecificDetails;
@@ -54,12 +55,18 @@ public class PaymentInstrument {
     private String accountNum;
     @ApiModelProperty(position = 9, required = true, value = "The label of the PI.")
     private String label;
-    @ApiModelProperty(position = 10, required = true, value = "The id of the billing address resource.")
+    @JsonIgnore
     private Address address;
+    @ApiModelProperty(position = 10, required = true, value = "The billing address resource of the PI.")
+    @PersonalInfoId
+    @JsonProperty("billingAddress")
+    private Long billingAddressId;
     @ApiModelProperty(position = 11, required = true, value = "The phone number resource of the PI.")
-    private String phoneNum;
+    @PersonalInfoId
+    private Long phoneNumber;
     @ApiModelProperty(position = 12, required = true, value = "The email resource of the PI.")
-    private String email;
+    @PersonalInfoId
+    private Long email;
     @ApiModelProperty(position = 13, required = true, value = "[Client Immutable]The current revision of the PI.")
     private String rev;
     @JsonIgnore
@@ -113,11 +120,11 @@ public class PaymentInstrument {
         this.isValidated = validated;
     }
 
-    public String getType() {
+    public Long getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Long type) {
         this.type = type;
     }
 
@@ -169,19 +176,27 @@ public class PaymentInstrument {
         this.address = address;
     }
 
-    public String getPhoneNum() {
-        return phoneNum;
+    public Long getBillingAddressId() {
+        return billingAddressId;
     }
 
-    public void setPhoneNum(String phoneNum) {
-        this.phoneNum = phoneNum;
+    public void setBillingAddressId(Long billingAddressId) {
+        this.billingAddressId = billingAddressId;
     }
 
-    public String getEmail() {
+    public Long getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(Long phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public Long getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(Long email) {
         this.email = email;
     }
 

@@ -50,6 +50,10 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
                     .exception();
         }
 
+        if (!existingEntity.getRev().equals(entity.getRev())) {
+            throw AppErrors.INSTANCE.fieldNotMatch("rev", entity.getRev(), existingEntity.getRev()).exception();
+        }
+
         getEntityRepo().update(entity);
         return getEntityRepo().get(entityId);
     }
@@ -80,6 +84,10 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
             throw AppErrors.INSTANCE.validation("Cannot update a revision after it's approved.").exception();
         }
         checkEntityNotNull(revisionId, existingRevision, getRevisionType());
+
+        if (!existingRevision.getRev().equals(revision.getRev())) {
+            throw AppErrors.INSTANCE.fieldNotMatch("rev", revision.getRev(), existingRevision.getRev()).exception();
+        }
 
         if (Status.APPROVED.equals(revision.getStatus())) {
             E existingEntity = getEntityRepo().get(revision.getEntityId());

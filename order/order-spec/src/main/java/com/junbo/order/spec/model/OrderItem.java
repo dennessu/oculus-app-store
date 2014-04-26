@@ -18,6 +18,7 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by chriszhu on 2/7/14.
@@ -75,6 +76,8 @@ public class OrderItem extends BaseOrderResource {
 
     @JsonProperty("futureExpansion")
     private String properties;
+
+    private List<OrderTaxItem> taxes;
 
     public OrderItemId getOrderItemId() {
         return orderItemId;
@@ -194,5 +197,13 @@ public class OrderItem extends BaseOrderResource {
 
     public void setProperties(String properties) {
         this.properties = properties;
+    }
+
+    public List<OrderTaxItem> getTaxes() {
+        return taxes;
+    }
+
+    public void setTaxes(List<OrderTaxItem> taxes) {
+        this.taxes = taxes;
     }
 }

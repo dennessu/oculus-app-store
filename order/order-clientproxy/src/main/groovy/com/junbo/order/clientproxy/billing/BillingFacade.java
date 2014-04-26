@@ -26,5 +26,5 @@ public interface BillingFacade {
     Promise<Balance> quoteBalance(Balance balance);
     Promise<List<Currency>> getCurrencies();
     Promise<Currency> getCurrency(String name);
-
+    Promise<Balance> confirmBalance(Balance balance);
 }

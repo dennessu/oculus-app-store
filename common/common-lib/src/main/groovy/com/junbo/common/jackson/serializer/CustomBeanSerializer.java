@@ -107,6 +107,8 @@ public class CustomBeanSerializer extends BeanSerializerBase {
             serializeFields(bean, jgen, provider);
         }
         jgen.writeEndObject();
+
+        clearHateoasLinks(bean);
     }
 
     @Override
@@ -190,6 +192,16 @@ public class CustomBeanSerializer extends BeanSerializerBase {
 
             try {
                 field.set(bean, link);
+            } catch (IllegalAccessException ex) {
+                throw new RuntimeException("Error setting hateoas link: " + field.getName(), ex);
+            }
+        }
+
+        public void clearValue(Object bean) {
+            if (bean == null) return;
+
+            try {
+                field.set(bean, null);
             } catch (IllegalAccessException ex) {
                 throw new RuntimeException("Error setting hateoas link: " + field.getName(), ex);
             }
@@ -298,6 +310,12 @@ public class CustomBeanSerializer extends BeanSerializerBase {
 
         for (HateoasLinkField link : hateoasLinkFields) {
             link.setValue(bean, fieldValues);
+        }
+    }
+
+    private void clearHateoasLinks(Object bean) {
+        for (HateoasLinkField link : hateoasLinkFields) {
+            link.clearValue(bean);
         }
     }
 }

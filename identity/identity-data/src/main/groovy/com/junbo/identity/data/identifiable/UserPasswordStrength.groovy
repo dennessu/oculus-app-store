@@ -6,12 +6,14 @@
 package com.junbo.identity.data.identifiable
 
 import com.junbo.common.util.Identifiable
+import groovy.transform.CompileStatic
 
 import javax.ws.rs.NotSupportedException
 
 /**
  * User password strength. Please refer to http://en.wikipedia.org/wiki/Password_strength
  */
+@CompileStatic
 enum UserPasswordStrength implements Identifiable<Short> {
     WEAK((short)1),
     FAIR((short)2),
