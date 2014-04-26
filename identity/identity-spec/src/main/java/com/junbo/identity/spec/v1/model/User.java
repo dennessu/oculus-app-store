@@ -47,13 +47,13 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
     private String status;
 
     @ApiModelProperty(position = 5, required = false, value = "The address book.")
-    private List<UserPersonalInfoLink> addresses = new ArrayList<>();
+    private List<UserPersonalInfoLink> addresses;
 
     @ApiModelProperty(position = 5, required = false, value = "The personal phones information.")
-    private List<UserPersonalInfoLink> phones = new ArrayList<>();
+    private List<UserPersonalInfoLink> phones;
 
     @ApiModelProperty(position = 5, required = false, value = "The personal email information.")
-    private List<UserPersonalInfoLink> emails = new ArrayList<>();
+    private List<UserPersonalInfoLink> emails;
 
     @ApiModelProperty(position = 6, required = false, value = "The personal name information.")
     private UserPersonalInfoLink name;
@@ -62,13 +62,13 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
     private UserPersonalInfoLink dob;
 
     @ApiModelProperty(position = 8, required = false, value = "The personal textMessages information.")
-    private List<UserPersonalInfoLink> textMessages = new ArrayList<>();
+    private List<UserPersonalInfoLink> textMessages;
 
     @ApiModelProperty(position = 9, required = false, value = "The personal qq information.")
-    private List<UserPersonalInfoLink> qqs = new ArrayList<>();
+    private List<UserPersonalInfoLink> qqs;
 
     @ApiModelProperty(position = 10, required = false, value = "The personal whatsapp information.")
-    private List<UserPersonalInfoLink> whatsApps = new ArrayList<>();
+    private List<UserPersonalInfoLink> whatsApps;
 
     @ApiModelProperty(position = 11, required = false, value = "The personal passport information.")
     private UserPersonalInfoLink passport;
