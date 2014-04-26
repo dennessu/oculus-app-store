@@ -199,23 +199,21 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         user.setCreatedTime(new Date())
         user.setCreatedBy('lixia')
         UserPersonalInfoLink userPersonalInfoLink = new UserPersonalInfoLink()
-        userPersonalInfoLink.setType(UUID.randomUUID().toString())
         userPersonalInfoLink.setUserId(new UserId(idGenerator.nextId()))
-        userPersonalInfoLink.setLabel(UUID.randomUUID().toString())
-        userPersonalInfoLink.setResourceLink(new UserPersonalInfoId(idGenerator.nextId()))
+        userPersonalInfoLink.setValue(new UserPersonalInfoId(idGenerator.nextId()))
         List<UserPersonalInfoLink> personalInfoLinkList = new ArrayList<>()
         personalInfoLinkList.add(userPersonalInfoLink)
-        user.setAddressBook(personalInfoLinkList)
-        user.setPersonalInfo(personalInfoLinkList)
+        user.setAddresses(personalInfoLinkList)
+        user.setEmails(personalInfoLinkList)
 
         user = userRepository.create(user).wrapped().get()
 
         User newUser = userRepository.get(user.getId()).wrapped().get()
         Assert.assertEquals(user.getPreferredLocale(), newUser.getPreferredLocale())
-        assert newUser.personalInfo != null
-        assert newUser.personalInfo.size() == 1
-        assert newUser.addressBook != null
-        assert newUser.addressBook.size() == 1
+        assert newUser.addresses != null
+        assert newUser.addresses.size() == 1
+        assert newUser.emails != null
+        assert newUser.emails.size() == 1
 
         LocaleId newPreferredLocale = new LocaleId(UUID.randomUUID().toString())
         newUser.setPreferredLocale(newPreferredLocale)

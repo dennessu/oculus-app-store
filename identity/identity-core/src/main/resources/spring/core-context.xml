@@ -184,8 +184,18 @@
                 <value>preferredTimezone</value>
                 <value>isAnonymous</value>
                 <value>status</value>
-                <value>addressBook</value>
-                <value>personalInfo</value>
+                <value>addresses</value>
+                <value>phones</value>
+                <value>emails</value>
+                <value>name</value>
+                <value>dob</value>
+                <value>textMessages</value>
+                <value>qqs</value>
+                <value>whatsApps</value>
+                <value>passport</value>
+                <value>governmentId</value>
+                <value>driversLicense</value>
+                <value>gender</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -199,8 +209,18 @@
                 <value>preferredTimezone</value>
                 <value>isAnonymous</value>
                 <value>status</value>
-                <value>addressBook</value>
-                <value>personalInfo</value>
+                <value>addresses</value>
+                <value>phones</value>
+                <value>emails</value>
+                <value>name</value>
+                <value>dob</value>
+                <value>textMessages</value>
+                <value>qqs</value>
+                <value>whatsApps</value>
+                <value>passport</value>
+                <value>governmentId</value>
+                <value>driversLicense</value>
+                <value>gender</value>
             </list>
         </property>
 
@@ -212,8 +232,18 @@
                 <value>preferredTimezone</value>
                 <value>isAnonymous</value>
                 <value>status</value>
-                <value>addressBook</value>
-                <value>personalInfo</value>
+                <value>addresses</value>
+                <value>phones</value>
+                <value>emails</value>
+                <value>name</value>
+                <value>dob</value>
+                <value>textMessages</value>
+                <value>qqs</value>
+                <value>whatsApps</value>
+                <value>passport</value>
+                <value>governmentId</value>
+                <value>driversLicense</value>
+                <value>gender</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -222,6 +252,102 @@
 
     </bean>
 
+    <bean id="userSecurityQuestionFilter" class="com.junbo.identity.core.service.filter.UserSecurityQuestionFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>userId</value>
+                <value>securityQuestion</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>securityQuestion</value>
+                <value>userId</value>
+                <value>answer</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>userId</value>
+                <value>securityQuestion</value>
+                <value>answer</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="userSecurityQuestionAttemptFilter" class="com.junbo.identity.core.service.filter.UserSecurityQuestionAttemptFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>userId</value>
+                <value>userSecurityQuestionId</value>
+                <value>ipAddress</value>
+                <value>userAgent</value>
+                <value>clientId</value>
+                <value>succeeded</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>userId</value>
+                <value>userSecurityQuestionId</value>
+                <value>value</value>
+                <value>ipAddress</value>
+                <value>userAgent</value>
+                <value>clientId</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list></list>
+        </property>
+    </bean>
+
+    <bean id="userTosFilter" class="com.junbo.identity.core.service.filter.UserTosFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>tosId</value>
+                <value>userId</value>
+                <value>agreementTime</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>tosId</value>
+                <value>agreementTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>tosUri</value>
+                <value>agreementTime</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+    </bean>
 
 
 
@@ -405,99 +531,6 @@
                 <value>value</value>
                 <value>primary</value>
                 <value>verified</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="userSecurityQuestionFilter" class="com.junbo.identity.core.service.filter.UserSecurityQuestionFilter">
-        <property name="readableProperties">
-            <list>
-                <value>id</value>
-                <value>securityQuestion</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForCreate">
-            <list>
-                <value>securityQuestion</value>
-                <value>userId</value>
-                <value>answer</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForUpdate">
-            <list>
-                <value>id</value>
-                <value>userId</value>
-                <value>securityQuestion</value>
-                <value>answer</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="userSecurityQuestionAttemptFilter" class="com.junbo.identity.core.service.filter.UserSecurityQuestionAttemptFilter">
-        <property name="readableProperties">
-            <list>
-                <value>id</value>
-                <value>userId</value>
-                <value>userSecurityQuestionId</value>
-                <value>ipAddress</value>
-                <value>userAgent</value>
-                <value>clientId</value>
-                <value>succeeded</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForCreate">
-            <list>
-                <value>userId</value>
-                <value>userSecurityQuestionId</value>
-                <value>value</value>
-                <value>ipAddress</value>
-                <value>userAgent</value>
-                <value>clientId</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForUpdate">
-            <list></list>
-        </property>
-    </bean>
-
-    <bean id="userTosFilter" class="com.junbo.identity.core.service.filter.UserTosFilter">
-        <property name="readableProperties">
-            <list>
-                <value>id</value>
-                <value>tosId</value>
-                <value>userId</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForCreate">
-            <list>
-                <value>tosId</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForUpdate">
-            <list>
-                <value>id</value>
-                <value>tosUri</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>

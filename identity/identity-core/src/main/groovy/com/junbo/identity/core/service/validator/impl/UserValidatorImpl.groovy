@@ -3,6 +3,7 @@ package com.junbo.identity.core.service.validator.impl
 import com.junbo.common.id.UserId
 import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.validator.*
+import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.LocaleRepository
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
@@ -33,11 +34,6 @@ class UserValidatorImpl implements UserValidator {
     private TimezoneValidator timezoneValidator
 
     private NormalizeService normalizeService
-
-    private List<String> allowedTypes
-
-    private Integer minLabelLength
-    private Integer maxLabelLength
 
     @Override
     Promise<Void> validateForCreate(User user) {
@@ -172,56 +168,88 @@ class UserValidatorImpl implements UserValidator {
         }
 
         return validateLocale(user).then {
-            UserPersonalInfoLink email = user.addressBook.find { UserPersonalInfoLink userPersonalInfoLink ->
-                return userPersonalInfoLink.type != 'EMAIL'
-            }
-
-            if (email == null) {
-                throw AppErrors.INSTANCE.fieldInvalid('addressBook').exception()
-            }
-
-            return validateUserPersonalInfoLink(user.addressBook.iterator()).then {
-                return validateUserPersonalInfoLink(user.personalInfo.iterator()).then {
-                    return Promise.pure(null)
-                }
-            }
+            return validateAddresses(user)
+        }.then {
+            return validateEmails(user)
+        }.then {
+            return validatePhones(user)
+        }.then {
+            return validateName(user)
+        }.then {
+            return validateDob(user)
+        }.then {
+            return validateSMS(user)
+        }.then {
+            return validateQQ(user)
+        }.then {
+            return validateWhatsApp(user)
+        }.then {
+            return validatePassport(user)
+        }.then {
+            return validateGovernmentId(user)
+        }.then {
+            return validateDriversLicense(user)
+        }.then {
+            return validateGender(user)
         }
     }
 
-    Promise<Void> validateUserPersonalInfoLink(Iterator<UserPersonalInfoLink> it) {
+    Promise<Void> validateUserPersonalInfoLinkIterator(Iterator<UserPersonalInfoLink> it, String type) {
         if (it.hasNext()) {
             UserPersonalInfoLink userPersonalInfoLink = it.next();
 
-            if (userPersonalInfoLink.label == null) {
-                throw AppErrors.INSTANCE.fieldRequired('label').exception()
-            }
-            if (userPersonalInfoLink.label.length() > maxLabelLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('label', maxLabelLength).exception()
-            }
-            if (userPersonalInfoLink.label.length() < minLabelLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('label', minLabelLength).exception()
+            if (userPersonalInfoLink.value == null) {
+                throw AppErrors.INSTANCE.fieldRequired('value').exception()
             }
 
-            if (userPersonalInfoLink.type == null) {
-                throw AppErrors.INSTANCE.fieldRequired('type').exception()
-            }
-            if (!(userPersonalInfoLink.type in allowedTypes)) {
-                throw AppErrors.INSTANCE.fieldInvalid('type', allowedTypes.join(',')).exception()
-            }
-
-            if (userPersonalInfoLink.resourceLink == null) {
-                throw AppErrors.INSTANCE.fieldRequired('resourceLink').exception()
-            }
-            userPersonalInfoRepository.get(userPersonalInfoLink.resourceLink).
+            return userPersonalInfoRepository.get(userPersonalInfoLink.value).
                     then { UserPersonalInfo userPersonalInfo ->
-                if (userPersonalInfo == null) {
-                    throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPersonalInfoLink.resourceLink).exception()
-                }
+                        if (userPersonalInfo == null) {
+                            throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPersonalInfoLink.value).exception()
+                        }
 
-                return validateUserPersonalInfoLink(it)
-            }
+                        if (type != null) {
+                            if (userPersonalInfo.type != type) {
+                                throw AppErrors.INSTANCE.fieldInvalid(userPersonalInfoLink.value.toString()).exception()
+                            }
+                        }
+
+                        return validateUserPersonalInfoLinkIterator(it, type)
+                    }
         }
         return Promise.pure(null)
+    }
+
+    Promise<UserPersonalInfo> validateUserPersonalInfoLink(UserPersonalInfoLink userPersonalInfoLink) {
+        if (userPersonalInfoLink.value == null) {
+            throw AppErrors.INSTANCE.fieldRequired('value').exception()
+        }
+        return userPersonalInfoRepository.get(userPersonalInfoLink.value).
+                then { UserPersonalInfo userPersonalInfo ->
+                    if (userPersonalInfo == null) {
+                        throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPersonalInfoLink.value).exception()
+                    }
+
+                    return Promise.pure(userPersonalInfo)
+                }
+    }
+
+    Promise<Void> validateUserPersonalInfoLink(UserPersonalInfoLink userPersonalInfoLink, String type) {
+        if (userPersonalInfoLink.value == null) {
+            throw AppErrors.INSTANCE.fieldRequired('value').exception()
+        }
+        return userPersonalInfoRepository.get(userPersonalInfoLink.value).
+                then { UserPersonalInfo userPersonalInfo ->
+                    if (userPersonalInfo == null) {
+                        throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPersonalInfoLink.value).exception()
+                    }
+
+                    if (userPersonalInfo.type != type) {
+                        throw AppErrors.INSTANCE.fieldInvalid(userPersonalInfoLink.value.toString()).exception()
+                    }
+
+                    return Promise.pure(userPersonalInfo)
+                }
     }
 
     Promise<Void> validateLocale(User user) {
@@ -233,6 +261,99 @@ class UserValidatorImpl implements UserValidator {
 
                 return Promise.pure(null)
             }
+        }
+
+        return Promise.pure(null)
+    }
+
+    Promise<Void> validateAddresses(User user) {
+        if (user.addresses != null) {
+            return validateUserPersonalInfoLinkIterator(user.addresses.iterator(),
+                    UserPersonalInfoType.ADDRESS.toString())
+        }
+
+        return Promise.pure(null)
+    }
+
+    Promise<Void> validateEmails(User user) {
+        if (user.emails != null) {
+            return validateUserPersonalInfoLinkIterator(user.addresses.iterator(),
+                    UserPersonalInfoType.EMAIL.toString())
+        }
+        return Promise.pure(null)
+    }
+
+    Promise<Void> validatePhones(User user) {
+        if (user.phones != null) {
+            return validateUserPersonalInfoLinkIterator(user.phones.iterator(), UserPersonalInfoType.PHONE.toString())
+        }
+
+        return Promise.pure(null)
+    }
+
+    Promise<Void> validateName(User user) {
+        if (user.name != null) {
+            return validateUserPersonalInfoLink(user.name, UserPersonalInfoType.NAME.toString())
+        }
+
+        return Promise.pure(null)
+    }
+
+    Promise<Void> validateDob(User user) {
+        if (user.dob != null) {
+            return validateUserPersonalInfoLink(user.dob, UserPersonalInfoType.DOB.toString())
+        }
+
+        return Promise.pure(null)
+    }
+
+    Promise<Void> validateSMS(User user) {
+        if (user.textMessages != null) {
+            return validateUserPersonalInfoLinkIterator(user.textMessages.iterator(),
+                    UserPersonalInfoType.SMS.toString())
+        }
+        return Promise.pure(null)
+    }
+
+    Promise<Void> validateQQ(User user) {
+        if (user.qqs != null) {
+            return validateUserPersonalInfoLinkIterator(user.qqs.iterator(), UserPersonalInfoType.QQ.toString())
+        }
+        return Promise.pure(null)
+    }
+
+    Promise<Void> validateWhatsApp(User user) {
+        if (user.whatsApps != null) {
+            return validateUserPersonalInfoLinkIterator(user.whatsApps.iterator(),
+                    UserPersonalInfoType.WHATSAPP.toString())
+        }
+        return Promise.pure(null)
+    }
+
+    Promise<Void> validatePassport(User user) {
+        if (user.passport != null) {
+            return validateUserPersonalInfoLink(user.passport, UserPersonalInfoType.PASSPORT.toString())
+        }
+        return Promise.pure(null)
+    }
+
+    Promise<Void> validateGovernmentId(User user) {
+        if (user.governmentId != null) {
+            return validateUserPersonalInfoLink(user.governmentId, UserPersonalInfoType.GOVERNMENT_ID.toString())
+        }
+        return Promise.pure(null)
+    }
+
+    Promise<Void> validateDriversLicense(User user) {
+        if (user.driversLicense != null) {
+            return validateUserPersonalInfoLink(user.driversLicense, UserPersonalInfoType.DRIVERS_LICENSE.toString())
+        }
+        return Promise.pure(null)
+    }
+
+    Promise<Void> validateGender(User user) {
+        if (user.gender != null) {
+            return validateUserPersonalInfoLink(user.gender, UserPersonalInfoType.GENDER.toString())
         }
 
         return Promise.pure(null)
@@ -266,20 +387,5 @@ class UserValidatorImpl implements UserValidator {
     @Required
     void setUserPersonalInfoRepository(UserPersonalInfoRepository userPersonalInfoRepository) {
         this.userPersonalInfoRepository = userPersonalInfoRepository
-    }
-
-    @Required
-    void setAllowedTypes(List<String> allowedTypes) {
-        this.allowedTypes = allowedTypes
-    }
-
-    @Required
-    void setMinLabelLength(Integer minLabelLength) {
-        this.minLabelLength = minLabelLength
-    }
-
-    @Required
-    void setMaxLabelLength(Integer maxLabelLength) {
-        this.maxLabelLength = maxLabelLength
     }
 }
