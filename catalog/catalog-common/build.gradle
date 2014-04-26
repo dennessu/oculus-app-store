@@ -8,6 +8,7 @@ dependencies {
     compile (libraries.langur)
     compile (libraries.fastjson)
     compile(libraries.jackson_jaxrs_json_provider)
+    compile (libraries.common_lib)
 
     compile (libraries.log4j)
     compile (libraries.slf4j_api)

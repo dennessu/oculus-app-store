@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.core.service;
 
+import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.EntitlementDefinitionService;
 import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.db.repo.ItemRepository;
@@ -104,13 +105,13 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
         if (ItemType.DIGITAL.equals(item.getType())||ItemType.SUBSCRIPTION.equals(item.getType())) {
             EntitlementDefinition entitlementDef = new EntitlementDefinition();
             entitlementDef.setDeveloperId(item.getOwnerId());
-            entitlementDef.setGroup(item.getItemId().toString());
+            entitlementDef.setGroup(Utils.encodeId(item.getItemId()));
             if (ItemType.DIGITAL.equals(item.getType())) {
                 entitlementDef.setType(EntitlementType.DOWNLOAD.name());
             } else {
                 entitlementDef.setType(EntitlementType.SUBSCRIPTION.name());
             }
-            entitlementDef.setTag(item.getItemId().toString());
+            entitlementDef.setTag(Utils.encodeId(item.getItemId()));
             Long entitlementDefId = entitlementDefService.createEntitlementDefinition(entitlementDef);
             item.setEntitlementDefId(entitlementDefId);
         }

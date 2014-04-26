@@ -8,6 +8,7 @@ package com.junbo.catalog.common.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.junbo.common.shuffle.Oculus48Id;
 
 import java.util.Date;
 
@@ -44,5 +45,10 @@ public class Utils {
 
     public static <T> T fromJson(String string, Class<T> clazz){
         return JSON.parseObject(string, clazz);
+    }
+
+    public static String encodeId(Long id) {
+        Oculus48Id.validateRawValue(id);
+        return Oculus48Id.format(Oculus48Id.shuffle(id));
     }
 }
