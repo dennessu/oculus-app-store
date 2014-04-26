@@ -23,6 +23,11 @@
     <bean id="defaultUserSecurityQuestionResource" class="com.junbo.identity.rest.resource.v1.UserSecurityQuestionResourceImpl" scope="prototype" />
     <bean id="defaultUserSecurityQuestionVerifyAttemptResource" class="com.junbo.identity.rest.resource.v1.UserSecurityQuestionVerifyAttemptResourceImpl" scope="prototype" />
     <bean id="defaultUserTosAgreementResource" class="com.junbo.identity.rest.resource.v1.UserTosAgreementResourceImpl" scope="prototype" />
+    <bean id="defaultCountryResource" class="com.junbo.identity.rest.resource.v1.CountryResourceImpl" scope="prototype" />
+    <bean id="defaultCurrencyResource" class="com.junbo.identity.rest.resource.v1.CurrencyResourceImpl" scope="prototype" />
+    <bean id="defaultLocaleResource" class="com.junbo.identity.rest.resource.v1.LocaleResourceImpl" scope="prototype" />
+    <bean id="defaultPITypeResource" class="com.junbo.identity.rest.resource.v1.PITypeResourceImpl" scope="prototype" />
+    <bean id="defaultDeviceTypeResource" class="com.junbo.identity.rest.resource.v1.DeviceTypeResourceImpl" scope="prototype" />
 
     <bean id="defaultRoleResource" class="com.junbo.identity.rest.resource.v1.RoleResourceImpl" scope="prototype">
         <property name="created201Marker" ref="created201Marker"/>
