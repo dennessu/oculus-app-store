@@ -46,8 +46,8 @@ public class Country extends ResourceMeta implements Identifiable<CountryId> {
     @ApiModelProperty(position = 7, required = true, value = "Sub country object mapping.")
     private Map<String, SubCountry> subCountries = new HashMap<>();
 
-    @ApiModelProperty(position = 8, required = false, value = "")
-    private Map<String, LocaleKey> localekeys = new HashMap<>();
+    @ApiModelProperty(position = 8, required = false, value = "locale keys")
+    private Map<String, LocaleKey> localeKeys = new HashMap<>();
 
     public CountryId getId() {
         return id;
@@ -113,12 +113,11 @@ public class Country extends ResourceMeta implements Identifiable<CountryId> {
         support.setPropertyAssigned("subCountries");
     }
 
-    public Map<String, LocaleKey> getLocalekeys() {
-        return localekeys;
+    public Map<String, LocaleKey> getLocaleKeys() {
+        return localeKeys;
     }
 
-    public void setLocalekeys(Map<String, LocaleKey> localekeys) {
-        this.localekeys = localekeys;
-        support.setPropertyAssigned("localekeys");
+    public void setLocaleKeys(Map<String, LocaleKey> localeKeys) {
+        this.localeKeys = localeKeys;
     }
 }

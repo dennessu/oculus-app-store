@@ -13,6 +13,6 @@ class LocaleFilter extends ResourceFilterImpl<com.junbo.identity.spec.v1.model.L
 
     @Override
     protected com.junbo.identity.spec.v1.model.Locale merge(com.junbo.identity.spec.v1.model.Locale source, com.junbo.identity.spec.v1.model.Locale base, MappingContext context) {
-        return selfMapper.filterLocale(source, base, context)
+        return selfMapper.mergeLocale(source, base, context)
     }
 }

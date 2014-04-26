@@ -7,6 +7,422 @@
         <property name="charsToDelete" value="."/>
     </bean>
 
+    <bean id="addressFilter" class="com.junbo.identity.core.service.filter.AddressFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>userId</value>
+                <value>street</value>
+                <value>street1</value>
+                <value>street2</value>
+                <value>city</value>
+                <value>state</value>
+                <value>postalCode</value>
+                <value>country</value>
+                <value>firstName</value>
+                <value>lastName</value>
+                <value>phoneNumber</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>userId</value>
+                <value>street</value>
+                <value>street1</value>
+                <value>street2</value>
+                <value>city</value>
+                <value>state</value>
+                <value>postalCode</value>
+                <value>country</value>
+                <value>firstName</value>
+                <value>lastName</value>
+                <value>phoneNumber</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>street</value>
+                <value>street1</value>
+                <value>street2</value>
+                <value>city</value>
+                <value>state</value>
+                <value>postalCode</value>
+                <value>country</value>
+                <value>firstName</value>
+                <value>lastName</value>
+                <value>phoneNumber</value>
+                <value>resourceAge</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="communicationFilter" class="com.junbo.identity.core.service.filter.CommunicationFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>name</value>
+                <value>description</value>
+                <value>allowedIn</value>
+                <value>locales</value>
+                <value>regions</value>
+                <value>translations</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>name</value>
+                <value>description</value>
+                <value>allowedIn</value>
+                <value>locales</value>
+                <value>regions</value>
+                <value>translations</value>
+            </list>
+        </property>
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>name</value>
+                <value>description</value>
+                <value>allowedIn</value>
+                <value>locales</value>
+                <value>regions</value>
+                <value>translations</value>
+                <value>resourceAge</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="countryFilter" class="com.junbo.identity.core.service.filter.CountryFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>countryCode</value>
+                <value>defaultLocale</value>
+                <value>defaultCurrency</value>
+                <value>futureExpansion</value>
+                <value>supportedLocales</value>
+                <value>subCountries</value>
+                <value>localeKeys</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>countryCode</value>
+                <value>defaultLocale</value>
+                <value>defaultCurrency</value>
+                <value>futureExpansion</value>
+                <value>supportedLocales</value>
+                <value>subCountries</value>
+                <value>localeKeys</value>
+            </list>
+        </property>
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>countryCode</value>
+                <value>defaultLocale</value>
+                <value>defaultCurrency</value>
+                <value>futureExpansion</value>
+                <value>supportedLocales</value>
+                <value>subCountries</value>
+                <value>localeKeys</value>
+                <value>resourceAge</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="currencyFilter" class="com.junbo.identity.core.service.filter.CurrencyFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>currencyCode</value>
+                <value>countries</value>
+                <value>symbol</value>
+                <value>locales</value>
+                <value>futureExpansion</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>currencyCode</value>
+                <value>countries</value>
+                <value>symbol</value>
+                <value>locales</value>
+                <value>futureExpansion</value>
+            </list>
+        </property>
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>currencyCode</value>
+                <value>countries</value>
+                <value>symbol</value>
+                <value>locales</value>
+                <value>futureExpansion</value>
+                <value>resourceAge</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="deviceFilter" class="com.junbo.identity.core.service.filter.DeviceFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>externalRef</value>
+                <value>description</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>externalRef</value>
+                <value>description</value>
+            </list>
+        </property>
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>externalRef</value>
+                <value>description</value>
+                <value>resourceAge</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="deviceTypeFilter" class="com.junbo.identity.core.service.filter.DeviceTypeFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>description</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>description</value>
+            </list>
+        </property>
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>description</value>
+                <value>resourceAge</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="groupFilter" class="com.junbo.identity.core.service.filter.GroupFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>name</value>
+                <value>active</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>name</value>
+                <value>active</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>name</value>
+                <value>active</value>
+                <value>resourceAge</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="localeFilter" class="com.junbo.identity.core.service.filter.LocaleFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>localeCode</value>
+                <value>shortName</value>
+                <value>longName</value>
+                <value>localeName</value>
+                <value>fallbackLocale</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>localeCode</value>
+                <value>shortName</value>
+                <value>longName</value>
+                <value>localeName</value>
+                <value>fallbackLocale</value>
+            </list>
+        </property>
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>localeCode</value>
+                <value>shortName</value>
+                <value>longName</value>
+                <value>localeName</value>
+                <value>fallbackLocale</value>
+                <value>resourceAge</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="tosFilter" class="com.junbo.identity.core.service.filter.TosFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>locale</value>
+                <value>title</value>
+                <value>content</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>locale</value>
+                <value>title</value>
+                <value>content</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>locale</value>
+                <value>title</value>
+                <value>content</value>
+                <value>resourceAge</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="piTypeFilter" class="com.junbo.identity.core.service.filter.PITypeFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>typeCode</value>
+                <value>locales</value>
+                <value>capableOfRecurring</value>
+                <value>isRefundable</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>typeCode</value>
+                <value>locales</value>
+                <value>capableOfRecurring</value>
+                <value>isRefundable</value>
+            </list>
+        </property>
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>typeCode</value>
+                <value>locales</value>
+                <value>capableOfRecurring</value>
+                <value>isRefundable</value>
+                <value>resourceAge</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="roleFilter" class="com.junbo.identity.core.service.filter.RoleFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>name</value>
+                <value>resourceType</value>
+                <value>resourceId</value>
+                <value>subResourceType</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>name</value>
+                <value>resourceType</value>
+                <value>resourceId</value>
+                <value>subResourceType</value>
+            </list>
+        </property>
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>name</value>
+                <value>resourceType</value>
+                <value>resourceId</value>
+                <value>subResourceType</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="roleAssignmentFilter" class="com.junbo.identity.core.service.filter.RoleAssignmentFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>roleId</value>
+                <value>assigneeType</value>
+                <value>assigneeId</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>roleId</value>
+                <value>assigneeType</value>
+                <value>assigneeId</value>
+            </list>
+        </property>
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>roleId</value>
+                <value>assigneeType</value>
+                <value>assigneeId</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+    </bean>
+
     <bean id="userAuthenticatorFilter" class="com.junbo.identity.core.service.filter.UserAuthenticatorFilter">
         <property name="readableProperties">
             <list>
@@ -349,98 +765,6 @@
         </property>
     </bean>
 
-
-
-    <bean id="groupFilter" class="com.junbo.identity.core.service.filter.GroupFilter">
-        <property name="readableProperties">
-            <list>
-                <value>id</value>
-                <value>name</value>
-                <value>active</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForCreate">
-            <list>
-                <value>name</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForUpdate">
-            <list>
-                <value>id</value>
-                <value>name</value>
-                <value>active</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="securityQuestionFilter" class="com.junbo.identity.core.service.filter.SecurityQuestionFilter">
-        <property name="readableProperties">
-            <list>
-                <value>id</value>
-                <value>value</value>
-                <value>active</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForCreate">
-            <list>
-                <value>value</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForUpdate">
-            <list>
-                <value>id</value>
-                <value>value</value>
-                <value>active</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="userDeviceFilter" class="com.junbo.identity.core.service.filter.UserDeviceFilter">
-        <property name="readableProperties">
-            <list>
-                <value>id</value>
-                <value>deviceId</value>
-                <value>userId</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForCreate">
-            <list>
-                <value>userId</value>
-                <value>deviceId</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForUpdate">
-            <list>
-                <value>id</value>
-                <value>deviceId</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-    </bean>
-
     <bean id="userPasswordFilter" class="com.junbo.identity.core.service.filter.UserPasswordFilter">
         <property name="readableProperties">
             <list>
@@ -500,310 +824,6 @@
         </property>
     </bean>
 
-    <bean id="userPhoneNumberFilter" class="com.junbo.identity.core.service.filter.UserPhoneNumberFilter">
-        <property name="readableProperties">
-            <list>
-                <value>id</value>
-                <value>type</value>
-                <value>value</value>
-                <value>primary</value>
-                <value>verified</value>
-                <value>userId</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForCreate">
-            <list>
-                <value>type</value>
-                <value>value</value>
-                <value>primary</value>
-                <value>verified</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForUpdate">
-            <list>
-                <value>id</value>
-                <value>type</value>
-                <value>value</value>
-                <value>primary</value>
-                <value>verified</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="userEmailFilter" class="com.junbo.identity.core.service.filter.UserEmailFilter">
-        <property name="readableProperties">
-            <list>
-                <value>id</value>
-                <value>value</value>
-                <value>type</value>
-                <value>primary</value>
-                <value>verified</value>
-                <value>userId</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForCreate">
-            <list>
-                <value>value</value>
-                <value>type</value>
-                <value>primary</value>
-                <value>verified</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForUpdate">
-            <list>
-                <value>id</value>
-                <value>value</value>
-                <value>type</value>
-                <value>primary</value>
-                <value>verified</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="deviceFilter" class="com.junbo.identity.core.service.filter.DeviceFilter">
-        <property name="readableProperties">
-            <list>
-                <value>id</value>
-                <value>externalRef</value>
-                <value>description</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForCreate">
-            <list>
-                <value>externalRef</value>
-                <value>description</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForUpdate">
-            <list>
-                <value>id</value>
-                <value>externalRef</value>
-                <value>description</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="tosFilter" class="com.junbo.identity.core.service.filter.TosFilter">
-        <property name="readableProperties">
-            <list>
-                <value>id</value>
-                <value>locale</value>
-                <value>title</value>
-                <value>content</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForCreate">
-            <list>
-                <value>locale</value>
-                <value>title</value>
-                <value>content</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForUpdate">
-            <list></list>
-        </property>
-    </bean>
-
-    <bean id="roleFilter" class="com.junbo.identity.core.service.filter.RoleFilter">
-        <property name="readableProperties">
-            <list>
-                <value>id</value>
-                <value>name</value>
-                <value>resourceType</value>
-                <value>resourceId</value>
-                <value>subResourceType</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-        <property name="writablePropertiesForCreate">
-            <list>
-                <value>name</value>
-                <value>resourceType</value>
-                <value>resourceId</value>
-                <value>subResourceType</value>
-            </list>
-        </property>
-        <property name="writablePropertiesForUpdate">
-            <list>
-                <value>name</value>
-                <value>resourceType</value>
-                <value>resourceId</value>
-                <value>subResourceType</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="roleAssignmentFilter" class="com.junbo.identity.core.service.filter.RoleAssignmentFilter">
-        <property name="readableProperties">
-            <list>
-                <value>id</value>
-                <value>roleId</value>
-                <value>assigneeType</value>
-                <value>assigneeId</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-        <property name="writablePropertiesForCreate">
-            <list>
-                <value>roleId</value>
-                <value>assigneeType</value>
-                <value>assigneeId</value>
-            </list>
-        </property>
-        <property name="writablePropertiesForUpdate">
-            <list>
-                <value>roleId</value>
-                <value>assigneeType</value>
-                <value>assigneeId</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="userPiiFilter" class="com.junbo.identity.core.service.filter.UserPiiFilter">
-        <property name="readableProperties">
-            <list>
-                <value>id</value>
-                <value>userId</value>
-                <value>name</value>
-                <value>birthday</value>
-                <value>gender</value>
-                <value>displayNameType</value>
-                <value>displayName</value>
-                <value>emails</value>
-                <value>phoneNumbers</value>
-                <value>addressBook</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForCreate">
-            <list>
-                <value>userId</value>
-                <value>name</value>
-                <value>birthday</value>
-                <value>gender</value>
-                <value>displayNameType</value>
-                <value>displayName</value>
-                <value>emails</value>
-                <value>phoneNumbers</value>
-                <value>addressBook</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForUpdate">
-            <list>
-                <value>id</value>
-                <value>userId</value>
-                <value>name</value>
-                <value>birthday</value>
-                <value>gender</value>
-                <value>displayNameType</value>
-                <value>displayName</value>
-                <value>emails</value>
-                <value>phoneNumbers</value>
-                <value>addressBook</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="addressFilter" class="com.junbo.identity.core.service.filter.AddressFilter">
-        <property name="readableProperties">
-            <list>
-                <value>id</value>
-                <value>userId</value>
-                <value>street</value>
-                <value>street1</value>
-                <value>street2</value>
-                <value>city</value>
-                <value>state</value>
-                <value>postalCode</value>
-                <value>country</value>
-                <value>firstName</value>
-                <value>lastName</value>
-                <value>phoneNumber</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForCreate">
-            <list>
-                <value>userId</value>
-                <value>street</value>
-                <value>street1</value>
-                <value>street2</value>
-                <value>city</value>
-                <value>state</value>
-                <value>postalCode</value>
-                <value>country</value>
-                <value>firstName</value>
-                <value>lastName</value>
-                <value>phoneNumber</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForUpdate">
-            <list>
-                <value>street</value>
-                <value>street1</value>
-                <value>street2</value>
-                <value>city</value>
-                <value>state</value>
-                <value>postalCode</value>
-                <value>country</value>
-                <value>firstName</value>
-                <value>lastName</value>
-                <value>phoneNumber</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-    </bean>
-
     <bean id="userTeleFilter" class="com.junbo.identity.core.service.filter.UserTeleFilter">
         <property name="readableProperties">
             <list>
@@ -852,4 +872,35 @@
             </list>
         </property>
     </bean>
+
+    <bean id="securityQuestionFilter" class="com.junbo.identity.core.service.filter.SecurityQuestionFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>value</value>
+                <value>active</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>value</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>value</value>
+                <value>active</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+    </bean>
+
 </beans>
