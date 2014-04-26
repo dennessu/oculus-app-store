@@ -8,7 +8,7 @@ package com.junbo.identity.data
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
-import com.junbo.common.enumid.PITypeId
+import com.junbo.common.id.PITypeId
 import com.junbo.common.id.*
 import com.junbo.identity.data.identifiable.UserPasswordStrength
 import com.junbo.identity.data.repository.*
@@ -158,10 +158,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void testPITypeRepository() {
-        piTypeRepository.delete(new PITypeId('1234')).wrapped().get()
-
         PIType piType = new PIType()
-        piType.setId(new PITypeId('1234'))
 
         PIType newPIType = piTypeRepository.create(piType).wrapped().get()
         assert  piType.id.toString() == newPIType.id.toString()

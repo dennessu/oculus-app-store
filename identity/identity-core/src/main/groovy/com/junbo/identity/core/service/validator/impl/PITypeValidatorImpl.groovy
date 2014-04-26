@@ -1,6 +1,6 @@
 package com.junbo.identity.core.service.validator.impl
 
-import com.junbo.common.enumid.PITypeId
+import com.junbo.common.id.PITypeId
 import com.junbo.identity.core.service.validator.PITypeValidator
 import com.junbo.identity.spec.v1.model.PIType
 import com.junbo.identity.spec.v1.option.list.PITypeListOptions

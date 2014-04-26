@@ -1,6 +1,6 @@
 package com.junbo.identity.rest.resource.v1
 
-import com.junbo.common.enumid.PITypeId
+import com.junbo.common.id.PITypeId
 import com.junbo.common.model.Results
 import com.junbo.identity.core.service.Created201Marker
 import com.junbo.identity.core.service.filter.PITypeFilter

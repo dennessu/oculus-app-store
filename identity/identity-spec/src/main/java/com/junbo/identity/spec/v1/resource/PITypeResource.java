@@ -5,7 +5,7 @@
  */
 package com.junbo.identity.spec.v1.resource;
 
-import com.junbo.common.enumid.PITypeId;
+import com.junbo.common.id.PITypeId;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.PIType;
 import com.junbo.identity.spec.v1.option.list.PITypeListOptions;
