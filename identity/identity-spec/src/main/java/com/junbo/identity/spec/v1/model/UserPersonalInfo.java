@@ -50,6 +50,8 @@ public class UserPersonalInfo  extends ResourceMeta implements Identifiable<User
     private Boolean isNormalized;
 
     @ApiModelProperty(position = 6, required = true, value = "User resource link.")
+    private String label;
+
     @JsonIgnore
     @JsonProperty("user")
     private UserId userId;
@@ -108,6 +110,15 @@ public class UserPersonalInfo  extends ResourceMeta implements Identifiable<User
         this.userId = userId;
         support.setPropertyAssigned("userId");
         support.setPropertyAssigned("user");
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+        support.setPropertyAssigned("label");
     }
 }
 

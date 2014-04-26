@@ -184,8 +184,18 @@
                 <value>preferredTimezone</value>
                 <value>isAnonymous</value>
                 <value>status</value>
-                <value>addressBook</value>
-                <value>personalInfo</value>
+                <value>addresses</value>
+                <value>phones</value>
+                <value>emails</value>
+                <value>name</value>
+                <value>dob</value>
+                <value>textMessages</value>
+                <value>qqs</value>
+                <value>whatsApps</value>
+                <value>passport</value>
+                <value>governmentId</value>
+                <value>driversLicense</value>
+                <value>gender</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -199,8 +209,18 @@
                 <value>preferredTimezone</value>
                 <value>isAnonymous</value>
                 <value>status</value>
-                <value>addressBook</value>
-                <value>personalInfo</value>
+                <value>addresses</value>
+                <value>phones</value>
+                <value>emails</value>
+                <value>name</value>
+                <value>dob</value>
+                <value>textMessages</value>
+                <value>qqs</value>
+                <value>whatsApps</value>
+                <value>passport</value>
+                <value>governmentId</value>
+                <value>driversLicense</value>
+                <value>gender</value>
             </list>
         </property>
 
@@ -212,8 +232,18 @@
                 <value>preferredTimezone</value>
                 <value>isAnonymous</value>
                 <value>status</value>
-                <value>addressBook</value>
-                <value>personalInfo</value>
+                <value>addresses</value>
+                <value>phones</value>
+                <value>emails</value>
+                <value>name</value>
+                <value>dob</value>
+                <value>textMessages</value>
+                <value>qqs</value>
+                <value>whatsApps</value>
+                <value>passport</value>
+                <value>governmentId</value>
+                <value>driversLicense</value>
+                <value>gender</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>

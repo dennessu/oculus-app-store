@@ -108,35 +108,16 @@
         <property name="localeRepository" ref="localeRepository" />
         <property name="timezoneValidator" ref="timezoneValidator" />
         <property name="usernameValidator" ref="usernameValidator" />
-        <property name="minLabelLength" value="1" />
-        <property name="maxLabelLength" value="255" />
-        <property name="allowedTypes">
-            <list>
-                <value>EMAIL</value>
-                <value>PHONE</value>
-                <value>GIVEN_NAME</value>
-                <value>FAMILY_NAME</value>
-                <value>MIDDLE_NAME</value>
-                <value>NICK_NAME</value>
-                <value>DOB</value>
-                <value>SMS</value>
-                <value>QQ</value>
-                <value>WHATSAPP</value>
-                <value>PASSPORT</value>
-                <value>GOVERNMENT_ID</value>
-                <value>DRIVERS_LICENSE</value>
-                <value>GENDER</value>
-            </list>
-        </property>
     </bean>
 
     <bean id="userSecurityQuestionValidator"
           class="com.junbo.identity.core.service.validator.impl.UserSecurityQuestionValidatorImpl">
         <property name="userRepository" ref="userRepository"/>
         <property name="userSecurityQuestionRepository" ref="userSecurityQuestionRepository"/>
-        <property name="securityQuestionRepository" ref="securityQuestionRepository"/>
-        <property name="answerMinLength" value="10"/>
-        <property name="answerMaxLength" value="255"/>
+        <property name="minAnswerLength" value="10" />
+        <property name="maxAnswerLength" value="255" />
+        <property name="minSecurityQuestionLength" value="10" />
+        <property name="maxSecurityQuestionLength" value="255" />
     </bean>
 
 
