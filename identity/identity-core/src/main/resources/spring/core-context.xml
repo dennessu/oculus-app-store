@@ -317,7 +317,37 @@
         </property>
     </bean>
 
+    <bean id="userTosFilter" class="com.junbo.identity.core.service.filter.UserTosFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>tosId</value>
+                <value>userId</value>
+                <value>agreementTime</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
 
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>tosId</value>
+                <value>agreementTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>tosUri</value>
+                <value>agreementTime</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+    </bean>
 
 
 
@@ -501,35 +531,6 @@
                 <value>value</value>
                 <value>primary</value>
                 <value>verified</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="userTosFilter" class="com.junbo.identity.core.service.filter.UserTosFilter">
-        <property name="readableProperties">
-            <list>
-                <value>id</value>
-                <value>tosId</value>
-                <value>userId</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForCreate">
-            <list>
-                <value>tosId</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForUpdate">
-            <list>
-                <value>id</value>
-                <value>tosUri</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>

@@ -147,6 +147,14 @@ class UserTosValidatorImpl implements UserTosValidator {
             throw AppErrors.INSTANCE.fieldRequired('tosId').exception()
         }
 
+        if (userTos.agreementTime == null) {
+            throw AppErrors.INSTANCE.fieldRequired('agreementTime').exception()
+        }
+
+        if (userTos.agreementTime.after(new Date())) {
+            throw AppErrors.INSTANCE.fieldInvalid('agreementTime').exception()
+        }
+
         return tosRepository.get(userTos.tosId).then { Tos tos ->
             if (tos == null) {
                 throw AppErrors.INSTANCE.tosNotFound(userTos.tosId).exception()

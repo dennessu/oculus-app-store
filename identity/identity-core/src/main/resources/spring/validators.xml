@@ -148,7 +148,11 @@
         <property name="userAgentMaxLength" value="255"/>
     </bean>
 
-
+    <bean id="userTosValidator" class="com.junbo.identity.core.service.validator.impl.UserTosValidatorImpl">
+        <property name="userRepository" ref="userRepository"/>
+        <property name="userTosRepository" ref="userTosRepository"/>
+        <property name="tosRepository" ref="tosRepository" />
+    </bean>
 
 
 
@@ -265,12 +269,6 @@
 
     <bean id="userPhoneNumberValidator"
           class="com.junbo.identity.core.service.validator.impl.UserPhoneNumberValidatorImpl">
-    </bean>
-
-    <bean id="userTosValidator" class="com.junbo.identity.core.service.validator.impl.UserTosValidatorImpl">
-        <property name="userRepository" ref="userRepository"/>
-        <property name="userTosRepository" ref="userTosRepository"/>
-        <property name="tosRepository" ref="tosRepository" />
     </bean>
 
     <bean id="userEmailValidator" class="com.junbo.identity.core.service.validator.impl.UserEmailValidatorImpl">
