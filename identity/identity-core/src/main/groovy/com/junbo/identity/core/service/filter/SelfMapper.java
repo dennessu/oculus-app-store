@@ -122,4 +122,8 @@ public interface SelfMapper {
     Communication filterCommunication(Communication communication, MappingContext context);
 
     Communication mergeCommunication(Communication source, Communication base, MappingContext context);
+
+    UserPersonalInfo filterUserPersonalInfo(UserPersonalInfo userPersonalInfo, MappingContext context);
+
+    UserPersonalInfo mergeUserPersonalInfo(UserPersonalInfo source, UserPersonalInfo base, MappingContext context);
 }

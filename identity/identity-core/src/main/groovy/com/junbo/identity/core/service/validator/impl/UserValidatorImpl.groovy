@@ -158,11 +158,10 @@ class UserValidatorImpl implements UserValidator {
         }
 
         if (user.status != null) {
-            UserStatus matched = UserStatus.values().find { UserStatus userStatus ->
-                return userStatus.toString() == userStatus
-            }
-
-            if (matched == null) {
+            if (UserStatus.values().any() { UserStatus userStatus ->
+                return userStatus.toString() == user.status
+            } == false)
+            {
                 throw AppErrors.INSTANCE.fieldInvalid('status').exception()
             }
         }

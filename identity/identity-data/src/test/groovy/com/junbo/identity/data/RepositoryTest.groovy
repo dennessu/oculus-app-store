@@ -5,12 +5,9 @@
  */
 package com.junbo.identity.data
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.node.ObjectNode
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
-import com.junbo.common.id.PITypeId
 import com.junbo.common.id.*
 import com.junbo.identity.data.identifiable.UserPasswordStrength
 import com.junbo.identity.data.repository.*
@@ -650,7 +647,6 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userPersonalInfo.setType(UUID.randomUUID().toString())
         userPersonalInfo.setIsNormalized(true)
         userPersonalInfo.setLastValidateTime(new Date())
-        userPersonalInfo.setUserId(userId)
         userPersonalInfo.setValue(UUID.randomUUID().toString())
 
         UserPersonalInfo newUserPersonalInfo = userPersonalInfoRepository.create(userPersonalInfo).wrapped().get()
@@ -663,8 +659,5 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userPersonalInfo = userPersonalInfoRepository.update(newUserPersonalInfo).wrapped().get()
 
         assert userPersonalInfo.type == newType
-
-        List<UserPersonalInfo> results = userPersonalInfoRepository.search(userId).wrapped().get()
-        assert results.size() != 0
     }
 }
