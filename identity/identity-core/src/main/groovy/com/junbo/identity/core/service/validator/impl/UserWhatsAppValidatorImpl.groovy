@@ -4,6 +4,7 @@ import com.junbo.identity.core.service.validator.UserWhatsAppValidator
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserWhatsApp
 import groovy.transform.CompileStatic
+import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by liangfu on 4/26/14.
@@ -24,5 +25,15 @@ class UserWhatsAppValidatorImpl implements UserWhatsAppValidator {
                 throw AppErrors.INSTANCE.fieldTooShort('whatsApp', maxWhatsAppLength).exception()
             }
         }
+    }
+
+    @Required
+    void setMinWhatsAppLength(Integer minWhatsAppLength) {
+        this.minWhatsAppLength = minWhatsAppLength
+    }
+
+    @Required
+    void setMaxWhatsAppLength(Integer maxWhatsAppLength) {
+        this.maxWhatsAppLength = maxWhatsAppLength
     }
 }
