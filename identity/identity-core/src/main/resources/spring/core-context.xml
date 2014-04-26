@@ -285,6 +285,38 @@
         </property>
     </bean>
 
+    <bean id="userSecurityQuestionAttemptFilter" class="com.junbo.identity.core.service.filter.UserSecurityQuestionAttemptFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>userId</value>
+                <value>userSecurityQuestionId</value>
+                <value>ipAddress</value>
+                <value>userAgent</value>
+                <value>clientId</value>
+                <value>succeeded</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>userId</value>
+                <value>userSecurityQuestionId</value>
+                <value>value</value>
+                <value>ipAddress</value>
+                <value>userAgent</value>
+                <value>clientId</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list></list>
+        </property>
+    </bean>
+
 
 
 
@@ -473,38 +505,6 @@
                 <value>createdTime</value>
                 <value>updatedTime</value>
             </list>
-        </property>
-    </bean>
-
-    <bean id="userSecurityQuestionAttemptFilter" class="com.junbo.identity.core.service.filter.UserSecurityQuestionAttemptFilter">
-        <property name="readableProperties">
-            <list>
-                <value>id</value>
-                <value>userId</value>
-                <value>userSecurityQuestionId</value>
-                <value>ipAddress</value>
-                <value>userAgent</value>
-                <value>clientId</value>
-                <value>succeeded</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForCreate">
-            <list>
-                <value>userId</value>
-                <value>userSecurityQuestionId</value>
-                <value>value</value>
-                <value>ipAddress</value>
-                <value>userAgent</value>
-                <value>clientId</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForUpdate">
-            <list></list>
         </property>
     </bean>
 
