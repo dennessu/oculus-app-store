@@ -357,6 +357,10 @@
         <property name="deviceExternalRefMaxLength" value="255"/>
     </bean>
 
+    <bean id="deviceTypeValidator" class="com.junbo.identity.core.service.validator.impl.DeviceTypeValidatorImpl">
+        <property name="deviceTypeRepository" ref="deviceTypeRepository"/>
+    </bean>
+
     <bean id="tosValidator" class="com.junbo.identity.core.service.validator.impl.TosValidatorImpl">
         <property name="tosRepository" ref="tosRepository"/>
         <property name="allowedLocales">
