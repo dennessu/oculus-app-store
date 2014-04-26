@@ -19,6 +19,9 @@ class CurrencyRepositoryCloudantImpl extends CloudantClient<Currency> implements
 
     @Override
     Promise<Currency> create(Currency model) {
+        if (model.id == null) {
+            model.id = new CurrencyId(model.currencyCode)
+        }
         return Promise.pure((Currency)super.cloudantPost(model))
     }
 

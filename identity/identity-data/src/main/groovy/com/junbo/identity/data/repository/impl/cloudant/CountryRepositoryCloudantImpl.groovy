@@ -19,6 +19,9 @@ class CountryRepositoryCloudantImpl extends CloudantClient<Country> implements C
 
     @Override
     Promise<Country> create(Country model) {
+        if (model.id == null) {
+            model.id = new CountryId(model.countryCode)
+        }
         return Promise.pure((Country)super.cloudantPost(model))
     }
 

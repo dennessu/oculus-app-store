@@ -32,7 +32,7 @@ public class Communication extends ResourceMeta implements Identifiable<Communic
     private String description;
 
     @ApiModelProperty(position = 4, required = true, value = "Indicated which country a communication is allowed in.")
-    private CountryId allowedIn;
+    private List<CountryId> allowedIn;
 
     @ApiModelProperty(position = 5, required = true, value = "For each language a given communication is available in.")
     private List<LocaleId> locales = new ArrayList<>();
@@ -71,13 +71,13 @@ public class Communication extends ResourceMeta implements Identifiable<Communic
         support.setPropertyAssigned("description");
     }
 
-    public CountryId getAllowedIn() {
-        return allowedIn;
-    }
-
-    public void setAllowedIn(CountryId allowedIn) {
+    public void setAllowedIn(List<CountryId> allowedIn) {
         this.allowedIn = allowedIn;
         support.setPropertyAssigned("allowedIn");
+    }
+
+    public List<CountryId> getAllowedIn() {
+        return allowedIn;
     }
 
     public List<LocaleId> getLocales() {

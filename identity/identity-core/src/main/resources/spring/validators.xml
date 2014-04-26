@@ -176,27 +176,6 @@
         <property name="honorificSuffixMaxLength" value="30"/>
     </bean>
 
-    <bean id="currencyValidator" class="com.junbo.identity.core.service.validator.impl.CurrencyValidatorImpl">
-        <property name="validCurrencies">
-            <list>
-                <value>USD</value>
-                <value>CNY</value>
-                <value>JPY</value>
-            </list>
-        </property>
-        <property name="defaultCurrency" value="USD" />
-    </bean>
-
-    <bean id="localeValidator" class="com.junbo.identity.core.service.validator.impl.LocaleValidatorImpl">
-        <property name="validLocales">
-            <list>
-                <value>en_US</value>
-                <value>zh_CN</value>
-            </list>
-        </property>
-        <property name="defaultLocale" value="en_US"/>
-    </bean>
-
     <bean id="timezoneValidator" class="com.junbo.identity.core.service.validator.impl.TimezoneValidatorImpl">
         <property name="validTimezones">
             <list>
@@ -249,6 +228,14 @@
     </bean>
 
     <bean id="displayNameValidator" class="com.junbo.identity.core.service.validator.impl.DisplayNameValidatorImpl">
+    </bean>
+
+    <bean id="communicationValidator" class="com.junbo.identity.core.service.validator.impl.CommunicationValidatorImpl">
+        <property name="communicationRepository" ref="communicationRepository"/>
+    </bean>
+
+    <bean id="countryValidator" class="com.junbo.identity.core.service.validator.impl.CountryValidatorImpl">
+        <property name="countryRepository" ref="countryRepository"/>
     </bean>
 
     <bean id="groupValidator" class="com.junbo.identity.core.service.validator.impl.GroupValidatorImpl">

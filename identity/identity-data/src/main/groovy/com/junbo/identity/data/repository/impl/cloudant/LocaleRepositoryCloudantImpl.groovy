@@ -19,6 +19,10 @@ class LocaleRepositoryCloudantImpl extends CloudantClient<Locale> implements Loc
 
     @Override
     Promise<Locale> create(Locale model) {
+        if (model.id == null) {
+            model.id = new LocaleId(model.localeCode)
+        }
+
         return Promise.pure((Locale)super.cloudantPost(model))
     }
 

@@ -7,7 +7,7 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.enumid.CurrencyId;
-import com.junbo.common.enumid.LocaleId;
+import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.ResourceMeta;
 import com.junbo.common.util.Identifiable;
@@ -29,14 +29,15 @@ public class Currency extends ResourceMeta implements Identifiable<CurrencyId> {
             "resource must be same with ID.")
     private String currencyCode;
 
-    @ApiModelProperty(position = 3, required = true, value = "The countries link of the currency resource.")
+    @ApiModelProperty(position = 3, required = false, value = "[Nullable]Countries link with default currency specified")
+    @HateoasLink("/countries?defaultCurrencyId={id}")
     private Link countries;
 
     @ApiModelProperty(position = 4, required = true, value = "The symbol of the currency resource.")
     private String symbol;
 
     @ApiModelProperty(position = 5, required = true, value = "The supported locales of the currency resource.")
-    private Map<String, LocaleId> locales = new HashMap<>();
+    private Map<String, LocaleName> locales = new HashMap<>();
 
     @ApiModelProperty(position = 6, required = true, value = "The future expansion of the currency resource.")
     private Map<String, String> futureExpansion = new HashMap<>();
@@ -78,13 +79,13 @@ public class Currency extends ResourceMeta implements Identifiable<CurrencyId> {
         support.setPropertyAssigned("symbol");
     }
 
-    public Map<String, LocaleId> getLocales() {
-        return locales;
-    }
-
-    public void setLocales(Map<String, LocaleId> locales) {
+    public void setLocales(Map<String, LocaleName> locales) {
         this.locales = locales;
         support.setPropertyAssigned("locales");
+    }
+
+    public Map<String, LocaleName> getLocales() {
+        return locales;
     }
 
     public Map<String, String> getFutureExpansion() {
