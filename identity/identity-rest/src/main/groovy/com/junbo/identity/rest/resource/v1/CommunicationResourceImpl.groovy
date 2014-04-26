@@ -42,8 +42,8 @@ class CommunicationResourceImpl implements CommunicationResource {
 
         communication = communicationFilter.filterForCreate(communication)
 
-        communicationValidator.validateForCreate(communication).then {
-            communicationRepository.create(communication).then { Communication newCommunication ->
+        return communicationValidator.validateForCreate(communication).then {
+            return communicationRepository.create(communication).then { Communication newCommunication ->
                 created201Marker.mark(newCommunication.id)
 
                 newCommunication = communicationFilter.filterForGet(newCommunication, null)
@@ -69,8 +69,8 @@ class CommunicationResourceImpl implements CommunicationResource {
 
             communication = communicationFilter.filterForPut(communication, oldCommunication)
 
-            communicationValidator.validateForUpdate(communicationId, communication, oldCommunication).then {
-                communicationRepository.update(communication).then { Communication newCommunication ->
+            return communicationValidator.validateForUpdate(communicationId, communication, oldCommunication).then {
+                return communicationRepository.update(communication).then { Communication newCommunication ->
                     newCommunication = communicationFilter.filterForGet(newCommunication, null)
                     return Promise.pure(newCommunication)
                 }
@@ -95,9 +95,8 @@ class CommunicationResourceImpl implements CommunicationResource {
 
             communication = communicationFilter.filterForPatch(communication, oldCommunication)
 
-            communicationValidator.validateForUpdate(
-                    communicationId, communication, oldCommunication).then {
-                communicationRepository.update(communication).then { Communication newCommunication ->
+            return communicationValidator.validateForUpdate(communicationId, communication, oldCommunication).then {
+                return communicationRepository.update(communication).then { Communication newCommunication ->
                     newCommunication = communicationFilter.filterForGet(newCommunication, null)
                     return Promise.pure(newCommunication)
                 }
@@ -111,7 +110,7 @@ class CommunicationResourceImpl implements CommunicationResource {
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        communicationValidator.validateForGet(communicationId).then { Communication communication ->
+        return communicationValidator.validateForGet(communicationId).then { Communication communication ->
             communication = communicationFilter.filterForGet(communication, null)
             return Promise.pure(communication)
         }
@@ -123,14 +122,20 @@ class CommunicationResourceImpl implements CommunicationResource {
             throw new IllegalArgumentException('listOptions is null')
         }
 
-        communicationRepository.search(listOptions).then { List<Communication> communicationList ->
-            def result = new Results<Communication>(items: [])
+        return communicationValidator.validateForSearch(listOptions).then {
+            return communicationRepository.search(listOptions).then { List<Communication> communicationList ->
+                def result = new Results<Communication>(items: [])
 
-            communicationList.each { Communication newCommunication ->
-                result.items.add(newCommunication)
+                communicationList.each { Communication newCommunication ->
+                    newCommunication = communicationFilter.filterForGet(newCommunication, null)
+
+                    if (newCommunication != null) {
+                        result.items.add(newCommunication)
+                    }
+                }
+
+                return Promise.pure(result)
             }
-
-            return Promise.pure(result)
         }
     }
 

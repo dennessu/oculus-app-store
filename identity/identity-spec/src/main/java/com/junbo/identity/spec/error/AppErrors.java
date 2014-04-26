@@ -158,17 +158,20 @@ public interface AppErrors {
     AppError userTeleCodeNotFound(UserTeleId userTeleId);
 
     @ErrorDef(httpStatusCode = 409, code = "2000040", description = "Country {0} not found.", field = "{0}")
-    AppError CountryNotFound(CountryId countryId);
+    AppError countryNotFound(CountryId countryId);
 
     @ErrorDef(httpStatusCode = 409, code = "2000041", description = "Currency {0} not found.", field = "{0}")
-    AppError CurrencyNotFound(CurrencyId countryId);
+    AppError currencyNotFound(CurrencyId countryId);
 
     @ErrorDef(httpStatusCode = 409, code = "2000042", description = "Locale {0} not found.", field = "{0}")
-    AppError LocaleNotFound(LocaleId localeId);
+    AppError localeNotFound(LocaleId localeId);
 
     @ErrorDef(httpStatusCode = 409, code = "2000043", description = "Payment instrument type {0} not found.", field = "{0}")
-    AppError PITypeNotFound(PITypeId piTypeId);
+    AppError piTypeNotFound(PITypeId piTypeId);
 
     @ErrorDef(httpStatusCode = 409, code = "2000044", description = "Communication {0} not found.", field = "{0}")
     AppError communicationNotFound(CommunicationId id);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000045", description = "DeviceType {0} not found.", field = "{0}")
+    AppError deviceTypeNotFound(DeviceTypeId id);
 }
