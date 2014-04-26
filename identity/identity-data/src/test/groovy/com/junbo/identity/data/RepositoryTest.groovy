@@ -5,12 +5,9 @@
  */
 package com.junbo.identity.data
 
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
-import com.junbo.common.enumid.PITypeId
 import com.junbo.common.id.*
 import com.junbo.identity.data.identifiable.UserPasswordStrength
 import com.junbo.identity.data.repository.*
@@ -178,11 +175,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void testPITypeRepository() {
-        piTypeRepository.delete(new PITypeId('1234')).wrapped().get()
-
         PIType piType = new PIType()
-        piType.setId(new PITypeId('1234'))
-
         PIType newPIType = piTypeRepository.create(piType).wrapped().get()
         assert  piType.id.toString() == newPIType.id.toString()
     }
@@ -194,30 +187,28 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         def random = UUID.randomUUID().toString()
         user.setCanonicalUsername(random)
         user.setUsername(random)
-        user.setPreferredLocale(UUID.randomUUID().toString())
+        user.setPreferredLocale(new LocaleId(UUID.randomUUID().toString()))
         user.setPreferredTimezone(UUID.randomUUID().toString())
         user.setCreatedTime(new Date())
         user.setCreatedBy('lixia')
         UserPersonalInfoLink userPersonalInfoLink = new UserPersonalInfoLink()
-        userPersonalInfoLink.setType(UUID.randomUUID().toString())
         userPersonalInfoLink.setUserId(new UserId(idGenerator.nextId()))
-        userPersonalInfoLink.setLabel(UUID.randomUUID().toString())
-        userPersonalInfoLink.setResourceLink(new UserPersonalInfoId(idGenerator.nextId()))
+        userPersonalInfoLink.setValue(new UserPersonalInfoId(idGenerator.nextId()))
         List<UserPersonalInfoLink> personalInfoLinkList = new ArrayList<>()
         personalInfoLinkList.add(userPersonalInfoLink)
-        user.setAddressBook(personalInfoLinkList)
-        user.setPersonalInfo(personalInfoLinkList)
+        user.setAddresses(personalInfoLinkList)
+        user.setEmails(personalInfoLinkList)
 
         user = userRepository.create(user).wrapped().get()
 
         User newUser = userRepository.get(user.getId()).wrapped().get()
         Assert.assertEquals(user.getPreferredLocale(), newUser.getPreferredLocale())
-        assert newUser.personalInfo != null
-        assert newUser.personalInfo.size() == 1
-        assert newUser.addressBook != null
-        assert newUser.addressBook.size() == 1
+        assert newUser.addresses != null
+        assert newUser.addresses.size() == 1
+        assert newUser.emails != null
+        assert newUser.emails.size() == 1
 
-        String newPreferredLocale = UUID.randomUUID().toString()
+        LocaleId newPreferredLocale = new LocaleId(UUID.randomUUID().toString())
         newUser.setPreferredLocale(newPreferredLocale)
         newUser = userRepository.update(newUser).wrapped().get()
         Assert.assertEquals(newUser.getPreferredLocale(), newPreferredLocale)
@@ -656,9 +647,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userPersonalInfo.setType(UUID.randomUUID().toString())
         userPersonalInfo.setIsNormalized(true)
         userPersonalInfo.setLastValidateTime(new Date())
-        userPersonalInfo.setUserId(userId)
-        ObjectMapper mapper = new ObjectMapper()
-        userPersonalInfo.setValue(mapper.convertValue(UUID.randomUUID().toString(), JsonNode.class))
+        userPersonalInfo.setValue(UUID.randomUUID().toString())
 
         UserPersonalInfo newUserPersonalInfo = userPersonalInfoRepository.create(userPersonalInfo).wrapped().get()
         newUserPersonalInfo = userPersonalInfoRepository.get(newUserPersonalInfo.id).wrapped().get()
@@ -670,8 +659,5 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userPersonalInfo = userPersonalInfoRepository.update(newUserPersonalInfo).wrapped().get()
 
         assert userPersonalInfo.type == newType
-
-        List<UserPersonalInfo> results = userPersonalInfoRepository.search(userId).wrapped().get()
-        assert results.size() != 0
     }
 }

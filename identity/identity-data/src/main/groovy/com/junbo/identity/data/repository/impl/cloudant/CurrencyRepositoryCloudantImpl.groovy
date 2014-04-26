@@ -7,10 +7,12 @@ import com.junbo.identity.data.repository.CurrencyRepository
 import com.junbo.identity.spec.v1.option.list.CurrencyListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.identity.spec.v1.model.Currency
+import groovy.transform.CompileStatic
 
 /**
  * Created by minhao on 4/24/14.
  */
+@CompileStatic
 class CurrencyRepositoryCloudantImpl extends CloudantClient<Currency> implements CurrencyRepository {
     @Override
     protected CloudantViews getCloudantViews() {
@@ -19,6 +21,9 @@ class CurrencyRepositoryCloudantImpl extends CloudantClient<Currency> implements
 
     @Override
     Promise<Currency> create(Currency model) {
+        if (model.id == null) {
+            model.id = new CurrencyId(model.currencyCode)
+        }
         return Promise.pure((Currency)super.cloudantPost(model))
     }
 

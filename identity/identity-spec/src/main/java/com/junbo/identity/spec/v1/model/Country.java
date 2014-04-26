@@ -37,17 +37,17 @@ public class Country extends ResourceMeta implements Identifiable<CountryId> {
     @ApiModelProperty(position = 4, required = true, value = "The default currency of the country resource.")
     private CurrencyId defaultCurrency;
 
-    @ApiModelProperty(position = 5, required = true, value = "The future expansion of the country resource.")
-    private Map<String, String> futureExpansion = new HashMap<>();
+    @ApiModelProperty(position = 5, required = true, value = "Sub country object mapping.")
+    private Map<String, SubCountry> subCountries = new HashMap<>();
 
     @ApiModelProperty(position = 6, required = true, value = "Array for supported locales in the country resource.")
     private List<LocaleId> supportedLocales = new ArrayList<>();
 
-    @ApiModelProperty(position = 7, required = true, value = "Sub country object mapping.")
-    private Map<String, SubCountry> subCountries = new HashMap<>();
+    @ApiModelProperty(position = 7, required = true, value = "Locales")
+    private Map<String, LocaleName> locales = new HashMap<>();
 
-    @ApiModelProperty(position = 8, required = false, value = "")
-    private Map<String, LocaleKey> localekeys = new HashMap<>();
+    @ApiModelProperty(position = 8, required = true, value = "The future expansion of the country resource.")
+    private Map<String, String> futureExpansion = new HashMap<>();
 
     public CountryId getId() {
         return id;
@@ -113,12 +113,12 @@ public class Country extends ResourceMeta implements Identifiable<CountryId> {
         support.setPropertyAssigned("subCountries");
     }
 
-    public Map<String, LocaleKey> getLocalekeys() {
-        return localekeys;
+    public Map<String, LocaleName> getLocales() {
+        return locales;
     }
 
-    public void setLocalekeys(Map<String, LocaleKey> localekeys) {
-        this.localekeys = localekeys;
-        support.setPropertyAssigned("localekeys");
+    public void setLocales(Map<String, LocaleName> locales) {
+        this.locales = locales;
+        support.setPropertyAssigned("locales");
     }
 }

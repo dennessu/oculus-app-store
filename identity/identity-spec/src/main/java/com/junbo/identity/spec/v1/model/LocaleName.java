@@ -5,21 +5,17 @@
  */
 package com.junbo.identity.spec.v1.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by liangfu on 4/24/14.
  */
-public class LocaleKey {
+public class LocaleName {
     @ApiModelProperty(position = 1, required = true, value = "short name of the locale.")
     private String shortName;
 
     @ApiModelProperty(position = 2, required = true, value = "long name of the locale.")
     private String longName;
-
-    @JsonIgnore
-    private String localeCode;
 
     public String getShortName() {
         return shortName;
@@ -35,13 +31,5 @@ public class LocaleKey {
 
     public void setLongName(String longName) {
         this.longName = longName;
-    }
-
-    public String getLocaleCode() {
-        return localeCode;
-    }
-
-    public void setLocaleCode(String localeCode) {
-        this.localeCode = localeCode;
     }
 }

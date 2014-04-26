@@ -63,10 +63,4 @@ public interface UserSecurityQuestionResource {
     @GET
     Promise<Results<UserSecurityQuestion>> list(@PathParam("userId") UserId userId,
             @BeanParam UserSecurityQuestionListOptions listOptions);
-
-    @ApiOperation("Delete one user security question")
-    @DELETE
-    @Path("/{userSecurityQuestionId}")
-    Promise<Void> get(@PathParam("userId") UserId userId,
-                      @PathParam("userSecurityQuestionId") UserSecurityQuestionId userSecurityQuestionId);
 }

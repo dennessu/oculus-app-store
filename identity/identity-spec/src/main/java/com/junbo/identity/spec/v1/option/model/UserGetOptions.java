@@ -14,11 +14,22 @@ public class UserGetOptions {
     @QueryParam("properties")
     private String properties;
 
+    @QueryParam("username")
+    private String username;
+
     public String getProperties() {
         return properties;
     }
 
     public void setProperties(String properties) {
         this.properties = properties;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

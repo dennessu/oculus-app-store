@@ -11,8 +11,8 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 public interface DeviceTypeValidator {
-    Promise<DeviceType> validateForGet(DeviceTypeId countryId)
+    Promise<DeviceType> validateForGet(DeviceTypeId deviceTypeId)
     Promise<Void> validateForSearch(DeviceTypeListOptions options)
-    Promise<Void> validateForCreate(DeviceType country)
+    Promise<Void> validateForCreate(DeviceType deviceType)
     Promise<Void> validateForUpdate(DeviceTypeId deviceTypeId, DeviceType deviceType, DeviceType oldDeviceType)
 }

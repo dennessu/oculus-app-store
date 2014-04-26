@@ -3,14 +3,16 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.common.enumid;
+package com.junbo.common.id;
 
 /**
- * Created by haomin on 14-4-25.
+ * Created by minhao on 4/26/14.
  */
-public class PITypeId extends EnumId {
+@IdResourcePath("/payment-instrument-types/{0}")
+public class PITypeId extends Id {
     public PITypeId() {}
-    public PITypeId(String value) {
+
+    public PITypeId(long value) {
         super(value);
     }
 }

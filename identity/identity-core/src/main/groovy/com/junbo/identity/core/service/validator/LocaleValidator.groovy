@@ -11,9 +11,6 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface LocaleValidator {
-    boolean isValidLocale(String locale)
-    String getDefaultLocale()
-
     Promise<Locale> validateForGet(LocaleId localeId)
     Promise<Void> validateForSearch(LocaleListOptions options)
     Promise<Void> validateForCreate(Locale locale)

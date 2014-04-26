@@ -3,6 +3,8 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.model.Results
 import com.junbo.identity.core.service.Created201Marker
+import com.junbo.identity.core.service.filter.CountryFilter
+import com.junbo.identity.core.service.validator.CountryValidator
 import com.junbo.identity.data.repository.CountryRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Country
@@ -27,15 +29,28 @@ class CountryResourceImpl implements CountryResource {
     @Autowired
     private Created201Marker created201Marker
 
+    @Autowired
+    private CountryFilter countryFilter
+
+    @Autowired
+    private CountryValidator countryValidator
+
+
     @Override
     Promise<Country> create(Country country) {
         if (country == null) {
             throw new IllegalArgumentException('country is null')
         }
 
-        countryRepository.create(country).then { Country newCountry ->
-            created201Marker.mark(newCountry.id)
-            return Promise.pure(newCountry)
+        country = countryFilter.filterForCreate(country)
+
+        return countryValidator.validateForCreate(country).then {
+            return countryRepository.create(country).then { Country newCountry ->
+                created201Marker.mark(newCountry.id)
+
+                newCountry = countryFilter.filterForGet(newCountry, null)
+                return Promise.pure(newCountry)
+            }
         }
     }
 
@@ -51,16 +66,45 @@ class CountryResourceImpl implements CountryResource {
 
         return countryRepository.get(countryId).then { Country oldCountry ->
             if (oldCountry == null) {
-                throw AppErrors.INSTANCE.CountryNotFound(countryId).exception()
+                throw AppErrors.INSTANCE.countryNotFound(countryId).exception()
             }
 
-            return countryRepository.update(country)
+            country = countryFilter.filterForPut(country, oldCountry)
+
+            return countryValidator.validateForUpdate(countryId, country, oldCountry).then {
+                return countryRepository.update(country).then { Country newCountry ->
+                    newCountry = countryFilter.filterForGet(newCountry, null)
+                    return Promise.pure(newCountry)
+                }
+            }
         }
     }
 
     @Override
     Promise<Country> patch(CountryId countryId, Country country) {
-        return null
+        if (countryId == null) {
+            throw new IllegalArgumentException('countryId is null')
+        }
+
+        if (country == null) {
+            throw new IllegalArgumentException('country is null')
+        }
+
+        return countryRepository.get(countryId).then { Country oldCountry ->
+            if (oldCountry == null) {
+                throw AppErrors.INSTANCE.countryNotFound(countryId).exception()
+            }
+
+            country = countryFilter.filterForPatch(country, oldCountry)
+
+            return countryValidator.validateForUpdate(
+                    countryId, country, oldCountry).then {
+                return countryRepository.update(country).then { Country newCountry ->
+                    newCountry = countryFilter.filterForGet(newCountry, null)
+                    return Promise.pure(newCountry)
+                }
+            }
+        }
     }
 
     @Override
@@ -78,19 +122,31 @@ class CountryResourceImpl implements CountryResource {
             throw new IllegalArgumentException('listOptions is null')
         }
 
-        countryRepository.search(listOptions).then { List<Country> countryList ->
-            def result = new Results<Country>(items: [])
+        return countryValidator.validateForSearch(listOptions).then {
+            return countryRepository.search(listOptions).then { List<Country> countryList ->
+                def result = new Results<Country>(items: [])
 
-            countryList.each { Country newCountry ->
-                    result.items.add(newCountry)
+                countryList.each { Country newCountry ->
+                    newCountry = countryFilter.filterForGet(newCountry, null)
+
+                    if (newCountry != null) {
+                        result.items.add(newCountry)
+                    }
+                }
+
+                return Promise.pure(result)
             }
-
-            return Promise.pure(result)
         }
     }
 
     @Override
     Promise<Void> delete(CountryId countryId) {
-        return countryRepository.delete(countryId)
+        if (countryId == null) {
+            throw new IllegalArgumentException('countryId is null')
+        }
+
+        return countryValidator.validateForGet(countryId).then {
+            return countryRepository.delete(countryId)
+        }
     }
 }

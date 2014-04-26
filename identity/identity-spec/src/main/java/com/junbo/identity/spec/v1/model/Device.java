@@ -8,6 +8,7 @@ package com.junbo.identity.spec.v1.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.DeviceId;
 import com.junbo.common.id.DeviceTypeId;
+import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.ResourceMeta;
 import com.junbo.common.util.Identifiable;
@@ -34,6 +35,7 @@ public class Device extends ResourceMeta implements Identifiable<DeviceId> {
     private String firmwareVersion;
 
     @ApiModelProperty(position = 5, required = false, value = "[Nullable]The users linked with this device")
+    @HateoasLink("/users?deviceId={id}")
     private Link users;
 
     @ApiModelProperty(position = 6, required = false, value = "Feature expansion of the device resource.")

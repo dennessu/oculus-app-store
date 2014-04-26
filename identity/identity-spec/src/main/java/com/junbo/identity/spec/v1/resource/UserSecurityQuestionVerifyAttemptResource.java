@@ -10,6 +10,7 @@ import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt;
 import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionAttemptListOptions;
+import com.junbo.identity.spec.v1.option.model.UserSecurityQuestionAttemptGetOptions;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
@@ -37,7 +38,8 @@ public interface UserSecurityQuestionVerifyAttemptResource {
     @GET
     @Path("/{UserSecurityQuestionVerifyAttemptId}")
     Promise<UserSecurityQuestionVerifyAttempt> get(@PathParam("userId") UserId userId,
-                @PathParam("UserSecurityQuestionVerifyAttemptId")UserSecurityQuestionVerifyAttemptId id);
+                @PathParam("UserSecurityQuestionVerifyAttemptId")UserSecurityQuestionVerifyAttemptId id,
+                @BeanParam UserSecurityQuestionAttemptGetOptions getOptions);
 
     @ApiOperation("Search security question attempt history")
     @GET

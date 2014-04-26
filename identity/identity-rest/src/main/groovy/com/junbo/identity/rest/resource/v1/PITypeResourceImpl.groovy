@@ -1,8 +1,10 @@
 package com.junbo.identity.rest.resource.v1
 
-import com.junbo.common.enumid.PITypeId
+import com.junbo.common.id.PITypeId
 import com.junbo.common.model.Results
 import com.junbo.identity.core.service.Created201Marker
+import com.junbo.identity.core.service.filter.PITypeFilter
+import com.junbo.identity.core.service.validator.PITypeValidator
 import com.junbo.identity.data.repository.PITypeRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.PIType
@@ -27,15 +29,26 @@ class PITypeResourceImpl implements PITypeResource {
     @Autowired
     private Created201Marker created201Marker
 
+    @Autowired
+    private PITypeFilter piTypeFilter
+
+    @Autowired
+    private PITypeValidator piTypeValidator
+
     @Override
     Promise<PIType> create(PIType piType) {
         if (piType == null) {
             throw new IllegalArgumentException('piType is null')
         }
 
-        piTypeRepository.create(piType).then { PIType newPIType ->
-            created201Marker.mark(newPIType.id)
-            return Promise.pure(newPIType)
+        piType = piTypeFilter.filterForCreate(piType)
+
+        return piTypeValidator.validateForCreate(piType).then {
+            return piTypeRepository.create(piType).then { PIType newPIType ->
+                created201Marker.mark(newPIType.id)
+                newPIType = piTypeFilter.filterForGet(newPIType, null)
+                return Promise.pure(newPIType)
+            }
         }
     }
 
@@ -51,11 +64,42 @@ class PITypeResourceImpl implements PITypeResource {
 
         return piTypeRepository.get(piTypeId).then { PIType oldPIType ->
             if (oldPIType == null) {
-                throw AppErrors.INSTANCE.PITypeNotFound(piTypeId).exception()
+                throw AppErrors.INSTANCE.piTypeNotFound(piTypeId).exception()
             }
 
-            piTypeRepository.update(piType).then { PIType newPIType ->
-                return Promise.pure(newPIType)
+            piType = piTypeFilter.filterForPut(piType, oldPIType)
+
+            return piTypeValidator.validateForUpdate(piTypeId, piType, oldPIType).then {
+                return piTypeRepository.update(piType).then { PIType newPIType ->
+                    newPIType = piTypeFilter.filterForGet(newPIType, null)
+                    return Promise.pure(newPIType)
+                }
+            }
+        }
+    }
+
+    @Override
+    Promise<PIType> patch(PITypeId piTypeId, PIType piType) {
+        if (piTypeId == null) {
+            throw new IllegalArgumentException('piTypeId is null')
+        }
+
+        if (piType == null) {
+            throw new IllegalArgumentException('piType is null')
+        }
+
+        return piTypeRepository.get(piTypeId).then { PIType oldPIType ->
+            if (oldPIType == null) {
+                throw AppErrors.INSTANCE.piTypeNotFound(piTypeId).exception()
+            }
+
+            piType = piTypeFilter.filterForPatch(piType, oldPIType)
+
+            return piTypeValidator.validateForUpdate(piTypeId, piType, oldPIType).then {
+                return piTypeRepository.update(piType).then { PIType newPIType ->
+                    newPIType = piTypeFilter.filterForGet(newPIType, null)
+                    return Promise.pure(newPIType)
+                }
             }
         }
     }
@@ -75,19 +119,30 @@ class PITypeResourceImpl implements PITypeResource {
             throw new IllegalArgumentException('listOptions is null')
         }
 
-        piTypeRepository.search(listOptions).then { List<PIType> piTypeList ->
-            def result = new Results<PIType>(items: [])
+        return piTypeValidator.validateForSearch(listOptions).then {
+            return piTypeRepository.search(listOptions).then { List<PIType> piTypeList ->
+                def result = new Results<PIType>(items: [])
 
-            piTypeList.each { PIType newPItype ->
-                result.items.add(newPItype)
+                piTypeList.each { PIType newPItype ->
+                    newPItype = piTypeFilter.filterForGet(newPItype, null)
+
+                    if (newPItype != null) {
+                        result.items.add(newPItype)
+                    }
+                }
+
+                return Promise.pure(result)
             }
-
-            return Promise.pure(result)
         }
     }
 
     @Override
     Promise<Void> delete(PITypeId piTypeId) {
-        return piTypeRepository.delete(piTypeId)
+        if (piTypeId != null) {
+            throw new IllegalArgumentException('piTypeId is null')
+        }
+        return piTypeValidator.validateForGet(piTypeId).then {
+            return piTypeRepository.delete(piTypeId)
+        }
     }
 }

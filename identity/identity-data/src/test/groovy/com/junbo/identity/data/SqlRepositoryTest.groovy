@@ -6,6 +6,7 @@
 package com.junbo.identity.data
 
 import com.junbo.common.enumid.CountryId
+import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.*
 import com.junbo.identity.data.identifiable.UserPasswordStrength
 import com.junbo.identity.data.repository.*
@@ -102,7 +103,7 @@ public class SqlRepositoryTest extends AbstractTestNGSpringContextTests {
         user.setStatus(UUID.randomUUID().toString())
         user.setIsAnonymous(false)
         user.setPreferredTimezone(UUID.randomUUID().toString())
-        user.setPreferredLocale(UUID.randomUUID().toString())
+        user.setPreferredLocale(new LocaleId(UUID.randomUUID().toString()))
         user.setCreatedTime(new Date())
         user.setCreatedBy('lixia')
         user.setCanonicalUsername(name)
@@ -111,10 +112,10 @@ public class SqlRepositoryTest extends AbstractTestNGSpringContextTests {
         User newUser = userRepository.get(user.getId()).wrapped().get()
         Assert.assertEquals(user.preferredLocale, newUser.preferredLocale)
 
-        String newPreferredLocale = UUID.randomUUID().toString()
+        LocaleId newPreferredLocale = new LocaleId(UUID.randomUUID().toString())
         newUser.setPreferredLocale(newPreferredLocale)
         newUser = userRepository.update(newUser).wrapped().get()
-        Assert.assertEquals(newUser.getPreferredLocale(), newPreferredLocale)
+        Assert.assertEquals(newUser.getPreferredLocale().toString(), newPreferredLocale.toString())
 
         User findUser = userRepository.getUserByCanonicalUsername(newUser.getUsername()).wrapped().get()
         Assert.assertNotNull(findUser)

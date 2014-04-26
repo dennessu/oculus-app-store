@@ -7,8 +7,20 @@ package com.junbo.identity.spec.v1.option.list;
 
 import com.junbo.identity.spec.options.list.PagingGetOptions;
 
+import javax.ws.rs.QueryParam;
+
 /**
  * Created by haomin on 14-4-25.
  */
 public class PITypeListOptions extends PagingGetOptions {
+    @QueryParam("typeCode")
+    private String typeCode;
+
+    public String getTypeCode() {
+        return typeCode;
+    }
+
+    public void setTypeCode(String typeCode) {
+        this.typeCode = typeCode;
+    }
 }
