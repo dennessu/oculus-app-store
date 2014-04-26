@@ -7,10 +7,12 @@ import com.junbo.identity.data.repository.LocaleRepository
 import com.junbo.identity.spec.v1.model.Locale
 import com.junbo.identity.spec.v1.option.list.LocaleListOptions
 import com.junbo.langur.core.promise.Promise
+import groovy.transform.CompileStatic
 
 /**
  * Created by minhao on 4/24/14.
  */
+@CompileStatic
 class LocaleRepositoryCloudantImpl extends CloudantClient<Locale> implements LocaleRepository {
     @Override
     protected CloudantViews getCloudantViews() {

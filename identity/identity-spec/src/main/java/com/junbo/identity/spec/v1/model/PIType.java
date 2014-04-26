@@ -26,7 +26,7 @@ public class PIType extends ResourceMeta implements Identifiable<PITypeId> {
     private String typeCode;
 
     @ApiModelProperty(position = 3, required = true, value = "The description of payment instrument resource.")
-    private Map<String, Object> locales = new HashMap<>();
+    private Map<String, LocaleName> locales = new HashMap<>();
 
     @ApiModelProperty(position = 4, required = true, value = "whether the PI is recurring-able or not.")
     private Boolean capableOfRecurring;
@@ -42,11 +42,11 @@ public class PIType extends ResourceMeta implements Identifiable<PITypeId> {
         this.typeCode = typeCode;
     }
 
-    public Map<String, Object> getLocales() {
+    public Map<String, LocaleName> getLocales() {
         return locales;
     }
 
-    public void setLocales(Map<String, Object> locales) {
+    public void setLocales(Map<String, LocaleName> locales) {
         this.locales = locales;
     }
 

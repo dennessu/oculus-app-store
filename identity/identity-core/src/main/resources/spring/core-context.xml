@@ -342,6 +342,7 @@
         </property>
         <property name="writablePropertiesForCreate">
             <list>
+                <value>id</value>
                 <value>typeCode</value>
                 <value>locales</value>
                 <value>capableOfRecurring</value>
