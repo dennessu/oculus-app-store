@@ -36,6 +36,7 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
 
     @Override
     public E createEntity(E entity) {
+        // TODO: revisions
         Long entityId = getEntityRepo().create(entity);
         return getEntityRepo().get(entityId);
     }
@@ -90,19 +91,25 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
         }
 
         if (Status.APPROVED.equals(revision.getStatus())) {
-            E existingEntity = getEntityRepo().get(revision.getEntityId());
-            checkEntityNotNull(revision.getEntityId(), existingEntity, getEntityType());
-            if (existingEntity instanceof Offer) {
-                ((Offer) existingEntity).setPublished(Boolean.TRUE);
-            }
-            existingEntity.setCurrentRevisionId(revisionId);
-            getEntityRepo().update(existingEntity);
             revision.setTimestamp(Utils.currentTimestamp());
         }
         getRevisionRepo().update(revision);
+        if (Status.APPROVED.equals(revision.getStatus())) {
+            E entity = getEntityRepo().get(revision.getEntityId());
+            checkEntityNotNull(revision.getEntityId(), entity, getEntityType());
+            if (entity instanceof Offer) {
+                ((Offer) entity).setPublished(Boolean.TRUE);
+            }
+            Long lastRevisionId = entity.getCurrentRevisionId();
+            entity.setCurrentRevisionId(revisionId);
+            getEntityRepo().update(entity);
+            postApproveActions(revision, lastRevisionId);
+        }
         return getRevisionRepo().get(revisionId);
     }
 
+    protected void postApproveActions(T currentRevision, Long lastRevisionId) {
+    }
 
     @Override
     public void deleteRevision(Long revisionId) {

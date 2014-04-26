@@ -15,6 +15,7 @@ import com.junbo.catalog.spec.model.offer.OffersGetOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -34,6 +35,16 @@ public class OfferRepository implements BaseEntityRepository<Offer> {
 
     public List<Offer> getOffers(OffersGetOptions options) {
         List<OfferEntity> offerEntities = offerDao.getOffers(options);
+        List<Offer> offers = new ArrayList<>();
+        for (OfferEntity offerEntity : offerEntities) {
+            offers.add(OfferMapper.toModel(offerEntity));
+        }
+
+        return offers;
+    }
+
+    public List<Offer> getOffers(Collection<Long> offerIds) {
+        List<OfferEntity> offerEntities = offerDao.getOffers(offerIds);
         List<Offer> offers = new ArrayList<>();
         for (OfferEntity offerEntity : offerEntities) {
             offers.add(OfferMapper.toModel(offerEntity));

@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -94,7 +95,7 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
         return criteria.list();
     }
 
-    protected <E extends Id> void addIdRestriction(String fieldName, List<E> ids, Criteria criteria) {
+    protected <E extends Id> void addIdRestriction(String fieldName, Collection<E> ids, Criteria criteria) {
         if (!CollectionUtils.isEmpty(ids)) {
             List<Long> idValues = new ArrayList<>();
             for (E id : ids) {
