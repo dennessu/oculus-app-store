@@ -7,7 +7,7 @@
 package com.junbo.catalog.db.mapper;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.entity.ItemAttributeEntity;
-import com.junbo.catalog.spec.model.item.ItemAttribute;
+import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 
 /**
  * Item attribute mapper between model and DB entity.

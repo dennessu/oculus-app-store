@@ -7,7 +7,7 @@
 package com.junbo.catalog.db.dao;
 
 import com.junbo.catalog.db.entity.ItemAttributeEntity;
-import com.junbo.catalog.spec.model.item.ItemAttributesGetOptions;
+import com.junbo.catalog.spec.model.attribute.ItemAttributesGetOptions;
 
 import java.util.List;
 

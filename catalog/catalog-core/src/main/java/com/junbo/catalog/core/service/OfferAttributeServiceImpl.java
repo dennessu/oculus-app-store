@@ -10,8 +10,8 @@ import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.OfferAttributeService;
 import com.junbo.catalog.db.repo.OfferAttributeRepository;
 import com.junbo.catalog.spec.error.AppErrors;
-import com.junbo.catalog.spec.model.offer.OfferAttribute;
-import com.junbo.catalog.spec.model.offer.OfferAttributesGetOptions;
+import com.junbo.catalog.spec.model.attribute.OfferAttribute;
+import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
