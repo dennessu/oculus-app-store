@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * Offer Attribute.
  */
-public class OfferAttribute extends BaseModel {
+public class OfferAttribute extends BaseModel implements Attribute {
     @OfferAttributeId
     @JsonProperty("self")
     @ApiModelProperty(position = 1, required = true, value = "Attribute id")

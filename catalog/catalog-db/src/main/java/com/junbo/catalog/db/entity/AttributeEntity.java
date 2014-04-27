@@ -11,18 +11,14 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * ItemAttributeEntity.
  */
-@Entity
-@Table(name="item_attribute")
+@MappedSuperclass
 @TypeDefs(@TypeDef(name="json-string", typeClass=StringJsonUserType.class))
-public class ItemAttributeEntity extends BaseEntity {
+public abstract class AttributeEntity extends BaseEntity {
     private Long id;
     private String type;
     private Long parentId;

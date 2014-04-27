@@ -213,6 +213,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     }
 
     private void validateOfferCreation(Offer offer) {
+        checkRequestNotNull(offer);
         List<AppError> errors = new ArrayList<>();
         if (!StringUtils.isEmpty(offer.getRev())) {
             errors.add(AppErrors.INSTANCE.unnecessaryField("rev"));
@@ -232,6 +233,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     }
 
     private void validateOfferUpdate(Offer offer, Offer oldOffer) {
+        checkRequestNotNull(offer);
         List<AppError> errors = new ArrayList<>();
         if (!oldOffer.getOfferId().equals(offer.getOfferId())) {
             errors.add(AppErrors.INSTANCE.fieldNotMatch("self.id", offer.getOfferId(), oldOffer.getOfferId()));
@@ -267,7 +269,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
                     errors.add(AppErrors.INSTANCE.fieldNotCorrect("categories", "should not contain null"));
                 } else {
                     OfferAttribute attribute = offerAttributeRepo.get(categoryId);
-                    if (attribute == null || !AttributeType.CATEGORY.is(attribute.getType())) {
+                    if (attribute == null || !OfferAttributeType.CATEGORY.is(attribute.getType())) {
                         errors.add(AppErrors.INSTANCE
                                 .fieldNotCorrect("categories", "Cannot find category " + Utils.encodeId(categoryId)));
                     }
@@ -277,6 +279,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     }
 
     private void validateRevisionCreation(OfferRevision revision) {
+        checkRequestNotNull(revision);
         List<AppError> errors = new ArrayList<>();
         if (!StringUtils.isEmpty(revision.getRev())) {
             errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", revision.getRev(), null));
@@ -293,6 +296,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     }
 
     private void validateRevisionUpdate(OfferRevision revision, OfferRevision oldRevision) {
+        checkRequestNotNull(revision);
         List<AppError> errors = new ArrayList<>();
         if (!oldRevision.getRevisionId().equals(revision.getRevisionId())) {
             errors.add(AppErrors.INSTANCE
@@ -329,6 +333,22 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             errors.add(AppErrors.INSTANCE.missingField("price"));
         } else {
             checkPrice(revision.getPrice(), errors);
+        }
+        if (CollectionUtils.isEmpty(revision.getLocales())) {
+            errors.add(AppErrors.INSTANCE.missingField("locales"));
+        } else {
+            for (Map.Entry<String, OfferRevisionLocaleProperties> entry : revision.getLocales().entrySet()) {
+                String locale = entry.getKey();
+                OfferRevisionLocaleProperties properties = entry.getValue();
+                // TODO: check locale is a valid locale
+                if (properties==null) {
+                    errors.add(AppErrors.INSTANCE.missingField("locales." + locale));
+                } else {
+                    if (StringUtils.isEmpty(properties.getName())) {
+                        errors.add(AppErrors.INSTANCE.missingField("locales." + locale + ".name"));
+                    }
+                }
+            }
         }
         // TODO: check other properties
     }

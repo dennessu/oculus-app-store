@@ -6,31 +6,27 @@
 
 package com.junbo.catalog.core.service;
 
-import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.ItemAttributeService;
 import com.junbo.catalog.db.repo.ItemAttributeRepository;
-import com.junbo.catalog.spec.error.AppErrors;
+import com.junbo.catalog.spec.enums.ItemAttributeType;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.attribute.ItemAttributesGetOptions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Item attribute service implementation.
  */
-public class ItemAttributeServiceImpl implements ItemAttributeService {
+public class ItemAttributeServiceImpl extends AttributeServiceSupport<ItemAttribute> implements ItemAttributeService {
     @Autowired
     private ItemAttributeRepository attributeRepo;
-
-    @Override
-    public ItemAttribute getAttribute(Long attributeId) {
-        ItemAttribute attribute = attributeRepo.get(attributeId);
-        if (attribute == null) {
-            throw AppErrors.INSTANCE.notFound("item-attribute", Utils.encodeId(attributeId)).exception();
+    private static final List<String> ATTRIBUTE_TYPES = new ArrayList<>();
+    static {
+        for (ItemAttributeType type : ItemAttributeType.values()) {
+            ATTRIBUTE_TYPES.add(type.name());
         }
-        return attribute;
     }
 
     @Override
@@ -39,37 +35,17 @@ public class ItemAttributeServiceImpl implements ItemAttributeService {
     }
 
     @Override
-    public ItemAttribute create(ItemAttribute attribute) {
-        if (!StringUtils.isEmpty(attribute.getRev())) {
-            throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
-        }
-        Long attributeId = attributeRepo.create(attribute);
-        return attributeRepo.get(attributeId);
+    protected ItemAttributeRepository getRepo() {
+        return attributeRepo;
     }
 
     @Override
-    public ItemAttribute update(Long attributeId, ItemAttribute attribute) {
-        if (!attributeId.equals(attribute.getId())) {
-            throw AppErrors.INSTANCE.fieldNotMatch("id", attribute.getId(), attributeId).exception();
-        }
-        if (StringUtils.isEmpty(attribute.getType())) {
-            throw AppErrors.INSTANCE.missingField("type").exception();
-        }
-        ItemAttribute existingAttribute = attributeRepo.get(attributeId);
-        if (existingAttribute==null) {
-            throw AppErrors.INSTANCE.notFound("item-attribute", Utils.encodeId(attributeId)).exception();
-        }
-        if (!existingAttribute.getRev().equals(attribute.getRev())) {
-            throw AppErrors.INSTANCE.fieldNotMatch("rev", attribute.getRev(), existingAttribute.getRev()).exception();
-        }
-
-        attributeRepo.update(attribute);
-
-        return attributeRepo.get(attributeId);
+    protected List<String> getTypes() {
+        return ATTRIBUTE_TYPES;
     }
 
     @Override
-    public void deleteAttribute(Long attributeId) {
-        attributeRepo.delete(attributeId);
+    protected String getEntityType() {
+        return "item-attributes";
     }
 }

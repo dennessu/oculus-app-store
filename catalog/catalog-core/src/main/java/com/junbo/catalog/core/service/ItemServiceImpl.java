@@ -13,7 +13,7 @@ import com.junbo.catalog.db.repo.ItemAttributeRepository;
 import com.junbo.catalog.db.repo.ItemRepository;
 import com.junbo.catalog.db.repo.ItemRevisionRepository;
 import com.junbo.catalog.db.repo.OfferRepository;
-import com.junbo.catalog.spec.enums.AttributeType;
+import com.junbo.catalog.spec.enums.ItemAttributeType;
 import com.junbo.catalog.spec.enums.ItemType;
 import com.junbo.catalog.spec.enums.Status;
 import com.junbo.catalog.spec.error.AppErrors;
@@ -147,6 +147,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
     }
 
     private void validateItemCreation(Item item) {
+        checkRequestNotNull(item);
         List<AppError> errors = new ArrayList<>();
         if (!StringUtils.isEmpty(item.getRev())) {
             errors.add(AppErrors.INSTANCE.unnecessaryField("rev"));
@@ -163,6 +164,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
     }
 
     private void validateItemUpdate(Item item, Item oldItem) {
+        checkRequestNotNull(item);
         List<AppError> errors = new ArrayList<>();
         if (!oldItem.getItemId().equals(item.getItemId())) {
             errors.add(AppErrors.INSTANCE.fieldNotMatch("self.id", item.getItemId(), oldItem.getItemId()));
@@ -205,7 +207,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
                     errors.add(AppErrors.INSTANCE.fieldNotCorrect("genres", "should not contain null"));
                 } else {
                     ItemAttribute attribute = itemAttributeRepo.get(genreId);
-                    if (attribute == null || !AttributeType.GENRE.is(attribute.getType())) {
+                    if (attribute == null || !ItemAttributeType.GENRE.is(attribute.getType())) {
                         errors.add(AppErrors.INSTANCE
                                 .fieldNotCorrect("categories", "Cannot find genre " + Utils.encodeId(genreId)));
                     }
@@ -215,6 +217,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
     }
 
     private void validateRevisionCreation(ItemRevision revision) {
+        checkRequestNotNull(revision);
         List<AppError> errors = new ArrayList<>();
         if (!StringUtils.isEmpty(revision.getRev())) {
             errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", revision.getRev(), null));
@@ -232,6 +235,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
 
 
     private void validateRevisionUpdate(ItemRevision revision, ItemRevision oldRevision) {
+        checkRequestNotNull(revision);
         List<AppError> errors = new ArrayList<>();
         if (!oldRevision.getRevisionId().equals(revision.getRevisionId())) {
             errors.add(AppErrors.INSTANCE
@@ -277,6 +281,19 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
                         errors.add(AppErrors.INSTANCE.fieldNotCorrect("walletAmount", "Should not less than 0"));
                     }
                 }
+                if (!ItemType.WALLET.is(item.getType())) {
+                    if (revision.getWalletCurrency() != null) {
+                        errors.add(AppErrors.INSTANCE.unnecessaryField("walletCurrency"));
+                    }
+                    if (revision.getWalletAmount() != null) {
+                        errors.add(AppErrors.INSTANCE.unnecessaryField("walletAmount"));
+                    }
+                }
+                if (!ItemType.DIGITAL.is(item.getType())) {
+                    if (!CollectionUtils.isEmpty(revision.getBinaries())) {
+                        errors.add(AppErrors.INSTANCE.unnecessaryField("binaries"));
+                    }
+                }
             }
         }
         if (revision.getMsrp() != null) {
@@ -290,7 +307,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
                 ItemRevisionLocaleProperties properties = entry.getValue();
                 // TODO: check locale is a valid locale
                 if (properties==null) {
-                    errors.add(AppErrors.INSTANCE.fieldNotCorrect("locales." + locale, "Should not be null"));
+                    errors.add(AppErrors.INSTANCE.missingField("locales." + locale));
                 } else {
                     if (StringUtils.isEmpty(properties.getName())) {
                         errors.add(AppErrors.INSTANCE.missingField("locales." + locale + ".name"));

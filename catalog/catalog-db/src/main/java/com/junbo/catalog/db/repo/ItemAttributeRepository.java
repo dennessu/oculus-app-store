@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Item repository.
  */
-public class ItemAttributeRepository {
+public class ItemAttributeRepository implements AttributeRepository<ItemAttribute> {
     @Autowired
     private ItemAttributeDao attributeDao;
 

@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Offer repository.
  */
-public class OfferAttributeRepository {
+public class OfferAttributeRepository implements AttributeRepository<OfferAttribute> {
     @Autowired
     private OfferAttributeDao attributeDao;
 
