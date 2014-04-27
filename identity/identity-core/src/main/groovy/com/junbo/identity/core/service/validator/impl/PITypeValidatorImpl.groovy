@@ -9,6 +9,7 @@ import com.junbo.identity.spec.v1.option.list.PITypeListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.CollectionUtils
 
 /**
  * Created by haomin on 14-4-25.
@@ -50,21 +51,18 @@ class PITypeValidatorImpl implements PITypeValidator {
     @Override
     Promise<Void> validateForCreate(PIType piType) {
         checkBasicPITypeInfo(piType)
-        if (piType.id == null) {
-            throw AppErrors.INSTANCE.fieldRequired('id').exception()
+        if (piType.id != null) {
+            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
         }
 
-        return piTypeRepository.get(piType.id).then { PIType existing ->
-            if (existing != null) {
-                throw AppErrors.INSTANCE.fieldDuplicate('id').exception()
+        return piTypeRepository.search(new PITypeListOptions(
+            typeCode: piType.typeCode
+        )).then { List<PIType> existing ->
+            if (!CollectionUtils.isEmpty(existing)) {
+                throw AppErrors.INSTANCE.fieldDuplicate('typeCode').exception()
             }
 
-            return piTypeRepository.search(new PITypeListOptions(typeCode: piType.typeCode)).then { PIType existing2 ->
-                if (existing2 != null) {
-                    throw AppErrors.INSTANCE.fieldDuplicate('typeCode').exception()
-                }
-                return Promise.pure(null)
-            }
+            return Promise.pure(null)
         }
     }
 
@@ -98,7 +96,7 @@ class PITypeValidatorImpl implements PITypeValidator {
         if (piType.typeCode == null) {
             throw AppErrors.INSTANCE.fieldRequired('typeCode').exception()
         }
-        if (piType.locales == null) {
+        if (CollectionUtils.isEmpty(piType.locales)) {
             throw AppErrors.INSTANCE.fieldRequired('locales').exception()
         }
         if (piType.capableOfRecurring == null) {

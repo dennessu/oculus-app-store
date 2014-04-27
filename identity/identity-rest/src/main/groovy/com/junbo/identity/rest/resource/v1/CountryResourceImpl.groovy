@@ -113,7 +113,16 @@ class CountryResourceImpl implements CountryResource {
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        return countryRepository.get(countryId)
+        return countryValidator.validateForGet(countryId).then {
+            countryRepository.get(countryId).then { Country newCountry ->
+                if (newCountry == null) {
+                    throw AppErrors.INSTANCE.countryNotFound(countryId).exception()
+                }
+
+                newCountry = countryFilter.filterForGet(newCountry, null)
+                return Promise.pure(newCountry)
+            }
+        }
     }
 
     @Override
