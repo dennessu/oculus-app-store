@@ -134,11 +134,11 @@ class UserGroupValidatorImpl implements UserGroupValidator {
                 throw AppErrors.INSTANCE.userNotFound(userGroup.userId).exception()
             }
 
-            if (existingUser.isAnonymous == false) {
+            if (existingUser.isAnonymous == true) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userGroup.userId).exception()
             }
 
-            if (existingUser.status == UserStatus.ACTIVE.toString()) {
+            if (existingUser.status != UserStatus.ACTIVE.toString()) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userGroup.userId).exception()
             }
 

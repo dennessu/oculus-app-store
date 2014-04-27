@@ -47,6 +47,6 @@ class SubledgerItemContextBuilder {
         }
 
         def offer = catalogFacade.getOfferRevision(subledgerItem.offerId.value, orderItem.honoredTime).wrapped().get()
-        return buildContext(offer, order.country, order.currency, subledgerItem.createdTime)
+        return buildContext(offer, order.country.value, order.currency.value, subledgerItem.createdTime)
     }
 }

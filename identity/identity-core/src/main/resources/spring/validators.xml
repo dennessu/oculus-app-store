@@ -8,16 +8,16 @@
         <property name="userAuthenticatorRepository" ref="userAuthenticatorRepository"/>
         <property name="allowedTypes">
             <list>
-                <value>hotmail</value>
-                <value>google</value>
-                <value>facebook</value>
+                <value>GOOGLE</value>
+                <value>FACEBOOK</value>
+                <value>TWITTER</value>
             </list>
         </property>
     </bean>
 
     <bean id="userCommunicationValidator" class="com.junbo.identity.core.service.validator.impl.UserCommunicationValidatorImpl">
         <property name="userRepository" ref="userRepository"/>
-        <property name="userCommunicationRepository" ref="userOptinRepository"/>
+        <property name="userCommunicationRepository" ref="userCommunicationRepository"/>
         <property name="communicationRepository" ref="communicationRepository" />
     </bean>
 

@@ -73,7 +73,7 @@ public class SqlRepositoryTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     @Qualifier('sqlUserOptinRepository')
-    private UserCommunicationRepository userOptinRepository
+    private UserCommunicationRepository userCommunicationRepository
 
     @Autowired
     @Qualifier('sqlUserPasswordRepository')
@@ -301,21 +301,21 @@ public class SqlRepositoryTest extends AbstractTestNGSpringContextTests {
         userOptin.setCommunicationId(new CommunicationId(idGenerator.nextId()))
         userOptin.setCreatedBy('lixia')
         userOptin.setCreatedTime(new Date())
-        userOptin = userOptinRepository.create(userOptin).wrapped().get()
+        userOptin = userCommunicationRepository.create(userOptin).wrapped().get()
 
-        UserCommunication newUserOptin = userOptinRepository.get(userOptin.getId()).wrapped().get()
+        UserCommunication newUserOptin = userCommunicationRepository.get(userOptin.getId()).wrapped().get()
         Assert.assertEquals(userOptin.communicationId, newUserOptin.communicationId)
 
         CommunicationId value = new CommunicationId(idGenerator.nextId())
         userOptin.setCommunicationId(value)
-        userOptinRepository.update(userOptin)
+        userCommunicationRepository.update(userOptin)
 
-        newUserOptin = userOptinRepository.get(userOptin.getId()).wrapped().get()
+        newUserOptin = userCommunicationRepository.get(userOptin.getId()).wrapped().get()
         Assert.assertEquals(value, newUserOptin.getCommunicationId())
 
         UserOptinListOptions getOption = new UserOptinListOptions()
         getOption.setUserId(new UserId(userId))
-        List<UserCommunication> userOptins = userOptinRepository.search(getOption).wrapped().get()
+        List<UserCommunication> userOptins = userCommunicationRepository.search(getOption).wrapped().get()
         assert userOptins.size() != 0
     }
 

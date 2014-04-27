@@ -110,7 +110,16 @@ class PITypeResourceImpl implements PITypeResource {
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        return piTypeRepository.get(piTypeId)
+        return piTypeValidator.validateForGet(piTypeId).then {
+            piTypeRepository.get(piTypeId).then { PIType newPIType ->
+                if (newPIType == null) {
+                    throw AppErrors.INSTANCE.piTypeNotFound(piTypeId).exception()
+                }
+
+                newPIType = piTypeFilter.filterForGet(newPIType, null)
+                return Promise.pure(newPIType)
+            }
+        }
     }
 
     @Override

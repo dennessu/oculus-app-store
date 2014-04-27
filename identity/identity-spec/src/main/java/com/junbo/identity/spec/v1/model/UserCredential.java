@@ -56,7 +56,7 @@ public class UserCredential extends ResourceMeta implements Identifiable<UserCre
 
     public void setUserId(UserId userId) {
         this.userId = userId;
-        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("userId");
     }
 
     public String getOldValue() {
@@ -92,7 +92,7 @@ public class UserCredential extends ResourceMeta implements Identifiable<UserCre
 
     public void setExpiresBy(Date expiresBy) {
         this.expiresBy = expiresBy;
-        support.setPropertyAssigned("expiredBy");
+        support.setPropertyAssigned("expiresBy");
     }
 
     public Boolean getChangeAtNextLogin() {

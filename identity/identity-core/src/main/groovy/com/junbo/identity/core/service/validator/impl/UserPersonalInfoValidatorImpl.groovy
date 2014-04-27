@@ -77,7 +77,7 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
             throw new IllegalArgumentException('userPersonalInfo is null')
         }
 
-        if (userPersonalInfo.id != oldUserPersonalInfo) {
+        if (userPersonalInfo.id != oldUserPersonalInfo.id) {
             throw AppErrors.INSTANCE.fieldInvalid('id', oldUserPersonalInfo.id.toString()).exception()
         }
 
@@ -85,6 +85,7 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
             throw AppErrors.INSTANCE.fieldRequired('id').exception()
         }
         checkBasicPersonalInfo(userPersonalInfo)
+        return Promise.pure(null)
     }
 
     void checkBasicPersonalInfo(UserPersonalInfo userPersonalInfo) {
