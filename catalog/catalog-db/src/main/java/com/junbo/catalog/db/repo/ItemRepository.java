@@ -48,9 +48,6 @@ public class ItemRepository implements BaseEntityRepository<Item> {
     @Override
     public Long update(Item item) {
         ItemEntity dbEntity = itemDao.get(item.getItemId());
-        if (dbEntity == null) {
-            throw AppErrors.INSTANCE.notFound("item", Utils.encodeId(item.getItemId())).exception();
-        }
         ItemMapper.fillDBEntity(item, dbEntity);
         return itemDao.update(dbEntity);
     }
@@ -58,9 +55,6 @@ public class ItemRepository implements BaseEntityRepository<Item> {
     @Override
     public void delete(Long itemId) {
         ItemEntity dbEntity = itemDao.get(itemId);
-        if (dbEntity == null) {
-            throw AppErrors.INSTANCE.notFound("item", Utils.encodeId(itemId)).exception();
-        }
         dbEntity.setDeleted(true);
         itemDao.update(dbEntity);
     }

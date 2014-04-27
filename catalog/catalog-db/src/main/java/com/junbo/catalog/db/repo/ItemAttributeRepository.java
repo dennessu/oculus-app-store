@@ -46,18 +46,12 @@ public class ItemAttributeRepository {
 
     public Long update(ItemAttribute attribute) {
         ItemAttributeEntity dbEntity = attributeDao.get(attribute.getId());
-        if (dbEntity == null) {
-            throw AppErrors.INSTANCE.notFound("item-attribute", Utils.encodeId(attribute.getId())).exception();
-        }
         ItemAttributeMapper.fillDBEntity(attribute, dbEntity);
         return attributeDao.update(dbEntity);
     }
 
     public void delete(Long attributeId) {
         ItemAttributeEntity dbEntity = attributeDao.get(attributeId);
-        if (dbEntity == null) {
-            throw AppErrors.INSTANCE.notFound("item-attribute", Utils.encodeId(attributeId)).exception();
-        }
         dbEntity.setDeleted(true);
         attributeDao.update(dbEntity);
     }

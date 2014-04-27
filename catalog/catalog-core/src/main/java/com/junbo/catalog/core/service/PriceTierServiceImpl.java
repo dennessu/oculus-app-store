@@ -58,4 +58,15 @@ public class PriceTierServiceImpl implements PriceTierService {
         Long attributeId = priceTierRepo.create(priceTier);
         return priceTierRepo.get(attributeId);
     }
+
+    @Override
+    public PriceTier update(Long tierId, PriceTier priceTier) {
+        priceTierRepo.update(priceTier);
+        return priceTierRepo.get(tierId);
+    }
+
+    @Override
+    public void delete(Long tierId) {
+        priceTierRepo.delete(tierId);
+    }
 }

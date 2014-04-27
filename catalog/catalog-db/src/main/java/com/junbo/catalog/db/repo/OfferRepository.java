@@ -57,9 +57,6 @@ public class OfferRepository implements BaseEntityRepository<Offer> {
     @Override
     public Long update(Offer offer) {
         OfferEntity dbEntity = offerDao.get(offer.getOfferId());
-        if (dbEntity == null) {
-            throw AppErrors.INSTANCE.notFound("offer", Utils.encodeId(offer.getOfferId())).exception();
-        }
         OfferMapper.fillDBEntity(offer, dbEntity);
         return offerDao.update(dbEntity);
     }
@@ -67,9 +64,6 @@ public class OfferRepository implements BaseEntityRepository<Offer> {
     @Override
     public void delete(Long offerId) {
         OfferEntity dbEntity = offerDao.get(offerId);
-        if (dbEntity == null) {
-            throw AppErrors.INSTANCE.notFound("offer", Utils.encodeId(offerId)).exception();
-        }
         dbEntity.setDeleted(true);
         offerDao.update(dbEntity);
     }

@@ -63,9 +63,6 @@ public class OfferRevisionRepository implements BaseRevisionRepository<OfferRevi
     @Override
     public Long update(OfferRevision revision) {
         OfferRevisionEntity dbEntity = offerRevisionDao.get(revision.getRevisionId());
-        if (dbEntity == null) {
-            throw AppErrors.INSTANCE.notFound("offer-revision", Utils.encodeId(revision.getRevisionId())).exception();
-        }
         OfferRevisionMapper.fillDBEntity(revision, dbEntity);
         return offerRevisionDao.update(dbEntity);
     }
@@ -73,9 +70,6 @@ public class OfferRevisionRepository implements BaseRevisionRepository<OfferRevi
     @Override
     public void delete(Long revisionId) {
         OfferRevisionEntity dbEntity = offerRevisionDao.get(revisionId);
-        if (dbEntity == null) {
-            throw AppErrors.INSTANCE.notFound("offer-revision", Utils.encodeId(revisionId)).exception();
-        }
         dbEntity.setDeleted(true);
         offerRevisionDao.update(dbEntity);
     }
