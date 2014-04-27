@@ -10,7 +10,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.alibaba.fastjson.serializer.PropertyFilter;
 import com.alibaba.fastjson.serializer.SerializeWriter;
+import com.junbo.common.shuffle.Oculus48Id;
 import com.junbo.payment.common.exception.AppClientExceptions;
+import com.junbo.payment.common.exception.AppServerExceptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,6 +77,24 @@ public final class CommonUtil {
             }
         }
         return result;
+    }
+
+    public static String encode(Object value) {
+        try{
+            if (value instanceof Long) {
+                Oculus48Id.validateRawValue((Long) value);
+                return Oculus48Id.format(Oculus48Id.shuffle((Long) value));
+            } else {
+                return value == null ? "" : value.toString();
+            }
+        }catch (Exception ex){
+            throw AppServerExceptions.INSTANCE.invalidIdToEncode(value == null ? "" : value.toString()).exception();
+        }
+    }
+
+    public static Long decode(String id) {
+        Oculus48Id.validateEncodedValue(id);
+        return Oculus48Id.unShuffle(Oculus48Id.deFormat(id));
     }
 
     public static void preValidation(Object obj) {

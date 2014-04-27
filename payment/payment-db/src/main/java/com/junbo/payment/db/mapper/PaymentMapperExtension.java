@@ -44,6 +44,7 @@ public class PaymentMapperExtension {
         }
         PaymentInstrument pi = paymentMapperImpl.toPaymentInstrumentRaw(piEntity, new MappingContext());
         //pi.setId(new PIId(piEntity.getUserId(), piEntity.getId()));
+        pi.setIsValidated(pi.getLastValidatedTime() != null);
         return pi;
     }
 

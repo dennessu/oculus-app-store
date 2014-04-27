@@ -13,11 +13,10 @@ import com.junbo.catalog.db.repo.BaseRevisionRepository;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.common.*;
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.common.error.AppError;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.List;
 
 /**
  * Base service implementation for revisioned entity.
@@ -36,6 +35,7 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
 
     @Override
     public E createEntity(E entity) {
+        // TODO: revisions
         Long entityId = getEntityRepo().create(entity);
         return getEntityRepo().get(entityId);
     }
@@ -48,6 +48,10 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
         if (!isEqual(existingEntity.getCurrentRevisionId(), entity.getCurrentRevisionId())) {
             throw AppErrors.INSTANCE.fieldNotCorrect("currentRevision", "The field should not be explicitly updated.")
                     .exception();
+        }
+
+        if (!existingEntity.getRev().equals(entity.getRev())) {
+            throw AppErrors.INSTANCE.fieldNotMatch("rev", entity.getRev(), existingEntity.getRev()).exception();
         }
 
         getEntityRepo().update(entity);
@@ -67,34 +71,27 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
     }
 
     @Override
-    public T createRevision(T revision) {
-        //TODO: validation
-        Long revisionId = getRevisionRepo().create(revision);
-        return getRevisionRepo().get(revisionId);
-    }
-
-    @Override
     public T updateRevision(Long revisionId, T revision) {
-        T existingRevision = getRevisionRepo().get(revisionId);
-        if (Status.APPROVED.equals(existingRevision.getStatus())) {
-            throw AppErrors.INSTANCE.validation("Cannot update a revision after it's approved.").exception();
-        }
-        checkEntityNotNull(revisionId, existingRevision, getRevisionType());
-
         if (Status.APPROVED.equals(revision.getStatus())) {
-            E existingEntity = getEntityRepo().get(revision.getEntityId());
-            checkEntityNotNull(revision.getEntityId(), existingEntity, getEntityType());
-            if (existingEntity instanceof Offer) {
-                ((Offer) existingEntity).setPublished(Boolean.TRUE);
-            }
-            existingEntity.setCurrentRevisionId(revisionId);
-            getEntityRepo().update(existingEntity);
             revision.setTimestamp(Utils.currentTimestamp());
         }
         getRevisionRepo().update(revision);
+        if (Status.APPROVED.equals(revision.getStatus())) {
+            E entity = getEntityRepo().get(revision.getEntityId());
+            checkEntityNotNull(revision.getEntityId(), entity, getEntityType());
+            if (entity instanceof Offer) {
+                ((Offer) entity).setPublished(Boolean.TRUE);
+            }
+            Long lastRevisionId = entity.getCurrentRevisionId();
+            entity.setCurrentRevisionId(revisionId);
+            getEntityRepo().update(entity);
+            postApproveActions(revision, lastRevisionId);
+        }
         return getRevisionRepo().get(revisionId);
     }
 
+    protected void postApproveActions(T currentRevision, Long lastRevisionId) {
+    }
 
     @Override
     public void deleteRevision(Long revisionId) {
@@ -105,44 +102,13 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
 
     protected void checkEntityNotNull(Long entityId, BaseModel entity, String name) {
         if (entity == null) {
-            throw AppErrors.INSTANCE.notFound(name, entityId).exception();
+            throw AppErrors.INSTANCE.notFound(name, Utils.encodeId(entityId)).exception();
         }
     }
-
 
     protected void checkFieldNotNull(Object field, String fieldName) {
         if (field == null) {
             throw AppErrors.INSTANCE.missingField(fieldName).exception();
-        }
-    }
-
-    protected void checkFieldNotEmpty(String field, String fieldName) {
-        if (StringUtils.isEmpty(field)) {
-            throw AppErrors.INSTANCE.missingField(fieldName).exception();
-        }
-    }
-
-    protected void checkFieldShouldNull(Object field, String fieldName) {
-        if (field != null) {
-            throw AppErrors.INSTANCE.fieldNotCorrect(fieldName, "Should be null.").exception();
-        }
-    }
-
-    protected void checkFieldShouldEmpty(Collection collection, String fieldName) {
-        if (!CollectionUtils.isEmpty(collection)) {
-            throw AppErrors.INSTANCE.fieldNotCorrect(fieldName, "Should be null.").exception();
-        }
-    }
-
-    protected void checkFieldShouldEmpty(Map map, String fieldName) {
-        if (!CollectionUtils.isEmpty(map)) {
-            throw AppErrors.INSTANCE.fieldNotCorrect(fieldName, "Should be null.").exception();
-        }
-    }
-
-    protected void checkFieldShouldEmpty(String field, String fieldName) {
-        if (!StringUtils.isEmpty(field)) {
-            throw AppErrors.INSTANCE.fieldNotCorrect(fieldName, "Should be null.").exception();
         }
     }
 
@@ -155,23 +121,30 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
         }
     }
 
-    protected void checkPrice(Price price) {
+    protected void checkPrice(Price price, List<AppError> errors) {
         if (!Price.ALL_TYPES.contains(price.getPriceType())) {
-            throw AppErrors.INSTANCE
-                    .fieldNotCorrect("priceType", "Valid price types: " + Price.ALL_TYPES).exception();
+            errors.add(AppErrors.INSTANCE.fieldNotCorrect("priceType", "Valid price types: " + Price.ALL_TYPES));
         }
 
         if (Price.TIERED.equals(price.getPriceType())) {
-            checkFieldShouldEmpty(price.getPrices(), "prices");
+            if (!CollectionUtils.isEmpty(price.getPrices())) {
+                errors.add(AppErrors.INSTANCE.unnecessaryField("prices"));
+            }
         } else if (Price.FREE.equals(price.getPriceType())) {
-            checkFieldShouldNull(price.getPriceTier(), "priceTier");
-            checkFieldShouldEmpty(price.getPrices(), "prices");
+            if (price.getPriceTier() != null) {
+                errors.add(AppErrors.INSTANCE.unnecessaryField("priceTier"));
+            }
+            if (!CollectionUtils.isEmpty(price.getPrices())) {
+                errors.add(AppErrors.INSTANCE.unnecessaryField("prices"));
+            }
         } else if (Price.CUSTOM.equals(price.getPriceType())) {
-            checkFieldShouldNull(price.getPriceTier(), "priceTier");
+            if (price.getPriceTier() != null) {
+                errors.add(AppErrors.INSTANCE.unnecessaryField("priceTier"));
+            }
         }
     }
 
-    private boolean isEqual(Long v1, Long v2) {
+    protected boolean isEqual(Long v1, Long v2) {
         if (v1==null) {
             return v2==null;
         }

@@ -171,7 +171,7 @@ public class OrderRatingService extends RatingServiceSupport{
         context.setShippingResult(result);
     }
 
-    private int getQuantity(RatingOffer ratingOffer, Long timestamp) {
+    private int getQuantity(RatingOffer ratingOffer, String timestamp) {
         int result = 0;
 
         for (LinkedEntry entry : ratingOffer.getItems()) {

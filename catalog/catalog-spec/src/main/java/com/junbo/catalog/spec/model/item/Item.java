@@ -25,7 +25,7 @@ public class Item extends BaseEntityModel {
     private Long itemId;
 
     @ApiModelProperty(position = 2, required = true, value = "Item type",
-            allowableValues = "PHYSICAL, DIGITAL, WALLET, SUBSCRIPTION")
+            allowableValues = "PHYSICAL, DIGITAL, WALLET, SUBSCRIPTION, VIRTUAL")
     private String type;
 
     @ItemRevisionId
@@ -58,8 +58,9 @@ public class Item extends BaseEntityModel {
     @ApiModelProperty(position = 26, required = true, value = "Genres")
     private List<Long> genres;
 
-    @ApiModelProperty(position = 27, required = true, value = "Sku")
-    private String sku;
+    @OfferId
+    @ApiModelProperty(position = 28, required = true, value = "Default offer")
+    private Long defaultOffer;
 
     @JsonIgnore
     private Long entitlementDefId;
@@ -136,19 +137,19 @@ public class Item extends BaseEntityModel {
         this.genres = genres;
     }
 
-    public String getSku() {
-        return sku;
-    }
-
-    public void setSku(String sku) {
-        this.sku = sku;
-    }
-
     public Long getEntitlementDefId() {
         return entitlementDefId;
     }
 
     public void setEntitlementDefId(Long entitlementDefId) {
         this.entitlementDefId = entitlementDefId;
+    }
+
+    public Long getDefaultOffer() {
+        return defaultOffer;
+    }
+
+    public void setDefaultOffer(Long defaultOffer) {
+        this.defaultOffer = defaultOffer;
     }
 }

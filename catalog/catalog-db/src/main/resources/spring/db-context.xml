@@ -86,6 +86,9 @@
     <bean id="priceTierDao" class="com.junbo.catalog.db.dao.impl.PriceTierDaoImpl" parent="catalogBaseDao">
         <property name="entityType" value="com.junbo.catalog.db.entity.PriceTierEntity"/>
     </bean>
+    <bean id="itemOfferRelationsDao" class="com.junbo.catalog.db.dao.impl.ItemOfferRelationsDaoImpl" parent="catalogBaseDao">
+        <property name="entityType" value="com.junbo.catalog.db.entity.ItemOfferRelationsEntity"/>
+    </bean>
 
     <!-- Repository -->
     <bean id="itemRepository" class="com.junbo.catalog.db.repo.ItemRepository"/>
@@ -99,4 +102,5 @@
     <bean id="itemAttributeRepository" class="com.junbo.catalog.db.repo.ItemAttributeRepository"/>
     <bean id="offerAttributeRepository" class="com.junbo.catalog.db.repo.OfferAttributeRepository"/>
     <bean id="priceTierRepository" class="com.junbo.catalog.db.repo.PriceTierRepository"/>
+    <bean id="itemOfferRelationsRepository" class="com.junbo.catalog.db.repo.ItemOfferRelationsRepository"/>
 </beans>

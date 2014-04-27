@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component
 
 import javax.ws.rs.BeanParam
 import javax.ws.rs.PathParam
+import javax.ws.rs.core.Response
+
 /**
 * Created by LinYi on 14-2-25.
 */
@@ -40,6 +42,11 @@ class MockCatalogResource extends BaseMock implements OfferRevisionResource {
     Promise<OfferRevision> updateOfferRevision(
             @PathParam('revisionId') OfferRevisionId revisionId, OfferRevision offerRevision) {
         return null
+    }
+
+    @Override
+    Promise<Response> delete(OfferRevisionId revisionId) {
+
     }
 
     OfferRevision generateOfferRevision() {

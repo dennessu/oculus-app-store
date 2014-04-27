@@ -49,6 +49,9 @@ public interface AppServerExceptions {
     @ErrorDef(httpStatusCode = 500, code = "50009", description = "Service {0} is not Implemented")
     AppError serviceNotImplemented(String serviceName);
 
-    @ErrorDef(httpStatusCode = 500, code = "50009", description = "payment {0} has no external token")
+    @ErrorDef(httpStatusCode = 500, code = "50010", description = "payment {0} has no external token")
     AppError noExternalTokenFoundForPayment(String paymentId);
+
+    @ErrorDef(httpStatusCode = 500, code = "50011", description = "error happens when encode the id")
+    AppError invalidIdToEncode(String paymentId);
 }

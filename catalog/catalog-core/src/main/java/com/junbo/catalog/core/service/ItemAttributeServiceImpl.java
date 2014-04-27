@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.core.service;
 
+import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.ItemAttributeService;
 import com.junbo.catalog.db.repo.ItemAttributeRepository;
 import com.junbo.catalog.spec.error.AppErrors;
@@ -27,7 +28,7 @@ public class ItemAttributeServiceImpl implements ItemAttributeService {
     public ItemAttribute getAttribute(Long attributeId) {
         ItemAttribute attribute = attributeRepo.get(attributeId);
         if (attribute == null) {
-            throw AppErrors.INSTANCE.notFound("item-attribute", attributeId).exception();
+            throw AppErrors.INSTANCE.notFound("item-attribute", Utils.encodeId(attributeId)).exception();
         }
         return attribute;
     }
@@ -39,6 +40,9 @@ public class ItemAttributeServiceImpl implements ItemAttributeService {
 
     @Override
     public ItemAttribute create(ItemAttribute attribute) {
+        if (!StringUtils.isEmpty(attribute.getRev())) {
+            throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
+        }
         Long attributeId = attributeRepo.create(attribute);
         return attributeRepo.get(attributeId);
     }
@@ -53,7 +57,10 @@ public class ItemAttributeServiceImpl implements ItemAttributeService {
         }
         ItemAttribute existingAttribute = attributeRepo.get(attributeId);
         if (existingAttribute==null) {
-            throw AppErrors.INSTANCE.notFound("item-attribute", attributeId).exception();
+            throw AppErrors.INSTANCE.notFound("item-attribute", Utils.encodeId(attributeId)).exception();
+        }
+        if (!existingAttribute.getRev().equals(attribute.getRev())) {
+            throw AppErrors.INSTANCE.fieldNotMatch("rev", attribute.getRev(), existingAttribute.getRev()).exception();
         }
 
         attributeRepo.update(attribute);

@@ -1,7 +1,10 @@
 package com.junbo.order.core.impl.common
+
+import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.Order
+import com.junbo.payment.spec.enums.PIType
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
@@ -51,6 +54,19 @@ class OrderValidator {
         def currency = facadeContainer.billingFacade.getCurrency(currencyString).wrapped().get()
         if (currency == null) {
             throw AppErrors.INSTANCE.fieldInvalid(fieldName, 'not a valid currency').exception()
+        }
+        return this
+    }
+
+    OrderValidator validWebPaymentUrls(List<PaymentInstrumentId> piids,
+                                       String successRedirectUrl, String cancelRedirectUrl) {
+        if (piids == null || piids.isEmpty()) {
+            return this
+        }
+        def pi = facadeContainer.paymentFacade.getPaymentInstrument(piids[0].value).wrapped().get()
+        if (pi?.type == PIType.PAYPAL.name()) {
+            notNull(successRedirectUrl, 'successRedirectUrl')
+            notNull(cancelRedirectUrl, 'cancelRedirectUrl')
         }
         return this
     }

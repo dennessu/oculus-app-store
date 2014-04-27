@@ -119,6 +119,12 @@ public class Order extends BaseOrderResource {
     @ApiModelProperty(required = true, position = 180, value = "[Client Immutable]]The link to the balances. ")
     private Link balances;
 
+    // urls for web payment
+    private String successRedirectUrl;
+    private String cancelRedirectUrl;
+    private String providerConfirmUrl;
+    // end of urls
+
     public OrderId getId() {
         return id;
     }
@@ -310,4 +316,27 @@ public class Order extends BaseOrderResource {
         this.paymentInstruments = paymentInstruments;
     }
 
+    public String getSuccessRedirectUrl() {
+        return successRedirectUrl;
+    }
+
+    public void setSuccessRedirectUrl(String successRedirectUrl) {
+        this.successRedirectUrl = successRedirectUrl;
+    }
+
+    public String getCancelRedirectUrl() {
+        return cancelRedirectUrl;
+    }
+
+    public void setCancelRedirectUrl(String cancelRedirectUrl) {
+        this.cancelRedirectUrl = cancelRedirectUrl;
+    }
+
+    public String getProviderConfirmUrl() {
+        return providerConfirmUrl;
+    }
+
+    public void setProviderConfirmUrl(String providerConfirmUrl) {
+        this.providerConfirmUrl = providerConfirmUrl;
+    }
 }

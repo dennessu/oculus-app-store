@@ -5,6 +5,7 @@
  */
 
 package com.junbo.order.core.impl.orderflow
+
 import com.junbo.billing.spec.model.Balance
 import com.junbo.common.error.AppErrorException
 import com.junbo.langur.core.promise.Promise
@@ -83,16 +84,12 @@ class DefaultFlowSelector implements FlowSelector {
                 LOGGER.error('name=Fulfillment_Event_Not_Support. action: {}, status:{}', event.action, event.status)
                 throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
             case OrderActionType.CHARGE.name():
-                return orderServiceContextBuilder.refreshBalances(context).then { List<Balance> balances ->
-                    if (event.status == EventStatus.COMPLETED.name()
-                            && CoreUtils.isChargeCompleted(balances)
-                            && context.order.status == OrderStatus.PENDING_CHARGE.name()) {
-                        LOGGER.info('name=Settle_Web_Payment_Order. orderId: {}', event.order.value)
-                        return Promise.pure(FlowType.WEB_PAYMENT_SETTLE.name())
-                    }
-                    LOGGER.error('name=Billing_Event_Not_Support. action: {}, status:{}', event.action, event.status)
-                    throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
+                if (event.status == EventStatus.COMPLETED.name()
+                        && context.order.status == OrderStatus.PENDING_CHARGE.name()) {
+                    return Promise.pure(FlowType.WEB_PAYMENT_SETTLE.name())
                 }
+                LOGGER.error('name=Charge_Event_Not_Support. action: {}, status:{}', event.action, event.status)
+                throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
             default:
                 LOGGER.error('name=Event_Not_Support. action: {}, status:{}', event.action, event.status)
                 throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
@@ -114,7 +111,7 @@ class DefaultFlowSelector implements FlowSelector {
                 // TODO reference to payment instrument type
                 case PIType.CREDITCARD.name():
                     // TODO: do not support mixed order containing both physical item & digital item now
-                    return CoreUtils.hasPhysicalOffer(context.order) ? Promise.pure(FlowType.PHYSICAL_SETTLE.name()) :
+                    return CoreUtils.hasPhysicalOffer(context.order) ? Promise.pure(FlowType.AUTH_SETTLE.name()) :
                             Promise.pure(FlowType.IMMEDIATE_SETTLE.name())
                 case PIType.WALLET.name():
                     return Promise.pure(FlowType.IMMEDIATE_SETTLE.name())

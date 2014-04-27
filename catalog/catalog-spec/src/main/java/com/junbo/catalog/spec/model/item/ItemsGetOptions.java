@@ -19,8 +19,6 @@ import java.util.List;
 public class ItemsGetOptions extends PageableGetOptions {
     @QueryParam("id")
     private List<ItemId> itemIds;
-    @QueryParam("curated")
-    private Boolean curated;
     @QueryParam("type")
     private String type;
     @AttributeId
@@ -33,14 +31,6 @@ public class ItemsGetOptions extends PageableGetOptions {
 
     public void setItemIds(List<ItemId> itemIds) {
         this.itemIds = itemIds;
-    }
-
-    public Boolean getCurated() {
-        return curated;
-    }
-
-    public void setCurated(Boolean curated) {
-        this.curated = curated;
     }
 
     public String getType() {

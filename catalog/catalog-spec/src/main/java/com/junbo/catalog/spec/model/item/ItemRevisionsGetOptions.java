@@ -25,7 +25,7 @@ public class ItemRevisionsGetOptions extends PageableGetOptions {
     private String type;
     @QueryParam("status")
     private String status;
-    @QueryParam("timestamp")
+    @QueryParam("timeInMillis")
     private Long timestamp;
 
     public List<ItemId> getItemIds() {

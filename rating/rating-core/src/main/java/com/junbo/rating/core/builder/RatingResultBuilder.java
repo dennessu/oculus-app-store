@@ -22,6 +22,7 @@ public class RatingResultBuilder {
         RatingRequest result = new RatingRequest();
         result.setUserId(context.getUserId());
         result.setCurrency(context.getCurrency().getCode());
+        result.setTime(context.getTimestamp());
         result.setLineItems(new HashSet<RatingItem>());
         result.setShippingMethodId(context.getDefaultShippingMethod());
 
@@ -61,6 +62,7 @@ public class RatingResultBuilder {
         RatingRequest result = new RatingRequest();
         result.setUserId(context.getUserId());
         result.setCurrency(context.getCurrency().getCode());
+        result.setTime(context.getTimestamp());
         result.setLineItems(new HashSet<RatingItem>());
         for (RatingResultEntry entry : context.getEntries()) {
             RatingItem item = new RatingItem();
