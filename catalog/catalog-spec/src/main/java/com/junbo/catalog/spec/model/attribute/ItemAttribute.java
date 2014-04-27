@@ -4,33 +4,33 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.catalog.spec.model.offer;
+package com.junbo.catalog.spec.model.attribute;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.catalog.spec.model.common.BaseModel;
-import com.junbo.common.jackson.annotation.OfferAttributeId;
+import com.junbo.common.jackson.annotation.ItemAttributeId;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 /**
- * Offer Attribute.
+ * Item Attribute.
  */
-public class OfferAttribute extends BaseModel {
-    @OfferAttributeId
+public class ItemAttribute extends BaseModel {
+    @ItemAttributeId
     @JsonProperty("self")
     @ApiModelProperty(position = 1, required = true, value = "Attribute id")
     private Long id;
     @NotNull
-    @ApiModelProperty(position = 2, required = true, value = "Attribute type", allowableValues = "CATEGORY")
+    @ApiModelProperty(position = 2, required = true, value = "Attribute type", allowableValues = "GENRE")
     private String type;
-    @OfferAttributeId
+    @ItemAttributeId
     @JsonProperty("parent")
-    @ApiModelProperty(position = 3, required = true, value = "Parent id")
+    @ApiModelProperty(position = 3, required = false, value = "Parent id")
     private Long parentId;
-    @ApiModelProperty(position = 4, required = false, value = "locale properties")
+    @ApiModelProperty(position = 4, required = true, value = "Locale properties")
     private Map<String, SimpleLocaleProperties> locales;
 
     public Long getId() {

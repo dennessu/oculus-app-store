@@ -16,12 +16,6 @@ import java.util.*;
  * Price.
  */
 public class Price {
-    public static final String FREE = "FREE";
-    public static final String TIERED = "TIERED";
-    public static final String CUSTOM = "CUSTOM";
-    public static final Set<String> ALL_TYPES =
-            Collections.unmodifiableSet(new HashSet<>(Arrays.asList(FREE, TIERED, CUSTOM)));
-
     @ApiModelProperty(position = 1, required = true, value = "price type")
     private String priceType;
     @PriceTierId

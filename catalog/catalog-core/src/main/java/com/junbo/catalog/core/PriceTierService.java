@@ -20,4 +20,6 @@ public interface PriceTierService {
     PriceTier getPriceTier(Long tierId);
     List<PriceTier> getPriceTiers(PriceTiersGetOptions options);
     PriceTier create(PriceTier priceTier);
+    PriceTier update(Long tierId, PriceTier priceTier);
+    void delete(Long tierId);
 }

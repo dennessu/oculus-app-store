@@ -6,13 +6,11 @@
 
 package com.junbo.catalog.db.repo;
 
-import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.dao.OfferAttributeDao;
 import com.junbo.catalog.db.entity.OfferAttributeEntity;
 import com.junbo.catalog.db.mapper.OfferAttributeMapper;
-import com.junbo.catalog.spec.error.AppErrors;
-import com.junbo.catalog.spec.model.offer.OfferAttribute;
-import com.junbo.catalog.spec.model.offer.OfferAttributesGetOptions;
+import com.junbo.catalog.spec.model.attribute.OfferAttribute;
+import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -46,9 +44,6 @@ public class OfferAttributeRepository {
 
     public Long update(OfferAttribute attribute) {
         OfferAttributeEntity dbEntity = attributeDao.get(attribute.getId());
-        if (dbEntity == null) {
-            throw AppErrors.INSTANCE.notFound("offer-attribute", Utils.encodeId(attribute.getId())).exception();
-        }
         OfferAttributeMapper.fillDBEntity(attribute, dbEntity);
         return attributeDao.update(dbEntity);
     }
@@ -56,9 +51,6 @@ public class OfferAttributeRepository {
 
     public void delete(Long attributeId) {
         OfferAttributeEntity dbEntity = attributeDao.get(attributeId);
-        if (dbEntity == null) {
-            throw AppErrors.INSTANCE.notFound("offer-attribute", Utils.encodeId(attributeId)).exception();
-        }
         dbEntity.setDeleted(true);
         attributeDao.update(dbEntity);
     }

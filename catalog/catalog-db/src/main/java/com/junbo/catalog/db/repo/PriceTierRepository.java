@@ -6,9 +6,9 @@
 
 package com.junbo.catalog.db.repo;
 
-import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.dao.PriceTierDao;
 import com.junbo.catalog.db.entity.PriceTierEntity;
+import com.junbo.catalog.db.mapper.PriceTierMapper;
 import com.junbo.catalog.spec.model.pricetier.PriceTier;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -23,28 +23,34 @@ public class PriceTierRepository {
     private PriceTierDao priceTierDao;
 
     public Long create(PriceTier priceTier) {
-        PriceTierEntity entity = new PriceTierEntity();
-        entity.setPayload(Utils.toJson(priceTier));
+        PriceTierEntity entity = PriceTierMapper.toDBEntity(priceTier);
         return priceTierDao.create(entity);
     }
 
     public PriceTier get(Long id) {
-        PriceTierEntity entity = priceTierDao.get(id);
-        PriceTier priceTier = Utils.fromJson(entity.getPayload(), PriceTier.class);
-        priceTier.setId(entity.getId());
-        return priceTier;
+        PriceTierEntity dbEntity = priceTierDao.get(id);
+        return PriceTierMapper.toModel(dbEntity);
     }
 
     public List<PriceTier> getPriceTiers(int start, int size) {
         List<PriceTierEntity> tierEntities = priceTierDao.getPriceTiers(start, size);
         List<PriceTier> priceTiers = new ArrayList<>();
         for (PriceTierEntity tierEntity : tierEntities) {
-            PriceTier priceTier = Utils.fromJson(tierEntity.getPayload(), PriceTier.class);
-            priceTier.setId(tierEntity.getId());
-
-            priceTiers.add(priceTier);
+            priceTiers.add(PriceTierMapper.toModel(tierEntity));
         }
 
         return priceTiers;
+    }
+
+    public Long update(PriceTier priceTier) {
+        PriceTierEntity dbEntity = priceTierDao.get(priceTier.getId());
+        PriceTierMapper.fillDBEntity(priceTier, dbEntity);
+        return priceTierDao.update(dbEntity);
+    }
+
+    public void delete(Long tierId) {
+        PriceTierEntity dbEntity = priceTierDao.get(tierId);
+        dbEntity.setDeleted(true);
+        priceTierDao.update(dbEntity);
     }
 }

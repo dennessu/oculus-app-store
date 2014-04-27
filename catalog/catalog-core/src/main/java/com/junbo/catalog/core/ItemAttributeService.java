@@ -6,8 +6,8 @@
 
 package com.junbo.catalog.core;
 
-import com.junbo.catalog.spec.model.item.ItemAttribute;
-import com.junbo.catalog.spec.model.item.ItemAttributesGetOptions;
+import com.junbo.catalog.spec.model.attribute.ItemAttribute;
+import com.junbo.catalog.spec.model.attribute.ItemAttributesGetOptions;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;

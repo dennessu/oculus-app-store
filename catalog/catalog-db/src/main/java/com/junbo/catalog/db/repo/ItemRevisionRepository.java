@@ -6,11 +6,9 @@
 
 package com.junbo.catalog.db.repo;
 
-import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.dao.ItemRevisionDao;
 import com.junbo.catalog.db.entity.ItemRevisionEntity;
 import com.junbo.catalog.db.mapper.ItemRevisionMapper;
-import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
 import com.junbo.common.id.ItemId;
@@ -63,9 +61,6 @@ public class ItemRevisionRepository implements BaseRevisionRepository<ItemRevisi
     @Override
     public Long update(ItemRevision revision) {
         ItemRevisionEntity dbEntity = itemRevisionDao.get(revision.getRevisionId());
-        if (dbEntity == null) {
-            throw AppErrors.INSTANCE.notFound("item-revision", Utils.encodeId(revision.getRevisionId())).exception();
-        }
         ItemRevisionMapper.fillDBEntity(revision, dbEntity);
         return itemRevisionDao.update(dbEntity);
     }
@@ -73,9 +68,6 @@ public class ItemRevisionRepository implements BaseRevisionRepository<ItemRevisi
     @Override
     public void delete(Long revisionId) {
         ItemRevisionEntity dbEntity = itemRevisionDao.get(revisionId);
-        if (dbEntity == null) {
-            throw AppErrors.INSTANCE.notFound("item-revision", Utils.encodeId(revisionId)).exception();
-        }
         dbEntity.setDeleted(true);
         itemRevisionDao.update(dbEntity);
     }

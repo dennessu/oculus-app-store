@@ -6,8 +6,8 @@
 
 package com.junbo.catalog.spec.resource;
 
-import com.junbo.catalog.spec.model.offer.OfferAttribute;
-import com.junbo.catalog.spec.model.offer.OfferAttributesGetOptions;
+import com.junbo.catalog.spec.model.attribute.OfferAttribute;
+import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions;
 import com.junbo.common.id.OfferAttributeId;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
