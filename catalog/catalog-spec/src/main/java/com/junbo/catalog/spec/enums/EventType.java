@@ -17,7 +17,7 @@ public enum EventType {
 
     public static final List<EventType> ALL = Arrays.asList(EventType.values());
 
-    public boolean equals(String type) {
+    public boolean is(String type) {
         return this.name().equals(type);
     }
 

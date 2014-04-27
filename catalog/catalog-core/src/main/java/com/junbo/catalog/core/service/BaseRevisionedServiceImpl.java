@@ -77,11 +77,11 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
 
     @Override
     public T updateRevision(Long revisionId, T revision) {
-        if (Status.APPROVED.equals(revision.getStatus())) {
+        if (Status.APPROVED.is(revision.getStatus())) {
             revision.setTimestamp(Utils.currentTimestamp());
         }
         getRevisionRepo().update(revision);
-        if (Status.APPROVED.equals(revision.getStatus())) {
+        if (Status.APPROVED.is(revision.getStatus())) {
             E entity = getEntityRepo().get(revision.getEntityId());
             checkEntityNotNull(revision.getEntityId(), entity, getEntityType());
             if (entity instanceof Offer) {
@@ -131,18 +131,18 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
             errors.add(AppErrors.INSTANCE.fieldNotCorrect("priceType", "Valid price types: " + PriceType.ALL));
         }
 
-        if (PriceType.TIERED.equals(price.getPriceType())) {
+        if (PriceType.TIERED.is(price.getPriceType())) {
             if (!CollectionUtils.isEmpty(price.getPrices())) {
                 errors.add(AppErrors.INSTANCE.unnecessaryField("prices"));
             }
-        } else if (PriceType.FREE.equals(price.getPriceType())) {
+        } else if (PriceType.FREE.is(price.getPriceType())) {
             if (price.getPriceTier() != null) {
                 errors.add(AppErrors.INSTANCE.unnecessaryField("priceTier"));
             }
             if (!CollectionUtils.isEmpty(price.getPrices())) {
                 errors.add(AppErrors.INSTANCE.unnecessaryField("prices"));
             }
-        } else if (PriceType.CUSTOM.equals(price.getPriceType())) {
+        } else if (PriceType.CUSTOM.is(price.getPriceType())) {
             if (price.getPriceTier() != null) {
                 errors.add(AppErrors.INSTANCE.unnecessaryField("priceTier"));
             }

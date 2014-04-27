@@ -17,7 +17,7 @@ public enum PriceType {
 
     public static final List<PriceType> ALL = Arrays.asList(PriceType.values());
 
-    public boolean equals(String type) {
+    public boolean is(String type) {
         return this.name().equals(type);
     }
 

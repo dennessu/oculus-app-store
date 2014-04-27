@@ -17,7 +17,7 @@ public enum AttributeType {
 
     public static final List<AttributeType> ALL = Arrays.asList(AttributeType.values());
 
-    public boolean equals(String type) {
+    public boolean is(String type) {
         return this.name().equals(type);
     }
 

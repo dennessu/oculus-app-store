@@ -17,7 +17,7 @@ public enum Status {
 
     public static final List<Status> ALL = Arrays.asList(Status.values());
 
-    public boolean equals(String status) {
+    public boolean is(String status) {
         return this.name().equals(status);
     }
 

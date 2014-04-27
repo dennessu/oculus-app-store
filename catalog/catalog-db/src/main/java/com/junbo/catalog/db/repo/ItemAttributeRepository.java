@@ -6,11 +6,9 @@
 
 package com.junbo.catalog.db.repo;
 
-import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.dao.ItemAttributeDao;
 import com.junbo.catalog.db.entity.ItemAttributeEntity;
 import com.junbo.catalog.db.mapper.ItemAttributeMapper;
-import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.attribute.ItemAttributesGetOptions;
 import org.springframework.beans.factory.annotation.Autowired;

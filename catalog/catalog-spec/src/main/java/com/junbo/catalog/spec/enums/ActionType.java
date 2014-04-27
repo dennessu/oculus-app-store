@@ -17,7 +17,7 @@ public enum ActionType {
 
     public static final List<ActionType> ALL = Arrays.asList(ActionType.values());
 
-    public boolean equals(String type) {
+    public boolean is(String type) {
         return this.name().equals(type);
     }
 

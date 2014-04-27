@@ -89,7 +89,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
         if (oldRevision==null) {
             throw AppErrors.INSTANCE.notFound("offer-revision", Utils.encodeId(revisionId)).exception();
         }
-        if (Status.APPROVED.equals(oldRevision.getStatus())) {
+        if (Status.APPROVED.is(oldRevision.getStatus())) {
             throw AppErrors.INSTANCE.validation("Cannot update an approved revision").exception();
         }
         validateRevisionUpdate(revision, oldRevision);
@@ -131,11 +131,11 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
     }
 
     private void generateEntitlementDef(Item item) {
-        if (ItemType.DIGITAL.equals(item.getType())||ItemType.SUBSCRIPTION.equals(item.getType())) {
+        if (ItemType.DIGITAL.is(item.getType())||ItemType.SUBSCRIPTION.is(item.getType())) {
             EntitlementDefinition entitlementDef = new EntitlementDefinition();
             entitlementDef.setDeveloperId(item.getOwnerId());
             entitlementDef.setGroup(Utils.encodeId(item.getItemId()));
-            if (ItemType.DIGITAL.equals(item.getType())) {
+            if (ItemType.DIGITAL.is(item.getType())) {
                 entitlementDef.setType(EntitlementType.DOWNLOAD.name());
             } else {
                 entitlementDef.setType(EntitlementType.SUBSCRIPTION.name());
@@ -205,7 +205,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
                     errors.add(AppErrors.INSTANCE.fieldNotCorrect("genres", "should not contain null"));
                 } else {
                     ItemAttribute attribute = itemAttributeRepo.get(genreId);
-                    if (attribute == null || !AttributeType.GENRE.equals(attribute.getType())) {
+                    if (attribute == null || !AttributeType.GENRE.is(attribute.getType())) {
                         errors.add(AppErrors.INSTANCE
                                 .fieldNotCorrect("categories", "Cannot find genre " + Utils.encodeId(genreId)));
                     }
@@ -219,7 +219,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
         if (!StringUtils.isEmpty(revision.getRev())) {
             errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", revision.getRev(), null));
         }
-        if (!Status.DRAFT.equals(revision.getStatus())) {
+        if (!Status.DRAFT.is(revision.getStatus())) {
             errors.add(AppErrors.INSTANCE.fieldNotMatch("status", revision.getStatus(), Status.DRAFT));
         }
 
@@ -263,11 +263,11 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
                 errors.add(AppErrors.INSTANCE
                         .fieldNotCorrect("itemId", "Cannot find item " + Utils.encodeId(revision.getItemId())));
             } else {
-                if (ItemType.DIGITAL.equals(item.getType())) {
+                if (ItemType.DIGITAL.is(item.getType())) {
                     if (CollectionUtils.isEmpty(revision.getBinaries())) {
                         errors.add(AppErrors.INSTANCE.missingField("binaries"));
                     }
-                } else if (ItemType.WALLET.equals(item.getType())) {
+                } else if (ItemType.WALLET.is(item.getType())) {
                     if (StringUtils.isEmpty(revision.getWalletCurrency())) {
                         errors.add(AppErrors.INSTANCE.missingField("walletCurrency"));
                     }

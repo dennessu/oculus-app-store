@@ -6,11 +6,9 @@
 
 package com.junbo.catalog.db.repo;
 
-import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.dao.OfferAttributeDao;
 import com.junbo.catalog.db.entity.OfferAttributeEntity;
 import com.junbo.catalog.db.mapper.OfferAttributeMapper;
-import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions;
 import org.springframework.beans.factory.annotation.Autowired;

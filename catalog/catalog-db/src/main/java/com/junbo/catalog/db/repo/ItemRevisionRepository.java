@@ -6,11 +6,9 @@
 
 package com.junbo.catalog.db.repo;
 
-import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.dao.ItemRevisionDao;
 import com.junbo.catalog.db.entity.ItemRevisionEntity;
 import com.junbo.catalog.db.mapper.ItemRevisionMapper;
-import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
 import com.junbo.common.id.ItemId;

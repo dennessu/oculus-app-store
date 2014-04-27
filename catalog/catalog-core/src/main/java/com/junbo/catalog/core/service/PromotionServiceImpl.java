@@ -63,12 +63,12 @@ public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, P
         validateRevision(revision);
 
         PromotionRevision existingRevision = promotionRevisionRepo.get(revisionId);
-        if (Status.APPROVED.equals(existingRevision.getStatus())) {
+        if (Status.APPROVED.is(existingRevision.getStatus())) {
             throw AppErrors.INSTANCE.validation("Cannot update a revision after it's approved.").exception();
         }
         checkEntityNotNull(revisionId, existingRevision, "promotion-revision");
 
-        if (Status.APPROVED.equals(revision.getStatus())) {
+        if (Status.APPROVED.is(revision.getStatus())) {
             Promotion existingPromotion = promotionRepo.get(revision.getEntityId());
             checkEntityNotNull(revision.getEntityId(), existingPromotion, getEntityType());
             existingPromotion.setCurrentRevisionId(revisionId);

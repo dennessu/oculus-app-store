@@ -17,7 +17,7 @@ public enum ItemType {
 
     public static final List<ItemType> ALL = Arrays.asList(ItemType.values());
 
-    public boolean equals(String type) {
+    public boolean is(String type) {
         return this.name().equals(type);
     }
 
