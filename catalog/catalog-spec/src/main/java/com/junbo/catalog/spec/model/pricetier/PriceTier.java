@@ -9,7 +9,7 @@ package com.junbo.catalog.spec.model.pricetier;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.catalog.spec.model.common.BaseModel;
-import com.junbo.common.jackson.annotation.AttributeId;
+import com.junbo.common.jackson.annotation.PriceTierId;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotNull;
@@ -20,7 +20,7 @@ import java.util.Map;
  * PriceTier.
  */
 public class PriceTier extends BaseModel {
-    @AttributeId
+    @PriceTierId
     @JsonProperty("self")
     @ApiModelProperty(position = 1, required = true, value = "Price tier id")
     private Long id;

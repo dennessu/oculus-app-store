@@ -8,8 +8,13 @@ package com.junbo.catalog.spec.model.offer;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.BaseEntityModel;
-import com.junbo.catalog.spec.model.common.Link;
 import com.junbo.common.jackson.annotation.*;
+import com.junbo.common.jackson.annotation.ItemId;
+import com.junbo.common.jackson.annotation.OfferAttributeId;
+import com.junbo.common.jackson.annotation.OfferId;
+import com.junbo.common.jackson.annotation.OfferRevisionId;
+import com.junbo.common.jackson.annotation.UserId;
+import com.junbo.common.model.Link;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
@@ -29,6 +34,7 @@ public class Offer extends BaseEntityModel {
     private Long currentRevisionId;
 
     @ApiModelProperty(position = 21, required = true, value = "Offer revisions")
+    @HateoasLink("/offer-revisions?offerId={offerId}")
     private Link revisions;
 
     @UserId
