@@ -132,7 +132,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     private LocaleRepository localeRepository
 
     @Autowired
-    @Qualifier('pitypeRepository')
+    @Qualifier('piTypeRepository')
     private PITypeRepository piTypeRepository
 
 
