@@ -57,9 +57,9 @@ public class ItemRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 26, required = true, value = "Download Link", allowableValues = "PC, MAC, LINUX")
     private Map<String, Binary> binaries;
 
-    @ApiModelProperty(position = 30, required = true, value = "Wallet currency type",
-            allowableValues = "REAL_CURRENCY, VIRTUAL_CURRENCY")
-    private String walletCurrencyType;
+    //@ApiModelProperty(position = 30, required = true, value = "Wallet currency type",
+    //        allowableValues = "REAL_CURRENCY, VIRTUAL_CURRENCY")
+    //private String walletCurrencyType;
     @CurrencyId
     @ApiModelProperty(position = 31, required = true, value = "Wallet currency")
     private String walletCurrency;
@@ -79,7 +79,7 @@ public class ItemRevision extends BaseRevisionModel {
     public void setSku(String sku) {
         this.sku = sku;
     }
-    
+
     public Long getRevisionId() {
         return revisionId;
     }
@@ -142,14 +142,6 @@ public class ItemRevision extends BaseRevisionModel {
 
     public void setBinaries(Map<String, Binary> binaries) {
         this.binaries = binaries;
-    }
-
-    public String getWalletCurrencyType() {
-        return walletCurrencyType;
-    }
-
-    public void setWalletCurrencyType(String walletCurrencyType) {
-        this.walletCurrencyType = walletCurrencyType;
     }
 
     public String getWalletCurrency() {
