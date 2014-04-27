@@ -9,6 +9,7 @@ import com.junbo.identity.spec.v1.option.list.CommunicationListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.CollectionUtils
 
 /**
  * Created by haomin on 14-4-25.
@@ -55,8 +56,9 @@ class CommunicationValidatorImpl implements CommunicationValidator {
             throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
         }
 
-        return communicationRepository.search(new CommunicationListOptions(name: communication.name)).then { Communication existing ->
-            if (existing != null) {
+        return communicationRepository.search(new CommunicationListOptions(name: communication.name)).
+                then { List<Communication> existing ->
+            if (!CollectionUtils.isEmpty(existing)) {
                 throw AppErrors.INSTANCE.fieldDuplicate('name').exception()
             }
 

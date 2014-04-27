@@ -40,6 +40,7 @@ public class PIType extends ResourceMeta implements Identifiable<PITypeId> {
 
     public void setTypeCode(String typeCode) {
         this.typeCode = typeCode;
+        support.setPropertyAssigned("typeCode");
     }
 
     public Map<String, LocaleName> getLocales() {
@@ -48,6 +49,7 @@ public class PIType extends ResourceMeta implements Identifiable<PITypeId> {
 
     public void setLocales(Map<String, LocaleName> locales) {
         this.locales = locales;
+        support.setPropertyAssigned("locales");
     }
 
     public Boolean getCapableOfRecurring() {
@@ -56,6 +58,7 @@ public class PIType extends ResourceMeta implements Identifiable<PITypeId> {
 
     public void setCapableOfRecurring(Boolean capableOfRecurring) {
         this.capableOfRecurring = capableOfRecurring;
+        support.setPropertyAssigned("capableOfRecurring");
     }
 
     public Boolean getIsRefundable() {
@@ -64,6 +67,7 @@ public class PIType extends ResourceMeta implements Identifiable<PITypeId> {
 
     public void setIsRefundable(Boolean isRefundable) {
         this.isRefundable = isRefundable;
+        support.setPropertyAssigned("isRefundable");
     }
 
     public PITypeId getId() {
@@ -72,5 +76,7 @@ public class PIType extends ResourceMeta implements Identifiable<PITypeId> {
 
     public void setId(PITypeId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("self");
     }
 }

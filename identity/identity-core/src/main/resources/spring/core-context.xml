@@ -183,8 +183,9 @@
         <property name="readableProperties">
             <list>
                 <value>id</value>
-                <value>externalRef</value>
-                <value>description</value>
+                <value>type</value>
+                <value>serialNumber</value>
+                <value>firmwareVersion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -192,15 +193,17 @@
         </property>
         <property name="writablePropertiesForCreate">
             <list>
-                <value>externalRef</value>
-                <value>description</value>
+                <value>type</value>
+                <value>serialNumber</value>
+                <value>firmwareVersion</value>
             </list>
         </property>
         <property name="writablePropertiesForUpdate">
             <list>
                 <value>id</value>
-                <value>externalRef</value>
-                <value>description</value>
+                <value>type</value>
+                <value>serialNumber</value>
+                <value>firmwareVersion</value>
                 <value>resourceAge</value>
             </list>
         </property>
@@ -302,6 +305,7 @@
                 <value>locale</value>
                 <value>title</value>
                 <value>content</value>
+                <value>state</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -313,6 +317,7 @@
                 <value>locale</value>
                 <value>title</value>
                 <value>content</value>
+                <value>state</value>
             </list>
         </property>
 
@@ -322,6 +327,7 @@
                 <value>locale</value>
                 <value>title</value>
                 <value>content</value>
+                <value>state</value>
                 <value>resourceAge</value>
             </list>
         </property>
