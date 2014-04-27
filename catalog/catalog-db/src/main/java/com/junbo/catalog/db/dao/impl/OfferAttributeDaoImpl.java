@@ -9,7 +9,7 @@ package com.junbo.catalog.db.dao.impl;
 import com.junbo.catalog.common.util.Action;
 import com.junbo.catalog.db.dao.OfferAttributeDao;
 import com.junbo.catalog.db.entity.OfferAttributeEntity;
-import com.junbo.catalog.spec.model.offer.OfferAttributesGetOptions;
+import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 

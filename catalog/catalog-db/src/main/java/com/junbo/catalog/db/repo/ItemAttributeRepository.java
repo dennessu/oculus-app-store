@@ -11,8 +11,8 @@ import com.junbo.catalog.db.dao.ItemAttributeDao;
 import com.junbo.catalog.db.entity.ItemAttributeEntity;
 import com.junbo.catalog.db.mapper.ItemAttributeMapper;
 import com.junbo.catalog.spec.error.AppErrors;
-import com.junbo.catalog.spec.model.item.ItemAttribute;
-import com.junbo.catalog.spec.model.item.ItemAttributesGetOptions;
+import com.junbo.catalog.spec.model.attribute.ItemAttribute;
+import com.junbo.catalog.spec.model.attribute.ItemAttributesGetOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;

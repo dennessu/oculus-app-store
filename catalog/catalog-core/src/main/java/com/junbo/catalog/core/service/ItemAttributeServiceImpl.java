@@ -10,8 +10,8 @@ import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.ItemAttributeService;
 import com.junbo.catalog.db.repo.ItemAttributeRepository;
 import com.junbo.catalog.spec.error.AppErrors;
-import com.junbo.catalog.spec.model.item.ItemAttribute;
-import com.junbo.catalog.spec.model.item.ItemAttributesGetOptions;
+import com.junbo.catalog.spec.model.attribute.ItemAttribute;
+import com.junbo.catalog.spec.model.attribute.ItemAttributesGetOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 

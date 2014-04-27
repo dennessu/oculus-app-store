@@ -17,6 +17,7 @@ import com.junbo.catalog.spec.enums.AttributeType;
 import com.junbo.catalog.spec.enums.ItemType;
 import com.junbo.catalog.spec.enums.Status;
 import com.junbo.catalog.spec.error.AppErrors;
+import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import com.junbo.catalog.spec.model.item.*;

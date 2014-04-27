@@ -13,6 +13,7 @@ import com.junbo.catalog.db.entity.ItemOfferRelationsEntity;
 import com.junbo.catalog.db.repo.*;
 import com.junbo.catalog.spec.enums.*;
 import com.junbo.catalog.spec.error.AppErrors;
+import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.common.error.*;

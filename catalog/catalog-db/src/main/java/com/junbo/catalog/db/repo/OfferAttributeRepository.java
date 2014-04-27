@@ -11,8 +11,8 @@ import com.junbo.catalog.db.dao.OfferAttributeDao;
 import com.junbo.catalog.db.entity.OfferAttributeEntity;
 import com.junbo.catalog.db.mapper.OfferAttributeMapper;
 import com.junbo.catalog.spec.error.AppErrors;
-import com.junbo.catalog.spec.model.offer.OfferAttribute;
-import com.junbo.catalog.spec.model.offer.OfferAttributesGetOptions;
+import com.junbo.catalog.spec.model.attribute.OfferAttribute;
+import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
