@@ -12,6 +12,7 @@ import com.junbo.fulfilment.spec.fusion.Item;
 import com.junbo.fulfilment.spec.fusion.LinkedEntry;
 import com.junbo.fulfilment.spec.model.FulfilmentAction;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,8 +33,10 @@ public class WalletHandler extends HandlerSupport<WalletContext> {
 
             request.setTrackingUuid(UUID.randomUUID());
             request.setUserId(context.getUserId());
-            request.setAmount(item.getWalletAmount());
             request.setCurrency(item.getWalletCurrency());
+
+            // aggregate credit amount
+            request.setAmount(item.getWalletAmount().multiply(new BigDecimal(action.getCopyCount())));
 
             Transaction transaction = walletGateway.credit(request);
             success.add(transaction.getTransactionId());

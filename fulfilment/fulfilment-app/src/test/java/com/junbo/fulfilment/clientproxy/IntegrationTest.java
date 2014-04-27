@@ -1,12 +1,13 @@
 package com.junbo.fulfilment.clientproxy;
 
-import com.junbo.catalog.spec.model.common.LocalizableProperty;
+import com.junbo.catalog.spec.enums.ItemType;
+import com.junbo.catalog.spec.enums.PriceType;
+import com.junbo.catalog.spec.enums.Status;
 import com.junbo.catalog.spec.model.common.Price;
-import com.junbo.catalog.spec.model.common.Status;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
-import com.junbo.catalog.spec.model.item.ItemType;
+import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
 import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.common.id.FulfilmentId;
 import com.junbo.common.id.OrderId;
@@ -28,6 +29,7 @@ import org.testng.annotations.Test;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -194,28 +196,27 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         Offer offer = new Offer();
         offer.setOwnerId(getRandomLong());
 
-        LocalizableProperty name = new LocalizableProperty();
-        name.set("en_US", "test_offer_name");
-        offer.setName(name);
         Long offerId = megaGateway.createOffer(offer);
         Assert.assertNotNull(offerId);
 
         OfferRevision offerRevision = new OfferRevision();
         offerRevision.setOfferId(offerId);
         offerRevision.setOwnerId(12345L);
-        offerRevision.setStatus(Status.DRAFT);
+        offerRevision.setStatus(Status.DRAFT.name());
+        offerRevision.setLocales(new HashMap<String, OfferRevisionLocaleProperties>() {{
+            put("en_US", new OfferRevisionLocaleProperties() {{
+                setName("test-offer");
+            }});
+        }});
 
         Price price = new Price();
-        price.setPriceType(Price.FREE);
+        price.setPriceType(PriceType.FREE.name());
         offerRevision.setPrice(price);
-        offerRevision.setEvents(new HashMap<String, Event>() {{
-            put(Constant.EVENT_PURCHASE.toLowerCase(), new Event() {{
-                setName(Constant.EVENT_PURCHASE);
-                setActions(new ArrayList<Action>() {{
-                    add(new Action() {{
-                        setType(Constant.ACTION_GRANT_ENTITLEMENT);
-                        setEntitlementDefId(entitlementDefId);
-                    }});
+        offerRevision.setEventActions(new HashMap<String, List<Action>>() {{
+            put(Constant.EVENT_PURCHASE, new ArrayList<Action>() {{
+                add(new Action() {{
+                    setType(Constant.ACTION_GRANT_ENTITLEMENT);
+                    setEntitlementDefId(entitlementDefId);
                 }});
             }});
         }});
@@ -224,23 +225,19 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         Assert.assertNotNull(offerRevisionId);
 
         OfferRevision retrievedRevision = megaGateway.getOfferRevision(offerRevisionId);
-        retrievedRevision.setStatus(Status.APPROVED);
+        retrievedRevision.setStatus(Status.APPROVED.name());
         megaGateway.updateOfferRevision(retrievedRevision);
 
         return offerId;
     }
 
     private Long prepareEwalletOffer() {
-        LocalizableProperty name = new LocalizableProperty();
-        name.set("DEFAULT", "test_offer_name");
         Long ownerId = 123L;
 
         // create item
         Item item = new Item();
-        item.setName(name);
-        item.setType(ItemType.WALLET);
+        item.setType(ItemType.WALLET.name());
         item.setOwnerId(ownerId);
-        item.setSku("test_sku");
 
         final Long itemId = megaGateway.createItem(item);
         Assert.assertNotNull(itemId);
@@ -248,27 +245,29 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         // create item revision
         ItemRevision itemRevision = new ItemRevision();
         itemRevision.setItemId(itemId);
-        itemRevision.setName(name);
         itemRevision.setOwnerId(ownerId);
-        itemRevision.setType(ItemType.WALLET);
         itemRevision.setWalletAmount(new BigDecimal(123.45));
         itemRevision.setWalletCurrency("USD");
-        itemRevision.setWalletCurrencyType("REAL_CURRENCY");
-        itemRevision.setStatus(Status.DRAFT);
+        itemRevision.setStatus(Status.DRAFT.name());
+        itemRevision.setLocales(new HashMap<String, ItemRevisionLocaleProperties>() {{
+            put("en_US", new ItemRevisionLocaleProperties() {{
+                setName("test-offer");
+            }});
+        }});
+        itemRevision.setSku("test_sku");
 
         Long itemRevisionId = megaGateway.createItemRevision(itemRevision);
         Assert.assertNotNull(itemRevisionId);
 
         // approve item
         ItemRevision retrievedItemRevision = megaGateway.getItemRevision(itemRevisionId);
-        retrievedItemRevision.setStatus(Status.APPROVED);
+        retrievedItemRevision.setStatus(Status.APPROVED.name());
         megaGateway.updateItemRevision(retrievedItemRevision);
 
         // create offer
         Offer offer = new Offer();
         offer.setOwnerId(ownerId);
 
-        offer.setName(name);
         Long offerId = megaGateway.createOffer(offer);
         Assert.assertNotNull(offerId);
 
@@ -276,18 +275,20 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         OfferRevision offerRevision = new OfferRevision();
         offerRevision.setOfferId(offerId);
         offerRevision.setOwnerId(ownerId);
-        offerRevision.setStatus(Status.DRAFT);
+        offerRevision.setStatus(Status.DRAFT.name());
+        offerRevision.setLocales(new HashMap<String, OfferRevisionLocaleProperties>() {{
+            put("en_US", new OfferRevisionLocaleProperties() {{
+                setName("test-offer");
+            }});
+        }});
 
         Price price = new Price();
-        price.setPriceType(Price.FREE);
+        price.setPriceType(PriceType.FREE.name());
         offerRevision.setPrice(price);
-        offerRevision.setEvents(new HashMap<String, Event>() {{
-            put(Constant.EVENT_PURCHASE.toLowerCase(), new Event() {{
-                setName(Constant.EVENT_PURCHASE);
-                setActions(new ArrayList<Action>() {{
-                    add(new Action() {{
-                        setType(Constant.ACTION_CREDIT_WALLET);
-                    }});
+        offerRevision.setEventActions(new HashMap<String, List<Action>>() {{
+            put(Constant.EVENT_PURCHASE, new ArrayList<Action>() {{
+                add(new Action() {{
+                    setType(Constant.ACTION_CREDIT_WALLET);
                 }});
             }});
         }});
@@ -303,7 +304,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         Assert.assertNotNull(offerRevisionId);
 
         OfferRevision retrievedOfferRevision = megaGateway.getOfferRevision(offerRevisionId);
-        retrievedOfferRevision.setStatus(Status.APPROVED);
+        retrievedOfferRevision.setStatus(Status.APPROVED.name());
         megaGateway.updateOfferRevision(retrievedOfferRevision);
 
         return offerId;

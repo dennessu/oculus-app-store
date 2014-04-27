@@ -7,7 +7,10 @@ package com.junbo.fulfilment.clientproxy.impl;
 
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
-import com.junbo.catalog.spec.model.offer.*;
+import com.junbo.catalog.spec.model.offer.Action;
+import com.junbo.catalog.spec.model.offer.ItemEntry;
+import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
 import com.junbo.catalog.spec.resource.EntitlementDefinitionResource;
 import com.junbo.catalog.spec.resource.ItemRevisionResource;
 import com.junbo.catalog.spec.resource.OfferRevisionResource;
@@ -18,7 +21,6 @@ import com.junbo.fulfilment.clientproxy.CatalogGateway;
 import com.junbo.fulfilment.common.util.Constant;
 import com.junbo.fulfilment.spec.error.AppErrors;
 import com.junbo.fulfilment.spec.fusion.*;
-import com.junbo.fulfilment.spec.fusion.Offer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -135,11 +138,11 @@ public class CatalogGatewayImpl implements CatalogGateway {
         }
 
         // fill fulfilment actions
-        if (offerRevision.getEvents() != null) {
-            Event purchaseEvent = offerRevision.getEvents().get(Constant.EVENT_PURCHASE.toLowerCase());
+        if (offerRevision.getEventActions() != null) {
+            List<Action> actions = offerRevision.getEventActions().get(Constant.EVENT_PURCHASE);
 
-            if (purchaseEvent != null && purchaseEvent.getActions() != null) {
-                for (Action action : purchaseEvent.getActions()) {
+            if (actions != null) {
+                for (Action action : actions) {
                     OfferAction offerAction = new OfferAction();
                     offerAction.setType(action.getType());
                     offerAction.setProperties(buildActionProperties(action));
