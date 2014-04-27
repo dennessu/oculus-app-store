@@ -11,12 +11,15 @@ import com.junbo.common.model.ResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.Date;
 
 /**
  * Created by liangfu on 4/24/14.
  */
-public class UserPersonalInfo  extends ResourceMeta implements Identifiable<UserPersonalInfoId> {
+public class UserPersonalInfo extends ResourceMeta implements Identifiable<UserPersonalInfoId> {
 
     @ApiModelProperty(position = 1, required = true, value = "[Nullable]The id of user personal info resource.")
     @JsonProperty("self")
@@ -104,6 +107,22 @@ public class UserPersonalInfo  extends ResourceMeta implements Identifiable<User
     public void setLabel(String label) {
         this.label = label;
         support.setPropertyAssigned("label");
+    }
+
+    public static String encode(String value) {
+        try {
+            return URLEncoder.encode(value, "UTF8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("Error happened while encoding the value", e);
+        }
+    }
+
+    public String decodedValue() {
+        try {
+            return URLDecoder.decode(value, "UTF8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("Error happened while decoding the value", e);
+        }
     }
 }
 

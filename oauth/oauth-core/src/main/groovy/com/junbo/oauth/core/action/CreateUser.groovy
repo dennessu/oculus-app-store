@@ -37,12 +37,9 @@ class CreateUser implements Action {
 
         String username = parameterMap.getFirst(OAuthParameters.USERNAME)
 
-        String nickname = parameterMap.getFirst(OAuthParameters.NICK_NAME)
-
         User user = new User(
                 username: username,
-                nickName: nickname,
-                type: 'user'
+                isAnonymous: false
         )
 
         userResource.create(user).recover { Throwable throwable ->

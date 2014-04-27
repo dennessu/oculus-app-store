@@ -230,7 +230,8 @@
     </bean>
 
     <bean id="createUserPii" class="com.junbo.oauth.core.action.CreateUserPii">
-        <property name="userPiiResource" ref="userPiiResource"/>
+        <property name="userResource" ref="userResource"/>
+        <property name="userPersonalInfoResource" ref="userPersonalInfoResource"/>
     </bean>
 
     <bean id="validateRegister" class="com.junbo.oauth.core.action.ValidateRegister"/>

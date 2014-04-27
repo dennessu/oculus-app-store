@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.core.action
 
+import com.junbo.common.id.UserId
 import com.junbo.email.spec.model.Email
 import com.junbo.email.spec.resource.EmailResource
 import com.junbo.langur.core.promise.Promise
@@ -52,13 +53,16 @@ class SendAccountVerifyEmail implements Action {
     @Override
     Promise<ActionResult> execute(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
-        def userPii = contextWrapper.userPii
+        def parameterMap = contextWrapper.parameterMap
+        def user = contextWrapper.user
 
-        Assert.notNull(userPii, 'userPii is null')
+        def email = parameterMap.getFirst(OAuthParameters.EMAIL)
+
+        Assert.notNull(user, 'user is null')
 
         EmailVerifyCode code = new EmailVerifyCode(
-                userId: userPii.userId.value,
-                email: userPii.emails.values().first().value
+                userId: (user.id as UserId).value,
+                email: email
         )
 
         emailVerifyCodeRepository.save(code)
@@ -69,23 +73,23 @@ class SendAccountVerifyEmail implements Action {
 
         uriBuilder.queryParam(OAuthParameters.CODE, code.code)
 
-        Email email = new Email(
-                userId: userPii.userId,
+        Email emailToSend = new Email(
+                userId: user.id as UserId,
                 source: EMAIL_SOURCE,
                 action: EMAIL_ACTION,
                 // TODO: temporal locale hardcode
                 locale: 'en_US',
-                recipients: [userPii.emails.values().first().value].asList(),
+                recipients: [email].asList(),
                 replacements: ['verifyUri': uriBuilder.build().toString()]
         )
 
-        emailResource.postEmail(email).recover { Throwable e ->
+        emailResource.postEmail(emailToSend).recover { Throwable e ->
             LOGGER.error('Error sending email to the user', e)
             contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingEmail().error())
             return Promise.pure(null)
         }.then { Email emailSent ->
             // Return success no matter the email has been successfully sent.
-            return Promise.pure('success')
+            return Promise.pure(new ActionResult('success'))
         }
     }
 }

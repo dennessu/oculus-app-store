@@ -57,14 +57,6 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
             throw new IllegalArgumentException('userCredential is null')
         }
 
-        if (userCredential.userId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
-        }
-
-        if (userCredential.userId != userId) {
-            throw AppErrors.INSTANCE.fieldInvalid('userId', userId.toString()).exception()
-        }
-
         if (userCredential.type == null) {
             throw AppErrors.INSTANCE.fieldRequired('type').exception()
         }
@@ -72,7 +64,7 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
             throw AppErrors.INSTANCE.fieldInvalid('type', allowedTypes.join(',')).exception()
         }
 
-        if (userCredential.type == CredentialType.PASSWORD) {
+        if (userCredential.type == CredentialType.PASSWORD.name()) {
             return userPasswordValidator.validateForOldPassword(userId, userCredential.oldValue).then {
                 UserPassword userPassword = modelMapper.credentialToPassword(userCredential, new MappingContext())
                 if (userPassword == null) {
@@ -82,7 +74,7 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
                     return Promise.pure(userPassword)
                 }
             }
-        } else if (userCredential.type == CredentialType.PIN) {
+        } else if (userCredential.type == CredentialType.PIN.name()) {
             return userPinValidator.validateForOldPassword(userId, userCredential.oldValue).then {
                 UserPin userPin = modelMapper.credentialToPin(userCredential, new MappingContext())
                 if (userPin == null) {
