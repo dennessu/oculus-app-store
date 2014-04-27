@@ -7,17 +7,16 @@
 package com.junbo.catalog.core.service;
 
 import com.junbo.catalog.common.util.EntityType;
-import com.junbo.catalog.core.ItemService;
+import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.OfferService;
 import com.junbo.catalog.db.entity.ItemOfferRelationsEntity;
-import com.junbo.catalog.db.repo.ItemOfferRelationsRepository;
-import com.junbo.catalog.db.repo.OfferRepository;
-import com.junbo.catalog.db.repo.OfferRevisionRepository;
+import com.junbo.catalog.db.repo.*;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.common.Status;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemType;
 import com.junbo.catalog.spec.model.offer.*;
+import com.junbo.common.error.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -33,28 +32,28 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     @Autowired
     private OfferRevisionRepository offerRevisionRepo;
     @Autowired
-    private ItemService itemService;
+    private ItemRepository itemRepo;
     @Autowired
     private ItemOfferRelationsRepository relationsRepo;
+    @Autowired
+    private OfferAttributeRepository offerAttributeRepo;
 
     @Override
     public Offer createEntity(Offer offer) {
-        if (!StringUtils.isEmpty(offer.getRev())) {
-            throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
-        }
-        if (Boolean.TRUE.equals(offer.getPublished())) {
-            throw AppErrors.INSTANCE
-                    .fieldNotCorrect("isPublished", "Cannot create an offer with isPublished true.").exception();
-        }
-        validateOffer(offer);
-        return super.createEntity(offer);
+        validateOfferCreation(offer);
+        Long offerId = offerRepo.create(offer);
+        return offerRepo.get(offerId);
     }
 
     @Override
     public Offer updateEntity(Long offerId, Offer offer) {
-        validateId(offerId, offer.getOfferId());
-        validateOffer(offer);
-        return super.updateEntity(offerId, offer);
+        Offer oldOffer = offerRepo.get(offerId);
+        if (oldOffer == null) {
+            throw AppErrors.INSTANCE.notFound("offer", Utils.encodeId(offerId)).exception();
+        }
+        validateOfferUpdate(offer, oldOffer);
+        offerRepo.update(offer);
+        return offerRepo.get(offerId);
     }
 
     @Override
@@ -70,7 +69,8 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     public List<OfferRevision> getRevisions(OfferRevisionsGetOptions options) {
         if (options.getTimestamp()!=null) {
             if (CollectionUtils.isEmpty(options.getOfferIds())) {
-                throw AppErrors.INSTANCE.validation("offerId must be specified when timestamp is present.").exception();
+                throw AppErrors.INSTANCE
+                        .validation("offerId must be specified when timeInMillis is present.").exception();
             }
 
             return offerRevisionRepo.getRevisions(options.getOfferIds(), options.getTimestamp());
@@ -81,21 +81,22 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
 
     @Override
     public OfferRevision createRevision(OfferRevision revision) {
-        if (!StringUtils.isEmpty(revision.getRev())) {
-            throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
-        }
-        if (!Status.DRAFT.equals(revision.getStatus())) {
-            throw AppErrors.INSTANCE.fieldNotMatch("status", revision.getStatus(), Status.DRAFT).exception();
-        }
-        validateRevision(revision);
+        validateRevisionCreation(revision);
         generateEventActions(revision);
-        return super.createRevision(revision);
+        Long revisionId = offerRevisionRepo.create(revision);
+        return offerRevisionRepo.get(revisionId);
     }
 
     @Override
     public OfferRevision updateRevision(Long revisionId, OfferRevision revision) {
-        validateId(revisionId, revision.getRevisionId());
-        validateRevision(revision);
+        OfferRevision oldRevision = offerRevisionRepo.get(revisionId);
+        if (oldRevision==null) {
+            throw AppErrors.INSTANCE.notFound("offer-revision", Utils.encodeId(revisionId)).exception();
+        }
+        if (Status.APPROVED.equals(oldRevision.getStatus())) {
+            throw AppErrors.INSTANCE.validation("Cannot update an approved revision").exception();
+        }
+        validateRevisionUpdate(revision, oldRevision);
         generateEventActions(revision);
 
         return super.updateRevision(revisionId, revision);
@@ -108,7 +109,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         if (lastRevisionId!=null) {
             OfferRevision lastRevision = offerRevisionRepo.get(lastRevisionId);
             if (lastRevision == null) {
-                throw AppErrors.INSTANCE.notFound("offer-revision", lastRevisionId).exception();
+                throw AppErrors.INSTANCE.notFound("offer-revision", Utils.encodeId(lastRevisionId)).exception();
             }
             List<Long> lastSubOffers = safeWrap(lastRevision.getSubOffers());
             List<Long> lastItems = convert(lastRevision.getItems());
@@ -211,29 +212,125 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         }
     }
 
-    private void validateOffer(Offer offer) {
-        checkFieldNotNull(offer.getOwnerId(), "publisher");
+    private void validateOfferCreation(Offer offer) {
+        List<AppError> errors = new ArrayList<>();
+        if (!StringUtils.isEmpty(offer.getRev())) {
+            errors.add(AppErrors.INSTANCE.unnecessaryField("rev"));
+        }
+        if (Boolean.TRUE.equals(offer.getPublished())) {
+            errors.add(AppErrors.INSTANCE.fieldNotCorrect("isPublished", "isPublished should be false."));
+        }
         if (offer.getCurrentRevisionId() != null) {
-            OfferRevision revision = offerRevisionRepo.get(offer.getCurrentRevisionId());
-            checkEntityNotNull(offer.getCurrentRevisionId(), revision, "offer-revision");
-            if (!Status.APPROVED.equals(revision.getStatus())) {
-                throw AppErrors.INSTANCE.validation("Cannot set current revision to unapproved revision").exception();
+            errors.add(AppErrors.INSTANCE.unnecessaryField("currentRevision"));
+        }
+
+        validateOfferCommon(offer, errors);
+
+        if (!errors.isEmpty()) {
+            throw AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+        }
+    }
+
+    private void validateOfferUpdate(Offer offer, Offer oldOffer) {
+        List<AppError> errors = new ArrayList<>();
+        if (!oldOffer.getOfferId().equals(offer.getOfferId())) {
+            errors.add(AppErrors.INSTANCE.fieldNotMatch("self.id", offer.getOfferId(), oldOffer.getOfferId()));
+        }
+        if (!isEqual(offer.getCurrentRevisionId(), oldOffer.getCurrentRevisionId())) {
+            errors.add(AppErrors.INSTANCE
+                    .fieldNotCorrect("currentRevision", "The field can only be changed through revision approve"));
+        }
+        if (!oldOffer.getRev().equals(offer.getRev())) {
+            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", offer.getRev(), oldOffer.getRev()));
+        }
+
+        validateOfferCommon(offer, errors);
+
+        if (!errors.isEmpty()) {
+            throw AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+        }
+    }
+
+    private void validateOfferCommon(Offer offer, List<AppError> errors) {
+        if (offer.getOwnerId()==null) {
+            errors.add(AppErrors.INSTANCE.missingField("publisher"));
+        }
+        if (offer.getIapItemId() != null) {
+            Item item = itemRepo.get(offer.getIapItemId());
+            if (item == null) {
+                errors.add(AppErrors.INSTANCE.fieldNotCorrect("soldWithinItem", "Item not found"));
+            }
+        }
+        if (!CollectionUtils.isEmpty(offer.getCategories())) {
+            for (Long categoryId : offer.getCategories()) {
+                if (categoryId == null) {
+                    errors.add(AppErrors.INSTANCE.fieldNotCorrect("categories", "should not contain null"));
+                } else {
+                    OfferAttribute attribute = offerAttributeRepo.get(categoryId);
+                    if (attribute == null || !"CATEGORY".equals(attribute.getType())) {
+                        errors.add(AppErrors.INSTANCE
+                                .fieldNotCorrect("categories", "Cannot find category " + Utils.encodeId(categoryId)));
+                    }
+                }
             }
         }
     }
 
-    private void validateRevision(OfferRevision revision) {
-        checkFieldNotNull(revision.getOwnerId(), "publisher");
-        checkFieldNotNull(revision.getOfferId(), "offer");
-        checkFieldNotNull(revision.getPrice(), "price");
-        checkPrice(revision.getPrice());
-
-        Offer offer = offerRepo.get(revision.getOfferId());
-        checkEntityNotNull(revision.getOfferId(), offer, "offer");
-
-        if (!Status.ALL_STATUSES.contains(revision.getStatus())) {
-            throw AppErrors.INSTANCE.fieldNotCorrect("status", "Valid statuses: " + Status.ALL_STATUSES).exception();
+    private void validateRevisionCreation(OfferRevision revision) {
+        List<AppError> errors = new ArrayList<>();
+        if (!StringUtils.isEmpty(revision.getRev())) {
+            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", revision.getRev(), null));
         }
+        if (!Status.DRAFT.equals(revision.getStatus())) {
+            errors.add(AppErrors.INSTANCE.fieldNotMatch("status", revision.getStatus(), Status.DRAFT));
+        }
+
+        validateRevisionCommon(revision, errors);
+
+        if (!errors.isEmpty()) {
+            throw AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+        }
+    }
+
+    private void validateRevisionUpdate(OfferRevision revision, OfferRevision oldRevision) {
+        List<AppError> errors = new ArrayList<>();
+        if (!oldRevision.getRevisionId().equals(revision.getRevisionId())) {
+            errors.add(AppErrors.INSTANCE
+                    .fieldNotMatch("revisionId", revision.getRevisionId(), oldRevision.getRevisionId()));
+        }
+        if (!oldRevision.getRev().equals(revision.getRev())) {
+            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", revision.getRev(), oldRevision.getRev()));
+        }
+        if (revision.getStatus()==null || !Status.ALL_STATUSES.contains(revision.getStatus())) {
+            errors.add(AppErrors.INSTANCE.fieldNotCorrect("status", "Valid statuses: " + Status.ALL_STATUSES));
+        }
+
+        validateRevisionCommon(revision, errors);
+
+        if (!errors.isEmpty()) {
+            throw AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+        }
+    }
+
+    private void validateRevisionCommon(OfferRevision revision, List<AppError> errors) {
+        if (revision.getOwnerId() == null) {
+            errors.add(AppErrors.INSTANCE.missingField("publisher"));
+        }
+        if (revision.getOfferId() == null) {
+            errors.add(AppErrors.INSTANCE.missingField("offerId"));
+        } else {
+            Offer offer = offerRepo.get(revision.getOfferId());
+            if (offer == null) {
+                errors.add(AppErrors.INSTANCE
+                        .fieldNotCorrect("offerId", "Cannot find offer " + Utils.encodeId(revision.getOfferId())));
+            }
+        }
+        if (revision.getPrice() == null) {
+            errors.add(AppErrors.INSTANCE.missingField("price"));
+        } else {
+            checkPrice(revision.getPrice(), errors);
+        }
+        // TODO: check other properties
     }
 
     private List<Long> subtract(List<Long> list1, List<Long> list2) {
@@ -271,7 +368,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         List<Action> purchaseActions = preparePurchaseEvent(revision);
 
         for (ItemEntry itemEntry : revision.getItems()) {
-            Item item = itemService.getEntity(itemEntry.getItemId());
+            Item item = itemRepo.get(itemEntry.getItemId());
             checkEntityNotNull(itemEntry.getItemId(), item, "item");
             if (ItemType.DIGITAL.equals(item.getType()) || ItemType.SUBSCRIPTION.equals(item.getType())) {
                 Action action = new Action();
