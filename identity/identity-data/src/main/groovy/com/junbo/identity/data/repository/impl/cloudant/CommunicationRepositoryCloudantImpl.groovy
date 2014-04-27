@@ -31,8 +31,7 @@ class CommunicationRepositoryCloudantImpl extends CloudantClient<Communication> 
     @Override
     Promise<List<Communication>> search(CommunicationListOptions options) {
         if (options.name != null) {
-            def list = super.queryView('by_name', options.name)
-            return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)
+            return Promise.pure(super.queryView('by_name', options.name))
         }
 
         return Promise.pure(super.cloudantGetAll())
