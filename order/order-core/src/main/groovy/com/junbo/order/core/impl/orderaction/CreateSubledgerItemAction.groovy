@@ -46,7 +46,7 @@ class CreateSubledgerItemAction extends BaseOrderEventAwareAction {
                 // todo ignore first party item
                 def offer = serviceContext.offersMap[orderItem.offer]
                 def subledgerItem = buildSubledgerItem(order, orderItem, offer)
-                def subledger = subledgerHelper.getMatchingSubledger(offer, order.country, order.currency, new Date())
+                def subledger = subledgerHelper.getMatchingSubledger(offer, order.country.value, order.currency.value, new Date())
 
                 if (subledger != null) {
                     // link to subledger only if matching subledger found. If not found, let the back-end job to create
