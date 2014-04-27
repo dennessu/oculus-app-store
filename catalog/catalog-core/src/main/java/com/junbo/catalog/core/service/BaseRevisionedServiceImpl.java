@@ -10,8 +10,13 @@ import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.BaseRevisionedService;
 import com.junbo.catalog.db.repo.BaseEntityRepository;
 import com.junbo.catalog.db.repo.BaseRevisionRepository;
+import com.junbo.catalog.spec.enums.PriceType;
+import com.junbo.catalog.spec.enums.Status;
 import com.junbo.catalog.spec.error.AppErrors;
-import com.junbo.catalog.spec.model.common.*;
+import com.junbo.catalog.spec.model.common.BaseEntityModel;
+import com.junbo.catalog.spec.model.common.BaseModel;
+import com.junbo.catalog.spec.model.common.BaseRevisionModel;
+import com.junbo.catalog.spec.model.common.Price;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.common.error.AppError;
 import org.springframework.util.CollectionUtils;
@@ -122,22 +127,22 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
     }
 
     protected void checkPrice(Price price, List<AppError> errors) {
-        if (!Price.ALL_TYPES.contains(price.getPriceType())) {
-            errors.add(AppErrors.INSTANCE.fieldNotCorrect("priceType", "Valid price types: " + Price.ALL_TYPES));
+        if (!PriceType.contains(price.getPriceType())) {
+            errors.add(AppErrors.INSTANCE.fieldNotCorrect("priceType", "Valid price types: " + PriceType.ALL));
         }
 
-        if (Price.TIERED.equals(price.getPriceType())) {
+        if (PriceType.TIERED.equals(price.getPriceType())) {
             if (!CollectionUtils.isEmpty(price.getPrices())) {
                 errors.add(AppErrors.INSTANCE.unnecessaryField("prices"));
             }
-        } else if (Price.FREE.equals(price.getPriceType())) {
+        } else if (PriceType.FREE.equals(price.getPriceType())) {
             if (price.getPriceTier() != null) {
                 errors.add(AppErrors.INSTANCE.unnecessaryField("priceTier"));
             }
             if (!CollectionUtils.isEmpty(price.getPrices())) {
                 errors.add(AppErrors.INSTANCE.unnecessaryField("prices"));
             }
-        } else if (Price.CUSTOM.equals(price.getPriceType())) {
+        } else if (PriceType.CUSTOM.equals(price.getPriceType())) {
             if (price.getPriceTier() != null) {
                 errors.add(AppErrors.INSTANCE.unnecessaryField("priceTier"));
             }

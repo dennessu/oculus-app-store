@@ -13,8 +13,10 @@ import com.junbo.catalog.db.repo.ItemAttributeRepository;
 import com.junbo.catalog.db.repo.ItemRepository;
 import com.junbo.catalog.db.repo.ItemRevisionRepository;
 import com.junbo.catalog.db.repo.OfferRepository;
+import com.junbo.catalog.spec.enums.AttributeType;
+import com.junbo.catalog.spec.enums.ItemType;
+import com.junbo.catalog.spec.enums.Status;
 import com.junbo.catalog.spec.error.AppErrors;
-import com.junbo.catalog.spec.model.common.Status;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import com.junbo.catalog.spec.model.item.*;
@@ -26,6 +28,7 @@ import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -182,8 +185,8 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
         if (item.getOwnerId()==null) {
             errors.add(AppErrors.INSTANCE.missingField("developer"));
         }
-        if (item.getType()==null || !ItemType.ALL_TYPES.contains(item.getType())) {
-            errors.add(AppErrors.INSTANCE.fieldNotCorrect("type", "Valid types: " + ItemType.ALL_TYPES));
+        if (item.getType()==null || !ItemType.contains(item.getType())) {
+            errors.add(AppErrors.INSTANCE.fieldNotCorrect("type", "Valid types: " + Arrays.asList(ItemType.values())));
         }
         if (item.getDefaultOffer() != null) {
             Offer offer = offerRepo.get(item.getDefaultOffer());
@@ -201,7 +204,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
                     errors.add(AppErrors.INSTANCE.fieldNotCorrect("genres", "should not contain null"));
                 } else {
                     ItemAttribute attribute = itemAttributeRepo.get(genreId);
-                    if (attribute == null || !"GENRE".equals(attribute.getType())) {
+                    if (attribute == null || !AttributeType.GENRE.equals(attribute.getType())) {
                         errors.add(AppErrors.INSTANCE
                                 .fieldNotCorrect("categories", "Cannot find genre " + Utils.encodeId(genreId)));
                     }
@@ -236,8 +239,8 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
         if (!oldRevision.getRev().equals(revision.getRev())) {
             errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", revision.getRev(), oldRevision.getRev()));
         }
-        if (revision.getStatus()==null || !Status.ALL_STATUSES.contains(revision.getStatus())) {
-            errors.add(AppErrors.INSTANCE.fieldNotCorrect("status", "Valid statuses: " + Status.ALL_STATUSES));
+        if (revision.getStatus()==null || !Status.ALL.contains(revision.getStatus())) {
+            errors.add(AppErrors.INSTANCE.fieldNotCorrect("status", "Valid statuses: " + Status.ALL));
         }
 
         validateRevisionCommon(revision, errors);
