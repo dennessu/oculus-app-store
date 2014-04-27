@@ -58,9 +58,6 @@ public class Item extends BaseEntityModel {
     @ApiModelProperty(position = 26, required = true, value = "Genres")
     private List<Long> genres;
 
-    @ApiModelProperty(position = 27, required = true, value = "Sku")
-    private String sku;
-
     @OfferId
     @ApiModelProperty(position = 28, required = true, value = "Default offer")
     private Long defaultOffer;
@@ -138,14 +135,6 @@ public class Item extends BaseEntityModel {
 
     public void setGenres(List<Long> genres) {
         this.genres = genres;
-    }
-
-    public String getSku() {
-        return sku;
-    }
-
-    public void setSku(String sku) {
-        this.sku = sku;
     }
 
     public Long getEntitlementDefId() {
