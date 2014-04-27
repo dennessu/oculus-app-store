@@ -252,7 +252,7 @@ class UserValidatorImpl implements UserValidator {
 
     Promise<Void> validateLocale(User user) {
         if (user.preferredLocale != null) {
-            return localeRepository.get(user.preferredLocale).then { Locale locale ->
+            return localeRepository.get(user.preferredLocale).then { com.junbo.identity.spec.v1.model.Locale locale ->
                 if (locale == null) {
                     throw AppErrors.INSTANCE.fieldInvalid(user.preferredLocale.value).exception()
                 }
@@ -275,7 +275,7 @@ class UserValidatorImpl implements UserValidator {
 
     Promise<Void> validateEmails(User user) {
         if (user.emails != null) {
-            return validateUserPersonalInfoLinkIterator(user.addresses.iterator(),
+            return validateUserPersonalInfoLinkIterator(user.emails.iterator(),
                     UserPersonalInfoType.EMAIL.toString())
         }
         return Promise.pure(null)

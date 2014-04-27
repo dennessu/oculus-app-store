@@ -61,9 +61,12 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
                         throw AppErrors.INSTANCE.userNotFound(userAuthenticator.userId).exception()
                     }
 
+                    // todo:    Need to check with kgu about whether notAnonymous user can have authenticator
+                    /*
                     if (user.isAnonymous == false) {
                         throw AppErrors.INSTANCE.userInInvalidStatus(userAuthenticator.userId).exception()
                     }
+                    */
 
                     if (user.status != UserStatus.ACTIVE.toString()) {
                         throw AppErrors.INSTANCE.userInInvalidStatus(userAuthenticator.userId).exception()
@@ -167,9 +170,12 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
                 throw AppErrors.INSTANCE.fieldRequired('isAnonymous').exception()
             }
 
+            // Todo:    Need to check with kgu, whether user having username can add authenticators
+            /*
             if (user.isAnonymous == false) {
                 throw AppErrors.INSTANCE.fieldInvalid('isAnonymous', 'true').exception()
             }
+            */
 
             if (user.status != UserStatus.ACTIVE.toString()) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userAuthenticator.userId).exception()

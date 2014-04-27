@@ -12,6 +12,6 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 enum Gender {
-    male,
-    female
+    MALE,
+    FEMALE
 }

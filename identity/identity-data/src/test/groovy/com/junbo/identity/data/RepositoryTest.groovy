@@ -76,8 +76,8 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     private UserCredentialVerifyAttemptRepository userCredentialVerifyAttemptRepository
 
     @Autowired
-    @Qualifier('userOptinRepository')
-    private UserCommunicationRepository userOptinRepository
+    @Qualifier('userCommunicationRepository')
+    private UserCommunicationRepository userCommunicationRepository
 
     @Autowired
     @Qualifier('userPasswordRepository')
@@ -132,7 +132,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     private LocaleRepository localeRepository
 
     @Autowired
-    @Qualifier('pitypeRepository')
+    @Qualifier('piTypeRepository')
     private PITypeRepository piTypeRepository
 
 
@@ -403,19 +403,19 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userOptin.setCommunicationId(new CommunicationId(idGenerator.nextId()))
         userOptin.setCreatedBy('lixia')
         userOptin.setCreatedTime(new Date())
-        userOptin = userOptinRepository.create(userOptin).wrapped().get()
+        userOptin = userCommunicationRepository.create(userOptin).wrapped().get()
 
-        UserCommunication newUserOptin = userOptinRepository.get(userOptin.getId()).wrapped().get()
+        UserCommunication newUserOptin = userCommunicationRepository.get(userOptin.getId()).wrapped().get()
         Assert.assertEquals(userOptin.getCommunicationId(), newUserOptin.getCommunicationId())
 
         CommunicationId value = new CommunicationId(idGenerator.nextId())
         userOptin.setCommunicationId(value)
-        newUserOptin = userOptinRepository.update(userOptin).wrapped().get()
+        newUserOptin = userCommunicationRepository.update(userOptin).wrapped().get()
         Assert.assertEquals(value, newUserOptin.getCommunicationId())
 
         UserOptinListOptions getOption = new UserOptinListOptions()
         getOption.setUserId(new UserId(userId))
-        List<UserCommunication> userOptins = userOptinRepository.search(getOption).wrapped().get()
+        List<UserCommunication> userOptins = userCommunicationRepository.search(getOption).wrapped().get()
         assert userOptins.size() != 0
     }
 

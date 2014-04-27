@@ -7,8 +7,8 @@
 package com.junbo.catalog.spec.model.item;
 
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
+import com.junbo.common.id.ItemAttributeId;
 import com.junbo.common.id.ItemId;
-import com.junbo.common.jackson.annotation.AttributeId;
 
 import javax.ws.rs.QueryParam;
 import java.util.List;
@@ -17,13 +17,12 @@ import java.util.List;
  * Items get options.
  */
 public class ItemsGetOptions extends PageableGetOptions {
-    @QueryParam("id")
+    @QueryParam("itemId")
     private List<ItemId> itemIds;
     @QueryParam("type")
     private String type;
-    @AttributeId
     @QueryParam("genre")
-    private Long genre;
+    private ItemAttributeId genre;
 
     public List<ItemId> getItemIds() {
         return itemIds;
@@ -41,11 +40,11 @@ public class ItemsGetOptions extends PageableGetOptions {
         this.type = type;
     }
 
-    public Long getGenre() {
+    public ItemAttributeId getGenre() {
         return genre;
     }
 
-    public void setGenre(Long genre) {
+    public void setGenre(ItemAttributeId genre) {
         this.genre = genre;
     }
 }

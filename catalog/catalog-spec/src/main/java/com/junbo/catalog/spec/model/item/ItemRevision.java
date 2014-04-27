@@ -29,6 +29,9 @@ public class ItemRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The id of item revision resource")
     private Long revisionId;
 
+    @ApiModelProperty(position = 15, required = true, value = "Sku")
+    private String sku;
+
     @UserId
     @JsonProperty("developer")
     @ApiModelProperty(position = 20, required = true, value = "Developer of the item revision resource")
@@ -54,9 +57,9 @@ public class ItemRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 26, required = true, value = "Download Link", allowableValues = "PC, MAC, LINUX")
     private Map<String, Binary> binaries;
 
-    @ApiModelProperty(position = 30, required = true, value = "Wallet currency type",
-            allowableValues = "REAL_CURRENCY, VIRTUAL_CURRENCY")
-    private String walletCurrencyType;
+    //@ApiModelProperty(position = 30, required = true, value = "Wallet currency type",
+    //        allowableValues = "REAL_CURRENCY, VIRTUAL_CURRENCY")
+    //private String walletCurrencyType;
     @CurrencyId
     @ApiModelProperty(position = 31, required = true, value = "Wallet currency")
     private String walletCurrency;
@@ -67,6 +70,15 @@ public class ItemRevision extends BaseRevisionModel {
     private Map<String, ItemRevisionLocaleProperties> locales;
     @ApiModelProperty(position = 41, required = true, value = "Country properties of the item revision")
     private Map<String, ItemRevisionCountryProperties> countries;
+
+
+    public String getSku() {
+        return sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
+    }
 
     public Long getRevisionId() {
         return revisionId;
@@ -130,14 +142,6 @@ public class ItemRevision extends BaseRevisionModel {
 
     public void setBinaries(Map<String, Binary> binaries) {
         this.binaries = binaries;
-    }
-
-    public String getWalletCurrencyType() {
-        return walletCurrencyType;
-    }
-
-    public void setWalletCurrencyType(String walletCurrencyType) {
-        this.walletCurrencyType = walletCurrencyType;
     }
 
     public String getWalletCurrency() {

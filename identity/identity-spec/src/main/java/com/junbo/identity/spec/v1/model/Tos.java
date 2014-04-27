@@ -20,6 +20,7 @@ public class Tos extends ResourceMeta implements Identifiable<TosId> {
     @JsonProperty("self")
     private TosId id;
 
+    // todo:    Need to confirm with carlos, why it doesn't use locale Id here.
     @ApiModelProperty(position = 2, required = true, value = "The locale of the tos resource.")
     private String locale;
 

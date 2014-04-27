@@ -110,7 +110,16 @@ class LocaleResourceImpl implements LocaleResource {
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        return localeRepository.get(localeId)
+        return localeValidator.validateForGet(localeId).then {
+            localeRepository.get(localeId).then { Locale newLocale ->
+                if (newLocale == null) {
+                    throw AppErrors.INSTANCE.localeNotFound(localeId).exception()
+                }
+
+                newLocale = localeFilter.filterForGet(newLocale, null)
+                return Promise.pure(newLocale)
+            }
+        }
     }
 
     @Override

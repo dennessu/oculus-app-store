@@ -8,8 +8,8 @@ package com.junbo.catalog.spec.model.offer;
 
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
 import com.junbo.common.id.ItemId;
+import com.junbo.common.id.OfferAttributeId;
 import com.junbo.common.id.OfferId;
-import com.junbo.common.jackson.annotation.AttributeId;
 
 import javax.ws.rs.QueryParam;
 import java.util.List;
@@ -22,9 +22,8 @@ public class OffersGetOptions extends PageableGetOptions {
     private List<OfferId> offerIds;
     @QueryParam("published")
     private Boolean published;
-    @AttributeId
     @QueryParam("category")
-    private Long category;
+    private OfferAttributeId category;
     @QueryParam("itemId")
     private ItemId itemId;
 
@@ -44,11 +43,11 @@ public class OffersGetOptions extends PageableGetOptions {
         this.published = published;
     }
 
-    public Long getCategory() {
+    public OfferAttributeId getCategory() {
         return category;
     }
 
-    public void setCategory(Long category) {
+    public void setCategory(OfferAttributeId category) {
         this.category = category;
     }
 

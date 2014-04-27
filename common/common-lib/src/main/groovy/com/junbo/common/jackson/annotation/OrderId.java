@@ -22,7 +22,7 @@ import java.lang.annotation.RetentionPolicy;
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @JacksonAnnotationsInside
-@JsonSerialize(using = OrderIdSerializer.class, include = JsonSerialize.Inclusion.NON_NULL)
+@JsonSerialize(using = OrderIdSerializer.class)
 @JsonDeserialize(using = OrderIdDeserializer.class)
 @ResourcePath("/orders")
 public @interface OrderId {

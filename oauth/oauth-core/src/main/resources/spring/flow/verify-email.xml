@@ -23,7 +23,8 @@
 
     <bean id="verifyEmail" class="com.junbo.oauth.core.action.VerifyEmail">
         <property name="emailVerifyCodeRepository" ref="emailVerifyCodeRepository"/>
-        <property name="userPiiResource" ref="userPiiResource"/>
+        <property name="userPersonalInfoResource" ref="userPersonalInfoResource"/>
+        <property name="userResource" ref="userResource"/>
     </bean>
 
     <bean id="emailVerifyView" class="com.junbo.oauth.core.view.EmailVerifyView"/>

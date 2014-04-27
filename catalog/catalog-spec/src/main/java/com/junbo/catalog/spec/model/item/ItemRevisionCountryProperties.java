@@ -6,7 +6,7 @@
 
 package com.junbo.catalog.spec.model.item;
 
-import com.junbo.catalog.spec.model.common.Link;
+import com.junbo.common.jackson.annotation.AgeRatingId;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
@@ -17,7 +17,8 @@ public class ItemRevisionCountryProperties {
     private String supportPhone;
     @ApiModelProperty(position = 36, required = true,
             value = "The content rating given to the item by a specific board (ESRB, PEGI)")
-    private Link ageRating;
+    @AgeRatingId
+    private String ageRating;
 
     public String getSupportPhone() {
         return supportPhone;
@@ -27,11 +28,11 @@ public class ItemRevisionCountryProperties {
         this.supportPhone = supportPhone;
     }
 
-    public Link getAgeRating() {
+    public String getAgeRating() {
         return ageRating;
     }
 
-    public void setAgeRating(Link ageRating) {
+    public void setAgeRating(String ageRating) {
         this.ageRating = ageRating;
     }
 }

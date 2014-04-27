@@ -30,7 +30,7 @@ class FacadeBuilder {
     public static final String SUBTOTAL = 'SUBTOTAL'
     public static final String TAX = 'TAX'
     public static final String GRAND_TOTAL = 'GRANDTOTAL'
-    public static final String ISO8601Format = 'yyyy-MM-ddThh:mm:ssZ'
+    public static final String ISO8601 = 'yyyy-MM-dd\'T\'hh:mm:ssXXX'
 
     static FulfilmentRequest buildFulfilmentRequest(Order order) {
         FulfilmentRequest request = new FulfilmentRequest()
@@ -67,7 +67,7 @@ class FacadeBuilder {
         request.currency = order.currency
         request.userId = order.user?.value
         request.shippingMethodId = order.shippingMethod
-        request.time = new SimpleDateFormat(ISO8601Format, Locale.US).format(order.honoredTime)
+        request.time = new SimpleDateFormat(ISO8601).format(order.honoredTime)
         request.includeCrossOfferPromos = true
         List<RatingItem> ratingItems = []
         order.orderItems?.each { OrderItem item ->
@@ -91,7 +91,7 @@ class FacadeBuilder {
         Map<String, String> properties = [:]
         properties.put(ORDER_NUMBER, order.id.value.toString())
         Date now = new Date()
-        properties.put(ORDER_DATE, new SimpleDateFormat(ISO8601Format, Locale.US).format(now))
+        properties.put(ORDER_DATE, new SimpleDateFormat(ISO8601).format(now))
         properties.put(NAME, user.username)
         properties.put(SUBTOTAL, order.totalAmount?.toString())
         properties.put(TAX, BigDecimal.ZERO.toString())

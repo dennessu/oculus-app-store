@@ -56,7 +56,7 @@
         <property name="sqlRepositoryTarget" ref="sqlUserGroupRepository" />
     </bean>
 
-    <bean id="userOptinRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
+    <bean id="userCommunicationRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="identityBaseRepository">
         <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserCommunicationRepository"/>
         <property name="cloudantRepositoryTarget" ref="cloudantUserOptinRepository" />
         <property name="sqlRepositoryTarget" ref="sqlUserOptinRepository" />

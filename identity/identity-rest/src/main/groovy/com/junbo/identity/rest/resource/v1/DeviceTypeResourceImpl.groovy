@@ -110,7 +110,16 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        return deviceTypeRepository.get(deviceTypeId)
+        return deviceTypeValidator.validateForGet(deviceTypeId).then {
+            deviceTypeRepository.get(deviceTypeId).then { DeviceType newDeviceType ->
+                if (newDeviceType == null) {
+                    throw AppErrors.INSTANCE.deviceTypeNotFound(deviceTypeId).exception()
+                }
+
+                newDeviceType = deviceTypeFilter.filterForGet(newDeviceType, null)
+                return Promise.pure(newDeviceType)
+            }
+        }
     }
 
     @Override

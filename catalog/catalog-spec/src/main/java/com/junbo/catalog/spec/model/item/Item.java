@@ -9,8 +9,8 @@ package com.junbo.catalog.spec.model.item;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.BaseEntityModel;
-import com.junbo.catalog.spec.model.common.Link;
 import com.junbo.common.jackson.annotation.*;
+import com.junbo.common.model.Link;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
@@ -34,6 +34,7 @@ public class Item extends BaseEntityModel {
     private Long currentRevisionId;
 
     @ApiModelProperty(position = 21, required = true, value = "Item revisions")
+    @HateoasLink("/item-revisions?itemId={itemId}")
     private Link revisions;
 
     @UserId
@@ -57,9 +58,6 @@ public class Item extends BaseEntityModel {
     @ItemAttributeId
     @ApiModelProperty(position = 26, required = true, value = "Genres")
     private List<Long> genres;
-
-    @ApiModelProperty(position = 27, required = true, value = "Sku")
-    private String sku;
 
     @OfferId
     @ApiModelProperty(position = 28, required = true, value = "Default offer")
@@ -138,14 +136,6 @@ public class Item extends BaseEntityModel {
 
     public void setGenres(List<Long> genres) {
         this.genres = genres;
-    }
-
-    public String getSku() {
-        return sku;
-    }
-
-    public void setSku(String sku) {
-        this.sku = sku;
     }
 
     public Long getEntitlementDefId() {

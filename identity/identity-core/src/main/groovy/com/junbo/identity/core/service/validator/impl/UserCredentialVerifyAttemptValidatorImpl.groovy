@@ -123,8 +123,8 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             def hasLen = 4
             def saltIndex = 1
             def pepperIndex = 2
-            if (userLoginAttempt.type == CredentialType.PASSWORD) {
-                userPasswordRepository.search(new UserPasswordListOptions(
+            if (userLoginAttempt.type == CredentialType.PASSWORD.toString()) {
+                return userPasswordRepository.search(new UserPasswordListOptions(
                         userId: (UserId)user.id,
                         active: true
                 )).then { List<UserPassword> userPasswordList ->
@@ -146,10 +146,12 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     } else {
                         userLoginAttempt.setSucceeded(false)
                     }
+
+                    return Promise.pure(null)
                 }
             }
             else {
-                userPinRepository.search(new UserPinListOptions(
+                return userPinRepository.search(new UserPinListOptions(
                         userId: (UserId)user.id,
                         active: true
                 )).then { List<UserPin> userPinList ->
@@ -171,10 +173,10 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     } else {
                         userLoginAttempt.setSucceeded(false)
                     }
+
+                    return Promise.pure(null)
                 }
             }
-
-            return Promise.pure(null)
         }
     }
 

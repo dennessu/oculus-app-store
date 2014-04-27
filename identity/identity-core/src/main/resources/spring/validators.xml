@@ -8,16 +8,16 @@
         <property name="userAuthenticatorRepository" ref="userAuthenticatorRepository"/>
         <property name="allowedTypes">
             <list>
-                <value>hotmail</value>
-                <value>google</value>
-                <value>facebook</value>
+                <value>GOOGLE</value>
+                <value>FACEBOOK</value>
+                <value>TWITTER</value>
             </list>
         </property>
     </bean>
 
     <bean id="userCommunicationValidator" class="com.junbo.identity.core.service.validator.impl.UserCommunicationValidatorImpl">
         <property name="userRepository" ref="userRepository"/>
-        <property name="userCommunicationRepository" ref="userOptinRepository"/>
+        <property name="userCommunicationRepository" ref="userCommunicationRepository"/>
         <property name="communicationRepository" ref="communicationRepository" />
     </bean>
 
@@ -215,7 +215,7 @@
         <property name="allowedEmailPatterns">
             <list>
                 <!--  todo: need to refactor this -->
-                <value>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}</value>
+                <value>^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$</value>
             </list>
         </property>
         <property name="minEmailLength" value="3" />
@@ -298,7 +298,7 @@
                 <value>UTC+13:00</value>
             </list>
         </property>
-        <property name="defaultTimezone" value="America/Los_Angeles"/>
+        <property name="defaultTimezone" value="UTC-07:00"/>
     </bean>
 
     <bean id="displayNameValidator" class="com.junbo.identity.core.service.validator.impl.DisplayNameValidatorImpl">

@@ -264,10 +264,6 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
                         errors.add(AppErrors.INSTANCE.missingField("binaries"));
                     }
                 } else if (ItemType.WALLET.equals(item.getType())) {
-                    if (!"REAL_CURRENCY".equals(revision.getWalletCurrencyType())) {
-                        errors.add(AppErrors.INSTANCE.fieldNotMatch("walletCurrencyType",
-                                revision.getWalletCurrencyType(), "REAL_CURRENCY"));
-                    }
                     if (StringUtils.isEmpty(revision.getWalletCurrency())) {
                         errors.add(AppErrors.INSTANCE.missingField("walletCurrency"));
                     }
