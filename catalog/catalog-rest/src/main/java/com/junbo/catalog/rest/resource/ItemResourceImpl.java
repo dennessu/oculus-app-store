@@ -9,6 +9,7 @@ package com.junbo.catalog.rest.resource;
 import com.junbo.authorization.AuthorizeCallback;
 import com.junbo.authorization.model.AuthorizeContext;
 import com.junbo.authorization.service.AuthorizeService;
+import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.rest.auth.ItemAuthorizeCallbackFactory;
 import com.junbo.catalog.spec.error.AppErrors;
@@ -58,7 +59,7 @@ public class ItemResourceImpl implements ItemResource {
         authorizeService.authorize(callback);
 
         if (!AuthorizeContext.hasRight("read")) {
-            throw AppErrors.INSTANCE.notFound("Item", item.getItemId()).exception();
+            throw AppErrors.INSTANCE.notFound("Item", Utils.encodeId(item.getItemId())).exception();
         }
 
         return Promise.pure(item);
