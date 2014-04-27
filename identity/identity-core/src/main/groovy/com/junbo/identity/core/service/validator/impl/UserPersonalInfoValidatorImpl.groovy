@@ -113,42 +113,44 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
             }
         }
 
+        String decodedValue = userPersonalInfo.decodedValue()
+
         // todo:    Refactor validator using factory method
         if (userPersonalInfo.type == UserPersonalInfoType.ADDRESS.toString()) {
-            Address address = (Address)stringToObj(userPersonalInfo.value, Address)
+            Address address = (Address)stringToObj(decodedValue, Address)
             addressValidator.validate(address)
         } else if (userPersonalInfo.type == UserPersonalInfoType.DOB.toString()) {
-            UserDOB dob = (UserDOB)stringToObj(userPersonalInfo.value, UserDOB)
+            UserDOB dob = (UserDOB)stringToObj(decodedValue, UserDOB)
             birthdayValidator.validate(dob)
         } else if (userPersonalInfo.type == UserPersonalInfoType.DRIVERS_LICENSE.toString()) {
-            UserDriverLicense driverLicense = (UserDriverLicense)stringToObj(userPersonalInfo.value, UserDriverLicense)
+            UserDriverLicense driverLicense = (UserDriverLicense)stringToObj(decodedValue, UserDriverLicense)
             driverLicenseValidator.validate(driverLicense)
         } else if (userPersonalInfo.type == UserPersonalInfoType.EMAIL.toString()) {
-            Email email = (Email)stringToObj(userPersonalInfo.value, Email)
+            Email email = (Email)stringToObj(decodedValue, Email)
             userEmailValidator.validate(email)
         } else if (userPersonalInfo.type == UserPersonalInfoType.GENDER.toString()) {
-            UserGender userGender = (UserGender)stringToObj(userPersonalInfo.value, UserGender)
+            UserGender userGender = (UserGender)stringToObj(decodedValue, UserGender)
             genderValidator.validate(userGender)
         } else if (userPersonalInfo.type == UserPersonalInfoType.GOVERNMENT_ID.toString()) {
-            UserGovernmentID userGovernmentID = (UserGovernmentID)stringToObj(userPersonalInfo.value, UserGovernmentID)
+            UserGovernmentID userGovernmentID = (UserGovernmentID)stringToObj(decodedValue, UserGovernmentID)
             governmentIDValidator.validate(userGovernmentID)
         } else if (userPersonalInfo.type == UserPersonalInfoType.NAME.toString()) {
-            UserName userName = (UserName)stringToObj(userPersonalInfo.value, UserName)
+            UserName userName = (UserName)stringToObj(decodedValue, UserName)
             nameValidator.validateName(userName)
         } else if (userPersonalInfo.type == UserPersonalInfoType.PASSPORT.toString()) {
-            UserPassport userPassport = (UserPassport)stringToObj(userPersonalInfo.value, UserPassport)
+            UserPassport userPassport = (UserPassport)stringToObj(decodedValue, UserPassport)
             passportValidator.validate(userPassport)
         } else if (userPersonalInfo.type == UserPersonalInfoType.PHONE.toString()) {
-            PhoneNumber phoneNumber = (PhoneNumber)stringToObj(userPersonalInfo.value, PhoneNumber)
+            PhoneNumber phoneNumber = (PhoneNumber)stringToObj(decodedValue, PhoneNumber)
             userPhoneNumberValidator.validate(phoneNumber)
         } else if (userPersonalInfo.type == UserPersonalInfoType.QQ.toString()) {
-            UserQQ qq = (UserQQ)stringToObj(userPersonalInfo.value, UserQQ)
+            UserQQ qq = (UserQQ)stringToObj(decodedValue, UserQQ)
             qqValidator.validate(qq)
         } else if (userPersonalInfo.type == UserPersonalInfoType.SMS.toString()) {
-            UserSMS sms = (UserSMS)stringToObj(userPersonalInfo.value, UserSMS)
+            UserSMS sms = (UserSMS)stringToObj(decodedValue, UserSMS)
             smsValidator.validate(sms)
         } else if (userPersonalInfo.type == UserPersonalInfoType.WHATSAPP.toString()) {
-            UserWhatsApp userWhatsApp = (UserWhatsApp)stringToObj(userPersonalInfo.value, UserWhatsApp)
+            UserWhatsApp userWhatsApp = (UserWhatsApp)stringToObj(decodedValue, UserWhatsApp)
             userWhatsAppValidator.validate(userWhatsApp)
         } else {
             throw AppErrors.INSTANCE.fieldInvalid('type', UserPersonalInfoType.values().join(',')).exception()

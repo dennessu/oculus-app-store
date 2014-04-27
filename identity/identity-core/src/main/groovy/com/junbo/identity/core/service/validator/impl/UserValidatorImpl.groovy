@@ -275,7 +275,7 @@ class UserValidatorImpl implements UserValidator {
 
     Promise<Void> validateEmails(User user) {
         if (user.emails != null) {
-            return validateUserPersonalInfoLinkIterator(user.addresses.iterator(),
+            return validateUserPersonalInfoLinkIterator(user.emails.iterator(),
                     UserPersonalInfoType.EMAIL.toString())
         }
         return Promise.pure(null)

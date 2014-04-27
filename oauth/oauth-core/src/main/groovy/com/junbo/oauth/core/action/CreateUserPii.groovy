@@ -7,20 +7,29 @@ package com.junbo.oauth.core.action
 
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserId
-import com.junbo.identity.spec.v1.model.UserEmail
+import com.junbo.common.id.UserPersonalInfoId
+import com.junbo.identity.spec.v1.model.Email
+import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.model.UserDOB
+import com.junbo.identity.spec.v1.model.UserGender
 import com.junbo.identity.spec.v1.model.UserName
-import com.junbo.identity.spec.v1.model.UserPii
-import com.junbo.identity.spec.v1.resource.UserPiiResource
+import com.junbo.identity.spec.v1.model.UserPersonalInfo
+import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
+import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
+import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
+import com.junbo.oauth.common.JsonMarshaller
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.spec.model.Gender
 import com.junbo.oauth.spec.model.LoginState
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.Assert
 
@@ -29,11 +38,19 @@ import org.springframework.util.Assert
  */
 @CompileStatic
 class CreateUserPii implements Action {
-    private UserPiiResource userPiiResource
+    private static final Logger LOGGER = LoggerFactory.getLogger(CreateUserPii)
+    private UserPersonalInfoResource userPersonalInfoResource
+
+    private UserResource userResource
 
     @Required
-    void setUserPiiResource(UserPiiResource userPiiResource) {
-        this.userPiiResource = userPiiResource
+    void setUserPersonalInfoResource(UserPersonalInfoResource userPersonalInfoResource) {
+        this.userPersonalInfoResource = userPersonalInfoResource
+    }
+
+    @Required
+    void setUserResource(UserResource userResource) {
+        this.userResource = userResource
     }
 
     @Override
@@ -48,35 +65,119 @@ class CreateUserPii implements Action {
 
         String lastName = parameterMap.getFirst(OAuthParameters.LAST_NAME)
 
+        String nickname = parameterMap.getFirst(OAuthParameters.NICK_NAME)
+
         String email = parameterMap.getFirst(OAuthParameters.EMAIL)
 
         Gender gender = contextWrapper.gender
 
         Date dob = contextWrapper.dob
 
-        UserPii userPii = new UserPii(
-                userId: (UserId) user.id,
-                name: new UserName(firstName: firstName, lastName: lastName),
-                birthday: dob,
-                gender: gender.name(),
-                displayName: "$firstName $lastName",
-                emails: ['google': new UserEmail(value: email, verified: false, type: 'google')]
+        UserName name = new UserName(firstName: firstName, lastName: lastName, nickName: nickname)
+
+        UserPersonalInfo namePii = new UserPersonalInfo(
+                type: 'NAME',
+                value: UserPersonalInfo.encode(JsonMarshaller.marshall(name))
         )
 
-        userPiiResource.create(userPii).recover { Throwable throwable ->
-            if (throwable instanceof AppErrorException) {
-                contextWrapper.errors.add(((AppErrorException) throwable).error.error())
-            } else {
-                contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingIdentity().error())
-            }
+        UserPersonalInfo emailPii = new UserPersonalInfo(
+                type: 'EMAIL',
+                value: UserPersonalInfo.encode(JsonMarshaller.marshall(new Email(value: email)))
+        )
 
+        UserPersonalInfo genderPii = new UserPersonalInfo(
+                type: 'GENDER',
+                value: UserPersonalInfo.encode(JsonMarshaller.marshall(new UserGender(value: gender.name())))
+        )
+
+        UserPersonalInfo dobPii = new UserPersonalInfo(
+                type: 'DOB',
+                value: UserPersonalInfo.encode(JsonMarshaller.marshall(new UserDOB(birthday: dob)))
+        )
+
+        userPersonalInfoResource.create(namePii).recover { Throwable e ->
+            handleException(e, contextWrapper)
             return Promise.pure(null)
-        }.then { UserPii newUserPii ->
-            if (newUserPii == null) {
+        }.then { UserPersonalInfo newNamePii ->
+            if (newNamePii == null) {
                 return Promise.pure(new ActionResult('error'))
             }
 
-            contextWrapper.userPii = newUserPii
+            user.name = new UserPersonalInfoLink(
+                    isdefault: true,
+                    value: newNamePii.id as UserPersonalInfoId
+            )
+
+            return Promise.pure(new ActionResult('next'))
+        }.then { ActionResult result ->
+            if (result.id == 'error') {
+                return Promise.pure(result)
+            }
+
+            return userPersonalInfoResource.create(emailPii)
+        }.recover { Throwable e ->
+            handleException(e, contextWrapper)
+            return Promise.pure(null)
+        }.then { UserPersonalInfo newEmailPii ->
+            if (newEmailPii == null) {
+                return Promise.pure(new ActionResult('error'))
+            }
+
+            user.emails = [new UserPersonalInfoLink(
+                    isdefault: true,
+                    value: newEmailPii.id as UserPersonalInfoId
+            )]
+
+            return Promise.pure(new ActionResult('next'))
+        }.then { ActionResult result ->
+            if (result.id == 'error') {
+                return Promise.pure(result)
+            }
+
+            return userPersonalInfoResource.create(genderPii)
+        }.recover { Throwable e ->
+            handleException(e, contextWrapper)
+            return Promise.pure(null)
+        }.then { UserPersonalInfo newGenderPii ->
+            if (newGenderPii == null) {
+                return Promise.pure(new ActionResult('error'))
+            }
+
+            user.gender = new UserPersonalInfoLink(
+                    isdefault: true,
+                    value: newGenderPii.id as UserPersonalInfoId
+            )
+
+            return Promise.pure(new ActionResult('next'))
+        }.then { ActionResult result ->
+            if (result.id == 'error') {
+                return Promise.pure(result)
+            }
+
+            return userPersonalInfoResource.create(dobPii)
+        }.recover { Throwable e ->
+            handleException(e, contextWrapper)
+            return Promise.pure(null)
+        }.then { UserPersonalInfo newDobPii ->
+            if (newDobPii == null) {
+                return Promise.pure(new ActionResult('error'))
+            }
+
+            user.dob = new UserPersonalInfoLink(
+                    isdefault: true,
+                    value: newDobPii.id as UserPersonalInfoId
+            )
+
+            return userResource.put(user.id as UserId, user)
+        }.recover { Throwable e ->
+            handleException(e, contextWrapper)
+            return Promise.pure(null)
+        }.then { User updatedUser ->
+            if (updatedUser == null) {
+                return Promise.pure(new ActionResult('error'))
+            }
+
+            contextWrapper.user = updatedUser
 
             LoginState loginState = new LoginState(
                     userId: ((UserId) user.id).value,
@@ -85,6 +186,15 @@ class CreateUserPii implements Action {
 
             contextWrapper.loginState = loginState
             return Promise.pure(new ActionResult('success'))
+        }
+    }
+
+    private static void handleException(Throwable throwable, ActionContextWrapper contextWrapper) {
+        LOGGER.error('Error calling the identity service', throwable)
+        if (throwable instanceof AppErrorException) {
+            contextWrapper.errors.add(((AppErrorException) throwable).error.error())
+        } else {
+            contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingIdentity().error())
         }
     }
 }

@@ -50,9 +50,8 @@ class CreateUserCredential implements Action {
         }
 
         UserCredential userCredential = new UserCredential(
-                userId: (UserId) user.id,
                 value: new String(Base64.encodeBase64(password.bytes)),
-                type: 'password'
+                type: 'PASSWORD'
         )
 
         userCredentialResource.create((UserId) user.id, userCredential).recover { Throwable throwable ->

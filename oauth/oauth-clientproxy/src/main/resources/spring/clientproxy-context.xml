@@ -29,8 +29,8 @@
         <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
     </bean>
 
-    <bean id="userPiiResource"
-          class="com.junbo.identity.spec.v1.resource.proxy.UserPiiResourceClientProxy">
+    <bean id="userPersonalInfoResource"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy">
         <constructor-arg name="client" ref="commonAsyncHttpClient"/>
         <constructor-arg name="target" value="${clientproxy.identity.url}"/>
         <constructor-arg name="transcoder" ref="commonTranscoder"/>
