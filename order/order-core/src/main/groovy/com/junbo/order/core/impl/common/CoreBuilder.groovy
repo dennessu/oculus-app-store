@@ -89,8 +89,8 @@ class CoreBuilder {
     static Balance buildBalance(Order order) {
         Balance balance = new Balance()
         balance.trackingUuid = UUID.randomUUID()
-        balance.country = order.country
-        balance.currency = order.currency
+        balance.country = order.country.value
+        balance.currency = order.currency.value
         balance.orderId = order.id
         balance.userId = order.user
         balance.piId = order.paymentInstruments?.get(0)

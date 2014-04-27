@@ -1,9 +1,12 @@
 package com.junbo.order.test
 
 import com.junbo.billing.spec.model.Balance
+import com.junbo.common.enumid.CountryId
+import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.order.spec.model.Order
+import com.junbo.order.spec.model.PaymentInfo
 import com.junbo.order.test.util.Generator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
@@ -33,15 +36,15 @@ class OrderPayInTest extends AbstractTestNGSpringContextTests {
         def offer = serviceFacade.getOfferByName('3D Parking Simulator')
         order.user = user.id
         order.with {
-            type = 'PAY_IN'
-            country = 'US'
-            currency = 'USD'
+            country = new CountryId('US')
+            currency = new CurrencyId('USD')
             tentative = true
-            paymentInstruments = [
-                    new PaymentInstrumentId(paymentInstrument.id.paymentInstrumentId)
+            payments = [
+                    new PaymentInfo(
+                            paymentInstrument : new PaymentInstrumentId(paymentInstrument.id))
             ]
             orderItems = [
-                    generator.generateOrderItem(new OfferId(offer.id), 1)
+                    generator.generateOrderItem(new OfferId(offer.offerId), 1)
             ]
         }
 
@@ -83,16 +86,15 @@ class OrderPayInTest extends AbstractTestNGSpringContextTests {
         def offer = serviceFacade.getOfferByName('Oculus VR')
         order.user = user.id
         order.with {
-            type = 'PAY_IN'
-            country = 'US'
-            currency = 'USD'
+            country = new CountryId('US')
+            currency = new CurrencyId('USD')
             tentative = true
             shippingAddress = address.addressId
             paymentInstruments = [
                     new PaymentInstrumentId(paymentInstrument.id.paymentInstrumentId)
             ]
             orderItems = [
-                    generator.generateOrderItem(new OfferId(offer.id), 10)
+                    generator.generateOrderItem(new OfferId(offer.offerId), 10)
             ]
         }
 

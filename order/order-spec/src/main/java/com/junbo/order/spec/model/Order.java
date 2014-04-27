@@ -9,6 +9,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.junbo.common.enumid.CountryId;
+import com.junbo.common.enumid.CurrencyId;
+import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.OrderId;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.ShippingAddressId;
@@ -50,13 +53,13 @@ public class Order extends BaseOrderResource {
 
     @ApiModelProperty(required = true, position = 50, value = "The order purchased country.")
     @JsonProperty("countryOfPurchase")
-    private String country;
+    private CountryId country;
 
     @ApiModelProperty(required = true, position = 60, value = "The order currency.")
-    private String currency;
+    private CurrencyId currency;
 
     @ApiModelProperty(required = true, position = 70, value = "The order locale.")
-    private String locale;
+    private LocaleId locale;
 
     // expand ratingInfo to simplify oom
     @ApiModelProperty(required = true, position = 80, value = "[Client Immutable] The order total amount.")
@@ -149,19 +152,19 @@ public class Order extends BaseOrderResource {
         this.status = status;
     }
 
-    public String getCountry() {
+    public CountryId getCountry() {
         return country;
     }
 
-    public void setCountry(String country) {
+    public void setCountry(CountryId country) {
         this.country = country;
     }
 
-    public String getCurrency() {
+    public CurrencyId getCurrency() {
         return currency;
     }
 
-    public void setCurrency(String currency) {
+    public void setCurrency(CurrencyId currency) {
         this.currency = currency;
     }
 
@@ -269,11 +272,11 @@ public class Order extends BaseOrderResource {
         this.orderItems = orderItems;
     }
 
-    public String getLocale() {
+    public LocaleId getLocale() {
         return locale;
     }
 
-    public void setLocale(String locale) {
+    public void setLocale(LocaleId locale) {
         this.locale = locale;
     }
 
