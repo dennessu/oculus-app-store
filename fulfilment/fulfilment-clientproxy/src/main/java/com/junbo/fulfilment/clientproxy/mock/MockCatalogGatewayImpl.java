@@ -174,7 +174,7 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
         }});
 
         offer.setEventActions(new HashMap<String, List<Action>>() {{
-            put(Constant.EVENT_PURCHASE.toLowerCase(), new ArrayList<Action>() {{
+            put(Constant.EVENT_PURCHASE, new ArrayList<Action>() {{
                 add(new Action() {{
                     setType(Constant.ACTION_DELIVER_PHYSICAL_GOODS);
                 }});
