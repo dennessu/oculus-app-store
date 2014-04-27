@@ -158,7 +158,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
     protected Item wash(ItemRevision itemRevision) {
         Item item = new Item();
         item.setItemId(itemRevision.getItemId());
-        //item.setSku(itemRevision.getSku());
+        item.setSku(itemRevision.getSku());
 
         item.setWalletAmount(itemRevision.getWalletAmount());
         item.setWalletCurrency(itemRevision.getWalletCurrency());
