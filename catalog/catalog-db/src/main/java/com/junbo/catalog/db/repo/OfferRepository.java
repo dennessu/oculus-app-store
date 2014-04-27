@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.db.repo;
 
+import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.dao.OfferDao;
 import com.junbo.catalog.db.entity.OfferEntity;
 import com.junbo.catalog.db.mapper.OfferMapper;
@@ -57,7 +58,7 @@ public class OfferRepository implements BaseEntityRepository<Offer> {
     public Long update(Offer offer) {
         OfferEntity dbEntity = offerDao.get(offer.getOfferId());
         if (dbEntity == null) {
-            throw AppErrors.INSTANCE.notFound("offer", offer.getOfferId()).exception();
+            throw AppErrors.INSTANCE.notFound("offer", Utils.encodeId(offer.getOfferId())).exception();
         }
         OfferMapper.fillDBEntity(offer, dbEntity);
         return offerDao.update(dbEntity);
@@ -67,7 +68,7 @@ public class OfferRepository implements BaseEntityRepository<Offer> {
     public void delete(Long offerId) {
         OfferEntity dbEntity = offerDao.get(offerId);
         if (dbEntity == null) {
-            throw AppErrors.INSTANCE.notFound("offer", offerId).exception();
+            throw AppErrors.INSTANCE.notFound("offer", Utils.encodeId(offerId)).exception();
         }
         dbEntity.setDeleted(true);
         offerDao.update(dbEntity);

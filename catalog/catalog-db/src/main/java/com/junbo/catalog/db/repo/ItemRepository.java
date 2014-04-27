@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.db.repo;
 
+import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.dao.ItemDao;
 import com.junbo.catalog.db.entity.ItemEntity;
 import com.junbo.catalog.db.mapper.ItemMapper;
@@ -48,7 +49,7 @@ public class ItemRepository implements BaseEntityRepository<Item> {
     public Long update(Item item) {
         ItemEntity dbEntity = itemDao.get(item.getItemId());
         if (dbEntity == null) {
-            throw AppErrors.INSTANCE.notFound("item", item.getItemId()).exception();
+            throw AppErrors.INSTANCE.notFound("item", Utils.encodeId(item.getItemId())).exception();
         }
         ItemMapper.fillDBEntity(item, dbEntity);
         return itemDao.update(dbEntity);
@@ -58,7 +59,7 @@ public class ItemRepository implements BaseEntityRepository<Item> {
     public void delete(Long itemId) {
         ItemEntity dbEntity = itemDao.get(itemId);
         if (dbEntity == null) {
-            throw AppErrors.INSTANCE.notFound("item", itemId).exception();
+            throw AppErrors.INSTANCE.notFound("item", Utils.encodeId(itemId)).exception();
         }
         dbEntity.setDeleted(true);
         itemDao.update(dbEntity);

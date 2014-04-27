@@ -15,6 +15,7 @@ import com.junbo.common.jackson.annotation.OfferId;
 import com.junbo.common.jackson.annotation.UserId;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -60,7 +61,7 @@ public class ItemRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 31, required = true, value = "Wallet currency")
     private String walletCurrency;
     @ApiModelProperty(position = 32, required = true, value = "Wallet amount")
-    private String walletAmount;
+    private BigDecimal walletAmount;
 
     @ApiModelProperty(position = 40, required = true, value = "Locale properties of the item revision")
     private Map<String, ItemRevisionLocaleProperties> locales;
@@ -147,11 +148,11 @@ public class ItemRevision extends BaseRevisionModel {
         this.walletCurrency = walletCurrency;
     }
 
-    public String getWalletAmount() {
+    public BigDecimal getWalletAmount() {
         return walletAmount;
     }
 
-    public void setWalletAmount(String walletAmount) {
+    public void setWalletAmount(BigDecimal walletAmount) {
         this.walletAmount = walletAmount;
     }
 

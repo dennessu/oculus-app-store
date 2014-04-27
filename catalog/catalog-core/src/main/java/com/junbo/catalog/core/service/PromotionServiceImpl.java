@@ -53,7 +53,8 @@ public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, P
             throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
         }
         validateRevision(revision);
-        return super.createRevision(revision);
+        Long revisionId = promotionRevisionRepo.create(revision);
+        return promotionRevisionRepo.get(revisionId);
     }
 
     @Override

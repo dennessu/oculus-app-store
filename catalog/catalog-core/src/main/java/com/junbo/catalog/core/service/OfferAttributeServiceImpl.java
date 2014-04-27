@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.core.service;
 
+import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.OfferAttributeService;
 import com.junbo.catalog.db.repo.OfferAttributeRepository;
 import com.junbo.catalog.spec.error.AppErrors;
@@ -27,7 +28,7 @@ public class OfferAttributeServiceImpl implements OfferAttributeService {
     public OfferAttribute getAttribute(Long attributeId) {
         OfferAttribute attribute = attributeRepo.get(attributeId);
         if (attribute == null) {
-            throw AppErrors.INSTANCE.notFound("offer-attribute", attributeId).exception();
+            throw AppErrors.INSTANCE.notFound("offer-attribute", Utils.encodeId(attributeId)).exception();
         }
         return attribute;
     }
@@ -56,7 +57,7 @@ public class OfferAttributeServiceImpl implements OfferAttributeService {
         }
         OfferAttribute existingAttribute = attributeRepo.get(attributeId);
         if (existingAttribute==null) {
-            throw AppErrors.INSTANCE.notFound("offer-attribute", attributeId).exception();
+            throw AppErrors.INSTANCE.notFound("offer-attribute", Utils.encodeId(attributeId)).exception();
         }
         if (!existingAttribute.getRev().equals(attribute.getRev())) {
             throw AppErrors.INSTANCE.fieldNotMatch("rev", attribute.getRev(), existingAttribute.getRev()).exception();
