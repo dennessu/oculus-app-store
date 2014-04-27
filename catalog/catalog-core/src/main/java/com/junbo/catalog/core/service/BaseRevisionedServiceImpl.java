@@ -126,6 +126,12 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
         }
     }
 
+    protected void checkRequestNotNull(BaseModel entity) {
+        if (entity == null) {
+            throw AppErrors.INSTANCE.invalidJson("Invalid json.").exception();
+        }
+    }
+
     protected void checkPrice(Price price, List<AppError> errors) {
         if (!PriceType.contains(price.getPriceType())) {
             errors.add(AppErrors.INSTANCE.fieldNotCorrect("priceType", "Valid price types: " + PriceType.ALL));

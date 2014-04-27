@@ -12,10 +12,10 @@ import java.util.List;
 /**
  * Event type.
  */
-public enum AttributeType {
-    CATEGORY, GENRE;
+public enum OfferAttributeType {
+    CATEGORY;
 
-    public static final List<AttributeType> ALL = Arrays.asList(AttributeType.values());
+    public static final List<OfferAttributeType> ALL = Arrays.asList(OfferAttributeType.values());
 
     public boolean is(String type) {
         return this.name().equals(type);
@@ -23,7 +23,7 @@ public enum AttributeType {
 
     public static boolean contains(String type) {
         try {
-            AttributeType.valueOf(type);
+            OfferAttributeType.valueOf(type);
         } catch (IllegalArgumentException e) {
             return false;
         }
