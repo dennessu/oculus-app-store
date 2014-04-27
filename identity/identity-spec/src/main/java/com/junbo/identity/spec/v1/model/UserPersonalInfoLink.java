@@ -15,40 +15,30 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  */
 public class UserPersonalInfoLink {
 
-    @ApiModelProperty(position = 1, required = true, value = "[Nullable]Type to validate.")
-    private String type;
+    @ApiModelProperty(position = 1, required = true, value = "Whether this link is default.")
+    private Boolean isdefault;
 
-    @ApiModelProperty(position = 2, required = true, value = "Resource Link Label.")
-    private String label;
-
-    @ApiModelProperty(position = 3, required = true, value = "Resource Link.")
-    private UserPersonalInfoId resourceLink;
+    @ApiModelProperty(position = 3, required = true, value = "Resource Link to the userPersonalInfo resource.")
+    private UserPersonalInfoId value;
 
     @JsonIgnore
     private UserId userId;
 
-    public String getType() {
-        return type;
+
+    public Boolean getIsdefault() {
+        return isdefault;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setIsdefault(Boolean isdefault) {
+        this.isdefault = isdefault;
     }
 
-    public String getLabel() {
-        return label;
+    public UserPersonalInfoId getValue() {
+        return value;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public UserPersonalInfoId getResourceLink() {
-        return resourceLink;
-    }
-
-    public void setResourceLink(UserPersonalInfoId resourceLink) {
-        this.resourceLink = resourceLink;
+    public void setValue(UserPersonalInfoId value) {
+        this.value = value;
     }
 
     public UserId getUserId() {

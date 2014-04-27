@@ -1,5 +1,6 @@
 package com.junbo.identity.core.service.validator
 
+import com.junbo.identity.spec.v1.model.UserDOB
 import groovy.transform.CompileStatic
 
 /**
@@ -8,6 +9,5 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface BirthdayValidator {
 
-    boolean isValidBirthday(Date birthday)
-
+    void validate(UserDOB userDOB)
 }

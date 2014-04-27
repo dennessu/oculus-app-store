@@ -11,12 +11,8 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface CurrencyValidator {
-    boolean isValid(String currency)
-    String getDefault()
-
-    Promise<Currency> validateForGet(CurrencyId countryId)
+    Promise<Currency> validateForGet(CurrencyId currencyId)
     Promise<Void> validateForSearch(CurrencyListOptions options)
-    Promise<Void> validateForCreate(Currency country)
+    Promise<Void> validateForCreate(Currency currency)
     Promise<Void> validateForUpdate(CurrencyId currencyId, Currency currency, Currency oldCurrency)
-
 }

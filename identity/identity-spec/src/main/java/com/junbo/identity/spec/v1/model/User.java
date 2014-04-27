@@ -7,6 +7,7 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.model.Link;
@@ -14,7 +15,6 @@ import com.junbo.common.model.ResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,7 +30,7 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
     private String username;
 
     @ApiModelProperty(position = 3, required = false, value = "The preferred locale of the user.")
-    private String preferredLocale;
+    private LocaleId preferredLocale;
 
     @ApiModelProperty(position = 4, required = false,
             value = "The preferred timezone of the user, must be the format as UTC+08:00.")
@@ -46,10 +46,40 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
     private String status;
 
     @ApiModelProperty(position = 5, required = false, value = "The address book.")
-    private List<UserPersonalInfoLink> addressBook = new ArrayList<>();
+    private List<UserPersonalInfoLink> addresses;
 
-    @ApiModelProperty(position = 5, required = false, value = "The personal Info")
-    private List<UserPersonalInfoLink> personalInfo = new ArrayList<>();
+    @ApiModelProperty(position = 5, required = false, value = "The personal phones information.")
+    private List<UserPersonalInfoLink> phones;
+
+    @ApiModelProperty(position = 5, required = false, value = "The personal email information.")
+    private List<UserPersonalInfoLink> emails;
+
+    @ApiModelProperty(position = 6, required = false, value = "The personal name information.")
+    private UserPersonalInfoLink name;
+
+    @ApiModelProperty(position = 7, required = false, value = "The personal birthday information.")
+    private UserPersonalInfoLink dob;
+
+    @ApiModelProperty(position = 8, required = false, value = "The personal textMessages information.")
+    private List<UserPersonalInfoLink> textMessages;
+
+    @ApiModelProperty(position = 9, required = false, value = "The personal qq information.")
+    private List<UserPersonalInfoLink> qqs;
+
+    @ApiModelProperty(position = 10, required = false, value = "The personal whatsapp information.")
+    private List<UserPersonalInfoLink> whatsApps;
+
+    @ApiModelProperty(position = 11, required = false, value = "The personal passport information.")
+    private UserPersonalInfoLink passport;
+
+    @ApiModelProperty(position = 12, required = false, value = "The personal government id information.")
+    private UserPersonalInfoLink governmentId;
+
+    @ApiModelProperty(position = 13, required = false, value = "The personal drivers license information.")
+    private UserPersonalInfoLink driversLicense;
+
+    @ApiModelProperty(position = 14, required = false, value = "The personal gender information.")
+    private UserPersonalInfoLink gender;
 
     @ApiModelProperty(position = 6, required = false, value = "[Nullable]User Group memberships.")
     @HateoasLink("/user-group-memberships?userId={id}")
@@ -130,11 +160,11 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
         support.setPropertyAssigned("username");
     }
 
-    public String getPreferredLocale() {
+    public LocaleId getPreferredLocale() {
         return preferredLocale;
     }
 
-    public void setPreferredLocale(String preferredLocale) {
+    public void setPreferredLocale(LocaleId preferredLocale) {
         this.preferredLocale = preferredLocale;
         support.setPropertyAssigned("preferredLocale");
     }
@@ -155,15 +185,6 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
     public void setStatus(String status) {
         this.status = status;
         support.setPropertyAssigned("status");
-    }
-
-    public List<UserPersonalInfoLink> getAddressBook() {
-        return addressBook;
-    }
-
-    public void setAddressBook(List<UserPersonalInfoLink> addressBook) {
-        this.addressBook = addressBook;
-        support.setPropertyAssigned("addressBook");
     }
 
     public Link getGroupMemeberships() {
@@ -310,12 +331,111 @@ public class User extends ResourceMeta implements Identifiable<UserId> {
         support.setPropertyAssigned("isAnonymous");
     }
 
-    public void setPersonalInfo(List<UserPersonalInfoLink> personalInfo) {
-        this.personalInfo = personalInfo;
-        support.setPropertyAssigned("personalInfo");
+    public List<UserPersonalInfoLink> getAddresses() {
+        return addresses;
     }
 
-    public List<UserPersonalInfoLink> getPersonalInfo() {
-        return personalInfo;
+    public void setAddresses(List<UserPersonalInfoLink> addresses) {
+        this.addresses = addresses;
+        support.setPropertyAssigned("addresses");
+    }
+
+    public List<UserPersonalInfoLink> getPhones() {
+        return phones;
+    }
+
+    public void setPhones(List<UserPersonalInfoLink> phones) {
+        this.phones = phones;
+        support.setPropertyAssigned("phones");
+    }
+
+    public List<UserPersonalInfoLink> getEmails() {
+        return emails;
+    }
+
+    public void setEmails(List<UserPersonalInfoLink> emails) {
+        this.emails = emails;
+        support.setPropertyAssigned("emails");
+    }
+
+    public UserPersonalInfoLink getName() {
+        return name;
+    }
+
+    public void setName(UserPersonalInfoLink name) {
+        this.name = name;
+        support.setPropertyAssigned("name");
+    }
+
+    public UserPersonalInfoLink getDob() {
+        return dob;
+    }
+
+    public void setDob(UserPersonalInfoLink dob) {
+        this.dob = dob;
+        support.setPropertyAssigned("dob");
+    }
+
+    public List<UserPersonalInfoLink> getTextMessages() {
+        return textMessages;
+    }
+
+    public void setTextMessages(List<UserPersonalInfoLink> textMessages) {
+        this.textMessages = textMessages;
+        support.setPropertyAssigned("textMessages");
+    }
+
+    public List<UserPersonalInfoLink> getQqs() {
+        return qqs;
+    }
+
+    public void setQqs(List<UserPersonalInfoLink> qqs) {
+        this.qqs = qqs;
+        support.setPropertyAssigned("qqs");
+    }
+
+    public List<UserPersonalInfoLink> getWhatsApps() {
+        return whatsApps;
+    }
+
+    public void setWhatsApps(List<UserPersonalInfoLink> whatsApps) {
+        this.whatsApps = whatsApps;
+        support.setPropertyAssigned("whatsApps");
+    }
+
+    public UserPersonalInfoLink getPassport() {
+        return passport;
+    }
+
+    public void setPassport(UserPersonalInfoLink passport) {
+        this.passport = passport;
+        support.setPropertyAssigned("passport");
+    }
+
+    public UserPersonalInfoLink getGovernmentId() {
+        return governmentId;
+    }
+
+    public void setGovernmentId(UserPersonalInfoLink governmentId) {
+        this.governmentId = governmentId;
+        support.setPropertyAssigned("governmentId");
+    }
+
+    public UserPersonalInfoLink getDriversLicense() {
+        return driversLicense;
+    }
+
+    public void setDriversLicense(UserPersonalInfoLink driversLicense) {
+        this.driversLicense = driversLicense;
+        support.setPropertyAssigned("driversLicense");
+    }
+
+    public UserPersonalInfoLink getGender() {
+        return gender;
+    }
+
+    public void setGender(UserPersonalInfoLink gender) {
+        this.gender = gender;
+        support.setPropertyAssigned("gender");
     }
 }

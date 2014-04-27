@@ -8,11 +8,13 @@ import com.junbo.identity.spec.v1.model.DeviceType
 import com.junbo.identity.spec.v1.option.list.DeviceTypeListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by haomin on 14-4-25.
  */
+@CompileStatic
 class DeviceTypeRepositoryCloudantImpl extends CloudantClient<DeviceType> implements DeviceTypeRepository {
     private IdGenerator idGenerator
 
@@ -53,7 +55,7 @@ class DeviceTypeRepositoryCloudantImpl extends CloudantClient<DeviceType> implem
 
     @Override
     Promise<Void> delete(DeviceTypeId id) {
-        super.cloudantDelete(id.value)
+        super.cloudantDelete(id.value.toString())
         return Promise.pure(null)
     }
 }

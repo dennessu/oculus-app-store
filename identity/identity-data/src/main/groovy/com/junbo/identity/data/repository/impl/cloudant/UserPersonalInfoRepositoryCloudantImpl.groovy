@@ -2,7 +2,6 @@ package com.junbo.identity.data.repository.impl.cloudant
 
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
-import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
@@ -28,7 +27,7 @@ class UserPersonalInfoRepositoryCloudantImpl extends CloudantClient<UserPersonal
     @Override
     Promise<UserPersonalInfo> create(UserPersonalInfo model) {
         if (model.id == null) {
-            model.id = new UserPersonalInfoId(idGenerator.nextId(model.userId.value))
+            model.id = new UserPersonalInfoId(idGenerator.nextId())
         }
         return Promise.pure((UserPersonalInfo)super.cloudantPost(model))
     }
@@ -47,12 +46,6 @@ class UserPersonalInfoRepositoryCloudantImpl extends CloudantClient<UserPersonal
     Promise<Void> delete(UserPersonalInfoId id) {
         super.cloudantDelete(id.toString())
         return Promise.pure(null)
-    }
-
-    @Override
-    Promise<List<UserPersonalInfo>> search(UserId userId) {
-        def list = super.queryView('by_user_id', userId.value.toString())
-        return Promise.pure(list)
     }
 
     protected CloudantViews views = new CloudantViews(

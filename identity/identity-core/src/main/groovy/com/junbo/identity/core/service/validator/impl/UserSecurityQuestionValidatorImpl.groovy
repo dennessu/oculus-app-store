@@ -4,7 +4,7 @@ import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionId
 import com.junbo.identity.core.service.util.CipherHelper
 import com.junbo.identity.core.service.validator.UserSecurityQuestionValidator
-import com.junbo.identity.data.repository.SecurityQuestionRepository
+import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.data.repository.UserSecurityQuestionRepository
 import com.junbo.identity.spec.error.AppErrors
@@ -25,10 +25,12 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
 
     private UserRepository userRepository
     private UserSecurityQuestionRepository userSecurityQuestionRepository
-    private SecurityQuestionRepository securityQuestionRepository
 
-    private Integer answerMinLength
-    private Integer answerMaxLength
+    private Integer minSecurityQuestionLength
+    private Integer maxSecurityQuestionLength
+
+    private Integer minAnswerLength
+    private Integer maxAnswerLength
 
     @Override
     Promise<UserSecurityQuestion> validateForGet(UserId userId, UserSecurityQuestionId userSecurityQuestionId) {
@@ -44,6 +46,14 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
         return userRepository.get(userId).then { User user ->
             if (user == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
+            }
+
+            if (user.isAnonymous == true) {
+                throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
+            }
+
+            if (user.status != UserStatus.ACTIVE.toString()) {
+                throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
 
             return userSecurityQuestionRepository.get(userSecurityQuestionId).
@@ -66,6 +76,10 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
     Promise<Void> validateForSearch(UserSecurityQuestionListOptions options) {
         if (options == null) {
             throw new IllegalArgumentException('options is null')
+        }
+
+        if (options.userId == null) {
+            throw AppErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         return Promise.pure(null)
@@ -165,15 +179,21 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
         if (userSecurityQuestion.answer == null) {
             throw AppErrors.INSTANCE.fieldRequired('answer').exception()
         }
-        if (userSecurityQuestion.answer.size() > answerMaxLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('answer', answerMaxLength).exception()
+        if (userSecurityQuestion.answer.length() > maxAnswerLength) {
+            throw AppErrors.INSTANCE.fieldTooLong('answer', maxAnswerLength).exception()
         }
-        if (userSecurityQuestion.answer.size() < answerMinLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('answer', answerMinLength).exception()
+        if (userSecurityQuestion.answer.length() < minAnswerLength) {
+            throw AppErrors.INSTANCE.fieldTooShort('answer', minAnswerLength).exception()
         }
 
         if (userSecurityQuestion.securityQuestion == null) {
             throw AppErrors.INSTANCE.fieldRequired('securityQuestion').exception()
+        }
+        if (userSecurityQuestion.securityQuestion.length() > maxSecurityQuestionLength) {
+            throw AppErrors.INSTANCE.fieldTooLong('securityQuestion', maxSecurityQuestionLength).exception()
+        }
+        if (userSecurityQuestion.securityQuestion.length() < minSecurityQuestionLength) {
+            throw AppErrors.INSTANCE.fieldTooShort('securityQuestion', minSecurityQuestionLength).exception()
         }
     }
 
@@ -183,22 +203,27 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
     }
 
     @Required
-    void setSecurityQuestionRepository(SecurityQuestionRepository securityQuestionRepository) {
-        this.securityQuestionRepository = securityQuestionRepository
-    }
-
-    @Required
     void setUserSecurityQuestionRepository(UserSecurityQuestionRepository userSecurityQuestionRepository) {
         this.userSecurityQuestionRepository = userSecurityQuestionRepository
     }
 
     @Required
-    void setAnswerMinLength(Integer answerMinLength) {
-        this.answerMinLength = answerMinLength
+    void setMinSecurityQuestionLength(Integer minSecurityQuestionLength) {
+        this.minSecurityQuestionLength = minSecurityQuestionLength
     }
 
     @Required
-    void setAnswerMaxLength(Integer answerMaxLength) {
-        this.answerMaxLength = answerMaxLength
+    void setMaxSecurityQuestionLength(Integer maxSecurityQuestionLength) {
+        this.maxSecurityQuestionLength = maxSecurityQuestionLength
+    }
+
+    @Required
+    void setMinAnswerLength(Integer minAnswerLength) {
+        this.minAnswerLength = minAnswerLength
+    }
+
+    @Required
+    void setMaxAnswerLength(Integer maxAnswerLength) {
+        this.maxAnswerLength = maxAnswerLength
     }
 }
