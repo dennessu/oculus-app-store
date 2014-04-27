@@ -10,6 +10,7 @@ import com.junbo.catalog.spec.model.common.Price;
 import com.junbo.catalog.spec.model.common.Status;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
 import com.junbo.catalog.spec.model.item.ItemType;
 import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.fulfilment.common.util.Constant;
@@ -20,6 +21,7 @@ import org.testng.annotations.Test;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * EntitlementGatewayTest.
@@ -35,7 +37,6 @@ public class CatalogGatewayTest extends BaseTest {
 
         LocalizableProperty name = new LocalizableProperty();
         name.set("DEFAULT", "test_offer_name");
-        offer.setName(name);
         Long offerId = megaGateway.createOffer(offer);
         Assert.assertNotNull(offerId);
 
@@ -43,22 +44,25 @@ public class CatalogGatewayTest extends BaseTest {
         offerRevision.setOfferId(offerId);
         offerRevision.setOwnerId(12345L);
         offerRevision.setStatus(Status.DRAFT);
+        offerRevision.setLocales(new HashMap<String, OfferRevisionLocaleProperties>() {{
+            put("en_US", new OfferRevisionLocaleProperties() {{
+                setName("test-offer");
+            }});
+        }});
 
         Price price = new Price();
         price.setPriceType(Price.FREE);
         offerRevision.setPrice(price);
-        offerRevision.setEvents(new HashMap<String, Event>() {{
-            put(Constant.EVENT_PURCHASE.toLowerCase(), new Event() {{
-                setName(Constant.EVENT_PURCHASE);
-                setActions(new ArrayList<Action>() {{
-                    add(new Action() {{
-                        setType(Constant.ACTION_GRANT_ENTITLEMENT);
-                        setProperties(new HashMap<String, Object>() {{
-                            put(Constant.ENTITLEMENT_DEF_ID, "12345");
+        offerRevision.setEventActions(new HashMap<String, List<Action>>() {{
+            put(Constant.EVENT_PURCHASE,
+                    new ArrayList<Action>() {{
+                        add(new Action() {{
+                            setType(Constant.ACTION_GRANT_ENTITLEMENT);
+                            setProperties(new HashMap<String, Object>() {{
+                                put(Constant.ENTITLEMENT_DEF_ID, "12345");
+                            }});
                         }});
                     }});
-                }});
-            }});
         }});
 
         Long offerRevisionId = megaGateway.createOfferRevision(offerRevision);
@@ -80,7 +84,6 @@ public class CatalogGatewayTest extends BaseTest {
 
         // create item
         Item item = new Item();
-        item.setName(name);
         item.setType(ItemType.WALLET);
         item.setOwnerId(ownerId);
         item.setSku("test_sku");
@@ -91,13 +94,17 @@ public class CatalogGatewayTest extends BaseTest {
         // create item revision
         ItemRevision itemRevision = new ItemRevision();
         itemRevision.setItemId(itemId);
-        itemRevision.setName(name);
         itemRevision.setOwnerId(ownerId);
         itemRevision.setType(ItemType.WALLET);
         itemRevision.setWalletAmount(new BigDecimal(123.45));
         itemRevision.setWalletCurrency("USD");
         itemRevision.setWalletCurrencyType("REAL_CURRENCY");
         itemRevision.setStatus(Status.DRAFT);
+        itemRevision.setLocales(new HashMap<String, ItemRevisionLocaleProperties>() {{
+            put("en_US", new ItemRevisionLocaleProperties() {{
+                setName("test-offer");
+            }});
+        }});
 
         Long itemRevisionId = megaGateway.createItemRevision(itemRevision);
         Assert.assertNotNull(itemRevisionId);
@@ -111,7 +118,6 @@ public class CatalogGatewayTest extends BaseTest {
         Offer offer = new Offer();
         offer.setOwnerId(ownerId);
 
-        offer.setName(name);
         Long offerId = megaGateway.createOffer(offer);
         Assert.assertNotNull(offerId);
 
@@ -124,13 +130,10 @@ public class CatalogGatewayTest extends BaseTest {
         Price price = new Price();
         price.setPriceType(Price.FREE);
         offerRevision.setPrice(price);
-        offerRevision.setEvents(new HashMap<String, Event>() {{
-            put(Constant.EVENT_PURCHASE.toLowerCase(), new Event() {{
-                setName(Constant.EVENT_PURCHASE);
-                setActions(new ArrayList<Action>() {{
-                    add(new Action() {{
-                        setType(Constant.ACTION_CREDIT_WALLET);
-                    }});
+        offerRevision.setEventActions(new HashMap<String, List<Action>>() {{
+            put(Constant.EVENT_PURCHASE.toLowerCase(), new ArrayList<Action>() {{
+                add(new Action() {{
+                    setType(Constant.ACTION_CREDIT_WALLET);
                 }});
             }});
         }});
