@@ -17,13 +17,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Java doc for AttributeId.
+ * Java doc for AgeRatingId.
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @JacksonAnnotationsInside
-@JsonSerialize(using = ResourceIdSerializer.class, include = JsonSerialize.Inclusion.NON_NULL)
+@JsonSerialize(using = ResourceIdSerializer.class)
 @JsonDeserialize(using = ResourceIdDeserializer.class)
-@ResourcePath("/attributes")
-public @interface AttributeId {
+@ResourcePath("/age-ratings")
+public @interface AgeRatingId {
 }
