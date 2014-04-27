@@ -95,7 +95,6 @@ public class CatalogGatewayTest extends BaseTest {
         ItemRevision itemRevision = new ItemRevision();
         itemRevision.setItemId(itemId);
         itemRevision.setOwnerId(ownerId);
-        itemRevision.setType(ItemType.WALLET);
         itemRevision.setWalletAmount(new BigDecimal(123.45));
         itemRevision.setWalletCurrency("USD");
         itemRevision.setWalletCurrencyType("REAL_CURRENCY");
@@ -131,7 +130,7 @@ public class CatalogGatewayTest extends BaseTest {
         price.setPriceType(Price.FREE);
         offerRevision.setPrice(price);
         offerRevision.setEventActions(new HashMap<String, List<Action>>() {{
-            put(Constant.EVENT_PURCHASE.toLowerCase(), new ArrayList<Action>() {{
+            put(Constant.EVENT_PURCHASE, new ArrayList<Action>() {{
                 add(new Action() {{
                     setType(Constant.ACTION_CREDIT_WALLET);
                 }});
