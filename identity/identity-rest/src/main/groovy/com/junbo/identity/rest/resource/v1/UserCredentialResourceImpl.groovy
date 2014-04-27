@@ -6,6 +6,7 @@ import com.junbo.common.model.Results
 import com.junbo.identity.core.service.Created201Marker
 import com.junbo.identity.core.service.filter.UserCredentialFilter
 import com.junbo.identity.core.service.validator.UserCredentialValidator
+import com.junbo.identity.data.identifiable.CredentialType
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.UserPasswordRepository
 import com.junbo.identity.data.repository.UserPinRepository
@@ -80,6 +81,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
 
                     UserCredential newUserCredential =
                             modelMapper.passwordToCredential(userPassword, new MappingContext())
+                    newUserCredential.type = CredentialType.PASSWORD.toString()
                     created201Marker.mark((Id) newUserCredential.id)
 
                     newUserCredential = userCredentialFilter.filterForGet(newUserCredential, null)
@@ -102,6 +104,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                     }
 
                     UserCredential newUserCredential = modelMapper.pinToCredential(userPin, new MappingContext())
+                    newUserCredential.type = CredentialType.PIN.toString()
                     created201Marker.mark((Id) newUserCredential.id)
 
                     newUserCredential = userCredentialFilter.filterForGet(newUserCredential, null)

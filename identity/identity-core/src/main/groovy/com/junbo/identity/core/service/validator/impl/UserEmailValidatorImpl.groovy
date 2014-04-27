@@ -31,11 +31,14 @@ class UserEmailValidatorImpl implements UserEmailValidator {
             throw AppErrors.INSTANCE.fieldTooLong('value', maxEmailLength).exception()
         }
 
+        // todo:    need to define this pattern correctly.
+        /*
         if (!allowedEmailPatterns.any {
             Pattern pattern -> pattern.matcher(email.value).matches()
         }) {
             throw AppErrors.INSTANCE.fieldInvalid('value').exception()
         }
+        */
     }
 
     @Required
