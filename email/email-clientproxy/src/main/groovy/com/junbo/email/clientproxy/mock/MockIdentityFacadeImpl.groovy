@@ -20,8 +20,6 @@ class MockIdentityFacadeImpl implements IdentityFacade {
     }
 
     Promise<String> getUserEmail(Long userId) {
-        userEmail.value = 'weijiang@silkcloud.com'
-        userPii.emails = ['silkcloud.com': userEmail] as Map
-        return Promise.pure(userPii)
+        return Promise.pure(null)
     }
 }

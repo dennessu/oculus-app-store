@@ -5,6 +5,8 @@
  */
 package com.junbo.email.spec.model;
 
+import com.junbo.common.enumid.LocaleId;
+
 /**
  * QueryParam.
  */
@@ -16,13 +18,7 @@ public class QueryParam {
     private String action;
 
     @javax.ws.rs.QueryParam("locale")
-    private String locale;
-
-    @javax.ws.rs.QueryParam("page")
-    private Integer page;
-
-    @javax.ws.rs.QueryParam("size")
-    private Integer size;
+    private LocaleId locale;
 
     public String getSource() {
         return source;
@@ -40,27 +36,11 @@ public class QueryParam {
         this.action = action;
     }
 
-    public String getLocale() {
+    public LocaleId getLocale() {
         return locale;
     }
 
-    public void setLocale(String locale) {
+    public void setLocale(LocaleId locale) {
         this.locale = locale;
-    }
-
-    public Integer getPage() {
-        return page;
-    }
-
-    public void setPage(Integer page) {
-        this.page = page;
-    }
-
-    public Integer getSize() {
-        return size;
-    }
-
-    public void setSize(Integer size) {
-        this.size = size;
     }
 }

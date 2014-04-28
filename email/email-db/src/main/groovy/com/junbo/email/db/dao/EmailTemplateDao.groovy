@@ -6,7 +6,7 @@
 package com.junbo.email.db.dao
 
 import com.junbo.email.db.entity.EmailTemplateEntity
-import com.junbo.email.spec.model.Paging
+import com.junbo.email.spec.model.Pagination
 
 /**
  * Interface of EmailTemplateDao
@@ -16,5 +16,5 @@ interface EmailTemplateDao extends BaseDao<EmailTemplateEntity> {
 
     List<EmailTemplateEntity> getEmailTemplateList()
 
-    List<EmailTemplateEntity> getEmailTemplatesByQuery(Map<String, String> queries, Paging paging)
+    List<EmailTemplateEntity> getEmailTemplatesByQuery(Map<String, String> queries, Pagination pagination)
 }

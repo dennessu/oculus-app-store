@@ -5,16 +5,16 @@
  */
 package com.junbo.email.spec.model;
 
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 
 /**
- * Paging model.
+ * Pagination model.
  */
-public class Paging {
-    @QueryParam("page")
+public class Pagination {
+    @javax.ws.rs.QueryParam("page")
     private Integer page;
 
-    @QueryParam("size")
+    @javax.ws.rs.QueryParam("size")
     private Integer size;
 
     public Integer getPage() {

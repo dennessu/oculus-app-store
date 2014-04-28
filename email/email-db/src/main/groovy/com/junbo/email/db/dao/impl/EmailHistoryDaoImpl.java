@@ -5,10 +5,9 @@
  */
 package com.junbo.email.db.dao.impl;
 
+import com.junbo.email.db.dao.EmailHistoryDao;
 import com.junbo.email.db.entity.EmailHistoryEntity;
 import org.springframework.stereotype.Component;
-
-import com.junbo.email.db.dao.EmailHistoryDao;
 
 /**
  * Impl of EmailHistoryDao.

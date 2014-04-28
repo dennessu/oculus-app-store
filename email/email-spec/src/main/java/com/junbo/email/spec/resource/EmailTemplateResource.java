@@ -26,7 +26,8 @@ import javax.ws.rs.core.Response;
 public interface EmailTemplateResource {
     @ApiOperation("Get email templates")
     @GET
-    Promise<Results<EmailTemplate>> getEmailTemplates(@BeanParam com.junbo.email.spec.model.QueryParam queryParam);
+    Promise<Results<EmailTemplate>> getEmailTemplates(@BeanParam com.junbo.email.spec.model.QueryParam queryParam,
+                                                      @BeanParam Pagination pagination);
 
     @POST
     Promise<EmailTemplate> postEmailTemplate(EmailTemplate template);
