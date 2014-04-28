@@ -9,6 +9,7 @@ package com.junbo.common.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.cloudant.CloudantEntity;
+import com.junbo.common.id.UserId;
 import com.junbo.common.json.PropertyAssignedAware;
 import com.junbo.common.json.PropertyAssignedAwareSupport;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -23,23 +24,27 @@ public abstract class ResourceMeta implements CloudantEntity, PropertyAssignedAw
     protected final PropertyAssignedAwareSupport support = new PropertyAssignedAwareSupport();
 
     @ApiModelProperty(position = 1000, required = true,
-            value = "[Readonly] The revision of the resource. Used for optimistic locking.")
+            value = "[Client Immutable] The revision of the resource. Used for optimistic locking.")
     @JsonProperty("rev")
     private String resourceAge;
 
     @ApiModelProperty(position = 1001, required = true,
-            value = "[Readonly] The created datetime of the resource.")
+            value = "[Client Immutable] The created datetime of the resource.")
     private Date createdTime;
 
     @ApiModelProperty(position = 1002, required = true,
-            value = "[Readonly] The updated datetime of the resource.")
+            value = "[Client Immutable] The updated datetime of the resource.")
     private Date updatedTime;
 
-    @JsonIgnore
-    private String createdBy;
+    @ApiModelProperty(position = 1003, required = false,
+            value = "[Client Immutable] The created datetime of the resource.")
+    private AdminInfo adminInfo;
 
     @JsonIgnore
-    private String updatedBy;
+    private UserId createdBy;
+
+    @JsonIgnore
+    private UserId updatedBy;
 
     @JsonIgnore
     private String createdByClient;
@@ -81,42 +86,6 @@ public abstract class ResourceMeta implements CloudantEntity, PropertyAssignedAw
         support.setPropertyAssigned("updatedTime");
     }
 
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-        support.setPropertyAssigned("createdBy");
-    }
-
-    public String getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-        support.setPropertyAssigned("updatedBy");
-    }
-
-    public String getCreatedByClient() {
-        return createdByClient;
-    }
-
-    public void setCreatedByClient(String createdByClient) {
-        this.createdByClient = createdByClient;
-        support.setPropertyAssigned("createdByClient");
-    }
-
-    public String getUpdatedByClient() {
-        return updatedByClient;
-    }
-
-    public void setUpdatedByClient(String updatedByClient) {
-        this.updatedByClient = updatedByClient;
-        support.setPropertyAssigned("updatedByClient");
-    }
-
     public String getCloudantId() {
         return cloudantId;
     }
@@ -131,6 +100,47 @@ public abstract class ResourceMeta implements CloudantEntity, PropertyAssignedAw
 
     public void setCloudantRev(String cloudantRev) {
         this.cloudantRev = cloudantRev;
+    }
+
+    public AdminInfo getAdminInfo() {
+        return adminInfo;
+    }
+
+    public void setAdminInfo(AdminInfo adminInfo) {
+        this.adminInfo = adminInfo;
+        support.setPropertyAssigned("adminInfo");
+    }
+
+    public UserId getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(UserId createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public UserId getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(UserId updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public String getCreatedByClient() {
+        return createdByClient;
+    }
+
+    public void setCreatedByClient(String createdByClient) {
+        this.createdByClient = createdByClient;
+    }
+
+    public String getUpdatedByClient() {
+        return updatedByClient;
+    }
+
+    public void setUpdatedByClient(String updatedByClient) {
+        this.updatedByClient = updatedByClient;
     }
 
     @Override

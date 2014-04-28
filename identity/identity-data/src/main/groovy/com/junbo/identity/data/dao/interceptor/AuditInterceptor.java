@@ -26,7 +26,7 @@ public class AuditInterceptor extends EmptyInterceptor {
         if(entity.getClass().getSuperclass() == ResourceMetaEntity.class) {
             //todo: need to get the userName from current threadLocal storage
             ((ResourceMetaEntity)entity).setCreatedTime(new Date());
-            ((ResourceMetaEntity)entity).setCreatedBy("todo-liangfuxia");
+            ((ResourceMetaEntity)entity).setCreatedBy(123L);
 
             for(int i = 0; i < propertyNames.length; i++) {
                 if(propertyNames[i].equals(CREATED_TIME_FIELD)) {
@@ -48,7 +48,7 @@ public class AuditInterceptor extends EmptyInterceptor {
         if(entity.getClass().getSuperclass() == ResourceMetaEntity.class) {
             //todo: need to get the userName from current threadLocal storage
             ((ResourceMetaEntity)entity).setUpdatedTime(new Date());
-            ((ResourceMetaEntity)entity).setUpdatedBy("todo");
+            ((ResourceMetaEntity)entity).setUpdatedBy(123L);
 
             for(int i = 0; i < propertyNames.length; i++) {
                 if(propertyNames[i].equals(CREATED_TIME_FIELD)) {
@@ -57,7 +57,7 @@ public class AuditInterceptor extends EmptyInterceptor {
                 }
                 if(propertyNames[i].equals(CREATED_BY_FILED)) {
                     currentState[i] = previousState[i];
-                    ((ResourceMetaEntity)entity).setCreatedBy((String) previousState[i]);
+                    ((ResourceMetaEntity)entity).setCreatedBy((Long) previousState[i]);
                 }
                 if(propertyNames[i].equals(UPDATED_TIME_FIELD)) {
                     currentState[i] = new Date();
@@ -76,7 +76,7 @@ public class AuditInterceptor extends EmptyInterceptor {
         if(entity.getClass().getSuperclass() == ResourceMetaEntity.class) {
             //todo: need to get the userName from current threadLocal storage
             ((ResourceMetaEntity)entity).setUpdatedTime(new Date());
-            ((ResourceMetaEntity)entity).setUpdatedBy("todo");
+            ((ResourceMetaEntity)entity).setUpdatedBy(123L);
             return;
         }
         super.onDelete(entity, id, state, propertyNames, types);

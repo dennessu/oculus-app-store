@@ -30,11 +30,11 @@ public class UserPasswordBlacklist {
         this.password = password;
     }
 
-    public String getCreatedBy() {
+    public Long getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(String createdBy) {
+    public void setCreatedBy(Long createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -52,7 +52,7 @@ public class UserPasswordBlacklist {
     @Column(name = "password")
     private String password;
     @Column(name = "created_by")
-    private String createdBy;
+    private Long createdBy;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_time")
     private Date createdTime;
