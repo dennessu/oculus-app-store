@@ -13,12 +13,6 @@ import java.util.*;
  * Created by lizwu on 2/12/14.
  */
 public class Price {
-    public static final String FREE = "FREE";
-    public static final String TIERED = "TIERED";
-    public static final String CUSTOM = "CUSTOM";
-    public static final Set<String> ALL_TYPES =
-            Collections.unmodifiableSet(new HashSet<>(Arrays.asList(FREE, TIERED, CUSTOM)));
-
     private String priceType;
     private Map<String, BigDecimal> prices;
 

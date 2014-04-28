@@ -6,6 +6,7 @@
 
 package com.junbo.rating.core.service;
 
+import com.junbo.catalog.spec.enums.PriceType;
 import com.junbo.catalog.spec.model.promotion.*;
 import com.junbo.rating.clientproxy.CatalogGateway;
 import com.junbo.rating.common.util.Func;
@@ -135,7 +136,7 @@ public abstract class RatingServiceSupport implements RatingService{
             return Money.NOT_FOUND;
         }
 
-        if (price.getPriceType().equalsIgnoreCase(Price.FREE)) {
+        if (price.getPriceType().equalsIgnoreCase(PriceType.FREE.name())) {
             return new Money(BigDecimal.ZERO, currency);
         }
 
