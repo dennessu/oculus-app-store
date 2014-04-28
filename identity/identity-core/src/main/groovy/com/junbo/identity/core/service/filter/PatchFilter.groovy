@@ -16,6 +16,7 @@ class PatchFilter implements PropertyMappingFilter {
 
     @Override
     boolean skipPropertyMapping(PropertyMappingEvent event, MappingContext context) {
+        return false
     }
 
     @Override
@@ -55,7 +56,9 @@ class PatchFilter implements PropertyMappingFilter {
         }
 
         if (writable) {
-            if (!PropertyAssignedAwareSupport.isPropertyAssigned(event.source, event.sourcePropertyName)) {
+            if (PropertyAssignedAwareSupport.isPropertyAssigned(event.source, event.sourcePropertyName)) {
+                event.alternativeSourceProperty = null // ignore alternativeSourceProperty
+            } else {
                 event.sourceProperty = event.alternativeSourceProperty
             }
         }

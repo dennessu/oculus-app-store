@@ -67,6 +67,7 @@ class ImmediateSettleAction extends BaseOrderEventAwareAction {
                 throw AppErrors.INSTANCE.
                         billingChargeFailed().exception()
             }
+            CoreBuilder.fillTaxInfo(order, balance)
             def billingEvent = BillingEventBuilder.buildBillingEvent(balance)
             orderRepository.createBillingEvent(order.id.value, billingEvent)
             orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {

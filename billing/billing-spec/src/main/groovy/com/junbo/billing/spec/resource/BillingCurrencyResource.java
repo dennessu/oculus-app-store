@@ -17,11 +17,11 @@ import javax.ws.rs.core.MediaType;
 /**
  * Created by xmchen on 14-2-13.
  */
-@Path("/currencies")
+@Path("/billing-currencies")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
-public interface CurrencyResource {
+public interface BillingCurrencyResource {
     @GET
     Promise<Results<Currency>> getCurrencies();
 

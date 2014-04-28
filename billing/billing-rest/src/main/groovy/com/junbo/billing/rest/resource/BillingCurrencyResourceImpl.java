@@ -8,7 +8,7 @@ package com.junbo.billing.rest.resource;
 
 import com.junbo.billing.core.service.CurrencyService;
 import com.junbo.billing.spec.model.Currency;
-import com.junbo.billing.spec.resource.CurrencyResource;
+import com.junbo.billing.spec.resource.BillingCurrencyResource;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Scope;
  * Created by xmchen on 14-2-13.
  */
 @Scope("prototype")
-public class CurrencyResourceImpl implements CurrencyResource {
+public class BillingCurrencyResourceImpl implements BillingCurrencyResource {
 
     @Autowired
     private CurrencyService currencyService;

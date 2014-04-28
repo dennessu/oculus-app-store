@@ -15,6 +15,8 @@ import com.junbo.order.spec.model.Order
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
@@ -32,13 +34,20 @@ class EmailFacadeImpl implements EmailFacade {
     @Resource(name = 'order.emailTemplateClient')
     EmailTemplateResource emailTemplateResource
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(EmailFacadeImpl)
+
     @Override
     Promise<Email> sendOrderConfirmationEMail(Order order, User user, List<OfferRevision> offers) {
         if (order == null || user == null || CollectionUtils.isEmpty(offers)) {
+            LOGGER.info('name=Email_Info_Not_Sufficient')
             return Promise.pure(null)
         }
-        return getEmailTemplates('SilkCloud', 'OrderConfirmation', 'en_US').then { List<EmailTemplate> templates ->
+        return getEmailTemplates('Oculus', 'OrderConfirmation', 'en_US').recover {
+            LOGGER.info('name=Get_Email_Template_Error')
+            return Promise.pure(null)
+        }.then { List<EmailTemplate> templates ->
             if (templates == null || CollectionUtils.isEmpty(templates)) {
+                LOGGER.info('name=Get_Email_Template_Empty_Templates')
                 return Promise.pure(null)
             }
             Email email = FacadeBuilder.buildOrderConfirmationEmail(order, user, offers, templates[0].id)

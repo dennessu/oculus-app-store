@@ -26,8 +26,8 @@ public class WalletHandler extends HandlerSupport<WalletContext> {
     protected String handle(WalletContext context, FulfilmentAction action) {
         List<Long> success = new ArrayList<>();
 
-        for (LinkedEntry entry : action.getItems()) {
-            Item item = catalogGateway.getItem(entry.getId(), action.getTimestamp());
+        for (LinkedEntry itemEntry : action.getItems()) {
+            Item item = catalogGateway.getItem(itemEntry.getId(), action.getTimestamp());
 
             CreditRequest request = new CreditRequest();
 
@@ -36,7 +36,11 @@ public class WalletHandler extends HandlerSupport<WalletContext> {
             request.setCurrency(item.getWalletCurrency());
 
             // aggregate credit amount
-            request.setAmount(item.getWalletAmount().multiply(new BigDecimal(action.getCopyCount())));
+            BigDecimal totalCreditAmount = item.getWalletAmount()
+                    .multiply(new BigDecimal(action.getCopyCount()))
+                    .multiply(new BigDecimal(itemEntry.getQuantity()));
+
+            request.setAmount(totalCreditAmount);
 
             Transaction transaction = walletGateway.credit(request);
             success.add(transaction.getTransactionId());
