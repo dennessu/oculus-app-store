@@ -5,22 +5,22 @@
  */
 package com.junbo.test.common.apihelper.catalog.impl;
 
-import com.junbo.catalog.spec.model.common.LocalizableProperty;
-import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.catalog.spec.model.item.ItemRevision;
-import com.junbo.common.id.ItemId;
-import com.junbo.common.id.ItemRevisionId;
-import com.junbo.common.json.JsonMessageTranscoder;
-import com.junbo.common.model.Results;
-import com.junbo.langur.core.client.TypeReference;
-import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
 import com.junbo.test.common.apihelper.catalog.ItemRevisionService;
 import com.junbo.test.common.apihelper.catalog.ItemService;
-import com.junbo.test.common.blueprint.Master;
-import com.junbo.test.common.libs.EnumHelper;
-import com.junbo.test.common.libs.IdConverter;
+import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.common.json.JsonMessageTranscoder;
+import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.common.libs.RandomFactory;
+import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.libs.IdConverter;
+import com.junbo.test.common.libs.EnumHelper;
 import com.junbo.test.common.libs.RestUrl;
+import com.junbo.common.id.ItemRevisionId;
+import com.junbo.common.model.Results;
+import com.junbo.common.id.ItemId;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +34,8 @@ import java.util.List;
 public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevisionService {
 
     private final String catalogServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.CATALOG) + "item-revisions";
-    private final String defaultItemRevisionFileName = "defaultItemRevision";
+    private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
+    private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
     private static ItemRevisionService instance;
 
     public static synchronized ItemRevisionService instance() {
@@ -114,7 +115,14 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
     }
 
     public String postDefaultItemRevision(EnumHelper.CatalogItemType itemType) throws Exception {
-        ItemRevision itemRevisionForPost = prepareItemRevisionEntity(defaultItemRevisionFileName, itemType);
+        ItemRevision itemRevisionForPost;
+        if (itemType.equals(EnumHelper.CatalogItemType.PHYSICAL)) {
+            itemRevisionForPost = prepareItemRevisionEntity(defaultPhysicalItemRevisionFileName, itemType);
+        }
+        else {
+            itemRevisionForPost = prepareItemRevisionEntity(defaultDigitalItemRevisionFileName, itemType);
+        }
+
         return postItemRevision(itemRevisionForPost);
     }
 
@@ -123,19 +131,20 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
 
         String strItem = readFileContent(String.format("testItemRevisions/%s.json", fileName));
         ItemRevision itemRevisionForPost = new JsonMessageTranscoder().decode(new TypeReference<ItemRevision>() {},
-                strItem.toString());
-        LocalizableProperty itemRevisionName = new LocalizableProperty();
-        String value = "testItemRevision_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10);
-        itemRevisionName.set("DEFAULT", value);
-        itemRevisionName.set("en_US", value);
-        itemRevisionForPost.setName(itemRevisionName);
+                strItem);
+
+        //set locales
+        ItemRevisionLocaleProperties itemRevisionLocaleProperties = new ItemRevisionLocaleProperties();
+        itemRevisionLocaleProperties.setName("testItemRevision_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
+        HashMap<String, ItemRevisionLocaleProperties> locales = new HashMap<>();
+        locales.put("en_US", itemRevisionLocaleProperties);
+        itemRevisionForPost.setLocales(locales);
 
         //prepare item for use
         ItemService itemService = ItemServiceImpl.instance();
         String defaultItemId = itemService.postDefaultItem(itemType);
         Item defaultItem = Master.getInstance().getItem(defaultItemId);
 
-        itemRevisionForPost.setType(itemType.getItemType());
         itemRevisionForPost.setItemId(IdConverter.hexStringToId(ItemId.class, defaultItemId));
         itemRevisionForPost.setOwnerId(defaultItem.getOwnerId());
 

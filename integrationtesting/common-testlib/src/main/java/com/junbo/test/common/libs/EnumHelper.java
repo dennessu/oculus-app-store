@@ -56,18 +56,39 @@ public class EnumHelper {
     }
 
     /**
-     * Enum for catalog attribute type.
+     * Enum for catalog item attribute type.
      *
      * @author Jason
      */
-    public enum CatalogAttributeType {
-        CATEGORY("Category"),
-        GENRE("Genre"),
-        COLOR("Color");
+    public enum CatalogItemAttributeType {
+        GENRE("GENRE");
 
         private String type;
 
-        private CatalogAttributeType(String type) {
+        private CatalogItemAttributeType(String type) {
+            this.type = type;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public static String getRandom(){
+            return values()[(int) (Math.random() * values().length)].getType();
+        }
+    }
+
+    /**
+     * Enum for catalog offer attribute type.
+     *
+     * @author Jason
+     */
+    public enum CatalogOfferAttributeType {
+        CATEGORY("CATEGORY");
+
+        private String type;
+
+        private CatalogOfferAttributeType(String type) {
             this.type = type;
         }
 
@@ -88,8 +109,9 @@ public class EnumHelper {
     public enum CatalogItemType {
         PHYSICAL("PHYSICAL"),
         DIGITAL("DIGITAL"),
-        EWALLET("EWALLET"),
-        SUBSCRIPTION("SUBSCRIPTION");
+        WALLET("WALLET"),
+        SUBSCRIPTION("SUBSCRIPTION"),
+        VIRTUAL("VIRTUAL");
 
         private String itemType;
 
