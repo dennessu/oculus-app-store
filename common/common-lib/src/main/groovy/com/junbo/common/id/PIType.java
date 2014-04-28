@@ -16,7 +16,7 @@ import java.util.Map;
 public enum PIType {
     CREDITCARD(0L),
     DIRECTDEBIT(1L),
-    WALLET(2L),
+    STOREDVALUE(2L),
     PAYPAL(3L);
 
     private final Long id;

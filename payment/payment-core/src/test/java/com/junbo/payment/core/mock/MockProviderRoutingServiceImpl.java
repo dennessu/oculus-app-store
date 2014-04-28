@@ -19,7 +19,7 @@ public class MockProviderRoutingServiceImpl implements ProviderRoutingService {
     public PaymentProviderService getPaymentProvider(PIType piType) {
         if(piType.equals(PIType.CREDITCARD)){
             return mockPaymentProviderService;
-        } else if(piType.equals(PIType.WALLET)){
+        } else if(piType.equals(PIType.STOREDVALUE)){
             return mockWalletService;
         }else if(piType.equals(PIType.PAYPAL)){
             return paypalProviderService;

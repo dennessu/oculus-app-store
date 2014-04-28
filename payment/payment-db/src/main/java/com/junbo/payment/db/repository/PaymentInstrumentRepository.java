@@ -49,7 +49,7 @@ public class PaymentInstrumentRepository {
         Long piId = idGenerator.nextId(piEntity.getUserId());
         piEntity.setId(piId);
         paymentInstrumentDao.save(piEntity);
-        if(request.getType().equals(PIType.CREDITCARD.toString())){
+        if(PIType.get(request.getType()).equals(PIType.CREDITCARD)){
             CreditCardPaymentInstrumentEntity ccPiEntity = paymentMapperImpl.toCreditCardEntity(
                     (CreditCardDetail)paymentMapperExtension.toSpecificDetail(request.getTypeSpecificDetails(),
                             PIType.CREDITCARD), new MappingContext());
@@ -71,7 +71,7 @@ public class PaymentInstrumentRepository {
         Long currentRev = Long.parseLong(request.getRev()) + 1;
         pi.setRev(currentRev.toString());
         paymentInstrumentDao.update(pi);
-        if(request.getType().equals(PIType.CREDITCARD.toString())){
+        if(PIType.get(request.getType()).equals(PIType.CREDITCARD)){
             ccPaymentInstrumentDao.update(paymentMapperImpl.toCreditCardEntity(
                     (CreditCardDetail)paymentMapperExtension.toSpecificDetail(request.getTypeSpecificDetails(),
                             PIType.CREDITCARD), new MappingContext()));
