@@ -1,18 +1,17 @@
 package com.junbo.order.core.impl.orderaction
-
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.core.impl.common.OrderValidator
-import com.junbo.order.db.entity.enums.OrderType
 import com.junbo.order.spec.model.OrderItem
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
-
 /**
  * Created by fzhang on 14-3-27.
  */
+@CompileStatic
 class ValidateOrderAction implements Action {
 
     @Qualifier('orderValidator')
@@ -27,10 +26,8 @@ class ValidateOrderAction implements Action {
         orderValidator.notNull(order, 'order')
         orderValidator.notNull(order.user, 'user')
 
-        orderValidator.notNull(order.type, 'type').validEnumString(order.type, 'type', OrderType)
-
         // todo validate country
-        orderValidator.validCurrency(order.currency, 'currency')
+        orderValidator.validCurrency(order.currency.value, 'currency')
 //        orderValidator.validWebPaymentUrls(order.paymentInstruments,
 //                order.successRedirectUrl, order.cancelRedirectUrl)
 
