@@ -28,6 +28,7 @@ public abstract class BaseEntity implements Serializable {
     private String createdBy;
     private Date updatedTime;
     private String updatedBy;
+    private Integer rev;
 
     @Column(name = "deleted")
     public boolean isDeleted() {
@@ -74,6 +75,16 @@ public abstract class BaseEntity implements Serializable {
 
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    //@Version
+    @Column(name = "rev")
+    public Integer getRev() {
+        return rev;
+    }
+
+    public void setRev(Integer rev) {
+        this.rev = rev;
     }
 
     @Transient

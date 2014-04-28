@@ -6,11 +6,10 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserCredentialId;
 import com.junbo.common.id.UserId;
-import com.junbo.common.util.Identifiable;
 import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
@@ -23,17 +22,16 @@ public class UserCredential extends ResourceMeta implements Identifiable<UserCre
     @JsonIgnore
     private UserCredentialId id;
 
-    @ApiModelProperty(position = 1, required = true, value = "The user resource for the credential.")
-    @JsonProperty("user")
+    @JsonIgnore
     private UserId userId;
 
-    @ApiModelProperty(position = 2, required = false, value = "The old password, it must be base64 encoded.")
+    @ApiModelProperty(position = 2, required = false, value = "The old password, plain text.")
     private String oldValue;
 
-    @ApiModelProperty(position = 3, required = true, value = "The new password, it must be base64 encoded.")
+    @ApiModelProperty(position = 3, required = true, value = "The new password, plain text.")
     private String value;
 
-    @ApiModelProperty(position = 4, required = true, value = "Credential type, it must be password or pin.")
+    @ApiModelProperty(position = 4, required = true, value = "Credential type, it must be in [PASSWORD, PIN].")
     private String type;
 
     @ApiModelProperty(position = 5, required = false, value = "Credential expire time.")
@@ -58,7 +56,6 @@ public class UserCredential extends ResourceMeta implements Identifiable<UserCre
 
     public void setUserId(UserId userId) {
         this.userId = userId;
-        support.setPropertyAssigned("user");
         support.setPropertyAssigned("userId");
     }
 
@@ -104,6 +101,6 @@ public class UserCredential extends ResourceMeta implements Identifiable<UserCre
 
     public void setChangeAtNextLogin(Boolean changeAtNextLogin) {
         this.changeAtNextLogin = changeAtNextLogin;
-        support.setPropertyAssigned("expiresBy");
+        support.setPropertyAssigned("changeAtNextLogin");
     }
 }

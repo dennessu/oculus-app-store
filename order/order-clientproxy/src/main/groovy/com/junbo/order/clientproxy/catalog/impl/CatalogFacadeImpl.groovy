@@ -6,6 +6,7 @@
 
 package com.junbo.order.clientproxy.catalog.impl
 
+import com.junbo.catalog.spec.model.item.Item
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions
 import com.junbo.catalog.spec.model.offer.ItemEntry
@@ -20,6 +21,7 @@ import com.junbo.common.id.OfferId
 import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.catalog.CatalogFacade
+import com.junbo.order.clientproxy.model.OrderOfferItem
 import com.junbo.order.clientproxy.model.OrderOfferItemRevision
 import com.junbo.order.clientproxy.model.OrderOfferRevision
 import com.junbo.order.spec.error.AppErrors
@@ -77,22 +79,25 @@ class CatalogFacadeImpl implements CatalogFacade {
                         offerId, honoredTime, ors.size())
                 return Promise.pure(null)
             }
+
             // only one offerRevision is returned here
             OfferRevision or = ors[0]
             assert (or != null)
             def orderOfferRevision = new OrderOfferRevision(
                     catalogOfferRevision: or,
-                    orderOfferItemRevisions: []
+                    orderOfferItems: []
             )
+
             Promise.each(or.items?.iterator()) { ItemEntry ie ->
-                getOfferItemRevision(ie.itemId, honoredTime).syncRecover { Throwable ex ->
-                    LOGGER.error('name=Failed_To_Get_Offer_Item_Revision. itemId: {}, timestamp: {}',
+                itemResource.getItem(new ItemId(ie.itemId)).syncRecover { Throwable ex ->
+                    LOGGER.error('name=Failed_To_Get_Offer_Item. itemId: {}, timestamp: {}',
                             ie.itemId, honoredTime, ex)
                     throw AppErrors.INSTANCE.catalogConnectionError().exception()
                     // TODO add logger and exception
-                }.syncThen { OrderOfferItemRevision ir ->
-                    assert(ir != null)
-                    orderOfferRevision.orderOfferItemRevisions.add(ir)
+                }.syncThen { Item item ->
+                    assert item != null
+                    orderOfferRevision.orderOfferItems << new OrderOfferItem(item: item)
+
                 }
             }.syncThen {
                 return orderOfferRevision

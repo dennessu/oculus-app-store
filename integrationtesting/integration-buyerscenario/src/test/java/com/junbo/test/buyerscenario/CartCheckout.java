@@ -16,6 +16,7 @@ import java.util.ArrayList;
  * Created by Yunlong on 3/20/14.
  */
 public class CartCheckout extends BaseTestClass {
+
     @Property(
             priority = Priority.BVT,
             features = "BuyerScenarios",

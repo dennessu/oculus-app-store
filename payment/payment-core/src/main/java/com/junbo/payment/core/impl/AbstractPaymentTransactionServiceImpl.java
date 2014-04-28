@@ -114,7 +114,7 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
     }
 
     protected String getMerchantRef(PaymentInstrument pi, PaymentTransaction request, String providerName){
-        if(pi.getType().equalsIgnoreCase(PIType.CREDITCARD.toString())){
+        if(PIType.get(pi.getType()).equals(PIType.CREDITCARD)){
             String merchantRef = merchantAccountRepository.getMerchantAccountRef(
                     paymentProviderRepository.getProviderId(providerName), request.getChargeInfo().getCurrency());
             if(CommonUtil.isNullOrEmpty(merchantRef)){

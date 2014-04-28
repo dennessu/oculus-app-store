@@ -59,8 +59,8 @@ class BalanceServiceImpl implements BalanceService {
     @Autowired
     TaxService taxService
 
-    //@Autowired
-    //AsyncChargePublisher asyncChargePublisher
+    @Autowired
+    AsyncChargePublisher asyncChargePublisher
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BalanceServiceImpl)
 
@@ -103,7 +103,7 @@ class BalanceServiceImpl implements BalanceService {
 
                     if (savedBalance.isAsyncCharge) {
                         LOGGER.info('name=Async_Charge_Balance. balance id: ' + savedBalance.balanceId.value)
-                        //asyncChargePublisher.publish(savedBalance.balanceId.toString())
+                        asyncChargePublisher.publish(savedBalance.balanceId.toString())
                         return Promise.pure(savedBalance)
                     }
                     return transactionService.processBalance(savedBalance).then { Balance returnedBalance ->
@@ -267,7 +267,7 @@ class BalanceServiceImpl implements BalanceService {
                 LOGGER.error('name=Error_Get_User. Get null for the user id: {}', userId)
                 throw AppErrors.INSTANCE.userNotFound(userId.toString()).exception()
             }
-            if (user.active == null || !user.active) {
+            if (user.status == null || user.status != 'ACTIVE') {
                 LOGGER.error('name=Error_Get_User. User not active with id: {}', userId)
                 throw AppErrors.INSTANCE.userStatusInvalid(userId.toString()).exception()
             }

@@ -31,7 +31,7 @@ public interface AppErrors {
     AppError fieldNotMatch(String fieldName, Object actually, Object expected);
 
     @ErrorDef(httpStatusCode = 404, code = "10003", description = "{0} [{1}] not found.")
-    AppError notFound(String entity, Long id);
+    AppError notFound(String entity, Object id);
 
     @ErrorDef(httpStatusCode = 400, code = "10004", description = "ExpirationTime should not be before grantTime.")
     AppError expirationTimeBeforeGrantTime();
@@ -40,7 +40,7 @@ public interface AppErrors {
     AppError fieldNotCorrect(String fieldName, String msg);
 
     @ErrorDef(httpStatusCode = 400, code = "10006", description = "Entitlement [{0}] is not transferable. {1}")
-    AppError notTransferable(Long id, String msg);
+    AppError notTransferable(Object id, String msg);
 
     @ErrorDef(httpStatusCode = 400, code = "10007", description = "Validation failed. {0}")
     AppError validation(String msg);

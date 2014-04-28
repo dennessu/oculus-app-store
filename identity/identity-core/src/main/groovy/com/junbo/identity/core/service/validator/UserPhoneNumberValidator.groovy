@@ -1,6 +1,6 @@
 package com.junbo.identity.core.service.validator
 
-import com.junbo.identity.spec.v1.model.UserPhoneNumber
+import com.junbo.identity.spec.v1.model.PhoneNumber
 import groovy.transform.CompileStatic
 
 /**
@@ -8,5 +8,6 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface UserPhoneNumberValidator {
-    void validate(UserPhoneNumber userPhoneNumber)
+
+    void validate(PhoneNumber phoneNumber)
 }

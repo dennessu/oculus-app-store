@@ -32,12 +32,12 @@ public class CommonMapper {
         return creditCardType.toString();
     }
 
-    public PIType toPITypeEnum(String piType){
-        return PIType.valueOf(piType.toUpperCase());
+    public PIType toPITypeEnum(Long piType){
+        return PIType.get(piType);
     }
 
-    public String toPIType(PIType piType){
-        return piType.toString();
+    public Long toPIType(PIType piType){
+        return piType.getId();
     }
 
     public PhoneType toPhoneTypeEnum(String phoneType){

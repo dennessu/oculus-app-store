@@ -7,7 +7,6 @@ package com.junbo.oauth.core.context
 
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserCredential
-import com.junbo.identity.spec.v1.model.UserPii
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.oauth.spec.model.*
 import groovy.transform.CompileStatic
@@ -43,7 +42,6 @@ class ActionContextWrapper {
     public static final String ERRORS = 'errors'
     public static final String USER = 'user'
     public static final String USER_CREDENTIAL = 'user_credential'
-    public static final String USER_PII = 'user_pii'
     public static final String DOB = 'dob'
     public static final String GENDER = 'gender'
     public static final String REMOTE_ADDRESS = 'remote_address'
@@ -251,14 +249,6 @@ class ActionContextWrapper {
 
     void setUserCredential(UserCredential userCredential) {
         actionContext.requestScope[USER_CREDENTIAL] = userCredential
-    }
-
-    UserPii getUserPii() {
-        return (UserPii) actionContext.requestScope[USER_PII]
-    }
-
-    void setUserPii(UserPii userPii) {
-        actionContext.requestScope[USER_PII] = userPii
     }
 
     Date getDob() {

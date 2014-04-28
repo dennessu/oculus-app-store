@@ -29,11 +29,11 @@ public class MockPaymentProviderServiceImpl extends AbstractPaymentProviderServi
     public void clonePIResult(PaymentInstrument source, PaymentInstrument target) {
         target.setAccountNum(source.getAccountNum());
         target.setExternalToken(source.getExternalToken());
-        target.getCreditCardRequest().setType(source.getCreditCardRequest().getType());
-        target.getCreditCardRequest().setCommercial(source.getCreditCardRequest().getCommercial());
-        target.getCreditCardRequest().setDebit(source.getCreditCardRequest().getDebit());
-        target.getCreditCardRequest().setPrepaid(source.getCreditCardRequest().getPrepaid());
-        target.getCreditCardRequest().setIssueCountry(source.getCreditCardRequest().getIssueCountry());
+        target.getTypeSpecificDetails().setCreditCardType(source.getTypeSpecificDetails().getCreditCardType());
+        target.getTypeSpecificDetails().setCommercial(source.getTypeSpecificDetails().getCommercial());
+        target.getTypeSpecificDetails().setDebit(source.getTypeSpecificDetails().getDebit());
+        target.getTypeSpecificDetails().setPrepaid(source.getTypeSpecificDetails().getPrepaid());
+        target.getTypeSpecificDetails().setIssueCountry(source.getTypeSpecificDetails().getIssueCountry());
     }
 
     @Override
@@ -49,12 +49,12 @@ public class MockPaymentProviderServiceImpl extends AbstractPaymentProviderServi
         request.setAccountNum("1111");
         request.setIsActive(true);
         request.setExternalToken(piExternalToken);
-        request.getCreditCardRequest().setType(CreditCardType.VISA.toString());
-        request.getCreditCardRequest().setCommercial("UNKNOW");
-        request.getCreditCardRequest().setDebit("UNKNOW");
-        request.getCreditCardRequest().setPrepaid("UNKNOW");
-        request.getCreditCardRequest().setIssueCountry("UNKNOW");
-        request.getCreditCardRequest().setLastBillingDate(new Date());
+        request.getTypeSpecificDetails().setCreditCardType(CreditCardType.VISA.toString());
+        request.getTypeSpecificDetails().setCommercial(null);
+        request.getTypeSpecificDetails().setDebit(true);
+        request.getTypeSpecificDetails().setPrepaid(false);
+        request.getTypeSpecificDetails().setIssueCountry(null);
+        request.getTypeSpecificDetails().setLastBillingDate(new Date());
         if(request.getIsValidated() == true){
             request.setLastValidatedTime(new Date());
         }

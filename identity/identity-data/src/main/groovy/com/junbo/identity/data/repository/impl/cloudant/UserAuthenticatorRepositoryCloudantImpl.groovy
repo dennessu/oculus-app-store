@@ -51,7 +51,7 @@ class UserAuthenticatorRepositoryCloudantImpl extends CloudantClient<UserAuthent
 
     @Override
     Promise<Void> delete(UserAuthenticatorId authenticatorId) {
-        super.cloudantDelete(authenticatorId.value)
+        super.cloudantDelete(authenticatorId.toString())
         return Promise.pure(null)
     }
 
@@ -59,17 +59,17 @@ class UserAuthenticatorRepositoryCloudantImpl extends CloudantClient<UserAuthent
     Promise<List<UserAuthenticator>> search(AuthenticatorListOptions getOption) {
         def list = []
         if (getOption.userId != null && getOption.userId.value != null) {
-            if (getOption.type != null && getOption.value != null) {
-                list = super.queryView('by_user_id_auth_type_auth_value',
-                        "${getOption.userId.value}:${getOption.type}:${getOption.value}",
+            if (getOption.type != null && getOption.externalId != null) {
+                list = super.queryView('by_user_id_auth_type_externalId',
+                        "${getOption.userId.value}:${getOption.type}:${getOption.externalId}",
                         getOption.limit, getOption.offset, false)
             }
             else if (getOption.type != null) {
                 list = super.queryView('by_user_id_auth_type', "${getOption.userId.value}:${getOption.type}",
                         getOption.limit, getOption.offset, false)
             }
-            else if (getOption.value != null) {
-                list = super.queryView('by_user_id_auth_value', "${getOption.userId.value}:${getOption.value}",
+            else if (getOption.externalId != null) {
+                list = super.queryView('by_user_id_externalId', "${getOption.userId.value}:${getOption.externalId}",
                         getOption.limit, getOption.offset, false)
             }
             else {
@@ -77,8 +77,8 @@ class UserAuthenticatorRepositoryCloudantImpl extends CloudantClient<UserAuthent
                         getOption.limit, getOption.offset, false)
             }
         }
-        else if (getOption != null && getOption.value != null) {
-            list = super.queryView('by_authenticator_value', getOption.value,
+        else if (getOption != null && getOption.externalId != null) {
+            list = super.queryView('by_authenticator_externalId', getOption.externalId,
                     getOption.limit, getOption.offset, false)
         }
 
@@ -87,9 +87,9 @@ class UserAuthenticatorRepositoryCloudantImpl extends CloudantClient<UserAuthent
 
     protected CloudantViews views = new CloudantViews(
             views: [
-                    'by_authenticator_value': new CloudantViews.CloudantView(
+                    'by_authenticator_externalId': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.value, doc._id)' +
+                                    '  emit(doc.externalId, doc._id)' +
                                     '}',
                             resultClass: String),
                     'by_user_id_auth_type': new CloudantViews.CloudantView(
@@ -97,14 +97,14 @@ class UserAuthenticatorRepositoryCloudantImpl extends CloudantClient<UserAuthent
                                     '  emit(doc.user.value + \':\' + doc.type, doc._id)' +
                                     '}',
                             resultClass: String),
-                    'by_user_id_auth_value': new CloudantViews.CloudantView(
+                    'by_user_id_externalId': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.user.value + \':\' + doc.value, doc._id)' +
+                                    '  emit(doc.user.value + \':\' + doc.externalId, doc._id)' +
                                     '}',
                             resultClass: String),
-                    'by_user_id_auth_type_auth_value': new CloudantViews.CloudantView(
+                    'by_user_id_auth_type_externalId': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.user.value + \':\' + doc.type + \':\' + doc.value, doc._id)' +
+                                    '  emit(doc.user.value + \':\' + doc.type + \':\' + doc.externalId, doc._id)' +
                                     '}',
                             resultClass: String),
                     'by_user_id': new CloudantViews.CloudantView(

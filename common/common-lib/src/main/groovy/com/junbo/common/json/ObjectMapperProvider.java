@@ -7,17 +7,20 @@
 package com.junbo.common.json;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
+import com.junbo.common.deser.EnumIdDeserizlizer;
 import com.junbo.common.deser.IdDeserializer;
+import com.junbo.common.enumid.EnumId;
 import com.junbo.common.id.Id;
-import com.junbo.common.jackson.deserializer.ResourceAwareDeserializationContext;
-import com.junbo.common.jackson.serializer.ResourceAwareSerializerProvider;
+import com.junbo.common.jackson.common.CustomDeserializationContext;
+import com.junbo.common.jackson.common.CustomSerializerModifier;
+import com.junbo.common.jackson.common.CustomSerializerProvider;
+import com.junbo.common.ser.EnumIdSerializer;
 import com.junbo.common.ser.IdSerializer;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
@@ -38,8 +41,8 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
 
     private static ObjectMapper createObjectMapper() {
         ObjectMapper objectMapper = new ObjectMapper(null,
-                new ResourceAwareSerializerProvider(),
-                new ResourceAwareDeserializationContext());
+                new CustomSerializerProvider(),
+                new CustomDeserializationContext());
 
         objectMapper.setDateFormat(new ISO8601DateFormat());
 
@@ -47,18 +50,36 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
         objectMapper.setSerializationInclusion(JsonInclude.Include.ALWAYS);
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
 
-        SimpleModule module = new SimpleModule(ObjectMapperProvider.class.getName(), new Version(1, 0, 0, null, null, null));
+        SimpleModule module = new SimpleModule(ObjectMapperProvider.class.getName()) {
+            public void setupModule(SetupContext context) {
+                super.setupModule(context);
+                context.addBeanSerializerModifier(new CustomSerializerModifier());
+            }
+        };
 
         ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(true);
-        provider.addIncludeFilter(new AssignableTypeFilter(Id.class));
 
+        provider.addIncludeFilter(new AssignableTypeFilter(Id.class));
         // scan in com.junbo.common.id package for SubClass of Id
-        Set<BeanDefinition> components = provider.findCandidateComponents("com/junbo/common/id");
-        for (BeanDefinition component : components) {
+        Set<BeanDefinition> idDefinitions = provider.findCandidateComponents("com/junbo/common/id");
+        for (BeanDefinition definition : idDefinitions) {
             try {
-                Class cls = Class.forName(component.getBeanClassName());
+                Class cls = Class.forName(definition.getBeanClassName());
                 module.addSerializer(cls, new IdSerializer());
                 module.addDeserializer(cls, new IdDeserializer(cls));
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        provider.addIncludeFilter(new AssignableTypeFilter(EnumId.class));
+        // scan in com.junbo.common.enumid package for Subclass of EnumId
+        Set<BeanDefinition> enumIdDefinitions = provider.findCandidateComponents("com/junbo/common/enumid");
+        for (BeanDefinition definition : enumIdDefinitions) {
+            try {
+                Class cls = Class.forName(definition.getBeanClassName());
+                module.addSerializer(cls, new EnumIdSerializer());
+                module.addDeserializer(cls, new EnumIdDeserizlizer(cls));
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }

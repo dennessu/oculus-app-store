@@ -100,14 +100,15 @@
                 (
                   payment_instrument_id             bigint              not null,
                   user_id                           bigint              not null,
-                  payment_instrument_type_id        smallint            not null,
+                  payment_instrument_type_id        bigint              not null,
                   payment_instrument_holder_name    varchar(100)            null,
                   encrypted_account_number          varchar(200)            null,
                   account_number                    varchar(100)            null,
-                  revision                          int                 not null,
+                  revision                          varchar(64)         not null,
                   address_id                        bigint                  null,
-                  phone_num                         varchar(64)             null,
-                  email                             varchar(64)             null,
+                  label                             varchar(128)            null,
+                  phone_num                         bigint                  null,
+                  email                             bigint                  null,
                   relation_to_holder                varchar(32)             null,
                   active                            boolean             not null,
                   deleted                           boolean                 null,
@@ -119,9 +120,6 @@
                   updated_by                        varchar(50)             null,
 
                   constraint payment_instrument_id_pk primary key (payment_instrument_id),
-                  constraint address_id_fk foreign key (address_id)
-                      references address (address_id) match simple
-                      on update no action on delete no action,
                   constraint payment_instrument_type_id_fk foreign key (payment_instrument_type_id)
                       references payment_instrument_type (payment_instrument_type_id) match simple
                       on update no action on delete no action
@@ -141,9 +139,9 @@
                   credit_card_type_id               smallint            not null,
                   expire_time                       varchar(16)         not null,
                   last_billing_time                 date                not null,
-				  prepaid                           varchar(16)             null,
-				  debit                             varchar(16)             null,
-				  commercial                        varchar(16)             null,
+				  prepaid                           boolean                 null,
+				  debit                             boolean                 null,
+				  commercial                        boolean                 null,
 				  issue_country                     varchar(16)              null,
 				  created_time                      date                not null,
                   created_by                        varchar(50)             null,

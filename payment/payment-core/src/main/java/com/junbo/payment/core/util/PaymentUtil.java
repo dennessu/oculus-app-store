@@ -21,11 +21,11 @@ public final class PaymentUtil {
 
     }
 
-    public static PIType getPIType(String piType){
+    public static PIType getPIType(Long piType){
         try{
-            return PIType.valueOf(piType.toUpperCase());
+            return PIType.get(piType);
         }catch (Exception ex){
-            throw AppClientExceptions.INSTANCE.invalidPIType(piType).exception();
+            throw AppClientExceptions.INSTANCE.invalidPIType(piType.toString()).exception();
         }
     }
 

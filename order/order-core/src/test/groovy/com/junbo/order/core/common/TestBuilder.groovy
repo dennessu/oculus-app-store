@@ -1,4 +1,8 @@
 package com.junbo.order.core.common
+
+import com.junbo.common.enumid.CountryId
+import com.junbo.common.enumid.CurrencyId
+import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.*
 import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
@@ -7,7 +11,10 @@ import com.junbo.langur.core.webflow.state.Conversation
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
-import com.junbo.order.db.entity.enums.*
+import com.junbo.order.db.entity.enums.DiscountType
+import com.junbo.order.db.entity.enums.EventStatus
+import com.junbo.order.db.entity.enums.ItemType
+import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.spec.model.Discount
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderEvent
@@ -15,6 +22,7 @@ import com.junbo.order.spec.model.OrderItem
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
+
 /**
  * Created by chriszhu on 2/14/14.
  */
@@ -35,9 +43,8 @@ class TestBuilder {
         def order = new Order()
         def orderItem = buildOrderItem()
         order.setOrderItems([orderItem])
-        order.setType(OrderType.PAY_IN.toString())
-        order.setCountry('US')
-        order.setCurrency('USD')
+        order.setCountry(new CountryId('US'))
+        order.setCurrency(new CurrencyId('USD'))
         def userId = new UserId()
         userId.setValue(generateLong())
         order.setUser(userId)
@@ -48,7 +55,7 @@ class TestBuilder {
         order.setTentative(true)
         order.discounts = []
         order.discounts.add(buildDiscount('AAA', orderItem))
-        order.locale = 'en-US'
+        order.locale = new LocaleId('en_US')
         return order
     }
 

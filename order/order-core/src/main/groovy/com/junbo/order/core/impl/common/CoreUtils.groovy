@@ -5,7 +5,7 @@ import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
 import com.junbo.common.error.AppError
 import com.junbo.common.error.AppErrorException
-import com.junbo.order.clientproxy.model.OrderOfferItemRevision
+import com.junbo.order.clientproxy.model.OrderOfferItem
 import com.junbo.order.clientproxy.model.OrderOfferRevision
 import com.junbo.order.db.entity.enums.ItemType
 import com.junbo.order.spec.model.Order
@@ -25,8 +25,8 @@ class CoreUtils {
 
     static ItemType getOfferType(OrderOfferRevision offer) {
         // TODO support bundle type
-        Boolean hasPhysical = offer.orderOfferItemRevisions?.any { OrderOfferItemRevision item ->
-            item.itemRevision.type == OFFER_ITEM_TYPE_PHYSICAL
+        Boolean hasPhysical = offer.orderOfferItems?.any { OrderOfferItem item ->
+            item.item.type == OFFER_ITEM_TYPE_PHYSICAL
         }
         if (hasPhysical) { return ItemType.PHYSICAL }
         return ItemType.DIGITAL

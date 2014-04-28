@@ -8,8 +8,6 @@
         <property name="accessTokenPostfix" value="${oauth.db.accessTokenPostfix}"/>
         <property name="authorizationCodeLength" value="${oauth.db.authorizationCodeLength}"/>
         <property name="authorizationCodePostfix" value="${oauth.db.authorizationCodePostfix}"/>
-        <property name="flowStateLength" value="${oauth.db.flowStateLength}"/>
-        <property name="flowStatePostfix" value="${oauth.db.flowStatePostfix}"/>
         <property name="loginStateLength" value="${oauth.db.loginStateLength}"/>
         <property name="loginStatePostfix" value="${oauth.db.loginStatePostfix}"/>
         <property name="refreshTokenLength" value="${oauth.db.refreshTokenLength}"/>
@@ -23,6 +21,7 @@
         <property name="clientIdLength" value="${oauth.db.clientIdLength}"/>
         <property name="clientSecretLength" value="${oauth.db.clientSecretLength}"/>
         <property name="saltLength" value="${oauth.db.saltLength}"/>
+        <property name="emailVerifyCodeLength" value="${oauth.db.emailVerifyCodeLength}"/>
     </bean>
 
     <bean id="jedisInstance" class="redis.clients.jedis.Jedis">
@@ -71,6 +70,10 @@
         <property name="dbName" value="api_definition"/>
     </bean>
 
+    <bean id="emailVerifyCodeDAO" class="com.junbo.oauth.db.dao.couch.CouchEmailVerifyCodeDAOImpl" parent="baseDAO">
+        <property name="dbName" value="email_verify_code"/>
+     </bean>
+
     <bean id="clientRepository" class="com.junbo.oauth.db.repo.impl.ClientRepositoryImpl">
         <property name="clientDAO" ref="clientDAO"/>
     </bean>
@@ -111,6 +114,11 @@
 
     <bean id="apiDefinitionRepository" class="com.junbo.oauth.db.repo.impl.ApiDefinitionRepositoryImpl">
         <property name="apiDefinitionDAO" ref="apiDefinitionDAO"/>
+    </bean>
+
+    <bean id="emailVerifyCodeRepository" class="com.junbo.oauth.db.repo.impl.EmailVerifyCodeRepositoryImpl">
+        <property name="emailVerifyCodeDAO" ref="emailVerifyCodeDAO"/>
+        <property name="tokenGenerator" ref="tokenGenerator"/>
     </bean>
 
 </beans>

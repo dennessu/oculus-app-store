@@ -5,27 +5,19 @@
  */
 package com.junbo.identity.spec.v1.model;
 
-import com.wordnik.swagger.annotations.ApiModelProperty;
-
 /**
- * Created by kg on 3/10/14.
+ * Created by liangfu on 4/26/14.
  */
 public class UserName {
-
-    @ApiModelProperty(position = 1, required = true, value = "The first name of user pii resource.")
     private String firstName;
 
-    @ApiModelProperty(position = 2, required = false, value = "The middle name of user pii resource.")
     private String middleName;
 
-    @ApiModelProperty(position = 3, required = true, value = "The last name of user pii resource.")
     private String lastName;
 
-    @ApiModelProperty(position = 4, required = false, value = "The honorific prefix of user pii resource.")
-    private String honorificPrefix;
+    private String nickName;
 
-    @ApiModelProperty(position = 5, required = false, value = "The honorific suffix of user pii resource.")
-    private String honorificSuffix;
+    private String displayName;
 
     public String getFirstName() {
         return firstName;
@@ -51,19 +43,19 @@ public class UserName {
         this.lastName = lastName;
     }
 
-    public String getHonorificPrefix() {
-        return honorificPrefix;
+    public String getNickName() {
+        return nickName;
     }
 
-    public void setHonorificPrefix(String honorificPrefix) {
-        this.honorificPrefix = honorificPrefix;
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
-    public String getHonorificSuffix() {
-        return honorificSuffix;
+    public String getDisplayName() {
+        return displayName;
     }
 
-    public void setHonorificSuffix(String honorificSuffix) {
-        this.honorificSuffix = honorificSuffix;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 }

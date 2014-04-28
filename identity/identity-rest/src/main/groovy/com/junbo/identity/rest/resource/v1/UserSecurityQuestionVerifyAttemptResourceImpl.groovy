@@ -2,6 +2,7 @@ package com.junbo.identity.rest.resource.v1
 
 import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
+import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
 import com.junbo.common.model.Results
 import com.junbo.identity.core.service.Created201Marker
 import com.junbo.identity.core.service.filter.UserSecurityQuestionAttemptFilter
@@ -10,6 +11,7 @@ import com.junbo.identity.data.repository.UserSecurityQuestionAttemptRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt
 import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionAttemptListOptions
+import com.junbo.identity.spec.v1.option.model.UserSecurityQuestionAttemptGetOptions
 import com.junbo.identity.spec.v1.resource.UserSecurityQuestionVerifyAttemptResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate
@@ -93,6 +95,22 @@ class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuest
                         return Promise.pure(result)
                     }
         }
+    }
+
+    @Override
+    Promise<UserSecurityQuestionVerifyAttempt> get(UserId userId, UserSecurityQuestionVerifyAttemptId id,
+                                           UserSecurityQuestionAttemptGetOptions getOptions) {
+        if (getOptions == null) {
+            throw new IllegalArgumentException('getOptions is null')
+        }
+
+        return userSecurityQuestionAttemptValidator.validateForGet(userId, id).
+                then { UserSecurityQuestionVerifyAttempt attempt ->
+                    attempt = userSecurityQuestionAttemptFilter.filterForGet(attempt,
+                            getOptions.properties?.split(',') as List<String>)
+
+                    return Promise.pure(attempt)
+                }
     }
 
     Promise<UserSecurityQuestionVerifyAttempt> createInNewTran(UserSecurityQuestionVerifyAttempt userLoginAttempt) {

@@ -26,9 +26,9 @@
         <property name="cacheManager" ref="billingCacheManagerFactory"/>
     </bean>
 
-    <!-- publisher
+    <!-- publisher-->
     <bean id="syncChargePublisher" class="com.junbo.billing.core.publisher.AsyncChargePublisher" parent="basePublisher">
         <property name="template" ref="billingAsyncChargeJmsTemplate"/>
         <property name="destination" ref="billingAsyncChargeQueue"/>
-    </bean>-->
+    </bean>
 </beans>

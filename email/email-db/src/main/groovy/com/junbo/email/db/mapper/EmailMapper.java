@@ -6,6 +6,7 @@
 package com.junbo.email.db.mapper;
 
 import com.junbo.common.id.EmailId;
+import com.junbo.common.id.EmailTemplateId;
 import com.junbo.common.util.EnumRegistry;
 import com.junbo.email.common.util.Utils;
 import com.junbo.email.db.entity.BaseEntity;
@@ -54,9 +55,7 @@ public class EmailMapper {
         if(email.getId() != null) {
             entity.setId(email.getId().getValue());
         }
-        entity.setAction(email.getAction());
-        entity.setSource(email.getSource());
-        entity.setLocale(email.getLocale());
+        entity.setTemplateId(email.getTemplateId().getValue());
         entity.setPayload(Utils.toJson(email));
         entity.setPriority(email.getPriority());
         entity.setStatus(toEmailStatus(email.getStatus()));
@@ -80,9 +79,7 @@ public class EmailMapper {
         if(email.getUserId() != null) {
             entity.setUserId(email.getUserId().getValue());
         }
-        entity.setSource(email.getSource());
-        entity.setAction(email.getAction());
-        entity.setLocale(email.getLocale());
+        entity.setTemplateId(email.getTemplateId().getValue());
         entity.setPayload(Utils.toJson(email));
         entity.setRecipients(Utils.toJson(email.getRecipients()));
         entity.setPriority(email.getPriority());
@@ -98,6 +95,8 @@ public class EmailMapper {
         Email email = Utils.toObject(entity.getPayload(),Email.class);
         email.setId(new EmailId(entity.getId()));
         email.setIsResend(false);
+        email.setTemplateId(new EmailTemplateId(entity.getTemplateId()));
+        email.setStatus(EmailStatus.PENDING.toString());
         email.setRecipients(Utils.toObject(entity.getRecipients(), List.class));
         email.setScheduleTime(entity.getScheduleTime());
         email.setCreatedTime(entity.getCreatedTime());
@@ -110,16 +109,19 @@ public class EmailMapper {
         if(entity == null) {
             return null;
         }
-        EmailTemplate template = toModel(entity, new EmailTemplate());
-        template.setId(new EmailId(entity.getId()));
+        EmailTemplate template = new EmailTemplate();
+        template.setSource(entity.getSource());
+        template.setAction(entity.getAction());
+        template.setLocale(entity.getLocale());
+        template.setId(new EmailTemplateId(entity.getId()));
         template.setFromAddress(entity.getFromAddress());
         template.setFromName(entity.getFromName());
         template.setProviderIndex(entity.getProviderIndex());
         template.setProviderName(entity.getProviderName());
         template.setName(entity.getName());
         template.setSubject(entity.getSubject());
-        if(entity.getVars() != null) {
-            template.setListOfVariables(Utils.toObject(entity.getVars(), List.class));
+        if(!StringUtils.isEmpty(entity.getPlaceholderNames())) {
+            template.setPlaceholderNames(Utils.toObject(entity.getPlaceholderNames(), List.class));
         }
 
         return template;
@@ -142,13 +144,16 @@ public class EmailMapper {
             entity.setId(template.getId().getValue());
         }
         entity.setName(template.getName());
+        entity.setSource(template.getSource());
+        entity.setAction(template.getAction());
+        entity.setLocale(template.getLocale());
         entity.setSubject(template.getSubject());
         entity.setProviderIndex(template.getProviderIndex());
         entity.setProviderName(template.getProviderName());
         entity.setFromAddress(template.getFromAddress());
         entity.setFromName(template.getFromName());
-        if(template.getListOfVariables() != null) {
-            entity.setVars(Utils.toJson(template.getListOfVariables()));
+        if(template.getPlaceholderNames() != null) {
+            entity.setPlaceholderNames(Utils.toJson(template.getPlaceholderNames()));
         }
 
         return entity;

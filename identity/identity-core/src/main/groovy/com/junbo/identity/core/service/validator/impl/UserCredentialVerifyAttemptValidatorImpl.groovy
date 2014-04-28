@@ -1,11 +1,13 @@
 package com.junbo.identity.core.service.validator.impl
 
-import com.junbo.common.id.UserId
 import com.junbo.common.id.UserCredentialVerifyAttemptId
+import com.junbo.common.id.UserId
 import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.util.CipherHelper
 import com.junbo.identity.core.service.validator.UserCredentialVerifyAttemptValidator
 import com.junbo.identity.core.service.validator.UsernameValidator
+import com.junbo.identity.data.identifiable.CredentialType
+import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.UserCredentialVerifyAttemptRepository
 import com.junbo.identity.data.repository.UserPasswordRepository
 import com.junbo.identity.data.repository.UserPinRepository
@@ -14,13 +16,12 @@ import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.UserPin
 import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
-import com.junbo.identity.spec.v1.option.list.UserPinListOptions
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
+import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
+import com.junbo.identity.spec.v1.option.list.UserPinListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
-import org.glassfish.jersey.internal.util.Base64
 import org.springframework.beans.factory.annotation.Required
 
 import java.util.regex.Pattern
@@ -48,9 +49,6 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     private Integer userAgentMinLength
     private Integer userAgentMaxLength
 
-    private Integer clientIdMinLength
-    private Integer clientIdMaxLength
-
     private NormalizeService normalizeService
 
     @Override
@@ -69,7 +67,11 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     throw AppErrors.INSTANCE.userNotFound(userLoginAttempt.userId).exception()
                 }
 
-                if (user.active == false) {
+                if (user.isAnonymous == true) {
+                    throw AppErrors.INSTANCE.userInInvalidStatus(userLoginAttempt.userId).exception()
+                }
+
+                if (user.status != UserStatus.ACTIVE.toString()) {
                     throw AppErrors.INSTANCE.userInInvalidStatus(userLoginAttempt.userId).exception()
                 }
 
@@ -103,17 +105,16 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
         }
 
         if (userLoginAttempt.succeeded != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('succeed').exception()
+            throw AppErrors.INSTANCE.fieldNotWritable('succeeded').exception()
         }
 
-        String decoded = Base64.decodeAsString(userLoginAttempt.value)
-        String[] split = decoded.split(':')
-        return userRepository.getUserByCanonicalUsername(normalizeService.normalize(split[0])).then { User user ->
+        return userRepository.getUserByCanonicalUsername(normalizeService.normalize(userLoginAttempt.username))
+                .then { User user ->
             if (user == null) {
-                throw AppErrors.INSTANCE.userNotFound(split[0]).exception()
+                throw AppErrors.INSTANCE.userNotFound(userLoginAttempt.username).exception()
             }
 
-            if (user.active == false) {
+            if (user.status != UserStatus.ACTIVE.toString()) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userLoginAttempt.userId).exception()
             }
 
@@ -122,8 +123,8 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             def hasLen = 4
             def saltIndex = 1
             def pepperIndex = 2
-            if (userLoginAttempt.type == 'password') {
-                userPasswordRepository.search(new UserPasswordListOptions(
+            if (userLoginAttempt.type == CredentialType.PASSWORD.toString()) {
+                return userPasswordRepository.search(new UserPasswordListOptions(
                         userId: (UserId)user.id,
                         active: true
                 )).then { List<UserPassword> userPasswordList ->
@@ -139,16 +140,18 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     String salt = hashInfo[saltIndex]
                     String pepper = hashInfo[pepperIndex]
 
-                    if (CipherHelper.generateCipherHashV1(split[1], salt, pepper)
+                    if (CipherHelper.generateCipherHashV1(userLoginAttempt.value, salt, pepper)
                             == userPasswordList.get(0).passwordHash) {
                         userLoginAttempt.setSucceeded(true)
                     } else {
                         userLoginAttempt.setSucceeded(false)
                     }
+
+                    return Promise.pure(null)
                 }
             }
             else {
-                userPinRepository.search(new UserPinListOptions(
+                return userPinRepository.search(new UserPinListOptions(
                         userId: (UserId)user.id,
                         active: true
                 )).then { List<UserPin> userPinList ->
@@ -164,31 +167,22 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     String salt = hashInfo[saltIndex]
                     String pepper = hashInfo[pepperIndex]
 
-                    if (CipherHelper.generateCipherHashV1(split[1], salt, pepper) == userPinList.get(0).pinHash) {
+                    if (CipherHelper.generateCipherHashV1(userLoginAttempt.value, salt, pepper)
+                            == userPinList.get(0).pinHash) {
                         userLoginAttempt.setSucceeded(true)
                     } else {
                         userLoginAttempt.setSucceeded(false)
                     }
+
+                    return Promise.pure(null)
                 }
             }
-
-            return Promise.pure(null)
         }
     }
 
     private void checkBasicUserLoginAttemptInfo(UserCredentialVerifyAttempt userLoginAttempt) {
         if (userLoginAttempt == null) {
             throw new IllegalArgumentException('userLoginAttempt is null')
-        }
-
-        if (userLoginAttempt.clientId != null) {
-            if (userLoginAttempt.clientId.length() > clientIdMaxLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('clientId', clientIdMaxLength).exception()
-            }
-
-            if (userLoginAttempt.clientId.length() < clientIdMinLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('clientId', clientIdMinLength).exception()
-            }
         }
 
         if (userLoginAttempt.ipAddress != null) {
@@ -199,6 +193,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             }
         }
 
+        // Todo:    make it in enum list
         if (userLoginAttempt.type == null) {
             throw AppErrors.INSTANCE.fieldRequired('type').exception()
         }
@@ -221,10 +216,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             throw AppErrors.INSTANCE.fieldRequired('value').exception()
         }
 
-        String decoded = Base64.decodeAsString(userLoginAttempt.value)
-        if (!decoded.contains(':')) {
-            throw AppErrors.INSTANCE.fieldInvalid('value').exception()
-        }
+        // Todo:    Add check for clientId
     }
 
     @Required
@@ -257,16 +249,6 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     @Required
     void setUserAgentMaxLength(Integer userAgentMaxLength) {
         this.userAgentMaxLength = userAgentMaxLength
-    }
-
-    @Required
-    void setClientIdMinLength(Integer clientIdMinLength) {
-        this.clientIdMinLength = clientIdMinLength
-    }
-
-    @Required
-    void setClientIdMaxLength(Integer clientIdMaxLength) {
-        this.clientIdMaxLength = clientIdMaxLength
     }
 
     @Required

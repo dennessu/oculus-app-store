@@ -1,5 +1,6 @@
 package com.junbo.ewallet.service.impl
 
+import com.junbo.common.id.UserId
 import com.junbo.ewallet.db.entity.def.NotEnoughMoneyException
 import com.junbo.ewallet.db.repo.TransactionRepository
 import com.junbo.ewallet.db.repo.WalletRepository
@@ -112,6 +113,13 @@ class WalletServiceImpl implements WalletService {
             throw AppErrors.INSTANCE.fieldNotCorrect('creditType', 'ony CASH supported').exception()
         }
 
+        if (creditRequest.walletType == null) {
+            creditRequest.walletType = WalletType.STORED_VALUE.toString()
+        }
+        if (!creditRequest.walletType.equalsIgnoreCase(WalletType.STORED_VALUE.toString())) {
+            throw AppErrors.INSTANCE.fieldNotCorrect('walletType', 'ony STORED_VALUE supported').exception()
+        }
+
         validateAmount(creditRequest.amount)
         validateExpirationDate(creditRequest.expirationDate)
 
@@ -197,6 +205,14 @@ class WalletServiceImpl implements WalletService {
     @Transactional
     Transaction getTransactionByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
         return transactionRepo.getByTrackingUuid(shardMasterId, trackingUuid)
+    }
+
+    @Override
+    @Transactional
+    List<Wallet> getWallets(UserId userId) {
+        validateNotNull(userId, "userId")
+        checkUserId(userId.value)
+        return walletRepo.getAll(userId.value)
     }
 
     private void checkUserId(Long userId) {

@@ -26,7 +26,7 @@ public class RatingContext {
     private Currency currency;
     private Map<String, String> couponCodes;
     private Set<RatableItem> items;
-    private Long timestamp;
+    private String timestamp;
     private Map<Long, Set<PromotionRevision>> candidates;
     private Map<PromotionType, Set<PromotionRevision>> rules;
 
@@ -49,7 +49,7 @@ public class RatingContext {
 
     public void fromRequest(OfferRatingRequest request) {
         this.userId = request.getUserId();
-        this.timestamp = request.getTimestamp();
+        this.timestamp = request.getTime();
 
         Currency currency = Currency.findByCode(request.getCurrency());
         if (currency == null) {
@@ -67,7 +67,7 @@ public class RatingContext {
 
     public void fromRequest(RatingRequest request) {
         this.userId = request.getUserId();
-        this.timestamp = request.getTimestamp();
+        this.timestamp = request.getTime();
         this.defaultShippingMethod = request.getShippingMethodId();
 
         Currency currency = Currency.findByCode(request.getCurrency());
@@ -77,7 +77,7 @@ public class RatingContext {
 
         this.currency = currency;
 
-        for (String coupon : request.getCouponCodes()) {
+        for (String coupon : request.getCoupons()) {
             couponCodes.put(coupon, null);
         }
 
@@ -126,11 +126,11 @@ public class RatingContext {
         this.items = items;
     }
 
-    public Long getTimestamp() {
+    public String getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Long timestamp) {
+    public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 

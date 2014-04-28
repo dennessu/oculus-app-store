@@ -16,8 +16,7 @@ import java.util.Random;
 /**
  * Javadoc.
  */
-public class
-        SecureRandomTokenGenerator implements TokenGenerator {
+public class SecureRandomTokenGenerator implements TokenGenerator {
 
     private static final char[] DEFAULT_CODEC =
             "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
@@ -30,9 +29,6 @@ public class
 
     private int sessionStateLength;
     private String sessionStatePostfix;
-
-    private int flowStateLength;
-    private String flowStatePostfix;
 
     private int authorizationCodeLength;
     private String authorizationCodePostfix;
@@ -53,6 +49,8 @@ public class
 
     private int saltLength;
 
+    private int emailVerifyCodeLength;
+
     @Required
     public void setLoginStateLength(int loginStateLength) {
         this.loginStateLength = loginStateLength;
@@ -61,16 +59,6 @@ public class
     @Required
     public void setLoginStatePostfix(String loginStatePostfix) {
         this.loginStatePostfix = loginStatePostfix;
-    }
-
-    @Required
-    public void setFlowStateLength(int flowStateLength) {
-        this.flowStateLength = flowStateLength;
-    }
-
-    @Required
-    public void setFlowStatePostfix(String flowStatePostfix) {
-        this.flowStatePostfix = flowStatePostfix;
     }
 
     @Required
@@ -148,6 +136,11 @@ public class
         this.saltLength = saltLength;
     }
 
+    @Required
+    public void setEmailVerifyCodeLength(int emailVerifyCodeLength) {
+        this.emailVerifyCodeLength = emailVerifyCodeLength;
+    }
+
     private String generate(int length) {
         byte[] bytes = new byte[length];
         random.nextBytes(bytes);
@@ -163,11 +156,6 @@ public class
         }
 
         return new String(chars);
-    }
-
-    @Override
-    public String generateFlowStateId() {
-        return generate(flowStateLength) + flowStatePostfix;
     }
 
     @Override
@@ -221,11 +209,6 @@ public class
     @Override
     public String generateClientSecret() {
         return generate(clientSecretLength);
-    }
-
-    @Override
-    public String generateSalt() {
-        return generate(saltLength);
     }
 
     @Override

@@ -7,6 +7,7 @@
 package com.junbo.rating.spec.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.jackson.annotation.CurrencyId;
 import com.junbo.common.jackson.annotation.UserId;
 
 import java.util.Set;
@@ -18,10 +19,12 @@ public class OfferRatingRequest {
     @UserId
     @JsonProperty("user")
     private Long userId;
+
+    @CurrencyId
     private String currency;
 
     private Set<OfferRatingItem> offers;
-    private Long timestamp;
+    private String time;
 
     public Long getUserId() {
         return userId;
@@ -47,11 +50,11 @@ public class OfferRatingRequest {
         this.offers = offers;
     }
 
-    public Long getTimestamp() {
-        return timestamp;
+    public String getTime() {
+        return time;
     }
 
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
+    public void setTime(String time) {
+        this.time = time;
     }
 }

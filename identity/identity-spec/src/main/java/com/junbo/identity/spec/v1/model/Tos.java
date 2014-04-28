@@ -16,10 +16,11 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  */
 public class Tos extends ResourceMeta implements Identifiable<TosId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "The id of the tos resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Nullable]The id of the tos resource.")
     @JsonProperty("self")
     private TosId id;
 
+    // todo:    Need to confirm with carlos, why it doesn't use locale Id here.
     @ApiModelProperty(position = 2, required = true, value = "The locale of the tos resource.")
     private String locale;
 
@@ -28,6 +29,9 @@ public class Tos extends ResourceMeta implements Identifiable<TosId> {
 
     @ApiModelProperty(position = 4, required = true, value = "The content of the tos resource.")
     private String content;
+
+    @ApiModelProperty(position = 5, required = true, value = "Tos state, it must in [DRAFT, APPROVED, OBSOLETE].")
+    private String state;
 
     @Override
     public TosId getId() {
@@ -65,5 +69,14 @@ public class Tos extends ResourceMeta implements Identifiable<TosId> {
     public void setContent(String content) {
         this.content = content;
         support.setPropertyAssigned("content");
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+        support.setPropertyAssigned("state");
     }
 }

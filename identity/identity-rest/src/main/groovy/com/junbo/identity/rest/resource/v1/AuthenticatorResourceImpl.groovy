@@ -20,7 +20,6 @@ import com.junbo.identity.spec.v1.resource.AuthenticatorResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
 
 /**
@@ -31,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional
 class AuthenticatorResourceImpl implements AuthenticatorResource {
 
     @Autowired
-    @Qualifier('userAuthenticatorRepository')
     private UserAuthenticatorRepository userAuthenticatorRepository
 
     @Autowired
@@ -51,8 +49,8 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
 
         userAuthenticator = userAuthenticatorFilter.filterForCreate(userAuthenticator)
 
-        userAuthenticatorValidator.validateForCreate(userAuthenticator).then {
-            userAuthenticatorRepository.create(userAuthenticator).then { UserAuthenticator newUserAuthenticator ->
+        return userAuthenticatorValidator.validateForCreate(userAuthenticator).then {
+            return userAuthenticatorRepository.create(userAuthenticator).then { UserAuthenticator newUserAuthenticator ->
                 created201Marker.mark((Id)newUserAuthenticator.id)
 
                 newUserAuthenticator = userAuthenticatorFilter.filterForGet(newUserAuthenticator, null)
@@ -79,9 +77,9 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
 
             userAuthenticator = userAuthenticatorFilter.filterForPut(userAuthenticator, oldUserAuthenticator)
 
-            userAuthenticatorValidator.validateForUpdate(
+            return userAuthenticatorValidator.validateForUpdate(
                     userAuthenticatorId, userAuthenticator, oldUserAuthenticator).then {
-                userAuthenticatorRepository.update(userAuthenticator).then { UserAuthenticator newUserAuthenticator ->
+                return userAuthenticatorRepository.update(userAuthenticator).then { UserAuthenticator newUserAuthenticator ->
                     newUserAuthenticator = userAuthenticatorFilter.filterForGet(newUserAuthenticator, null)
                     return Promise.pure(newUserAuthenticator)
                 }
@@ -107,9 +105,9 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
 
             userAuthenticator = userAuthenticatorFilter.filterForPatch(userAuthenticator, oldUserAuthenticator)
 
-            userAuthenticatorValidator.validateForUpdate(
+            return userAuthenticatorValidator.validateForUpdate(
                     userAuthenticatorId, userAuthenticator, oldUserAuthenticator).then {
-                userAuthenticatorRepository.update(userAuthenticator).then { UserAuthenticator newUserAuthenticator ->
+                return userAuthenticatorRepository.update(userAuthenticator).then { UserAuthenticator newUserAuthenticator ->
                     newUserAuthenticator = userAuthenticatorFilter.filterForGet(newUserAuthenticator, null)
                     return Promise.pure(newUserAuthenticator)
                 }
@@ -124,7 +122,7 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        userAuthenticatorValidator.validateForGet(userAuthenticatorId).then { UserAuthenticator authenticator ->
+        return userAuthenticatorValidator.validateForGet(userAuthenticatorId).then { UserAuthenticator authenticator ->
             authenticator = userAuthenticatorFilter.filterForGet(authenticator,
                     getOptions.properties?.split(',') as List<String>)
 
@@ -140,7 +138,7 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
         }
 
         return userAuthenticatorValidator.validateForSearch(listOptions).then {
-            userAuthenticatorRepository.search(listOptions).then { List<UserAuthenticator> authenticatorList ->
+            return userAuthenticatorRepository.search(listOptions).then { List<UserAuthenticator> authenticatorList ->
                 def result = new Results<UserAuthenticator>(items: [])
 
                 authenticatorList.each { UserAuthenticator newUserAuthenticator ->
@@ -156,6 +154,19 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
 
                 return Promise.pure(result)
             }
+        }
+    }
+
+    @Override
+    Promise<Void> delete(UserAuthenticatorId userAuthenticatorId) {
+        if (userAuthenticatorId == null) {
+            throw new IllegalArgumentException('userAuthenticatorId is null')
+        }
+
+        return userAuthenticatorValidator.validateForGet(userAuthenticatorId).then { UserAuthenticator authenticator ->
+            userAuthenticatorRepository.delete(userAuthenticatorId)
+
+            return Promise.pure(null)
         }
     }
 }

@@ -7,27 +7,24 @@
 package com.junbo.catalog.spec.model.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
-
-import javax.validation.constraints.NotNull;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Base entity revision model.
  */
 public abstract class BaseRevisionModel extends BaseModel {
-    //(Design, PendingReview, Rejected) => (Released, Deleted)
+    @ApiModelProperty(position = 10, required = true, value = "Status of the revision",
+            allowableValues = "DRAFT, PENDING_REVIEW, APPROVED, REJECTED")
     private String status;
 
     @JsonIgnore
     private Long timestamp;
 
-    @NotNull
-    private LocalizableProperty name;
+    @ApiModelProperty(position = 1001, required = false, value = "Future properties")
+    private ExtensibleProperties futureProperties;
 
-    private Integer rev;
-
-    @JsonUnwrapped
-    private ExtensibleProperties properties;
+    @ApiModelProperty(position = 1002, required = true, value = "[Client Immutable] rev")
+    private String rev;
 
     public String getStatus() {
         return status;
@@ -45,28 +42,20 @@ public abstract class BaseRevisionModel extends BaseModel {
         this.status = status;
     }
 
-    public LocalizableProperty getName() {
-        return name;
+    public ExtensibleProperties getFutureProperties() {
+        return futureProperties;
     }
 
-    public void setName(LocalizableProperty name) {
-        this.name = name;
+    public void setFutureProperties(ExtensibleProperties futureProperties) {
+        this.futureProperties = futureProperties;
     }
 
-    public Integer getRev() {
+    public String getRev() {
         return rev;
     }
 
-    public void setRev(Integer rev) {
+    public void setRev(String rev) {
         this.rev = rev;
-    }
-
-    public ExtensibleProperties getProperties() {
-        return properties;
-    }
-
-    public void setProperties(ExtensibleProperties properties) {
-        this.properties = properties;
     }
 
     @JsonIgnore

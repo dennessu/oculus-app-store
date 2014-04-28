@@ -30,7 +30,7 @@ public class PaymentServiceTest extends BaseTest {
         PaymentInstrument result = null;
         result = piService.add(request).wrapped().get();
         Assert.assertNotNull(result);
-        Assert.assertEquals(result.getCreditCardRequest().getType(), CreditCardType.VISA.toString());
+        Assert.assertEquals(result.getTypeSpecificDetails().getCreditCardType(), CreditCardType.VISA.toString());
         Assert.assertEquals(result.getExternalToken(), MockPaymentProviderServiceImpl.piExternalToken);
         PaymentInstrument getResult = piService.getById(result.getId());
         Assert.assertEquals(getResult.getAccountName(), result.getAccountName());
@@ -48,11 +48,11 @@ public class PaymentServiceTest extends BaseTest {
         PaymentInstrument request = buildPIRequest();
         PaymentInstrument result = piService.add(request).wrapped().get();
         result.setIsActive(false);
-        result.getAddress().setPostalCode("123");
+        result.setBillingAddressId(123L);
         piService.update(result);
         PaymentInstrument resultUpdate = piService.getById(result.getId());
         Assert.assertEquals(resultUpdate.getIsActive(), Boolean.FALSE);
-        Assert.assertEquals(resultUpdate.getAddress().getPostalCode(), "123");
+        Assert.assertEquals(resultUpdate.getBillingAddressId().longValue(), 123L);
     }
 
     @Test
@@ -126,11 +126,11 @@ public class PaymentServiceTest extends BaseTest {
     private PaymentInstrument buildWalletPIRequest() {
         PaymentInstrument request = buildBasePIRequest();
         request.setAccountNum(null);
-        request.setType(PIType.WALLET.toString());
-        request.setWalletRequest(new WalletRequest() {
+        request.setType(PIType.WALLET.getId());
+        request.setTypeSpecificDetails(new TypeSpecificDetails() {
             {
-                setType("STORED_VALUE");
-                setCurrency("USD");
+                setWalletType("STORED_VALUE");
+                setWalletCurrency("USD");
             }
         });
         return request;

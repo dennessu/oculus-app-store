@@ -7,6 +7,7 @@
 package com.junbo.catalog.spec.model.common;
 
 import com.junbo.common.jackson.annotation.PriceTierId;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -15,15 +16,12 @@ import java.util.*;
  * Price.
  */
 public class Price {
-    public static final String FREE = "FREE";
-    public static final String TIERED = "TIERED";
-    public static final String CUSTOM = "CUSTOM";
-    public static final Set<String> ALL_TYPES =
-            Collections.unmodifiableSet(new HashSet<>(Arrays.asList(FREE, TIERED, CUSTOM)));
-
+    @ApiModelProperty(position = 1, required = true, value = "price type")
     private String priceType;
     @PriceTierId
+    @ApiModelProperty(position = 2, required = true, value = "price tier")
     private Long priceTier;
+    @ApiModelProperty(position = 3, required = true, value = "prices")
     private Map<String, BigDecimal> prices;
 
     public String getPriceType() {

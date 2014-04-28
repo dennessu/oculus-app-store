@@ -29,7 +29,6 @@ public class PaymentClientProxyTest extends BaseTest {
         PaymentInstrument pi = getPaymentInstrument();
 
         final PaymentInstrument result = piClient.postPaymentInstrument(pi).wrapped().get();
-        Assert.assertNotNull(result.getExternalToken());
         Assert.assertNotNull(result.getId());
         final PaymentInstrument getResult = piClient.getById(new PaymentInstrumentId(result.getId())).wrapped().get();
         Assert.assertEquals(result.getExternalToken(), getResult.getExternalToken());
@@ -74,17 +73,12 @@ public class PaymentClientProxyTest extends BaseTest {
                     setAccountName("ut");
                     setAccountNum("4111111111111111");
                     setIsValidated(false);
-                    setType("CREDITCARD");
+                    setType(0L);
                     setTrackingUuid(generateUUID());
                     setAdmins(Arrays.asList(getLongId()));
-                    setAddress(new Address() {
-                        {
-                            setAddressLine1("3rd street");
-                            setPostalCode("12345");
-                            setCountry("US");
-                        }
-                    });
-                    setCreditCardRequest(new CreditCardRequest(){
+                    setLabel("my first card");
+                    setBillingAddressId(123L);
+                    setTypeSpecificDetails(new TypeSpecificDetails() {
                         {
                             setExpireDate("2025-12");
                             setEncryptedCvmCode("111");

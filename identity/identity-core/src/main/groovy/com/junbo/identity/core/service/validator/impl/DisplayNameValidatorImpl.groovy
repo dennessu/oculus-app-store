@@ -3,7 +3,7 @@ package com.junbo.identity.core.service.validator.impl
 import com.junbo.identity.core.service.validator.DisplayNameValidator
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserPii
+import com.junbo.identity.spec.v1.model.UserName
 import groovy.transform.CompileStatic
 
 /**
@@ -11,7 +11,6 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class DisplayNameValidatorImpl implements DisplayNameValidator {
-
     public static final int FIRSTNAME_LASTNAME_THEN_USERNAME = 1
 
     public static final int LASTNAME_FIRSTNAME_THEN_USERNAME = 2
@@ -20,139 +19,33 @@ class DisplayNameValidatorImpl implements DisplayNameValidator {
 
     public static final int LASTNAME_MIDDLENAME_FIRSTNAME_THEN_USERNAME = 4
 
-    public static final int USERNAME = 5
-
-    Integer getDisplayNameType(User user, UserPii userPii) {
-        if (user == null) {
-            throw new IllegalArgumentException('user is null')
-        }
-        if (userPii == null) {
-            throw new IllegalArgumentException('userPii is null')
-        }
-
-        if (userPii.displayName == null) {
-            return FIRSTNAME_LASTNAME_THEN_USERNAME
-        }
-        if (userPii.name != null) {
-            if (userPii.displayName == "${userPii.name.firstName} ${userPii.name.lastName}") {
-                return FIRSTNAME_LASTNAME_THEN_USERNAME
+    @Override
+    void validate(UserName name) {
+        Integer displayNameType = -1
+        if (name.displayName != null) {
+            if (name.displayName == "${name.firstName} ${name.lastName}") {
+                displayNameType = FIRSTNAME_LASTNAME_THEN_USERNAME
             }
 
-            if (userPii.displayName == "${userPii.name.lastName} ${userPii.name.firstName}") {
-                return LASTNAME_FIRSTNAME_THEN_USERNAME
+            if (name.displayName == "${name.lastName} ${name.firstName}") {
+                displayNameType = LASTNAME_FIRSTNAME_THEN_USERNAME
             }
 
-            if (userPii.name.middleName != null) {
-                if (userPii.displayName ==
-                        "${userPii.name.firstName} ${userPii.name.middleName} ${userPii.name.lastName}") {
-                    return FIRSTNAME_MIDDLENAME_LASTNAME_THEN_USERNAME
+            if (name.middleName != null) {
+                if (name.displayName == "${name.firstName} ${name.middleName} ${name.lastName}") {
+                    displayNameType = FIRSTNAME_MIDDLENAME_LASTNAME_THEN_USERNAME
                 }
 
-                if (userPii.displayName ==
-                        "${userPii.name.lastName} ${userPii.name.middleName} ${userPii.name.firstName}") {
-                    return LASTNAME_MIDDLENAME_FIRSTNAME_THEN_USERNAME
+                if (name.displayName == "${name.lastName} ${name.middleName} ${name.firstName}") {
+                    displayNameType = LASTNAME_MIDDLENAME_FIRSTNAME_THEN_USERNAME
                 }
             }
-        }
 
-        if (user.username != null) {
-            if (userPii.displayName == user.username) {
-                return USERNAME
+            if (displayNameType == -1) {
+                throw AppErrors.INSTANCE.fieldInvalid('displayName',
+                        'FIRSTNAME_MIDDLENAME_LASTNAME or LASTNAME_MIDDLENAME_FIRSTNAME').exception()
             }
         }
-
-        def possibleValues = []
-        if (userPii.name != null) {
-            possibleValues.add("${userPii.name.firstName} ${userPii.name.lastName}")
-            possibleValues.add("${userPii.name.lastName} ${userPii.name.firstName}")
-
-            if (userPii.name.middleName != null) {
-                possibleValues.add("${userPii.name.firstName} ${userPii.name.middleName} ${userPii.name.lastName}")
-                possibleValues.add("${userPii.name.lastName} ${userPii.name.middleName} ${userPii.name.firstName}")
-            }
-        }
-
-        if (user.username != null) {
-            possibleValues.add(user.username)
-        }
-
-
-        throw AppErrors.INSTANCE.fieldInvalid('displayName', possibleValues.join(', ')).exception()
     }
 
-    String getDisplayName(User user, UserPii userPii) {
-        if (user == null) {
-            throw new IllegalArgumentException('user is null')
-        }
-
-        if (userPii == null) {
-            throw new IllegalArgumentException('userPii is null')
-        }
-
-        if (userPii.displayNameType == null || userPii.displayNameType == FIRSTNAME_LASTNAME_THEN_USERNAME) {
-            if (userPii.name != null) {
-                return "${userPii.name.firstName} ${userPii.name.lastName}"
-            }
-
-            if (user.username != null) {
-                return user.username
-            }
-
-            return null
-        }
-
-        if (userPii.displayNameType == LASTNAME_FIRSTNAME_THEN_USERNAME) {
-            if (userPii.name != null) {
-                return "${userPii.name.lastName} ${userPii.name.firstName}"
-            }
-
-            if (user.username != null) {
-                return user.username
-            }
-
-            return null
-        }
-
-        if (userPii.displayNameType == FIRSTNAME_MIDDLENAME_LASTNAME_THEN_USERNAME) {
-            if (userPii.name != null) {
-                if (userPii.name.middleName != null) {
-                    return "${userPii.name.firstName} ${userPii.name.middleName} ${userPii.name.lastName}"
-                }
-
-                return "${userPii.name.firstName} ${userPii.name.lastName}"
-            }
-
-            if (user.username != null) {
-                return user.username
-            }
-
-            return null
-        }
-
-        if (userPii.displayNameType == LASTNAME_MIDDLENAME_FIRSTNAME_THEN_USERNAME) {
-            if (userPii.name != null) {
-                if (userPii.name.middleName != null) {
-                    return "${userPii.name.lastName} ${userPii.name.middleName} ${userPii.name.firstName}"
-                }
-
-                return "${userPii.name.lastName} ${userPii.name.firstName}"
-            }
-
-            if (user.username != null) {
-                return user.username
-            }
-
-            return null
-        }
-
-        if (userPii.displayNameType == USERNAME) {
-            if (user.username != null) {
-                return user.username
-            }
-
-            return null
-        }
-
-        return null
-    }
 }

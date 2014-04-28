@@ -50,16 +50,19 @@ public class PaymentInstrumentEntity extends GenericEntity {
     private String accountNum;
 
     @Column(name = "revision")
-    private Integer rev;
+    private String rev;
 
     @Column(name = "address_id")
-    private Long addressId;
+    private Long billingAddressId;
+
+    @Column(name = "label")
+    private String label;
 
     @Column(name = "phone_num")
-    private String phoneNum;
+    private Long phoneNumber;
 
     @Column(name = "email")
-    private String email;
+    private Long email;
 
     @Column(name = "relation_to_holder")
     private String relationToHolder;
@@ -130,28 +133,36 @@ public class PaymentInstrumentEntity extends GenericEntity {
         this.accountNum = accountNum;
     }
 
-    public Integer getRev() {
+    public String getRev() {
         return rev;
     }
 
-    public void setRev(Integer rev) {
+    public void setRev(String rev) {
         this.rev = rev;
     }
 
-    public Long getAddressId() {
-        return addressId;
+    public Long getBillingAddressId() {
+        return billingAddressId;
     }
 
-    public void setAddressId(Long addressId) {
-        this.addressId = addressId;
+    public void setBillingAddressId(Long billingAddressId) {
+        this.billingAddressId = billingAddressId;
     }
 
-    public String getPhoneNum() {
-        return phoneNum;
+    public String getLabel() {
+        return label;
     }
 
-    public void setPhoneNum(String phoneNum) {
-        this.phoneNum = phoneNum;
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public Long getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(Long phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getRelationToHolder() {
@@ -162,11 +173,11 @@ public class PaymentInstrumentEntity extends GenericEntity {
         this.relationToHolder = relationToHolder;
     }
 
-    public String getEmail() {
+    public Long getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(Long email) {
         this.email = email;
     }
 

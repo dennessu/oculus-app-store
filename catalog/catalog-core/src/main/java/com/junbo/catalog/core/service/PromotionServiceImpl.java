@@ -10,13 +10,14 @@ import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.PromotionService;
 import com.junbo.catalog.db.repo.PromotionRepository;
 import com.junbo.catalog.db.repo.PromotionRevisionRepository;
+import com.junbo.catalog.spec.enums.Status;
 import com.junbo.catalog.spec.error.AppErrors;
-import com.junbo.catalog.spec.model.common.Status;
 import com.junbo.catalog.spec.model.promotion.Promotion;
 import com.junbo.catalog.spec.model.promotion.PromotionRevision;
 import com.junbo.catalog.spec.model.promotion.PromotionRevisionsGetOptions;
 import com.junbo.catalog.spec.model.promotion.PromotionsGetOptions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -32,9 +33,8 @@ public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, P
 
     @Override
     public Promotion createEntity(Promotion promotion) {
-        if (Boolean.TRUE.equals(promotion.getCurated())) {
-            throw AppErrors.INSTANCE
-                    .fieldNotCorrect("curated", "Cannot create an promotion with curated true.").exception();
+        if (!StringUtils.isEmpty(promotion.getRev())) {
+            throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
         }
         validatePromotion(promotion);
         return super.createEntity(promotion);
@@ -49,8 +49,12 @@ public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, P
 
     @Override
     public PromotionRevision createRevision(PromotionRevision revision) {
+        if (!StringUtils.isEmpty(revision.getRev())) {
+            throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
+        }
         validateRevision(revision);
-        return super.createRevision(revision);
+        Long revisionId = promotionRevisionRepo.create(revision);
+        return promotionRevisionRepo.get(revisionId);
     }
 
     @Override
@@ -59,15 +63,14 @@ public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, P
         validateRevision(revision);
 
         PromotionRevision existingRevision = promotionRevisionRepo.get(revisionId);
-        if (Status.APPROVED.equals(existingRevision.getStatus())) {
+        if (Status.APPROVED.is(existingRevision.getStatus())) {
             throw AppErrors.INSTANCE.validation("Cannot update a revision after it's approved.").exception();
         }
         checkEntityNotNull(revisionId, existingRevision, "promotion-revision");
 
-        if (Status.APPROVED.equals(revision.getStatus())) {
+        if (Status.APPROVED.is(revision.getStatus())) {
             Promotion existingPromotion = promotionRepo.get(revision.getEntityId());
             checkEntityNotNull(revision.getEntityId(), existingPromotion, getEntityType());
-            existingPromotion.setCurated(Boolean.TRUE);
             existingPromotion.setCurrentRevisionId(revisionId);
             existingPromotion.setStartDate(revision.getStartDate());
             existingPromotion.setEndDate(revision.getEndDate());
@@ -109,7 +112,6 @@ public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, P
     }
 
     private void validatePromotion(Promotion promotion) {
-        checkFieldNotNull(promotion.getName(), "name");
         checkFieldNotNull(promotion.getOwnerId(), "publisher");
         checkFieldNotNull(promotion.getType(), "type");
     }

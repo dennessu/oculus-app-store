@@ -34,10 +34,6 @@ public interface SelfMapper {
 
     UserAuthenticator mergeUserAuthenticator(UserAuthenticator source, UserAuthenticator base, MappingContext context);
 
-    UserDevice filterUserDevice(UserDevice userDevice, MappingContext context);
-
-    UserDevice mergeUserDevice(UserDevice source, UserDevice base, MappingContext context);
-
     UserGroup filterUserGroup(UserGroup userGroup, MappingContext context);
 
     UserGroup mergeUserGroup(UserGroup source, UserGroup base, MappingContext context);
@@ -48,17 +44,13 @@ public interface SelfMapper {
     UserCredentialVerifyAttempt mergeUserCredentialVerifyAttempt(
             UserCredentialVerifyAttempt source, UserCredentialVerifyAttempt base, MappingContext context);
 
-    UserOptin filterUserOptin(UserOptin userOptin, MappingContext context);
+    UserCommunication filterUserCommunication(UserCommunication userOptin, MappingContext context);
 
-    UserOptin mergeUserOptin(UserOptin source, UserOptin base, MappingContext context);
+    UserCommunication mergeUserCommunication(UserCommunication source, UserCommunication base, MappingContext context);
 
     UserPassword filterUserPassword(UserPassword userPassword, MappingContext context);
 
     UserPassword mergeUserPassword(UserPassword source, UserPassword base, MappingContext context);
-
-    UserPhoneNumber filterUserPhoneNumber(UserPhoneNumber userPhoneNumber, MappingContext context);
-
-    UserPhoneNumber mergeUserPhoneNumber(UserPhoneNumber source, UserPhoneNumber base, MappingContext context);
 
     UserPin filterUserPin(UserPin userPin, MappingContext context);
 
@@ -74,10 +66,6 @@ public interface SelfMapper {
 
     UserSecurityQuestionVerifyAttempt mergeUserSecurityQuestionAttempt(UserSecurityQuestionVerifyAttempt source,
                                              UserSecurityQuestionVerifyAttempt base, MappingContext mappingContext);
-
-    UserEmail filterUserEmail(UserEmail userEmail, MappingContext context);
-
-    UserEmail mergeUserEmail(UserEmail source, UserEmail base, MappingContext context);
 
     UserTosAgreement filterUserTos(UserTosAgreement userTos, MappingContext context);
 
@@ -103,11 +91,39 @@ public interface SelfMapper {
 
     UserCredential mergeUserCredential(UserCredential source, UserCredential base, MappingContext context);
 
-    UserPii filterUserPii(UserPii userPii, MappingContext context);
-
-    UserPii mergeUserPii(UserPii source, UserPii base, MappingContext context);
-
     Address filterAddress(Address address, MappingContext context);
 
     Address mergeAddress(Address source, Address base, MappingContext context);
+
+    UserTeleCode filterUserTeleCode(UserTeleCode userTeleCode, MappingContext context);
+
+    UserTeleCode mergeUserTeleCode(UserTeleCode source, UserTeleCode base, MappingContext context);
+
+    DeviceType filterDeviceType(DeviceType deviceType, MappingContext context);
+
+    DeviceType mergeDeviceType(DeviceType source, DeviceType base, MappingContext context);
+
+    Country filterCountry(Country country, MappingContext context);
+
+    Country mergeCountry(Country source, Country base, MappingContext context);
+
+    Currency filterCurrency(Currency currency, MappingContext context);
+
+    Currency mergeCurrency(Currency source, Currency base, MappingContext context);
+
+    Locale filterLocale(Locale locale, MappingContext context);
+
+    Locale mergeLocale(Locale source, Locale base, MappingContext context);
+
+    PIType filterPIType(PIType piType, MappingContext context);
+
+    PIType mergePIType(PIType source, PIType base, MappingContext context);
+
+    Communication filterCommunication(Communication communication, MappingContext context);
+
+    Communication mergeCommunication(Communication source, Communication base, MappingContext context);
+
+    UserPersonalInfo filterUserPersonalInfo(UserPersonalInfo userPersonalInfo, MappingContext context);
+
+    UserPersonalInfo mergeUserPersonalInfo(UserPersonalInfo source, UserPersonalInfo base, MappingContext context);
 }

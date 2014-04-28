@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -58,6 +59,7 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
         entity.setCreatedBy(Constants.SYSTEM_INTERNAL);
         entity.setUpdatedTime(Utils.now());
         entity.setUpdatedBy(Constants.SYSTEM_INTERNAL);
+        entity.setRev(1);
 
         return (Long) currentSession().save(entity);
     }
@@ -70,7 +72,7 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
     public Long update(T entity) {
         entity.setUpdatedTime(Utils.now());
         entity.setUpdatedBy(Constants.SYSTEM_INTERNAL);
-
+        entity.setRev(entity.getRev()==null ? 1 : entity.getRev() + 1);
         currentSession().update(entity);
         return entity.getId();
     }
@@ -93,7 +95,7 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
         return criteria.list();
     }
 
-    protected <E extends Id> void addIdRestriction(String fieldName, List<E> ids, Criteria criteria) {
+    protected <E extends Id> void addIdRestriction(String fieldName, Collection<E> ids, Criteria criteria) {
         if (!CollectionUtils.isEmpty(ids)) {
             List<Long> idValues = new ArrayList<>();
             for (E id : ids) {

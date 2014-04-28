@@ -6,12 +6,14 @@
 package com.junbo.identity.data.identifiable
 
 import com.junbo.common.util.Identifiable
+import groovy.transform.CompileStatic
 
 import javax.ws.rs.NotSupportedException
 
 /**
  * User Password status enum
  */
+@CompileStatic
 enum UserPasswordStatus implements Identifiable<Short> {
     ACTIVE((short)1),
     RETIRE((short)2)

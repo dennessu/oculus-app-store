@@ -12,6 +12,8 @@ import com.junbo.payment.spec.model.PaymentInstrumentType;
 import com.junbo.payment.spec.resource.PaymentInstrumentTypeResource;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 /**
  * payment instrument resource implementation.
  */
@@ -20,8 +22,13 @@ public class PaymentInstrumentTypeResourceImpl implements PaymentInstrumentTypeR
     private PaymentInstrumentService piService;
 
     @Override
-    public Promise<PaymentInstrumentType> getById(String paymentInstrumentType) {
-        PaymentInstrumentType piType = piService.getPIType(paymentInstrumentType);
+    public Promise<PaymentInstrumentType> getById(String paymentInstrumentTypeId) {
+        PaymentInstrumentType piType = piService.getPIType(paymentInstrumentTypeId);
         return Promise.pure(piType);
+    }
+
+    @Override
+    public Promise<List<PaymentInstrumentType>> getAllTypes() {
+        return null;
     }
 }

@@ -8,56 +8,62 @@ package com.junbo.payment.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.PaymentInstrumentTypeId;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * payment instrument type model.
  */
 public class PaymentInstrumentType {
+    @ApiModelProperty(position = 1, required = true, value = "The id of payment instrument type resource.")
     @JsonProperty("self")
     @PaymentInstrumentTypeId
-    private String name;
-    private String recurring;
-    private String refundable;
-    private String authorizable;
-    private String defaultable;
+    private Long id;
+    @ApiModelProperty(position = 2, required = true, value = "The type code of payment instrument resource.")
+    private String typeCode;
+    @ApiModelProperty(position = 3, required = true, value = "The description of payment instrument resource with different locales.")
+    private String locales;
+    @ApiModelProperty(position = 4, required = true, value = "whether the PI is recurring-able or not.")
+    private Boolean capableOfRecurring;
+    @ApiModelProperty(position = 5, required = true, value = "whether the PI is refund-able or not.")
+    private Boolean isRefundable;
 
-    public String getDefaultable() {
-        return defaultable;
+    public Long getId() {
+        return id;
     }
 
-    public void setDefaultable(String defaultable) {
-        this.defaultable = defaultable;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getLocales() {
+        return locales;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setLocales(String locales) {
+        this.locales = locales;
     }
 
-    public String getRecurring() {
-        return recurring;
+    public String getTypeCode() {
+        return typeCode;
     }
 
-    public void setRecurring(String recurring) {
-        this.recurring = recurring;
+    public void setTypeCode(String typeCode) {
+        this.typeCode = typeCode;
     }
 
-    public String getRefundable() {
-        return refundable;
+    public Boolean getCapableOfRecurring() {
+        return capableOfRecurring;
     }
 
-    public void setRefundable(String refundable) {
-        this.refundable = refundable;
+    public void setCapableOfRecurring(Boolean capableOfRecurring) {
+        this.capableOfRecurring = capableOfRecurring;
     }
 
-    public String getAuthorizable() {
-        return authorizable;
+    public Boolean getIsRefundable() {
+        return isRefundable;
     }
 
-    public void setAuthorizable(String authorizable) {
-        this.authorizable = authorizable;
+    public void setIsRefundable(Boolean isRefundable) {
+        this.isRefundable = isRefundable;
     }
 }

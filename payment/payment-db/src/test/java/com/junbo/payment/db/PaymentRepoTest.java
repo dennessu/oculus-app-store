@@ -23,28 +23,21 @@ public class PaymentRepoTest extends BaseTest {
         PaymentInstrument result = piRepo.getByPIId(pi.getId());
         Assert.assertEquals(pi.getAccountName(), result.getAccountName());
         Assert.assertEquals(pi.getAccountNum(), result.getAccountNum());
-        Assert.assertEquals(pi.getAddress().getAddressLine1(), result.getAddress().getAddressLine1());
     }
 
     private PaymentInstrument buildPIRequest(){
         PaymentInstrument pi = new PaymentInstrument();
         pi.setUserId(userId);
-        pi.setType(PIType.CREDITCARD.toString());
+        pi.setType(PIType.CREDITCARD.getId());
         pi.setAccountName("David");
         pi.setAccountNum("1111");
         pi.setIsActive(true);
-        pi.setAddress(new Address(){
-            {
-                setAddressLine1("third street");
-                setCountry("US");
-                setPostalCode("12345");
-            }
-        });
-        pi.setPhoneNum("12345676");
-        pi.setCreditCardRequest(new CreditCardRequest(){
+        pi.setBillingAddressId(123L);
+        pi.setPhoneNumber(12345676L);
+        pi.setTypeSpecificDetails(new TypeSpecificDetails() {
             {
                 setExpireDate("2025-10-12");
-                setType(CreditCardType.VISA.toString());
+                setCreditCardType(CreditCardType.VISA.toString());
                 setLastBillingDate(new Date());
             }
         });

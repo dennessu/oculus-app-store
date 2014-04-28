@@ -7,17 +7,13 @@ package com.junbo.fulfilment.clientproxy.mock;
 
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Action;
-import com.junbo.catalog.spec.model.offer.Event;
 import com.junbo.catalog.spec.model.offer.ItemEntry;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.fulfilment.clientproxy.impl.CatalogGatewayImpl;
 import com.junbo.fulfilment.common.util.Constant;
 import com.junbo.fulfilment.spec.fusion.ShippingMethod;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * MockCatalogGatewayImpl.
@@ -78,18 +74,15 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
             }});
         }});
 
-        offer.setEvents(new HashMap<String, Event>() {{
-            put(Constant.EVENT_PURCHASE.toLowerCase(), new Event() {{
-                setName(Constant.EVENT_PURCHASE);
-                setActions(new ArrayList<Action>() {{
-                    add(new Action() {{
-                        setType(Constant.ACTION_DELIVER_PHYSICAL_GOODS);
-                    }});
-                    add(new Action() {{
-                        setType(Constant.ACTION_GRANT_ENTITLEMENT);
-                        setProperties(new HashMap<String, Object>() {{
-                            put(Constant.ENTITLEMENT_DEF_ID, "12345");
-                        }});
+        offer.setEventActions(new HashMap<String, List<Action>>() {{
+            put(Constant.EVENT_PURCHASE, new ArrayList<Action>() {{
+                add(new Action() {{
+                    setType(Constant.ACTION_DELIVER_PHYSICAL_GOODS);
+                }});
+                add(new Action() {{
+                    setType(Constant.ACTION_GRANT_ENTITLEMENT);
+                    setProperties(new HashMap<String, Object>() {{
+                        put(Constant.ENTITLEMENT_DEF_ID, "12345");
                     }});
                 }});
             }});
@@ -116,15 +109,12 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
             }});
         }});
 
-        offer.setEvents(new HashMap<String, Event>() {{
-            put(Constant.EVENT_PURCHASE.toLowerCase(), new Event() {{
-                setName(Constant.EVENT_PURCHASE);
-                setActions(new ArrayList<Action>() {{
-                    add(new Action() {{
-                        setType(Constant.ACTION_GRANT_ENTITLEMENT);
-                        setProperties(new HashMap<String, Object>() {{
-                            put(Constant.ENTITLEMENT_DEF_ID, "12345");
-                        }});
+        offer.setEventActions(new HashMap<String, List<Action>>() {{
+            put(Constant.EVENT_PURCHASE, new ArrayList<Action>() {{
+                add(new Action() {{
+                    setType(Constant.ACTION_GRANT_ENTITLEMENT);
+                    setProperties(new HashMap<String, Object>() {{
+                        put(Constant.ENTITLEMENT_DEF_ID, "12345");
                     }});
                 }});
             }});
@@ -154,13 +144,10 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
             }});
         }});
 
-        offer.setEvents(new HashMap<String, Event>() {{
-            put(Constant.EVENT_PURCHASE.toLowerCase(), new Event() {{
-                setName(Constant.EVENT_PURCHASE);
-                setActions(new ArrayList<Action>() {{
-                    add(new Action() {{
-                        setType(Constant.ACTION_DELIVER_PHYSICAL_GOODS);
-                    }});
+        offer.setEventActions(new HashMap<String, List<Action>>() {{
+            put(Constant.EVENT_PURCHASE, new ArrayList<Action>() {{
+                add(new Action() {{
+                    setType(Constant.ACTION_DELIVER_PHYSICAL_GOODS);
                 }});
             }});
         }});
@@ -186,13 +173,10 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
             }});
         }});
 
-        offer.setEvents(new HashMap<String, Event>() {{
-            put(Constant.EVENT_PURCHASE.toLowerCase(), new Event() {{
-                setName(Constant.EVENT_PURCHASE);
-                setActions(new ArrayList<Action>() {{
-                    add(new Action() {{
-                        setType(Constant.ACTION_DELIVER_PHYSICAL_GOODS);
-                    }});
+        offer.setEventActions(new HashMap<String, List<Action>>() {{
+            put(Constant.EVENT_PURCHASE, new ArrayList<Action>() {{
+                add(new Action() {{
+                    setType(Constant.ACTION_DELIVER_PHYSICAL_GOODS);
                 }});
             }});
         }});

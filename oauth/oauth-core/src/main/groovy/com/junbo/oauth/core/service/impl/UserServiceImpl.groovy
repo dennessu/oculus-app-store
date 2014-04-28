@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.core.service.impl
 
+import com.junbo.common.id.ClientId
 import com.junbo.common.id.UserId
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
@@ -56,7 +57,8 @@ class UserServiceImpl implements UserService {
         UserCredentialVerifyAttempt loginAttempt = new UserCredentialVerifyAttempt(
                 type: 'password',
                 value: new String(Base64.encodeBase64("$username:$password".bytes)),
-                clientId: clientId,
+                //TODO: remove the hard coded client id
+                clientId: new ClientId(1L),
                 ipAddress: ipAddress,
                 userAgent: userAgent
         )

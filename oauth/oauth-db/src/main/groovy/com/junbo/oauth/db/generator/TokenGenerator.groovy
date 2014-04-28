@@ -12,7 +12,6 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface TokenGenerator {
-    String generateFlowStateId()
 
     String generateLoginStateId()
 
@@ -33,6 +32,8 @@ interface TokenGenerator {
     String generateClientId()
 
     String generateClientSecret()
+
+    String generateEmailVerifyCode()
 
     String generateSalt()
 

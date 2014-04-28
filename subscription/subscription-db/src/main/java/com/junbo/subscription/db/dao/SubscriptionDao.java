@@ -18,7 +18,7 @@ import java.util.UUID;
 public class SubscriptionDao extends BaseDao<SubscriptionEntity> {
 
     public List<SubscriptionEntity> getByTrackingUuid(Long userId, UUID trackingUuid) {
-        Criteria criteria = currentSession().createCriteria(SubscriptionEntity.class);
+        Criteria criteria = currentSession(userId).createCriteria(SubscriptionEntity.class);
         criteria.add(Restrictions.eq("userId", userId));
         criteria.add(Restrictions.eq("trackingUuid", trackingUuid));
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);

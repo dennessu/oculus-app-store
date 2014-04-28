@@ -46,6 +46,10 @@ class ValidateClient implements Action {
             throw AppExceptions.INSTANCE.invalidClientId(clientId).exception()
         }
 
+        if (client == null) {
+            throw AppExceptions.INSTANCE.invalidClientId(clientId).exception()
+        }
+
         contextWrapper.client = client
 
         return Promise.pure(null)

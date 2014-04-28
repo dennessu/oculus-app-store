@@ -35,7 +35,7 @@ public class EmailScheduleRepository extends EmailBaseRepository {
     public Email updateEmailSchedule(Email email) {
         EmailScheduleEntity entity = emailMapper.toEmailScheduleEntity(email);
         EmailScheduleEntity savedEntity = emailScheduleDao.get(entity.getId());
-        mergeEntity(savedEntity,entity);
+        this.merge(savedEntity, entity);
         savedEntity.setUpdatedTime(new Date());
         savedEntity.setUpdatedBy("internal system");
         Long id = emailScheduleDao.update(savedEntity);
@@ -51,17 +51,15 @@ public class EmailScheduleRepository extends EmailBaseRepository {
         return emailMapper.toEmailSchedule(entity);
     }
 
-    private void mergeEntity(EmailScheduleEntity savedEntity,EmailScheduleEntity updateEntity){
+    private void merge(EmailScheduleEntity savedEntity, EmailScheduleEntity updateEntity){
         if(updateEntity.getPriority()!=null) {
             savedEntity.setPriority(updateEntity.getPriority());
         }
         if(updateEntity.getRecipients()!=null) {
             savedEntity.setRecipients(updateEntity.getRecipients());
         }
+        savedEntity.setTemplateId(updateEntity.getTemplateId());
         savedEntity.setScheduleTime(updateEntity.getScheduleTime());
-        savedEntity.setSource(updateEntity.getSource());
-        savedEntity.setAction(updateEntity.getAction());
-        savedEntity.setLocale(updateEntity.getLocale());
         savedEntity.setPayload(updateEntity.getPayload());
     }
 

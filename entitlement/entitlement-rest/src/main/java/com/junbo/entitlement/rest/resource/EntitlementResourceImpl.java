@@ -41,7 +41,7 @@ public class EntitlementResourceImpl implements EntitlementResource {
 
     @Override
     public Promise<Entitlement> updateEntitlement(EntitlementId entitlementId, Entitlement entitlement) {
-        Entitlement existing = getByTrackingUuid(entitlementId.getValue(), entitlement.getTrackingUuid());
+        Entitlement existing = getByTrackingUuid(entitlement.getUserId(), entitlement.getTrackingUuid());
         return Promise.pure(existing != null ? existing :
                 entitlementService.updateEntitlement(entitlementId.getValue(), entitlement));
     }

@@ -8,7 +8,6 @@ package com.junbo.catalog.db.mapper;
 
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.entity.PromotionEntity;
-import com.junbo.catalog.spec.model.common.LocalizableProperty;
 import com.junbo.catalog.spec.model.promotion.Promotion;
 
 /**
@@ -28,14 +27,13 @@ public class PromotionMapper {
 
     public static void fillDBEntity(Promotion model, PromotionEntity entity) {
         entity.setPromotionId(model.getPromotionId());
-        entity.setName(Utils.toJson(model.getName()));
-        entity.setCurated(model.getCurated()==null?false:model.getCurated());
         entity.setOwnerId(model.getOwnerId());
         entity.setType(model.getType());
         entity.setCurrentRevisionId(model.getCurrentRevisionId());
         entity.setStartDate(model.getStartDate()==null?Utils.minDate():model.getStartDate());
         entity.setEndDate(model.getEndDate()==null?Utils.maxDate():model.getEndDate());
         entity.setPayload(Utils.toJsonWithType(model));
+        entity.setRev(model.getRev()==null ? null : Integer.valueOf(model.getRev()));
     }
 
     public static Promotion toModel(PromotionEntity entity) {
@@ -44,8 +42,6 @@ public class PromotionMapper {
         }
         Promotion model = Utils.fromJson(entity.getPayload(), Promotion.class);
         model.setPromotionId(entity.getPromotionId());
-        model.setName(Utils.fromJson(entity.getName(), LocalizableProperty.class));
-        model.setCurated(entity.isCurated());
         model.setCurrentRevisionId(entity.getCurrentRevisionId());
         model.setOwnerId(entity.getOwnerId());
         model.setStartDate(entity.getStartDate());
@@ -54,6 +50,7 @@ public class PromotionMapper {
         model.setCreatedTime(entity.getCreatedTime());
         model.setUpdatedBy(entity.getUpdatedBy());
         model.setUpdatedTime(entity.getUpdatedTime());
+        model.setRev(entity.getRev().toString());
         return model;
     }
 }

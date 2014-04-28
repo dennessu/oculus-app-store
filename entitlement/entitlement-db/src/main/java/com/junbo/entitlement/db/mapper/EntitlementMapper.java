@@ -26,7 +26,7 @@ public class EntitlementMapper {
         }
         Entitlement entitlement = new Entitlement();
         entitlement.setEntitlementId(entitlementEntity.getEntitlementId());
-        entitlement.setRev(entitlementEntity.getRev());
+        entitlement.setRev(entitlementEntity.getRev().toString());
         entitlement.setUserId(entitlementEntity.getUserId());
         entitlement.setEntitlementDefinitionId(entitlementEntity.getEntitlementDefinitionId());
         entitlement.setIsActive(isActive(entitlementEntity));
@@ -41,7 +41,9 @@ public class EntitlementMapper {
         EntitlementEntity entitlementEntity = new EntitlementEntity();
         entitlementEntity.setTrackingUuid(entitlement.getTrackingUuid());
         entitlementEntity.setEntitlementId(entitlement.getEntitlementId());
-        entitlementEntity.setRev(entitlement.getRev());
+        if (entitlement.getRev() != null) {
+            entitlementEntity.setRev(Integer.valueOf(entitlement.getRev()));
+        }
         entitlementEntity.setEntitlementDefinitionId(
                 entitlement.getEntitlementDefinitionId());
         entitlementEntity.setUserId(entitlement.getUserId());
@@ -63,7 +65,7 @@ public class EntitlementMapper {
     }
 
     private Boolean isActive(EntitlementEntity entitlementEntity) {
-        if(entitlementEntity.getIsBanned()){
+        if (entitlementEntity.getIsBanned()) {
             return false;
         }
         Date now = EntitlementContext.current().getNow();

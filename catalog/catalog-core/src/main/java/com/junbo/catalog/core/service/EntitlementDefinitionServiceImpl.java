@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.core.service;
 
+import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.EntitlementDefinitionService;
 import com.junbo.catalog.db.repo.EntitlementDefinitionRepository;
 import com.junbo.catalog.spec.error.AppErrors;
@@ -18,10 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Service for EntitlementDefinition.
@@ -35,7 +33,8 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
     public EntitlementDefinition getEntitlementDefinition(Long entitlementDefinitionId) {
         EntitlementDefinition entitlementDefinition = entitlementDefinitionRepository.get(entitlementDefinitionId);
         if (entitlementDefinition == null) {
-            throw AppErrors.INSTANCE.notFound("entitlementDefinition", entitlementDefinitionId).exception();
+            throw AppErrors.INSTANCE
+                    .notFound("entitlementDefinition", Utils.encodeId(entitlementDefinitionId)).exception();
         }
         checkDeveloper(entitlementDefinition.getDeveloperId());
         return entitlementDefinition;
@@ -93,25 +92,18 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
         EntitlementDefinition existingEntitlementDefinition =
                 entitlementDefinitionRepository.get(entitlementDefinitionId);
         if (existingEntitlementDefinition == null) {
-            throw AppErrors.INSTANCE.notFound("entitlementDefinition", entitlementDefinitionId).exception();
+            throw AppErrors.INSTANCE
+                    .notFound("entitlementDefinition", Utils.encodeId(entitlementDefinitionId)).exception();
         }
 
         checkDeveloper(existingEntitlementDefinition.getDeveloperId());
         checkInAppContext(entitlementDefinition.getInAppContext());
 
-        if (!existingEntitlementDefinition.getDeveloperId().equals(entitlementDefinition.getDeveloperId())) {
-            throw AppErrors.INSTANCE.fieldNotMatch("developer",
-                    entitlementDefinition.getDeveloperId(),
-                    existingEntitlementDefinition.getDeveloperId())
-                    .exception();
-        }
 
-        if (!existingEntitlementDefinition.getType().equalsIgnoreCase(entitlementDefinition.getType())) {
-            throw AppErrors.INSTANCE.fieldNotMatch("type",
-                    entitlementDefinition.getType(),
-                    existingEntitlementDefinition.getType())
-                    .exception();
-        }
+        validateEquals(entitlementDefinition.getDeveloperId(),
+                existingEntitlementDefinition.getDeveloperId(), "developer");
+        validateEquals(entitlementDefinition.getType(),
+                existingEntitlementDefinition.getType(), "type");
 
         existingEntitlementDefinition.setTag(entitlementDefinition.getTag());
         existingEntitlementDefinition.setGroup(entitlementDefinition.getGroup());
@@ -127,7 +119,8 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
         EntitlementDefinition existingEntitlementDefinition =
                 entitlementDefinitionRepository.get(entitlementDefinitionId);
         if (existingEntitlementDefinition == null) {
-            throw AppErrors.INSTANCE.notFound("entitlementDefinition", entitlementDefinitionId).exception();
+            throw AppErrors.INSTANCE
+                    .notFound("entitlementDefinition", Utils.encodeId(entitlementDefinitionId)).exception();
         }
         checkDeveloper(existingEntitlementDefinition.getDeveloperId());
         entitlementDefinitionRepository.delete(existingEntitlementDefinition);
@@ -138,9 +131,27 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
         return entitlementDefinitionRepository.getByTrackingUuid(trackingUuid);
     }
 
-    protected void validateNotNull(Object value, String fieldName) {
-        if (value == null) {
-            throw AppErrors.INSTANCE.missingField(fieldName).exception();
+    private void validateEquals(Object actual, Object expected, String fieldName) {
+        if (expected == actual) {
+            return;
+        } else if (expected == null || actual == null) {
+            throw AppErrors.INSTANCE.fieldNotMatch(fieldName, actual, expected).exception();
+        }
+        Boolean equals = true;
+        if (actual instanceof String) {
+            if (!((String) expected).equalsIgnoreCase((String) actual)) {
+                equals = false;
+            }
+        } else if (actual instanceof Date) {
+            if (Math.abs(((Date) actual).getTime() - ((Date) expected).getTime()) > 1000) {
+                equals = false;
+            }
+        } else if (!expected.equals(actual)) {
+            equals = false;
+        }
+
+        if (!equals) {
+            throw AppErrors.INSTANCE.fieldNotMatch(fieldName, actual, expected).exception();
         }
     }
 

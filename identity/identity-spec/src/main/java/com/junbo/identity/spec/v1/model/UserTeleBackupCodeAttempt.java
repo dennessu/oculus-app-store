@@ -46,6 +46,8 @@ public class UserTeleBackupCodeAttempt extends ResourceMeta implements Identifia
 
     public void setId(UserTeleBackupCodeAttemptId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("self");
     }
 
     public UserId getUserId() {
@@ -54,6 +56,8 @@ public class UserTeleBackupCodeAttempt extends ResourceMeta implements Identifia
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+        support.setPropertyAssigned("userId");
+        support.setPropertyAssigned("user");
     }
 
     public String getVerifyCode() {
@@ -62,6 +66,7 @@ public class UserTeleBackupCodeAttempt extends ResourceMeta implements Identifia
 
     public void setVerifyCode(String verifyCode) {
         this.verifyCode = verifyCode;
+        support.setPropertyAssigned("verifyCode");
     }
 
     public String getIpAddress() {
@@ -70,6 +75,7 @@ public class UserTeleBackupCodeAttempt extends ResourceMeta implements Identifia
 
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
+        support.setPropertyAssigned("ipAddress");
     }
 
     public String getUserAgent() {
@@ -78,6 +84,7 @@ public class UserTeleBackupCodeAttempt extends ResourceMeta implements Identifia
 
     public void setUserAgent(String userAgent) {
         this.userAgent = userAgent;
+        support.setPropertyAssigned("userAgent");
     }
 
     public String getClientId() {
@@ -86,6 +93,7 @@ public class UserTeleBackupCodeAttempt extends ResourceMeta implements Identifia
 
     public void setClientId(String clientId) {
         this.clientId = clientId;
+        support.setPropertyAssigned("clientId");
     }
 
     public Boolean getSucceeded() {
@@ -94,5 +102,6 @@ public class UserTeleBackupCodeAttempt extends ResourceMeta implements Identifia
 
     public void setSucceeded(Boolean succeeded) {
         this.succeeded = succeeded;
+        support.setPropertyAssigned("succeeded");
     }
 }

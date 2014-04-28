@@ -13,6 +13,7 @@ import com.junbo.payment.db.entity.payment.PaymentEventEntity;
 import com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentEntity;
 import com.junbo.payment.db.repository.MerchantAccountRepository;
 import com.junbo.payment.db.repository.PaymentProviderRepository;
+import com.junbo.payment.spec.enums.PIType;
 import com.junbo.payment.spec.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -43,6 +44,7 @@ public class PaymentMapperExtension {
         }
         PaymentInstrument pi = paymentMapperImpl.toPaymentInstrumentRaw(piEntity, new MappingContext());
         //pi.setId(new PIId(piEntity.getUserId(), piEntity.getId()));
+        pi.setIsValidated(pi.getLastValidatedTime() != null);
         return pi;
     }
 
@@ -96,5 +98,56 @@ public class PaymentMapperExtension {
         chargeInfo.setCountry(paymentEntity.getCountryCode());
         request.setChargeInfo(chargeInfo);
         return request;
+    }
+
+    public TypeSpecificDetails toTypeSpecificDetails(Object specificDetail){
+        TypeSpecificDetails result = new TypeSpecificDetails();
+        if(specificDetail instanceof CreditCardDetail){
+            CreditCardDetail generalDetail = (CreditCardDetail)specificDetail;
+            result.setId(generalDetail.getId());
+            result.setExpireDate(generalDetail.getExpireDate());
+            result.setCreditCardType(generalDetail.getType());
+            result.setEncryptedCvmCode(generalDetail.getEncryptedCvmCode());
+            result.setLastBillingDate(generalDetail.getLastBillingDate());
+            result.setCommercial(generalDetail.getIsCommercial());
+            result.setDebit(generalDetail.getIsDebit());
+            result.setIssueCountry(generalDetail.getIssueCountry());
+            result.setPrepaid(generalDetail.getIsPrepaid());
+        }else if(specificDetail instanceof WalletDetail){
+            WalletDetail generalDetail = (WalletDetail)specificDetail;
+            result.setWalletCurrency(generalDetail.getCurrency());
+            result.setWalletType(generalDetail.getType());
+        }else{
+            return null;
+        }
+        return result;
+    }
+
+    public <T> T toSpecificDetail(final TypeSpecificDetails generalDetail, PIType type){
+        switch (type){
+            case CREDITCARD:
+                return (T) new CreditCardDetail(){
+                    {
+                        setId(generalDetail.getId());
+                        setExpireDate(generalDetail.getExpireDate());
+                        setType(generalDetail.getCreditCardType());
+                        setEncryptedCvmCode(generalDetail.getEncryptedCvmCode());
+                        setLastBillingDate(generalDetail.getLastBillingDate());
+                        setIsCommercial(generalDetail.getCommercial());
+                        setIsDebit(generalDetail.getDebit());
+                        setIssueCountry(generalDetail.getIssueCountry());
+                        setIsPrepaid(generalDetail.getPrepaid());
+                    }
+                };
+            case WALLET:
+                return (T) new WalletDetail(){
+                    {
+                        setCurrency(generalDetail.getWalletCurrency());
+                        setType(generalDetail.getWalletType());
+                    }
+                };
+            default:
+                return null;
+        }
     }
 }

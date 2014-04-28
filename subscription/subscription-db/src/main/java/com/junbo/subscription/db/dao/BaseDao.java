@@ -6,6 +6,8 @@
 package com.junbo.subscription.db.dao;
 
 import com.junbo.sharding.IdGenerator;
+import com.junbo.sharding.ShardAlgorithm;
+import com.junbo.sharding.hibernate.ShardScope;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,10 @@ import java.util.Date;
  */
 public class BaseDao<T extends com.junbo.subscription.db.entity.Entity> {
     @Autowired
+    @Qualifier("userShardAlgorithm")
+    private ShardAlgorithm shardAlgorithm;
+
+    @Autowired
     @Qualifier("subscriptionSessionFactory")
     private SessionFactory sessionFactory;
 
@@ -30,8 +36,13 @@ public class BaseDao<T extends com.junbo.subscription.db.entity.Entity> {
 
     private Class<T> classType;
 
-    protected Session currentSession() {
-        return sessionFactory.getCurrentSession();
+    public Session currentSession(Object key) {
+        ShardScope shardScope = new ShardScope(shardAlgorithm.shardId(key));
+        try {
+            return sessionFactory.getCurrentSession();
+        } finally {
+            shardScope.close();
+        }
     }
 
     public Long insert(T t) {
@@ -40,15 +51,15 @@ public class BaseDao<T extends com.junbo.subscription.db.entity.Entity> {
             t.setCreatedTime(new Date());
             t.setCreatedBy("INTERNAL");
         }
-        return (Long) currentSession().save(t);
+        return (Long) currentSession(t.getShardMasterId()).save(t);
     }
 
     public T get(Long id) {
-        return (T) currentSession().get(classType, id);
+        return (T) currentSession(id).get(classType, id);
     }
 
     public Long update(T t) {
-        currentSession().update(t);
+        currentSession(t.getShardMasterId()).update(t);
         if(t.getModifiedTime() == null){
             t.setModifiedTime(new Date());
             t.setModifiedBy("INTERNAL");
@@ -56,8 +67,8 @@ public class BaseDao<T extends com.junbo.subscription.db.entity.Entity> {
         return t.getId();
     }
 
-    public void delete(T entity) {
-        currentSession().delete(entity);
+    public void delete(T t) {
+        currentSession(t.getShardMasterId()).delete(t);
     }
 
     public Class<T> getClassType() {

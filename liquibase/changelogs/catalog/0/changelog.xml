@@ -11,8 +11,6 @@
             create table item (
               item_id                 bigint            not null,
               type                    varchar(64)       not null,
-              item_name               json              not null,
-              curated                 boolean           not null default false,
               owner_id                bigint            not null,
               genres                  bigint[]          null,
               current_revision_id     bigint            null,
@@ -22,6 +20,7 @@
               created_time            timestamp         not null,
               updated_by              varchar(64)       default null,
               updated_time            timestamp         default null,
+              rev                     int               not null,
 
               primary key (item_id)
             );
@@ -29,7 +28,6 @@
             create table item_revision (
               revision_id             bigint            not null,
               item_id                 bigint            not null,
-              type                    varchar(64)       not null,
               status                  varchar(64)       not null,
               owner_id                bigint            not null,
               payload                 json              not null,
@@ -39,22 +37,25 @@
               created_time            timestamp         not null,
               updated_by              varchar(64)       default null,
               updated_time            timestamp         default null,
+              rev                     int               not null,
 
               primary key (revision_id)
             );
 
             create table offer (
               offer_id                bigint            not null,
-              offer_name              json              not null,
-              curated                 boolean           not null default false,
+              published               boolean           not null default false,
               owner_id                bigint            not null,
+              iap_item_id             bigint            default null,
               current_revision_id     bigint            null,
               categories              bigint[]          null,
+              environment             varchar(64)       null,
               deleted                 boolean           not null default false,
               created_by              varchar(64)       not null,
               created_time            timestamp         not null,
               updated_by              varchar(64)       default null,
               updated_time            timestamp         default null,
+              rev                     int               not null,
 
               primary key (offer_id)
             );
@@ -71,33 +72,65 @@
               created_time            timestamp         not null,
               updated_by              varchar(64)       default null,
               updated_time            timestamp         default null,
+              rev                     int               not null,
 
               primary key (revision_id)
             );
 
-            create table attribute (
+            create table item_offer_relations (
+              id                      bigint            not null,
+              entity_type             int               not null,
+              entity_id               bigint            not null,
+              parent_offer_id         bigint            not null,
+              deleted                 boolean           not null default false,
+              created_by              varchar(64)       not null,
+              created_time            timestamp         not null,
+              updated_by              varchar(64)       default null,
+              updated_time            timestamp         default null,
+              rev                     int               not null,
+
+              primary key (id)
+            );
+
+            create table item_attribute (
               id                      bigint            not null,
               type                    varchar(64)       not null,
-              name                    json              not null,
+              parent_id               bigint            null,
               payload                 json              not null,
               deleted                 boolean           not null default false,
               created_by              varchar(64)       not null,
               created_time            timestamp         not null,
               updated_by              varchar(64)       default null,
               updated_time            timestamp         default null,
+              rev                     int               not null,
+
+              primary key (id)
+            );
+
+            create table offer_attribute (
+              id                      bigint            not null,
+              type                    varchar(64)       not null,
+              parent_id               bigint            null,
+              payload                 json              not null,
+              deleted                 boolean           not null default false,
+              created_by              varchar(64)       not null,
+              created_time            timestamp         not null,
+              updated_by              varchar(64)       default null,
+              updated_time            timestamp         default null,
+              rev                     int               not null,
 
               primary key (id)
             );
 
             create table price_tiers (
               id                      bigint            not null,
-              name                    varchar(64)       not null,
               payload                 json              not null,
               deleted                 boolean           not null default false,
               created_by              varchar(64)       not null,
               created_time            timestamp         not null,
               updated_by              varchar(64)       default null,
               updated_time            timestamp         default null,
+              rev                     int               not null,
 
               primary key (id)
             );
@@ -109,7 +142,6 @@
             create table promotion (
                 promotion_id            bigint            not null,
                 type                    varchar(64)       not null,
-                promotion_name          json              not null,
                 curated                 boolean           not null default false,
                 owner_id                bigint            not null,
                 current_revision_id     bigint            null,
@@ -121,6 +153,7 @@
                 created_time            timestamp         not null,
                 updated_by              varchar(64)       default null,
                 updated_time            timestamp         default null,
+                rev                     int               not null,
 
                 primary key (promotion_id)
             );
@@ -139,6 +172,7 @@
                 created_time            timestamp         not null,
                 updated_by              varchar(64)       default null,
                 updated_time            timestamp         default null,
+                rev                     int               not null,
 
                 primary key (revision_id)
             );
@@ -173,6 +207,7 @@
             LANGUAGE sql IMMUTABLE;
             CREATE INDEX entitlement_definition_in_app_context_gin_idx ON entitlement_definition
             USING GIN (json_val_arr(in_app_context));
+            insert into entitlement_definition values (177536427572383, 177536427572383, 0, null, 0, '', '', false, 'nanxin', null, '2014-02-10', null, null, false);
         ]]>
         </sql>
     </changeSet>

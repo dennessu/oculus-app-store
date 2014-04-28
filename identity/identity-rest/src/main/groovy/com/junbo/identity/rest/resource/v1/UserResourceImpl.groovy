@@ -16,7 +16,6 @@ import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.StringUtils
 
@@ -31,7 +30,6 @@ class UserResourceImpl implements UserResource {
     private Created201Marker created201Marker
 
     @Autowired
-    @Qualifier('userRepository')
     private UserRepository userRepository
 
     @Autowired
@@ -51,7 +49,7 @@ class UserResourceImpl implements UserResource {
 
         user = userFilter.filterForCreate(user)
 
-        userValidator.validateForCreate(user).then {
+        return userValidator.validateForCreate(user).then {
             userRepository.create(user).then { User newUser ->
                 created201Marker.mark((Id) newUser.id)
 
@@ -71,14 +69,14 @@ class UserResourceImpl implements UserResource {
             throw new IllegalArgumentException('user is null')
         }
 
-        userRepository.get(userId).then { User oldUser ->
+        return userRepository.get(userId).then { User oldUser ->
             if (oldUser == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
 
             user = userFilter.filterForPut(user, oldUser)
 
-            userValidator.validateForUpdate(user, oldUser).then {
+            return userValidator.validateForUpdate(user, oldUser).then {
                 userRepository.update(user).then { User newUser ->
                     newUser = userFilter.filterForGet(newUser, null)
                     return Promise.pure(newUser)
@@ -97,15 +95,15 @@ class UserResourceImpl implements UserResource {
             throw new IllegalArgumentException('user is null')
         }
 
-        userRepository.get(userId).then { User oldUser ->
+        return userRepository.get(userId).then { User oldUser ->
             if (oldUser == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
 
             user = userFilter.filterForPatch(user, oldUser)
 
-            userValidator.validateForUpdate(user, oldUser).then {
-                userRepository.update(user).then { User newUser ->
+            return userValidator.validateForUpdate(user, oldUser).then {
+                return userRepository.update(user).then { User newUser ->
                     newUser = userFilter.filterForGet(newUser, null)
                     return Promise.pure(newUser)
                 }
@@ -123,11 +121,7 @@ class UserResourceImpl implements UserResource {
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        userRepository.get(userId).then { User user ->
-            if (user == null) {
-                throw AppErrors.INSTANCE.userNotFound(userId).exception()
-            }
-
+        return userValidator.validateForGet(userId).then { User user ->
             user = userFilter.filterForGet(user, getOptions.properties?.split(',') as List<String>)
 
             return Promise.pure(user)
@@ -145,7 +139,7 @@ class UserResourceImpl implements UserResource {
         }
 
         String canonicalUsername = normalizeService.normalize(listOptions.username)
-        userRepository.getUserByCanonicalUsername(canonicalUsername).then { User user ->
+        return userRepository.getUserByCanonicalUsername(canonicalUsername).then { User user ->
             def resultList = new Results<User>(items: [])
 
             if (user != null) {
@@ -157,6 +151,19 @@ class UserResourceImpl implements UserResource {
             }
 
             return Promise.pure(resultList)
+        }
+    }
+
+    @Override
+    Promise<Void> delete(UserId userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException('userId is null')
+        }
+
+        return userValidator.validateForGet(userId).then {
+            userRepository.delete(userId)
+
+            return Promise.pure(null)
         }
     }
 }
