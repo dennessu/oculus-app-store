@@ -24,7 +24,7 @@ import javax.ws.rs.core.Response;
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
 public interface EmailTemplateResource {
-    @ApiOperation("Create an email template request")
+    @ApiOperation("Get email templates")
     @GET
     Promise<Results<EmailTemplate>> getEmailTemplates(@BeanParam com.junbo.email.spec.model.QueryParam queryParam);
 

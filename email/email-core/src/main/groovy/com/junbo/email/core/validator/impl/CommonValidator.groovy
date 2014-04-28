@@ -11,7 +11,6 @@ import com.junbo.email.spec.model.Email
 import com.junbo.email.spec.model.EmailTemplate
 import com.junbo.email.spec.model.Model
 import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserPii
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -27,14 +26,8 @@ class CommonValidator {
         if (user == null) {
             throw AppErrors.INSTANCE.invalidUserId('').exception()
         }
-        if (!user.active) {
+        if (user.status != 'ACTIVE') {
             throw AppErrors.INSTANCE.invalidUserStatus('').exception()
-        }
-    }
-
-    protected void validateUserPii(UserPii userPii) {
-        if ( userPii?.emails?.values()?.first() == null) {
-            throw AppErrors.INSTANCE.emptyUserEmail().exception()
         }
     }
 
