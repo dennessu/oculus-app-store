@@ -95,6 +95,11 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
     }
 
     @Override
+    public Promise<PaymentInstrument> getByInstrumentToken(String token) {
+        return Promise.pure(null);
+    }
+
+    @Override
     public Promise<PaymentTransaction> authorize(PaymentInstrument pi, PaymentTransaction paymentRequest) {
         throw AppServerExceptions.INSTANCE.serviceNotImplemented("authorize").exception();
     }

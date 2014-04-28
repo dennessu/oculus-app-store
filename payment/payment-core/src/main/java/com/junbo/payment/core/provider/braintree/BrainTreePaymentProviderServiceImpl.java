@@ -173,6 +173,11 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
     }
 
     @Override
+    public Promise<PaymentInstrument> getByInstrumentToken(String token) {
+        return Promise.pure(null);
+    }
+
+    @Override
     public Promise<PaymentTransaction> authorize(final PaymentInstrument pi, final PaymentTransaction paymentRequest) {
         return PromiseFacade.PAYMENT.decorate(new Callable<PaymentTransaction>() {
             @Override

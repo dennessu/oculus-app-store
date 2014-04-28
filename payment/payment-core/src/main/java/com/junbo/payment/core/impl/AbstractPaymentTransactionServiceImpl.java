@@ -98,11 +98,16 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
         trackingUuidRepository.saveTrackingUuid(trackingUuid);
     }
 
-    protected PaymentInstrument getPaymentInstrument(PaymentTransaction request) {
+    protected PaymentInstrument getPaymentInstrument(PaymentTransaction request){
         if(request.getPaymentInstrumentId() == null){
             throw AppClientExceptions.INSTANCE.missingPaymentInstrumentId().exception();
         }
-        PaymentInstrument pi = paymentInstrumentService.getById(request.getPaymentInstrumentId());
+        PaymentInstrument pi = null;
+        try{
+            pi = paymentInstrumentService.getById(request.getPaymentInstrumentId()).wrapped().get();
+        }catch(Exception ex){
+            throw AppServerExceptions.INSTANCE.invalidPI().exception();
+        }
         if(pi == null){
             throw AppClientExceptions.INSTANCE.invalidPaymentInstrumentId(
                     request.getPaymentInstrumentId().toString()).exception();

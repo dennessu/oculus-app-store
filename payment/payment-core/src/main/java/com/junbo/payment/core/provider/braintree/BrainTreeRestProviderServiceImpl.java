@@ -58,6 +58,11 @@ public class BrainTreeRestProviderServiceImpl extends AbstractPaymentProviderSer
     }
 
     @Override
+    public Promise<PaymentInstrument> getByInstrumentToken(String token) {
+        return Promise.pure(null);
+    }
+
+    @Override
     public Promise<PaymentTransaction> authorize(PaymentInstrument pi, PaymentTransaction paymentRequest) {
         return brainTreeResource.postAuthorization(pi.getExternalToken(), paymentRequest);
     }

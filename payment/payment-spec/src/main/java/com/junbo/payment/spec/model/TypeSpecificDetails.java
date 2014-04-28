@@ -13,6 +13,7 @@ import com.junbo.payment.common.FilterIn;
 import com.junbo.payment.common.FilterOut;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -54,6 +55,9 @@ public class TypeSpecificDetails {
     private String walletType;
     @CurrencyId
     private String walletCurrency;
+    @FilterIn
+    @JsonIgnore
+    private BigDecimal walletBalance;
 
     @JsonIgnore
     public Long getId() {
@@ -142,6 +146,14 @@ public class TypeSpecificDetails {
 
     public void setWalletCurrency(String walletCurrency) {
         this.walletCurrency = walletCurrency;
+    }
+
+    public BigDecimal getWalletBalance() {
+        return walletBalance;
+    }
+
+    public void setWalletBalance(BigDecimal walletBalance) {
+        this.walletBalance = walletBalance;
     }
 
 }
