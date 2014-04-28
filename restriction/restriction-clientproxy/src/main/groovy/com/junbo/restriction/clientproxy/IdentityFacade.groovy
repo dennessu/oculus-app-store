@@ -6,13 +6,11 @@
 package com.junbo.restriction.clientproxy
 
 import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserPii
 import com.junbo.langur.core.promise.Promise
 /**
  * Interface of Identity Facade.
  */
 interface IdentityFacade {
     Promise<User> getUser(Long userId)
-
-    Promise<UserPii> getUserPii(Long userId)
+    Promise<Date> getUserDob(Long userId)
 }
