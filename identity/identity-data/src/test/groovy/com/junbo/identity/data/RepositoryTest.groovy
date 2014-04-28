@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.data
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
@@ -647,7 +648,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userPersonalInfo.setType(UUID.randomUUID().toString())
         userPersonalInfo.setIsNormalized(true)
         userPersonalInfo.setLastValidateTime(new Date())
-        userPersonalInfo.setValue(UUID.randomUUID().toString())
+        userPersonalInfo.setValue(JsonNodeFactory.instance.textNode(UUID.randomUUID().toString()))
 
         UserPersonalInfo newUserPersonalInfo = userPersonalInfoRepository.create(userPersonalInfo).wrapped().get()
         newUserPersonalInfo = userPersonalInfoRepository.get(newUserPersonalInfo.id).wrapped().get()

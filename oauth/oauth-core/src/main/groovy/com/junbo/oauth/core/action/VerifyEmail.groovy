@@ -7,6 +7,7 @@ package com.junbo.oauth.core.action
 
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserId
+import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.identity.spec.v1.model.Email
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
@@ -18,7 +19,6 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
-import com.junbo.oauth.common.JsonMarshaller
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.db.repo.EmailVerifyCodeRepository
@@ -105,7 +105,7 @@ class VerifyEmail implements Action {
                         return Promise.pure(new ActionResult('error'))
                     }
 
-                    Email email = JsonMarshaller.unmarshall(personalInfo.decodedValue(), Email)
+                    Email email = ObjectMapperProvider.instance().treeToValue(personalInfo.value, Email)
 
                     if (email.value == emailVerifyCode.email) {
                         personalInfo.lastValidateTime = new Date()

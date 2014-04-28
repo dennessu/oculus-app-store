@@ -15,7 +15,9 @@ import com.junbo.oom.core.MappingContext;
 /**
  * Created by kg on 3/26/2014.
  */
-@Mapper
+@Mapper(uses = {
+        JsonNodeSelfMapper.class
+})
 public interface SelfMapper {
 
     User filterUser(User user, MappingContext context);
