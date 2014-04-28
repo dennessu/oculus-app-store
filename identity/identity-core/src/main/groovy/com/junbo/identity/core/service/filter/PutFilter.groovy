@@ -24,39 +24,57 @@ class PutFilter implements PropertyMappingFilter {
         boolean readable = context.isPropertyReadable(event.sourcePropertyName)
         boolean writable = context.isPropertyWritable(event.sourcePropertyName)
 
-        if (readable && !writable) { // readonly
-            boolean different = false
+        boolean different = false
 
-            if (FilterUtil.isSimpleType(event.sourcePropertyType)) {
-                if (event.sourceProperty != event.alternativeSourceProperty) {
-                    different = true
-                }
-            } else {
-                boolean sourcePropertyIsNull = event.sourceProperty == null
-                boolean alternativeSourcePropertyIsNull = event.alternativeSourceProperty == null
+        if (FilterUtil.isSimpleType(event.sourcePropertyType)) {
+            if (event.sourceProperty != event.alternativeSourceProperty) {
+                different = true
+            }
 
-                if (sourcePropertyIsNull != alternativeSourcePropertyIsNull) {
-                    different = true
+            if (readable && !writable) { // readonly
+                if (different) {
+                    throw AppErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
                 }
             }
 
-            if (different) {
+            if (!readable && !writable) {
                 if (PropertyAssignedAwareSupport.isPropertyAssigned(event.source, event.sourcePropertyName)) {
                     throw AppErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
                 } else {
                     event.sourceProperty = event.alternativeSourceProperty
                 }
             }
-        }
 
-        if (!readable && !writable) {
-            if (PropertyAssignedAwareSupport.isPropertyAssigned(event.source, event.sourcePropertyName)) {
-                throw AppErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
+            if (writable) {
+                event.alternativeSourceProperty = null // always ignore alternativeSourceProperty
             }
-        }
+        } else {
+            boolean sourcePropertyIsNull = event.sourceProperty == null
+            boolean alternativeSourcePropertyIsNull = event.alternativeSourceProperty == null
 
-        if (writable) {
-            event.alternativeSourceProperty = null // always ignore alternativeSourceProperty
+            if (sourcePropertyIsNull != alternativeSourcePropertyIsNull) {
+                different = true
+            }
+
+            if (readable && !writable) { // readonly
+                if (different) {
+                    throw AppErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
+                }
+            }
+
+            if (!readable && !writable) {
+                if (PropertyAssignedAwareSupport.isPropertyAssigned(event.source, event.sourcePropertyName)) {
+                    throw AppErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
+                } else {
+                    if (!alternativeSourcePropertyIsNull) {
+                        event.sourceProperty = event.sourcePropertyType.newInstance()
+                    }
+                }
+            }
+
+            if (writable) {
+                event.alternativeSourceProperty = null // always ignore alternativeSourceProperty
+            }
         }
     }
 
