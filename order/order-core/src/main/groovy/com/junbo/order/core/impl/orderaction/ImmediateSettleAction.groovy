@@ -62,7 +62,8 @@ class ImmediateSettleAction extends BaseOrderEventAwareAction {
                 throw AppErrors.INSTANCE.
                         billingConnectionError().exception()
             }
-            if (balance.status != BalanceStatus.AWAITING_PAYMENT.name()) {
+            if (balance.status != BalanceStatus.AWAITING_PAYMENT.name() &&
+                    balance.status != BalanceStatus.COMPLETED.name()) {
                 LOGGER.error('name=Order_ImmediateSettle_Failed')
                 throw AppErrors.INSTANCE.
                         billingChargeFailed().exception()
