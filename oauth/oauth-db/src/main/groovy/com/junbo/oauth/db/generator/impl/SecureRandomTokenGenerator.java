@@ -212,6 +212,16 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
     }
 
     @Override
+    public String generateSalt() {
+        return generate(saltLength);
+    }
+
+    @Override
+    public String generateEmailVerifyCode() {
+        return generate(emailVerifyCodeLength);
+    }
+
+    @Override
     public boolean isValidAccessToken(String tokenValue) {
         Assert.notNull(tokenValue);
 

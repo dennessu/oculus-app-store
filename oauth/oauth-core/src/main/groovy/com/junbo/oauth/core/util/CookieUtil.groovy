@@ -8,7 +8,6 @@ package com.junbo.oauth.core.util
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.oauth.core.context.ActionContextWrapper
 import groovy.transform.CompileStatic
-import org.glassfish.jersey.server.ContainerRequest
 
 import javax.ws.rs.core.NewCookie
 

@@ -73,10 +73,10 @@ class RedirectToClient implements Action {
         }
 
         // Add the session state, the client will use it for tracking the login status within an iframe.
-        String sessionState = tokenService.generateSessionState(
+        String sessionState = tokenService.generateSessionStatePerClient(
+                loginState.sessionId,
                 contextWrapper.client.clientId,
-                contextWrapper.oauthInfo.redirectUri,
-                loginState.sessionId)
+                contextWrapper.oauthInfo.redirectUri)
 
         parameters.put(OAuthParameters.SESSION_STATE, sessionState)
 

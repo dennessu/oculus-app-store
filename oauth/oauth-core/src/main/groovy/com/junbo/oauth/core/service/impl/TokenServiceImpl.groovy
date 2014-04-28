@@ -310,7 +310,7 @@ class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    String generateSessionState(String clientId, String redirectUri, String sessionId) {
+    String generateSessionStatePerClient(String sessionId, String clientId, String redirectUri) {
 
         def origin = UriUtil.getOrigin(redirectUri)
         def salt = tokenGenerator.generateSalt()
