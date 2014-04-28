@@ -6,7 +6,9 @@
 
 package com.junbo.rating.core.service;
 
+import com.junbo.catalog.spec.enums.ItemType;
 import com.junbo.catalog.spec.enums.PriceType;
+import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.promotion.*;
 import com.junbo.rating.clientproxy.CatalogGateway;
 import com.junbo.rating.common.util.Func;
@@ -14,6 +16,7 @@ import com.junbo.rating.common.util.Utils;
 import com.junbo.rating.core.RatingService;
 import com.junbo.rating.core.context.RatingContext;
 import com.junbo.rating.core.handler.HandlerRegister;
+import com.junbo.rating.spec.error.AppErrors;
 import com.junbo.rating.spec.fusion.*;
 import com.junbo.rating.spec.model.Money;
 import com.junbo.rating.spec.model.RatableItem;
@@ -34,7 +37,30 @@ public abstract class RatingServiceSupport implements RatingService{
     protected void fillOffer(RatingContext context) {
         for (RatableItem item : context.getItems()) {
             item.setOffer(catalogGateway.getOffer(item.getOfferId(), context.getTimestamp()));
+            validateLineItem(item, context.getTimestamp());
         }
+    }
+
+    private void validateLineItem(RatableItem item, String timestamp) {
+        if (item.getQuantity() > 1 && containsDigitalGoods(item.getOffer(), timestamp)){
+            throw AppErrors.INSTANCE.incorrectQuantity(item.getOfferId().toString(), item.getQuantity()).exception();
+        }
+    }
+
+    private boolean containsDigitalGoods(RatingOffer offer, String timestamp) {
+        for (LinkedEntry entry : offer.getItems()) {
+            Item item = catalogGateway.getItem(entry.getEntryId());
+            if (item.getType().equalsIgnoreCase(ItemType.DIGITAL.name())) {
+                return true;
+            }
+        }
+        for (LinkedEntry entry : offer.getSubOffers()) {
+            RatingOffer subOffer = catalogGateway.getOffer(entry.getEntryId(), timestamp);
+            if (containsDigitalGoods(subOffer, timestamp)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected Map<PromotionType, Set<PromotionRevision>> getPromotionRulesByTypes(PromotionType... types) {
