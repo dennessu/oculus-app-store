@@ -91,6 +91,7 @@ class UserValidatorImpl implements UserValidator {
 
         return validateUserInfo(user).then {
             if (user.username != oldUser.username) {
+                user.canonicalUsername = normalizeService.normalize(user.username)
                 if (user.canonicalUsername != oldUser.canonicalUsername) {
                     return userRepository.getUserByCanonicalUsername(user.canonicalUsername).then { User existingUser ->
                         if (existingUser != null) {
@@ -166,8 +167,21 @@ class UserValidatorImpl implements UserValidator {
         }
 
         return validateLocale(user).then {
+            if (user.addresses != null) {
+                boolean defaultExists = false
+                user.addresses.each { UserPersonalInfoLink link ->
+                    if (link.isdefault == true) {
+                        if (defaultExists == true) {
+                            throw AppErrors.INSTANCE.fieldInvalidException('isDefault', 'Multiple isDefault found.')
+                                    .exception()
+                        }
+                        defaultExists == true
+                    }
+                }
+            }
             return validateAddresses(user)
         }.then {
+
             return validateEmails(user)
         }.then {
             return validatePhones(user)
