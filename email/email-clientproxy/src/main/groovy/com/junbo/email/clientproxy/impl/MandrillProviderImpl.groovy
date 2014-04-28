@@ -164,7 +164,7 @@ class MandrillProviderImpl implements EmailProvider {
     static void encoder(Email email) {
         if (email.replacements != null) {
             def properties = [:]
-            email.replacements.each { Map<String, String> replacement ->
+            email.replacements.each { Map.Entry<String, String> replacement ->
                 def value = replacement.value
                 def split = replacement.key.split(':')
                 def key = split.first()

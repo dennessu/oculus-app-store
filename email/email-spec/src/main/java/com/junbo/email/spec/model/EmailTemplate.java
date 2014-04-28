@@ -8,7 +8,6 @@ package com.junbo.email.spec.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.EmailTemplateId;
 //import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -35,7 +34,7 @@ public class EmailTemplate extends Model {
     private String action;
 
     @ApiModelProperty(position = 5, required = true, value = "The locale of the email template.")
-    private LocaleId locale;
+    private String locale;
 
     @ApiModelProperty(position = 6, required = true, value = "The service provider name of the email template.")
     private String providerName;
@@ -137,11 +136,11 @@ public class EmailTemplate extends Model {
         this.action = action;
     }
 
-    public LocaleId getLocale() {
+    public String getLocale() {
         return locale;
     }
 
-    public void setLocale(LocaleId locale) {
+    public void setLocale(String locale) {
         this.locale = locale;
     }
 }
