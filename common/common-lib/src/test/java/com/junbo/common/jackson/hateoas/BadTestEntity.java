@@ -6,6 +6,7 @@
 package com.junbo.common.jackson.hateoas;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.id.OrderId;
 import com.junbo.common.id.UserId;
@@ -15,7 +16,7 @@ import com.junbo.common.model.Link;
 /**
  * TestEntity.
  */
-public class TestEntity {
+public class BadTestEntity {
 
     private UserId userId;
     private OrderId orderId;
@@ -30,17 +31,10 @@ public class TestEntity {
     @com.junbo.common.jackson.annotation.CurrencyId
     private String friendCurrencyId;
 
+    // JsonProperty is not allowed in @HateoasLink.
+    @JsonProperty("superSuperLink")
     @HateoasLink("/users/{userId}/orders/{orderId}/friends/{friendUserId}/{friendOrderId}/end")
     private Link superLink;
-
-    @HateoasLink("/users/{userId}/orders/{orderId}")
-    private Link subLink1;
-
-    @HateoasLink("/friends/{friendUserId}/{friendOrderId}")
-    private Link subLink2;
-
-    @HateoasLink("/currencies/{currencyId}/{friendCurrencyId}")
-    private Link subLink3;
 
     public UserId getUserId() {
         return userId;
@@ -88,21 +82,5 @@ public class TestEntity {
 
     public void setFriendCurrencyId(String friendCurrencyId) {
         this.friendCurrencyId = friendCurrencyId;
-    }
-
-    public Link getSuperLink() {
-        return superLink;
-    }
-
-    public Link getSubLink1() {
-        return subLink1;
-    }
-
-    public Link getSubLink2() {
-        return subLink2;
-    }
-
-    public Link getSubLink3() {
-        return subLink3;
     }
 }

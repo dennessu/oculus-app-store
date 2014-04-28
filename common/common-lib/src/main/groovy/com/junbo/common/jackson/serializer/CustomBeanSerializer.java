@@ -6,9 +6,11 @@
 
 package com.junbo.common.jackson.serializer;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.impl.BeanAsArraySerializer;
 import com.fasterxml.jackson.databind.ser.impl.ObjectIdWriter;
@@ -17,6 +19,7 @@ import com.fasterxml.jackson.databind.ser.std.BeanSerializerBase;
 import com.fasterxml.jackson.databind.util.NameTransformer;
 import com.junbo.common.id.Id;
 import com.junbo.common.jackson.annotation.HateoasLink;
+import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.common.model.Link;
 import com.junbo.common.shuffle.Oculus40Id;
 import com.junbo.common.shuffle.Oculus48Id;
@@ -25,13 +28,9 @@ import com.junbo.common.util.Utils;
 import com.junbo.configuration.ConfigService;
 import com.junbo.configuration.ConfigServiceManager;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -98,8 +97,6 @@ public class CustomBeanSerializer extends BeanSerializerBase {
     @Override
     public void serialize(Object bean, JsonGenerator jgen, SerializerProvider provider)
             throws IOException, JsonGenerationException {
-        fillHateoasLinks(bean);
-
         if (_objectIdWriter != null) {
             _serializeWithObjectId(bean, jgen, provider, true);
             return;
@@ -110,9 +107,9 @@ public class CustomBeanSerializer extends BeanSerializerBase {
         } else {
             serializeFields(bean, jgen, provider);
         }
-        jgen.writeEndObject();
+        serializeHateoasLinks(bean, jgen);
 
-        clearHateoasLinks(bean);
+        jgen.writeEndObject();
     }
 
     @Override
@@ -141,7 +138,7 @@ public class CustomBeanSerializer extends BeanSerializerBase {
         }
 
         public HateoasLinkField(Field field, String template, Map<String, Field> allFields) {
-            this.field = field;
+            this.fieldName = field.getName();
             this.template = template;
 
             if (resourceUrlPrefix == null) {
@@ -155,13 +152,8 @@ public class CustomBeanSerializer extends BeanSerializerBase {
                 );
             }
 
-            try {
-                fieldSetter = new PropertyDescriptor(field.getName(), field.getDeclaringClass()).getWriteMethod();
-            } catch (IntrospectionException ex) {
-                throw new RuntimeException(
-                        "Hateoas link field " + field.getName() + ": " +
-                                "setter method not found."
-                );
+            if (field.getAnnotation(JsonProperty.class) != null) {
+                throw new RuntimeException("JsonProperty not allowed in @HateoasLink field: " + fieldName);
             }
 
             Matcher matcher = FIELD_PATTERN.matcher(template);
@@ -177,8 +169,8 @@ public class CustomBeanSerializer extends BeanSerializerBase {
             }
         }
 
-        public void setValue(Object bean, Map<String, String> refFieldValues) {
-            if (bean == null) return;
+        public Link getLink(Object bean, Map<String, String> refFieldValues) {
+            if (bean == null) return null;
 
             boolean hasEmptyValue = false;
             StringBuffer buffer = new StringBuffer();
@@ -202,30 +194,30 @@ public class CustomBeanSerializer extends BeanSerializerBase {
                 link = new Link();
                 link.setHref(Utils.combineUrl(resourceUrlPrefix, buffer.toString()));
             }
-
-            try {
-                fieldSetter.invoke(bean, link);
-            } catch (InvocationTargetException|IllegalAccessException ex) {
-                throw new RuntimeException("Error setting hateoas link: " + field.getName(), ex);
-            }
+            return link;
         }
 
-        public void clearValue(Object bean) {
-            if (bean == null) return;
+        public void serialize(Object bean, JsonGenerator jgen, Map<String, String> refFieldValues)
+                throws IOException, JsonGenerationException {
 
-            try {
-                fieldSetter.invoke(bean, (Object)null);
-            } catch (InvocationTargetException|IllegalAccessException ex) {
-                throw new RuntimeException("Error setting hateoas link: " + field.getName(), ex);
+            jgen.writeFieldName(fieldName);
+
+            Link link = getLink(bean, refFieldValues);
+            if (link == null) {
+                // always serialize as null
+                jgen.writeNull();
+                return;
             }
+
+            ObjectMapper mapper = ObjectMapperProvider.instance();
+            mapper.writeValue(jgen, link);
         }
 
         public Map<String, ParamField> getReferencedFields() {
             return referencedFields;
         }
 
-        private Field field;
-        private Method fieldSetter;
+        private String fieldName;
         private String template;
         private Map<String, ParamField> referencedFields = new HashMap<>();
     }
@@ -243,14 +235,14 @@ public class CustomBeanSerializer extends BeanSerializerBase {
         public String getValue(Object bean) {
             try {
                 Object fieldValue = field.get(bean);
-                String result = null;
+                String result;
                 if (fieldValue == null) {
                     result = null;
                 } else if (fieldValue instanceof Id) {
                     result = IdFormatter.encodeId((Id) fieldValue);
                 } else if (hasOrderIdAnnotation) {
                     result = Oculus40Id.format(Oculus40Id.shuffle((Long) fieldValue));
-                } else if (hasIdAnnotation) {
+                } else if (hasIdAnnotation && fieldValue instanceof Long) {
                     result = Oculus48Id.format(Oculus48Id.shuffle((Long) fieldValue));
                 } else {
                     result = fieldValue.toString();
@@ -315,7 +307,8 @@ public class CustomBeanSerializer extends BeanSerializerBase {
     }
 
 
-    private void fillHateoasLinks(Object bean) {
+    private void serializeHateoasLinks(Object bean, JsonGenerator jgen)
+            throws IOException, JsonGenerationException {
         Map<String, String> fieldValues = new HashMap<>();
 
         for (ParamField field : allRefFields.values()) {
@@ -323,13 +316,7 @@ public class CustomBeanSerializer extends BeanSerializerBase {
         }
 
         for (HateoasLinkField link : hateoasLinkFields) {
-            link.setValue(bean, fieldValues);
-        }
-    }
-
-    private void clearHateoasLinks(Object bean) {
-        for (HateoasLinkField link : hateoasLinkFields) {
-            link.clearValue(bean);
+            link.serialize(bean, jgen, fieldValues);
         }
     }
 }
