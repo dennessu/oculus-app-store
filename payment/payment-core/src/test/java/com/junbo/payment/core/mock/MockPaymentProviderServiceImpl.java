@@ -67,6 +67,11 @@ public class MockPaymentProviderServiceImpl extends AbstractPaymentProviderServi
     }
 
     @Override
+    public Promise<PaymentInstrument> getByInstrumentToken(String token) {
+        return Promise.pure(null);
+    }
+
+    @Override
     public Promise<PaymentTransaction> authorize(PaymentInstrument request, PaymentTransaction paymentRequest) {
         paymentRequest.setExternalToken(authExternalToken);
         paymentRequest.setStatus(PaymentStatus.AUTHORIZED.toString());

@@ -26,7 +26,7 @@ public interface PaymentInstrumentService {
     @Transactional
     void update(PaymentInstrument request);
     @Transactional(readOnly = true)
-    PaymentInstrument getById(Long paymentInstrumentId);
+    Promise<PaymentInstrument> getById(Long paymentInstrumentId);
     @Transactional(readOnly = true)
     List<PaymentInstrument> getByUserId(Long userId);
     @Transactional(readOnly = true)

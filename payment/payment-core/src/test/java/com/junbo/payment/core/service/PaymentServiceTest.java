@@ -27,7 +27,7 @@ public class PaymentServiceTest extends BaseTest {
         Assert.assertNotNull(result);
         Assert.assertEquals(result.getTypeSpecificDetails().getCreditCardType(), CreditCardType.VISA.toString());
         Assert.assertEquals(result.getExternalToken(), MockPaymentProviderServiceImpl.piExternalToken);
-        PaymentInstrument getResult = piService.getById(result.getId());
+        PaymentInstrument getResult = piService.getById(result.getId()).wrapped().get();
         Assert.assertEquals(getResult.getAccountName(), result.getAccountName());
        }
 
@@ -45,7 +45,7 @@ public class PaymentServiceTest extends BaseTest {
         result.setIsActive(false);
         result.setBillingAddressId(123L);
         piService.update(result);
-        PaymentInstrument resultUpdate = piService.getById(result.getId());
+        PaymentInstrument resultUpdate = piService.getById(result.getId()).wrapped().get();
         Assert.assertEquals(resultUpdate.getIsActive(), Boolean.FALSE);
         Assert.assertEquals(resultUpdate.getBillingAddressId().longValue(), 123L);
     }
