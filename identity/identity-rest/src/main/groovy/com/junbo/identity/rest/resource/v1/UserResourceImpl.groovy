@@ -7,9 +7,12 @@ import com.junbo.identity.core.service.Created201Marker
 import com.junbo.identity.core.service.filter.UserFilter
 import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.validator.UserValidator
+import com.junbo.identity.data.repository.UserGroupRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.model.UserGroup
+import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
 import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.resource.UserResource
@@ -17,7 +20,6 @@ import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.util.StringUtils
 
 /**
  * Created by liangfu on 4/10/14.
@@ -31,6 +33,9 @@ class UserResourceImpl implements UserResource {
 
     @Autowired
     private UserRepository userRepository
+
+    @Autowired
+    private UserGroupRepository userGroupRepository
 
     @Autowired
     private UserValidator userValidator
@@ -130,30 +135,44 @@ class UserResourceImpl implements UserResource {
 
     @Override
     Promise<Results<User>> list(UserListOptions listOptions) {
-        if (listOptions == null) {
-            throw new IllegalArgumentException('listOptions is null')
-        }
-
-        if (StringUtils.isEmpty(listOptions.username)) {
-            throw AppErrors.INSTANCE.fieldRequired('username').exception()
-        }
-
-        String canonicalUsername = normalizeService.normalize(listOptions.username)
         return userValidator.validateForSearch(listOptions).then {
-            userRepository.getUserByCanonicalUsername(canonicalUsername).then { User user ->
-                def resultList = new Results<User>(items: [])
+            def resultList = new Results<User>(items: [])
 
-                if (user != null) {
-                    user = userFilter.filterForGet(user, listOptions.properties?.split(',') as List<String>)
+            if (listOptions.username != null) {
+                String canonicalUsername = normalizeService.normalize(listOptions.username)
+                return userRepository.getUserByCanonicalUsername(canonicalUsername).then { User user ->
+                    if (user != null) {
+                        user = userFilter.filterForGet(user, listOptions.properties?.split(',') as List<String>)
+                        resultList.items.add(user)
+                    }
+
+                    return Promise.pure(resultList)
                 }
-
-                if (user != null) {
-                    resultList.items.add(user)
+            } else {
+                return userGroupRepository.search(new UserGroupListOptions(
+                    groupId: listOptions.groupId
+                )).then { List<UserGroup> userGroupList ->
+                    return fillUserGroups(userGroupList.iterator(), resultList, listOptions).then {
+                        return Promise.pure(resultList)
+                    }
                 }
-
-                return Promise.pure(resultList)
             }
         }
+    }
+
+    private Promise<Void> fillUserGroups(Iterator<UserGroup> it, Results<User> resultList,
+                                         UserListOptions listOptions) {
+        if (it.hasNext()) {
+            UserGroup userGroup = it.next()
+            return userValidator.validateForGet(userGroup.userId).then { User existing ->
+                existing = userFilter.filterForGet(existing, listOptions.properties?.split(',') as List<String>)
+                resultList.items.add(existing)
+
+                return fillUserGroups(it, resultList, listOptions)
+            }
+        }
+
+        return Promise.pure(null)
     }
 
     @Override
