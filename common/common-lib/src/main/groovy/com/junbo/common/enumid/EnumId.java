@@ -19,6 +19,7 @@ public abstract class EnumId extends Object implements Serializable {
 
     // default ctor needed for Class.newInstance in deserializer
     public EnumId() {
+        value = "";
     }
 
     public EnumId(String value) {

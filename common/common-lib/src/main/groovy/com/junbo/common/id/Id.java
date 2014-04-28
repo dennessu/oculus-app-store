@@ -21,6 +21,7 @@ public abstract class Id extends Object implements Serializable {
 
     // default ctor needed for Class.newInstance in deserializer
     public Id() {
+        value = new Long(-1);
     }
 
     public Id(Long value) {
