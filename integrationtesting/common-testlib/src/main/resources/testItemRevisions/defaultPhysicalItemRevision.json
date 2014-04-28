@@ -56,8 +56,8 @@
         }
     },
     "website": "the external website for the item",
-    "walletCurrency": null,
-    "walletAmount": null,
+    "storedValueCurrency": null,
+    "storedValueAmount": null,
     "futureProperties":{},
     "rev": null
 }
