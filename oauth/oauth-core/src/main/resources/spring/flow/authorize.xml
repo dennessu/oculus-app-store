@@ -16,6 +16,8 @@
             <wf:action ref="validatePrompt"/>
             <wf:action ref="validateMaxAge"/>
             <wf:action ref="validateNonce"/>
+            <wf:action ref="validateLocale" />
+            <wf:action ref="validateExtraParameters" />
             <wf:transition on="*" to="CHECK_LOGIN"/>
         </wf:action-state>
 
