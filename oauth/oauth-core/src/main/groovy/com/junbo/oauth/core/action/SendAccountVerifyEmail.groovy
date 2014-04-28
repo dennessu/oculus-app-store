@@ -8,6 +8,7 @@ package com.junbo.oauth.core.action
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.EmailTemplateId
 import com.junbo.common.id.UserId
+import com.junbo.common.model.Results
 import com.junbo.email.spec.model.Email
 import com.junbo.email.spec.model.EmailTemplate
 import com.junbo.email.spec.model.QueryParam
@@ -96,11 +97,13 @@ class SendAccountVerifyEmail implements Action {
         emailTemplateResource.getEmailTemplates(queryParam).recover { Throwable e ->
             handleException(e, contextWrapper)
             return Promise.pure(null)
-        }.then { EmailTemplate template ->
-            if (template == null) {
+        }.then { Results<EmailTemplate> results ->
+            if (results == null || results.items == null || results.items.isEmpty()) {
                 LOGGER.warn('Failed to get the email template, skip the email send')
                 return Promise.pure(new ActionResult('success'))
             }
+
+            EmailTemplate template = results.items.get(0)
 
             Email emailToSend = new Email(
                     userId: user.id as UserId,
