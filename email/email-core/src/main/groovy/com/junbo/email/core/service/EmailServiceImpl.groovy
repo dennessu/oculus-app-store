@@ -8,7 +8,6 @@ package com.junbo.email.core.service
 import com.junbo.common.id.EmailId
 import com.junbo.email.clientproxy.EmailProvider
 import com.junbo.email.clientproxy.IdentityFacade
-
 import com.junbo.email.core.EmailService
 import com.junbo.email.core.validator.EmailValidator
 import com.junbo.email.db.repo.EmailHistoryRepository
@@ -18,12 +17,14 @@ import com.junbo.email.spec.error.AppErrors
 import com.junbo.email.spec.model.Email
 import com.junbo.email.spec.model.EmailStatus
 import com.junbo.langur.core.promise.Promise
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 /**
  * Impl of EmailService.
  */
+@CompileStatic
 @Component
 class EmailServiceImpl implements EmailService {
 
@@ -83,7 +84,7 @@ class EmailServiceImpl implements EmailService {
                 }
                 def recipients = [] as List<String>
                 recipients << strEmail
-                email.setRecipients(strEmail)
+                email.setRecipients(recipients)
                 return email.id == null ? this.save(email) : this.update(email)
             }
         }

@@ -6,10 +6,10 @@
 package com.junbo.email.common.constant;
 
 /**
- * Paging constants.
+ * Created by Wei on 4/28/14.
  */
-public class PagingConstants {
-    private PagingConstants(){}
+public class PageConstants {
+    private PageConstants(){}
 
     public static final int DEFAULT_PAGE_SIZE =20;
 
@@ -17,3 +17,4 @@ public class PagingConstants {
 
     public static final int DEFAULT_PAGE_NUMBER=0;
 }
+

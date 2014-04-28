@@ -5,6 +5,7 @@
  */
 package com.junbo.email.db.mapper;
 
+import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.EmailId;
 import com.junbo.common.id.EmailTemplateId;
 import com.junbo.common.util.EnumRegistry;
@@ -112,7 +113,7 @@ public class EmailMapper {
         EmailTemplate template = new EmailTemplate();
         template.setSource(entity.getSource());
         template.setAction(entity.getAction());
-        template.setLocale(entity.getLocale());
+        template.setLocale(new LocaleId(entity.getLocale()));
         template.setId(new EmailTemplateId(entity.getId()));
         template.setFromAddress(entity.getFromAddress());
         template.setFromName(entity.getFromName());
@@ -146,7 +147,7 @@ public class EmailMapper {
         entity.setName(template.getName());
         entity.setSource(template.getSource());
         entity.setAction(template.getAction());
-        entity.setLocale(template.getLocale());
+        entity.setLocale(template.getLocale().getValue());
         entity.setSubject(template.getSubject());
         entity.setProviderIndex(template.getProviderIndex());
         entity.setProviderName(template.getProviderName());

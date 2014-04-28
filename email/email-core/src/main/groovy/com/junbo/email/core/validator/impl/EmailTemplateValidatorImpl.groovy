@@ -8,12 +8,15 @@ package com.junbo.email.core.validator.impl
 import com.junbo.email.core.validator.EmailTemplateValidator
 import com.junbo.email.spec.error.AppErrors
 import com.junbo.email.spec.model.EmailTemplate
+import com.junbo.email.spec.model.Pagination
+import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 
 /**
  * Impl of EmailTemplate validator.
  */
+@CompileStatic
 @Component
 class EmailTemplateValidatorImpl extends CommonValidator implements EmailTemplateValidator {
 
@@ -32,14 +35,14 @@ class EmailTemplateValidatorImpl extends CommonValidator implements EmailTemplat
         }
     }
 
-//    void validateGet(QueryParam queryParam) {
-//        if (queryParam.page != null && queryParam.page < 1) {
-//            throw AppErrors.INSTANCE.invalidParameter('page').exception()
-//        }
-//        if (queryParam.size != null && queryParam.size < 1) {
-//            throw AppErrors.INSTANCE.invalidParameter('size').exception()
-//        }
-//    }
+    void validateGet(Pagination pagination) {
+        if (pagination?.page != null && pagination.page < 1) {
+            throw AppErrors.INSTANCE.invalidParameter('page').exception()
+        }
+        if (pagination?.size != null && pagination.size < 1) {
+            throw AppErrors.INSTANCE.invalidParameter('size').exception()
+        }
+    }
 
     private void validateCommonField(EmailTemplate template) {
         if (template == null) {

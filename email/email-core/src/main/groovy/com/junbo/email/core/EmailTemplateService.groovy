@@ -7,6 +7,7 @@ package com.junbo.email.core
 
 import com.junbo.common.model.Results
 import com.junbo.email.spec.model.EmailTemplate
+import com.junbo.email.spec.model.Pagination
 import com.junbo.email.spec.model.QueryParam
 import com.junbo.langur.core.promise.Promise
 
@@ -22,5 +23,5 @@ interface EmailTemplateService {
 
     Void deleteEmailTemplate(Long id)
 
-    Promise<Results<EmailTemplate>> getEmailTemplates(QueryParam queryParam)
+    Promise<Results<EmailTemplate>> getEmailTemplates(QueryParam queryParam, Pagination pagination)
 }

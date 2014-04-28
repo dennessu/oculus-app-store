@@ -1,5 +1,6 @@
 package com.junbo.email.clientproxy.impl
 
+
 import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
 
 import com.junbo.email.spec.model.EmailTemplate
@@ -28,10 +29,12 @@ import com.ning.http.client.AsyncHttpClient
 import com.ning.http.client.AsyncHttpClientConfigBean
 import com.ning.http.client.Response
 import org.springframework.beans.factory.annotation.Autowired
+import groovy.transform.CompileStatic
 
 /**
  * Email Provider implement by Mandrill.
  */
+@CompileStatic
 class MandrillProviderImpl implements EmailProvider {
     private final static Logger LOGGER = LoggerFactory.getLogger(MandrillProviderImpl)
 
@@ -161,9 +164,9 @@ class MandrillProviderImpl implements EmailProvider {
     static void encoder(Email email) {
         if (email.replacements != null) {
             def properties = [:]
-            email.replacements.each {
-                def value = it.value
-                def split = it.key.split(':')
+            email.replacements.each { Map<String, String> replacement ->
+                def value = replacement.value
+                def split = replacement.key.split(':')
                 def key = split.first()
                 def type = split.length == 2 ? split.last() : ''
                 if (!type.isEmpty()) {
@@ -171,12 +174,12 @@ class MandrillProviderImpl implements EmailProvider {
                     try {
                         Class c = getClass().classLoader.loadClass(canonicalName)
                         if (c.superclass ==  Id) {
-                            def id = c.newInstance(Long.parseLong(it.value)) as Id
+                            def id = c.newInstance(Long.parseLong(replacement.value)) as Id
                             value = IdFormatter.encodeId(id)
                         }
                     }
                     catch (NumberFormatException ex) {
-                        LOGGER.error('Failed to parse:' + it.value, ex)
+                        LOGGER.error('Failed to parse:' + replacement.value, ex)
                     }
                     catch (ClassNotFoundException e) {
                         LOGGER.error('Failed to reflect:' + canonicalName, e)
