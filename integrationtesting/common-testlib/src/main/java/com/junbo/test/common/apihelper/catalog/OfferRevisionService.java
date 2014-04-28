@@ -31,4 +31,7 @@ public interface OfferRevisionService {
 
     String updateOfferRevision(OfferRevision offerRevision) throws Exception;
     String updateOfferRevision(OfferRevision offerRevision, int expectedResponseCode) throws Exception;
+
+    void deleteOfferRevision(String offerRevisionId) throws Exception;
+    void deleteOfferRevision(String offerRevisionId, int expectedResponseCode) throws Exception;
 }

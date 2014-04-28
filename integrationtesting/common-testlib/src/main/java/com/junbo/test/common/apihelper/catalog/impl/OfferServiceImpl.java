@@ -42,7 +42,8 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
     private final String catalogServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.CATALOG) + "offers";
     private final String defaultOfferFileName = "defaultOffer";
-    private final String defaultItemRevisionFileName = "defaultItemRevision";
+    private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
+    private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
     private final String defaultDigitalOfferRevisionFileName = "defaultDigitalOfferRevision";
     private final String defaultPhysicalOfferRevisionFileName = "defaultPhysicalOfferRevision";
     private LogHelper logger = new LogHelper(OfferServiceImpl.class);
@@ -98,12 +99,12 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         return listOfferId;
     }
 
-    public String postDefaultOffer(EnumHelper.CatalogItemType itemType) throws Exception {
-        Offer offerForPost = prepareOfferEntity(defaultOfferFileName, itemType);
+    public String postDefaultOffer() throws Exception {
+        Offer offerForPost = prepareOfferEntity(defaultOfferFileName);
         return postOffer(offerForPost);
     }
 
-    public Offer prepareOfferEntity(String fileName, EnumHelper.CatalogItemType itemType) throws Exception {
+    public Offer prepareOfferEntity(String fileName) throws Exception {
         String strOfferContent = readFileContent(String.format("testOffers/%s.json", fileName));
         Offer offerForPost = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {}, strOfferContent);
         offerForPost.setOwnerId(IdConverter.hexStringToId(UserId.class, getUserId()));
@@ -139,6 +140,16 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         Master.getInstance().addOffer(offerRtnId, offerPut);
 
         return offerRtnId;
+    }
+
+    public void deleteOffer(String offerId) throws Exception {
+        this.deleteOffer(offerId, 204);
+    }
+
+    public void deleteOffer(String offerId, int expectedResponseCode) throws Exception {
+        String url = catalogServerURL + "/" + offerId;
+        restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode);
+        Master.getInstance().removeOffer(offerId);
     }
 
     public String getOfferIdByName(String offerName) throws  Exception {
@@ -281,8 +292,14 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         String itemId = itemService.postItem(item);
 
         //Attach item revision to the item
-        ItemRevision itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultItemRevisionFileName,
-                EnumHelper.CatalogItemType.valueOf(itemType));
+        ItemRevision itemRevision;
+        if (itemType.equalsIgnoreCase(EnumHelper.CatalogItemType.PHYSICAL.getItemType())) {
+            itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultPhysicalItemRevisionFileName);
+        }
+        else {
+            itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultDigitalItemRevisionFileName);
+        }
+
         itemRevision.setItemId(IdConverter.hexStringToId(ItemId.class, itemId));
         itemRevision.setOwnerId(item.getOwnerId());
 
@@ -303,4 +320,5 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         String itemGetId = itemService.getItem(itemId);
         return Master.getInstance().getItem(itemGetId);
     }
+
 }

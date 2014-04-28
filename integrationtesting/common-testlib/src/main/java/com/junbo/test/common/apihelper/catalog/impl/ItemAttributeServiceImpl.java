@@ -5,6 +5,8 @@
  */
 package com.junbo.test.common.apihelper.catalog.impl;
 
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
+import com.junbo.common.id.EntitlementDefinitionId;
 import com.junbo.test.common.apihelper.catalog.ItemAttributeService;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.test.common.apihelper.HttpClientBase;
@@ -88,4 +90,33 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
 
         return attributeRtnId;
     }
+
+    public String updateItemAttribute(ItemAttribute attribute) throws Exception {
+        return updateItemAttribute(attribute, 200);
+    }
+
+    public String updateItemAttribute(ItemAttribute attribute, int expectedResponseCode) throws Exception {
+
+        String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(ItemAttributeId.class,
+                attribute.getId());
+        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, attribute, expectedResponseCode);
+        ItemAttribute itemAttributePut = new JsonMessageTranscoder().decode(new TypeReference<ItemAttribute>() {},
+                responseBody);
+        String itemAttributeRtnId = IdConverter.idLongToHexString(ItemAttributeId.class,
+                itemAttributePut.getId());
+        Master.getInstance().addItemAttribute(itemAttributeRtnId, itemAttributePut);
+
+        return itemAttributeRtnId;
+    }
+
+    public void deleteItemAttribute(String itemAttributeId) throws Exception {
+        deleteItemAttribute(itemAttributeId, 204);
+    }
+
+    public void deleteItemAttribute(String itemAttributeId, int expectedResponseCode) throws Exception {
+        String url = catalogServerURL + "/" + itemAttributeId;
+        restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode);
+        Master.getInstance().removeItemAttribute(itemAttributeId);
+    }
+
 }

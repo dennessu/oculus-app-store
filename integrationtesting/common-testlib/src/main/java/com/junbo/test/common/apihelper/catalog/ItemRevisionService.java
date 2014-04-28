@@ -24,11 +24,14 @@ public interface ItemRevisionService {
     List<String> getItemRevisions(HashMap<String, String> httpPara) throws Exception;
     List<String> getItemRevisions(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception;
 
-    String postDefaultItemRevision(EnumHelper.CatalogItemType itemType) throws Exception;
-    ItemRevision prepareItemRevisionEntity(String fileName, EnumHelper.CatalogItemType itemType) throws Exception;
+    String postDefaultItemRevision(String itemId, EnumHelper.CatalogItemType itemType) throws Exception;
+    ItemRevision prepareItemRevisionEntity(String fileName) throws Exception;
     String postItemRevision(ItemRevision itemRevision) throws Exception;
     String postItemRevision(ItemRevision itemRevision, int expectedResponseCode) throws Exception;
 
     String updateItemRevision(ItemRevision itemRevision) throws Exception;
     String updateItemRevision(ItemRevision itemRevision, int expectedResponseCode) throws Exception;
+
+    void deleteItemRevision(String itemRevisionId) throws Exception;
+    void deleteItemRevision(String itemRevisionId, int expectedResponseCode) throws Exception;
 }

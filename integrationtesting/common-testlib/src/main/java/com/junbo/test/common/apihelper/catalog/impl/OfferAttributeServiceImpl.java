@@ -89,4 +89,32 @@ public class OfferAttributeServiceImpl extends HttpClientBase implements OfferAt
 
         return attributeRtnId;
     }
+
+    public String updateOfferAttribute(OfferAttribute attribute) throws Exception {
+        return updateOfferAttribute(attribute, 200);
+    }
+
+    public String updateOfferAttribute(OfferAttribute attribute, int expectedResponseCode) throws Exception {
+
+        String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(OfferAttributeId.class,
+                attribute.getId());
+        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, attribute, expectedResponseCode);
+        OfferAttribute offerAttributePut = new JsonMessageTranscoder().decode(new TypeReference<OfferAttribute>() {},
+                responseBody);
+        String offerAttributeRtnId = IdConverter.idLongToHexString(OfferAttributeId.class,
+                offerAttributePut.getId());
+        Master.getInstance().addOfferAttribute(offerAttributeRtnId, offerAttributePut);
+
+        return offerAttributeRtnId;
+    }
+
+    public void deleteOfferAttribute(String offerAttributeId) throws Exception {
+        deleteOfferAttribute(offerAttributeId, 204);
+    }
+
+    public void deleteOfferAttribute(String offerAttributeId, int expectedResponseCode) throws Exception {
+        String url = catalogServerURL + "/" + offerAttributeId;
+        restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode);
+        Master.getInstance().removeOfferAttribute(offerAttributeId);
+    }
 }
