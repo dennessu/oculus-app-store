@@ -54,13 +54,13 @@ public class TypeSpecificDetails {
     @JsonIgnore
     private String walletType;
     @ApiModelProperty(position = 9, required = true,
-            value = "The currency resource of the wallet")
+            value = "The currency resource of the Storde Value PI")
     @CurrencyId
-    private String walletCurrency;
+    private String storedValueCurrency;
     @ApiModelProperty(position = 10, required = true,
-            value = "[Client Immutable] The wallet balance of the wallet PI.")
+            value = "[Client Immutable] The Stored Value balance of the PI.")
     @FilterIn
-    private BigDecimal walletBalance;
+    private BigDecimal storedValueBalance;
 
     @JsonIgnore
     public Long getId() {
@@ -143,20 +143,20 @@ public class TypeSpecificDetails {
         this.walletType = walletType;
     }
 
-    public String getWalletCurrency() {
-        return walletCurrency;
+    public String getStoredValueCurrency() {
+        return storedValueCurrency;
     }
 
-    public void setWalletCurrency(String walletCurrency) {
-        this.walletCurrency = walletCurrency;
+    public void setStoredValueCurrency(String storedValueCurrency) {
+        this.storedValueCurrency = storedValueCurrency;
     }
 
-    public BigDecimal getWalletBalance() {
-        return walletBalance;
+    public BigDecimal getStoredValueBalance() {
+        return storedValueBalance;
     }
 
-    public void setWalletBalance(BigDecimal walletBalance) {
-        this.walletBalance = walletBalance;
+    public void setStoredValueBalance(BigDecimal storedValueBalance) {
+        this.storedValueBalance = storedValueBalance;
     }
 
 }
