@@ -33,7 +33,7 @@ class FacadeBuilder {
     public static final String SUBTOTAL = 'SUBTOTAL'
     public static final String TAX = 'TAX'
     public static final String GRAND_TOTAL = 'GRANDTOTAL'
-    public static final String ISO8601 = 'yyyy-MM-dd\'T\'hh:mm:ssXXX'
+    public static final String ISO8601 = 'yyyy-MM-dd\'T\'HH:mm:ssXXX'
 
     private static final ThreadLocal<SimpleDateFormat> DATE_FORMATTER =
             new ThreadLocal<SimpleDateFormat>() {
