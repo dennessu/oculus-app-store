@@ -6,7 +6,7 @@
 
 package com.junbo.payment.core.provider;
 
-import com.junbo.payment.spec.enums.PIType;
+import com.junbo.common.id.PIType;
 import org.springframework.transaction.annotation.Transactional;
 
 /**

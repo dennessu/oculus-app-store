@@ -7,6 +7,8 @@
 package com.junbo.payment.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.junbo.common.jackson.annotation.CountryId;
+import com.junbo.common.jackson.annotation.CurrencyId;
 import com.junbo.payment.common.FilterIn;
 import com.junbo.payment.common.FilterOut;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -46,9 +48,11 @@ public class TypeSpecificDetails {
     @ApiModelProperty(position = 8, required = true,
             value = "[Client Immutable] The country resource where the PI issued.")
     @FilterIn
+    @CountryId
     private String issueCountry;
-
+    @JsonIgnore
     private String walletType;
+    @CurrencyId
     private String walletCurrency;
 
     @JsonIgnore

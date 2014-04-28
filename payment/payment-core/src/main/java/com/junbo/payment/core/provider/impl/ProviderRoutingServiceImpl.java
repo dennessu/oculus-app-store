@@ -6,10 +6,10 @@
 
 package com.junbo.payment.core.provider.impl;
 
+import com.junbo.common.id.PIType;
 import com.junbo.payment.core.provider.PaymentProvider;
 import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.core.provider.ProviderRoutingService;
-import com.junbo.payment.spec.enums.PIType;
 
 /**
  * payment provider routing implementation.

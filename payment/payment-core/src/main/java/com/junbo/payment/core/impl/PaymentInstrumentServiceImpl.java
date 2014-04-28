@@ -6,6 +6,7 @@
 
 package com.junbo.payment.core.impl;
 
+import com.junbo.common.id.PIType;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
@@ -16,7 +17,6 @@ import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.core.util.ProxyExceptionResponse;
 import com.junbo.payment.db.repository.PITypeRepository;
-import com.junbo.payment.spec.enums.PIType;
 import com.junbo.payment.db.mapper.PaymentAPI;
 import com.junbo.payment.db.mapper.TrackingUuid;
 import com.junbo.payment.db.repository.PaymentInstrumentRepository;

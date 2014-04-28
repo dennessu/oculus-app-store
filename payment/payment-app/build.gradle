@@ -8,4 +8,5 @@ dependencies {
     runtime (libraries.common_configuration_data)
 
     compile project(':payment-rest')
+    compile 'com.junbo.ewallet:ewallet-spec:0.0.1-SNAPSHOT'
 }

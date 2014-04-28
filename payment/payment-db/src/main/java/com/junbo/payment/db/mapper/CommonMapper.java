@@ -6,6 +6,7 @@
 
 package com.junbo.payment.db.mapper;
 
+import com.junbo.common.id.PIType;
 import com.junbo.payment.db.repository.MerchantAccountRepository;
 import com.junbo.payment.db.repository.PaymentProviderRepository;
 import com.junbo.payment.spec.enums.*;

@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.payment.spec.enums;
+package com.junbo.common.id;
 
 import java.util.EnumSet;
 import java.util.HashMap;

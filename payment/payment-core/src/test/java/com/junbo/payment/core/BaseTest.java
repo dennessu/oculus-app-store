@@ -1,8 +1,7 @@
 package com.junbo.payment.core;
 
+import com.junbo.common.id.PIType;
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
-import com.junbo.payment.spec.enums.PIType;
-import com.junbo.payment.spec.model.Address;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.TypeSpecificDetails;
 import org.springframework.beans.factory.annotation.Autowired;

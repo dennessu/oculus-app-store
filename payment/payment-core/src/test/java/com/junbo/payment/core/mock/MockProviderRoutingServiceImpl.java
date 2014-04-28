@@ -1,9 +1,9 @@
 package com.junbo.payment.core.mock;
 
+import com.junbo.common.id.PIType;
 import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.core.provider.ProviderRoutingService;
 import com.junbo.payment.core.provider.paypal.PayPalProviderServiceImpl;
-import com.junbo.payment.spec.enums.PIType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 

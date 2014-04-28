@@ -1,9 +1,9 @@
 package com.junbo.payment.core.provider;
 
+import com.junbo.common.id.PIType;
 import com.junbo.payment.core.BaseTest;
 import com.junbo.payment.core.PaymentCallbackService;
 import com.junbo.payment.core.provider.paypal.PayPalProviderServiceImpl;
-import com.junbo.payment.spec.enums.PIType;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.enums.PropertyField;
 import com.junbo.payment.spec.model.*;

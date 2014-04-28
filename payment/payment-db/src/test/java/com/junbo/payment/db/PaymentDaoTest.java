@@ -1,6 +1,7 @@
 package com.junbo.payment.db;
 
 
+import com.junbo.common.id.PIType;
 import com.junbo.payment.db.dao.TrackingUuidDao;
 import com.junbo.payment.db.dao.payment.MerchantAccountDao;
 import com.junbo.payment.db.dao.payment.PaymentDao;
