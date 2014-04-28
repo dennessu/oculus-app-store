@@ -6,7 +6,6 @@
 
 package com.junbo.order.core.impl.orderflow
 
-import com.junbo.billing.spec.model.Balance
 import com.junbo.common.error.AppErrorException
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.FlowSelector
@@ -28,6 +27,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
+
 /**
  * Created by chriszhu on 2/7/14.
  */

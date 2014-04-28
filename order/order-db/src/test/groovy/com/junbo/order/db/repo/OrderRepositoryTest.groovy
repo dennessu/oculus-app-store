@@ -157,7 +157,7 @@ class OrderRepositoryTest extends BaseTest {
 
     void assertOrderEquals(Order actual, Order expected) {
         assert actual.id == expected.id
-        assert actual.currency == expected.currency
+        assert actual.currency.value == expected.currency.value
         assert actual.tentative == expected.tentative
         assert actual.shippingMethod == expected.shippingMethod
         assert actual.shippingAddress == expected.shippingAddress

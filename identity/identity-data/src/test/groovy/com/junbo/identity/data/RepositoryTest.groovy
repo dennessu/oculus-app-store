@@ -45,10 +45,6 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     private IdGenerator idGenerator
 
     @Autowired
-    @Qualifier('addressRepository')
-    private AddressRepository addressRepository
-
-    @Autowired
     @Qualifier('tosRepository')
     private TosRepository tosRepository
 
@@ -222,19 +218,6 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         Tos newTos = tosRepository.get(tos.getId()).wrapped().get()
         Assert.assertEquals(tos.getContent(), newTos.getContent())
-    }
-
-    @Test
-    public void testAddressRepository() {
-        Address address = new Address()
-        address.city = 'shanghai'
-        address.countryId = new CountryId("usd")
-        address.postalCode = '201102'
-        address.userId = new UserId(userId)
-        address = addressRepository.create(address).wrapped().get()
-
-        Address newAddress = addressRepository.get(address.id).wrapped().get()
-        Assert.assertEquals(address.city, newAddress.city)
     }
 
     @Test

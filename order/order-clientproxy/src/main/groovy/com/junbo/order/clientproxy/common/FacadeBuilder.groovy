@@ -1,5 +1,6 @@
 package com.junbo.order.clientproxy.common
 import com.junbo.catalog.spec.model.offer.OfferRevision
+import com.junbo.common.id.EmailTemplateId
 import com.junbo.common.id.UserId
 import com.junbo.email.spec.model.Email
 import com.junbo.fulfilment.spec.model.FulfilmentItem
@@ -67,7 +68,7 @@ class FacadeBuilder {
         request.currency = order.currency
         request.userId = order.user?.value
         request.shippingMethodId = order.shippingMethod
-        request.time = new SimpleDateFormat(ISO8601).format(order.honoredTime)
+        request.time = new SimpleDateFormat(ISO8601, Locale.US).format(order.honoredTime)
         request.includeCrossOfferPromos = true
         List<RatingItem> ratingItems = []
         order.orderItems?.each { OrderItem item ->
@@ -80,18 +81,16 @@ class FacadeBuilder {
         return request
     }
 
-    static Email buildOrderConfirmationEmail(Order order, User user, List<OfferRevision> offers) {
+    static Email buildOrderConfirmationEmail(Order order, User user, List<OfferRevision> offers, EmailTemplateId templateId) {
         Email email = new Email()
         email.userId = (UserId)(user.id)
-        email.source = 'SilkCloud'
-        email.action = 'OrderConfirmation'
-        email.locale = 'en_US'
+        email.templateId = templateId
         // TODO: update email address as IDENTITY component
         email.recipients = [user.username]
         Map<String, String> properties = [:]
         properties.put(ORDER_NUMBER, order.id.value.toString())
         Date now = new Date()
-        properties.put(ORDER_DATE, new SimpleDateFormat(ISO8601).format(now))
+        properties.put(ORDER_DATE, new SimpleDateFormat(ISO8601, Locale.US).format(now))
         properties.put(NAME, user.username)
         properties.put(SUBTOTAL, order.totalAmount?.toString())
         properties.put(TAX, BigDecimal.ZERO.toString())
