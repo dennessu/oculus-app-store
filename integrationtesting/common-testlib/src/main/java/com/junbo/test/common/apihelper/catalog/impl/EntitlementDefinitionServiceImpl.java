@@ -113,7 +113,7 @@ public class EntitlementDefinitionServiceImpl extends HttpClientBase implements 
 
     public String updateEntitlementDefinition(EntitlementDefinition entitlementDefinition, int expectedResponseCode) throws Exception {
 
-        String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(EntitlementDefinition.class,
+        String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(EntitlementDefinitionId.class,
                 entitlementDefinition.getEntitlementDefId());
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, entitlementDefinition, expectedResponseCode);
         EntitlementDefinition entitlementDefinitionPut = new JsonMessageTranscoder().decode(new TypeReference<EntitlementDefinition>() {},

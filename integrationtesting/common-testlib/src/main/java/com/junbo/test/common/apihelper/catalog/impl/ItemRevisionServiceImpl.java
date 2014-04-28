@@ -114,20 +114,30 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
         return itemRevisionRtnId;
     }
 
-    public String postDefaultItemRevision(EnumHelper.CatalogItemType itemType) throws Exception {
+    public String postDefaultItemRevision(String itemId, EnumHelper.CatalogItemType itemType) throws Exception {
         ItemRevision itemRevisionForPost;
         if (itemType.equals(EnumHelper.CatalogItemType.PHYSICAL)) {
-            itemRevisionForPost = prepareItemRevisionEntity(defaultPhysicalItemRevisionFileName, itemType);
+            itemRevisionForPost = prepareItemRevisionEntity(defaultPhysicalItemRevisionFileName);
         }
         else {
-            itemRevisionForPost = prepareItemRevisionEntity(defaultDigitalItemRevisionFileName, itemType);
+            itemRevisionForPost = prepareItemRevisionEntity(defaultDigitalItemRevisionFileName);
         }
+
+        //set item info
+        Item item = Master.getInstance().getItem(itemId);
+        if (item == null) {
+            ItemService itemService = ItemServiceImpl.instance();
+            itemService.getItem(itemId);
+            item = Master.getInstance().getItem(itemId);
+        }
+
+        itemRevisionForPost.setItemId(item.getItemId());
+        itemRevisionForPost.setOwnerId(item.getOwnerId());
 
         return postItemRevision(itemRevisionForPost);
     }
 
-    public ItemRevision prepareItemRevisionEntity(String fileName, EnumHelper.CatalogItemType itemType)
-            throws Exception {
+    public ItemRevision prepareItemRevisionEntity(String fileName) throws Exception {
 
         String strItem = readFileContent(String.format("testItemRevisions/%s.json", fileName));
         ItemRevision itemRevisionForPost = new JsonMessageTranscoder().decode(new TypeReference<ItemRevision>() {},
@@ -140,15 +150,17 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
         locales.put("en_US", itemRevisionLocaleProperties);
         itemRevisionForPost.setLocales(locales);
 
-        //prepare item for use
-        ItemService itemService = ItemServiceImpl.instance();
-        String defaultItemId = itemService.postDefaultItem(itemType);
-        Item defaultItem = Master.getInstance().getItem(defaultItemId);
-
-        itemRevisionForPost.setItemId(IdConverter.hexStringToId(ItemId.class, defaultItemId));
-        itemRevisionForPost.setOwnerId(defaultItem.getOwnerId());
-
         return itemRevisionForPost;
+    }
+
+    public void deleteItemRevision(String itemRevisionId) throws Exception {
+        deleteItemRevision(itemRevisionId, 204);
+    }
+
+    public void deleteItemRevision(String itemRevisionId, int expectedResponseCode) throws Exception {
+        String url = catalogServerURL + "/" + itemRevisionId;
+        restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode);
+        Master.getInstance().removeItemRevision(itemRevisionId);
     }
 
 }

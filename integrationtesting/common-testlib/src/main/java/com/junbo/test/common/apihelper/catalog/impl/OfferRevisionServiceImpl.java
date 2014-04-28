@@ -160,10 +160,6 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
         offerRevisionForPost.setItems(itemEntities);
         offerRevisionForPost.setOwnerId(itemPrepared.getOwnerId());
 
-        //Add offer related info
-        String offerId = getOffer(itemType, itemPrepared.getOwnerId());
-        offerRevisionForPost.setOfferId(IdConverter.hexStringToId(OfferId.class, offerId));
-
         return offerRevisionForPost;
     }
 
@@ -179,11 +175,11 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
         ItemRevision itemRevision;
         if (itemType.equals(EnumHelper.CatalogItemType.PHYSICAL)) {
             itemRevision = itemRevisionService.prepareItemRevisionEntity(
-                    defaultPhysicalItemRevisionFileName, itemType);
+                    defaultPhysicalItemRevisionFileName);
         }
         else {
             itemRevision = itemRevisionService.prepareItemRevisionEntity(
-                    defaultDigitalItemRevisionFileName, itemType);
+                    defaultDigitalItemRevisionFileName);
         }
 
         itemRevision.setItemId(IdConverter.hexStringToId(ItemId.class, itemId));
@@ -201,8 +197,19 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
 
     private String getOffer(EnumHelper.CatalogItemType itemType, Long ownerId) throws Exception {
         OfferService offerService = OfferServiceImpl.instance();
-        Offer offer = offerService.prepareOfferEntity(defaultOfferFileName, itemType);
+        Offer offer = offerService.prepareOfferEntity(defaultOfferFileName);
         offer.setOwnerId(ownerId);
         return offerService.postOffer(offer);
     }
+
+    public void deleteOfferRevision(String offerRevisionId) throws Exception {
+        deleteOfferRevision(offerRevisionId, 204);
+    }
+
+    public void deleteOfferRevision(String offerRevisionId, int expectedResponseCode) throws Exception {
+        String url = catalogServerURL + "/" + offerRevisionId;
+        restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode);
+        Master.getInstance().removeOfferRevision(offerRevisionId);
+    }
+
 }

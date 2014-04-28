@@ -26,4 +26,11 @@ public interface OfferAttributeService {
 
     String postOfferAttribute(OfferAttribute offerAttribute) throws Exception;
     String postOfferAttribute(OfferAttribute offerAttribute, int expectedResponseCode) throws Exception;
+
+    String updateOfferAttribute(OfferAttribute offerAttribute) throws Exception;
+    String updateOfferAttribute(OfferAttribute offerAttribute, int expectedResponseCode) throws Exception;
+
+    void deleteOfferAttribute(String offerAttributeId) throws Exception;
+    void deleteOfferAttribute(String offerAttributeId, int expectedResponseCode) throws Exception;
+
 }

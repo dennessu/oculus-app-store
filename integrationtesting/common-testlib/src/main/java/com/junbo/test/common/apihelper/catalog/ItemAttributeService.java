@@ -16,12 +16,18 @@ import java.util.List;
  */
 public interface ItemAttributeService {
 
-    String getItemAttribute(String attributeId) throws Exception;
-    String getItemAttribute(String attributeId, int expectedResponseCode) throws Exception;
+    String getItemAttribute(String itemAttributeId) throws Exception;
+    String getItemAttribute(String itemAttributeId, int expectedResponseCode) throws Exception;
 
     List<String> getItemAttributes(HashMap<String, String> httpPara) throws Exception;
     List<String> getItemAttributes(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception;
 
     String postItemAttribute(ItemAttribute itemAttribute) throws Exception;
     String postItemAttribute(ItemAttribute itemAttribute, int expectedResponseCode) throws Exception;
+
+    String updateItemAttribute(ItemAttribute itemAttribute) throws Exception;
+    String updateItemAttribute(ItemAttribute itemAttribute, int expectedResponseCode) throws Exception;
+
+    void deleteItemAttribute(String itemAttributeId) throws Exception;
+    void deleteItemAttribute(String itemAttributeId, int expectedResponseCode) throws Exception;
 }
