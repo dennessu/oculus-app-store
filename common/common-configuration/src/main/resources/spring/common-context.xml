@@ -6,7 +6,7 @@
        ">
 
     <context:annotation-config />
-    <bean id="configService" class="com.junbo.configuration.impl.ConfigServiceImpl" />
+    <bean id="configService" class="com.junbo.configuration.ConfigServiceManager" factory-method="instance" />
     <bean id="configPropertyPlaceholderConfigurer" class="com.junbo.configuration.impl.ConfigPropertyPlaceholderConfigurer">
         <property name="configService" ref="configService" />
     </bean>
@@ -18,9 +18,6 @@
                 </bean>
             </list>
         </property>
-    </bean>
-    <bean class="com.junbo.configuration.ConfigServiceManager">
-        <property name="configService" ref="configService" />
     </bean>
 
     <context:component-scan base-package="com.junbo.configuration" />

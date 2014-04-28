@@ -14,6 +14,9 @@ import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.junbo.common.id.OrderId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.json.ObjectMapperProvider;
+import com.junbo.common.util.Utils;
+import com.junbo.configuration.ConfigServiceManager;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
@@ -23,6 +26,12 @@ import static org.testng.Assert.*;
  */
 public class HateoasTest {
     private ObjectMapper mapper = ObjectMapperProvider.instance();
+    private String urlPrefix = ConfigServiceManager.instance().getConfigValue("common.conf.resourceUrlPrefix");
+
+    @BeforeTest
+    public void setup() {
+        assertTrue(urlPrefix != null && urlPrefix.matches("^http(s?)://.*"), "Url Prefix is invalid: " + urlPrefix);
+    }
 
     @Test
     public void testBVT() throws Exception {
@@ -38,7 +47,7 @@ public class HateoasTest {
 
         assertEquals(
                 jsonNode.get("subLink1").get("href").asText(),
-                "https://api.oculusvr.com/v1/users/6B54FFB0BC9E/orders/3650-6702-5565");
+                Utils.combineUrl(urlPrefix, "/users/6B54FFB0BC9E/orders/3650-6702-5565"));
 
         assertEquals(jsonNode.get("subLink2").getNodeType(), JsonNodeType.NULL);
         assertEquals(jsonNode.get("superSuperLink").getNodeType(), JsonNodeType.NULL);
@@ -52,15 +61,15 @@ public class HateoasTest {
 
         assertEquals(
                 jsonNode.get("subLink1").get("href").asText(),
-                "https://api.oculusvr.com/v1/users/6B54FFB0BC9E/orders/3650-6702-5565");
+                Utils.combineUrl(urlPrefix, "/users/6B54FFB0BC9E/orders/3650-6702-5565"));
 
         assertEquals(
                 jsonNode.get("subLink2").get("href").asText(),
-                "https://api.oculusvr.com/v1/friends/6355EF9DBDA1/3687-3240-1275");
+                Utils.combineUrl(urlPrefix, "/friends/6355EF9DBDA1/3687-3240-1275"));
 
         assertEquals(
                 jsonNode.get("superSuperLink").get("href").asText(),
-                "https://api.oculusvr.com/v1/users/6B54FFB0BC9E/orders/3650-6702-5565/friends/6355EF9DBDA1/3687-3240-1275/end");
+                Utils.combineUrl(urlPrefix, "/users/6B54FFB0BC9E/orders/3650-6702-5565/friends/6355EF9DBDA1/3687-3240-1275/end"));
 
         assertAllLinksNull(testEntity);
         testDeserialize(testEntity, json);
@@ -76,7 +85,7 @@ public class HateoasTest {
 
         assertEquals(
                 jsonNode.get("subLink2").get("href").asText(),
-                "https://api.oculusvr.com/v1/friends/6B54FFB0BC9E/3650-6702-5565");
+                Utils.combineUrl(urlPrefix, "/friends/6B54FFB0BC9E/3650-6702-5565"));
 
         assertEquals(jsonNode.get("superSuperLink").getNodeType(), JsonNodeType.NULL);
 
