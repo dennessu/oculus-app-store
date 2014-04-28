@@ -51,7 +51,7 @@ class IdentityFacadeImpl implements IdentityFacade {
                 return userPersonalInfoResource.get(user.dob.value, new UserPersonalInfoGetOptions()).then { UserPersonalInfo info ->
                     if (info != null && info.type.equalsIgnoreCase('dob')) {
                         try {
-                            Date date = ObjectMapperProvider.instance().valueToTree(info.value, Date)
+                            Date date = ObjectMapperProvider.instance().treeToValue(info.value, Date)
                             return Promise.pure(date)
                         }
                         catch (Exception e) {
