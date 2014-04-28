@@ -46,4 +46,12 @@
         <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
     </bean>
 
+    <bean id="emailTemplateResource" class="com.junbo.email.spec.resource.proxy.EmailTemplateResourceClientProxy">
+        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
+        <constructor-arg name="target" value="${clientproxy.email.url}"/>
+        <constructor-arg name="transcoder" ref="commonTranscoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+    </bean>
+
 </beans>

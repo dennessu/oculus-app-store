@@ -38,7 +38,7 @@ import javax.ws.rs.core.UriBuilder
 class SendAccountVerifyEmail implements Action {
     private static final Logger LOGGER = LoggerFactory.getLogger(SendAccountVerifyEmail)
     private static final String EMAIL_SOURCE = 'SilkCloud'
-    private static final String EMAIL_ACTION = 'accountEmailVerification'
+    private static final String EMAIL_ACTION = 'EmailVerification'
     private static final String EMAIL_VERIFY_PATH = 'oauth2/verify-email'
 
     private EmailResource emailResource
@@ -106,7 +106,10 @@ class SendAccountVerifyEmail implements Action {
                     userId: user.id as UserId,
                     templateId: template.id as EmailTemplateId,
                     recipients: [email].asList(),
-                    replacements: ['verifyUri': uriBuilder.build().toString()]
+                    replacements: [
+                            'name': user.username,
+                            'verify_link': uriBuilder.build().toString()
+                    ]
             )
 
             emailResource.postEmail(emailToSend).recover { Throwable e ->
