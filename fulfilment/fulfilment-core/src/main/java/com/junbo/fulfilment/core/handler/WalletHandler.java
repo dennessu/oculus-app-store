@@ -33,10 +33,10 @@ public class WalletHandler extends HandlerSupport<WalletContext> {
 
             request.setTrackingUuid(UUID.randomUUID());
             request.setUserId(context.getUserId());
-            request.setCurrency(item.getWalletCurrency());
+            request.setCurrency(item.getStoredValueCurrency());
 
             // aggregate credit amount
-            BigDecimal totalCreditAmount = item.getWalletAmount()
+            BigDecimal totalCreditAmount = item.getStoredValueAmount()
                     .multiply(new BigDecimal(action.getCopyCount()))
                     .multiply(new BigDecimal(itemEntry.getQuantity()));
 
