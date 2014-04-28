@@ -21,7 +21,7 @@ import javax.annotation.Resource
 @Component('validateUserAction')
 class ValidateUserAction implements Action {
 
-    public static final String UserActive = 'ACTIVE'
+    public static final String USERACTIVE = 'ACTIVE'
 
     @Resource(name = 'orderServiceContextBuilder')
     OrderServiceContextBuilder orderServiceContextBuilder
@@ -41,7 +41,7 @@ class ValidateUserAction implements Action {
                 throw AppErrors.INSTANCE.userNotFound(
                         context?.orderServiceContext?.order?.user?.value?.toString()).exception()
             }
-            if (!user.status == UserActive) {
+            if (!user.status == USERACTIVE) {
                 LOGGER.info('name=Validate_User_Invalid')
                 throw AppErrors.INSTANCE.userStatusInvalid().exception()
             }

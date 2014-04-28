@@ -1,7 +1,5 @@
 package com.junbo.order.test.offer
-import com.junbo.catalog.spec.model.common.LocalizableProperty
 import com.junbo.catalog.spec.model.common.Price
-import com.junbo.catalog.spec.model.common.Status
 import com.junbo.catalog.spec.model.item.Item
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.catalog.spec.model.offer.*
@@ -44,10 +42,7 @@ class OfferLoader {
 
     Item createItem(Long ownerId) {
         def item = new Item()
-        item.name = new LocalizableProperty()
-        item.name.locales = ['en_US': 'en_US_test_item_name', 'DEFAULT': 'default_test_item_name']
         item.ownerId = ownerId
-        item.sku = 'sku'
         item.type = 'DIGITAL'
         return serviceFacade.itemResource.create(item).wrapped().get()
     }
@@ -58,7 +53,7 @@ class OfferLoader {
         itemRevision.sku = item.sku
         itemRevision.ownerId = item.ownerId
         itemRevision.itemId = item.itemId
-        itemRevision.status = Status.DRAFT
+        itemRevision.status = 'DRAFT'
         ItemRevision draft = serviceFacade.itemRevisionResource.createItemRevision(itemRevision).wrapped().get()
         draft.status = Status.APPROVED
         return serviceFacade.itemRevisionResource.updateItemRevision(new ItemRevisionId(draft.revisionId), draft).wrapped().get()
@@ -75,8 +70,7 @@ class OfferLoader {
         offerRevision.offerId = offer.offerId
         offerRevision.ownerId = offer.ownerId
         offerRevision.status = Status.DRAFT;
-        offerRevision.name = new LocalizableProperty()
-        offerRevision.name.locales = ["en_US": "en_US_test_item_name", "DEFAULT": "default_test_item_name"]
+        offerRevision.locales = ["en_US": "en_US_test_item_name", "DEFAULT": "default_test_item_name"]
 
         offerRevision.price = new Price();
         offerRevision.price.priceType = Price.CUSTOM;

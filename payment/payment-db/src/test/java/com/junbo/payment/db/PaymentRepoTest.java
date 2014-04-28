@@ -1,8 +1,8 @@
 package com.junbo.payment.db;
 
+import com.junbo.common.id.PIType;
 import com.junbo.payment.db.repository.PaymentInstrumentRepository;
 import com.junbo.payment.spec.enums.CreditCardType;
-import com.junbo.payment.spec.enums.PIType;
 import com.junbo.payment.spec.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;

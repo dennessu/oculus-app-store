@@ -7,13 +7,13 @@
 package com.junbo.payment.db.mapper;
 
 
+import com.junbo.common.id.PIType;
 import com.junbo.oom.core.MappingContext;
 import com.junbo.payment.db.entity.payment.PaymentEntity;
 import com.junbo.payment.db.entity.payment.PaymentEventEntity;
 import com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentEntity;
 import com.junbo.payment.db.repository.MerchantAccountRepository;
 import com.junbo.payment.db.repository.PaymentProviderRepository;
-import com.junbo.payment.spec.enums.PIType;
 import com.junbo.payment.spec.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 

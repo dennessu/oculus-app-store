@@ -1,17 +1,12 @@
 package com.junbo.payment.core.service;
 
+import com.junbo.common.id.PIType;
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
 import com.junbo.payment.core.BaseTest;
-import com.junbo.payment.core.PaymentInstrumentService;
-import com.junbo.payment.core.PaymentTransactionService;
 import com.junbo.payment.core.mock.MockPaymentProviderServiceImpl;
 import com.junbo.payment.spec.enums.CreditCardType;
-import com.junbo.payment.spec.enums.PIType;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -134,6 +129,8 @@ public class PaymentServiceTest extends BaseTest {
             }
         });
         return request;
+
+
     }
 
     private PaymentTransaction buildPaymentTransaction(final PaymentInstrument pi){

@@ -7,6 +7,7 @@
 package com.junbo.payment.core.provider.ewallet;
 
 import com.junbo.common.id.WalletId;
+import com.junbo.ewallet.spec.def.WalletType;
 import com.junbo.ewallet.spec.model.DebitRequest;
 import com.junbo.ewallet.spec.model.Transaction;
 import com.junbo.ewallet.spec.model.Wallet;
@@ -60,7 +61,8 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
         Wallet wallet = new Wallet();
         wallet.setUserId(request.getUserId());
         wallet.setCurrency(request.getTypeSpecificDetails().getWalletCurrency());
-        wallet.setType(request.getTypeSpecificDetails().getWalletType());
+        String walletType = request.getTypeSpecificDetails().getWalletType();
+        wallet.setType(CommonUtil.isNullOrEmpty(walletType) ? WalletType.STORED_VALUE.toString() : walletType);
         return walletClient.postWallet(wallet).recover(new Promise.Func<Throwable, Promise<Wallet>>() {
             @Override
             public Promise<Wallet> apply(Throwable throwable) {
