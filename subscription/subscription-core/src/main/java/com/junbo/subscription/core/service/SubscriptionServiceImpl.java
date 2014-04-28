@@ -6,6 +6,7 @@
 
 package com.junbo.subscription.core.service;
 
+import com.junbo.catalog.spec.enums.PriceType;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.ItemEntry;
 import com.junbo.catalog.spec.model.offer.Offer;
@@ -113,7 +114,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private boolean isFreeSubscrption(OfferRevision offerRev) {
 
         Price price = offerRev.getPrice();
-        if(!price.getPriceType().equals(Price.FREE)){
+        if(!price.getPriceType().equals(PriceType.FREE.name())){
             return false;
         }
         return true;

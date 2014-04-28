@@ -1,8 +1,7 @@
 package com.junbo.order.db.repo
 
+import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.OfferId
-import com.junbo.common.id.OrderId
-import com.junbo.common.id.OrderItemId
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.common.id.ShippingAddressId
 import com.junbo.common.id.UserId
@@ -13,9 +12,9 @@ import com.junbo.order.db.mapper.ModelMapper
 import com.junbo.order.spec.model.Discount
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
+import org.apache.commons.lang.RandomStringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.testng.annotations.Test
-
 /**
  * Created by fzhang on 14-3-12.
  */
@@ -125,6 +124,7 @@ class OrderRepositoryTest extends BaseTest {
         def orderEntity = TestHelper.generateOrder()
         orderEntity.setUserId(idGenerator.nextId(UserId.class));
         def order = modelMapper.toOrderModel(orderEntity, new MappingContext())
+        order.currency = new CurrencyId(RandomStringUtils.randomAlphabetic(2).toUpperCase())
         order.id = null
         order.orderItems = [ createOrderItem(), createOrderItem()]
         order.discounts = [

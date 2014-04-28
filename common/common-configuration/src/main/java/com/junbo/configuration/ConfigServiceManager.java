@@ -6,6 +6,7 @@
 
 package com.junbo.configuration;
 
+import com.junbo.configuration.impl.ConfigServiceImpl;
 import org.springframework.beans.factory.annotation.Required;
 
 /**
@@ -13,7 +14,7 @@ import org.springframework.beans.factory.annotation.Required;
  */
 public class ConfigServiceManager {
 
-    private static ConfigService configService;
+    private static ConfigService configService = new ConfigServiceImpl();
 
     public static ConfigService instance() {
         return configService;

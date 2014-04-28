@@ -7,6 +7,7 @@
 package com.junbo.order.core.impl.orderflow
 
 import com.junbo.common.error.AppErrorException
+import com.junbo.common.id.PIType
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.FlowSelector
 import com.junbo.order.core.FlowType
@@ -18,7 +19,6 @@ import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.db.entity.enums.OrderStatus
 import com.junbo.order.spec.error.AppErrors
-import com.junbo.payment.spec.enums.PIType
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -107,15 +107,15 @@ class DefaultFlowSelector implements FlowSelector {
         orderServiceContextBuilder.getPaymentInstruments(context).then { List<PaymentInstrument> pis ->
             // TODO: do not support multiple payment methods now
             assert(!CollectionUtils.isEmpty(pis))
-            switch (pis[0].type) {
+            switch (PIType.get(pis[0].type)) {
                 // TODO reference to payment instrument type
-                case PIType.CREDITCARD.name():
+                case PIType.CREDITCARD:
                     // TODO: do not support mixed order containing both physical item & digital item now
                     return CoreUtils.hasPhysicalOffer(context.order) ? Promise.pure(FlowType.AUTH_SETTLE.name()) :
                             Promise.pure(FlowType.IMMEDIATE_SETTLE.name())
-                case PIType.WALLET.name():
+                case PIType.WALLET:
                     return Promise.pure(FlowType.IMMEDIATE_SETTLE.name())
-                case PIType.PAYPAL.name():
+                case PIType.PAYPAL:
                     return Promise.pure(FlowType.WEB_PAYMENT_CHARGE.name())
                 default:
                     LOGGER.error('name=Payment_Instrument_Type_Not_Supported, action: {}', pis[0]?.type)

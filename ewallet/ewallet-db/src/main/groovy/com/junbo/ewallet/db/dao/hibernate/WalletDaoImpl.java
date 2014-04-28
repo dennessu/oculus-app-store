@@ -31,7 +31,7 @@ public class WalletDaoImpl extends BaseDao<WalletEntity> implements WalletDao {
         Query q = currentSession(userId).createQuery(queryString)
                 .setLong("userId", userId)
                 .setInteger("type", type.getId())
-                .setString("currency", currency);
+                .setString("currency", currency.toUpperCase());
         return (WalletEntity) q.uniqueResult();
     }
 

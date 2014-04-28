@@ -47,9 +47,9 @@ public class Offer extends BaseEntityModel {
     private Boolean published;
 
     @ItemId
-    @JsonProperty("soldWithinItem")
+    @JsonProperty("iapHostItem")
     @ApiModelProperty(position = 24, required = false, value = "The item in which the IAP offer will be sold.")
-    private Long iapItemId;
+    private Long iapHostItemId;
 
     @OfferAttributeId
     @ApiModelProperty(position = 25, required = true, value = "Categories of the offer.")
@@ -98,12 +98,12 @@ public class Offer extends BaseEntityModel {
         this.published = published;
     }
 
-    public Long getIapItemId() {
-        return iapItemId;
+    public Long getIapHostItemId() {
+        return iapHostItemId;
     }
 
-    public void setIapItemId(Long iapItemId) {
-        this.iapItemId = iapItemId;
+    public void setIapHostItemId(Long iapHostItemId) {
+        this.iapHostItemId = iapHostItemId;
     }
 
     public List<Long> getCategories() {

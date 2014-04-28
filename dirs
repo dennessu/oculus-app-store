@@ -6,6 +6,7 @@ apphost/apphost-core
 notification
 identity/identity-spec
 oauth/oauth-spec
+email/email-spec
 authorization
 identity
 oauth

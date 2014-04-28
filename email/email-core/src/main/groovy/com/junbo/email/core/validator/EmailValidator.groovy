@@ -7,7 +7,6 @@ package com.junbo.email.core.validator
 
 import com.junbo.email.spec.model.Email
 import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserPii
 
 /**
  * Interface of Email.
@@ -20,6 +19,4 @@ interface EmailValidator {
     void validateDelete(Long id)
 
     void validateUser(User user)
-
-    void validateUserPii(UserPii userPii)
 }

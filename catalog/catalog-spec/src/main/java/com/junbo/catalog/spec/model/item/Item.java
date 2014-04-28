@@ -25,8 +25,13 @@ public class Item extends BaseEntityModel {
     private Long itemId;
 
     @ApiModelProperty(position = 2, required = true, value = "Item type",
-            allowableValues = "PHYSICAL, DIGITAL, WALLET, SUBSCRIPTION, VIRTUAL")
+            allowableValues = "PHYSICAL, DIGITAL, STORED_VALUE, SUBSCRIPTION, VIRTUAL")
     private String type;
+
+    @ItemId
+    @JsonProperty("iapHostItem")
+    @ApiModelProperty(position = 24, required = false, value = "The item in which the IAP item will be sold.")
+    private Long iapHostItemId;
 
     @ItemRevisionId
     @JsonProperty("currentRevision")
@@ -80,6 +85,14 @@ public class Item extends BaseEntityModel {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Long getIapHostItemId() {
+        return iapHostItemId;
+    }
+
+    public void setIapHostItemId(Long iapHostItemId) {
+        this.iapHostItemId = iapHostItemId;
     }
 
     public Long getCurrentRevisionId() {

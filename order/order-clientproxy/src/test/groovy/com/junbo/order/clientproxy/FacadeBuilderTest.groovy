@@ -15,7 +15,7 @@ import javax.xml.bind.DatatypeConverter
 @TypeChecked
 class FacadeBuilderTest extends BaseTest {
 
-    @Test
+    @Test(enabled = false)
     void testRatingRequestBuilder() {
         def order = TestBuilder.buildOrderRequest()
         order.honoredTime = new Date()

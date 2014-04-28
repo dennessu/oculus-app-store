@@ -10,7 +10,6 @@ import com.junbo.email.db.repo.EmailScheduleRepository
 import com.junbo.email.spec.error.AppErrors
 import com.junbo.email.spec.model.Email
 import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserPii
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
@@ -52,10 +51,6 @@ class EmailValidatorImpl extends CommonValidator implements EmailValidator {
 
     void validateUser(User user) {
         super.validateUser(user)
-    }
-
-    void validateUserPii(UserPii userPii) {
-        super.validateUserPii(userPii)
     }
 
     private void validateEmailSchedule(Email email) {

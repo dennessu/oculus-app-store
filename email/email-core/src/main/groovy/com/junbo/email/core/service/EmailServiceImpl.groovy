@@ -14,13 +14,12 @@ import com.junbo.email.core.validator.EmailValidator
 import com.junbo.email.db.repo.EmailHistoryRepository
 import com.junbo.email.db.repo.EmailScheduleRepository
 import com.junbo.email.db.repo.EmailTemplateRepository
+import com.junbo.email.spec.error.AppErrors
 import com.junbo.email.spec.model.Email
 import com.junbo.email.spec.model.EmailStatus
-import com.junbo.identity.spec.v1.model.UserPii
 import com.junbo.langur.core.promise.Promise
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import org.springframework.util.StringUtils
 
 /**
  * Impl of EmailService.
@@ -76,18 +75,15 @@ class EmailServiceImpl implements EmailService {
         return this.handle(email)
     }
 
-    private List<String> getEmailAddress(UserPii userPii) {
-        def type = userPii?.emails?.keySet()?.first()
-        def emailAddress = StringUtils.isEmpty(type) ? '' : userPii?.emails?.get(type)?.value
-        return StringUtils.isEmpty(emailAddress) ? [] : [emailAddress]
-    }
-
     private Promise<Email> handle(Email email) {
         if (email.recipients == null) {
-            identityFacade.getUserPii(email.userId.value).then {
-                def userPii = it as UserPii
-                emailValidator.validateUserPii(userPii)
-                email.setRecipients(this.getEmailAddress(userPii))
+            identityFacade.getUserEmail(email.userId.value).then { String strEmail ->
+                if (email == null) {
+                    throw AppErrors.INSTANCE.missingField('recipients').exception()
+                }
+                def recipients = [] as List<String>
+                recipients << strEmail
+                email.setRecipients(strEmail)
                 return email.id == null ? this.save(email) : this.update(email)
             }
         }
