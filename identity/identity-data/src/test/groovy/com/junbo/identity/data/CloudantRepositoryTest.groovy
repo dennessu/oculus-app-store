@@ -46,10 +46,6 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     private IdGenerator idGenerator
 
     @Autowired
-    @Qualifier('cloudantAddressRepository')
-    private AddressRepository addressRepository
-
-    @Autowired
     @Qualifier('cloudantDeviceRepository')
     private DeviceRepository deviceRepository
 
@@ -157,14 +153,6 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void testPITypeRepository() {
-        PIType piType = new PIType()
-
-        PIType newPIType = piTypeRepository.create(piType).wrapped().get()
-        assert  piType.id.toString() == newPIType.id.toString()
-    }
-
-    @Test
     public void testDeviceRepository() {
         Device device = new Device()
         device.setFirmwareVersion(UUID.randomUUID().toString())
@@ -185,19 +173,6 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         device = deviceRepository.searchBySerialNumber(device.serialNumber).wrapped().get()
         assert device.serialNumber == newSerialNumber
-    }
-
-    @Test(enabled = true)
-    public void testAddressRepository() {
-        Address address = new Address()
-        address.city = 'shanghai'
-        address.street1 = UUID.randomUUID().toString()
-        address.postalCode = '201102'
-        address.userId = new UserId(userId)
-        address = addressRepository.create(address).wrapped().get()
-
-        Address newAddress = addressRepository.get(address.id).wrapped().get()
-        Assert.assertEquals(address.city, newAddress.city)
     }
 
     @Test
