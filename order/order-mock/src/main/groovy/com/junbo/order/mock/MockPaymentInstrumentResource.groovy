@@ -1,8 +1,8 @@
 package com.junbo.order.mock
+
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
-import com.junbo.payment.spec.enums.PIType
 import com.junbo.payment.spec.model.PageMetaData
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam
@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component
 
 import javax.ws.rs.BeanParam
 import javax.ws.rs.core.Response
+
 /**
  * Created by chriszhu on 2/11/14.
  */
@@ -35,7 +36,7 @@ class MockPaymentInstrumentResource extends BaseMock implements PaymentInstrumen
         pi.id = paymentInstrumentId.value
         pi.isValidated = true
         pi.isActive = true
-        pi.type = PIType.CREDITCARD
+        pi.type = generateLong()
         return Promise.pure(pi)
     }
 
