@@ -19,6 +19,8 @@ public class ErrorCode {
 
     public static final String SHIPPING_ADDRESS_NOT_FOUND = "SHIPPING_ADDRESS_NOT_FOUND";
 
+    public static final String ADDRESS_NOT_FOUND = "ADDRESS_NOT_FOUND";
+
     public static final String USER_SHIPPING_ADDRESS_NOT_MATCH = "USER_SHIPPING_ADDRESS_NOT_MATCH";
 
     public static final String FIELD_MISSING_VALUE = "FIELD_MISSING_VALUE";

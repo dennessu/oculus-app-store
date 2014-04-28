@@ -19,6 +19,10 @@ public interface AppErrors {
             description = "Shipping address with id {0} not found")
     AppError shippingAddressNotFound(String id);
 
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.ADDRESS_NOT_FOUND,
+            description = "Address with id {0} not found")
+    AppError addressNotFound(String id);
+
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.USER_SHIPPING_ADDRESS_NOT_MATCH,
             description = "Shipping address with id {1} not belong to the user {0}")
     AppError userShippingAddressNotMatch(String userId, String addressId);
