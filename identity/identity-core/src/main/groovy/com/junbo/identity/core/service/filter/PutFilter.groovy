@@ -16,6 +16,7 @@ class PutFilter implements PropertyMappingFilter {
 
     @Override
     boolean skipPropertyMapping(PropertyMappingEvent event, MappingContext context) {
+        return false
     }
 
     @Override
@@ -52,6 +53,10 @@ class PutFilter implements PropertyMappingFilter {
             if (PropertyAssignedAwareSupport.isPropertyAssigned(event.source, event.sourcePropertyName)) {
                 throw AppErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
             }
+        }
+
+        if (writable) {
+            event.alternativeSourceProperty = null // always ignore alternativeSourceProperty
         }
     }
 
