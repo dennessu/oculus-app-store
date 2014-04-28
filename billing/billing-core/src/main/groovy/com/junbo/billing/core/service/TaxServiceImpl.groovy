@@ -31,10 +31,10 @@ class TaxServiceImpl implements TaxService {
     @Resource
     TaxFacade avalaraFacade
 
-    @Resource
+    @Resource(name='billingPaymentFacade')
     PaymentFacade paymentFacade
 
-    @Resource
+    @Resource(name='billingIdentityFacade')
     IdentityFacade identityFacade
 
     @Resource
