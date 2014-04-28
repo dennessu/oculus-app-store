@@ -153,14 +153,6 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void testPITypeRepository() {
-        PIType piType = new PIType()
-
-        PIType newPIType = piTypeRepository.create(piType).wrapped().get()
-        assert  piType.id.toString() == newPIType.id.toString()
-    }
-
-    @Test
     public void testDeviceRepository() {
         Device device = new Device()
         device.setFirmwareVersion(UUID.randomUUID().toString())
