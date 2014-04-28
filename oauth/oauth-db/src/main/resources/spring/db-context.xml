@@ -20,6 +20,7 @@
         <property name="sessionStatePostfix" value="${oauth.db.sessionStatePostfix}"/>
         <property name="clientIdLength" value="${oauth.db.clientIdLength}"/>
         <property name="clientSecretLength" value="${oauth.db.clientSecretLength}"/>
+        <property name="saltLength" value="${oauth.db.saltLength}"/>
         <property name="emailVerifyCodeLength" value="${oauth.db.emailVerifyCodeLength}"/>
     </bean>
 

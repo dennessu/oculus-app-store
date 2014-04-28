@@ -41,7 +41,7 @@ class LoadRememberMeToken implements Action {
         def contextWrapper = new ActionContextWrapper(context)
         def cookieMap = contextWrapper.cookieMap
 
-        Cookie rememberMeCookie = cookieMap.get(OAuthParameters.REMEMBER_ME)
+        Cookie rememberMeCookie = cookieMap.get(OAuthParameters.COOKIE_REMEMBER_ME)
 
         if (rememberMeCookie == null) {
             return Promise.pure(null)

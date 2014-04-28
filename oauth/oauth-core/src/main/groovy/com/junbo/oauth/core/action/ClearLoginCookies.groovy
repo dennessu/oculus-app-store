@@ -64,7 +64,10 @@ class ClearLoginCookies implements Action {
         }
 
         // Clear the login state cookie.
-        CookieUtil.clearCookie(OAuthParameters.LOGIN_STATE, context)
+        CookieUtil.clearCookie(context, OAuthParameters.COOKIE_LOGIN_STATE)
+
+        // Clear the session state cookie.
+        CookieUtil.clearCookie(context, OAuthParameters.COOKIE_SESSION_STATE)
 
         def rememberMeToken = contextWrapper.rememberMeToken
 
@@ -74,7 +77,7 @@ class ClearLoginCookies implements Action {
         }
 
         // Clear the remember me token cookie.
-        CookieUtil.clearCookie(OAuthParameters.REMEMBER_ME, context)
+        CookieUtil.clearCookie(context, OAuthParameters.COOKIE_REMEMBER_ME)
 
         // Return an OK(200) response.
         if (contextWrapper.responseBuilder == null) {

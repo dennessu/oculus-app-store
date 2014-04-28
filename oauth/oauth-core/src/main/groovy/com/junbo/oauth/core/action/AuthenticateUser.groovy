@@ -140,6 +140,14 @@ class AuthenticateUser implements Action {
                     lastAuthDate: new Date()
             )
 
+            def oldLoginState = contextWrapper.loginState
+            if (oldLoginState != null) {
+                loginState.id = oldLoginState.id
+                if (loginState.userId == oldLoginState.userId) {
+                    loginState.sessionId = oldLoginState.id
+                }
+            }
+
             contextWrapper.loginState = loginState
 
             // Check if the remember me token is needed.

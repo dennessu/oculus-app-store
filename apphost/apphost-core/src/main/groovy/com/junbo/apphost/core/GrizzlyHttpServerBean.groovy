@@ -6,6 +6,8 @@ import org.glassfish.grizzly.http.server.CLStaticHttpHandler
 import org.glassfish.grizzly.http.server.HttpHandler
 import org.glassfish.grizzly.http.server.HttpServer
 import org.glassfish.grizzly.http.server.NetworkListener
+import org.glassfish.grizzly.http.server.Request
+import org.glassfish.grizzly.http.server.Response
 import org.glassfish.hk2.api.InjectionResolver
 import org.glassfish.hk2.api.ServiceLocator
 import org.glassfish.hk2.api.TypeLiteral
@@ -69,6 +71,26 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean, Applica
         NetworkListener listener = new NetworkListener('grizzly', host, port)
         httpServer.addListener(listener)
 
+        def config = httpServer.serverConfiguration
+
+        // handle Jersey resources
+        HttpHandler jerseyHandler = buildJerseyHandler()
+
+        // handle static resources
+        def staticHandler = new CLStaticHttpHandler(ClassUtils.defaultClassLoader, ['static/'] as String[]) {
+            @Override
+            protected void onMissingResource(Request request, Response response) throws Exception {
+                jerseyHandler.service(request, response)
+            }
+        }
+
+        config.addHttpHandler(staticHandler, uri.path)
+
+        config.setPassTraceRequest(true)
+        config.monitoringConfig.webServerConfig.addProbes(new AccessLogProbe())
+    }
+
+    private HttpHandler buildJerseyHandler() {
         // configure resourceConfig
         def resourceConfig = new ResourceConfig()
 
@@ -110,17 +132,7 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean, Applica
             throw new IllegalArgumentException('No container provider supports the GrizzlyHttpContainer')
         }
 
-        // configure serverConfiguration
-        def config = httpServer.serverConfiguration
-
-        config.addHttpHandler(handler, uri.path)
-        config.setPassTraceRequest(true)
-
-        config.monitoringConfig.webServerConfig.addProbes(new AccessLogProbe())
-
-        // handle static resources
-        def staticHandler = new CLStaticHttpHandler(ClassUtils.defaultClassLoader, "static/files/")
-        config.addHttpHandler(staticHandler, "/static")
+        return handler
     }
 
     @Override

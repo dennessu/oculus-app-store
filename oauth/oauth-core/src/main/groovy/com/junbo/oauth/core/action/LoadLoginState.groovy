@@ -41,7 +41,7 @@ class LoadLoginState implements Action {
 
         def cookieMap = contextWrapper.cookieMap
 
-        Cookie loginStateCookie = cookieMap.get(OAuthParameters.LOGIN_STATE)
+        Cookie loginStateCookie = cookieMap.get(OAuthParameters.COOKIE_LOGIN_STATE)
 
         if (loginStateCookie == null) {
             return Promise.pure(null)

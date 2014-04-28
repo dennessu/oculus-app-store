@@ -90,7 +90,7 @@ class BuildRedirectUri implements Action {
         }
 
         // Add the session state, the client will use it for tracking the login status within an iframe.
-        parameters.put(OAuthParameters.SESSION_ID, loginState.sessionId)
+        parameters.put(OAuthParameters.SESSION_STATE, loginState.sessionId)
 
         // If the flow is an implicit flow, which means the token, id_token response type is presented,
         // the parameters need to be added to the redirect uri's fragment.

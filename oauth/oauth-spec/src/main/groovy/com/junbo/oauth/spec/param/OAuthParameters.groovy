@@ -24,7 +24,6 @@ class OAuthParameters {
     public static final String ID_TOKEN_HINT = 'id_token_hint'
     public static final String LOGIN_HINT = 'login_hint'
     public static final String MAX_AGE = 'max_age'
-    public static final String LOGIN_STATE = 'ls'
     public static final String REMEMBER_ME = 'remember_me'
     public static final String CODE = 'code'
     public static final String GRANT_TYPE = 'grant_type'
@@ -41,7 +40,8 @@ class OAuthParameters {
     public static final String POST_LOGOUT_REDIRECT_URI = 'post_logout_redirect_uri'
     public static final String USER_ID = 'user_id'
     public static final String ID_TOKEN_USER_ID = 'id_token_user_id'
-    public static final String SESSION_ID = 'session_id'
+    public static final String SESSION_STATE = 'session_state'
+
     public static final String ERROR = 'error'
     public static final String NICK_NAME = 'nickname'
     public static final String FIRST_NAME = 'first_name'
@@ -49,5 +49,9 @@ class OAuthParameters {
     public static final String DOB = 'dob'
     public static final String GENDER = 'gender'
     public static final String EMAIL = 'email'
+
+    public static final String COOKIE_LOGIN_STATE = 'ls'
+    public static final String COOKIE_SESSION_STATE = 'ss'
+    public static final String COOKIE_REMEMBER_ME = 'me'
 }
 

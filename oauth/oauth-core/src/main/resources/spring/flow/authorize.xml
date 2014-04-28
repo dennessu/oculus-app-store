@@ -53,6 +53,7 @@
             </wf:on-render>
             <wf:transition on="*" to="CHECK_CONSENT">
                 <wf:action ref="saveLoginState"/>
+                <wf:action ref="grantRememberMeToken"/>
             </wf:transition>
         </wf:view-state>
 
@@ -77,6 +78,7 @@
             </wf:on-render>
             <wf:transition on="*" to="CHECK_CONSENT">
                 <wf:action ref="saveLoginState"/>
+                <wf:action ref="grantRememberMeToken"/>
             </wf:transition>
         </wf:view-state>
 
@@ -114,7 +116,6 @@
             <wf:on-entry>
                 <wf:action ref="grantAuthorizationCode"/>
                 <wf:action ref="grantImplicitAccessToken"/>
-                <wf:action ref="grantRememberMeToken"/>
                 <wf:action ref="grantIdToken"/>
                 <wf:action ref="redirectToClient"/>
             </wf:on-entry>
@@ -207,6 +208,7 @@
 
 
     <bean id="redirectToClient" class="com.junbo.oauth.core.view.RedirectToClient">
+        <property name="tokenService" ref="tokenService"/>
     </bean>
 
     <bean id="accessDenied" class="com.junbo.oauth.core.view.RedirectToClientError">

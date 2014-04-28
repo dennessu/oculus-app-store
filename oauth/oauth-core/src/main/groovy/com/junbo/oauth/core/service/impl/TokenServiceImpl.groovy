@@ -11,6 +11,8 @@ import com.junbo.oauth.common.JsonMarshaller
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.TokenService
 import com.junbo.oauth.core.util.AuthorizationHeaderUtil
+import com.junbo.oauth.core.util.UriUtil
+import com.junbo.oauth.db.generator.TokenGenerator
 import com.junbo.oauth.db.repo.AccessTokenRepository
 import com.junbo.oauth.db.repo.ClientRepository
 import com.junbo.oauth.db.repo.RefreshTokenRepository
@@ -20,11 +22,13 @@ import com.nimbusds.jose.crypto.MACSigner
 import com.nimbusds.jose.crypto.MACVerifier
 import com.nimbusds.jose.util.Base64URL
 import groovy.transform.CompileStatic
+import org.apache.commons.codec.binary.Hex
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.Assert
 
+import java.security.MessageDigest
 import java.text.ParseException
 
 /**
@@ -45,6 +49,8 @@ class TokenServiceImpl implements TokenService {
     private AccessTokenRepository accessTokenRepository
     private RefreshTokenRepository refreshTokenRepository
     private ClientRepository clientRepository
+
+    private TokenGenerator tokenGenerator
 
     @Required
     void setDefaultAccessTokenExpiration(Long defaultAccessTokenExpiration) {
@@ -74,6 +80,11 @@ class TokenServiceImpl implements TokenService {
     @Required
     void setClientRepository(ClientRepository clientRepository) {
         this.clientRepository = clientRepository
+    }
+
+    @Required
+    void setTokenGenerator(TokenGenerator tokenGenerator) {
+        this.tokenGenerator = tokenGenerator
     }
 
     @Override
@@ -296,5 +307,20 @@ class TokenServiceImpl implements TokenService {
     @Override
     boolean isValidRefreshToken(String tokenValue) {
         return refreshTokenRepository.isValidRefreshToken(tokenValue)
+    }
+
+    @Override
+    String generateSessionStatePerClient(String sessionId, String clientId, String redirectUri) {
+
+        def origin = UriUtil.getOrigin(redirectUri)
+        def salt = tokenGenerator.generateSalt()
+
+        String rawSessionState = "$clientId $origin $sessionId $salt"
+
+        MessageDigest digest = MessageDigest.getInstance("SHA-256")
+        byte[] hash = digest.digest(rawSessionState.getBytes("UTF-8"))
+        String sessionState = Hex.encodeHexString(hash) + ".$salt"
+
+        return sessionState
     }
 }

@@ -47,6 +47,8 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
     private int clientIdLength;
     private int clientSecretLength;
 
+    private int saltLength;
+
     private int emailVerifyCodeLength;
 
     @Required
@@ -130,6 +132,11 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
     }
 
     @Required
+    public void setSaltLength(int saltLength) {
+        this.saltLength = saltLength;
+    }
+
+    @Required
     public void setEmailVerifyCodeLength(int emailVerifyCodeLength) {
         this.emailVerifyCodeLength = emailVerifyCodeLength;
     }
@@ -202,6 +209,11 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
     @Override
     public String generateClientSecret() {
         return generate(clientSecretLength);
+    }
+
+    @Override
+    public String generateSalt() {
+        return generate(saltLength);
     }
 
     @Override

@@ -7,5 +7,9 @@ dependencies {
     runtime (libraries.apphost_core)
     runtime (libraries.common_configuration_data)
 
+    runtime ('com.junbo.identity:identity-rest:0.0.1-SNAPSHOT') {
+        exclude group: 'com.junbo.oauth', module: 'oauth-spec'
+    }
+
     compile project(':oauth-api')
 }
