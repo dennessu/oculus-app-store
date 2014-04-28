@@ -44,9 +44,10 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
     }
 
     @Override
-    Promise<Response> verifyEmail(String code, String conversationId, String event) {
+    Promise<Response> verifyEmail(String code, String locale, String conversationId, String event) {
         Map<String, Object> requestScope = new HashMap<>()
         requestScope[OAuthParameters.CODE] = code
+        requestScope[OAuthParameters.LOCALE] = locale
 
         // if the conversation id is empty, start a new conversation in the flowExecutor.
         if (StringUtils.isEmpty(conversationId)) {

@@ -85,6 +85,7 @@ class SendAccountVerifyEmail implements Action {
         uriBuilder.path(EMAIL_VERIFY_PATH)
 
         uriBuilder.queryParam(OAuthParameters.CODE, code.code)
+        uriBuilder.queryParam(OAuthParameters.LOCALE, contextWrapper.viewLocale)
 
         QueryParam queryParam = new QueryParam(
                 source: EMAIL_SOURCE,
