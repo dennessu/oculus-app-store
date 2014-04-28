@@ -15,8 +15,6 @@ import com.junbo.ewallet.spec.model.Transaction;
 import com.junbo.ewallet.spec.model.Wallet;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -24,7 +22,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * Wallet Resource API.
  */
-@Api("wallets")
+//@Api("wallets")
 @Path("/wallets")
 @RestResource
 @Produces(MediaType.APPLICATION_JSON)
@@ -35,7 +33,7 @@ public interface WalletResource {
     @Path("/{walletId}")
     Promise<Wallet> getWallet(@PathParam("walletId") WalletId walletId);
 
-    @ApiOperation("Get all wallets for a user")
+//    @ApiOperation("Get all wallets for a user")
     @GET
     Promise<Results<Wallet>> getWallets(@QueryParam("userId") UserId userId);
 
