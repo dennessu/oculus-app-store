@@ -1,5 +1,6 @@
 package com.junbo.email.clientproxy
 
+import com.junbo.common.id.EmailTemplateId
 import com.junbo.email.spec.model.Email
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
@@ -19,9 +20,8 @@ class EmailProviderTest extends BaseTest {
     @BeforeMethod
     void genEmail() {
         email = new Email()
-        email.setLocale('en_US')
-        email.setSource('oculus')
-        email.setAction('welcome')
+        email.templateId = new EmailTemplateId(0)
+        email.recipients = ['weijiang@silkcloud.com']
     }
 
     @Test(enabled = false)

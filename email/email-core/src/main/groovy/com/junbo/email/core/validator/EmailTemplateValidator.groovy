@@ -6,6 +6,7 @@
 package com.junbo.email.core.validator
 
 import com.junbo.email.spec.model.EmailTemplate
+import com.junbo.email.spec.model.Pagination
 
 /**
  * Interface of EmailTemplate validator.
@@ -17,5 +18,5 @@ interface EmailTemplateValidator {
 
     void validateDelete(Long id)
 
-    //void validateGet(QueryParam queryParam)
+    void validateGet(Pagination pagination)
 }

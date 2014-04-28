@@ -9,7 +9,7 @@ import com.junbo.email.common.util.Action;
 import com.junbo.email.db.dao.BaseDao;
 import com.junbo.email.db.dao.EmailTemplateDao;
 import com.junbo.email.db.entity.EmailTemplateEntity;
-import com.junbo.email.spec.model.Paging;
+import com.junbo.email.spec.model.Pagination;
 import com.junbo.sharding.hibernate.ShardScope;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -82,18 +82,18 @@ public class EmailTemplateDaoImpl implements EmailTemplateDao, BaseDao<EmailTemp
         });
     }
 
-    public List<EmailTemplateEntity> getEmailTemplatesByQuery(final Map<String, String> queries, final Paging paging) {
+    public List<EmailTemplateEntity> getEmailTemplatesByQuery(final Map<String, String> queries,
+                                                              final Pagination pagination) {
         return findAllBy(new Action<Criteria>() {
             public void apply(Criteria criteria) {
                 if(queries != null) {
-                    //criteria.add(Restrictions.allEq(queries));
                     for(String key : queries.keySet()) {
                         criteria.add(Restrictions.eq(key, queries.get(key)).ignoreCase());
                     }
                 }
-                if(paging != null) {
-                    criteria.setFirstResult((paging.getPage()-1)*paging.getSize());
-                    criteria.setMaxResults(paging.getSize());
+                if(pagination != null) {
+                    criteria.setFirstResult((pagination.getPage()-1)*pagination.getSize());
+                    criteria.setMaxResults(pagination.getSize());
                 }
             }
         });

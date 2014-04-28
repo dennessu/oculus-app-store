@@ -115,7 +115,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
                 || !piTarget.getAccountNum().equals(request.getAccountNum())){
             throw AppClientExceptions.INSTANCE.invalidPaymentInstrumentId(request.getId().toString()).exception();
         }
-        if(request.getType().equals(PIType.CREDITCARD.toString())){
+        if(PIType.get(request.getType()).equals(PIType.CREDITCARD)){
             request.getTypeSpecificDetails().setId(request.getId());
         }
         //TODO: need re-validate the PI according to the lastValidatedTime

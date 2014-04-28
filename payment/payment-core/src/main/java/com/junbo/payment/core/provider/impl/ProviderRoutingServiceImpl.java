@@ -21,7 +21,7 @@ public class ProviderRoutingServiceImpl implements ProviderRoutingService{
         //TODO: hard code braintree first
         if(piType.equals(PIType.CREDITCARD)){
             return PaymentProviderRegistry.getPaymentProviderService(PaymentProvider.BrainTree);
-        }else if(piType.equals(PIType.WALLET)){
+        }else if(piType.equals(PIType.STOREDVALUE)){
             return PaymentProviderRegistry.getPaymentProviderService(PaymentProvider.Wallet);
         }else if(piType.equals(PIType.PAYPAL)){
             return PaymentProviderRegistry.getPaymentProviderService(PaymentProvider.PayPal);

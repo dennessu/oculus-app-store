@@ -51,6 +51,7 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
                 target.setTypeSpecificDetails(new TypeSpecificDetails());
             }
             target.getTypeSpecificDetails().setWalletBalance(source.getTypeSpecificDetails().getWalletBalance());
+            target.getTypeSpecificDetails().setWalletCurrency(source.getTypeSpecificDetails().getWalletCurrency());
         }
     }
 
@@ -124,6 +125,7 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
                 }
                 final TypeSpecificDetails detail = new TypeSpecificDetails();
                 detail.setWalletBalance(wallet.getBalance());
+                detail.setWalletCurrency(wallet.getCurrency());
                 PaymentInstrument pi = new PaymentInstrument();
                 pi.setTypeSpecificDetails(detail);
                 return Promise.pure(pi);

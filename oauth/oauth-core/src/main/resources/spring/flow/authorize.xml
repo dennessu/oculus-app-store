@@ -32,6 +32,7 @@
             <wf:on-render>
                 <wf:action ref="redirectToLogin"/>
             </wf:on-render>
+            <wf:transition on="register" to="REGISTER_VIEW"/>
             <wf:transition on="*" to="LOGIN_VIEW"/>
         </wf:view-state>
 

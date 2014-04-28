@@ -246,8 +246,8 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         ItemRevision itemRevision = new ItemRevision();
         itemRevision.setItemId(itemId);
         itemRevision.setOwnerId(ownerId);
-        itemRevision.setWalletAmount(new BigDecimal(123.45));
-        itemRevision.setWalletCurrency("USD");
+        itemRevision.setStoredValueAmount(new BigDecimal(123.45));
+        itemRevision.setStoredValueCurrency("USD");
         itemRevision.setStatus(Status.DRAFT.name());
         itemRevision.setLocales(new HashMap<String, ItemRevisionLocaleProperties>() {{
             put("en_US", new ItemRevisionLocaleProperties() {{

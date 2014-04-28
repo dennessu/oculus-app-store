@@ -314,7 +314,7 @@ ruleset {
         // CyclomaticComplexity   // Requires the GMetrics jar
         // MethodCount
         MethodSize(maxLines:200)
-        NestedBlockDepth
+        // NestedBlockDepth
 
         // rulesets/unnecessary.xml
         AddEmptyString
