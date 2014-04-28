@@ -31,8 +31,8 @@ public class Communication extends ResourceMeta implements Identifiable<Communic
     @ApiModelProperty(position = 3, required = true, value = "The description of communication.")
     private String description;
 
-    //Todo: Need to double confirm with Hao, why he changed this.
-    // According to Marshall's spec, it should be single country
+    // Todo:    Need to double confirm with Hao, why he changed this.
+    // Todo:    According to Marshall's spec, it should be single country
     @ApiModelProperty(position = 4, required = true, value = "Indicated which country a communication is allowed in.")
     private List<CountryId> allowedIn;
 

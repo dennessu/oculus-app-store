@@ -44,10 +44,6 @@ public class SqlRepositoryTest extends AbstractTestNGSpringContextTests {
     private IdGenerator idGenerator
 
     @Autowired
-    @Qualifier('sqlAddressRepository')
-    private AddressRepository addressRepository
-
-    @Autowired
     @Qualifier('sqlUserRepository')
     private UserRepository userRepository
 
@@ -119,19 +115,6 @@ public class SqlRepositoryTest extends AbstractTestNGSpringContextTests {
 
         User findUser = userRepository.getUserByCanonicalUsername(newUser.getUsername()).wrapped().get()
         Assert.assertNotNull(findUser)
-    }
-
-    @Test(enabled = false)
-    public void testAddressRepository() {
-        Address address = new Address()
-        address.city = 'shanghai'
-        address.countryId = new CountryId(UUID.randomUUID().toString())
-        address.postalCode = '201102'
-        address.userId = new UserId(userId)
-        address = addressRepository.create(address).wrapped().get()
-
-        Address newAddress = addressRepository.get(address.id).wrapped().get()
-        Assert.assertEquals(address.city, newAddress.city)
     }
 
     @Test(enabled = false)

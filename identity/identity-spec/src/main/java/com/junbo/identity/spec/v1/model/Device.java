@@ -14,7 +14,7 @@ import com.junbo.common.model.ResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by liangfu on 4/3/14.
@@ -39,7 +39,7 @@ public class Device extends ResourceMeta implements Identifiable<DeviceId> {
     private Link users;
 
     @ApiModelProperty(position = 6, required = false, value = "Feature expansion of the device resource.")
-    private HashMap<String, String> futureExpansion;
+    private Map<String, String> futureExpansion;
 
     public DeviceId getId() {
         return id;
@@ -87,11 +87,11 @@ public class Device extends ResourceMeta implements Identifiable<DeviceId> {
         support.setPropertyAssigned("type");
     }
 
-    public HashMap<String, String> getFutureExpansion() {
+    public Map<String, String> getFutureExpansion() {
         return futureExpansion;
     }
 
-    public void setFutureExpansion(HashMap<String, String> futureExpansion) {
+    public void setFutureExpansion(Map<String, String> futureExpansion) {
         this.futureExpansion = futureExpansion;
         support.setPropertyAssigned("futureExpansion");
     }
