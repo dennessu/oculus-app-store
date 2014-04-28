@@ -302,7 +302,7 @@
         <property name="readableProperties">
             <list>
                 <value>id</value>
-                <value>locale</value>
+                <value>localeId</value>
                 <value>title</value>
                 <value>content</value>
                 <value>state</value>
@@ -314,7 +314,7 @@
 
         <property name="writablePropertiesForCreate">
             <list>
-                <value>locale</value>
+                <value>localeId</value>
                 <value>title</value>
                 <value>content</value>
                 <value>state</value>
@@ -324,7 +324,7 @@
         <property name="writablePropertiesForUpdate">
             <list>
                 <value>id</value>
-                <value>locale</value>
+                <value>localeId</value>
                 <value>title</value>
                 <value>content</value>
                 <value>state</value>

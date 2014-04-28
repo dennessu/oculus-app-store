@@ -71,12 +71,6 @@
                 </value>
             </list>
         </property>
-        <property name="allowedTypes">
-            <list>
-                <value>PIN</value>
-                <value>PASSWORD</value>
-            </list>
-        </property>
         <property name="userAgentMinLength" value="1"/>
         <property name="userAgentMaxLength" value="255"/>
     </bean>
@@ -214,7 +208,6 @@
     <bean id="userEmailValidator" class="com.junbo.identity.core.service.validator.impl.UserEmailValidatorImpl">
         <property name="allowedEmailPatterns">
             <list>
-                <!--  todo: need to refactor this -->
                 <value>^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$</value>
             </list>
         </property>
@@ -352,12 +345,7 @@
 
     <bean id="tosValidator" class="com.junbo.identity.core.service.validator.impl.TosValidatorImpl">
         <property name="tosRepository" ref="tosRepository"/>
-        <property name="allowedLocales">
-            <list>
-                <value>en_US</value>
-                <value>default</value>
-            </list>
-        </property>
+        <property name="localeRepository" ref="localeRepository" />
         <property name="titleMinLength" value="1"/>
         <property name="titleMaxLength" value="255"/>
         <property name="contentMinLength" value="1"/>
