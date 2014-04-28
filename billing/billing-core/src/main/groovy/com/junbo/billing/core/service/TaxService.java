@@ -8,8 +8,8 @@ package com.junbo.billing.core.service;
 
 import com.junbo.billing.spec.model.Balance;
 import com.junbo.billing.spec.model.ShippingAddress;
+import com.junbo.identity.spec.v1.model.Address;
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.payment.spec.model.Address;
 
 /**
  * Created by LinYi on 14-3-10.
@@ -20,5 +20,5 @@ public interface TaxService {
 
     Promise<ShippingAddress> validateShippingAddress(ShippingAddress shippingAddress);
 
-    Promise<Address> validatePiAddress(Address piAddress);
+    Promise<Address> validateAddress(Address address);
 }

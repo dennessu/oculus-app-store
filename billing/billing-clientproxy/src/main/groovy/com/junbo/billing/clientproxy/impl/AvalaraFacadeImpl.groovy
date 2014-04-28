@@ -8,6 +8,9 @@ package com.junbo.billing.clientproxy.impl
 
 import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
 
+import com.junbo.common.enumid.CountryId
+import com.junbo.identity.spec.v1.model.Address
+
 import com.junbo.billing.clientproxy.impl.avalara.ResponseMessage
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -33,7 +36,6 @@ import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.billing.spec.model.TaxItem
 import com.junbo.langur.core.promise.Promise
-import com.junbo.payment.spec.model.Address
 import com.ning.http.client.AsyncHttpClient
 import com.ning.http.client.AsyncHttpClient.BoundRequestBuilder
 import groovy.transform.CompileStatic
@@ -84,8 +86,8 @@ class AvalaraFacadeImpl implements TaxFacade {
     }
 
     @Override
-    Promise<Address> validatePiAddress(Address piAddress) {
-        if (SUPPORT_COUNTRY_LIST.contains(piAddress.country.trim().toUpperCase())) {
+    Promise<Address> validateAddress(Address piAddress) {
+        if (SUPPORT_COUNTRY_LIST.contains(piAddress.countryId.value.trim().toUpperCase())) {
             AvalaraAddress address = getAvalaraAddress(piAddress)
             LOGGER.info('name=Validate_Address_Request, request={}', address.toString())
             return validateAddress(address).then { ValidateAddressResponse response ->
@@ -114,13 +116,13 @@ class AvalaraFacadeImpl implements TaxFacade {
 
     Address updatePiAddress(ValidateAddressResponse response, Address piAddress) {
         if (response != null && response.resultCode == SeverityLevel.Success) {
-            piAddress.addressLine1 = response.address.line1
-            piAddress.addressLine2 = response.address.line2
-            piAddress.addressLine3 = response.address.line3
+            piAddress.street1 = response.address.line1
+            piAddress.street2 = response.address.line2
+            piAddress.street3 = response.address.line3
             piAddress.city = response.address.city
-            piAddress.state = response.address.region
+            piAddress.subCountryCode = response.address.region
             piAddress.postalCode = response.address.postalCode
-            piAddress.country = response.address.country
+            piAddress.countryId = new CountryId(response.address.country)
         } else {
             LOGGER.error('name=Address_Validation_Response_Invalid.')
             throw AppErrors.INSTANCE.addressValidationError('Invalid response.').exception()
@@ -322,19 +324,14 @@ class AvalaraFacadeImpl implements TaxFacade {
 
     AvalaraAddress getAvalaraAddress(Address piAddress) {
         def address = new AvalaraAddress()
-        if (piAddress.id != null) {
-            address.addressCode = piAddress.id
-        }
-        else {
-            address.addressCode = '0'
-        }
-        address.line1 = piAddress.addressLine1
-        address.line2 = piAddress.addressLine2
-        address.line3 = piAddress.addressLine3
+        address.addressCode = '0'
+        address.line1 = piAddress.street1
+        address.line2 = piAddress.street2
+        address.line3 = piAddress.street3
         address.city = piAddress.city
-        address.region = piAddress.state
+        address.region = piAddress.subCountryCode
         address.postalCode = piAddress.postalCode
-        address.country = piAddress.country
+        address.country = piAddress.countryId.value
 
         return address
     }
