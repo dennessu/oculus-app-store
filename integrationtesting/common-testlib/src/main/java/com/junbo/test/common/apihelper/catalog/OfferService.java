@@ -21,8 +21,8 @@ public interface OfferService {
     String getOffer(String offerId) throws Exception;
     String getOffer(String offerId, int expectedResponseCode) throws Exception;
 
-    List<String> getOffer(HashMap<String, String> httpPara) throws Exception;
-    List<String> getOffer(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception;
+    List<String> getOffers(HashMap<String, String> httpPara) throws Exception;
+    List<String> getOffers(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception;
 
     String postDefaultOffer(EnumHelper.CatalogItemType itemType) throws Exception;
     Offer prepareOfferEntity(String fileName, EnumHelper.CatalogItemType itemType) throws Exception;

@@ -139,7 +139,7 @@ public class PaymentMapperExtension {
                         setIsPrepaid(generalDetail.getPrepaid());
                     }
                 };
-            case WALLET:
+            case STOREDVALUE:
                 return (T) new WalletDetail(){
                     {
                         setCurrency(generalDetail.getWalletCurrency());

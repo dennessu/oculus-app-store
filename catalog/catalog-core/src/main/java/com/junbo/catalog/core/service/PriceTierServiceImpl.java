@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.core.service;
 
+import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.PriceTierService;
 import com.junbo.catalog.db.repo.PriceTierRepository;
 import com.junbo.catalog.spec.error.AppErrors;
@@ -70,6 +71,10 @@ public class PriceTierServiceImpl implements PriceTierService {
 
     @Override
     public void delete(Long tierId) {
+        PriceTier priceTier = priceTierRepo.get(tierId);
+        if (priceTier==null) {
+            throw AppErrors.INSTANCE.notFound("price-tier", Utils.encodeId(tierId)).exception();
+        }
         priceTierRepo.delete(tierId);
     }
 

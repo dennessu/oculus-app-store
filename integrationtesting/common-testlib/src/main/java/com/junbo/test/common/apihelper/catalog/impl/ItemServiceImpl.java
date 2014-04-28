@@ -5,19 +5,18 @@
  */
 package com.junbo.test.common.apihelper.catalog.impl;
 
-import com.junbo.catalog.spec.model.common.LocalizableProperty;
-import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.common.id.UserId;
-import com.junbo.common.model.Results;
-import com.junbo.common.id.ItemId;
+import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.test.common.apihelper.identity.UserService;
+import com.junbo.test.common.apihelper.catalog.ItemService;
+import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
-import com.junbo.test.common.apihelper.HttpClientBase;
-import com.junbo.test.common.apihelper.catalog.ItemService;
-import com.junbo.test.common.apihelper.identity.UserService;
-import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.common.blueprint.Master;
+import com.junbo.common.model.Results;
 import com.junbo.test.common.libs.*;
+import com.junbo.common.id.UserId;
+import com.junbo.common.id.ItemId;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,11 +59,11 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
         return itemRtnId;
     }
 
-    public List<String> getItem(HashMap<String, String> httpPara) throws Exception {
-        return getItem(httpPara, 200);
+    public List<String> getItems(HashMap<String, String> httpPara) throws Exception {
+        return getItems(httpPara, 200);
     }
 
-    public List<String> getItem(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception {
+    public List<String> getItems(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception {
 
         String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara);
         Results<Item> itemGet = new JsonMessageTranscoder().decode(new TypeReference<Results<Item>>() {},
@@ -84,12 +83,11 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
         String strItem = readFileContent(String.format("testItems/%s.json", fileName));
         Item itemForPost = new JsonMessageTranscoder().decode(new TypeReference<Item>() {},
                 strItem.toString());
-        LocalizableProperty itemName = new LocalizableProperty();
-        itemName.set("en_US", "testItem_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
-        itemForPost.setName(itemName);
         UserService us = UserServiceImpl.instance();
         String developerId = us.PostUser();
         itemForPost.setOwnerId(IdConverter.hexStringToId(UserId.class, developerId));
+
+        itemForPost.setOwnerId(IdConverter.hexStringToId(UserId.class, "6B54FF907CDF"));
 
         return itemForPost;
     }

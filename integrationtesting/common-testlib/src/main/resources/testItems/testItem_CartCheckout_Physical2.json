@@ -1,14 +1,9 @@
 {
-    "name" : {
-        "default": "testItem_CartCheckout_PHYSICAL2",
-        "en_US" : "testItem_CartCheckout_PHYSICAL2"
-    },
     "type": "PHYSICAL",
-    "isCurated": false,
-    "sku": "SKU123",
-    "genres":[
-        { "href": "https://api.oculusvr.com/v1/item-attributes/103", "id": "103"},
-        { "href": "https://api.oculusvr.com/v1/item-attributes/104", "id": "104"}
-    ],
-    "developer": {"href": "https://api.oculusvr.com/v1/users/3234", "id": "3234"}
+    "developer": {"href": "https://api.oculusvr.com/v1/users/1234", "id": "1234"},
+    "genres":[],
+    "rollupPackageName": "rollupPackageName",
+    "packageName": "package name",
+    "defaultOffer": null,
+    "rev": null
 }

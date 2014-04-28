@@ -5,32 +5,33 @@
  */
 package com.junbo.test.common.apihelper.catalog.impl;
 
-import com.junbo.catalog.spec.model.common.LocalizableProperty;
-import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.catalog.spec.model.item.ItemRevision;
-import com.junbo.catalog.spec.model.offer.ItemEntry;
-import com.junbo.catalog.spec.model.offer.Offer;
-import com.junbo.catalog.spec.model.offer.OfferRevision;
-import com.junbo.common.id.ItemId;
-import com.junbo.common.id.OfferId;
-import com.junbo.common.id.UserId;
-import com.junbo.common.json.JsonMessageTranscoder;
-import com.junbo.common.model.Results;
-import com.junbo.langur.core.client.TypeReference;
-import com.junbo.test.common.apihelper.HttpClientBase;
-import com.junbo.test.common.apihelper.catalog.ItemRevisionService;
-import com.junbo.test.common.apihelper.catalog.ItemService;
+import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
+import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties;
+import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.apihelper.catalog.OfferRevisionService;
+import com.junbo.test.common.apihelper.catalog.ItemRevisionService;
 import com.junbo.test.common.apihelper.catalog.OfferService;
 import com.junbo.test.common.apihelper.identity.UserService;
-import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.test.common.apihelper.catalog.ItemService;
+import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.catalog.spec.model.offer.ItemEntry;
+import com.junbo.common.json.JsonMessageTranscoder;
+import com.junbo.langur.core.client.TypeReference;
+import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.common.blueprint.Master;
+import com.junbo.common.model.Results;
 import com.junbo.test.common.libs.*;
+import com.junbo.common.id.OfferId;
+import com.junbo.common.id.ItemId;
+import com.junbo.common.id.UserId;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.io.*;
 
 /**
  @author Jason
@@ -78,11 +79,11 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         return offerRtnId;
     }
 
-    public List<String> getOffer(HashMap<String, String> httpPara) throws Exception {
-        return getOffer(httpPara, 200);
+    public List<String> getOffers(HashMap<String, String> httpPara) throws Exception {
+        return getOffers(httpPara, 200);
     }
 
-    public List<String> getOffer(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception {
+    public List<String> getOffers(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception {
 
         String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara);
         Results<Offer> offerGet = new JsonMessageTranscoder().decode(new TypeReference<Results<Offer>>() {},
@@ -156,7 +157,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
     private void loadAllOffers() throws Exception {
         HashMap<String, String> paraMap = new HashMap<>();
-        this.getOffer(paraMap);
+        this.getOffers(paraMap);
     }
 
     private void loadAllOfferRevisions() throws Exception {
@@ -166,7 +167,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
     private void loadAllItems() throws Exception {
         HashMap<String, String> paraMap = new HashMap<>();
-        itemService.getItem(paraMap);
+        itemService.getItems(paraMap);
     }
 
     private void loadAllItemRevisions() throws Exception {
@@ -238,12 +239,12 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         OfferRevision offerRevisionForPost = new JsonMessageTranscoder().decode(
                 new TypeReference<OfferRevision>() {}, strOfferRevisionContent);
 
-        //Set random name
-        LocalizableProperty offerRevisionName = new LocalizableProperty();
-        String value = "testOfferRevision_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10);
-        offerRevisionName.set("DEFAULT", value);
-        offerRevisionName.set("en_US", value);
-        offerRevisionForPost.setName(offerRevisionName);
+        //set locales
+        OfferRevisionLocaleProperties offerRevisionLocaleProperties = new OfferRevisionLocaleProperties();
+        offerRevisionLocaleProperties.setName(offerName);
+        HashMap<String, OfferRevisionLocaleProperties> locales = new HashMap<>();
+        locales.put("en_US", offerRevisionLocaleProperties);
+        offerRevisionForPost.setLocales(locales);
 
         //Add item related info
         ItemEntry itemEntry = new ItemEntry();
@@ -283,8 +284,15 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         ItemRevision itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultItemRevisionFileName,
                 EnumHelper.CatalogItemType.valueOf(itemType));
         itemRevision.setItemId(IdConverter.hexStringToId(ItemId.class, itemId));
-        itemRevision.setType(itemType);
         itemRevision.setOwnerId(item.getOwnerId());
+
+        //set locales
+        ItemRevisionLocaleProperties itemRevisionLocaleProperties = new ItemRevisionLocaleProperties();
+        itemRevisionLocaleProperties.setName(fileName);
+        HashMap<String, ItemRevisionLocaleProperties> locales = new HashMap<>();
+        locales.put("en_US", itemRevisionLocaleProperties);
+        itemRevision.setLocales(locales);
+
         String itemRevisionId = itemRevisionService.postItemRevision(itemRevision);
 
         //Approve the item revision

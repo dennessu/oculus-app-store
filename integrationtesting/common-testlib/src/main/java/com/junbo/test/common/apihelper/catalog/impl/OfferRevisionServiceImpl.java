@@ -5,27 +5,27 @@
  */
 package com.junbo.test.common.apihelper.catalog.impl;
 
-import com.junbo.catalog.spec.model.common.LocalizableProperty;
-import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties;
+import com.junbo.test.common.apihelper.catalog.OfferRevisionService;
+import com.junbo.test.common.apihelper.catalog.ItemRevisionService;
+import com.junbo.test.common.apihelper.catalog.OfferService;
+import com.junbo.test.common.apihelper.catalog.ItemService;
+import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.ItemEntry;
-import com.junbo.catalog.spec.model.offer.Offer;
-import com.junbo.catalog.spec.model.offer.OfferRevision;
-import com.junbo.common.id.ItemId;
-import com.junbo.common.id.OfferId;
-import com.junbo.common.id.OfferRevisionId;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
-import com.junbo.test.common.apihelper.HttpClientBase;
-import com.junbo.test.common.apihelper.catalog.ItemRevisionService;
-import com.junbo.test.common.apihelper.catalog.ItemService;
-import com.junbo.test.common.apihelper.catalog.OfferRevisionService;
-import com.junbo.test.common.apihelper.catalog.OfferService;
+import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.test.common.blueprint.Master;
+import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.common.libs.LogHelper;
+import com.junbo.common.id.OfferRevisionId;
 import com.junbo.test.common.libs.RestUrl;
 import com.junbo.common.model.Results;
-import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.*;
+import com.junbo.common.id.OfferId;
+import com.junbo.common.id.ItemId;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +41,8 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
     private final String catalogServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.CATALOG) + "offer-revisions";
     private final String defaultDigitalOfferRevisionFileName = "defaultDigitalOfferRevision";
     private final String defaultPhysicalOfferRevisionFileName = "defaultPhysicalOfferRevision";
-    private final String defaultItemRevisionFileName = "defaultItemRevision";
+    private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
+    private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
     private final String defaultOfferFileName = "defaultOffer";
     private LogHelper logger = new LogHelper(OfferRevisionServiceImpl.class);
     private static OfferRevisionService instance;
@@ -142,12 +143,12 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
         OfferRevision offerRevisionForPost = new JsonMessageTranscoder().decode(
                 new TypeReference<OfferRevision>() {}, strOfferRevisionContent);
 
-        //Set random name
-        LocalizableProperty offerRevisionName = new LocalizableProperty();
-        String value = "testOfferRevision_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10);
-        offerRevisionName.set("DEFAULT", value);
-        offerRevisionName.set("en_US", value);
-        offerRevisionForPost.setName(offerRevisionName);
+        //set locales
+        OfferRevisionLocaleProperties offerRevisionLocaleProperties = new OfferRevisionLocaleProperties();
+        offerRevisionLocaleProperties.setName("testOfferRevision_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
+        HashMap<String, OfferRevisionLocaleProperties> locales = new HashMap<>();
+        locales.put("en_US", offerRevisionLocaleProperties);
+        offerRevisionForPost.setLocales(locales);
 
         //Add item related info
         Item itemPrepared = prepareItem(itemType);
@@ -175,10 +176,17 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
         Item item = Master.getInstance().getItem(itemId);
 
         //Attach item revision to the item
-        ItemRevision itemRevision = itemRevisionService.prepareItemRevisionEntity(
-                defaultItemRevisionFileName, itemType);
+        ItemRevision itemRevision;
+        if (itemType.equals(EnumHelper.CatalogItemType.PHYSICAL)) {
+            itemRevision = itemRevisionService.prepareItemRevisionEntity(
+                    defaultPhysicalItemRevisionFileName, itemType);
+        }
+        else {
+            itemRevision = itemRevisionService.prepareItemRevisionEntity(
+                    defaultDigitalItemRevisionFileName, itemType);
+        }
+
         itemRevision.setItemId(IdConverter.hexStringToId(ItemId.class, itemId));
-        itemRevision.setType(itemType.getItemType());
         itemRevision.setOwnerId(item.getOwnerId());
         String itemRevisionId = itemRevisionService.postItemRevision(itemRevision);
 
@@ -197,5 +205,4 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
         offer.setOwnerId(ownerId);
         return offerService.postOffer(offer);
     }
-
 }

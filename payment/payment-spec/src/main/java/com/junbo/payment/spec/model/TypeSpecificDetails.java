@@ -53,10 +53,13 @@ public class TypeSpecificDetails {
     private String issueCountry;
     @JsonIgnore
     private String walletType;
+    @ApiModelProperty(position = 9, required = true,
+            value = "The currency resource of the wallet")
     @CurrencyId
     private String walletCurrency;
+    @ApiModelProperty(position = 10, required = true,
+            value = "[Client Immutable] The wallet balance of the wallet PI.")
     @FilterIn
-    @JsonIgnore
     private BigDecimal walletBalance;
 
     @JsonIgnore
