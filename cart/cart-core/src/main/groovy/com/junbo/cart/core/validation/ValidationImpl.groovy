@@ -50,7 +50,7 @@ class ValidationImpl implements Validation {
         if (user == null) {
             throw AppErrors.INSTANCE.userNotFound().exception()
         }
-        if (Boolean.TRUE != user.active) {
+        if ('ACTIVE' != user.status) {
             throw AppErrors.INSTANCE.userStatusInvalid().exception()
         }
         return this
