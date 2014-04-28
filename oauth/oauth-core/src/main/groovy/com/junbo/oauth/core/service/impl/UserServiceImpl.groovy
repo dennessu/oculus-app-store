@@ -19,7 +19,6 @@ import com.junbo.oauth.core.service.UserService
 import com.junbo.oauth.spec.model.AccessToken
 import com.junbo.oauth.spec.model.UserInfo
 import groovy.transform.CompileStatic
-import org.apache.commons.codec.binary.Base64
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 

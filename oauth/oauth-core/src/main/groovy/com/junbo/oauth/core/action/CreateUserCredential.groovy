@@ -17,7 +17,6 @@ import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
-import org.apache.commons.codec.binary.Base64
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.Assert
 import org.springframework.util.StringUtils
