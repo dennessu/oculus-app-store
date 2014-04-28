@@ -14,7 +14,7 @@ import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.order.spec.model.OrderItem;
 import com.junbo.payment.spec.model.Address;
-import com.junbo.payment.spec.model.CreditCardRequest;
+//import com.junbo.payment.spec.model.CreditCardRequest;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.test.billing.apihelper.ShippingAddressService;
 import com.junbo.test.billing.apihelper.impl.ShippingAddressServiceImpl;
@@ -109,7 +109,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
             offerItemList.add(offerItem);
         }
         primaryCart.setOffers(offerItemList);
-        primaryCart.setCouponCodes(couponItemList);
+        //primaryCart.setCouponCodes(couponItemList);
 
         Master.getInstance().addCart(primaryCartId, primaryCart);
         return cartClient.updateCart(uid, primaryCartId, primaryCart);
@@ -135,10 +135,10 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
 
     public String postCreditCardToUser(String uid, CreditCardInfo creditCardInfo) throws Exception {
         PaymentInstrument paymentInstrument = new PaymentInstrument();
-        CreditCardRequest creditCardRequest = new CreditCardRequest();
+        /*CreditCardRequest creditCardRequest = new CreditCardRequest();
         //creditCardRequest.setType(creditCardInfo.getType().toString());
         creditCardRequest.setExpireDate(creditCardInfo.getExpireDate());
-        creditCardRequest.setEncryptedCvmCode(creditCardInfo.getEncryptedCVMCode());
+        creditCardRequest.setEncryptedCvmCode(creditCardInfo.getEncryptedCVMCode());*/
 
         Address address = new Address();
         address.setAddressLine1(creditCardInfo.getAddress().getAddressLine1());
@@ -154,10 +154,10 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
         //paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
         paymentInstrument.setAddress(address);
-        paymentInstrument.setCreditCardRequest(creditCardRequest);
+        /*paymentInstrument.setCreditCardRequest(creditCardRequest);
         paymentInstrument.setIsValidated(creditCardInfo.isValidated());
         paymentInstrument.setPhoneNum("650-253-0000");
-        paymentInstrument.setType(creditCardInfo.getType().toString());
+        paymentInstrument.setType(creditCardInfo.getType().toString());*/
         paymentInstrument.setTrackingUuid(UUID.randomUUID());
         logger.LogSample("Post a new credit card to user");
         return paymentClient.postPaymentInstrument(paymentInstrument);

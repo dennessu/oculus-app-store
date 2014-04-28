@@ -1,13 +1,9 @@
 {
-    "name":  {
-        "DEFAULT":"testOffer_CartCheckout_Physical2",
-        "en_US":"testOffer_CartCheckout_Physical2"
-    },
-    "isCurated": false,
+    "isPublished": false,
     "publisher": {"href": "https://api.oculusvr.com/v1/users/1234", "id": "1234"},
-    "categories":[
-        { "href": "https://api.oculusvr.com/v1/offer-attributes/123", "id": "123"},
-        { "href": "https://api.oculusvr.com/v1/offer-attributes/124", "id": "124"}
-    ],
-    "rev": 1
+    "currentRevision": null,
+    "environment": "DEV",
+    "iapHostItem": null,
+    "categories":[],
+    "rev": null
 }

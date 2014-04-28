@@ -5,19 +5,23 @@
  */
 package com.junbo.test.common.blueprint;
 
-import com.junbo.billing.spec.model.Balance;
-import com.junbo.billing.spec.model.ShippingAddress;
-import com.junbo.cart.spec.model.Cart;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
+import com.junbo.catalog.spec.model.attribute.OfferAttribute;
+import com.junbo.catalog.spec.model.attribute.ItemAttribute;
+import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.payment.spec.model.PaymentInstrument;
+import com.junbo.billing.spec.model.ShippingAddress;
+import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.catalog.spec.model.offer.OfferRevision;
-import com.junbo.entitlement.spec.model.Entitlement;
+import com.junbo.test.common.libs.IdConverter;
 import com.junbo.identity.spec.v1.model.User;
+import com.junbo.billing.spec.model.Balance;
+import com.junbo.common.id.OfferRevisionId;
+import com.junbo.common.id.ItemRevisionId;
 import com.junbo.order.spec.model.Order;
-import com.junbo.catalog.spec.model.attribute.Attribute;
-import com.junbo.payment.spec.model.PaymentInstrument;
+import com.junbo.cart.spec.model.Cart;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +53,8 @@ public class Master {
     private Map<String, EntitlementDefinition> entitlementDefinitions;
     private Map<String, Order> orders;
     private Map<String, ShippingAddress> shippingAddresses;
-    private Map<String, Attribute> attributes;
+    private Map<String, ItemAttribute> itemAttributes;
+    private Map<String, OfferAttribute> offerAttributes;
     private Map<String, PaymentInstrument> paymentInstruments;
     private Map<String, Entitlement> entitlements;
     private Map<String, Balance> balances;
@@ -63,7 +68,8 @@ public class Master {
         this.initializeOfferRevisions();
         this.initializeEntitlementDefinitions();
         this.initializeOrders();
-        this.initializeAttributes();
+        this.initializeItemAttributes();
+        this.initializeOfferAttributes();
         this.initializeEntitlements();
         this.initializePayments();
         this.initializeShippingAddresses();
@@ -126,11 +132,18 @@ public class Master {
         this.orders.clear();
     }
 
-    public void initializeAttributes() {
-        if (this.attributes == null) {
-            this.attributes = new HashMap<>();
+    public void initializeItemAttributes() {
+        if (this.itemAttributes == null) {
+            this.itemAttributes = new HashMap<>();
         }
-        this.attributes.clear();
+        this.itemAttributes.clear();
+    }
+
+    public void initializeOfferAttributes() {
+        if (this.offerAttributes == null) {
+            this.offerAttributes = new HashMap<>();
+        }
+        this.offerAttributes.clear();
     }
 
     public void initializeEntitlements() {
@@ -226,11 +239,18 @@ public class Master {
         this.shippingAddresses.put(addressId, address);
     }
 
-    public void addAttribute(String attributeId, Attribute attribute) {
-        if (this.attributes.containsKey(attributeId)) {
-            this.attributes.remove(attributeId);
+    public void addItemAttribute(String attributeId, ItemAttribute attribute) {
+        if (this.itemAttributes.containsKey(attributeId)) {
+            this.itemAttributes.remove(attributeId);
         }
-        this.attributes.put(attributeId, attribute);
+        this.itemAttributes.put(attributeId, attribute);
+    }
+
+    public void addOfferAttribute(String attributeId, OfferAttribute attribute) {
+        if (this.offerAttributes.containsKey(attributeId)) {
+            this.offerAttributes.remove(attributeId);
+        }
+        this.offerAttributes.put(attributeId, attribute);
     }
 
     public void addPaymentInstrument(String paymentInstrumentId, PaymentInstrument paymentInstrument) {
@@ -280,8 +300,13 @@ public class Master {
         for (Map.Entry<String, Offer> entry : offers.entrySet()) {
             String key = entry.getKey();
             Offer offer = entry.getValue();
-            if (offer.getName().getLocales().containsValue(offerName)) {
-                return key;
+            if (offer.getCurrentRevisionId() != null) {
+                String offerRevisionId = IdConverter.idLongToHexString(OfferRevisionId.class, offer.getCurrentRevisionId());
+                OfferRevision offerRevision = this.offerRevisions.get(offerRevisionId);
+
+                if (offerRevision.getLocales().get("en_US").getName().equalsIgnoreCase(offerName)) {
+                    return key;
+                }
             }
         }
         return null;
@@ -292,8 +317,13 @@ public class Master {
         for (Map.Entry<String, Item> entry : items.entrySet()) {
             String key = entry.getKey();
             Item item = entry.getValue();
-            if (item.getName().getLocales().containsValue(itemName)) {
-                return key;
+            if (item.getCurrentRevisionId() != null) {
+                String itemRevisionId = IdConverter.idLongToHexString(ItemRevisionId.class, item.getCurrentRevisionId());
+                ItemRevision itemRevision = this.itemRevisions.get(itemRevisionId);
+
+                if (itemRevision.getLocales().get("en_US").getName().equalsIgnoreCase(itemName)) {
+                    return key;
+                }
             }
         }
         return null;
@@ -315,8 +345,12 @@ public class Master {
         return this.paymentInstruments.get(paymentInstrumentId);
     }
 
-    public Attribute getAttribute(String attributeId) {
-        return this.attributes.get(attributeId);
+    public ItemAttribute getItemAttribute(String attributeId) {
+        return this.itemAttributes.get(attributeId);
+    }
+
+    public OfferAttribute getOfferAttribute(String attributeId) {
+        return this.offerAttributes.get(attributeId);
     }
 
     public EntitlementDefinition getEntitlementDefinition(String entitlementDefinitionId) {
