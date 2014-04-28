@@ -8,6 +8,7 @@ package com.junbo.billing.clientproxy.mock
 
 import com.junbo.billing.clientproxy.IdentityFacade
 import com.junbo.common.id.UserId
+import com.junbo.identity.spec.v1.model.Address
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 
@@ -22,5 +23,10 @@ class MockIdentityFacadeImpl implements IdentityFacade {
         user.setStatus('ACTIVE')
         user.setId(new UserId(12345))
         return Promise.pure(user)
+    }
+
+    @Override
+    Promise<Address> getAddress(Long addressId) {
+        return Promise.pure(null)
     }
 }

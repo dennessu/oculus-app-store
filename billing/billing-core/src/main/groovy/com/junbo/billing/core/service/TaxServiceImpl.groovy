@@ -6,6 +6,7 @@
 
 package com.junbo.billing.core.service
 
+import com.junbo.billing.clientproxy.IdentityFacade
 import com.junbo.billing.clientproxy.PaymentFacade
 import com.junbo.billing.clientproxy.TaxFacade
 import com.junbo.billing.spec.enums.TaxStatus
@@ -13,8 +14,8 @@ import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.ShippingAddress
+import com.junbo.identity.spec.v1.model.Address
 import com.junbo.langur.core.promise.Promise
-import com.junbo.payment.spec.model.Address
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
@@ -32,6 +33,9 @@ class TaxServiceImpl implements TaxService {
 
     @Resource
     PaymentFacade paymentFacade
+
+    @Resource
+    IdentityFacade identityFacade
 
     @Resource
     ShippingAddressService shippingAddressService
@@ -80,18 +84,26 @@ class TaxServiceImpl implements TaxService {
             LOGGER.error('name=Error_Get_PaymentInstrument. pi id: ' + balance.piId.value, throwable)
             throw AppErrors.INSTANCE.piNotFound(piId.toString()).exception()
         }.then { PaymentInstrument pi ->
+            if (pi.billingAddressId == null) {
+                throw AppErrors.INSTANCE.addressNotFound("null").exception()
+            }
             if (balance.shippingAddressId != null) {
                 Long addressId = balance.shippingAddressId.value
                 return shippingAddressService.getShippingAddress(userId, addressId)
                         .then { ShippingAddress shippingAddress ->
                     return taxFacade.validateShippingAddress(shippingAddress)
-                            .then { ShippingAddress validatedShippingAddress ->
-                        return taxFacade.calculateTax(balance, validatedShippingAddress, pi.address)
+                }.then { ShippingAddress validatedShippingAddress ->
+                    return identityFacade.getAddress(pi.billingAddressId).then { Address address ->
+                        return taxFacade.validateAddress(address)
+                    }.then { Address validatedPiAddress ->
+                        return taxFacade.calculateTax(balance, validatedShippingAddress, validatedPiAddress)
                     }
                 }
             }
-            return taxFacade.validatePiAddress(pi.address).then { Address validatedPiAddress ->
-                return taxFacade.calculateTax(balance, null, validatedPiAddress)
+            return identityFacade.getAddress(pi.billingAddressId).then { Address address ->
+                return taxFacade.validateAddress(address).then { Address validatedPiAddress ->
+                    return taxFacade.calculateTax(balance, null, validatedPiAddress)
+                }
             }
         }
 
@@ -105,9 +117,9 @@ class TaxServiceImpl implements TaxService {
     }
 
     @Override
-    Promise<Address> validatePiAddress(Address piAddress) {
+    Promise<Address> validateAddress(Address address) {
         chooseTaxProvider()
 
-        return taxFacade.validatePiAddress(piAddress)
+        return taxFacade.validateAddress(address)
     }
 }
