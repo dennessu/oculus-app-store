@@ -131,14 +131,18 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
     }
 
     private void generateEntitlementDef(Item item) {
-        if (ItemType.DIGITAL.is(item.getType())||ItemType.SUBSCRIPTION.is(item.getType())) {
+        if (ItemType.DIGITAL.is(item.getType())
+                || ItemType.SUBSCRIPTION.is(item.getType())
+                || ItemType.VIRTUAL.is(item.getType())) {
             EntitlementDefinition entitlementDef = new EntitlementDefinition();
             entitlementDef.setDeveloperId(item.getOwnerId());
             entitlementDef.setGroup(Utils.encodeId(item.getItemId()));
             if (ItemType.DIGITAL.is(item.getType())) {
                 entitlementDef.setType(EntitlementType.DOWNLOAD.name());
-            } else {
+            } else if (ItemType.SUBSCRIPTION.is(item.getType())) {
                 entitlementDef.setType(EntitlementType.SUBSCRIPTION.name());
+            } else if (ItemType.VIRTUAL.is(item.getType())) {
+                entitlementDef.setType(EntitlementType.ONLINE_ACCESS.name());
             }
             entitlementDef.setTag(Utils.encodeId(item.getItemId()));
             Long entitlementDefId = entitlementDefService.createEntitlementDefinition(entitlementDef);
@@ -196,6 +200,11 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
             if (offer == null) {
                 errors.add(AppErrors.INSTANCE.fieldNotCorrect("defaultOffer",
                         "Cannot find offer " + Utils.encodeId(item.getDefaultOffer())));
+            } else {
+                if (!isEqual(item.getIapHostItemId(), offer.getIapHostItemId())) {
+                    errors.add(AppErrors.INSTANCE
+                            .validation("defaultOffer should have same iapHostItem as this item."));
+                }
             }
         }
         if (item.getEntitlementDefId() != null) {
@@ -244,7 +253,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
         if (!oldRevision.getRev().equals(revision.getRev())) {
             errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", revision.getRev(), oldRevision.getRev()));
         }
-        if (revision.getStatus()==null || !Status.ALL.contains(revision.getStatus())) {
+        if (revision.getStatus()==null || !Status.contains(revision.getStatus())) {
             errors.add(AppErrors.INSTANCE.fieldNotCorrect("status", "Valid statuses: " + Status.ALL));
         }
 
@@ -271,7 +280,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
                     if (CollectionUtils.isEmpty(revision.getBinaries())) {
                         errors.add(AppErrors.INSTANCE.missingField("binaries"));
                     }
-                } else if (ItemType.WALLET.is(item.getType())) {
+                } else if (ItemType.STORED_VALUE.is(item.getType())) {
                     if (StringUtils.isEmpty(revision.getWalletCurrency())) {
                         errors.add(AppErrors.INSTANCE.missingField("walletCurrency"));
                     }
@@ -281,7 +290,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
                         errors.add(AppErrors.INSTANCE.fieldNotCorrect("walletAmount", "Should not less than 0"));
                     }
                 }
-                if (!ItemType.WALLET.is(item.getType())) {
+                if (!ItemType.STORED_VALUE.is(item.getType())) {
                     if (revision.getWalletCurrency() != null) {
                         errors.add(AppErrors.INSTANCE.unnecessaryField("walletCurrency"));
                     }
