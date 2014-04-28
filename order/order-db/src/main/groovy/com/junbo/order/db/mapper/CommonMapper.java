@@ -6,6 +6,8 @@
 
 package com.junbo.order.db.mapper;
 
+import com.junbo.common.enumid.CountryId;
+import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.id.*;
 import com.junbo.order.db.entity.enums.*;
 import com.junbo.order.spec.error.AppErrors;
@@ -460,5 +462,33 @@ public class CommonMapper {
             return null;
         }
         return new SubledgerItemId(id);
+    }
+
+    public CurrencyId fromStringToCurrencyId(String from) {
+        if (from == null) {
+            return null;
+        }
+        return new CurrencyId(from);
+    }
+
+    public String fromCurrencyIdToString(CurrencyId from) {
+        if (from == null) {
+            return null;
+        }
+        return from.getValue();
+    }
+
+    public CountryId fromStringToCountryId(String from) {
+        if (from == null) {
+            return null;
+        }
+        return new CountryId(from);
+    }
+
+    public String fromCountryIdToString(CountryId from) {
+        if (from == null) {
+            return null;
+        }
+        return from.getValue();
     }
 }

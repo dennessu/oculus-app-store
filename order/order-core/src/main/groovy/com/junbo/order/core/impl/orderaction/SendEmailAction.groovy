@@ -1,6 +1,7 @@
 package com.junbo.order.core.impl.orderaction
 
 import com.junbo.catalog.spec.model.offer.OfferRevision
+import com.junbo.common.id.PIType
 import com.junbo.email.spec.model.Email
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
@@ -11,7 +12,6 @@ import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.clientproxy.model.OrderOfferRevision
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.spec.model.Order
-import com.junbo.payment.spec.enums.PIType
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -60,9 +60,9 @@ class SendEmailAction implements Action {
                         .then { List<PaymentInstrument> pis ->
                     // select email type per pi & per item
                     String emailType = null
-                    switch (pis[0].type) {
-                        case PIType.CREDITCARD.name():
-                        case PIType.WALLET.name():
+                    switch (PIType.get(pis[0].type)) {
+                        case PIType.CREDITCARD:
+                        case PIType.WALLET:
                             emailType = 'ORDER_CONFIRMATION'
                             break
                         default:
