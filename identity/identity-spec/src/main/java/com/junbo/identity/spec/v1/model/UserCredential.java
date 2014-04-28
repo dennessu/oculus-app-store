@@ -103,4 +103,10 @@ public class UserCredential extends ResourceMeta implements Identifiable<UserCre
         this.changeAtNextLogin = changeAtNextLogin;
         support.setPropertyAssigned("changeAtNextLogin");
     }
+
+    @Override
+    public String getResourceAge() {
+        // resource Age won't return due to it isn't a resource
+        return null;
+    }
 }
