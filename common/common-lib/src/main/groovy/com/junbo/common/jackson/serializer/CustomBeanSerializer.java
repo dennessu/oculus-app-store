@@ -25,9 +25,13 @@ import com.junbo.common.util.Utils;
 import com.junbo.configuration.ConfigService;
 import com.junbo.configuration.ConfigServiceManager;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -151,6 +155,15 @@ public class CustomBeanSerializer extends BeanSerializerBase {
                 );
             }
 
+            try {
+                fieldSetter = new PropertyDescriptor(field.getName(), field.getDeclaringClass()).getWriteMethod();
+            } catch (IntrospectionException ex) {
+                throw new RuntimeException(
+                        "Hateoas link field " + field.getName() + ": " +
+                                "setter method not found."
+                );
+            }
+
             Matcher matcher = FIELD_PATTERN.matcher(template);
             while (matcher.find()) {
                 String fieldName = matcher.group(1);
@@ -191,8 +204,8 @@ public class CustomBeanSerializer extends BeanSerializerBase {
             }
 
             try {
-                field.set(bean, link);
-            } catch (IllegalAccessException ex) {
+                fieldSetter.invoke(bean, link);
+            } catch (InvocationTargetException|IllegalAccessException ex) {
                 throw new RuntimeException("Error setting hateoas link: " + field.getName(), ex);
             }
         }
@@ -201,8 +214,8 @@ public class CustomBeanSerializer extends BeanSerializerBase {
             if (bean == null) return;
 
             try {
-                field.set(bean, null);
-            } catch (IllegalAccessException ex) {
+                fieldSetter.invoke(bean, (Object)null);
+            } catch (InvocationTargetException|IllegalAccessException ex) {
                 throw new RuntimeException("Error setting hateoas link: " + field.getName(), ex);
             }
         }
@@ -212,6 +225,7 @@ public class CustomBeanSerializer extends BeanSerializerBase {
         }
 
         private Field field;
+        private Method fieldSetter;
         private String template;
         private Map<String, ParamField> referencedFields = new HashMap<>();
     }
