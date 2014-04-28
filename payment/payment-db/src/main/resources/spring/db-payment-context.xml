@@ -171,7 +171,7 @@
         <property name="dao" ref="paymentProviderDao"/>
     </bean>
 
-    <bean id="piTypeRepository"
+    <bean id="paymentPiTypeRepository"
           class="com.junbo.payment.db.repository.PITypeRepository" parent="domainDataRepository">
         <property name="dao" ref="paymentInstrumentTypeDao"/>
     </bean>

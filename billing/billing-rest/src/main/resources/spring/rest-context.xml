@@ -9,5 +9,5 @@
 
     <bean id="defaultShippingAddressResource" class="com.junbo.billing.rest.resource.ShippingAddressResourceImpl"/>
     <bean id="defaultBalanceResource" class="com.junbo.billing.rest.resource.BalanceResourceImpl"/>
-    <bean id="defaultCurrencyResource" class="com.junbo.billing.rest.resource.CurrencyResourceImpl"/>
+    <bean id="defaultCurrencyResource" class="com.junbo.billing.rest.resource.BillingCurrencyResourceImpl"/>
 </beans>
