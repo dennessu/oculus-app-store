@@ -15,7 +15,7 @@ dependencies {
         exclude group: 'com.junbo.oauth', module: 'oauth-spec'
     }
 
-    runtime ('com.junbo.identity:email-rest:0.0.1-SNAPSHOT') {
+    runtime ('com.junbo.email:email-rest:0.0.1-SNAPSHOT') {
         exclude group: 'com.junbo.oauth', module: 'oauth-spec'
     }
 
