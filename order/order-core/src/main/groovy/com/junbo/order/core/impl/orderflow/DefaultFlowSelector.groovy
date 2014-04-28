@@ -113,7 +113,7 @@ class DefaultFlowSelector implements FlowSelector {
                     // TODO: do not support mixed order containing both physical item & digital item now
                     return CoreUtils.hasPhysicalOffer(context.order) ? Promise.pure(FlowType.AUTH_SETTLE.name()) :
                             Promise.pure(FlowType.IMMEDIATE_SETTLE.name())
-                case PIType.WALLET:
+                case PIType.STOREDVALUE:
                     return Promise.pure(FlowType.IMMEDIATE_SETTLE.name())
                 case PIType.PAYPAL:
                     return Promise.pure(FlowType.WEB_PAYMENT_CHARGE.name())

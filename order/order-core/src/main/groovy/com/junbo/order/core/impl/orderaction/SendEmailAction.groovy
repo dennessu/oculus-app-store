@@ -62,7 +62,7 @@ class SendEmailAction implements Action {
                     String emailType = null
                     switch (PIType.get(pis[0].type)) {
                         case PIType.CREDITCARD:
-                        case PIType.WALLET:
+                        case PIType.STOREDVALUE:
                             emailType = 'ORDER_CONFIRMATION'
                             break
                         default:
