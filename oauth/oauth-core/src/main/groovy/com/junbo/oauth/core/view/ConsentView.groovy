@@ -20,14 +20,17 @@ class ConsentView extends AbstractView {
     @Override
     protected Promise<ViewModel> buildViewModel(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
+        def modelMap = [
+                'clientId': contextWrapper.client.clientId,
+                'userId'  : contextWrapper.loginState.userId,
+                'scopes'  : contextWrapper.oauthInfo.scopes,
+                'locale'  : contextWrapper.viewLocale
+        ]
+        modelMap.putAll(contextWrapper.extraParameterMap)
 
         def model = new ViewModel(
                 view: 'consent',
-                model: [
-                        'clientId': contextWrapper.client.clientId,
-                        'userId'  : contextWrapper.loginState.userId,
-                        'scopes'  : contextWrapper.oauthInfo.scopes
-                ] as Map<String, Object>,
+                model: modelMap as Map<String, Object>,
                 errors: contextWrapper.errors.unique(new ErrorComparator()).asList()
         )
 

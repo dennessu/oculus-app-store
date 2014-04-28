@@ -41,6 +41,8 @@ class OAuthParameters {
     public static final String USER_ID = 'user_id'
     public static final String ID_TOKEN_USER_ID = 'id_token_user_id'
     public static final String SESSION_STATE = 'session_state'
+    public static final String LOCALE = 'locale'
+    public static final String EXTRA_PREFIX = 'extra_'
 
     public static final String ERROR = 'error'
     public static final String NICK_NAME = 'nickname'
