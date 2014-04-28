@@ -8,6 +8,8 @@ package com.junbo.common.json;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.ErrorDef;
 import com.junbo.common.error.ErrorProxy;
@@ -28,7 +30,14 @@ public class InvalidJsonReaderInterceptor implements ReaderInterceptor {
     public Object aroundReadFrom(ReaderInterceptorContext context) throws IOException, WebApplicationException {
         try {
             return context.proceed();
-        } catch (JsonParseException | JsonMappingException ex) {
+        } catch (InvalidFormatException invalidFormatException) {
+            throw ERRORS.invalidJson(invalidFormatException.getLocalizedMessage()).exception();
+        } catch (UnrecognizedPropertyException unrecognizedPropertyException) {
+            throw ERRORS.invalidJson("UnrecognizedProperty:    " +
+                    unrecognizedPropertyException.getUnrecognizedPropertyName()).exception();
+        } catch (JsonMappingException jsonMappingException) {
+            throw ERRORS.invalidJson(jsonMappingException.getMessage()).exception();
+        } catch (JsonParseException ex) {
 
             // todo: customize ex.getMessage() to hide internal information.
             throw ERRORS.invalidJson(ex.getMessage()).exception();
