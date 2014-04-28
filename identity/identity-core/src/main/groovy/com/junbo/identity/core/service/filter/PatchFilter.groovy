@@ -56,10 +56,10 @@ class PatchFilter implements PropertyMappingFilter {
         }
 
         if (writable) {
-            if (!PropertyAssignedAwareSupport.isPropertyAssigned(event.source, event.sourcePropertyName)) {
-                event.sourceProperty = event.alternativeSourceProperty
-            } else {
+            if (PropertyAssignedAwareSupport.isPropertyAssigned(event.source, event.sourcePropertyName)) {
                 event.alternativeSourceProperty = null // ignore alternativeSourceProperty
+            } else {
+                event.sourceProperty = event.alternativeSourceProperty
             }
         }
     }
