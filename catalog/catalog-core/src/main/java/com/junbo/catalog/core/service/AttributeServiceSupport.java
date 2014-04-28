@@ -55,6 +55,10 @@ public abstract class AttributeServiceSupport<T extends Attribute> {
     }
 
     public void deleteAttribute(Long attributeId) {
+        T attribute = getRepo().get(attributeId);
+        if (attribute == null) {
+            throw AppErrors.INSTANCE.notFound(getEntityType(), Utils.encodeId(attributeId)).exception();
+        }
         getRepo().delete(attributeId);
     }
 
