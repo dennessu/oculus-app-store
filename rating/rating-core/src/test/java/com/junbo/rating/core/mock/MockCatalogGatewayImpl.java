@@ -64,8 +64,8 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
     public ShippingMethod getShippingMethod(Long shippingMethodId) {
         return new ShippingMethod() {{
             setId(System.currentTimeMillis());
-            setBaseUnit(10);
-            setCapUnit(20);
+            setBaseUnit(5);
+            setCapUnit(10);
             setBasePrice(new BigDecimal("10.00"));
             setAdditionalPrice(new BigDecimal("1.20"));
         }};
