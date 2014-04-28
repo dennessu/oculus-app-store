@@ -6,6 +6,7 @@
 
 package com.junbo.rating.clientproxy.impl;
 
+import com.junbo.catalog.spec.enums.PriceType;
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
 import com.junbo.catalog.spec.model.domaindata.ShippingMethod;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefSearchParams;
@@ -106,11 +107,11 @@ public class CatalogGatewayImpl implements CatalogGateway{
         }
 
         Map<String, BigDecimal> prices = new HashMap<>();
-        switch(offerRevision.getPrice().getPriceType()) {
-            case Price.CUSTOM:
+        switch(PriceType.valueOf(offerRevision.getPrice().getPriceType())) {
+            case CUSTOM:
                 prices.putAll(offerRevision.getPrice().getPrices());
                 break;
-            case Price.TIERED:
+            case TIERED:
                 PriceTier priceTier;
                 try {
                     priceTier = priceTierResource.getPriceTier(
