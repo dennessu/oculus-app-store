@@ -2,6 +2,7 @@ package com.junbo.identity.data.repository.impl.cloudant
 
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
+import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
@@ -48,13 +49,31 @@ class UserPersonalInfoRepositoryCloudantImpl extends CloudantClient<UserPersonal
         return Promise.pure(null)
     }
 
+    @Override
+    Promise<List<UserPersonalInfo>> searchByUserId(UserId userId) {
+        def list = super.queryView('by_user_id', userId.value.toString())
+
+        return Promise.pure(list)
+    }
+
+    @Override
+    Promise<List<UserPersonalInfo>> searchByUserIdAndType(UserId userId, String type) {
+        def list = super.queryView('by_user_id_type', "${userId.value.toString()}:${type}")
+
+        return Promise.pure(list)
+    }
     protected CloudantViews views = new CloudantViews(
             views: [
                     'by_user_id': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
                                     '  emit(doc.userId.value.toString(), doc._id)' +
                                     '}',
-                            resultClass: String)
+                            resultClass: String),
+                    'by_user_id_type': new CloudantViews.CloudantView(
+                            map: 'function(doc) {' +
+                                    '  emit(doc.userId.value.toString() + \':\' + doc.type, doc._id)' +
+                                    '}',
+                            resultClass: String),
             ]
     )
 

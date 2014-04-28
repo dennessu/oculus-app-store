@@ -629,6 +629,7 @@
                 <value>lastValidateTime</value>
                 <value>isNormalized</value>
                 <value>label</value>
+                <value>userId</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -642,6 +643,7 @@
                 <value>lastValidateTime</value>
                 <value>isNormalized</value>
                 <value>label</value>
+                <value>userId</value>
             </list>
         </property>
 
@@ -653,6 +655,7 @@
                 <value>lastValidateTime</value>
                 <value>isNormalized</value>
                 <value>label</value>
+                <value>userId</value>
                 <value>resourceAge</value>
             </list>
         </property>

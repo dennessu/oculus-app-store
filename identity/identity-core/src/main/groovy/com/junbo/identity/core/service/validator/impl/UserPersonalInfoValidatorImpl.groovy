@@ -4,7 +4,9 @@ import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.identity.core.service.validator.*
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
+import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
+import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.UserPersonalInfoListOptions
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Required
 class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
 
     private UserPersonalInfoRepository userPersonalInfoRepository
+    private UserRepository userRepository
 
     private AddressValidator addressValidator
     private UserEmailValidator userEmailValidator
@@ -53,8 +56,12 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
 
     @Override
     Promise<Void> validateForSearch(UserPersonalInfoListOptions options) {
-        //todo: How to implement the search API?
-        //todo: How many field needs to be supported?
+        if (options == null) {
+            throw new IllegalArgumentException('options is null')
+        }
+        if (options.userId == null) {
+            throw AppErrors.INSTANCE.parameterRequired('userId').exception()
+        }
         return Promise.pure(null)
     }
 
@@ -67,8 +74,7 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
         if (userPersonalInfo.id != null) {
             throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
         }
-        checkBasicPersonalInfo(userPersonalInfo)
-        return Promise.pure(null)
+        return checkBasicPersonalInfo(userPersonalInfo)
     }
 
     @Override
@@ -84,13 +90,15 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
         if (userPersonalInfo.id == null) {
             throw AppErrors.INSTANCE.fieldRequired('id').exception()
         }
-        checkBasicPersonalInfo(userPersonalInfo)
-        return Promise.pure(null)
+        return checkBasicPersonalInfo(userPersonalInfo)
     }
 
-    void checkBasicPersonalInfo(UserPersonalInfo userPersonalInfo) {
+    Promise<Void> checkBasicPersonalInfo(UserPersonalInfo userPersonalInfo) {
         if (userPersonalInfo == null) {
             throw new IllegalArgumentException('userPersonalInfo is null')
+        }
+        if (userPersonalInfo.userId == null) {
+            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
         }
 
         if (userPersonalInfo.value == null) {
@@ -164,6 +172,18 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
             userWhatsAppValidator.validate(userWhatsApp)
         } else {
             throw AppErrors.INSTANCE.fieldInvalid('type', UserPersonalInfoType.values().join(',')).exception()
+        }
+
+        return userRepository.get(userPersonalInfo.userId).then { User user ->
+            if (user == null) {
+                throw AppErrors.INSTANCE.userNotFound(userPersonalInfo.userId).exception()
+            }
+
+            if (user.status != UserStatus.ACTIVE.toString()) {
+                throw AppErrors.INSTANCE.userInInvalidStatus(userPersonalInfo.userId).exception()
+            }
+
+            return Promise.pure(null)
         }
     }
 
@@ -240,5 +260,10 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
     @Required
     void setMaxLabelLength(Integer maxLabelLength) {
         this.maxLabelLength = maxLabelLength
+    }
+
+    @Required
+    void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository
     }
 }

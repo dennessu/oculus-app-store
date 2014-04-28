@@ -7,6 +7,7 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.common.model.ResourceMeta;
 import com.junbo.common.util.Identifiable;
@@ -49,8 +50,12 @@ public class UserPersonalInfo extends ResourceMeta implements Identifiable<UserP
     @ApiModelProperty(position = 5, required = false, value = "Whether the value is normalized or not.")
     private Boolean isNormalized;
 
-    @ApiModelProperty(position = 6, required = false, value = "User resource link.")
+    @ApiModelProperty(position = 6, required = false, value = "User resource link label.")
     private String label;
+
+    @ApiModelProperty(position = 7, required = false, value = "User resource.")
+    @JsonProperty("user")
+    private UserId userId;
 
     public UserPersonalInfoId getId() {
         return id;
@@ -105,6 +110,16 @@ public class UserPersonalInfo extends ResourceMeta implements Identifiable<UserP
     public void setLabel(String label) {
         this.label = label;
         support.setPropertyAssigned("label");
+    }
+
+    public UserId getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UserId userId) {
+        this.userId = userId;
+        support.setPropertyAssigned("userId");
+        support.setPropertyAssigned("user");
     }
 }
 

@@ -139,18 +139,20 @@ class UserResourceImpl implements UserResource {
         }
 
         String canonicalUsername = normalizeService.normalize(listOptions.username)
-        return userRepository.getUserByCanonicalUsername(canonicalUsername).then { User user ->
-            def resultList = new Results<User>(items: [])
+        return userValidator.validateForSearch(listOptions).then {
+            userRepository.getUserByCanonicalUsername(canonicalUsername).then { User user ->
+                def resultList = new Results<User>(items: [])
 
-            if (user != null) {
-                user = userFilter.filterForGet(user, listOptions.properties?.split(',') as List<String>)
+                if (user != null) {
+                    user = userFilter.filterForGet(user, listOptions.properties?.split(',') as List<String>)
+                }
+
+                if (user != null) {
+                    resultList.items.add(user)
+                }
+
+                return Promise.pure(resultList)
             }
-
-            if (user != null) {
-                resultList.items.add(user)
-            }
-
-            return Promise.pure(resultList)
         }
     }
 
