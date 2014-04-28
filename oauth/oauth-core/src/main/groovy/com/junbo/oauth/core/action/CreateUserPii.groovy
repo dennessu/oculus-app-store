@@ -8,6 +8,7 @@ package com.junbo.oauth.core.action
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
+import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.identity.spec.v1.model.Email
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserDOB
@@ -21,7 +22,6 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
-import com.junbo.oauth.common.JsonMarshaller
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.spec.model.Gender
@@ -77,22 +77,22 @@ class CreateUserPii implements Action {
 
         UserPersonalInfo namePii = new UserPersonalInfo(
                 type: 'NAME',
-                value: UserPersonalInfo.encode(JsonMarshaller.marshall(name))
+                value: ObjectMapperProvider.instance().valueToTree(name)
         )
 
         UserPersonalInfo emailPii = new UserPersonalInfo(
                 type: 'EMAIL',
-                value: UserPersonalInfo.encode(JsonMarshaller.marshall(new Email(value: email)))
+                value: ObjectMapperProvider.instance().valueToTree(new Email(value: email))
         )
 
         UserPersonalInfo genderPii = new UserPersonalInfo(
                 type: 'GENDER',
-                value: UserPersonalInfo.encode(JsonMarshaller.marshall(new UserGender(value: gender.name())))
+                value: ObjectMapperProvider.instance().valueToTree(new UserGender(value: gender.name()))
         )
 
         UserPersonalInfo dobPii = new UserPersonalInfo(
                 type: 'DOB',
-                value: UserPersonalInfo.encode(JsonMarshaller.marshall(new UserDOB(birthday: dob)))
+                value: ObjectMapperProvider.instance().valueToTree(new UserDOB(birthday: dob))
         )
 
         userPersonalInfoResource.create(namePii).recover { Throwable e ->

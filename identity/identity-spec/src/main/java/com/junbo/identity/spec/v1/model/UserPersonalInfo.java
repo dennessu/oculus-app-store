@@ -6,14 +6,12 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.common.model.ResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.Date;
 
 /**
@@ -43,7 +41,7 @@ public class UserPersonalInfo extends ResourceMeta implements Identifiable<UserP
     private String type;
 
     @ApiModelProperty(position = 3, required = true, value = "The userPersonal information, it must be json structure.")
-    private String value;
+    private JsonNode value;
 
     @ApiModelProperty(position = 4, required = false, value = "Last validated time, if null, it isn't validated.")
     private Date lastValidateTime;
@@ -73,11 +71,11 @@ public class UserPersonalInfo extends ResourceMeta implements Identifiable<UserP
         support.setPropertyAssigned("type");
     }
 
-    public String getValue() {
+    public JsonNode getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(JsonNode value) {
         this.value = value;
         support.setPropertyAssigned("value");
     }
@@ -107,22 +105,6 @@ public class UserPersonalInfo extends ResourceMeta implements Identifiable<UserP
     public void setLabel(String label) {
         this.label = label;
         support.setPropertyAssigned("label");
-    }
-
-    public static String encode(String value) {
-        try {
-            return URLEncoder.encode(value, "UTF8");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("Error happened while encoding the value", e);
-        }
-    }
-
-    public String decodedValue() {
-        try {
-            return URLDecoder.decode(value, "UTF8");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("Error happened while decoding the value", e);
-        }
     }
 }
 

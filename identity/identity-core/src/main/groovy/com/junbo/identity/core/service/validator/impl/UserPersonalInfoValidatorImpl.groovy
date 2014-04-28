@@ -1,7 +1,9 @@
 package com.junbo.identity.core.service.validator.impl
 
+import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.junbo.common.id.UserPersonalInfoId
+import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.identity.core.service.validator.*
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
@@ -113,58 +115,57 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
             }
         }
 
-        String decodedValue = userPersonalInfo.decodedValue()
-
         // todo:    Refactor validator using factory method
         if (userPersonalInfo.type == UserPersonalInfoType.ADDRESS.toString()) {
-            Address address = (Address)stringToObj(decodedValue, Address)
+            Address address = ObjectMapperProvider.instance().treeToValue(
+                    userPersonalInfo.value, Address)
             addressValidator.validate(address)
         } else if (userPersonalInfo.type == UserPersonalInfoType.DOB.toString()) {
-            UserDOB dob = (UserDOB)stringToObj(decodedValue, UserDOB)
+            UserDOB dob = ObjectMapperProvider.instance().treeToValue(
+                    userPersonalInfo.value, UserDOB)
             birthdayValidator.validate(dob)
         } else if (userPersonalInfo.type == UserPersonalInfoType.DRIVERS_LICENSE.toString()) {
-            UserDriverLicense driverLicense = (UserDriverLicense)stringToObj(decodedValue, UserDriverLicense)
+            UserDriverLicense driverLicense = ObjectMapperProvider.instance().treeToValue(
+                    userPersonalInfo.value, UserDriverLicense)
             driverLicenseValidator.validate(driverLicense)
         } else if (userPersonalInfo.type == UserPersonalInfoType.EMAIL.toString()) {
-            Email email = (Email)stringToObj(decodedValue, Email)
+            Email email = ObjectMapperProvider.instance().treeToValue(
+                    userPersonalInfo.value, Email)
             userEmailValidator.validate(email)
         } else if (userPersonalInfo.type == UserPersonalInfoType.GENDER.toString()) {
-            UserGender userGender = (UserGender)stringToObj(decodedValue, UserGender)
+            UserGender userGender = ObjectMapperProvider.instance().treeToValue(
+                    userPersonalInfo.value, UserGender)
             genderValidator.validate(userGender)
         } else if (userPersonalInfo.type == UserPersonalInfoType.GOVERNMENT_ID.toString()) {
-            UserGovernmentID userGovernmentID = (UserGovernmentID)stringToObj(decodedValue, UserGovernmentID)
+            UserGovernmentID userGovernmentID = ObjectMapperProvider.instance().treeToValue(
+                    userPersonalInfo.value, UserGovernmentID)
             governmentIDValidator.validate(userGovernmentID)
         } else if (userPersonalInfo.type == UserPersonalInfoType.NAME.toString()) {
-            UserName userName = (UserName)stringToObj(decodedValue, UserName)
+            UserName userName = ObjectMapperProvider.instance().treeToValue(
+                    userPersonalInfo.value, UserName)
             nameValidator.validateName(userName)
         } else if (userPersonalInfo.type == UserPersonalInfoType.PASSPORT.toString()) {
-            UserPassport userPassport = (UserPassport)stringToObj(decodedValue, UserPassport)
+            UserPassport userPassport = ObjectMapperProvider.instance().treeToValue(
+                    userPersonalInfo.value, UserPassport)
             passportValidator.validate(userPassport)
         } else if (userPersonalInfo.type == UserPersonalInfoType.PHONE.toString()) {
-            PhoneNumber phoneNumber = (PhoneNumber)stringToObj(decodedValue, PhoneNumber)
+            PhoneNumber phoneNumber = ObjectMapperProvider.instance().treeToValue(
+                    userPersonalInfo.value, PhoneNumber)
             userPhoneNumberValidator.validate(phoneNumber)
         } else if (userPersonalInfo.type == UserPersonalInfoType.QQ.toString()) {
-            UserQQ qq = (UserQQ)stringToObj(decodedValue, UserQQ)
+            UserQQ qq = ObjectMapperProvider.instance().treeToValue(
+                    userPersonalInfo.value, UserQQ)
             qqValidator.validate(qq)
         } else if (userPersonalInfo.type == UserPersonalInfoType.SMS.toString()) {
-            UserSMS sms = (UserSMS)stringToObj(decodedValue, UserSMS)
+            UserSMS sms = ObjectMapperProvider.instance().treeToValue(
+                    userPersonalInfo.value, UserSMS)
             smsValidator.validate(sms)
         } else if (userPersonalInfo.type == UserPersonalInfoType.WHATSAPP.toString()) {
-            UserWhatsApp userWhatsApp = (UserWhatsApp)stringToObj(decodedValue, UserWhatsApp)
+            UserWhatsApp userWhatsApp = ObjectMapperProvider.instance().treeToValue(
+                    userPersonalInfo.value, UserWhatsApp)
             userWhatsAppValidator.validate(userWhatsApp)
         } else {
             throw AppErrors.INSTANCE.fieldInvalid('type', UserPersonalInfoType.values().join(',')).exception()
-        }
-    }
-
-    private Object stringToObj(String value, Class cls) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper()
-            return objectMapper.readValue(value, cls)
-        }
-        catch (Exception e) {
-            //todo: Need to provide the example jason according to the class
-            throw AppErrors.INSTANCE.fieldInvalid('value').exception()
         }
     }
 
