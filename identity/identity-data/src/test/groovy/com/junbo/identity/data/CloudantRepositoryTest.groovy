@@ -226,7 +226,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     public void testTosRepository() {
         Tos tos = new Tos()
         tos.title = 'title'
-        tos.locale = 'en_us'
+        tos.localeId = new LocaleId('en_US')
         tos.content = 'content'
 
         tos = tosRepository.create(tos).wrapped().get()

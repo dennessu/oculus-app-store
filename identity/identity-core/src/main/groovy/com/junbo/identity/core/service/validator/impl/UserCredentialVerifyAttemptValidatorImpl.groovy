@@ -42,8 +42,6 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
 
     private UsernameValidator usernameValidator
 
-    private List<String> allowedTypes
-
     private List<Pattern> allowedIpAddressPatterns
 
     private Integer userAgentMinLength
@@ -193,9 +191,12 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             }
         }
 
-        // Todo:    make it in enum list
         if (userLoginAttempt.type == null) {
             throw AppErrors.INSTANCE.fieldRequired('type').exception()
+        }
+
+        List<String> allowedTypes = CredentialType.values().collect { CredentialType credentialType ->
+            credentialType.toString()
         }
 
         if (!(userLoginAttempt.type in allowedTypes)) {
@@ -215,8 +216,6 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
         if (userLoginAttempt.value == null) {
             throw AppErrors.INSTANCE.fieldRequired('value').exception()
         }
-
-        // Todo:    Add check for clientId
     }
 
     @Required
@@ -227,11 +226,6 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     @Required
     void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository
-    }
-
-    @Required
-    void setAllowedTypes(List<String> allowedTypes) {
-        this.allowedTypes = allowedTypes
     }
 
     @Required
