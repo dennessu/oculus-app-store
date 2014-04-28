@@ -46,11 +46,12 @@ public class PriceTierResourceImpl implements PriceTierResource {
 
     @Override
     public Promise<PriceTier> update(PriceTierId tierId, PriceTier priceTier) {
-        return null;
+        return Promise.pure(priceTierService.update(tierId.getValue(), priceTier));
     }
 
     @Override
     public Promise<Response> delete(PriceTierId tierId) {
-        return null;
+        priceTierService.delete(tierId.getValue());
+        return Promise.pure(Response.status(204).build());
     }
 }
