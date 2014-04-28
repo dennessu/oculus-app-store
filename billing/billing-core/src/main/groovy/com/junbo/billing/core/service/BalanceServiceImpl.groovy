@@ -18,9 +18,9 @@ import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.*
 import com.junbo.common.id.BalanceId
 import com.junbo.common.id.OrderId
+import com.junbo.common.id.PIType
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
-import com.junbo.payment.spec.enums.PIType
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
