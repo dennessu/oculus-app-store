@@ -98,7 +98,6 @@ class FacadeBuilder {
         email.userId = (UserId)(user.id)
         email.templateId = template.id
         // TODO: update email address as IDENTITY component
-        email.recipients = [user.username]
         Map<String, String> properties = [:]
         properties.put(ORDER_NUMBER, order.id.value.toString())
         Date now = new Date()
