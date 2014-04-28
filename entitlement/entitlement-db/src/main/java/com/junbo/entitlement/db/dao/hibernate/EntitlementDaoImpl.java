@@ -57,6 +57,8 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
         if (!StringUtils.isEmpty(entitlementSearchParam.getType() != null)) {
             addSingleParam("type", "type",
                     entitlementSearchParam.getType(), "=", queryStringBuilder, params);
+        } else {
+            addSingleParam("type", "type", EntitlementConsts.NO_TYPE, "=", queryStringBuilder, params);
         }
 
         if (!Boolean.TRUE.equals(entitlementSearchParam.getIsBanned())) {

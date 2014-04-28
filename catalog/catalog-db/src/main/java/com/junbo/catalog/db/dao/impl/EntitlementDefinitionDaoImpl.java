@@ -47,6 +47,8 @@ public class EntitlementDefinitionDaoImpl extends BaseDaoImpl<EntitlementDefinit
                 typeOrdinals.add(type.ordinal());
             }
             params.put("types", typeOrdinals);
+        } else {
+            queryString.append(" and type is null");
         }
         if (!CollectionUtils.isEmpty(groups)) {
             queryString.append(" and entitlement_group in (:groups)");
