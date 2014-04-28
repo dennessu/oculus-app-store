@@ -33,10 +33,10 @@ public class InvalidJsonReaderInterceptor implements ReaderInterceptor {
         } catch (InvalidFormatException invalidFormatException) {
             throw ERRORS.invalidJson(invalidFormatException.getOriginalMessage()).exception();
         } catch (UnrecognizedPropertyException unrecognizedPropertyException) {
-            throw ERRORS.invalidJson("UnrecognizedProperty:    " +
+            throw ERRORS.invalidJson("UnrecognizedProperty: " +
                     unrecognizedPropertyException.getUnrecognizedPropertyName()).exception();
         } catch (JsonMappingException jsonMappingException) {
-            throw ERRORS.invalidJson(jsonMappingException.getMessage()).exception();
+            throw ERRORS.invalidJson(jsonMappingException.getOriginalMessage()).exception();
         } catch (JsonParseException ex) {
             throw ERRORS.invalidJson(ex.getOriginalMessage()).exception();
         }
