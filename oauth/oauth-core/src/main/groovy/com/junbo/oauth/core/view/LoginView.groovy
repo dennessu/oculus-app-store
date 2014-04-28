@@ -27,13 +27,16 @@ class LoginView extends AbstractView {
     @Override
     protected Promise<ViewModel> buildViewModel(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
+        def modelMap = [
+                'clientId': contextWrapper.client.clientId,
+                'userId'  : contextWrapper.loginState?.userId,
+                'locale'  : contextWrapper.viewLocale
+        ]
+        modelMap.putAll(contextWrapper.extraParameterMap)
 
         def model = new ViewModel(
                 view: 'login',
-                model: [
-                        'clientId': contextWrapper.client.clientId,
-                        'userId'  : contextWrapper.loginState?.userId
-                ] as Map<String, Object>,
+                model: modelMap as Map<String, Object>,
                 errors: contextWrapper.errors.unique(new ErrorComparator()).asList()
         )
 

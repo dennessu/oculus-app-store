@@ -50,7 +50,7 @@ class EmailFacadeImpl implements EmailFacade {
                 LOGGER.info('name=Get_Email_Template_Empty_Templates')
                 return Promise.pure(null)
             }
-            Email email = FacadeBuilder.buildOrderConfirmationEmail(order, user, offers, templates[0].id)
+            Email email = FacadeBuilder.buildOrderConfirmationEmail(order, user, offers, templates[0])
             return emailResource.postEmail(email)
         }
     }

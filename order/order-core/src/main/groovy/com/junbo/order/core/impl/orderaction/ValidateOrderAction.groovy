@@ -26,15 +26,16 @@ class ValidateOrderAction implements Action {
         orderValidator.notNull(order, 'order')
         orderValidator.notNull(order.user, 'user')
 
-        // todo validate country
-        orderValidator.validCurrency(order.currency.value, 'currency')
-//        orderValidator.validWebPaymentUrls(order.paymentInstruments,
-//                order.successRedirectUrl, order.cancelRedirectUrl)
-
         order.orderItems?.eachWithIndex { OrderItem item, int index ->
             orderValidator.notNull(item.offer, "orderItems[${index}].offer")
             orderValidator.between(item.quantity, 1, 100, "orderItems[${index}].quantity")
         }
-        return Promise.pure(null)
+
+        // todo validate country
+        return orderValidator.validCurrency(order.currency.value, 'currency').syncThen {
+            return null
+        }
+//        orderValidator.validWebPaymentUrls(order.paymentInstruments,
+//                order.successRedirectUrl, order.cancelRedirectUrl)
     }
 }

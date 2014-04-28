@@ -9,7 +9,6 @@ import com.junbo.common.id.EmailTemplateId;
 import com.junbo.common.model.Results;
 import com.junbo.email.core.EmailTemplateService;
 import com.junbo.email.spec.model.EmailTemplate;
-import com.junbo.email.spec.model.Pagination;
 import com.junbo.email.spec.model.QueryParam;
 import com.junbo.email.spec.resource.EmailTemplateResource;
 import com.junbo.langur.core.promise.Promise;
@@ -44,8 +43,8 @@ public class EmailTemplateResourceImpl implements EmailTemplateResource{
         return Promise.pure(Response.status(204).build());
     }
 
-    public Promise<Results<EmailTemplate>> getEmailTemplates(QueryParam queryParam, Pagination pagination) {
-        return templateService.getEmailTemplates(queryParam, pagination);
+    public Promise<Results<EmailTemplate>> getEmailTemplates(QueryParam queryParam) {
+        return templateService.getEmailTemplates(queryParam);
     }
 
 }

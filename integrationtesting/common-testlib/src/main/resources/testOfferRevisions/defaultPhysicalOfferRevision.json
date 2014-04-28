@@ -8,7 +8,7 @@
             "quantity": 1
         }
     ],
-    "subOffers": [{"href": "https://api.oculusvr.com/v1/offers/6B54FF24FC9F", "id": "6B54FF24FC9F"}],
+    "subOffers": [],
     "price":{
         "priceType": "CUSTOM",
         "priceTier": null,

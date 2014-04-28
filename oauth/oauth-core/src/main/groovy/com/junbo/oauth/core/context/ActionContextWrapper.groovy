@@ -47,6 +47,8 @@ class ActionContextWrapper {
     public static final String REMOTE_ADDRESS = 'remote_address'
     public static final String CAPTCHA_REQUIRED = 'captcha_required'
     public static final String CAPTCHA_SUCCEED = 'captcha_succeed'
+    public static final String VIEW_LOCALE = 'view_locale'
+    public static final String EXTRA_PARAM_MAP = 'extra_param_map'
 
     @Delegate
     private final ActionContext actionContext
@@ -103,7 +105,7 @@ class ActionContextWrapper {
     }
 
     void setResponseHeaderMap(Map<String, String> headerMap) {
-        actionContext.requestScope[RESPONSE_COOKIE_LIST] = headerMap
+        actionContext.requestScope[RESPONSE_HEADER_MAP] = headerMap
     }
 
     List<NewCookie> getResponseCookieList() {
@@ -297,5 +299,24 @@ class ActionContextWrapper {
 
     void setCaptchaSucceed(Boolean captchaRequired) {
         actionContext.requestScope[CAPTCHA_SUCCEED] = captchaRequired
+    }
+
+    String getViewLocale() {
+        return (String) actionContext.flowScope[VIEW_LOCALE]
+    }
+
+    void setViewLocale(String locale) {
+        actionContext.flowScope[VIEW_LOCALE] = locale
+    }
+
+    Map<String, String> getExtraParameterMap() {
+        if (actionContext.flowScope[EXTRA_PARAM_MAP] == null) {
+            actionContext.flowScope[EXTRA_PARAM_MAP] = new HashMap<String, String>()
+        }
+        return (Map<String, String>) actionContext.flowScope[EXTRA_PARAM_MAP]
+    }
+
+    void setExtraParameterMap(Map<String, String> extraMap) {
+        actionContext.flowScope[EXTRA_PARAM_MAP] = extraMap
     }
 }

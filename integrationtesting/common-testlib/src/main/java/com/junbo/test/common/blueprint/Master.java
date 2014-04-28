@@ -401,4 +401,28 @@ public class Master {
         }
     }
 
+    public void removeItemAttribute(String itemAttributeId) {
+        if (this.itemAttributes.containsKey(itemAttributeId)) {
+            this.itemAttributes.remove(itemAttributeId);
+        }
+    }
+
+    public void removeOfferAttribute(String offerAttributeId) {
+        if (this.offerAttributes.containsKey(offerAttributeId)) {
+            this.offerAttributes.remove(offerAttributeId);
+        }
+    }
+
+    public void removeItemRevision(String itemRevisionId) {
+        if (this.itemRevisions.containsKey(itemRevisionId)) {
+            this.itemRevisions.remove(itemRevisionId);
+        }
+    }
+
+    public void removeOfferRevision(String offerRevisionId) {
+        if (this.offerRevisions.containsKey(offerRevisionId)) {
+            this.offerRevisions.remove(offerRevisionId);
+        }
+    }
+
 }
