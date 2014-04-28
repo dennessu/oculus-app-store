@@ -99,7 +99,7 @@ import javax.ws.rs.core.UriInfo
             uri.queryParam('action', queryParam.action)
         }
         if (queryParam?.locale != null) {
-            uri.queryParam('locale', queryParam.locale.value)
+            uri.queryParam('locale', queryParam.locale)
         }
         uri.queryParam('size', pagination.size)
         uri.queryParam('page', isNext ? pagination.page + 1 : pagination.page)
@@ -121,8 +121,8 @@ import javax.ws.rs.core.UriInfo
         if (!StringUtils.isEmpty(queryParam?.source)) {
             map.put('source', queryParam.source)
         }
-        if (!StringUtils.isEmpty(queryParam?.locale?.value)) {
-            map.put('locale', queryParam.locale.value)
+        if (!StringUtils.isEmpty(queryParam?.locale)) {
+            map.put('locale', queryParam.locale)
         }
         return map
     }
