@@ -56,6 +56,7 @@ public class TypeSpecificDetails {
     @CurrencyId
     private String walletCurrency;
     @FilterIn
+    @JsonIgnore
     private BigDecimal walletBalance;
 
     @JsonIgnore

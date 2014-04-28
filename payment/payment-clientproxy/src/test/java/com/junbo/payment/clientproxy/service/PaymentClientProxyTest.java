@@ -23,7 +23,7 @@ public class PaymentClientProxyTest extends BaseTest {
     @Autowired
     private PaymentTransactionResourceClientProxy paymentClient;
 
-    @Test(enabled = true)
+    @Test(enabled = false)
     public void addPIAndAuthSettle() throws ExecutionException, InterruptedException {
         final UserId userId = new UserId(getLongId());
         PaymentInstrument pi = getPaymentInstrument();
@@ -85,7 +85,7 @@ public class PaymentClientProxyTest extends BaseTest {
             };
     }
 
-    @Test(enabled = true)
+    @Test(enabled = false)
     public void addPIAndAuthPartialSettle() throws ExecutionException, InterruptedException {
         final UserId userId = new UserId(getLongId());
         PaymentInstrument pi = getPaymentInstrument();
@@ -125,7 +125,7 @@ public class PaymentClientProxyTest extends BaseTest {
         Assert.assertEquals(captureResult.getStatus().toUpperCase(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
     }
 
-    @Test(enabled = true)
+    @Test(enabled = false)
     public void addPIAndAuthReverse() throws ExecutionException, InterruptedException {
         final UserId userId = new UserId(getLongId());
         PaymentInstrument pi = getPaymentInstrument();
@@ -159,7 +159,7 @@ public class PaymentClientProxyTest extends BaseTest {
         Assert.assertEquals(captureResult.getStatus().toUpperCase(), PaymentStatus.REVERSED.toString());
     }
 
-    @Test(enabled = true)
+    @Test(enabled = false)
     public void addPIAndChargeReverse() throws ExecutionException, InterruptedException {
         final UserId userId = new UserId(getLongId());
         PaymentInstrument pi = getPaymentInstrument();
