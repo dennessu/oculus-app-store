@@ -8,12 +8,10 @@ package com.junbo.email.core.service
 import com.junbo.common.id.EmailTemplateId
 import com.junbo.common.model.Link
 import com.junbo.common.model.Results
-import com.junbo.email.common.constant.PageConstants
 import com.junbo.email.core.EmailTemplateService
 import com.junbo.email.core.validator.EmailTemplateValidator
 import com.junbo.email.db.repo.EmailTemplateRepository
 import com.junbo.email.spec.model.EmailTemplate
-import com.junbo.email.spec.model.Pagination
 import com.junbo.email.spec.model.QueryParam
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -65,31 +63,25 @@ import javax.ws.rs.core.UriInfo
         return null
     }
 
-    Promise<Results<EmailTemplate>> getEmailTemplates(QueryParam queryParam, Pagination pagination) {
-        templateValidator.validateGet(pagination)
+    Promise<Results<EmailTemplate>> getEmailTemplates(QueryParam queryParam) {
         def queries = this.buildQueryParam(queryParam)
-        pagination = this.buildPagination(pagination)
-        List<EmailTemplate> templates = templateRepository.getEmailTemplates(queries, pagination)
-        Results<EmailTemplate> results = buildResults(templates, queryParam, pagination)
+        List<EmailTemplate> templates = templateRepository.getEmailTemplates(queries, null)
+        Results<EmailTemplate> results = buildResults(templates, queryParam)
         return Promise.pure(results)
     }
 
     private Results<EmailTemplate> buildResults(List<EmailTemplate> templates,
-                                                QueryParam queryParam, Pagination pagination) {
+                                                QueryParam queryParam) {
         Results<EmailTemplate> results = new Results<>()
         if (templates != null) {
             results.setItems(templates)
-            results.setSelf(this.buildLink(queryParam, pagination, false))
+            results.setSelf(this.buildLink(queryParam))
             results.setHasNext(false)
-            if (templates.size() == pagination.size) {
-                results.setHasNext(true)
-                results.setNext(this.buildLink(queryParam, pagination, true))
-            }
         }
         return  results
     }
 
-    private Link buildLink(QueryParam queryParam, Pagination pagination, boolean  isNext) {
+    private Link buildLink(QueryParam queryParam) {
         Link link = new Link()
         UriBuilder uri = uriInfo.baseUriBuilder.path('email-templates')
         if (queryParam?.source != null) {
@@ -101,8 +93,6 @@ import javax.ws.rs.core.UriInfo
         if (queryParam?.locale != null) {
             uri.queryParam('locale', queryParam.locale)
         }
-        uri.queryParam('size', pagination.size)
-        uri.queryParam('page', isNext ? pagination.page + 1 : pagination.page)
         link.setHref(uri.toTemplate())
         return link
     }
@@ -125,25 +115,5 @@ import javax.ws.rs.core.UriInfo
             map.put('locale', queryParam.locale)
         }
         return map
-    }
-
-    private Pagination buildPagination(Pagination pagination) {
-        def ret = new Pagination()
-        if (pagination?.size == null || pagination?.size < PageConstants.DEFAULT_PAGE_SIZE ) {
-            ret.setSize(PageConstants.DEFAULT_PAGE_SIZE)
-        }
-        else if (pagination?.size > PageConstants.MAX_PAGE_SIZE) {
-            ret.setSize(PageConstants.MAX_PAGE_SIZE)
-        }
-        else {
-            ret.setSize(pagination.size)
-        }
-        if (pagination?.page == null) {
-            ret.setPage(PageConstants.DEFAULT_PAGE_NUMBER)
-        }
-        else {
-            ret.setPage(pagination.page)
-        }
-        return ret
     }
 }

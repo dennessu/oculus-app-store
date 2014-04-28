@@ -18,6 +18,13 @@ public class QueryParam {
     @javax.ws.rs.QueryParam("locale")
     private String locale;
 
+    @javax.ws.rs.QueryParam("page")
+    private Integer page;
+
+    @javax.ws.rs.QueryParam("size")
+    private Integer size;
+
+
     public String getSource() {
         return source;
     }
@@ -41,4 +48,21 @@ public class QueryParam {
     public void setLocale(String locale) {
         this.locale = locale;
     }
+
+    public Integer getPage() {
+        return page;
+    }
+
+    public void setPage(Integer page) {
+        this.page = page;
+    }
+
+    public Integer getSize() {
+        return size;
+    }
+
+    public void setSize(Integer size) {
+        this.size = size;
+    }
+
 }
