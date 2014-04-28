@@ -281,20 +281,20 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
                         errors.add(AppErrors.INSTANCE.missingField("binaries"));
                     }
                 } else if (ItemType.STORED_VALUE.is(item.getType())) {
-                    if (StringUtils.isEmpty(revision.getWalletCurrency())) {
-                        errors.add(AppErrors.INSTANCE.missingField("walletCurrency"));
+                    if (StringUtils.isEmpty(revision.getStoredValueCurrency())) {
+                        errors.add(AppErrors.INSTANCE.missingField("storedValueCurrency"));
                     }
-                    if (revision.getWalletAmount()==null) {
+                    if (revision.getStoredValueAmount()==null) {
                         errors.add(AppErrors.INSTANCE.missingField("walletAmount"));
-                    } else if (revision.getWalletAmount().compareTo(BigDecimal.ZERO)<0) {
+                    } else if (revision.getStoredValueAmount().compareTo(BigDecimal.ZERO)<0) {
                         errors.add(AppErrors.INSTANCE.fieldNotCorrect("walletAmount", "Should not less than 0"));
                     }
                 }
                 if (!ItemType.STORED_VALUE.is(item.getType())) {
-                    if (revision.getWalletCurrency() != null) {
-                        errors.add(AppErrors.INSTANCE.unnecessaryField("walletCurrency"));
+                    if (revision.getStoredValueCurrency() != null) {
+                        errors.add(AppErrors.INSTANCE.unnecessaryField("storedValueCurrency"));
                     }
-                    if (revision.getWalletAmount() != null) {
+                    if (revision.getStoredValueAmount() != null) {
                         errors.add(AppErrors.INSTANCE.unnecessaryField("walletAmount"));
                     }
                 }

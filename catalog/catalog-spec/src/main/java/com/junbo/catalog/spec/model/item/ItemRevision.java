@@ -57,14 +57,11 @@ public class ItemRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 26, required = true, value = "Download Link", allowableValues = "PC, MAC, LINUX")
     private Map<String, Binary> binaries;
 
-    //@ApiModelProperty(position = 30, required = true, value = "Wallet currency type",
-    //        allowableValues = "REAL_CURRENCY, VIRTUAL_CURRENCY")
-    //private String walletCurrencyType;
     @CurrencyId
     @ApiModelProperty(position = 31, required = true, value = "Wallet currency")
-    private String walletCurrency;
+    private String storedValueCurrency;
     @ApiModelProperty(position = 32, required = true, value = "Wallet amount")
-    private BigDecimal walletAmount;
+    private BigDecimal storedValueAmount;
 
     @ApiModelProperty(position = 40, required = true, value = "Locale properties of the item revision")
     private Map<String, ItemRevisionLocaleProperties> locales;
@@ -144,20 +141,20 @@ public class ItemRevision extends BaseRevisionModel {
         this.binaries = binaries;
     }
 
-    public String getWalletCurrency() {
-        return walletCurrency;
+    public String getStoredValueCurrency() {
+        return storedValueCurrency;
     }
 
-    public void setWalletCurrency(String walletCurrency) {
-        this.walletCurrency = walletCurrency;
+    public void setStoredValueCurrency(String storedValueCurrency) {
+        this.storedValueCurrency = storedValueCurrency;
     }
 
-    public BigDecimal getWalletAmount() {
-        return walletAmount;
+    public BigDecimal getStoredValueAmount() {
+        return storedValueAmount;
     }
 
-    public void setWalletAmount(BigDecimal walletAmount) {
-        this.walletAmount = walletAmount;
+    public void setStoredValueAmount(BigDecimal storedValueAmount) {
+        this.storedValueAmount = storedValueAmount;
     }
 
     public Map<String, ItemRevisionLocaleProperties> getLocales() {
