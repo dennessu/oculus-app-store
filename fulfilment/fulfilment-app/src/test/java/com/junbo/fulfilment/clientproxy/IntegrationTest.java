@@ -236,7 +236,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
 
         // create item
         Item item = new Item();
-        item.setType(ItemType.WALLET.name());
+        item.setType(ItemType.STORED_VALUE.name());
         item.setOwnerId(ownerId);
 
         final Long itemId = megaGateway.createItem(item);
