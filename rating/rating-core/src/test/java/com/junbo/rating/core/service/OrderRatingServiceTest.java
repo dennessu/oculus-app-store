@@ -41,13 +41,13 @@ public class OrderRatingServiceTest extends BaseTest {
 
         item = new RatableItem();
         item.setOfferId(102L);
-        item.setQuantity(2);
+        item.setQuantity(1);
         item.setShippingMethodId(400L);
         context.getItems().add(item);
 
         item = new RatableItem();
         item.setOfferId(109L);
-        item.setQuantity(2);
+        item.setQuantity(1);
         item.setShippingMethodId(400L);
         context.getItems().add(item);
 
@@ -58,9 +58,9 @@ public class OrderRatingServiceTest extends BaseTest {
         Assert.assertEquals(result.getLineItems().size(), 3);
 
         Assert.assertEquals(result.getRatingSummary().getDiscountAmount(), new BigDecimal("5.00"));
-        Assert.assertEquals(result.getRatingSummary().getFinalAmount(), new BigDecimal("28.95"));
+        Assert.assertEquals(result.getRatingSummary().getFinalAmount(), new BigDecimal("16.97"));
 
-        Assert.assertEquals(result.getShippingSummary().getTotalShippingFee(), new BigDecimal("16.00"));
+        Assert.assertEquals(result.getShippingSummary().getTotalShippingFee(), new BigDecimal("13.60"));
     }
 
     @Test

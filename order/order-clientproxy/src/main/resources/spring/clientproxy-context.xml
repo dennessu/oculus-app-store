@@ -54,7 +54,7 @@
         <constructor-arg name="target" value="${clientproxy.billing.url}"/>
     </bean>
 
-    <bean id="order.billingCurrencyClient" class="com.junbo.billing.spec.resource.proxy.CurrencyResourceClientProxy">
+    <bean id="order.billingCurrencyClient" class="com.junbo.billing.spec.resource.proxy.BillingCurrencyResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
         <constructor-arg name="transcoder" ref="transcoder"/>
         <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
