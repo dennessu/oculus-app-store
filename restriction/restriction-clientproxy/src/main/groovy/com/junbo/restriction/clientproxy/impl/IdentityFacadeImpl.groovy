@@ -7,6 +7,7 @@ package com.junbo.restriction.clientproxy.impl
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.junbo.common.id.UserId
+import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
@@ -50,8 +51,7 @@ class IdentityFacadeImpl implements IdentityFacade {
                 return userPersonalInfoResource.get(user.dob.value, new UserPersonalInfoGetOptions()).then { UserPersonalInfo info ->
                     if (info != null && info.type.equalsIgnoreCase('dob')) {
                         try {
-                            ObjectMapper objectMapper = new ObjectMapper();
-                            Date date = objectMapper.readValue(info.value.toString(), Date)
+                            Date date = ObjectMapperProvider.instance().valueToTree(info.value, Date)
                             return Promise.pure(date)
                         }
                         catch (Exception e) {

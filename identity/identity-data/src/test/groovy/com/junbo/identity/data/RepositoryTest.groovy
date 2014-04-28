@@ -175,13 +175,6 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void testPITypeRepository() {
-        PIType piType = new PIType()
-        PIType newPIType = piTypeRepository.create(piType).wrapped().get()
-        assert  piType.id.toString() == newPIType.id.toString()
-    }
-
-    @Test
     public void testUserRepository() throws Exception {
         User user = new User()
         user.setIsAnonymous(true)
