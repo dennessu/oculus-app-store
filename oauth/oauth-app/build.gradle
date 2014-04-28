@@ -15,5 +15,9 @@ dependencies {
         exclude group: 'com.junbo.oauth', module: 'oauth-spec'
     }
 
+    runtime ('com.junbo.identity:email-rest:0.0.1-SNAPSHOT') {
+        exclude group: 'com.junbo.oauth', module: 'oauth-spec'
+    }
+
     compile project(':oauth-api')
 }
