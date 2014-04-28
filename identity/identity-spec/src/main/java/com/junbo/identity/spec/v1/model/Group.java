@@ -7,6 +7,7 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.GroupId;
+import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.model.Link;
 import com.junbo.common.util.Identifiable;
 import com.junbo.common.model.ResourceMeta;
@@ -29,9 +30,11 @@ public class Group extends ResourceMeta implements Identifiable<GroupId> {
     private Boolean active;
 
     @ApiModelProperty(position = 5, required = false, value = "[Nullable]The membership in this group")
+    @HateoasLink("/user-group-memberships?groupId={id}")
     private Link userMemberships;
 
     @ApiModelProperty(position = 4, required = false, value = "[Nullable]Users in this group.")
+    @HateoasLink("/users?groupId={id}")
     private Link users;
 
     @Override

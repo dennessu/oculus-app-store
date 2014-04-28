@@ -38,9 +38,9 @@ public class WalletMapper {
         WalletEntity walletEntity = new WalletEntity();
         walletEntity.setUserId(wallet.getUserId());
         walletEntity.setId(wallet.getWalletId());
-        walletEntity.setStatus(Status.valueOf(wallet.getStatus()));
-        walletEntity.setType(WalletType.valueOf(wallet.getType()));
-        walletEntity.setCurrency(wallet.getCurrency());
+        walletEntity.setStatus(Status.valueOf(wallet.getStatus().toUpperCase()));
+        walletEntity.setType(WalletType.valueOf(wallet.getType().toUpperCase()));
+        walletEntity.setCurrency(wallet.getCurrency().toUpperCase());
         walletEntity.setBalance(wallet.getBalance());
         walletEntity.setTrackingUuid(wallet.getTrackingUuid());
         return walletEntity;

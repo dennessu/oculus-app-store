@@ -7,11 +7,11 @@
 package com.junbo.subscription.clientproxy;
 
 
-import com.junbo.catalog.spec.model.common.LocalizableProperty;
+import com.junbo.catalog.spec.enums.PriceType;
 import com.junbo.catalog.spec.model.common.Price;
-import com.junbo.catalog.spec.model.common.Status;
+import com.junbo.catalog.spec.enums.Status;
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.catalog.spec.model.item.ItemType;
+import com.junbo.catalog.spec.enums.ItemType;
 import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.catalog.spec.resource.ItemResource;
 import com.junbo.catalog.spec.resource.OfferResource;
@@ -46,27 +46,26 @@ public class CatalogGatewayTest extends AbstractTestNGSpringContextTests {
 
     @Test(enabled = false)
     public void testBVT() {
-        LocalizableProperty name = new LocalizableProperty();
-        name.set("en_US", "subs_offer_name");
-
         Item item =  new Item();
         item.setOwnerId(123L);
-        item.setType(ItemType.SUBSCRIPTION);
-        item.setName(name);
-        item.setSku("test_sku");
+        item.setType(ItemType.SUBSCRIPTION.name());
 
         final Long itemId = createItem(item);
 
         Offer offer = new Offer();
         offer.setOwnerId(123L);
-        offer.setName(name);
         Long offerId = createOffer(offer);
         Assert.assertNotNull(offerId);
 
         OfferRevision offerRevision = new OfferRevision();
         offerRevision.setOfferId(offerId);
         offerRevision.setOwnerId(12345L);
-        offerRevision.setStatus(Status.DRAFT);
+        offerRevision.setStatus(Status.DRAFT.name());
+        offerRevision.setLocales(new HashMap<String, OfferRevisionLocaleProperties>() {{
+            put("en_US", new OfferRevisionLocaleProperties() {{
+                setName("subscription-offer");
+            }});
+        }});
 
         offerRevision.setItems(new ArrayList<ItemEntry>() {{
             add(new ItemEntry() {{
@@ -78,14 +77,14 @@ public class CatalogGatewayTest extends AbstractTestNGSpringContextTests {
         );
 
         Price price = new Price();
-        price.setPriceType(Price.FREE);
+        price.setPriceType(PriceType.FREE.name());
         offerRevision.setPrice(price);
 
         Long offerRevisionId = createOfferRevision(offerRevision);
         Assert.assertNotNull(offerRevisionId);
 
         OfferRevision retrievedRevision = getOfferRevision(offerRevisionId);
-        retrievedRevision.setStatus(Status.APPROVED);
+        retrievedRevision.setStatus(Status.APPROVED.name());
         updateOfferRevision(retrievedRevision);
 
         Offer retrieved = catalogGateway.getOffer(offerId, System.currentTimeMillis());

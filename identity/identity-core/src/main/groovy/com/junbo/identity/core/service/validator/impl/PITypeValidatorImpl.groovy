@@ -96,6 +96,12 @@ class PITypeValidatorImpl implements PITypeValidator {
         if (piType.typeCode == null) {
             throw AppErrors.INSTANCE.fieldRequired('typeCode').exception()
         }
+        try {
+            Enum.valueOf(com.junbo.common.id.PIType, piType.typeCode)
+        }
+        catch (IllegalArgumentException e) {
+            throw AppErrors.INSTANCE.fieldInvalid('typeCode', '[CREDITCARD, DIRECTDEBIT, WALLET, PAYPAL]').exception()
+        }
         if (CollectionUtils.isEmpty(piType.locales)) {
             throw AppErrors.INSTANCE.fieldRequired('locales').exception()
         }
