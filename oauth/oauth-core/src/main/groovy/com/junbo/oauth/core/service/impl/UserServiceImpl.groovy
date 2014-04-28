@@ -55,8 +55,9 @@ class UserServiceImpl implements UserService {
     Promise<UserCredentialVerifyAttempt> authenticateUser(String username, String password,
                                                           String clientId, String ipAddress, String userAgent) {
         UserCredentialVerifyAttempt loginAttempt = new UserCredentialVerifyAttempt(
-                type: 'password',
-                value: new String(Base64.encodeBase64("$username:$password".bytes)),
+                type: 'PASSWORD',
+                username: username,
+                value: password,
                 //TODO: remove the hard coded client id
                 clientId: new ClientId(1L),
                 ipAddress: ipAddress,

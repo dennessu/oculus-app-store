@@ -50,7 +50,7 @@ class CreateUserCredential implements Action {
         }
 
         UserCredential userCredential = new UserCredential(
-                value: new String(Base64.encodeBase64(password.bytes)),
+                value: password,
                 type: 'PASSWORD'
         )
 
