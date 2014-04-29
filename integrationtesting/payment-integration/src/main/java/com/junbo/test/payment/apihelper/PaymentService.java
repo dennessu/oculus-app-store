@@ -5,6 +5,7 @@
  */
 package com.junbo.test.payment.apihelper;
 
+import com.junbo.ewallet.spec.model.CreditRequest;
 import com.junbo.payment.spec.model.PaymentInstrument;
 
 import java.util.List;
@@ -36,5 +37,7 @@ public interface PaymentService {
     List<String> searchPaymentInstrumentsByUserId(String uid) throws Exception;
 
     List<String> searchPaymentInstrumentsByUserId(String uid, int expectedResponseCode) throws Exception;
+
+    void creditWallet(CreditRequest creditRequest) throws Exception;
 
 }
