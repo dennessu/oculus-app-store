@@ -40,7 +40,7 @@ public class Catalog extends TestClass {
     private LogHelper logger = new LogHelper(Catalog.class);
     private final String defaultItemFileName = "defaultItem";
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
-    private final String defaultDigitalOfferRevisionFileName = "defaultDigitalOfferRevision";
+    private final String defaultOfferRevisionFileName = "defaultOfferRevision";
 
     @Property(
             priority = Priority.BVT,
@@ -281,8 +281,7 @@ public class Catalog extends TestClass {
 
         //Attach offer revision to the offer
         Offer offer = Master.getInstance().getOffer(offerId);
-        OfferRevision offerRevision = offerRevisionServiceAPI.prepareOfferRevisionEntity(defaultDigitalOfferRevisionFileName,
-                EnumHelper.CatalogItemType.DIGITAL);
+        OfferRevision offerRevision = offerRevisionServiceAPI.prepareOfferRevisionEntity(defaultOfferRevisionFileName);
         offerRevision.setOfferId(offer.getOfferId());
         offerRevision.setOwnerId(offer.getOwnerId());
         String offerRevisionId = offerRevisionServiceAPI.postOfferRevision(offerRevision);
@@ -380,27 +379,60 @@ public class Catalog extends TestClass {
             features = "CatalogScenarios",
             component = Component.Catalog,
             owner = "JasonFu",
-            status = Status.Incomplete,
-            description = "Test EntitlementDefinition Post/Get",
+            status = Status.Enable,
+            description = "Test uploading item and offer",
             steps = {
-                    "1. Post an EntitlementDefinition",
-                    "2. Get the EntitlementDefinition by EntitlementDefinition ID",
-                    "3. Get EntitlementDefinition by some search conditions",
-                    "4. Get all EntitlementDefinition without any search condition"
+                    "1. View all previously submitted offers",
+                    "2. Post an item",
+                    "3. Post an item revision, approve it",
+                    "4. Post an offer",
+                    "5. Post an offer revision based on the item and offer above, approve it",
+                    "6. Check the offer status is published"
             }
     )
     @Test
     public void testUploadingOfferToStore() throws Exception {
-        UserService us = UserServiceImpl.instance();
-        ItemService is = ItemServiceImpl.instance();
-        OfferService os = OfferServiceImpl.instance();
+        UserService userService = UserServiceImpl.instance();
+        ItemService itemService = ItemServiceImpl.instance();
+        ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
+        OfferService offerService = OfferServiceImpl.instance();
+        OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
 
-        String superUserId = us.PostUser();
+        //Prepare a super user
+        String superUserId = userService.PostUser();
         User userSuper = Master.getInstance().getUser(superUserId);
 
+        //Show all previously submitted offers
         HashMap<String, String> paraMap = new HashMap();
+        offerService.getOffers(paraMap);
 
+        //Simulate app submission process
+        //Post an Item
+        String itemId = itemService.postDefaultItem(EnumHelper.CatalogItemType.DIGITAL);
 
+        //Post an item revision
+        String itemRevisionId = itemRevisionService.postDefaultItemRevision(itemId);
+
+        //Approve the item revision
+        ItemRevision itemRevision = Master.getInstance().getItemRevision(itemRevisionId);
+        itemRevision.setStatus(EnumHelper.CatalogEntityStatus.APPROVED.getEntityStatus());
+        itemRevisionService.updateItemRevision(itemRevision);
+
+        //Post an offer
+        String offerId = offerService.postDefaultOffer();
+
+        //Post an offer revision
+        String offerRevisionId = offerRevisionService.postDefaultOfferRevision(offerId, itemId);
+
+        //Approve the offer revision
+        OfferRevision offerRevision = Master.getInstance().getOfferRevision(offerRevisionId);
+        offerRevision.setStatus(EnumHelper.CatalogEntityStatus.APPROVED.getEntityStatus());
+        offerRevisionService.updateOfferRevision(offerRevision);
+
+        //Check the offer status
+        offerService.getOffer(offerId);
+        Offer offer = Master.getInstance().getOffer(offerId);
+        Assert.assertEquals(offer.getPublished(), Boolean.TRUE);
     }
 
     @Property(
