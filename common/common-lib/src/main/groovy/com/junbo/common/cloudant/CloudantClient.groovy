@@ -3,7 +3,6 @@ import com.junbo.common.cloudant.exception.CloudantConnectException
 import com.junbo.common.cloudant.exception.CloudantException
 import com.junbo.common.cloudant.exception.CloudantUpdateConflictException
 import com.junbo.common.cloudant.model.*
-import com.junbo.common.id.UserId
 import com.junbo.common.util.Identifiable
 import com.junbo.common.util.ResourceAge
 import com.junbo.common.util.Utils
@@ -76,8 +75,8 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
             entity.resourceAge = ResourceAge.initial()
         }
         // Todo:    Need to read from the Universe to cover time and createdBy
+        entity.createdBy = 'created-by-todo'
         entity.createdTime = new Date()
-        entity.updatedBy = new UserId(123L)
 
         def response = executeRequest(HttpMethod.POST, '', [:], entity)
         if (response.statusCode != HttpStatus.CREATED.value()) {
@@ -121,7 +120,7 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
         entity.cloudantRev = cloudantDoc.cloudantRev
 
         // Todo:    Need to read from the Universe to cover time and createdBy
-        entity.updatedBy = new UserId(123L)
+        entity.updatedBy = 'updated-by-todo'
         entity.updatedTime = new Date()
 
         // assume resourceAge is increased by external caller
@@ -164,10 +163,6 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
     void cloudantDelete(String id) {
         def cloudantDoc = getCloudantDocument(id)
         if (cloudantDoc != null) {
-            // Todo:    Need to read from the Universe to cover time and createdBy
-            cloudantDoc.updatedTime = new Date()
-            cloudantDoc.updatedBy = new UserId(123L)
-
             def response = executeRequest(HttpMethod.DELETE, id.toString(), ['rev': cloudantDoc.cloudantRev], null)
 
             if (response.statusCode != HttpStatus.OK.value() && response.statusCode != HttpStatus.NOT_FOUND.value()) {
