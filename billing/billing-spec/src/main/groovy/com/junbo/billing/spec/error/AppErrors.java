@@ -51,9 +51,13 @@ public interface AppErrors {
             description ="Balance type {0} invalid")
     AppError invalidBalanceType(String type);
 
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_BALANCE_TYPE,
+            description ="Balance type {0} invalid, expected types: {1}")
+    AppError invalidBalanceType(String type, String expectedTypes);
+
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_BALANCE_STATUS,
-            description ="Balance status {0} invalid")
-    AppError invalidBalanceStatus(String status);
+            description ="Balance status {0} invalid, expected status: {1}")
+    AppError invalidBalanceStatus(String status, String expectedStatus);
 
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_BALANCE_TOTAL,
             description ="Balance total amount {0} invalid")
