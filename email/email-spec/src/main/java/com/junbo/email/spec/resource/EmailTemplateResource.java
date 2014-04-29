@@ -10,6 +10,7 @@ import com.junbo.common.model.Results;
 import com.junbo.email.spec.model.*;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
@@ -19,6 +20,7 @@ import javax.ws.rs.core.Response;
 /**
  * Resource of EmailTemplate.
  */
+@Api(value= "email-templates")
 @Path("/email-templates")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
