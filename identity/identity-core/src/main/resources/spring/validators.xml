@@ -238,20 +238,9 @@
     <bean id="userPersonalInfoValidator" class="com.junbo.identity.core.service.validator.impl.UserPersonalInfoValidatorImpl">
         <property name="minLabelLength" value="1" />
         <property name="maxLabelLength" value="255" />
-        <property name="addressValidator" ref="addressValidator" />
-        <property name="birthdayValidator" ref="birthdayValidator" />
-        <property name="driverLicenseValidator" ref="driverLicenseValidator" />
-        <property name="genderValidator" ref="genderValidator" />
-        <property name="governmentIDValidator" ref="governmentIDValidator" />
-        <property name="nameValidator" ref="nameValidator" />
-        <property name="passportValidator" ref="passportValidator" />
-        <property name="qqValidator" ref="qqValidator" />
-        <property name="smsValidator" ref="smsValidator" />
-        <property name="userEmailValidator" ref="userEmailValidator" />
         <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
         <property name="userRepository" ref="userRepository" />
-        <property name="userPhoneNumberValidator" ref="userPhoneNumberValidator" />
-        <property name="userWhatsAppValidator" ref="userWhatsAppValidator" />
+        <property name="piiValidatorFactory" ref="piiValidatorFactory" />
     </bean>
 
     <bean id="timezoneValidator" class="com.junbo.identity.core.service.validator.impl.TimezoneValidatorImpl">
@@ -361,5 +350,24 @@
           class="com.junbo.identity.core.service.validator.impl.RoleAssignmentValidatorImpl">
         <property name="roleAssignmentRepository" ref="roleAssignmentRepository"/>
         <property name="roleRepository" ref="roleRepository"/>
+    </bean>
+
+    <bean id="piiValidatorFactory" class="com.junbo.identity.core.service.validator.impl.PiiValidatorFactoryImpl">
+        <constructor-arg>
+            <list>
+                <ref bean="userEmailValidator" />
+                <ref bean="userPhoneNumberValidator" />
+                <ref bean="nameValidator" />
+                <ref bean="birthdayValidator" />
+                <ref bean="smsValidator" />
+                <ref bean="qqValidator" />
+                <ref bean="userWhatsAppValidator" />
+                <ref bean="passportValidator" />
+                <ref bean="governmentIDValidator" />
+                <ref bean="driverLicenseValidator" />
+                <ref bean="genderValidator" />
+                <ref bean="addressValidator" />
+            </list>
+        </constructor-arg>
     </bean>
 </beans>
