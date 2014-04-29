@@ -285,9 +285,9 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
                         errors.add(AppErrors.INSTANCE.missingField("storedValueCurrency"));
                     }
                     if (revision.getStoredValueAmount()==null) {
-                        errors.add(AppErrors.INSTANCE.missingField("walletAmount"));
+                        errors.add(AppErrors.INSTANCE.missingField("storedValueAmount"));
                     } else if (revision.getStoredValueAmount().compareTo(BigDecimal.ZERO)<0) {
-                        errors.add(AppErrors.INSTANCE.fieldNotCorrect("walletAmount", "Should not less than 0"));
+                        errors.add(AppErrors.INSTANCE.fieldNotCorrect("storedValueAmount", "Should not less than 0"));
                     }
                 }
                 if (!ItemType.STORED_VALUE.is(item.getType())) {
@@ -295,7 +295,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
                         errors.add(AppErrors.INSTANCE.unnecessaryField("storedValueCurrency"));
                     }
                     if (revision.getStoredValueAmount() != null) {
-                        errors.add(AppErrors.INSTANCE.unnecessaryField("walletAmount"));
+                        errors.add(AppErrors.INSTANCE.unnecessaryField("storedValueAmount"));
                     }
                 }
                 if (!ItemType.DIGITAL.is(item.getType())) {
