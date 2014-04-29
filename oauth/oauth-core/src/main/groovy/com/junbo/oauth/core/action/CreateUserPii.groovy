@@ -104,7 +104,7 @@ class CreateUserPii implements Action {
             }
 
             user.name = new UserPersonalInfoLink(
-                    isdefault: true,
+                    isDefault: true,
                     value: newNamePii.id as UserPersonalInfoId
             )
 
@@ -124,7 +124,7 @@ class CreateUserPii implements Action {
             }
 
             user.emails = [new UserPersonalInfoLink(
-                    isdefault: true,
+                    isDefault: true,
                     value: newEmailPii.id as UserPersonalInfoId
             )]
 
@@ -144,7 +144,7 @@ class CreateUserPii implements Action {
             }
 
             user.gender = new UserPersonalInfoLink(
-                    isdefault: true,
+                    isDefault: true,
                     value: newGenderPii.id as UserPersonalInfoId
             )
 
@@ -164,7 +164,7 @@ class CreateUserPii implements Action {
             }
 
             user.dob = new UserPersonalInfoLink(
-                    isdefault: true,
+                    isDefault: true,
                     value: newDobPii.id as UserPersonalInfoId
             )
 
