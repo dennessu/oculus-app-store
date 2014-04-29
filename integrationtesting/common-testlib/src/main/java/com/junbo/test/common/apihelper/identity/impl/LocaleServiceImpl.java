@@ -1,0 +1,110 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
+package com.junbo.test.common.apihelper.identity.impl;
+
+import com.junbo.test.common.apihelper.identity.LocaleService;
+import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.common.json.JsonMessageTranscoder;
+import com.junbo.langur.core.client.TypeReference;
+import com.junbo.identity.spec.v1.model.Locale;
+import com.junbo.test.common.apihelper.identity.UserService;
+import com.junbo.test.common.libs.IdConverter;
+import com.junbo.test.common.libs.RestUrl;
+import com.junbo.common.enumid.LocaleId;
+import com.junbo.common.model.Results;
+
+/**
+ * @author Jason
+ * time 4/29/2014
+ * Locale related API helper, including get/post/put/delete locale.
+ */
+public class LocaleServiceImpl extends HttpClientBase implements LocaleService {
+
+    private final String localeURL = RestUrl.getRestUrl(RestUrl.ComponentName.IDENTITY) + "locales";
+    private static LocaleService instance;
+
+    public static synchronized LocaleService instance() {
+        if (instance == null) {
+            instance = new LocaleServiceImpl();
+        }
+        return instance;
+    }
+
+    private LocaleServiceImpl() {
+    }
+
+    public Locale postDefaultLocale() throws Exception {
+
+        Locale locale = new Locale();
+        locale.setLocaleCode("en_US");
+        locale.setLocaleName("US");
+        locale.setLongName("en_US");
+        locale.setShortName("US");
+
+        return this.postLocale(locale);
+    }
+
+    public Locale postLocale(Locale locale) throws Exception {
+        return postLocale(locale, 200);
+    }
+
+    public Locale postLocale(Locale locale, int expectedResponseCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, localeURL, locale, expectedResponseCode);
+        Locale localeGet = new JsonMessageTranscoder().decode(new TypeReference<Locale>() {},
+                responseBody);
+
+        return localeGet;
+    }
+
+    public Results<Locale> getLocales() throws Exception {
+        return getLocales(200);
+    }
+
+    public Results<Locale> getLocales(int expectedResponseCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.GET, localeURL, expectedResponseCode);
+        Results<Locale> localesGet = new JsonMessageTranscoder().decode(new TypeReference<Results<Locale>>() {},
+                responseBody);
+
+        return localesGet;
+    }
+
+    public Locale getLocale(String localeId) throws Exception {
+        return getLocale(localeId, 200);
+    }
+
+    public Locale getLocale(String localeId, int expectedResponseCode) throws Exception {
+        String url = localeURL + "/" + localeId;
+        String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
+        Locale localeGet = new JsonMessageTranscoder().decode(new TypeReference<Locale>() {},
+                responseBody);
+
+        return localeGet;
+    }
+
+    public Locale updateLocale(Locale locale) throws Exception {
+        return updateLocale(locale, 200);
+    }
+
+    public Locale updateLocale(Locale locale, int expectedResponseCode) throws Exception {
+        String putUrl = localeURL + "/" + locale.getId().toString();
+
+        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, locale, expectedResponseCode);
+        Locale localePut = new JsonMessageTranscoder().decode(new TypeReference<Locale>() {},
+                responseBody);
+
+        return localePut;
+    }
+
+    public void deleteLocale(String localeId) throws Exception {
+        this.deleteLocale(localeId, 204);
+    }
+
+    public void deleteLocale(String localeId, int expectedResponseCode) throws Exception {
+        String url = localeURL + "/" + localeId;
+        restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode);
+    }
+
+}

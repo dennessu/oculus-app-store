@@ -44,6 +44,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     private final String defaultOfferFileName = "defaultOffer";
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
     private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
+    private final String defaultStoredValueItemRevisionFileName = "defaultStoredValueItemRevision";
     private final String defaultDigitalOfferRevisionFileName = "defaultDigitalOfferRevision";
     private final String defaultPhysicalOfferRevisionFileName = "defaultPhysicalOfferRevision";
     private LogHelper logger = new LogHelper(OfferServiceImpl.class);
@@ -293,11 +294,14 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
         //Attach item revision to the item
         ItemRevision itemRevision;
-        if (itemType.equalsIgnoreCase(EnumHelper.CatalogItemType.PHYSICAL.getItemType())) {
-            itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultPhysicalItemRevisionFileName);
+        if (itemType.equalsIgnoreCase(EnumHelper.CatalogItemType.DIGITAL.getItemType())) {
+            itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultDigitalItemRevisionFileName);
+        }
+        else if (itemType.equalsIgnoreCase(EnumHelper.CatalogItemType.STORED_VALUE.getItemType())) {
+            itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultStoredValueItemRevisionFileName);
         }
         else {
-            itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultDigitalItemRevisionFileName);
+            itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultPhysicalItemRevisionFileName);
         }
 
         itemRevision.setItemId(IdConverter.hexStringToId(ItemId.class, itemId));

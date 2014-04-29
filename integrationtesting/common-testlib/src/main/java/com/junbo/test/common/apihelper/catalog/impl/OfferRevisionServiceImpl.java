@@ -42,6 +42,7 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
     private final String defaultPhysicalOfferRevisionFileName = "defaultPhysicalOfferRevision";
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
     private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
+    private final String defaultStoredValueItemRevisionFileName = "defaultStoredValueItemRevision";
     private final String defaultOfferFileName = "defaultOffer";
     private LogHelper logger = new LogHelper(OfferRevisionServiceImpl.class);
     private static OfferRevisionService instance;
@@ -172,13 +173,14 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
 
         //Attach item revision to the item
         ItemRevision itemRevision;
-        if (itemType.equals(EnumHelper.CatalogItemType.PHYSICAL)) {
-            itemRevision = itemRevisionService.prepareItemRevisionEntity(
-                    defaultPhysicalItemRevisionFileName);
+        if (itemType.equals(EnumHelper.CatalogItemType.DIGITAL)) {
+            itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultDigitalItemRevisionFileName);
+        }
+        else if (itemType.equals(EnumHelper.CatalogItemType.STORED_VALUE)) {
+            itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultStoredValueItemRevisionFileName);
         }
         else {
-            itemRevision = itemRevisionService.prepareItemRevisionEntity(
-                    defaultDigitalItemRevisionFileName);
+            itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultPhysicalItemRevisionFileName);
         }
 
         itemRevision.setItemId(IdConverter.hexStringToId(ItemId.class, itemId));
