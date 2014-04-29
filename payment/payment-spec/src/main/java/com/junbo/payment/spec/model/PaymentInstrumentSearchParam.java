@@ -6,6 +6,8 @@
 
 package com.junbo.payment.spec.model;
 
+import com.junbo.common.id.UserId;
+
 import javax.ws.rs.QueryParam;
 
 /**
@@ -13,23 +15,23 @@ import javax.ws.rs.QueryParam;
  */
 public class PaymentInstrumentSearchParam {
     @QueryParam("userId")
-    private Long userId;
+    private UserId userId;
     @QueryParam("type")
     private String type;
 
     public PaymentInstrumentSearchParam() {
     }
 
-    public PaymentInstrumentSearchParam(Long userId, String type, String status) {
+    public PaymentInstrumentSearchParam(UserId userId, String type, String status) {
         this.userId = userId;
         this.type = type;
     }
 
-    public Long getUserId() {
+    public UserId getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(UserId userId) {
         this.userId = userId;
     }
 

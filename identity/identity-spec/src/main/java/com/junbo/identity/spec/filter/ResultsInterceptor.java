@@ -5,11 +5,13 @@
  */
 package com.junbo.identity.spec.filter;
 
+import com.junbo.common.filter.OverrideApiHostFilter;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
 import com.junbo.configuration.ConfigService;
 import com.junbo.configuration.ConfigServiceManager;
 import org.glassfish.jersey.server.ContainerResponse;
+import org.slf4j.MDC;
 import org.springframework.util.StringUtils;
 
 import javax.ws.rs.container.ContainerRequestContext;
@@ -62,9 +64,15 @@ public class ResultsInterceptor implements ContainerResponseFilter {
 
         ContainerResponse response = (ContainerResponse)responseContext;
         Link ref = new Link();
+        String hrefPrefix = selfHrefPrfix;
+        String apiHost = MDC.get(OverrideApiHostFilter.X_OVERRIDE_API_HOST);
+
+        if (StringUtils.hasText(apiHost)) {
+            hrefPrefix = apiHost;
+        }
         String requestUri = response.getRequestContext().getRequestUri().toString();
         requestUri = requestUri.replace(response.getRequestContext().getBaseUri().toString(),
-                selfHrefPrfix.endsWith("/") ? selfHrefPrfix : selfHrefPrfix + "/");
+                hrefPrefix.endsWith("/") ? hrefPrefix : hrefPrefix + "/");
 
         ref.setHref(requestUri);
         ref.setId("");

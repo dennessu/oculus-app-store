@@ -8,6 +8,7 @@ package com.junbo.payment.db.repository;
 
 import com.junbo.common.id.PIType;
 import com.junbo.oom.core.MappingContext;
+import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.db.dao.paymentinstrument.AddressDao;
 import com.junbo.payment.db.dao.paymentinstrument.CreditCardPaymentInstrumentDao;
 import com.junbo.payment.db.dao.paymentinstrument.PaymentInstrumentDao;
@@ -111,6 +112,16 @@ public class PaymentInstrumentRepository {
 
     public List<PaymentInstrument> search(Long userId,
             PaymentInstrumentSearchParam searchParam, PageMetaData pageMetadata) {
-        return getByUserId(userId);
+        List<PaymentInstrument> request = new ArrayList<PaymentInstrument>();
+        List<PaymentInstrumentEntity> piEntities = paymentInstrumentDao.getByUserAndType(userId,
+            CommonUtil.isNullOrEmpty(searchParam.getType()) ? null : PIType.valueOf(searchParam.getType()));
+        for(PaymentInstrumentEntity piEntity : piEntities){
+            if(!piEntity.isDeleted()){
+                PaymentInstrument piRequest = paymentMapperExtension.toPaymentInstrument(piEntity);
+                setAdditionalInfo(piEntity, piRequest);
+                request.add(piRequest);
+            }
+        }
+        return request;
     }
 }

@@ -6,7 +6,6 @@
 package com.junbo.identity.data.repository.impl.sql
 
 import com.junbo.common.id.RoleId
-import com.junbo.common.id.UserId
 import com.junbo.identity.data.dao.RoleDAO
 import com.junbo.identity.data.entity.role.RoleEntity
 import com.junbo.identity.data.repository.RoleRepository
@@ -70,9 +69,9 @@ class RoleRepositorySqlImpl implements RoleRepository {
                 resourceId: entity.resourceId,
                 subResourceType: entity.subResourceType,
                 resourceAge: entity.resourceAge.toString(),
-                createdBy: new UserId(entity.createdBy),
+                createdBy: entity.createdBy,
                 createdTime: entity.createdTime,
-                updatedBy: new UserId(entity.updatedBy),
+                updatedBy: entity.updatedBy,
                 updatedTime: entity.updatedTime
         )
     }
@@ -89,9 +88,9 @@ class RoleRepositorySqlImpl implements RoleRepository {
                 resourceId: entity.resourceId,
                 subResourceType: entity.subResourceType,
                 resourceAge: Integer.parseInt(entity.resourceAge),
-                createdBy: entity.createdBy == null ? null : entity.createdBy.value,
+                createdBy: entity.createdBy,
                 createdTime: entity.createdTime,
-                updatedBy: entity.updatedBy == null ? null : entity.updatedBy.value,
+                updatedBy: entity.updatedBy,
                 updatedTime: entity.updatedTime
         )
     }
