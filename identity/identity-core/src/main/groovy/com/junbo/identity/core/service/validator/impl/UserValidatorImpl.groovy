@@ -2,7 +2,9 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.id.UserId
 import com.junbo.identity.core.service.normalize.NormalizeService
-import com.junbo.identity.core.service.validator.*
+import com.junbo.identity.core.service.validator.TimezoneValidator
+import com.junbo.identity.core.service.validator.UserValidator
+import com.junbo.identity.core.service.validator.UsernameValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.LocaleRepository
@@ -12,7 +14,7 @@ import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
-import com.junbo.identity.spec.v1.option.model.UserGetOptions
+import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
@@ -91,6 +93,7 @@ class UserValidatorImpl implements UserValidator {
 
         return validateUserInfo(user).then {
             if (user.username != oldUser.username) {
+                user.canonicalUsername = normalizeService.normalize(user.username)
                 if (user.canonicalUsername != oldUser.canonicalUsername) {
                     return userRepository.getUserByCanonicalUsername(user.canonicalUsername).then { User existingUser ->
                         if (existingUser != null) {
@@ -121,13 +124,17 @@ class UserValidatorImpl implements UserValidator {
     }
 
     @Override
-    Promise<Void> validateForSearch(UserGetOptions options) {
+    Promise<Void> validateForSearch(UserListOptions options) {
         if (options == null) {
             throw new IllegalArgumentException('options is null')
         }
 
-        if (options.username == null) {
-            throw AppErrors.INSTANCE.parameterRequired('username').exception()
+        if (options.username == null && options.groupId == null) {
+            throw AppErrors.INSTANCE.parameterRequired('username or groupId').exception()
+        }
+
+        if (options.username != null && options.groupId != null) {
+            throw AppErrors.INSTANCE.parameterInvalid('username and groupId can\'t search together.').exception()
         }
 
         return Promise.pure(null)
@@ -166,8 +173,21 @@ class UserValidatorImpl implements UserValidator {
         }
 
         return validateLocale(user).then {
+            if (user.addresses != null) {
+                boolean defaultExists = false
+                user.addresses.each { UserPersonalInfoLink link ->
+                    if (link.isDefault == true) {
+                        if (defaultExists == true) {
+                            throw AppErrors.INSTANCE.fieldInvalidException('isDefault', 'Multiple isDefault found.')
+                                    .exception()
+                        }
+                        defaultExists == true
+                    }
+                }
+            }
             return validateAddresses(user)
         }.then {
+
             return validateEmails(user)
         }.then {
             return validatePhones(user)

@@ -9,6 +9,7 @@ package com.junbo.common.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.cloudant.CloudantEntity;
+import com.junbo.common.id.UserId;
 import com.junbo.common.json.PropertyAssignedAware;
 import com.junbo.common.json.PropertyAssignedAwareSupport;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -40,10 +41,10 @@ public abstract class ResourceMeta implements CloudantEntity, PropertyAssignedAw
     private AdminInfo adminInfo;
 
     @JsonIgnore
-    private String createdBy;
+    private UserId createdBy;
 
     @JsonIgnore
-    private String updatedBy;
+    private UserId updatedBy;
 
     @JsonIgnore
     private String createdByClient;
@@ -110,22 +111,20 @@ public abstract class ResourceMeta implements CloudantEntity, PropertyAssignedAw
         support.setPropertyAssigned("adminInfo");
     }
 
-    public String getCreatedBy() {
+    public UserId getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(String createdBy) {
+    public void setCreatedBy(UserId createdBy) {
         this.createdBy = createdBy;
-        support.setPropertyAssigned("createdBy");
     }
 
-    public String getUpdatedBy() {
+    public UserId getUpdatedBy() {
         return updatedBy;
     }
 
-    public void setUpdatedBy(String updatedBy) {
+    public void setUpdatedBy(UserId updatedBy) {
         this.updatedBy = updatedBy;
-        support.setPropertyAssigned("updatedBy");
     }
 
     public String getCreatedByClient() {

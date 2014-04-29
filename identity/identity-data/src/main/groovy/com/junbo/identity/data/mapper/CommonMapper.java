@@ -13,8 +13,6 @@ import com.junbo.common.id.*;
 import com.junbo.common.util.EnumRegistry;
 import com.junbo.identity.data.identifiable.UserPasswordStrength;
 import com.junbo.identity.spec.error.AppErrors;
-import com.junbo.identity.spec.v1.model.Communication;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.io.StringWriter;

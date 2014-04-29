@@ -7,6 +7,7 @@ package com.junbo.identity.data.repository.impl.sql
 
 import com.junbo.common.id.RoleAssignmentId
 import com.junbo.common.id.RoleId
+import com.junbo.common.id.UserId
 import com.junbo.identity.data.dao.RoleAssignmentDAO
 import com.junbo.identity.data.entity.role.RoleAssignmentEntity
 import com.junbo.identity.data.repository.RoleAssignmentRepository
@@ -67,9 +68,9 @@ class RoleAssignmentRepositorySqlImpl implements RoleAssignmentRepository {
                 assigneeType: entity.assigneeType,
                 assigneeId: entity.assigneeId,
                 resourceAge: entity.resourceAge == null ? null : entity.resourceAge.toString(),
-                createdBy: entity.createdBy,
+                createdBy: new UserId(entity.createdBy),
                 createdTime: entity.createdTime,
-                updatedBy: entity.updatedBy,
+                updatedBy: new UserId(entity.updatedBy),
                 updatedTime: entity.updatedTime
         )
     }
@@ -85,9 +86,9 @@ class RoleAssignmentRepositorySqlImpl implements RoleAssignmentRepository {
                 assigneeType: entity.assigneeType,
                 assigneeId: entity.assigneeId,
                 resourceAge: Integer.parseInt(entity.resourceAge),
-                createdBy: entity.createdBy,
+                createdBy: entity.createdBy == null ? null : entity.createdBy.value,
                 createdTime: entity.createdTime,
-                updatedBy: entity.updatedBy,
+                updatedBy: entity.updatedBy == null ? null : entity.updatedBy.value,
                 updatedTime: entity.updatedTime
         )
     }

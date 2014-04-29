@@ -249,6 +249,7 @@
         <property name="smsValidator" ref="smsValidator" />
         <property name="userEmailValidator" ref="userEmailValidator" />
         <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
+        <property name="userRepository" ref="userRepository" />
         <property name="userPhoneNumberValidator" ref="userPhoneNumberValidator" />
         <property name="userWhatsAppValidator" ref="userWhatsAppValidator" />
     </bean>

@@ -46,7 +46,7 @@ class IdentityFacadeImpl implements IdentityFacade {
         return userResource.get(new UserId(userId), new UserGetOptions()).then { User user ->
             if (user.emails != null && user.emails.size() != 0) {
                 for (UserPersonalInfoLink link : user.emails) {
-                    if (!link.isdefault) {
+                    if (!link.isDefault) {
                         continue
                     }
                     return userPersonalInfoResource.get(link.value,

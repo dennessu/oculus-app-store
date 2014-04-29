@@ -139,9 +139,40 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
 
     @Override
     Promise<Results<UserPersonalInfo>> list(UserPersonalInfoListOptions listOptions) {
-        // Todo:    How many user personal info search will be supported?
-        // Such as email or some others.
-        // Will talk to carlos about this.
-        return null
+        if (listOptions == null) {
+            throw new IllegalArgumentException('listOptions is null')
+        }
+
+        return userPersonalInfoValidator.validateForSearch(listOptions).then {
+            def resultList = new Results<UserPersonalInfo>(items: [])
+
+            if (listOptions.userId != null && listOptions.type != null) {
+                userPersonalInfoRepository.searchByUserIdAndType(listOptions.userId, listOptions.type).
+                    then { List<UserPersonalInfo> userPersonalInfoList ->
+                        userPersonalInfoList.each { UserPersonalInfo temp ->
+                            temp = userPersonalInfoFilter.filterForGet(temp,
+                                    listOptions.properties?.split(',') as List<String>)
+
+                            if (temp != null) {
+                                resultList.items.add(temp)
+                            }
+                        }
+                    }
+            } else {
+                userPersonalInfoRepository.searchByUserId(listOptions.userId).
+                    then { List<UserPersonalInfo> userPersonalInfoList ->
+                        userPersonalInfoList.each { UserPersonalInfo temp ->
+                            temp = userPersonalInfoFilter.filterForGet(temp,
+                                    listOptions.properties?.split(',') as List<String>)
+
+                            if (temp != null) {
+                                resultList.items.add(temp)
+                            }
+                        }
+                    }
+            }
+
+            return Promise.pure(resultList)
+        }
     }
 }
