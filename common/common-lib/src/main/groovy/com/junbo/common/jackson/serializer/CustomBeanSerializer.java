@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.ser.impl.ObjectIdWriter;
 import com.fasterxml.jackson.databind.ser.impl.UnwrappingBeanSerializer;
 import com.fasterxml.jackson.databind.ser.std.BeanSerializerBase;
 import com.fasterxml.jackson.databind.util.NameTransformer;
+import com.junbo.common.filter.OverrideApiHostFilter;
 import com.junbo.common.id.Id;
 import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.json.ObjectMapperProvider;
@@ -27,6 +28,8 @@ import com.junbo.common.util.IdFormatter;
 import com.junbo.common.util.Utils;
 import com.junbo.configuration.ConfigService;
 import com.junbo.configuration.ConfigServiceManager;
+import org.slf4j.MDC;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -192,7 +195,15 @@ public class CustomBeanSerializer extends BeanSerializerBase {
             Link link = null;
             if (!hasEmptyValue) {
                 link = new Link();
-                link.setHref(Utils.combineUrl(resourceUrlPrefix, buffer.toString()));
+
+                String overrideResourceUrlPrefix = resourceUrlPrefix;
+                String apiHost = MDC.get(OverrideApiHostFilter.X_OVERRIDE_API_HOST);
+
+                if (StringUtils.hasText(apiHost)) {
+                    overrideResourceUrlPrefix = apiHost;
+                }
+
+                link.setHref(Utils.combineUrl(overrideResourceUrlPrefix, buffer.toString()));
             }
             return link;
         }

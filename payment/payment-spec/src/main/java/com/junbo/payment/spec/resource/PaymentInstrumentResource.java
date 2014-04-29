@@ -18,7 +18,6 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 /**
  * payment instrument resource interface.
@@ -43,7 +42,7 @@ public interface PaymentInstrumentResource {
     @ApiOperation("Delete a payment instrument")
     @DELETE
     @Path("payment-instruments/{paymentInstrumentId}")
-    Promise<Response> delete(@PathParam("paymentInstrumentId") PaymentInstrumentId paymentInstrumentId);
+    Promise<Void> delete(@PathParam("paymentInstrumentId") PaymentInstrumentId paymentInstrumentId);
 
     @ApiOperation("Put a payment instrument")
     @PUT

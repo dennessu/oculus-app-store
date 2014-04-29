@@ -110,7 +110,7 @@
                   phone_num                         bigint                  null,
                   email                             bigint                  null,
                   relation_to_holder                varchar(32)             null,
-                  active                            boolean             not null,
+                  active                            boolean                 null,
                   deleted                           boolean                 null,
 				  last_validated_time               date                    null,
 				  external_token                    varchar(64)             null,

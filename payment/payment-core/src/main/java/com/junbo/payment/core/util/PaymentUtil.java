@@ -29,6 +29,14 @@ public final class PaymentUtil {
         }
     }
 
+    public static PIType getPIType(String piType){
+        try{
+            return PIType.valueOf(piType);
+        }catch (Exception ex){
+            throw AppClientExceptions.INSTANCE.invalidPIType(piType.toString()).exception();
+        }
+    }
+
     public static CreditCardType getCreditCardType(String ccType){
         try{
             return CreditCardType.valueOf(ccType.toUpperCase());

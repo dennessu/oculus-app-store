@@ -5,10 +5,13 @@
  */
 package com.junbo.common.jackson.serializer;
 
+import com.junbo.common.filter.OverrideApiHostFilter;
 import com.junbo.common.jackson.aware.CompoundAware;
 import com.junbo.common.jackson.model.ResourceRef;
 import com.junbo.common.util.Utils;
+import org.slf4j.MDC;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
 
@@ -43,6 +46,13 @@ public class CompoundIdSerializer extends ResourceIdSerializer {
             throw new RuntimeException("Error occurred during serializing CompoundId.");
         }
 
-        return Utils.combineUrl(resourceUrlPrefix, path);
+        String urlPrefix = resourceUrlPrefix;
+        String apiHost = MDC.get(OverrideApiHostFilter.X_OVERRIDE_API_HOST);
+
+        if (StringUtils.hasText(apiHost)) {
+            urlPrefix = apiHost;
+        }
+
+        return Utils.combineUrl(urlPrefix, path);
     }
 }

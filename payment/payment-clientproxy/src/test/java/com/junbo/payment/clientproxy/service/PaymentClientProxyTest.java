@@ -1,7 +1,11 @@
 package com.junbo.payment.clientproxy.service;
 
+import com.junbo.common.id.PIType;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.model.Results;
+import com.junbo.ewallet.spec.model.CreditRequest;
+import com.junbo.ewallet.spec.resource.WalletResource;
 import com.junbo.payment.clientproxy.BaseTest;
 import com.junbo.payment.spec.enums.PaymentEventType;
 import com.junbo.payment.spec.enums.PaymentStatus;
@@ -22,6 +26,39 @@ public class PaymentClientProxyTest extends BaseTest {
     private PaymentInstrumentResourceClientProxy piClient;
     @Autowired
     private PaymentTransactionResourceClientProxy paymentClient;
+    @Autowired
+    private WalletResource walletClient;
+
+    @Test(enabled = false)
+    public void addPIAndUpdatePI() throws ExecutionException, InterruptedException {
+        PaymentInstrument pi = getPaymentInstrument();
+        final UserId userId = new UserId(pi.getUserId());
+        final PaymentInstrument result = piClient.postPaymentInstrument(pi).wrapped().get();
+        Assert.assertNotNull(result.getId());
+        final PaymentInstrument getResult = piClient.getById(new PaymentInstrumentId(result.getId())).wrapped().get();
+        Assert.assertEquals(result.getUserId(), getResult.getUserId());
+        Assert.assertEquals(result.getId(), getResult.getId());
+        Long newPIIId = 123456L;
+        getResult.setBillingAddressId(newPIIId);
+        getResult.setPhoneNumber(newPIIId);
+        PaymentInstrumentId piid = new PaymentInstrumentId(getResult.getId());
+        final PaymentInstrument updateResult =  piClient.update(piid,getResult).wrapped().get();
+        Assert.assertEquals(updateResult.getBillingAddressId(), newPIIId);
+        Assert.assertEquals(updateResult.getPhoneNumber(), newPIIId);
+        final PaymentInstrument getUpdatedResult = piClient.getById(new PaymentInstrumentId(result.getId())).wrapped().get();
+        Assert.assertEquals(updateResult.getBillingAddressId(), newPIIId);
+        Assert.assertEquals(updateResult.getPhoneNumber(), newPIIId);
+        final PaymentInstrument result2 = piClient.postPaymentInstrument(pi).wrapped().get();
+        Assert.assertNotNull(result2.getId());
+        PaymentInstrumentSearchParam searchParam = new PaymentInstrumentSearchParam();
+        searchParam.setUserId(userId);
+        Results<PaymentInstrument> results = piClient.searchPaymentInstrument(searchParam,new PageMetaData()).wrapped().get();
+        Assert.assertTrue(results.getItems().size() > 1);
+        piClient.delete(new PaymentInstrumentId(result.getId())).wrapped().get();
+        searchParam.setType(PIType.CREDITCARD.toString());
+        Results<PaymentInstrument> results2 = piClient.searchPaymentInstrument(searchParam,new PageMetaData()).wrapped().get();
+        Assert.assertEquals(results.getItems().size(), results2.getItems().size() + 1);
+    }
 
     @Test(enabled = false)
     public void addPIAndAuthSettle() throws ExecutionException, InterruptedException {
@@ -64,6 +101,44 @@ public class PaymentClientProxyTest extends BaseTest {
 
     }
 
+    @Test(enabled = false)
+    public void addSVPIAndCharge() throws ExecutionException, InterruptedException {
+        PaymentInstrument pi = getPaymentInstrument();
+        final UserId userId = new UserId(pi.getUserId());
+        pi.setType(PIType.STOREDVALUE.getId());
+        pi.getTypeSpecificDetails().setStoredValueCurrency("usd");
+        final PaymentInstrument result = piClient.postPaymentInstrument(pi).wrapped().get();
+        Assert.assertNotNull(result.getId());
+        //credit balance
+        CreditRequest cr = new CreditRequest();
+        cr.setUserId(userId.getValue());
+        BigDecimal amount = new BigDecimal(1000.00);
+        cr.setAmount(amount);
+        cr.setCurrency("usd");
+        walletClient.credit(cr).wrapped().get();
+        PaymentInstrument getResult =  piClient.getById(new PaymentInstrumentId(result.getId())).wrapped().get();
+        Assert.assertTrue(getResult.getTypeSpecificDetails().getStoredValueBalance().equals(amount));
+        PaymentTransaction trx = new PaymentTransaction(){
+            {
+                setTrackingUuid(generateUUID());
+                setUserId(userId.getValue());
+                setPaymentInstrumentId(result.getId());
+                setBillingRefId(BILLING_REF_ID);
+                setChargeInfo(new ChargeInfo(){
+                    {
+                        setCurrency("USD");
+                        setAmount(new BigDecimal(15.00));
+                    }
+                });
+            }
+        };
+        PaymentTransaction paymentResult = paymentClient.postPaymentCharge(trx).wrapped().get();
+        Assert.assertEquals(paymentResult.getStatus().toUpperCase(), PaymentStatus.SETTLED.toString());
+        //get Balance again
+        PaymentInstrument getResult2 =  piClient.getById(new PaymentInstrumentId(result.getId())).wrapped().get();
+        Assert.assertTrue(getResult2.getTypeSpecificDetails().getStoredValueBalance().equals(new BigDecimal(985.00)));
+    }
+
     private PaymentInstrument getPaymentInstrument() {
         return new PaymentInstrument(){
                 {
@@ -72,7 +147,7 @@ public class PaymentClientProxyTest extends BaseTest {
                     setIsValidated(false);
                     setType(0L);
                     setTrackingUuid(generateUUID());
-                    setAdmins(Arrays.asList(getLongId()));
+                    setUserId(getLongId());
                     setLabel("my first card");
                     setBillingAddressId(123L);
                     setTypeSpecificDetails(new TypeSpecificDetails() {
