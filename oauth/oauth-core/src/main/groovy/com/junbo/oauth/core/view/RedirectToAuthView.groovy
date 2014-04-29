@@ -8,7 +8,7 @@ package com.junbo.oauth.core.view
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.model.ViewModel
+import com.junbo.oauth.spec.model.ViewModel
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.glassfish.jersey.server.ContainerRequest
