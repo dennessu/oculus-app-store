@@ -76,21 +76,25 @@ class CreateUserPii implements Action {
         UserName name = new UserName(firstName: firstName, lastName: lastName, nickName: nickname)
 
         UserPersonalInfo namePii = new UserPersonalInfo(
+                userId: user.id as UserId,
                 type: 'NAME',
                 value: ObjectMapperProvider.instance().valueToTree(name)
         )
 
         UserPersonalInfo emailPii = new UserPersonalInfo(
+                userId: user.id as UserId,
                 type: 'EMAIL',
                 value: ObjectMapperProvider.instance().valueToTree(new Email(value: email))
         )
 
         UserPersonalInfo genderPii = new UserPersonalInfo(
+                userId: user.id as UserId,
                 type: 'GENDER',
                 value: ObjectMapperProvider.instance().valueToTree(new UserGender(value: gender.name()))
         )
 
         UserPersonalInfo dobPii = new UserPersonalInfo(
+                userId: user.id as UserId,
                 type: 'DOB',
                 value: ObjectMapperProvider.instance().valueToTree(new UserDOB(birthday: dob))
         )
