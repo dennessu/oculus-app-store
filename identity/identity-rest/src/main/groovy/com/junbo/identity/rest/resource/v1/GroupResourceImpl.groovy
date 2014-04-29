@@ -12,9 +12,12 @@ import com.junbo.identity.core.service.Created201Marker
 import com.junbo.identity.core.service.filter.GroupFilter
 import com.junbo.identity.core.service.validator.GroupValidator
 import com.junbo.identity.data.repository.GroupRepository
+import com.junbo.identity.data.repository.UserGroupRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Group
+import com.junbo.identity.spec.v1.model.UserGroup
 import com.junbo.identity.spec.v1.option.list.GroupListOptions
+import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
 import com.junbo.identity.spec.v1.option.model.GroupGetOptions
 import com.junbo.identity.spec.v1.resource.GroupResource
 import com.junbo.langur.core.promise.Promise
@@ -31,6 +34,9 @@ class GroupResourceImpl implements GroupResource {
 
     @Autowired
     private GroupRepository groupRepository
+
+    @Autowired
+    private UserGroupRepository userGroupRepository
 
     @Autowired
     private Created201Marker created201Marker
@@ -115,22 +121,46 @@ class GroupResourceImpl implements GroupResource {
     Promise<Results<Group>> list(GroupListOptions listOptions) {
         groupValidator.validateForSearch(listOptions).then {
             def resultList = new Results<Group>(items: [])
-            groupRepository.searchByName(listOptions.name).then { Group newGroup ->
-                if (newGroup != null) {
-                    newGroup = groupFilter.filterForGet(newGroup, listOptions.properties?.split(',') as List<String>)
-                }
+            if (listOptions.name != null) {
+                return groupRepository.searchByName(listOptions.name).then { Group newGroup ->
+                    if (newGroup != null) {
+                        newGroup = groupFilter.filterForGet(newGroup, listOptions.properties?.split(',') as List<String>)
+                    }
 
-                if (newGroup != null) {
-                    resultList.items.add(newGroup)
+                    if (newGroup != null) {
+                        resultList.items.add(newGroup)
+                    }
+
+                    return Promise.pure(resultList)
+                }
+            } else {
+                return userGroupRepository.search(new UserGroupListOptions(
+                        userId: listOptions.userId
+                )).then { List<UserGroup> userGroupList ->
+                    return fillUserGroups(userGroupList.iterator(), resultList, listOptions).then {
+                        return Promise.pure(resultList)
+                    }
                 }
             }
-
-            return Promise.pure(resultList)
         }
     }
 
-    @Override
+    private Promise<Void> fillUserGroups(Iterator<UserGroup> it, Results<Group> resultList,
+                                         GroupListOptions listOptions) {
+        if (it.hasNext()) {
+            UserGroup userGroup = it.next()
+            return groupValidator.validateForGet(userGroup.groupId).then { Group existing ->
+                existing = groupFilter.filterForGet(existing, listOptions.properties?.split(',') as List<String>)
+                resultList.items.add(existing)
 
+                return fillUserGroups(it, resultList, listOptions)
+            }
+        }
+
+        return Promise.pure(null)
+    }
+
+    @Override
     Promise<Void> delete(GroupId groupId) {
         return groupValidator.validateForGet(groupId).then {
             groupRepository.delete(groupId)

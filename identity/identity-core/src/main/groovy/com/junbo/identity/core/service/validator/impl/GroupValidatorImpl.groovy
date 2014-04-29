@@ -64,8 +64,12 @@ class GroupValidatorImpl implements GroupValidator {
             throw new IllegalArgumentException('options is null')
         }
 
-        if (options.name == null) {
+        if (options.name == null && options.userId == null) {
             throw AppErrors.INSTANCE.parameterRequired('name').exception()
+        }
+
+        if (options.name != null && options.userId != null) {
+            throw AppErrors.INSTANCE.parameterInvalid('name and userId can\'t search together.').exception()
         }
         return Promise.pure(null)
     }
