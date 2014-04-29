@@ -6,6 +6,7 @@
 
 package com.junbo.payment.db.dao.paymentinstrument;
 
+import com.junbo.common.id.PIType;
 import com.junbo.payment.db.dao.CommonDataDAOImpl;
 import com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentEntity;
 import org.hibernate.Criteria;
@@ -23,6 +24,16 @@ public class PaymentInstrumentDao extends CommonDataDAOImpl<PaymentInstrumentEnt
     public List<PaymentInstrumentEntity> getByUserId(final Long userId) {
         Criteria criteria = currentSession(userId).createCriteria(PaymentInstrumentEntity.class);
         criteria.add(Restrictions.eq("userId", userId));
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        return criteria.list();
+    }
+
+    public List<PaymentInstrumentEntity> getByUserAndType(final Long userId, final PIType piType) {
+        Criteria criteria = currentSession(userId).createCriteria(PaymentInstrumentEntity.class);
+        criteria.add(Restrictions.eq("userId", userId));
+        if(piType != null){
+            criteria.add(Restrictions.eq("type", piType));
+        }
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         return criteria.list();
     }
