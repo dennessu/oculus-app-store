@@ -106,7 +106,7 @@ class OrderResourceImpl implements OrderResource {
 
     boolean allowModification(Order oldOrder, Order order) {
         // TODO: check the modification is allowed
-        return oldOrder.shippingAddress.value != order.shippingAddress.value
+        return oldOrder.shippingAddress != order.shippingAddress
     }
 
     @Override
