@@ -5,8 +5,6 @@
  */
 package com.junbo.common.cloudant;
 
-import com.junbo.common.id.UserId;
-
 import java.util.Date;
 
 /**
@@ -28,11 +26,11 @@ public interface CloudantEntity {
     Date getUpdatedTime();
     void setUpdatedTime(Date date);
 
-    UserId getCreatedBy();
-    void setCreatedBy(UserId createdBy);
+    String getCreatedBy();
+    void setCreatedBy(String createdBy);
 
-    UserId getUpdatedBy();
-    void setUpdatedBy(UserId updatedBy);
+    String getUpdatedBy();
+    void setUpdatedBy(String updatedBy);
 
     // TODO: track client
     // String getCreatedByClient()
