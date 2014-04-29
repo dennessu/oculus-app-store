@@ -5,9 +5,7 @@
  */
 package com.junbo.test.common.apihelper.catalog;
 
-import com.junbo.catalog.spec.model.attribute.Attribute;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
-
 import java.util.HashMap;
 import java.util.List;
 
