@@ -24,7 +24,6 @@ import com.junbo.common.id.OfferRevisionId;
 import com.junbo.test.common.libs.RestUrl;
 import com.junbo.common.model.Results;
 import com.junbo.test.common.libs.*;
-import com.junbo.common.id.OfferId;
 import com.junbo.common.id.ItemId;
 
 import java.util.ArrayList;

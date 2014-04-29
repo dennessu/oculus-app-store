@@ -5,8 +5,6 @@
  */
 package com.junbo.test.common.apihelper.catalog.impl;
 
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
-import com.junbo.common.id.EntitlementDefinitionId;
 import com.junbo.test.common.apihelper.catalog.ItemAttributeService;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.test.common.apihelper.HttpClientBase;

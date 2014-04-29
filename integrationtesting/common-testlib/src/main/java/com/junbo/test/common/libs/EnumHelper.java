@@ -109,7 +109,7 @@ public class EnumHelper {
     public enum CatalogItemType {
         PHYSICAL("PHYSICAL"),
         DIGITAL("DIGITAL"),
-        WALLET("WALLET"),
+        STORED_VALUE("STORED_VALUE"),
         SUBSCRIPTION("SUBSCRIPTION"),
         VIRTUAL("VIRTUAL");
 
@@ -177,6 +177,10 @@ public class EnumHelper {
 
         public static String getRandom(){
             return values()[(int) (Math.random() * values().length)].getType();
+        }
+
+        public static EntitlementType getRandomType(){
+            return values()[(int) (Math.random() * values().length)];
         }
     }
 
