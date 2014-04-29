@@ -266,7 +266,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
 
     private void validateRevisionCommon(ItemRevision revision, List<AppError> errors) {
         if (revision.getOwnerId() == null) {
-            errors.add(AppErrors.INSTANCE.missingField("publisher"));
+            errors.add(AppErrors.INSTANCE.missingField("developer"));
         }
         if (revision.getItemId() == null) {
             errors.add(AppErrors.INSTANCE.missingField("itemId"));
