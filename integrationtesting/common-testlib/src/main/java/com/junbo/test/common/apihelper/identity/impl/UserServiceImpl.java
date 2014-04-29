@@ -57,6 +57,20 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
             throws Exception {
 
         String strUser = readFileContent(String.format("testUsers/%s.json", fileName));
+
+        //Try to find if en_US locale exists;if not, post it
+        Results<Locale> locales = this.GetLocales();
+        Boolean isExist = false;
+        for (Locale locale : locales.getItems()) {
+            if (locale.getLocaleCode().equalsIgnoreCase("en_US")){
+                isExist = true;
+            }
+        }
+
+        if (!isExist) {
+            this.PostLocale();
+        }
+
         strUser = strUser.replace("RANDOMUSERNAME", RandomFactory.getRandomStringOfAlphabet(10));
         return strUser;
     }
