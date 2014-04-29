@@ -80,6 +80,8 @@ class OrderRepositoryImpl implements OrderRepository {
 
         // Save Order
         orderEntity.setOrderId(idGeneratorFacade.nextId(OrderId, order.user.value))
+        orderEntity.setResourceAge(null)
+
         def id = orderDao.create(orderEntity)
         def orderId = new OrderId(id)
         order.setId(orderId)
@@ -200,6 +202,10 @@ class OrderRepositoryImpl implements OrderRepository {
         def orderEntity = modelMapper.toOrderEntity(order, new MappingContext())
         orderEntity.createdTime = oldEntity.createdTime
         orderEntity.createdBy = oldEntity.createdBy
+        if (orderEntity.resourceAge == null) {
+            orderEntity.resourceAge = oldEntity.resourceAge
+        }
+
         orderDao.update(orderEntity)
         Utils.fillDateInfo(order, orderEntity)
 
@@ -368,8 +374,11 @@ class OrderRepositoryImpl implements OrderRepository {
         } else {
             entity = modelMapper.toOrderItemEntity(orderItem, new MappingContext())
             def oldEntity = orderItemDao.read(entity.orderItemId)
+
             entity.createdTime = oldEntity.createdTime
             entity.createdBy = oldEntity.createdBy
+            entity.resourceAge = oldEntity.resourceAge
+
             orderItemDao.update(entity)
         }
         Utils.fillDateInfo(orderItem, entity)
@@ -385,8 +394,11 @@ class OrderRepositoryImpl implements OrderRepository {
         } else {
             entity = modelMapper.toDiscountEntity(discount, new MappingContext())
             def oldEntity = discountDao.read(entity.discountInfoId)
+
             entity.createdTime = oldEntity.createdTime
             entity.createdBy = oldEntity.createdBy
+            entity.resourceAge = oldEntity.resourceAge
+
             discountDao.update(entity)
         }
         Utils.fillDateInfo(discount, entity)
