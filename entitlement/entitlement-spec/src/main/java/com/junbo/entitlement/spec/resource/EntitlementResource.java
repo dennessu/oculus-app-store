@@ -9,8 +9,11 @@ package com.junbo.entitlement.spec.resource;
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.model.Results;
 import com.junbo.entitlement.spec.model.Entitlement;
+import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.EntitlementTransfer;
+import com.junbo.entitlement.spec.model.PageMetadata;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
@@ -52,6 +55,10 @@ public interface EntitlementResource {
     @Path("/{entitlementId}")
     Promise<Response> deleteEntitlement(@PathParam("entitlementId") EntitlementId entitlementId);
 
+    @ApiOperation("Search entitlements")
+    @GET
+    Promise<Results<Entitlement>> searchEntitlements(@BeanParam EntitlementSearchParam searchParam,
+                                                     @BeanParam PageMetadata pageMetadata);
     @POST
     @Path("/transfer")
     @Consumes({MediaType.APPLICATION_JSON})
