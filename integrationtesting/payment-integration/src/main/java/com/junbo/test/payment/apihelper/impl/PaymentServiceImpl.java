@@ -7,6 +7,7 @@ package com.junbo.test.payment.apihelper.impl;
 
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.model.Results;
+import com.junbo.ewallet.spec.model.CreditRequest;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.payment.apihelper.PaymentService;
@@ -93,10 +94,16 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
     }
 
     @Override
+    public void creditWallet(CreditRequest creditRequest) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, paymentInstrumentUrl +
+                "wallets/credit", creditRequest, 200);
+    }
+
+    @Override
     public String postPaymentInstrument(PaymentInstrument paymentInstrument,
-                                              int expectedResponseCode) throws Exception {
+                                        int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.POST, paymentInstrumentUrl
-               + "payment-instruments", paymentInstrument, expectedResponseCode);
+                + "payment-instruments", paymentInstrument, expectedResponseCode);
 
         PaymentInstrument paymentInstrumentResult = new JsonMessageTranscoder().decode(
                 new TypeReference<PaymentInstrument>() {
@@ -144,5 +151,6 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
                 uid + "/payment-instruments/" + paymentId, expectedResponseCode);
         Master.getInstance().removePaymentInstrument(paymentId);
     }
+
 
 }

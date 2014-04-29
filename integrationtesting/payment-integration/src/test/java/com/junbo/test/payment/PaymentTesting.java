@@ -198,6 +198,8 @@ public class PaymentTesting extends BaseTestClass {
         EwalletInfo ewalletInfo = EwalletInfo.getEwalletInfo(Country.DEFAULT, Currency.DEFAULT);
         String ewalletId = testDataProvider.postPaymentInstrument(randomUid, ewalletInfo);
 
+        testDataProvider.creditWallet(randomUid);
+
         logHelper.LogSample("Post ewallet");
 
         validationHelper.validatePaymentInstrument(ewalletId, ewalletInfo);
