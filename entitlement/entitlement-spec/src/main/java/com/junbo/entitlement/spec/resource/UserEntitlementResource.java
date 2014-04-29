@@ -12,21 +12,22 @@ import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 /**
+ * @deprecated
  * Search entitlements resource.
+ * Please use entitlements/?userId{userId}.
  */
-@Api("entitlements")
+//@Api("entitlements")
 @Produces({MediaType.APPLICATION_JSON})
 @RestResource
 @Path("users/{userId}/entitlements")
+@Deprecated
 public interface UserEntitlementResource {
-    @ApiOperation("Search entitlements")
+//    @ApiOperation("Search entitlements")
     @GET
     Promise<Results<Entitlement>> getEntitlements(
             @PathParam("userId") UserId userId,

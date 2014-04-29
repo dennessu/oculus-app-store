@@ -8,6 +8,7 @@
     <wf:flow id="emailVerifyFlow">
         <wf:view-state id="REDIRECT_TO_VERIFY">
             <wf:on-render>
+                <wf:action ref="validateLocale" />
                 <wf:action ref="redirectToVerifyResult"/>
             </wf:on-render>
             <wf:transition on="*" to="EMAIL_VERIFY_VIEW"/>

@@ -125,7 +125,7 @@ public class PaymentServiceTest extends BaseTest {
         request.setTypeSpecificDetails(new TypeSpecificDetails() {
             {
                 setWalletType("STORED_VALUE");
-                setWalletCurrency("USD");
+                setStoredValueCurrency("USD");
             }
         });
         return request;

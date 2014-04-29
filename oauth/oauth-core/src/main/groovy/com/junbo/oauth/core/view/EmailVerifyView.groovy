@@ -23,7 +23,6 @@ class EmailVerifyView extends AbstractView {
                 'verifyResult': contextWrapper.errors.isEmpty() ? 'true' : 'false',
                 'locale': contextWrapper.viewLocale
         ]
-        modelMap.putAll(contextWrapper.extraParameterMap)
 
         def model = new ViewModel(
                 view: 'emailVerify',

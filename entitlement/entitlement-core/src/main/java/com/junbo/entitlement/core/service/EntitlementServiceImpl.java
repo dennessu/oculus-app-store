@@ -83,7 +83,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     @Transactional
     public List<Entitlement> searchEntitlement(EntitlementSearchParam entitlementSearchParam,
                                                PageMetadata pageMetadata) {
-        validateNotNull(entitlementSearchParam.getUserId(), "user");
+        validateNotNull(entitlementSearchParam.getUserId(), "userId");
         checkUser(entitlementSearchParam.getUserId().getValue());
         fillClient(entitlementSearchParam);
         checkSearchDateFormat(entitlementSearchParam);

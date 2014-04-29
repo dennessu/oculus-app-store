@@ -45,13 +45,15 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
 
     @Override
     public void clonePIResult(PaymentInstrument source, PaymentInstrument target) {
-        target.setExternalToken(source.getExternalToken());
+        if(source != null && !CommonUtil.isNullOrEmpty(source.getExternalToken())){
+            target.setExternalToken(source.getExternalToken());
+        }
         if(source != null && source.getTypeSpecificDetails() != null){
             if(target.getTypeSpecificDetails() == null){
                 target.setTypeSpecificDetails(new TypeSpecificDetails());
             }
-            target.getTypeSpecificDetails().setWalletBalance(source.getTypeSpecificDetails().getWalletBalance());
-            target.getTypeSpecificDetails().setWalletCurrency(source.getTypeSpecificDetails().getWalletCurrency());
+            target.getTypeSpecificDetails().setStoredValueBalance(source.getTypeSpecificDetails().getStoredValueBalance());
+            target.getTypeSpecificDetails().setStoredValueCurrency(source.getTypeSpecificDetails().getStoredValueCurrency());
         }
     }
 
@@ -68,7 +70,7 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
         validateWallet(request);
         Wallet wallet = new Wallet();
         wallet.setUserId(request.getUserId());
-        wallet.setCurrency(request.getTypeSpecificDetails().getWalletCurrency());
+        wallet.setCurrency(request.getTypeSpecificDetails().getStoredValueCurrency());
         String walletType = request.getTypeSpecificDetails().getWalletType();
         wallet.setType(CommonUtil.isNullOrEmpty(walletType) ? WalletType.STORED_VALUE.toString() : walletType);
         return walletClient.postWallet(wallet).recover(new Promise.Func<Throwable, Promise<Wallet>>() {
@@ -124,8 +126,8 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
                             PROVIDER_NAME, "No such wallet").exception();
                 }
                 final TypeSpecificDetails detail = new TypeSpecificDetails();
-                detail.setWalletBalance(wallet.getBalance());
-                detail.setWalletCurrency(wallet.getCurrency());
+                detail.setStoredValueBalance(wallet.getBalance());
+                detail.setStoredValueCurrency(wallet.getCurrency());
                 PaymentInstrument pi = new PaymentInstrument();
                 pi.setTypeSpecificDetails(detail);
                 return Promise.pure(pi);
@@ -199,10 +201,10 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
         if(request.getTypeSpecificDetails() == null){
             throw AppClientExceptions.INSTANCE.missingCurrency().exception();
         }
-        if(CommonUtil.isNullOrEmpty(request.getTypeSpecificDetails().getWalletCurrency())){
+        if(CommonUtil.isNullOrEmpty(request.getTypeSpecificDetails().getStoredValueCurrency())){
             throw AppClientExceptions.INSTANCE.missingCurrency().exception();
         }
-        if(CommonUtil.isNullOrEmpty(request.getTypeSpecificDetails().getWalletCurrency())){
+        if(CommonUtil.isNullOrEmpty(request.getTypeSpecificDetails().getStoredValueCurrency())){
             throw AppClientExceptions.INSTANCE.missingWalletType().exception();
         }
     }

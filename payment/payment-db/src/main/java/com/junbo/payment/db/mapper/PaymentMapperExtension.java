@@ -115,7 +115,7 @@ public class PaymentMapperExtension {
             result.setPrepaid(generalDetail.getIsPrepaid());
         }else if(specificDetail instanceof WalletDetail){
             WalletDetail generalDetail = (WalletDetail)specificDetail;
-            result.setWalletCurrency(generalDetail.getCurrency());
+            result.setStoredValueCurrency(generalDetail.getCurrency());
             result.setWalletType(generalDetail.getType());
         }else{
             return null;
@@ -142,7 +142,7 @@ public class PaymentMapperExtension {
             case STOREDVALUE:
                 return (T) new WalletDetail(){
                     {
-                        setCurrency(generalDetail.getWalletCurrency());
+                        setCurrency(generalDetail.getStoredValueCurrency());
                         setType(generalDetail.getWalletType());
                     }
                 };
