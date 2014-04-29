@@ -10,7 +10,7 @@ import com.junbo.common.id.UserId;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
-import com.junbo.entitlement.spec.resource.UserEntitlementResource;
+import com.junbo.entitlement.spec.resource.EntitlementResource;
 import com.junbo.rating.clientproxy.EntitlementGateway;
 import com.junbo.rating.common.util.Constants;
 import com.junbo.rating.spec.error.AppErrors;
@@ -24,8 +24,8 @@ import java.util.*;
  */
 public class EntitlementGatewayImpl implements EntitlementGateway {
     @Autowired
-    @Qualifier("ratingUserEntitlementClient")
-    private UserEntitlementResource userEntitlementResource;
+    @Qualifier("ratingEntitlementClient")
+    private EntitlementResource entitlementResource;
 
     @Override
     public Map<Long, Long> getEntitlements(Long userId, Set<Long> definitionIds) {
@@ -34,6 +34,7 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
             entitlementDefinitionIds.add(new EntitlementDefinitionId(definitionId));
         }
         EntitlementSearchParam param = new EntitlementSearchParam();
+        param.setUserId(new UserId(userId));
         param.setDefinitionIds(entitlementDefinitionIds);
 
         PageMetadata pagingOption = new PageMetadata();
@@ -45,8 +46,7 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
             List<Entitlement> entitlements = new ArrayList<Entitlement>();
             try {
                 entitlements.addAll(
-                        userEntitlementResource.getEntitlements(
-                                new UserId(userId), param, pagingOption).wrapped().get().getItems());
+                        entitlementResource.searchEntitlements(param, pagingOption).wrapped().get().getItems());
             } catch (Exception e) {
                 throw AppErrors.INSTANCE.entitlementGatewayError().exception();
             }
