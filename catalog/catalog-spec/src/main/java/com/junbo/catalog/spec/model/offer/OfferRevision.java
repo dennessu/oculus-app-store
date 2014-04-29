@@ -54,9 +54,9 @@ public class OfferRevision extends BaseRevisionModel {
     private List<String> eligibleCountries;
     @ApiModelProperty(position = 27, required = true, value = "Event actions")
     private Map<String, List<Action>> eventActions;
-    @ApiModelProperty(position = 28, required = true, value = "Start effective time")
+    @ApiModelProperty(position = 28, required = true, value = "Start effective time [NOT AVAILABLE]")
     private Date startTime;
-    @ApiModelProperty(position = 29, required = true, value = "End effective time")
+    @ApiModelProperty(position = 29, required = true, value = "End effective time [NOT AVAILABLE]")
     private Date endTIme;
 
     @ApiModelProperty(position = 31, required = true, value = "Locale properties of the offer revision resource")
