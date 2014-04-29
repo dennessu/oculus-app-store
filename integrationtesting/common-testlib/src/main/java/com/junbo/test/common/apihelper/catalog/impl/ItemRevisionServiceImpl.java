@@ -35,6 +35,7 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
     private final String catalogServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.CATALOG) + "item-revisions";
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
     private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
+    private final String defaultStoredValueItemRevisionFileName = "defaultStoredValueItemRevision";
     private static ItemRevisionService instance;
 
     public static synchronized ItemRevisionService instance() {
@@ -115,11 +116,14 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
 
     public String postDefaultItemRevision(String itemId, EnumHelper.CatalogItemType itemType) throws Exception {
         ItemRevision itemRevisionForPost;
-        if (itemType.equals(EnumHelper.CatalogItemType.PHYSICAL)) {
-            itemRevisionForPost = prepareItemRevisionEntity(defaultPhysicalItemRevisionFileName);
+        if (itemType.equals(EnumHelper.CatalogItemType.DIGITAL)) {
+            itemRevisionForPost = prepareItemRevisionEntity(defaultDigitalItemRevisionFileName);
+        }
+        else if (itemType.equals(EnumHelper.CatalogItemType.STORED_VALUE)) {
+            itemRevisionForPost = prepareItemRevisionEntity(defaultStoredValueItemRevisionFileName);
         }
         else {
-            itemRevisionForPost = prepareItemRevisionEntity(defaultDigitalItemRevisionFileName);
+            itemRevisionForPost = prepareItemRevisionEntity(defaultPhysicalItemRevisionFileName);
         }
 
         //set item info

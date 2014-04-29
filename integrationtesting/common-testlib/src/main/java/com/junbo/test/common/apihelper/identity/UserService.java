@@ -19,6 +19,8 @@ public interface UserService {
     String PostUser() throws Exception;
     String PostUser(User user) throws Exception;
     String PostUser(User user, int expectedResponseCode) throws Exception;
+    String PostUser(String payload) throws Exception;
+    String PostUser(String payload, int expectedResponseCode) throws Exception;
 
     //Get the user by userId
     String GetUserByUserId(String userId) throws Exception;
@@ -29,8 +31,8 @@ public interface UserService {
     List<String> GetUserByUserName(String userName, int expectedResponseCode) throws Exception;
 
     //update a user
-    String PutUser(String userName, String status) throws Exception;
-    String PutUser(String userName, String status, int expectedResponseCode) throws Exception;
+    String PutUser(String userId, User user) throws Exception;
+    String PutUser(String userId, User user, int expectedResponseCode) throws Exception;
 
     //Authenticate user
     String AuthenticateUser(String userName, String password) throws Exception;
