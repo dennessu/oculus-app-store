@@ -1,6 +1,9 @@
 package com.junbo.identity.core.service.validator.impl
 
-import com.junbo.identity.core.service.validator.UserPhoneNumberValidator
+import com.fasterxml.jackson.databind.JsonNode
+import com.junbo.common.json.ObjectMapperProvider
+import com.junbo.identity.core.service.validator.PiiValidator
+import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.PhoneNumber
 import groovy.transform.CompileStatic
@@ -12,13 +15,22 @@ import java.util.regex.Pattern
  * Created by liangfu on 3/31/14.
  */
 @CompileStatic
-class UserPhoneNumberValidatorImpl implements UserPhoneNumberValidator {
+class UserPhoneNumberValidatorImpl implements PiiValidator {
     private Integer minValueLength
     private Integer maxValueLength
     private List<Pattern> allowedValuePatterns
 
     @Override
-    void validate(PhoneNumber phoneNumber) {
+    boolean handles(String type) {
+        if (type == UserPersonalInfoType.PHONE.toString()) {
+            return true
+        }
+        return false
+    }
+
+    @Override
+    void validate(JsonNode value) {
+        PhoneNumber phoneNumber = ObjectMapperProvider.instance().treeToValue(value, PhoneNumber)
         if (phoneNumber.value == null) {
             throw AppErrors.INSTANCE.fieldRequired('value').exception()
         }
