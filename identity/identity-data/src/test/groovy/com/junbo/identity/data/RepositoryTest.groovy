@@ -180,7 +180,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         user.setPreferredLocale(new LocaleId(UUID.randomUUID().toString()))
         user.setPreferredTimezone(UUID.randomUUID().toString())
         user.setCreatedTime(new Date())
-        user.setCreatedBy('lixia-todo')
+        user.setCreatedBy(new UserId(123L))
         UserPersonalInfoLink userPersonalInfoLink = new UserPersonalInfoLink()
         userPersonalInfoLink.setUserId(new UserId(idGenerator.nextId()))
         userPersonalInfoLink.setValue(new UserPersonalInfoId(idGenerator.nextId()))
@@ -249,9 +249,9 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userPassword.setChangeAtNextLogin(false)
         userPassword.setExpiresBy(new Date())
         userPassword.setCreatedTime(new Date())
-        userPassword.setCreatedBy('lixia-todo')
+        userPassword.setCreatedBy(new UserId(123L))
         userPassword.setUpdatedTime(new Date())
-        userPassword.setUpdatedBy('lixia-todo')
+        userPassword.setUpdatedBy(new UserId(123L))
         userPassword = userPasswordRepository.create(userPassword).wrapped().get()
 
         UserPassword newUserPassword = userPasswordRepository.get(userPassword.getId()).wrapped().get()
@@ -277,9 +277,9 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userPIN.setChangeAtNextLogin(false)
         userPIN.setExpiresBy(new Date())
         userPIN.setCreatedTime(new Date())
-        userPIN.setCreatedBy('lixia-todo')
+        userPIN.setCreatedBy(new UserId(123L))
         userPIN.setUpdatedTime(new Date())
-        userPIN.setUpdatedBy('lixia-todo')
+        userPIN.setUpdatedBy(new UserId(123L))
         userPIN = userPinRepository.create(userPIN).wrapped().get()
 
         UserPin newUserPin = userPinRepository.get(userPIN.getId()).wrapped().get()
@@ -304,7 +304,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         authenticator.setType('Google_account')
         authenticator.setExternalId(UUID.randomUUID().toString())
         authenticator.setCreatedTime(new Date())
-        authenticator.setCreatedBy('lixia-todo')
+        authenticator.setCreatedBy(new UserId(123L))
         authenticator = userAuthenticatorRepository.create(authenticator).wrapped().get()
 
         UserAuthenticator newUserAuthenticator = userAuthenticatorRepository.get(authenticator.getId()).wrapped().get()
@@ -327,7 +327,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         UserGroup userGroup = new UserGroup()
         userGroup.setUserId(new UserId(userId))
         userGroup.setGroupId(new GroupId(1493188608L))
-        userGroup.setCreatedBy('lixia-todo')
+        userGroup.setCreatedBy(new UserId(123L))
         userGroup.setCreatedTime(new Date())
         userGroup = userGroupRepository.create(userGroup).wrapped().get()
 
@@ -352,7 +352,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userLoginAttempt.setIpAddress(UUID.randomUUID().toString())
         userLoginAttempt.setUserAgent(UUID.randomUUID().toString())
         userLoginAttempt.setSucceeded(true)
-        userLoginAttempt.setCreatedBy('lixia-todo')
+        userLoginAttempt.setCreatedBy(new UserId(123L))
         userLoginAttempt.setCreatedTime(new Date())
 
         userLoginAttempt = userCredentialVerifyAttemptRepository.create(userLoginAttempt).wrapped().get()
@@ -378,7 +378,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         UserCommunication userOptin = new UserCommunication()
         userOptin.setUserId(new UserId(userId))
         userOptin.setCommunicationId(new CommunicationId(idGenerator.nextId()))
-        userOptin.setCreatedBy('lixia-todo')
+        userOptin.setCreatedBy(new UserId(123L))
         userOptin.setCreatedTime(new Date())
         userOptin = userCommunicationRepository.create(userOptin).wrapped().get()
 
@@ -402,7 +402,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userSecurityQuestion.setUserId(new UserId(userId))
         userSecurityQuestion.setSecurityQuestion('whosyourdaddy')
         userSecurityQuestion.setAnswerHash(UUID.randomUUID().toString())
-        userSecurityQuestion.setCreatedBy('lixia-todo')
+        userSecurityQuestion.setCreatedBy(new UserId(123L))
         userSecurityQuestion.setCreatedTime(new Date())
 
         userSecurityQuestion = userSecurityQuestionRepository.create(userSecurityQuestion).wrapped().get()
@@ -426,7 +426,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         UserTosAgreement userTos = new UserTosAgreement()
         userTos.setUserId(new UserId(userId))
         userTos.setTosId(new TosId(123L))
-        userTos.setCreatedBy('lixia-todo')
+        userTos.setCreatedBy(new UserId(123L))
         userTos.setCreatedTime(new Date())
         userTos = userTosRepository.create(userTos).wrapped().get()
 
