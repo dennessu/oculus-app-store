@@ -1,6 +1,6 @@
 package com.junbo.order.mock
 
-import com.junbo.billing.spec.resource.CurrencyResource
+import com.junbo.billing.spec.resource.BillingCurrencyResource
 import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -15,7 +15,7 @@ import javax.ws.rs.PathParam
 @CompileStatic
 @TypeChecked
 @Component('mockCurrencyResource')
-class MockCurrencyResource implements CurrencyResource {
+class MockCurrencyResource implements BillingCurrencyResource {
     @Override
     Promise<Results<com.junbo.billing.spec.model.Currency>> getCurrencies() {
         return Promise.pure(null)

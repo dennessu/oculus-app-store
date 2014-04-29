@@ -8,7 +8,7 @@ package com.junbo.identity.spec.error;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.enumid.LocaleId;
-import com.junbo.common.enumid.PITypeId;
+import com.junbo.common.id.PITypeId;
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.ErrorDef;
 import com.junbo.common.error.ErrorProxy;
@@ -174,4 +174,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 409, code = "2000045", description = "DeviceType {0} not found.", field = "{0}")
     AppError deviceTypeNotFound(DeviceTypeId id);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000046", description = "Field {0} invalid due to {1}.", field = "{0}")
+    AppError fieldInvalidException(String field, String detail);
 }

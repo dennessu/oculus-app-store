@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.core.service;
 
+import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.EntitlementDefinitionService;
 import com.junbo.catalog.db.repo.EntitlementDefinitionRepository;
 import com.junbo.catalog.spec.error.AppErrors;
@@ -32,7 +33,8 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
     public EntitlementDefinition getEntitlementDefinition(Long entitlementDefinitionId) {
         EntitlementDefinition entitlementDefinition = entitlementDefinitionRepository.get(entitlementDefinitionId);
         if (entitlementDefinition == null) {
-            throw AppErrors.INSTANCE.notFound("entitlementDefinition", entitlementDefinitionId).exception();
+            throw AppErrors.INSTANCE
+                    .notFound("entitlementDefinition", Utils.encodeId(entitlementDefinitionId)).exception();
         }
         checkDeveloper(entitlementDefinition.getDeveloperId());
         return entitlementDefinition;
@@ -90,7 +92,8 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
         EntitlementDefinition existingEntitlementDefinition =
                 entitlementDefinitionRepository.get(entitlementDefinitionId);
         if (existingEntitlementDefinition == null) {
-            throw AppErrors.INSTANCE.notFound("entitlementDefinition", entitlementDefinitionId).exception();
+            throw AppErrors.INSTANCE
+                    .notFound("entitlementDefinition", Utils.encodeId(entitlementDefinitionId)).exception();
         }
 
         checkDeveloper(existingEntitlementDefinition.getDeveloperId());
@@ -116,7 +119,8 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
         EntitlementDefinition existingEntitlementDefinition =
                 entitlementDefinitionRepository.get(entitlementDefinitionId);
         if (existingEntitlementDefinition == null) {
-            throw AppErrors.INSTANCE.notFound("entitlementDefinition", entitlementDefinitionId).exception();
+            throw AppErrors.INSTANCE
+                    .notFound("entitlementDefinition", Utils.encodeId(entitlementDefinitionId)).exception();
         }
         checkDeveloper(existingEntitlementDefinition.getDeveloperId());
         entitlementDefinitionRepository.delete(existingEntitlementDefinition);

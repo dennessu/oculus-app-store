@@ -6,15 +6,16 @@
 package com.junbo.restriction.core.verifier.impl
 
 import com.junbo.catalog.spec.model.offer.Offer
-import com.junbo.identity.spec.v1.model.UserPii
 import com.junbo.langur.core.promise.Promise
 import com.junbo.restriction.core.verifier.Verifier
 import com.junbo.restriction.spec.model.AgeCheck
 import com.junbo.restriction.spec.model.Status
+import groovy.transform.CompileStatic
 
 /**
  * Created by Wei on 4/19/14.
  */
+@CompileStatic
 class CommonVerifierImpl extends BaseVerifier implements Verifier {
     private final static String TYPE = 'COMMON'
     private String country
@@ -43,9 +44,9 @@ class CommonVerifierImpl extends BaseVerifier implements Verifier {
             }
         }
         else if (ageCheck.userId != null) {
-            return identityFacade.getUserPii(ageCheck.userId.value).then { UserPii userPii ->
-                if (userPii?.birthday != null) {
-                    def userAge = super.calculateAge(userPii.birthday)
+            return identityFacade.getUserDob(ageCheck.userId.value).then { Date dob ->
+                if (dob != null) {
+                    def userAge = super.calculateAge(dob)
                     return catalogFacade.getOffers(ageCheck.offerIds).then { List<Offer> offers ->
                         def maxRatingAge = super.getMaxRatingAge(offers)
                         ageCheck.setStatus(maxRatingAge > userAge ? Status.BANNED : Status.PASSED)

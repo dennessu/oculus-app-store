@@ -5,13 +5,16 @@
  */
 package com.junbo.oauth.core.action
 
+import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserId
-import com.junbo.common.id.UserPiiId
-import com.junbo.common.model.Results
-import com.junbo.identity.spec.v1.model.UserEmail
-import com.junbo.identity.spec.v1.model.UserPii
-import com.junbo.identity.spec.v1.option.list.UserPiiListOptions
-import com.junbo.identity.spec.v1.resource.UserPiiResource
+import com.junbo.common.json.ObjectMapperProvider
+import com.junbo.identity.spec.v1.model.Email
+import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.model.UserPersonalInfo
+import com.junbo.identity.spec.v1.option.model.UserGetOptions
+import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
+import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
+import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
@@ -31,12 +34,15 @@ import org.springframework.util.StringUtils
  * VerifyEmail.
  */
 @CompileStatic
+@SuppressWarnings('NestedBlockDepth')
 class VerifyEmail implements Action {
     private static final Logger LOGGER = LoggerFactory.getLogger(VerifyEmail)
 
     private EmailVerifyCodeRepository emailVerifyCodeRepository
 
-    private UserPiiResource userPiiResource
+    private UserResource userResource
+
+    private UserPersonalInfoResource userPersonalInfoResource
 
     @Required
     void setEmailVerifyCodeRepository(EmailVerifyCodeRepository emailVerifyCodeRepository) {
@@ -44,8 +50,13 @@ class VerifyEmail implements Action {
     }
 
     @Required
-    void setUserPiiResource(UserPiiResource userPiiResource) {
-        this.userPiiResource = userPiiResource
+    void setUserPersonalInfoResource(UserPersonalInfoResource userPersonalInfoResource) {
+        this.userPersonalInfoResource = userPersonalInfoResource
+    }
+
+    @Required
+    void setUserResource(UserResource userResource) {
+        this.userResource = userResource
     }
 
     @Override
@@ -65,40 +76,64 @@ class VerifyEmail implements Action {
             return Promise.pure(new ActionResult('error'))
         }
 
-        UserPiiListOptions options = new UserPiiListOptions(userId: new UserId(emailVerifyCode.userId))
-        userPiiResource.list(options).recover { Throwable e ->
-            LOGGER.error('Error Calling the Identity service', e)
+        userResource.get(new UserId(emailVerifyCode.userId), new UserGetOptions()).recover { Throwable e ->
+            handleException(e, contextWrapper)
             return Promise.pure(null)
-        }.then { Results<UserPii> results ->
-            if (results == null) {
-                contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingIdentity().error())
+        }.then { User user ->
+            if (user == null) {
                 return Promise.pure(new ActionResult('error'))
             }
 
-            if (results.items == null || results.items.isEmpty()) {
-                contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingIdentity().error())
-                return Promise.pure(new ActionResult('error'))
-            }
+            def iter = user.emails.iterator()
 
-            UserPii userPii = results.items.get(0)
-
-            UserEmail userEmail = userPii.emails.values().find { UserEmail email ->
-                email.value == emailVerifyCode.email
-            }
-
-            userEmail.verified = true
-
-            userPiiResource.put(userPii.id as UserPiiId, userPii).recover { Throwable e ->
-                LOGGER.error('Error Calling the Identity service', e)
-                return Promise.pure(null)
-            }.then { UserPii userPiiUpdated ->
-                if (userPiiUpdated == null) {
-                    contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingIdentity().error())
-                    return Promise.pure(new ActionResult('error'))
+            Closure process = null
+            process = { ActionResult actionResult ->
+                if (actionResult.id == 'error') {
+                    return actionResult
                 }
 
-                return Promise.pure(new ActionResult('success'))
+                if (!iter.hasNext() || actionResult.id == 'success') {
+                    return Promise.pure(new ActionResult('success'))
+                }
+
+                def piiLink = iter.next()
+                return userPersonalInfoResource.get(piiLink.value, new UserPersonalInfoGetOptions()).recover { Throwable e ->
+                    handleException(e, contextWrapper)
+                    return Promise.pure(null)
+                }.then { UserPersonalInfo personalInfo ->
+                    if (personalInfo == null) {
+                        return Promise.pure(new ActionResult('error'))
+                    }
+
+                    Email email = ObjectMapperProvider.instance().treeToValue(personalInfo.value, Email)
+
+                    if (email.value == emailVerifyCode.email) {
+                        personalInfo.lastValidateTime = new Date()
+                        userPersonalInfoResource.put(piiLink.value, personalInfo).recover { Throwable e ->
+                            handleException(e, contextWrapper)
+                            return Promise.pure(null)
+                        }.then { UserPersonalInfo updatedPersonalInfo ->
+                            if (updatedPersonalInfo == null) {
+                                return Promise.pure(new ActionResult('error'))
+                            }
+
+                            return Promise.pure(new ActionResult('success'))
+                        }
+                    }
+                    return Promise.pure(new ActionResult('next'))
+                }.then(process)
             }
+
+            return process(new ActionResult('next'))
+        }
+    }
+
+    private static void handleException(Throwable throwable, ActionContextWrapper contextWrapper) {
+        LOGGER.error('Error calling the identity service', throwable)
+        if (throwable instanceof AppErrorException) {
+            contextWrapper.errors.add(((AppErrorException) throwable).error.error())
+        } else {
+            contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingIdentity().error())
         }
     }
 }

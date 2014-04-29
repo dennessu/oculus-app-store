@@ -9,9 +9,8 @@ package com.junbo.catalog.db.repo;
 import com.junbo.catalog.db.dao.ItemAttributeDao;
 import com.junbo.catalog.db.entity.ItemAttributeEntity;
 import com.junbo.catalog.db.mapper.ItemAttributeMapper;
-import com.junbo.catalog.spec.error.AppErrors;
-import com.junbo.catalog.spec.model.item.ItemAttribute;
-import com.junbo.catalog.spec.model.item.ItemAttributesGetOptions;
+import com.junbo.catalog.spec.model.attribute.ItemAttribute;
+import com.junbo.catalog.spec.model.attribute.ItemAttributesGetOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ import java.util.List;
 /**
  * Item repository.
  */
-public class ItemAttributeRepository {
+public class ItemAttributeRepository implements AttributeRepository<ItemAttribute> {
     @Autowired
     private ItemAttributeDao attributeDao;
 
@@ -45,18 +44,12 @@ public class ItemAttributeRepository {
 
     public Long update(ItemAttribute attribute) {
         ItemAttributeEntity dbEntity = attributeDao.get(attribute.getId());
-        if (dbEntity == null) {
-            throw AppErrors.INSTANCE.notFound("item-attribute", attribute.getId()).exception();
-        }
         ItemAttributeMapper.fillDBEntity(attribute, dbEntity);
         return attributeDao.update(dbEntity);
     }
 
     public void delete(Long attributeId) {
         ItemAttributeEntity dbEntity = attributeDao.get(attributeId);
-        if (dbEntity == null) {
-            throw AppErrors.INSTANCE.notFound("item-attribute", attributeId).exception();
-        }
         dbEntity.setDeleted(true);
         attributeDao.update(dbEntity);
     }

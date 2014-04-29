@@ -23,7 +23,7 @@ import javax.ws.rs.core.MediaType;
  */
 @Api(value = "userPersonalInfo")
 @RestResource
-@Path("/person-info")
+@Path("/personalInfo")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public interface UserPersonalInfoResource {
@@ -40,13 +40,13 @@ public interface UserPersonalInfoResource {
     @POST
     @Path("/{userPiiId}")
     Promise<UserPersonalInfo> patch(@PathParam("userPiiId") UserPersonalInfoId userPiiId,
-                             UserPersonalInfo userOptin);
+                             UserPersonalInfo userPersonalInfo);
 
     @ApiOperation("Update user's personalInfo information")
     @PUT
     @Path("/{userPiiId}")
     Promise<UserPersonalInfo> put(@PathParam("userPiiId") UserPersonalInfoId userPiiId,
-                         UserPersonalInfo userPii);
+                         UserPersonalInfo userPersonalInfo);
 
     @ApiOperation("Delete user's personalInfo information")
     @DELETE

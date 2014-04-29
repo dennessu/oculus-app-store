@@ -8,7 +8,7 @@ package com.junbo.email.db.repo;
 import com.junbo.email.db.dao.EmailTemplateDao;
 import com.junbo.email.db.entity.EmailTemplateEntity;
 import com.junbo.email.spec.model.EmailTemplate;
-import com.junbo.email.spec.model.Paging;
+import com.junbo.email.spec.model.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,8 +62,8 @@ public class EmailTemplateRepository extends EmailBaseRepository {
         return emailMapper.toEmailTemplate(entity);
     }
 
-    public List<EmailTemplate> getEmailTemplates(Map<String, String> queries, Paging paging) {
-        List<EmailTemplateEntity> entities = emailTemplateDao.getEmailTemplatesByQuery(queries, paging);
+    public List<EmailTemplate> getEmailTemplates(Map<String, String> queries, Pagination pagination) {
+        List<EmailTemplateEntity> entities = emailTemplateDao.getEmailTemplatesByQuery(queries, pagination);
         return emailMapper.toEmailTemplates(entities);
     }
 

@@ -6,9 +6,9 @@
 
 package com.junbo.payment.db.repository;
 
+import com.junbo.common.id.PIType;
 import com.junbo.payment.db.dao.payment.PaymentProviderDao;
 import com.junbo.payment.db.entity.payment.PaymentProviderEntity;
-import com.junbo.payment.spec.enums.PIType;
 
 import java.util.List;
 

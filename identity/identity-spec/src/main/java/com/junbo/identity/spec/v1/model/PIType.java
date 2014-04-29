@@ -6,7 +6,7 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.common.enumid.PITypeId;
+import com.junbo.common.id.PITypeId;
 import com.junbo.common.model.ResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -26,7 +26,7 @@ public class PIType extends ResourceMeta implements Identifiable<PITypeId> {
     private String typeCode;
 
     @ApiModelProperty(position = 3, required = true, value = "The description of payment instrument resource.")
-    private Map<String, Object> locales = new HashMap<>();
+    private Map<String, LocaleName> locales = new HashMap<>();
 
     @ApiModelProperty(position = 4, required = true, value = "whether the PI is recurring-able or not.")
     private Boolean capableOfRecurring;
@@ -40,14 +40,16 @@ public class PIType extends ResourceMeta implements Identifiable<PITypeId> {
 
     public void setTypeCode(String typeCode) {
         this.typeCode = typeCode;
+        support.setPropertyAssigned("typeCode");
     }
 
-    public Map<String, Object> getLocales() {
+    public Map<String, LocaleName> getLocales() {
         return locales;
     }
 
-    public void setLocales(Map<String, Object> locales) {
+    public void setLocales(Map<String, LocaleName> locales) {
         this.locales = locales;
+        support.setPropertyAssigned("locales");
     }
 
     public Boolean getCapableOfRecurring() {
@@ -56,6 +58,7 @@ public class PIType extends ResourceMeta implements Identifiable<PITypeId> {
 
     public void setCapableOfRecurring(Boolean capableOfRecurring) {
         this.capableOfRecurring = capableOfRecurring;
+        support.setPropertyAssigned("capableOfRecurring");
     }
 
     public Boolean getIsRefundable() {
@@ -64,6 +67,7 @@ public class PIType extends ResourceMeta implements Identifiable<PITypeId> {
 
     public void setIsRefundable(Boolean isRefundable) {
         this.isRefundable = isRefundable;
+        support.setPropertyAssigned("isRefundable");
     }
 
     public PITypeId getId() {
@@ -72,5 +76,7 @@ public class PIType extends ResourceMeta implements Identifiable<PITypeId> {
 
     public void setId(PITypeId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
+        support.setPropertyAssigned("self");
     }
 }

@@ -5,8 +5,15 @@
  */
 package com.junbo.oauth.core.action
 
+import com.junbo.common.error.AppErrorException
+import com.junbo.common.id.EmailTemplateId
+import com.junbo.common.id.UserId
+import com.junbo.common.model.Results
 import com.junbo.email.spec.model.Email
+import com.junbo.email.spec.model.EmailTemplate
+import com.junbo.email.spec.model.QueryParam
 import com.junbo.email.spec.resource.EmailResource
+import com.junbo.email.spec.resource.EmailTemplateResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
@@ -32,16 +39,23 @@ import javax.ws.rs.core.UriBuilder
 class SendAccountVerifyEmail implements Action {
     private static final Logger LOGGER = LoggerFactory.getLogger(SendAccountVerifyEmail)
     private static final String EMAIL_SOURCE = 'SilkCloud'
-    private static final String EMAIL_ACTION = 'accountEmailVerification'
+    private static final String EMAIL_ACTION = 'EmailVerification'
     private static final String EMAIL_VERIFY_PATH = 'oauth2/verify-email'
 
     private EmailResource emailResource
+
+    private EmailTemplateResource emailTemplateResource
 
     private EmailVerifyCodeRepository emailVerifyCodeRepository
 
     @Required
     void setEmailResource(EmailResource emailResource) {
         this.emailResource = emailResource
+    }
+
+    @Required
+    void setEmailTemplateResource(EmailTemplateResource emailTemplateResource) {
+        this.emailTemplateResource = emailTemplateResource
     }
 
     @Required
@@ -52,13 +66,16 @@ class SendAccountVerifyEmail implements Action {
     @Override
     Promise<ActionResult> execute(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
-        def userPii = contextWrapper.userPii
+        def parameterMap = contextWrapper.parameterMap
+        def user = contextWrapper.user
 
-        Assert.notNull(userPii, 'userPii is null')
+        def email = parameterMap.getFirst(OAuthParameters.EMAIL)
+
+        Assert.notNull(user, 'user is null')
 
         EmailVerifyCode code = new EmailVerifyCode(
-                userId: userPii.userId.value,
-                email: userPii.emails.values().first().value
+                userId: (user.id as UserId).value,
+                email: email
         )
 
         emailVerifyCodeRepository.save(code)
@@ -68,24 +85,58 @@ class SendAccountVerifyEmail implements Action {
         uriBuilder.path(EMAIL_VERIFY_PATH)
 
         uriBuilder.queryParam(OAuthParameters.CODE, code.code)
+        uriBuilder.queryParam(OAuthParameters.LOCALE, contextWrapper.viewLocale)
 
-        Email email = new Email(
-                userId: userPii.userId,
+        QueryParam queryParam = new QueryParam(
                 source: EMAIL_SOURCE,
                 action: EMAIL_ACTION,
-                // TODO: temporal locale hardcode
-                locale: 'en_US',
-                recipients: [userPii.emails.values().first().value].asList(),
-                replacements: ['verifyUri': uriBuilder.build().toString()]
+                // TODO: remove the hard coded locale
+                locale: 'en_US'
         )
 
-        emailResource.postEmail(email).recover { Throwable e ->
-            LOGGER.error('Error sending email to the user', e)
-            contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingEmail().error())
+        // TODO: cache the email template for each locale.
+        emailTemplateResource.getEmailTemplates(queryParam).recover { Throwable e ->
+            handleException(e, contextWrapper)
             return Promise.pure(null)
-        }.then { Email emailSent ->
-            // Return success no matter the email has been successfully sent.
-            return Promise.pure('success')
+        }.then { Results<EmailTemplate> results ->
+            if (results == null || results.items == null || results.items.isEmpty()) {
+                LOGGER.warn('Failed to get the email template, skip the email send')
+                return Promise.pure(new ActionResult('success'))
+            }
+
+            EmailTemplate template = results.items.get(0)
+
+            Email emailToSend = new Email(
+                    userId: user.id as UserId,
+                    templateId: template.id as EmailTemplateId,
+                    recipients: [email].asList(),
+                    replacements: [
+                            'name': user.username,
+                            'verify_link': uriBuilder.build().toString()
+                    ]
+            )
+
+            emailResource.postEmail(emailToSend).recover { Throwable e ->
+                LOGGER.error('Error sending email to the user', e)
+                contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingEmail().error())
+                return Promise.pure(null)
+            }.then { Email emailSent ->
+                if (emailSent == null) {
+                    LOGGER.warn('Failed to send the email, skip the email send')
+                }
+                // Return success no matter the email has been successfully sent.
+                return Promise.pure(new ActionResult('success'))
+            }
+        }
+
+    }
+
+    private static void handleException(Throwable throwable, ActionContextWrapper contextWrapper) {
+        LOGGER.error('Error calling the email service', throwable)
+        if (throwable instanceof AppErrorException) {
+            contextWrapper.errors.add(((AppErrorException) throwable).error.error())
+        } else {
+            contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingIdentity().error())
         }
     }
 }

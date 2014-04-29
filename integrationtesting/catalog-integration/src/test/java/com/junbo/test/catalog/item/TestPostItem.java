@@ -5,16 +5,16 @@
  */
 package com.junbo.test.catalog.item;
 
-import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.test.catalog.util.BaseTestClass;
-import com.junbo.test.common.apihelper.catalog.ItemService;
 import com.junbo.test.common.apihelper.catalog.impl.ItemServiceImpl;
+import com.junbo.test.common.apihelper.catalog.ItemService;
+import com.junbo.test.catalog.util.BaseTestClass;
+import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.*;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
+import org.testng.annotations.Test;
+import org.testng.Assert;
 /**
   * @author Jason
   * Time: 4/1/2014
@@ -77,7 +77,6 @@ public class TestPostItem extends BaseTestClass {
     public void testPostItemInvalidScenarios() throws Exception {
 
         Item testItem = itemService.prepareItemEntity(defaultItem);
-        testItem.setName(null);
         try {
             //Error code 400 means "Missing Input field"
             itemService.postItem(testItem, 400);
@@ -119,7 +118,6 @@ public class TestPostItem extends BaseTestClass {
 
     private void checkItemRequiredParams(Item item1, Item item2) {
         Assert.assertEquals(item1.getType(), item2.getType());
-        Assert.assertEquals(item1.getName(), item2.getName());
         Assert.assertEquals(item1.getOwnerId(), item2.getOwnerId());
     }
 

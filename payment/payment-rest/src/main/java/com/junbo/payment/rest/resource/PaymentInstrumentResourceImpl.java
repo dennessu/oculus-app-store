@@ -45,8 +45,7 @@ public class PaymentInstrumentResourceImpl implements PaymentInstrumentResource 
 
     @Override
     public Promise<PaymentInstrument> getById(PaymentInstrumentId paymentInstrumentId) {
-        PaymentInstrument result = piService.getById(paymentInstrumentId.getValue());
-        return Promise.pure(result);
+        return piService.getById(paymentInstrumentId.getValue());
     }
 
     @Override

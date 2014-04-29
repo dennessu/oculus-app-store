@@ -7,6 +7,8 @@ package com.junbo.identity.spec.filter;
 
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
+import com.junbo.configuration.ConfigService;
+import com.junbo.configuration.ConfigServiceManager;
 import org.glassfish.jersey.server.ContainerResponse;
 import org.springframework.util.StringUtils;
 
@@ -23,6 +25,18 @@ public class ResultsInterceptor implements ContainerResponseFilter {
     private static final String CURSOR_FORMAT = "cursor=";
     private static final String COUNT_FORMAT = "count=";
     private static final String AND_FORMAT = "&";
+
+    private String selfHrefPrfix = "https://api.oculusvr.com/v1";
+
+    public ResultsInterceptor() {
+        ConfigService configService = ConfigServiceManager.instance();
+        if (configService != null) {
+            String prefixFromConfig = configService.getConfigValue("common.conf.resourceUrlPrefix");
+            if (prefixFromConfig != null) {
+                selfHrefPrfix = prefixFromConfig;
+            }
+        }
+    }
 
     @Override
     public void filter(ContainerRequestContext requestContext,
@@ -48,7 +62,11 @@ public class ResultsInterceptor implements ContainerResponseFilter {
 
         ContainerResponse response = (ContainerResponse)responseContext;
         Link ref = new Link();
-        ref.setHref(response.getRequestContext().getRequestUri().toString());
+        String requestUri = response.getRequestContext().getRequestUri().toString();
+        requestUri = requestUri.replace(response.getRequestContext().getBaseUri().toString(),
+                selfHrefPrfix.endsWith("/") ? selfHrefPrfix : selfHrefPrfix + "/");
+
+        ref.setHref(requestUri);
         ref.setId("");
         return ref;
     }

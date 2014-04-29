@@ -45,9 +45,12 @@ class LoginStateRepositoryImpl implements LoginStateRepository {
     }
 
     @Override
-    void saveOrUpdate(LoginState loginState) {
+    LoginState saveOrUpdate(LoginState loginState) {
         if (loginState.id == null) {
             loginState.id = tokenGenerator.generateLoginStateId()
+        }
+
+        if (loginState.sessionId == null) {
             loginState.sessionId = tokenGenerator.generateSessionStateId()
         }
 
@@ -55,7 +58,7 @@ class LoginStateRepositoryImpl implements LoginStateRepository {
             loginState.expiredBy = new Date(System.currentTimeMillis() + defaultLoginStateExpiration * 1000)
         }
 
-        loginStateDAO.update(unwrap(loginState))
+        return wrap(loginStateDAO.update(unwrap(loginState)))
     }
 
     @Override

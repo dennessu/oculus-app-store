@@ -295,4 +295,7 @@ interface AppExceptions {
     @ErrorDef(httpStatusCode = 400, code = '20068',
             description = 'Invalid email format: {0}', field = 'email')
     AppError invalidEmail(String email)
+
+    @ErrorDef(httpStatusCode = 400, code = '20069', description = 'Invalid locale: {0}', field = 'locale')
+    AppError invalidLocale(String locale)
 }

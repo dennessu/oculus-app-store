@@ -8,7 +8,6 @@ package com.junbo.oauth.core.util
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.oauth.core.context.ActionContextWrapper
 import groovy.transform.CompileStatic
-import org.glassfish.jersey.server.ContainerRequest
 
 import javax.ws.rs.core.NewCookie
 
@@ -17,18 +16,20 @@ import javax.ws.rs.core.NewCookie
  */
 @CompileStatic
 class CookieUtil {
-    static void setCookie(String cookieName, String value, int maxAge, ActionContext context) {
+    static void setCookie(ActionContext context, String cookieName,
+                          String value, int maxAge = NewCookie.DEFAULT_MAX_AGE, boolean httpOnly = true) {
         def wrapper = new ActionContextWrapper(context)
-        def request = wrapper.request
-        URI uri = ((ContainerRequest) request).baseUri
 
-        NewCookie cookie = new NewCookie(cookieName, value, uri.path, uri.host, null, maxAge, uri.scheme == 'https')
+        def secure = false // todo: read it from configuration service
+
+        NewCookie cookie = new NewCookie(cookieName, value,
+                null, null, null, maxAge, secure, httpOnly)
 
         List<NewCookie> responseCookieList = wrapper.responseCookieList
         responseCookieList.add(cookie)
     }
 
-    static void clearCookie(String cookieName, ActionContext context) {
-        setCookie(cookieName, null, 0, context)
+    static void clearCookie(ActionContext context, String cookieName) {
+        setCookie(context, cookieName, null, 0)
     }
 }

@@ -98,7 +98,7 @@ class Logout implements Action {
             contextWrapper.redirectUriBuilder = UriComponentsBuilder.fromUriString(postLogoutRedirectUri)
         }
 
-        def rememberMeCookie = cookieMap.get(OAuthParameters.REMEMBER_ME)
+        def rememberMeCookie = cookieMap.get(OAuthParameters.COOKIE_REMEMBER_ME)
         if (rememberMeCookie != null) {
             def rememberMeToken = rememberMeTokenRepository.get(rememberMeCookie.value)
             if (rememberMeToken == null) {
@@ -108,7 +108,7 @@ class Logout implements Action {
             contextWrapper.rememberMeToken = rememberMeToken
         }
 
-        def loginStateCookie = cookieMap.get(OAuthParameters.LOGIN_STATE)
+        def loginStateCookie = cookieMap.get(OAuthParameters.COOKIE_LOGIN_STATE)
         if (loginStateCookie != null) {
             def loginState = loginStateRepository.get(loginStateCookie.value)
 

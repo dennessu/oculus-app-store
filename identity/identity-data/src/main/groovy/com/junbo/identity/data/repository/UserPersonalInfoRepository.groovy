@@ -13,5 +13,8 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface UserPersonalInfoRepository extends IdentityBaseRepository<UserPersonalInfo, UserPersonalInfoId> {
     @ReadMethod
-    Promise<List<UserPersonalInfo>> search(UserId userId)
+    Promise<List<UserPersonalInfo>> searchByUserId(UserId userId)
+
+    @ReadMethod
+    Promise<List<UserPersonalInfo>> searchByUserIdAndType(UserId userId, String type)
 }

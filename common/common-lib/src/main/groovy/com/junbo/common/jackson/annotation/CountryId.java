@@ -9,7 +9,6 @@ package com.junbo.common.jackson.annotation;
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.junbo.common.jackson.annotation.ResourcePath;
 import com.junbo.common.jackson.deserializer.ResourceIdDeserializer;
 import com.junbo.common.jackson.serializer.ResourceIdSerializer;
 
@@ -23,8 +22,8 @@ import java.lang.annotation.RetentionPolicy;
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @JacksonAnnotationsInside
-@JsonSerialize(using = ResourceIdSerializer.class, include = JsonSerialize.Inclusion.NON_NULL)
+@JsonSerialize(using = ResourceIdSerializer.class)
 @JsonDeserialize(using = ResourceIdDeserializer.class)
-@ResourcePath("/currencies")
+@ResourcePath("/countries")
 public @interface CountryId {
 }

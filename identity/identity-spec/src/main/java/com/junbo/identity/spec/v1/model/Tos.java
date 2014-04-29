@@ -6,6 +6,7 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.TosId;
 import com.junbo.common.util.Identifiable;
 import com.junbo.common.model.ResourceMeta;
@@ -21,7 +22,8 @@ public class Tos extends ResourceMeta implements Identifiable<TosId> {
     private TosId id;
 
     @ApiModelProperty(position = 2, required = true, value = "The locale of the tos resource.")
-    private String locale;
+    @JsonProperty("locale")
+    private LocaleId localeId;
 
     @ApiModelProperty(position = 3, required = true, value = "The title of the tos resource.")
     private String title;
@@ -43,13 +45,14 @@ public class Tos extends ResourceMeta implements Identifiable<TosId> {
         support.setPropertyAssigned("self");
     }
 
-    public String getLocale() {
-        return locale;
+    public LocaleId getLocaleId() {
+        return localeId;
     }
 
-    public void setLocale(String locale) {
-        this.locale = locale;
+    public void setLocaleId(LocaleId localeId) {
+        this.localeId = localeId;
         support.setPropertyAssigned("locale");
+        support.setPropertyAssigned("localeId");
     }
 
     public String getTitle() {

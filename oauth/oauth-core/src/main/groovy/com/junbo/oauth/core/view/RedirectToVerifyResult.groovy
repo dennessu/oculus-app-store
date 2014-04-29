@@ -35,8 +35,10 @@ class RedirectToVerifyResult implements Action {
         def contextWrapper = new ActionContextWrapper(context)
 
         String code = (String) context.requestScope[OAuthParameters.CODE]
+        String locale = (String) context.requestScope[OAuthParameters.LOCALE]
 
         context.flowScope[OAuthParameters.CODE] = code
+        context.flowScope[OAuthParameters.LOCALE] = locale
 
         def uriBuilder = UriComponentsBuilder.fromHttpUrl(pageUrl)
         uriBuilder.queryParam(OAuthParameters.CONVERSATION_ID, context.conversationId)

@@ -16,6 +16,8 @@
             <wf:action ref="validatePrompt"/>
             <wf:action ref="validateMaxAge"/>
             <wf:action ref="validateNonce"/>
+            <wf:action ref="validateLocale" />
+            <wf:action ref="validateExtraParameters" />
             <wf:transition on="*" to="CHECK_LOGIN"/>
         </wf:action-state>
 
@@ -32,6 +34,7 @@
             <wf:on-render>
                 <wf:action ref="redirectToLogin"/>
             </wf:on-render>
+            <wf:transition on="register" to="REGISTER_VIEW"/>
             <wf:transition on="*" to="LOGIN_VIEW"/>
         </wf:view-state>
 
@@ -53,6 +56,7 @@
             </wf:on-render>
             <wf:transition on="*" to="CHECK_CONSENT">
                 <wf:action ref="saveLoginState"/>
+                <wf:action ref="grantRememberMeToken"/>
             </wf:transition>
         </wf:view-state>
 
@@ -77,6 +81,7 @@
             </wf:on-render>
             <wf:transition on="*" to="CHECK_CONSENT">
                 <wf:action ref="saveLoginState"/>
+                <wf:action ref="grantRememberMeToken"/>
             </wf:transition>
         </wf:view-state>
 
@@ -114,7 +119,6 @@
             <wf:on-entry>
                 <wf:action ref="grantAuthorizationCode"/>
                 <wf:action ref="grantImplicitAccessToken"/>
-                <wf:action ref="grantRememberMeToken"/>
                 <wf:action ref="grantIdToken"/>
                 <wf:action ref="redirectToClient"/>
             </wf:on-entry>
@@ -207,6 +211,7 @@
 
 
     <bean id="redirectToClient" class="com.junbo.oauth.core.view.RedirectToClient">
+        <property name="tokenService" ref="tokenService"/>
     </bean>
 
     <bean id="accessDenied" class="com.junbo.oauth.core.view.RedirectToClientError">
@@ -230,7 +235,8 @@
     </bean>
 
     <bean id="createUserPii" class="com.junbo.oauth.core.action.CreateUserPii">
-        <property name="userPiiResource" ref="userPiiResource"/>
+        <property name="userResource" ref="userResource"/>
+        <property name="userPersonalInfoResource" ref="userPersonalInfoResource"/>
     </bean>
 
     <bean id="validateRegister" class="com.junbo.oauth.core.action.ValidateRegister"/>
@@ -245,6 +251,7 @@
 
     <bean id="sendAccountVerifyEmail" class="com.junbo.oauth.core.action.SendAccountVerifyEmail">
         <property name="emailResource" ref="emailResource"/>
+        <property name="emailTemplateResource" ref="emailTemplateResource"/>
         <property name="emailVerifyCodeRepository" ref="emailVerifyCodeRepository"/>
     </bean>
 </beans>

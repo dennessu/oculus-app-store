@@ -7,6 +7,7 @@
 package com.junbo.payment.core.provider.ewallet;
 
 import com.junbo.common.id.WalletId;
+import com.junbo.ewallet.spec.def.WalletType;
 import com.junbo.ewallet.spec.model.DebitRequest;
 import com.junbo.ewallet.spec.model.Transaction;
 import com.junbo.ewallet.spec.model.Wallet;
@@ -20,6 +21,7 @@ import com.junbo.payment.core.util.ProxyExceptionResponse;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
+import com.junbo.payment.spec.model.TypeSpecificDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +45,16 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
 
     @Override
     public void clonePIResult(PaymentInstrument source, PaymentInstrument target) {
-        target.setExternalToken(source.getExternalToken());
+        if(source != null && !CommonUtil.isNullOrEmpty(source.getExternalToken())){
+            target.setExternalToken(source.getExternalToken());
+        }
+        if(source != null && source.getTypeSpecificDetails() != null){
+            if(target.getTypeSpecificDetails() == null){
+                target.setTypeSpecificDetails(new TypeSpecificDetails());
+            }
+            target.getTypeSpecificDetails().setStoredValueBalance(source.getTypeSpecificDetails().getStoredValueBalance());
+            target.getTypeSpecificDetails().setStoredValueCurrency(source.getTypeSpecificDetails().getStoredValueCurrency());
+        }
     }
 
     @Override
@@ -59,8 +70,9 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
         validateWallet(request);
         Wallet wallet = new Wallet();
         wallet.setUserId(request.getUserId());
-        wallet.setCurrency(request.getTypeSpecificDetails().getWalletCurrency());
-        wallet.setType(request.getTypeSpecificDetails().getWalletType());
+        wallet.setCurrency(request.getTypeSpecificDetails().getStoredValueCurrency());
+        String walletType = request.getTypeSpecificDetails().getWalletType();
+        wallet.setType(CommonUtil.isNullOrEmpty(walletType) ? WalletType.STORED_VALUE.toString() : walletType);
         return walletClient.postWallet(wallet).recover(new Promise.Func<Throwable, Promise<Wallet>>() {
             @Override
             public Promise<Wallet> apply(Throwable throwable) {
@@ -82,6 +94,46 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
     @Override
     public Promise<Response> delete(PaymentInstrument pi) {
         return Promise.pure(null);
+    }
+
+    @Override
+    public Promise<PaymentInstrument> getByInstrumentToken(String token) {
+        if(CommonUtil.isNullOrEmpty(token)){
+            LOGGER.error("invalid external token: " + token);
+            throw AppServerExceptions.INSTANCE.invalidPI().exception();
+        }
+        WalletId walletId = null;
+        try{
+            walletId = new WalletId(Long.parseLong(token));
+        }catch (Exception ex){
+            LOGGER.error("invalid external token: " + token);
+            throw AppServerExceptions.INSTANCE.invalidPI().exception();
+        }
+        return walletClient.getWallet(walletId).recover(new Promise.Func<Throwable, Promise<Wallet>>() {
+            @Override
+            public Promise<Wallet> apply(Throwable throwable) {
+                ProxyExceptionResponse proxyResponse = new ProxyExceptionResponse(throwable);
+                LOGGER.error("get details failed for" + getProviderName() +
+                        "; error detail: " + proxyResponse.getBody());
+                throw AppServerExceptions.INSTANCE.providerProcessError(
+                        PROVIDER_NAME, proxyResponse.getBody()).exception();
+            }
+        }).then(new Promise.Func<Wallet, Promise<PaymentInstrument>>() {
+            @Override
+            public Promise<PaymentInstrument> apply(Wallet wallet) {
+                if (wallet == null) {
+                    throw AppServerExceptions.INSTANCE.providerProcessError(
+                            PROVIDER_NAME, "No such wallet").exception();
+                }
+                final TypeSpecificDetails detail = new TypeSpecificDetails();
+                detail.setStoredValueBalance(wallet.getBalance());
+                detail.setStoredValueCurrency(wallet.getCurrency());
+                PaymentInstrument pi = new PaymentInstrument();
+                pi.setTypeSpecificDetails(detail);
+                return Promise.pure(pi);
+            }
+        });
+
     }
 
     @Override
@@ -149,10 +201,10 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
         if(request.getTypeSpecificDetails() == null){
             throw AppClientExceptions.INSTANCE.missingCurrency().exception();
         }
-        if(CommonUtil.isNullOrEmpty(request.getTypeSpecificDetails().getWalletCurrency())){
+        if(CommonUtil.isNullOrEmpty(request.getTypeSpecificDetails().getStoredValueCurrency())){
             throw AppClientExceptions.INSTANCE.missingCurrency().exception();
         }
-        if(CommonUtil.isNullOrEmpty(request.getTypeSpecificDetails().getWalletCurrency())){
+        if(CommonUtil.isNullOrEmpty(request.getTypeSpecificDetails().getStoredValueCurrency())){
             throw AppClientExceptions.INSTANCE.missingWalletType().exception();
         }
     }

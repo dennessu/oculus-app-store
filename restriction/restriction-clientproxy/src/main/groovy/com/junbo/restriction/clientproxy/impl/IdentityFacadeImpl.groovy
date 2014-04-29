@@ -5,52 +5,62 @@
  */
 package com.junbo.restriction.clientproxy.impl
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.junbo.common.id.UserId
-import com.junbo.common.model.Results
-import com.junbo.identity.spec.v1.model.UserPii
-import com.junbo.identity.spec.v1.option.list.UserPiiListOptions
+import com.junbo.common.json.ObjectMapperProvider
+import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
-import com.junbo.identity.spec.v1.resource.UserPiiResource
+import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
+import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
+import com.junbo.identity.spec.v1.resource.UserResource
+import com.junbo.langur.core.promise.Promise
 import com.junbo.restriction.clientproxy.IdentityFacade
-import com.junbo.restriction.spec.error.AppErrors
+import groovy.transform.CompileStatic
 
 import javax.annotation.Resource
-import com.junbo.identity.spec.v1.resource.UserResource
-import com.junbo.identity.spec.v1.model.User
-import com.junbo.langur.core.promise.Promise
 
 /**
  * Impl of Identity Facade.
  */
+@CompileStatic
 class IdentityFacadeImpl implements IdentityFacade {
 
     @Resource(name = 'restrictionIdentityUserClient')
     private UserResource userResource
 
-    @Resource(name = 'restrictionIdentityUserPiiClient')
-    private UserPiiResource userPiiResource
+    @Resource(name = 'restrictionIdentityUserPersonalInfoClient')
+    private UserPersonalInfoResource userPersonalInfoResource
 
     void setUserResource(UserResource userResource) {
         this.userResource = userResource
     }
 
-    void setUserPiiResource(UserPiiResource userPiiResource) {
-        this.userPiiResource = userPiiResource
+    void setUserPersonalInfoResource(UserPersonalInfoResource userPersonalInfoResource) {
+        this.userPersonalInfoResource = userPersonalInfoResource
     }
 
     Promise<User> getUser(Long userId) {
         return userResource.get(new UserId(userId), new UserGetOptions())
     }
 
-    Promise<UserPii> getUserPii(Long userId) {
-        def options = new UserPiiListOptions()
-        options.userId = new UserId(userId)
-        userPiiResource.list(options).recover {
-            throw AppErrors.INSTANCE.invalidUserPii().exception()
-        }.then {  Results<UserPii> userPii ->
-            if (userPii?.items?.size() != 0) {
-                return Promise.pure(userPii.items.get(0))
+    @Override
+    Promise<Date> getUserDob(Long userId) {
+        return userResource.get(new UserId(userId), new UserGetOptions()).then { User user ->
+            if (user.dob != null && user.dob.value != null) {
+                return userPersonalInfoResource.get(user.dob.value, new UserPersonalInfoGetOptions()).then { UserPersonalInfo info ->
+                    if (info != null && info.type.equalsIgnoreCase('dob')) {
+                        try {
+                            Date date = ObjectMapperProvider.instance().treeToValue(info.value, Date)
+                            return Promise.pure(date)
+                        }
+                        catch (Exception e) {
+                            return Promise.pure(null)
+                        }
+                    }
+                }
             }
+
             return Promise.pure(null)
         }
     }

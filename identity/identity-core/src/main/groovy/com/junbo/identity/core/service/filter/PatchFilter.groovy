@@ -16,6 +16,7 @@ class PatchFilter implements PropertyMappingFilter {
 
     @Override
     boolean skipPropertyMapping(PropertyMappingEvent event, MappingContext context) {
+        return false
     }
 
     @Override
@@ -23,40 +24,76 @@ class PatchFilter implements PropertyMappingFilter {
         boolean readable = context.isPropertyReadable(event.sourcePropertyName)
         boolean writable = context.isPropertyWritable(event.sourcePropertyName)
 
-        if (readable && !writable) { // readonly
-            boolean different = false
+        boolean different = false
 
-            if (FilterUtil.isSimpleType(event.sourcePropertyType)) {
-                if (event.sourceProperty != event.alternativeSourceProperty) {
-                    different = true
-                }
-            } else {
-                boolean sourcePropertyIsNull = event.sourceProperty == null
-                boolean alternativeSourcePropertyIsNull = event.alternativeSourceProperty == null
+        if (FilterUtil.isSimpleType(event.sourcePropertyType)) {
+            if (event.sourceProperty != event.alternativeSourceProperty) {
+                different = true
+            }
 
-                if (sourcePropertyIsNull != alternativeSourcePropertyIsNull) {
-                    different = true
+            if (readable && !writable) { // readonly
+                if (PropertyAssignedAwareSupport.isPropertyAssigned(event.source, event.sourcePropertyName)) {
+                    if (different) {
+                        throw AppErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
+                    }
+                } else {
+                    event.sourceProperty = event.alternativeSourceProperty
                 }
             }
 
-            if (different) {
+            if (!readable && !writable) {
                 if (PropertyAssignedAwareSupport.isPropertyAssigned(event.source, event.sourcePropertyName)) {
                     throw AppErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
                 } else {
                     event.sourceProperty = event.alternativeSourceProperty
                 }
             }
-        }
 
-        if (!readable && !writable) {
-            if (PropertyAssignedAwareSupport.isPropertyAssigned(event.source, event.sourcePropertyName)) {
-                throw AppErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
+            if (writable) {
+                if (PropertyAssignedAwareSupport.isPropertyAssigned(event.source, event.sourcePropertyName)) {
+                    event.alternativeSourceProperty = null
+                } else {
+                    event.sourceProperty = event.alternativeSourceProperty
+                }
             }
-        }
+        } else {
+            boolean sourcePropertyIsNull = event.sourceProperty == null
+            boolean alternativeSourcePropertyIsNull = event.alternativeSourceProperty == null
 
-        if (writable) {
-            if (!PropertyAssignedAwareSupport.isPropertyAssigned(event.source, event.sourcePropertyName)) {
-                event.sourceProperty = event.alternativeSourceProperty
+            if (sourcePropertyIsNull != alternativeSourcePropertyIsNull) {
+                different = true
+            }
+
+            if (readable && !writable) { // readonly
+                if (PropertyAssignedAwareSupport.isPropertyAssigned(event.source, event.sourcePropertyName)) {
+                    if (different) {
+                        throw AppErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
+                    }
+                } else {
+                    if (!alternativeSourcePropertyIsNull) {
+                        event.sourceProperty = event.sourcePropertyType.newInstance()
+                    }
+                }
+            }
+
+            if (!readable && !writable) {
+                if (PropertyAssignedAwareSupport.isPropertyAssigned(event.source, event.sourcePropertyName)) {
+                    throw AppErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
+                } else {
+                    if (!alternativeSourcePropertyIsNull) {
+                        event.sourceProperty = event.sourcePropertyType.newInstance()
+                    }
+                }
+            }
+
+            if (writable) {
+                if (PropertyAssignedAwareSupport.isPropertyAssigned(event.source, event.sourcePropertyName)) {
+                    event.alternativeSourceProperty = null
+                } else {
+                    if (!alternativeSourcePropertyIsNull) {
+                        event.sourceProperty = event.sourcePropertyType.newInstance()
+                    }
+                }
             }
         }
     }

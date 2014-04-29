@@ -8,6 +8,7 @@ package com.junbo.identity.spec.v1.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.common.id.UserCredentialId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.model.ResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -16,7 +17,7 @@ import java.util.Date;
 /**
  * Created by liangfu on 4/3/14.
  */
-public class UserCredential implements Identifiable<UserCredentialId> {
+public class UserCredential extends ResourceMeta implements Identifiable<UserCredentialId> {
 
     @JsonIgnore
     private UserCredentialId id;
@@ -46,6 +47,7 @@ public class UserCredential implements Identifiable<UserCredentialId> {
 
     public void setId(UserCredentialId id) {
         this.id = id;
+        support.setPropertyAssigned("id");
     }
 
     public UserId getUserId() {
@@ -54,6 +56,7 @@ public class UserCredential implements Identifiable<UserCredentialId> {
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+        support.setPropertyAssigned("userId");
     }
 
     public String getOldValue() {
@@ -62,6 +65,7 @@ public class UserCredential implements Identifiable<UserCredentialId> {
 
     public void setOldValue(String oldValue) {
         this.oldValue = oldValue;
+        support.setPropertyAssigned("oldValue");
     }
 
     public String getValue() {
@@ -70,6 +74,7 @@ public class UserCredential implements Identifiable<UserCredentialId> {
 
     public void setValue(String value) {
         this.value = value;
+        support.setPropertyAssigned("value");
     }
 
     public String getType() {
@@ -78,6 +83,7 @@ public class UserCredential implements Identifiable<UserCredentialId> {
 
     public void setType(String type) {
         this.type = type;
+        support.setPropertyAssigned("type");
     }
 
     public Date getExpiresBy() {
@@ -86,6 +92,7 @@ public class UserCredential implements Identifiable<UserCredentialId> {
 
     public void setExpiresBy(Date expiresBy) {
         this.expiresBy = expiresBy;
+        support.setPropertyAssigned("expiresBy");
     }
 
     public Boolean getChangeAtNextLogin() {
@@ -94,5 +101,12 @@ public class UserCredential implements Identifiable<UserCredentialId> {
 
     public void setChangeAtNextLogin(Boolean changeAtNextLogin) {
         this.changeAtNextLogin = changeAtNextLogin;
+        support.setPropertyAssigned("changeAtNextLogin");
+    }
+
+    @Override
+    public String getResourceAge() {
+        // resource Age won't return due to it isn't a resource
+        return null;
     }
 }

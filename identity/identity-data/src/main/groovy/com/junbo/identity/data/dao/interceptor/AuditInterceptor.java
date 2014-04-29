@@ -26,7 +26,7 @@ public class AuditInterceptor extends EmptyInterceptor {
         if(entity.getClass().getSuperclass() == ResourceMetaEntity.class) {
             //todo: need to get the userName from current threadLocal storage
             ((ResourceMetaEntity)entity).setCreatedTime(new Date());
-            ((ResourceMetaEntity)entity).setCreatedBy("todo-liangfuxia");
+            ((ResourceMetaEntity)entity).setCreatedBy("todo-liangfu");
 
             for(int i = 0; i < propertyNames.length; i++) {
                 if(propertyNames[i].equals(CREATED_TIME_FIELD)) {
@@ -48,7 +48,7 @@ public class AuditInterceptor extends EmptyInterceptor {
         if(entity.getClass().getSuperclass() == ResourceMetaEntity.class) {
             //todo: need to get the userName from current threadLocal storage
             ((ResourceMetaEntity)entity).setUpdatedTime(new Date());
-            ((ResourceMetaEntity)entity).setUpdatedBy("todo");
+            ((ResourceMetaEntity)entity).setUpdatedBy("todo-liangfu");
 
             for(int i = 0; i < propertyNames.length; i++) {
                 if(propertyNames[i].equals(CREATED_TIME_FIELD)) {
@@ -76,7 +76,7 @@ public class AuditInterceptor extends EmptyInterceptor {
         if(entity.getClass().getSuperclass() == ResourceMetaEntity.class) {
             //todo: need to get the userName from current threadLocal storage
             ((ResourceMetaEntity)entity).setUpdatedTime(new Date());
-            ((ResourceMetaEntity)entity).setUpdatedBy("todo");
+            ((ResourceMetaEntity)entity).setUpdatedBy("todo-liangfu");
             return;
         }
         super.onDelete(entity, id, state, propertyNames, types);

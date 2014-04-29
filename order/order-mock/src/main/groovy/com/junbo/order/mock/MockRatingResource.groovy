@@ -17,15 +17,15 @@ class MockRatingResource extends BaseMock implements RatingResource {
 
     @Override
     Promise<RatingRequest> priceRating(RatingRequest request) {
-        request.orderBenefit = new OrderBenefit()
+        request.ratingSummary = new RatingSummary()
         BigDecimal ten = BigDecimal.valueOf(10.00D)
         BigDecimal fifty = BigDecimal.valueOf(50.00D)
         BigDecimal sixty = BigDecimal.valueOf(60.00D)
-        request.orderBenefit.discountAmount = ten
-        request.orderBenefit.finalAmount = fifty
-        request.orderBenefit.promotion = generateLong()
-        request.shippingBenefit = new ShippingBenefit()
-        request.shippingBenefit.shippingFee = ten
+        request.ratingSummary.discountAmount = ten
+        request.ratingSummary.finalAmount = fifty
+        request.ratingSummary.promotion = generateLong()
+        request.shippingSummary = new ShippingSummary()
+        request.shippingSummary.totalShippingFee = ten
         request.lineItems?.each { RatingItem item ->
             item.finalTotalAmount = fifty
             item.totalDiscountAmount = ten

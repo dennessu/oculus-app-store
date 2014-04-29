@@ -15,8 +15,7 @@
     <bean id="defaultUserCredentialVerifyAttemptResource" class="com.junbo.identity.rest.resource.v1.UserCredentialVerifyAttemptResourceImpl" scope="prototype" />
     <bean id="defaultGroupResource" class="com.junbo.identity.rest.resource.v1.GroupResourceImpl" scope="prototype" />
     <bean id="defaultUserResource" class="com.junbo.identity.rest.resource.v1.UserResourceImpl" scope="prototype" />
-
-
+    <bean id="defaultUserPersonalInfoResource" class="com.junbo.identity.rest.resource.v1.UserPersonalInfoResourceImpl" scope="prototype" />
     <bean id="defaultSecurityQuestionResource" class="com.junbo.identity.rest.resource.SecurityQuestionResourceImpl" scope="prototype" />
     <bean id="defaultDeviceResource" class="com.junbo.identity.rest.resource.v1.DeviceResourceImpl" scope="prototype" />
     <bean id="defaultTosResource" class="com.junbo.identity.rest.resource.v1.TosResourceImpl" scope="prototype" />
@@ -24,6 +23,12 @@
     <bean id="defaultUserSecurityQuestionResource" class="com.junbo.identity.rest.resource.v1.UserSecurityQuestionResourceImpl" scope="prototype" />
     <bean id="defaultUserSecurityQuestionVerifyAttemptResource" class="com.junbo.identity.rest.resource.v1.UserSecurityQuestionVerifyAttemptResourceImpl" scope="prototype" />
     <bean id="defaultUserTosAgreementResource" class="com.junbo.identity.rest.resource.v1.UserTosAgreementResourceImpl" scope="prototype" />
+    <bean id="defaultCountryResource" class="com.junbo.identity.rest.resource.v1.CountryResourceImpl" scope="prototype" />
+    <bean id="defaultCurrencyResource" class="com.junbo.identity.rest.resource.v1.CurrencyResourceImpl" scope="prototype" />
+    <bean id="defaultLocaleResource" class="com.junbo.identity.rest.resource.v1.LocaleResourceImpl" scope="prototype" />
+    <bean id="defaultPITypeResource" class="com.junbo.identity.rest.resource.v1.PITypeResourceImpl" scope="prototype" />
+    <bean id="defaultDeviceTypeResource" class="com.junbo.identity.rest.resource.v1.DeviceTypeResourceImpl" scope="prototype" />
+    <bean id="defaultCommunicationResource" class="com.junbo.identity.rest.resource.v1.CommunicationResourceImpl" scope="prototype" />
 
     <bean id="defaultRoleResource" class="com.junbo.identity.rest.resource.v1.RoleResourceImpl" scope="prototype">
         <property name="created201Marker" ref="created201Marker"/>

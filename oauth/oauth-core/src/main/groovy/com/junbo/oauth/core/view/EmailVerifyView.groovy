@@ -19,12 +19,14 @@ class EmailVerifyView extends AbstractView {
     @Override
     protected Promise<ViewModel> buildViewModel(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
+        def modelMap = [
+                'verifyResult': contextWrapper.errors.isEmpty() ? 'true' : 'false',
+                'locale': contextWrapper.viewLocale
+        ]
 
         def model = new ViewModel(
                 view: 'emailVerify',
-                model: [
-                        'verifyResult': contextWrapper.errors.isEmpty() ? 'true' : 'false'
-                ] as Map<String, Object>,
+                model: modelMap as Map<String, Object>,
                 errors: contextWrapper.errors.unique(new ErrorComparator()).asList()
         )
 

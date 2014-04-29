@@ -6,10 +6,10 @@
 
 package com.junbo.payment.core.provider.impl;
 
+import com.junbo.common.id.PIType;
 import com.junbo.payment.core.provider.PaymentProvider;
 import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.core.provider.ProviderRoutingService;
-import com.junbo.payment.spec.enums.PIType;
 
 /**
  * payment provider routing implementation.
@@ -21,7 +21,7 @@ public class ProviderRoutingServiceImpl implements ProviderRoutingService{
         //TODO: hard code braintree first
         if(piType.equals(PIType.CREDITCARD)){
             return PaymentProviderRegistry.getPaymentProviderService(PaymentProvider.BrainTree);
-        }else if(piType.equals(PIType.WALLET)){
+        }else if(piType.equals(PIType.STOREDVALUE)){
             return PaymentProviderRegistry.getPaymentProviderService(PaymentProvider.Wallet);
         }else if(piType.equals(PIType.PAYPAL)){
             return PaymentProviderRegistry.getPaymentProviderService(PaymentProvider.PayPal);

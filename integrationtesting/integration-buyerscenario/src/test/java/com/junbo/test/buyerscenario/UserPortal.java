@@ -5,16 +5,15 @@
  */
 package com.junbo.test.buyerscenario;
 
-import com.junbo.test.common.Utility.TestClass;
-import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.test.common.apihelper.identity.UserService;
+import com.junbo.test.common.Utility.TestClass;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.*;
 
-import org.testng.Assert;
 import org.testng.annotations.Test;
-
+import org.testng.Assert;
 import java.util.List;
 
 /**

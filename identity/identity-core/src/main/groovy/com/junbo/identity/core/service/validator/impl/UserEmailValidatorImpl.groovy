@@ -1,54 +1,43 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.identity.core.service.validator.UserEmailValidator
+import com.junbo.identity.spec.error.AppErrors
+import com.junbo.identity.spec.v1.model.Email
 import groovy.transform.CompileStatic
+import org.springframework.beans.factory.annotation.Required
+
+import java.util.regex.Pattern
 
 /**
  * Created by liangfu on 3/31/14.
  */
 @CompileStatic
 class UserEmailValidatorImpl implements UserEmailValidator {
-    @Override
-    void test() {
 
-    }
-    /*
-    private List<String> allowedEmailTypes
     private List<Pattern> allowedEmailPatterns
-    private Integer emailMinLength
-    private Integer emailMaxLength
+    private Integer minEmailLength
+    private Integer maxEmailLength
 
     @Override
-    void validate(UserEmail userEmail) {
-        if (userEmail == null) {
-            throw new IllegalArgumentException('userEmail is null')
+    void validate(Email email) {
+        if (email.value == null) {
+            throw AppErrors.INSTANCE.fieldInvalid('value').exception()
         }
 
-        if (userEmail.type == null) {
-            throw AppErrors.INSTANCE.fieldRequired('type').exception()
+        if (email.value.length() < minEmailLength) {
+            throw AppErrors.INSTANCE.fieldTooShort('value', minEmailLength).exception()
         }
-        if (!(userEmail.type in allowedEmailTypes)) {
-            throw AppErrors.INSTANCE.fieldInvalid('type', allowedEmailTypes.join(',')).exception()
-        }
-
-        if (userEmail.value == null) {
-            throw AppErrors.INSTANCE.fieldRequired('value').exception()
+        if (email.value.length() > maxEmailLength) {
+            throw AppErrors.INSTANCE.fieldTooLong('value', maxEmailLength).exception()
         }
 
         if (!allowedEmailPatterns.any {
-            Pattern pattern -> pattern.matcher(userEmail.value).matches()
+            Pattern pattern -> pattern.matcher(email.value).matches()
         }) {
             throw AppErrors.INSTANCE.fieldInvalid('value').exception()
         }
 
-        if (userEmail.verified == null) {
-            throw AppErrors.INSTANCE.fieldRequired('verified').exception()
-        }
-    }
-
-    @Required
-    void setAllowedEmailTypes(List<String> allowedEmailTypes) {
-        this.allowedEmailTypes = allowedEmailTypes
+        // todo:    Need to add logic check to ensure one email can only be added once.
     }
 
     @Required
@@ -59,13 +48,12 @@ class UserEmailValidatorImpl implements UserEmailValidator {
     }
 
     @Required
-    void setEmailMinLength(Integer emailMinLength) {
-        this.emailMinLength = emailMinLength
+    void setMinEmailLength(Integer minEmailLength) {
+        this.minEmailLength = minEmailLength
     }
 
     @Required
-    void setEmailMaxLength(Integer emailMaxLength) {
-        this.emailMaxLength = emailMaxLength
+    void setMaxEmailLength(Integer maxEmailLength) {
+        this.maxEmailLength = maxEmailLength
     }
-    */
 }

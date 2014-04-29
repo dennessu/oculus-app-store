@@ -12,6 +12,7 @@ import com.junbo.order.db.entity.enums.SubledgerItemAction
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.order.spec.model.SubledgerItem
+import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.transaction.annotation.Transactional
@@ -21,6 +22,7 @@ import javax.annotation.Resource
 /**
  * Created by fzhang on 4/10/2014.
  */
+@CompileStatic
 class CreateSubledgerItemAction extends BaseOrderEventAwareAction {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CreateSubledgerItemAction)
@@ -46,7 +48,7 @@ class CreateSubledgerItemAction extends BaseOrderEventAwareAction {
                 // todo ignore first party item
                 def offer = serviceContext.offersMap[orderItem.offer]
                 def subledgerItem = buildSubledgerItem(order, orderItem, offer)
-                def subledger = subledgerHelper.getMatchingSubledger(offer, order.country, order.currency, new Date())
+                def subledger = subledgerHelper.getMatchingSubledger(offer, order.country.value, order.currency.value, new Date())
 
                 if (subledger != null) {
                     // link to subledger only if matching subledger found. If not found, let the back-end job to create
@@ -70,7 +72,7 @@ class CreateSubledgerItemAction extends BaseOrderEventAwareAction {
                 totalAmount: order.isTaxInclusive ? orderItem.totalAmount - orderItem.totalTax : orderItem.totalAmount,
                 orderItemId: orderItem.orderItemId,
                 offerId: new OfferId(offer.catalogOfferRevision.offerId),
-                subledgerItemAction: SubledgerItemAction.CHARGE
+                subledgerItemAction: SubledgerItemAction.CHARGE.name()
         )
         return subledgerItem
     }

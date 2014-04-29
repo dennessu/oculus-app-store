@@ -5,14 +5,16 @@
  */
 package com.junbo.test.common.apihelper.identity.impl;
 
-import com.junbo.common.json.JsonMessageTranscoder;
-import com.junbo.common.model.Results;
-import com.junbo.langur.core.client.TypeReference;
-import com.junbo.test.common.apihelper.HttpClientBase;
-import com.junbo.test.common.blueprint.Master;
-import com.junbo.test.common.libs.*;
 import com.junbo.test.common.apihelper.identity.UserService;
+import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.common.json.JsonMessageTranscoder;
+import com.junbo.langur.core.client.TypeReference;
+import com.junbo.identity.spec.v1.model.Locale;
+import com.junbo.test.common.blueprint.Master;
 import com.junbo.identity.spec.v1.model.User;
+import com.junbo.common.enumid.LocaleId;
+import com.junbo.common.model.Results;
+import com.junbo.test.common.libs.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +28,7 @@ import java.util.List;
 public class UserServiceImpl extends HttpClientBase implements UserService {
 
     private final String identityServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.IDENTITY) + "users";
+    private final String defaultUser = "defaultUser";
     private static UserService instance;
 
     public static synchronized UserService instance() {
@@ -39,16 +42,23 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     }
 
     public String PostUser() throws Exception {
+        String userForPost = prepareUserEntity(defaultUser);
 
-        User user = new User();
-        user.setUsername(RandomFactory.getRandomStringOfAlphabet(20));
-        user.setNickName(RandomFactory.getRandomStringOfAlphabet(10));
-        user.setType("user");
-        user.setCanonicalUsername(RandomFactory.getRandomStringOfAlphabet(10));
-        user.setLocale("en_US");
-        user.setPreferredLanguage("en_US");
+        String responseBody = restApiCall(HTTPMethod.POST, identityServerURL, userForPost, 201);
+        User userGet = new JsonMessageTranscoder().decode(new TypeReference<User>() {},
+                responseBody);
+        String userId = IdConverter.idToHexString(userGet.getId());
+        Master.getInstance().addUser(userId, userGet);
 
-        return PostUser(user);
+        return userId;
+    }
+
+    private String prepareUserEntity(String fileName)
+            throws Exception {
+
+        String strUser = readFileContent(String.format("testUsers/%s.json", fileName));
+        strUser = strUser.replace("RANDOMUSERNAME", RandomFactory.getRandomStringOfAlphabet(10));
+        return strUser;
     }
 
     public String PostUser(User user) throws Exception {
@@ -149,5 +159,44 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     public String ResetPassword(String userId, String newPassword, int expectedResponseCode) throws Exception {
         //Todo
         return null;
+    }
+
+    public LocaleId PostLocale() throws Exception {
+
+        Locale locale = new Locale();
+        locale.setLocaleCode("en_US");
+        locale.setLocaleName("US");
+        locale.setLongName("en_US");
+        locale.setShortName("US");
+
+        return PostLocale(locale);
+    }
+
+    public LocaleId PostLocale(Locale locale) throws Exception {
+        return PostLocale(locale, 200);
+    }
+
+    public LocaleId PostLocale(Locale locale, int expectedResponseCode) throws Exception {
+        String localeServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.IDENTITY) + "locales";
+
+        String responseBody = restApiCall(HTTPMethod.POST, localeServerURL, locale, expectedResponseCode);
+        Locale localeGet = new JsonMessageTranscoder().decode(new TypeReference<Locale>() {},
+                responseBody);
+
+        return localeGet.getId();
+    }
+
+    public Results<Locale> GetLocales() throws Exception {
+        return GetLocales(200);
+    }
+
+    public Results<Locale> GetLocales(int expectedResponseCode) throws Exception {
+        String localeServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.IDENTITY) + "locales";
+
+        String responseBody = restApiCall(HTTPMethod.GET, localeServerURL, expectedResponseCode);
+        Results<Locale> localesGet = new JsonMessageTranscoder().decode(new TypeReference<Results<Locale>>() {},
+                responseBody);
+
+        return localesGet;
     }
 }

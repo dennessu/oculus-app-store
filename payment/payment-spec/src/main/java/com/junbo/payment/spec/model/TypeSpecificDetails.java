@@ -7,10 +7,13 @@
 package com.junbo.payment.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.junbo.common.jackson.annotation.CountryId;
+import com.junbo.common.jackson.annotation.CurrencyId;
 import com.junbo.payment.common.FilterIn;
 import com.junbo.payment.common.FilterOut;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -46,10 +49,18 @@ public class TypeSpecificDetails {
     @ApiModelProperty(position = 8, required = true,
             value = "[Client Immutable] The country resource where the PI issued.")
     @FilterIn
+    @CountryId
     private String issueCountry;
-
+    @JsonIgnore
     private String walletType;
-    private String walletCurrency;
+    @ApiModelProperty(position = 9, required = true,
+            value = "The currency resource of the Storde Value PI")
+    @CurrencyId
+    private String storedValueCurrency;
+    @ApiModelProperty(position = 10, required = true,
+            value = "[Client Immutable] The Stored Value balance of the PI.")
+    @FilterIn
+    private BigDecimal storedValueBalance;
 
     @JsonIgnore
     public Long getId() {
@@ -132,12 +143,20 @@ public class TypeSpecificDetails {
         this.walletType = walletType;
     }
 
-    public String getWalletCurrency() {
-        return walletCurrency;
+    public String getStoredValueCurrency() {
+        return storedValueCurrency;
     }
 
-    public void setWalletCurrency(String walletCurrency) {
-        this.walletCurrency = walletCurrency;
+    public void setStoredValueCurrency(String storedValueCurrency) {
+        this.storedValueCurrency = storedValueCurrency;
+    }
+
+    public BigDecimal getStoredValueBalance() {
+        return storedValueBalance;
+    }
+
+    public void setStoredValueBalance(BigDecimal storedValueBalance) {
+        this.storedValueBalance = storedValueBalance;
     }
 
 }

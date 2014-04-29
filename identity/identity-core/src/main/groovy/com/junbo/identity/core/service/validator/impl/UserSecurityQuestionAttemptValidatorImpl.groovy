@@ -146,8 +146,6 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
             throw AppErrors.INSTANCE.fieldTooShort('value', valueMinLength).exception()
         }
 
-        // todo:    Add check for clientId
-
         if (attempt.ipAddress != null) {
             if (!allowedIPPatterns.any {
                 Pattern pattern -> pattern.matcher(attempt.ipAddress).matches()

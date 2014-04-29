@@ -10,10 +10,12 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
+import com.junbo.oauth.core.service.TokenService
 import com.junbo.oauth.core.util.OAuthInfoUtil
 import com.junbo.oauth.spec.model.TokenType
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
+import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 import org.springframework.web.util.UriComponentsBuilder
 
@@ -24,6 +26,13 @@ import javax.ws.rs.core.Response
  */
 @CompileStatic
 class RedirectToClient implements Action {
+
+    private TokenService tokenService
+
+    @Required
+    void setTokenService(TokenService tokenService) {
+        this.tokenService = tokenService
+    }
 
     @Override
     Promise<ActionResult> execute(ActionContext context) {
@@ -64,7 +73,12 @@ class RedirectToClient implements Action {
         }
 
         // Add the session state, the client will use it for tracking the login status within an iframe.
-        parameters.put(OAuthParameters.SESSION_ID, loginState.sessionId)
+        String sessionState = tokenService.generateSessionStatePerClient(
+                loginState.sessionId,
+                contextWrapper.client.clientId,
+                contextWrapper.oauthInfo.redirectUri)
+
+        parameters.put(OAuthParameters.SESSION_STATE, sessionState)
 
         // If the flow is an implicit flow, which means the token, id_token response type is presented,
         // the parameters need to be added to the redirect uri's fragment.

@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Created by baojing on 2/18/14.
  */
 @ContextConfiguration(locations = {"classpath:spring/context-test.xml"})
-@TransactionConfiguration(defaultRollback = false)
+@TransactionConfiguration(defaultRollback = true)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
 @Transactional("transactionManager")
 public class BaseTest extends AbstractTestNGSpringContextTests {

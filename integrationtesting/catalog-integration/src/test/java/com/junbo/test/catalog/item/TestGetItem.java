@@ -5,18 +5,18 @@
  */
 package com.junbo.test.catalog.item;
 
-import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.test.catalog.util.BaseTestClass;
-import com.junbo.test.common.apihelper.catalog.ItemService;
 import com.junbo.test.common.apihelper.catalog.impl.ItemServiceImpl;
+import com.junbo.test.common.apihelper.catalog.ItemService;
+import com.junbo.test.catalog.util.BaseTestClass;
+import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.EnumHelper;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.*;
 
-import java.util.*;
-import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.testng.Assert;
+import java.util.*;
 
 /**
   * @author Jason
@@ -171,7 +171,6 @@ public class TestGetItem extends BaseTestClass {
     private void verifyValidScenarios(String itemId, boolean status) throws Exception {
         String itemRtnId = itemService.getItem(itemId);
         Assert.assertNotNull("Can't get items", itemRtnId);
-        Assert.assertTrue(status == Master.getInstance().getItem(itemRtnId).getCurated());
     }
 
     private void verifyInvalidScenarios(String itemId) throws Exception {
@@ -229,7 +228,7 @@ public class TestGetItem extends BaseTestClass {
     }
 
     private void verifyGetItemsScenarios(HashMap<String, String> paraMap, int expectedRtnSize, String... itemId) throws Exception{
-        List<String> itemRtnId = itemService.getItem(paraMap);
+        List<String> itemRtnId = itemService.getItems(paraMap);
 
         Assert.assertEquals(itemRtnId.size(), expectedRtnSize);
 

@@ -9,8 +9,8 @@ package com.junbo.catalog.spec.model.item;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.BaseEntityModel;
-import com.junbo.catalog.spec.model.common.Link;
 import com.junbo.common.jackson.annotation.*;
+import com.junbo.common.model.Link;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
@@ -25,8 +25,13 @@ public class Item extends BaseEntityModel {
     private Long itemId;
 
     @ApiModelProperty(position = 2, required = true, value = "Item type",
-            allowableValues = "PHYSICAL, DIGITAL, WALLET, SUBSCRIPTION, VIRTUAL")
+            allowableValues = "PHYSICAL, DIGITAL, STORED_VALUE, SUBSCRIPTION, VIRTUAL")
     private String type;
+
+    @ItemId
+    @JsonProperty("iapHostItem")
+    @ApiModelProperty(position = 24, required = false, value = "The item in which the IAP item will be sold.")
+    private Long iapHostItemId;
 
     @ItemRevisionId
     @JsonProperty("currentRevision")
@@ -34,6 +39,7 @@ public class Item extends BaseEntityModel {
     private Long currentRevisionId;
 
     @ApiModelProperty(position = 21, required = true, value = "Item revisions")
+    @HateoasLink("/item-revisions?itemId={itemId}")
     private Link revisions;
 
     @UserId
@@ -58,9 +64,6 @@ public class Item extends BaseEntityModel {
     @ApiModelProperty(position = 26, required = true, value = "Genres")
     private List<Long> genres;
 
-    @ApiModelProperty(position = 27, required = true, value = "Sku")
-    private String sku;
-
     @OfferId
     @ApiModelProperty(position = 28, required = true, value = "Default offer")
     private Long defaultOffer;
@@ -82,6 +85,14 @@ public class Item extends BaseEntityModel {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Long getIapHostItemId() {
+        return iapHostItemId;
+    }
+
+    public void setIapHostItemId(Long iapHostItemId) {
+        this.iapHostItemId = iapHostItemId;
     }
 
     public Long getCurrentRevisionId() {
@@ -138,14 +149,6 @@ public class Item extends BaseEntityModel {
 
     public void setGenres(List<Long> genres) {
         this.genres = genres;
-    }
-
-    public String getSku() {
-        return sku;
-    }
-
-    public void setSku(String sku) {
-        this.sku = sku;
     }
 
     public Long getEntitlementDefId() {

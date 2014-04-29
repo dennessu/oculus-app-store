@@ -44,4 +44,21 @@ class UriUtil {
 
         return true
     }
+
+    static String getOrigin(String uriStr) {
+        URI uri = URI.create(uriStr)
+
+        def port = uri.port
+        if ('https' == uri.scheme && 433 == port) {
+            port = -1
+        } else if ('http' == uri.scheme && 80 == port) {
+            port = -1
+        }
+
+        if (port < 0) {
+            "${uri.scheme}://${uri.host}"
+        }
+
+        return "${uri.scheme}://${uri.host}:$port"
+    }
 }

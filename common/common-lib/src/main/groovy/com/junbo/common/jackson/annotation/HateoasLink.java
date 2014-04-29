@@ -6,6 +6,9 @@
 
 package com.junbo.common.jackson.annotation;
 
+import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.lang.annotation.*;
 
 /**
@@ -13,6 +16,8 @@ import java.lang.annotation.*;
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
+@JacksonAnnotationsInside
+@JsonIgnore
 @Target(ElementType.FIELD)
 public @interface HateoasLink {
     String value();

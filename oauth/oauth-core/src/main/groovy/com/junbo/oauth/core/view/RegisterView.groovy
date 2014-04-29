@@ -27,14 +27,17 @@ class RegisterView extends AbstractView {
     @Override
     protected Promise<ViewModel> buildViewModel(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
+        def modelMap = [
+                'clientId'          : contextWrapper.client.clientId,
+                'captchaRequired'   : true,
+                'recaptchaPublicKey': recaptchaPublicKey,
+                'locale'            : contextWrapper.viewLocale
+        ]
+        modelMap.putAll(contextWrapper.extraParameterMap)
 
         def model = new ViewModel(
                 view: 'register',
-                model: [
-                        'clientId'          : contextWrapper.client.clientId,
-                        'captchaRequired'   : true,
-                        'recaptchaPublicKey': recaptchaPublicKey
-                ] as Map<String, Object>,
+                model: modelMap as Map<String, Object>,
                 errors: contextWrapper.errors.unique(new ErrorComparator()).asList()
         )
 

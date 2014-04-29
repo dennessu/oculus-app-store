@@ -6,6 +6,7 @@
 
 package com.junbo.rating.core.mock;
 
+import com.junbo.catalog.spec.enums.PriceType;
 import com.junbo.catalog.spec.model.domaindata.ShippingMethod;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.promotion.*;
@@ -63,8 +64,8 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
     public ShippingMethod getShippingMethod(Long shippingMethodId) {
         return new ShippingMethod() {{
             setId(System.currentTimeMillis());
-            setBaseUnit(10);
-            setCapUnit(20);
+            setBaseUnit(5);
+            setCapUnit(10);
             setBasePrice(new BigDecimal("10.00"));
             setAdditionalPrice(new BigDecimal("1.20"));
         }};
@@ -85,7 +86,7 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
     private RatingOffer genOffer100() {
         return new RatingOffer() {{
             setId(100L);
-            setPrice(new Price(Price.CUSTOM, new HashMap<String, BigDecimal>() {{
+            setPrice(new Price(PriceType.CUSTOM.name(), new HashMap<String, BigDecimal>() {{
                 put("USD", new BigDecimal("9.99"));
             }}));
             setCategories(new ArrayList<Long>());
@@ -107,7 +108,7 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
     private RatingOffer genOffer102() {
         return new RatingOffer() {{
             setId(102L);
-            setPrice(new Price(Price.CUSTOM, new HashMap<String, BigDecimal>() {{
+            setPrice(new Price(PriceType.CUSTOM.name(), new HashMap<String, BigDecimal>() {{
                 put("USD", new BigDecimal("9.99"));
             }}));
             setCategories(new ArrayList<Long>());
@@ -130,7 +131,7 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
     private RatingOffer genOffer107() {
         return new RatingOffer() {{
             setId(107L);
-            setPrice(new Price(Price.CUSTOM, new HashMap<String, BigDecimal>() {{
+            setPrice(new Price(PriceType.CUSTOM.name(), new HashMap<String, BigDecimal>() {{
                 put("USD", new BigDecimal("1.99"));
             }}));
             setCategories(new ArrayList<Long>());
@@ -147,7 +148,7 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
     private RatingOffer genOffer109() {
         return new RatingOffer() {{
             setId(109L);
-            setPrice(new Price(Price.CUSTOM, new HashMap<String, BigDecimal>() {{
+            setPrice(new Price(PriceType.CUSTOM.name(), new HashMap<String, BigDecimal>() {{
                 put("USD", new BigDecimal("9.99"));
             }}));
             setCategories(new ArrayList<Long>());

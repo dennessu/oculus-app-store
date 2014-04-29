@@ -92,6 +92,7 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
         entitlementResourceClientProxy.postEntitlement(entitlement).wrapped().get();
         entitlementResourceClientProxy.postEntitlement(entitlement).wrapped().get();
         EntitlementSearchParam searchParam = new EntitlementSearchParam.Builder(new UserId(userId)).isActive(true).lastModifiedTime("2014-01-01T00:00:00Z").build();
+        //TODO: use /entitlements/?userId={userId}
         Results<Entitlement> result = userEntitlementResourceClientProxy.getEntitlements(new UserId(userId), searchParam, new PageMetadata()).wrapped().get();
         Assert.assertEquals(result.getItems().size(), 2);
         searchParam.setIsBanned(true);

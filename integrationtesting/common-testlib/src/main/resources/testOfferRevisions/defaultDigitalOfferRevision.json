@@ -1,24 +1,18 @@
 {
-    "offer": {"href": "https://api.oculusvr.com/v1/offers/6B54FD31BC9F", "id": "6B54FD31BC9F"},
+    "offer": {"href": "https://api.oculusvr.com/v1/offers/6B54DF103CDF", "id": "6B54DF103CDF"},
     "status": "DRAFT",
-    "name": {
-        "DEFAULT":"Angry Bird",
-        "en_US":"Angry Bird",
-        "zh_CN":"愤怒的小鸟"
-    },
     "publisher": {"href": "https://api.oculusvr.com/v1/users/1234", "id": "1234"},
-    "artwork": "main image address",
     "items":[
         {
-            "item": {"href": "https://api.oculusvr.com/v1/items/6B54FDB4BC9F", "id": "6B54FDB4BC9F"},
+            "item": {"href": "https://api.oculusvr.com/v1/items/6B54FFA0FC9F", "id": "6B54FFA0FC9F"},
             "quantity": 1
         }
     ],
+    "subOffers": [],
     "price":{
         "priceType": "CUSTOM",
-        "prices": {
-            "USD": 9.99
-        }
+        "priceTier": null,
+        "prices": {"USD":10, "JPY": 1000.0}
     },
     "restrictions":{
         "limitPerCustomer": 10,
@@ -26,38 +20,37 @@
         "preconditionItems": [{"href": "https://api.oculusvr.com/v1/items/1230", "id": "1230"}],
         "exclusionItems": [{"href": "https://api.oculusvr.com/v1/items/120", "id": "120"}]
     },
-    "availableCountries":["US", "CN"],
-    "startTime": {
-        "US": "2014-01-01T01:00:00Z",
-        "CN": "2014-01-01T01:00:00Z"
-    },
-    "endTime": {
-        "US": "2015-01-01T01:00:00Z",
-        "CN": "2015-01-01T01:00:00Z"
-    },
-    "events": {
-        "Purchase":
-        {
-            "name": "Purchase",
-            "actions":[
+    "eligibleCountries": [
+        {"href": "https://api.oculusvr.com/v1/countries/US", "id": "US"},
+        {"href": "https://api.oculusvr.com/v1/countries/CN", "id": "CN"}
+    ],
+    "eventActions": null,
+    "locales":{
+        "en_US":{
+            "name": "Angry Bird",
+            "revisionNotes": "fix some bugs",
+            "longDescription": "long description",
+            "shortDescription": "short description",
+            "images":{
+                "thumb": {
+                    "id": "id of image",
+                    "href":"location of image",
+                    "size":200,
+                    "x":20,
+                    "y":10
+                },
+                "main": {},
+                "general":[]
+            },
+            "videos":[
                 {
-                    "type": "GRANT_ENTITLEMENT",
-                    "entitlementDefinition": {"href": "https://api.oculusvr.com/v1/entitlement-definitions/1241", "id": "1241"}
+                    "service": "YOUTUBE",
+                    "id": "id of the video",
+                    "title": "title of the video"
                 }
             ]
         }
     },
-    "shortDescription": {
-        "DEFAULT": "short description",
-        "en_US": "short description",
-        "zh_CN": "描述"
-    },
-    "longDescription": {
-        "DEFAULT": "long description",
-        "en_US": "long description",
-        "zh_CN": "长描述"
-    },
-    "images":["http://image1.address","http://image2.address"],
-    "videos":["http://video1.address","http://video2.address"],
-    "rev": 1
+    "futureProperties":{},
+    "rev": null
 }

@@ -15,6 +15,7 @@ import com.junbo.common.jackson.annotation.OfferId;
 import com.junbo.common.jackson.annotation.UserId;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,9 @@ public class ItemRevision extends BaseRevisionModel {
     @JsonProperty("self")
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The id of item revision resource")
     private Long revisionId;
+
+    @ApiModelProperty(position = 15, required = true, value = "Sku")
+    private String sku;
 
     @UserId
     @JsonProperty("developer")
@@ -53,19 +57,25 @@ public class ItemRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 26, required = true, value = "Download Link", allowableValues = "PC, MAC, LINUX")
     private Map<String, Binary> binaries;
 
-    @ApiModelProperty(position = 30, required = true, value = "Wallet currency type",
-            allowableValues = "REAL_CURRENCY, VIRTUAL_CURRENCY")
-    private String walletCurrencyType;
     @CurrencyId
     @ApiModelProperty(position = 31, required = true, value = "Wallet currency")
-    private String walletCurrency;
+    private String storedValueCurrency;
     @ApiModelProperty(position = 32, required = true, value = "Wallet amount")
-    private String walletAmount;
+    private BigDecimal storedValueAmount;
 
     @ApiModelProperty(position = 40, required = true, value = "Locale properties of the item revision")
     private Map<String, ItemRevisionLocaleProperties> locales;
     @ApiModelProperty(position = 41, required = true, value = "Country properties of the item revision")
     private Map<String, ItemRevisionCountryProperties> countries;
+
+
+    public String getSku() {
+        return sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
+    }
 
     public Long getRevisionId() {
         return revisionId;
@@ -131,28 +141,20 @@ public class ItemRevision extends BaseRevisionModel {
         this.binaries = binaries;
     }
 
-    public String getWalletCurrencyType() {
-        return walletCurrencyType;
+    public String getStoredValueCurrency() {
+        return storedValueCurrency;
     }
 
-    public void setWalletCurrencyType(String walletCurrencyType) {
-        this.walletCurrencyType = walletCurrencyType;
+    public void setStoredValueCurrency(String storedValueCurrency) {
+        this.storedValueCurrency = storedValueCurrency;
     }
 
-    public String getWalletCurrency() {
-        return walletCurrency;
+    public BigDecimal getStoredValueAmount() {
+        return storedValueAmount;
     }
 
-    public void setWalletCurrency(String walletCurrency) {
-        this.walletCurrency = walletCurrency;
-    }
-
-    public String getWalletAmount() {
-        return walletAmount;
-    }
-
-    public void setWalletAmount(String walletAmount) {
-        this.walletAmount = walletAmount;
+    public void setStoredValueAmount(BigDecimal storedValueAmount) {
+        this.storedValueAmount = storedValueAmount;
     }
 
     public Map<String, ItemRevisionLocaleProperties> getLocales() {

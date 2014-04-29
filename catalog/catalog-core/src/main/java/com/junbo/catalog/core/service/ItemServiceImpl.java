@@ -6,19 +6,30 @@
 
 package com.junbo.catalog.core.service;
 
+import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.EntitlementDefinitionService;
 import com.junbo.catalog.core.ItemService;
+import com.junbo.catalog.db.repo.ItemAttributeRepository;
 import com.junbo.catalog.db.repo.ItemRepository;
 import com.junbo.catalog.db.repo.ItemRevisionRepository;
+import com.junbo.catalog.db.repo.OfferRepository;
+import com.junbo.catalog.spec.enums.ItemAttributeType;
+import com.junbo.catalog.spec.enums.ItemType;
+import com.junbo.catalog.spec.enums.Status;
 import com.junbo.catalog.spec.error.AppErrors;
-import com.junbo.catalog.spec.model.common.Status;
+import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import com.junbo.catalog.spec.model.item.*;
+import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.common.error.AppError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -32,13 +43,14 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
     private ItemRevisionRepository itemRevisionRepo;
     @Autowired
     private EntitlementDefinitionService entitlementDefService;
+    @Autowired
+    private ItemAttributeRepository itemAttributeRepo;
+    @Autowired
+    private OfferRepository offerRepo;
 
     @Override
     public Item createEntity(Item item) {
-        if (!StringUtils.isEmpty(item.getRev())) {
-            throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
-        }
-        validateItem(item);
+        validateItemCreation(item);
 
         Long itemId = itemRepo.create(item);
         item.setItemId(itemId);
@@ -49,21 +61,39 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
     }
 
     @Override
+    public Item updateEntity(Long itemId, Item item) {
+        Item oldItem = itemRepo.get(itemId);
+        if (oldItem == null) {
+            throw AppErrors.INSTANCE.notFound("item", Utils.encodeId(itemId)).exception();
+        }
+        validateItemUpdate(item, oldItem);
+        itemRepo.update(item);
+        return itemRepo.get(itemId);
+    }
+
+    @Override
     public List<Item> getItems(ItemsGetOptions options) {
         return itemRepo.getItems(options);
     }
 
     @Override
     public ItemRevision createRevision(ItemRevision revision) {
-        if (!StringUtils.isEmpty(revision.getRev())) {
-            throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
+        validateRevisionCreation(revision);
+        Long revisionId = itemRevisionRepo.create(revision);
+        return itemRevisionRepo.get(revisionId);
+    }
+
+    @Override
+    public ItemRevision updateRevision(Long revisionId, ItemRevision revision) {
+        ItemRevision oldRevision = itemRevisionRepo.get(revisionId);
+        if (oldRevision==null) {
+            throw AppErrors.INSTANCE.notFound("offer-revision", Utils.encodeId(revisionId)).exception();
         }
-        if (!Status.DRAFT.equals(revision.getStatus())) {
-            throw AppErrors.INSTANCE
-                    .fieldNotCorrect("status", "status should be 'DRAFT' at item revision creation.").exception();
+        if (Status.APPROVED.is(oldRevision.getStatus())) {
+            throw AppErrors.INSTANCE.validation("Cannot update an approved revision").exception();
         }
-        validateRevision(revision);
-        return super.createRevision(revision);
+        validateRevisionUpdate(revision, oldRevision);
+        return super.updateRevision(revisionId, revision);
     }
 
     @Override
@@ -101,71 +131,200 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
     }
 
     private void generateEntitlementDef(Item item) {
-        if (ItemType.DIGITAL.equals(item.getType())||ItemType.SUBSCRIPTION.equals(item.getType())) {
+        if (ItemType.DIGITAL.is(item.getType())
+                || ItemType.SUBSCRIPTION.is(item.getType())
+                || ItemType.VIRTUAL.is(item.getType())) {
             EntitlementDefinition entitlementDef = new EntitlementDefinition();
             entitlementDef.setDeveloperId(item.getOwnerId());
-            entitlementDef.setGroup(item.getItemId().toString());
-            if (ItemType.DIGITAL.equals(item.getType())) {
+            entitlementDef.setGroup(Utils.encodeId(item.getItemId()));
+            if (ItemType.DIGITAL.is(item.getType())) {
                 entitlementDef.setType(EntitlementType.DOWNLOAD.name());
-            } else {
+            } else if (ItemType.SUBSCRIPTION.is(item.getType())) {
                 entitlementDef.setType(EntitlementType.SUBSCRIPTION.name());
+            } else if (ItemType.VIRTUAL.is(item.getType())) {
+                entitlementDef.setType(EntitlementType.ONLINE_ACCESS.name());
             }
-            entitlementDef.setTag(item.getItemId().toString());
+            entitlementDef.setTag(Utils.encodeId(item.getItemId()));
             Long entitlementDefId = entitlementDefService.createEntitlementDefinition(entitlementDef);
             item.setEntitlementDefId(entitlementDefId);
         }
     }
 
-    private void validateItem(Item item) {
-        checkFieldNotEmpty(item.getType(), "type");
-        checkFieldNotNull(item.getOwnerId(), "developer");
-
-        if (!ItemType.ALL_TYPES.contains(item.getType())) {
-            throw AppErrors.INSTANCE.fieldNotCorrect("type", "Valid item types: " + ItemType.ALL_TYPES).exception();
+    private void validateItemCreation(Item item) {
+        checkRequestNotNull(item);
+        List<AppError> errors = new ArrayList<>();
+        if (!StringUtils.isEmpty(item.getRev())) {
+            errors.add(AppErrors.INSTANCE.unnecessaryField("rev"));
         }
-
-        if (item.getEntitlementDefId() != null) {
-            throw AppErrors.INSTANCE.unnecessaryField("entitlementDefinition").exception();
-        }
-
         if (item.getCurrentRevisionId() != null) {
-            ItemRevision revision = itemRevisionRepo.get(item.getCurrentRevisionId());
-            checkEntityNotNull(item.getCurrentRevisionId(), revision, "item-revision");
-            if (!item.getItemId().equals(item.getItemId())) {
-                throw AppErrors.INSTANCE.validation("Current revision doesn't belong to this item").exception();
+            errors.add(AppErrors.INSTANCE.unnecessaryField("currentRevision"));
+        }
+
+        validateItemCommon(item, errors);
+
+        if (!errors.isEmpty()) {
+            throw AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+        }
+    }
+
+    private void validateItemUpdate(Item item, Item oldItem) {
+        checkRequestNotNull(item);
+        List<AppError> errors = new ArrayList<>();
+        if (!oldItem.getItemId().equals(item.getItemId())) {
+            errors.add(AppErrors.INSTANCE.fieldNotMatch("self.id", item.getItemId(), oldItem.getItemId()));
+        }
+        if (!isEqual(item.getCurrentRevisionId(), oldItem.getCurrentRevisionId())) {
+            errors.add(AppErrors.INSTANCE
+                    .fieldNotCorrect("currentRevision", "The field can only be changed through revision approve"));
+        }
+        if (!oldItem.getRev().equals(item.getRev())) {
+            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", item.getRev(), oldItem.getRev()));
+        }
+
+        validateItemCommon(item, errors);
+
+        if (!errors.isEmpty()) {
+            throw AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+        }
+    }
+
+    private void validateItemCommon(Item item, List<AppError> errors) {
+        if (item.getOwnerId()==null) {
+            errors.add(AppErrors.INSTANCE.missingField("developer"));
+        }
+        if (item.getType()==null || !ItemType.contains(item.getType())) {
+            errors.add(AppErrors.INSTANCE.fieldNotCorrect("type", "Valid types: " + Arrays.asList(ItemType.values())));
+        }
+        if (item.getDefaultOffer() != null) {
+            Offer offer = offerRepo.get(item.getDefaultOffer());
+            if (offer == null) {
+                errors.add(AppErrors.INSTANCE.fieldNotCorrect("defaultOffer",
+                        "Cannot find offer " + Utils.encodeId(item.getDefaultOffer())));
+            } else {
+                if (!isEqual(item.getIapHostItemId(), offer.getIapHostItemId())) {
+                    errors.add(AppErrors.INSTANCE
+                            .validation("defaultOffer should have same iapHostItem as this item."));
+                }
             }
-            if (!Status.APPROVED.equals(revision.getStatus())) {
-                throw AppErrors.INSTANCE.validation("Cannot set current revision to unapproved revision").exception();
+        }
+        if (item.getEntitlementDefId() != null) {
+            errors.add(AppErrors.INSTANCE.unnecessaryField("entitlementDefId"));
+        }
+        if (!CollectionUtils.isEmpty(item.getGenres())) {
+            for (Long genreId : item.getGenres()) {
+                if (genreId == null) {
+                    errors.add(AppErrors.INSTANCE.fieldNotCorrect("genres", "should not contain null"));
+                } else {
+                    ItemAttribute attribute = itemAttributeRepo.get(genreId);
+                    if (attribute == null || !ItemAttributeType.GENRE.is(attribute.getType())) {
+                        errors.add(AppErrors.INSTANCE
+                                .fieldNotCorrect("categories", "Cannot find genre " + Utils.encodeId(genreId)));
+                    }
+                }
             }
         }
     }
 
-    private void validateRevision(ItemRevision revision) {
-        checkFieldNotNull(revision.getItemId(), "item");
-        checkFieldNotNull(revision.getOwnerId(), "developer");
-
-        Item item = itemRepo.get(revision.getItemId());
-        checkEntityNotNull(revision.getItemId(), item, "item");
-
-        if (ItemType.DIGITAL.equals(item.getType())) {
-            checkFieldNotNull(revision.getBinaries(), "binaries");
-        } else if (ItemType.WALLET.equals(item.getType())) {
-            checkFieldNotNull(revision.getWalletCurrencyType(), "walletCurrencyType");
-            checkFieldNotNull(revision.getWalletCurrency(), "walletCurrency");
-            checkFieldNotNull(revision.getWalletAmount(), "walletAmount");
+    private void validateRevisionCreation(ItemRevision revision) {
+        checkRequestNotNull(revision);
+        List<AppError> errors = new ArrayList<>();
+        if (!StringUtils.isEmpty(revision.getRev())) {
+            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", revision.getRev(), null));
+        }
+        if (!Status.DRAFT.is(revision.getStatus())) {
+            errors.add(AppErrors.INSTANCE.fieldNotMatch("status", revision.getStatus(), Status.DRAFT));
         }
 
-        checkFieldNotNull(revision.getLocales(), "locales");
-        for (Map.Entry<String, ItemRevisionLocaleProperties> entry : revision.getLocales().entrySet()) {
-            String locale = entry.getKey();
-            ItemRevisionLocaleProperties properties = entry.getValue();
-            // TODO: check locale is a valid locale
-            checkFieldNotNull(properties, "Properties should not be null for locale " + locale);
-            checkFieldNotNull(properties.getName(), locale + ".name");
-        }
+        validateRevisionCommon(revision, errors);
 
-        if (revision.getMsrp()!=null) {
-            checkPrice(revision.getMsrp());
+        if (!errors.isEmpty()) {
+            throw AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
         }
     }
+
+
+    private void validateRevisionUpdate(ItemRevision revision, ItemRevision oldRevision) {
+        checkRequestNotNull(revision);
+        List<AppError> errors = new ArrayList<>();
+        if (!oldRevision.getRevisionId().equals(revision.getRevisionId())) {
+            errors.add(AppErrors.INSTANCE
+                    .fieldNotMatch("revisionId", revision.getRevisionId(), oldRevision.getRevisionId()));
+        }
+        if (!oldRevision.getRev().equals(revision.getRev())) {
+            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", revision.getRev(), oldRevision.getRev()));
+        }
+        if (revision.getStatus()==null || !Status.contains(revision.getStatus())) {
+            errors.add(AppErrors.INSTANCE.fieldNotCorrect("status", "Valid statuses: " + Status.ALL));
+        }
+
+        validateRevisionCommon(revision, errors);
+
+        if (!errors.isEmpty()) {
+            throw AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+        }
+    }
+
+    private void validateRevisionCommon(ItemRevision revision, List<AppError> errors) {
+        if (revision.getOwnerId() == null) {
+            errors.add(AppErrors.INSTANCE.missingField("developer"));
+        }
+        if (revision.getItemId() == null) {
+            errors.add(AppErrors.INSTANCE.missingField("itemId"));
+        } else {
+            Item item = itemRepo.get(revision.getItemId());
+            if (item == null) {
+                errors.add(AppErrors.INSTANCE
+                        .fieldNotCorrect("itemId", "Cannot find item " + Utils.encodeId(revision.getItemId())));
+            } else {
+                if (ItemType.DIGITAL.is(item.getType())) {
+                    if (CollectionUtils.isEmpty(revision.getBinaries())) {
+                        errors.add(AppErrors.INSTANCE.missingField("binaries"));
+                    }
+                } else if (ItemType.STORED_VALUE.is(item.getType())) {
+                    if (StringUtils.isEmpty(revision.getStoredValueCurrency())) {
+                        errors.add(AppErrors.INSTANCE.missingField("storedValueCurrency"));
+                    }
+                    if (revision.getStoredValueAmount()==null) {
+                        errors.add(AppErrors.INSTANCE.missingField("walletAmount"));
+                    } else if (revision.getStoredValueAmount().compareTo(BigDecimal.ZERO)<0) {
+                        errors.add(AppErrors.INSTANCE.fieldNotCorrect("walletAmount", "Should not less than 0"));
+                    }
+                }
+                if (!ItemType.STORED_VALUE.is(item.getType())) {
+                    if (revision.getStoredValueCurrency() != null) {
+                        errors.add(AppErrors.INSTANCE.unnecessaryField("storedValueCurrency"));
+                    }
+                    if (revision.getStoredValueAmount() != null) {
+                        errors.add(AppErrors.INSTANCE.unnecessaryField("walletAmount"));
+                    }
+                }
+                if (!ItemType.DIGITAL.is(item.getType())) {
+                    if (!CollectionUtils.isEmpty(revision.getBinaries())) {
+                        errors.add(AppErrors.INSTANCE.unnecessaryField("binaries"));
+                    }
+                }
+            }
+        }
+        if (revision.getMsrp() != null) {
+            checkPrice(revision.getMsrp(), errors);
+        }
+        if (CollectionUtils.isEmpty(revision.getLocales())) {
+            errors.add(AppErrors.INSTANCE.missingField("locales"));
+        } else {
+            for (Map.Entry<String, ItemRevisionLocaleProperties> entry : revision.getLocales().entrySet()) {
+                String locale = entry.getKey();
+                ItemRevisionLocaleProperties properties = entry.getValue();
+                // TODO: check locale is a valid locale
+                if (properties==null) {
+                    errors.add(AppErrors.INSTANCE.missingField("locales." + locale));
+                } else {
+                    if (StringUtils.isEmpty(properties.getName())) {
+                        errors.add(AppErrors.INSTANCE.missingField("locales." + locale + ".name"));
+                    }
+                }
+            }
+        }
+        // TODO: check other properties
+    }
+
 }

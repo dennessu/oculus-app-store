@@ -18,8 +18,6 @@ import java.util.List;
 public class PromotionsGetOptions extends PageableGetOptions {
     @QueryParam("id")
     private List<PromotionId> promotionIds;
-    @QueryParam("curated")
-    private Boolean curated;
 
     public List<PromotionId> getPromotionIds() {
         return promotionIds;
@@ -27,13 +25,5 @@ public class PromotionsGetOptions extends PageableGetOptions {
 
     public void setPromotionIds(List<PromotionId> promotionIds) {
         this.promotionIds = promotionIds;
-    }
-
-    public Boolean getCurated() {
-        return curated;
-    }
-
-    public void setCurated(Boolean curated) {
-        this.curated = curated;
     }
 }

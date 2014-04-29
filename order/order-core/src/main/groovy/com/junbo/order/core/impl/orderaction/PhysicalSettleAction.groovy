@@ -1,7 +1,7 @@
 package com.junbo.order.core.impl.orderaction
-
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
+import com.junbo.common.id.PIType
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
@@ -15,7 +15,6 @@ import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
-import com.junbo.payment.spec.enums.PIType
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -53,7 +52,7 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
         if (completeCharge) {
             return orderServiceContextBuilder.getPaymentInstruments(context.orderServiceContext)
                     .then { List<PaymentInstrument> pis ->
-                if (pis[0].type == PIType.PAYPAL.name()) {
+                if (PIType.get(pis[0].type) == PIType.PAYPAL) {
                     // for web payment, balance is already fully charged at web payment flow
                     return Promise.pure(actionContext)
                 }

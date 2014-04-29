@@ -8,6 +8,7 @@
     <wf:flow id="emailVerifyFlow">
         <wf:view-state id="REDIRECT_TO_VERIFY">
             <wf:on-render>
+                <wf:action ref="validateLocale" />
                 <wf:action ref="redirectToVerifyResult"/>
             </wf:on-render>
             <wf:transition on="*" to="EMAIL_VERIFY_VIEW"/>
@@ -23,7 +24,8 @@
 
     <bean id="verifyEmail" class="com.junbo.oauth.core.action.VerifyEmail">
         <property name="emailVerifyCodeRepository" ref="emailVerifyCodeRepository"/>
-        <property name="userPiiResource" ref="userPiiResource"/>
+        <property name="userPersonalInfoResource" ref="userPersonalInfoResource"/>
+        <property name="userResource" ref="userResource"/>
     </bean>
 
     <bean id="emailVerifyView" class="com.junbo.oauth.core.view.EmailVerifyView"/>

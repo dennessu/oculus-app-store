@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.junbo.common.deser.EnumIdDeserizlizer;
 import com.junbo.common.deser.IdDeserializer;
+import com.junbo.common.enumid.EnumId;
 import com.junbo.common.id.Id;
 import com.junbo.common.jackson.common.CustomDeserializationContext;
 import com.junbo.common.jackson.common.CustomSerializerModifier;
@@ -57,8 +58,8 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
         };
 
         ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(true);
-        provider.addIncludeFilter(new AssignableTypeFilter(Id.class));
 
+        provider.addIncludeFilter(new AssignableTypeFilter(Id.class));
         // scan in com.junbo.common.id package for SubClass of Id
         Set<BeanDefinition> idDefinitions = provider.findCandidateComponents("com/junbo/common/id");
         for (BeanDefinition definition : idDefinitions) {
@@ -71,6 +72,7 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
             }
         }
 
+        provider.addIncludeFilter(new AssignableTypeFilter(EnumId.class));
         // scan in com.junbo.common.enumid package for Subclass of EnumId
         Set<BeanDefinition> enumIdDefinitions = provider.findCandidateComponents("com/junbo/common/enumid");
         for (BeanDefinition definition : enumIdDefinitions) {

@@ -1,17 +1,12 @@
 package com.junbo.payment.core.service;
 
+import com.junbo.common.id.PIType;
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
 import com.junbo.payment.core.BaseTest;
-import com.junbo.payment.core.PaymentInstrumentService;
-import com.junbo.payment.core.PaymentTransactionService;
 import com.junbo.payment.core.mock.MockPaymentProviderServiceImpl;
 import com.junbo.payment.spec.enums.CreditCardType;
-import com.junbo.payment.spec.enums.PIType;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -32,7 +27,7 @@ public class PaymentServiceTest extends BaseTest {
         Assert.assertNotNull(result);
         Assert.assertEquals(result.getTypeSpecificDetails().getCreditCardType(), CreditCardType.VISA.toString());
         Assert.assertEquals(result.getExternalToken(), MockPaymentProviderServiceImpl.piExternalToken);
-        PaymentInstrument getResult = piService.getById(result.getId());
+        PaymentInstrument getResult = piService.getById(result.getId()).wrapped().get();
         Assert.assertEquals(getResult.getAccountName(), result.getAccountName());
        }
 
@@ -50,7 +45,7 @@ public class PaymentServiceTest extends BaseTest {
         result.setIsActive(false);
         result.setBillingAddressId(123L);
         piService.update(result);
-        PaymentInstrument resultUpdate = piService.getById(result.getId());
+        PaymentInstrument resultUpdate = piService.getById(result.getId()).wrapped().get();
         Assert.assertEquals(resultUpdate.getIsActive(), Boolean.FALSE);
         Assert.assertEquals(resultUpdate.getBillingAddressId().longValue(), 123L);
     }
@@ -126,14 +121,16 @@ public class PaymentServiceTest extends BaseTest {
     private PaymentInstrument buildWalletPIRequest() {
         PaymentInstrument request = buildBasePIRequest();
         request.setAccountNum(null);
-        request.setType(PIType.WALLET.getId());
+        request.setType(PIType.STOREDVALUE.getId());
         request.setTypeSpecificDetails(new TypeSpecificDetails() {
             {
                 setWalletType("STORED_VALUE");
-                setWalletCurrency("USD");
+                setStoredValueCurrency("USD");
             }
         });
         return request;
+
+
     }
 
     private PaymentTransaction buildPaymentTransaction(final PaymentInstrument pi){

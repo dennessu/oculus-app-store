@@ -6,6 +6,7 @@ import com.junbo.common.model.Results
 import com.junbo.identity.core.service.Created201Marker
 import com.junbo.identity.core.service.filter.UserCredentialFilter
 import com.junbo.identity.core.service.validator.UserCredentialValidator
+import com.junbo.identity.data.identifiable.CredentialType
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.UserPasswordRepository
 import com.junbo.identity.data.repository.UserPinRepository
@@ -80,6 +81,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
 
                     UserCredential newUserCredential =
                             modelMapper.passwordToCredential(userPassword, new MappingContext())
+                    newUserCredential.type = CredentialType.PASSWORD.toString()
                     created201Marker.mark((Id) newUserCredential.id)
 
                     newUserCredential = userCredentialFilter.filterForGet(newUserCredential, null)
@@ -102,6 +104,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                     }
 
                     UserCredential newUserCredential = modelMapper.pinToCredential(userPin, new MappingContext())
+                    newUserCredential.type = CredentialType.PIN.toString()
                     created201Marker.mark((Id) newUserCredential.id)
 
                     newUserCredential = userCredentialFilter.filterForGet(newUserCredential, null)
@@ -118,7 +121,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
 
         def resultList = new Results<UserCredential>(items: [])
         return userCredentialValidator.validateForSearch(userId, listOptions).then {
-            if (listOptions.type == 'password') {
+            if (listOptions.type == CredentialType.PASSWORD.toString()) {
                 UserPasswordListOptions options = new UserPasswordListOptions()
                 options.setUserId(listOptions.userId)
                 userPasswordRepository.search(options).then { List<UserPassword> userPasswordList ->
@@ -131,6 +134,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                         UserCredential newUserCredential =
                                 modelMapper.passwordToCredential(userPassword, new MappingContext())
                         if (newUserCredential != null) {
+                            newUserCredential.type = CredentialType.PASSWORD.toString()
                             newUserCredential = userCredentialFilter.filterForGet(newUserCredential,
                                     listOptions.properties?.split(',') as List<String>)
 
@@ -139,7 +143,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                     }
                     return Promise.pure(resultList)
                 }
-            } else if (listOptions.type == 'pin') {
+            } else if (listOptions.type == CredentialType.PIN.toString()) {
                 UserPinListOptions options = new UserPinListOptions()
                 options.setUserId(listOptions.userId)
                 userPinRepository.search(options).then { List<UserPin> userPinList ->
@@ -150,6 +154,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                     userPinList.each { UserPin userPin ->
                         UserCredential newUserCredential = modelMapper.pinToCredential(userPin, new MappingContext())
                         if (newUserCredential != null) {
+                            newUserCredential.type = CredentialType.PIN.toString()
                             newUserCredential = userCredentialFilter.filterForGet(newUserCredential,
                                     listOptions.properties?.split(',') as List<String>)
 

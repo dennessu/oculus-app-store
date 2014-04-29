@@ -102,7 +102,7 @@ class DeviceValidatorImpl implements DeviceValidator {
 
     private void checkBasicDeviceInfo(Device device) {
         if (device == null) {
-            throw new IllegalArgumentException('device id null')
+            throw new IllegalArgumentException('device is null')
         }
 
         if (device.serialNumber == null) {

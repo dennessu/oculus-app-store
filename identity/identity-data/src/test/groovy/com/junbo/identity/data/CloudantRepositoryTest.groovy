@@ -8,7 +8,7 @@ package com.junbo.identity.data
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
-import com.junbo.common.enumid.PITypeId
+import com.junbo.common.id.PITypeId
 import com.junbo.common.id.*
 import com.junbo.identity.data.identifiable.UserPasswordStrength
 import com.junbo.identity.data.repository.*
@@ -46,10 +46,6 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     private IdGenerator idGenerator
 
     @Autowired
-    @Qualifier('cloudantAddressRepository')
-    private AddressRepository addressRepository
-
-    @Autowired
     @Qualifier('cloudantDeviceRepository')
     private DeviceRepository deviceRepository
 
@@ -83,7 +79,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     @Qualifier('cloudantUserOptinRepository')
-    private UserCommunicationRepository userOptinRepository
+    private UserCommunicationRepository userCommunicationRepository
 
     @Autowired
     @Qualifier('cloudantUserRepository')
@@ -157,17 +153,6 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void testPITypeRepository() {
-        piTypeRepository.delete(new PITypeId('1234')).wrapped().get()
-
-        PIType piType = new PIType()
-        piType.setId(new PITypeId('1234'))
-
-        PIType newPIType = piTypeRepository.create(piType).wrapped().get()
-        assert  piType.id.toString() == newPIType.id.toString()
-    }
-
-    @Test
     public void testDeviceRepository() {
         Device device = new Device()
         device.setFirmwareVersion(UUID.randomUUID().toString())
@@ -188,19 +173,6 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         device = deviceRepository.searchBySerialNumber(device.serialNumber).wrapped().get()
         assert device.serialNumber == newSerialNumber
-    }
-
-    @Test(enabled = true)
-    public void testAddressRepository() {
-        Address address = new Address()
-        address.city = 'shanghai'
-        address.street1 = UUID.randomUUID().toString()
-        address.postalCode = '201102'
-        address.userId = new UserId(userId)
-        address = addressRepository.create(address).wrapped().get()
-
-        Address newAddress = addressRepository.get(address.id).wrapped().get()
-        Assert.assertEquals(address.city, newAddress.city)
     }
 
     @Test
@@ -229,7 +201,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     public void testTosRepository() {
         Tos tos = new Tos()
         tos.title = 'title'
-        tos.locale = 'en_us'
+        tos.localeId = new LocaleId('en_US')
         tos.content = 'content'
 
         tos = tosRepository.create(tos).wrapped().get()
@@ -252,9 +224,10 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         userPassword.setChangeAtNextLogin(false)
         userPassword.setExpiresBy(new Date())
         userPassword.setCreatedTime(new Date())
-        userPassword.setCreatedBy('lixia')
+
+        userPassword.setCreatedBy('lixia-todo')
         userPassword.setUpdatedTime(new Date())
-        userPassword.setUpdatedBy('lixia')
+        userPassword.setUpdatedBy('lixia-todo')
         userPassword = userPasswordRepository.create(userPassword).wrapped().get()
 
         UserPassword newUserPassword = userPasswordRepository.get(userPassword.getId()).wrapped().get()
@@ -285,9 +258,9 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         userPIN.setChangeAtNextLogin(false)
         userPIN.setExpiresBy(new Date())
         userPIN.setCreatedTime(new Date())
-        userPIN.setCreatedBy('lixia')
+        userPIN.setCreatedBy('lixia-todo')
         userPIN.setUpdatedTime(new Date())
-        userPIN.setUpdatedBy('lixia')
+        userPIN.setUpdatedBy('lixia-todo')
         userPIN = userPinRepository.create(userPIN).wrapped().get()
 
         UserPin newUserPin = userPinRepository.get(userPIN.getId()).wrapped().get()
@@ -312,7 +285,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         authenticator.setType('Google_account')
         authenticator.setExternalId(UUID.randomUUID().toString())
         authenticator.setCreatedTime(new Date())
-        authenticator.setCreatedBy('lixia')
+        authenticator.setCreatedBy('lixia-todo')
         authenticator = userAuthenticatorRepository.create(authenticator).wrapped().get()
 
         UserAuthenticator newUserAuthenticator = userAuthenticatorRepository.get(authenticator.getId()).wrapped().get()
@@ -341,7 +314,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         userLoginAttempt.setIpAddress(UUID.randomUUID().toString())
         userLoginAttempt.setUserAgent(UUID.randomUUID().toString())
         userLoginAttempt.setSucceeded(true)
-        userLoginAttempt.setCreatedBy('lixia')
+        userLoginAttempt.setCreatedBy('lixia-todo')
         userLoginAttempt.setCreatedTime(new Date())
 
         userCredentialVerifyAttemptRepository.create(userLoginAttempt).wrapped().get()
@@ -359,7 +332,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         UserGroup userGroup = new UserGroup()
         userGroup.setUserId(new UserId(userId))
         userGroup.setGroupId(new GroupId(1493188608L))
-        userGroup.setCreatedBy('lixia')
+        userGroup.setCreatedBy('lixia-todo')
         userGroup.setCreatedTime(new Date())
         userGroup = userGroupRepository.create(userGroup).wrapped().get()
 
@@ -386,23 +359,23 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         UserCommunication userOptin = new UserCommunication()
         userOptin.setUserId(new UserId(userId))
         userOptin.setCommunicationId(new CommunicationId(idGenerator.nextId()))
-        userOptin.setCreatedBy('lixia')
+        userOptin.setCreatedBy('lixia-todo')
         userOptin.setCreatedTime(new Date())
-        userOptin = userOptinRepository.create(userOptin).wrapped().get()
+        userOptin = userCommunicationRepository.create(userOptin).wrapped().get()
 
-        UserCommunication newUserOptin = userOptinRepository.get(userOptin.getId()).wrapped().get()
+        UserCommunication newUserOptin = userCommunicationRepository.get(userOptin.getId()).wrapped().get()
         Assert.assertEquals(userOptin.communicationId, newUserOptin.communicationId)
 
         CommunicationId newCommunicationId = new CommunicationId(idGenerator.nextId())
         userOptin.setCommunicationId(newCommunicationId)
-        userOptinRepository.update(userOptin)
+        userCommunicationRepository.update(userOptin)
 
-        newUserOptin = userOptinRepository.get(userOptin.getId()).wrapped().get()
+        newUserOptin = userCommunicationRepository.get(userOptin.getId()).wrapped().get()
         Assert.assertEquals(newCommunicationId, newUserOptin.getCommunicationId())
 
         UserOptinListOptions getOption = new UserOptinListOptions()
         getOption.setUserId(new UserId(userId))
-        List<UserCommunication> userOptins = userOptinRepository.search(getOption).wrapped().get()
+        List<UserCommunication> userOptins = userCommunicationRepository.search(getOption).wrapped().get()
         assert userOptins.size() != 0
     }
 
@@ -417,7 +390,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         user.setPreferredTimezone(UUID.randomUUID().toString())
         user.setCanonicalUsername(random)
         user.setCreatedTime(new Date())
-        user.setCreatedBy('lixia')
+        user.setCreatedBy('lixia-todo')
         user = userRepository.create(user).wrapped().get()
 
         User newUser = userRepository.get(user.getId()).wrapped().get()
@@ -463,7 +436,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         userSecurityQuestion.setUserId(new UserId(userId))
         userSecurityQuestion.setSecurityQuestion('whosyourdaddy')
         userSecurityQuestion.setAnswerHash(UUID.randomUUID().toString())
-        userSecurityQuestion.setCreatedBy('lixia')
+        userSecurityQuestion.setCreatedBy('lixia-todo')
         userSecurityQuestion.setCreatedTime(new Date())
 
         userSecurityQuestion = userSecurityQuestionRepository.create(userSecurityQuestion).wrapped().get()
@@ -489,7 +462,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         UserTosAgreement userTos = new UserTosAgreement()
         userTos.setUserId(new UserId(userId))
         userTos.setTosId(new TosId(123L))
-        userTos.setCreatedBy('lixia')
+        userTos.setCreatedBy('lixia-todo')
         userTos.setCreatedTime(new Date())
         userTos = userTosRepository.create(userTos).wrapped().get()
 

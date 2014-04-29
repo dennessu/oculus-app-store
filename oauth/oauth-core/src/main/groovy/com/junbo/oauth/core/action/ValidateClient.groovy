@@ -42,6 +42,9 @@ class ValidateClient implements Action {
         }
 
         Client client = clientRepository.getClient(clientId)
+        if (client == null) {
+            throw AppExceptions.INSTANCE.invalidClientId(clientId).exception()
+        }
 
         if (client == null) {
             throw AppExceptions.INSTANCE.invalidClientId(clientId).exception()

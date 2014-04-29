@@ -111,7 +111,16 @@ class CurrencyResourceImpl implements CurrencyResource {
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        return currencyRepository.get(currencyId)
+        return currencyValidator.validateForGet(currencyId).then {
+            currencyRepository.get(currencyId).then { Currency newCurrency ->
+                if (newCurrency == null) {
+                    throw AppErrors.INSTANCE.currencyNotFound(currencyId).exception()
+                }
+
+                newCurrency = currencyFilter.filterForGet(newCurrency, null)
+                return Promise.pure(newCurrency)
+            }
+        }
     }
 
     @Override

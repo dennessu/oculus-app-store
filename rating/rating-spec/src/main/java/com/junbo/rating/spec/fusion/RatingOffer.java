@@ -15,16 +15,10 @@ public class RatingOffer {
     private Long id;
 
     private Price price;
-    private List<Long> categories;
+    private List<Long> categories = new ArrayList<>();
 
-    private List<LinkedEntry> items;
-    private List<LinkedEntry> subOffers;
-
-    public RatingOffer() {
-        categories = new ArrayList<>();
-        items = new ArrayList<>();
-        subOffers = new ArrayList<>();
-    }
+    private List<LinkedEntry> items = new ArrayList<>();
+    private List<LinkedEntry> subOffers = new ArrayList<>();
 
     public Long getId() {
         return id;

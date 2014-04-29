@@ -21,8 +21,8 @@ public interface ItemService {
     String getItem(String itemId) throws Exception;
     String getItem(String itemId, int expectedResponseCode) throws Exception;
 
-    List<String> getItem(HashMap<String, String> httpPara) throws Exception;
-    List<String> getItem(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception;
+    List<String> getItems(HashMap<String, String> httpPara) throws Exception;
+    List<String> getItems(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception;
 
     String postDefaultItem(EnumHelper.CatalogItemType itemType) throws Exception;
     Item prepareItemEntity(String fileName) throws Exception;

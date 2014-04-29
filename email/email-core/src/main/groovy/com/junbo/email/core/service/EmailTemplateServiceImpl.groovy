@@ -14,6 +14,7 @@ import com.junbo.email.db.repo.EmailTemplateRepository
 import com.junbo.email.spec.model.EmailTemplate
 import com.junbo.email.spec.model.QueryParam
 import com.junbo.langur.core.promise.Promise
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
@@ -24,6 +25,7 @@ import javax.ws.rs.core.UriInfo
 /**
  * Impl of EmailTemplateService.
  */
+@CompileStatic
 @Component
  class EmailTemplateServiceImpl implements EmailTemplateService {
 
@@ -68,11 +70,12 @@ import javax.ws.rs.core.UriInfo
         return Promise.pure(results)
     }
 
-    private Results<EmailTemplate> buildResults(List<EmailTemplate> templates, QueryParam queryParam) {
+    private Results<EmailTemplate> buildResults(List<EmailTemplate> templates,
+                                                QueryParam queryParam) {
         Results<EmailTemplate> results = new Results<>()
         if (templates != null) {
             results.setItems(templates)
-            results.setSelf(buildLink(queryParam))
+            results.setSelf(this.buildLink(queryParam))
             results.setHasNext(false)
         }
         return  results
@@ -81,13 +84,13 @@ import javax.ws.rs.core.UriInfo
     private Link buildLink(QueryParam queryParam) {
         Link link = new Link()
         UriBuilder uri = uriInfo.baseUriBuilder.path('email-templates')
-        if (queryParam.source != null) {
+        if (queryParam?.source != null) {
             uri.queryParam('source', queryParam.source)
         }
-        if (queryParam.action != null) {
+        if (queryParam?.action != null) {
             uri.queryParam('action', queryParam.action)
         }
-        if (queryParam.locale != null) {
+        if (queryParam?.locale != null) {
             uri.queryParam('locale', queryParam.locale)
         }
         link.setHref(uri.toTemplate())

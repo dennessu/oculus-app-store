@@ -11,9 +11,13 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
+import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.id.OrderId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.json.ObjectMapperProvider;
+import com.junbo.common.util.Utils;
+import com.junbo.configuration.ConfigServiceManager;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
@@ -23,9 +27,15 @@ import static org.testng.Assert.*;
  */
 public class HateoasTest {
     private ObjectMapper mapper = ObjectMapperProvider.instance();
+    private String urlPrefix = ConfigServiceManager.instance().getConfigValue("common.conf.resourceUrlPrefix");
+
+    @BeforeTest
+    public void setup() {
+        assertTrue(urlPrefix != null && urlPrefix.matches("^http(s?)://.*"), "Url Prefix is invalid: " + urlPrefix);
+    }
 
     @Test
-    public void testBVT() throws Exception {
+    public void testStrongTypeId() throws Exception {
         // prepare data
         TestEntity testEntity = new TestEntity();
         testEntity.setUserId(new UserId(1L));
@@ -34,49 +44,67 @@ public class HateoasTest {
         // only partially set, the serialized object should not contain link
         String json = mapper.writeValueAsString(testEntity);
         JsonNode jsonNode = parseJson(json);
+        assertAllLinksNull(testEntity);
 
         assertEquals(
                 jsonNode.get("subLink1").get("href").asText(),
-                "https://api.oculusvr.com/v1/users/6B54FFB0BC9E/orders/3650-6702-5565");
+                Utils.combineUrl(urlPrefix, "/users/6B54FFB0BC9E/orders/3650-6702-5565"));
 
         assertEquals(jsonNode.get("subLink2").getNodeType(), JsonNodeType.NULL);
-        assertEquals(jsonNode.get("superSuperLink").getNodeType(), JsonNodeType.NULL);
+        assertEquals(jsonNode.get("superLink").getNodeType(), JsonNodeType.NULL);
+        testDeserialize(testEntity, json);
+    }
 
-        TestEntity testEntity2 = mapper.readValue(json, TestEntity.class);
-        assertEquals(testEntity2.getUserId().getValue(), testEntity.getUserId().getValue());
-        assertEquals(testEntity2.getOrderId().getValue(), testEntity.getOrderId().getValue());
-
+    @Test
+    public void testAllIds() throws Exception {
+        // parepare data
+        TestEntity testEntity = new TestEntity();
+        testEntity.setUserId(new UserId(1L));
+        testEntity.setOrderId(new OrderId(2L));
         testEntity.setFriendUserId(204783934L);
         testEntity.setFriendOrderId(4102394596L);
-        json = mapper.writeValueAsString(testEntity);
-        jsonNode = parseJson(json);
+
+        String json = mapper.writeValueAsString(testEntity);
+        JsonNode jsonNode = parseJson(json);
 
         assertEquals(
                 jsonNode.get("subLink1").get("href").asText(),
-                "https://api.oculusvr.com/v1/users/6B54FFB0BC9E/orders/3650-6702-5565");
+                Utils.combineUrl(urlPrefix, "/users/6B54FFB0BC9E/orders/3650-6702-5565"));
 
         assertEquals(
                 jsonNode.get("subLink2").get("href").asText(),
-                "https://api.oculusvr.com/v1/friends/6355EF9DBDA1/3687-3240-1275");
+                Utils.combineUrl(urlPrefix, "/friends/6355EF9DBDA1/3687-3240-1275"));
 
         assertEquals(
-                jsonNode.get("superSuperLink").get("href").asText(),
-                "https://api.oculusvr.com/v1/users/6B54FFB0BC9E/orders/3650-6702-5565/friends/6355EF9DBDA1/3687-3240-1275/end");
+                jsonNode.get("superLink").get("href").asText(),
+                Utils.combineUrl(urlPrefix, "/users/6B54FFB0BC9E/orders/3650-6702-5565/friends/6355EF9DBDA1/3687-3240-1275/end"));
 
+        assertAllLinksNull(testEntity);
+        testDeserialize(testEntity, json);
+    }
+
+    @Test
+    public void testWeakTypeId() throws Exception {
+        // prepare data
+        TestEntity testEntity = new TestEntity();
         testEntity.setFriendUserId(1L);
         testEntity.setFriendOrderId(2L);
         testEntity.setUserId(null);
         testEntity.setOrderId(null);
-        json = mapper.writeValueAsString(testEntity);
-        jsonNode = parseJson(json);
+
+        String json = mapper.writeValueAsString(testEntity);
+        JsonNode jsonNode = parseJson(json);
 
         assertEquals(jsonNode.get("subLink1").getNodeType(), JsonNodeType.NULL);
 
         assertEquals(
                 jsonNode.get("subLink2").get("href").asText(),
-                "https://api.oculusvr.com/v1/friends/6B54FFB0BC9E/3650-6702-5565");
+                Utils.combineUrl(urlPrefix, "/friends/6B54FFB0BC9E/3650-6702-5565"));
 
-        assertEquals(jsonNode.get("superSuperLink").getNodeType(), JsonNodeType.NULL);
+        assertEquals(jsonNode.get("superLink").getNodeType(), JsonNodeType.NULL);
+
+        assertAllLinksNull(testEntity);
+        testDeserialize(testEntity, json);
 
         testEntity.setFriendOrderId(null);
         json = mapper.writeValueAsString(testEntity);
@@ -85,7 +113,50 @@ public class HateoasTest {
         // now none of the links are complete, all links are null
         assertEquals(jsonNode.get("subLink1").getNodeType(), JsonNodeType.NULL);
         assertEquals(jsonNode.get("subLink2").getNodeType(), JsonNodeType.NULL);
-        assertEquals(jsonNode.get("superSuperLink").getNodeType(), JsonNodeType.NULL);
+        assertEquals(jsonNode.get("superLink").getNodeType(), JsonNodeType.NULL);
+
+        assertAllLinksNull(testEntity);
+        testDeserialize(testEntity, json);
+    }
+
+    @Test
+    public void testEnumId() throws Exception {
+        TestEntity testEntity = new TestEntity();
+        testEntity.setCurrencyId(new CurrencyId("USD"));
+        testEntity.setFriendCurrencyId("JPY");
+
+        String json = mapper.writeValueAsString(testEntity);
+        JsonNode jsonNode = parseJson(json);
+
+        assertEquals(jsonNode.get("subLink1").getNodeType(), JsonNodeType.NULL);
+        assertEquals(jsonNode.get("subLink2").getNodeType(), JsonNodeType.NULL);
+        assertEquals(jsonNode.get("superLink").getNodeType(), JsonNodeType.NULL);
+
+        assertEquals(
+                jsonNode.get("subLink3").get("href").asText(),
+                Utils.combineUrl(urlPrefix, "/currencies/USD/JPY"));
+
+        assertAllLinksNull(testEntity);
+        testDeserialize(testEntity, json);
+
+        testEntity.setFriendOrderId(null);
+        json = mapper.writeValueAsString(testEntity);
+        jsonNode = parseJson(json);
+
+        // now none of the links are complete, all links are null
+        assertEquals(jsonNode.get("subLink1").getNodeType(), JsonNodeType.NULL);
+        assertEquals(jsonNode.get("subLink2").getNodeType(), JsonNodeType.NULL);
+        assertEquals(jsonNode.get("superLink").getNodeType(), JsonNodeType.NULL);
+
+        assertAllLinksNull(testEntity);
+        testDeserialize(testEntity, json);
+    }
+
+    @Test(expectedExceptions = RuntimeException.class,
+            expectedExceptionsMessageRegExp = "JsonProperty not allowed in @HateoasLink field: .*")
+    public void testJsonPropertyNotAllowed() throws Exception {
+        BadTestEntity testEntity = new BadTestEntity();
+        mapper.writeValueAsString(testEntity);
     }
 
     private JsonNode parseJson(String json) {
@@ -97,5 +168,23 @@ public class HateoasTest {
         } catch (Exception ex) {
             throw new RuntimeException("Failed to parse json: " + json, ex);
         }
+    }
+
+    private void assertAllLinksNull(TestEntity testEntity) {
+        assertNull(testEntity.getSubLink1());
+        assertNull(testEntity.getSubLink2());
+        assertNull(testEntity.getSubLink3());
+        assertNull(testEntity.getSuperLink());
+    }
+
+    private void testDeserialize(TestEntity testEntity, String json) throws Exception {
+        TestEntity testEntity2 = mapper.readValue(json, TestEntity.class);
+        assertEquals(testEntity2.getUserId(), testEntity.getUserId());
+        assertEquals(testEntity2.getOrderId(), testEntity.getOrderId());
+        assertEquals(testEntity2.getFriendUserId(), testEntity.getFriendUserId());
+        assertEquals(testEntity2.getFriendOrderId(), testEntity.getFriendOrderId());
+        assertEquals(testEntity2.getCurrencyId(), testEntity.getCurrencyId());
+        assertEquals(testEntity2.getFriendCurrencyId(), testEntity.getFriendCurrencyId());
+        assertAllLinksNull(testEntity2);
     }
 }

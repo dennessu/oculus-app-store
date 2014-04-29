@@ -61,10 +61,6 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
                         throw AppErrors.INSTANCE.userNotFound(userAuthenticator.userId).exception()
                     }
 
-                    if (user.isAnonymous == false) {
-                        throw AppErrors.INSTANCE.userInInvalidStatus(userAuthenticator.userId).exception()
-                    }
-
                     if (user.status != UserStatus.ACTIVE.toString()) {
                         throw AppErrors.INSTANCE.userInInvalidStatus(userAuthenticator.userId).exception()
                     }
@@ -165,10 +161,6 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
 
             if (user.isAnonymous == null) {
                 throw AppErrors.INSTANCE.fieldRequired('isAnonymous').exception()
-            }
-
-            if (user.isAnonymous == false) {
-                throw AppErrors.INSTANCE.fieldInvalid('isAnonymous', 'true').exception()
             }
 
             if (user.status != UserStatus.ACTIVE.toString()) {

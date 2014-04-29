@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>opiframe</title>
+
+    <script type="text/javascript" src="scripts/cookies.js"></script>
+    <script type="text/javascript" src="scripts/sha256.js"></script>
+    <script>
+
+        if (window.addEventListener) {
+            window.addEventListener('message', receiveMessage);
+        } else { // IE8 or earlier
+            window.attachEvent('onmessage', receiveMessage);
+        }
+
+        function receiveMessage(e) {
+            var message = e.data;
+            if (!message) {
+                // invalid message
+                return
+            }
+
+            var client_id = message.split(' ')[0];
+
+            var session_state = message.split(' ')[1];
+            if (!session_state) {
+                // invalid session_state
+                return
+            }
+
+            var salt = session_state.split('.')[1];
+            if (!salt) {
+                // invalid salt
+                return
+            }
+
+            var opss = docCookies.getItem('ss');
+
+            if (!opss) {
+                e.source.postMessage("changed", e.origin);
+                return
+            }
+
+            var shaObj = new jsSHA(client_id + ' ' + e.origin + ' ' + opss + ' ' + salt, "TEXT");
+            var hash = shaObj.getHash("SHA-256", "HEX");
+
+            var ss = hash + "." + salt;
+
+            if (session_state == ss) {
+                e.source.postMessage("unchanged", e.origin);
+            } else {
+                e.source.postMessage("changed", e.origin);
+            }
+        }
+    </script>
+</head>
+<body>
+</body>
+</html>

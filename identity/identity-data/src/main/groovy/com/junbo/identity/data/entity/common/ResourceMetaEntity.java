@@ -37,20 +37,20 @@ public abstract class ResourceMetaEntity {
         this.createdBy = createdBy;
     }
 
-    public Date getUpdatedTime() {
-        return updatedTime;
-    }
-
-    public void setUpdatedTime(Date updatedTime) {
-        this.updatedTime = updatedTime;
-    }
-
     public String getUpdatedBy() {
         return updatedBy;
     }
 
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    public Date getUpdatedTime() {
+        return updatedTime;
+    }
+
+    public void setUpdatedTime(Date updatedTime) {
+        this.updatedTime = updatedTime;
     }
 
     @Column(name = "version")

@@ -6,6 +6,9 @@
 
 package com.junbo.common.id;
 
+import com.junbo.common.json.PropertyAssignedAware;
+import com.junbo.common.json.PropertyAssignedAwareSupport;
+
 import java.io.Serializable;
 import java.util.Properties;
 
@@ -13,7 +16,9 @@ import java.util.Properties;
  * generic identifier class.
  *
  */
-public abstract class Id extends Object implements Serializable {
+public abstract class Id extends Object implements Serializable, PropertyAssignedAware {
+
+    private final PropertyAssignedAwareSupport support = new PropertyAssignedAwareSupport();
 
     private Long value;
 
@@ -21,10 +26,12 @@ public abstract class Id extends Object implements Serializable {
 
     // default ctor needed for Class.newInstance in deserializer
     public Id() {
+        // value = new Long(-1);
     }
 
     public Id(Long value) {
         this.value = value;
+        support.setPropertyAssigned("value");
     }
 
     public Long getValue() {
@@ -33,6 +40,7 @@ public abstract class Id extends Object implements Serializable {
 
     public void setValue(Long value) {
         this.value = value;
+        support.setPropertyAssigned("value");
     }
 
     public Properties getResourcePathPlaceHolder() {
@@ -65,5 +73,10 @@ public abstract class Id extends Object implements Serializable {
             return false;
         }
         return value.equals(((Id)other).value);
+    }
+
+    @Override
+    public boolean isPropertyAssigned(String propertyName) {
+        return support.isPropertyAssigned(propertyName);
     }
 }

@@ -5,19 +5,19 @@
  */
 package com.junbo.test.common.apihelper.catalog.impl;
 
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
-import com.junbo.common.id.EntitlementDefinitionId;
-import com.junbo.common.id.UserId;
-import com.junbo.common.json.JsonMessageTranscoder;
-import com.junbo.common.model.Results;
-import com.junbo.langur.core.client.TypeReference;
-import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.apihelper.catalog.EntitlementDefinitionService;
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.common.id.EntitlementDefinitionId;
+import com.junbo.common.json.JsonMessageTranscoder;
+import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.common.blueprint.Master;
-import com.junbo.test.common.libs.EnumHelper;
 import com.junbo.test.common.libs.IdConverter;
+import com.junbo.test.common.libs.EnumHelper;
 import com.junbo.test.common.libs.RestUrl;
+import com.junbo.common.model.Results;
+import com.junbo.common.id.UserId;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,11 +60,11 @@ public class EntitlementDefinitionServiceImpl extends HttpClientBase implements 
         return entitlementDefinitionRtnId;
     }
 
-    public List<String> getEntitlementDefinition(HashMap<String, String> httpPara) throws Exception {
-        return getEntitlementDefinition(httpPara, 200);
+    public List<String> getEntitlementDefinitions(HashMap<String, String> httpPara) throws Exception {
+        return getEntitlementDefinitions(httpPara, 200);
     }
 
-    public List<String> getEntitlementDefinition(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception {
+    public List<String> getEntitlementDefinitions(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception {
 
         String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara);
         Results<EntitlementDefinition> entitlementDefinitionGet = new JsonMessageTranscoder().decode(
@@ -113,7 +113,7 @@ public class EntitlementDefinitionServiceImpl extends HttpClientBase implements 
 
     public String updateEntitlementDefinition(EntitlementDefinition entitlementDefinition, int expectedResponseCode) throws Exception {
 
-        String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(EntitlementDefinition.class,
+        String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(EntitlementDefinitionId.class,
                 entitlementDefinition.getEntitlementDefId());
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, entitlementDefinition, expectedResponseCode);
         EntitlementDefinition entitlementDefinitionPut = new JsonMessageTranscoder().decode(new TypeReference<EntitlementDefinition>() {},

@@ -8,28 +8,27 @@ package com.junbo.catalog.core.service;
 
 import com.junbo.catalog.core.OfferAttributeService;
 import com.junbo.catalog.db.repo.OfferAttributeRepository;
-import com.junbo.catalog.spec.error.AppErrors;
-import com.junbo.catalog.spec.model.offer.OfferAttribute;
-import com.junbo.catalog.spec.model.offer.OfferAttributesGetOptions;
+import com.junbo.catalog.spec.enums.OfferAttributeType;
+import com.junbo.catalog.spec.model.attribute.OfferAttribute;
+import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Offer attribute service implementation.
  */
-public class OfferAttributeServiceImpl implements OfferAttributeService {
+public class OfferAttributeServiceImpl extends AttributeServiceSupport<OfferAttribute>
+        implements OfferAttributeService {
     @Autowired
     private OfferAttributeRepository attributeRepo;
 
-    @Override
-    public OfferAttribute getAttribute(Long attributeId) {
-        OfferAttribute attribute = attributeRepo.get(attributeId);
-        if (attribute == null) {
-            throw AppErrors.INSTANCE.notFound("offer-attribute", attributeId).exception();
+    private static final List<String> ATTRIBUTE_TYPES = new ArrayList<>();
+    static {
+        for (OfferAttributeType type : OfferAttributeType.values()) {
+            ATTRIBUTE_TYPES.add(type.name());
         }
-        return attribute;
     }
 
     @Override
@@ -38,37 +37,17 @@ public class OfferAttributeServiceImpl implements OfferAttributeService {
     }
 
     @Override
-    public OfferAttribute create(OfferAttribute attribute) {
-        if (!StringUtils.isEmpty(attribute.getRev())) {
-            throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
-        }
-        Long attributeId = attributeRepo.create(attribute);
-        return attributeRepo.get(attributeId);
+    protected OfferAttributeRepository getRepo() {
+        return attributeRepo;
     }
 
     @Override
-    public OfferAttribute update(Long attributeId, OfferAttribute attribute) {
-        if (!attributeId.equals(attribute.getId())) {
-            throw AppErrors.INSTANCE.fieldNotMatch("id", attribute.getId(), attributeId).exception();
-        }
-        if (StringUtils.isEmpty(attribute.getType())) {
-            throw AppErrors.INSTANCE.missingField("type").exception();
-        }
-        OfferAttribute existingAttribute = attributeRepo.get(attributeId);
-        if (existingAttribute==null) {
-            throw AppErrors.INSTANCE.notFound("offer-attribute", attributeId).exception();
-        }
-        if (!existingAttribute.getRev().equals(attribute.getRev())) {
-            throw AppErrors.INSTANCE.fieldNotMatch("rev", attribute.getRev(), existingAttribute.getRev()).exception();
-        }
-
-        attributeRepo.update(attribute);
-
-        return attributeRepo.get(attributeId);
+    protected List<String> getTypes() {
+        return ATTRIBUTE_TYPES;
     }
 
     @Override
-    public void deleteAttribute(Long attributeId) {
-        attributeRepo.delete(attributeId);
+    protected String getEntityType() {
+        return "offer-attributes";
     }
 }

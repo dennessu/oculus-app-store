@@ -42,8 +42,6 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
 
     private UsernameValidator usernameValidator
 
-    private List<String> allowedTypes
-
     private List<Pattern> allowedIpAddressPatterns
 
     private Integer userAgentMinLength
@@ -123,8 +121,8 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             def hasLen = 4
             def saltIndex = 1
             def pepperIndex = 2
-            if (userLoginAttempt.type == CredentialType.PASSWORD) {
-                userPasswordRepository.search(new UserPasswordListOptions(
+            if (userLoginAttempt.type == CredentialType.PASSWORD.toString()) {
+                return userPasswordRepository.search(new UserPasswordListOptions(
                         userId: (UserId)user.id,
                         active: true
                 )).then { List<UserPassword> userPasswordList ->
@@ -146,10 +144,12 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     } else {
                         userLoginAttempt.setSucceeded(false)
                     }
+
+                    return Promise.pure(null)
                 }
             }
             else {
-                userPinRepository.search(new UserPinListOptions(
+                return userPinRepository.search(new UserPinListOptions(
                         userId: (UserId)user.id,
                         active: true
                 )).then { List<UserPin> userPinList ->
@@ -171,10 +171,10 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     } else {
                         userLoginAttempt.setSucceeded(false)
                     }
+
+                    return Promise.pure(null)
                 }
             }
-
-            return Promise.pure(null)
         }
     }
 
@@ -191,9 +191,12 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             }
         }
 
-        // Todo:    make it in enum list
         if (userLoginAttempt.type == null) {
             throw AppErrors.INSTANCE.fieldRequired('type').exception()
+        }
+
+        List<String> allowedTypes = CredentialType.values().collect { CredentialType credentialType ->
+            credentialType.toString()
         }
 
         if (!(userLoginAttempt.type in allowedTypes)) {
@@ -213,8 +216,6 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
         if (userLoginAttempt.value == null) {
             throw AppErrors.INSTANCE.fieldRequired('value').exception()
         }
-
-        // Todo:    Add check for clientId
     }
 
     @Required
@@ -225,11 +226,6 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     @Required
     void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository
-    }
-
-    @Required
-    void setAllowedTypes(List<String> allowedTypes) {
-        this.allowedTypes = allowedTypes
     }
 
     @Required

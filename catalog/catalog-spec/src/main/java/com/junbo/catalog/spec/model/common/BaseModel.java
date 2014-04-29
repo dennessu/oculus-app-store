@@ -16,13 +16,11 @@ import java.util.Date;
  */
 public class BaseModel {
     @Null
-    @JsonIgnore
     private Date createdTime;
     @Null
     @JsonIgnore
     private String createdBy;
     @Null
-    @JsonIgnore
     private Date updatedTime;
     @Null
     @JsonIgnore

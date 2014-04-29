@@ -7,7 +7,7 @@
 package com.junbo.catalog.db.mapper;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.entity.OfferAttributeEntity;
-import com.junbo.catalog.spec.model.offer.OfferAttribute;
+import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 
 /**
  * Offer attribute mapper between model and DB entity.

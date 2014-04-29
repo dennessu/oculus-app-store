@@ -21,11 +21,11 @@ public interface OfferService {
     String getOffer(String offerId) throws Exception;
     String getOffer(String offerId, int expectedResponseCode) throws Exception;
 
-    List<String> getOffer(HashMap<String, String> httpPara) throws Exception;
-    List<String> getOffer(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception;
+    List<String> getOffers(HashMap<String, String> httpPara) throws Exception;
+    List<String> getOffers(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception;
 
-    String postDefaultOffer(EnumHelper.CatalogItemType itemType) throws Exception;
-    Offer prepareOfferEntity(String fileName, EnumHelper.CatalogItemType itemType) throws Exception;
+    String postDefaultOffer() throws Exception;
+    Offer prepareOfferEntity(String fileName) throws Exception;
     String postOffer(Offer offer) throws Exception;
     String postOffer(Offer offer, int expectedResponseCode) throws Exception;
 
@@ -33,4 +33,8 @@ public interface OfferService {
     String updateOffer(Offer offer, int expectedResponseCode) throws Exception;
 
     String getOfferIdByName(String offerName) throws  Exception;
+
+    void deleteOffer(String offerId) throws Exception;
+    void deleteOffer(String offerId, int expectedResponseCode) throws Exception;
+
 }

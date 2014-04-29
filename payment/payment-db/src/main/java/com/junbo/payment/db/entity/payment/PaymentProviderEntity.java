@@ -6,7 +6,7 @@
 
 package com.junbo.payment.db.entity.payment;
 
-import com.junbo.payment.spec.enums.PIType;
+import com.junbo.common.id.PIType;
 
 import javax.persistence.*;
 import java.util.Date;

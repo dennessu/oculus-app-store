@@ -6,6 +6,7 @@
 
 package com.junbo.subscription.clientproxy.mock;
 
+import com.junbo.catalog.spec.enums.PriceType;
 import com.junbo.catalog.spec.model.common.Price;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.ItemEntry;
@@ -67,7 +68,7 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
         offerRev.setRevisionId(2L);
         //offerRev.setName("Subs Offer");
         Price price = new Price();
-        price.setPriceType(Price.FREE);
+        price.setPriceType(PriceType.FREE.name());
         offerRev.setPrice(price);
 
         offerRev.setItems(new ArrayList<ItemEntry>() {{

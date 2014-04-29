@@ -5,8 +5,8 @@
  */
 package com.junbo.identity.spec.v1.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.common.model.ResourceMeta;
@@ -18,14 +18,15 @@ import java.util.Date;
 /**
  * Created by liangfu on 4/24/14.
  */
-public class UserPersonalInfo  extends ResourceMeta implements Identifiable<UserPersonalInfoId> {
+public class UserPersonalInfo extends ResourceMeta implements Identifiable<UserPersonalInfoId> {
 
     @ApiModelProperty(position = 1, required = true, value = "[Nullable]The id of user personal info resource.")
     @JsonProperty("self")
     private UserPersonalInfoId id;
 
     @ApiModelProperty(position = 2, required = true, value = "The type of user personal info resource, it must be in " +
-            "[EMAIL, " +
+            "[ADDRESS, " +
+            "EMAIL, " +
             "PHONE, " +
             "GIVEN_NAME, " +
             "FAMILY_NAME, " +
@@ -41,7 +42,7 @@ public class UserPersonalInfo  extends ResourceMeta implements Identifiable<User
     private String type;
 
     @ApiModelProperty(position = 3, required = true, value = "The userPersonal information, it must be json structure.")
-    private String value;
+    private JsonNode value;
 
     @ApiModelProperty(position = 4, required = false, value = "Last validated time, if null, it isn't validated.")
     private Date lastValidateTime;
@@ -49,10 +50,10 @@ public class UserPersonalInfo  extends ResourceMeta implements Identifiable<User
     @ApiModelProperty(position = 5, required = false, value = "Whether the value is normalized or not.")
     private Boolean isNormalized;
 
-    @ApiModelProperty(position = 6, required = true, value = "User resource link.")
+    @ApiModelProperty(position = 6, required = false, value = "User resource link label.")
     private String label;
 
-    @JsonIgnore
+    @ApiModelProperty(position = 7, required = false, value = "User resource.")
     @JsonProperty("user")
     private UserId userId;
 
@@ -75,11 +76,11 @@ public class UserPersonalInfo  extends ResourceMeta implements Identifiable<User
         support.setPropertyAssigned("type");
     }
 
-    public String getValue() {
+    public JsonNode getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(JsonNode value) {
         this.value = value;
         support.setPropertyAssigned("value");
     }
@@ -102,6 +103,15 @@ public class UserPersonalInfo  extends ResourceMeta implements Identifiable<User
         support.setPropertyAssigned("isNormalized");
     }
 
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+        support.setPropertyAssigned("label");
+    }
+
     public UserId getUserId() {
         return userId;
     }
@@ -110,15 +120,6 @@ public class UserPersonalInfo  extends ResourceMeta implements Identifiable<User
         this.userId = userId;
         support.setPropertyAssigned("userId");
         support.setPropertyAssigned("user");
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-        support.setPropertyAssigned("label");
     }
 }
 

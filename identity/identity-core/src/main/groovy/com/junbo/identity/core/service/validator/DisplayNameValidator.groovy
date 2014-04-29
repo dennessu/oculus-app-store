@@ -1,6 +1,7 @@
 package com.junbo.identity.core.service.validator
 
 import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.model.UserName
 import groovy.transform.CompileStatic
 
 /**
@@ -8,9 +9,5 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface DisplayNameValidator {
-
-    Integer getDisplayNameType(User user)
-
-    String getDisplayName(User user)
-
+    void validate(UserName name)
 }

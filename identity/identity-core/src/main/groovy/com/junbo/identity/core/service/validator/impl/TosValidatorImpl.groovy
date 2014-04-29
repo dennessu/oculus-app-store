@@ -2,6 +2,7 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.id.TosId
 import com.junbo.identity.core.service.validator.TosValidator
+import com.junbo.identity.data.repository.LocaleRepository
 import com.junbo.identity.data.repository.TosRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Tos
@@ -17,8 +18,7 @@ import org.springframework.beans.factory.annotation.Required
 class TosValidatorImpl implements TosValidator {
 
     private TosRepository tosRepository
-
-    private List<String> allowedLocales
+    private LocaleRepository localeRepository
 
     private Integer titleMinLength
     private Integer titleMaxLength
@@ -52,24 +52,21 @@ class TosValidatorImpl implements TosValidator {
 
     @Override
     Promise<Void> validateForCreate(Tos tos) {
-        checkBasicTosInfo(tos)
-
-        if (tos.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+        return checkBasicTosInfo(tos).then {
+            if (tos.id != null) {
+                throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+            }
+            return Promise.pure(null)
         }
-        return Promise.pure(null)
     }
 
-    private void checkBasicTosInfo(Tos tos) {
+    private Promise<Void> checkBasicTosInfo(Tos tos) {
         if (tos == null) {
             throw new IllegalArgumentException('tos is null')
         }
 
-        if (tos.locale == null) {
-            throw AppErrors.INSTANCE.fieldRequired('locale').exception()
-        }
-        if (!(tos.locale in allowedLocales)) {
-            throw AppErrors.INSTANCE.fieldInvalid('locale', allowedLocales.join(',')).exception()
+        if (tos.localeId == null) {
+            throw AppErrors.INSTANCE.fieldRequired('localeId').exception()
         }
 
         if (tos.title == null) {
@@ -91,16 +88,19 @@ class TosValidatorImpl implements TosValidator {
         if (tos.content.size() < contentMinLength) {
             throw AppErrors.INSTANCE.fieldTooShort('content', contentMinLength).exception()
         }
+
+        return localeRepository.get(tos.localeId).then { com.junbo.identity.spec.v1.model.Locale locale ->
+            if (locale == null) {
+                throw AppErrors.INSTANCE.localeNotFound(tos.localeId).exception()
+            }
+
+            return Promise.pure(null)
+        }
     }
 
     @Required
     void setTosRepository(TosRepository tosRepository) {
         this.tosRepository = tosRepository
-    }
-
-    @Required
-    void setAllowedLocales(List<String> allowedLocales) {
-        this.allowedLocales = allowedLocales
     }
 
     @Required
@@ -121,5 +121,10 @@ class TosValidatorImpl implements TosValidator {
     @Required
     void setContentMaxLength(Integer contentMaxLength) {
         this.contentMaxLength = contentMaxLength
+    }
+
+    @Required
+    void setLocaleRepository(LocaleRepository localeRepository) {
+        this.localeRepository = localeRepository
     }
 }

@@ -7,8 +7,9 @@
 package com.junbo.catalog.spec.model.offer;
 
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
+import com.junbo.common.id.ItemId;
+import com.junbo.common.id.OfferAttributeId;
 import com.junbo.common.id.OfferId;
-import com.junbo.common.jackson.annotation.AttributeId;
 
 import javax.ws.rs.QueryParam;
 import java.util.List;
@@ -17,13 +18,14 @@ import java.util.List;
  * Offers get options.
  */
 public class OffersGetOptions extends PageableGetOptions {
-    @QueryParam("id")
+    @QueryParam("offerId")
     private List<OfferId> offerIds;
-    @QueryParam("curated")
-    private Boolean curated;
-    @AttributeId
+    @QueryParam("published")
+    private Boolean published;
     @QueryParam("category")
-    private Long category;
+    private OfferAttributeId category;
+    @QueryParam("itemId")
+    private ItemId itemId;
 
     public List<OfferId> getOfferIds() {
         return offerIds;
@@ -33,19 +35,27 @@ public class OffersGetOptions extends PageableGetOptions {
         this.offerIds = offerIds;
     }
 
-    public Boolean getCurated() {
-        return curated;
+    public Boolean getPublished() {
+        return published;
     }
 
-    public void setCurated(Boolean curated) {
-        this.curated = curated;
+    public void setPublished(Boolean published) {
+        this.published = published;
     }
 
-    public Long getCategory() {
+    public OfferAttributeId getCategory() {
         return category;
     }
 
-    public void setCategory(Long category) {
+    public void setCategory(OfferAttributeId category) {
         this.category = category;
+    }
+
+    public ItemId getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(ItemId itemId) {
+        this.itemId = itemId;
     }
 }

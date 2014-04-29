@@ -24,6 +24,7 @@ public class QueryParam {
     @javax.ws.rs.QueryParam("size")
     private Integer size;
 
+
     public String getSource() {
         return source;
     }
@@ -63,4 +64,5 @@ public class QueryParam {
     public void setSize(Integer size) {
         this.size = size;
     }
+
 }

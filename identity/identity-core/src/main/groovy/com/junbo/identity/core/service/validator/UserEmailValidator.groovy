@@ -1,5 +1,6 @@
 package com.junbo.identity.core.service.validator
 
+import com.junbo.identity.spec.v1.model.Email
 import groovy.transform.CompileStatic
 
 /**
@@ -7,6 +8,5 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface UserEmailValidator {
-    //void validate(UserEmail userEmail)
-    void test()
+    void validate(Email email)
 }

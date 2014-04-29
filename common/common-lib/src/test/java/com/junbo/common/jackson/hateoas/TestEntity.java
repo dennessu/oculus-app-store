@@ -6,7 +6,7 @@
 package com.junbo.common.jackson.hateoas;
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.id.OrderId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.jackson.annotation.HateoasLink;
@@ -19,6 +19,7 @@ public class TestEntity {
 
     private UserId userId;
     private OrderId orderId;
+    private CurrencyId currencyId;
 
     @com.junbo.common.jackson.annotation.UserId
     private Long friendUserId;
@@ -26,7 +27,9 @@ public class TestEntity {
     @com.junbo.common.jackson.annotation.OrderId
     private Long friendOrderId;
 
-    @JsonProperty("superSuperLink")
+    @com.junbo.common.jackson.annotation.CurrencyId
+    private String friendCurrencyId;
+
     @HateoasLink("/users/{userId}/orders/{orderId}/friends/{friendUserId}/{friendOrderId}/end")
     private Link superLink;
 
@@ -35,6 +38,9 @@ public class TestEntity {
 
     @HateoasLink("/friends/{friendUserId}/{friendOrderId}")
     private Link subLink2;
+
+    @HateoasLink("/currencies/{currencyId}/{friendCurrencyId}")
+    private Link subLink3;
 
     public UserId getUserId() {
         return userId;
@@ -50,6 +56,14 @@ public class TestEntity {
 
     public void setOrderId(OrderId orderId) {
         this.orderId = orderId;
+    }
+
+    public CurrencyId getCurrencyId() {
+        return currencyId;
+    }
+
+    public void setCurrencyId(CurrencyId currencyId) {
+        this.currencyId = currencyId;
     }
 
     public Long getFriendUserId() {
@@ -68,27 +82,27 @@ public class TestEntity {
         this.friendOrderId = friendOrderId;
     }
 
-    public Link getSuperLink() {
-        return superLink;
+    public String getFriendCurrencyId() {
+        return friendCurrencyId;
     }
 
-    public void setSuperLink(Link superLink) {
-        this.superLink = superLink;
+    public void setFriendCurrencyId(String friendCurrencyId) {
+        this.friendCurrencyId = friendCurrencyId;
+    }
+
+    public Link getSuperLink() {
+        return superLink;
     }
 
     public Link getSubLink1() {
         return subLink1;
     }
 
-    public void setSubLink1(Link subLink1) {
-        this.subLink1 = subLink1;
-    }
-
     public Link getSubLink2() {
         return subLink2;
     }
 
-    public void setSubLink2(Link subLink2) {
-        this.subLink2 = subLink2;
+    public Link getSubLink3() {
+        return subLink3;
     }
 }

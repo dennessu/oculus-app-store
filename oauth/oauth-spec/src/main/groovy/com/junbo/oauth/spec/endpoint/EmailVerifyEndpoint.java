@@ -25,6 +25,6 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public interface EmailVerifyEndpoint {
     @GET
-    Promise<Response> verifyEmail(@QueryParam("code") String code, @QueryParam("cid") String conversationId,
+    Promise<Response> verifyEmail(@QueryParam("code") String code, @QueryParam("locale") String locale, @QueryParam("cid") String conversationId,
                                   @QueryParam("event") String event);
 }

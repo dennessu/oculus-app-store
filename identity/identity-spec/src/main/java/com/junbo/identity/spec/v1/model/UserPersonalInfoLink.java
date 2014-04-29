@@ -16,7 +16,7 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 public class UserPersonalInfoLink {
 
     @ApiModelProperty(position = 1, required = true, value = "Whether this link is default.")
-    private Boolean isdefault;
+    private Boolean isDefault;
 
     @ApiModelProperty(position = 3, required = true, value = "Resource Link to the userPersonalInfo resource.")
     private UserPersonalInfoId value;
@@ -24,13 +24,12 @@ public class UserPersonalInfoLink {
     @JsonIgnore
     private UserId userId;
 
-
-    public Boolean getIsdefault() {
-        return isdefault;
+    public Boolean getIsDefault() {
+        return isDefault;
     }
 
-    public void setIsdefault(Boolean isdefault) {
-        this.isdefault = isdefault;
+    public void setIsDefault(Boolean isDefault) {
+        this.isDefault = isDefault;
     }
 
     public UserPersonalInfoId getValue() {

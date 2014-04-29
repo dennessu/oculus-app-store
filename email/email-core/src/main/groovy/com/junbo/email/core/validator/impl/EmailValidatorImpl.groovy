@@ -10,7 +10,7 @@ import com.junbo.email.db.repo.EmailScheduleRepository
 import com.junbo.email.spec.error.AppErrors
 import com.junbo.email.spec.model.Email
 import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserPii
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
@@ -18,6 +18,7 @@ import org.springframework.util.StringUtils
 /**
  * Impl of EmailValidator.
  */
+@CompileStatic
 @Component
 class EmailValidatorImpl extends CommonValidator implements EmailValidator {
 
@@ -54,10 +55,6 @@ class EmailValidatorImpl extends CommonValidator implements EmailValidator {
         super.validateUser(user)
     }
 
-    void validateUserPii(UserPii userPii) {
-        super.validateUserPii(userPii)
-    }
-
     private void validateEmailSchedule(Email email) {
         Email schedule = emailScheduleRepository.getEmailSchedule(email.id.value)
         if (schedule == null) {
@@ -67,7 +64,7 @@ class EmailValidatorImpl extends CommonValidator implements EmailValidator {
 
     private void validateEmailId(Email email) {
         if (email.id != null) {
-            throw AppErrors.INSTANCE.invalidEmailId(email.id.value).exception()
+            throw AppErrors.INSTANCE.invalidEmailId('').exception()
         }
     }
 

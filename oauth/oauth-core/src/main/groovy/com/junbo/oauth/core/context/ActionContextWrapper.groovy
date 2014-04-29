@@ -7,7 +7,6 @@ package com.junbo.oauth.core.context
 
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserCredential
-import com.junbo.identity.spec.v1.model.UserPii
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.oauth.spec.model.*
 import groovy.transform.CompileStatic
@@ -43,12 +42,13 @@ class ActionContextWrapper {
     public static final String ERRORS = 'errors'
     public static final String USER = 'user'
     public static final String USER_CREDENTIAL = 'user_credential'
-    public static final String USER_PII = 'user_pii'
     public static final String DOB = 'dob'
     public static final String GENDER = 'gender'
     public static final String REMOTE_ADDRESS = 'remote_address'
     public static final String CAPTCHA_REQUIRED = 'captcha_required'
     public static final String CAPTCHA_SUCCEED = 'captcha_succeed'
+    public static final String VIEW_LOCALE = 'view_locale'
+    public static final String EXTRA_PARAM_MAP = 'extra_param_map'
 
     @Delegate
     private final ActionContext actionContext
@@ -105,7 +105,7 @@ class ActionContextWrapper {
     }
 
     void setResponseHeaderMap(Map<String, String> headerMap) {
-        actionContext.requestScope[RESPONSE_COOKIE_LIST] = headerMap
+        actionContext.requestScope[RESPONSE_HEADER_MAP] = headerMap
     }
 
     List<NewCookie> getResponseCookieList() {
@@ -253,14 +253,6 @@ class ActionContextWrapper {
         actionContext.requestScope[USER_CREDENTIAL] = userCredential
     }
 
-    UserPii getUserPii() {
-        return (UserPii) actionContext.requestScope[USER_PII]
-    }
-
-    void setUserPii(UserPii userPii) {
-        actionContext.requestScope[USER_PII] = userPii
-    }
-
     Date getDob() {
         return (Date) actionContext.requestScope[DOB]
     }
@@ -307,5 +299,24 @@ class ActionContextWrapper {
 
     void setCaptchaSucceed(Boolean captchaRequired) {
         actionContext.requestScope[CAPTCHA_SUCCEED] = captchaRequired
+    }
+
+    String getViewLocale() {
+        return (String) actionContext.flowScope[VIEW_LOCALE]
+    }
+
+    void setViewLocale(String locale) {
+        actionContext.flowScope[VIEW_LOCALE] = locale
+    }
+
+    Map<String, String> getExtraParameterMap() {
+        if (actionContext.flowScope[EXTRA_PARAM_MAP] == null) {
+            actionContext.flowScope[EXTRA_PARAM_MAP] = new HashMap<String, String>()
+        }
+        return (Map<String, String>) actionContext.flowScope[EXTRA_PARAM_MAP]
+    }
+
+    void setExtraParameterMap(Map<String, String> extraMap) {
+        actionContext.flowScope[EXTRA_PARAM_MAP] = extraMap
     }
 }

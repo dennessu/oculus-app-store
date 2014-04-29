@@ -15,7 +15,9 @@ import com.junbo.oom.core.MappingContext;
 /**
  * Created by kg on 3/26/2014.
  */
-@Mapper
+@Mapper(uses = {
+        JsonNodeSelfMapper.class
+})
 public interface SelfMapper {
 
     User filterUser(User user, MappingContext context);
@@ -105,7 +107,7 @@ public interface SelfMapper {
 
     Country filterCountry(Country country, MappingContext context);
 
-    Country mergeCountry(Country country, MappingContext context);
+    Country mergeCountry(Country source, Country base, MappingContext context);
 
     Currency filterCurrency(Currency currency, MappingContext context);
 
@@ -122,4 +124,8 @@ public interface SelfMapper {
     Communication filterCommunication(Communication communication, MappingContext context);
 
     Communication mergeCommunication(Communication source, Communication base, MappingContext context);
+
+    UserPersonalInfo filterUserPersonalInfo(UserPersonalInfo userPersonalInfo, MappingContext context);
+
+    UserPersonalInfo mergeUserPersonalInfo(UserPersonalInfo source, UserPersonalInfo base, MappingContext context);
 }

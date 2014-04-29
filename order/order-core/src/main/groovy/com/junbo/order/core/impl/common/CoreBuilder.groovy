@@ -89,8 +89,8 @@ class CoreBuilder {
     static Balance buildBalance(Order order) {
         Balance balance = new Balance()
         balance.trackingUuid = UUID.randomUUID()
-        balance.country = order.country
-        balance.currency = order.currency
+        balance.country = order.country.value
+        balance.currency = order.currency.value
         balance.orderId = order.id
         balance.userId = order.user
         balance.piId = order.paymentInstruments?.get(0)
@@ -143,9 +143,9 @@ class CoreBuilder {
     }
 
     static void fillRatingInfo(Order order, RatingRequest ratingRequest) {
-        order.totalAmount = ratingRequest.orderBenefit.finalAmount
-        order.totalDiscount = ratingRequest.orderBenefit.discountAmount
-        order.totalShippingFee = ratingRequest.shippingBenefit.shippingFee
+        order.totalAmount = ratingRequest.ratingSummary.finalAmount
+        order.totalDiscount = ratingRequest.ratingSummary.discountAmount
+        order.totalShippingFee = ratingRequest.shippingSummary.totalShippingFee
         // TODO the shipping discount is not exposed by rating yet
         order.totalShippingFeeDiscount = BigDecimal.ZERO
         // TODO the honorUntilTime is not exposed by rating yet
@@ -155,11 +155,11 @@ class CoreBuilder {
             buildItemRatingInfo(i, ratingRequest)
         }
         order.discounts = []
-        ratingRequest.couponCodes?.each { String couponCode ->
+        ratingRequest.coupons?.each { String couponCode ->
             def discount = new Discount()
-            discount.discountAmount = ratingRequest.orderBenefit.discountAmount
+            discount.discountAmount = ratingRequest.ratingSummary.discountAmount
             discount.discountType = DiscountType.ORDER_DISCOUNT
-            discount.promotion = new PromotionId(ratingRequest.orderBenefit.promotion)
+            discount.promotion = new PromotionId(ratingRequest.ratingSummary.promotion)
             order.discounts.add(discount)
             // TODO: need to discuss the coupon logic
             discount.coupon = couponCode

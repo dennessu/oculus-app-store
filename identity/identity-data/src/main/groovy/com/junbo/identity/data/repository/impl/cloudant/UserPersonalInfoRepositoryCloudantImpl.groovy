@@ -28,7 +28,7 @@ class UserPersonalInfoRepositoryCloudantImpl extends CloudantClient<UserPersonal
     @Override
     Promise<UserPersonalInfo> create(UserPersonalInfo model) {
         if (model.id == null) {
-            model.id = new UserPersonalInfoId(idGenerator.nextId(model.userId.value))
+            model.id = new UserPersonalInfoId(idGenerator.nextId())
         }
         return Promise.pure((UserPersonalInfo)super.cloudantPost(model))
     }
@@ -50,18 +50,30 @@ class UserPersonalInfoRepositoryCloudantImpl extends CloudantClient<UserPersonal
     }
 
     @Override
-    Promise<List<UserPersonalInfo>> search(UserId userId) {
+    Promise<List<UserPersonalInfo>> searchByUserId(UserId userId) {
         def list = super.queryView('by_user_id', userId.value.toString())
+
         return Promise.pure(list)
     }
 
+    @Override
+    Promise<List<UserPersonalInfo>> searchByUserIdAndType(UserId userId, String type) {
+        def list = super.queryView('by_user_id_type', "${userId.value.toString()}:${type}")
+
+        return Promise.pure(list)
+    }
     protected CloudantViews views = new CloudantViews(
             views: [
                     'by_user_id': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
                                     '  emit(doc.userId.value.toString(), doc._id)' +
                                     '}',
-                            resultClass: String)
+                            resultClass: String),
+                    'by_user_id_type': new CloudantViews.CloudantView(
+                            map: 'function(doc) {' +
+                                    '  emit(doc.userId.value.toString() + \':\' + doc.type, doc._id)' +
+                                    '}',
+                            resultClass: String),
             ]
     )
 

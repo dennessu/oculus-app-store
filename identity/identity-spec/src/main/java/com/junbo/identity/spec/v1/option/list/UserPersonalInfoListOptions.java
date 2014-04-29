@@ -18,12 +18,11 @@ public class UserPersonalInfoListOptions extends PagingGetOptions {
     @QueryParam("properties")
     private String properties;
 
-    // UserId or email can't be searched at the same time
     @QueryParam("userId")
     private UserId userId;
 
-    @QueryParam("email")
-    private String email;
+    @QueryParam("type")
+    private String type;
 
     public String getProperties() {
         return properties;
@@ -41,11 +40,11 @@ public class UserPersonalInfoListOptions extends PagingGetOptions {
         this.userId = userId;
     }
 
-    public String getEmail() {
-        return email;
+    public String getType() {
+        return type;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setType(String type) {
+        this.type = type;
     }
 }

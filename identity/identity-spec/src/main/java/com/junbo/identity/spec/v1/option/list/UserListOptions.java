@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.spec.v1.option.list;
 
+import com.junbo.common.id.GroupId;
 import com.junbo.identity.spec.options.list.PagingGetOptions;
 
 import javax.ws.rs.QueryParam;
@@ -17,6 +18,9 @@ public class UserListOptions extends PagingGetOptions {
     @QueryParam("username")
     private String username;
 
+    @QueryParam("groupId")
+    private GroupId groupId;
+
     @QueryParam("properties")
     private String properties;
 
@@ -26,6 +30,14 @@ public class UserListOptions extends PagingGetOptions {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public GroupId getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(GroupId groupId) {
+        this.groupId = groupId;
     }
 
     public String getProperties() {

@@ -2,7 +2,7 @@ package com.junbo.identity.core.service.validator
 
 import com.junbo.common.id.UserId
 import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.option.model.UserGetOptions
+import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.langur.core.promise.Promise
 
 /**
@@ -12,5 +12,5 @@ interface UserValidator {
     Promise<User> validateForGet(UserId userId)
     Promise<Void> validateForCreate(User user)
     Promise<Void> validateForUpdate(User user, User oldUser)
-    Promise<Void> validateForSearch(UserGetOptions options)
+    Promise<Void> validateForSearch(UserListOptions options)
 }

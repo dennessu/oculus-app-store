@@ -30,7 +30,7 @@ public interface AppErrors {
     AppError fieldNotMatch(String fieldName, Object actually, Object expected);
 
     @ErrorDef(httpStatusCode = 404, code = "10003", description = "{0} [{1}] not found.")
-    AppError notFound(String entity, Long id);
+    AppError notFound(String entity, String id);
 
     @ErrorDef(httpStatusCode = 400, code = "10004", description = "invalid Json: {0}")
     AppError invalidJson(String detail);
@@ -40,6 +40,9 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 400, code = "10007", description = "Validation failed. {0}")
     AppError validation(String msg);
+
+    @ErrorDef(httpStatusCode = 400, code = "10011", description = "Validation failed.")
+    AppError validation(AppError[] errors);
 
     @ErrorDef(httpStatusCode = 400, code = "10008", description = "{0}")
     AppError common(String msg);

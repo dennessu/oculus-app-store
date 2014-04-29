@@ -11,13 +11,14 @@ import com.junbo.email.spec.model.Email
 import com.junbo.email.spec.model.EmailTemplate
 import com.junbo.email.spec.model.Model
 import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserPii
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 /**
  * Common Validator.
  */
+@CompileStatic
 @Component('emailCommonValidator')
 class CommonValidator {
     @Autowired
@@ -27,14 +28,8 @@ class CommonValidator {
         if (user == null) {
             throw AppErrors.INSTANCE.invalidUserId('').exception()
         }
-        if (!user.active) {
+        if (user.status != 'ACTIVE') {
             throw AppErrors.INSTANCE.invalidUserStatus('').exception()
-        }
-    }
-
-    protected void validateUserPii(UserPii userPii) {
-        if ( userPii?.emails?.values()?.first() == null) {
-            throw AppErrors.INSTANCE.emptyUserEmail().exception()
         }
     }
 
@@ -74,7 +69,8 @@ class CommonValidator {
             throw AppErrors.INSTANCE.invalidProperty('replacements').exception()
         }
         if (template.placeholderNames != null) {
-            List<String> placeholderNames = template.placeholderNames.collect { it.toLowerCase() }
+            List<String> placeholderNames = template.placeholderNames.collect { String placeholderName ->
+                placeholderName.toLowerCase() }
             for (String key : email.replacements.keySet()) {
                 if (!placeholderNames.contains(key.replaceAll('\\d*(:\\w*)?$','').toLowerCase())) {
                     throw AppErrors.INSTANCE.invalidProperty(key).exception()

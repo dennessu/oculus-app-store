@@ -31,7 +31,7 @@ class ValidateRegister implements Action {
     private static final Logger LOGGER = LoggerFactory.getLogger(ValidateRegister)
 
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
-            Pattern.compile('^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$', Pattern.CASE_INSENSITIVE);
+            Pattern.compile('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$', Pattern.CASE_INSENSITIVE);
 
 
     @Override
@@ -84,7 +84,7 @@ class ValidateRegister implements Action {
             contextWrapper.errors.add(AppExceptions.INSTANCE.missingGender().error())
         } else {
             try {
-                contextWrapper.gender = Gender.valueOf(genderStr.toLowerCase())
+                contextWrapper.gender = Gender.valueOf(genderStr.toUpperCase())
             } catch (IllegalArgumentException e) {
                 LOGGER.debug('Error parsing the gender', e)
                 contextWrapper.errors.add(AppExceptions.INSTANCE.invalidGender().error())

@@ -6,6 +6,7 @@
 
 package com.junbo.payment.db.repository;
 
+import com.junbo.common.id.PIType;
 import com.junbo.oom.core.MappingContext;
 import com.junbo.payment.db.dao.paymentinstrument.AddressDao;
 import com.junbo.payment.db.dao.paymentinstrument.CreditCardPaymentInstrumentDao;
@@ -13,7 +14,6 @@ import com.junbo.payment.db.dao.paymentinstrument.PaymentInstrumentDao;
 import com.junbo.payment.db.entity.paymentinstrument.*;
 import com.junbo.payment.db.mapper.CreditCardDetail;
 import com.junbo.payment.db.mapper.PaymentMapperExtension;
-import com.junbo.payment.spec.enums.PIType;
 import com.junbo.payment.db.mapper.PaymentMapper;
 import com.junbo.payment.spec.model.*;
 import com.junbo.sharding.IdGenerator;
@@ -49,7 +49,7 @@ public class PaymentInstrumentRepository {
         Long piId = idGenerator.nextId(piEntity.getUserId());
         piEntity.setId(piId);
         paymentInstrumentDao.save(piEntity);
-        if(request.getType().equals(PIType.CREDITCARD.toString())){
+        if(PIType.get(request.getType()).equals(PIType.CREDITCARD)){
             CreditCardPaymentInstrumentEntity ccPiEntity = paymentMapperImpl.toCreditCardEntity(
                     (CreditCardDetail)paymentMapperExtension.toSpecificDetail(request.getTypeSpecificDetails(),
                             PIType.CREDITCARD), new MappingContext());
@@ -71,7 +71,7 @@ public class PaymentInstrumentRepository {
         Long currentRev = Long.parseLong(request.getRev()) + 1;
         pi.setRev(currentRev.toString());
         paymentInstrumentDao.update(pi);
-        if(request.getType().equals(PIType.CREDITCARD.toString())){
+        if(PIType.get(request.getType()).equals(PIType.CREDITCARD)){
             ccPaymentInstrumentDao.update(paymentMapperImpl.toCreditCardEntity(
                     (CreditCardDetail)paymentMapperExtension.toSpecificDetail(request.getTypeSpecificDetails(),
                             PIType.CREDITCARD), new MappingContext()));

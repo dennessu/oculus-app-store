@@ -25,11 +25,15 @@ class CommunicationRepositoryCloudantImpl extends CloudantClient<Communication> 
 
     @Override
     protected CloudantViews getCloudantViews() {
-        return null
+        return views
     }
 
     @Override
     Promise<List<Communication>> search(CommunicationListOptions options) {
+        if (options.name != null) {
+            return Promise.pure(super.queryView('by_name', options.name))
+        }
+
         return Promise.pure(super.cloudantGetAll())
     }
 
@@ -58,4 +62,14 @@ class CommunicationRepositoryCloudantImpl extends CloudantClient<Communication> 
         super.cloudantDelete(id.toString())
         return Promise.pure(null)
     }
+
+    protected CloudantViews views = new CloudantViews(
+        views: [
+            'by_name': new CloudantViews.CloudantView(
+                map: 'function(doc) {' +
+                        '  emit(doc.name, doc._id)' +
+                        '}',
+                resultClass: String)
+        ]
+    )
 }

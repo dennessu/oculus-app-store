@@ -6,6 +6,7 @@
 
 package com.junbo.payment.core.impl;
 
+import com.junbo.common.id.PIType;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
@@ -16,7 +17,6 @@ import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.core.util.ProxyExceptionResponse;
 import com.junbo.payment.db.repository.PITypeRepository;
-import com.junbo.payment.spec.enums.PIType;
 import com.junbo.payment.db.mapper.PaymentAPI;
 import com.junbo.payment.db.mapper.TrackingUuid;
 import com.junbo.payment.db.repository.PaymentInstrumentRepository;
@@ -105,7 +105,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         if(request.getRev() == null){
             throw AppClientExceptions.INSTANCE.missingRevision().exception();
         }
-        PaymentInstrument piTarget = getById(request.getId());
+        PaymentInstrument piTarget = getPaymentInstrument(request.getId());
         if(!request.getRev().equals(piTarget.getRev())){
             throw AppClientExceptions.INSTANCE.invalidRevision().exception();
         }
@@ -115,7 +115,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
                 || !piTarget.getAccountNum().equals(request.getAccountNum())){
             throw AppClientExceptions.INSTANCE.invalidPaymentInstrumentId(request.getId().toString()).exception();
         }
-        if(request.getType().equals(PIType.CREDITCARD.toString())){
+        if(PIType.get(request.getType()).equals(PIType.CREDITCARD)){
             request.getTypeSpecificDetails().setId(request.getId());
         }
         //TODO: need re-validate the PI according to the lastValidatedTime
@@ -123,15 +123,26 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     }
 
     @Override
-    public PaymentInstrument getById(Long paymentInstrumentId) {
-        PaymentInstrument result = paymentInstrumentRepository.getByPIId(paymentInstrumentId);
-        if(result == null){
-            throw AppClientExceptions.INSTANCE.resourceNotFound("payment_instrument").exception();
-        }
+    public Promise<PaymentInstrument> getById(Long paymentInstrumentId) {
+        final PaymentInstrument result = getPaymentInstrument(paymentInstrumentId);
         //if(userId != null && !userId.equals(result.getUserId())){
         //    throw AppClientExceptions.INSTANCE.resourceNotFound("payment_instrument").exception();
         //}
-        return result;
+        final PaymentProviderService provider = providerRoutingService.getPaymentProvider(
+                PIType.get(result.getType()));
+        if(provider == null){
+            throw AppServerExceptions.INSTANCE.providerNotFound(PIType.get(result.getType()).toString()).exception();
+        }
+        return provider.getByInstrumentToken(result.getExternalToken())
+                .then(new Promise.Func<PaymentInstrument, Promise<PaymentInstrument>>() {
+            @Override
+            public Promise<PaymentInstrument> apply(PaymentInstrument paymentInstrument) {
+                if(paymentInstrument != null){
+                    provider.clonePIResult(paymentInstrument, result);
+                }
+                return Promise.pure(result);
+            }
+        });
     }
 
     @Override
@@ -212,5 +223,13 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
                 throw AppClientExceptions.INSTANCE.invalidExpireDateFormat(expireDate).exception();
             }
         }
+    }
+
+    private PaymentInstrument getPaymentInstrument(Long paymentInstrumentId){
+        PaymentInstrument result = paymentInstrumentRepository.getByPIId(paymentInstrumentId);
+        if(result == null){
+            throw AppClientExceptions.INSTANCE.resourceNotFound("payment_instrument").exception();
+        }
+        return result;
     }
 }

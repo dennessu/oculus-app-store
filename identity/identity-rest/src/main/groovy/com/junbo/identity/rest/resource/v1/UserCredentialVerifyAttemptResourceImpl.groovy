@@ -6,6 +6,7 @@ import com.junbo.common.model.Results
 import com.junbo.identity.core.service.Created201Marker
 import com.junbo.identity.core.service.filter.UserCredentialVerifyAttemptFilter
 import com.junbo.identity.core.service.validator.UserCredentialVerifyAttemptValidator
+import com.junbo.identity.data.identifiable.CredentialType
 import com.junbo.identity.data.repository.UserCredentialVerifyAttemptRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
@@ -62,7 +63,7 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
                     attempt = userCredentialVerifyAttemptFilter.filterForGet(attempt, null)
                     return Promise.pure(attempt)
                 }
-                if (userCredentialAttempt.type == 'password') {
+                if (userCredentialAttempt.type == CredentialType.PASSWORD.toString()) {
                     throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
                 }
                 else {

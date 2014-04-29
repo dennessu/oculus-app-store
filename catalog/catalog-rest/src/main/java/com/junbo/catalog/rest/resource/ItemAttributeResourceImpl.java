@@ -7,8 +7,8 @@
 package com.junbo.catalog.rest.resource;
 
 import com.junbo.catalog.core.ItemAttributeService;
-import com.junbo.catalog.spec.model.item.ItemAttribute;
-import com.junbo.catalog.spec.model.item.ItemAttributesGetOptions;
+import com.junbo.catalog.spec.model.attribute.ItemAttribute;
+import com.junbo.catalog.spec.model.attribute.ItemAttributesGetOptions;
 import com.junbo.catalog.spec.resource.ItemAttributeResource;
 import com.junbo.common.id.ItemAttributeId;
 import com.junbo.common.model.Results;

@@ -5,12 +5,10 @@
  */
 package com.junbo.identity.data
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.node.ObjectNode
+import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
-import com.junbo.common.enumid.PITypeId
 import com.junbo.common.id.*
 import com.junbo.identity.data.identifiable.UserPasswordStrength
 import com.junbo.identity.data.repository.*
@@ -47,10 +45,6 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     private IdGenerator idGenerator
 
     @Autowired
-    @Qualifier('addressRepository')
-    private AddressRepository addressRepository
-
-    @Autowired
     @Qualifier('tosRepository')
     private TosRepository tosRepository
 
@@ -79,8 +73,8 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     private UserCredentialVerifyAttemptRepository userCredentialVerifyAttemptRepository
 
     @Autowired
-    @Qualifier('userOptinRepository')
-    private UserCommunicationRepository userOptinRepository
+    @Qualifier('userCommunicationRepository')
+    private UserCommunicationRepository userCommunicationRepository
 
     @Autowired
     @Qualifier('userPasswordRepository')
@@ -135,7 +129,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     private LocaleRepository localeRepository
 
     @Autowired
-    @Qualifier('pitypeRepository')
+    @Qualifier('piTypeRepository')
     private PITypeRepository piTypeRepository
 
 
@@ -177,17 +171,6 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void testPITypeRepository() {
-        piTypeRepository.delete(new PITypeId('1234')).wrapped().get()
-
-        PIType piType = new PIType()
-        piType.setId(new PITypeId('1234'))
-
-        PIType newPIType = piTypeRepository.create(piType).wrapped().get()
-        assert  piType.id.toString() == newPIType.id.toString()
-    }
-
-    @Test
     public void testUserRepository() throws Exception {
         User user = new User()
         user.setIsAnonymous(true)
@@ -197,7 +180,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         user.setPreferredLocale(new LocaleId(UUID.randomUUID().toString()))
         user.setPreferredTimezone(UUID.randomUUID().toString())
         user.setCreatedTime(new Date())
-        user.setCreatedBy('lixia')
+        user.setCreatedBy('lixia-todo')
         UserPersonalInfoLink userPersonalInfoLink = new UserPersonalInfoLink()
         userPersonalInfoLink.setUserId(new UserId(idGenerator.nextId()))
         userPersonalInfoLink.setValue(new UserPersonalInfoId(idGenerator.nextId()))
@@ -230,24 +213,11 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         Tos tos = new Tos()
         tos.setTitle('title')
         tos.setContent(content)
-        tos.setLocale('en_us')
+        tos.setLocaleId(new LocaleId('en_US'))
         tos = tosRepository.create(tos).wrapped().get()
 
         Tos newTos = tosRepository.get(tos.getId()).wrapped().get()
         Assert.assertEquals(tos.getContent(), newTos.getContent())
-    }
-
-    @Test
-    public void testAddressRepository() {
-        Address address = new Address()
-        address.city = 'shanghai'
-        address.countryId = new CountryId("usd")
-        address.postalCode = '201102'
-        address.userId = new UserId(userId)
-        address = addressRepository.create(address).wrapped().get()
-
-        Address newAddress = addressRepository.get(address.id).wrapped().get()
-        Assert.assertEquals(address.city, newAddress.city)
     }
 
     @Test
@@ -279,9 +249,9 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userPassword.setChangeAtNextLogin(false)
         userPassword.setExpiresBy(new Date())
         userPassword.setCreatedTime(new Date())
-        userPassword.setCreatedBy('lixia')
+        userPassword.setCreatedBy('lixia-todo')
         userPassword.setUpdatedTime(new Date())
-        userPassword.setUpdatedBy('lixia')
+        userPassword.setUpdatedBy('lixia-todo')
         userPassword = userPasswordRepository.create(userPassword).wrapped().get()
 
         UserPassword newUserPassword = userPasswordRepository.get(userPassword.getId()).wrapped().get()
@@ -307,9 +277,9 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userPIN.setChangeAtNextLogin(false)
         userPIN.setExpiresBy(new Date())
         userPIN.setCreatedTime(new Date())
-        userPIN.setCreatedBy('lixia')
+        userPIN.setCreatedBy('lixia-todo')
         userPIN.setUpdatedTime(new Date())
-        userPIN.setUpdatedBy('lixia')
+        userPIN.setUpdatedBy('lixia-todo')
         userPIN = userPinRepository.create(userPIN).wrapped().get()
 
         UserPin newUserPin = userPinRepository.get(userPIN.getId()).wrapped().get()
@@ -334,7 +304,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         authenticator.setType('Google_account')
         authenticator.setExternalId(UUID.randomUUID().toString())
         authenticator.setCreatedTime(new Date())
-        authenticator.setCreatedBy('lixia')
+        authenticator.setCreatedBy('lixia-todo')
         authenticator = userAuthenticatorRepository.create(authenticator).wrapped().get()
 
         UserAuthenticator newUserAuthenticator = userAuthenticatorRepository.get(authenticator.getId()).wrapped().get()
@@ -357,7 +327,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         UserGroup userGroup = new UserGroup()
         userGroup.setUserId(new UserId(userId))
         userGroup.setGroupId(new GroupId(1493188608L))
-        userGroup.setCreatedBy('lixia')
+        userGroup.setCreatedBy('lixia-todo')
         userGroup.setCreatedTime(new Date())
         userGroup = userGroupRepository.create(userGroup).wrapped().get()
 
@@ -382,7 +352,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userLoginAttempt.setIpAddress(UUID.randomUUID().toString())
         userLoginAttempt.setUserAgent(UUID.randomUUID().toString())
         userLoginAttempt.setSucceeded(true)
-        userLoginAttempt.setCreatedBy('lixia')
+        userLoginAttempt.setCreatedBy('lixia-todo')
         userLoginAttempt.setCreatedTime(new Date())
 
         userLoginAttempt = userCredentialVerifyAttemptRepository.create(userLoginAttempt).wrapped().get()
@@ -408,21 +378,21 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         UserCommunication userOptin = new UserCommunication()
         userOptin.setUserId(new UserId(userId))
         userOptin.setCommunicationId(new CommunicationId(idGenerator.nextId()))
-        userOptin.setCreatedBy('lixia')
+        userOptin.setCreatedBy('lixia-todo')
         userOptin.setCreatedTime(new Date())
-        userOptin = userOptinRepository.create(userOptin).wrapped().get()
+        userOptin = userCommunicationRepository.create(userOptin).wrapped().get()
 
-        UserCommunication newUserOptin = userOptinRepository.get(userOptin.getId()).wrapped().get()
+        UserCommunication newUserOptin = userCommunicationRepository.get(userOptin.getId()).wrapped().get()
         Assert.assertEquals(userOptin.getCommunicationId(), newUserOptin.getCommunicationId())
 
         CommunicationId value = new CommunicationId(idGenerator.nextId())
         userOptin.setCommunicationId(value)
-        newUserOptin = userOptinRepository.update(userOptin).wrapped().get()
+        newUserOptin = userCommunicationRepository.update(userOptin).wrapped().get()
         Assert.assertEquals(value, newUserOptin.getCommunicationId())
 
         UserOptinListOptions getOption = new UserOptinListOptions()
         getOption.setUserId(new UserId(userId))
-        List<UserCommunication> userOptins = userOptinRepository.search(getOption).wrapped().get()
+        List<UserCommunication> userOptins = userCommunicationRepository.search(getOption).wrapped().get()
         assert userOptins.size() != 0
     }
 
@@ -432,7 +402,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userSecurityQuestion.setUserId(new UserId(userId))
         userSecurityQuestion.setSecurityQuestion('whosyourdaddy')
         userSecurityQuestion.setAnswerHash(UUID.randomUUID().toString())
-        userSecurityQuestion.setCreatedBy('lixia')
+        userSecurityQuestion.setCreatedBy('lixia-todo')
         userSecurityQuestion.setCreatedTime(new Date())
 
         userSecurityQuestion = userSecurityQuestionRepository.create(userSecurityQuestion).wrapped().get()
@@ -456,7 +426,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         UserTosAgreement userTos = new UserTosAgreement()
         userTos.setUserId(new UserId(userId))
         userTos.setTosId(new TosId(123L))
-        userTos.setCreatedBy('lixia')
+        userTos.setCreatedBy('lixia-todo')
         userTos.setCreatedTime(new Date())
         userTos = userTosRepository.create(userTos).wrapped().get()
 
@@ -654,8 +624,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userPersonalInfo.setType(UUID.randomUUID().toString())
         userPersonalInfo.setIsNormalized(true)
         userPersonalInfo.setLastValidateTime(new Date())
-        userPersonalInfo.setUserId(userId)
-        userPersonalInfo.setValue(UUID.randomUUID().toString())
+        userPersonalInfo.setValue(JsonNodeFactory.instance.textNode(UUID.randomUUID().toString()))
 
         UserPersonalInfo newUserPersonalInfo = userPersonalInfoRepository.create(userPersonalInfo).wrapped().get()
         newUserPersonalInfo = userPersonalInfoRepository.get(newUserPersonalInfo.id).wrapped().get()
@@ -667,8 +636,5 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userPersonalInfo = userPersonalInfoRepository.update(newUserPersonalInfo).wrapped().get()
 
         assert userPersonalInfo.type == newType
-
-        List<UserPersonalInfo> results = userPersonalInfoRepository.search(userId).wrapped().get()
-        assert results.size() != 0
     }
 }
