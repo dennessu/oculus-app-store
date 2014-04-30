@@ -135,7 +135,7 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
     }
 
     public String postDefaultOfferRevision(String offerId, String itemId) throws Exception {
-        if (offerId == null || offerId.length() == 0 ) {
+        if (offerId == null || offerId.length() == 0) {
             throw new Exception("offerId is null or empty");
         }
 

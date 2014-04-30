@@ -6,7 +6,6 @@
 package com.junbo.test.common.apihelper.catalog;
 
 import com.junbo.catalog.spec.model.offer.OfferRevision;
-import com.junbo.test.common.libs.EnumHelper;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,7 +27,7 @@ public interface OfferRevisionService {
 
     String postDefaultOfferRevision() throws Exception;
     String postDefaultOfferRevision(String offerId) throws Exception;
-    String postDefaultOfferRevision(String offerId, String ItemId) throws Exception;
+    String postDefaultOfferRevision(String offerId, String itemId) throws Exception;
     String postOfferRevision(OfferRevision offerRevision) throws Exception;
     String postOfferRevision(OfferRevision offerRevision, int expectedResponseCode) throws Exception;
 
