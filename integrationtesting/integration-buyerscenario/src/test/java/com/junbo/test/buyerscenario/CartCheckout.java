@@ -241,6 +241,7 @@ public class CartCheckout extends BaseTestClass {
 
         String orderId = testDataProvider.postOrder(
                 uid, Country.DEFAULT, Currency.DEFAULT, ewalletId, null, offerList, 200);
+
     }
 
 }

@@ -80,7 +80,6 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         User userToPost = new User();
         //userToPost.setUserName(email);
         //userToPost.setPassword(password);
-        //userToPost.setStatus(status.getStatus());
         logger.LogSample("Create a new user");
         return identityClient.PostUser(userToPost);
     }
