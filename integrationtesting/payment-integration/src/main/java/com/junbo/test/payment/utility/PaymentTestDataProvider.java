@@ -16,7 +16,7 @@ import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
 import com.junbo.test.common.Utility.BaseTestDataProvider;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
-import com.junbo.test.common.blueprint.Master;
+//import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.payment.apihelper.PaymentService;
@@ -82,8 +82,8 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                 paymentInstrument.setAddress(address);
                 paymentInstrument.setIsValidated(creditCardInfo.isValidated());
                 //paymentInstrument.setIsDefault(String.valueOf(creditCardInfo.isDefault()));
-                paymentInstrument.setType(0l);
-                paymentInstrument.setBillingAddressId(0l);
+                paymentInstrument.setType(0L);
+                paymentInstrument.setBillingAddressId(0L);
 
                 return paymentClient.postPaymentInstrument(paymentInstrument);
 
@@ -94,7 +94,7 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                 paymentInstrument.setAccountName(ewalletInfo.getAccountName());
                 paymentInstrument.setType(2L);
                 paymentInstrument.setIsValidated(ewalletInfo.isValidated());
-                paymentInstrument.setBillingAddressId(167772224l);
+                paymentInstrument.setBillingAddressId(167772224L);
                 address.setAddressLine1(ewalletInfo.getAddress().getAddressLine1());
                 address.setCity(ewalletInfo.getAddress().getCity());
                 address.setState(ewalletInfo.getAddress().getState());
