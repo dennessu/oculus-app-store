@@ -147,7 +147,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
             def resultList = new Results<UserPersonalInfo>(items: [])
 
             if (listOptions.userId != null && listOptions.type != null) {
-                userPersonalInfoRepository.searchByUserIdAndType(listOptions.userId, listOptions.type).
+                return userPersonalInfoRepository.searchByUserIdAndType(listOptions.userId, listOptions.type).
                     then { List<UserPersonalInfo> userPersonalInfoList ->
                         userPersonalInfoList.each { UserPersonalInfo temp ->
                             temp = userPersonalInfoFilter.filterForGet(temp,
@@ -157,22 +157,51 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
                                 resultList.items.add(temp)
                             }
                         }
+
+                        return Promise.pure(resultList)
                     }
+            } else if (listOptions.userId != null) {
+                return userPersonalInfoRepository.searchByUserId(listOptions.userId).
+                    then { List<UserPersonalInfo> userPersonalInfoList ->
+                        userPersonalInfoList.each { UserPersonalInfo temp ->
+                            temp = userPersonalInfoFilter.filterForGet(temp,
+                                    listOptions.properties?.split(',') as List<String>)
+
+                            if (temp != null) {
+                                resultList.items.add(temp)
+                            }
+                        }
+
+                        return Promise.pure(resultList)
+                    }
+            } else if (listOptions.email != null) {
+                return userPersonalInfoRepository.searchByEmail(listOptions.email)
+                        .then { List<UserPersonalInfo> userPersonalInfoList ->
+                    userPersonalInfoList.each { UserPersonalInfo temp ->
+                        temp = userPersonalInfoFilter.filterForGet(temp,
+                                listOptions.properties?.split(',') as List<String>)
+
+                        if (temp != null) {
+                            resultList.items.add(temp)
+                        }
+                    }
+                    return Promise.pure(resultList)
+                }
             } else {
-                userPersonalInfoRepository.searchByUserId(listOptions.userId).
-                    then { List<UserPersonalInfo> userPersonalInfoList ->
-                        userPersonalInfoList.each { UserPersonalInfo temp ->
-                            temp = userPersonalInfoFilter.filterForGet(temp,
-                                    listOptions.properties?.split(',') as List<String>)
+                return userPersonalInfoRepository.searchByPhoneNumber(listOptions.phoneNumber)
+                        .then { List<UserPersonalInfo> userPersonalInfoList ->
+                    userPersonalInfoList.each { UserPersonalInfo temp ->
+                        temp = userPersonalInfoFilter.filterForGet(temp,
+                                listOptions.properties?.split(',') as List<String>)
 
-                            if (temp != null) {
-                                resultList.items.add(temp)
-                            }
+                        if (temp != null) {
+                            resultList.items.add(temp)
                         }
                     }
+                    return Promise.pure(resultList)
+                }
             }
 
-            return Promise.pure(resultList)
         }
     }
 }

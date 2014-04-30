@@ -50,8 +50,16 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
         if (options == null) {
             throw new IllegalArgumentException('options is null')
         }
-        if (options.userId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userId').exception()
+        if (options.userId == null && options.email == null && options.phoneNumber == null) {
+            throw AppErrors.INSTANCE.parameterRequired('userId or email or phoneNumber').exception()
+        }
+
+        if (options.userId != null && (options.email != null || options.phoneNumber != null)) {
+            throw AppErrors.INSTANCE.parameterInvalid('userId can\'t be searched with email or phone.').exception()
+        }
+
+        if (options.email != null && options.phoneNumber != null) {
+            throw AppErrors.INSTANCE.parameterInvalid('email can\'t be searched with phone.').exception()
         }
         return Promise.pure(null)
     }
@@ -120,24 +128,32 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
         }
 
         List<PiiValidator> piiValidatorList = piiValidatorFactory.validators
+        return iterateValidate(piiValidatorList.iterator(), userPersonalInfo).then {
+            return userRepository.get(userPersonalInfo.userId).then { User user ->
+                if (user == null) {
+                    throw AppErrors.INSTANCE.userNotFound(userPersonalInfo.userId).exception()
+                }
 
-        piiValidatorList.each { PiiValidator piiValidator ->
+                if (user.status != UserStatus.ACTIVE.toString()) {
+                    throw AppErrors.INSTANCE.userInInvalidStatus(userPersonalInfo.userId).exception()
+                }
+
+                return Promise.pure(null)
+            }
+        }
+    }
+
+    Promise<Void> iterateValidate(Iterator<PiiValidator> iterator, UserPersonalInfo userPersonalInfo) {
+        if (iterator.hasNext()) {
+            PiiValidator piiValidator = iterator.next()
             if (piiValidator.handles(userPersonalInfo.type)) {
-                piiValidator.validate(userPersonalInfo.value)
+                return piiValidator.validate(userPersonalInfo.value, userPersonalInfo.userId).then {
+                    return iterateValidate(iterator, userPersonalInfo)
+                }
             }
+            return iterateValidate(iterator, userPersonalInfo)
         }
-
-        return userRepository.get(userPersonalInfo.userId).then { User user ->
-            if (user == null) {
-                throw AppErrors.INSTANCE.userNotFound(userPersonalInfo.userId).exception()
-            }
-
-            if (user.status != UserStatus.ACTIVE.toString()) {
-                throw AppErrors.INSTANCE.userInInvalidStatus(userPersonalInfo.userId).exception()
-            }
-
-            return Promise.pure(null)
-        }
+        return Promise.pure(null)
     }
 
     @Required

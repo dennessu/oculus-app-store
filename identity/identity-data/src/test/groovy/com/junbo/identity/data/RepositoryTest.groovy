@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.data
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
@@ -621,20 +622,19 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     public void testUserPersonalInfoRepository() {
         UserId userId = new UserId(idGenerator.nextId())
         UserPersonalInfo userPersonalInfo = new UserPersonalInfo()
-        userPersonalInfo.setType(UUID.randomUUID().toString())
+        userPersonalInfo.setType('EMAIL')
         userPersonalInfo.setIsNormalized(true)
         userPersonalInfo.setLastValidateTime(new Date())
-        userPersonalInfo.setValue(JsonNodeFactory.instance.textNode(UUID.randomUUID().toString()))
+        userPersonalInfo.setUserId(userId)
+        Email email = new Email()
+        email.value = UUID.randomUUID().toString()
+        email.value = false
+        ObjectMapper objectMapper = new ObjectMapper()
+        userPersonalInfo.setValue(objectMapper.valueToTree(email))
 
         UserPersonalInfo newUserPersonalInfo = userPersonalInfoRepository.create(userPersonalInfo).wrapped().get()
         newUserPersonalInfo = userPersonalInfoRepository.get(newUserPersonalInfo.id).wrapped().get()
 
         assert newUserPersonalInfo.type == userPersonalInfo.type
-
-        String newType = UUID.randomUUID().toString()
-        newUserPersonalInfo.setType(newType)
-        userPersonalInfo = userPersonalInfoRepository.update(newUserPersonalInfo).wrapped().get()
-
-        assert userPersonalInfo.type == newType
     }
 }
