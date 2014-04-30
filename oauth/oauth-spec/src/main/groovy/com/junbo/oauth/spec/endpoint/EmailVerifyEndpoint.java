@@ -9,10 +9,9 @@ import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -25,6 +24,11 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public interface EmailVerifyEndpoint {
     @GET
-    Promise<Response> verifyEmail(@QueryParam("code") String code, @QueryParam("locale") String locale, @QueryParam("cid") String conversationId,
-                                  @QueryParam("event") String event);
+    Promise<Response> verifyEmail(@QueryParam("code") String code, @QueryParam("locale") String locale,
+                                  @QueryParam("cid") String conversationId, @QueryParam("event") String event);
+
+    @POST
+    Promise<Response> sendVerifyEmail(@HeaderParam("Authorization") String authorization,
+                                      @FormParam("locale") String locale,
+                                      @Context ContainerRequestContext request);
 }

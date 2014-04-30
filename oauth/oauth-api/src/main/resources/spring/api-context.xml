@@ -52,6 +52,7 @@
     <bean id="defaultEmailVerifyEndpoint" class="com.junbo.oauth.api.endpoint.EmailVerifyEndpointImpl">
         <property name="flowExecutor" ref="flowExecutor"/>
         <property name="emailVerifyFlow" value="emailVerifyFlow"/>
+        <property name="userService" ref="userService" />
     </bean>
 
 </beans>

@@ -315,4 +315,7 @@ interface AppExceptions {
     @ErrorDef(httpStatusCode = 400, code = '20074', description = 'The state parameter is missing',
             field = 'state')
     AppError missingState()
+
+    @ErrorDef(httpStatusCode = 400, code = '20075', description = 'Missing user id')
+    AppError missingUserId()
 }

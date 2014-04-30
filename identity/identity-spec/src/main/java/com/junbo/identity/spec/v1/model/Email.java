@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import java.util.Date;
+
 /**
  * Created by liangfu on 4/26/14.
  */
@@ -12,6 +14,8 @@ public class Email {
     private String value;
 
     private Boolean isValidated;
+
+    private Date validateTime;
 
     public String getValue() {
         return value;
@@ -27,5 +31,13 @@ public class Email {
 
     public void setIsValidated(Boolean isValidated) {
         this.isValidated = isValidated;
+    }
+
+    public Date getValidateTime() {
+        return validateTime;
+    }
+
+    public void setValidateTime(Date validateTime) {
+        this.validateTime = validateTime;
     }
 }
