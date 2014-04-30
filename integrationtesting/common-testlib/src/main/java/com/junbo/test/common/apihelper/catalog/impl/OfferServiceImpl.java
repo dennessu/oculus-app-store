@@ -5,8 +5,8 @@
  */
 package com.junbo.test.common.apihelper.catalog.impl;
 
-import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
 import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties;
+import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.apihelper.catalog.OfferRevisionService;
 import com.junbo.test.common.apihelper.catalog.ItemRevisionService;
@@ -45,8 +45,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
     private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
     private final String defaultStoredValueItemRevisionFileName = "defaultStoredValueItemRevision";
-    private final String defaultDigitalOfferRevisionFileName = "defaultDigitalOfferRevision";
-    private final String defaultPhysicalOfferRevisionFileName = "defaultPhysicalOfferRevision";
+    private final String defaultOfferRevisionFileName = "defaultOfferRevision";
     private LogHelper logger = new LogHelper(OfferServiceImpl.class);
     private static OfferService instance;
     private boolean offerLoaded;
@@ -238,15 +237,8 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         String offerId = this.postOffer(offerForPost);
 
         //Post offer revision
-        String strOfferRevisionContent;
-        if (offerType.equalsIgnoreCase("physical")) {
-            strOfferRevisionContent = readFileContent(String.format("testOfferRevisions/%s.json",
-                    defaultPhysicalOfferRevisionFileName));
-        }
-        else {
-            strOfferRevisionContent = readFileContent(String.format("testOfferRevisions/%s.json",
-                    defaultDigitalOfferRevisionFileName));
-        }
+        String strOfferRevisionContent = readFileContent(String.format("testOfferRevisions/%s.json",
+                defaultOfferRevisionFileName));
 
         OfferRevision offerRevisionForPost = new JsonMessageTranscoder().decode(
                 new TypeReference<OfferRevision>() {}, strOfferRevisionContent);
