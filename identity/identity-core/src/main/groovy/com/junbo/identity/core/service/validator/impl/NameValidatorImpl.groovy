@@ -1,6 +1,7 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.identity.core.service.validator.DisplayNameValidator
 import com.junbo.identity.core.service.validator.NickNameValidator
@@ -8,6 +9,7 @@ import com.junbo.identity.core.service.validator.PiiValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserName
+import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
@@ -37,7 +39,7 @@ class NameValidatorImpl implements PiiValidator {
     }
 
     @Override
-    void validate(JsonNode value) {
+    Promise<Void> validate(JsonNode value, UserId userId) {
         UserName name = ObjectMapperProvider.instance().treeToValue(value, UserName)
         if (name.firstName == null) {
             throw AppErrors.INSTANCE.fieldRequired('firstName').exception()
@@ -71,6 +73,8 @@ class NameValidatorImpl implements PiiValidator {
         nickNameValidator.validateNickName(name.nickName)
 
         displayNameValidator.validate(name)
+
+        return Promise.pure(null)
     }
 
     @Required

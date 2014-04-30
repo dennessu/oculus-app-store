@@ -1,13 +1,18 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.identity.core.service.validator.PiiValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
+import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Email
+import com.junbo.identity.spec.v1.model.UserPersonalInfo
+import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.CollectionUtils
 
 import java.util.regex.Pattern
 
@@ -21,6 +26,8 @@ class UserEmailValidatorImpl implements PiiValidator {
     private Integer minEmailLength
     private Integer maxEmailLength
 
+    private UserPersonalInfoRepository userPersonalInfoRepository
+
     @Override
     boolean handles(String type) {
         if (type == UserPersonalInfoType.EMAIL.toString()) {
@@ -30,7 +37,7 @@ class UserEmailValidatorImpl implements PiiValidator {
     }
 
     @Override
-    void validate(JsonNode value) {
+    Promise<Void> validate(JsonNode value, UserId userId) {
         Email email = ObjectMapperProvider.instance().treeToValue(value, Email)
         if (email.value == null) {
             throw AppErrors.INSTANCE.fieldInvalid('value').exception()
@@ -49,7 +56,13 @@ class UserEmailValidatorImpl implements PiiValidator {
             throw AppErrors.INSTANCE.fieldInvalid('value').exception()
         }
 
-        // todo:    Need to add logic check to ensure one email can only be added once.
+        return userPersonalInfoRepository.searchByEmail(email.value).then { List<UserPersonalInfo> existing ->
+            if (!CollectionUtils.isEmpty(existing)) {
+                throw AppErrors.INSTANCE.fieldDuplicate('value').exception()
+            }
+
+            return Promise.pure(null)
+        }
     }
 
     @Required
@@ -67,5 +80,10 @@ class UserEmailValidatorImpl implements PiiValidator {
     @Required
     void setMaxEmailLength(Integer maxEmailLength) {
         this.maxEmailLength = maxEmailLength
+    }
+
+    @Required
+    void setUserPersonalInfoRepository(UserPersonalInfoRepository userPersonalInfoRepository) {
+        this.userPersonalInfoRepository = userPersonalInfoRepository
     }
 }

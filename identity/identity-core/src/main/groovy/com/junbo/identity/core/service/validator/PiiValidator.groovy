@@ -1,6 +1,8 @@
 package com.junbo.identity.core.service.validator
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.junbo.common.id.UserId
+import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 
 /**
@@ -9,5 +11,5 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface PiiValidator {
     boolean handles(String type)
-    void validate(JsonNode value)
+    Promise<Void> validate(JsonNode value, UserId userId)
 }

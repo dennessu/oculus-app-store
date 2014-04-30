@@ -46,7 +46,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
         userPii = userPersonalInfoFilter.filterForCreate(userPii)
 
         return userPersonalInfoValidator.validateForCreate(userPii).then {
-            return userPersonalInfoRepository.create(userPii).then { UserPersonalInfo newUserPii ->
+            userPersonalInfoRepository.create(userPii).then { UserPersonalInfo newUserPii ->
                 created201Marker.mark((Id) newUserPii.id)
 
                 newUserPii = userPersonalInfoFilter.filterForGet(newUserPii, null)
@@ -116,7 +116,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
             userPii = userPersonalInfoFilter.filterForPut(userPii, oldUserPersonalInfo)
 
             return userPersonalInfoValidator.validateForUpdate(userPii, oldUserPersonalInfo).then {
-                return userPersonalInfoRepository.update(userPii).then { UserPersonalInfo newUserPersonalInfo ->
+                userPersonalInfoRepository.update(userPii).then { UserPersonalInfo newUserPersonalInfo ->
                     newUserPersonalInfo = userPersonalInfoFilter.filterForGet(newUserPersonalInfo, null)
                     return Promise.pure(newUserPersonalInfo)
                 }
@@ -131,7 +131,9 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
         }
 
         return userPersonalInfoValidator.validateForGet(userPiiId).then {
-            return userPersonalInfoRepository.delete(userPiiId)
+            userPersonalInfoRepository.delete(userPiiId)
+
+            return Promise.pure(null)
         }
     }
 
@@ -155,9 +157,10 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
                                 resultList.items.add(temp)
                             }
                         }
+
                         return Promise.pure(resultList)
                     }
-            } else {
+            } else if (listOptions.userId != null) {
                 return userPersonalInfoRepository.searchByUserId(listOptions.userId).
                     then { List<UserPersonalInfo> userPersonalInfoList ->
                         userPersonalInfoList.each { UserPersonalInfo temp ->
@@ -171,7 +174,34 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
 
                         return Promise.pure(resultList)
                     }
+            } else if (listOptions.email != null) {
+                return userPersonalInfoRepository.searchByEmail(listOptions.email)
+                        .then { List<UserPersonalInfo> userPersonalInfoList ->
+                    userPersonalInfoList.each { UserPersonalInfo temp ->
+                        temp = userPersonalInfoFilter.filterForGet(temp,
+                                listOptions.properties?.split(',') as List<String>)
+
+                        if (temp != null) {
+                            resultList.items.add(temp)
+                        }
+                    }
+                    return Promise.pure(resultList)
+                }
+            } else {
+                return userPersonalInfoRepository.searchByPhoneNumber(listOptions.phoneNumber)
+                        .then { List<UserPersonalInfo> userPersonalInfoList ->
+                    userPersonalInfoList.each { UserPersonalInfo temp ->
+                        temp = userPersonalInfoFilter.filterForGet(temp,
+                                listOptions.properties?.split(',') as List<String>)
+
+                        if (temp != null) {
+                            resultList.items.add(temp)
+                        }
+                    }
+                    return Promise.pure(resultList)
+                }
             }
+
         }
     }
 }

@@ -213,6 +213,7 @@
         </property>
         <property name="minEmailLength" value="3" />
         <property name="maxEmailLength" value="255" />
+        <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
     </bean>
 
     <bean id="userPhoneNumberValidator" class="com.junbo.identity.core.service.validator.impl.UserPhoneNumberValidatorImpl">
@@ -228,6 +229,8 @@
         </property>
         <property name="minValueLength" value="1" />
         <property name="maxValueLength" value="255" />
+        <property name="maxUserNumberPerPhone" value="${identity.conf.maxUsersPerPhoneNumber}" />
+        <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
     </bean>
 
     <bean id="userWhatsAppValidator" class="com.junbo.identity.core.service.validator.impl.UserWhatsAppValidatorImpl">

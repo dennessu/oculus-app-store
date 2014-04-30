@@ -62,6 +62,21 @@ class UserPersonalInfoRepositoryCloudantImpl extends CloudantClient<UserPersonal
 
         return Promise.pure(list)
     }
+
+    @Override
+    Promise<List<UserPersonalInfo>> searchByEmail(String email) {
+        def list = super.queryView('by_email', email)
+
+        return Promise.pure(list)
+    }
+
+    @Override
+    Promise<List<UserPersonalInfo>> searchByPhoneNumber(String phoneNumber) {
+        def list = super.queryView('by_phone_number', phoneNumber)
+
+        return Promise.pure(list)
+    }
+
     protected CloudantViews views = new CloudantViews(
             views: [
                     'by_user_id': new CloudantViews.CloudantView(
@@ -74,6 +89,18 @@ class UserPersonalInfoRepositoryCloudantImpl extends CloudantClient<UserPersonal
                                     '  emit(doc.userId.value.toString() + \':\' + doc.type, doc._id)' +
                                     '}',
                             resultClass: String),
+                    'by_email': new CloudantViews.CloudantView(
+                            map: 'function(doc) {' +
+                                    'if (doc.type == \'EMAIL\') {' +
+                                    'emit(doc.value.value.toString(), doc._id) }' +
+                            '}',
+                            resultClass: String),
+                    'by_phone_number': new CloudantViews.CloudantView(
+                            map: 'function(doc) {' +
+                                    'if (doc.type == \'PHONE\') {' +
+                                    'emit(doc.value.value.toString(), doc._id) }' +
+                                    '}',
+                            resultClass: String)
             ]
     )
 

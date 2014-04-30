@@ -1,11 +1,15 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.identity.core.service.validator.PiiValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
+import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.PhoneNumber
+import com.junbo.identity.spec.v1.model.UserPersonalInfo
+import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
@@ -20,6 +24,9 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
     private Integer maxValueLength
     private List<Pattern> allowedValuePatterns
 
+    private UserPersonalInfoRepository userPersonalInfoRepository
+    private Integer maxUserNumberPerPhone
+
     @Override
     boolean handles(String type) {
         if (type == UserPersonalInfoType.PHONE.toString()) {
@@ -29,7 +36,7 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
     }
 
     @Override
-    void validate(JsonNode value) {
+    Promise<Void> validate(JsonNode value, UserId userId) {
         PhoneNumber phoneNumber = ObjectMapperProvider.instance().treeToValue(value, PhoneNumber)
         if (phoneNumber.value == null) {
             throw AppErrors.INSTANCE.fieldRequired('value').exception()
@@ -46,6 +53,24 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
             Pattern pattern -> pattern.matcher(phoneNumber.value).matches()
         }) {
             throw AppErrors.INSTANCE.fieldInvalid('value').exception()
+        }
+
+        return userPersonalInfoRepository.searchByPhoneNumber(phoneNumber.value).then {
+            List<UserPersonalInfo> existing ->
+                if (existing != null) {
+                    existing.unique { UserPersonalInfo userPersonalInfo ->
+                        return userPersonalInfo.userId
+                    }.removeAll { UserPersonalInfo userPersonalInfo ->
+                        userPersonalInfo.userId == userId
+                    }
+
+                    if (existing != null && existing.size() > maxUserNumberPerPhone) {
+                        throw AppErrors.INSTANCE.fieldInvalidException('value', 'Reach maximum phoneNumber users')
+                            .exception()
+                    }
+                }
+
+                return Promise.pure(null)
         }
     }
 
@@ -64,5 +89,15 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
     @Required
     void setMaxValueLength(Integer maxValueLength) {
         this.maxValueLength = maxValueLength
+    }
+
+    @Required
+    void setUserPersonalInfoRepository(UserPersonalInfoRepository userPersonalInfoRepository) {
+        this.userPersonalInfoRepository = userPersonalInfoRepository
+    }
+
+    @Required
+    void setMaxUserNumberPerPhone(Integer maxUserNumberPerPhone) {
+        this.maxUserNumberPerPhone = maxUserNumberPerPhone
     }
 }
