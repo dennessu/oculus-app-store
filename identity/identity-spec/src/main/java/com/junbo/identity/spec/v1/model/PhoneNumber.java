@@ -11,11 +11,21 @@ package com.junbo.identity.spec.v1.model;
 public class PhoneNumber {
     private String value;
 
+    private Boolean isValidated;
+
     public String getValue() {
         return value;
     }
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public Boolean getIsValidated() {
+        return isValidated;
+    }
+
+    public void setIsValidated(Boolean isValidated) {
+        this.isValidated = isValidated;
     }
 }

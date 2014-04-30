@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JavaType
 import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat
 import groovy.transform.CompileStatic
 /**
  * Json Marshaller implementation.
@@ -23,8 +24,10 @@ class CloudantDefaultMarshaller implements CloudantMarshaller {
      */
     static {
         // Intentionally not using ObjectMapperProvider to get the raw serialization result
+        // todo:    For those objectMapper, we should define one common configuration, or it will have bugs
         objectMapper = new ObjectMapper()
         objectMapper.disable(MapperFeature.USE_ANNOTATIONS)
+        objectMapper.setDateFormat(new ISO8601DateFormat())
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     }
