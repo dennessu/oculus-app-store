@@ -83,7 +83,7 @@ public class TestGetItem extends BaseTestClass {
         //prepare 4 items for later use
         String itemId1 = itemService.postDefaultItem(EnumHelper.CatalogItemType.DIGITAL);
         String itemId2 = itemService.postDefaultItem(EnumHelper.CatalogItemType.PHYSICAL);
-        String itemId3 = itemService.postDefaultItem(EnumHelper.CatalogItemType.EWALLET);
+        String itemId3 = itemService.postDefaultItem(EnumHelper.CatalogItemType.STORED_VALUE);
         String itemId4 = itemService.postDefaultItem(EnumHelper.CatalogItemType.SUBSCRIPTION);
 
         HashMap<String, String> paraMap = new HashMap();
@@ -154,7 +154,7 @@ public class TestGetItem extends BaseTestClass {
         //prepare 4 items for later use
         String itemId1 = itemService.postDefaultItem(EnumHelper.CatalogItemType.DIGITAL);
         String itemId2 = itemService.postDefaultItem(EnumHelper.CatalogItemType.PHYSICAL);
-        String itemId3 = itemService.postDefaultItem(EnumHelper.CatalogItemType.EWALLET);
+        String itemId3 = itemService.postDefaultItem(EnumHelper.CatalogItemType.STORED_VALUE);
         String itemId4 = itemService.postDefaultItem(EnumHelper.CatalogItemType.SUBSCRIPTION);
 
         performVerification(itemId1, itemId2, itemId3, itemId4);

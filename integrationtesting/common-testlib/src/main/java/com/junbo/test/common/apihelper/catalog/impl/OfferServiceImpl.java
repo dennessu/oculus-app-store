@@ -46,7 +46,8 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
     private final String defaultStoredValueItemRevisionFileName = "defaultStoredValueItemRevision";
     private final String defaultOfferRevisionFileName = "defaultOfferRevision";
-    private final Integer DEFAULT_PAGING_SIZE = 10000;
+    private final Integer defaultPagingSize = 10000;
+    private final Integer start = 0;
     private LogHelper logger = new LogHelper(OfferServiceImpl.class);
     private static OfferService instance;
     private Boolean offerLoaded = false;
@@ -169,31 +170,31 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
     private void loadAllOffers() throws Exception {
         HashMap<String, String> paraMap = new HashMap<>();
-        paraMap.put("start", "0");
-        paraMap.put("size", DEFAULT_PAGING_SIZE.toString());
+        paraMap.put("start", start.toString());
+        paraMap.put("size", defaultPagingSize.toString());
         this.getOffers(paraMap);
     }
 
     private void loadAllOfferRevisions() throws Exception {
         HashMap<String, String> paraMap = new HashMap<>();
         paraMap.put("status", EnumHelper.CatalogEntityStatus.APPROVED.getEntityStatus());
-        paraMap.put("start", "0");
-        paraMap.put("size", DEFAULT_PAGING_SIZE.toString());
+        paraMap.put("start", start.toString());
+        paraMap.put("size", defaultPagingSize.toString());
         OfferRevisionServiceImpl.instance().getOfferRevisions(paraMap);
     }
 
     private void loadAllItems() throws Exception {
         HashMap<String, String> paraMap = new HashMap<>();
-        paraMap.put("start", "0");
-        paraMap.put("size", DEFAULT_PAGING_SIZE.toString());
+        paraMap.put("start", start.toString());
+        paraMap.put("size", defaultPagingSize.toString());
         itemService.getItems(paraMap);
     }
 
     private void loadAllItemRevisions() throws Exception {
         HashMap<String, String> paraMap = new HashMap<>();
         paraMap.put("status", EnumHelper.CatalogEntityStatus.APPROVED.getEntityStatus());
-        paraMap.put("start", "0");
-        paraMap.put("size", DEFAULT_PAGING_SIZE.toString());
+        paraMap.put("start", start.toString());
+        paraMap.put("size", defaultPagingSize.toString());
         ItemRevisionServiceImpl.instance().getItemRevisions(paraMap);
     }
 
