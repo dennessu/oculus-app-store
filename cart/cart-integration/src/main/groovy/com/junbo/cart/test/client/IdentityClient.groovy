@@ -13,7 +13,7 @@ class IdentityClient {
     User randomUser() {
         User user = new User(
                 username: RandomStringUtils.randomAlphabetic(10),
-                type: 'anonymousUser'
+                isAnonymous: false
         )
         return userResource.create(user).wrapped().get()
     }

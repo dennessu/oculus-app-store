@@ -8,6 +8,7 @@ package com.junbo.test.oauth;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.oauth.spec.model.TokenInfo;
 import com.junbo.test.common.HttpclientHelper;
+import com.junbo.test.common.RandomHelper;
 import com.junbo.test.identity.Identity;
 import org.testng.annotations.*;
 
@@ -30,11 +31,29 @@ public class authorizeUser {
 
     @Test(groups = "bvt")
     public void authorizeUser() throws Exception {
-        User user = Identity.DefaultPostUser();
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
         String cid = Oauth.GetLoginCid();
-        Oauth.StartLoggingAPISample(Oauth.MessageGetAuthCodeByCidAndUserName);
-        String authCode = Oauth.GetAuthCode(cid, user.getUsername());
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        String currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        assertEquals("validate current view state is login", true, currentViewState.contains("\"view\" : \"login\""));
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
+        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
+        ValidateErrorFreeResponse(postRegisterViewResponse);
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        assertEquals("validate view state after post register view", postRegisterViewResponse, currentViewState);
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
+        String userName = RandomHelper.randomAlphabetic(15);
+        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName);
+        ValidateErrorFreeResponse(postRegisterUserResponse);
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetAuthCodeByCidAfterRegisterUser);
+        String authCode = Oauth.GetAuthCodeAfterRegisterUser(cid);
         Oauth.StartLoggingAPISample(Oauth.MessageGetAccessTokenByAuthCode);
         String accessToken = Oauth.GetAccessToken(authCode);
         Oauth.StartLoggingAPISample(Oauth.MessageGetTokenInfoByAccessToken);
@@ -42,21 +61,42 @@ public class authorizeUser {
         assertEquals("validate token->client is correct", Oauth.DefaultClientId, tokenInfo.getClientId());
         assertEquals("validate token->scopes is correct", Oauth.DefaultClientScopes, tokenInfo.getScopes());
         User storedUser = Identity.GetUserByUserId(tokenInfo.getSub());
-        assertEquals("validate token->binded user is correct", user.getUsername(), storedUser.getUsername());
+        assertEquals("validate token->binded user is correct", userName, storedUser.getUsername());
     }
 
     @Test(groups = "bvt")
     public void userSSO() throws Exception {
-        User user = Identity.DefaultPostUser();
+        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
         String cid = Oauth.GetLoginCid();
-        String loginState = Oauth.GetLoginState(cid, user.getUsername());
+
+        String currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        assertEquals("validate current view state is login", true, currentViewState.contains("\"view\" : \"login\""));
+
+        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
+        ValidateErrorFreeResponse(postRegisterViewResponse);
+        currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        assertEquals("validate view state after post register view", postRegisterViewResponse, currentViewState);
+
+        String userName = RandomHelper.randomAlphabetic(15);
+        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName);
+        ValidateErrorFreeResponse(postRegisterUserResponse);
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginStateByCidAfterRegisterUser);
+        String loginState = Oauth.GetLoginStateAfterRegisterUser(cid);
+        Oauth.StartLoggingAPISample(Oauth.MessageGetAuthCodeByLoginState);
         String authCode = Oauth.SSO2GetAuthCode(loginState);
         String accessToken = Oauth.GetAccessToken(authCode);
         TokenInfo tokenInfo = Oauth.GetTokenInfo(accessToken);
         assertEquals("validate token->client is correct", Oauth.DefaultClientId, tokenInfo.getClientId());
         assertEquals("validate token->scopes is correct", Oauth.DefaultClientScopes, tokenInfo.getScopes());
         User storedUser = Identity.GetUserByUserId(tokenInfo.getSub());
-        assertEquals("validate token->binded user is correct", user.getUsername(), storedUser.getUsername());
+        assertEquals("validate token->binded user is correct", userName, storedUser.getUsername());
     }
 
+    private static void ValidateErrorFreeResponse(String responseString) throws Exception {
+        assertEquals("validate no errors in response \r\n" + responseString,
+                true, responseString.contains("\"errors\" : [ ]"));
+    }
 }

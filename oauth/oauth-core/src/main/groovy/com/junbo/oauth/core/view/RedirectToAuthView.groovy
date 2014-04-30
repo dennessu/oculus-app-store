@@ -37,7 +37,8 @@ class RedirectToAuthView extends AbstractView {
                 view: 'redirect',
                 model: [
                         'location': builder.build().toUriString()
-                ] as Map<String, Object>
+                ] as Map<String, Object>,
+                errors: contextWrapper.errors.unique(new ErrorComparator()).asList()
         )
 
         return Promise.pure(model)

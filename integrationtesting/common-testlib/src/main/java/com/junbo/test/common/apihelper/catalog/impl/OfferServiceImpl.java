@@ -5,8 +5,8 @@
  */
 package com.junbo.test.common.apihelper.catalog.impl;
 
-import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
 import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties;
+import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.apihelper.catalog.OfferRevisionService;
 import com.junbo.test.common.apihelper.catalog.ItemRevisionService;
@@ -44,8 +44,8 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     private final String defaultOfferFileName = "defaultOffer";
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
     private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
-    private final String defaultDigitalOfferRevisionFileName = "defaultDigitalOfferRevision";
-    private final String defaultPhysicalOfferRevisionFileName = "defaultPhysicalOfferRevision";
+    private final String defaultStoredValueItemRevisionFileName = "defaultStoredValueItemRevision";
+    private final String defaultOfferRevisionFileName = "defaultOfferRevision";
     private LogHelper logger = new LogHelper(OfferServiceImpl.class);
     private static OfferService instance;
     private boolean offerLoaded;
@@ -237,15 +237,8 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         String offerId = this.postOffer(offerForPost);
 
         //Post offer revision
-        String strOfferRevisionContent;
-        if (offerType.equalsIgnoreCase("physical")) {
-            strOfferRevisionContent = readFileContent(String.format("testOfferRevisions/%s.json",
-                    defaultPhysicalOfferRevisionFileName));
-        }
-        else {
-            strOfferRevisionContent = readFileContent(String.format("testOfferRevisions/%s.json",
-                    defaultDigitalOfferRevisionFileName));
-        }
+        String strOfferRevisionContent = readFileContent(String.format("testOfferRevisions/%s.json",
+                defaultOfferRevisionFileName));
 
         OfferRevision offerRevisionForPost = new JsonMessageTranscoder().decode(
                 new TypeReference<OfferRevision>() {}, strOfferRevisionContent);
@@ -293,11 +286,14 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
         //Attach item revision to the item
         ItemRevision itemRevision;
-        if (itemType.equalsIgnoreCase(EnumHelper.CatalogItemType.PHYSICAL.getItemType())) {
-            itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultPhysicalItemRevisionFileName);
+        if (itemType.equalsIgnoreCase(EnumHelper.CatalogItemType.DIGITAL.getItemType())) {
+            itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultDigitalItemRevisionFileName);
+        }
+        else if (itemType.equalsIgnoreCase(EnumHelper.CatalogItemType.STORED_VALUE.getItemType())) {
+            itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultStoredValueItemRevisionFileName);
         }
         else {
-            itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultDigitalItemRevisionFileName);
+            itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultPhysicalItemRevisionFileName);
         }
 
         itemRevision.setItemId(IdConverter.hexStringToId(ItemId.class, itemId));
