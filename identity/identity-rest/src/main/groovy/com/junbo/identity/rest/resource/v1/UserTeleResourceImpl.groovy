@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional
 @CompileStatic
 @Transactional
 class UserTeleResourceImpl implements UserTeleResource {
+
+
     @Override
     Promise<UserTeleCode> create(UserId userId, UserTeleCode userTeleCode) {
         return null
