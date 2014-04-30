@@ -9,6 +9,7 @@ package com.junbo.order.clientproxy.billing;
 import com.junbo.billing.spec.model.Balance;
 import com.junbo.billing.spec.model.Currency;
 import com.junbo.billing.spec.model.ShippingAddress;
+import com.junbo.common.error.AppError;
 import com.junbo.langur.core.promise.Promise;
 
 import java.util.Collection;
@@ -28,4 +29,6 @@ public interface BillingFacade {
     Promise<Collection<Currency>> getCurrencies();
     Promise<Currency> getCurrency(String name);
     Promise<Balance> confirmBalance(Balance balance);
+
+    AppError convertError(Throwable error);
 }

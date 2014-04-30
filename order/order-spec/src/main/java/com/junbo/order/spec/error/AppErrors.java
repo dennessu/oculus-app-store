@@ -125,6 +125,10 @@ public interface AppErrors {
             description = "Billing charge failed")
     AppError billingChargeFailed();
 
+    @ErrorDef(httpStatusCode = 409, code = BillingErrorCode.BILLING_INSUFFICIENT_FUND,
+            description = "Insufficient fund")
+    AppError billingInsufficientFund();
+
     @ErrorDef(httpStatusCode = 404, code = ErrorCode.ORDER_EVENT_NOT_FOUND,
             description = "Order event not found")
     AppError orderEventNotFound();

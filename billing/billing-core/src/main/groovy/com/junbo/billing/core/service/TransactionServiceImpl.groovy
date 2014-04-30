@@ -15,6 +15,7 @@ import com.junbo.billing.spec.enums.TransactionType
 import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.Transaction
+import com.junbo.common.error.AppErrorException
 import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.enums.PaymentStatus
 import com.junbo.payment.spec.model.ChargeInfo
@@ -78,13 +79,13 @@ class TransactionServiceImpl implements TransactionService {
             LOGGER.error('name=Capture_Balance_Error. error in post payment capture', throwable)
             newTransaction.setStatus(TransactionStatus.ERROR.name())
             balance.addTransaction(newTransaction)
-            balance.setStatus(BalanceStatus.ERROR.name())
-            return Promise.pure(null)
-        }.then { PaymentTransaction pt ->
-            if (pt == null) {
-                return Promise.pure(balance)
-            }
+            balance.setStatus(BalanceStatus.FAILED.name())
 
+            if (throwable instanceof AppErrorException) {
+                throw AppErrors.INSTANCE.paymentProcessingFailed(balance.piId.value.toString()).exception()
+            }
+            throw throwable
+        }.then { PaymentTransaction pt ->
             LOGGER.info('name=Capture_Balance_Response. payment id: {}, amount: {}, status: {}',
                     pt.id, pt.chargeInfo.amount, pt.status)
             newTransaction.setPaymentRefId(pt.id.toString())
@@ -140,7 +141,11 @@ class TransactionServiceImpl implements TransactionService {
                 LOGGER.error('name=Confirm_Balance_Error. error in post payment confirm', throwable)
                 newTransaction.setStatus(TransactionStatus.ERROR.name())
                 balance.addTransaction(newTransaction)
-                return Promise.pure(null)
+
+                if (throwable instanceof AppErrorException) {
+                    throw AppErrors.INSTANCE.paymentProcessingFailed(balance.piId.value.toString()).exception()
+                }
+                throw throwable
             }.then { PaymentTransaction pt ->
                 if (pt == null) {
                     return Promise.pure(balance)
@@ -174,13 +179,18 @@ class TransactionServiceImpl implements TransactionService {
             LOGGER.error('name=Charge_Balance_Error. error in post payment charge', throwable)
             transaction.setStatus(TransactionStatus.ERROR.name())
             balance.addTransaction(transaction)
-            balance.setStatus(BalanceStatus.ERROR.name())
-            return Promise.pure(null)
-        }.then { PaymentTransaction pt ->
-            if (pt == null) {
-                return Promise.pure(balance)
-            }
+            balance.setStatus(BalanceStatus.FAILED.name())
 
+            if (throwable instanceof AppErrorException) {
+                // check whether is insufficient fund
+                def appException = ((AppErrorException)throwable)
+                if (appException.error.code == '40028') {
+                    throw AppErrors.INSTANCE.paymentInsufficientFund(balance.piId.value.toString()).exception()
+                }
+                throw AppErrors.INSTANCE.paymentProcessingFailed(balance.piId.value.toString()).exception()
+            }
+            throw throwable
+        }.then { PaymentTransaction pt ->
             LOGGER.info('name=Charge_Balance. payment id: {}, status: {}', pt.id, pt.status)
             transaction.setPaymentRefId(pt.id.toString())
             transaction.setStatus(getTransactionStatusByPaymentStatus(pt.status).name())
@@ -210,13 +220,13 @@ class TransactionServiceImpl implements TransactionService {
             LOGGER.error('name=Authorize_Balance_Error. error in post payment authorization', throwable)
             transaction.setStatus(TransactionStatus.ERROR.name())
             balance.addTransaction(transaction)
-            balance.setStatus(BalanceStatus.ERROR.name())
-            return Promise.pure(null)
-        }.then { PaymentTransaction pt ->
-            if (pt == null) {
-                return Promise.pure(balance)
-            }
+            balance.setStatus(BalanceStatus.FAILED.name())
 
+            if (throwable instanceof AppErrorException) {
+                throw AppErrors.INSTANCE.paymentProcessingFailed(balance.piId.value.toString()).exception()
+            }
+            throw throwable
+        }.then { PaymentTransaction pt ->
             LOGGER.info('name=Authorize_Balance. payment id: {}, status: {}', pt.id, pt.status)
             transaction.setPaymentRefId(pt.id.toString())
             transaction.setStatus(getTransactionStatusByPaymentStatus(pt.status).name())
