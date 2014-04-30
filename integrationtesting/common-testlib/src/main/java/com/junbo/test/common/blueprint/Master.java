@@ -304,7 +304,7 @@ public class Master {
                 String offerRevisionId = IdConverter.idLongToHexString(OfferRevisionId.class, offer.getCurrentRevisionId());
                 OfferRevision offerRevision = this.offerRevisions.get(offerRevisionId);
 
-                if (offerRevision.getLocales().get("en_US").getName().equalsIgnoreCase(offerName)) {
+                if (offerRevision != null && offerRevision.getLocales().get("en_US").getName().equalsIgnoreCase(offerName)) {
                     return key;
                 }
             }
