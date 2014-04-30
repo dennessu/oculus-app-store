@@ -240,7 +240,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         paymentInstrument.setIsValidated(creditCardInfo.isValidated());
         paymentInstrument.setPhoneNum("650-253-0000");
         paymentInstrument.setType(creditCardInfo.getType().toString());*/
-        paymentInstrument.setBillingAddressId(167772224l);
+        paymentInstrument.setBillingAddressId(167772224L);
         paymentInstrument.setTrackingUuid(UUID.randomUUID());
         logger.LogSample("Post a new credit card to user");
         return paymentClient.postPaymentInstrument(paymentInstrument);
@@ -290,7 +290,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
                 IdConverter.hexStringToId(PaymentInstrumentId.class, paymentInstrumentId)));
         paymentInfos.add(paymentInfo);
         order.setPayments(paymentInfos);
-        order.setShippingMethod(0l);
+        order.setShippingMethod(0L);
 
         if (shippingAddressId != null) {
             order.setShippingAddress(Master.getInstance().getShippingAddress(shippingAddressId).getAddressId());

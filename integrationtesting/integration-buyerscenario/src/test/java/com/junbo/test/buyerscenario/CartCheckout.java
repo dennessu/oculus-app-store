@@ -240,7 +240,7 @@ public class CartCheckout extends BaseTestClass {
         testDataProvider.creditWallet(uid, new BigDecimal(9));
 
         String orderId = testDataProvider.postOrder(
-                uid, Country.DEFAULT, Currency.DEFAULT, ewalletId, null, offerList, 200);
+                uid, Country.DEFAULT, Currency.DEFAULT, ewalletId, null, offerList, 33004);
 
     }
 
