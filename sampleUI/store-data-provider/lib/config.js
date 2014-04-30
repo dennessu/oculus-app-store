@@ -83,8 +83,7 @@ module.exports = {
         },
 
         PostUser: {
-            Rules:{
-            },
+            Rules:{},
             Options: {
                 path: "/users",
                 method: 'POST',
@@ -95,6 +94,22 @@ module.exports = {
             Arguments: {
                 data: 0,
                 cb: 1
+            }
+        },
+
+        PostChangeCredentials: {
+            Rules:{},
+            Options: {
+                path: "/users/{userId}/change-credentials",
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            },
+            Arguments: {
+                userId: 0,
+                data: 1,
+                cb: 2
             }
         },
 
@@ -132,20 +147,19 @@ module.exports = {
             }
         },
 
-        PostProfile: {
+        PostPersonalInfo: {
             Rules:{
             },
             Options: {
-                path: "/users/{userId}/profiles",
+                path: "/personalInfo",
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 }
             },
             Arguments: {
-                userId: 0,
-                data: 1,
-                cb: 2
+                data: 0,
+                cb: 1
             }
         },
 
@@ -322,9 +336,7 @@ module.exports = {
         },
 
         GetOffers: {
-            Rules:{
-                
-            },
+            Rules:{},
             Options: {
                 path: "/offers?status=Released",
                 method: 'GET',
@@ -350,6 +362,36 @@ module.exports = {
             },
             Arguments: {
                 offerId: 0,
+                cb: 1
+            }
+        },
+
+        GetOfferRevisionById: {
+            Rules:{},
+            Options: {
+                path: "/offer-revisions/{revisionId}",
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            },
+            Arguments: {
+                revisionId: 0,
+                cb: 1
+            }
+        },
+
+        GetPriceTierById: {
+            Rules:{},
+            Options: {
+                path: "/price-tiers/{priceTierId}",
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            },
+            Arguments: {
+                priceTierId: 0,
                 cb: 1
             }
         },

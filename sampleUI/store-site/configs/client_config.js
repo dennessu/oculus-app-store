@@ -11,6 +11,7 @@ var ClientConfigs = {
     SettingTypeEnum:null,
     UrlConstants: null,
     Runtime: null,
+    FieldNames: null,
     PaymentTypes: null,
     CardTypes: null,
     PaymentHolderTypes: null,

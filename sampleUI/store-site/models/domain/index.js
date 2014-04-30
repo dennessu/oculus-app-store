@@ -1,15 +1,32 @@
 
-var ResultModel = require('./result_model');
-var ResultStatusEnum = require('./result_status_enum');
-var RedirectModel = require('./redirect_model');
-var RedirectTargetsEnum = require('./redirect_targets_enum');
-var SettingModel = require('./setting_model');
+exports.ResultModel = function(){
+    this.status = 200;
+    this.data =  "";
+};
 
-var ResponseModel = require('./response_model');
+exports.ResultStatusEnum = {
+    Normal: 200,
+    Redirect: 302, // return '{target: _blank or _self, url: '' }'
+    APIError: 1000, // API throw an error
+    Exception: 2000  // code throw an exception
+};
 
-exports.ResultModel = ResultModel;
-exports.ResultStatusEnum = ResultStatusEnum;
-exports.RedirectModel = RedirectModel;
-exports.RedirectTargetsEnum = RedirectTargetsEnum;
-exports.SettingModel = SettingModel;
-exports.ResponseModel = ResponseModel;
+exports.RedirectModel = function(){
+    this.target = "";
+    this.url = ""
+};
+
+exports.RedirectTargetsEnum = {
+    Blank: "_blank",
+    Self: "_self"
+};
+
+exports.SettingModel = function(){
+    this.type = "";
+    this.data = "";
+};
+
+exports.ResponseModel = function(){
+    this.data = ""; // ResultModel
+    this.settings = ""; // SettingModel Array
+};

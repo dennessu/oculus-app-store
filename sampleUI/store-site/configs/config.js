@@ -55,6 +55,20 @@ var Configs = {
         RegisterUrl: "{1}/identity?redirect_url={2}#/register"
     },
 
+    // API Data field and other site post filed
+    FieldNames: {
+        AccessToken: "access_token",
+        IdToken: "id_token",
+        IdTokenUserId: "userId",
+        Username: "userName",
+
+        TokenInfoUser: "sub",
+        ProfileFirstname: "firstName",
+        ProfileLastname: "lastName",
+
+        Results: "results"
+    },
+
     // hard code
     PaymentTypes: [
         {name: "Please choose", value: ""},
@@ -206,17 +220,7 @@ var Configs = {
     Google_Captcha_VerifyUrl: "/recaptcha/api/verify",
     Google_Captcha_PrivateKey: "6LeKhO4SAAAAACP5W0NoL7YV9dZAs3-5Z-T4Dl5i",
 
-    // API Data field and other site post filed
-    FieldNames: {
-        AccessToken: "access_token",
-        IdToken: "id_token",
-        IdTokenUserId: "userId",
-        Username: "userName",
 
-        TokenInfoUser: "sub",
-        ProfileFirstname: "firstName",
-        ProfileLastname: "lastName"
-    },
     SaveQueryStringArray: ["cid", "event", "id_token", "access_token", "redirect_url"]
 };
 

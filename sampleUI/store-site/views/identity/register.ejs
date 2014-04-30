@@ -5,8 +5,8 @@
     <p class="error">{{errMessage}}</p>
     {{/if}}
     <dl>
-        <dt>Email</dt>
-        <dd>{{input type="email" class="{required:true,email:true}" name="REmail" id="REmail" value=content.email}}</dd>
+        <dt>Username</dt>
+        <dd>{{input type="email" class="{required:true}" name="RUsername" id="RUsername" value=content.username}}</dd>
     </dl>
     <dl>
         <dt>Password</dt>
@@ -17,8 +17,8 @@
         <dd>{{input type="password" class="{required:true,equalTo:'#RPassword'}" id="RConfirmPassword"}}</dd>
     </dl>
     <dl>
-        <dt>Phone Number</dt>
-        <dd>{{input type="text" class="{required:true,maxlength:20}" name="RPhone" id="RPhone" value=content.phone}}</dd>
+        <dt>Email</dt>
+        <dd>{{input type="email" class="{required:true,email:true}" name="REmail" id="REmail" value=content.email}}</dd>
     </dl>
     <dl>
         <dt>Enter Birth Date</dt>
@@ -27,10 +27,6 @@
             {{view Ember.Select content=days optionValuePath="content.v" optionLabelPath="content.t" value=day id="RDay" name="RDay" class="day {required:true, VerifyNumberValue:true}"}}
             {{view Ember.Select content=years optionValuePath="content.v" optionLabelPath="content.t" value=year id="RYear" name="RYear" class="year {required:true, VerifyNumberValue:true}"}}
         </dd>
-    </dl>
-    <dl>
-        <dt>Country of Residence</dt>
-        <dd>{{view Ember.Select content=countries optionValuePath="content.v" optionLabelPath="content.t" value=country id="RCountry" name="RCountry" class="{required:true, ValidEmpty:true}"}}</dd>
     </dl>
     <dl class="agreement">
         <dd><label>{{input type="checkbox" id="RIsAgree" name="RIsAgree" class="{required:true}" checked=content.isAgree}}<span>I have read and agree to Store Terms of Service and Privacy Policy.</span></label></dd>

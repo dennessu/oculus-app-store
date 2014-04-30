@@ -4,6 +4,42 @@ var CatalogDataProvider = require('store-data-provider').Catalog;
 var DomainModels = require('../../models/domain');
 var Utils = require('../../utils/utils');
 
+
+exports.GetOffers = function(data, cb){
+    var body = data.data;
+    var cookies = data.cookies;
+    var query = data.query;
+
+    var dataProvider = new CatalogDataProvider(process.AppConfig.Catalog_API_Host, process.AppConfig.Catalog_API_Port);
+
+    Async.waterfall([
+        // get offers
+        function(cb){
+            dataProvider.GetOffers(function(result){
+                if(result.StatusCode.toString()[0] == 2){
+                    var offers = JSON.parse(result.Data)[process.AppConfig.FieldNames.Results];
+                    cb(null, offers);
+                }else{
+                    cb("Can't get offers", result);
+                }
+            });
+        },
+        // get offer revisions
+        function(offers, cb){
+
+
+
+
+        }
+    ], function(err, result){
+
+    });
+
+
+
+
+};
+
 exports.GetProducts = function (data, cb) {
     var body = data.data;
     var cookies = data.cookies;

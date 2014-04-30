@@ -297,141 +297,59 @@ module.exports = {
                     statusCode: 200,
                     headers: null,
                     data: {
-                        results: [
+                        "self" : {
+                            "href" : "http://api.oculusvr-demo.com:8081/v1/offers?status=Released",
+                            "id" : ""
+                        },
+                        "results": [
                             {
-                                "revision": 1,
-                                "name": "3D Parking 1",
-                                "status": "DRAFT",
-                                "createdTime": "2014-02-28T09:11:15Z",
-                                "createdBy": "system internal",
-                                "updatedTime": "2014-02-28T09:11:15Z",
-                                "updatedBy": "system internal",
-                                "ownerId": {
-                                    "href": "http://api.oculusvr.com/v1/User/3234",
-                                    "id": "3234"
-                                },
-                                "priceTier": null,
-                                "prices": {
-                                    "US": {
-                                        "amount": 9.99,
-                                        "currency": "USD"
-                                    }
-                                },
-                                "subOffers": [],
-                                "items": [
-                                    {
-                                        "itemId": {
-                                            "href": "http://api.oculusvr.com/v1/Item/100000",
-                                            "id": "100000"
-                                        },
-                                        "sku": null,
-                                        "quantity": null
-                                    }
-                                ],
-                                "restriction": null,
-                                "categories": [
-                                    {
-                                        "href": "http://api.oculusvr.com/v1/Category/123",
-                                        "id": "123"
-                                    }
-                                ],
-                                "events": [
-                                    {
-                                        "name": "PURCHASE_EVENT",
-                                        "actions": [
-                                            {
-                                                "type": "GRANT_DOWNLOAD_ENTITLEMENT",
-                                                "properties": {
-                                                    "duration": "3Month",
-                                                    "tag": "item001_ANGRY.BIRD_ONLINE_ACCESS",
-                                                    "type": "ONLINE_ACCESS",
-                                                    "group": "Angry Bird"
-                                                }
-                                            }
-                                        ]
-                                    }
-                                ],
-                                "eligibleCountries": null,
-                                "countryProperties": null,
-                                "localeProperties": {
-                                    "DEFAULT": {
-                                        "description": "3D Parking Simulator is a VR driving simulator specialized for parking. Currently you can practice car parking in 5 small courses. You can see stereoscopic rear-view and door mirrors. Both left and right driving seats are supported (switch by 'C' key)."
-                                    }
-                                },
-                                "properties": {
-                                    "mainImage": "/images/p1.jpg"
-                                },
+                                "createdTime": "2014-04-28T00:00:00Z",
+                                "updatedTime": "2014-04-28T00:00:00Z",
+                                "rev": "2",
+                                "categories": [],
+                                "environment": null,
                                 "self": {
-                                    "href": "http://api.oculusvr.com/v1/Offer/1393578675743",
-                                    "id": 1
+                                    "href": "http://api.oculusvr-demo.com:8081/v1/offers/2B54FFB8BCDF",
+                                    "id": "2B54FFB8BCDF"
+                                },
+                                "currentRevision": {
+                                    "href": "http://api.oculusvr-demo.com:8081/v1/offer-revisions/2B54FFBCBCDF",
+                                    "id": "2B54FFBCBCDF"
+                                },
+                                "publisher": {
+                                    "href": "http://api.oculusvr-demo.com:8081/v1/users/6B54FF3CBCDF",
+                                    "id": "6B54FF3CBCDF"
+                                },
+                                "isPublished": true,
+                                "iapHostItem": null,
+                                "revisions": {
+                                    "href": "http://api.oculusvr-demo.com:8081/v1/offer-revisions?offerId=2B54FFB8BCDF",
+                                    "id": null
                                 }
                             },
                             {
-                                "revision": 1,
-                                "name": "3D Parking 2",
-                                "status": "DRAFT",
-                                "createdTime": "2014-02-28T09:11:15Z",
-                                "createdBy": "system internal",
-                                "updatedTime": "2014-02-28T09:11:15Z",
-                                "updatedBy": "system internal",
-                                "ownerId": {
-                                    "href": "http://api.oculusvr.com/v1/User/3234",
-                                    "id": "3234"
-                                },
-                                "priceTier": null,
-                                "prices": {
-                                    "US": {
-                                        "amount": 9.99,
-                                        "currency": "USD"
-                                    }
-                                },
-                                "subOffers": [],
-                                "items": [
-                                    {
-                                        "itemId": {
-                                            "href": "http://api.oculusvr.com/v1/Item/100000",
-                                            "id": "100000"
-                                        },
-                                        "sku": null,
-                                        "quantity": null
-                                    }
-                                ],
-                                "restriction": null,
-                                "categories": [
-                                    {
-                                        "href": "http://api.oculusvr.com/v1/Category/123",
-                                        "id": "123"
-                                    }
-                                ],
-                                "events": [
-                                    {
-                                        "name": "PURCHASE_EVENT",
-                                        "actions": [
-                                            {
-                                                "type": "GRANT_DOWNLOAD_ENTITLEMENT",
-                                                "properties": {
-                                                    "duration": "3Month",
-                                                    "tag": "item001_ANGRY.BIRD_ONLINE_ACCESS",
-                                                    "type": "ONLINE_ACCESS",
-                                                    "group": "Angry Bird"
-                                                }
-                                            }
-                                        ]
-                                    }
-                                ],
-                                "eligibleCountries": null,
-                                "countryProperties": null,
-                                "localeProperties": {
-                                    "DEFAULT": {
-                                        "description": "3D Parking Simulator is a VR driving simulator specialized for parking. Currently you can practice car parking in 5 small courses. You can see stereoscopic rear-view and door mirrors. Both left and right driving seats are supported (switch by 'C' key)."
-                                    }
-                                },
-                                "properties": {
-                                    "mainImage": "/images/p2.jpg"
-                                },
+                                "createdTime": "2014-04-28T00:00:00Z",
+                                "updatedTime": "2014-04-28T00:00:00Z",
+                                "rev": "2",
+                                "categories": [],
+                                "environment": null,
                                 "self": {
-                                    "href": "http://api.oculusvr.com/v1/Offer/222222222",
-                                    "id": 2
+                                    "href": "http://api.oculusvr-demo.com:8081/v1/offers/2B54FF34BCDF",
+                                    "id": "2B54FF34BCDF"
+                                },
+                                "currentRevision": {
+                                    "href": "http://api.oculusvr-demo.com:8081/v1/offer-revisions/2B54FF38BCDF",
+                                    "id": "2B54FF38BCDF"
+                                },
+                                "publisher": {
+                                    "href": "http://api.oculusvr-demo.com:8081/v1/users/2B55FFB8BC9F",
+                                    "id": "2B55FFB8BC9F"
+                                },
+                                "isPublished": true,
+                                "iapHostItem": null,
+                                "revisions": {
+                                    "href": "http://api.oculusvr-demo.com:8081/v1/offer-revisions?offerId=2B54FF34BCDF",
+                                    "id": null
                                 }
                             }
                         ]
@@ -440,6 +358,174 @@ module.exports = {
 
                 'Failed': {
                     statusCode: 404,
+                    headers: null,
+                    data: null
+                }
+            }
+        },
+
+        GetOfferRevisionsById:{
+            Method: 'GET',
+            Path: '/v1/offer-revisions/:revisionsId',
+            ResponseItem: 'Succeed',
+            Items: {
+                'Succeed': {
+                    statusCode: 200,
+                    headers: null,
+                    data: {
+                        "createdTime": "2014-04-28T00:00:00Z",
+                        "updatedTime": "2014-04-28T00:00:00Z",
+                        "rev": "1",
+                        "status": "DRAFT",
+                        "futureProperties": null,
+                        "price": {
+                            "priceType": "TIERED",
+                            "priceTier": {
+                                "href": "http://api.oculusvr-demo.com:8081/v1/price-tiers/6B55FFB03C9F",
+                                "id": "6B55FFB03C9F"
+                            },
+                            "prices": null
+                        },
+                        "restrictions": {
+                            "limitPerCustomer": 1,
+                            "limitPerOrder": 1,
+                            "preconditionItems": [],
+                            "exclusionItems": []
+                        },
+                        "subOffers": [],
+                        "items": [
+                            {
+                                "quantity": 1,
+                                "item": {
+                                    "href": "http://api.oculusvr-demo.com:8081/v1/items/6B54FDB03C9F",
+                                    "id": "6B54FDB03C9F"
+                                }
+                            }
+                        ],
+                        "eligibleCountries": [],
+                        "eventActions": {
+                            "PURCHASE": [
+                                {
+                                    "type": "GRANT_ENTITLEMENT",
+                                    "properties": null,
+                                    "itemId": null,
+                                    "entitlementDefinition": {
+                                        "href": "http://api.oculusvr-demo.com:8081/v1/entitlement-definitions/6B54FDB03CDF",
+                                        "id": "6B54FDB03CDF"
+                                    }
+                                }
+                            ]
+                        },
+                        "startTime": null,
+                        "endTIme": null,
+                        "locales": {
+                            "en_US": {
+                                "name": "VR Cinema",
+                                "revisionNotes": "",
+                                "longDescription": "<p>\r\n    VR Cinema will put you inside a virtual movie theater. You can watch videos in 2D as well as 3D on a huge screen. You can even walk around and choose your seat.\r\n</p>\r\n<p>\r\n\t   The application supports AVI, MP4, MKV, WMV files.\r\n</p>",
+                                "shortDescription": "VR Cinema will put you inside a virtual movie theater. You can watch videos in 2D as well as 3D on a huge screen. You can even walk around and choose your seat. ",
+                                "images": {
+                                    "thumb": {
+                                        "id": "1375715152280",
+                                        "href": "http://static.oculusvr.com/shareuploads/apps/1377300026335dp071fw29/screens/1375425759163d69yv3rf6r_1375715152280.jpg",
+                                        "size": 73374,
+                                        "x": 290,
+                                        "y": 163
+                                    },
+                                    "main": {
+                                        "id": "1375714938390",
+                                        "href": "http://static.oculusvr.com/shareuploads/apps/1377300026335dp071fw29/screens/1375425759163d69yv3rf6r_1375714938390.jpg",
+                                        "size": 243656,
+                                        "x": 700,
+                                        "y": 438
+                                    },
+                                    "general": [
+                                        {
+                                            "id": "1377298280725",
+                                            "href": "http://static.oculusvr.com/shareuploads/apps/1377300026335dp071fw29/screens/1375425759163d69yv3rf6r_1377298280725.jpg",
+                                            "size": 297523,
+                                            "x": 700,
+                                            "y": 438
+                                        },
+                                        {
+                                            "id": "1377298282919",
+                                            "href": "http://static.oculusvr.com/shareuploads/apps/1377300026335dp071fw29/screens/1375425759163d69yv3rf6r_1377298282919.jpg",
+                                            "size": 234791,
+                                            "x": 700,
+                                            "y": 438
+                                        },
+                                        {
+                                            "id": "1377298285020",
+                                            "href": "http://static.oculusvr.com/shareuploads/apps/1377300026335dp071fw29/screens/1375425759163d69yv3rf6r_1377298285020.jpg",
+                                            "size": 230466,
+                                            "x": 700,
+                                            "y": 438
+                                        },
+                                        {
+                                            "id": "1377298286936",
+                                            "href": "http://static.oculusvr.com/shareuploads/apps/1377300026335dp071fw29/screens/1375425759163d69yv3rf6r_1377298286936.jpg",
+                                            "size": 205243,
+                                            "x": 700,
+                                            "y": 438
+                                        }
+                                    ]
+                                },
+                                "videos": [
+                                    {
+                                        "service": "YOUTUBE",
+                                        "id": "Nha5VVslG_o",
+                                        "title": "VR Cinema v0.3 - Oculus Rift"
+                                    }
+                                ],
+                                "items": null
+                            }
+                        },
+                        "self": {
+                            "href": "http://api.oculusvr-demo.com:8081/v1/offer-revisions/6B54FDB83C9F",
+                            "id": "6B54FDB83C9F"
+                        },
+                        "publisher": {
+                            "href": "http://api.oculusvr-demo.com:8081/v1/users/6B54FF383C9F",
+                            "id": "6B54FF383C9F"
+                        },
+                        "offer": {
+                            "href": "http://api.oculusvr-demo.com:8081/v1/offers/6B54FDB43C9F",
+                            "id": "6B54FDB43C9F"
+                        }
+                    }
+                },
+
+                'Failed': {
+                    statusCode: 400,
+                    headers: null,
+                    data: null
+                }
+            }
+        },
+
+        GetPriceTiersById:{
+            Method: 'GET',
+            Path: '/v1/offer-revisions/:id',
+            ResponseItem: 'Succeed',
+            Items: {
+                'Succeed': {
+                    statusCode: 200,
+                    headers: null,
+                    data: {
+                        "createdTime": "2014-04-28T00:00:00Z",
+                        "updatedTime": "2014-04-28T00:00:00Z",
+                        "rev": "1",
+                        "prices": null,
+                        "locales": null,
+                        "self": {
+                            "href": "http://api.oculusvr-demo.com:8081/v1/price-tiers/6B55FFB03C9F",
+                            "id": "6B55FFB03C9F"
+                        }
+                    }
+                },
+
+                'Failed': {
+                    statusCode: 400,
                     headers: null,
                     data: null
                 }
