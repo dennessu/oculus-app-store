@@ -35,6 +35,7 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
     private final String catalogServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.CATALOG) + "item-revisions";
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
     private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
+    private final String defaultStoredValueItemRevisionFileName = "defaultStoredValueItemRevision";
     private static ItemRevisionService instance;
 
     public static synchronized ItemRevisionService instance() {
@@ -113,21 +114,29 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
         return itemRevisionRtnId;
     }
 
-    public String postDefaultItemRevision(String itemId, EnumHelper.CatalogItemType itemType) throws Exception {
-        ItemRevision itemRevisionForPost;
-        if (itemType.equals(EnumHelper.CatalogItemType.PHYSICAL)) {
-            itemRevisionForPost = prepareItemRevisionEntity(defaultPhysicalItemRevisionFileName);
-        }
-        else {
-            itemRevisionForPost = prepareItemRevisionEntity(defaultDigitalItemRevisionFileName);
+    public String postDefaultItemRevision() throws Exception {
+        String itemId = ItemServiceImpl.instance().postDefaultItem(EnumHelper.CatalogItemType.getRandom());
+        return postDefaultItemRevision(itemId);
+    }
+
+    public String postDefaultItemRevision(String itemId) throws Exception {
+        if (itemId == null || itemId.length() == 0) {
+            throw new Exception("ItemId is null or empty");
         }
 
-        //set item info
-        Item item = Master.getInstance().getItem(itemId);
-        if (item == null) {
-            ItemService itemService = ItemServiceImpl.instance();
-            itemService.getItem(itemId);
-            item = Master.getInstance().getItem(itemId);
+        ItemService itemService = ItemServiceImpl.instance();
+        String itemGetId = itemService.getItem(itemId);
+        Item item = Master.getInstance().getItem(itemGetId);
+        ItemRevision itemRevisionForPost;
+
+        if (item.getType().equalsIgnoreCase(EnumHelper.CatalogItemType.DIGITAL.getItemType())) {
+            itemRevisionForPost = prepareItemRevisionEntity(defaultDigitalItemRevisionFileName);
+        }
+        else if (item.getType().equalsIgnoreCase(EnumHelper.CatalogItemType.STORED_VALUE.getItemType())) {
+            itemRevisionForPost = prepareItemRevisionEntity(defaultStoredValueItemRevisionFileName);
+        }
+        else {
+            itemRevisionForPost = prepareItemRevisionEntity(defaultPhysicalItemRevisionFileName);
         }
 
         itemRevisionForPost.setItemId(item.getItemId());

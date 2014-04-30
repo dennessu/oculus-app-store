@@ -48,4 +48,8 @@ public class ErrorCode {
     public static final String ADDRESS_VALIDATION_ERROR = "ADDRESS_VALIDATION_ERROR";
 
     public static final String NOT_ASYNC_CHARGE_BALANCE = "NOT_ASYNC_CHARGE_BALANCE";
+
+    public static final String PAYMENT_PROCESSING_FAILED = "PAYMENT_PROCESSING_FAILED";
+
+    public static final String PAYMENT_INSUFFICIENT_FUND = "PAYMENT_INSUFFICIENT_FUND";
 }

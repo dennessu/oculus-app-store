@@ -5,14 +5,14 @@
  */
 package com.junbo.test.payment.utility;
 
-import com.junbo.payment.spec.model.Address;
-import com.junbo.payment.spec.model.CreditCardRequest;
-import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
+//import com.junbo.payment.spec.model.Address;
+
+//import com.junbo.payment.spec.model.PaymentInstrument;
+//import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
 import com.junbo.test.common.Utility.BaseValidationHelper;
-import com.junbo.test.common.blueprint.Master;
-import com.junbo.test.common.exception.TestException;
+//import com.junbo.test.common.blueprint.Master;
+//import com.junbo.test.common.exception.TestException;
 
 import java.util.List;
 
@@ -25,6 +25,7 @@ public class PaymentValidationHelper extends BaseValidationHelper {
     }
 
     public void validatePaymentInstrument(String paymentId, PaymentInstrumentBase expectedPaymentInfo) {
+        /*
         PaymentInstrument actualPI = Master.getInstance().getPaymentInstrument(paymentId);
         switch (expectedPaymentInfo.getType()) {
             case CREDITCARD:
@@ -72,6 +73,7 @@ public class PaymentValidationHelper extends BaseValidationHelper {
                 throw new TestException(String.format("%s : %s is not supported",
                         expectedPaymentInfo.getAccountName(), expectedPaymentInfo.getAccountNum()));
         }
+        */
 
     }
 

@@ -38,10 +38,10 @@ import java.util.List;
 public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRevisionService {
 
     private final String catalogServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.CATALOG) + "offer-revisions";
-    private final String defaultDigitalOfferRevisionFileName = "defaultDigitalOfferRevision";
-    private final String defaultPhysicalOfferRevisionFileName = "defaultPhysicalOfferRevision";
+    private final String defaultOfferRevisionFileName = "defaultOfferRevision";
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
     private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
+    private final String defaultStoredValueItemRevisionFileName = "defaultStoredValueItemRevision";
     private final String defaultOfferFileName = "defaultOffer";
     private LogHelper logger = new LogHelper(OfferRevisionServiceImpl.class);
     private static OfferRevisionService instance;
@@ -123,21 +123,52 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
         return offerRevisionRtnId;
     }
 
-    public String postDefaultOfferRevision(EnumHelper.CatalogItemType itemType) throws Exception {
-        OfferRevision offerRevisionForPost;
-        if (itemType.equals(EnumHelper.CatalogItemType.PHYSICAL)) {
-            offerRevisionForPost = prepareOfferRevisionEntity(defaultPhysicalOfferRevisionFileName, itemType);
+    public String postDefaultOfferRevision() throws Exception {
+        String offerId = OfferServiceImpl.instance().postDefaultOffer();
+        return postDefaultOfferRevision(offerId);
+    }
+
+    public String postDefaultOfferRevision(String offerId) throws Exception {
+        Item itemPrepared = prepareItem(EnumHelper.CatalogItemType.getRandom());
+        String itemId = IdConverter.idLongToHexString(ItemId.class, itemPrepared.getItemId());
+        return postDefaultOfferRevision(offerId, itemId);
+    }
+
+    public String postDefaultOfferRevision(String offerId, String itemId) throws Exception {
+        if (offerId == null || offerId.length() == 0) {
+            throw new Exception("offerId is null or empty");
         }
-        else {
-            offerRevisionForPost = prepareOfferRevisionEntity(defaultDigitalOfferRevisionFileName, itemType);
+
+        if (itemId == null || itemId.length() == 0) {
+            throw new Exception("ItemId is null or empty");
         }
+
+        OfferService offerService = OfferServiceImpl.instance();
+        String offerGetId = offerService.getOffer(offerId);
+        Offer offer = Master.getInstance().getOffer(offerGetId);
+
+        OfferRevision offerRevisionForPost = prepareOfferRevisionEntity(defaultOfferRevisionFileName, false);
+        offerRevisionForPost.setOfferId(offer.getOfferId());
+        offerRevisionForPost.setOwnerId(offer.getOwnerId());
+
+        //add Item info
+        String itemGetId = ItemServiceImpl.instance().getItem(itemId);
+        Item itemPrepared = Master.getInstance().getItem(itemGetId);
+        ItemEntry itemEntry = new ItemEntry();
+        List<ItemEntry> itemEntities = new ArrayList<>();
+        itemEntry.setItemId(itemPrepared.getItemId());
+        itemEntry.setQuantity(1);
+        itemEntities.add(itemEntry);
+        offerRevisionForPost.setItems(itemEntities);
 
         return postOfferRevision(offerRevisionForPost);
     }
 
-    public OfferRevision prepareOfferRevisionEntity(String fileName, EnumHelper.CatalogItemType itemType)
-            throws Exception {
+    public OfferRevision prepareOfferRevisionEntity(String fileName) throws Exception {
+        return prepareOfferRevisionEntity(fileName, true);
+    }
 
+    public OfferRevision prepareOfferRevisionEntity(String fileName, Boolean addItemInfo) throws Exception {
         String strOfferRevisionContent = readFileContent(String.format("testOfferRevisions/%s.json", fileName));
         OfferRevision offerRevisionForPost = new JsonMessageTranscoder().decode(
                 new TypeReference<OfferRevision>() {}, strOfferRevisionContent);
@@ -150,14 +181,15 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
         offerRevisionForPost.setLocales(locales);
 
         //Add item related info
-        Item itemPrepared = prepareItem(itemType);
-        ItemEntry itemEntry = new ItemEntry();
-        List<ItemEntry> itemEntities = new ArrayList<>();
-        itemEntry.setItemId(itemPrepared.getItemId());
-        itemEntry.setQuantity(1);
-        itemEntities.add(itemEntry);
-        offerRevisionForPost.setItems(itemEntities);
-        offerRevisionForPost.setOwnerId(itemPrepared.getOwnerId());
+        if (addItemInfo) {
+            Item itemPrepared = prepareItem(EnumHelper.CatalogItemType.getRandom());
+            ItemEntry itemEntry = new ItemEntry();
+            List<ItemEntry> itemEntities = new ArrayList<>();
+            itemEntry.setItemId(itemPrepared.getItemId());
+            itemEntry.setQuantity(1);
+            itemEntities.add(itemEntry);
+            offerRevisionForPost.setItems(itemEntities);
+        }
 
         return offerRevisionForPost;
     }
@@ -172,13 +204,14 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
 
         //Attach item revision to the item
         ItemRevision itemRevision;
-        if (itemType.equals(EnumHelper.CatalogItemType.PHYSICAL)) {
-            itemRevision = itemRevisionService.prepareItemRevisionEntity(
-                    defaultPhysicalItemRevisionFileName);
+        if (itemType.equals(EnumHelper.CatalogItemType.DIGITAL)) {
+            itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultDigitalItemRevisionFileName);
+        }
+        else if (itemType.equals(EnumHelper.CatalogItemType.STORED_VALUE)) {
+            itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultStoredValueItemRevisionFileName);
         }
         else {
-            itemRevision = itemRevisionService.prepareItemRevisionEntity(
-                    defaultDigitalItemRevisionFileName);
+            itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultPhysicalItemRevisionFileName);
         }
 
         itemRevision.setItemId(IdConverter.hexStringToId(ItemId.class, itemId));

@@ -5,6 +5,7 @@
  */
 package com.junbo.test.catalog.util;
 
+import com.esotericsoftware.kryo.util.IdentityObjectIntMap;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.common.id.ItemId;
@@ -27,30 +28,18 @@ public class BaseTestClass extends TestClass {
     protected final String defaultItemFileName = "defaultItem";
     protected final String defaultItemRevisionFileName = "defaultItemRevision";
     protected final String defaultOfferFileName = "defaultOffer";
-    protected final String defaultDigitalOfferRevisionFileName = "defaultDigitalOfferRevision";
-    protected final String defaultPhysicalOfferRevisionFileName = "defaultPhysicalOfferRevision";
+    protected final String defaultOfferRevisionFileName = "defaultOfferRevision";
 
     protected void releaseItem(Item item) throws Exception {
+        ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
 
-        if (item.getCurrentRevisionId() != null){
-            ItemService itemService = ItemServiceImpl.instance();
-            item.setCurated(true);
-            itemService.updateItem(item);
-        }
-        else {
-            ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
+        //Attach item revision to the item
+        String itemId = IdConverter.idLongToHexString(ItemId.class, item.getItemId());
+        String itemRevisionId = itemRevisionService.postDefaultItemRevision(itemId);
 
-            //Attach item revision to the item
-            ItemRevision itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultItemRevisionFileName, EnumHelper.CatalogItemType.getRandom());
-            itemRevision.setItemId(item.getItemId());
-            itemRevision.setType(item.getType());
-            itemRevision.setOwnerId(item.getOwnerId());
-            String itemRevisionId = itemRevisionService.postItemRevision(itemRevision);
-
-            //Approve the item revision
-            itemRevision = Master.getInstance().getItemRevision(itemRevisionId);
-            itemRevision.setStatus(EnumHelper.CatalogEntityStatus.APPROVED.getEntityStatus());
-            itemRevisionService.updateItemRevision(itemRevision);
-        }
+        //Approve the item revision
+        ItemRevision itemRevision = Master.getInstance().getItemRevision(itemRevisionId);
+        itemRevision.setStatus(EnumHelper.CatalogEntityStatus.APPROVED.getEntityStatus());
+        itemRevisionService.updateItemRevision(itemRevision);
     }
 }

@@ -18,7 +18,7 @@ import java.util.Set;
 public class EntitlementSearchParam {
     @QueryParam("userId")
     private UserId userId;
-    @QueryParam("type")
+//    @QueryParam("type")
     private String type;
     @QueryParam("isActive")
     private Boolean isActive;

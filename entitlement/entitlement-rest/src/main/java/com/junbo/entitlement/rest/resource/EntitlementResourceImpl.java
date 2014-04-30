@@ -117,22 +117,22 @@ public class EntitlementResourceImpl implements EntitlementResource {
                 entitlementService.transferEntitlement(entitlementTransfer));
     }
 
-    @Override
+//    @Override
     public Promise<Boolean> isDeveloper(UserId userId) {
         return Promise.pure(entitlementService.isDeveloper(userId.getValue()));
     }
 
-    @Override
+//    @Override
     public Promise<Entitlement> grantDeveloperEntitlement(UserId userId) {
         return Promise.pure(entitlementService.grantDeveloperEntitlement(userId.getValue()));
     }
 
-    @Override
+//    @Override
     public Promise<Boolean> canDownload(UserId userId, ItemId itemId) {
         return Promise.pure(entitlementService.canDownload(userId.getValue(), itemId.getValue()));
     }
 
-    @Override
+//    @Override
     public Promise<Boolean> canAccess(UserId userId, ItemId itemId) {
         return Promise.pure(entitlementService.canAccess(userId.getValue(), itemId.getValue()));
     }

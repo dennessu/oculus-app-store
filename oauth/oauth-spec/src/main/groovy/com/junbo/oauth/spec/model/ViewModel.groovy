@@ -1,10 +1,10 @@
-package com.junbo.oauth.core.model
+package com.junbo.oauth.spec.model
 
 import com.junbo.common.error.Error
 import groovy.transform.CompileStatic
 
 /**
- * Created by Shenhua on 4/9/2014.
+ * Created by haomin on 14-4-29.
  */
 @CompileStatic
 class ViewModel {

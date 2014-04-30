@@ -1,10 +1,7 @@
 package com.junbo.order.core.impl.common
-
 import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
-import com.junbo.common.error.AppError
-import com.junbo.common.error.AppErrorException
 import com.junbo.order.clientproxy.model.OrderOfferItem
 import com.junbo.order.clientproxy.model.OrderOfferRevision
 import com.junbo.order.db.entity.enums.ItemType
@@ -13,7 +10,6 @@ import com.junbo.order.spec.model.OrderItem
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
-
 /**
  * Created by chriszhu on 3/19/14.
  */
@@ -30,13 +26,6 @@ class CoreUtils {
         }
         if (hasPhysical) { return ItemType.PHYSICAL }
         return ItemType.DIGITAL
-    }
-
-    static AppError[] toAppErrors(Throwable throwable) {
-        if (throwable instanceof AppErrorException) {
-            return [throwable.error] as AppError[]
-        }
-        return new AppError[0]
     }
 
     static Boolean isFreeOrder(Order order) {

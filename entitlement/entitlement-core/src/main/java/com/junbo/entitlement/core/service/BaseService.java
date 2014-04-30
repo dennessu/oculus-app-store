@@ -45,7 +45,7 @@ public class BaseService {
         if (entitlement.getGrantTime() == null) {
             entitlement.setGrantTime(EntitlementContext.current().getNow());
         }
-        fillType(entitlement);
+//        fillType(entitlement);
     }
 
     private void fillType(final Entitlement entitlement) {
@@ -177,13 +177,13 @@ public class BaseService {
     }
 
     protected void checkOauth(final Entitlement entitlement) {
-        EntitlementDefinition definition = (EntitlementDefinition) PermanentCache.ENTITLEMENT_DEFINITION.get(
-                "id#" + entitlement.getEntitlementDefinitionId().toString(), new Callable<Object>() {
-            @Override
-            public Object call() throws Exception {
-                return definitionFacade.getDefinition(entitlement.getEntitlementDefinitionId());
-            }
-        });
+//        EntitlementDefinition definition = (EntitlementDefinition) PermanentCache.ENTITLEMENT_DEFINITION.get(
+//                "id#" + entitlement.getEntitlementDefinitionId().toString(), new Callable<Object>() {
+//            @Override
+//            public Object call() throws Exception {
+//                return definitionFacade.getDefinition(entitlement.getEntitlementDefinitionId());
+//            }
+//        });
         //TODO: check clientId
     }
 
@@ -199,13 +199,13 @@ public class BaseService {
     }
 
     protected void checkDefinition(Long entitlementDefinitionId) {
-        EntitlementDefinition def = getDef(entitlementDefinitionId);
-        if (def == null) {
-            throw AppErrors.INSTANCE.fieldNotCorrect("entitlementDefinition",
-                    "entitlementDefinition [" +
-                            formatId(entitlementDefinitionId) +
-                            "] not found").exception();
-        }
+//        EntitlementDefinition def = getDef(entitlementDefinitionId);
+//        if (def == null) {
+//            throw AppErrors.INSTANCE.fieldNotCorrect("entitlementDefinition",
+//                    "entitlementDefinition [" +
+//                            formatId(entitlementDefinitionId) +
+//                            "] not found").exception();
+//        }
     }
 
     protected EntitlementDefinition getDef(final Long entitlementDefId) {

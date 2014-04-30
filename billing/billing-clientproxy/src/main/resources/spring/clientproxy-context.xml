@@ -7,18 +7,42 @@
 
     <context:component-scan base-package="com.junbo.billing.clientproxy"/>
 
-    <!-- <tx:annotation-driven/> -->
-
     <!-- proxy -->
-    <!-- using mock for development
-    <bean id="ascynHttpClient" class="com.ning.http.client.AsyncHttpClient" />
-    -->
-    <bean id="billingIdentityFacade" class="com.junbo.billing.clientproxy.impl.IdentityFacadeImpl">
-        <property name="url" value="${clientproxy.identity.url}"/>
+    <bean id="billingIdentityUserClient" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy">
+        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
+        <constructor-arg name="transcoder" ref="commonTranscoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+        <constructor-arg name="target" value="${clientproxy.identity.url}"/>
     </bean>
-    <bean id="billingPaymentFacade" class="com.junbo.billing.clientproxy.impl.PaymentFacadeImpl">
-        <property name="url" value="${clientproxy.payment.url}"/>
+
+    <bean id="billingIdentityUserPersonalInfoClient" class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy">
+        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
+        <constructor-arg name="transcoder" ref="commonTranscoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+        <constructor-arg name="target" value="${clientproxy.identity.url}"/>
     </bean>
+
+    <bean id="billingPaymentInstrumentClient" class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy">
+        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
+        <constructor-arg name="transcoder" ref="commonTranscoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+        <constructor-arg name="target" value="${clientproxy.payment.url}"/>
+    </bean>
+
+    <bean id="billingPaymentTransactionClient" class="com.junbo.payment.spec.resource.proxy.PaymentTransactionResourceClientProxy">
+        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
+        <constructor-arg name="transcoder" ref="commonTranscoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+        <constructor-arg name="target" value="${clientproxy.payment.url}"/>
+    </bean>
+
+    <!-- facade -->
+    <bean id="billingIdentityFacade" class="com.junbo.billing.clientproxy.impl.IdentityFacadeImpl" />
+    <bean id="billingPaymentFacade" class="com.junbo.billing.clientproxy.impl.PaymentFacadeImpl" />
 
     <!--<bean id="identityFacade" class="com.junbo.billing.clientproxy.mock.MockIdentityFacadeImpl" />
     <bean id="paymentFacade" class="com.junbo.billing.clientproxy.mock.MockPaymentFacadeImpl" />-->

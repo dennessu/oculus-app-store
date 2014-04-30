@@ -150,6 +150,10 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
     public Promise<PaymentTransaction> charge(PaymentInstrument pi, final PaymentTransaction paymentRequest) {
         DebitRequest debitRequest = new DebitRequest();
         debitRequest.setAmount(paymentRequest.getChargeInfo().getAmount());
+        if(pi.getTypeSpecificDetails() == null || pi.getTypeSpecificDetails().getStoredValueBalance() == null
+                || pi.getTypeSpecificDetails().getStoredValueBalance().compareTo(debitRequest.getAmount()) < 0){
+            throw AppClientExceptions.INSTANCE.insufficientBalance().exception();
+        }
         return walletClient.debit(new WalletId(Long.parseLong(pi.getExternalToken())), debitRequest).
                 recover(new Promise.Func<Throwable, Promise<Transaction>>() {
                     @Override

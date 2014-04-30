@@ -10,7 +10,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.model.ViewModel
+import com.junbo.oauth.spec.model.ViewModel
 import groovy.transform.CompileStatic
 
 import javax.ws.rs.core.Response
