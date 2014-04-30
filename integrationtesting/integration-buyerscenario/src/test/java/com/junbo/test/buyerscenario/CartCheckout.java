@@ -48,7 +48,7 @@ public class CartCheckout extends BaseTestClass {
         //String cartId = testDataProvider.postOffersToPrimaryCart(uid, offerList);
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
-        String creditCardId = testDataProvider.postCreditCardToUser(uid, creditCardInfo);
+        String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
 
         String orderId = testDataProvider.postOrder(
                 uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, null, offerList);
@@ -146,7 +146,7 @@ public class CartCheckout extends BaseTestClass {
         //String cartId = testDataProvider.postOffersToPrimaryCart(uid, offerList);
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
-        String creditCardId = testDataProvider.postCreditCardToUser(uid, creditCardInfo);
+        String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
 
         String orderId = testDataProvider.postOrder(
                 uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, shippingAddressId, offerList);
@@ -231,16 +231,21 @@ public class CartCheckout extends BaseTestClass {
         String uid = testDataProvider.createUser();
 
         ArrayList<String> offerList = new ArrayList<>();
-        offerList.add(offer_digital_normal1);
-        offerList.add(offer_digital_normal2);
+        offerList.add(offer_physical_normal1);
+        offerList.add(offer_physical_normal2);
+
+        ShippingAddressInfo shippingAddressInfo = ShippingAddressInfo.getRandomShippingAddress(Country.DEFAULT);
+        String shippingAddressId = testDataProvider.postShippingAddressToUser(uid, shippingAddressInfo);
 
         EwalletInfo ewalletInfo = EwalletInfo.getEwalletInfo(Country.DEFAULT, Currency.DEFAULT);
         String ewalletId = testDataProvider.postPaymentInstrument(uid, ewalletInfo);
 
-        testDataProvider.creditWallet(uid, new BigDecimal(9));
+        testDataProvider.creditWallet(uid, new BigDecimal(20));
 
         String orderId = testDataProvider.postOrder(
-                uid, Country.DEFAULT, Currency.DEFAULT, ewalletId, null, offerList, 33004);
+                uid, Country.DEFAULT, Currency.DEFAULT, ewalletId, shippingAddressId, offerList);
+
+        orderId = testDataProvider.updateOrderTentative(orderId, false, 409);
 
     }
 

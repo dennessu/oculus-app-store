@@ -165,7 +165,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
                 address.setState(creditCardInfo.getAddress().getState());
                 address.setCountry(creditCardInfo.getAddress().getCountry());
                 address.setPostalCode(creditCardInfo.getAddress().getPostalCode());
-
+                paymentInstrument.setType(0L);
                 paymentInstrument.setAccountName(creditCardInfo.getAccountName());
                 paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
                 paymentInstrument.setAddress(address);
@@ -209,43 +209,6 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         creditRequest.setAmount(amount);
         paymentClient.creditWallet(creditRequest);
     }
-
-    public String postCreditCardToUser(String uid, CreditCardInfo creditCardInfo) throws Exception {
-        PaymentInstrument paymentInstrument = new PaymentInstrument();
-        paymentInstrument.setLabel("4");
-
-        TypeSpecificDetails typeSpecificDetails = new TypeSpecificDetails();
-        typeSpecificDetails.setExpireDate(creditCardInfo.getExpireDate());
-        typeSpecificDetails.setEncryptedCvmCode(creditCardInfo.getEncryptedCVMCode());
-
-        paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
-
-        Address address = new Address();
-        address.setAddressLine1(creditCardInfo.getAddress().getAddressLine1());
-        address.setCity(creditCardInfo.getAddress().getCity());
-        address.setState(creditCardInfo.getAddress().getState());
-        address.setCountry(creditCardInfo.getAddress().getCountry());
-        address.setPostalCode(creditCardInfo.getAddress().getPostalCode());
-
-
-        List<Long> admins = new ArrayList<>();
-        admins.add(IdConverter.hexStringToId(UserId.class, uid));
-        paymentInstrument.setAdmins(admins);
-        paymentInstrument.setAccountName(creditCardInfo.getAccountName());
-        paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
-        paymentInstrument.setType(0L);
-        //paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
-        paymentInstrument.setBillingAddressId(0L);
-        /*paymentInstrument.setCreditCardRequest(creditCardRequest);
-        paymentInstrument.setIsValidated(creditCardInfo.isValidated());
-        paymentInstrument.setPhoneNum("650-253-0000");
-        paymentInstrument.setType(creditCardInfo.getType().toString());*/
-        paymentInstrument.setBillingAddressId(167772224L);
-        paymentInstrument.setTrackingUuid(UUID.randomUUID());
-        logger.LogSample("Post a new credit card to user");
-        return paymentClient.postPaymentInstrument(paymentInstrument);
-    }
-
 
     public String postShippingAddressToUser(String uid, ShippingAddressInfo shippingAddressInfo) throws Exception {
         ShippingAddress shippingAddress = new ShippingAddress();
@@ -361,10 +324,14 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
 
 
     public String updateOrderTentative(String orderId, boolean isTentative) throws Exception {
+        return this.updateOrderTentative(orderId, isTentative, 200);
+    }
+
+    public String updateOrderTentative(String orderId, boolean isTentative, int expectedResponseCode) throws Exception {
         Order order = Master.getInstance().getOrder(orderClient.getOrderByOrderId(orderId));
         order.setTentative(isTentative);
         logger.LogSample("Put an order");
-        return orderClient.updateOrder(order);
+        return orderClient.updateOrder(order, expectedResponseCode);
     }
 
     public void emptyCartByCartId(String uid, String cartId) throws Exception {
