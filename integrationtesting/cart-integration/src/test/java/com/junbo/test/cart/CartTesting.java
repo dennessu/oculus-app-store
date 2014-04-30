@@ -126,7 +126,7 @@ public class CartTesting extends TestClass {
             features = "POST /users/{keyUser}/carts/{keyCart}/merge",
             component = Component.Cart,
             owner = "JieFeng",
-            status = Status.Enable,
+            status = Status.Disable,
             description = "merge an cart to user's primary cart",
             steps = {
                     "1. Create user1" +
@@ -419,6 +419,7 @@ public class CartTesting extends TestClass {
             offerItem.setOffer(offerId);
             offerItem.setQuantity(quantity);
             offerItem.setSelected(selected);
+            offerItem.setApproved(true);
             curOffers.add(offerItem);
         }
     }
@@ -462,7 +463,7 @@ public class CartTesting extends TestClass {
         List<CouponId> curCoupons = cart.getCoupons();
         if (curCoupons == null) return false;
         for (CouponId ci : curCoupons) {
-            if (ci.getValue().equals(couponId)) {
+            if (ci.getValue().equals(couponId.getValue())) {
                 return true;
             }
         }
