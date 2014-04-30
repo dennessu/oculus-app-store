@@ -87,7 +87,11 @@ public interface AppErrors {
             description ="The balance {0} is not an async charge balance")
     AppError notAsyncChargeBalance(String id);
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.BALANCE_ITEM_NOT_FOUND,
-            description ="The balance item {0} is not found")
-    AppError balanceItemNotFound(String id);
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.PAYMENT_PROCESSING_FAILED,
+            description ="The payment instrument {0} processing failed")
+    AppError paymentProcessingFailed(String id);
+
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.PAYMENT_INSUFFICIENT_FUND,
+            description ="The payment instrument {0} stored value balance insufficient")
+    AppError paymentInsufficientFund(String id);
 }
