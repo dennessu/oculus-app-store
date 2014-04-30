@@ -169,10 +169,8 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
 
                 paymentInstrument.setAccountName(creditCardInfo.getAccountName());
                 paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
-                //paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
                 paymentInstrument.setAddress(address);
                 paymentInstrument.setIsValidated(creditCardInfo.isValidated());
-                //paymentInstrument.setIsDefault(String.valueOf(creditCardInfo.isDefault()));
                 paymentInstrument.setType(0L);
                 paymentInstrument.setBillingAddressId(billingAddressId);
                 return paymentClient.postPaymentInstrument(paymentInstrument);

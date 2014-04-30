@@ -244,7 +244,6 @@ public class CartCheckout extends BaseTestClass {
 
     }
 
-
 }
 
 
