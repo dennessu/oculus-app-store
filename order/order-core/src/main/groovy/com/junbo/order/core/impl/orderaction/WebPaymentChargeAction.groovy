@@ -1,5 +1,4 @@
 package com.junbo.order.core.impl.orderaction
-
 import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
@@ -11,20 +10,20 @@ import com.junbo.order.core.annotation.OrderEventAwareAfter
 import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.BillingEventBuilder
 import com.junbo.order.core.impl.common.CoreBuilder
-import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
+import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
-
 /**
  * Charge Action for Web Payment.
  */
+@CompileStatic
 class WebPaymentChargeAction extends BaseOrderEventAwareAction {
     @Autowired
     @Qualifier('orderFacadeContainer')
@@ -57,8 +56,7 @@ class WebPaymentChargeAction extends BaseOrderEventAwareAction {
                         CoreBuilder.buildBalance(context.orderServiceContext.order, BalanceType.DEBIT))
         return promise.syncRecover { Throwable throwable ->
             LOGGER.error('name=Order_WebPaymentCharge_Error', throwable)
-            throw AppErrors.INSTANCE.
-                    billingConnectionError(CoreUtils.toAppErrors(throwable)).exception()
+            throw facadeContainer.billingFacade.convertError(throwable).exception()
         }.then { Balance balance ->
             if (balance == null) {
                 LOGGER.error('name=Order_WebPaymentCharge_Error_Balance_Null')
