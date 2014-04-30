@@ -23,8 +23,6 @@ class IdentityClientImpl implements IdentityClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IdentityClientImpl)
 
-    private static final String USER_PROPERTIES = 'active'
-
     private UserResource userResource
 
     void setIdentityUrl(String identityUrl) {
@@ -37,8 +35,7 @@ class IdentityClientImpl implements IdentityClient {
 
     @Override
     Promise<User> getUser(UserId userId) {
-        def option = new UserGetOptions(properties: USER_PROPERTIES)
-        return userResource.get(userId, option).syncRecover { Throwable throwable ->
+        return userResource.get(userId, new UserGetOptions()).syncRecover { Throwable throwable ->
             LOGGER.error('name=Cart_GetUser_Error', throwable)
         }.syncThen { User user ->
             if (user == null) {

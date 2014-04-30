@@ -6,7 +6,6 @@
 package com.junbo.test.common.apihelper.catalog;
 
 import com.junbo.catalog.spec.model.item.ItemRevision;
-import com.junbo.test.common.libs.EnumHelper;
 import java.util.HashMap;
 import java.util.List;
 
@@ -23,8 +22,10 @@ public interface ItemRevisionService {
     List<String> getItemRevisions(HashMap<String, String> httpPara) throws Exception;
     List<String> getItemRevisions(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception;
 
-    String postDefaultItemRevision(String itemId, EnumHelper.CatalogItemType itemType) throws Exception;
     ItemRevision prepareItemRevisionEntity(String fileName) throws Exception;
+
+    String postDefaultItemRevision() throws Exception;
+    String postDefaultItemRevision(String itemId) throws Exception;
     String postItemRevision(ItemRevision itemRevision) throws Exception;
     String postItemRevision(ItemRevision itemRevision, int expectedResponseCode) throws Exception;
 
