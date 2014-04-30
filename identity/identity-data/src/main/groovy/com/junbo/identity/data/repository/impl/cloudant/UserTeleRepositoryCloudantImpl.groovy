@@ -2,6 +2,7 @@ package com.junbo.identity.data.repository.impl.cloudant
 
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
+import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTeleId
 import com.junbo.identity.data.repository.UserTeleRepository
 import com.junbo.identity.spec.v1.model.UserTeleCode
@@ -25,21 +26,11 @@ class UserTeleRepositoryCloudantImpl extends CloudantClient<UserTeleCode> implem
     }
 
     @Override
-    Promise<UserTeleCode> findActiveTeleCode(Long userId, String phoneNumber) {
-        def list = super.queryView('by_user_id', userId.toString(),
+    Promise<List<UserTeleCode>> searchActiveTeleCode(UserId userId, String phoneNumber) {
+        def list = super.queryView('by_user_id_phone_number', "${userId.value.toString()}:${phoneNumber}",
                 Integer.MAX_VALUE, 0, false)
 
-        if (list == null) {
-            return Promise.pure(null)
-        }
-
-        UserTeleCode result = (UserTeleCode)list.find { UserTeleCode userTeleCode ->
-            if (userTeleCode.phoneNumber == phoneNumber && userTeleCode.expiresBy.after(new Date())) {
-                return true
-            }
-        }
-
-        return Promise.pure(result)
+        return Promise.pure(list)
     }
 
     @Override
@@ -68,9 +59,9 @@ class UserTeleRepositoryCloudantImpl extends CloudantClient<UserTeleCode> implem
 
     protected CloudantViews views = new CloudantViews(
             views: [
-                    'by_user_id': new CloudantViews.CloudantView(
+                    'by_user_id_phone_number': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.userId.value.toString(), doc._id)' +
+                                    '  emit(doc.userId.value.toString() + \':\' + doc.phoneNumber, doc._id)' +
                                     '}',
                             resultClass: String)
             ]

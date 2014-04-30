@@ -23,7 +23,7 @@ public class UserTeleCode extends ResourceMeta implements Identifiable<UserTeleI
     @JsonProperty("self")
     private UserTeleId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "[Client Immutable]The id of ")
+    @ApiModelProperty(position = 2, required = false, value = "[Client Immutable]The id of user resource.")
     @JsonProperty("user")
     private UserId userId;
 

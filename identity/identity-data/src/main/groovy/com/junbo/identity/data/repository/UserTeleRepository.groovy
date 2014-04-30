@@ -1,5 +1,6 @@
 package com.junbo.identity.data.repository
 
+import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTeleId
 import com.junbo.identity.spec.v1.model.UserTeleCode
 import com.junbo.langur.core.promise.Promise
@@ -12,5 +13,5 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface UserTeleRepository extends IdentityBaseRepository<UserTeleCode, UserTeleId> {
     @ReadMethod
-    Promise<UserTeleCode> findActiveTeleCode(Long userId, String phoneNumber)
+    Promise<List<UserTeleCode>> searchActiveTeleCode(UserId userId, String phoneNumber)
 }

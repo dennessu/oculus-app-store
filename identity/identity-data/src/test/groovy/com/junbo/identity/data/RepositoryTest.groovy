@@ -6,7 +6,6 @@
 package com.junbo.identity.data
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
@@ -518,9 +517,6 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         String newPhoneNumber = UUID.randomUUID().toString()
         newUserTeleCode.setPhoneNumber(newPhoneNumber)
         userTeleCode = userTeleRepository.update(newUserTeleCode).wrapped().get()
-        assert userTeleCode.phoneNumber == newPhoneNumber
-
-        userTeleCode = userTeleRepository.findActiveTeleCode(id, newPhoneNumber).wrapped().get()
         assert userTeleCode.phoneNumber == newPhoneNumber
     }
 
