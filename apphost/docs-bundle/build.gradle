@@ -5,3 +5,5 @@ mainClassName = "com.junbo.docs.app.Main"
 dependencies {
     compile "com.junbo.docs:docs-app:${junboVersion}"
 }
+
+defaultTasks 'clean', 'installApp', 'distTar'
