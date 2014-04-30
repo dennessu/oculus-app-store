@@ -26,6 +26,7 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
 
     private UserPersonalInfoRepository userPersonalInfoRepository
     private Integer maxUserNumberPerPhone
+    private Integer maxNewPhoneNumberPerMonth
 
     @Override
     boolean handles(String type) {
@@ -70,7 +71,35 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
                     }
                 }
 
-                return Promise.pure(null)
+                return userPersonalInfoRepository.searchByUserIdAndType(userId, UserPersonalInfoType.PHONE.toString())
+                        .then { List<UserPersonalInfo> userPersonalInfoList ->
+                    userPersonalInfoList.sort( new Comparator<UserPersonalInfo>( ) {
+                        @Override
+                        int compare(UserPersonalInfo o1, UserPersonalInfo o2) {
+                            Date o1LastChangedTime = o1.updatedTime == null ? o1.createdTime : o1.updatedTime
+                            Date o2LastChangedTime = o2.updatedTime == null ? o2.createdTime : o2.updatedTime
+
+                            return o2LastChangedTime <=> o1LastChangedTime
+                        }
+                    }
+                    )
+
+                    if (userPersonalInfoList.size() > maxNewPhoneNumberPerMonth) {
+                        UserPersonalInfo userPersonalInfo = userPersonalInfoList.get(maxNewPhoneNumberPerMonth - 1)
+                        Date lastChangedTime = userPersonalInfo.updatedTime == null ?
+                                userPersonalInfo.createdTime : userPersonalInfo.updatedTime
+
+                        Calendar calendar = Calendar.instance
+                        calendar.setTime(new Date())
+                        calendar.add(Calendar.MONTH, -1)
+                        if (lastChangedTime.after(calendar.time)) {
+                            throw AppErrors.INSTANCE.fieldInvalidException('value',
+                                    "Reach maximum phoneNumber change numbers per month").exception()
+                        }
+                    }
+
+                    return Promise.pure(null)
+                }
         }
     }
 
@@ -99,5 +128,11 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
     @Required
     void setMaxUserNumberPerPhone(Integer maxUserNumberPerPhone) {
         this.maxUserNumberPerPhone = maxUserNumberPerPhone
+    }
+
+    @Required
+
+    void setMaxNewPhoneNumberPerMonth(Integer maxNewPhoneNumberPerMonth) {
+        this.maxNewPhoneNumberPerMonth = maxNewPhoneNumberPerMonth
     }
 }

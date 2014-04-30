@@ -230,6 +230,7 @@
         <property name="minValueLength" value="1" />
         <property name="maxValueLength" value="255" />
         <property name="maxUserNumberPerPhone" value="${identity.conf.maxUsersPerPhoneNumber}" />
+        <property name="maxNewPhoneNumberPerMonth" value="${identity.conf.maxNewPhoneNumberPerMonth}" />
         <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
     </bean>
 
