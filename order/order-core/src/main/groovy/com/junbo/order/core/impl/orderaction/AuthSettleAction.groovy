@@ -10,7 +10,6 @@ import com.junbo.order.core.annotation.OrderEventAwareAfter
 import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.BillingEventBuilder
 import com.junbo.order.core.impl.common.CoreBuilder
-import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.repo.OrderRepository
@@ -53,8 +52,7 @@ class AuthSettleAction extends BaseOrderEventAwareAction {
         promise.syncRecover { Throwable throwable ->
             LOGGER.error('name=Order_AuthSettle_Error', throwable)
             context.orderServiceContext.order.tentative = true
-            throw AppErrors.INSTANCE.
-                    billingConnectionError(CoreUtils.toAppErrors(throwable)).exception()
+            throw facadeContainer.billingFacade.convertError(throwable).exception()
         }.then { Balance resultBalance ->
             context.orderServiceContext.order.tentative = true
             if (resultBalance == null) {
