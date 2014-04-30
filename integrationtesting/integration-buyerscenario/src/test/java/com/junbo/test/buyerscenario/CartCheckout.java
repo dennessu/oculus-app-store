@@ -11,6 +11,7 @@ import com.junbo.test.common.property.*;
 
 import org.testng.annotations.Test;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 /**
@@ -73,7 +74,7 @@ public class CartCheckout extends BaseTestClass {
             steps = {
                     "1. Post a new user",
                     "2. Add digital offer to user's primary cart",
-                    "3. Post new ewallet to new user and credit some money.",
+                    "3. Post new ewallet to new user and credit enough money.",
                     "4. Post order to checkout",
                     "5. Verify the order response info",
                     "6. Empty the primary cart",
@@ -170,7 +171,7 @@ public class CartCheckout extends BaseTestClass {
             steps = {
                     "1. Post a new user",
                     "2. Add physical offer to user's primary cart",
-                    "3. Post new credit card and shipping address to new user.",
+                    "3. Post new ewallet to new user and credit enough money",
                     "4. Post order to checkout",
                     "5  Verify order info correct",
                     "6. Empty the primary cart",
@@ -209,6 +210,40 @@ public class CartCheckout extends BaseTestClass {
 
         //validationHelper.validateEmailHistory(uid, orderId);
     }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "BuyerScenarios",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test digital good checkout",
+            steps = {
+                    "1. Post a new user",
+                    "2. Add digital offer to user's primary cart",
+                    "3. Post new ewallet to new user and credit insufficient money.",
+                    "4. Post order to checkout",
+                    "5. Verify the order response error",
+            }
+    )
+    @Test
+    public void testInsufficientEwalletCheckout() throws Exception {
+        String uid = testDataProvider.createUser();
+
+        ArrayList<String> offerList = new ArrayList<>();
+        offerList.add(offer_digital_normal1);
+        offerList.add(offer_digital_normal2);
+
+        EwalletInfo ewalletInfo = EwalletInfo.getEwalletInfo(Country.DEFAULT, Currency.DEFAULT);
+        String ewalletId = testDataProvider.postPaymentInstrument(uid, ewalletInfo);
+
+        testDataProvider.creditWallet(uid, new BigDecimal(9));
+
+        String orderId = testDataProvider.postOrder(
+                uid, Country.DEFAULT, Currency.DEFAULT, ewalletId, null, offerList, 200);
+
+    }
+
 
 }
 
