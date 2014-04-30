@@ -11,7 +11,7 @@ import com.junbo.catalog.common.util.Constants;
 import javax.ws.rs.QueryParam;
 
 /**
- * Created by baojing on 3/12/14.
+ * PageableGetOptions.
  */
 public class PageableGetOptions {
     // paging params
@@ -22,8 +22,10 @@ public class PageableGetOptions {
     private Integer size;
 
     public PageableGetOptions ensurePagingValid() {
-        if (start == null || size == null) {
+        if (start == null || start < 0) {
             start = Constants.DEFAULT_PAGING_START;
+        }
+        if (size == null || size < 0) {
             size = Constants.DEFAULT_PAGING_SIZE;
         }
 
