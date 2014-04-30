@@ -8,10 +8,7 @@ package com.junbo.test.identity;
 import com.junbo.common.id.UserId;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.identity.spec.v1.model.User;
-import com.junbo.test.common.ConfigHelper;
-import com.junbo.test.common.GsonHelper;
-import com.junbo.test.common.HttpclientHelper;
-import com.junbo.test.common.RandomHelper;
+import com.junbo.test.common.*;
 
 /**
  * @author dw
@@ -21,6 +18,7 @@ public class Identity {
     public static final String DefaultIdentityURI = ConfigHelper.getSetting("defaultIdentityURI");
     public static final String DefaultUserPwd = "1234qwerASDF";
     public static final String DefaultUserStatus = "ACTIVE";
+    public static final String DefaultUserEmail = "leoltd@163.com";
 
     private Identity() {
 
@@ -30,9 +28,9 @@ public class Identity {
         String userName = RandomHelper.randomAlphabetic(15);
         User user = new User();
         user.setUsername(userName);
-        user.setType("user");
+        user.setIsAnonymous(false);
         User posted = (User) HttpclientHelper.SimpleJsonPost(DefaultIdentityURI,
-                GsonHelper.GsonSerializer(user),
+                JsonHelper.JsonSerializer(user),
                 User.class);
         return posted;
     }
