@@ -3,6 +3,7 @@ package com.junbo.identity.core.service.validator.impl
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTeleId
 import com.junbo.identity.core.service.validator.UserTeleValidator
+import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.data.repository.UserTeleRepository
 import com.junbo.identity.spec.error.AppErrors
@@ -35,11 +36,15 @@ class UserTeleValidatorImpl implements UserTeleValidator {
             if (existing == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
-            /*
-            if (existing.active == false) {
+
+            if (existing.status != UserStatus.ACTIVE.toString()) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
-            */
+
+            if (existing.isAnonymous == true) {
+                throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
+            }
+
             return userTeleRepository.get(userTeleId).then { UserTeleCode existingUserTeleCode ->
                 if (existingUserTeleCode == null) {
                     throw AppErrors.INSTANCE.userTeleCodeNotFound(userTeleId).exception()
@@ -56,13 +61,42 @@ class UserTeleValidatorImpl implements UserTeleValidator {
 
     @Override
     Promise<Void> validateForSearch(UserTeleListOptions options) {
+        if (options == null) {
+            throw new IllegalArgumentException('options is null')
+        }
 
-        return null
+        if (options.userId == null) {
+            throw AppErrors.INSTANCE.parameterRequired('userId').exception()
+        }
+
+        return Promise.pure(null)
     }
 
     @Override
     Promise<Void> validateForCreate(UserId userId, UserTeleCode userTeleCode) {
-        return null
+        if (userId == null) {
+            throw new IllegalArgumentException('userId is null')
+        }
+
+        if (userTeleCode == null) {
+            throw new IllegalArgumentException('userTeleCode is null')
+        }
+
+        return userRepository.get(userId).then { User existing ->
+            if (existing == null) {
+                throw AppErrors.INSTANCE.userNotFound(userId).exception()
+            }
+
+            if (existing.status != UserStatus.ACTIVE.toString()) {
+                throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
+            }
+
+            if (existing.isAnonymous == true) {
+                throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
+            }
+
+            
+        }
     }
 
     @Override
