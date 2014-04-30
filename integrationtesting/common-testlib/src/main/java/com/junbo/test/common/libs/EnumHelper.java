@@ -126,6 +126,10 @@ public class EnumHelper {
         public static CatalogItemType getRandom(){
             return values()[(int) (Math.random() * values().length)];
         }
+
+        public static CatalogItemType getByIndex(int index) {
+            return values()[index];
+        }
     }
 
     /**

@@ -120,8 +120,8 @@ public abstract class HttpClientBase {
                 if (httpParameters != null && !httpParameters.isEmpty()) {
                     restUrl = restUrl.concat("?");
                     for (String key : httpParameters.keySet()) {
-                        if (key.length() > 2 && key.substring(0,2).equalsIgnoreCase("id")) {
-                            restUrl = restUrl.concat(String.format("%s=%s", "id", httpParameters.get(key)));
+                        if (key.length() > 6 && key.substring(0, 6).equals("itemId")) {
+                            restUrl = restUrl.concat(String.format("%s=%s", "itemId", httpParameters.get(key)));
                         }
                         else {
                             restUrl = restUrl.concat(String.format("%s=%s", key, httpParameters.get(key)));
