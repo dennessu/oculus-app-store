@@ -132,4 +132,8 @@ public interface AppClientExceptions {
     @ErrorDef(httpStatusCode = 400, code = "40027",
             description = "The wallet type is missing", field = "wallet_type")
     AppError missingWalletType();
+
+    @ErrorDef(httpStatusCode = 400, code = "40028",
+            description = "The Stored Value Balance is insufficient")
+    AppError insufficientBalance();
 }
