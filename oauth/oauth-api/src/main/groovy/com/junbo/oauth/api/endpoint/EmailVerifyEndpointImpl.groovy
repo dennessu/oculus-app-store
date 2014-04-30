@@ -7,14 +7,17 @@ package com.junbo.oauth.api.endpoint
 
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.executor.FlowExecutor
+import com.junbo.oauth.core.service.UserService
 import com.junbo.oauth.core.util.ResponseUtil
 import com.junbo.oauth.spec.endpoint.EmailVerifyEndpoint
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
+import org.glassfish.jersey.server.ContainerRequest
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.context.annotation.Scope
 import org.springframework.util.StringUtils
 
+import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.core.Response
 
 /**
@@ -33,6 +36,8 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
      */
     private String emailVerifyFlow
 
+    private UserService userService
+
     @Required
     void setFlowExecutor(FlowExecutor flowExecutor) {
         this.flowExecutor = flowExecutor
@@ -41,6 +46,11 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
     @Required
     void setEmailVerifyFlow(String emailVerifyFlow) {
         this.emailVerifyFlow = emailVerifyFlow
+    }
+
+    @Required
+    void setUserService(UserService userService) {
+        this.userService = userService
     }
 
     @Override
@@ -56,5 +66,11 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
 
         // else try to resume the conversation with the given conversation id and event in the flowExecutor.
         return flowExecutor.resume(conversationId, event ?: '', requestScope).then(ResponseUtil.WRITE_RESPONSE_CLOSURE)
+    }
+
+    @Override
+    Promise<Response> sendVerifyEmail(String authorization, String locale, ContainerRequestContext request) {
+        userService.verifyEmailByAuthHeader(authorization, locale, ((ContainerRequest)request).baseUri)
+        return Promise.pure(Response.noContent().build())
     }
 }

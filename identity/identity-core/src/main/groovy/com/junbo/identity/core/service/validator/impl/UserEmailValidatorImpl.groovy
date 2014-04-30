@@ -56,6 +56,9 @@ class UserEmailValidatorImpl implements PiiValidator {
             throw AppErrors.INSTANCE.fieldInvalid('value').exception()
         }
 
+        return Promise.pure(null)
+
+        /*
         return userPersonalInfoRepository.searchByEmail(email.value).then { List<UserPersonalInfo> existing ->
             if (!CollectionUtils.isEmpty(existing)) {
                 throw AppErrors.INSTANCE.fieldDuplicate('value').exception()
@@ -63,6 +66,7 @@ class UserEmailValidatorImpl implements PiiValidator {
 
             return Promise.pure(null)
         }
+        */
     }
 
     @Required
