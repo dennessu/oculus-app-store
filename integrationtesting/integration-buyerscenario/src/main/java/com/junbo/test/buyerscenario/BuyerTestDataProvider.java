@@ -80,7 +80,6 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         User userToPost = new User();
         //userToPost.setUserName(email);
         //userToPost.setPassword(password);
-        //userToPost.setStatus(status.getStatus());
         logger.LogSample("Create a new user");
         return identityClient.PostUser(userToPost);
     }
@@ -169,11 +168,8 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
 
                 paymentInstrument.setAccountName(creditCardInfo.getAccountName());
                 paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
-                //paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
                 paymentInstrument.setAddress(address);
                 paymentInstrument.setIsValidated(creditCardInfo.isValidated());
-                //paymentInstrument.setIsDefault(String.valueOf(creditCardInfo.isDefault()));
-                paymentInstrument.setType(0L);
                 paymentInstrument.setBillingAddressId(billingAddressId);
                 return paymentClient.postPaymentInstrument(paymentInstrument);
 
@@ -198,11 +194,19 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         }
     }
 
-    public void creditWallet(String uid) throws Exception{
+    public void creditWallet(String uid) throws Exception {
         CreditRequest creditRequest = new CreditRequest();
         creditRequest.setCurrency("usd");
-        creditRequest.setUserId(IdConverter.hexStringToId(UserId.class,uid));
+        creditRequest.setUserId(IdConverter.hexStringToId(UserId.class, uid));
         creditRequest.setAmount(new BigDecimal(1000));
+        paymentClient.creditWallet(creditRequest);
+    }
+
+    public void creditWallet(String uid, BigDecimal amount) throws Exception {
+        CreditRequest creditRequest = new CreditRequest();
+        creditRequest.setCurrency("usd");
+        creditRequest.setUserId(IdConverter.hexStringToId(UserId.class, uid));
+        creditRequest.setAmount(amount);
         paymentClient.creditWallet(creditRequest);
     }
 
@@ -265,6 +269,12 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
     public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
                             String shippingAddressId, ArrayList<String> offers) throws Exception {
 
+        return this.postOrder(uid, country, currency, paymentInstrumentId, shippingAddressId, offers, 200);
+    }
+
+    public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
+                            String shippingAddressId, ArrayList<String> offers, int expectedResponseCode) throws Exception {
+
         Order order = new Order();
 
         List<PaymentInstrumentId> paymentInstruments = new ArrayList<>();
@@ -299,7 +309,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         order.setOrderItems(orderItemList);
         order.setTentative(true);
         order.setLocale(new LocaleId("en_US"));
-        return orderClient.postOrder(order);
+        return orderClient.postOrder(order, expectedResponseCode);
     }
 
     public String postOrderByCartId(String uid, String cartId, Country country, Currency currency,
