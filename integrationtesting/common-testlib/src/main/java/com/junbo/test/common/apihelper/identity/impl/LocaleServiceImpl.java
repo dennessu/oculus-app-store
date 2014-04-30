@@ -10,10 +10,7 @@ import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.identity.spec.v1.model.Locale;
-import com.junbo.test.common.apihelper.identity.UserService;
-import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.RestUrl;
-import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.model.Results;
 
 /**

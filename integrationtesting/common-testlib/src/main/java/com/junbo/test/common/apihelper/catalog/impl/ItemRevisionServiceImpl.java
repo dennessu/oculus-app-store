@@ -120,7 +120,7 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
     }
 
     public String postDefaultItemRevision(String itemId) throws Exception {
-        if (itemId == null || itemId.length() == 0 ) {
+        if (itemId == null || itemId.length() == 0) {
             throw new Exception("ItemId is null or empty");
         }
 
