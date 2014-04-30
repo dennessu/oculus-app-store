@@ -100,7 +100,7 @@ public class DeveloperManager extends TestClass {
         //user1 upload an offer as a developer
 
         String offerName = "defaultOffer";
-        Offer offerToPost = os.prepareOfferEntity(offerName, EnumHelper.CatalogItemType.DIGITAL);
+        Offer offerToPost = os.prepareOfferEntity(offerName);
         offerToPost.setOwnerId(Master.getInstance().getUser(developerUser).getId().getValue());
         logger.LogSample("post an offer for a developer");
         String offerId = os.postOffer(offerToPost);
