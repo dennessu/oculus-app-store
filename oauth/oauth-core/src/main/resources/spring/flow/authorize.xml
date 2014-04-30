@@ -250,8 +250,6 @@
     </bean>
 
     <bean id="sendAccountVerifyEmail" class="com.junbo.oauth.core.action.SendAccountVerifyEmail">
-        <property name="emailResource" ref="emailResource"/>
-        <property name="emailTemplateResource" ref="emailTemplateResource"/>
-        <property name="emailVerifyCodeRepository" ref="emailVerifyCodeRepository"/>
+        <property name="userService" ref="userService" />
     </bean>
 </beans>

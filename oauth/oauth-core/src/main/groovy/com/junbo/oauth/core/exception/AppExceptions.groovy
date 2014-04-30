@@ -298,4 +298,7 @@ interface AppExceptions {
 
     @ErrorDef(httpStatusCode = 400, code = '20069', description = 'Invalid locale: {0}', field = 'locale')
     AppError invalidLocale(String locale)
+
+    @ErrorDef(httpStatusCode = 400, code = '20070', description = 'Missing user id')
+    AppError missingUserId()
 }
