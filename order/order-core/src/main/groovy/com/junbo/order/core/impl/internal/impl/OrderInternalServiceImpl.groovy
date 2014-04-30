@@ -59,7 +59,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 throw AppErrors.INSTANCE.ratingResultInvalid().exception()
             }
             CoreBuilder.fillRatingInfo(order, ratingResult)
-            LOGGER.error('name=Rating_Result_Successfully')
+            LOGGER.info('name=Rating_Result_Successfully')
             // no need to log order event for rating
             // call billing to calculate tax
             if (order.totalAmount == 0) {
