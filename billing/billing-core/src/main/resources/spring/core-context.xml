@@ -31,4 +31,7 @@
         <property name="template" ref="billingAsyncChargeJmsTemplate"/>
         <property name="destination" ref="billingAsyncChargeQueue"/>
     </bean>
+
+    <bean id="balanceValidator" class="com.junbo.billing.core.validator.BalanceValidator"/>
+
 </beans>

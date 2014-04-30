@@ -6,6 +6,7 @@
 package com.junbo.test.catalogscenario;
 
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
@@ -39,7 +40,7 @@ public class Catalog extends TestClass {
     private LogHelper logger = new LogHelper(Catalog.class);
     private final String defaultItemFileName = "defaultItem";
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
-    private final String defaultDigitalOfferRevisionFileName = "defaultDigitalOfferRevision";
+    private final String defaultOfferRevisionFileName = "defaultOfferRevision";
 
     @Property(
             priority = Priority.BVT,
@@ -280,8 +281,7 @@ public class Catalog extends TestClass {
 
         //Attach offer revision to the offer
         Offer offer = Master.getInstance().getOffer(offerId);
-        OfferRevision offerRevision = offerRevisionServiceAPI.prepareOfferRevisionEntity(defaultDigitalOfferRevisionFileName,
-                EnumHelper.CatalogItemType.DIGITAL);
+        OfferRevision offerRevision = offerRevisionServiceAPI.prepareOfferRevisionEntity(defaultOfferRevisionFileName);
         offerRevision.setOfferId(offer.getOfferId());
         offerRevision.setOwnerId(offer.getOwnerId());
         String offerRevisionId = offerRevisionServiceAPI.postOfferRevision(offerRevision);
@@ -303,13 +303,15 @@ public class Catalog extends TestClass {
             features = "CatalogScenarios",
             component = Component.Catalog,
             owner = "JasonFu",
-            status = Status.Incomplete,
+            status = Status.Enable,
             description = "Test EntitlementDefinition Post/Get",
             steps = {
                     "1. Post an EntitlementDefinition",
                     "2. Get the EntitlementDefinition by EntitlementDefinition ID",
                     "3. Get EntitlementDefinition by some search conditions",
-                    "4. Get all EntitlementDefinition without any search condition"
+                    "4. Get all EntitlementDefinition without any search condition",
+                    "5. Update the EntitlementDefinition",
+                    "6. Delete the EntitlementDefinition"
             }
     )
     @Test
@@ -318,9 +320,58 @@ public class Catalog extends TestClass {
         HashMap<String, String> paraMap = new HashMap();
         EntitlementDefinitionService entitlementDefinitionService = EntitlementDefinitionServiceImpl.instance();
 
-        ///Post an attribute and verify it got posted
-        entitlementDefinitionService.postDefaultEntitlementDefinition(EnumHelper.EntitlementType.DOWNLOAD);
+        ///Post an entitlement definition and verify it got posted
+        logger.LogSample("Post an entitlement definition");
+        String edId = entitlementDefinitionService.postDefaultEntitlementDefinition(EnumHelper.EntitlementType.getRandomType());
+        EntitlementDefinition edRtn = Master.getInstance().getEntitlementDefinition(edId);
+        Assert.assertNotNull(edRtn);
 
+        //Get the entitlement definition by its id and assert the return value is not null
+        logger.LogSample("Get the entitlement definition by its id");
+        String edGetId = entitlementDefinitionService.getEntitlementDefinition(edId);
+        Assert.assertNotNull(Master.getInstance().getEntitlementDefinition(edGetId));
+
+        //Get entitlement definitions by some get conditions, like type and id.
+        logger.LogSample("Get entitlement definitions by its id and type");
+        paraMap.put("type", edRtn.getType());
+        paraMap.put("id", edId);
+        List<String> edResultList = entitlementDefinitionService.getEntitlementDefinitions(paraMap);
+        Assert.assertNotNull(edResultList);
+
+        //Get all entitlement definitions without any search condition
+        logger.LogSample("Get all entitlement definitions(without any search condition)");
+        paraMap.clear();
+        edResultList.clear();
+        edResultList = entitlementDefinitionService.getEntitlementDefinitions(paraMap);
+        Assert.assertNotNull(edResultList);
+
+        //update the entitlement definition
+        edRtn = Master.getInstance().getEntitlementDefinition(edId);
+        String edGroup = RandomFactory.getRandomStringOfAlphabet(5);
+        String edTag = RandomFactory.getRandomStringOfAlphabet(5);
+        edRtn.setGroup(edGroup);
+        edRtn.setTag(edTag);
+        edRtn.setConsumable(Boolean.TRUE);
+
+        logger.LogSample("Update entitlement definition");
+        entitlementDefinitionService.updateEntitlementDefinition(edRtn);
+        edRtn = Master.getInstance().getEntitlementDefinition(edId);
+        Assert.assertEquals(edRtn.getGroup(), edGroup);
+        Assert.assertEquals(edRtn.getTag(), edTag);
+        Assert.assertEquals(edRtn.getConsumable(), Boolean.TRUE);
+
+        //Delete the entitlement definition
+        logger.LogSample("Delete entitlement definition");
+        entitlementDefinitionService.deleteEntitlementDefinition(edId);
+
+        //search the entitlement definition again, and verify we could not found it.
+        try {
+            entitlementDefinitionService.getEntitlementDefinition(edId, 404);
+            Assert.fail("couldn't find an entitlement definition which has been deleted");
+        }
+        catch (Exception ex) {
+            Assert.assertTrue(ex.getMessage().contains(String.format("entitlementDefinition [%s] not found", edId)));
+        }
     }
 
     @Property(
@@ -328,27 +379,60 @@ public class Catalog extends TestClass {
             features = "CatalogScenarios",
             component = Component.Catalog,
             owner = "JasonFu",
-            status = Status.Incomplete,
-            description = "Test EntitlementDefinition Post/Get",
+            status = Status.Enable,
+            description = "Test uploading item and offer",
             steps = {
-                    "1. Post an EntitlementDefinition",
-                    "2. Get the EntitlementDefinition by EntitlementDefinition ID",
-                    "3. Get EntitlementDefinition by some search conditions",
-                    "4. Get all EntitlementDefinition without any search condition"
+                    "1. View all previously submitted offers",
+                    "2. Post an item",
+                    "3. Post an item revision, approve it",
+                    "4. Post an offer",
+                    "5. Post an offer revision based on the item and offer above, approve it",
+                    "6. Check the offer status is published"
             }
     )
     @Test
     public void testUploadingOfferToStore() throws Exception {
-        UserService us = UserServiceImpl.instance();
-        ItemService is = ItemServiceImpl.instance();
-        OfferService os = OfferServiceImpl.instance();
+        UserService userService = UserServiceImpl.instance();
+        ItemService itemService = ItemServiceImpl.instance();
+        ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
+        OfferService offerService = OfferServiceImpl.instance();
+        OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
 
-        String superUserId = us.PostUser();
+        //Prepare a super user
+        String superUserId = userService.PostUser();
         User userSuper = Master.getInstance().getUser(superUserId);
 
+        //Show all previously submitted offers
         HashMap<String, String> paraMap = new HashMap();
+        offerService.getOffers(paraMap);
 
+        //Simulate app submission process
+        //Post an Item
+        String itemId = itemService.postDefaultItem(EnumHelper.CatalogItemType.DIGITAL);
 
+        //Post an item revision
+        String itemRevisionId = itemRevisionService.postDefaultItemRevision(itemId);
+
+        //Approve the item revision
+        ItemRevision itemRevision = Master.getInstance().getItemRevision(itemRevisionId);
+        itemRevision.setStatus(EnumHelper.CatalogEntityStatus.APPROVED.getEntityStatus());
+        itemRevisionService.updateItemRevision(itemRevision);
+
+        //Post an offer
+        String offerId = offerService.postDefaultOffer();
+
+        //Post an offer revision
+        String offerRevisionId = offerRevisionService.postDefaultOfferRevision(offerId, itemId);
+
+        //Approve the offer revision
+        OfferRevision offerRevision = Master.getInstance().getOfferRevision(offerRevisionId);
+        offerRevision.setStatus(EnumHelper.CatalogEntityStatus.APPROVED.getEntityStatus());
+        offerRevisionService.updateOfferRevision(offerRevision);
+
+        //Check the offer status
+        offerService.getOffer(offerId);
+        Offer offer = Master.getInstance().getOffer(offerId);
+        Assert.assertEquals(offer.getPublished(), Boolean.TRUE);
     }
 
     @Property(

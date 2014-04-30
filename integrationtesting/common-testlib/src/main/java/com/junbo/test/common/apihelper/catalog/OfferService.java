@@ -6,8 +6,6 @@
 package com.junbo.test.common.apihelper.catalog;
 
 import com.junbo.catalog.spec.model.offer.Offer;
-import com.junbo.test.common.libs.EnumHelper;
-
 import java.util.HashMap;
 import java.util.List;
 

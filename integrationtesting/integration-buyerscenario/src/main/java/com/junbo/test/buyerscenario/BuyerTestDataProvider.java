@@ -8,17 +8,24 @@ package com.junbo.test.buyerscenario;
 import com.junbo.billing.spec.model.ShippingAddress;
 import com.junbo.cart.spec.model.Cart;
 import com.junbo.cart.spec.model.item.OfferItem;
+import com.junbo.common.enumid.CountryId;
+import com.junbo.common.enumid.CurrencyId;
+import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.UserId;
+import com.junbo.ewallet.spec.model.CreditRequest;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.order.spec.model.OrderItem;
+import com.junbo.order.spec.model.PaymentInfo;
 import com.junbo.payment.spec.model.Address;
-//import com.junbo.payment.spec.model.CreditCardRequest;
 import com.junbo.payment.spec.model.PaymentInstrument;
+import com.junbo.payment.spec.model.TypeSpecificDetails;
 import com.junbo.test.billing.apihelper.ShippingAddressService;
 import com.junbo.test.billing.apihelper.impl.ShippingAddressServiceImpl;
 import com.junbo.test.common.Entities.ShippingAddressInfo;
+import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
+import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
 import com.junbo.test.common.Utility.BaseTestDataProvider;
 
 import com.junbo.test.common.apihelper.cart.CartService;
@@ -36,6 +43,7 @@ import com.junbo.test.common.apihelper.order.impl.OrderServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
+import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.EnumHelper;
 import com.junbo.test.common.libs.EnumHelper.UserStatus;
 import com.junbo.test.common.libs.IdConverter;
@@ -45,6 +53,7 @@ import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.payment.apihelper.PaymentService;
 import com.junbo.test.payment.apihelper.impl.PaymentServiceImpl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -90,7 +99,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
 
     public String postDefaultOffer(EnumHelper.CatalogItemType itemType) throws Exception {
         logger.LogSample("Post a offer");
-        return offerClient.postDefaultOffer(itemType);
+        return offerClient.postDefaultOffer();
     }
 
     public String postOffersToPrimaryCart(String uid, ArrayList<String> offers) throws Exception {
@@ -133,12 +142,79 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         return cartClient.mergeCart(destinationUid, destinationCartId, sourceCart);
     }
 
+    public String postPaymentInstrument(String uid, PaymentInstrumentBase paymentInfo) throws Exception {
+
+        PaymentInstrument paymentInstrument = new PaymentInstrument();
+        Address address = new Address();
+        // paymentInstrument.setPhoneNumber("650-253-0000");
+        paymentInstrument.setTrackingUuid(UUID.randomUUID());
+        ArrayList<Long> admins = new ArrayList<>();
+        admins.add(IdConverter.hexStringToId(UserId.class, uid));
+        paymentInstrument.setAdmins(admins);
+        paymentInstrument.setLabel("4");
+        TypeSpecificDetails typeSpecificDetails = new TypeSpecificDetails();
+        Long billingAddressId = Master.getInstance().getUser(uid).getAddresses().get(0).getValue().getValue();
+        switch (paymentInfo.getType()) {
+            case CREDITCARD:
+                CreditCardInfo creditCardInfo = (CreditCardInfo) paymentInfo;
+                typeSpecificDetails.setExpireDate(creditCardInfo.getExpireDate());
+                typeSpecificDetails.setEncryptedCvmCode(creditCardInfo.getEncryptedCVMCode());
+
+                paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
+                address.setAddressLine1(creditCardInfo.getAddress().getAddressLine1());
+                address.setCity(creditCardInfo.getAddress().getCity());
+                address.setState(creditCardInfo.getAddress().getState());
+                address.setCountry(creditCardInfo.getAddress().getCountry());
+                address.setPostalCode(creditCardInfo.getAddress().getPostalCode());
+
+                paymentInstrument.setAccountName(creditCardInfo.getAccountName());
+                paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
+                //paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
+                paymentInstrument.setAddress(address);
+                paymentInstrument.setIsValidated(creditCardInfo.isValidated());
+                //paymentInstrument.setIsDefault(String.valueOf(creditCardInfo.isDefault()));
+                paymentInstrument.setType(0L);
+                paymentInstrument.setBillingAddressId(billingAddressId);
+                return paymentClient.postPaymentInstrument(paymentInstrument);
+
+            case EWALLET:
+                EwalletInfo ewalletInfo = (EwalletInfo) paymentInfo;
+                typeSpecificDetails.setStoredValueCurrency("usd");
+                paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
+                paymentInstrument.setAccountName(ewalletInfo.getAccountName());
+                paymentInstrument.setType(2L);
+                paymentInstrument.setIsValidated(ewalletInfo.isValidated());
+                paymentInstrument.setBillingAddressId(billingAddressId);
+                address.setAddressLine1(ewalletInfo.getAddress().getAddressLine1());
+                address.setCity(ewalletInfo.getAddress().getCity());
+                address.setState(ewalletInfo.getAddress().getState());
+                address.setCountry(ewalletInfo.getAddress().getCountry());
+                address.setPostalCode(ewalletInfo.getAddress().getPostalCode());
+                paymentInstrument.setAddress(address);
+                return paymentClient.postPaymentInstrument(paymentInstrument);
+
+            default:
+                throw new TestException(String.format("%s is not supported", paymentInfo.getType().toString()));
+        }
+    }
+
+    public void creditWallet(String uid) throws Exception{
+        CreditRequest creditRequest = new CreditRequest();
+        creditRequest.setCurrency("usd");
+        creditRequest.setUserId(IdConverter.hexStringToId(UserId.class,uid));
+        creditRequest.setAmount(new BigDecimal(1000));
+        paymentClient.creditWallet(creditRequest);
+    }
+
     public String postCreditCardToUser(String uid, CreditCardInfo creditCardInfo) throws Exception {
         PaymentInstrument paymentInstrument = new PaymentInstrument();
-        /*CreditCardRequest creditCardRequest = new CreditCardRequest();
-        //creditCardRequest.setType(creditCardInfo.getType().toString());
-        creditCardRequest.setExpireDate(creditCardInfo.getExpireDate());
-        creditCardRequest.setEncryptedCvmCode(creditCardInfo.getEncryptedCVMCode());*/
+        paymentInstrument.setLabel("4");
+
+        TypeSpecificDetails typeSpecificDetails = new TypeSpecificDetails();
+        typeSpecificDetails.setExpireDate(creditCardInfo.getExpireDate());
+        typeSpecificDetails.setEncryptedCvmCode(creditCardInfo.getEncryptedCVMCode());
+
+        paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
 
         Address address = new Address();
         address.setAddressLine1(creditCardInfo.getAddress().getAddressLine1());
@@ -147,21 +223,25 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         address.setCountry(creditCardInfo.getAddress().getCountry());
         address.setPostalCode(creditCardInfo.getAddress().getPostalCode());
 
-        ArrayList<Long> admins = new ArrayList<>();
+
+        List<Long> admins = new ArrayList<>();
         admins.add(IdConverter.hexStringToId(UserId.class, uid));
         paymentInstrument.setAdmins(admins);
         paymentInstrument.setAccountName(creditCardInfo.getAccountName());
         paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
+        paymentInstrument.setType(0L);
         //paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
-        paymentInstrument.setAddress(address);
+        paymentInstrument.setBillingAddressId(0L);
         /*paymentInstrument.setCreditCardRequest(creditCardRequest);
         paymentInstrument.setIsValidated(creditCardInfo.isValidated());
         paymentInstrument.setPhoneNum("650-253-0000");
         paymentInstrument.setType(creditCardInfo.getType().toString());*/
+        paymentInstrument.setBillingAddressId(167772224l);
         paymentInstrument.setTrackingUuid(UUID.randomUUID());
         logger.LogSample("Post a new credit card to user");
         return paymentClient.postPaymentInstrument(paymentInstrument);
     }
+
 
     public String postShippingAddressToUser(String uid, ShippingAddressInfo shippingAddressInfo) throws Exception {
         ShippingAddress shippingAddress = new ShippingAddress();
@@ -180,6 +260,46 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
     public String postOrderByCartId(String uid, String cartId, Country country, Currency currency,
                                     String paymentInstrumentId) throws Exception {
         return postOrderByCartId(uid, cartId, country, currency, paymentInstrumentId, null);
+    }
+
+    public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
+                            String shippingAddressId, ArrayList<String> offers) throws Exception {
+
+        Order order = new Order();
+
+        List<PaymentInstrumentId> paymentInstruments = new ArrayList<>();
+        paymentInstruments.add(new PaymentInstrumentId(
+                IdConverter.hexStringToId(PaymentInstrumentId.class, paymentInstrumentId)));
+        order.setUser(new UserId(IdConverter.hexStringToId(UserId.class, uid)));
+        order.setCountry(new CountryId(country.toString()));
+        order.setCurrency(new CurrencyId(currency.toString()));
+        //order.setPaymentInstruments(paymentInstruments);
+        List<PaymentInfo> paymentInfos = new ArrayList<>();
+        PaymentInfo paymentInfo = new PaymentInfo();
+        paymentInfo.setPaymentInstrument(new PaymentInstrumentId(
+                IdConverter.hexStringToId(PaymentInstrumentId.class, paymentInstrumentId)));
+        paymentInfos.add(paymentInfo);
+        order.setPayments(paymentInfos);
+        order.setShippingMethod(0l);
+
+        if (shippingAddressId != null) {
+            order.setShippingAddress(Master.getInstance().getShippingAddress(shippingAddressId).getAddressId());
+        }
+        List<OrderItem> orderItemList = new ArrayList<>();
+        for (int i = 0; i < offers.size(); i++) {
+            OfferId offerId = new OfferId(
+                    IdConverter.hexStringToId(OfferId.class, offerClient.getOfferIdByName(offers.get(i))));
+
+            OrderItem orderItem = new OrderItem();
+            orderItem.setQuantity(1);
+            //orderItem.setQuantity(Integer.valueOf(RandomFactory.getRandomLong(1L, 1L).toString()));
+            orderItem.setOffer(offerId);
+            orderItemList.add(orderItem);
+        }
+        order.setOrderItems(orderItemList);
+        order.setTentative(true);
+        order.setLocale(new LocaleId("en_US"));
+        return orderClient.postOrder(order);
     }
 
     public String postOrderByCartId(String uid, String cartId, Country country, Currency currency,
@@ -201,8 +321,8 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         paymentInstruments.add(new PaymentInstrumentId(
                 IdConverter.hexStringToId(PaymentInstrumentId.class, paymentInstrumentId)));
         order.setUser(cart.getUser());
-        order.setCountry(country.toString());
-        order.setCurrency(currency.toString());
+        order.setCountry(new CountryId(country.toString()));
+        order.setCurrency(new CurrencyId(currency.toString()));
         order.setPaymentInstruments(paymentInstruments);
         if (shippingAddressId != null) {
             order.setShippingAddress(Master.getInstance().getShippingAddress(shippingAddressId).getAddressId());
@@ -223,8 +343,8 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         }
         order.setOrderItems(orderItemList);
         order.setTentative(true);
-        order.setType("PAY_IN");
-        order.setLocale("en_US");
+
+        order.setLocale(new LocaleId("en_US"));
         logger.LogSample("Post an order");
         return orderClient.postOrder(order);
     }
