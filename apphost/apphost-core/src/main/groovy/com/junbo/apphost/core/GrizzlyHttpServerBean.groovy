@@ -4,6 +4,7 @@ import com.junbo.apphost.core.logging.AccessLogProbe
 import groovy.transform.CompileStatic
 import org.glassfish.grizzly.http.server.*
 import org.glassfish.grizzly.nio.transport.TCPNIOTransport
+import org.glassfish.grizzly.threadpool.AbstractThreadPool
 import org.glassfish.grizzly.threadpool.JunboThreadPool
 import org.glassfish.grizzly.threadpool.ThreadPoolConfig
 import org.glassfish.hk2.api.InjectionResolver
@@ -31,6 +32,8 @@ import org.springframework.core.io.support.EncodedResource
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.util.ClassUtils
 
+import java.util.concurrent.TimeUnit
+
 /**
  * Created by kg on 4/21/2014.
  */
@@ -47,9 +50,33 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean, Applica
 
     private ServiceLocator serviceLocator
 
+    private int corePoolSize = AbstractThreadPool.DEFAULT_MIN_THREAD_COUNT
+
+    private int maxPoolSize = AbstractThreadPool.DEFAULT_MAX_THREAD_COUNT
+
+    private int keepAliveTimeMillis = AbstractThreadPool.DEFAULT_IDLE_THREAD_KEEPALIVE_TIMEOUT
+
+    private int queueLimit = AbstractThreadPool.DEFAULT_MAX_TASKS_QUEUED
+
     @Required
     void setUri(URI uri) {
         this.uri = uri
+    }
+
+    void setCorePoolSize(int corePoolSize) {
+        this.corePoolSize = corePoolSize
+    }
+
+    void setMaxPoolSize(int maxPoolSize) {
+        this.maxPoolSize = maxPoolSize
+    }
+
+    void setKeepAliveTimeMillis(int keepAliveTimeMillis) {
+        this.keepAliveTimeMillis = keepAliveTimeMillis
+    }
+
+    void setQueueLimit(int queueLimit) {
+        this.queueLimit = queueLimit
     }
 
     @Override
@@ -67,13 +94,15 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean, Applica
 
         // configure listener
         NetworkListener listener = new NetworkListener('grizzly', host, port)
+
         TCPNIOTransport transport = listener.transport
 
         ThreadPoolConfig threadPoolConfig = ThreadPoolConfig.defaultConfig()
 
-        // todo: more to configure for thread pool from spring. the two are just samples
-        // threadPoolConfig.corePoolSize = 100
-        // threadPoolConfig.maxPoolSize = 100
+        threadPoolConfig.corePoolSize = corePoolSize
+        threadPoolConfig.maxPoolSize = maxPoolSize
+        threadPoolConfig.setKeepAliveTime(keepAliveTimeMillis, TimeUnit.MILLISECONDS)
+        threadPoolConfig.queueLimit = queueLimit
 
         transport.setWorkerThreadPool(new JunboThreadPool(threadPoolConfig))
         httpServer.addListener(listener)
