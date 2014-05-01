@@ -25,6 +25,9 @@ public class ItemDaoImpl extends BaseDaoImpl<ItemEntity> implements ItemDao {
             @Override
             public void apply(Criteria criteria) {
                 addIdRestriction("itemId", options.getItemIds(), criteria);
+                if (options.getType() != null) {
+                    criteria.add(Restrictions.eq("type", options.getType()));
+                }
                 if (options.getGenre() != null) {
                     criteria.add(Restrictions.sqlRestriction(options.getGenre().getValue() + "=ANY(genres)"));
                 }

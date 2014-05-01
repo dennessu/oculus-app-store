@@ -5,11 +5,8 @@
  */
 package com.junbo.test.catalog.item;
 
-import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.test.common.apihelper.catalog.ItemService;
 import com.junbo.test.common.apihelper.catalog.impl.ItemServiceImpl;
-import com.junbo.test.common.blueprint.Master;
-import com.junbo.test.common.libs.EnumHelper;
+import com.junbo.test.common.apihelper.catalog.ItemService;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.*;
 import org.testng.annotations.Test;
@@ -29,7 +26,7 @@ public class TestPutItem {
             features = "CatalogIntegration",
             component = Component.Catalog,
             owner = "JasonFu",
-            status = Status.Enable,
+            status = Status.Incomplete,
             description = "Test Get an Item by itemId(valid, invalid scenarios)",
             steps = {
                     "1. Post an default item",
@@ -41,9 +38,6 @@ public class TestPutItem {
 
     @Test
     public void testPutItem() throws Exception {
-
-        String defaultItemId = itemService.postDefaultItem(EnumHelper.CatalogItemType.DIGITAL);
-        Item defaultItem = Master.getInstance().getItem(defaultItemId);
 
     }
 }

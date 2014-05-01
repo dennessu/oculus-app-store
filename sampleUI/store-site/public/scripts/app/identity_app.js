@@ -321,7 +321,7 @@ App.RegisterController = Ember.ObjectController.extend({
 
             provider.Register(Utils.GenerateRequestModel(model), function(data){
                 var resultModel = data.data;
-                if(resultModel.status == 200){
+                if(resultModel.status.toString()[0] == 2){
                     _self.set("errMessage", null);
 
                     var redirectUrl = Utils.Cookies.Get(AppConfig.CookiesName.RedirectUrl);

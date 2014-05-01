@@ -76,14 +76,24 @@ var StoreRoutes = {
             }
         }
     }),
+
     IndexRoute: Ember.Route.extend({
         beforeModel: function(){
             Utils.GetViews(AppConfig.Templates.Store.Index);
         },
-        model: function(){
-            return this.store.findAll("Product");
+        setupController: function(controller, model){
+            var provider = new CatalogProvider();
+            provider.GetProducts(Utils.GenerateRequestModel(null), function(result){
+                if(result.data.status.toString()[0] == 2) {
+                    var products = JSON.parse(result.data.data)[AppConfig.FieldNames.Results];
+                    controller.set("content.products",products);
+                }else{
+                    // TODO: Error
+                }
+            });
         }
     }),
+
     DetailRoute: Ember.Route.extend({
         beforeModel: function(){
             Utils.GetViews(AppConfig.Templates.Store.Detail);

@@ -10,6 +10,12 @@ var StoreControllers = {
         }.property('App.AuthManager.AuthKey')
     }),
 
+    IndexController: Ember.ObjectController.extend({
+       content:{
+           products: []
+       }
+    }),
+
     DetailController: Ember.ObjectController.extend({
 
         actions:{

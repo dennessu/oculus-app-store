@@ -77,15 +77,6 @@ public class TestPostItem extends BaseTestClass {
     public void testPostItemInvalidScenarios() throws Exception {
 
         Item testItem = itemService.prepareItemEntity(defaultItem);
-        try {
-            //Error code 400 means "Missing Input field"
-            itemService.postItem(testItem, 400);
-            Assert.fail("Post item should fail");
-        }
-        catch (Exception ex) {
-        }
-
-        testItem = itemService.prepareItemEntity(defaultItem);
         testItem.setType(null);
         try {
             //Error code 400 means "Missing Input field"

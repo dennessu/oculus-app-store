@@ -51,15 +51,17 @@ public class TestGetItem extends BaseTestClass {
         String itemId = itemService.postDefaultItem(EnumHelper.CatalogItemType.getRandom());
         String invalidId = "000000000";
 
-        //get the item by Id, check its status
-        verifyValidScenarios(itemId, false);
+        //get the item by Id, assert not null
+        String itemRtnId = itemService.getItem(itemId);
+        Assert.assertNotNull("Can't get items", itemRtnId);
         verifyInvalidScenarios(invalidId);
 
         //Release the item and then try to get the item
         Item item = Master.getInstance().getItem(itemId);
         releaseItem(item);
 
-        verifyValidScenarios(itemId, true);
+        itemRtnId = itemService.getItem(itemId);
+        Assert.assertNotNull("Can't get items", itemRtnId);
         verifyInvalidScenarios(invalidId);
     }
 
@@ -80,57 +82,58 @@ public class TestGetItem extends BaseTestClass {
     @Test
     public void testGetItemsByIds() throws Exception {
 
-        //prepare 4 items for later use
-        String itemId1 = itemService.postDefaultItem(EnumHelper.CatalogItemType.DIGITAL);
-        String itemId2 = itemService.postDefaultItem(EnumHelper.CatalogItemType.PHYSICAL);
-        String itemId3 = itemService.postDefaultItem(EnumHelper.CatalogItemType.STORED_VALUE);
-        String itemId4 = itemService.postDefaultItem(EnumHelper.CatalogItemType.SUBSCRIPTION);
+        //prepare 5 items for later use
+        String[] itemId = new String[5];
+        for (int i = 0; i < itemId.length; i ++) {
+            itemId[i] = itemService.postDefaultItem(EnumHelper.CatalogItemType.getByIndex(i));
+        }
 
         HashMap<String, String> paraMap = new HashMap();
 
         //Set 1 item by its Id, verify 1 item could be gotten
-        paraMap.put("id1", itemId1);
-        verifyGetItemsScenarios(paraMap, 1, itemId1);
+        paraMap.put("itemId1", itemId[0]);
+        verifyGetItemsScenarios(paraMap, 1, itemId[0]);
 
         //Set 2 items by their Ids, verify 2 items could be gotten
-        paraMap.put("id2", itemId2);
-        verifyGetItemsScenarios(paraMap, 2, itemId1, itemId2);
+        paraMap.put("itemId2", itemId[1]);
+        verifyGetItemsScenarios(paraMap, 2, itemId[0], itemId[1]);
 
-        //Search the 4 items by their Ids, verify only return the 4 items
-        paraMap.put("id3", itemId3);
-        paraMap.put("id4", itemId4);
-        verifyGetItemsScenarios(paraMap, 4, itemId1, itemId2, itemId3, itemId4);
+        //Search the 5 items by their Ids, verify only return the 4 items
+        paraMap.put("itemId3", itemId[2]);
+        paraMap.put("itemId4", itemId[3]);
+        paraMap.put("itemId5", itemId[4]);
+        verifyGetItemsScenarios(paraMap, 5, itemId[0], itemId[1], itemId[2], itemId[3], itemId[4]);
 
-        //Set 2 of 4 to invalid string
-        paraMap.put("id1", "0000000000");
-        paraMap.put("id2", "0000000001");
-        verifyGetItemsScenarios(paraMap, 2, itemId3, itemId4);
+        //Set 2 of 5 to invalid string
+        paraMap.put("itemId1", "0000000000");
+        paraMap.put("itemId2", "0000000001");
+        verifyGetItemsScenarios(paraMap, 3, itemId[2], itemId[3], itemId[4]);
 
-        //Release the 4 items
-        releaseItem(Master.getInstance().getItem(itemId1));
-        releaseItem(Master.getInstance().getItem(itemId2));
-        releaseItem(Master.getInstance().getItem(itemId3));
-        releaseItem(Master.getInstance().getItem(itemId4));
+        //Release the 5 items
+        for (int i = 0; i < itemId.length; i ++) {
+            releaseItem(Master.getInstance().getItem(itemId[i]));
+        }
 
         //Set 1 item by its Id, verify 1 item could be gotten
         paraMap.clear();
-        paraMap.put("id1", itemId1);
-        verifyGetItemsScenarios(paraMap, 1, itemId1);
+        paraMap.put("itemId1", itemId[0]);
+        verifyGetItemsScenarios(paraMap, 1, itemId[0]);
 
         //Set 2 items by their Ids, verify 2 items could be gotten
-        paraMap.put("id2", itemId2);
-        verifyGetItemsScenarios(paraMap, 2, itemId1, itemId2);
+        paraMap.put("itemId2", itemId[1]);
+        verifyGetItemsScenarios(paraMap, 2, itemId[0], itemId[1]);
 
         //Search the 4 items by their Ids, verify only return the 4 items
-        paraMap.put("id3", itemId3);
-        paraMap.put("id4", itemId4);
-        verifyGetItemsScenarios(paraMap, 4, itemId1, itemId2, itemId3, itemId4);
+        paraMap.put("itemId3", itemId[2]);
+        paraMap.put("itemId4", itemId[3]);
+        verifyGetItemsScenarios(paraMap, 4, itemId[0], itemId[1], itemId[2], itemId[3]);
 
         //Set all to invalid string
-        paraMap.put("id1", "0000000000");
-        paraMap.put("id2", "0000000001");
-        paraMap.put("id3", "0000000002");
-        paraMap.put("id4", "0000000003");
+        paraMap.put("itemId1", "0000000000");
+        paraMap.put("itemId2", "0000000001");
+        paraMap.put("itemId3", "0000000002");
+        paraMap.put("itemId4", "0000000003");
+        paraMap.put("itemId5", "0000000004");
         verifyGetItemsScenarios(paraMap, 0);
     }
 
@@ -156,21 +159,18 @@ public class TestGetItem extends BaseTestClass {
         String itemId2 = itemService.postDefaultItem(EnumHelper.CatalogItemType.PHYSICAL);
         String itemId3 = itemService.postDefaultItem(EnumHelper.CatalogItemType.STORED_VALUE);
         String itemId4 = itemService.postDefaultItem(EnumHelper.CatalogItemType.SUBSCRIPTION);
+        String itemId5 = itemService.postDefaultItem(EnumHelper.CatalogItemType.VIRTUAL);
 
-        performVerification(itemId1, itemId2, itemId3, itemId4);
+        performVerification(itemId1, itemId2, itemId3, itemId4, itemId5);
 
         //Release the 4 items
         releaseItem(Master.getInstance().getItem(itemId1));
         releaseItem(Master.getInstance().getItem(itemId2));
         releaseItem(Master.getInstance().getItem(itemId3));
         releaseItem(Master.getInstance().getItem(itemId4));
+        releaseItem(Master.getInstance().getItem(itemId5));
 
-        performVerification(itemId1, itemId2, itemId3, itemId4);
-    }
-
-    private void verifyValidScenarios(String itemId, boolean status) throws Exception {
-        String itemRtnId = itemService.getItem(itemId);
-        Assert.assertNotNull("Can't get items", itemRtnId);
+        performVerification(itemId1, itemId2, itemId3, itemId4, itemId5);
     }
 
     private void verifyInvalidScenarios(String itemId) throws Exception {
@@ -183,19 +183,16 @@ public class TestGetItem extends BaseTestClass {
         }
     }
 
-    private void performVerification(String itemId1, String itemId2, String itemId3, String itemId4)  throws Exception {
+    private void performVerification(String itemId1, String itemId2, String itemId3, String itemId4, String itemId5)  throws Exception {
 
         HashMap<String, String> paraMap = new HashMap();
 
         //Set item ids
-        paraMap.put("id1", itemId1);
-        paraMap.put("id2", itemId2);
-        paraMap.put("id3", itemId3);
-        paraMap.put("id4", itemId4);
-
-        //set curated false
-        paraMap.put("curated", "false");
-        verifyGetItemsScenarios(paraMap, 4, itemId1, itemId2, itemId3, itemId4);
+        paraMap.put("itemId1", itemId1);
+        paraMap.put("itemId2", itemId2);
+        paraMap.put("itemId3", itemId3);
+        paraMap.put("itemId4", itemId4);
+        paraMap.put("itemId5", itemId5);
 
         //set type Digital firstly
         paraMap.put("type", "DIGITAL");
@@ -211,20 +208,8 @@ public class TestGetItem extends BaseTestClass {
 
         paraMap.remove("type");
 
-        //Set curated true
-        paraMap.put("curated", "true");
-        verifyGetItemsScenarios(paraMap, 0);
-
-        paraMap.put("curated", "invalidStatus");
-        verifyGetItemsScenarios(paraMap, 0);
-
         paraMap.put("type", "DIGITAL");
-        paraMap.put("curated", "false");
-        paraMap.put("genre", Master.getInstance().getItem(itemId1).getGenres().get(0).toString());
         verifyGetItemsScenarios(paraMap, 1, itemId1);
-
-        paraMap.put("genre", "1111111");
-        verifyGetItemsScenarios(paraMap, 0);
     }
 
     private void verifyGetItemsScenarios(HashMap<String, String> paraMap, int expectedRtnSize, String... itemId) throws Exception{

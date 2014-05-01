@@ -98,6 +98,7 @@ App.AccountAddshippingView = AccountViews.AddShippingView;
 App.AccountEntitlementsView = AccountViews.EntitlementsView;
 
 App.ApplicationController = StoreControllers.ApplicationController;
+App.IndexController = StoreControllers.IndexController;
 App.DetailController = StoreControllers.DetailController;
 App.CartController = StoreControllers.CartController;
 App.CartItemController = StoreControllers.CartItemController;
