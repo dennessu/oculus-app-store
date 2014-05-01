@@ -2,12 +2,10 @@ package com.junbo.apphost.core
 
 import com.junbo.apphost.core.logging.AccessLogProbe
 import groovy.transform.CompileStatic
-import org.glassfish.grizzly.http.server.CLStaticHttpHandler
-import org.glassfish.grizzly.http.server.HttpHandler
-import org.glassfish.grizzly.http.server.HttpServer
-import org.glassfish.grizzly.http.server.NetworkListener
-import org.glassfish.grizzly.http.server.Request
-import org.glassfish.grizzly.http.server.Response
+import org.glassfish.grizzly.http.server.*
+import org.glassfish.grizzly.nio.transport.TCPNIOTransport
+import org.glassfish.grizzly.threadpool.JunboThreadPool
+import org.glassfish.grizzly.threadpool.ThreadPoolConfig
 import org.glassfish.hk2.api.InjectionResolver
 import org.glassfish.hk2.api.ServiceLocator
 import org.glassfish.hk2.api.TypeLiteral
@@ -69,6 +67,15 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean, Applica
 
         // configure listener
         NetworkListener listener = new NetworkListener('grizzly', host, port)
+        TCPNIOTransport transport = listener.transport
+
+        ThreadPoolConfig threadPoolConfig = ThreadPoolConfig.defaultConfig()
+
+        // todo: more to configure for thread pool from spring. the two are just samples
+        // threadPoolConfig.corePoolSize = 100
+        // threadPoolConfig.maxPoolSize = 100
+
+        transport.setWorkerThreadPool(new JunboThreadPool(threadPoolConfig))
         httpServer.addListener(listener)
 
         def config = httpServer.serverConfiguration
