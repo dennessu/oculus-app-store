@@ -87,7 +87,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
     public ItemRevision updateRevision(Long revisionId, ItemRevision revision) {
         ItemRevision oldRevision = itemRevisionRepo.get(revisionId);
         if (oldRevision==null) {
-            throw AppErrors.INSTANCE.notFound("offer-revision", Utils.encodeId(revisionId)).exception();
+            throw AppErrors.INSTANCE.notFound("item-revision", Utils.encodeId(revisionId)).exception();
         }
         if (Status.APPROVED.is(oldRevision.getStatus())) {
             throw AppErrors.INSTANCE.validation("Cannot update an approved revision").exception();
