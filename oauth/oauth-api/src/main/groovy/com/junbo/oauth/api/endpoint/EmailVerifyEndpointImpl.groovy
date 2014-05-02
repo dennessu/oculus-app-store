@@ -54,9 +54,9 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
     }
 
     @Override
-    Promise<Response> verifyEmail(String code, String locale, String conversationId, String event) {
+    Promise<Response> verifyEmail(String evc, String locale, String conversationId, String event) {
         Map<String, Object> requestScope = new HashMap<>()
-        requestScope[OAuthParameters.CODE] = code
+        requestScope[OAuthParameters.EMAIL_VERIFY_CODE] = evc
         requestScope[OAuthParameters.LOCALE] = locale
 
         // if the conversation id is empty, start a new conversation in the flowExecutor.
@@ -69,7 +69,7 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
     }
 
     @Override
-    Promise<Response> sendVerifyEmail(String authorization, String locale, ContainerRequestContext request) {
+    Promise<Response> sendVerifyEmailEmail(String authorization, String locale, ContainerRequestContext request) {
         userService.verifyEmailByAuthHeader(authorization, locale, ((ContainerRequest)request).baseUri)
         return Promise.pure(Response.noContent().build())
     }

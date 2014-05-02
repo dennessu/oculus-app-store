@@ -318,4 +318,7 @@ interface AppExceptions {
 
     @ErrorDef(httpStatusCode = 400, code = '20075', description = 'Missing user id')
     AppError missingUserId()
+
+    @ErrorDef(httpStatusCode = 400, code = '20071', description = 'Invalid verification code')
+    AppError invalidVerificationCode()
 }
