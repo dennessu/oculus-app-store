@@ -53,9 +53,9 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
 
         userCredentialAttempt = userCredentialVerifyAttemptFilter.filterForCreate(userCredentialAttempt)
 
-        credentialVerifyAttemptValidator.validateForCreate(userCredentialAttempt).then {
+        return credentialVerifyAttemptValidator.validateForCreate(userCredentialAttempt).then {
 
-            createInNewTran(userCredentialAttempt).then { UserCredentialVerifyAttempt attempt ->
+            return createInNewTran(userCredentialAttempt).then { UserCredentialVerifyAttempt attempt ->
 
                 if (attempt.succeeded == true) {
                     created201Marker.mark((Id)attempt.id)
@@ -75,8 +75,8 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
 
     @Override
     Promise<Results<UserCredentialVerifyAttempt>> list(UserCredentialAttemptListOptions listOptions) {
-        credentialVerifyAttemptValidator.validateForSearch(listOptions).then {
-            userCredentialVerifyAttemptRepository.search(listOptions).then { List<UserCredentialVerifyAttempt> attempts ->
+        return credentialVerifyAttemptValidator.validateForSearch(listOptions).then {
+            return userCredentialVerifyAttemptRepository.search(listOptions).then { List<UserCredentialVerifyAttempt> attempts ->
                 def result = new Results<UserCredentialVerifyAttempt>(items: [])
 
                 attempts.each { UserCredentialVerifyAttempt attempt ->
@@ -112,7 +112,6 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
             Promise<UserCredentialVerifyAttempt> doInTransaction(TransactionStatus txnStatus) {
                 return userCredentialVerifyAttemptRepository.create(userLoginAttempt)
             }
-        }
-        )
+        })
     }
 }

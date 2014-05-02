@@ -112,7 +112,7 @@ class CurrencyResourceImpl implements CurrencyResource {
         }
 
         return currencyValidator.validateForGet(currencyId).then {
-            currencyRepository.get(currencyId).then { Currency newCurrency ->
+            return currencyRepository.get(currencyId).then { Currency newCurrency ->
                 if (newCurrency == null) {
                     throw AppErrors.INSTANCE.currencyNotFound(currencyId).exception()
                 }

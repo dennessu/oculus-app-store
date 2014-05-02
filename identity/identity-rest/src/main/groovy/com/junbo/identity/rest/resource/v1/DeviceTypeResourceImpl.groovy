@@ -111,7 +111,7 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
         }
 
         return deviceTypeValidator.validateForGet(deviceTypeId).then {
-            deviceTypeRepository.get(deviceTypeId).then { DeviceType newDeviceType ->
+            return deviceTypeRepository.get(deviceTypeId).then { DeviceType newDeviceType ->
                 if (newDeviceType == null) {
                     throw AppErrors.INSTANCE.deviceTypeNotFound(deviceTypeId).exception()
                 }

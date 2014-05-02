@@ -45,8 +45,8 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
 
         userTos = userTosFilter.filterForCreate(userTos)
 
-        userTosValidator.validateForCreate(userId, userTos).then {
-            userTosRepository.create(userTos).then { UserTosAgreement newUserTos ->
+        return userTosValidator.validateForCreate(userId, userTos).then {
+            return userTosRepository.create(userTos).then { UserTosAgreement newUserTos ->
                 created201Marker.mark((Id)newUserTos.id)
 
                 newUserTos = userTosFilter.filterForGet(newUserTos, null)
@@ -62,7 +62,7 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        userTosValidator.validateForGet(userId, userTosAgreementId).then { UserTosAgreement newUserTos ->
+        return userTosValidator.validateForGet(userId, userTosAgreementId).then { UserTosAgreement newUserTos ->
             newUserTos = userTosFilter.filterForGet(newUserTos,
                     getOptions.properties?.split(',') as List<String>)
 
@@ -92,9 +92,9 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
 
             userTos = userTosFilter.filterForPatch(userTos, oldUserTos)
 
-            userTosValidator.validateForUpdate(userId, userTosAgreementId, userTos, oldUserTos).then {
+            return userTosValidator.validateForUpdate(userId, userTosAgreementId, userTos, oldUserTos).then {
 
-                userTosRepository.update(userTos).then { UserTosAgreement newUserTos ->
+                return userTosRepository.update(userTos).then { UserTosAgreement newUserTos ->
                     newUserTos = userTosFilter.filterForGet(newUserTos, null)
                     return Promise.pure(newUserTos)
                 }
@@ -125,7 +125,7 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
             userTos = userTosFilter.filterForPut(userTos, oldUserTos)
 
             return userTosValidator.validateForUpdate(userId, userTosAgreementId, userTos, oldUserTos).then {
-                userTosRepository.update(userTos).then { UserTosAgreement newUserTos ->
+                return userTosRepository.update(userTos).then { UserTosAgreement newUserTos ->
                     newUserTos = userTosFilter.filterForGet(newUserTos, null)
                     return Promise.pure(newUserTos)
                 }
@@ -136,9 +136,7 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
     @Override
     Promise<Void> delete(UserId userId, UserTosAgreementId userTosAgreementId) {
         return userTosValidator.validateForGet(userId, userTosAgreementId).then {
-            userTosRepository.delete(userTosAgreementId)
-
-            return Promise.pure(null)
+            return userTosRepository.delete(userTosAgreementId)
         }
     }
 
@@ -150,7 +148,7 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
         listOptions.setUserId(userId)
 
         return userTosValidator.validateForSearch(listOptions).then {
-            userTosRepository.search(listOptions).then { List<UserTosAgreement> userTosList ->
+            return userTosRepository.search(listOptions).then { List<UserTosAgreement> userTosList ->
                 def result = new Results<UserTosAgreement>(items: [])
 
                 userTosList.each { UserTosAgreement newUserTos ->

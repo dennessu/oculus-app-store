@@ -76,7 +76,7 @@ class VerifyEmail implements Action {
             return Promise.pure(new ActionResult('error'))
         }
 
-        userResource.get(new UserId(emailVerifyCode.userId), new UserGetOptions()).recover { Throwable e ->
+        return userResource.get(new UserId(emailVerifyCode.userId), new UserGetOptions()).recover { Throwable e ->
             handleException(e, contextWrapper)
             return Promise.pure(null)
         }.then { User user ->
@@ -109,7 +109,7 @@ class VerifyEmail implements Action {
 
                     if (email.value == emailVerifyCode.email) {
                         personalInfo.lastValidateTime = new Date()
-                        userPersonalInfoResource.put(piiLink.value, personalInfo).recover { Throwable e ->
+                        return userPersonalInfoResource.put(piiLink.value, personalInfo).recover { Throwable e ->
                             handleException(e, contextWrapper)
                             return Promise.pure(null)
                         }.then { UserPersonalInfo updatedPersonalInfo ->

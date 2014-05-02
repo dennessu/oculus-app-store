@@ -52,7 +52,7 @@ class  FulfillmentAction extends BaseOrderEventAwareAction {
         def serviceContext = context.orderServiceContext
         def order = serviceContext.order
 
-        facadeContainer.fulfillmentFacade.postFulfillment(order).syncRecover { Throwable throwable ->
+        return facadeContainer.fulfillmentFacade.postFulfillment(order).syncRecover { Throwable throwable ->
             LOGGER.error('name=Order_FulfillmentAction_Error', throwable)
             throw AppErrors.INSTANCE.
                     fulfilmentConnectionError(ErrorUtils.toAppErrors(throwable)).exception()

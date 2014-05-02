@@ -78,7 +78,7 @@ class EmailServiceImpl implements EmailService {
 
     private Promise<Email> handle(Email email) {
         if (email.recipients == null) {
-            identityFacade.getUserEmail(email.userId.value).then { String strEmail ->
+            return identityFacade.getUserEmail(email.userId.value).then { String strEmail ->
                 if (email == null) {
                     throw AppErrors.INSTANCE.missingField('recipients').exception()
                 }

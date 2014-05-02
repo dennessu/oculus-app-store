@@ -45,7 +45,7 @@ class RoleAssignmentValidatorImpl implements RoleAssignmentValidator {
             throw AppErrors.INSTANCE.fieldRequired('roleId').exception()
         }
 
-        roleRepository.get(roleAssignment.roleId).then { Role role ->
+        return roleRepository.get(roleAssignment.roleId).then { Role role ->
             if (role == null) {
                 throw AppErrors.INSTANCE.fieldInvalid('roleId').exception()
             }
@@ -58,7 +58,7 @@ class RoleAssignmentValidatorImpl implements RoleAssignmentValidator {
                 throw AppErrors.INSTANCE.fieldRequired('assigneeId').exception()
             }
 
-            roleAssignmentRepository.findByRoleIdAssignee(roleAssignment.roleId, roleAssignment.assigneeType,
+            return roleAssignmentRepository.findByRoleIdAssignee(roleAssignment.roleId, roleAssignment.assigneeType,
                     roleAssignment.assigneeId).then { RoleAssignment existing ->
                 if (existing != null) {
                     throw AppErrors.INSTANCE.fieldDuplicate('roleAssignment').exception()
@@ -97,7 +97,7 @@ class RoleAssignmentValidatorImpl implements RoleAssignmentValidator {
             throw AppErrors.INSTANCE.fieldRequired('roleId').exception()
         }
 
-        roleRepository.get(roleAssignment.roleId).then { Role role ->
+        return roleRepository.get(roleAssignment.roleId).then { Role role ->
             if (role == null) {
                 throw AppErrors.INSTANCE.fieldInvalid('roleId').exception()
             }
@@ -114,7 +114,7 @@ class RoleAssignmentValidatorImpl implements RoleAssignmentValidator {
                 throw AppErrors.INSTANCE.fieldRequired('assigneeId').exception()
             }
 
-            roleAssignmentRepository.findByRoleIdAssignee(roleAssignment.roleId, roleAssignment.assigneeType,
+            return roleAssignmentRepository.findByRoleIdAssignee(roleAssignment.roleId, roleAssignment.assigneeType,
                     roleAssignment.assigneeId).then { RoleAssignment existing ->
                 if (existing != null) {
                     throw AppErrors.INSTANCE.fieldDuplicate('roleAssignment').exception()

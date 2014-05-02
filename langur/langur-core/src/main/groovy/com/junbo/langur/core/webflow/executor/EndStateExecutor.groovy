@@ -35,7 +35,7 @@ class EndStateExecutor implements StateExecutor {
 
         def actionContext = context.newActionContext()
         def entryActions = new ActionList(stateDef.entryActions)
-        entryActions.execute(actionContext).then {
+        return entryActions.execute(actionContext).then {
             flowState.stateId = null
 
             actionContext.view = stateDef.view

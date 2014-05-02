@@ -164,9 +164,7 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
         }
 
         return userAuthenticatorValidator.validateForGet(userAuthenticatorId).then { UserAuthenticator authenticator ->
-            userAuthenticatorRepository.delete(userAuthenticatorId)
-
-            return Promise.pure(null)
+            return userAuthenticatorRepository.delete(userAuthenticatorId)
         }
     }
 }

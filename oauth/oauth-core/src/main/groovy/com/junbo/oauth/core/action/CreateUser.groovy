@@ -42,7 +42,7 @@ class CreateUser implements Action {
                 isAnonymous: false
         )
 
-        userResource.create(user).recover { Throwable throwable ->
+        return userResource.create(user).recover { Throwable throwable ->
             if (throwable instanceof AppErrorException) {
                 contextWrapper.errors.add(((AppErrorException) throwable).error.error())
             } else {

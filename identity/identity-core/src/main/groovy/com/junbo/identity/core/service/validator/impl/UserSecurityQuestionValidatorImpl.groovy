@@ -155,7 +155,7 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
             }
 
             if (userSecurityQuestion.securityQuestion != oldUserSecurityQuestion.securityQuestion) {
-                userSecurityQuestionRepository.search(new UserSecurityQuestionListOptions(userId: userId)).then {
+                return userSecurityQuestionRepository.search(new UserSecurityQuestionListOptions(userId: userId)).then {
                     List<UserSecurityQuestion> userSecurityQuestionList ->
                     boolean securityQuestionExists = userSecurityQuestionList.any { UserSecurityQuestion existing ->
                         return (existing.securityQuestion == userSecurityQuestion.securityQuestion)

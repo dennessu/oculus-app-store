@@ -8,7 +8,6 @@ import org.springframework.beans.factory.DisposableBean
 import org.springframework.beans.factory.FactoryBean
 import org.springframework.beans.factory.annotation.Required
 
-import javax.sql.DataSource
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 

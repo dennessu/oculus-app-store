@@ -86,7 +86,7 @@ class ShippingAddressServiceImpl implements ShippingAddressService {
     }
 
     private Promise<Void> validateUser(Long userId) {
-        identityFacade.getUser(userId).recover { Throwable throwable ->
+        return identityFacade.getUser(userId).recover { Throwable throwable ->
             LOGGER.error('name=Error_Get_User. userId: ' + userId, throwable)
             throw AppErrors.INSTANCE.userNotFound(userId.toString()).exception()
         }.then { User user ->

@@ -88,8 +88,8 @@ class CatalogFacadeImpl implements CatalogFacade {
                     orderOfferItems: []
             )
 
-            Promise.each(or.items?.iterator()) { ItemEntry ie ->
-                itemResource.getItem(new ItemId(ie.itemId)).syncRecover { Throwable ex ->
+            return Promise.each(or.items?.iterator()) { ItemEntry ie ->
+                return itemResource.getItem(new ItemId(ie.itemId)).syncRecover { Throwable ex ->
                     LOGGER.error('name=Failed_To_Get_Offer_Item. itemId: {}, timestamp: {}',
                             ie.itemId, honoredTime, ex)
                     throw AppErrors.INSTANCE.catalogConnectionError().exception()

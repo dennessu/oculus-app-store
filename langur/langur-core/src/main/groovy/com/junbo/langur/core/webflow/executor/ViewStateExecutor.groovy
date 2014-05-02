@@ -40,9 +40,9 @@ class ViewStateExecutor implements StateExecutor {
         actionContext.viewScope.clear()
 
         def entryActions = new ActionList(stateDef.entryActions)
-        entryActions.execute(actionContext).then {
+        return entryActions.execute(actionContext).then {
             def renderActions = new ActionList(stateDef.renderActions)
-            renderActions.execute(actionContext).then {
+            return renderActions.execute(actionContext).then {
                 actionContext.view = stateDef.view
                 actionContext.flashScope.clear()
 
@@ -86,7 +86,7 @@ class ViewStateExecutor implements StateExecutor {
             }
 
             def action = iter.next()
-            action.execute(actionContext).then { ActionResult result ->
+            return action.execute(actionContext).then { ActionResult result ->
                 if (result != null && result.id in ['success', 'yes', 'true']) {
                     return process()
                 }
@@ -95,10 +95,10 @@ class ViewStateExecutor implements StateExecutor {
             }
         }
 
-        process().then { Boolean result ->
+        return process().then { Boolean result ->
             if (result) {
                 def exitActions = new ActionList(stateDef.exitActions)
-                exitActions.execute(actionContext).then {
+                return exitActions.execute(actionContext).then {
                     actionContext.viewScope.clear()
                     flowState.stateId = null
 
@@ -106,7 +106,7 @@ class ViewStateExecutor implements StateExecutor {
                 }
             } else {
                 def renderActions = new ActionList(stateDef.renderActions)
-                renderActions.execute(actionContext).then {
+                return renderActions.execute(actionContext).then {
                     actionContext.view = stateDef.view
                     actionContext.flashScope.clear()
 

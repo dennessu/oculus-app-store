@@ -44,8 +44,8 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
 
         userGroup = userGroupFilter.filterForCreate(userGroup)
 
-        userGroupValidator.validateForCreate(userGroup).then {
-            userGroupRepository.create(userGroup).then { UserGroup newUserGroup ->
+        return userGroupValidator.validateForCreate(userGroup).then {
+            return userGroupRepository.create(userGroup).then { UserGroup newUserGroup ->
                 created201Marker.mark((Id)newUserGroup.id)
 
                 newUserGroup = userGroupFilter.filterForGet(newUserGroup, null)
@@ -60,7 +60,7 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        userGroupValidator.validateForGet(userGroupId).then { UserGroup newUserGroup ->
+        return userGroupValidator.validateForGet(userGroupId).then { UserGroup newUserGroup ->
             newUserGroup = userGroupFilter.filterForGet(newUserGroup,
                     getOptions.properties?.split(',') as List<String>)
 
@@ -85,9 +85,9 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
 
             userGroup = userGroupFilter.filterForPatch(userGroup, oldUserGroup)
 
-            userGroupValidator.validateForUpdate(userGroupId, userGroup, oldUserGroup).then {
+            return userGroupValidator.validateForUpdate(userGroupId, userGroup, oldUserGroup).then {
 
-                userGroupRepository.update(userGroup).then { UserGroup newUserGroup ->
+                return userGroupRepository.update(userGroup).then { UserGroup newUserGroup ->
                     newUserGroup = userGroupFilter.filterForGet(newUserGroup, null)
                     return Promise.pure(newUserGroup)
                 }
@@ -112,8 +112,8 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
 
             userGroup = userGroupFilter.filterForPut(userGroup, oldUserGroup)
 
-            userGroupValidator.validateForUpdate(userGroupId, userGroup, oldUserGroup).then {
-                userGroupRepository.update(userGroup).then { UserGroup newUserGroup ->
+            return userGroupValidator.validateForUpdate(userGroupId, userGroup, oldUserGroup).then {
+                return userGroupRepository.update(userGroup).then { UserGroup newUserGroup ->
                     newUserGroup = userGroupFilter.filterForGet(newUserGroup, null)
                     return Promise.pure(newUserGroup)
                 }
@@ -124,9 +124,7 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
     @Override
     Promise<Void> delete(UserGroupId userGroupId) {
         return userGroupValidator.validateForGet(userGroupId).then {
-            userGroupRepository.delete(userGroupId)
-
-            return Promise.pure(null)
+            return userGroupRepository.delete(userGroupId)
         }
     }
 
@@ -137,7 +135,7 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
         }
 
         return userGroupValidator.validateForSearch(listOptions).then {
-            userGroupRepository.search(listOptions).then { List<UserGroup> userGroupList ->
+            return userGroupRepository.search(listOptions).then { List<UserGroup> userGroupList ->
                 def result = new Results<UserGroup>(items: [])
 
                 userGroupList.each { UserGroup newUserGroup ->

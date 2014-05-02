@@ -110,7 +110,7 @@ class GroupValidatorImpl implements GroupValidator {
             throw AppErrors.INSTANCE.fieldInvalid('groupId', group.id.toString()).exception()
         }
         if (group.name != oldGroup.name) {
-            groupRepository.searchByName(group.name).then { Group existing ->
+            return groupRepository.searchByName(group.name).then { Group existing ->
                 if (existing != null) {
                     throw AppErrors.INSTANCE.fieldDuplicate('name').exception()
                 }

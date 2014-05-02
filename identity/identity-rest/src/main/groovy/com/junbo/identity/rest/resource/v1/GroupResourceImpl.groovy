@@ -52,7 +52,7 @@ class GroupResourceImpl implements GroupResource {
         group = groupFilter.filterForCreate(group)
 
         return groupValidator.validateForCreate(group).then {
-            groupRepository.create(group).then { Group newGroup ->
+            return groupRepository.create(group).then { Group newGroup ->
                 created201Marker.mark((Id) newGroup.id)
 
                 newGroup = groupFilter.filterForGet(newGroup, null)
@@ -71,8 +71,8 @@ class GroupResourceImpl implements GroupResource {
 
             group = groupFilter.filterForPut(group, oldGroup)
 
-            groupValidator.validateForUpdate(groupId, group, oldGroup).then {
-                groupRepository.update(group).then { Group newGroup ->
+            return groupValidator.validateForUpdate(groupId, group, oldGroup).then {
+                return groupRepository.update(group).then { Group newGroup ->
                     newGroup = groupFilter.filterForGet(newGroup, null)
                     return Promise.pure(newGroup)
                 }
@@ -83,15 +83,15 @@ class GroupResourceImpl implements GroupResource {
     @Override
     Promise<Group> patch(GroupId groupId, Group group) {
 
-        groupValidator.validateForGet(groupId).then { Group oldGroup ->
+        return groupValidator.validateForGet(groupId).then { Group oldGroup ->
             if (oldGroup == null) {
                 throw AppErrors.INSTANCE.groupNotFound(groupId).exception()
             }
 
             group = groupFilter.filterForPatch(group, oldGroup)
 
-            groupValidator.validateForUpdate(groupId, group, oldGroup).then {
-                groupRepository.update(group).then { Group newGroup ->
+            return groupValidator.validateForUpdate(groupId, group, oldGroup).then {
+                return groupRepository.update(group).then { Group newGroup ->
                     newGroup = groupFilter.filterForGet(newGroup, null)
                     return Promise.pure(newGroup)
                 }
@@ -106,7 +106,7 @@ class GroupResourceImpl implements GroupResource {
         }
 
         return groupValidator.validateForGet(groupId).then {
-            groupRepository.get(groupId).then { Group newGroup ->
+            return groupRepository.get(groupId).then { Group newGroup ->
                 if (newGroup == null) {
                     throw AppErrors.INSTANCE.groupNotFound(groupId).exception()
                 }
@@ -119,7 +119,7 @@ class GroupResourceImpl implements GroupResource {
 
     @Override
     Promise<Results<Group>> list(GroupListOptions listOptions) {
-        groupValidator.validateForSearch(listOptions).then {
+        return groupValidator.validateForSearch(listOptions).then {
             def resultList = new Results<Group>(items: [])
             if (listOptions.name != null) {
                 return groupRepository.searchByName(listOptions.name).then { Group newGroup ->
@@ -163,9 +163,7 @@ class GroupResourceImpl implements GroupResource {
     @Override
     Promise<Void> delete(GroupId groupId) {
         return groupValidator.validateForGet(groupId).then {
-            groupRepository.delete(groupId)
-
-            return Promise.pure(null)
+            return groupRepository.delete(groupId)
         }
     }
 }

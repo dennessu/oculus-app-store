@@ -1,6 +1,5 @@
 package com.junbo.identity.core.service.validator
 
-import com.sun.org.apache.xalan.internal.xsltc.cmdline.Compile
 import groovy.transform.CompileStatic
 
 /**

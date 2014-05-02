@@ -46,7 +46,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
         userPii = userPersonalInfoFilter.filterForCreate(userPii)
 
         return userPersonalInfoValidator.validateForCreate(userPii).then {
-            userPersonalInfoRepository.create(userPii).then { UserPersonalInfo newUserPii ->
+            return userPersonalInfoRepository.create(userPii).then { UserPersonalInfo newUserPii ->
                 created201Marker.mark((Id) newUserPii.id)
 
                 newUserPii = userPersonalInfoFilter.filterForGet(newUserPii, null)
@@ -116,7 +116,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
             userPii = userPersonalInfoFilter.filterForPut(userPii, oldUserPersonalInfo)
 
             return userPersonalInfoValidator.validateForUpdate(userPii, oldUserPersonalInfo).then {
-                userPersonalInfoRepository.update(userPii).then { UserPersonalInfo newUserPersonalInfo ->
+                return userPersonalInfoRepository.update(userPii).then { UserPersonalInfo newUserPersonalInfo ->
                     newUserPersonalInfo = userPersonalInfoFilter.filterForGet(newUserPersonalInfo, null)
                     return Promise.pure(newUserPersonalInfo)
                 }
@@ -131,9 +131,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
         }
 
         return userPersonalInfoValidator.validateForGet(userPiiId).then {
-            userPersonalInfoRepository.delete(userPiiId)
-
-            return Promise.pure(null)
+            return userPersonalInfoRepository.delete(userPiiId)
         }
     }
 
@@ -147,7 +145,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
             def resultList = new Results<UserPersonalInfo>(items: [])
 
             if (listOptions.userId != null && listOptions.type != null) {
-                userPersonalInfoRepository.searchByUserIdAndType(listOptions.userId, listOptions.type).
+                return userPersonalInfoRepository.searchByUserIdAndType(listOptions.userId, listOptions.type).
                     then { List<UserPersonalInfo> userPersonalInfoList ->
                         userPersonalInfoList.each { UserPersonalInfo temp ->
                             temp = userPersonalInfoFilter.filterForGet(temp,
@@ -157,9 +155,10 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
                                 resultList.items.add(temp)
                             }
                         }
+                        return Promise.pure(resultList)
                     }
             } else {
-                userPersonalInfoRepository.searchByUserId(listOptions.userId).
+                return userPersonalInfoRepository.searchByUserId(listOptions.userId).
                     then { List<UserPersonalInfo> userPersonalInfoList ->
                         userPersonalInfoList.each { UserPersonalInfo temp ->
                             temp = userPersonalInfoFilter.filterForGet(temp,
@@ -169,10 +168,10 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
                                 resultList.items.add(temp)
                             }
                         }
+
+                        return Promise.pure(resultList)
                     }
             }
-
-            return Promise.pure(resultList)
         }
     }
 }

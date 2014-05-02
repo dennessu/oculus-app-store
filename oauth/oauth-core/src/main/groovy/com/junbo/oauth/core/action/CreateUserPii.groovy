@@ -99,7 +99,7 @@ class CreateUserPii implements Action {
                 value: ObjectMapperProvider.instance().valueToTree(new UserDOB(birthday: dob))
         )
 
-        userPersonalInfoResource.create(namePii).recover { Throwable e ->
+        return userPersonalInfoResource.create(namePii).recover { Throwable e ->
             handleException(e, contextWrapper)
             return Promise.pure(null)
         }.then { UserPersonalInfo newNamePii ->

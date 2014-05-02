@@ -43,7 +43,7 @@ class CreateSubledgerItemAction extends BaseOrderEventAwareAction {
         def serviceContext = context.orderServiceContext
         def order = serviceContext.order
 
-        builder.getOffers(serviceContext).syncThen {
+        return builder.getOffers(serviceContext).syncThen {
             serviceContext.order.orderItems?.each { OrderItem orderItem ->
                 // todo ignore first party item
                 def offer = serviceContext.offersMap[orderItem.offer]

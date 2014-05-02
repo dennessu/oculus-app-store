@@ -104,7 +104,7 @@ class DefaultFlowSelector implements FlowSelector {
             return Promise.pure(FlowType.FREE_SETTLE.name())
         }
         // select order flow per payment info and product item info
-        orderServiceContextBuilder.getPaymentInstruments(context).then { List<PaymentInstrument> pis ->
+        return orderServiceContextBuilder.getPaymentInstruments(context).then { List<PaymentInstrument> pis ->
             // TODO: do not support multiple payment methods now
             assert(!CollectionUtils.isEmpty(pis))
             switch (PIType.get(pis[0].type)) {
