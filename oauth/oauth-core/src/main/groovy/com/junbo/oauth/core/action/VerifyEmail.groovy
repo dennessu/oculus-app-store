@@ -23,7 +23,6 @@ import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.db.repo.EmailVerifyCodeRepository
 import com.junbo.oauth.spec.model.EmailVerifyCode
-import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -62,7 +61,7 @@ class VerifyEmail implements Action {
     @Override
     Promise<ActionResult> execute(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
-        String code = (String) context.flowScope[OAuthParameters.CODE]
+        String code = contextWrapper.emailVerifyCode
 
         if (StringUtils.isEmpty(code)) {
             contextWrapper.errors.add(AppExceptions.INSTANCE.missingEmailVerifyCode().error())

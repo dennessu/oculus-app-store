@@ -22,6 +22,7 @@
         <property name="clientSecretLength" value="${oauth.db.clientSecretLength}"/>
         <property name="saltLength" value="${oauth.db.saltLength}"/>
         <property name="emailVerifyCodeLength" value="${oauth.db.emailVerifyCodeLength}"/>
+        <property name="resetPasswordCodeLength" value="${oauth.db.resetPasswordCodeLength}" />
     </bean>
 
     <bean id="jedisInstance" class="redis.clients.jedis.Jedis">

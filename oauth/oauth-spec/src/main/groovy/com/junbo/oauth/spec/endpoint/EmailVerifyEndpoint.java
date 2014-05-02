@@ -24,11 +24,11 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public interface EmailVerifyEndpoint {
     @GET
-    Promise<Response> verifyEmail(@QueryParam("code") String code, @QueryParam("locale") String locale,
+    Promise<Response> verifyEmail(@QueryParam("evc") String evc, @QueryParam("locale") String locale,
                                   @QueryParam("cid") String conversationId, @QueryParam("event") String event);
 
     @POST
-    Promise<Response> sendVerifyEmail(@HeaderParam("Authorization") String authorization,
-                                      @FormParam("locale") String locale,
-                                      @Context ContainerRequestContext request);
+    Promise<Response> sendVerifyEmailEmail(@HeaderParam("Authorization") String authorization,
+                                           @FormParam("locale") String locale,
+                                           @Context ContainerRequestContext request);
 }
