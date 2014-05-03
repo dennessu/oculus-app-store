@@ -274,7 +274,7 @@ interface AppExceptions {
     AppError invalidRecaptcha(String message)
 
     @ErrorDef(httpStatusCode = 400, code = '20067',
-            description = 'The email verify code is missing', field = 'code')
+            description = 'The email verify code is missing', field = 'evc')
     AppError missingEmailVerifyCode()
 
     @ErrorDef(httpStatusCode = 400, code = '20068',
@@ -321,4 +321,8 @@ interface AppExceptions {
 
     @ErrorDef(httpStatusCode = 400, code = '20071', description = 'Invalid verification code')
     AppError invalidVerificationCode()
+
+    @ErrorDef(httpStatusCode = 400, code = '20072',
+            description = 'The reset password code is missing', field = 'rpc')
+    AppError missingResetPasswordCode()
 }

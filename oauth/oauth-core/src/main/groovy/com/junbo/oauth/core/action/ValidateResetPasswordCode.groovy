@@ -26,15 +26,15 @@ class ValidateResetPasswordCode implements Action {
     @Override
     Promise<ActionResult> execute(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
-        def parameterMap = contextWrapper.parameterMap
+        String code = (String) context.requestScope[OAuthParameters.RESET_PASSWORD_CODE]
 
-        String code = parameterMap?.getFirst(OAuthParameters.RESET_PASSWORD_CODE)
-        if (!tokenGenerator.isValidResetPasswordCode(code)) {
-            throw AppExceptions.INSTANCE.invalidVerificationCode().exception()
+        if (!tokenGenerator.isValidEmailVerifyCode(code)) {
+            contextWrapper.errors.add(AppExceptions.INSTANCE.invalidVerificationCode().error())
+            return Promise.pure(new ActionResult('error'))
         }
 
         contextWrapper.resetPasswordCode = code
 
-        return Promise.pure(null)
+        return Promise.pure(new ActionResult('success'))
     }
 }

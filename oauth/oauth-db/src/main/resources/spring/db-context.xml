@@ -73,7 +73,11 @@
 
     <bean id="emailVerifyCodeDAO" class="com.junbo.oauth.db.dao.couch.CouchEmailVerifyCodeDAOImpl" parent="baseDAO">
         <property name="dbName" value="email_verify_code"/>
-     </bean>
+    </bean>
+
+    <bean id="resetPasswordCodeDAO" class="com.junbo.oauth.db.dao.couch.CouchResetPasswordCodeDAOImpl" parent="baseDAO">
+        <property name="dbName" value="email_verify_code"/>
+    </bean>
 
     <bean id="clientRepository" class="com.junbo.oauth.db.repo.impl.ClientRepositoryImpl">
         <property name="clientDAO" ref="clientDAO"/>
@@ -119,6 +123,11 @@
 
     <bean id="emailVerifyCodeRepository" class="com.junbo.oauth.db.repo.impl.EmailVerifyCodeRepositoryImpl">
         <property name="emailVerifyCodeDAO" ref="emailVerifyCodeDAO"/>
+        <property name="tokenGenerator" ref="tokenGenerator"/>
+    </bean>
+
+    <bean id="resetPasswordCodeRepository" class="com.junbo.oauth.db.repo.impl.ResetPasswordCodeRepositoryImpl">
+        <property name="resetPasswordCodeDAO" ref="resetPasswordCodeDAO" />
         <property name="tokenGenerator" ref="tokenGenerator"/>
     </bean>
 

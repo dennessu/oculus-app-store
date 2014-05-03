@@ -55,4 +55,10 @@
         <property name="userService" ref="userService" />
     </bean>
 
+    <bean id="defaultResetPasswordEndpoint" class="com.junbo.oauth.api.endpoint.ResetPasswordEndpointImpl">
+        <property name="resetPasswordFlow" value="resetPasswordFlow"/>
+        <property name="flowExecutor" ref="flowExecutor"/>
+        <property name="userService" ref="userService"/>
+    </bean>
+
 </beans>

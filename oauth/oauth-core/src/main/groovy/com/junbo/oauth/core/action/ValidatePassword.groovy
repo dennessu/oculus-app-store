@@ -14,7 +14,7 @@ import org.springframework.util.StringUtils
  * Created by minhao on 5/1/14.
  */
 @CompileStatic
-class ValidateResetPassword implements Action {
+class ValidatePassword implements Action {
     @Override
     Promise<ActionResult> execute(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
@@ -24,7 +24,9 @@ class ValidateResetPassword implements Action {
 
         if (StringUtils.isEmpty(password)) {
             contextWrapper.errors.add(AppExceptions.INSTANCE.missingPassword().error())
+            return Promise.pure(new ActionResult('error'))
         }
-        return null
+
+        return Promise.pure(new ActionResult('success'))
     }
 }

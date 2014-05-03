@@ -24,4 +24,11 @@ interface UserService {
     Promise<Void> verifyEmailByAuthHeader(String authorization, String locale, URI baseUri)
 
     Promise<Void> verifyEmailByUserId(UserId userId, String locale, URI baseUri)
+
+    // csr can issue password reset flow to any verified user in csr tool, the authorization header need to prove
+    // the caller has csr privilege.
+    Promise<Void> resetPasswordByAuthHeader(String authorization, UserId userId, String locale, URI baseUri)
+
+    // user can issue password reset flow in other security flow, like forget password flow
+    Promise<Void> resetPasswordByUserId(UserId userId, String locale, URI baseUri)
 }
