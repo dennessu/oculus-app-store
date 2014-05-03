@@ -298,4 +298,20 @@ interface AppExceptions {
 
     @ErrorDef(httpStatusCode = 400, code = '20069', description = 'Invalid locale: {0}', field = 'locale')
     AppError invalidLocale(String locale)
+
+    @ErrorDef(httpStatusCode = 400, code = '20070',
+            description = 'The facebookAuth is missing', field = 'facebookAuth')
+    AppError missingFacebookAuth()
+
+    @ErrorDef(httpStatusCode = 400, code = '20071',
+            description = 'Invalid facebookAuth', field = 'facebookAuth')
+    AppError errorCallingFacebook()
+
+    @ErrorDef(httpStatusCode = 400, code = '20072',
+            description = 'The googleAuth is missing', field = 'googleAuth')
+    AppError missingGoogleAuth()
+
+    @ErrorDef(httpStatusCode = 400, code = '20073',
+            description = 'Invalid googleAuth', field = 'googleAuth')
+    AppError errorCallingGoogle()
 }

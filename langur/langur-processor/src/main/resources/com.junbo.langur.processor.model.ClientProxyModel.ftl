@@ -34,17 +34,20 @@ public class ${className} implements ${interfaceType} {
 
     private final QueryParamTranscoder __queryParamTranscoder;
 
+    private final ExceptionHandler __exceptionHandler;
+
     public ${className}(AsyncHttpClient client, MessageTranscoder transcoder, PathParamTranscoder pathParamTranscoder,
-                                QueryParamTranscoder queryParamTranscoder, String target) {
-        this(client, transcoder, pathParamTranscoder, queryParamTranscoder, target, new javax.ws.rs.core.MultivaluedHashMap<String, Object>());
+                                QueryParamTranscoder queryParamTranscoder, ExceptionHandler exceptionHandler, String target) {
+        this(client, transcoder, pathParamTranscoder, queryParamTranscoder, exceptionHandler, target, new javax.ws.rs.core.MultivaluedHashMap<String, Object>());
     }
 
     public ${className}(AsyncHttpClient client, MessageTranscoder transcoder, PathParamTranscoder pathParamTranscoder,
-                            QueryParamTranscoder queryParamTranscoder, String target, MultivaluedMap<String, Object> headers) {
+                            QueryParamTranscoder queryParamTranscoder, ExceptionHandler exceptionHandler, String target, MultivaluedMap<String, Object> headers) {
         assert client != null : "client is null";
         assert transcoder != null : "transcoder is null";
         assert pathParamTranscoder != null : "pathParamTranscoder is null";
         assert queryParamTranscoder != null : "queryParamTranscoder is null";
+        assert exceptionHandler != null : "exceptionHandler is null";
         assert target != null : "target is null";
         assert headers != null : "headers is null";
 
@@ -52,6 +55,7 @@ public class ${className} implements ${interfaceType} {
         __transcoder = transcoder;
         __pathParamTranscoder = pathParamTranscoder;
         __queryParamTranscoder = queryParamTranscoder;
+        __exceptionHandler = exceptionHandler;
         __target = target;
         __headers = headers;
     }
@@ -60,49 +64,4 @@ public class ${className} implements ${interfaceType} {
         [@includeModel model=clientMethod indent=true/]
 
     [/#list]
-
-    private AppError getAppError(final int statusCode, final Error error) {
-        return new AppError() {
-            @Override
-            public int getHttpStatusCode() {
-                return statusCode;
-            }
-
-            @Override
-            public String getCode() {
-                return error.getCode();
-            }
-
-            @Override
-            public String getDescription() {
-                return error.getDescription();
-            }
-
-            @Override
-            public String getField() {
-                return error.getField();
-            }
-
-            @Override
-            public List<AppError> getCauses() {
-                List<AppError> causes = new ArrayList<>();
-                if (error.getCauses() != null) {
-                    for (Error innerError : error.getCauses()) {
-                        causes.add(getAppError(statusCode, innerError));
-                    }
-                }
-                return causes;
-            }
-
-            @Override
-            public AppErrorException exception() {
-                return new AppErrorException(this);
-            }
-
-            @Override
-            public Error error() {
-                return error;
-            }
-        };
-    }
 }

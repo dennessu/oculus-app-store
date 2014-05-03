@@ -47,6 +47,7 @@
         <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
         <constructor-arg name="target" value="${order.client.identity.url}"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="billingBalanceClient" class="com.junbo.billing.spec.resource.proxy.BalanceResourceClientProxy">
@@ -55,6 +56,7 @@
         <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
         <constructor-arg name="target" value="${order.client.billing.url}"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="billingShippingAddressClient" class="com.junbo.billing.spec.resource.proxy.ShippingAddressResourceClientProxy">
@@ -63,6 +65,7 @@
         <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
         <constructor-arg name="target" value="${order.client.billing.url}"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="ratingClient" class="com.junbo.rating.spec.resource.proxy.RatingResourceClientProxy">
@@ -71,6 +74,7 @@
         <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
         <constructor-arg name="target" value="${order.client.rating.url}"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy">
@@ -79,6 +83,7 @@
         <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
         <constructor-arg name="target" value="${order.client.catalog.url}"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="itemClient" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy">
@@ -87,6 +92,7 @@
         <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
         <constructor-arg name="target" value="${order.client.catalog.url}"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="fulfilmentClient" class="com.junbo.fulfilment.spec.resource.proxy.FulfilmentResourceClientProxy">
@@ -95,6 +101,7 @@
         <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
         <constructor-arg name="target" value="${order.client.fulfilment.url}"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="entitlementClient" class="com.junbo.entitlement.spec.resource.proxy.EntitlementResourceClientProxy">
@@ -103,6 +110,7 @@
         <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
         <constructor-arg name="target" value="${order.client.entitlement.url}"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="paymentInstrumentClient" class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy">
@@ -119,6 +127,7 @@
         <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
         <constructor-arg name="target" value="${order.client.email.url}"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="orderClient" class="com.junbo.order.spec.resource.proxy.OrderResourceClientProxy">
@@ -127,5 +136,6 @@
         <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
         <constructor-arg name="target" value="${order.client.order.url}"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 </beans>
