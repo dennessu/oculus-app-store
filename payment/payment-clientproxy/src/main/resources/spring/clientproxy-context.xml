@@ -14,6 +14,7 @@
         <constructor-arg name="transcoder" ref="transcoder"/>
         <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder" />
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="walletClient" class="com.junbo.ewallet.spec.resource.proxy.WalletResourceClientProxy">
@@ -22,6 +23,7 @@
         <constructor-arg name="transcoder" ref="transcoder"/>
         <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder" />
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="personalInfoFacade" class="com.junbo.payment.clientproxy.impl.PersonalInfoFacadeImpl"/>

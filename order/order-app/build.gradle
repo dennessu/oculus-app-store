@@ -13,4 +13,6 @@ dependencies {
     runtime "com.junbo.billing:billing-rest:${junboVersion}"
     runtime "com.junbo.identity:identity-rest:${junboVersion}"
     runtime "com.junbo.payment:payment-rest:${junboVersion}"
+    runtime "com.junbo.rating:rating-rest:${junboVersion}"
+    runtime "com.junbo.catalog:catalog-rest:${junboVersion}"
 }

@@ -175,7 +175,7 @@
     </bean>
 
     <bean id="nickNameValidator" class="com.junbo.identity.core.service.validator.impl.NickNameValidatorImpl">
-        <property name="nickNameMinLength" value="4"/>
+        <property name="nickNameMinLength" value="3"/>
         <property name="nickNameMaxLength" value="30"/>
     </bean>
 
