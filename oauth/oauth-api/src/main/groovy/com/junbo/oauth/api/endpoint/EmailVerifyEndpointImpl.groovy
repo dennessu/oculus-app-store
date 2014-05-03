@@ -70,7 +70,8 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
 
     @Override
     Promise<Response> sendVerifyEmailEmail(String authorization, String locale, ContainerRequestContext request) {
-        userService.verifyEmailByAuthHeader(authorization, locale, ((ContainerRequest)request).baseUri)
-        return Promise.pure(Response.noContent().build())
+        return userService.verifyEmailByAuthHeader(authorization, locale, ((ContainerRequest)request).baseUri).then {
+            return Promise.pure(Response.noContent().build())
+        }
     }
 }

@@ -28,8 +28,10 @@ import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.TokenService
 import com.junbo.oauth.core.service.UserService
 import com.junbo.oauth.db.repo.EmailVerifyCodeRepository
+import com.junbo.oauth.db.repo.ResetPasswordCodeRepository
 import com.junbo.oauth.spec.model.AccessToken
 import com.junbo.oauth.spec.model.EmailVerifyCode
+import com.junbo.oauth.spec.model.ResetPasswordCode
 import com.junbo.oauth.spec.model.UserInfo
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
@@ -49,6 +51,7 @@ class UserServiceImpl implements UserService {
     private static final String EMAIL_SOURCE = 'SilkCloud'
     private static final String EMAIL_ACTION = 'EmailVerification'
     private static final String EMAIL_VERIFY_PATH = 'oauth2/verify-email'
+    private static final String EMAIL_RESET_PASSWORD_PATH = 'oauth2/reset-password'
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl)
 
     private TokenService tokenService
@@ -64,6 +67,8 @@ class UserServiceImpl implements UserService {
     private EmailTemplateResource emailTemplateResource
 
     private EmailVerifyCodeRepository emailVerifyCodeRepository
+
+    private ResetPasswordCodeRepository resetPasswordCodeRepository
 
     @Required
     void setTokenService(TokenService tokenService) {
@@ -99,6 +104,11 @@ class UserServiceImpl implements UserService {
     @Required
     void setEmailVerifyCodeRepository(EmailVerifyCodeRepository emailVerifyCodeRepository) {
         this.emailVerifyCodeRepository = emailVerifyCodeRepository
+    }
+
+    @Required
+    void setResetPasswordCodeRepository(ResetPasswordCodeRepository resetPasswordCodeRepository) {
+        this.resetPasswordCodeRepository = resetPasswordCodeRepository
     }
 
     @Override
@@ -193,41 +203,74 @@ class UserServiceImpl implements UserService {
                 QueryParam queryParam = new QueryParam(
                         source: EMAIL_SOURCE,
                         action: EMAIL_ACTION,
-                        // todo: remove hard coded locale
-                        locale: 'en_US'
+                        locale: locale
                 )
 
-                // TODO: cache the email template for each locale.
-                return emailTemplateResource.getEmailTemplates(queryParam).then { Results<EmailTemplate> results ->
-                    if (results == null || results.items == null || results.items.isEmpty()) {
-                        LOGGER.warn('Failed to get the email template, skip the email send')
-                        throw AppExceptions.INSTANCE.errorCallingEmail().exception()
-                    }
-
-                    EmailTemplate template = results.items.get(0)
-
-                    Email emailToSend = new Email(
-                            userId: user.id as UserId,
-                            templateId: template.id as EmailTemplateId,
-                            recipients: [email].asList(),
-                            replacements: [
-                                    'name': user.username,
-                                    'verify_link': uriBuilder.build().toString()
-                            ]
-                    )
-
-                    return emailResource.postEmail(emailToSend).then { Email emailSent ->
-                        if (emailSent == null) {
-                            LOGGER.warn('Failed to send the email, skip the email send')
-                            throw AppExceptions.INSTANCE.errorCallingEmail().exception()
-                        }
-
-                        // Return success no matter the email has been successfully sent.
-                        return Promise.pure(null)
-                    }
-                }
+                return this.sendEmail(queryParam, user, email, uriBuilder)
             }
         }
+    }
+
+    @Override
+    Promise<Void> resetPasswordByUserId(UserId userId, String locale, URI baseUri) {
+        if (userId == null || userId.value == null) {
+            throw AppExceptions.INSTANCE.missingUserId().exception()
+        }
+
+        return userResource.get(userId, new UserGetOptions()).then { User user ->
+            if (user == null) {
+                throw AppExceptions.INSTANCE.errorCallingIdentity().exception()
+            }
+
+            return this.getUserEmail(user).then { String email ->
+                if (email == null) {
+                    throw AppExceptions.INSTANCE.errorCallingIdentity().exception()
+                }
+
+                ResetPasswordCode code = new ResetPasswordCode(
+                        userId: userId.value
+                )
+
+                resetPasswordCodeRepository.save(code)
+
+                UriBuilder uriBuilder = UriBuilder.fromUri(baseUri)
+                uriBuilder.path(EMAIL_RESET_PASSWORD_PATH)
+                uriBuilder.queryParam(OAuthParameters.RESET_PASSWORD_CODE, code.code)
+                uriBuilder.queryParam(OAuthParameters.LOCALE, locale)
+
+                QueryParam queryParam = new QueryParam(
+                        // todo: change to reset password email template params
+                        source: EMAIL_SOURCE,
+                        action: EMAIL_ACTION,
+                        locale: locale
+                )
+
+                return this.sendEmail(queryParam, user, email, uriBuilder)
+            }
+        }
+    }
+
+    @Override
+    Promise<Void> resetPasswordByAuthHeader(String authorization, UserId userId, String locale, URI baseUri) {
+        /*
+        if (!StringUtils.hasText(authorization)) {
+            throw AppExceptions.INSTANCE.missingAuthorization().exception()
+        }
+
+        AccessToken accessToken = tokenService.extractAccessToken(authorization)
+
+        if (accessToken == null) {
+            throw AppExceptions.INSTANCE.invalidAccessToken().exception()
+        }
+
+        if (accessToken.isExpired()) {
+            throw AppExceptions.INSTANCE.expiredAccessToken().exception()
+        }*/
+
+        //todo: csr authorization header
+        //if (accessToken.scopes) {}
+
+        return this.resetPasswordByUserId(userId, locale, baseUri)
     }
 
     private Promise<String> getUserEmail(User user) {
@@ -259,5 +302,40 @@ class UserServiceImpl implements UserService {
         }
 
         return Promise.pure(null)
+    }
+
+    private Promise<Void> sendEmail(QueryParam queryParam, User user, String email, UriBuilder uriBuilder) {
+        // todo: remove this hard coded after email template has been setup
+        queryParam.locale = 'en_US'
+
+        // TODO: cache the email template for each locale.
+        return emailTemplateResource.getEmailTemplates(queryParam).then { Results<EmailTemplate> results ->
+            if (results == null || results.items == null || results.items.isEmpty()) {
+                LOGGER.warn('Failed to get the email template, skip the email send')
+                throw AppExceptions.INSTANCE.errorCallingEmail().exception()
+            }
+
+            EmailTemplate template = results.items.get(0)
+
+            Email emailToSend = new Email(
+                    userId: user.id as UserId,
+                    templateId: template.id as EmailTemplateId,
+                    recipients: [email].asList(),
+                    replacements: [
+                            'name': user.username,
+                            'verify_link': uriBuilder.build().toString()
+                    ]
+            )
+
+            return emailResource.postEmail(emailToSend).then { Email emailSent ->
+                if (emailSent == null) {
+                    LOGGER.warn('Failed to send the email, skip the email send')
+                    throw AppExceptions.INSTANCE.errorCallingEmail().exception()
+                }
+
+                // Return success no matter the email has been successfully sent.
+                return Promise.pure(null)
+            }
+        }
     }
 }

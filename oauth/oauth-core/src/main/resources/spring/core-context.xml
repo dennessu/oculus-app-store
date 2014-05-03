@@ -22,6 +22,7 @@
         <property name="emailResource" ref="emailResource"/>
         <property name="emailTemplateResource" ref="emailTemplateResource"/>
         <property name="emailVerifyCodeRepository" ref="emailVerifyCodeRepository"/>
+        <property name="resetPasswordCodeRepository" ref="resetPasswordCodeRepository" />
     </bean>
 
     <bean id="clientService" class="com.junbo.oauth.core.service.impl.ClientServiceImpl">

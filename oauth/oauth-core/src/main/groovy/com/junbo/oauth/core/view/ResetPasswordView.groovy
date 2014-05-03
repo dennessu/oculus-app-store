@@ -14,7 +14,6 @@ class ResetPasswordView extends AbstractView {
     protected Promise<ViewModel> buildViewModel(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
         def modelMap = [
-                'clientId': contextWrapper.client.clientId,
                 'locale'  : contextWrapper.viewLocale
         ]
         modelMap.putAll(contextWrapper.extraParameterMap)

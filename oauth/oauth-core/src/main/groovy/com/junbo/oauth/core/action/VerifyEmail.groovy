@@ -33,7 +33,6 @@ import org.springframework.util.StringUtils
  * VerifyEmail.
  */
 @CompileStatic
-@SuppressWarnings('NestedBlockDepth')
 class VerifyEmail implements Action {
     private static final Logger LOGGER = LoggerFactory.getLogger(VerifyEmail)
 
