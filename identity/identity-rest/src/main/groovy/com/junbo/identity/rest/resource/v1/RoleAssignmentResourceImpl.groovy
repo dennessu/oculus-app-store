@@ -115,19 +115,19 @@ class RoleAssignmentResourceImpl implements RoleAssignmentResource {
 
     @Override
     Promise<Results<RoleAssignment>> list(RoleAssignmentListOptions options) {
-        return roleAssignmentValidator.validateForList(options).then {
-            return roleAssignmentRepository.findByRoleIdAssignee(options.roleId, options.assigneeType, options.assigneeId)
-                    .then { RoleAssignment roleAssignment ->
-                def results = new Results<RoleAssignment>(items: [])
+        roleAssignmentValidator.validateForList(options).then {
+            def results = new Results<RoleAssignment>(items: [])
 
+            roleAssignmentRepository.findByRoleIdAssignee(options.roleId, options.assigneeType, options.assigneeId)
+                    .then { RoleAssignment roleAssignment ->
                 RoleAssignment filtered = roleAssignmentFilter.filterForGet(roleAssignment, null)
 
                 if (filtered != null) {
                     results.items.add(filtered)
                 }
-
-                return Promise.pure(results)
             }
+
+            return Promise.pure(results)
         }
     }
 }

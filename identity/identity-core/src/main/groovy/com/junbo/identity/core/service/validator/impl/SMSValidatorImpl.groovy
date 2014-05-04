@@ -39,6 +39,8 @@ class SMSValidatorImpl implements PiiValidator {
                 throw AppErrors.INSTANCE.fieldTooShort('textMessage', minTextMessageLength).exception()
             }
         }
+
+        return Promise.pure(null)
     }
 
     @Required
