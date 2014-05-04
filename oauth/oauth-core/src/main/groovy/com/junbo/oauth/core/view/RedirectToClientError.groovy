@@ -10,9 +10,11 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
+import com.junbo.oauth.core.util.OAuthInfoUtil
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.StringUtils
 import org.springframework.web.util.UriComponentsBuilder
 
 import javax.ws.rs.core.Response
@@ -36,7 +38,27 @@ class RedirectToClientError implements Action {
 
         def oauthInfo = contextWrapper.oauthInfo
         def uriBuilder = UriComponentsBuilder.fromHttpUrl(oauthInfo.redirectUri)
-        uriBuilder.queryParam(OAuthParameters.ERROR, errorMessage)
+
+        Map<String, String> parameters = new HashMap<>()
+
+        parameters.put(OAuthParameters.ERROR, errorMessage)
+
+        // Add the state parameter.
+        if (oauthInfo.state != null) {
+            parameters.put(OAuthParameters.STATE, oauthInfo.state)
+        }
+
+        if (OAuthInfoUtil.isImplicitFlow(oauthInfo)) {
+            List<GString> fragments = parameters.collect { String key, String value ->
+                return "$key=$value"
+            }
+
+            uriBuilder.fragment(StringUtils.arrayToDelimitedString(fragments.toArray(), '&'))
+        } else {
+            parameters.each { String key, String value ->
+                uriBuilder.queryParam(key, value)
+            }
+        }
 
         contextWrapper.responseBuilder = Response.status(Response.Status.FOUND)
                 .location(uriBuilder.build().toUri())

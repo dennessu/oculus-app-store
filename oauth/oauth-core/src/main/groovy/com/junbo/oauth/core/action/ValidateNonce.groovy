@@ -28,14 +28,26 @@ class ValidateNonce implements Action {
         def parameterMap = contextWrapper.parameterMap
         def oauthInfo = contextWrapper.oauthInfo
 
-        if (OAuthInfoUtil.isOpenIdConnect(oauthInfo)) {
-            String nonce = parameterMap.getFirst(OAuthParameters.NONCE)
-            if (nonce == null && OAuthInfoUtil.isImplicitFlow(oauthInfo)) {
+        String state = parameterMap.getFirst(OAuthParameters.STATE)
+
+        if (OAuthInfoUtil.isImplicitFlow(oauthInfo)) {
+            if (state == null) {
+                throw AppExceptions.INSTANCE.missingState().exception()
+            }
+        }
+
+        oauthInfo.state = state
+
+
+        String nonce = parameterMap.getFirst(OAuthParameters.NONCE)
+
+        if (OAuthInfoUtil.isImplicitFlow(oauthInfo) && OAuthInfoUtil.isIdTokenNeeded(oauthInfo)) {
+            if (nonce == null) {
                 throw AppExceptions.INSTANCE.missingNonce().exception()
             }
-
-            oauthInfo.nonce = nonce
         }
+
+        oauthInfo.nonce = nonce
 
         return Promise.pure(null)
     }
