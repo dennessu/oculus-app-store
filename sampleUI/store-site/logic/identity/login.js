@@ -1,4 +1,4 @@
-var IdentityProvider = require('store-data-provider').Identity;
+var IdentityProvider = require('store-data-provider').APIProvider.Identity;
 var DomainModels = require('../../models/domain');
 
 module.exports = function(data, cb){

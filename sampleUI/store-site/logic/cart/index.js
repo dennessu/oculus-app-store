@@ -1,7 +1,7 @@
 var Async = require('async');
 var Guid = require('guid');
-var CartDataProvider = require('store-data-provider').Cart;
-var OrderDataProvider = require('store-data-provider').Order;
+var CartDataProvider = require('store-data-provider').APIProvider.Cart;
+var OrderDataProvider = require('store-data-provider').APIProvider.Order;
 
 var CartModels = require('store-model').Cart;
 var OrderModels = require('store-model').Order;

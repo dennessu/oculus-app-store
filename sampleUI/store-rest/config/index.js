@@ -303,248 +303,56 @@ module.exports = {
                         },
                         "results": [
                             {
-                                "createdTime": "2014-04-28T00:00:00Z",
-                                "updatedTime": "2014-04-28T00:00:00Z",
+                                "createdTime": "2014-05-01T00:00:00Z",
+                                "updatedTime": "2014-05-01T00:00:00Z",
                                 "rev": "2",
                                 "categories": [],
                                 "environment": null,
                                 "self": {
-                                    "href": "http://api.oculusvr-demo.com:8081/v1/offers/2B54FFB8BCDF",
-                                    "id": "2B54FFB8BCDF"
+                                    "href": "http://api.oculusvr-demo.com:8081/v1/offers/2B55FF387CDF",
+                                    "id": "2B55FF387CDF"
                                 },
                                 "currentRevision": {
-                                    "href": "http://api.oculusvr-demo.com:8081/v1/offer-revisions/2B54FFBCBCDF",
-                                    "id": "2B54FFBCBCDF"
+                                    "href": "http://api.oculusvr-demo.com:8081/v1/offer-revisions/6B55FFF0FC9F",
+                                    "id": "6B55FFF0FC9F"
                                 },
                                 "publisher": {
-                                    "href": "http://api.oculusvr-demo.com:8081/v1/users/6B54FF3CBCDF",
-                                    "id": "6B54FF3CBCDF"
+                                    "href": "http://api.oculusvr-demo.com:8081/v1/users/6B54FF383C9F",
+                                    "id": "6B54FF383C9F"
                                 },
                                 "isPublished": true,
                                 "iapHostItem": null,
                                 "revisions": {
-                                    "href": "http://api.oculusvr-demo.com:8081/v1/offer-revisions?offerId=2B54FFB8BCDF",
+                                    "href": "http://api.oculusvr-demo.com:8081/v1/offer-revisions?offerId=2B55FF387CDF",
                                     "id": null
                                 }
                             },
                             {
-                                "createdTime": "2014-04-28T00:00:00Z",
-                                "updatedTime": "2014-04-28T00:00:00Z",
+                                "createdTime": "2014-05-01T00:00:00Z",
+                                "updatedTime": "2014-05-01T00:00:00Z",
                                 "rev": "2",
                                 "categories": [],
                                 "environment": null,
                                 "self": {
-                                    "href": "http://api.oculusvr-demo.com:8081/v1/offers/2B54FF34BCDF",
-                                    "id": "2B54FF34BCDF"
+                                    "href": "http://api.oculusvr-demo.com:8081/v1/offers/6BD4FF347CDF",
+                                    "id": "6BD4FF347CDF"
                                 },
                                 "currentRevision": {
-                                    "href": "http://api.oculusvr-demo.com:8081/v1/offer-revisions/2B54FF38BCDF",
-                                    "id": "2B54FF38BCDF"
+                                    "href": "http://api.oculusvr-demo.com:8081/v1/offer-revisions/6B55FFF07CDF",
+                                    "id": "6B55FFF07CDF"
                                 },
                                 "publisher": {
-                                    "href": "http://api.oculusvr-demo.com:8081/v1/users/2B55FFB8BC9F",
-                                    "id": "2B55FFB8BC9F"
+                                    "href": "http://api.oculusvr-demo.com:8081/v1/users/6B54FF383C9F",
+                                    "id": "6B54FF383C9F"
                                 },
                                 "isPublished": true,
                                 "iapHostItem": null,
                                 "revisions": {
-                                    "href": "http://api.oculusvr-demo.com:8081/v1/offer-revisions?offerId=2B54FF34BCDF",
+                                    "href": "http://api.oculusvr-demo.com:8081/v1/offer-revisions?offerId=6BD4FF347CDF",
                                     "id": null
                                 }
                             }
                         ]
-                    }
-                },
-
-                'Failed': {
-                    statusCode: 404,
-                    headers: null,
-                    data: null
-                }
-            }
-        },
-
-        GetOfferRevisionsById:{
-            Method: 'GET',
-            Path: '/v1/offer-revisions/:revisionsId',
-            ResponseItem: 'Succeed',
-            Items: {
-                'Succeed': {
-                    statusCode: 200,
-                    headers: null,
-                    data: {
-                        "createdTime": "2014-04-28T00:00:00Z",
-                        "updatedTime": "2014-04-28T00:00:00Z",
-                        "rev": "1",
-                        "status": "DRAFT",
-                        "futureProperties": null,
-                        "price": {
-                            "priceType": "TIERED",
-                            "priceTier": {
-                                "href": "http://api.oculusvr-demo.com:8081/v1/price-tiers/6B55FFB03C9F",
-                                "id": "6B55FFB03C9F"
-                            },
-                            "prices": null
-                        },
-                        "restrictions": {
-                            "limitPerCustomer": 1,
-                            "limitPerOrder": 1,
-                            "preconditionItems": [],
-                            "exclusionItems": []
-                        },
-                        "subOffers": [],
-                        "items": [
-                            {
-                                "quantity": 1,
-                                "item": {
-                                    "href": "http://api.oculusvr-demo.com:8081/v1/items/6B54FDB03C9F",
-                                    "id": "6B54FDB03C9F"
-                                }
-                            }
-                        ],
-                        "eligibleCountries": [],
-                        "eventActions": {
-                            "PURCHASE": [
-                                {
-                                    "type": "GRANT_ENTITLEMENT",
-                                    "properties": null,
-                                    "itemId": null,
-                                    "entitlementDefinition": {
-                                        "href": "http://api.oculusvr-demo.com:8081/v1/entitlement-definitions/6B54FDB03CDF",
-                                        "id": "6B54FDB03CDF"
-                                    }
-                                }
-                            ]
-                        },
-                        "startTime": null,
-                        "endTIme": null,
-                        "locales": {
-                            "en_US": {
-                                "name": "VR Cinema",
-                                "revisionNotes": "",
-                                "longDescription": "<p>\r\n    VR Cinema will put you inside a virtual movie theater. You can watch videos in 2D as well as 3D on a huge screen. You can even walk around and choose your seat.\r\n</p>\r\n<p>\r\n\t   The application supports AVI, MP4, MKV, WMV files.\r\n</p>",
-                                "shortDescription": "VR Cinema will put you inside a virtual movie theater. You can watch videos in 2D as well as 3D on a huge screen. You can even walk around and choose your seat. ",
-                                "images": {
-                                    "thumb": {
-                                        "id": "1375715152280",
-                                        "href": "http://static.oculusvr.com/shareuploads/apps/1377300026335dp071fw29/screens/1375425759163d69yv3rf6r_1375715152280.jpg",
-                                        "size": 73374,
-                                        "x": 290,
-                                        "y": 163
-                                    },
-                                    "main": {
-                                        "id": "1375714938390",
-                                        "href": "http://static.oculusvr.com/shareuploads/apps/1377300026335dp071fw29/screens/1375425759163d69yv3rf6r_1375714938390.jpg",
-                                        "size": 243656,
-                                        "x": 700,
-                                        "y": 438
-                                    },
-                                    "general": [
-                                        {
-                                            "id": "1377298280725",
-                                            "href": "http://static.oculusvr.com/shareuploads/apps/1377300026335dp071fw29/screens/1375425759163d69yv3rf6r_1377298280725.jpg",
-                                            "size": 297523,
-                                            "x": 700,
-                                            "y": 438
-                                        },
-                                        {
-                                            "id": "1377298282919",
-                                            "href": "http://static.oculusvr.com/shareuploads/apps/1377300026335dp071fw29/screens/1375425759163d69yv3rf6r_1377298282919.jpg",
-                                            "size": 234791,
-                                            "x": 700,
-                                            "y": 438
-                                        },
-                                        {
-                                            "id": "1377298285020",
-                                            "href": "http://static.oculusvr.com/shareuploads/apps/1377300026335dp071fw29/screens/1375425759163d69yv3rf6r_1377298285020.jpg",
-                                            "size": 230466,
-                                            "x": 700,
-                                            "y": 438
-                                        },
-                                        {
-                                            "id": "1377298286936",
-                                            "href": "http://static.oculusvr.com/shareuploads/apps/1377300026335dp071fw29/screens/1375425759163d69yv3rf6r_1377298286936.jpg",
-                                            "size": 205243,
-                                            "x": 700,
-                                            "y": 438
-                                        }
-                                    ]
-                                },
-                                "videos": [
-                                    {
-                                        "service": "YOUTUBE",
-                                        "id": "Nha5VVslG_o",
-                                        "title": "VR Cinema v0.3 - Oculus Rift"
-                                    }
-                                ],
-                                "items": null
-                            }
-                        },
-                        "self": {
-                            "href": "http://api.oculusvr-demo.com:8081/v1/offer-revisions/6B54FDB83C9F",
-                            "id": "6B54FDB83C9F"
-                        },
-                        "publisher": {
-                            "href": "http://api.oculusvr-demo.com:8081/v1/users/6B54FF383C9F",
-                            "id": "6B54FF383C9F"
-                        },
-                        "offer": {
-                            "href": "http://api.oculusvr-demo.com:8081/v1/offers/6B54FDB43C9F",
-                            "id": "6B54FDB43C9F"
-                        }
-                    }
-                },
-
-                'Failed': {
-                    statusCode: 400,
-                    headers: null,
-                    data: null
-                }
-            }
-        },
-
-        GetPriceTiersById:{
-            Method: 'GET',
-            Path: '/v1/offer-revisions/:id',
-            ResponseItem: 'Succeed',
-            Items: {
-                'Succeed': {
-                    statusCode: 200,
-                    headers: null,
-                    data: {
-                        "createdTime": "2014-04-28T00:00:00Z",
-                        "updatedTime": "2014-04-28T00:00:00Z",
-                        "rev": "1",
-                        "prices": null,
-                        "locales": null,
-                        "self": {
-                            "href": "http://api.oculusvr-demo.com:8081/v1/price-tiers/6B55FFB03C9F",
-                            "id": "6B55FFB03C9F"
-                        }
-                    }
-                },
-
-                'Failed': {
-                    statusCode: 400,
-                    headers: null,
-                    data: null
-                }
-            }
-        },
-
-        GetItemById: {
-            Method: 'GET',
-            Path: '/v1/items/:itemId',
-            ResponseItem: 'Succeed',
-            Items: {
-                'Succeed': {
-                    statusCode: 200,
-                    headers: null,
-                    data: {
-                        name: "APP Name",
-                        properties:{
-                            downloadLink: "http://www.google.com"
-                        }
                     }
                 },
 
@@ -648,7 +456,303 @@ module.exports = {
                     data: null
                 }
             }
+        },
+
+        GetOfferRevisionsById:{
+            Method: 'GET',
+            Path: '/v1/offer-revisions/:revisionsId',
+            ResponseItem: 'Succeed',
+            Items: {
+                'SucceedTiered': {
+                    statusCode: 200,
+                    headers: null,
+                    data: {
+                        "createdTime": "2014-05-01T00:00:00Z",
+                        "updatedTime": "2014-05-01T00:00:00Z",
+                        "rev": "2",
+                        "status": "APPROVED",
+                        "futureProperties": null,
+                        "price": {
+                            "priceType": "TIERED",
+                            "priceTier": {
+                                "href": "http://api.oculusvr-demo.com:8081/v1/price-tiers/6B55FFB03C9F",
+                                "id": "6B55FFB03C9F"
+                            },
+                            "prices": null
+                        },
+                        "restrictions": {
+                            "limitPerCustomer": 1,
+                            "limitPerOrder": 1,
+                            "preconditionItems": [],
+                            "exclusionItems": []
+                        },
+                        "subOffers": [],
+                        "items": [
+                            {
+                                "quantity": 1,
+                                "item": {
+                                    "href": "http://api.oculusvr-demo.com:8081/v1/items/2B55FFB0FC9F",
+                                    "id": "2B55FFB0FC9F"
+                                }
+                            }
+                        ],
+                        "eligibleCountries": [
+                            {
+                                "href": "http://api.oculusvr-demo.com:8081/v1/countries/US",
+                                "id": "US"
+                            }
+                        ],
+                        "eventActions": {
+                            "PURCHASE": [
+                                {
+                                    "type": "GRANT_ENTITLEMENT",
+                                    "properties": null,
+                                    "itemId": null,
+                                    "entitlementDefinition": {
+                                        "href": "http://api.oculusvr-demo.com:8081/v1/entitlement-definitions/2B55FFB4FC9F",
+                                        "id": "2B55FFB4FC9F"
+                                    }
+                                },
+                                {
+                                    "type": "GRANT_ENTITLEMENT",
+                                    "properties": null,
+                                    "itemId": null,
+                                    "entitlementDefinition": {
+                                        "href": "http://api.oculusvr-demo.com:8081/v1/entitlement-definitions/2B55FFB4FC9F",
+                                        "id": "2B55FFB4FC9F"
+                                    }
+                                }
+                            ]
+                        },
+                        "startTime": null,
+                        "endTIme": null,
+                        "locales": {
+                            "en_US": {
+                                "name": "Above + Below 2",
+                                "revisionNotes": "",
+                                "longDescription": "<p>\r\n   Above + Below 2 is a Rift game, and it is played only with the Rift. Tilt your head to the side to turn, and look up or down to fly in these directions.\r\n</p>\r\n<p>\r\n\t Additionally it can be played as a traditional game (switch with ESC), and then it is played via mouse and keyboard, where the mouse steers the looking direction and ascend/descend and the keys A/D are used to turn.\r\n</p>\r\n<p>\r\n\t In the manu screen, look at the buttons and either nod with the head to activate them or click left MB.\r\n</p>\r\n<p>\r\n\t The main goal is to reach the angels/demons to the next heaven/hell by flying towards them and avoiding the enemies. Dodge the planes, look at the pigeons/crows to scare them away and look the enemy demons/angels into the eyes to vanquish them.\r\n</p>\r\n<p>\r\n\t Pickup potions to maintain travel speed at the maximum and to replendish power after an enemy attack, which results in blurry vision.\r\n</p>",
+                                "shortDescription": "Above + Below 2 is a metaphor on the human condition. It gives the player the choice between good and bad, and this choice is visualized as as the ascend to heaven or the descend to hell.",
+                                "images": {
+                                    "thumb": {
+                                        "id": "1396368074775",
+                                        "href": "http://static.oculusvr.com/shareuploads/apps/1396892603314wh1k0uow29/screens/1396367932219tnboxswcdi_1396368074775.png",
+                                        "size": 47692,
+                                        "x": 280,
+                                        "y": 163
+                                    },
+                                    "main": {
+                                        "id": "1396368070031",
+                                        "href": "http://static.oculusvr.com/shareuploads/apps/1396892603314wh1k0uow29/screens/1396367932219tnboxswcdi_1396368070031.jpg",
+                                        "size": 48617,
+                                        "x": 700,
+                                        "y": 394
+                                    },
+                                    "general": [
+                                        {
+                                            "id": "1396368075926",
+                                            "href": "http://static.oculusvr.com/shareuploads/apps/1396892603314wh1k0uow29/screens/1396367932219tnboxswcdi_1396368075926.jpg",
+                                            "size": 44416,
+                                            "x": 700,
+                                            "y": 394
+                                        }
+                                    ]
+                                },
+                                "videos": [
+                                    {
+                                        "service": "YOUTUBE",
+                                        "id": "5SuHFPd5UKU",
+                                        "title": "Above + Below 2 Trailer"
+                                    }
+                                ],
+                                "items": null
+                            }
+                        },
+                        "self": {
+                            "href": "http://api.oculusvr-demo.com:8081/v1/offer-revisions/6B55FFF0FC9F",
+                            "id": "6B55FFF0FC9F"
+                        },
+                        "publisher": {
+                            "href": "http://api.oculusvr-demo.com:8081/v1/users/6B54FF383C9F",
+                            "id": "6B54FF383C9F"
+                        },
+                        "offer": {
+                            "href": "http://api.oculusvr-demo.com:8081/v1/offers/2B55FF387CDF",
+                            "id": "2B55FF387CDF"
+                        }
+                    }
+                },
+
+                'Succeed':{
+                    statusCode: 200,
+                    headers: null,
+                    data:{"createdTime": "2014-04-28T00:00:00Z",
+                        "updatedTime": "2014-04-28T00:00:00Z",
+                        "rev": "2",
+                        "status": "APPROVED",
+                        "futureProperties": {},
+                        "price": {
+                            "priceType": "CUSTOM",
+                            "priceTier": null,
+                            "prices": {
+                                "JPY": 1000,
+                                "USD": 10
+                            }
+                        },
+                        "restrictions": {
+                            "limitPerCustomer": 10,
+                            "limitPerOrder": 2,
+                            "preconditionItems": [
+                                {
+                                    "href": "http://api.oculusvr-demo.com:8081/v1/items/000000001230",
+                                    "id": "000000001230"
+                                }
+                            ],
+                            "exclusionItems": [
+                                {
+                                    "href": "http://api.oculusvr-demo.com:8081/v1/items/000000000120",
+                                    "id": "000000000120"
+                                }
+                            ]
+                        },
+                        "subOffers": [],
+                        "items": [
+                            {
+                                "quantity": 1,
+                                "item": {
+                                    "href": "http://api.oculusvr-demo.com:8081/v1/items/6B55FF30BC9F",
+                                    "id": "6B55FF30BC9F"
+                                }
+                            }
+                        ],
+                        "eligibleCountries": [
+                            {
+                                "href": "http://api.oculusvr-demo.com:8081/v1/countries/US",
+                                "id": "US"
+                            },
+                            {
+                                "href": "http://api.oculusvr-demo.com:8081/v1/countries/CN",
+                                "id": "CN"
+                            }
+                        ],
+                        "eventActions": {
+                            "PURCHASE": [
+                                {
+                                    "type": "GRANT_ENTITLEMENT",
+                                    "properties": null,
+                                    "itemId": null,
+                                    "entitlementDefinition": {
+                                        "href": "http://api.oculusvr-demo.com:8081/v1/entitlement-definitions/6B55FF34BC9F",
+                                        "id": "6B55FF34BC9F"
+                                    }
+                                },
+                                {
+                                    "type": "GRANT_ENTITLEMENT",
+                                    "properties": null,
+                                    "itemId": null,
+                                    "entitlementDefinition": {
+                                        "href": "http://api.oculusvr-demo.com:8081/v1/entitlement-definitions/6B55FF34BC9F",
+                                        "id": "6B55FF34BC9F"
+                                    }
+                                }
+                            ]
+                        },
+                        "startTime": null,
+                        "endTIme": null,
+                        "locales": {
+                            "en_US": {
+                                "name": "testOffer_CartCheckout_Digital1",
+                                "revisionNotes": null,
+                                "longDescription": null,
+                                "shortDescription": null,
+                                "images": null,
+                                "videos": null,
+                                "items": null
+                            }
+                        },
+                        "self": {
+                            "href": "http://api.oculusvr-demo.com:8081/v1/offer-revisions/6B55FF38BC9F",
+                            "id": "6B55FF38BC9F"
+                        },
+                        "publisher": {
+                            "href": "http://api.oculusvr-demo.com:8081/v1/users/6B55FFB8BC9F",
+                            "id": "6B55FFB8BC9F"
+                        },
+                        "offer": {
+                            "href": "http://api.oculusvr-demo.com:8081/v1/offers/6B54FF34BCDF",
+                            "id": "6BD4FF347CDF"
+                        }
+                    }
+                },
+
+                'Failed': {
+                    statusCode: 400,
+                    headers: null,
+                    data: null
+                }
+            }
+        },
+
+        GetPriceTiersById:{
+            Method: 'GET',
+            Path: '/v1/price-tiers/:id',
+            ResponseItem: 'Succeed',
+            Items: {
+                'Succeed':{
+                    statusCode: 200,
+                    headers: null,
+                    data: {
+                        "createdTime": "2014-04-28T00:00:00Z",
+                        "updatedTime": "2014-05-01T00:00:00Z",
+                        "rev": "3",
+                        "prices": {
+                            "JPY": 1000,
+                            "USD": 9.99
+                        },
+                        "locales": {
+                            "en_US": {
+                                "name": "first price tier",
+                                "description": "first price tier"
+                            }
+                        },
+                        "self": {
+                            "href": "http://api.oculusvr-demo.com:8081/v1/price-tiers/6B55FFB03C9F",
+                            "id": "6B55FFB03C9F"
+                        }
+                    }
+                },
+
+                'Failed': {
+                    statusCode: 400,
+                    headers: null,
+                    data: null
+                }
+            }
+        },
+
+        GetItemById: {
+            Method: 'GET',
+            Path: '/v1/items/:itemId',
+            ResponseItem: 'Succeed',
+            Items: {
+                'Succeed': {
+                    statusCode: 200,
+                    headers: null,
+                    data: {
+                        name: "APP Name",
+                        properties:{
+                            downloadLink: "http://www.google.com"
+                        }
+                    }
+                },
+
+                'Failed': {
+                    statusCode: 404,
+                    headers: null,
+                    data: null
+                }
+            }
         }
+
     },
 
     Cart:{

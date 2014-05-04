@@ -1,4 +1,6 @@
 
-var DataProvider = require('./lib/data_provider');
+var APIProvider = require('./lib/api_provider');
+var DataProvider = require('./provider');
 
-module.exports = DataProvider;
+exports.APIProvider = APIProvider;
+exports.DataProvider = DataProvider;

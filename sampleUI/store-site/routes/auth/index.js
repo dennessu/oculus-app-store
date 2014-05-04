@@ -2,7 +2,7 @@ var Async = require('async');
 var Session = require('../../utils/session_store');
 
 var CodeMode = require('store-model').Identity.CodeModel;
-var IdentityDataProvider = require('store-data-provider').Identity;
+var IdentityDataProvider = require('store-data-provider').APIProvider.Identity;
 
 exports.Login = function (req, res) {
 

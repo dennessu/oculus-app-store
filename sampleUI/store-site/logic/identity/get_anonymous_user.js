@@ -1,6 +1,7 @@
 var Guid = require('guid');
 var Async = require('async');
-var DataProvider = require('store-data-provider');
+var IdentityProvider = require('store-data-provider').APIProvider.Identity;
+var CartProvider = require('store-data-provider').APIProvider.Cart;
 var IdentityModels = require('store-model').Identity;
 var DomainModels = require('../../models/domain');
 var Utils = require('../../utils/utils');
@@ -19,8 +20,8 @@ module.exports = function (data, callback) {
     //userModel.passwordStrength = pi.GetIntensity(userModel.password);
     userModel.status = "ACTIVE";
 
-    var dataProvider = new DataProvider.Identity(process.AppConfig.Identity_API_Host, process.AppConfig.Identity_API_Port);
-    var cartProvider = new DataProvider.Cart(process.AppConfig.Cart_API_Host, process.AppConfig.Cart_API_Port);
+    var dataProvider = new IdentityProvider(process.AppConfig.Identity_API_Host, process.AppConfig.Identity_API_Port);
+    var cartProvider = new CartProvider(process.AppConfig.Cart_API_Host, process.AppConfig.Cart_API_Port);
 
     Async.waterfall([function (cb) {
         dataProvider.PostUser(userModel, function (resultData) {

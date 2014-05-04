@@ -3,9 +3,9 @@ var Configs = require('./config');
 var Utils = require('./utils');
 var RestClient = require('./rest_client');
 
-var DataProvider = {};
+var APIProvider = {};
 
-DataProvider._BuildUrl = function(url, isFullPath, namespace, argsObj){
+APIProvider._BuildUrl = function(url, isFullPath, namespace, argsObj){
     var resultUrl = url;
 
     if(!isFullPath) {
@@ -37,7 +37,7 @@ DataProvider._BuildUrl = function(url, isFullPath, namespace, argsObj){
     return resultUrl;
 };
 
-DataProvider._BuildArgumentsObject = function(argumentsConfig, argsArr){
+APIProvider._BuildArgumentsObject = function(argumentsConfig, argsArr){
     if(argumentsConfig == undefined || argumentsConfig == null) return null;
     if(argsArr == undefined || argsArr == null || argsArr.length == 0) return argumentsConfig;
 
@@ -53,7 +53,7 @@ DataProvider._BuildArgumentsObject = function(argumentsConfig, argsArr){
     return resultObj;
 };
 
-DataProvider._Exec = function(provider, propertyName, args){
+APIProvider._Exec = function(provider, propertyName, args){
 
     var params = Utils.Clone(provider.SelfConfigItem[propertyName].Arguments);
     var options = Utils.Clone(provider.SelfConfigItem[propertyName].Options);
@@ -67,8 +67,8 @@ DataProvider._Exec = function(provider, propertyName, args){
         namespace = provider.SelfConfigItem.Config.namespace;
     }
 
-    var argsObj = DataProvider._BuildArgumentsObject(params, args);
-    var pathUrl = DataProvider._BuildUrl(options["path"], isFullPath, namespace, argsObj);
+    var argsObj = APIProvider._BuildArgumentsObject(params, args);
+    var pathUrl = APIProvider._BuildUrl(options["path"], isFullPath, namespace, argsObj);
 
     options["host"] = provider.Host;
     options["port"] = provider.Port;
@@ -95,7 +95,7 @@ for (var s in Configs) {
             this.Config = this.SelfConfigItem.Config;
             this.Client = new RestClient();
         };
-    })(DataProvider, s);
+    })(APIProvider, s);
 
 
     for (var api in Configs[s]) {
@@ -103,10 +103,10 @@ for (var s in Configs) {
 
         (function (parentClass, propertyName) {
             parentClass.prototype[propertyName] = function () {
-                DataProvider._Exec(this, propertyName, arguments);
+                APIProvider._Exec(this, propertyName, arguments);
             }
-        })(DataProvider[s], api);
+        })(APIProvider[s], api);
     }
 }
 
-module.exports = DataProvider;
+module.exports = APIProvider;

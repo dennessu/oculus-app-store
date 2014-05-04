@@ -1,4 +1,4 @@
-var IdentityProvider = require('store-data-provider').Identity;
+var IdentityProvider = require('store-data-provider').APIProvider.Identity;
 var IdentityModels = require('store-model').Identity;
 var DomainModels = require('../../models/domain');
 var Utils = require('../../utils/utils');
