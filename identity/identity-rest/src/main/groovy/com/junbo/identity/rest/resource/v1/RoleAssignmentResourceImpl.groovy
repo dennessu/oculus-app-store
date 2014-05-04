@@ -60,7 +60,7 @@ class RoleAssignmentResourceImpl implements RoleAssignmentResource {
     Promise<RoleAssignment> create(RoleAssignment roleAssignment) {
         RoleAssignment filtered = roleAssignmentFilter.filterForCreate(roleAssignment)
         return roleAssignmentValidator.validateForCreate(filtered).then {
-            roleAssignmentRepository.create(filtered).then { RoleAssignment newRoleAssignment ->
+            return roleAssignmentRepository.create(filtered).then { RoleAssignment newRoleAssignment ->
                 created201Marker.mark((Id) (newRoleAssignment.id))
 
                 return Promise.pure(roleAssignmentFilter.filterForGet(newRoleAssignment, null))
@@ -81,15 +81,15 @@ class RoleAssignmentResourceImpl implements RoleAssignmentResource {
 
     @Override
     Promise<Role> patch(RoleAssignmentId roleAssignmentId, RoleAssignment roleAssignment) {
-        roleAssignmentValidator.validateForGet(roleAssignmentId).then { RoleAssignment oldRoleAssignment ->
+        return roleAssignmentValidator.validateForGet(roleAssignmentId).then { RoleAssignment oldRoleAssignment ->
             if (oldRoleAssignment == null) {
                 throw AppErrors.INSTANCE.roleAssignmentNotFound(roleAssignmentId).exception()
             }
 
             RoleAssignment filtered = roleAssignmentFilter.filterForPatch(roleAssignment, oldRoleAssignment)
 
-            roleAssignmentValidator.validateForUpdate(filtered, oldRoleAssignment).then {
-                roleAssignmentRepository.update(filtered).then { RoleAssignment newRoleAssignment ->
+            return roleAssignmentValidator.validateForUpdate(filtered, oldRoleAssignment).then {
+                return roleAssignmentRepository.update(filtered).then { RoleAssignment newRoleAssignment ->
                     return Promise.pure(roleAssignmentFilter.filterForGet(newRoleAssignment, null))
                 }
             }
@@ -105,8 +105,8 @@ class RoleAssignmentResourceImpl implements RoleAssignmentResource {
 
             RoleAssignment filtered = roleAssignmentFilter.filterForPut(roleAssignment, oldRoleAssignment)
 
-            roleAssignmentValidator.validateForUpdate(filtered, oldRoleAssignment).then {
-                roleAssignmentRepository.update(filtered).then { RoleAssignment newRoleAssignment ->
+            return roleAssignmentValidator.validateForUpdate(filtered, oldRoleAssignment).then {
+                return roleAssignmentRepository.update(filtered).then { RoleAssignment newRoleAssignment ->
                     return Promise.pure(roleAssignmentFilter.filterForGet(newRoleAssignment, null))
                 }
             }
@@ -115,19 +115,19 @@ class RoleAssignmentResourceImpl implements RoleAssignmentResource {
 
     @Override
     Promise<Results<RoleAssignment>> list(RoleAssignmentListOptions options) {
-        roleAssignmentValidator.validateForList(options).then {
+        return roleAssignmentValidator.validateForList(options).then {
             def results = new Results<RoleAssignment>(items: [])
 
-            roleAssignmentRepository.findByRoleIdAssignee(options.roleId, options.assigneeType, options.assigneeId)
+            return roleAssignmentRepository.findByRoleIdAssignee(options.roleId, options.assigneeType, options.assigneeId)
                     .then { RoleAssignment roleAssignment ->
                 RoleAssignment filtered = roleAssignmentFilter.filterForGet(roleAssignment, null)
 
                 if (filtered != null) {
                     results.items.add(filtered)
                 }
-            }
 
-            return Promise.pure(results)
+                return Promise.pure(results)
+            }
         }
     }
 }

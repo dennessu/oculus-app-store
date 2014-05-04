@@ -55,7 +55,7 @@ class UserResourceImpl implements UserResource {
         user = userFilter.filterForCreate(user)
 
         return userValidator.validateForCreate(user).then {
-            userRepository.create(user).then { User newUser ->
+            return userRepository.create(user).then { User newUser ->
                 created201Marker.mark((Id) newUser.id)
 
                 newUser = userFilter.filterForGet(newUser, null)
@@ -82,7 +82,7 @@ class UserResourceImpl implements UserResource {
             user = userFilter.filterForPut(user, oldUser)
 
             return userValidator.validateForUpdate(user, oldUser).then {
-                userRepository.update(user).then { User newUser ->
+                return userRepository.update(user).then { User newUser ->
                     newUser = userFilter.filterForGet(newUser, null)
                     return Promise.pure(newUser)
                 }
@@ -182,9 +182,7 @@ class UserResourceImpl implements UserResource {
         }
 
         return userValidator.validateForGet(userId).then {
-            userRepository.delete(userId)
-
-            return Promise.pure(null)
+            return userRepository.delete(userId)
         }
     }
 }

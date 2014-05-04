@@ -45,8 +45,8 @@ class DeviceResourceImpl implements DeviceResource {
     Promise<Device> create(Device device) {
         device = deviceFilter.filterForCreate(device)
 
-        deviceValidator.validateForCreate(device).then {
-            deviceRepository.create(device).then { Device newDevice ->
+        return deviceValidator.validateForCreate(device).then {
+            return deviceRepository.create(device).then { Device newDevice ->
                 created201Marker.mark((Id) newDevice.id)
 
                 newDevice = deviceFilter.filterForGet(newDevice, null)
@@ -60,15 +60,15 @@ class DeviceResourceImpl implements DeviceResource {
         if (deviceId == null) {
             throw new IllegalArgumentException()
         }
-        deviceRepository.get(deviceId).then { Device oldDevice ->
+        return deviceRepository.get(deviceId).then { Device oldDevice ->
             if (oldDevice == null) {
                 throw AppErrors.INSTANCE.deviceNotFound(deviceId).exception()
             }
 
             device = deviceFilter.filterForPut(device, oldDevice)
 
-            deviceValidator.validateForUpdate(deviceId, device, oldDevice).then {
-                deviceRepository.update(device).then { Device newDevice ->
+            return deviceValidator.validateForUpdate(deviceId, device, oldDevice).then {
+                return deviceRepository.update(device).then { Device newDevice ->
                     newDevice = deviceFilter.filterForGet(newDevice, null)
                     return Promise.pure(newDevice)
                 }
@@ -82,15 +82,15 @@ class DeviceResourceImpl implements DeviceResource {
             throw new IllegalArgumentException('deviceId is null')
         }
 
-        deviceRepository.get(deviceId).then { Device oldDevice ->
+        return deviceRepository.get(deviceId).then { Device oldDevice ->
             if (oldDevice == null) {
                 throw AppErrors.INSTANCE.deviceNotFound(deviceId).exception()
             }
 
             device = deviceFilter.filterForPatch(device, oldDevice)
 
-            deviceValidator.validateForUpdate(deviceId, device, oldDevice).then {
-                deviceRepository.update(device).then { Device newDevice ->
+            return deviceValidator.validateForUpdate(deviceId, device, oldDevice).then {
+                return deviceRepository.update(device).then { Device newDevice ->
                     newDevice = deviceFilter.filterForGet(newDevice, null)
                     return Promise.pure(newDevice)
                 }
@@ -103,8 +103,8 @@ class DeviceResourceImpl implements DeviceResource {
         if (getOptions == null) {
             throw new IllegalArgumentException()
         }
-        deviceValidator.validateForGet(deviceId).then {
-            deviceRepository.get(deviceId).then { Device newDevice ->
+        return deviceValidator.validateForGet(deviceId).then {
+            return deviceRepository.get(deviceId).then { Device newDevice ->
                 if (newDevice == null) {
                     throw AppErrors.INSTANCE.deviceNotFound(deviceId).exception()
                 }
@@ -117,9 +117,9 @@ class DeviceResourceImpl implements DeviceResource {
 
     @Override
     Promise<Results<Device>> list(DeviceListOptions listOptions) {
-        deviceValidator.validateForSearch(listOptions).then {
+        return deviceValidator.validateForSearch(listOptions).then {
             def resultList = new Results<Device>(items: [])
-            deviceRepository.searchBySerialNumber(listOptions.externalRef).then { Device newDevice ->
+            return deviceRepository.searchBySerialNumber(listOptions.externalRef).then { Device newDevice ->
                 if (newDevice != null) {
                     newDevice = deviceFilter.filterForGet(newDevice, listOptions.properties?.split(',') as List<String>)
                 }
@@ -127,18 +127,16 @@ class DeviceResourceImpl implements DeviceResource {
                 if (newDevice != null) {
                     resultList.items.add(newDevice)
                 }
-            }
 
-            return Promise.pure(resultList)
+                return Promise.pure(resultList)
+            }
         }    
     }
 
     @Override
     Promise<Void> delete(DeviceId deviceId) {
         return deviceValidator.validateForGet(deviceId).then {
-            deviceRepository.delete(deviceId)
-
-            return Promise.pure(null)
+            return deviceRepository.delete(deviceId)
         }
     }
 }

@@ -64,7 +64,7 @@ class UserGroupValidatorImpl implements UserGroupValidator {
     @Override
     Promise<Void> validateForCreate(UserGroup userGroup) {
 
-        checkBasicUserGroupInfo(userGroup).then {
+        return checkBasicUserGroupInfo(userGroup).then {
             if (userGroup.id != null) {
                 throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
             }

@@ -45,7 +45,7 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
 
         userSecurityQuestion = userSecurityQuestionFilter.filterForCreate(userSecurityQuestion)
 
-        userSecurityQuestionValidator.validateForCreate(userId, userSecurityQuestion).then {
+        return userSecurityQuestionValidator.validateForCreate(userId, userSecurityQuestion).then {
            return userSecurityQuestionRepository.create(userSecurityQuestion).
                then { UserSecurityQuestion newUserSecurityQuestion ->
                     created201Marker.mark((Id)newUserSecurityQuestion.id)
@@ -63,7 +63,7 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        userSecurityQuestionValidator.validateForGet(userId, userSecurityQuestionId).
+        return userSecurityQuestionValidator.validateForGet(userId, userSecurityQuestionId).
             then { UserSecurityQuestion newUserSecurityQuestion ->
                 newUserSecurityQuestion = userSecurityQuestionFilter.filterForGet(newUserSecurityQuestion,
                         getOptions.properties?.split(',') as List<String>)
@@ -92,10 +92,10 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
             userSecurityQuestion = userSecurityQuestionFilter.
                     filterForPatch(userSecurityQuestion, oldUserSecurityQuestion)
 
-            userSecurityQuestionValidator.validateForUpdate(
+            return userSecurityQuestionValidator.validateForUpdate(
                     userId, userSecurityQuestionId, userSecurityQuestion, oldUserSecurityQuestion).then {
 
-                userSecurityQuestionRepository.update(userSecurityQuestion).
+                return userSecurityQuestionRepository.update(userSecurityQuestion).
                         then { UserSecurityQuestion newUserSecurityQuestion ->
                     newUserSecurityQuestion = userSecurityQuestionFilter.filterForGet(newUserSecurityQuestion, null)
                     return Promise.pure(newUserSecurityQuestion)
@@ -124,9 +124,9 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
             userSecurityQuestion = userSecurityQuestionFilter.
                     filterForPut(userSecurityQuestion, oldUserSecurityQuestion)
 
-            userSecurityQuestionValidator.validateForUpdate(
+            return userSecurityQuestionValidator.validateForUpdate(
                     userId, userSecurityQuestionId, userSecurityQuestion, oldUserSecurityQuestion).then {
-                userSecurityQuestionRepository.update(userSecurityQuestion).
+                return userSecurityQuestionRepository.update(userSecurityQuestion).
                         then { UserSecurityQuestion newUserSecurityQuestion ->
                     newUserSecurityQuestion = userSecurityQuestionFilter.filterForGet(newUserSecurityQuestion, null)
                     return Promise.pure(newUserSecurityQuestion)
@@ -138,9 +138,7 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
     @Override
     Promise<Void> delete(UserId userId, UserSecurityQuestionId userSecurityQuestionId) {
         return userSecurityQuestionValidator.validateForGet(userId, userSecurityQuestionId).then {
-            userSecurityQuestionRepository.delete(userSecurityQuestionId)
-
-            return Promise.pure(null)
+            return userSecurityQuestionRepository.delete(userSecurityQuestionId)
         }
     }
 
@@ -155,7 +153,7 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
         listOptions.setUserId(userId)
 
         return userSecurityQuestionValidator.validateForSearch(listOptions).then {
-            userSecurityQuestionRepository.search(listOptions)
+            return userSecurityQuestionRepository.search(listOptions)
                     .then { List<UserSecurityQuestion> userSecurityQuestionList ->
                 def result = new Results<UserSecurityQuestion>(items: [])
 

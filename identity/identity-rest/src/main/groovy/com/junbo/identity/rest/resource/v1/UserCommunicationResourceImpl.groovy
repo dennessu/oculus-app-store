@@ -44,8 +44,9 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
 
         userCommunication = userCommunicationFilter.filterForCreate(userCommunication)
 
-        userCommunicationValidator.validateForCreate(userCommunication).then {
-            userCommunicationRepository.create(userCommunication).then { UserCommunication newUserCommunication ->
+        return userCommunicationValidator.validateForCreate(userCommunication).then {
+            return userCommunicationRepository.create(userCommunication).then {
+                UserCommunication newUserCommunication ->
                 created201Marker.mark((Id)newUserCommunication.id)
 
                 newUserCommunication = userCommunicationFilter.filterForGet(newUserCommunication, null)
@@ -60,7 +61,8 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        userCommunicationValidator.validateForGet(userCommunicationId).then { UserCommunication userCommunication ->
+        return userCommunicationValidator.validateForGet(userCommunicationId).then {
+            UserCommunication userCommunication ->
             userCommunication = userCommunicationFilter.filterForGet(userCommunication,
                     getOptions.properties?.split(',') as List<String>)
 
@@ -85,9 +87,11 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
 
             userCommunication = userCommunicationFilter.filterForPatch(userCommunication, oldUserOptin)
 
-            userCommunicationValidator.validateForUpdate(userCommunicationId, userCommunication, oldUserOptin).then {
+            return userCommunicationValidator.validateForUpdate(userCommunicationId, userCommunication, oldUserOptin).
+                    then {
 
-                userCommunicationRepository.update(userCommunication).then { UserCommunication newUserCommunication ->
+                return userCommunicationRepository.update(userCommunication).then {
+                    UserCommunication newUserCommunication ->
                     newUserCommunication = userCommunicationFilter.filterForGet(newUserCommunication, null)
                     return Promise.pure(newUserCommunication)
                 }
@@ -125,16 +129,14 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
     @Override
     Promise<Void> delete(UserCommunicationId userCommunicationId) {
         return userCommunicationValidator.validateForGet(userCommunicationId).then {
-            userCommunicationRepository.delete(userCommunicationId)
-
-            return Promise.pure(null)
+            return userCommunicationRepository.delete(userCommunicationId)
         }
     }
 
     @Override
     Promise<Results<UserCommunication>> list(UserOptinListOptions listOptions) {
         return userCommunicationValidator.validateForSearch(listOptions).then {
-            userCommunicationRepository.search(listOptions).then { List<UserCommunication> userCommunications ->
+            return userCommunicationRepository.search(listOptions).then { List<UserCommunication> userCommunications ->
                 def result = new Results<UserCommunication>(items: [])
 
                 userCommunications.each { UserCommunication newUserCommunication ->

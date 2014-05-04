@@ -46,7 +46,7 @@ class TosResourceImpl implements TosResource {
         tos = tosFilter.filterForCreate(tos)
 
         return tosValidator.validateForCreate(tos).then {
-            tosRepository.create(tos).then { Tos newTos ->
+            return tosRepository.create(tos).then { Tos newTos ->
                 created201Marker.mark((Id) newTos.id)
 
                 newTos = tosFilter.filterForGet(newTos, null)
@@ -62,7 +62,7 @@ class TosResourceImpl implements TosResource {
         }
 
         return tosValidator.validateForGet(tosId).then {
-            tosRepository.get(tosId).then { Tos newTos ->
+            return tosRepository.get(tosId).then { Tos newTos ->
                 if (newTos == null) {
                     throw AppErrors.INSTANCE.tosNotFound(tosId).exception()
                 }
@@ -75,9 +75,9 @@ class TosResourceImpl implements TosResource {
 
     @Override
     Promise<Results<Tos>> list(TosListOptions listOptions) {
-        tosValidator.validateForSearch(listOptions).then {
+        return tosValidator.validateForSearch(listOptions).then {
             def resultList = new Results<Tos>(items: [])
-            tosRepository.search(listOptions).then { List<Tos> newToses ->
+            return tosRepository.search(listOptions).then { List<Tos> newToses ->
                 if (newToses == null) {
                     return Promise.pure(resultList)
                 }
@@ -90,9 +90,9 @@ class TosResourceImpl implements TosResource {
                         resultList.items.add(newTos)
                     }
                 }
-            }
 
-            return Promise.pure(resultList)
+                return Promise.pure(resultList)
+            }
         }
     }
 
@@ -113,7 +113,7 @@ class TosResourceImpl implements TosResource {
 
             tos = tosFilter.filterForPut(tos, oldTos)
 
-            tosRepository.update(tos).then { Tos newTos ->
+            return tosRepository.update(tos).then { Tos newTos ->
                 newTos = tosFilter.filterForGet(newTos, null)
                 return Promise.pure(newTos)
             }
@@ -122,7 +122,7 @@ class TosResourceImpl implements TosResource {
 
     @Override
     Promise<Void> delete(TosId tosId) {
-        tosValidator.validateForGet(tosId).then {
+        return tosValidator.validateForGet(tosId).then {
             return tosRepository.delete(tosId)
         }
     }

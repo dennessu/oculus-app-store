@@ -146,8 +146,7 @@ class CommunicationResourceImpl implements CommunicationResource {
         }
 
         return communicationValidator.validateForGet(communicationId).then { Communication communication ->
-            communicationRepository.delete(communicationId)
-            return Promise.pure(null)
+            return communicationRepository.delete(communicationId)
         }
     }
 }

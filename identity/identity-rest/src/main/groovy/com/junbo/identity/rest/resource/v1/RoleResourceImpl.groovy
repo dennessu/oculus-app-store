@@ -59,7 +59,7 @@ class RoleResourceImpl implements RoleResource {
     Promise<Role> create(Role role) {
         Role filtered = roleFilter.filterForCreate(role)
         return roleValidator.validateForCreate(filtered).then {
-            roleRepository.create(filtered).then { Role newRole ->
+            return roleRepository.create(filtered).then { Role newRole ->
                 created201Marker.mark((Id) newRole.id)
 
                 return Promise.pure(roleFilter.filterForGet(newRole, null))
@@ -80,15 +80,15 @@ class RoleResourceImpl implements RoleResource {
 
     @Override
     Promise<Role> patch(RoleId roleId, Role role) {
-        roleValidator.validateForGet(roleId).then { Role oldRole ->
+        return roleValidator.validateForGet(roleId).then { Role oldRole ->
             if (oldRole == null) {
                 throw AppErrors.INSTANCE.roleNotFound(roleId).exception()
             }
 
             Role filtered = roleFilter.filterForPatch(role, oldRole)
 
-            roleValidator.validateForUpdate(filtered, oldRole).then {
-                roleRepository.update(filtered).then { Role newRole ->
+            return roleValidator.validateForUpdate(filtered, oldRole).then {
+                return roleRepository.update(filtered).then { Role newRole ->
                     return Promise.pure(roleFilter.filterForGet(newRole, null))
                 }
             }
@@ -104,8 +104,8 @@ class RoleResourceImpl implements RoleResource {
 
             Role filtered = roleFilter.filterForPut(role, oldRole)
 
-            roleValidator.validateForUpdate(filtered, oldRole).then {
-                roleRepository.update(filtered).then { Role newRole ->
+            return roleValidator.validateForUpdate(filtered, oldRole).then {
+                return roleRepository.update(filtered).then { Role newRole ->
                     return Promise.pure(roleFilter.filterForGet(newRole, null))
                 }
             }
@@ -114,19 +114,19 @@ class RoleResourceImpl implements RoleResource {
 
     @Override
     Promise<Results<Role>> list(RoleListOptions options) {
-        roleValidator.validateForList(options).then {
+        return roleValidator.validateForList(options).then {
             def results = new Results<Role>(items: [])
 
-            roleRepository.findByRoleName(options.name, options.resourceType,
+            return roleRepository.findByRoleName(options.name, options.resourceType,
                     options.resourceId, options.subResourceType).then { Role role ->
                 Role filtered = roleFilter.filterForGet(role, null)
 
                 if (filtered != null) {
                     results.items.add(filtered)
                 }
-            }
 
-            return Promise.pure(results)
+                return Promise.pure(results)
+            }
         }
     }
 }

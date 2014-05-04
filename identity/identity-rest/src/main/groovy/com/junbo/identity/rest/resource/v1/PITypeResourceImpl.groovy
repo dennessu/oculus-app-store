@@ -116,7 +116,7 @@ class PITypeResourceImpl implements PITypeResource {
         }
 
         return piTypeValidator.validateForGet(piTypeId).then {
-            piTypeRepository.get(piTypeId).then { PIType newPIType ->
+            return piTypeRepository.get(piTypeId).then { PIType newPIType ->
                 if (newPIType == null) {
                     throw AppErrors.INSTANCE.piTypeNotFound(piTypeId).exception()
                 }

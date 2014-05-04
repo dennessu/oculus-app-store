@@ -44,7 +44,7 @@ class RoleValidatorImpl implements RoleValidator {
             throw AppErrors.INSTANCE.fieldRequired('resourceId').exception()
         }
 
-        roleRepository.findByRoleName(role.name, role.resourceType,
+        return roleRepository.findByRoleName(role.name, role.resourceType,
                 role.resourceId, role.subResourceType).then { Role existing ->
             if (existing != null) {
                 throw AppErrors.INSTANCE.fieldDuplicate('name').exception()
@@ -83,15 +83,13 @@ class RoleValidatorImpl implements RoleValidator {
             throw AppErrors.INSTANCE.fieldInvalid('roleId').exception()
         }
 
-        roleRepository.findByRoleName(role.name, role.resourceType,
+        return roleRepository.findByRoleName(role.name, role.resourceType,
                 role.resourceId, role.subResourceType).then { Role existing ->
             if (existing != null) {
                 throw AppErrors.INSTANCE.fieldDuplicate('name').exception()
             }
             return Promise.pure(null)
         }
-
-        return Promise.pure(null)
     }
 
     @Override
