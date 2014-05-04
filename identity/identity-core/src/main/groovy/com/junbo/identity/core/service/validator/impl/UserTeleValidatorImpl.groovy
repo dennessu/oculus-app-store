@@ -19,6 +19,7 @@ import com.junbo.identity.spec.v1.option.list.UserTeleListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.CollectionUtils
 
 /**
  * Created by liangfu on 4/24/14.
@@ -86,20 +87,115 @@ class UserTeleValidatorImpl implements UserTeleValidator {
             throw AppErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
+        if (options.phoneNumber == null) {
+            throw AppErrors.INSTANCE.parameterRequired('phoneNumber').exception()
+        }
+
         return Promise.pure(null)
     }
 
     @Override
     Promise<Void> validateForCreate(UserId userId, UserTeleCode userTeleCode) {
-        return basicTeleCodeCheck(userId, userTeleCode)
+        return basicTeleCodeCheck(userId, userTeleCode).then {
+            if (userTeleCode.id != null) {
+                throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+            }
 
-        // userTeleRepository.searchActiveTeleCode(userId, userTeleCode.phoneNumber)
+            if (userTeleCode.expiresBy != null) {
+                throw AppErrors.INSTANCE.fieldNotWritable('expiresBy').exception()
+            }
+
+            if (userTeleCode.active != null) {
+                throw AppErrors.INSTANCE.fieldNotWritable('active').exception()
+            }
+
+            Calendar cal = Calendar.instance
+            cal.setTime(new Date())
+            cal.add(Calendar.SECOND, maxTeleCodeExpireTime)
+            userTeleCode.expiresBy = cal.time
+
+            userTeleCode.active = true
+            userTeleCode.userId = userId
+
+            return Promise.pure(null)
+        }.then {
+            return userTeleRepository.searchTeleCode(userId, userTeleCode.phoneNumber).
+                    then { List<UserTeleCode> userTeleCodeList ->
+                        if (CollectionUtils.isEmpty(userTeleCodeList)
+                         || userTeleCodeList.size() <= maxSMSRequestsPerHour) {
+                            return Promise.pure(null)
+                        }
+
+                        userTeleCodeList.sort(new Comparator<UserTeleCode> () {
+                            @Override
+                            int compare(UserTeleCode o1, UserTeleCode o2) {
+                                Date o1LastChangedTime = o1.updatedTime == null ? o1.createdTime : o1.updatedTime
+                                Date o2LastChangedTime = o2.updatedTime == null ? o2.createdTime : o2.updatedTime
+
+                                return o2LastChangedTime <=> o1LastChangedTime
+                            }
+                        }
+                        )
+
+                        UserTeleCode teleCode = userTeleCodeList.get(maxSMSRequestsPerHour - 1)
+                        Date lastChangeTime = teleCode.updatedTime == null ? teleCode.createdTime : teleCode.updatedTime
+
+                        Calendar cal = Calendar.instance
+                        cal.setTime(new Date())
+                        cal.add(Calendar.HOUR, -1)
+                        if (lastChangeTime.after(cal.time)) {
+                            throw AppErrors.INSTANCE.fieldInvalidException('userId',
+                                    'Reach maximum request number per hour').exception()
+                        }
+
+                        return Promise.pure(null)
+                    }
+        }
     }
 
     @Override
     Promise<Void> validateForUpdate(UserId userId, UserTeleId userTeleId, UserTeleCode userTeleCode,
                                     UserTeleCode oldUserTeleCode) {
-        return null
+        return basicTeleCodeCheck(userId, userTeleCode).then {
+            return userTeleRepository.get(userTeleId).then { UserTeleCode teleCode ->
+                if (teleCode == null) {
+                    throw AppErrors.INSTANCE.userTeleCodeNotFound(userTeleId).exception()
+                }
+
+                return Promise.pure(null)
+            }
+        }.then {
+            if (userTeleCode.id == null) {
+                throw AppErrors.INSTANCE.fieldRequired('id').exception()
+            }
+
+            if (userTeleCode.expiresBy == null) {
+                throw AppErrors.INSTANCE.fieldRequired('expiresBy').exception()
+            }
+
+            if (userTeleCode.active == null) {
+                throw AppErrors.INSTANCE.fieldRequired('active').exception()
+            }
+
+            // TeleCode can't update teleCode number & verifyCode & userId
+            if (userTeleCode.phoneNumber != oldUserTeleCode.phoneNumber) {
+                throw AppErrors.INSTANCE.fieldInvalid('phoneNumber').exception()
+            }
+
+            if (userTeleCode.userId != userId) {
+                throw AppErrors.INSTANCE.fieldInvalid('userId', userId.toString()).exception()
+            }
+
+            if (userTeleCode.userId != oldUserTeleCode.userId) {
+                throw AppErrors.INSTANCE.fieldInvalid('userId', oldUserTeleCode.userId.toString()).exception()
+            }
+
+            if (userTeleCode.verifyCode != oldUserTeleCode.verifyCode) {
+                throw AppErrors.INSTANCE.fieldInvalid('verifyCode', oldUserTeleCode.verifyCode).exception()
+            }
+
+            return Promise.pure(null)
+        }
     }
 
     private Promise<Void> basicTeleCodeCheck(UserId userId, UserTeleCode userTeleCode) {
@@ -175,7 +271,7 @@ class UserTeleValidatorImpl implements UserTeleValidator {
     }
 
     private Promise<Void> validatePhoneNumber(UserId userId, String phoneNumber) {
-        userRepository.get(userId).then { User user ->
+        return userRepository.get(userId).then { User user ->
             if (user.phones == null) {
                 throw AppErrors.INSTANCE.fieldInvalidException('phoneNumber', 'user has no phones').exception()
             }
@@ -238,5 +334,35 @@ class UserTeleValidatorImpl implements UserTeleValidator {
     @Required
     void setUserTeleRepository(UserTeleRepository userTeleRepository) {
         this.userTeleRepository = userTeleRepository
+    }
+
+    @Required
+    void setUserPersonalInfoRepository(UserPersonalInfoRepository userPersonalInfoRepository) {
+        this.userPersonalInfoRepository = userPersonalInfoRepository
+    }
+
+    @Required
+    void setAllowedLanguages(List<String> allowedLanguages) {
+        this.allowedLanguages = allowedLanguages
+    }
+
+    @Required
+    void setMinVerifyCodeLength(Integer minVerifyCodeLength) {
+        this.minVerifyCodeLength = minVerifyCodeLength
+    }
+
+    @Required
+    void setMaxVerifyCodeLength(Integer maxVerifyCodeLength) {
+        this.maxVerifyCodeLength = maxVerifyCodeLength
+    }
+
+    @Required
+    void setMinTemplateLength(Integer minTemplateLength) {
+        this.minTemplateLength = minTemplateLength
+    }
+
+    @Required
+    void setMaxTemplateLength(Integer maxTemplateLength) {
+        this.maxTemplateLength = maxTemplateLength
     }
 }

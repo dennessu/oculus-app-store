@@ -26,7 +26,7 @@ class UserTeleRepositoryCloudantImpl extends CloudantClient<UserTeleCode> implem
     }
 
     @Override
-    Promise<List<UserTeleCode>> searchActiveTeleCode(UserId userId, String phoneNumber) {
+    Promise<List<UserTeleCode>> searchTeleCode(UserId userId, String phoneNumber) {
         def list = super.queryView('by_user_id_phone_number', "${userId.value.toString()}:${phoneNumber}",
                 Integer.MAX_VALUE, 0, false)
 
@@ -58,6 +58,7 @@ class UserTeleRepositoryCloudantImpl extends CloudantClient<UserTeleCode> implem
     }
 
     protected CloudantViews views = new CloudantViews(
+            // Todo:    The phoneNumber will be using cipher key later
             views: [
                     'by_user_id_phone_number': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
