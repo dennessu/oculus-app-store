@@ -180,4 +180,10 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 409, code = "2000050", description = "TeleSign provider error.")
     AppError teleSignProviderError(String message);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000051", description = "User Tele attempt {0} not found.", field = "{0}")
+    AppError userTeleAttemptNotFound(UserTeleAttemptId userTeleAttemptId);
+
+    @ErrorDef(httpStatusCode = 404, code = "2000052", description = "User tele code is incorrect.")
+    AppError userTeleCodeIncorrect();
 }
