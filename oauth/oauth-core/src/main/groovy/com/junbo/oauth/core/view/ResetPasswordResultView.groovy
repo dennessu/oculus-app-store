@@ -4,10 +4,12 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.spec.model.ViewModel
+import groovy.transform.CompileStatic
 
 /**
  * Created by minhao on 5/1/14.
  */
+@CompileStatic
 class ResetPasswordResultView extends AbstractView {
     @Override
     protected Promise<ViewModel> buildViewModel(ActionContext context) {
