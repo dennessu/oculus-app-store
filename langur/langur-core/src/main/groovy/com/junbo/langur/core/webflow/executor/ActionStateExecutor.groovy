@@ -37,7 +37,7 @@ class ActionStateExecutor implements StateExecutor {
 
         def actionContext = context.newActionContext()
         def entryActions = new ActionList(stateDef.entryActions)
-        entryActions.execute(actionContext).then {
+        return entryActions.execute(actionContext).then {
 
             def iter = stateDef.actions.iterator()
             Closure process = null
@@ -47,7 +47,7 @@ class ActionStateExecutor implements StateExecutor {
                 }
 
                 def action = iter.next()
-                action.execute(actionContext).then { ActionResult result ->
+                return action.execute(actionContext).then { ActionResult result ->
                     if (result == null) {
                         return process()
                     }
@@ -64,7 +64,7 @@ class ActionStateExecutor implements StateExecutor {
                 }
             }
 
-            process().then { ActionResult result ->
+            return process().then { ActionResult result ->
                 return Promise.pure(new ResumeStateEvent(result.id))
             }
         }
@@ -94,7 +94,7 @@ class ActionStateExecutor implements StateExecutor {
         def actionContext = context.newActionContext()
         def exitActions = new ActionList(stateDef.exitActions)
 
-        exitActions.execute(actionContext).then {
+        return exitActions.execute(actionContext).then {
             flowState.stateId = null
 
             return Promise.pure(new StartStateEvent(transitionDef.to))

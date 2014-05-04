@@ -118,7 +118,7 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
 
             return userCommunicationValidator.validateForUpdate(userCommunicationId, userCommunication, oldUserOptin)
                     .then {
-                userCommunicationRepository.update(userCommunication).then { UserCommunication newUserCommunication ->
+                return userCommunicationRepository.update(userCommunication).then { UserCommunication newUserCommunication ->
                     newUserCommunication = userCommunicationFilter.filterForGet(newUserCommunication, null)
                     return Promise.pure(newUserCommunication)
                 }

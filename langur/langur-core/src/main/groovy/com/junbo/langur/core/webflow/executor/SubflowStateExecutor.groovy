@@ -36,7 +36,7 @@ class SubflowStateExecutor implements StateExecutor {
 
         def actionContext = context.newActionContext()
         def entryActions = new ActionList(stateDef.entryActions)
-        entryActions.execute(actionContext).then {
+        return entryActions.execute(actionContext).then {
             return Promise.pure(new StartFlowEvent(stateDef.subflow))
         }
     }
@@ -65,7 +65,7 @@ class SubflowStateExecutor implements StateExecutor {
         def actionContext = context.newActionContext()
         def exitActions = new ActionList(stateDef.exitActions)
 
-        exitActions.execute(actionContext).then {
+        return exitActions.execute(actionContext).then {
             flowState.stateId = null
 
             return Promise.pure(new StartStateEvent(transitionDef.to))

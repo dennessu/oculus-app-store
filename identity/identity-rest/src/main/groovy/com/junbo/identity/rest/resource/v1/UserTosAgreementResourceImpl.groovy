@@ -125,7 +125,7 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
             userTos = userTosFilter.filterForPut(userTos, oldUserTos)
 
             return userTosValidator.validateForUpdate(userId, userTosAgreementId, userTos, oldUserTos).then {
-                userTosRepository.update(userTos).then { UserTosAgreement newUserTos ->
+                return userTosRepository.update(userTos).then { UserTosAgreement newUserTos ->
                     newUserTos = userTosFilter.filterForGet(newUserTos, null)
                     return Promise.pure(newUserTos)
                 }

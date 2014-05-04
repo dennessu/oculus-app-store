@@ -5,9 +5,12 @@
  */
 package com.junbo.restriction.spec.internal
 
+import groovy.transform.CompileStatic
+
 /**
  * Restriction.
  */
+@CompileStatic
 class Restriction {
     String country
     List<Rating> ratings

@@ -5,9 +5,12 @@
  */
 package com.junbo.restriction.spec.error
 
+import groovy.transform.CompileStatic
+
 /**
  * ErrorCode.
  */
+@CompileStatic
 class ErrorCode {
     private ErrorCode() { }
 

@@ -82,7 +82,7 @@ class BillingFacadeImpl implements BillingFacade {
             return Promise.pure(new ArrayList<com.junbo.billing.spec.model.Currency>(currencyMap.values()))
         }
 
-        billingCurrencyResource.currencies.syncThen { Results<Currency> results ->
+        return billingCurrencyResource.currencies.syncThen { Results<Currency> results ->
             def val = new HashMap<>()
             results?.items?.each { com.junbo.billing.spec.model.Currency currency ->
                 val[currency.name] = currency
@@ -94,7 +94,7 @@ class BillingFacadeImpl implements BillingFacade {
 
     @Override
     Promise<com.junbo.billing.spec.model.Currency> getCurrency(String name) {
-        currencies.syncThen {
+        return currencies.syncThen {
             return currencyMap.get(name)
         }
     }

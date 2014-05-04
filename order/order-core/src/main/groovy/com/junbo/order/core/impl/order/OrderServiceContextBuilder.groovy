@@ -59,7 +59,7 @@ class OrderServiceContextBuilder {
 
         List<PaymentInstrument> pis = []
         return Promise.each(piids.iterator()) { PaymentInstrumentId piid ->
-            facadeContainer.paymentFacade.
+            return facadeContainer.paymentFacade.
                     getPaymentInstrument(piid.value).syncRecover { Throwable throwable ->
                 LOGGER.error('name=Order_GetPaymentInstrument_Error', throwable)
                 // TODO read the payment error
@@ -145,7 +145,7 @@ class OrderServiceContextBuilder {
 
         List<OrderOfferRevision> offers = []
         return Promise.each(context.order.orderItems.iterator()) { OrderItem oi ->
-            facadeContainer.catalogFacade.getOfferRevision(oi.offer.value).syncThen { OrderOfferRevision of ->
+            return facadeContainer.catalogFacade.getOfferRevision(oi.offer.value).syncThen { OrderOfferRevision of ->
                 offers << of
             }
         }.syncThen {

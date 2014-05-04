@@ -113,7 +113,6 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
             Promise<UserCredentialVerifyAttempt> doInTransaction(TransactionStatus txnStatus) {
                 return userCredentialVerifyAttemptRepository.create(userLoginAttempt)
             }
-        }
-        )
+        })
     }
 }

@@ -7,10 +7,12 @@ package com.junbo.email.clientproxy.impl.mandrill
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
+import groovy.transform.CompileStatic
 
 /**
  * Response of Mandrill.
  */
+@CompileStatic
 class MandrillResponse {
     @JsonProperty('status')
     String status

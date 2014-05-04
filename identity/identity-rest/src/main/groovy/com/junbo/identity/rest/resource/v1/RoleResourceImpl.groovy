@@ -115,10 +115,10 @@ class RoleResourceImpl implements RoleResource {
     @Override
     Promise<Results<Role>> list(RoleListOptions options) {
         return roleValidator.validateForList(options).then {
-            def results = new Results<Role>(items: [])
-
             return roleRepository.findByRoleName(options.name, options.resourceType,
                     options.resourceId, options.subResourceType).then { Role role ->
+                def results = new Results<Role>(items: [])
+
                 Role filtered = roleFilter.filterForGet(role, null)
 
                 if (filtered != null) {

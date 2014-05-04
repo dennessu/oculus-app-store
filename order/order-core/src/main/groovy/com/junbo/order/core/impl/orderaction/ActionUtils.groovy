@@ -5,9 +5,12 @@ import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.orderaction.context.CreateOrderActionContext
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.core.impl.orderaction.context.OrderActionResult
+import groovy.transform.CompileStatic
+
 /**
  * Created by fzhang on 14-3-6.
  */
+@CompileStatic
 final class ActionUtils {
 
     private ActionUtils() {

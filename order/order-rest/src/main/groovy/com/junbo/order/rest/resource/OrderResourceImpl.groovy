@@ -48,7 +48,7 @@ class OrderResourceImpl implements OrderResource {
 
     @Override
     Promise<Order> getOrderByOrderId(OrderId orderId) {
-        orderService.getOrderByOrderId(orderId.value).then { Order order ->
+        return orderService.getOrderByOrderId(orderId.value).then { Order order ->
             if (order.tentative && CoreUtils.isRateExpired(order)) {
                 // rate the order according to the honored until time
                 return orderService.updateTentativeOrder(order, null)
@@ -78,18 +78,18 @@ class OrderResourceImpl implements OrderResource {
         orderValidator.notNull(order, 'order').notNull(order.user, 'user')
 
         order.id = orderId
-        orderService.getOrderByOrderId(orderId.value).then { Order oldOrder ->
+        return orderService.getOrderByOrderId(orderId.value).then { Order oldOrder ->
             // handle the update request per scenario
             if (oldOrder.tentative) { // order not settle
                 if (order.tentative) {
-                    orderService.updateTentativeOrder(order,
+                    return orderService.updateTentativeOrder(order,
                             new ApiContext(requestContext.headers)).syncThen { Order result ->
                         return result
                     }
                 } else { // handle settle order scenario: the tentative flag is updated from true to false
                     oldOrder.successRedirectUrl = order.successRedirectUrl
                     oldOrder.cancelRedirectUrl = order.cancelRedirectUrl
-                    orderService.settleQuote(oldOrder, new ApiContext(requestContext.headers))
+                    return orderService.settleQuote(oldOrder, new ApiContext(requestContext.headers))
                 }
             } else { // order already settle
                 LOGGER.info('name=Update_Non_Tentative_offer')
@@ -111,7 +111,7 @@ class OrderResourceImpl implements OrderResource {
 
     @Override
     Promise<Results<Order>> getOrderByUserId(UserId userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
-        orderService.getOrdersByUserId(userId.value, orderQueryParam, pageParam).syncThen { List<Order> orders ->
+        return orderService.getOrdersByUserId(userId.value, orderQueryParam, pageParam).syncThen { List<Order> orders ->
             Results<Order> results = new Results<>()
             results.setItems(orders)
             return results

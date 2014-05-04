@@ -35,7 +35,7 @@ class IdentityFacadeImpl implements IdentityFacade {
     private UserPersonalInfoResource userPersonalInfoResource
 
     Promise<User> getUser(Long userId) {
-        userResource.get(new UserId(userId), new UserGetOptions()).recover {
+        return userResource.get(new UserId(userId), new UserGetOptions()).recover {
             throw AppErrors.INSTANCE.invalidUserId('').exception()
         }.then {
             return Promise.pure(it)

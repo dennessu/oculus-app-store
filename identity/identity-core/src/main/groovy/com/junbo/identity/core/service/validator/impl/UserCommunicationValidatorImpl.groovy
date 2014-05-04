@@ -57,7 +57,7 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
 
     @Override
     Promise<Void> validateForCreate(UserCommunication userCommunication) {
-        checkBasicUserCommunicationInfo(userCommunication).then {
+        return checkBasicUserCommunicationInfo(userCommunication).then {
             if (userCommunication.id != null) {
                 throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
             }

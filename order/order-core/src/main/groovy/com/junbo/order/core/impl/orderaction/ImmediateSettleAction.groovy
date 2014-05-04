@@ -68,7 +68,7 @@ class ImmediateSettleAction extends BaseOrderEventAwareAction {
             CoreBuilder.fillTaxInfo(order, balance)
             def billingEvent = BillingEventBuilder.buildBillingEvent(balance)
             orderRepository.createBillingEvent(order.id.value, billingEvent)
-            orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
+            return orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
                 // TODO: save order level tax
                 return CoreBuilder.buildActionResultForOrderEventAwareAction(context, billingEvent.status)
             }

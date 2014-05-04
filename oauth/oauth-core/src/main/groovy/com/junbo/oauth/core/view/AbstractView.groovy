@@ -25,7 +25,7 @@ abstract class AbstractView implements Action {
 
     @Override
     Promise<ActionResult> execute(ActionContext context) {
-        buildViewModel(context).then { ViewModel model ->
+        return buildViewModel(context).then { ViewModel model ->
 
             def responseBuilder = Response.status(Response.Status.OK)
             responseBuilder.entity(model)
@@ -37,11 +37,15 @@ abstract class AbstractView implements Action {
         }
     }
 
-    protected static class ErrorComparator implements Comparator<com.junbo.common.error.Error> {
+    private static class ErrorComparator implements Comparator<com.junbo.common.error.Error> {
 
         @Override
         int compare(com.junbo.common.error.Error o1, com.junbo.common.error.Error o2) {
             return o1.code <=> o2.code
         }
+    }
+
+    protected static Comparator<com.junbo.common.error.Error> getErrorComparator() {
+        return new ErrorComparator()
     }
 }

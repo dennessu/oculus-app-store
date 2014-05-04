@@ -99,7 +99,7 @@ class OrderEventAspect {
         assert (orderEventAwareAfter != null)
         LOGGER.info('name=Save_Order_Event_AfterReturning. action: {}', orderEventAwareAfter.action())
 
-        rv.syncRecover { Throwable throwable ->
+        return rv.syncRecover { Throwable throwable ->
             def oe = getReturnedOrderEvent(jp, EventStatus.ERROR)
             if (oe != null && oe.order != null) {
                 transactionHelper.executeInNewTransaction {

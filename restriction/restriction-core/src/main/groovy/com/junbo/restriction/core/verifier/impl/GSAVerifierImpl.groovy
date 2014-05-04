@@ -10,10 +10,12 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.restriction.core.verifier.Verifier
 import com.junbo.restriction.spec.model.AgeCheck
 import com.junbo.restriction.spec.model.Status
+import groovy.transform.CompileStatic
 
 /**
  * Created by Wei on 4/19/14.
  */
+@CompileStatic
 class GSAVerifierImpl extends BaseVerifier implements Verifier {
     private final static String TIME_ZONE_OF_CET = 'CET'
     private final static String TYPE = 'GSA'

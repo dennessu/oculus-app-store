@@ -80,7 +80,7 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
                         }
                         def billingEvent = BillingEventBuilder.buildBillingEvent(resultBalance)
                         orderRepository.createBillingEvent(context.orderServiceContext.order.id.value, billingEvent)
-                        orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
+                        return orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
                             return CoreBuilder.buildActionResultForOrderEventAwareAction(context, billingEvent.status)
                         }
                     }
@@ -92,7 +92,7 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
         Balance balance = CoreBuilder.buildPartialChargeBalance(context.orderServiceContext.order,
                 BalanceType.DEBIT, null)
         Promise promise = facadeContainer.billingFacade.createBalance(balance)
-        promise.syncRecover {  Throwable throwable ->
+        return promise.syncRecover {  Throwable throwable ->
             LOGGER.error('name=Order_PhysicalSettle_Error', throwable)
             context.orderServiceContext.order.tentative = true
             throw facadeContainer.billingFacade.convertError(throwable).exception()
@@ -104,7 +104,7 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
             }
             def billingEvent = BillingEventBuilder.buildBillingEvent(resultBalance)
             orderRepository.createBillingEvent(context.orderServiceContext.order.id.value, billingEvent)
-            orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
+            return orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
                 return CoreBuilder.buildActionResultForOrderEventAwareAction(context, billingEvent.status)
             }
         }

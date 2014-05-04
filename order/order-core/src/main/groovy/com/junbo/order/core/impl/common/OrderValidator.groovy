@@ -51,7 +51,7 @@ class OrderValidator {
     }
 
     Promise<OrderValidator> validCurrency(String currencyString, String fieldName) {
-        facadeContainer.billingFacade.getCurrency(currencyString).syncThen {
+        return facadeContainer.billingFacade.getCurrency(currencyString).syncThen {
             com.junbo.billing.spec.model.Currency currency ->
             if (currency == null) {
                 throw AppErrors.INSTANCE.fieldInvalid(fieldName, 'not a valid currency').exception()

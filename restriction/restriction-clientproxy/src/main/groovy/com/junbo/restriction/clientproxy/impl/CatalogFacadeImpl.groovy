@@ -11,6 +11,7 @@ import com.junbo.common.id.OfferId
 import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import com.junbo.restriction.clientproxy.CatalogFacade
+import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -20,6 +21,7 @@ import com.junbo.catalog.spec.model.offer.Offer
 /**
  * Impl of Catalog Facade.
  */
+@CompileStatic
 class CatalogFacadeImpl implements CatalogFacade {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CatalogFacadeImpl)
@@ -35,7 +37,7 @@ class CatalogFacadeImpl implements CatalogFacade {
         OffersGetOptions options = new OffersGetOptions()
         options.setSize(Integer.MAX_VALUE)
         options.setOfferIds(offerIds)
-        offerResource.getOffers(options).recover {
+        return offerResource.getOffers(options).recover {
             LOGGER.error('Failed to get offer')
             throw AppErrors.INSTANCE.fetchOfferFailed().exception()
         }.then { Results<Offer> offers ->

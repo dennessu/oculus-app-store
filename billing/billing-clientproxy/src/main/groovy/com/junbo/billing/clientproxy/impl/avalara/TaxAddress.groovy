@@ -7,10 +7,12 @@
 package com.junbo.billing.clientproxy.impl.avalara
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import groovy.transform.CompileStatic
 
 /**
  * Created by LinYi on 14-3-10.
  */
+@CompileStatic
 class TaxAddress {
     // Canonical street address
     @JsonProperty('Address')

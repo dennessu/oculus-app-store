@@ -9,7 +9,6 @@ oauth/oauth-spec
 email/email-spec
 authorization
 identity
-email/email-spec
 oauth
 catalog
 entitlement
