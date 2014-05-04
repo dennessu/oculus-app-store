@@ -7,10 +7,12 @@
 package com.junbo.billing.clientproxy.impl.avalara
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import groovy.transform.CompileStatic
 
 /**
  * Created by LinYi on 14-3-10.
  */
+@CompileStatic
 class GetTaxResponse {
     // The document code, if not supplied in the request the returned value is a GUID.
     @JsonProperty('DocCode')

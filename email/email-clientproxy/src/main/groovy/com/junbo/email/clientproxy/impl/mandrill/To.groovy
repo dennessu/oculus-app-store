@@ -5,9 +5,12 @@
  */
 package com.junbo.email.clientproxy.impl.mandrill
 
+import groovy.transform.CompileStatic
+
 /**
  * Recipient info of Mandrill request.
  */
+@CompileStatic
 class To {
     String email
     String name

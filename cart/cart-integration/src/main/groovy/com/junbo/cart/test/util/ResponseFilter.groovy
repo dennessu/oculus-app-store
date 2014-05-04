@@ -6,14 +6,17 @@ import com.ning.http.client.HttpResponseHeaders
 import com.ning.http.client.HttpResponseStatus
 import com.ning.http.client.filter.FilterContext
 import com.ning.http.client.filter.FilterException
+import groovy.transform.CompileStatic
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 /**
  * Created by fzhang on 14-3-18.
  */
+@CompileStatic
 class ResponseFilter implements com.ning.http.client.filter.ResponseFilter {
 
-    private static final LOGGER  = LoggerFactory.getLogger(ResponseFilter)
+    private static final Logger LOGGER  = LoggerFactory.getLogger(ResponseFilter)
 
     private class ResponseHandler implements AsyncHandler {
 
@@ -33,7 +36,7 @@ class ResponseFilter implements com.ning.http.client.filter.ResponseFilter {
         @Override
         AsyncHandler.STATE onBodyPartReceived(HttpResponseBodyPart bodyPart) throws Exception {
             if (bodyPart.bodyPartBytes != null) {
-                bodyPart.bodyPartBytes.each {
+                bodyPart.bodyPartBytes.each { byte it ->
                     body.add(it)
                 }
             }

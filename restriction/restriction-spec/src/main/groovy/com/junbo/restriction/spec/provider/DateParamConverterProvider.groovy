@@ -2,6 +2,7 @@ package com.junbo.restriction.spec.provider
 
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat
 import com.junbo.restriction.spec.error.AppErrors
+import groovy.transform.CompileStatic
 import org.springframework.util.StringUtils
 
 import javax.ws.rs.ext.ParamConverter
@@ -14,6 +15,7 @@ import java.text.ParseException
 /**
  * DateParamConverterProvider.
  */
+@CompileStatic
 @javax.inject.Singleton
 @Provider
 class DateParamConverterProvider implements ParamConverterProvider {

@@ -6,9 +6,12 @@
 
 package com.junbo.order.mock
 
+import groovy.transform.CompileStatic
+
 /**
  * Created by fzhang on 14-3-4.
  */
+@CompileStatic
 class BaseMock {
 
     private static long nextLong = System.currentTimeMillis()

@@ -5,9 +5,12 @@
  */
 package com.junbo.langur.processor.model
 
+import groovy.transform.CompileStatic
+
 /**
  * Created by kevingu on 11/28/13.
  */
+@CompileStatic
 class ClientProxyModel {
 
     String packageName

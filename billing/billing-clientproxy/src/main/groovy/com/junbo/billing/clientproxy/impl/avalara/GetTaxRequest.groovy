@@ -7,12 +7,14 @@
 package com.junbo.billing.clientproxy.impl.avalara
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import groovy.transform.CompileStatic
 
 import java.sql.Date
 
 /**
  * GetTaxRequest
  */
+@CompileStatic
 class GetTaxRequest {
 
     // Required for tax calculation: DocDate, CustomerCode, Addresses, Lines
@@ -81,7 +83,7 @@ class GetTaxRequest {
 
     // Optional: PurchaseOrderNo, PaymentDate, ReferenceCode, PosLaneCode
 
-    // Buyer¡¯s purchase order identifier.
+    // Buyerï¿½ï¿½s purchase order identifier.
     // PurchaseOrderNo is required for single use exemption certificates
     // to match the order and invoice with the certificate.
     @JsonProperty('PurchaseOrderNo')
