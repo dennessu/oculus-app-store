@@ -10,6 +10,7 @@ import com.junbo.common.id.provider.IdTypeFromStringProvider
 import com.junbo.common.json.JacksonFeature
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.restriction.spec.provider.DateParamConverterProvider
+import groovy.transform.CompileStatic
 import org.glassfish.grizzly.http.server.HttpServer
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory
 import org.glassfish.jersey.server.ResourceConfig
@@ -18,6 +19,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler
 /**
  * App to launch Server
  */
+@CompileStatic
 class Main {
 
     static HttpServer startServer() {

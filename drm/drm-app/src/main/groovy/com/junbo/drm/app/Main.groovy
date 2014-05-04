@@ -1,5 +1,6 @@
 package com.junbo.drm.app
 
+import groovy.transform.CompileStatic
 import org.glassfish.grizzly.http.server.HttpServer
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory
 import org.glassfish.jersey.server.ResourceConfig
@@ -7,6 +8,7 @@ import org.glassfish.jersey.server.ResourceConfig
 /**
  * Created by NanXin on 14-1-20.
  */
+@CompileStatic
 class Main {
     static HttpServer startServer() {
         def resourceConfig = new ResourceConfig()

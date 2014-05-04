@@ -158,6 +158,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
                 CreditCardInfo creditCardInfo = (CreditCardInfo) paymentInfo;
                 typeSpecificDetails.setExpireDate(creditCardInfo.getExpireDate());
                 typeSpecificDetails.setEncryptedCvmCode(creditCardInfo.getEncryptedCVMCode());
+                creditCardInfo.setBillingAddressId(billingAddressId);
 
                 paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
                 address.setAddressLine1(creditCardInfo.getAddress().getAddressLine1());
@@ -170,7 +171,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
                 paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
                 paymentInstrument.setAddress(address);
                 paymentInstrument.setIsValidated(creditCardInfo.isValidated());
-                paymentInstrument.setBillingAddressId(billingAddressId);
+                paymentInstrument.setBillingAddressId(creditCardInfo.getBillingAddressId());
                 return paymentClient.postPaymentInstrument(paymentInstrument);
 
             case EWALLET:

@@ -1,11 +1,13 @@
 package com.junbo.langur.core.webflow.definition
 
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationContext
 
 /**
  * Created by kg on 2/26/14.
  */
+@CompileStatic
 class FlowDefLoaderImpl implements FlowDefLoader {
 
     @Autowired

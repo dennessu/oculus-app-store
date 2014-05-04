@@ -7,10 +7,12 @@
 package com.junbo.billing.clientproxy.impl.avalara
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import groovy.transform.CompileStatic
 
 /**
  *  AvalaraAddress
  */
+@CompileStatic
 class AvalaraAddress {
     // Reference code uniquely identifying this address instance.
     @JsonProperty('AddressCode')

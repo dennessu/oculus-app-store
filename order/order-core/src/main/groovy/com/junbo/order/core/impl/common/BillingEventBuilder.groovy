@@ -6,12 +6,14 @@ import com.junbo.billing.spec.model.Balance
 import com.junbo.order.db.entity.enums.BillingAction
 import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.spec.model.BillingEvent
+import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 /**
  * Created by fzhang on 14-3-26.
  */
+@CompileStatic
 class BillingEventBuilder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BillingEventBuilder)

@@ -7,10 +7,12 @@ package com.junbo.oauth.db.dao.redis
 
 import com.junbo.oauth.db.dao.RefreshTokenDAO
 import com.junbo.oauth.db.entity.RefreshTokenEntity
+import groovy.transform.CompileStatic
 
 /**
  * Javadoc.
  */
+@CompileStatic
 class RedisRefreshTokenDAOImpl extends RedisBaseDAO<RefreshTokenEntity> implements RefreshTokenDAO {
     @Override
     List<RefreshTokenEntity> findByUserIdClientId(Long userId, String clientId) {

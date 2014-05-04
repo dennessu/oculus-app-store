@@ -5,6 +5,8 @@
  */
 package com.junbo.email.db.entity
 
+import groovy.transform.CompileStatic
+
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -13,6 +15,7 @@ import javax.persistence.Table
 /**
  * Entity of EmailSchedule
  */
+@CompileStatic
 @Entity
 @Table(name = 'email_schedule')
 class EmailScheduleEntity extends BaseEntity {
