@@ -177,4 +177,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 409, code = "2000046", description = "Field {0} invalid due to {1}.", field = "{0}")
     AppError fieldInvalidException(String field, String detail);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000050", description = "TeleSign provider error.")
+    AppError teleSignProviderError(String message);
 }

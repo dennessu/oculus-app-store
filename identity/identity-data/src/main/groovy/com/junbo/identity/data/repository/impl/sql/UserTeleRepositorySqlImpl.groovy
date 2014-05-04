@@ -20,7 +20,7 @@ class UserTeleRepositorySqlImpl implements UserTeleRepository {
     private ModelMapper modelMapper
 
     @Override
-    Promise<List<UserTeleCode>> searchActiveTeleCode(UserId userId, String phoneNumber) {
+    Promise<List<UserTeleCode>> searchTeleCode(UserId userId, String phoneNumber) {
         // def entity = userTeleDAO.getActiveUserTeleCode(userId, phoneNumber)
 
         // return get(new UserTeleId(entity.id))

@@ -13,5 +13,5 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface UserTeleRepository extends IdentityBaseRepository<UserTeleCode, UserTeleId> {
     @ReadMethod
-    Promise<List<UserTeleCode>> searchActiveTeleCode(UserId userId, String phoneNumber)
+    Promise<List<UserTeleCode>> searchTeleCode(UserId userId, String phoneNumber)
 }

@@ -1,0 +1,12 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile fileTree(dir: '../libs', include: '*.jar')
+
+    compile (libraries.gson)
+    compile (libraries.common_codec)
+    compile (libraries.hamcrest_core)
+
+    compile project(':identity-data')
+    compile project(':identity-spec')
+}

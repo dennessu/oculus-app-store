@@ -18,6 +18,7 @@ Desktop.ini
 *.war
 !common/liquibase/lib/*
 !identity/identity-data/src/test/resources/*
+!identity/libs/*.jar
 
 # Output files
 *.class

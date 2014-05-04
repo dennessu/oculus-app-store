@@ -21,6 +21,9 @@ public class UserTeleListOptions extends PagingGetOptions {
     @QueryParam("userId")
     private UserId userId;
 
+    @QueryParam("phoneNumber")
+    private String phoneNumber;
+
     public String getProperties() {
         return properties;
     }
@@ -35,5 +38,13 @@ public class UserTeleListOptions extends PagingGetOptions {
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }
