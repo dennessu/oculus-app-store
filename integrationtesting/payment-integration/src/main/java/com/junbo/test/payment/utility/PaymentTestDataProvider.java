@@ -17,6 +17,7 @@ import com.junbo.test.common.Utility.BaseTestDataProvider;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 //import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.payment.apihelper.PaymentService;
@@ -42,11 +43,12 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
         return identityClient.PostUser();
     }
 
-    public void creditWallet(String uid) throws Exception{
+    public void creditWallet(String uid, EwalletInfo ewalletInfo, BigDecimal creditAmount) throws Exception{
         CreditRequest creditRequest = new CreditRequest();
         creditRequest.setCurrency("usd");
         creditRequest.setUserId(IdConverter.hexStringToId(UserId.class,uid));
-        creditRequest.setAmount(new BigDecimal(1000));
+        ewalletInfo.setBalance(creditAmount);
+        creditRequest.setAmount(creditAmount);
         paymentClient.creditWallet(creditRequest);
     }
 
@@ -62,7 +64,8 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
         paymentInstrument.setAdmins(admins);
         paymentInstrument.setLabel("4");
         TypeSpecificDetails typeSpecificDetails = new TypeSpecificDetails();
-
+        Long billingAddressId = Master.getInstance().getUser(uid).getAddresses().get(0).getValue().getValue();
+        paymentInfo.setBillingAddressId(billingAddressId);
         switch (paymentInfo.getType()) {
             case CREDITCARD:
                 CreditCardInfo creditCardInfo = (CreditCardInfo) paymentInfo;
@@ -83,7 +86,7 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                 paymentInstrument.setIsValidated(creditCardInfo.isValidated());
                 //paymentInstrument.setIsDefault(String.valueOf(creditCardInfo.isDefault()));
                 paymentInstrument.setType(0L);
-                paymentInstrument.setBillingAddressId(0L);
+                paymentInstrument.setBillingAddressId(creditCardInfo.getBillingAddressId());
 
                 return paymentClient.postPaymentInstrument(paymentInstrument);
 
@@ -100,7 +103,7 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                 address.setState(ewalletInfo.getAddress().getState());
                 address.setCountry(ewalletInfo.getAddress().getCountry());
                 address.setPostalCode(ewalletInfo.getAddress().getPostalCode());
-
+                paymentInstrument.setBillingAddressId(ewalletInfo.getBillingAddressId());
                 paymentInstrument.setAddress(address);
 
                 return paymentClient.postPaymentInstrument(paymentInstrument);
@@ -148,8 +151,8 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
 
     }
 
-    public String getPaymentInstrument(String uid, String paymentId) throws Exception {
-        return paymentClient.getPaymentInstrumentByPaymentId(uid, paymentId);
+    public String getPaymentInstrument(String paymentId) throws Exception {
+        return paymentClient.getPaymentInstrumentByPaymentId(paymentId);
     }
 
     public List<String> searchPaymentInstruments(String uid) throws Exception {

@@ -10,12 +10,24 @@ import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.Entities.enums.PaymentType;
 import com.junbo.test.common.libs.RandomFactory;
 
+import java.math.BigDecimal;
+
 /**
  * Created by Yunlong on 4/24/14.
  */
 public class EwalletInfo extends PaymentInstrumentBase {
     private String walletType;
     private Currency currency;
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
+
+    private BigDecimal balance = new BigDecimal(0);
 
     public String getWalletType() {
         return walletType;
