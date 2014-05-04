@@ -20,7 +20,7 @@ class ResetPasswordResultView extends AbstractView {
         def model = new ViewModel(
                 view: 'reset_password_result',
                 model: modelMap as Map<String, Object>,
-                errors: contextWrapper.errors.unique(new ErrorComparator()).asList()
+                errors: contextWrapper.errors.unique(errorComparator).asList()
         )
 
         return Promise.pure(model)

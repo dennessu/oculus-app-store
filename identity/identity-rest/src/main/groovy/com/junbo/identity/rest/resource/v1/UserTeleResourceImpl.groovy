@@ -51,7 +51,7 @@ class UserTeleResourceImpl implements UserTeleResource {
 
         return userTeleValidator.validateForCreate(userId, userTeleCode).then {
             return teleSign.verifyCode(userTeleCode).then {
-                userTeleRepository.create(userTeleCode).then { UserTeleCode newUserTeleCode ->
+                return userTeleRepository.create(userTeleCode).then { UserTeleCode newUserTeleCode ->
                     created201Marker.mark((Id)newUserTeleCode.id)
 
                     newUserTeleCode = userTeleFilter.filterForGet(newUserTeleCode, null)
