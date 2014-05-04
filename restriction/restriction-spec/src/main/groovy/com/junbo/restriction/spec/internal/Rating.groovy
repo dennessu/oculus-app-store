@@ -5,9 +5,12 @@
  */
 package com.junbo.restriction.spec.internal
 
+import groovy.transform.CompileStatic
+
 /**
  * Rating.
  */
+@CompileStatic
 class Rating {
     String name
     Map<String, Integer> level

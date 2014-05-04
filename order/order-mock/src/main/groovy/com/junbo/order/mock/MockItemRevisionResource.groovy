@@ -7,6 +7,7 @@ import com.junbo.catalog.spec.resource.ItemRevisionResource
 import com.junbo.common.id.ItemRevisionId
 import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
+import groovy.transform.CompileStatic
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
@@ -17,6 +18,7 @@ import javax.ws.rs.core.Response
 /**
  * Created by chriszhu on 4/16/14.
  */
+@CompileStatic
 @Component('mockItemRevisionResource')
 @Scope('prototype')
 class MockItemRevisionResource extends BaseMock implements ItemRevisionResource {
@@ -53,7 +55,6 @@ class MockItemRevisionResource extends BaseMock implements ItemRevisionResource 
                 revisionId: generateLong(),
                 ownerId: generateLong(),
                 itemId: generateLong(),
-                type: 'DIGITAL',
                 msrp: new Price(
                         priceType: 'CUSTOM',
                         prices: ['USD': 9.99G, 'CNY': 19.99G]

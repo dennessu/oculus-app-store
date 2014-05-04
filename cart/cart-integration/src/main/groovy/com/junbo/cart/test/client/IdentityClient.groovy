@@ -1,11 +1,13 @@
 package com.junbo.cart.test.client
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.resource.UserResource
+import groovy.transform.CompileStatic
 import org.apache.commons.lang.RandomStringUtils
 
 /**
  * Created by fzhang@wan-san.com on 14-2-24.
  */
+@CompileStatic
 class IdentityClient {
 
     UserResource userResource

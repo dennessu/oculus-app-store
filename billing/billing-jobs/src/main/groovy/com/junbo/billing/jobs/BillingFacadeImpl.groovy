@@ -14,11 +14,13 @@ import com.junbo.common.json.QueryParamTranscoderImpl
 import com.junbo.langur.core.promise.Promise
 import com.ning.http.client.AsyncHttpClient
 import com.ning.http.client.AsyncHttpClientConfigBean
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 
 /**
  * Created by xmchen on 14-4-11.
  */
+@CompileStatic
 class BillingFacadeImpl implements BillingFacade {
 
     @Autowired

@@ -6,10 +6,12 @@
 package com.junbo.email.clientproxy.impl.mandrill
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import groovy.transform.CompileStatic
 
 /**
  * Message object of Mandrill request.
  */
+@CompileStatic
 class Message {
     String subject
 

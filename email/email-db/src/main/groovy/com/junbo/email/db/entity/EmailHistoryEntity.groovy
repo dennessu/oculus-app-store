@@ -5,6 +5,8 @@
  */
 package com.junbo.email.db.entity
 
+import groovy.transform.CompileStatic
+
 import javax.persistence.Entity
 import javax.persistence.Table
 import javax.persistence.Column
@@ -13,6 +15,7 @@ import javax.persistence.Id
 /**
  * Entity of EmailHistory
  */
+@CompileStatic
 @Entity
 @Table(name = 'email_history')
 class EmailHistoryEntity extends BaseEntity {

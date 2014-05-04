@@ -25,9 +25,16 @@ public abstract class PaymentInstrumentBase {
     private String relationToHolder;
     private String phoneNumber;
 
-    public String getPhoneNumber() { return phoneNumber; }
 
-    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+    private Long billingAddressId;
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 
     public String getId() {
         return id;
@@ -43,6 +50,10 @@ public abstract class PaymentInstrumentBase {
 
     public boolean isDefault() {
         return isDefault;
+    }
+
+    public Long getBillingAddressId() {
+        return billingAddressId;
     }
 
     public PaymentType getType() {
@@ -123,5 +134,10 @@ public abstract class PaymentInstrumentBase {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+
+    public void setBillingAddressId(Long billingAddressId) {
+        this.billingAddressId = billingAddressId;
     }
 }

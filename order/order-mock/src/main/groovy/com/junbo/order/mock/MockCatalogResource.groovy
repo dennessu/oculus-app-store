@@ -7,6 +7,7 @@ import com.junbo.catalog.spec.resource.OfferRevisionResource
 import com.junbo.common.id.OfferRevisionId
 import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
+import groovy.transform.CompileStatic
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
@@ -17,6 +18,7 @@ import javax.ws.rs.core.Response
 /**
 * Created by LinYi on 14-2-25.
 */
+@CompileStatic
 @Component('mockCatalogResource')
 @Scope('prototype')
 class MockCatalogResource extends BaseMock implements OfferRevisionResource {

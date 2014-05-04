@@ -1,18 +1,15 @@
 package com.junbo.cart.test
-
 import com.junbo.cart.spec.model.Cart
 import com.junbo.cart.spec.model.item.OfferItem
 import com.junbo.cart.test.client.CartClient
 import com.junbo.cart.test.client.IdentityClient
 import com.junbo.cart.test.util.Generator
 import com.junbo.cart.test.validate.CartValidator
-
 import com.junbo.cart.test.validate.OfferValidator
 import com.junbo.common.id.CouponId
 import com.junbo.common.id.OfferId
 import org.springframework.beans.factory.annotation.Autowired
 import org.testng.annotations.Test
-
 /**
  * Created by fzhang@wan-san.com on 14-2-24.
  */

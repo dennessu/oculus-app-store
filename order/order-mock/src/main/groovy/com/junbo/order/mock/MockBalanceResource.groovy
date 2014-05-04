@@ -5,6 +5,7 @@ import com.junbo.billing.spec.resource.BalanceResource
 import com.junbo.common.id.BalanceId
 import com.junbo.common.id.OrderId
 import com.junbo.langur.core.promise.Promise
+import groovy.transform.CompileStatic
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
@@ -12,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap
 /**
  * Created by chriszhu on 2/20/14.
  */
+@CompileStatic
 @Component('mockBalanceResource')
 @Scope('prototype')
 class MockBalanceResource extends BaseMock implements BalanceResource {

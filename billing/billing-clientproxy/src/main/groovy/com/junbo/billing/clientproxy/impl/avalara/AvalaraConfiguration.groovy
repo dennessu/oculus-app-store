@@ -5,9 +5,13 @@
  */
 
 package com.junbo.billing.clientproxy.impl.avalara
+
+import groovy.transform.CompileStatic
+
 /**
  * Created by LinYi on 14-3-10.
  */
+@CompileStatic
 class AvalaraConfiguration {
     String baseUrl
     String companyCode

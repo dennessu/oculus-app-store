@@ -5,6 +5,7 @@
  */
 package com.junbo.test.billing;
 
+import com.junbo.test.common.Entities.ShippingAddressInfo;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
@@ -99,7 +100,7 @@ public class BillingTesting extends BaseTestClass {
             component = Component.Billing,
             owner = "Yunlongzhao",
             status = Status.Enable,
-            description = "Get balance by order Id",
+            description = "Get balance by balance Id",
             steps = {
                     "1. Prepare an order",
                     "2. Update order tentative to false",
@@ -122,7 +123,7 @@ public class BillingTesting extends BaseTestClass {
 
         String balanceId = testDataProvider.postBalanceByOrderId(randomUid, orderId);
 
-        balanceId = testDataProvider.getBalanceByBalanceId(randomUid, orderId);
+        balanceId = testDataProvider.getBalanceByBalanceId(randomUid, balanceId);
 
         //TODO Validate response
     }
@@ -144,6 +145,9 @@ public class BillingTesting extends BaseTestClass {
     @Test
     public void testPostShippingAddress() throws Exception {
         String randomUid = testDataProvider.CreateUser();
+
+        ShippingAddressInfo shippingAddressInfo = ShippingAddressInfo.getRandomShippingAddress(Country.DEFAULT);
+        String shippingAddressId = testDataProvider.postShippingAddressToUser(randomUid, shippingAddressInfo);
 
         //TODO Validate response
     }

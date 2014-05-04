@@ -13,10 +13,12 @@ import com.junbo.payment.spec.enums.PaymentType
 import com.junbo.payment.spec.model.Address
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.model.PaymentTransaction
+import groovy.transform.CompileStatic
 
 /**
  * Created by xmchen on 14-2-27.
  */
+@CompileStatic
 class MockPaymentFacadeImpl implements PaymentFacade {
     @Override
     Promise<PaymentInstrument> getPaymentInstrument(Long piId) {
@@ -36,7 +38,7 @@ class MockPaymentFacadeImpl implements PaymentFacade {
 
     @Override
     Promise<PaymentTransaction> postPaymentCharge(PaymentTransaction request) {
-        request.setPaymentId(1111111)
+        request.setId(1111111L)
         request.setMerchantAccount('JUNBO')
         request.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.name())
         request.setType(PaymentType.CHARGE.name())
@@ -46,7 +48,7 @@ class MockPaymentFacadeImpl implements PaymentFacade {
 
     @Override
     Promise<PaymentTransaction> postPaymentAuthorization(PaymentTransaction request) {
-        request.setPaymentId(33333333)
+        request.setId(33333333L)
         request.setMerchantAccount('JUNBO')
         request.setStatus(PaymentStatus.AUTHORIZED.name())
         request.setType(PaymentType.AUTHORIZE.name())
@@ -56,7 +58,7 @@ class MockPaymentFacadeImpl implements PaymentFacade {
 
     @Override
     Promise<PaymentTransaction> postPaymentCapture(Long paymentId, PaymentTransaction request) {
-        request.setPaymentId(paymentId)
+        request.setId(paymentId)
         request.setMerchantAccount('JUNBO')
         request.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.name())
         request.setType(PaymentType.CAPTURE.name())
@@ -66,7 +68,7 @@ class MockPaymentFacadeImpl implements PaymentFacade {
 
     @Override
     Promise<PaymentTransaction> postPaymentConfirm(Long paymentId, PaymentTransaction request) {
-        request.setPaymentId(paymentId)
+        request.setId(paymentId)
         request.setMerchantAccount('JUNBO')
         request.setStatus(PaymentStatus.SETTLED.name())
         request.setType(PaymentType.CHARGE.name())
@@ -77,7 +79,7 @@ class MockPaymentFacadeImpl implements PaymentFacade {
     @Override
     Promise<PaymentTransaction> getPayment(Long paymentId) {
         PaymentTransaction paymentTransaction = new PaymentTransaction()
-        paymentTransaction.setPaymentId(paymentId)
+        paymentTransaction.setId(paymentId)
         paymentTransaction.setMerchantAccount('JUNBO')
         paymentTransaction.setStatus(PaymentStatus.SETTLED.name())
         paymentTransaction.setType(PaymentType.CHARGE.name())

@@ -1,8 +1,0 @@
-apply plugin: 'groovy'
-
-dependencies {
-    compile localGroovy()
-    compile gradleApi()
-
-    compile project(':oom-processor')
-}
