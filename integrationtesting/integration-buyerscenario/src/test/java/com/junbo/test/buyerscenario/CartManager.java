@@ -231,6 +231,7 @@ public class CartManager extends TestClass {
             offerItem.setOffer(offerId);
             offerItem.setQuantity(quantity);
             offerItem.setSelected(selected);
+            offerItem.setApproved(true);
             curOffers.add(offerItem);
         }
     }
