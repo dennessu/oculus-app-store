@@ -7,6 +7,7 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
+import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.common.id.UserTeleId;
 import com.junbo.common.util.Identifiable;
 import com.junbo.common.model.ResourceMeta;
@@ -28,7 +29,7 @@ public class UserTeleCode extends ResourceMeta implements Identifiable<UserTeleI
     private UserId userId;
 
     @ApiModelProperty(position = 3, required = true, value = "User Phone number used to verify.")
-    private String phoneNumber;
+    private UserPersonalInfoId phoneNumber;
 
     @ApiModelProperty(position = 4, required = false, value = "The language to sent to the user.")
     private String sentLanguage;
@@ -68,11 +69,11 @@ public class UserTeleCode extends ResourceMeta implements Identifiable<UserTeleI
         support.setPropertyAssigned("user");
     }
 
-    public String getPhoneNumber() {
+    public UserPersonalInfoId getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    public void setPhoneNumber(UserPersonalInfoId phoneNumber) {
         this.phoneNumber = phoneNumber;
         support.setPropertyAssigned("phoneNumber");
     }

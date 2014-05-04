@@ -3,8 +3,10 @@ package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.UserId
+import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.id.UserTeleId
 import com.junbo.identity.data.repository.UserTeleRepository
+import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.model.UserTeleCode
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
@@ -26,9 +28,9 @@ class UserTeleRepositoryCloudantImpl extends CloudantClient<UserTeleCode> implem
     }
 
     @Override
-    Promise<List<UserTeleCode>> searchTeleCode(UserId userId, String phoneNumber) {
-        def list = super.queryView('by_user_id_phone_number', "${userId.value.toString()}:${phoneNumber}",
-                Integer.MAX_VALUE, 0, false)
+    Promise<List<UserTeleCode>> searchTeleCode(UserId userId, UserPersonalInfoId phoneNumber) {
+        def list = super.queryView('by_user_id_phone_number',
+                "${userId.value.toString()}:${phoneNumber.value.toString()}", Integer.MAX_VALUE, 0, false)
 
         return Promise.pure(list)
     }
@@ -58,13 +60,12 @@ class UserTeleRepositoryCloudantImpl extends CloudantClient<UserTeleCode> implem
     }
 
     protected CloudantViews views = new CloudantViews(
-            // Todo:    The phoneNumber will be using cipher key later
             views: [
-                    'by_user_id_phone_number': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.userId.value.toString() + \':\' + doc.phoneNumber, doc._id)' +
-                                    '}',
-                            resultClass: String)
+                'by_user_id_phone_number': new CloudantViews.CloudantView(
+                    map: 'function(doc) {' +
+                            '  emit(doc.userId.value.toString() + \':\' + doc.phoneNumber.value.toString(), doc._id)' +
+                            '}',
+                    resultClass: String)
             ]
     )
 

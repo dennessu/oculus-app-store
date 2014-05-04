@@ -1,6 +1,7 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.id.UserId
+import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.id.UserTeleId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.identity.core.service.validator.UserTeleValidator
@@ -38,7 +39,6 @@ class UserTeleValidatorImpl implements UserTeleValidator {
     private Integer maxVerifyCodeLength
     private Integer minTemplateLength
     private Integer maxTemplateLength
-
 
     @Override
     Promise<UserTeleCode> validateForGet(UserId userId, UserTeleId userTeleId) {
@@ -270,7 +270,7 @@ class UserTeleValidatorImpl implements UserTeleValidator {
         }
     }
 
-    private Promise<Void> validatePhoneNumber(UserId userId, String phoneNumber) {
+    private Promise<Void> validatePhoneNumber(UserId userId, UserPersonalInfoId phoneNumber) {
         return userRepository.get(userId).then { User user ->
             if (user.phones == null) {
                 throw AppErrors.INSTANCE.fieldInvalidException('phoneNumber', 'user has no phones').exception()
@@ -287,14 +287,14 @@ class UserTeleValidatorImpl implements UserTeleValidator {
         }
     }
 
-    private Promise<Boolean> validateUserPhoneLinkList(Iterator<UserPersonalInfoLink> iterator, String phoneNumber) {
+    private Promise<Boolean> validateUserPhoneLinkList(Iterator<UserPersonalInfoLink> iterator,
+                                                       UserPersonalInfoId phoneNumber) {
         if (iterator.hasNext()) {
             UserPersonalInfoLink link = (UserPersonalInfoLink)iterator.next()
 
-            return validateUserPhoneLink(link, phoneNumber).then { Boolean isValid ->
-                if (isValid == true) {
-                    return Promise.pure(true)
-                }
+            if (link.value == phoneNumber) {
+                return Promise.pure(true)
+            } else {
                 return validateUserPhoneLinkList(iterator, phoneNumber)
             }
         }
