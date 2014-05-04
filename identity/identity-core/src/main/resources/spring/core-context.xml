@@ -820,11 +820,11 @@
     <bean id="userTeleFilter" class="com.junbo.identity.core.service.filter.UserTeleFilter">
         <property name="readableProperties">
             <list>
+                <!-- Here we use this filter to ignore verifyCode -->
                 <value>id</value>
                 <value>userId</value>
                 <value>phoneNumber</value>
                 <value>sentLanguage</value>
-                <value>verifyCode</value>
                 <value>template</value>
                 <value>verifyType</value>
                 <value>expiresBy</value>
@@ -863,6 +863,39 @@
                 <value>createdTime</value>
                 <value>updatedTime</value>
             </list>
+        </property>
+    </bean>
+
+    <bean id="userTeleAttemptFilter" class="com.junbo.identity.core.service.filter.UserTeleAttemptFilter">
+        <property name="readableProperties">
+            <list>
+                <!-- Here we use this filter to ignore verifyCode -->
+                <value>id</value>
+                <value>userTeleId</value>
+                <value>userId</value>
+                <value>ipAddress</value>
+                <value>userAgent</value>
+                <value>clientId</value>
+                <value>succeeded</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>userTeleId</value>
+                <value>userId</value>
+                <value>verifyCode</value>
+                <value>ipAddress</value>
+                <value>userAgent</value>
+                <value>clientId</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list></list>
         </property>
     </bean>
 

@@ -101,6 +101,10 @@ public interface SelfMapper {
 
     UserTeleCode mergeUserTeleCode(UserTeleCode source, UserTeleCode base, MappingContext context);
 
+    UserTeleAttempt filterUserTeleAttempt(UserTeleAttempt attempt, MappingContext context);
+
+    UserTeleAttempt mergeUserTeleAttempt(UserTeleAttempt source, UserTeleAttempt base, MappingContext context);
+
     DeviceType filterDeviceType(DeviceType deviceType, MappingContext context);
 
     DeviceType mergeDeviceType(DeviceType source, DeviceType base, MappingContext context);

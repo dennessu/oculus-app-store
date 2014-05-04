@@ -522,6 +522,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void testUserTeleAttemptRepository() {
+        def userTeleId = new UserTeleId(idGenerator.nextId())
         def userId = new UserId(idGenerator.nextId())
         UserTeleAttempt userTeleAttempt = new UserTeleAttempt()
         userTeleAttempt.setVerifyCode(UUID.randomUUID().toString())
@@ -530,7 +531,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userTeleAttempt.setIpAddress(UUID.randomUUID().toString())
         userTeleAttempt.setSucceeded(true)
         userTeleAttempt.setUserAgent(UUID.randomUUID().toString())
-        userTeleAttempt.setUserTeleId(new UserTeleId(idGenerator.nextId()))
+        userTeleAttempt.setUserTeleId(userTeleId)
 
         UserTeleAttempt newUserTeleAttempt = userTeleAttemptRepository.create(userTeleAttempt).wrapped().get()
         newUserTeleAttempt = userTeleAttemptRepository.get((UserTeleAttemptId)newUserTeleAttempt.id).wrapped().get()
@@ -544,6 +545,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         List<UserTeleAttempt> results = userTeleAttemptRepository.search(new UserTeleAttemptListOptions(
                 userId: userId,
+                userTeleId: userTeleId,
                 offset: 0,
                 limit: 100
         )).wrapped().get()

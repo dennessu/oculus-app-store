@@ -38,7 +38,7 @@ class UserTeleAttemptRepositoryCloudantImpl  extends CloudantClient<UserTeleAtte
 
     @Override
     Promise<List<UserTeleAttempt>> search(UserTeleAttemptListOptions listOptions) {
-        def list = super.queryView('by_user_id', listOptions.userId.toString(),
+        def list = super.queryView('by_user_id_tele_id', "${listOptions.userId.value}:${listOptions.userTeleId.value}",
                 listOptions.limit, listOptions.offset, false)
 
         return Promise.pure(list)
@@ -70,11 +70,11 @@ class UserTeleAttemptRepositoryCloudantImpl  extends CloudantClient<UserTeleAtte
 
     protected CloudantViews views = new CloudantViews(
             views: [
-                    'by_user_id': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.userId.value.toString(), doc._id)' +
-                                    '}',
-                            resultClass: String)
+                'by_user_id_tele_id': new CloudantViews.CloudantView(
+                    map: 'function(doc) {' +
+                            '  emit(doc.userId.value.toString() + \':\' + doc.userTeleId.value.toString() , doc._id)' +
+                            '}',
+                    resultClass: String)
             ]
     )
 }
