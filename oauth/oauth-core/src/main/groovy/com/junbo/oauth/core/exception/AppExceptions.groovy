@@ -62,9 +62,6 @@ interface AppExceptions {
     @ErrorDef(httpStatusCode = 400, code = '20012', description = 'The display {0} is invalid', field = 'display')
     AppError invalidDisplay(String display)
 
-    @ErrorDef(httpStatusCode = 400, code = '20014', description = 'The login is required')
-    AppError loginRequired()
-
     @ErrorDef(httpStatusCode = 400, code = '20015', description = 'The response_type {0} is invalid',
             field = 'response_type')
     AppError invalidResponseType(String responseType)
@@ -298,4 +295,8 @@ interface AppExceptions {
 
     @ErrorDef(httpStatusCode = 400, code = '20069', description = 'Invalid locale: {0}', field = 'locale')
     AppError invalidLocale(String locale)
+
+    @ErrorDef(httpStatusCode = 400, code = '20070', description = 'The state parameter is missing',
+            field = 'state')
+    AppError missingState()
 }
