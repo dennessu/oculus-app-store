@@ -4,10 +4,12 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.spec.model.ViewModel
+import groovy.transform.CompileStatic
 
 /**
  * Created by minhao on 5/1/14.
  */
+@CompileStatic
 class ResetPasswordView extends AbstractView {
 
     @Override
@@ -16,6 +18,8 @@ class ResetPasswordView extends AbstractView {
         def modelMap = [
                 'locale'  : contextWrapper.viewLocale
         ]
+
+
         modelMap.putAll(contextWrapper.extraParameterMap)
 
         def model = new ViewModel(
