@@ -6,6 +6,7 @@
     <bean id="teleSign" class="com.junbo.identity.clientproxy.impl.TeleSignImpl">
         <constructor-arg><value>${identity.conf.teleSign.customerId}</value></constructor-arg>
         <constructor-arg><value>${identity.conf.teleSign.secretKey}</value></constructor-arg>
+        <constructor-arg ref="userPersonalInfoRepository"></constructor-arg>
     </bean>
 
 </beans>

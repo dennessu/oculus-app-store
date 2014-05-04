@@ -499,11 +499,12 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
             after30Mins = (new Date()) + 30.minutes
         }
         def id = idGenerator.nextId()
+        def phoneNumber = new UserPersonalInfoId(idGenerator.nextId())
         UserTeleCode userTeleCode = new UserTeleCode()
         userTeleCode.setUserId(new UserId(id))
         userTeleCode.setActive(true)
         userTeleCode.setExpiresBy(after30Mins)
-        userTeleCode.setPhoneNumber(UUID.randomUUID().toString())
+        userTeleCode.setPhoneNumber(phoneNumber)
         userTeleCode.setSentLanguage('en_US')
         userTeleCode.setTemplate('xxxxx')
         userTeleCode.setVerifyCode(UUID.randomUUID().toString())
@@ -514,7 +515,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         assert userTeleCode.phoneNumber == newUserTeleCode.phoneNumber
 
-        String newPhoneNumber = UUID.randomUUID().toString()
+        UserPersonalInfoId newPhoneNumber = new UserPersonalInfoId(idGenerator.nextId())
         newUserTeleCode.setPhoneNumber(newPhoneNumber)
         userTeleCode = userTeleRepository.update(newUserTeleCode).wrapped().get()
         assert userTeleCode.phoneNumber == newPhoneNumber
