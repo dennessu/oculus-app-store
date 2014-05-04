@@ -19,6 +19,7 @@ import com.junbo.test.payment.utility.PaymentTestDataProvider;
 import com.junbo.test.payment.utility.PaymentValidationHelper;
 import org.testng.annotations.Test;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -78,7 +79,7 @@ public class PaymentTesting extends BaseTestClass {
         String creditCardId = testDataProvider.postPaymentInstrument(randomUid, creditCardInfo);
 
         logHelper.LogSample("Get a payment instrument");
-        creditCardId = testDataProvider.getPaymentInstrument(randomUid, creditCardId);
+        creditCardId = testDataProvider.getPaymentInstrument(creditCardId);
 
         validationHelper.validatePaymentInstrument(creditCardId, creditCardInfo);
     }
@@ -117,7 +118,8 @@ public class PaymentTesting extends BaseTestClass {
             features = "DELETE /users/{userId}/payment-instruments/{paymentInstrumentId}",
             component = Component.Payment,
             owner = "Yunlongzhao",
-            status = Status.Enable,
+            status = Status.BugOnIt,
+            bugNum = "https://oculus.atlassian.net/browse/SER-181",
             description = "delete payment instruments",
             steps = {
                     "1. Create an user",
@@ -145,7 +147,7 @@ public class PaymentTesting extends BaseTestClass {
 
     @Property(
             priority = Priority.Dailies,
-            features = "GET /users/{userId}/payment-instruments/search",
+            features = "GET /users/{userId}/payment-instruments",
             component = Component.Payment,
             owner = "Yunlongzhao",
             status = Status.Enable,
@@ -167,7 +169,7 @@ public class PaymentTesting extends BaseTestClass {
         CreditCardInfo creditCardInfo2 = CreditCardInfo.getRandomCreditCardInfo(country);
         String creditCardId2 = testDataProvider.postPaymentInstrument(randomUid, creditCardInfo2);
 
-        logHelper.LogSample("Search payment instruments");
+        logHelper.LogSample("Get payment instruments");
         List<String> searchResults = testDataProvider.searchPaymentInstruments(randomUid);
 
         PaymentValidationHelper.verifyEqual(true, searchResults.contains(creditCardId1), "verify credit card Id 1");
@@ -198,12 +200,37 @@ public class PaymentTesting extends BaseTestClass {
         EwalletInfo ewalletInfo = EwalletInfo.getEwalletInfo(Country.DEFAULT, Currency.DEFAULT);
         String ewalletId = testDataProvider.postPaymentInstrument(randomUid, ewalletInfo);
 
-        testDataProvider.creditWallet(randomUid);
-
         logHelper.LogSample("Post ewallet");
 
         validationHelper.validatePaymentInstrument(ewalletId, ewalletInfo);
     }
 
+    @Property(
+            priority = Priority.Dailies,
+            features = "POST /users/{userId}/payment-instruments",
+            component = Component.Payment,
+            owner = "Yunlongzhao",
+            status = Status.Enable,
+            description = "post ewallet",
+            steps = {
+                    "1. Create an user",
+                    "2. Post ewallet to user",
+                    "3. Credit some money,",
+                    "3. Validation: response"
+            }
+    )
+    @Test
+    public void testCreditEwallet() throws Exception {
+        String randomUid = testDataProvider.CreateUser();
+
+        EwalletInfo ewalletInfo = EwalletInfo.getEwalletInfo(Country.DEFAULT, Currency.DEFAULT);
+        String ewalletId = testDataProvider.postPaymentInstrument(randomUid, ewalletInfo);
+
+        testDataProvider.creditWallet(randomUid, ewalletInfo, new BigDecimal(1000));
+
+        logHelper.LogSample("Credit ewallet");
+
+        validationHelper.validatePaymentInstrument(ewalletId, ewalletInfo);
+    }
 
 }

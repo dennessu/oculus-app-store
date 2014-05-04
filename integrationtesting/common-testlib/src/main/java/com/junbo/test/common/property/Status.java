@@ -16,4 +16,5 @@ public enum Status {
     Disable,
     Manual,
     DefaultEnable,
+    BugOnIt,
 }

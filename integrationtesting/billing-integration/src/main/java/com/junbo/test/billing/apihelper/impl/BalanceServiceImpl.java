@@ -6,6 +6,7 @@
 package com.junbo.test.billing.apihelper.impl;
 
 import com.junbo.billing.spec.model.Balance;
+import com.junbo.common.model.Results;
 import com.junbo.test.billing.apihelper.BalanceService;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.blueprint.Master;
@@ -13,6 +14,9 @@ import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.RestUrl;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Yunlong on 4/8/14.
@@ -83,7 +87,7 @@ public class BalanceServiceImpl extends HttpClientBase implements BalanceService
     public String getBalanceByBalanceId(String uid, String balanceId, int expectedResponseCode) throws Exception {
         setUserId(uid);
         String responseBody = restApiCall(HTTPMethod.GET, balanceUrl +
-                "/balances?balanceId=" + balanceId, expectedResponseCode);
+                "balances/"+ balanceId, expectedResponseCode);
 
         Balance balanceResult =
                 new JsonMessageTranscoder().decode(
@@ -97,24 +101,28 @@ public class BalanceServiceImpl extends HttpClientBase implements BalanceService
     }
 
     @Override
-    public String getBalanceByOrderId(String uid, String orderId) throws Exception {
+    public List<String> getBalanceByOrderId(String uid, String orderId) throws Exception {
         return getBalanceByOrderId(uid, orderId, 200);
     }
 
     @Override
-    public String getBalanceByOrderId(String uid, String orderId, int expectedResponseCode) throws Exception {
+    public List<String> getBalanceByOrderId(String uid, String orderId, int expectedResponseCode) throws Exception {
         setUserId(uid);
         String responseBody = restApiCall(HTTPMethod.GET, balanceUrl +
                 "balances?orderId=" + orderId, expectedResponseCode);
 
-        Balance balanceResult =
+        Results<Balance> balanceResults =
                 new JsonMessageTranscoder().decode(
-                        new TypeReference<Balance>() {
+                        new TypeReference<Results<Balance>>() {
                         }, responseBody);
 
-        String balanceId = IdConverter.idToHexString(balanceResult.getBalanceId());
-        Master.getInstance().addBalances(balanceId, balanceResult);
+        List<String> balanceList = new ArrayList<>();
+        for (Balance balanceResult : balanceResults.getItems()) {
+            String balanceId = IdConverter.idToHexString(balanceResult.getBalanceId());
+            balanceList.add(balanceId);
+            Master.getInstance().addBalances(balanceId, balanceResult);
+        }
 
-        return orderId;
+        return balanceList;
     }
 }

@@ -19,9 +19,9 @@ public interface PaymentService {
     String postPaymentInstrument(PaymentInstrument paymentInstrument,
                                        int expectedResponseCode) throws Exception;
 
-    String getPaymentInstrumentByPaymentId(String uid, String paymentInstrumentId) throws Exception;
+    String getPaymentInstrumentByPaymentId(String paymentInstrumentId) throws Exception;
 
-    String getPaymentInstrumentByPaymentId(String uid, String paymentInstrumentId,
+    String getPaymentInstrumentByPaymentId(String paymentInstrumentId,
                                            int expectedResponseCode) throws Exception;
 
     String updatePaymentInstrument(String uid, String paymentId, PaymentInstrument paymentInstrument) throws Exception;
