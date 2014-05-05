@@ -50,10 +50,10 @@ public class EntitlementDefinitionRepository {
 
 
     public List<EntitlementDefinition> getByParams(Long developerId, String clientId,
-                                                   Set<String> groups, Set<String> tags, Set<EntitlementType> types,
+                                                   Long itemId, Set<String> tags, Set<EntitlementType> types,
                                                    Boolean isConsumable, PageableGetOptions pageMetadata) {
         return EntitlementDefinitionMapper.toEntitlementDefinitionList(
-                entitlementDefinitionDao.getByParams(developerId, clientId, groups, tags, types, isConsumable,
+                entitlementDefinitionDao.getByParams(developerId, clientId, itemId, tags, types, isConsumable,
                         pageMetadata == null ? new PageableGetOptions().ensurePagingValid() : pageMetadata));
     }
 

@@ -26,7 +26,7 @@ public class EntitlementDefinitionEntity extends BaseEntity {
     private Long entitlementDefinitionId;
     private Long developerId;
     private EntitlementType type;
-    private String group;
+    private Long itemId;
     private String tag;
     private Boolean consumable;
     private List<String> inAppContext;
@@ -70,13 +70,13 @@ public class EntitlementDefinitionEntity extends BaseEntity {
         this.type = type;
     }
 
-    @Column(name = "entitlement_group")
-    public String getGroup() {
-        return group;
+    @Column(name = "item_id")
+    public Long getItemId() {
+        return itemId;
     }
 
-    public void setGroup(String group) {
-        this.group = group;
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
     }
 
     @Column(name = "tag")
