@@ -86,6 +86,11 @@ public interface SelfMapper {
     UserTeleBackupCode mergeUserTeleBackupCode(UserTeleBackupCode source, UserTeleBackupCode base,
                                                MappingContext context);
 
+    UserTeleBackupCodeAttempt filterUserTeleBackupCodeAttempt(UserTeleBackupCodeAttempt userTeleBackupCodeAttempt,
+                                                              MappingContext context);
+    UserTeleBackupCodeAttempt mergeUserTeleBackupCodeAttempt(UserTeleBackupCodeAttempt source,
+                                               UserTeleBackupCodeAttempt base, MappingContext context);
+
     DeviceType filterDeviceType(DeviceType deviceType, MappingContext context);
     DeviceType mergeDeviceType(DeviceType source, DeviceType base, MappingContext context);
 

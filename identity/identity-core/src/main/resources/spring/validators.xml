@@ -428,4 +428,32 @@
         <property name="minVerifyCodeLength" value="1" />
         <property name="maxVerifyCodeLength" value="255" />
     </bean>
+
+    <bean id="userTeleBackupCodeAttemptValidator" class="com.junbo.identity.core.service.validator.impl.UserTeleBackupCodeAttemptValidatorImpl">
+        <property name="userRepository" ref="userRepository" />
+        <property name="userTeleBackupCodeRepository" ref="userTeleBackupCodeRepository" />
+        <property name="userTeleBackupCodeAttemptRepository" ref="userTeleBackupCodeAttemptRepository" />
+        <property name="allowedIPPatterns">
+            <list>
+                <!-- IPv4Pattern -->
+                <value>(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}</value>
+                <!-- IPv6Pattern -->
+                <value>(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}</value>
+                <!-- IPv6Pattern_HEXCompressed -->
+                <value>((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)::((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)
+                </value>
+                <!-- IPv6Pattern_6Hex4Dec -->
+                <value>((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)
+                    ::((?:[0-9A-Fa-f]{1,4}:)*)(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}
+                </value>
+            </list>
+        </property>
+        <property name="minClientIdLength" value="1" />
+        <property name="maxClientIdLength" value="255" />
+        <property name="minUserAgentLength" value="1" />
+        <property name="maxUserAgentLength" value="255" />
+        <property name="minVerifyCodeLength" value="1" />
+        <property name="maxVerifyCodeLength" value="255" />
+        <property name="maxRetryCount" value="${identity.conf.maxTeleCodeAttemptNumber}" />
+    </bean>
 </beans>
