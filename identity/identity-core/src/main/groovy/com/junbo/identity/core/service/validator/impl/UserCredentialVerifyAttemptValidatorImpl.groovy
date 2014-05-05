@@ -154,10 +154,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                         userLoginAttempt.setSucceeded(false)
                     }
 
-                    if (userLoginAttempt.succeeded == true) {
-                        return Promise.pure(null)
-                    }
-                    return checkMaximumRetryCount(user, CredentialType.PASSWORD.toString())
+                    return checkMaximumRetryCount(user, userLoginAttempt)
                 }
             }
             else {
@@ -184,19 +181,20 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                         userLoginAttempt.setSucceeded(false)
                     }
 
-                    if (userLoginAttempt.succeeded == true) {
-                        return Promise.pure(null)
-                    }
-                    return checkMaximumRetryCount(user, CredentialType.PIN.toString())
+                    return checkMaximumRetryCount(user, userLoginAttempt)
                 }
             }
         }
     }
 
-    private Promise<Void> checkMaximumRetryCount(User user, String credentialType) {
+    private Promise<Void> checkMaximumRetryCount(User user, UserCredentialVerifyAttempt userLoginAttempt) {
+        if (userLoginAttempt.succeeded == true) {
+            return Promise.pure(null)
+        }
+
         return userLoginAttemptRepository.search(new UserCredentialAttemptListOptions(
                 userId: (UserId)user.id,
-                type: credentialType
+                type: userLoginAttempt.type
         )).then { List<UserCredentialVerifyAttempt> attemptList ->
             if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxRetryCount) {
                 return Promise.pure(null)
