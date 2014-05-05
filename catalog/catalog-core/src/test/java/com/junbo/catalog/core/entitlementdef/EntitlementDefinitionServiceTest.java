@@ -32,7 +32,7 @@ public class EntitlementDefinitionServiceTest extends BaseTest {
         definition.setDeveloperId(generateId());
         definition.setInAppContext(Collections.singletonList(String.valueOf(generateId())));
         definition.setTag("TEST");
-        definition.setGroup("TEST");
+        definition.setItemId(generateId());
         definition.setConsumable(true);
         return definition;
     }

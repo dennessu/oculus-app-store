@@ -30,7 +30,7 @@ public class EntitlementDefinitionDaoTest extends BaseTest {
         EntitlementDefinitionEntity definitionEntity = new EntitlementDefinitionEntity();
         definitionEntity.setDeveloperId(generateId());
         definitionEntity.setTag("TEST");
-        definitionEntity.setGroup("TEST");
+        definitionEntity.setItemId(generateId());
         definitionEntity.setConsumable(true);
         definitionEntity.setInAppContext(Collections.singletonList(String.valueOf(generateId())));
         return definitionEntity;

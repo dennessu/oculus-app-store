@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.junbo.common.jackson.annotation.ClientId;
 import com.junbo.common.jackson.annotation.EntitlementDefinitionId;
+import com.junbo.common.jackson.annotation.ItemId;
 import com.junbo.common.jackson.annotation.UserId;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -26,7 +27,7 @@ import java.util.UUID;
         "developerId",
         "inAppContext",
         "type",
-        "group",
+        "itemId",
         "tag",
         "consumable"
 })
@@ -65,11 +66,14 @@ public class EntitlementDefinition {
             value = "whether the entitlement with the entitlementDefinition can be consumable")
     @JsonProperty("isConsumable")
     private Boolean consumable;
-    @ApiModelProperty(position = 7, required = true,
-            value = "group of entitlementDefinition, for example, ARMOR_HELM or WEAPON_AXE")
-    private String group;
+    @ApiModelProperty(position = 7, required = false,
+            value = "item which this entitlementDefinition belongs to.")
+    @ItemId
+    @JsonProperty("item")
+    private Long itemId;
     @ApiModelProperty(position = 8, required = true,
-            value = "tag of entitlementDefinition, for example, LEATHER_HOOD or HAND_AXE")
+            value = "name of entitlementDefinition, for example, LEATHER_HOOD or HAND_AXE")
+    @JsonProperty("name")
     private String tag;
 
     @JsonIgnore
@@ -99,12 +103,12 @@ public class EntitlementDefinition {
         this.type = type;
     }
 
-    public String getGroup() {
-        return group;
+    public Long getItemId() {
+        return itemId;
     }
 
-    public void setGroup(String group) {
-        this.group = group;
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
     }
 
     public String getTag() {

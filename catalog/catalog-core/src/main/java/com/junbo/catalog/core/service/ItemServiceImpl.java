@@ -136,7 +136,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
                 || ItemType.VIRTUAL.is(item.getType())) {
             EntitlementDefinition entitlementDef = new EntitlementDefinition();
             entitlementDef.setDeveloperId(item.getOwnerId());
-            entitlementDef.setGroup(Utils.encodeId(item.getItemId()));
+            entitlementDef.setItemId(item.getItemId());
             if (ItemType.DIGITAL.is(item.getType())) {
                 entitlementDef.setType(EntitlementType.DOWNLOAD.name());
             } else if (ItemType.SUBSCRIPTION.is(item.getType())) {
