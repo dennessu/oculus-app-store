@@ -47,6 +47,10 @@ class UserTeleResourceImpl implements UserTeleResource {
             throw new IllegalArgumentException('userTeleCode is null')
         }
 
+        if (userTeleCode.userId != null && userTeleCode.userId != userId) {
+            throw AppErrors.INSTANCE.fieldInvalid('userId', userId.toString()).exception()
+        }
+
         userTeleCode = userTeleFilter.filterForCreate(userTeleCode)
 
         return userTeleValidator.validateForCreate(userId, userTeleCode).then {

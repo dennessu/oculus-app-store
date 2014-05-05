@@ -171,6 +171,14 @@ class UserTeleAttemptValidatorImpl implements UserTeleAttemptValidator {
                             'userId isn\'t matched to userTeleId.').exception()
                 }
 
+                if (userTeleCode.active != true) {
+                    throw AppErrors.INSTANCE.fieldInvalidException('userTeleId', 'Tele code isn\'t active.').exception()
+                }
+
+                if (userTeleCode.expiresBy.before(new Date())) {
+                    throw AppErrors.INSTANCE.fieldInvalidException('userTeleId', 'Tele code expired.').exception()
+                }
+
                 if (userTeleCode.verifyCode == attempt.verifyCode) {
                     attempt.succeeded = true
                 } else {

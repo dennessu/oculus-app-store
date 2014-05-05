@@ -899,6 +899,42 @@
         </property>
     </bean>
 
+    <bean id="userTeleBackupCodeFilter" class="com.junbo.identity.core.service.filter.UserTeleBackupCodeFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>userId</value>
+                <value>verifyCode</value>
+                <value>expiresBy</value>
+                <value>active</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>userId</value>
+                <value>verifyCode</value>
+                <value>expiresBy</value>
+                <value>active</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>verifyCode</value>
+                <value>expiresBy</value>
+                <value>active</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+    </bean>
+
     <bean id="securityQuestionFilter" class="com.junbo.identity.core.service.filter.SecurityQuestionFilter">
         <property name="readableProperties">
             <list>
