@@ -8,13 +8,13 @@ set -e
 $PG_BIN/createdb testdb2 -h $SLAVE_SERVER -p $SLAVE_PORT
 $PG_BIN/psql testdb2 -h $SLAVE_SERVER -p $SLAVE_PORT -c "CREATE TABLE teacher (id bigint);"
 
-for k in $(seq 1 100)
+for k in $(seq 1 50)
 do
   $PG_BIN/psql testdb2 -h $SLAVE_SERVER -p $SLAVE_PORT -c "INSERT INTO teacher VALUES ($k);"
 done
 
 echo 'waiting for replication...'
-sleep 3s
+sleep 5s
 
 echo 'check replication data on old master...'
 $PG_BIN/psql testdb2 -h $MASTER_SERVER -p $MASTER_PORT -c "SELECT max(id) FROM teacher"

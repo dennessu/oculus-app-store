@@ -14,7 +14,7 @@ do
 done
 
 echo 'waiting for replication...'
-sleep 3s
+sleep 5s
 
 echo 'check replication data on slave...'
 $PG_BIN/psql testdb -h $SLAVE_SERVER -p $SLAVE_PORT -c "SELECT max(id) FROM student"

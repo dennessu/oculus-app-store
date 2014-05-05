@@ -1,5 +1,6 @@
 #!/bin/bash
 source set_env.sh
+source show_info.sh
 
 echo "stop slave databases..."
 if (lsof -i:$SLAVE_PORT -t)
