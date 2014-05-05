@@ -38,12 +38,12 @@ public class BuyerValidationHelper extends BaseValidationHelper {
 
     public void validateEwalletBalance(String uid, String orderId) throws Exception{
         Order order=  Master.getInstance().getOrder(orderId);
-        BigDecimal totalAmount = order.getTotalAmount();
+        BigDecimal totalAmount = order.getTotalAmount().add(order.getTotalTax());
         String sqlStr = String.format(
                 "select balance from shard_%s.ewallet where user_id = '%s'",
                 ShardIdHelper.getShardIdByUid(uid), IdConverter.hexStringToId(UserId.class,uid));
         verifyEqual(dbHelper.executeScalar(sqlStr, DBHelper.DBName.EWALLET),
-                new BigDecimal(100).subtract(totalAmount).toString(), "verify ewallet balance");
+                new BigDecimal(500).subtract(totalAmount).toString(), "verify ewallet balance");
     }
 
     public void validateOrderInfoByCartId(String uid, String orderId, String cartId, Country country, Currency currency,
@@ -62,7 +62,7 @@ public class BuyerValidationHelper extends BaseValidationHelper {
         verifyEqual(order.getCurrency().toString(), currency.toString(), "verify currency field in order");
 
         if (hasPhysicalGood) {
-            verifyEqual(order.getStatus(), "PENDING_FULFILLED", "verify order status");
+            verifyEqual(order.getStatus(), "PENDING_FULFILL", "verify order status");
         } else {
             verifyEqual(order.getStatus(), "COMPLETED", "verify order status");
         }
