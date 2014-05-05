@@ -101,19 +101,23 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         return offerClient.postDefaultOffer();
     }
 
-    public String postOffersToPrimaryCart(String uid, ArrayList<String> offers) throws Exception {
+    public String postOffersToPrimaryCart(String uid, boolean hasPhysicalGood, ArrayList<String> offers) throws Exception {
         String primaryCartId = cartClient.getCartPrimary(uid);
         Cart primaryCart = Master.getInstance().getCart(primaryCartId);
         List<OfferItem> offerItemList = new ArrayList<>();
         List<String> couponItemList = new ArrayList<>();
         for (int i = 0; i < offers.size(); i++) {
             OfferItem offerItem = new OfferItem();
-            offerItem.setQuantity(RandomFactory.getRandomLong(1L, 5L));
+            if (hasPhysicalGood) {
+                offerItem.setQuantity(RandomFactory.getRandomLong(1L, 5L));
+            } else {
+                offerItem.setQuantity(1L);
+            }
             offerItem.setSelected(true);
             OfferId offerId = new OfferId(
                     IdConverter.hexStringToId(OfferId.class, offerClient.getOfferIdByName(offers.get(i))));
             offerItem.setOffer(offerId);
-
+            offerItem.setApproved(true);
             offerItemList.add(offerItem);
         }
         primaryCart.setOffers(offerItemList);
@@ -128,24 +132,13 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         //String offerId = IdConverter.idLongToHexString(OfferId.class, new OfferId(100001L).getValue());
         ArrayList<String> offerList = new ArrayList<>();
         offerList.add(offerId);
-        return this.postOffersToPrimaryCart(uid, offerList);
-    }
-
-    public String mergeCart(String destinationUid, String sourceUid) throws Exception {
-        String sourceCartId = cartClient.getCartPrimary(sourceUid);
-        Cart sourceCart = Master.getInstance().getCart(sourceCartId);
-
-        String destinationCartId = cartClient.getCartPrimary(destinationUid);
-        //Cart destinationCart = Master.getInstance().getCart(destinationCartId);
-        logger.LogSample("Merge the carts");
-        return cartClient.mergeCart(destinationUid, destinationCartId, sourceCart);
+        return this.postOffersToPrimaryCart(uid, false, offerList);
     }
 
     public String postPaymentInstrument(String uid, PaymentInstrumentBase paymentInfo) throws Exception {
 
         PaymentInstrument paymentInstrument = new PaymentInstrument();
         Address address = new Address();
-        // paymentInstrument.setPhoneNumber("650-253-0000");
         paymentInstrument.setTrackingUuid(UUID.randomUUID());
         ArrayList<Long> admins = new ArrayList<>();
         admins.add(IdConverter.hexStringToId(UserId.class, uid));
@@ -158,6 +151,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
                 CreditCardInfo creditCardInfo = (CreditCardInfo) paymentInfo;
                 typeSpecificDetails.setExpireDate(creditCardInfo.getExpireDate());
                 typeSpecificDetails.setEncryptedCvmCode(creditCardInfo.getEncryptedCVMCode());
+                creditCardInfo.setBillingAddressId(billingAddressId);
 
                 paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
                 address.setAddressLine1(creditCardInfo.getAddress().getAddressLine1());
@@ -165,20 +159,20 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
                 address.setState(creditCardInfo.getAddress().getState());
                 address.setCountry(creditCardInfo.getAddress().getCountry());
                 address.setPostalCode(creditCardInfo.getAddress().getPostalCode());
-                paymentInstrument.setType(0L);
+                paymentInstrument.setType(creditCardInfo.getType().getValue());
                 paymentInstrument.setAccountName(creditCardInfo.getAccountName());
                 paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
                 paymentInstrument.setAddress(address);
                 paymentInstrument.setIsValidated(creditCardInfo.isValidated());
-                paymentInstrument.setBillingAddressId(billingAddressId);
+                paymentInstrument.setBillingAddressId(creditCardInfo.getBillingAddressId());
                 return paymentClient.postPaymentInstrument(paymentInstrument);
 
             case EWALLET:
                 EwalletInfo ewalletInfo = (EwalletInfo) paymentInfo;
-                typeSpecificDetails.setStoredValueCurrency("usd");
+                typeSpecificDetails.setStoredValueCurrency(ewalletInfo.getCurrency().toString().toLowerCase());
                 paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
                 paymentInstrument.setAccountName(ewalletInfo.getAccountName());
-                paymentInstrument.setType(2L);
+                paymentInstrument.setType(ewalletInfo.getType().getValue());
                 paymentInstrument.setIsValidated(ewalletInfo.isValidated());
                 paymentInstrument.setBillingAddressId(billingAddressId);
                 address.setAddressLine1(ewalletInfo.getAddress().getAddressLine1());
@@ -198,7 +192,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         CreditRequest creditRequest = new CreditRequest();
         creditRequest.setCurrency("usd");
         creditRequest.setUserId(IdConverter.hexStringToId(UserId.class, uid));
-        creditRequest.setAmount(new BigDecimal(1000));
+        creditRequest.setAmount(new BigDecimal(500));
         paymentClient.creditWallet(creditRequest);
     }
 
@@ -240,13 +234,9 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
 
         Order order = new Order();
 
-        List<PaymentInstrumentId> paymentInstruments = new ArrayList<>();
-        paymentInstruments.add(new PaymentInstrumentId(
-                IdConverter.hexStringToId(PaymentInstrumentId.class, paymentInstrumentId)));
         order.setUser(new UserId(IdConverter.hexStringToId(UserId.class, uid)));
         order.setCountry(new CountryId(country.toString()));
         order.setCurrency(new CurrencyId(currency.toString()));
-        //order.setPaymentInstruments(paymentInstruments);
         List<PaymentInfo> paymentInfos = new ArrayList<>();
         PaymentInfo paymentInfo = new PaymentInfo();
         paymentInfo.setPaymentInstrument(new PaymentInstrumentId(
@@ -290,13 +280,15 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         Cart cart = Master.getInstance().getCart(cartId);
         Order order = new Order();
 
-        List<PaymentInstrumentId> paymentInstruments = new ArrayList<>();
-        paymentInstruments.add(new PaymentInstrumentId(
+        List<PaymentInfo> paymentInfos = new ArrayList<>();
+        PaymentInfo paymentInfo = new PaymentInfo();
+        paymentInfo.setPaymentInstrument(new PaymentInstrumentId(
                 IdConverter.hexStringToId(PaymentInstrumentId.class, paymentInstrumentId)));
+        paymentInfos.add(paymentInfo);
+        order.setPayments(paymentInfos);
         order.setUser(cart.getUser());
         order.setCountry(new CountryId(country.toString()));
         order.setCurrency(new CurrencyId(currency.toString()));
-        order.setPaymentInstruments(paymentInstruments);
         if (shippingAddressId != null) {
             order.setShippingAddress(Master.getInstance().getShippingAddress(shippingAddressId).getAddressId());
         }

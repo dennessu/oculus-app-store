@@ -4,9 +4,6 @@
 
 package ${packageName};
 
-import com.junbo.common.error.AppError;
-import com.junbo.common.error.AppErrorException;
-import com.junbo.common.error.Error;
 import com.junbo.langur.core.client.*;
 import com.junbo.langur.core.promise.Promise;
 import com.ning.http.client.AsyncHttpClient;

@@ -19,8 +19,8 @@ public interface ItemRevisionService {
     String getItemRevision(String revisionId) throws Exception;
     String getItemRevision(String revisionId, int expectedResponseCode) throws Exception;
 
-    List<String> getItemRevisions(HashMap<String, String> httpPara) throws Exception;
-    List<String> getItemRevisions(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception;
+    List<String> getItemRevisions(HashMap<String, List<String>> httpPara) throws Exception;
+    List<String> getItemRevisions(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception;
 
     ItemRevision prepareItemRevisionEntity(String fileName) throws Exception;
 

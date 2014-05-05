@@ -38,7 +38,8 @@ public class DBHelper {
         IDENTITY("identity"),
         ORDER("order"),
         PAYMENT("payment"),
-        SHARDING("sharding");
+        SHARDING("sharding"),
+        EWALLET("ewallet");
 
         private String dbName;
 

@@ -62,11 +62,11 @@ class BalanceServiceImpl implements BalanceService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BalanceServiceImpl)
 
-    private static final Set<String> SUPPORT_ASYNC_CHARGE_PI_TYPE
+    private static final Set<Long> SUPPORT_ASYNC_CHARGE_PI_TYPE
 
     static {
-        Set<String> supportAsyncChargePiType = [] as Set
-        supportAsyncChargePiType << PIType.CREDITCARD.name()
+        Set<Long> supportAsyncChargePiType = [] as Set
+        supportAsyncChargePiType << PIType.CREDITCARD.id
 
         SUPPORT_ASYNC_CHARGE_PI_TYPE = Collections.unmodifiableSet(supportAsyncChargePiType)
     }

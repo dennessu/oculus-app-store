@@ -147,6 +147,7 @@ public class CartManager extends TestClass {
         addOrRemoveOfferInCart(primaryCart1, testOffer2, 2, true);
         addCouponInCart(primaryCart1, testCoupon1);
         cs.updateCart(user1, primaryCartId1, primaryCart1);
+        primaryCart1 = Master.getInstance().getCart(primaryCartId1);
 
         //add a few offers and couples to user2's primary cart
         //2 testOffer1 + 3 testOffer3 + testCoupon2
@@ -156,6 +157,7 @@ public class CartManager extends TestClass {
         addOrRemoveOfferInCart(primaryCart2, testOffer3, 3, true);
         addCouponInCart(primaryCart2, testCoupon2);
         cs.updateCart(user2, primaryCartId2, primaryCart2);
+        primaryCart2 = Master.getInstance().getCart(primaryCartId2);
 
         //merge user2's cart to user1's primary cart
         //Merging is actually put now.
@@ -231,6 +233,7 @@ public class CartManager extends TestClass {
             offerItem.setOffer(offerId);
             offerItem.setQuantity(quantity);
             offerItem.setSelected(selected);
+            offerItem.setApproved(true);
             curOffers.add(offerItem);
         }
     }

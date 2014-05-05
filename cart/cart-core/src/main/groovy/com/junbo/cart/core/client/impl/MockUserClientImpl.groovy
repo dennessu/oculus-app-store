@@ -4,10 +4,12 @@ import com.junbo.cart.core.client.IdentityClient
 import com.junbo.common.id.UserId
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
+import groovy.transform.CompileStatic
 
 /**
  * Created by fzhang@wan-san.com on 14-2-18.
  */
+@CompileStatic
 class MockUserClientImpl implements IdentityClient {
     @Override
     Promise<User> getUser(UserId userId) {

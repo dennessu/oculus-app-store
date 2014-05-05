@@ -10,12 +10,14 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.UserId
 import com.wordnik.swagger.annotations.ApiModelProperty
+import groovy.transform.CompileStatic
 
 import javax.ws.rs.QueryParam
 
 /**
  * AgeCheck.
  */
+@CompileStatic
 class AgeCheck {
     @ApiModelProperty(position = 1, required = true, value = '(PASSED,BLOCKED,BANNED)\
                  PASSED represent pass the age gate, BLOCKED represent need to trigger the age verify, \

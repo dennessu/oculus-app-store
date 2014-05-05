@@ -374,4 +374,5 @@ ruleset {
 
         // rulesets: junbo only
         rule('config/codenarc/rules/CheckIgnoredPromiseRule.groovy')
+        rule('config/codenarc/rules/MustCompileStaticRule.groovy')
 }

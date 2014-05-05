@@ -45,15 +45,15 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
     }
 
     @Override
-    public String getPaymentInstrumentByPaymentId(String uid, String paymentInstrumentId) throws Exception {
-        return getPaymentInstrumentByPaymentId(uid, paymentInstrumentId, 200);
+    public String getPaymentInstrumentByPaymentId(String paymentInstrumentId) throws Exception {
+        return getPaymentInstrumentByPaymentId(paymentInstrumentId, 200);
     }
 
     @Override
     public String getPaymentInstrumentByPaymentId(
-            String uid, String paymentInstrumentId, int expectedResponseCode) throws Exception {
+            String paymentInstrumentId, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.GET, paymentInstrumentUrl +
-                "users/" + uid + "/payment-instruments/" + paymentInstrumentId);
+                "payment-instruments/" + paymentInstrumentId);
 
         PaymentInstrument paymentInstrumentResult = new JsonMessageTranscoder().decode(
                 new TypeReference<PaymentInstrument>() {
@@ -68,14 +68,14 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
     }
 
     @Override
-    public List<String> searchPaymentInstrumentsByUserId(String uid) throws Exception {
-        return searchPaymentInstrumentsByUserId(uid, 200);
+    public List<String> getPaymentInstrumentsByUserId(String uid) throws Exception {
+        return getPaymentInstrumentsByUserId(uid, 200);
     }
 
     @Override
-    public List<String> searchPaymentInstrumentsByUserId(String uid, int expectedResponseCode) throws Exception {
+    public List<String> getPaymentInstrumentsByUserId(String uid, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.GET, paymentInstrumentUrl +
-                "users/" + uid + "/payment-instruments/search", expectedResponseCode);
+                "payment-instruments?userId=" + uid, expectedResponseCode);
 
         Results<PaymentInstrument> paymentInstrumentResults = new JsonMessageTranscoder().decode(
                 new TypeReference<Results<PaymentInstrument>>() {
@@ -127,7 +127,7 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
     public String updatePaymentInstrument(String uid, String paymentId, PaymentInstrument paymentInstrument,
                                           int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.PUT, paymentInstrumentUrl
-                + "users/" + uid + "/payment-instruments/" + paymentId, paymentInstrument, expectedResponseCode);
+                + "payment-instruments/" + paymentId, paymentInstrument, expectedResponseCode);
 
         PaymentInstrument paymentInstrumentResult = new JsonMessageTranscoder().decode(
                 new TypeReference<PaymentInstrument>() {
@@ -147,8 +147,7 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
 
     @Override
     public void deletePaymentInstrument(String uid, String paymentId, int expectedResponseCode) throws Exception {
-        restApiCall(HTTPMethod.DELETE, paymentInstrumentUrl + "users/" +
-                uid + "/payment-instruments/" + paymentId, expectedResponseCode);
+        restApiCall(HTTPMethod.DELETE, paymentInstrumentUrl + "payment-instruments/" + paymentId, expectedResponseCode);
         Master.getInstance().removePaymentInstrument(paymentId);
     }
 

@@ -1,10 +1,12 @@
 package com.junbo.billing.clientproxy.impl.avalara
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import groovy.transform.CompileStatic
 
 /**
  * Created by LinYi on 14-3-24.
  */
+@CompileStatic
 class ValidatedAddress {
     // Address line 1
     @JsonProperty('Line1')

@@ -205,8 +205,11 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
 
     public List<String> GetUserByUserName(String userName, int expectedResponseCode) throws Exception {
 
-        HashMap<String, String> paraMap = new HashMap();
-        paraMap.put("username", userName);
+        HashMap<String, List<String>> paraMap = new HashMap();
+        List<String> listUsername = new ArrayList<>();
+        listUsername.add(userName);
+
+        paraMap.put("username", listUsername);
         String responseBody = restApiCall(HTTPMethod.GET, identityServerURL, null, expectedResponseCode, paraMap);
 
         Results<User> userGet = new JsonMessageTranscoder().decode(

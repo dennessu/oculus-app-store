@@ -5,6 +5,7 @@ import com.junbo.catalog.spec.resource.ItemResource
 import com.junbo.common.id.ItemId
 import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
+import groovy.transform.CompileStatic
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
@@ -12,6 +13,7 @@ import javax.ws.rs.core.Response
 /**
  * Created by fzhang on 4/25/2014.
  */
+@CompileStatic
 @Component('mockCatalogItemResource')
 @Scope('prototype')
 class MockItemResource implements ItemResource {

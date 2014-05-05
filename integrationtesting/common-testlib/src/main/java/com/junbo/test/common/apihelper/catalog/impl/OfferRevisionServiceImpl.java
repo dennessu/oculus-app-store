@@ -72,11 +72,11 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
         return offerRevisionRtnId;
     }
 
-    public List<String> getOfferRevisions(HashMap<String, String> httpPara) throws Exception {
+    public List<String> getOfferRevisions(HashMap<String, List<String>> httpPara) throws Exception {
         return getOfferRevisions(httpPara, 200);
     }
 
-    public List<String> getOfferRevisions(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception {
+    public List<String> getOfferRevisions(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara);
         Results<OfferRevision> offerRevisionGet = new JsonMessageTranscoder().decode(
                 new TypeReference<Results<OfferRevision>>() {}, responseBody);
@@ -225,13 +225,6 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
 
         String itemGetId = itemService.getItem(itemId);
         return Master.getInstance().getItem(itemGetId);
-    }
-
-    private String getOffer(EnumHelper.CatalogItemType itemType, Long ownerId) throws Exception {
-        OfferService offerService = OfferServiceImpl.instance();
-        Offer offer = offerService.prepareOfferEntity(defaultOfferFileName);
-        offer.setOwnerId(ownerId);
-        return offerService.postOffer(offer);
     }
 
     public void deleteOfferRevision(String offerRevisionId) throws Exception {

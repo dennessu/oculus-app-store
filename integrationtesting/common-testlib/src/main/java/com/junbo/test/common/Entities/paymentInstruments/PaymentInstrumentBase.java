@@ -11,7 +11,7 @@ import com.junbo.test.common.Entities.enums.PaymentType;
  * Created by Yunlong on 3/25/14.
  */
 public abstract class PaymentInstrumentBase {
-    private String id;
+    private String pid;
     private String userId;
     private boolean isValidated;
     private boolean isDefault;
@@ -25,12 +25,19 @@ public abstract class PaymentInstrumentBase {
     private String relationToHolder;
     private String phoneNumber;
 
-    public String getPhoneNumber() { return phoneNumber; }
 
-    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+    private Long billingAddressId;
 
-    public String getId() {
-        return id;
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getPid() {
+        return pid;
     }
 
     public String getUserId() {
@@ -43,6 +50,10 @@ public abstract class PaymentInstrumentBase {
 
     public boolean isDefault() {
         return isDefault;
+    }
+
+    public Long getBillingAddressId() {
+        return billingAddressId;
     }
 
     public PaymentType getType() {
@@ -81,8 +92,8 @@ public abstract class PaymentInstrumentBase {
         this.relationToHolder = relationToHolder;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setPid(String pid) {
+        this.pid = pid;
     }
 
     public void setUserId(String userId) {
@@ -123,5 +134,10 @@ public abstract class PaymentInstrumentBase {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+
+    public void setBillingAddressId(Long billingAddressId) {
+        this.billingAddressId = billingAddressId;
     }
 }

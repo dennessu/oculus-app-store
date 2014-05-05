@@ -19,8 +19,8 @@ public interface OfferAttributeService {
     String getOfferAttribute(String attributeId) throws Exception;
     String getOfferAttribute(String attributeId, int expectedResponseCode) throws Exception;
 
-    List<String> getOfferAttributes(HashMap<String, String> httpPara) throws Exception;
-    List<String> getOfferAttributes(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception;
+    List<String> getOfferAttributes(HashMap<String, List<String>> httpPara) throws Exception;
+    List<String> getOfferAttributes(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception;
 
     String postOfferAttribute(OfferAttribute offerAttribute) throws Exception;
     String postOfferAttribute(OfferAttribute offerAttribute, int expectedResponseCode) throws Exception;

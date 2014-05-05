@@ -11,15 +11,16 @@ import com.junbo.common.id.UserId
 import com.junbo.identity.spec.v1.model.Address
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
+import groovy.transform.CompileStatic
 
 /**
  * Created by xmchen on 14-2-27.
  */
+@CompileStatic
 class MockIdentityFacadeImpl implements IdentityFacade {
     @Override
     Promise<User> getUser(Long userId) {
         User user = new User()
-        user.setUserName('xmchen')
         user.setStatus('ACTIVE')
         user.setId(new UserId(12345))
         return Promise.pure(user)
