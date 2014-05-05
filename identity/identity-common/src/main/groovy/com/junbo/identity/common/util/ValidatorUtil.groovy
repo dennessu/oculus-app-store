@@ -1,4 +1,4 @@
-package com.junbo.identity.core.service.util
+package com.junbo.identity.common.util
 
 import groovy.transform.CompileStatic
 
