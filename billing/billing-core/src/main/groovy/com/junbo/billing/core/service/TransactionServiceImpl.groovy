@@ -52,6 +52,8 @@ class TransactionServiceImpl implements TransactionService {
                 return charge(balance)
             case BalanceType.MANUAL_CAPTURE:
                 return authorize(balance)
+            case BalanceType.REFUND:
+                return refund(balance)
             default:
                 throw AppErrors.INSTANCE.invalidBalanceType(balance.type).exception()
         }
@@ -235,6 +237,10 @@ class TransactionServiceImpl implements TransactionService {
             balance.addTransaction(transaction)
             return Promise.pure(balance)
         }
+    }
+
+    private Promise<Balance> refund(Balance balance) {
+        return Promise.pure(balance)
     }
 
     private PaymentTransaction generatePaymentTransaction(Balance balance) {

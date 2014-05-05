@@ -28,4 +28,6 @@ public interface BalanceRepository {
     Balance updateBalance(Balance balance, EventActionType eventActionType);
 
     List<BalanceId> fetchAsyncChargeBalanceIds(Integer count);
+
+    List<Balance> getRefundBalancesByOriginalId(Long balanceId);
 }

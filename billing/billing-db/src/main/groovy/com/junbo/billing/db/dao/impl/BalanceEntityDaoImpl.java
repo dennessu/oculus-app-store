@@ -11,10 +11,14 @@ import com.junbo.billing.db.BaseDao;
 import com.junbo.billing.db.entity.BalanceEntity;
 import com.junbo.billing.db.dao.BalanceEntityDao;
 import com.junbo.billing.spec.enums.BalanceStatus;
+import com.junbo.billing.spec.enums.BalanceType;
 import com.junbo.sharding.view.ViewQuery;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -86,5 +90,17 @@ public class BalanceEntityDaoImpl extends BaseDao implements BalanceEntityDao {
         }
 
         return null;
+    }
+
+    @Override
+    public List<BalanceEntity> getRefundBalancesByOriginalId(Long balanceId) {
+        Collection<Short> successStatus = new ArrayList<>();
+        successStatus.add(BalanceStatus.COMPLETED.getId());
+        successStatus.add(BalanceStatus.AWAITING_PAYMENT.getId());
+        Criteria criteria = currentSession(balanceId).createCriteria(BalanceEntity.class)
+                .add(Restrictions.eq("originalBalanceId", balanceId))
+                .add(Restrictions.eq("typeId", BalanceType.REFUND.getId()))
+                .add(Restrictions.in("statusId", successStatus));
+        return criteria.list();
     }
 }

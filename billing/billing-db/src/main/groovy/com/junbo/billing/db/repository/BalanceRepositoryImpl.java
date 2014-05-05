@@ -207,6 +207,21 @@ public class BalanceRepositoryImpl implements BalanceRepository {
         return ids;
     }
 
+    @Override
+    public List<Balance> getRefundBalancesByOriginalId(Long balanceId) {
+        List<BalanceEntity> balanceEntities = balanceEntityDao.getRefundBalancesByOriginalId(balanceId);
+        List<Balance> results = new ArrayList<>();
+        if (balanceEntities != null) {
+            for (BalanceEntity entity : balanceEntities) {
+                Balance balance = getBalance(entity.getBalanceId());
+                if (balance != null) {
+                    results.add(balance);
+                }
+            }
+        }
+        return results;
+    }
+
     private void saveBalanceEventEntity(BalanceEntity balanceEntity, EventActionType eventActionType) {
         // create balance event
         BalanceEventEntity balanceEventEntity = new BalanceEventEntity();
