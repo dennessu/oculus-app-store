@@ -1,4 +1,9 @@
 #!/bin/bash
+
+# stop the execution whenever there is an error
+set -e
+
+# configure environment variables
 export PG_BIN=/Library/PostgreSQL/9.3/bin/
 export PG_DATA_BASE=/tmp/pgha_data
 export PG_USER=postgres
@@ -16,6 +21,7 @@ export SLAVE_TRIGGER_FILE=$PG_DATA_BASE/bring_me_up1
 export ARCHIVE_DATA=$PG_DATA_BASE/archive
 export BACKUP_DATA=$PG_DATA_BASE/backup
 
+# show environment configurtion
 echo "[Master Database Info]"
 echo "Master Server: $MASTER_SERVER"
 echo "Master Port: $MASTER_PORT"

@@ -1,3 +1,8 @@
-#failover steps
-
-#failback steps
+#demo steps
+./purge.sh
+./build_master.sh
+./base_backup.sh
+./build_slave.sh
+./test_replication.sh
+./failover.sh
+./failback.sh

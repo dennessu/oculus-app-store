@@ -1,22 +1,32 @@
 #!/bin/bash
 source set_env.sh
 
-echo "Stop master databases..."
-kill -n 9 $(lsof -i:$MASTER_PORT -t)
+echo "stop master databases..."
+if (lsof -i:$MASTER_PORT -t)
+then
+	kill -n 9 $(lsof -i:$MASTER_PORT -t)
+else
+	echo 'master database is not running...'
+fi
 
-echo "Stop slave databases..."
-kill -n 9 $(lsof -i:$SLAVE_PORT -t)
+echo "stop slave databases..."
+if (lsof -i:$SLAVE_PORT -t)
+then
+	kill -n 9 $(lsof -i:$SLAVE_PORT -t)
+else
+	echo 'slave database is not running...'
+fi
 
-echo "Purge master database..."
+echo "purge master database..."
 rm -rf $MASTER_DATA
 
-echo "Purge slave database..."
+echo "purge slave database..."
 rm -rf $SLAVE_DATA
 
-echo "Purge archive data..."
+echo "purge archive data..."
 rm -rf $ARCHIVE_DATA
 
-echo "Purge backup data..."
+echo "purge backup data..."
 rm -rf $BACKUP_DATA
 
-echo "Finished!"
+echo "finished!"
