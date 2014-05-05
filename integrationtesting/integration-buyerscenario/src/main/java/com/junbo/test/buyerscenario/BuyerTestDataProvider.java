@@ -145,7 +145,6 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
 
         PaymentInstrument paymentInstrument = new PaymentInstrument();
         Address address = new Address();
-        // paymentInstrument.setPhoneNumber("650-253-0000");
         paymentInstrument.setTrackingUuid(UUID.randomUUID());
         ArrayList<Long> admins = new ArrayList<>();
         admins.add(IdConverter.hexStringToId(UserId.class, uid));
@@ -166,7 +165,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
                 address.setState(creditCardInfo.getAddress().getState());
                 address.setCountry(creditCardInfo.getAddress().getCountry());
                 address.setPostalCode(creditCardInfo.getAddress().getPostalCode());
-                paymentInstrument.setType(0L);
+                paymentInstrument.setType(creditCardInfo.getType().getValue());
                 paymentInstrument.setAccountName(creditCardInfo.getAccountName());
                 paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
                 paymentInstrument.setAddress(address);
@@ -176,10 +175,10 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
 
             case EWALLET:
                 EwalletInfo ewalletInfo = (EwalletInfo) paymentInfo;
-                typeSpecificDetails.setStoredValueCurrency("usd");
+                typeSpecificDetails.setStoredValueCurrency(ewalletInfo.getCurrency().toString().toLowerCase());
                 paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
                 paymentInstrument.setAccountName(ewalletInfo.getAccountName());
-                paymentInstrument.setType(2L);
+                paymentInstrument.setType(ewalletInfo.getType().getValue());
                 paymentInstrument.setIsValidated(ewalletInfo.isValidated());
                 paymentInstrument.setBillingAddressId(billingAddressId);
                 address.setAddressLine1(ewalletInfo.getAddress().getAddressLine1());

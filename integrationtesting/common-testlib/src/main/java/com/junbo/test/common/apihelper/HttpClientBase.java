@@ -69,7 +69,7 @@ public abstract class HttpClientBase {
     }
 
     protected <T> String restApiCall(HTTPMethod httpMethod, String restUrl, T t,
-                                 int expectedResponseCode) throws Exception {
+                                     int expectedResponseCode) throws Exception {
         String requestBody = new JsonMessageTranscoder().encode(t);
 
         return restApiCall(httpMethod, restUrl, requestBody, expectedResponseCode);
@@ -110,7 +110,7 @@ public abstract class HttpClientBase {
 
                 logger.LogResponse(nettyResponse);
                 if (expectedResponseCode != 0) {
-                    Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
+                    Assert.assertEquals(nettyResponse.getStatusCode(), expectedResponseCode);
                 }
 
                 return nettyResponse.getResponseBody();
@@ -122,8 +122,7 @@ public abstract class HttpClientBase {
                     for (String key : httpParameters.keySet()) {
                         if (key.length() > 6 && key.substring(0, 6).equals("itemId")) {
                             restUrl = restUrl.concat(String.format("%s=%s", "itemId", httpParameters.get(key)));
-                        }
-                        else {
+                        } else {
                             restUrl = restUrl.concat(String.format("%s=%s", key, httpParameters.get(key)));
                         }
                         restUrl = restUrl.concat("&");
@@ -177,7 +176,7 @@ public abstract class HttpClientBase {
 
                 logger.LogResponse(nettyResponse);
                 if (expectedResponseCode != 0) {
-                    Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
+                    Assert.assertEquals(nettyResponse.getStatusCode(), expectedResponseCode);
                 }
 
                 return nettyResponse.getResponseBody();
@@ -203,7 +202,7 @@ public abstract class HttpClientBase {
         } catch (IOException e) {
             throw e;
         } finally {
-            if (br != null){
+            if (br != null) {
                 br.close();
             }
             if (inStream != null) {
