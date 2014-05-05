@@ -272,6 +272,18 @@ class UserTeleValidatorImpl implements UserTeleValidator {
 
     private Promise<Void> validatePhoneNumber(UserId userId, UserPersonalInfoId phoneNumber) {
         return userRepository.get(userId).then { User user ->
+            if (user == null) {
+                throw AppErrors.INSTANCE.userNotFound(userId).exception()
+            }
+
+            if (user.status != UserStatus.ACTIVE.toString()) {
+                throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
+            }
+
+            if (user.isAnonymous == true) {
+                throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
+            }
+
             if (user.phones == null) {
                 throw AppErrors.INSTANCE.fieldInvalidException('phoneNumber', 'user has no phones').exception()
             }
