@@ -460,5 +460,6 @@
         <property name="minVerifyCodeLength" value="1" />
         <property name="maxVerifyCodeLength" value="255" />
         <property name="maxRetryCount" value="${identity.conf.maxTeleCodeAttemptNumber}" />
+        <property name="transactionManager" ref="transactionManager" />
     </bean>
 </beans>
