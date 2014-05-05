@@ -3,6 +3,7 @@ package com.junbo.identity.core.service.validator.impl
 import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
+import com.junbo.identity.core.service.util.JsonHelper
 import com.junbo.identity.core.service.validator.PiiValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.spec.error.AppErrors
@@ -30,7 +31,7 @@ class PassportValidatorImpl implements PiiValidator {
 
     @Override
     Promise<Void> validate(JsonNode value, UserId userId) {
-        UserPassport userPassport = ObjectMapperProvider.instance().treeToValue(value, UserPassport)
+        UserPassport userPassport = (UserPassport)JsonHelper.jsonNodeToObj(value, UserPassport)
         if (userPassport.value != null) {
             if (userPassport.value.length() > maxPassportLength) {
                 throw AppErrors.INSTANCE.fieldTooLong('value', maxPassportLength).exception()

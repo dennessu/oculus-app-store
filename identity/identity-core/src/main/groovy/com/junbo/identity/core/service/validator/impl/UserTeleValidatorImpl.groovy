@@ -314,20 +314,6 @@ class UserTeleValidatorImpl implements UserTeleValidator {
         return Promise.pure(false)
     }
 
-    private Promise<Boolean> validateUserPhoneLink(UserPersonalInfoLink link, String phoneNumber) {
-        return userPersonalInfoRepository.get(link.value).then { UserPersonalInfo userPersonalInfo ->
-            if (userPersonalInfo == null) {
-                throw AppErrors.INSTANCE.userPersonalInfoNotFound(link.value).exception()
-            }
-
-            PhoneNumber userPhone = ObjectMapperProvider.instance().treeToValue(userPersonalInfo.value, PhoneNumber)
-            if (userPhone.value == phoneNumber) {
-                return Promise.pure(true)
-            }
-            return Promise.pure(false)
-        }
-    }
-
     @Required
     void setMaxTeleCodeExpireTime(Integer maxTeleCodeExpireTime) {
         this.maxTeleCodeExpireTime = maxTeleCodeExpireTime
