@@ -125,7 +125,7 @@ public class PaymentTesting extends BaseTestClass {
                     "1. Create an user",
                     "2. Post two credit cards to user",
                     "3  delete the first credit card",
-                    "3, Validation: response & one the second credit card left"
+                    "3, Validation: response & only the second credit card left"
             }
     )
     @Test
@@ -147,7 +147,7 @@ public class PaymentTesting extends BaseTestClass {
 
     @Property(
             priority = Priority.Dailies,
-            features = "GET /users/{userId}/payment-instruments",
+            features = "GET /payment-instruments?userId={userId}",
             component = Component.Payment,
             owner = "Yunlongzhao",
             status = Status.Enable,
@@ -170,7 +170,7 @@ public class PaymentTesting extends BaseTestClass {
         String creditCardId2 = testDataProvider.postPaymentInstrument(randomUid, creditCardInfo2);
 
         logHelper.LogSample("Get payment instruments");
-        List<String> searchResults = testDataProvider.searchPaymentInstruments(randomUid);
+        List<String> searchResults = testDataProvider.getPaymentInstruments(randomUid);
 
         PaymentValidationHelper.verifyEqual(true, searchResults.contains(creditCardId1), "verify credit card Id 1");
         PaymentValidationHelper.verifyEqual(true, searchResults.contains(creditCardId1), "verify credit card Id 2");
@@ -207,7 +207,7 @@ public class PaymentTesting extends BaseTestClass {
 
     @Property(
             priority = Priority.Dailies,
-            features = "POST /users/{userId}/payment-instruments",
+            features = "POST /wallets/credit",
             component = Component.Payment,
             owner = "Yunlongzhao",
             status = Status.Enable,

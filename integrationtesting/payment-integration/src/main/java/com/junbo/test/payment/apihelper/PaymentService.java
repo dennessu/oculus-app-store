@@ -34,9 +34,9 @@ public interface PaymentService {
 
     void deletePaymentInstrument(String uid, String paymentId, int expectedResponseCode) throws Exception;
 
-    List<String> searchPaymentInstrumentsByUserId(String uid) throws Exception;
+    List<String> getPaymentInstrumentsByUserId(String uid) throws Exception;
 
-    List<String> searchPaymentInstrumentsByUserId(String uid, int expectedResponseCode) throws Exception;
+    List<String> getPaymentInstrumentsByUserId(String uid, int expectedResponseCode) throws Exception;
 
     void creditWallet(CreditRequest creditRequest) throws Exception;
 

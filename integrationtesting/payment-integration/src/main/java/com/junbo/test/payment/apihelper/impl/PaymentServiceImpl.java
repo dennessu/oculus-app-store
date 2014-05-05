@@ -68,14 +68,14 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
     }
 
     @Override
-    public List<String> searchPaymentInstrumentsByUserId(String uid) throws Exception {
-        return searchPaymentInstrumentsByUserId(uid, 200);
+    public List<String> getPaymentInstrumentsByUserId(String uid) throws Exception {
+        return getPaymentInstrumentsByUserId(uid, 200);
     }
 
     @Override
-    public List<String> searchPaymentInstrumentsByUserId(String uid, int expectedResponseCode) throws Exception {
+    public List<String> getPaymentInstrumentsByUserId(String uid, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.GET, paymentInstrumentUrl +
-                "users/" + uid + "/payment-instruments", expectedResponseCode);
+                "payment-instruments?userId=" + uid, expectedResponseCode);
 
         Results<PaymentInstrument> paymentInstrumentResults = new JsonMessageTranscoder().decode(
                 new TypeReference<Results<PaymentInstrument>>() {

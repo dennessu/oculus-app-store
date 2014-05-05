@@ -53,29 +53,7 @@ public class PaymentValidationHelper extends BaseValidationHelper {
                 verifyEqual(typeSpecificDetails.getCreditCardType(), CreditCardInfo.CreditCardGenerator.VISA.toString(),
                         "verify credit card type");
 
-                /* verify billing address
-                Address address = actualPI.getAddress();
-                verifyEqual(address.getAddressLine1(), expectedCreditCard.getAddress().getAddressLine1(),
-                        "verify billing address - Line1");
-                verifyEqual(address.getCity(), expectedCreditCard.getAddress().getCity(),
-                        "verify billing address - City");
-                verifyEqual(address.getState(), expectedCreditCard.getAddress().getState(),
-                        "verify billing address - State");
-                verifyEqual(address.getCountry(), expectedCreditCard.getAddress().getCountry(),
-                        "verify billing address - Country");
-                verifyEqual(address.getPostalCode(), expectedCreditCard.getAddress().getPostalCode(),
-                        "verify billing address - PostalCode");
-
-                //verify phone
-                verifyEqual(actualPI.getPhoneNumber().toString(), expectedCreditCard.getPhone().getNumber(),
-                        "verify phone number");
-                        */
-                //verify other info
-
-                //verifyEqual(actualPI.getIsDefault(), String.valueOf(expectedCreditCard.isDefault()),
-                //        "verify payment is default");
                 break;
-
             case EWALLET:
                 EwalletInfo ewalletInfo = (EwalletInfo) expectedPaymentInfo;
                 verifyEqual(typeSpecificDetails.getStoredValueCurrency(), ewalletInfo.getCurrency().toString(), "verify wallet currency");

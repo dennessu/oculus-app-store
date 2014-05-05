@@ -57,7 +57,6 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
 
         PaymentInstrument paymentInstrument = new PaymentInstrument();
         Address address = new Address();
-       // paymentInstrument.setPhoneNumber("650-253-0000");
         paymentInstrument.setTrackingUuid(UUID.randomUUID());
         ArrayList<Long> admins = new ArrayList<>();
         admins.add(IdConverter.hexStringToId(UserId.class, uid));
@@ -71,21 +70,11 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                 CreditCardInfo creditCardInfo = (CreditCardInfo) paymentInfo;
                 typeSpecificDetails.setExpireDate(creditCardInfo.getExpireDate());
                 typeSpecificDetails.setEncryptedCvmCode(creditCardInfo.getEncryptedCVMCode());
-
                 paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
-                address.setAddressLine1(creditCardInfo.getAddress().getAddressLine1());
-                address.setCity(creditCardInfo.getAddress().getCity());
-                address.setState(creditCardInfo.getAddress().getState());
-                address.setCountry(creditCardInfo.getAddress().getCountry());
-                address.setPostalCode(creditCardInfo.getAddress().getPostalCode());
-
                 paymentInstrument.setAccountName(creditCardInfo.getAccountName());
                 paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
-                //paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
-                paymentInstrument.setAddress(address);
                 paymentInstrument.setIsValidated(creditCardInfo.isValidated());
-                //paymentInstrument.setIsDefault(String.valueOf(creditCardInfo.isDefault()));
-                paymentInstrument.setType(0L);
+                paymentInstrument.setType(creditCardInfo.getType().getValue());
                 paymentInstrument.setBillingAddressId(creditCardInfo.getBillingAddressId());
 
                 return paymentClient.postPaymentInstrument(paymentInstrument);
@@ -95,9 +84,9 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                 typeSpecificDetails.setStoredValueCurrency("usd");
                 paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
                 paymentInstrument.setAccountName(ewalletInfo.getAccountName());
-                paymentInstrument.setType(2L);
+                paymentInstrument.setType(ewalletInfo.getType().getValue());
                 paymentInstrument.setIsValidated(ewalletInfo.isValidated());
-                paymentInstrument.setBillingAddressId(167772224L);
+                paymentInstrument.setBillingAddressId(billingAddressId);
                 address.setAddressLine1(ewalletInfo.getAddress().getAddressLine1());
                 address.setCity(ewalletInfo.getAddress().getCity());
                 address.setState(ewalletInfo.getAddress().getState());
@@ -155,8 +144,8 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
         return paymentClient.getPaymentInstrumentByPaymentId(paymentId);
     }
 
-    public List<String> searchPaymentInstruments(String uid) throws Exception {
-        return paymentClient.searchPaymentInstrumentsByUserId(uid);
+    public List<String> getPaymentInstruments(String uid) throws Exception {
+        return paymentClient.getPaymentInstrumentsByUserId(uid);
     }
 
     public void deletePaymentInstruments(String uid, String paymentId) throws Exception {
