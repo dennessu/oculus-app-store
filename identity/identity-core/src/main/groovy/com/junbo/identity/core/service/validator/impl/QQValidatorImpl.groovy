@@ -3,6 +3,7 @@ package com.junbo.identity.core.service.validator.impl
 import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
+import com.junbo.identity.core.service.util.JsonHelper
 import com.junbo.identity.core.service.validator.PiiValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.spec.error.AppErrors
@@ -29,7 +30,7 @@ class QQValidatorImpl implements PiiValidator {
 
     @Override
     Promise<Void> validate(JsonNode value, UserId userId) {
-        UserQQ userQQ = ObjectMapperProvider.instance().treeToValue(value, UserQQ)
+        UserQQ userQQ = (UserQQ)JsonHelper.jsonNodeToObj(value, UserQQ)
         if (userQQ.qq != null) {
             if (userQQ.qq.length() > maxQQLength) {
                 throw AppErrors.INSTANCE.fieldTooLong('qq', maxQQLength).exception()

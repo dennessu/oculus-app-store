@@ -3,6 +3,7 @@ package com.junbo.identity.core.service.validator.impl
 import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
+import com.junbo.identity.core.service.util.JsonHelper
 import com.junbo.identity.core.service.validator.PiiValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
@@ -38,7 +39,7 @@ class UserEmailValidatorImpl implements PiiValidator {
 
     @Override
     Promise<Void> validate(JsonNode value, UserId userId) {
-        Email email = ObjectMapperProvider.instance().treeToValue(value, Email)
+        Email email = (Email)JsonHelper.jsonNodeToObj(value, Email)
         if (email.value == null) {
             throw AppErrors.INSTANCE.fieldInvalid('value').exception()
         }

@@ -3,6 +3,7 @@ package com.junbo.identity.core.service.validator.impl
 import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
+import com.junbo.identity.core.service.util.JsonHelper
 import com.junbo.identity.core.service.validator.PiiValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.spec.error.AppErrors
@@ -30,7 +31,7 @@ class GovernmentIDValidatorImpl implements PiiValidator {
 
     @Override
     Promise<Void> validate(JsonNode value, UserId userId) {
-        UserGovernmentID userGovernmentID = ObjectMapperProvider.instance().treeToValue(value, UserGovernmentID)
+        UserGovernmentID userGovernmentID = (UserGovernmentID)JsonHelper.jsonNodeToObj(value, UserGovernmentID)
         if (userGovernmentID.value != null) {
             if (userGovernmentID.value.length() > maxGovernmentIDLength) {
                 throw AppErrors.INSTANCE.fieldTooLong('value', maxGovernmentIDLength).exception()

@@ -3,6 +3,7 @@ package com.junbo.identity.clientproxy.impl
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.identity.clientproxy.TeleSign
+import com.junbo.identity.core.service.util.JsonHelper
 import com.junbo.identity.data.identifiable.TeleVerifyType
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.spec.error.AppErrors
@@ -40,7 +41,7 @@ class TeleSignImpl implements TeleSign {
     private Promise<VerifyResponse> sms(UserTeleCode userTeleCode) {
         return userPersonalInfoRepository.get(userTeleCode.phoneNumber).then { UserPersonalInfo userPersonalInfo ->
 
-            PhoneNumber phoneNumber = ObjectMapperProvider.instance().treeToValue(userPersonalInfo.value, PhoneNumber)
+            PhoneNumber phoneNumber = (PhoneNumber)JsonHelper.jsonNodeToObj(userPersonalInfo.value, PhoneNumber)
             VerifyResponse response = null
             try {
                 response = verify.sms(phoneNumber.value, userTeleCode.sentLanguage, userTeleCode.verifyCode,
@@ -56,7 +57,7 @@ class TeleSignImpl implements TeleSign {
 
     private Promise<VerifyResponse> call(UserTeleCode userTeleCode) {
         return userPersonalInfoRepository.get(userTeleCode.phoneNumber).then { UserPersonalInfo userPersonalInfo ->
-            PhoneNumber phoneNumber = ObjectMapperProvider.instance().treeToValue(userPersonalInfo.value, PhoneNumber)
+            PhoneNumber phoneNumber = (PhoneNumber)JsonHelper.jsonNodeToObj(userPersonalInfo.value, PhoneNumber)
             VerifyResponse response = null
             try {
                 response = verify.call(phoneNumber.value, userTeleCode.sentLanguage)
