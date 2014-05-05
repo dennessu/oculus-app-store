@@ -1,5 +1,5 @@
 // CHECKSTYLE:OFF
-package com.junbo.identity.core.service.util;
+package com.junbo.identity.common.util;
 
 /*
  * Copyright (C) 2012 Neo Visionaries Inc.
