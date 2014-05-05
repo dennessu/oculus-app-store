@@ -74,17 +74,23 @@
    3). run ./setupdb.sh to drop old database and create new database in localhost.
    note: all the old data will be removed by this script.
 
-10. copy bundles and start service
+10. install ActiveMQ
+   1). Download activeMQ from http://activemq.apache.org/activemq-591-release.html.   
+   2). tar -zxvf apache-activemq-5.9.1-bin.tar.gz
+   3). start activemq: ./apache-activemq-5.9.1-bin/activemq start
+   4). check status: http://<ip>:8161/ (usr&pwd: admin/admin)
+
+11. copy bundles and start service
    1). in source branch /main/apphost
    2). gradle installApp
    3). /apphost/apphost-cli/build/install/apphost-cli to onebox
    4). killd old one and run ./startup.sh to start identity/catalog/commerce on 8080
 
-11. startup docs bundle
+12. startup docs bundle
    1). go to main/bootstrap/docs-bundle
    2). gradle installApp
    3). copy bootstrap/docs-bundle/build/install/docs-bundle to onebox
    4). kill old one and run ./startup.sh to start docs on 8079
    5). use http://oneboxip:8079/ to check docs
    
-10. populate catalog data(TBD) 
+13. populate catalog data(TBD) 
