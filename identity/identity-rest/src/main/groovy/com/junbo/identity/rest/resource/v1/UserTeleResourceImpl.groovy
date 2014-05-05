@@ -43,8 +43,13 @@ class UserTeleResourceImpl implements UserTeleResource {
 
     @Override
     Promise<UserTeleCode> create(UserId userId, UserTeleCode userTeleCode) {
+        // todo:    For all secondary resource, should ignore the first level resource's input.
         if (userTeleCode == null) {
             throw new IllegalArgumentException('userTeleCode is null')
+        }
+
+        if (userTeleCode.userId != null && userTeleCode.userId != userId) {
+            throw AppErrors.INSTANCE.fieldInvalid('userId', userId.toString()).exception()
         }
 
         userTeleCode = userTeleFilter.filterForCreate(userTeleCode)

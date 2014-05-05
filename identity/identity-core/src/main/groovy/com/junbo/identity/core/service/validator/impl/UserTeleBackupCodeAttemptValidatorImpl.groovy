@@ -1,17 +1,18 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.id.UserId
-import com.junbo.common.id.UserTeleAttemptId
-import com.junbo.identity.core.service.validator.UserTeleAttemptValidator
+import com.junbo.common.id.UserTeleBackupCodeAttemptId
+import com.junbo.identity.core.service.validator.UserTeleBackupCodeAttemptValidator
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.UserRepository
-import com.junbo.identity.data.repository.UserTeleAttemptRepository
-import com.junbo.identity.data.repository.UserTeleRepository
+import com.junbo.identity.data.repository.UserTeleBackupCodeAttemptRepository
+import com.junbo.identity.data.repository.UserTeleBackupCodeRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserTeleAttempt
-import com.junbo.identity.spec.v1.model.UserTeleCode
-import com.junbo.identity.spec.v1.option.list.UserTeleAttemptListOptions
+import com.junbo.identity.spec.v1.model.UserTeleBackupCode
+import com.junbo.identity.spec.v1.model.UserTeleBackupCodeAttempt
+import com.junbo.identity.spec.v1.option.list.UserTeleBackupCodeAttemptListOptions
+import com.junbo.identity.spec.v1.option.list.UserTeleBackupCodeListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
@@ -20,14 +21,14 @@ import org.springframework.util.CollectionUtils
 import java.util.regex.Pattern
 
 /**
- * Created by liangfu on 5/4/14.
+ * Created by liangfu on 5/5/14.
  */
 @CompileStatic
-class UserTeleAttemptValidatorImpl implements UserTeleAttemptValidator {
+class UserTeleBackupCodeAttemptValidatorImpl implements UserTeleBackupCodeAttemptValidator {
 
     private UserRepository userRepository
-    private UserTeleRepository userTeleRepository
-    private UserTeleAttemptRepository userTeleAttemptRepository
+    private UserTeleBackupCodeRepository userTeleBackupCodeRepository
+    private UserTeleBackupCodeAttemptRepository userTeleBackupCodeAttemptRepository
 
     private Integer minVerifyCodeLength
     private Integer maxVerifyCodeLength
@@ -40,78 +41,69 @@ class UserTeleAttemptValidatorImpl implements UserTeleAttemptValidator {
     private Integer minClientIdLength
     private Integer maxClientIdLength
 
-    private Integer maxTeleCodeAttemptNumber
+    private Integer maxRetryCount
 
     @Override
-    Promise<UserTeleAttempt> validateForGet(UserId userId, UserTeleAttemptId attemptId) {
+    Promise<UserTeleBackupCodeAttempt> validateForGet(UserId userId, UserTeleBackupCodeAttemptId attemptId) {
         if (userId == null) {
             throw new IllegalArgumentException('userId is null')
         }
 
         if (attemptId == null) {
-            throw new IllegalArgumentException('userTeleAttemptId is null')
+            throw new IllegalArgumentException('userTeleBackupCodeAttemptId is null')
         }
 
-        return userRepository.get(userId).then { User existingUser ->
-            if (existingUser == null) {
+        return userRepository.get(userId).then { User user ->
+            if (user == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
 
-            if (existingUser.status != UserStatus.ACTIVE.toString()) {
+            if (user.status != UserStatus.ACTIVE.toString()) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
 
-            if (existingUser.isAnonymous == true) {
+            if (user.isAnonymous == true) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
 
-            return userTeleAttemptRepository.get(attemptId).then { UserTeleAttempt userTeleAttempt ->
-                if (userTeleAttempt == null) {
-                    throw AppErrors.INSTANCE.userTeleAttemptNotFound(attemptId).exception()
+            return userTeleBackupCodeAttemptRepository.get(attemptId).then { UserTeleBackupCodeAttempt attempt ->
+                if (attempt == null) {
+                    throw AppErrors.INSTANCE.userTeleBackupCodeAttemptNotFound(attemptId).exception()
                 }
 
-                if (userTeleAttempt.userId != userId) {
-                    throw AppErrors.INSTANCE.fieldInvalidException('userTeleAttemptId',
-                            'userId doesn\'t match with userTeleAttempt.').exception()
+                if (attempt.userId != userId) {
+                    throw AppErrors.INSTANCE.fieldInvalid('attemptId', 'AttemptId and userId don\'t match.').exception()
                 }
 
-                return Promise.pure(userTeleAttempt)
+                return Promise.pure(attempt)
             }
         }
     }
 
     @Override
-    Promise<Void> validateForSearch(UserId userId, UserTeleAttemptListOptions options) {
+    Promise<Void> validateForSearch(UserId userId, UserTeleBackupCodeAttemptListOptions options) {
         if (userId == null) {
             throw new IllegalArgumentException('userId is null')
         }
         if (options == null) {
             throw new IllegalArgumentException('options is null')
         }
-
         options.userId = userId
+
         return Promise.pure(null)
     }
 
     @Override
-    Promise<Void> validateForCreate(UserId userId, UserTeleAttempt attempt) {
+    Promise<Void> validateForCreate(UserId userId, UserTeleBackupCodeAttempt attempt) {
         if (userId == null) {
             throw new IllegalArgumentException('userId is null')
         }
-
         if (attempt == null) {
-            throw new IllegalArgumentException('attmpt is null')
-        }
-
-        if (attempt.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
-        }
-        if (attempt.userTeleId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('userTeleId').exception()
+            throw new IllegalArgumentException('attempt is null')
         }
 
         if (attempt.verifyCode == null) {
-            throw AppErrors.INSTANCE.fieldRequired('verifyCode').exception()
+            throw AppErrors.INSTANCE.fieldInvalid('verifyCode').exception()
         }
         if (attempt.verifyCode.length() > maxVerifyCodeLength) {
             throw AppErrors.INSTANCE.fieldTooLong('verifyCode', maxVerifyCodeLength).exception()
@@ -154,6 +146,7 @@ class UserTeleAttemptValidatorImpl implements UserTeleAttemptValidator {
             if (user == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
+
             if (user.status != UserStatus.ACTIVE.toString()) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
@@ -161,61 +154,48 @@ class UserTeleAttemptValidatorImpl implements UserTeleAttemptValidator {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
 
-            return userTeleRepository.get(attempt.userTeleId).then { UserTeleCode userTeleCode ->
-                if (userTeleCode == null) {
-                    throw AppErrors.INSTANCE.userTeleCodeNotFound(attempt.userTeleId).exception()
+            attempt.userId = userId
+
+            return userTeleBackupCodeRepository.search(new UserTeleBackupCodeListOptions(
+                    userId: userId,
+                    active: true
+            )).then { List<UserTeleBackupCode> userTeleBackupCodeList ->
+                if (CollectionUtils.isEmpty(userTeleBackupCodeList)) {
+                    throw AppErrors.INSTANCE.userTeleBackupCodeIncorrect().exception()
                 }
 
-                if (userTeleCode.userId != userId) {
-                    throw AppErrors.INSTANCE.fieldInvalidException('userId',
-                            'userId isn\'t matched to userTeleId.').exception()
-                }
-
-                if (userTeleCode.active != true) {
-                    throw AppErrors.INSTANCE.fieldInvalidException('userTeleId', 'Tele code isn\'t active.').exception()
-                }
-
-                if (userTeleCode.expiresBy.before(new Date())) {
-                    throw AppErrors.INSTANCE.fieldInvalidException('userTeleId', 'Tele code expired.').exception()
-                }
-
-                if (userTeleCode.verifyCode == attempt.verifyCode) {
+                if (userTeleBackupCodeList.any { UserTeleBackupCode userTeleBackupCode ->
+                    return (userTeleBackupCode.active && userTeleBackupCode.expiresBy.after(new Date())
+                        && userTeleBackupCode.verifyCode == attempt.verifyCode)
+                }) {
                     attempt.succeeded = true
                 } else {
                     attempt.succeeded = false
                 }
 
-                attempt.userId = userId
-
-                // todo:    Is it possible to add limitation and paging to control the size?
-                // todo:    How to sort by some column?
-                return userTeleAttemptRepository.search(new UserTeleAttemptListOptions(
-                        userId: userId,
-                        userTeleId: attempt.userTeleId
-                )).then { List<UserTeleAttempt> userTeleAttemptList ->
-                    if (CollectionUtils.isEmpty(userTeleAttemptList)
-                     || userTeleAttemptList.size() < maxTeleCodeAttemptNumber) {
+                return userTeleBackupCodeAttemptRepository.search(new UserTeleBackupCodeAttemptListOptions(
+                        userId:userId
+                )).then { List<UserTeleBackupCodeAttempt> attemptList ->
+                    if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxRetryCount) {
                         return Promise.pure(null)
                     }
 
-                    userTeleAttemptList.sort(new Comparator<UserTeleAttempt>() {
+                    attemptList.sort(new Comparator<UserTeleBackupCodeAttempt>() {
                         @Override
-                        int compare(UserTeleAttempt o1, UserTeleAttempt o2) {
+                        int compare(UserTeleBackupCodeAttempt o1, UserTeleBackupCodeAttempt o2) {
                             return o2.createdTime <=> o1.createdTime
                         }
-                    }
-                    )
+                    })
 
-                    int size = 0;
-                    for (; size < maxTeleCodeAttemptNumber; size++) {
-                        if (userTeleAttemptList.get(size).succeeded == true) {
+                    int index = 0
+                    for( ; index < maxRetryCount; index++) {
+                        if (attemptList.get(index).succeeded == true) {
                             break
                         }
                     }
 
-                    if (size == maxTeleCodeAttemptNumber) {
-                        throw AppErrors.INSTANCE.fieldInvalid('userTeleId',
-                                'UserTele attempt reaches the maximum.').exception()
+                    if (index == maxRetryCount) {
+                        throw AppErrors.INSTANCE.fieldInvalid('verifyCode', 'Attempt reaches maximum.').exception()
                     }
 
                     return Promise.pure(null)
@@ -224,27 +204,19 @@ class UserTeleAttemptValidatorImpl implements UserTeleAttemptValidator {
         }
     }
 
-
     @Required
     void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository
     }
 
     @Required
-    void setUserTeleRepository(UserTeleRepository userTeleRepository) {
-        this.userTeleRepository = userTeleRepository
+    void setUserTeleBackupCodeRepository(UserTeleBackupCodeRepository userTeleBackupCodeRepository) {
+        this.userTeleBackupCodeRepository = userTeleBackupCodeRepository
     }
 
     @Required
-    void setUserTeleAttemptRepository(UserTeleAttemptRepository userTeleAttemptRepository) {
-        this.userTeleAttemptRepository = userTeleAttemptRepository
-    }
-
-    @Required
-    void setAllowedIPPatterns(List<String> allowedIPPatterns) {
-        this.allowedIPPatterns = allowedIPPatterns.collect {
-            String pattern -> Pattern.compile(pattern)
-        }
+    void setUserTeleBackupCodeAttemptRepository(UserTeleBackupCodeAttemptRepository userTeleBackupCodeAttemptRepository) {
+        this.userTeleBackupCodeAttemptRepository = userTeleBackupCodeAttemptRepository
     }
 
     @Required
@@ -255,6 +227,13 @@ class UserTeleAttemptValidatorImpl implements UserTeleAttemptValidator {
     @Required
     void setMaxVerifyCodeLength(Integer maxVerifyCodeLength) {
         this.maxVerifyCodeLength = maxVerifyCodeLength
+    }
+
+    @Required
+    void setAllowedIPPatterns(List<String> allowedIPPatterns) {
+        this.allowedIPPatterns = allowedIPPatterns.collect {
+            String pattern -> Pattern.compile(pattern)
+        }
     }
 
     @Required
@@ -278,7 +257,8 @@ class UserTeleAttemptValidatorImpl implements UserTeleAttemptValidator {
     }
 
     @Required
-    void setMaxTeleCodeAttemptNumber(Integer maxTeleCodeAttemptNumber) {
-        this.maxTeleCodeAttemptNumber = maxTeleCodeAttemptNumber
+    void setMaxRetryCount(Integer maxRetryCount) {
+        this.maxRetryCount = maxRetryCount
     }
 }
+
