@@ -14,8 +14,13 @@ import com.junbo.identity.spec.v1.model.UserTeleBackupCodeAttempt
 import com.junbo.identity.spec.v1.option.list.UserTeleBackupCodeAttemptListOptions
 import com.junbo.identity.spec.v1.option.list.UserTeleBackupCodeListOptions
 import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.transaction.AsyncTransactionTemplate
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.transaction.PlatformTransactionManager
+import org.springframework.transaction.TransactionDefinition
+import org.springframework.transaction.TransactionStatus
+import org.springframework.transaction.support.TransactionCallback
 import org.springframework.util.CollectionUtils
 
 import java.util.regex.Pattern
@@ -42,6 +47,7 @@ class UserTeleBackupCodeAttemptValidatorImpl implements UserTeleBackupCodeAttemp
     private Integer maxClientIdLength
 
     private Integer maxRetryCount
+    private PlatformTransactionManager transactionManager
 
     @Override
     Promise<UserTeleBackupCodeAttempt> validateForGet(UserId userId, UserTeleBackupCodeAttemptId attemptId) {
@@ -173,35 +179,56 @@ class UserTeleBackupCodeAttemptValidatorImpl implements UserTeleBackupCodeAttemp
                     attempt.succeeded = false
                 }
 
-                return userTeleBackupCodeAttemptRepository.search(new UserTeleBackupCodeAttemptListOptions(
-                        userId:userId
-                )).then { List<UserTeleBackupCodeAttempt> attemptList ->
-                    if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxRetryCount) {
-                        return Promise.pure(null)
-                    }
-
-                    attemptList.sort(new Comparator<UserTeleBackupCodeAttempt>() {
-                        @Override
-                        int compare(UserTeleBackupCodeAttempt o1, UserTeleBackupCodeAttempt o2) {
-                            return o2.createdTime <=> o1.createdTime
-                        }
-                    })
-
-                    int index = 0
-                    for( ; index < maxRetryCount; index++) {
-                        if (attemptList.get(index).succeeded == true) {
-                            break
-                        }
-                    }
-
-                    if (index == maxRetryCount) {
-                        throw AppErrors.INSTANCE.fieldInvalid('verifyCode', 'Attempt reaches maximum.').exception()
-                    }
-
-                    return Promise.pure(null)
-                }
+                return checkMaximumRetryCount(user, attempt)
             }
         }
+    }
+
+    private Promise<Void> checkMaximumRetryCount(User user, UserTeleBackupCodeAttempt attempt) {
+        if (attempt.succeeded == true) {
+            return Promise.pure(null)
+        }
+
+        return userTeleBackupCodeAttemptRepository.search(new UserTeleBackupCodeAttemptListOptions(
+                userId:(UserId)user.id
+        )).then { List<UserTeleBackupCodeAttempt> attemptList ->
+            if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxRetryCount) {
+                return Promise.pure(null)
+            }
+
+            attemptList.sort(new Comparator<UserTeleBackupCodeAttempt>() {
+                @Override
+                int compare(UserTeleBackupCodeAttempt o1, UserTeleBackupCodeAttempt o2) {
+                    return o2.createdTime <=> o1.createdTime
+                }
+            })
+
+            int index = 0
+            for( ; index < maxRetryCount; index++) {
+                if (attemptList.get(index).succeeded == true) {
+                    break
+                }
+            }
+
+            if (index == maxRetryCount) {
+                user.status = UserStatus.SUSPEND.toString()
+                return createInNewTran(user).then {
+                    throw AppErrors.INSTANCE.fieldInvalid('verifyCode', 'Attempt reaches maximum.').exception()
+                }
+            }
+
+            return Promise.pure(null)
+        }
+    }
+
+    Promise<User> createInNewTran(User user) {
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager)
+        template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
+        return template.execute(new TransactionCallback<Promise<User>>() {
+            Promise<User> doInTransaction(TransactionStatus txnStatus) {
+                return userRepository.update(user)
+            }
+        })
     }
 
     @Required
@@ -259,6 +286,11 @@ class UserTeleBackupCodeAttemptValidatorImpl implements UserTeleBackupCodeAttemp
     @Required
     void setMaxRetryCount(Integer maxRetryCount) {
         this.maxRetryCount = maxRetryCount
+    }
+
+    @Required
+    void setTransactionManager(PlatformTransactionManager transactionManager) {
+        this.transactionManager = transactionManager
     }
 }
 
