@@ -31,9 +31,9 @@ public class PaymentValidationHelper extends BaseValidationHelper {
         super();
     }
 
-    public void validatePaymentInstrument(String paymentId, PaymentInstrumentBase expectedPaymentInfo) throws Exception {
+    public void validatePaymentInstrument(PaymentInstrumentBase expectedPaymentInfo) throws Exception {
 
-        PaymentInstrument actualPI = Master.getInstance().getPaymentInstrument(paymentId);
+        PaymentInstrument actualPI = Master.getInstance().getPaymentInstrument(expectedPaymentInfo.getPid());
         TypeSpecificDetails typeSpecificDetails = actualPI.getTypeSpecificDetails();
         verifyEqual(actualPI.getType(), expectedPaymentInfo.getType().getValue(), "verify payment type");
         verifyEqual(actualPI.getAccountName(), expectedPaymentInfo.getAccountName(), "verify account name");
@@ -74,11 +74,12 @@ public class PaymentValidationHelper extends BaseValidationHelper {
 
     }
 
-    public void validatePaymentInstruments(List<String> paymentList, List<PaymentInstrumentBase> expectedPaymentList) {
-        verifyEqual(paymentList.size(), expectedPaymentList.size(), "verify payment list size");
-        for (int i = 0; i < paymentList.size(); i++) {
-            //TODO Need Sort
-            // validatePaymentInstrument(paymentList.get(i), expectedPaymentList.get(i));
+    public void validatePaymentInstruments(List<PaymentInstrumentBase> expectedPaymentList) throws Exception {
+        verifyEqual(Master.getInstance().getPaymentInstruments().size(),
+
+                expectedPaymentList.size(), "verify payments quantity");
+        for (int i = 0; i < expectedPaymentList.size(); i++) {
+            validatePaymentInstrument(expectedPaymentList.get(i));
         }
     }
 
