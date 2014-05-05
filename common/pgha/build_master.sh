@@ -1,11 +1,6 @@
 #!/bin/bash
 source set_env.sh
 
-echo "[Master Database Info]"
-echo "Server: $MASTER_SERVER"
-echo "Port: $MASTER_PORT"
-echo "Data File: $MASTER_DATA"
-
 echo "Clean up exisitng master database..."
 rm -rf $MASTER_DATA
 rm -rf $ARCHIVE_DATA

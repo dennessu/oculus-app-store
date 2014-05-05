@@ -1,11 +1,6 @@
 #!/bin/bash
 source set_env.sh
 
-echo "[Slave Database Info]"
-echo "Server: $SLAVE_SERVER"
-echo "Port: $SLAVE_PORT"
-echo "Data File: $SLAVE_DATA"
-
 echo "Clean up exisitng slave database..."
 rm -rf $SLAVE_DATA
 kill -n 9 $(lsof -i:$SLAVE_PORT -t)
@@ -24,7 +19,7 @@ recovery_target_timeline = 'latest'
 restore_command = 'cp $ARCHIVE_DATA/%f %p'
 standby_mode = 'on'
 primary_conninfo = 'user=$PG_USER host=$MASTER_SERVER port=$MASTER_PORT sslmode=prefer sslcompression=1 krbsrvname=$PG_USER'
-trigger_file = '$TRIGGER_FILE'
+trigger_file = '$SLAVE_TRIGGER_FILE'
 EOF
 
 echo "Configure postgres.conf..."
