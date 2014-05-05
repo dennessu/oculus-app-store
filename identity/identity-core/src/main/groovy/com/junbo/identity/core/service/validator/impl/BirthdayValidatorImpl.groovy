@@ -3,6 +3,7 @@ package com.junbo.identity.core.service.validator.impl
 import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
+import com.junbo.identity.core.service.util.JsonHelper
 import com.junbo.identity.core.service.validator.PiiValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.spec.error.AppErrors
@@ -29,7 +30,7 @@ class BirthdayValidatorImpl implements PiiValidator {
 
     @Override
     Promise<Void> validate(JsonNode value, UserId userId) {
-        UserDOB userDOB = ObjectMapperProvider.instance().treeToValue(value, UserDOB)
+        UserDOB userDOB = (UserDOB)JsonHelper.jsonNodeToObj(value, UserDOB)
         Date birthday = userDOB.birthday
         if (birthday == null) {
             throw new IllegalArgumentException('birthday is null')

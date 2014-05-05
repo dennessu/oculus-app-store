@@ -197,4 +197,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 404, code = "2000055", description = "User tele backup code is incorrect.")
     AppError userTeleBackupCodeIncorrect();
+
+    @ErrorDef(httpStatusCode = 404, code = "2000056", description = "User {0} is not in valid status.", field = "{0}")
+    AppError userInInvalidStatus(String username);
 }

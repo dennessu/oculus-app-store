@@ -3,6 +3,7 @@ package com.junbo.identity.core.service.validator.impl
 import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
+import com.junbo.identity.core.service.util.JsonHelper
 import com.junbo.identity.core.service.validator.PiiValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.spec.v1.model.Address
@@ -25,7 +26,7 @@ class AddressValidatorImpl implements PiiValidator {
 
     @Override
     Promise<Void> validate(JsonNode value, UserId userId) {
-        ObjectMapperProvider.instance().treeToValue(value, Address)
+        Address address = (Address)JsonHelper.jsonNodeToObj(value, Address)
 
         return Promise.pure(null)
         // todo:    User Address

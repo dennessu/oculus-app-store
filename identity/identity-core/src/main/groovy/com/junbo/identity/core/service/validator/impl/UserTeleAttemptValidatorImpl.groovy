@@ -13,8 +13,13 @@ import com.junbo.identity.spec.v1.model.UserTeleAttempt
 import com.junbo.identity.spec.v1.model.UserTeleCode
 import com.junbo.identity.spec.v1.option.list.UserTeleAttemptListOptions
 import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.transaction.AsyncTransactionTemplate
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.transaction.PlatformTransactionManager
+import org.springframework.transaction.TransactionDefinition
+import org.springframework.transaction.TransactionStatus
+import org.springframework.transaction.support.TransactionCallback
 import org.springframework.util.CollectionUtils
 
 import java.util.regex.Pattern
@@ -41,6 +46,7 @@ class UserTeleAttemptValidatorImpl implements UserTeleAttemptValidator {
     private Integer maxClientIdLength
 
     private Integer maxTeleCodeAttemptNumber
+    private PlatformTransactionManager transactionManager
 
     @Override
     Promise<UserTeleAttempt> validateForGet(UserId userId, UserTeleAttemptId attemptId) {
@@ -187,43 +193,63 @@ class UserTeleAttemptValidatorImpl implements UserTeleAttemptValidator {
 
                 attempt.userId = userId
 
-                // todo:    Is it possible to add limitation and paging to control the size?
-                // todo:    How to sort by some column?
-                return userTeleAttemptRepository.search(new UserTeleAttemptListOptions(
-                        userId: userId,
-                        userTeleId: attempt.userTeleId
-                )).then { List<UserTeleAttempt> userTeleAttemptList ->
-                    if (CollectionUtils.isEmpty(userTeleAttemptList)
-                     || userTeleAttemptList.size() < maxTeleCodeAttemptNumber) {
-                        return Promise.pure(null)
-                    }
-
-                    userTeleAttemptList.sort(new Comparator<UserTeleAttempt>() {
-                        @Override
-                        int compare(UserTeleAttempt o1, UserTeleAttempt o2) {
-                            return o2.createdTime <=> o1.createdTime
-                        }
-                    }
-                    )
-
-                    int size = 0;
-                    for (; size < maxTeleCodeAttemptNumber; size++) {
-                        if (userTeleAttemptList.get(size).succeeded == true) {
-                            break
-                        }
-                    }
-
-                    if (size == maxTeleCodeAttemptNumber) {
-                        throw AppErrors.INSTANCE.fieldInvalid('userTeleId',
-                                'UserTele attempt reaches the maximum.').exception()
-                    }
-
-                    return Promise.pure(null)
-                }
+                return checkMaximumRetryCount(user, attempt)
             }
         }
     }
 
+    private Promise<Void> checkMaximumRetryCount(User user, UserTeleAttempt attempt) {
+        if (attempt.succeeded == true) {
+            return Promise.pure(null)
+        }
+
+        // todo:    Is it possible to add limitation and paging to control the size?
+        // todo:    How to sort by some column?
+        return userTeleAttemptRepository.search(new UserTeleAttemptListOptions(
+                userId: (UserId)user.id,
+                userTeleId: attempt.userTeleId
+        )).then { List<UserTeleAttempt> userTeleAttemptList ->
+            if (CollectionUtils.isEmpty(userTeleAttemptList)
+                    || userTeleAttemptList.size() < maxTeleCodeAttemptNumber) {
+                return Promise.pure(null)
+            }
+
+            userTeleAttemptList.sort(new Comparator<UserTeleAttempt>() {
+                @Override
+                int compare(UserTeleAttempt o1, UserTeleAttempt o2) {
+                    return o2.createdTime <=> o1.createdTime
+                }
+            }
+            )
+
+            int size = 0;
+            for (; size < maxTeleCodeAttemptNumber; size++) {
+                if (userTeleAttemptList.get(size).succeeded == true) {
+                    break
+                }
+            }
+
+            if (size == maxTeleCodeAttemptNumber) {
+                user.status = UserStatus.SUSPEND.toString()
+                return createInNewTran(user).then {
+                    throw AppErrors.INSTANCE.fieldInvalid('userTeleId',
+                            'UserTele attempt reaches the maximum.').exception()
+                }
+            }
+
+            return Promise.pure(null)
+        }
+    }
+
+    Promise<User> createInNewTran(User user) {
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager)
+        template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
+        return template.execute(new TransactionCallback<Promise<User>>() {
+            Promise<User> doInTransaction(TransactionStatus txnStatus) {
+                return userRepository.update(user)
+            }
+        })
+    }
 
     @Required
     void setUserRepository(UserRepository userRepository) {
@@ -280,5 +306,9 @@ class UserTeleAttemptValidatorImpl implements UserTeleAttemptValidator {
     @Required
     void setMaxTeleCodeAttemptNumber(Integer maxTeleCodeAttemptNumber) {
         this.maxTeleCodeAttemptNumber = maxTeleCodeAttemptNumber
+    }
+
+    void setTransactionManager(PlatformTransactionManager transactionManager) {
+        this.transactionManager = transactionManager
     }
 }

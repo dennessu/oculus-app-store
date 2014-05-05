@@ -3,6 +3,7 @@ package com.junbo.identity.core.service.validator.impl
 import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
+import com.junbo.identity.core.service.util.JsonHelper
 import com.junbo.identity.core.service.validator.PiiValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.spec.error.AppErrors
@@ -30,7 +31,7 @@ class UserWhatsAppValidatorImpl implements PiiValidator {
 
     @Override
     Promise<Void> validate(JsonNode value, UserId userId) {
-        UserWhatsApp userWhatsApp = ObjectMapperProvider.instance().treeToValue(value, UserWhatsApp)
+        UserWhatsApp userWhatsApp = (UserWhatsApp)JsonHelper.jsonNodeToObj(value, UserWhatsApp)
         if (userWhatsApp.value != null) {
             if (userWhatsApp.value.length() > maxWhatsAppLength) {
                 throw AppErrors.INSTANCE.fieldTooLong('whatsApp', maxWhatsAppLength).exception()
