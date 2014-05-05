@@ -1,5 +1,6 @@
 #!/bin/bash
 source set_env.sh
+source show_info.sh
 
 mkdir -p $PG_DATA_BASE
 rm -rf $BACKUP_DATA

@@ -1,5 +1,6 @@
 #!/bin/bash
 source set_env.sh
+source show_info.sh
 
 echo "stop master databases..."
 if (lsof -i:$MASTER_PORT -t)

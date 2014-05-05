@@ -1,5 +1,6 @@
 #!/bin/bash
 source set_env.sh
+source show_info.sh
 
 echo "stop slave databases..."
 if (lsof -i:$SLAVE_PORT -t)
@@ -32,7 +33,6 @@ EOF
 echo "configure postgres.conf..."
 cat >> $SLAVE_DATA/postgresql.conf <<EOF
 port = $SLAVE_PORT
-hot_standby = on
 EOF
 
 echo "start slave database..."
