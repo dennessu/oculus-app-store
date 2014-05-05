@@ -32,6 +32,7 @@
     <bean id="defaultUserTeleResource" class="com.junbo.identity.rest.resource.v1.UserTeleResourceImpl" scope="prototype" />
     <bean id="defaultUserTeleAttemptResource" class="com.junbo.identity.rest.resource.v1.UserTeleAttemptResourceImpl" scope="prototype" />
     <bean id="defaultUserTeleBackupCodeResource" class="com.junbo.identity.rest.resource.v1.UserTeleBackupCodeResourceImpl" scope="prototype" />
+    <bean id="defaultUserTeleBackupCodeAttemptResource" class="com.junbo.identity.rest.resource.v1.UserTeleBackupCodeAttemptResourceImpl" scope="prototype" />
 
     <bean id="defaultRoleResource" class="com.junbo.identity.rest.resource.v1.RoleResourceImpl" scope="prototype">
         <property name="created201Marker" ref="created201Marker"/>
