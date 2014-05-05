@@ -30,6 +30,7 @@ public class EntitlementDefinitionEntity extends BaseEntity {
     private String tag;
     private Boolean consumable;
     private List<String> inAppContext;
+    private String externalNotification;
     private UUID trackingUuid;
 
     @Id
@@ -95,6 +96,15 @@ public class EntitlementDefinitionEntity extends BaseEntity {
 
     public void setConsumable(Boolean consumable) {
         this.consumable = consumable;
+    }
+
+    @Column(name = "external_notification")
+    public String getExternalNotification() {
+        return externalNotification;
+    }
+
+    public void setExternalNotification(String externalNotification) {
+        this.externalNotification = externalNotification;
     }
 
     @Column(name = "tracking_uuid")

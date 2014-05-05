@@ -41,6 +41,7 @@ public class EntitlementDefinitionMapper {
         entitlementDefinition.setItemId(entitlementDefinitionEntity.getItemId());
         entitlementDefinition.setTag(entitlementDefinitionEntity.getTag());
         entitlementDefinition.setConsumable(entitlementDefinitionEntity.getConsumable());
+        entitlementDefinition.setExternalNotification(entitlementDefinitionEntity.getExternalNotification());
         return entitlementDefinition;
     }
 
@@ -63,6 +64,7 @@ public class EntitlementDefinitionMapper {
         entitlementDefinitionEntity.setItemId(entitlementDefinition.getItemId());
         entitlementDefinitionEntity.setTag(entitlementDefinition.getTag());
         entitlementDefinitionEntity.setConsumable(entitlementDefinition.getConsumable());
+        entitlementDefinitionEntity.setExternalNotification(entitlementDefinition.getExternalNotification());
         return entitlementDefinitionEntity;
     }
 
