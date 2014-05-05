@@ -44,7 +44,7 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
         }
 
         if (options.type == null) {
-            throw AppErrors.INSTANCE.parameterRequired('type').exception()
+            throw AppErrors.INSTANCE.parameterRequired('credentialType').exception()
         }
         options.setUserId(userId)
 
