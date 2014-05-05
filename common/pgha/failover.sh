@@ -20,11 +20,6 @@ primary_conninfo = 'user=$PG_USER host=$SLAVE_SERVER port=$SLAVE_PORT sslmode=pr
 trigger_file = '$MASTER_TRIGGER_FILE'
 EOF
 
-echo "configure postgres.conf for old master..."
-cat >> $MASTER_DATA/postgresql.conf <<EOF
-hot_standby = on
-EOF
-
 echo "start master database..."
 $PG_BIN/pg_ctl -D $MASTER_DATA start
 

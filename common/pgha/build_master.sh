@@ -32,6 +32,7 @@ archive_command = 'cp %p $ARCHIVE_DATA/%f'
 max_wal_senders = 3
 port = $MASTER_PORT
 listen_addresses = '*'
+hot_standby = on
 EOF
 
 echo "start master database..."

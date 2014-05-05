@@ -32,7 +32,6 @@ EOF
 echo "configure postgres.conf..."
 cat >> $SLAVE_DATA/postgresql.conf <<EOF
 port = $SLAVE_PORT
-hot_standby = on
 EOF
 
 echo "start slave database..."
