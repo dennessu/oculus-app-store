@@ -197,7 +197,8 @@ public class CatalogGatewayImpl implements CatalogGateway{
         Map<Long, String> result = new HashMap<>();
 
         EntitlementDefSearchParams searchParams = new EntitlementDefSearchParams();
-        searchParams.setGroups(groups);
+        //TODO: use definitionIds or item+name
+//        searchParams.setGroups(groups);
 
         PageableGetOptions options = new PageableGetOptions();
         options.setStart(Constants.DEFAULT_PAGE_START);
@@ -214,8 +215,9 @@ public class CatalogGatewayImpl implements CatalogGateway{
             }
 
             for (EntitlementDefinition entitlementDef : entitlementDefinitions) {
-                result.put(entitlementDef.getEntitlementDefId(),
-                        entitlementDef.getGroup() + Constants.ENTITLEMENT_SEPARATOR + entitlementDef.getTag());
+                //TODO: use definitionIds or item+name
+//                result.put(entitlementDef.getEntitlementDefId(),
+//                        entitlementDef.getGroup() + Constants.ENTITLEMENT_SEPARATOR + entitlementDef.getTag());
             }
 
             if (entitlementDefinitions.size() < Constants.DEFAULT_PAGE_SIZE) {
