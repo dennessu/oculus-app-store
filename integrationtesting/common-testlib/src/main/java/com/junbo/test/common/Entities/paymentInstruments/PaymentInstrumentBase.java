@@ -11,7 +11,7 @@ import com.junbo.test.common.Entities.enums.PaymentType;
  * Created by Yunlong on 3/25/14.
  */
 public abstract class PaymentInstrumentBase {
-    private String id;
+    private String pid;
     private String userId;
     private boolean isValidated;
     private boolean isDefault;
@@ -36,8 +36,8 @@ public abstract class PaymentInstrumentBase {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getId() {
-        return id;
+    public String getPid() {
+        return pid;
     }
 
     public String getUserId() {
@@ -92,8 +92,8 @@ public abstract class PaymentInstrumentBase {
         this.relationToHolder = relationToHolder;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setPid(String pid) {
+        this.pid = pid;
     }
 
     public void setUserId(String userId) {
