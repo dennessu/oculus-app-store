@@ -1,0 +1,42 @@
+apply plugin: 'java'
+
+sourceCompatibility = '1.7'
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+test {
+    useTestNG()
+    systemProperty 'test.config', System.properties['test.config']
+    options {
+        listeners << 'org.testng.reporters.XMLReporter'
+        listeners << 'com.junbo.test.common.property.PropertyTransformer'
+    }
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+    // show standard out and standard error of the test JVM(s) on the console
+    testLogging.showStandardStreams = true
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        credentials {
+            username "${artifactory_user}"
+            password "${artifactory_password}"
+        }
+        url "${artifactory_contextUrl}/repo"
+    }
+    mavenCentral()
+}
+
+dependencies {
+    //compile project(':common-testlib')
+    compile 'com.junbo.entitlement:entitlement-spec:0.0.1-SNAPSHOT'
+    compile 'com.junbo.test:catalog-integration:0.0.1-SNAPSHOT'
+    compile 'com.junbo.test:identity-integration:0.0.1-SNAPSHOT'
+    compile(libraries.common_testlib)
+
+    testCompile(libraries.junit)
+    testCompile(libraries.testng)
+
+}

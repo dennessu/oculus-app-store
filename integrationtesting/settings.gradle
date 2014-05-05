@@ -6,6 +6,7 @@ include 'cart-integration'
 include 'payment-integration'
 include 'catalog-integration'
 include 'billing-integration'
+include 'entitlement-integration'
 
 include 'integration-buyerscenario'
 include 'integration-catalogscenario'
