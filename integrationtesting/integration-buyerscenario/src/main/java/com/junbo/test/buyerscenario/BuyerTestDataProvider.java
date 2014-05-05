@@ -192,7 +192,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         CreditRequest creditRequest = new CreditRequest();
         creditRequest.setCurrency("usd");
         creditRequest.setUserId(IdConverter.hexStringToId(UserId.class, uid));
-        creditRequest.setAmount(new BigDecimal(100));
+        creditRequest.setAmount(new BigDecimal(500));
         paymentClient.creditWallet(creditRequest);
     }
 

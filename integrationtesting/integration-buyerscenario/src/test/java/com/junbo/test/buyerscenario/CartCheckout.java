@@ -147,7 +147,7 @@ public class CartCheckout extends BaseTestClass {
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
 
         String orderId = testDataProvider.postOrderByCartId(
-                uid, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, shippingAddressId);
+                uid, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, shippingAddressId, true);
 
         orderId = testDataProvider.updateOrderTentative(orderId, false);
 
@@ -196,14 +196,14 @@ public class CartCheckout extends BaseTestClass {
         testDataProvider.creditWallet(uid);
 
         String orderId = testDataProvider.postOrderByCartId(
-                uid, cartId, Country.DEFAULT, Currency.DEFAULT, ewalletId, shippingAddressId);
+                uid, cartId, Country.DEFAULT, Currency.DEFAULT, ewalletId, shippingAddressId, true);
 
         orderId = testDataProvider.updateOrderTentative(orderId, false);
 
         validationHelper.validateEwalletBalance(uid, orderId);
 
         validationHelper.validateOrderInfoByCartId(
-                uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, ewalletId, null);
+                uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, ewalletId, shippingAddressId, true);
 
         testDataProvider.emptyCartByCartId(uid, cartId);
         validationHelper.validateEmailHistory(uid, orderId);
