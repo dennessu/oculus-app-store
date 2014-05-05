@@ -1,0 +1,9 @@
+{
+    "type": "PHYSICAL",
+    "developer": {"href": "https://api.oculusvr.com/v1/users/1234", "id": "1234"},
+    "genres":[],
+    "rollupPackageName": "rollupPackageName",
+    "packageName": "package name",
+    "defaultOffer": null,
+    "rev": null
+}

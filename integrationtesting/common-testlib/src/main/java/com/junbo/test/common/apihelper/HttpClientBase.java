@@ -5,22 +5,22 @@
  */
 package com.junbo.test.common.apihelper;
 
-import com.junbo.common.json.JsonMessageTranscoder;
+import com.ning.http.client.FluentCaseInsensitiveStringsMap;
+import com.ning.http.client.providers.netty.NettyResponse;
 import com.junbo.test.common.exception.TestException;
+import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.test.common.libs.LogHelper;
 import com.ning.http.client.AsyncHttpClient;
-import com.ning.http.client.FluentCaseInsensitiveStringsMap;
-import com.ning.http.client.Request;
 import com.ning.http.client.RequestBuilder;
-import com.ning.http.client.providers.netty.NettyResponse;
-import org.testng.Assert;
-
+import com.ning.http.client.Request;
+import java.util.concurrent.Future;
+import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.concurrent.Future;
+import org.testng.Assert;
+import java.util.List;
 
 /**
  * Created by Yunlong on 3/20/14.
@@ -93,7 +93,7 @@ public abstract class HttpClientBase {
     }
 
     protected String restApiCall(HTTPMethod httpMethod, String restUrl, String requestBody,
-                                 int expectedResponseCode, HashMap<String, String> httpParameters) throws Exception {
+                                 int expectedResponseCode, HashMap<String, List<String>> httpParameters) throws Exception {
         switch (httpMethod) {
             case PUT:
             case POST: {
@@ -120,14 +120,13 @@ public abstract class HttpClientBase {
                 if (httpParameters != null && !httpParameters.isEmpty()) {
                     restUrl = restUrl.concat("?");
                     for (String key : httpParameters.keySet()) {
-                        if (key.length() > 6 && key.substring(0, 6).equals("itemId")) {
-                            restUrl = restUrl.concat(String.format("%s=%s", "itemId", httpParameters.get(key)));
-                        } else {
-                            restUrl = restUrl.concat(String.format("%s=%s", key, httpParameters.get(key)));
+                        List<String> strValues = httpParameters.get(key);
+                        for (int i = 0; i < strValues.size(); i ++) {
+                            restUrl = restUrl.concat(String.format("%s=%s", key, strValues.get(i)));
+                            restUrl = restUrl.concat("&");
                         }
-                        restUrl = restUrl.concat("&");
                     }
-                    //Remove the last & character
+                    //Remove the last "&" character
                     restUrl = restUrl.substring(0, restUrl.length() - 1);
                 }
 
