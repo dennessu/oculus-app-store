@@ -29,7 +29,8 @@ import java.util.UUID;
         "type",
         "itemId",
         "tag",
-        "consumable"
+        "consumable",
+        "externalNotification"
 })
 public class EntitlementDefinition {
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] entitlementDefinition id")
@@ -45,7 +46,7 @@ public class EntitlementDefinition {
     @ApiModelProperty(position = 4, required = true,
             value = "clients which entitlementDefinition can be allowed to use in")
     @ClientId
-    @JsonProperty("checkClients")
+    @JsonProperty("allowedClients")
     private List<String> inAppContext;
     @ApiModelProperty(position = 5, required = true,
             value = "type of entitlementDefinition.\n" +
@@ -75,6 +76,8 @@ public class EntitlementDefinition {
             value = "name of entitlementDefinition, for example, LEATHER_HOOD or HAND_AXE")
     @JsonProperty("name")
     private String tag;
+    @JsonIgnore
+    private String externalNotification;
 
     @JsonIgnore
     private UUID trackingUuid;
@@ -141,6 +144,14 @@ public class EntitlementDefinition {
 
     public void setConsumable(Boolean consumable) {
         this.consumable = consumable;
+    }
+
+    public String getExternalNotification() {
+        return externalNotification;
+    }
+
+    public void setExternalNotification(String externalNotification) {
+        this.externalNotification = externalNotification;
     }
 
     public UUID getTrackingUuid() {
