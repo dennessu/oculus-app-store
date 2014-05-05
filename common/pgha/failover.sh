@@ -20,7 +20,7 @@ primary_conninfo = 'user=$PG_USER host=$SLAVE_SERVER port=$SLAVE_PORT sslmode=pr
 trigger_file = '$MASTER_TRIGGER_FILE'
 EOF
 
-echo "start master database..."
+echo "start old master database..."
 $PG_BIN/pg_ctl -D $MASTER_DATA start
 
 while ! echo exit | nc $MASTER_SERVER $MASTER_PORT; do sleep 1 && echo "waiting for old master database..."; done
