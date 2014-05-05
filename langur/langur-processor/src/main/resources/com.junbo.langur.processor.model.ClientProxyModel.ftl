@@ -103,6 +103,16 @@ public class ${className} implements ${interfaceType} {
             public Error error() {
                 return error;
             }
+
+            @Override
+            public String toString() {
+                return "ClientProxyError" +
+                        " { httpStatusCode=" + getHttpStatusCode() +
+                        ", code=" + getCode() +
+                        ", message=" + getDescription() +
+                        ", field=" + getField() +
+                        ", causes=" + getCauses() + " }";
+            }
         };
     }
 }
