@@ -64,11 +64,11 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
         return itemRevisionRtnId;
     }
 
-    public List<String> getItemRevisions(HashMap<String, String> httpPara) throws Exception {
+    public List<String> getItemRevisions(HashMap<String, List<String>> httpPara) throws Exception {
         return getItemRevisions(httpPara, 200);
     }
 
-    public List<String> getItemRevisions(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception {
+    public List<String> getItemRevisions(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara);
         Results<ItemRevision> itemRevisionGet = new JsonMessageTranscoder().decode(
                 new TypeReference<Results<ItemRevision>>() {}, responseBody);

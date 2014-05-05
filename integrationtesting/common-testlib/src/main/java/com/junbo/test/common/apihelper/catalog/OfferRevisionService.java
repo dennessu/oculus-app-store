@@ -19,8 +19,8 @@ public interface OfferRevisionService {
     String getOfferRevision(String offerRevisionId) throws Exception;
     String getOfferRevision(String offerRevisionId, int expectedResponseCode) throws Exception;
 
-    List<String> getOfferRevisions(HashMap<String, String> httpPara) throws Exception;
-    List<String> getOfferRevisions(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception;
+    List<String> getOfferRevisions(HashMap<String, List<String>> httpPara) throws Exception;
+    List<String> getOfferRevisions(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception;
 
     OfferRevision prepareOfferRevisionEntity(String fileName) throws Exception;
     OfferRevision prepareOfferRevisionEntity(String fileName, Boolean addItemInfo) throws Exception;

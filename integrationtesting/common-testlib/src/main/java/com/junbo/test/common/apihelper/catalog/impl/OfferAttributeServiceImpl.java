@@ -56,11 +56,11 @@ public class OfferAttributeServiceImpl extends HttpClientBase implements OfferAt
         return attributeRtnId;
     }
 
-    public List<String> getOfferAttributes(HashMap<String, String> httpPara) throws Exception {
+    public List<String> getOfferAttributes(HashMap<String, List<String>> httpPara) throws Exception {
         return getOfferAttributes(httpPara, 200);
     }
 
-    public List<String> getOfferAttributes(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception {
+    public List<String> getOfferAttributes(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception {
 
         String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara);
         Results<OfferAttribute> attributeGet = new JsonMessageTranscoder().decode(new TypeReference<Results<OfferAttribute>>() {},
