@@ -20,3 +20,8 @@ echo "[Misc Info]"
 echo "Archive Data: $ARCHIVE_DATA"
 echo "Backup Data: $BACKUP_DATA"
 echo ""
+
+echo "[PGBouncer Info]"
+echo "Primary PGBouncer: $PRIMARY_PGBOUNCER_HOST:$PRIMARY_PGBOUNCER_PORT"
+echo "Secondary PGBouncer: $SECONDARY_PGBOUNCER_HOST:$SECONDARY_PGBOUNCER_PORT"
+echo ""
