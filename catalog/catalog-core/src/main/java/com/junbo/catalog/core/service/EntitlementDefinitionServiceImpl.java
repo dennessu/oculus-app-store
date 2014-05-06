@@ -42,7 +42,7 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
 
     @Override
     public List<EntitlementDefinition> getEntitlementDefinitions(Long developerId, String clientId,
-                                                                 Set<String> groups, Set<String> tags, Set<String> types,
+                                                                 Long itemId, Set<String> tags, Set<String> types,
                                                                  Boolean isConsumable, PageableGetOptions pageMetadata) {
         checkDeveloper(developerId);
         Set<EntitlementType> typeSet = new HashSet<>();
@@ -55,14 +55,11 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
                 }
             }
         }
-        return entitlementDefinitionRepository.getByParams(developerId, clientId, groups, tags, typeSet, isConsumable, pageMetadata);
+        return entitlementDefinitionRepository.getByParams(developerId, clientId, itemId, tags, typeSet, isConsumable, pageMetadata);
     }
 
     @Override
     public Long createEntitlementDefinition(EntitlementDefinition entitlementDefinition) {
-        if (entitlementDefinition.getGroup() == null) {
-            entitlementDefinition.setGroup("");
-        }
         if (entitlementDefinition.getTag() == null) {
             entitlementDefinition.setTag("");
         }
@@ -106,7 +103,7 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
                 existingEntitlementDefinition.getType(), "type");
 
         existingEntitlementDefinition.setTag(entitlementDefinition.getTag());
-        existingEntitlementDefinition.setGroup(entitlementDefinition.getGroup());
+        existingEntitlementDefinition.setItemId(entitlementDefinition.getItemId());
         existingEntitlementDefinition.setConsumable(entitlementDefinition.getConsumable());
         existingEntitlementDefinition.setInAppContext(entitlementDefinition.getInAppContext());
 
