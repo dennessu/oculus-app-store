@@ -5,6 +5,8 @@
  */
 package com.junbo.entitlement.rest;
 
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
+import com.junbo.catalog.spec.resource.proxy.EntitlementDefinitionResourceClientProxy;
 import com.junbo.common.error.AppErrorException;
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.UserId;
@@ -14,7 +16,6 @@ import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.EntitlementTransfer;
 import com.junbo.entitlement.spec.model.PageMetadata;
 import com.junbo.entitlement.spec.resource.proxy.EntitlementResourceClientProxy;
-import com.junbo.entitlement.spec.resource.proxy.UserEntitlementResourceClientProxy;
 import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -34,7 +35,7 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
     @Autowired
     private EntitlementResourceClientProxy entitlementResourceClientProxy;
     @Autowired
-    private UserEntitlementResourceClientProxy userEntitlementResourceClientProxy;
+    private EntitlementDefinitionResourceClientProxy entitlementDefinitionResourceClientProxy;
     @Autowired
     @Qualifier("oculus48IdGenerator")
     private IdGenerator idGenerator;
@@ -49,9 +50,10 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
     @Test(enabled = false)
     public void testUpdate() throws ExecutionException, InterruptedException {
         Entitlement entitlement = entitlementResourceClientProxy.postEntitlement(buildAnEntitlement()).wrapped().get();
-        entitlement.setUseCount(100);
+        Date now = new Date();
+        entitlement.setExpirationTime(now);
         entitlement = entitlementResourceClientProxy.updateEntitlement(new EntitlementId(entitlement.getEntitlementId()), entitlement).wrapped().get();
-        Assert.assertEquals(entitlement.getUseCount(), Integer.valueOf(100));
+        Assert.assertTrue(Math.abs(entitlement.getExpirationTime().getTime() - now.getTime()) <= 1000);
     }
 
     @Test(enabled = false)
@@ -92,11 +94,10 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
         entitlementResourceClientProxy.postEntitlement(entitlement).wrapped().get();
         entitlementResourceClientProxy.postEntitlement(entitlement).wrapped().get();
         EntitlementSearchParam searchParam = new EntitlementSearchParam.Builder(new UserId(userId)).isActive(true).lastModifiedTime("2014-01-01T00:00:00Z").build();
-        //TODO: use /entitlements/?userId={userId}
-        Results<Entitlement> result = userEntitlementResourceClientProxy.getEntitlements(new UserId(userId), searchParam, new PageMetadata()).wrapped().get();
+        Results<Entitlement> result = entitlementResourceClientProxy.searchEntitlements(searchParam, new PageMetadata()).wrapped().get();
         Assert.assertEquals(result.getItems().size(), 2);
         searchParam.setIsBanned(true);
-        result = userEntitlementResourceClientProxy.getEntitlements(new UserId(userId), searchParam, new PageMetadata()).wrapped().get();
+        result = entitlementResourceClientProxy.searchEntitlements(searchParam, new PageMetadata()).wrapped().get();
         Assert.assertEquals(result.getItems().size(), 0);
     }
 
@@ -104,7 +105,16 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
         Entitlement entitlement = new Entitlement();
         entitlement.setUserId(idGenerator.nextId());
         entitlement.setGrantTime(new Date());
-        entitlement.setEntitlementDefinitionId(idGenerator.nextId());
+        EntitlementDefinition definition = new EntitlementDefinition();
+        definition.setEntitlementDefId(entitlement.getEntitlementDefinitionId());
+        definition.setConsumable(false);
+        definition.setDeveloperId(idGenerator.nextId());
+        try {
+            definition = entitlementDefinitionResourceClientProxy.postEntitlementDefinition(definition).wrapped().get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        entitlement.setEntitlementDefinitionId(definition.getEntitlementDefId());
         return entitlement;
     }
 }
