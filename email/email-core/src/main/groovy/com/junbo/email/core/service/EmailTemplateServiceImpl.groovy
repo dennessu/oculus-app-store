@@ -51,7 +51,7 @@ import javax.ws.rs.core.UriInfo
     }
 
     Promise<EmailTemplate> putEmailTemplate(Long id, EmailTemplate template) {
-        templateValidator.validateUpdate(template)
+        templateValidator.validateUpdate(template, id)
         template.setId(new EmailTemplateId(id))
         this.build(template)
         return Promise.pure(templateRepository.updateEmailTemplate(template))

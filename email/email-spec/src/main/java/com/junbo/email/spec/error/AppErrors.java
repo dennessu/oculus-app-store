@@ -57,12 +57,17 @@ public interface AppErrors {
     AppError invalidPayload();
 
     @ErrorDef(httpStatusCode = 404, code = ErrorCode.EMAIL_TEMPLATE_NOT_FOUND,
-            description = "Template {0} is not found")
-    AppError templateNotFound(String template);
+            description = "Template is not found")
+    AppError templateNotFound();
 
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.TEMPLATE_NAME_ALREADY_EXIST,
-            description ="Template is already exists")
-    AppError emailTemplateAlreadyExist(String id);
+            description ="Template with specified source, action and locale is already exists")
+    AppError emailTemplateAlreadyExist();
+
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.TEMPLATE_NAME_ALREADY_EXIST,
+            description ="The PlaceholderNames Filed missing subject placeholder",
+            field = "PlaceholderNames")
+    AppError invalidPlaceholderNames();
 
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_PROPERTIES,
             description = "The properties {0} is invalid")

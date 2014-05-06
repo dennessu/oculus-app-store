@@ -63,7 +63,7 @@ class CommonValidator {
         EmailTemplate template = emailTemplateRepository.getEmailTemplate(email.templateId.value)
 
         if (template == null) {
-            throw AppErrors.INSTANCE.templateNotFound('').exception()
+            throw AppErrors.INSTANCE.templateNotFound().exception()
         }
         if (template.placeholderNames != null && email.replacements == null) {
             throw AppErrors.INSTANCE.invalidProperty('replacements').exception()
