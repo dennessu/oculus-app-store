@@ -30,4 +30,6 @@ dependencies {
     compile (libraries.spy_memcached)
 
     compile (libraries.swagger_annotations)
+
+    testRuntime project(':configuration-data')
 }

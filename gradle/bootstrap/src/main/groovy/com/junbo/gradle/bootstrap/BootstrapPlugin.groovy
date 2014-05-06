@@ -219,43 +219,50 @@ class BootstrapPlugin implements Plugin<Project> {
                     }
                 }
 
-                task('codenarc', dependsOn: 'jar', type: JavaExec) {
-                    def reportFile = "$buildDir/CodeNarcReport.html"
-                    def outputStream = new ByteArrayOutputStream()
+                // hardcoded source folder because pattern matching is not working in windows
+                def codenarcSourceFolder = file("$projectDir/src/main/groovy")
+                if (codenarcSourceFolder.exists()) {
+                    task('codenarc', dependsOn: 'jar', type: JavaExec) {
+                        def reportFile = "$buildDir/CodeNarcReport.html"
+                        def outputStream = new ByteArrayOutputStream()
 
-                    classpath configurations.codenarc + tasks['jar'].outputs.files + configurations.compile
-                    main = 'org.codenarc.CodeNarc'
-                    standardOutput = new TeeOutputStream(standardOutput, outputStream)
+                        classpath configurations.codenarc + tasks['jar'].outputs.files + configurations.compile
+                        main = 'org.codenarc.CodeNarc'
+                        standardOutput = new TeeOutputStream(standardOutput, outputStream)
 
-                    // only include main. test is not included
-                    args = ["-basedir=$projectDir",
-                            "-includes=" + sourceSets.main.groovy.srcDirs.collect { "$it/**.groovy" }.join(","),
-                            "-rulesetfiles=config/codenarc/codenarc.groovy",
-                            "-report=html:$reportFile"
-                    ].toList()
+                        // only include main. test is not included
+                        args = ["-basedir=$codenarcSourceFolder",
+                                // disable, pattern matching is not working in windows somehow
+                                // "-includes=" + sourceSets.main.groovy.srcDirs.collect { "$it\\**.groovy" }.join(","),
+                                "-rulesetfiles=config/codenarc/codenarc.groovy",
+                                "-report=html:$reportFile"
+                        ].toList()
 
-                    doLast {
-                        def outputAsString = outputStream.toString()
-                        def compileErrorMatcher = outputAsString =~ /Compilation failed for /
-                        def resultMatcher = outputAsString =~ /CodeNarc completed: \(p1=(\d+); p2=(\d+); p3=(\d+)\)/
+                        doLast {
+                            def outputAsString = outputStream.toString()
+                            def compileErrorMatcher = outputAsString =~ /Compilation failed for /
+                            def resultMatcher = outputAsString =~ /CodeNarc completed: \(p1=(\d+); p2=(\d+); p3=(\d+)\)/
 
-                        def p1Count = resultMatcher[0][1].toInteger()
-                        def p2Count = resultMatcher[0][2].toInteger()
-                        def p3Count = resultMatcher[0][3].toInteger()
+                            def p1Count = resultMatcher[0][1].toInteger()
+                            def p2Count = resultMatcher[0][2].toInteger()
+                            def p3Count = resultMatcher[0][3].toInteger()
 
-                        println "CodeNarc report is available at: $reportFile"
+                            println "CodeNarc report is available at: $reportFile"
 
-                        if (compileErrorMatcher.find()) {
-                            throw new GradleException("Compilation failures in CodeNarc run.")
-                        }
+                            println args.join(" ")
 
-                        if (p1Count + p2Count + p3Count > 0) {
-                            throw new GradleException("CodeNarc found violations.")
+                            if (compileErrorMatcher.find()) {
+                                throw new GradleException("Compilation failures in CodeNarc run.")
+                            }
+
+                            if (p1Count + p2Count + p3Count > 0) {
+                                throw new GradleException("CodeNarc found violations.")
+                            }
                         }
                     }
-                }
 
-                tasks.build.dependsOn 'codenarc'
+                    tasks.build.dependsOn 'codenarc'
+                }
             }
 
             plugins.withType(ApplicationPlugin) {
