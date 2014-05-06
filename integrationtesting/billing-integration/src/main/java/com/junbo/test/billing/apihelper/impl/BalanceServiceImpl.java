@@ -34,6 +34,10 @@ public class BalanceServiceImpl extends HttpClientBase implements BalanceService
     private static String requestorId = "CheckoutService";
     private static String onBehalfOfRequestorId = "DigitalGameStore";
     private static String userIp = "157.123.45.67";
+    private static String fakeBalanceId = "\"self\" : {\n" +
+            "    \"href\" : \"http://api.oculusvr-demo.com:8081/v1/balances/0355ED747CDF\",\n" +
+            "    \"id\" : \"0355ED747CDF\"\n" +
+            "  }";
 
 
     public static synchronized BalanceService getInstance() {
@@ -87,7 +91,7 @@ public class BalanceServiceImpl extends HttpClientBase implements BalanceService
     public String getBalanceByBalanceId(String uid, String balanceId, int expectedResponseCode) throws Exception {
         setUserId(uid);
         String responseBody = restApiCall(HTTPMethod.GET, balanceUrl +
-                "balances/"+ balanceId, expectedResponseCode);
+                "balances/" + balanceId, expectedResponseCode);
 
         Balance balanceResult =
                 new JsonMessageTranscoder().decode(
@@ -95,6 +99,29 @@ public class BalanceServiceImpl extends HttpClientBase implements BalanceService
                         }, responseBody);
 
         balanceId = IdConverter.idToHexString(balanceResult.getBalanceId());
+        Master.getInstance().addBalances(balanceId, balanceResult);
+
+        return balanceId;
+    }
+
+    @Override
+    public String quoteBalance(String uid, Balance balance) throws Exception {
+        return this.quoteBalance(uid, balance, 200);
+    }
+
+    @Override
+    public String quoteBalance(String uid, Balance balance, int expectedResponseCode) throws Exception {
+        this.setUserId(uid);
+        String responseBody = restApiCall(HTTPMethod.POST, balanceUrl + "balances/quote", balance);
+
+        responseBody = responseBody.replace("\"self\" : null", fakeBalanceId);
+
+        Balance balanceResult =
+                new JsonMessageTranscoder().decode(
+                        new TypeReference<Balance>() {
+                        }, responseBody);
+
+        String balanceId = IdConverter.idToHexString(balanceResult.getBalanceId());
         Master.getInstance().addBalances(balanceId, balanceResult);
 
         return balanceId;
