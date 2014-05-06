@@ -25,6 +25,7 @@ import com.junbo.test.billing.apihelper.ShippingAddressService;
 import com.junbo.test.billing.apihelper.impl.ShippingAddressServiceImpl;
 import com.junbo.test.common.Entities.ShippingAddressInfo;
 import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
+import com.junbo.test.common.Entities.paymentInstruments.PayPalInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
 import com.junbo.test.common.Utility.BaseTestDataProvider;
 
@@ -169,6 +170,21 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
                 paymentInstrument.setIsValidated(ewalletInfo.isValidated());
                 paymentInstrument.setBillingAddressId(billingAddressId);
                 paymentInstrument.setBillingAddressId(ewalletInfo.getBillingAddressId());
+
+                paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument));
+                return paymentInfo.getPid();
+
+            case PAYPAL:
+                PayPalInfo payPalInfo = (PayPalInfo) paymentInfo;
+                typeSpecificDetails.setExpireDate(payPalInfo.getExpireDate());
+                typeSpecificDetails.setEncryptedCvmCode(payPalInfo.getEncryptedCVMCode());
+                paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
+
+                paymentInstrument.setAccountName(payPalInfo.getAccountName());
+                paymentInstrument.setAccountNum(payPalInfo.getAccountNum());
+                paymentInstrument.setIsValidated(payPalInfo.isValidated());
+                paymentInstrument.setType(payPalInfo.getType().getValue());
+                paymentInstrument.setBillingAddressId(payPalInfo.getBillingAddressId());
 
                 paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument));
                 return paymentInfo.getPid();
@@ -322,6 +338,10 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         }
         logger.LogSample("Put cart");
         cartClient.updateCart(uid, cartId, new Cart());
+    }
+
+    public String updateOrder(Order order) throws Exception {
+        return orderClient.updateOrder(order);
     }
 
 }
