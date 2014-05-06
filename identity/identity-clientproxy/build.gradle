@@ -8,6 +8,5 @@ dependencies {
     compile (libraries.hamcrest_core)
 
     compile project(':identity-data')
-    compile project(':identity-core')
     compile project(':identity-spec')
 }

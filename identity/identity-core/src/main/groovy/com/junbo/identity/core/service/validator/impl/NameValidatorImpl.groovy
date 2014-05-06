@@ -2,8 +2,7 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.common.id.UserId
-import com.junbo.common.json.ObjectMapperProvider
-import com.junbo.identity.core.service.util.JsonHelper
+import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.validator.DisplayNameValidator
 import com.junbo.identity.core.service.validator.NickNameValidator
 import com.junbo.identity.core.service.validator.PiiValidator
