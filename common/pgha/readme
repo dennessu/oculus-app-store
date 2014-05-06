@@ -20,8 +20,21 @@
 #check data had been replicated to slave database correctly
 ./test_replication.sh
 
+# failover steps:
+# - stop primary/secondary pgbouncer proxies
+# - gracefully shutdown master database
+# - copy unarchived log
+# - promote slave database as new master
+# - configure old master
+# - start old master as new slave
+# - switch primary/secondary pgbouncer proxies to new master
+# - start primary/secondary pgbouncer proxies
 ./failover.sh
+
+#insert data into new master database, primary pgbouncer proxy and secondary pgbouncer proxy
+#check data had been replicated to new slave database correctly
 ./test_replication_reverse.sh
 
 ./failback.sh
+
 ./test_replication.sh
