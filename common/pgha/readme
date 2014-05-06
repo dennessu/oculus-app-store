@@ -35,6 +35,7 @@
 #check data had been replicated to new slave database correctly
 ./test_replication_reverse.sh
 
+# similar to failover steps
 ./failback.sh
 
 ./test_replication.sh

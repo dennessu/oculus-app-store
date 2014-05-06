@@ -1,5 +1,6 @@
 #!/bin/bash
 source set_env.sh
+source common.sh
 
 echo "current master database: $SLAVE_SERVER:$SLAVE_PORT"
 echo "current slave database: $MASTER_SERVER:$MASTER_PORT"
