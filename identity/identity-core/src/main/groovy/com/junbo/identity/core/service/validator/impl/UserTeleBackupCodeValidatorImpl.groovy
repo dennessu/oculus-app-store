@@ -2,6 +2,7 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTeleBackupCodeId
+import com.junbo.identity.core.service.util.CodeGenerator
 import com.junbo.identity.core.service.validator.UserTeleBackupCodeValidator
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.UserRepository
@@ -22,9 +23,7 @@ class UserTeleBackupCodeValidatorImpl implements UserTeleBackupCodeValidator {
 
     private UserTeleBackupCodeRepository userTeleBackupCodeRepository
     private UserRepository userRepository
-
-    private Integer minVerifyCodeLength
-    private Integer maxVerifyCodeLength
+    private CodeGenerator codeGenerator
 
     @Override
     Promise<UserTeleBackupCode> validateForGet(UserId userId, UserTeleBackupCodeId userTeleBackupCodeId) {
@@ -101,11 +100,17 @@ class UserTeleBackupCodeValidatorImpl implements UserTeleBackupCodeValidator {
             throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
         }
 
-        if (userTeleBackupCode.active == null) {
+        if (userTeleBackupCode.active != null) {
             throw AppErrors.INSTANCE.fieldNotWritable('active').exception()
         }
 
         userTeleBackupCode.active = true
+
+        if (userTeleBackupCode.verifyCode != null) {
+            throw AppErrors.INSTANCE.fieldNotWritable('verifyCode').exception()
+        }
+
+        userTeleBackupCode.verifyCode = codeGenerator.generateTeleBackupCode()
 
         return checkBasicUserTeleBackupCode(userTeleBackupCode)
     }
@@ -148,20 +153,15 @@ class UserTeleBackupCodeValidatorImpl implements UserTeleBackupCodeValidator {
             throw AppErrors.INSTANCE.fieldRequired('active').exception()
         }
 
+        if (userTeleBackupCode.verifyCode != null
+         && userTeleBackupCode.verifyCode != oldUserTeleBackupCode.verifyCode) {
+            throw AppErrors.INSTANCE.fieldNotWritable('verifyCode').exception()
+        }
+
         return checkBasicUserTeleBackupCode(userTeleBackupCode)
     }
 
     Promise<Void> checkBasicUserTeleBackupCode(UserTeleBackupCode userTeleBackupCode) {
-        if (userTeleBackupCode.verifyCode == null) {
-            throw AppErrors.INSTANCE.fieldRequired('verifyCode').exception()
-        }
-
-        if (userTeleBackupCode.verifyCode.length() > maxVerifyCodeLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('verifyCode', maxVerifyCodeLength).exception()
-        }
-        if (userTeleBackupCode.verifyCode.length() < minVerifyCodeLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('verifyCode', minVerifyCodeLength).exception()
-        }
 
         return userRepository.get(userTeleBackupCode.userId).then { User user ->
             if (user == null) {
@@ -190,12 +190,7 @@ class UserTeleBackupCodeValidatorImpl implements UserTeleBackupCodeValidator {
     }
 
     @Required
-    void setMinVerifyCodeLength(Integer minVerifyCodeLength) {
-        this.minVerifyCodeLength = minVerifyCodeLength
-    }
-
-    @Required
-    void setMaxVerifyCodeLength(Integer maxVerifyCodeLength) {
-        this.maxVerifyCodeLength = maxVerifyCodeLength
+    void setCodeGenerator(CodeGenerator codeGenerator) {
+        this.codeGenerator = codeGenerator
     }
 }

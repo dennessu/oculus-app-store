@@ -391,10 +391,10 @@
         </property>
         <property name="maxSMSRequestsPerHour" value="${identity.conf.maxSMSRequestsPerHour}" />
         <property name="maxTeleCodeExpireTime" value="${identity.conf.maxTeleCodeExpireTime}" />
-        <property name="maxVerifyCodeLength" value="255" />
-        <property name="minVerifyCodeLength" value="6" />
         <property name="minTemplateLength" value="1" />
         <property name="maxTemplateLength" value="255" />
+        <property name="codeGenerator" ref="codeGenerator" />
+        <property name="maxReuseSeconds" value="${identity.conf.tele.maxReuseTime}" />
     </bean>
 
     <!-- // todo:   Need to make all those values configurable-->
@@ -430,8 +430,7 @@
     <bean id="userTeleBackupCodeValidator" class="com.junbo.identity.core.service.validator.impl.UserTeleBackupCodeValidatorImpl">
         <property name="userRepository" ref="userRepository" />
         <property name="userTeleBackupCodeRepository" ref="userTeleBackupCodeRepository" />
-        <property name="minVerifyCodeLength" value="1" />
-        <property name="maxVerifyCodeLength" value="255" />
+        <property name="codeGenerator" ref="codeGenerator" />
     </bean>
 
     <bean id="userTeleBackupCodeAttemptValidator" class="com.junbo.identity.core.service.validator.impl.UserTeleBackupCodeAttemptValidatorImpl">
@@ -461,5 +460,10 @@
         <property name="maxVerifyCodeLength" value="255" />
         <property name="maxRetryCount" value="${identity.conf.maxTeleCodeAttemptNumber}" />
         <property name="transactionManager" ref="transactionManager" />
+    </bean>
+
+    <bean id="codeGenerator" class="com.junbo.identity.core.service.util.impl.CodeGeneratorImpl">
+        <property name="codeLength" value="${identity.conf.tele.codeLength}" />
+        <property name="backupCodeLength" value="${identity.conf.tele.backupCodeLength}" />
     </bean>
 </beans>
