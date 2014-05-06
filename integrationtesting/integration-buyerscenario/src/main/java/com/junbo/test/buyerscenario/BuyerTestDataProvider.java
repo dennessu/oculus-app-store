@@ -138,50 +138,40 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
     public String postPaymentInstrument(String uid, PaymentInstrumentBase paymentInfo) throws Exception {
 
         PaymentInstrument paymentInstrument = new PaymentInstrument();
-        Address address = new Address();
-        paymentInstrument.setTrackingUuid(UUID.randomUUID());
         ArrayList<Long> admins = new ArrayList<>();
         admins.add(IdConverter.hexStringToId(UserId.class, uid));
         paymentInstrument.setAdmins(admins);
         paymentInstrument.setLabel("4");
         TypeSpecificDetails typeSpecificDetails = new TypeSpecificDetails();
         Long billingAddressId = Master.getInstance().getUser(uid).getAddresses().get(0).getValue().getValue();
+        paymentInfo.setBillingAddressId(billingAddressId);
         switch (paymentInfo.getType()) {
             case CREDITCARD:
                 CreditCardInfo creditCardInfo = (CreditCardInfo) paymentInfo;
                 typeSpecificDetails.setExpireDate(creditCardInfo.getExpireDate());
                 typeSpecificDetails.setEncryptedCvmCode(creditCardInfo.getEncryptedCVMCode());
-                creditCardInfo.setBillingAddressId(billingAddressId);
-
                 paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
-                address.setAddressLine1(creditCardInfo.getAddress().getAddressLine1());
-                address.setCity(creditCardInfo.getAddress().getCity());
-                address.setState(creditCardInfo.getAddress().getState());
-                address.setCountry(creditCardInfo.getAddress().getCountry());
-                address.setPostalCode(creditCardInfo.getAddress().getPostalCode());
-                paymentInstrument.setType(creditCardInfo.getType().getValue());
                 paymentInstrument.setAccountName(creditCardInfo.getAccountName());
                 paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
-                paymentInstrument.setAddress(address);
                 paymentInstrument.setIsValidated(creditCardInfo.isValidated());
+                paymentInstrument.setType(creditCardInfo.getType().getValue());
                 paymentInstrument.setBillingAddressId(creditCardInfo.getBillingAddressId());
-                return paymentClient.postPaymentInstrument(paymentInstrument);
+
+                paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument));
+                return paymentInfo.getPid();
 
             case EWALLET:
                 EwalletInfo ewalletInfo = (EwalletInfo) paymentInfo;
-                typeSpecificDetails.setStoredValueCurrency(ewalletInfo.getCurrency().toString().toLowerCase());
+                typeSpecificDetails.setStoredValueCurrency("usd");
                 paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
                 paymentInstrument.setAccountName(ewalletInfo.getAccountName());
                 paymentInstrument.setType(ewalletInfo.getType().getValue());
                 paymentInstrument.setIsValidated(ewalletInfo.isValidated());
                 paymentInstrument.setBillingAddressId(billingAddressId);
-                address.setAddressLine1(ewalletInfo.getAddress().getAddressLine1());
-                address.setCity(ewalletInfo.getAddress().getCity());
-                address.setState(ewalletInfo.getAddress().getState());
-                address.setCountry(ewalletInfo.getAddress().getCountry());
-                address.setPostalCode(ewalletInfo.getAddress().getPostalCode());
-                paymentInstrument.setAddress(address);
-                return paymentClient.postPaymentInstrument(paymentInstrument);
+                paymentInstrument.setBillingAddressId(ewalletInfo.getBillingAddressId());
+
+                paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument));
+                return paymentInfo.getPid();
 
             default:
                 throw new TestException(String.format("%s is not supported", paymentInfo.getType().toString()));
