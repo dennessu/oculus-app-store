@@ -34,7 +34,7 @@ public class EwalletInfo extends PaymentInstrumentBase {
     }
 
     public void setWalletType(String walletType) {
-        walletType = walletType;
+        this.walletType = walletType;
     }
 
     public Currency getCurrency() {
