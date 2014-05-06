@@ -18,9 +18,9 @@ import java.util.Set;
  */
 public class MockEntitlementGatewayImpl implements EntitlementGateway {
     @Override
-    public Map<Long, Long> getEntitlements(Long userId, Set<Long> entitlementDefinitionIds) {
-        return new HashMap<Long, Long>() {{
-            put(400L, 500L);
+    public Set<Long> getEntitlements(Long userId, Set<Long> entitlementDefinitionIds) {
+        return new HashSet<Long>() {{
+            add(400L);
         }};
     }
 }

@@ -71,18 +71,6 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
         }};
     }
 
-    @Override
-    public Map<Long, String> getEntitlementDefinitions(Set<String> groups) {
-        return new HashMap<Long, String>() {{
-            put(400L, "A1#B1");
-            put(401L, "A2#B2");
-            put(402L, "A1#B2");
-            put(403L, "A2#B2");
-            put(404L, "A3#B3");
-            put(405L, "A4#B4");
-        }};
-    }
-
     private RatingOffer genOffer100() {
         return new RatingOffer() {{
             setId(100L);
@@ -220,11 +208,8 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
             setCriteria(new ArrayList<Criterion>() {{
                 add(new EntitlementCriterion() {{
                     setPredicate(Predicate.EXCLUDE_ENTITLEMENT);
-                    setEntitlements(new ArrayList<Entitlement>() {{
-                        add(new Entitlement() {{
-                            setGroup("A1");
-                            setTag("B1");
-                        }});
+                    setEntitlements(new ArrayList<Long>() {{
+                        add(400L);
                     }});
                 }});
                 add(new ScopeCriterion() {{
@@ -253,28 +238,16 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
             setCriteria(new ArrayList<Criterion>() {{
                 add(new EntitlementCriterion() {{
                     setPredicate(Predicate.EXCLUDE_ENTITLEMENT);
-                    setEntitlements(new ArrayList<Entitlement>() {{
-                        add(new Entitlement() {{
-                            setGroup("A3");
-                            setTag("B3");
-                        }});
-                        add(new Entitlement() {{
-                            setGroup("A4");
-                            setTag("B4");
-                        }});
+                    setEntitlements(new ArrayList<Long>() {{
+                        add(401L);
+                        add(402L);
                     }});
                 }});
                 add(new EntitlementCriterion() {{
                     setPredicate(Predicate.INCLUDE_ENTITLEMENT);
-                    setEntitlements(new ArrayList<Entitlement>() {{
-                        add(new Entitlement() {{
-                            setGroup("A1");
-                            setTag("B1");
-                        }});
-                        add(new Entitlement() {{
-                            setGroup("A2");
-                            setTag("B2");
-                        }});
+                    setEntitlements(new ArrayList<Long>() {{
+                        add(400L);
+                        add(403L);
                     }});
                 }});
                 add(new ScopeCriterion() {{
@@ -302,11 +275,8 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
             setCriteria(new ArrayList<Criterion>() {{
                 add(new EntitlementCriterion() {{
                     setPredicate(Predicate.INCLUDE_ENTITLEMENT);
-                    setEntitlements(new ArrayList<Entitlement>() {{
-                        add(new Entitlement() {{
-                            setGroup("A1");
-                            setTag("B1");
-                        }});
+                    setEntitlements(new ArrayList<Long>() {{
+                        add(400L);
                     }});
                 }});
                 add(new OrderCriterion() {{
