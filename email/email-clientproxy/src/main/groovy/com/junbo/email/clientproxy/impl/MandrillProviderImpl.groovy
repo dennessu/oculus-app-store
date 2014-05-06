@@ -1,10 +1,8 @@
 package com.junbo.email.clientproxy.impl
 
-import com.junbo.email.common.util.PlaceholderUtils
-import com.junbo.email.common.util.Utils
-
 import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
 
+import com.junbo.email.common.util.PlaceholderUtils
 import com.junbo.email.spec.model.EmailTemplate
 import org.springframework.util.StringUtils
 import com.junbo.common.id.Id
