@@ -25,7 +25,7 @@ class AddressValidatorImpl implements PiiValidator {
 
     @Override
     Promise<Void> validate(JsonNode value, UserId userId) {
-        Address address = (Address)JsonHelper.jsonNodeToObj(value, Address)
+        JsonHelper.jsonNodeToObj(value, Address)
 
         return Promise.pure(null)
         // todo:    User Address

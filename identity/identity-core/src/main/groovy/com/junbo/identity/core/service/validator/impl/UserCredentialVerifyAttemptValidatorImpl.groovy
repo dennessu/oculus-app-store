@@ -208,7 +208,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             })
 
             int index = 0
-            for(; index < maxRetryCount; index++) {
+            for ( ; index < maxRetryCount; index++) {
                 if (attemptList.get(index).succeeded == true) {
                     break
                 }
