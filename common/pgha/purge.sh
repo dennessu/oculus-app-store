@@ -1,22 +1,13 @@
 #!/bin/bash
 source set_env.sh
 source show_info.sh
+source common.sh
 
 echo "stop master databases..."
-if (lsof -i:$MASTER_PORT -t)
-then
-	kill -n 9 $(lsof -i:$MASTER_PORT -t)
-else
-	echo 'master database is not running...'
-fi
+forceKill $MASTER_PORT
 
 echo "stop slave databases..."
-if (lsof -i:$SLAVE_PORT -t)
-then
-	kill -n 9 $(lsof -i:$SLAVE_PORT -t)
-else
-	echo 'slave database is not running...'
-fi
+forceKill $SLAVE_PORT
 
 echo "purge master database..."
 rm -rf $MASTER_DATA
@@ -29,5 +20,14 @@ rm -rf $ARCHIVE_DATA
 
 echo "purge backup data..."
 rm -rf $BACKUP_DATA
+
+echo "purge pgbouncer configuration and data..."
+rm -rf $PGBOUNCER_BASE
+
+echo "stop primary pgbouncer proxy..."
+forceKill $PRIMARY_PGBOUNCER_PORT
+
+echo "stop secondary pgbouncer proxy..."
+forceKill $SECONDARY_PGBOUNCER_PORT
 
 echo "finished!"
