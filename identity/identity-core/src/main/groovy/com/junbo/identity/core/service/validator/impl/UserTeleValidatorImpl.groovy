@@ -3,7 +3,6 @@ package com.junbo.identity.core.service.validator.impl
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.id.UserTeleId
-import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.identity.core.service.validator.UserTeleValidator
 import com.junbo.identity.data.identifiable.TeleVerifyType
 import com.junbo.identity.data.identifiable.UserStatus
@@ -11,9 +10,7 @@ import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.data.repository.UserTeleRepository
 import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.v1.model.PhoneNumber
 import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
 import com.junbo.identity.spec.v1.model.UserTeleCode
 import com.junbo.identity.spec.v1.option.list.UserTeleListOptions
