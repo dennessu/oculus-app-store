@@ -1,5 +1,7 @@
 package com.junbo.email.clientproxy.impl
 
+import com.junbo.email.common.util.PlaceholderUtils
+import com.junbo.email.common.util.Utils
 
 import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
 
@@ -146,7 +148,7 @@ class MandrillProviderImpl implements EmailProvider {
             message.fromName = template.fromName
         }
         if (!StringUtils.isEmpty(template.subject)) {
-            message.subject = template.subject
+            message.subject = PlaceholderUtils.replace(template.subject, email.replacements)
         }
         request.message = message
         request.templateName = template.name
