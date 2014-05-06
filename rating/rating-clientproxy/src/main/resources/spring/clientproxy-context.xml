@@ -116,7 +116,7 @@
         </constructor-arg>
     </bean>
 
-    <bean id="ratingUserEntitlementClient" class="com.junbo.entitlement.spec.resource.proxy.UserEntitlementResourceClientProxy">
+    <bean id="ratingEntitlementClient" class="com.junbo.entitlement.spec.resource.proxy.EntitlementResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
         <constructor-arg name="target" value="${clientproxy.entitlement.url}"/>
         <constructor-arg name="transcoder">
