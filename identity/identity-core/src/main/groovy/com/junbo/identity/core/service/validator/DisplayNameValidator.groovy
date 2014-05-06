@@ -1,6 +1,5 @@
 package com.junbo.identity.core.service.validator
 
-import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserName
 import groovy.transform.CompileStatic
 

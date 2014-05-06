@@ -5,9 +5,12 @@
  */
 package com.junbo.restriction.spec.model
 
+import groovy.transform.CompileStatic
+
 /**
  * Status.
  */
+@CompileStatic
 enum Status {
     PASSED,
     BANNED,

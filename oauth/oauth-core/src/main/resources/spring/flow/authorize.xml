@@ -27,6 +27,7 @@
             <wf:action ref="loadRememberMeToken"/>
             <wf:action ref="validateLoginState"/>
             <wf:transition on="loginRequired" to="REDIRECT_TO_LOGIN"/>
+            <wf:transition on="loginRequiredError" to="LOGIN_REQUIRED"/>
             <wf:transition on="*" to="CHECK_CONSENT"/>
         </wf:action-state>
 
@@ -136,6 +137,18 @@
                 <wf:action ref="accessDenied"/>
             </wf:on-entry>
         </wf:end-state>
+
+        <wf:end-state id="LOGIN_REQUIRED">
+            <wf:on-entry>
+                <wf:action ref="loginRequired"/>
+            </wf:on-entry>
+        </wf:end-state>
+
+        <wf:end-state id="CONSENT_REQUIRED">
+            <wf:on-entry>
+                <wf:action ref="consentRequired"/>
+            </wf:on-entry>
+        </wf:end-state>
     </wf:flow>
 
     <!-- actions -->
@@ -216,6 +229,14 @@
 
     <bean id="accessDenied" class="com.junbo.oauth.core.view.RedirectToClientError">
         <property name="errorMessage" value="access_denied"/>
+    </bean>
+
+    <bean id="loginRequired" class="com.junbo.oauth.core.view.RedirectToClientError">
+        <property name="errorMessage" value="login_required"/>
+    </bean>
+
+    <bean id="consentRequired" class="com.junbo.oauth.core.view.RedirectToClientError">
+        <property name="errorMessage" value="consent_required"/>
     </bean>
 
     <bean id="redirectToRegister" class="com.junbo.oauth.core.view.RedirectToPage">

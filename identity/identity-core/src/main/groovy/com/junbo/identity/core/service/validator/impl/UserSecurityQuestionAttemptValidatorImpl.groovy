@@ -92,7 +92,7 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
         }
 
         return checkBasicUserSecurityQuestionAttemptInfo(attempt).then {
-            userRepository.get(userId).then { User user ->
+            return userRepository.get(userId).then { User user ->
 
                 if (user == null) {
                     throw AppErrors.INSTANCE.userNotFound(userId).exception()
@@ -103,7 +103,7 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
                 }
                 attempt.setUserId((UserId)user.id)
 
-                userSecurityQuestionRepository.get(attempt.userSecurityQuestionId).
+                return userSecurityQuestionRepository.get(attempt.userSecurityQuestionId).
                         then { UserSecurityQuestion userSecurityQuestion ->
                             if (userSecurityQuestion == null) {
                                 throw AppErrors.INSTANCE.userSecurityQuestionNotFound().exception()

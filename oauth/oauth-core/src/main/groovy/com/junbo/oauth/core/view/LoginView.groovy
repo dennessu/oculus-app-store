@@ -37,7 +37,7 @@ class LoginView extends AbstractView {
         def model = new ViewModel(
                 view: 'login',
                 model: modelMap as Map<String, Object>,
-                errors: contextWrapper.errors.unique(new ErrorComparator()).asList()
+                errors: contextWrapper.errors.unique(errorComparator).asList()
         )
 
         if (contextWrapper.captchaRequired) {

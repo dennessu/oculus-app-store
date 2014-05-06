@@ -95,7 +95,7 @@ class SendAccountVerifyEmail implements Action {
         )
 
         // TODO: cache the email template for each locale.
-        emailTemplateResource.getEmailTemplates(queryParam).recover { Throwable e ->
+        return emailTemplateResource.getEmailTemplates(queryParam).recover { Throwable e ->
             handleException(e, contextWrapper)
             return Promise.pure(null)
         }.then { Results<EmailTemplate> results ->
@@ -116,7 +116,7 @@ class SendAccountVerifyEmail implements Action {
                     ]
             )
 
-            emailResource.postEmail(emailToSend).recover { Throwable e ->
+            return emailResource.postEmail(emailToSend).recover { Throwable e ->
                 LOGGER.error('Error sending email to the user', e)
                 contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingEmail().error())
                 return Promise.pure(null)

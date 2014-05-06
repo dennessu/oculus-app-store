@@ -107,7 +107,7 @@ class UserPinValidatorImpl implements UserPinValidator {
             return Promise.pure(null)
         }
 
-        userPinRepository.search(new UserPinListOptions(
+        return userPinRepository.search(new UserPinListOptions(
                 userId: userId,
                 active: true
         )).then { List<UserPin> userPinList ->

@@ -93,7 +93,7 @@ class AuthenticateUser implements Action {
         // TODO: wait for identity response of captcha required
         boolean captchaRequired = true
 
-        userService.authenticateUser(username, password, clientId, remoteAddress, userAgent).recover { Throwable e ->
+        return userService.authenticateUser(username, password, clientId, remoteAddress, userAgent).recover { Throwable e ->
             if (e instanceof AppErrorException) {
                 AppErrorException appError = (AppErrorException) e
                 // Exception happened while calling the identity service.
@@ -143,8 +143,10 @@ class AuthenticateUser implements Action {
             def oldLoginState = contextWrapper.loginState
             if (oldLoginState != null) {
                 loginState.id = oldLoginState.id
+                loginState.revision = oldLoginState.revision
+
                 if (loginState.userId == oldLoginState.userId) {
-                    loginState.sessionId = oldLoginState.id
+                    loginState.sessionId = oldLoginState.sessionId
                 }
             }
 

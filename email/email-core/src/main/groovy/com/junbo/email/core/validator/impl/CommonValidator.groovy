@@ -72,7 +72,7 @@ class CommonValidator {
             List<String> placeholderNames = template.placeholderNames.collect { String placeholderName ->
                 placeholderName.toLowerCase() }
             for (String key : email.replacements.keySet()) {
-                if (!placeholderNames.contains(key.replaceAll('\\d*(:\\w*)?$','').toLowerCase())) {
+                if (!placeholderNames.contains(key.replaceAll('\\d*(:\\w*)?$', '').toLowerCase())) {
                     throw AppErrors.INSTANCE.invalidProperty(key).exception()
                 }
             }

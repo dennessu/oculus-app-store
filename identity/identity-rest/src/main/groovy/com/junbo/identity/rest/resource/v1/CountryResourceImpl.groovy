@@ -114,7 +114,7 @@ class CountryResourceImpl implements CountryResource {
         }
 
         return countryValidator.validateForGet(countryId).then {
-            countryRepository.get(countryId).then { Country newCountry ->
+            return countryRepository.get(countryId).then { Country newCountry ->
                 if (newCountry == null) {
                     throw AppErrors.INSTANCE.countryNotFound(countryId).exception()
                 }

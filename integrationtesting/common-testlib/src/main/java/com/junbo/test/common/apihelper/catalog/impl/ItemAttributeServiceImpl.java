@@ -55,11 +55,11 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
         return attributeRtnId;
     }
 
-    public List<String> getItemAttributes(HashMap<String, String> httpPara) throws Exception {
+    public List<String> getItemAttributes(HashMap<String, List<String>> httpPara) throws Exception {
         return getItemAttributes(httpPara, 200);
     }
 
-    public List<String> getItemAttributes(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception {
+    public List<String> getItemAttributes(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception {
 
         String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara);
         Results<ItemAttribute> attributeGet = new JsonMessageTranscoder().decode(new TypeReference<Results<ItemAttribute>>() {},

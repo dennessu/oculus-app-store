@@ -7,9 +7,11 @@ package com.junbo.oauth.db.dao.redis
 
 import com.junbo.oauth.db.dao.RememberMeTokenDAO
 import com.junbo.oauth.db.entity.RememberMeTokenEntity
+import groovy.transform.CompileStatic
 
 /**
  * Javadoc.
  */
+@CompileStatic
 class RedisRememberMeTokenDAOImpl extends RedisBaseDAO<RememberMeTokenEntity> implements RememberMeTokenDAO {
 }

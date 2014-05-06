@@ -81,7 +81,7 @@ class TokenEndpointImpl implements TokenEndpoint {
         requestScope[ActionContextWrapper.COOKIE_MAP] = httpHeaders.cookies
 
         // Start a new conversation of grantTokenFlow in the flowExecutor.
-        flowExecutor.start(grantTokenFlow, requestScope).then { ActionContext context ->
+        return flowExecutor.start(grantTokenFlow, requestScope).then { ActionContext context ->
             ActionContextWrapper wrapper = new ActionContextWrapper(context)
             return Promise.pure(wrapper.accessTokenResponse)
         }

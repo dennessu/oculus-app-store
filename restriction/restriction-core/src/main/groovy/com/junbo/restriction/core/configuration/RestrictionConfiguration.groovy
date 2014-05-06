@@ -7,11 +7,13 @@ package com.junbo.restriction.core.configuration
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.junbo.restriction.spec.internal.Restriction
+import groovy.transform.CompileStatic
 import org.springframework.core.io.Resource
 
 /**
  * RestrictionConfiguration.
  */
+@CompileStatic
 class RestrictionConfiguration {
 
     private final Resource config
@@ -30,7 +32,7 @@ class RestrictionConfiguration {
         this.config = config
         if (restrictions == null) {
             def type = mapper.typeFactory.constructParametricType(List, Restriction)
-            restrictions = mapper.readValue(config.file, type)
+            restrictions = (List<Restriction>)mapper.readValue(config.file, type)
         }
     }
 

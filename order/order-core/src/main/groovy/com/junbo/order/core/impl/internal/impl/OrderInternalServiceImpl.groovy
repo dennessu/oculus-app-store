@@ -130,8 +130,8 @@ class OrderInternalServiceImpl implements OrderInternalService {
         def orders = orderRepository.getOrdersByUserId(userId,
                 ParamUtils.processOrderQueryParam(orderQueryParam),
                 ParamUtils.processPageParam(pageParam))
-        Promise.each(orders) { Order order ->
-            completeOrder(order)
+        return Promise.each(orders) { Order order ->
+            return completeOrder(order)
         }.then {
             return Promise.pure(orders)
         }

@@ -1,5 +1,4 @@
 package com.junbo.order.core.impl.orderaction
-
 import com.junbo.common.id.OrderItemId
 import com.junbo.fulfilment.spec.constant.FulfilmentStatus
 import com.junbo.fulfilment.spec.model.FulfilmentItem
@@ -11,10 +10,10 @@ import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.annotation.OrderEventAwareAfter
 import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.CoreBuilder
-import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
+import com.junbo.order.spec.error.ErrorUtils
 import com.junbo.order.spec.model.FulfillmentEvent
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -23,7 +22,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
-
 /**
  * Created by fzhang on 14-2-25.
  */
@@ -54,10 +52,10 @@ class  FulfillmentAction extends BaseOrderEventAwareAction {
         def serviceContext = context.orderServiceContext
         def order = serviceContext.order
 
-        facadeContainer.fulfillmentFacade.postFulfillment(order).syncRecover { Throwable throwable ->
+        return facadeContainer.fulfillmentFacade.postFulfillment(order).syncRecover { Throwable throwable ->
             LOGGER.error('name=Order_FulfillmentAction_Error', throwable)
             throw AppErrors.INSTANCE.
-                    fulfilmentConnectionError(CoreUtils.toAppErrors(throwable)).exception()
+                    fulfilmentConnectionError(ErrorUtils.toAppErrors(throwable)).exception()
         }.syncThen { FulfilmentRequest fulfilmentResult ->
             EventStatus orderEventStatus = EventStatus.COMPLETED
 

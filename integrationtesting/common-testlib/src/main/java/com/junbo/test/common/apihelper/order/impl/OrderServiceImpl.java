@@ -147,14 +147,17 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
 
         String responseBody = restApiCall(HTTPMethod.PUT, orderUrl + "orders/" + orderId, order, expectedResponseCode);
 
-        Order orderResult = new JsonMessageTranscoder().decode(
-                new TypeReference<Order>() {
-                }, responseBody);
+        if (expectedResponseCode == 200) {
+            Order orderResult = new JsonMessageTranscoder().decode(
+                    new TypeReference<Order>() {
+                    }, responseBody);
 
-        String responseOrderId = IdConverter.idToHexString(orderResult.getId());
-        Master.getInstance().addOrder(orderId, orderResult);
+            String responseOrderId = IdConverter.idToHexString(orderResult.getId());
+            Master.getInstance().addOrder(orderId, orderResult);
 
-        return responseOrderId;
+            return responseOrderId;
+        }
+        return null;
     }
 
 }

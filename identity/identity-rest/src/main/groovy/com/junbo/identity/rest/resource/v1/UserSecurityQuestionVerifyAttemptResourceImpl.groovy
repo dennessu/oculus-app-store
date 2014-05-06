@@ -58,9 +58,9 @@ class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuest
 
         userSecurityQuestionAttempt = userSecurityQuestionAttemptFilter.filterForCreate(userSecurityQuestionAttempt)
 
-        userSecurityQuestionAttemptValidator.validateForCreate(userId, userSecurityQuestionAttempt).then {
+        return userSecurityQuestionAttemptValidator.validateForCreate(userId, userSecurityQuestionAttempt).then {
 
-            createInNewTran(userSecurityQuestionAttempt).then { UserSecurityQuestionVerifyAttempt attempt ->
+            return createInNewTran(userSecurityQuestionAttempt).then { UserSecurityQuestionVerifyAttempt attempt ->
 
                 if (attempt.succeeded == true) {
                     created201Marker.mark((Id)attempt.id)
@@ -81,8 +81,8 @@ class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuest
             throw new IllegalArgumentException('userId is null')
         }
         listOptions.setUserId(userId)
-        userSecurityQuestionAttemptValidator.validateForSearch(listOptions).then {
-            userSecurityQuestionAttemptRepository.search(listOptions).
+        return userSecurityQuestionAttemptValidator.validateForSearch(listOptions).then {
+            return userSecurityQuestionAttemptRepository.search(listOptions).
                     then { List<UserSecurityQuestionVerifyAttempt> userSecurityQuestionAttemptList ->
                         def result = new Results<UserSecurityQuestionVerifyAttempt>(items: [])
 

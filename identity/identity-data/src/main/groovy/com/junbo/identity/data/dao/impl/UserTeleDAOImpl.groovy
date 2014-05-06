@@ -2,7 +2,6 @@ package com.junbo.identity.data.dao.impl
 
 import com.junbo.identity.data.dao.UserTeleDAO
 import com.junbo.identity.data.entity.user.UserTeleCodeEntity
-import com.junbo.identity.spec.v1.model.UserTeleCode
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
 import org.hibernate.criterion.Order

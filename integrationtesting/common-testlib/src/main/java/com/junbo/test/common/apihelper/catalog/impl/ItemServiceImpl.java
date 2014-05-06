@@ -59,11 +59,11 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
         return itemRtnId;
     }
 
-    public List<String> getItems(HashMap<String, String> httpPara) throws Exception {
+    public List<String> getItems(HashMap<String, List<String>> httpPara) throws Exception {
         return getItems(httpPara, 200);
     }
 
-    public List<String> getItems(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception {
+    public List<String> getItems(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception {
 
         String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara);
         Results<Item> itemGet = new JsonMessageTranscoder().decode(new TypeReference<Results<Item>>() {},

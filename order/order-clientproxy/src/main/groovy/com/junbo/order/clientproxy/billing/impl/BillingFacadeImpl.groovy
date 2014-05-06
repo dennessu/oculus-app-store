@@ -1,10 +1,12 @@
 package com.junbo.order.clientproxy.billing.impl
 
+import com.junbo.billing.spec.error.ErrorCode
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.billing.spec.resource.BalanceResource
 import com.junbo.billing.spec.resource.BillingCurrencyResource
 import com.junbo.billing.spec.resource.ShippingAddressResource
+import com.junbo.common.error.AppError
 import com.junbo.common.id.BalanceId
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.ShippingAddressId
@@ -12,6 +14,8 @@ import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.billing.BillingFacade
+import com.junbo.order.spec.error.AppErrors
+import com.junbo.order.spec.error.ErrorUtils
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.springframework.stereotype.Component
@@ -78,7 +82,7 @@ class BillingFacadeImpl implements BillingFacade {
             return Promise.pure(new ArrayList<com.junbo.billing.spec.model.Currency>(currencyMap.values()))
         }
 
-        billingCurrencyResource.currencies.syncThen { Results<Currency> results ->
+        return billingCurrencyResource.currencies.syncThen { Results<Currency> results ->
             def val = new HashMap<>()
             results?.items?.each { com.junbo.billing.spec.model.Currency currency ->
                 val[currency.name] = currency
@@ -90,7 +94,7 @@ class BillingFacadeImpl implements BillingFacade {
 
     @Override
     Promise<com.junbo.billing.spec.model.Currency> getCurrency(String name) {
-        currencies.syncThen {
+        return currencies.syncThen {
             return currencyMap.get(name)
         }
     }
@@ -98,5 +102,17 @@ class BillingFacadeImpl implements BillingFacade {
     @Override
     Promise<Balance> confirmBalance(Balance balance) {
         return balanceResource.confirmBalance(balance)
+    }
+
+    @Override
+    AppError convertError(Throwable error) {
+        AppError e = ErrorUtils.toAppError(error)
+
+        if (e != null && e.code == ErrorCode.PAYMENT_INSUFFICIENT_FUND) {
+            return AppErrors.INSTANCE.billingInsufficientFund()
+        }
+
+        return AppErrors.INSTANCE.
+                billingConnectionError(ErrorUtils.toAppErrors(error))
     }
 }

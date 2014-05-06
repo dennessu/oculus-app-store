@@ -128,7 +128,7 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
 
             if (authenticator.externalId != oldAuthenticator.externalId
              || authenticator.type != oldAuthenticator.type) {
-                userAuthenticatorRepository.search(new AuthenticatorListOptions(
+                return userAuthenticatorRepository.search(new AuthenticatorListOptions(
                         userId: authenticator.userId,
                         externalId: authenticator.externalId,
                         type: authenticator.type
@@ -138,7 +138,6 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
                             throw AppErrors.INSTANCE.fieldDuplicate('type or externalId').exception()
                         }
                 }
-                return Promise.pure(null)
             }
 
             return Promise.pure(null)

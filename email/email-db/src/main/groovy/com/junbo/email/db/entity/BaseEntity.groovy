@@ -5,11 +5,14 @@
  */
 package com.junbo.email.db.entity
 
+import groovy.transform.CompileStatic
+
 import javax.persistence.*
 
 /**
  * Base Entity of Email
  */
+@CompileStatic
 @MappedSuperclass
 abstract class BaseEntity {
     @Temporal(TemporalType.TIMESTAMP)

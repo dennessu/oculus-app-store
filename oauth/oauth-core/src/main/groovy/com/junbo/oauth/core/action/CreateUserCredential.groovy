@@ -53,7 +53,7 @@ class CreateUserCredential implements Action {
                 type: 'PASSWORD'
         )
 
-        userCredentialResource.create((UserId) user.id, userCredential).recover { Throwable throwable ->
+        return userCredentialResource.create((UserId) user.id, userCredential).recover { Throwable throwable ->
             if (throwable instanceof AppErrorException) {
                 contextWrapper.errors.add(((AppErrorException) throwable).error.error())
             } else {

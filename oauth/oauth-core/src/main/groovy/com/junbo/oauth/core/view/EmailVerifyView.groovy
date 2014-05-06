@@ -27,7 +27,7 @@ class EmailVerifyView extends AbstractView {
         def model = new ViewModel(
                 view: 'emailVerify',
                 model: modelMap as Map<String, Object>,
-                errors: contextWrapper.errors.unique(new ErrorComparator()).asList()
+                errors: contextWrapper.errors.unique(errorComparator).asList()
         )
 
         return Promise.pure(model)

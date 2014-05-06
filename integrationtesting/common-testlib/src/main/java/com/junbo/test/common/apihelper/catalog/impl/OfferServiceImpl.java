@@ -46,9 +46,11 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
     private final String defaultStoredValueItemRevisionFileName = "defaultStoredValueItemRevision";
     private final String defaultOfferRevisionFileName = "defaultOfferRevision";
+    private final Integer defaultPagingSize = 10000;
+    private final Integer start = 0;
     private LogHelper logger = new LogHelper(OfferServiceImpl.class);
     private static OfferService instance;
-    private boolean offerLoaded;
+    private Boolean offerLoaded = false;
 
     private ItemService itemService = ItemServiceImpl.instance();
     private UserService userService = UserServiceImpl.instance();
@@ -80,11 +82,11 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         return offerRtnId;
     }
 
-    public List<String> getOffers(HashMap<String, String> httpPara) throws Exception {
+    public List<String> getOffers(HashMap<String, List<String>> httpPara) throws Exception {
         return getOffers(httpPara, 200);
     }
 
-    public List<String> getOffers(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception {
+    public List<String> getOffers(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception {
 
         String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara);
         Results<Offer> offerGet = new JsonMessageTranscoder().decode(new TypeReference<Results<Offer>>() {},
@@ -167,22 +169,57 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     }
 
     private void loadAllOffers() throws Exception {
-        HashMap<String, String> paraMap = new HashMap<>();
+        HashMap<String, List<String>> paraMap = new HashMap<>();
+        List<String> listStart = new ArrayList<>();
+        listStart.add(start.toString());
+        List<String> listSize = new ArrayList<>();
+        listSize.add(defaultPagingSize.toString());
+
+        paraMap.put("start", listStart);
+        paraMap.put("size", listSize);
         this.getOffers(paraMap);
     }
 
     private void loadAllOfferRevisions() throws Exception {
-        HashMap<String, String> paraMap = new HashMap<>();
+        HashMap<String, List<String>> paraMap = new HashMap<>();
+        List<String> listStatus = new ArrayList<>();
+        listStatus.add(EnumHelper.CatalogEntityStatus.APPROVED.getEntityStatus());
+        List<String> listStart = new ArrayList<>();
+        listStart.add(start.toString());
+        List<String> listSize = new ArrayList<>();
+        listSize.add(defaultPagingSize.toString());
+
+        paraMap.put("status", listStatus);
+        paraMap.put("start", listStart);
+        paraMap.put("size", listSize);
         OfferRevisionServiceImpl.instance().getOfferRevisions(paraMap);
     }
 
     private void loadAllItems() throws Exception {
-        HashMap<String, String> paraMap = new HashMap<>();
+        HashMap<String, List<String>> paraMap = new HashMap<>();
+        List<String> listStart = new ArrayList<>();
+        listStart.add(start.toString());
+        List<String> listSize = new ArrayList<>();
+        listSize.add(defaultPagingSize.toString());
+
+        paraMap.put("start", listStart);
+        paraMap.put("size", listSize);
         itemService.getItems(paraMap);
     }
 
     private void loadAllItemRevisions() throws Exception {
-        HashMap<String, String> paraMap = new HashMap<>();
+        HashMap<String, List<String>> paraMap = new HashMap<>();
+        List<String> listStatus = new ArrayList<>();
+        listStatus.add(EnumHelper.CatalogEntityStatus.APPROVED.getEntityStatus());
+        List<String> listStart = new ArrayList<>();
+        listStart.add(start.toString());
+        List<String> listSize = new ArrayList<>();
+        listSize.add(defaultPagingSize.toString());
+
+        paraMap.put("status", listStatus);
+        paraMap.put("start", listStart);
+        paraMap.put("size", listSize);
+
         ItemRevisionServiceImpl.instance().getItemRevisions(paraMap);
     }
 

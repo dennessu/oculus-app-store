@@ -64,7 +64,7 @@ class MandrillProviderImpl implements EmailProvider {
         requestBuilder.setBody(toJson(request))
         Promise<Response> future = Promise.wrap(asGuavaFuture(requestBuilder.execute()))
 
-        future.recover {
+        return future.recover {
             LOGGER.error('Failed to build request')
             throw AppErrors.INSTANCE.emailSendError('Fail to build request').exception()
         } .then {
@@ -76,7 +76,7 @@ class MandrillProviderImpl implements EmailProvider {
             try {
                 return Promise.pure( transcoder(response, email))
             } catch (IOException e) {
-                LOGGER.error('Fail to parse the response:',e)
+                LOGGER.error('Fail to parse the response:', e)
                 throw AppErrors.INSTANCE.emailSendError('Fail to parse the response').exception()
             }
         }

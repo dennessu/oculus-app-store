@@ -7,6 +7,7 @@
         <property name="uri">
             <value type="java.net.URI">${apphost.server.uri}</value>
         </property>
+        <property name="maxPoolSize" value="${apphost.maxPoolSize}"/>
     </bean>
 
     <bean id="serviceLocator" factory-bean="httpServer" factory-method="getServiceLocator"

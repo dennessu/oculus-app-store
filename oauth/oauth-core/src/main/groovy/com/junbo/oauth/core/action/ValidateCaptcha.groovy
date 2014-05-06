@@ -99,7 +99,7 @@ class ValidateCaptcha implements Action {
         requestBuilder.addParameter('remoteip', contextWrapper.remoteAddress)
 
         try {
-            Promise.wrap(ListenableFutureAdapter.asGuavaFuture(requestBuilder.execute())).then { Response res ->
+            return Promise.wrap(ListenableFutureAdapter.asGuavaFuture(requestBuilder.execute())).then { Response res ->
                 if (res.statusCode / 100 == 2) {
                     String[] results = res.responseBody.split('\n')
                     if (results[0] == 'true') {

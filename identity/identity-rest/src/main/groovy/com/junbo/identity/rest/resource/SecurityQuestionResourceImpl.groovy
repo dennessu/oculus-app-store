@@ -47,8 +47,8 @@ class SecurityQuestionResourceImpl implements SecurityQuestionResource {
     Promise<SecurityQuestion> create(SecurityQuestion securityQuestion) {
         securityQuestion = securityQuestionFilter.filterForCreate(securityQuestion)
 
-        securityQuestionValidator.validateForCreate(securityQuestion).then {
-            securityQuestionRepository.create(securityQuestion).then { SecurityQuestion newSecurityQuestion ->
+        return securityQuestionValidator.validateForCreate(securityQuestion).then {
+            return securityQuestionRepository.create(securityQuestion).then { SecurityQuestion newSecurityQuestion ->
                 created201Marker.mark((Id)newSecurityQuestion.id)
 
                 newSecurityQuestion = securityQuestionFilter.filterForGet(newSecurityQuestion, null)
@@ -63,16 +63,16 @@ class SecurityQuestionResourceImpl implements SecurityQuestionResource {
             throw new IllegalArgumentException('securityQuestionId is null')
         }
 
-        securityQuestionRepository.get(securityQuestionId).then { SecurityQuestion oldSecurityQuestion ->
+        return securityQuestionRepository.get(securityQuestionId).then { SecurityQuestion oldSecurityQuestion ->
             if (oldSecurityQuestion == null) {
                 throw AppErrors.INSTANCE.securityQuestionNotFound(securityQuestionId).exception()
             }
 
             securityQuestion = securityQuestionFilter.filterForPut(securityQuestion, oldSecurityQuestion)
 
-            securityQuestionValidator.validateForUpdate(securityQuestionId, securityQuestion, oldSecurityQuestion).
+            return securityQuestionValidator.validateForUpdate(securityQuestionId, securityQuestion, oldSecurityQuestion).
                     then {
-                securityQuestionRepository.update(securityQuestion).then { SecurityQuestion newSecurityQuestion ->
+                return securityQuestionRepository.update(securityQuestion).then { SecurityQuestion newSecurityQuestion ->
                     newSecurityQuestion = securityQuestionFilter.filterForGet(newSecurityQuestion, null)
                     return Promise.pure(newSecurityQuestion)
                 }
@@ -86,16 +86,16 @@ class SecurityQuestionResourceImpl implements SecurityQuestionResource {
             throw new IllegalArgumentException('securityQuestionId is null')
         }
 
-        securityQuestionRepository.get(securityQuestionId).then { SecurityQuestion oldSecurityQuestion ->
+        return securityQuestionRepository.get(securityQuestionId).then { SecurityQuestion oldSecurityQuestion ->
             if (oldSecurityQuestion == null) {
                 throw AppErrors.INSTANCE.securityQuestionNotFound(securityQuestionId).exception()
             }
 
             securityQuestion = securityQuestionFilter.filterForPatch(securityQuestion, oldSecurityQuestion)
 
-            securityQuestionValidator.validateForUpdate(securityQuestionId, securityQuestion, oldSecurityQuestion)
+            return securityQuestionValidator.validateForUpdate(securityQuestionId, securityQuestion, oldSecurityQuestion)
                     .then {
-                securityQuestionRepository.update(securityQuestion).then { SecurityQuestion newSecurityQuestion ->
+                return securityQuestionRepository.update(securityQuestion).then { SecurityQuestion newSecurityQuestion ->
                     newSecurityQuestion = securityQuestionFilter.filterForGet(newSecurityQuestion, null)
                     return Promise.pure(newSecurityQuestion)
                 }
@@ -109,8 +109,8 @@ class SecurityQuestionResourceImpl implements SecurityQuestionResource {
         if (getOptions == null) {
             throw new IllegalArgumentException()
         }
-        securityQuestionValidator.validateForGet(securityQuestionId).then {
-            securityQuestionRepository.get(securityQuestionId).then { SecurityQuestion newSecurityQuestion ->
+        return securityQuestionValidator.validateForGet(securityQuestionId).then {
+            return securityQuestionRepository.get(securityQuestionId).then { SecurityQuestion newSecurityQuestion ->
                 if (newSecurityQuestion == null) {
                     throw AppErrors.INSTANCE.securityQuestionNotFound(securityQuestionId).exception()
                 }
@@ -125,8 +125,8 @@ class SecurityQuestionResourceImpl implements SecurityQuestionResource {
     @Override
     Promise<Results<SecurityQuestion>> list(@BeanParam SecurityQuestionListOptions listOptions) {
 
-        securityQuestionValidator.validateForSearch(listOptions).then {
-            securityQuestionRepository.search(listOptions).then { List<SecurityQuestion> securityQuestionList ->
+        return securityQuestionValidator.validateForSearch(listOptions).then {
+            return securityQuestionRepository.search(listOptions).then { List<SecurityQuestion> securityQuestionList ->
                 def result = new Results<SecurityQuestion>(items: [])
 
                 securityQuestionList.each { SecurityQuestion newSecurityQuestion ->

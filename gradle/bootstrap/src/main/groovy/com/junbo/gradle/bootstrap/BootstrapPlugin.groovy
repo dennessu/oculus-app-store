@@ -1,11 +1,14 @@
 package com.junbo.gradle.bootstrap
+
+import org.apache.tools.ant.util.TeeOutputStream
+import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.ApplicationPlugin
 import org.gradle.api.plugins.GroovyPlugin
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.quality.Checkstyle
-import org.gradle.api.plugins.quality.CodeNarc
+import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.Upload
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.wrapper.Wrapper
@@ -39,6 +42,8 @@ class BootstrapPlugin implements Plugin<Project> {
                 languageLevel = 1.7
             }
         }
+
+        rootProject.defaultTasks 'clean', 'install'
 
         rootProject.subprojects {
             def subProject = it
@@ -186,9 +191,17 @@ class BootstrapPlugin implements Plugin<Project> {
             }
 
             plugins.withType(GroovyPlugin) {
+                configurations {
+                    codenarc
+                }
 
                 dependencies {
                     compile libraries.groovy
+
+                    codenarc "org.codenarc:CodeNarc:0.21-J-SNAPSHOT"
+                    codenarc "com.junbo.gradle:bootstrap:${junboVersion}"
+                    codenarc libraries.log4j
+                    codenarc libraries.groovy
                 }
 
                 compileGroovy.doFirst {
@@ -206,36 +219,43 @@ class BootstrapPlugin implements Plugin<Project> {
                     }
                 }
 
-                subProject.apply plugin: 'codenarc'
+                task('codenarc', dependsOn: 'jar', type: JavaExec) {
+                    def reportFile = "$buildDir/CodeNarcReport.html"
+                    def outputStream = new ByteArrayOutputStream()
 
-                codenarc {
-                    configFile = file("$buildDir/config/codenarc/codenarc.groovy")
-                    toolVersion = '0.20'
-                }
+                    classpath configurations.codenarc + tasks['jar'].outputs.files + configurations.compile
+                    main = 'org.codenarc.CodeNarc'
+                    standardOutput = new TeeOutputStream(standardOutput, outputStream)
 
-                codenarcTest {
-                    exclude "**/**"
-                }
-
-                codenarcMain {
-                    exclude "**/**/package-info.java"
-                }
-
-                task('unzipCodenarcConfigFile') {
-                    outputs.upToDateWhen { codenarc.configFile.exists() }
+                    // only include main. test is not included
+                    args = ["-basedir=$projectDir",
+                            "-includes=" + sourceSets.main.groovy.srcDirs.collect { "$it/**.groovy" }.join(","),
+                            "-rulesetfiles=config/codenarc/codenarc.groovy",
+                            "-report=html:$reportFile"
+                    ].toList()
 
                     doLast {
-                        codenarc.configFile.parentFile.mkdirs()
+                        def outputAsString = outputStream.toString()
+                        def compileErrorMatcher = outputAsString =~ /Compilation failed for /
+                        def resultMatcher = outputAsString =~ /CodeNarc completed: \(p1=(\d+); p2=(\d+); p3=(\d+)\)/
 
-                        def path = Paths.get(codenarc.configFile.canonicalPath)
-                        def resource = BootstrapPlugin.getResourceAsStream('/config/codenarc/codenarc.groovy')
-                        Files.copy(resource, path, StandardCopyOption.REPLACE_EXISTING)
+                        def p1Count = resultMatcher[0][1].toInteger()
+                        def p2Count = resultMatcher[0][2].toInteger()
+                        def p3Count = resultMatcher[0][3].toInteger()
+
+                        println "CodeNarc report is available at: $reportFile"
+
+                        if (compileErrorMatcher.find()) {
+                            throw new GradleException("Compilation failures in CodeNarc run.")
+                        }
+
+                        if (p1Count + p2Count + p3Count > 0) {
+                            throw new GradleException("CodeNarc found violations.")
+                        }
                     }
                 }
 
-                tasks.withType(CodeNarc) {
-                    it.dependsOn 'unzipCodenarcConfigFile'
-                }
+                tasks.build.dependsOn 'codenarc'
             }
 
             plugins.withType(ApplicationPlugin) {
@@ -252,6 +272,8 @@ class BootstrapPlugin implements Plugin<Project> {
                     classpath = files(jar.archivePath)
                 }
             }
+
+            defaultTasks 'clean', 'install'
         }
 
         rootProject.apply plugin: "sonar-runner"

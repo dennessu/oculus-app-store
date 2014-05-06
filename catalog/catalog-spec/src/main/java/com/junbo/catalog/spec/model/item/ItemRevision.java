@@ -9,10 +9,7 @@ package com.junbo.catalog.spec.model.item;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.*;
-import com.junbo.common.jackson.annotation.CurrencyId;
-import com.junbo.common.jackson.annotation.ItemRevisionId;
-import com.junbo.common.jackson.annotation.OfferId;
-import com.junbo.common.jackson.annotation.UserId;
+import com.junbo.common.jackson.annotation.*;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
@@ -37,7 +34,7 @@ public class ItemRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 20, required = true, value = "Developer of the item revision resource")
     private Long ownerId;
 
-    @OfferId
+    @ItemId
     @JsonProperty("item")
     @ApiModelProperty(position = 21, required = true, value = "Item of the item revision")
     private Long itemId;

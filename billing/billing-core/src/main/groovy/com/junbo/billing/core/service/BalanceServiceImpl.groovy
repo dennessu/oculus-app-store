@@ -18,12 +18,16 @@ import com.junbo.common.id.BalanceId
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.PIType
 import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.transaction.AsyncTransactionTemplate
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.PlatformTransactionManager
+import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.transaction.support.TransactionCallback
 
 /**
  * Created by xmchen on 14-1-26.
@@ -53,13 +57,16 @@ class BalanceServiceImpl implements BalanceService {
     @Autowired
     BalanceValidator balanceValidator
 
+    @Autowired
+    PlatformTransactionManager transactionManager
+
     private static final Logger LOGGER = LoggerFactory.getLogger(BalanceServiceImpl)
 
-    private static final Set<String> SUPPORT_ASYNC_CHARGE_PI_TYPE
+    private static final Set<Long> SUPPORT_ASYNC_CHARGE_PI_TYPE
 
     static {
-        Set<String> supportAsyncChargePiType = [] as Set
-        supportAsyncChargePiType << PIType.CREDITCARD.name()
+        Set<Long> supportAsyncChargePiType = [] as Set
+        supportAsyncChargePiType << PIType.CREDITCARD.id
 
         SUPPORT_ASYNC_CHARGE_PI_TYPE = Collections.unmodifiableSet(supportAsyncChargePiType)
     }
@@ -80,7 +87,7 @@ class BalanceServiceImpl implements BalanceService {
                 balanceValidator.validateCountry(balance.country)
                 balanceValidator.validateBalance(balance, false)
 
-                if (!SUPPORT_ASYNC_CHARGE_PI_TYPE.contains(pi.type)) {
+                if (balance.isAsyncCharge == true && !SUPPORT_ASYNC_CHARGE_PI_TYPE.contains(pi.type)) {
                     LOGGER.info('name=Not_Support_Async_Charge. pi type: ' + pi.type)
                     balance.isAsyncCharge = false
                 }
@@ -95,14 +102,17 @@ class BalanceServiceImpl implements BalanceService {
                         taxedBalance.isAsyncCharge = false
                     }
 
-                    Balance savedBalance = balanceRepository.saveBalance(taxedBalance)
+                    Balance savedBalance = saveAndCommitBalance(taxedBalance)
 
                     if (savedBalance.isAsyncCharge) {
                         LOGGER.info('name=Async_Charge_Balance. balance id: ' + savedBalance.balanceId.value)
                         asyncChargePublisher.publish(savedBalance.balanceId.toString())
                         return Promise.pure(savedBalance)
                     }
-                    return transactionService.processBalance(savedBalance).then { Balance returnedBalance ->
+                    return transactionService.processBalance(savedBalance).recover { Throwable throwable ->
+                        updateAndCommitBalance(savedBalance, EventActionType.CHARGE)
+                        throw throwable
+                    }.then { Balance returnedBalance ->
                         return Promise.pure(balanceRepository.updateBalance(returnedBalance, EventActionType.CHARGE))
                     }
                 }
@@ -141,7 +151,10 @@ class BalanceServiceImpl implements BalanceService {
             throw AppErrors.INSTANCE.invalidBalanceTotal(balance.totalAmount.toString()).exception()
         }
 
-        return transactionService.captureBalance(savedBalance, balance.totalAmount).then {
+        return transactionService.captureBalance(savedBalance, balance.totalAmount).recover { Throwable throwable ->
+            updateAndCommitBalance(savedBalance, EventActionType.CAPTURE)
+            throw throwable
+        }.then {
             //persist the balance entity
             Balance resultBalance = balanceRepository.updateBalance(savedBalance, EventActionType.CAPTURE)
             return Promise.pure(resultBalance)
@@ -155,7 +168,10 @@ class BalanceServiceImpl implements BalanceService {
         balanceValidator.validateBalanceStatus(balance.status, BalanceStatus.UNCONFIRMED)
         balanceValidator.validateTransactionNotEmpty(savedBalance.balanceId, savedBalance.transactions)
 
-        return transactionService.confirmBalance(savedBalance).then {
+        return transactionService.confirmBalance(savedBalance).recover { Throwable throwable ->
+            updateAndCommitBalance(savedBalance, EventActionType.CONFIRM)
+            throw throwable
+        }.then {
             //persist the balance entity
             Balance resultBalance = balanceRepository.updateBalance(savedBalance, EventActionType.CONFIRM)
             return Promise.pure(resultBalance)
@@ -171,7 +187,10 @@ class BalanceServiceImpl implements BalanceService {
             throw AppErrors.INSTANCE.notAsyncChargeBalance(balance.balanceId.value.toString()).exception()
         }
 
-        return transactionService.processBalance(savedBalance).then { Balance returnedBalance ->
+        return transactionService.processBalance(savedBalance).recover { Throwable throwable ->
+            updateAndCommitBalance(savedBalance, EventActionType.ASYNC_CHARGE)
+            throw throwable
+        }.then { Balance returnedBalance ->
             return Promise.pure(balanceRepository.updateBalance(returnedBalance, EventActionType.ASYNC_CHARGE))
         }
     }
@@ -207,6 +226,26 @@ class BalanceServiceImpl implements BalanceService {
         savedBalance.setShippingAddressId(balance.shippingAddressId)
         Balance resultBalance = balanceRepository.updateBalance(savedBalance, EventActionType.ADDRESS_CHANGE)
         return Promise.pure(resultBalance)
+    }
+
+    protected Balance saveAndCommitBalance(final Balance balance) {
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager)
+        template.setPropagationBehavior(3)
+        return template.execute(new TransactionCallback<Balance>() {
+            public Balance doInTransaction(TransactionStatus txnStatus) {
+                return balanceRepository.saveBalance(balance)
+            }
+        } )
+    }
+
+    protected Balance updateAndCommitBalance(final Balance balance, final EventActionType eventActionType) {
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager)
+        template.setPropagationBehavior(3)
+        return template.execute(new TransactionCallback<Balance>() {
+            public Balance doInTransaction(TransactionStatus txnStatus) {
+                return balanceRepository.updateBalance(balance, eventActionType)
+            }
+        } )
     }
 
     private void computeTotal(Balance balance) {

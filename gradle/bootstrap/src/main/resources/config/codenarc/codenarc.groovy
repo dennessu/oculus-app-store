@@ -124,7 +124,7 @@ ruleset {
         // rulesets/enhanced.xml
         CloneWithoutCloneable
         JUnitAssertEqualsConstantActualValue
-        UnsafeImplementationAsMap
+        // UnsafeImplementationAsMap
 
         // rulesets/exceptions.xml
         CatchArrayIndexOutOfBoundsException
@@ -157,7 +157,7 @@ ruleset {
         ClosureStatementOnOpeningLineOfMultipleLineClosure
         // LineLength
         SpaceAfterCatch
-        SpaceAfterClosingBrace
+        // SpaceAfterClosingBrace
         SpaceAfterComma
         SpaceAfterFor
         SpaceAfterIf
@@ -372,4 +372,7 @@ ruleset {
         UnusedPrivateMethodParameter
         UnusedVariable
 
+        // rulesets: junbo only
+        rule('config/codenarc/rules/CheckIgnoredPromiseRule.groovy')
+        rule('config/codenarc/rules/MustCompileStaticRule.groovy')
 }

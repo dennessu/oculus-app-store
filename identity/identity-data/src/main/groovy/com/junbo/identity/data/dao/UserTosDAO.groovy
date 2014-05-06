@@ -6,7 +6,6 @@
 package com.junbo.identity.data.dao
 
 import com.junbo.identity.data.entity.user.UserTosAgreementEntity
-import com.junbo.identity.spec.v1.model.UserTosAgreement
 import com.junbo.identity.spec.v1.option.list.UserTosAgreementListOptions
 import groovy.transform.CompileStatic
 

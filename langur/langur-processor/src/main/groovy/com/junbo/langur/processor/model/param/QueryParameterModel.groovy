@@ -6,10 +6,12 @@
 package com.junbo.langur.processor.model.param
 
 import com.junbo.langur.processor.model.ClientParameterModel
+import groovy.transform.CompileStatic
 
 /**
  * Created by kevingu on 11/28/13.
  */
+@CompileStatic
 class QueryParameterModel extends ClientParameterModel {
 
     String queryName

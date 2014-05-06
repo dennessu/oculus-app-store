@@ -111,7 +111,7 @@ class LocaleResourceImpl implements LocaleResource {
         }
 
         return localeValidator.validateForGet(localeId).then {
-            localeRepository.get(localeId).then { Locale newLocale ->
+            return localeRepository.get(localeId).then { Locale newLocale ->
                 if (newLocale == null) {
                     throw AppErrors.INSTANCE.localeNotFound(localeId).exception()
                 }

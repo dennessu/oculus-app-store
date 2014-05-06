@@ -7,6 +7,8 @@ package com.junbo.test.billing.apihelper;
 
 import com.junbo.billing.spec.model.Balance;
 
+import java.util.List;
+
 /**
  * Created by Yunlong on 4/8/14.
  */
@@ -19,8 +21,8 @@ public interface BalanceService {
 
     String getBalanceByBalanceId(String uid, String balanceId, int expectedResponseCode) throws Exception;
 
-    String getBalanceByOrderId(String uid, String orderId) throws Exception;
+    List<String> getBalanceByOrderId(String uid, String orderId) throws Exception;
 
-    String getBalanceByOrderId(String uid, String orderId, int expectedResponseCode) throws Exception;
+    List<String> getBalanceByOrderId(String uid, String orderId, int expectedResponseCode) throws Exception;
 
 }

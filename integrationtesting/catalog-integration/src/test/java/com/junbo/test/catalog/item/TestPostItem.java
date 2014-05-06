@@ -5,12 +5,11 @@
  */
 package com.junbo.test.catalog.item;
 
-import com.junbo.test.common.apihelper.catalog.impl.ItemServiceImpl;
-import com.junbo.test.common.apihelper.catalog.ItemService;
+import com.junbo.test.catalog.impl.ItemServiceImpl;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.LogHelper;
+import com.junbo.test.catalog.ItemService;
 import com.junbo.test.common.property.*;
 
 import org.testng.annotations.Test;
@@ -46,18 +45,16 @@ public class TestPostItem extends BaseTestClass {
 
         //Post test items only with required parameters
         Item testItemRequired = itemService.prepareItemEntity(itemRequiredPara);
-        String itemRtnId1 = itemService.postItem(testItemRequired);
-        Item returnedItem1 = Master.getInstance().getItem(itemRtnId1);
+        Item itemRtn1 = itemService.postItem(testItemRequired);
 
-        checkItemRequiredParams(returnedItem1, testItemRequired);
+        checkItemRequiredParams(itemRtn1, testItemRequired);
 
         //Post test item with optional params
         Item testItemFull = itemService.prepareItemEntity(defaultItem);
-        String itemRtnId2 = itemService.postItem(testItemFull);
-        Item returnedItem2 = Master.getInstance().getItem(itemRtnId2);
+        Item itemRtn2 = itemService.postItem(testItemFull);
 
-        checkItemRequiredParams(returnedItem2, testItemFull);
-        checkItemOptionalParams(returnedItem2, testItemFull);
+        checkItemRequiredParams(itemRtn2, testItemFull);
+        checkItemOptionalParams(itemRtn2, testItemFull);
     }
 
     @Property(
@@ -77,15 +74,6 @@ public class TestPostItem extends BaseTestClass {
     public void testPostItemInvalidScenarios() throws Exception {
 
         Item testItem = itemService.prepareItemEntity(defaultItem);
-        try {
-            //Error code 400 means "Missing Input field"
-            itemService.postItem(testItem, 400);
-            Assert.fail("Post item should fail");
-        }
-        catch (Exception ex) {
-        }
-
-        testItem = itemService.prepareItemEntity(defaultItem);
         testItem.setType(null);
         try {
             //Error code 400 means "Missing Input field"
@@ -122,8 +110,14 @@ public class TestPostItem extends BaseTestClass {
     }
 
     private void checkItemOptionalParams(Item item1, Item item2) {
-        //Assert.assertEquals(item1.getSkus(), item2.getSkus());
-        //Assert.assertEquals(item1.getProperties(), item2.getProperties());
+        Assert.assertEquals(item1.getCurrentRevisionId(), item2.getCurrentRevisionId());
+        Assert.assertEquals(item1.getEntitlementDefId(), item2.getEntitlementDefId());
+        Assert.assertEquals(item1.getGenres(), item2.getGenres());
+        Assert.assertEquals(item1.getIapHostItemId(), item2.getIapHostItemId());
+        Assert.assertEquals(item1.getPackageName(), item2.getPackageName());
+        Assert.assertEquals(item1.getPlatforms(), item2.getPlatforms());
+        Assert.assertEquals(item1.getRollupPackageName(), item2.getRollupPackageName());
+        Assert.assertEquals(item1.getDefaultOffer(), item2.getDefaultOffer());
     }
 
 }

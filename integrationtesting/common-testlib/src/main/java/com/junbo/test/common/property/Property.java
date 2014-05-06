@@ -21,4 +21,5 @@ public @interface Property {
     Status status() default Status.DefaultEnable;
     String description() default "";
     String[] steps() default {};
+    String bugNum() default "";
 }
