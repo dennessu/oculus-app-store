@@ -12,6 +12,7 @@ import com.junbo.order.db.mapper.ModelMapper
 import com.junbo.order.spec.model.Discount
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
+import com.junbo.order.spec.model.PaymentInfo
 import org.apache.commons.lang.RandomStringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.testng.annotations.Test
@@ -45,7 +46,7 @@ class OrderRepositoryTest extends BaseTest {
         order.shippingMethod = TestHelper.generateLong() % 100
         order.orderItems << createOrderItem()
         order.discounts << createDiscount(order, order.orderItems.last())
-        order.paymentInstruments << new PaymentInstrumentId(TestHelper.generateId())
+        order.payments << new PaymentInfo(paymentInstrument : new PaymentInstrumentId(TestHelper.generateId()))
         orderRepository.updateOrder(order, false)
         verifyByRead(order)
 
@@ -64,14 +65,14 @@ class OrderRepositoryTest extends BaseTest {
         // update order item, discount, paymentId
         order.orderItems[0].offer = new OfferId(TestHelper.generateLong())
         order.discounts[0].coupon = 'Code' + TestHelper.generateLong()
-        order.paymentInstruments[0] = new PaymentInstrumentId(TestHelper.generateId())
+        order.payments[0] = new PaymentInfo(paymentInstrument : new PaymentInstrumentId(TestHelper.generateId()))
         orderRepository.updateOrder(order, false)
         verifyByRead(order)
 
         // remove order item, discount, paymentId
         order.orderItems.clear()
         order.discounts.clear()
-        order.paymentInstruments.clear()
+        order.payments.clear()
         orderRepository.updateOrder(order, false)
         verifyByRead(order)
     }
@@ -100,8 +101,9 @@ class OrderRepositoryTest extends BaseTest {
         )
 
         // verify pi
-        assert new HashSet<PaymentInstrumentId>(orderRepository.getPaymentInstrumentIds(order.id.value)) ==
-                new HashSet<PaymentInstrumentId>(order.paymentInstruments)
+        assert new HashSet<PaymentInstrumentId>(orderRepository.getPayments(order.id.value).
+                collect {it -> return it.paymentInstrument}) ==
+                new HashSet<PaymentInstrumentId>(order.payments.collect {it -> return it.paymentInstrument})
     }
 
     private OrderItem createOrderItem() {
@@ -131,9 +133,9 @@ class OrderRepositoryTest extends BaseTest {
                 createDiscount(order, order.orderItems[0]),
                 createDiscount(order, order.orderItems[1])
         ]
-        order.paymentInstruments = [
-                new PaymentInstrumentId(TestHelper.generateLong()),
-                new PaymentInstrumentId(TestHelper.generateLong())
+        order.payments = [
+                new PaymentInfo(paymentInstrument:  new PaymentInstrumentId(TestHelper.generateLong())),
+                new PaymentInfo(paymentInstrument: new PaymentInstrumentId(TestHelper.generateLong()))
         ]
         return order
     }
