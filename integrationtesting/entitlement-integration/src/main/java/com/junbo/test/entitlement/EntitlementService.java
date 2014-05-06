@@ -11,6 +11,7 @@ import com.junbo.common.model.Results;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.langur.core.client.TypeReference;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
@@ -32,7 +33,7 @@ import java.util.concurrent.Future;
  */
 public class EntitlementService {
 
-    private static String entitlementUrl = RestUrl.getRestUrl(RestUrl.ComponentName.COMMERCE);
+    private static String commerceUrl = ConfigHelper.getSetting("defaultCommerceURI");
     private static LogHelper logger = new LogHelper(Entitlement.class);
     private static AsyncHttpClient asyncClient = new AsyncHttpClient(new AsyncHttpClientConfig.Builder().build());
 
@@ -46,7 +47,7 @@ public class EntitlementService {
     public static String grantEntitlement(Entitlement entitlement, int expectedResponseCode) throws Exception {
         String requestBody = new JsonMessageTranscoder().encode(entitlement);
 
-        String entitlementEndpointUrl = entitlementUrl + "entitlements/";
+        String entitlementEndpointUrl = commerceUrl + "entitlements/";
 
         Request req = new RequestBuilder("POST")
                 .setUrl(entitlementEndpointUrl)
@@ -77,7 +78,7 @@ public class EntitlementService {
     }
 
     public List<String> getEntitlements(String userId, String developerId, int expectedResponseCode) throws Exception {
-        String entitlementEndpointUrl = entitlementUrl
+        String entitlementEndpointUrl = commerceUrl
                 + "users/"
                 + userId
                 + "/entitlements?developerId="
