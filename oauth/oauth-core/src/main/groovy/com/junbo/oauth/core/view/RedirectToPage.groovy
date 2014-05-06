@@ -10,10 +10,8 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-import org.springframework.web.util.UriComponentsBuilder
 
 import javax.ws.rs.core.Response
 
@@ -34,11 +32,8 @@ class RedirectToPage implements Action {
     Promise<ActionResult> execute(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
 
-        def uriBuilder = UriComponentsBuilder.fromHttpUrl(pageUrl)
-        uriBuilder.queryParam(OAuthParameters.CONVERSATION_ID, context.conversationId)
-
         contextWrapper.responseBuilder = Response.status(Response.Status.FOUND)
-                .location(uriBuilder.build().toUri())
+                .location(URI.create("${pageUrl}cid=${context.conversationId}"))
 
         return Promise.pure(null)
     }

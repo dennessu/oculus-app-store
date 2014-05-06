@@ -60,11 +60,11 @@ public class EntitlementDefinitionServiceImpl extends HttpClientBase implements 
         return entitlementDefinitionRtnId;
     }
 
-    public List<String> getEntitlementDefinitions(HashMap<String, String> httpPara) throws Exception {
+    public List<String> getEntitlementDefinitions(HashMap<String, List<String>> httpPara) throws Exception {
         return getEntitlementDefinitions(httpPara, 200);
     }
 
-    public List<String> getEntitlementDefinitions(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception {
+    public List<String> getEntitlementDefinitions(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception {
 
         String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara);
         Results<EntitlementDefinition> entitlementDefinitionGet = new JsonMessageTranscoder().decode(

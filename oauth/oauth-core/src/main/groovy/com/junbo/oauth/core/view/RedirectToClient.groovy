@@ -42,7 +42,6 @@ class RedirectToClient implements Action {
         def oauthInfo = contextWrapper.oauthInfo
         def uriBuilder = UriComponentsBuilder.fromHttpUrl(oauthInfo.redirectUri)
 
-        def parameterMap = contextWrapper.parameterMap
         def authorizationCode = contextWrapper.authorizationCode
         def accessToken = contextWrapper.accessToken
         def idToken = contextWrapper.idToken
@@ -67,9 +66,8 @@ class RedirectToClient implements Action {
         }
 
         // Add the state parameter.
-        String state = parameterMap.getFirst(OAuthParameters.STATE)
-        if (state != null) {
-            parameters.put(OAuthParameters.STATE, state)
+        if (oauthInfo.state != null) {
+            parameters.put(OAuthParameters.STATE, oauthInfo.state)
         }
 
         // Add the session state, the client will use it for tracking the login status within an iframe.

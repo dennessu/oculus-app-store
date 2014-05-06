@@ -19,8 +19,8 @@ public interface ItemAttributeService {
     String getItemAttribute(String itemAttributeId) throws Exception;
     String getItemAttribute(String itemAttributeId, int expectedResponseCode) throws Exception;
 
-    List<String> getItemAttributes(HashMap<String, String> httpPara) throws Exception;
-    List<String> getItemAttributes(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception;
+    List<String> getItemAttributes(HashMap<String, List<String>> httpPara) throws Exception;
+    List<String> getItemAttributes(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception;
 
     String postItemAttribute(ItemAttribute itemAttribute) throws Exception;
     String postItemAttribute(ItemAttribute itemAttribute, int expectedResponseCode) throws Exception;

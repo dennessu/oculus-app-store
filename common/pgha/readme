@@ -1,0 +1,13 @@
+#demo steps
+./purge.sh
+./build_master.sh
+./base_backup.sh
+
+./build_slave.sh
+./test_replication.sh
+
+./failover.sh
+./test_replication_reverse.sh
+
+./failback.sh
+./test_replication.sh
