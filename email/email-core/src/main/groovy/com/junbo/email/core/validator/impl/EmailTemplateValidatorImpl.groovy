@@ -80,9 +80,9 @@ class EmailTemplateValidatorImpl extends CommonValidator implements EmailTemplat
     }
 
     private void validatePlaceholderNamesField(EmailTemplate template) {
-        if(!StringUtils.isEmpty(template.subject)) {
+        if (!StringUtils.isEmpty(template.subject)) {
             List<String> placeholders = PlaceholderUtils.retrievePlaceholders(template.subject);
-            if(!PlaceholderUtils.compare(placeholders,template.placeholderNames)) {
+            if (!PlaceholderUtils.compare(placeholders, template.placeholderNames)) {
                 throw AppErrors.INSTANCE.invalidPlaceholderNames().exception()
             }
         }
@@ -90,7 +90,7 @@ class EmailTemplateValidatorImpl extends CommonValidator implements EmailTemplat
 
     private void validateTemplateId(Long id) {
         EmailTemplate template = emailTemplateRepository.getEmailTemplate(id)
-        if(template == null) {
+        if (template == null) {
             throw AppErrors.INSTANCE.templateNotFound().exception()
         }
     }
