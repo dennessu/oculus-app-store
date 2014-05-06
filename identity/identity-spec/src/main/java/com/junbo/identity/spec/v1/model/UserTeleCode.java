@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPersonalInfoId;
@@ -34,7 +35,7 @@ public class UserTeleCode extends ResourceMeta implements Identifiable<UserTeleI
     @ApiModelProperty(position = 4, required = false, value = "The language to sent to the user.")
     private String sentLanguage;
 
-    @ApiModelProperty(position = 5, required = true, value = "The verify code sent to the user.")
+    @JsonIgnore
     private String verifyCode;
 
     @ApiModelProperty(position = 6, required = false, value = "The template sent to the user.")

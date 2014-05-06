@@ -3,6 +3,7 @@ package com.junbo.identity.core.service.validator.impl
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.id.UserTeleId
+import com.junbo.identity.core.service.util.CodeGenerator
 import com.junbo.identity.core.service.validator.UserTeleValidator
 import com.junbo.identity.data.identifiable.TeleVerifyType
 import com.junbo.identity.data.identifiable.UserStatus
@@ -26,14 +27,15 @@ import org.springframework.util.CollectionUtils
 class UserTeleValidatorImpl implements UserTeleValidator {
     private Integer maxTeleCodeExpireTime
     private Integer maxSMSRequestsPerHour
+    private Integer maxReuseSeconds
+
+    private CodeGenerator codeGenerator
 
     private UserRepository userRepository
     private UserTeleRepository userTeleRepository
     private UserPersonalInfoRepository userPersonalInfoRepository
 
     private List<String> allowedLanguages
-    private Integer minVerifyCodeLength
-    private Integer maxVerifyCodeLength
     private Integer minTemplateLength
     private Integer maxTemplateLength
 
@@ -93,66 +95,78 @@ class UserTeleValidatorImpl implements UserTeleValidator {
 
     @Override
     Promise<Void> validateForCreate(UserId userId, UserTeleCode userTeleCode) {
+
+        if (userTeleCode.verifyCode != null) {
+            throw AppErrors.INSTANCE.fieldNotWritable('verifyCode').exception()
+        }
+
         return basicTeleCodeCheck(userId, userTeleCode).then {
-            if (userTeleCode.id != null) {
-                throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
-            }
-
-            if (userTeleCode.expiresBy != null) {
-                throw AppErrors.INSTANCE.fieldNotWritable('expiresBy').exception()
-            }
-
-            if (userTeleCode.active != null) {
-                throw AppErrors.INSTANCE.fieldNotWritable('active').exception()
-            }
-
-            Calendar cal = Calendar.instance
-            cal.setTime(new Date())
-            cal.add(Calendar.SECOND, maxTeleCodeExpireTime)
-            userTeleCode.expiresBy = cal.time
-
-            userTeleCode.active = true
-            userTeleCode.userId = userId
-
-            return Promise.pure(null)
+            return fillCode(userId, userTeleCode)
         }.then {
-            return userTeleRepository.searchTeleCode(userId, userTeleCode.phoneNumber).
-                    then { List<UserTeleCode> userTeleCodeList ->
-                        if (CollectionUtils.isEmpty(userTeleCodeList)
-                         || userTeleCodeList.size() <= maxSMSRequestsPerHour) {
+                if (userTeleCode.id != null) {
+                    throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+                }
+
+                if (userTeleCode.expiresBy != null) {
+                    throw AppErrors.INSTANCE.fieldNotWritable('expiresBy').exception()
+                }
+
+                if (userTeleCode.active != null) {
+                    throw AppErrors.INSTANCE.fieldNotWritable('active').exception()
+                }
+
+                Calendar cal = Calendar.instance
+                cal.setTime(new Date())
+                cal.add(Calendar.SECOND, maxTeleCodeExpireTime)
+                userTeleCode.expiresBy = cal.time
+
+                userTeleCode.active = true
+                userTeleCode.userId = userId
+
+                return Promise.pure(null)
+            }.then {
+                return userTeleRepository.searchTeleCode(userId, userTeleCode.phoneNumber).
+                        then { List<UserTeleCode> userTeleCodeList ->
+                            if (CollectionUtils.isEmpty(userTeleCodeList)
+                                    || userTeleCodeList.size() <= maxSMSRequestsPerHour) {
+                                return Promise.pure(null)
+                            }
+
+                            userTeleCodeList.sort(new Comparator<UserTeleCode> () {
+                                @Override
+                                int compare(UserTeleCode o1, UserTeleCode o2) {
+                                    Date o1LastChangedTime = o1.updatedTime == null ? o1.createdTime : o1.updatedTime
+                                    Date o2LastChangedTime = o2.updatedTime == null ? o2.createdTime : o2.updatedTime
+
+                                    return o2LastChangedTime <=> o1LastChangedTime
+                                }
+                            }
+                            )
+
+                            UserTeleCode teleCode = userTeleCodeList.get(maxSMSRequestsPerHour - 1)
+                            Date lastChangeTime = teleCode.updatedTime == null ? teleCode.createdTime : teleCode.updatedTime
+
+                            Calendar cal = Calendar.instance
+                            cal.setTime(new Date())
+                            cal.add(Calendar.HOUR, -1)
+                            if (lastChangeTime.after(cal.time)) {
+                                throw AppErrors.INSTANCE.fieldInvalidException('userId',
+                                        'Reach maximum request number per hour').exception()
+                            }
+
                             return Promise.pure(null)
                         }
-
-                        userTeleCodeList.sort(new Comparator<UserTeleCode> () {
-                            @Override
-                            int compare(UserTeleCode o1, UserTeleCode o2) {
-                                Date o1LastChangedTime = o1.updatedTime == null ? o1.createdTime : o1.updatedTime
-                                Date o2LastChangedTime = o2.updatedTime == null ? o2.createdTime : o2.updatedTime
-
-                                return o2LastChangedTime <=> o1LastChangedTime
-                            }
-                        }
-                        )
-
-                        UserTeleCode teleCode = userTeleCodeList.get(maxSMSRequestsPerHour - 1)
-                        Date lastChangeTime = teleCode.updatedTime == null ? teleCode.createdTime : teleCode.updatedTime
-
-                        Calendar cal = Calendar.instance
-                        cal.setTime(new Date())
-                        cal.add(Calendar.HOUR, -1)
-                        if (lastChangeTime.after(cal.time)) {
-                            throw AppErrors.INSTANCE.fieldInvalidException('userId',
-                                    'Reach maximum request number per hour').exception()
-                        }
-
-                        return Promise.pure(null)
-                    }
-        }
+            }
     }
 
     @Override
     Promise<Void> validateForUpdate(UserId userId, UserTeleId userTeleId, UserTeleCode userTeleCode,
                                     UserTeleCode oldUserTeleCode) {
+
+        if (userTeleCode.verifyCode != null && userTeleCode.verifyCode != oldUserTeleCode.verifyCode) {
+            throw AppErrors.INSTANCE.fieldNotWritable('verifyCode').exception()
+        }
+
         return basicTeleCodeCheck(userId, userTeleCode).then {
             return userTeleRepository.get(userTeleId).then { UserTeleCode teleCode ->
                 if (teleCode == null) {
@@ -195,6 +209,30 @@ class UserTeleValidatorImpl implements UserTeleValidator {
         }
     }
 
+    private Promise<Void> fillCode(UserId userId, UserTeleCode userTeleCode) {
+        return userTeleRepository.searchTeleCode(userId, userTeleCode.phoneNumber).then { List<UserTeleCode> codeList ->
+            if (CollectionUtils.isEmpty(codeList)) {
+                userTeleCode.verifyCode = codeGenerator.generateTeleCode()
+            }
+
+            UserTeleCode teleCode = codeList.find { UserTeleCode code ->
+                Calendar calendar = Calendar.instance
+                calendar.setTime(new Date())
+                calendar.add(Calendar.SECOND, -maxReuseSeconds)
+                Date date = code.updatedTime != null ? code.updatedTime : code.createdTime
+                return date.after(calendar.time)
+            }
+
+            if (teleCode != null) {
+                userTeleCode.verifyCode = teleCode.verifyCode
+            } else {
+                userTeleCode.verifyCode = codeGenerator.generateTeleCode()
+            }
+
+            return Promise.pure(null)
+        }
+    }
+
     private Promise<Void> basicTeleCodeCheck(UserId userId, UserTeleCode userTeleCode) {
         if (userId == null) {
             throw new IllegalArgumentException('userId is null')
@@ -212,16 +250,6 @@ class UserTeleValidatorImpl implements UserTeleValidator {
             if (!(userTeleCode.sentLanguage in allowedLanguages)) {
                 throw AppErrors.INSTANCE.fieldInvalid('sentLanguage', allowedLanguages.join(',')).exception()
             }
-        }
-
-        if (userTeleCode.verifyCode == null) {
-            throw AppErrors.INSTANCE.fieldRequired('verifyCode').exception()
-        }
-        if (userTeleCode.verifyCode.length() > maxVerifyCodeLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('verifyCode', maxVerifyCodeLength).exception()
-        }
-        if (userTeleCode.verifyCode.length() < minVerifyCodeLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('verifyCode', minVerifyCodeLength).exception()
         }
 
         if (userTeleCode.template != null) {
@@ -342,16 +370,6 @@ class UserTeleValidatorImpl implements UserTeleValidator {
     }
 
     @Required
-    void setMinVerifyCodeLength(Integer minVerifyCodeLength) {
-        this.minVerifyCodeLength = minVerifyCodeLength
-    }
-
-    @Required
-    void setMaxVerifyCodeLength(Integer maxVerifyCodeLength) {
-        this.maxVerifyCodeLength = maxVerifyCodeLength
-    }
-
-    @Required
     void setMinTemplateLength(Integer minTemplateLength) {
         this.minTemplateLength = minTemplateLength
     }
@@ -359,5 +377,15 @@ class UserTeleValidatorImpl implements UserTeleValidator {
     @Required
     void setMaxTemplateLength(Integer maxTemplateLength) {
         this.maxTemplateLength = maxTemplateLength
+    }
+
+    @Required
+    void setMaxReuseSeconds(Integer maxReuseSeconds) {
+        this.maxReuseSeconds = maxReuseSeconds
+    }
+
+    @Required
+    void setCodeGenerator(CodeGenerator codeGenerator) {
+        this.codeGenerator = codeGenerator
     }
 }
