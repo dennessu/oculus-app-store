@@ -18,7 +18,6 @@ import com.junbo.ewallet.spec.model.CreditRequest;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.order.spec.model.OrderItem;
 import com.junbo.order.spec.model.PaymentInfo;
-import com.junbo.payment.spec.model.Address;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.TypeSpecificDetails;
 import com.junbo.test.billing.apihelper.ShippingAddressService;
@@ -57,7 +56,6 @@ import com.junbo.test.payment.apihelper.impl.PaymentServiceImpl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by Yunlong on 3/20/14.
