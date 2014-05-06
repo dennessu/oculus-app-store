@@ -18,13 +18,13 @@ import com.junbo.ewallet.spec.model.CreditRequest;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.order.spec.model.OrderItem;
 import com.junbo.order.spec.model.PaymentInfo;
-import com.junbo.payment.spec.model.Address;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.TypeSpecificDetails;
 import com.junbo.test.billing.apihelper.ShippingAddressService;
 import com.junbo.test.billing.apihelper.impl.ShippingAddressServiceImpl;
 import com.junbo.test.common.Entities.ShippingAddressInfo;
 import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
+import com.junbo.test.common.Entities.paymentInstruments.PayPalInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
 import com.junbo.test.common.Utility.BaseTestDataProvider;
 
@@ -56,7 +56,6 @@ import com.junbo.test.payment.apihelper.impl.PaymentServiceImpl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by Yunlong on 3/20/14.
@@ -169,6 +168,21 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
                 paymentInstrument.setIsValidated(ewalletInfo.isValidated());
                 paymentInstrument.setBillingAddressId(billingAddressId);
                 paymentInstrument.setBillingAddressId(ewalletInfo.getBillingAddressId());
+
+                paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument));
+                return paymentInfo.getPid();
+
+            case PAYPAL:
+                PayPalInfo payPalInfo = (PayPalInfo) paymentInfo;
+                typeSpecificDetails.setExpireDate(payPalInfo.getExpireDate());
+                typeSpecificDetails.setEncryptedCvmCode(payPalInfo.getEncryptedCVMCode());
+                paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
+
+                paymentInstrument.setAccountName(payPalInfo.getAccountName());
+                paymentInstrument.setAccountNum(payPalInfo.getAccountNum());
+                paymentInstrument.setIsValidated(payPalInfo.isValidated());
+                paymentInstrument.setType(payPalInfo.getType().getValue());
+                paymentInstrument.setBillingAddressId(payPalInfo.getBillingAddressId());
 
                 paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument));
                 return paymentInfo.getPid();
@@ -322,6 +336,10 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         }
         logger.LogSample("Put cart");
         cartClient.updateCart(uid, cartId, new Cart());
+    }
+
+    public String updateOrder(Order order) throws Exception {
+        return orderClient.updateOrder(order);
     }
 
 }

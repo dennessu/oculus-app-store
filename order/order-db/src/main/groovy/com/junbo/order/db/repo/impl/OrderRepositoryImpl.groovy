@@ -87,7 +87,7 @@ class OrderRepositoryImpl implements OrderRepository {
 
         saveOrderItems(order.id, order.orderItems)
         saveDiscounts(order.id, order.discounts)
-        savePaymentInstruments(order.id, order.paymentInstruments)
+        savePaymentInstruments(order.id, order.payments)
 
         // Save Order Item Tax Info
         return order
@@ -173,12 +173,12 @@ class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    List<PaymentInstrumentId> getPaymentInstrumentIds(Long orderId) {
-        List<PaymentInstrumentId> paymentInstrumentIds = []
-        orderPaymentInfoDao.readByOrderId(orderId)?.each { OrderPaymentInfoEntity paymentInfo ->
-            paymentInstrumentIds << new PaymentInstrumentId(Long.parseLong(paymentInfo.paymentInstrumentId))
+    List<PaymentInfo> getPayments(Long orderId) {
+        List<PaymentInfo> paymentInfos = []
+        orderPaymentInfoDao.readByOrderId(orderId)?.each { OrderPaymentInfoEntity paymentInfoEntity ->
+            paymentInfos << modelMapper.toPaymentInfo(paymentInfoEntity, new MappingContext())
         }
-        return paymentInstrumentIds
+        return paymentInfos
     }
 
     @Override
@@ -206,7 +206,7 @@ class OrderRepositoryImpl implements OrderRepository {
         if (!updateOnlyOrder) {
             saveOrderItems(order.id, order.orderItems)
             saveDiscounts(order.id, order.discounts)
-            savePaymentInstruments(order.id, order.paymentInstruments)
+            savePaymentInstruments(order.id, order.payments)
         }
         return order
     }
@@ -286,35 +286,43 @@ class OrderRepositoryImpl implements OrderRepository {
         updateListTypeField(discounts, getDiscounts(orderId.value), repositoryFuncSet, keyFunc, 'discounts')
     }
 
-    void savePaymentInstruments(OrderId orderId, List<PaymentInstrumentId> paymentInstruments) {
+    void savePaymentInstruments(OrderId orderId, List<PaymentInfo> paymentInfos) {
         def repositoryFuncSet = new RepositoryFuncSet()
-        def paymentInfoEntityList = orderPaymentInfoDao.readByOrderId(orderId.value)
-        def oldPaymentInstruments = new ArrayList<PaymentInstrumentId>()
-        paymentInfoEntityList.each { OrderPaymentInfoEntity paymentInfo ->
-            oldPaymentInstruments << new PaymentInstrumentId(Long.parseLong(paymentInfo.paymentInstrumentId))
+
+        def oldPaymentInfoEntityList = orderPaymentInfoDao.readByOrderId(orderId.value)
+        def oldPaymentInfos = [] as ArrayList<PaymentInfo>
+        def oldPaymentInfoEntityMap = [:] as HashMap<PaymentInstrumentId, OrderPaymentInfoEntity>
+
+        oldPaymentInfoEntityList.each { OrderPaymentInfoEntity paymentInfo ->
+            oldPaymentInfos << modelMapper.toPaymentInfo(paymentInfo, new MappingContext())
+            oldPaymentInfoEntityMap[new PaymentInstrumentId(Long.parseLong(paymentInfo.paymentInstrumentId))] =
+                    paymentInfo
         }
-        repositoryFuncSet.create = { PaymentInstrumentId pi ->
-            savePaymentInstrument(orderId, pi)
+
+        repositoryFuncSet.create = { PaymentInfo pi ->
+            savePaymentInstrument(orderId, pi, null)
         }
-        repositoryFuncSet.update = { PaymentInstrumentId newPi, PaymentInstrumentId oldPi ->
-            assert newPi == oldPi
-            return false
+
+        repositoryFuncSet.update = { PaymentInfo newPi, PaymentInfo oldPi ->
+            assert newPi.paymentInstrument == oldPi.paymentInstrument
+            savePaymentInstrument(orderId, newPi, oldPaymentInfoEntityMap[oldPi.paymentInstrument].orderPaymentId)
+            return true
         }
-        repositoryFuncSet.delete = { PaymentInstrumentId pi ->
-            def entity = paymentInfoEntityList.find { OrderPaymentInfoEntity entity ->
-                return Long.parseLong(entity.paymentInstrumentId) == pi.value
-            }
+
+        repositoryFuncSet.delete = { PaymentInfo pi ->
+            def entity = oldPaymentInfoEntityMap[pi.paymentInstrument]
             if (entity != null) {
                 orderPaymentInfoDao.markDelete(entity.orderPaymentId)
                 return true
             }
             return false
         }
-        def keyFunc = { PaymentInstrumentId piId ->
-            return piId
+        def keyFunc = { PaymentInfo pi ->
+            return pi.paymentInstrument
         }
-        updateListTypeField(paymentInstruments, oldPaymentInstruments, repositoryFuncSet, keyFunc,
-                'paymentInstruments')
+
+        updateListTypeField(paymentInfos, oldPaymentInfos, repositoryFuncSet, keyFunc,
+                'payments')
     }
 
     void updateListTypeField(List newList, List oldList, RepositoryFuncSet repositoryFuncSet, Closure keyFunc,
@@ -392,15 +400,20 @@ class OrderRepositoryImpl implements OrderRepository {
         Utils.fillDateInfo(discount, entity)
     }
 
-    void savePaymentInstrument(OrderId orderId, PaymentInstrumentId paymentInstrumentId) {
-        def orderPaymentInfoEntity = new OrderPaymentInfoEntity()
-        orderPaymentInfoEntity.paymentInstrumentId =
-                (paymentInstrumentId == null || paymentInstrumentId.value == null) ? null :
-                        paymentInstrumentId.value.toString()
-        orderPaymentInfoEntity.orderId = orderId == null ? null : orderId.value
-        orderPaymentInfoEntity.paymentInstrumentType = 'CREDIT_CAR' // todo may not need to save this field in db
-        orderPaymentInfoEntity.orderPaymentId = idGenerator.nextId(orderId.value)
-        orderPaymentInfoDao.create(orderPaymentInfoEntity)
-    }
+    void savePaymentInstrument(OrderId orderId, PaymentInfo paymentInfo, Long oldEntityId) {
+        def entity = modelMapper.toOrderPaymentInfoEntity(paymentInfo, new MappingContext())
+        entity.orderId = orderId == null ? null : orderId.value
+        entity.paymentInstrumentType = 'CREDIT_CAR' // todo may not need to save this field in db
 
+        if (oldEntityId == null) { // create
+            entity.orderPaymentId = idGenerator.nextId(orderId.value)
+            orderPaymentInfoDao.create(entity)
+        } else { // update
+            def oldEntity = orderPaymentInfoDao.read(oldEntityId)
+            entity.createdTime = oldEntity.createdTime
+            entity.createdBy = oldEntity.createdBy
+            entity.orderPaymentId = oldEntityId
+            orderPaymentInfoDao.update(entity)
+        }
+    }
 }

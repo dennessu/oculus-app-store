@@ -31,7 +31,7 @@ class FlowSelectorTest extends BaseTest {
     @Test
     void testSelector_CREATE_PayIn_NoPI_Digital() {
         def context = TestBuilder.buildDefaultContext()
-        context.order.paymentInstruments = null
+        context.order.payments = null
         flowSelector.select(context, OrderServiceOperation.CREATE).syncThen { String name ->
             assert(name == FlowType.FREE_SETTLE.name())
         }
