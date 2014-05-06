@@ -6,7 +6,6 @@ import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.id.UserTeleId
 import com.junbo.identity.data.repository.UserTeleRepository
-import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.model.UserTeleCode
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
