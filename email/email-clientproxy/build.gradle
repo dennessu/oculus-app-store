@@ -2,6 +2,7 @@ apply plugin: 'groovy'
 
 dependencies {
     compile project(":email-spec")
+    compile project(":email-common")
     compile (libraries.rs_api)
     compile (libraries.langur)
     compile (libraries.spring_beans)

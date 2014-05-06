@@ -5,6 +5,7 @@
  */
 package com.junbo.email.core.validator.impl
 
+import com.junbo.email.common.util.PlaceholderUtils
 import com.junbo.email.core.validator.EmailTemplateValidator
 import com.junbo.email.spec.error.AppErrors
 import com.junbo.email.spec.model.EmailTemplate
@@ -22,11 +23,14 @@ class EmailTemplateValidatorImpl extends CommonValidator implements EmailTemplat
 
     void validateCreate(EmailTemplate template) {
         this.validateCommonField(template)
+        this.validatePlaceholderNamesField(template)
         this.validateTemplateName(template.name)
     }
 
-    void validateUpdate(EmailTemplate template) {
+    void validateUpdate(EmailTemplate template, Long templateId) {
+        this.validateTemplateId(templateId)
         this.validateCommonField(template)
+        this.validatePlaceholderNamesField(template)
     }
 
     void validateDelete(Long id) {
@@ -71,7 +75,23 @@ class EmailTemplateValidatorImpl extends CommonValidator implements EmailTemplat
     private void validateTemplateName(String name) {
         EmailTemplate template = emailTemplateRepository.getEmailTemplateByName(name)
         if (template != null) {
-            throw AppErrors.INSTANCE.emailTemplateAlreadyExist('').exception()
+            throw AppErrors.INSTANCE.emailTemplateAlreadyExist().exception()
+        }
+    }
+
+    private void validatePlaceholderNamesField(EmailTemplate template) {
+        if(!StringUtils.isEmpty(template.subject)) {
+            List<String> placeholders = PlaceholderUtils.retrievePlaceholders(template.subject);
+            if(!PlaceholderUtils.compare(placeholders,template.placeholderNames)) {
+                throw AppErrors.INSTANCE.invalidPlaceholderNames().exception()
+            }
+        }
+    }
+
+    private void validateTemplateId(Long id) {
+        EmailTemplate template = emailTemplateRepository.getEmailTemplate(id)
+        if(template == null) {
+            throw AppErrors.INSTANCE.templateNotFound().exception()
         }
     }
 }
