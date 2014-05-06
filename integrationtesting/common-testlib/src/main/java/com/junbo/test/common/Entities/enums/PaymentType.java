@@ -11,7 +11,7 @@ package com.junbo.test.common.Entities.enums;
 public enum PaymentType {
     CREDITCARD("CREDITCARD", 0L),
     DIRECTDEBIT("DIRECTDEBIT", 0L),
-    PAYPAL("PAYPAL", 0L),
+    PAYPAL("PAYPAL", 3L),
     EWALLET("WALLET", 2L);
 
     private String name;

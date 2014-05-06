@@ -305,6 +305,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         OfferRevision offerRevisionGet = Master.getInstance().getOfferRevision(offerRevisionId);
         offerRevisionGet.setStatus(EnumHelper.CatalogEntityStatus.APPROVED.getEntityStatus());
         offerRevisionService.updateOfferRevision(offerRevisionGet);
+        this.getOffer(offerId);
     }
 
     private String getUserId() throws Exception {
