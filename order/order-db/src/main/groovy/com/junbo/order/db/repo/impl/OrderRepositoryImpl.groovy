@@ -424,6 +424,7 @@ class OrderRepositoryImpl implements OrderRepository {
             def oldEntity = orderPaymentInfoDao.read(oldEntityId)
             entity.createdTime = oldEntity.createdTime
             entity.createdBy = oldEntity.createdBy
+            entity.resourceAge = oldEntity.resourceAge
             entity.orderPaymentId = oldEntityId
             orderPaymentInfoDao.update(entity)
         }
