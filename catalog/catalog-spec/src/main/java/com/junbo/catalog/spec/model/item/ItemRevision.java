@@ -54,6 +54,11 @@ public class ItemRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 26, required = true, value = "Download Link", allowableValues = "PC, MAC, LINUX")
     private Map<String, Binary> binaries;
 
+
+    @ApiModelProperty(position = 27, required = true, value = "The platform name, for digital goods only",
+            allowableValues = "PC, MAC, LINUX, ANDROID")
+    private List<String> platforms;
+
     @CurrencyId
     @ApiModelProperty(position = 31, required = true, value = "Wallet currency")
     private String storedValueCurrency;
@@ -136,6 +141,14 @@ public class ItemRevision extends BaseRevisionModel {
 
     public void setBinaries(Map<String, Binary> binaries) {
         this.binaries = binaries;
+    }
+
+    public List<String> getPlatforms() {
+        return platforms;
+    }
+
+    public void setPlatforms(List<String> platforms) {
+        this.platforms = platforms;
     }
 
     public String getStoredValueCurrency() {
