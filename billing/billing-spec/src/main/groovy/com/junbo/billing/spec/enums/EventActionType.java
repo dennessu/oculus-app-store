@@ -16,6 +16,8 @@ import javax.ws.rs.NotSupportedException;
 public enum EventActionType implements Identifiable<Short> {
     CREATE((short)0),
 
+    QUEUE((short)3),
+
     CHARGE((short)10),
     ASYNC_CHARGE((short)11),
     CAPTURE((short)12),

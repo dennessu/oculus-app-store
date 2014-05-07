@@ -19,6 +19,8 @@ public interface BalanceEntityDao {
     BalanceEntity save(BalanceEntity balance);
     BalanceEntity update(BalanceEntity balance);
     List<BalanceEntity> getByTrackingUuid(UUID trackingUuid);
-    List<BalanceEntity> getAsyncChargeInitBalances(Integer count);
+    List<BalanceEntity> getInitBalances();
+    List<BalanceEntity> getAwaitingPaymentBalances();
+    List<BalanceEntity> getUnconfirmedBalances();
     List<BalanceEntity> getRefundBalancesByOriginalId(Long balanceId);
 }

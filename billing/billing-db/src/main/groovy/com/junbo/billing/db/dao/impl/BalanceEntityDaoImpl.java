@@ -73,10 +73,47 @@ public class BalanceEntityDaoImpl extends BaseDao implements BalanceEntityDao {
     }
 
     @Override
-    public List<BalanceEntity> getAsyncChargeInitBalances(Integer count) {
+    public List<BalanceEntity> getInitBalances() {
         BalanceEntity example = new BalanceEntity();
-        example.setIsAsyncCharge(true);
         example.setStatusId(BalanceStatus.INIT.getId());
+
+        ViewQuery<Long> viewQuery = viewQueryFactory.from(example);
+        if (viewQuery != null) {
+            List<Long> balanceIds = viewQuery.list();
+
+            List<BalanceEntity> balanceEntities = new ArrayList<>();
+            for (Long id : balanceIds) {
+                balanceEntities.add(get(id));
+            }
+            return balanceEntities;
+        }
+
+        return null;
+    }
+
+    @Override
+    public List<BalanceEntity> getAwaitingPaymentBalances() {
+        BalanceEntity example = new BalanceEntity();
+        example.setStatusId(BalanceStatus.AWAITING_PAYMENT.getId());
+
+        ViewQuery<Long> viewQuery = viewQueryFactory.from(example);
+        if (viewQuery != null) {
+            List<Long> balanceIds = viewQuery.list();
+
+            List<BalanceEntity> balanceEntities = new ArrayList<>();
+            for (Long id : balanceIds) {
+                balanceEntities.add(get(id));
+            }
+            return balanceEntities;
+        }
+
+        return null;
+    }
+
+    @Override
+    public List<BalanceEntity> getUnconfirmedBalances() {
+        BalanceEntity example = new BalanceEntity();
+        example.setStatusId(BalanceStatus.UNCONFIRMED.getId());
 
         ViewQuery<Long> viewQuery = viewQueryFactory.from(example);
         if (viewQuery != null) {

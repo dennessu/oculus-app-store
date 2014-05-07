@@ -195,15 +195,10 @@ public class BalanceRepositoryImpl implements BalanceRepository {
     }
 
     @Override
-    public List<BalanceId> fetchAsyncChargeBalanceIds(Integer count) {
-        List<BalanceEntity> balanceEntities = balanceEntityDao.getAsyncChargeInitBalances(count);
+    public List<BalanceId> fetchToSettleBalanceIds(Integer count) {
+
         List<BalanceId> ids = new ArrayList<>();
-        if(balanceEntities != null) {
-            for(BalanceEntity entity : balanceEntities) {
-                BalanceId id = new BalanceId(entity.getBalanceId());
-                ids.add(id);
-            }
-        }
+        
         return ids;
     }
 

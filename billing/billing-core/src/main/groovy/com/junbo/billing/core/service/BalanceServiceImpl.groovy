@@ -111,8 +111,14 @@ class BalanceServiceImpl implements BalanceService {
 
                     if (savedBalance.isAsyncCharge) {
                         LOGGER.info('name=Async_Charge_Balance. balance id: ' + savedBalance.balanceId.value)
-                        asyncChargePublisher.publish(savedBalance.balanceId.toString())
-                        return Promise.pure(savedBalance)
+                        try {
+                            asyncChargePublisher.publish(savedBalance.balanceId.toString())
+                        } catch (Exception ex) {
+                            LOGGER.error('name=Async_Charge_Balance_Queue_Error. ', ex)
+                            return Promise.pure(savedBalance)
+                        }
+                        savedBalance.setStatus(BalanceStatus.QUEUING.name())
+                        return Promise.pure(balanceRepository.updateBalance(savedBalance, EventActionType.QUEUE))
                     }
                     return transactionService.processBalance(savedBalance).recover { Throwable throwable ->
                         updateAndCommitBalance(savedBalance, EventActionType.CHARGE)
@@ -187,7 +193,8 @@ class BalanceServiceImpl implements BalanceService {
     Promise<Balance> processAsyncBalance(Balance balance) {
 
         Balance savedBalance = balanceValidator.validateBalanceId(balance.balanceId)
-        balanceValidator.validateBalanceStatus(balance.status, BalanceStatus.INIT.name())
+        balanceValidator.validateBalanceStatus(balance.status,
+                [BalanceStatus.INIT.name(), BalanceStatus.QUEUING.name()])
         if (savedBalance.isAsyncCharge != true) {
             throw AppErrors.INSTANCE.notAsyncChargeBalance(balance.balanceId.value.toString()).exception()
         }

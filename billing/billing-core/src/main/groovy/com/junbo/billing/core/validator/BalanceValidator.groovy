@@ -99,6 +99,7 @@ class BalanceValidator {
             throw AppErrors.INSTANCE.currencyNotFound(currency).exception()
         }
     }
+
     void validateCountry(String country) {
         if (country == null || country.isEmpty()) {
             throw AppErrors.INSTANCE.fieldMissingValue('country').exception()

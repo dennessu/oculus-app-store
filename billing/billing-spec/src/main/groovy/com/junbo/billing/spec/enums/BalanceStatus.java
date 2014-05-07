@@ -15,6 +15,7 @@ import javax.ws.rs.NotSupportedException;
  */
 public enum BalanceStatus implements Identifiable<Short> {
     INIT((short)0),
+    QUEUING((short)1),
 
     UNCONFIRMED((short)10),
     PENDING_CAPTURE((short)50),
