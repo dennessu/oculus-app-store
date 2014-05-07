@@ -17,13 +17,13 @@ import com.junbo.payment.db.mapper.*;
 import com.junbo.payment.spec.enums.*;
 import com.junbo.payment.spec.model.PaymentEvent;
 import com.junbo.payment.spec.model.PaymentInstrument;
+import com.junbo.payment.spec.model.PaymentProperties;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Map;
 
 /**
  * payment transaction service.
@@ -140,10 +140,10 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
                 api, PaymentStatus.SETTLE_CREATED, false);
         PaymentInstrument pi = getPaymentInstrument(existedTransaction);
         final PaymentProviderService provider = getPaymentProviderService(pi);
-        Map<PropertyField, String> properties = paymentRepository.getPaymentProperties(paymentId);
-        if(!properties.isEmpty()){
-            request.getWebPaymentInfo().setToken(properties.get(PropertyField.EXTERNAL_ACCESS_TOKEN));
-            request.getWebPaymentInfo().setPayerId(properties.get(PropertyField.EXTERNAL_PAYER_ID));
+        PaymentProperties properties = paymentRepository.getPaymentProperties(paymentId);
+        if(properties != null){
+            request.getWebPaymentInfo().setToken(properties.getExternalAccessToken());
+            request.getWebPaymentInfo().setPayerId(properties.getExternalPayerId());
         }
         return provider.confirm(existedTransaction.getExternalToken(), request).
                 recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
@@ -303,9 +303,9 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         PaymentTransaction payment = paymentRepository.getByPaymentId(paymentId);
         String externalToken = payment.getExternalToken();
         if(CommonUtil.isNullOrEmpty(externalToken)){
-            Map<PropertyField, String> properties = paymentRepository.getPaymentProperties(paymentId);
-            if(!properties.isEmpty()){
-                externalToken = properties.get(PropertyField.EXTERNAL_ACCESS_TOKEN);
+            PaymentProperties properties = paymentRepository.getPaymentProperties(paymentId);
+            if(properties != null){
+                externalToken = properties.getExternalAccessToken();
             }
         }
         if(CommonUtil.isNullOrEmpty(externalToken)){

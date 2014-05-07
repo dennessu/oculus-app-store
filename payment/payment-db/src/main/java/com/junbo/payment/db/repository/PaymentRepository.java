@@ -6,6 +6,7 @@
 
 package com.junbo.payment.db.repository;
 
+import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.db.dao.payment.PaymentDao;
 import com.junbo.payment.db.dao.payment.PaymentEventDao;
 import com.junbo.payment.db.dao.payment.PaymentPropertyDao;
@@ -15,8 +16,8 @@ import com.junbo.payment.db.entity.payment.PaymentEventEntity;
 import com.junbo.payment.db.entity.payment.PaymentPropertyEntity;
 import com.junbo.payment.db.mapper.PaymentMapperExtension;
 import com.junbo.payment.spec.enums.PaymentStatus;
-import com.junbo.payment.spec.enums.PropertyField;
 import com.junbo.payment.spec.model.PaymentEvent;
+import com.junbo.payment.spec.model.PaymentProperties;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -82,11 +83,12 @@ public class PaymentRepository {
         return events;
     }
 
-    public void addPaymentProperties(Long paymentId, Map<PropertyField, String> properties){
+    public void addPaymentProperties(Long paymentId, PaymentProperties properties){
         if(properties == null){
             return;
         }
-        for(final Map.Entry property : properties.entrySet()){
+        Map<String, String> mapProperties = CommonUtil.parseJson(CommonUtil.toJson(properties, null), HashMap.class);
+        for(final Map.Entry property : mapProperties.entrySet()){
             PaymentPropertyEntity entity = new PaymentPropertyEntity();
             entity.setPaymentId(paymentId);
             entity.setPropertyName(property.getKey().toString());
@@ -95,7 +97,7 @@ public class PaymentRepository {
         }
     }
 
-    public Map<PropertyField, String> getPaymentProperties(Long paymentId){
+    public PaymentProperties getPaymentProperties(Long paymentId){
         PaymentEntity entity = paymentDao.get(paymentId);
         if(entity == null){
             return null;
@@ -104,10 +106,10 @@ public class PaymentRepository {
         if(properties == null){
             return  null;
         }
-        Map<PropertyField, String> paymentProperties = new HashMap<>();
+        Map<String, String> paymentProperties = new HashMap<>();
         for(PaymentPropertyEntity property : properties){
-            paymentProperties.put(PropertyField.valueOf(property.getPropertyName()), property.getPropertyValue());
+            paymentProperties.put(property.getPropertyName(), property.getPropertyValue());
         }
-        return paymentProperties;
+        return CommonUtil.parseJson(CommonUtil.toJson(paymentProperties, null), PaymentProperties.class);
     }
 }
