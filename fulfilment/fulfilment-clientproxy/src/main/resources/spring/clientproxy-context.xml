@@ -24,6 +24,7 @@
         <constructor-arg name="queryParamTranscoder">
             <bean class="com.junbo.common.json.QueryParamTranscoderImpl"/>
         </constructor-arg>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy">
@@ -38,6 +39,7 @@
         <constructor-arg name="queryParamTranscoder">
             <bean class="com.junbo.common.json.QueryParamTranscoderImpl"/>
         </constructor-arg>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="offerRevisionClient" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxy">
@@ -52,6 +54,7 @@
         <constructor-arg name="queryParamTranscoder">
             <bean class="com.junbo.common.json.QueryParamTranscoderImpl"/>
         </constructor-arg>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="itemClient" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy">
@@ -66,6 +69,7 @@
         <constructor-arg name="queryParamTranscoder">
             <bean class="com.junbo.common.json.QueryParamTranscoderImpl"/>
         </constructor-arg>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="itemRevisionClient" class="com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxy">
@@ -80,6 +84,7 @@
         <constructor-arg name="queryParamTranscoder">
             <bean class="com.junbo.common.json.QueryParamTranscoderImpl"/>
         </constructor-arg>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="entitlementDefClient"
@@ -95,6 +100,7 @@
         <constructor-arg name="queryParamTranscoder">
             <bean class="com.junbo.common.json.QueryParamTranscoderImpl"/>
         </constructor-arg>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="shippingAddressClient" class="com.junbo.billing.spec.resource.proxy.ShippingAddressResourceClientProxy">
@@ -109,6 +115,7 @@
         <constructor-arg name="queryParamTranscoder">
             <bean class="com.junbo.common.json.QueryParamTranscoderImpl"/>
         </constructor-arg>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="walletClient"
@@ -124,5 +131,6 @@
         <constructor-arg name="queryParamTranscoder">
             <bean class="com.junbo.common.json.QueryParamTranscoderImpl"/>
         </constructor-arg>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 </beans>

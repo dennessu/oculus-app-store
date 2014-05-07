@@ -67,7 +67,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 return Promise.pure(order)
             }
             // check pi is there, it means the billing address is there.
-            if (CollectionUtils.isEmpty(order.paymentInstruments)) {
+            if (CollectionUtils.isEmpty(order.payments)) {
                 if (order.tentative) {
                     LOGGER.info('name=Skip_Calculate_Tax_Without_PI')
                     return Promise.pure(order)
@@ -150,7 +150,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
             }
         }
         // payment instrument
-        order.setPaymentInstruments(orderRepository.getPaymentInstrumentIds(order.id.value))
+        order.setPayments(orderRepository.getPayments(order.id.value))
         // discount
         order.setDiscounts(orderRepository.getDiscounts(order.id.value))
         // tax

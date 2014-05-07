@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -259,13 +258,14 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
     }
 
     @Override
+    public Promise<PaymentTransaction> getTransaction(Long paymentId) {
+        final PaymentTransaction result = getPaymentAndEvents(paymentId);
+        return Promise.pure(result);
+    }
+
+    @Override
     public Promise<PaymentTransaction> getUpdatedTransaction(Long paymentId) {
-        final PaymentTransaction result = paymentRepository.getByPaymentId(paymentId);
-        if(result == null){
-            throw AppClientExceptions.INSTANCE.resourceNotFound("payment_transaction").exception();
-        }
-        final List<PaymentEvent> events = paymentRepository.getPaymentEventsByPaymentId(paymentId);
-        result.setPaymentEvents(events);
+        final PaymentTransaction result = getPaymentAndEvents(paymentId);
         if(result.getStatus().equalsIgnoreCase(PaymentStatus.SETTLED.toString()) ||
                 result.getStatus().equalsIgnoreCase(PaymentStatus.SETTLE_DECLINED.toString())){
             return Promise.pure(result);

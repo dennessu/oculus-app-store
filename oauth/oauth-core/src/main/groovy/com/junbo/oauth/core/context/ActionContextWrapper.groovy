@@ -49,6 +49,7 @@ class ActionContextWrapper {
     public static final String CAPTCHA_SUCCEED = 'captcha_succeed'
     public static final String VIEW_LOCALE = 'view_locale'
     public static final String EXTRA_PARAM_MAP = 'extra_param_map'
+    public static final String THIRD_PARTY_USERNAME = 'third_party_username'
 
     @Delegate
     private final ActionContext actionContext
@@ -318,5 +319,13 @@ class ActionContextWrapper {
 
     void setExtraParameterMap(Map<String, String> extraMap) {
         actionContext.flowScope[EXTRA_PARAM_MAP] = extraMap
+    }
+
+    String getThirdPartyUsername() {
+        return (String) actionContext.flowScope[THIRD_PARTY_USERNAME]
+    }
+
+    void setThirdPartyUsername(String thirdPartyName) {
+        actionContext.flowScope[THIRD_PARTY_USERNAME] = thirdPartyName
     }
 }

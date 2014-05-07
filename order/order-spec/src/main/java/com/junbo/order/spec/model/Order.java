@@ -13,7 +13,6 @@ import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.OrderId;
-import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.ShippingAddressId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.jackson.annotation.ShippingMethodId;
@@ -21,7 +20,6 @@ import com.junbo.common.model.Link;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -104,11 +102,6 @@ public class Order extends BaseOrderResource {
             "Required if the order is not free. " +
             "It might be empty if there is no payments instruments at this time.")
     private List<PaymentInfo> payments;
-    @ApiModelProperty(required = true, position = 160, value = "The discounts. " +
-            "It might be empty if there is no discounts at this time.")
-
-    @JsonIgnore
-    private List<PaymentInstrumentId> paymentInstruments;
 
     @ApiModelProperty(required = true, position = 160, value = "The discounts. " +
             "It might be empty if there is no discounts at this time.")
@@ -287,12 +280,6 @@ public class Order extends BaseOrderResource {
 
     public void setPayments(List<PaymentInfo> payments) {
         this.payments = payments;
-        if(payments != null) {
-            this.paymentInstruments = new ArrayList<>();
-            for (PaymentInfo paymentInfo : payments) {
-                this.paymentInstruments.add(paymentInfo.getPaymentInstrument());
-            }
-        }
     }
 
     public Link getOrderEvents() {
@@ -309,14 +296,6 @@ public class Order extends BaseOrderResource {
 
     public void setBalances(Link balances) {
         this.balances = balances;
-    }
-
-    public List<PaymentInstrumentId> getPaymentInstruments() {
-        return paymentInstruments;
-    }
-
-    public void setPaymentInstruments(List<PaymentInstrumentId> paymentInstruments) {
-        this.paymentInstruments = paymentInstruments;
     }
 
     public String getSuccessRedirectUrl() {

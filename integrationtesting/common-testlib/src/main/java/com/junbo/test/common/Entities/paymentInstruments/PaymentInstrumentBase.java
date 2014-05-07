@@ -24,8 +24,6 @@ public abstract class PaymentInstrumentBase {
     private String status;
     private String relationToHolder;
     private String phoneNumber;
-
-
     private Long billingAddressId;
 
     public String getPhoneNumber() {
@@ -135,7 +133,6 @@ public abstract class PaymentInstrumentBase {
     public void setStatus(String status) {
         this.status = status;
     }
-
 
     public void setBillingAddressId(Long billingAddressId) {
         this.billingAddressId = billingAddressId;

@@ -6,7 +6,6 @@
 
 package com.junbo.order.db.repo;
 
-import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.order.spec.model.*;
 
 import java.util.List;
@@ -37,7 +36,7 @@ public interface OrderRepository {
 
     List<Discount> getDiscounts(Long orderId);
 
-    List<PaymentInstrumentId> getPaymentInstrumentIds(Long orderId);
+    List<PaymentInfo> getPayments(Long orderId);
 
     Order updateOrder(Order order, boolean updateOnlyOrder);
 
