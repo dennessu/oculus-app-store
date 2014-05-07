@@ -203,6 +203,7 @@ abstract class ThirdPartyLogin implements Action {
 
 }
 
+@CompileStatic
 public class ThirdPartyAccount {
     String type
     String externalId
