@@ -2,7 +2,7 @@
 source "$(git rev-parse --show-toplevel)/scripts/common.sh"; # this comment is needed, see common.sh for detail
 
 if [ -z "$*" ]; then
-    GRADLE_CMD="gradle clean build install"
+    GRADLE_CMD="gradle"
 else
     GRADLE_CMD="gradle $*"
 fi

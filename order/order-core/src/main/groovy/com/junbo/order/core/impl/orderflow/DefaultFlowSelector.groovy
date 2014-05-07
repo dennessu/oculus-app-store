@@ -100,7 +100,7 @@ class DefaultFlowSelector implements FlowSelector {
 
         assert(context != null && context.order != null)
 
-        if (CollectionUtils.isEmpty(context.order.paymentInstruments)) {
+        if (CollectionUtils.isEmpty(context.order.payments)) {
             return Promise.pure(FlowType.FREE_SETTLE.name())
         }
         // select order flow per payment info and product item info

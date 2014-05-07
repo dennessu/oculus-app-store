@@ -8,6 +8,7 @@
         <constructor-arg name="transcoder" ref="commonTranscoder"/>
         <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="userGroupMembershipResource"
@@ -17,6 +18,7 @@
         <constructor-arg name="transcoder" ref="commonTranscoder"/>
         <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="roleService" class="com.junbo.identity.spec.v1.resource.proxy.RoleResourceClientProxy">
@@ -25,6 +27,7 @@
         <constructor-arg name="transcoder" ref="commonTranscoder"/>
         <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="roleAssignmentService"
@@ -34,5 +37,6 @@
         <constructor-arg name="transcoder" ref="commonTranscoder"/>
         <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 </beans>
