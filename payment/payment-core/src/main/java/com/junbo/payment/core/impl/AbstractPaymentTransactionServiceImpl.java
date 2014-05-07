@@ -147,6 +147,16 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
         });
     }
 
+    protected PaymentTransaction getPaymentAndEvents(Long paymentId) {
+        final PaymentTransaction result = paymentRepository.getByPaymentId(paymentId);
+        if(result == null){
+            throw AppClientExceptions.INSTANCE.resourceNotFound("payment_transaction").exception();
+        }
+        final List<PaymentEvent> events = paymentRepository.getPaymentEventsByPaymentId(paymentId);
+        result.setPaymentEvents(events);
+        return result;
+    }
+
     protected PaymentTransaction saveAndCommitPayment(final PaymentTransaction request) {
         AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
         template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);

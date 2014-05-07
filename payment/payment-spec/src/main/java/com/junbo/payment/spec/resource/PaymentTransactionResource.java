@@ -49,7 +49,7 @@ public interface PaymentTransactionResource {
     @Path("/{paymentId}")
     Promise<PaymentTransaction> getPayment(@PathParam("paymentId") Long paymentId);
 
-    @GET
-    @Path("/{paymentId}/external")
-    Promise<PaymentTransaction> getExternalPayment(@PathParam("paymentId") Long paymentId);
+    @POST
+    @Path("/{paymentId}/check")
+    Promise<PaymentTransaction> checkPaymentStatus(@PathParam("paymentId") Long paymentId);
 }
