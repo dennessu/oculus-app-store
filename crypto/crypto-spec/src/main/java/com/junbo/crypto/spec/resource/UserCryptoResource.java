@@ -30,5 +30,5 @@ public interface UserCryptoResource {
     // No user can access this resource any more.
     // If user already has user key, it can't be updated or recreated.
     @POST
-    Promise<String> generateUserEncryptKey(UserId userId);
+    Promise<Void> generateUserEncryptKey(UserId userId);
 }

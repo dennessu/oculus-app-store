@@ -3,22 +3,24 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.crypto.data.entity;
+package com.junbo.crypto.spec.model;
+
+import com.junbo.common.id.UserId;
 
 /**
- * Created by liangfu on 5/6/14.
+ * Created by liangfu on 5/7/14.
  */
-public class UserCryptoKeyEntity {
-    private Long userId;
+public class UserCryptoKey {
+    private UserId userId;
 
     // The user encrypted key
     private String cryptoValue;
 
-    public Long getUserId() {
+    public UserId getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(UserId userId) {
         this.userId = userId;
     }
 

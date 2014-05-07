@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 class UserCryptoResourceImpl implements UserCryptoResource {
 
     @Override
-    Promise<String> generateUserEncryptKey(UserId userId) {
+    Promise<Void> generateUserEncryptKey(UserId userId) {
         return null
     }
 }
