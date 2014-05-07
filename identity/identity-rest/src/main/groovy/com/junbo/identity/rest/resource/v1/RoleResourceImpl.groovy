@@ -124,7 +124,6 @@ class RoleResourceImpl implements RoleResource {
                 if (filtered != null) {
                     results.items.add(filtered)
                 }
-            }
 
                 return Promise.pure(results)
             }
