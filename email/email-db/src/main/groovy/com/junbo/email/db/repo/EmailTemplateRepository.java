@@ -11,7 +11,6 @@ import com.junbo.email.spec.model.EmailTemplate;
 import com.junbo.email.spec.model.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -21,7 +20,6 @@ import java.util.Map;
  * Repository of EmailTemplate.
  */
 @Component
-@Transactional
 public class EmailTemplateRepository extends EmailBaseRepository {
     @Autowired
     private EmailTemplateDao emailTemplateDao;
