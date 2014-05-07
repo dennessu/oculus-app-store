@@ -41,10 +41,14 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
     private static final String CONFIG_PROPERTY_FILE = "configuration.properties";
     private static final String CONFIG_DIR_OPTS = "configDir";
     private static final String ACTIVE_ENV_OPTS = "activeEnv";
+    private static final String ACTIVE_DC_OPTS = "activeDc";
+    private static final String ACTIVE_SUBNET_OPTS = "subnet";
     private static final String SUFFIX_PROPERTY_FILE = ".properties";
     private static final String DEFAULT_FOLDER = "_default";
     private static final String DEFAULT_PROPERTIES_FILE = "_default.properties";
     private static final String DEFAULT_ENVIRONMENT = "onebox";
+    private static final String DEFAULT_DATACENTER = "0";
+    private static final String DEFAULT_SUBNET = "0.0.0.0/0";
     private static final String CONFIG_PATH = "junbo/conf";
 
     private static Logger logger = LoggerFactory.getLogger(ConfigServiceImpl.class);
@@ -87,19 +91,29 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
 
     //region private methods
 
-    private ConfigContext readConfigContext(Path path) {
-        logger.info("Reading config context from: " + path);
-        Properties properties = readProperties(path);
-        String environment = properties.getProperty("environment");
-        //String shards = properties.getProperty("shards");
+    private ConfigContext readConfigContext(Properties properties) {
+        String environment = readConfigContext("environment", ACTIVE_ENV_OPTS, properties, DEFAULT_ENVIRONMENT);
+        String datacenter = readConfigContext("datacenter", ACTIVE_DC_OPTS, properties, DEFAULT_DATACENTER);
+        String ip4vSubnet = readConfigContext("ipv4Subnet", ACTIVE_SUBNET_OPTS, properties, DEFAULT_SUBNET);
 
-        if (StringUtils.isEmpty(environment)) {
-            throw new RuntimeException(String.format(
-                    "Configuration context incomplete from path %s. environment=%s",
-                    path, environment));
+        return new ConfigContext(environment, datacenter, ip4vSubnet);
+    }
+
+    private String readConfigContext(String settingName, String settingKey, Properties properties, String defaultValue) {
+        String result = System.getProperty(settingKey);
+        if (StringUtils.isEmpty(result) && properties != null) {
+            result = properties.getProperty(settingKey);
         }
 
-        return new ConfigContext(environment);
+        if (StringUtils.isEmpty(result)) {
+            logger.info("No configContext %s configured, will use default %s='%s'", settingName, settingKey, defaultValue);
+            result = defaultValue;
+        }
+        else {
+            logger.info("ConfigContext %s is configured as %s='%s'", settingName, settingKey, result);
+        }
+        properties.setProperty(settingKey, result);
+        return result;
     }
 
     // This path is the configurationData first level Path
@@ -225,19 +239,6 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
     }
 
     private void loadConfig() {
-        String environment = System.getProperty(ACTIVE_ENV_OPTS);
-        if (StringUtils.isEmpty(environment)) {
-            logger.info("No environment configured, will use default environment=onebox.");
-            configContext = new ConfigContext(DEFAULT_ENVIRONMENT);
-        }
-        else {
-            logger.info("Environment is configured as environment=" + environment);
-            configContext = new ConfigContext(environment);
-        }
-
-        // Read jar configuration files
-        jarProperties = readJarProperties();
-
         String configDir = System.getProperty(CONFIG_DIR_OPTS);
         if (!StringUtils.isEmpty(configDir)) {
             logger.info("Scanning configuration from configDir: " + configDir);
@@ -245,6 +246,11 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
             Path configFilePath = Paths.get(configDir, CONFIG_PROPERTY_FILE);
             overrideProperties = readProperties(configFilePath);
         }
+
+        configContext = readConfigContext(overrideProperties);
+
+        // Read jar configuration files
+        jarProperties = readJarProperties();
 
         Properties commandLineProperties = System.getProperties();
 
