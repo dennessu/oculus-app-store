@@ -196,9 +196,35 @@ public class BalanceRepositoryImpl implements BalanceRepository {
 
     @Override
     public List<BalanceId> fetchToSettleBalanceIds(Integer count) {
-
         List<BalanceId> ids = new ArrayList<>();
-        
+
+        List<BalanceEntity> balanceEntities = balanceEntityDao.getInitBalances();
+        for (BalanceEntity entity : balanceEntities) {
+            if (count <= 0) {
+                break;
+            }
+            ids.add(new BalanceId(entity.getId()));
+            count --;
+        }
+
+        balanceEntities = balanceEntityDao.getAwaitingPaymentBalances();
+        for (BalanceEntity entity : balanceEntities) {
+            if (count <= 0) {
+                break;
+            }
+            ids.add(new BalanceId(entity.getId()));
+            count --;
+        }
+
+        balanceEntities = balanceEntityDao.getUnconfirmedBalances();
+        for (BalanceEntity entity : balanceEntities) {
+            if (count <= 0) {
+                break;
+            }
+            ids.add(new BalanceId(entity.getId()));
+            count --;
+        }
+
         return ids;
     }
 

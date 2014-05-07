@@ -23,6 +23,7 @@ public enum EventActionType implements Identifiable<Short> {
     CAPTURE((short)12),
     ADDRESS_CHANGE((short)13),
     CONFIRM((short)14),
+    CHECK((short)15),
 
     ADJUSTMENT((short)20);
 

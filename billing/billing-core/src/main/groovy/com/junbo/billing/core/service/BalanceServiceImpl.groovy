@@ -176,7 +176,7 @@ class BalanceServiceImpl implements BalanceService {
     Promise<Balance> confirmBalance(Balance balance) {
 
         Balance savedBalance = balanceValidator.validateBalanceId(balance.balanceId)
-        balanceValidator.validateBalanceStatus(balance.status, BalanceStatus.UNCONFIRMED.name())
+        balanceValidator.validateBalanceStatus(savedBalance.status, BalanceStatus.UNCONFIRMED.name())
         balanceValidator.validateTransactionNotEmpty(savedBalance.balanceId, savedBalance.transactions)
 
         return transactionService.confirmBalance(savedBalance).recover { Throwable throwable ->
@@ -190,10 +190,33 @@ class BalanceServiceImpl implements BalanceService {
     }
 
     @Override
+    Promise<Balance> checkBalance(Balance balance) {
+
+        Balance savedBalance = balanceValidator.validateBalanceId(balance.balanceId)
+        balanceValidator.validateBalanceStatus(savedBalance.status,
+                [BalanceStatus.UNCONFIRMED.name(), BalanceStatus.AWAITING_PAYMENT.name(), BalanceStatus.INIT.name()])
+
+        if (savedBalance.status == BalanceStatus.INIT.name()) {
+            return processAsyncBalance(balance)
+        } else {
+            balanceValidator.validateTransactionNotEmpty(savedBalance.balanceId, savedBalance.transactions)
+
+            return transactionService.checkBalance(savedBalance).recover { Throwable throwable ->
+                updateAndCommitBalance(savedBalance, EventActionType.CONFIRM)
+                throw throwable
+            }.then {
+                //persist the balance entity
+                Balance resultBalance = balanceRepository.updateBalance(savedBalance, EventActionType.CHECK)
+                return Promise.pure(resultBalance)
+            }
+        }
+    }
+
+    @Override
     Promise<Balance> processAsyncBalance(Balance balance) {
 
         Balance savedBalance = balanceValidator.validateBalanceId(balance.balanceId)
-        balanceValidator.validateBalanceStatus(balance.status,
+        balanceValidator.validateBalanceStatus(savedBalance.status,
                 [BalanceStatus.INIT.name(), BalanceStatus.QUEUING.name()])
         if (savedBalance.isAsyncCharge != true) {
             throw AppErrors.INSTANCE.notAsyncChargeBalance(balance.balanceId.value.toString()).exception()

@@ -6,14 +6,21 @@
 
     <context:component-scan base-package="com.junbo.billing.db.*"/>
 
-    <bean id="billingFacade" class="com.junbo.billing.jobs.BillingFacadeImpl">
-        <property name="url" value="${clientproxy.billing.url}"/>
+    <bean id="billingBalanceClient" class="com.junbo.billing.spec.resource.proxy.BalanceResourceClientProxy">
+        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
+        <constructor-arg name="transcoder" ref="commonTranscoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+        <constructor-arg name="target" value="${clientproxy.billing.url}"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
-<!--
+
+    <bean id="billingBillingFacade" class="com.junbo.billing.jobs.BillingFacadeImpl" />
+
     <bean id="asyncChargeListener" class="com.junbo.billing.jobs.asyncCharge.AsyncChargeListener" />
 
     <bean id="billingListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
         <property name="destination" ref="billingAsyncChargeQueue" />
         <property name="messageListener" ref="asyncChargeListener" />
-    </bean>-->
+    </bean>
 </beans>

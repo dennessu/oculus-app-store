@@ -73,7 +73,7 @@ public class SettlementProcessor {
         producer.execute(new Runnable() {
             @Override
             public void run() {
-                fetchAsyncBalanceIds(balanceIds);
+                fetchToSettleBalanceIds(balanceIds);
                 balanceIds.add(NO_MORE_BALANCES);
             }
         });
@@ -87,37 +87,37 @@ public class SettlementProcessor {
         try {
             if (!consumers.awaitTermination(timeLimitMinutes, TimeUnit.MINUTES)) {
                 consumers.shutdownNow();
-                LOGGER.error("Async Charge Job ran too long. Killed it...");
+                LOGGER.error("Settlement Job ran too long. Killed it...");
             }
 
         } catch (InterruptedException ex) {
             consumers.shutdownNow();
-            LOGGER.error("Async Charge Job was interrupted. Shutting down...", ex);
+            LOGGER.error("Settlement Job was interrupted. Shutting down...", ex);
         }
 
     }
 
-    private void fetchAsyncBalanceIds(final BlockingQueue<BalanceId> ids) {
+    private void fetchToSettleBalanceIds(final BlockingQueue<BalanceId> ids) {
         TransactionTemplate template = new TransactionTemplate(transactionManager);
         template.setReadOnly(true);
         template.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
-                List<BalanceId> balanceIdList = balanceRepository.fetchAsyncChargeBalanceIds(processCount);
+                List<BalanceId> balanceIdList = balanceRepository.fetchToSettleBalanceIds(processCount);
                 ids.addAll(balanceIdList);
             }
         });
     }
 
     private void processBalance(BalanceId balanceId) {
-        LOGGER.info("Sending async charge process request for balance id: " + balanceId);
+        LOGGER.info("Sending check balance request for balance id: " + balanceId);
         Balance balance = new Balance();
         balance.setBalanceId(balanceId);
 
-        billingFacade.processAsyncBalance(balance).recover(new Promise.Func<Throwable, Promise<Balance>>() {
+        billingFacade.checkBalance(balance).recover(new Promise.Func<Throwable, Promise<Balance>>() {
             @Override
             public Promise<Balance> apply(Throwable throwable) {
-                LOGGER.error("Error in processing async charge balance", throwable);
+                LOGGER.error("Error in checking balance", throwable);
                 return Promise.pure(null);
             }
         }).then(new Promise.Func<Balance, Promise<Balance>>() {
@@ -126,7 +126,7 @@ public class SettlementProcessor {
                 if(balance == null) {
                     return Promise.pure(null);
                 }
-                LOGGER.info("The processed balance status is " + balance.getStatus() + "for balance id: " +
+                LOGGER.info("The checked balance status is " + balance.getStatus() + "for balance id: " +
                         balance.getBalanceId().getValue());
                 return Promise.pure(balance);
             }
@@ -143,7 +143,7 @@ public class SettlementProcessor {
 
         @Override
         public void run() {
-            LOGGER.info("Start thread to process async charge balance");
+            LOGGER.info("Start thread to check balance");
             BalanceId balanceId;
             while (true) {
                 try {
@@ -157,13 +157,13 @@ public class SettlementProcessor {
                     }
 
                 } catch (InterruptedException ex) {
-                    LOGGER.warn("Balance Processing thread is interrupted.");
+                    LOGGER.warn("Balance Checking thread is interrupted.");
                 }
 
             }
 
             balanceIds.add(NO_MORE_BALANCES);
-            LOGGER.info("Thread to process async charge balance finished");
+            LOGGER.info("Thread to check balance finished");
         }
     }
 

@@ -58,4 +58,9 @@ class PaymentFacadeImpl implements PaymentFacade {
     Promise<PaymentTransaction> getPayment(Long paymentId) {
         return paymentTransactionResource.getPayment(paymentId)
     }
+
+    @Override
+    Promise<PaymentTransaction> postPaymentCheck(Long paymentId) {
+        return paymentTransactionResource.checkPaymentStatus(paymentId)
+    }
 }
