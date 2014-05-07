@@ -23,7 +23,7 @@ import javax.ws.rs.core.MediaType;
  */
 @Api(value = "userPersonalInfo")
 @RestResource
-@Path("/personalInfo")
+@Path("/personal-info")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public interface UserPersonalInfoResource {
