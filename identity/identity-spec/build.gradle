@@ -16,8 +16,6 @@ dependencies {
 
     processor (libraries.langur_processor)
     processor (libraries.log4j)
-
-    compile project(':identity-common')
 }
 
 ext {
