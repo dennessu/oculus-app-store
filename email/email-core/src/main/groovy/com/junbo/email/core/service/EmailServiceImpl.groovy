@@ -9,6 +9,7 @@ import com.junbo.common.id.EmailId
 import com.junbo.email.clientproxy.EmailProvider
 import com.junbo.email.clientproxy.IdentityFacade
 import com.junbo.email.core.EmailService
+import com.junbo.email.core.notification.EmailPublisher
 import com.junbo.email.core.validator.EmailValidator
 import com.junbo.email.db.repo.EmailHistoryRepository
 import com.junbo.email.db.repo.EmailScheduleRepository
@@ -20,12 +21,14 @@ import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 
 /**
  * Impl of EmailService.
  */
 @CompileStatic
 @Component
+@Transactional
 class EmailServiceImpl implements EmailService {
 
     @Autowired
@@ -45,6 +48,9 @@ class EmailServiceImpl implements EmailService {
 
     @Autowired
     private IdentityFacade identityFacade
+
+    @Autowired
+    private EmailPublisher emailPublisher
 
     @Override
     Promise<Email> postEmail(Email email) {
@@ -98,15 +104,33 @@ class EmailServiceImpl implements EmailService {
             def scheduleEmail = emailScheduleRepository.saveEmailSchedule(email)
             return Promise.pure(scheduleEmail)
         }
-        def template = emailTemplateRepository.getEmailTemplate(email.templateId.value)
-        return emailProvider.sendEmail(email, template).then {
-            Long id = emailHistoryRepository.createEmailHistory(it as Email)
-            return Promise.pure(emailHistoryRepository.getEmail(id))
-        }
+//        def template = emailTemplateRepository.getEmailTemplate(email.templateId.value)
+//        return emailProvider.sendEmail(email, template).then {
+//            Long id = emailHistoryRepository.createEmailHistory(it as Email)
+//            return Promise.pure(emailHistoryRepository.getEmail(id))
+//        }
+        Long id = emailHistoryRepository.createEmailHistory(email)
+        emailPublisher.send(id)
+        return Promise.pure(emailHistoryRepository.getEmail(id))
     }
 
     private Promise<Email> update(Email email) {
         Email scheduleEmail = emailScheduleRepository.updateEmailSchedule(email)
         return Promise.pure(scheduleEmail)
+    }
+
+    @Override
+    Promise<Email> sendEmail(Email request) {
+        def email = emailHistoryRepository.getEmail(request.id.value)
+        if (email != null) {
+            def template = emailTemplateRepository.getEmailTemplate(email.templateId.value)
+            if (template != null) {
+                return emailProvider.sendEmail(email, template).then { Email retEmail ->
+                    def emailId = emailHistoryRepository.updateEmailHistory(retEmail)
+                    return Promise.pure(emailHistoryRepository.getEmail(emailId))
+                }
+            }
+        }
+        return Promise.pure(null)
     }
 }
