@@ -1,0 +1,138 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
+package com.junbo.common.topo;
+
+import com.junbo.common.topo.model.TopologyConfig;
+import com.junbo.configuration.ConfigService;
+import com.junbo.configuration.reloadable.StringConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Required;
+
+/**
+ * Topology.
+ */
+public class Topology implements InitializingBean {
+    private static final Logger logger = LoggerFactory.getLogger(Topology.class);
+
+    private String appHostUrl;
+    private StringConfig dataCentersConfig;
+    private StringConfig appUrlTemplateConfig;
+    private StringConfig appServersConfig;
+
+    private TopologyConfig topologyConfig;
+    private ConfigService configService;
+
+    public Topology() {}
+
+    @Required
+    public void setAppHostUrl(String appHostUrl) {
+        this.appHostUrl = appHostUrl;
+    }
+
+    @Required
+    public void setDataCentersConfig(StringConfig dataCentersConfig) {
+        this.dataCentersConfig = dataCentersConfig;
+    }
+
+    @Required
+    public void setAppUrlTemplateConfig(StringConfig appUrlTemplateConfig) {
+        this.appUrlTemplateConfig = appUrlTemplateConfig;
+    }
+
+    @Required
+    public void setAppServersConfig(StringConfig appServersConfig) {
+        this.appServersConfig = appServersConfig;
+    }
+
+    @Required
+    public void setConfigService(ConfigService configService) {
+        this.configService = configService;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        topologyConfig = new TopologyConfig(
+                this.appHostUrl,
+                this.dataCentersConfig.get(),
+                this.appUrlTemplateConfig.get(),
+                this.appServersConfig.get(),
+                configService);
+
+        ConfigService.ConfigListener configListener = new ConfigService.ConfigListener() {
+            @Override
+            public void onConfigChanged(String configKey, String newValue) {
+                reload();
+            }
+        };
+        this.dataCentersConfig.setConfigListener(configListener);
+        this.appUrlTemplateConfig.setConfigListener(configListener);
+        this.appServersConfig.setConfigListener(configListener);
+    }
+
+    public String getDataCenterUrlByName(String dataCenterName) {
+        return topologyConfig.getDataCenterUrlByName(dataCenterName);
+    }
+
+    public String getDataCenterUrl(int dataCenterId) {
+        return topologyConfig.getDataCenterUrl(dataCenterId);
+    }
+
+    public String getAppServerUrl(int shard) {
+        return topologyConfig.getAppServerUrl(shard);
+    }
+
+    public boolean isLocalDatacenter(int dc) {
+        return topologyConfig.isLocalDatacenter(dc);
+    }
+
+    public boolean isLocalDatacenter(String dcName) {
+        return topologyConfig.isLocalDatacenter(dcName);
+    }
+
+    public boolean isHandledBy(int shard, String ipAddress, int port) {
+        return topologyConfig.isHandledBy(shard, ipAddress, port);
+    }
+
+    public boolean isHandledBySelf(int shard) {
+        return topologyConfig.isHandledBySelf(shard);
+    }
+
+    /**
+     * Generate a random shard id handled by current server.
+     * @return the shard id controlled by current server
+     */
+    public int getRandomShardId() {
+        return topologyConfig.getRandomShardId();
+    }
+
+    /**
+     * Shards handled by current server.
+     * @return an array of shards handled by current server.
+     */
+    public int[] handledShards() {
+        return topologyConfig.handledShards();
+    }
+
+    private void reload() {
+        try {
+            TopologyConfig newTopologyConfig = new TopologyConfig(
+                    this.appHostUrl,
+                    this.dataCentersConfig.get(),
+                    this.appUrlTemplateConfig.get(),
+                    this.appServersConfig.get(),
+                    configService);
+            this.topologyConfig = newTopologyConfig;
+        } catch (Exception ex) {
+            logger.error("Failed to load new topology configuration: \n" +
+                "dataCenters: " + this.dataCentersConfig.get() + "\n" +
+                "appUrlTemplate: " + this.appUrlTemplateConfig.get() + "\n" +
+                "appServers: " + this.appServersConfig.get(), ex);
+            // continue to use existing configuration.
+        }
+    }
+}
