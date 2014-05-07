@@ -3,4 +3,6 @@ apply plugin: 'groovy'
 dependencies {
     compile project(':crypto-common')
     compile project(':crypto-data')
+
+    testCompile (libraries.spring_test)
 }

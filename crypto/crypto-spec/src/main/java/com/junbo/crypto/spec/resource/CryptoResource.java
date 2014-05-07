@@ -23,11 +23,13 @@ import javax.ws.rs.core.MediaType;
 @Consumes({MediaType.APPLICATION_JSON})
 public interface CryptoResource {
 
-    // Encrypt the object based on key
+    // Encrypt the object based on key,
+    // It will use the latest version to encrypt
     @POST
     Promise<String> encrypt(UserId userId, Object obj);
 
-    // Decrypt the object based on key
+    // Decrypt the object based on key,
+    // It will use the latest version to decrypt, if unsuccessful, it will fall back to the older version
     @GET
     Promise<Object> decrypt(UserId userId, String encrypted);
 }
