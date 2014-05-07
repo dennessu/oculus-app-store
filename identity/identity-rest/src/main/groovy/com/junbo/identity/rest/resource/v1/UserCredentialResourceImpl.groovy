@@ -94,7 +94,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                 )).then { List<UserPin> pinList ->
                     return Promise.each(pinList) { UserPin userPin ->
                         userPin.active = false
-                        userPinRepository.update(userPin)
+                        return userPinRepository.update(userPin)
                     }
                 }.then {
                     return userPinRepository.create((UserPin)obj).then { UserPin userPin ->

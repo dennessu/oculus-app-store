@@ -136,9 +136,7 @@ class DeviceResourceImpl implements DeviceResource {
     @Override
     Promise<Void> delete(DeviceId deviceId) {
         return deviceValidator.validateForGet(deviceId).then {
-            deviceRepository.delete(deviceId)
-
-            return Promise.pure(null)
+            return deviceRepository.delete(deviceId)
         }
     }
 }
