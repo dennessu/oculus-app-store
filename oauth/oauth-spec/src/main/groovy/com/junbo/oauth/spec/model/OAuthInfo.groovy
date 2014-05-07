@@ -19,5 +19,6 @@ class OAuthInfo {
     Set<ResponseType> responseTypes
     GrantType grantType
     String nonce
+    String state
     Long maxAge
 }

@@ -21,6 +21,7 @@
         <constructor-arg name="queryParamTranscoder">
             <bean class="com.junbo.common.json.QueryParamTranscoderImpl"/>
         </constructor-arg>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="offerRevisionClient" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxy">
@@ -35,6 +36,7 @@
         <constructor-arg name="queryParamTranscoder">
             <bean class="com.junbo.common.json.QueryParamTranscoderImpl"/>
         </constructor-arg>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
 </beans>

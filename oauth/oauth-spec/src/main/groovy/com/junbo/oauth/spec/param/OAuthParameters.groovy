@@ -57,5 +57,7 @@ class OAuthParameters {
     public static final String COOKIE_LOGIN_STATE = 'ls'
     public static final String COOKIE_SESSION_STATE = 'ss'
     public static final String COOKIE_REMEMBER_ME = 'me'
+    public static final String FACEBOOK_AUTH = 'facebookAuth'
+    public static final String GOOGLE_AUTH = 'googleAuth'
 }
 

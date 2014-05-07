@@ -20,8 +20,8 @@ public interface EntitlementDefinitionService {
     String getEntitlementDefinition(String entitlementDefinitionId) throws Exception;
     String getEntitlementDefinition(String entitlementDefinitionId, int expectedResponseCode) throws Exception;
 
-    List<String> getEntitlementDefinitions(HashMap<String, String> httpPara) throws Exception;
-    List<String> getEntitlementDefinitions(HashMap<String, String> httpPara, int expectedResponseCode) throws Exception;
+    List<String> getEntitlementDefinitions(HashMap<String, List<String>> httpPara) throws Exception;
+    List<String> getEntitlementDefinitions(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception;
 
     String postDefaultEntitlementDefinition(EnumHelper.EntitlementType entitlementDefinitionType) throws Exception;
     String postEntitlementDefinition(EntitlementDefinition entitlementDefinition) throws Exception;

@@ -1,0 +1,10 @@
+{
+    "type": "DIGITAL",
+    "developer": {"href": "https://api.oculusvr.com/v1/users/1234", "id": "1234"},
+    "genres":[],
+    "rollupPackageName": "rollupPackageName",
+    "packageName": "package name",
+    "platforms": ["PC", "MAC"],
+    "defaultOffer": null,
+    "rev": null
+}

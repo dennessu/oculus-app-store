@@ -249,6 +249,8 @@ class BootstrapPlugin implements Plugin<Project> {
 
                             println "CodeNarc report is available at: $reportFile"
 
+                            println args.join(" ")
+
                             if (compileErrorMatcher.find()) {
                                 throw new GradleException("Compilation failures in CodeNarc run.")
                             }

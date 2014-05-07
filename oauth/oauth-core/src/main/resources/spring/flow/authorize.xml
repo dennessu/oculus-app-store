@@ -27,6 +27,7 @@
             <wf:action ref="loadRememberMeToken"/>
             <wf:action ref="validateLoginState"/>
             <wf:transition on="loginRequired" to="REDIRECT_TO_LOGIN"/>
+            <wf:transition on="loginRequiredError" to="LOGIN_REQUIRED"/>
             <wf:transition on="*" to="CHECK_CONSENT"/>
         </wf:action-state>
 
@@ -47,6 +48,12 @@
                 <wf:action ref="authenticateUserAuthorize"/>
             </wf:transition>
             <wf:transition on="register" to="REGISTER_VIEW"/>
+            <wf:transition on="facebookLogin" to="LOGIN_SUCCESS">
+                <wf:action ref="facebookLogin"/>
+            </wf:transition>
+            <wf:transition on="googleLogin" to="LOGIN_SUCCESS">
+                <wf:action ref="googleLogin"/>
+            </wf:transition>
             <wf:transition on="cancel" to="CANCEL_VIEW"/>
         </wf:view-state>
 
@@ -136,6 +143,18 @@
                 <wf:action ref="accessDenied"/>
             </wf:on-entry>
         </wf:end-state>
+
+        <wf:end-state id="LOGIN_REQUIRED">
+            <wf:on-entry>
+                <wf:action ref="loginRequired"/>
+            </wf:on-entry>
+        </wf:end-state>
+
+        <wf:end-state id="CONSENT_REQUIRED">
+            <wf:on-entry>
+                <wf:action ref="consentRequired"/>
+            </wf:on-entry>
+        </wf:end-state>
     </wf:flow>
 
     <!-- actions -->
@@ -218,6 +237,14 @@
         <property name="errorMessage" value="access_denied"/>
     </bean>
 
+    <bean id="loginRequired" class="com.junbo.oauth.core.view.RedirectToClientError">
+        <property name="errorMessage" value="login_required"/>
+    </bean>
+
+    <bean id="consentRequired" class="com.junbo.oauth.core.view.RedirectToClientError">
+        <property name="errorMessage" value="consent_required"/>
+    </bean>
+
     <bean id="redirectToRegister" class="com.junbo.oauth.core.view.RedirectToPage">
         <property name="pageUrl" value="${oauth.core.portal.registerUri}"/>
     </bean>
@@ -251,5 +278,19 @@
 
     <bean id="sendAccountVerifyEmail" class="com.junbo.oauth.core.action.SendAccountVerifyEmail">
         <property name="userService" ref="userService" />
+    </bean>
+
+    <bean id="thirdPartyLogin" class="com.junbo.oauth.core.action.ThirdPartyLogin" abstract="true">
+        <property name="userResource" ref="userResource"/>
+        <property name="authenticatorResource" ref="authenticatorResource"/>
+        <property name="userPersonalInfoResource" ref="userPersonalInfoResource"/>
+    </bean>
+
+    <bean id="facebookLogin" class="com.junbo.oauth.core.action.FacebookLogin" parent="thirdPartyLogin">
+        <property name="facebookApi" ref="facebookApi"/>
+    </bean>
+
+    <bean id="googleLogin" class="com.junbo.oauth.core.action.GoogleLogin" parent="thirdPartyLogin">
+        <property name="googleApi" ref="googleApi"/>
     </bean>
 </beans>

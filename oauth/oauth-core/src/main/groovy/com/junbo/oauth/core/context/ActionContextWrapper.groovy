@@ -50,6 +50,7 @@ class ActionContextWrapper {
     public static final String VIEW_LOCALE = 'view_locale'
     public static final String EXTRA_PARAM_MAP = 'extra_param_map'
     public static final String EMAIL_VERIFY_CODE = 'email_verify_code'
+    public static final String THIRD_PARTY_USERNAME = 'third_party_username'
     public static final String RESET_PASSWORD_CODE = 'reset_password_code'
 
     @Delegate
@@ -336,5 +337,13 @@ class ActionContextWrapper {
 
     void setExtraParameterMap(Map<String, String> extraMap) {
         actionContext.flowScope[EXTRA_PARAM_MAP] = extraMap
+    }
+
+    String getThirdPartyUsername() {
+        return (String) actionContext.flowScope[THIRD_PARTY_USERNAME]
+    }
+
+    void setThirdPartyUsername(String thirdPartyName) {
+        actionContext.flowScope[THIRD_PARTY_USERNAME] = thirdPartyName
     }
 }

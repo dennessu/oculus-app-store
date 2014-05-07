@@ -9,13 +9,12 @@ package com.junbo.payment.core.impl;
 import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.core.PaymentCallbackService;
 import com.junbo.payment.db.repository.PaymentRepository;
-import com.junbo.payment.spec.enums.PropertyField;
+import com.junbo.payment.spec.model.PaymentProperties;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Map;
 
 /**
  * payment callback service implementation.
@@ -25,7 +24,7 @@ public class PaymentCallbackServiceImpl implements PaymentCallbackService{
     @Autowired
     private PaymentRepository paymentRepository;
     @Override
-    public void addPaymentProperties(Long paymentId, Map<PropertyField, String> properties) {
+    public void addPaymentProperties(Long paymentId, PaymentProperties properties) {
         PaymentTransaction existedTransaction = paymentRepository.getByPaymentId(paymentId);
         if(existedTransaction == null){
             LOGGER.error("the payment id is invalid.");

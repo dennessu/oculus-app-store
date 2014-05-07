@@ -62,9 +62,6 @@ interface AppExceptions {
     @ErrorDef(httpStatusCode = 400, code = '20012', description = 'The display {0} is invalid', field = 'display')
     AppError invalidDisplay(String display)
 
-    @ErrorDef(httpStatusCode = 400, code = '20014', description = 'The login is required')
-    AppError loginRequired()
-
     @ErrorDef(httpStatusCode = 400, code = '20015', description = 'The response_type {0} is invalid',
             field = 'response_type')
     AppError invalidResponseType(String responseType)
@@ -308,4 +305,24 @@ interface AppExceptions {
     @ErrorDef(httpStatusCode = 400, code = '20072',
             description = 'The reset password code is missing', field = 'rpc')
     AppError missingResetPasswordCode()
+    
+    @ErrorDef(httpStatusCode = 400, code = '20073',
+            description = 'The facebookAuth is missing', field = 'facebookAuth')
+    AppError missingFacebookAuth()
+
+    @ErrorDef(httpStatusCode = 400, code = '20074',
+            description = 'Invalid facebookAuth', field = 'facebookAuth')
+    AppError errorCallingFacebook()
+
+    @ErrorDef(httpStatusCode = 400, code = '20075',
+            description = 'The googleAuth is missing', field = 'googleAuth')
+    AppError missingGoogleAuth()
+
+    @ErrorDef(httpStatusCode = 400, code = '20076',
+            description = 'Invalid googleAuth', field = 'googleAuth')
+    AppError errorCallingGoogle()
+
+    @ErrorDef(httpStatusCode = 400, code = '20077', description = 'The state parameter is missing',
+            field = 'state')
+    AppError missingState()
 }

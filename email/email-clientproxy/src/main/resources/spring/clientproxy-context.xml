@@ -16,6 +16,7 @@
         <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
         <constructor-arg name="target" value="${clientproxy.identity.url}"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="emailIdentityUserPersonalInfoClient" class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy">
@@ -24,6 +25,7 @@
         <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
         <constructor-arg name="target" value="${clientproxy.identity.url}"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
     
     <bean id="emailProvider" class="com.junbo.email.clientproxy.impl.MandrillProviderImpl"/>

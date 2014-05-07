@@ -27,6 +27,8 @@ import com.junbo.test.common.property.*;
 
 import org.testng.annotations.Test;
 import org.testng.Assert;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,9 +40,9 @@ import java.util.List;
 public class Catalog extends TestClass {
 
     private LogHelper logger = new LogHelper(Catalog.class);
-    private final String defaultItemFileName = "defaultItem";
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
     private final String defaultOfferRevisionFileName = "defaultOfferRevision";
+    private final String defaultItemFileName = "defaultItem";
 
     @Property(
             priority = Priority.BVT,
@@ -59,7 +61,7 @@ public class Catalog extends TestClass {
     @Test
     public void testItemAttributeManagement() throws Exception {
 
-        HashMap<String, String> paraMap = new HashMap<>();
+        HashMap<String, List<String>> paraMap = new HashMap<>();
         HashMap<String, SimpleLocaleProperties> locales = new HashMap<>();
         ItemAttributeService itemAttributeAPI = ItemAttributeServiceImpl.instance();
 
@@ -84,8 +86,13 @@ public class Catalog extends TestClass {
 
         //Get attributes by some get conditions, like type and id.
         logger.LogSample("Get item attributes by its id and type");
-        paraMap.put("type", attributeRtn.getType());
-        paraMap.put("id", attributeId);
+        List<String> listType = new ArrayList<>();
+        listType.add(attributeRtn.getType());
+        List<String> listAttributeId = new ArrayList<>();
+        listAttributeId.add(attributeId);
+
+        paraMap.put("type", listType);
+        paraMap.put("id", listAttributeId);
         List<String> attributeResultList = itemAttributeAPI.getItemAttributes(paraMap);
         Assert.assertNotNull(attributeResultList);
 
@@ -114,7 +121,7 @@ public class Catalog extends TestClass {
     @Test
     public void testOfferAttributeManagement() throws Exception {
 
-        HashMap<String, String> paraMap = new HashMap();
+        HashMap<String, List<String>> paraMap = new HashMap();
         HashMap<String, SimpleLocaleProperties> locales = new HashMap<>();
         OfferAttributeService offerAttributeAPI = OfferAttributeServiceImpl.instance();
 
@@ -139,8 +146,13 @@ public class Catalog extends TestClass {
 
         //Get attributes by some get conditions, like type and id.
         logger.LogSample("Get offer attributes by its id and type");
-        paraMap.put("type", attributeRtn.getType());
-        paraMap.put("id", attributeId);
+        List<String> listType = new ArrayList<>();
+        listType.add(attributeRtn.getType());
+        List<String> listAttributeId = new ArrayList<>();
+        listAttributeId.add(attributeId);
+
+        paraMap.put("type", listType);
+        paraMap.put("id", listAttributeId);
         List<String> attributeResultList = offerAttributeAPI.getOfferAttributes(paraMap);
         Assert.assertNotNull(attributeResultList);
 
@@ -171,7 +183,7 @@ public class Catalog extends TestClass {
     @Test
     public void testItemManagement() throws Exception {
 
-        HashMap<String, String> paraMap = new HashMap();
+        HashMap<String, List<String>> paraMap = new HashMap();
         ItemService itemServiceAPI = ItemServiceImpl.instance();
         ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
 
@@ -196,7 +208,10 @@ public class Catalog extends TestClass {
 
         //Get item by id and status
         logger.LogSample("Get item(s) by id");
-        paraMap.put("id", itemGetId);
+        List<String> listItemId = new ArrayList<>();
+        listItemId.add(itemGetId);
+
+        paraMap.put("id", listItemId);
         List<String> itemResultList = itemServiceAPI.getItems(paraMap);
         Assert.assertNotNull(itemResultList);
 
@@ -245,7 +260,7 @@ public class Catalog extends TestClass {
     @Test
     public void testOfferManagement() throws Exception {
 
-        HashMap<String, String> paraMap = new HashMap();
+        HashMap<String, List<String>> paraMap = new HashMap();
         OfferService offerServiceAPI = OfferServiceImpl.instance();
         OfferRevisionService offerRevisionServiceAPI = OfferRevisionServiceImpl.instance();
 
@@ -261,13 +276,19 @@ public class Catalog extends TestClass {
 
         //Get the offer(s) by some conditions: by published property firstly
         logger.LogSample("Get the offer just by published property");
-        paraMap.put("published", "false");
+        List<String> listStatus = new ArrayList<>();
+        listStatus.add("false");
+
+        paraMap.put("published", listStatus);
         List<String> offerResultList = offerServiceAPI.getOffers(paraMap);
         Assert.assertNotNull(offerResultList);
 
         //Get offer by id and status
         logger.LogSample("Get offers by id and published property");
-        paraMap.put("id", offerGetId);
+        List<String> listOfferId = new ArrayList<>();
+        listOfferId.add(offerGetId);
+
+        paraMap.put("id", listOfferId);
         offerResultList.clear();
         offerResultList = offerServiceAPI.getOffers(paraMap);
         Assert.assertNotNull(offerResultList);
@@ -317,7 +338,7 @@ public class Catalog extends TestClass {
     @Test
     public void testEntitlementDefinitionManagement() throws Exception {
 
-        HashMap<String, String> paraMap = new HashMap();
+        HashMap<String, List<String>> paraMap = new HashMap();
         EntitlementDefinitionService entitlementDefinitionService = EntitlementDefinitionServiceImpl.instance();
 
         ///Post an entitlement definition and verify it got posted
@@ -333,8 +354,13 @@ public class Catalog extends TestClass {
 
         //Get entitlement definitions by some get conditions, like type and id.
         logger.LogSample("Get entitlement definitions by its id and type");
-        paraMap.put("type", edRtn.getType());
-        paraMap.put("id", edId);
+        List<String> listType = new ArrayList<>();
+        listType.add(edRtn.getType());
+        List<String> listEDId = new ArrayList<>();
+        listEDId.add(edId);
+
+        paraMap.put("type", listType);
+        paraMap.put("id", listEDId);
         List<String> edResultList = entitlementDefinitionService.getEntitlementDefinitions(paraMap);
         Assert.assertNotNull(edResultList);
 
@@ -403,7 +429,7 @@ public class Catalog extends TestClass {
         User userSuper = Master.getInstance().getUser(superUserId);
 
         //Show all previously submitted offers
-        HashMap<String, String> paraMap = new HashMap();
+        HashMap<String, List<String>> paraMap = new HashMap();
         offerService.getOffers(paraMap);
 
         //Simulate app submission process

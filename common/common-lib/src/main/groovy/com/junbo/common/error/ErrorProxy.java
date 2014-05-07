@@ -125,7 +125,6 @@ public class ErrorProxy implements InvocationHandler {
                         ", code=" + code +
                         ", message=" + message +
                         ", field=" + field +
-                        ", httpStatusCode=" + httpStatusCode +
                         ", causes=" + causes + " }";
             }
         };

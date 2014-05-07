@@ -361,6 +361,22 @@ public class CommonMapper {
         return offerId.getValue().toString();
     }
 
+    public PaymentInstrumentId fromStringToPaymentInstrumentId(String paymentInstrumentId) {
+        if (paymentInstrumentId == null) {
+            return null;
+        }
+
+        return new PaymentInstrumentId(Long.parseLong(paymentInstrumentId));
+    }
+
+    public String fromPaymentInstrumentIdToString(PaymentInstrumentId paymentInstrumentId) {
+        if (paymentInstrumentId == null) {
+            return null;
+        }
+
+        return paymentInstrumentId.getValue().toString();
+    }
+
     public OfferRevisionId fromStringToOfferRevisionId(String offerRevisionId) {
         if (offerRevisionId == null) {
             return null;
