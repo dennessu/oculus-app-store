@@ -6,6 +6,7 @@ includeDir 'oauth'
 includeDir 'email'
 includeDir 'authorization'
 includeDir 'catalog'
+includeDir 'notification'
 includeDir 'apphost'
 
 def includeDir(String dir) {
