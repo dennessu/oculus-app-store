@@ -1,8 +1,8 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile project(':ewallet-spec')
-    compile project(':ewallet-core')
+    compile junboProject(':ewallet-spec')
+    compile junboProject(':ewallet-core')
 
     compile(libraries.servlet_api)
     //compile(libraries.jersey_spring3)
@@ -17,7 +17,7 @@ dependencies {
     compile(libraries.spring_tx)
     compile(libraries.spring_web)
 
-    compile(libraries.common_configuration)
+    compile junboProject(':common-configuration')
 
     testCompile (libraries.guava)
     testCompile (libraries.spring_test)

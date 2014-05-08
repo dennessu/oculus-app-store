@@ -16,13 +16,13 @@ dependencies {
 
     compile (libraries.asyncclient)
 
-    compile project(':rating-spec')
-    compile project(':rating-common')
-    compile project(':rating-clientproxy')
-    compile project(':rating-core')
+    compile junboProject(':rating-spec')
+    compile junboProject(':rating-common')
+    compile junboProject(':rating-clientproxy')
+    compile junboProject(':rating-core')
 
 
-    compile (libraries.oom)
+    compile junboProject(':oom-core')
 
-    processor (libraries.langur_processor)
+    processor junboProject(':langur-processor')
 }

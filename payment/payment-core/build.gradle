@@ -1,13 +1,13 @@
 apply plugin: 'java'
 
 dependencies {
-    compile project(":payment-db")
-    compile project(":payment-spec")
-    compile project(":payment-clientproxy")
+    compile junboProject(":payment-db")
+    compile junboProject(":payment-spec")
+    compile junboProject(":payment-clientproxy")
 
 	compile 'com.braintreepayments.gateway:braintree-java:2.22.1'
     compile 'com.paypal.sdk:merchantsdk:2.5.106'
 
-	testCompile(libraries.spring_test)
-    testCompile(libraries.common_configuration_data)
+	testCompile (libraries.spring_test)
+    testCompile junboProject(':configuration-data')
 }
