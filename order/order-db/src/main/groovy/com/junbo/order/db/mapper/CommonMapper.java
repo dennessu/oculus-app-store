@@ -329,15 +329,15 @@ public class CommonMapper {
         }
     }
 
-    public ShippingAddressId fromLongToShippingAddressId(Long shippingAddressId) {
+    public UserPersonalInfoId fromLongToUserPersonalInfoId(Long shippingAddressId) {
         if (shippingAddressId == null) {
             return null;
         }
 
-        return new ShippingAddressId(shippingAddressId);
+        return new UserPersonalInfoId(shippingAddressId);
     }
 
-    public Long fromShippingAddressIdToLong(ShippingAddressId shippingAddressId) {
+    public Long fromUserPersonalInfoIdToLong(UserPersonalInfoId shippingAddressId) {
         if (shippingAddressId == null) {
             return null;
         }

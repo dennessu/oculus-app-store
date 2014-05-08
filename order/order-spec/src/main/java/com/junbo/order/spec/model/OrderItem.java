@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.OrderId;
 import com.junbo.common.id.OrderItemId;
-import com.junbo.common.id.ShippingAddressId;
+import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.common.jackson.annotation.ShippingMethodId;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -45,7 +45,7 @@ public class OrderItem extends BaseOrderResource {
     private Integer quantity;
 
     @JsonIgnore
-    private ShippingAddressId shippingAddress;
+    private UserPersonalInfoId shippingAddress;
 
     @JsonIgnore
     @ShippingMethodId
@@ -119,11 +119,11 @@ public class OrderItem extends BaseOrderResource {
         this.quantity = quantity;
     }
 
-    public ShippingAddressId getShippingAddress() {
+    public UserPersonalInfoId getShippingAddress() {
         return shippingAddress;
     }
 
-    public void setShippingAddress(ShippingAddressId shippingAddress) {
+    public void setShippingAddress(UserPersonalInfoId shippingAddress) {
         this.shippingAddress = shippingAddress;
     }
 

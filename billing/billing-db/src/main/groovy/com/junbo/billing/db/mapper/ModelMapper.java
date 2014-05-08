@@ -10,7 +10,6 @@ import com.junbo.oom.core.Mapper;
 import com.junbo.oom.core.Mapping;
 import com.junbo.oom.core.MappingContext;
 import com.junbo.oom.core.Mappings;
-import com.junbo.billing.db.entity.ShippingAddressEntity;
 import com.junbo.billing.db.entity.BalanceEntity;
 import com.junbo.billing.db.entity.BalanceItemEntity;
 import com.junbo.billing.db.entity.DiscountItemEntity;
@@ -32,18 +31,6 @@ public interface ModelMapper {
             @Mapping(source = "updatedTime", target = "updatedDate", excluded = true, bidirectional = false),
     })
     Currency toCurrency(CurrencyEntity entity, MappingContext context);
-
-    @Mappings({
-            @Mapping(source = "createdTime", target = "insertedDate", excluded = true, bidirectional = false),
-            @Mapping(source = "updatedTime", target = "updatedDate", excluded = true, bidirectional = false),
-    })
-    ShippingAddress toShippingAddress(ShippingAddressEntity entity, MappingContext context);
-
-    @Mappings({
-            @Mapping(source = "createdTime", target = "insertedDate", excluded = true, bidirectional = false),
-            @Mapping(source = "updatedTime", target = "updatedDate", excluded = true, bidirectional = false),
-    })
-    ShippingAddressEntity toShippingAddressEntity(ShippingAddress address, MappingContext context);
 
     @Mappings({
             @Mapping(source = "type", target = "typeId", explicitMethod = "convertBalanceType"),
