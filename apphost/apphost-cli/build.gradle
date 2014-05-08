@@ -19,11 +19,7 @@ dependencies {
     compile junboProject(':email-rest')
     compile junboProject(':cart-rest')
     compile junboProject(':fulfilment-rest')
-
-    /*
     compile junboProject(':order-rest')
-    */
-
 
     compile junboProject(':billing-jobs')
     // more to add
