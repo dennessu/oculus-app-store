@@ -159,7 +159,6 @@ public class SettlementProcessor {
                 } catch (InterruptedException ex) {
                     LOGGER.warn("Balance Checking thread is interrupted.");
                 }
-
             }
 
             balanceIds.add(NO_MORE_BALANCES);

@@ -23,4 +23,38 @@
         <property name="destination" ref="billingAsyncChargeQueue" />
         <property name="messageListener" ref="asyncChargeListener" />
     </bean>
+
+    <!-- Billing Scheduler -->
+    <bean id="billingSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="schedulerName" value="billingScheduler" />
+        <property name="autoStartup" value="${billing.jobs.scheduler.start}" />
+        <property name="triggers">
+            <list>
+                <ref bean="billingSettlementJobTrigger"/>
+            </list>
+        </property>
+        <property name="applicationContextSchedulerContextKey" value="applicationContext" />
+    </bean>
+
+    <!-- Billing Balance Process Job Trigger -->
+    <bean id="billingSettlementJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean" >
+        <property name="jobDetail" ref="billingAsyncChargeJobDetail" />
+        <property name="cronExpression" value="${billing.jobs.asynccharge.cronexpression}" />
+    </bean>
+
+    <!-- Billing Balance Process Job -->
+    <bean id="billingSettlementJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="billingSettlementJob" />
+        <property name="targetMethod" value="execute" />
+    </bean>
+
+    <bean id="billingSettlementJob" class="com.junbo.billing.jobs.settlement.SettlementJob" />
+
+    <bean id="settlementProcessor" class="com.junbo.billing.jobs.settlement.SettlementProcessor">
+        <property name="concurrentCount" value="${billing.jobs.settlement.concurrentCount}" />
+        <property name="processCount" value="${billing.jobs.settlement.processCount}" />
+        <property name="timeLimitMinutes" value="${billing.jobs.settlement.timeLimitMinutes}" />
+        <property name="transactionManager" ref="transactionManager" />
+    </bean>
+
 </beans>
