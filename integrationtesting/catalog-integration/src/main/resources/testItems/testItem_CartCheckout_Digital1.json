@@ -4,7 +4,6 @@
     "genres":[],
     "rollupPackageName": "rollupPackageName",
     "packageName": "package name",
-    "platforms": ["PC", "MAC"],
     "defaultOffer": null,
     "rev": null
 }

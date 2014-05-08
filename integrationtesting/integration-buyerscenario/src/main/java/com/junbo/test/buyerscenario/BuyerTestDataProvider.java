@@ -174,10 +174,6 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
 
             case PAYPAL:
                 PayPalInfo payPalInfo = (PayPalInfo) paymentInfo;
-                typeSpecificDetails.setExpireDate(payPalInfo.getExpireDate());
-                typeSpecificDetails.setEncryptedCvmCode(payPalInfo.getEncryptedCVMCode());
-                paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
-
                 paymentInstrument.setAccountName(payPalInfo.getAccountName());
                 paymentInstrument.setAccountNum(payPalInfo.getAccountNum());
                 paymentInstrument.setIsValidated(payPalInfo.isValidated());
@@ -340,6 +336,10 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
 
     public String updateOrder(Order order) throws Exception {
         return orderClient.updateOrder(order);
+    }
+
+    public String getOrder(String orderId) throws Exception {
+        return orderClient.getOrderByOrderId(orderId);
     }
 
 }

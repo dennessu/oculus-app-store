@@ -86,7 +86,6 @@ public class EntitlementDefinitionServiceImpl extends HttpClientBase implements 
         entitlementDefinition.setType(entitlementDefinitionType.getType());
         String developerId = UserServiceImpl.instance().PostUser();
         entitlementDefinition.setDeveloperId(IdConverter.hexStringToId(UserId.class, developerId));
-        entitlementDefinition.setGroup("");
         entitlementDefinition.setTag("");
         return postEntitlementDefinition(entitlementDefinition);
     }
