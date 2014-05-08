@@ -1,17 +1,25 @@
 package com.junbo.gradle.bootstrap
 
 import org.apache.tools.ant.util.TeeOutputStream
+import org.gradle.BuildListener
+import org.gradle.BuildResult
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
+import org.gradle.api.execution.TaskExecutionListener
+import org.gradle.api.initialization.Settings
+import org.gradle.api.invocation.Gradle
 import org.gradle.api.plugins.ApplicationPlugin
 import org.gradle.api.plugins.GroovyPlugin
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.api.tasks.JavaExec
+import org.gradle.api.tasks.TaskState
 import org.gradle.api.tasks.Upload
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.wrapper.Wrapper
+import org.gradle.util.Clock
 
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -23,19 +31,19 @@ class BootstrapPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project rootProject) {
-        rootProject.task('createWrapper', type: Wrapper) {
+       rootProject.task('createWrapper', type: Wrapper) {
             gradleVersion = '1.11'
         }
 
+        rootProject.gradle.addListener(new TimingsListener())
+
+        def propertiesGradle = BootstrapPlugin.getResource("/config/gradle/properties.gradle")
+        rootProject.apply from: propertiesGradle.toURI()
+
+        def librariesGradle = BootstrapPlugin.getResource("/config/gradle/libraries.gradle")
+        rootProject.apply from: librariesGradle.toURI()
+
         rootProject.apply plugin: 'idea'
-
-        // unzip libraries.gradle on rootProject (identity, billing, etc.)
-        rootProject.file("$rootProject.projectDir/build").mkdirs()
-        def libPath = Paths.get("$rootProject.projectDir/build/libraries.gradle")
-        def libResource = BootstrapPlugin.getResourceAsStream("/config/gradle/libraries.gradle")
-        Files.copy(libResource, libPath, StandardCopyOption.REPLACE_EXISTING)
-
-        rootProject.apply from: "$rootProject.projectDir/build/libraries.gradle"
         rootProject.idea {
             project {
                 jdkName = 1.7
@@ -48,7 +56,7 @@ class BootstrapPlugin implements Plugin<Project> {
         rootProject.subprojects {
             def subProject = it
 
-            group = "${project_group}"
+            group = 'com.junbo.' + project.name.split('-', 2)[0]
             version = property("${project.name}-version")
 
             apply plugin: 'idea'
@@ -113,6 +121,7 @@ class BootstrapPlugin implements Plugin<Project> {
                     testCompile libraries.testng
                 }
 
+                compileJava.dependsOn configurations.processor
                 compileJava.doFirst {
                     def generated = file "$buildDir/generated-src"
                     generated.mkdirs()
@@ -204,6 +213,7 @@ class BootstrapPlugin implements Plugin<Project> {
                     codenarc libraries.groovy
                 }
 
+                compileGroovy.dependsOn configurations.processor
                 compileGroovy.doFirst {
                     def generated = file "$buildDir/generated-src"
                     generated.mkdirs()
@@ -306,4 +316,42 @@ class BootstrapPlugin implements Plugin<Project> {
             }
         }
     }
+}
+
+// Log timings per task.
+class TimingsListener implements TaskExecutionListener, BuildListener {
+    private Clock clock
+    private timings = []
+
+    @Override
+    void beforeExecute(Task task) {
+        clock = new org.gradle.util.Clock()
+    }
+
+    @Override
+    void afterExecute(Task task, TaskState taskState) {
+        def ms = clock.timeInMs
+        timings.add([ms, task.path])
+        task.project.logger.warn "${task.path} took ${ms}ms"
+    }
+
+    @Override
+    void buildFinished(BuildResult result) {
+        println "Task timings:"
+        for (timing in timings.sort { -it[0] }) {
+            printf "%7sms  %s\n", timing
+        }
+    }
+
+    @Override
+    void buildStarted(Gradle gradle) {}
+
+    @Override
+    void projectsEvaluated(Gradle gradle) {}
+
+    @Override
+    void projectsLoaded(Gradle gradle) {}
+
+    @Override
+    void settingsEvaluated(Settings settings) {}
 }

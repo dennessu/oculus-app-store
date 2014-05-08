@@ -4,17 +4,17 @@ dependencies {
     compile project(":email-spec")
     compile project(":email-common")
     compile (libraries.rs_api)
-    compile (libraries.langur)
+    compile junboProject(':langur-core')
     compile (libraries.spring_beans)
     compile (libraries.spring_context)
     compile (libraries.guava)
     compile (libraries.asyncclient)
-    compile (libraries.common_lib)
+    compile junboProject(':common-lib')
 
-    compile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
+    compile junboProject(':identity-spec')
     testCompile (libraries.spring_test)
 
-    processor (libraries.langur_processor)
+    processor junboProject(':langur-processor')
     processor (libraries.log4j)
 }
 

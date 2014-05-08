@@ -15,6 +15,6 @@ dependencies {
 
     compile "redis.clients:jedis:2.2.1"
 
-    compile project(':oauth-spec')
-    compile project(':oauth-common')
+    compile junboProject(':oauth-spec')
+    compile junboProject(':oauth-common')
 }

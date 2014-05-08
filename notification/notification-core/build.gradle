@@ -1,9 +1,9 @@
 apply plugin: 'java'
 
 dependencies {
-    compile(libraries.common_lib)
-    compile(libraries.common_sharding)
-    compile(libraries.common_configuration)
+    compile junboProject(':common-lib')
+    compile junboProject(':common-sharding')
+    compile junboProject(':common-configuration')
 
     compile(libraries.spring_core)
     compile(libraries.spring_expression)
@@ -27,4 +27,3 @@ dependencies {
     testCompile(libraries.spring_test)
     testCompile 'org.apache.activemq:activemq-all:5.7.0'
 }
-

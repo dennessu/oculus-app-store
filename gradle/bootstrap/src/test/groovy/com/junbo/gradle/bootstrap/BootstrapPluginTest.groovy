@@ -15,10 +15,6 @@ class BootstrapPluginTest {
     public void testBootstrap() {
         Project project = ProjectBuilder.builder().build()
 
-        project.ext.set("artifactory_contextUrl", "http://192.168.1.127:8080/artifactory")
-        project.ext.set("artifactory_user", "wsbuilder")
-        project.ext.set("artifactory_password", "Welcome123")
-
         project.ext.set("project_group", "com.junbo.sample")
         project.ext.set("test-version", "0.0.1-SNAPSHOT")
 
@@ -28,11 +24,9 @@ class BootstrapPluginTest {
         def subproj2 = ProjectBuilder.builder().withParent(project).build()
         project.subprojects.add(subproj2)
 
-
         project.apply plugin: 'bootstrap'
 
         subproj1.apply plugin: 'java'
         subproj2.apply plugin: 'groovy'
-
     }
 }

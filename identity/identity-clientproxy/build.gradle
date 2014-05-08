@@ -7,6 +7,6 @@ dependencies {
     compile (libraries.common_codec)
     compile (libraries.hamcrest_core)
 
-    compile project(':identity-data')
-    compile project(':identity-spec')
+    compile junboProject(':identity-data')
+    compile junboProject(':identity-spec')
 }

@@ -15,22 +15,22 @@ dependencies {
     compile (libraries.spring_web)
 
     compile (libraries.asyncclient)
-    compile (libraries.oom_processor)
-    compile (libraries.oom)
+    processor junboProject(':oom-processor')
+    compile junboProject(':oom-core')
     compile (libraries.jersey_common)
 
     compile (libraries.common_io)
 
-    compile project(':catalog-spec')
-    compile project(':catalog-db')
-    compile project(':catalog-common')
-    compile project(':catalog-clientproxy')
-    compile project(':catalog-core')
+    compile junboProject(':catalog-spec')
+    compile junboProject(':catalog-db')
+    compile junboProject(':catalog-common')
+    compile junboProject(':catalog-clientproxy')
+    compile junboProject(':catalog-core')
 
-    compile ('com.junbo.authorization:authorization-lib:0.0.1-SNAPSHOT')
-    compile ('com.junbo.identity:identity-spec:0.0.1-SNAPSHOT')
+    compile junboProject(':authorization-lib')
+    compile junboProject(':identity-spec')
 
     testCompile (libraries.spring_test)
 
-    processor (libraries.langur_processor)
+    processor junboProject(':langur-processor')
 }
