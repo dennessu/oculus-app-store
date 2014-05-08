@@ -21,7 +21,7 @@ import static org.testng.Assert.assertTrue;
  * Java doc for TopologyTest.
  */
 public class TopologyTest {
-    @Test
+    //@Test
     public void testTopologyConfig() throws Exception {
 
         ConfigService configService = new ConfigService() {
@@ -96,7 +96,7 @@ public class TopologyTest {
         assertFalse(topologyConfig.isLocalDatacenter("dc1"));
     }
 
-    @Test
+    //@Test
     public void testTopologyConfigMultipleAppServers() throws Exception {
 
         ConfigService configService = new ConfigService() {

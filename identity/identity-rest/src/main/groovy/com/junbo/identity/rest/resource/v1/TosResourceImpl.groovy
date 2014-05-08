@@ -76,9 +76,8 @@ class TosResourceImpl implements TosResource {
     @Override
     Promise<Results<Tos>> list(TosListOptions listOptions) {
         return tosValidator.validateForSearch(listOptions).then {
+            def resultList = new Results<Tos>(items: [])
             return tosRepository.search(listOptions).then { List<Tos> newToses ->
-                def resultList = new Results<Tos>(items: [])
-
                 if (newToses == null) {
                     return Promise.pure(resultList)
                 }
@@ -91,6 +90,7 @@ class TosResourceImpl implements TosResource {
                         resultList.items.add(newTos)
                     }
                 }
+
                 return Promise.pure(resultList)
             }
         }

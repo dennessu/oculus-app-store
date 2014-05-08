@@ -296,6 +296,7 @@ interface AppExceptions {
     @ErrorDef(httpStatusCode = 400, code = '20069', description = 'Invalid locale: {0}', field = 'locale')
     AppError invalidLocale(String locale)
 
+<<<<<<< HEAD
     @ErrorDef(httpStatusCode = 400, code = '20070', description = 'Missing user id')
     AppError missingUserId()
 
@@ -307,6 +308,9 @@ interface AppExceptions {
     AppError missingResetPasswordCode()
     
     @ErrorDef(httpStatusCode = 400, code = '20073',
+=======
+    @ErrorDef(httpStatusCode = 400, code = '20070',
+>>>>>>> upstream/master
             description = 'The facebookAuth is missing', field = 'facebookAuth')
     AppError missingFacebookAuth()
 
@@ -325,4 +329,17 @@ interface AppExceptions {
     @ErrorDef(httpStatusCode = 400, code = '20077', description = 'The state parameter is missing',
             field = 'state')
     AppError missingState()
+<<<<<<< HEAD
+=======
+
+    @ErrorDef(httpStatusCode = 400, code = '20075', description = 'Missing user id')
+    AppError missingUserId()
+
+    @ErrorDef(httpStatusCode = 400, code = '20071', description = 'Invalid verification code')
+    AppError invalidVerificationCode()
+
+    @ErrorDef(httpStatusCode = 400, code = '20072',
+            description = 'The reset password code is missing', field = 'rpc')
+    AppError missingResetPasswordCode()
+>>>>>>> upstream/master
 }

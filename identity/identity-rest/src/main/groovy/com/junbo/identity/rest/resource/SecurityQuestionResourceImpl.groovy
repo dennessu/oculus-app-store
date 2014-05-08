@@ -22,6 +22,8 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
+import javax.ws.rs.BeanParam
+
 /**
  * Created by liangfu on 3/14/14.
  */
@@ -103,7 +105,8 @@ class SecurityQuestionResourceImpl implements SecurityQuestionResource {
     }
 
     @Override
-    Promise<SecurityQuestion> get(SecurityQuestionId securityQuestionId, SecurityQuestionGetOptions getOptions) {
+    Promise<SecurityQuestion> get(SecurityQuestionId securityQuestionId,
+                                         @BeanParam SecurityQuestionGetOptions getOptions) {
         if (getOptions == null) {
             throw new IllegalArgumentException()
         }
@@ -121,7 +124,7 @@ class SecurityQuestionResourceImpl implements SecurityQuestionResource {
     }
 
     @Override
-    Promise<Results<SecurityQuestion>> list(SecurityQuestionListOptions listOptions) {
+    Promise<Results<SecurityQuestion>> list(@BeanParam SecurityQuestionListOptions listOptions) {
 
         return securityQuestionValidator.validateForSearch(listOptions).then {
             return securityQuestionRepository.search(listOptions).then { List<SecurityQuestion> securityQuestionList ->
