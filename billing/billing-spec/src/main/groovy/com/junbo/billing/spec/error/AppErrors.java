@@ -8,6 +8,8 @@ package com.junbo.billing.spec.error;
 
 import com.junbo.common.error.*;
 
+import java.math.BigDecimal;
+
 /**
  * Interface for AppError.
  * HttpStatusCode please refer to http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
@@ -94,4 +96,12 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.PAYMENT_INSUFFICIENT_FUND,
             description ="The payment instrument {0} stored value balance insufficient")
     AppError paymentInsufficientFund(String id);
+
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.BALANCE_REFUND_TOTAL_EXCEEDED,
+            description ="The refund balance total {0} exceeded, the original total {1}, refunded total {2}")
+    AppError balanceRefundTotalExceeded(BigDecimal refund, BigDecimal original, BigDecimal refunded);
+
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.BALANCE_ITEM_REFUND_TOTAL_EXCEEDED,
+            description ="The refund balance item total {0} exceeded, the original total {1}, refunded total {2}")
+    AppError balanceItemRefundTotalExceeded(BigDecimal refund, BigDecimal original, BigDecimal refunded);
 }

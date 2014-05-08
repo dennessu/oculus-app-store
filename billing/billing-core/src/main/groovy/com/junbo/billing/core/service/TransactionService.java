@@ -21,4 +21,6 @@ public interface TransactionService {
     Promise<Balance> captureBalance(Balance balance, BigDecimal amount);
 
     Promise<Balance> confirmBalance(Balance balance);
+
+    Promise<Balance> checkBalance(Balance balance);
 }

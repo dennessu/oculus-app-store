@@ -105,7 +105,7 @@
     <bean id="billingEntityViewRepository" class="com.junbo.sharding.view.DefaultEntityViewRepository">
         <property name="entityViews">
             <list>
-                <bean class="com.junbo.billing.db.view.BalanceAsyncChargeStatusView" />
+                <bean class="com.junbo.billing.db.view.BalanceStatusView" />
                 <bean class="com.junbo.billing.db.view.BalanceTrackingUuidView" />
             </list>
         </property>

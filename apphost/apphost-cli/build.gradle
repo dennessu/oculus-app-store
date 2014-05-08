@@ -19,5 +19,7 @@ dependencies {
     compile "com.junbo.email:email-rest:${junboVersion}"
     compile "com.junbo.ewallet:ewallet-rest:${junboVersion}"
     compile "com.junbo.catalog:catalog-rest:${junboVersion}"
+
+    compile "com.junbo.billing:billing-jobs:${junboVersion}"
     // more to add
 }
