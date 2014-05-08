@@ -4,6 +4,5 @@ com.junbo.common.json.InvalidJsonReaderInterceptor
 com.junbo.common.error.RestExceptionMapper
 com.junbo.configuration.ConfigResource
 com.junbo.common.id.provider.IdTypeFromStringProvider
-com.junbo.common.filter.ResponseFilter
 com.junbo.common.filter.SequenceIdFilter
 com.junbo.common.filter.OverrideApiHostFilter

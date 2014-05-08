@@ -8,8 +8,10 @@ import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Email
+import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Required
 
 import java.util.regex.Pattern
@@ -35,8 +37,32 @@ class UserEmailValidatorImpl implements PiiValidator {
     }
 
     @Override
-    Promise<Void> validate(JsonNode value, UserId userId) {
+    Promise<Void> validateCreate(JsonNode value, UserId userId) {
         Email email = (Email)JsonHelper.jsonNodeToObj(value, Email)
+        checkUserEmail(email)
+
+        return checkAdvanceUserEmail(email)
+    }
+
+    @Override
+    Promise<Void> validateUpdate(JsonNode value, JsonNode oldValue, UserId userId) {
+        Email email = (Email)JsonHelper.jsonNodeToObj(value, Email)
+        Email oldEmail = (Email)JsonHelper.jsonNodeToObj(oldValue, Email)
+
+        if (email != oldEmail) {
+            checkUserEmail(email)
+
+            if (email.value != oldEmail.value) {
+                return checkAdvanceUserEmail(email)
+            }
+
+            return Promise.pure(null)
+        }
+
+        return Promise.pure(null)
+    }
+
+    private void checkUserEmail(Email email) {
         if (email.value == null) {
             throw AppErrors.INSTANCE.fieldInvalid('value').exception()
         }
@@ -53,10 +79,9 @@ class UserEmailValidatorImpl implements PiiValidator {
         }) {
             throw AppErrors.INSTANCE.fieldInvalid('value').exception()
         }
+    }
 
-        return Promise.pure(null)
-
-        /*
+    private Promise<Void> checkAdvanceUserEmail(Email email) {
         return userPersonalInfoRepository.searchByEmail(email.value).then { List<UserPersonalInfo> existing ->
             if (!CollectionUtils.isEmpty(existing)) {
                 throw AppErrors.INSTANCE.fieldDuplicate('value').exception()
@@ -64,7 +89,6 @@ class UserEmailValidatorImpl implements PiiValidator {
 
             return Promise.pure(null)
         }
-        */
     }
 
     @Required

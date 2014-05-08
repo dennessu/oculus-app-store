@@ -18,4 +18,21 @@ public class UserQQ {
     public void setQq(String qq) {
         this.qq = qq;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserQQ userQQ = (UserQQ) o;
+
+        if (qq != null ? !qq.equals(userQQ.qq) : userQQ.qq != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return qq != null ? qq.hashCode() : 0;
+    }
 }

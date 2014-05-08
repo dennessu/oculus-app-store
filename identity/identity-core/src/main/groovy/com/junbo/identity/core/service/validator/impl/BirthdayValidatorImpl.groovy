@@ -28,8 +28,26 @@ class BirthdayValidatorImpl implements PiiValidator {
     }
 
     @Override
-    Promise<Void> validate(JsonNode value, UserId userId) {
+    Promise<Void> validateCreate(JsonNode value, UserId userId) {
         UserDOB userDOB = (UserDOB)JsonHelper.jsonNodeToObj(value, UserDOB)
+        checkBirthdayInfo(userDOB)
+
+        return Promise.pure(null)
+    }
+
+    @Override
+    Promise<Void> validateUpdate(JsonNode value, JsonNode oldValue, UserId userId) {
+        UserDOB userDOB = (UserDOB)JsonHelper.jsonNodeToObj(value, UserDOB)
+        UserDOB oldUserDOB = (UserDOB)JsonHelper.jsonNodeToObj(oldValue, UserDOB)
+
+        if (userDOB != oldUserDOB) {
+            checkBirthdayInfo(userDOB)
+        }
+
+        return Promise.pure(null)
+    }
+
+    private void checkBirthdayInfo(UserDOB userDOB) {
         Date birthday = userDOB.birthday
         if (birthday == null) {
             throw new IllegalArgumentException('birthday is null')
@@ -47,8 +65,6 @@ class BirthdayValidatorImpl implements PiiValidator {
         if (birthday.before(before.time)) {
             throw AppErrors.INSTANCE.fieldInvalid('DOB').exception()
         }
-
-        return Promise.pure(null)
     }
 
     @Required
