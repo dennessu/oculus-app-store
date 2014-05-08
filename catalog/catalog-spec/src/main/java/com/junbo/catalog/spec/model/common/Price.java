@@ -16,7 +16,7 @@ import java.util.*;
  * Price.
  */
 public class Price {
-    @ApiModelProperty(position = 1, required = true, value = "price type")
+    @ApiModelProperty(position = 1, required = true, value = "price type", allowableValues = "TIERED, CUSTOM, FREE")
     private String priceType;
     @PriceTierId
     @ApiModelProperty(position = 2, required = true, value = "price tier")
