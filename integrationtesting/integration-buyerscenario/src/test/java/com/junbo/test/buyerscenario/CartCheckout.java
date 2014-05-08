@@ -295,10 +295,7 @@ public class CartCheckout extends BaseTestClass {
     )
     @Test
     public void testDigitalGoodsCheckoutByPayPal() throws Exception {
-        //testCheckoutByPalPal(CatalogItemType.DIGITAL);
-
-        String id = OfferServiceImpl.instance().getOfferIdByName(offer_storedValue_normal);
-        System.out.println(id);
+        testCheckoutByPalPal(CatalogItemType.DIGITAL);
     }
 
     @Property(
