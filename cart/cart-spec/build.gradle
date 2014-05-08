@@ -1,8 +1,8 @@
 apply plugin: 'java'
 
 dependencies {
-    compile (libraries.langur)
-    compile (libraries.common_lib)
+    compile junboProject(':langur-core')
+    compile junboProject(':common-lib')
 
     compile (libraries.rs_api)
     compile (libraries.guava)
@@ -15,9 +15,9 @@ dependencies {
 
     compile (libraries.hibernate_validator)
 
-    compile project(':cart-common')
+    compile junboProject(':cart-common')
 
-    processor (libraries.langur_processor)
+    processor junboProject(':langur-processor')
     processor (libraries.log4j)
 }
 

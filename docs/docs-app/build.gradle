@@ -5,20 +5,20 @@ def jettyVersion = '9.1.3.v20140225'
 
 dependencies {
 
-    // compile junboProject(':billing-spec')
-    // compile junboProject(':cart-spec')
+    compile junboProject(':billing-spec')
+    compile junboProject(':cart-spec')
     compile junboProject(':catalog-spec')
     // compile junboProject(':drm-spec')
     compile junboProject(':entitlement-spec')
-    // compile junboProject(':ewallet-spec')
+    compile junboProject(':ewallet-spec')
     // compile junboProject(':fulfilment-spec')
     compile junboProject(':identity-spec')
     compile junboProject(':oauth-spec')
     // compile junboProject(':order-spec')
-    // compile junboProject(':payment-spec')
-    // compile junboProject(':rating-spec')
-    // compile junboProject(':restriction-spec')
-    // compile junboProject(':email-spec')
+    compile junboProject(':payment-spec')
+    compile junboProject(':rating-spec')
+    compile junboProject(':restriction-spec')
+    compile junboProject(':email-spec')
 
     compile("com.wordnik:swagger-jersey2-jaxrs_2.10:${swaggerVersion}") {
         exclude group: "javax.ws.rs", module: "jsr311-api"

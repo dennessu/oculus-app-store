@@ -15,13 +15,13 @@ dependencies {
     compile (libraries.spring_web)
 
     compile (libraries.asyncclient)
-    compile (libraries.oom_processor)
+    processor junboProject(':oom-processor')
 
-    compile (libraries.oom)
+    compile junboProject(':oom-core')
     compile (libraries.jersey_common)
 
-    compile project(':cart-common')
-    compile project(':cart-core')
-    compile project(':cart-db')
-    compile project(':cart-spec')
+    compile junboProject(':cart-common')
+    compile junboProject(':cart-core')
+    compile junboProject(':cart-db')
+    compile junboProject(':cart-spec')
 }

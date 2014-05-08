@@ -9,22 +9,22 @@ dependencies {
 
     compile junboProject(':identity-rest')
     compile junboProject(':oauth-api')
-
-    /*
-    compile junboProject(':rating-rest')
-    compile junboProject(':fulfilment-rest')
-    compile junboProject(':cart-rest')
-    compile junboProject(':billing-rest')
-    compile junboProject(':order-rest')
-    compile junboProject(':payment-rest')
-    compile junboProject(':email-rest')
-    compile junboProject(':ewallet-rest')
-    compile junboProject(':billing-jobs')
-
-    */
-
     compile junboProject(':entitlement-rest')
     compile junboProject(':catalog-rest')
+    compile junboProject(':rating-rest')
+    compile junboProject(':restriction-rest')
+    compile junboProject(':ewallet-rest')
+    compile junboProject(':payment-rest')
+    compile junboProject(':billing-rest')
+    compile junboProject(':email-rest')
+    compile junboProject(':cart-rest')
 
+    /*
+    compile junboProject(':fulfilment-rest')
+    compile junboProject(':order-rest')
+    */
+
+
+    compile junboProject(':billing-jobs')
     // more to add
 }

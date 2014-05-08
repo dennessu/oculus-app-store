@@ -1,12 +1,35 @@
-<h1>Item creation</h1>
+<h1>Item Creation</h1>
 <form novalidate="novalidate" class="form-horizontal" name="itemCreationForm">
-
-    <div ng-include src="'views/item/item-edit.html'"></div>
-
+    <table class="table table-bordered vertical-table">
+        <tr>
+            <td style="width: 200px;">Type *</td>
+            <td>
+                <select ng-model="item.type" ng-options="itemType for itemType in itemTypes" required />
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Rollup Package Name</td>
+            <td><input type="text" class="form-control required" ng-model="item.rollupPackageName" /></td>
+        </tr>
+        <tr>
+            <td>Package Name</td>
+            <td><input type="text" class="form-control required" ng-model="item.packageName" /></td>
+        </tr>
+        <tr>
+            <td>Genres</td>
+            <td>
+                <div>
+                    <label ng-repeat="genre in genres">
+                        <input type="checkbox" checklist-model="item.genres" checklist-value="genre" class="chooseItem">{{ genre }}
+                    </label>
+                </div>
+            </td>
+        </tr>
+    </table>
     <div class="control-group">
         <div class="controls">
-            <a ng-click="cancel()" class="btn btn-small btn-default">Cancel</a>
-            <a ng-click="itemCreationForm.$valid && createItem()" class="btn btn-small btn-default">Save</a>
+            <a ng-click="itemCreationForm.$valid && saveItem()" class="btn btn-small btn-default">Next</a>
         </div>
     </div>
 </form>

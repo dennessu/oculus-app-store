@@ -52,7 +52,10 @@ class UserEmailValidatorImpl implements PiiValidator {
         if (email != oldEmail) {
             checkUserEmail(email)
 
-            if (email.value != oldEmail.value) {
+            // If user want to promote validate from false to true, need to check again
+            if (email.value != oldEmail.value
+            || (email.isValidated == true  && email.isValidated != oldEmail.isValidated)
+            ) {
                 return checkAdvanceUserEmail(email)
             }
 
@@ -83,6 +86,12 @@ class UserEmailValidatorImpl implements PiiValidator {
 
     private Promise<Void> checkAdvanceUserEmail(Email email) {
         return userPersonalInfoRepository.searchByEmail(email.value).then { List<UserPersonalInfo> existing ->
+            existing.removeAll { UserPersonalInfo userPersonalInfo ->
+                // Only validated mail can't be added twice
+                Email existingEmail = (Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Email)
+                return existingEmail.isValidated != true
+            }
+
             if (!CollectionUtils.isEmpty(existing)) {
                 throw AppErrors.INSTANCE.fieldDuplicate('value').exception()
             }

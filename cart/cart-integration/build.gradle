@@ -10,8 +10,8 @@ dependencies {
     compile (libraries.spring_tx)
     compile (libraries.spring_aop)
     compile (libraries.spring_context)
-    compile project(':cart-spec')
-    compile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
+    compile junboProject(':cart-spec')
+    compile junboProject(':identity-spec')
 }
 
 def enableIntegration = hasProperty('cart-integration')

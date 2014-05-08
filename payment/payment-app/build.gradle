@@ -4,9 +4,9 @@ apply plugin: 'application'
 mainClassName = "com.junbo.apphost.core.JunboApplication"
 
 dependencies {
-    runtime (libraries.apphost_core)
-    runtime (libraries.common_configuration_data)
+    runtime junboProject(':apphost-core')
+    runtime junboProject(':configuration-data')
 
-    compile project(':payment-rest')
-    compile 'com.junbo.ewallet:ewallet-rest:0.0.1-SNAPSHOT'
+    compile junboProject(':payment-rest')
+    compile junboProject(':ewallet-rest')
 }

@@ -1,21 +1,21 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile project(':restriction-spec')
+    compile junboProject(':restriction-spec')
     compile (libraries.rs_api)
-    compile (libraries.langur)
+    compile junboProject(':langur-core')
     compile (libraries.spring_beans)
     compile (libraries.spring_context)
-    compile (libraries.common_lib)
+    compile junboProject(':common-lib')
     compile (libraries.jersey_common)
     compile (libraries.asyncclient)
 
-    compile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
-    compile 'com.junbo.catalog:catalog-spec:0.0.1-SNAPSHOT'
+    compile junboProject(':identity-spec')
+    compile junboProject(':catalog-spec')
 
     testCompile (libraries.spring_test)
 
-    processor (libraries.langur_processor)
+    processor junboProject(':langur-processor')
     processor (libraries.log4j)
 }
 
