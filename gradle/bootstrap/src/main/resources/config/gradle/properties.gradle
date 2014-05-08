@@ -42,11 +42,22 @@ ext {
     set("catalog-clientproxy-version", '0.0.1-SNAPSHOT')
     set("catalog-app-version", '0.0.1-SNAPSHOT')
 
+    set("entitlement-common-version", '0.0.1-SNAPSHOT')
+    set("entitlement-core-version", '0.0.1-SNAPSHOT')
+    set("entitlement-db-version", '0.0.1-SNAPSHOT')
+    set("entitlement-rest-version", '0.0.1-SNAPSHOT')
+    set("entitlement-spec-version", '0.0.1-SNAPSHOT')
+    set("entitlement-clientproxy-version", '0.0.1-SNAPSHOT')
+    set("entitlement-app-version", '0.0.1-SNAPSHOT')
+
     set("authorization-lib-version", '0.0.1-SNAPSHOT')
 
     set("notification-core-version", '0.0.1-SNAPSHOT')
 
+    set("docs-app-version", '0.0.1-SNAPSHOT')
+
     set("apphost-core-version", '0.0.1-SNAPSHOT')
+    set("docs-bundle-version", '0.0.1-SNAPSHOT')
     set("apphost-cli-version", '0.0.1-SNAPSHOT')
 
     junboProject = { projectPath ->
