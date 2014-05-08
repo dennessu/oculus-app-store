@@ -9,10 +9,7 @@ package com.junbo.catalog.spec.model.offer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.*;
-import com.junbo.common.jackson.annotation.CountryId;
-import com.junbo.common.jackson.annotation.OfferId;
-import com.junbo.common.jackson.annotation.OfferRevisionId;
-import com.junbo.common.jackson.annotation.UserId;
+import com.junbo.common.jackson.annotation.*;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
@@ -61,6 +58,10 @@ public class OfferRevision extends BaseRevisionModel {
 
     @ApiModelProperty(position = 31, required = true, value = "Locale properties of the offer revision resource")
     private Map<String, OfferRevisionLocaleProperties> locales;
+    @ApiModelProperty(position = 32, required = true,
+            value = "The content ratings given to the offer by specific boards (ESRB, PEGI)")
+    @AgeRatingId
+    private Map<String, AgeRating> ageRating;
 
     public Long getRevisionId() {
         return revisionId;
@@ -156,6 +157,14 @@ public class OfferRevision extends BaseRevisionModel {
 
     public void setLocales(Map<String, OfferRevisionLocaleProperties> locales) {
         this.locales = locales;
+    }
+
+    public Map<String, AgeRating> getAgeRating() {
+        return ageRating;
+    }
+
+    public void setAgeRating(Map<String, AgeRating> ageRating) {
+        this.ageRating = ageRating;
     }
 
     @Override

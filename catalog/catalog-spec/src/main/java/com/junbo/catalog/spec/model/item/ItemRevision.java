@@ -42,9 +42,6 @@ public class ItemRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 22, required = true, value = "Manufacturer's suggested retail price")
     private Price msrp;
 
-    @ApiModelProperty(position = 23, required = false, value = "Website for the item revision resource")
-    private String website;
-
     @ApiModelProperty(position = 24, required = true, value = "supported input devices",
             allowableValues = "KEYBOARD, MOUSE")
     List<String> supportedInputDevices;
@@ -59,6 +56,11 @@ public class ItemRevision extends BaseRevisionModel {
             allowableValues = "PC, MAC, LINUX, ANDROID")
     private List<String> platforms;
 
+    @ApiModelProperty(position = 28, required = true,
+            value = "The content ratings given to the item by specific boards (ESRB, PEGI)")
+    @AgeRatingId
+    private Map<String, AgeRating> ageRating;
+
     @CurrencyId
     @ApiModelProperty(position = 31, required = true, value = "Wallet currency")
     private String storedValueCurrency;
@@ -69,7 +71,6 @@ public class ItemRevision extends BaseRevisionModel {
     private Map<String, ItemRevisionLocaleProperties> locales;
     @ApiModelProperty(position = 41, required = true, value = "Country properties of the item revision")
     private Map<String, ItemRevisionCountryProperties> countries;
-
 
     public String getSku() {
         return sku;
@@ -111,14 +112,6 @@ public class ItemRevision extends BaseRevisionModel {
         this.msrp = msrp;
     }
 
-    public String getWebsite() {
-        return website;
-    }
-
-    public void setWebsite(String website) {
-        this.website = website;
-    }
-
     public List<String> getSupportedInputDevices() {
         return supportedInputDevices;
     }
@@ -149,6 +142,14 @@ public class ItemRevision extends BaseRevisionModel {
 
     public void setPlatforms(List<String> platforms) {
         this.platforms = platforms;
+    }
+
+    public Map<String, AgeRating> getAgeRating() {
+        return ageRating;
+    }
+
+    public void setAgeRating(Map<String, AgeRating> ageRating) {
+        this.ageRating = ageRating;
     }
 
     public String getStoredValueCurrency() {
