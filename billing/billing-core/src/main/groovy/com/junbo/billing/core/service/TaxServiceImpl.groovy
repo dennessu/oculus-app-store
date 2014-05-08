@@ -13,7 +13,6 @@ import com.junbo.billing.spec.enums.TaxStatus
 import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
-import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.identity.spec.v1.model.Address
 import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.model.PaymentInstrument
@@ -33,9 +32,6 @@ class TaxServiceImpl implements TaxService {
 
     @Resource(name='billingIdentityFacade')
     IdentityFacade identityFacade
-
-    @Resource
-    ShippingAddressService shippingAddressService
 
     TaxFacade taxFacade
 
@@ -71,7 +67,6 @@ class TaxServiceImpl implements TaxService {
             return Promise.pure(balance)
         }
 
-        Long userId = balance.userId.value
         Long piId = balance.piId.value
         return paymentFacade.getPaymentInstrument(piId).recover { Throwable throwable ->
             LOGGER.error('name=Error_Get_PaymentInstrument. pi id: ' + balance.piId.value, throwable)
@@ -82,10 +77,9 @@ class TaxServiceImpl implements TaxService {
             }
             if (balance.shippingAddressId != null) {
                 Long addressId = balance.shippingAddressId.value
-                return shippingAddressService.getShippingAddress(userId, addressId)
-                        .then { ShippingAddress shippingAddress ->
-                    return taxFacade.validateShippingAddress(shippingAddress)
-                }.then { ShippingAddress validatedShippingAddress ->
+                return identityFacade.getAddress(addressId).then { Address shippingAddress ->
+                    return taxFacade.validateAddress(shippingAddress)
+                }.then { Address validatedShippingAddress ->
                     return identityFacade.getAddress(pi.billingAddressId).then { Address address ->
                         return taxFacade.validateAddress(address)
                     }.then { Address validatedPiAddress ->
@@ -100,11 +94,6 @@ class TaxServiceImpl implements TaxService {
             }
         }
 
-    }
-
-    @Override
-    Promise<ShippingAddress> validateShippingAddress(ShippingAddress shippingAddress) {
-        return taxFacade.validateShippingAddress(shippingAddress)
     }
 
     @Override
