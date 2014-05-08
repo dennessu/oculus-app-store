@@ -49,8 +49,8 @@ class ActionContextWrapper {
     public static final String CAPTCHA_SUCCEED = 'captcha_succeed'
     public static final String VIEW_LOCALE = 'view_locale'
     public static final String EXTRA_PARAM_MAP = 'extra_param_map'
-    public static final String EMAIL_VERIFY_CODE = 'email_verify_code'
     public static final String THIRD_PARTY_USERNAME = 'third_party_username'
+    public static final String EMAIL_VERIFY_CODE = 'email_verify_code'
     public static final String RESET_PASSWORD_CODE = 'reset_password_code'
 
     @Delegate

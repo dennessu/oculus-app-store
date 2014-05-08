@@ -300,30 +300,29 @@ interface AppExceptions {
             description = 'The facebookAuth is missing', field = 'facebookAuth')
     AppError missingFacebookAuth()
 
-    @ErrorDef(httpStatusCode = 400, code = '20071', description = 'Invalid verification code')
-    AppError invalidVerificationCode()
-
-    @ErrorDef(httpStatusCode = 400, code = '20072',
-            description = 'The reset password code is missing', field = 'rpc')
-    AppError missingResetPasswordCode()
-
-    @ErrorDef(httpStatusCode = 400, code = '20074',
+    @ErrorDef(httpStatusCode = 400, code = '20071',
             description = 'Invalid facebookAuth', field = 'facebookAuth')
     AppError errorCallingFacebook()
 
-    @ErrorDef(httpStatusCode = 400, code = '20075',
+    @ErrorDef(httpStatusCode = 400, code = '20072',
             description = 'The googleAuth is missing', field = 'googleAuth')
     AppError missingGoogleAuth()
 
-    @ErrorDef(httpStatusCode = 400, code = '20076',
+    @ErrorDef(httpStatusCode = 400, code = '20073',
             description = 'Invalid googleAuth', field = 'googleAuth')
     AppError errorCallingGoogle()
 
-    @ErrorDef(httpStatusCode = 400, code = '20077', description = 'The state parameter is missing',
+    @ErrorDef(httpStatusCode = 400, code = '20074', description = 'The state parameter is missing',
             field = 'state')
     AppError missingState()
 
     @ErrorDef(httpStatusCode = 400, code = '20075', description = 'Missing user id')
     AppError missingUserId()
 
+    @ErrorDef(httpStatusCode = 400, code = '20071', description = 'Invalid verification code')
+    AppError invalidVerificationCode()
+
+    @ErrorDef(httpStatusCode = 400, code = '20072',
+            description = 'The reset password code is missing', field = 'rpc')
+    AppError missingResetPasswordCode()
 }
