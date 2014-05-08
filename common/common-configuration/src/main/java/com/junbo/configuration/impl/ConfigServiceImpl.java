@@ -31,7 +31,10 @@ import java.util.jar.JarFile;
  * 1):  activeEnv:      If this environment(onebox/int/prod...) is configured,
  *                      it will load configuration from its environment configuration;
  *                      If this environment isn't configured, it will load from onebox environment by default;
- * 2):  configDir:      This is the override configuration file, if it is set,
+ * 2):  activeDc:       This is datacenter within the environment of current machine.
+ *                      It is used by API corss DC routing logic.
+ *                      If this datacenter isn't configured, it will use dc0 by default;
+ * 3):  configDir:      This is the override configuration file, if it is set,
  *                      it will override the same property in the configuration data, and we will watch this file;
  *                      if it isn't set, use configuration data.
  */
@@ -47,7 +50,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
     private static final String DEFAULT_FOLDER = "_default";
     private static final String DEFAULT_PROPERTIES_FILE = "_default.properties";
     private static final String DEFAULT_ENVIRONMENT = "onebox";
-    private static final String DEFAULT_DATACENTER = "0";
+    private static final String DEFAULT_DATACENTER = "dc0";
     private static final String DEFAULT_SUBNET = "0.0.0.0/0";
     private static final String CONFIG_PATH = "junbo/conf";
 

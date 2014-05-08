@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.common.topo.model;
+package com.junbo.configuration.topo.model;
 
 /**
  * Data utilities.
