@@ -23,7 +23,7 @@ public interface EntitlementDefinitionDao {
     EntitlementDefinitionEntity get(Long entitlementDefinitionId);
 
     List<EntitlementDefinitionEntity> getByParams(Long developerId, String clientId,
-                                                  Set<String> groups, Set<String> tags, Set<EntitlementType> types,
+                                                  Long itemId, Set<String> tags, Set<EntitlementType> types,
                                                   Boolean isConsumable, PageableGetOptions pageableGetOptions);
 
     Long update(EntitlementDefinitionEntity entitlementDefinition);

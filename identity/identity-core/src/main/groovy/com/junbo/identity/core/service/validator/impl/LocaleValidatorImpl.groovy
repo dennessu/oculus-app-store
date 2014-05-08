@@ -1,7 +1,7 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.enumid.LocaleId
-import com.junbo.identity.core.service.util.ValidatorUtil
+import com.junbo.identity.common.util.ValidatorUtil
 import com.junbo.identity.core.service.validator.LocaleValidator
 import com.junbo.identity.data.repository.LocaleRepository
 import com.junbo.identity.spec.error.AppErrors

@@ -197,7 +197,7 @@ public class BillingTestDataProvider extends BaseTestDataProvider {
         balance.setCurrency(order.getCurrency().getValue());
         //balance.setDiscountAmount(order.getTotalDiscount());
         balance.setShippingAddressId(order.getShippingAddress());
-        balance.setPiId(order.getPaymentInstruments().get(0));
+        balance.setPiId(order.getPayments().get(0).getPaymentInstrument());
         balance.setType(BalanceType.DEBIT.toString());
         //balance.setStatus(BalanceStatus.AWAITING_PAYMENT.toString());
         //balance.setTotalAmount(order.getTotalAmount());

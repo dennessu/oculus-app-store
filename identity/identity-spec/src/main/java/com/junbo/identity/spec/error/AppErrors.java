@@ -142,13 +142,13 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 409, code = "2000034", description = "Tos {0} not found.", field = "{0}")
     AppError tosNotFound(TosId tosId);
 
-    @ErrorDef(httpStatusCode = 404, code = "2000035", description = "Role {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 409, code = "2000035", description = "Role {0} not found.", field = "{0}")
     AppError roleNotFound(RoleId roleId);
 
-    @ErrorDef(httpStatusCode = 404, code = "2000036", description = "RoleAssignment {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 409, code = "2000036", description = "RoleAssignment {0} not found.", field = "{0}")
     AppError roleAssignmentNotFound(RoleAssignmentId roleAssignmentId);
 
-    @ErrorDef(httpStatusCode = 404, code = "2000037", description = "User Personal Info {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 409, code = "2000037", description = "User Personal Info {0} not found.", field = "{0}")
     AppError userPersonalInfoNotFound(UserPersonalInfoId userPersonalInfoId);
 
     @ErrorDef(httpStatusCode = 409, code = "2000038", description = "Address {0} not found.", field = "{0}")
@@ -177,4 +177,27 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 409, code = "2000046", description = "Field {0} invalid due to {1}.", field = "{0}")
     AppError fieldInvalidException(String field, String detail);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000050", description = "TeleSign provider error.")
+    AppError teleSignProviderError(String message);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000051", description = "User Tele attempt {0} not found.", field = "{0}")
+    AppError userTeleAttemptNotFound(UserTeleAttemptId userTeleAttemptId);
+
+    @ErrorDef(httpStatusCode = 404, code = "2000052", description = "User tele code is incorrect.")
+    AppError userTeleCodeIncorrect();
+
+    @ErrorDef(httpStatusCode = 409, code = "2000053", description = "User Tele backup code {0} not found.",
+            field = "{0}")
+    AppError userTeleBackupCodeNotFound(UserTeleBackupCodeId userTeleBackupCodeId);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000054", description = "User Tele backup code attempt {0} not found.",
+            field = "{0}")
+    AppError userTeleBackupCodeAttemptNotFound(UserTeleBackupCodeAttemptId userTeleBackupCodeAttemptId);
+
+    @ErrorDef(httpStatusCode = 404, code = "2000055", description = "User tele backup code is incorrect.")
+    AppError userTeleBackupCodeIncorrect();
+
+    @ErrorDef(httpStatusCode = 404, code = "2000056", description = "User {0} is not in valid status.", field = "{0}")
+    AppError userInInvalidStatus(String username);
 }

@@ -21,6 +21,9 @@ public class UserTeleBackupCodeListOptions extends PagingGetOptions {
     @QueryParam("userId")
     private UserId userId;
 
+    @QueryParam("active")
+    private Boolean active;
+
     public String getProperties() {
         return properties;
     }
@@ -35,5 +38,13 @@ public class UserTeleBackupCodeListOptions extends PagingGetOptions {
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }

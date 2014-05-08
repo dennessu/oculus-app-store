@@ -21,8 +21,14 @@ import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
 import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
 import com.junbo.identity.spec.v1.option.list.UserPinListOptions
 import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.transaction.AsyncTransactionTemplate
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.transaction.PlatformTransactionManager
+import org.springframework.transaction.TransactionDefinition
+import org.springframework.transaction.TransactionStatus
+import org.springframework.transaction.support.TransactionCallback
+import org.springframework.util.CollectionUtils
 
 import java.util.regex.Pattern
 
@@ -33,21 +39,20 @@ import java.util.regex.Pattern
 class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAttemptValidator {
 
     private UserCredentialVerifyAttemptRepository userLoginAttemptRepository
-
     private UserRepository userRepository
-
     private UserPasswordRepository userPasswordRepository
-
     private UserPinRepository userPinRepository
 
     private UsernameValidator usernameValidator
 
     private List<Pattern> allowedIpAddressPatterns
-
     private Integer userAgentMinLength
     private Integer userAgentMaxLength
+    private Integer maxRetryCount
 
     private NormalizeService normalizeService
+
+    private PlatformTransactionManager transactionManager
 
     @Override
     Promise<UserCredentialVerifyAttempt> validateForGet(UserCredentialVerifyAttemptId userLoginAttemptId) {
@@ -113,7 +118,11 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             }
 
             if (user.status != UserStatus.ACTIVE.toString()) {
-                throw AppErrors.INSTANCE.userInInvalidStatus(userLoginAttempt.userId).exception()
+                throw AppErrors.INSTANCE.userInInvalidStatus(userLoginAttempt.username).exception()
+            }
+
+            if (user.isAnonymous == true) {
+                throw AppErrors.INSTANCE.userInInvalidStatus(userLoginAttempt.username).exception()
             }
 
             userLoginAttempt.setUserId((UserId)user.id)
@@ -145,7 +154,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                         userLoginAttempt.setSucceeded(false)
                     }
 
-                    return Promise.pure(null)
+                    return checkMaximumRetryCount(user, userLoginAttempt)
                 }
             }
             else {
@@ -172,9 +181,49 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                         userLoginAttempt.setSucceeded(false)
                     }
 
-                    return Promise.pure(null)
+                    return checkMaximumRetryCount(user, userLoginAttempt)
                 }
             }
+        }
+    }
+
+    private Promise<Void> checkMaximumRetryCount(User user, UserCredentialVerifyAttempt userLoginAttempt) {
+        if (userLoginAttempt.succeeded == true) {
+            return Promise.pure(null)
+        }
+
+        return userLoginAttemptRepository.search(new UserCredentialAttemptListOptions(
+                userId: (UserId)user.id,
+                type: userLoginAttempt.type
+        )).then { List<UserCredentialVerifyAttempt> attemptList ->
+            if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxRetryCount) {
+                return Promise.pure(null)
+            }
+
+            attemptList.sort(new Comparator<UserCredentialVerifyAttempt>() {
+                @Override
+                int compare(UserCredentialVerifyAttempt o1, UserCredentialVerifyAttempt o2) {
+                    return o2.createdTime <=> o1.createdTime
+                }
+            })
+
+            int index = 0
+            for ( ; index < maxRetryCount; index++) {
+                if (attemptList.get(index).succeeded == true) {
+                    break
+                }
+            }
+
+            // Reach maximum count, lock account
+            if (index == maxRetryCount) {
+                user.status = UserStatus.SUSPEND.toString()
+                return createInNewTran(user).then {
+                    throw AppErrors.INSTANCE.fieldInvalid('userId',
+                            'User reaches maximum allowed retry count').exception()
+                }
+            }
+
+            return Promise.pure(null)
         }
     }
 
@@ -216,6 +265,16 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
         if (userLoginAttempt.value == null) {
             throw AppErrors.INSTANCE.fieldRequired('value').exception()
         }
+    }
+
+    Promise<User> createInNewTran(User user) {
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager)
+        template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
+        return template.execute(new TransactionCallback<Promise<User>>() {
+            Promise<User> doInTransaction(TransactionStatus txnStatus) {
+                return userRepository.update(user)
+            }
+        })
     }
 
     @Required
@@ -263,5 +322,15 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     @Required
     void setNormalizeService(NormalizeService normalizeService) {
         this.normalizeService = normalizeService
+    }
+
+    @Required
+    void setMaxRetryCount(Integer maxRetryCount) {
+        this.maxRetryCount = maxRetryCount
+    }
+
+    @Required
+    void setTransactionManager(PlatformTransactionManager transactionManager) {
+        this.transactionManager = transactionManager
     }
 }

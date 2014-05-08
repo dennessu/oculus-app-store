@@ -1,7 +1,7 @@
 package com.junbo.identity.core.service.filter
 
 import com.junbo.common.json.PropertyAssignedAwareSupport
-import com.junbo.identity.core.service.util.FilterUtil
+import com.junbo.identity.common.util.FilterUtil
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.oom.core.MappingContext
 import com.junbo.oom.core.filter.PropertyMappingEvent

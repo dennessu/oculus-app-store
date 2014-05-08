@@ -137,6 +137,8 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
                         if (!CollectionUtils.isEmpty(existing)) {
                             throw AppErrors.INSTANCE.fieldDuplicate('type or externalId').exception()
                         }
+
+                        return Promise.pure(null)
                 }
             }
 

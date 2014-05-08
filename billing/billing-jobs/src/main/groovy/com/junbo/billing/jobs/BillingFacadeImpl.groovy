@@ -8,6 +8,7 @@ package com.junbo.billing.jobs
 
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.resource.proxy.BalanceResourceClientProxy
+import com.junbo.common.error.CommonExceptionHandler
 import com.junbo.common.json.IdPathParamTranscoder
 import com.junbo.common.json.JsonMessageTranscoder
 import com.junbo.common.json.QueryParamTranscoderImpl
@@ -40,7 +41,10 @@ class BillingFacadeImpl implements BillingFacade {
 
     @Override
     Promise<Balance> processAsyncBalance(Balance balance) {
-        return new BalanceResourceClientProxy(asyncHttpClient, new JsonMessageTranscoder(),
-                new IdPathParamTranscoder(), new QueryParamTranscoderImpl(), url).processAsyncBalance(balance)
+        JsonMessageTranscoder transcoder = new JsonMessageTranscoder()
+        CommonExceptionHandler exceptionHandler = new CommonExceptionHandler()
+        exceptionHandler.messageTranscoder = transcoder
+        return new BalanceResourceClientProxy(asyncHttpClient, transcoder,
+                new IdPathParamTranscoder(), new QueryParamTranscoderImpl(), exceptionHandler, url).processAsyncBalance(balance)
     }
 }

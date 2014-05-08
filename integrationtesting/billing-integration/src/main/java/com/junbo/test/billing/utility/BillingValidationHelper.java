@@ -47,7 +47,7 @@ public class BillingValidationHelper extends BaseValidationHelper {
                 IdConverter.hexStringToId(UserId.class, uid), "verify user id");
 
         verifyEqual(balanceResult.getPiId().getValue(),
-                order.getPaymentInstruments().get(0).getValue(), "verify payment id");
+                order.getPayments().get(0).getPaymentInstrument().getValue(), "verify payment id");
 
         verifyEqual(balanceResult.getBalanceItems().size(), order.getOrderItems().size(), "verify balance item size");
         verifyEqual(balanceResult.getType(), BalanceType.DEBIT.toString(), "verify balance type");
@@ -72,7 +72,7 @@ public class BillingValidationHelper extends BaseValidationHelper {
         if (balanceResult.getTransactions().size() > 0) {
             Transaction transaction = balanceResult.getTransactions().get(0);
             verifyEqual(transaction.getPiId().getValue(),
-                    order.getPaymentInstruments().get(0).getValue(), "verify pid");
+                    order.getPayments().get(0).getPaymentInstrument().getValue(), "verify pid");
             verifyEqual(transaction.getType(), String.format("CHARGE"), "verify transaction type");
             verifyEqual(transaction.getStatus(), String.format("SUCCESS"), "verify transaction status");
             verifyEqual(transaction.getAmount(),

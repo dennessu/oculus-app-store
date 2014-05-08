@@ -103,6 +103,8 @@ class UserValidatorImpl implements UserValidator {
                         return Promise.pure(null)
                     }
                 }
+
+                return Promise.pure(null)
             }
 
             return Promise.pure(null)

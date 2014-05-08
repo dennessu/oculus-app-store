@@ -1,6 +1,0 @@
-#!/bin/bash
-
-# set -e
-
-dropdb -e -h demo-instance.cjodfwztqut5.us-west-2.rds.amazonaws.com -U demo_user catalog
-createdb -e -h demo-instance.cjodfwztqut5.us-west-2.rds.amazonaws.com -U demo_user catalog

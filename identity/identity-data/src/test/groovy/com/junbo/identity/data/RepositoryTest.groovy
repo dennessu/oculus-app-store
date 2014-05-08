@@ -5,7 +5,7 @@
  */
 package com.junbo.identity.data
 
-import com.fasterxml.jackson.databind.node.JsonNodeFactory
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
@@ -180,7 +180,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         user.setPreferredLocale(new LocaleId(UUID.randomUUID().toString()))
         user.setPreferredTimezone(UUID.randomUUID().toString())
         user.setCreatedTime(new Date())
-        user.setCreatedBy('lixia-todo')
+        user.setCreatedBy(new UserId(123L))
         UserPersonalInfoLink userPersonalInfoLink = new UserPersonalInfoLink()
         userPersonalInfoLink.setUserId(new UserId(idGenerator.nextId()))
         userPersonalInfoLink.setValue(new UserPersonalInfoId(idGenerator.nextId()))
@@ -249,9 +249,9 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userPassword.setChangeAtNextLogin(false)
         userPassword.setExpiresBy(new Date())
         userPassword.setCreatedTime(new Date())
-        userPassword.setCreatedBy('lixia-todo')
+        userPassword.setCreatedBy(new UserId(123L))
         userPassword.setUpdatedTime(new Date())
-        userPassword.setUpdatedBy('lixia-todo')
+        userPassword.setUpdatedBy(new UserId(123L))
         userPassword = userPasswordRepository.create(userPassword).wrapped().get()
 
         UserPassword newUserPassword = userPasswordRepository.get(userPassword.getId()).wrapped().get()
@@ -277,9 +277,9 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userPIN.setChangeAtNextLogin(false)
         userPIN.setExpiresBy(new Date())
         userPIN.setCreatedTime(new Date())
-        userPIN.setCreatedBy('lixia-todo')
+        userPIN.setCreatedBy(new UserId(123L))
         userPIN.setUpdatedTime(new Date())
-        userPIN.setUpdatedBy('lixia-todo')
+        userPIN.setUpdatedBy(new UserId(123L))
         userPIN = userPinRepository.create(userPIN).wrapped().get()
 
         UserPin newUserPin = userPinRepository.get(userPIN.getId()).wrapped().get()
@@ -304,7 +304,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         authenticator.setType('Google_account')
         authenticator.setExternalId(UUID.randomUUID().toString())
         authenticator.setCreatedTime(new Date())
-        authenticator.setCreatedBy('lixia-todo')
+        authenticator.setCreatedBy(new UserId(123L))
         authenticator = userAuthenticatorRepository.create(authenticator).wrapped().get()
 
         UserAuthenticator newUserAuthenticator = userAuthenticatorRepository.get(authenticator.getId()).wrapped().get()
@@ -327,7 +327,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         UserGroup userGroup = new UserGroup()
         userGroup.setUserId(new UserId(userId))
         userGroup.setGroupId(new GroupId(1493188608L))
-        userGroup.setCreatedBy('lixia-todo')
+        userGroup.setCreatedBy(new UserId(123L))
         userGroup.setCreatedTime(new Date())
         userGroup = userGroupRepository.create(userGroup).wrapped().get()
 
@@ -352,7 +352,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userLoginAttempt.setIpAddress(UUID.randomUUID().toString())
         userLoginAttempt.setUserAgent(UUID.randomUUID().toString())
         userLoginAttempt.setSucceeded(true)
-        userLoginAttempt.setCreatedBy('lixia-todo')
+        userLoginAttempt.setCreatedBy(new UserId(123L))
         userLoginAttempt.setCreatedTime(new Date())
 
         userLoginAttempt = userCredentialVerifyAttemptRepository.create(userLoginAttempt).wrapped().get()
@@ -378,7 +378,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         UserCommunication userOptin = new UserCommunication()
         userOptin.setUserId(new UserId(userId))
         userOptin.setCommunicationId(new CommunicationId(idGenerator.nextId()))
-        userOptin.setCreatedBy('lixia-todo')
+        userOptin.setCreatedBy(new UserId(123L))
         userOptin.setCreatedTime(new Date())
         userOptin = userCommunicationRepository.create(userOptin).wrapped().get()
 
@@ -402,7 +402,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userSecurityQuestion.setUserId(new UserId(userId))
         userSecurityQuestion.setSecurityQuestion('whosyourdaddy')
         userSecurityQuestion.setAnswerHash(UUID.randomUUID().toString())
-        userSecurityQuestion.setCreatedBy('lixia-todo')
+        userSecurityQuestion.setCreatedBy(new UserId(123L))
         userSecurityQuestion.setCreatedTime(new Date())
 
         userSecurityQuestion = userSecurityQuestionRepository.create(userSecurityQuestion).wrapped().get()
@@ -426,7 +426,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         UserTosAgreement userTos = new UserTosAgreement()
         userTos.setUserId(new UserId(userId))
         userTos.setTosId(new TosId(123L))
-        userTos.setCreatedBy('lixia-todo')
+        userTos.setCreatedBy(new UserId(123L))
         userTos.setCreatedTime(new Date())
         userTos = userTosRepository.create(userTos).wrapped().get()
 
@@ -499,11 +499,12 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
             after30Mins = (new Date()) + 30.minutes
         }
         def id = idGenerator.nextId()
+        def phoneNumber = new UserPersonalInfoId(idGenerator.nextId())
         UserTeleCode userTeleCode = new UserTeleCode()
         userTeleCode.setUserId(new UserId(id))
         userTeleCode.setActive(true)
         userTeleCode.setExpiresBy(after30Mins)
-        userTeleCode.setPhoneNumber(UUID.randomUUID().toString())
+        userTeleCode.setPhoneNumber(phoneNumber)
         userTeleCode.setSentLanguage('en_US')
         userTeleCode.setTemplate('xxxxx')
         userTeleCode.setVerifyCode(UUID.randomUUID().toString())
@@ -514,17 +515,15 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         assert userTeleCode.phoneNumber == newUserTeleCode.phoneNumber
 
-        String newPhoneNumber = UUID.randomUUID().toString()
+        UserPersonalInfoId newPhoneNumber = new UserPersonalInfoId(idGenerator.nextId())
         newUserTeleCode.setPhoneNumber(newPhoneNumber)
         userTeleCode = userTeleRepository.update(newUserTeleCode).wrapped().get()
-        assert userTeleCode.phoneNumber == newPhoneNumber
-
-        userTeleCode = userTeleRepository.findActiveTeleCode(id, newPhoneNumber).wrapped().get()
         assert userTeleCode.phoneNumber == newPhoneNumber
     }
 
     @Test
     public void testUserTeleAttemptRepository() {
+        def userTeleId = new UserTeleId(idGenerator.nextId())
         def userId = new UserId(idGenerator.nextId())
         UserTeleAttempt userTeleAttempt = new UserTeleAttempt()
         userTeleAttempt.setVerifyCode(UUID.randomUUID().toString())
@@ -533,7 +532,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userTeleAttempt.setIpAddress(UUID.randomUUID().toString())
         userTeleAttempt.setSucceeded(true)
         userTeleAttempt.setUserAgent(UUID.randomUUID().toString())
-        userTeleAttempt.setUserTeleId(new UserTeleId(idGenerator.nextId()))
+        userTeleAttempt.setUserTeleId(userTeleId)
 
         UserTeleAttempt newUserTeleAttempt = userTeleAttemptRepository.create(userTeleAttempt).wrapped().get()
         newUserTeleAttempt = userTeleAttemptRepository.get((UserTeleAttemptId)newUserTeleAttempt.id).wrapped().get()
@@ -547,6 +546,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         List<UserTeleAttempt> results = userTeleAttemptRepository.search(new UserTeleAttemptListOptions(
                 userId: userId,
+                userTeleId: userTeleId,
                 offset: 0,
                 limit: 100
         )).wrapped().get()
@@ -621,20 +621,19 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     public void testUserPersonalInfoRepository() {
         UserId userId = new UserId(idGenerator.nextId())
         UserPersonalInfo userPersonalInfo = new UserPersonalInfo()
-        userPersonalInfo.setType(UUID.randomUUID().toString())
+        userPersonalInfo.setType('EMAIL')
         userPersonalInfo.setIsNormalized(true)
         userPersonalInfo.setLastValidateTime(new Date())
-        userPersonalInfo.setValue(JsonNodeFactory.instance.textNode(UUID.randomUUID().toString()))
+        userPersonalInfo.setUserId(userId)
+        Email email = new Email()
+        email.value = UUID.randomUUID().toString()
+        email.value = false
+        ObjectMapper objectMapper = new ObjectMapper()
+        userPersonalInfo.setValue(objectMapper.valueToTree(email))
 
         UserPersonalInfo newUserPersonalInfo = userPersonalInfoRepository.create(userPersonalInfo).wrapped().get()
         newUserPersonalInfo = userPersonalInfoRepository.get(newUserPersonalInfo.id).wrapped().get()
 
         assert newUserPersonalInfo.type == userPersonalInfo.type
-
-        String newType = UUID.randomUUID().toString()
-        newUserPersonalInfo.setType(newType)
-        userPersonalInfo = userPersonalInfoRepository.update(newUserPersonalInfo).wrapped().get()
-
-        assert userPersonalInfo.type == newType
     }
 }

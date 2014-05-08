@@ -13,6 +13,7 @@
         <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
         <constructor-arg name="transcoder" ref="commonTranscoder"/>
         <constructor-arg name="target" value="${authorize.oauth.endpoint}"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="tokenInfoEndpoint" class="com.junbo.oauth.spec.endpoint.proxy.TokenInfoEndpointClientProxy">
@@ -21,6 +22,7 @@
         <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
         <constructor-arg name="transcoder" ref="commonTranscoder"/>
         <constructor-arg name="target" value="${authorize.oauth.endpoint}"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="apiEndpoint" class="com.junbo.oauth.spec.endpoint.proxy.ApiEndpointClientProxy">
@@ -29,6 +31,7 @@
         <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
         <constructor-arg name="transcoder" ref="commonTranscoder"/>
         <constructor-arg name="target" value="${authorize.oauth.endpoint}"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="conditionEvaluator" class="com.junbo.authorization.service.impl.SPELConditionEvaluator"/>

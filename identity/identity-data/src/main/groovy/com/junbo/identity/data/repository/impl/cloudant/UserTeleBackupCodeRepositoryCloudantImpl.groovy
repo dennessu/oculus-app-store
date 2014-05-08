@@ -29,10 +29,18 @@ class UserTeleBackupCodeRepositoryCloudantImpl extends CloudantClient<UserTeleBa
 
     @Override
     Promise<List<UserTeleBackupCode>> search(UserTeleBackupCodeListOptions listOptions) {
-        def list = super.queryView('by_user_id', listOptions.userId.value.toString(),
-                listOptions.limit, listOptions.offset, false)
+        if (listOptions.active == null) {
+            def list = super.queryView('by_user_id', listOptions.userId.value.toString(),
+                    listOptions.limit, listOptions.offset, false)
 
-        return Promise.pure(list)
+            return Promise.pure(list)
+        } else {
+            def list = super.queryView('by_user_id_active',
+                    "${listOptions.userId.value.toString()}:${listOptions.active.toString()}", listOptions.limit,
+                    listOptions.offset, false)
+
+            return Promise.pure(list)
+        }
     }
 
     @Override
@@ -64,6 +72,11 @@ class UserTeleBackupCodeRepositoryCloudantImpl extends CloudantClient<UserTeleBa
                     'by_user_id': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
                                     '  emit(doc.userId.value.toString(), doc._id)' +
+                                    '}',
+                            resultClass: String),
+                    'by_user_id_active': new CloudantViews.CloudantView(
+                            map: 'function(doc) {' +
+                                    '  emit(doc.userId.value.toString() + \':\' + doc.active.toString(), doc._id)' +
                                     '}',
                             resultClass: String)
             ]

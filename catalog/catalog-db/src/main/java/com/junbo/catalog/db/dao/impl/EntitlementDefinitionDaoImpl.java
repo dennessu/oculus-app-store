@@ -24,7 +24,7 @@ import java.util.*;
 public class EntitlementDefinitionDaoImpl extends BaseDaoImpl<EntitlementDefinitionEntity>
         implements EntitlementDefinitionDao {
     @Override
-    public List<EntitlementDefinitionEntity> getByParams(Long developerId, String clientId, Set<String> groups, Set<String> tags,
+    public List<EntitlementDefinitionEntity> getByParams(Long developerId, String clientId, Long itemId, Set<String> tags,
                                                          Set<EntitlementType> types, Boolean isConsumable, PageableGetOptions pageableGetOptions) {
         StringBuilder queryString = new StringBuilder("select * from entitlement_definition" +
                 " where deleted = false");
@@ -50,9 +50,9 @@ public class EntitlementDefinitionDaoImpl extends BaseDaoImpl<EntitlementDefinit
         } else {
             queryString.append(" and type is null");
         }
-        if (!CollectionUtils.isEmpty(groups)) {
-            queryString.append(" and entitlement_group in (:groups)");
-            params.put("groups", groups);
+        if (itemId != null) {
+            queryString.append(" and item_id = (:itemId)");
+            params.put("itemId", itemId);
         }
         if (!CollectionUtils.isEmpty(tags)) {
             queryString.append(" and tag in (:tags)");
@@ -91,6 +91,7 @@ public class EntitlementDefinitionDaoImpl extends BaseDaoImpl<EntitlementDefinit
         entity.setCreatedBy(existed.getCreatedBy());
         entity.setUpdatedBy(Constants.SYSTEM_INTERNAL); //TODO
         entity.setUpdatedTime(Utils.now());
+        entity.setRev(entity.getRev() == null ? 1 : entity.getRev() + 1);
         currentSession().merge(entity);
         return entity.getId();
     }

@@ -29,6 +29,10 @@
     <bean id="defaultPITypeResource" class="com.junbo.identity.rest.resource.v1.PITypeResourceImpl" scope="prototype" />
     <bean id="defaultDeviceTypeResource" class="com.junbo.identity.rest.resource.v1.DeviceTypeResourceImpl" scope="prototype" />
     <bean id="defaultCommunicationResource" class="com.junbo.identity.rest.resource.v1.CommunicationResourceImpl" scope="prototype" />
+    <bean id="defaultUserTeleResource" class="com.junbo.identity.rest.resource.v1.UserTeleResourceImpl" scope="prototype" />
+    <bean id="defaultUserTeleAttemptResource" class="com.junbo.identity.rest.resource.v1.UserTeleAttemptResourceImpl" scope="prototype" />
+    <bean id="defaultUserTeleBackupCodeResource" class="com.junbo.identity.rest.resource.v1.UserTeleBackupCodeResourceImpl" scope="prototype" />
+    <bean id="defaultUserTeleBackupCodeAttemptResource" class="com.junbo.identity.rest.resource.v1.UserTeleBackupCodeAttemptResourceImpl" scope="prototype" />
 
     <bean id="defaultRoleResource" class="com.junbo.identity.rest.resource.v1.RoleResourceImpl" scope="prototype">
         <property name="created201Marker" ref="created201Marker"/>

@@ -30,9 +30,13 @@ class ValidateLocale implements Action {
         def parameterMap = contextWrapper.parameterMap
 
         String locale = parameterMap?.getFirst(OAuthParameters.LOCALE)
-        if (locale == null ) {
-            (String) context.flowScope[OAuthParameters.LOCALE]
+        if (locale == null) {
+            locale = (String) context.flowScope[OAuthParameters.LOCALE]
         }
+        if (locale == null) {
+            locale = (String) context.requestScope[OAuthParameters.LOCALE]
+        }
+
         if (StringUtils.hasText(locale)) {
             if (!ValidatorUtil.isValidLocale(locale)) {
                 throw AppExceptions.INSTANCE.invalidLocale(locale).exception()

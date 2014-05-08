@@ -3,6 +3,7 @@ import com.junbo.common.cloudant.exception.CloudantConnectException
 import com.junbo.common.cloudant.exception.CloudantException
 import com.junbo.common.cloudant.exception.CloudantUpdateConflictException
 import com.junbo.common.cloudant.model.*
+import com.junbo.common.id.UserId
 import com.junbo.common.util.Identifiable
 import com.junbo.common.util.ResourceAge
 import com.junbo.common.util.Utils
@@ -75,7 +76,7 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
             entity.resourceAge = ResourceAge.initial()
         }
         // Todo:    Need to read from the Universe to cover time and createdBy
-        entity.createdBy = 'created-by-todo'
+        entity.createdBy = new UserId(123L)
         entity.createdTime = new Date()
 
         def response = executeRequest(HttpMethod.POST, '', [:], entity)
@@ -120,7 +121,7 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
         entity.cloudantRev = cloudantDoc.cloudantRev
 
         // Todo:    Need to read from the Universe to cover time and createdBy
-        entity.updatedBy = 'updated-by-todo'
+        entity.updatedBy = new UserId(123L)
         entity.updatedTime = new Date()
 
         // assume resourceAge is increased by external caller

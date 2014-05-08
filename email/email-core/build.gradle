@@ -6,6 +6,7 @@ dependencies {
     compile junboProject(':email-db')
     compile junboProject(':email-spec')
     compile junboProject(':email-common')
+    compile junboProject(':notification-core')
 
     testCompile (libraries.spring_test)
 }

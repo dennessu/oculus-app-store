@@ -11,7 +11,7 @@ import javax.sql.DataSource;
  * BaseTest Class.
  */
 @ContextConfiguration(locations = {"classpath:spring/context-test.xml"})
-@TransactionConfiguration(defaultRollback = true)
+@TransactionConfiguration(defaultRollback = false)
 public abstract class BaseTest extends AbstractTransactionalTestNGSpringContextTests {
 
     protected long generateId() {

@@ -4,4 +4,6 @@ dependencies {
     compile (libraries.jackson_databind)
     compile (libraries.jackson_core)
     compile (libraries.rs_api)
+    compile (libraries.common_lib)
+    compile (libraries.spring_core)
 }

@@ -38,9 +38,10 @@ public class EntitlementDefinitionMapper {
                 entitlementDefinitionEntity.getType() == null ?
                         null :
                         entitlementDefinitionEntity.getType().toString());
-        entitlementDefinition.setGroup(entitlementDefinitionEntity.getGroup());
+        entitlementDefinition.setItemId(entitlementDefinitionEntity.getItemId());
         entitlementDefinition.setTag(entitlementDefinitionEntity.getTag());
         entitlementDefinition.setConsumable(entitlementDefinitionEntity.getConsumable());
+        entitlementDefinition.setExternalNotification(entitlementDefinitionEntity.getExternalNotification());
         return entitlementDefinition;
     }
 
@@ -60,9 +61,10 @@ public class EntitlementDefinitionMapper {
                         null :
                         EntitlementType.valueOf(entitlementDefinition.getType())
         );
-        entitlementDefinitionEntity.setGroup(entitlementDefinition.getGroup());
+        entitlementDefinitionEntity.setItemId(entitlementDefinition.getItemId());
         entitlementDefinitionEntity.setTag(entitlementDefinition.getTag());
         entitlementDefinitionEntity.setConsumable(entitlementDefinition.getConsumable());
+        entitlementDefinitionEntity.setExternalNotification(entitlementDefinition.getExternalNotification());
         return entitlementDefinitionEntity;
     }
 

@@ -5,12 +5,12 @@
  */
 package com.junbo.sharding.util;
 
+import com.junbo.common.util.Context;
+
 /**
  * Created by haomin on 14-3-14.
  */
 public class Helper {
-    private static ThreadLocal<Integer> currentShardId = new ThreadLocal<Integer>();
-
     private Helper() {}
 
     /**
@@ -62,14 +62,14 @@ public class Helper {
     }
 
     public static void setCurrentShardId(int shardId) {
-        currentShardId.set(shardId);
+        Context.get().setShardId(shardId);
     }
 
     public static int fetchCurrentThreadLocalShardId() {
-        if (currentShardId.get() == null) {
+        if (Context.get().getShardId() == null) {
             throw new RuntimeException("current shardId hasn't been set.");
         }
 
-        return currentShardId.get().intValue();
+        return Context.get().getShardId().intValue();
     }
 }

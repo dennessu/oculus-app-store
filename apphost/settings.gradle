@@ -1,2 +1,3 @@
 include 'apphost-core'
 include 'apphost-cli'
+include 'docs-bundle'

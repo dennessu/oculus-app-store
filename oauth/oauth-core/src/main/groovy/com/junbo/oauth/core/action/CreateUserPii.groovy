@@ -114,82 +114,88 @@ class CreateUserPii implements Action {
 
             return Promise.pure(new ActionResult('next'))
         }.then { ActionResult result ->
-            if (result.id == 'error') {
+             if (result.id == 'error') {
                 return Promise.pure(result)
             }
 
-            return userPersonalInfoResource.create(emailPii)
-        }.recover { Throwable e ->
-            handleException(e, contextWrapper)
-            return Promise.pure(null)
-        }.then { UserPersonalInfo newEmailPii ->
-            if (newEmailPii == null) {
-                return Promise.pure(new ActionResult('error'))
+            return userPersonalInfoResource.create(emailPii).recover { Throwable e ->
+                handleException(e, contextWrapper)
+                return Promise.pure(null)
+            }.then { UserPersonalInfo newEmailPii ->
+                if (newEmailPii == null) {
+                    return Promise.pure(new ActionResult('error'))
+                }
+
+                user.emails = [new UserPersonalInfoLink(
+                        isDefault: true,
+                        value: newEmailPii.id as UserPersonalInfoId
+                )]
+
+                return Promise.pure(new ActionResult('next'))
             }
-
-            user.emails = [new UserPersonalInfoLink(
-                    isDefault: true,
-                    value: newEmailPii.id as UserPersonalInfoId
-            )]
-
-            return Promise.pure(new ActionResult('next'))
         }.then { ActionResult result ->
             if (result.id == 'error') {
                 return Promise.pure(result)
             }
 
-            return userPersonalInfoResource.create(genderPii)
-        }.recover { Throwable e ->
-            handleException(e, contextWrapper)
-            return Promise.pure(null)
-        }.then { UserPersonalInfo newGenderPii ->
-            if (newGenderPii == null) {
-                return Promise.pure(new ActionResult('error'))
+            return userPersonalInfoResource.create(genderPii).recover { Throwable e ->
+                handleException(e, contextWrapper)
+                return Promise.pure(null)
+            }.then { UserPersonalInfo newGenderPii ->
+                if (newGenderPii == null) {
+                    return Promise.pure(new ActionResult('error'))
+                }
+
+                user.gender = new UserPersonalInfoLink(
+                        isDefault: true,
+                        value: newGenderPii.id as UserPersonalInfoId
+                )
+
+                return Promise.pure(new ActionResult('next'))
             }
-
-            user.gender = new UserPersonalInfoLink(
-                    isDefault: true,
-                    value: newGenderPii.id as UserPersonalInfoId
-            )
-
-            return Promise.pure(new ActionResult('next'))
         }.then { ActionResult result ->
             if (result.id == 'error') {
                 return Promise.pure(result)
             }
 
-            return userPersonalInfoResource.create(dobPii)
-        }.recover { Throwable e ->
-            handleException(e, contextWrapper)
-            return Promise.pure(null)
-        }.then { UserPersonalInfo newDobPii ->
-            if (newDobPii == null) {
-                return Promise.pure(new ActionResult('error'))
+            return userPersonalInfoResource.create(dobPii).recover { Throwable e ->
+                handleException(e, contextWrapper)
+                return Promise.pure(null)
+            }.then { UserPersonalInfo newDobPii ->
+                if (newDobPii == null) {
+                    return Promise.pure(new ActionResult('error'))
+                }
+
+                user.dob = new UserPersonalInfoLink(
+                        isDefault: true,
+                        value: newDobPii.id as UserPersonalInfoId
+                )
+
+                return Promise.pure(new ActionResult('next'))
+            }
+        }.then { ActionResult result ->
+            if (result.id == 'error') {
+                return Promise.pure(result)
             }
 
-            user.dob = new UserPersonalInfoLink(
-                    isDefault: true,
-                    value: newDobPii.id as UserPersonalInfoId
-            )
+            return userResource.put(user.id as UserId, user).recover { Throwable e ->
+                handleException(e, contextWrapper)
+                return Promise.pure(null)
+            }.then { User updatedUser ->
+                if (updatedUser == null) {
+                    return Promise.pure(new ActionResult('error'))
+                }
 
-            return userResource.put(user.id as UserId, user)
-        }.recover { Throwable e ->
-            handleException(e, contextWrapper)
-            return Promise.pure(null)
-        }.then { User updatedUser ->
-            if (updatedUser == null) {
-                return Promise.pure(new ActionResult('error'))
+                contextWrapper.user = updatedUser
+
+                LoginState loginState = new LoginState(
+                        userId: ((UserId) user.id).value,
+                        lastAuthDate: new Date()
+                )
+
+                contextWrapper.loginState = loginState
+                return Promise.pure(new ActionResult('success'))
             }
-
-            contextWrapper.user = updatedUser
-
-            LoginState loginState = new LoginState(
-                    userId: ((UserId) user.id).value,
-                    lastAuthDate: new Date()
-            )
-
-            contextWrapper.loginState = loginState
-            return Promise.pure(new ActionResult('success'))
         }
     }
 

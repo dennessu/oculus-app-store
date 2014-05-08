@@ -73,6 +73,9 @@ class WebPaymentChargeAction extends BaseOrderEventAwareAction {
                 throw AppErrors.INSTANCE.billingChargeFailed().exception()
             }
             order.providerConfirmUrl = balance.providerConfirmUrl
+            def oldOrder = orderRepository.getOrder(order.id.value)
+            oldOrder.providerConfirmUrl = order.providerConfirmUrl
+            orderRepository.updateOrder(oldOrder, true)
             CoreBuilder.fillTaxInfo(order, balance)
             def billingEvent = BillingEventBuilder.buildBillingEvent(balance)
             orderRepository.createBillingEvent(order.id.value, billingEvent)

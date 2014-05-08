@@ -9,4 +9,11 @@ dependencies {
 
     compile junboProject(':identity-spec')
     compile junboProject(':email-spec')
+
+    processor junboProject(':langur-processor')
+    processor (libraries.log4j)
+}
+
+ext {
+    processorClass = 'com.junbo.langur.processor.ClientProxyProcessor'
 }

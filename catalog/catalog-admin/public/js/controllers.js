@@ -14,7 +14,9 @@ app.run(function ($rootScope, $templateCache) {
 
 app.controller('OfferListCtrl', ['$scope', 'OffersFactory', '$routeParams', '$cookies',
   function($scope, OffersFactory, $routeParams, $cookies) {
-  	  $scope.offers = OffersFactory.query($routeParams);
+  	  OffersFactory.query($routeParams, function(offers) {
+          $scope.offers = offers.results;
+      });
       $scope.user_id=$cookies.user_id;
       $scope.email=$cookies.email;
   }]);
@@ -250,7 +252,9 @@ app.controller('ItemListCtrl', ['$scope', 'ItemsFactory', '$routeParams', '$loca
             $location.path('/items');
         };
         $scope.user_id=$cookies.user_id;
-        $scope.items = ItemsFactory.query($routeParams);
+        ItemsFactory.query($routeParams, function(items) {
+            $scope.items = items.results;
+        });
     }]);
 
 app.controller('ItemCreationCtrl', ['$scope', 'MetaFactory', 'ItemsFactory', 'AuthFactory', '$location', '$cookies',
@@ -352,6 +356,26 @@ app.controller('ItemDetailCtrl', ['$scope', 'ItemFactory', 'MetaFactory', '$rout
                     }
                 }
             });
+        });
+    }]);
+
+
+app.controller('ItemOverviewCtrl', ['$scope', 'ItemFactory', 'MetaFactory', '$routeParams', 'OfferFactory', 'ItemRevisionsFactory',
+    function($scope, ItemFactory, MetaFactory, $routeParams, OfferFactory, ItemRevisionsFactory) {
+        $scope.itemId = $routeParams.id;
+        $scope.item = ItemFactory.query($routeParams);
+        OfferFactory.query({'itemId': $scope.itemId}, function(offers) {
+            $scope.offers = offers.results;
+        });
+        ItemRevisionsFactory.query({'itemId': $scope.itemId}, function(revisions) {
+            $scope.itemRevisions = revisions.results;
+        });
+    }]);
+
+app.controller('ItemRevisionCtrl', ['$scope', 'ItemRevisionFactory', '$routeParams',
+    function($scope, ItemRevisionFactory, $routeParams) {
+        ItemRevisionFactory.query({'id': $routeParams.revisionId}, function(revision) {
+            $scope.revision = revision;
         });
     }]);
 

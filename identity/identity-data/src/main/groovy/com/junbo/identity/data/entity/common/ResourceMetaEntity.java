@@ -29,19 +29,19 @@ public abstract class ResourceMetaEntity {
         this.createdTime = createdTime;
     }
 
-    public String getCreatedBy() {
+    public Long getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(String createdBy) {
+    public void setCreatedBy(Long createdBy) {
         this.createdBy = createdBy;
     }
 
-    public String getUpdatedBy() {
+    public Long getUpdatedBy() {
         return updatedBy;
     }
 
-    public void setUpdatedBy(String updatedBy) {
+    public void setUpdatedBy(Long updatedBy) {
         this.updatedBy = updatedBy;
     }
 
@@ -60,10 +60,10 @@ public abstract class ResourceMetaEntity {
     @Column(name = "created_time")
     private Date createdTime;
     @Column(name = "created_by")
-    private String createdBy;
+    private Long createdBy;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "modified_time")
     private Date updatedTime;
     @Column(name = "modified_by")
-    private String updatedBy;
+    private Long updatedBy;
 }

@@ -1,7 +1,7 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.enumid.CurrencyId
-import com.junbo.identity.core.service.util.ValidatorUtil
+import com.junbo.identity.common.util.ValidatorUtil
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Currency
 import com.junbo.identity.core.service.validator.CurrencyValidator

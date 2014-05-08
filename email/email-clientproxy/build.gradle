@@ -2,6 +2,7 @@ apply plugin: 'groovy'
 
 dependencies {
     compile project(":email-spec")
+    compile project(":email-common")
     compile (libraries.rs_api)
     compile junboProject(':langur-core')
     compile (libraries.spring_beans)

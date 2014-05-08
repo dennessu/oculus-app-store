@@ -185,9 +185,7 @@ def createDb(shardId, configFile):
     info("Creating %s.%s in %s (shard %s)..." % 
         (configFile.dbName, shardConfig.schema, configFile.env, shardConfig.shardId));
 
-    command = "bash ./scripts/createdb.sh '%s' '%s' '%s'" % (configFile.dbName, shardConfig.schema, shardConfig.loginUserName)
-    if shardConfig.loginPassword is not None:
-        command += (" '%s'" % shardConfig.loginPassword)
+    command = "bash ./scripts/createdb.sh '%s' '%s'" % (configFile.dbName, shardConfig.schema)
     executeCommand(command)
 
 def dropDb(configFile):
