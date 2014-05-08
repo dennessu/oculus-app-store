@@ -53,16 +53,16 @@ class EmailListener extends BaseListener {
             LOGGER.error("Email don't found with id: {}", emailId)
             return
         }
-        def template = this.findEmailTemplate(email.templateId.value)
-        if (template == null) {
-            LOGGER.error("EmailTemplate don't found with id: {}", email.templateId)
+        if (email.templateId == null) {
+            LOGGER.error("EmailTemplate id should be not null")
             return
         }
+        def template = this.findEmailTemplate(email.templateId.value)
         def result = emailProvider.sendEmail(email, template).then { Email retEmail ->
             this.updateEmail(retEmail)
             return Promise.pure(retEmail)
         }
-        assert result != null, 'email should be not null'
+        assert result != null, 'Email should be not null'
     }
 
     private Email findEmail(Long emailId) {
