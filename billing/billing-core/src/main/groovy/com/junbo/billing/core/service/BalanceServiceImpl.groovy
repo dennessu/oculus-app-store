@@ -41,9 +41,6 @@ class BalanceServiceImpl implements BalanceService {
     BalanceRepository balanceRepository
 
     @Autowired
-    ShippingAddressService shippingAddressService
-
-    @Autowired
     TransactionService transactionService
 
     @Autowired

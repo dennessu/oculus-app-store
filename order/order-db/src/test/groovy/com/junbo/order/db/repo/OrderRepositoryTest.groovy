@@ -3,8 +3,8 @@ package com.junbo.order.db.repo
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.PaymentInstrumentId
-import com.junbo.common.id.ShippingAddressId
 import com.junbo.common.id.UserId
+import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.oom.core.MappingContext
 import com.junbo.order.db.BaseTest
 import com.junbo.order.db.common.TestHelper
@@ -42,7 +42,7 @@ class OrderRepositoryTest extends BaseTest {
         verifyByRead(order)
 
         // add order item, discount, paymentId
-        order.shippingAddress = new ShippingAddressId(TestHelper.generateId())
+        order.shippingAddress = new UserPersonalInfoId(TestHelper.generateId())
         order.shippingMethod = TestHelper.generateLong() % 100
         order.orderItems << createOrderItem()
         order.discounts << createDiscount(order, order.orderItems.last())

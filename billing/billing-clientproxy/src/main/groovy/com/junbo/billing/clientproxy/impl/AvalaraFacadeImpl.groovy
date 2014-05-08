@@ -33,7 +33,6 @@ import com.junbo.billing.spec.enums.TaxAuthority
 import com.junbo.billing.spec.enums.TaxStatus
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
-import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.billing.spec.model.TaxItem
 import com.junbo.langur.core.promise.Promise
 import com.ning.http.client.AsyncHttpClient
@@ -64,7 +63,7 @@ class AvalaraFacadeImpl implements TaxFacade {
 
 
     @Override
-    Promise<Balance> calculateTax(Balance balance, ShippingAddress shippingAddress, Address piAddress) {
+    Promise<Balance> calculateTax(Balance balance, Address shippingAddress, Address piAddress) {
         GetTaxRequest request = generateGetTaxRequest(balance, shippingAddress, piAddress)
         LOGGER.info('name=Get_Tax_Request, request={}', request.toString())
         return calculateTax(request).then { GetTaxResponse response ->
@@ -73,61 +72,32 @@ class AvalaraFacadeImpl implements TaxFacade {
     }
 
     @Override
-    Promise<ShippingAddress> validateShippingAddress(ShippingAddress shippingAddress) {
-        if (SUPPORT_COUNTRY_LIST.contains(shippingAddress.country)) {
-            AvalaraAddress address = getAvalaraAddress(shippingAddress)
-            LOGGER.info('name=Validate_Address_Request, request={}', address.toString())
-            return validateAddress(address).then { ValidateAddressResponse response ->
-                return Promise.pure(updateShippingAddress(response, shippingAddress))
+    Promise<Address> validateAddress(Address address) {
+        if (SUPPORT_COUNTRY_LIST.contains(address.countryId.value.trim().toUpperCase())) {
+            AvalaraAddress externalAddress = getAvalaraAddress(address)
+            LOGGER.info('name=Validate_Address_Request, request={}', externalAddress.toString())
+            return validateAvalaraAddress(externalAddress).then { ValidateAddressResponse response ->
+                return Promise.pure(updateAddress(response, address))
             }
         }
 
-        return Promise.pure(shippingAddress)
+        return Promise.pure(address)
     }
 
-    @Override
-    Promise<Address> validateAddress(Address piAddress) {
-        if (SUPPORT_COUNTRY_LIST.contains(piAddress.countryId.value.trim().toUpperCase())) {
-            AvalaraAddress address = getAvalaraAddress(piAddress)
-            LOGGER.info('name=Validate_Address_Request, request={}', address.toString())
-            return validateAddress(address).then { ValidateAddressResponse response ->
-                return Promise.pure(updatePiAddress(response, piAddress))
-            }
-        }
-
-        return Promise.pure(piAddress)
-    }
-
-    ShippingAddress updateShippingAddress(ValidateAddressResponse response, ShippingAddress shippingAddress) {
+    Address updateAddress(ValidateAddressResponse response, Address address) {
         if (response != null && response.resultCode == SeverityLevel.Success) {
-            shippingAddress.street = response.address.line1
-            shippingAddress.street1 = response.address.line2
-            shippingAddress.street2 = response.address.line3
-            shippingAddress.city = response.address.city
-            shippingAddress.state = response.address.region
-            shippingAddress.postalCode = response.address.postalCode
-            shippingAddress.country = response.address.country
+            address.street1 = response.address.line1
+            address.street2 = response.address.line2
+            address.street3 = response.address.line3
+            address.city = response.address.city
+            address.subCountryCode = response.address.region
+            address.postalCode = response.address.postalCode
+            address.countryId = new CountryId(response.address.country)
         } else {
             LOGGER.error('name=Address_Validation_Response_Invalid.')
             throw AppErrors.INSTANCE.addressValidationError('Invalid response.').exception()
         }
-        return shippingAddress
-    }
-
-    Address updatePiAddress(ValidateAddressResponse response, Address piAddress) {
-        if (response != null && response.resultCode == SeverityLevel.Success) {
-            piAddress.street1 = response.address.line1
-            piAddress.street2 = response.address.line2
-            piAddress.street3 = response.address.line3
-            piAddress.city = response.address.city
-            piAddress.subCountryCode = response.address.region
-            piAddress.postalCode = response.address.postalCode
-            piAddress.countryId = new CountryId(response.address.country)
-        } else {
-            LOGGER.error('name=Address_Validation_Response_Invalid.')
-            throw AppErrors.INSTANCE.addressValidationError('Invalid response.').exception()
-        }
-        return piAddress
+        return address
     }
 
     Balance updateBalance(GetTaxResponse response, Balance balance) {
@@ -205,7 +175,7 @@ class AvalaraFacadeImpl implements TaxFacade {
         return requestBuilder
     }
 
-    Promise<ValidateAddressResponse> validateAddress(AvalaraAddress address) {
+    Promise<ValidateAddressResponse> validateAvalaraAddress(AvalaraAddress address) {
         String validateAddressUrl = configuration.baseUrl + 'address/validate'
         def requestBuilder = buildRequest(validateAddressUrl, address)
         return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover { Throwable throwable ->
@@ -262,7 +232,7 @@ class AvalaraFacadeImpl implements TaxFacade {
 
     }
 
-    GetTaxRequest generateGetTaxRequest(Balance balance, ShippingAddress shippingAddress, Address piAddress) {
+    GetTaxRequest generateGetTaxRequest(Balance balance, Address shippingAddress, Address piAddress) {
         GetTaxRequest request = new GetTaxRequest()
         request.companyCode = configuration.companyCode
         Date date = new Date()
@@ -303,37 +273,18 @@ class AvalaraFacadeImpl implements TaxFacade {
         return request
     }
 
-    AvalaraAddress getAvalaraAddress(ShippingAddress shippingAddress) {
-        def address = new AvalaraAddress()
-        if (shippingAddress.addressId != null) {
-            address.addressCode = shippingAddress.addressId.value
-        }
-        else {
-            address.addressCode = '0'
-        }
-        address.line1 = shippingAddress.street
-        address.line2 = shippingAddress.street1
-        address.line3 = shippingAddress.street2
-        address.city = shippingAddress.city
-        address.region = shippingAddress.state
-        address.postalCode = shippingAddress.postalCode
-        address.country = shippingAddress.country
+    AvalaraAddress getAvalaraAddress(Address address) {
+        def avalaraAddress = new AvalaraAddress()
+        avalaraAddress.addressCode = '0'
+        avalaraAddress.line1 = address.street1
+        avalaraAddress.line2 = address.street2
+        avalaraAddress.line3 = address.street3
+        avalaraAddress.city = address.city
+        avalaraAddress.region = address.subCountryCode
+        avalaraAddress.postalCode = address.postalCode
+        avalaraAddress.country = address.countryId.value
 
-        return address
-    }
-
-    AvalaraAddress getAvalaraAddress(Address piAddress) {
-        def address = new AvalaraAddress()
-        address.addressCode = '0'
-        address.line1 = piAddress.street1
-        address.line2 = piAddress.street2
-        address.line3 = piAddress.street3
-        address.city = piAddress.city
-        address.region = piAddress.subCountryCode
-        address.postalCode = piAddress.postalCode
-        address.country = piAddress.countryId.value
-
-        return address
+        return avalaraAddress
     }
 
     AvalaraAddress getAvalaraShipFromAddress() {

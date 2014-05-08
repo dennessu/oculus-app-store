@@ -10,7 +10,6 @@
 
     <bean id="mockBillingFacade" class="com.junbo.order.clientproxy.billing.impl.BillingFacadeImpl">
         <property name="balanceResource" ref="mockBalanceResource"/>
-        <property name="shippingAddressResource" ref="mockShippingAddressResource"/>
         <property name="billingCurrencyResource" ref="mockCurrencyResource"/>
     </bean>
 
