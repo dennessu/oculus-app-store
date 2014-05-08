@@ -88,8 +88,8 @@ interface AppExceptions {
     @ErrorDef(httpStatusCode = 400, code = '20021', description = 'The code parameter is missing', field = 'code')
     AppError missingCode()
 
-    @ErrorDef(httpStatusCode = 400, code = '20022', description = 'The username parameter is missing',
-            field = 'username')
+    @ErrorDef(httpStatusCode = 400, code = '20022', description = 'The login parameter is missing',
+            field = 'login')
     AppError missingUsername()
 
     @ErrorDef(httpStatusCode = 400, code = '20023', description = 'The password parameter is missing',
