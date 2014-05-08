@@ -1,9 +1,9 @@
 apply plugin: 'java'
 
 dependencies {
-    compile project(':entitlement-common')
+    compile junboProject(':entitlement-common')
 
-    compile (libraries.langur)
+    compile junboProject(':langur-core')
     compile (libraries.common_lib)
 
     compile (libraries.rs_api)

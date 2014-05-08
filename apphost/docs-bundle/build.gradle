@@ -3,7 +3,7 @@ apply plugin: 'application'
 mainClassName = "com.junbo.docs.app.Main"
 
 dependencies {
-    compile "com.junbo.docs:docs-app:${junboVersion}"
+    compile junboProject(':docs-app')
 }
 
 defaultTasks 'clean', 'installApp', 'distTar'

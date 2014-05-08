@@ -12,7 +12,6 @@ dependencies {
 
     /*
     compile junboProject(':rating-rest')
-    compile junboProject(':entitlement-rest')
     compile junboProject(':fulfilment-rest')
     compile junboProject(':cart-rest')
     compile junboProject(':billing-rest')
@@ -24,6 +23,7 @@ dependencies {
 
     */
 
+    compile junboProject(':entitlement-rest')
     compile junboProject(':catalog-rest')
 
     // more to add

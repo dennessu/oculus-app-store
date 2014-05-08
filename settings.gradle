@@ -7,6 +7,8 @@ includeDir 'email'
 includeDir 'authorization'
 includeDir 'catalog'
 includeDir 'notification'
+includeDir 'entitlement'
+includeDir 'docs'
 includeDir 'apphost'
 
 def includeDir(String dir) {
