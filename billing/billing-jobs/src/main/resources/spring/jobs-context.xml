@@ -19,7 +19,7 @@
 
     <bean id="asyncChargeListener" class="com.junbo.billing.jobs.asyncCharge.AsyncChargeListener" />
 
-    <bean id="billingListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+    <bean id="billingListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer" parent="baseListenerContainer">
         <property name="destination" ref="billingAsyncChargeQueue" />
         <property name="messageListener" ref="asyncChargeListener" />
     </bean>
@@ -38,8 +38,8 @@
 
     <!-- Billing Balance Process Job Trigger -->
     <bean id="billingSettlementJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean" >
-        <property name="jobDetail" ref="billingAsyncChargeJobDetail" />
-        <property name="cronExpression" value="${billing.jobs.asynccharge.cronexpression}" />
+        <property name="jobDetail" ref="billingSettlementJobDetail" />
+        <property name="cronExpression" value="${billing.jobs.settlement.cronexpression}" />
     </bean>
 
     <!-- Billing Balance Process Job -->

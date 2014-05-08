@@ -19,7 +19,7 @@ import javax.annotation.Resource
 @CompileStatic
 class BillingFacadeImpl implements BillingFacade {
 
-    @Resource(name = 'billingBillingClient')
+    @Resource(name = 'billingBalanceClient')
     private BalanceResource balanceResource
 
     @Override
