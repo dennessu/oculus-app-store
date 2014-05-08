@@ -18,10 +18,10 @@ dependencies {
     compile (libraries.log4j)
 
     compile (libraries.common_lang)
-    compile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
+    compile junboProject(':identity-spec')
 
-    compile project(':cart-spec')
-    compile project(':cart-common')
+    compile junboProject(':cart-spec')
+    compile junboProject(':cart-common')
 
     testCompile (libraries.spring_test)
     testCompile (libraries.common_lang)
