@@ -57,7 +57,7 @@
     },
     "website": "the external website for the item",
     "storedValueCurrency": {"href": "https://api.oculusvr.com/v1/currencies/USD", "id": "USD"},
-    "storedValueAmount": 99,
+    "storedValueAmount": 1000,
     "futureProperties":{},
     "rev": null
 }

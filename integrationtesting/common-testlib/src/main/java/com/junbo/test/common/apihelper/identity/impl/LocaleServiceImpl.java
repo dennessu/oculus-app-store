@@ -45,7 +45,7 @@ public class LocaleServiceImpl extends HttpClientBase implements LocaleService {
     }
 
     public Locale postLocale(Locale locale) throws Exception {
-        return postLocale(locale, 200);
+        return postLocale(locale, 201);
     }
 
     public Locale postLocale(Locale locale, int expectedResponseCode) throws Exception {

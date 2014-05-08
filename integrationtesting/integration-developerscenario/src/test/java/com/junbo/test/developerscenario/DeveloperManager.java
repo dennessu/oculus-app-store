@@ -75,7 +75,6 @@ public class DeveloperManager extends TestClass {
         entitlementDefinition.setDeveloperId(Master.getInstance().getUser(partnerUser).getId().getValue());
         entitlementDefinition.setType(entitlementType);
         entitlementDefinition.setTag("");
-        entitlementDefinition.setGroup("");
         String entitlementDefinitionId = EntitlementDefinitionServiceImpl.instance().postEntitlementDefinition(entitlementDefinition);
         developerEntitlement.setEntitlementDefinitionId(IdConverter.hexStringToId(EntitlementDefinitionId.class, entitlementDefinitionId));
 

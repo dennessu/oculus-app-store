@@ -375,14 +375,12 @@ public class Catalog extends TestClass {
         edRtn = Master.getInstance().getEntitlementDefinition(edId);
         String edGroup = RandomFactory.getRandomStringOfAlphabet(5);
         String edTag = RandomFactory.getRandomStringOfAlphabet(5);
-        edRtn.setGroup(edGroup);
         edRtn.setTag(edTag);
         edRtn.setConsumable(Boolean.TRUE);
 
         logger.LogSample("Update entitlement definition");
         entitlementDefinitionService.updateEntitlementDefinition(edRtn);
         edRtn = Master.getInstance().getEntitlementDefinition(edId);
-        Assert.assertEquals(edRtn.getGroup(), edGroup);
         Assert.assertEquals(edRtn.getTag(), edTag);
         Assert.assertEquals(edRtn.getConsumable(), Boolean.TRUE);
 

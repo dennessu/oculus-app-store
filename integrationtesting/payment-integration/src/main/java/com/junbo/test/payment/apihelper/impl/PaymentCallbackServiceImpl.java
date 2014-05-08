@@ -1,0 +1,48 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
+package com.junbo.test.payment.apihelper.impl;
+
+import com.junbo.test.payment.apihelper.PaymentCallbackService;
+import com.junbo.payment.spec.model.PaymentProperties;
+import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.common.id.PaymentInstrumentId;
+import com.junbo.test.common.libs.IdConverter;
+import com.junbo.test.common.libs.LogHelper;
+import com.junbo.test.common.libs.RestUrl;
+
+/**
+ @author Jason
+  * Time: 5/7/2014
+  * The implementation for Payment callback related APIs
+ */
+public class PaymentCallbackServiceImpl extends HttpClientBase implements PaymentCallbackService {
+
+    private static String paymentCallbackUrl = RestUrl.getRestUrl(RestUrl.ComponentName.COMMERCE) + "payment-callback";
+
+    private LogHelper logger = new LogHelper(PaymentServiceImpl.class);
+
+    private static PaymentCallbackService instance;
+
+    public static synchronized PaymentCallbackService getInstance() {
+        if (instance == null) {
+            instance = new PaymentCallbackServiceImpl();
+        }
+        return instance;
+    }
+
+    private PaymentCallbackServiceImpl() {
+    }
+
+    public void postPaymentProperties(Long paymentId, PaymentProperties properties) throws Exception {
+        this.postPaymentProperties(paymentId, properties, 200);
+    }
+
+    public void postPaymentProperties(Long paymentId, PaymentProperties properties, int expectedResponseCode) throws Exception {
+        String url = paymentCallbackUrl + "/" + IdConverter.idLongToHexString(PaymentInstrumentId.class, paymentId) + "/properties";
+        restApiCall(HTTPMethod.POST, url, properties, expectedResponseCode);
+    }
+
+}
