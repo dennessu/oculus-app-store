@@ -28,9 +28,6 @@ import javax.annotation.Resource
  */
 @CompileStatic
 class TaxServiceImpl implements TaxService {
-    @Resource
-    TaxFacade avalaraFacade
-
     @Resource(name='billingPaymentFacade')
     PaymentFacade paymentFacade
 
@@ -42,23 +39,21 @@ class TaxServiceImpl implements TaxService {
 
     TaxFacade taxFacade
 
+    Map<String, TaxFacade> map
+
     String providerName
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaxServiceImpl)
 
-    void chooseTaxProvider() {
-        if (taxFacade != null) {
-            return
+    TaxServiceImpl(Map<String, TaxFacade> map, String providerName) {
+        if (map == null || providerName == null) {
+            throw AppErrors.INSTANCE.taxCalculationError('Fail to load tax configuration.').exception()
         }
-        switch (providerName) {
-            case 'AVALARA':
-                taxFacade = avalaraFacade
-                break
-            case 'SABRIX':
-                // TODO: SABRIX IMPLEMENTATION
-                break
-            default:
-                throw AppErrors.INSTANCE.taxCalculationError('No Such Tax Provider.').exception()
+        this.map = map
+        this.providerName = providerName
+        this.taxFacade = map.get(providerName)
+        if (taxFacade == null) {
+            throw AppErrors.INSTANCE.taxCalculationError('Fail to load tax configuration.').exception()
         }
     }
 
@@ -75,8 +70,6 @@ class TaxServiceImpl implements TaxService {
             balance.taxStatus = TaxStatus.NOT_TAXED.name()
             return Promise.pure(balance)
         }
-
-        chooseTaxProvider()
 
         Long userId = balance.userId.value
         Long piId = balance.piId.value
@@ -111,15 +104,11 @@ class TaxServiceImpl implements TaxService {
 
     @Override
     Promise<ShippingAddress> validateShippingAddress(ShippingAddress shippingAddress) {
-        chooseTaxProvider()
-
         return taxFacade.validateShippingAddress(shippingAddress)
     }
 
     @Override
     Promise<Address> validateAddress(Address address) {
-        chooseTaxProvider()
-
         return taxFacade.validateAddress(address)
     }
 }

@@ -13,7 +13,13 @@
     <bean id="transactionService" class="com.junbo.billing.core.service.TransactionServiceImpl"/>
     <bean id="currencyService" class="com.junbo.billing.core.service.CurrencyServiceImpl"/>
     <bean id="taxService" class="com.junbo.billing.core.service.TaxServiceImpl">
-        <property name="providerName" value="${tax.provider.name}"/>
+        <constructor-arg name="map">
+            <map>
+                <entry key="SABRIX" value-ref="sabrixFacade"/>
+                <entry key="AVALARA" value-ref="avalaraFacade"/>
+            </map>
+        </constructor-arg>
+        <constructor-arg name="providerName" value="${tax.provider.name}"/>
     </bean>
 
     <!-- cache -->
