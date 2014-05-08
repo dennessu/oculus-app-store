@@ -29,8 +29,24 @@ class PassportValidatorImpl implements PiiValidator {
     }
 
     @Override
-    Promise<Void> validate(JsonNode value, UserId userId) {
+    Promise<Void> validateCreate(JsonNode value, UserId userId) {
         UserPassport userPassport = (UserPassport)JsonHelper.jsonNodeToObj(value, UserPassport)
+        checkUserPassport(userPassport)
+        return Promise.pure(null)
+    }
+
+    @Override
+    Promise<Void> validateUpdate(JsonNode value, JsonNode oldValue, UserId userId) {
+        UserPassport userPassport = (UserPassport)JsonHelper.jsonNodeToObj(value, UserPassport)
+        UserPassport oldUserPassport = (UserPassport)JsonHelper.jsonNodeToObj(oldValue, UserPassport)
+
+        if (userPassport != oldUserPassport) {
+            checkUserPassport(userPassport)
+        }
+        return Promise.pure(null)
+    }
+
+    private void checkUserPassport(UserPassport userPassport) {
         if (userPassport.value != null) {
             if (userPassport.value.length() > maxPassportLength) {
                 throw AppErrors.INSTANCE.fieldTooLong('value', maxPassportLength).exception()
@@ -39,7 +55,6 @@ class PassportValidatorImpl implements PiiValidator {
                 throw AppErrors.INSTANCE.fieldTooShort('value', minPassportLength).exception()
             }
         }
-        return Promise.pure(null)
     }
 
     @Required

@@ -16,11 +16,14 @@ import javax.ws.rs.NotSupportedException;
 public enum EventActionType implements Identifiable<Short> {
     CREATE((short)0),
 
+    QUEUE((short)3),
+
     CHARGE((short)10),
     ASYNC_CHARGE((short)11),
     CAPTURE((short)12),
     ADDRESS_CHANGE((short)13),
     CONFIRM((short)14),
+    CHECK((short)15),
 
     ADJUSTMENT((short)20);
 

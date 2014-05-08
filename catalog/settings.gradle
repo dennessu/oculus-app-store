@@ -8,4 +8,3 @@ include 'catalog-rest'
 include 'catalog-clientproxy'
 
 include 'catalog-app'
-1

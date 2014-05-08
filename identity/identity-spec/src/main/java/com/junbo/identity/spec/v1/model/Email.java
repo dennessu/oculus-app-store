@@ -40,4 +40,26 @@ public class Email {
     public void setValidateTime(Date validateTime) {
         this.validateTime = validateTime;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Email email = (Email) o;
+
+        if (isValidated != null ? !isValidated.equals(email.isValidated) : email.isValidated != null) return false;
+        if (validateTime != null ? !validateTime.equals(email.validateTime) : email.validateTime != null) return false;
+        if (value != null ? !value.equals(email.value) : email.value != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = value != null ? value.hashCode() : 0;
+        result = 31 * result + (isValidated != null ? isValidated.hashCode() : 0);
+        result = 31 * result + (validateTime != null ? validateTime.hashCode() : 0);
+        return result;
+    }
 }

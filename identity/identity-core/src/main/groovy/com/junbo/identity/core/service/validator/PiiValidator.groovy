@@ -11,5 +11,6 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface PiiValidator {
     boolean handles(String type)
-    Promise<Void> validate(JsonNode value, UserId userId)
+    Promise<Void> validateCreate(JsonNode value, UserId userId)
+    Promise<Void> validateUpdate(JsonNode value, JsonNode oldValue, UserId userId)
 }

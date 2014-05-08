@@ -41,6 +41,10 @@ public interface BalanceResource {
     Promise<Balance> confirmBalance(Balance balance);
 
     @POST
+    @Path("/check")
+    Promise<Balance> checkBalance(Balance balance);
+
+    @POST
     @Path("/process-async")
     Promise<Balance> processAsyncBalance(Balance balance);
 

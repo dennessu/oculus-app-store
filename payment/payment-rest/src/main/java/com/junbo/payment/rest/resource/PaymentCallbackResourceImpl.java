@@ -6,6 +6,7 @@
 
 package com.junbo.payment.rest.resource;
 
+import com.junbo.common.id.PaymentId;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.core.PaymentCallbackService;
 import com.junbo.payment.spec.model.PaymentProperties;
@@ -22,8 +23,8 @@ public class PaymentCallbackResourceImpl implements PaymentCallbackResource{
     private PaymentCallbackService paymentCallbackService;
 
     @Override
-    public Promise<Response> postPaymentProperties(Long paymentId, PaymentProperties properties) {
-        paymentCallbackService.addPaymentProperties(paymentId, properties);
+    public Promise<Response> postPaymentProperties(PaymentId paymentId, PaymentProperties properties) {
+        paymentCallbackService.addPaymentProperties(paymentId.getValue(), properties);
         return Promise.pure(null);
     }
 }

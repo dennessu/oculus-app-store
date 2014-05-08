@@ -195,16 +195,52 @@ public class BalanceRepositoryImpl implements BalanceRepository {
     }
 
     @Override
-    public List<BalanceId> fetchAsyncChargeBalanceIds(Integer count) {
-        List<BalanceEntity> balanceEntities = balanceEntityDao.getAsyncChargeInitBalances(count);
+    public List<BalanceId> fetchToSettleBalanceIds(Integer count) {
         List<BalanceId> ids = new ArrayList<>();
-        if(balanceEntities != null) {
-            for(BalanceEntity entity : balanceEntities) {
-                BalanceId id = new BalanceId(entity.getBalanceId());
-                ids.add(id);
+
+        List<BalanceEntity> balanceEntities = balanceEntityDao.getInitBalances();
+        for (BalanceEntity entity : balanceEntities) {
+            if (count <= 0) {
+                break;
+            }
+            ids.add(new BalanceId(entity.getId()));
+            count --;
+        }
+
+        balanceEntities = balanceEntityDao.getAwaitingPaymentBalances();
+        for (BalanceEntity entity : balanceEntities) {
+            if (count <= 0) {
+                break;
+            }
+            ids.add(new BalanceId(entity.getId()));
+            count --;
+        }
+
+        balanceEntities = balanceEntityDao.getUnconfirmedBalances();
+        for (BalanceEntity entity : balanceEntities) {
+            if (count <= 0) {
+                break;
+            }
+            ids.add(new BalanceId(entity.getId()));
+            count --;
+        }
+
+        return ids;
+    }
+
+    @Override
+    public List<Balance> getRefundBalancesByOriginalId(Long balanceId) {
+        List<BalanceEntity> balanceEntities = balanceEntityDao.getRefundBalancesByOriginalId(balanceId);
+        List<Balance> results = new ArrayList<>();
+        if (balanceEntities != null) {
+            for (BalanceEntity entity : balanceEntities) {
+                Balance balance = getBalance(entity.getBalanceId());
+                if (balance != null) {
+                    results.add(balance);
+                }
             }
         }
-        return ids;
+        return results;
     }
 
     private void saveBalanceEventEntity(BalanceEntity balanceEntity, EventActionType eventActionType) {

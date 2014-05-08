@@ -7,6 +7,7 @@
 package com.junbo.billing.clientproxy.impl
 
 import com.junbo.billing.clientproxy.PaymentFacade
+import com.junbo.common.id.PaymentId
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.model.PaymentInstrument
@@ -46,16 +47,21 @@ class PaymentFacadeImpl implements PaymentFacade {
 
     @Override
     Promise<PaymentTransaction> postPaymentCapture(Long paymentId, PaymentTransaction request) {
-        return paymentTransactionResource.postPaymentCapture(paymentId, request)
+        return paymentTransactionResource.postPaymentCapture(new PaymentId(paymentId), request)
     }
 
     @Override
     Promise<PaymentTransaction> postPaymentConfirm(Long paymentId, PaymentTransaction request) {
-        return paymentTransactionResource.postPaymentConfirm(paymentId, request)
+        return paymentTransactionResource.postPaymentConfirm(new PaymentId(paymentId), request)
     }
 
     @Override
     Promise<PaymentTransaction> getPayment(Long paymentId) {
-        return paymentTransactionResource.getPayment(paymentId)
+        return paymentTransactionResource.getPayment(new PaymentId(paymentId))
+    }
+
+    @Override
+    Promise<PaymentTransaction> postPaymentCheck(Long paymentId) {
+        return paymentTransactionResource.checkPaymentStatus(paymentId)
     }
 }

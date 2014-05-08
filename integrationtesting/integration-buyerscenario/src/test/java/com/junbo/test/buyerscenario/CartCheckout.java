@@ -86,15 +86,21 @@ public class CartCheckout extends BaseTestClass {
         String uid = testDataProvider.createUser();
 
         ArrayList<String> offerList = new ArrayList<>();
-        offerList.add(offer_digital_normal1);
-        offerList.add(offer_digital_normal2);
+        //TODO add ewallet offer
 
-        String cartId = testDataProvider.postOffersToPrimaryCart(uid, false, offerList);
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
 
         EwalletInfo ewalletInfo = EwalletInfo.getEwalletInfo(Country.DEFAULT, Currency.DEFAULT);
         String ewalletId = testDataProvider.postPaymentInstrument(uid, ewalletInfo);
 
-        testDataProvider.creditWallet(uid);
+        testDataProvider.postOrder(uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, null, offerList);
+        offerList.clear();
+
+        offerList.add(offer_digital_normal1);
+        offerList.add(offer_digital_normal2);
+
+        String cartId = testDataProvider.postOffersToPrimaryCart(uid, false, offerList);
 
         String orderId = testDataProvider.postOrderByCartId(
                 uid, cartId, Country.DEFAULT, Currency.DEFAULT, ewalletId, null);
@@ -181,29 +187,34 @@ public class CartCheckout extends BaseTestClass {
         String uid = testDataProvider.createUser();
 
         ArrayList<String> offerList = new ArrayList<>();
-        offerList.add(offer_physical_normal1);
-        offerList.add(offer_physical_normal2);
-
+        //TODO add ewallet offer
 
         ShippingAddressInfo shippingAddressInfo = ShippingAddressInfo.getRandomShippingAddress(Country.DEFAULT);
         String shippingAddressId = testDataProvider.postShippingAddressToUser(uid, shippingAddressInfo);
 
-        String cartId = testDataProvider.postOffersToPrimaryCart(uid, true, offerList);
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
 
         EwalletInfo ewalletInfo = EwalletInfo.getEwalletInfo(Country.DEFAULT, Currency.DEFAULT);
         String ewalletId = testDataProvider.postPaymentInstrument(uid, ewalletInfo);
 
-        testDataProvider.creditWallet(uid);
+        testDataProvider.postOrder(uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, null, offerList);
+        offerList.clear();
+
+        offerList.add(offer_digital_normal1);
+        offerList.add(offer_digital_normal2);
+
+        String cartId = testDataProvider.postOffersToPrimaryCart(uid, false, offerList);
 
         String orderId = testDataProvider.postOrderByCartId(
-                uid, cartId, Country.DEFAULT, Currency.DEFAULT, ewalletId, shippingAddressId, true);
+                uid, cartId, Country.DEFAULT, Currency.DEFAULT, ewalletId, null);
 
         orderId = testDataProvider.updateOrderTentative(orderId, false);
 
         validationHelper.validateEwalletBalance(uid, orderId);
 
         validationHelper.validateOrderInfoByCartId(
-                uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, ewalletId, shippingAddressId, true);
+                uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, ewalletId, shippingAddressId);
 
         testDataProvider.emptyCartByCartId(uid, cartId);
         validationHelper.validateEmailHistory(uid, orderId);

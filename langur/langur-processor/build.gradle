@@ -1,7 +1,7 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile project(':langur-core')
+    compile junboProject(':langur-core')
 
     compile (libraries.rs_api)
     compile (libraries.freemarker)

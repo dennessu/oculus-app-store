@@ -28,8 +28,24 @@ class QQValidatorImpl implements PiiValidator {
     }
 
     @Override
-    Promise<Void> validate(JsonNode value, UserId userId) {
+    Promise<Void> validateCreate(JsonNode value, UserId userId) {
         UserQQ userQQ = (UserQQ)JsonHelper.jsonNodeToObj(value, UserQQ)
+        checkUserQQ(userQQ)
+        return Promise.pure(null)
+    }
+
+    @Override
+    Promise<Void> validateUpdate(JsonNode value, JsonNode oldValue, UserId userId) {
+        UserQQ userQQ = (UserQQ)JsonHelper.jsonNodeToObj(value, UserQQ)
+        UserQQ oldUserQQ = (UserQQ)JsonHelper.jsonNodeToObj(oldValue, UserQQ)
+
+        if (userQQ != oldUserQQ) {
+            checkUserQQ(userQQ)
+        }
+        return Promise.pure(null)
+    }
+
+    private void checkUserQQ(UserQQ userQQ) {
         if (userQQ.qq != null) {
             if (userQQ.qq.length() > maxQQLength) {
                 throw AppErrors.INSTANCE.fieldTooLong('qq', maxQQLength).exception()
@@ -39,7 +55,6 @@ class QQValidatorImpl implements PiiValidator {
                 throw AppErrors.INSTANCE.fieldTooShort('qq', minQQLength).exception()
             }
         }
-        return Promise.pure(null)
     }
 
     @Required
