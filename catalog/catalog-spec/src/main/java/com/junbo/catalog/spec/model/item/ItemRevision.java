@@ -51,7 +51,6 @@ public class ItemRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 26, required = true, value = "Download Link", allowableValues = "PC, MAC, LINUX")
     private Map<String, Binary> binaries;
 
-
     @ApiModelProperty(position = 27, required = true, value = "The platform name, for digital goods only",
             allowableValues = "PC, MAC, LINUX, ANDROID")
     private List<String> platforms;

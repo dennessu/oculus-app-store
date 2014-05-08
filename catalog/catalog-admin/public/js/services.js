@@ -121,18 +121,10 @@ services.factory('Developer', function() {
 
 services.factory('MetaFactory', function() {
     return  {
-        itemMeta: {
-            "shortDescription": { "display": "Short Description", "controlType": "TEXT_INPUT", "required": "false"},
-            "longDescription": { "display": "Long Description", "controlType": "TEXT_INPUT", "required": "true"},
-            "platforms": { "display": "Platform", "controlType": "MULTI_SELECT", "allowedValues":["PC", "Mac", "Linux"], "required": "false"},
-            "changeNotes": { "display": "Change Notes", "controlType": "TEXT_INPUT", "required": "false"},
-            "website": { "display": "Website", "controlType": "URL_INPUT", "required": "false"},
-            "downloadlink": { "display": "Download Link", "controlType": "URL_INPUT", "required": "true"},
-            "minSystemRequirements": { "display": "Minimum System Requirements", "controlType": "TEXT_INPUT", "required": "false"},
-            "maxSystemRequirements": { "display": "Maximum System Requirements", "controlType": "TEXT_INPUT", "required": "false"},
-            "gameModes": { "display": "Game Modes", "controlType": "SINGLE_SELECT", "allowedValues":["Single Player", "Multi Player"], "required": "false"}
-        },
-        itemTypes: ["PHYSICAL", "APP"],
+        itemTypes: ["PHYSICAL", "DIGITAL", "STORED_VALUE"],
+        platforms: ["PC", "MAC", "LINUX"],
+        gameModes: ["SINGLE_PLAYER", "MULTI_PLAYER", "CO_OP"],
+        locales: ["en_US", "zh_CN"],
         countries: [
             {"code":"AT", "name":"Austria", "currency": "AUD"},
             {"code":"CN", "name":"China", "currency": "RMB"},
