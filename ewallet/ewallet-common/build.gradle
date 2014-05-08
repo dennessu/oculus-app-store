@@ -12,5 +12,5 @@ dependencies {
     compile(libraries.spring_orm)
     compile(libraries.spring_beans)
 
-    compile(libraries.common_lib)
+    compile junboProject(':common-lib')
 }
