@@ -44,10 +44,10 @@ public class ItemRevision extends BaseRevisionModel {
 
     @ApiModelProperty(position = 24, required = true, value = "supported input devices",
             allowableValues = "KEYBOARD, MOUSE")
-    List<String> supportedInputDevices;
+    private List<String> supportedInputDevices;
     @ApiModelProperty(position = 25, required = true, value = "game modes",
             allowableValues = "SINGLE_PLAYER, MULTI_PLAYER, CO_OP")
-    String gameModes;
+    private List<String> gameModes;
     @ApiModelProperty(position = 26, required = true, value = "Download Link", allowableValues = "PC, MAC, LINUX")
     private Map<String, Binary> binaries;
 
@@ -120,11 +120,11 @@ public class ItemRevision extends BaseRevisionModel {
         this.supportedInputDevices = supportedInputDevices;
     }
 
-    public String getGameModes() {
+    public List<String> getGameModes() {
         return gameModes;
     }
 
-    public void setGameModes(String gameModes) {
+    public void setGameModes(List<String> gameModes) {
         this.gameModes = gameModes;
     }
 
