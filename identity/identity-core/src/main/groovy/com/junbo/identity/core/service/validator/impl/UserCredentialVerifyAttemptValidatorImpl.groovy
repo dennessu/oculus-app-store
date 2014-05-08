@@ -2,6 +2,7 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.id.UserCredentialVerifyAttemptId
 import com.junbo.common.id.UserId
+import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.util.CipherHelper
 import com.junbo.identity.core.service.validator.UserCredentialVerifyAttemptValidator
@@ -10,13 +11,17 @@ import com.junbo.identity.data.identifiable.CredentialType
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.UserCredentialVerifyAttemptRepository
 import com.junbo.identity.data.repository.UserPasswordRepository
+import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.data.repository.UserPinRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.UserPin
+import com.junbo.identity.spec.v1.model.Email
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
+import com.junbo.identity.spec.v1.model.UserPersonalInfo
+import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
 import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
 import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
 import com.junbo.identity.spec.v1.option.list.UserPinListOptions
@@ -38,10 +43,13 @@ import java.util.regex.Pattern
 @CompileStatic
 class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAttemptValidator {
 
+    private static final String MAIL_IDENTIFIER = "@"
+
     private UserCredentialVerifyAttemptRepository userLoginAttemptRepository
     private UserRepository userRepository
     private UserPasswordRepository userPasswordRepository
     private UserPinRepository userPinRepository
+    private UserPersonalInfoRepository userPersonalInfoRepository
 
     private UsernameValidator usernameValidator
 
@@ -111,8 +119,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             throw AppErrors.INSTANCE.fieldNotWritable('succeeded').exception()
         }
 
-        return userRepository.getUserByCanonicalUsername(normalizeService.normalize(userLoginAttempt.username))
-                .then { User user ->
+        return findUser(userLoginAttempt).then { User user ->
             if (user == null) {
                 throw AppErrors.INSTANCE.userNotFound(userLoginAttempt.username).exception()
             }
@@ -135,7 +142,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                         userId: (UserId)user.id,
                         active: true
                 )).then { List<UserPassword> userPasswordList ->
-                    if (userPasswordList == null || userPasswordList.size() > 1) {
+                    if (CollectionUtils.isEmpty(userPasswordList) || userPasswordList.size() > 1) {
                         throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
                     }
 
@@ -184,6 +191,43 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     return checkMaximumRetryCount(user, userLoginAttempt)
                 }
             }
+        }
+    }
+
+    private Promise<User> findUser(UserCredentialVerifyAttempt userLoginAttempt) {
+        if (isEmail(userLoginAttempt.username)) {
+            return userPersonalInfoRepository.searchByEmail(userLoginAttempt.username).
+                then { List<UserPersonalInfo> personalInfos ->
+                    if (CollectionUtils.isEmpty(personalInfos)) {
+                        throw AppErrors.INSTANCE.userNotFound(userLoginAttempt.username).exception()
+                    }
+
+                    UserPersonalInfo personalInfo = personalInfos.find { UserPersonalInfo userPersonalInfo ->
+                        Email email = (Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Email)
+                        return email.isValidated == true
+                    }
+
+                    if (personalInfo == null) {
+                        throw AppErrors.INSTANCE.userNotFound(userLoginAttempt.username).exception()
+                    }
+
+                    return userRepository.get(personalInfo.userId).then { User user ->
+                        if (CollectionUtils.isEmpty(user.emails)) {
+                            throw AppErrors.INSTANCE.userNotFound(userLoginAttempt.username).exception()
+                        }
+
+                        if (user.emails.any { UserPersonalInfoLink link ->
+                            return link.value == personalInfo.id && (link.isDefault == true)
+                        }
+                        ) {
+                            return Promise.pure(user)
+                        }
+
+                        throw AppErrors.INSTANCE.fieldInvalid('username', 'Only primary mail can login').exception()
+                    }
+                }
+        } else {
+            return userRepository.getUserByCanonicalUsername(normalizeService.normalize(userLoginAttempt.username))
         }
     }
 
@@ -277,6 +321,13 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
         })
     }
 
+    private boolean isEmail(String value) {
+        if (value.contains(MAIL_IDENTIFIER)) {
+            return true
+        }
+        return false
+    }
+
     @Required
     void setUserLoginAttemptRepository(UserCredentialVerifyAttemptRepository userLoginAttemptRepository) {
         this.userLoginAttemptRepository = userLoginAttemptRepository
@@ -332,5 +383,10 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     @Required
     void setTransactionManager(PlatformTransactionManager transactionManager) {
         this.transactionManager = transactionManager
+    }
+
+    @Required
+    void setUserPersonalInfoRepository(UserPersonalInfoRepository userPersonalInfoRepository) {
+        this.userPersonalInfoRepository = userPersonalInfoRepository
     }
 }

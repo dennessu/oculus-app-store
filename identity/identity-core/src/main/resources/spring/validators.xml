@@ -54,6 +54,7 @@
         <property name="userLoginAttemptRepository" ref="userCredentialVerifyAttemptRepository"/>
         <property name="userPasswordRepository" ref="userPasswordRepository"/>
         <property name="userPinRepository" ref="userPinRepository"/>
+        <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
         <property name="normalizeService" ref="normalizeService" />
         <property name="usernameValidator" ref="usernameValidator"/>
         <property name="allowedIpAddressPatterns">
