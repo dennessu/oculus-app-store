@@ -40,4 +40,26 @@ public class PhoneNumber {
     public void setValidateTime(Date validateTime) {
         this.validateTime = validateTime;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PhoneNumber that = (PhoneNumber) o;
+
+        if (isValidated != null ? !isValidated.equals(that.isValidated) : that.isValidated != null) return false;
+        if (validateTime != null ? !validateTime.equals(that.validateTime) : that.validateTime != null) return false;
+        if (value != null ? !value.equals(that.value) : that.value != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = value != null ? value.hashCode() : 0;
+        result = 31 * result + (isValidated != null ? isValidated.hashCode() : 0);
+        result = 31 * result + (validateTime != null ? validateTime.hashCode() : 0);
+        return result;
+    }
 }

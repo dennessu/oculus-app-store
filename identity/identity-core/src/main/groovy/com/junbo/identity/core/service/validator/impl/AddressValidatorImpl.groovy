@@ -24,10 +24,15 @@ class AddressValidatorImpl implements PiiValidator {
     }
 
     @Override
-    Promise<Void> validate(JsonNode value, UserId userId) {
+    Promise<Void> validateCreate(JsonNode value, UserId userId) {
         JsonHelper.jsonNodeToObj(value, Address)
 
         return Promise.pure(null)
         // todo:    User Address
+    }
+
+    @Override
+    Promise<Void> validateUpdate(JsonNode value, JsonNode oldValue, UserId userId) {
+        return Promise.pure(null)
     }
 }

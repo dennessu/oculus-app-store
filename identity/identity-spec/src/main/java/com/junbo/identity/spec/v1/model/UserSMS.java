@@ -19,4 +19,21 @@ public class UserSMS {
     public void setTextMessage(String textMessage) {
         this.textMessage = textMessage;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserSMS userSMS = (UserSMS) o;
+
+        if (textMessage != null ? !textMessage.equals(userSMS.textMessage) : userSMS.textMessage != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return textMessage != null ? textMessage.hashCode() : 0;
+    }
 }

@@ -39,8 +39,25 @@ class NameValidatorImpl implements PiiValidator {
     }
 
     @Override
-    Promise<Void> validate(JsonNode value, UserId userId) {
+    Promise<Void> validateCreate(JsonNode value, UserId userId) {
         UserName name = (UserName)JsonHelper.jsonNodeToObj(value, UserName)
+
+        checkName(name)
+        return Promise.pure(null)
+    }
+
+    @Override
+    Promise<Void> validateUpdate(JsonNode value, JsonNode oldValue, UserId userId) {
+        UserName name = (UserName)JsonHelper.jsonNodeToObj(value, UserName)
+        UserName oldName = (UserName)JsonHelper.jsonNodeToObj(oldValue, UserName)
+
+        if (name != oldName) {
+            checkName(name)
+        }
+        return Promise.pure(null)
+    }
+
+    private void checkName(UserName name) {
         if (name.firstName == null) {
             throw AppErrors.INSTANCE.fieldRequired('firstName').exception()
         }
@@ -74,7 +91,6 @@ class NameValidatorImpl implements PiiValidator {
 
         displayNameValidator.validate(name)
 
-        return Promise.pure(null)
     }
 
     @Required

@@ -29,8 +29,24 @@ class SMSValidatorImpl implements PiiValidator {
     }
 
     @Override
-    Promise<Void> validate(JsonNode value, UserId userId) {
+    Promise<Void> validateCreate(JsonNode value, UserId userId) {
         UserSMS userSMS = (UserSMS)JsonHelper.jsonNodeToObj(value, UserSMS)
+        checkUserSMS(userSMS)
+
+        return Promise.pure(null)
+    }
+
+    @Override
+    Promise<Void> validateUpdate(JsonNode value, JsonNode oldValue, UserId userId) {
+        UserSMS userSMS = (UserSMS)JsonHelper.jsonNodeToObj(value, UserSMS)
+        UserSMS oldUserSMS = (UserSMS)JsonHelper.jsonNodeToObj(oldValue, UserSMS)
+        if (userSMS != oldUserSMS) {
+            checkUserSMS(userSMS)
+        }
+        return Promise.pure(null)
+    }
+
+    private void checkUserSMS(UserSMS userSMS) {
         if (userSMS.textMessage != null) {
             if (userSMS.textMessage.length() > maxTextMessageLength) {
                 throw AppErrors.INSTANCE.fieldTooLong('textMessage', maxTextMessageLength).exception()
@@ -39,8 +55,6 @@ class SMSValidatorImpl implements PiiValidator {
                 throw AppErrors.INSTANCE.fieldTooShort('textMessage', minTextMessageLength).exception()
             }
         }
-
-        return Promise.pure(null)
     }
 
     @Required
