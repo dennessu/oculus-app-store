@@ -14,6 +14,7 @@ import org.gradle.api.plugins.ApplicationPlugin
 import org.gradle.api.plugins.GroovyPlugin
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.quality.Checkstyle
+import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.TaskState
 import org.gradle.api.tasks.Upload
@@ -31,7 +32,7 @@ class BootstrapPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project rootProject) {
-       rootProject.task('createWrapper', type: Wrapper) {
+        rootProject.task('createWrapper', type: Wrapper) {
             gradleVersion = '1.11'
         }
 
@@ -73,8 +74,6 @@ class BootstrapPlugin implements Plugin<Project> {
                 }
             }
 
-            apply plugin: 'maven'
-
             repositories {
                 mavenLocal()
                 mavenCentral()
@@ -89,20 +88,6 @@ class BootstrapPlugin implements Plugin<Project> {
                     url "${artifactory_contextUrl}/repo"
                 }
 
-            }
-
-            uploadArchives {
-                repositories {
-                    mavenDeployer {
-                        repository(url: "${artifactory_contextUrl}/libs-release-local") {
-                            authentication(userName: "${artifactory_user}", password: "${artifactory_password}")
-                        }
-
-                        snapshotRepository(url: "${artifactory_contextUrl}/libs-snapshot-local") {
-                            authentication(userName: "${artifactory_user}", password: "${artifactory_password}")
-                        }
-                    }
-                }
             }
 
             configurations {
@@ -135,15 +120,6 @@ class BootstrapPlugin implements Plugin<Project> {
                     if (processorClass) {
                         compileJava.options.compilerArgs.addAll '-processor', processorClass
                     }
-                }
-
-                task('sourcesJar', type: Jar) {
-                    classifier = 'sources'
-                    from sourceSets.main.allSource, "$buildDir/generated-src"
-                }
-
-                artifacts {
-                    archives sourcesJar
                 }
 
                 test {
@@ -197,6 +173,42 @@ class BootstrapPlugin implements Plugin<Project> {
                         )
                     }
                 }
+
+                subProject.apply plugin: 'maven-publish'
+
+                task('sourcesJar', type: Jar) {
+                    classifier = 'sources'
+                    from sourceSets.main.allSource, "$buildDir/generated-src"
+                }
+
+                publishing {
+                    publications {
+                        junboBundle(MavenPublication) {
+                            from components.java
+
+                            artifact (sourcesJar) {
+                                classifier = 'sources'
+                            }
+                        }
+                    }
+
+                    repositories {
+                        maven {
+                            if (subProject.version.endsWith('-SNAPSHOT')) {
+                                url "${artifactory_contextUrl}/libs-snapshot-local"
+                            } else {
+                                url "${artifactory_contextUrl}/libs-release-local"
+                            }
+
+                            credentials {
+                                username = "${artifactory_user}"
+                                password = "${artifactory_password}"
+                            }
+                        }
+                    }
+                }
+
+                task('install').dependsOn 'publishToMavenLocal'
             }
 
             plugins.withType(GroovyPlugin) {
@@ -338,8 +350,8 @@ class TimingsListener implements TaskExecutionListener, BuildListener {
     @Override
     void buildFinished(BuildResult result) {
         if (result.failure == null) {
-            println "Task timings:"
-            for (timing in timings.sort { -it[0] }) {
+            println "Task timings (Top 10):"
+            for (timing in timings.sort { -it[0] }[0..9]) {
                 printf "%7sms  %s\n", timing
             }
         }
