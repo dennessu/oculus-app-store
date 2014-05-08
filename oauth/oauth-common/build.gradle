@@ -13,5 +13,6 @@ dependencies {
     compile(libraries.spring_beans)
 
     compile(libraries.spy_memcached)
-    compile(libraries.common_lib)
+
+    compile junboProject(':common-lib')
 }

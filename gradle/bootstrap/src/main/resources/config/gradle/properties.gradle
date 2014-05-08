@@ -1,0 +1,60 @@
+ext {
+    set("langur-core-version", '0.0.1-SNAPSHOT')
+    set("langur-processor-version", '0.0.1-SNAPSHOT')
+
+    set("common-configuration-version", '0.0.1-SNAPSHOT')
+    set("configuration-data-version", '0.0.1-SNAPSHOT')
+    set("common-sharding-version", '0.0.1-SNAPSHOT')
+    set("common-lib-version", '0.0.1-SNAPSHOT')
+
+    set("oom-core-version", '0.0.1-SNAPSHOT')
+    set("oom-processor-version", '0.0.1-SNAPSHOT')
+
+    set("identity-common-version", '0.0.1-SNAPSHOT')
+    set("identity-core-version", '0.0.1-SNAPSHOT')
+    set("identity-data-version", '0.0.1-SNAPSHOT')
+    set("identity-rest-version", '0.0.1-SNAPSHOT')
+    set("identity-spec-version", '0.0.1-SNAPSHOT')
+    set("identity-app-version", '0.0.1-SNAPSHOT')
+
+    set("oauth-common-version", '0.0.1-SNAPSHOT')
+    set("oauth-core-version", '0.0.1-SNAPSHOT')
+    set("oauth-db-version", '0.0.1-SNAPSHOT')
+    set("oauth-api-version", '0.0.1-SNAPSHOT')
+    set("oauth-spec-version", '0.0.1-SNAPSHOT')
+    set("oauth-clientproxy-version", '0.0.1-SNAPSHOT')
+    set("oauth-app-version", '0.0.1-SNAPSHOT')
+
+    set("email-common-version", '0.0.1-SNAPSHOT')
+    set("email-core-version", '0.0.1-SNAPSHOT')
+    set("email-db-version", '0.0.1-SNAPSHOT')
+    set("email-rest-version", '0.0.1-SNAPSHOT')
+    set("email-spec-version", '0.0.1-SNAPSHOT')
+    set("email-clientproxy-version", '0.0.1-SNAPSHOT')
+    set("email-app-version", '0.0.1-SNAPSHOT')
+
+    set("catalog-common-version", '0.0.1-SNAPSHOT')
+    set("catalog-core-version", '0.0.1-SNAPSHOT')
+    set("catalog-db-version", '0.0.1-SNAPSHOT')
+    set("catalog-rest-version", '0.0.1-SNAPSHOT')
+    set("catalog-spec-version", '0.0.1-SNAPSHOT')
+    set("catalog-clientproxy-version", '0.0.1-SNAPSHOT')
+    set("catalog-app-version", '0.0.1-SNAPSHOT')
+
+    set("authorization-lib-version", '0.0.1-SNAPSHOT')
+
+    set("apphost-core-version", '0.0.1-SNAPSHOT')
+    set("apphost-cli-version", '0.0.1-SNAPSHOT')
+
+    junboProject = { projectPath ->
+        def projectName = projectPath.substring(1)
+
+        if (allprojects.find { it.name == projectName }) {
+            project(projectPath)
+        } else {
+            def groupName = projectName.split('-', 2)[0]
+            def version = property("${projectName}-version")
+            "com.junbo.$groupName:$projectName:$version"
+        }
+    }
+}

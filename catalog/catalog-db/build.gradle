@@ -1,8 +1,8 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile project(":catalog-spec")
-    compile project(":catalog-common")
+    compile junboProject(":catalog-spec")
+    compile junboProject(":catalog-common")
 
     compile (libraries.persistence_api)
     compile (libraries.validation_api)
@@ -24,9 +24,9 @@ dependencies {
 
     compile (libraries.bonecp_spring)
 
-    compile (libraries.common_lib)
-    compile (libraries.common_sharding)
-    compile (libraries.common_configuration)
+    compile junboProject(':common-lib')
+    compile junboProject(':common-sharding')
+    compile junboProject(':common-configuration')
 
     testCompile (libraries.spring_test)
 }

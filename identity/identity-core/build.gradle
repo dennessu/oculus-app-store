@@ -1,10 +1,10 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile project(':identity-common')
-    compile project(':identity-data')
+    compile junboProject(':identity-common')
+    compile junboProject(':identity-data')
 
-    processor (libraries.oom_processor)
+    processor junboProject(':oom-processor')
 }
 
 ext {

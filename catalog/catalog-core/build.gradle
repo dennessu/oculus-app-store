@@ -1,7 +1,7 @@
 apply plugin: 'java'
 
 dependencies {
-    compile project(":catalog-db")
+    compile junboProject(":catalog-db")
 
     testCompile (libraries.spring_test)
 }

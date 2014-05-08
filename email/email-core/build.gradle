@@ -2,10 +2,10 @@ apply plugin: 'java'
 apply plugin: 'groovy'
 
 dependencies {
-    compile project(':email-clientproxy')
-    compile project(':email-db')
-    compile project(':email-spec')
-    compile project(':email-common')
+    compile junboProject(':email-clientproxy')
+    compile junboProject(':email-db')
+    compile junboProject(':email-spec')
+    compile junboProject(':email-common')
 
     testCompile (libraries.spring_test)
 }

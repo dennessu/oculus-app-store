@@ -1,0 +1,22 @@
+includeDir 'langur'
+includeDir 'common'
+includeDir 'oom'
+includeDir 'identity'
+includeDir 'oauth'
+includeDir 'email'
+includeDir 'authorization'
+includeDir 'catalog'
+includeDir 'apphost'
+
+def includeDir(String dir) {
+    new File(rootDir, "$dir/settings.gradle").eachLine { line ->
+        def matcher = line =~ /^\s*include\s*\(?('|")(\S+)('|")\)?\s*$/;
+        if (matcher.find()) {
+            def projectName = matcher[0][2]
+
+            include projectName
+            def project = project(":$projectName")
+            project.projectDir = new File(rootDir, "$dir/$projectName")
+        }
+    }
+}
