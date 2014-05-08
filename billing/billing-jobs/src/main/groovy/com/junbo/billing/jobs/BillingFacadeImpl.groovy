@@ -7,16 +7,11 @@
 package com.junbo.billing.jobs
 
 import com.junbo.billing.spec.model.Balance
-import com.junbo.billing.spec.resource.proxy.BalanceResourceClientProxy
-import com.junbo.common.error.CommonExceptionHandler
-import com.junbo.common.json.IdPathParamTranscoder
-import com.junbo.common.json.JsonMessageTranscoder
-import com.junbo.common.json.QueryParamTranscoderImpl
+import com.junbo.billing.spec.resource.BalanceResource
 import com.junbo.langur.core.promise.Promise
-import com.ning.http.client.AsyncHttpClient
-import com.ning.http.client.AsyncHttpClientConfigBean
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Autowired
+
+import javax.annotation.Resource
 
 /**
  * Created by xmchen on 14-4-11.
@@ -24,27 +19,16 @@ import org.springframework.beans.factory.annotation.Autowired
 @CompileStatic
 class BillingFacadeImpl implements BillingFacade {
 
-    @Autowired
-    private final AsyncHttpClient asyncHttpClient
-
-    private String url
-
-    void setUrl(String url) {
-        this.url = url
-    }
-
-    BillingFacadeImpl() {
-        if (asyncHttpClient == null) {
-            asyncHttpClient = new AsyncHttpClient(new AsyncHttpClientConfigBean())
-        }
-    }
+    @Resource(name = 'billingBalanceClient')
+    private BalanceResource balanceResource
 
     @Override
     Promise<Balance> processAsyncBalance(Balance balance) {
-        JsonMessageTranscoder transcoder = new JsonMessageTranscoder()
-        CommonExceptionHandler exceptionHandler = new CommonExceptionHandler()
-        exceptionHandler.messageTranscoder = transcoder
-        return new BalanceResourceClientProxy(asyncHttpClient, transcoder,
-                new IdPathParamTranscoder(), new QueryParamTranscoderImpl(), exceptionHandler, url).processAsyncBalance(balance)
+        return balanceResource.processAsyncBalance(balance)
+    }
+
+    @Override
+    Promise<Balance> checkBalance(Balance balance) {
+        return balanceResource.checkBalance(balance)
     }
 }

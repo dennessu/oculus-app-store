@@ -10,6 +10,7 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.clientproxy.model.OrderOfferRevision
+import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.spec.model.Order
 import com.junbo.payment.spec.model.PaymentInstrument
@@ -60,13 +61,16 @@ class SendEmailAction implements Action {
                         .then { List<PaymentInstrument> pis ->
                     // select email type per pi & per item
                     String emailType = null
-                    switch (PIType.get(pis[0].type)) {
-                        case PIType.CREDITCARD:
-                        case PIType.STOREDVALUE:
-                            emailType = 'ORDER_CONFIRMATION'
-                            break
-                        default:
-                            emailType = null
+                    if (!CoreUtils.hasPhysicalOffer(order)) {
+                        switch (PIType.get(pis[0].type)) {
+                            case PIType.CREDITCARD:
+                            case PIType.STOREDVALUE:
+                            case PIType.PAYPAL:
+                                emailType = 'ORDER_CONFIRMATION'
+                                break
+                            default:
+                                emailType = null
+                        }
                     }
                     return sendEmail(emailType, order, u, catalogOffers)
                 }

@@ -8,5 +8,5 @@ dependencies {
     compile (libraries.json_path)
     compile (libraries.fastjson)
 
-    compile (libraries.common_lib)
+    compile junboProject(':common-lib')
 }

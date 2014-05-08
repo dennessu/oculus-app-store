@@ -73,7 +73,9 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
         if (userPersonalInfo.id != null) {
             throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
         }
-        return checkBasicPersonalInfo(userPersonalInfo)
+        return checkBasicPersonalInfo(userPersonalInfo).then {
+            return checkAdvancedCreate(userPersonalInfo)
+        }
     }
 
     @Override
@@ -89,7 +91,9 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
         if (userPersonalInfo.id == null) {
             throw AppErrors.INSTANCE.fieldRequired('id').exception()
         }
-        return checkBasicPersonalInfo(userPersonalInfo)
+        return checkBasicPersonalInfo(userPersonalInfo).then {
+            return checkAdvancedUpdate(userPersonalInfo, oldUserPersonalInfo)
+        }
     }
 
     Promise<Void> checkBasicPersonalInfo(UserPersonalInfo userPersonalInfo) {
@@ -127,8 +131,12 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
             }
         }
 
+        return Promise.pure(null)
+    }
+
+    Promise<Void> checkAdvancedCreate(UserPersonalInfo userPersonalInfo) {
         List<PiiValidator> piiValidatorList = piiValidatorFactory.validators
-        return iterateValidate(piiValidatorList.iterator(), userPersonalInfo).then {
+        return iterateValidateCreate(piiValidatorList.iterator(), userPersonalInfo).then {
             return userRepository.get(userPersonalInfo.userId).then { User user ->
                 if (user == null) {
                     throw AppErrors.INSTANCE.userNotFound(userPersonalInfo.userId).exception()
@@ -143,15 +151,47 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
         }
     }
 
-    Promise<Void> iterateValidate(Iterator<PiiValidator> iterator, UserPersonalInfo userPersonalInfo) {
+    Promise<Void> checkAdvancedUpdate(UserPersonalInfo userPersonalInfo, UserPersonalInfo oldUserPersonalInfo) {
+        List<PiiValidator> piiValidatorList = piiValidatorFactory.validators
+        return iterateValidateUpdate(piiValidatorList.iterator(), userPersonalInfo, oldUserPersonalInfo).then {
+            return userRepository.get(userPersonalInfo.userId).then { User user ->
+                if (user == null) {
+                    throw AppErrors.INSTANCE.userNotFound(userPersonalInfo.userId).exception()
+                }
+
+                if (user.status != UserStatus.ACTIVE.toString()) {
+                    throw AppErrors.INSTANCE.userInInvalidStatus(userPersonalInfo.userId).exception()
+                }
+
+                return Promise.pure(null)
+            }
+        }
+    }
+
+    Promise<Void> iterateValidateCreate(Iterator<PiiValidator> iterator, UserPersonalInfo userPersonalInfo) {
         if (iterator.hasNext()) {
             PiiValidator piiValidator = iterator.next()
             if (piiValidator.handles(userPersonalInfo.type)) {
-                return piiValidator.validate(userPersonalInfo.value, userPersonalInfo.userId).then {
-                    return iterateValidate(iterator, userPersonalInfo)
+                return piiValidator.validateCreate(userPersonalInfo.value, userPersonalInfo.userId).then {
+                    return iterateValidateCreate(iterator, userPersonalInfo)
                 }
             }
-            return iterateValidate(iterator, userPersonalInfo)
+            return iterateValidateCreate(iterator, userPersonalInfo)
+        }
+        return Promise.pure(null)
+    }
+
+    Promise<Void> iterateValidateUpdate(Iterator<PiiValidator> iterator, UserPersonalInfo userPersonalInfo,
+                                        UserPersonalInfo oldUserPersonalInfo) {
+        if (iterator.hasNext()) {
+            PiiValidator piiValidator = iterator.next()
+            if (piiValidator.handles(userPersonalInfo.type)) {
+                return piiValidator.validateUpdate(userPersonalInfo.value, oldUserPersonalInfo.value,
+                        userPersonalInfo.userId).then {
+                    return iterateValidateUpdate(iterator, userPersonalInfo, oldUserPersonalInfo)
+                }
+            }
+            return iterateValidateUpdate(iterator, userPersonalInfo, oldUserPersonalInfo)
         }
         return Promise.pure(null)
     }

@@ -52,4 +52,8 @@ public class ErrorCode {
     public static final String PAYMENT_PROCESSING_FAILED = "PAYMENT_PROCESSING_FAILED";
 
     public static final String PAYMENT_INSUFFICIENT_FUND = "PAYMENT_INSUFFICIENT_FUND";
+
+    public static final String BALANCE_REFUND_TOTAL_EXCEEDED = "BALANCE_REFUND_TOTAL_EXCEEDED";
+
+    public static final String BALANCE_ITEM_REFUND_TOTAL_EXCEEDED = "BALANCE_ITEM_REFUND_TOTAL_EXCEEDED";
 }

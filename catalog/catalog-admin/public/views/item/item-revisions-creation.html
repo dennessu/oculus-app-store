@@ -1,0 +1,75 @@
+<h1>Item Revision Creation</h1>
+<form novalidate="novalidate" class="form-horizontal" name="revisionCreationForm">
+    <table class="table table-bordered vertical-table">
+        <tr>
+            <td style="width: 200px;">Platforms</td>
+            <td>
+                <div>
+                    <label ng-repeat="platform in platforms">
+                        <input type="checkbox" checklist-model="revision.platforms" checklist-value="platform" class="chooseItem">{{ platform }}
+                    </label>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>Game Modes</td>
+            <td>
+                <div>
+                    <label ng-repeat="gameMode in gameModes">
+                        <input type="checkbox" checklist-model="revision.gameModes" checklist-value="gameMode" class="chooseItem">{{ gameMode }}
+                    </label>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>Sku</td>
+            <td>
+                <input type="text" class="form-control" ng-model="revision.sku" />
+            </td>
+        </tr>
+        <tr>
+            <td>Locale Properties</td>
+            <td>
+                <div>
+                    Add Locale:
+                    <select ng-model="selectedLocale" ng-change="addLocale(selectedLocale)" ng-options="locale for locale in locales">
+                    </select>
+                    <table class="table table-bordered vertical-table">
+                        <tr ng-repeat="(locale, properties) in revision.locales">
+                            <td>{{ locale }}</td>
+                            <td>
+                                <table class="table table-bordered vertical-table">
+                                    <tr>
+                                        <td>Name</td>
+                                        <td><input type="text" class="form-control required" ng-model="properties.name" required /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Revision Notes</td>
+                                        <td><input type="text" class="form-control required" ng-model="properties.revisionNotes" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Long Description</td>
+                                        <td><input type="text" class="form-control required" ng-model="properties.longDescription" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Short Description</td>
+                                        <td><input type="text" class="form-control required" ng-model="properties.shortDescription" /></td>
+                                    </tr>
+                                </table>
+
+                            </td>
+                            <td class="select" ng-click="removeLocale(locale)">x</td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+
+
+    </table>
+    <div class="control-group">
+        <div class="controls">
+            <a ng-click="revisionCreationForm.$valid && saveItemRevision()" class="btn btn-small btn-default">Next</a>
+        </div>
+    </div>
+</form>

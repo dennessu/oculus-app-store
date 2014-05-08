@@ -4,16 +4,16 @@ dependencies {
     compile (libraries.rs_api)
     compile (libraries.jersey_bean_validation)
     compile (libraries.jackson_databind)
-    compile (libraries.langur)
+    compile junboProject(':langur-core')
     compile (libraries.guava)
     compile (libraries.spring_beans)
     compile (libraries.spring_context)
-    compile (libraries.common_lib)
+    compile junboProject(':common-lib')
 
-    processor (libraries.langur_processor)
+    processor junboProject(':langur-processor')
     processor (libraries.log4j)
 
-    compile project(':catalog-common')
+    compile junboProject(':catalog-common')
 }
 
 ext {

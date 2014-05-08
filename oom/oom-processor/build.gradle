@@ -9,8 +9,8 @@ dependencies {
     compile (libraries.spring_beans)
     compile (libraries.spring_context)
 
-    compile project(':oom-core')
+    compile junboProject(':oom-core')
 
     testCompile (libraries.testng)
-    testCompile (libraries.common_lib)
+    testCompile junboProject(':common-lib')
 }

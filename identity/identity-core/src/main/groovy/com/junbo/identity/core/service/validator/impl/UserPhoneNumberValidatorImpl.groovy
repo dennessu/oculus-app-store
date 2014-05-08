@@ -37,8 +37,29 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
     }
 
     @Override
-    Promise<Void> validate(JsonNode value, UserId userId) {
+    Promise<Void> validateCreate(JsonNode value, UserId userId) {
         PhoneNumber phoneNumber = (PhoneNumber)JsonHelper.jsonNodeToObj(value, PhoneNumber)
+        checkUserPhone(phoneNumber)
+        return checkAdvanceUserPhone(phoneNumber, userId)
+    }
+
+    @Override
+    Promise<Void> validateUpdate(JsonNode value, JsonNode oldValue, UserId userId) {
+        PhoneNumber phoneNumber = (PhoneNumber)JsonHelper.jsonNodeToObj(value, PhoneNumber)
+        PhoneNumber oldPhoneNumber = (PhoneNumber)JsonHelper.jsonNodeToObj(oldValue, PhoneNumber)
+
+        if (phoneNumber != oldPhoneNumber) {
+            checkUserPhone(phoneNumber)
+
+            if (phoneNumber.value != oldPhoneNumber.value) {
+                return checkAdvanceUserPhone(phoneNumber, userId)
+            }
+            return Promise.pure(null)
+        }
+        return Promise.pure(null)
+    }
+
+    private void checkUserPhone(PhoneNumber phoneNumber) {
         if (phoneNumber.value == null) {
             throw AppErrors.INSTANCE.fieldRequired('value').exception()
         }
@@ -55,10 +76,21 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
         }) {
             throw AppErrors.INSTANCE.fieldInvalid('value').exception()
         }
+    }
 
+    private Promise<Void> checkAdvanceUserPhone(PhoneNumber phoneNumber, UserId userId) {
         return userPersonalInfoRepository.searchByPhoneNumber(phoneNumber.value).then {
             List<UserPersonalInfo> existing ->
                 if (existing != null) {
+                    // check this phone number is not used by this user
+                    if (existing.any { UserPersonalInfo userPersonalInfo ->
+                        return userPersonalInfo.userId == userId
+                    }
+                    ) {
+                        throw AppErrors.INSTANCE.fieldDuplicate('value').exception()
+                    }
+
+                    // remove all phones not belonging to this user
                     existing.unique { UserPersonalInfo userPersonalInfo ->
                         return userPersonalInfo.userId
                     }.removeAll { UserPersonalInfo userPersonalInfo ->
@@ -67,12 +99,13 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
 
                     if (existing != null && existing.size() > maxUserNumberPerPhone) {
                         throw AppErrors.INSTANCE.fieldInvalidException('value', 'Reach maximum phoneNumber users')
-                            .exception()
+                                .exception()
                     }
                 }
 
                 return userPersonalInfoRepository.searchByUserIdAndType(userId, UserPersonalInfoType.PHONE.toString())
                         .then { List<UserPersonalInfo> userPersonalInfoList ->
+                    // Even the phone is updated, we will treat this as new added
                     userPersonalInfoList.sort( new Comparator<UserPersonalInfo>( ) {
                         @Override
                         int compare(UserPersonalInfo o1, UserPersonalInfo o2) {

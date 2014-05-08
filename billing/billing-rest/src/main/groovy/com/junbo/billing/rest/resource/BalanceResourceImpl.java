@@ -48,6 +48,11 @@ public class BalanceResourceImpl implements BalanceResource {
     }
 
     @Override
+    public Promise<Balance> checkBalance(Balance balance) {
+        return balanceService.checkBalance(balance);
+    }
+
+    @Override
     public Promise<Balance> processAsyncBalance(Balance balance) {
         return balanceService.processAsyncBalance(balance);
     }

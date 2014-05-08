@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -66,12 +67,12 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
         if (entitlementDefinition.getConsumable() == null) {
             entitlementDefinition.setConsumable(false);
         }
+        if (!StringUtils.isEmpty(entitlementDefinition.getRev())) {
+            throw AppErrors.INSTANCE.unnecessaryField("rev").exception();
+        }
         checkDeveloper(entitlementDefinition.getDeveloperId());
         checkInAppContext(entitlementDefinition.getInAppContext());
         return entitlementDefinitionRepository.create(entitlementDefinition);
-    }
-
-    private void checkInAppContext(List<String> inAppContext) {
     }
 
     @Override
@@ -96,15 +97,17 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
         checkDeveloper(existingEntitlementDefinition.getDeveloperId());
         checkInAppContext(entitlementDefinition.getInAppContext());
 
-
-        validateEquals(entitlementDefinition.getDeveloperId(),
-                existingEntitlementDefinition.getDeveloperId(), "developer");
+        validateEquals(entitlementDefinition.getRev(),
+                existingEntitlementDefinition.getRev(), "rev");
+        validateEquals(Utils.encodeId(entitlementDefinition.getDeveloperId()),
+                Utils.encodeId(existingEntitlementDefinition.getDeveloperId()), "developer");
         validateEquals(entitlementDefinition.getType(),
                 existingEntitlementDefinition.getType(), "type");
+        validateEquals(entitlementDefinition.getConsumable(),
+                existingEntitlementDefinition.getConsumable(), "isConsumable");
 
         existingEntitlementDefinition.setTag(entitlementDefinition.getTag());
         existingEntitlementDefinition.setItemId(entitlementDefinition.getItemId());
-        existingEntitlementDefinition.setConsumable(entitlementDefinition.getConsumable());
         existingEntitlementDefinition.setInAppContext(entitlementDefinition.getInAppContext());
 
         return entitlementDefinitionRepository.update(existingEntitlementDefinition);
@@ -150,6 +153,9 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
         if (!equals) {
             throw AppErrors.INSTANCE.fieldNotMatch(fieldName, actual, expected).exception();
         }
+    }
+
+    private void checkInAppContext(List<String> inAppContext) {
     }
 
     private void checkDeveloper(Long developerId) {

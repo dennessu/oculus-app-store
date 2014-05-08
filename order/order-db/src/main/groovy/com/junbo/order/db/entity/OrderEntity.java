@@ -39,6 +39,9 @@ public class OrderEntity extends CommonDbEntityWithDate {
     private BigDecimal totalDiscount;
     private BigDecimal totalShippingFee;
     private BigDecimal totalShippingFeeDiscount;
+    private String successRedirectUrl;
+    private String cancelRedirectUrl;
+    private String providerConfirmUrl;
     private Date honorUntilTime;
     private Date honoredTime;
     // end of ratingInfo
@@ -202,6 +205,33 @@ public class OrderEntity extends CommonDbEntityWithDate {
 
     public void setLocale(String locale) {
         this.locale = locale;
+    }
+
+    @Column(name = "SUCCESS_REDIRECT_URL")
+    public String getSuccessRedirectUrl() {
+        return successRedirectUrl;
+    }
+
+    public void setSuccessRedirectUrl(String successRedirectUrl) {
+        this.successRedirectUrl = successRedirectUrl;
+    }
+
+    @Column(name = "CANCEL_REDIRECT_URL")
+    public String getCancelRedirectUrl() {
+        return cancelRedirectUrl;
+    }
+
+    public void setCancelRedirectUrl(String cancelRedirectUrl) {
+        this.cancelRedirectUrl = cancelRedirectUrl;
+    }
+
+    @Column(name = "PROVIDER_CONFIRM_URL")
+    public String getProviderConfirmUrl() {
+        return providerConfirmUrl;
+    }
+
+    public void setProviderConfirmUrl(String providerConfirmUrl) {
+        this.providerConfirmUrl = providerConfirmUrl;
     }
 
     @Override

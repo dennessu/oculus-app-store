@@ -1,7 +1,7 @@
 apply plugin: 'java'
 
 dependencies {
-    compile project(':entitlement-core')
+    compile junboProject(':entitlement-core')
 
     compile (libraries.servlet_api)
     compile (libraries.jackson_jaxrs_json_provider)
@@ -16,8 +16,8 @@ dependencies {
     compile (libraries.spring_web)
 
     compile (libraries.asyncclient)
-    compile (libraries.oom_processor)
-    compile (libraries.oom)
+    processor junboProject(':oom-processor')
+    compile junboProject(':oom-core')
     compile (libraries.jersey_common)
 
     testCompile (libraries.guava)

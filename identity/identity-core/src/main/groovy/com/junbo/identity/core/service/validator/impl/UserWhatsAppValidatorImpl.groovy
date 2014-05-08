@@ -29,8 +29,24 @@ class UserWhatsAppValidatorImpl implements PiiValidator {
     }
 
     @Override
-    Promise<Void> validate(JsonNode value, UserId userId) {
+    Promise<Void> validateCreate(JsonNode value, UserId userId) {
         UserWhatsApp userWhatsApp = (UserWhatsApp)JsonHelper.jsonNodeToObj(value, UserWhatsApp)
+        checkUserWhatsApp(userWhatsApp)
+        return Promise.pure(null)
+    }
+
+    @Override
+    Promise<Void> validateUpdate(JsonNode value, JsonNode oldValue, UserId userId) {
+        UserWhatsApp userWhatsApp = (UserWhatsApp)JsonHelper.jsonNodeToObj(value, UserWhatsApp)
+        UserWhatsApp oldUserWhatsApp = (UserWhatsApp)JsonHelper.jsonNodeToObj(oldValue, UserWhatsApp)
+
+        if (userWhatsApp != oldUserWhatsApp) {
+            checkUserWhatsApp(userWhatsApp)
+        }
+        return Promise.pure(null)
+    }
+
+    private void checkUserWhatsApp(UserWhatsApp userWhatsApp) {
         if (userWhatsApp.value != null) {
             if (userWhatsApp.value.length() > maxWhatsAppLength) {
                 throw AppErrors.INSTANCE.fieldTooLong('whatsApp', maxWhatsAppLength).exception()
@@ -39,7 +55,6 @@ class UserWhatsAppValidatorImpl implements PiiValidator {
                 throw AppErrors.INSTANCE.fieldTooShort('whatsApp', maxWhatsAppLength).exception()
             }
         }
-        return Promise.pure(null)
     }
 
     @Required

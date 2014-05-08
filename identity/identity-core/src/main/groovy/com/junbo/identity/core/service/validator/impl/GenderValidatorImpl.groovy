@@ -28,15 +28,29 @@ class GenderValidatorImpl implements PiiValidator {
     }
 
     @Override
-    Promise<Void> validate(JsonNode value, UserId userId) {
+    Promise<Void> validateCreate(JsonNode value, UserId userId) {
         UserGender userGender = (UserGender)JsonHelper.jsonNodeToObj(value, UserGender)
+        checkUserGender(userGender)
+        return Promise.pure(null)
+    }
+
+    @Override
+    Promise<Void> validateUpdate(JsonNode value, JsonNode oldValue, UserId userId) {
+        UserGender userGender = (UserGender)JsonHelper.jsonNodeToObj(value, UserGender)
+        UserGender oldUserGender = (UserGender)JsonHelper.jsonNodeToObj(oldValue, UserGender)
+
+        if (userGender != oldUserGender) {
+            checkUserGender(userGender)
+        }
+        return null
+    }
+
+    private void checkUserGender(UserGender userGender) {
         if (userGender.value != null) {
             if (!(userGender.value in allowedValues)) {
                 throw AppErrors.INSTANCE.fieldInvalid('value', allowedValues.join(',')).exception()
             }
         }
-
-        return Promise.pure(null)
     }
 
     @Required

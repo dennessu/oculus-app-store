@@ -14,4 +14,5 @@ import com.junbo.langur.core.promise.Promise;
  */
 public interface BillingFacade {
     Promise<Balance> processAsyncBalance(Balance balance);
+    Promise<Balance> checkBalance(Balance balance);
 }

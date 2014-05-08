@@ -29,8 +29,25 @@ class DriverLicenseValidatorImpl implements PiiValidator {
     }
 
     @Override
-    Promise<Void> validate(JsonNode value, UserId userId) {
+    Promise<Void> validateCreate(JsonNode value, UserId userId) {
         UserDriverLicense userDriverLicense = (UserDriverLicense)JsonHelper.jsonNodeToObj(value, UserDriverLicense)
+        checkDriverLicense(userDriverLicense)
+        return Promise.pure(null)
+    }
+
+    @Override
+    Promise<Void> validateUpdate(JsonNode value, JsonNode oldValue, UserId userId) {
+        UserDriverLicense userDriverLicense = (UserDriverLicense)JsonHelper.jsonNodeToObj(value, UserDriverLicense)
+        UserDriverLicense oldUserDriverLicense = (UserDriverLicense)JsonHelper.jsonNodeToObj(oldValue,
+                UserDriverLicense)
+
+        if (userDriverLicense != oldUserDriverLicense) {
+            checkDriverLicense(userDriverLicense)
+        }
+        return Promise.pure(null)
+    }
+
+    private void checkDriverLicense(UserDriverLicense userDriverLicense) {
         if (userDriverLicense.value != null) {
             if (userDriverLicense.value.length() > maxDriverLicenseLength) {
                 throw AppErrors.INSTANCE.fieldTooLong('value', maxDriverLicenseLength).exception()
@@ -39,8 +56,6 @@ class DriverLicenseValidatorImpl implements PiiValidator {
                 throw AppErrors.INSTANCE.fieldTooShort('value', minDriverLicenseLength).exception()
             }
         }
-
-        return Promise.pure(null)
     }
 
     @Required

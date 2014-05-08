@@ -91,6 +91,7 @@ public class EntitlementDefinitionDaoImpl extends BaseDaoImpl<EntitlementDefinit
         entity.setCreatedBy(existed.getCreatedBy());
         entity.setUpdatedBy(Constants.SYSTEM_INTERNAL); //TODO
         entity.setUpdatedTime(Utils.now());
+        entity.setRev(entity.getRev() == null ? 1 : entity.getRev() + 1);
         currentSession().merge(entity);
         return entity.getId();
     }

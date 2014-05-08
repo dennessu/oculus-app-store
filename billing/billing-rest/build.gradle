@@ -1,7 +1,7 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile (libraries.oom)
+    compile junboProject(':oom-core')
     compile (libraries.servlet_api)
     //compile (libraries.jersey_spring3)
     compile (libraries.jackson_jaxrs_json_provider)
@@ -16,6 +16,6 @@ dependencies {
 
     testCompile (libraries.spring_test)
 
-    compile project(':billing-core')
-    compile project(':billing-spec')
+    compile junboProject(':billing-core')
+    compile junboProject(':billing-spec')
 }

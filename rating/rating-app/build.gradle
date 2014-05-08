@@ -4,10 +4,11 @@ apply plugin: 'application'
 mainClassName = "com.junbo.apphost.core.JunboApplication"
 
 dependencies {
-    runtime (libraries.apphost_core)
-    runtime (libraries.common_configuration_data)
+    runtime junboProject(':apphost-core')
+    runtime junboProject(':configuration-data')
 
-    compile project(':rating-rest')
-    compile 'com.junbo.entitlement:entitlement-rest:0.0.1-SNAPSHOT'
-    compile 'com.junbo.catalog:catalog-rest:0.0.1-SNAPSHOT'
+    runtime junboProject(':rating-rest')
+
+    runtime junboProject(':entitlement-rest')
+    runtime junboProject(':catalog-rest')
 }

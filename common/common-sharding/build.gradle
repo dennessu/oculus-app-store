@@ -1,10 +1,10 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile project(':common-lib')
+    compile junboProject(':common-lib')
 
-    compile (libraries.common_configuration)
-    compile (libraries.common_configuration_data)
+    compile junboProject(':common-configuration')
+    runtime junboProject(':configuration-data')
 
     compile (libraries.spring_beans)
     compile (libraries.spring_context)
