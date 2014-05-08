@@ -9,9 +9,10 @@ dependencies {
 
     compile junboProject(':identity-rest')
     compile junboProject(':oauth-api')
+    compile junboProject(':rating-rest')
+    compile junboProject(':restriction-rest')
 
     /*
-    compile junboProject(':rating-rest')
     compile junboProject(':fulfilment-rest')
     compile junboProject(':cart-rest')
     compile junboProject(':billing-rest')
@@ -20,7 +21,6 @@ dependencies {
     compile junboProject(':email-rest')
     compile junboProject(':ewallet-rest')
     compile junboProject(':billing-jobs')
-
     */
 
     compile junboProject(':entitlement-rest')

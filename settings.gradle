@@ -9,6 +9,7 @@ includeDir 'catalog'
 includeDir 'notification'
 includeDir 'entitlement'
 includeDir 'restriction'
+includeDir 'rating'
 includeDir 'docs'
 includeDir 'apphost'
 

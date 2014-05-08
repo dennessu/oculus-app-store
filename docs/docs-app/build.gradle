@@ -16,8 +16,8 @@ dependencies {
     compile junboProject(':oauth-spec')
     // compile junboProject(':order-spec')
     // compile junboProject(':payment-spec')
-    // compile junboProject(':rating-spec')
-    // compile junboProject(':restriction-spec')
+    compile junboProject(':rating-spec')
+    compile junboProject(':restriction-spec')
     // compile junboProject(':email-spec')
 
     compile("com.wordnik:swagger-jersey2-jaxrs_2.10:${swaggerVersion}") {
