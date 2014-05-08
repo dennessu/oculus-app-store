@@ -13,8 +13,8 @@ import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.OrderId;
-import com.junbo.common.id.ShippingAddressId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.common.jackson.annotation.ShippingMethodId;
 import com.junbo.common.model.Link;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -95,7 +95,7 @@ public class Order extends BaseOrderResource {
     private Long shippingMethod;
     @ApiModelProperty(required = true, position = 76, value = "The shipping address. Required for physical goods. " +
             "It might be null if there is no shipping address at this time.")
-    private ShippingAddressId shippingAddress;
+    private UserPersonalInfoId shippingAddress;
     // end of shippingInfo
 
     @ApiModelProperty(required = true, position = 150, value = "The payments instruments. " +
@@ -241,11 +241,11 @@ public class Order extends BaseOrderResource {
         this.shippingMethod = shippingMethod;
     }
 
-    public ShippingAddressId getShippingAddress() {
+    public UserPersonalInfoId getShippingAddress() {
         return shippingAddress;
     }
 
-    public void setShippingAddress(ShippingAddressId shippingAddress) {
+    public void setShippingAddress(UserPersonalInfoId shippingAddress) {
         this.shippingAddress = shippingAddress;
     }
 

@@ -6,8 +6,8 @@
 
 package com.junbo.order.core.impl.order
 import com.junbo.billing.spec.model.Balance
-import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.common.id.OfferId
+import com.junbo.identity.spec.v1.model.Address
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
@@ -94,7 +94,7 @@ class OrderServiceContextBuilder {
         }
     }
 
-    Promise<ShippingAddress> getShippingAddress(OrderServiceContext context) {
+    Promise<Address> getShippingAddress(OrderServiceContext context) {
         if (context == null || context.order == null || context.order.shippingAddress == null) {
             return Promise.pure(null)
         }
@@ -105,15 +105,15 @@ class OrderServiceContextBuilder {
         return refreshShippingAddress(context)
     }
 
-    Promise<ShippingAddress> refreshShippingAddress(OrderServiceContext context) {
+    Promise<Address> refreshShippingAddress(OrderServiceContext context) {
 
         if (context == null || context.order == null || context.order.shippingAddress == null) {
             return Promise.pure(null)
         }
-        return facadeContainer.billingFacade.getShippingAddress(
-                context.order.user.value, context.order.shippingAddress.value).syncThen { ShippingAddress sa ->
-            context.shippingAddress = sa
-            return sa
+        return facadeContainer.identityFacade.getAddress(context.order.shippingAddress.value).syncThen {
+            Address address ->
+            context.shippingAddress = address
+            return address
         }
     }
 

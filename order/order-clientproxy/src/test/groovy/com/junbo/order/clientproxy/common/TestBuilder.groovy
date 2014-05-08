@@ -66,7 +66,7 @@ class TestBuilder {
         order.setUser(userId)
         order.setPayments([])
         order.getPayments().add(new PaymentInfo(paymentInstrument: new PaymentInstrumentId(generateLong())))
-        order.setShippingAddress(new ShippingAddressId(generateLong()))
+        order.setShippingAddress(new UserPersonalInfoId(generateLong()))
         order.setShippingMethod(generateLong())
         order.setTentative(true)
         order.discounts = []
