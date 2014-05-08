@@ -12,6 +12,8 @@ includeDir 'restriction'
 includeDir 'rating'
 includeDir 'ewallet'
 includeDir 'payment'
+includeDir 'billing'
+includeDir 'cart'
 includeDir 'docs'
 includeDir 'apphost'
 

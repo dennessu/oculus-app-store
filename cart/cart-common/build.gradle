@@ -5,5 +5,5 @@ dependencies {
     compile (libraries.spring_expression)
     compile (libraries.spring_tx)
     compile (libraries.hibernate_core)
-    compile (libraries.common_lib)
+    compile junboProject(':common-lib')
 }
