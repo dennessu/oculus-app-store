@@ -12,13 +12,13 @@ dependencies {
     compile junboProject(':rating-rest')
     compile junboProject(':restriction-rest')
     compile junboProject(':ewallet-rest')
+    compile junboProject(':payment-rest')
 
     /*
     compile junboProject(':fulfilment-rest')
     compile junboProject(':cart-rest')
     compile junboProject(':billing-rest')
     compile junboProject(':order-rest')
-    compile junboProject(':payment-rest')
     compile junboProject(':email-rest')
     compile junboProject(':billing-jobs')
     */

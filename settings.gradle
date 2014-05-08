@@ -10,6 +10,8 @@ includeDir 'notification'
 includeDir 'entitlement'
 includeDir 'restriction'
 includeDir 'rating'
+includeDir 'ewallet'
+includeDir 'payment'
 includeDir 'docs'
 includeDir 'apphost'
 

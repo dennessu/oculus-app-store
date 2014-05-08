@@ -72,6 +72,14 @@ ext {
     set("ewallet-clientproxy-version", '0.0.1-SNAPSHOT')
     set("ewallet-app-version", '0.0.1-SNAPSHOT')
 
+    set("payment-common-version", '0.0.1-SNAPSHOT')
+    set("payment-core-version", '0.0.1-SNAPSHOT')
+    set("payment-db-version", '0.0.1-SNAPSHOT')
+    set("payment-rest-version", '0.0.1-SNAPSHOT')
+    set("payment-spec-version", '0.0.1-SNAPSHOT')
+    set("payment-clientproxy-version", '0.0.1-SNAPSHOT')
+    set("payment-app-version", '0.0.1-SNAPSHOT')
+
     set("authorization-lib-version", '0.0.1-SNAPSHOT')
 
     set("notification-core-version", '0.0.1-SNAPSHOT')
