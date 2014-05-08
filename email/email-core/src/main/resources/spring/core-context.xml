@@ -27,6 +27,7 @@
         <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
         <constructor-arg name="target" value="${clientproxy.email.url}"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="emailFacade" class="com.junbo.email.core.notification.impl.EmailFacadeImpl"/>
