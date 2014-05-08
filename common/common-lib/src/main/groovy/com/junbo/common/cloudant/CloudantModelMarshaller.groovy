@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JavaType
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat
 import com.junbo.common.cloudant.model.CloudantModel
 import groovy.transform.CompileStatic
 
@@ -23,6 +24,7 @@ class CloudantModelMarshaller {
     static {
         // Intentionally not using ObjectMapperProvider to get the raw serialization result
         objectMapper = new ObjectMapper()
+        objectMapper.setDateFormat(new ISO8601DateFormat());
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     }

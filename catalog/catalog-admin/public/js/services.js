@@ -7,60 +7,75 @@ var services = angular.module('catalog.services', ['ngResource']);
 // In this case it is a simple value service.
 services.value('version', '0.1');
 
-services.factory('OffersFactory', function ($resource) {
-    return $resource('/api/offers', {}, {
-        query: { method: 'GET', isArray: true },
+services.factory('OffersFactory', function ($resource, CONFIG) {
+    return $resource(CONFIG.baseUrl + 'offers', {}, {
+        query: { method: 'GET' },
         create: { method: 'POST' }
     })
 });
 
-services.factory('OfferFactory', function ($resource) {
-    return $resource('/api/offers/:id', {}, {
+services.factory('OfferFactory', function ($resource, CONFIG) {
+    return $resource(CONFIG.baseUrl + 'offers/:id', {}, {
         query: { method: 'GET' },
         update: { method: 'PUT', params: {id: '@id'} },
         delete: { method: 'DELETE', params: {id: '@id'} }
     })
 });
 
-services.factory('ItemsFactory', function ($resource) {
-    return $resource('/api/items', {}, {
-        query: { method: 'GET', isArray: true },
+services.factory('ItemsFactory', function ($resource, CONFIG) {
+    return $resource(CONFIG.baseUrl + 'items', {}, {
+        query: { method: 'GET'},
         create: { method: 'POST' }
     })
 });
 
-services.factory('ItemFactory', function ($resource) {
-    return $resource('/api/items/:id', {}, {
+services.factory('ItemRevisionsFactory', function ($resource, CONFIG) {
+    return $resource(CONFIG.baseUrl + 'item-revisions', {}, {
+        query: { method: 'GET' },
+        create: { method: 'POST' }
+    })
+});
+
+services.factory('ItemRevisionFactory', function ($resource, CONFIG) {
+    return $resource(CONFIG.baseUrl + 'item-revisions/:id', {}, {
         query: { method: 'GET' },
         update: { method: 'PUT', params: {id: '@id'} },
         delete: { method: 'DELETE', params: {id: '@id'} }
     })
 });
 
-services.factory('AttributesFactory', function ($resource) {
-    return $resource('/api/attributes', {}, {
-        query: { method: 'GET', isArray: true },
-        create: { method: 'POST' }
-    })
-});
-
-services.factory('AttributeFactory', function ($resource) {
-    return $resource('/api/attributes/:id', {}, {
+services.factory('ItemFactory', function ($resource, CONFIG) {
+    return $resource(CONFIG.baseUrl + 'items/:id', {}, {
         query: { method: 'GET' },
         update: { method: 'PUT', params: {id: '@id'} },
         delete: { method: 'DELETE', params: {id: '@id'} }
     })
 });
 
-services.factory('PriceTiersFactory', function ($resource) {
-    return $resource('/api/price-tiers', {}, {
-        query: { method: 'GET', isArray: true },
+services.factory('AttributesFactory', function ($resource, CONFIG) {
+    return $resource(CONFIG.baseUrl + 'attributes', {}, {
+        query: { method: 'GET' },
         create: { method: 'POST' }
     })
 });
 
-services.factory('PriceTierFactory', function ($resource) {
-    return $resource('/api/price-tiers/:id', {}, {
+services.factory('AttributeFactory', function ($resource, CONFIG) {
+    return $resource(CONFIG.baseUrl + 'attributes/:id', {}, {
+        query: { method: 'GET' },
+        update: { method: 'PUT', params: {id: '@id'} },
+        delete: { method: 'DELETE', params: {id: '@id'} }
+    })
+});
+
+services.factory('PriceTiersFactory', function ($resource, CONFIG) {
+    return $resource(CONFIG.baseUrl + 'price-tiers', {}, {
+        query: { method: 'GET' },
+        create: { method: 'POST' }
+    })
+});
+
+services.factory('PriceTierFactory', function ($resource, CONFIG) {
+    return $resource(CONFIG.baseUrl + 'price-tiers/:id', {}, {
         query: { method: 'GET' },
         update: { method: 'PUT', params: {id: '@id'} },
         delete: { method: 'DELETE', params: {id: '@id'} }

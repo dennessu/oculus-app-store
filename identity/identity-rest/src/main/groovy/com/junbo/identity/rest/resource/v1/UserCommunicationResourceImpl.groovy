@@ -45,7 +45,8 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
         userCommunication = userCommunicationFilter.filterForCreate(userCommunication)
 
         return userCommunicationValidator.validateForCreate(userCommunication).then {
-            return userCommunicationRepository.create(userCommunication).then { UserCommunication newUserCommunication ->
+            return userCommunicationRepository.create(userCommunication).then {
+                UserCommunication newUserCommunication ->
                 created201Marker.mark((Id)newUserCommunication.id)
 
                 newUserCommunication = userCommunicationFilter.filterForGet(newUserCommunication, null)
@@ -60,7 +61,8 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        return userCommunicationValidator.validateForGet(userCommunicationId).then { UserCommunication userCommunication ->
+        return userCommunicationValidator.validateForGet(userCommunicationId).then {
+            UserCommunication userCommunication ->
             userCommunication = userCommunicationFilter.filterForGet(userCommunication,
                     getOptions.properties?.split(',') as List<String>)
 
@@ -85,9 +87,11 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
 
             userCommunication = userCommunicationFilter.filterForPatch(userCommunication, oldUserOptin)
 
-            return userCommunicationValidator.validateForUpdate(userCommunicationId, userCommunication, oldUserOptin).then {
+            return userCommunicationValidator.validateForUpdate(userCommunicationId, userCommunication, oldUserOptin).
+                    then {
 
-                return userCommunicationRepository.update(userCommunication).then { UserCommunication newUserCommunication ->
+                return userCommunicationRepository.update(userCommunication).then {
+                    UserCommunication newUserCommunication ->
                     newUserCommunication = userCommunicationFilter.filterForGet(newUserCommunication, null)
                     return Promise.pure(newUserCommunication)
                 }

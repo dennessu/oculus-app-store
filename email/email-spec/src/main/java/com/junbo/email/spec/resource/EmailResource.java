@@ -44,4 +44,8 @@ public interface EmailResource {
     @Path("/{id}")
     Promise<Response> deleteEmail(@PathParam("id") EmailId id);
 
+    @POST
+    @Path("/send")
+    Promise<Email> sendEmail(Email email);
+
 }

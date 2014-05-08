@@ -27,4 +27,6 @@ public interface EntitlementDao {
                                              PageMetadata pageMetadata);
 
     EntitlementEntity getByTrackingUuid(Long shardMasterId, UUID trackingUuid);
+
+    EntitlementEntity get(Long userId, Long entitlementDefinitionId);
 }

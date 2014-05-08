@@ -1,10 +1,15 @@
 package com.junbo.identity.core.service.validator.impl
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.junbo.common.id.UserId
+import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.validator.DisplayNameValidator
-import com.junbo.identity.core.service.validator.NameValidator
 import com.junbo.identity.core.service.validator.NickNameValidator
+import com.junbo.identity.core.service.validator.PiiValidator
+import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserName
+import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
@@ -12,7 +17,7 @@ import org.springframework.beans.factory.annotation.Required
  * Created by kg on 3/17/14.
  */
 @CompileStatic
-class NameValidatorImpl implements NameValidator {
+class NameValidatorImpl implements PiiValidator {
     private Integer minFirstNameLength
     private Integer maxFirstNameLength
 
@@ -26,7 +31,16 @@ class NameValidatorImpl implements NameValidator {
     private DisplayNameValidator displayNameValidator
 
     @Override
-    void validateName(UserName name) {
+    boolean handles(String type) {
+        if (type == UserPersonalInfoType.NAME.toString()) {
+            return true
+        }
+        return false
+    }
+
+    @Override
+    Promise<Void> validate(JsonNode value, UserId userId) {
+        UserName name = (UserName)JsonHelper.jsonNodeToObj(value, UserName)
         if (name.firstName == null) {
             throw AppErrors.INSTANCE.fieldRequired('firstName').exception()
         }
@@ -59,6 +73,8 @@ class NameValidatorImpl implements NameValidator {
         nickNameValidator.validateNickName(name.nickName)
 
         displayNameValidator.validate(name)
+
+        return Promise.pure(null)
     }
 
     @Required

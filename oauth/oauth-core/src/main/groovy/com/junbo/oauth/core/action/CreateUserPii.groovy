@@ -114,7 +114,7 @@ class CreateUserPii implements Action {
 
             return Promise.pure(new ActionResult('next'))
         }.then { ActionResult result ->
-            if (result.id == 'error') {
+             if (result.id == 'error') {
                 return Promise.pure(result)
             }
 

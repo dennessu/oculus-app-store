@@ -6,8 +6,10 @@
 
 package com.junbo.entitlement.core;
 
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.common.error.AppErrorException;
 import com.junbo.common.id.UserId;
+import com.junbo.entitlement.common.cache.PermanentCache;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
@@ -28,6 +30,7 @@ import org.testng.annotations.Test;
 import javax.ws.rs.WebApplicationException;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * Entitlement service test.
@@ -71,10 +74,11 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
     public void testUpdateEntitlement() {
         Entitlement entitlement = buildAnEntitlement();
         Entitlement addedEntitlement = entitlementService.addEntitlement(entitlement);
-        addedEntitlement.setUseCount(1);
+        Date now = new Date();
+        addedEntitlement.setExpirationTime(now);
         Entitlement updatedEntitlement = entitlementService.updateEntitlement(
                 addedEntitlement.getEntitlementId(), addedEntitlement);
-        Assert.assertEquals(updatedEntitlement.getUseCount(), (Integer) 1);
+        Assert.assertTrue(Math.abs(updatedEntitlement.getExpirationTime().getTime() - now.getTime()) <= 1000);
     }
 
     @Test
@@ -97,7 +101,6 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
         for (int i = 0; i < 48; i++) {
             Entitlement entitlementEntity = buildAnEntitlement();
             entitlementEntity.setUserId(userId);
-            entitlementEntity.setEntitlementDefinitionId(idGenerator.nextId());
             entitlementEntity.setExpirationTime(new Date(114, 2, 20));
             entitlementService.addEntitlement(entitlementEntity);
         }
@@ -130,11 +133,19 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
 
     private Entitlement buildAnEntitlement() {
         Entitlement entitlement = new Entitlement();
-
         entitlement.setUserId(idGenerator.nextId());
         entitlement.setGrantTime(new Date(114, 0, 22));
         entitlement.setExpirationTime(new Date(114, 0, 28));
         entitlement.setEntitlementDefinitionId(idGenerator.nextId());
+        final EntitlementDefinition definition = new EntitlementDefinition();
+        definition.setEntitlementDefId(entitlement.getEntitlementDefinitionId());
+        definition.setConsumable(false);
+        PermanentCache.ENTITLEMENT_DEFINITION.get("id#" + definition.getEntitlementDefId(), new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                return definition;
+            }
+        });
         return entitlement;
     }
 }

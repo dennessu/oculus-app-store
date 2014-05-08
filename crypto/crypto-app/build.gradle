@@ -1,0 +1,9 @@
+apply plugin: 'groovy'
+apply plugin: 'application'
+
+mainClassName = "com.junbo.apphost.core.JunboApplication"
+
+dependencies {
+
+    compile project(':crypto-rest')
+}

@@ -12,6 +12,7 @@ import org.springframework.util.Assert;
 
 import java.security.SecureRandom;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 /**
  * Javadoc.
@@ -20,6 +21,9 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
 
     private static final char[] DEFAULT_CODEC =
             "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
+
+    private static final Pattern DEFAULT_CODEC_PATTERN = Pattern.compile("[0-9A-Za-z]+");
+
     private static final String TOKEN_DELIMITER = ";";
 
     private final Random random = new SecureRandom();
@@ -50,6 +54,7 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
     private int saltLength;
 
     private int emailVerifyCodeLength;
+    private int resetPasswordCodeLength;
 
     @Required
     public void setLoginStateLength(int loginStateLength) {
@@ -141,6 +146,11 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
         this.emailVerifyCodeLength = emailVerifyCodeLength;
     }
 
+    @Required
+    public void setResetPasswordCodeLength(int resetPasswordCodeLength) {
+        this.resetPasswordCodeLength = resetPasswordCodeLength;
+    }
+
     private String generate(int length) {
         byte[] bytes = new byte[length];
         random.nextBytes(bytes);
@@ -222,6 +232,11 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
     }
 
     @Override
+    public String generateResetPasswordCode() {
+        return generate(resetPasswordCodeLength);
+    }
+
+    @Override
     public boolean isValidAccessToken(String tokenValue) {
         Assert.notNull(tokenValue);
 
@@ -273,5 +288,27 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    @Override
+    public boolean isValidEmailVerifyCode(String codeValue) {
+        Assert.notNull(codeValue);
+
+        if (codeValue.length() == emailVerifyCodeLength && DEFAULT_CODEC_PATTERN.matcher(codeValue).matches()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean isValidResetPasswordCode(String codeValue) {
+        Assert.notNull(codeValue);
+
+        if (codeValue.length() == resetPasswordCodeLength && DEFAULT_CODEC_PATTERN.matcher(codeValue).matches()) {
+            return true;
+        }
+
+        return false;
     }
 }

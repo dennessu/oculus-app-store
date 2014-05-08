@@ -5,8 +5,10 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
+import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.common.id.UserTeleId;
 import com.junbo.common.util.Identifiable;
 import com.junbo.common.model.ResourceMeta;
@@ -23,17 +25,17 @@ public class UserTeleCode extends ResourceMeta implements Identifiable<UserTeleI
     @JsonProperty("self")
     private UserTeleId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "[Client Immutable]The id of ")
+    @ApiModelProperty(position = 2, required = false, value = "[Client Immutable]The id of user resource.")
     @JsonProperty("user")
     private UserId userId;
 
     @ApiModelProperty(position = 3, required = true, value = "User Phone number used to verify.")
-    private String phoneNumber;
+    private UserPersonalInfoId phoneNumber;
 
     @ApiModelProperty(position = 4, required = false, value = "The language to sent to the user.")
     private String sentLanguage;
 
-    @ApiModelProperty(position = 5, required = true, value = "The verify code sent to the user.")
+    @JsonIgnore
     private String verifyCode;
 
     @ApiModelProperty(position = 6, required = false, value = "The template sent to the user.")
@@ -68,11 +70,11 @@ public class UserTeleCode extends ResourceMeta implements Identifiable<UserTeleI
         support.setPropertyAssigned("user");
     }
 
-    public String getPhoneNumber() {
+    public UserPersonalInfoId getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    public void setPhoneNumber(UserPersonalInfoId phoneNumber) {
         this.phoneNumber = phoneNumber;
         support.setPropertyAssigned("phoneNumber");
     }

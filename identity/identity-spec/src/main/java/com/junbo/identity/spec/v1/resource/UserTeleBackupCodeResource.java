@@ -39,6 +39,19 @@ public interface UserTeleBackupCodeResource {
                               @PathParam("userTeleBackupCodeId") UserTeleBackupCodeId userTeleBackupCodeId,
                               @BeanParam UserTeleBackupCodeGetOptions getOptions);
 
+    @POST
+    @Path("/{userTeleBackupCodeId}")
+    Promise<UserTeleBackupCode> patch(@PathParam("userId") UserId userId,
+                                @PathParam("userTeleBackupCodeId") UserTeleBackupCodeId userTeleBackupCodeId,
+                                UserTeleBackupCode userTeleBackupCode);
+
+    @ApiOperation("Update one user tele backupCode resource")
+    @PUT
+    @Path("/{userTeleBackupCodeId}")
+    Promise<UserTeleBackupCode> put(@PathParam("userId") UserId userId,
+                              @PathParam("userTeleBackupCodeId") UserTeleBackupCodeId userTeleBackupCodeId,
+                              UserTeleBackupCode userTeleBackupCode);
+
     @ApiOperation("Delete one user tele backup resource")
     @DELETE
     @Path("/{userTeleId}")

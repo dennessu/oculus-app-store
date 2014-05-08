@@ -8,6 +8,7 @@ package com.junbo.catalog.spec.resource;
 
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
+import com.junbo.common.filter.annotations.CacheMaxAge;
 import com.junbo.common.id.OfferRevisionId;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
@@ -18,6 +19,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Offer revisions resource definition.
@@ -28,11 +30,13 @@ import javax.ws.rs.core.Response;
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
 public interface OfferRevisionResource {
+    @CacheMaxAge(duration = 5, unit = TimeUnit.MINUTES)
     @ApiOperation("Get or search offer revisions")
     @GET
     @Path("/")
     Promise<Results<OfferRevision>> getOfferRevisions(@BeanParam OfferRevisionsGetOptions options);
 
+    @CacheMaxAge(duration = 5, unit = TimeUnit.MINUTES)
     @ApiOperation("Get an offer revision")
     @GET
     @Path("/{revisionId}")

@@ -5,6 +5,7 @@
  */
 package com.junbo.catalog.spec.model.entitlementdef;
 
+import com.junbo.common.id.ItemId;
 import com.junbo.common.id.UserId;
 
 import javax.ws.rs.QueryParam;
@@ -14,9 +15,9 @@ import java.util.Set;
  * entitlementDef search params.
  */
 public class EntitlementDefSearchParams {
-    @QueryParam("groups")
-    private Set<String> groups;
-    @QueryParam("tags")
+    @QueryParam("itemId")
+    private ItemId itemId;
+    @QueryParam("names")
     private Set<String> tags;
     @QueryParam("clientId")
     private String clientId;
@@ -27,12 +28,12 @@ public class EntitlementDefSearchParams {
     @QueryParam("isConsumable")
     private Boolean isConsumable;
 
-    public Set<String> getGroups() {
-        return groups;
+    public ItemId getItemId() {
+        return itemId;
     }
 
-    public void setGroups(Set<String> groups) {
-        this.groups = groups;
+    public void setItemId(ItemId itemId) {
+        this.itemId = itemId;
     }
 
     public Set<String> getTags() {

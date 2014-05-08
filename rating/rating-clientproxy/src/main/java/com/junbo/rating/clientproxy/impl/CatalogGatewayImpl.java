@@ -7,10 +7,7 @@
 package com.junbo.rating.clientproxy.impl;
 
 import com.junbo.catalog.spec.enums.PriceType;
-import com.junbo.catalog.spec.model.common.PageableGetOptions;
 import com.junbo.catalog.spec.model.domaindata.ShippingMethod;
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefSearchParams;
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.ItemEntry;
 import com.junbo.catalog.spec.model.offer.Offer;
@@ -190,41 +187,6 @@ public class CatalogGatewayImpl implements CatalogGateway{
     @Override
     public ShippingMethod getShippingMethod(Long shippingMethodId) {
         return null;
-    }
-
-    @Override
-    public Map<Long, String> getEntitlementDefinitions(Set<String> groups) {
-        Map<Long, String> result = new HashMap<>();
-
-        EntitlementDefSearchParams searchParams = new EntitlementDefSearchParams();
-        searchParams.setGroups(groups);
-
-        PageableGetOptions options = new PageableGetOptions();
-        options.setStart(Constants.DEFAULT_PAGE_START);
-        options.setSize(Constants.DEFAULT_PAGE_SIZE);
-
-        while(true) {
-            List<EntitlementDefinition> entitlementDefinitions = new ArrayList<>();
-            try {
-                 entitlementDefinitions.addAll(
-                         entitlementDefinitionResource.getEntitlementDefinitions(
-                                 searchParams, options).wrapped().get().getItems());
-            } catch (Exception e) {
-                throw AppErrors.INSTANCE.catalogGatewayError().exception();
-            }
-
-            for (EntitlementDefinition entitlementDef : entitlementDefinitions) {
-                result.put(entitlementDef.getEntitlementDefId(),
-                        entitlementDef.getGroup() + Constants.ENTITLEMENT_SEPARATOR + entitlementDef.getTag());
-            }
-
-            if (entitlementDefinitions.size() < Constants.DEFAULT_PAGE_SIZE) {
-                break;
-            }
-            options.setStart(options.getStart() + Constants.DEFAULT_PAGE_SIZE);
-        }
-
-        return result;
     }
 
     private OfferRevision getOfferRevisionByTimestamp(Long offerId, Long timestamp) {

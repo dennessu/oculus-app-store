@@ -76,7 +76,8 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
     @Override
     Promise<Results<UserCredentialVerifyAttempt>> list(UserCredentialAttemptListOptions listOptions) {
         return credentialVerifyAttemptValidator.validateForSearch(listOptions).then {
-            return userCredentialVerifyAttemptRepository.search(listOptions).then { List<UserCredentialVerifyAttempt> attempts ->
+            return userCredentialVerifyAttemptRepository.search(listOptions).then {
+                List<UserCredentialVerifyAttempt> attempts ->
                 def result = new Results<UserCredentialVerifyAttempt>(items: [])
 
                 attempts.each { UserCredentialVerifyAttempt attempt ->

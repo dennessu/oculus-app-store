@@ -40,6 +40,6 @@ class UserInfoEndpointImpl implements UserInfoEndpoint {
      */
     @Override
     Promise<UserInfo> getUserInfo(String authorization) {
-        return Promise.pure(userService.getUserInfo(authorization))
+        return userService.getUserInfo(authorization)
     }
 }

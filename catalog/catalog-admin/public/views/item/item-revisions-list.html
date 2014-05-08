@@ -1,0 +1,17 @@
+<div class="span6">
+  Go to Item <a href="#/items/{{ itemId }}">{{ itemId }}</a>.
+  <table class="table">
+    <thead>
+      <tr>
+        <th style="min-width: 80px;">Item Revision Id</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="revision in itemRevisions">
+          <td><a href="#/items/{{ revision.item.id }}/revisions/{{ revision.self.id }}">{{ revision.self.id }}</a></td>
+          <td>{{ revision.status }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

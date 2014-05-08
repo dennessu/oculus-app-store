@@ -1,0 +1,33 @@
+<h1>Item detail</h1>
+
+<div class="controls">
+    <a href="#/items/{{ revision.self.id }}/edit" ng-if="offer.status!='PendingReview'">Edit</a>
+    <a ng-click="reviewItem()" class="btn btn-small btn-default" ng-if="revision.status=='Design'">Submit</a>
+</div>
+
+<table class="table table-bordered vertical-table">
+    <tr>
+        <td style="width: 200px;">Item Revision Id</td>
+        <td>{{ revision.self.id }}</td>
+    </tr>
+    <tr>
+        <td>Status</td>
+        <td>{{ revision.status }}</td>
+    </tr>
+    <tr>
+        <td>Sku</td>
+        <td>{{ revision.sku }}</td>
+    </tr>
+    <tr>
+        <td>Item Id</td>
+        <td>{{ revision.item.id }}</td>
+    </tr>
+    <tr>
+        <td>Game Modes</td>
+        <td>{{ revision.gameModes }}</td>
+    </tr>
+    <tr>
+        <td>Supported Input Devices</td>
+        <td>{{ revision.supportedInputDevices }}</td>
+    </tr>
+</table>

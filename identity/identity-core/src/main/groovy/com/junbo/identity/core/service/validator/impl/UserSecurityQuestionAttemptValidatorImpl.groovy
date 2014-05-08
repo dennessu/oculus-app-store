@@ -9,6 +9,7 @@ import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
 import com.junbo.identity.core.service.util.CipherHelper
 import com.junbo.identity.core.service.validator.UserSecurityQuestionAttemptValidator
+import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.data.repository.UserSecurityQuestionAttemptRepository
 import com.junbo.identity.data.repository.UserSecurityQuestionRepository
@@ -18,8 +19,14 @@ import com.junbo.identity.spec.v1.model.UserSecurityQuestion
 import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt
 import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionAttemptListOptions
 import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.transaction.AsyncTransactionTemplate
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.transaction.PlatformTransactionManager
+import org.springframework.transaction.TransactionDefinition
+import org.springframework.transaction.TransactionStatus
+import org.springframework.transaction.support.TransactionCallback
+import org.springframework.util.CollectionUtils
 
 import java.util.regex.Pattern
 
@@ -43,6 +50,9 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
 
     private Integer clientIdMinLength
     private Integer clientIdMaxLength
+
+    private PlatformTransactionManager transactionManager
+    private Integer maxRetryCount
 
     @Override
     Promise<UserSecurityQuestionVerifyAttempt> validateForGet(
@@ -98,6 +108,14 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
                     throw AppErrors.INSTANCE.userNotFound(userId).exception()
                 }
 
+                if (user.status != UserStatus.ACTIVE.toString()) {
+                    throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
+                }
+
+                if (user.isAnonymous == true) {
+                    throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
+                }
+
                 if (attempt.userId != null && attempt.userId != userId) {
                     throw AppErrors.INSTANCE.fieldInvalid('userId', attempt.userId.toString()).exception()
                 }
@@ -125,10 +143,60 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
                                 attempt.setSucceeded(false)
                             }
 
-                            return Promise.pure(null)
+                            return checkMaximumRetryCount(user, attempt)
                         }
             }
         }
+    }
+
+    private Promise<Void> checkMaximumRetryCount(User user, UserSecurityQuestionVerifyAttempt attempt) {
+        if (attempt.succeeded == true) {
+            return Promise.pure(null)
+        }
+
+        return attemptRepository.search(new UserSecurityQuestionAttemptListOptions(
+                userId: attempt.userId,
+                userSecurityQuestionId: attempt.userSecurityQuestionId
+        )).then { List<UserSecurityQuestionVerifyAttempt> attemptList ->
+            if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxRetryCount) {
+                return Promise.pure(null)
+            }
+
+            attemptList.sort(new Comparator<UserSecurityQuestionVerifyAttempt>() {
+                @Override
+                int compare(UserSecurityQuestionVerifyAttempt o1, UserSecurityQuestionVerifyAttempt o2) {
+                    return o2.createdTime <=> o1.createdTime
+                }
+            })
+
+            int index = 0
+            for (; index < maxRetryCount; index++) {
+                if (attemptList.get(index).succeeded == true) {
+                    break
+                }
+            }
+
+            // Reach maximum count, lock account
+            if (index == maxRetryCount) {
+                user.status = UserStatus.SUSPEND.toString()
+                return createInNewTran(user).then {
+                    throw AppErrors.INSTANCE.fieldInvalid('userId',
+                            'User reaches maximum allowed retry count').exception()
+                }
+            }
+
+            return Promise.pure(null)
+        }
+    }
+
+    Promise<User> createInNewTran(User user) {
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager)
+        template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
+        return template.execute(new TransactionCallback<Promise<User>>() {
+            Promise<User> doInTransaction(TransactionStatus txnStatus) {
+                return userRepository.update(user)
+            }
+        })
     }
 
     private Promise<Void> checkBasicUserSecurityQuestionAttemptInfo(UserSecurityQuestionVerifyAttempt attempt) {
@@ -227,5 +295,15 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
     @Required
     void setClientIdMaxLength(Integer clientIdMaxLength) {
         this.clientIdMaxLength = clientIdMaxLength
+    }
+
+    @Required
+    void setTransactionManager(PlatformTransactionManager transactionManager) {
+        this.transactionManager = transactionManager
+    }
+
+    @Required
+    void setMaxRetryCount(Integer maxRetryCount) {
+        this.maxRetryCount = maxRetryCount
     }
 }

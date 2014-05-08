@@ -17,4 +17,10 @@ interface UserPersonalInfoRepository extends IdentityBaseRepository<UserPersonal
 
     @ReadMethod
     Promise<List<UserPersonalInfo>> searchByUserIdAndType(UserId userId, String type)
+
+    @ReadMethod
+    Promise<List<UserPersonalInfo>> searchByEmail(String email)
+
+    @ReadMethod
+    Promise<List<UserPersonalInfo>> searchByPhoneNumber(String phoneNumber)
 }

@@ -1,8 +1,14 @@
 package com.junbo.identity.core.service.validator.impl
 
-import com.junbo.identity.core.service.validator.UserEmailValidator
+import com.fasterxml.jackson.databind.JsonNode
+import com.junbo.common.id.UserId
+import com.junbo.identity.common.util.JsonHelper
+import com.junbo.identity.core.service.validator.PiiValidator
+import com.junbo.identity.data.identifiable.UserPersonalInfoType
+import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Email
+import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
@@ -12,14 +18,25 @@ import java.util.regex.Pattern
  * Created by liangfu on 3/31/14.
  */
 @CompileStatic
-class UserEmailValidatorImpl implements UserEmailValidator {
+class UserEmailValidatorImpl implements PiiValidator {
 
     private List<Pattern> allowedEmailPatterns
     private Integer minEmailLength
     private Integer maxEmailLength
 
+    private UserPersonalInfoRepository userPersonalInfoRepository
+
     @Override
-    void validate(Email email) {
+    boolean handles(String type) {
+        if (type == UserPersonalInfoType.EMAIL.toString()) {
+            return true
+        }
+        return false
+    }
+
+    @Override
+    Promise<Void> validate(JsonNode value, UserId userId) {
+        Email email = (Email)JsonHelper.jsonNodeToObj(value, Email)
         if (email.value == null) {
             throw AppErrors.INSTANCE.fieldInvalid('value').exception()
         }
@@ -37,7 +54,17 @@ class UserEmailValidatorImpl implements UserEmailValidator {
             throw AppErrors.INSTANCE.fieldInvalid('value').exception()
         }
 
-        // todo:    Need to add logic check to ensure one email can only be added once.
+        return Promise.pure(null)
+
+        /*
+        return userPersonalInfoRepository.searchByEmail(email.value).then { List<UserPersonalInfo> existing ->
+            if (!CollectionUtils.isEmpty(existing)) {
+                throw AppErrors.INSTANCE.fieldDuplicate('value').exception()
+            }
+
+            return Promise.pure(null)
+        }
+        */
     }
 
     @Required
@@ -55,5 +82,10 @@ class UserEmailValidatorImpl implements UserEmailValidator {
     @Required
     void setMaxEmailLength(Integer maxEmailLength) {
         this.maxEmailLength = maxEmailLength
+    }
+
+    @Required
+    void setUserPersonalInfoRepository(UserPersonalInfoRepository userPersonalInfoRepository) {
+        this.userPersonalInfoRepository = userPersonalInfoRepository
     }
 }

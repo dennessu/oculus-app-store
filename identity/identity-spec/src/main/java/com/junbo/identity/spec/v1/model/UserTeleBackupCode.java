@@ -8,8 +8,8 @@ package com.junbo.identity.spec.v1.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserTeleBackupCodeId;
-import com.junbo.common.util.Identifiable;
 import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
@@ -26,10 +26,10 @@ public class UserTeleBackupCode extends ResourceMeta implements Identifiable<Use
     @JsonProperty("user")
     private UserId userId;
 
-    @ApiModelProperty(position = 3, required = true, value = "The verify back up code to be used.")
+    @ApiModelProperty(position = 3, required = true, value = "[Client Immutable]The verify code generated..")
     private String verifyCode;
 
-    @ApiModelProperty(position = 4, required = false, value = "[Client Immutable]The verify expires time.")
+    @ApiModelProperty(position = 4, required = true, value = "The verify expires time.")
     private Date expiresBy;
 
     @ApiModelProperty(position = 5, required = false, value = "[Client Immutable]Whether user Tele resource is active.")
