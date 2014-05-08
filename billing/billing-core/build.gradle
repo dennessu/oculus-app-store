@@ -6,7 +6,7 @@ dependencies {
     compile junboProject(':billing-clientproxy')
     compile 'net.sf.ehcache:ehcache-core:2.6.6'
     compile 'org.springframework:spring-context-support:4.0.2.RELEASE'
-    compile 'com.junbo.notification:notification-core:0.0.1-SNAPSHOT'
+    compile junboProject(':notification-core')
 
     testCompile (libraries.spring_test)
 }
