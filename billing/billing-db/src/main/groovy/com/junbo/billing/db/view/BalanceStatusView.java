@@ -15,10 +15,10 @@ import java.util.List;
 /**
  * Created by xmchen on 14-4-14.
  */
-public class BalanceAsyncChargeStatusView implements EntityView<Long, BalanceEntity, String> {
+public class BalanceStatusView implements EntityView<Long, BalanceEntity, String> {
     @Override
     public String getName() {
-        return "balance_async_charge_status";
+        return "balance_status";
     }
 
     @Override
@@ -42,7 +42,7 @@ public class BalanceAsyncChargeStatusView implements EntityView<Long, BalanceEnt
             throw new IllegalArgumentException("entity is null");
         }
 
-        return entity.getIsAsyncCharge() != null && entity.getStatusId() != null;
+        return entity.getStatusId() != null;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class BalanceAsyncChargeStatusView implements EntityView<Long, BalanceEnt
             throw new IllegalArgumentException("entity is null");
         }
         List<String> result = new ArrayList<>();
-        result.add(entity.getIsAsyncCharge().toString() + ":" + entity.getStatusId());
+        result.add(entity.getStatusId().toString());
         return result;
     }
 }

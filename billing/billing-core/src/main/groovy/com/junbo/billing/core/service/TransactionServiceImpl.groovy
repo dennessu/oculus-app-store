@@ -52,6 +52,8 @@ class TransactionServiceImpl implements TransactionService {
                 return charge(balance)
             case BalanceType.MANUAL_CAPTURE:
                 return authorize(balance)
+            case BalanceType.REFUND:
+                return refund(balance)
             default:
                 throw AppErrors.INSTANCE.invalidBalanceType(balance.type).exception()
         }
@@ -101,32 +103,9 @@ class TransactionServiceImpl implements TransactionService {
     @Override
     Promise<Balance> confirmBalance(Balance balance) {
 
-        Long paymentId = getPaymentIdByRef(balance.transactions[0].paymentRefId)
+        return checkBalance(balance).then {
 
-        return paymentFacade.getPayment(paymentId).recover { Throwable throwable ->
-            LOGGER.error('name=Confirm_Balance_Error. error in get payment', throwable)
-            balance.setStatus(BalanceStatus.ERROR.name())
-            return Promise.pure(null)
-        }.then { PaymentTransaction getPt ->
-            if (getPt == null) {
-                return Promise.pure(balance)
-            }
-
-            LOGGER.info('name=Confirm_Balance_Get_Payment. payment id: {}, amount: {}, status: {}',
-                    getPt.id, getPt.chargeInfo.amount, getPt.status)
-
-            balance.setStatus(getBalanceStatusByPaymentStatus(getPt.status).name())
-            if (getPt.status != PaymentStatus.UNCONFIRMED) {
-                return Promise.pure(balance)
-            }
-
-            if (isTimeLimitReached(balance.transactions[0].transactionTime)) {
-                LOGGER.info('name=Confirm_Balance_Timeout. ')
-                balance.setStatus(BalanceStatus.FAILED.name())
-                return Promise.pure(balance)
-            }
-
-            def paymentTransaction = generatePaymentTransaction(balance)
+            Long paymentId = getPaymentIdByRef(balance.transactions[0].paymentRefId)
 
             def newTransaction = new Transaction()
             newTransaction.setAmount(balance.totalAmount)
@@ -134,6 +113,8 @@ class TransactionServiceImpl implements TransactionService {
             newTransaction.setType(TransactionType.CONFIRM.name())
             newTransaction.setPiId(balance.piId)
             newTransaction.setTransactionTime(new Date())
+
+            def paymentTransaction = generatePaymentTransaction(balance)
 
             LOGGER.info('name=Confirm_Balance. balance currency: {}, amount: {}, pi id: {}',
                     balance.currency, balance.totalAmount, balance.piId)
@@ -147,10 +128,6 @@ class TransactionServiceImpl implements TransactionService {
                 }
                 throw throwable
             }.then { PaymentTransaction pt ->
-                if (pt == null) {
-                    return Promise.pure(balance)
-                }
-
                 LOGGER.info('name=Confirm_Balance_Response. payment id: {}, amount: {}, status: {}',
                         pt.id, pt.chargeInfo.amount, pt.status)
                 newTransaction.setPaymentRefId(pt.id.toString())
@@ -159,6 +136,48 @@ class TransactionServiceImpl implements TransactionService {
                 balance.setStatus(getBalanceStatusByPaymentStatus(pt.status).name())
 
                 balance.addTransaction(newTransaction)
+                return Promise.pure(balance)
+            }
+        }
+    }
+    @Override
+    Promise<Balance> checkBalance(Balance balance) {
+
+        Long paymentId = getPaymentIdByRef(balance.transactions[0].paymentRefId)
+
+        def newTransaction = new Transaction()
+        newTransaction.setAmount(balance.totalAmount)
+        newTransaction.setCurrency(balance.currency)
+        newTransaction.setType(TransactionType.CHECK.name())
+        newTransaction.setPiId(balance.piId)
+        newTransaction.setTransactionTime(new Date())
+
+        return paymentFacade.postPaymentCheck(paymentId).recover { Throwable throwable ->
+            LOGGER.error('name=Check_Balance_Error. error in get payment', throwable)
+            newTransaction.setStatus(TransactionStatus.ERROR.name())
+            balance.addTransaction(newTransaction)
+            balance.setStatus(BalanceStatus.ERROR.name())
+            throw throwable
+        }.then { PaymentTransaction checkPt ->
+            if (checkPt == null) {
+                throw AppErrors.INSTANCE.invalidPaymentId(paymentId.toString()).exception()
+            }
+
+            LOGGER.info('name=Check_Balance_Get_Payment. payment id: {}, amount: {}, status: {}',
+                    checkPt.id, checkPt.chargeInfo.amount, checkPt.status)
+
+            balance.setStatus(getBalanceStatusByPaymentStatus(checkPt.status).name())
+            if (checkPt.status != PaymentStatus.UNCONFIRMED) {
+                newTransaction.setStatus(getTransactionStatusByPaymentStatus(checkPt.status).name())
+                balance.addTransaction(newTransaction)
+                return Promise.pure(balance)
+            }
+
+            if (isTimeLimitReached(balance.transactions[0].transactionTime)) {
+                LOGGER.info('name=Confirm_Balance_Timeout. ')
+                newTransaction.setStatus(TransactionStatus.TIMEOUT.name())
+                balance.addTransaction(newTransaction)
+                balance.setStatus(BalanceStatus.FAILED.name())
                 return Promise.pure(balance)
             }
         }
@@ -235,6 +254,10 @@ class TransactionServiceImpl implements TransactionService {
             balance.addTransaction(transaction)
             return Promise.pure(balance)
         }
+    }
+
+    private Promise<Balance> refund(Balance balance) {
+        return Promise.pure(balance)
     }
 
     private PaymentTransaction generatePaymentTransaction(Balance balance) {

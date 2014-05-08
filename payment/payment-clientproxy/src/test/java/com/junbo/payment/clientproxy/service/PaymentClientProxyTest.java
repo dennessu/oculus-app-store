@@ -1,6 +1,7 @@
 package com.junbo.payment.clientproxy.service;
 
 import com.junbo.common.id.PIType;
+import com.junbo.common.id.PaymentId;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.model.Results;
@@ -86,7 +87,7 @@ public class PaymentClientProxyTest extends BaseTest {
         };
         PaymentTransaction paymentResult = paymentClient.postPaymentAuthorization(trx).wrapped().get();
         Assert.assertEquals(paymentResult.getStatus().toUpperCase(), PaymentStatus.AUTHORIZED.toString());
-        PaymentTransaction getAuth = paymentClient.getPayment(paymentResult.getId()).wrapped().get();
+        PaymentTransaction getAuth = paymentClient.getPayment(new PaymentId(paymentResult.getId())).wrapped().get();
         Assert.assertEquals(getAuth.getPaymentInstrumentId(), paymentResult.getPaymentInstrumentId());
         Assert.assertEquals(getAuth.getStatus().toUpperCase(), PaymentStatus.AUTHORIZED.toString());
         PaymentTransaction captureTrx = new PaymentTransaction(){
@@ -96,7 +97,7 @@ public class PaymentClientProxyTest extends BaseTest {
                 setBillingRefId(BILLING_REF_ID);
             }
         };
-        PaymentTransaction captureResult = paymentClient.postPaymentCapture(paymentResult.getId(), captureTrx).wrapped().get();
+        PaymentTransaction captureResult = paymentClient.postPaymentCapture(new PaymentId(paymentResult.getId()), captureTrx).wrapped().get();
         Assert.assertEquals(captureResult.getStatus().toUpperCase(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
 
     }
@@ -196,7 +197,7 @@ public class PaymentClientProxyTest extends BaseTest {
                 });
             }
         };
-        PaymentTransaction captureResult = paymentClient.postPaymentCapture(paymentResult.getId(), captureTrx).wrapped().get();
+        PaymentTransaction captureResult = paymentClient.postPaymentCapture(new PaymentId(paymentResult.getId()), captureTrx).wrapped().get();
         Assert.assertEquals(captureResult.getStatus().toUpperCase(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
     }
 
@@ -230,7 +231,7 @@ public class PaymentClientProxyTest extends BaseTest {
                 setUserId(userId.getValue());
             }
         };
-        PaymentTransaction captureResult = paymentClient.reversePayment(paymentResult.getId(), reverseTrx).wrapped().get();
+        PaymentTransaction captureResult = paymentClient.reversePayment(new PaymentId(paymentResult.getId()), reverseTrx).wrapped().get();
         Assert.assertEquals(captureResult.getStatus().toUpperCase(), PaymentStatus.REVERSED.toString());
     }
 
@@ -264,7 +265,7 @@ public class PaymentClientProxyTest extends BaseTest {
                 setUserId(userId.getValue());
             }
         };
-        PaymentTransaction captureResult = paymentClient.reversePayment(paymentResult.getId(), reverseTrx).wrapped().get();
+        PaymentTransaction captureResult = paymentClient.reversePayment(new PaymentId(paymentResult.getId()), reverseTrx).wrapped().get();
         Assert.assertEquals(captureResult.getStatus().toUpperCase(), PaymentStatus.REVERSED.toString());
     }
 
@@ -336,10 +337,10 @@ public class PaymentClientProxyTest extends BaseTest {
         };
         PaymentTransaction captureResult = null;
         try{
-            captureResult = paymentClient.postPaymentCapture(paymentResult.getId(), captureTrx).wrapped().get();
+            captureResult = paymentClient.postPaymentCapture(new PaymentId(paymentResult.getId()), captureTrx).wrapped().get();
         }catch (Exception ex){
             Assert.assertNull(captureResult);
-            PaymentTransaction revertResult = paymentClient.getPayment(paymentResult.getId()).wrapped().get();
+            PaymentTransaction revertResult = paymentClient.getPayment(new PaymentId(paymentResult.getId())).wrapped().get();
             Assert.assertEquals(revertResult.getStatus().toUpperCase(), PaymentStatus.SETTLEMENT_SUBMIT_DECLINED.toString());
             for(PaymentEvent event : revertResult.getPaymentEvents()){
                 if(event.getType().equalsIgnoreCase(PaymentEventType.SUBMIT_SETTLE.toString())
@@ -383,10 +384,10 @@ public class PaymentClientProxyTest extends BaseTest {
         };
         PaymentTransaction reverseResult = null;
         try{
-            reverseResult = paymentClient.reversePayment(paymentResult.getId(), reverseTrx).wrapped().get();
+            reverseResult = paymentClient.reversePayment(new PaymentId(paymentResult.getId()), reverseTrx).wrapped().get();
         }catch (Exception ex){
             Assert.assertNull(reverseResult);
-            PaymentTransaction getResult = paymentClient.getPayment(paymentResult.getId()).wrapped().get();
+            PaymentTransaction getResult = paymentClient.getPayment(new PaymentId(paymentResult.getId())).wrapped().get();
             Assert.assertEquals(getResult.getStatus().toUpperCase(), PaymentStatus.REVERSE_DECLINED.toString());
             for(PaymentEvent event : getResult.getPaymentEvents()){
                 if(event.getType().equalsIgnoreCase(PaymentEventType.AUTH_REVERSE.toString())

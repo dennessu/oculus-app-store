@@ -20,6 +20,8 @@ dependencies {
     compile junboProject(':payment-rest')
     compile junboProject(':email-rest')
     compile junboProject(':ewallet-rest')
+    compile junboProject(':billing-jobs')
+
     */
 
     compile junboProject(':catalog-rest')

@@ -99,6 +99,7 @@ class BalanceValidator {
             throw AppErrors.INSTANCE.currencyNotFound(currency).exception()
         }
     }
+
     void validateCountry(String country) {
         if (country == null || country.isEmpty()) {
             throw AppErrors.INSTANCE.fieldMissingValue('country').exception()
@@ -128,9 +129,22 @@ class BalanceValidator {
         }
     }
 
-    void validateBalanceTotal(BigDecimal totalAmount) {
-        if (totalAmount <= 0) {
-            throw AppErrors.INSTANCE.invalidBalanceTotal(totalAmount.toString()).exception()
+    void validateBalanceTotal(Balance balance) {
+        if (balance.totalAmount <= 0) {
+            throw AppErrors.INSTANCE.invalidBalanceTotal(balance.totalAmount.toString()).exception()
+        }
+
+        if (balance.type == BalanceType.REFUND.name()) {
+            Balance originalBalance = balanceRepository.getBalance(balance.originalBalanceId.value)
+            List<Balance> refundeds = balanceRepository.getRefundBalancesByOriginalId(balance.originalBalanceId.value)
+            BigDecimal totalRefunded;
+            for (Balance refunded : refundeds) {
+                totalRefunded += refunded.totalAmount
+            }
+            if (totalRefunded + balance.totalAmount > originalBalance.totalAmount) {
+                throw AppErrors.INSTANCE.balanceRefundTotalExceeded(balance.totalAmount, originalBalance.totalAmount,
+                totalRefunded).exception()
+            }
         }
     }
 
@@ -145,15 +159,39 @@ class BalanceValidator {
         return savedBalance
     }
 
-    void validateBalanceStatus(String status, BalanceStatus expectedStatus) {
-        if (status != expectedStatus.name()) {
-            throw AppErrors.INSTANCE.invalidBalanceStatus(status, expectedStatus.name()).exception()
+    void validateBalanceStatus(String status, String expectedStatus) {
+        if (status != expectedStatus) {
+            throw AppErrors.INSTANCE.invalidBalanceStatus(status, expectedStatus).exception()
+        }
+    }
+
+    void validateBalanceStatus(String status, Collection<String> expectedStatus) {
+        if (!expectedStatus.contains(status)) {
+            throw AppErrors.INSTANCE.invalidBalanceStatus(status, expectedStatus.join(',')).exception()
         }
     }
 
     void validateTransactionNotEmpty(BalanceId balanceId, Collection<Transaction> transactions) {
         if (transactions == null || transactions.size() == 0) {
             throw AppErrors.INSTANCE.transactionNotFound(balanceId.value.toString()).exception()
+        }
+    }
+
+    void validateRefund(Balance balance) {
+        if (balance.originalBalanceId == null) {
+            throw AppErrors.INSTANCE.fieldMissingValue('originalBalanceId').exception()
+        }
+
+        if (balance.balanceItems == null || balance.balanceItems.size() == 0) {
+            throw AppErrors.INSTANCE.fieldMissingValue('balanceItems').exception()
+        }
+
+        validateBalanceStatus(balance.status, [BalanceStatus.COMPLETED.name(), BalanceStatus.AWAITING_PAYMENT.name()])
+
+        for (BalanceItem item : balance.balanceItems) {
+            if (item.originalBalanceItemId == null) {
+                throw AppErrors.INSTANCE.fieldMissingValue('balanceItems.originalBalanceItemId').exception()
+            }
         }
     }
 }
