@@ -208,7 +208,7 @@ class BootstrapPlugin implements Plugin<Project> {
                     compile libraries.groovy
 
                     codenarc "org.codenarc:CodeNarc:0.21-J-SNAPSHOT"
-                    codenarc "com.junbo.gradle:bootstrap:${junboVersion}"
+                    codenarc "com.junbo.gradle:bootstrap:0.0.1-SNAPSHOT"
                     codenarc libraries.log4j
                     codenarc libraries.groovy
                 }
@@ -337,9 +337,11 @@ class TimingsListener implements TaskExecutionListener, BuildListener {
 
     @Override
     void buildFinished(BuildResult result) {
-        println "Task timings:"
-        for (timing in timings.sort { -it[0] }) {
-            printf "%7sms  %s\n", timing
+        if (result.failure == null) {
+            println "Task timings:"
+            for (timing in timings.sort { -it[0] }) {
+                printf "%7sms  %s\n", timing
+            }
         }
     }
 

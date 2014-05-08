@@ -6,7 +6,7 @@ dependencies {
     compile (libraries.rs_api)
     compile (libraries.jersey_bean_validation)
 
-    compile junboProject('langur-core')
+    compile junboProject(':langur-core')
     compile (libraries.guava)
     compile (libraries.spring_beans)
     compile (libraries.spring_context)

@@ -4,7 +4,7 @@ dependencies {
     compile junboProject(':entitlement-common')
 
     compile junboProject(':langur-core')
-    compile (libraries.common_lib)
+    compile junboProject(':common-lib')
 
     compile (libraries.rs_api)
     compile (libraries.guava)
@@ -15,7 +15,7 @@ dependencies {
     compile (libraries.jackson_annotations)
     compile (libraries.jackson_databind)
 
-    processor (libraries.langur_processor)
+    processor junboProject(':langur-processor')
     processor (libraries.log4j)
 }
 

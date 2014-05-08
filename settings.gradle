@@ -16,6 +16,8 @@ includeDir 'billing'
 includeDir 'cart'
 includeDir 'fulfilment'
 includeDir 'order'
+includeDir 'drm'
+includeDir 'subscription'
 includeDir 'docs'
 includeDir 'apphost'
 

@@ -8,7 +8,7 @@ dependencies {
     compile junboProject(':billing-spec')
     compile junboProject(':cart-spec')
     compile junboProject(':catalog-spec')
-    // compile junboProject(':drm-spec')
+    compile junboProject(':drm-spec')
     compile junboProject(':entitlement-spec')
     compile junboProject(':ewallet-spec')
     compile junboProject(':fulfilment-spec')
