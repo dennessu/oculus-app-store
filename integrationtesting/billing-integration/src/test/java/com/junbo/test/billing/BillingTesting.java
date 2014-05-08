@@ -28,6 +28,35 @@ public class BillingTesting extends BaseTestClass {
     private Country country = Country.DEFAULT;
     private Currency currency = Currency.DEFAULT;
 
+    @Property(
+            priority = Priority.Dailies,
+            features = "POST /balances/quote",
+            component = Component.Billing,
+            owner = "Yunlongzhao",
+            status = Status.Enable,
+            description = "post balance by order Id",
+            steps = {
+                    "1. Create a user",
+                    "2. Post quote balance",
+                    "3, Validation: response",
+            }
+    )
+    @Test
+    public void testQuoteBalance() throws Exception {
+        ArrayList<String> offerList = new ArrayList<>();
+        offerList.add(offer_digital_normal1);
+        offerList.add(offer_digital_normal2);
+
+        String randomUid = testDataProvider.CreateUser();
+
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(country);
+        String creditCardId = testDataProvider.postPaymentInstrument(randomUid, creditCardInfo);
+
+        String fakeBalanceId = testDataProvider.quoteBalance(randomUid, creditCardId);
+
+        validationHelper.validateBalanceQuote(randomUid, fakeBalanceId, creditCardId);
+    }
+
 
     @Property(
             priority = Priority.Dailies,
@@ -57,7 +86,7 @@ public class BillingTesting extends BaseTestClass {
 
         String balanceId = testDataProvider.postBalanceByOrderId(randomUid, orderId);
 
-        //TODO Validate response
+        validationHelper.validateBalance(randomUid, balanceId, orderId, true);
     }
 
     @Property(
@@ -91,7 +120,7 @@ public class BillingTesting extends BaseTestClass {
 
         String balanceId = testDataProvider.getBalanceByOrderId(randomUid, orderId);
 
-        //TODO Validate response
+        validationHelper.validateBalance(randomUid, balanceId, orderId, false);
     }
 
     @Property(
@@ -125,13 +154,13 @@ public class BillingTesting extends BaseTestClass {
 
         balanceId = testDataProvider.getBalanceByBalanceId(randomUid, balanceId);
 
-        //TODO Validate response
+        validationHelper.validateBalance(randomUid, balanceId, orderId, false);
     }
 
 
     @Property(
             priority = Priority.Dailies,
-            features = "POST /user/userid/ship-to-info",
+            features = "POST /user/userId/ship-to-info",
             component = Component.Billing,
             owner = "Yunlongzhao",
             status = Status.Enable,

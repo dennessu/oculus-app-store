@@ -12,6 +12,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
@@ -26,7 +27,7 @@ public abstract class CommonDbEntityWithDate implements Serializable, Shardable 
     protected String createdBy;
     protected Date updatedTime;
     protected String updatedBy;
-    //protected Integer resourceAge;
+    protected Long resourceAge;
 
     @Column(name = "CREATED_TIME")
     @NotNull(message = ValidationMessages.MISSING_VALUE)
@@ -66,14 +67,14 @@ public abstract class CommonDbEntityWithDate implements Serializable, Shardable 
         this.updatedBy = updatedBy;
     }
 
-//    @Column(name = "RESOURCE_AGE")
-//    @NotEmpty(message = ValidationMessages.MISSING_VALUE)
-//    public Integer getRev() {
-//        return resourceAge;
-//    }
-//
-//    public void setRev(Integer resourceAge) {
-//        this.resourceAge = resourceAge;
-//    }
+    @Column(name = "RESOURCE_AGE")
+    @Version
+    public Long getResourceAge() {
+        return resourceAge;
+    }
+
+    public void setResourceAge(Long resourceAge) {
+        this.resourceAge = resourceAge;
+    }
 
 }

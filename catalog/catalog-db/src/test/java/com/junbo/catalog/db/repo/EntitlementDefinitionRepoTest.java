@@ -39,7 +39,7 @@ public class EntitlementDefinitionRepoTest extends BaseTest {
         EntitlementDefinition definition = new EntitlementDefinition();
         definition.setDeveloperId(generateId());
         definition.setTag("TEST");
-        definition.setGroup("TEST");
+        definition.setItemId(generateId());
         definition.setConsumable(true);
         List<String> inAppContext = new ArrayList<>();
         inAppContext.add("123");

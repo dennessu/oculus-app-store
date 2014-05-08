@@ -71,7 +71,7 @@ public class EntitlementMapper {
         Date now = EntitlementContext.current().getNow();
         Date expirationDate = entitlementEntity.getExpirationTime();
         Integer useCount = entitlementEntity.getUseCount();
-        if (entitlementEntity.getGrantTime().before(now) &&
+        if (entitlementEntity.getGrantTime().getTime() - now.getTime() <= 0 &&
                 (expirationDate == null || expirationDate.after(now)) &&
                 (useCount == null || useCount > 0)) {
             return true;

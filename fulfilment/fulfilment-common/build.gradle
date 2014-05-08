@@ -8,8 +8,8 @@ dependencies {
     compile (libraries.json_path)
     compile (libraries.fastjson)
 
-    compile (libraries.common_lib)
-    compile (libraries.common_configuration)
+    compile junboProject(':common-lib')
+    compile junboProject(':common-configuration')
 
     compile (libraries.log4j)
     compile (libraries.slf4j_api)

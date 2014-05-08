@@ -59,7 +59,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 throw AppErrors.INSTANCE.ratingResultInvalid().exception()
             }
             CoreBuilder.fillRatingInfo(order, ratingResult)
-            LOGGER.error('name=Rating_Result_Successfully')
+            LOGGER.info('name=Rating_Result_Successfully')
             // no need to log order event for rating
             // call billing to calculate tax
             if (order.totalAmount == 0) {
@@ -67,7 +67,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 return Promise.pure(order)
             }
             // check pi is there, it means the billing address is there.
-            if (CollectionUtils.isEmpty(order.paymentInstruments)) {
+            if (CollectionUtils.isEmpty(order.payments)) {
                 if (order.tentative) {
                     LOGGER.info('name=Skip_Calculate_Tax_Without_PI')
                     return Promise.pure(order)
@@ -150,7 +150,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
             }
         }
         // payment instrument
-        order.setPaymentInstruments(orderRepository.getPaymentInstrumentIds(order.id.value))
+        order.setPayments(orderRepository.getPayments(order.id.value))
         // discount
         order.setDiscounts(orderRepository.getDiscounts(order.id.value))
         // tax

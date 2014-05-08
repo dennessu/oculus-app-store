@@ -2,6 +2,7 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.id.UserCredentialVerifyAttemptId
 import com.junbo.common.id.UserId
+import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.util.CipherHelper
 import com.junbo.identity.core.service.validator.UserCredentialVerifyAttemptValidator
@@ -10,19 +11,29 @@ import com.junbo.identity.data.identifiable.CredentialType
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.UserCredentialVerifyAttemptRepository
 import com.junbo.identity.data.repository.UserPasswordRepository
+import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.data.repository.UserPinRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.UserPin
+import com.junbo.identity.spec.v1.model.Email
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
+import com.junbo.identity.spec.v1.model.UserPersonalInfo
+import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
 import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
 import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
 import com.junbo.identity.spec.v1.option.list.UserPinListOptions
 import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.transaction.AsyncTransactionTemplate
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.transaction.PlatformTransactionManager
+import org.springframework.transaction.TransactionDefinition
+import org.springframework.transaction.TransactionStatus
+import org.springframework.transaction.support.TransactionCallback
+import org.springframework.util.CollectionUtils
 
 import java.util.regex.Pattern
 
@@ -32,22 +43,24 @@ import java.util.regex.Pattern
 @CompileStatic
 class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAttemptValidator {
 
+    private static final String MAIL_IDENTIFIER = "@"
+
     private UserCredentialVerifyAttemptRepository userLoginAttemptRepository
-
     private UserRepository userRepository
-
     private UserPasswordRepository userPasswordRepository
-
     private UserPinRepository userPinRepository
+    private UserPersonalInfoRepository userPersonalInfoRepository
 
     private UsernameValidator usernameValidator
 
     private List<Pattern> allowedIpAddressPatterns
-
     private Integer userAgentMinLength
     private Integer userAgentMaxLength
+    private Integer maxRetryCount
 
     private NormalizeService normalizeService
+
+    private PlatformTransactionManager transactionManager
 
     @Override
     Promise<UserCredentialVerifyAttempt> validateForGet(UserCredentialVerifyAttemptId userLoginAttemptId) {
@@ -106,14 +119,17 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             throw AppErrors.INSTANCE.fieldNotWritable('succeeded').exception()
         }
 
-        return userRepository.getUserByCanonicalUsername(normalizeService.normalize(userLoginAttempt.username))
-                .then { User user ->
+        return findUser(userLoginAttempt).then { User user ->
             if (user == null) {
                 throw AppErrors.INSTANCE.userNotFound(userLoginAttempt.username).exception()
             }
 
             if (user.status != UserStatus.ACTIVE.toString()) {
-                throw AppErrors.INSTANCE.userInInvalidStatus(userLoginAttempt.userId).exception()
+                throw AppErrors.INSTANCE.userInInvalidStatus(userLoginAttempt.username).exception()
+            }
+
+            if (user.isAnonymous == true) {
+                throw AppErrors.INSTANCE.userInInvalidStatus(userLoginAttempt.username).exception()
             }
 
             userLoginAttempt.setUserId((UserId)user.id)
@@ -126,7 +142,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                         userId: (UserId)user.id,
                         active: true
                 )).then { List<UserPassword> userPasswordList ->
-                    if (userPasswordList == null || userPasswordList.size() > 1) {
+                    if (CollectionUtils.isEmpty(userPasswordList) || userPasswordList.size() > 1) {
                         throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
                     }
 
@@ -145,7 +161,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                         userLoginAttempt.setSucceeded(false)
                     }
 
-                    return Promise.pure(null)
+                    return checkMaximumRetryCount(user, userLoginAttempt)
                 }
             }
             else {
@@ -172,9 +188,86 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                         userLoginAttempt.setSucceeded(false)
                     }
 
-                    return Promise.pure(null)
+                    return checkMaximumRetryCount(user, userLoginAttempt)
                 }
             }
+        }
+    }
+
+    private Promise<User> findUser(UserCredentialVerifyAttempt userLoginAttempt) {
+        if (isEmail(userLoginAttempt.username)) {
+            return userPersonalInfoRepository.searchByEmail(userLoginAttempt.username).
+                then { List<UserPersonalInfo> personalInfos ->
+                    if (CollectionUtils.isEmpty(personalInfos)) {
+                        throw AppErrors.INSTANCE.userNotFound(userLoginAttempt.username).exception()
+                    }
+
+                    UserPersonalInfo personalInfo = personalInfos.find { UserPersonalInfo userPersonalInfo ->
+                        Email email = (Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Email)
+                        return email.isValidated == true
+                    }
+
+                    if (personalInfo == null) {
+                        throw AppErrors.INSTANCE.userNotFound(userLoginAttempt.username).exception()
+                    }
+
+                    return userRepository.get(personalInfo.userId).then { User user ->
+                        if (CollectionUtils.isEmpty(user.emails)) {
+                            throw AppErrors.INSTANCE.userNotFound(userLoginAttempt.username).exception()
+                        }
+
+                        if (user.emails.any { UserPersonalInfoLink link ->
+                            return link.value == personalInfo.id && (link.isDefault == true)
+                        }
+                        ) {
+                            return Promise.pure(user)
+                        }
+
+                        throw AppErrors.INSTANCE.fieldInvalid('username', 'Only primary mail can login').exception()
+                    }
+                }
+        } else {
+            return userRepository.getUserByCanonicalUsername(normalizeService.normalize(userLoginAttempt.username))
+        }
+    }
+
+    private Promise<Void> checkMaximumRetryCount(User user, UserCredentialVerifyAttempt userLoginAttempt) {
+        if (userLoginAttempt.succeeded == true) {
+            return Promise.pure(null)
+        }
+
+        return userLoginAttemptRepository.search(new UserCredentialAttemptListOptions(
+                userId: (UserId)user.id,
+                type: userLoginAttempt.type
+        )).then { List<UserCredentialVerifyAttempt> attemptList ->
+            if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxRetryCount) {
+                return Promise.pure(null)
+            }
+
+            attemptList.sort(new Comparator<UserCredentialVerifyAttempt>() {
+                @Override
+                int compare(UserCredentialVerifyAttempt o1, UserCredentialVerifyAttempt o2) {
+                    return o2.createdTime <=> o1.createdTime
+                }
+            })
+
+            int index = 0
+            for ( ; index < maxRetryCount; index++) {
+                if (attemptList.get(index).succeeded == true) {
+                    break
+                }
+            }
+
+            // Reach maximum count, lock account
+            if (index == maxRetryCount) {
+                user.status = UserStatus.SUSPEND.toString()
+                return createInNewTran(user).then {
+                    throw AppErrors.INSTANCE.fieldInvalid('userId',
+                            'User reaches maximum allowed retry count').exception()
+                }
+            }
+
+            return Promise.pure(null)
         }
     }
 
@@ -216,6 +309,23 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
         if (userLoginAttempt.value == null) {
             throw AppErrors.INSTANCE.fieldRequired('value').exception()
         }
+    }
+
+    Promise<User> createInNewTran(User user) {
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager)
+        template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
+        return template.execute(new TransactionCallback<Promise<User>>() {
+            Promise<User> doInTransaction(TransactionStatus txnStatus) {
+                return userRepository.update(user)
+            }
+        })
+    }
+
+    private boolean isEmail(String value) {
+        if (value.contains(MAIL_IDENTIFIER)) {
+            return true
+        }
+        return false
     }
 
     @Required
@@ -263,5 +373,20 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     @Required
     void setNormalizeService(NormalizeService normalizeService) {
         this.normalizeService = normalizeService
+    }
+
+    @Required
+    void setMaxRetryCount(Integer maxRetryCount) {
+        this.maxRetryCount = maxRetryCount
+    }
+
+    @Required
+    void setTransactionManager(PlatformTransactionManager transactionManager) {
+        this.transactionManager = transactionManager
+    }
+
+    @Required
+    void setUserPersonalInfoRepository(UserPersonalInfoRepository userPersonalInfoRepository) {
+        this.userPersonalInfoRepository = userPersonalInfoRepository
     }
 }

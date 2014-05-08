@@ -10,6 +10,7 @@ import com.junbo.billing.core.publisher.AsyncChargePublisher
 import com.junbo.billing.core.validator.BalanceValidator
 import com.junbo.billing.db.repository.BalanceRepository
 import com.junbo.billing.spec.enums.BalanceStatus
+import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.enums.EventActionType
 import com.junbo.billing.spec.enums.TaxStatus
 import com.junbo.billing.spec.error.AppErrors
@@ -80,6 +81,10 @@ class BalanceServiceImpl implements BalanceService {
             return Promise.pure(tmpBalance)
         }
 
+        if (balance.type == BalanceType.REFUND.name()) {
+            balanceValidator.validateRefund(balance)
+        }
+
         return balanceValidator.validateUser(balance.userId).then {
             return balanceValidator.validatePI(balance.piId).then { PaymentInstrument pi ->
                 balanceValidator.validateBalanceType(balance.type)
@@ -94,7 +99,7 @@ class BalanceServiceImpl implements BalanceService {
 
                 return taxService.calculateTax(balance).then { Balance taxedBalance ->
                     computeTotal(taxedBalance)
-                    balanceValidator.validateBalanceTotal(taxedBalance.totalAmount)
+                    balanceValidator.validateBalanceTotal(taxedBalance)
 
                     // set the balance status to INIT
                     taxedBalance.setStatus(BalanceStatus.INIT.name())
@@ -106,8 +111,14 @@ class BalanceServiceImpl implements BalanceService {
 
                     if (savedBalance.isAsyncCharge) {
                         LOGGER.info('name=Async_Charge_Balance. balance id: ' + savedBalance.balanceId.value)
-                        asyncChargePublisher.publish(savedBalance.balanceId.toString())
-                        return Promise.pure(savedBalance)
+                        try {
+                            asyncChargePublisher.publish(savedBalance.balanceId.toString())
+                        } catch (Exception ex) {
+                            LOGGER.error('name=Async_Charge_Balance_Queue_Error. ', ex)
+                            return Promise.pure(savedBalance)
+                        }
+                        savedBalance.setStatus(BalanceStatus.QUEUING.name())
+                        return Promise.pure(balanceRepository.updateBalance(savedBalance, EventActionType.QUEUE))
                     }
                     return transactionService.processBalance(savedBalance).recover { Throwable throwable ->
                         updateAndCommitBalance(savedBalance, EventActionType.CHARGE)
@@ -132,7 +143,7 @@ class BalanceServiceImpl implements BalanceService {
 
                 return taxService.calculateTax(balance).then { Balance taxedBalance ->
                     computeTotal(taxedBalance)
-                    balanceValidator.validateBalanceTotal(taxedBalance.totalAmount)
+                    balanceValidator.validateBalanceTotal(taxedBalance)
 
                     return Promise.pure(taxedBalance)
                 }
@@ -144,7 +155,7 @@ class BalanceServiceImpl implements BalanceService {
     Promise<Balance> captureBalance(Balance balance) {
 
         Balance savedBalance = balanceValidator.validateBalanceId(balance.balanceId)
-        balanceValidator.validateBalanceStatus(balance.status, BalanceStatus.PENDING_CAPTURE)
+        balanceValidator.validateBalanceStatus(balance.status, BalanceStatus.PENDING_CAPTURE.name())
         balanceValidator.validateTransactionNotEmpty(savedBalance.balanceId, savedBalance.transactions)
 
         if (balance.totalAmount != null && balance.totalAmount > savedBalance.totalAmount) {
@@ -165,7 +176,7 @@ class BalanceServiceImpl implements BalanceService {
     Promise<Balance> confirmBalance(Balance balance) {
 
         Balance savedBalance = balanceValidator.validateBalanceId(balance.balanceId)
-        balanceValidator.validateBalanceStatus(balance.status, BalanceStatus.UNCONFIRMED)
+        balanceValidator.validateBalanceStatus(savedBalance.status, BalanceStatus.UNCONFIRMED.name())
         balanceValidator.validateTransactionNotEmpty(savedBalance.balanceId, savedBalance.transactions)
 
         return transactionService.confirmBalance(savedBalance).recover { Throwable throwable ->
@@ -179,10 +190,34 @@ class BalanceServiceImpl implements BalanceService {
     }
 
     @Override
+    Promise<Balance> checkBalance(Balance balance) {
+
+        Balance savedBalance = balanceValidator.validateBalanceId(balance.balanceId)
+        balanceValidator.validateBalanceStatus(savedBalance.status,
+                [BalanceStatus.UNCONFIRMED.name(), BalanceStatus.AWAITING_PAYMENT.name(), BalanceStatus.INIT.name()])
+
+        if (savedBalance.status == BalanceStatus.INIT.name()) {
+            return processAsyncBalance(balance)
+        } else {
+            balanceValidator.validateTransactionNotEmpty(savedBalance.balanceId, savedBalance.transactions)
+
+            return transactionService.checkBalance(savedBalance).recover { Throwable throwable ->
+                updateAndCommitBalance(savedBalance, EventActionType.CONFIRM)
+                throw throwable
+            }.then {
+                //persist the balance entity
+                Balance resultBalance = balanceRepository.updateBalance(savedBalance, EventActionType.CHECK)
+                return Promise.pure(resultBalance)
+            }
+        }
+    }
+
+    @Override
     Promise<Balance> processAsyncBalance(Balance balance) {
 
         Balance savedBalance = balanceValidator.validateBalanceId(balance.balanceId)
-        balanceValidator.validateBalanceStatus(balance.status, BalanceStatus.INIT)
+        balanceValidator.validateBalanceStatus(savedBalance.status,
+                [BalanceStatus.INIT.name(), BalanceStatus.QUEUING.name()])
         if (savedBalance.isAsyncCharge != true) {
             throw AppErrors.INSTANCE.notAsyncChargeBalance(balance.balanceId.value.toString()).exception()
         }

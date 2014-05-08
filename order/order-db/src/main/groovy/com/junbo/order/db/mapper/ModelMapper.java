@@ -6,7 +6,6 @@
 
 package com.junbo.order.db.mapper;
 
-import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.oom.core.Mapper;
 import com.junbo.oom.core.Mapping;
 import com.junbo.oom.core.MappingContext;
@@ -77,8 +76,15 @@ public interface ModelMapper {
     })
     OrderEvent toOrderEventModel(OrderEventEntity orderEventEntity, MappingContext context);
 
-    OrderPaymentInfoEntity toOrderPaymentInfoEntity(PaymentInstrumentId paymentInstrumentId, MappingContext context);
-    PaymentInstrumentId toPaymentInstrumentId(OrderPaymentInfoEntity orderPaymentInfoEntity, MappingContext context);
+    @Mappings({
+            @Mapping(source = "paymentInstrument", target = "paymentInstrumentId", excluded = false, bidirectional = false),
+    })
+    OrderPaymentInfoEntity toOrderPaymentInfoEntity(PaymentInfo paymentInfo, MappingContext context);
+
+    @Mappings({
+            @Mapping(source = "paymentInstrumentId", target = "paymentInstrument", excluded = false, bidirectional = false),
+    })
+    PaymentInfo toPaymentInfo(OrderPaymentInfoEntity orderPaymentInfoEntity, MappingContext context);
 
     @Mappings({
             @Mapping(source = "id", target = "eventId", excluded = false, bidirectional = false),

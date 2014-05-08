@@ -3,10 +3,6 @@
         <td>Item Id</td>
         <td>{{ item.self.id }}</td>
     </tr>
-    <tr>
-        <td style="width: 200px;">Item Name *</td>
-        <td><input type="text" class="form-control required" ng-model="item.name" required /></td>
-    </tr>
     <!--tr>
         <td>Developer *</td>
         <td>
@@ -14,13 +10,32 @@
         </td>
     </tr-->
     <tr>
-        <td>Type *</td>
+        <td style="width: 200px;">Type *</td>
         <td>
             <select ng-model="item.type" ng-options="itemType for itemType in itemTypes" required />
             </select>
         </td>
     </tr>
-    <tr ng-repeat="(key, value) in item.properties">
+    <tr>
+        <td>Rollup Package Name</td>
+        <td><input type="text" class="form-control required" ng-model="item.rollupPackageName" /></td>
+    </tr>
+    <tr>
+        <td>Package Name</td>
+        <td><input type="text" class="form-control required" ng-model="item.packageName" /></td>
+    </tr>
+    <tr>
+        <td>Genres</td>
+        <td>
+            <div>
+                <label ng-repeat="genre in genres">
+                    <input type="checkbox" checklist-model="item.genres" checklist-value="genre" class="chooseItem">{{ genre }}
+                </label>
+            </div>
+        </td>
+    </tr>
+
+    <!--tr ng-repeat="(key, value) in item.properties">
         <td>{{ metaDefinitions[key].display }}
             &nbsp;<label ng-if="metaDefinitions[key].required=='true'">*</label>
         </td>
@@ -42,5 +57,5 @@
                 </label>
             </div>
         </td>
-    </tr>
+    </tr-->
 </table>

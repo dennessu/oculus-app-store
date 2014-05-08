@@ -24,6 +24,7 @@ public abstract class ReloadableConfig<T> {
     private String key;
     private volatile String value;
     private volatile T parsedValue;
+    private ConfigService.ConfigListener configListener;
 
     //endregion
 
@@ -33,6 +34,10 @@ public abstract class ReloadableConfig<T> {
 
     public String getRaw() {
         return value;
+    }
+
+    public void setConfigListener(ConfigService.ConfigListener listener) {
+        this.configListener = listener;
     }
 
     @Override
@@ -69,6 +74,10 @@ public abstract class ReloadableConfig<T> {
         try {
             parsedValue = parseValue(newValue);
             value = newValue;
+
+            if (configListener != null) {
+                configListener.onConfigChanged(this.key, newValue);
+            }
         }
         catch (Exception ex) {
             logger.warn(String.format("ReloadableConfig %s failed to parse new value: %s, using old value %s.",

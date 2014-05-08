@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 
+import javax.transaction.Transactional
 import javax.ws.rs.core.UriBuilder
 import javax.ws.rs.core.UriInfo
 
@@ -27,6 +28,7 @@ import javax.ws.rs.core.UriInfo
  */
 @CompileStatic
 @Component
+@Transactional
  class EmailTemplateServiceImpl implements EmailTemplateService {
 
     @Autowired
@@ -51,7 +53,7 @@ import javax.ws.rs.core.UriInfo
     }
 
     Promise<EmailTemplate> putEmailTemplate(Long id, EmailTemplate template) {
-        templateValidator.validateUpdate(template)
+        templateValidator.validateUpdate(template, id)
         template.setId(new EmailTemplateId(id))
         this.build(template)
         return Promise.pure(templateRepository.updateEmailTemplate(template))

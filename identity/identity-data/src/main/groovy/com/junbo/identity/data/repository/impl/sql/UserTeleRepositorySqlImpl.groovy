@@ -1,5 +1,7 @@
 package com.junbo.identity.data.repository.impl.sql
 
+import com.junbo.common.id.UserId
+import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.id.UserTeleId
 import com.junbo.identity.data.dao.UserTeleDAO
 import com.junbo.identity.data.mapper.ModelMapper
@@ -19,10 +21,11 @@ class UserTeleRepositorySqlImpl implements UserTeleRepository {
     private ModelMapper modelMapper
 
     @Override
-    Promise<UserTeleCode> findActiveTeleCode(Long userId, String phoneNumber) {
-        def entity = userTeleDAO.getActiveUserTeleCode(userId, phoneNumber)
+    Promise<List<UserTeleCode>> searchTeleCode(UserId userId, UserPersonalInfoId phoneNumber) {
+        // def entity = userTeleDAO.getActiveUserTeleCode(userId, phoneNumber)
 
-        return get(new UserTeleId(entity.id))
+        // return get(new UserTeleId(entity.id))
+        return Promise.pure(null)
     }
 
     @Override

@@ -16,15 +16,16 @@ dependencies {
     compile (libraries.common_lib)
 
     compile (libraries.asyncclient)
-    compile (libraries.oom_processor)
+    processor junboProject(':oom-processor')
 
-    compile (libraries.oom)
+    compile junboProject(':oom-core')
     compile (libraries.jersey_common)
-    compile ('com.junbo.authorization:authorization-lib:0.0.1-SNAPSHOT')
-    compile('com.junbo.oauth:oauth-spec:0.0.1-SNAPSHOT')
+    compile junboProject(':authorization-lib')
+    compile junboProject(':oauth-spec')
 
-    compile project(':identity-core')
-    compile project(':identity-spec')
-    compile project(':identity-common')
-    compile project(':identity-data')
+    compile junboProject(':identity-core')
+    compile junboProject(':identity-spec')
+    compile junboProject(':identity-common')
+    compile junboProject(':identity-data')
+    compile junboProject(':identity-clientproxy')
 }

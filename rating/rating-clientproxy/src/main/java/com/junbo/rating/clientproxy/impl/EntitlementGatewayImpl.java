@@ -28,7 +28,7 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
     private EntitlementResource entitlementResource;
 
     @Override
-    public Map<Long, Long> getEntitlements(Long userId, Set<Long> definitionIds) {
+    public Set<Long> getEntitlements(Long userId, Set<Long> definitionIds) {
         Set<EntitlementDefinitionId> entitlementDefinitionIds = new HashSet<>();
         for (Long definitionId : definitionIds) {
             entitlementDefinitionIds.add(new EntitlementDefinitionId(definitionId));
@@ -41,18 +41,21 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
         pagingOption.setStart(Constants.DEFAULT_PAGE_START);
         pagingOption.setCount(Constants.DEFAULT_PAGE_SIZE);
 
-        Map<Long, Long> result = new HashMap<>();
+        Set<Long> result = new HashSet<>();
         while(true) {
             List<Entitlement> entitlements = new ArrayList<Entitlement>();
             try {
                 entitlements.addAll(
-                        entitlementResource.searchEntitlements(param, pagingOption).wrapped().get().getItems());
+                        entitlementResource.searchEntitlements(
+                                param, pagingOption).wrapped().get().getItems());
             } catch (Exception e) {
                 throw AppErrors.INSTANCE.entitlementGatewayError().exception();
             }
+
             for (Entitlement entitlement : entitlements) {
-                result.put(entitlement.getEntitlementDefinitionId(), entitlement.getEntitlementId());
+                result.add(entitlement.getEntitlementDefinitionId());
             }
+
             pagingOption.setStart(pagingOption.getStart() + Constants.DEFAULT_PAGE_SIZE);
             if (entitlements.size() < Constants.DEFAULT_PAGE_SIZE) {
                 break;

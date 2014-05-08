@@ -18,6 +18,7 @@
         <constructor-arg name="queryParamTranscoder">
             <bean class="com.junbo.common.json.QueryParamTranscoderImpl"/>
         </constructor-arg>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
     <bean id="userEntitlementClient" class="com.junbo.entitlement.spec.resource.proxy.UserEntitlementResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
@@ -31,5 +32,6 @@
         <constructor-arg name="queryParamTranscoder">
             <bean class="com.junbo.common.json.QueryParamTranscoderImpl"/>
         </constructor-arg>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 </beans>

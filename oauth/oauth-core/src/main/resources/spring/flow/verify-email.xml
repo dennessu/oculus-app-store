@@ -9,7 +9,8 @@
         <wf:view-state id="REDIRECT_TO_VERIFY">
             <wf:on-render>
                 <wf:action ref="validateLocale" />
-                <wf:action ref="redirectToVerifyResult"/>
+                <wf:action ref="validateEmailVerifyCode"/>
+                <wf:action ref="redirectToEmailVerifyResult"/>
             </wf:on-render>
             <wf:transition on="*" to="EMAIL_VERIFY_VIEW"/>
         </wf:view-state>
@@ -30,7 +31,7 @@
 
     <bean id="emailVerifyView" class="com.junbo.oauth.core.view.EmailVerifyView"/>
 
-    <bean id="redirectToVerifyResult" class="com.junbo.oauth.core.view.RedirectToVerifyResult">
+    <bean id="redirectToEmailVerifyResult" class="com.junbo.oauth.core.view.RedirectToPage">
         <property name="pageUrl" value="${oauth.core.portal.verifyUri}"/>
     </bean>
 </beans>

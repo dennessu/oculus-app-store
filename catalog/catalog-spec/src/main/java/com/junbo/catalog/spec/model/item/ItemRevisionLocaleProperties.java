@@ -38,6 +38,8 @@ public class ItemRevisionLocaleProperties {
     String knownBugs;
     @ApiModelProperty(position = 27, required = false, value = "Support email")
     private String supportEmail;
+    @ApiModelProperty(position = 28, required = false, value = "Website for the item revision resource")
+    private String website;
     @ApiModelProperty(position = 31, required = false, value = "Manual document for the item revision resource")
     private String manualDocument;
     @ApiModelProperty(position = 32, required = false, value = "Community forum link of the item revision resource")
@@ -137,6 +139,14 @@ public class ItemRevisionLocaleProperties {
 
     public void setSupportEmail(String supportEmail) {
         this.supportEmail = supportEmail;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
     }
 
     public String getManualDocument() {

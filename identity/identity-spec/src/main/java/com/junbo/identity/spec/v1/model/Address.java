@@ -153,4 +153,32 @@ public class Address{
     public void setStreet3(String street3) {
         this.street3 = street3;
     }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+
+        Address address = (Address)obj;
+        if (this.street1 != address.street1) return false;
+        if (this.street2 != address.street2) return false;
+        if (this.street3 != address.street3) return false;
+        if (this.city != address.city) return false;
+        if (this.postalCode != address.postalCode) return false;
+        if (this.countryName != address.countryName) return false;
+        if (this.countryId != address.countryId) return false;
+        if (this.firstName != address.firstName) return false;
+        if (this.lastName != address.lastName) return false;
+        if (this.phoneNumber != address.phoneNumber) return false;
+        if (this.isWellFormed != address.isWellFormed) return false;
+        if (this.isNormalized != address.isNormalized) return false;
+        if (this.subCountryCode != address.subCountryCode) return false;
+        if (this.subCountryName != address.subCountryName) return false;
+
+        return true;
+    }
 }

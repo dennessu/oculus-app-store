@@ -2,12 +2,12 @@ apply plugin: 'groovy'
 apply plugin: 'java'
 
 dependencies {
-    compile project(":entitlement-spec")
-    compile project(":entitlement-common")
+    compile junboProject(":entitlement-spec")
+    compile junboProject(":entitlement-common")
 
-    compile (libraries.common_lib)
-    compile (libraries.common_sharding)
-    compile (libraries.common_configuration)
+    compile junboProject(':common-lib')
+    compile junboProject(':common-sharding')
+    compile junboProject(':common-configuration')
 
     compile (libraries.persistence_api)
     compile (libraries.validation_api)

@@ -5,11 +5,9 @@
  */
 
 package com.junbo.order.core.impl.order
-
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.common.id.OfferId
-import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
@@ -17,6 +15,7 @@ import com.junbo.order.clientproxy.model.OrderOfferRevision
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.OrderItem
+import com.junbo.order.spec.model.PaymentInfo
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -51,16 +50,16 @@ class OrderServiceContextBuilder {
             return Promise.pure(context.paymentInstruments)
         }
 
-        List<PaymentInstrumentId> piids = context.order.paymentInstruments
+        List<PaymentInfo> payments = context.order.payments
 
-        if (piids == null || piids.isEmpty()) {
+        if (payments == null || payments.isEmpty()) {
             return Promise.pure(null)
         }
 
         List<PaymentInstrument> pis = []
-        return Promise.each(piids.iterator()) { PaymentInstrumentId piid ->
+        return Promise.each(payments.iterator()) { PaymentInfo paymentInfo ->
             return facadeContainer.paymentFacade.
-                    getPaymentInstrument(piid.value).syncRecover { Throwable throwable ->
+                    getPaymentInstrument(paymentInfo.paymentInstrument.value).syncRecover { Throwable throwable ->
                 LOGGER.error('name=Order_GetPaymentInstrument_Error', throwable)
                 // TODO read the payment error
                 throw AppErrors.INSTANCE.paymentConnectionError().exception()

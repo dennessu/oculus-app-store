@@ -6,6 +6,7 @@
 
 package com.junbo.entitlement.core.service;
 
+import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.common.id.EntitlementDefinitionId;
 import com.junbo.common.id.UserId;
 import com.junbo.entitlement.common.lib.CloneUtils;
@@ -51,7 +52,23 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     public Entitlement addEntitlement(Entitlement entitlement) {
         fillCreate(entitlement);
         validateCreate(entitlement);
-        return entitlementRepository.insert(entitlement);
+        return merge(entitlement);
+    }
+
+    private Entitlement merge(Entitlement entitlement) {
+        EntitlementDefinition def = getDef(entitlement.getEntitlementDefinitionId());
+        if (!def.getConsumable()) {
+            return entitlementRepository.insert(entitlement);
+        }
+
+        Entitlement existing = entitlementRepository.get(entitlement.getUserId(), entitlement.getEntitlementDefinitionId());
+        if (existing == null) {
+            return entitlementRepository.insert(entitlement);
+        }
+
+        existing.setIsBanned(false);
+        existing.setUseCount(existing.getUseCount() + entitlement.getUseCount());
+        return entitlementRepository.update(existing);
     }
 
     @Override

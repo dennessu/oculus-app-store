@@ -54,12 +54,12 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
                     entitlementSearchParam.getIsBanned(), "=", queryStringBuilder, params);
         }
 
-//        if (!StringUtils.isEmpty(entitlementSearchParam.getType() != null)) {
-//            addSingleParam("type", "type",
-//                    entitlementSearchParam.getType(), "=", queryStringBuilder, params);
-//        } else {
-//            addSingleParam("type", "type", EntitlementConsts.NO_TYPE, "=", queryStringBuilder, params);
-//        }
+        if (!StringUtils.isEmpty(entitlementSearchParam.getType() != null)) {
+            addSingleParam("type", "type",
+                    entitlementSearchParam.getType(), "=", queryStringBuilder, params);
+        } else {
+            addSingleParam("type", "type", EntitlementConsts.NO_TYPE, "=", queryStringBuilder, params);
+        }
 
         if (!Boolean.TRUE.equals(entitlementSearchParam.getIsBanned())) {
             Date now = EntitlementContext.current().getNow();
@@ -122,6 +122,16 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
     public EntitlementEntity getByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
         String queryString = "from EntitlementEntity where trackingUuid = (:trackingUuid) and isDeleted = false";
         Query q = currentSession(shardMasterId).createQuery(queryString).setParameter("trackingUuid", trackingUuid);
+        return (EntitlementEntity) q.uniqueResult();
+    }
+
+    @Override
+    public EntitlementEntity get(Long userId, Long entitlementDefinitionId) {
+        String queryString = "from EntitlementEntity where userId = (:userId)" +
+                " and entitlementDefinitionId = (:entitlementDefinitionId) and isDeleted = false";
+        Query q = currentSession(userId).createQuery(queryString)
+                .setLong("userId", userId)
+                .setLong("entitlementDefinitionId", entitlementDefinitionId);
         return (EntitlementEntity) q.uniqueResult();
     }
 }

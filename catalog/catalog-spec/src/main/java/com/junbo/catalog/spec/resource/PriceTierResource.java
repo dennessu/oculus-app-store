@@ -8,6 +8,7 @@ package com.junbo.catalog.spec.resource;
 
 import com.junbo.catalog.spec.model.pricetier.PriceTier;
 import com.junbo.catalog.spec.model.pricetier.PriceTiersGetOptions;
+import com.junbo.common.filter.annotations.CacheMaxAge;
 import com.junbo.common.id.PriceTierId;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
@@ -18,6 +19,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Price tier resource.
@@ -28,12 +30,13 @@ import javax.ws.rs.core.Response;
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
 public interface PriceTierResource {
-
+    @CacheMaxAge(duration = 1, unit = TimeUnit.HOURS)
     @ApiOperation("Get a price tier")
     @GET
     @Path("/{tierId}")
     Promise<PriceTier> getPriceTier(@PathParam("tierId") PriceTierId tierId);
 
+    @CacheMaxAge(duration = 1, unit = TimeUnit.HOURS)
     @ApiOperation("Get all price tiers")
     @GET
     @Path("/")

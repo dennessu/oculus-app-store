@@ -17,16 +17,16 @@ dependencies {
     compile (libraries.hibernate_annotation)
     compile (libraries.postgresql)
 
-    compile (libraries.oom)
-    compile (libraries.common_sharding)
+    compile junboProject(':oom-core')
+    compile junboProject(':common-sharding')
     compile (libraries.bonecp_spring)
 
-    compile project(':cart-common')
-    compile project(':cart-core')
+    compile junboProject(':cart-common')
+    compile junboProject(':cart-core')
 
     testCompile (libraries.spring_test)
     testCompile (libraries.common_lang)
     testCompile (libraries.easy_mock)
 
-    processor (libraries.oom_processor)
+    processor junboProject(':oom-processor')
 }

@@ -13,12 +13,12 @@ dependencies {
 
     compile(libraries.jersey_server)
 
-    compile(libraries.common_lib)
+    compile junboProject(':common-lib')
 
     testCompile (libraries.guava)
     testCompile (libraries.spring_test)
 
-    compile project(':ewallet-spec')
-    compile project(':ewallet-db')
-    compile project(':ewallet-clientproxy')
+    compile junboProject(':ewallet-spec')
+    compile junboProject(':ewallet-db')
+    compile junboProject(':ewallet-clientproxy')
 }

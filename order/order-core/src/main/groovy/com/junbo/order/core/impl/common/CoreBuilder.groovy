@@ -93,7 +93,7 @@ class CoreBuilder {
         balance.currency = order.currency.value
         balance.orderId = order.id
         balance.userId = order.user
-        balance.piId = order.paymentInstruments?.get(0)
+        balance.piId = order.payments?.get(0)?.paymentInstrument
         balance.trackingUuid = UUID.randomUUID()
         balance.shippingAddressId = order.shippingAddress
         balance.providerConfirmUrl = order.providerConfirmUrl

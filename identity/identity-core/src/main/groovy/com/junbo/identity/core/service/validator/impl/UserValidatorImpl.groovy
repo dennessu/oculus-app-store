@@ -1,6 +1,7 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.id.UserId
+import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.validator.TimezoneValidator
 import com.junbo.identity.core.service.validator.UserValidator
@@ -11,6 +12,7 @@ import com.junbo.identity.data.repository.LocaleRepository
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
+import com.junbo.identity.spec.v1.model.Email
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
@@ -18,6 +20,7 @@ import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.CollectionUtils
 
 /**
  * Created by kg on 3/17/14.
@@ -103,6 +106,8 @@ class UserValidatorImpl implements UserValidator {
                         return Promise.pure(null)
                     }
                 }
+
+                return Promise.pure(null)
             }
 
             return Promise.pure(null)
@@ -216,6 +221,10 @@ class UserValidatorImpl implements UserValidator {
         if (it.hasNext()) {
             UserPersonalInfoLink userPersonalInfoLink = it.next();
 
+            if (userPersonalInfoLink.isDefault == null) {
+                throw AppErrors.INSTANCE.fieldRequired('isDefault').exception()
+            }
+
             if (userPersonalInfoLink.value == null) {
                 throw AppErrors.INSTANCE.fieldRequired('value').exception()
             }
@@ -229,6 +238,15 @@ class UserValidatorImpl implements UserValidator {
                         if (type != null) {
                             if (userPersonalInfo.type != type) {
                                 throw AppErrors.INSTANCE.fieldInvalid(userPersonalInfoLink.value.toString()).exception()
+                            }
+                        }
+
+                        if (userPersonalInfoLink.isDefault == true) {
+                            // Only default email can be set as default.
+                            Email email = (Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Email)
+                            if (email.isValidated != true) {
+                                throw AppErrors.INSTANCE.fieldInvalid('value',
+                                        'Only validated email can be set default.').exception()
                             }
                         }
 
@@ -284,8 +302,20 @@ class UserValidatorImpl implements UserValidator {
         return Promise.pure(null)
     }
 
+    private void checkSinglePersonalInfoLink(List<UserPersonalInfoLink> links) {
+        if (links != null) {
+            Collection<UserPersonalInfoLink> defaultLinks = links.findAll { UserPersonalInfoLink link ->
+                return link.isDefault
+            }
+            if (!CollectionUtils.isEmpty(defaultLinks) && defaultLinks.size() > 1) {
+                throw AppErrors.INSTANCE.fieldInvalid('isDefault', 'Can only have one default.').exception()
+            }
+        }
+    }
+
     Promise<Void> validateAddresses(User user) {
         if (user.addresses != null) {
+            checkSinglePersonalInfoLink(user.addresses)
             return validateUserPersonalInfoLinkIterator(user.addresses.iterator(),
                     UserPersonalInfoType.ADDRESS.toString())
         }
@@ -295,6 +325,7 @@ class UserValidatorImpl implements UserValidator {
 
     Promise<Void> validateEmails(User user) {
         if (user.emails != null) {
+            checkSinglePersonalInfoLink(user.emails)
             return validateUserPersonalInfoLinkIterator(user.emails.iterator(),
                     UserPersonalInfoType.EMAIL.toString())
         }
@@ -303,6 +334,7 @@ class UserValidatorImpl implements UserValidator {
 
     Promise<Void> validatePhones(User user) {
         if (user.phones != null) {
+            checkSinglePersonalInfoLink(user.phones)
             return validateUserPersonalInfoLinkIterator(user.phones.iterator(), UserPersonalInfoType.PHONE.toString())
         }
 
@@ -327,6 +359,7 @@ class UserValidatorImpl implements UserValidator {
 
     Promise<Void> validateSMS(User user) {
         if (user.textMessages != null) {
+            checkSinglePersonalInfoLink(user.textMessages)
             return validateUserPersonalInfoLinkIterator(user.textMessages.iterator(),
                     UserPersonalInfoType.SMS.toString())
         }
@@ -335,6 +368,7 @@ class UserValidatorImpl implements UserValidator {
 
     Promise<Void> validateQQ(User user) {
         if (user.qqs != null) {
+            checkSinglePersonalInfoLink(user.qqs)
             return validateUserPersonalInfoLinkIterator(user.qqs.iterator(), UserPersonalInfoType.QQ.toString())
         }
         return Promise.pure(null)
@@ -342,6 +376,7 @@ class UserValidatorImpl implements UserValidator {
 
     Promise<Void> validateWhatsApp(User user) {
         if (user.whatsApps != null) {
+            checkSinglePersonalInfoLink(user.whatsApps)
             return validateUserPersonalInfoLinkIterator(user.whatsApps.iterator(),
                     UserPersonalInfoType.WHATSAPP.toString())
         }

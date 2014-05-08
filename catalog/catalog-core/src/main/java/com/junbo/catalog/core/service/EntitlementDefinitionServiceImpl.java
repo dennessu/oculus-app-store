@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -42,7 +43,7 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
 
     @Override
     public List<EntitlementDefinition> getEntitlementDefinitions(Long developerId, String clientId,
-                                                                 Set<String> groups, Set<String> tags, Set<String> types,
+                                                                 Long itemId, Set<String> tags, Set<String> types,
                                                                  Boolean isConsumable, PageableGetOptions pageMetadata) {
         checkDeveloper(developerId);
         Set<EntitlementType> typeSet = new HashSet<>();
@@ -55,26 +56,23 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
                 }
             }
         }
-        return entitlementDefinitionRepository.getByParams(developerId, clientId, groups, tags, typeSet, isConsumable, pageMetadata);
+        return entitlementDefinitionRepository.getByParams(developerId, clientId, itemId, tags, typeSet, isConsumable, pageMetadata);
     }
 
     @Override
     public Long createEntitlementDefinition(EntitlementDefinition entitlementDefinition) {
-        if (entitlementDefinition.getGroup() == null) {
-            entitlementDefinition.setGroup("");
-        }
         if (entitlementDefinition.getTag() == null) {
             entitlementDefinition.setTag("");
         }
         if (entitlementDefinition.getConsumable() == null) {
             entitlementDefinition.setConsumable(false);
         }
+        if (!StringUtils.isEmpty(entitlementDefinition.getRev())) {
+            throw AppErrors.INSTANCE.unnecessaryField("rev").exception();
+        }
         checkDeveloper(entitlementDefinition.getDeveloperId());
         checkInAppContext(entitlementDefinition.getInAppContext());
         return entitlementDefinitionRepository.create(entitlementDefinition);
-    }
-
-    private void checkInAppContext(List<String> inAppContext) {
     }
 
     @Override
@@ -99,15 +97,17 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
         checkDeveloper(existingEntitlementDefinition.getDeveloperId());
         checkInAppContext(entitlementDefinition.getInAppContext());
 
-
-        validateEquals(entitlementDefinition.getDeveloperId(),
-                existingEntitlementDefinition.getDeveloperId(), "developer");
+        validateEquals(entitlementDefinition.getRev(),
+                existingEntitlementDefinition.getRev(), "rev");
+        validateEquals(Utils.encodeId(entitlementDefinition.getDeveloperId()),
+                Utils.encodeId(existingEntitlementDefinition.getDeveloperId()), "developer");
         validateEquals(entitlementDefinition.getType(),
                 existingEntitlementDefinition.getType(), "type");
+        validateEquals(entitlementDefinition.getConsumable(),
+                existingEntitlementDefinition.getConsumable(), "isConsumable");
 
         existingEntitlementDefinition.setTag(entitlementDefinition.getTag());
-        existingEntitlementDefinition.setGroup(entitlementDefinition.getGroup());
-        existingEntitlementDefinition.setConsumable(entitlementDefinition.getConsumable());
+        existingEntitlementDefinition.setItemId(entitlementDefinition.getItemId());
         existingEntitlementDefinition.setInAppContext(entitlementDefinition.getInAppContext());
 
         return entitlementDefinitionRepository.update(existingEntitlementDefinition);
@@ -153,6 +153,9 @@ public class EntitlementDefinitionServiceImpl implements EntitlementDefinitionSe
         if (!equals) {
             throw AppErrors.INSTANCE.fieldNotMatch(fieldName, actual, expected).exception();
         }
+    }
+
+    private void checkInAppContext(List<String> inAppContext) {
     }
 
     private void checkDeveloper(Long developerId) {

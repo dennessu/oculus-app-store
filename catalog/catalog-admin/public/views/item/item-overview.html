@@ -1,0 +1,53 @@
+<h1>Item Overview</h1>
+
+<table class="table table-bordered vertical-table">
+    <tr>
+        <td style="width: 200px;">Item Id</td>
+        <td>{{ item.self.id }}</td>
+    </tr>
+    <tr>
+        <td>Type</td>
+        <td>{{ item.type }}</td>
+    </tr>
+    <tr>
+        <td>Rollup Package Name</td>
+        <td>{{ item.rollupPackageName }}</td>
+    </tr>
+    <tr>
+        <td>Package Name</td>
+        <td>{{ item.packageName }}</td>
+    </tr>
+    <tr>
+        <td>Current Revision</td>
+        <td><a href="#/items/{{item.self.id}}/revisions/{{item.currentRevision.id}}">{{ item.currentRevision.id }}</a></td>
+    </tr>
+    <tr>
+        <td>Revisions</td>
+        <td>
+            <a href="#/items/{{item.self.id}}/revisions" class="btn btn-small btn-default">View</a>&nbsp;&nbsp;&nbsp;&nbsp;
+            <a ng-click="newItemRevision(item)" class="btn btn-small btn-default">New Revision</a>
+        </td>
+    </tr>
+</table>
+
+<br/>
+<h4>Offers For the Item</h4>
+<table class="table table-bordered vertical-table">
+    <thead>
+        <tr>
+            <th style="min-width: 80px;">Offer Id</th>
+            <th>Published</th>
+            <th>Current Revision</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="offer in offers">
+            <td><a href="#/offers/{{ offer.self.id }}">{{ offer.self.id }}</a></td>
+            <td>{{ offer.isPublished }}</td>
+            <td><a href="#/offer-revisions/{{ offer.currentRevision.id }}">{{ offer.currentRevision.id }}</a></td>
+        </tr>
+    </tbody>
+</table>
+<div>
+    <a ng-click="newOffer(item)" class="btn btn-small btn-default">New Offer</a>
+</div>

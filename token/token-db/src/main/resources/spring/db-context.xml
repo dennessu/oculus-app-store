@@ -22,7 +22,7 @@
         <property name="maxPoolSize" value="${token.db.maxConnectionsPerPartition}"/>
         <property name="driverProperties">
             <props>
-                <prop key="url">${token.db.url}</prop>
+                <prop key="url">${token.db.jdbcUrls}</prop>
                 <prop key="user">${token.db.username}</prop>
                 <prop key="password">${token.db.password}</prop>
             </props>

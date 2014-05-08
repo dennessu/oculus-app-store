@@ -20,4 +20,21 @@ public class UserDOB {
     public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserDOB userDOB = (UserDOB) o;
+
+        if (birthday != null ? !birthday.equals(userDOB.birthday) : userDOB.birthday != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return birthday != null ? birthday.hashCode() : 0;
+    }
 }

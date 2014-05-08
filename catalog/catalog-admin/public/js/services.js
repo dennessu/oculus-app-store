@@ -7,60 +7,75 @@ var services = angular.module('catalog.services', ['ngResource']);
 // In this case it is a simple value service.
 services.value('version', '0.1');
 
-services.factory('OffersFactory', function ($resource) {
-    return $resource('/api/offers', {}, {
-        query: { method: 'GET', isArray: true },
+services.factory('OffersFactory', function ($resource, CONFIG) {
+    return $resource(CONFIG.baseUrl + 'offers', {}, {
+        query: { method: 'GET' },
         create: { method: 'POST' }
     })
 });
 
-services.factory('OfferFactory', function ($resource) {
-    return $resource('/api/offers/:id', {}, {
+services.factory('OfferFactory', function ($resource, CONFIG) {
+    return $resource(CONFIG.baseUrl + 'offers/:id', {}, {
         query: { method: 'GET' },
         update: { method: 'PUT', params: {id: '@id'} },
         delete: { method: 'DELETE', params: {id: '@id'} }
     })
 });
 
-services.factory('ItemsFactory', function ($resource) {
-    return $resource('/api/items', {}, {
-        query: { method: 'GET', isArray: true },
+services.factory('ItemsFactory', function ($resource, CONFIG) {
+    return $resource(CONFIG.baseUrl + 'items', {}, {
+        query: { method: 'GET'},
         create: { method: 'POST' }
     })
 });
 
-services.factory('ItemFactory', function ($resource) {
-    return $resource('/api/items/:id', {}, {
+services.factory('ItemRevisionsFactory', function ($resource, CONFIG) {
+    return $resource(CONFIG.baseUrl + 'item-revisions', {}, {
+        query: { method: 'GET' },
+        create: { method: 'POST' }
+    })
+});
+
+services.factory('ItemRevisionFactory', function ($resource, CONFIG) {
+    return $resource(CONFIG.baseUrl + 'item-revisions/:id', {}, {
         query: { method: 'GET' },
         update: { method: 'PUT', params: {id: '@id'} },
         delete: { method: 'DELETE', params: {id: '@id'} }
     })
 });
 
-services.factory('AttributesFactory', function ($resource) {
-    return $resource('/api/attributes', {}, {
-        query: { method: 'GET', isArray: true },
-        create: { method: 'POST' }
-    })
-});
-
-services.factory('AttributeFactory', function ($resource) {
-    return $resource('/api/attributes/:id', {}, {
+services.factory('ItemFactory', function ($resource, CONFIG) {
+    return $resource(CONFIG.baseUrl + 'items/:id', {}, {
         query: { method: 'GET' },
         update: { method: 'PUT', params: {id: '@id'} },
         delete: { method: 'DELETE', params: {id: '@id'} }
     })
 });
 
-services.factory('PriceTiersFactory', function ($resource) {
-    return $resource('/api/price-tiers', {}, {
-        query: { method: 'GET', isArray: true },
+services.factory('AttributesFactory', function ($resource, CONFIG) {
+    return $resource(CONFIG.baseUrl + 'attributes', {}, {
+        query: { method: 'GET' },
         create: { method: 'POST' }
     })
 });
 
-services.factory('PriceTierFactory', function ($resource) {
-    return $resource('/api/price-tiers/:id', {}, {
+services.factory('AttributeFactory', function ($resource, CONFIG) {
+    return $resource(CONFIG.baseUrl + 'attributes/:id', {}, {
+        query: { method: 'GET' },
+        update: { method: 'PUT', params: {id: '@id'} },
+        delete: { method: 'DELETE', params: {id: '@id'} }
+    })
+});
+
+services.factory('PriceTiersFactory', function ($resource, CONFIG) {
+    return $resource(CONFIG.baseUrl + 'price-tiers', {}, {
+        query: { method: 'GET' },
+        create: { method: 'POST' }
+    })
+});
+
+services.factory('PriceTierFactory', function ($resource, CONFIG) {
+    return $resource(CONFIG.baseUrl + 'price-tiers/:id', {}, {
         query: { method: 'GET' },
         update: { method: 'PUT', params: {id: '@id'} },
         delete: { method: 'DELETE', params: {id: '@id'} }
@@ -106,18 +121,10 @@ services.factory('Developer', function() {
 
 services.factory('MetaFactory', function() {
     return  {
-        itemMeta: {
-            "shortDescription": { "display": "Short Description", "controlType": "TEXT_INPUT", "required": "false"},
-            "longDescription": { "display": "Long Description", "controlType": "TEXT_INPUT", "required": "true"},
-            "platforms": { "display": "Platform", "controlType": "MULTI_SELECT", "allowedValues":["PC", "Mac", "Linux"], "required": "false"},
-            "changeNotes": { "display": "Change Notes", "controlType": "TEXT_INPUT", "required": "false"},
-            "website": { "display": "Website", "controlType": "URL_INPUT", "required": "false"},
-            "downloadlink": { "display": "Download Link", "controlType": "URL_INPUT", "required": "true"},
-            "minSystemRequirements": { "display": "Minimum System Requirements", "controlType": "TEXT_INPUT", "required": "false"},
-            "maxSystemRequirements": { "display": "Maximum System Requirements", "controlType": "TEXT_INPUT", "required": "false"},
-            "gameModes": { "display": "Game Modes", "controlType": "SINGLE_SELECT", "allowedValues":["Single Player", "Multi Player"], "required": "false"}
-        },
-        itemTypes: ["PHYSICAL", "APP"],
+        itemTypes: ["PHYSICAL", "DIGITAL", "STORED_VALUE"],
+        platforms: ["PC", "MAC", "LINUX"],
+        gameModes: ["SINGLE_PLAYER", "MULTI_PLAYER", "CO_OP"],
+        locales: ["en_US", "zh_CN"],
         countries: [
             {"code":"AT", "name":"Austria", "currency": "AUD"},
             {"code":"CN", "name":"China", "currency": "RMB"},

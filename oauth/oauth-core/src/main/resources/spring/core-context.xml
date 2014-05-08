@@ -18,6 +18,11 @@
         <property name="tokenService" ref="tokenService"/>
         <property name="userCredentialVerifyAttemptResource" ref="userCredentialVerifyAttemptResource"/>
         <property name="userResource" ref="userResource"/>
+        <property name="userPersonalInfoResource" ref="userPersonalInfoResource" />
+        <property name="emailResource" ref="emailResource"/>
+        <property name="emailTemplateResource" ref="emailTemplateResource"/>
+        <property name="emailVerifyCodeRepository" ref="emailVerifyCodeRepository"/>
+        <property name="resetPasswordCodeRepository" ref="resetPasswordCodeRepository" />
     </bean>
 
     <bean id="clientService" class="com.junbo.oauth.core.service.impl.ClientServiceImpl">

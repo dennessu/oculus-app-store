@@ -42,17 +42,23 @@ public class ItemRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 22, required = true, value = "Manufacturer's suggested retail price")
     private Price msrp;
 
-    @ApiModelProperty(position = 23, required = false, value = "Website for the item revision resource")
-    private String website;
-
     @ApiModelProperty(position = 24, required = true, value = "supported input devices",
             allowableValues = "KEYBOARD, MOUSE")
-    List<String> supportedInputDevices;
+    private List<String> supportedInputDevices;
     @ApiModelProperty(position = 25, required = true, value = "game modes",
             allowableValues = "SINGLE_PLAYER, MULTI_PLAYER, CO_OP")
-    String gameModes;
+    private List<String> gameModes;
     @ApiModelProperty(position = 26, required = true, value = "Download Link", allowableValues = "PC, MAC, LINUX")
     private Map<String, Binary> binaries;
+
+    @ApiModelProperty(position = 27, required = true, value = "The platform name, for digital goods only",
+            allowableValues = "PC, MAC, LINUX, ANDROID")
+    private List<String> platforms;
+
+    @ApiModelProperty(position = 28, required = true,
+            value = "The content ratings given to the item by specific boards (ESRB, PEGI)")
+    @AgeRatingId
+    private Map<String, AgeRating> ageRating;
 
     @CurrencyId
     @ApiModelProperty(position = 31, required = true, value = "Wallet currency")
@@ -64,7 +70,6 @@ public class ItemRevision extends BaseRevisionModel {
     private Map<String, ItemRevisionLocaleProperties> locales;
     @ApiModelProperty(position = 41, required = true, value = "Country properties of the item revision")
     private Map<String, ItemRevisionCountryProperties> countries;
-
 
     public String getSku() {
         return sku;
@@ -106,14 +111,6 @@ public class ItemRevision extends BaseRevisionModel {
         this.msrp = msrp;
     }
 
-    public String getWebsite() {
-        return website;
-    }
-
-    public void setWebsite(String website) {
-        this.website = website;
-    }
-
     public List<String> getSupportedInputDevices() {
         return supportedInputDevices;
     }
@@ -122,11 +119,11 @@ public class ItemRevision extends BaseRevisionModel {
         this.supportedInputDevices = supportedInputDevices;
     }
 
-    public String getGameModes() {
+    public List<String> getGameModes() {
         return gameModes;
     }
 
-    public void setGameModes(String gameModes) {
+    public void setGameModes(List<String> gameModes) {
         this.gameModes = gameModes;
     }
 
@@ -136,6 +133,22 @@ public class ItemRevision extends BaseRevisionModel {
 
     public void setBinaries(Map<String, Binary> binaries) {
         this.binaries = binaries;
+    }
+
+    public List<String> getPlatforms() {
+        return platforms;
+    }
+
+    public void setPlatforms(List<String> platforms) {
+        this.platforms = platforms;
+    }
+
+    public Map<String, AgeRating> getAgeRating() {
+        return ageRating;
+    }
+
+    public void setAgeRating(Map<String, AgeRating> ageRating) {
+        this.ageRating = ageRating;
     }
 
     public String getStoredValueCurrency() {

@@ -1,7 +1,8 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile project(':common-configuration')
+    compile junboProject(':common-configuration')
+    compile junboProject(':langur-core')
 
     compile (libraries.rs_api)
 
@@ -14,7 +15,6 @@ dependencies {
     compile (libraries.jackson_core)
     compile (libraries.jackson_annotations)
     compile (libraries.jackson_databind)
-    compile (libraries.langur)
 
     compile (libraries.slf4j_api)
     compile (libraries.log4j_over_slf4j)
@@ -30,4 +30,6 @@ dependencies {
     compile (libraries.spy_memcached)
 
     compile (libraries.swagger_annotations)
+
+    testRuntime junboProject(':configuration-data')
 }

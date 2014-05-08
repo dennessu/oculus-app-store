@@ -23,7 +23,6 @@ import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.db.repo.EmailVerifyCodeRepository
 import com.junbo.oauth.spec.model.EmailVerifyCode
-import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -34,7 +33,6 @@ import org.springframework.util.StringUtils
  * VerifyEmail.
  */
 @CompileStatic
-@SuppressWarnings('NestedBlockDepth')
 class VerifyEmail implements Action {
     private static final Logger LOGGER = LoggerFactory.getLogger(VerifyEmail)
 
@@ -62,7 +60,7 @@ class VerifyEmail implements Action {
     @Override
     Promise<ActionResult> execute(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
-        String code = (String) context.flowScope[OAuthParameters.CODE]
+        String code = contextWrapper.emailVerifyCode
 
         if (StringUtils.isEmpty(code)) {
             contextWrapper.errors.add(AppExceptions.INSTANCE.missingEmailVerifyCode().error())
@@ -109,6 +107,9 @@ class VerifyEmail implements Action {
 
                     if (email.value == emailVerifyCode.email) {
                         personalInfo.lastValidateTime = new Date()
+                        email.isValidated = true
+                        email.validateTime = new Date()
+                        personalInfo.value = ObjectMapperProvider.instance().valueToTree(email)
                         return userPersonalInfoResource.put(piiLink.value, personalInfo).recover { Throwable e ->
                             handleException(e, contextWrapper)
                             return Promise.pure(null)

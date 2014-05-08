@@ -8,9 +8,9 @@ dependencies {
     compile (libraries.guava)
     compile (libraries.spring_beans)
     compile (libraries.spring_context)
-    compile (libraries.common_lib)
+    compile junboProject(':common-lib')
 
-    processor (libraries.langur_processor)
+    processor junboProject(':langur-processor')
     processor (libraries.log4j)
 }
 

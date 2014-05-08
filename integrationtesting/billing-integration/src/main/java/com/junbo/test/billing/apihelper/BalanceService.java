@@ -21,6 +21,10 @@ public interface BalanceService {
 
     String getBalanceByBalanceId(String uid, String balanceId, int expectedResponseCode) throws Exception;
 
+    String quoteBalance(String uid, Balance balance) throws Exception;
+
+    String quoteBalance(String uid, Balance balance, int expectedResponseCode) throws Exception;
+
     List<String> getBalanceByOrderId(String uid, String orderId) throws Exception;
 
     List<String> getBalanceByOrderId(String uid, String orderId, int expectedResponseCode) throws Exception;

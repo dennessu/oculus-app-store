@@ -7,6 +7,7 @@
 package com.junbo.payment.spec.resource;
 
 
+import com.junbo.common.id.PaymentId;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.spec.model.PaymentTransaction;
@@ -28,12 +29,12 @@ public interface PaymentTransactionResource {
 
     @POST
     @Path("/{paymentId}/capture")
-    Promise<PaymentTransaction> postPaymentCapture(@PathParam("paymentId") Long paymentId,
+    Promise<PaymentTransaction> postPaymentCapture(@PathParam("paymentId") PaymentId paymentId,
                                                           PaymentTransaction request);
 
     @POST
     @Path("/{paymentId}/confirm")
-    Promise<PaymentTransaction> postPaymentConfirm(@PathParam("paymentId") Long paymentId,
+    Promise<PaymentTransaction> postPaymentConfirm(@PathParam("paymentId") PaymentId paymentId,
                                                PaymentTransaction request);
 
     @POST
@@ -42,14 +43,14 @@ public interface PaymentTransactionResource {
 
     @PUT
     @Path("/{paymentId}/reverse")
-    Promise<PaymentTransaction> reversePayment(@PathParam("paymentId") Long paymentId,
+    Promise<PaymentTransaction> reversePayment(@PathParam("paymentId") PaymentId paymentId,
                                                PaymentTransaction request);
 
     @GET
     @Path("/{paymentId}")
-    Promise<PaymentTransaction> getPayment(@PathParam("paymentId") Long paymentId);
+    Promise<PaymentTransaction> getPayment(@PathParam("paymentId") PaymentId paymentId);
 
-    @GET
-    @Path("/{paymentId}/external")
-    Promise<PaymentTransaction> getExternalPayment(@PathParam("paymentId") Long paymentId);
+    @POST
+    @Path("/{paymentId}/check")
+    Promise<PaymentTransaction> checkPaymentStatus(@PathParam("paymentId") PaymentId paymentId);
 }

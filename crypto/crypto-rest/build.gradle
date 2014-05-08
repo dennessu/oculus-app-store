@@ -1,0 +1,10 @@
+import com.sun.org.apache.regexp.internal.recompile
+
+apply plugin: 'groovy'
+
+dependencies {
+    compile project(':crypto-core')
+    compile project(':crypto-spec')
+    compile project(':crypto-common')
+    compile project(':crypto-data')
+}

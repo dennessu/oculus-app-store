@@ -1,8 +1,13 @@
 package com.junbo.identity.core.service.validator.impl
 
-import com.junbo.identity.core.service.validator.BirthdayValidator
+import com.fasterxml.jackson.databind.JsonNode
+import com.junbo.common.id.UserId
+import com.junbo.identity.common.util.JsonHelper
+import com.junbo.identity.core.service.validator.PiiValidator
+import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserDOB
+import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
@@ -10,12 +15,39 @@ import org.springframework.beans.factory.annotation.Required
  * Created by kg on 3/17/14.
  */
 @CompileStatic
-class BirthdayValidatorImpl implements BirthdayValidator {
+class BirthdayValidatorImpl implements PiiValidator {
 
     private Integer timespanInYears
 
     @Override
-    void validate(UserDOB userDOB) {
+    boolean handles(String type) {
+        if (type == UserPersonalInfoType.DOB.toString()) {
+            return true
+        }
+        return false
+    }
+
+    @Override
+    Promise<Void> validateCreate(JsonNode value, UserId userId) {
+        UserDOB userDOB = (UserDOB)JsonHelper.jsonNodeToObj(value, UserDOB)
+        checkBirthdayInfo(userDOB)
+
+        return Promise.pure(null)
+    }
+
+    @Override
+    Promise<Void> validateUpdate(JsonNode value, JsonNode oldValue, UserId userId) {
+        UserDOB userDOB = (UserDOB)JsonHelper.jsonNodeToObj(value, UserDOB)
+        UserDOB oldUserDOB = (UserDOB)JsonHelper.jsonNodeToObj(oldValue, UserDOB)
+
+        if (userDOB != oldUserDOB) {
+            checkBirthdayInfo(userDOB)
+        }
+
+        return Promise.pure(null)
+    }
+
+    private void checkBirthdayInfo(UserDOB userDOB) {
         Date birthday = userDOB.birthday
         if (birthday == null) {
             throw new IllegalArgumentException('birthday is null')

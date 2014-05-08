@@ -8,7 +8,7 @@
 
     <bean id="entitlementDefinitionClient" class="com.junbo.catalog.spec.resource.proxy.EntitlementDefinitionResourceClientProxy">
         <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="target" value="${clientproxy.ewallet.url}"/>
+        <constructor-arg name="target" value="${clientproxy.catalog.url}"/>
         <constructor-arg name="transcoder">
             <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
         </constructor-arg>
@@ -18,5 +18,6 @@
         <constructor-arg name="queryParamTranscoder">
             <bean class="com.junbo.common.json.QueryParamTranscoderImpl"/>
         </constructor-arg>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 </beans>

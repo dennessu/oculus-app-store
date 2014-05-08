@@ -286,7 +286,7 @@ In windows, do the following steps in cygwin terminal. For OS X and Linux, open 
 1. Trust aws-artifactory server cert.
 
     ```bash
-    cd ~/owp-main/bootstrap/setup
+    cd ~/owp-main/scripts/setup
     keytool -import -alias aws-artifactory -keystore $JAVA_HOME/jre/lib/security/cacerts -file ./aws-artifactory.cer -trustcacerts
     ```
 

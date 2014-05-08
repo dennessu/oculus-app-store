@@ -9,6 +9,7 @@
         <constructor-arg name="transcoder" ref="commonTranscoder"/>
         <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="userCredentialVerifyAttemptResource"
@@ -18,6 +19,7 @@
         <constructor-arg name="transcoder" ref="commonTranscoder"/>
         <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="userCredentialResource"
@@ -27,6 +29,7 @@
         <constructor-arg name="transcoder" ref="commonTranscoder"/>
         <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="userPersonalInfoResource"
@@ -36,6 +39,7 @@
         <constructor-arg name="transcoder" ref="commonTranscoder"/>
         <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="emailResource" class="com.junbo.email.spec.resource.proxy.EmailResourceClientProxy">
@@ -44,6 +48,7 @@
         <constructor-arg name="transcoder" ref="commonTranscoder"/>
         <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
     <bean id="emailTemplateResource" class="com.junbo.email.spec.resource.proxy.EmailTemplateResourceClientProxy">
@@ -52,6 +57,41 @@
         <constructor-arg name="transcoder" ref="commonTranscoder"/>
         <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
+    <bean id="authenticatorResource" class="com.junbo.identity.spec.v1.resource.proxy.AuthenticatorResourceClientProxy">
+        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
+        <constructor-arg name="target" value="${clientproxy.email.url}"/>
+        <constructor-arg name="transcoder" ref="commonTranscoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
+    </bean>
+
+    <bean id="facebookExceptionHandler" class="com.junbo.oauth.clientproxy.facebook.FacebookExceptionHandler">
+        <property name="messageTranscoder" ref="commonIgnoreUnknownTranscoder"/>
+    </bean>
+
+    <bean id="facebookApi" class="com.junbo.oauth.clientproxy.facebook.proxy.FacebookApiClientProxy">
+        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
+        <constructor-arg name="target" value="${clientproxy.facebook.url}"/>
+        <constructor-arg name="transcoder" ref="commonIgnoreUnknownTranscoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+        <constructor-arg name="exceptionHandler" ref="facebookExceptionHandler"/>
+    </bean>
+
+    <bean id="googleExceptionHandler" class="com.junbo.oauth.clientproxy.google.GoogleExceptionHandler">
+        <property name="messageTranscoder" ref="commonIgnoreUnknownTranscoder"/>
+    </bean>
+
+    <bean id="googleApi" class="com.junbo.oauth.clientproxy.google.proxy.GoogleApiClientProxy">
+        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
+        <constructor-arg name="target" value="${clientproxy.google.url}"/>
+        <constructor-arg name="transcoder" ref="commonIgnoreUnknownTranscoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+        <constructor-arg name="exceptionHandler" ref="googleExceptionHandler"/>
+    </bean>
 </beans>

@@ -10,17 +10,14 @@ dependencies {
     compile (libraries.spring_context)
     compile (libraries.spring_core)
 
-    compile (libraries.oom_processor)
-    compile (libraries.oom)
+    compile junboProject(':oom-core')
 
     compile (libraries.asyncclient)
-    compile (libraries.oom_processor)
-    compile (libraries.oom)
     compile (libraries.jersey_common)
 
-    compile project(':restriction-core')
-    compile project(':restriction-spec')
-    compile project(':restriction-clientproxy')
+    compile junboProject(':restriction-core')
+    compile junboProject(':restriction-spec')
+    compile junboProject(':restriction-clientproxy')
 
-    processor (libraries.oom_processor)
+    processor junboProject(':oom-processor')
 }

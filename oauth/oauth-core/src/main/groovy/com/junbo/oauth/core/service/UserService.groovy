@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.core.service
 
+import com.junbo.common.id.UserId
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.spec.model.UserInfo
@@ -18,5 +19,16 @@ interface UserService {
     Promise<UserCredentialVerifyAttempt> authenticateUser(String username, String password,
                                                           String clientId, String ipAddress, String userAgent)
 
-    UserInfo getUserInfo(String authorization)
+    Promise<UserInfo> getUserInfo(String authorization)
+
+    Promise<Void> verifyEmailByAuthHeader(String authorization, String locale, URI baseUri)
+
+    Promise<Void> verifyEmailByUserId(UserId userId, String locale, URI baseUri)
+
+    // csr can issue password reset flow to any verified user in csr tool, the authorization header need to prove
+    // the caller has csr privilege.
+    Promise<Void> resetPasswordByAuthHeader(String authorization, UserId userId, String locale, URI baseUri)
+
+    // user can issue password reset flow in other security flow, like forget password flow
+    Promise<Void> resetPasswordByUserId(UserId userId, String locale, URI baseUri)
 }

@@ -93,9 +93,10 @@ class SecurityQuestionResourceImpl implements SecurityQuestionResource {
 
             securityQuestion = securityQuestionFilter.filterForPatch(securityQuestion, oldSecurityQuestion)
 
-            return securityQuestionValidator.validateForUpdate(securityQuestionId, securityQuestion, oldSecurityQuestion)
-                    .then {
-                return securityQuestionRepository.update(securityQuestion).then { SecurityQuestion newSecurityQuestion ->
+            return securityQuestionValidator.validateForUpdate(securityQuestionId,
+                    securityQuestion, oldSecurityQuestion).then {
+                return securityQuestionRepository.update(securityQuestion).then {
+                    SecurityQuestion newSecurityQuestion ->
                     newSecurityQuestion = securityQuestionFilter.filterForGet(newSecurityQuestion, null)
                     return Promise.pure(newSecurityQuestion)
                 }

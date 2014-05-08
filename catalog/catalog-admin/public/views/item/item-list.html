@@ -7,15 +7,17 @@
     <thead>
       <tr>
         <th style="min-width: 80px;">Item Id</th>
-        <th style="min-width: 80px;">Item Name</th>
-          <th style="min-width: 80px;">Item Status</th>
+        <th>Type</th>
+        <th>Package Name</th>
+        <th>Current Revision</th>
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="item in items | filter: user_id">
-            <td><a href="#/items/{{ item.self.id }}">{{ item.self.id }}</a></td>
-            <td>{{ item.name }}</td>
-            <td>{{ item.status }}</td>
+      <tr ng-repeat="item in items">
+          <td><a href="#/items/{{ item.self.id }}">{{ item.self.id }}</a></td>
+          <td>{{ item.type }}</td>
+          <td>{{ item.packageName }}</td>
+          <td><a href="#/item-revisions/{{ item.currentRevision.id }}">{{ item.currentRevision.id }}</a></td>
       </tr>
     </tbody>
   </table>

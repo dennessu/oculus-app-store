@@ -97,7 +97,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                         return userPinRepository.update(userPin)
                     }
                 }.then {
-                    return userPinRepository.create((UserPin) obj).then { UserPin userPin ->
+                    return userPinRepository.create((UserPin)obj).then { UserPin userPin ->
                         if (userPin == null) {
                             throw new RuntimeException()
                         }

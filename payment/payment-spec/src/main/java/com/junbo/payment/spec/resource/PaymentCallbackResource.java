@@ -6,13 +6,14 @@
 
 package com.junbo.payment.spec.resource;
 
+import com.junbo.common.id.PaymentId;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.payment.spec.model.PaymentProperties;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Map;
 
 /**
  * payment callback resource interface.
@@ -24,5 +25,5 @@ import java.util.Map;
 public interface PaymentCallbackResource {
     @POST
     @Path("/{paymentId}/properties")
-    Promise<Response> postPaymentProperties(@PathParam("paymentId") Long paymentId, Map<String, String> properties);
+    Promise<Response> postPaymentProperties(@PathParam("paymentId") PaymentId paymentId, PaymentProperties properties);
 }

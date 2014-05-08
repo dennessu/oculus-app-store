@@ -70,14 +70,21 @@ class ShardMultiTenantConnectionProviderFactoryBean
                     continue
                 }
 
-                def parts = url.split(';', 3)
-                if (parts.length != 3) {
-                    throw new IllegalArgumentException("jdbcUrl(url;schema;range) is invalid. $url")
+                def parts = url.split(';', 4)
+                if (parts.length != 4) {
+                    throw new IllegalArgumentException("jdbcUrl(url;schema;range;dc) is invalid. $url")
                 }
 
                 url = parts[0].trim()
                 def schema = parts[1].trim()
                 def range = parseRange(parts[2].trim())
+                def dc = parts[3].trim()
+
+                // TODO: work around for now
+                if (dc != "dc0") {
+                    // not in local dc
+                    continue;
+                }
 
                 if (range[0] != dataSourceList.size()) {
                     throw new IllegalArgumentException("Range $range is not in a row")

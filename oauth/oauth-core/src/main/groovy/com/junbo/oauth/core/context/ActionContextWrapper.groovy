@@ -49,6 +49,9 @@ class ActionContextWrapper {
     public static final String CAPTCHA_SUCCEED = 'captcha_succeed'
     public static final String VIEW_LOCALE = 'view_locale'
     public static final String EXTRA_PARAM_MAP = 'extra_param_map'
+    public static final String THIRD_PARTY_USERNAME = 'third_party_username'
+    public static final String EMAIL_VERIFY_CODE = 'email_verify_code'
+    public static final String RESET_PASSWORD_CODE = 'reset_password_code'
 
     @Delegate
     private final ActionContext actionContext
@@ -309,6 +312,22 @@ class ActionContextWrapper {
         actionContext.flowScope[VIEW_LOCALE] = locale
     }
 
+    String getEmailVerifyCode() {
+        return (String) actionContext.flowScope[EMAIL_VERIFY_CODE]
+    }
+
+    void setEmailVerifyCode(String code) {
+        actionContext.flowScope[EMAIL_VERIFY_CODE] = code
+    }
+
+    String getResetPasswordCode() {
+        return (String) actionContext.flowScope[RESET_PASSWORD_CODE]
+    }
+
+    void setResetPasswordCode(String code) {
+        actionContext.flowScope[RESET_PASSWORD_CODE] = code
+    }
+
     Map<String, String> getExtraParameterMap() {
         if (actionContext.flowScope[EXTRA_PARAM_MAP] == null) {
             actionContext.flowScope[EXTRA_PARAM_MAP] = new HashMap<String, String>()
@@ -318,5 +337,13 @@ class ActionContextWrapper {
 
     void setExtraParameterMap(Map<String, String> extraMap) {
         actionContext.flowScope[EXTRA_PARAM_MAP] = extraMap
+    }
+
+    String getThirdPartyUsername() {
+        return (String) actionContext.flowScope[THIRD_PARTY_USERNAME]
+    }
+
+    void setThirdPartyUsername(String thirdPartyName) {
+        actionContext.flowScope[THIRD_PARTY_USERNAME] = thirdPartyName
     }
 }

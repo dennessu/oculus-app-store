@@ -92,7 +92,7 @@ class OrderValidator {
                     notNull(order.shippingAddress, 'shippingAddressId')
                 }
                 if (!CoreUtils.isFreeOrder(order)) {
-                    notEmpty(order.paymentInstruments, 'paymentInstruments')
+                    notEmpty(order.payments, 'payments')
                 }
             }
         }

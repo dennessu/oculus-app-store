@@ -1,5 +1,6 @@
 package com.junbo.sharding.hibernate
 
+import com.junbo.common.util.Context
 import groovy.transform.CompileStatic
 
 /**
@@ -9,10 +10,8 @@ import groovy.transform.CompileStatic
 @SuppressWarnings('CloseWithoutCloseable')
 class ShardScope implements AutoCloseable {
 
-    private static final ThreadLocal<Integer> SHARD_ID = new ThreadLocal<>()
-
     static int currentShardId() {
-        Integer currentShardId = SHARD_ID.get()
+        Integer currentShardId = Context.get().shardId
 
         if (currentShardId == null) {
             throw new IllegalStateException('currentShardId is null')
@@ -39,7 +38,6 @@ class ShardScope implements AutoCloseable {
         }
     }
 
-
     private final Integer oldShardId
 
     ShardScope() {
@@ -47,12 +45,12 @@ class ShardScope implements AutoCloseable {
     }
 
     ShardScope(Integer shardId) {
-        oldShardId = SHARD_ID.get()
-        SHARD_ID.set(shardId)
+        oldShardId = Context.get().shardId
+        Context.get().shardId = shardId
     }
 
     @Override
     void close() {
-        SHARD_ID.set(oldShardId)
+        Context.get().shardId = oldShardId
     }
 }
