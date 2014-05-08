@@ -96,6 +96,14 @@ ext {
     set("cart-app-version", '0.0.1-SNAPSHOT')
     set("cart-integration-version", '0.0.1-SNAPSHOT')
 
+    set("fulfilment-common-version", '0.0.1-SNAPSHOT')
+    set("fulfilment-core-version", '0.0.1-SNAPSHOT')
+    set("fulfilment-db-version", '0.0.1-SNAPSHOT')
+    set("fulfilment-rest-version", '0.0.1-SNAPSHOT')
+    set("fulfilment-spec-version", '0.0.1-SNAPSHOT')
+    set("fulfilment-clientproxy-version", '0.0.1-SNAPSHOT')
+    set("fulfilment-app-version", '0.0.1-SNAPSHOT')
+
     set("authorization-lib-version", '0.0.1-SNAPSHOT')
 
     set("notification-core-version", '0.0.1-SNAPSHOT')
