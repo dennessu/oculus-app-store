@@ -8,4 +8,3 @@ include 'drm-rest'
 include 'drm-clientproxy'
 
 include 'drm-app'
-1

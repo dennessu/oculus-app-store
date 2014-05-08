@@ -17,12 +17,12 @@ dependencies {
 
     compile 'org.apache.httpcomponents:httpcomponents-asyncclient:4.0'
 
-    compile project(':drm-spec')
-    compile project(':drm-db')
-    compile project(':drm-common')
-    compile project(':drm-clientproxy')
+    compile junboProject(':drm-spec')
+    compile junboProject(':drm-db')
+    compile junboProject(':drm-common')
+    compile junboProject(':drm-clientproxy')
 
-    compile 'com.junbo.oom:oom-core:0.0.1-SNAPSHOT'
+    compile junboProject(':oom-core')
 
-    processor 'com.junbo.oom:oom-processor:0.0.1-SNAPSHOT'
+    processor junboProject(':oom-processor')
 }

@@ -1,9 +1,9 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile project(":order-spec")
-    compile project(":order-clientproxy")
-    compile project(":order-db")
+    compile junboProject(":order-spec")
+    compile junboProject(":order-clientproxy")
+    compile junboProject(":order-db")
     compile (libraries.aspectjrt)
     compile (libraries.aspectjweaver)
     testCompile (libraries.spring_test)

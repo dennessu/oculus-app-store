@@ -15,13 +15,13 @@ dependencies {
     compile (libraries.spring_web)
 
     compile (libraries.asyncclient)
-    compile (libraries.oom_processor)
-    compile (libraries.oom)
+    processor junboProject(':oom-processor')
+    compile junboProject(':oom-core')
     compile (libraries.jersey_common)
 
-    compile project(':subscription-spec')
-    compile project(':subscription-db')
-    compile project(':subscription-common')
-    compile project(':subscription-clientproxy')
-    compile project(':subscription-core')
+    compile junboProject(':subscription-spec')
+    compile junboProject(':subscription-db')
+    compile junboProject(':subscription-common')
+    compile junboProject(':subscription-clientproxy')
+    compile junboProject(':subscription-core')
 }
