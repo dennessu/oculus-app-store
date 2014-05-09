@@ -118,6 +118,11 @@ public class CatalogGatewayTest extends BaseTest {
         offerRevision.setOfferId(offerId);
         offerRevision.setOwnerId(ownerId);
         offerRevision.setStatus(Status.DRAFT.name());
+        offerRevision.setLocales(new HashMap<String, OfferRevisionLocaleProperties>() {{
+            put("en_US", new OfferRevisionLocaleProperties() {{
+                setName("test-offer");
+            }});
+        }});
 
         Price price = new Price();
         price.setPriceType(PriceType.FREE.name());
@@ -126,7 +131,7 @@ public class CatalogGatewayTest extends BaseTest {
             put(Constant.EVENT_PURCHASE, new ArrayList<Action>() {{
                 add(new Action() {{
                     setType(Constant.ACTION_CREDIT_WALLET);
-                    setStoredValueAmount(new BigDecimal(123.45));
+                    setStoredValueAmount(new BigDecimal("123.45"));
                     setStoredValueCurrency("USD");
                 }});
             }});
