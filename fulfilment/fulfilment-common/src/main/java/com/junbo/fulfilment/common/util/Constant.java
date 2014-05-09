@@ -17,6 +17,8 @@ public final class Constant {
     // offer action properties
     public static final String ENTITLEMENT_DEF_ID = "ENTITLEMENT_DEF_ID";
     public static final String ITEM_ID = "ITEM_ID";
+    public static final String STORED_VALUE_CURRENCY = "STORED_VALUE_CURRENCY";
+    public static final String STORED_VALUE_AMOUNT = "STORED_VALUE_AMOUNT";
 
     // event name
     public static final String EVENT_PURCHASE = "PURCHASE";

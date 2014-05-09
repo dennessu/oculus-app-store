@@ -7,16 +7,13 @@ package com.junbo.fulfilment.core.handler;
 
 import com.junbo.ewallet.spec.model.CreditRequest;
 import com.junbo.ewallet.spec.model.Transaction;
+import com.junbo.fulfilment.common.util.Constant;
 import com.junbo.fulfilment.core.context.WalletContext;
-import com.junbo.fulfilment.spec.fusion.Item;
 import com.junbo.fulfilment.spec.fusion.LinkedEntry;
 import com.junbo.fulfilment.spec.model.FulfilmentAction;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * WalletHandler.
@@ -27,16 +24,17 @@ public class WalletHandler extends HandlerSupport<WalletContext> {
         List<Long> success = new ArrayList<>();
 
         for (LinkedEntry itemEntry : action.getItems()) {
-            Item item = catalogGateway.getItem(itemEntry.getId(), action.getTimestamp());
+            Map<String, Object> actionProp = action.getProperties();
 
             CreditRequest request = new CreditRequest();
 
             request.setTrackingUuid(UUID.randomUUID());
             request.setUserId(context.getUserId());
-            request.setCurrency(item.getStoredValueCurrency());
+            request.setCurrency(actionProp.get(Constant.STORED_VALUE_CURRENCY).toString());
 
             // aggregate credit amount
-            BigDecimal totalCreditAmount = item.getStoredValueAmount()
+            BigDecimal amount = (BigDecimal) actionProp.get(Constant.STORED_VALUE_AMOUNT);
+            BigDecimal totalCreditAmount = amount
                     .multiply(new BigDecimal(action.getCopyCount()))
                     .multiply(new BigDecimal(itemEntry.getQuantity()));
 
