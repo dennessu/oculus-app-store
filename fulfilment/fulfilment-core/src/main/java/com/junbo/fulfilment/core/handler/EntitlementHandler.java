@@ -24,7 +24,7 @@ public class EntitlementHandler extends HandlerSupport<EntitlementContext> {
         Map<String, Object> prop = action.getProperties();
 
         entitlement.setUserId(context.getUserId());
-        entitlement.setUseCount(action.getCopyCount());
+        //entitlement.setUseCount(action.getCopyCount());
         entitlement.setEntitlementDefinitionId((Long) prop.get(Constant.ENTITLEMENT_DEF_ID));
         entitlement.setGrantTime(Utils.now());
 
