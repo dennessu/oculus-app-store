@@ -48,10 +48,10 @@
                 <wf:action ref="authenticateUserAuthorize"/>
             </wf:transition>
             <wf:transition on="register" to="REGISTER_VIEW"/>
-            <wf:transition on="facebookLogin" to="LOGIN_SUCCESS">
+            <wf:transition on="facebookLogin" to="CHECK_USER_AUTHENTICATOR">
                 <wf:action ref="facebookLogin"/>
             </wf:transition>
-            <wf:transition on="googleLogin" to="LOGIN_SUCCESS">
+            <wf:transition on="googleLogin" to="CHECK_USER_AUTHENTICATOR">
                 <wf:action ref="googleLogin"/>
             </wf:transition>
             <wf:transition on="cancel" to="CANCEL_VIEW"/>
@@ -89,6 +89,33 @@
             <wf:transition on="*" to="CHECK_CONSENT">
                 <wf:action ref="saveLoginState"/>
                 <wf:action ref="grantRememberMeToken"/>
+            </wf:transition>
+        </wf:view-state>
+
+        <wf:action-state id="CHECK_USER_AUTHENTICATOR">
+            <wf:action ref="checkAuthenticator"/>
+            <wf:transition on="suggestUpgrade" to="REDIRECT_TO_THIRD_PARTY_UPGRADE"/>
+            <wf:transition on="success" to="LOGIN_SUCCESS"/>
+        </wf:action-state>
+
+        <wf:view-state id="REDIRECT_TO_THIRD_PARTY_UPGRADE">
+            <wf:on-entry>
+                <wf:action ref="redirectToThirdPartyUpgrade"/>
+            </wf:on-entry>
+            <wf:transition on="*" to="THIRD_PARTY_UPGRADE_VIEW"/>
+        </wf:view-state>
+
+        <wf:view-state id="THIRD_PARTY_UPGRADE_VIEW">
+            <wf:on-render>
+                <wf:action ref="thirdPartyUpgradeView"/>
+            </wf:on-render>
+            <wf:transition on="next" to="LOGIN_SUCCESS">
+                <wf:action ref="authenticateUserAuthorize"/>
+                <wf:action ref="linkThirdPartyAccount"/>
+            </wf:transition>
+            <wf:transition on="cancel" to="LOGIN_SUCCESS">
+                <wf:action ref="createAnonymousUser"/>
+                <wf:action ref="linkThirdPartyAccount"/>
             </wf:transition>
         </wf:view-state>
 
@@ -282,17 +309,30 @@
         <property name="emailVerifyCodeRepository" ref="emailVerifyCodeRepository"/>
     </bean>
 
-    <bean id="thirdPartyLogin" class="com.junbo.oauth.core.action.ThirdPartyLogin" abstract="true">
-        <property name="userResource" ref="userResource"/>
-        <property name="authenticatorResource" ref="authenticatorResource"/>
-        <property name="userPersonalInfoResource" ref="userPersonalInfoResource"/>
-    </bean>
-
-    <bean id="facebookLogin" class="com.junbo.oauth.core.action.FacebookLogin" parent="thirdPartyLogin">
+    <bean id="facebookLogin" class="com.junbo.oauth.core.action.FacebookLogin">
         <property name="facebookApi" ref="facebookApi"/>
     </bean>
 
-    <bean id="googleLogin" class="com.junbo.oauth.core.action.GoogleLogin" parent="thirdPartyLogin">
+    <bean id="googleLogin" class="com.junbo.oauth.core.action.GoogleLogin">
         <property name="googleApi" ref="googleApi"/>
+    </bean>
+
+    <bean id="checkAuthenticator" class="com.junbo.oauth.core.action.CheckAuthenticator">
+        <property name="authenticatorResource" ref="authenticatorResource"/>
+    </bean>
+
+    <bean id="redirectToThirdPartyUpgrade" class="com.junbo.oauth.core.view.RedirectToPage">
+        <property name="pageUrl" value="${oauth.core.portal.thirdPartyUpgradeUri}"/>
+    </bean>
+
+    <bean id="thirdPartyUpgradeView" class="com.junbo.oauth.core.view.ThirdPartyUpgradeView"/>
+
+    <bean id="createAnonymousUser" class="com.junbo.oauth.core.action.CreateAnonymousUser">
+        <property name="userResource" ref="userResource"/>
+        <property name="userPersonalInfoResource" ref="userPersonalInfoResource"/>
+    </bean>
+
+    <bean id="linkThirdPartyAccount" class="com.junbo.oauth.core.action.LinkThirdPartyAccount">
+        <property name="authenticatorResource" ref="authenticatorResource"/>
     </bean>
 </beans>
