@@ -5,9 +5,9 @@
  */
 package com.junbo.test.catalog.item;
 
-import com.junbo.test.common.apihelper.catalog.impl.ItemServiceImpl;
-import com.junbo.test.common.apihelper.catalog.ItemService;
+import com.junbo.test.catalog.impl.ItemServiceImpl;
 import com.junbo.test.common.libs.LogHelper;
+import com.junbo.test.catalog.ItemService;
 import com.junbo.test.common.property.*;
 import org.testng.annotations.Test;
 

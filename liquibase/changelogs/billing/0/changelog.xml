@@ -30,6 +30,7 @@
 				shipping_address_id BIGINT NULL,
 				requestor_id VARCHAR(64) NOT NULL,
 				onbehalfof_requestor_id VARCHAR(64),
+				property_set json,
 				created_date TIMESTAMP NOT NULL,
 				created_by VARCHAR(64) NOT NULL,
 				modified_date TIMESTAMP,
@@ -123,39 +124,6 @@
 			);
 			CREATE INDEX discount_item_balance_item_id_idx ON discount_item (balance_item_id);
 			CREATE INDEX discount_item_deleted_idx ON discount_item (deleted);
-                ]]>
-        </sql>
-    </changeSet>
-
-    <changeSet id="2" author='xmchen' context="PREDEPLOY">
-        <sql><![CDATA[
-			CREATE TABLE shipping_address (
-				shipping_address_id BIGINT NOT NULL,
-				user_id BIGINT NOT NULL,
-				street VARCHAR(512) NOT NULL,
-				street1 VARCHAR(512),
-				street2 VARCHAR(512),
-				city VARCHAR(128) NOT NULL,
-				state VARCHAR(128),
-				postal_code VARCHAR(64) NOT NULL,
-				country_code CHAR(2) NOT NULL,
-				company_name VARCHAR(256),
-				first_name VARCHAR(256) NOT NULL,
-				middle_name VARCHAR(256),
-				last_name VARCHAR(256) NOT NULL,
-				phone_number VARCHAR(128),
-				description VARCHAR(512),
-				requestor_id VARCHAR(64) NOT NULL,
-				onbehalfof_requestor_id VARCHAR(64),
-				deleted BOOLEAN NOT NULL DEFAULT(FALSE),
-				created_date TIMESTAMP NOT NULL,
-				created_by VARCHAR(64) NOT NULL,
-				modified_date TIMESTAMP,
-				modified_by VARCHAR(64),
-				PRIMARY KEY(shipping_address_id)
-			);
-			CREATE INDEX shipping_address_user_id_idx ON shipping_address (user_id);
-			CREATE INDEX shipping_address_deleted_idx ON shipping_address (deleted);
                 ]]>
         </sql>
     </changeSet>

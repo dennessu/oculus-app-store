@@ -25,11 +25,11 @@ public class AsyncChargeListener extends BaseListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AsyncChargeListener.class);
 
-    protected void onTextMessage(final String eventId, final String message) {
+    protected void onMessage(final String eventId, final String content) {
         LOGGER.info("Receive a message with event id: " + eventId);
         Long balanceId;
         try {
-            balanceId = Long.parseLong(message);
+            balanceId = Long.parseLong(content);
         } catch(NumberFormatException ex) {
             throw ex;
         }
