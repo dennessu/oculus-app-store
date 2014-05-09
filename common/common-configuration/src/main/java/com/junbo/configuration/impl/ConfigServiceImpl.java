@@ -51,7 +51,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
     private static final String DEFAULT_PROPERTIES_FILE = "_default.properties";
     private static final String DEFAULT_ENVIRONMENT = "onebox";
     private static final String DEFAULT_DATACENTER = "dc0";
-    private static final String DEFAULT_SUBNET = "0.0.0.0/0";
+    private static final String DEFAULT_SUBNET = "127.0.0.1/32";
     private static final String CONFIG_PATH = "junbo/conf";
 
     private static Logger logger = LoggerFactory.getLogger(ConfigServiceImpl.class);
