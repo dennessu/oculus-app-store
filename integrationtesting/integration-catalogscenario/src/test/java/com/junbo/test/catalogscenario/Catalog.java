@@ -371,12 +371,10 @@ public class Catalog extends TestClass {
         edRtn = entitlementDefinitionService.getEntitlementDefinition(edRtn.getEntitlementDefId());
         String edTag = RandomFactory.getRandomStringOfAlphabet(5);
         edRtn.setTag(edTag);
-        edRtn.setConsumable(Boolean.TRUE);
 
         logger.LogSample("Update entitlement definition");
         edRtn = entitlementDefinitionService.updateEntitlementDefinition(edRtn);
         Assert.assertEquals(edRtn.getTag(), edTag);
-        Assert.assertEquals(edRtn.getConsumable(), Boolean.TRUE);
 
         //Delete the entitlement definition
         logger.LogSample("Delete entitlement definition");
