@@ -19,14 +19,13 @@ import java.math.BigDecimal;
 public class SubledgerItem extends BaseOrderResource {
     @JsonProperty("self")
     private SubledgerItemId subledgerItemId;
-    private SubledgerId subledgerId;
-    private SubledgerItemId originalSubledgerItemId;
+    private SubledgerId subledger;
+    private SubledgerItemId originalSubledgerItem;
     private BigDecimal totalAmount;
-    private OrderItemId orderItemId;
-    private OfferId offerId;
+    private OrderItemId orderItem;
+    private OfferId offer;
     private String subledgerItemAction;
     private String status;
-    private Integer resourceAge;
 
     public SubledgerItemId getSubledgerItemId() {
         return subledgerItemId;
@@ -36,20 +35,20 @@ public class SubledgerItem extends BaseOrderResource {
         this.subledgerItemId = subledgerItemId;
     }
 
-    public SubledgerId getSubledgerId() {
-        return subledgerId;
+    public SubledgerId getSubledger() {
+        return subledger;
     }
 
-    public void setSubledgerId(SubledgerId subledgerId) {
-        this.subledgerId = subledgerId;
+    public void setSubledger(SubledgerId subledger) {
+        this.subledger = subledger;
     }
 
-    public SubledgerItemId getOriginalSubledgerItemId() {
-        return originalSubledgerItemId;
+    public SubledgerItemId getOriginalSubledgerItem() {
+        return originalSubledgerItem;
     }
 
-    public void setOriginalSubledgerItemId(SubledgerItemId originalSubledgerItemId) {
-        this.originalSubledgerItemId = originalSubledgerItemId;
+    public void setOriginalSubledgerItem(SubledgerItemId originalSubledgerItem) {
+        this.originalSubledgerItem = originalSubledgerItem;
     }
 
     public BigDecimal getTotalAmount() {
@@ -60,20 +59,20 @@ public class SubledgerItem extends BaseOrderResource {
         this.totalAmount = totalAmount;
     }
 
-    public OrderItemId getOrderItemId() {
-        return orderItemId;
+    public OrderItemId getOrderItem() {
+        return orderItem;
     }
 
-    public void setOrderItemId(OrderItemId orderItemId) {
-        this.orderItemId = orderItemId;
+    public void setOrderItem(OrderItemId orderItem) {
+        this.orderItem = orderItem;
     }
 
-    public OfferId getOfferId() {
-        return offerId;
+    public OfferId getOffer() {
+        return offer;
     }
 
-    public void setOfferId(OfferId offerId) {
-        this.offerId = offerId;
+    public void setOffer(OfferId offer) {
+        this.offer = offer;
     }
 
     public String getSubledgerItemAction() {

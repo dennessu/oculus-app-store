@@ -1,4 +1,7 @@
 package com.junbo.order.db.repo.impl
+
+import com.junbo.common.enumid.CountryId
+import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.SubledgerId
 import com.junbo.common.id.SubledgerItemId
@@ -44,7 +47,7 @@ class SubledgerRepositoryImpl implements SubledgerRepository {
     @Override
     Subledger createSubledger(Subledger subledger) {
         def subledgerEntity = modelMapper.toSubledgerEntity(subledger, new MappingContext())
-        subledgerEntity.subledgerId = idGeneratorFacade.nextId(SubledgerId, subledger.sellerId.value)
+        subledgerEntity.subledgerId = idGeneratorFacade.nextId(SubledgerId, subledger.seller.value)
         subledgerDao.create(subledgerEntity)
         subledger.subledgerId = new SubledgerId(subledgerEntity.subledgerId)
         Utils.fillDateInfo(subledger, subledgerEntity)
@@ -90,16 +93,16 @@ class SubledgerRepositoryImpl implements SubledgerRepository {
 
     @Override
     Subledger findSubledger(UserId sellerId, String payoutStatus, OfferId offerId,
-                            Date startTime, String currency, String country) {
+                            Date startTime, CurrencyId currency, CountryId country) {
         def entity = subledgerDao.find(sellerId.value, PayoutStatus.valueOf(payoutStatus),
-                        startTime, offerId.value.toString(), currency, country)
+                        startTime, offerId.value.toString(), currency?.toString(), country?.toString())
         return entity == null ? null : modelMapper.toSubledgerModel(entity, new MappingContext())
     }
 
     @Override
     SubledgerItem createSubledgerItem(SubledgerItem subledgerItem) {
         def subledgerItemEntity = modelMapper.toSubledgerItemEntity(subledgerItem, new MappingContext())
-        subledgerItemEntity.subledgerItemId = idGeneratorFacade.nextId(SubledgerItemId, subledgerItem.orderItemId.value)
+        subledgerItemEntity.subledgerItemId = idGeneratorFacade.nextId(SubledgerItemId, subledgerItem.orderItem.value)
         subledgerItemDao.create(subledgerItemEntity)
         subledgerItem.subledgerItemId = new SubledgerItemId(subledgerItemEntity.subledgerItemId)
         Utils.fillDateInfo(subledgerItem, subledgerItemEntity)
