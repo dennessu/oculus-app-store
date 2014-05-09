@@ -1,5 +1,7 @@
 package com.junbo.order.core.impl.subledger
 import com.google.common.math.IntMath
+import com.junbo.common.enumid.CountryId
+import com.junbo.common.enumid.CurrencyId
 import com.junbo.order.clientproxy.model.OrderOfferRevision
 import com.junbo.order.db.entity.enums.PayoutStatus
 import com.junbo.order.db.repo.OrderRepository
@@ -68,23 +70,23 @@ class SubledgerHelper {
     }
 
     Subledger getMatchingSubledger(SubledgerItemContext subledgerItemContext) {
-        def sellerId = subledgerItemContext.sellerId
+        def sellerId = subledgerItemContext.seller
         def startTime = getSubledgerStartTime(subledgerItemContext.createdTime)
 
         return subledgerRepository.findSubledger(sellerId, PayoutStatus.PENDING.name(),
-                subledgerItemContext.offerId, startTime, subledgerItemContext.currency,
+                subledgerItemContext.offer, startTime, subledgerItemContext.currency,
                 subledgerItemContext.country)
     }
 
-    Subledger getMatchingSubledger(OrderOfferRevision offer, String country, String currency, Date createdTime) {
+    Subledger getMatchingSubledger(OrderOfferRevision offer, CountryId country, CurrencyId currency, Date createdTime) {
         return getMatchingSubledger(
                 subledgerItemContextBuilder.buildContext(offer, country, currency, createdTime))
     }
 
     Subledger subledgerForSubledgerItemContext(SubledgerItemContext context) {
         Subledger subledger = new Subledger(
-                sellerId: context.sellerId,
-                offerId: context.offerId,
+                seller: context.seller,
+                offer: context.offer,
                 startTime: getSubledgerStartTime(context.createdTime),
                 endTime: getNextSubledgerStartTime(context.createdTime),
                 country: context.country,

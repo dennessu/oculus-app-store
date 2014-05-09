@@ -6,9 +6,12 @@
 
 package com.junbo.payment.core.impl;
 
+import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.core.PaymentCallbackService;
+import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.db.repository.PaymentRepository;
+import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.PaymentProperties;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import org.slf4j.Logger;
@@ -21,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class PaymentCallbackServiceImpl implements PaymentCallbackService{
     private static final Logger LOGGER = LoggerFactory.getLogger(PaymentCallbackServiceImpl.class);
+    private static final String CONFIRMED_STATUS = "AUTHORISED";
     @Autowired
     private PaymentRepository paymentRepository;
     @Override
@@ -31,5 +35,12 @@ public class PaymentCallbackServiceImpl implements PaymentCallbackService{
             throw AppClientExceptions.INSTANCE.invalidPaymentId(paymentId.toString()).exception();
         }
         paymentRepository.addPaymentProperties(paymentId, properties);
+        //for adyen
+        if(!CommonUtil.isNullOrEmpty(properties.getPspReference())
+                && !CommonUtil.isNullOrEmpty(properties.getAuthResult())
+                && properties.getAuthResult().equalsIgnoreCase(CONFIRMED_STATUS)){
+            paymentRepository.updatePayment(paymentId, PaymentUtil.getPaymentStatus(
+                    PaymentStatus.SETTLED.toString()), properties.getPspReference());
+        }
     }
 }

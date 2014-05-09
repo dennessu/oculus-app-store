@@ -8,6 +8,7 @@ package com.junbo.catalog.spec.model.offer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.jackson.annotation.CurrencyId;
 import com.junbo.common.jackson.annotation.EntitlementDefinitionId;
 import com.junbo.common.jackson.annotation.ItemId;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -29,6 +30,7 @@ public class Action {
     @ApiModelProperty(position = 3, required = true, value = "properties")
     @ItemId
     private Long itemId;
+    @CurrencyId
     @ApiModelProperty(position = 4, required = true, value = "Stored value credit currency")
     private String storedValueCurrency;
     @ApiModelProperty(position = 5, required = true, value = "Stored value credit amount")

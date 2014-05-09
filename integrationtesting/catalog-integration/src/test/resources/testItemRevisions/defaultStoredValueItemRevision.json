@@ -11,7 +11,6 @@
         }
     },
     "supportedInputDevices": ["KEYBOARD", "MOUSE"],
-    "gameModes": "SINGLE_PLAYER",
     "locales":{
         "en_US":{
             "name": "Angry Bird",
@@ -51,26 +50,9 @@
     },
     "countries": {
         "US":{
-            "supportPhone": "1234567890",
-            "ageRating": {"href": "https://api.oculusvr.com/v1/age-ratings/123", "id": "123"}
+            "supportPhone": "1234567890"
         }
     },
-    "binaries": {
-        "PC":{
-            "href":"http://www.google.com/downlaod/angrybird1_0.exe",
-            "size": 1024,
-            "version": "1.0"
-        },
-        "MAC":
-        {
-            "href":"http://www.google.com/download/angrybird1_1mac.dmg",
-            "size": 1024,
-            "version": "1.1"
-        }
-    },
-    "website": "the external website for the item",
-    "storedValueCurrency": null,
-    "storedValueAmount": null,
     "futureProperties":{},
     "rev": null
 }

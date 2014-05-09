@@ -10,21 +10,18 @@ import com.junbo.test.catalog.enums.CatalogEntityStatus;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.catalog.spec.model.offer.ItemEntry;
 import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.catalog.OfferRevisionService;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.catalog.ItemRevisionService;
-import com.junbo.catalog.spec.model.offer.ItemEntry;
 import com.junbo.catalog.spec.model.offer.Offer;
-import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.test.common.libs.IdConverter;
-import com.junbo.test.common.libs.LogHelper;
 import com.junbo.common.id.OfferRevisionId;
 import com.junbo.test.catalog.ItemService;
-import com.junbo.test.common.libs.RestUrl;
 import com.junbo.common.model.Results;
+import com.junbo.test.common.libs.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,6 +39,7 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
     private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
     private final String defaultOfferRevisionFileName = "defaultOfferRevision";
+    private final String defaultStoredValueOfferRevisionFileName = "defaultStoredValueOfferRevision";
 
     private LogHelper logger = new LogHelper(OfferRevisionServiceImpl.class);
     private static OfferRevisionService instance;
@@ -100,8 +98,18 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
         return postDefaultOfferRevision(offer);
     }
 
+    public OfferRevision postDefaultOfferRevision(CatalogItemType itemType) throws Exception {
+        Offer offer = OfferServiceImpl.instance().postDefaultOffer();
+        return postDefaultOfferRevision(offer, itemType);
+    }
+
     public OfferRevision postDefaultOfferRevision(Offer offer) throws Exception {
         Item item = prepareItem(CatalogItemType.getRandom());
+        return postDefaultOfferRevision(offer, item);
+    }
+
+    public OfferRevision postDefaultOfferRevision(Offer offer, CatalogItemType itemType) throws Exception {
+        Item item = prepareItem(itemType);
         return postDefaultOfferRevision(offer, item);
     }
 
@@ -114,7 +122,15 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
             throw new Exception("Item is null");
         }
 
-        OfferRevision offerRevisionForPost = prepareOfferRevisionEntity(defaultOfferRevisionFileName, false);
+        OfferRevision offerRevisionForPost;
+
+        if (item.getType().equalsIgnoreCase(CatalogItemType.STORED_VALUE.getItemType())) {
+            offerRevisionForPost = prepareOfferRevisionEntity(defaultStoredValueOfferRevisionFileName, false);
+        }
+        else {
+            offerRevisionForPost = prepareOfferRevisionEntity(defaultOfferRevisionFileName, false);
+        }
+
         offerRevisionForPost.setOfferId(offer.getOfferId());
         offerRevisionForPost.setOwnerId(offer.getOwnerId());
 

@@ -82,7 +82,7 @@ public class MockWalletServiceImpl extends AbstractPaymentProviderService {
     }
 
     @Override
-    public Promise<PaymentTransaction> getByTransactionToken(String token) {
-        return null;
+    public Promise<PaymentTransaction> getByTransactionToken(PaymentTransaction request) {
+        return Promise.pure(null);
     }
 }

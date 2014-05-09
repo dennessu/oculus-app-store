@@ -286,7 +286,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
             put(Constant.EVENT_PURCHASE, new ArrayList<Action>() {{
                 add(new Action() {{
                     setType(Constant.ACTION_CREDIT_WALLET);
-                    setStoredValueAmount(new BigDecimal(123.45));
+                    setStoredValueAmount(new BigDecimal("123.45"));
                     setStoredValueCurrency("USD");
                 }});
             }});

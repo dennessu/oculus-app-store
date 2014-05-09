@@ -145,22 +145,33 @@ public interface ModelMapper {
                                                                MappingContext context);
 
     @Mappings({
-            @Mapping(source = "productItemId", target = "offerId", excluded = false, bidirectional = false)
+            @Mapping(source = "productItemId", target = "offer", excluded = false, bidirectional = false),
+            @Mapping(source = "sellerId", target = "seller", excluded = false, bidirectional = false)
     })
     Subledger toSubledgerModel(SubledgerEntity subledgerEntity, MappingContext context);
 
     @Mappings({
-            @Mapping(source = "offerId", target = "productItemId", excluded = false, bidirectional = false)
+            @Mapping(source = "offer", target = "productItemId", excluded = false, bidirectional = false),
+            @Mapping(source = "seller", target = "sellerId", excluded = false, bidirectional = false),
+
     })
     SubledgerEntity toSubledgerEntity(Subledger subledger, MappingContext context);
 
     @Mappings({
-            @Mapping(source = "productItemId", target = "offerId", excluded = false, bidirectional = false)
+            @Mapping(source = "productItemId", target = "offer", excluded = false, bidirectional = false),
+            @Mapping(source = "subledgerId", target = "subledger", excluded = false, bidirectional = false),
+            @Mapping(source = "orderItemId", target = "orderItem", excluded = false, bidirectional = false),
+            @Mapping(source = "originalSubledgerItemId", target = "originalSubledgerItem",
+                    excluded = false, bidirectional = false)
     })
     SubledgerItem toSubledgerItemModel(SubledgerItemEntity subledgerItemEntity, MappingContext context);
 
     @Mappings({
-            @Mapping(source = "offerId", target = "productItemId", excluded = false, bidirectional = false)
+            @Mapping(source = "offer", target = "productItemId", excluded = false, bidirectional = false),
+            @Mapping(source = "subledger", target = "subledgerId", excluded = false, bidirectional = false),
+            @Mapping(source = "orderItem", target = "orderItemId", excluded = false, bidirectional = false),
+            @Mapping(source = "originalSubledgerItem", target = "originalSubledgerItemId",
+                    excluded = false, bidirectional = false)
     })
     SubledgerItemEntity toSubledgerItemEntity(SubledgerItem subledgerItem, MappingContext context);
 }

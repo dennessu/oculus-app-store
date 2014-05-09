@@ -93,7 +93,7 @@ public class BrainTreeRestProviderServiceImpl extends AbstractPaymentProviderSer
     }
 
     @Override
-    public Promise<PaymentTransaction> getByTransactionToken(String token) {
+    public Promise<PaymentTransaction> getByTransactionToken(PaymentTransaction request) {
         return Promise.pure(null);
     }
 

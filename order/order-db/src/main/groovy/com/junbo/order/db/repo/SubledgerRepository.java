@@ -5,6 +5,8 @@
  */
 package com.junbo.order.db.repo;
 
+import com.junbo.common.enumid.CountryId;
+import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.SubledgerId;
 import com.junbo.common.id.UserId;
@@ -31,8 +33,8 @@ public interface SubledgerRepository {
                                   PageParam pageParam);
 
     Subledger findSubledger(UserId sellerId, String payoutStatus,
-                                          OfferId offerId, Date startTime,  String currency,
-                                          String country);
+                                          OfferId offerId, Date startTime,  CurrencyId currency,
+                                          CountryId country);
 
     SubledgerItem createSubledgerItem(SubledgerItem subledgerItem);
 

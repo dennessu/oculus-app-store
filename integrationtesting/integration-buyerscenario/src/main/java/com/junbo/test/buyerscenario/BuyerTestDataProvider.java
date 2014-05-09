@@ -7,9 +7,12 @@ package com.junbo.test.buyerscenario;
 
 import com.junbo.cart.spec.model.Cart;
 import com.junbo.cart.spec.model.item.OfferItem;
+import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.enumid.LocaleId;
+import com.junbo.common.id.ItemId;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.UserId;
@@ -19,6 +22,7 @@ import com.junbo.order.spec.model.OrderItem;
 import com.junbo.order.spec.model.PaymentInfo;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.TypeSpecificDetails;
+import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PayPalInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
@@ -26,10 +30,10 @@ import com.junbo.test.common.Utility.BaseTestDataProvider;
 
 import com.junbo.test.common.apihelper.cart.CartService;
 import com.junbo.test.common.apihelper.cart.impl.CartServiceImpl;
-import com.junbo.test.common.apihelper.catalog.ItemService;
-import com.junbo.test.common.apihelper.catalog.OfferService;
-import com.junbo.test.common.apihelper.catalog.impl.ItemServiceImpl;
-import com.junbo.test.common.apihelper.catalog.impl.OfferServiceImpl;
+import com.junbo.test.catalog.ItemService;
+import com.junbo.test.catalog.OfferService;
+import com.junbo.test.catalog.impl.ItemServiceImpl;
+import com.junbo.test.catalog.impl.OfferServiceImpl;
 import com.junbo.order.spec.model.Order;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
@@ -87,12 +91,14 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
     }
 
     public String postDefaultItem() throws Exception {
-        return itemClient.postDefaultItem(EnumHelper.CatalogItemType.PHYSICAL);
+        Item item = itemClient.postDefaultItem(CatalogItemType.PHYSICAL);
+        return IdConverter.idLongToHexString(ItemId.class, item.getItemId());
     }
 
     public String postDefaultOffer(EnumHelper.CatalogItemType itemType) throws Exception {
         logger.LogSample("Post a offer");
-        return offerClient.postDefaultOffer();
+        Offer offer = offerClient.postDefaultOffer();
+        return IdConverter.idLongToHexString(OfferId.class, offer.getOfferId());
     }
 
     public String postOffersToPrimaryCart(String uid, boolean hasPhysicalGood, ArrayList<String> offers) throws Exception {

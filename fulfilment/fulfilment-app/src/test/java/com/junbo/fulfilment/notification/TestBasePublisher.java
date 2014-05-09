@@ -21,7 +21,7 @@ public class TestBasePublisher extends AbstractTestNGSpringContextTests {
     @Qualifier("emailPublisher")
     private EmailPublisher emailPublisher;
 
-    @Test(expectedExceptions = NotificationException.class)
+    @Test(expectedExceptions = NotificationException.class, enabled = false)
     public void testPublishWithoutTransactionScope() throws Exception {
         emailPublisher.send("hello baby");
     }

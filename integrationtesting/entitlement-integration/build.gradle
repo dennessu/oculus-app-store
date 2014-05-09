@@ -17,26 +17,26 @@ test {
     testLogging.showStandardStreams = true
 }
 
+/*
 repositories {
-    mavenLocal()
-    maven {
-        credentials {
-            username "${artifactory_user}"
-            password "${artifactory_password}"
-        }
-        url "${artifactory_contextUrl}/repo"
-    }
-    mavenCentral()
+mavenLocal()
+maven {
+credentials {
+username "${artifactory_user}"
+password "${artifactory_password}"
 }
+url "${artifactory_contextUrl}/repo"
+}
+mavenCentral()
+}
+ */
 
 dependencies {
+    compile junboProject(':entitlement-spec')
     compile junboProject(':common-testlib')
-
-    compile 'com.junbo.entitlement:entitlement-spec:0.0.1-SNAPSHOT'
-    compile 'com.junbo.test:catalog-integration:0.0.1-SNAPSHOT'
-    compile 'com.junbo.test:identity-integration:0.0.1-SNAPSHOT'
+    compile junboProject(':catalog-integration')
+    compile junboProject(':identity-integration')
 
     testCompile(libraries.junit)
     testCompile(libraries.testng)
-
 }

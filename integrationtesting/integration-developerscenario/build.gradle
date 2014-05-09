@@ -1,6 +1,4 @@
 apply plugin: 'java'
-apply plugin: 'idea'
-//apply plugin: 'maven'
 apply plugin: 'groovy'
 
 sourceCompatibility = '1.7'
@@ -26,15 +24,12 @@ test{
 }
 
 dependencies {
-
+    compile junboProject(':catalog-spec')
     compile junboProject(':common-testlib')
-    compile(libraries.asyncclient)
-
-    testCompile(libraries.asyncclient)
+    compile junboProject(':catalog-integration')
+    
+    testCompile(libraries.asyncclient)    
     testCompile(libraries.junit)
     testCompile(libraries.slf4j_api)
     testCompile(libraries.testng)
-
-    testCompile 'com.junbo.catalog:catalog-spec:0.0.1-SNAPSHOT'
-
 }
