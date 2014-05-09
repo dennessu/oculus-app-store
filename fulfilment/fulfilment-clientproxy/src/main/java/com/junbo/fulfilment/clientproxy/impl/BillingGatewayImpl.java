@@ -9,14 +9,12 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.fulfilment.clientproxy.BillingGateway;
-import com.junbo.fulfilment.common.util.Utils;
 import com.junbo.fulfilment.spec.error.AppErrors;
 import com.junbo.fulfilment.spec.fusion.ShippingAddress;
 import com.junbo.identity.spec.v1.model.Address;
 import com.junbo.identity.spec.v1.model.UserPersonalInfo;
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions;
 import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource;
-import ma.glasnost.orika.metadata.ClassMapBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +29,7 @@ public class BillingGatewayImpl implements BillingGateway {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BillingGatewayImpl.class);
 
-    static {
+    /*static {
         Utils.registerClassMap(
                 ClassMapBuilder.map(Address.class, ShippingAddress.class)
                         .field("street1", "street")
@@ -55,7 +53,7 @@ public class BillingGatewayImpl implements BillingGateway {
                         .exclude("description")
                         .toClassMap()
         );
-    }
+    }*/
 
     @Autowired
     @Qualifier("shippingAddressClient")
@@ -74,8 +72,8 @@ public class BillingGatewayImpl implements BillingGateway {
 
             return wash(retrieved);
         } catch (Exception e) {
-            LOGGER.error("Error occurred during calling [Billing] component.", e);
-            throw AppErrors.INSTANCE.gatewayFailure("billing").exception();
+            LOGGER.error("Error occurred during calling [Identity] component.", e);
+            throw AppErrors.INSTANCE.gatewayFailure("identity").exception();
         }
     }
 
@@ -90,17 +88,16 @@ public class BillingGatewayImpl implements BillingGateway {
         Address address;
         try {
             address = ObjectMapperProvider.instance().treeToValue(source.getValue(), Address.class);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.error("UserPersonalInfo [" + source.getId().getValue() + "] failed to cast to Address. Value: [" + source.getValue() + "]");
             throw AppErrors.INSTANCE.validation("UserPersonalInfo [" + source.getId().getValue() + "] failed to cast to Address").exception();
         }
 
-        ShippingAddress result = Utils.map(address, ShippingAddress.class);
+        /*ShippingAddress result = Utils.map(address, ShippingAddress.class);
         result.setUserId(source.getUserId().getValue());
         result.setAddressId(source.getId().getValue());
-        result.setDescription(source.getLabel());
+        result.setDescription(source.getLabel());*/
 
-        return result;
+        return new ShippingAddress();
     }
 }
