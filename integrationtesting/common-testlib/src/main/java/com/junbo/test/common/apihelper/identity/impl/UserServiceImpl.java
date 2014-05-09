@@ -117,7 +117,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     }
 
     private UserPersonalInfo postUserPersonalInfo(UserPersonalInfo userPersonalInfo, int expectedResponseCode) throws Exception {
-        String serverURL = RestUrl.getRestUrl(RestUrl.ComponentName.IDENTITY) + "personalInfo";
+        String serverURL = RestUrl.getRestUrl(RestUrl.ComponentName.IDENTITY) + "personal-info";
 
         String responseBody = restApiCall(HTTPMethod.POST, serverURL, userPersonalInfo, expectedResponseCode);
         UserPersonalInfo piGet = new JsonMessageTranscoder().decode(new TypeReference<UserPersonalInfo>() {},
@@ -237,41 +237,6 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         Master.getInstance().addUser(userRtnId, userPut);
 
         return userRtnId;
-
-    }
-
-    //Authenticate user
-    public String AuthenticateUser(String userName, String password) throws Exception {
-        //Todo
-        return AuthenticateUser(userName, password, 200);
-    }
-
-    public String AuthenticateUser(String userName, String password, int expectedResponseCode) throws Exception {
-        //Todo
-        return null;
-    }
-
-    //update password
-    public String UpdatePassword(String userId, String oldPassword, String newPassword) throws Exception {
-        //Todo
-        return UpdatePassword(userId, oldPassword, newPassword, 200);
-    }
-
-    public String UpdatePassword(String userId, String oldPassword, String newPassword, int expectedResponseCode)
-            throws Exception {
-        //Todo
-        return null;
-    }
-
-    //reset password
-    public String ResetPassword(String userId, String newPassword) throws Exception {
-        //Todo
-        return ResetPassword(userId, newPassword, 200);
-    }
-
-    public String ResetPassword(String userId, String newPassword, int expectedResponseCode) throws Exception {
-        //Todo
-        return null;
     }
 
 }

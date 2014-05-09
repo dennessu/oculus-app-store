@@ -27,7 +27,6 @@ dependencies {
     compile(libraries.asyncclient)
     compile(libraries.postgresql)
     compile junboProject(':payment-integration')
-    //compile(libraries.common_testlib)
     compile junboProject(':common-testlib')
 
     compile 'com.junbo.billing:billing-spec:0.0.1-SNAPSHOT'
