@@ -5,6 +5,7 @@
  */
 
 package com.junbo.catalog.db.mapper;
+
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.entity.OfferAttributeEntity;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
@@ -40,9 +41,7 @@ public class OfferAttributeMapper {
         attribute.setId(dbEntity.getId());
         attribute.setParentId(dbEntity.getParentId());
         attribute.setType(dbEntity.getType());
-        attribute.setCreatedBy(dbEntity.getCreatedBy());
         attribute.setCreatedTime(dbEntity.getCreatedTime());
-        attribute.setUpdatedBy(dbEntity.getUpdatedBy());
         attribute.setUpdatedTime(dbEntity.getUpdatedTime());
         attribute.setRev(dbEntity.getRev().toString());
         return attribute;

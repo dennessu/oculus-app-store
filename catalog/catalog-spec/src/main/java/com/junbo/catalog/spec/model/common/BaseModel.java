@@ -6,7 +6,7 @@
 
 package com.junbo.catalog.spec.model.common;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.Null;
 import java.util.Date;
@@ -15,17 +15,20 @@ import java.util.Date;
  * Base model.
  */
 public class BaseModel {
+    @ApiModelProperty(position = 1000, required = true,
+            value = "[Client Immutable] The revision of the resource. Used for optimistic locking.")
+    private String rev;
     @Null
+    @ApiModelProperty(position = 1001, required = true,
+            value = "[Client Immutable] The created datetime of the resource.")
     private Date createdTime;
     @Null
-    @JsonIgnore
-    private String createdBy;
-    @Null
+    @ApiModelProperty(position = 1002, required = true,
+            value = "[Client Immutable] The updated datetime of the resource.")
     private Date updatedTime;
-    @Null
-    @JsonIgnore
-    private String updatedBy;
-    private String rev;
+    @ApiModelProperty(position = 1003, required = false,
+            value = "[Client Immutable] The user who operated the resource.")
+    private AdminInfo adminInfo;
 
     public Date getCreatedTime() {
         return createdTime;
@@ -33,14 +36,6 @@ public class BaseModel {
 
     public void setCreatedTime(Date createdTime) {
         this.createdTime = createdTime;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
     }
 
     public Date getUpdatedTime() {
@@ -51,12 +46,12 @@ public class BaseModel {
         this.updatedTime = updatedTime;
     }
 
-    public String getUpdatedBy() {
-        return updatedBy;
+    public AdminInfo getAdminInfo() {
+        return adminInfo;
     }
 
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
+    public void setAdminInfo(AdminInfo adminInfo) {
+        this.adminInfo = adminInfo;
     }
 
     public String getRev() {

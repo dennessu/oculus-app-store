@@ -40,9 +40,7 @@ public class ItemAttributeMapper {
         attribute.setId(dbEntity.getId());
         attribute.setParentId(dbEntity.getParentId());
         attribute.setType(dbEntity.getType());
-        attribute.setCreatedBy(dbEntity.getCreatedBy());
         attribute.setCreatedTime(dbEntity.getCreatedTime());
-        attribute.setUpdatedBy(dbEntity.getUpdatedBy());
         attribute.setUpdatedTime(dbEntity.getUpdatedTime());
         attribute.setRev(dbEntity.getRev().toString());
         return attribute;
