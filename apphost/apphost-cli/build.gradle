@@ -24,3 +24,6 @@ dependencies {
     compile junboProject(':billing-jobs')
     // more to add
 }
+
+defaultTasks 'clean', 'install', 'installApp', 'distZip'
+
