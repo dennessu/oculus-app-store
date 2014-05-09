@@ -118,7 +118,7 @@
     <!-- 2: Id generator proposed by oculus rift (Using 48 bits) -->
     <bean id="oculus48IdSchema" class="com.junbo.sharding.id.oculus.OculusIdSchema">
         <constructor-arg name="idType" value="2" />
-        <constructor-arg name="dataCenterId" value="${activeDc}" />
+        <constructor-arg name="dataCenter" value="${activeDc}" />
         <constructor-arg name="bitsInDataCenterId" value="${sharding.oculus48.sharding.bitsInDataCenterId}" />
         <constructor-arg name="bitsInGlobalCounter" value="${sharding.oculus48.sharding.bitsInGlobalCounter}" />
         <constructor-arg name="bitsInLocalCounter" value="${sharding.oculus48.sharding.bitsInLocalCounter}" />
@@ -131,7 +131,7 @@
     <!-- 3: OrderId generator propsed by oculus rift (Using 40 bits) -->
     <bean id="oculus40IdSchema" class="com.junbo.sharding.id.oculus.OculusIdSchema">
         <constructor-arg name="idType" value="3" />
-        <constructor-arg name="dataCenterId" value="${activeDc}" />
+        <constructor-arg name="dataCenter" value="${activeDc}" />
         <constructor-arg name="bitsInDataCenterId" value="${sharding.oculus40.sharding.bitsInDataCenterId}" />
         <constructor-arg name="bitsInGlobalCounter" value="${sharding.oculus40.sharding.bitsInGlobalCounter}" />
         <constructor-arg name="bitsInLocalCounter" value="${sharding.oculus40.sharding.bitsInLocalCounter}" />
