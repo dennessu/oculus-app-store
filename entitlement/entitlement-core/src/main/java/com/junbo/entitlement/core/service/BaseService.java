@@ -83,7 +83,7 @@ public class BaseService {
                     "isSuspended can not be true when created").exception();
         }
         validateNotNull(entitlement.getGrantTime(), "grantTime");
-        if (entitlement.getUseCount() != null && entitlement.getUseCount() < 1) {
+        if (entitlement.getUseCount() != null && entitlement.getUseCount() < 0) {
             throw AppErrors.INSTANCE.fieldNotCorrect("useCount", "useCount should not be negative").exception();
         }
         validateConsumable(entitlement);
@@ -108,7 +108,7 @@ public class BaseService {
         validateEquals(formatId(entitlement.getEntitlementDefinitionId()),
                 formatId(existingEntitlement.getEntitlementDefinitionId()), "definition");
         validateEquals(entitlement.getGrantTime(), existingEntitlement.getGrantTime(), "grantTime");
-        if (entitlement.getUseCount() != null && entitlement.getUseCount() < 1) {
+        if (entitlement.getUseCount() != null && entitlement.getUseCount() < 0) {
             throw AppErrors.INSTANCE.fieldNotCorrect("useCount", "useCount should not be negative").exception();
         }
         validateConsumable(entitlement);
