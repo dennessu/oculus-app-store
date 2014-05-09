@@ -81,7 +81,7 @@ class ShardMultiTenantConnectionProviderFactoryBean
                 def range = parseRange(parts[2].trim())
                 def dc = parts[3].trim()
 
-                if (DataCenters.instance().isLocalDataCenter(dc)) {
+                if (!DataCenters.instance().isLocalDataCenter(dc)) {
                     // not in local dc
                     continue;
                 }
