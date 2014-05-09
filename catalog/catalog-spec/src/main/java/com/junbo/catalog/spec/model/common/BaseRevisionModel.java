@@ -20,9 +20,6 @@ public abstract class BaseRevisionModel extends BaseModel {
     @JsonIgnore
     private Long timestamp;
 
-    @ApiModelProperty(position = 500, required = false, value = "Future properties")
-    private ExtensibleProperties futureProperties;
-
     public String getStatus() {
         return status;
     }
@@ -37,14 +34,6 @@ public abstract class BaseRevisionModel extends BaseModel {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public ExtensibleProperties getFutureProperties() {
-        return futureProperties;
-    }
-
-    public void setFutureProperties(ExtensibleProperties futureProperties) {
-        this.futureProperties = futureProperties;
     }
 
     @JsonIgnore

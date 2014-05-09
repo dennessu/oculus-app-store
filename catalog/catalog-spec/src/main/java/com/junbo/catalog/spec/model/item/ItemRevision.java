@@ -30,8 +30,22 @@ public class ItemRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The id of item revision resource")
     private Long revisionId;
 
+    @ApiModelProperty(position = 2, required = true,
+            value = "An ID that helps to group like items. ex. TEAM_FORTRESS, this rollup ID would be applied to" +
+                    "all items that are team fortress (PC, MAC, LINUX, etc)")
+    private String rollupPackageName;
+
+    @ApiModelProperty(position = 3, required = true,
+            value = "Used to identify the item (app), used mainly for android")
+    private String packageName;
+
     @ApiModelProperty(position = 15, required = true, value = "Sku")
     private String sku;
+
+    @ItemId
+    @JsonProperty("iapHostItems")
+    @ApiModelProperty(position = 16, required = false, value = "The items in which the IAP item will be sold.")
+    private List<Long> iapHostItemIds;
 
     @UserId
     @JsonProperty("developer")
@@ -75,6 +89,30 @@ public class ItemRevision extends BaseRevisionModel {
 
     public void setSku(String sku) {
         this.sku = sku;
+    }
+
+    public String getRollupPackageName() {
+        return rollupPackageName;
+    }
+
+    public void setRollupPackageName(String rollupPackageName) {
+        this.rollupPackageName = rollupPackageName;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
+    public List<Long> getIapHostItemIds() {
+        return iapHostItemIds;
+    }
+
+    public void setIapHostItemIds(List<Long> iapHostItemIds) {
+        this.iapHostItemIds = iapHostItemIds;
     }
 
     public Long getRevisionId() {

@@ -199,11 +199,6 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
             if (offer == null) {
                 errors.add(AppErrors.INSTANCE.fieldNotCorrect("defaultOffer",
                         "Cannot find offer " + Utils.encodeId(item.getDefaultOffer())));
-            } else {
-                if (!isEqual(item.getIapHostItemId(), offer.getIapHostItemId())) {
-                    errors.add(AppErrors.INSTANCE
-                            .validation("defaultOffer should have same iapHostItem as this item."));
-                }
             }
         }
         if (item.getEntitlementDefId() != null) {
