@@ -12,17 +12,27 @@ import com.junbo.email.spec.model.EmailTemplate
 import com.junbo.email.spec.model.Model
 import com.junbo.identity.spec.v1.model.User
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
+import org.springframework.util.StringUtils
+
+import java.util.regex.Pattern
 
 /**
  * Common Validator.
  */
 @CompileStatic
-@Component('emailCommonValidator')
-class CommonValidator {
-    @Autowired
+abstract class CommonValidator {
+
     protected EmailTemplateRepository emailTemplateRepository
+
+    private Pattern emailPattern
+
+    void setEmailTemplateRepository(EmailTemplateRepository emailTemplateRepository) {
+        this.emailTemplateRepository = emailTemplateRepository
+    }
+
+    void setEmailPattern(String emailPattern) {
+        this.emailPattern = Pattern.compile(emailPattern)
+    }
 
     protected void validateUser(User user) {
         if (user == null) {
@@ -52,11 +62,10 @@ class CommonValidator {
     }
 
     protected boolean validateEmailAddress(String email) {
-        //TODO:need to update later.
-        if (email == null) {
-            return false
+        if (!StringUtils.isEmpty(email)) {
+            return emailPattern.matcher(email).matches()
         }
-        return true
+        return false
     }
 
     protected void validateEmailTemplate(Email email) {

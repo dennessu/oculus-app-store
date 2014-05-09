@@ -7,7 +7,7 @@ package com.junbo.test.billing.utility;
 
 import com.junbo.billing.spec.model.Balance;
 import com.junbo.billing.spec.model.BalanceItem;
-import com.junbo.billing.spec.model.ShippingAddress;
+//import com.junbo.billing.spec.model.ShippingAddress;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.enumid.LocaleId;
@@ -18,11 +18,10 @@ import com.junbo.order.spec.model.PaymentInfo;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.TypeSpecificDetails;
 import com.junbo.test.billing.apihelper.BalanceService;
-import com.junbo.test.billing.apihelper.ShippingAddressService;
+//import com.junbo.test.billing.apihelper.ShippingAddressService;
 import com.junbo.test.billing.apihelper.impl.BalanceServiceImpl;
-import com.junbo.test.billing.apihelper.impl.ShippingAddressServiceImpl;
 import com.junbo.test.billing.enums.BalanceType;
-import com.junbo.test.common.Entities.ShippingAddressInfo;
+//import com.junbo.test.common.Entities.ShippingAddressInfo;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
@@ -57,7 +56,7 @@ public class BillingTestDataProvider extends BaseTestDataProvider {
     private OfferService offerClient = OfferServiceImpl.instance();
     private OrderService orderClient = OrderServiceImpl.getInstance();
     private BalanceService balanceClient = BalanceServiceImpl.getInstance();
-    private ShippingAddressService shippingClient = ShippingAddressServiceImpl.getInstance();
+    //private ShippingAddressService shippingClient = ShippingAddressServiceImpl.getInstance();
     private DBHelper dbHelper = new DBHelper();
 
 
@@ -132,7 +131,7 @@ public class BillingTestDataProvider extends BaseTestDataProvider {
         order.setShippingMethod(0L);
 
         if (shippingAddressId != null) {
-            order.setShippingAddress(Master.getInstance().getShippingAddress(shippingAddressId).getAddressId());
+            //order.setShippingAddress(Master.getInstance().getShippingAddress(shippingAddressId).getAddressId());
         }
         List<OrderItem> orderItemList = new ArrayList<>();
         for (int i = 0; i < offers.size(); i++) {
@@ -151,7 +150,7 @@ public class BillingTestDataProvider extends BaseTestDataProvider {
         return orderClient.postOrder(order);
     }
 
-    public String postShippingAddressToUser(String uid, ShippingAddressInfo shippingAddressInfo) throws Exception {
+   /* public String postShippingAddressToUser(String uid, ShippingAddressInfo shippingAddressInfo) throws Exception {
         ShippingAddress shippingAddress = new ShippingAddress();
         shippingAddress.setStreet(shippingAddressInfo.getStreet());
         shippingAddress.setCity(shippingAddressInfo.getCity());
@@ -162,7 +161,7 @@ public class BillingTestDataProvider extends BaseTestDataProvider {
         shippingAddress.setLastName(shippingAddressInfo.getLastName());
         shippingAddress.setPhoneNumber(shippingAddressInfo.getPhoneNumber());
         return shippingClient.postShippingAddressToUser(uid, shippingAddress);
-    }
+    }*/
 
     public String quoteBalance(String uid, String pid) throws Exception {
         Balance balance = new Balance();

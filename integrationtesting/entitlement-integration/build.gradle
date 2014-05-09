@@ -30,11 +30,11 @@ repositories {
 }
 
 dependencies {
-    //compile project(':common-testlib')
+    compile junboProject(':common-testlib')
+
     compile 'com.junbo.entitlement:entitlement-spec:0.0.1-SNAPSHOT'
     compile 'com.junbo.test:catalog-integration:0.0.1-SNAPSHOT'
     compile 'com.junbo.test:identity-integration:0.0.1-SNAPSHOT'
-    compile(libraries.common_testlib)
 
     testCompile(libraries.junit)
     testCompile(libraries.testng)

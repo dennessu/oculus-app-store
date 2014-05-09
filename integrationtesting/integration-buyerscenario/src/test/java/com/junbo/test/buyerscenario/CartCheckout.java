@@ -1,6 +1,5 @@
 package com.junbo.test.buyerscenario;
 
-import com.junbo.test.common.apihelper.catalog.impl.OfferServiceImpl;
 import com.junbo.test.payment.apihelper.impl.PaymentTransactionServiceImpl;
 import com.junbo.test.payment.apihelper.impl.PaymentCallbackServiceImpl;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
@@ -163,7 +162,9 @@ public class CartCheckout extends BaseTestClass {
 
 
         ShippingAddressInfo shippingAddressInfo = ShippingAddressInfo.getRandomShippingAddress(Country.DEFAULT);
-        String shippingAddressId = testDataProvider.postShippingAddressToUser(uid, shippingAddressInfo);
+        //String shippingAddressId = testDataProvider.postShippingAddressToUser(uid, shippingAddressInfo);
+        //TODO
+        String shippingAddressId = "shipping";
 
         String cartId = testDataProvider.postOffersToPrimaryCart(uid, true, offerList);
 
@@ -208,7 +209,9 @@ public class CartCheckout extends BaseTestClass {
         //TODO add ewallet offer
 
         ShippingAddressInfo shippingAddressInfo = ShippingAddressInfo.getRandomShippingAddress(Country.DEFAULT);
-        String shippingAddressId = testDataProvider.postShippingAddressToUser(uid, shippingAddressInfo);
+        //String shippingAddressId = testDataProvider.postShippingAddressToUser(uid, shippingAddressInfo);
+        //TODO
+        String shippingAddressId = "shipping";
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
@@ -262,7 +265,9 @@ public class CartCheckout extends BaseTestClass {
         offerList.add(offer_physical_normal2);
 
         ShippingAddressInfo shippingAddressInfo = ShippingAddressInfo.getRandomShippingAddress(Country.DEFAULT);
-        String shippingAddressId = testDataProvider.postShippingAddressToUser(uid, shippingAddressInfo);
+        //String shippingAddressId = testDataProvider.postShippingAddressToUser(uid, shippingAddressInfo);
+        //TODO
+        String shippingAddressId = "shipping";
 
         EwalletInfo ewalletInfo = EwalletInfo.getEwalletInfo(Country.DEFAULT, Currency.DEFAULT);
         String ewalletId = testDataProvider.postPaymentInstrument(uid, ewalletInfo);

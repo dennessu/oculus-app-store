@@ -1,6 +1,5 @@
 apply plugin: 'java'
 apply plugin: 'idea'
-apply plugin: 'maven'
 apply plugin: 'groovy'
 
 sourceCompatibility = '1.7'
@@ -26,7 +25,7 @@ test {
 }
 
 dependencies {
-    compile project(':common-testlib')
+    compile junboProject(':common-testlib')
     compile(libraries.asyncclient)
     compile 'com.junbo.payment:payment-spec:0.0.1-SNAPSHOT'
     compile 'com.junbo.ewallet:ewallet-spec:0.0.1-SNAPSHOT'

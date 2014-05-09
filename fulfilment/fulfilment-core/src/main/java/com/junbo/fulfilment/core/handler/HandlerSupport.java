@@ -16,6 +16,8 @@ import com.junbo.fulfilment.core.service.TransactionSupport;
 import com.junbo.fulfilment.db.repo.FulfilmentActionRepository;
 import com.junbo.fulfilment.spec.constant.FulfilmentStatus;
 import com.junbo.fulfilment.spec.model.FulfilmentAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -26,6 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class HandlerSupport<T extends FulfilmentContext>
         extends TransactionSupport
         implements FulfilmentHandler<T> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FulfilmentHandler.class);
+
     @Autowired
     protected CatalogGateway catalogGateway;
 
@@ -52,8 +56,12 @@ public abstract class HandlerSupport<T extends FulfilmentContext>
     public void process(T context) {
         for (final FulfilmentAction action : context.getActions()) {
             try {
+                LOGGER.info("Start processing action [" + action.getActionId() + "].");
+
                 action.setResult(handle(context, action));
                 action.setStatus(FulfilmentStatus.SUCCEED);
+
+                LOGGER.info("Finish processing action [" + action.getActionId() + "].");
             } catch (Exception e) {
                 action.setStatus(FulfilmentStatus.FAILED);
             }

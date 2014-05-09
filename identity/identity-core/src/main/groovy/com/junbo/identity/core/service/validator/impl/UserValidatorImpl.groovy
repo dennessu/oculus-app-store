@@ -241,6 +241,8 @@ class UserValidatorImpl implements UserValidator {
                             }
                         }
 
+                        // todo:    Temp disable default userPersonalInfoLink need verified email
+                        /*
                         if (userPersonalInfoLink.isDefault == true) {
                             // Only default email can be set as default.
                             Email email = (Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Email)
@@ -249,6 +251,7 @@ class UserValidatorImpl implements UserValidator {
                                         'Only validated email can be set default.').exception()
                             }
                         }
+                        */
 
                         return validateUserPersonalInfoLinkIterator(it, type)
                     }

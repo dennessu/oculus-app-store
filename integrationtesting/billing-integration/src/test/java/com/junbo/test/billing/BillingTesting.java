@@ -176,7 +176,7 @@ public class BillingTesting extends BaseTestClass {
         String randomUid = testDataProvider.CreateUser();
 
         ShippingAddressInfo shippingAddressInfo = ShippingAddressInfo.getRandomShippingAddress(Country.DEFAULT);
-        String shippingAddressId = testDataProvider.postShippingAddressToUser(randomUid, shippingAddressInfo);
+        //String shippingAddressId = testDataProvider.postShippingAddressToUser(randomUid, shippingAddressInfo);
 
         //TODO Validate response
     }
