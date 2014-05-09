@@ -1,7 +1,4 @@
 apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'maven'
-apply plugin: 'groovy'
 
 sourceCompatibility = '1.7'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
@@ -27,9 +24,9 @@ test {
 
 dependencies {
 
-    compile project(':common-testlib')
-    compile project(':payment-integration')
-    compile project(':billing-integration')
+    compile junboProject(':common-testlib')
+    compile junboProject(':payment-integration')
+    compile junboProject(':billing-integration')
 
     compile(libraries.asyncclient)
     //compile(libraries.common_testlib)

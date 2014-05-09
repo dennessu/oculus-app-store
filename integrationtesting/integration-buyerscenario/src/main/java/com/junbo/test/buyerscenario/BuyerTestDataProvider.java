@@ -5,7 +5,7 @@
  */
 package com.junbo.test.buyerscenario;
 
-import com.junbo.billing.spec.model.ShippingAddress;
+//import com.junbo.billing.spec.model.ShippingAddress;
 import com.junbo.cart.spec.model.Cart;
 import com.junbo.cart.spec.model.item.OfferItem;
 import com.junbo.common.enumid.CountryId;
@@ -20,9 +20,8 @@ import com.junbo.order.spec.model.OrderItem;
 import com.junbo.order.spec.model.PaymentInfo;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.TypeSpecificDetails;
-import com.junbo.test.billing.apihelper.ShippingAddressService;
-import com.junbo.test.billing.apihelper.impl.ShippingAddressServiceImpl;
-import com.junbo.test.common.Entities.ShippingAddressInfo;
+//import com.junbo.test.billing.apihelper.ShippingAddressService;
+//import com.junbo.test.common.Entities.ShippingAddressInfo;
 import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PayPalInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
@@ -67,7 +66,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
     private CartService cartClient = CartServiceImpl.getInstance();
     private OrderService orderClient = OrderServiceImpl.getInstance();
     private PaymentService paymentClient = PaymentServiceImpl.getInstance();
-    private ShippingAddressService shippingClient = ShippingAddressServiceImpl.getInstance();
+    //private ShippingAddressService shippingClient = ShippingAddressServiceImpl.getInstance();
 
     private LogHelper logger = new LogHelper(BuyerTestDataProvider.class);
 
@@ -204,7 +203,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         paymentClient.creditWallet(creditRequest);
     }
 
-    public String postShippingAddressToUser(String uid, ShippingAddressInfo shippingAddressInfo) throws Exception {
+/*    public String postShippingAddressToUser(String uid, ShippingAddressInfo shippingAddressInfo) throws Exception {
         ShippingAddress shippingAddress = new ShippingAddress();
         shippingAddress.setStreet(shippingAddressInfo.getStreet());
         shippingAddress.setCity(shippingAddressInfo.getCity());
@@ -216,7 +215,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         shippingAddress.setPhoneNumber(shippingAddressInfo.getPhoneNumber());
         logger.LogSample("Post shipping address to user");
         return shippingClient.postShippingAddressToUser(uid, shippingAddress);
-    }
+    }*/
 
     public String postOrderByCartId(String uid, String cartId, Country country, Currency currency,
                                     String paymentInstrumentId) throws Exception {
@@ -246,7 +245,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         order.setShippingMethod(0L);
 
         if (shippingAddressId != null) {
-            order.setShippingAddress(Master.getInstance().getShippingAddress(shippingAddressId).getAddressId());
+            //order.setShippingAddress(Master.getInstance().getShippingAddress(shippingAddressId).getAddressId());
         }
         List<OrderItem> orderItemList = new ArrayList<>();
         for (int i = 0; i < offers.size(); i++) {
@@ -289,9 +288,9 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         order.setUser(cart.getUser());
         order.setCountry(new CountryId(country.toString()));
         order.setCurrency(new CurrencyId(currency.toString()));
-        if (shippingAddressId != null) {
+       /* if (shippingAddressId != null) {
             order.setShippingAddress(Master.getInstance().getShippingAddress(shippingAddressId).getAddressId());
-        }
+        }*/
 
         List<OrderItem> orderItemList = new ArrayList<>();
         List<OfferItem> offerItemList = cart.getOffers();

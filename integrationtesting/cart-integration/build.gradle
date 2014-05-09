@@ -31,9 +31,9 @@ repositories {
 
 dependencies {
 
-    compile project(':common-testlib')
+    compile junboProject(':common-testlib')
+
     compile 'com.junbo.cart:cart-spec:0.0.1-SNAPSHOT'
-    //compile(libraries.common_testlib)
 
     testCompile(libraries.junit)
     testCompile(libraries.testng)

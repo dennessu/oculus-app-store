@@ -8,7 +8,7 @@ package com.junbo.test.buyerscenario;
 import com.junbo.cart.spec.model.item.OfferItem;
 
 import com.junbo.common.id.OfferRevisionId;
-import com.junbo.common.id.ShippingAddressId;
+//import com.junbo.common.id.ShippingAddressId;
 import com.junbo.common.id.UserId;
 import com.junbo.order.spec.model.OrderItem;
 import com.junbo.test.common.Entities.enums.Country;
@@ -68,12 +68,12 @@ public class BuyerValidationHelper extends BaseValidationHelper {
         }
 
         verifyEqual(order.getOrderItems().size(), cart.getOffers().size(), "verify offer items in order");
-        if (shippingAddressId != null) {
+        /*if (shippingAddressId != null) {
             verifyEqual(IdConverter.idLongToHexString(
                     ShippingAddressId.class, order.getShippingAddress().getValue()), shippingAddressId,
                     "verify shipping address id"
             );
-        }
+        }*/
 
         BigDecimal expectedTotalAmount = new BigDecimal(0.00);
         BigDecimal expectedTotalTaxAmount = new BigDecimal(0.00);
