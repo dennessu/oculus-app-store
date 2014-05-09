@@ -17,22 +17,26 @@ test {
     testLogging.showStandardStreams = true
 }
 
+/*
 repositories {
-    mavenLocal()
-    maven {
-        credentials {
-            username "${artifactory_user}"
-            password "${artifactory_password}"
-        }
-        url "${artifactory_contextUrl}/repo"
-    }
-    mavenCentral()
+mavenLocal()
+maven {
+credentials {
+username "${artifactory_user}"
+password "${artifactory_password}"
 }
+url "${artifactory_contextUrl}/repo"
+}
+mavenCentral()
+}
+ */
 
 dependencies {
-    compile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
+    compile junboProject(':identity-spec')
+    compile junboProject(':common-lib')
     compile junboProject(':common-testlib')
 
     testCompile(libraries.junit)
     testCompile(libraries.testng)
+
 }

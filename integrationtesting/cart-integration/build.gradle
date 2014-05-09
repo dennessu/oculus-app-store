@@ -17,24 +17,24 @@ test {
     testLogging.showStandardStreams = true
 }
 
+/*
 repositories {
-    mavenLocal()
-    maven {
-        credentials {
-            username "${artifactory_user}"
-            password "${artifactory_password}"
-        }
-        url "${artifactory_contextUrl}/repo"
-    }
-    mavenCentral()
+mavenLocal()
+maven {
+credentials {
+username "${artifactory_user}"
+password "${artifactory_password}"
 }
+url "${artifactory_contextUrl}/repo"
+}
+mavenCentral()
+}
+ */
 
 dependencies {
-
+    compile junboProject(':cart-spec')    
     compile junboProject(':common-testlib')
-    compile 'com.junbo.cart:cart-spec:0.0.1-SNAPSHOT'
 
     testCompile(libraries.junit)
     testCompile(libraries.testng)
-
 }
