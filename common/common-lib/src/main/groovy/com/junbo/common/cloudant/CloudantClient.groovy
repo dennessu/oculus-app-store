@@ -48,7 +48,7 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
 
     @Required
     void setCloudantDBUri(String cloudantDBUri) {
-        this.cloudantDBUri = cloudantDBUri
+        this.cloudantDBUri = Utils.filterPerDataCenterConfig(cloudantDBUri, "cloudantDBUri")
     }
 
     @Required
