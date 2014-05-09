@@ -1,4 +1,7 @@
 apply plugin: 'groovy'
 
 dependencies {
+    compile (libraries.common_lang)
+
+    compile (libraries.slf4j_api)
 }

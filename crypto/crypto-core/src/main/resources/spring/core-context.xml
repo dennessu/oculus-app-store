@@ -3,9 +3,6 @@
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="cipherService" class="com.junbo.crypto.core.impl.CipherServiceImpl">
-        <property name="algorithm" value="${crypto.core.algorithm}" />
-        <property name="keyAlgorithm" value="${crypto.core.keyAlgorithm}" />
-    </bean>
+    <bean id="cipherService" class="com.junbo.crypto.core.impl.AESCipherServiceImpl" />
 
 </beans>
