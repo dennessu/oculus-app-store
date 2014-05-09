@@ -1,6 +1,6 @@
 package com.junbo.identity.core.service.validator
 
-import com.junbo.common.id.DeviceTypeId
+import com.junbo.common.enumid.DeviceTypeId
 import com.junbo.identity.spec.v1.model.DeviceType
 import com.junbo.identity.spec.v1.option.list.DeviceTypeListOptions
 import com.junbo.langur.core.promise.Promise

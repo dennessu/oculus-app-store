@@ -104,8 +104,11 @@ class CommunicationValidatorImpl implements CommunicationValidator {
         if (communication.description == null) {
             throw AppErrors.INSTANCE.fieldRequired('description').exception()
         }
-        if (communication.allowedIn == null) {
-            throw AppErrors.INSTANCE.fieldRequired('allowedIn').exception()
+        if (communication.regions == null) {
+            throw AppErrors.INSTANCE.fieldRequired('regions').exception()
+        }
+        if (communication.translations == null) {
+            throw AppErrors.INSTANCE.fieldRequired('translations').exception()
         }
         if (communication.locales == null) {
             throw AppErrors.INSTANCE.fieldRequired('locales').exception()

@@ -7,6 +7,7 @@ package com.junbo.identity.data
 
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
+import com.junbo.common.enumid.DeviceTypeId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.PITypeId
 import com.junbo.common.id.*
@@ -157,7 +158,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         Device device = new Device()
         device.setFirmwareVersion(UUID.randomUUID().toString())
         device.setSerialNumber(UUID.randomUUID().toString())
-        device.setType(new DeviceTypeId(123L))
+        device.setType(new DeviceTypeId("DK2"))
 
         Device newDevice = deviceRepository.create(device).wrapped().get()
         newDevice = deviceRepository.get((DeviceId)newDevice.id).wrapped().get()
@@ -201,7 +202,6 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     public void testTosRepository() {
         Tos tos = new Tos()
         tos.title = 'title'
-        tos.localeId = new LocaleId('en_US')
         tos.content = 'content'
 
         tos = tosRepository.create(tos).wrapped().get()
