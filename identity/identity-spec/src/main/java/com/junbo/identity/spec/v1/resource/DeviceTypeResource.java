@@ -5,7 +5,7 @@
  */
 package com.junbo.identity.spec.v1.resource;
 
-import com.junbo.common.id.DeviceTypeId;
+import com.junbo.common.enumid.DeviceTypeId;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.DeviceType;
 import com.junbo.identity.spec.v1.option.list.DeviceTypeListOptions;
