@@ -1,7 +1,4 @@
 apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'maven'
-apply plugin: 'groovy'
 
 sourceCompatibility = '1.7'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
@@ -11,20 +8,19 @@ dependencies {
     compile(libraries.apache_httpclient)
     compile(libraries.async_http_client)
     compile(libraries.common_io)
-    compile(libraries.common_lib)
+    //compile(libraries.common_lib)
     compile(libraries.gson)
     compile(libraries.guava)
     compile(libraries.jackson_annotations)
     compile(libraries.jackson_databind)
     compile(libraries.jackson_core)
     compile(libraries.jackson_jaxrs_json_provider)
-    compile(libraries.langur)
+    //compile(libraries.langur)
     compile(libraries.rs_api)
     compile(libraries.spring_beans)
     compile(libraries.spring_context)
     compile(libraries.testng)
-    compile(libraries.common_sharding)
-
+    //compile(libraries.common_sharding)
 
     compile 'com.junbo.billing:billing-spec:0.0.1-SNAPSHOT'
     compile 'com.junbo.cart:cart-spec:0.0.1-SNAPSHOT'
@@ -34,7 +30,11 @@ dependencies {
     compile 'com.junbo.order:order-spec:0.0.1-SNAPSHOT'
     compile 'com.junbo.payment:payment-spec:0.0.1-SNAPSHOT'
     compile 'com.junbo.ewallet:ewallet-spec:0.0.1-SNAPSHOT'
+    compile 'com.junbo.common:common-lib:0.0.1-SNAPSHOT'
+    compile 'com.junbo.common:common-sharding:0.0.1-SNAPSHOT'
+    compile 'com.junbo.langur:langur-core:0.0.1-SNAPSHOT'
 
-    processor(libraries.langur_processor)
     processor(libraries.log4j)
+    //processor(libraries.langur_processor)
+    processor 'com.junbo.langur:langur-processor:0.0.1-SNAPSHOT'
 }
