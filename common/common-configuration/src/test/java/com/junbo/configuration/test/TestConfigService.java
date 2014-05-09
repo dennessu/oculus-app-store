@@ -8,7 +8,7 @@ import java.util.Properties;
 
 public class TestConfigService implements ConfigService, AutoCloseable {
     private ConfigService oldInstance;
-    private ConfigContext context = new ConfigContext("unittest", "dc0", "0.0.0.0/0");
+    private ConfigContext context = new ConfigContext("unittest", "dc0", "127.0.0.1/32");
     private ConfigService.ConfigListener listener;
     private Properties properties = new Properties();
 
