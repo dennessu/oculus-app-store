@@ -23,7 +23,7 @@
 
     <bean id="cloudantClient" class="com.junbo.common.cloudant.CloudantClient" abstract="true">
         <property name="asyncHttpClient" ref="commonAsyncHttpClient" />
-        <property name="cloudantDBUri" value="${identity.cloudant.url}" />
+        <property name="cloudantDBUri" value="${common.cloudant.url}" />
         <property name="marshaller">
             <bean class="com.junbo.common.cloudant.CloudantDefaultMarshaller" />
         </property>
