@@ -8,10 +8,12 @@ package com.junbo.catalog.spec.model.offer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.jackson.annotation.CurrencyId;
 import com.junbo.common.jackson.annotation.EntitlementDefinitionId;
 import com.junbo.common.jackson.annotation.ItemId;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 /**
@@ -28,10 +30,11 @@ public class Action {
     @ApiModelProperty(position = 3, required = true, value = "properties")
     @ItemId
     private Long itemId;
+    @CurrencyId
     @ApiModelProperty(position = 4, required = true, value = "Stored value credit currency")
     private String storedValueCurrency;
     @ApiModelProperty(position = 5, required = true, value = "Stored value credit amount")
-    private String storedValueAmount;
+    private BigDecimal storedValueAmount;
     @ApiModelProperty(position = 20, required = true, value = "properties")
     private Map<String, Object> properties;
     @JsonIgnore
@@ -69,11 +72,11 @@ public class Action {
         this.storedValueCurrency = storedValueCurrency;
     }
 
-    public String getStoredValueAmount() {
+    public BigDecimal getStoredValueAmount() {
         return storedValueAmount;
     }
 
-    public void setStoredValueAmount(String storedValueAmount) {
+    public void setStoredValueAmount(BigDecimal storedValueAmount) {
         this.storedValueAmount = storedValueAmount;
     }
 

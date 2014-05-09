@@ -11,7 +11,6 @@ import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.billing.spec.model.ShippingAddress;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.item.Item;
@@ -52,7 +51,6 @@ public class Master {
     private Map<String, OfferRevision> offerRevisions;
     private Map<String, EntitlementDefinition> entitlementDefinitions;
     private Map<String, Order> orders;
-    private Map<String, ShippingAddress> shippingAddresses;
     private Map<String, ItemAttribute> itemAttributes;
     private Map<String, OfferAttribute> offerAttributes;
 
@@ -74,7 +72,6 @@ public class Master {
         this.initializeOfferAttributes();
         this.initializeEntitlements();
         this.initializePayments();
-        this.initializeShippingAddresses();
         this.initializeBalances();
     }
 
@@ -155,13 +152,6 @@ public class Master {
         this.entitlements.clear();
     }
 
-    public void initializeShippingAddresses() {
-        if (this.shippingAddresses == null) {
-            this.shippingAddresses = new HashMap<>();
-        }
-        this.shippingAddresses.clear();
-    }
-
     public void initializePayments() {
         if (this.paymentInstruments == null) {
             this.paymentInstruments = new HashMap<>();
@@ -231,14 +221,6 @@ public class Master {
         }
 
         this.orders.put(orderId, order);
-    }
-
-    public void addShippingAddress(String addressId, ShippingAddress address) {
-        if (this.shippingAddresses.containsKey(addressId)) {
-            this.shippingAddresses.remove(addressId);
-        }
-
-        this.shippingAddresses.put(addressId, address);
     }
 
     public void addItemAttribute(String attributeId, ItemAttribute attribute) {
@@ -339,10 +321,6 @@ public class Master {
         return this.orders.get(orderId);
     }
 
-    public ShippingAddress getShippingAddress(String addressId) {
-        return this.shippingAddresses.get(addressId);
-    }
-
     public PaymentInstrument getPaymentInstrument(String paymentInstrumentId) {
         return this.paymentInstruments.get(paymentInstrumentId);
     }
@@ -369,12 +347,6 @@ public class Master {
 
     public Map<String, PaymentInstrument> getPaymentInstruments() {
         return paymentInstruments;
-    }
-
-    public void removeShippingAddress(String addressId) {
-        if (this.shippingAddresses.containsKey(addressId)) {
-            this.shippingAddresses.remove(addressId);
-        }
     }
 
     public void removePaymentInstrument(String paymentInstrumentId) {

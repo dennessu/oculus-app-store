@@ -5,7 +5,6 @@
  */
 package com.junbo.test.buyerscenario;
 
-import com.junbo.billing.spec.model.ShippingAddress;
 import com.junbo.cart.spec.model.Cart;
 import com.junbo.cart.spec.model.item.OfferItem;
 import com.junbo.common.enumid.CountryId;
@@ -20,9 +19,6 @@ import com.junbo.order.spec.model.OrderItem;
 import com.junbo.order.spec.model.PaymentInfo;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.TypeSpecificDetails;
-import com.junbo.test.billing.apihelper.ShippingAddressService;
-import com.junbo.test.billing.apihelper.impl.ShippingAddressServiceImpl;
-import com.junbo.test.common.Entities.ShippingAddressInfo;
 import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PayPalInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
@@ -67,7 +63,6 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
     private CartService cartClient = CartServiceImpl.getInstance();
     private OrderService orderClient = OrderServiceImpl.getInstance();
     private PaymentService paymentClient = PaymentServiceImpl.getInstance();
-    private ShippingAddressService shippingClient = ShippingAddressServiceImpl.getInstance();
 
     private LogHelper logger = new LogHelper(BuyerTestDataProvider.class);
 
@@ -104,7 +99,6 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         String primaryCartId = cartClient.getCartPrimary(uid);
         Cart primaryCart = Master.getInstance().getCart(primaryCartId);
         List<OfferItem> offerItemList = new ArrayList<>();
-        List<String> couponItemList = new ArrayList<>();
         for (int i = 0; i < offers.size(); i++) {
             OfferItem offerItem = new OfferItem();
             if (hasPhysicalGood) {
@@ -120,7 +114,6 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
             offerItemList.add(offerItem);
         }
         primaryCart.setOffers(offerItemList);
-        //primaryCart.setCouponCodes(couponItemList);
 
         Master.getInstance().addCart(primaryCartId, primaryCart);
         return cartClient.updateCart(uid, primaryCartId, primaryCart);
@@ -204,7 +197,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         paymentClient.creditWallet(creditRequest);
     }
 
-    public String postShippingAddressToUser(String uid, ShippingAddressInfo shippingAddressInfo) throws Exception {
+/*    public String postShippingAddressToUser(String uid, ShippingAddressInfo shippingAddressInfo) throws Exception {
         ShippingAddress shippingAddress = new ShippingAddress();
         shippingAddress.setStreet(shippingAddressInfo.getStreet());
         shippingAddress.setCity(shippingAddressInfo.getCity());
@@ -216,7 +209,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         shippingAddress.setPhoneNumber(shippingAddressInfo.getPhoneNumber());
         logger.LogSample("Post shipping address to user");
         return shippingClient.postShippingAddressToUser(uid, shippingAddress);
-    }
+    }*/
 
     public String postOrderByCartId(String uid, String cartId, Country country, Currency currency,
                                     String paymentInstrumentId) throws Exception {
@@ -224,16 +217,16 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
     }
 
     public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
-                            String shippingAddressId, ArrayList<String> offers) throws Exception {
+                            boolean hasPhysicalGood, ArrayList<String> offers) throws Exception {
 
-        return this.postOrder(uid, country, currency, paymentInstrumentId, shippingAddressId, offers, 200);
+        return this.postOrder(uid, country, currency, paymentInstrumentId, hasPhysicalGood, offers, 200);
     }
 
     public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
-                            String shippingAddressId, ArrayList<String> offers, int expectedResponseCode) throws Exception {
+                            boolean hasPhysicalGood, ArrayList<String> offers, int expectedResponseCode)
+            throws Exception {
 
         Order order = new Order();
-
         order.setUser(new UserId(IdConverter.hexStringToId(UserId.class, uid)));
         order.setCountry(new CountryId(country.toString()));
         order.setCurrency(new CurrencyId(currency.toString()));
@@ -245,8 +238,8 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         order.setPayments(paymentInfos);
         order.setShippingMethod(0L);
 
-        if (shippingAddressId != null) {
-            order.setShippingAddress(Master.getInstance().getShippingAddress(shippingAddressId).getAddressId());
+        if (hasPhysicalGood) {
+            order.setShippingAddress(Master.getInstance().getUser(uid).getAddresses().get(0).getValue());
         }
         List<OrderItem> orderItemList = new ArrayList<>();
         for (int i = 0; i < offers.size(); i++) {
@@ -267,11 +260,11 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
 
     public String postOrderByCartId(String uid, String cartId, Country country, Currency currency,
                                     String paymentInstrumentId, String shippingAddressId) throws Exception {
-        return this.postOrderByCartId(uid, cartId, country, currency, paymentInstrumentId, shippingAddressId, false);
+        return this.postOrderByCartId(uid, cartId, country, currency, paymentInstrumentId, false);
     }
 
     public String postOrderByCartId(String uid, String cartId, Country country, Currency currency,
-                                    String paymentInstrumentId, String shippingAddressId, boolean hasPhysicalGood)
+                                    String paymentInstrumentId, boolean hasPhysicalGood)
             throws Exception {
         if (cartId == null) {
             cartId = cartClient.getCartPrimary(uid);
@@ -289,9 +282,6 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         order.setUser(cart.getUser());
         order.setCountry(new CountryId(country.toString()));
         order.setCurrency(new CurrencyId(currency.toString()));
-        if (shippingAddressId != null) {
-            order.setShippingAddress(Master.getInstance().getShippingAddress(shippingAddressId).getAddressId());
-        }
 
         List<OrderItem> orderItemList = new ArrayList<>();
         List<OfferItem> offerItemList = cart.getOffers();
@@ -305,6 +295,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         }
         if (hasPhysicalGood) {
             order.setShippingMethod(01L);
+            order.setShippingAddress(Master.getInstance().getUser(uid).getAddresses().get(0).getValue());
         }
         order.setOrderItems(orderItemList);
         order.setTentative(true);

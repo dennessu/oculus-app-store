@@ -1,5 +1,4 @@
 package com.junbo.gradle.bootstrap
-
 import org.apache.tools.ant.util.TeeOutputStream
 import org.gradle.BuildListener
 import org.gradle.BuildResult
@@ -17,7 +16,6 @@ import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.TaskState
-import org.gradle.api.tasks.Upload
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.wrapper.Wrapper
 import org.gradle.util.Clock
@@ -161,10 +159,6 @@ class BootstrapPlugin implements Plugin<Project> {
                     it.dependsOn 'unzipCheckstyleConfigFile'
                 }
 
-                tasks.withType(Upload) {
-                    it.dependsOn 'build'
-                }
-
                 jar {
                     manifest {
                         attributes(
@@ -208,7 +202,7 @@ class BootstrapPlugin implements Plugin<Project> {
                     }
                 }
 
-                task('install').dependsOn 'publishToMavenLocal'
+                task('install').dependsOn 'publishToMavenLocal', 'build'
             }
 
             plugins.withType(GroovyPlugin) {

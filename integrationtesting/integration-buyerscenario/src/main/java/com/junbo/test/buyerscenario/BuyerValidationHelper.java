@@ -8,7 +8,7 @@ package com.junbo.test.buyerscenario;
 import com.junbo.cart.spec.model.item.OfferItem;
 
 import com.junbo.common.id.OfferRevisionId;
-import com.junbo.common.id.ShippingAddressId;
+import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.UserId;
 import com.junbo.order.spec.model.OrderItem;
 import com.junbo.test.common.Entities.enums.Country;
@@ -36,24 +36,23 @@ public class BuyerValidationHelper extends BaseValidationHelper {
         super();
     }
 
-    public void validateEwalletBalance(String uid, String orderId) throws Exception{
-        Order order=  Master.getInstance().getOrder(orderId);
+    public void validateEwalletBalance(String uid, String orderId) throws Exception {
+        Order order = Master.getInstance().getOrder(orderId);
         BigDecimal totalAmount = order.getTotalAmount().add(order.getTotalTax());
         String sqlStr = String.format(
                 "select balance from shard_%s.ewallet where user_id = '%s'",
-                ShardIdHelper.getShardIdByUid(uid), IdConverter.hexStringToId(UserId.class,uid));
+                ShardIdHelper.getShardIdByUid(uid), IdConverter.hexStringToId(UserId.class, uid));
         verifyEqual(dbHelper.executeScalar(sqlStr, DBHelper.DBName.EWALLET),
-                new BigDecimal(500).subtract(totalAmount).toString(), "verify ewallet balance");
+                new BigDecimal(1000).subtract(totalAmount).toString(), "verify ewallet balance");
     }
 
     public void validateOrderInfoByCartId(String uid, String orderId, String cartId, Country country, Currency currency,
-                                          String paymentInstrumentId, String shippingAddressId) {
-        validateOrderInfoByCartId(uid, orderId, cartId, country, currency, paymentInstrumentId,
-                shippingAddressId, false);
+                                          String paymentInstrumentId) {
+        validateOrderInfoByCartId(uid, orderId, cartId, country, currency, paymentInstrumentId, false);
     }
 
     public void validateOrderInfoByCartId(String uid, String orderId, String cartId, Country country, Currency currency,
-                                          String paymentInstrumentId, String shippingAddressId, boolean hasPhysicalGood) {
+                                          String paymentInstrumentId, boolean hasPhysicalGood) {
         Order order = Master.getInstance().getOrder(orderId);
         Cart cart = Master.getInstance().getCart(cartId);
 
@@ -68,10 +67,14 @@ public class BuyerValidationHelper extends BaseValidationHelper {
         }
 
         verifyEqual(order.getOrderItems().size(), cart.getOffers().size(), "verify offer items in order");
-        if (shippingAddressId != null) {
-            verifyEqual(IdConverter.idLongToHexString(
-                    ShippingAddressId.class, order.getShippingAddress().getValue()), shippingAddressId,
-                    "verify shipping address id"
+        verifyEqual(order.getPayments().get(0).getPaymentInstrument().getValue(),
+                IdConverter.hexStringToId(PaymentInstrumentId.class, paymentInstrumentId),
+                "verify payment instrument id");
+
+        if (hasPhysicalGood) {
+            verifyEqual(order.getShippingAddress().getValue(),
+                    Master.getInstance().getUser(uid).getAddresses().get(0).getValue().getValue(),
+                    "verify personal info address id"
             );
         }
 
