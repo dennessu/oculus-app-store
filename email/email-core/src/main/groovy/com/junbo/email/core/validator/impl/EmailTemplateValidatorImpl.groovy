@@ -21,24 +21,28 @@ import org.springframework.util.StringUtils
 @Component
 class EmailTemplateValidatorImpl extends CommonValidator implements EmailTemplateValidator {
 
+    @Override
     void validateCreate(EmailTemplate template) {
         this.validateCommonField(template)
         this.validatePlaceholderNamesField(template)
         this.validateTemplateName(template.name)
     }
 
+    @Override
     void validateUpdate(EmailTemplate template, Long templateId) {
         this.validateTemplateId(templateId)
         this.validateCommonField(template)
         this.validatePlaceholderNamesField(template)
     }
 
+    @Override
     void validateDelete(Long id) {
         if (id == null) {
             throw AppErrors.INSTANCE.invalidEmailId('').exception()
         }
     }
 
+    @Override
     void validateGet(Pagination pagination) {
         if (pagination?.page != null && pagination.page < 1) {
             throw AppErrors.INSTANCE.invalidParameter('page').exception()

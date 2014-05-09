@@ -5,17 +5,12 @@
  */
 package com.junbo.fulfilment.spec.fusion;
 
-import java.math.BigDecimal;
-
 /**
  * Item.
  */
 public class Item {
     private Long itemId;
     private String sku;
-
-    private BigDecimal storedValueAmount;
-    private String storedValueCurrency;
 
     public Long getItemId() {
         return itemId;
@@ -31,21 +26,5 @@ public class Item {
 
     public void setSku(String sku) {
         this.sku = sku;
-    }
-
-    public BigDecimal getStoredValueAmount() {
-        return storedValueAmount;
-    }
-
-    public void setStoredValueAmount(BigDecimal storedValueAmount) {
-        this.storedValueAmount = storedValueAmount;
-    }
-
-    public String getStoredValueCurrency() {
-        return storedValueCurrency;
-    }
-
-    public void setStoredValueCurrency(String storedValueCurrency) {
-        this.storedValueCurrency = storedValueCurrency;
     }
 }

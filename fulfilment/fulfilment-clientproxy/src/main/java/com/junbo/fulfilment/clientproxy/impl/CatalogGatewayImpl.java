@@ -160,9 +160,6 @@ public class CatalogGatewayImpl implements CatalogGateway {
         item.setItemId(itemRevision.getItemId());
         item.setSku(itemRevision.getSku());
 
-       // item.setStoredValueAmount(itemRevision.getStoredValueAmount());
-      //  item.setStoredValueCurrency(itemRevision.getStoredValueCurrency());
-
         return item;
     }
 
@@ -170,6 +167,8 @@ public class CatalogGatewayImpl implements CatalogGateway {
         Map<String, Object> result = new HashMap<>();
         result.put(Constant.ENTITLEMENT_DEF_ID, action.getEntitlementDefId());
         result.put(Constant.ITEM_ID, action.getItemId());
+        result.put(Constant.STORED_VALUE_CURRENCY, action.getStoredValueCurrency());
+        result.put(Constant.STORED_VALUE_AMOUNT, action.getStoredValueAmount());
 
         return result;
     }
