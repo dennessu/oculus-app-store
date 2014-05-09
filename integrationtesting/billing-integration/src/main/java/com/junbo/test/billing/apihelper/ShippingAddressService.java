@@ -5,7 +5,7 @@
  */
 package com.junbo.test.billing.apihelper;
 
-import com.junbo.billing.spec.model.ShippingAddress;
+//import com.junbo.billing.spec.model.ShippingAddress;
 
 import java.util.List;
 
@@ -13,9 +13,9 @@ import java.util.List;
  * Created by Yunlong on 3/24/14.
  */
 public interface ShippingAddressService {
-    String postShippingAddressToUser(String uid, ShippingAddress address) throws Exception;
+    //String postShippingAddressToUser(String uid, ShippingAddress address) throws Exception;
 
-    String postShippingAddressToUser(String uid, ShippingAddress address, int expectedResponseCode) throws Exception;
+    //String postShippingAddressToUser(String uid, ShippingAddress address, int expectedResponseCode) throws Exception;
 
     List<String> getShippingAddresses(String uid) throws Exception;
 

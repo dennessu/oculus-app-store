@@ -1,6 +1,6 @@
 apply plugin: 'java'
 apply plugin: 'idea'
-apply plugin: 'maven'
+//apply plugin: 'maven'
 apply plugin: 'groovy'
 
 sourceCompatibility = '1.7'
@@ -27,9 +27,8 @@ test{
 
 dependencies {
 
-    compile project(':common-testlib')
+    compile junboProject(':common-testlib')
     compile(libraries.asyncclient)
-    //compile(libraries.common_testlib)
 
     testCompile(libraries.asyncclient)
     testCompile(libraries.junit)
