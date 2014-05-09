@@ -1,11 +1,27 @@
 <h1>Offer creation</h1>
 <form novalidate="novalidate" class="form-horizontal" name="offerCreationForm">
-    <div ng-include src="'views/offer/offer-edit.html'"></div>
+    <table class="table table-bordered vertical-table">
+        <tr>
+            <td style="width: 200px;">Categories</td>
+            <td>
+                <label ng-repeat="categoryAttribute in categoryAttributes">
+                    <input type="checkbox" checklist-model="offer.categories" checklist-value="categoryAttribute.self" class="chooseItem">{{ categoryAttribute.name }}
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>Environment</td>
+            <td>
+                <label ng-repeat="environment in environments">
+                    <input type="radio" ng-model="offer.environment" value="{{environment}}" class="chooseItem">{{ environment }}
+                </label>
+            </td>
+        </tr>
+    </table>
 
     <div class="control-group">
         <div class="controls">
-            <a ng-click="cancel()" class="btn btn-small btn-default">Cancel</a>
-            <a ng-click="offerCreationForm.$valid && createOffer()" class="btn btn-small btn-default">Save</a>
+            <a ng-click="offerCreationForm.$valid && saveOffer()" class="btn btn-small btn-default">Next</a>
         </div>
     </div>
 </form>

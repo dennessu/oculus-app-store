@@ -22,6 +22,21 @@ services.factory('OfferFactory', function ($resource, CONFIG) {
     })
 });
 
+services.factory('OfferRevisionsFactory', function ($resource, CONFIG) {
+    return $resource(CONFIG.baseUrl + 'offer-revisions', {}, {
+        query: { method: 'GET' },
+        create: { method: 'POST' }
+    })
+});
+
+services.factory('OfferRevisionFactory', function ($resource, CONFIG) {
+    return $resource(CONFIG.baseUrl + 'item-revisions/:id', {}, {
+        query: { method: 'GET' },
+        update: { method: 'PUT', params: {id: '@id'} },
+        delete: { method: 'DELETE', params: {id: '@id'} }
+    })
+});
+
 services.factory('ItemsFactory', function ($resource, CONFIG) {
     return $resource(CONFIG.baseUrl + 'items', {}, {
         query: { method: 'GET'},
@@ -52,8 +67,15 @@ services.factory('ItemFactory', function ($resource, CONFIG) {
     })
 });
 
-services.factory('AttributesFactory', function ($resource, CONFIG) {
-    return $resource(CONFIG.baseUrl + 'attributes', {}, {
+services.factory('ItemAttributesFactory', function ($resource, CONFIG) {
+    return $resource(CONFIG.baseUrl + 'item-attributes', {}, {
+        query: { method: 'GET' },
+        create: { method: 'POST' }
+    })
+});
+
+services.factory('OfferAttributesFactory', function ($resource, CONFIG) {
+    return $resource(CONFIG.baseUrl + 'offer-attributes', {}, {
         query: { method: 'GET' },
         create: { method: 'POST' }
     })

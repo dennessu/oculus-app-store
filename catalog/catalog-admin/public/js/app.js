@@ -20,6 +20,8 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
 
   $routeProvider.when('/items/creation', {templateUrl: 'views/item/item-creation.html', controller: 'ItemCreationCtrl'});
   $routeProvider.when('/items/:itemId/revisions/creation', {templateUrl: 'views/item/item-revisions-creation.html', controller: 'ItemRevisionCreationCtrl'});
+  $routeProvider.when('/items/:itemId/offers/creation', {templateUrl: 'views/offer/offer-creation.html', controller: 'OfferCreationCtrl'});
+  $routeProvider.when('/items/:itemId/offers/:offerId/revisions/creation', {templateUrl: 'views/offer/offer-revision-creation.html', controller: 'OfferRevisionCreationCtrl'});
   $routeProvider.when('/items', {templateUrl: 'views/item/item-list.html', controller: 'ItemListCtrl'});
   //$routeProvider.when('/items/review', {templateUrl: 'views/item/item-list.html', controller: 'ItemReviewListCtrl'});
   $routeProvider.when('/items/:id', {templateUrl: 'views/item/item-overview.html', controller: 'ItemOverviewCtrl'});
