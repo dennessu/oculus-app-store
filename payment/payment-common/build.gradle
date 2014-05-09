@@ -9,4 +9,7 @@ dependencies {
     compile (libraries.fastjson)
 
     compile junboProject(':common-lib')
+
+    compile (libraries.common_codec)
+
 }

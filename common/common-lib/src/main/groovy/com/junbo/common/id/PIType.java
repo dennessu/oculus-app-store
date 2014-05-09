@@ -17,7 +17,8 @@ public enum PIType {
     CREDITCARD(0L),
     DIRECTDEBIT(1L),
     STOREDVALUE(2L),
-    PAYPAL(3L);
+    PAYPAL(3L),
+    OTHERS(4L);
 
     private final Long id;
     PIType(Long id){
