@@ -46,6 +46,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
     private final String defaultStoredValueItemRevisionFileName = "defaultStoredValueItemRevision";
     private final String defaultOfferRevisionFileName = "defaultOfferRevision";
+    private final String defaultStoredValueOfferRevisionFileName = "defaultStoredValueOfferRevision";
     private final Integer defaultPagingSize = 10000;
     private final Integer start = 0;
     private LogHelper logger = new LogHelper(OfferServiceImpl.class);
@@ -274,8 +275,16 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         String offerId = this.postOffer(offerForPost);
 
         //Post offer revision
-        String strOfferRevisionContent = readFileContent(String.format("testOfferRevisions/%s.json",
-                defaultOfferRevisionFileName));
+
+        String strOfferRevisionContent;
+        if (offerType.equalsIgnoreCase(EnumHelper.CatalogItemType.STORED_VALUE.getItemType())) {
+            strOfferRevisionContent = readFileContent(String.format("testOfferRevisions/%s.json",
+                    defaultStoredValueOfferRevisionFileName));
+        }
+        else {
+            strOfferRevisionContent = readFileContent(String.format("testOfferRevisions/%s.json",
+                    defaultOfferRevisionFileName));
+        }
 
         OfferRevision offerRevisionForPost = new JsonMessageTranscoder().decode(
                 new TypeReference<OfferRevision>() {}, strOfferRevisionContent);
