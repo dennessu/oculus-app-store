@@ -217,7 +217,9 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                         }
 
                         if (user.emails.any { UserPersonalInfoLink link ->
-                            return link.value == personalInfo.id && (link.isDefault == true)
+                            return link.value == personalInfo.id
+                            // todo:    No matter default or non-default can login
+                            // && (link.isDefault == true)
                         }
                         ) {
                             return Promise.pure(user)
