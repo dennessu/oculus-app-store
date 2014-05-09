@@ -8,11 +8,15 @@ package com.junbo.catalog.spec.model.item;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.catalog.spec.model.common.*;
-import com.junbo.common.jackson.annotation.*;
+import com.junbo.catalog.spec.model.common.AgeRating;
+import com.junbo.catalog.spec.model.common.BaseRevisionModel;
+import com.junbo.catalog.spec.model.common.Price;
+import com.junbo.common.jackson.annotation.AgeRatingId;
+import com.junbo.common.jackson.annotation.ItemId;
+import com.junbo.common.jackson.annotation.ItemRevisionId;
+import com.junbo.common.jackson.annotation.UserId;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -59,12 +63,6 @@ public class ItemRevision extends BaseRevisionModel {
             value = "The content ratings given to the item by specific boards (ESRB, PEGI)")
     @AgeRatingId
     private Map<String, AgeRating> ageRating;
-
-    @CurrencyId
-    @ApiModelProperty(position = 31, required = true, value = "Wallet currency")
-    private String storedValueCurrency;
-    @ApiModelProperty(position = 32, required = true, value = "Wallet amount")
-    private BigDecimal storedValueAmount;
 
     @ApiModelProperty(position = 40, required = true, value = "Locale properties of the item revision")
     private Map<String, ItemRevisionLocaleProperties> locales;
@@ -149,22 +147,6 @@ public class ItemRevision extends BaseRevisionModel {
 
     public void setAgeRating(Map<String, AgeRating> ageRating) {
         this.ageRating = ageRating;
-    }
-
-    public String getStoredValueCurrency() {
-        return storedValueCurrency;
-    }
-
-    public void setStoredValueCurrency(String storedValueCurrency) {
-        this.storedValueCurrency = storedValueCurrency;
-    }
-
-    public BigDecimal getStoredValueAmount() {
-        return storedValueAmount;
-    }
-
-    public void setStoredValueAmount(BigDecimal storedValueAmount) {
-        this.storedValueAmount = storedValueAmount;
     }
 
     public Map<String, ItemRevisionLocaleProperties> getLocales() {
