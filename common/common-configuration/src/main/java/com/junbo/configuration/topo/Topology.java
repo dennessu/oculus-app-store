@@ -3,9 +3,9 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.common.topo;
+package com.junbo.configuration.topo;
 
-import com.junbo.common.topo.model.TopologyConfig;
+import com.junbo.configuration.topo.model.TopologyConfig;
 import com.junbo.configuration.ConfigService;
 import com.junbo.configuration.reloadable.StringConfig;
 import org.slf4j.Logger;
@@ -58,7 +58,6 @@ public class Topology implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         topologyConfig = new TopologyConfig(
                 this.appHostUrl,
-                this.dataCentersConfig.get(),
                 this.appUrlTemplateConfig.get(),
                 this.appServersConfig.get(),
                 configService);
@@ -74,24 +73,8 @@ public class Topology implements InitializingBean {
         this.appServersConfig.setConfigListener(configListener);
     }
 
-    public String getDataCenterUrlByName(String dataCenterName) {
-        return topologyConfig.getDataCenterUrlByName(dataCenterName);
-    }
-
-    public String getDataCenterUrl(int dataCenterId) {
-        return topologyConfig.getDataCenterUrl(dataCenterId);
-    }
-
     public String getAppServerUrl(int shard) {
         return topologyConfig.getAppServerUrl(shard);
-    }
-
-    public boolean isLocalDatacenter(int dc) {
-        return topologyConfig.isLocalDatacenter(dc);
-    }
-
-    public boolean isLocalDatacenter(String dcName) {
-        return topologyConfig.isLocalDatacenter(dcName);
     }
 
     public boolean isHandledBy(int shard, String ipAddress, int port) {
@@ -122,7 +105,6 @@ public class Topology implements InitializingBean {
         try {
             TopologyConfig newTopologyConfig = new TopologyConfig(
                     this.appHostUrl,
-                    this.dataCentersConfig.get(),
                     this.appUrlTemplateConfig.get(),
                     this.appServersConfig.get(),
                     configService);

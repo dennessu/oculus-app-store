@@ -26,7 +26,6 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -245,8 +244,8 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         ItemRevision itemRevision = new ItemRevision();
         itemRevision.setItemId(itemId);
         itemRevision.setOwnerId(ownerId);
-        itemRevision.setStoredValueAmount(new BigDecimal(123.45));
-        itemRevision.setStoredValueCurrency("USD");
+        //itemRevision.setStoredValueAmount(new BigDecimal(123.45));
+        //itemRevision.setStoredValueCurrency("USD");
         itemRevision.setStatus(Status.DRAFT.name());
         itemRevision.setLocales(new HashMap<String, ItemRevisionLocaleProperties>() {{
             put("en_US", new ItemRevisionLocaleProperties() {{

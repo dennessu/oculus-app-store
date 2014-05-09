@@ -2,7 +2,7 @@ package com.junbo.identity.data.repository.impl.cloudant
 
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
-import com.junbo.common.id.DeviceTypeId
+import com.junbo.common.enumid.DeviceTypeId
 import com.junbo.identity.data.repository.DeviceTypeRepository
 import com.junbo.identity.spec.v1.model.DeviceType
 import com.junbo.identity.spec.v1.option.list.DeviceTypeListOptions
@@ -37,7 +37,7 @@ class DeviceTypeRepositoryCloudantImpl extends CloudantClient<DeviceType> implem
     Promise<DeviceType> create(DeviceType deviceType) {
         if (deviceType.id == null) {
             // hard code to shard 0 for all device type
-            deviceType.id = new DeviceTypeId(idGenerator.nextIdByShardId(0))
+            deviceType.id = new DeviceTypeId(deviceType.typeCode)
         }
 
         return Promise.pure((DeviceType)super.cloudantPost(deviceType))

@@ -65,9 +65,6 @@ class TosValidatorImpl implements TosValidator {
             throw new IllegalArgumentException('tos is null')
         }
 
-        if (tos.localeId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('localeId').exception()
-        }
 
         if (tos.title == null) {
             throw AppErrors.INSTANCE.fieldRequired('title').exception()
@@ -89,13 +86,7 @@ class TosValidatorImpl implements TosValidator {
             throw AppErrors.INSTANCE.fieldTooShort('content', contentMinLength).exception()
         }
 
-        return localeRepository.get(tos.localeId).then { com.junbo.identity.spec.v1.model.Locale locale ->
-            if (locale == null) {
-                throw AppErrors.INSTANCE.localeNotFound(tos.localeId).exception()
-            }
-
-            return Promise.pure(null)
-        }
+        return Promise.pure(null)
     }
 
     @Required

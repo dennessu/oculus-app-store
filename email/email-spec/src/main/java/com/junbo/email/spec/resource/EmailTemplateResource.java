@@ -39,10 +39,12 @@ public interface EmailTemplateResource {
     @Path("/{id}")
     Promise<EmailTemplate> getEmailTemplate(@PathParam("id") EmailTemplateId id);
 
+    @ApiOperation("Put email templates by template id")
     @PUT
     @Path("/{id}")
     Promise<EmailTemplate> putEmailTemplate(@PathParam("id") EmailTemplateId id, EmailTemplate template);
 
+    @ApiOperation("Delete email templates by template id")
     @DELETE
     @Path("/{id}")
     Promise<Response> deleteEmailTemplate(@PathParam("id") EmailTemplateId id);

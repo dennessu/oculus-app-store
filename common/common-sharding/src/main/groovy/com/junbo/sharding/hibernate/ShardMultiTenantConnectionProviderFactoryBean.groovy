@@ -3,6 +3,7 @@ package com.junbo.sharding.hibernate
 import bitronix.tm.resource.common.ResourceBean
 import bitronix.tm.resource.jdbc.PoolingDataSource
 import bitronix.tm.utils.PropertyUtils
+import com.junbo.configuration.topo.DataCenters
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.DisposableBean
 import org.springframework.beans.factory.FactoryBean
@@ -80,8 +81,7 @@ class ShardMultiTenantConnectionProviderFactoryBean
                 def range = parseRange(parts[2].trim())
                 def dc = parts[3].trim()
 
-                // TODO: work around for now
-                if (dc != "dc0") {
+                if (!DataCenters.instance().isLocalDataCenter(dc)) {
                     // not in local dc
                     continue;
                 }

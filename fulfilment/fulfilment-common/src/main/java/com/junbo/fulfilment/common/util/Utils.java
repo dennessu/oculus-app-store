@@ -10,18 +10,30 @@ import com.alibaba.fastjson.serializer.PropertyFilter;
 import com.alibaba.fastjson.serializer.SerializeWriter;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
+import ma.glasnost.orika.metadata.ClassMap;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Utils.
  */
 public final class Utils {
     // thread safe
-    private static final MapperFacade MAPPER = new DefaultMapperFactory.Builder().build().getMapperFacade();
+    private static List<ClassMap<?,?>> classMapList = new ArrayList<>();
+    private static MapperFacade mapper = new DefaultMapperFactory.Builder().build().getMapperFacade();
+
+    public static void registerClassMap(ClassMap<?, ?> ... classMaps) {
+        for (ClassMap<?, ?> classMap : classMaps) {
+            classMapList.add(classMap);
+        }
+
+        // rebuild the mapper
+        DefaultMapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
+        for (ClassMap<?, ?> classMap : classMapList) {
+            mapperFactory.registerClassMap(classMap);
+        }
+        mapper = mapperFactory.getMapperFacade();
+    }
 
     private Utils() {
 
@@ -62,6 +74,6 @@ public final class Utils {
     }
 
     public static <S, T> T map(S source, Class<T> targetClass) {
-        return MAPPER.map(source, targetClass);
+        return mapper.map(source, targetClass);
     }
 }

@@ -13,6 +13,7 @@ dependencies {
     compile junboProject(':entitlement-spec')
     compile junboProject(':catalog-spec')
     compile junboProject(':billing-spec')
+    compile junboProject(':identity-spec')
     compile junboProject(':ewallet-spec')
 
     testCompile (libraries.spring_test)

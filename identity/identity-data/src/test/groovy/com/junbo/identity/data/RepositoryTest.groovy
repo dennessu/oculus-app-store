@@ -8,6 +8,7 @@ package com.junbo.identity.data
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
+import com.junbo.common.enumid.DeviceTypeId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.*
 import com.junbo.identity.data.identifiable.UserPasswordStrength
@@ -475,7 +476,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     public void testDeviceRepository() {
         Device device = new Device()
         device.setSerialNumber(UUID.randomUUID().toString())
-        device.setType(new DeviceTypeId(idGenerator.nextId()))
+        device.setType(new DeviceTypeId("DK2"))
         device.setFirmwareVersion(UUID.randomUUID().toString())
 
         Device newDevice = deviceRepository.create(device).wrapped().get()

@@ -1,6 +1,6 @@
 package com.junbo.identity.core.service.validator.impl
 
-import com.junbo.common.id.DeviceTypeId
+import com.junbo.common.enumid.DeviceTypeId
 import com.junbo.identity.core.service.validator.DeviceTypeValidator
 import com.junbo.identity.data.repository.DeviceTypeRepository
 import com.junbo.identity.spec.error.AppErrors

@@ -7,11 +7,14 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.CommunicationId;
-import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserCommunicationId;
-import com.junbo.common.util.Identifiable;
+import com.junbo.common.id.UserId;
 import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by liangfu on 4/3/14.
@@ -26,9 +29,12 @@ public class UserCommunication extends ResourceMeta implements Identifiable<User
     @JsonProperty("user")
     private UserId userId;
 
-    @ApiModelProperty(position = 3, required = true, value = "The communication type.")
+    @ApiModelProperty(position = 3, required = true, value = "Link to the communication resource.")
     @JsonProperty("communication")
     private CommunicationId communicationId;
+
+    @ApiModelProperty(position = 4, required = false, value = "Feature expansion of the opt-ins resource.")
+    private Map<String, String> futureExpansion = new HashMap<>();
 
     @Override
     public UserCommunicationId getId() {
@@ -59,5 +65,15 @@ public class UserCommunication extends ResourceMeta implements Identifiable<User
         this.communicationId = communicationId;
         support.setPropertyAssigned("communication");
         support.setPropertyAssigned("communicationId");
+    }
+
+
+    public Map<String, String> getFutureExpansion() {
+        return futureExpansion;
+    }
+
+    public void setFutureExpansion(Map<String, String> futureExpansion) {
+        this.futureExpansion = futureExpansion;
+        support.setPropertyAssigned("futureExpansion");
     }
 }
