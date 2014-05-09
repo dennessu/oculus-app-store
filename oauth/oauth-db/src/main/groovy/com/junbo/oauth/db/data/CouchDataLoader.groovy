@@ -1,4 +1,3 @@
-//
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
@@ -24,15 +23,14 @@ import com.junbo.oauth.spec.model.Client
 import com.junbo.oauth.spec.model.Scope
 import com.ning.http.client.AsyncHttpClient
 import groovy.transform.CompileStatic
-//import junit.framework.Assert
-import org.apache.commons.io.FileUtils
+import org.apache.commons.io.IOUtils
 
 /**
  * CouchDataLoader.
  */
 @CompileStatic
 class CouchDataLoader {
-    private static final String DEFAULT_DB_URI = 'http://localhost:5984'
+    private static final String DEFAULT_DB_URI = 'http://localhost:5984;dc0'
     private static final int ENTITY_TYPE_INDEX = 0
     private static final int ENTITY_KEY_INDEX = 1
     private static final int ENTITY_BODY_INDEX = 2
@@ -90,12 +88,12 @@ class CouchDataLoader {
         CouchDataLoader loader = new CouchDataLoader(dbUri)
 
         loader.populateData()
+        System.exit(0)
     }
 
     void populateData() {
-
-        String content = FileUtils.readFileToString(new File(CouchDataLoader.classLoader.
-                getResource('data/changelog.dat').path))
+        def inputStream = CouchDataLoader.classLoader.getResourceAsStream('data/changelog.dat')
+        String content = IOUtils.toString(inputStream, 'UTF-8')
 
         String[] records = content.split('\n\n')
 

@@ -128,7 +128,9 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
             return Promise.pure(trackingResult);
         }
         final PaymentTransaction existedTransaction = getPaymentById(paymentId);
-
+        if(existedTransaction.getStatus().equalsIgnoreCase(PaymentStatus.SETTLED.toString())){
+            throw AppServerExceptions.INSTANCE.invalidPaymentStatus(PaymentStatus.SETTLED.toString()).exception();
+        }
         CloneRequest(request, existedTransaction);
         PaymentStatus createStatus = PaymentStatus.SETTLE_CREATED;
         existedTransaction.setStatus(createStatus.toString());
@@ -141,10 +143,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         PaymentInstrument pi = getPaymentInstrument(existedTransaction);
         final PaymentProviderService provider = getPaymentProviderService(pi);
         PaymentProperties properties = paymentRepository.getPaymentProperties(paymentId);
-        if(properties != null){
-            request.getWebPaymentInfo().setToken(properties.getExternalAccessToken());
-            request.getWebPaymentInfo().setPayerId(properties.getExternalPayerId());
-        }
+        request.setPaymentProperties(properties);
         return provider.confirm(existedTransaction.getExternalToken(), request).
                 recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
                     @Override
@@ -155,6 +154,9 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
                 }).then(new Promise.Func<PaymentTransaction, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(PaymentTransaction paymentTransaction) {
+                if(paymentTransaction == null){
+                    return Promise.pure(existedTransaction);
+                }
                 provider.cloneTransactionResult(paymentTransaction, existedTransaction);
                 PaymentStatus settleStatus = PaymentStatus.valueOf(existedTransaction.getStatus());
                 PaymentEvent submitEvent = createPaymentEvent(request, PaymentEventType.IMMEDIATE_SETTLE,
@@ -285,6 +287,9 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
                                 return Promise.pure(result);
                             } else {
                                 PaymentStatus paymentStatus = PaymentStatus.valueOf(paymentTransaction.getStatus());
+                                if(paymentStatus.toString().equalsIgnoreCase(result.getStatus())){
+                                    return Promise.pure(result);
+                                }
                                 PaymentEvent reportEvent = createPaymentEvent(result
                                         , PaymentEventType.REPORT_EVENT, paymentStatus, SUCCESS_EVENT_RESPONSE);
                                 reportPaymentEvent(reportEvent);
@@ -305,15 +310,12 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         if(CommonUtil.isNullOrEmpty(externalToken)){
             PaymentProperties properties = paymentRepository.getPaymentProperties(paymentId);
             if(properties != null){
-                externalToken = properties.getExternalAccessToken();
+                payment.setPaymentProperties(properties);
             }
-        }
-        if(CommonUtil.isNullOrEmpty(externalToken)){
-            return Promise.pure(null);
         }
         PaymentInstrument pi = getPaymentInstrument(payment);
         final PaymentProviderService provider = getPaymentProviderService(pi);
-        return provider.getByTransactionToken(externalToken)
+        return provider.getByTransactionToken(payment)
                 .recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
                     @Override
                     public Promise<PaymentTransaction> apply(Throwable throwable) {
