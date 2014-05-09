@@ -8,15 +8,7 @@
                 </select>
             </td>
         </tr>
-        <tr>
-            <td>Rollup Package Name</td>
-            <td><input type="text" class="form-control required" ng-model="item.rollupPackageName" /></td>
-        </tr>
-        <tr>
-            <td>Package Name</td>
-            <td><input type="text" class="form-control required" ng-model="item.packageName" /></td>
-        </tr>
-        <tr>
+        <tr ng-show="item.type=='DIGITAL'">
             <td>Genres</td>
             <td>
                 <div>

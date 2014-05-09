@@ -8,7 +8,7 @@
         <tr>
             <td>Price type</td>
             <td>
-                <select ng-model="revision.priceType" ng-init="revision.priceType='FREE'" ng-change="updatePriceType(revision.priceType)">
+                <select ng-model="revision.price.priceType" ng-init="revision.price.priceType='FREE'" ng-change="updatePriceType(revision.price.priceType)">
                     <option>FREE</option>
                     <option>TIERED</option>
                     <option>CUSTOM</option>
@@ -19,10 +19,10 @@
             <td>Prices *</td>
             <td>
                 <div>
-                    <div ng-show="revision.priceType=='FREE'">
+                    <div ng-show="revision.price.priceType=='FREE'">
                         Free
                     </div>
-                    <div ng-show="revision.priceType=='CUSTOM'">
+                    <div ng-show="revision.price.priceType=='CUSTOM'">
                         Add price:
                         <select ng-model="selectedCountry" ng-change="addPrice(selectedCountry)" ng-options="country.code for country in countries">
                         </select>
@@ -36,11 +36,11 @@
                             </tr>
                         </table>
                     </div>
-                    <div ng-show="revision.priceType=='TIERED'">
+                    <div ng-show="revision.price.priceType=='TIERED'">
                         Select a price tier
                         <select ng-model="selectedTierIndex" ng-change="updatePriceTier()">
                             <option ng-repeat="priceTier in priceTiers" value="{{$index}}"
-                                    ng-selected="priceTier.self.id == revision.priceTier.id">{{priceTier.name}}</option>
+                                    ng-selected="priceTier.self.id == revision.price.priceTier.id">{{priceTier.name}}</option>
                         </select>
                         <div ng-show="revision.priceTier">
                             <table class="table table-bordered vertical-table">
@@ -76,13 +76,13 @@
             </td>
         </tr>
     </table>
+    <hr>
 
     <div>
         <b>Locale Properties</b><br>
         Add Locale:
         <select ng-model="selectedLocale" ng-change="addLocale(selectedLocale)" ng-options="locale for locale in locales">
         </select>
-        <hr>
         <table class="table table-bordered vertical-table">
             <tr ng-repeat="(locale, properties) in revision.locales">
                 <td>{{ locale }}</td>
@@ -114,7 +114,7 @@
     <hr>
     <div class="control-group">
         <div class="controls">
-            <a ng-click="offerCreationForm.$valid && saveOffer()" class="btn btn-small btn-default">Finish</a>
+            <a ng-click="offerCreationForm.$valid && saveOfferRevision()" class="btn btn-small btn-default">Finish</a>
         </div>
     </div>
 </form>

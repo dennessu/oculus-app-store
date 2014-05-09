@@ -1,4 +1,9 @@
-<h1>Item Revision Creation</h1>
+<div ng-if="item.self==undefined">
+    <p style="color:red">CANNOT find item {{ itemId }}!</p>
+</div>
+
+<div ng-hide="item.self==undefined">
+<h2>Item Revision Creation</h2>
 <form novalidate="novalidate" class="form-horizontal" name="revisionCreationForm">
     <table class="table table-bordered vertical-table">
         <tr>
@@ -28,48 +33,84 @@
             </td>
         </tr>
         <tr>
-            <td>Locale Properties</td>
-            <td>
-                <div>
-                    Add Locale:
-                    <select ng-model="selectedLocale" ng-change="addLocale(selectedLocale)" ng-options="locale for locale in locales">
-                    </select>
+            <td>Rollup Package Name</td>
+            <td><input type="text" class="form-control required" ng-model="item.rollupPackageName" /></td>
+        </tr>
+        <tr>
+            <td>Package Name</td>
+            <td><input type="text" class="form-control required" ng-model="item.packageName" /></td>
+        </tr>
+    </table>
+    <hr>
+    <div>
+        <b>Locale Properties</b><br>
+        Add Locale:
+        <select ng-model="selectedLocale" ng-change="addLocale(selectedLocale)" ng-options="locale for locale in locales">
+        </select>
+        <table class="table table-bordered vertical-table">
+            <tr ng-repeat="(locale, properties) in revision.locales">
+                <td>{{ locale }}</td>
+                <td>
                     <table class="table table-bordered vertical-table">
-                        <tr ng-repeat="(locale, properties) in revision.locales">
-                            <td>{{ locale }}</td>
-                            <td>
-                                <table class="table table-bordered vertical-table">
-                                    <tr>
-                                        <td>Name</td>
-                                        <td><input type="text" class="form-control required" ng-model="properties.name" required /></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Revision Notes</td>
-                                        <td><input type="text" class="form-control required" ng-model="properties.revisionNotes" /></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Long Description</td>
-                                        <td><input type="text" class="form-control required" ng-model="properties.longDescription" /></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Short Description</td>
-                                        <td><input type="text" class="form-control required" ng-model="properties.shortDescription" /></td>
-                                    </tr>
-                                </table>
-
-                            </td>
-                            <td class="select" ng-click="removeLocale(locale)">x</td>
+                        <tr>
+                            <td>Name</td>
+                            <td><input type="text" class="form-control required" ng-model="properties.name" required /></td>
+                        </tr>
+                        <tr>
+                            <td>Revision Notes</td>
+                            <td><input type="text" class="form-control required" ng-model="properties.revisionNotes" /></td>
+                        </tr>
+                        <tr>
+                            <td>Long Description</td>
+                            <td><input type="text" class="form-control required" ng-model="properties.longDescription" /></td>
+                        </tr>
+                        <tr>
+                            <td>Short Description</td>
+                            <td><input type="text" class="form-control required" ng-model="properties.shortDescription" /></td>
                         </tr>
                     </table>
-                </div>
-            </td>
-        </tr>
 
+                </td>
+                <td class="select" ng-click="removeLocale(locale)">x</td>
+            </tr>
+        </table>
+    </div>
+    <hr>
+    <div>
+        <b>Binaries</b><br>
+        Choose Platform:
+        <select ng-model="selectedPlatform" ng-change="addPlatform(selectedPlatform)" ng-options="platform for platform in platforms">
+        </select>
+        <table class="table table-bordered vertical-table">
+            <tr ng-repeat="(platform, properties) in revision.binaries">
+                <td>{{ locale }}</td>
+                <td>
+                    <table class="table table-bordered vertical-table">
+                        <tr>
+                            <td>Href</td>
+                            <td><input type="text" class="form-control required" ng-model="properties.href" required /></td>
+                        </tr>
+                        <tr>
+                            <td>Size</td>
+                            <td><input type="number" class="form-control required" ng-model="properties.size" /></td>
+                        </tr>
+                        <tr>
+                            <td>Version</td>
+                            <td><input type="text" class="form-control required" ng-model="properties.version" /></td>
+                        </tr>
+                    </table>
 
-    </table>
+                </td>
+                <td class="select" ng-click="removePlatform(platform)">x</td>
+            </tr>
+        </table>
+    </div>
+    <hr>
+
     <div class="control-group">
         <div class="controls">
             <a ng-click="revisionCreationForm.$valid && saveItemRevision()" class="btn btn-small btn-default">Next</a>
         </div>
     </div>
 </form>
+</div>
