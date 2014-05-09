@@ -25,6 +25,8 @@ public class ProviderRoutingServiceImpl implements ProviderRoutingService{
             return PaymentProviderRegistry.getPaymentProviderService(PaymentProvider.Wallet);
         }else if(piType.equals(PIType.PAYPAL)){
             return PaymentProviderRegistry.getPaymentProviderService(PaymentProvider.PayPal);
+        }else if(piType.equals(PIType.OTHERS)){
+            return PaymentProviderRegistry.getPaymentProviderService(PaymentProvider.Adyen);
         }
         else{
             //TODO: find some default PI

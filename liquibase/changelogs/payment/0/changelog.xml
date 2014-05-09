@@ -119,10 +119,7 @@
                   updated_time                      date                    null,
                   updated_by                        varchar(50)             null,
 
-                  constraint payment_instrument_id_pk primary key (payment_instrument_id),
-                  constraint payment_instrument_type_id_fk foreign key (payment_instrument_type_id)
-                      references payment_instrument_type (payment_instrument_type_id) match simple
-                      on update no action on delete no action
+                  constraint payment_instrument_id_pk primary key (payment_instrument_id)
                 );
         ]]>
         </sql>
@@ -824,7 +821,8 @@
         <![CDATA[
             insert into payment_provider values (0, 'BrainTree', 0, null, 'USD', '2014-02-10','wenhongzhu')
                                                ,(1, 'Wallet', 2, null, 'WLT', '2014-02-10', 'wenhongzhu')
-                                               ,(2, 'PayPal', 3, null, 'USD', '2014-02-10', 'wenhongzhu');                                               
+                                               ,(2, 'PayPal', 3, null, 'USD', '2014-02-10', 'wenhongzhu')
+                                               ,(3, 'Adyen', 3, null, 'USD', '2014-02-10', 'wenhongzhu');
         ]]>
         </sql>
     </changeSet>

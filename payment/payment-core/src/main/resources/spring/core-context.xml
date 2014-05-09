@@ -38,6 +38,13 @@
         <property name="signature" value="${payment.provider.paypal.signature}"/>
     </bean>
 
+    <bean id="adyenProviderService" class="com.junbo.payment.core.provider.adyen.AdyenProviderServiceImpl">
+        <property name="redirectURL" value="${payment.provider.adyen.redirecturl}"/>
+        <property name="merchantAccount" value="${payment.provider.adyen.merchantaccount}"/>
+        <property name="skinCode" value="${payment.provider.adyen.skincode}"/>
+        <property name="skinSecret" value="${payment.provider.adyen.skinsecret}"/>
+    </bean>
+
     <bean id="providerRoutingService" class="com.junbo.payment.core.provider.impl.ProviderRoutingServiceImpl"/>
 
     <!-- regiester brainTreeRestProviderService for async and brainTreePaymentProviderService for sync call -->
@@ -47,6 +54,7 @@
                 <entry key="BrainTree" value-ref="brainTreePaymentProviderService"/>
                 <entry key="Wallet" value-ref="walletProviderService"/>
                 <entry key="PayPal" value-ref="paypalProviderService"/>
+                <entry key="Adyen" value-ref="adyenProviderService"/>
             </util:map>
         </property>
     </bean>

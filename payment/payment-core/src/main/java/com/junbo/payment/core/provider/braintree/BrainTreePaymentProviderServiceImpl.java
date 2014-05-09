@@ -358,10 +358,14 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
     }
 
     @Override
-    public Promise<PaymentTransaction> getByTransactionToken(final String token) {
+    public Promise<PaymentTransaction> getByTransactionToken(final PaymentTransaction request) {
         return PromiseFacade.PAYMENT.decorate(new Callable<PaymentTransaction>() {
             @Override
             public PaymentTransaction call() throws Exception {
+                if(request.getExternalToken() == null){
+                    return null;
+                }
+                String token = request.getExternalToken();
                 Transaction transaction = null;
                 try{
                     transaction = gateway.transaction().find(token);
