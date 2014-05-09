@@ -160,8 +160,8 @@ public class CatalogGatewayImpl implements CatalogGateway {
         item.setItemId(itemRevision.getItemId());
         item.setSku(itemRevision.getSku());
 
-        item.setStoredValueAmount(itemRevision.getStoredValueAmount());
-        item.setStoredValueCurrency(itemRevision.getStoredValueCurrency());
+       // item.setStoredValueAmount(itemRevision.getStoredValueAmount());
+      //  item.setStoredValueCurrency(itemRevision.getStoredValueCurrency());
 
         return item;
     }
