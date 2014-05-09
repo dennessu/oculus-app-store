@@ -23,6 +23,6 @@ import java.lang.annotation.RetentionPolicy;
 @JacksonAnnotationsInside
 @JsonSerialize(using = ResourceIdSerializer.class)
 @JsonDeserialize(using = ResourceIdDeserializer.class)
-@ResourcePath("/personalinfo")
+@ResourcePath("/personal-info")
 public @interface PersonalInfoId {
 }

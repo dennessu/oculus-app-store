@@ -141,6 +141,13 @@ ext {
     set("docs-bundle-version", '0.0.1-SNAPSHOT')
     set("apphost-cli-version", '0.0.1-SNAPSHOT')
 
+    set("crypto-app-version", '0.0.1-SNAPSHOT')
+    set("crypto-common-version", '0.0.1-SNAPSHOT')
+    set("crypto-core-version", '0.0.1-SNAPSHOT')
+    set("crypto-data-version", '0.0.1-SNAPSHOT')
+    set("crypto-rest-version", '0.0.1-SNAPSHOT')
+    set("crypto-spec-version", '0.0.1-SNAPSHOT')
+
     junboProject = { projectPath ->
         def projectName = projectPath.substring(1)
 

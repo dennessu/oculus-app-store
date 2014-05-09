@@ -1,0 +1,16 @@
+package com.junbo.crypto.core
+
+import groovy.transform.CompileStatic
+
+import java.security.Key
+
+/**
+ * Created by liangfu on 5/7/14.
+ */
+@CompileStatic
+interface AESCipherService {
+
+    public String encrypt(String message, Key key)
+
+    public String decrypt(String encryptMessage, Key key)
+}
