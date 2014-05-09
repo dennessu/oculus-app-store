@@ -37,20 +37,22 @@ public class BillingGatewayImpl implements BillingGateway {
                         .field("street3", "street2")
                         .field("city", "city")
                         .field("postalCode", "postalCode")
-                        .exclude("countryName")
                         .field("countryId.value", "country")
                         .field("firstName", "firstName")
                         .field("lastName", "lastName")
                         .field("phoneNumber", "phoneNumber")
-                        .exclude("isWellFormed")
-                        .exclude("isNormalized")
                         .field("subCountryCode", "state")
-                        .exclude("subCountryName")
-                        .exclude("addressId")
-                        .exclude("userId")
-                        .exclude("companyName")
-                        .exclude("middleName")
-                        .exclude("description")
+                        // excludes, must provide a dummy but valid fieldB
+                        // exclude aToB
+                        .fieldMap("countryName", "userId").exclude().add()
+                        .fieldMap("isWellFormed", "userId").exclude().add()
+                        .fieldMap("isNormalized", "userId").exclude().add()
+                        .fieldMap("subCountryName", "userId").exclude().add()
+                        // exclude bToA
+                        .fieldMap("countryName", "userId").exclude().add()
+                        .fieldMap("countryName", "addressId").exclude().add()
+                        .fieldMap("countryName", "middleName").exclude().add()
+                        .fieldMap("countryName", "description").exclude().add()
                         .toClassMap()
         );
     }*/

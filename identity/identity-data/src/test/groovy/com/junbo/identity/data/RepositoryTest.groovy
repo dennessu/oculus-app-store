@@ -214,7 +214,6 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         Tos tos = new Tos()
         tos.setTitle('title')
         tos.setContent(content)
-        tos.setLocaleId(new LocaleId('en_US'))
         tos = tosRepository.create(tos).wrapped().get()
 
         Tos newTos = tosRepository.get(tos.getId()).wrapped().get()
