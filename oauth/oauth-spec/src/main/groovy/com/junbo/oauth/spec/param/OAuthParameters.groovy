@@ -29,6 +29,7 @@ class OAuthParameters {
     public static final String GRANT_TYPE = 'grant_type'
     public static final String SALT = 'salt'
     public static final String USERNAME = 'username'
+    public static final String LOGIN = 'login'
     public static final String PASSWORD = 'password'
     public static final String ACCESS_TOKEN = 'access_token'
     public static final String TOKEN_TYPE = 'token_type'

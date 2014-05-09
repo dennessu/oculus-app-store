@@ -1,8 +1,8 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile project(":subscription-spec")
-    compile project(":subscription-common")
+    compile junboProject(":subscription-spec")
+    compile junboProject(":subscription-common")
 
     compile(libraries.persistence_api)
     compile(libraries.validation_api)
@@ -14,8 +14,8 @@ dependencies {
     compile(libraries.spring_jdbc)
     compile(libraries.spring_orm)
 
-    compile (libraries.oom_processor)
-    compile (libraries.oom)
+    processor junboProject(':oom-processor')
+    compile junboProject(':oom-core')
 
     compile(libraries.hibernate_core)
     compile(libraries.hibernate_annotation)
@@ -27,8 +27,8 @@ dependencies {
 
     testCompile(libraries.spring_test)
 
-    compile (libraries.common_lib)
-    compile (libraries.common_sharding)
-    compile (libraries.common_configuration)
+    compile junboProject(':common-lib')
+    compile junboProject(':common-sharding')
+    compile junboProject(':common-configuration')
 
 }

@@ -1,8 +1,6 @@
 // build a map of the dependency artifacts to use.
 // Allows centralized definition of the version of artifacts to use.
 ext {
-    junboVersion = '0.0.1-SNAPSHOT'
-
     jerseyVersion = '2.5.1'
     springVersion = '4.0.2.RELEASE'
     swaggerVersion = '1.3.2-J-SNAPSHOT'
@@ -11,17 +9,6 @@ ext {
     logbackVersion = '1.1.1'
 
     libraries = [
-        // junbo
-        common_configuration:   "com.junbo.common:common-configuration:${junboVersion}",
-        common_lib:             "com.junbo.common:common-lib:${junboVersion}",
-        common_sharding:        "com.junbo.common:common-sharding:${junboVersion}",
-        common_configuration_data:"com.junbo.common:configuration-data:${junboVersion}",
-        langur:                 "com.junbo.langur:langur-core:${junboVersion}",
-        langur_processor:       "com.junbo.langur:langur-processor:${junboVersion}",
-        oom:                    "com.junbo.oom:oom-core:${junboVersion}",
-        oom_processor:          "com.junbo.oom:oom-processor:${junboVersion}",
-        apphost_core:           "com.junbo.apphost:apphost-core:${junboVersion}",
-
         // jersey
         jersey_container_grizzly2_http:     "org.glassfish.jersey.containers:jersey-container-grizzly2-http:${jerseyVersion}",
         jersey_spring3:          "org.glassfish.jersey.ext:jersey-spring3:${jerseyVersion}",
@@ -133,7 +120,7 @@ ext {
         hamcrest_core:          'org.hamcrest:hamcrest-core:1.3',
 
         //****** common.junbo.test ******
-        common_testlib:         "com.junbo.test:common-testlib:${junboVersion}",
+        common_testlib:         "com.junbo.test:common-testlib:0.0.1-SNAPSHOT",
 
         querydsl_apt:           'com.mysema.querydsl:querydsl-apt:3.3.2',
         querydsl_jpa:           'com.mysema.querydsl:querydsl-jpa:3.3.2',

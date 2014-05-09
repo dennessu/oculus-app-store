@@ -4,7 +4,7 @@ dependencies {
     compile (libraries.rs_api)
     compile (libraries.jackson_annotations)
     compile (libraries.jackson_databind)
-    compile (libraries.langur)
+    compile junboProject(':langur-core')
     compile (libraries.guava)
     compile (libraries.spring_beans)
     compile (libraries.spring_context)

@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.db.dao.couch
 
+import com.junbo.common.util.Utils
 import com.junbo.oauth.common.JsonMarshaller
 import com.junbo.oauth.db.dao.BaseDAO
 import com.junbo.oauth.db.entity.BaseEntity
@@ -42,7 +43,7 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
 
     @Required
     void setCouchDBUri(String couchDBUri) {
-        this.couchDBUri = couchDBUri
+        this.couchDBUri = Utils.filterPerDataCenterConfig(couchDBUri, "couchDBUri")
     }
 
     @Required

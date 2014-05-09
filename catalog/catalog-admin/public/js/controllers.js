@@ -21,37 +21,20 @@ app.controller('OfferListCtrl', ['$scope', 'OffersFactory', '$routeParams', '$co
       $scope.email=$cookies.email;
   }]);
 
-app.controller('OfferCreationCtrl', ['$scope', 'OffersFactory', 'MetaFactory', 'AuthFactory', '$location','$cookies',
-    function($scope, OffersFactory, MetaFactory, AuthFactory, $location, $cookies) {
-        $scope.createOffer = function () {
+app.controller('OfferCreationCtrl', ['$scope', 'OffersFactory', 'MetaFactory', 'AuthFactory', '$location','$cookies', '$routeParams',
+    function($scope, OffersFactory, MetaFactory, AuthFactory, $location, $cookies, $routeParams) {
+        $scope.saveOffer = function () {
             $scope.submitted = true;
             OffersFactory.create($scope.offer, function(offer){
-                $location.path('/offers/' + offer.self.id);
+                $location.path('/items/' + $routeParams.itemId + '/offers/' + offer.self.id + '/revisions/creation');
             });
         };
 
-        $scope.cancel = function () {
-            $location.path('/offers');
-        };
-
-        $scope.offerMetaDefinitions = MetaFactory.offerMeta;
-        $scope.user_id = $cookies.user_id;
-
+        $scope.user_id = 0;//$cookies.user_id;
+        $scope.environments = ['DEV', 'STAGING', 'PROD'];
         var init = function() {
             $scope.offer = {};
             $scope.offer.developer = {"href": "http://localhost:3000/api/users/" + $scope.user_id, "id":$scope.user_id };
-            $scope.offer.items = [];
-            $scope.offer.categories = [];
-            $scope.offer.properties = {};
-            Object.keys($scope.offerMetaDefinitions).forEach(function(key) {
-                $scope.offer.properties[key] = "";
-                if ($scope.offerMetaDefinitions[key].controlType == "MULTI_SELECT") {
-                    $scope.offer.properties[key] = [];
-                }
-            });
-            $scope.offer.eligibleCountries = [];
-            $scope.selectedItems = {};
-            //$scope.offer.developer = AuthFactory.query().sub;
         };
 
         init();
@@ -370,7 +353,7 @@ app.controller('ItemRevisionCreationCtrl', ['$scope', 'MetaFactory', '$routePara
     function($scope, MetaFactory, $routeParams, ItemRevisionsFactory, $location, $cookies) {
         $scope.saveItemRevision = function () {
             ItemRevisionsFactory.create($scope.revision, function(revision){
-                $location.path('/offers/creation');
+                $location.path('/items/' + $routeParams.itemId + '/offers/creation');
             });
         };
 
@@ -391,6 +374,91 @@ app.controller('ItemRevisionCreationCtrl', ['$scope', 'MetaFactory', '$routePara
             $scope.revision.status = "DRAFT";
             $scope.revision.locales = {};
             $scope.revision.item = {"href": "http://xxx.xxx.xxx", "id":$routeParams.itemId };
+            $scope.revision.developer = {"href": "http://xxx.xxx.xxx", "id":$scope.user_id };
+        };
+
+        init();
+    }]);
+
+app.controller('OfferRevisionCreationCtrl', ['$scope', 'MetaFactory', '$routeParams', 'OfferRevisionsFactory', 'PriceTiersFactory', 'OfferAttributesFactory', '$location', '$cookies',
+    function($scope, MetaFactory, $routeParams, OfferRevisionsFactory, PriceTiersFactory, OfferAttributesFactory, $location, $cookies) {
+        $scope.saveOfferRevision = function () {
+            ItemRevisionsFactory.create($scope.revision, function(revision){
+                $location.path('/items/' + $routeParams.itemId);
+            });
+        };
+
+        $scope.addLocale = function(locale) {
+            $scope.revision.locales[locale] = {};
+        };
+        $scope.removeLocale = function(locale) {
+            delete $scope.revision.locales[locale];
+        };
+        $scope.removePrice = function(countryCode) {
+            delete $scope.revision.prices[countryCode];
+        };
+        $scope.updatePriceTier = function(priceTier) {
+            $scope.revision.priceTier = priceTier.self;
+            $scope.selectedTier = priceTier;
+        };
+        $scope.addPrice = function(country) {
+            if (angular.isUndefined($scope.revision)) {
+                $scope.revision = {};
+            }
+            if (angular.isUndefined($scope.revision.prices)) {
+                $scope.revision.prices = {};
+            }
+
+            $scope.revision.prices[country.code] = {"currency": country.currency};
+        };
+        $scope.selectAllCountries = function() {
+            $scope.revision.eligibleCountries = [];
+            $scope.countries.forEach(function(country) {
+                if (country.code != "DEFAULT") {
+                    $scope.revision.eligibleCountries.push(country.code);
+                }
+            });
+        };
+        $scope.deselectAllCountries = function() {
+            $scope.revision.eligibleCountries = [];
+        };
+
+        $scope.updateSelectedPriceTier = function(priceTier) {
+            console.log(priceTier);
+            $scope.selectedTier = priceTier;
+        };
+
+        $scope.updatePriceTier = function() {
+            $scope.revision.priceTier = $scope.priceTiers[$scope.selectedTierIndex].self;
+            $scope.selectedTier = $scope.priceTiers[$scope.selectedTierIndex];
+        };
+
+        $scope.updatePriceType = function(priceType) {
+            if (priceType=="FREE") {
+                $scope.revision.priceTier = {};
+                $scope.selectedTier = {};
+                $scope.revision.prices = {};
+            }else if (priceType=="TIERED") {
+                $scope.revision.prices = {};
+            } else {
+                $scope.revision.priceTier = {};
+                $scope.selectedTier = {};
+            }
+        };
+
+        $scope.priceTiers = PriceTiersFactory.query();
+        $scope.categoryAttributes = OfferAttributesFactory.query({type: "Category"});
+
+        $scope.isCollapsed = true;
+        $scope.locales = MetaFactory.locales;
+        $scope.countries = MetaFactory.countries;
+
+        $scope.user_id = 0;//$cookies.user_id;
+        var init = function() {
+            $scope.revision = {};
+            $scope.revision.status = "DRAFT";
+            $scope.revision.locales = {};
+            $scope.revision.offer = {"href": "http://xxx.xxx.xxx", "id":$routeParams.offerId };
             $scope.revision.developer = {"href": "http://xxx.xxx.xxx", "id":$scope.user_id };
         };
 

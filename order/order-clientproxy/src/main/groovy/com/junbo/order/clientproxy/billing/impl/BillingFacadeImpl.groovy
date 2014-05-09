@@ -2,15 +2,11 @@ package com.junbo.order.clientproxy.billing.impl
 
 import com.junbo.billing.spec.error.ErrorCode
 import com.junbo.billing.spec.model.Balance
-import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.billing.spec.resource.BalanceResource
 import com.junbo.billing.spec.resource.BillingCurrencyResource
-import com.junbo.billing.spec.resource.ShippingAddressResource
 import com.junbo.common.error.AppError
 import com.junbo.common.id.BalanceId
 import com.junbo.common.id.OrderId
-import com.junbo.common.id.ShippingAddressId
-import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.billing.BillingFacade
@@ -31,8 +27,6 @@ import javax.annotation.Resource
 class BillingFacadeImpl implements BillingFacade {
     @Resource(name='order.billingBalanceClient')
     BalanceResource balanceResource
-    @Resource(name='order.billingShippingAddressClient')
-    ShippingAddressResource shippingAddressResource
     @Resource(name='order.billingCurrencyClient')
     BillingCurrencyResource billingCurrencyResource
 
@@ -63,12 +57,6 @@ class BillingFacadeImpl implements BillingFacade {
         return balanceResource.getBalances(new OrderId(orderId)).syncThen { Results<Balance> results ->
             return results == null ? Collections.emptyList() : results.items
         }
-    }
-
-    @Override
-    Promise<ShippingAddress> getShippingAddress(Long userId, Long shippingAddressId) {
-        return shippingAddressResource.getShippingAddress(
-                new UserId(userId), new ShippingAddressId(shippingAddressId)) // provide the user id
     }
 
     @Override

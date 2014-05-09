@@ -3,7 +3,7 @@ apply plugin: 'groovy'
 dependencies {
     compile junboProject(":billing-spec")
     compile (libraries.rs_api)
-    compile (libraries.langur)
+    compile junboProject(':langur-core')
     compile (libraries.spring_beans)
     compile (libraries.spring_context)
     compile junboProject(':common-lib')

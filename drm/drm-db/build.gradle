@@ -1,8 +1,8 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile project(":drm-spec")
-    compile project(":drm-common")
+    compile junboProject(":drm-spec")
+    compile junboProject(":drm-common")
 
     compile 'javax.persistence:persistence-api:1.0.2'
     compile 'javax.validation:validation-api:1.1.0.Final'

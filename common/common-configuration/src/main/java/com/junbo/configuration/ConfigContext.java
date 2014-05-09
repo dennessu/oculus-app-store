@@ -25,20 +25,12 @@ public class ConfigContext {
     private static final Logger logger = LoggerFactory.getLogger(ConfigContext.class);
 
     private String environment;
-    private int datacenter;
+    private String datacenter;
     private List<String> ipAddresses;
 
     public ConfigContext(String environment, String datacenter, String ipv4Subnet) {
         this.environment = environment;
-        try {
-            this.datacenter = Integer.parseInt(datacenter);
-        } catch (RuntimeException ex) {
-            throw new RuntimeException("Invalid datacenter: " + datacenter);
-        }
-        if (this.datacenter < 0) {
-            throw new RuntimeException("Invalid datacenter: " + datacenter);
-        }
-
+        this.datacenter = datacenter;
         this.ipAddresses = getIpAddresses(ipv4Subnet);
     }
 
@@ -46,7 +38,7 @@ public class ConfigContext {
         return environment;
     }
 
-    public int getDatacenter() {
+    public String getDataCenter() {
         return datacenter;
     }
 

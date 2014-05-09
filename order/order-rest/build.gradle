@@ -1,10 +1,10 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile project(':order-spec')
-    compile project(':order-core')
-    compile project(':order-db')
-    compile (libraries.oom)
+    compile junboProject(':order-spec')
+    compile junboProject(':order-core')
+    compile junboProject(':order-db')
+    compile junboProject(':oom-core')
     compile (libraries.servlet_api)
     //compile (libraries.jersey_spring3)
     compile (libraries.jackson_jaxrs_json_provider)
@@ -17,7 +17,7 @@ dependencies {
     compile (libraries.spring_web)
     compile (libraries.asyncclient)
 
-    processor (libraries.oom_processor)
+    processor junboProject(':oom-processor')
 
     testCompile (libraries.spring_test)
 

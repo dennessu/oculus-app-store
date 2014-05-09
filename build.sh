@@ -12,8 +12,7 @@ function run_gradle {
     popd
 }
 
-while read p; do
-    if [[ ! -z "$p" && ! $p == \#* ]]; then
-        run_gradle $p
-    fi
-done < dirs
+cd `git rev-parse --show-toplevel`
+run_gradle gradle/bootstrap
+$GRADLE_CMD 
+

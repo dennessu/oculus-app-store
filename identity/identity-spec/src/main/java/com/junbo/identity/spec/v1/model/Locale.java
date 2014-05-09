@@ -11,6 +11,9 @@ import com.junbo.common.model.ResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by xiali_000 on 4/21/2014.
  */
@@ -34,6 +37,9 @@ public class Locale extends ResourceMeta implements Identifiable<LocaleId> {
 
     @ApiModelProperty(position = 6, required = false, value = "The fallback locale.")
     private LocaleId fallbackLocale;
+
+    @ApiModelProperty(position = 7, required = false, value = "Feature expansion of the locale resource.")
+    private Map<String, String> futureExpansion = new HashMap<>();
 
     public String getShortName() {
         return shortName;
@@ -88,5 +94,14 @@ public class Locale extends ResourceMeta implements Identifiable<LocaleId> {
     public void setFallbackLocale(LocaleId fallbackLocale) {
         this.fallbackLocale = fallbackLocale;
         support.setPropertyAssigned("fallbackLocale");
+    }
+
+    public Map<String, String> getFutureExpansion() {
+        return futureExpansion;
+    }
+
+    public void setFutureExpansion(Map<String, String> futureExpansion) {
+        this.futureExpansion = futureExpansion;
+        support.setPropertyAssigned("futureExpansion");
     }
 }

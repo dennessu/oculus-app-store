@@ -1,9 +1,9 @@
 apply plugin: 'java'
 
 dependencies {
-    compile project(":subscription-db")
-    compile project(":subscription-spec")
-    compile project(":subscription-clientproxy")
+    compile junboProject(":subscription-db")
+    compile junboProject(":subscription-spec")
+    compile junboProject(":subscription-clientproxy")
 
     testCompile(libraries.spring_test)
 }

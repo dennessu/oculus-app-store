@@ -37,7 +37,7 @@ public class Balance {
     private String country;
     private Date dueDate;
     private Boolean isAsyncCharge;
-    private ShippingAddressId shippingAddressId;
+    private UserPersonalInfoId shippingAddressId;
     private BalanceId originalBalanceId;
     private Boolean skipTaxCalculation;
 
@@ -191,11 +191,11 @@ public class Balance {
         this.type = type;
     }
 
-    public ShippingAddressId getShippingAddressId() {
+    public UserPersonalInfoId getShippingAddressId() {
         return shippingAddressId;
     }
 
-    public void setShippingAddressId(ShippingAddressId shippingAddressId) {
+    public void setShippingAddressId(UserPersonalInfoId shippingAddressId) {
         this.shippingAddressId = shippingAddressId;
     }
 

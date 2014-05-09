@@ -8,7 +8,6 @@ package com.junbo.billing.clientproxy.impl
 
 import com.junbo.billing.clientproxy.TaxFacade
 import com.junbo.billing.spec.model.Balance
-import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.identity.spec.v1.model.Address
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -19,12 +18,7 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class SabrixFacadeImpl implements TaxFacade {
     @Override
-    Promise<Balance> calculateTax(Balance balance, ShippingAddress shippingAddress, Address piAddress) {
-        return null
-    }
-
-    @Override
-    Promise<ShippingAddress> validateShippingAddress(ShippingAddress shippingAddress) {
+    Promise<Balance> calculateTax(Balance balance, Address shippingAddress, Address piAddress) {
         return null
     }
 

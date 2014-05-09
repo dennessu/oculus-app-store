@@ -1,11 +1,8 @@
 package com.junbo.gradle.bootstrap
 
-import org.gradle.GradleLauncher
 import org.gradle.api.Project
-import org.gradle.api.internal.TaskInternal
 import org.gradle.testfixtures.ProjectBuilder
 import org.testng.annotations.Test
-
 /**
  * Created by kg on 1/21/14.
  */
@@ -17,6 +14,10 @@ class BootstrapPluginTest {
 
         project.ext.set("project_group", "com.junbo.sample")
         project.ext.set("test-version", "0.0.1-SNAPSHOT")
+
+        project.ext.set("artifactory_contextUrl", "https://aws-artifactory:8443/artifactory")
+        project.ext.set("artifactory_user", "username")
+        project.ext.set("artifactory_password", "password")
 
         def subproj1 = ProjectBuilder.builder().withParent(project).build()
         project.subprojects.add(subproj1)

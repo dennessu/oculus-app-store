@@ -1,6 +1,6 @@
 apply plugin: 'java'
 
 dependencies {
-    compile project(":drm-db")
+    compile junboProject(":drm-db")
     testCompile 'org.springframework:spring-test:4.0.0.RELEASE'
 }

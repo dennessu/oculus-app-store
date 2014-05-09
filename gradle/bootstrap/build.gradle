@@ -18,6 +18,10 @@ repositories {
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
+tasks.withType(Upload) {
+    it.dependsOn 'build'
+}
+
 dependencies {
     compile gradleApi()
     compile localGroovy()

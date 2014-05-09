@@ -4,20 +4,20 @@ dependencies {
     compile (libraries.rs_api)
     compile (libraries.jackson_annotations)
     compile (libraries.jackson_databind)
-    compile (libraries.langur)
+    compile junboProject(':langur-core')
     compile (libraries.guava)
     compile (libraries.spring_beans)
     compile (libraries.spring_context)
-    compile (libraries.common_lib)
+    compile junboProject(':common-lib')
 
-    processor (libraries.langur_processor)
+    processor junboProject(':langur-processor')
     processor (libraries.log4j)
 
-    compile 'com.junbo.identity:identity-spec:0.0.1-SNAPSHOT'
-    compile 'com.junbo.billing:billing-spec:0.0.1-SNAPSHOT'
-    compile 'com.junbo.catalog:catalog-spec:0.0.1-SNAPSHOT'
-    compile 'com.junbo.rating:rating-spec:0.0.1-SNAPSHOT'
-    compile 'com.junbo.fulfilment:fulfilment-spec:0.0.1-SNAPSHOT'
-    compile 'com.junbo.payment:payment-spec:0.0.1-SNAPSHOT'
+    compile junboProject(':identity-spec')
+    compile junboProject(':billing-spec')
+    compile junboProject(':catalog-spec')
+    compile junboProject(':rating-spec')
+    compile junboProject(':fulfilment-spec')
+    compile junboProject(':payment-spec')
 }
 

@@ -31,7 +31,10 @@ import java.util.jar.JarFile;
  * 1):  activeEnv:      If this environment(onebox/int/prod...) is configured,
  *                      it will load configuration from its environment configuration;
  *                      If this environment isn't configured, it will load from onebox environment by default;
- * 2):  configDir:      This is the override configuration file, if it is set,
+ * 2):  activeDc:       This is datacenter within the environment of current machine.
+ *                      It is used by API corss DC routing logic.
+ *                      If this datacenter isn't configured, it will use dc0 by default;
+ * 3):  configDir:      This is the override configuration file, if it is set,
  *                      it will override the same property in the configuration data, and we will watch this file;
  *                      if it isn't set, use configuration data.
  */
@@ -47,7 +50,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
     private static final String DEFAULT_FOLDER = "_default";
     private static final String DEFAULT_PROPERTIES_FILE = "_default.properties";
     private static final String DEFAULT_ENVIRONMENT = "onebox";
-    private static final String DEFAULT_DATACENTER = "0";
+    private static final String DEFAULT_DATACENTER = "dc0";
     private static final String DEFAULT_SUBNET = "0.0.0.0/0";
     private static final String CONFIG_PATH = "junbo/conf";
 
@@ -140,11 +143,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
 
             if (en.hasMoreElements()) {
                 URL url = en.nextElement();
-                List<String> strings = getJarFiles(url.getPath());
-                for(String string : strings) {
-                    InputStream inputStream1 = this.getClass().getClassLoader().getResourceAsStream(string);
-                    properties.load(inputStream1);
-                }
+                loadJarProperties(url.getPath(), properties);
             }
 
             // 3) {env}/_default.properties
@@ -161,40 +160,63 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
 
             if (en.hasMoreElements()) {
                 URL url = en.nextElement();
-                List<String> strings = getJarFiles(url.getPath());
-                for(String string : strings) {
-                    InputStream inputStream1 = this.getClass().getClassLoader().getResourceAsStream(string);
-                    properties.load(inputStream1);
-                }
+                loadJarProperties(url.getPath(), properties);
             }
         }
         catch (IOException ex) {
-            logger.warn("Failed to read jar file: ");
+            logger.error("Failed to read jar file.", ex);
+            throw new RuntimeException("Failed to read configuration jar file.", ex);
         }
 
         return properties;
     }
 
-    private List<String> getJarFiles(String jarPath) {
+    private void loadJarProperties(String jarPath, Properties properties) {
         List<String> resourcePathes = new ArrayList<String>();
         String[] jarInfo = jarPath.split("!");
+        if (jarInfo.length == 1) {
+            // this is loading from class file, not jar package
+            loadFolderProperties(jarInfo[0], properties);
+            return;
+        }
+
         String jarFilePath = jarInfo[0].substring(jarInfo[0].indexOf("/"));
         String packagePath = jarInfo[1].substring(1);
         try {
             JarFile jarFile = new JarFile(jarFilePath);
-            Enumeration<JarEntry> entrys = jarFile.entries();
-            while (entrys.hasMoreElements()) {
-                JarEntry jarEntry = entrys.nextElement();
+            Enumeration<JarEntry> entries = jarFile.entries();
+            while (entries.hasMoreElements()) {
+                JarEntry jarEntry = entries.nextElement();
                 String entryName = jarEntry.getName();
                 if (entryName.startsWith(packagePath) && entryName.endsWith(SUFFIX_PROPERTY_FILE)) {
                     resourcePathes.add(entryName);
                 }
             }
+        } catch (Exception ex) {
+            throw new RuntimeException("Failed to read from jar path: " + jarPath, ex);
         }
-        catch (Exception e) {
-            e.printStackTrace();
+
+        for (String string : resourcePathes) {
+            try (InputStream fileStream = this.getClass().getClassLoader().getResourceAsStream(string)) {
+                properties.load(fileStream);
+            } catch (IOException ex) {
+                throw new RuntimeException("Failed to read property file from resource: " + string, ex);
+            }
         }
-        return resourcePathes;
+    }
+
+    private void loadFolderProperties(String folder, Properties properties) {
+        for (File file : new File(folder).listFiles()) {
+            if (file.isDirectory()) {
+                loadFolderProperties(file.getAbsolutePath(), properties);
+            } else if (file.isFile()) {
+                try (InputStream fileStream = new FileInputStream(file.getAbsoluteFile())) {
+                    properties.load(fileStream);
+                } catch (IOException ex) {
+                    throw new RuntimeException("Failed to read file: " + file.getAbsolutePath(), ex);
+                }
+            }
+        }
     }
 
     private void loadJarEntry(Properties props, JarFile jarFile, String entryName) {
