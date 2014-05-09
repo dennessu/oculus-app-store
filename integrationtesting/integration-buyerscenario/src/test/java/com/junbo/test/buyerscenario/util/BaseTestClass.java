@@ -27,6 +27,7 @@ public class BaseTestClass extends TestClass {
     protected String offer_physical_normal2;
     protected String offer_storedValue_normal;
 
+
     public BaseTestClass() {
         loadOffers();
     }
