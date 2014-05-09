@@ -21,6 +21,7 @@ dependencies {
     compile junboProject(':order-rest')
 
     compile junboProject(':billing-jobs')
+    compile junboProject(':order-jobs')
     // more to add
 }
 

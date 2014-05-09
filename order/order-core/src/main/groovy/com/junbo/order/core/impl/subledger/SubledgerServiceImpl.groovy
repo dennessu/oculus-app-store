@@ -81,8 +81,8 @@ class SubledgerServiceImpl implements SubledgerService {
     SubledgerItem createSubledgerItem(SubledgerItem subledgerItem) {
         def start = System.currentTimeMillis()
         orderValidator.notNull(subledgerItem.totalAmount, 'totalAmount')
-        orderValidator.notNull(subledgerItem.orderItemId, 'orderItemId')
-        orderValidator.notNull(subledgerItem.offerId, 'offerId')
+        orderValidator.notNull(subledgerItem.orderItem, 'orderItem')
+        orderValidator.notNull(subledgerItem.offer, 'offer')
         orderValidator.notNull(subledgerItem.subledgerItemAction, 'subledgerItemAction').
                 validEnumString(subledgerItem.subledgerItemAction, 'subledgerItemAction', SubledgerItemAction)
 
@@ -91,7 +91,7 @@ class SubledgerServiceImpl implements SubledgerService {
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.info('name=CreateSubledgerItem, subledgerItemId={}, orderItemId={}, offerId={}, latency={}',
-                result.subledgerItemId, result.orderItemId, result.offerId, System.currentTimeMillis() - start)
+                result.subledgerItemId, result.orderItem, result.offer, System.currentTimeMillis() - start)
         }
 
         return result
@@ -100,7 +100,7 @@ class SubledgerServiceImpl implements SubledgerService {
     @Override
     @Transactional
     void aggregateSubledgerItem(SubledgerItem subledgerItem) {
-        def subledger = getSubledger(subledgerItem.subledgerId)
+        def subledger = getSubledger(subledgerItem.subledger)
 
         if (subledgerItem.subledgerItemAction == SubledgerItemAction.CHARGE.name()) {
             subledger.totalAmount += subledgerItem.totalAmount
@@ -109,7 +109,7 @@ class SubledgerServiceImpl implements SubledgerService {
             subledger.totalAmount -= subledgerItem.totalAmount
         }
 
-        subledgerItem.subledgerId = subledger.subledgerId
+        subledgerItem.subledger = subledger.subledgerId
         subledgerItem.status = SubledgerItemStatus.PROCESSED
         subledgerRepository.updateSubledgerItem(subledgerItem)
 

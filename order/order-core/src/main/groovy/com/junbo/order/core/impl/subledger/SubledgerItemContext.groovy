@@ -1,5 +1,7 @@
 package com.junbo.order.core.impl.subledger
 
+import com.junbo.common.enumid.CountryId
+import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.UserId
 import groovy.transform.CompileStatic
@@ -10,13 +12,13 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class SubledgerItemContext {
 
-    UserId sellerId
+    UserId seller
 
-    OfferId offerId
+    OfferId offer
 
-    String currency
+    CurrencyId currency
 
-    String country
+    CountryId country
 
     Date createdTime
 }

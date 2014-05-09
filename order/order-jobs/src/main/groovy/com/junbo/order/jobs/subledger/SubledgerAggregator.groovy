@@ -58,7 +58,7 @@ class SubledgerAggregator {
 
             subledgerItems.each { SubledgerItem subledgerItem ->
                 transactionHelper.executeInTransaction {
-                    if (subledgerItem.subledgerId == null) {
+                    if (subledgerItem.subledger == null) {
                         def subledgerItemContext =
                                 subledgerHelper.subledgerItemContextBuilder.buildContext(subledgerItem)
                         def subledger = subledgerHelper.getMatchingSubledger(subledgerItemContext)
@@ -68,7 +68,7 @@ class SubledgerAggregator {
                             subledger = subledgerService.createSubledger(subledger)
                         }
 
-                        subledgerItem.subledgerId = subledger.subledgerId
+                        subledgerItem.subledger = subledger.subledgerId
                         numItemMatchOperation++
                     }
                     subledgerService.aggregateSubledgerItem(subledgerItem)
