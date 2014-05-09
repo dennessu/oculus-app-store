@@ -10,6 +10,7 @@ dependencies {
 
     compile junboProject(':catalog-spec')
     compile junboProject(':entitlement-spec')
+    compile junboProject(':payment-spec')
     compile junboProject(':subscription-common')
 
     testCompile(libraries.spring_test)
