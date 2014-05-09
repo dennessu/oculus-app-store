@@ -16,7 +16,8 @@ enum SendStatus {
     QUEUED('queued'),
     INVALID('invalid'),
     REJECTED('rejected'),
-    SCHEDULED('scheduled')
+    SCHEDULED('scheduled'),
+    ERROR('error')
 
     final String status
 
