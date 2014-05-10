@@ -74,6 +74,7 @@ public class FulfilmentActionEntity extends BaseEntity {
     }
 
     @Column(name = "result")
+    @Type(type = "json-string")
     public String getResult() {
         return result;
     }
