@@ -17,10 +17,10 @@ import com.junbo.common.jackson.aware.AnnotationsAware;
 import com.junbo.common.jackson.model.ResourceRef;
 import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.common.shuffle.Oculus48Id;
+import com.junbo.common.util.Context;
 import com.junbo.common.util.Utils;
 import com.junbo.configuration.ConfigService;
 import com.junbo.configuration.ConfigServiceManager;
-import org.slf4j.MDC;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -89,7 +89,7 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Anno
 
     protected String getResourceHref(Object value) {
         String urlPrefix = resourceUrlPrefix;
-        String apiHost = MDC.get(OverrideApiHostFilter.X_OVERRIDE_API_HOST);
+        String apiHost = Context.get().getHeader(OverrideApiHostFilter.X_OVERRIDE_API_HOST);
 
         if (StringUtils.hasText(apiHost)) {
             urlPrefix = apiHost;

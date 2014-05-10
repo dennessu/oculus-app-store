@@ -5,7 +5,7 @@
  */
 package com.junbo.common.filter;
 
-import org.slf4j.MDC;
+import com.junbo.common.util.Context;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -24,7 +24,7 @@ public class OverrideApiHostFilter implements ContainerRequestFilter {
         String apiHost = requestContext.getHeaders().getFirst(X_OVERRIDE_API_HOST);
 
         if (apiHost != null) {
-            MDC.put(X_OVERRIDE_API_HOST, apiHost);
+            Context.get().putHeader(X_OVERRIDE_API_HOST, apiHost);
         }
     }
 }
