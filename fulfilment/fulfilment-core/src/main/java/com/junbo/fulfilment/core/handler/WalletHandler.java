@@ -13,15 +13,18 @@ import com.junbo.fulfilment.spec.fusion.LinkedEntry;
 import com.junbo.fulfilment.spec.model.FulfilmentAction;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * WalletHandler.
  */
 public class WalletHandler extends HandlerSupport<WalletContext> {
     @Override
-    protected String handle(WalletContext context, FulfilmentAction action) {
-        List<Long> success = new ArrayList<>();
+    protected Object handle(WalletContext context, FulfilmentAction action) {
+        List<Long> results = new ArrayList<>();
 
         for (LinkedEntry itemEntry : action.getItems()) {
             Map<String, Object> actionProp = action.getProperties();
@@ -41,9 +44,9 @@ public class WalletHandler extends HandlerSupport<WalletContext> {
             request.setAmount(totalCreditAmount);
 
             Transaction transaction = walletGateway.credit(request);
-            success.add(transaction.getTransactionId());
+            results.add(transaction.getTransactionId());
         }
 
-        return Arrays.toString(success.toArray());
+        return results;
     }
 }
