@@ -11,19 +11,13 @@ import groovy.transform.CompileStatic
  * Created by kevingu on 11/28/13.
  */
 @CompileStatic
-class RestMethodModel {
+class ClientProxyFactoryModel {
 
-    String adapteeType
+    String packageName
 
-    String methodName
+    String className
 
-    String returnType
+    String resourceName
 
-    List<RestParameterModel> parameters
-
-    List<String> annotations
-
-    List<String> routeParamExprs
-
-    boolean routeFallbackToAnyLocal
+    String resourceType
 }

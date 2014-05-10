@@ -11,5 +11,4 @@ dependencies {
     compile junboProject(':common-lib')
 
     compile (libraries.common_codec)
-
 }

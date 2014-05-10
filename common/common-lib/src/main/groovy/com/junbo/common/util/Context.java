@@ -87,6 +87,14 @@ public class Context {
         public void setDataCenterId(Integer dataCenterId) {
             this.dataCenterId = dataCenterId;
         }
+
+        public String putHeader(String key, String value) {
+            return this.headers.put(key, value);
+        }
+
+        public String getHeader(String key) {
+            return this.headers.get(key);
+        }
     }
 
     public static Data get() {

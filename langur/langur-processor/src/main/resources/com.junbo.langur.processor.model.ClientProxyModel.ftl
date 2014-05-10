@@ -20,17 +20,11 @@ import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture;
 public class ${className} implements ${interfaceType} {
 
     private final AsyncHttpClient __client;
-
     private final String __target;
-
     private final MultivaluedMap<String, Object> __headers;
-
     private final MessageTranscoder __transcoder;
-
     private final PathParamTranscoder __pathParamTranscoder;
-
     private final QueryParamTranscoder __queryParamTranscoder;
-
     private final ExceptionHandler __exceptionHandler;
 
     public ${className}(AsyncHttpClient client, MessageTranscoder transcoder, PathParamTranscoder pathParamTranscoder,
