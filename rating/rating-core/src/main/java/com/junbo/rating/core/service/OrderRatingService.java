@@ -15,6 +15,8 @@ import com.junbo.rating.spec.error.AppErrors;
 import com.junbo.rating.spec.fusion.LinkedEntry;
 import com.junbo.rating.spec.fusion.RatingOffer;
 import com.junbo.rating.spec.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -26,6 +28,7 @@ import java.util.Set;
  * Created by lizwu on 2/7/14.
  */
 public class OrderRatingService extends RatingServiceSupport{
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderRatingService.class);
 
     public void orderRating(RatingContext context) {
         rate(context);
@@ -141,7 +144,8 @@ public class OrderRatingService extends RatingServiceSupport{
             Long shippingMethodId = item.getShippingMethodId() == null?
                     context.getDefaultShippingMethod() : item.getShippingMethodId();
             if (shippingMethodId == null) {
-                throw AppErrors.INSTANCE.missingShippingMethod(item.getOfferId().toString()).exception();
+                LOGGER.warn("Missing shipping method for Offer " + item.getOfferId());
+                continue;
             }
 
             if (!shippingDetail.containsKey(shippingMethodId)) {
