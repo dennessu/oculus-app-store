@@ -37,11 +37,7 @@ public interface AppErrors {
             description = "No approved offerRevision is found for Offer: {0}", field = "offer_id")
     AppError offerRevisionNotFound(String offerId);
 
-    @ErrorDef(httpStatusCode = 404, code = "10007",
-            description = "Missing shipping method for Offer: {0}", field = "offer_id")
-    AppError missingShippingMethod(String offerId);
-
-    @ErrorDef(httpStatusCode = 400, code = "10008",
+    @ErrorDef(httpStatusCode = 400, code = "10007",
             description = "Cannot purchase digital Offer: {0} with quantity of {1}.", field = "quantity")
     AppError incorrectQuantity(String offerId, int quantity);
 }
