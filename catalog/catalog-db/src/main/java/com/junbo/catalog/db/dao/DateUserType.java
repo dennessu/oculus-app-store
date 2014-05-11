@@ -53,7 +53,7 @@ public class DateUserType implements UserType{
         if (rs.getString(names[0]) == null) {
             return null;
         }
-        return new Date(rs.getDate(names[0]).getTime());
+        return new Date(rs.getTimestamp(names[0]).getTime());
     }
 
     @Override
