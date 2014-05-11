@@ -44,7 +44,7 @@ class SendAccountVerifyEmail implements Action {
 
         return userService.verifyEmailByUserId((UserId)(user.id), contextWrapper.viewLocale, request.baseUri).recover { Throwable e ->
             handleException(e, contextWrapper)
-            // Return success no matter the email has been successfully sent.
+            // Return success no matter the email has been sent or not
             return Promise.pure(new ActionResult('success'))
         }.then {
             return Promise.pure(new ActionResult('success'))

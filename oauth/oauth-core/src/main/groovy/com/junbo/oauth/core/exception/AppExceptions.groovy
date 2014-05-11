@@ -325,4 +325,8 @@ interface AppExceptions {
     @ErrorDef(httpStatusCode = 400, code = '20072',
             description = 'The reset password code is missing', field = 'rpc')
     AppError missingResetPasswordCode()
+
+    @ErrorDef(httpStatusCode = 400, code = '20073',
+            description = 'No account found with that email address.', field = 'email')
+    AppError noAccountFound()
 }
