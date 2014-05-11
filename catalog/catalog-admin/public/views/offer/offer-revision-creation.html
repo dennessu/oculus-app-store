@@ -11,8 +11,8 @@
         </div>
         <div class="panel-body">
             <div class="form-group">
-                <label class="col-sm-2 control-label">Price Type</label>
-                <div class="col-sm-10">
+                <label class="col-sm-3 control-label">Price Type</label>
+                <div class="col-sm-9">
                     <label class="checkbox-inline">
                     <select ng-model="revision.price.priceType" ng-init="revision.price.priceType='FREE'" ng-change="updatePriceType(revision.price.priceType)">
                         <option>FREE</option>
@@ -24,8 +24,8 @@
             </div>
             <hr>
             <div class="form-group">
-                <label class="col-sm-2 control-label">Prices</label>
-                <div class="col-sm-10">
+                <label class="col-sm-3 control-label">Prices</label>
+                <div class="col-sm-9">
                     <div ng-show="revision.price.priceType=='FREE'">
                         <label class="checkbox-inline">Free</label>
                     </div>
@@ -39,9 +39,9 @@
                         </br>
                         </br>
                         <table class="table">
-                            <tr ng-repeat="(countryCode, price) in revision.prices">
-                                <td>{{ price.currency }}</td>
-                                <td><input type="text" class="form-control required" ng-model="price.amount" placeholder="Amount" required /></td>
+                            <tr ng-repeat="(currency, price) in revision.prices">
+                                <td>{{ currency }}</td>
+                                <td><input type="text" class="form-control required" ng-model="price" placeholder="Amount" required /></td>
                                 <td class="select" ng-click="removePrice(countryCode)">x</td>
                             </tr>
                         </table>
@@ -80,33 +80,33 @@
             <div ng-repeat="(locale, properties) in revision.locales">
                 <hr>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label"></label>
+                    <label class="col-sm-3 control-label"></label>
                     <div>
                         Locale <label>{{ locale }}</label>&nbsp;&nbsp;
                         <a class="btn btn-xs btn-default" ng-click="removeLocale(locale)">Remove</a>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">Name</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 control-label">Name</label>
+                    <div class="col-sm-9">
                         <input type="text" class="form-control" ng-model="properties.name" placeholder="Name" />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">Revision Notes</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 control-label">Revision Notes</label>
+                    <div class="col-sm-9">
                         <input type="text" class="form-control" ng-model="properties.revisionNotes" placeholder="Revision Notes" />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">Long Description</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 control-label">Long Description</label>
+                    <div class="col-sm-9">
                         <input type="text" class="form-control" ng-model="properties.longDescription" placeholder="Long Description" />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">Short Description</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 control-label">Short Description</label>
+                    <div class="col-sm-9">
                         <input type="text" class="form-control" ng-model="properties.shortDescription" placeholder="Short Description" />
                     </div>
                 </div>
@@ -120,20 +120,20 @@
         </div>
         <div class="panel-body">
             <div class="form-group">
-                <label class="col-sm-2 control-label">Limit Per Customer</label>
-                <div class="col-sm-10">
+                <label class="col-sm-3 control-label">Limit Per Customer</label>
+                <div class="col-sm-9">
                     <input type="number" class="form-control" ng-model="revision.restriction.limitPerCustomer" placeholder="Limit Per Customer">
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">Limit Per Order</label>
-                <div class="col-sm-10">
+                <label class="col-sm-3 control-label">Limit Per Order</label>
+                <div class="col-sm-9">
                     <input type="number" class="form-control" ng-model="revision.restriction.limitPerOrder" placeholder="Limit Per Order">
                 </div>
             </div>
             <div class="form-group">
-                <label for="chooseCountries" class="col-sm-2 control-label">Available Countries</label>
-                <div class="col-sm-10">
+                <label for="chooseCountries" class="col-sm-3 control-label">Available Countries</label>
+                <div class="col-sm-9">
                     <label class="checkbox-inline">
                         <a ng-click="selectAllCountries()" class="btn btn-small btn-default">Check All</a>
                         <a ng-click="deselectAllCountries()" class="btn btn-small btn-default">Uncheck All</a>
@@ -154,4 +154,4 @@
         </div>
     </div>
 </form>
-<!--/div-->
+</div>
