@@ -17,7 +17,7 @@
       <tr ng-repeat="item in items">
           <td><a href="#/items/{{ item.self.id }}">{{ item.self.id }}</a></td>
           <td>{{ item.type }}</td>
-          <td><a href="#/item-revisions/{{ item.currentRevision.id }}">{{ item.currentRevision.id }}</a></td>
+          <td><a href="#/items/{{ item.self.id }}/revisions/{{ item.currentRevision.id }}">{{ item.currentRevision.id }}</a></td>
           <td>{{ item.createdTime }}</a></td>
           <td>{{ item.updatedTime }}</a></td>
       </tr>

@@ -1,6 +1,3 @@
-<a href="#/offers/{{offer.self.id}}/revisions/creation" class="btn btn-small btn-default">New Revision</a>
-<hr>
-
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">General</h3>
@@ -19,17 +16,17 @@
                 <p class="form-control-static" ng-if="!offer.isPublished">Not Published</p>
             </div>
         </div>
-        <div ng-if="currentRevision">
+        <div ng-if="revision">
             <div class="form-group">
                 <label class="col-sm-3 control-label">Revision Id</label>
                 <div class="col-sm-9">
-                    <p class="form-control-static">{{ currentRevision.self.id }}</p>
+                    <p class="form-control-static">{{ revision.self.id }}</p>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Category</label>
                 <div class="col-sm-9">
-                    <div ng-repeat="category in currentRevision.categories">
+                    <div ng-repeat="category in revision.categories">
                         <p class="form-control-static">
                             <a href="#/attributes/{{category.id}}" >{{ category.id }}</a>
                         </p>
@@ -40,7 +37,7 @@
                 <label class="col-sm-3 control-label">Items</label>
                 <div class="col-sm-9">
                     <p class="form-control-static">
-                        <span ng-repeat="item in currentRevision.items">
+                        <span ng-repeat="item in revision.items">
                             <a href="#/items/{{item.item.id}}" >{{ item.item.id }}</a>
                         </span>
                     </p>
@@ -49,24 +46,24 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Price Type</label>
                 <div class="col-sm-9">
-                    <p class="form-control-static">{{ currentRevision.price.priceType }}</p>
+                    <p class="form-control-static">{{ revision.price.priceType }}</p>
                 </div>
             </div>
-            <div class="form-group" ng-show="currentRevision.price.priceType=='TIERED'">
+            <div class="form-group" ng-show="revision.price.priceType=='TIERED'">
                 <label class="col-sm-3 control-label">Price Tier</label>
                 <div class="col-sm-9">
                     <p class="form-control-static">
-                        <a href="/api/price-tiers/{{ currentRevision.price.priceTier.id }}">{{ currentRevision.price.priceTier.id }}</a>
+                        <a href="/api/price-tiers/{{ revision.price.priceTier.id }}">{{ revision.price.priceTier.id }}</a>
                     </p>
                 </div>
             </div>
-            <div class="form-group" ng-show="currentRevision.price.priceType=='CUSTOM'">
+            <div class="form-group" ng-show="revision.price.priceType=='CUSTOM'">
                 <label class="col-sm-3 control-label">Prices</label>
                 <div class="col-sm-9">
                     <div class="panel panel-default" class="form-control-static">
                         <div class="panel-body">
                             <table class="table">
-                                <tr ng-repeat="(currency, price) in currentRevision.price.prices">
+                                <tr ng-repeat="(currency, price) in revision.price.prices">
                                     <td>{{ currency }}</td>
                                     <td>{{ price }}</td>
                                 </tr>
@@ -90,7 +87,7 @@
         <h3 class="panel-title">Locale Properties</h3>
     </div>
     <div class="panel-body form-horizontal">
-        <div ng-repeat="(locale, properties) in currentRevision.locales">
+        <div ng-repeat="(locale, properties) in revision.locales">
             <div class="form-group">
                 <span class="col-sm-3 control-label">{{ locale }}</span>
             </div>
@@ -98,7 +95,7 @@
                 <label class="col-sm-3 control-label">Name</label>
                 <div class="col-sm-9">
                     <p class="form-control-static">
-                    {{ properties.name }}
+                        {{ properties.name }}
                     </p>
                 </div>
             </div>
@@ -106,7 +103,7 @@
                 <label class="col-sm-3 control-label">Revision Notes</label>
                 <div class="col-sm-9">
                     <p class="form-control-static">
-                    {{ properties.revisionNotes }}
+                        {{ properties.revisionNotes }}
                     </p>
                 </div>
             </div>
@@ -114,7 +111,7 @@
                 <label class="col-sm-3 control-label">Long Description</label>
                 <div class="col-sm-9">
                     <p class="form-control-static">
-                    {{ properties.longDescription }}
+                        {{ properties.longDescription }}
                     </p>
                 </div>
             </div>
@@ -122,7 +119,7 @@
                 <label class="col-sm-3 control-label">Short Description</label>
                 <div class="col-sm-9">
                     <p class="form-control-static">
-                    {{ properties.shortDescription }}
+                        {{ properties.shortDescription }}
                     </p>
                 </div>
             </div>
@@ -135,27 +132,27 @@
     <div class="panel-heading">
         <h3 class="panel-title">Restrictions</h3>
     </div>
-    <div class="panel-body" ng-if="!currentRevision">
+    <div class="panel-body" ng-if="!revision">
         <span>Current Revision Not Set</span>
     </div>
-    <div class="panel-body" ng-if="currentRevision">
+    <div class="panel-body" ng-if="revision">
         <div class="form-group">
             <label class="col-sm-3 control-label">Limit Per Customer</label>
             <div class="col-sm-9">
-                <p class="form-control-static">{{ currentRevision.restriction.limitPerCustomer }}</p>
+                <p class="form-control-static">{{ revision.restriction.limitPerCustomer }}</p>
             </div>
         </div>
         <div class="form-group">
             <label class="col-sm-3 control-label">Limit Per Order</label>
             <div class="col-sm-9">
-                <p class="form-control-static">{{ currentRevision.restriction.limitPerOrder }}</p>
+                <p class="form-control-static">{{ revision.restriction.limitPerOrder }}</p>
             </div>
         </div>
         <div class="form-group">
             <label class="col-sm-3 control-label">Available Countries</label>
             <div class="col-sm-9">
                 <p class="form-control-static">
-                    <span ng-repeat="country in currentRevision.eligibleCountries">
+                    <span ng-repeat="country in revision.eligibleCountries">
                         {{ country.id }}
                     </span>
                 </p>
@@ -163,24 +160,3 @@
         </div>
     </div>
 </div>
-
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">All Revisions</h3>
-    </div>
-    <div class="panel-body form-horizontal">
-        <span ng-if="offerRevisions.length == 0">No Revisions</span>
-        <table class="table" ng-if="offerRevisions.length > 0">
-            <tr><th>Revision Id</th><th>Status</th><th>Created Time</th><th>Updated Time</th></tr>
-            <tr ng-repeat="revision in offerRevisions">
-                <td>
-                    <a href="#/offers/{{ offer.self.id }}/revisions/{{ revision.self.id }}">{{revision.self.id}}</a>
-                </td>
-                <td>{{revision.status}}</td>
-                <td>{{revision.createdTime}}</td>
-                <td>{{revision.updatedTime}}</td>
-            </tr>
-        </table>
-    </div>
-</div>
-

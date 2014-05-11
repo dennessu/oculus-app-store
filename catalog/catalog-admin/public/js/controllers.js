@@ -291,10 +291,14 @@ app.controller('ItemDetailCtrl', ['$scope', 'ItemFactory', 'MetaFactory', '$rout
     }]);
 
 
-app.controller('ItemOverviewCtrl', ['$scope', 'ItemFactory', 'MetaFactory', '$routeParams', 'OfferFactory', 'ItemRevisionsFactory',
-    function($scope, ItemFactory, MetaFactory, $routeParams, OfferFactory, ItemRevisionsFactory) {
+app.controller('ItemOverviewCtrl', ['$scope', 'ItemFactory', 'MetaFactory', '$routeParams', 'OfferFactory', 'ItemRevisionFactory', 'ItemRevisionsFactory',
+    function($scope, ItemFactory, MetaFactory, $routeParams, OfferFactory, ItemRevisionFactory, ItemRevisionsFactory) {
         $scope.itemId = $routeParams.id;
-        $scope.item = ItemFactory.query($routeParams);
+        $scope.item = ItemFactory.query($routeParams, function(item) {
+            if (item.currentRevision != undefined) {
+                $scope.currentRevision = ItemRevisionFactory.query({'id': item.currentRevision.id});
+            }
+        });
         OfferFactory.query({'itemId': $scope.itemId}, function(offers) {
             $scope.offers = offers.results;
         });
@@ -303,11 +307,10 @@ app.controller('ItemOverviewCtrl', ['$scope', 'ItemFactory', 'MetaFactory', '$ro
         });
     }]);
 
-app.controller('ItemRevisionCtrl', ['$scope', 'ItemRevisionFactory', '$routeParams',
-    function($scope, ItemRevisionFactory, $routeParams) {
-        ItemRevisionFactory.query({'id': $routeParams.revisionId}, function(revision) {
-            $scope.revision = revision;
-        });
+app.controller('ItemRevisionCtrl', ['$scope', 'ItemRevisionFactory', 'ItemFactory', '$routeParams',
+    function($scope, ItemRevisionFactory, ItemFactory, $routeParams) {
+        $scope.revision = ItemRevisionFactory.query({'id': $routeParams.revisionId});
+        $scope.item = ItemFactory.query({'id': $routeParams.id});
     }]);
 
 app.controller('ItemCreationCtrl', ['$scope', 'MetaFactory', 'ItemsFactory', '$location', '$cookies',
@@ -374,12 +377,20 @@ app.controller('OfferOverviewCtrl', ['$scope', 'MetaFactory', '$routeParams', 'O
     function($scope, MetaFactory, $routeParams, OfferFactory, OfferRevisionsFactory, OfferRevisionFactory) {
         $scope.offerId = $routeParams.offerId;
         $scope.offer = OfferFactory.query({'id':$routeParams.offerId}, function(offer) {
-            $scope.currentRevision = OfferRevisionFactory.query({'id': offer.currentRevision.id});
+            if (offer.currentRevision != undefined) {
+                $scope.currentRevision = OfferRevisionFactory.query({'id': offer.currentRevision.id});
+            }
         });
         OfferRevisionsFactory.query({'offerId': $scope.offerId}, function(revisions) {
             $scope.offerRevisions = revisions.results;
         });
 
+    }]);
+
+app.controller('OfferRevisionCtrl', ['$scope', 'OfferRevisionFactory', 'OfferFactory', '$routeParams',
+    function($scope, OfferRevisionFactory, OfferFactory, $routeParams) {
+        $scope.revision = OfferRevisionFactory.query({'id': $routeParams.revisionId});
+        $scope.offer = OfferFactory.query({'id':$routeParams.id});
     }]);
 
 app.controller('OfferCreationCtrl', ['$scope', 'OffersFactory', 'MetaFactory', 'AuthFactory', '$location','$cookies', '$routeParams',

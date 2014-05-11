@@ -17,7 +17,7 @@
       <tr ng-repeat="offer in offers | filter: user_id">
         <td><a href="#/offers/{{ offer.self.id }}">{{ offer.self.id }}</a></td>
         <td>{{ offer.status }}</td>
-        <td><a href="#/offer-revisions/{{ offer.currentRevision.id }}">{{ offer.currentRevision.id }}</a></td>
+        <td><a href="#/offers/{{ offer.self.id }}/revisions/{{ offer.currentRevision.id }}">{{ offer.currentRevision.id }}</a></td>
         <td>{{ offer.createdTime }}</td>
         <td>{{ offer.updatedTime }}</td>
       </tr>
