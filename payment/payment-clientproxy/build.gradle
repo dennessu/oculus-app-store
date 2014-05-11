@@ -18,6 +18,3 @@ dependencies {
     compile junboProject(':ewallet-spec')
 }
 
-ext {
-    processorClass = 'com.junbo.langur.processor.RestAdapterProcessor,com.junbo.langur.processor.ClientProxyProcessor'
-}
