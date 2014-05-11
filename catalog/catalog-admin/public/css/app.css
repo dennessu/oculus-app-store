@@ -9,13 +9,13 @@ html, body {
   padding: 0 0 0.5em;
 }
 
-.menu:before {
+/*.menu:before {
   content: "[";
 }
 
 .menu:after {
   content: "]";
-}
+}*/
 
 .menu > li {
   display: inline;
@@ -39,7 +39,9 @@ html, body {
     border-top: 0 !important;
 }
 
-.chooseItem {margin:0px 5px 0px 10px !important;}
+.chooseItem {
+    margin:0px 5px 0px 10px !important;
+}
 
 input.ng-invalid {
     border: 1px solid red;
@@ -47,4 +49,33 @@ input.ng-invalid {
 
 select.ng-invalid {
     border: 1px solid red;
+}
+
+/*h2 {text-align:center;}*/
+
+.box {
+    margin-left: 0;
+    margin-right: 0;
+    background-color: #fff;
+    border-width: 1px;
+    border-color: #ddd;
+    border-radius: 4px 4px 0 0;
+    box-shadow: none;
+
+    position: relative;
+    padding: 45px 15px 15px;
+    margin: 0 -15px 15px;
+    border-style: solid;
+}
+
+.box:after{
+    content:"Oculus Developer Catalog";
+    position:absolute;
+    top:15px;
+    left:15px;
+    font-size:14px;
+    font-weight:700;
+    color:#bbb;
+    text-transform:uppercase;
+    letter-spacing:1px
 }

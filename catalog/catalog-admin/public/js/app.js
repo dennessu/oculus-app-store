@@ -14,7 +14,7 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
   $routeProvider.when('/offers/creation', {templateUrl: 'views/offer/offer-creation.html', controller: 'OfferCreationCtrl'});
   $routeProvider.when('/offers', {templateUrl: 'views/offer/offer-list.html', controller: 'OfferListCtrl'});
   //$routeProvider.when('/offers/review', {templateUrl: 'views/offer/offer-list.html', controller: 'OfferReviewListCtrl'});
-  $routeProvider.when('/offers/:id', {templateUrl: 'views/offer/offer-detail-view.html', controller: 'OfferDetailCtrl'});
+  $routeProvider.when('/offers/:offerId', {templateUrl: 'views/offer/offer-overview.html', controller: 'OfferOverviewCtrl'});
   $routeProvider.when('/offers/:id/response', {templateUrl: 'views/offer/offer-response.html', controller: 'OfferResponseCtrl'});
   $routeProvider.when('/offers/:id/edit', {templateUrl: 'views/offer/offer-detail-edit.html', controller: 'OfferDetailCtrl'});
 
@@ -35,7 +35,7 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
 
   $routeProvider.when('/login', {templateUrl: 'views/auth/login.html', controller: 'LoginCtrl'});
   //$routeProvider.otherwise({redirectTo: '/login'});
-  $routeProvider.otherwise({redirectTo: '/items'});
+  $routeProvider.otherwise({redirectTo: '/offers'});
 }]);
 
 angular.module('catalog').constant('CONFIG', {

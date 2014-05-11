@@ -1,21 +1,19 @@
 <div class="span6">
   <div class="controls">
-      <a href="#/offers/creation">New Offer</a>
+      <a href="#/items/creation">New Offer</a>
   </div>
 
   <table class="table">
     <thead>
       <tr>
         <th style="min-width: 80px;">Offer Id</th>
-        <th style="min-width: 80px;">Offer Name</th>
-          <th style="min-width: 80px;">Offer Status</th>
+        <th style="min-width: 80px;">Offer Status</th>
       </tr>
     </thead>
     <tbody>
       <tr ng-repeat="offer in offers | filter: user_id">
         <td><a href="#/offers/{{ offer.self.id }}">{{ offer.self.id }}</a></td>
-        <td>{{ offer.name }}</td>
-          <td>{{ offer.status }}</td>
+        <td>{{ offer.status }}</td>
       </tr>
     </tbody>
   </table>

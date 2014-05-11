@@ -1,8 +1,8 @@
-<h1>Item detail</h1>
+<h1>Item Revision Details</h1>
 
 <div class="controls">
-    <a href="#/items/{{ revision.self.id }}/edit" ng-if="offer.status!='PendingReview'">Edit</a>
-    <a ng-click="reviewItem()" class="btn btn-small btn-default" ng-if="revision.status=='Design'">Submit</a>
+    <a href="#/items/{{ item.self.id }}/edit" ng-if="offer.status!='PendingReview'">Edit</a>
+    <a ng-click="reviewItem()" class="btn btn-small btn-default" ng-if="item.status=='Design'">Submit</a>
 </div>
 
 <table class="table table-bordered vertical-table">
@@ -11,16 +11,24 @@
         <td>{{ revision.self.id }}</td>
     </tr>
     <tr>
+        <td>Item Id</td>
+        <td>{{ revision.item.id }}</td>
+    </tr>
+    <tr>
         <td>Status</td>
         <td>{{ revision.status }}</td>
     </tr>
     <tr>
-        <td>Sku</td>
-        <td>{{ revision.sku }}</td>
+        <td>Rollup Package Name</td>
+        <td>{{ item.rollupPackageName }}</td>
     </tr>
     <tr>
-        <td>Item Id</td>
-        <td>{{ revision.item.id }}</td>
+        <td>Package Name</td>
+        <td>{{ item.packageName }}</td>
+    </tr>
+    <tr>
+        <td>Sku</td>
+        <td>{{ revision.sku }}</td>
     </tr>
     <tr>
         <td>Game Modes</td>
@@ -31,3 +39,58 @@
         <td>{{ revision.supportedInputDevices }}</td>
     </tr>
 </table>
+<hr>
+<div>
+    <b>Locale Properties</b><br>
+    <table class="table table-bordered vertical-table">
+        <tr ng-repeat="(locale, properties) in revision.locales">
+            <td style="width: 100px;">{{ locale }}</td>
+            <td>
+                <table class="table table-bordered vertical-table">
+                    <tr>
+                        <td style="width: 200px;">Name</td>
+                        <td>{{properties.name}}</td>
+                    </tr>
+                    <tr>
+                        <td>Revision Notes</td>
+                        <td>{{properties.revisionNotes}}</td>
+                    </tr>
+                    <tr>
+                        <td>Long Description</td>
+                        <td>{{properties.longDescription}}</td>
+                    </tr>
+                    <tr>
+                        <td>Short Description</td>
+                        <td>{{properties.shortDescription}}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
+<hr>
+<div>
+    <b>Binaries</b><br>
+    <table class="table table-bordered vertical-table">
+        <tr ng-repeat="(platform, properties) in revision.binaries">
+            <td style="width: 100px;"><b>{{ platform }}</b></td>
+            <td>
+                <table class="table table-bordered vertical-table">
+                    <tr>
+                        <td style="width: 200px;">Href</td>
+                        <td>{{properties.href}}</td>
+                    </tr>
+                    <tr>
+                        <td>Size</td>
+                        <td>{{properties.size}}</td>
+                    </tr>
+                    <tr>
+                        <td>Version</td>
+                        <td>{{properties.version}}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
+<hr>
