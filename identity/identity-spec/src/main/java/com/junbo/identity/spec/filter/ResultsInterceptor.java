@@ -5,7 +5,6 @@
  */
 package com.junbo.identity.spec.filter;
 
-import com.junbo.common.filter.OverrideApiHostFilter;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
 import com.junbo.common.util.Context;
@@ -65,7 +64,7 @@ public class ResultsInterceptor implements ContainerResponseFilter {
         ContainerResponse response = (ContainerResponse)responseContext;
         Link ref = new Link();
         String hrefPrefix = selfHrefPrfix;
-        String apiHost = Context.get().getHeader(OverrideApiHostFilter.X_OVERRIDE_API_HOST);
+        String apiHost = Context.get().getOverrideApiHost();
 
         if (StringUtils.hasText(apiHost)) {
             hrefPrefix = apiHost;

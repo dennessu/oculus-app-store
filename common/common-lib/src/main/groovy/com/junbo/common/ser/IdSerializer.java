@@ -11,7 +11,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.junbo.common.filter.OverrideApiHostFilter;
 import com.junbo.common.id.Id;
 import com.junbo.common.id.IdResourcePath;
 import com.junbo.common.json.ObjectMapperProvider;
@@ -69,7 +68,7 @@ public class IdSerializer extends JsonSerializer<Id> {
 
     protected String getHref(Id value, String path) {
         String hrefPrefix;
-        String apiHost = Context.get().getHeader(OverrideApiHostFilter.X_OVERRIDE_API_HOST);
+        String apiHost = Context.get().getOverrideApiHost();
 
         if (StringUtils.hasText(apiHost)) {
             hrefPrefix = apiHost;

@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.common.routing;
+package com.junbo.sharding.routing.model;
 
 /**
  * The policy for data access.

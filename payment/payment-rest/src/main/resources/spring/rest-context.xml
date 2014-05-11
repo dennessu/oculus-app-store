@@ -4,7 +4,7 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <import resource="classpath*:spring/common-lib-context.xml"/>
+    <import resource="classpath*:spring/routing-context.xml"/>
 
     <context:component-scan base-package="com.junbo.payment.rest.resource"/>
     <context:component-scan base-package="com.junbo.payment.spec.resource.adapter"/>
@@ -21,10 +21,10 @@
     <!--bean id="defaultPaymentInstrumentTypeResourceClientFactory" class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentTypeResourceClientProxyFactory"/-->
     <bean id="defaultPaymentCallbackResourceClientFactory" class="com.junbo.payment.spec.resource.proxy.PaymentCallbackResourceClientProxyFactory"/>
 
-    <alias alias="defaultPaymentInstrumentResourceRouter" name="commonRouter" />
-    <alias alias="defaultPaymentTransactionResourceRouter" name="commonRouter" />
-    <alias alias="defaultBrainTreeResourceRouter" name="commonRouter" />
-    <!--alias alias="defaultPaymentInstrumentTypeResourceRouter" name="commonRouter" /-->
-    <alias alias="defaultPaymentCallbackResourceRouter" name="commonRouter" />
+    <bean id="defaultPaymentInstrumentResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultPaymentTransactionResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultBrainTreeResourceRouter" parent="routingRouterBase" />
+    <!--alias alias="defaultPaymentInstrumentTypeResourceRouter" name="routingRouter" /-->
+    <bean id="defaultPaymentCallbackResourceRouter" parent="routingRouterBase" />
 
 </beans>

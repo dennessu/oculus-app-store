@@ -4,7 +4,7 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <import resource="classpath*:spring/common-lib-context.xml"/>
+    <import resource="classpath*:spring/routing-context.xml"/>
 
     <!--context:component-scan base-package="com.junbo.catalog.rest.resource"/-->
     <context:component-scan base-package="com.junbo.catalog.spec.resource.adapter"/>
@@ -32,16 +32,16 @@
     <bean id="defaultEntitlementDefinitionResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.EntitlementDefinitionResourceClientProxyFactory"/>
     <bean id="defaultPriceTierResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.PriceTierResourceClientProxyFactory"/>
 
-    <alias alias="defaultItemResourceRouter" name="commonRouter" />
-    <alias alias="defaultItemRevisionResourceRouter" name="commonRouter" />
-    <alias alias="defaultOfferResourceRouter" name="commonRouter" />
-    <alias alias="defaultOfferRevisionResourceRouter" name="commonRouter" />
-    <alias alias="defaultPromotionResourceRouter" name="commonRouter" />
-    <alias alias="defaultPromotionRevisionResourceRouter" name="commonRouter" />
-    <alias alias="defaultItemAttributeResourceRouter" name="commonRouter" />
-    <alias alias="defaultOfferAttributeResourceRouter" name="commonRouter" />
-    <alias alias="defaultEntitlementDefinitionResourceRouter" name="commonRouter" />
-    <alias alias="defaultPriceTierResourceRouter" name="commonRouter" />
+    <bean id="defaultItemResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultItemRevisionResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultOfferResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultOfferRevisionResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultPromotionResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultPromotionRevisionResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultItemAttributeResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultOfferAttributeResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultEntitlementDefinitionResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultPriceTierResourceRouter" parent="routingRouterBase" />
 
     <bean id="itemAuthorizeCallbackFactory" class="com.junbo.catalog.rest.auth.ItemAuthorizeCallbackFactory">
         <property name="groupResource" ref="groupResource"/>

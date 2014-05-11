@@ -15,5 +15,5 @@ public interface HeadersProvider {
      * Method to provide headers which will get passed through when routing to another endpoint.
      * @return the headers to be passed through to another endpoint.
      */
-    MultivaluedMap<String, Object> getHeaders();
+    MultivaluedMap<String, String> getHeaders();
 }

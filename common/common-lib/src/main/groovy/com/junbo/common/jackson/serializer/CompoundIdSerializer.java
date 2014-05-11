@@ -5,7 +5,6 @@
  */
 package com.junbo.common.jackson.serializer;
 
-import com.junbo.common.filter.OverrideApiHostFilter;
 import com.junbo.common.jackson.aware.CompoundAware;
 import com.junbo.common.jackson.model.ResourceRef;
 import com.junbo.common.util.Context;
@@ -47,7 +46,7 @@ public class CompoundIdSerializer extends ResourceIdSerializer {
         }
 
         String urlPrefix = resourceUrlPrefix;
-        String apiHost = Context.get().getHeader(OverrideApiHostFilter.X_OVERRIDE_API_HOST);
+        String apiHost = Context.get().getOverrideApiHost();
 
         if (StringUtils.hasText(apiHost)) {
             urlPrefix = apiHost;

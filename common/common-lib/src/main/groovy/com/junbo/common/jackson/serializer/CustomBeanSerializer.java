@@ -17,7 +17,6 @@ import com.fasterxml.jackson.databind.ser.impl.ObjectIdWriter;
 import com.fasterxml.jackson.databind.ser.impl.UnwrappingBeanSerializer;
 import com.fasterxml.jackson.databind.ser.std.BeanSerializerBase;
 import com.fasterxml.jackson.databind.util.NameTransformer;
-import com.junbo.common.filter.OverrideApiHostFilter;
 import com.junbo.common.id.Id;
 import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.json.ObjectMapperProvider;
@@ -197,7 +196,7 @@ public class CustomBeanSerializer extends BeanSerializerBase {
                 link = new Link();
 
                 String overrideResourceUrlPrefix = resourceUrlPrefix;
-                String apiHost = Context.get().getHeader(OverrideApiHostFilter.X_OVERRIDE_API_HOST);
+                String apiHost = Context.get().getOverrideApiHost();
 
                 if (StringUtils.hasText(apiHost)) {
                     overrideResourceUrlPrefix = apiHost;

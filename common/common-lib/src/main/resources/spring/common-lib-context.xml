@@ -12,8 +12,6 @@
     <bean id="commonExceptionHandler" class="com.junbo.common.error.CommonExceptionHandler">
         <property name="messageTranscoder" ref="commonTranscoder"/>
     </bean>
-    <bean id="commonHeadersProvider" class="com.junbo.common.routing.HeadersProviderImpl" />
-    <bean id="commonRouter" class="com.junbo.common.routing.RouterImpl" />
 
     <bean id="oculus40IdShuffle" class="com.junbo.common.shuffle.Oculus40Id" />
     <bean id="oculus48IdShuffle" class="com.junbo.common.shuffle.Oculus48Id" />

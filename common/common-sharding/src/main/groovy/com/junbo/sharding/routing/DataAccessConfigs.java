@@ -3,7 +3,9 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.common.routing;
+package com.junbo.sharding.routing;
+
+import com.junbo.sharding.routing.model.DataAccessConfigEntry;
 
 import java.util.Map;
 

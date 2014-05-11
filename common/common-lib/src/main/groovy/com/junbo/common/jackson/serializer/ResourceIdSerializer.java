@@ -11,7 +11,6 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.introspect.Annotated;
-import com.junbo.common.filter.OverrideApiHostFilter;
 import com.junbo.common.jackson.annotation.ResourcePath;
 import com.junbo.common.jackson.aware.AnnotationsAware;
 import com.junbo.common.jackson.model.ResourceRef;
@@ -89,7 +88,7 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Anno
 
     protected String getResourceHref(Object value) {
         String urlPrefix = resourceUrlPrefix;
-        String apiHost = Context.get().getHeader(OverrideApiHostFilter.X_OVERRIDE_API_HOST);
+        String apiHost = Context.get().getOverrideApiHost();
 
         if (StringUtils.hasText(apiHost)) {
             urlPrefix = apiHost;

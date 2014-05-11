@@ -12,27 +12,27 @@ import ${resourceType};
 public class ${className} implements ClientProxyFactory<${resourceName}> {
 
     @org.springframework.beans.factory.annotation.Autowired
-    @org.springframework.beans.factory.annotation.Qualifier("commonAsyncHttpClient")
+    @org.springframework.beans.factory.annotation.Qualifier("routingAsyncHttpClient")
     private AsyncHttpClient __client;
 
     @org.springframework.beans.factory.annotation.Autowired
-    @org.springframework.beans.factory.annotation.Qualifier("commonTranscoder")
+    @org.springframework.beans.factory.annotation.Qualifier("routingTranscoder")
     private MessageTranscoder __transcoder;
 
     @org.springframework.beans.factory.annotation.Autowired
-    @org.springframework.beans.factory.annotation.Qualifier("commonPathParamTranscoder")
+    @org.springframework.beans.factory.annotation.Qualifier("routingPathParamTranscoder")
     private PathParamTranscoder __pathParamTranscoder;
 
     @org.springframework.beans.factory.annotation.Autowired
-    @org.springframework.beans.factory.annotation.Qualifier("commonQueryParamTranscoder")
+    @org.springframework.beans.factory.annotation.Qualifier("routingQueryParamTranscoder")
     private QueryParamTranscoder __queryParamTranscoder;
 
     @org.springframework.beans.factory.annotation.Autowired
-    @org.springframework.beans.factory.annotation.Qualifier("commonExceptionHandler")
+    @org.springframework.beans.factory.annotation.Qualifier("routingExceptionHandler")
     private ExceptionHandler __exceptionHandler;
 
     @org.springframework.beans.factory.annotation.Autowired
-    @org.springframework.beans.factory.annotation.Qualifier("commonHeadersProvider")
+    @org.springframework.beans.factory.annotation.Qualifier("routingHeadersProvider")
     private HeadersProvider __headersProvider;
 
     public ${className}() { }
