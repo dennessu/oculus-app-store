@@ -254,7 +254,7 @@ Note: If you don't want to change the coreutils preference, you can create anoth
 `aws-artifactory` is a shared artifactory server used by the development team. The code always uses the name `aws-artifactory` to access it. Run the following command to map IP address to the name.
 
 ```bash
-sudo echo 54.254.249.206 aws-artifactory >> /etc/hosts
+sudo bash -c 'echo 54.254.249.206 aws-artifactory >> /etc/hosts'
 ```
 
 #### Install IntelliJ IDEA (Optional)

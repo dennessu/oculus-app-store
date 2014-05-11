@@ -16,11 +16,11 @@ public class ${className} {
     @org.springframework.beans.factory.annotation.Qualifier("default${adapteeName}")
     private ${adapteeType} __adaptee;
 
-    @org.springframework.beans.factory.annotation.Autowired
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
     @org.springframework.beans.factory.annotation.Qualifier("default${adapteeName}ClientFactory")
     private ClientProxyFactory<${adapteeType}> __clientFactory;
 
-    @org.springframework.beans.factory.annotation.Autowired
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
     @org.springframework.beans.factory.annotation.Qualifier("default${adapteeName}Router")
     private Router __router;
 
