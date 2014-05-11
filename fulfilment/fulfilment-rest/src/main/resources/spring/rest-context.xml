@@ -4,6 +4,8 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
+    <import resource="classpath*:spring/common-lib-context.xml"/>
+
     <context:component-scan base-package="com.junbo.fulfilment.rest.resource"/>
     <context:component-scan base-package="com.junbo.fulfilment.spec.resource.adapter"/>
 
@@ -11,4 +13,7 @@
     <bean id="defaultFulfilmentResource" scope="prototype"
           class="com.junbo.fulfilment.rest.resource.FulfilmentResourceImpl"/>
 
+    <bean id="defaultFulfilmentResourceClientFactory" class="com.junbo.fulfilment.spec.resource.proxy.FulfilmentResourceClientProxyFactory"/>
+
+    <alias alias="defaultFulfilmentResourceRouter" name="commonRouter" />
 </beans>

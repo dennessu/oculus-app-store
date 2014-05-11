@@ -5,6 +5,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
+    <import resource="classpath*:spring/common-lib-context.xml"/>
+
     <context:component-scan base-package="com.junbo.identity.spec.v1.resource.adapter" />
     <context:component-scan base-package="com.junbo.identity.core.service" />
 
@@ -48,4 +50,58 @@
         <property name="roleAssignmentRepository" ref="roleAssignmentRepository"/>
         <property name="roleAssignmentValidator" ref="roleAssignmentValidator"/>
     </bean>
+
+    <bean id="defaultAuthenticatorResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.AuthenticatorResourceClientProxyFactory"/>
+    <bean id="defaultUserCommunicationResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserCommunicationResourceClientProxyFactory"/>
+    <bean id="defaultUserCredentialResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserCredentialResourceClientProxyFactory"/>
+    <bean id="defaultUserCredentialVerifyAttemptResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserCredentialVerifyAttemptResourceClientProxyFactory"/>
+    <bean id="defaultGroupResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.GroupResourceClientProxyFactory"/>
+    <bean id="defaultUserResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxyFactory"/>
+    <bean id="defaultUserPersonalInfoResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxyFactory"/>
+    <bean id="defaultSecurityQuestionResourceClientFactory" class="com.junbo.identity.spec.resource.proxy.SecurityQuestionResourceClientProxyFactory"/>
+    <bean id="defaultDeviceResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.DeviceResourceClientProxyFactory"/>
+    <bean id="defaultTosResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.TosResourceClientProxyFactory"/>
+    <bean id="defaultUserGroupMembershipResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserGroupMembershipResourceClientProxyFactory"/>
+    <bean id="defaultUserSecurityQuestionResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserSecurityQuestionResourceClientProxyFactory"/>
+    <bean id="defaultUserSecurityQuestionVerifyAttemptResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserSecurityQuestionVerifyAttemptResourceClientProxyFactory"/>
+    <bean id="defaultUserTosAgreementResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserTosAgreementResourceClientProxyFactory"/>
+    <bean id="defaultCountryResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.CountryResourceClientProxyFactory"/>
+    <bean id="defaultCurrencyResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.CurrencyResourceClientProxyFactory"/>
+    <bean id="defaultLocaleResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.LocaleResourceClientProxyFactory"/>
+    <bean id="defaultPITypeResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.PITypeResourceClientProxyFactory"/>
+    <bean id="defaultDeviceTypeResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.DeviceTypeResourceClientProxyFactory"/>
+    <bean id="defaultCommunicationResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.CommunicationResourceClientProxyFactory"/>
+    <bean id="defaultUserTeleResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserTeleResourceClientProxyFactory"/>
+    <bean id="defaultUserTeleAttemptResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserTeleAttemptResourceClientProxyFactory"/>
+    <bean id="defaultUserTeleBackupCodeResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserTeleBackupCodeResourceClientProxyFactory"/>
+    <bean id="defaultUserTeleBackupCodeAttemptResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserTeleBackupCodeAttemptResourceClientProxyFactory"/>
+    <bean id="defaultRoleResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.RoleResourceClientProxyFactory"/>
+    <bean id="defaultRoleAssignmentResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.RoleAssignmentResourceClientProxyFactory"/>
+
+    <alias alias="defaultAuthenticatorResourceRouter" name="commonRouter" />
+    <alias alias="defaultUserCommunicationResourceRouter" name="commonRouter" />
+    <alias alias="defaultUserCredentialResourceRouter" name="commonRouter" />
+    <alias alias="defaultUserCredentialVerifyAttemptResourceRouter" name="commonRouter" />
+    <alias alias="defaultGroupResourceRouter" name="commonRouter" />
+    <alias alias="defaultUserResourceRouter" name="commonRouter" />
+    <alias alias="defaultUserPersonalInfoResourceRouter" name="commonRouter" />
+    <alias alias="defaultSecurityQuestionResourceRouter" name="commonRouter" />
+    <alias alias="defaultDeviceResourceRouter" name="commonRouter" />
+    <alias alias="defaultTosResourceRouter" name="commonRouter" />
+    <alias alias="defaultUserGroupMembershipResourceRouter" name="commonRouter" />
+    <alias alias="defaultUserSecurityQuestionResourceRouter" name="commonRouter" />
+    <alias alias="defaultUserSecurityQuestionVerifyAttemptResourceRouter" name="commonRouter" />
+    <alias alias="defaultUserTosAgreementResourceRouter" name="commonRouter" />
+    <alias alias="defaultCountryResourceRouter" name="commonRouter" />
+    <alias alias="defaultCurrencyResourceRouter" name="commonRouter" />
+    <alias alias="defaultLocaleResourceRouter" name="commonRouter" />
+    <alias alias="defaultPITypeResourceRouter" name="commonRouter" />
+    <alias alias="defaultDeviceTypeResourceRouter" name="commonRouter" />
+    <alias alias="defaultCommunicationResourceRouter" name="commonRouter" />
+    <alias alias="defaultUserTeleResourceRouter" name="commonRouter" />
+    <alias alias="defaultUserTeleAttemptResourceRouter" name="commonRouter" />
+    <alias alias="defaultUserTeleBackupCodeResourceRouter" name="commonRouter" />
+    <alias alias="defaultUserTeleBackupCodeAttemptResourceRouter" name="commonRouter" />
+    <alias alias="defaultRoleResourceRouter" name="commonRouter" />
+    <alias alias="defaultRoleAssignmentResourceRouter" name="commonRouter" />
 </beans>

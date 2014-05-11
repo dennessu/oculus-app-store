@@ -5,18 +5,15 @@
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="commonAsyncHttpClient" class="com.ning.http.client.AsyncHttpClient" />
-
     <bean id="commonPathParamTranscoder" class="com.junbo.common.json.IdPathParamTranscoder"/>
-
     <bean id="commonQueryParamTranscoder" class="com.junbo.common.json.QueryParamTranscoderImpl"/>
-
     <bean id="commonTranscoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
-
     <bean id="commonIgnoreUnknownTranscoder" class="com.junbo.common.json.JsonMessageIgnoreUnknownTranscoder"/>
-
     <bean id="commonExceptionHandler" class="com.junbo.common.error.CommonExceptionHandler">
         <property name="messageTranscoder" ref="commonTranscoder"/>
     </bean>
+    <bean id="commonHeadersProvider" class="com.junbo.common.routing.HeadersProviderImpl" />
+    <bean id="commonRouter" class="com.junbo.common.routing.RouterImpl" />
 
     <bean id="oculus40IdShuffle" class="com.junbo.common.shuffle.Oculus40Id" />
     <bean id="oculus48IdShuffle" class="com.junbo.common.shuffle.Oculus48Id" />

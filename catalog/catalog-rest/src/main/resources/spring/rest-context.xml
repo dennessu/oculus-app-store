@@ -4,6 +4,8 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
+    <import resource="classpath*:spring/common-lib-context.xml"/>
+
     <!--context:component-scan base-package="com.junbo.catalog.rest.resource"/-->
     <context:component-scan base-package="com.junbo.catalog.spec.resource.adapter"/>
 
@@ -18,6 +20,28 @@
     <bean id="defaultOfferAttributeResource" class="com.junbo.catalog.rest.resource.OfferAttributeResourceImpl" scope="prototype"/>
     <bean id="defaultEntitlementDefinitionResource" class="com.junbo.catalog.rest.resource.EntitlementDefinitionResourceImpl" scope="prototype"/>
     <bean id="defaultPriceTierResource" class="com.junbo.catalog.rest.resource.PriceTierResourceImpl" scope="prototype"/>
+
+    <bean id="defaultItemResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxyFactory"/>
+    <bean id="defaultItemRevisionResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxyFactory"/>
+    <bean id="defaultOfferResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxyFactory"/>
+    <bean id="defaultOfferRevisionResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxyFactory"/>
+    <bean id="defaultPromotionResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.PromotionResourceClientProxyFactory"/>
+    <bean id="defaultPromotionRevisionResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.PromotionRevisionResourceClientProxyFactory"/>
+    <bean id="defaultItemAttributeResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.ItemAttributeResourceClientProxyFactory"/>
+    <bean id="defaultOfferAttributeResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.OfferAttributeResourceClientProxyFactory"/>
+    <bean id="defaultEntitlementDefinitionResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.EntitlementDefinitionResourceClientProxyFactory"/>
+    <bean id="defaultPriceTierResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.PriceTierResourceClientProxyFactory"/>
+
+    <alias alias="defaultItemResourceRouter" name="commonRouter" />
+    <alias alias="defaultItemRevisionResourceRouter" name="commonRouter" />
+    <alias alias="defaultOfferResourceRouter" name="commonRouter" />
+    <alias alias="defaultOfferRevisionResourceRouter" name="commonRouter" />
+    <alias alias="defaultPromotionResourceRouter" name="commonRouter" />
+    <alias alias="defaultPromotionRevisionResourceRouter" name="commonRouter" />
+    <alias alias="defaultItemAttributeResourceRouter" name="commonRouter" />
+    <alias alias="defaultOfferAttributeResourceRouter" name="commonRouter" />
+    <alias alias="defaultEntitlementDefinitionResourceRouter" name="commonRouter" />
+    <alias alias="defaultPriceTierResourceRouter" name="commonRouter" />
 
     <bean id="itemAuthorizeCallbackFactory" class="com.junbo.catalog.rest.auth.ItemAuthorizeCallbackFactory">
         <property name="groupResource" ref="groupResource"/>

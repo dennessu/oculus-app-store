@@ -13,27 +13,29 @@ public class ${className} implements ClientProxyFactory<${resourceName}> {
 
     @org.springframework.beans.factory.annotation.Autowired
     @org.springframework.beans.factory.annotation.Qualifier("commonAsyncHttpClient")
-    private final AsyncHttpClient __client;
+    private AsyncHttpClient __client;
 
     @org.springframework.beans.factory.annotation.Autowired
     @org.springframework.beans.factory.annotation.Qualifier("commonTranscoder")
-    private final MessageTranscoder __transcoder;
+    private MessageTranscoder __transcoder;
 
     @org.springframework.beans.factory.annotation.Autowired
     @org.springframework.beans.factory.annotation.Qualifier("commonPathParamTranscoder")
-    private final PathParamTranscoder __pathParamTranscoder;
+    private PathParamTranscoder __pathParamTranscoder;
 
     @org.springframework.beans.factory.annotation.Autowired
     @org.springframework.beans.factory.annotation.Qualifier("commonQueryParamTranscoder")
-    private final QueryParamTranscoder __queryParamTranscoder;
+    private QueryParamTranscoder __queryParamTranscoder;
 
     @org.springframework.beans.factory.annotation.Autowired
     @org.springframework.beans.factory.annotation.Qualifier("commonExceptionHandler")
-    private final ExceptionHandler __exceptionHandler;
+    private ExceptionHandler __exceptionHandler;
 
     @org.springframework.beans.factory.annotation.Autowired
     @org.springframework.beans.factory.annotation.Qualifier("commonHeadersProvider")
-    private final HeadersProvider __headersProvider;
+    private HeadersProvider __headersProvider;
+
+    public ${className}() { }
 
     public ${className}(AsyncHttpClient client, MessageTranscoder transcoder, PathParamTranscoder pathParamTranscoder,
             QueryParamTranscoder queryParamTranscoder, ExceptionHandler exceptionHandler,

@@ -4,6 +4,8 @@
        xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
+    <import resource="classpath*:spring/common-lib-context.xml"/>
+
     <context:component-scan base-package="com.junbo.email.spec.resource.adapter" />
 
     <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
@@ -11,4 +13,10 @@
     <!-- resource implementation -->
     <bean id="defaultEmailResource" class="com.junbo.email.rest.resource.EmailResourceImpl" />
     <bean id="defaultEmailTemplateResource" class="com.junbo.email.rest.resource.EmailTemplateResourceImpl"/>
+
+    <bean id="defaultEmailResourceClientFactory" class="com.junbo.email.spec.resource.proxy.EmailResourceClientProxyFactory"/>
+    <bean id="defaultEmailTemplateResourceClientFactory" class="com.junbo.email.spec.resource.proxy.EmailTemplateResourceClientProxyFactory"/>
+
+    <alias alias="defaultEmailResourceRouter" name="commonRouter" />
+    <alias alias="defaultEmailTemplateResourceRouter" name="commonRouter" />
 </beans>

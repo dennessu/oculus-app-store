@@ -4,8 +4,13 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
+    <import resource="classpath*:spring/common-lib-context.xml"/>
+
     <context:component-scan base-package="com.junbo.subscription.spec.resource.adapter"/>
 
     <bean id="defaultSubscriptionResource" class="com.junbo.subscription.rest.resource.SubscriptionResourceImpl" scope="prototype"/>
 
+    <bean id="defaultSubscriptionResourceClientFactory" class="com.junbo.subscription.spec.resource.proxy.SubscriptionResourceClientProxyFactory"/>
+
+    <alias alias="defaultSubscriptionResourceRouter" name="commonRouter" />
 </beans>
