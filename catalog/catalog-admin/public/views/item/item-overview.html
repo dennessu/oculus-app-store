@@ -1,39 +1,164 @@
-<h3>Item {{ item.self.id }} </h3>
-<!--div class="page-header">
-    <h2>Item  <small>{{ item.self.id }}</small></h2>
-</div-->
-
 <div>
-<h4>General</h4>
+    <a href="#/items/{{item.self.id}}/revisions/creation" class="btn btn-small btn-default">New Item Revision</a>
+    <a href="#/items/{{item.self.id}}/offers/creation" class="btn btn-small btn-default">New Offer</a>
 </div>
-<div class="form-horizontal">
-    <div class="form-group">
-        <label class="col-sm-2 control-label">Item Id</label>
-        <div class="col-sm-10">
-            <p class="form-control-static">{{ item.self.id }}</p>
+<hr>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">General</h3>
+    </div>
+    <div class="panel-body form-horizontal">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Item Id</label>
+            <div class="col-sm-9">
+                <p class="form-control-static">{{ item.self.id }}</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Type</label>
+            <div class="col-sm-9">
+                <p class="form-control-static">{{ item.type }}</p>
+            </div>
+        </div>
+        <div ng-if="currentRevision">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Revision Id</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static">{{ currentRevision.self.id }}</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Genre</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static">
+                        <span ng-repeat="genre in currentRevision.genres">
+                            <a href="#/attributes/{{category.id}}" >{{ genre.id }}</a>
+                        </span>
+                    </p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Rollup Package Name</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static">{{ currentRevision.rollupPackageName }}</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Package Name</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static">{{ currentRevision.packageName }}</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Sku</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static">{{ currentRevision.sku }}</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Platforms</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static">
+                    <span ng-repeat="platform in currentRevision.platforms">
+                        {{ platform }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Created Time</label>
+            <div class="col-sm-9">
+                <p class="form-control-static">{{ item.createdTime }}</p>
+            </div>
         </div>
     </div>
-    <div class="form-group">
-        <label class="col-sm-2 control-label">Type</label>
-        <div class="col-sm-10">
-            <p class="form-control-static">{{ item.type }}</p>
+</div>
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Locale Properties</h3>
+    </div>
+    <div class="panel-body form-horizontal">
+        <div ng-repeat="(locale, properties) in currentRevision.locales">
+            <div class="form-group">
+                <span class="col-sm-3 control-label">{{ locale }}</span>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Name</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static">
+                        {{ properties.name }}
+                    </p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Revision Notes</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static">
+                        {{ properties.revisionNotes }}
+                    </p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Long Description</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static">
+                        {{ properties.longDescription }}
+                    </p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Short Description</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static">
+                        {{ properties.shortDescription }}
+                    </p>
+                </div>
+            </div>
+            <hr>
         </div>
     </div>
 </div>
 
-<br/>
-<h4>Published Offers For the Item</h4>
-<table class="table table-bordered vertical-table">
-    <tr><th>Revision Id</th><th>Current Revision</th><th>Created Time</th><th>Updated Time</th></tr>
-    <tbody>
-        <tr ng-repeat="offer in offers">
-            <td><a href="#/offers/{{ offer.self.id }}">{{ offer.self.id }}</a></td>
-            <td><a href="#/offer-revisions/{{ offer.currentRevision.id }}">{{ offer.currentRevision.id }}</a></td>
-            <td>{{ offer.createdTime }}</a></td>
-            <td>{{ offer.updatedTime }}</a></td>
-        </tr>
-    </tbody>
-</table>
-<div>
-    <a ng-click="newOffer(item)" class="btn btn-small btn-default">New Offer</a>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">All Revisions</h3>
+    </div>
+    <div class="panel-body form-horizontal">
+        <span ng-if="itemRevisions.length == 0">No Revisions</span>
+        <table class="table" ng-if="itemRevisions.length > 0">
+            <tr><th>Revision Id</th><th>Status</th><th>Created Time</th><th>Updated Time</th></tr>
+            <tr ng-repeat="revision in itemRevisions">
+                <td>
+                    <a href="#/items/{{ item.self.id }}/revisions/{{ revision.self.id }}">{{revision.self.id}}</a>
+                </td>
+                <td>{{revision.status}}</td>
+                <td>{{revision.createdTime}}</td>
+                <td>{{revision.updatedTime}}</td>
+            </tr>
+        </table>
+    </div>
 </div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Published Offers</h3>
+    </div>
+    <div class="panel-body form-horizontal">
+        <span ng-if="offers.length == 0">No Published Offers For the Item</span>
+        <table class="table"  ng-if="offers.length > 0">
+            <tr><th>Offer Id</th><th>Current Revision</th><th>Created Time</th><th>Updated Time</th></tr>
+            <tr ng-repeat="offer in offers">
+                <td><a href="#/offers/{{ offer.self.id }}">{{ offer.self.id }}</a></td>
+                <td>
+                    <a href="#/offers/{{ offer.self.id }}/revisions/{{ offer.currentRevision.id }}">{{ offer.currentRevision.id }}</a>
+                </td>
+                <td>{{ offer.createdTime }}</a></td>
+                <td>{{ offer.updatedTime }}</a></td>
+            </tr>
+        </table>
+    </div>
+</div>
+
