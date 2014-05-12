@@ -28,13 +28,15 @@ public class OfferItem extends CartItem {
     @Min(value = 0, groups = {Group.CartItem.class})
     private Long quantity;
 
-    @ApiModelProperty(required = true, position = 3, value = "Whether the item is selected for checkout.")
+    @ApiModelProperty(required = true, position = 3, value = "Whether the item is selected for checkout. " +
+            "It indicates whether the user wants to purchase the offer or not.")
     @NotNull(groups = {Group.CartItem.class})
-    private Boolean selected;
+    private Boolean isSelected;
 
-    @ApiModelProperty(required = true, position = 3, value = "Whether the item is approved or not for checkout.")
-    @NotNull(groups = {Group.CartItem.class})
-    private Boolean approved;
+    @ApiModelProperty(position = 3, value = "Whether the item is approved or not for checkout. " +
+            "It indicates whether the user's parent approved the purchase of offer in the cart " +
+            "if the user is under parenting control.")
+    private Boolean isApproved;
 
     public OfferId getOffer() {
         return offer;
@@ -52,19 +54,19 @@ public class OfferItem extends CartItem {
         this.quantity = quantity;
     }
 
-    public Boolean getSelected() {
-        return selected;
+    public Boolean getIsSelected() {
+        return isSelected;
     }
 
-    public void setSelected(Boolean selected) {
-        this.selected = selected;
+    public void setIsSelected(Boolean isSelected) {
+        this.isSelected = isSelected;
     }
 
-    public Boolean getApproved() {
-        return approved;
+    public Boolean getIsApproved() {
+        return isApproved;
     }
 
-    public void setApproved(Boolean approved) {
-        this.approved = approved;
+    public void setIsApproved(Boolean isApproved) {
+        this.isApproved = isApproved;
     }
 }

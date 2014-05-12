@@ -27,12 +27,12 @@ class OfferValidator {
     }
 
     OfferValidator selected (Boolean selected) {
-        assert selected == result.selected
+        assert selected == result.isSelected
         return this
     }
 
     OfferValidator approved (Boolean approved) {
-        assert approved == result.approved
+        assert approved == result.isSelected
         return this
     }
 }

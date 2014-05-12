@@ -57,7 +57,7 @@ class CartTest extends TestBase {
         OfferValidator.fromResult(offer(cartUserA, offerB)).quantity(offerB.quantity * 2).selected(true)
 
         // unselect oB by update
-        offer(cartUserA, offerB).selected = false
+        offer(cartUserA, offerB).isSelected = false
         cartUserA = cartClient.updateCart(userA.id, cartUserA.id, cartUserA)
         CartValidator.fromResult(cartUserA).resourceAge(4)
         OfferValidator.fromResult(offer(cartUserA, offerB)).selected(false)

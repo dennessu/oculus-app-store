@@ -41,7 +41,7 @@ create table cart_offer_item (
   offer_id bigint not null,
   quantity bigint not null,
   selected boolean not null,
-  approved boolean not null,
+  approved boolean default null,
   primary key (cart_item_id)
 );
 ]]>
