@@ -11,6 +11,7 @@ import com.junbo.billing.db.dao.TransactionEntityDao;
 import com.junbo.billing.db.entity.TransactionEntity;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.List;
@@ -48,8 +49,9 @@ public class TransactionEntityDaoImpl extends BaseDao implements TransactionEnti
     @Override
     public List<TransactionEntity> findByBalanceId(Long balanceId) {
 
-        Criteria criteria = currentSession(balanceId).createCriteria(TransactionEntity.class).
-                add(Restrictions.eq("balanceId", balanceId));
+        Criteria criteria = currentSession(balanceId).createCriteria(TransactionEntity.class)
+                .add(Restrictions.eq("balanceId", balanceId))
+                .addOrder(Order.asc("createdTime"));
         return criteria.list();
     }
 }

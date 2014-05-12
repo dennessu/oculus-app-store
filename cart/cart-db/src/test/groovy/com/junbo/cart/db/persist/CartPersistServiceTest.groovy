@@ -28,8 +28,8 @@ class CartPersistServiceTest extends DaoTestBase {
         cart.offers = [new OfferItem(
                 offer: new OfferId(idGenerator.nextId(OfferId)),
                 quantity: 1,
-                selected: true,
-                approved: true
+                isSelected: true,
+                isApproved: true
         )]
 
         service.saveNewCart(cart)

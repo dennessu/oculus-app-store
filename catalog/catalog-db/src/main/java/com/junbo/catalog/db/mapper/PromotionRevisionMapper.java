@@ -47,9 +47,7 @@ public class PromotionRevisionMapper {
         model.setStatus(entity.getStatus());
         model.setStartDate(entity.getStartDate());
         model.setEndDate(entity.getEndDate());
-        model.setCreatedBy(entity.getCreatedBy());
         model.setCreatedTime(entity.getCreatedTime());
-        model.setUpdatedBy(entity.getUpdatedBy());
         model.setUpdatedTime(entity.getUpdatedTime());
         model.setRev(entity.getRev().toString());
         return model;

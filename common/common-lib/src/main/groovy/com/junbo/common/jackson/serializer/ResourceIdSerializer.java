@@ -11,16 +11,15 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.introspect.Annotated;
-import com.junbo.common.filter.OverrideApiHostFilter;
 import com.junbo.common.jackson.annotation.ResourcePath;
 import com.junbo.common.jackson.aware.AnnotationsAware;
 import com.junbo.common.jackson.model.ResourceRef;
 import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.common.shuffle.Oculus48Id;
+import com.junbo.common.util.Context;
 import com.junbo.common.util.Utils;
 import com.junbo.configuration.ConfigService;
 import com.junbo.configuration.ConfigServiceManager;
-import org.slf4j.MDC;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -89,7 +88,7 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Anno
 
     protected String getResourceHref(Object value) {
         String urlPrefix = resourceUrlPrefix;
-        String apiHost = MDC.get(OverrideApiHostFilter.X_OVERRIDE_API_HOST);
+        String apiHost = Context.get().getOverrideApiHost();
 
         if (StringUtils.hasText(apiHost)) {
             urlPrefix = apiHost;

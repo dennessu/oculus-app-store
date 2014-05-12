@@ -5,8 +5,6 @@
  */
 package com.junbo.sharding.util;
 
-import com.junbo.common.util.Context;
-
 /**
  * Created by haomin on 14-3-14.
  */
@@ -47,29 +45,10 @@ public class Helper {
             return shardId;
         }
         else if(cls == String.class) {
-            String strKey = (String) obj;
-
-            Long h = 0L;
-            for (int i = 0; i < strKey.length(); i++) {
-                h = 31 * h + ((int) strKey.charAt(i));
-            }
-
-            return calcShardId(h, Long.class);
+            throw new RuntimeException("Invalid id class: " + cls);
         }
         else {
             throw new RuntimeException("current shardId only support Long and String");
         }
-    }
-
-    public static void setCurrentShardId(int shardId) {
-        Context.get().setShardId(shardId);
-    }
-
-    public static int fetchCurrentThreadLocalShardId() {
-        if (Context.get().getShardId() == null) {
-            throw new RuntimeException("current shardId hasn't been set.");
-        }
-
-        return Context.get().getShardId().intValue();
     }
 }

@@ -8,7 +8,7 @@ package com.junbo.common.id;
 /**
  * Created by liangfu on 4/24/14.
  */
-@IdResourcePath("/personalInfo/{0}")
+@IdResourcePath("/personal-info/{0}")
 public class UserPersonalInfoId extends Id {
     public UserPersonalInfoId() {}
     public UserPersonalInfoId(long value) {

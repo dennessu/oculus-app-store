@@ -257,12 +257,6 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         if (offer.getOwnerId()==null) {
             errors.add(AppErrors.INSTANCE.missingField("publisher"));
         }
-        if (offer.getIapHostItemId() != null) {
-            Item item = itemRepo.get(offer.getIapHostItemId());
-            if (item == null) {
-                errors.add(AppErrors.INSTANCE.fieldNotCorrect("iapHostItem", "Item not found"));
-            }
-        }
         if (!CollectionUtils.isEmpty(offer.getCategories())) {
             for (Long categoryId : offer.getCategories()) {
                 if (categoryId == null) {

@@ -26,6 +26,7 @@ test{
 dependencies {
     compile junboProject(':catalog-spec')
     compile junboProject(':common-testlib')
+    compile junboProject(':catalog-integration')
     
     testCompile(libraries.asyncclient)    
     testCompile(libraries.junit)

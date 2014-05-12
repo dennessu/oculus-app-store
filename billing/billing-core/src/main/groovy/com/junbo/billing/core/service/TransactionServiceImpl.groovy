@@ -166,18 +166,28 @@ class TransactionServiceImpl implements TransactionService {
             LOGGER.info('name=Check_Balance_Get_Payment. payment id: {}, amount: {}, status: {}',
                     checkPt.id, checkPt.chargeInfo.amount, checkPt.status)
 
-            balance.setStatus(getBalanceStatusByPaymentStatus(checkPt.status).name())
-            if (checkPt.status != PaymentStatus.UNCONFIRMED) {
-                newTransaction.setStatus(getTransactionStatusByPaymentStatus(checkPt.status).name())
-                balance.addTransaction(newTransaction)
-                return Promise.pure(balance)
+            if (checkPt.id != null) {
+                newTransaction.setPaymentRefId(checkPt.id.toString())
             }
 
-            if (isTimeLimitReached(balance.transactions[0].transactionTime)) {
-                LOGGER.info('name=Confirm_Balance_Timeout. ')
-                newTransaction.setStatus(TransactionStatus.TIMEOUT.name())
-                balance.addTransaction(newTransaction)
-                balance.setStatus(BalanceStatus.FAILED.name())
+            String newStatus = getBalanceStatusByPaymentStatus(checkPt.status).name()
+            if (balance.status != newStatus) {
+                balance.setStatus(newStatus)
+                if (checkPt.status != PaymentStatus.UNCONFIRMED) {
+                    newTransaction.setStatus(getTransactionStatusByPaymentStatus(checkPt.status).name())
+                    balance.addTransaction(newTransaction)
+                    return Promise.pure(balance)
+                }
+
+                if (isTimeLimitReached(balance.transactions[0].transactionTime)) {
+                    LOGGER.info('name=Confirm_Balance_Timeout. ')
+                    newTransaction.setStatus(TransactionStatus.TIMEOUT.name())
+                    balance.addTransaction(newTransaction)
+                    balance.setStatus(BalanceStatus.FAILED.name())
+                    return Promise.pure(balance)
+                }
+            } else {
+                LOGGER.info('name=Check_Balance_Get_Payment. There is no new status update.')
                 return Promise.pure(balance)
             }
         }

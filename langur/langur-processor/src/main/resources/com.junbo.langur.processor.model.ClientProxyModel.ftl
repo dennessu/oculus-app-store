@@ -20,26 +20,20 @@ import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture;
 public class ${className} implements ${interfaceType} {
 
     private final AsyncHttpClient __client;
-
     private final String __target;
-
-    private final MultivaluedMap<String, Object> __headers;
-
+    private final MultivaluedMap<String, String> __headers;
     private final MessageTranscoder __transcoder;
-
     private final PathParamTranscoder __pathParamTranscoder;
-
     private final QueryParamTranscoder __queryParamTranscoder;
-
     private final ExceptionHandler __exceptionHandler;
 
     public ${className}(AsyncHttpClient client, MessageTranscoder transcoder, PathParamTranscoder pathParamTranscoder,
                                 QueryParamTranscoder queryParamTranscoder, ExceptionHandler exceptionHandler, String target) {
-        this(client, transcoder, pathParamTranscoder, queryParamTranscoder, exceptionHandler, target, new javax.ws.rs.core.MultivaluedHashMap<String, Object>());
+        this(client, transcoder, pathParamTranscoder, queryParamTranscoder, exceptionHandler, target, new javax.ws.rs.core.MultivaluedHashMap<String, String>());
     }
 
     public ${className}(AsyncHttpClient client, MessageTranscoder transcoder, PathParamTranscoder pathParamTranscoder,
-                            QueryParamTranscoder queryParamTranscoder, ExceptionHandler exceptionHandler, String target, MultivaluedMap<String, Object> headers) {
+                            QueryParamTranscoder queryParamTranscoder, ExceptionHandler exceptionHandler, String target, MultivaluedMap<String, String> headers) {
         assert client != null : "client is null";
         assert transcoder != null : "transcoder is null";
         assert pathParamTranscoder != null : "pathParamTranscoder is null";

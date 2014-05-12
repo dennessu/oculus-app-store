@@ -57,7 +57,7 @@ class CartMapperTest extends DaoTestBase {
         def model = cartMapper.toOfferItemModel(entity, context)
 
         assert model.id.value == entity.cartItemId
-        assert model.selected == entity.selected
+        assert model.isSelected == entity.isSelected
         assert model.quantity == entity.quantity
         assert model.offer.value == entity.offerId
     }

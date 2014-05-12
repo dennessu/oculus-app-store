@@ -1,52 +1,63 @@
-<h2>Offer creation</h2>
+<div ng-if="offer.self==undefined">
+    <p style="color:red">Cannot Find Offer {{ offerId }}!</p>
+</div>
+
+<div ng-hide="offer.self==undefined">
+<h2>Offer Revision creation</h2>
 <form novalidate="novalidate" class="form-horizontal" name="offerCreationForm">
-    <table class="table table-bordered vertical-table">
-        <tr>
-            <td style="width: 200px;">Offer Id</td>
-            <td>{{ revision.offer.id }}</td>
-        </tr>
-        <tr>
-            <td>Price type</td>
-            <td>
-                <select ng-model="revision.priceType" ng-init="revision.priceType='FREE'" ng-change="updatePriceType(revision.priceType)">
-                    <option>FREE</option>
-                    <option>TIERED</option>
-                    <option>CUSTOM</option>
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>Prices *</td>
-            <td>
-                <div>
-                    <div ng-show="revision.priceType=='FREE'">
-                        Free
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Price</h3>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Price Type</label>
+                <div class="col-sm-9">
+                    <label class="checkbox-inline">
+                    <select ng-model="revision.price.priceType" ng-init="revision.price.priceType='FREE'" ng-change="updatePriceType(revision.price.priceType)">
+                        <option>FREE</option>
+                        <option>TIERED</option>
+                        <option>CUSTOM</option>
+                    </select>
+                    </label>
+                </div>
+            </div>
+            <hr>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Prices</label>
+                <div class="col-sm-9">
+                    <div ng-show="revision.price.priceType=='FREE'">
+                        <label class="checkbox-inline">Free</label>
                     </div>
-                    <div ng-show="revision.priceType=='CUSTOM'">
-                        Add price:
-                        <select ng-model="selectedCountry" ng-change="addPrice(selectedCountry)" ng-options="country.code for country in countries">
-                        </select>
-                        <table class="table table-bordered vertical-table">
-                            <tr><td>Country</td><td>Currency</td><td>Amount</td><td></td></tr>
-                            <tr ng-repeat="(countryCode, price) in revision.prices">
-                                <td>{{ countryCode }}</td>
-                                <td>{{ price.currency }}</td>
-                                <td><input type="text" class="form-control required" ng-model="price.amount" required /></td>
+
+                    <div ng-show="revision.price.priceType=='CUSTOM'">
+                        <label class="checkbox-inline">
+                            Add price:
+                            <select ng-model="selectedCountry" ng-change="addPrice(selectedCountry)" ng-options="country.code for country in countries">
+                            </select>
+                        </label>
+                        </br>
+                        </br>
+                        <table class="table">
+                            <tr ng-repeat="(currency, price) in revision.prices">
+                                <td>{{ currency }}</td>
+                                <td><input type="text" class="form-control required" ng-model="price" placeholder="Amount" required /></td>
                                 <td class="select" ng-click="removePrice(countryCode)">x</td>
                             </tr>
                         </table>
                     </div>
-                    <div ng-show="revision.priceType=='TIERED'">
-                        Select a price tier
-                        <select ng-model="selectedTierIndex" ng-change="updatePriceTier()">
-                            <option ng-repeat="priceTier in priceTiers" value="{{$index}}"
-                                    ng-selected="priceTier.self.id == revision.priceTier.id">{{priceTier.name}}</option>
-                        </select>
+                    <div ng-show="revision.price.priceType=='TIERED'">
+                        <label class="checkbox-inline">
+                            Select a price tier
+                            <select ng-model="selectedTierIndex" ng-change="updatePriceTier()">
+                                <option ng-repeat="priceTier in priceTiers" value="{{$index}}"
+                                        ng-selected="priceTier.self.id == revision.price.priceTier.id">{{priceTier.name}}</option>
+                            </select>
+                        </label>
+                        <br>
                         <div ng-show="revision.priceTier">
-                            <table class="table table-bordered vertical-table">
-                                <tr><td>Country</td><td>Currency</td><td>Price</td></tr>
+                            <table class="table">
                                 <tr ng-repeat="(country, price) in selectedTier.prices">
-                                    <td>{{country}}</td>
                                     <td>{{price.currency}}</td>
                                     <td>{{price.amount}}</td>
                                 </tr>
@@ -54,67 +65,93 @@
                         </div>
                     </div>
                 </div>
-            </td>
-        </tr>
-        <tr>
-            <td>Limit Per Customer</td>
-            <td><input type="number" class="form-control required" ng-model="revision.restriction.limitPerCustomer"></td>
-        </tr>
-        <tr>
-            <td>Limit Per Order</td>
-            <td><input type="number" class="form-control required" ng-model="revision.restriction.limitPerOrder"></td>
-        </tr>
-        <tr>
-            <td>Available Countries</td>
-            <td>
-                <a ng-click="selectAllCountries()" class="btn btn-small btn-default">Check All</a>
-                <a ng-click="deselectAllCountries()" class="btn btn-small btn-default">Uncheck All</a>
-                <hr/>
-                <label ng-repeat="country in countries | filter: '!DEFAULT'">
-                    <input type="checkbox" checklist-model="revision.eligibleCountries" checklist-value="country.code" class="chooseItem">{{ country.name }}
-                </label>
-            </td>
-        </tr>
-    </table>
-
-    <div>
-        <b>Locale Properties</b><br>
-        Add Locale:
-        <select ng-model="selectedLocale" ng-change="addLocale(selectedLocale)" ng-options="locale for locale in locales">
-        </select>
-        <hr>
-        <table class="table table-bordered vertical-table">
-            <tr ng-repeat="(locale, properties) in revision.locales">
-                <td>{{ locale }}</td>
-                <td>
-                    <table class="table table-bordered vertical-table">
-                        <tr>
-                            <td>Name</td>
-                            <td><input type="text" class="form-control required" ng-model="properties.name" required /></td>
-                        </tr>
-                        <tr>
-                            <td>Revision Notes</td>
-                            <td><input type="text" class="form-control required" ng-model="properties.revisionNotes" /></td>
-                        </tr>
-                        <tr>
-                            <td>Long Description</td>
-                            <td><input type="text" class="form-control required" ng-model="properties.longDescription" /></td>
-                        </tr>
-                        <tr>
-                            <td>Short Description</td>
-                            <td><input type="text" class="form-control required" ng-model="properties.shortDescription" /></td>
-                        </tr>
-                    </table>
-
-                </td>
-                <td class="select" ng-click="removeLocale(locale)">x</td>
-            </tr>
-        </table>
+            </div>
+        </div>
     </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Locale Properties</h3>
+        </div>
+        <div class="panel-body">
+            Add Locale:
+            <select ng-model="selectedLocale" ng-change="addLocale(selectedLocale)" ng-options="locale for locale in locales">
+            </select>
+            <div ng-repeat="(locale, properties) in revision.locales">
+                <hr>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"></label>
+                    <div>
+                        Locale <label>{{ locale }}</label>&nbsp;&nbsp;
+                        <a class="btn btn-xs btn-default" ng-click="removeLocale(locale)">Remove</a>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Name</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" ng-model="properties.name" placeholder="Name" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Revision Notes</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" ng-model="properties.revisionNotes" placeholder="Revision Notes" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Long Description</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" ng-model="properties.longDescription" placeholder="Long Description" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Short Description</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" ng-model="properties.shortDescription" placeholder="Short Description" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Restrictions</h3>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Limit Per Customer</label>
+                <div class="col-sm-9">
+                    <input type="number" class="form-control" ng-model="revision.restriction.limitPerCustomer" placeholder="Limit Per Customer">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Limit Per Order</label>
+                <div class="col-sm-9">
+                    <input type="number" class="form-control" ng-model="revision.restriction.limitPerOrder" placeholder="Limit Per Order">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="chooseCountries" class="col-sm-3 control-label">Available Countries</label>
+                <div class="col-sm-9">
+                    <label class="checkbox-inline">
+                        <a ng-click="selectAllCountries()" class="btn btn-small btn-default">Check All</a>
+                        <a ng-click="deselectAllCountries()" class="btn btn-small btn-default">Uncheck All</a>
+                    </label>
+                    <br>
+                    <label ng-repeat="country in countries | filter: '!DEFAULT'" class="checkbox-inline">
+                        <input type="checkbox" checklist-model="revision.eligibleCountries" checklist-value="country.code" id="chooseCountries">{{ country.name }}
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <hr>
     <div class="control-group">
         <div class="controls">
-            <a ng-click="offerCreationForm.$valid && saveOffer()" class="btn btn-small btn-default">Finish</a>
+            <a ng-click="offerCreationForm.$valid && saveOfferRevision()" class="btn btn-small btn-default">Finish</a>
         </div>
     </div>
 </form>
+</div>
