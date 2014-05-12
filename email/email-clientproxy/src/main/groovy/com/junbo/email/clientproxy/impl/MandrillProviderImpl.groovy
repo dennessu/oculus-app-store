@@ -49,27 +49,21 @@ class MandrillProviderImpl implements EmailProvider {
     }
 
     Promise<Email> sendEmail(Email email, EmailTemplate template) {
-        def collateRecipients = [[]]
-        def requests = []
-        collateRecipients = email.recipients.size() > 10 ? email.recipients.collate(10) : [email.recipients]
-        for (List<String> recipients : collateRecipients) {
+        def collateRecipients = email.recipients.collate(10)
+        def requests = collateRecipients.collect { List<String> recipients ->
             email.recipients = recipients
-            def request = this.buildRequest(email, template)
-            requests.add(request)
+            return this.buildRequest(email, template)
         }
-        def mResponses =[]
-        return Promise.each(requests.iterator()) { BoundRequestBuilder requestBuilder ->
-            return  Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover { Throwable throwable ->
-                throw AppErrors.INSTANCE.emailSendError('').exception()
-            }.then { Response response ->
-                if (response == null) {
-                    LOGGER.error('Fail to get the response')
-                    throw AppErrors.INSTANCE.emailSendError('Fail to get the response').exception()
-                }
-                mResponses << parseResponse(response)
+        def promise = Promise.pure([])
+        def iterator = requests.iterator()
+        while (iterator?.hasNext()) {
+            def request = iterator.next()
+            promise = promise.then { List<MandrillResponse> tempResponse ->
+                return this.send(request, tempResponse)
             }
-        }.then {
-            return this.fillEmail(mResponses, email)
+        }
+        return promise.then { List<MandrillResponse> finalResponses ->
+            return Promise.pure(this.fillEmail(finalResponses, email))
         }
     }
 
@@ -77,10 +71,11 @@ class MandrillProviderImpl implements EmailProvider {
         def request = new MandrillRequest()
         request.key = configuration.key
         def toList = []
-        email.recipients.each {
-            def to = new To()
-            to.type = TO_TYPE
-            to.email = it
+        email.recipients.each { String recipient ->
+            def to = new To(
+                type: TO_TYPE,
+                email: recipient
+            )
             toList << to
         }
 
@@ -88,10 +83,10 @@ class MandrillProviderImpl implements EmailProvider {
         message.toList = toList
         if (email.replacements != null) {
             def properties = []
-            email.replacements.keySet().each {
+            email.replacements.keySet().each { String key ->
                 def map = [:]
-                map.put(VARS_NAME, it)
-                map.put(VARS_CONTENT, email.replacements.get(it))
+                map.put(VARS_NAME, key)
+                map.put(VARS_CONTENT, email.replacements.get(key))
                 properties << map
             }
             message.properties = properties
@@ -203,6 +198,19 @@ class MandrillProviderImpl implements EmailProvider {
             email.setStatusReason('An unexpected error occurred processing the request')
         }
         return email
+    }
+
+    private Promise<List<MandrillResponse>> send(BoundRequestBuilder requestBuilder, List<MandrillResponse> responses) {
+        return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover { Throwable throwable ->
+            throw AppErrors.INSTANCE.emailSendError('').exception()
+        }.then { Response response ->
+            if (response == null) {
+                LOGGER.error('Fail to get the response')
+                throw AppErrors.INSTANCE.emailSendError('Fail to get the response').exception()
+            }
+            responses.addAll(parseResponse(response))
+            return Promise.pure(responses)
+        }
     }
 }
 
