@@ -7,12 +7,6 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]${par
 
     AsyncHttpClient.BoundRequestBuilder __requestBuilder = __client.prepare${httpMethodName}("http://127.0.0.1"); // the url will be overwritten later
 
-    for (java.util.Map.Entry<String, java.util.List<Object>> entry : __headers.entrySet()) {
-        for (Object value : entry.getValue()) {
-            __requestBuilder.addHeader(entry.getKey(), value.toString());
-        }
-    }
-
     [#list accepts as accept]
     __requestBuilder.addHeader("Accept", "${accept}");
     [/#list]
@@ -21,9 +15,22 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]${par
     __requestBuilder.addHeader("Content-Type", "${contentType}");
     [/#if]
 
-    String __requestId = org.slf4j.MDC.get("X-Request-Id");
-    if (__requestId != null) {
-        __requestBuilder.addHeader("X-Request-Id", __requestId);
+    // pass down the x-request-id if not specified in the request.
+    if (!__headers.containsKey(com.junbo.common.util.Context.X_REQUEST_ID)) {
+        String __requestId = com.junbo.common.util.Context.get().getRequestId();
+        if (__requestId != null) {
+            __requestBuilder.addHeader(com.junbo.common.util.Context.X_REQUEST_ID, __requestId);
+        }
+    }
+
+    for (java.util.Map.Entry<String, java.util.List<String>> entry : __headers.entrySet()) {
+        // skip headers already handled by ClientProxy
+        if (entry.getKey().equals("Accept") || entry.getKey().equals("Content-Type")) {
+            continue;
+        }
+        for (String value : entry.getValue()) {
+            __requestBuilder.addHeader(entry.getKey(), value);
+        }
     }
 
     [#list parameters as parameter]

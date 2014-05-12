@@ -144,7 +144,11 @@ public abstract class MapperTestBase {
                 compilationUnits
         );
 
-        task.setProcessors(Arrays.asList(new RestAdapterProcessor(), new ClientProxyProcessor()));
+        task.setProcessors(Arrays.asList(
+                new RestAdapterProcessor(),
+                new ClientProxyProcessor(),
+                new ClientProxyFactoryProcessor()
+        ));
 
         return task.call();
     }

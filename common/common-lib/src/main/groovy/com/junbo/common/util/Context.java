@@ -5,9 +5,12 @@
  */
 package com.junbo.common.util;
 
+import com.junbo.configuration.topo.Topology;
+
+import javax.ws.rs.container.ContainerRequestContext;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 /**
  * Data utilities.
@@ -17,6 +20,10 @@ public class Context {
 
     private static final ThreadLocal<Data> context = new ThreadLocal<>();
 
+    public static final String X_OVERRIDE_API_HOST = "x-override-api-host";
+    public static final String X_REQUEST_ID = "x-request-id";
+    public static final String X_ROUTING_HOPS = "x-routing-hops";
+
     /**
      * The context of current API call.
      */
@@ -24,10 +31,10 @@ public class Context {
         private Date currentDate;
         private String currentUser;
         private String currentClient = "System";
-        private String requestUri;
-        private Map<String, String> headers = new HashMap<>();
+        private ContainerRequestContext requestContext;
         private Integer shardId;
         private Integer dataCenterId;
+        private Topology topology;
 
         public Date getCurrentDate() {
             if (currentDate == null) {
@@ -56,20 +63,12 @@ public class Context {
             this.currentClient = currentClient;
         }
 
-        public String getRequestUri() {
-            return requestUri;
+        public ContainerRequestContext getRequestContext() {
+            return requestContext;
         }
 
-        public void setRequestUri(String requestUri) {
-            this.requestUri = requestUri;
-        }
-
-        public Map<String, String> getHeaders() {
-            return headers;
-        }
-
-        public void setHeaders(Map<String, String> headers) {
-            this.headers = headers;
+        public void setRequestContext(ContainerRequestContext requestContext) {
+            this.requestContext = requestContext;
         }
 
         public Integer getShardId() {
@@ -86,6 +85,36 @@ public class Context {
 
         public void setDataCenterId(Integer dataCenterId) {
             this.dataCenterId = dataCenterId;
+        }
+
+        public Topology getTopology() {
+            return topology;
+        }
+
+        public void setTopology(Topology topology) {
+            this.topology = topology;
+        }
+
+        public String getHeader(String key) {
+            if (this.requestContext == null) {
+                return null;
+            }
+            return this.requestContext.getHeaders().getFirst(key);
+        }
+
+        public List<String> getHeaderValues(String key) {
+            if (this.requestContext == null) {
+                return new ArrayList<>();
+            }
+            return this.requestContext.getHeaders().get(key);
+        }
+
+        public String getOverrideApiHost() {
+            return getHeader(X_OVERRIDE_API_HOST);
+        }
+
+        public String getRequestId() {
+            return getHeader(X_REQUEST_ID);
         }
     }
 

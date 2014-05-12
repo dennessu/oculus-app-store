@@ -7,7 +7,7 @@
 **/target/**
 build/
 target/
-
+/build.log
 
 # OS files
 Thumbs.db

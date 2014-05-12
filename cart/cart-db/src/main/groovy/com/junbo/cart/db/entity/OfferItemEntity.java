@@ -23,9 +23,9 @@ public class OfferItemEntity extends CartItemEntity {
 
     private Long quantity;
 
-    private Boolean selected;
+    private Boolean isSelected;
 
-    private Boolean approved;
+    private Boolean isApproved;
 
     @Column(name = "OFFER_ID")
     public Long getOfferId() {
@@ -46,20 +46,20 @@ public class OfferItemEntity extends CartItemEntity {
     }
 
     @Column(name = "SELECTED")
-    public Boolean getSelected() {
-        return selected;
+    public Boolean getIsSelected() {
+        return isSelected;
     }
 
-    public void setSelected(Boolean selected) {
-        this.selected = selected;
+    public void setIsSelected(Boolean isSelected) {
+        this.isSelected = isSelected;
     }
 
     @Column(name = "APPROVED")
-    public Boolean getApproved() {
-        return approved;
+    public Boolean getIsApproved() {
+        return isApproved;
     }
 
-    public void setApproved(Boolean approved) {
-        this.approved = approved;
+    public void setIsApproved(Boolean isApproved) {
+        this.isApproved = isApproved;
     }
 }

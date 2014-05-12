@@ -13,6 +13,8 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class RestMethodModel {
 
+    String adapteeType
+
     String methodName
 
     String returnType
@@ -20,4 +22,8 @@ class RestMethodModel {
     List<RestParameterModel> parameters
 
     List<String> annotations
+
+    List<String> routeParamExprs
+
+    boolean routeFallbackToAnyLocal
 }

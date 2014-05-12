@@ -21,7 +21,7 @@ public enum PermanentCache {
     ENTITLEMENT_DEFINITION;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PermanentCache.class);
-    private Cache<Object, Object> cache = CacheBuilder.newBuilder().build();
+    private Cache<Object, Object> cache = CacheBuilder.newBuilder().maximumSize(100).build();
 
     public Object get(Object key) {
         return cache.getIfPresent(key);

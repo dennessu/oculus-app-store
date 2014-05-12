@@ -3,8 +3,8 @@ import com.sun.org.apache.regexp.internal.recompile
 apply plugin: 'groovy'
 
 dependencies {
-    compile project(':crypto-core')
-    compile project(':crypto-spec')
-    compile project(':crypto-common')
-    compile project(':crypto-data')
+    compile junboProject(':crypto-core')
+    compile junboProject(':crypto-spec')
+    compile junboProject(':crypto-common')
+    compile junboProject(':crypto-data')
 }

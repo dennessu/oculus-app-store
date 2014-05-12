@@ -17,18 +17,17 @@ import com.fasterxml.jackson.databind.ser.impl.ObjectIdWriter;
 import com.fasterxml.jackson.databind.ser.impl.UnwrappingBeanSerializer;
 import com.fasterxml.jackson.databind.ser.std.BeanSerializerBase;
 import com.fasterxml.jackson.databind.util.NameTransformer;
-import com.junbo.common.filter.OverrideApiHostFilter;
 import com.junbo.common.id.Id;
 import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.common.model.Link;
 import com.junbo.common.shuffle.Oculus40Id;
 import com.junbo.common.shuffle.Oculus48Id;
+import com.junbo.common.util.Context;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.common.util.Utils;
 import com.junbo.configuration.ConfigService;
 import com.junbo.configuration.ConfigServiceManager;
-import org.slf4j.MDC;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
@@ -197,7 +196,7 @@ public class CustomBeanSerializer extends BeanSerializerBase {
                 link = new Link();
 
                 String overrideResourceUrlPrefix = resourceUrlPrefix;
-                String apiHost = MDC.get(OverrideApiHostFilter.X_OVERRIDE_API_HOST);
+                String apiHost = Context.get().getOverrideApiHost();
 
                 if (StringUtils.hasText(apiHost)) {
                     overrideResourceUrlPrefix = apiHost;

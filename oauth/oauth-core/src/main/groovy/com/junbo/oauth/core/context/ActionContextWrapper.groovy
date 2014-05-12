@@ -44,6 +44,7 @@ class ActionContextWrapper {
     public static final String USER_CREDENTIAL = 'user_credential'
     public static final String DOB = 'dob'
     public static final String GENDER = 'gender'
+    public static final String FORGET_PASSWORD_EMAIL = 'forget_password_email'
     public static final String REMOTE_ADDRESS = 'remote_address'
     public static final String CAPTCHA_REQUIRED = 'captcha_required'
     public static final String CAPTCHA_SUCCEED = 'captcha_succeed'
@@ -270,6 +271,14 @@ class ActionContextWrapper {
 
     void setGender(Gender gender) {
         actionContext.requestScope[GENDER] = gender
+    }
+
+    String getForgetPasswordEmail() {
+        return (String) actionContext.requestScope[FORGET_PASSWORD_EMAIL]
+    }
+
+    void setForgetPasswordEmail(String email) {
+        actionContext.requestScope[FORGET_PASSWORD_EMAIL] = email
     }
 
     String getRemoteAddress() {

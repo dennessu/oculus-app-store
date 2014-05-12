@@ -21,25 +21,6 @@ app.controller('OfferListCtrl', ['$scope', 'OffersFactory', '$routeParams', '$co
       $scope.email=$cookies.email;
   }]);
 
-app.controller('OfferCreationCtrl', ['$scope', 'OffersFactory', 'MetaFactory', 'AuthFactory', '$location','$cookies', '$routeParams',
-    function($scope, OffersFactory, MetaFactory, AuthFactory, $location, $cookies, $routeParams) {
-        $scope.saveOffer = function () {
-            $scope.submitted = true;
-            OffersFactory.create($scope.offer, function(offer){
-                $location.path('/items/' + $routeParams.itemId + '/offers/' + offer.self.id + '/revisions/creation');
-            });
-        };
-
-        $scope.user_id = 0;//$cookies.user_id;
-        $scope.environments = ['DEV', 'STAGING', 'PROD'];
-        var init = function() {
-            $scope.offer = {};
-            $scope.offer.developer = {"href": "http://localhost:3000/api/users/" + $scope.user_id, "id":$scope.user_id };
-        };
-
-        init();
-    }]);
-
 app.controller('OfferEditCtrl',
     ['$scope', 'OffersFactory', 'ItemsFactory', 'MetaFactory', 'AttributesFactory', 'PriceTiersFactory', 'PriceTierFactory','$routeParams',
         function($scope, OffersFactory, ItemsFactory, MetaFactory, AttributesFactory, PriceTiersFactory, PriceTierFactory, $routeParams) {
@@ -310,10 +291,14 @@ app.controller('ItemDetailCtrl', ['$scope', 'ItemFactory', 'MetaFactory', '$rout
     }]);
 
 
-app.controller('ItemOverviewCtrl', ['$scope', 'ItemFactory', 'MetaFactory', '$routeParams', 'OfferFactory', 'ItemRevisionsFactory',
-    function($scope, ItemFactory, MetaFactory, $routeParams, OfferFactory, ItemRevisionsFactory) {
+app.controller('ItemOverviewCtrl', ['$scope', 'ItemFactory', 'MetaFactory', '$routeParams', 'OfferFactory', 'ItemRevisionFactory', 'ItemRevisionsFactory',
+    function($scope, ItemFactory, MetaFactory, $routeParams, OfferFactory, ItemRevisionFactory, ItemRevisionsFactory) {
         $scope.itemId = $routeParams.id;
-        $scope.item = ItemFactory.query($routeParams);
+        $scope.item = ItemFactory.query($routeParams, function(item) {
+            if (item.currentRevision != undefined) {
+                $scope.currentRevision = ItemRevisionFactory.query({'id': item.currentRevision.id});
+            }
+        });
         OfferFactory.query({'itemId': $scope.itemId}, function(offers) {
             $scope.offers = offers.results;
         });
@@ -322,11 +307,10 @@ app.controller('ItemOverviewCtrl', ['$scope', 'ItemFactory', 'MetaFactory', '$ro
         });
     }]);
 
-app.controller('ItemRevisionCtrl', ['$scope', 'ItemRevisionFactory', '$routeParams',
-    function($scope, ItemRevisionFactory, $routeParams) {
-        ItemRevisionFactory.query({'id': $routeParams.revisionId}, function(revision) {
-            $scope.revision = revision;
-        });
+app.controller('ItemRevisionCtrl', ['$scope', 'ItemRevisionFactory', 'ItemFactory', '$routeParams',
+    function($scope, ItemRevisionFactory, ItemFactory, $routeParams) {
+        $scope.revision = ItemRevisionFactory.query({'id': $routeParams.revisionId});
+        $scope.item = ItemFactory.query({'id': $routeParams.id});
     }]);
 
 app.controller('ItemCreationCtrl', ['$scope', 'MetaFactory', 'ItemsFactory', '$location', '$cookies',
@@ -349,8 +333,8 @@ app.controller('ItemCreationCtrl', ['$scope', 'MetaFactory', 'ItemsFactory', '$l
         init();
     }]);
 
-app.controller('ItemRevisionCreationCtrl', ['$scope', 'MetaFactory', '$routeParams', 'ItemRevisionsFactory', '$location', '$cookies',
-    function($scope, MetaFactory, $routeParams, ItemRevisionsFactory, $location, $cookies) {
+app.controller('ItemRevisionCreationCtrl', ['$scope', 'MetaFactory', '$routeParams', 'ItemFactory', 'ItemRevisionsFactory', '$location', '$cookies',
+    function($scope, MetaFactory, $routeParams, ItemFactory, ItemRevisionsFactory, $location, $cookies) {
         $scope.saveItemRevision = function () {
             ItemRevisionsFactory.create($scope.revision, function(revision){
                 $location.path('/items/' + $routeParams.itemId + '/offers/creation');
@@ -363,6 +347,12 @@ app.controller('ItemRevisionCreationCtrl', ['$scope', 'MetaFactory', '$routePara
         $scope.removeLocale = function(locale) {
             delete $scope.revision.locales[locale];
         };
+        $scope.addPlatform = function(platform) {
+            $scope.revision.binaries[platform] = {};
+        };
+        $scope.removePlatform = function(platform) {
+            delete $scope.revision.binaries[platform];
+        };
 
         $scope.platforms = MetaFactory.platforms;
         $scope.gameModes = MetaFactory.gameModes;
@@ -373,18 +363,60 @@ app.controller('ItemRevisionCreationCtrl', ['$scope', 'MetaFactory', '$routePara
             $scope.revision = {};
             $scope.revision.status = "DRAFT";
             $scope.revision.locales = {};
+            $scope.revision.binaries = {};
             $scope.revision.item = {"href": "http://xxx.xxx.xxx", "id":$routeParams.itemId };
             $scope.revision.developer = {"href": "http://xxx.xxx.xxx", "id":$scope.user_id };
+            $scope.itemId = $routeParams.itemId;
+            $scope.item = ItemFactory.query({"id":$routeParams.itemId});
         };
 
         init();
     }]);
 
-app.controller('OfferRevisionCreationCtrl', ['$scope', 'MetaFactory', '$routeParams', 'OfferRevisionsFactory', 'PriceTiersFactory', 'OfferAttributesFactory', '$location', '$cookies',
-    function($scope, MetaFactory, $routeParams, OfferRevisionsFactory, PriceTiersFactory, OfferAttributesFactory, $location, $cookies) {
+app.controller('OfferOverviewCtrl', ['$scope', 'MetaFactory', '$routeParams', 'OfferFactory', 'OfferRevisionsFactory', 'OfferRevisionFactory',
+    function($scope, MetaFactory, $routeParams, OfferFactory, OfferRevisionsFactory, OfferRevisionFactory) {
+        $scope.offerId = $routeParams.offerId;
+        $scope.offer = OfferFactory.query({'id':$routeParams.offerId}, function(offer) {
+            if (offer.currentRevision != undefined) {
+                $scope.currentRevision = OfferRevisionFactory.query({'id': offer.currentRevision.id});
+            }
+        });
+        OfferRevisionsFactory.query({'offerId': $scope.offerId}, function(revisions) {
+            $scope.offerRevisions = revisions.results;
+        });
+
+    }]);
+
+app.controller('OfferRevisionCtrl', ['$scope', 'OfferRevisionFactory', 'OfferFactory', '$routeParams',
+    function($scope, OfferRevisionFactory, OfferFactory, $routeParams) {
+        $scope.revision = OfferRevisionFactory.query({'id': $routeParams.revisionId});
+        $scope.offer = OfferFactory.query({'id':$routeParams.id});
+    }]);
+
+app.controller('OfferCreationCtrl', ['$scope', 'OffersFactory', 'MetaFactory', 'AuthFactory', '$location','$cookies', '$routeParams',
+    function($scope, OffersFactory, MetaFactory, AuthFactory, $location, $cookies, $routeParams) {
+        $scope.saveOffer = function () {
+            $scope.submitted = true;
+            OffersFactory.create($scope.offer, function(offer){
+                $location.path('/items/' + $routeParams.itemId + '/offers/' + offer.self.id + '/revisions/creation');
+            });
+        };
+
+        $scope.user_id = 0;//$cookies.user_id;
+        $scope.environments = ['DEV', 'STAGING', 'PROD'];
+        var init = function() {
+            $scope.offer = {};
+            $scope.offer.publisher = {"href": "http://xx.xx.xxx", "id":$scope.user_id };
+        };
+
+        init();
+    }]);
+
+app.controller('OfferRevisionCreationCtrl', ['$scope', 'MetaFactory', '$routeParams', 'OfferRevisionsFactory', 'OfferFactory', 'PriceTiersFactory', 'OfferAttributesFactory', '$location', '$cookies',
+    function($scope, MetaFactory, $routeParams, OfferRevisionsFactory, OfferFactory, PriceTiersFactory, OfferAttributesFactory, $location, $cookies) {
         $scope.saveOfferRevision = function () {
-            ItemRevisionsFactory.create($scope.revision, function(revision){
-                $location.path('/items/' + $routeParams.itemId);
+            OfferRevisionsFactory.create($scope.revision, function(revision){
+                $location.path('/offers/' + $routeParams.offerId);
             });
         };
 
@@ -452,14 +484,16 @@ app.controller('OfferRevisionCreationCtrl', ['$scope', 'MetaFactory', '$routePar
         $scope.isCollapsed = true;
         $scope.locales = MetaFactory.locales;
         $scope.countries = MetaFactory.countries;
-
+        $scope.offerId = $routeParams.offerId;
         $scope.user_id = 0;//$cookies.user_id;
         var init = function() {
             $scope.revision = {};
+            $scope.revision.price = {};
             $scope.revision.status = "DRAFT";
             $scope.revision.locales = {};
             $scope.revision.offer = {"href": "http://xxx.xxx.xxx", "id":$routeParams.offerId };
-            $scope.revision.developer = {"href": "http://xxx.xxx.xxx", "id":$scope.user_id };
+            $scope.revision.publisher = {"href": "http://xxx.xxx.xxx", "id":$scope.user_id };
+            $scope.offer = OfferFactory.query({"id":$routeParams.offerId});
         };
 
         init();

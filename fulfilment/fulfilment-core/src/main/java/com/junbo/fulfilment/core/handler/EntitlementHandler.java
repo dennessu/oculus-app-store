@@ -11,6 +11,8 @@ import com.junbo.fulfilment.core.context.EntitlementContext;
 import com.junbo.fulfilment.spec.fusion.Entitlement;
 import com.junbo.fulfilment.spec.model.FulfilmentAction;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,16 +20,21 @@ import java.util.Map;
  */
 public class EntitlementHandler extends HandlerSupport<EntitlementContext> {
     @Override
-    protected String handle(EntitlementContext context, FulfilmentAction action) {
-        Entitlement entitlement = new Entitlement();
-
+    protected Object handle(EntitlementContext context, FulfilmentAction action) {
         Map<String, Object> prop = action.getProperties();
+        List<String> results = new ArrayList<>();
 
-        entitlement.setUserId(context.getUserId());
-        entitlement.setUseCount(action.getCopyCount());
-        entitlement.setEntitlementDefinitionId((Long) prop.get(Constant.ENTITLEMENT_DEF_ID));
-        entitlement.setGrantTime(Utils.now());
+        for (int i = 0; i < action.getCopyCount(); i++) {
+            Entitlement entitlement = new Entitlement();
 
-        return entitlementGateway.grant(entitlement);
+            entitlement.setUserId(context.getUserId());
+            entitlement.setUseCount((Integer) (prop.get(Constant.USE_COUNT)));
+            entitlement.setEntitlementDefinitionId((Long) prop.get(Constant.ENTITLEMENT_DEF_ID));
+            entitlement.setGrantTime(Utils.now());
+
+            results.add(entitlementGateway.grant(entitlement));
+        }
+
+        return results;
     }
 }

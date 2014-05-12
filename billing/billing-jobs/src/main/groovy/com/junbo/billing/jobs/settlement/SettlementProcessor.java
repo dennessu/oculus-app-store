@@ -126,7 +126,7 @@ public class SettlementProcessor {
                 if(balance == null) {
                     return Promise.pure(null);
                 }
-                LOGGER.info("The checked balance status is " + balance.getStatus() + "for balance id: " +
+                LOGGER.info("The checked balance status is " + balance.getStatus() + " for balance id: " +
                         balance.getBalanceId().getValue());
                 return Promise.pure(balance);
             }

@@ -30,6 +30,7 @@ dependencies {
     compile junboProject(':billing-spec')
     compile junboProject(':common-testlib')
     compile junboProject(':payment-integration')
+    compile junboProject(':catalog-integration')
 
     testCompile(libraries.asyncclient)
     testCompile(libraries.junit)

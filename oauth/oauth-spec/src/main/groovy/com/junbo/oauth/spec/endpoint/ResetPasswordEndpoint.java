@@ -25,12 +25,21 @@ import javax.ws.rs.core.Response;
 @RestResource
 @Produces(MediaType.APPLICATION_JSON)
 public interface ResetPasswordEndpoint {
+    @GET
+    @Path("/forget-password")
+    Promise<Response> forgetPassword(@QueryParam("cid") String conversationId, @QueryParam("locale") String locale);
+
+    @POST
+    @Path("/forget-password")
+    Promise<Response> forgetPassword(@FormParam("cid") String conversationId,
+                                     @FormParam("event") String event,
+                                     MultivaluedMap<String, String> formParams);
 
     @GET
     @Path("/reset-password")
-    Promise<Response> resetPasswordStart(@QueryParam("rpc") String code,
-                                    @QueryParam("locale") String locale,
-                                    @QueryParam("cid") String cid);
+    Promise<Response> resetPasswordStart(@QueryParam("cid") String conversationId,
+                                         @QueryParam("rpc") String code,
+                                    @QueryParam("locale") String locale);
     @POST
     @Path("/reset-password")
     Promise<Response> resetPassword(@FormParam("cid") String conversationId,

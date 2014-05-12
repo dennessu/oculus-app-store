@@ -73,6 +73,10 @@ public class TopologyConfig {
         return isHandledBy(shard, myAppServer.getIpAddress(), myAppServer.getPort());
     }
 
+    public int getNumberOfShards() {
+        return appServers.length;
+    }
+
     public int getRandomShardId() {
         int[] myShards = myAppServer.getShards();
         return myShards[ThreadLocalRandom.current().nextInt(myShards.length)];

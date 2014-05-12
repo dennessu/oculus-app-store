@@ -21,8 +21,6 @@ public class ItemRevisionsGetOptions extends PageableGetOptions {
     private List<ItemId> itemIds;
     @QueryParam("revisionId")
     private List<ItemRevisionId> revisionIds;
-    @QueryParam("type")
-    private String type;
     @QueryParam("status")
     private String status;
     @QueryParam("timeInMillis")
@@ -42,14 +40,6 @@ public class ItemRevisionsGetOptions extends PageableGetOptions {
 
     public void setRevisionIds(List<ItemRevisionId> revisionIds) {
         this.revisionIds = revisionIds;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getStatus() {

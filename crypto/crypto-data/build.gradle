@@ -2,6 +2,6 @@ apply plugin: 'groovy'
 
 dependencies {
    
-    compile project(':crypto-common')
-    compile project(':crypto-spec')
+    compile junboProject(':crypto-common')
+    compile junboProject(':crypto-spec')
 }
