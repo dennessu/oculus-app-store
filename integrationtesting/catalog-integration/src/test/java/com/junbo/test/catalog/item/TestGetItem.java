@@ -96,7 +96,7 @@ public class TestGetItem extends BaseTestClass {
             itemId[i] = IdConverter.idLongToHexString(ItemId.class, items[i].getItemId());
         }
 
-        HashMap<String, List<String>> paraMap = new HashMap();
+        HashMap<String, List<String>> paraMap = new HashMap<>();
         List<String> listItemId = new ArrayList<>();
 
         //Set 1 item by its Id, verify 1 item could be gotten
@@ -127,8 +127,8 @@ public class TestGetItem extends BaseTestClass {
         verifyGetItemsScenarios(paraMap, 3, itemId[2], itemId[3], itemId[4]);
 
         //Release the 5 items
-        for (int i = 0; i < items.length; i ++) {
-            releaseItem(items[i]);
+        for (Item item : items) {
+            releaseItem(item);
         }
 
         //Set 1 item by its Id, verify 1 item could be gotten
@@ -187,8 +187,8 @@ public class TestGetItem extends BaseTestClass {
         performVerification(itemId[0], itemId[1], itemId[2], itemId[3], itemId[4]);
 
         //Release the 5 items
-        for (int i = 0; i < items.length; i ++) {
-            releaseItem(items[i]);
+        for (Item item : items) {
+            releaseItem(item);
         }
 
         performVerification(itemId[0], itemId[1], itemId[2], itemId[3], itemId[4]);
@@ -206,7 +206,7 @@ public class TestGetItem extends BaseTestClass {
 
     private void performVerification(String itemId1, String itemId2, String itemId3, String itemId4, String itemId5)  throws Exception {
 
-        HashMap<String, List<String>> paraMap = new HashMap();
+        HashMap<String, List<String>> paraMap = new HashMap<>();
         List<String> listItemId = new ArrayList<>();
         List<String> listType = new ArrayList<>();
 
@@ -219,6 +219,7 @@ public class TestGetItem extends BaseTestClass {
 
         //set type Digital firstly
         listType.add(CatalogItemType.DIGITAL.getItemType());
+        paraMap.put("itemId", listItemId);
         paraMap.put("type", listType);
         verifyGetItemsScenarios(paraMap, 1, itemId1);
 
@@ -240,8 +241,8 @@ public class TestGetItem extends BaseTestClass {
 
         Assert.assertEquals(itemRtnId.getItems().size(), expectedRtnSize);
 
-        for (int i = 0; i < itemId.length; i++) {
-            Item item = itemService.getItem(IdConverter.hexStringToId(ItemId.class, itemId[i]));
+        for (String itemGetId : itemId) {
+            Item item = itemService.getItem(IdConverter.hexStringToId(ItemId.class, itemGetId));
             itemRtnId.getItems().contains(item);
         }
     }

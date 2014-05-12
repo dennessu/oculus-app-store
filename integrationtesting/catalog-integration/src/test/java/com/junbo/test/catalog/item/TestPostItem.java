@@ -113,9 +113,6 @@ public class TestPostItem extends BaseTestClass {
         Assert.assertEquals(item1.getCurrentRevisionId(), item2.getCurrentRevisionId());
         Assert.assertEquals(item1.getEntitlementDefId(), item2.getEntitlementDefId());
         Assert.assertEquals(item1.getGenres(), item2.getGenres());
-        Assert.assertEquals(item1.getIapHostItemId(), item2.getIapHostItemId());
-        Assert.assertEquals(item1.getPackageName(), item2.getPackageName());
-        Assert.assertEquals(item1.getRollupPackageName(), item2.getRollupPackageName());
         Assert.assertEquals(item1.getDefaultOffer(), item2.getDefaultOffer());
     }
 

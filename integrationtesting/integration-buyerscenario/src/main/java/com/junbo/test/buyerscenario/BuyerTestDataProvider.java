@@ -112,11 +112,11 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
             } else {
                 offerItem.setQuantity(1L);
             }
-            offerItem.setSelected(true);
+            offerItem.setIsSelected(true);
             OfferId offerId = new OfferId(
                     IdConverter.hexStringToId(OfferId.class, offerClient.getOfferIdByName(offers.get(i))));
             offerItem.setOffer(offerId);
-            offerItem.setApproved(true);
+            offerItem.setIsApproved(true);
             offerItemList.add(offerItem);
         }
         primaryCart.setOffers(offerItemList);
