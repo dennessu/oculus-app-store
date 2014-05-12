@@ -12,13 +12,13 @@ import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.RestUrl;
 import com.junbo.test.catalog.ItemService;
 import com.junbo.common.model.Results;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.UserId;
-
 
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +51,10 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
     public Item getItem(Long itemId, int expectedResponseCode) throws Exception {
         String url = catalogServerURL + "/" + IdConverter.idLongToHexString(ItemId.class, itemId);
         String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode);
-        return new JsonMessageTranscoder().decode(new TypeReference<Item>() {}, responseBody);
+        Item itemGet = new JsonMessageTranscoder().decode(new TypeReference<Item>() {}, responseBody);
+        String itemRtnId = IdConverter.idLongToHexString(ItemId.class, itemGet.getItemId());
+        Master.getInstance().addItem(itemRtnId, itemGet);
+        return itemGet;
     }
 
     public Results<Item> getItems(HashMap<String, List<String>> httpPara) throws Exception {
@@ -60,7 +63,13 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
 
     public Results<Item> getItems(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara);
-        return new JsonMessageTranscoder().decode(new TypeReference<Results<Item>>() {}, responseBody);
+        Results<Item> itemGet = new JsonMessageTranscoder().decode(new TypeReference<Results<Item>>() {},
+                responseBody);
+        for (Item item : itemGet.getItems()){
+            String itemRtnId = IdConverter.idLongToHexString(ItemId.class, item.getItemId());
+            Master.getInstance().addItem(itemRtnId, item);
+        }
+        return itemGet;
     }
 
     public Item prepareItemEntity(String fileName) throws Exception {
@@ -85,7 +94,11 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
 
     public Item postItem(Item item, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, item, expectedResponseCode);
-        return new JsonMessageTranscoder().decode(new TypeReference<Item>() {}, responseBody);
+        Item itemPost = new JsonMessageTranscoder().decode(new TypeReference<Item>() {},
+                responseBody);
+        String itemRtnId = IdConverter.idLongToHexString(ItemId.class, itemPost.getItemId());
+        Master.getInstance().addItem(itemRtnId, itemPost);
+        return itemPost;
     }
 
     public Item updateItem(Item item) throws Exception {
@@ -95,7 +108,11 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
     public Item updateItem(Item item, int expectedResponseCode) throws Exception {
         String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(ItemId.class, item.getItemId());
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, item, expectedResponseCode);
-        return new JsonMessageTranscoder().decode(new TypeReference<Item>() {}, responseBody);
+        Item itemPut = new JsonMessageTranscoder().decode(new TypeReference<Item>() {},
+                responseBody);
+        String itemRtnId = IdConverter.idLongToHexString(ItemId.class, itemPut.getItemId());
+        Master.getInstance().addItem(itemRtnId, itemPut);
+        return itemPut;
     }
 
     public void deleteItem(Long itemId) throws Exception {
@@ -103,8 +120,10 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
     }
 
     public void deleteItem(Long itemId, int expectedResponseCode) throws Exception {
-        String url = catalogServerURL + "/" + IdConverter.idLongToHexString(ItemId.class, itemId);
+        String strItemId = IdConverter.idLongToHexString(ItemId.class, itemId);
+        String url = catalogServerURL + "/" + strItemId;
         restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode);
+        Master.getInstance().removeItem(strItemId);
     }
 
 }
