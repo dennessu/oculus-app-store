@@ -1,3 +1,8 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
 package com.junbo.sharding.routing;
 
 import com.junbo.common.id.Id;
@@ -10,6 +15,9 @@ import com.junbo.sharding.id.oculus.OculusIdSchema;
 import com.junbo.sharding.id.oculus.OculusObjectId;
 import org.springframework.beans.factory.annotation.Required;
 
+/**
+ * The implementation of router.
+ */
 public class RouterImpl implements Router {
     private OculusIdSchema oculus40IdSchema;
     private OculusIdSchema oculus48IdSchema;
