@@ -14,6 +14,7 @@ import com.junbo.common.id.EntitlementDefinitionId;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.common.libs.IdConverter;
+import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.RestUrl;
 import com.junbo.common.model.Results;
 import com.junbo.common.id.UserId;
@@ -48,8 +49,11 @@ public class EntitlementDefinitionServiceImpl extends HttpClientBase implements 
     public EntitlementDefinition getEntitlementDefinition(Long edId, int expectedResponseCode) throws Exception {
         String url = catalogServerURL + "/" +  IdConverter.idLongToHexString(EntitlementDefinitionId.class, edId);
         String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode);
-        return new JsonMessageTranscoder().decode(new TypeReference<EntitlementDefinition>() {},
+        EntitlementDefinition ed = new JsonMessageTranscoder().decode(new TypeReference<EntitlementDefinition>() {},
                 responseBody);
+        String edGetId = IdConverter.idLongToHexString(EntitlementDefinitionId.class, ed.getEntitlementDefId());
+        Master.getInstance().addEntitlementDefinition(edGetId, ed);
+        return ed;
     }
 
     public Results<EntitlementDefinition> getEntitlementDefinitions(HashMap<String, List<String>> httpPara) throws Exception {
@@ -59,7 +63,14 @@ public class EntitlementDefinitionServiceImpl extends HttpClientBase implements 
     public Results<EntitlementDefinition> getEntitlementDefinitions(HashMap<String, List<String>> httpPara, int expectedResponseCode)
             throws Exception {
         String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara);
-        return new JsonMessageTranscoder().decode(new TypeReference<Results<EntitlementDefinition>>() {}, responseBody);
+        Results<EntitlementDefinition> eds = new JsonMessageTranscoder().decode(new TypeReference<Results
+                <EntitlementDefinition>>() {}, responseBody);
+
+        for (EntitlementDefinition ed : eds.getItems()){
+            String edRtnId = IdConverter.idLongToHexString(EntitlementDefinitionId.class, ed.getEntitlementDefId());
+            Master.getInstance().addEntitlementDefinition(edRtnId, ed);
+        }
+        return eds;
     }
 
     public EntitlementDefinition postDefaultEntitlementDefinition(EntitlementType entitlementDefinitionType) throws Exception {
@@ -78,7 +89,12 @@ public class EntitlementDefinitionServiceImpl extends HttpClientBase implements 
     public EntitlementDefinition postEntitlementDefinition(EntitlementDefinition entitlementDefinition, int expectedResponseCode)
             throws Exception {
         String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, entitlementDefinition, expectedResponseCode);
-        return new JsonMessageTranscoder().decode(new TypeReference<EntitlementDefinition>() {}, responseBody);
+        EntitlementDefinition ed = new JsonMessageTranscoder().decode(new TypeReference<EntitlementDefinition>() {},
+                responseBody);
+        String edRtnId = IdConverter.idLongToHexString(EntitlementDefinitionId.class,
+                ed.getEntitlementDefId());
+        Master.getInstance().addEntitlementDefinition(edRtnId, ed);
+        return ed;
     }
 
     public EntitlementDefinition updateEntitlementDefinition(EntitlementDefinition entitlementDefinition) throws Exception {
@@ -90,7 +106,12 @@ public class EntitlementDefinitionServiceImpl extends HttpClientBase implements 
         String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(EntitlementDefinitionId.class,
                 entitlementDefinition.getEntitlementDefId());
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, entitlementDefinition, expectedResponseCode);
-        return new JsonMessageTranscoder().decode(new TypeReference<EntitlementDefinition>() {}, responseBody);
+        EntitlementDefinition edPut = new JsonMessageTranscoder().decode(new TypeReference<EntitlementDefinition>() {},
+                responseBody);
+        String edRtnId = IdConverter.idLongToHexString(EntitlementDefinitionId.class,
+                edPut.getEntitlementDefId());
+        Master.getInstance().addEntitlementDefinition(edRtnId, edPut);
+        return edPut;
     }
 
     public void deleteEntitlementDefinition(Long edId) throws Exception {
@@ -98,8 +119,10 @@ public class EntitlementDefinitionServiceImpl extends HttpClientBase implements 
     }
 
     public void deleteEntitlementDefinition(Long edId, int expectedResponseCode) throws Exception {
-        String url = catalogServerURL + "/" + IdConverter.idLongToHexString(EntitlementDefinitionId.class, edId);
+        String strEdId = IdConverter.idLongToHexString(EntitlementDefinitionId.class, edId);
+        String url = catalogServerURL + "/" + strEdId;
         restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode);
+        Master.getInstance().removeEntitlementDefinition(strEdId);
     }
 
 }

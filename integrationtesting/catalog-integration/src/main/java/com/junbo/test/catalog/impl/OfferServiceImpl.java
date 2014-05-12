@@ -22,17 +22,14 @@ import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.catalog.ItemRevisionService;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.test.common.libs.EnumHelper;
+import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
-import com.junbo.common.id.OfferRevisionId;
 import com.junbo.test.catalog.OfferService;
-import com.junbo.common.id.ItemRevisionId;
 import com.junbo.test.catalog.ItemService;
 import com.junbo.test.common.libs.RestUrl;
 import com.junbo.common.model.Results;
 import com.junbo.common.id.OfferId;
-import com.junbo.common.id.ItemId;
 import com.junbo.common.id.UserId;
 
 import java.io.InputStreamReader;
@@ -42,7 +39,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  @author Jason
@@ -68,11 +64,6 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     private ItemService itemService = ItemServiceImpl.instance();
     private UserService userService = UserServiceImpl.instance();
 
-    private Map<String, Item> items;
-    private Map<String, Offer> offers;
-    private Map<String, ItemRevision> itemRevisions;
-    private Map<String, OfferRevision> offerRevisions;
-
     public static synchronized OfferService instance() {
         if (instance == null) {
             instance = new OfferServiceImpl();
@@ -81,10 +72,6 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     }
 
     private OfferServiceImpl() {
-        items = new HashMap<>();
-        offers = new HashMap<>();
-        itemRevisions = new HashMap<>();
-        offerRevisions = new HashMap<>();
     }
 
     public Offer getOffer(Long offerId) throws Exception {
@@ -94,8 +81,10 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     public Offer getOffer(Long offerId, int expectedResponseCode) throws Exception {
         String url = catalogServerURL + "/" + IdConverter.idLongToHexString(OfferId.class, offerId);
         String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode);
-        return new JsonMessageTranscoder().decode(new TypeReference<Offer>() {
-        }, responseBody);
+        Offer offerGet = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {}, responseBody);
+        String offerRtnId = IdConverter.idLongToHexString(OfferId.class, offerGet.getOfferId());
+        Master.getInstance().addOffer(offerRtnId, offerGet);
+        return offerGet;
     }
 
     public Results<Offer> getOffers(HashMap<String, List<String>> httpPara) throws Exception {
@@ -104,8 +93,14 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
     public Results<Offer> getOffers(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara);
-        return new JsonMessageTranscoder().decode(new TypeReference<Results<Offer>>() {
-        }, responseBody);
+        Results<Offer> offerGet = new JsonMessageTranscoder().decode(new TypeReference<Results<Offer>>() {},
+                responseBody);
+        for (Offer offer : offerGet.getItems()){
+            String offerRtnId = IdConverter.idLongToHexString(OfferId.class, offer.getOfferId());
+            Master.getInstance().addOffer(offerRtnId, offer);
+        }
+
+        return offerGet;
     }
 
     public Offer postDefaultOffer() throws Exception {
@@ -126,8 +121,11 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
     public Offer postOffer(Offer offer, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, offer, expectedResponseCode);
-        return new JsonMessageTranscoder().decode(new TypeReference<Offer>() {
-        }, responseBody);
+        Offer offerPost = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {},
+                responseBody);
+        String offerRtnId = IdConverter.idLongToHexString(OfferId.class, offerPost.getOfferId());
+        Master.getInstance().addOffer(offerRtnId, offerPost);
+        return offerPost;
     }
 
     public Offer updateOffer(Offer offer) throws Exception {
@@ -137,8 +135,11 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     public Offer updateOffer(Offer offer, int expectedResponseCode) throws Exception {
         String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(OfferId.class, offer.getOfferId());
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, offer, expectedResponseCode);
-        return new JsonMessageTranscoder().decode(new TypeReference<Offer>() {
-        }, responseBody);
+        Offer offerPut = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {},
+                responseBody);
+        String offerRtnId = IdConverter.idLongToHexString(OfferId.class, offerPut.getOfferId());
+        Master.getInstance().addOffer(offerRtnId, offerPut);
+        return offerPut;
     }
 
     public void deleteOffer(Long offerId) throws Exception {
@@ -146,8 +147,10 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     }
 
     public void deleteOffer(Long offerId, int expectedResponseCode) throws Exception {
-        String url = catalogServerURL + "/" + IdConverter.idLongToHexString(OfferId.class, offerId);
+        String strOfferId = IdConverter.idLongToHexString(OfferId.class, offerId);
+        String url = catalogServerURL + "/" + strOfferId;
         restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode);
+        Master.getInstance().removeOffer(strOfferId);
     }
 
     public String getOfferIdByName(String offerName) throws  Exception {
@@ -161,7 +164,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
             offerLoaded = true;
         }
 
-        return getOfferByName(offerName);
+        return Master.getInstance().getOfferIdByName(offerName);
     }
 
     private void loadAllOffers() throws Exception {
@@ -173,12 +176,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
         paraMap.put("start", listStart);
         paraMap.put("size", listSize);
-        Results<Offer> offerResults = this.getOffers(paraMap);
-
-        for (Offer offer : offerResults.getItems()){
-            String offerId = IdConverter.idLongToHexString(OfferId.class, offer.getOfferId());
-            offers.put(offerId, offer);
-        }
+        this.getOffers(paraMap);
     }
 
     private void loadAllOfferRevisions() throws Exception {
@@ -194,12 +192,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         paraMap.put("start", listStart);
         paraMap.put("size", listSize);
         OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
-        Results<OfferRevision> offerRevisionResults = offerRevisionService.getOfferRevisions(paraMap);
-
-        for (OfferRevision offerRevision : offerRevisionResults.getItems()){
-            String offerRevisionId = IdConverter.idLongToHexString(OfferRevisionId.class, offerRevision.getRevisionId());
-            offerRevisions.put(offerRevisionId, offerRevision);
-        }
+        offerRevisionService.getOfferRevisions(paraMap);
     }
 
     private void loadAllItems() throws Exception {
@@ -211,12 +204,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
         paraMap.put("start", listStart);
         paraMap.put("size", listSize);
-        Results<Item> itemResults = itemService.getItems(paraMap);
-
-        for (Item item : itemResults.getItems()){
-            String itemId = IdConverter.idLongToHexString(ItemId.class, item.getItemId());
-            items.put(itemId, item);
-        }
+        itemService.getItems(paraMap);
     }
 
     private void loadAllItemRevisions() throws Exception {
@@ -233,12 +221,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         paraMap.put("size", listSize);
 
         ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
-        Results<ItemRevision> itemRevisonResults = itemRevisionService.getItemRevisions(paraMap);
-
-        for (ItemRevision itemRevision : itemRevisonResults.getItems()){
-            String itemRevisionId = IdConverter.idLongToHexString(ItemRevisionId.class, itemRevision.getRevisionId());
-            itemRevisions.put(itemRevisionId, itemRevision);
-        }
+        itemRevisionService.getItemRevisions(paraMap);
     }
 
     private void postPredefinedOffer() throws Exception {
@@ -250,7 +233,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
             while ((sCurrentLine = br.readLine()) != null) {
                 logger.logInfo(sCurrentLine);
                 String[] strLine = sCurrentLine.split(",");
-                if (getOfferByName(strLine[0]) == null) {
+                if (Master.getInstance().getOfferIdByName(strLine[0]) == null) {
                     preparePredefinedOffer(strLine[0], strLine[1], strLine[2], strLine[3]);
                 }
             }
@@ -266,43 +249,9 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         }
     }
 
-    private String getOfferByName(String offerName) {
-
-        for (Map.Entry<String, Offer> entry : offers.entrySet()) {
-            String key = entry.getKey();
-            Offer offer = entry.getValue();
-            if (offer.getCurrentRevisionId() != null) {
-                String offerRevisionId = IdConverter.idLongToHexString(OfferRevisionId.class, offer.getCurrentRevisionId());
-                OfferRevision offerRevision = this.offerRevisions.get(offerRevisionId);
-
-                if (offerRevision != null && offerRevision.getLocales().get("en_US").getName().equalsIgnoreCase(offerName)) {
-                    return key;
-                }
-            }
-        }
-        return null;
-    }
-
-    private String getItemIdByName(String itemName) {
-
-        for (Map.Entry<String, Item> entry : items.entrySet()) {
-            String key = entry.getKey();
-            Item item = entry.getValue();
-            if (item.getCurrentRevisionId() != null) {
-                String itemRevisionId = IdConverter.idLongToHexString(ItemRevisionId.class, item.getCurrentRevisionId());
-                ItemRevision itemRevision = this.itemRevisions.get(itemRevisionId);
-
-                if (itemRevision.getLocales().get("en_US").getName().equalsIgnoreCase(itemName)) {
-                    return key;
-                }
-            }
-        }
-        return null;
-    }
-
     private void preparePredefinedOffer(String offerName, String itemName, String userName, String offerType) throws  Exception {
 
-        String itemId = this.getItemIdByName(itemName);
+        String itemId = Master.getInstance().getItemIdByName(itemName);
         List<String> userIdList = userService.GetUserByUserName(userName);
         String userId;
 
@@ -318,7 +267,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
             item = prepareItem(userId, itemName, offerType);
         }
         else {
-            item = itemService.getItem(IdConverter.hexStringToId(ItemId.class, itemId));
+            item = Master.getInstance().getItem(itemId);
         }
 
         //Post offer
@@ -329,7 +278,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
         //Post offer revision
         String strOfferRevisionContent;
-        if (offerType.equalsIgnoreCase(EnumHelper.CatalogItemType.STORED_VALUE.getItemType())) {
+        if (offerType.equalsIgnoreCase(CatalogItemType.STORED_VALUE.getItemType())) {
             strOfferRevisionContent = readFileContent(String.format("testOfferRevisions/%s.json",
                     defaultStoredValueOfferRevisionFileName));
         }
@@ -365,13 +314,8 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
         OfferRevision offerRevision = offerRevisionService.postOfferRevision(offerRevisionForPost);
         offerRevision.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
-        offerRevision = offerRevisionService.updateOfferRevision(offerRevision);
-
-        //Add to offerRevisions
-        offerRevisions.put(IdConverter.idLongToHexString(OfferRevisionId.class, offerRevision.getRevisionId()), offerRevision);
-
-        offer = this.getOffer(offer.getOfferId());
-        offers.put(IdConverter.idLongToHexString(OfferId.class, offer.getOfferId()), offer);
+        offerRevisionService.updateOfferRevision(offerRevision);
+        this.getOffer(offer.getOfferId());
     }
 
     private String getUserId() throws Exception {
@@ -413,16 +357,8 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         //Post and then approve the item revision
         ItemRevision itemRevisionPost = itemRevisionService.postItemRevision(itemRevision);
         itemRevisionPost.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
-        itemRevisionPost = itemRevisionService.updateItemRevision(itemRevisionPost);
-
-        //Add to itemRevisions
-        itemRevisions.put(IdConverter.idLongToHexString(ItemRevisionId.class, itemRevisionPost.getRevisionId()), itemRevisionPost);
-
-        itemPost = itemService.getItem(itemPost.getItemId());
-        //Add to items
-        items.put(IdConverter.idLongToHexString(ItemId.class, itemPost.getItemId()), itemPost);
-
-        return itemPost;
+        itemRevisionService.updateItemRevision(itemRevisionPost);
+        return itemService.getItem(itemPost.getItemId());
     }
 
 }
