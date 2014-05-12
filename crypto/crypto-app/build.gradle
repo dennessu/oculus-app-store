@@ -5,5 +5,5 @@ mainClassName = "com.junbo.apphost.core.JunboApplication"
 
 dependencies {
 
-    compile project(':crypto-rest')
+    compile junboProject(':crypto-rest')
 }

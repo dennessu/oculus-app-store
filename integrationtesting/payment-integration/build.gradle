@@ -1,5 +1,4 @@
 apply plugin: 'java'
-apply plugin: 'idea'
 apply plugin: 'groovy'
 
 sourceCompatibility = '1.7'
@@ -25,14 +24,12 @@ test {
 }
 
 dependencies {
+    compile junboProject(':ewallet-spec')
+    compile junboProject(':payment-spec')
     compile junboProject(':common-testlib')
     compile(libraries.asyncclient)
-    compile 'com.junbo.payment:payment-spec:0.0.1-SNAPSHOT'
-    compile 'com.junbo.ewallet:ewallet-spec:0.0.1-SNAPSHOT'
 
-    testCompile(libraries.asyncclient)
     testCompile(libraries.junit)
     testCompile(libraries.slf4j_api)
     testCompile(libraries.testng)
-
 }

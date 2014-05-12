@@ -1,35 +1,24 @@
-<h1>Item Creation</h1>
-<form novalidate="novalidate" class="form-horizontal" name="itemCreationForm">
-    <table class="table table-bordered vertical-table">
-        <tr>
-            <td style="width: 200px;">Type *</td>
-            <td>
-                <select ng-model="item.type" ng-options="itemType for itemType in itemTypes" required />
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>Rollup Package Name</td>
-            <td><input type="text" class="form-control required" ng-model="item.rollupPackageName" /></td>
-        </tr>
-        <tr>
-            <td>Package Name</td>
-            <td><input type="text" class="form-control required" ng-model="item.packageName" /></td>
-        </tr>
-        <tr>
-            <td>Genres</td>
-            <td>
-                <div>
-                    <label ng-repeat="genre in genres">
-                        <input type="checkbox" checklist-model="item.genres" checklist-value="genre" class="chooseItem">{{ genre }}
-                    </label>
-                </div>
-            </td>
-        </tr>
-    </table>
-    <div class="control-group">
-        <div class="controls">
-            <a ng-click="itemCreationForm.$valid && saveItem()" class="btn btn-small btn-default">Next</a>
+<h2>Item Creation</h2>
+<form class="form-horizontal" role="form" name="itemCreationForm">
+    <div class="form-group">
+        <label for="chooseType" class="col-sm-2 control-label">Type</label>
+        <div class="col-sm-10">
+            <select ng-model="item.type" ng-options="itemType for itemType in itemTypes" id="chooseType" required />
+            </select>
+        </div>
+    </div>
+    <div class="form-group" ng-show="item.type=='DIGITAL'">
+        <label for="chooseGenre" class="col-sm-2 control-label">Genres</label>
+        <div class="col-sm-10">
+            <label ng-repeat="genre in genres">
+                <input type="checkbox" checklist-model="item.genres" checklist-value="genre" class="chooseItem" id="chooseGenre">
+                {{ genre }}
+            </label>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" ng-click="itemCreationForm.$valid && saveItem()" class="btn btn-default">Next</button>
         </div>
     </div>
 </form>

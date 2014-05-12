@@ -19,10 +19,10 @@ import java.util.*;
  */
 public final class Utils {
     // thread safe
-    private static List<ClassMap<?,?>> classMapList = new ArrayList<>();
+    private static List<ClassMap<?, ?>> classMapList = new ArrayList<>();
     private static MapperFacade mapper = new DefaultMapperFactory.Builder().build().getMapperFacade();
 
-    public static void registerClassMap(ClassMap<?, ?> ... classMaps) {
+    public static void registerClassMap(ClassMap<?, ?>... classMaps) {
         for (ClassMap<?, ?> classMap : classMaps) {
             classMapList.add(classMap);
         }
@@ -53,6 +53,10 @@ public final class Utils {
         }
 
         return b == null;
+    }
+
+    public static String toJson(Object input) {
+        return toJson(input, null);
     }
 
     public static String toJson(Object input, String[] filterProperties) {

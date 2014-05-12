@@ -4,9 +4,17 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
+    <import resource="classpath*:spring/routing-context.xml"/>
+
     <context:component-scan base-package="com.junbo.billing.core.service"/>
     <context:component-scan base-package="com.junbo.billing.spec.resource.adapter" />
 
-    <bean id="defaultBalanceResource" class="com.junbo.billing.rest.resource.BalanceResourceImpl" scope="prototype"/>
-    <bean id="defaultBillingCurrencyResource" class="com.junbo.billing.rest.resource.BillingCurrencyResourceImpl" scope="prototype"/>
+    <bean id="defaultBalanceResource" class="com.junbo.billing.rest.resource.BalanceResourceImpl"/>
+    <bean id="defaultBillingCurrencyResource" class="com.junbo.billing.rest.resource.BillingCurrencyResourceImpl"/>
+
+    <bean id="defaultBalanceResourceClientFactory" class="com.junbo.billing.spec.resource.proxy.BalanceResourceClientProxyFactory"/>
+    <bean id="defaultBillingCurrencyResourceClientFactory" class="com.junbo.billing.spec.resource.proxy.BillingCurrencyResourceClientProxyFactory"/>
+
+    <bean id="defaultBalanceResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultBillingCurrencyResourceRouter" parent="routingRouterBase" />
 </beans>

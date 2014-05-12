@@ -5,6 +5,7 @@
  */
 package com.junbo.langur.processor.handler
 
+import com.junbo.langur.processor.model.ClientProxyFactoryModel
 import com.junbo.langur.processor.model.ClientProxyModel
 import com.junbo.langur.processor.model.RestAdapterModel
 import groovy.transform.CompileStatic
@@ -21,4 +22,6 @@ class HandlerContext {
     RestAdapterModel restAdapter
 
     ClientProxyModel clientProxy
+
+    ClientProxyFactoryModel clientProxyFactory
 }

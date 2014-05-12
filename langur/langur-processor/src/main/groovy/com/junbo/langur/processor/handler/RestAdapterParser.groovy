@@ -5,6 +5,8 @@
  */
 package com.junbo.langur.processor.handler
 
+import com.junbo.langur.core.routing.RouteAnyLocal
+import com.junbo.langur.core.routing.RouteBy
 import com.junbo.langur.processor.ProcessingException
 import com.junbo.langur.processor.model.RestAdapterModel
 import com.junbo.langur.processor.model.RestMethodModel
@@ -64,6 +66,7 @@ class RestAdapterParser implements RestResourceHandler {
 
                 def restMethod = new RestMethodModel()
 
+                restMethod.adapteeType = restAdapter.adapteeType
                 restMethod.returnType = returnType.typeArguments[0].toString()
                 restMethod.methodName = executableElement.simpleName.toString()
                 restMethod.annotations = executableElement.annotationMirrors.collect {
@@ -80,6 +83,17 @@ class RestAdapterParser implements RestResourceHandler {
                                 annotations:variableElement.annotationMirrors.collect {
                                     AnnotationMirror annotationMirror -> annotationMirror.toString()
                                 })
+                }
+
+                def routeBy = executableElement.getAnnotation(RouteBy)
+                def routeAnyLocal = executableElement.getAnnotation(RouteAnyLocal)
+                restMethod.routeParamExprs = Arrays.asList(routeBy?.value() ?: new String[0])
+
+                if (routeBy != null) {
+                    restMethod.routeFallbackToAnyLocal = routeBy.fallbackToAnyLocal()
+                }
+                if (routeAnyLocal != null) {
+                    restMethod.routeFallbackToAnyLocal = true
                 }
 
                 restAdapter.restMethods.add(restMethod)

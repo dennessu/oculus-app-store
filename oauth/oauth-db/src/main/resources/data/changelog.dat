@@ -7,6 +7,9 @@ client	client	{
     "default_redirect_uri": "http://localhost/login",
     "scopes": [
         "identity",
+        "commerce",
+        "catalog",
+        "developer",
         "openid",
         "offline",
         "scope.manage",

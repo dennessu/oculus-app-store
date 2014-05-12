@@ -30,7 +30,7 @@ services.factory('OfferRevisionsFactory', function ($resource, CONFIG) {
 });
 
 services.factory('OfferRevisionFactory', function ($resource, CONFIG) {
-    return $resource(CONFIG.baseUrl + 'item-revisions/:id', {}, {
+    return $resource(CONFIG.baseUrl + 'offer-revisions/:id', {}, {
         query: { method: 'GET' },
         update: { method: 'PUT', params: {id: '@id'} },
         delete: { method: 'DELETE', params: {id: '@id'} }

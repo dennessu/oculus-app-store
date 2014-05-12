@@ -26,6 +26,7 @@ import javax.ws.rs.core.Response
 class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
     private FlowExecutor flowExecutor
     private String resetPasswordFlow
+    private String forgetPasswordFlow
     private UserService userService
 
     @Required
@@ -39,12 +40,42 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
     }
 
     @Required
+    void setForgetPasswordFlow(String forgetPasswordFlow) {
+        this.forgetPasswordFlow = forgetPasswordFlow
+    }
+
+    @Required
     void setUserService(UserService userService) {
         this.userService = userService
     }
 
     @Override
-    Promise<Response> resetPasswordStart(String code, String locale, String cid) {
+    Promise<Response> forgetPassword(String cid, String locale) {
+        Map<String, Object> requestScope = new HashMap<>()
+        requestScope[OAuthParameters.LOCALE] = locale
+
+        if (cid == null) {
+            //start a new conversation in the flowExecutor.
+            return flowExecutor.start(forgetPasswordFlow, requestScope).then(ResponseUtil.WRITE_RESPONSE_CLOSURE)
+        }
+
+        return flowExecutor.resume(cid, '', requestScope).then(ResponseUtil.WRITE_RESPONSE_CLOSURE)
+    }
+
+    @Override
+    Promise<Response> forgetPassword(String conversationId, String event, MultivaluedMap<String, String> formParams) {
+        Map<String, Object> requestScope = new HashMap<>()
+        requestScope[ActionContextWrapper.PARAMETER_MAP] = formParams
+
+        if (conversationId == null) {
+            throw new ConversationNotfFoundException()
+        }
+
+        return flowExecutor.resume(conversationId, event ?: '', requestScope).then(ResponseUtil.WRITE_RESPONSE_CLOSURE)
+    }
+
+    @Override
+    Promise<Response> resetPasswordStart(String cid, String code, String locale) {
         Map<String, Object> requestScope = new HashMap<>()
         requestScope[OAuthParameters.RESET_PASSWORD_CODE] = code
         requestScope[OAuthParameters.LOCALE] = locale

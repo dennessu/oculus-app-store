@@ -5,6 +5,7 @@
  */
 
 package com.junbo.catalog.db.mapper;
+
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.entity.ItemEntity;
 import com.junbo.catalog.spec.model.item.Item;
@@ -31,6 +32,8 @@ public class ItemMapper {
         entity.setOwnerId(model.getOwnerId());
         entity.setCurrentRevisionId(model.getCurrentRevisionId());
         entity.setPayload(Utils.toJson(model));
+        entity.setCreatedBy(String.valueOf(model.getOwnerId()));
+        entity.setUpdatedBy(String.valueOf(model.getOwnerId()));
         entity.setRev(model.getRev()==null ? null : Integer.valueOf(model.getRev()));
     }
 
@@ -44,9 +47,7 @@ public class ItemMapper {
         model.setCurrentRevisionId(entity.getCurrentRevisionId());
         model.setOwnerId(entity.getOwnerId());
         model.setGenres(entity.getGenres());
-        model.setCreatedBy(entity.getCreatedBy());
         model.setCreatedTime(entity.getCreatedTime());
-        model.setUpdatedBy(entity.getUpdatedBy());
         model.setUpdatedTime(entity.getUpdatedTime());
         model.setRev(entity.getRev().toString());
         return model;

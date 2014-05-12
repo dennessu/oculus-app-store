@@ -14,6 +14,10 @@ dependencies {
     processor (libraries.log4j)
 }
 ext {
-    processorClass = 'com.junbo.langur.processor.RestAdapterProcessor,com.junbo.langur.processor.ClientProxyProcessor'
+    processorClass = [
+            'com.junbo.langur.processor.RestAdapterProcessor',
+            'com.junbo.langur.processor.ClientProxyProcessor',
+            'com.junbo.langur.processor.ClientProxyFactoryProcessor'
+    ].join(',')
 }
 

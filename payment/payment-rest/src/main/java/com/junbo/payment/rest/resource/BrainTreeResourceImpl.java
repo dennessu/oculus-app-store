@@ -65,7 +65,9 @@ public class BrainTreeResourceImpl implements BrainTreeResource {
 
     @Override
     public Promise<PaymentTransaction> getById(String transactionToken) {
-        return brainTreePaymentProviderService.getByTransactionToken(transactionToken);
+        PaymentTransaction payment = new PaymentTransaction();
+        payment.setExternalToken(transactionToken);
+        return brainTreePaymentProviderService.getByTransactionToken(payment);
     }
 
     @Override

@@ -1,4 +1,5 @@
 apply plugin: 'java'
+apply plugin: 'groovy'
 
 sourceCompatibility = '1.7'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
@@ -23,18 +24,16 @@ test {
 }
 
 dependencies {
-
     compile(libraries.asyncclient)
     compile(libraries.postgresql)
-    compile junboProject(':payment-integration')
-    //compile(libraries.common_testlib)
+    
+    compile junboProject(':billing-spec')
     compile junboProject(':common-testlib')
-
-    compile 'com.junbo.billing:billing-spec:0.0.1-SNAPSHOT'
+    compile junboProject(':payment-integration')
+    compile junboProject(':catalog-integration')
 
     testCompile(libraries.asyncclient)
     testCompile(libraries.junit)
     testCompile(libraries.slf4j_api)
     testCompile(libraries.testng)
-
 }

@@ -22,6 +22,7 @@ import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.catalog.ItemRevisionService;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.test.common.libs.EnumHelper;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.common.id.OfferRevisionId;
@@ -55,6 +56,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
     private final String defaultOfferRevisionFileName = "defaultOfferRevision";
+    private final String defaultStoredValueOfferRevisionFileName = "defaultStoredValueOfferRevision";
     private final String defaultOfferFileName = "defaultOffer";
     private final Integer defaultPagingSize = 10000;
     private final Integer start = 0;
@@ -301,7 +303,6 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     private void preparePredefinedOffer(String offerName, String itemName, String userName, String offerType) throws  Exception {
 
         String itemId = this.getItemIdByName(itemName);
-        Item item = itemService.getItem(IdConverter.hexStringToId(ItemId.class, itemId));
         List<String> userIdList = userService.GetUserByUserName(userName);
         String userId;
 
@@ -312,8 +313,12 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
             userId = userIdList.get(0);
         }
 
+        Item item;
         if (itemId == null) {
             item = prepareItem(userId, itemName, offerType);
+        }
+        else {
+            item = itemService.getItem(IdConverter.hexStringToId(ItemId.class, itemId));
         }
 
         //Post offer
@@ -323,8 +328,16 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         Offer offer = this.postOffer(offerForPost);
 
         //Post offer revision
-        String strOfferRevisionContent = readFileContent(String.format("testOfferRevisions/%s.json",
-                defaultOfferRevisionFileName));
+        String strOfferRevisionContent;
+        if (offerType.equalsIgnoreCase(EnumHelper.CatalogItemType.STORED_VALUE.getItemType())) {
+            strOfferRevisionContent = readFileContent(String.format("testOfferRevisions/%s.json",
+                    defaultStoredValueOfferRevisionFileName));
+        }
+        else {
+            strOfferRevisionContent = readFileContent(String.format("testOfferRevisions/%s.json",
+                    defaultOfferRevisionFileName));
+        }
+
 
         OfferRevision offerRevisionForPost = new JsonMessageTranscoder().decode(
                 new TypeReference<OfferRevision>() {}, strOfferRevisionContent);

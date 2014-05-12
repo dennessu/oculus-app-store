@@ -10,6 +10,7 @@ import com.junbo.fulfilment.clientproxy.CatalogGateway;
 import com.junbo.fulfilment.clientproxy.EntitlementGateway;
 import com.junbo.fulfilment.clientproxy.WalletGateway;
 import com.junbo.fulfilment.common.util.Callback;
+import com.junbo.fulfilment.common.util.Utils;
 import com.junbo.fulfilment.core.FulfilmentHandler;
 import com.junbo.fulfilment.core.context.FulfilmentContext;
 import com.junbo.fulfilment.core.service.TransactionSupport;
@@ -58,7 +59,7 @@ public abstract class HandlerSupport<T extends FulfilmentContext>
             try {
                 LOGGER.info("Start processing action [" + action.getActionId() + "].");
 
-                action.setResult(handle(context, action));
+                action.setResult(Utils.toJson(handle(context, action)));
                 action.setStatus(FulfilmentStatus.SUCCEED);
 
                 LOGGER.info("Finish processing action [" + action.getActionId() + "].");
@@ -74,7 +75,7 @@ public abstract class HandlerSupport<T extends FulfilmentContext>
         }
     }
 
-    protected String handle(T context, FulfilmentAction action) {
+    protected Object handle(T context, FulfilmentAction action) {
         throw new RuntimeException("not implemented");
     }
 }

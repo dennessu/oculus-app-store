@@ -12,9 +12,8 @@ import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.Utility.TestClass;
-import com.junbo.test.common.apihelper.catalog.EntitlementDefinitionService;
-import com.junbo.test.common.apihelper.catalog.impl.EntitlementDefinitionServiceImpl;
-import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.catalog.EntitlementDefinitionService;
+import com.junbo.test.catalog.impl.EntitlementDefinitionServiceImpl;
 import com.junbo.test.common.libs.EnumHelper;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
@@ -196,8 +195,8 @@ public class EntitlementTesting extends TestClass {
         EntitlementDefinition ed = new EntitlementDefinition();
         ed.setType(entitlementType);
         ed.setDeveloperId(developer.getId().getValue());
-        String edsposted = eds.postEntitlementDefinition(ed);
-        entitlement.setEntitlementDefinitionId(Master.getInstance().getEntitlementDefinition(edsposted).getEntitlementDefId());
+        EntitlementDefinition edRtn = eds.postEntitlementDefinition(ed);
+        entitlement.setEntitlementDefinitionId(edRtn.getEntitlementDefId());
         entitlement.setUserId(user.getId().getValue());
         return EntitlementService.grantEntitlement(entitlement);
     }

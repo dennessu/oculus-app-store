@@ -196,9 +196,8 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
     }
 
     @Override
-    public Promise<PaymentTransaction> getByTransactionToken(String token) {
-        throw AppServerExceptions.INSTANCE.serviceNotImplemented(
-                getProviderName() + "_getByTransactionToken").exception();
+    public Promise<PaymentTransaction> getByTransactionToken(PaymentTransaction request) {
+        return Promise.pure(null);
     }
 
     private void validateWallet(PaymentInstrument request){

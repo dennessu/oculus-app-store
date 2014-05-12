@@ -11,6 +11,7 @@ package com.junbo.catalog.common.util;
  */
 public class Constants {
     public static final String SYSTEM_INTERNAL = "system internal";
+    public static final String DEFAULT_USER_ID = "0";
 
     // API paging options
     public static final Integer DEFAULT_PAGING_START = 0;

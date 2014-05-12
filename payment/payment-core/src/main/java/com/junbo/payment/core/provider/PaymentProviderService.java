@@ -31,7 +31,7 @@ public interface PaymentProviderService{
     Promise<PaymentTransaction> reverse(String transactionId, PaymentTransaction paymentRequest);
     Promise<PaymentTransaction> refund(String transactionId, PaymentTransaction request);
     List<PaymentTransaction> getByBillingRefId(String orderId);
-    Promise<PaymentTransaction> getByTransactionToken(String token);
+    Promise<PaymentTransaction> getByTransactionToken(PaymentTransaction paymentRequest);
 
     Promise<PaymentTransaction> confirm(String transactionId, PaymentTransaction paymentRequest);
 }
