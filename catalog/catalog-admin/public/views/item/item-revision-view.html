@@ -1,10 +1,7 @@
-<h1>Item Revision Details</h1>
-
 <div class="controls">
-    <a href="#/items/{{ item.self.id }}/edit" ng-if="item.status!='PendingReview'">Edit</a>
-    <a ng-click="reviewItem()" class="btn btn-small btn-default" ng-if="item.status=='Design'">Submit</a>
+    <a ng-click="approveRevision()" class="btn btn-small btn-default" ng-if="revision.status=='DRAFT'">Publish</a>
 </div>
-
+<hr>
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">General</h3>
@@ -21,6 +18,12 @@
                 <label class="col-sm-3 control-label">Revision Id</label>
                 <div class="col-sm-9">
                     <p class="form-control-static">{{ revision.self.id }}</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Status</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static">{{ revision.status }}</p>
                 </div>
             </div>
             <div class="form-group">
