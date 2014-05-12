@@ -6,13 +6,6 @@
 package com.junbo.test.catalogscenario;
 
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
-import com.junbo.common.id.*;
-import com.junbo.common.model.Results;
-import com.junbo.test.catalog.*;
-import com.junbo.test.catalog.enums.CatalogItemType;
-import com.junbo.test.catalog.enums.EntitlementType;
-import com.junbo.test.catalog.impl.*;
-
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
@@ -20,20 +13,22 @@ import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.item.ItemRevision;
-import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.test.common.Utility.TestClass;
+import com.junbo.test.common.libs.IdConverter;
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.test.common.libs.EnumHelper;
-import com.junbo.identity.spec.v1.model.User;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.*;
+import com.junbo.common.model.Results;
+import com.junbo.test.catalog.enums.*;
+import com.junbo.test.catalog.impl.*;
+import com.junbo.test.catalog.*;
+import com.junbo.common.id.*;
 
 import org.testng.annotations.Test;
-import org.testng.Assert;
-
 import java.util.ArrayList;
+import org.testng.Assert;
 import java.util.HashMap;
 import java.util.List;
 
@@ -77,7 +72,7 @@ public class Catalog extends TestClass {
         attributeProperties.setDescription(RandomFactory.getRandomStringOfAlphabetOrNumeric(30));
         locales.put("en_US", attributeProperties);
         itemAttribute.setLocales(locales);
-        itemAttribute.setType(EnumHelper.CatalogItemAttributeType.getRandom());
+        itemAttribute.setType(CatalogItemAttributeType.getRandom());
 
         logger.LogSample("Post an Item attribute");
         ItemAttribute attributeRtn = itemAttributeAPI.postItemAttribute(itemAttribute);
@@ -136,7 +131,7 @@ public class Catalog extends TestClass {
         attributeProperties.setDescription(RandomFactory.getRandomStringOfAlphabetOrNumeric(30));
         locales.put("en_US", attributeProperties);
         offerAttribute.setLocales(locales);
-        offerAttribute.setType(EnumHelper.CatalogOfferAttributeType.getRandom());
+        offerAttribute.setType(CatalogOfferAttributeType.getRandom());
 
         logger.LogSample("Post an offer attribute");
         OfferAttribute attributeRtn = offerAttributeAPI.postOfferAttribute(offerAttribute);
@@ -192,14 +187,14 @@ public class Catalog extends TestClass {
 
         //Post a Physical item
         Item physicalItem = itemServiceAPI.prepareItemEntity(defaultItemFileName);
-        physicalItem.setType(EnumHelper.CatalogItemType.PHYSICAL.getItemType());
+        physicalItem.setType(CatalogItemType.PHYSICAL.getItemType());
         logger.LogSample("Post a physical item");
         Item physicalItemGet = itemServiceAPI.postItem(physicalItem);
         Assert.assertNotNull(physicalItemGet);
 
         //Post a Digital item
         Item digitalItem = itemServiceAPI.prepareItemEntity(defaultItemFileName);
-        digitalItem.setType(EnumHelper.CatalogItemType.DIGITAL.getItemType());
+        digitalItem.setType(CatalogItemType.DIGITAL.getItemType());
         logger.LogSample("Post a digital(app) item");
         Item digitalItemGet = itemServiceAPI.postItem(digitalItem);
         Assert.assertNotNull(digitalItemGet);
@@ -233,7 +228,7 @@ public class Catalog extends TestClass {
         ItemRevision itemRevisionRtn = itemRevisionService.postItemRevision(itemRevision);
 
         //Approve the item revision
-        itemRevisionRtn.setStatus(EnumHelper.CatalogEntityStatus.APPROVED.getEntityStatus());
+        itemRevisionRtn.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
         logger.LogSample("Update item Revision's status to APPROVED");
         itemRevisionService.updateItemRevision(itemRevisionRtn);
 
@@ -307,7 +302,7 @@ public class Catalog extends TestClass {
         OfferRevision offerRevisionRtn = offerRevisionServiceAPI.postOfferRevision(offerRevision);
 
         //Approve the offer revision
-        offerRevisionRtn.setStatus(EnumHelper.CatalogEntityStatus.APPROVED.getEntityStatus());
+        offerRevisionRtn.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
         offerRevisionServiceAPI.updateOfferRevision(offerRevisionRtn);
 
         //verify the offer published status and currentOfferRevisionId
@@ -335,7 +330,7 @@ public class Catalog extends TestClass {
     @Test
     public void testEntitlementDefinitionManagement() throws Exception {
 
-        HashMap<String, List<String>> paraMap = new HashMap();
+        HashMap<String, List<String>> paraMap = new HashMap<>();
         EntitlementDefinitionService entitlementDefinitionService = EntitlementDefinitionServiceImpl.instance();
 
         ///Post an entitlement definition and verify it got posted
@@ -418,7 +413,7 @@ public class Catalog extends TestClass {
         String superUserId = userService.PostUser();
 
         //Show all previously submitted offers
-        HashMap<String, List<String>> paraMap = new HashMap();
+        HashMap<String, List<String>> paraMap = new HashMap<>();
         offerService.getOffers(paraMap);
 
         //Simulate app submission process
@@ -429,7 +424,7 @@ public class Catalog extends TestClass {
         ItemRevision itemRevision = itemRevisionService.postDefaultItemRevision(item);
 
         //3. Approve the item revision
-        itemRevision.setStatus(EnumHelper.CatalogEntityStatus.APPROVED.getEntityStatus());
+        itemRevision.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
         itemRevisionService.updateItemRevision(itemRevision);
 
         //4. Post an offer
@@ -439,7 +434,7 @@ public class Catalog extends TestClass {
         OfferRevision offerRevision = offerRevisionService.postDefaultOfferRevision(offer, item);
 
         //6. Approve the offer revision
-        offerRevision.setStatus(EnumHelper.CatalogEntityStatus.APPROVED.getEntityStatus());
+        offerRevision.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
         offerRevisionService.updateOfferRevision(offerRevision);
 
         //Check the offer status
