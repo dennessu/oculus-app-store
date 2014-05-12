@@ -8,7 +8,7 @@ import java.security.Key
  * Created by liangfu on 5/7/14.
  */
 @CompileStatic
-interface AESCipherService {
+interface CipherService {
 
     public String encrypt(String message, Key key)
 

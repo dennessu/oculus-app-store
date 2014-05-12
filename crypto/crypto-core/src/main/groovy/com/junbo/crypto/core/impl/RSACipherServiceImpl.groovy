@@ -11,23 +11,21 @@ import javax.crypto.BadPaddingException
 import javax.crypto.Cipher
 import javax.crypto.IllegalBlockSizeException
 import javax.crypto.NoSuchPaddingException
-import javax.crypto.spec.IvParameterSpec
 import java.security.InvalidAlgorithmParameterException
 import java.security.InvalidKeyException
 import java.security.Key
 import java.security.NoSuchAlgorithmException
 
 /**
- * This is AES asymmetric cipher.
- * Created by liangfu on 5/7/14.
+ * This is RSA asymmetric cipher.
+ * Created by liangfu on 5/12/14.
  */
 @CompileStatic
-class AESCipherServiceImpl implements CipherService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AESCipherServiceImpl)
+class RSACipherServiceImpl implements CipherService {
 
-    private static final byte [] IV = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    private static final Logger LOGGER = LoggerFactory.getLogger(RSACipherServiceImpl)
 
-    private static final String ALGORITHM = 'AES/CBC/PKCS5Padding'
+    private static final String ALGORITHM = 'RSA'
 
     @Override
     String encrypt(String message, Key key) {
@@ -41,8 +39,7 @@ class AESCipherServiceImpl implements CipherService {
         }
         try {
             Cipher cipher = Cipher.getInstance(ALGORITHM)
-            IvParameterSpec ivspec = new IvParameterSpec(IV);
-            cipher.init(Cipher.ENCRYPT_MODE, key, ivspec);
+            cipher.init(Cipher.ENCRYPT_MODE, key);
             return HexHelper.byteArrayToHex(cipher.doFinal(message.getBytes("UTF-8")));
         } catch (NoSuchAlgorithmException noAlgorithmEx) {
             throw AppErrors.INSTANCE.noSuchAlgorithmException("Encrypt: " + noAlgorithmEx.message).exception()
@@ -74,8 +71,7 @@ class AESCipherServiceImpl implements CipherService {
         }
         try {
             Cipher cipher = Cipher.getInstance(ALGORITHM);
-            IvParameterSpec ivspec = new IvParameterSpec(IV);
-            cipher.init(Cipher.DECRYPT_MODE, key, ivspec);
+            cipher.init(Cipher.DECRYPT_MODE, key);
             return new String(cipher.doFinal(HexHelper.hexStringToByteArray(encryptMessage)), "UTF-8");
         } catch (NoSuchAlgorithmException noAlgorithmEx) {
             throw AppErrors.INSTANCE.noSuchAlgorithmException("Encrypt: " + noAlgorithmEx.message).exception()

@@ -6,36 +6,36 @@
 package com.junbo.crypto.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.junbo.common.id.UserCryptoKeyId;
-import com.junbo.common.id.UserId;
+import com.junbo.common.id.MasterKeyId;
 import com.junbo.common.model.ResourceMeta;
 import com.junbo.common.util.Identifiable;
 
 /**
- * Created by liangfu on 5/7/14.
+ * Created by liangfu on 5/12/14.
  */
-public class UserCryptoKey extends ResourceMeta implements Identifiable<UserCryptoKeyId> {
-    private UserCryptoKeyId id;
+public class MasterKey extends ResourceMeta implements Identifiable<MasterKeyId> {
 
-    private UserId userId;
+    private MasterKeyId id;
+
+    private String value;
 
     @JsonIgnore
     private String encryptValue;
 
-    public UserId getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UserId userId) {
-        this.userId = userId;
-    }
-
-    public UserCryptoKeyId getId() {
+    public MasterKeyId getId() {
         return id;
     }
 
-    public void setId(UserCryptoKeyId id) {
+    public void setId(MasterKeyId id) {
         this.id = id;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 
     public String getEncryptValue() {
