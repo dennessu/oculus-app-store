@@ -22,7 +22,7 @@
         <property name="grantTokenFlow" value="grantTokenFlow"/>
     </bean>
 
-    <bean id="defaultTokenRouter" parent="routingRouterBase" />
+    <bean id="defaultTokenEndpointRouter" parent="routingRouterBase" />
 
     <bean id="defaultTokenEndpointClientFactory" class="com.junbo.oauth.spec.endpoint.proxy.TokenEndpointClientProxyFactory"/>
 
@@ -30,7 +30,7 @@
         <property name="tokenService" ref="tokenService"/>
     </bean>
 
-    <bean id="defaultTokenInfoRouter" parent="routingRouterBase" />
+    <bean id="defaultTokenInfoEndpointRouter" parent="routingRouterBase" />
 
     <bean id="defaultTokenInfoEndpointClientFactory" class="com.junbo.oauth.spec.endpoint.proxy.TokenInfoEndpointClientProxyFactory"/>
 
@@ -40,7 +40,7 @@
 
     <bean id="defaultUserInfoEndpointClientFactory" class="com.junbo.oauth.spec.endpoint.proxy.UserInfoEndpointClientProxyFactory"/>
 
-    <bean id="defaultUserInfoRouter" parent="routingRouterBase" />
+    <bean id="defaultUserInfoEndpointRouter" parent="routingRouterBase" />
 
     <bean id="defaultEndSessionEndpoint" class="com.junbo.oauth.api.endpoint.EndSessionEndpointImpl">
         <property name="flowExecutor" ref="flowExecutor"/>
