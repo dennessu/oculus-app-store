@@ -37,13 +37,13 @@ class EmailListener extends BaseListener {
     @Autowired
     private EmailTemplateRepository emailTemplateRepository
     @Autowired
-    protected PlatformTransactionManager transactionManager;
+    protected PlatformTransactionManager transactionManager
 
     private final static Logger LOGGER = LoggerFactory.getLogger(EmailListener)
 
     protected void onMessage(final String eventId, final String message) {
         LOGGER.info("Receive a message with event id: {} and message is: {}", eventId, message)
-        Long emailId == null
+        Long emailId = null
         try {
             emailId = Long.parseLong(message)
         } catch (NumberFormatException ex) {
