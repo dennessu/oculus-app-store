@@ -254,7 +254,7 @@ Note: If you don't want to change the coreutils preference, you can create anoth
 `aws-artifactory` is a shared artifactory server used by the development team. The code always uses the name `aws-artifactory` to access it. Run the following command to map IP address to the name.
 
 ```bash
-sudo echo 54.254.249.206 aws-artifactory >> /etc/hosts
+sudo bash -c 'echo 54.254.249.206 aws-artifactory >> /etc/hosts'
 ```
 
 #### Install IntelliJ IDEA (Optional)
@@ -307,41 +307,45 @@ cd ~/owp-main
 
 The command should finish without error. The fullcycle.sh includes the unit tests.
 
+The above command equals to the following:
+```bash
+cd ~/owp-main
+./setupdb.sh
+pushd gradle/bootstrap
+gradle
+popd
+gradle
+```
+
 ### Partial Build
 If you want to build only one component (for example, identity), run the following commands:
 
 ```bash
 cd ~/owp-main/identity
-gradle clean build install
+gradle
 ```
 
-If you want to run the build without unittests, run the following commands:
+If you want to run the build without code style checks and unittests, run the following commands:
 
 ```bash
 cd ~/owp-main/identity
-gradle clean build install -x test
+gradle -x build
 ```
 
 If you want to run the build using locally cached jar packages:
 
 ```bash
 cdo ~/owp-main/identity
-gradle clean build install --offline
+gradle --offline
 ```
 
 ### Run the servers
 After the build, run the servers using the following command:
 
 ```bash
-cd ~/owp-main/bootstrap
+cd ~/owp-main/apphost
 gradle installApp distTar
-pushd catalog-bundle/build/install/catalog-bundle
-./startup.sh
-popd
-pushd commerce-bundle/build/install/commerce-bundle
-./startup.sh
-popd
-pushd identity-bundle/build/install/identity-bundle
+pushd apphost-cli/build/install/apphost-cli
 ./startup.sh
 popd
 pushd docs-bundle/build/install/docs-bundle
@@ -351,9 +355,7 @@ popd
 
 After the steps, the serices are available at different ports on the development machine.
 - Docs Url: [http://localhost:8079](http://localhost:8079)
-- Commerce Url: [http://localhost:8080](http://localhost:8080)
-- Identity Url: [http://localhost:8081](http://localhost:8081)
-- Catalog Url: [http://localhost:8082](http://localhost:8082)
+- Api Url: [http://localhost:8080/v1](http://localhost:8080)
 
 Note: In integration and production environment, a hardware load balancer will be put in front of these endpoints to provide a single endpoint. 
 (TODO: In onebox, use a Nginx server will be used to proxy the requests.)

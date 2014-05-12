@@ -5,6 +5,7 @@
  */
 package com.junbo.crypto.core
 
+import com.junbo.crypto.common.HexHelper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.TestExecutionListeners
@@ -15,9 +16,7 @@ import org.testng.annotations.Test
 
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
-import javax.crypto.SecretKeyFactory
 import java.security.SecureRandom
-import java.security.spec.KeySpec
 
 /**
  * Created by liangfu on 5/7/14.
@@ -31,26 +30,35 @@ public class CipherServiceTest extends AbstractTestNGSpringContextTests {
     Random random = new SecureRandom();
 
     @Autowired
-    private CipherService cipherService
+    private AESCipherService cipherService
 
-    @Test(enabled = false)
+    @Test
     public void testEncrypt() {
-        String message = 'Hello World!'
         // Get the KeyGenerator
         KeyGenerator kgen = KeyGenerator.getInstance("AES");
-        kgen.init(256); // 192 and 256 bits may not be available
 
         // Generate the secret key specs.
         SecretKey skey = kgen.generateKey();
-        String key = skey.getEncoded().toString();
+        String message = 'Hello World!'
+        // Get the KeyGenerator
 
-        String encryptedValue = cipherService.encrypt(message, key)
+        String encryptedValue = cipherService.encrypt(message, skey)
 
-        String decryptedValue = cipherService.decrypt(encryptedValue, key)
+        String decryptedValue = cipherService.decrypt(encryptedValue, skey)
 
         assert message == decryptedValue
     }
 
+    @Test
+    public void testHexDecodeAndEncode() {
+        Integer size = Math.abs(random.nextInt() % 50)
+        String value = generate(size * 2)
+
+        byte[] encodeValue = HexHelper.hexStringToByteArray(value);
+        String decodedValue = HexHelper.byteArrayToHex(encodeValue);
+
+        assert  decodedValue == value
+    }
 
     private String generate(int length) {
         byte[] bytes = new byte[length];

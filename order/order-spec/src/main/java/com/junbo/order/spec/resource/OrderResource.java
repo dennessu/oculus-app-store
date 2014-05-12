@@ -10,6 +10,7 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.langur.core.routing.RouteBy;
 import com.junbo.order.spec.model.Order;
 import com.junbo.order.spec.model.OrderQueryParam;
 import com.junbo.order.spec.model.PageParam;
@@ -31,15 +32,18 @@ public interface OrderResource {
 
     @ApiOperation("Create an order")
     @POST
+    @RouteBy("order.getUser()")
     Promise<Order> createOrder(Order order);
 
     @ApiOperation("Get an order")
     @GET
     @Path("/{orderId}")
+    @RouteBy("orderId")
     Promise<Order> getOrderByOrderId(@PathParam("orderId") OrderId orderId);
 
     @ApiOperation("Get orders by user")
     @GET
+    @RouteBy(value = "userId", fallbackToAnyLocal = true)
     Promise<Results<Order>> getOrderByUserId(@QueryParam("userId") UserId userId,
                                              @BeanParam OrderQueryParam orderQueryParam,
                                              @BeanParam PageParam pageParam);
@@ -47,5 +51,6 @@ public interface OrderResource {
     @ApiOperation("Put an order")
     @PUT
     @Path("/{orderId}")
+    @RouteBy("orderId")
     Promise<Order> updateOrderByOrderId(@PathParam("orderId") OrderId orderId, Order order);
 }

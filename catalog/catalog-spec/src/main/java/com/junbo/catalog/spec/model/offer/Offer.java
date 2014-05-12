@@ -9,11 +9,6 @@ package com.junbo.catalog.spec.model.offer;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.BaseEntityModel;
 import com.junbo.common.jackson.annotation.*;
-import com.junbo.common.jackson.annotation.ItemId;
-import com.junbo.common.jackson.annotation.OfferAttributeId;
-import com.junbo.common.jackson.annotation.OfferId;
-import com.junbo.common.jackson.annotation.OfferRevisionId;
-import com.junbo.common.jackson.annotation.UserId;
 import com.junbo.common.model.Link;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -45,11 +40,6 @@ public class Offer extends BaseEntityModel {
     @ApiModelProperty(position = 23, required = true, value = "Whether the offer is published")
     @JsonProperty("isPublished")
     private Boolean published;
-
-    @ItemId
-    @JsonProperty("iapHostItem")
-    @ApiModelProperty(position = 24, required = false, value = "The item in which the IAP offer will be sold.")
-    private Long iapHostItemId;
 
     @OfferAttributeId
     @ApiModelProperty(position = 25, required = true, value = "Categories of the offer.")
@@ -96,14 +86,6 @@ public class Offer extends BaseEntityModel {
 
     public void setPublished(Boolean published) {
         this.published = published;
-    }
-
-    public Long getIapHostItemId() {
-        return iapHostItemId;
-    }
-
-    public void setIapHostItemId(Long iapHostItemId) {
-        this.iapHostItemId = iapHostItemId;
     }
 
     public List<Long> getCategories() {

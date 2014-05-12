@@ -17,7 +17,3 @@ dependencies {
     processor junboProject(':langur-processor')
     processor (libraries.log4j)
 }
-
-ext {
-    processorClass = 'com.junbo.langur.processor.RestAdapterProcessor,com.junbo.langur.processor.ClientProxyProcessor'
-}

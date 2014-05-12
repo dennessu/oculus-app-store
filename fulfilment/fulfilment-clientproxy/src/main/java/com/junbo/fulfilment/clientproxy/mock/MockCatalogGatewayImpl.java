@@ -81,9 +81,7 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
                 }});
                 add(new Action() {{
                     setType(Constant.ACTION_GRANT_ENTITLEMENT);
-                    setProperties(new HashMap<String, Object>() {{
-                        put(Constant.ENTITLEMENT_DEF_ID, "12345");
-                    }});
+                    setEntitlementDefId(12345L);
                 }});
             }});
         }});
@@ -113,9 +111,7 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
             put(Constant.EVENT_PURCHASE, new ArrayList<Action>() {{
                 add(new Action() {{
                     setType(Constant.ACTION_GRANT_ENTITLEMENT);
-                    setProperties(new HashMap<String, Object>() {{
-                        put(Constant.ENTITLEMENT_DEF_ID, "12345");
-                    }});
+                    setEntitlementDefId(12345L);
                 }});
             }});
         }});

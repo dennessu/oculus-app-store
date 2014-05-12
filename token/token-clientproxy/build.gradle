@@ -13,7 +13,3 @@ dependencies {
 
     testCompile(libraries.spring_test)
 }
-
-ext {
-    processorClass = 'com.junbo.langur.processor.RestAdapterProcessor,com.junbo.langur.processor.ClientProxyProcessor'
-}

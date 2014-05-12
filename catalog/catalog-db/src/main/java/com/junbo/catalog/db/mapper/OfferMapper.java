@@ -31,6 +31,8 @@ public class OfferMapper {
         entity.setCurrentRevisionId(model.getCurrentRevisionId());
         //entity.setCategories(Utils.toJson(model.getCategories()));
         entity.setCategories(model.getCategories());
+        entity.setCreatedBy(String.valueOf(model.getOwnerId()));
+        entity.setUpdatedBy(String.valueOf(model.getOwnerId()));
         entity.setRev(model.getRev()==null ? null : Integer.valueOf(model.getRev()));
     }
 
@@ -45,9 +47,7 @@ public class OfferMapper {
         model.setOwnerId(entity.getOwnerId());
         //model.setCategories(Utils.fromJson(entity.getCategories(), List.class));
         model.setCategories(entity.getCategories());
-        model.setCreatedBy(entity.getCreatedBy());
         model.setCreatedTime(entity.getCreatedTime());
-        model.setUpdatedBy(entity.getUpdatedBy());
         model.setUpdatedTime(entity.getUpdatedTime());
         model.setRev(entity.getRev().toString());
         return model;
