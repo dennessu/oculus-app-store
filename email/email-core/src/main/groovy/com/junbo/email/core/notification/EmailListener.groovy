@@ -43,7 +43,15 @@ class EmailListener extends BaseListener {
 
     protected void onMessage(final String eventId, final String message) {
         LOGGER.info("Receive a message with event id: {} and message is: {}", eventId, message)
-        Long emailId = Long.parseLong(message)
+        Long emailId == null
+        try {
+            emailId = Long.parseLong(message)
+        } catch (NumberFormatException ex) {
+            LOGGER.error("Failed to parse message: {}", message)
+        }
+        if (emailId == null) {
+            return
+        }
         this.sendEmail(emailId)
     }
 
