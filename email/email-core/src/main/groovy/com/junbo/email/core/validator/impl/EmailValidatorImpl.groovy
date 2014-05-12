@@ -11,7 +11,6 @@ import com.junbo.email.spec.error.AppErrors
 import com.junbo.email.spec.model.Email
 import com.junbo.identity.spec.v1.model.User
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 
@@ -22,9 +21,13 @@ import org.springframework.util.StringUtils
 @Component
 class EmailValidatorImpl extends CommonValidator implements EmailValidator {
 
-    @Autowired
     private EmailScheduleRepository emailScheduleRepository
 
+    void setEmailScheduleRepository(EmailScheduleRepository emailScheduleRepository) {
+        this.emailScheduleRepository = emailScheduleRepository
+    }
+
+    @Override
     void validateCreate(Email email) {
         this.validateEmailId(email)
         this.validateCommonField(email)
@@ -33,6 +36,7 @@ class EmailValidatorImpl extends CommonValidator implements EmailValidator {
         super.validateEmailTemplate(email)
     }
 
+    @Override
     void validateUpdate(Email email) {
         this.validateCommonField(email)
         this.validateProhibitedFields(email)
@@ -42,6 +46,7 @@ class EmailValidatorImpl extends CommonValidator implements EmailValidator {
         this.validateEmailSchedule(email)
     }
 
+    @Override
     void validateDelete(Long id) {
         if (id == null) {
             throw AppErrors.INSTANCE.invalidEmailId('').exception()
@@ -51,6 +56,7 @@ class EmailValidatorImpl extends CommonValidator implements EmailValidator {
         }
     }
 
+    @Override
     void validateUser(User user) {
         super.validateUser(user)
     }
@@ -74,6 +80,13 @@ class EmailValidatorImpl extends CommonValidator implements EmailValidator {
         }
         if (email.userId == null && email.recipients == null) {
             throw AppErrors.INSTANCE.missingField('user or recipients').exception()
+        }
+        if (email.recipients != null) {
+            for (String recipient : email.recipients) {
+                if (!super.validateEmailAddress(recipient)) {
+                   throw AppErrors.INSTANCE.invalidField('recipients').exception()
+                }
+            }
         }
         if (email.templateId == null) {
             throw AppErrors.INSTANCE.missingField('template').exception()

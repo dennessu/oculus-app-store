@@ -6,4 +6,4 @@ dependencies {
     compile junboProject(':docs-app')
 }
 
-defaultTasks 'clean', 'installApp', 'distTar'
+defaultTasks 'clean', 'install', 'installApp', 'distZip'

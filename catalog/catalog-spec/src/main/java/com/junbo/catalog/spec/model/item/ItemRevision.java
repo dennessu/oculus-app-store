@@ -8,11 +8,15 @@ package com.junbo.catalog.spec.model.item;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.catalog.spec.model.common.*;
-import com.junbo.common.jackson.annotation.*;
+import com.junbo.catalog.spec.model.common.AgeRating;
+import com.junbo.catalog.spec.model.common.BaseRevisionModel;
+import com.junbo.catalog.spec.model.common.Price;
+import com.junbo.common.jackson.annotation.AgeRatingId;
+import com.junbo.common.jackson.annotation.ItemId;
+import com.junbo.common.jackson.annotation.ItemRevisionId;
+import com.junbo.common.jackson.annotation.UserId;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -26,8 +30,22 @@ public class ItemRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The id of item revision resource")
     private Long revisionId;
 
+    @ApiModelProperty(position = 2, required = true,
+            value = "An ID that helps to group like items. ex. TEAM_FORTRESS, this rollup ID would be applied to" +
+                    "all items that are team fortress (PC, MAC, LINUX, etc)")
+    private String rollupPackageName;
+
+    @ApiModelProperty(position = 3, required = true,
+            value = "Used to identify the item (app), used mainly for android")
+    private String packageName;
+
     @ApiModelProperty(position = 15, required = true, value = "Sku")
     private String sku;
+
+    @ItemId
+    @JsonProperty("iapHostItems")
+    @ApiModelProperty(position = 16, required = false, value = "The items in which the IAP item will be sold.")
+    private List<Long> iapHostItemIds;
 
     @UserId
     @JsonProperty("developer")
@@ -60,12 +78,6 @@ public class ItemRevision extends BaseRevisionModel {
     @AgeRatingId
     private Map<String, AgeRating> ageRating;
 
-    @CurrencyId
-    @ApiModelProperty(position = 31, required = true, value = "Wallet currency")
-    private String storedValueCurrency;
-    @ApiModelProperty(position = 32, required = true, value = "Wallet amount")
-    private BigDecimal storedValueAmount;
-
     @ApiModelProperty(position = 40, required = true, value = "Locale properties of the item revision")
     private Map<String, ItemRevisionLocaleProperties> locales;
     @ApiModelProperty(position = 41, required = true, value = "Country properties of the item revision")
@@ -77,6 +89,30 @@ public class ItemRevision extends BaseRevisionModel {
 
     public void setSku(String sku) {
         this.sku = sku;
+    }
+
+    public String getRollupPackageName() {
+        return rollupPackageName;
+    }
+
+    public void setRollupPackageName(String rollupPackageName) {
+        this.rollupPackageName = rollupPackageName;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
+    public List<Long> getIapHostItemIds() {
+        return iapHostItemIds;
+    }
+
+    public void setIapHostItemIds(List<Long> iapHostItemIds) {
+        this.iapHostItemIds = iapHostItemIds;
     }
 
     public Long getRevisionId() {
@@ -149,22 +185,6 @@ public class ItemRevision extends BaseRevisionModel {
 
     public void setAgeRating(Map<String, AgeRating> ageRating) {
         this.ageRating = ageRating;
-    }
-
-    public String getStoredValueCurrency() {
-        return storedValueCurrency;
-    }
-
-    public void setStoredValueCurrency(String storedValueCurrency) {
-        this.storedValueCurrency = storedValueCurrency;
-    }
-
-    public BigDecimal getStoredValueAmount() {
-        return storedValueAmount;
-    }
-
-    public void setStoredValueAmount(BigDecimal storedValueAmount) {
-        this.storedValueAmount = storedValueAmount;
     }
 
     public Map<String, ItemRevisionLocaleProperties> getLocales() {

@@ -245,8 +245,6 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         ItemRevision itemRevision = new ItemRevision();
         itemRevision.setItemId(itemId);
         itemRevision.setOwnerId(ownerId);
-        itemRevision.setStoredValueAmount(new BigDecimal(123.45));
-        itemRevision.setStoredValueCurrency("USD");
         itemRevision.setStatus(Status.DRAFT.name());
         itemRevision.setLocales(new HashMap<String, ItemRevisionLocaleProperties>() {{
             put("en_US", new ItemRevisionLocaleProperties() {{
@@ -288,6 +286,8 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
             put(Constant.EVENT_PURCHASE, new ArrayList<Action>() {{
                 add(new Action() {{
                     setType(Constant.ACTION_CREDIT_WALLET);
+                    setStoredValueAmount(new BigDecimal("123.45"));
+                    setStoredValueCurrency("USD");
                 }});
             }});
         }});

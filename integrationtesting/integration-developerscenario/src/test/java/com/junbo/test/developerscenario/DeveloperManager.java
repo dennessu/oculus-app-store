@@ -10,16 +10,16 @@ import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.common.id.EntitlementDefinitionId;
 import com.junbo.common.id.UserId;
 import com.junbo.entitlement.spec.model.Entitlement;
+import com.junbo.test.catalog.EntitlementDefinitionService;
 import com.junbo.test.common.Utility.TestClass;
-import com.junbo.test.common.apihelper.catalog.OfferService;
-import com.junbo.test.common.apihelper.catalog.impl.EntitlementDefinitionServiceImpl;
-import com.junbo.test.common.apihelper.catalog.impl.OfferServiceImpl;
+import com.junbo.test.catalog.OfferService;
+import com.junbo.test.catalog.impl.EntitlementDefinitionServiceImpl;
+import com.junbo.test.catalog.impl.OfferServiceImpl;
 import com.junbo.test.common.apihelper.entitlement.EntitlementService;
 import com.junbo.test.common.apihelper.entitlement.impl.EntitlementServiceImpl;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.blueprint.Master;
-import com.junbo.test.common.libs.EnumHelper;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.Component;
@@ -59,6 +59,7 @@ public class DeveloperManager extends TestClass {
         UserService us = UserServiceImpl.instance();
         EntitlementService es = EntitlementServiceImpl.getInstance();
         OfferService os = OfferServiceImpl.instance();
+        EntitlementDefinitionService eds = EntitlementDefinitionServiceImpl.instance();
 
         String entitlementType = "DEVELOPER";
 
@@ -75,8 +76,8 @@ public class DeveloperManager extends TestClass {
         entitlementDefinition.setDeveloperId(Master.getInstance().getUser(partnerUser).getId().getValue());
         entitlementDefinition.setType(entitlementType);
         entitlementDefinition.setTag("");
-        String entitlementDefinitionId = EntitlementDefinitionServiceImpl.instance().postEntitlementDefinition(entitlementDefinition);
-        developerEntitlement.setEntitlementDefinitionId(IdConverter.hexStringToId(EntitlementDefinitionId.class, entitlementDefinitionId));
+        EntitlementDefinition edGet = eds.postEntitlementDefinition(entitlementDefinition);
+        developerEntitlement.setEntitlementDefinitionId(edGet.getEntitlementDefId());
 
         //developerEntitlement.setDeveloperId(Master.getInstance().getUser(partnerUser).getId().getValue());
         //developerEntitlement.setType(entitlementType);
@@ -90,8 +91,8 @@ public class DeveloperManager extends TestClass {
         Entitlement rtnEntitlement = Master.getInstance().getEntitlement(rtnEntitlements.get(0));
 
         Assert.assertTrue(rtnEntitlement.getUserId().equals(Master.getInstance().getUser(developerUser).getId().getValue()));
-        EntitlementDefinition entitlementDefinitionGet = Master.getInstance().getEntitlementDefinition(
-                IdConverter.idLongToHexString(EntitlementDefinitionId.class, rtnEntitlement.getEntitlementDefinitionId()));
+        EntitlementDefinition entitlementDefinitionGet = eds.getEntitlementDefinition(edGet.getEntitlementDefId());
+
         Assert.assertTrue(entitlementDefinitionGet.getDeveloperId().equals(Master.getInstance().getUser(partnerUser).getId().getValue()));
         Assert.assertEquals(entitlementDefinitionGet.getType(), entitlementType);
         //Assert.assertTrue(rtnEntitlement.getDeveloperId().equals(Master.getInstance().getUser(partnerUser).getId().getValue()));
@@ -102,9 +103,9 @@ public class DeveloperManager extends TestClass {
         Offer offerToPost = os.prepareOfferEntity(offerName);
         offerToPost.setOwnerId(Master.getInstance().getUser(developerUser).getId().getValue());
         logger.LogSample("post an offer for a developer");
-        String offerId = os.postOffer(offerToPost);
+        Offer offer = os.postOffer(offerToPost);
 
         //check user1's offer ownerId
-        Assert.assertEquals(IdConverter.idToHexString(new UserId(Master.getInstance().getOffer(offerId).getOwnerId())), developerUser);
+        Assert.assertEquals(IdConverter.idToHexString(new UserId(offer.getOwnerId())), developerUser);
     }
 }

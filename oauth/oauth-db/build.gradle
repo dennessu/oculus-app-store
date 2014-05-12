@@ -1,4 +1,7 @@
 apply plugin: 'groovy'
+apply plugin: 'application'
+
+mainClassName = "com.junbo.oauth.db.data.CouchDataLoader"
 
 dependencies {
     compile(libraries.spring_aop)

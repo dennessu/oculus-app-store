@@ -20,7 +20,6 @@ public class Topology implements InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(Topology.class);
 
     private String appHostUrl;
-    private StringConfig dataCentersConfig;
     private StringConfig appUrlTemplateConfig;
     private StringConfig appServersConfig;
 
@@ -32,11 +31,6 @@ public class Topology implements InitializingBean {
     @Required
     public void setAppHostUrl(String appHostUrl) {
         this.appHostUrl = appHostUrl;
-    }
-
-    @Required
-    public void setDataCentersConfig(StringConfig dataCentersConfig) {
-        this.dataCentersConfig = dataCentersConfig;
     }
 
     @Required
@@ -68,7 +62,6 @@ public class Topology implements InitializingBean {
                 reload();
             }
         };
-        this.dataCentersConfig.setConfigListener(configListener);
         this.appUrlTemplateConfig.setConfigListener(configListener);
         this.appServersConfig.setConfigListener(configListener);
     }
@@ -83,6 +76,14 @@ public class Topology implements InitializingBean {
 
     public boolean isHandledBySelf(int shard) {
         return topologyConfig.isHandledBySelf(shard);
+    }
+
+    /**
+     * Get the total number of shards int the topology.
+     * @return
+     */
+    public int getNumberOfShards() {
+        return topologyConfig.getNumberOfShards();
     }
 
     /**
@@ -111,7 +112,6 @@ public class Topology implements InitializingBean {
             this.topologyConfig = newTopologyConfig;
         } catch (Exception ex) {
             logger.error("Failed to load new topology configuration: \n" +
-                "dataCenters: " + this.dataCentersConfig.get() + "\n" +
                 "appUrlTemplate: " + this.appUrlTemplateConfig.get() + "\n" +
                 "appServers: " + this.appServersConfig.get(), ex);
             // continue to use existing configuration.

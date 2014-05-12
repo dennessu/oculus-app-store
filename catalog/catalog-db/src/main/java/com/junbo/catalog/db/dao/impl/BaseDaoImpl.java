@@ -22,6 +22,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -56,9 +57,13 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
     public Long create(T entity) {
         entity.setId(idGenerator.nextId());
         entity.setCreatedTime(Utils.now());
-        entity.setCreatedBy(Constants.SYSTEM_INTERNAL);
+        if (StringUtils.isEmpty(entity.getCreatedBy())) {
+            entity.setCreatedBy(Constants.DEFAULT_USER_ID);
+        }
         entity.setUpdatedTime(Utils.now());
-        entity.setUpdatedBy(Constants.SYSTEM_INTERNAL);
+        if (StringUtils.isEmpty(entity.getUpdatedBy())) {
+            entity.setUpdatedBy(Constants.DEFAULT_USER_ID);
+        }
         entity.setRev(1);
 
         return (Long) currentSession().save(entity);
@@ -71,7 +76,9 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
 
     public Long update(T entity) {
         entity.setUpdatedTime(Utils.now());
-        entity.setUpdatedBy(Constants.SYSTEM_INTERNAL);
+        if (StringUtils.isEmpty(entity.getUpdatedBy())) {
+            entity.setUpdatedBy(Constants.DEFAULT_USER_ID);
+        }
         entity.setRev(entity.getRev()==null ? 1 : entity.getRev() + 1);
         currentSession().update(entity);
         return entity.getId();

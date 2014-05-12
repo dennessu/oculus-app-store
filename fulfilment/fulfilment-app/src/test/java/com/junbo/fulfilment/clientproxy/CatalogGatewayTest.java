@@ -56,9 +56,7 @@ public class CatalogGatewayTest extends BaseTest {
                     new ArrayList<Action>() {{
                         add(new Action() {{
                             setType(Constant.ACTION_GRANT_ENTITLEMENT);
-                            setProperties(new HashMap<String, Object>() {{
-                                put(Constant.ENTITLEMENT_DEF_ID, "12345");
-                            }});
+                            setEntitlementDefId(12345L);
                         }});
                     }});
         }});
@@ -90,8 +88,6 @@ public class CatalogGatewayTest extends BaseTest {
         ItemRevision itemRevision = new ItemRevision();
         itemRevision.setItemId(itemId);
         itemRevision.setOwnerId(ownerId);
-        itemRevision.setStoredValueAmount(new BigDecimal(123.45));
-        itemRevision.setStoredValueCurrency("USD");
         itemRevision.setStatus(Status.DRAFT.name());
         itemRevision.setLocales(new HashMap<String, ItemRevisionLocaleProperties>() {{
             put("en_US", new ItemRevisionLocaleProperties() {{
@@ -120,6 +116,11 @@ public class CatalogGatewayTest extends BaseTest {
         offerRevision.setOfferId(offerId);
         offerRevision.setOwnerId(ownerId);
         offerRevision.setStatus(Status.DRAFT.name());
+        offerRevision.setLocales(new HashMap<String, OfferRevisionLocaleProperties>() {{
+            put("en_US", new OfferRevisionLocaleProperties() {{
+                setName("test-offer");
+            }});
+        }});
 
         Price price = new Price();
         price.setPriceType(PriceType.FREE.name());
@@ -128,6 +129,8 @@ public class CatalogGatewayTest extends BaseTest {
             put(Constant.EVENT_PURCHASE, new ArrayList<Action>() {{
                 add(new Action() {{
                     setType(Constant.ACTION_CREDIT_WALLET);
+                    setStoredValueAmount(new BigDecimal("123.45"));
+                    setStoredValueCurrency("USD");
                 }});
             }});
         }});

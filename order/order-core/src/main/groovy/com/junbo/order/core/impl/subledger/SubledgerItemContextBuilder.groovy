@@ -1,5 +1,7 @@
 package com.junbo.order.core.impl.subledger
 
+import com.junbo.common.enumid.CountryId
+import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.UserId
 import com.junbo.order.clientproxy.catalog.CatalogFacade
@@ -25,10 +27,10 @@ class SubledgerItemContextBuilder {
     @Resource(name = 'cachedCatalogFacade')
     CatalogFacade catalogFacade
 
-    SubledgerItemContext buildContext(OrderOfferRevision offer, String country, String currency, Date createdTime) {
+    SubledgerItemContext buildContext(OrderOfferRevision offer, CountryId country, CurrencyId currency, Date createdTime) {
         return new SubledgerItemContext(
-            sellerId : new UserId(offer.catalogOfferRevision.ownerId),
-            offerId : new OfferId(offer.catalogOfferRevision.offerId),
+            seller : new UserId(offer.catalogOfferRevision.ownerId),
+            offer : new OfferId(offer.catalogOfferRevision.offerId),
             currency : currency,
             country : country,
             createdTime : createdTime
@@ -36,7 +38,7 @@ class SubledgerItemContextBuilder {
     }
 
     SubledgerItemContext buildContext(SubledgerItem subledgerItem) {
-        def orderItem = orderRepository.getOrderItem(subledgerItem.orderItemId.value)
+        def orderItem = orderRepository.getOrderItem(subledgerItem.orderItem.value)
         if (orderItem == null) {
             throw AppErrors.INSTANCE.orderItemNotFound().exception()
         }
@@ -46,7 +48,7 @@ class SubledgerItemContextBuilder {
             throw AppErrors.INSTANCE.orderNotFound().exception()
         }
 
-        def offer = catalogFacade.getOfferRevision(subledgerItem.offerId.value, orderItem.honoredTime).wrapped().get()
-        return buildContext(offer, order.country.value, order.currency.value, subledgerItem.createdTime)
+        def offer = catalogFacade.getOfferRevision(subledgerItem.offer.value, orderItem.honoredTime).wrapped().get()
+        return buildContext(offer, order.country, order.currency, subledgerItem.createdTime)
     }
 }

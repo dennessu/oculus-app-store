@@ -5,18 +5,16 @@
  */
 package com.junbo.test.catalog.item;
 
-import com.junbo.catalog.spec.enums.ItemType;
-import com.junbo.common.id.ItemId;
-import com.junbo.common.model.Results;
 import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.catalog.impl.ItemServiceImpl;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.catalog.spec.model.item.Item;
-
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.catalog.ItemService;
 import com.junbo.test.common.property.*;
+import com.junbo.common.model.Results;
+import com.junbo.common.id.ItemId;
 
 import org.testng.annotations.Test;
 import org.testng.Assert;

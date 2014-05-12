@@ -6,7 +6,9 @@
 
 package com.junbo.sharding.id.oculus
 
+import com.junbo.common.util.Context
 import groovy.transform.CompileStatic
+
 import java.security.SecureRandom
 
 /**
@@ -53,7 +55,14 @@ class OculusIdGeneratorImpl implements com.junbo.sharding.IdGenerator {
 
     @Override
     long nextId() {
-        int shardId = random.nextInt(slots.size())
+        int shardId;
+
+        def topology = Context.get().topology;
+        if (topology != null) {
+            shardId = topology.randomShardId
+        } else {
+            shardId = random.nextInt(slots.size())
+        }
         return nextIdByShardId(shardId)
     }
 

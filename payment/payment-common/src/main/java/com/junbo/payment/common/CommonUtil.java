@@ -16,6 +16,9 @@ import com.junbo.payment.common.exception.AppServerExceptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.apache.commons.codec.binary.Base64;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
@@ -28,6 +31,7 @@ import java.util.*;
  */
 public final class CommonUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(CommonUtil.class);
+    private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";
 
     private CommonUtil(){
 
@@ -159,6 +163,21 @@ public final class CommonUtil {
                     }
                 }
             }
+        }
+    }
+
+    public static String calHMCASHA1(String data, String key){
+        String result = null;
+        try {
+            SecretKeySpec signingKey = new SecretKeySpec(key.getBytes(), HMAC_SHA1_ALGORITHM);
+            Mac mac = Mac.getInstance(HMAC_SHA1_ALGORITHM);
+            mac.init(signingKey);
+            byte[] rawHmac = mac.doFinal(data.getBytes());
+            result = Base64.encodeBase64String(rawHmac);
+            return result;
+        }catch (Exception ex){
+            LOGGER.error(ex.toString());
+            throw AppServerExceptions.INSTANCE.errorCalculateHMCA().exception();
         }
     }
 }

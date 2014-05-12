@@ -1,6 +1,4 @@
 apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'maven'
 apply plugin: 'groovy'
 
 sourceCompatibility = '1.7'
@@ -26,16 +24,16 @@ test {
 }
 
 dependencies {
-    compile project(':common-testlib')
     compile(libraries.asyncclient)
     compile(libraries.postgresql)
-    compile project(':payment-integration')
-    //compile(libraries.common_testlib)
-    compile 'com.junbo.billing:billing-spec:0.0.1-SNAPSHOT'
+    
+    compile junboProject(':billing-spec')
+    compile junboProject(':common-testlib')
+    compile junboProject(':payment-integration')
+    compile junboProject(':catalog-integration')
 
     testCompile(libraries.asyncclient)
     testCompile(libraries.junit)
     testCompile(libraries.slf4j_api)
     testCompile(libraries.testng)
-
 }

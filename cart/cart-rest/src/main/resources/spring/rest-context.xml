@@ -5,6 +5,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
+    <import resource="classpath*:spring/routing-context.xml"/>
+
     <context:component-scan base-package="com.junbo.oom.core.builtin"/>
     <!--<context:component-scan base-package="com.junbo.catalog.rest.mapper"/>-->
     <context:component-scan base-package="com.junbo.cart.spec.resource.adapter" />
@@ -13,6 +15,12 @@
         <property name="cartService" ref="cartService"/>
         <property name="pathParamTranscoder" ref="pathParamTranscoder"/>
     </bean>
+
+    <bean id="defaultCartResourceClientFactory" class="com.junbo.cart.spec.resource.proxy.CartResourceClientProxyFactory"/>
+
+    <bean id="defaultCartResourceRouter" parent="routingRouterBase" />
+
+    <bean id="defaultCartResourceTopology" parent="routingTopologyBase" />
 
     <bean id="httpClient" class="com.ning.http.client.AsyncHttpClient">
     </bean>

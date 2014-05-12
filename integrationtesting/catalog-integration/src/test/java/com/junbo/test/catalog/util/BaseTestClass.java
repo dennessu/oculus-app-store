@@ -5,18 +5,12 @@
  */
 package com.junbo.test.catalog.util;
 
-import com.esotericsoftware.kryo.util.IdentityObjectIntMap;
-import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
 import com.junbo.catalog.spec.model.item.ItemRevision;
-import com.junbo.common.id.ItemId;
+import com.junbo.test.catalog.ItemRevisionService;
 import com.junbo.test.common.Utility.TestClass;
-import com.junbo.test.common.apihelper.catalog.ItemRevisionService;
-import com.junbo.test.common.apihelper.catalog.ItemService;
-import com.junbo.test.common.apihelper.catalog.impl.ItemRevisionServiceImpl;
-import com.junbo.test.common.apihelper.catalog.impl.ItemServiceImpl;
-import com.junbo.test.common.blueprint.Master;
+import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.common.libs.EnumHelper;
-import com.junbo.test.common.libs.IdConverter;
 
 /**
  @author Jason
@@ -34,11 +28,9 @@ public class BaseTestClass extends TestClass {
         ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
 
         //Attach item revision to the item
-        String itemId = IdConverter.idLongToHexString(ItemId.class, item.getItemId());
-        String itemRevisionId = itemRevisionService.postDefaultItemRevision(itemId);
+        ItemRevision itemRevision = itemRevisionService.postDefaultItemRevision(item);
 
         //Approve the item revision
-        ItemRevision itemRevision = Master.getInstance().getItemRevision(itemRevisionId);
         itemRevision.setStatus(EnumHelper.CatalogEntityStatus.APPROVED.getEntityStatus());
         itemRevisionService.updateItemRevision(itemRevision);
     }

@@ -1,8 +1,8 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile project(':crypto-common')
-    compile project(':crypto-data')
+    compile junboProject(':crypto-common')
+    compile junboProject(':crypto-data')
 
     testCompile (libraries.spring_test)
 }

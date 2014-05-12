@@ -7,15 +7,12 @@ package com.junbo.fulfilment.core.handler;
 
 import com.junbo.ewallet.spec.model.CreditRequest;
 import com.junbo.ewallet.spec.model.Transaction;
+import com.junbo.fulfilment.common.util.Constant;
 import com.junbo.fulfilment.core.context.WalletContext;
-import com.junbo.fulfilment.spec.fusion.Item;
-import com.junbo.fulfilment.spec.fusion.LinkedEntry;
 import com.junbo.fulfilment.spec.model.FulfilmentAction;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -23,29 +20,23 @@ import java.util.UUID;
  */
 public class WalletHandler extends HandlerSupport<WalletContext> {
     @Override
-    protected String handle(WalletContext context, FulfilmentAction action) {
-        List<Long> success = new ArrayList<>();
+    protected Object handle(WalletContext context, FulfilmentAction action) {
+        Map<String, Object> actionProp = action.getProperties();
 
-        for (LinkedEntry itemEntry : action.getItems()) {
-            Item item = catalogGateway.getItem(itemEntry.getId(), action.getTimestamp());
+        CreditRequest request = new CreditRequest();
 
-            CreditRequest request = new CreditRequest();
+        request.setTrackingUuid(UUID.randomUUID());
+        request.setUserId(context.getUserId());
+        request.setCurrency(actionProp.get(Constant.STORED_VALUE_CURRENCY).toString());
 
-            request.setTrackingUuid(UUID.randomUUID());
-            request.setUserId(context.getUserId());
-            request.setCurrency(item.getStoredValueCurrency());
+        // aggregate credit amount
+        BigDecimal amount = (BigDecimal) actionProp.get(Constant.STORED_VALUE_AMOUNT);
+        BigDecimal totalCreditAmount = amount
+                .multiply(new BigDecimal(action.getCopyCount()));
 
-            // aggregate credit amount
-            BigDecimal totalCreditAmount = item.getStoredValueAmount()
-                    .multiply(new BigDecimal(action.getCopyCount()))
-                    .multiply(new BigDecimal(itemEntry.getQuantity()));
+        request.setAmount(totalCreditAmount);
+        Transaction transaction = walletGateway.credit(request);
 
-            request.setAmount(totalCreditAmount);
-
-            Transaction transaction = walletGateway.credit(request);
-            success.add(transaction.getTransactionId());
-        }
-
-        return Arrays.toString(success.toArray());
+        return transaction.getTransactionId();
     }
 }

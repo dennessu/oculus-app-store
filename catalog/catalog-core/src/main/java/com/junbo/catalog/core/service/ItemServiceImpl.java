@@ -27,7 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -200,11 +199,6 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
             if (offer == null) {
                 errors.add(AppErrors.INSTANCE.fieldNotCorrect("defaultOffer",
                         "Cannot find offer " + Utils.encodeId(item.getDefaultOffer())));
-            } else {
-                if (!isEqual(item.getIapHostItemId(), offer.getIapHostItemId())) {
-                    errors.add(AppErrors.INSTANCE
-                            .validation("defaultOffer should have same iapHostItem as this item."));
-                }
             }
         }
         if (item.getEntitlementDefId() != null) {
@@ -279,23 +273,6 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
                 if (ItemType.DIGITAL.is(item.getType())) {
                     if (CollectionUtils.isEmpty(revision.getBinaries())) {
                         errors.add(AppErrors.INSTANCE.missingField("binaries"));
-                    }
-                } else if (ItemType.STORED_VALUE.is(item.getType())) {
-                    if (StringUtils.isEmpty(revision.getStoredValueCurrency())) {
-                        errors.add(AppErrors.INSTANCE.missingField("storedValueCurrency"));
-                    }
-                    if (revision.getStoredValueAmount()==null) {
-                        errors.add(AppErrors.INSTANCE.missingField("storedValueAmount"));
-                    } else if (revision.getStoredValueAmount().compareTo(BigDecimal.ZERO)<0) {
-                        errors.add(AppErrors.INSTANCE.fieldNotCorrect("storedValueAmount", "Should not less than 0"));
-                    }
-                }
-                if (!ItemType.STORED_VALUE.is(item.getType())) {
-                    if (revision.getStoredValueCurrency() != null) {
-                        errors.add(AppErrors.INSTANCE.unnecessaryField("storedValueCurrency"));
-                    }
-                    if (revision.getStoredValueAmount() != null) {
-                        errors.add(AppErrors.INSTANCE.unnecessaryField("storedValueAmount"));
                     }
                 }
                 if (!ItemType.DIGITAL.is(item.getType())) {

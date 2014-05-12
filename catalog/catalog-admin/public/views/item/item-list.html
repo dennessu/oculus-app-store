@@ -1,4 +1,4 @@
-<div class="span6">
+<div class="bs-example">
   <div class="controls">
       <a href="#/items/creation">New Item</a>
   </div>
@@ -8,16 +8,18 @@
       <tr>
         <th style="min-width: 80px;">Item Id</th>
         <th>Type</th>
-        <th>Package Name</th>
         <th>Current Revision</th>
+        <th>Created Time</th>
+        <th>Updated Time</th>
       </tr>
     </thead>
     <tbody>
       <tr ng-repeat="item in items">
           <td><a href="#/items/{{ item.self.id }}">{{ item.self.id }}</a></td>
           <td>{{ item.type }}</td>
-          <td>{{ item.packageName }}</td>
-          <td><a href="#/item-revisions/{{ item.currentRevision.id }}">{{ item.currentRevision.id }}</a></td>
+          <td><a href="#/items/{{ item.self.id }}/revisions/{{ item.currentRevision.id }}">{{ item.currentRevision.id }}</a></td>
+          <td>{{ item.createdTime }}</a></td>
+          <td>{{ item.updatedTime }}</a></td>
       </tr>
     </tbody>
   </table>

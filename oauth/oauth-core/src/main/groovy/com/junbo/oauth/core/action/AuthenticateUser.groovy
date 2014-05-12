@@ -71,6 +71,10 @@ class AuthenticateUser implements Action {
 
         // Get and validate the username and password from the query parameter.
         String username = parameterMap.getFirst(OAuthParameters.USERNAME)
+        if (!StringUtils.hasText(username)) {
+            // try to get login parameter from POST form, login param can be username or user-email
+            username = parameterMap.getFirst(OAuthParameters.LOGIN)
+        }
         String password = parameterMap.getFirst(OAuthParameters.PASSWORD)
 
         if (!StringUtils.hasText(username)) {

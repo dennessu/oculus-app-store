@@ -12,10 +12,7 @@ import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.spec.enums.PaymentStatus;
-import com.junbo.payment.spec.model.Item;
-import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.payment.spec.model.PaymentTransaction;
-import com.junbo.payment.spec.model.WebPaymentInfo;
+import com.junbo.payment.spec.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -184,10 +181,17 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
     }
 
     @Override
-    public Promise<PaymentTransaction> getByTransactionToken(final String token) {
+    public Promise<PaymentTransaction> getByTransactionToken(final PaymentTransaction request) {
         return PromiseFacade.PAYMENT.decorate(new Callable<PaymentTransaction>() {
             @Override
             public PaymentTransaction call() throws Exception {
+                String token = request.getExternalToken();
+                if(CommonUtil.isNullOrEmpty(token) && request.getPaymentProperties() != null){
+                    token = request.getPaymentProperties().getExternalAccessToken();
+                }
+                if(CommonUtil.isNullOrEmpty(token)){
+                    return null;
+                }
                 GetExpressCheckoutDetailsRequestType getExpressCheckoutDetailsRequest =
                         new GetExpressCheckoutDetailsRequestType(token);
                 getExpressCheckoutDetailsRequest.setVersion(apiVersion);
@@ -229,6 +233,11 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
         return PromiseFacade.PAYMENT.decorate(new Callable<PaymentTransaction>() {
             @Override
             public PaymentTransaction call() throws Exception {
+                PaymentProperties properties = paymentRequest.getPaymentProperties();
+                if(properties != null){
+                    paymentRequest.getWebPaymentInfo().setToken(properties.getExternalAccessToken());
+                    paymentRequest.getWebPaymentInfo().setPayerId(properties.getExternalPayerId());
+                }
                 PaymentDetailsType paymentDetail = new PaymentDetailsType();
                 paymentDetail.setNotifyURL("http://replaceIpnUrl.com");
                 BasicAmountType orderTotal = new BasicAmountType();

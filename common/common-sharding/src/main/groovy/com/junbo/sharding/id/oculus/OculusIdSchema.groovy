@@ -6,6 +6,7 @@
 
 package com.junbo.sharding.id.oculus
 
+import com.junbo.configuration.topo.DataCenters
 import groovy.transform.CompileStatic
 
 /**
@@ -27,7 +28,7 @@ class OculusIdSchema {
     private final int masksInLocalCounter
     private final int numberOfShards
 
-    OculusIdSchema(int idType, int dataCenterId, int bitsInDataCenterId, int bitsInGlobalCounter,
+    OculusIdSchema(int idType, String dataCenter, int bitsInDataCenterId, int bitsInGlobalCounter,
                int bitsInLocalCounter, int idVersion, int bitsInIdVersion, int bitsInShardParam, int numberOfShards) {
         this.idType = idType
         this.bitsInGlobalCounter = bitsInGlobalCounter
@@ -38,11 +39,11 @@ class OculusIdSchema {
         this.numberOfShards = numberOfShards
         this.bitsInShard = bitsInShardParam
 
+        this.dataCenterId = DataCenters.instance().getDataCenter(dataCenter).id
         int dataCenterInShard = bits(dataCenterId)
         if (dataCenterInShard < 0 || dataCenterInShard > bitsInDataCenterId) {
             throw new IllegalArgumentException('dataCenterId ' + dataCenterId + ' should be 0..' + bitsInDataCenterId)
         }
-        this.dataCenterId = dataCenterId
         this.bitsInDataCenterId = bitsInDataCenterId
 
         int idVersionInShard = bits(idVersion)

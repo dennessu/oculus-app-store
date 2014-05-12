@@ -54,4 +54,7 @@ public interface AppServerExceptions {
 
     @ErrorDef(httpStatusCode = 500, code = "50011", description = "error happens when encode the id")
     AppError invalidIdToEncode(String paymentId);
+
+    @ErrorDef(httpStatusCode = 500, code = "50012", description = "error happens when calculation the HMCA")
+    AppError errorCalculateHMCA();
 }

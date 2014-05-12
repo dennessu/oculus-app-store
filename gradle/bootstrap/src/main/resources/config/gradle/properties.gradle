@@ -141,6 +141,30 @@ ext {
     set("docs-bundle-version", '0.0.1-SNAPSHOT')
     set("apphost-cli-version", '0.0.1-SNAPSHOT')
 
+    set("crypto-app-version", '0.0.1-SNAPSHOT')
+    set("crypto-common-version", '0.0.1-SNAPSHOT')
+    set("crypto-core-version", '0.0.1-SNAPSHOT')
+    set("crypto-data-version", '0.0.1-SNAPSHOT')
+    set("crypto-rest-version", '0.0.1-SNAPSHOT')
+    set("crypto-spec-version", '0.0.1-SNAPSHOT')
+
+    /// TEST
+    set("common-testlib-version", '0.0.1-SNAPSHOT')
+
+    set("billing-integration-version", '0.0.1-SNAPSHOT')
+    set("cart-integration-version", '0.0.1-SNAPSHOT')
+    set("catalog-integration-version", '0.0.1-SNAPSHOT')
+    set("entitlement-integration-version", '0.0.1-SNAPSHOT')
+    set("identity-integration-version", '0.0.1-SNAPSHOT')
+    set("oauth-integration-version", '0.0.1-SNAPSHOT')
+    set("payment-integration-version", '0.0.1-SNAPSHOT')
+
+    set("integration-buyerscenario-version", '0.0.1-SNAPSHOT')
+    set("integration-catalogscenario-version", '0.0.1-SNAPSHOT')
+    set("integration-csrscenario-version", '0.0.1-SNAPSHOT')
+    set("integration-developerscenario-version", '0.0.1-SNAPSHOT')
+    ///
+
     junboProject = { projectPath ->
         def projectName = projectPath.substring(1)
 

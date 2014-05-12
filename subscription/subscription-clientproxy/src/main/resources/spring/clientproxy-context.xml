@@ -15,11 +15,13 @@
 
     <!-- fusion mock (will be removed in the future)-->
     <!--bean id="catalogGateway" class="com.junbo.subscription.clientproxy.impl.CatalogGatewayImpl"/>
-    <bean id="entitlementGateway" class="com.junbo.subscription.clientproxy.impl.EntitlementGatewayImpl"/-->
+    <bean id="entitlementGateway" class="com.junbo.subscription.clientproxy.impl.EntitlementGatewayImpl">
+    <bean id="paymentGateway" class="com.junbo.subscription.clientproxy.impl.PaymentGatewayImpl"/-->
 
 
     <bean id="catalogGateway" class="com.junbo.subscription.clientproxy.mock.MockCatalogGatewayImpl"/>
     <bean id="entitlementGateway" class="com.junbo.subscription.clientproxy.mock.MockEntitlementGatewayImpl"/>
+    <bean id="paymentGateway" class="com.junbo.subscription.clientproxy.mock.MockPaymentGatewayImpl"/>
 
     <!-- async http client -->
     <bean id="asyncHttpClient" class="com.ning.http.client.AsyncHttpClient"/>
@@ -85,4 +87,18 @@
         <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
+    <bean id="paymentClient" class="com.junbo.payment.spec.resource.proxy.PaymentTransactionResourceClientProxy">
+        <constructor-arg name="client" ref="asyncHttpClient"/>
+        <constructor-arg name="target" value="${clientproxy.payment.url}"/>
+        <constructor-arg name="transcoder">
+            <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
+        </constructor-arg>
+        <constructor-arg name="pathParamTranscoder">
+            <bean class="com.junbo.common.json.IdPathParamTranscoder"/>
+        </constructor-arg>
+        <constructor-arg name="queryParamTranscoder">
+            <bean class="com.junbo.common.json.QueryParamTranscoderImpl"/>
+        </constructor-arg>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
+    </bean>
 </beans>
