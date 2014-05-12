@@ -303,6 +303,7 @@ class CartPersistServiceImpl implements CartPersistService {
     private boolean diffOfferItem(OfferItem left, OfferItem right) {
         return !(left.offer == right.offer &&
                 left.quantity == right.quantity &&
-                left.selected == right.selected)
+                left.isSelected == right.isSelected &&
+                left.isApproved == right.isApproved)
     }
 }
