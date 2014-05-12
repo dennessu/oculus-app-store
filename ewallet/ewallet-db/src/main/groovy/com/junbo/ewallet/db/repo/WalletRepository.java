@@ -74,7 +74,7 @@ public class WalletRepository {
 
         TransactionEntity transaction =
                 transactionDao.insert(buildCreditTransaction(
-                        wallet.getTrackingUuid(), wallet.getWalletId(), creditRequest));
+                        creditRequest.getTrackingUuid(), wallet.getWalletId(), creditRequest));
 
         WalletLotEntity lotEntity = walletLotDao.insert(buildWalletLot(wallet.getWalletId(), creditRequest));
         lotTransactionDao.insert(buildCreditLotTransaction(lotEntity, transaction.getId()));
@@ -90,7 +90,7 @@ public class WalletRepository {
 
         TransactionEntity transaction =
                 transactionDao.insert(buildDebitTransaction(
-                        wallet.getTrackingUuid(), wallet.getWalletId(), debitRequest));
+                        debitRequest.getTrackingUuid(), wallet.getWalletId(), debitRequest));
 
         List<WalletLotEntity> lots = walletLotDao.getValidLot(wallet.getWalletId());
         debit(resultEntity, lots, debitRequest.getAmount(), transaction.getId());
