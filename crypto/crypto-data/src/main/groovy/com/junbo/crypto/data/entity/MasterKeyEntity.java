@@ -11,20 +11,18 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * Created by liangfu on 5/6/14.
+ * Created by liangfu on 5/12/14.
  */
 @Entity
-@Table(name = "user_crypto_key")
-public class UserCryptoKeyEntity {
+@Table(name = "master_key")
+public class MasterKeyEntity {
+
     @Id
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "user_id")
-    private Long userId;
-
-    // The user encrypted key, it must be the format as versionNumber:encryptValue
     @Column(name = "value")
+    // It must be versionNumber:encryptValue
     private String encryptValue;
 
     public Long getId() {
@@ -33,14 +31,6 @@ public class UserCryptoKeyEntity {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     public String getEncryptValue() {

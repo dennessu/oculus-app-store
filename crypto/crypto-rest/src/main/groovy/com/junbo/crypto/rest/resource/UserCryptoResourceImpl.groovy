@@ -5,11 +5,11 @@
  */
 package com.junbo.crypto.rest.resource
 
-import com.junbo.common.id.UserId
+import com.junbo.crypto.spec.model.UserCryptoKey
 import com.junbo.crypto.spec.resource.UserCryptoResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Transactional
 
 /**
  * Created by liangfu on 5/6/14.
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 class UserCryptoResourceImpl implements UserCryptoResource {
 
     @Override
-    Promise<Void> generateUserEncryptKey(UserId userId) {
-        return null
+    Promise<Void> create(UserCryptoKey userCryptoKey) {
+        return Promise.pure(null)
     }
 }

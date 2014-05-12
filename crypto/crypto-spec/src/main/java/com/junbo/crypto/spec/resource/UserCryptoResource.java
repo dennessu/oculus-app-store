@@ -5,7 +5,7 @@
  */
 package com.junbo.crypto.spec.resource;
 
-import com.junbo.common.id.UserId;
+import com.junbo.crypto.spec.model.UserCryptoKey;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
@@ -28,7 +28,7 @@ public interface UserCryptoResource {
 
     // Once a user is defined, its user key is determined.
     // No user can access this resource any more.
-    // If user already has user key, it can't be updated or recreated.
+    // If user already has user key, it just increase the version, then insert the new encrypt value.
     @POST
-    Promise<Void> generateUserEncryptKey(UserId userId);
+    Promise<Void> create(UserCryptoKey userCryptoKey);
 }

@@ -19,12 +19,12 @@ import org.springframework.transaction.annotation.Transactional
 class CryptoResourceImpl implements CryptoResource {
 
     @Override
-    Promise<String> encrypt(UserId userId, Object obj) {
-        return null
+    Promise<String> encrypt(UserId userId, String str) {
+        return Promise.pure(null)
     }
 
     @Override
-    Promise<Object> decrypt(UserId userId, String encrypted) {
-        return null
+    Promise<String> decrypt(UserId userId, String encrypted) {
+        return Promise.pure(null)
     }
 }

@@ -18,7 +18,7 @@ import javax.ws.rs.core.MediaType;
  */
 @Api(value = "crypto")
 @RestResource
-@Path("/crypto")
+@Path("/crypto/{userId}")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public interface CryptoResource {
@@ -26,11 +26,11 @@ public interface CryptoResource {
     // Encrypt the object based on key,
     // It will use the latest version to encrypt
     @POST
-    Promise<String> encrypt(UserId userId, Object obj);
+    Promise<String> encrypt(@PathParam("userId") UserId userId, String str);
 
-    // Decrypt the object based on key,
+    // Decrypt the object based on key
     // It will use the latest version to decrypt, if unsuccessful, it will fall back to the older version
     @GET
-    Promise<Object> decrypt(UserId userId, String encrypted);
+    Promise<String> decrypt(@PathParam("userId") UserId userId, String encrypted);
 }
 
