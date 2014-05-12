@@ -13,15 +13,19 @@ import com.junbo.configuration.topo.Topology;
 import com.junbo.langur.core.routing.Router;
 import com.junbo.sharding.id.oculus.OculusIdSchema;
 import com.junbo.sharding.id.oculus.OculusObjectId;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Required;
 
 /**
  * The implementation of router.
  */
-public class RouterImpl implements Router {
+public class RouterImpl implements Router, InitializingBean {
+
     private OculusIdSchema oculus40IdSchema;
     private OculusIdSchema oculus48IdSchema;
     private Topology topology;
+    private boolean crossDcRoutingEnabled;
+    private boolean inDcRoutingEnabled;
 
     @Required
     public void setOculus40IdSchema(OculusIdSchema oculus40IdSchema) {
@@ -36,6 +40,28 @@ public class RouterImpl implements Router {
     @Required
     public void setTopology(Topology topology) {
         this.topology = topology;
+    }
+
+    public void setCrossDcRoutingEnabled(boolean crossDcRoutingEnabled) {
+        this.crossDcRoutingEnabled = crossDcRoutingEnabled;
+    }
+
+    public void setInDcRoutingEnabled(boolean inDcRoutingEnabled) {
+        this.inDcRoutingEnabled = inDcRoutingEnabled;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        if (oculus40IdSchema.getNumberOfShards() < topology.getNumberOfShards()) {
+            throw new RuntimeException(String.format(
+                    "Topology is configured to have more shards than Oculus40 ID Generator can provide. id shards: %d, topo: %d",
+                    oculus40IdSchema.getNumberOfShards(), topology.getNumberOfShards()));
+        }
+        if (oculus48IdSchema.getNumberOfShards() < topology.getNumberOfShards()) {
+            throw new RuntimeException(String.format(
+                    "Topology is configured to have more shards than Oculus48 ID Generator can provide. id shards: %d, topo: %d",
+                    oculus48IdSchema.getNumberOfShards(), topology.getNumberOfShards()));
+        }
     }
 
     @Override
@@ -59,17 +85,21 @@ public class RouterImpl implements Router {
     private String resolveRotingAddress(Class<?> resourceClass, Object routingParam) {
         resolveShard(routingParam);
 
-        // route across data center
-        DataCenters dcs = DataCenters.instance();
-        int dcId = Context.get().getDataCenterId();
-        if (!dcs.isLocalDataCenter(dcId)) {
-            return dcs.getDataCenterUrl(dcId);
+        if (crossDcRoutingEnabled) {
+            // route across data center
+            DataCenters dcs = DataCenters.instance();
+            int dcId = Context.get().getDataCenterId();
+            if (!dcs.isLocalDataCenter(dcId)) {
+                return dcs.getDataCenterUrl(dcId);
+            }
         }
 
-        // route within data center
-        int shardId = Context.get().getShardId();
-        if (!topology.isHandledBySelf(shardId)) {
-            return topology.getAppServerUrl(shardId);
+        if (inDcRoutingEnabled) {
+            // route within data center
+            int shardId = Context.get().getShardId();
+            if (!topology.isHandledBySelf(shardId)) {
+                return topology.getAppServerUrl(shardId);
+            }
         }
 
         // can be handled by current server
@@ -99,5 +129,6 @@ public class RouterImpl implements Router {
 
         Context.get().setShardId(id.getShardId());
         Context.get().setDataCenterId(id.getDataCenterId());
+        Context.get().setTopology(topology);
     }
 }

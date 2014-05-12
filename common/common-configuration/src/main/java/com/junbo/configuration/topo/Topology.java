@@ -79,6 +79,14 @@ public class Topology implements InitializingBean {
     }
 
     /**
+     * Get the total number of shards int the topology.
+     * @return
+     */
+    public int getNumberOfShards() {
+        return topologyConfig.getNumberOfShards();
+    }
+
+    /**
      * Generate a random shard id handled by current server.
      * @return the shard id controlled by current server
      */

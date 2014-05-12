@@ -5,6 +5,8 @@
  */
 package com.junbo.common.util;
 
+import com.junbo.configuration.topo.Topology;
+
 import javax.ws.rs.container.ContainerRequestContext;
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,6 +34,7 @@ public class Context {
         private ContainerRequestContext requestContext;
         private Integer shardId;
         private Integer dataCenterId;
+        private Topology topology;
 
         public Date getCurrentDate() {
             if (currentDate == null) {
@@ -82,6 +85,14 @@ public class Context {
 
         public void setDataCenterId(Integer dataCenterId) {
             this.dataCenterId = dataCenterId;
+        }
+
+        public Topology getTopology() {
+            return topology;
+        }
+
+        public void setTopology(Topology topology) {
+            this.topology = topology;
         }
 
         public String getHeader(String key) {

@@ -20,6 +20,8 @@
         <property name="oculus48IdSchema" ref="oculus48IdSchema" />
         <property name="oculus40IdSchema" ref="oculus40IdSchema" />
         <property name="topology" ref="routingTopologyBase" />
+        <property name="crossDcRoutingEnabled" value="${common.routing.crossDcRoutingEnabled}" />
+        <property name="inDcRoutingEnabled" value="${common.routing.inDcRoutingEnabled}" />
     </bean>
 
     <bean id="routingTopologyBase" class="com.junbo.configuration.topo.Topology">
