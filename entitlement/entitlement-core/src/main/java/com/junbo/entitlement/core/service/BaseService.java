@@ -53,7 +53,7 @@ public class BaseService {
         if (entitlement.getEntitlementDefinitionId() == null) {
             entitlement.setType(EntitlementConsts.NO_TYPE);
         }
-        EntitlementDefinition def = getDef(entitlement.getEntitlementId());
+        EntitlementDefinition def = getDef(entitlement.getEntitlementDefinitionId());
         if (def == null || StringUtils.isEmpty(def.getType())) {
             entitlement.setType(EntitlementConsts.NO_TYPE);
         } else {
