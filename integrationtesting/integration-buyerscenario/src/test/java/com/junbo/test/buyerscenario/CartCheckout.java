@@ -74,7 +74,7 @@ public class CartCheckout extends BaseTestClass {
         orderId = testDataProvider.updateOrderTentative(orderId, false);
 
         validationHelper.validateOrderInfoByCartId(
-                uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId);
+                uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, false);
 
         testDataProvider.emptyCartByCartId(uid, cartId);
         validationHelper.validateEmailHistory(uid, orderId);
@@ -112,7 +112,8 @@ public class CartCheckout extends BaseTestClass {
         EwalletInfo ewalletInfo = EwalletInfo.getEwalletInfo(Country.DEFAULT, Currency.DEFAULT);
         String ewalletId = testDataProvider.postPaymentInstrument(uid, ewalletInfo);
 
-        testDataProvider.postOrder(uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
+        String orderId = testDataProvider.postOrder(uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
+        orderId = testDataProvider.updateOrderTentative(orderId, false);
         offerList.clear();
 
         offerList.add(offer_digital_normal1);
@@ -120,7 +121,7 @@ public class CartCheckout extends BaseTestClass {
 
         String cartId = testDataProvider.postOffersToPrimaryCart(uid, false, offerList);
 
-        String orderId = testDataProvider.postOrderByCartId(
+        orderId = testDataProvider.postOrderByCartId(
                 uid, cartId, Country.DEFAULT, Currency.DEFAULT, ewalletId, null);
 
         orderId = testDataProvider.updateOrderTentative(orderId, false);
@@ -208,16 +209,17 @@ public class CartCheckout extends BaseTestClass {
         EwalletInfo ewalletInfo = EwalletInfo.getEwalletInfo(Country.DEFAULT, Currency.DEFAULT);
         String ewalletId = testDataProvider.postPaymentInstrument(uid, ewalletInfo);
 
-        testDataProvider.postOrder(uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, true, offerList);
+        String orderId = testDataProvider.postOrder(uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, true, offerList);
+        testDataProvider.updateOrderTentative(orderId,false);
         offerList.clear();
 
-        offerList.add(offer_digital_normal1);
-        offerList.add(offer_digital_normal2);
+        offerList.add(offer_physical_normal1);
+        offerList.add(offer_physical_normal2);
 
         String cartId = testDataProvider.postOffersToPrimaryCart(uid, false, offerList);
 
-        String orderId = testDataProvider.postOrderByCartId(
-                uid, cartId, Country.DEFAULT, Currency.DEFAULT, ewalletId, null);
+        orderId = testDataProvider.postOrderByCartId(
+                uid, cartId, Country.DEFAULT, Currency.DEFAULT, ewalletId, true);
 
         orderId = testDataProvider.updateOrderTentative(orderId, false);
 
