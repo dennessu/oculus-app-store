@@ -5,5 +5,14 @@
  */
 package com.junbo.notification.core;
 
-public class SimplePublisher {
+import java.util.UUID;
+
+/**
+ * SimplePublisher.
+ */
+public class SimplePublisher extends BasePublisher {
+    public void send(final String content) {
+        final String eventId = UUID.randomUUID().toString();
+        publishText(eventId, content);
+    }
 }
