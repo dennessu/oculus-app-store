@@ -1,7 +1,37 @@
 apply plugin: 'groovy'
 
 dependencies {
-   
+
+    compile (libraries.validation_api)
+
+    compile (libraries.spring_aop)
+    compile (libraries.spring_context)
+    compile (libraries.spring_core)
+    compile (libraries.spring_expression)
+    compile (libraries.spring_tx)
+    compile (libraries.spring_jdbc)
+    compile (libraries.spring_orm)
+    compile (libraries.spring_beans)
+
+    compile (libraries.hibernate_core)
+    compile (libraries.hibernate_entitymanager)
+    compile (libraries.hibernate_annotation)
+    compile (libraries.hibernate_validator)
+
+    compile (libraries.postgresql)
+    compile (libraries.bonecp_spring)
+    compile (libraries.rs_api)
+
+    compile (libraries.querydsl_jpa)
+    compile (libraries.querydsl_collections)
+
+    compile junboProject(':common-sharding')
+
+    processor (libraries.querydsl_apt)
+    processor (libraries.persistence_api)
+
     compile junboProject(':crypto-common')
     compile junboProject(':crypto-spec')
+
+    testCompile (libraries.spring_test)
 }

@@ -7,4 +7,6 @@ dependencies {
     compile junboProject(':crypto-spec')
     compile junboProject(':crypto-common')
     compile junboProject(':crypto-data')
+
+    compile junboProject(':common-lib')
 }

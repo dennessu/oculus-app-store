@@ -6,7 +6,10 @@
 package com.junbo.crypto.core
 
 import com.junbo.crypto.common.HexHelper
+import com.junbo.crypto.core.service.CipherService
+import com.junbo.crypto.core.service.KeyStoreService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.TestExecutionListeners
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests
@@ -16,6 +19,10 @@ import org.testng.annotations.Test
 
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
+import java.security.KeyPair
+import java.security.KeyPairGenerator
+import java.security.PrivateKey
+import java.security.PublicKey
 import java.security.SecureRandom
 
 /**
@@ -30,23 +37,49 @@ public class CipherServiceTest extends AbstractTestNGSpringContextTests {
     Random random = new SecureRandom();
 
     @Autowired
-    private AESCipherService cipherService
+    @Qualifier('aesCipherService')
+    private CipherService aesCipherService
+
+    @Autowired
+    @Qualifier('rsaCipherService')
+    private CipherService rsaCipherService
+
+    @Autowired
+    private KeyStoreService keyStoreService
 
     @Test
-    public void testEncrypt() {
+    public void testAESEncryptAndDecrypt() {
         // Get the KeyGenerator
         KeyGenerator kgen = KeyGenerator.getInstance("AES");
 
         // Generate the secret key specs.
         SecretKey skey = kgen.generateKey();
+        skey.toString()
         String message = 'Hello World!'
         // Get the KeyGenerator
 
-        String encryptedValue = cipherService.encrypt(message, skey)
+        String encryptedValue = aesCipherService.encrypt(message, skey)
 
-        String decryptedValue = cipherService.decrypt(encryptedValue, skey)
+        String decryptedValue = aesCipherService.decrypt(encryptedValue, skey)
 
         assert message == decryptedValue
+    }
+
+    @Test
+    public void testRSAEncryptAndDecrypt() {
+        KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+        kpg.initialize(512); // 512 is the keysize.
+        KeyPair kp = kpg.generateKeyPair();
+        PublicKey pubk = kp.getPublic();
+        PrivateKey prvk = kp.getPrivate();
+
+        String message = 'Hello World!'
+
+        String encryptValue = rsaCipherService.encrypt(message, pubk)
+
+        String decryptValue = rsaCipherService.decrypt(encryptValue, prvk)
+
+        assert message == decryptValue
     }
 
     @Test

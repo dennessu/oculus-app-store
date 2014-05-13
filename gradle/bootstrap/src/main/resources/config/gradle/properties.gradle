@@ -148,6 +148,7 @@ ext {
     set("crypto-data-version", '0.0.1-SNAPSHOT')
     set("crypto-rest-version", '0.0.1-SNAPSHOT')
     set("crypto-spec-version", '0.0.1-SNAPSHOT')
+    set("crypto-clientproxy-version", '0.0.1-SNAPSHOT')
 
     /// TEST
     set("common-testlib-version", '0.0.1-SNAPSHOT')
