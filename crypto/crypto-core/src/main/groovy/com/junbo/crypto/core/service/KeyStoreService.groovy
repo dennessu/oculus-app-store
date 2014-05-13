@@ -1,4 +1,4 @@
-package com.junbo.crypto.core
+package com.junbo.crypto.core.service
 
 import groovy.transform.CompileStatic
 

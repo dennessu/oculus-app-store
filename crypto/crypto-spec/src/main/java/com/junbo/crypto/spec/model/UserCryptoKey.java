@@ -20,7 +20,13 @@ public class UserCryptoKey extends ResourceMeta implements Identifiable<UserCryp
     private UserId userId;
 
     @JsonIgnore
+    private String value;
+
+    @JsonIgnore
     private String encryptValue;
+
+    @JsonIgnore
+    private Integer keyVersion;
 
     public UserId getUserId() {
         return userId;
@@ -38,11 +44,27 @@ public class UserCryptoKey extends ResourceMeta implements Identifiable<UserCryp
         this.id = id;
     }
 
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
     public String getEncryptValue() {
         return encryptValue;
     }
 
     public void setEncryptValue(String encryptValue) {
         this.encryptValue = encryptValue;
+    }
+
+    public Integer getKeyVersion() {
+        return keyVersion;
+    }
+
+    public void setKeyVersion(Integer keyVersion) {
+        this.keyVersion = keyVersion;
     }
 }

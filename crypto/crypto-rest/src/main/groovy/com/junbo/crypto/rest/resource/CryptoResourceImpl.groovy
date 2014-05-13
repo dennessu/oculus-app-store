@@ -16,15 +16,15 @@ import org.springframework.transaction.annotation.Transactional
  */
 @CompileStatic
 @Transactional
-class CryptoResourceImpl implements CryptoResource {
+class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
 
     @Override
     Promise<String> encrypt(UserId userId, String str) {
-        return Promise.pure(null)
+        return symmetricEncryptUserMessage(userId, str)
     }
 
     @Override
     Promise<String> decrypt(UserId userId, String encrypted) {
-        return Promise.pure(null)
+        return symmetricDecryptUserMessage(userId, encrypted)
     }
 }
