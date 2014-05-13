@@ -32,12 +32,12 @@ public class TestBasePublisher extends BaseTest {
         simplePublisher.send("hello baby3");
     }
 
-    @Test(expectedExceptions = NotificationException.class, enabled = false)
+    @Test(expectedExceptions = NotificationException.class)
     public void testPublishWithoutTransactionScope() throws Exception {
         emailPublisher.send("hello baby");
     }
 
-    @Test(enabled = false)
+    @Test
     public void testPublishInTransactionScope() throws Exception {
         TransactionTemplate template = new TransactionTemplate(transactionManager);
         template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
@@ -52,7 +52,7 @@ public class TestBasePublisher extends BaseTest {
         });
     }
 
-    @Test(expectedExceptions = RuntimeException.class, enabled = false)
+    @Test(expectedExceptions = RuntimeException.class)
     public void testPublishWithTransactionRollback() throws Exception {
         TransactionTemplate template = new TransactionTemplate(transactionManager);
         template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
