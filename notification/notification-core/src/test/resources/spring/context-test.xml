@@ -12,16 +12,35 @@
         <property name="brokerUrl" value="${notification.activemq.brokerURL}"/>
     </bean>
 
+    <bean id="baseJmsTemplate" class="org.springframework.jms.core.JmsTemplate" abstract="true">
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="explicitQosEnabled" value="true"/>
+        <property name="deliveryPersistent" value="true"/>
+    </bean>
+
+    <bean id="testQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="TEST_QUEUE"/>
+    </bean>
+
+    <bean id="testJmsTemplate" class="org.springframework.jms.core.JmsTemplate" parent="baseJmsTemplate">
+        <property name="defaultDestination" ref="testQueue"/>
+    </bean>
+
     <bean id="emailPublisher" class="com.junbo.notification.core.EmailPublisher" parent="basePublisher">
-        <property name="template" ref="emailJmsTemplate"/>
-        <property name="destination" ref="emailQueue"/>
+        <property name="template" ref="testJmsTemplate"/>
+        <property name="destination" ref="testQueue"/>
+    </bean>
+
+    <bean id="simplePublisher" class="com.junbo.notification.core.SimplePublisher" parent="basePublisher">
+        <property name="template" ref="testJmsTemplate"/>
+        <property name="destination" ref="testQueue"/>
     </bean>
 
     <bean id="emailListener" class="com.junbo.notification.core.EmailListener"/>
 
     <bean id="emailListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer"
           parent="baseListenerContainer">
-        <property name="destination" ref="emailQueue"/>
+        <property name="destination" ref="testQueue"/>
         <property name="messageListener" ref="emailListener"/>
     </bean>
 </beans>

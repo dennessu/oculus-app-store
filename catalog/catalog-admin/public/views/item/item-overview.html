@@ -21,7 +21,21 @@
                 <p class="form-control-static">{{ item.type }}</p>
             </div>
         </div>
+        <div ng-if="!currentRevision">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Status</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static">Not Published</p>
+                </div>
+            </div>
+        </div>
         <div ng-if="currentRevision">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Status</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static">{{ currentRevision.status }}</p>
+                </div>
+            </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Revision Id</label>
                 <div class="col-sm-9">

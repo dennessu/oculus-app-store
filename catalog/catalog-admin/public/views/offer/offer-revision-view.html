@@ -1,3 +1,7 @@
+<div class="controls">
+    <a ng-click="approveRevision()" class="btn btn-small btn-default" ng-if="revision.status=='DRAFT'">Publish</a>
+</div>
+<hr>
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">General</h3>
@@ -12,8 +16,9 @@
         <div class="form-group">
             <label class="col-sm-3 control-label">Status</label>
             <div class="col-sm-9">
-                <p class="form-control-static" ng-if="offer.isPublished">Published</p>
-                <p class="form-control-static" ng-if="!offer.isPublished">Not Published</p>
+                <p class="form-control-static">{{ revision.status }}</p>
+                <!--p class="form-control-static" ng-if="offer.isPublished">Published</p>
+                <p class="form-control-static" ng-if="!offer.isPublished">Not Published</p-->
             </div>
         </div>
         <div ng-if="revision">

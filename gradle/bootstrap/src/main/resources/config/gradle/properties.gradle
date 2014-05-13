@@ -31,6 +31,7 @@ ext {
     set("email-db-version", '0.0.1-SNAPSHOT')
     set("email-rest-version", '0.0.1-SNAPSHOT')
     set("email-spec-version", '0.0.1-SNAPSHOT')
+    set("email-jobs-version", '0.0.1-SNAPSHOT')
     set("email-clientproxy-version", '0.0.1-SNAPSHOT')
     set("email-app-version", '0.0.1-SNAPSHOT')
 
