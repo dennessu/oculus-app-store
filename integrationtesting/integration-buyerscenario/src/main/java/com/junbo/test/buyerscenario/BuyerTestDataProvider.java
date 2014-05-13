@@ -16,6 +16,8 @@ import com.junbo.common.id.ItemId;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.model.Results;
+import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.ewallet.spec.model.CreditRequest;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.order.spec.model.OrderItem;
@@ -49,6 +51,7 @@ import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.libs.RandomFactory;
+import com.junbo.test.entitlement.EntitlementService;
 import com.junbo.test.payment.apihelper.PaymentService;
 import com.junbo.test.payment.apihelper.impl.PaymentServiceImpl;
 
@@ -338,4 +341,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         return orderClient.getOrderByOrderId(orderId);
     }
 
+    public Results<Entitlement> getEntitlementByUserId(String uid) throws Exception{
+        return EntitlementService.getEntitlements(uid);
+    }
 }
