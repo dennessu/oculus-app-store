@@ -13,9 +13,8 @@ public class HttpHeadersConstants {
     private HttpHeadersConstants() {
     }
 
-    public static final String HTTP_HEADER_CLIENT_ID = "X-Client-Id";
-    public static final String HTTP_HEADER_CLIENT_IP_ADDRESS = "X-Client-IP";
-    public static final String HTTP_HEADER_RETRIEVE_ALL = "X-Retrieve-All";
-    public static final String HTTP_HEADER_EXPAND_RESOURCE = "X-Expand-Resource";
+    public static final String HTTP_HEADER_CLIENT_ID = "x-client-id";
+    public static final String HTTP_HEADER_CLIENT_IP_ADDRESS = "x-client-ip";
+    public static final String HTTP_HEADER_RETRIEVE_ALL = "x-retrieve-all";
+    public static final String HTTP_HEADER_EXPAND_RESOURCE = "x-expand-resource";
 }
-

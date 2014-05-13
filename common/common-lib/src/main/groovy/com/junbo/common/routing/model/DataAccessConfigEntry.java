@@ -3,13 +3,14 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.sharding.routing.model;
+package com.junbo.common.routing.model;
 
 /**
  * The policy for data access.
  */
 public class DataAccessConfigEntry {
     private Class<?> resourceClass;
+    private String httpMethod;
     private DataAccessPolicy dataAccessPolicy;
 
     public Class<?> getResourceClass() {
@@ -18,6 +19,14 @@ public class DataAccessConfigEntry {
 
     public void setResourceClass(Class<?> resourceClass) {
         this.resourceClass = resourceClass;
+    }
+
+    public String getHttpMethod() {
+        return httpMethod;
+    }
+
+    public void setHttpMethod(String httpMethod) {
+        this.httpMethod = httpMethod;
     }
 
     public DataAccessPolicy getDataAccessPolicy() {
