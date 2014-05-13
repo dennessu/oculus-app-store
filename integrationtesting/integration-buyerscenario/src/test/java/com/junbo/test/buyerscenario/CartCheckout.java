@@ -1,5 +1,7 @@
 package com.junbo.test.buyerscenario;
 
+import com.junbo.common.model.Results;
+import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.test.payment.apihelper.impl.PaymentTransactionServiceImpl;
 import com.junbo.test.payment.apihelper.impl.PaymentCallbackServiceImpl;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
@@ -75,6 +77,9 @@ public class CartCheckout extends BaseTestClass {
 
         validationHelper.validateOrderInfoByCartId(
                 uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, false);
+        Results<Entitlement> entitlementResults = testDataProvider.getEntitlementByUserId(uid);
+
+        validationHelper.validateEntitlments(entitlementResults, offerList.size());
 
         testDataProvider.emptyCartByCartId(uid, cartId);
         validationHelper.validateEmailHistory(uid, orderId);
@@ -210,7 +215,7 @@ public class CartCheckout extends BaseTestClass {
         String ewalletId = testDataProvider.postPaymentInstrument(uid, ewalletInfo);
 
         String orderId = testDataProvider.postOrder(uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, true, offerList);
-        testDataProvider.updateOrderTentative(orderId,false);
+        testDataProvider.updateOrderTentative(orderId, false);
         offerList.clear();
 
         offerList.add(offer_physical_normal1);
