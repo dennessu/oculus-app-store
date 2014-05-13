@@ -11,6 +11,6 @@ package com.junbo.payment.spec.enums;
  */
 public enum PaymentType {
     AUTHORIZE,
-    CAPTURE,
+    CREDIT,
     CHARGE
 }
