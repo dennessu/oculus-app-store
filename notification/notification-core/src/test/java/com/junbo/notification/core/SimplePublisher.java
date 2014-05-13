@@ -8,7 +8,7 @@ package com.junbo.notification.core;
 import java.util.UUID;
 
 /**
- * EmailPublisher.
+ * SimplePublisher.
  */
 public class SimplePublisher extends BasePublisher {
     public void send(final String content) {
