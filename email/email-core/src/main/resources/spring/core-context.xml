@@ -13,13 +13,13 @@
         <property name="template" ref="emailJmsTemplate"/>
         <property name="destination" ref="emailQueue"/>
     </bean>
-    <bean id="emailListener" class="com.junbo.email.core.notification.EmailListener"/>
+    <!--<bean id="emailListener" class="com.junbo.email.core.notification.EmailListener"/>-->
 
-    <bean id="emailListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer"
-          parent="baseListenerContainer">
-        <property name="destination" ref="emailQueue"/>
-        <property name="messageListener" ref="emailListener"/>
-    </bean>
+    <!--<bean id="emailListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer"-->
+          <!--parent="baseListenerContainer">-->
+        <!--<property name="destination" ref="emailQueue"/>-->
+        <!--<property name="messageListener" ref="emailListener"/>-->
+    <!--</bean>-->
 
     <bean id="emailClient" class="com.junbo.email.spec.resource.proxy.EmailResourceClientProxy">
         <constructor-arg name="client" ref="commonAsyncHttpClient"/>
