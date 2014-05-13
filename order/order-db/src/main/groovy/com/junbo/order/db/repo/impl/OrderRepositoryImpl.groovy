@@ -85,6 +85,7 @@ class OrderRepositoryImpl implements OrderRepository {
         def id = orderDao.create(orderEntity)
         def orderId = new OrderId(id)
         order.setId(orderId)
+        order.resourceAge = orderEntity.resourceAge
         Utils.fillDateInfo(order, orderEntity)
 
         saveOrderItems(order.id, order.orderItems)
@@ -207,6 +208,8 @@ class OrderRepositoryImpl implements OrderRepository {
         }
 
         orderDao.update(orderEntity)
+        orderEntity = orderDao.read(orderEntity.orderId)
+        order.resourceAge = orderEntity.resourceAge
         Utils.fillDateInfo(order, orderEntity)
 
         if (!updateOnlyOrder) {
