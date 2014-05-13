@@ -1,7 +1,6 @@
 package com.junbo.crypto.rest.resource
 
 import com.junbo.common.id.UserId
-import com.junbo.common.mark.Created201Marker
 import com.junbo.crypto.core.service.CipherService
 import com.junbo.crypto.core.service.KeyStoreService
 import com.junbo.crypto.data.repo.MasterKeyRepo
@@ -25,13 +24,11 @@ import java.security.PublicKey
 @SuppressWarnings('UnnecessaryGetter')
 abstract class CommonResourceImpl {
 
-    private static final String VERSION_SEPARATOR = ':'
+    public static final String VERSION_SEPARATOR = ':'
 
     protected MasterKeyRepo masterKeyRepo
 
     protected UserCryptoKeyRepo userCryptoKeyRepo
-
-    protected Created201Marker created201Marker
 
     protected CipherService aesCipherService
 
@@ -47,11 +44,6 @@ abstract class CommonResourceImpl {
     @Required
     void setUserCryptoKeyRepo(UserCryptoKeyRepo userCryptoKeyRepo) {
         this.userCryptoKeyRepo = userCryptoKeyRepo
-    }
-
-    @Required
-    void setCreated201Marker(Created201Marker created201Marker) {
-        this.created201Marker = created201Marker
     }
 
     @Required
@@ -91,7 +83,7 @@ abstract class CommonResourceImpl {
 
             Key masterKeyLoaded = stringToKey(decryptedMasterKey)
 
-            return aesCipherService.decrypt(userEncryptValue, masterKeyLoaded)
+            return Promise.pure(aesCipherService.decrypt(userEncryptValue, masterKeyLoaded))
         }
     }
 
@@ -215,7 +207,7 @@ abstract class CommonResourceImpl {
             UserCryptoKey key = userCryptoKeyList.max(new Comparator<UserCryptoKey>() {
                 @Override
                 int compare(UserCryptoKey o1, UserCryptoKey o2) {
-                    return o2.keyVersion <=> o1.keyVersion
+                    return o1.keyVersion <=> o2.keyVersion
                 }
             })
 
@@ -233,7 +225,7 @@ abstract class CommonResourceImpl {
             MasterKey key = masterKeyList.max(new Comparator<MasterKey>() {
                 @Override
                 int compare(MasterKey o1, MasterKey o2) {
-                    return o2.keyVersion <=> o1.keyVersion
+                    return o1.keyVersion <=> o2.keyVersion
                 }
             })
 

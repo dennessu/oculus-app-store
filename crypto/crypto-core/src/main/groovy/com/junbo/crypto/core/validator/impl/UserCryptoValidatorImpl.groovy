@@ -10,13 +10,23 @@ import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
+import java.security.SecureRandom
+
 /**
  * Created by liangfu on 5/13/14.
  */
 @CompileStatic
 class UserCryptoValidatorImpl implements UserCryptoValidator {
 
+    // todo:    Add one new class for this generator
+    private static final char[] DEFAULT_CODEC =
+            "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
+
+    private final Random random = new SecureRandom();
+
     private UserResource userResource
+
+    private Integer userKeyLength
 
     @Override
     Promise<Void> validateUserCryptoKeyCreate(UserCryptoKey userCryptoKey) {
@@ -37,7 +47,7 @@ class UserCryptoValidatorImpl implements UserCryptoValidator {
         }
 
         return checkBasicCryptoKey(userCryptoKey).then {
-            userCryptoKey.setValue(UUID.randomUUID().toString())
+            userCryptoKey.setValue(generate(userKeyLength))
 
             return Promise.pure(null)
         }
@@ -57,8 +67,30 @@ class UserCryptoValidatorImpl implements UserCryptoValidator {
         }
     }
 
+    private String generate(int length) {
+        byte[] bytes = new byte[length];
+        random.nextBytes(bytes);
+
+        return getString(bytes);
+    }
+
+    private String getString(byte[] bytes) {
+        char[] chars = new char[bytes.length];
+
+        for (int i = 0; i < bytes.length; i++) {
+            chars[i] = (char)DEFAULT_CODEC[((bytes[i] & 0xFF) % DEFAULT_CODEC.length)];
+        }
+
+        return new String(chars);
+    }
+
     @Required
     void setUserResource(UserResource userResource) {
         this.userResource = userResource
+    }
+
+    @Required
+    void setUserKeyLength(Integer userKeyLength) {
+        this.userKeyLength = userKeyLength
     }
 }

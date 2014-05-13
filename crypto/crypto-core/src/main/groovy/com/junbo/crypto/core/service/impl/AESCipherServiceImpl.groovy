@@ -41,7 +41,6 @@ class AESCipherServiceImpl implements CipherService {
             throw new IllegalArgumentException('key is null')
         }
 
-
         try {
             Cipher cipher = Cipher.getInstance(ALGORITHM)
             IvParameterSpec ivspec = new IvParameterSpec(IV);
