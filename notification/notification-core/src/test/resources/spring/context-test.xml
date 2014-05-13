@@ -31,6 +31,11 @@
         <property name="destination" ref="testQueue"/>
     </bean>
 
+    <bean id="simplePublisher" class="com.junbo.notification.core.SimplePublisher" parent="basePublisher">
+        <property name="template" ref="testJmsTemplate"/>
+        <property name="destination" ref="testQueue"/>
+    </bean>
+
     <bean id="emailListener" class="com.junbo.notification.core.EmailListener"/>
 
     <bean id="emailListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer"

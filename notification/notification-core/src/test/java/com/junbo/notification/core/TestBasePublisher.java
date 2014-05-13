@@ -21,12 +21,23 @@ public class TestBasePublisher extends BaseTest {
     @Qualifier("emailPublisher")
     private EmailPublisher emailPublisher;
 
-    @Test(expectedExceptions = NotificationException.class)
+    @Autowired
+    @Qualifier("simplePublisher")
+    private SimplePublisher simplePublisher;
+
+    @Test
+    public void testSimplePublisher() throws Exception {
+        simplePublisher.send("hello baby");
+        simplePublisher.send("hello baby2");
+        simplePublisher.send("hello baby3");
+    }
+
+    @Test(expectedExceptions = NotificationException.class, enabled = false)
     public void testPublishWithoutTransactionScope() throws Exception {
         emailPublisher.send("hello baby");
     }
 
-    @Test
+    @Test(enabled = false)
     public void testPublishInTransactionScope() throws Exception {
         TransactionTemplate template = new TransactionTemplate(transactionManager);
         template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
@@ -34,13 +45,14 @@ public class TestBasePublisher extends BaseTest {
         template.execute(new TransactionCallback<Void>() {
             public Void doInTransaction(TransactionStatus status) {
                 emailPublisher.send("hello baby");
+                emailPublisher.send("hello baby2");
 
                 return null;
             }
         });
     }
 
-    @Test(expectedExceptions = RuntimeException.class)
+    @Test(expectedExceptions = RuntimeException.class, enabled = false)
     public void testPublishWithTransactionRollback() throws Exception {
         TransactionTemplate template = new TransactionTemplate(transactionManager);
         template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
@@ -48,6 +60,7 @@ public class TestBasePublisher extends BaseTest {
         template.execute(new TransactionCallback<Void>() {
             public Void doInTransaction(TransactionStatus status) {
                 emailPublisher.send("come on baby");
+                emailPublisher.send("come on baby2");
 
                 throw new RuntimeException("oops, error occurred...");
             }
