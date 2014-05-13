@@ -1,5 +1,7 @@
 package com.junbo.test.buyerscenario;
 
+import com.junbo.common.model.Results;
+import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.test.payment.apihelper.impl.PaymentTransactionServiceImpl;
 import com.junbo.test.payment.apihelper.impl.PaymentCallbackServiceImpl;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
@@ -9,11 +11,11 @@ import com.junbo.test.common.Entities.paymentInstruments.PayPalInfo;
 import com.junbo.test.payment.apihelper.PaymentTransactionService;
 import com.junbo.test.payment.apihelper.PaymentCallbackService;
 import com.junbo.test.common.apihelper.order.OrderEventService;
-import com.junbo.test.common.libs.EnumHelper.CatalogItemType;
 import com.junbo.test.buyerscenario.util.BaseTestClass;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import com.junbo.payment.spec.model.PaymentProperties;
 import com.junbo.test.common.Entities.enums.Currency;
+import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.payment.spec.model.WebPaymentInfo;
 import com.junbo.test.common.libs.ShardIdHelper;
@@ -75,6 +77,9 @@ public class CartCheckout extends BaseTestClass {
 
         validationHelper.validateOrderInfoByCartId(
                 uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, false);
+        Results<Entitlement> entitlementResults = testDataProvider.getEntitlementByUserId(uid);
+
+        validationHelper.validateEntitlments(entitlementResults, offerList.size());
 
         testDataProvider.emptyCartByCartId(uid, cartId);
         validationHelper.validateEmailHistory(uid, orderId);
@@ -210,7 +215,7 @@ public class CartCheckout extends BaseTestClass {
         String ewalletId = testDataProvider.postPaymentInstrument(uid, ewalletInfo);
 
         String orderId = testDataProvider.postOrder(uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, true, offerList);
-        testDataProvider.updateOrderTentative(orderId,false);
+        testDataProvider.updateOrderTentative(orderId, false);
         offerList.clear();
 
         offerList.add(offer_physical_normal1);

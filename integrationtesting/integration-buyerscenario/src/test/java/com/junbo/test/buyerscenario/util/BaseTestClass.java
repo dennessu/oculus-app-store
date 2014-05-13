@@ -7,10 +7,8 @@ package com.junbo.test.buyerscenario.util;
 
 import com.junbo.test.buyerscenario.BuyerTestDataProvider;
 import com.junbo.test.buyerscenario.BuyerValidationHelper;
-import com.junbo.test.common.Utility.TestClass;
-
-
 import com.junbo.test.common.libs.ConfigPropertiesHelper;
+import com.junbo.test.common.Utility.TestClass;
 
 /**
  @author Jason
