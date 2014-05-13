@@ -8,6 +8,7 @@ package com.junbo.payment.core.provider;
 
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.common.exception.AppServerExceptions;
+import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
 
 
@@ -18,5 +19,10 @@ public abstract class AbstractPaymentProviderService implements PaymentProviderS
     @Override
     public Promise<PaymentTransaction> confirm(String transactionId, PaymentTransaction paymentRequest) {
         throw AppServerExceptions.INSTANCE.serviceNotImplemented("confirm").exception();
+    }
+
+    @Override
+    public Promise<PaymentTransaction> credit(PaymentInstrument pi, PaymentTransaction paymentRequest) {
+        throw AppServerExceptions.INSTANCE.serviceNotImplemented("credit").exception();
     }
 }

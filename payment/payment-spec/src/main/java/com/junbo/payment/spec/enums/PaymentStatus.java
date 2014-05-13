@@ -29,6 +29,8 @@ public enum PaymentStatus {
     REFUNDED,
     REFUND_DECLINED,
     UNCONFIRMED,
+    CREDIT_CREATED,
+    CREDIT_DECLINED,
     UNRECOGNIZED;
 
 
