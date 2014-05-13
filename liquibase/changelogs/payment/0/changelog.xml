@@ -756,14 +756,9 @@
         <sql>
         <![CDATA[
             insert into payment_type values
-                    (0, 'CHARGE','A charge request.', '2014-02-10', 'wenhongzhu')
-                   ,(1, 'VALIDATION','A validation request.', '2014-02-10', 'wenhongzhu')
-                   ,(2, 'REVERSAL','A reversal request.', '2014-02-10', 'wenhongzhu')
-                   ,(3, 'AUTHORIZATION','A authorization request.', '2014-02-10', 'wenhongzhu')
-                   ,(4, 'CAPTURE','A capture request.', '2014-02-10', 'wenhongzhu')
-                   ,(5, 'REPORTED_PAYMENT','A payment reported from a payment provider.', '2014-02-10', 'wenhongzhu')
-                   ,(6, 'PAYOUT','A payout request.', '2014-02-10', 'wenhongzhu')
-                   ,(7, 'PREPARATION','A prepare request for a payment.', '2014-02-10', 'wenhongzhu');
+                    (0, 'AUTHORIZE','A authorize request.', '2014-02-10', 'wenhongzhu')
+                   ,(1, 'CREDIT','A credit request.', '2014-02-10', 'wenhongzhu')
+                   ,(2, 'CHARGE','A charge request.', '2014-02-10', 'wenhongzhu');
         ]]>
         </sql>
     </changeSet>
@@ -791,7 +786,9 @@
                  ,(16,'REFUNDED', 'Refund is completed', '2014-02-10', 'wenhongzhu')
                  ,(17,'REFUND_DECLINED', 'Refund is declined', '2014-02-10', 'wenhongzhu')
                  ,(18,'UNCONFIRMED', 'the transaction is unconfirmed by payer', '2014-02-10', 'wenhongzhu')
-                 ,(19,'UNRECOGNIZED', 'Unkonw status', '2014-02-10', 'wenhongzhu');
+                 ,(19,'CREDIT_CREATED', 'a credit is declined', '2014-02-10', 'wenhongzhu')
+                 ,(20,'CREDIT_DECLINED', 'the credit is declined', '2014-02-10', 'wenhongzhu')
+                 ,(21,'UNRECOGNIZED', 'Unkonw status', '2014-02-10', 'wenhongzhu');
         ]]>
         </sql>
     </changeSet>
@@ -811,7 +808,9 @@
 				  ,(8,'IMMEDIATE_SETTLE','settle a transaction immediately', '2014-02-14', 'wenhongzhu')
 				  ,(9,'REFUND_CREATE','create a transaction refund', '2014-02-14', 'wenhongzhu')
 				  ,(10,'REFUND','refund a transaction', '2014-02-14', 'wenhongzhu')
-				  ,(11,'REPORT_EVENT','provider reports a new event', '2014-02-14', 'wenhongzhu');
+				  ,(11,'REPORT_EVENT','provider reports a new event', '2014-02-14', 'wenhongzhu')
+				  ,(12,'CREDIT_CREATE','create a credit transaction', '2014-02-14', 'wenhongzhu')
+				  ,(13,'CREDIT','credit transaction', '2014-02-14', 'wenhongzhu');
         ]]>
         </sql>
     </changeSet>
@@ -892,9 +891,11 @@
                                            (2, 'UpdatePI', '2014-02-10','wenhongzhu'),
                                            (3, 'Auth', '2014-02-10','wenhongzhu'),
                                            (4, 'Capture', '2014-02-10','wenhongzhu'),
-                                           (5, 'Charge', '2014-02-10','wenhongzhu'),
-                                           (6, 'Reverse', '2014-02-10','wenhongzhu'),
-                                           (7, 'Refund', '2014-02-10','wenhongzhu');
+                                           (5, 'Confirm', '2014-02-10','wenhongzhu'),
+                                           (6, 'Charge', '2014-02-10','wenhongzhu'),
+                                           (7, 'Reverse', '2014-02-10','wenhongzhu'),
+                                           (8, 'Refund', '2014-02-10','wenhongzhu'),
+                                           (9, 'Credit', '2014-02-10','wenhongzhu');
         ]]>
         </sql>
     </changeSet>
