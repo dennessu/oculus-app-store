@@ -16,7 +16,7 @@ import static org.testng.AssertJUnit.assertEquals;
 /**
  * @author dw
  */
-public class postUser {
+public class postLocales {
 
     @BeforeMethod
     public void setup() {
@@ -29,32 +29,12 @@ public class postUser {
     }
 
     @Test(groups = "bvt")
-    public void postUser() throws Exception {
-        Identity.StartLoggingAPISample(Identity.MessageDefaultPostUser);
+    public void postLocale() throws Exception {
         User newUser = Identity.DefaultPostUser();
-        Identity.StartLoggingAPISample(Identity.MessageGetUserByUserId);
         User storedUser = Identity.GetUserByUserId(newUser.getId());
         assertEquals("validate user name is correct",
                 newUser.getUsername(), storedUser.getUsername());
         assertEquals("validate user created time is correct",
                 newUser.getCreatedTime(), storedUser.getCreatedTime());
     }
-
-    @Test(groups = "dailies")
-    public void postUserWithFullData() throws Exception {
-        /*
-        String userName = RandomHelper.randomAlphabetic(15);
-        User user = new User();
-        user.setUsername(userName);
-        user.setIsAnonymous(false);
-        user.setCanonicalUsername(RandomHelper.randomAlphabetic(15));
-        List<UserPersonalInfoLink> addresses = new ArrayList<>();
-        addresses.
-        user.setAddresses(addresses);
-        User posted = (User) HttpclientHelper.SimpleJsonPost(Identity.DefaultIdentityEndPointV1,
-                JsonHelper.JsonSerializer(user),
-                User.class);
-                */
-    }
-
 }

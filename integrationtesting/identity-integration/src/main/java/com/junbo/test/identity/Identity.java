@@ -5,19 +5,22 @@
  */
 package com.junbo.test.identity;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.UserId;
 import com.junbo.common.util.IdFormatter;
-import com.junbo.identity.spec.v1.model.User;
-import com.junbo.test.common.*;
+import com.junbo.identity.spec.v1.model.*;
+import com.junbo.test.common.ConfigHelper;
+import com.junbo.test.common.HttpclientHelper;
+import com.junbo.test.common.JsonHelper;
+import com.junbo.test.common.RandomHelper;
 
 /**
  * @author dw
  */
 public class Identity {
 
-    public static final String DefaultIdentityURI = ConfigHelper.getSetting("defaultIdentityURI");
+    public static final String DefaultIdentityEndPointV1 = ConfigHelper.getSetting("defaultIdentityEndPointV1");
     public static final String DefaultUserPwd = "1234qwerASDF";
-    public static final String DefaultUserStatus = "ACTIVE";
     public static final String DefaultUserEmail = "leoltd@163.com";
 
     private Identity() {
@@ -29,16 +32,49 @@ public class Identity {
         User user = new User();
         user.setUsername(userName);
         user.setIsAnonymous(false);
-        User posted = (User) HttpclientHelper.SimpleJsonPost(DefaultIdentityURI,
+        return (User) HttpclientHelper.SimpleJsonPost(DefaultIdentityEndPointV1 + "/users",
                 JsonHelper.JsonSerializer(user),
                 User.class);
-        return posted;
     }
 
     public static User GetUserByUserId(UserId userId) throws Exception {
-        User got = (User) HttpclientHelper.SimpleGet(DefaultIdentityURI + "/"
+        return (User) HttpclientHelper.SimpleGet(DefaultIdentityEndPointV1 + "/users/"
                 + IdFormatter.encodeId(userId), User.class);
-        return got;
+    }
+
+    public static Country DefaultPostCountry() throws Exception {
+        Country country = IdentityModel.DefaultCountry();
+        return (Country) HttpclientHelper.SimpleJsonPost(DefaultIdentityEndPointV1 + "/countries",
+                JsonHelper.JsonSerializer(country),
+                Country.class);
+    }
+
+    public static Country GetCountryByCountryId(String countryId) throws Exception {
+        return (Country) HttpclientHelper.SimpleGet(DefaultIdentityEndPointV1 + "/countries/"
+                + countryId, Country.class);
+    }
+
+    public static Currency DefaultPostCurrency() throws Exception {
+        Currency currency = IdentityModel.DefaultCurrency();
+        return (Currency) HttpclientHelper.SimpleJsonPost(DefaultIdentityEndPointV1 + "/currencies",
+                JsonHelper.JsonSerializer(currency),
+                Currency.class);
+    }
+
+    public static Locale DefaultPostLocale() throws Exception {
+        Locale locale = IdentityModel.DefaultLocale();
+        return (Locale) HttpclientHelper.SimpleJsonPost(DefaultIdentityEndPointV1 + "/locales",
+                JsonHelper.JsonSerializer(locale),
+                Locale.class);
+    }
+
+    public static UserPersonalInfo DefaultPostUserPersonalInfo(String type, JsonNode value) throws Exception {
+        UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
+        userPersonalInfo.setType(type);
+        userPersonalInfo.setValue(value);
+        return (UserPersonalInfo) HttpclientHelper.SimpleJsonPost(DefaultIdentityEndPointV1 + "/personal-info",
+                JsonHelper.JsonSerializer(userPersonalInfo),
+                UserPersonalInfo.class);
     }
 
     // ****** start API sample logging ******
