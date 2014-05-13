@@ -336,8 +336,8 @@ public class CachingConnectionFactory extends SingleConnectionFactory {
                     if (noLocal == null) {
                         // createSharedDurableConsumer((Topic) dest, subscription, selector);
                         try {
-                            consumer = (MessageConsumer) createSharedDurableConsumerMethod.invoke
-                                    (this.target, dest, subscription, selector);
+                            consumer = (MessageConsumer) createSharedDurableConsumerMethod.invoke(
+                                    this.target, dest, subscription, selector);
                         } catch (InvocationTargetException ex) {
                             if (ex.getTargetException() instanceof JMSException) {
                                 throw (JMSException) ex.getTargetException();
@@ -486,6 +486,11 @@ public class CachingConnectionFactory extends SingleConnectionFactory {
                     ObjectUtils.nullSafeEquals(this.selector, otherKey.selector) &&
                     ObjectUtils.nullSafeEquals(this.noLocal, otherKey.noLocal) &&
                     ObjectUtils.nullSafeEquals(this.subscription, otherKey.subscription));
+        }
+
+        @Override
+        public int hashCode(){
+            return super.hashCode();
         }
     }
 
