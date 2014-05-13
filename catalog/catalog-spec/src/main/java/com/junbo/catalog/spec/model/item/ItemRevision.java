@@ -74,7 +74,7 @@ public class ItemRevision extends BaseRevisionModel {
 
     @ApiModelProperty(position = 28, required = true,
             value = "The content ratings given to the item by specific boards (ESRB, PEGI)")
-    private Map<String, AgeRating> ageRating;
+    private Map<String, List<AgeRating>> ageRatings;
 
     @ApiModelProperty(position = 40, required = true, value = "Locale properties of the item revision")
     private Map<String, ItemRevisionLocaleProperties> locales;
@@ -177,12 +177,12 @@ public class ItemRevision extends BaseRevisionModel {
         this.platforms = platforms;
     }
 
-    public Map<String, AgeRating> getAgeRating() {
-        return ageRating;
+    public Map<String, List<AgeRating>> getAgeRatings() {
+        return ageRatings;
     }
 
-    public void setAgeRating(Map<String, AgeRating> ageRating) {
-        this.ageRating = ageRating;
+    public void setAgeRatings(Map<String, List<AgeRating>> ageRatings) {
+        this.ageRatings = ageRatings;
     }
 
     public Map<String, ItemRevisionLocaleProperties> getLocales() {
