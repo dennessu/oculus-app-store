@@ -43,11 +43,18 @@
             <wf:on-render>
                 <wf:action ref="loginView"/>
             </wf:on-render>
-            <wf:transition on="next" to="LOGIN_SUCCESS">
+            <wf:transition on="login" to="PRE_LOGIN_SUCCESS">
                 <wf:action ref="validateCaptcha"/>
                 <wf:action ref="authenticateUserAuthorize"/>
             </wf:transition>
-            <wf:transition on="register" to="REGISTER_VIEW"/>
+            <wf:transition on="register" to="REGISTER_SUCCESS">
+                <wf:action ref="validateRegister"/>
+                <wf:action ref="validateCaptcha"/>
+                <wf:action ref="createUser"/>
+                <wf:action ref="createUserCredential"/>
+                <wf:action ref="createUserPii"/>
+                <wf:action ref="sendAccountVerifyEmail"/>
+            </wf:transition>
             <wf:transition on="facebookLogin" to="CHECK_USER_AUTHENTICATOR">
                 <wf:action ref="facebookLogin"/>
             </wf:transition>
@@ -56,6 +63,12 @@
             </wf:transition>
             <wf:transition on="cancel" to="CANCEL_VIEW"/>
         </wf:view-state>
+
+        <wf:action-state id="PRE_LOGIN_SUCCESS">
+            <wf:action ref="checkEmailVerified"/>
+            <wf:transition on="emailVerifyRequired" to="EMAIL_VERIFY_REQUIRED" />
+            <wf:transition on="*" to="LOGIN_SUCCESS" />
+        </wf:action-state>
 
         <wf:view-state id="LOGIN_SUCCESS">
             <wf:on-render>
@@ -109,11 +122,20 @@
             <wf:on-render>
                 <wf:action ref="thirdPartyUpgradeView"/>
             </wf:on-render>
-            <wf:transition on="next" to="LOGIN_SUCCESS">
+            <wf:transition on="login" to="LOGIN_SUCCESS">
                 <wf:action ref="authenticateUserAuthorize"/>
                 <wf:action ref="linkThirdPartyAccount"/>
             </wf:transition>
-            <wf:transition on="cancel" to="LOGIN_SUCCESS">
+            <wf:transition on="register" to="REGISTER_SUCCESS">
+                <wf:action ref="validateRegister"/>
+                <wf:action ref="validateCaptcha"/>
+                <wf:action ref="createUser"/>
+                <wf:action ref="createUserCredential"/>
+                <wf:action ref="createUserPii"/>
+                <wf:action ref="sendAccountVerifyEmail"/>
+                <wf:action ref="linkThirdPartyAccount"/>
+            </wf:transition>
+            <wf:transition on="skip" to="LOGIN_SUCCESS">
                 <wf:action ref="createAnonymousUser"/>
                 <wf:action ref="linkThirdPartyAccount"/>
             </wf:transition>
@@ -148,6 +170,12 @@
             </wf:on-render>
             <wf:transition on="*" to="END"/>
         </wf:view-state>
+
+        <wf:end-state id="EMAIL_VERIFY_REQUIRED">
+            <wf:on-entry>
+                <wf:action ref="emailVerifyRequiredView"/>
+            </wf:on-entry>
+        </wf:end-state>
 
         <wf:end-state id="END">
             <wf:on-entry>
@@ -333,4 +361,11 @@
     <bean id="linkThirdPartyAccount" class="com.junbo.oauth.core.action.LinkThirdPartyAccount">
         <property name="authenticatorResource" ref="authenticatorResource"/>
     </bean>
+
+    <bean id="checkEmailVerified" class="com.junbo.oauth.core.action.CheckEmailVerified">
+        <property name="userResource" ref="userResource"/>
+        <property name="userPersonalInfoResource" ref="userPersonalInfoResource"/>
+    </bean>
+
+    <bean id="emailVerifyRequiredView" class="com.junbo.oauth.core.view.EmailVerifyRequiredView"/>
 </beans>
