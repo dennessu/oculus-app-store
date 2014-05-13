@@ -101,7 +101,7 @@ public class LocaleServiceImpl extends HttpClientBase implements LocaleService {
 
     public void deleteLocale(String localeId, int expectedResponseCode) throws Exception {
         String url = localeURL + "/" + localeId;
-        restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode);
+        restApiCall(HTTPMethod.DELETE, url, expectedResponseCode);
     }
 
 }

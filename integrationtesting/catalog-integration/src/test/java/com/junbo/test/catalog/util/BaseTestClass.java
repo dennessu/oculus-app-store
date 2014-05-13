@@ -6,11 +6,11 @@
 package com.junbo.test.catalog.util;
 
 import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
+import com.junbo.test.catalog.enums.CatalogEntityStatus;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.test.catalog.ItemRevisionService;
 import com.junbo.test.common.Utility.TestClass;
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.test.common.libs.EnumHelper;
 
 /**
  @author Jason
@@ -31,7 +31,8 @@ public class BaseTestClass extends TestClass {
         ItemRevision itemRevision = itemRevisionService.postDefaultItemRevision(item);
 
         //Approve the item revision
-        itemRevision.setStatus(EnumHelper.CatalogEntityStatus.APPROVED.getEntityStatus());
+        itemRevision.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
         itemRevisionService.updateItemRevision(itemRevision);
     }
+
 }
