@@ -23,6 +23,7 @@ dependencies {
 
     compile junboProject(':billing-jobs')
     compile junboProject(':order-jobs')
+    compile junboProject(':email-jobs')
     // more to add
 }
 
