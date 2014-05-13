@@ -3,39 +3,24 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.sharding.routing;
+package com.junbo.common.routing;
 
 import com.junbo.common.id.Id;
-import com.junbo.common.id.OrderId;
+import com.junbo.common.routing.model.DataAccessPolicy;
 import com.junbo.common.util.Context;
 import com.junbo.configuration.topo.DataCenters;
 import com.junbo.configuration.topo.Topology;
 import com.junbo.langur.core.routing.Router;
-import com.junbo.sharding.id.oculus.OculusIdSchema;
-import com.junbo.sharding.id.oculus.OculusObjectId;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Required;
 
 /**
  * The implementation of router.
  */
-public class RouterImpl implements Router, InitializingBean {
+public class RouterImpl implements Router {
 
-    private OculusIdSchema oculus40IdSchema;
-    private OculusIdSchema oculus48IdSchema;
     private Topology topology;
     private boolean crossDcRoutingEnabled;
     private boolean inDcRoutingEnabled;
-
-    @Required
-    public void setOculus40IdSchema(OculusIdSchema oculus40IdSchema) {
-        this.oculus40IdSchema = oculus40IdSchema;
-    }
-
-    @Required
-    public void setOculus48IdSchema(OculusIdSchema oculus48IdSchema) {
-        this.oculus48IdSchema = oculus48IdSchema;
-    }
 
     @Required
     public void setTopology(Topology topology) {
@@ -51,22 +36,16 @@ public class RouterImpl implements Router, InitializingBean {
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
-        if (oculus40IdSchema.getNumberOfShards() < topology.getNumberOfShards()) {
-            throw new RuntimeException(String.format(
-                    "Topology is configured to have more shards than Oculus40 ID Generator can provide. id shards: %d, topo: %d",
-                    oculus40IdSchema.getNumberOfShards(), topology.getNumberOfShards()));
-        }
-        if (oculus48IdSchema.getNumberOfShards() < topology.getNumberOfShards()) {
-            throw new RuntimeException(String.format(
-                    "Topology is configured to have more shards than Oculus48 ID Generator can provide. id shards: %d, topo: %d",
-                    oculus48IdSchema.getNumberOfShards(), topology.getNumberOfShards()));
-        }
-    }
-
-    @Override
     public String getTargetUrl(Class<?> resourceClass, Object[] routingParams, boolean fallbackToAnyLocal) {
         if (routingParams == null || routingParams.length == 0) {
+            return null;
+        }
+
+        DataAccessPolicy policy = DataAccessConfigs.instance().getPolicy(resourceClass, Context.get().getHttpMethod());
+        if (policy != null) {
+            Context.get().setDataAccessPolicy(policy);
+        }
+        if (policy == null || policy == DataAccessPolicy.CLOUDANT_FIRST || policy == DataAccessPolicy.CLOUDANT_ONLY) {
             return null;
         }
 
@@ -107,28 +86,21 @@ public class RouterImpl implements Router, InitializingBean {
     }
 
     private void resolveShard(Object routingParam) {
-        Long oculus48Id = null;
-        Long oculus40Id = null;
+        long oculusId;
         if (routingParam instanceof Long) {
-            oculus48Id = (Long)routingParam;
-        } else if (routingParam instanceof OrderId) {
-            oculus40Id = ((Id)routingParam).getValue();
+            oculusId = (Long)routingParam;
         } else if (routingParam instanceof Id) {
-            oculus48Id = ((Id)routingParam).getValue();
+            oculusId = ((Id)routingParam).getValue();
         } else {
             throw new RuntimeException("Unknown routing parameter type: " + routingParam.getClass());
         }
 
-        OculusObjectId id = null;
-        if (oculus40Id != null) {
-            id = oculus40IdSchema.parseObjectId(oculus40Id.longValue());
-        } else if (oculus48Id != null) {
-            id = oculus48IdSchema.parseObjectId(oculus48Id.longValue());
-        }
-        assert id != null;
+        // both Oculus40Id and Oculus48Id share the same bit layout for dc and shard
+        int dc = (int)((oculusId >> 2) & 0xF);
+        int shard = (int)((oculusId >> 6) & 0xFF);
 
-        Context.get().setShardId(id.getShardId());
-        Context.get().setDataCenterId(id.getDataCenterId());
+        Context.get().setDataCenterId(dc);
+        Context.get().setShardId(shard);
         Context.get().setTopology(topology);
     }
 }

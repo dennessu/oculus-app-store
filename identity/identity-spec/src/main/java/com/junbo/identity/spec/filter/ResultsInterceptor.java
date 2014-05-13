@@ -7,7 +7,6 @@ package com.junbo.identity.spec.filter;
 
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
-import com.junbo.common.util.Context;
 import com.junbo.configuration.ConfigService;
 import com.junbo.configuration.ConfigServiceManager;
 import org.glassfish.jersey.server.ContainerResponse;
@@ -63,15 +62,10 @@ public class ResultsInterceptor implements ContainerResponseFilter {
 
         ContainerResponse response = (ContainerResponse)responseContext;
         Link ref = new Link();
-        String hrefPrefix = selfHrefPrfix;
-        String apiHost = Context.get().getOverrideApiHost();
 
-        if (StringUtils.hasText(apiHost)) {
-            hrefPrefix = apiHost;
-        }
         String requestUri = response.getRequestContext().getRequestUri().toString();
         requestUri = requestUri.replace(response.getRequestContext().getBaseUri().toString(),
-                hrefPrefix.endsWith("/") ? hrefPrefix : hrefPrefix + "/");
+                selfHrefPrfix.endsWith("/") ? selfHrefPrfix : selfHrefPrfix + "/");
 
         ref.setHref(requestUri);
         ref.setId("");

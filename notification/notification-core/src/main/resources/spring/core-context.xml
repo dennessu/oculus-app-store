@@ -15,9 +15,9 @@
         <property name="useAsyncSend" value="${notification.activemq.useAsyncSend}"/>
     </bean>
 
-    <bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+    <bean id="connectionFactory" class="com.junbo.notification.core.lib.CachingConnectionFactory">
         <property name="targetConnectionFactory" ref="activeMQConnectionFactory"/>
-        <property name="sessionCacheSize" value="10"/>
+        <property name="sessionCacheSize" value="${notification.activemq.sessionCacheSize}"/>
     </bean>
 
     <!-- base definition -->

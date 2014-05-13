@@ -1,9 +1,4 @@
-/*
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- *
- * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
- */
-package com.junbo.email.core.notification
+package com.junbo.email.jobs.listener
 
 import com.junbo.email.clientproxy.EmailProvider
 import com.junbo.email.db.repo.EmailHistoryRepository
@@ -16,7 +11,6 @@ import com.junbo.notification.core.BaseListener
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.TransactionDefinition
 import org.springframework.transaction.TransactionStatus
@@ -29,17 +23,31 @@ import org.springframework.transaction.support.TransactionCallbackWithoutResult
  */
 @CompileStatic
 class EmailListener extends BaseListener {
-
-    @Autowired
-    private EmailProvider emailProvider
-    @Autowired
-    private  EmailHistoryRepository emailHistoryRepository
-    @Autowired
-    private EmailTemplateRepository emailTemplateRepository
-    @Autowired
-    protected PlatformTransactionManager transactionManager
-
     private final static Logger LOGGER = LoggerFactory.getLogger(EmailListener)
+
+    private EmailProvider emailProvider
+
+    private  EmailHistoryRepository emailHistoryRepository
+
+    private EmailTemplateRepository emailTemplateRepository
+
+    private PlatformTransactionManager transactionManager
+
+    void setEmailProvider(EmailProvider emailProvider) {
+        this.emailProvider = emailProvider
+    }
+
+    void setEmailHistoryRepository(EmailHistoryRepository emailHistoryRepository) {
+        this.emailHistoryRepository = emailHistoryRepository
+    }
+
+    void setEmailTemplateRepository(EmailTemplateRepository emailTemplateRepository) {
+        this.emailTemplateRepository = emailTemplateRepository
+    }
+
+    void setTransactionManager(PlatformTransactionManager transactionManager) {
+        this.transactionManager = transactionManager
+    }
 
     protected void onMessage(final String eventId, final String message) {
         LOGGER.info("Receive a message with event id: {} and message is: {}", eventId, message)
@@ -101,8 +109,8 @@ class EmailListener extends BaseListener {
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
-                    emailHistoryRepository.updateEmailHistory(email)
-                }
-            })
+                emailHistoryRepository.updateEmailHistory(email)
+            }
+        })
     }
 }

@@ -31,7 +31,7 @@ public class HateoasTest {
 
     @BeforeTest
     public void setup() {
-        assertTrue(urlPrefix != null && urlPrefix.matches("^http(s?)://.*"), "Url Prefix is invalid: " + urlPrefix);
+        assertTrue(urlPrefix != null && urlPrefix.equals("/v1"), "Url Prefix is invalid: " + urlPrefix);
     }
 
     @Test
