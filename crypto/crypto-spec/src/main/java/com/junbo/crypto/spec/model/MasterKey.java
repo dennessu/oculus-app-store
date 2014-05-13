@@ -20,6 +20,9 @@ public class MasterKey extends ResourceMeta implements Identifiable<MasterKeyId>
     private String value;
 
     @JsonIgnore
+    private Integer keyVersion;
+
+    @JsonIgnore
     private String encryptValue;
 
     public MasterKeyId getId() {
@@ -44,5 +47,13 @@ public class MasterKey extends ResourceMeta implements Identifiable<MasterKeyId>
 
     public void setEncryptValue(String encryptValue) {
         this.encryptValue = encryptValue;
+    }
+
+    public Integer getKeyVersion() {
+        return keyVersion;
+    }
+
+    public void setKeyVersion(Integer keyVersion) {
+        this.keyVersion = keyVersion;
     }
 }

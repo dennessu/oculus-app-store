@@ -1,7 +1,7 @@
-package com.junbo.crypto.core.impl
+package com.junbo.crypto.core.service.impl
 
 import com.junbo.crypto.common.HexHelper
-import com.junbo.crypto.core.CipherService
+import com.junbo.crypto.core.service.CipherService
 import com.junbo.crypto.spec.error.AppErrors
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
@@ -21,6 +21,7 @@ import java.security.NoSuchAlgorithmException
  * Created by liangfu on 5/12/14.
  */
 @CompileStatic
+@SuppressWarnings('GetterMethodCouldBeProperty')
 class RSACipherServiceImpl implements CipherService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RSACipherServiceImpl)
@@ -89,5 +90,10 @@ class RSACipherServiceImpl implements CipherService {
         } catch (Exception e) {
             throw AppErrors.INSTANCE.internalError("Encrypt: "  + e.message).exception()
         }
+    }
+
+    @Override
+    String getKeyAlgorithm() {
+        return 'RSA'
     }
 }

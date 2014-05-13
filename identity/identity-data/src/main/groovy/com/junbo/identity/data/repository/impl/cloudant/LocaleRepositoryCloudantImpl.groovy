@@ -41,7 +41,7 @@ class LocaleRepositoryCloudantImpl extends CloudantClient<Locale> implements Loc
     @Override
     Promise<Void> delete(LocaleId id) {
         super.cloudantDelete(id.value)
-        return Promise.pure(null)
+        return Promise.pu re(null)
     }
 
     @Override

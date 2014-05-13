@@ -5,10 +5,12 @@
  */
 package com.junbo.crypto.rest.resource
 
+import com.junbo.crypto.core.validator.UserCryptoValidator
 import com.junbo.crypto.spec.model.UserCryptoKey
 import com.junbo.crypto.spec.resource.UserCryptoResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+import org.springframework.beans.factory.annotation.Required
 import org.springframework.transaction.annotation.Transactional
 
 /**
@@ -16,10 +18,27 @@ import org.springframework.transaction.annotation.Transactional
  */
 @CompileStatic
 @Transactional
-class UserCryptoResourceImpl implements UserCryptoResource {
+class UserCryptoResourceImpl extends CommonResourceImpl implements UserCryptoResource {
+
+    private UserCryptoValidator userCryptoValidator
 
     @Override
     Promise<Void> create(UserCryptoKey userCryptoKey) {
-        return Promise.pure(null)
+        return userCryptoValidator.validateUserCryptoKeyCreate(userCryptoKey).then {
+
+            return getCurrentUserCryptoKey(userCryptoKey.userId).then { Integer keyVersion ->
+                userCryptoKey.encryptValue = symmetricEncryptUserKey(userCryptoKey.value)
+                userCryptoKey.keyVersion = keyVersion + 1
+
+                return userCryptoKeyRepo.create(userCryptoKey).then {
+                    return Promise.pure(null)
+                }
+            }
+        }
+    }
+
+    @Required
+    void setUserCryptoValidator(UserCryptoValidator userCryptoValidator) {
+        this.userCryptoValidator = userCryptoValidator
     }
 }

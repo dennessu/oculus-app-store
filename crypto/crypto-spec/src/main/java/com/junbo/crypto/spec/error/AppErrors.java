@@ -8,6 +8,7 @@ package com.junbo.crypto.spec.error;
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.ErrorDef;
 import com.junbo.common.error.ErrorProxy;
+import com.junbo.common.id.UserId;
 
 /**
  * Interface for AppError.
@@ -49,4 +50,13 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 500, code = "5000010", description = "Certificate exception: {0}.")
     AppError certificateException(String message);
+
+    @ErrorDef(httpStatusCode = 500, code = "5000011", description = "Field missing: {0}.", field = "{0}")
+    AppError fieldMissing(String field);
+
+    @ErrorDef(httpStatusCode = 500, code = "5000012", description = "User {0} not found.")
+    AppError userNotFound(UserId userId);
+
+    @ErrorDef(httpStatusCode = 500, code = "5000013", description = "Field invalid: {0}.")
+    AppError fieldInvalid(String message);
 }

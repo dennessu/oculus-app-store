@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="cryptoUserResource" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy">
+        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
+        <constructor-arg name="target" value="${clientproxy.identity.url}"/>
+        <constructor-arg name="transcoder" ref="commonTranscoder"/>
+        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
+    </bean>
+</beans>

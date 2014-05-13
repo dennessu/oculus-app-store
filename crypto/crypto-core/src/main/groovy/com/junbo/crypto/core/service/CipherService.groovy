@@ -1,4 +1,4 @@
-package com.junbo.crypto.core
+package com.junbo.crypto.core.service
 
 import groovy.transform.CompileStatic
 
@@ -13,4 +13,6 @@ interface CipherService {
     public String encrypt(String message, Key key)
 
     public String decrypt(String encryptMessage, Key key)
+
+    public String getKeyAlgorithm()
 }

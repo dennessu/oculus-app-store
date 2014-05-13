@@ -6,6 +6,8 @@
 package com.junbo.crypto.core
 
 import com.junbo.crypto.common.HexHelper
+import com.junbo.crypto.core.service.CipherService
+import com.junbo.crypto.core.service.KeyStoreService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.test.context.ContextConfiguration

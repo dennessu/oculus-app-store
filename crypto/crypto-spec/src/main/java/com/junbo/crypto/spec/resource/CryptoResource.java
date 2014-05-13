@@ -26,11 +26,13 @@ public interface CryptoResource {
     // Encrypt the object based on key,
     // It will use the latest version to encrypt
     @POST
+    @Path("/encrypt")
     Promise<String> encrypt(@PathParam("userId") UserId userId, String str);
 
     // Decrypt the object based on key
     // It will use the latest version to decrypt, if unsuccessful, it will fall back to the older version
-    @GET
+    @POST
+    @Path("/decrypt")
     Promise<String> decrypt(@PathParam("userId") UserId userId, String encrypted);
 }
 
