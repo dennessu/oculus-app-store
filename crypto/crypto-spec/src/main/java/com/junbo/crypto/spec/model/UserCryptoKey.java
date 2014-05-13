@@ -6,6 +6,7 @@
 package com.junbo.crypto.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserCryptoKeyId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.model.ResourceMeta;
@@ -17,6 +18,7 @@ import com.junbo.common.util.Identifiable;
 public class UserCryptoKey extends ResourceMeta implements Identifiable<UserCryptoKeyId> {
     private UserCryptoKeyId id;
 
+    @JsonProperty("user")
     private UserId userId;
 
     @JsonIgnore

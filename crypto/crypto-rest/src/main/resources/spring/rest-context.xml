@@ -11,7 +11,6 @@
 
     <bean id="defaultCryptoResource" class="com.junbo.crypto.rest.resource.CryptoResourceImpl" scope="prototype">
         <property name="aesCipherService" ref="aesCipherService" />
-        <property name="created201Marker" ref="created201Marker" />
         <property name="keyStoreService" ref="keyStoreService" />
         <property name="masterKeyRepo" ref="cloudantMasterKeyRepo" />
         <property name="userCryptoKeyRepo" ref="cloudantUserCryptoKeyRepo" />
@@ -20,7 +19,6 @@
 
     <bean id="defaultMasterKeyResource" class="com.junbo.crypto.rest.resource.MasterKeyResourceImpl" scope="prototype">
         <property name="aesCipherService" ref="aesCipherService" />
-        <property name="created201Marker" ref="created201Marker" />
         <property name="keyStoreService" ref="keyStoreService" />
         <property name="masterKeyRepo" ref="cloudantMasterKeyRepo" />
         <property name="userCryptoKeyRepo" ref="cloudantUserCryptoKeyRepo" />
@@ -30,11 +28,18 @@
 
     <bean id="defaultUserCryptoResource" class="com.junbo.crypto.rest.resource.UserCryptoResourceImpl" scope="prototype">
         <property name="aesCipherService" ref="aesCipherService" />
-        <property name="created201Marker" ref="created201Marker" />
         <property name="keyStoreService" ref="keyStoreService" />
         <property name="masterKeyRepo" ref="cloudantMasterKeyRepo" />
         <property name="userCryptoKeyRepo" ref="cloudantUserCryptoKeyRepo" />
         <property name="rsaCipherService" ref="rsaCipherService" />
         <property name="userCryptoValidator" ref="userCryptoValidator" />
     </bean>
+
+    <bean id="defaultCryptoResourceClientFactory" class="com.junbo.crypto.spec.resource.proxy.CryptoResourceClientProxyFactory" />
+    <bean id="defaultMasterKeyResourceClientFactory" class="com.junbo.crypto.spec.resource.proxy.MasterKeyResourceClientProxyFactory" />
+    <bean id="defaultUserCryptoResourceClientFactory" class="com.junbo.crypto.spec.resource.proxy.UserCryptoResourceClientProxyFactory" />
+
+    <bean id="defaultCryptoResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultMasterKeyResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultUserCryptoResourceRouter" parent="routingRouterBase" />
 </beans>
