@@ -1,4 +1,4 @@
-#demo steps
+#pgha demo steps
 
 #purge all
 ./purge.sh
