@@ -14,7 +14,8 @@ import javax.ws.rs.NotSupportedException;
  */
 public enum ItemType implements Identifiable<Short> {
     DIGITAL(0),
-    PHYSICAL(1);
+    PHYSICAL(1),
+    STORED_VALUE(2);
 
     private ItemType(int id) {
         this.id = (short) id;

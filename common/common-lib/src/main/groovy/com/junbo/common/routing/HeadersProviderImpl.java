@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.sharding.routing;
+package com.junbo.common.routing;
 
 import com.junbo.common.util.Context;
 import com.junbo.langur.core.client.HeadersProvider;

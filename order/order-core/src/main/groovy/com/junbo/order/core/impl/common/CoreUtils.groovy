@@ -18,13 +18,23 @@ import org.apache.commons.collections.CollectionUtils
 class CoreUtils {
 
     static final String OFFER_ITEM_TYPE_PHYSICAL = 'PHYSICAL'
+    static final String OFFER_ITEM_TYPE_STORED_VALUE = 'STORED_VALUE'
+
 
     static ItemType getOfferType(OrderOfferRevision offer) {
         // TODO support bundle type
         Boolean hasPhysical = offer.orderOfferItems?.any { OrderOfferItem item ->
             item.item.type == OFFER_ITEM_TYPE_PHYSICAL
         }
+
         if (hasPhysical) { return ItemType.PHYSICAL }
+
+        Boolean hasStoredValue = offer.orderOfferItems?.any { OrderOfferItem item ->
+            item.item.type == OFFER_ITEM_TYPE_STORED_VALUE
+        }
+
+        if (hasStoredValue) { return ItemType.STORED_VALUE }
+
         return ItemType.DIGITAL
     }
 
@@ -38,6 +48,18 @@ class CoreUtils {
         }
         if (order.orderItems.any { OrderItem oi ->
             oi.type == ItemType.PHYSICAL.toString()
+        }) {
+            return true
+        }
+        return false
+    }
+
+    static Boolean hasStoredValueOffer(Order order) {
+        if (CollectionUtils.isEmpty(order.orderItems)) {
+            return false
+        }
+        if (order.orderItems.any { OrderItem oi ->
+            oi.type == ItemType.STORED_VALUE.toString()
         }) {
             return true
         }

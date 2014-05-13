@@ -3,9 +3,9 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.email.core.notification.impl
+package com.junbo.email.core.publisher.impl
 
-import com.junbo.email.core.notification.EmailPublisher
+import com.junbo.email.core.publisher.EmailPublisher
 import com.junbo.notification.core.TransactionalPublisher
 import groovy.transform.CompileStatic
 
@@ -14,6 +14,7 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class EmailPublisherImpl extends TransactionalPublisher implements EmailPublisher {
+    @Override
     void send(Long id) {
         super.publishText(UUID.randomUUID().toString(), id.toString())
     }

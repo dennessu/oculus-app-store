@@ -23,12 +23,10 @@ import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.common.model.Link;
 import com.junbo.common.shuffle.Oculus40Id;
 import com.junbo.common.shuffle.Oculus48Id;
-import com.junbo.common.util.Context;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.common.util.Utils;
 import com.junbo.configuration.ConfigService;
 import com.junbo.configuration.ConfigServiceManager;
-import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -194,15 +192,7 @@ public class CustomBeanSerializer extends BeanSerializerBase {
             Link link = null;
             if (!hasEmptyValue) {
                 link = new Link();
-
-                String overrideResourceUrlPrefix = resourceUrlPrefix;
-                String apiHost = Context.get().getOverrideApiHost();
-
-                if (StringUtils.hasText(apiHost)) {
-                    overrideResourceUrlPrefix = apiHost;
-                }
-
-                link.setHref(Utils.combineUrl(overrideResourceUrlPrefix, buffer.toString()));
+                link.setHref(Utils.combineUrl(resourceUrlPrefix, buffer.toString()));
             }
             return link;
         }

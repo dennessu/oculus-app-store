@@ -6,7 +6,6 @@
 
     <import resource="classpath*:spring/common-context.xml"/>
     <import resource="classpath*:spring/common-lib-context.xml"/>
-    <import resource="classpath:spring/sharding-context.xml"/>
 
     <alias alias="routingAsyncHttpClient" name="commonAsyncHttpClient" />
     <alias alias="routingPathParamTranscoder" name="commonPathParamTranscoder" />
@@ -14,11 +13,9 @@
     <alias alias="routingTranscoder" name="commonTranscoder" />
     <alias alias="routingExceptionHandler" name="commonExceptionHandler" />
 
-    <bean id="routingHeadersProvider" class="com.junbo.sharding.routing.HeadersProviderImpl" />
+    <bean id="routingHeadersProvider" class="com.junbo.common.routing.HeadersProviderImpl" />
 
-    <bean id="routingRouterBase" class="com.junbo.sharding.routing.RouterImpl">
-        <property name="oculus48IdSchema" ref="oculus48IdSchema" />
-        <property name="oculus40IdSchema" ref="oculus40IdSchema" />
+    <bean id="routingRouterBase" class="com.junbo.common.routing.RouterImpl">
         <property name="topology" ref="routingTopologyBase" />
         <property name="crossDcRoutingEnabled" value="${common.routing.crossDcRoutingEnabled}" />
         <property name="inDcRoutingEnabled" value="${common.routing.inDcRoutingEnabled}" />

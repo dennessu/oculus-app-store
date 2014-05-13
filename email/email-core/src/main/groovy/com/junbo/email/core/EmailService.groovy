@@ -20,6 +20,4 @@ interface EmailService {
     Promise<Email> updateEmail(Long id, Email email)
 
     Void deleteEmail(Long id)
-
-    Promise<Email> sendEmail(Email email)
 }

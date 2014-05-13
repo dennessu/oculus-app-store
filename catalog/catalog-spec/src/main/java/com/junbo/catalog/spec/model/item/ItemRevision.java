@@ -11,7 +11,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.AgeRating;
 import com.junbo.catalog.spec.model.common.BaseRevisionModel;
 import com.junbo.catalog.spec.model.common.Price;
-import com.junbo.common.jackson.annotation.AgeRatingId;
 import com.junbo.common.jackson.annotation.ItemId;
 import com.junbo.common.jackson.annotation.ItemRevisionId;
 import com.junbo.common.jackson.annotation.UserId;
@@ -75,7 +74,6 @@ public class ItemRevision extends BaseRevisionModel {
 
     @ApiModelProperty(position = 28, required = true,
             value = "The content ratings given to the item by specific boards (ESRB, PEGI)")
-    @AgeRatingId
     private Map<String, AgeRating> ageRating;
 
     @ApiModelProperty(position = 40, required = true, value = "Locale properties of the item revision")

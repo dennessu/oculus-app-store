@@ -16,6 +16,8 @@ import com.junbo.common.id.ItemId;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.model.Results;
+import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.ewallet.spec.model.CreditRequest;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.order.spec.model.OrderItem;
@@ -44,12 +46,12 @@ import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.exception.TestException;
-import com.junbo.test.common.libs.EnumHelper;
 import com.junbo.test.common.libs.EnumHelper.UserStatus;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.libs.RandomFactory;
+import com.junbo.test.entitlement.EntitlementService;
 import com.junbo.test.payment.apihelper.PaymentService;
 import com.junbo.test.payment.apihelper.impl.PaymentServiceImpl;
 
@@ -95,7 +97,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         return IdConverter.idLongToHexString(ItemId.class, item.getItemId());
     }
 
-    public String postDefaultOffer(EnumHelper.CatalogItemType itemType) throws Exception {
+    public String postDefaultOffer(CatalogItemType itemType) throws Exception {
         logger.LogSample("Post a offer");
         Offer offer = offerClient.postDefaultOffer();
         return IdConverter.idLongToHexString(OfferId.class, offer.getOfferId());
@@ -125,7 +127,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         return cartClient.updateCart(uid, primaryCartId, primaryCart);
     }
 
-    public String postDefaultOffersToPrimaryCart(String uid, EnumHelper.CatalogItemType itemType) throws Exception {
+    public String postDefaultOffersToPrimaryCart(String uid, CatalogItemType itemType) throws Exception {
         String offerId = this.postDefaultOffer(itemType);
         //String offerId = IdConverter.idLongToHexString(OfferId.class, new OfferId(100001L).getValue());
         ArrayList<String> offerList = new ArrayList<>();
@@ -339,4 +341,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         return orderClient.getOrderByOrderId(orderId);
     }
 
+    public Results<Entitlement> getEntitlementByUserId(String uid) throws Exception{
+        return EntitlementService.getEntitlements(uid);
+    }
 }
