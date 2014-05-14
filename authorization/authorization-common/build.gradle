@@ -1,0 +1,9 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile junboProject(':common-lib')
+    compile junboProject(':common-sharding')
+    compile junboProject(':common-configuration')
+
+    compile junboProject(':oom-core')
+}
