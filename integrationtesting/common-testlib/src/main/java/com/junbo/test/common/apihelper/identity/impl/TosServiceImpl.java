@@ -7,7 +7,7 @@ package com.junbo.test.common.apihelper.identity.impl;
 
 import com.junbo.test.common.apihelper.identity.TosService;
 import com.junbo.test.common.apihelper.HttpClientBase;
-import com.junbo.test.common.libs.EnumHelper.TosState;
+import com.junbo.test.common.Entities.enums.TosState;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.common.libs.RandomFactory;
