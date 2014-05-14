@@ -24,17 +24,7 @@
     <bean id="keyStoreService" class="com.junbo.crypto.core.service.impl.KeyStoreServiceImpl">
         <constructor-arg name="keyStorePath" value="${crypto.core.keyStorePath}" />
         <constructor-arg name="keyStorePassword" value="${crypto.core.keyStorePassword}" />
-        <constructor-arg name="keyAliasMap">
-            <map>
-                <entry key="1" value="${crypto.core.keyAliasAlternative}" />
-                <entry key="2" value="${crypto.core.keyAliasPrimary}" />
-            </map>
-        </constructor-arg>
-        <constructor-arg name="keyPasswordMap">
-            <map>
-                <entry key="1" value="${crypto.core.keyPasswordAlternative}" />
-                <entry key="2" value="${crypto.core.keyPasswordPrimary}" />
-            </map>
-        </constructor-arg>
+        <constructor-arg name="keyAliases" value="${crypto.core.keyAlias}" />
+        <constructor-arg name="keyPasswords" value="${crypto.core.keyPassword}" />
     </bean>
 </beans>
