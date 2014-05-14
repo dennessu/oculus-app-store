@@ -7,5 +7,9 @@ dependencies {
     runtime junboProject(':apphost-core')
     runtime junboProject(':configuration-data')
 
+    runtime (junboProject(':crypto-rest')) {
+        exclude group: 'com.junbo.identity', module: 'identity-spec'
+    }
+
     compile junboProject(':identity-rest')
 }

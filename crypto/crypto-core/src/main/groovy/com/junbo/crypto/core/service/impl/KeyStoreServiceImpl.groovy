@@ -17,27 +17,24 @@ import java.security.cert.CertificateException
 class KeyStoreServiceImpl implements KeyStoreService {
     private static final String DEFAULT_KEY_STORE_TYPE = 'jks'
 
-    // todo:    To change this to use the reverse lookup properties
     // The aliases for keyStore to load
     // We will load all the largest version's alias to encrypt and decrypt the latest data;
     // We will try to decrypt the data from the largest version to the least version.
     // If no cert alias found, throw exception;
     // If cert expires, it won't be used any more.
-    private Map<Integer, String> keyAliasMap
+    private Map<Integer, String> keyAliasMap = new HashMap<>()
 
     // This is used to load keyStore
-    private Map<Integer, String> keyPasswordMap
+    private Map<Integer, String> keyPasswordMap = new HashMap<>()
 
     private KeyStore keyStore
 
-    KeyStoreServiceImpl(String keyStorePath, String keyStorePassword, Map<Integer, String> keyAliasMap,
-                        Map<Integer, String> keyPasswordMap) {
+    KeyStoreServiceImpl(String keyStorePath, String keyStorePassword, String keyAliases, String keyPasswords) {
         assert keyStorePath != null
         assert keyStorePassword != null
-        assert keyAliasMap != null
-        assert keyPasswordMap != null
-        this.keyAliasMap = keyAliasMap
-        this.keyPasswordMap = keyPasswordMap
+        assert keyAliases != null
+        assert keyPasswords != null
+        initKeyAliasesAndPassword(keyAliases, keyPasswords)
         initKeyStore(keyStorePath, keyStorePassword)
     }
 
@@ -132,6 +129,24 @@ class KeyStoreServiceImpl implements KeyStoreService {
             throw AppErrors.INSTANCE.noSuchAlgorithmException(noSuchAlgoEx.message).exception()
         } catch (CertificateException certEx) {
             throw AppErrors.INSTANCE.certificateException(certEx.message).exception()
+        }
+    }
+
+    private void initKeyAliasesAndPassword(String keyAliases, String keyPasswords) {
+        assert keyAliases != null
+        assert keyPasswords != null
+
+        String[] aliases = keyAliases.split(';')
+        String[] passwords = keyPasswords.split(';')
+
+        if (aliases.length != passwords.length) {
+            throw new IllegalStateException('aliases and passwords number doesn\'t match')
+        }
+
+        int length = aliases.length
+        for (int index = 0; index < length; index++) {
+            keyAliasMap.put(index + 1, aliases[index])
+            keyPasswordMap.put(index + 1, passwords[index])
         }
     }
 

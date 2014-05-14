@@ -11,4 +11,6 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface MasterKeyRepo extends CryptoBaseRepository<MasterKey, MasterKeyId> {
     Promise<List<MasterKey>> getAllMaterKeys()
+
+    Promise<MasterKey> getMasterKeyByVersion(Integer version)
 }
