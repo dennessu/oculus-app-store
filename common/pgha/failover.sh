@@ -8,7 +8,7 @@ echo "current slave database: $SLAVE_SERVER:$SLAVE_PORT"
 echo "stop primary pgbouncer proxy..."
 forceKill $PRIMARY_PGBOUNCER_PORT
 
-echo "start primary pgbouncer proxy..."
+echo "stop secondary pgbouncer proxy..."
 forceKill $SECONDARY_PGBOUNCER_PORT
 
 echo "do failover..."
