@@ -56,4 +56,8 @@ public class FulfilmentTestDataProvider extends BuyerTestDataProvider {
         return dbHelper.executeScalar(sqlStr, DBHelper.DBName.ORDER);
     }
 
+    public String getFulfilmentByOrderId(String orderId) throws Exception{
+        return fulfilmentClient.getFulfilmentByOrderId(orderId);
+    }
+
 }
