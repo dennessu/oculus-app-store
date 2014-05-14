@@ -13,6 +13,10 @@
     </bean>
 
     <bean id="masterKeyValidator" class="com.junbo.crypto.core.validator.impl.MasterKeyValidatorImpl" />
+    <bean id="cryptoMessageValidator" class="com.junbo.crypto.core.validator.impl.CryptoMessageValidatorImpl">
+        <property name="userResource" ref="cryptoUserResource" />
+        <property name="versionSeparator" value="${crypto.core.versionSeparator}" />
+    </bean>
 
     <bean id="aesCipherService" class="com.junbo.crypto.core.service.impl.AESCipherServiceImpl" />
     <bean id="rsaCipherService" class="com.junbo.crypto.core.service.impl.RSACipherServiceImpl" />

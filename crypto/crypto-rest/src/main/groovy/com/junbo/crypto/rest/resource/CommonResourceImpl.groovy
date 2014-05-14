@@ -24,7 +24,7 @@ import java.security.PublicKey
 @SuppressWarnings('UnnecessaryGetter')
 abstract class CommonResourceImpl {
 
-    public static final String VERSION_SEPARATOR = ':'
+    protected String versionSeparator
 
     protected MasterKeyRepo masterKeyRepo
 
@@ -35,6 +35,11 @@ abstract class CommonResourceImpl {
     protected CipherService rsaCipherService
 
     protected KeyStoreService keyStoreService
+
+    @Required
+    void setVersionSeparator(String versionSeparator) {
+        this.versionSeparator = versionSeparator
+    }
 
     @Required
     void setMasterKeyRepo(MasterKeyRepo masterKeyRepo) {
@@ -63,9 +68,9 @@ abstract class CommonResourceImpl {
 
     // Used to encrypt and decrypt userKey
     protected Promise<String> symmetricDecryptUserKey(String encryptedUserKey) {
-        String[] userKeyInfo = (String [])encryptedUserKey.split(VERSION_SEPARATOR)
+        String[] userKeyInfo = (String [])encryptedUserKey.split(versionSeparator)
         if (userKeyInfo == null || userKeyInfo.length != 2) {
-            throw new IllegalArgumentException('userKey should be separated by ' + VERSION_SEPARATOR)
+            throw new IllegalArgumentException('userKey should be separated by ' + versionSeparator)
         }
 
         Integer masterKeyVersion = Integer.parseInt(userKeyInfo[0])
@@ -105,7 +110,7 @@ abstract class CommonResourceImpl {
 
             String encryptUserKey = aesCipherService.encrypt(rawUserKey, stringToKey(decryptMasterKey))
 
-            return Promise.pure(current.keyVersion.toString() + VERSION_SEPARATOR + encryptUserKey)
+            return Promise.pure(current.keyVersion.toString() + versionSeparator + encryptUserKey)
         }
     }
 
@@ -116,10 +121,10 @@ abstract class CommonResourceImpl {
 
     // Used to encrypt and decrypt master key
     protected String asymmetricDecryptMasterKey(String encryptMasterKey) {
-        String[] messageInfo = (String [])encryptMasterKey.split(VERSION_SEPARATOR)
+        String[] messageInfo = (String [])encryptMasterKey.split(versionSeparator)
 
         if (messageInfo == null || messageInfo.length != 2) {
-            throw new IllegalArgumentException('encryptMessage should be separated by ' + VERSION_SEPARATOR)
+            throw new IllegalArgumentException('encryptMessage should be separated by ' + versionSeparator)
         }
 
         Integer masterKeyVersion = Integer.parseInt(messageInfo[0])
@@ -146,15 +151,15 @@ abstract class CommonResourceImpl {
 
         PublicKey publicKey = publicKeyMap[maxVersion]
 
-        return maxVersion.toString() + VERSION_SEPARATOR + rsaCipherService.encrypt(rawMaterKey, publicKey)
+        return maxVersion.toString() + versionSeparator + rsaCipherService.encrypt(rawMaterKey, publicKey)
     }
 
     // Used to encrypt and decrypt user message
     protected Promise<String> symmetricDecryptUserMessage(UserId userId, String message) {
-        String[] messageInfo = (String [])message.split(VERSION_SEPARATOR)
+        String[] messageInfo = (String [])message.split(versionSeparator)
 
         if (messageInfo == null || messageInfo.length != 2) {
-            throw new IllegalArgumentException('encryptMessage should be separated by ' + VERSION_SEPARATOR)
+            throw new IllegalArgumentException('encryptMessage should be separated by ' + versionSeparator)
         }
 
         Integer userKeyVersion = Integer.parseInt(messageInfo[0])
@@ -193,7 +198,7 @@ abstract class CommonResourceImpl {
                     Key userKeyLoaded = stringToKey(userKey)
                     String value = aesCipherService.encrypt(message, userKeyLoaded)
 
-                    return Promise.pure(userKeyVersion.toString() + VERSION_SEPARATOR + value)
+                    return Promise.pure(userKeyVersion.toString() + versionSeparator + value)
                 }
             }
         }
