@@ -1,6 +1,8 @@
 apply plugin: 'groovy'
 
 dependencies {
+    compile (libraries.apache_common_io)
+
     compile junboProject(':crypto-common')
     compile junboProject(':crypto-data')
 
