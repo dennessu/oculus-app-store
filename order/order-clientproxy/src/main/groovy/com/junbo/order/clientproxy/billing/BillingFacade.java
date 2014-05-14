@@ -18,7 +18,7 @@ import java.util.List;
  * Created by chriszhu on 2/19/14.
  */
 public interface BillingFacade {
-    Promise<Balance> createBalance(Balance balance);
+    Promise<Balance> createBalance(Balance balance, Boolean isAsyncCharge);
     Promise<Balance> settleBalance(Long balanceId);
     Promise<Balance> captureBalance(Long balanceId);
     Promise<Balance> getBalanceById(Long balanceId);
