@@ -14,6 +14,7 @@ import java.security.cert.CertificateException
  * Created by liangfu on 5/12/14.
  */
 @CompileStatic
+@SuppressWarnings('EmptyCatchBlock')
 class KeyStoreServiceImpl implements KeyStoreService {
     private static final String DEFAULT_KEY_STORE_TYPE = 'jks'
 
@@ -35,7 +36,11 @@ class KeyStoreServiceImpl implements KeyStoreService {
         assert keyAliases != null
         assert keyPasswords != null
         initKeyAliasesAndPassword(keyAliases, keyPasswords)
-        initKeyStore(keyStorePath, keyStorePassword)
+        try {
+            initKeyStore(keyStorePath, keyStorePassword)
+        } catch (Exception e) {
+            // todo:    Here we need to implement different logic
+        }
     }
 
     @Override
