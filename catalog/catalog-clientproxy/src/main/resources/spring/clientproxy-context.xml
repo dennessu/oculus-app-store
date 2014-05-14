@@ -21,7 +21,7 @@
         <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
-    <bean id="roleService" class="com.junbo.identity.spec.v1.resource.proxy.RoleResourceClientProxy">
+    <bean id="roleService" class="com.junbo.authorization.spec.resource.proxy.RoleResourceClientProxy">
         <constructor-arg name="client" ref="commonAsyncHttpClient"/>
         <constructor-arg name="target" value="${clientproxy.identity.url}"/>
         <constructor-arg name="transcoder" ref="commonTranscoder"/>
@@ -31,7 +31,7 @@
     </bean>
 
     <bean id="roleAssignmentService"
-          class="com.junbo.identity.spec.v1.resource.proxy.RoleAssignmentResourceClientProxy">
+          class="com.junbo.authorization.spec.resource.proxy.RoleAssignmentResourceClientProxy">
         <constructor-arg name="client" ref="commonAsyncHttpClient"/>
         <constructor-arg name="target" value="${clientproxy.identity.url}"/>
         <constructor-arg name="transcoder" ref="commonTranscoder"/>

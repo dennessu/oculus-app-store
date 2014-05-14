@@ -7,19 +7,19 @@ package com.junbo.catalog.rest.auth;
 
 import com.junbo.authorization.AuthorizeCallback;
 import com.junbo.authorization.AuthorizeCallbackFactory;
+import com.junbo.authorization.spec.model.Role;
+import com.junbo.authorization.spec.model.RoleAssignment;
+import com.junbo.authorization.spec.option.list.RoleAssignmentListOptions;
+import com.junbo.authorization.spec.option.list.RoleListOptions;
+import com.junbo.authorization.spec.resource.RoleAssignmentResource;
+import com.junbo.authorization.spec.resource.RoleResource;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.Group;
-import com.junbo.identity.spec.v1.model.Role;
-import com.junbo.identity.spec.v1.model.RoleAssignment;
 import com.junbo.identity.spec.v1.model.UserGroup;
 import com.junbo.identity.spec.v1.option.list.GroupListOptions;
-import com.junbo.identity.spec.v1.option.list.RoleAssignmentListOptions;
-import com.junbo.identity.spec.v1.option.list.RoleListOptions;
 import com.junbo.identity.spec.v1.option.list.UserGroupListOptions;
 import com.junbo.identity.spec.v1.resource.GroupResource;
-import com.junbo.identity.spec.v1.resource.RoleAssignmentResource;
-import com.junbo.identity.spec.v1.resource.RoleResource;
 import com.junbo.identity.spec.v1.resource.UserGroupMembershipResource;
 import com.junbo.oauth.spec.model.TokenInfo;
 import groovy.transform.CompileStatic;
@@ -120,8 +120,8 @@ public class ItemAuthorizeCallbackFactory implements AuthorizeCallbackFactory<It
         public boolean role(String roleName) {
             RoleListOptions roleListOptions = new RoleListOptions();
             roleListOptions.setName(roleName);
-            roleListOptions.setResourceType("item");
-            roleListOptions.setResourceId(entity.getItemId());
+//            roleListOptions.setResourceType("item");
+//            roleListOptions.setResourceId(entity.getItemId());
 
             try {
                 Results<Role> roles = roleResource.list(roleListOptions).wrapped().get();
@@ -133,9 +133,9 @@ public class ItemAuthorizeCallbackFactory implements AuthorizeCallbackFactory<It
                 Role role = roles.getItems().get(0);
 
                 RoleAssignmentListOptions roleAssignmentListOptions = new RoleAssignmentListOptions();
-                roleAssignmentListOptions.setRoleId(role.getId());
-                roleAssignmentListOptions.setAssigneeType("user");
-                roleAssignmentListOptions.setAssigneeId(tokenInfo.getSub().getValue());
+//                roleAssignmentListOptions.setRoleId(role.getId());
+//                roleAssignmentListOptions.setAssigneeType("user");
+//                roleAssignmentListOptions.setAssigneeId(tokenInfo.getSub().getValue());
                 Results<RoleAssignment> roleAssignments = roleAssignmentResource.list(roleAssignmentListOptions)
                         .wrapped().get();
 
