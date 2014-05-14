@@ -15,6 +15,8 @@
         <property name="masterKeyRepo" ref="cloudantMasterKeyRepo" />
         <property name="userCryptoKeyRepo" ref="cloudantUserCryptoKeyRepo" />
         <property name="rsaCipherService" ref="rsaCipherService" />
+        <property name="versionSeparator" value="${crypto.core.versionSeparator}" />
+        <property name="validator" ref="cryptoMessageValidator" />
     </bean>
 
     <bean id="defaultMasterKeyResource" class="com.junbo.crypto.rest.resource.MasterKeyResourceImpl" scope="prototype">
@@ -24,6 +26,7 @@
         <property name="userCryptoKeyRepo" ref="cloudantUserCryptoKeyRepo" />
         <property name="rsaCipherService" ref="rsaCipherService" />
         <property name="masterKeyValidator" ref="masterKeyValidator" />
+        <property name="versionSeparator" value="${crypto.core.versionSeparator}" />
     </bean>
 
     <bean id="defaultUserCryptoResource" class="com.junbo.crypto.rest.resource.UserCryptoResourceImpl" scope="prototype">
@@ -33,6 +36,7 @@
         <property name="userCryptoKeyRepo" ref="cloudantUserCryptoKeyRepo" />
         <property name="rsaCipherService" ref="rsaCipherService" />
         <property name="userCryptoValidator" ref="userCryptoValidator" />
+        <property name="versionSeparator" value="${crypto.core.versionSeparator}" />
     </bean>
 
     <bean id="defaultCryptoResourceClientFactory" class="com.junbo.crypto.spec.resource.proxy.CryptoResourceClientProxyFactory" />

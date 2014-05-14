@@ -22,11 +22,7 @@ import com.junbo.ewallet.spec.model.CreditRequest;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.order.spec.model.OrderItem;
 import com.junbo.order.spec.model.PaymentInfo;
-import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.payment.spec.model.TypeSpecificDetails;
 import com.junbo.test.catalog.enums.CatalogItemType;
-import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
-import com.junbo.test.common.Entities.paymentInstruments.PayPalInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
 import com.junbo.test.common.Utility.BaseTestDataProvider;
 
@@ -45,15 +41,14 @@ import com.junbo.test.common.apihelper.order.impl.OrderServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
-import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.EnumHelper.UserStatus;
 import com.junbo.test.common.libs.IdConverter;
-import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.entitlement.EntitlementService;
 import com.junbo.test.payment.apihelper.PaymentService;
 import com.junbo.test.payment.apihelper.impl.PaymentServiceImpl;
+import com.junbo.test.payment.utility.PaymentTestDataProvider;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -69,6 +64,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
     private CartService cartClient = CartServiceImpl.getInstance();
     private OrderService orderClient = OrderServiceImpl.getInstance();
     private PaymentService paymentClient = PaymentServiceImpl.getInstance();
+    private PaymentTestDataProvider paymentProvider = new PaymentTestDataProvider();
 
     private LogHelper logger = new LogHelper(BuyerTestDataProvider.class);
 
@@ -136,57 +132,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
     }
 
     public String postPaymentInstrument(String uid, PaymentInstrumentBase paymentInfo) throws Exception {
-
-        PaymentInstrument paymentInstrument = new PaymentInstrument();
-        ArrayList<Long> admins = new ArrayList<>();
-        admins.add(IdConverter.hexStringToId(UserId.class, uid));
-        paymentInstrument.setAdmins(admins);
-        paymentInstrument.setLabel("4");
-        TypeSpecificDetails typeSpecificDetails = new TypeSpecificDetails();
-        Long billingAddressId = Master.getInstance().getUser(uid).getAddresses().get(0).getValue().getValue();
-        paymentInfo.setBillingAddressId(billingAddressId);
-        switch (paymentInfo.getType()) {
-            case CREDITCARD:
-                CreditCardInfo creditCardInfo = (CreditCardInfo) paymentInfo;
-                typeSpecificDetails.setExpireDate(creditCardInfo.getExpireDate());
-                typeSpecificDetails.setEncryptedCvmCode(creditCardInfo.getEncryptedCVMCode());
-                paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
-                paymentInstrument.setAccountName(creditCardInfo.getAccountName());
-                paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
-                paymentInstrument.setIsValidated(creditCardInfo.isValidated());
-                paymentInstrument.setType(creditCardInfo.getType().getValue());
-                paymentInstrument.setBillingAddressId(creditCardInfo.getBillingAddressId());
-
-                paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument));
-                return paymentInfo.getPid();
-
-            case EWALLET:
-                EwalletInfo ewalletInfo = (EwalletInfo) paymentInfo;
-                typeSpecificDetails.setStoredValueCurrency("usd");
-                paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
-                paymentInstrument.setAccountName(ewalletInfo.getAccountName());
-                paymentInstrument.setType(ewalletInfo.getType().getValue());
-                paymentInstrument.setIsValidated(ewalletInfo.isValidated());
-                paymentInstrument.setBillingAddressId(billingAddressId);
-                paymentInstrument.setBillingAddressId(ewalletInfo.getBillingAddressId());
-
-                paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument));
-                return paymentInfo.getPid();
-
-            case PAYPAL:
-                PayPalInfo payPalInfo = (PayPalInfo) paymentInfo;
-                paymentInstrument.setAccountName(payPalInfo.getAccountName());
-                paymentInstrument.setAccountNum(payPalInfo.getAccountNum());
-                paymentInstrument.setIsValidated(payPalInfo.isValidated());
-                paymentInstrument.setType(payPalInfo.getType().getValue());
-                paymentInstrument.setBillingAddressId(payPalInfo.getBillingAddressId());
-
-                paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument));
-                return paymentInfo.getPid();
-
-            default:
-                throw new TestException(String.format("%s is not supported", paymentInfo.getType().toString()));
-        }
+       return paymentProvider.postPaymentInstrument(uid,paymentInfo);
     }
 
     public void creditWallet(String uid) throws Exception {

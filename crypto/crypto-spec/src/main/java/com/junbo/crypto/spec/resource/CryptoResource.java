@@ -6,6 +6,7 @@
 package com.junbo.crypto.spec.resource;
 
 import com.junbo.common.id.UserId;
+import com.junbo.crypto.spec.model.CryptoMessage;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
@@ -27,12 +28,12 @@ public interface CryptoResource {
     // It will use the latest version to encrypt
     @POST
     @Path("/encrypt")
-    Promise<String> encrypt(@PathParam("userId") UserId userId, String str);
+    Promise<CryptoMessage> encrypt(@PathParam("userId") UserId userId, CryptoMessage rawMessage);
 
     // Decrypt the object based on key
     // It will use the latest version to decrypt, if unsuccessful, it will fall back to the older version
     @POST
     @Path("/decrypt")
-    Promise<String> decrypt(@PathParam("userId") UserId userId, String encrypted);
+    Promise<CryptoMessage> decrypt(@PathParam("userId") UserId userId, CryptoMessage encryptMessage);
 }
 

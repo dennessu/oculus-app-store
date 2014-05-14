@@ -24,7 +24,7 @@ import java.security.PublicKey
 @SuppressWarnings('UnnecessaryGetter')
 abstract class CommonResourceImpl {
 
-    public static final String VERSION_SEPARATOR = ':'
+    protected String versionSeparator
 
     protected MasterKeyRepo masterKeyRepo
 
@@ -35,6 +35,11 @@ abstract class CommonResourceImpl {
     protected CipherService rsaCipherService
 
     protected KeyStoreService keyStoreService
+
+    @Required
+    void setVersionSeparator(String versionSeparator) {
+        this.versionSeparator = versionSeparator
+    }
 
     @Required
     void setMasterKeyRepo(MasterKeyRepo masterKeyRepo) {
@@ -63,18 +68,14 @@ abstract class CommonResourceImpl {
 
     // Used to encrypt and decrypt userKey
     protected Promise<String> symmetricDecryptUserKey(String encryptedUserKey) {
-        String[] userKeyInfo = (String [])encryptedUserKey.split(VERSION_SEPARATOR)
+        String[] userKeyInfo = (String [])encryptedUserKey.split(versionSeparator)
         if (userKeyInfo == null || userKeyInfo.length != 2) {
-            throw new IllegalArgumentException('userKey should be separated by ' + VERSION_SEPARATOR)
+            throw new IllegalArgumentException('userKey should be separated by ' + versionSeparator)
         }
 
         Integer masterKeyVersion = Integer.parseInt(userKeyInfo[0])
         String userEncryptValue = userKeyInfo[1]
-        return masterKeyRepo.getAllMaterKeys().then { List<MasterKey> masterKeys ->
-            MasterKey masterKey = masterKeys.find { MasterKey temp ->
-                return temp.keyVersion == masterKeyVersion
-            }
-
+        return masterKeyRepo.getMasterKeyByVersion(masterKeyVersion).then { MasterKey masterKey ->
             if (masterKey == null) {
                 throw new IllegalArgumentException('master key with version: ' + masterKeyVersion + ' not found.')
             }
@@ -88,24 +89,13 @@ abstract class CommonResourceImpl {
     }
 
     protected Promise<String> symmetricEncryptUserKey(String rawUserKey) {
-        return masterKeyRepo.getAllMaterKeys().then { List<MasterKey> masterKeyList ->
-            if (masterKeyList == null) {
-                throw new IllegalArgumentException('No master key found.')
-            }
-            masterKeyList.sort(new Comparator<MasterKey>() {
-                @Override
-                int compare(MasterKey o1, MasterKey o2) {
-                    return o2.keyVersion <=> o1.keyVersion
-                }
-            })
-
-            MasterKey current = masterKeyList.get(0)
+        return getCurrentMasterKey().then { MasterKey current ->
 
             String decryptMasterKey = asymmetricDecryptMasterKey(current.encryptValue)
 
             String encryptUserKey = aesCipherService.encrypt(rawUserKey, stringToKey(decryptMasterKey))
 
-            return Promise.pure(current.keyVersion.toString() + VERSION_SEPARATOR + encryptUserKey)
+            return Promise.pure(current.keyVersion.toString() + versionSeparator + encryptUserKey)
         }
     }
 
@@ -116,10 +106,10 @@ abstract class CommonResourceImpl {
 
     // Used to encrypt and decrypt master key
     protected String asymmetricDecryptMasterKey(String encryptMasterKey) {
-        String[] messageInfo = (String [])encryptMasterKey.split(VERSION_SEPARATOR)
+        String[] messageInfo = (String [])encryptMasterKey.split(versionSeparator)
 
         if (messageInfo == null || messageInfo.length != 2) {
-            throw new IllegalArgumentException('encryptMessage should be separated by ' + VERSION_SEPARATOR)
+            throw new IllegalArgumentException('encryptMessage should be separated by ' + versionSeparator)
         }
 
         Integer masterKeyVersion = Integer.parseInt(messageInfo[0])
@@ -146,25 +136,21 @@ abstract class CommonResourceImpl {
 
         PublicKey publicKey = publicKeyMap[maxVersion]
 
-        return maxVersion.toString() + VERSION_SEPARATOR + rsaCipherService.encrypt(rawMaterKey, publicKey)
+        return maxVersion.toString() + versionSeparator + rsaCipherService.encrypt(rawMaterKey, publicKey)
     }
 
     // Used to encrypt and decrypt user message
     protected Promise<String> symmetricDecryptUserMessage(UserId userId, String message) {
-        String[] messageInfo = (String [])message.split(VERSION_SEPARATOR)
+        String[] messageInfo = (String [])message.split(versionSeparator)
 
         if (messageInfo == null || messageInfo.length != 2) {
-            throw new IllegalArgumentException('encryptMessage should be separated by ' + VERSION_SEPARATOR)
+            throw new IllegalArgumentException('encryptMessage should be separated by ' + versionSeparator)
         }
 
         Integer userKeyVersion = Integer.parseInt(messageInfo[0])
         String encryptMessage = messageInfo[1]
 
-        return userCryptoKeyRepo.searchAllUserCryptoKeys(userId).then { List<UserCryptoKey> userCryptoKeyList ->
-            UserCryptoKey key = userCryptoKeyList.find { UserCryptoKey userCryptoKey ->
-                return userCryptoKey.keyVersion == userKeyVersion
-            }
-
+        return userCryptoKeyRepo.getUserCryptoKeyByVersion(userId, userKeyVersion).then { UserCryptoKey key ->
             if (key == null) {
                 throw new IllegalArgumentException('user key with version: ' + userKeyVersion + ' not found.')
             }
@@ -180,11 +166,7 @@ abstract class CommonResourceImpl {
 
     protected Promise<String> symmetricEncryptUserMessage(UserId userId, String message) {
         return getCurrentUserCryptoKey(userId).then { Integer userKeyVersion ->
-            return userCryptoKeyRepo.searchAllUserCryptoKeys(userId).then { List<UserCryptoKey> userCryptoKeyList ->
-                UserCryptoKey key = userCryptoKeyList.find { UserCryptoKey userCryptoKey ->
-                    return userCryptoKey.keyVersion == userKeyVersion
-                }
-
+            return userCryptoKeyRepo.getUserCryptoKeyByVersion(userId, userKeyVersion).then { UserCryptoKey key ->
                 if (key == null) {
                     throw new IllegalArgumentException('user key with version: ' + userKeyVersion + ' not found.')
                 }
@@ -193,14 +175,14 @@ abstract class CommonResourceImpl {
                     Key userKeyLoaded = stringToKey(userKey)
                     String value = aesCipherService.encrypt(message, userKeyLoaded)
 
-                    return Promise.pure(userKeyVersion.toString() + VERSION_SEPARATOR + value)
+                    return Promise.pure(userKeyVersion.toString() + versionSeparator + value)
                 }
             }
         }
     }
 
     protected Promise<Integer> getCurrentUserCryptoKey(UserId userId) {
-        return userCryptoKeyRepo.searchAllUserCryptoKeys(userId).then { List<UserCryptoKey> userCryptoKeyList ->
+        return userCryptoKeyRepo.getAllUserCryptoKeys(userId).then { List<UserCryptoKey> userCryptoKeyList ->
             if (CollectionUtils.isEmpty(userCryptoKeyList)) {
                 return Promise.pure(0)
             }
@@ -215,7 +197,7 @@ abstract class CommonResourceImpl {
         }
     }
 
-    protected Promise<Integer> getCurrentMasterKey() {
+    protected Promise<MasterKey> getCurrentMasterKey() {
         return masterKeyRepo.getAllMaterKeys().then { List<MasterKey> masterKeyList ->
 
             if (CollectionUtils.isEmpty(masterKeyList)) {
@@ -229,7 +211,7 @@ abstract class CommonResourceImpl {
                 }
             })
 
-            return Promise.pure(key.keyVersion)
+            return Promise.pure(key)
         }
     }
 }
