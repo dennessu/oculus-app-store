@@ -51,12 +51,13 @@ public class IdentityModel {
         LocaleId localeId = new LocaleId();
         localeId.setValue("en_US");
         country.setDefaultLocale(localeId);
-        Map<String, JsonNode> locales = new HashMap<>();
-        LocaleName localeName = new LocaleName();
-        localeName.setShortName("USD_SHORT");
-        localeName.setLongName("USD_LONG");
-        locales.put("en_US", JsonHelper.ObjectToJsonNode(localeName));
-        country.setLocales(locales);
+        //TODO fields to be uncommented once code complete.
+//        Map<String, JsonNode> locales = new HashMap<>();
+//        LocaleName localeName = new LocaleName();
+//        localeName.setShortName("USD_SHORT");
+//        localeName.setLongName("USD_LONG");
+//        locales.put("en_US", JsonHelper.ObjectToJsonNode(localeName));
+//        country.setLocales(locales);
         List<RatingBoardId> ratingBoardIds = new ArrayList<>();
         country.setRatingBoardId(ratingBoardIds);
         Map<String, SubCountry> subCountryMap = new HashMap<>();
@@ -77,21 +78,22 @@ public class IdentityModel {
     }
 
     public static Currency DefaultCurrency() throws Exception {
+        //TODO fields to be uncommented once code complete.
         Currency currency = new Currency();
         currency.setCurrencyCode("USD");
-        currency.setDecimalSymbol(".");
-        currency.setDigitGroupingLength(3);
-        currency.setDigitGroupingSymbol(",");
+        //currency.setDecimalSymbol(".");
+        //currency.setDigitGroupingLength(3);
+        //currency.setDigitGroupingSymbol(",");
         Map<String, JsonNode> locales = new HashMap<>();
         LocaleName localeName = new LocaleName();
         localeName.setShortName("USD_SHORT");
         localeName.setLongName("USD_LONG");
         locales.put("en_US", JsonHelper.ObjectToJsonNode(localeName));
         currency.setLocales(locales);
-        currency.setNegativeFormat("BRACE");
-        currency.setNumberAfterDecimal(2);
+        //currency.setNegativeFormat("BRACE");
+        //currency.setNumberAfterDecimal(2);
         currency.setSymbol("$");
-        currency.setSymbolPosition("BEFORE");
+        //currency.setSymbolPosition("BEFORE");
         return currency;
     }
 
@@ -102,5 +104,19 @@ public class IdentityModel {
         locale.setLongName("English (United States)");
         locale.setShortName("English(US)");
         return locale;
+    }
+
+    public static User DefaultUser() throws Exception {
+        User user = new User();
+        user.setUsername(RandomHelper.randomAlphabetic(15));
+        user.setIsAnonymous(false);
+        return user;
+    }
+
+    public static UserPersonalInfo DefaultUserPersonalInfo() throws Exception {
+        UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
+        userPersonalInfo.setType("ADDRESS");
+        userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(DefaultAddress()));
+        return userPersonalInfo;
     }
 }

@@ -6,7 +6,9 @@
 package com.junbo.test.identity;
 
 import com.junbo.identity.spec.v1.model.User;
+import com.junbo.identity.spec.v1.model.UserPersonalInfo;
 import com.junbo.test.common.HttpclientHelper;
+import com.junbo.test.common.JsonHelper;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -29,12 +31,18 @@ public class postUserPersonalInfo {
     }
 
     @Test(groups = "bvt")
-    public void postUser() throws Exception {
-        User newUser = Identity.DefaultPostUser();
-        User storedUser = Identity.GetUserByUserId(newUser.getId());
-        assertEquals("validate user name is correct",
-                newUser.getUsername(), storedUser.getUsername());
-        assertEquals("validate user created time is correct",
-                newUser.getCreatedTime(), storedUser.getCreatedTime());
+    public void postUserPersonalInfo() throws Exception {
+        User user = Identity.UserPostDefault();
+        UserPersonalInfo posted = Identity.UserPersonalInfoPostDefault(user.getId());
+        UserPersonalInfo stored = Identity.UserPersonalInfoGetByUserPersonalInfoId(posted.getId());
+        assertEquals("validate user personal info id is correct",
+                posted.getId(), stored.getId());
+        assertEquals("validate user personal info type is correct",
+                posted.getType(), stored.getType());
+        assertEquals("validate user personal info user id is correct",
+                posted.getUserId(), stored.getUserId());
+        assertEquals("validate user personal info value is correct",
+                JsonHelper.ObjectToJsonNode(posted.getValue()),
+                JsonHelper.ObjectToJsonNode(stored.getValue()));
     }
 }
