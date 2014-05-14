@@ -47,7 +47,7 @@ public class CipherServiceTest extends AbstractTestNGSpringContextTests {
     @Autowired
     private KeyStoreService keyStoreService
 
-    @Test
+    @Test(enabled = false)
     public void testAESEncryptAndDecrypt() {
         // Get the KeyGenerator
         KeyGenerator kgen = KeyGenerator.getInstance("AES");
@@ -65,7 +65,7 @@ public class CipherServiceTest extends AbstractTestNGSpringContextTests {
         assert message == decryptedValue
     }
 
-    @Test
+    @Test(enabled = false)
     public void testRSAEncryptAndDecrypt() {
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
         kpg.initialize(512); // 512 is the keysize.
