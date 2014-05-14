@@ -109,11 +109,11 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
         }
 
         if (StringUtils.isEmpty(result)) {
-            logger.info("No configContext %s configured, will use default %s='%s'", settingName, settingKey, defaultValue);
+            logger.info("No configContext {} configured, will use default {}='{}'", settingName, settingKey, defaultValue);
             result = defaultValue;
         }
         else {
-            logger.info("ConfigContext %s is configured as %s='%s'", settingName, settingKey, result);
+            logger.info("ConfigContext {} is configured as {}='{}'", settingName, settingKey, result);
         }
         properties.setProperty(settingKey, result);
         return result;

@@ -63,6 +63,7 @@ public class OrderRatingService extends RatingServiceSupport{
 
             Money originalPrice = getPrice(item.getOffer(), currency.getCode());
             if (originalPrice == Money.NOT_FOUND) {
+                LOGGER.error("Price of Offer [" + offerId + "] is not found for Currency [" + currency + "].");
                 throw AppErrors.INSTANCE.priceNotFound(item.getOfferId().toString()).exception();
             }
 
@@ -157,7 +158,6 @@ public class OrderRatingService extends RatingServiceSupport{
         for (Long shippingMethodId : shippingDetail.keySet()) {
             int quantity = shippingDetail.get(shippingMethodId);
             ShippingMethod shippingMethod = catalogGateway.getShippingMethod(shippingMethodId);
-            // TODO throw exception if the shipping method is not found
             if (shippingMethod != null) {
                 shippingFee = shippingFee.add(shippingMethod.getBasePrice());
                 if (quantity > shippingMethod.getBaseUnit()) {

@@ -6,11 +6,12 @@
 package com.junbo.test.identity;
 
 import com.junbo.identity.spec.v1.model.User;
-
 import com.junbo.test.common.HttpclientHelper;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
-import static org.testng.AssertJUnit.*;
+import static org.testng.AssertJUnit.assertEquals;
 
 /**
  * @author dw
@@ -29,14 +30,17 @@ public class postUser {
 
     @Test(groups = "bvt")
     public void postUser() throws Exception {
-        Identity.StartLoggingAPISample(Identity.MessageDefaultPostUser);
-        User newUser = Identity.DefaultPostUser();
-        Identity.StartLoggingAPISample(Identity.MessageGetUserByUserId);
-        User storedUser = Identity.GetUserByUserId(newUser.getId());
+        User posted = Identity.UserPostDefault();
+        User stored = Identity.UserGetByUserId(posted.getId());
         assertEquals("validate user name is correct",
-                newUser.getUsername(), storedUser.getUsername());
+                posted.getUsername(), stored.getUsername());
         assertEquals("validate user created time is correct",
-                newUser.getCreatedTime(), storedUser.getCreatedTime());
+                posted.getCreatedTime(), stored.getCreatedTime());
+    }
+
+    @Test(groups = "dailies")
+    public void postUserWithFullData() throws Exception {
+
     }
 
 }

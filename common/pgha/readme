@@ -24,6 +24,7 @@
 # - stop primary/secondary pgbouncer proxies
 # - gracefully shutdown master database
 # - copy unarchived log
+# - ensure slave catch up
 # - promote slave database as new master
 # - configure old master
 # - start old master as new slave

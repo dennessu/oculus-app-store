@@ -10,6 +10,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.impl.common.*
 import com.junbo.order.core.impl.internal.OrderInternalService
+import com.junbo.order.db.entity.enums.OrderStatus
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
@@ -130,6 +131,22 @@ class OrderInternalServiceImpl implements OrderInternalService {
 
     @Override
     @Transactional
+    Promise<Boolean> checkOrderCancelable(Long orderId) {
+
+        // get Order by id
+        return getOrderByOrderId(orderId).recover { Throwable ex ->
+            LOGGER.error("name=Fail_Get_Order", ex)
+            throw ex
+        }.then { Order order ->
+            if (order.status == OrderStatus.OPEN || order.status == OrderStatus.PREORDERED) {
+                return Promise.pure(true)
+            }
+            return Promise.pure(false)
+        }
+    }
+
+    @Override
+    @Transactional
     Promise<List<Order>> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
 
         if (userId == null) {
@@ -157,11 +174,14 @@ class OrderInternalServiceImpl implements OrderInternalService {
             if (preorderInfoList?.size() > 0) {
                 orderItem.preorderInfo = preorderInfoList[0]
             }
+            orderItem.fulfillmentHistories = orderRepository.getFulfillmentHistories(orderItem.orderItemId.value)
         }
         // payment instrument
         order.setPayments(orderRepository.getPayments(order.id.value))
         // discount
         order.setDiscounts(orderRepository.getDiscounts(order.id.value))
+        // event
+        order.setBillingHistories(orderRepository.getBillingHistories(order.id.value))
         // tax
         return facadeContainer.billingFacade.getBalancesByOrderId(order.id.value).then { List<Balance> balances ->
             // TODO: handle the case when the size of taxed balances > 1

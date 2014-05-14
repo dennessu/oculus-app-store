@@ -26,4 +26,6 @@ public interface OrderInternalService {
 
     void markSettlement(Order order);
 
+    Promise<Boolean> checkOrderCancelable(Long orderId);
+
 }

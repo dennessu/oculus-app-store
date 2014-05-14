@@ -11,6 +11,7 @@ import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.TypeSpecificDetails;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
+import com.junbo.test.common.Entities.paymentInstruments.PayPalInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
 import com.junbo.test.common.Utility.BaseTestDataProvider;
 import com.junbo.test.common.apihelper.identity.UserService;
@@ -84,6 +85,17 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                 paymentInstrument.setIsValidated(ewalletInfo.isValidated());
                 paymentInstrument.setBillingAddressId(billingAddressId);
                 paymentInstrument.setBillingAddressId(ewalletInfo.getBillingAddressId());
+
+                paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument));
+                return paymentInfo.getPid();
+
+            case PAYPAL:
+                PayPalInfo payPalInfo = (PayPalInfo) paymentInfo;
+                paymentInstrument.setAccountName(payPalInfo.getAccountName());
+                paymentInstrument.setAccountNum(payPalInfo.getAccountNum());
+                paymentInstrument.setIsValidated(payPalInfo.isValidated());
+                paymentInstrument.setType(payPalInfo.getType().getValue());
+                paymentInstrument.setBillingAddressId(payPalInfo.getBillingAddressId());
 
                 paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument));
                 return paymentInfo.getPid();

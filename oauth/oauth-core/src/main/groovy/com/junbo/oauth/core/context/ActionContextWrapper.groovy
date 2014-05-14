@@ -53,6 +53,7 @@ class ActionContextWrapper {
     public static final String EMAIL_VERIFY_CODE = 'email_verify_code'
     public static final String RESET_PASSWORD_CODE = 'reset_password_code'
     public static final String THIRD_PARTY_ACCOUNT = 'third_party_account'
+    public static final String SUB_FLOW_NAME = 'sub_flow_name'
 
     @Delegate
     private final ActionContext actionContext
@@ -354,5 +355,13 @@ class ActionContextWrapper {
 
     void setThirdPartyAccount(ThirdPartyAccount thirdPartyAccount) {
         actionContext.flowScope[THIRD_PARTY_ACCOUNT] = thirdPartyAccount
+    }
+
+    String getSubFlowName() {
+        return actionContext.flowScope[SUB_FLOW_NAME] as String
+    }
+
+    void setSubFlowName(String subFlowName) {
+        actionContext.flowScope[SUB_FLOW_NAME] = subFlowName
     }
 }
