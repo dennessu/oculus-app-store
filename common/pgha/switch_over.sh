@@ -11,6 +11,10 @@ CURRENT_SLAVE_PORT=$6
 CURRENT_SLAVE_DATA=$7
 CURRENT_SLAVE_TRIGGER_FILE=$8
 
+echo "waiting for slave catching up with master..."
+while ! echo exit | psql postgres -h $CURRENT_MASTER_SERVER -p $CURRENT_MASTER_PORT -c "SELECT 'x' from pg_stat_replication where sent_location != replay_location;" | grep "(0 rows)"; do sleep 1 && echo "slave is catching up..."; done
+echo "slave catch up with master!"
+
 echo "gracefully shutdown current master database..."
 $PG_BIN/pg_ctl stop -m fast -D $CURRENT_MASTER_DATA
 
