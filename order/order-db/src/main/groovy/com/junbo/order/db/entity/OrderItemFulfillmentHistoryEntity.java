@@ -8,15 +8,11 @@ package com.junbo.order.db.entity;
 
 import com.junbo.order.db.ValidationMessages;
 import com.junbo.order.db.entity.enums.FulfillmentAction;
-import com.junbo.order.db.entity.enums.EventStatus;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
@@ -24,14 +20,24 @@ import java.util.UUID;
  * Created by chriszhu on 1/26/14.
  */
 @Entity
-@Table(name = "ORDER_ITEM_FULFILLMENT_EVENT")
-public class OrderItemFulfillmentEventEntity extends CommonEventEntity{
+@Table(name = "ORDER_ITEM_FULFILLMENT_HISTORY")
+public class OrderItemFulfillmentHistoryEntity extends CommonDbEntityWithDate {
+    private Long historyId;
     private Long orderId;
     private Long orderItemId;
     private UUID trackingUuid;
     private String fulfillmentId;
-    private FulfillmentAction action;
-    private EventStatus status;
+    private FulfillmentAction fulfillmentEventId;
+
+    @Id
+    @Column(name = "HISTORY_ID")
+    public Long getHistoryId() {
+        return historyId;
+    }
+
+    public void setHistoryId(Long historyId) {
+        this.historyId = historyId;
+    }
 
     @Column(name = "ORDER_ID")
     @NotNull(message = ValidationMessages.MISSING_VALUE)
@@ -75,31 +81,20 @@ public class OrderItemFulfillmentEventEntity extends CommonEventEntity{
         this.fulfillmentId = fulfillmentId;
     }
 
-    @Column (name = "ACTION_ID")
+    @Column (name = "FULFILLMENT_EVENT_ID")
     @NotNull(message = ValidationMessages.MISSING_VALUE)
     @Type(type = "com.junbo.order.db.entity.type.FulfillmentActionType")
-    public FulfillmentAction getAction() {
-        return action;
+    public FulfillmentAction getFulfillmentEventId() {
+        return fulfillmentEventId;
     }
 
-    public void setAction(FulfillmentAction action) {
-        this.action = action;
-    }
-
-    @Column (name = "STATUS_ID")
-    @NotNull (message = ValidationMessages.MISSING_VALUE)
-    @Type(type = "com.junbo.order.db.entity.type.EventStatusType")
-    public EventStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(EventStatus statusId) {
-        this.status = statusId;
+    public void setFulfillmentEventId(FulfillmentAction fulfillmentEventId) {
+        this.fulfillmentEventId = fulfillmentEventId;
     }
 
     @Override
     @Transient
     public Long getShardId() {
-        return getEventId();
+        return getHistoryId();
     }
 }

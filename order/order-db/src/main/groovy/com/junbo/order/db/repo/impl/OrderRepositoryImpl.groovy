@@ -5,6 +5,7 @@
  */
 
 package com.junbo.order.db.repo.impl
+
 import com.google.common.collect.HashMultimap
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.OrderItemId
@@ -25,6 +26,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
+
 /**
  * Created by chriszhu on 2/18/14.
  */
@@ -44,11 +46,11 @@ class OrderRepositoryImpl implements OrderRepository {
     @Autowired
     OrderEventDao orderEventDao
     @Autowired
-    OrderItemFulfillmentEventDao orderItemFulfillmentEventDao
+    OrderItemFulfillmentHistoryDao orderItemFulfillmentHistoryDao
     @Autowired
     OrderPaymentInfoDao orderPaymentInfoDao
     @Autowired
-    OrderBillingEventDao orderBillingEventDao
+    OrderBillingHistoryDao orderBillingHistoryDao
     @Autowired
     OrderItemPreorderEventDao orderItemPreorderEventDao
     @Autowired
@@ -132,21 +134,21 @@ class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    FulfillmentEvent createFulfillmentEvent(Long orderId, FulfillmentEvent event) {
-        def entity = modelMapper.toOrderItemFulfillmentEventEntity(event, new MappingContext())
-        entity.eventId = idGenerator.nextId(orderId)
+    FulfillmentHistory createFulfillmentHistory(Long orderId, FulfillmentHistory event) {
+        def entity = modelMapper.toOrderItemFulfillmentHistoryEntity(event, new MappingContext())
+        entity.historyId = idGenerator.nextId(orderId)
         entity.orderId = orderId
-        orderItemFulfillmentEventDao.create(entity)
-        return modelMapper.toFulfillmentEventModel(entity, new MappingContext())
+        orderItemFulfillmentHistoryDao.create(entity)
+        return modelMapper.toFulfillmentHistoryModel(entity, new MappingContext())
     }
 
     @Override
-    BillingEvent createBillingEvent(Long orderId, BillingEvent event) {
-        def entity = modelMapper.toOrderBillingEventEntity(event, new MappingContext())
-        entity.eventId = idGenerator.nextId(orderId)
+    BillingHistory createBillingHistory(Long orderId, BillingHistory history) {
+        def entity = modelMapper.toOrderBillingHistoryEntity(history, new MappingContext())
+        entity.historyId = idGenerator.nextId(orderId)
         entity.orderId = orderId
-        orderBillingEventDao.create(entity)
-        return modelMapper.toOrderBillingEventModel(entity, new MappingContext())
+        orderBillingHistoryDao.create(entity)
+        return modelMapper.toOrderBillingHistoryModel(entity, new MappingContext())
     }
 
     @Override
@@ -239,6 +241,27 @@ class OrderRepositoryImpl implements OrderRepository {
             preorderInfoList << modelMapper.toPreOrderInfoModel(entity, context)
         }
         return preorderInfoList
+    }
+
+    @Override
+    List<BillingHistory> getBillingHistories(Long orderId) {
+        List<BillingHistory> billingHistories = []
+        MappingContext context = new MappingContext()
+        orderBillingHistoryDao.readByOrderId(orderId)?.each { OrderBillingHistoryEntity history ->
+            billingHistories << modelMapper.toOrderBillingHistoryModel(history, context)
+        }
+        return billingHistories
+    }
+
+    @Override
+    List<FulfillmentHistory> getFulfillmentHistories(Long orderItemId) {
+        List<FulfillmentHistory> fulfillmentHistories = []
+        MappingContext context = new MappingContext()
+        orderItemFulfillmentHistoryDao.readByOrderItemId(orderItemId)?.each {
+            OrderItemFulfillmentHistoryEntity history ->
+            fulfillmentHistories << modelMapper.toFulfillmentHistoryModel(history, context)
+        }
+        return fulfillmentHistories
     }
 
     void saveOrderItems(OrderId orderId, List<OrderItem> orderItems) {
