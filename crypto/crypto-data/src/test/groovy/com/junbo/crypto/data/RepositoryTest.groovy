@@ -54,7 +54,7 @@ class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         assert userCryptoKey.encryptValue == newUserCryptoKey.encryptValue
 
-        List<UserCryptoKey> list = userCryptoKeyRepo.searchAllUserCryptoKeys(userId).wrapped().get()
+        List<UserCryptoKey> list = userCryptoKeyRepo.getAllUserCryptoKeys(userId).wrapped().get()
         assert list.size() != 0
     }
 }

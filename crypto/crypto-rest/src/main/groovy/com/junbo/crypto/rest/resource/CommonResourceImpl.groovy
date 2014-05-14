@@ -75,11 +75,7 @@ abstract class CommonResourceImpl {
 
         Integer masterKeyVersion = Integer.parseInt(userKeyInfo[0])
         String userEncryptValue = userKeyInfo[1]
-        return masterKeyRepo.getAllMaterKeys().then { List<MasterKey> masterKeys ->
-            MasterKey masterKey = masterKeys.find { MasterKey temp ->
-                return temp.keyVersion == masterKeyVersion
-            }
-
+        return masterKeyRepo.getMasterKeyByVersion(masterKeyVersion).then { MasterKey masterKey ->
             if (masterKey == null) {
                 throw new IllegalArgumentException('master key with version: ' + masterKeyVersion + ' not found.')
             }
@@ -93,18 +89,7 @@ abstract class CommonResourceImpl {
     }
 
     protected Promise<String> symmetricEncryptUserKey(String rawUserKey) {
-        return masterKeyRepo.getAllMaterKeys().then { List<MasterKey> masterKeyList ->
-            if (masterKeyList == null) {
-                throw new IllegalArgumentException('No master key found.')
-            }
-            masterKeyList.sort(new Comparator<MasterKey>() {
-                @Override
-                int compare(MasterKey o1, MasterKey o2) {
-                    return o2.keyVersion <=> o1.keyVersion
-                }
-            })
-
-            MasterKey current = masterKeyList.get(0)
+        return getCurrentMasterKey().then { MasterKey current ->
 
             String decryptMasterKey = asymmetricDecryptMasterKey(current.encryptValue)
 
@@ -165,11 +150,7 @@ abstract class CommonResourceImpl {
         Integer userKeyVersion = Integer.parseInt(messageInfo[0])
         String encryptMessage = messageInfo[1]
 
-        return userCryptoKeyRepo.searchAllUserCryptoKeys(userId).then { List<UserCryptoKey> userCryptoKeyList ->
-            UserCryptoKey key = userCryptoKeyList.find { UserCryptoKey userCryptoKey ->
-                return userCryptoKey.keyVersion == userKeyVersion
-            }
-
+        return userCryptoKeyRepo.getUserCryptoKeyByVersion(userId, userKeyVersion).then { UserCryptoKey key ->
             if (key == null) {
                 throw new IllegalArgumentException('user key with version: ' + userKeyVersion + ' not found.')
             }
@@ -185,11 +166,7 @@ abstract class CommonResourceImpl {
 
     protected Promise<String> symmetricEncryptUserMessage(UserId userId, String message) {
         return getCurrentUserCryptoKey(userId).then { Integer userKeyVersion ->
-            return userCryptoKeyRepo.searchAllUserCryptoKeys(userId).then { List<UserCryptoKey> userCryptoKeyList ->
-                UserCryptoKey key = userCryptoKeyList.find { UserCryptoKey userCryptoKey ->
-                    return userCryptoKey.keyVersion == userKeyVersion
-                }
-
+            return userCryptoKeyRepo.getUserCryptoKeyByVersion(userId, userKeyVersion).then { UserCryptoKey key ->
                 if (key == null) {
                     throw new IllegalArgumentException('user key with version: ' + userKeyVersion + ' not found.')
                 }
@@ -205,7 +182,7 @@ abstract class CommonResourceImpl {
     }
 
     protected Promise<Integer> getCurrentUserCryptoKey(UserId userId) {
-        return userCryptoKeyRepo.searchAllUserCryptoKeys(userId).then { List<UserCryptoKey> userCryptoKeyList ->
+        return userCryptoKeyRepo.getAllUserCryptoKeys(userId).then { List<UserCryptoKey> userCryptoKeyList ->
             if (CollectionUtils.isEmpty(userCryptoKeyList)) {
                 return Promise.pure(0)
             }
@@ -220,7 +197,7 @@ abstract class CommonResourceImpl {
         }
     }
 
-    protected Promise<Integer> getCurrentMasterKey() {
+    protected Promise<MasterKey> getCurrentMasterKey() {
         return masterKeyRepo.getAllMaterKeys().then { List<MasterKey> masterKeyList ->
 
             if (CollectionUtils.isEmpty(masterKeyList)) {
@@ -234,7 +211,7 @@ abstract class CommonResourceImpl {
                 }
             })
 
-            return Promise.pure(key.keyVersion)
+            return Promise.pure(key)
         }
     }
 }

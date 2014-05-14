@@ -10,6 +10,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.CollectionUtils
 
 /**
  * Created by liangfu on 5/12/14.
@@ -24,7 +25,7 @@ class CloudantUserCryptoKeyRepoImpl extends CloudantClient<UserCryptoKey> implem
     }
 
     @Override
-    Promise<List<UserCryptoKey>> searchAllUserCryptoKeys(UserId userId) {
+    Promise<List<UserCryptoKey>> getAllUserCryptoKeys(UserId userId) {
         def list = super.queryView('by_user_id', userId.value.toString(),
                 Integer.MAX_VALUE, 0, false)
         return Promise.pure(list)
@@ -54,11 +55,28 @@ class CloudantUserCryptoKeyRepoImpl extends CloudantClient<UserCryptoKey> implem
         return Promise.pure(null)
     }
 
+    @Override
+    Promise<UserCryptoKey> getUserCryptoKeyByVersion(UserId userId, Integer version) {
+        def list = super.queryView('by_user_id_key_version', "${userId.value.toString()}:${version.toString()}",
+                Integer.MAX_VALUE, 0, false)
+
+        if (CollectionUtils.isEmpty(list)) {
+            return Promise.pure(null)
+        }
+
+        return Promise.pure((UserCryptoKey)list.get(0))
+    }
+
     protected CloudantViews views = new CloudantViews(
             views: [
                     'by_user_id': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
                                     '  emit(doc.userId.value.toString(), doc._id)' +
+                                    '}',
+                            resultClass: String),
+                    'by_user_id_key_version': new CloudantViews.CloudantView(
+                            map: 'function(doc) {' +
+                                    '  emit(doc.userId.value.toString() + \':\' + doc.keyVersion.toString(), doc._id)' +
                                     '}',
                             resultClass: String)
             ]
