@@ -104,7 +104,7 @@ public class BaseDao<T extends Entity> {
         return idGenerator.nextId(shardId);
     }
 
-    protected void addSingleParam(String columnName, String paramName,
+    protected void  addSingleParam(String columnName, String paramName,
                                   Object value, String op,
                                   StringBuilder queryStringBuilder, Map<String, Object> params) {
         if (CommonUtils.isNotNull(value)) {

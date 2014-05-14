@@ -6,6 +6,7 @@
 
 package com.junbo.entitlement.db.mapper;
 
+import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.db.entity.EntitlementEntity;
 import com.junbo.entitlement.spec.model.Entitlement;
@@ -32,8 +33,16 @@ public class EntitlementMapper {
         entitlement.setIsActive(isActive(entitlementEntity));
         entitlement.setIsBanned(entitlementEntity.getIsBanned());
         entitlement.setGrantTime(entitlementEntity.getGrantTime());
-        entitlement.setExpirationTime(entitlementEntity.getExpirationTime());
-        entitlement.setUseCount(entitlementEntity.getUseCount());
+        if (entitlementEntity.getExpirationTime().getTime() == EntitlementConsts.NEVER_EXPIRE.getTime()) {
+            entitlement.setExpirationTime(null);
+        } else {
+            entitlement.setExpirationTime(entitlementEntity.getExpirationTime());
+        }
+        if (entitlementEntity.getUseCount().equals(EntitlementConsts.UNCONSUMABLE_USECOUNT)) {
+            entitlement.setUseCount(null);
+        } else {
+            entitlement.setUseCount(entitlementEntity.getUseCount());
+        }
         return entitlement;
     }
 
@@ -49,8 +58,16 @@ public class EntitlementMapper {
         entitlementEntity.setUserId(entitlement.getUserId());
         entitlementEntity.setIsBanned(entitlement.getIsBanned());
         entitlementEntity.setGrantTime(entitlement.getGrantTime());
-        entitlementEntity.setExpirationTime(entitlement.getExpirationTime());
-        entitlementEntity.setUseCount(entitlement.getUseCount());
+        if (entitlement.getExpirationTime() == null) {
+            entitlementEntity.setExpirationTime(EntitlementConsts.NEVER_EXPIRE);
+        } else {
+            entitlementEntity.setExpirationTime(entitlement.getExpirationTime());
+        }
+        if (entitlement.getUseCount() == null) {
+            entitlementEntity.setUseCount(EntitlementConsts.UNCONSUMABLE_USECOUNT);
+        } else {
+            entitlementEntity.setUseCount(entitlement.getUseCount());
+        }
         entitlementEntity.setType(entitlement.getType());
         return entitlementEntity;
     }
