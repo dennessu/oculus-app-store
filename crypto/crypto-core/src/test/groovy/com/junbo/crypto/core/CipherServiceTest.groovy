@@ -82,7 +82,7 @@ public class CipherServiceTest extends AbstractTestNGSpringContextTests {
         assert message == decryptValue
     }
 
-    @Test
+    @Test(enabled = false)
     public void testHexDecodeAndEncode() {
         Integer size = Math.abs(random.nextInt() % 50)
         String value = generate(size * 2)
