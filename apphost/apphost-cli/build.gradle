@@ -2,6 +2,7 @@ apply plugin: 'groovy'
 apply plugin: 'application'
 
 mainClassName = "com.junbo.apphost.core.JunboApplication"
+applicationDefaultJvmArgs = ["-Xmx1024m", "-Xms1024m", "-XX:PermSize=512m", "-XX:MaxPermSize=512m"]
 
 dependencies {
     compile junboProject(':apphost-core')
@@ -19,9 +20,11 @@ dependencies {
     compile junboProject(':cart-rest')
     compile junboProject(':fulfilment-rest')
     compile junboProject(':order-rest')
+    compile junboProject(':crypto-rest')
 
     compile junboProject(':billing-jobs')
     compile junboProject(':order-jobs')
+    compile junboProject(':email-jobs')
     // more to add
 }
 

@@ -8,6 +8,7 @@ package com.junbo.entitlement.common.def;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Consts for entitlement.
@@ -20,7 +21,10 @@ public class EntitlementConsts {
     public static final int DEFAULT_PAGE_SIZE = 50;
     public static final int DEFAULT_PAGE_NUMBER = 0;
     public static final String NEXT_END = "END";
+
     public static final String NO_TYPE = "NO_TYPE";
+    public static final Date NEVER_EXPIRE = new Date(253402185600000L);
+    public static final Integer UNCONSUMABLE_USECOUNT = Integer.MAX_VALUE;
 
     public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 }

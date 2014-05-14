@@ -18,5 +18,6 @@ public enum PaymentAPI {
     Confirm,
     Charge,
     Reverse,
-    Refund
+    Refund,
+    Credit
 }

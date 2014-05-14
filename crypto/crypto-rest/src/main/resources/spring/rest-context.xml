@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <import resource="classpath*:spring/routing-context.xml"/>
+
+    <context:component-scan base-package="com.junbo.crypto.spec.resource.adapter" />
+    <context:component-scan base-package="com.junbo.crypto.core.service" />
+
+    <bean id="defaultCryptoResource" class="com.junbo.crypto.rest.resource.CryptoResourceImpl" scope="prototype">
+        <property name="aesCipherService" ref="aesCipherService" />
+        <property name="keyStoreService" ref="keyStoreService" />
+        <property name="masterKeyRepo" ref="cloudantMasterKeyRepo" />
+        <property name="userCryptoKeyRepo" ref="cloudantUserCryptoKeyRepo" />
+        <property name="rsaCipherService" ref="rsaCipherService" />
+        <property name="versionSeparator" value="${crypto.core.versionSeparator}" />
+        <property name="validator" ref="cryptoMessageValidator" />
+    </bean>
+
+    <bean id="defaultMasterKeyResource" class="com.junbo.crypto.rest.resource.MasterKeyResourceImpl" scope="prototype">
+        <property name="aesCipherService" ref="aesCipherService" />
+        <property name="keyStoreService" ref="keyStoreService" />
+        <property name="masterKeyRepo" ref="cloudantMasterKeyRepo" />
+        <property name="userCryptoKeyRepo" ref="cloudantUserCryptoKeyRepo" />
+        <property name="rsaCipherService" ref="rsaCipherService" />
+        <property name="masterKeyValidator" ref="masterKeyValidator" />
+        <property name="versionSeparator" value="${crypto.core.versionSeparator}" />
+    </bean>
+
+    <bean id="defaultUserCryptoResource" class="com.junbo.crypto.rest.resource.UserCryptoResourceImpl" scope="prototype">
+        <property name="aesCipherService" ref="aesCipherService" />
+        <property name="keyStoreService" ref="keyStoreService" />
+        <property name="masterKeyRepo" ref="cloudantMasterKeyRepo" />
+        <property name="userCryptoKeyRepo" ref="cloudantUserCryptoKeyRepo" />
+        <property name="rsaCipherService" ref="rsaCipherService" />
+        <property name="userCryptoValidator" ref="userCryptoValidator" />
+        <property name="versionSeparator" value="${crypto.core.versionSeparator}" />
+    </bean>
+
+    <bean id="defaultCryptoResourceClientFactory" class="com.junbo.crypto.spec.resource.proxy.CryptoResourceClientProxyFactory" />
+    <bean id="defaultMasterKeyResourceClientFactory" class="com.junbo.crypto.spec.resource.proxy.MasterKeyResourceClientProxyFactory" />
+    <bean id="defaultUserCryptoResourceClientFactory" class="com.junbo.crypto.spec.resource.proxy.UserCryptoResourceClientProxyFactory" />
+
+    <bean id="defaultCryptoResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultMasterKeyResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultUserCryptoResourceRouter" parent="routingRouterBase" />
+</beans>

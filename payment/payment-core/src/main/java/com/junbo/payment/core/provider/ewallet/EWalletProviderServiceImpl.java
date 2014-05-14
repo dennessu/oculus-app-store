@@ -8,6 +8,7 @@ package com.junbo.payment.core.provider.ewallet;
 
 import com.junbo.common.id.WalletId;
 import com.junbo.ewallet.spec.def.WalletType;
+import com.junbo.ewallet.spec.model.CreditRequest;
 import com.junbo.ewallet.spec.model.DebitRequest;
 import com.junbo.ewallet.spec.model.Transaction;
 import com.junbo.ewallet.spec.model.Wallet;
@@ -28,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * e-wallet provider service implementation.
@@ -59,7 +61,9 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
 
     @Override
     public void cloneTransactionResult(PaymentTransaction source, PaymentTransaction target) {
-        target.setExternalToken(source.getExternalToken());
+        if(!CommonUtil.isNullOrEmpty(source.getExternalToken())){
+            target.setExternalToken(source.getExternalToken());
+        }
         if(!CommonUtil.isNullOrEmpty(source.getStatus())){
             target.setStatus(source.getStatus());
         }
@@ -137,6 +141,36 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
     }
 
     @Override
+    public Promise<PaymentTransaction> credit(final PaymentInstrument pi, final PaymentTransaction paymentRequest) {
+        CreditRequest request = new CreditRequest();
+        request.setTrackingUuid(UUID.randomUUID());
+        request.setUserId(pi.getUserId());
+        request.setCurrency(paymentRequest.getChargeInfo().getCurrency());
+        request.setAmount(paymentRequest.getChargeInfo().getAmount());
+        return walletClient.credit(request).
+                recover(new Promise.Func<Throwable, Promise<Transaction>>() {
+                    @Override
+                    public Promise<Transaction> apply(Throwable throwable) {
+                        ProxyExceptionResponse proxyResponse = new ProxyExceptionResponse(throwable);
+                        LOGGER.error("credit declined by " + getProviderName() +
+                                "; error detail: " + proxyResponse.getBody());
+                        throw AppServerExceptions.INSTANCE.providerProcessError(
+                                PROVIDER_NAME, proxyResponse.getBody()).exception();
+                    }
+                }).then(new Promise.Func<Transaction, Promise<PaymentTransaction>>() {
+            @Override
+            public Promise<PaymentTransaction> apply(Transaction transaction) {
+                if (transaction == null || transaction.getTransactionId() == null) {
+                    throw AppServerExceptions.INSTANCE.providerProcessError(
+                            PROVIDER_NAME, "No transaction happens").exception();
+                }
+                paymentRequest.setStatus(PaymentStatus.SETTLED.toString());
+                return Promise.pure(paymentRequest);
+            }
+        });
+    }
+
+    @Override
     public Promise<PaymentTransaction> authorize(PaymentInstrument pi, PaymentTransaction paymentRequest) {
         throw AppServerExceptions.INSTANCE.serviceNotImplemented(getProviderName() + "_authorize").exception();
     }
@@ -149,6 +183,7 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
     @Override
     public Promise<PaymentTransaction> charge(PaymentInstrument pi, final PaymentTransaction paymentRequest) {
         DebitRequest debitRequest = new DebitRequest();
+        debitRequest.setTrackingUuid(UUID.randomUUID());
         debitRequest.setAmount(paymentRequest.getChargeInfo().getAmount());
         if(pi.getTypeSpecificDetails() == null || pi.getTypeSpecificDetails().getStoredValueBalance() == null
                 || pi.getTypeSpecificDetails().getStoredValueBalance().compareTo(debitRequest.getAmount()) < 0){
@@ -167,8 +202,7 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
                 }).then(new Promise.Func<Transaction, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(Transaction transaction) {
-                if (transaction == null ||
-                        transaction.getTransactionId() == null) {
+                if (transaction == null || transaction.getTransactionId() == null) {
                     throw AppServerExceptions.INSTANCE.providerProcessError(
                             PROVIDER_NAME, "No transaction happens").exception();
                 }

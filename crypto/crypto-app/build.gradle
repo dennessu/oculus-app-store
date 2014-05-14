@@ -4,6 +4,12 @@ apply plugin: 'application'
 mainClassName = "com.junbo.apphost.core.JunboApplication"
 
 dependencies {
+    runtime junboProject(':apphost-core')
+    runtime junboProject(':configuration-data')
+
+    runtime (junboProject(':identity-rest')) {
+        exclude group: 'com.junbo.crypto', module: 'crypto-spec'
+    }
 
     compile junboProject(':crypto-rest')
 }

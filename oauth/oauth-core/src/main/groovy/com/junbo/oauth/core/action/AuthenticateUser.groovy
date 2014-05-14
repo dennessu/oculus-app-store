@@ -78,7 +78,7 @@ class AuthenticateUser implements Action {
         String password = parameterMap.getFirst(OAuthParameters.PASSWORD)
 
         if (!StringUtils.hasText(username)) {
-            handleAppError(contextWrapper, AppExceptions.INSTANCE.missingUsername())
+            handleAppError(contextWrapper, AppExceptions.INSTANCE.missingLoginOrUsername())
         }
 
         if (!StringUtils.hasText(password)) {

@@ -10,6 +10,7 @@ import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.fulfilment.spec.model.FulfilmentItem;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.catalog.spec.model.offer.Offer;
@@ -58,6 +59,7 @@ public class Master {
     private Map<String, PaymentInstrument> paymentInstruments;
     private Map<String, Entitlement> entitlements;
     private Map<String, Balance> balances;
+    private Map<String, FulfilmentItem> fulfilmentItems;
 
     public void initializeMaster() {
         this.initializeUsers();
@@ -73,6 +75,7 @@ public class Master {
         this.initializeEntitlements();
         this.initializePayments();
         this.initializeBalances();
+        this.initializeFulfilmentItems();
     }
 
     public void initializeUsers() {
@@ -164,6 +167,13 @@ public class Master {
             this.balances = new HashMap<>();
         }
         this.balances.clear();
+    }
+
+    public void initializeFulfilmentItems() {
+        if (this.fulfilmentItems == null) {
+            this.fulfilmentItems = new HashMap<>();
+        }
+        this.fulfilmentItems.clear();
     }
 
     public void addUser(String userId, User user) {
@@ -259,6 +269,13 @@ public class Master {
         this.balances.put(balanceId, balance);
     }
 
+    public void addFulfilment(String fulfilmentId, FulfilmentItem fulfilmentItem) {
+        if (this.fulfilmentItems.containsKey(fulfilmentId)) {
+            this.fulfilmentItems.remove(fulfilmentId);
+        }
+        this.fulfilmentItems.put(fulfilmentId, fulfilmentItem);
+    }
+
     public User getUser(String userId) {
         return this.users.get(userId);
     }
@@ -343,6 +360,10 @@ public class Master {
 
     public Balance getBalance(String balanceId) {
         return this.balances.get(balanceId);
+    }
+
+    public FulfilmentItem getFulfilment(String fulfilmentId){
+        return this.fulfilmentItems.get(fulfilmentId);
     }
 
     public Map<String, PaymentInstrument> getPaymentInstruments() {

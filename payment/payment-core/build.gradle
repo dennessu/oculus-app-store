@@ -7,6 +7,11 @@ dependencies {
 
 	compile 'com.braintreepayments.gateway:braintree-java:2.22.1'
     compile 'com.paypal.sdk:merchantsdk:2.5.106'
+    compile 'com.adyen.services:adyensdk:1.0-SNAPSHOT'
+    compile (libraries.apache_axis)
+    compile (libraries.javaee_api)
+    compile (libraries.commons_discovery)
+    compile (libraries.wsdl4j)
 
 	testCompile (libraries.spring_test)
     testCompile junboProject(':configuration-data')

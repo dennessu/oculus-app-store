@@ -56,16 +56,18 @@ public class EnumHelper {
     }
 
     /**
-     * Enum for catalog item attribute type.
+     * Enum for Tos type.
      *
      * @author Jason
      */
-    public enum CatalogItemAttributeType {
-        GENRE("GENRE");
+    public enum TosType {
+        EULA("EULA"),
+        TOS("TOS"),
+        PP("PP");
 
         private String type;
 
-        private CatalogItemAttributeType(String type) {
+        private TosType(String type) {
             this.type = type;
         }
 
@@ -76,116 +78,33 @@ public class EnumHelper {
         public static String getRandom(){
             return values()[(int) (Math.random() * values().length)].getType();
         }
-    }
 
-    /**
-     * Enum for catalog offer attribute type.
-     *
-     * @author Jason
-     */
-    public enum CatalogOfferAttributeType {
-        CATEGORY("CATEGORY");
-
-        private String type;
-
-        private CatalogOfferAttributeType(String type) {
-            this.type = type;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public static String getRandom(){
-            return values()[(int) (Math.random() * values().length)].getType();
-        }
-    }
-
-    /**
-     * Enum for catalog item type.
-     *
-     * @author Jason
-     */
-    public enum CatalogItemType {
-        PHYSICAL("PHYSICAL"),
-        DIGITAL("DIGITAL"),
-        STORED_VALUE("STORED_VALUE"),
-        SUBSCRIPTION("SUBSCRIPTION"),
-        VIRTUAL("VIRTUAL");
-
-        private String itemType;
-
-        private CatalogItemType(String type) {
-            this.itemType = type;
-        }
-
-        public String getItemType() {
-            return itemType;
-        }
-
-        public static CatalogItemType getRandom(){
+        public static TosType getRandomType(){
             return values()[(int) (Math.random() * values().length)];
         }
 
-        public static CatalogItemType getByIndex(int index) {
-            return values()[index];
-        }
     }
 
     /**
-     * Enum for catalog entity status.
+     * Enum for Tos type.
      *
      * @author Jason
      */
-    public enum CatalogEntityStatus {
+    public enum TosState {
         DRAFT("DRAFT"),
-        PENDING_REVIEW("PENDING_REVIEW"),
-        REJECTED("REJECTED"),
-        DELETED("DELETED"),
-        APPROVED("APPROVED");
-
-        private String entityStatus;
-
-        private CatalogEntityStatus(String entityStatus) {
-            this.entityStatus = entityStatus;
-        }
-
-        public String getEntityStatus() {
-            return entityStatus;
-        }
-    }
-
-    /**
-     * Enum for entitlement type.
-     *
-     * @author Jason
-     */
-    public enum EntitlementType {
-        DEVELOPER("DEVELOPER"),
-        DEVELOPER_SUBSCRIPTION("DEVELOPER_SUBSCRIPTION"),
-        DOWNLOAD("DOWNLOAD"),
-        DOWNLOAD_SUBSCRIPTION("DOWNLOAD_SUBSCRIPTION"),
-        ONLINE_ACCESS("ONLINE_ACCESS"),
-        ONLINE_ACCESS_SUBSCRIPTION("ONLINE_ACCESS_SUBSCRIPTION"),
-        SUBSCRIPTION("SUBSCRIPTION");
+        APPROVED("APPROVED"),
+        OBSOLETE("OBSOLETE");
 
         private String type;
 
-        private EntitlementType(String type) {
+        private TosState(String type) {
             this.type = type;
         }
 
-        public String getType() {
+        public String getState() {
             return type;
         }
 
-        public static String getRandom(){
-            return values()[(int) (Math.random() * values().length)].getType();
-        }
-
-        public static EntitlementType getRandomType(){
-            return values()[(int) (Math.random() * values().length)];
-        }
     }
 
 }

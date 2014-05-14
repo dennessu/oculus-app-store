@@ -25,6 +25,7 @@ public interface PaymentProviderService{
     Promise<Response> delete(PaymentInstrument pi);
     Promise<PaymentInstrument> getByInstrumentToken(String token);
 
+    Promise<PaymentTransaction> credit(PaymentInstrument pi, PaymentTransaction paymentRequest);
     Promise<PaymentTransaction> authorize(PaymentInstrument pi, PaymentTransaction paymentRequest);
     Promise<PaymentTransaction> capture(String transactionId, PaymentTransaction paymentRequest);
     Promise<PaymentTransaction> charge(PaymentInstrument pi, PaymentTransaction paymentRequest);

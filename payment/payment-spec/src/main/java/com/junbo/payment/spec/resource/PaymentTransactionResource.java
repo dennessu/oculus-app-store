@@ -24,6 +24,9 @@ import javax.ws.rs.core.MediaType;
 @RestResource
 public interface PaymentTransactionResource {
     @POST
+    @Path("/credit")
+    Promise<PaymentTransaction> postPaymentCredit(PaymentTransaction request);
+    @POST
     @Path("/authorization")
     Promise<PaymentTransaction> postPaymentAuthorization(PaymentTransaction request);
 

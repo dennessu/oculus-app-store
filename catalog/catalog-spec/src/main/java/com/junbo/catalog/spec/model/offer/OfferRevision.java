@@ -61,7 +61,7 @@ public class OfferRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 32, required = true,
             value = "The content ratings given to the offer by specific boards (ESRB, PEGI)")
     @AgeRatingId
-    private Map<String, AgeRating> ageRating;
+    private Map<String, List<AgeRating>> ageRatings;
 
     public Long getRevisionId() {
         return revisionId;
@@ -159,12 +159,12 @@ public class OfferRevision extends BaseRevisionModel {
         this.locales = locales;
     }
 
-    public Map<String, AgeRating> getAgeRating() {
-        return ageRating;
+    public Map<String, List<AgeRating>> getAgeRatings() {
+        return ageRatings;
     }
 
-    public void setAgeRating(Map<String, AgeRating> ageRating) {
-        this.ageRating = ageRating;
+    public void setAgeRatings(Map<String, List<AgeRating>> ageRatings) {
+        this.ageRatings = ageRatings;
     }
 
     @Override

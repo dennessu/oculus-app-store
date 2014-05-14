@@ -6,9 +6,12 @@
 package com.junbo.crypto.rest.resource
 
 import com.junbo.common.id.UserId
+import com.junbo.crypto.core.validator.CryptoMessageValidator
+import com.junbo.crypto.spec.model.CryptoMessage
 import com.junbo.crypto.spec.resource.CryptoResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+import org.springframework.beans.factory.annotation.Required
 import org.springframework.transaction.annotation.Transactional
 
 /**
@@ -16,15 +19,35 @@ import org.springframework.transaction.annotation.Transactional
  */
 @CompileStatic
 @Transactional
-class CryptoResourceImpl implements CryptoResource {
+class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
+
+    private CryptoMessageValidator validator
 
     @Override
-    Promise<String> encrypt(UserId userId, Object obj) {
-        return null
+    Promise<CryptoMessage> encrypt(UserId userId, CryptoMessage rawMessage) {
+        return validator.validateEncrypt(userId, rawMessage).then {
+            return symmetricEncryptUserMessage(userId, rawMessage.value).then { String encryptMessage ->
+                CryptoMessage result = new CryptoMessage()
+                result.value = encryptMessage
+                return Promise.pure(result)
+            }
+        }
     }
 
     @Override
-    Promise<Object> decrypt(UserId userId, String encrypted) {
-        return null
+    Promise<CryptoMessage> decrypt(UserId userId, CryptoMessage encryptMessage) {
+        return validator.validateDecrypt(userId, encryptMessage).then {
+            return symmetricDecryptUserMessage(userId, encryptMessage.value).then { String rawMessage ->
+                CryptoMessage result = new CryptoMessage()
+                result.value = rawMessage
+
+                return Promise.pure(result)
+            }
+        }
+    }
+
+    @Required
+    void setValidator(CryptoMessageValidator validator) {
+        this.validator = validator
     }
 }
