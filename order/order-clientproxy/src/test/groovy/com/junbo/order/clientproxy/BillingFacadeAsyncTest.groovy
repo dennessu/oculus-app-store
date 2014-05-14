@@ -37,15 +37,14 @@ class BillingFacadeAsyncTest extends BaseTest {
                 }))
             }
         }
-        billingFacadeAsync.syncChargeCapacity = 10
-        billingFacadeAsync.afterPropertiesSet()
+        billingFacadeAsync.pendingUserNumberLimit = 10
     }
 
     @Test
     void testCreateBalance() {
         List<Promise<Balance>> balanceList = []
         for (int i = 0; i < 15; ++i) {
-            balanceList.add(billingFacadeAsync.createBalance(new Balance()))
+            balanceList.add(billingFacadeAsync.createBalance(new Balance(), null))
         }
 
         semaphore.release(15)
@@ -59,7 +58,7 @@ class BillingFacadeAsyncTest extends BaseTest {
             }
         }
 
-        assert billingFacadeAsync.syncChargeLockPermit == billingFacadeAsync.syncChargeCapacity
+        assert billingFacadeAsync.pendingUserNumberInt == 0
     }
 
     @Test
@@ -85,7 +84,7 @@ class BillingFacadeAsyncTest extends BaseTest {
             }
         }
 
-        assert billingFacadeAsync.syncChargeLockPermit == billingFacadeAsync.syncChargeCapacity
+        assert billingFacadeAsync.pendingUserNumberInt == 0
     }
 
 }

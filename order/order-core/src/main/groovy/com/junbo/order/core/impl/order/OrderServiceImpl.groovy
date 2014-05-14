@@ -71,7 +71,7 @@ class OrderServiceImpl implements OrderService {
         order.tentative = false
         orderValidator.validateSettleOrderRequest(order)
 
-        def orderServiceContext = initOrderServiceContext(order)
+        def orderServiceContext = initOrderServiceContext(order, context)
         Throwable error
         return flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_TENTATIVE).then { String flowName ->
             // Prepare Flow Request
@@ -97,7 +97,7 @@ class OrderServiceImpl implements OrderService {
         LOGGER.info('name=Update_Tentative_Order. orderId: {}', order.id.value)
 
         setHonoredTime(order)
-        def orderServiceContext = initOrderServiceContext(order)
+        def orderServiceContext = initOrderServiceContext(order, context)
         return prepareOrder(order).then {
             return flowSelector.select(orderServiceContext, OrderServiceOperation.UPDATE_TENTATIVE).then { String flowName ->
                 // Prepare Flow Request
@@ -116,7 +116,7 @@ class OrderServiceImpl implements OrderService {
     @Override
     Promise<Order> updateNonTentativeOrder(Order order, ApiContext context) {
         LOGGER.info('name=Update_Non_Tentative_Order. orderId: {}', order.id.value)
-        def orderServiceContext = initOrderServiceContext(order)
+        def orderServiceContext = initOrderServiceContext(order, context)
         return prepareOrder(order).then {
             return flowSelector.select(
                     orderServiceContext, OrderServiceOperation.UPDATE_NON_TENTATIVE).then { String flowName ->
@@ -140,7 +140,7 @@ class OrderServiceImpl implements OrderService {
         order.id = null
         setHonoredTime(order)
 
-        def orderServiceContext = initOrderServiceContext(order)
+        def orderServiceContext = initOrderServiceContext(order, context)
         return prepareOrder(order).then {
             return flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE_TENTATIVE).then { String flowName ->
                 // Prepare Flow Request
@@ -185,7 +185,7 @@ class OrderServiceImpl implements OrderService {
     Promise<OrderEvent> updateOrderByOrderEvent(OrderEvent event) {
         LOGGER.info('name=Update_Order_By_Order_Event. orderId: {}', event.order.value)
         return getOrderByOrderId(event.order.value).then { Order order ->
-            def orderServiceContext = initOrderServiceContext(order)
+            def orderServiceContext = initOrderServiceContext(order, null)
             orderServiceContext.orderEvent = event
             return flowSelector.select(orderServiceContext, OrderServiceOperation.UPDATE).then { String flowName ->
                 // Prepare Flow Request
@@ -225,8 +225,9 @@ class OrderServiceImpl implements OrderService {
         }
     }
 
-    private OrderServiceContext initOrderServiceContext(Order order) {
+    private OrderServiceContext initOrderServiceContext(Order order, ApiContext apiContext) {
         OrderServiceContext context = new OrderServiceContext(order)
+        context.apiContext = apiContext
         return context
     }
 

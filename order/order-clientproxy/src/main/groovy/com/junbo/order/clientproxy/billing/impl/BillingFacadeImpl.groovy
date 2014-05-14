@@ -33,7 +33,8 @@ class BillingFacadeImpl implements BillingFacade {
     private Map<String, com.junbo.billing.spec.model.Currency> currencyMap
 
     @Override
-    Promise<Balance> createBalance(Balance balance) {
+    Promise<Balance> createBalance(Balance balance, Boolean isAsyncCharge) {
+        balance.isAsyncCharge = isAsyncCharge
         return balanceResource.postBalance(balance)
     }
 
