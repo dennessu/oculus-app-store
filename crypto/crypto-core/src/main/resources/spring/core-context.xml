@@ -5,7 +5,11 @@
 
     <bean id="userCryptoValidator" class="com.junbo.crypto.core.validator.impl.UserCryptoValidatorImpl">
         <property name="userResource" ref="cryptoUserResource" />
-        <property name="userKeyLength" value="16" />
+        <property name="securityKeyGenerator" ref="securityKeyGenerator" />
+    </bean>
+
+    <bean id="securityKeyGenerator" class="com.junbo.crypto.core.generator.impl.SecurityKeyGeneratorImpl">
+        <property name="userKeyLength" value="${crypto.core.userKeyLength}" />
     </bean>
 
     <bean id="masterKeyValidator" class="com.junbo.crypto.core.validator.impl.MasterKeyValidatorImpl" />
