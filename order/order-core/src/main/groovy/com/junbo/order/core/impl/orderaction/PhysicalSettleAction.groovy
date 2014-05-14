@@ -8,10 +8,11 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.annotation.OrderEventAwareAfter
 import com.junbo.order.core.annotation.OrderEventAwareBefore
-import com.junbo.order.core.impl.common.BillingEventBuilder
+import com.junbo.order.core.impl.common.BillingEventHistoryBuilder
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
+import com.junbo.order.db.entity.enums.BillingAction
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.payment.spec.model.PaymentInstrument
@@ -48,6 +49,7 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
     @Transactional
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
+        def order = context.orderServiceContext.order
         if (completeCharge) {
             return orderServiceContextBuilder.getPaymentInstruments(context.orderServiceContext)
                     .then { List<PaymentInstrument> pis ->
@@ -79,10 +81,19 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
                             LOGGER.error('name=Order_PhysicalSettle_CompleteCharge_Error_Balance_Null')
                             throw AppErrors.INSTANCE.billingConnectionError().exception()
                         }
-                        def billingEvent = BillingEventBuilder.buildBillingEvent(resultBalance)
-                        orderRepository.createBillingEvent(context.orderServiceContext.order.id.value, billingEvent)
+                        def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(resultBalance)
+                        if (billingHistory.billingEvent != null) {
+                            def savedHistory = orderRepository.createBillingHistory(order.id.value, billingHistory)
+                            if (order.billingHistories == null) {
+                                order.billingHistories = [savedHistory]
+                            }
+                            else {
+                                order.billingHistories.add(savedHistory)
+                            }
+                        }
                         return orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
-                            return CoreBuilder.buildActionResultForOrderEventAwareAction(context, billingEvent.status)
+                            return CoreBuilder.buildActionResultForOrderEventAwareAction(context,
+                                    BillingEventHistoryBuilder.buildEventStatusFromBalance(resultBalance))
                         }
                     }
                 }
@@ -104,10 +115,23 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
                 throw AppErrors.INSTANCE.
                         billingConnectionError().exception()
             }
-            def billingEvent = BillingEventBuilder.buildBillingEvent(resultBalance)
-            orderRepository.createBillingEvent(context.orderServiceContext.order.id.value, billingEvent)
+            def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(resultBalance)
+            if (billingHistory.billingEvent != null) {
+                if (billingHistory.billingEvent == BillingAction.CHARGE.name()) {
+                    // partial charge
+                    billingHistory.billingEvent = BillingAction.DEPOSIT.name()
+                }
+                def savedHistory = orderRepository.createBillingHistory(order.id.value, billingHistory)
+                if (order.billingHistories == null) {
+                    order.billingHistories = [savedHistory]
+                }
+                else {
+                    order.billingHistories.add(savedHistory)
+                }
+            }
             return orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
-                return CoreBuilder.buildActionResultForOrderEventAwareAction(context, billingEvent.status)
+                return CoreBuilder.buildActionResultForOrderEventAwareAction(context,
+                        BillingEventHistoryBuilder.buildEventStatusFromBalance(resultBalance))
             }
         }
 

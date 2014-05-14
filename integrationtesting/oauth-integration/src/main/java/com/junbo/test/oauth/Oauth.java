@@ -11,7 +11,6 @@ import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.JsonHelper;
 import com.junbo.test.common.RandomHelper;
-import com.junbo.test.identity.Identity;
 import org.apache.http.Header;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -60,6 +59,9 @@ public class Oauth {
     public static final String DefaultFNLastName = "last_name";
     public static final String DefaultFNGender = "gender";
     public static final String DefaultFNDoB = "dob";
+
+    public static final String DefaultUserPwd = "1234qwerASDF";
+    public static final String DefaultUserEmail = "leoltd@163.com";
 
     public static String GetLoginCid() throws Exception {
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(
@@ -157,8 +159,8 @@ public class Oauth {
         nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
         nvps.add(new BasicNameValuePair(DefaultFNEvent, "next"));
         nvps.add(new BasicNameValuePair(DefaultFNUserName, userName));
-        nvps.add(new BasicNameValuePair(DefaultFNPassword, Identity.DefaultUserPwd));
-        nvps.add(new BasicNameValuePair(DefaultFNEmail, Identity.DefaultUserEmail));
+        nvps.add(new BasicNameValuePair(DefaultFNPassword, DefaultUserPwd));
+        nvps.add(new BasicNameValuePair(DefaultFNEmail, DefaultUserEmail));
         nvps.add(new BasicNameValuePair(DefaultFNNickName, RandomHelper.randomAlphabetic(15)));
         nvps.add(new BasicNameValuePair(DefaultFNFirstName, RandomHelper.randomAlphabetic(15)));
         nvps.add(new BasicNameValuePair(DefaultFNLastName, RandomHelper.randomAlphabetic(15)));

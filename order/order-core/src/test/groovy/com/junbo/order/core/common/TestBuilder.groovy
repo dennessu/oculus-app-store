@@ -71,6 +71,7 @@ class TestBuilder {
 
     static OrderItem buildOrderItem() {
         def orderItem = new OrderItem()
+        orderItem.setOrderItemId(new OrderItemId(generateLong()))
         orderItem.setType(ItemType.DIGITAL.toString())
         orderItem.setOffer(new OfferId(generateLong()))
         orderItem.quantity = 1
@@ -115,10 +116,10 @@ class TestBuilder {
         return request
     }
 
-    static FulfilmentItem buildFulfilmentItem(String itemStatus) {
+    static FulfilmentItem buildFulfilmentItem(String itemStatus, OrderItem orderItem) {
         def item = new FulfilmentItem()
         item.fulfilmentId = generateLong()
-        item.orderItemId = generateLong()
+        item.orderItemId = orderItem.orderItemId.value
         item.status = itemStatus
         return item
     }

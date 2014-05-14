@@ -5,7 +5,7 @@ import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
 import com.junbo.order.db.entity.enums.BillingAction
 import com.junbo.order.db.entity.enums.EventStatus
-import com.junbo.order.spec.model.BillingEvent
+import com.junbo.order.spec.model.BillingHistory
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -14,9 +14,9 @@ import org.slf4j.LoggerFactory
  * Created by fzhang on 14-3-26.
  */
 @CompileStatic
-class BillingEventBuilder {
+class BillingEventHistoryBuilder {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BillingEventBuilder)
+    private static final Logger LOGGER = LoggerFactory.getLogger(BillingEventHistoryBuilder)
 
     static EventStatus buildEventStatusFromBalance(Balance balance) {
         def balanceStatus = BalanceStatus.valueOf(balance.status)
@@ -41,24 +41,34 @@ class BillingEventBuilder {
         }
     }
 
-    static String buildEventAction(Balance balance) {
+    static String buildBillingEvent(Balance balance) {
         def balanceType = BalanceType.valueOf(balance.type)
+        def status = buildEventStatusFromBalance(balance)
         switch (balanceType) {
             case BalanceType.MANUAL_CAPTURE:
-                return BillingAction.AUTHORIZE.name()
+                if (status == EventStatus.COMPLETED) {
+                    return BillingAction.AUTHORIZE.name()
+                }
+                return null
             case BalanceType.DEBIT:
-                return BillingAction.CHARGE.name()
+                if (status == EventStatus.COMPLETED) {
+                    return BillingAction.CHARGE.name()
+                }
+                else if (status == EventStatus.PENDING) {
+                    return BillingAction.PENDING_CHARGE.name()
+                }
+                return null
         }
         throw new IllegalArgumentException("Balance_Type_Not_Supported, type-${balanceType}")
     }
 
-    static BillingEvent buildBillingEvent(Balance balance) {
-        def billingEvent = new BillingEvent()
-        billingEvent.balanceId = (balance.balanceId == null || balance.balanceId.value == null) ?
+    static BillingHistory buildBillingHistory(Balance balance) {
+        def billingHistory = new BillingHistory()
+        billingHistory.balanceId = (balance.balanceId == null || balance.balanceId.value == null) ?
                 null : balance.balanceId.value.toString()
-        billingEvent.action = buildEventAction(balance)
-        billingEvent.status = buildEventStatusFromBalance(balance)
-        return billingEvent
+        billingHistory.totalAmount = balance.totalAmount
+        billingHistory.billingEvent = buildBillingEvent(balance)
+        return billingHistory
     }
 
 }

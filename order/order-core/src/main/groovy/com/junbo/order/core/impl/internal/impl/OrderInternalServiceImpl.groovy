@@ -157,11 +157,14 @@ class OrderInternalServiceImpl implements OrderInternalService {
             if (preorderInfoList?.size() > 0) {
                 orderItem.preorderInfo = preorderInfoList[0]
             }
+            orderItem.fulfillmentHistories = orderRepository.getFulfillmentHistories(orderItem.orderItemId.value)
         }
         // payment instrument
         order.setPayments(orderRepository.getPayments(order.id.value))
         // discount
         order.setDiscounts(orderRepository.getDiscounts(order.id.value))
+        // event
+        order.setBillingHistories(orderRepository.getBillingHistories(order.id.value))
         // tax
         return facadeContainer.billingFacade.getBalancesByOrderId(order.id.value).then { List<Balance> balances ->
             // TODO: handle the case when the size of taxed balances > 1

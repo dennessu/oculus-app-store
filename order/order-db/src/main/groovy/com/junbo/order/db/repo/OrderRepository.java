@@ -26,9 +26,9 @@ public interface OrderRepository {
 
     OrderEvent createOrderEvent(OrderEvent event);
 
-    FulfillmentEvent createFulfillmentEvent(Long orderId, FulfillmentEvent event);
+    FulfillmentHistory createFulfillmentHistory(Long orderId, FulfillmentHistory history);
 
-    BillingEvent createBillingEvent(Long orderId, BillingEvent event);
+    BillingHistory createBillingHistory(Long orderId, BillingHistory history);
 
     List<OrderItem> getOrderItems(Long orderId);
 
@@ -43,4 +43,8 @@ public interface OrderRepository {
     List<OrderEvent> getOrderEvents(Long orderId, PageParam pageParam);
 
     List<PreorderInfo> getPreorderInfo(Long orderItemId);
+
+    List<BillingHistory> getBillingHistories(Long orderId);
+
+    List<FulfillmentHistory> getFulfillmentHistories(Long orderItemId);
 }
