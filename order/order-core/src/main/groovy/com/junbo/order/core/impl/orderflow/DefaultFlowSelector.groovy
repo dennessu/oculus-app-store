@@ -83,12 +83,21 @@ class DefaultFlowSelector implements FlowSelector {
                 }
                 LOGGER.error('name=Fulfillment_Event_Not_Support. action: {}, status:{}', event.action, event.status)
                 throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
+
             case OrderActionType.CHARGE.name():
                 if (event.status == EventStatus.COMPLETED.name()
                         && context.order.status == OrderStatus.PENDING_CHARGE.name()) {
                     return Promise.pure(FlowType.WEB_PAYMENT_SETTLE.name())
                 }
                 LOGGER.error('name=Charge_Event_Not_Support. action: {}, status:{}', event.action, event.status)
+                throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
+
+            case OrderActionType.CANCEL.name():
+                if (event.status == EventStatus.COMPLETED.name()
+                        && context.order.status == OrderStatus.PENDING_CHARGE.name()) {
+                    return Promise.pure(FlowType.CANCEL_ORDER.name())
+                }
+                LOGGER.error('name=Cancel_Event_Not_Support. action: {}, status:{}', event.action, event.status)
                 throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
             default:
                 LOGGER.error('name=Event_Not_Support. action: {}, status:{}', event.action, event.status)
