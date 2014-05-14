@@ -8,11 +8,16 @@
     <context:annotation-config/>
 
     <!-- connection factory -->
-    <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+    <bean id="activeMQConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
         <property name="brokerURL" value="${notification.activemq.brokerURL}"/>
         <property name="userName" value="${notification.activemq.userName}"/>
         <property name="password" value="${notification.activemq.password}"/>
         <property name="useAsyncSend" value="${notification.activemq.useAsyncSend}"/>
+    </bean>
+
+    <bean id="connectionFactory" class="com.junbo.notification.core.lib.CachingConnectionFactory">
+        <property name="targetConnectionFactory" ref="activeMQConnectionFactory"/>
+        <property name="sessionCacheSize" value="${notification.activemq.sessionCacheSize}"/>
     </bean>
 
     <!-- base definition -->

@@ -5,6 +5,7 @@
  */
 package com.junbo.test.common;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.json.ObjectMapperProvider;
 
@@ -29,5 +30,11 @@ public class JsonHelper {
         ObjectMapperProvider provider = new ObjectMapperProvider();
         ObjectMapper objectMapper = provider.getContext(Object.class);
         return objectMapper.readValue(reader, cls);
+    }
+
+    public static JsonNode ObjectToJsonNode(Object obj) throws Exception {
+        ObjectMapperProvider provider = new ObjectMapperProvider();
+        ObjectMapper objectMapper = provider.getContext(Object.class);
+        return objectMapper.valueToTree(obj);
     }
 }

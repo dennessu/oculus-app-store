@@ -30,6 +30,7 @@ dependencies {
     compile junboProject(':payment-spec')
     compile junboProject(':common-lib')
     compile junboProject(':common-sharding')
+    compile junboProject(':fulfilment-spec')
     //compile junboProject(':langur')
 
     //processor(libraries.langur_processor)

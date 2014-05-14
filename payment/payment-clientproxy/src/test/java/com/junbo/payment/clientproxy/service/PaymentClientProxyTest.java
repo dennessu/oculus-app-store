@@ -113,7 +113,7 @@ public class PaymentClientProxyTest extends BaseTest {
         //credit balance
         CreditRequest cr = new CreditRequest();
         cr.setUserId(userId.getValue());
-        BigDecimal amount = new BigDecimal(1000.00);
+        BigDecimal amount = new BigDecimal("1000.00");
         cr.setAmount(amount);
         cr.setCurrency("usd");
         walletClient.credit(cr).wrapped().get();
@@ -128,7 +128,7 @@ public class PaymentClientProxyTest extends BaseTest {
                 setChargeInfo(new ChargeInfo(){
                     {
                         setCurrency("USD");
-                        setAmount(new BigDecimal(15.00));
+                        setAmount(new BigDecimal("15.00"));
                     }
                 });
             }
@@ -137,7 +137,13 @@ public class PaymentClientProxyTest extends BaseTest {
         Assert.assertEquals(paymentResult.getStatus().toUpperCase(), PaymentStatus.SETTLED.toString());
         //get Balance again
         PaymentInstrument getResult2 =  piClient.getById(new PaymentInstrumentId(result.getId())).wrapped().get();
-        Assert.assertTrue(getResult2.getTypeSpecificDetails().getStoredValueBalance().equals(new BigDecimal(985.00)));
+        Assert.assertTrue(getResult2.getTypeSpecificDetails().getStoredValueBalance().equals(new BigDecimal("985.00")));
+        //Credit Balance and get again
+        trx.getChargeInfo().setAmount(new BigDecimal("1000.00"));
+        paymentResult = paymentClient.postPaymentCredit(trx).wrapped().get();
+        Assert.assertEquals(paymentResult.getStatus().toUpperCase(), PaymentStatus.SETTLED.toString());
+        PaymentInstrument getResult3 =  piClient.getById(new PaymentInstrumentId(result.getId())).wrapped().get();
+        Assert.assertTrue(getResult3.getTypeSpecificDetails().getStoredValueBalance().equals(new BigDecimal("1985.00")));
     }
 
     private PaymentInstrument getPaymentInstrument() {

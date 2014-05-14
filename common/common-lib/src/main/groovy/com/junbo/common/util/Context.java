@@ -5,6 +5,7 @@
  */
 package com.junbo.common.util;
 
+import com.junbo.common.routing.model.DataAccessPolicy;
 import com.junbo.configuration.topo.Topology;
 
 import javax.ws.rs.container.ContainerRequestContext;
@@ -20,7 +21,6 @@ public class Context {
 
     private static final ThreadLocal<Data> context = new ThreadLocal<>();
 
-    public static final String X_OVERRIDE_API_HOST = "x-override-api-host";
     public static final String X_REQUEST_ID = "x-request-id";
     public static final String X_ROUTING_HOPS = "x-routing-hops";
 
@@ -35,6 +35,7 @@ public class Context {
         private Integer shardId;
         private Integer dataCenterId;
         private Topology topology;
+        private DataAccessPolicy dataAccessPolicy;
 
         public Date getCurrentDate() {
             if (currentDate == null) {
@@ -109,12 +110,23 @@ public class Context {
             return this.requestContext.getHeaders().get(key);
         }
 
-        public String getOverrideApiHost() {
-            return getHeader(X_OVERRIDE_API_HOST);
-        }
-
         public String getRequestId() {
             return getHeader(X_REQUEST_ID);
+        }
+
+        public String getHttpMethod() {
+            if (this.requestContext == null) {
+                throw new RuntimeException("HttpMethod not available.");
+            }
+            return this.requestContext.getMethod();
+        }
+
+        public DataAccessPolicy getDataAccessPolicy() {
+            return dataAccessPolicy;
+        }
+
+        public void setDataAccessPolicy(DataAccessPolicy dataAccessPolicy) {
+            this.dataAccessPolicy = dataAccessPolicy;
         }
     }
 

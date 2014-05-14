@@ -15,7 +15,6 @@ import com.junbo.common.id.Id;
 import com.junbo.common.id.IdResourcePath;
 import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.common.model.Link;
-import com.junbo.common.util.Context;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.common.util.Utils;
 import com.junbo.configuration.ConfigService;
@@ -23,7 +22,6 @@ import com.junbo.configuration.ConfigServiceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.Map;
@@ -67,16 +65,7 @@ public class IdSerializer extends JsonSerializer<Id> {
     }
 
     protected String getHref(Id value, String path) {
-        String hrefPrefix;
-        String apiHost = Context.get().getOverrideApiHost();
-
-        if (StringUtils.hasText(apiHost)) {
-            hrefPrefix = apiHost;
-        } else {
-            hrefPrefix = selfHrefPrfix;
-        }
-
-        String href = this.formatIndexPlaceHolder(Utils.combineUrl(hrefPrefix, path), new String[]{IdFormatter.encodeId(value)});
+        String href = this.formatIndexPlaceHolder(Utils.combineUrl(selfHrefPrfix, path), new String[] { IdFormatter.encodeId(value) });
         href = this.formatPropertyPlaceHolder(href, value.getResourcePathPlaceHolder());
         return href;
     }

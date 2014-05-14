@@ -1,0 +1,8 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile junboProject(':email-clientproxy')
+    compile junboProject(':email-db')
+    compile junboProject(':email-spec')
+    compile junboProject(':notification-core')
+}

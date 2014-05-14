@@ -65,8 +65,8 @@ class Generator {
             id = nextId
             offer = nextId
             quantity = rand.nextLong()
-            selected = rand.nextBoolean()
-            approved = rand.nextBoolean()
+            isSelected = rand.nextBoolean()
+            isApproved = rand.nextBoolean()
         }
         return o
     }
@@ -76,8 +76,8 @@ class Generator {
         o.with {
             cartId = nextId
             offerId = nextId
-            selected = rand.nextBoolean()
-            approved = rand.nextBoolean()
+            isSelected = rand.nextBoolean()
+            isApproved = rand.nextBoolean()
             cartItemId = nextId
             updatedTime = date()
             createdTime = date()

@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public interface PaymentTransactionService {
     @Transactional
+    Promise<PaymentTransaction> credit(PaymentTransaction request);
+    @Transactional
     Promise<PaymentTransaction> authorize(PaymentTransaction request);
     @Transactional
     Promise<PaymentTransaction> capture(Long paymentId, PaymentTransaction request);

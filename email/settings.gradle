@@ -8,3 +8,5 @@ include 'email-rest'
 include 'email-clientproxy'
 
 include 'email-app'
+
+include 'email-jobs'

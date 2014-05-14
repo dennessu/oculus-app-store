@@ -13,27 +13,51 @@
         <property name="flowExecutor" ref="flowExecutor"/>
     </bean>
 
+    <bean id="defaultAuthorizeEndpointClientFactory" class="com.junbo.oauth.spec.endpoint.proxy.AuthorizeEndpointClientProxyFactory"/>
+
+    <bean id="defaultAuthorizeEndpointRouter" parent="routingRouterBase" />
+
     <bean id="defaultTokenEndpoint" class="com.junbo.oauth.api.endpoint.TokenEndpointImpl">
         <property name="flowExecutor" ref="flowExecutor"/>
         <property name="grantTokenFlow" value="grantTokenFlow"/>
     </bean>
 
+    <bean id="defaultTokenEndpointRouter" parent="routingRouterBase" />
+
+    <bean id="defaultTokenEndpointClientFactory" class="com.junbo.oauth.spec.endpoint.proxy.TokenEndpointClientProxyFactory"/>
+
     <bean id="defaultTokenInfoEndpoint" class="com.junbo.oauth.api.endpoint.TokenInfoEndpointImpl">
         <property name="tokenService" ref="tokenService"/>
     </bean>
 
+    <bean id="defaultTokenInfoEndpointRouter" parent="routingRouterBase" />
+
+    <bean id="defaultTokenInfoEndpointClientFactory" class="com.junbo.oauth.spec.endpoint.proxy.TokenInfoEndpointClientProxyFactory"/>
+
     <bean id="defaultUserInfoEndpoint" class="com.junbo.oauth.api.endpoint.UserInfoEndpointImpl">
         <property name="userService" ref="userService"/>
     </bean>
+
+    <bean id="defaultUserInfoEndpointClientFactory" class="com.junbo.oauth.spec.endpoint.proxy.UserInfoEndpointClientProxyFactory"/>
+
+    <bean id="defaultUserInfoEndpointRouter" parent="routingRouterBase" />
 
     <bean id="defaultEndSessionEndpoint" class="com.junbo.oauth.api.endpoint.EndSessionEndpointImpl">
         <property name="flowExecutor" ref="flowExecutor"/>
         <property name="endSessionFlow" value="endSessionFlow"/>
     </bean>
 
+    <bean id="defaultEndSessionEndpointClientFactory" class="com.junbo.oauth.spec.endpoint.proxy.EndSessionEndpointClientProxyFactory"/>
+
+    <bean id="defaultEndSessionEndpointRouter" parent="routingRouterBase" />
+
     <bean id="defaultClientEndpoint" class="com.junbo.oauth.api.endpoint.ClientEndpointImpl">
         <property name="clientService" ref="clientService"/>
     </bean>
+
+    <bean id="defaultClientEndpointClientFactory" class="com.junbo.oauth.spec.endpoint.proxy.ClientEndpointClientProxyFactory"/>
+
+    <bean id="defaultClientEndpointRouter" parent="routingRouterBase" />
 
     <bean id="defaultRevokeEndpoint" class="com.junbo.oauth.api.endpoint.RevokeEndpointImpl">
         <property name="clientRepository" ref="clientRepository"/>
@@ -41,19 +65,35 @@
         <property name="consentRepository" ref="consentRepository"/>
     </bean>
 
+    <bean id="defaultRevokeEndpointClientFactory" class="com.junbo.oauth.spec.endpoint.proxy.RevokeEndpointClientProxyFactory"/>
+
+    <bean id="defaultRevokeEndpointRouter" parent="routingRouterBase" />
+
     <bean id="defaultScopeEndpoint" class="com.junbo.oauth.api.endpoint.ScopeEndpointImpl">
         <property name="scopeService" ref="scopeService"/>
     </bean>
 
+    <bean id="defaultScopeEndpointClientFactory" class="com.junbo.oauth.spec.endpoint.proxy.ScopeEndpointClientProxyFactory"/>
+
+    <bean id="defaultScopeEndpointRouter" parent="routingRouterBase" />
+
     <bean id="defaultApiEndpoint" class="com.junbo.oauth.api.endpoint.ApiEndpointImpl">
         <property name="apiService" ref="apiService"/>
     </bean>
+
+    <bean id="defaultApiEndpointClientFactory" class="com.junbo.oauth.spec.endpoint.proxy.ApiEndpointClientProxyFactory"/>
+
+    <bean id="defaultApiEndpointRouter" parent="routingRouterBase" />
 
     <bean id="defaultEmailVerifyEndpoint" class="com.junbo.oauth.api.endpoint.EmailVerifyEndpointImpl">
         <property name="flowExecutor" ref="flowExecutor"/>
         <property name="emailVerifyFlow" value="emailVerifyFlow"/>
         <property name="userService" ref="userService" />
     </bean>
+
+    <bean id="defaultEmailVerifyEndpointClientFactory" class="com.junbo.oauth.spec.endpoint.proxy.EmailVerifyEndpointClientProxyFactory"/>
+
+    <bean id="defaultEmailVerifyEndpointRouter" parent="routingRouterBase" />
 
     <bean id="defaultResetPasswordEndpoint" class="com.junbo.oauth.api.endpoint.ResetPasswordEndpointImpl">
         <property name="resetPasswordFlow" value="resetPasswordFlow"/>
@@ -62,4 +102,7 @@
         <property name="userService" ref="userService"/>
     </bean>
 
+    <bean id="defaultResetPasswordEndpointClientFactory" class="com.junbo.oauth.spec.endpoint.proxy.ResetPasswordEndpointClientProxyFactory"/>
+
+    <bean id="defaultResetPasswordEndpointRouter" parent="routingRouterBase" />
 </beans>

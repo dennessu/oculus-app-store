@@ -20,8 +20,7 @@ class Generator {
         def ret = new OfferItem()
         ret.quantity = 1
         ret.offer = new OfferId(offerId)
-        ret.selected = true
-        ret.approved = true
+        ret.isSelected = true
         return ret
     }
 

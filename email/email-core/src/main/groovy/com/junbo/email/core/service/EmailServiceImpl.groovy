@@ -6,14 +6,12 @@
 package com.junbo.email.core.service
 
 import com.junbo.common.id.EmailId
-import com.junbo.email.clientproxy.EmailProvider
 import com.junbo.email.clientproxy.IdentityFacade
 import com.junbo.email.core.EmailService
-import com.junbo.email.core.notification.EmailPublisher
+import com.junbo.email.core.publisher.EmailPublisher
 import com.junbo.email.core.validator.EmailValidator
 import com.junbo.email.db.repo.EmailHistoryRepository
 import com.junbo.email.db.repo.EmailScheduleRepository
-import com.junbo.email.db.repo.EmailTemplateRepository
 import com.junbo.email.spec.error.AppErrors
 import com.junbo.email.spec.model.Email
 import com.junbo.email.spec.model.EmailStatus
@@ -38,13 +36,7 @@ class EmailServiceImpl implements EmailService {
     private EmailScheduleRepository emailScheduleRepository
 
     @Autowired
-    private EmailTemplateRepository emailTemplateRepository
-
-    @Autowired
     private EmailValidator emailValidator
-
-    @Autowired
-    private EmailProvider emailProvider
 
     @Autowired
     private IdentityFacade identityFacade
@@ -117,20 +109,5 @@ class EmailServiceImpl implements EmailService {
     private Promise<Email> update(Email email) {
         Email scheduleEmail = emailScheduleRepository.updateEmailSchedule(email)
         return Promise.pure(scheduleEmail)
-    }
-
-    @Override
-    Promise<Email> sendEmail(Email request) {
-        def email = emailHistoryRepository.getEmail(request.id.value)
-        if (email != null) {
-            def template = emailTemplateRepository.getEmailTemplate(email.templateId.value)
-            if (template != null) {
-                return emailProvider.sendEmail(email, template).then { Email retEmail ->
-                    def emailId = emailHistoryRepository.updateEmailHistory(retEmail)
-                    return Promise.pure(emailHistoryRepository.getEmail(emailId))
-                }
-            }
-        }
-        return Promise.pure(null)
     }
 }

@@ -418,8 +418,8 @@ public class CartTesting extends TestClass {
             OfferItem offerItem = new OfferItem();
             offerItem.setOffer(offerId);
             offerItem.setQuantity(quantity);
-            offerItem.setSelected(selected);
-            offerItem.setApproved(true);
+            offerItem.setIsSelected(selected);
+            offerItem.setIsApproved(true);
             curOffers.add(offerItem);
         }
     }

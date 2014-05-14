@@ -10,6 +10,8 @@ import com.junbo.cart.spec.model.item.OfferItem;
 import com.junbo.common.id.OfferRevisionId;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.model.Results;
+import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.order.spec.model.OrderItem;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
@@ -24,6 +26,7 @@ import com.junbo.test.common.libs.ShardIdHelper;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 /**
  * Created by Yunlong on 3/27/14.
@@ -116,6 +119,17 @@ public class BuyerValidationHelper extends BaseValidationHelper {
         verifyEqual(order.getTotalTax(), expectedTotalTaxAmount.setScale(2), "verify order total tax");
 
     }
+
+    public void validateEntitlments(Results<Entitlement> entitlementResults, int expectedCount) {
+        List<Entitlement> entitlements = entitlementResults.getItems();
+        verifyEqual(entitlements.size(), expectedCount, "verify entitlement size");
+        for (int i = 0; i < entitlements.size(); i++) {
+            Entitlement entitlement = entitlements.get(i);
+            verifyEqual(true, entitlement.getIsActive(), "verify entitlement active is true");
+            verifyEqual(false, entitlement.getIsBanned(), "verify entilement banned is false");
+        }
+    }
+
 
     public void validateEmailHistory(String uid, String orderId) throws Exception {
         String id = IdConverter.hexStringToId(UserId.class, uid).toString();

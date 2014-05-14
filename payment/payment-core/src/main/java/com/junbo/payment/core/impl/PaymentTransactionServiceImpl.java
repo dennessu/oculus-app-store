@@ -32,6 +32,47 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
     private static final Logger LOGGER = LoggerFactory.getLogger(PaymentTransactionServiceImpl.class);
 
     @Override
+    public Promise<PaymentTransaction> credit(final PaymentTransaction request) {
+        validateRequest(request, true, true);
+        PaymentInstrument pi = getPaymentInstrument(request);
+        final PaymentAPI api = PaymentAPI.Credit;
+        LOGGER.info("credit for PI:" + request.getPaymentInstrumentId());
+        PaymentTransaction trackingResult = getResultByTrackingUuid(request, api);
+        if(trackingResult != null){
+            return Promise.pure(trackingResult);
+        }
+        final PaymentProviderService provider = getPaymentProviderService(pi);
+        request.setPaymentProvider(provider.getProviderName());
+        request.setMerchantAccount(getMerchantRef(pi, request, provider.getProviderName()));
+        request.setStatus(PaymentStatus.CREDIT_CREATED.toString());
+        request.setType(PaymentType.CREDIT.toString());
+        PaymentEvent createEvent = createPaymentEvent(request
+                , PaymentEventType.CREDIT_CREATE, PaymentStatus.CREDIT_CREATED, SUCCESS_EVENT_RESPONSE);
+        addPaymentEvent(request, createEvent);
+        //commit the transaction with trackingUuid
+        saveAndCommitPayment(request);
+        //call braintree.
+        return provider.credit(pi, request).recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
+            @Override
+            public Promise<PaymentTransaction> apply(Throwable throwable) {
+                return handleProviderException(throwable, provider, request, api,
+                        PaymentStatus.CREDIT_DECLINED, PaymentEventType.CREDIT);
+            }
+        }).then(new Promise.Func<PaymentTransaction, Promise<PaymentTransaction>>() {
+            @Override
+            public Promise<PaymentTransaction> apply(PaymentTransaction paymentTransaction) {
+                provider.cloneTransactionResult(paymentTransaction, request);
+                PaymentStatus authStatus = PaymentStatus.valueOf(request.getStatus());
+                PaymentEvent authEvent = createPaymentEvent(request,
+                        PaymentEventType.CREDIT, authStatus, SUCCESS_EVENT_RESPONSE);
+                addPaymentEvent(request, authEvent);
+                updatePaymentAndSaveEvent(request, Arrays.asList(authEvent), api, authStatus, true);
+                return Promise.pure(request);
+            }
+        });
+    }
+
+    @Override
     public Promise<PaymentTransaction> authorize(final PaymentTransaction request) {
         validateRequest(request, true, true);
         PaymentInstrument pi = getPaymentInstrument(request);
@@ -42,9 +83,8 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
             return Promise.pure(trackingResult);
         }
         final PaymentProviderService provider = getPaymentProviderService(pi);
-        String merchantRef = getMerchantRef(pi, request, provider.getProviderName());
         request.setPaymentProvider(provider.getProviderName());
-        request.setMerchantAccount(merchantRef);
+        request.setMerchantAccount(getMerchantRef(pi, request, provider.getProviderName()));
         request.setStatus(PaymentStatus.AUTH_CREATED.toString());
         request.setType(PaymentType.AUTHORIZE.toString());
         PaymentEvent createEvent = createPaymentEvent(request
@@ -179,9 +219,8 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
             return Promise.pure(trackingResult);
         }
         final PaymentProviderService provider = getPaymentProviderService(pi);
-        String merchantRef = getMerchantRef(pi, request, provider.getProviderName());
         request.setPaymentProvider(provider.getProviderName());
-        request.setMerchantAccount(merchantRef);
+        request.setMerchantAccount(getMerchantRef(pi, request, provider.getProviderName()));
         request.setStatus(PaymentStatus.SETTLEMENT_SUBMIT_CREATED.toString());
         request.setType(PaymentType.CHARGE.toString());
         PaymentEvent event = createPaymentEvent(request, PaymentEventType.SUBMIT_SETTLE_CREATE,
@@ -467,31 +506,5 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         event.setRequest(CommonUtil.toJson(request, FILTER));
         event.setResponse(response);
         return event;
-    }
-
-    private void validateRequest(PaymentTransaction request, boolean needChargeInfo, boolean supportChargeInfo){
-        if(request.getUserId() == null){
-            throw AppClientExceptions.INSTANCE.missingUserId().exception();
-        }
-        if(request.getTrackingUuid() == null){
-            throw AppClientExceptions.INSTANCE.missingTrackingUuid().exception();
-        }
-        if(CommonUtil.isNullOrEmpty(request.getBillingRefId())){
-            throw AppClientExceptions.INSTANCE.missingBillingRefId().exception();
-        }
-        if(needChargeInfo){
-            if(request.getChargeInfo() == null){
-                throw AppClientExceptions.INSTANCE.missingAmount().exception();
-            }
-            if(request.getChargeInfo().getAmount() == null){
-                throw AppClientExceptions.INSTANCE.missingAmount().exception();
-            }
-            if(CommonUtil.isNullOrEmpty(request.getChargeInfo().getCurrency())){
-                throw AppClientExceptions.INSTANCE.missingCurrency().exception();
-            }
-        }
-        if(!supportChargeInfo && request.getChargeInfo() != null){
-            throw AppClientExceptions.INSTANCE.fieldNotNeeded("chargeInfo").exception();
-        }
     }
 }

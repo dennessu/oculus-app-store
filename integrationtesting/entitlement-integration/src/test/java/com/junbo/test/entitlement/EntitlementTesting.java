@@ -6,6 +6,7 @@
 package com.junbo.test.entitlement;
 
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
+import com.junbo.common.id.EntitlementDefinitionId;
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.model.Results;
 import com.junbo.entitlement.spec.model.Entitlement;
@@ -14,7 +15,7 @@ import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.Utility.TestClass;
 import com.junbo.test.catalog.EntitlementDefinitionService;
 import com.junbo.test.catalog.impl.EntitlementDefinitionServiceImpl;
-import com.junbo.test.common.libs.EnumHelper;
+import com.junbo.test.catalog.enums.EntitlementType;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.Component;
@@ -41,6 +42,7 @@ public class EntitlementTesting extends TestClass {
     public void dispose() throws Exception {
         HttpclientHelper.CloseHttpClient();
     }
+
     private LogHelper logger = new LogHelper(EntitlementTesting.class);
 
     @Property(
@@ -59,10 +61,10 @@ public class EntitlementTesting extends TestClass {
     )
     @Test
     public void testPostEntitlement() throws Exception {
-        User us = Identity.DefaultPostUser();
+        User us = Identity.UserPostDefault();
         User dp = this.createDeveloper();
         logger.LogSample("post a DOWNLOAD type entitlement");
-        Entitlement etCreated = this.CreateEntitlement(us,dp,EnumHelper.EntitlementType.DOWNLOAD.getType());
+        Entitlement etCreated = this.CreateEntitlement(us, dp, EntitlementType.DOWNLOAD.getType());
         assertNotNull("return entitlement should not be null", etCreated);
         assertTrue(etCreated.getIsActive());
     }
@@ -84,9 +86,9 @@ public class EntitlementTesting extends TestClass {
     )
     @Test
     public void testGetEntitlementById() throws Exception {
-        User us = Identity.DefaultPostUser();
+        User us = Identity.UserPostDefault();
         User dp = this.createDeveloper();
-        Entitlement etCreated = this.CreateEntitlement(us,dp,EnumHelper.EntitlementType.DOWNLOAD.getType());
+        Entitlement etCreated = this.CreateEntitlement(us, dp, EntitlementType.DOWNLOAD.getType());
         logger.LogSample("get entitlement by entitlementId");
         Entitlement etGet = EntitlementService.getEntitlement(IdConverter.idToHexString(new EntitlementId(etCreated.getEntitlementId())));
         assertEquals("validate userId in entitlement is correct",
@@ -110,15 +112,15 @@ public class EntitlementTesting extends TestClass {
     )
     @Test
     public void testUpdateEntitlementStatus() throws Exception {
-        User us = Identity.DefaultPostUser();
+        User us = Identity.UserPostDefault();
         User dp = this.createDeveloper();
-        Entitlement etCreated = this.CreateEntitlement(us,dp,EnumHelper.EntitlementType.DOWNLOAD.getType());
+        Entitlement etCreated = this.CreateEntitlement(us, dp, EntitlementType.DOWNLOAD.getType());
         String entitlementId = IdConverter.idToHexString(new EntitlementId(etCreated.getEntitlementId()));
         Entitlement etGet = EntitlementService.getEntitlement(entitlementId);
         assertTrue(!etGet.getIsBanned());
         etGet.setIsBanned(true);
         logger.LogSample("update Entitlement's banned status from false to true");
-        Entitlement etupdated = EntitlementService.updateEntitlement(entitlementId,etGet);
+        Entitlement etupdated = EntitlementService.updateEntitlement(entitlementId, etGet);
         assertTrue(etupdated.getIsBanned());
     }
 
@@ -137,19 +139,19 @@ public class EntitlementTesting extends TestClass {
     )
     @Test
     public void testDeleteEntitlement() throws Exception {
-        User us = Identity.DefaultPostUser();
+        User us = Identity.UserPostDefault();
         User dp = this.createDeveloper();
-        Entitlement etCreated = this.CreateEntitlement(us,dp,EnumHelper.EntitlementType.DOWNLOAD.getType());
+        Entitlement etCreated = this.CreateEntitlement(us, dp, EntitlementType.DOWNLOAD.getType());
         String entitlementId = IdConverter.idToHexString(new EntitlementId(etCreated.getEntitlementId()));
         logger.LogSample("delete an entitlement");
         EntitlementService.deleteEntitlement(entitlementId);
         //verify entitlement not found returned after deletion
         logger.LogSample("get an non-existing entitlement");
-        Entitlement etGet = EntitlementService.getEntitlement(entitlementId,404);
+        Entitlement etGet = EntitlementService.getEntitlement(entitlementId, 404);
         assertNull(etGet);
         //delete again, ENTITLEMENT_NOT_FOUND should be returned
         logger.LogSample("delete an non-existing entitlement");
-        EntitlementService.deleteEntitlement(entitlementId,404);
+        EntitlementService.deleteEntitlement(entitlementId, 404);
     }
 
     @Property(
@@ -167,11 +169,11 @@ public class EntitlementTesting extends TestClass {
     )
     @Test
     public void testGetEntitlementByUserId() throws Exception {
-        User us = Identity.DefaultPostUser();
+        User us = Identity.UserPostDefault();
         User dp1 = this.createDeveloper();
         User dp2 = this.createDeveloper();
-        this.CreateEntitlement(us,dp1,EnumHelper.EntitlementType.DOWNLOAD.getType());
-        this.CreateEntitlement(us,dp2,EnumHelper.EntitlementType.DOWNLOAD.getType());
+        this.CreateEntitlement(us, dp1, EntitlementType.DOWNLOAD.getType());
+        this.CreateEntitlement(us, dp2, EntitlementType.DOWNLOAD.getType());
         String userId = IdConverter.idToHexString(us.getId());
         logger.LogSample("Get entitlement by userId");
         Results<Entitlement> etGets = EntitlementService.getEntitlements(userId);
@@ -180,18 +182,19 @@ public class EntitlementTesting extends TestClass {
 
     //help function
     private User createDeveloper() throws Exception {
-        User developerUser = Identity.DefaultPostUser(); // create an developer
+        User developerUser = Identity.UserPostDefault(); // create an developer
         Entitlement developerEntitlement = new Entitlement();
         developerEntitlement.setUserId(developerUser.getId().getValue());
-        developerEntitlement.setEntitlementDefinitionId(0L);// create DEVELOPER definitionId
+        // create DEVELOPER definitionId
+        long developerEDId = IdConverter.hexStringToId(EntitlementDefinitionId.class, "0");
+        developerEntitlement.setEntitlementDefinitionId(developerEDId);
         EntitlementService.grantEntitlement(developerEntitlement);
         return developerUser;
     }
 
-    private Entitlement CreateEntitlement(User user, User developer, String entitlementType) throws Exception
-    {
+    private Entitlement CreateEntitlement(User user, User developer, String entitlementType) throws Exception {
         EntitlementDefinitionService eds = EntitlementDefinitionServiceImpl.instance();
-        Entitlement entitlement= new Entitlement();
+        Entitlement entitlement = new Entitlement();
         EntitlementDefinition ed = new EntitlementDefinition();
         ed.setType(entitlementType);
         ed.setDeveloperId(developer.getId().getValue());

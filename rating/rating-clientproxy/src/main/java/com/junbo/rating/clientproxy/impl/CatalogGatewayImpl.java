@@ -28,6 +28,8 @@ import com.junbo.rating.spec.fusion.EntryType;
 import com.junbo.rating.spec.fusion.LinkedEntry;
 import com.junbo.rating.spec.fusion.Price;
 import com.junbo.rating.spec.fusion.RatingOffer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -38,6 +40,8 @@ import java.util.*;
  * Catalog gateway.
  */
 public class CatalogGatewayImpl implements CatalogGateway{
+    private static final Logger LOGGER = LoggerFactory.getLogger(CatalogGatewayImpl.class);
+
     @Autowired
     @Qualifier("ratingItemClient")
     private ItemResource itemResource;
@@ -71,6 +75,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
         try {
             return itemResource.getItem(new ItemId(itemId)).wrapped().get();
         } catch (Exception e) {
+            LOGGER.error("Error occurring when getting Item [" + itemId + "].", e);
             throw AppErrors.INSTANCE.catalogGatewayError().exception();
         }
     }
@@ -81,6 +86,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
         try {
             offer = offerResource.getOffer(new OfferId(offerId)).wrapped().get();
         } catch (Exception e) {
+            LOGGER.error("Error occurring when getting Offer [" + offerId + "].", e);
             throw AppErrors.INSTANCE.catalogGatewayError().exception();
         }
 
@@ -97,6 +103,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
                 offerRevision = offerRevisionResource.getOfferRevision(
                         new OfferRevisionId(offer.getCurrentRevisionId())).wrapped().get();
             } catch (Exception e) {
+                LOGGER.error("Error occurring when getting Offer Revision [" + offer.getCurrentRevisionId() + "]", e);
                 throw AppErrors.INSTANCE.catalogGatewayError().exception();
             }
         } else {
@@ -156,6 +163,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
             try {
                 promotions.addAll(promotionResource.getPromotions(options).wrapped().get().getItems());
             } catch (Exception e) {
+                LOGGER.error("Error occurring when getting promotions.", e);
                 throw AppErrors.INSTANCE.catalogGatewayError().exception();
             }
 
@@ -170,6 +178,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
         }
 
         if (revisionIds.isEmpty()) {
+            LOGGER.info("No promotion exists in Catalog component.");
             return results;
         }
 
@@ -178,6 +187,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
         try {
             results.addAll(promotionRevisionResource.getPromotionRevisions(revisionOptions).wrapped().get().getItems());
         } catch (Exception e) {
+            LOGGER.error("Error occurring when getting Promotion Revisions.", e);
             throw AppErrors.INSTANCE.catalogGatewayError().exception();
         }
 
@@ -197,10 +207,13 @@ public class CatalogGatewayImpl implements CatalogGateway{
         try {
             revisions = offerRevisionResource.getOfferRevisions(options).wrapped().get().getItems();
         } catch (Exception e) {
+            LOGGER.error("Error occurring when getting Offer Revision " +
+                    "with offerId [" + offerId + "] and timestamp [" + timestamp + "].", e);
             throw AppErrors.INSTANCE.catalogGatewayError().exception();
         }
 
         if (revisions.isEmpty()) {
+            LOGGER.error("Revision with offerId [" + offerId + "] and timestamp [" + timestamp + "] does not exist.");
             throw AppErrors.INSTANCE.offerRevisionNotFound(offerId.toString()).exception();
         }
 

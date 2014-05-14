@@ -31,6 +31,7 @@ ext {
     set("email-db-version", '0.0.1-SNAPSHOT')
     set("email-rest-version", '0.0.1-SNAPSHOT')
     set("email-spec-version", '0.0.1-SNAPSHOT')
+    set("email-jobs-version", '0.0.1-SNAPSHOT')
     set("email-clientproxy-version", '0.0.1-SNAPSHOT')
     set("email-app-version", '0.0.1-SNAPSHOT')
 
@@ -147,6 +148,7 @@ ext {
     set("crypto-data-version", '0.0.1-SNAPSHOT')
     set("crypto-rest-version", '0.0.1-SNAPSHOT')
     set("crypto-spec-version", '0.0.1-SNAPSHOT')
+    set("crypto-clientproxy-version", '0.0.1-SNAPSHOT')
 
     /// TEST
     set("common-testlib-version", '0.0.1-SNAPSHOT')
@@ -158,6 +160,7 @@ ext {
     set("identity-integration-version", '0.0.1-SNAPSHOT')
     set("oauth-integration-version", '0.0.1-SNAPSHOT')
     set("payment-integration-version", '0.0.1-SNAPSHOT')
+    set("fulfilment-integration-version", '0.0.1-SNAPSHOT')
 
     set("integration-buyerscenario-version", '0.0.1-SNAPSHOT')
     set("integration-catalogscenario-version", '0.0.1-SNAPSHOT')

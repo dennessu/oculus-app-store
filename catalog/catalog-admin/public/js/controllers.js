@@ -309,6 +309,13 @@ app.controller('ItemOverviewCtrl', ['$scope', 'ItemFactory', 'MetaFactory', '$ro
 
 app.controller('ItemRevisionCtrl', ['$scope', 'ItemRevisionFactory', 'ItemFactory', '$routeParams',
     function($scope, ItemRevisionFactory, ItemFactory, $routeParams) {
+        $scope.approveRevision = function () {
+            $scope.revision.status="APPROVED";
+
+            ItemRevisionFactory.update({id: $routeParams.revisionId}, $scope.revision, function(){
+                $location.path('/items/' + $routeParams.itemId + '/revisions/' + $scope.revision.self.id);
+            });
+        };
         $scope.revision = ItemRevisionFactory.query({'id': $routeParams.revisionId});
         $scope.item = ItemFactory.query({'id': $routeParams.id});
     }]);
@@ -389,6 +396,13 @@ app.controller('OfferOverviewCtrl', ['$scope', 'MetaFactory', '$routeParams', 'O
 
 app.controller('OfferRevisionCtrl', ['$scope', 'OfferRevisionFactory', 'OfferFactory', '$routeParams',
     function($scope, OfferRevisionFactory, OfferFactory, $routeParams) {
+        $scope.approveRevision = function () {
+            $scope.revision.status="APPROVED";
+
+            OfferRevisionFactory.update({id: $routeParams.revisionId}, $scope.revision, function(){
+                $location.path('/offers/' + $routeParams.offerId + '/revisions/' + $scope.revision.self.id);
+            });
+        };
         $scope.revision = OfferRevisionFactory.query({'id': $routeParams.revisionId});
         $scope.offer = OfferFactory.query({'id':$routeParams.id});
     }]);
