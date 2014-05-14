@@ -3,6 +3,34 @@
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="cipherService" class="com.junbo.crypto.core.impl.AESCipherServiceImpl" />
+    <bean id="userCryptoValidator" class="com.junbo.crypto.core.validator.impl.UserCryptoValidatorImpl">
+        <property name="userResource" ref="cryptoUserResource" />
+        <property name="securityKeyGenerator" ref="securityKeyGenerator" />
+    </bean>
 
+    <bean id="securityKeyGenerator" class="com.junbo.crypto.core.generator.impl.SecurityKeyGeneratorImpl">
+        <property name="userKeyLength" value="${crypto.core.userKeyLength}" />
+    </bean>
+
+    <bean id="masterKeyValidator" class="com.junbo.crypto.core.validator.impl.MasterKeyValidatorImpl" />
+
+    <bean id="aesCipherService" class="com.junbo.crypto.core.service.impl.AESCipherServiceImpl" />
+    <bean id="rsaCipherService" class="com.junbo.crypto.core.service.impl.RSACipherServiceImpl" />
+
+    <bean id="keyStoreService" class="com.junbo.crypto.core.service.impl.KeyStoreServiceImpl">
+        <constructor-arg name="keyStorePath" value="${crypto.core.keyStorePath}" />
+        <constructor-arg name="keyStorePassword" value="${crypto.core.keyStorePassword}" />
+        <constructor-arg name="keyAliasMap">
+            <map>
+                <entry key="1" value="${crypto.core.keyAliasAlternative}" />
+                <entry key="2" value="${crypto.core.keyAliasPrimary}" />
+            </map>
+        </constructor-arg>
+        <constructor-arg name="keyPasswordMap">
+            <map>
+                <entry key="1" value="${crypto.core.keyPasswordAlternative}" />
+                <entry key="2" value="${crypto.core.keyPasswordPrimary}" />
+            </map>
+        </constructor-arg>
+    </bean>
 </beans>

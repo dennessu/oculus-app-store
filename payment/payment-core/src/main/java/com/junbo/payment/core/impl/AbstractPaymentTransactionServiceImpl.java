@@ -65,6 +65,32 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
     @Autowired
     protected TrackingUuidRepository trackingUuidRepository;
 
+    protected void validateRequest(PaymentTransaction request, boolean needChargeInfo, boolean supportChargeInfo){
+        if(request.getUserId() == null){
+            throw AppClientExceptions.INSTANCE.missingUserId().exception();
+        }
+        if(request.getTrackingUuid() == null){
+            throw AppClientExceptions.INSTANCE.missingTrackingUuid().exception();
+        }
+        if(CommonUtil.isNullOrEmpty(request.getBillingRefId())){
+            throw AppClientExceptions.INSTANCE.missingBillingRefId().exception();
+        }
+        if(needChargeInfo){
+            if(request.getChargeInfo() == null){
+                throw AppClientExceptions.INSTANCE.missingAmount().exception();
+            }
+            if(request.getChargeInfo().getAmount() == null){
+                throw AppClientExceptions.INSTANCE.missingAmount().exception();
+            }
+            if(CommonUtil.isNullOrEmpty(request.getChargeInfo().getCurrency())){
+                throw AppClientExceptions.INSTANCE.missingCurrency().exception();
+            }
+        }
+        if(!supportChargeInfo && request.getChargeInfo() != null){
+            throw AppClientExceptions.INSTANCE.fieldNotNeeded("chargeInfo").exception();
+        }
+    }
+
     //use new transaction for business data to avoid hibernate cache in the service level transaction
     protected PaymentTransaction getResultByTrackingUuid(final PaymentTransaction request, final PaymentAPI api) {
         if(request.getTrackingUuid() == null){

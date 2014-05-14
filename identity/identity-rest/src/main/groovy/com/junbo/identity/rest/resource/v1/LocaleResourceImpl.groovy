@@ -147,7 +147,7 @@ class LocaleResourceImpl implements LocaleResource {
 
     @Override
     Promise<Void> delete(LocaleId localeId) {
-        if (localeId != null) {
+        if (localeId == null) {
             throw new IllegalArgumentException('localeId is null')
         }
 

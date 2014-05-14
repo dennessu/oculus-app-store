@@ -6,6 +6,10 @@
 
 package com.junbo.payment.core.provider.adyen;
 
+import com.adyen.services.payment.PaymentLocator;
+import com.adyen.services.payment.PaymentPortType;
+import com.adyen.services.recurring.RecurringLocator;
+import com.adyen.services.recurring.RecurringPortType;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.common.CommonUtil;
@@ -20,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import javax.ws.rs.core.Response;
+import javax.xml.rpc.Stub;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -36,9 +41,19 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
     private String merchantAccount;
     private String skinCode;
     private String skinSecret;
+    private PaymentPortType service;
+    private RecurringPortType recurService;
     @Override
     public void afterPropertiesSet() throws Exception {
+        //TODO: add API integration
+        service = new PaymentLocator().getPaymentHttpPort(
+                new java.net.URL("https://pal-test.adyen.com/pal/servlet/soap/Payment"));
+        recurService = new RecurringLocator().getRecurringHttpPort(
+                new java.net.URL("https://pal-test.adyen.com/pal/servlet/soap/Payment"));
 
+        //Basic HTTP Authentication:
+        ((Stub)service)._setProperty("javax.xml.rpc.security.auth.username","ws@Company.oculusCOM");
+        ((Stub)service)._setProperty("javax.xml.rpc.security.auth.password","#Bugsf0r$&#Bugsf0r$1");
     }
 
     @Override
@@ -113,14 +128,25 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
         ISO8601DateFormat format2 = new ISO8601DateFormat();
         strToSign.append(format2.format(calValid.getTime()));
         strRequest.append("&sessionValidity=" + format2.format(calValid.getTime()));
-        //"shopperReference"
+        //shopperEmail
+        strToSign.append("test@123.com");
+        strRequest.append("&shopperEmail=" + "test@123.com");
+                //"shopperReference"
         strToSign.append(nullToEmpty(paymentRequest.getUserId().toString()));
         strRequest.append("&shopperReference=" + nullToEmpty(paymentRequest.getUserId().toString()));
+        //recurringContract
+        String contract = "RECURRING";
+        strToSign.append(contract);
+        strRequest.append("&recurringContract=" + contract);
+        //signature
         String merchantSig = CommonUtil.calHMCASHA1(strToSign.toString(), skinSecret);
         strRequest.append("&merchantSig=" + merchantSig);
         paymentRequest.setWebPaymentInfo(new WebPaymentInfo());
         paymentRequest.getWebPaymentInfo().setRedirectURL(redirectURL + "?" + strRequest.toString());
         paymentRequest.setStatus(PaymentStatus.UNCONFIRMED.toString());
+
+        //retrive the recurring info:
+        //recurService.listRecurringDetails();
         return Promise.pure(paymentRequest);
     }
 

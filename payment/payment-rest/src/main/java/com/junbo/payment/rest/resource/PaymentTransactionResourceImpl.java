@@ -21,6 +21,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class PaymentTransactionResourceImpl implements PaymentTransactionResource{
     @Autowired
     private PaymentTransactionService paymentService;
+
+    @Override
+    public Promise<PaymentTransaction> postPaymentCredit(PaymentTransaction request) {
+        CommonUtil.preValidation(request);
+        return paymentService.credit(request);
+    }
+
     @Override
     public Promise<PaymentTransaction> postPaymentAuthorization(PaymentTransaction request) {
         CommonUtil.preValidation(request);

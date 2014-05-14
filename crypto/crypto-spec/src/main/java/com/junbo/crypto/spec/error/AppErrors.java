@@ -8,6 +8,7 @@ package com.junbo.crypto.spec.error;
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.ErrorDef;
 import com.junbo.common.error.ErrorProxy;
+import com.junbo.common.id.UserId;
 
 /**
  * Interface for AppError.
@@ -37,4 +38,25 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 500, code = "5000006", description = "Bad padding: {0}.")
     AppError badPaddingException(String message);
+
+    @ErrorDef(httpStatusCode = 500, code = "5000007", description = "Key store exception: {0}.")
+    AppError keyStoreException(String message);
+
+    @ErrorDef(httpStatusCode = 500, code = "5000008", description = "Unrecoverable key exception: {0}.")
+    AppError unrecoverableKeyException(String message);
+
+    @ErrorDef(httpStatusCode = 500, code = "5000009", description = "IO exception: {0}.")
+    AppError ioException(String message);
+
+    @ErrorDef(httpStatusCode = 500, code = "5000010", description = "Certificate exception: {0}.")
+    AppError certificateException(String message);
+
+    @ErrorDef(httpStatusCode = 500, code = "5000011", description = "Field missing: {0}.", field = "{0}")
+    AppError fieldMissing(String field);
+
+    @ErrorDef(httpStatusCode = 500, code = "5000012", description = "User {0} not found.")
+    AppError userNotFound(UserId userId);
+
+    @ErrorDef(httpStatusCode = 500, code = "5000013", description = "Field invalid: {0}.")
+    AppError fieldInvalid(String message);
 }

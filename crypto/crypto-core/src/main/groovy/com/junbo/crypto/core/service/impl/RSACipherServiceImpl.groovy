@@ -1,7 +1,7 @@
-package com.junbo.crypto.core.impl
+package com.junbo.crypto.core.service.impl
 
 import com.junbo.crypto.common.HexHelper
-import com.junbo.crypto.core.AESCipherService
+import com.junbo.crypto.core.service.CipherService
 import com.junbo.crypto.spec.error.AppErrors
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
@@ -11,22 +11,22 @@ import javax.crypto.BadPaddingException
 import javax.crypto.Cipher
 import javax.crypto.IllegalBlockSizeException
 import javax.crypto.NoSuchPaddingException
-import javax.crypto.spec.IvParameterSpec
 import java.security.InvalidAlgorithmParameterException
 import java.security.InvalidKeyException
 import java.security.Key
 import java.security.NoSuchAlgorithmException
 
 /**
- * Created by liangfu on 5/7/14.
+ * This is RSA asymmetric cipher.
+ * Created by liangfu on 5/12/14.
  */
 @CompileStatic
-class AESCipherServiceImpl implements AESCipherService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AESCipherServiceImpl)
+@SuppressWarnings('GetterMethodCouldBeProperty')
+class RSACipherServiceImpl implements CipherService {
 
-    private static final byte [] IV = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    private static final Logger LOGGER = LoggerFactory.getLogger(RSACipherServiceImpl)
 
-    private static final String ALGORITHM = 'AES/CBC/PKCS5Padding'
+    private static final String ALGORITHM = 'RSA'
 
     @Override
     String encrypt(String message, Key key) {
@@ -40,8 +40,7 @@ class AESCipherServiceImpl implements AESCipherService {
         }
         try {
             Cipher cipher = Cipher.getInstance(ALGORITHM)
-            IvParameterSpec ivspec = new IvParameterSpec(IV);
-            cipher.init(Cipher.ENCRYPT_MODE, key, ivspec);
+            cipher.init(Cipher.ENCRYPT_MODE, key);
             return HexHelper.byteArrayToHex(cipher.doFinal(message.getBytes("UTF-8")));
         } catch (NoSuchAlgorithmException noAlgorithmEx) {
             throw AppErrors.INSTANCE.noSuchAlgorithmException("Encrypt: " + noAlgorithmEx.message).exception()
@@ -73,8 +72,7 @@ class AESCipherServiceImpl implements AESCipherService {
         }
         try {
             Cipher cipher = Cipher.getInstance(ALGORITHM);
-            IvParameterSpec ivspec = new IvParameterSpec(IV);
-            cipher.init(Cipher.DECRYPT_MODE, key, ivspec);
+            cipher.init(Cipher.DECRYPT_MODE, key);
             return new String(cipher.doFinal(HexHelper.hexStringToByteArray(encryptMessage)), "UTF-8");
         } catch (NoSuchAlgorithmException noAlgorithmEx) {
             throw AppErrors.INSTANCE.noSuchAlgorithmException("Encrypt: " + noAlgorithmEx.message).exception()
@@ -92,5 +90,10 @@ class AESCipherServiceImpl implements AESCipherService {
         } catch (Exception e) {
             throw AppErrors.INSTANCE.internalError("Encrypt: "  + e.message).exception()
         }
+    }
+
+    @Override
+    String getKeyAlgorithm() {
+        return 'RSA'
     }
 }

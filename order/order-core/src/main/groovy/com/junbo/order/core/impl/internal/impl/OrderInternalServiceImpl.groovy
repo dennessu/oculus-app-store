@@ -66,6 +66,13 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 LOGGER.info('name=Skip_Calculate_Tax_Zero_Total_Amount')
                 return Promise.pure(order)
             }
+
+            if (CoreUtils.hasStoredValueOffer(order)) {
+                LOGGER.info('name=Skip_Calculate_Tax_Credit_Stored_Value')
+                return Promise.pure(order)
+            }
+
+            // validate the tax calculation precondition
             // check pi is there, it means the billing address is there.
             if (CollectionUtils.isEmpty(order.payments)) {
                 if (order.tentative) {
@@ -86,6 +93,8 @@ class OrderInternalServiceImpl implements OrderInternalService {
                     throw AppErrors.INSTANCE.missingParameterField('shippingAddressId').exception()
                 }
             }
+
+            // calculateTax
             return facadeContainer.billingFacade.quoteBalance(
                     CoreBuilder.buildBalance(order, BalanceType.DEBIT)).syncRecover {
                 Throwable throwable ->

@@ -409,10 +409,10 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         Iterator<Action> iterator = purchaseActions.iterator();
         while(iterator.hasNext()) {
             Action action = iterator.next();
-            if (ActionType.CREDIT_WALLET.is(action.getType())) {
+            if (ActionType.CREDIT_WALLET.is(action.getType()) || action.getItemId() == null) {
                 continue;
             }
-            if (action.getItemId() == null || !result.containsKey(action.getItemId())) {
+            if (!result.containsKey(action.getItemId())) {
                 iterator.remove();
                 continue;
             }

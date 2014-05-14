@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="cloudantMasterKeyRepo" class="com.junbo.crypto.data.repo.impl.cloudant.CloudantMasterKeyRepoImpl">
+        <property name="dbName" value="master_key"/>
+        <property name="asyncHttpClient" ref="commonAsyncHttpClient" />
+        <property name="cloudantDBUri" value="${crypto.masterkey.cloudant.url}" />
+        <property name="idGenerator" ref="oculus48IdGenerator" />
+        <property name="marshaller">
+            <bean class="com.junbo.common.cloudant.CloudantDefaultMarshaller" />
+        </property>
+    </bean>
+
+    <bean id="cloudantUserCryptoKeyRepo" class="com.junbo.crypto.data.repo.impl.cloudant.CloudantUserCryptoKeyRepoImpl">
+        <property name="dbName" value="user_crypt_key" />
+        <property name="cloudantDBUri" value="${crypto.userkey.cloudant.url}" />
+        <property name="idGenerator" ref="oculus48IdGenerator" />
+        <property name="asyncHttpClient" ref="commonAsyncHttpClient" />
+        <property name="marshaller">
+            <bean class="com.junbo.common.cloudant.CloudantDefaultMarshaller" />
+        </property>
+    </bean>
+
+    <bean id="cryptoBaseRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" abstract="true">
+        <property name="persistentMode" value="CLOUDANT_READ_WRITE"/>
+    </bean>
+
+    <bean id="masterkeyRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="cryptoBaseRepository">
+        <property name="repositoryInterface" value="com.junbo.crypto.data.dao.MasterKeyDAO"/>
+        <property name="cloudantRepositoryTarget" ref="cloudantMasterKeyRepo" />
+    </bean>
+
+    <bean id="userkeyRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="cryptoBaseRepository">
+        <property name="repositoryInterface" value="com.junbo.crypto.data.dao.UserCryptoKeyDAO" />
+        <property name="cloudantRepositoryTarget" ref="cloudantUserCryptoKeyRepo" />
+    </bean>
+</beans>
