@@ -8,26 +8,34 @@ package com.junbo.order.db.entity;
 
 import com.junbo.order.db.ValidationMessages;
 import com.junbo.order.db.entity.enums.BillingAction;
-import com.junbo.order.db.entity.enums.EventStatus;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 /**
  * Created by chriszhu on 1/26/14.
  */
 @Entity
-@Table(name= "ORDER_BILLING_EVENT")
-public class OrderBillingEventEntity extends CommonEventEntity{
+@Table(name= "ORDER_BILLING_HISTORY")
+public class OrderBillingHistoryEntity extends CommonDbEntityWithDate {
+    private Long historyId;
     private Long orderId;
     private String balanceId;
-    private BillingAction action;
-    private EventStatus status;
+    private BillingAction billingEventId;
+    private BigDecimal totalAmount;
+
+    @Id
+    @Column(name = "HISTORY_ID")
+    public Long getHistoryId() {
+        return historyId;
+    }
+
+    public void setHistoryId(Long historyId) {
+        this.historyId = historyId;
+    }
 
     @Column(name = "ORDER_ID")
     @NotNull(message = ValidationMessages.MISSING_VALUE)
@@ -49,31 +57,30 @@ public class OrderBillingEventEntity extends CommonEventEntity{
         this.balanceId = balanceId;
     }
 
-    @Column (name = "ACTION_ID")
+    @Column (name = "BILLING_EVENT_ID")
     @NotNull(message = ValidationMessages.MISSING_VALUE)
     @Type(type = "com.junbo.order.db.entity.type.BillingActionType")
-    public BillingAction getAction() {
-        return action;
+    public BillingAction getBillingEventId() {
+        return billingEventId;
     }
 
-    public void setAction(BillingAction action) {
-        this.action = action;
+    public void setBillingEventId(BillingAction billingEventId) {
+        this.billingEventId = billingEventId;
     }
 
-    @Column (name = "STATUS_ID")
-    @NotNull (message = ValidationMessages.MISSING_VALUE)
-    @Type(type = "com.junbo.order.db.entity.type.EventStatusType")
-    public EventStatus getStatus() {
-        return status;
+    @Column(name = "TOTAL_AMOUNT")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
     }
 
-    public void setStatus(EventStatus statusId) {
-        this.status = statusId;
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
     }
 
     @Override
     @Transient
     public Long getShardId() {
-        return getEventId();
+        return getHistoryId();
     }
 }
