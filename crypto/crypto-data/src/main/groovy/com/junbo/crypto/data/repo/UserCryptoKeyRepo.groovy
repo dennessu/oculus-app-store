@@ -11,5 +11,7 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface UserCryptoKeyRepo extends CryptoBaseRepository<UserCryptoKey, UserCryptoKeyId> {
-    Promise<List<UserCryptoKey>> searchAllUserCryptoKeys(UserId userId)
+    Promise<List<UserCryptoKey>> getAllUserCryptoKeys(UserId userId)
+
+    Promise<UserCryptoKey> getUserCryptoKeyByVersion(UserId userId, Integer version)
 }

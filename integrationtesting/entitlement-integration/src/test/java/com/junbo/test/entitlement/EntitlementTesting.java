@@ -6,6 +6,7 @@
 package com.junbo.test.entitlement;
 
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
+import com.junbo.common.id.EntitlementDefinitionId;
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.model.Results;
 import com.junbo.entitlement.spec.model.Entitlement;
@@ -184,7 +185,9 @@ public class EntitlementTesting extends TestClass {
         User developerUser = Identity.UserPostDefault(); // create an developer
         Entitlement developerEntitlement = new Entitlement();
         developerEntitlement.setUserId(developerUser.getId().getValue());
-        developerEntitlement.setEntitlementDefinitionId(0L);// create DEVELOPER definitionId
+        // create DEVELOPER definitionId
+        long developerEDId = IdConverter.hexStringToId(EntitlementDefinitionId.class, "0");
+        developerEntitlement.setEntitlementDefinitionId(developerEDId);
         EntitlementService.grantEntitlement(developerEntitlement);
         return developerUser;
     }

@@ -54,11 +54,9 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
                     entitlementSearchParam.getIsBanned(), "=", queryStringBuilder, params);
         }
 
-        if (!StringUtils.isEmpty(entitlementSearchParam.getType() != null)) {
+        if (!StringUtils.isEmpty(entitlementSearchParam.getType())) {
             addSingleParam("type", "type",
                     entitlementSearchParam.getType(), "=", queryStringBuilder, params);
-        } else {
-            addSingleParam("type", "type", EntitlementConsts.NO_TYPE, "=", queryStringBuilder, params);
         }
 
         if (!Boolean.TRUE.equals(entitlementSearchParam.getIsBanned())) {
@@ -69,9 +67,9 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
                         " or use_count = 0 )");
             } else {
                 queryStringBuilder.append(
-                        " and ( use_count is null or use_count > 0 )" +
+                        " and use_count > 0" +
                                 " and ( grant_time <= (:now)" +
-                                " and ( expiration_time is null or expiration_time >= (:now) ))");
+                                " and expiration_time >= (:now) )");
             }
             params.put("now", now);
         }
@@ -87,11 +85,6 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
                     queryStringBuilder, params);
         }
         if (!StringUtils.isEmpty(entitlementSearchParam.getStartGrantTime())) {
-            addSingleParam("grant_time", "startGrantTime",
-                    entitlementSearchParam.getStartGrantTime(),
-                    ">=", queryStringBuilder, params);
-        }
-        if (!StringUtils.isEmpty(entitlementSearchParam.getEndGrantTime())) {
             addSingleParam("grant_time", "startGrantTime",
                     EntitlementConsts.DATE_FORMAT.parse(entitlementSearchParam.getStartGrantTime()),
                     ">=", queryStringBuilder, params);
