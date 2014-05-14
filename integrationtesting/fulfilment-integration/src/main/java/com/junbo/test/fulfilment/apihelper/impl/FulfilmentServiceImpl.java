@@ -38,7 +38,8 @@ public class FulfilmentServiceImpl extends HttpClientBase implements FulfilmentS
 
     @Override
     public String postFulfilment(FulfilmentRequest fulfilment, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, fulfilmentUrl + "fulfilments", fulfilment, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, fulfilmentUrl + "fulfilments", fulfilment,
+                expectedResponseCode);
 
         FulfilmentItem fulfilmentItemResult =
                 new JsonMessageTranscoder().decode(
