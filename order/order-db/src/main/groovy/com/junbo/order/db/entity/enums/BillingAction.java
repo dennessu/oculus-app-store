@@ -16,7 +16,10 @@ public enum BillingAction implements Identifiable<Short> {
     CHARGE(0),
     AUTHORIZE(1),
     CREDIT(2),
-    REFUND(3);
+    REFUND(3),
+    CAPTURE(4),
+    DEPOSIT(5),
+    PENDING_CHARGE(6);
 
     private BillingAction(int id) {
         this.id = (short) id;

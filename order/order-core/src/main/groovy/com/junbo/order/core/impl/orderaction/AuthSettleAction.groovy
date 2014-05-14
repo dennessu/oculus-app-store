@@ -8,7 +8,7 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.annotation.OrderEventAwareAfter
 import com.junbo.order.core.annotation.OrderEventAwareBefore
-import com.junbo.order.core.impl.common.BillingEventBuilder
+import com.junbo.order.core.impl.common.BillingEventHistoryBuilder
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
@@ -67,10 +67,20 @@ class AuthSettleAction extends BaseOrderEventAwareAction {
             }
             context.orderServiceContext.order.tentative = false
             CoreBuilder.fillTaxInfo(order, resultBalance)
-            def billingEvent = BillingEventBuilder.buildBillingEvent(resultBalance)
+            def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(resultBalance)
+            if (billingHistory.billingEvent != null) {
+                def savedHistory = orderRepository.createBillingHistory(order.id.value, billingHistory)
+                if (order.billingHistories == null) {
+                    order.billingHistories = [savedHistory]
+                }
+                else {
+                    order.billingHistories.add(savedHistory)
+                }
+            }
             return orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
                 // TODO: save order level tax
-                return CoreBuilder.buildActionResultForOrderEventAwareAction(context, billingEvent.status)
+                return CoreBuilder.buildActionResultForOrderEventAwareAction(context,
+                        BillingEventHistoryBuilder.buildEventStatusFromBalance(resultBalance))
             }
         }
     }

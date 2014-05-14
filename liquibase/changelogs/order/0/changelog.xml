@@ -100,25 +100,24 @@
                 );
                 create unique index discount_order_index on order_discount_info (order_item_discount_info_id, order_id);
 
-                create table order_billing_event (
-                    event_id bigint not null,
-                    action_id smallint not null,
-                    status_id smallint not null,
+                create table order_billing_history (
+                    history_id bigint not null,
+                    billing_event_id smallint not null,
 					resource_age bigint not null,
                     created_time timestamp not null,
                     created_by varchar(128) not null,
                     updated_time timestamp not null,
                     updated_by varchar(128) not null,
                     order_id bigint not null,
+                    total_amount decimal NOT NULL,
                     balance_id varchar(128) not null,
-                    primary key (event_id)
+                    primary key (history_id)
                 );
-                create unique index event_order_balance_time_index on order_billing_event (event_id, order_id, balance_id, updated_time);
+                create unique index history_order_balance_time_index on order_billing_history (history_id, order_id, balance_id, updated_time);
 
-                create table order_item_fulfillment_event (
-                    event_id bigint not null,
-                    action_id smallint not null,
-                    status_id smallint not null,
+                create table order_item_fulfillment_history (
+                    history_id bigint not null,
+                    fulfillment_event_id smallint not null,
 					resource_age bigint not null,
                     created_time timestamp not null,
                     created_by varchar(128) not null,
@@ -128,10 +127,10 @@
                     order_item_id bigint not null,
                     tracking_uuid uuid not null,
                     fulfillment_id varchar(128) not null,
-                    primary key (event_id)
+                    primary key (history_id)
                 );
-                create unique index fulfillment_event_order_item_time_index on order_item_fulfillment_event (event_id, order_id, order_item_id, updated_time);
-                create unique index fulfillment_event_tracking_uuid_index on order_item_fulfillment_event (event_id, tracking_uuid);
+                create unique index fulfillment_history_order_item_time_index on order_item_fulfillment_history (history_id, order_id, order_item_id, updated_time);
+                create unique index fulfillment_history_tracking_uuid_index on order_item_fulfillment_history (history_id, tracking_uuid);
 
                 create table order_item_preorder_info (
                     order_item_preorder_info_id bigint not null,
