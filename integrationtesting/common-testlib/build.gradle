@@ -31,8 +31,7 @@ dependencies {
     compile junboProject(':common-lib')
     compile junboProject(':common-sharding')
     compile junboProject(':fulfilment-spec')
-    //compile junboProject(':langur')
+    compile junboProject(':email-spec')
 
-    //processor(libraries.langur_processor)
     processor(libraries.log4j)
 }
