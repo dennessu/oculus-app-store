@@ -6,6 +6,7 @@ identity-integration
 oauth-integration
 payment-integration
 entitlement-integration
+fulfilment-integration
 integration-buyerscenario
 integration-catalogscenario
 integration-csrscenario
