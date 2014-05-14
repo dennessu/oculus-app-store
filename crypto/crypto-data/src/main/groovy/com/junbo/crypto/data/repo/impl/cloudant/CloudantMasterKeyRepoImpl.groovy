@@ -9,6 +9,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.CollectionUtils
 
 /**
  * Created by liangfu on 5/12/14.
@@ -19,7 +20,7 @@ class CloudantMasterKeyRepoImpl extends CloudantClient<MasterKey> implements Mas
 
     @Override
     protected CloudantViews getCloudantViews() {
-        return null
+        return views
     }
 
     @Override
@@ -37,6 +38,17 @@ class CloudantMasterKeyRepoImpl extends CloudantClient<MasterKey> implements Mas
     }
 
     @Override
+    Promise<MasterKey> getMasterKeyByVersion(Integer version) {
+        def list = super.queryView('by_key_version', version.toString(),
+                Integer.MAX_VALUE, 0, false)
+
+        if (CollectionUtils.isEmpty(list)) {
+            return Promise.pure(null)
+        }
+        return Promise.pure((MasterKey)list.get(0))
+    }
+
+    @Override
     Promise<MasterKey> update(MasterKey model) {
         throw new IllegalStateException('Update operation isn\'t supported')
     }
@@ -45,6 +57,16 @@ class CloudantMasterKeyRepoImpl extends CloudantClient<MasterKey> implements Mas
     Promise<MasterKey> get(MasterKeyId id) {
         return Promise.pure((MasterKey)super.cloudantGet(id.toString()))
     }
+
+    protected CloudantViews views = new CloudantViews(
+            views: [
+                    'by_key_version': new CloudantViews.CloudantView(
+                            map: 'function(doc) {' +
+                                    '  emit(doc.keyVersion.toString(), doc._id)' +
+                                    '}',
+                            resultClass: String)
+            ]
+    )
 
     @Override
     Promise<Void> delete(MasterKeyId id) {
