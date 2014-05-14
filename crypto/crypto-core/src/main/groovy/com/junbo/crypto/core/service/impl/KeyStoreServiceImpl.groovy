@@ -3,6 +3,7 @@ package com.junbo.crypto.core.service.impl
 import com.junbo.crypto.core.service.KeyStoreService
 import com.junbo.crypto.spec.error.AppErrors
 import groovy.transform.CompileStatic
+import org.apache.commons.io.FilenameUtils
 import org.springframework.util.StringUtils
 
 import java.security.*
@@ -121,7 +122,7 @@ class KeyStoreServiceImpl implements KeyStoreService {
 
         try {
             this.keyStore = KeyStore.getInstance(DEFAULT_KEY_STORE_TYPE)
-            InputStream input = new FileInputStream(keyStorePath)
+            InputStream input = new FileInputStream(getAbsoluteKeyStorePath(keyStorePath))
             this.keyStore.load(input, keyStorePassword.toCharArray())
         } catch (KeyStoreException ksex) {
             throw AppErrors.INSTANCE.keyStoreException(ksex.message).exception()
@@ -132,5 +133,11 @@ class KeyStoreServiceImpl implements KeyStoreService {
         } catch (CertificateException certEx) {
             throw AppErrors.INSTANCE.certificateException(certEx.message).exception()
         }
+    }
+
+    private String getAbsoluteKeyStorePath(String keyStorePath) {
+        String javaHome = System.properties.getProperty('java.home')
+
+        return FilenameUtils.normalize(javaHome + '/' + keyStorePath)
     }
 }
