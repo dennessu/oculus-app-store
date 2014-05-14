@@ -1,2 +1,7 @@
+include 'authorization-app'
+include 'authorization-common'
+include 'authorization-core'
+include 'authorization-db'
 include 'authorization-lib'
-
+include 'authorization-rest'
+include 'authorization-spec'

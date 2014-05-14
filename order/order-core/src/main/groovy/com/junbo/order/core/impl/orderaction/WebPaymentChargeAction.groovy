@@ -8,7 +8,7 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.annotation.OrderEventAwareAfter
 import com.junbo.order.core.annotation.OrderEventAwareBefore
-import com.junbo.order.core.impl.common.BillingEventBuilder
+import com.junbo.order.core.impl.common.BillingEventHistoryBuilder
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
@@ -53,7 +53,8 @@ class WebPaymentChargeAction extends BaseOrderEventAwareAction {
         }
         Promise promise =
                 facadeContainer.billingFacade.createBalance(
-                        CoreBuilder.buildBalance(context.orderServiceContext.order, BalanceType.DEBIT))
+                        CoreBuilder.buildBalance(context.orderServiceContext.order, BalanceType.DEBIT),
+                        context?.orderServiceContext?.apiContext?.asyncCharge)
         return promise.syncRecover { Throwable throwable ->
             LOGGER.error('name=Order_WebPaymentCharge_Error', throwable)
             throw facadeContainer.billingFacade.convertError(throwable).exception()
@@ -77,11 +78,20 @@ class WebPaymentChargeAction extends BaseOrderEventAwareAction {
             oldOrder.providerConfirmUrl = order.providerConfirmUrl
             orderRepository.updateOrder(oldOrder, true)
             CoreBuilder.fillTaxInfo(order, balance)
-            def billingEvent = BillingEventBuilder.buildBillingEvent(balance)
-            orderRepository.createBillingEvent(order.id.value, billingEvent)
+            def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(balance)
+            if (billingHistory.billingEvent != null) {
+                def savedHistory = orderRepository.createBillingHistory(order.id.value, billingHistory)
+                if (order.billingHistories == null) {
+                    order.billingHistories = [savedHistory]
+                }
+                else {
+                    order.billingHistories.add(savedHistory)
+                }
+            }
             return orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
                 // TODO: save order level tax
-                return CoreBuilder.buildActionResultForOrderEventAwareAction(context, billingEvent.status)
+                return CoreBuilder.buildActionResultForOrderEventAwareAction(context,
+                        BillingEventHistoryBuilder.buildEventStatusFromBalance(balance))
             }
         }
     }

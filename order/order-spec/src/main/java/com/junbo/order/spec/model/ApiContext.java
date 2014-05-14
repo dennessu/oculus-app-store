@@ -19,14 +19,21 @@ public class ApiContext {
     public static final String HEADER_ON_BEHALF_OF_REQUESTOR = "On-Behalf-Of-Requestor-Id";
     public static final String HEADER_USER_IP = "User_Ip";
 
+    public static final String QA_HEADER_ASYNC_CHARGE = "X-QA-Async-Charge";
+
     private String delegateUserId;
     private String requestorId;
     private String onBehalfOfRequestorId;
     private String userIp;
+    private Boolean asyncCharge;
 
     public ApiContext(MultivaluedMap<String, String> httpHeaders) {
         if (!CollectionUtils.isEmpty(httpHeaders.get(HEADER_USER_IP))) {
             setUserIp(httpHeaders.get(HEADER_USER_IP).get(0));
+        }
+
+        if (!CollectionUtils.isEmpty(httpHeaders.get(QA_HEADER_ASYNC_CHARGE))) {
+            asyncCharge = Boolean.valueOf(httpHeaders.get(QA_HEADER_ASYNC_CHARGE).get(0));
         }
     }
 
@@ -60,5 +67,13 @@ public class ApiContext {
 
     public void setUserIp(String userIp) {
         this.userIp = userIp;
+    }
+
+    public Boolean getAsyncCharge() {
+        return asyncCharge;
+    }
+
+    public void setAsyncCharge(Boolean asyncCharge) {
+        this.asyncCharge = asyncCharge;
     }
 }

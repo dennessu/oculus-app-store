@@ -14,6 +14,8 @@ import com.junbo.rating.spec.model.Currency;
 import com.junbo.rating.spec.model.Money;
 import com.junbo.rating.spec.model.RatableItem;
 import com.junbo.rating.spec.model.RatingResultEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -24,6 +26,7 @@ import java.util.Set;
  * Created by lizwu on 2/7/14.
  */
 public class OfferRatingService extends RatingServiceSupport{
+    private static final Logger LOGGER = LoggerFactory.getLogger(OfferRatingService.class);
 
     public void offerRating(RatingContext context) {
         rate(context);
@@ -54,6 +57,7 @@ public class OfferRatingService extends RatingServiceSupport{
 
             Money originalPrice = getPrice(item.getOffer(), currency.getCode());
             if (originalPrice == Money.NOT_FOUND) {
+                LOGGER.error("Price of Offer [" + offerId + "] is not found for Currency [" + currency + "].");
                 throw AppErrors.INSTANCE.priceNotFound(item.getOfferId().toString()).exception();
             }
 

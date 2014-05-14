@@ -87,24 +87,30 @@ public interface ModelMapper {
     PaymentInfo toPaymentInfo(OrderPaymentInfoEntity orderPaymentInfoEntity, MappingContext context);
 
     @Mappings({
-            @Mapping(source = "id", target = "eventId", excluded = false, bidirectional = false),
-            @Mapping(source = "orderItem", target = "orderItemId", excluded = false, bidirectional = false)
+            @Mapping(source = "id", target = "historyId", excluded = false, bidirectional = false),
+            @Mapping(source = "fulfillmentEvent", target = "fulfillmentEventId", excluded = false, bidirectional = false)
     })
-    OrderItemFulfillmentEventEntity toOrderItemFulfillmentEventEntity(FulfillmentEvent fulfillmentEvent,
+    OrderItemFulfillmentHistoryEntity toOrderItemFulfillmentHistoryEntity(FulfillmentHistory fulfillmentHistory,
                                                                       MappingContext context);
 
     @Mappings({
-            @Mapping(source = "eventId", target = "id", excluded = false, bidirectional = false),
-            @Mapping(source = "orderItemId", target = "orderItem", excluded = false, bidirectional = false)
-
+            @Mapping(source = "historyId", target = "id", excluded = false, bidirectional = false),
+            @Mapping(source = "fulfillmentEventId", target = "fulfillmentEvent", excluded = false, bidirectional = false)
     })
-    FulfillmentEvent toFulfillmentEventModel(OrderItemFulfillmentEventEntity orderItemFulfillmentEventEntity,
+    FulfillmentHistory toFulfillmentHistoryModel(OrderItemFulfillmentHistoryEntity orderItemFulfillmentHistoryEntity,
                                              MappingContext context);
 
-    OrderBillingEventEntity toOrderBillingEventEntity(BillingEvent billingEvent,
+    @Mappings({
+            @Mapping(source = "id", target = "historyId", excluded = false, bidirectional = false),
+            @Mapping(source = "billingEvent", target = "billingEventId", excluded = false, bidirectional = false),
+    })
+    OrderBillingHistoryEntity toOrderBillingHistoryEntity(BillingHistory billingHistory,
                                                                       MappingContext context);
-
-    BillingEvent toOrderBillingEventModel(OrderBillingEventEntity orderBillingEventEntity,
+    @Mappings({
+            @Mapping(source = "historyId", target = "id", excluded = false, bidirectional = false),
+            @Mapping(source = "billingEventId", target = "billingEvent", excluded = false, bidirectional = false),
+    })
+    BillingHistory toOrderBillingHistoryModel(OrderBillingHistoryEntity orderBillingHistoryEntity,
                                              MappingContext context);
     @Mappings({
             @Mapping(source = "orderItemPreorderInfoId", target = "preorderInfoId",

@@ -79,6 +79,8 @@ public class OrderItem extends BaseOrderResource {
 
     private List<OrderTaxItem> taxes;
 
+    private List<FulfillmentHistory> fulfillmentHistories;
+
     public OrderItemId getOrderItemId() {
         return orderItemId;
     }
@@ -205,5 +207,13 @@ public class OrderItem extends BaseOrderResource {
 
     public void setTaxes(List<OrderTaxItem> taxes) {
         this.taxes = taxes;
+    }
+
+    public List<FulfillmentHistory> getFulfillmentHistories() {
+        return fulfillmentHistories;
+    }
+
+    public void setFulfillmentHistories(List<FulfillmentHistory> fulfillmentHistories) {
+        this.fulfillmentHistories = fulfillmentHistories;
     }
 }

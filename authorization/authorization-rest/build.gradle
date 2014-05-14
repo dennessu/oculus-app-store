@@ -1,0 +1,8 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile junboProject(':authorization-core')
+    compile junboProject(':authorization-spec')
+    compile junboProject(':authorization-common')
+    compile junboProject(':authorization-db')
+}

@@ -10,10 +10,7 @@ package com.junbo.test.common;
 import org.apache.http.*;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -21,6 +18,7 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+import org.testng.Assert;
 
 import java.io.InputStreamReader;
 import java.util.List;
@@ -156,6 +154,17 @@ public class HttpclientHelper {
             T type = JsonHelper.JsonDeserializer(new InputStreamReader(responseEntity.getContent()), cls);
             EntityUtils.consume(entity);
             return type;
+        } finally {
+            response.close();
+        }
+    }
+
+    public static void SimpleDelete(String requestURI) throws Exception {
+        HttpDelete httpDelete = new HttpDelete(requestURI);
+        httpDelete.addHeader("Content-Type", "application/json");
+        CloseableHttpResponse response = httpclient.execute(httpDelete);
+        try {
+            Assert.assertEquals(response.getStatusLine().getStatusCode(), 200, "validate HttpDelete response is 200");
         } finally {
             response.close();
         }
