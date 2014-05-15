@@ -14,6 +14,7 @@ import com.junbo.order.spec.model.Order;
 import com.junbo.order.spec.model.OrderItem;
 import com.junbo.test.common.Utility.BaseValidationHelper;
 import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.IdConverter;
 
 /**
@@ -75,6 +76,28 @@ public class FulfimentValidationHelper extends BaseValidationHelper {
             }
         }
         return null;
+    }
+
+    public void validateSingleFulfilmentItem(FulfilmentItem fulfilmentItem, String orderId, boolean hasPhysicalGood) {
+        Order order = Master.getInstance().getOrder(orderId);
+        OrderItem orderItem = order.getOrderItems().get(0);
+        verifyEqual(fulfilmentItem.getOfferId(), orderItem.getOffer().getValue(), "verify offer id");
+        verifyEqual(fulfilmentItem.getQuantity(), orderItem.getQuantity(), "verify offer quantity");
+
+        if (fulfilmentItem.getActions().size() > 0) {
+            for (FulfilmentAction fulfilmentAction : fulfilmentItem.getActions()) {
+                if (hasPhysicalGood) {
+                    verifyEqual(fulfilmentAction.getType(), ACTION_DELIVER_PHYSICAL_GOODS,
+                            "verify fulfilment item type");
+                    verifyEqual(fulfilmentAction.getStatus(), "PENDING", "verify fulfilment status");
+                } else {
+                    verifyEqual(fulfilmentAction.getType(), ACTION_GRANT_ENTITLEMENT, "verify fulfilment status");
+                    verifyEqual(fulfilmentAction.getStatus(), "SUCCEED", "verify fulfilment status");
+                }
+            }
+        } else {
+            throw new TestException("missing fulfilment action");
+        }
     }
 
 
