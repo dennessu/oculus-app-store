@@ -111,8 +111,6 @@ class VerifyEmail implements Action {
 
                     if (email.value == emailVerifyCode.email) {
                         personalInfo.lastValidateTime = new Date()
-                        email.isValidated = true
-                        email.validateTime = new Date()
                         personalInfo.value = ObjectMapperProvider.instance().valueToTree(email)
                         return userPersonalInfoResource.put(piiLink.value, personalInfo).recover { Throwable e ->
                             handleException(e, contextWrapper)

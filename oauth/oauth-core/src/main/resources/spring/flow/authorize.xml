@@ -168,7 +168,8 @@
             <wf:on-render>
                 <wf:action ref="emailVerifyView"/>
             </wf:on-render>
-            <wf:transition on="*" to="LOGIN_SUCCESS"/>
+            <wf:transition on="success" to="LOGIN_SUCCESS"/>
+            <wf:transition on="failed" to="ACCESS_DENIED" />
         </wf:view-state>
 
         <wf:end-state id="END">
