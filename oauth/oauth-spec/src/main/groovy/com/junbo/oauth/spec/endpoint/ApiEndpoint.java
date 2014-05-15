@@ -24,24 +24,20 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 public interface ApiEndpoint {
     @GET
-    Promise<List<ApiDefinition>> getAllApis(@HeaderParam("Authorization") String authorization);
+    Promise<List<ApiDefinition>> getAllApis();
 
     @GET
     @Path("/{apiName}")
-    Promise<ApiDefinition> getApi(@HeaderParam("Authorization") String authorization,
-                                  @PathParam("apiName") String apiName);
+    Promise<ApiDefinition> getApi(@PathParam("apiName") String apiName);
 
     @POST
-    Promise<ApiDefinition> postApi(@HeaderParam("Authorization") String authorization,
-                                   ApiDefinition apiDefinition);
+    Promise<ApiDefinition> postApi(ApiDefinition apiDefinition);
 
     @PUT
     @Path("/{apiName}")
-    Promise<ApiDefinition> putApi(@HeaderParam("Authorization") String authorization,
-                                  @PathParam("apiName") String apiName, ApiDefinition apiDefinition);
+    Promise<ApiDefinition> putApi(@PathParam("apiName") String apiName, ApiDefinition apiDefinition);
 
     @DELETE
     @Path("/{apiName}")
-    Promise<Response> deleteApi(@HeaderParam("Authorization") String authorization,
-                                @PathParam("apiName") String apiName);
+    Promise<Void> deleteApi(@PathParam("apiName") String apiName);
 }

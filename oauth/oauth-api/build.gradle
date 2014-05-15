@@ -4,6 +4,8 @@ dependencies {
     compile junboProject(':oauth-spec')
     compile junboProject(':oauth-core')
 
+    compile junboProject(':authorization-lib')
+
     compile(libraries.servlet_api)
     // compile(libraries.jersey_spring3)
     compile(libraries.jackson_jaxrs_json_provider)

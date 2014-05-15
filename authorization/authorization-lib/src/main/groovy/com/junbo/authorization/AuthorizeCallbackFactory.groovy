@@ -12,5 +12,6 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface AuthorizeCallbackFactory<T> {
-    AuthorizeCallback<T> create(Map<String, Object> context)
+
+    AuthorizeCallback<T> create(String apiName, T entity)
 }

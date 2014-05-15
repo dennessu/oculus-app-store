@@ -12,5 +12,8 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface ConditionEvaluator {
+
+    String getScriptType()
+
     Boolean evaluate(String condition, Object object)
 }

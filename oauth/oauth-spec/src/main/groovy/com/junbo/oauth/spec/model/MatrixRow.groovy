@@ -13,7 +13,11 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class MatrixRow {
 
+    String scriptType // SPEL, Javscript
+
     String precondition
+
+    Boolean breakOnMatch
 
     List<String> rights
 }
