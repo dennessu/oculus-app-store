@@ -4,7 +4,6 @@ import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionId
 import com.junbo.identity.core.service.credential.CredentialHash
 import com.junbo.identity.core.service.credential.CredentialHashFactory
-import com.junbo.identity.core.service.util.SaltGenerator
 import com.junbo.identity.core.service.validator.UserSecurityQuestionValidator
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.UserRepository
