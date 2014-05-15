@@ -4,6 +4,8 @@ dependencies {
     compile (libraries.jackson_databind)
     compile (libraries.jackson_core)
     compile (libraries.rs_api)
-    compile junboProject(':common-lib')
     compile (libraries.spring_core)
+    compile (libraries.spring_security)
+
+    compile junboProject(':common-lib')
 }

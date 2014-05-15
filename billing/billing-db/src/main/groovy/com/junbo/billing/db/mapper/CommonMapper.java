@@ -6,15 +6,24 @@
 
 package com.junbo.billing.db.mapper;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.billing.spec.enums.*;
 import com.junbo.common.id.*;
 import com.junbo.common.util.EnumRegistry;
 import org.springframework.util.StringUtils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by xmchen on 14-2-14.
  */
 public class CommonMapper {
+
+    private ObjectMapper mapper = new ObjectMapper();
+
     public Short explicitMethod_convertBalanceType(String type) {
         if(!StringUtils.isEmpty(type)) {
             BalanceType balanceType = BalanceType.valueOf(type);
@@ -147,5 +156,23 @@ public class CommonMapper {
 
     public TransactionId toTransactionId(Long id) {
         return id == null ? null : new TransactionId(id);
+    }
+
+    public String explicitMethod_convertPropertySet(Map<String, String> propertySet) {
+        try {
+            return mapper.writeValueAsString(propertySet);
+        }
+        catch (JsonProcessingException ex) {
+            return null;
+        }
+    }
+
+    public Map<String, String> explicitMethod_convertPropertySet(String propertySet) {
+        try {
+            return mapper.readValue(propertySet, new TypeReference<HashMap<String,String>>(){});
+        }
+        catch (Exception ex) {
+            return null;
+        }
     }
 }

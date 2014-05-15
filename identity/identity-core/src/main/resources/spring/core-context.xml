@@ -966,35 +966,4 @@
             </list>
         </property>
     </bean>
-
-    <bean id="securityQuestionFilter" class="com.junbo.identity.core.service.filter.SecurityQuestionFilter">
-        <property name="readableProperties">
-            <list>
-                <value>id</value>
-                <value>value</value>
-                <value>active</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForCreate">
-            <list>
-                <value>value</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForUpdate">
-            <list>
-                <value>id</value>
-                <value>value</value>
-                <value>active</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-    </bean>
-
 </beans>

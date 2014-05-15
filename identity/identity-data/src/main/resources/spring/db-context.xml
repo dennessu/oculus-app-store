@@ -90,11 +90,6 @@
         <property name="userTosDAO" ref="userTosDAO"/>
     </bean>
 
-    <bean id="sqlSecurityQuestionRepository" class="com.junbo.identity.data.repository.impl.sql.SecurityQuestionRepositorySqlImpl">
-        <property name="securityQuestionDAO" ref="securityQuestionDAO"/>
-        <property name="modelMapper" ref="modelMapper"/>
-    </bean>
-
     <bean id="sqlUserSecurityQuestionAttemptRepository" class="com.junbo.identity.data.repository.impl.sql.UserSecurityQuestionAttemptRepositorySqlImpl" >
         <property name="modelMapper" ref="modelMapper"/>
         <property name="userSecurityQuestionAttemptDAO" ref="userSecurityQuestionAttemptDAO"/>
@@ -245,9 +240,5 @@
                 <entry key="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
             </map>
         </property>
-    </bean>
-
-    <bean id="securityQuestionDAO" class="com.junbo.identity.data.dao.impl.SecurityQuestionDAOImpl">
-        <property name="sessionFactory" ref="configSessionFactory"/>
     </bean>
 </beans>

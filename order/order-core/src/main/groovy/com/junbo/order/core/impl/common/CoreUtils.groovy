@@ -5,6 +5,7 @@ import com.junbo.billing.spec.model.Balance
 import com.junbo.order.clientproxy.model.OrderOfferItem
 import com.junbo.order.clientproxy.model.OrderOfferRevision
 import com.junbo.order.db.entity.enums.ItemType
+import com.junbo.order.db.entity.enums.OrderStatus
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
 import groovy.transform.CompileStatic
@@ -83,6 +84,15 @@ class CoreUtils {
             return true
         }
         if (order.honorUntilTime > new Date()) {
+            return true
+        }
+        return false
+    }
+
+    static Boolean checkOrderCancelable(Order order) {
+
+        // TODO: check authorized
+        if (order.status == OrderStatus.OPEN || order.status == OrderStatus.PREORDERED) {
             return true
         }
         return false

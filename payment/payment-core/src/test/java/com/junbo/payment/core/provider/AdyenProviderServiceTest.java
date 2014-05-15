@@ -25,7 +25,7 @@ public class AdyenProviderServiceTest extends BaseTest {
     private AdyenProviderServiceImpl adyenProviderService;
     @Autowired
     private PaymentCallbackService paymentCallbackService;
-    @Test(enabled = true)
+    @Test(enabled = false)
     public void testCharge() throws ExecutionException, InterruptedException {
         PaymentInstrument piRequest = buildBasePIRequest();
         piRequest.setType(PIType.OTHERS.getId());
@@ -37,12 +37,13 @@ public class AdyenProviderServiceTest extends BaseTest {
         payment.setTrackingUuid(generateUUID());
         payment.setChargeInfo(new ChargeInfo() {
             {
-                setCurrency("USD");
+                setCurrency("CNY");
                 setAmount(new BigDecimal(1500.00));
             }
         });
         PaymentTransaction result = paymentService.charge(payment).wrapped().get();
         Assert.assertNotNull(result.getWebPaymentInfo().getRedirectURL());
+        Assert.assertEquals(result.getStatus(), PaymentStatus.UNCONFIRMED.toString());
         //manual pay through redirectURL
         PaymentProperties properties = new PaymentProperties();
         properties.setPspReference("ut1234");
@@ -57,6 +58,13 @@ public class AdyenProviderServiceTest extends BaseTest {
         }catch (Exception ex){
             exception = true;
         }
+        //since the transaction is settled, so the exception should be true.
         Assert.assertTrue(exception);
+        //Charge the user again, this time. there should be no ReturnURL and the transaction becomes settled immediately as we use recurring
+        payment.setTrackingUuid(generateUUID());
+        payment.setId(null);
+        result = paymentService.charge(payment).wrapped().get();
+        Assert.assertNull(result.getWebPaymentInfo());
+        Assert.assertEquals(result.getStatus(), PaymentStatus.SETTLED.toString());
     }
 }

@@ -70,12 +70,16 @@ public class PaymentInstrumentResourceImpl implements PaymentInstrumentResource 
     @Override
     public Promise<Results<PaymentInstrument>> searchPaymentInstrument(
             @BeanParam PaymentInstrumentSearchParam searchParam, @BeanParam PageMetaData pageMetadata) {
-        List<PaymentInstrument> piRequests = piService.searchPi(
-                searchParam.getUserId().getValue(), searchParam, pageMetadata);
-        Results<PaymentInstrument> result = new Results<PaymentInstrument>();
-        result.setItems(piRequests);
-        //result.setNext(CommonUtils.buildNextUrl(uriInfo));
-        return Promise.pure(result);
+        return piService.searchPi(searchParam.getUserId().getValue(), searchParam, pageMetadata)
+                .then(new Promise.Func<List<PaymentInstrument>, Promise<Results<PaymentInstrument>>>() {
+            @Override
+            public Promise<Results<PaymentInstrument>> apply(List<PaymentInstrument> paymentInstruments) {
+                Results<PaymentInstrument> result = new Results<PaymentInstrument>();
+                result.setItems(paymentInstruments);
+                //result.setNext(CommonUtils.buildNextUrl(uriInfo));
+                return Promise.pure(result);
+            }
+        });
     }
 
     @GET

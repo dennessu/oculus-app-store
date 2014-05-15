@@ -140,7 +140,7 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
                 requestDetails.setCancelURL(paymentRequest.getWebPaymentInfo().getCancelURL());
 
                 requestDetails.setPaymentDetails(paymentDetailsList);
-
+                requestDetails.setBuyerEmail(pi.getAccountNum());
                 SetExpressCheckoutRequestType setRequest = new SetExpressCheckoutRequestType(requestDetails);
                 setRequest.setVersion(apiVersion);
 
@@ -168,6 +168,11 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
     @Override
     public Promise<PaymentTransaction> reverse(String transactionId, PaymentTransaction paymentRequest) {
         throw AppServerExceptions.INSTANCE.serviceNotImplemented("reverse").exception();
+    }
+
+    @Override
+    public Promise<PaymentTransaction> confirmNotify(PaymentTransaction payment, PaymentProperties properties){
+        return Promise.pure(payment);
     }
 
     @Override
