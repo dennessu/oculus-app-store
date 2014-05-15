@@ -6,7 +6,7 @@
 
 package com.junbo.entitlement.db.dao.hibernate;
 
-import com.junbo.common.id.EntitlementDefinitionId;
+import com.junbo.common.id.ItemId;
 import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.def.Function;
 import com.junbo.entitlement.common.lib.CommonUtils;
@@ -56,30 +56,32 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
 
         if (!StringUtils.isEmpty(entitlementSearchParam.getType())) {
             addSingleParam("type", "type",
-                    entitlementSearchParam.getType(), "=", queryStringBuilder, params);
+                    entitlementSearchParam.getType().toUpperCase(), "=", queryStringBuilder, params);
         }
 
-        if (!Boolean.TRUE.equals(entitlementSearchParam.getIsBanned())) {
-            Date now = EntitlementContext.current().getNow();
-            if (Boolean.FALSE.equals(entitlementSearchParam.getIsActive())) {
-                queryStringBuilder.append(" and ( grant_time >= (:now)" +
-                        " or expiration_time <= (:now)" +
-                        " or use_count = 0 )");
-            } else {
-                queryStringBuilder.append(
-                        " and use_count > 0" +
-                                " and ( grant_time <= (:now)" +
-                                " and expiration_time >= (:now) )");
-            }
+        Date now = EntitlementContext.current().getNow();
+        if (Boolean.FALSE.equals(entitlementSearchParam.getIsActive())) {
+            queryStringBuilder.append(" and ( grant_time >= (:now)" +
+                    " or expiration_time <= (:now)" +
+                    " or use_count = 0" +
+                    " or is_banned = true )");
+            params.put("now", now);
+        } else if (Boolean.TRUE.equals(entitlementSearchParam.getIsActive())) {
+            queryStringBuilder.append(
+                    " and use_count > 0" +
+                            " and ( grant_time <= (:now)" +
+                            " and expiration_time >= (:now) )" +
+                            " and is_banned = false");
             params.put("now", now);
         }
-        if (!CollectionUtils.isEmpty(entitlementSearchParam.getDefinitionIds())) {
-            addCollectionParam("entitlement_definition_id", "definitionIds",
-                    CommonUtils.select(entitlementSearchParam.getDefinitionIds(),
-                            new Function<Long, EntitlementDefinitionId>() {
+
+        if (!CollectionUtils.isEmpty(entitlementSearchParam.getItemIds())) {
+            addCollectionParam("item_id", "itemIds",
+                    CommonUtils.select(entitlementSearchParam.getItemIds(),
+                            new Function<Long, ItemId>() {
                                 @Override
-                                public Long apply(EntitlementDefinitionId entitlementDefinitionId) {
-                                    return entitlementDefinitionId.getValue();
+                                public Long apply(ItemId itemId) {
+                                    return itemId.getValue();
                                 }
                             }),
                     queryStringBuilder, params);
@@ -119,12 +121,13 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
     }
 
     @Override
-    public EntitlementEntity get(Long userId, Long entitlementDefinitionId) {
+    public EntitlementEntity get(Long userId, Long itemId, String type) {
         String queryString = "from EntitlementEntity where userId = (:userId)" +
-                " and entitlementDefinitionId = (:entitlementDefinitionId) and isDeleted = false";
+                " and itemId = (:itemId) and type = (:type) and isDeleted = false";
         Query q = currentSession(userId).createQuery(queryString)
                 .setLong("userId", userId)
-                .setLong("entitlementDefinitionId", entitlementDefinitionId);
+                .setLong("itemId", itemId)
+                .setString("type", type == null ? EntitlementConsts.NO_TYPE : type.toUpperCase());
         return (EntitlementEntity) q.uniqueResult();
     }
 }

@@ -5,10 +5,16 @@
  */
 package com.junbo.entitlement.rest;
 
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
-import com.junbo.catalog.spec.resource.proxy.EntitlementDefinitionResourceClientProxy;
+import com.junbo.catalog.spec.enums.Status;
+import com.junbo.catalog.spec.model.item.Binary;
+import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
+import com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy;
+import com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxy;
 import com.junbo.common.error.AppErrorException;
 import com.junbo.common.id.EntitlementId;
+import com.junbo.common.id.ItemRevisionId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.model.Results;
 import com.junbo.entitlement.spec.model.Entitlement;
@@ -24,7 +30,10 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -35,7 +44,9 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
     @Autowired
     private EntitlementResourceClientProxy entitlementResourceClientProxy;
     @Autowired
-    private EntitlementDefinitionResourceClientProxy entitlementDefinitionResourceClientProxy;
+    private ItemResourceClientProxy itemResourceClientProxy;
+    @Autowired
+    private ItemRevisionResourceClientProxy itemRevisionResourceClientProxy;
     @Autowired
     @Qualifier("oculus48IdGenerator")
     private IdGenerator idGenerator;
@@ -77,7 +88,7 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
         Entitlement newEntitlement = entitlementResourceClientProxy.transferEntitlement(transfer).get();
         Assert.assertEquals(newEntitlement.getUserId(), targetId);
         Assert.assertNotEquals(newEntitlement.getEntitlementId(), entitlement.getEntitlementId());
-        Assert.assertEquals(newEntitlement.getEntitlementDefinitionId(), entitlement.getEntitlementDefinitionId());
+        Assert.assertEquals(newEntitlement.getItemId(), entitlement.getItemId());
         Assert.assertEquals(newEntitlement.getGrantTime(), entitlement.getGrantTime());
         try {
             entitlementResourceClientProxy.getEntitlement(new EntitlementId(entitlement.getEntitlementId()));
@@ -105,16 +116,46 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
         Entitlement entitlement = new Entitlement();
         entitlement.setUserId(idGenerator.nextId());
         entitlement.setGrantTime(new Date());
-        EntitlementDefinition definition = new EntitlementDefinition();
-        definition.setEntitlementDefId(entitlement.getEntitlementDefinitionId());
-        definition.setConsumable(false);
-        definition.setDeveloperId(idGenerator.nextId());
+        Item item = new Item();
+        item.setType("DIGITAL");
+        item.setOwnerId(idGenerator.nextId());
+        item.setGenres(new ArrayList<Long>());
         try {
+<<<<<<< HEAD
             definition = entitlementDefinitionResourceClientProxy.postEntitlementDefinition(definition).get();
+=======
+            item = itemResourceClientProxy.create(item).wrapped().get();
+            ItemRevision revision = itemRevisionResourceClientProxy.createItemRevision(buildAnItemRevision(item)).wrapped().get();
+            revision.setStatus(Status.APPROVED.name());
+            itemRevisionResourceClientProxy.updateItemRevision(new ItemRevisionId(revision.getRevisionId()), revision).wrapped().get();
+>>>>>>> update entitlement according to new design
         } catch (Exception e) {
             e.printStackTrace();
         }
-        entitlement.setEntitlementDefinitionId(definition.getEntitlementDefId());
+        entitlement.setItemId(item.getItemId());
         return entitlement;
+    }
+
+    private ItemRevision buildAnItemRevision(Item item) {
+        ItemRevision itemRevision = new ItemRevision();
+        itemRevision.setOwnerId(item.getOwnerId());
+        itemRevision.setItemId(item.getItemId());
+        itemRevision.setStatus(Status.DRAFT.name());
+
+        Map<String, Binary> binaries = new HashMap<>();
+        Binary binary = new Binary();
+        binary.setHref("xxx");
+        binary.setSize(1L);
+        binary.setVersion("0");
+        binaries.put("default", binary);
+        itemRevision.setBinaries(binaries);
+
+        Map<String, ItemRevisionLocaleProperties> locales = new HashMap<>();
+        ItemRevisionLocaleProperties locale = new ItemRevisionLocaleProperties();
+        locale.setName("name");
+        locales.put("default", locale);
+        itemRevision.setLocales(locales);
+
+        return itemRevision;
     }
 }

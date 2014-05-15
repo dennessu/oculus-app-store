@@ -6,7 +6,7 @@
 
 package com.junbo.entitlement.spec.model;
 
-import com.junbo.common.id.EntitlementDefinitionId;
+import com.junbo.common.id.ItemId;
 import com.junbo.common.id.UserId;
 
 import javax.ws.rs.QueryParam;
@@ -25,8 +25,8 @@ public class EntitlementSearchParam {
     @QueryParam("isSuspended")
     private Boolean isBanned;
 
-    @QueryParam("definitionIds")
-    private Set<EntitlementDefinitionId> definitionIds;
+    @QueryParam("itemIds")
+    private Set<ItemId> itemIds;
 
     @QueryParam("startGrantTime")
     private String startGrantTime;
@@ -50,13 +50,12 @@ public class EntitlementSearchParam {
         this.userId = userId;
     }
 
-
-    public Set<EntitlementDefinitionId> getDefinitionIds() {
-        return definitionIds;
+    public Set<ItemId> getItemIds() {
+        return itemIds;
     }
 
-    public void setDefinitionIds(Set<EntitlementDefinitionId> definitionIds) {
-        this.definitionIds = definitionIds;
+    public void setItemIds(Set<ItemId> itemIds) {
+        this.itemIds = itemIds;
     }
 
     public Boolean getIsActive() {
@@ -132,7 +131,7 @@ public class EntitlementSearchParam {
         private Boolean isActive;
         private Boolean isBanned;
 
-        private Set<EntitlementDefinitionId> definitionIds;
+        private Set<ItemId> itemIds;
 
         private String startGrantTime;
         private String endGrantTime;
@@ -180,8 +179,8 @@ public class EntitlementSearchParam {
             return this;
         }
 
-        public Builder definitionIds(Set<EntitlementDefinitionId> val) {
-            definitionIds = val;
+        public Builder itemIds(Set<ItemId> val) {
+            itemIds = val;
             return this;
         }
 
@@ -199,7 +198,7 @@ public class EntitlementSearchParam {
         userId = builder.userId;
         isActive = builder.isActive;
         isBanned = builder.isBanned;
-        definitionIds = builder.definitionIds;
+        itemIds = builder.itemIds;
         startGrantTime = builder.startGrantTime;
         endGrantTime = builder.endGrantTime;
         startExpirationTime = builder.startExpirationTime;

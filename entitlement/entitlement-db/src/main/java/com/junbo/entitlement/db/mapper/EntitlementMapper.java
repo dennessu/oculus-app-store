@@ -6,6 +6,8 @@
 
 package com.junbo.entitlement.db.mapper;
 
+import com.junbo.common.id.UserId;
+import com.junbo.common.model.AdminInfo;
 import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.db.entity.EntitlementEntity;
@@ -27,12 +29,19 @@ public class EntitlementMapper {
         }
         Entitlement entitlement = new Entitlement();
         entitlement.setEntitlementId(entitlementEntity.getEntitlementId());
-        entitlement.setRev(entitlementEntity.getRev().toString());
+        entitlement.setResourceAge(entitlementEntity.getRev().toString());
         entitlement.setUserId(entitlementEntity.getUserId());
-        entitlement.setEntitlementDefinitionId(entitlementEntity.getEntitlementDefinitionId());
+        entitlement.setItemId(entitlementEntity.getItemId());
         entitlement.setIsActive(isActive(entitlementEntity));
         entitlement.setIsBanned(entitlementEntity.getIsBanned());
         entitlement.setGrantTime(entitlementEntity.getGrantTime());
+        entitlement.setFutureExpansion(entitlementEntity.getFutureExpansion());
+        entitlement.setCreatedTime(entitlementEntity.getCreatedTime());
+        entitlement.setUpdatedTime(entitlementEntity.getModifiedTime());
+        AdminInfo adminInfo = new AdminInfo();
+        adminInfo.setCreatedBy(new UserId(Long.valueOf(entitlementEntity.getCreatedBy())));
+        adminInfo.setUpdatedBy(new UserId(Long.valueOf(entitlementEntity.getModifiedBy())));
+        entitlement.setAdminInfo(adminInfo);
         if (entitlementEntity.getExpirationTime().getTime() == EntitlementConsts.NEVER_EXPIRE.getTime()) {
             entitlement.setExpirationTime(null);
         } else {
@@ -43,6 +52,9 @@ public class EntitlementMapper {
         } else {
             entitlement.setUseCount(entitlementEntity.getUseCount());
         }
+        if (!entitlementEntity.getType().equalsIgnoreCase(EntitlementConsts.NO_TYPE)) {
+            entitlement.setType(entitlementEntity.getType());
+        }
         return entitlement;
     }
 
@@ -50,11 +62,11 @@ public class EntitlementMapper {
         EntitlementEntity entitlementEntity = new EntitlementEntity();
         entitlementEntity.setTrackingUuid(entitlement.getTrackingUuid());
         entitlementEntity.setEntitlementId(entitlement.getEntitlementId());
-        if (entitlement.getRev() != null) {
-            entitlementEntity.setRev(Integer.valueOf(entitlement.getRev()));
+        if (entitlement.getResourceAge() != null) {
+            entitlementEntity.setRev(Integer.valueOf(entitlement.getResourceAge()));
         }
-        entitlementEntity.setEntitlementDefinitionId(
-                entitlement.getEntitlementDefinitionId());
+        entitlementEntity.setItemId(
+                entitlement.getItemId());
         entitlementEntity.setUserId(entitlement.getUserId());
         entitlementEntity.setIsBanned(entitlement.getIsBanned());
         entitlementEntity.setGrantTime(entitlement.getGrantTime());
@@ -68,13 +80,18 @@ public class EntitlementMapper {
         } else {
             entitlementEntity.setUseCount(entitlement.getUseCount());
         }
-        entitlementEntity.setType(entitlement.getType());
+        if (entitlement.getType() == null) {
+            entitlementEntity.setType(EntitlementConsts.NO_TYPE);
+        } else {
+            entitlementEntity.setType(entitlement.getType().toUpperCase());
+        }
+        entitlementEntity.setFutureExpansion(entitlement.getFutureExpansion());
         return entitlementEntity;
     }
 
 
     public List<Entitlement> toEntitlementList(List<EntitlementEntity> entitlementEntities) {
-        List<Entitlement> entitlements = new ArrayList<Entitlement>(entitlementEntities.size());
+        List<Entitlement> entitlements = new ArrayList<>(entitlementEntities.size());
         for (EntitlementEntity entitlementEntity : entitlementEntities) {
             entitlements.add(toEntitlement(entitlementEntity));
         }

@@ -6,26 +6,33 @@
 
 package com.junbo.entitlement.db.entity;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.junbo.entitlement.db.entity.def.MapJsonUserType;
 import com.junbo.entitlement.db.entity.def.Shardable;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * EntitlementHistory Entity.
  */
 @javax.persistence.Entity
 @Table(name = "entitlement_history")
+@TypeDefs(@TypeDef(name = "json-map", typeClass = MapJsonUserType.class))
 public class EntitlementHistoryEntity implements Shardable {
     private Long entitlementHistoryId;
     private String action;
     private Long entitlementId;
     private Integer rev;
     private Long userId;
-    private Long entitlementDefinitionId;
+    private Long itemId;
     private Boolean isBanned;
     private Date grantTime;
     private Date expirationTime;
@@ -35,6 +42,7 @@ public class EntitlementHistoryEntity implements Shardable {
     private String createdBy;
     private Date modifiedTime;
     private String modifiedBy;
+    private Map<String, JsonNode> futureExpansion;
 
     public EntitlementHistoryEntity() {
     }
@@ -43,10 +51,10 @@ public class EntitlementHistoryEntity implements Shardable {
         this.action = action;
         this.entitlementId = entitlementEntity.getEntitlementId();
         this.rev = entitlementEntity.getRev();
-        this.entitlementDefinitionId = entitlementEntity.getEntitlementDefinitionId();
+        this.itemId = entitlementEntity.getItemId();
         this.userId = entitlementEntity.getUserId();
         this.isBanned = entitlementEntity.getIsBanned();
-        this.entitlementDefinitionId = entitlementEntity.getEntitlementDefinitionId();
+        this.futureExpansion = entitlementEntity.getFutureExpansion();
         this.grantTime = entitlementEntity.getGrantTime();
         this.expirationTime = entitlementEntity.getExpirationTime();
         this.useCount = entitlementEntity.getUseCount();
@@ -103,13 +111,23 @@ public class EntitlementHistoryEntity implements Shardable {
         this.userId = userId;
     }
 
-    @Column(name = "entitlement_definition_id")
-    public Long getEntitlementDefinitionId() {
-        return entitlementDefinitionId;
+    @Column(name = "item_id")
+    public Long getItemId() {
+        return itemId;
     }
 
-    public void setEntitlementDefinitionId(Long entitlementDefinitionId) {
-        this.entitlementDefinitionId = entitlementDefinitionId;
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
+    }
+
+    @Column(name = "future_expansion")
+    @Type(type = "json-map")
+    public Map<String, JsonNode> getFutureExpansion() {
+        return futureExpansion;
+    }
+
+    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
+        this.futureExpansion = futureExpansion;
     }
 
     @Column(name = "is_banned")

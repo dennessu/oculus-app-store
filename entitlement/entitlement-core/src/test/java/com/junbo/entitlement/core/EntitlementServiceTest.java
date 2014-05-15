@@ -6,7 +6,7 @@
 
 package com.junbo.entitlement.core;
 
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
+import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.common.error.AppErrorException;
 import com.junbo.common.id.UserId;
 import com.junbo.entitlement.common.cache.PermanentCache;
@@ -136,14 +136,14 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
         entitlement.setUserId(idGenerator.nextId());
         entitlement.setGrantTime(new Date(114, 0, 22));
         entitlement.setExpirationTime(new Date(114, 0, 28));
-        entitlement.setEntitlementDefinitionId(idGenerator.nextId());
-        final EntitlementDefinition definition = new EntitlementDefinition();
-        definition.setEntitlementDefId(entitlement.getEntitlementDefinitionId());
-        definition.setConsumable(false);
-        PermanentCache.ENTITLEMENT_DEFINITION.get("id#" + definition.getEntitlementDefId(), new Callable<Object>() {
+        entitlement.setItemId(idGenerator.nextId());
+        final ItemRevision item = new ItemRevision();
+        item.setItemId(entitlement.getItemId());
+        //TODO: set consumable properties
+        PermanentCache.ITEM_REVISION.get(item.getItemId(), new Callable<Object>() {
             @Override
             public Object call() throws Exception {
-                return definition;
+                return item;
             }
         });
         return entitlement;
