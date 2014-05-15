@@ -140,7 +140,7 @@ public final class Promise<T> {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> Promise each(final Iterator<T> iterator, final Func<? super T, Promise> func) {
+    public static <T> Promise each(final Iterator<T> iterator, final Func<? super T, Promise> func) {
         final Func<Object, Promise> process = new Func<Object, Promise>() {
             Func<Object, Promise> self = this;
 

@@ -95,9 +95,9 @@
         </wf:action-state>
 
         <wf:view-state id="REDIRECT_TO_THIRD_PARTY_UPGRADE">
-            <wf:on-entry>
+            <wf:on-render>
                 <wf:action ref="redirectToThirdPartyUpgrade"/>
-            </wf:on-entry>
+            </wf:on-render>
             <wf:transition on="*" to="THIRD_PARTY_UPGRADE_VIEW"/>
         </wf:view-state>
 
@@ -122,16 +122,16 @@
         </wf:action-state>
 
         <wf:view-state id="REDIRECT_TO_CONSENT">
-            <wf:on-entry>
+            <wf:on-render>
                 <wf:action ref="redirectToConsent"/>
-            </wf:on-entry>
+            </wf:on-render>
             <wf:transition on="*" to="CONSENT_VIEW"/>
         </wf:view-state>
 
         <wf:view-state id="CONSENT_VIEW">
-            <wf:on-entry>
+            <wf:on-render>
                 <wf:action ref="consentView"/>
-            </wf:on-entry>
+            </wf:on-render>
             <wf:transition on="next" to="CONSENT_SUCCESS">
                 <wf:action ref="saveConsent"/>
             </wf:transition>
@@ -149,12 +149,26 @@
             <wf:on-render>
                 <wf:action ref="emailVerifyRequiredView"/>
             </wf:on-render>
-            <wf:transition on="verify" to="LOGIN_SUCCESS">
+            <wf:transition on="verify" to="REDIRECT_TO_EMAIL_VERIFY_RESULT">
                 <wf:action ref="verifyEmail"/>
             </wf:transition>
             <wf:transition on="resend" to="EMAIL_VERIFY_REQUIRED">
                 <wf:action ref="sendAccountVerifyEmail"/>
             </wf:transition>
+        </wf:view-state>
+
+        <wf:view-state id="REDIRECT_TO_EMAIL_VERIFY_RESULT">
+            <wf:on-render>
+                <wf:action ref="redirectToEmailVerifyResult"/>
+            </wf:on-render>
+            <wf:transition on="*" to="EMAIL_VERIFY_RESULT_VIEW"/>
+        </wf:view-state>
+
+        <wf:view-state id="EMAIL_VERIFY_RESULT_VIEW">
+            <wf:on-render>
+                <wf:action ref="emailVerifyView"/>
+            </wf:on-render>
+            <wf:transition on="*" to="LOGIN_SUCCESS"/>
         </wf:view-state>
 
         <wf:end-state id="END">
