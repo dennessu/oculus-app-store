@@ -24,6 +24,8 @@
     <bean id="userPasswordValidator" class="com.junbo.identity.core.service.validator.impl.UserPasswordValidatorImpl">
         <property name="userRepository" ref="userRepository"/>
         <property name="userPasswordRepository" ref="userPasswordRepository"/>
+        <property name="credentialHashFactory" ref="credentialHashFactory" />
+        <property name="currentCredentialVersion" value="${identity.conf.currentCredentialVersion}" />
     </bean>
 
     <bean id="userPinValidator" class="com.junbo.identity.core.service.validator.impl.UserPinValidatorImpl">
@@ -31,6 +33,8 @@
         <property name="userPinRepository" ref="userPinRepository"/>
         <property name="valueMinLength" value="4"/>
         <property name="valueMaxLength" value="255"/>
+        <property name="credentialHashFactory" ref="credentialHashFactory" />
+        <property name="currentCredentialVersion" value="${identity.conf.currentCredentialVersion}" />
     </bean>
 
     <bean id="userCredentialValidator"
@@ -57,6 +61,7 @@
         <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
         <property name="normalizeService" ref="normalizeService" />
         <property name="usernameValidator" ref="usernameValidator"/>
+        <property name="credentialHashFactory" ref="credentialHashFactory" />
         <property name="allowedIpAddressPatterns">
             <list>
                 <!-- IPv4Pattern -->
@@ -115,6 +120,8 @@
         <property name="maxAnswerLength" value="255" />
         <property name="minSecurityQuestionLength" value="10" />
         <property name="maxSecurityQuestionLength" value="255" />
+        <property name="credentialHashFactory" ref="credentialHashFactory" />
+        <property name="currentCredentialVersion" value="${identity.conf.currentCredentialVersion}" />
     </bean>
 
     <bean id="userSecurityQuestionAttemptValidator"
@@ -122,6 +129,7 @@
         <property name="attemptRepository" ref="userSecurityQuestionAttemptRepository"/>
         <property name="userRepository" ref="userRepository"/>
         <property name="userSecurityQuestionRepository" ref="userSecurityQuestionRepository"/>
+        <property name="credentialHashFactory" ref="credentialHashFactory" />
         <property name="allowedIPPatterns">
             <list>
                 <!-- IPv4Pattern -->
@@ -463,8 +471,34 @@
         <property name="transactionManager" ref="transactionManager" />
     </bean>
 
+    <bean id="bcryptCredentialHash" class="com.junbo.identity.core.service.credential.impl.BcryptCredentialHash">
+        <property name="generator" ref="bCryptSaltGenerator" />
+    </bean>
+
+    <bean id="oculusCredentialHash" class="com.junbo.identity.core.service.credential.impl.OculusCredentialHash">
+        <property name="generator" ref="shaSaltGenerator" />
+    </bean>
+
+    <bean id="credentialHashFactory" class="com.junbo.identity.core.service.credential.impl.CredentialHashFactoryImpl">
+        <constructor-arg name="credentialHashList">
+            <list>
+                <ref bean="bcryptCredentialHash" />
+                <ref bean="oculusCredentialHash" />
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <!-- todo:  Later we can merge all those beans using one bean -->
     <bean id="codeGenerator" class="com.junbo.identity.core.service.util.impl.CodeGeneratorImpl">
         <property name="codeLength" value="${identity.conf.tele.codeLength}" />
         <property name="backupCodeLength" value="${identity.conf.tele.backupCodeLength}" />
+    </bean>
+
+    <bean id="shaSaltGenerator" class="com.junbo.identity.core.service.util.impl.SHASaltGeneratorImpl">
+        <property name="saltLength" value="${identity.conf.shaSaltLength}" />
+    </bean>
+
+    <bean id="bCryptSaltGenerator" class="com.junbo.identity.core.service.util.impl.BCryptSaltGeneratorImpl">
+        <property name="logRound" value="${identity.conf.bcryptLogRound}" />
     </bean>
 </beans>
