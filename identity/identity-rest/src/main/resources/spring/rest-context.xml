@@ -18,7 +18,6 @@
     <bean id="defaultGroupResource" class="com.junbo.identity.rest.resource.v1.GroupResourceImpl" scope="prototype" />
     <bean id="defaultUserResource" class="com.junbo.identity.rest.resource.v1.UserResourceImpl" scope="prototype" />
     <bean id="defaultUserPersonalInfoResource" class="com.junbo.identity.rest.resource.v1.UserPersonalInfoResourceImpl" scope="prototype" />
-    <bean id="defaultSecurityQuestionResource" class="com.junbo.identity.rest.resource.SecurityQuestionResourceImpl" scope="prototype" />
     <bean id="defaultDeviceResource" class="com.junbo.identity.rest.resource.v1.DeviceResourceImpl" scope="prototype" />
     <bean id="defaultTosResource" class="com.junbo.identity.rest.resource.v1.TosResourceImpl" scope="prototype" />
     <bean id="defaultUserGroupMembershipResource" class="com.junbo.identity.rest.resource.v1.UserGroupMembershipResourceImpl" scope="prototype"/>
@@ -58,7 +57,6 @@
     <bean id="defaultGroupResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.GroupResourceClientProxyFactory"/>
     <bean id="defaultUserResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxyFactory"/>
     <bean id="defaultUserPersonalInfoResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxyFactory"/>
-    <bean id="defaultSecurityQuestionResourceClientFactory" class="com.junbo.identity.spec.resource.proxy.SecurityQuestionResourceClientProxyFactory"/>
     <bean id="defaultDeviceResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.DeviceResourceClientProxyFactory"/>
     <bean id="defaultTosResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.TosResourceClientProxyFactory"/>
     <bean id="defaultUserGroupMembershipResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserGroupMembershipResourceClientProxyFactory"/>
@@ -85,7 +83,6 @@
     <bean id="defaultGroupResourceRouter" parent="routingRouterBase" />
     <bean id="defaultUserResourceRouter" parent="routingRouterBase" />
     <bean id="defaultUserPersonalInfoResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultSecurityQuestionResourceRouter" parent="routingRouterBase" />
     <bean id="defaultDeviceResourceRouter" parent="routingRouterBase" />
     <bean id="defaultTosResourceRouter" parent="routingRouterBase" />
     <bean id="defaultUserGroupMembershipResourceRouter" parent="routingRouterBase" />
