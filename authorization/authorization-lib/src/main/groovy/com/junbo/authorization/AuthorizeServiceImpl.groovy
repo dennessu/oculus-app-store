@@ -5,12 +5,6 @@
  */
 package com.junbo.authorization
 
-import com.junbo.authorization.AuthorizeCallback
-import com.junbo.authorization.AuthorizeContext
-import com.junbo.authorization.RightsScope
-import com.junbo.authorization.AuthorizeService
-import com.junbo.authorization.ConditionEvaluator
-import com.junbo.authorization.TokenInfoParser
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.spec.endpoint.ApiEndpoint
 import com.junbo.oauth.spec.model.ApiDefinition

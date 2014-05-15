@@ -5,7 +5,6 @@
  */
 package com.junbo.authorization
 
-import com.junbo.authorization.AuthorizeCallback
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 
