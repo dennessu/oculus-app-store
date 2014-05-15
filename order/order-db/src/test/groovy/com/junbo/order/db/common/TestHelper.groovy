@@ -118,25 +118,24 @@ class TestHelper {
         return orderEventEntity
     }
 
-    static OrderItemFulfillmentEventEntity generateOrderItemFulfillmentEventEntity() {
-        OrderItemFulfillmentEventEntity entity = new OrderItemFulfillmentEventEntity()
-        entity.setEventId(generateId())
-        entity.setAction(FulfillmentAction.FULFILL)
-        entity.setStatus(EventStatus.COMPLETED)
+    static OrderItemFulfillmentHistoryEntity generateOrderItemFulfillmentHistoryEntity() {
+        OrderItemFulfillmentHistoryEntity entity = new OrderItemFulfillmentHistoryEntity()
+        entity.setHistoryId(generateId())
+        entity.setFulfillmentEventId(randEnum(FulfillmentAction))
         entity.setOrderId(generateLong())
         entity.setOrderItemId(generateLong())
         entity.setTrackingUuid(generateUUID())
-        entity.setFulfillmentId('TEST_FULFILLMENT_ID')
+        entity.setFulfillmentId(RandomStringUtils.randomAlphabetic(20))
         return entity
     }
 
-    static OrderBillingEventEntity generateOrderBillingEventEntity() {
-        def entity = new OrderBillingEventEntity()
-        entity.eventId = generateId()
-        entity.action = randEnum(BillingAction)
-        entity.status = randEnum(EventStatus)
+    static OrderBillingHistoryEntity generateOrderBillingHistoryEntity() {
+        def entity = new OrderBillingHistoryEntity()
+        entity.historyId = generateId()
+        entity.billingEventId = randEnum(BillingAction)
         entity.setOrderId(generateLong())
         entity.balanceId = RandomStringUtils.randomAlphabetic(20)
+        entity.totalAmount = BigDecimal.TEN
         return entity
     }
 

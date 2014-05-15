@@ -23,6 +23,8 @@ dependencies {
     compile(libraries.aspectjweaver)
 
     compile junboProject(':oauth-spec')
+    compile junboProject(':identity-spec')
+    compile junboProject(':authorization-spec')
 
     testCompile(libraries.spring_test)
 }

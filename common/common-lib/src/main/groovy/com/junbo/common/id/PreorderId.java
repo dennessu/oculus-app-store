@@ -8,7 +8,7 @@ package com.junbo.common.id;
 /**
  * Java doc for PreorderId.
  */
-@IdResourcePath("/pre-orders/{0}")
+@IdResourcePath(value = "/pre-orders/{0}", regex = "/pre-orders/(?<id>[0-9A-Z]+)")
 public class PreorderId extends Id {
     public PreorderId() {}
 

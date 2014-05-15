@@ -31,7 +31,7 @@ public class EntitlementService {
     private static LogHelper logger = new LogHelper(Entitlement.class);
     private static AsyncHttpClient asyncClient = new AsyncHttpClient(new AsyncHttpClientConfig.Builder().build());
 
-    public EntitlementService() {
+    private EntitlementService() {
     }
 
     public static Entitlement grantEntitlement(Entitlement entitlement) throws Exception {

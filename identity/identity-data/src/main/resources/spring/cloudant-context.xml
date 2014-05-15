@@ -119,8 +119,16 @@
         <property name="idGenerator" ref="oculus48IdGenerator" />
     </bean>
 
-    <bean id="cloudantUserPersonalInfoRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserPersonalInfoRepositoryCloudantImpl" parent="cloudantClient">
+    <!--bean id="cloudantUserPersonalInfoRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserPersonalInfoRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="user_personal_info" />
+        <property name="idGenerator" ref="oculus48IdGenerator" />
+    </bean-->
+
+    <bean id="cloudantUserPersonalInfoRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserPersonalInfoEncryptRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="userIdLinkRepository" ref="cloudantUserPersonalInfoIdToUserIdLinkRepository" />
+        <property name="encryptUserPersonalInfoRepository" ref="cloudantEncryptUserPersonalInfoRepository" />
+        <property name="cryptoResource" ref="identityCryptoResource" />
+        <property name="dbName" value="non_exists" />
         <property name="idGenerator" ref="oculus48IdGenerator" />
     </bean>
 
@@ -149,5 +157,23 @@
     <bean id="cloudantDeviceTypeRepository" class="com.junbo.identity.data.repository.impl.cloudant.DeviceTypeRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="device_type" />
         <property name="idGenerator" ref="oculus48IdGenerator" />
+    </bean>
+
+    <bean id="encryptUserPersonalInfocloudantClient" class="com.junbo.common.cloudant.CloudantClient" abstract="true">
+        <property name="asyncHttpClient" ref="commonAsyncHttpClient" />
+        <property name="cloudantDBUri" value="${encrypt.user.personalinfo.cloudant.url}" />
+        <property name="marshaller">
+            <bean class="com.junbo.common.cloudant.CloudantDefaultMarshaller" />
+        </property>
+    </bean>
+
+    <bean id="cloudantEncryptUserPersonalInfoRepository" class="com.junbo.identity.data.repository.impl.cloudant.EncryptUserPersonalInfoRepositoryImpl" parent="encryptUserPersonalInfocloudantClient">
+        <property name="idGenerator" ref="oculus48IdGenerator" />
+        <property name="dbName" value="encrypt_user_personal_info" />
+    </bean>
+
+    <bean id="cloudantUserPersonalInfoIdToUserIdLinkRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserPersonalInfoIdToUserIdLinkRepositoryImpl" parent="cloudantClient">
+        <property name="idGenerator" ref="oculus48IdGenerator" />
+        <property name="dbName" value="user_personal_info_id_to_user_id" />
     </bean>
 </beans>

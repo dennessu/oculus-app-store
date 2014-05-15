@@ -20,6 +20,7 @@ import com.junbo.order.core.impl.common.TransactionHelper
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
+import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
@@ -183,7 +184,29 @@ class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     Promise<OrderEvent> updateOrderByOrderEvent(OrderEvent event) {
-        LOGGER.info('name=Update_Order_By_Order_Event. orderId: {}', event.order.value)
+
+        switch (event.action) {
+            case OrderActionType.CANCEL.name():
+                LOGGER.info('name=Cancel_Order. orderId: {}, action:{}, status{}',
+                        event.order.value, event.action, event.status)
+                break
+            case OrderActionType.CHARGE.name():
+                LOGGER.info('name=Update_Charge_Status. orderId: {}, action:{}, status{}',
+                        event.order.value, event.action, event.status)
+                break
+            case OrderActionType.FULFILL.name():
+                LOGGER.info('name=Update_Fulfillment_Status. orderId: {}, action:{}, status{}',
+                        event.order.value, event.action, event.status)
+                break
+            default:
+                LOGGER.error('name=Event_Action_Not_Supported. orderId: {}, action:{}, status{}',
+                        event.order.value, event.action, event.status)
+                throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
+        }
+
+        LOGGER.info('name=Update_Order_By_Order_Event. orderId: {}, action:{}, status{}',
+                event.order.value, event.action, event.status)
+
         return getOrderByOrderId(event.order.value).then { Order order ->
             def orderServiceContext = initOrderServiceContext(order, null)
             orderServiceContext.orderEvent = event

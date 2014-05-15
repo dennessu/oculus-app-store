@@ -121,6 +121,8 @@ public class Order extends BaseOrderResource {
     private String providerConfirmUrl;
     // end of urls
 
+    private List<BillingHistory> billingHistories;
+
     public OrderId getId() {
         return id;
     }
@@ -320,5 +322,13 @@ public class Order extends BaseOrderResource {
 
     public void setProviderConfirmUrl(String providerConfirmUrl) {
         this.providerConfirmUrl = providerConfirmUrl;
+    }
+
+    public List<BillingHistory> getBillingHistories() {
+        return billingHistories;
+    }
+
+    public void setBillingHistories(List<BillingHistory> billingHistories) {
+        this.billingHistories = billingHistories;
     }
 }

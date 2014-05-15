@@ -73,7 +73,7 @@ public interface AppErrors {
             description = "Payment service connection error")
     AppError paymentConnectionError();
 
-    @ErrorDef(httpStatusCode = 403, code = ErrorCode.INVALID_FIELD,
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_FIELD,
             description = "{1}", field = "{0}")
     AppError fieldInvalid(String field, String message);
 
@@ -160,4 +160,8 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 400, code = BillingErrorCode.BILLING_CONFIRM_BALANCE_FAILED,
             description = "Fail to confirm balance")
     AppError balanceConfirmFailed();
+
+    @ErrorDef(httpStatusCode = 409, code = ErrorCode.ORDER_CAN_NOT_BE_CANCELED,
+            description = "Order can not be canceled")
+    AppError orderNotCancelable();
 }

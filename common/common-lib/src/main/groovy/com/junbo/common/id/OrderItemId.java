@@ -9,7 +9,7 @@ package com.junbo.common.id;
 /**
  * Java doc for OrderItemId.
  */
-@IdResourcePath("/order-items/{0}")
+@IdResourcePath(value = "/order-items/{0}", regex = "/order-items/(?<id>[0-9A-Z]+)")
 public class OrderItemId extends Id {
 
     public OrderItemId() {}

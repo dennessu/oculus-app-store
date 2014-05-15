@@ -9,7 +9,7 @@ package com.junbo.common.id;
 /**
  * Created by minhao on 2/13/14.
  */
-@IdResourcePath("/fulfilments/{0}")
+@IdResourcePath(value = "/fulfilments/{0}", regex = "/fulfilments/(?<id>[0-9A-Z]+)")
 public class FulfilmentId extends Id {
 
     public FulfilmentId() {}

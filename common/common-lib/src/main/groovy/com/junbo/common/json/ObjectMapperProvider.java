@@ -15,20 +15,15 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.junbo.common.deser.EnumIdDeserizlizer;
 import com.junbo.common.deser.IdDeserializer;
-import com.junbo.common.enumid.EnumId;
-import com.junbo.common.id.Id;
+import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.jackson.common.CustomDeserializationContext;
 import com.junbo.common.jackson.common.CustomSerializerModifier;
 import com.junbo.common.jackson.common.CustomSerializerProvider;
 import com.junbo.common.ser.EnumIdSerializer;
 import com.junbo.common.ser.IdSerializer;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
-import org.springframework.core.type.filter.AssignableTypeFilter;
 
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
-import java.util.Set;
 
 /**
  * Created by minhao on 2/13/14.
@@ -57,32 +52,14 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
             }
         };
 
-        ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(true);
-
-        provider.addIncludeFilter(new AssignableTypeFilter(Id.class));
-        // scan in com.junbo.common.id package for SubClass of Id
-        Set<BeanDefinition> idDefinitions = provider.findCandidateComponents("com/junbo/common/id");
-        for (BeanDefinition definition : idDefinitions) {
-            try {
-                Class cls = Class.forName(definition.getBeanClassName());
-                module.addSerializer(cls, new IdSerializer());
-                module.addDeserializer(cls, new IdDeserializer(cls));
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+        for (Class cls : IdUtil.ID_CLASSES) {
+            module.addSerializer(cls, new IdSerializer());
+            module.addDeserializer(cls, new IdDeserializer(cls));
         }
 
-        provider.addIncludeFilter(new AssignableTypeFilter(EnumId.class));
-        // scan in com.junbo.common.enumid package for Subclass of EnumId
-        Set<BeanDefinition> enumIdDefinitions = provider.findCandidateComponents("com/junbo/common/enumid");
-        for (BeanDefinition definition : enumIdDefinitions) {
-            try {
-                Class cls = Class.forName(definition.getBeanClassName());
-                module.addSerializer(cls, new EnumIdSerializer());
-                module.addDeserializer(cls, new EnumIdDeserizlizer(cls));
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+        for (Class cls : IdUtil.ENUM_ID_CLASSES) {
+            module.addSerializer(cls, new EnumIdSerializer());
+            module.addDeserializer(cls, new EnumIdDeserizlizer(cls));
         }
 
         objectMapper.registerModule(module);

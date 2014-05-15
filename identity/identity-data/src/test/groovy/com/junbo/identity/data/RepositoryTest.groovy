@@ -617,7 +617,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         assert results.size() != 0
     }
 
-    @Test
+    @Test(enabled = false)
     public void testUserPersonalInfoRepository() {
         UserId userId = new UserId(idGenerator.nextId())
         UserPersonalInfo userPersonalInfo = new UserPersonalInfo()

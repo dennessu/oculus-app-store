@@ -11,4 +11,5 @@
     <import resource="classpath*:spring/repo-context.xml"/>
     <import resource="classpath*:spring/sharding-context.xml"/>
     <import resource="classpath*:spring/common-lib-context.xml" />
+    <import resource="classpath*:spring/spring-context.xml" />
 </beans>
