@@ -2,8 +2,6 @@ package com.junbo.oauth.core.action
 
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserId
-import com.junbo.common.json.ObjectMapperProvider
-import com.junbo.identity.spec.v1.model.Email
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
@@ -81,8 +79,8 @@ class CheckEmailVerified implements Action {
                     return Promise.pure(new ActionResult('error'))
                 }
 
-                Email email = ObjectMapperProvider.instance().treeToValue(personalInfo.value, Email)
-                if (email.isValidated) {
+                // the pii data has been validated if lastValidateTime is not null
+                if (personalInfo.lastValidateTime != null) {
                     return Promise.pure(new ActionResult('success'))
                 }
 
