@@ -99,6 +99,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         }
 
         Assert.assertEquals(retrievedFulfilmentItem.getFulfilmentId(), fulfilmentId, "Fulfilment id should match.");
+        Assert.assertNotNull(retrievedFulfilmentItem.getActions(), "Fulfilment actions should not be null.");
     }
 
     @Test(enabled = false)
