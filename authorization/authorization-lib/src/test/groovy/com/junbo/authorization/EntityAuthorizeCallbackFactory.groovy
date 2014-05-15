@@ -5,43 +5,38 @@
  */
 package com.junbo.authorization
 
-import com.junbo.authorization.model.AuthorizeContext
-import com.junbo.oauth.spec.model.TokenInfo
 import groovy.transform.CompileStatic
 
 /**
  * EntityAuthorizeCallbackFactory.
  */
 @CompileStatic
-class EntityAuthorizeCallbackFactory implements AuthorizeCallbackFactory<Entity> {
+class EntityAuthorizeCallbackFactory extends AbstractAuthorizeCallbackFactory<Entity> {
 
     @Override
-    AuthorizeCallback<Entity> create(Map<String, Object> context) {
-        return new EntityAuthorizeCallback(context)
+    AuthorizeCallback<Entity> create(String apiName, Entity entity) {
+        return new EntityAuthorizeCallback(this, apiName, entity)
     }
 
-    private class EntityAuthorizeCallback implements AuthorizeCallback<Entity> {
+    private class EntityAuthorizeCallback extends AbstractAuthorizeCallback<Entity> {
 
-        String apiName
         Long resourceId
-        Entity entity
-        TokenInfo tokenInfo
 
-        EntityAuthorizeCallback(Map<String, Object> context) {
-            this.apiName = context['apiName']
-            this.resourceId = (Long) context['id']
-            this.entity = (Entity) context['entity']
+        EntityAuthorizeCallback(EntityAuthorizeCallbackFactory factory, String apiName, Entity entity) {
+            super(factory, apiName, entity)
+
             if (resourceId == null && entity != null) {
                 resourceId = entity.id
             }
         }
 
         Boolean isOwner() {
-            return resourceId == tokenInfo.sub.value
+
+            return resourceId == AuthorizeContext.currentUserId.value
         }
 
         Boolean isAdmin() {
-            return tokenInfo.sub.value == 123L
+            return AuthorizeContext.currentUserId.value == 123L
         }
 
         Boolean isGuest() {
@@ -51,28 +46,6 @@ class EntityAuthorizeCallbackFactory implements AuthorizeCallbackFactory<Entity>
         @Override
         String getApiName() {
             return apiName
-        }
-
-        @Override
-        void setTokenInfo(TokenInfo tokenInfo) {
-            this.tokenInfo = tokenInfo
-        }
-
-        @Override
-        Entity postFilter() {
-            Set<String> rights = AuthorizeContext.RIGHTS.get()
-            if (!rights.contains('read')) {
-                return null
-            }
-
-            if (!rights.contains('owner') && !rights.contains('admin')) {
-                entity.name = null
-            }
-
-            if (!rights.contains('admin')) {
-                entity.createdBy = null
-            }
-            return entity
         }
     }
 }

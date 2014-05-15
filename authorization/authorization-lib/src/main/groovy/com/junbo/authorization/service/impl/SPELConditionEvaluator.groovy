@@ -7,21 +7,44 @@ package com.junbo.authorization.service.impl
 
 import com.junbo.authorization.service.ConditionEvaluator
 import groovy.transform.CompileStatic
+import org.springframework.expression.Expression
 import org.springframework.expression.ExpressionParser
 import org.springframework.expression.spel.standard.SpelExpressionParser
 import org.springframework.expression.spel.support.StandardEvaluationContext
+
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * SPELConditionEvaluator.
  */
 @CompileStatic
 class SPELConditionEvaluator implements ConditionEvaluator {
-    private final static ExpressionParser PARSER = new SpelExpressionParser()
+
+    private final ExpressionParser parser = new SpelExpressionParser()
+
+    @SuppressWarnings('ImplementationAsType')
+    private final ConcurrentHashMap<String, Expression> parsedExpressions = new ConcurrentHashMap<>()
+
+    @Override
+    @SuppressWarnings('GetterMethodCouldBeProperty')
+    String getScriptType() {
+        return 'SPEL'
+    }
 
     @Override
     Boolean evaluate(String condition, Object object) {
         StandardEvaluationContext context = new StandardEvaluationContext(object)
 
-        return PARSER.parseExpression(condition).getValue(context, Boolean)
+        return parseExpression(condition).getValue(context, Boolean)
+    }
+
+    private Expression parseExpression(String expStr) {
+        Expression exp = parsedExpressions.get(expStr)
+        if (exp == null) {
+            exp = parser.parseExpression(expStr)
+            exp = parsedExpressions.putIfAbsent(expStr, exp)
+        }
+
+        return exp
     }
 }

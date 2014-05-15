@@ -6,58 +6,31 @@
 package com.junbo.authorization.service.impl
 
 import com.junbo.authorization.AuthorizeCallback
-import com.junbo.authorization.model.AuthorizeContext
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.authorization.RightsScope
 import com.junbo.authorization.service.AuthorizeService
 import com.junbo.authorization.service.ConditionEvaluator
+import com.junbo.authorization.token.TokenInfoParser
+import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.spec.endpoint.ApiEndpoint
-import com.junbo.oauth.spec.endpoint.TokenEndpoint
-import com.junbo.oauth.spec.endpoint.TokenInfoEndpoint
-import com.junbo.oauth.spec.model.*
+import com.junbo.oauth.spec.model.ApiDefinition
+import com.junbo.oauth.spec.model.MatrixRow
 import groovy.transform.CompileStatic
-import org.springframework.beans.BeansException
-import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Required
-import org.springframework.context.ApplicationContext
-import org.springframework.context.ApplicationContextAware
-import org.springframework.util.Assert
-
-import javax.ws.rs.core.HttpHeaders
 
 /**
  * AuthorizeServiceImpl.
  */
 @CompileStatic
-class AuthorizeServiceImpl implements AuthorizeService, ApplicationContextAware, InitializingBean {
-    private static final String AUTHORIZATION_HEADER = 'Authorization'
-    private static final String API_SCOPE = 'api.info'
-    private static final int TOKENS_LENGTH = 2
-    private ApplicationContext applicationContext
-
-    private TokenEndpoint tokenEndpoint
-
-    private TokenInfoEndpoint tokenInfoEndpoint
+class AuthorizeServiceImpl implements AuthorizeService {
 
     private ApiEndpoint apiEndpoint
 
-    private final Map<String, ApiDefinition> apiDefinitions = [:]
+    private Map<String, ConditionEvaluator> conditionEvaluators
 
-    private ConditionEvaluator conditionEvaluator
+    private TokenInfoParser tokenInfoParser
 
-    private String serviceClientId
-
-    private String serviceClientSecret
-
-    private Boolean authorizeEnabled
-
-    @Required
-    void setTokenEndpoint(TokenEndpoint tokenEndpoint) {
-        this.tokenEndpoint = tokenEndpoint
-    }
-
-    @Required
-    void setTokenInfoEndpoint(TokenInfoEndpoint tokenInfoEndpoint) {
-        this.tokenInfoEndpoint = tokenInfoEndpoint
-    }
+    private Boolean useDummyRights
 
     @Required
     void setApiEndpoint(ApiEndpoint apiEndpoint) {
@@ -65,100 +38,82 @@ class AuthorizeServiceImpl implements AuthorizeService, ApplicationContextAware,
     }
 
     @Required
-    void setConditionEvaluator(ConditionEvaluator conditionEvaluator) {
-        this.conditionEvaluator = conditionEvaluator
+    void setConditionEvaluators(List<ConditionEvaluator> conditionEvaluators) {
+
+        this.conditionEvaluators = new HashMap<>()
+
+        for (ConditionEvaluator evaluator : conditionEvaluators) {
+            this.conditionEvaluators.put(evaluator.scriptType, evaluator)
+        }
     }
 
     @Required
-    void setServiceClientId(String serviceClientId) {
-        this.serviceClientId = serviceClientId
+    void setUseDummyRights(Boolean useDummyRights) {
+        this.useDummyRights = useDummyRights
     }
 
     @Required
-    void setServiceClientSecret(String serviceClientSecret) {
-        this.serviceClientSecret = serviceClientSecret
+    void setTokenInfoParser(TokenInfoParser tokenInfoParser) {
+        this.tokenInfoParser = tokenInfoParser
     }
 
     @Override
-    Boolean getAuthorizeEnabled() {
-        return authorizeEnabled
-    }
+    public Promise<Set<String>> authorize(AuthorizeCallback callback) {
 
-    @Required
-    void setAuthorizeEnabled(Boolean authorizeEnabled) {
-        this.authorizeEnabled = authorizeEnabled
-    }
-
-    @Override
-    void authorize(AuthorizeCallback callback) {
-        if (!authorizeEnabled) {
-            return
+        if (useDummyRights) {
+            return Promise.pure([AuthorizeContext.SUPER_RIGHT] as Set)
         }
 
-        String accessToken = parseAccessToken()
-
-        TokenInfo tokenInfo = tokenInfoEndpoint.getTokenInfo(accessToken).wrapped().get()
-        Set<String> tokenScopes = []
-        tokenScopes.addAll(tokenInfo.scopes.split(' '))
-
-        ApiDefinition api = apiDefinitions[callback.apiName]
-        if (api == null) {
-            return
-        }
-
-        Collection<String> scopes = api.scopes.keySet().intersect(tokenScopes)
-
-        callback.tokenInfo = tokenInfo
-
-        Set<String> rights = []
-        scopes.each { String scopeName ->
-            List<MatrixRow> matrixRows = api.scopes[scopeName]
-            matrixRows.each { MatrixRow row ->
-                if (conditionEvaluator.evaluate(row.precondition, callback)) {
-                    rights.addAll(row.rights)
+        return tokenInfoParser.parseAndThen {
+            return getApiDefinition(callback.apiName).then { ApiDefinition api ->
+                if (api == null) {
+                    throw new RuntimeException("api ${callback.apiName} not found")
                 }
+
+                def tokenScopes = AuthorizeContext.currentScopes as Set<String>
+                def scopes = api.scopes.keySet().intersect(tokenScopes)
+
+                Set<String> rights = []
+
+                for (String scopeName : scopes) {
+                    List<MatrixRow> matrixRows = api.scopes[scopeName]
+
+                    for (MatrixRow row : matrixRows) {
+                        def conditionEvaluator = conditionEvaluators.get(row.scriptType)
+                        if (conditionEvaluator) {
+                            throw new RuntimeException("scriptType ${row.scriptType} not supported")
+                        }
+
+                        if (conditionEvaluator.evaluate(row.precondition, callback)) {
+                            rights.addAll(row.rights)
+
+                            if (row.breakOnMatch) {
+                                break
+                            }
+                        }
+                    }
+                }
+
+                return Promise.pure(rights)
             }
         }
-
-        AuthorizeContext.RIGHTS.set(rights)
-    }
-
-    private String parseAccessToken() {
-        HttpHeaders httpHeaders = applicationContext.getBean(HttpHeaders)
-        String authorization = httpHeaders.requestHeaders.getFirst(AUTHORIZATION_HEADER)
-        String accessToken = extractAccessToken(authorization)
-        return accessToken
     }
 
     @Override
-    void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext
-    }
-
-    static String extractAccessToken(String authorization) {
-        Assert.notNull(authorization, 'authorization is null')
-
-        String[] tokens = authorization.split(' ')
-        if (tokens.length != TOKENS_LENGTH || !tokens[0].equalsIgnoreCase(TokenType.BEARER.name())) {
-            return null
+    def <T> Promise<T> authorizeAndThen(AuthorizeCallback callback, Closure<Promise<T>> closure) {
+        return authorize(callback).then { Set<String> rights ->
+            return RightsScope.with(rights, closure)
         }
-
-        return tokens[1]
     }
 
     @Override
-    void afterPropertiesSet() throws Exception {
-        if (authorizeEnabled) {
-            AccessTokenResponse token = tokenEndpoint.postToken(serviceClientId, serviceClientSecret,
-                    GrantType.CLIENT_CREDENTIALS.name(), null, API_SCOPE, null, null, null, null, null).wrapped().get()
-
-            List<ApiDefinition> apis = apiEndpoint.getAllApis("Bearer $token.accessToken").wrapped().get()
-
-            apis.each { ApiDefinition api ->
-                apiDefinitions[api.apiName] = api
-            }
+    def <T> Promise<T> authorizeAndThen(AuthorizeCallback callback, Promise.Func0<Promise<T>> closure) {
+        return authorize(callback).then { Set<String> rights ->
+            return RightsScope.with(rights, closure)
         }
+    }
 
-        AuthorizeContext.authorizeEnabled = authorizeEnabled
+    private Promise<ApiDefinition> getApiDefinition(String apiName) {
+        return apiEndpoint.getApi(apiName)
     }
 }
