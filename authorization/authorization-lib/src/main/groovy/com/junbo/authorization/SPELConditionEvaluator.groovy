@@ -3,9 +3,9 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.authorization.service.impl
+package com.junbo.authorization
 
-import com.junbo.authorization.service.ConditionEvaluator
+import com.junbo.authorization.ConditionEvaluator
 import groovy.transform.CompileStatic
 import org.springframework.expression.Expression
 import org.springframework.expression.ExpressionParser

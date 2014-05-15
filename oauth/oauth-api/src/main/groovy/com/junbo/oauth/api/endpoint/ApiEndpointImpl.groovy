@@ -6,7 +6,7 @@
 package com.junbo.oauth.api.endpoint
 
 import com.junbo.authorization.AuthorizeContext
-import com.junbo.authorization.token.TokenInfoParser
+import com.junbo.authorization.TokenInfoParser
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.ApiService
@@ -32,6 +32,11 @@ class ApiEndpointImpl implements ApiEndpoint {
     @Required
     void setApiService(ApiService apiService) {
         this.apiService = apiService
+    }
+
+    @Required
+    void setTokenInfoParser(TokenInfoParser tokenInfoParser) {
+        this.tokenInfoParser = tokenInfoParser
     }
 
     @Override

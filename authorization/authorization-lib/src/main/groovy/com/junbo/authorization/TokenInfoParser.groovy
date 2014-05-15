@@ -1,4 +1,4 @@
-package com.junbo.authorization.token
+package com.junbo.authorization
 
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.spec.model.TokenInfo

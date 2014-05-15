@@ -8,7 +8,7 @@ package com.junbo.catalog.rest.resource;
 
 import com.junbo.authorization.AuthorizeCallback;
 import com.junbo.authorization.AuthorizeContext;
-import com.junbo.authorization.service.AuthorizeService;
+import com.junbo.authorization.AuthorizeService;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.rest.auth.ItemAuthorizeCallbackFactory;

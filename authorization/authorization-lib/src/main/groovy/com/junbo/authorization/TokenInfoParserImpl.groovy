@@ -1,6 +1,5 @@
-package com.junbo.authorization.token
+package com.junbo.authorization
 
-import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.id.UserId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.spec.endpoint.TokenInfoEndpoint
