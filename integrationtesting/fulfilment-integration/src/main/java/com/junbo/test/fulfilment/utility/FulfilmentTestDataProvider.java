@@ -20,6 +20,7 @@ import com.junbo.test.fulfilment.apihelper.impl.FulfilmentServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by yunlongzhao on 5/14/14.
@@ -28,7 +29,11 @@ public class FulfilmentTestDataProvider extends BuyerTestDataProvider {
     private FulfilmentService fulfilmentClient = FulfilmentServiceImpl.getInstance();
 
     public String postFulfilment(String uid, String orderId) throws Exception {
+        return postFulfilment(uid, orderId, false);
 
+    }
+
+    public String postFulfilment(String uid, String orderId, boolean hasPhysicalGood) throws Exception {
         Order order = Master.getInstance().getOrder(orderId);
 
         FulfilmentRequest fulfilmentRequest = new FulfilmentRequest();
@@ -46,8 +51,16 @@ public class FulfilmentTestDataProvider extends BuyerTestDataProvider {
         }
         fulfilmentRequest.setItems(fulfilmentItems);
         fulfilmentRequest.setUserId(order.getUser().getValue());
+        fulfilmentRequest.setTrackingGuid(UUID.randomUUID().toString());
+
+        if (hasPhysicalGood) {
+            fulfilmentRequest.setShippingMethodId(01L);
+            fulfilmentRequest.setShippingAddressId(Master.getInstance().getUser(uid).getAddresses()
+                    .get(0).getValue().getValue());
+        }
         return fulfilmentClient.postFulfilment(fulfilmentRequest);
     }
+
 
     private String getOrderItemId(String uid, Long orderId, Long offerId) throws Exception {
         String sqlStr = String.format(
@@ -56,7 +69,7 @@ public class FulfilmentTestDataProvider extends BuyerTestDataProvider {
         return dbHelper.executeScalar(sqlStr, DBHelper.DBName.ORDER);
     }
 
-    public String getFulfilmentByOrderId(String orderId) throws Exception{
+    public String getFulfilmentByOrderId(String orderId) throws Exception {
         return fulfilmentClient.getFulfilmentByOrderId(orderId);
     }
 
