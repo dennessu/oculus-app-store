@@ -5,7 +5,7 @@
  */
 package com.junbo.test.common.apihelper.email.impl;
 
-import com.junbo.test.common.apihelper.email.EmailService;
+import com.junbo.test.common.apihelper.email.TempName;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
@@ -18,15 +18,15 @@ import com.junbo.email.spec.model.Email;
   * Time: 5/14/2014
   * The implementation for email related APIs
  */
-public class EmailServiceImpl extends HttpClientBase implements EmailService {
+public class EmailServiceImpl extends HttpClientBase implements TempName {
 
     private static String emailUrl = RestUrl.getRestUrl(RestUrl.ComponentName.COMMERCE) + "emails";
 
     private LogHelper logger = new LogHelper(EmailServiceImpl.class);
 
-    private static EmailService instance;
+    private static TempName instance;
 
-    public static synchronized EmailService getInstance() {
+    public static synchronized TempName getInstance() {
         if (instance == null) {
             instance = new EmailServiceImpl();
         }

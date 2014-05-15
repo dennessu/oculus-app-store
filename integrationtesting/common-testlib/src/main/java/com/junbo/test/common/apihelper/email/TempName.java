@@ -12,7 +12,7 @@ import com.junbo.email.spec.model.Email;
   * Time: 5/14/2014
   * The interface for email related APIs
  */
-public interface EmailService {
+public interface TempName {
     Email postEmail(Email email) throws Exception;
     Email postEmail(Email email, int expectedResponseCode) throws Exception;
 }
