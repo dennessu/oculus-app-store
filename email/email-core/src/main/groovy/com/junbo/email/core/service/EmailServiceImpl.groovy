@@ -78,8 +78,9 @@ class EmailServiceImpl implements EmailService {
         if (email.recipients == null) {
             return identityFacade.getUserEmail(email.userId.value).then { String strEmail ->
                 if (email == null) {
-                    throw AppErrors.INSTANCE.missingField('recipients').exception()
+                    throw AppErrors.INSTANCE.noValidatedUserEmail().exception()
                 }
+
                 def recipients = [] as List<String>
                 recipients << strEmail
                 email.setRecipients(recipients)
