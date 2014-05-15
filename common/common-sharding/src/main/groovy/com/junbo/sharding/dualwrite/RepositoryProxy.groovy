@@ -75,7 +75,7 @@ class RepositoryProxy implements InvocationHandler {
         if ( 'toString' == methodName && argsCount == 0 ) {
             return this.toString()
         } else if ( 'equals' == methodName && argsCount == 1 ) {
-            return proxy == args[0]
+            return proxy.is(args[0])
         } else if ( 'hashCode' == methodName && argsCount == 0 ) {
             return this.hashCode()
         }

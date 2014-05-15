@@ -43,7 +43,7 @@
             <wf:on-render>
                 <wf:action ref="loginView"/>
             </wf:on-render>
-            <wf:transition on="next" to="LOGIN_SUCCESS">
+            <wf:transition on="next" to="PRE_LOGIN_SUCCESS">
                 <wf:action ref="validateCaptcha"/>
                 <wf:action ref="authenticateUserAuthorize"/>
             </wf:transition>
@@ -56,6 +56,12 @@
             </wf:transition>
             <wf:transition on="cancel" to="CANCEL_VIEW"/>
         </wf:view-state>
+
+        <wf:action-state id="PRE_LOGIN_SUCCESS">
+            <wf:action ref="checkEmailVerified"/>
+            <wf:transition on="emailVerifyRequired" to="EMAIL_VERIFY_REQUIRED" />
+            <wf:transition on="*" to="LOGIN_SUCCESS" />
+        </wf:action-state>
 
         <wf:view-state id="LOGIN_SUCCESS">
             <wf:on-render>
@@ -139,11 +145,17 @@
             <wf:transition on="*" to="END"/>
         </wf:view-state>
 
-        <wf:end-state id="EMAIL_VERIFY_REQUIRED">
-            <wf:on-entry>
+        <wf:view-state id="EMAIL_VERIFY_REQUIRED">
+            <wf:on-render>
                 <wf:action ref="emailVerifyRequiredView"/>
-            </wf:on-entry>
-        </wf:end-state>
+            </wf:on-render>
+            <wf:transition on="verify" to="LOGIN_SUCCESS">
+                <wf:action ref="verifyEmail"/>
+            </wf:transition>
+            <wf:transition on="resend" to="EMAIL_VERIFY_REQUIRED">
+                <wf:action ref="sendAccountVerifyEmail"/>
+            </wf:transition>
+        </wf:view-state>
 
         <wf:end-state id="END">
             <wf:on-entry>
@@ -330,5 +342,23 @@
         <property name="authenticatorResource" ref="authenticatorResource"/>
     </bean>
 
+
+    <bean id="checkEmailVerified" class="com.junbo.oauth.core.action.CheckEmailVerified">
+        <property name="userResource" ref="userResource"/>
+        <property name="userPersonalInfoResource" ref="userPersonalInfoResource"/>
+    </bean>
+
     <bean id="emailVerifyRequiredView" class="com.junbo.oauth.core.view.EmailVerifyRequiredView"/>
+
+    <bean id="verifyEmail" class="com.junbo.oauth.core.action.VerifyEmail">
+        <property name="emailVerifyCodeRepository" ref="emailVerifyCodeRepository"/>
+        <property name="userPersonalInfoResource" ref="userPersonalInfoResource"/>
+        <property name="userResource" ref="userResource"/>
+    </bean>
+
+    <bean id="emailVerifyView" class="com.junbo.oauth.core.view.EmailVerifyView"/>
+
+    <bean id="redirectToEmailVerifyResult" class="com.junbo.oauth.core.view.RedirectToPage">
+        <property name="pageUrl" value="${oauth.core.portal.verifyUri}"/>
+    </bean>
 </beans>

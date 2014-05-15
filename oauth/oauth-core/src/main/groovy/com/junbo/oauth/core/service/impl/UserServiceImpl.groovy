@@ -24,9 +24,11 @@ import com.junbo.identity.spec.v1.resource.UserCredentialVerifyAttemptResource
 import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
 import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
+import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.TokenService
 import com.junbo.oauth.core.service.UserService
+import com.junbo.oauth.db.generator.TokenGenerator
 import com.junbo.oauth.db.repo.EmailVerifyCodeRepository
 import com.junbo.oauth.db.repo.ResetPasswordCodeRepository
 import com.junbo.oauth.spec.model.AccessToken
@@ -35,6 +37,7 @@ import com.junbo.oauth.spec.model.ResetPasswordCode
 import com.junbo.oauth.spec.model.UserInfo
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
+import org.glassfish.jersey.server.ContainerRequest
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
@@ -50,11 +53,14 @@ class UserServiceImpl implements UserService {
 
     private static final String EMAIL_SOURCE = 'SilkCloud'
     private static final String EMAIL_ACTION = 'EmailVerification'
-    private static final String EMAIL_VERIFY_PATH = 'oauth2/verify-email'
+    private static final String EMAIL_VERIFY_PATH = 'oauth2/authorize'
+    private static final String EMAIL_VERIFY_EVENT = 'verify'
     private static final String EMAIL_RESET_PASSWORD_PATH = 'oauth2/reset-password'
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl)
 
     private TokenService tokenService
+
+    private TokenGenerator tokenGenerator
 
     private UserPersonalInfoResource userPersonalInfoResource
 
@@ -66,13 +72,16 @@ class UserServiceImpl implements UserService {
 
     private EmailTemplateResource emailTemplateResource
 
-    private EmailVerifyCodeRepository emailVerifyCodeRepository
-
     private ResetPasswordCodeRepository resetPasswordCodeRepository
 
     @Required
     void setTokenService(TokenService tokenService) {
         this.tokenService = tokenService
+    }
+
+    @Required
+    void setTokenGenerator(TokenGenerator tokenGenerator) {
+        this.tokenGenerator = tokenGenerator
     }
 
     @Required
@@ -99,11 +108,6 @@ class UserServiceImpl implements UserService {
     @Required
     void setEmailTemplateResource(EmailTemplateResource emailTemplateResource) {
         this.emailTemplateResource = emailTemplateResource
-    }
-
-    @Required
-    void setEmailVerifyCodeRepository(EmailVerifyCodeRepository emailVerifyCodeRepository) {
-        this.emailVerifyCodeRepository = emailVerifyCodeRepository
     }
 
     @Required
@@ -155,29 +159,12 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    Promise<Void> verifyEmailByAuthHeader(String authorization, String locale, URI baseUri) {
-        if (!StringUtils.hasText(authorization)) {
-            throw AppExceptions.INSTANCE.missingAuthorization().exception()
-        }
-
-        AccessToken accessToken = tokenService.extractAccessToken(authorization)
-
-        if (accessToken == null) {
-            throw AppExceptions.INSTANCE.invalidAccessToken().exception()
-        }
-
-        if (accessToken.isExpired()) {
-            throw AppExceptions.INSTANCE.expiredAccessToken().exception()
-        }
-
-        return this.verifyEmailByUserId(new UserId(accessToken.userId), locale, baseUri)
-    }
-
-    @Override
-    Promise<Void> verifyEmailByUserId(UserId userId, String locale, URI baseUri) {
+    Promise<Void> sendVerifyEmail(UserId userId, ActionContextWrapper contextWrapper) {
         if (userId == null || userId.value == null) {
             throw AppExceptions.INSTANCE.missingUserId().exception()
         }
+
+        def request = (ContainerRequest) contextWrapper.request
 
         return userResource.get(userId, new UserGetOptions()).then { User user ->
             if (user == null) {
@@ -190,20 +177,23 @@ class UserServiceImpl implements UserService {
                 }
 
                 EmailVerifyCode code = new EmailVerifyCode(
+                        code: tokenGenerator.generateEmailVerifyCode(),
                         userId: (user.id as UserId).value,
                         email: email)
 
-                emailVerifyCodeRepository.save(code)
+                contextWrapper.emailVerifyCode = code
 
-                UriBuilder uriBuilder = UriBuilder.fromUri(baseUri)
+                UriBuilder uriBuilder = UriBuilder.fromUri(request.baseUri)
                 uriBuilder.path(EMAIL_VERIFY_PATH)
+                uriBuilder.queryParam(OAuthParameters.CONVERSATION_ID, contextWrapper.conversationId)
                 uriBuilder.queryParam(OAuthParameters.EMAIL_VERIFY_CODE, code.code)
-                uriBuilder.queryParam(OAuthParameters.LOCALE, locale)
+                uriBuilder.queryParam(OAuthParameters.LOCALE, contextWrapper.viewLocale)
+                uriBuilder.queryParam(OAuthParameters.EVENT, EMAIL_VERIFY_EVENT)
 
                 QueryParam queryParam = new QueryParam(
                         source: EMAIL_SOURCE,
                         action: EMAIL_ACTION,
-                        locale: locale
+                        locale: contextWrapper.viewLocale
                 )
 
                 return this.sendEmail(queryParam, user, email, uriBuilder)

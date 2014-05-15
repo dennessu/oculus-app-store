@@ -243,11 +243,11 @@ class ActionContextWrapper {
     }
 
     User getUser() {
-        return (User) actionContext.requestScope[USER]
+        return (User) actionContext.flowScope[USER]
     }
 
     void setUser(User user) {
-        actionContext.requestScope[USER] = user
+        actionContext.flowScope[USER] = user
     }
 
     UserCredential getUserCredential() {
@@ -322,11 +322,11 @@ class ActionContextWrapper {
         actionContext.flowScope[VIEW_LOCALE] = locale
     }
 
-    String getEmailVerifyCode() {
-        return (String) actionContext.flowScope[EMAIL_VERIFY_CODE]
+    EmailVerifyCode getEmailVerifyCode() {
+        return (EmailVerifyCode) actionContext.flowScope[EMAIL_VERIFY_CODE]
     }
 
-    void setEmailVerifyCode(String code) {
+    void setEmailVerifyCode(EmailVerifyCode code) {
         actionContext.flowScope[EMAIL_VERIFY_CODE] = code
     }
 

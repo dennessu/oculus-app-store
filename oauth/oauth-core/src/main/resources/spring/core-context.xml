@@ -16,6 +16,7 @@
 
     <bean id="userService" class="com.junbo.oauth.core.service.impl.UserServiceImpl">
         <property name="tokenService" ref="tokenService"/>
+        <property name="tokenGenerator" ref="tokenGenerator"/>
         <property name="userCredentialVerifyAttemptResource" ref="userCredentialVerifyAttemptResource"/>
         <property name="userResource" ref="userResource"/>
         <property name="userPersonalInfoResource" ref="userPersonalInfoResource" />

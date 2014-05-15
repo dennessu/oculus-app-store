@@ -48,7 +48,7 @@ class ApiEndpointImpl implements ApiEndpoint {
                 return Promise.pure([])
             }
 
-            return Promise.pure(apiService.getAllApis());
+            return Promise.pure(apiService.allApis);
         }
     }
 
