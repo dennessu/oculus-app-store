@@ -7,6 +7,8 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.annotation.OrderEventAwareAfter
 import com.junbo.order.core.annotation.OrderEventAwareBefore
+import com.junbo.order.core.impl.common.BillingEventHistoryBuilder
+import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -23,6 +25,9 @@ import javax.annotation.Resource
 class ConfirmBalanceAction extends BaseOrderEventAwareAction {
     @Resource(name = 'orderFacadeContainer')
     FacadeContainer facadeContainer
+
+    @Resource(name = 'orderRepository')
+    OrderRepository orderRepository
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfirmBalanceAction)
 
@@ -51,6 +56,16 @@ class ConfirmBalanceAction extends BaseOrderEventAwareAction {
                     throw facadeContainer.billingFacade.convertError(throwable).exception()
                 }.then { Balance confirmedBalance ->
                     if (confirmedBalance.status == BalanceStatus.COMPLETED.name()) {
+                        def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(confirmedBalance)
+                        if (billingHistory.billingEvent != null) {
+                            def savedHistory = orderRepository.createBillingHistory(order.id.value, billingHistory)
+                            if (order.billingHistories == null) {
+                                order.billingHistories = [savedHistory]
+                            }
+                            else {
+                                order.billingHistories.add(savedHistory)
+                            }
+                        }
                         balanceConfirmed = true
                     }
                     return Promise.pure(null)
