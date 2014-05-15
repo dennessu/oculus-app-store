@@ -28,7 +28,7 @@ public class CartEntity {
 
     private String cartName;
 
-    private Long resourceAge;
+    private Integer resourceAge;
 
     private String properties;
 
@@ -84,11 +84,11 @@ public class CartEntity {
 
     @Column(name = "RESOURCE_AGE")
     @Version
-    public Long getResourceAge() {
+    public Integer getResourceAge() {
         return resourceAge;
     }
 
-    public void setResourceAge(Long resourceAge) {
+    public void setResourceAge(Integer resourceAge) {
         this.resourceAge = resourceAge;
     }
 

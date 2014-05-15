@@ -6,6 +6,7 @@
 package com.junbo.common.filter;
 
 import com.junbo.common.filter.annotations.CacheMaxAge;
+import com.junbo.common.util.Context;
 import com.junbo.configuration.ConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -45,7 +46,7 @@ public class ResponseFilter implements ContainerResponseFilter {
         headers.add("Access-Control-Expose-Headers", configService.getConfigValue(ACCESS_CONTROL_EXPOSE_HEADERS_NAME));
         headers.add("Access-Control-Allow-Methods", configService.getConfigValue(ACCESS_CONTROL_ALLOW_METHODS_NAME));
         
-        if (responseContext.getStatus()/100 == 2) {
+        if (responseContext.getStatus() / 100 == 2) {
             for (Annotation annotation : responseContext.getEntityAnnotations()) {
                 if (annotation.annotationType() == CacheMaxAge.class) {
                     CacheMaxAge cacheMaxAge = (CacheMaxAge)annotation;
@@ -53,5 +54,7 @@ public class ResponseFilter implements ContainerResponseFilter {
                 }
             }
         }
+
+        Context.clear();
     }
 }

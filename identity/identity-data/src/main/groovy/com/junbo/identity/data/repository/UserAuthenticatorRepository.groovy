@@ -9,7 +9,8 @@ import com.junbo.common.id.UserAuthenticatorId
 import com.junbo.identity.spec.v1.model.UserAuthenticator
 import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.core.annotations.ReadMethod
+import com.junbo.sharding.dualwrite.annotations.ReadMethod
+import com.junbo.sharding.repo.BaseRepository
 import groovy.transform.CompileStatic
 
 /**
@@ -17,7 +18,7 @@ import groovy.transform.CompileStatic
  * federation data(such as google account, facebook account) from the database
  */
 @CompileStatic
-interface UserAuthenticatorRepository extends IdentityBaseRepository<UserAuthenticator, UserAuthenticatorId> {
+interface UserAuthenticatorRepository extends BaseRepository<UserAuthenticator, UserAuthenticatorId> {
     @ReadMethod
     Promise<List<UserAuthenticator>> search(AuthenticatorListOptions getOption)
 }

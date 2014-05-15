@@ -27,7 +27,7 @@ class TosDAOImpl extends BaseDAO implements TosDAO {
     @Override
     TosEntity create(TosEntity tos) {
         if (tos.id == null) {
-            tos.id = idGenerator.nextIdByShardId(shardAlgorithm.shardId())
+            tos.id = idGenerator.nextId()
         }
         def session = currentSession(tos.id)
         session.save(tos)

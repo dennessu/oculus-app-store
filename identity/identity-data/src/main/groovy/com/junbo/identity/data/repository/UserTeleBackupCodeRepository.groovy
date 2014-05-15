@@ -4,7 +4,8 @@ import com.junbo.common.id.UserTeleBackupCodeId
 import com.junbo.identity.spec.v1.model.UserTeleBackupCode
 import com.junbo.identity.spec.v1.option.list.UserTeleBackupCodeListOptions
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.core.annotations.ReadMethod
+import com.junbo.sharding.dualwrite.annotations.ReadMethod
+import com.junbo.sharding.repo.BaseRepository
 import groovy.transform.CompileStatic
 
 /**
@@ -12,7 +13,7 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface UserTeleBackupCodeRepository
-        extends IdentityBaseRepository<UserTeleBackupCode, UserTeleBackupCodeId>  {
+        extends BaseRepository<UserTeleBackupCode, UserTeleBackupCodeId> {
     @ReadMethod
     Promise<List<UserTeleBackupCode>> search(UserTeleBackupCodeListOptions listOptions)
 }

@@ -4,14 +4,15 @@ import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.core.annotations.ReadMethod
+import com.junbo.sharding.dualwrite.annotations.ReadMethod
+import com.junbo.sharding.repo.BaseRepository
 import groovy.transform.CompileStatic
 
 /**
  * Created by liangfu on 4/25/14.
  */
 @CompileStatic
-interface UserPersonalInfoRepository extends IdentityBaseRepository<UserPersonalInfo, UserPersonalInfoId> {
+interface UserPersonalInfoRepository extends BaseRepository<UserPersonalInfo, UserPersonalInfoId> {
     @ReadMethod
     Promise<List<UserPersonalInfo>> searchByUserId(UserId userId)
 

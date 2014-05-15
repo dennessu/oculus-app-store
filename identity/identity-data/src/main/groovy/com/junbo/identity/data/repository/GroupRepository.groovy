@@ -8,12 +8,13 @@ package com.junbo.identity.data.repository
 import com.junbo.common.id.GroupId
 import com.junbo.identity.spec.v1.model.Group
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.core.annotations.ReadMethod
+import com.junbo.sharding.dualwrite.annotations.ReadMethod
+import com.junbo.sharding.repo.BaseRepository
 
 /**
  * Created by liangfu on 3/14/14.
  */
-interface GroupRepository extends IdentityBaseRepository<Group, GroupId> {
+interface GroupRepository extends BaseRepository<Group, GroupId> {
     @ReadMethod
     Promise<Group> searchByName(String name)
 }

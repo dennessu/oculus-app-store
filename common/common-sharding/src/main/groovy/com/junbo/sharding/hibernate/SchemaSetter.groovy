@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Created by Shenhua on 4/1/2014.
+ * Set the PostgreSQL schema when connection is fetched from pool.
  */
 @CompileStatic
 @SuppressWarnings('JdbcConnectionReference')

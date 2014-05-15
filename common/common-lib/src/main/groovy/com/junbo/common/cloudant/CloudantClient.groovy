@@ -3,9 +3,7 @@ import com.junbo.common.cloudant.exception.CloudantConnectException
 import com.junbo.common.cloudant.exception.CloudantException
 import com.junbo.common.cloudant.exception.CloudantUpdateConflictException
 import com.junbo.common.cloudant.model.*
-import com.junbo.common.id.UserId
 import com.junbo.common.util.Identifiable
-import com.junbo.common.util.ResourceAge
 import com.junbo.common.util.Utils
 import com.ning.http.client.AsyncHttpClient
 import com.ning.http.client.Response
@@ -73,10 +71,10 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
         entity.cloudantId = ((Identifiable)entity).id.toString()
         entity.cloudantRev = null
         if (entity.resourceAge == null) {
-            entity.resourceAge = ResourceAge.initial()
+            entity.resourceAge = 0
         }
         // Todo:    Need to read from the Universe to cover time and createdBy
-        entity.createdBy = new UserId(123L)
+        entity.createdBy = 123L
         entity.createdTime = new Date()
 
         def response = executeRequest(HttpMethod.POST, '', [:], entity)
@@ -121,11 +119,11 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
         entity.cloudantRev = cloudantDoc.cloudantRev
 
         // Todo:    Need to read from the Universe to cover time and createdBy
-        entity.updatedBy = new UserId(123L)
+        entity.updatedBy = 123L
         entity.updatedTime = new Date()
 
         // assume resourceAge is increased by external caller
-        if (this == null && !ResourceAge.isNewer(entity.resourceAge, cloudantDoc.resourceAge)) {
+        if (this == null && entity.resourceAge <= cloudantDoc.resourceAge) {
             // The target resource age is higher or equal than the resource age of the entity we are about to put.
             // This indicates a conflicting change or change already committed.
             // Raise conflict or silently ignore

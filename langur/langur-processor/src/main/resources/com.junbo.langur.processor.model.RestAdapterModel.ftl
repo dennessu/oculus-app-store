@@ -3,6 +3,8 @@
 package ${packageName};
 
 import com.junbo.langur.core.client.ClientProxyFactory;
+import com.junbo.langur.core.promise.Promise;
+import com.junbo.langur.core.filter.AfterInvocationFilter;
 import com.junbo.langur.core.routing.Router;
 
 @org.springframework.stereotype.Component
@@ -23,6 +25,10 @@ public class ${className} {
     @org.springframework.beans.factory.annotation.Autowired(required = false)
     @org.springframework.beans.factory.annotation.Qualifier("default${adapteeName}Router")
     private Router __router;
+
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    @org.springframework.beans.factory.annotation.Qualifier("defaultAfterInvocationFilter")
+    private AfterInvocationFilter __afterInvocationFilter;
 
     public ${adapteeType} getAdaptee() {
         return __adaptee;
@@ -46,6 +52,14 @@ public class ${className} {
 
     public void setRouter(Router router) {
         __router = router;
+    }
+
+    public AfterInvocationFilter getAfterInvocationFilter() {
+        return __afterInvocationFilter;
+    }
+
+    public void setAfterInvocationFilter(AfterInvocationFilter afterInvocationFilter) {
+        __afterInvocationFilter = afterInvocationFilter;
     }
 
     [#list restMethods as restMethod]

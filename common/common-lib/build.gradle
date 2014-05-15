@@ -26,10 +26,12 @@ dependencies {
     compile (libraries.common_collection)
 
     compile (libraries.jersey_container_grizzly2_http)
-
     compile (libraries.spy_memcached)
-
     compile (libraries.swagger_annotations)
+
+    compile (libraries.hibernate_core)
+    compile (libraries.hibernate_entitymanager)
+    compile (libraries.hibernate_annotation)
 
     testRuntime junboProject(':configuration-data')
 }

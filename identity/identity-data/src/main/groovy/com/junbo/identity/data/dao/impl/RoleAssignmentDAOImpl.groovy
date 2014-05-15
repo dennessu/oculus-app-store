@@ -18,7 +18,7 @@ class RoleAssignmentDAOImpl extends BaseDAO implements RoleAssignmentDAO {
     @Override
     RoleAssignmentEntity create(RoleAssignmentEntity entity) {
         if (entity.id == null) {
-            entity.id = idGenerator.nextIdByShardId(shardAlgorithm.shardId())
+            entity.id = idGenerator.nextId()
         }
         Session session = currentSession(entity.id)
         session.save(entity)
