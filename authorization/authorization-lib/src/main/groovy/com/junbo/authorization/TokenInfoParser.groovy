@@ -9,7 +9,7 @@ import com.junbo.oauth.spec.model.TokenInfo
 interface TokenInfoParser {
     Promise<TokenInfo> parse()
 
-    public <T> Promise<T> parseAndThen(Closure<Promise<T>> closure)
+    public <T> Promise<T> parseAndThen(Closure<Promise> closure)
 
-    public <T> Promise<T> parseAndThen(Promise.Func0<Promise<T>> closure)
+    public <T> Promise<T> parseAndThen(Promise.Func0<Promise<T>> func)
 }

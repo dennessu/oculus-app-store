@@ -264,7 +264,7 @@ class OrderServiceImpl implements OrderService {
     }
 
     private Promise<Object> prepareOrder(Order order) {
-        return Promise.each(order.orderItems.iterator()) { OrderItem item -> // get item type from catalog
+        return Promise.each(order.orderItems) { OrderItem item -> // get item type from catalog
             return facadeContainer.catalogFacade.getOfferRevision(item.offer.value).syncThen { OrderOfferRevision offer ->
                 if (offer == null) {
                     throw AppErrors.INSTANCE.offerNotFound(item.offer.value?.toString()).exception()

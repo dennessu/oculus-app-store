@@ -15,9 +15,12 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Created by kg on 2/14/14.
+ *
  * @param <T>
  */
 public final class Promise<T> {
+
+    public static final Object BREAK = new Object();
 
     /**
      * Callback0.
@@ -28,6 +31,7 @@ public final class Promise<T> {
 
     /**
      * Callback.
+     *
      * @param <A>
      */
     public static interface Callback<A> {
@@ -36,6 +40,7 @@ public final class Promise<T> {
 
     /**
      * Func0.
+     *
      * @param <R>
      */
     public static interface Func0<R> {
@@ -44,6 +49,7 @@ public final class Promise<T> {
 
     /**
      * Func.
+     *
      * @param <A>
      * @param <R>
      */
@@ -85,8 +91,7 @@ public final class Promise<T> {
             public void run() {
                 try {
                     future.set(wrapped.apply());
-                }
-                catch (Throwable ex) {
+                } catch (Throwable ex) {
                     future.setException(ex);
                 }
             }
@@ -125,7 +130,7 @@ public final class Promise<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> Promise<Void> each(final Iterator<T> iterator, final Closure<Promise> closure) {
+    private static <T> Promise each(final Iterator<T> iterator, final Closure<Promise> closure) {
         return each(iterator, new Func<T, Promise>() {
             @Override
             public Promise apply(T t) {
@@ -135,32 +140,36 @@ public final class Promise<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> Promise<Void> each(final Iterator<T> iterator, final Func<? super T, Promise> func) {
-        Promise lastPromise = Promise.pure(null);
-        while (iterator != null && iterator.hasNext()) {
-            final T e = iterator.next();
-            lastPromise = lastPromise.then(new Func<Object, Promise>() {
-                @Override
-                public Promise apply(Object obj) {
-                    return func.apply(e);
-                }
-            });
-        }
-        return lastPromise.syncThen(new Func<Object, Void>() {
+    private static <T> Promise each(final Iterator<T> iterator, final Func<? super T, Promise> func) {
+        final Func<Object, Promise> process = new Func<Object, Promise>() {
+            Func<Object, Promise> self = this;
+
             @Override
-            public Void apply(Object o) {
-                return null;
+            public Promise apply(Object result) {
+                if (result == BREAK) {
+                    return Promise.pure(null);
+                }
+
+                if (iterator == null || !iterator.hasNext()) {
+                    return Promise.pure(null);
+                }
+
+                T item = iterator.next();
+
+                return func.apply(item).then(self);
             }
-        });
+        };
+
+        return process.apply(null);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> Promise<Void> each(final Iterable<T> iterable, final Closure<Promise> closure) {
+    public static <T> Promise each(final Iterable<T> iterable, final Closure<Promise> closure) {
         return each(iterable == null ? null : iterable.iterator(), closure);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> Promise<Void> each(final Iterable<T> iterable, final Func<? super T, Promise> func) {
+    public static <T> Promise each(final Iterable<T> iterable, final Func<? super T, Promise> func) {
         return each(iterable == null ? null : iterable.iterator(), func);
     }
 

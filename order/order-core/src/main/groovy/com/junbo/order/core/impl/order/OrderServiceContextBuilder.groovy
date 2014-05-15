@@ -57,7 +57,7 @@ class OrderServiceContextBuilder {
         }
 
         List<PaymentInstrument> pis = []
-        return Promise.each(payments.iterator()) { PaymentInfo paymentInfo ->
+        return Promise.each(payments) { PaymentInfo paymentInfo ->
             return facadeContainer.paymentFacade.
                     getPaymentInstrument(paymentInfo.paymentInstrument.value).syncRecover { Throwable throwable ->
                 LOGGER.error('name=Order_GetPaymentInstrument_Error', throwable)
@@ -143,7 +143,7 @@ class OrderServiceContextBuilder {
         }
 
         List<OrderOfferRevision> offers = []
-        return Promise.each(context.order.orderItems.iterator()) { OrderItem oi ->
+        return Promise.each(context.order.orderItems) { OrderItem oi ->
             return facadeContainer.catalogFacade.getOfferRevision(oi.offer.value).syncThen { OrderOfferRevision of ->
                 offers << of
             }

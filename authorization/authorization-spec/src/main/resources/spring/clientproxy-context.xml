@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <bean id="roleResourceClientProxy" class="com.junbo.authorization.spec.resource.proxy.RoleResourceClientProxy">
+        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
+        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+        <constructor-arg name="transcoder" ref="commonTranscoder"/>
+        <constructor-arg name="target" value="${clientproxy.authorization.url}"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
+    </bean>
+
+    <bean id="roleAssignmentResourceClientProxy" class="com.junbo.authorization.spec.resource.proxy.RoleAssignmentResourceClientProxy">
+        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
+        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
+        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+        <constructor-arg name="transcoder" ref="commonTranscoder"/>
+        <constructor-arg name="target" value="${clientproxy.authorization.url}"/>
+        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
+    </bean>
+
+</beans>

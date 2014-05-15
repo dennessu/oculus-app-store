@@ -94,16 +94,16 @@ class AuthorizeServiceImpl implements AuthorizeService {
     }
 
     @Override
-    def <T> Promise<T> authorizeAndThen(AuthorizeCallback callback, Closure<Promise<T>> closure) {
+    public <T> Promise<T> authorizeAndThen(AuthorizeCallback<T> callback, Closure<Promise> closure) {
         return authorize(callback).then { Set<String> rights ->
             return RightsScope.with(rights, closure)
         }
     }
 
     @Override
-    def <T> Promise<T> authorizeAndThen(AuthorizeCallback callback, Promise.Func0<Promise<T>> closure) {
+    public <T> Promise<T> authorizeAndThen(AuthorizeCallback<T> callback, Promise.Func0<Promise<T>> func) {
         return authorize(callback).then { Set<String> rights ->
-            return RightsScope.with(rights, closure)
+            return RightsScope.with(rights, func)
         }
     }
 
