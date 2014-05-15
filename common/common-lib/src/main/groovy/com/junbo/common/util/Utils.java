@@ -5,7 +5,9 @@
  */
 package com.junbo.common.util;
 
+import com.junbo.common.id.Id;
 import com.junbo.configuration.topo.DataCenters;
+import groovy.lang.Closure;
 import org.springframework.util.Assert;
 
 import java.lang.reflect.Method;
@@ -16,6 +18,12 @@ import java.util.Locale;
  */
 public class Utils {
     private Utils() { }
+
+    public static <V> V with(AutoCloseable closable, Closure<V> closure) throws Exception {
+        try (AutoCloseable scope = closable) {
+            return closure.call();
+        }
+    }
 
     /**
      * The helper function to filter configuration values for current data center.
@@ -74,6 +82,17 @@ public class Utils {
             }
         }
         return result.toString();
+    }
+
+    public static Long keyToLong(Object key) {
+        if (key == null) return null;
+
+        if (key instanceof Id) {
+            return ((Id)key).getValue();
+        } else if (key instanceof Long) {
+            return (Long)key;
+        }
+        throw new RuntimeException("Unknown key type: " + key.getClass());
     }
 
     public static Method tryObtainGetterMethod(Class<?> clazz, final String propertyName) {

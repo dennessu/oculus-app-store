@@ -43,7 +43,7 @@ abstract class AbstractResourceFilter<T> implements ResourceFilter<T> {
     }
 
     private Set<String> calculateReadableProperties() {
-        Set<String> result = new HashSet<>()
+        Set<String> result = []
 
         for (String right : readableProperties.keySet()) {
             if (AuthorizeContext.hasRights(right)) {
@@ -56,7 +56,7 @@ abstract class AbstractResourceFilter<T> implements ResourceFilter<T> {
     }
 
     private Set<String> calculateWritablePropertiesForCreate() {
-        Set<String> result = new HashSet<>()
+        Set<String> result = []
 
         for (String right : writablePropertiesForCreate.keySet()) {
             if (AuthorizeContext.hasRights(right)) {
@@ -69,7 +69,7 @@ abstract class AbstractResourceFilter<T> implements ResourceFilter<T> {
     }
 
     private Set<String> calculateWritablePropertiesForUpdate() {
-        Set<String> result = new HashSet<>()
+        Set<String> result = []
 
         for (String right : writablePropertiesForUpdate.keySet()) {
             if (AuthorizeContext.hasRights(right)) {

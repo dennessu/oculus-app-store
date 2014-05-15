@@ -7,6 +7,10 @@
 package com.junbo.billing.db.entity;
 
 import com.junbo.billing.db.BaseEntity;
+import com.junbo.billing.db.ext.JSONStringUserType;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,6 +23,7 @@ import java.math.BigDecimal;
  */
 @Entity
 @Table(name = "balance_item")
+@TypeDefs({@TypeDef(name = "json-string", typeClass = JSONStringUserType.class)})
 public class BalanceItemEntity extends BaseEntity {
     @Id
     @Column(name = "balance_item_id")
@@ -47,6 +52,10 @@ public class BalanceItemEntity extends BaseEntity {
 
     @Column(name = "original_balance_item_id")
     private Long originalBalanceItemId;
+
+    @Column(name = "property_set")
+    @Type(type = "json-string")
+    private String propertySet;
 
     public Long getBalanceItemId() {
         return balanceItemId;
@@ -107,8 +116,14 @@ public class BalanceItemEntity extends BaseEntity {
     public Long getOrderId() {
         return orderId;
     }
-
     public void setOrderId(Long orderId) {
         this.orderId = orderId;
+    }
+
+    public String getPropertySet() {
+        return propertySet;
+    }
+    public void setPropertySet(String propertySet) {
+        this.propertySet = propertySet;
     }
 }

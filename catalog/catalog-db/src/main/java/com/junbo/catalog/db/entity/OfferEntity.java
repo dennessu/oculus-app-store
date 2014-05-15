@@ -6,8 +6,8 @@
 
 package com.junbo.catalog.db.entity;
 
-import com.junbo.catalog.db.dao.LongArrayUserType;
-import com.junbo.catalog.db.dao.StringJsonUserType;
+import com.junbo.common.hibernate.LongArrayUserType;
+import com.junbo.common.hibernate.StringJsonUserType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;

@@ -7,7 +7,8 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
-import com.junbo.identity.core.service.util.CipherHelper
+import com.junbo.identity.core.service.credential.CredentialHash
+import com.junbo.identity.core.service.credential.CredentialHashFactory
 import com.junbo.identity.core.service.validator.UserSecurityQuestionAttemptValidator
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.UserRepository
@@ -34,11 +35,14 @@ import java.util.regex.Pattern
  * Created by liangfu on 3/25/14.
  */
 @CompileStatic
+@SuppressWarnings('UnnecessaryGetter')
 class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAttemptValidator {
 
     private UserRepository userRepository
     private UserSecurityQuestionAttemptRepository attemptRepository
     private UserSecurityQuestionRepository userSecurityQuestionRepository
+
+    private CredentialHashFactory credentialHashFactory
 
     private Integer valueMinLength
     private Integer valueMaxLength
@@ -127,19 +131,14 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
                                 throw AppErrors.INSTANCE.userSecurityQuestionNotFound().exception()
                             }
 
-                            String[] hashInfo = userSecurityQuestion.answerHash.split(CipherHelper.COLON)
-                            if (hashInfo.length != 4) {
-                                throw AppErrors.INSTANCE.userSecurityQuestionIncorrect().exception()
+                            List<CredentialHash> credentialHashList = credentialHashFactory.getAllCredentialHash()
+                            CredentialHash matched = credentialHashList.find { CredentialHash hash ->
+                                return hash.matches(attempt.value, userSecurityQuestion.answerHash)
                             }
 
-                            String salt = hashInfo[1]
-                            String pepper = hashInfo[2]
-
-                            if (CipherHelper.generateCipherHashV1(attempt.value, salt, pepper)
-                                    == userSecurityQuestion.answerHash) {
+                            if (matched != null) {
                                 attempt.setSucceeded(true)
-                            }
-                            else {
+                            } else {
                                 attempt.setSucceeded(false)
                             }
 
@@ -258,6 +257,11 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
     @Required
     void setUserSecurityQuestionRepository(UserSecurityQuestionRepository userSecurityQuestionRepository) {
         this.userSecurityQuestionRepository = userSecurityQuestionRepository
+    }
+
+    @Required
+    void setCredentialHashFactory(CredentialHashFactory credentialHashFactory) {
+        this.credentialHashFactory = credentialHashFactory
     }
 
     @Required

@@ -12,7 +12,9 @@
 
     <bean id="paymentService" class="com.junbo.payment.core.impl.PaymentTransactionServiceImpl"></bean>
 
-    <bean id="paymentCallbackService" class="com.junbo.payment.core.impl.PaymentCallbackServiceImpl"></bean>
+    <bean id="paymentCallbackService" class="com.junbo.payment.core.impl.PaymentCallbackServiceImpl">
+        <property name="paymentTransactionService" ref="paymentService"/>
+    </bean>
 
     <bean id="brainTreePaymentProviderService" class="com.junbo.payment.core.provider.braintree.BrainTreePaymentProviderServiceImpl">
         <property name="environment" value="${payment.provider.braintree.environment}"/>
@@ -43,6 +45,10 @@
         <property name="merchantAccount" value="${payment.provider.adyen.merchantaccount}"/>
         <property name="skinCode" value="${payment.provider.adyen.skincode}"/>
         <property name="skinSecret" value="${payment.provider.adyen.skinsecret}"/>
+        <property name="paymentURL" value="${payment.provider.adyen.paymenturl}"/>
+        <property name="recurringURL" value="${payment.provider.adyen.recurringurl}"/>
+        <property name="authUser" value="${payment.provider.adyen.user}"/>
+        <property name="authPassword" value="${payment.provider.adyen.password}"/>
     </bean>
 
     <bean id="providerRoutingService" class="com.junbo.payment.core.provider.impl.ProviderRoutingServiceImpl"/>

@@ -84,7 +84,7 @@ class CartDaoTest  extends DaoTestBase {
         cartDao.insert(cartEntity)
         cartDao.getSession(cartEntity.userId).flush()
         Assert.assertSame(cartDao.get(cartEntity.id), cartEntity)
-        assert cartDao.get(-1) == null
+        assert cartDao.get(idGenerator.nextId(CartId, userId)) == null
     }
 
     @Test

@@ -13,14 +13,16 @@
         <property name="messageTranscoder" ref="commonTranscoder"/>
     </bean>
 
+    <bean id="defaultAfterInvocationFilter" class="com.junbo.common.filter.RestAdapterAfterInvocationFilter" />
+
     <bean id="oculus40IdShuffle" class="com.junbo.common.shuffle.Oculus40Id" />
     <bean id="oculus48IdShuffle" class="com.junbo.common.shuffle.Oculus48Id" />
 
     <bean id="cloudantClient" class="com.junbo.common.cloudant.CloudantClient" abstract="true">
         <property name="asyncHttpClient" ref="commonAsyncHttpClient" />
         <property name="cloudantDBUri" value="${common.cloudant.url}" />
-        <property name="marshaller">
-            <bean class="com.junbo.common.cloudant.CloudantDefaultMarshaller" />
-        </property>
+        <property name="marshaller" ref="cloudantDefaultMarshaller" />
     </bean>
+
+    <bean id="cloudantDefaultMarshaller" class="com.junbo.common.cloudant.CloudantDefaultMarshaller" />
 </beans>

@@ -8,8 +8,12 @@ package com.junbo.common.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.junbo.common.cloudant.CloudantEntity;
-import com.junbo.common.id.UserId;
+import com.junbo.common.jackson.annotation.UserId;
+import com.junbo.common.jackson.deserializer.IntFromStringDeserializer;
 import com.junbo.common.json.PropertyAssignedAware;
 import com.junbo.common.json.PropertyAssignedAwareSupport;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -26,7 +30,9 @@ public abstract class ResourceMeta implements CloudantEntity, PropertyAssignedAw
     @ApiModelProperty(position = 1000, required = true,
             value = "[Client Immutable] The revision of the resource. Used for optimistic locking.")
     @JsonProperty("rev")
-    private String resourceAge;
+    @JsonSerialize(using = ToStringSerializer.class)
+    @JsonDeserialize(using = IntFromStringDeserializer.class)
+    private Integer resourceAge;
 
     @ApiModelProperty(position = 1001, required = true,
             value = "[Client Immutable] The created datetime of the resource.")
@@ -41,10 +47,12 @@ public abstract class ResourceMeta implements CloudantEntity, PropertyAssignedAw
     private AdminInfo adminInfo;
 
     @JsonIgnore
-    private UserId createdBy;
+    @UserId
+    private Long createdBy;
 
     @JsonIgnore
-    private UserId updatedBy;
+    @UserId
+    private Long updatedBy;
 
     @JsonIgnore
     private String createdByClient;
@@ -58,11 +66,11 @@ public abstract class ResourceMeta implements CloudantEntity, PropertyAssignedAw
     @JsonIgnore
     private String cloudantRev;
 
-    public String getResourceAge() {
+    public Integer getResourceAge() {
         return resourceAge;
     }
 
-    public void setResourceAge(String resourceAge) {
+    public void setResourceAge(Integer resourceAge) {
         this.resourceAge = resourceAge;
         support.setPropertyAssigned("resourceAge");
         support.setPropertyAssigned("rev");
@@ -111,20 +119,20 @@ public abstract class ResourceMeta implements CloudantEntity, PropertyAssignedAw
         support.setPropertyAssigned("adminInfo");
     }
 
-    public UserId getCreatedBy() {
+    public Long getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(UserId createdBy) {
+    public void setCreatedBy(Long createdBy) {
         this.createdBy = createdBy;
         support.setPropertyAssigned("createdBy");
     }
 
-    public UserId getUpdatedBy() {
+    public Long getUpdatedBy() {
         return updatedBy;
     }
 
-    public void setUpdatedBy(UserId updatedBy) {
+    public void setUpdatedBy(Long updatedBy) {
         this.updatedBy = updatedBy;
         support.setPropertyAssigned("updatedBy");
     }

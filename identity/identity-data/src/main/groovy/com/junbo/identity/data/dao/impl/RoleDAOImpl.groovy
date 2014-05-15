@@ -18,7 +18,7 @@ class RoleDAOImpl extends BaseDAO implements RoleDAO {
     @Override
     RoleEntity create(RoleEntity entity) {
         if (entity.id == null) {
-            entity.id = idGenerator.nextIdByShardId(shardAlgorithm.shardId())
+            entity.id = idGenerator.nextId()
         }
         Session session = currentSession(entity.id)
         session.save(entity)

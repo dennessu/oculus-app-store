@@ -4,9 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.repository.impl.sql
-
 import com.junbo.common.id.RoleId
-import com.junbo.common.id.UserId
 import com.junbo.identity.data.dao.RoleDAO
 import com.junbo.identity.data.entity.role.RoleEntity
 import com.junbo.identity.data.repository.RoleRepository
@@ -14,7 +12,6 @@ import com.junbo.identity.spec.v1.model.Role
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-
 /**
  * RoleRepositorySqlImpl.
  */
@@ -69,10 +66,10 @@ class RoleRepositorySqlImpl implements RoleRepository {
                 resourceType: entity.resourceType,
                 resourceId: entity.resourceId,
                 subResourceType: entity.subResourceType,
-                resourceAge: entity.resourceAge.toString(),
-                createdBy: entity.createdBy == null ? null : new UserId(entity.createdBy),
+                resourceAge: entity.resourceAge,
+                createdBy: entity.createdBy,
                 createdTime: entity.createdTime,
-                updatedBy: entity.updatedBy == null ? null : new UserId(entity.updatedBy),
+                updatedBy: entity.updatedBy,
                 updatedTime: entity.updatedTime
         )
     }
@@ -88,10 +85,10 @@ class RoleRepositorySqlImpl implements RoleRepository {
                 resourceType: entity.resourceType,
                 resourceId: entity.resourceId,
                 subResourceType: entity.subResourceType,
-                resourceAge: Integer.parseInt(entity.resourceAge),
-                createdBy: entity.createdBy == null ? null : entity.createdBy.value,
+                resourceAge: entity.resourceAge,
+                createdBy: entity.createdBy,
                 createdTime: entity.createdTime,
-                updatedBy: entity.updatedBy == null ? null : entity.updatedBy.value,
+                updatedBy: entity.updatedBy,
                 updatedTime: entity.updatedTime
         )
     }

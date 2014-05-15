@@ -13,13 +13,16 @@ import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.core.PaymentTransactionService;
+import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.core.provider.ProviderRoutingService;
+import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.db.mapper.PaymentAPI;
 import com.junbo.payment.db.mapper.TrackingUuid;
 import com.junbo.payment.db.repository.MerchantAccountRepository;
 import com.junbo.payment.db.repository.PaymentProviderRepository;
 import com.junbo.payment.db.repository.PaymentRepository;
 import com.junbo.payment.db.repository.TrackingUuidRepository;
+import com.junbo.payment.spec.enums.PaymentEventType;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.PaymentEvent;
 import com.junbo.payment.spec.model.PaymentInstrument;
@@ -211,5 +214,28 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
                 return events;
             }
         });
+    }
+
+    protected PaymentEvent createPaymentEvent(PaymentTransaction request,
+                                            PaymentEventType eventType, PaymentStatus status, String response) {
+        PaymentEvent event = new PaymentEvent();
+        event.setPaymentId(request.getId());
+        event.setType(eventType.toString());
+        event.setStatus(status.toString());
+        event.setChargeInfo(request.getChargeInfo());
+        //TODO: need more detailed json request/response
+        event.setRequest(CommonUtil.toJson(request, FILTER));
+        event.setResponse(response);
+        return event;
+    }
+
+    protected PaymentProviderService getPaymentProviderService(PaymentInstrument pi) {
+        PaymentProviderService provider = providerRoutingService.getPaymentProvider(
+                PaymentUtil.getPIType(pi.getType()));
+        if(provider == null){
+            throw AppServerExceptions.INSTANCE.providerNotFound(
+                    PaymentUtil.getPIType(pi.getType()).toString()).exception();
+        }
+        return provider;
     }
 }

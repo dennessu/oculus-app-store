@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -155,15 +156,32 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     }
 
     @Override
-    public List<PaymentInstrument> searchPi(Long userId, PaymentInstrumentSearchParam searchParam, PageMetaData page) {
+    public Promise<List<PaymentInstrument>> searchPi(Long userId, PaymentInstrumentSearchParam searchParam, PageMetaData page) {
         if(userId == null){
             throw AppClientExceptions.INSTANCE.missingUserId().exception();
         }
         if(!CommonUtil.isNullOrEmpty(searchParam.getType())){
             PaymentUtil.getPIType(searchParam.getType());
         }
-        List<PaymentInstrument> results = paymentInstrumentRepository.search(userId, searchParam, page);
-        return results;
+        final List<PaymentInstrument> results = paymentInstrumentRepository.search(userId, searchParam, page);
+        final List<PaymentInstrument> detailedResults = new ArrayList<PaymentInstrument>();
+        return Promise.each(results.iterator(), new Promise.Func<PaymentInstrument, Promise>() {
+            @Override
+            public Promise apply(PaymentInstrument paymentInstrument) {
+                return getById(paymentInstrument.getId()).then(new Promise.Func<PaymentInstrument, Promise<Void>>() {
+                    @Override
+                    public Promise<Void> apply(PaymentInstrument paymentInstrument) {
+                        detailedResults.add(paymentInstrument);
+                        return Promise.pure(null);
+                    }
+                });
+            }
+        }).then(new Promise.Func<Void, Promise<List<PaymentInstrument>>>() {
+            @Override
+            public Promise<List<PaymentInstrument>> apply(Void aVoid) {
+                return Promise.pure(detailedResults);
+            }
+        });
     }
 
     @Override

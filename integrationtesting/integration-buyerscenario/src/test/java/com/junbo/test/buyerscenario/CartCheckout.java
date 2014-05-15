@@ -1,8 +1,5 @@
 package com.junbo.test.buyerscenario;
 
-import com.junbo.common.model.Results;
-import com.junbo.entitlement.spec.model.Entitlement;
-import com.junbo.order.spec.model.OrderEvent;
 import com.junbo.test.payment.apihelper.impl.PaymentTransactionServiceImpl;
 import com.junbo.test.payment.apihelper.impl.PaymentCallbackServiceImpl;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
@@ -18,20 +15,22 @@ import com.junbo.payment.spec.model.PaymentProperties;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.common.Entities.enums.Country;
+import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.payment.spec.model.WebPaymentInfo;
 import com.junbo.test.common.libs.ShardIdHelper;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
+import com.junbo.order.spec.model.OrderEvent;
 import com.junbo.test.common.libs.DBHelper;
 import com.junbo.order.spec.model.Order;
 import com.junbo.test.common.property.*;
+import com.junbo.common.model.Results;
 import com.junbo.common.id.UserId;
 
 import org.testng.annotations.Test;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.UUID;
-
 
 /**
  * Created by Yunlong on 3/20/14.

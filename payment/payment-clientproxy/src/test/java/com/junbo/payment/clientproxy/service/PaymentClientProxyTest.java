@@ -144,6 +144,20 @@ public class PaymentClientProxyTest extends BaseTest {
         Assert.assertEquals(paymentResult.getStatus().toUpperCase(), PaymentStatus.SETTLED.toString());
         PaymentInstrument getResult3 =  piClient.getById(new PaymentInstrumentId(result.getId())).wrapped().get();
         Assert.assertTrue(getResult3.getTypeSpecificDetails().getStoredValueBalance().equals(new BigDecimal("1985.00")));
+        PaymentInstrument pi2 = getPaymentInstrument();
+        pi2.setUserId(pi.getUserId());
+        final PaymentInstrument result2 = piClient.postPaymentInstrument(pi2).wrapped().get();
+        PaymentInstrumentSearchParam searchParam = new PaymentInstrumentSearchParam();
+        searchParam.setUserId(userId);
+        Results<PaymentInstrument> results = piClient.searchPaymentInstrument(searchParam,new PageMetaData()).wrapped().get();
+        Assert.assertEquals(results.getItems().size(), 2);
+        PaymentInstrument walletPI;
+        if(results.getItems().get(0).getType().equals(PIType.STOREDVALUE.getId())){
+            walletPI = results.getItems().get(0);
+        }else{
+            walletPI = results.getItems().get(1);
+        }
+        Assert.assertTrue(walletPI.getTypeSpecificDetails().getStoredValueBalance().equals(new BigDecimal("1985.00")));
     }
 
     private PaymentInstrument getPaymentInstrument() {

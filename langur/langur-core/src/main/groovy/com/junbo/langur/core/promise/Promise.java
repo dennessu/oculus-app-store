@@ -57,28 +57,6 @@ public final class Promise<T> {
         public R apply(A a);
     }
 
-    public static class Context {
-
-        private final Map<String, Object> properties;
-
-        private Context() {
-            properties = new HashMap<>();
-        }
-
-        @SuppressWarnings("unchecked")
-        public <T> T get(String propertyName) {
-            return (T) properties.get(propertyName);
-        }
-
-        public <T> void set(String propertyName, T value) {
-            properties.put(propertyName, value);
-        }
-
-        public void clear() {
-            properties.clear();
-        }
-    }
-
     private static final Timer timer = new Timer();
 
     public static <T> Promise<T> wrap(ListenableFuture<T> future) {
@@ -306,7 +284,7 @@ public final class Promise<T> {
     // the sequence of the invocation is not guaranteed. Disable for now.
     @Deprecated
     public void onFailure(final Callback<Throwable> action) {
-        final Callback<Throwable> wrapped = Wrapper.wrap(action);
+        final Callback<Throwable> wrapped = Wrapper.wrap(action);;
 
         Futures.addCallback(future, new FutureCallback<T>() {
             @Override

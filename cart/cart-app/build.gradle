@@ -8,5 +8,6 @@ dependencies {
     runtime junboProject(':configuration-data')
 
     compile junboProject(':cart-rest')
-    compile junboProject(':identity-rest')
+    runtime junboProject(':identity-rest')
+    runtime junboProject(':crypto-rest')
 }

@@ -4,10 +4,8 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data.repository.impl.sql
-
 import com.junbo.common.id.RoleAssignmentId
 import com.junbo.common.id.RoleId
-import com.junbo.common.id.UserId
 import com.junbo.identity.data.dao.RoleAssignmentDAO
 import com.junbo.identity.data.entity.role.RoleAssignmentEntity
 import com.junbo.identity.data.repository.RoleAssignmentRepository
@@ -15,7 +13,6 @@ import com.junbo.identity.spec.v1.model.RoleAssignment
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-
 /**
  * RoleAssignmentRepositorySqlImpl.
  */
@@ -67,10 +64,10 @@ class RoleAssignmentRepositorySqlImpl implements RoleAssignmentRepository {
                 roleId: new RoleId(entity.roleId),
                 assigneeType: entity.assigneeType,
                 assigneeId: entity.assigneeId,
-                resourceAge: entity.resourceAge == null ? null : entity.resourceAge.toString(),
-                createdBy: entity.createdBy == null ? null : new UserId(entity.createdBy),
+                resourceAge: entity.resourceAge,
+                createdBy: entity.createdBy,
                 createdTime: entity.createdTime,
-                updatedBy: entity.updatedBy == null ? null : new UserId(entity.updatedBy),
+                updatedBy: entity.updatedBy,
                 updatedTime: entity.updatedTime
         )
     }
@@ -85,10 +82,10 @@ class RoleAssignmentRepositorySqlImpl implements RoleAssignmentRepository {
                 roleId: entity.roleId.value,
                 assigneeType: entity.assigneeType,
                 assigneeId: entity.assigneeId,
-                resourceAge: Integer.parseInt(entity.resourceAge),
-                createdBy: entity.createdBy == null ? null : entity.createdBy.value,
+                resourceAge: entity.resourceAge,
+                createdBy: entity.createdBy,
                 createdTime: entity.createdTime,
-                updatedBy: entity.updatedBy == null ? null : entity.updatedBy.value,
+                updatedBy: entity.updatedBy,
                 updatedTime: entity.updatedTime
         )
     }

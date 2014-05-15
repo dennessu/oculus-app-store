@@ -47,13 +47,16 @@ class EncryptUserPersonalInfoRepositoryImpl extends CloudantClient<EncryptUserPe
     @Override
     Promise<EncryptUserPersonalInfo> create(EncryptUserPersonalInfo model) {
         if (model.id == null) {
-            model.id = new EncryptUserPersonalInfoId(idGenerator.nextId())
+            model.id = new EncryptUserPersonalInfoId(model.userPersonalInfoId.value)
         }
         return Promise.pure((EncryptUserPersonalInfo)super.cloudantPost(model))
     }
 
     @Override
     Promise<EncryptUserPersonalInfo> update(EncryptUserPersonalInfo model) {
+        if (model.id == null) {
+            model.id = new EncryptUserPersonalInfoId(model.userPersonalInfoId.value)
+        }
         return Promise.pure((EncryptUserPersonalInfo)super.cloudantPut(model))
     }
 

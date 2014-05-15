@@ -79,6 +79,20 @@ public class PaymentInstrumentRepository {
         }
     }
 
+    public void updateExternalInfo(Long paymentInstrumentId, String externalToken, String label, String num){
+        PaymentInstrumentEntity entity = paymentInstrumentDao.get(paymentInstrumentId);
+        if(!CommonUtil.isNullOrEmpty(externalToken)){
+            entity.setExternalToken(externalToken);
+        }
+        if(!CommonUtil.isNullOrEmpty(label)){
+            entity.setLabel(entity.getLabel() == null ? label : entity.getLabel() + label);
+        }
+        if(!CommonUtil.isNullOrEmpty(num)){
+            entity.setAccountNum(num);
+        }
+        paymentInstrumentDao.update(entity);
+    }
+
     public PaymentInstrument getByPIId(Long piId){
         PaymentInstrumentEntity pi = paymentInstrumentDao.get(piId);
         if(pi == null || pi.isDeleted()){

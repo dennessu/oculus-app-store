@@ -24,4 +24,5 @@ public enum PaymentEventType {
     REPORT_EVENT,
     CREDIT_CREATE,
     CREDIT,
+    NOTIFY
 }
