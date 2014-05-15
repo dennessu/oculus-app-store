@@ -73,4 +73,8 @@ public class FulfilmentTestDataProvider extends BuyerTestDataProvider {
         return fulfilmentClient.getFulfilmentByOrderId(orderId);
     }
 
+    public FulfilmentItem getFulfilmentItem(String fulfilmentId) throws Exception {
+        return fulfilmentClient.getFulfilment(fulfilmentId);
+    }
+
 }

@@ -5,9 +5,13 @@
  */
 package com.junbo.test.fulfilment;
 
+import com.junbo.common.id.FulfilmentId;
+import com.junbo.fulfilment.spec.model.FulfilmentItem;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
+import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
@@ -89,6 +93,43 @@ public class FulfilmentTesting extends BaseTestClass {
         fulfilmentId = testDataProvider.getFulfilmentByOrderId(orderId);
 
         validationHelper.validateFulfilmentRequest(fulfilmentId, orderId, true);
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Get /fulfilments/{key}",
+            component = Component.Billing,
+            owner = "Yunlongzhao",
+            status = Status.Enable,
+            description = "post fulfilment",
+            steps = {
+                    "1. Create a user",
+                    "2. Post order",
+                    "3. Post fulfilment",
+                    "4. Get fulfilment by fulfilment id",
+                    "3, Validation: response"
+            }
+    )
+    @Test
+    public void testGetFulfilment() throws Exception {
+        ArrayList<String> offerList = new ArrayList<>();
+        offerList.add(offer_digital_normal1);
+
+        String randomUid = testDataProvider.createUser();
+
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(country);
+        String creditCardId = testDataProvider.postPaymentInstrument(randomUid, creditCardInfo);
+
+        String orderId = testDataProvider.postOrder(randomUid, country, currency, creditCardId, false, offerList);
+
+        String fulfilmentId = testDataProvider.postFulfilment(randomUid, orderId);
+
+        FulfilmentItem fulfilmentItem = testDataProvider.getFulfilmentItem(IdConverter.idLongToHexString(
+                FulfilmentId.class, Master.getInstance().
+                getFulfilment(fulfilmentId).getItems().get(0).getFulfilmentId()));
+
+        validationHelper.validateSingleFulfilmentItem(fulfilmentItem, orderId, false);
+
     }
 
 }
