@@ -1,5 +1,4 @@
 package com.junbo.order.rest.resource
-
 import com.junbo.common.id.OrderEventId
 import com.junbo.common.id.OrderId
 import com.junbo.common.model.Results
@@ -19,7 +18,6 @@ import javax.annotation.Resource
 import javax.ws.rs.PathParam
 import javax.ws.rs.core.Context
 import javax.ws.rs.core.HttpHeaders
-
 /**
  * Created by chriszhu on 3/12/14.
  */
@@ -49,7 +47,6 @@ class OrderEventResourceImpl implements OrderEventResource {
     @Override
     Promise<OrderEvent> createOrderEvent(OrderEvent orderEvent, @Context HttpHeaders headers) {
         orderValidator.notNull(orderEvent, 'orderEvent').notNull(orderEvent.order, 'orderId')
-
         return orderService.updateOrderByOrderEvent(orderEvent).then { OrderEvent event ->
             return Promise.pure(event)
         }

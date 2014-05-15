@@ -73,6 +73,10 @@ public interface AppErrors {
             description = "The properties {0} is invalid")
     AppError invalidProperty(String property);
 
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.NO_VALIDATED_USER_EMAIL,
+            description = "There is no validated default email in this user")
+    AppError noValidatedUserEmail();
+
     @ErrorDef(httpStatusCode = 500, code = ErrorCode.EMAIL_SEND_ERROR,
             description = "Fail to send email, reason: {0}")
     AppError emailSendError(String reason);

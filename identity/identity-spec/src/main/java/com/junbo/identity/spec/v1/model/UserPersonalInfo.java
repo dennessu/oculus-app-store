@@ -53,7 +53,7 @@ public class UserPersonalInfo extends ResourceMeta implements Identifiable<UserP
     @ApiModelProperty(position = 6, required = false, value = "User resource link label.")
     private String label;
 
-    @ApiModelProperty(position = 7, required = false, value = "User resource.")
+    @ApiModelProperty(position = 7, required = true, value = "User resource.")
     @JsonProperty("user")
     private UserId userId;
 

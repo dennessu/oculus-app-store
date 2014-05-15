@@ -19,7 +19,6 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.model.Results;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.ewallet.spec.model.CreditRequest;
-import com.junbo.identity.spec.v1.model.User;
 import com.junbo.order.spec.model.OrderItem;
 import com.junbo.order.spec.model.PaymentInfo;
 import com.junbo.test.catalog.enums.CatalogItemType;
@@ -41,7 +40,6 @@ import com.junbo.test.common.apihelper.order.impl.OrderServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
-import com.junbo.test.common.libs.EnumHelper.UserStatus;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.libs.RandomFactory;
@@ -70,14 +68,6 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
 
 
     public BuyerTestDataProvider() {
-    }
-
-    public String createUser(String email, String password, UserStatus status) throws Exception {
-        User userToPost = new User();
-        //userToPost.setUserName(email);
-        //userToPost.setPassword(password);
-        logger.LogSample("Create a new user");
-        return identityClient.PostUser(userToPost);
     }
 
     public String createUser() throws Exception {

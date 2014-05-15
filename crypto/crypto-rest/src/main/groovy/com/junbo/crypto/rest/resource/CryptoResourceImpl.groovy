@@ -23,8 +23,13 @@ class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
 
     private CryptoMessageValidator validator
 
+    private Boolean enableEncrypt
+
     @Override
     Promise<CryptoMessage> encrypt(UserId userId, CryptoMessage rawMessage) {
+        if (enableEncrypt != true) {
+            return Promise.pure(rawMessage)
+        }
         return validator.validateEncrypt(userId, rawMessage).then {
             return symmetricEncryptUserMessage(userId, rawMessage.value).then { String encryptMessage ->
                 CryptoMessage result = new CryptoMessage()
@@ -36,6 +41,9 @@ class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
 
     @Override
     Promise<CryptoMessage> decrypt(UserId userId, CryptoMessage encryptMessage) {
+        if (enableEncrypt != true) {
+            return Promise.pure(encryptMessage)
+        }
         return validator.validateDecrypt(userId, encryptMessage).then {
             return symmetricDecryptUserMessage(userId, encryptMessage.value).then { String rawMessage ->
                 CryptoMessage result = new CryptoMessage()
@@ -49,5 +57,10 @@ class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
     @Required
     void setValidator(CryptoMessageValidator validator) {
         this.validator = validator
+    }
+
+    @Required
+    void setEnableEncrypt(Boolean enableEncrypt) {
+        this.enableEncrypt = enableEncrypt
     }
 }

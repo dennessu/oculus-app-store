@@ -2,6 +2,7 @@ package com.junbo.test.buyerscenario;
 
 import com.junbo.common.model.Results;
 import com.junbo.entitlement.spec.model.Entitlement;
+import com.junbo.order.spec.model.OrderEvent;
 import com.junbo.test.payment.apihelper.impl.PaymentTransactionServiceImpl;
 import com.junbo.test.payment.apihelper.impl.PaymentCallbackServiceImpl;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
@@ -21,16 +22,16 @@ import com.junbo.payment.spec.model.WebPaymentInfo;
 import com.junbo.test.common.libs.ShardIdHelper;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
-import com.junbo.order.spec.model.OrderEvent;
 import com.junbo.test.common.libs.DBHelper;
 import com.junbo.order.spec.model.Order;
 import com.junbo.test.common.property.*;
-import org.testng.annotations.Test;
 import com.junbo.common.id.UserId;
 
+import org.testng.annotations.Test;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.UUID;
+
 
 /**
  * Created by Yunlong on 3/20/14.
@@ -276,7 +277,7 @@ public class CartCheckout extends BaseTestClass {
             features = "BuyerScenarios",
             component = Component.Order,
             owner = "JasonFu",
-            status = Status.Enable,
+            status = Status.Manual,
             description = "Test digital good checkout by PayPal",
             steps = {
                     "1. Post a new user",
@@ -337,8 +338,21 @@ public class CartCheckout extends BaseTestClass {
         PayPalInfo payPalInfo = PayPalInfo.getPayPalInfo(Country.DEFAULT);
         String payPalId = testDataProvider.postPaymentInstrument(uid, payPalInfo);
 
-        String orderId = testDataProvider.postOrderByCartId(
-                uid, cartId, Country.DEFAULT, Currency.DEFAULT, payPalId, null);
+        String orderId;
+        switch (itemType) {
+            case DIGITAL:
+                orderId = testDataProvider.postOrderByCartId(
+                        uid, cartId, Country.DEFAULT, Currency.DEFAULT, payPalId, false);
+                break;
+            case PHYSICAL:
+                orderId = testDataProvider.postOrderByCartId(
+                        uid, cartId, Country.DEFAULT, Currency.DEFAULT, payPalId, true);
+                break;
+            default:
+                orderId = testDataProvider.postOrderByCartId(
+                        uid, cartId, Country.DEFAULT, Currency.DEFAULT, payPalId, true);
+                break;
+        }
 
         Order order = Master.getInstance().getOrder(orderId);
         order.setTentative(false);
@@ -350,22 +364,30 @@ public class CartCheckout extends BaseTestClass {
         int tokenIndex = providerConfirmUrl.indexOf("token=");
         String token = providerConfirmUrl.substring(tokenIndex + 6);
 
-        emulatePayPalCheckout(order, token);
+        emulatePayPalCheckout(order, token, itemType);
 
         //get the order and do verification
         testDataProvider.getOrder(orderId);
-        validationHelper.validateOrderInfoByCartId(
-                uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, payPalId, true);
+
         switch (itemType) {
             case PHYSICAL:
+                validationHelper.validateOrderInfoByCartId(
+                        uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, payPalId, true);
+                break;
+            case DIGITAL:
+                validationHelper.validateOrderInfoByCartId(
+                        uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, payPalId, false);
+                validationHelper.validateEmailHistory(uid, orderId);
                 break;
             default:
+                validationHelper.validateOrderInfoByCartId(
+                        uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, payPalId, false);
                 validationHelper.validateEmailHistory(uid, orderId);
                 break;
         }
     }
 
-    private void emulatePayPalCheckout(Order order, String token) throws Exception {
+    private void emulatePayPalCheckout(Order order, String token, CatalogItemType itemType) throws Exception {
         PaymentTransactionService paymentTransactionService = PaymentTransactionServiceImpl.getInstance();
         Long paymentTransactionId = getTransactionId(order.getUser().getValue());
 
@@ -389,8 +411,9 @@ public class CartCheckout extends BaseTestClass {
         paymentCallbackService.postPaymentProperties(paymentTransactionId, paymentProperties);
 
         //confirm
-        mockPaymentTransactionConfirm(paymentTransactionId, paymentTransaction);
+        //mockPaymentTransactionConfirm(paymentTransactionId, paymentTransaction);
 
+        //Post "charge completed" order event
         OrderEventService orderEventService = OrderEventServiceImpl.getInstance();
         OrderEvent orderEvent = new OrderEvent();
         orderEvent.setOrder(order.getId());
@@ -398,6 +421,7 @@ public class CartCheckout extends BaseTestClass {
         orderEvent.setStatus("COMPLETED");
 
         orderEventService.postOrderEvent(orderEvent);
+
     }
 
     private Long getTransactionId(Long uid) throws Exception {
@@ -422,6 +446,7 @@ public class CartCheckout extends BaseTestClass {
                 ShardIdHelper.getShardIdByUid(userId), paymentTransaction.getExternalToken(), paymentTransactionId);
         dbHelper.executeUpdate(sqlStr, DBHelper.DBName.PAYMENT);
     }
+
 }
 
 
