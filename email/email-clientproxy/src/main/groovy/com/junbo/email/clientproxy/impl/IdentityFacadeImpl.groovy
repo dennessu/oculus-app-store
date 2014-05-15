@@ -47,6 +47,7 @@ class IdentityFacadeImpl implements IdentityFacade {
             if (user.emails != null && user.emails.size() != 0) {
                 for (UserPersonalInfoLink link : user.emails) {
                     if (!link.isDefault) {
+                        // only use user default email to send user an email
                         continue
                     }
                     return userPersonalInfoResource.get(link.value,
@@ -55,8 +56,12 @@ class IdentityFacadeImpl implements IdentityFacade {
                             return Promise.pure(null)
                         }
                         try {
-                            Email email = ObjectMapperProvider.instance().treeToValue(info.value, Email)
-                            return Promise.pure(email.value)
+                            if (info.lastValidateTime != null) {
+                                Email email = ObjectMapperProvider.instance().treeToValue(info.value, Email)
+                                return Promise.pure(email.value)
+                            }
+
+                            return Promise.pure(null)
                         }
                         catch (Exception e) {
                             return Promise.pure(null)

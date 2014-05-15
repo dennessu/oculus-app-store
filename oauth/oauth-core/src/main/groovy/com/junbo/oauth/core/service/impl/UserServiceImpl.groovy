@@ -144,7 +144,7 @@ class UserServiceImpl implements UserService {
         }
 
         return userResource.get(new UserId(accessToken.userId), new UserGetOptions()).then { User user ->
-            return this.getUserEmail(user).then { String email ->
+            return this.getDefaultUserEmail(user).then { String email ->
                 if (email == null) {
                     return Promise.pure(new UserInfo(sub: user.id.toString(), name: user.username, email: ''))
                 }
@@ -184,9 +184,9 @@ class UserServiceImpl implements UserService {
                 throw AppExceptions.INSTANCE.errorCallingIdentity().exception()
             }
 
-            return this.getUserEmail(user).then { String email ->
+            return this.getDefaultUserEmail(user).then { String email ->
                 if (email == null) {
-                    throw AppExceptions.INSTANCE.errorCallingIdentity().exception()
+                    throw AppExceptions.INSTANCE.missingDefaultUserEmail().exception()
                 }
 
                 EmailVerifyCode code = new EmailVerifyCode(
@@ -222,9 +222,9 @@ class UserServiceImpl implements UserService {
                 throw AppExceptions.INSTANCE.errorCallingIdentity().exception()
             }
 
-            return this.getUserEmail(user).then { String email ->
+            return this.getDefaultUserEmail(user).then { String email ->
                 if (email == null) {
-                    throw AppExceptions.INSTANCE.errorCallingIdentity().exception()
+                    throw AppExceptions.INSTANCE.missingDefaultUserEmail().exception()
                 }
 
                 ResetPasswordCode code = new ResetPasswordCode(
@@ -273,15 +273,16 @@ class UserServiceImpl implements UserService {
         return this.resetPasswordByUserId(userId, locale, baseUri)
     }
 
-    private Promise<String> getUserEmail(User user) {
+    private Promise<String> getDefaultUserEmail(User user) {
         if (user == null) {
             throw AppExceptions.INSTANCE.errorCallingIdentity().exception()
         }
 
         for (int i = 0; i < user.emails.size(); i++) {
             def userPersonalInfoLink = user.emails.get(i)
-            // if no default email, pick the last email as possible
-            if (userPersonalInfoLink.isDefault || i == (user.emails.size() - 1)) {
+            // use default email only, the email doesn't need to be verified at the moment
+            // when sending verify-email email and reset-password email
+            if (userPersonalInfoLink.isDefault) {
                 return userPersonalInfoResource.get(userPersonalInfoLink.value, new UserPersonalInfoGetOptions()).then { UserPersonalInfo info ->
                     if (info == null) {
                         return Promise.pure(new UserInfo(sub: user.id.toString(), name: user.username, email: ''))
@@ -293,7 +294,7 @@ class UserServiceImpl implements UserService {
                         userEmail = email.value
                     }
                     catch (Exception e) {
-                        userEmail = ''
+                        return Promise.pure(null)
                     }
 
                     return Promise.pure(userEmail)
