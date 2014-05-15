@@ -10,6 +10,7 @@ import com.junbo.billing.clientproxy.PaymentFacade
 import com.junbo.billing.db.repository.TransactionRepository
 import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
+import com.junbo.billing.spec.enums.PropertyKey
 import com.junbo.billing.spec.enums.TransactionStatus
 import com.junbo.billing.spec.enums.TransactionType
 import com.junbo.billing.spec.error.AppErrors
@@ -19,6 +20,7 @@ import com.junbo.common.error.AppErrorException
 import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.enums.PaymentStatus
 import com.junbo.payment.spec.model.ChargeInfo
+import com.junbo.payment.spec.model.Item
 import com.junbo.payment.spec.model.PaymentTransaction
 import com.junbo.payment.spec.model.WebPaymentInfo
 import groovy.transform.CompileStatic
@@ -283,6 +285,15 @@ class TransactionServiceImpl implements TransactionService {
         chargeInfo.setAmount(balance.totalAmount)
         chargeInfo.setCountry(balance.country)
         paymentTransaction.setChargeInfo(chargeInfo)
+
+        String description = balance.getProperty(PropertyKey.BALANCE_DESCRIPTION)
+        if (description != null) {
+            Item paymentItem = new Item()
+            paymentItem.name = description
+            paymentItem.amount = balance.totalAmount
+            paymentItem.quantity = 1
+            chargeInfo.setItems([ paymentItem ])
+        }
 
         def webPaymentInfo = new WebPaymentInfo()
         if (balance.successRedirectUrl != null || balance.cancelRedirectUrl != null) {
