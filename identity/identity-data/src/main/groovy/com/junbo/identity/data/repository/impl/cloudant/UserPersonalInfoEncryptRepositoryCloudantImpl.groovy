@@ -161,7 +161,6 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
 
     @Override
     Promise<Void> delete(UserPersonalInfoId id) {
-        // todo:    Not supported method
         throw new IllegalStateException('Delete is not supported')
     }
 
@@ -171,10 +170,10 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
         String algorithm = 'SHA-256'
 
         if (userPersonalInfo.type == UserPersonalInfoType.EMAIL.toString()) {
-            return HashHelper.hash(UserPersonalInfoType.EMAIL.toString() + ":" + marshall(userPersonalInfo), salt,
+            return HashHelper.shaHash(UserPersonalInfoType.EMAIL.toString() + ":" + marshall(userPersonalInfo), salt,
                     algorithm)
         } else if (userPersonalInfo.type == UserPersonalInfoType.PHONE.toString()) {
-            return HashHelper.hash(UserPersonalInfoType.PHONE.toString() + ":" + marshall(userPersonalInfo), salt,
+            return HashHelper.shaHash(UserPersonalInfoType.PHONE.toString() + ":" + marshall(userPersonalInfo), salt,
                     algorithm)
         } else {
             return null;

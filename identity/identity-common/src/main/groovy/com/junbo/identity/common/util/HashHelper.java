@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.common.util;
 
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.util.StringUtils;
 
 import java.security.MessageDigest;
@@ -18,7 +19,7 @@ public class HashHelper {
 
     }
 
-    public static String hash(String password, String passwordSalt, String algorithm) {
+    public static String shaHash(String password, String passwordSalt, String algorithm) {
         String passwordHash = null;
         try {
             MessageDigest md = MessageDigest.getInstance(algorithm);
@@ -38,4 +39,11 @@ public class HashHelper {
         return passwordHash;
     }
 
+    public static String bcryptHash(String password, String passwordSalt) {
+        try {
+            return BCrypt.hashpw(password, passwordSalt);
+        } catch (Exception e) {
+            throw new IllegalStateException("BCrypt hash error");
+        }
+    }
 }
