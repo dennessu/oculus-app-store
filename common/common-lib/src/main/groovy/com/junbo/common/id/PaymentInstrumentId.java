@@ -8,7 +8,7 @@ package com.junbo.common.id;
 /**
  * Created by xmchen on 2/20/14.
  */
-@IdResourcePath("/payment-instruments/{0}")
+@IdResourcePath(value = "/payment-instruments/{0}", regex = "/payment-instruments/(?<id>[0-9A-Z]+)")
 public class PaymentInstrumentId extends Id {
 
     public PaymentInstrumentId() {} {

@@ -9,7 +9,7 @@ package com.junbo.common.id;
 /**
  * Created by liangfu on 3/9/14.
  */
-@IdResourcePath("/promotions/{0}")
+@IdResourcePath(value = "/promotions/{0}", regex = "/promotions/(?<id>[0-9A-Z]+)")
 public class PromotionId extends Id {
     public PromotionId(){
 

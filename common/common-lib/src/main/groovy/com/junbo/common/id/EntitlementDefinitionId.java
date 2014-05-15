@@ -9,7 +9,7 @@ package com.junbo.common.id;
 /**
  * Java doc.
  */
-@IdResourcePath("/entitlement-definitions/{0}")
+@IdResourcePath(value = "/entitlement-definitions/{0}", regex = "/entitlement-definitions/(?<id>[0-9A-Z]+)")
 public class EntitlementDefinitionId extends Id {
 
     public EntitlementDefinitionId() {}

@@ -9,7 +9,7 @@ package com.junbo.common.id;
 /**
  * Created by liangfu on 3/9/14.
  */
-@IdResourcePath("/categories/{0}")
+@IdResourcePath(value = "/categories/{0}", regex = "/categories/(?<id>[0-9A-Z]+)")
 public class CategoryId extends Id {
     public CategoryId(){
 
