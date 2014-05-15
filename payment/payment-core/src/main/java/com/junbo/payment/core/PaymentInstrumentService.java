@@ -30,7 +30,7 @@ public interface PaymentInstrumentService {
     @Transactional(readOnly = true)
     List<PaymentInstrument> getByUserId(Long userId);
     @Transactional(readOnly = true)
-    List<PaymentInstrument> searchPi(Long userId, PaymentInstrumentSearchParam searchParam, PageMetaData page);
+    Promise<List<PaymentInstrument>> searchPi(Long userId, PaymentInstrumentSearchParam searchParam, PageMetaData page);
     @Transactional(readOnly = true)
     PaymentInstrumentType getPIType(String piType);
 }
