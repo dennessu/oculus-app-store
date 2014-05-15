@@ -10,7 +10,7 @@ import com.junbo.authorization.spec.model.RoleAssignment
 import com.junbo.authorization.spec.option.list.RoleAssignmentListOptions
 import com.junbo.authorization.spec.option.list.RoleListOptions
 import com.junbo.authorization.spec.option.model.RoleFilterType
-import com.junbo.common.id.Id
+import com.junbo.common.id.RoleId
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
 import com.junbo.common.util.IdFormatter
@@ -192,7 +192,7 @@ abstract class AbstractAuthorizeCallback<T> implements AuthorizeCallback<T> {
         }
 
         Results<RoleAssignment> roleAssignments = factory.roleAssignmentResource.list(new RoleAssignmentListOptions(
-                roleId: role.getId(),
+                roleId: (RoleId)role.id,
                 assignee: assignee.join(',')
         )).wrapped().get()
 
