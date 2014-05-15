@@ -6,4 +6,6 @@ dependencies {
     compile junboProject(':common-configuration')
 
     compile junboProject(':oom-core')
+
+    compile junboProject(':authorization-lib')
 }

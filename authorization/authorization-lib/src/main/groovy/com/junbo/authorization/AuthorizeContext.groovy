@@ -38,6 +38,7 @@ class AuthorizeContext {
         return tokenInfo == null ? null : tokenInfo.clientId
     }
 
+    @PackageScope
     static Set<String> getCurrentScopes() {
         TokenInfo tokenInfo = CURRENT_TOKEN_INFO.get()
         return (tokenInfo == null || tokenInfo.scopes == null) ?
@@ -73,6 +74,7 @@ class AuthorizeContext {
         CURRENT_RIGHTS.set(rights)
     }
 
+    @PackageScope
     static Set<String> getCurrentRights() {
         def rights = CURRENT_RIGHTS.get()
         return rights == null ? Collections.emptySet() : rights

@@ -30,15 +30,14 @@
         <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
-    <bean id="tokenInfoParser" class="com.junbo.authorization.token.TokenInfoParserImpl">
+    <bean id="tokenInfoParser" class="com.junbo.authorization.TokenInfoParserImpl">
         <property name="tokenInfoEndpoint" ref="tokenInfoEndpoint"/>
         <property name="useDummyTokenInfo" value="true"/>
-
     </bean>
 
-    <bean id="spelConditionEvaluator" class="com.junbo.authorization.service.impl.SPELConditionEvaluator"/>
+    <bean id="spelConditionEvaluator" class="com.junbo.authorization.SPELConditionEvaluator"/>
 
-    <bean id="authorizeService" class="com.junbo.authorization.service.impl.AuthorizeServiceImpl">
+    <bean id="authorizeService" class="com.junbo.authorization.AuthorizeServiceImpl">
         <property name="apiEndpoint" ref="apiEndpoint"/>
         <property name="tokenInfoParser" ref="tokenInfoParser"/>
         <property name="conditionEvaluators">
