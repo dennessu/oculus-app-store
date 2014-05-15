@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.authorization.service
+package com.junbo.authorization
 
 import com.junbo.authorization.AuthorizeCallback
 import com.junbo.langur.core.promise.Promise

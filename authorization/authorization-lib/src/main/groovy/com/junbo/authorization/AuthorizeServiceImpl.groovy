@@ -3,14 +3,14 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.authorization.service.impl
+package com.junbo.authorization
 
 import com.junbo.authorization.AuthorizeCallback
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.RightsScope
-import com.junbo.authorization.service.AuthorizeService
-import com.junbo.authorization.service.ConditionEvaluator
-import com.junbo.authorization.token.TokenInfoParser
+import com.junbo.authorization.AuthorizeService
+import com.junbo.authorization.ConditionEvaluator
+import com.junbo.authorization.TokenInfoParser
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.spec.endpoint.ApiEndpoint
 import com.junbo.oauth.spec.model.ApiDefinition

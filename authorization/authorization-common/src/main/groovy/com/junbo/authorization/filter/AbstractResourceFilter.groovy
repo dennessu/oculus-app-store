@@ -5,6 +5,9 @@
  */
 package com.junbo.authorization.filter
 
+import com.google.common.collect.HashMultimap
+import com.google.common.collect.Multimap
+import com.junbo.authorization.AuthorizeContext
 import com.junbo.oom.core.BeanMarker
 import com.junbo.oom.core.MappingContext
 import com.junbo.oom.core.filter.PropertiesToIncludeFilter
@@ -20,25 +23,100 @@ import org.springframework.beans.factory.annotation.Required
 @CompileStatic
 abstract class AbstractResourceFilter<T> implements ResourceFilter<T> {
 
-    protected List<String> readableProperties
+    protected Multimap<String, String> readableProperties
 
-    protected List<String> writablePropertiesForCreate
+    protected Multimap<String, String> writablePropertiesForCreate
 
-    protected List<String> writablePropertiesForUpdate
+    protected Multimap<String, String> writablePropertiesForUpdate
 
     @Required
-    void setReadableProperties(List<String> readableProperties) {
-        this.readableProperties = readableProperties
+    void setReadableProperties(Map<String, String> readableProperties) {
+        this.readableProperties = HashMultimap.create()
+
+        for (String right : readableProperties.keySet()) {
+            String value = readableProperties.get(right)
+
+            for (String property : value.split(',')) {
+                property = property.trim()
+                if (!property.empty) {
+                    this.readableProperties.put(right, property)
+                }
+            }
+        }
     }
 
     @Required
-    void setWritablePropertiesForCreate(List<String> writablePropertiesForCreate) {
-        this.writablePropertiesForCreate = writablePropertiesForCreate
+    void setWritablePropertiesForCreate(Map<String, String> writablePropertiesForCreate) {
+        this.writablePropertiesForCreate = HashMultimap.create()
+
+        for (String right : writablePropertiesForCreate.keySet()) {
+            String value = writablePropertiesForCreate.get(right)
+
+            for (String property : value.split(',')) {
+                property = property.trim()
+                if (!property.empty) {
+                    this.writablePropertiesForCreate.put(right, property)
+                }
+            }
+        }
     }
 
     @Required
-    void setWritablePropertiesForUpdate(List<String> writablePropertiesForUpdate) {
-        this.writablePropertiesForUpdate = writablePropertiesForUpdate
+    void setWritablePropertiesForUpdate(Map<String, String> writablePropertiesForUpdate) {
+        this.writablePropertiesForUpdate = HashMultimap.create()
+
+        for (String right : writablePropertiesForUpdate.keySet()) {
+            String value = writablePropertiesForUpdate.get(right)
+
+            for (String property : value.split(',')) {
+                property = property.trim()
+                if (!property.empty) {
+                    this.writablePropertiesForUpdate.put(right, property)
+                }
+            }
+        }
+    }
+
+    private Set<String> calculateReadableProperties() {
+        Set<String> result = new HashSet<>()
+
+        for (String scope : readableProperties.keySet()) {
+            if (AuthorizeContext.hasScopes(scope)) {
+                def properties = readableProperties.get(scope)
+                result.addAll(properties)
+
+            }
+        }
+
+        return result
+    }
+
+    private Set<String> calculateWritablePropertiesForCreate() {
+        Set<String> result = new HashSet<>()
+
+        for (String scope : writablePropertiesForCreate.keySet()) {
+            if (AuthorizeContext.hasScopes(scope)) {
+                def properties = writablePropertiesForCreate.get(scope)
+                result.addAll(properties)
+
+            }
+        }
+
+        return result
+    }
+
+    private Set<String> calculateWritablePropertiesForUpdate() {
+        Set<String> result = new HashSet<>()
+
+        for (String scope : writablePropertiesForUpdate.keySet()) {
+            if (AuthorizeContext.hasScopes(scope)) {
+                def properties = writablePropertiesForUpdate.get(scope)
+                result.addAll(properties)
+
+            }
+        }
+
+        return result
     }
 
     @Override
@@ -49,7 +127,7 @@ abstract class AbstractResourceFilter<T> implements ResourceFilter<T> {
 
         def context = new MappingContext()
         context.writableProperties = new BeanMarker()
-        context.writableProperties.markProperties(writablePropertiesForCreate)
+        context.writableProperties.markProperties(calculateWritablePropertiesForCreate())
 
         def createFilter = new CreateFilter()
         def writablePropertiesFilter = new WritablePropertiesFilter()
@@ -72,10 +150,10 @@ abstract class AbstractResourceFilter<T> implements ResourceFilter<T> {
 
         def context = new MappingContext()
         context.readableProperties = new BeanMarker()
-        context.readableProperties.markProperties(readableProperties)
+        context.readableProperties.markProperties(calculateReadableProperties())
 
         context.writableProperties = new BeanMarker()
-        context.writableProperties.markProperties(writablePropertiesForUpdate)
+        context.writableProperties.markProperties(calculateWritablePropertiesForUpdate())
 
         def putFilter = new PutFilter()
         def readablePropertiesFilter = new ReadablePropertiesFilter()
@@ -100,10 +178,10 @@ abstract class AbstractResourceFilter<T> implements ResourceFilter<T> {
 
         def context = new MappingContext()
         context.readableProperties = new BeanMarker()
-        context.readableProperties.markProperties(readableProperties)
+        context.readableProperties.markProperties(calculateReadableProperties())
 
         context.writableProperties = new BeanMarker()
-        context.writableProperties.markProperties(writablePropertiesForUpdate)
+        context.writableProperties.markProperties(calculateWritablePropertiesForUpdate())
 
         def patchFilter = new PatchFilter()
         def readablePropertiesFilter = new ReadablePropertiesFilter()
@@ -128,7 +206,7 @@ abstract class AbstractResourceFilter<T> implements ResourceFilter<T> {
 
         def context = new MappingContext()
         context.readableProperties = new BeanMarker()
-        context.readableProperties.markProperties(readableProperties)
+        context.readableProperties.markProperties(calculateReadableProperties())
 
         def readFilter = new ReadFilter()
         def readablePropertiesFilter = new ReadablePropertiesFilter()

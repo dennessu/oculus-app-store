@@ -7,8 +7,11 @@
 package com.junbo.billing.db.entity;
 
 import com.junbo.billing.db.BaseEntity;
+import com.junbo.billing.db.ext.JSONStringUserType;
 import com.junbo.common.util.Identifiable;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -20,6 +23,7 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "balance")
+@TypeDefs({@TypeDef(name = "json-string", typeClass = JSONStringUserType.class)})
 public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
     @Id
     @Column(name = "balance_id")
@@ -85,6 +89,10 @@ public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
 
     @Column(name = "onbehalfof_requestor_id")
     private String onbehalfofRequestorId;
+
+    @Column(name = "property_set")
+    @Type(type = "json-string")
+    private String propertySet;
 
     public Long getBalanceId() {
         return balanceId;
@@ -239,5 +247,12 @@ public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
     }
     public void setId(Long id) {
         balanceId = id;
+    }
+
+    public String getPropertySet() {
+        return propertySet;
+    }
+    public void setPropertySet(String propertySet) {
+        this.propertySet = propertySet;
     }
 }

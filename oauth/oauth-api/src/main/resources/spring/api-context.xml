@@ -79,6 +79,8 @@
 
     <bean id="defaultApiEndpoint" class="com.junbo.oauth.api.endpoint.ApiEndpointImpl">
         <property name="apiService" ref="apiService"/>
+        <property name="tokenInfoParser" ref="tokenInfoParser"/>
+
     </bean>
 
     <bean id="defaultApiEndpointClientFactory" class="com.junbo.oauth.spec.endpoint.proxy.ApiEndpointClientProxyFactory"/>

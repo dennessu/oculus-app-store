@@ -10,7 +10,6 @@ import com.junbo.authorization.spec.resource.RoleResource
 import com.junbo.identity.spec.v1.resource.GroupResource
 import com.junbo.identity.spec.v1.resource.UserGroupMembershipResource
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required
 
 /**
  * AuthorizeCallbackFactory.

@@ -6,12 +6,15 @@
 
 package com.junbo.billing.spec.model;
 
+import com.junbo.billing.spec.enums.PropertyKey;
 import com.junbo.common.id.OrderId;
 import com.junbo.common.id.OrderItemId;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by xmchen on 14-1-26.
@@ -25,6 +28,7 @@ public class BalanceItem {
     private BigDecimal discountAmount;
     private String financeId;
     private Long originalBalanceItemId;
+    private Map<String, String> propertySet;
 
     private List<TaxItem> taxItems;
     private List<DiscountItem> discountItems;
@@ -32,6 +36,7 @@ public class BalanceItem {
     public BalanceItem() {
         taxItems = new ArrayList<>();
         discountItems = new ArrayList<>();
+        propertySet = new HashMap<>();
     }
 
     public Long getBalanceItemId() {
@@ -112,5 +117,20 @@ public class BalanceItem {
 
     public void setOrderId(OrderId orderId) {
         this.orderId = orderId;
+    }
+
+    public Map<String, String> getPropertySet() {
+        return propertySet;
+    }
+
+    public void setPropertySet(Map<String, String> propertySet) {
+        if (propertySet == null) {
+            return;
+        }
+        this.propertySet = propertySet;
+    }
+
+    public void addPropertySet(PropertyKey key, String value) {
+        propertySet.put(key.name(), value);
     }
 }

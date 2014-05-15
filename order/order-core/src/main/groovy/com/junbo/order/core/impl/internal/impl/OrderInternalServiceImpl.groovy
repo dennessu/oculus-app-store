@@ -131,19 +131,36 @@ class OrderInternalServiceImpl implements OrderInternalService {
 
     @Override
     @Transactional
-    Promise<Boolean> checkOrderCancelable(Long orderId) {
+    Promise<Order> cancelOrder(Order order) {
 
-        // get Order by id
-        return getOrderByOrderId(orderId).recover { Throwable ex ->
-            LOGGER.error("name=Fail_Get_Order", ex)
-            throw ex
-        }.then { Order order ->
-            if (order.status == OrderStatus.OPEN || order.status == OrderStatus.PREORDERED) {
-                return Promise.pure(true)
-            }
-            return Promise.pure(false)
+        def isCancelable = CoreUtils.checkOrderCancelable(order)
+        if (!isCancelable) {
+            LOGGER.info('name=Order_Is_Not_Cancelable, orderId = {}, orderStatus={}', order.id.value, order.status)
+            throw AppErrors.INSTANCE.orderNotCancelable().exception()
+        }
+        LOGGER.info('name=Order_Is_Cancelable, orderId = {}, orderStatus={}', order.id.value, order.status)
+
+        // TODO: reverse authorize if physical goods
+
+        // TODO: refund deposit if preorder
+        return refundDeposit(order).then { Order o ->
+            // mark order status canceled
+            order.status = OrderStatus.CANCELED.name()
+            // update item fulfillment history
+
+            // persist
+            orderRepository.updateOrder(o, true)
+
+            return Promise.pure(o)
         }
     }
+
+    @Override
+    @Transactional
+    Promise<Order> refundDeposit(Order order) {
+        return Promise.pure(order)
+    }
+
 
     @Override
     @Transactional

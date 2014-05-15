@@ -39,7 +39,6 @@
 
     <bean id="apiService" class="com.junbo.oauth.core.service.impl.ApiServiceImpl">
         <property name="apiDefinitionRepository" ref="apiDefinitionRepository"/>
-        <property name="tokenService" ref="tokenService"/>
     </bean>
 
 </beans>
