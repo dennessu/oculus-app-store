@@ -109,6 +109,8 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
             throw AppErrors.INSTANCE.notFound("Fulfilment", fulfilmentId).exception();
         }
 
+        item.setActions(fulfilmentActionRepository.findByFulfilmentId(item.getFulfilmentId()));
+
         return item;
     }
 
