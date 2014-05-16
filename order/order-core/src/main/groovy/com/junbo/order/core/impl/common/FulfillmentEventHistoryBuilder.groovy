@@ -48,7 +48,7 @@ class FulfillmentEventHistoryBuilder {
         switch (fulfilmentItem.status) {
             case FulfilmentStatus.PENDING:
                 if (orderItem.type == ItemType.PHYSICAL.name()) {
-                    return FulfillmentAction.PREORDER.name()
+                    return FulfillmentAction.PENDING_FULFILL.name()
                 }
                 return null
             case FulfilmentStatus.SUCCEED:

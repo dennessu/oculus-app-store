@@ -10,10 +10,13 @@ import com.junbo.order.core.impl.common.ParamUtils
 import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
+import com.junbo.order.spec.error.ErrorUtils
 import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.PageParam
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -31,6 +34,8 @@ class OrderEventServiceImpl implements OrderEventService {
 
     @Resource(name = 'orderFacadeContainer')
     FacadeContainer facadeContainer
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderEventServiceImpl)
 
     @Override
     @Transactional
@@ -53,7 +58,16 @@ class OrderEventServiceImpl implements OrderEventService {
         switch (event.action) {
             case OrderActionType.FULFILL.name():
                 return facadeContainer.fulfillmentFacade.getFulfillment(event.order)
-                        .then { FulfilmentRequest fulfillment ->
+                        .syncRecover { Throwable throwable ->
+                    LOGGER.error('name=Order_FulfillmentAction_Error', throwable)
+                    throw AppErrors.INSTANCE.
+                            fulfilmentConnectionError(ErrorUtils.toAppErrors(throwable)).exception()
+                }.then { FulfilmentRequest fulfillment ->
+                    if (fulfillment == null) {
+                        LOGGER.error('name=Order_GetFulfillment_Error_Fulfillment_Null')
+                        throw AppErrors.INSTANCE.
+                                fulfillmentConnectionError().exception()
+                    }
                     fulfillment.items.each { FulfilmentItem fulfilmentItem ->
                         def fulfillmentHistory = FulfillmentEventHistoryBuilder.buildFulfillmentHistory(
                             fulfillment, fulfilmentItem, event)

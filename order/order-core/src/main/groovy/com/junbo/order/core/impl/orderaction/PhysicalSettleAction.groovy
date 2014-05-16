@@ -86,6 +86,11 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
                         }
                         def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(resultBalance)
                         if (billingHistory.billingEvent != null) {
+                            if (billingHistory.billingEvent == BillingAction.CHARGE.name()) {
+                                order.payments?.get(0)?.paymentAmount = order.payments?.get(0)?.paymentAmount == null ?
+                                        billingHistory.totalAmount :
+                                        order.payments?.get(0)?.paymentAmount + billingHistory.totalAmount
+                            }
                             def savedHistory = orderRepository.createBillingHistory(order.id.value, billingHistory)
                             if (order.billingHistories == null) {
                                 order.billingHistories = [savedHistory]
@@ -124,6 +129,7 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
                 if (billingHistory.billingEvent == BillingAction.CHARGE.name()) {
                     // partial charge
                     billingHistory.billingEvent = BillingAction.DEPOSIT.name()
+                    order.payments?.get(0)?.paymentAmount = billingHistory.totalAmount
                 }
                 def savedHistory = orderRepository.createBillingHistory(order.id.value, billingHistory)
                 if (order.billingHistories == null) {

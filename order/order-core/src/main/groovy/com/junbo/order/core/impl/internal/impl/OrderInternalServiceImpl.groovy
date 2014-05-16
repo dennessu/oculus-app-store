@@ -174,7 +174,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
             if (taxedBalance != null) {
                 CoreBuilder.fillTaxInfo(order, taxedBalance)
             }
-            return Promise.pure(refreshOrderStatus(order))
+            return Promise.pure(order)
         }
     }
 
