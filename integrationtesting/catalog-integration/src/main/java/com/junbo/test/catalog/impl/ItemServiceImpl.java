@@ -73,11 +73,14 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
     }
 
     public Item prepareItemEntity(String fileName) throws Exception {
+        UserService us = UserServiceImpl.instance();
+        return prepareItemEntity(fileName, us.PostUser());
+    }
+
+    public Item prepareItemEntity(String fileName, String userId) throws Exception {
         String strItem = readFileContent(String.format("testItems/%s.json", fileName));
         Item itemForPost = new JsonMessageTranscoder().decode(new TypeReference<Item>() {}, strItem);
-        UserService us = UserServiceImpl.instance();
-        String developerId = us.PostUser();
-        itemForPost.setOwnerId(IdConverter.hexStringToId(UserId.class, developerId));
+        itemForPost.setOwnerId(IdConverter.hexStringToId(UserId.class, userId));
         return itemForPost;
     }
 

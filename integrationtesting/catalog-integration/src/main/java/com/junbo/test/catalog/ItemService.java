@@ -27,6 +27,7 @@ public interface ItemService {
 
     Item postDefaultItem(CatalogItemType itemType) throws Exception;
     Item prepareItemEntity(String fileName) throws Exception;
+    Item prepareItemEntity(String fileName, String userId) throws Exception;
     Item postItem(Item item) throws Exception;
     Item postItem(Item item, int expectedResponseCode) throws Exception;
 
