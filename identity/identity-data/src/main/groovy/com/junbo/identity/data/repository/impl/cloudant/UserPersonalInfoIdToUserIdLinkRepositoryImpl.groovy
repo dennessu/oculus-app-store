@@ -19,7 +19,6 @@ import org.springframework.util.CollectionUtils
 @CompileStatic
 class UserPersonalInfoIdToUserIdLinkRepositoryImpl extends CloudantClient<UserPersonalInfoIdToUserIdLink>
         implements UserPersonalInfoIdToUserIdLinkRepository {
-    private IdGenerator idGenerator
 
     @Override
     protected CloudantViews getCloudantViews() {
@@ -48,13 +47,16 @@ class UserPersonalInfoIdToUserIdLinkRepositoryImpl extends CloudantClient<UserPe
     Promise<UserPersonalInfoIdToUserIdLink> create(UserPersonalInfoIdToUserIdLink model) {
 
         if (model.id == null) {
-            model.id = new UserPersonalInfoIdToUserIdLinkId(idGenerator.nextId(model.userId.value))
+            model.id = new UserPersonalInfoIdToUserIdLinkId(model.userPersonalInfoId.value)
         }
         return Promise.pure((UserPersonalInfoIdToUserIdLink)super.cloudantPost(model))
     }
 
     @Override
     Promise<UserPersonalInfoIdToUserIdLink> update(UserPersonalInfoIdToUserIdLink model) {
+        if (model.id == null) {
+            model.id = new UserPersonalInfoIdToUserIdLinkId(model.userPersonalInfoId.value)
+        }
         return Promise.pure((UserPersonalInfoIdToUserIdLink)super.cloudantPut(model))
     }
 
@@ -83,9 +85,4 @@ class UserPersonalInfoIdToUserIdLinkRepositoryImpl extends CloudantClient<UserPe
                             resultClass: String)
             ]
     )
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
 }
