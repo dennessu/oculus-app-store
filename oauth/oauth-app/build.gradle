@@ -15,4 +15,5 @@ dependencies {
     runtime junboProject(':email-rest')
 
     compile junboProject(':oauth-api')
+    compile junboProject(':email-jobs')
 }
