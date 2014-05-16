@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="roleFilter" class="com.junbo.authorization.core.filter.RoleFilterImpl"/>
+
+    <bean id="roleValidator" class="com.junbo.authorization.core.validator.RoleValidatorImpl">
+        <property name="roleRepository" ref="roleRepository"/>
+    </bean>
+
+    <bean id="roleAssignmentFilter" class="com.junbo.authorization.core.filter.RoleAssignmentFilterImpl"/>
+
+    <bean id="roleAssignmentValidator" class="com.junbo.authorization.core.validator.RoleAssignmentValidatorImpl">
+    </bean>
+</beans>

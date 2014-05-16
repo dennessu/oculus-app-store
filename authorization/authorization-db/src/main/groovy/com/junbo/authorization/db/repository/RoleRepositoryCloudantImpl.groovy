@@ -35,7 +35,7 @@ class RoleRepositoryCloudantImpl extends CloudantClient<Role> implements RoleRep
 
     @Override
     protected CloudantViews getCloudantViews() {
-        return null
+        return views
     }
 
     @Override
@@ -63,14 +63,17 @@ class RoleRepositoryCloudantImpl extends CloudantClient<Role> implements RoleRep
 
     @Override
     Promise<Role> findByRoleName(String roleName, String targetType, String filterType, String filterLink) {
-        return null
+        String key = "$roleName:$targetType:$filterType:$filterLink"
+        def list = super.queryView('by_role_name', key)
+        return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)
     }
 
     protected CloudantViews views = new CloudantViews(
             views: [
                     'by_role_name': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.name, doc._id)' +
+                                    '  emit(doc.name + \':\' + doc.target.targetType + \':\'' +
+                                    ' + doc.target.filterType + \':\' + doc.target.filterLink.href, doc._id)' +
                                         '}',
                             resultClass: String)
             ]

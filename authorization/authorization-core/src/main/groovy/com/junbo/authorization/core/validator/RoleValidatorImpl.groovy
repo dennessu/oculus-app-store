@@ -5,11 +5,16 @@
  */
 package com.junbo.authorization.core.validator
 
+import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.db.repository.RoleRepository
+import com.junbo.common.error.AppError
+import com.junbo.common.id.Id
 import com.junbo.common.id.RoleId
 import com.junbo.authorization.spec.error.AppErrors
 import com.junbo.authorization.spec.model.Role
 import com.junbo.authorization.spec.option.list.RoleListOptions
+import com.junbo.common.id.util.IdUtil
+import com.junbo.common.util.IdFormatter
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
@@ -21,6 +26,7 @@ import org.springframework.util.StringUtils
  */
 @CompileStatic
 class RoleValidatorImpl implements RoleValidator {
+    private static final String CREATE_RIGHT = 'create'
     private RoleRepository roleRepository
 
     @Required
@@ -52,6 +58,16 @@ class RoleValidatorImpl implements RoleValidator {
             throw AppErrors.INSTANCE.fieldRequired('target.filterLink').exception()
         }
 
+        Id resourceId = IdUtil.fromHref(role.target.filterLink.href)
+
+        if (resourceId == null) {
+            throw AppErrors.INSTANCE.fieldInvalid('target.filterLink').exception()
+        }
+
+        if (IdFormatter.encodeId(resourceId) != role.target.filterLink.id) {
+            throw AppErrors.INSTANCE.fieldInvalid('target.filterLink').exception()
+        }
+
         return roleRepository.findByRoleName(role.name, role.target.targetType,
                 role.target.filterType, role.target.filterLink.href).then { Role existing ->
             if (existing != null) {
@@ -62,18 +78,12 @@ class RoleValidatorImpl implements RoleValidator {
     }
 
     @Override
-    Promise<Role> validateForGet(RoleId roleId) {
+    Promise<Void> validateForGet(RoleId roleId) {
         if (roleId == null) {
             throw AppErrors.INSTANCE.fieldRequired('roleId').exception()
         }
 
-        return roleRepository.get(roleId).then { Role role ->
-            if (role == null) {
-                throw AppErrors.INSTANCE.roleNotFound(roleId).exception()
-            }
-
-            return Promise.pure(role)
-        }
+        return Promise.pure(null)
     }
 
     @Override

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="roleRepository" class="com.junbo.authorization.db.repository.RoleRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="role"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="roleAssignmentRepository" class="com.junbo.authorization.db.repository.RoleAssignmentRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="role_assignment"/>
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+</beans>
