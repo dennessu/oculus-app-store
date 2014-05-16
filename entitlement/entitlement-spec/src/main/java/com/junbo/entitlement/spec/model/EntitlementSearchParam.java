@@ -27,6 +27,8 @@ public class EntitlementSearchParam {
 
     @QueryParam("itemIds")
     private Set<ItemId> itemIds;
+    @QueryParam("hostItemId")
+    private ItemId hostItemId;
 
     @QueryParam("startGrantTime")
     private String startGrantTime;
@@ -56,6 +58,14 @@ public class EntitlementSearchParam {
 
     public void setItemIds(Set<ItemId> itemIds) {
         this.itemIds = itemIds;
+    }
+
+    public ItemId getHostItemId() {
+        return hostItemId;
+    }
+
+    public void setHostItemId(ItemId hostItemId) {
+        this.hostItemId = hostItemId;
     }
 
     public Boolean getIsActive() {
@@ -132,6 +142,7 @@ public class EntitlementSearchParam {
         private Boolean isBanned;
 
         private Set<ItemId> itemIds;
+        private ItemId hostItemId;
 
         private String startGrantTime;
         private String endGrantTime;
@@ -184,6 +195,11 @@ public class EntitlementSearchParam {
             return this;
         }
 
+        public Builder hostItemId(ItemId val) {
+            hostItemId = val;
+            return this;
+        }
+
         public Builder type(String val) {
             type = val;
             return this;
@@ -199,6 +215,7 @@ public class EntitlementSearchParam {
         isActive = builder.isActive;
         isBanned = builder.isBanned;
         itemIds = builder.itemIds;
+        hostItemId = builder.hostItemId;
         startGrantTime = builder.startGrantTime;
         endGrantTime = builder.endGrantTime;
         startExpirationTime = builder.startExpirationTime;

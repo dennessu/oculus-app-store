@@ -7,6 +7,7 @@ package com.junbo.entitlement.clientproxy.catalog.impl;
 
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
 import com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy;
 import com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxy;
 import com.junbo.common.id.ItemId;
@@ -16,6 +17,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Impl of CatalogFacade.
@@ -54,5 +60,25 @@ public class ItemFacadeImpl implements ItemFacade {
             LOGGER.error("Getting itemRevision [{" + revisionId + "}] failed.", e);
         }
         return itemRevision;
+    }
+
+    @Override
+    public Set<Long> getItemIdsByHostItemId(Long hostItemId){
+        List<ItemRevision> itemRevisions = new LinkedList<>();
+        ItemRevisionsGetOptions options = new ItemRevisionsGetOptions();
+        //TODO: need to get by HostItemId
+        try {
+            LOGGER.info("Getting itemRevisions by hostItemId [{}] started.", hostItemId);
+            itemRevisions = itemRevisionClient.getItemRevisions(
+                    options).wrapped().get().getItems();
+            LOGGER.info("Getting itemRevisions by hostItemId [{}] finished.", hostItemId);
+        } catch (Exception e) {
+            LOGGER.error("Getting itemRevisions by hostItemId [{" + hostItemId + "}] failed.", e);
+        }
+        Set<Long> itemIds = new HashSet<>();
+        for(ItemRevision revision : itemRevisions){
+            itemIds.add(revision.getItemId());
+        }
+        return itemIds;
     }
 }

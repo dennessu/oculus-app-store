@@ -7,9 +7,12 @@ package com.junbo.entitlement.clientproxy.catalog;
 
 import com.junbo.catalog.spec.model.item.ItemRevision;
 
+import java.util.Set;
+
 /**
  * Interface wrapper to call from catalog.
  */
 public interface ItemFacade {
     ItemRevision getItem(Long itemId);
+    Set<Long> getItemIdsByHostItemId(Long hostItemId);
 }

@@ -7,6 +7,7 @@
 package com.junbo.entitlement.core.service;
 
 import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.common.id.ItemId;
 import com.junbo.entitlement.common.lib.CloneUtils;
 import com.junbo.entitlement.core.EntitlementService;
 import com.junbo.entitlement.db.repository.EntitlementRepository;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -99,11 +101,22 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         validateNotNull(entitlementSearchParam.getUserId(), "userId");
         checkUser(entitlementSearchParam.getUserId().getValue());
         fillClient(entitlementSearchParam);
+        fillHostItemId(entitlementSearchParam);
         checkSearchDateFormat(entitlementSearchParam);
         checkIsActiveAndIsBanned(entitlementSearchParam);
         List<Entitlement> entitlementEntities = entitlementRepository.getBySearchParam(
                 entitlementSearchParam, pageMetadata);
         return entitlementEntities;
+    }
+
+    private void fillHostItemId(EntitlementSearchParam entitlementSearchParam) {
+        if (entitlementSearchParam.getHostItemId() == null) {
+            return;
+        }
+        Set<Long> itemIds = itemFacade.getItemIdsByHostItemId(entitlementSearchParam.getHostItemId().getValue());
+        for (Long itemId : itemIds) {
+            entitlementSearchParam.getItemIds().add(new ItemId(itemId));
+        }
     }
 
     private void checkIsActiveAndIsBanned(EntitlementSearchParam entitlementSearchParam) {

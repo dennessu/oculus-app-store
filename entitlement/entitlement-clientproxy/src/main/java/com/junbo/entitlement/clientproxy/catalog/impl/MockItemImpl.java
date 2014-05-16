@@ -8,6 +8,9 @@ package com.junbo.entitlement.clientproxy.catalog.impl;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.entitlement.clientproxy.catalog.ItemFacade;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Mocked definition facade.
  */
@@ -15,5 +18,10 @@ public class MockItemImpl implements ItemFacade {
     @Override
     public ItemRevision getItem(Long itemId) {
         return new ItemRevision();
+    }
+
+    @Override
+    public Set<Long> getItemIdsByHostItemId(Long hostItemId) {
+        return new HashSet<>();
     }
 }
