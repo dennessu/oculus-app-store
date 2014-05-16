@@ -17,8 +17,7 @@ import groovy.transform.CompileStatic;
 public class ItemAuthorizeCallbackFactory extends AbstractAuthorizeCallbackFactory<Item> {
 
     @Override
-    public AuthorizeCallback<Item> create(String apiName, Item entity) {
-
-        return new ItemAuthorizeCallback(this, apiName, entity);
+    public AuthorizeCallback<Item> create(Item entity) {
+        return new ItemAuthorizeCallback(this, entity);
     }
 }

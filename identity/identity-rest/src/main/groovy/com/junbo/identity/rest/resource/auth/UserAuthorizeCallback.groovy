@@ -17,8 +17,13 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class UserAuthorizeCallback extends AbstractAuthorizeCallback<User> {
 
-    UserAuthorizeCallback(AbstractAuthorizeCallbackFactory<User> factory, String apiName, User entity) {
-        super(factory, apiName, entity)
+    UserAuthorizeCallback(AbstractAuthorizeCallbackFactory<User> factory, User entity) {
+        super(factory, entity)
+    }
+
+    @Override
+    String getApiName() {
+        return 'users'
     }
 
     @Override

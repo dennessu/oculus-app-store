@@ -18,8 +18,8 @@ import com.junbo.oauth.db.repo.ScopeRepository
 import com.junbo.oauth.db.repo.impl.ApiDefinitionRepositoryImpl
 import com.junbo.oauth.db.repo.impl.ClientRepositoryImpl
 import com.junbo.oauth.db.repo.impl.ScopeRepositoryImpl
-import com.junbo.oauth.spec.model.ApiDefinition
 import com.junbo.oauth.spec.model.Client
+import com.junbo.oauth.spec.model.ApiDefinition
 import com.junbo.oauth.spec.model.Scope
 import com.ning.http.client.AsyncHttpClient
 import groovy.transform.CompileStatic

@@ -15,28 +15,28 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 /**
- * ApiEndpoint.
+ * ApiDefinitionEndpoint.
  */
-@Api("oauth2")
-@Path("/oauth2/apis")
+@Api("authorization")
+@Path("/api-definitions")
 @RestResource
 @Produces(MediaType.APPLICATION_JSON)
-public interface ApiEndpoint {
+public interface ApiDefinitionEndpoint {
     @GET
-    Promise<List<ApiDefinition>> getAllApis();
+    Promise<List<ApiDefinition>> list();
 
     @GET
     @Path("/{apiName}")
-    Promise<ApiDefinition> getApi(@PathParam("apiName") String apiName);
+    Promise<ApiDefinition> get(@PathParam("apiName") String apiName);
 
     @POST
-    Promise<ApiDefinition> postApi(ApiDefinition apiDefinition);
+    Promise<ApiDefinition> create(ApiDefinition apiDefinition);
 
     @PUT
     @Path("/{apiName}")
-    Promise<ApiDefinition> putApi(@PathParam("apiName") String apiName, ApiDefinition apiDefinition);
+    Promise<ApiDefinition> update(@PathParam("apiName") String apiName, ApiDefinition apiDefinition);
 
     @DELETE
     @Path("/{apiName}")
-    Promise<Void> deleteApi(@PathParam("apiName") String apiName);
+    Promise<Void> delete(@PathParam("apiName") String apiName);
 }

@@ -10,17 +10,17 @@ import com.junbo.authorization.TokenInfoParser
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.ApiService
-import com.junbo.oauth.spec.endpoint.ApiEndpoint
+import com.junbo.oauth.spec.endpoint.ApiDefinitionEndpoint
 import com.junbo.oauth.spec.model.ApiDefinition
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
- * ApiEndpointImpl.
+ * ApiDefinitionEndpointImpl.
  */
 @CompileStatic
 @SuppressWarnings('UnnecessaryGetter')
-class ApiEndpointImpl implements ApiEndpoint {
+class ApiDefinitionEndpointImpl implements ApiDefinitionEndpoint {
 
     private static final String API_MANAGE_SCOPE = 'api.manage'
 
@@ -41,7 +41,7 @@ class ApiEndpointImpl implements ApiEndpoint {
     }
 
     @Override
-    Promise<List<ApiDefinition>> getAllApis() {
+    Promise<List<ApiDefinition>> list() {
 
         return tokenInfoParser.parseAndThen {
             if (!AuthorizeContext.hasScopes(API_INFO_SCOPE)) {
@@ -53,7 +53,7 @@ class ApiEndpointImpl implements ApiEndpoint {
     }
 
     @Override
-    Promise<ApiDefinition> getApi(String apiName) {
+    Promise<ApiDefinition> get(String apiName) {
 
         return tokenInfoParser.parseAndThen {
             if (!AuthorizeContext.hasScopes(API_INFO_SCOPE)) {
@@ -65,7 +65,7 @@ class ApiEndpointImpl implements ApiEndpoint {
     }
 
     @Override
-    Promise<ApiDefinition> postApi(ApiDefinition apiDefinition) {
+    Promise<ApiDefinition> create(ApiDefinition apiDefinition) {
 
         return tokenInfoParser.parseAndThen {
             if (!AuthorizeContext.hasScopes(API_MANAGE_SCOPE)) {
@@ -77,7 +77,7 @@ class ApiEndpointImpl implements ApiEndpoint {
     }
 
     @Override
-    Promise<ApiDefinition> putApi(String apiName, ApiDefinition apiDefinition) {
+    Promise<ApiDefinition> update(String apiName, ApiDefinition apiDefinition) {
 
         return tokenInfoParser.parseAndThen {
             if (!AuthorizeContext.hasScopes(API_MANAGE_SCOPE)) {
@@ -89,7 +89,7 @@ class ApiEndpointImpl implements ApiEndpoint {
     }
 
     @Override
-    Promise<Void> deleteApi(String apiName) {
+    Promise<Void> delete(String apiName) {
 
         return tokenInfoParser.parseAndThen {
             if (!AuthorizeContext.hasScopes(API_MANAGE_SCOPE)) {
