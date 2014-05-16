@@ -9,7 +9,7 @@ import com.junbo.authorization.spec.model.Role
  */
 class RoleAuthorizeCallbackFactory extends AbstractAuthorizeCallbackFactory<Role> {
     @Override
-    AuthorizeCallback<Role> create(String apiName, Role entity) {
-        return new RoleAuthorizeCallback(this, apiName, entity)
+    AuthorizeCallback<Role> create(Role entity) {
+        return new RoleAuthorizeCallback(this, entity)
     }
 }

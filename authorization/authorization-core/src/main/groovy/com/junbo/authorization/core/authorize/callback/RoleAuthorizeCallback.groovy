@@ -15,8 +15,13 @@ import com.junbo.identity.spec.v1.option.model.GroupGetOptions
  * Created by Zhanxin on 5/16/2014.
  */
 class RoleAuthorizeCallback extends AbstractAuthorizeCallback<Role> {
-    RoleAuthorizeCallback(AbstractAuthorizeCallbackFactory<Role> factory, String apiName, Role entity) {
-        super(factory, apiName, entity)
+    RoleAuthorizeCallback(AbstractAuthorizeCallbackFactory<Role> factory, Role entity) {
+        super(factory, entity)
+    }
+
+    @Override
+    String getApiName() {
+        return '/roles'
     }
 
     @Override

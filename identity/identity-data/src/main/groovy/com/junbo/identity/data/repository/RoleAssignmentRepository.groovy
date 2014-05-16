@@ -20,17 +20,7 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface RoleAssignmentRepository extends BaseRepository<RoleAssignment, RoleAssignmentId> {
-    @ReadMethod
-    Promise<T> get(K id);
 
-    @WriteMethod
-    Promise<T> create(T model);
-
-    @WriteMethod
-    Promise<T> update(T model);
-
-    @DeleteMethod
-    Promise<Void> delete(K id);
     @ReadMethod
     Promise<RoleAssignment> findByRoleIdAssignee(RoleId roleId, String assigneeType, Long assigneeId)
 }
