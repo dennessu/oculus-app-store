@@ -24,8 +24,8 @@ public class PromotionRevisionRepository implements BaseRevisionRepository<Promo
     @Autowired
     private PromotionRevisionDao promotionRevisionDao;
 
-    public Long create(PromotionRevision offerRevision) {
-        return promotionRevisionDao.create(PromotionRevisionMapper.toDBEntity(offerRevision));
+    public Long create(PromotionRevision promotionRevision) {
+        return promotionRevisionDao.create(PromotionRevisionMapper.toDBEntity(promotionRevision));
     }
 
     public PromotionRevision get(Long revisionId) {
@@ -33,7 +33,7 @@ public class PromotionRevisionRepository implements BaseRevisionRepository<Promo
     }
 
     public List<PromotionRevision> getRevisions(PromotionRevisionsGetOptions options) {
-        List<PromotionRevisionEntity> revisionEntities = promotionRevisionDao.getRevisions(options);
+        List<PromotionRevisionEntity> revisionEntities = promotionRevisionDao.getEffectiveRevisions(options);
         List<PromotionRevision> revisions = new ArrayList<>();
         for (PromotionRevisionEntity revisionEntity : revisionEntities) {
             revisions.add(PromotionRevisionMapper.toModel(revisionEntity));

@@ -28,7 +28,7 @@ public interface PromotionRevisionResource {
     //@ApiOperation("Get or search promotion revisions")
     @GET
     @Path("/")
-    Promise<Results<PromotionRevision>> getPromotionRevisions(PromotionRevisionsGetOptions options);
+    Promise<Results<PromotionRevision>> getPromotionRevisions(@BeanParam PromotionRevisionsGetOptions options);
 
     //@ApiOperation("Get an promotion revision")
     @GET
