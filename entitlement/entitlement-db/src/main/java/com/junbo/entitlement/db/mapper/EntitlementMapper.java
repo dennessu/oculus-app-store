@@ -6,7 +6,6 @@
 
 package com.junbo.entitlement.db.mapper;
 
-import com.junbo.common.id.UserId;
 import com.junbo.common.model.AdminInfo;
 import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.lib.EntitlementContext;
@@ -29,7 +28,7 @@ public class EntitlementMapper {
         }
         Entitlement entitlement = new Entitlement();
         entitlement.setEntitlementId(entitlementEntity.getEntitlementId());
-        entitlement.setResourceAge(entitlementEntity.getRev().toString());
+        entitlement.setResourceAge(entitlementEntity.getRev());
         entitlement.setUserId(entitlementEntity.getUserId());
         entitlement.setItemId(entitlementEntity.getItemId());
         entitlement.setIsActive(isActive(entitlementEntity));
@@ -39,8 +38,8 @@ public class EntitlementMapper {
         entitlement.setCreatedTime(entitlementEntity.getCreatedTime());
         entitlement.setUpdatedTime(entitlementEntity.getModifiedTime());
         AdminInfo adminInfo = new AdminInfo();
-        adminInfo.setCreatedBy(new UserId(Long.valueOf(entitlementEntity.getCreatedBy())));
-        adminInfo.setUpdatedBy(new UserId(Long.valueOf(entitlementEntity.getModifiedBy())));
+        adminInfo.setCreatedBy(Long.valueOf(entitlementEntity.getCreatedBy()));
+        adminInfo.setUpdatedBy(Long.valueOf(entitlementEntity.getModifiedBy()));
         entitlement.setAdminInfo(adminInfo);
         if (entitlementEntity.getExpirationTime().getTime() == EntitlementConsts.NEVER_EXPIRE.getTime()) {
             entitlement.setExpirationTime(null);
@@ -63,7 +62,7 @@ public class EntitlementMapper {
         entitlementEntity.setTrackingUuid(entitlement.getTrackingUuid());
         entitlementEntity.setEntitlementId(entitlement.getEntitlementId());
         if (entitlement.getResourceAge() != null) {
-            entitlementEntity.setRev(Integer.valueOf(entitlement.getResourceAge()));
+            entitlementEntity.setRev(entitlement.getResourceAge());
         }
         entitlementEntity.setItemId(
                 entitlement.getItemId());
