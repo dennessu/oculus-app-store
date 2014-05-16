@@ -29,6 +29,7 @@ class UserCryptoResourceImpl extends CommonResourceImpl implements UserCryptoRes
             return getCurrentUserCryptoKey(userCryptoKey.userId).then { Integer keyVersion ->
                 return symmetricEncryptUserKey(userCryptoKey.value).then { String encryptValue ->
                     userCryptoKey.encryptValue = encryptValue
+                    userCryptoKey.value = null
                     userCryptoKey.keyVersion = keyVersion + 1
 
                     return userCryptoKeyRepo.create(userCryptoKey).then {
