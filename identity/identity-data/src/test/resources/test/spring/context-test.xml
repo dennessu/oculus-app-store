@@ -13,4 +13,5 @@
     <import resource="classpath*:spring/dualwrite-context.xml"/>
     <import resource="classpath*:spring/common-lib-context.xml" />
     <import resource="classpath*:spring/spring-context.xml" />
+    <import resource="classpath*:spring/data-context.xml" />
 </beans>
