@@ -12,6 +12,7 @@ import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.CollectionUtils
 
 import java.util.regex.Pattern
 
@@ -105,6 +106,11 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
 
                 return userPersonalInfoRepository.searchByUserIdAndType(userId, UserPersonalInfoType.PHONE.toString())
                         .then { List<UserPersonalInfo> userPersonalInfoList ->
+
+                    if (CollectionUtils.isEmpty(userPersonalInfoList)) {
+                        return Promise.pure(null)
+                    }
+
                     // Even the phone is updated, we will treat this as new added
                     userPersonalInfoList.sort( new Comparator<UserPersonalInfo>( ) {
                         @Override
