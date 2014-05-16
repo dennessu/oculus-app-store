@@ -106,7 +106,7 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
                 }
 
                 List<UserPersonalInfo> infos = new ArrayList<>()
-                return Promise.each(userPersonalInfos.iterator()) { EncryptUserPersonalInfo personalInfo ->
+                return Promise.each(userPersonalInfos) { EncryptUserPersonalInfo personalInfo ->
                     return get(personalInfo.userPersonalInfoId).then { UserPersonalInfo userPersonalInfo ->
                         Email emailObj = (Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Email)
                         if (emailObj.value == email) {
@@ -131,7 +131,7 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
                 }
 
                 List<UserPersonalInfo> infos = new ArrayList<>()
-                return Promise.each(userPersonalInfos.iterator()) { EncryptUserPersonalInfo personalInfo ->
+                return Promise.each(userPersonalInfos) { EncryptUserPersonalInfo personalInfo ->
                     return get(personalInfo.userPersonalInfoId).then { UserPersonalInfo userPersonalInfo ->
                         PhoneNumber phoneObj = (PhoneNumber)JsonHelper.jsonNodeToObj(userPersonalInfo.value,
                                 PhoneNumber)
