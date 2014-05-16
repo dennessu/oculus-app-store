@@ -10,18 +10,20 @@ import javax.ws.rs.NotSupportedException
  */
 @CompileStatic
 enum UserPersonalInfoType implements Identifiable<Short> {
-    EMAIL((short)1),
-    PHONE((short)2),
-    NAME((short)3),
-    DOB((short)4),
-    SMS((short)5),
-    QQ((short)6),
-    WHATSAPP((short)7),
-    PASSPORT((short)8),
-    GOVERNMENT_ID((short)9),
-    DRIVERS_LICENSE((short)10),
-    GENDER((short)11),
-    ADDRESS((short)12)
+
+    WIPED((short)1),
+    ADDRESS((short)2),
+    EMAIL((short)3),
+    PHONE((short)4),
+    NAME((short)5),
+    DOB((short)6),
+    SMS((short)7),
+    QQ((short)8),
+    WHATSAPP((short)9),
+    PASSPORT((short)10),
+    GOVERNMENT_ID((short)11),
+    DRIVERS_LICENSE((short)12),
+    GENDER((short)13)
 
     private final Short id
 

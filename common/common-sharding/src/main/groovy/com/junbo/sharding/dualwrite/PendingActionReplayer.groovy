@@ -52,7 +52,7 @@ public class PendingActionReplayer {
 
             return future.then { Boolean result ->
                 if (result != null && result.booleanValue()) {
-                    pendingActionRepository.delete(action.id)
+                    return pendingActionRepository.delete(action.id)
                 }
                 return Promise.pure(null);
             };

@@ -6,11 +6,9 @@ import com.junbo.sharding.dualwrite.annotations.ReadMethod
 import com.junbo.sharding.dualwrite.annotations.WriteMethod
 import groovy.transform.CompileStatic
 
-import java.lang.annotation.Annotation
 import java.lang.reflect.InvocationHandler
 import java.lang.reflect.Method
 import java.lang.reflect.Proxy
-
 /**
  * Created by minhao on 4/20/14.
  */
@@ -57,8 +55,6 @@ class RepositoryProxy implements InvocationHandler {
 
     @Override
     Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        Annotation[] annotations = method.declaredAnnotations
-
         def dataAccessStrategy = getEffectiveStrategy()
 
         if (method.getAnnotation(ReadMethod) != null) {

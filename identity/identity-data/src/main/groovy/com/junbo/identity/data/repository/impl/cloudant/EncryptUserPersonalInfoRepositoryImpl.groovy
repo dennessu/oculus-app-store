@@ -19,8 +19,6 @@ import org.springframework.util.CollectionUtils
 class EncryptUserPersonalInfoRepositoryImpl extends CloudantClient<EncryptUserPersonalInfo>
         implements EncryptUserPersonalInfoRepository {
 
-    private IdGenerator idGenerator
-
     @Override
     protected CloudantViews getCloudantViews() {
         return views
@@ -85,9 +83,4 @@ class EncryptUserPersonalInfoRepositoryImpl extends CloudantClient<EncryptUserPe
                             resultClass: String)
             ]
     )
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
 }
