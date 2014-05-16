@@ -91,7 +91,7 @@ class UserResourceImpl implements UserResource {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
 
-            def callback = userAuthorizeCallbackFactory.create(user)
+            def callback = userAuthorizeCallbackFactory.create(oldUser)
             return authorizeService.authorizeAndThen(callback) {
                 user = userFilter.filterForPut(user, oldUser)
 
@@ -120,7 +120,7 @@ class UserResourceImpl implements UserResource {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
 
-            def callback = userAuthorizeCallbackFactory.create(user)
+            def callback = userAuthorizeCallbackFactory.create(oldUser)
             return authorizeService.authorizeAndThen(callback) {
                 user = userFilter.filterForPatch(user, oldUser)
 

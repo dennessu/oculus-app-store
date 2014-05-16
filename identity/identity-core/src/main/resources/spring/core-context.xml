@@ -632,42 +632,54 @@
 
     <bean id="userPersonalInfoFilter" class="com.junbo.identity.core.service.filter.UserPersonalInfoFilter">
         <property name="readableProperties">
-            <list>
-                <value>id</value>
-                <value>type</value>
-                <value>value</value>
-                <value>lastValidateTime</value>
-                <value>isNormalized</value>
-                <value>label</value>
-                <value>userId</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
+            <map>
+                <entry key="read">
+                    <list>
+                        <value>id</value>
+                        <value>type</value>
+                        <value>value</value>
+                        <value>lastValidateTime</value>
+                        <value>isNormalized</value>
+                        <value>label</value>
+                        <value>userId</value>
+                        <value>resourceAge</value>
+                        <value>createdTime</value>
+                        <value>updatedTime</value>
+                    </list>
+                </entry>
+            </map>
         </property>
 
         <property name="writablePropertiesForCreate">
-            <list>
-                <value>type</value>
-                <value>value</value>
-                <value>lastValidateTime</value>
-                <value>isNormalized</value>
-                <value>label</value>
-                <value>userId</value>
-            </list>
+            <map>
+                <entry key="create">
+                    <list>
+                        <value>type</value>
+                        <value>value</value>
+                        <value>lastValidateTime</value>
+                        <value>isNormalized</value>
+                        <value>label</value>
+                        <value>userId</value>
+                    </list>
+                </entry>
+            </map>
         </property>
 
         <property name="writablePropertiesForUpdate">
-            <list>
-                <value>id</value>
-                <value>type</value>
-                <value>value</value>
-                <value>lastValidateTime</value>
-                <value>isNormalized</value>
-                <value>label</value>
-                <value>userId</value>
-                <value>resourceAge</value>
-            </list>
+            <map>
+                <entry key="update">
+                    <list>
+                        <value>id</value>
+                        <value>type</value>
+                        <value>value</value>
+                        <value>lastValidateTime</value>
+                        <value>isNormalized</value>
+                        <value>label</value>
+                        <value>userId</value>
+                        <value>resourceAge</value>
+                    </list>
+                </entry>
+            </map>
         </property>
     </bean>
 

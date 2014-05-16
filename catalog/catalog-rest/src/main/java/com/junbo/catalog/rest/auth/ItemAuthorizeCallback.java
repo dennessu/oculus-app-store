@@ -23,7 +23,7 @@ class ItemAuthorizeCallback extends AbstractAuthorizeCallback<Item> {
 
     @Override
     public String getApiName() {
-        return "items";
+        return "/items";
     }
 
     @Override
