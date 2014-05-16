@@ -6,21 +6,21 @@
 package com.junbo.authorization
 
 import com.junbo.langur.core.promise.Promise
-import com.junbo.oauth.spec.endpoint.ApiEndpoint
-import com.junbo.oauth.spec.model.ApiDefinition
+import com.junbo.oauth.spec.endpoint.ApiDefinitionEndpoint
 import com.junbo.oauth.spec.model.MatrixRow
+import com.junbo.oauth.spec.model.ApiDefinition
 import groovy.transform.CompileStatic
 
 import javax.ws.rs.PathParam
 
 /**
- * MockApiEndpoint.
+ * MockApiDefinitionEndpoint.
  */
 @CompileStatic
-class MockApiEndpoint implements ApiEndpoint {
+class MockApiDefinitionEndpoint implements ApiDefinitionEndpoint {
     private ApiDefinition api
 
-    MockApiEndpoint() {
+    MockApiDefinitionEndpoint() {
         MatrixRow row1 = new MatrixRow(precondition: 'owner', rights: ['owner', 'read'])
         MatrixRow row2 = new MatrixRow(precondition: 'admin', rights: ['admin', 'read'])
         MatrixRow row3 = new MatrixRow(precondition: 'guest', rights: ['read'])
@@ -28,28 +28,28 @@ class MockApiEndpoint implements ApiEndpoint {
     }
 
     @Override
-    Promise<List<ApiDefinition>> getAllApis() {
+    Promise<List<ApiDefinition>> list() {
         return Promise.pure([api].asList())
     }
 
     @Override
-    Promise<ApiDefinition> getApi(@PathParam("apiName") String apiName) {
+    Promise<ApiDefinition> get(@PathParam("apiName") String apiName) {
 
         return Promise.pure(api)
     }
 
     @Override
-    Promise<ApiDefinition> postApi(ApiDefinition apiDefinition) {
+    Promise<ApiDefinition> create(ApiDefinition apiDefinition) {
         return null
     }
 
     @Override
-    Promise<ApiDefinition> putApi(String apiName, ApiDefinition apiDefinition) {
+    Promise<ApiDefinition> update(String apiName, ApiDefinition apiDefinition) {
         return null
     }
 
     @Override
-    Promise<Void> deleteApi(String apiName) {
+    Promise<Void> delete(String apiName) {
         return null
     }
 }

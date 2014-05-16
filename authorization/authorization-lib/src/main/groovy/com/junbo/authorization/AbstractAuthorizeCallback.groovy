@@ -29,29 +29,21 @@ abstract class AbstractAuthorizeCallback<T> implements AuthorizeCallback<T> {
 
     private final AbstractAuthorizeCallbackFactory<T> factory
 
-    private final String apiName
-
     private final T entity
 
     AbstractAuthorizeCallbackFactory<T> getFactory() {
         return factory
     }
 
-    String getApiName() {
-        return apiName
-    }
+    abstract String getApiName()
 
     T getEntity() {
         return entity
     }
 
-    protected AbstractAuthorizeCallback(AbstractAuthorizeCallbackFactory<T> factory, String apiName, T entity) {
+    protected AbstractAuthorizeCallback(AbstractAuthorizeCallbackFactory<T> factory, T entity) {
         if (factory == null) {
             throw new IllegalArgumentException('factory is null')
-        }
-
-        if (apiName == null || apiName.empty) {
-            throw new IllegalArgumentException('apiName is null or empty')
         }
 
         if (entity == null) {
@@ -59,8 +51,6 @@ abstract class AbstractAuthorizeCallback<T> implements AuthorizeCallback<T> {
         }
 
         this.factory = factory
-
-        this.apiName = apiName
 
         this.entity = entity
     }
@@ -192,7 +182,7 @@ abstract class AbstractAuthorizeCallback<T> implements AuthorizeCallback<T> {
         }
 
         Results<RoleAssignment> roleAssignments = factory.roleAssignmentResource.list(new RoleAssignmentListOptions(
-                roleId: (RoleId)role.id,
+                roleId: (RoleId) role.id,
                 assignee: assignee.join(',')
         )).wrapped().get()
 

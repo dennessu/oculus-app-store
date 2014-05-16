@@ -6,9 +6,9 @@
 package com.junbo.authorization
 
 import com.junbo.langur.core.promise.Promise
-import com.junbo.oauth.spec.endpoint.ApiEndpoint
-import com.junbo.oauth.spec.model.ApiDefinition
+import com.junbo.oauth.spec.endpoint.ApiDefinitionEndpoint
 import com.junbo.oauth.spec.model.MatrixRow
+import com.junbo.oauth.spec.model.ApiDefinition
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Required
 @CompileStatic
 class AuthorizeServiceImpl implements AuthorizeService {
 
-    private ApiEndpoint apiEndpoint
+    private ApiDefinitionEndpoint apiDefinitionEndpoint
 
     private Map<String, ConditionEvaluator> conditionEvaluators
 
@@ -27,8 +27,8 @@ class AuthorizeServiceImpl implements AuthorizeService {
     private Boolean useDummyRights
 
     @Required
-    void setApiEndpoint(ApiEndpoint apiEndpoint) {
-        this.apiEndpoint = apiEndpoint
+    void setApiDefinitionEndpoint(ApiDefinitionEndpoint apiEndpoint) {
+        this.apiDefinitionEndpoint = apiEndpoint
     }
 
     @Required
@@ -108,6 +108,6 @@ class AuthorizeServiceImpl implements AuthorizeService {
     }
 
     private Promise<ApiDefinition> getApiDefinition(String apiName) {
-        return apiEndpoint.getApi(apiName)
+        return apiDefinitionEndpoint.get(apiName)
     }
 }

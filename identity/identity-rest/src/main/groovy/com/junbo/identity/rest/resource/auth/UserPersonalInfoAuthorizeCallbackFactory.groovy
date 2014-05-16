@@ -8,16 +8,17 @@ package com.junbo.identity.rest.resource.auth
 import com.junbo.authorization.AbstractAuthorizeCallbackFactory
 import com.junbo.authorization.AuthorizeCallback
 import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import groovy.transform.CompileStatic
 
 /**
  * ItemAuthorizeCallbackFactoryBean.
  */
 @CompileStatic
-class UserAuthorizeCallbackFactory extends AbstractAuthorizeCallbackFactory<User> {
+class UserPersonalInfoAuthorizeCallbackFactory extends AbstractAuthorizeCallbackFactory<UserPersonalInfo> {
 
     @Override
-    AuthorizeCallback<User> create(User entity) {
-        return new UserAuthorizeCallback(this, entity)
+    AuthorizeCallback<UserPersonalInfo> create(UserPersonalInfo entity) {
+        return new UserPersonalInfoAuthorizeCallback(this, entity)
     }
 }

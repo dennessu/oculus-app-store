@@ -77,13 +77,13 @@
 
     <bean id="defaultScopeEndpointRouter" parent="routingRouterBase" />
 
-    <bean id="defaultApiEndpoint" class="com.junbo.oauth.api.endpoint.ApiEndpointImpl">
+    <bean id="defaultApiEndpoint" class="com.junbo.oauth.api.endpoint.ApiDefinitionEndpointImpl">
         <property name="apiService" ref="apiService"/>
         <property name="tokenInfoParser" ref="tokenInfoParser"/>
 
     </bean>
 
-    <bean id="defaultApiEndpointClientFactory" class="com.junbo.oauth.spec.endpoint.proxy.ApiEndpointClientProxyFactory"/>
+    <bean id="defaultApiEndpointClientFactory" class="com.junbo.oauth.spec.endpoint.proxy.ApiDefinitionEndpointClientProxyFactory"/>
 
     <bean id="defaultApiEndpointRouter" parent="routingRouterBase" />
 

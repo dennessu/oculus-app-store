@@ -14,16 +14,16 @@ import groovy.transform.CompileStatic
 class EntityAuthorizeCallbackFactory extends AbstractAuthorizeCallbackFactory<Entity> {
 
     @Override
-    AuthorizeCallback<Entity> create(String apiName, Entity entity) {
-        return new EntityAuthorizeCallback(this, apiName, entity)
+    AuthorizeCallback<Entity> create(Entity entity) {
+        return new EntityAuthorizeCallback(this, entity)
     }
 
     private class EntityAuthorizeCallback extends AbstractAuthorizeCallback<Entity> {
 
         Long resourceId
 
-        EntityAuthorizeCallback(EntityAuthorizeCallbackFactory factory, String apiName, Entity entity) {
-            super(factory, apiName, entity)
+        EntityAuthorizeCallback(EntityAuthorizeCallbackFactory factory, Entity entity) {
+            super(factory, entity)
 
             if (resourceId == null && entity != null) {
                 resourceId = entity.id
@@ -31,7 +31,6 @@ class EntityAuthorizeCallbackFactory extends AbstractAuthorizeCallbackFactory<En
         }
 
         Boolean isOwner() {
-
             return resourceId == AuthorizeContext.currentUserId.value
         }
 
@@ -45,7 +44,7 @@ class EntityAuthorizeCallbackFactory extends AbstractAuthorizeCallbackFactory<En
 
         @Override
         String getApiName() {
-            return apiName
+            return 'entity'
         }
     }
 }
