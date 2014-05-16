@@ -65,7 +65,6 @@ class UserTeleAttemptResourceImpl implements UserTeleAttemptResource {
                 if (attempt.succeeded == true) {
                     created201Marker.mark((Id)attempt.id)
 
-                    // todo:    Later we can use one annotation to do this filter.
                     attempt.verifyCode = null
                     attempt = userTeleAttemptFilter.filterForGet(attempt, null)
                     return Promise.pure(attempt)

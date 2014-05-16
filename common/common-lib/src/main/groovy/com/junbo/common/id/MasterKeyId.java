@@ -8,7 +8,7 @@ package com.junbo.common.id;
 /**
  * Created by liangfu on 5/12/14.
  */
-@IdResourcePath("/master-key/{0}")
+@IdResourcePath(value = "/master-key/{0}", regex = "/master-key/(?<id>[0-9A-Z]+)")
 public class MasterKeyId extends Id {
     public MasterKeyId() {}
     public MasterKeyId(long value) {

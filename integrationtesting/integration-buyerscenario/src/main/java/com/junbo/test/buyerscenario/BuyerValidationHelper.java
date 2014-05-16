@@ -5,27 +5,28 @@
  */
 package com.junbo.test.buyerscenario;
 
-import com.junbo.cart.spec.model.item.OfferItem;
-
-import com.junbo.common.id.OfferRevisionId;
-import com.junbo.common.id.PaymentInstrumentId;
-import com.junbo.common.id.UserId;
-import com.junbo.common.model.Results;
-import com.junbo.entitlement.spec.model.Entitlement;
-import com.junbo.order.spec.model.OrderItem;
-import com.junbo.test.common.Entities.enums.Country;
-import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.Utility.BaseValidationHelper;
-import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.exception.TestException;
+import com.junbo.test.common.Entities.enums.Currency;
+import com.junbo.entitlement.spec.model.Entitlement;
+import com.junbo.test.common.Entities.enums.Country;
+import com.junbo.test.common.libs.ShardIdHelper;
+import com.junbo.cart.spec.model.item.OfferItem;
+import com.junbo.common.id.PaymentInstrumentId;
+import com.junbo.email.spec.model.EmailStatus;
+import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.libs.IdConverter;
+import com.junbo.order.spec.model.OrderItem;
 import com.junbo.test.common.libs.DBHelper;
+import com.junbo.common.id.OfferRevisionId;
 import com.junbo.order.spec.model.Order;
 import com.junbo.cart.spec.model.Cart;
-import com.junbo.test.common.libs.IdConverter;
-import com.junbo.test.common.libs.ShardIdHelper;
+import com.junbo.common.model.Results;
+import com.junbo.common.id.OrderId;
+import com.junbo.common.id.UserId;
 
-import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -135,16 +136,22 @@ public class BuyerValidationHelper extends BaseValidationHelper {
         String id = IdConverter.hexStringToId(UserId.class, uid).toString();
         String sql = String.format("select payload from shard_%s.email_history where user_id=\'%s\'",
                 ShardIdHelper.getShardIdByUid(uid), id);
-        String resultString = dbHelper.executeScalar(sql, DBHelper.DBName.EMAIL);
+        String resultPayload = dbHelper.executeScalar(sql, DBHelper.DBName.EMAIL);
 
-        //verifyEqual(resultString.indexOf("OrderConfirmation") >= 0, true, "Verify email type");
-        verifyEqual(resultString.indexOf(orderId) >= 0, true, "verify order Id");
-        verifyEqual(resultString.indexOf("SUCCEED") >= 0, true, "Verify email sent status");
-        verifyEqual(resultString.indexOf(
+        sql = String.format("select status from shard_%s.email_history where user_id=\'%s\'",
+                ShardIdHelper.getShardIdByUid(uid), id);
+        String resultStatus = dbHelper.executeScalar(sql, DBHelper.DBName.EMAIL);
+
+        Long orderIdLong = IdConverter.hexStringToId(OrderId.class, orderId);
+        //verify payload
+        verifyEqual(resultPayload.indexOf(orderIdLong.toString()) >= 0, true, "verify order Id");
+        verifyEqual(resultPayload.indexOf(
                 Master.getInstance().getUser(uid).getUsername()) >= 0, true, "verify email receipt correct");
-        verifyEqual(resultString.indexOf(
+        verifyEqual(resultPayload.indexOf(
                 IdConverter.hexStringToId(UserId.class, uid).toString()) >= 0, true, "verify user id");
 
+        //verify email send status: 1: pending 2: succeed 3: fail 4: SCHEDULED
+        verifyEqual(resultStatus, EmailStatus.SUCCEED.getId().toString(), "email send status");
     }
 
 }

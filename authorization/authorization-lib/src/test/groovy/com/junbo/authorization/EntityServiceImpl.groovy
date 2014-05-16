@@ -5,10 +5,7 @@
  */
 package com.junbo.authorization
 
-import com.junbo.authorization.annotation.AuthContextParam
-import com.junbo.authorization.annotation.AuthorizeRequired
-import com.junbo.authorization.model.AuthorizeContext
-import com.junbo.authorization.service.AuthorizeService
+import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
@@ -33,9 +30,8 @@ class EntityServiceImpl implements EntityService {
     }
 
     @Override
-    @AuthorizeRequired(authCallBackFactoryBean = 'entityAuthorizeCallbackFactory', apiName = 'entity_get')
-    Entity annotatedGet(@AuthContextParam('id') Long id) {
-        if (AuthorizeContext.hasRight('read')) {
+    Entity annotatedGet(Long id) {
+        if (AuthorizeContext.hasRights('read')) {
             return new Entity(id: id, name: 'name', createdBy: 'system')
         }
         return null
@@ -43,31 +39,19 @@ class EntityServiceImpl implements EntityService {
 
     @Override
     Entity get(Long id) {
-        Map<String, Object> map = [:]
-        map['apiName'] = 'entity_get'
-        map['id'] = id
-        AuthorizeCallback callback = entityAuthorizeCallbackFactory.create(map)
-        authorizeService.authorize(callback)
-
-        if (!AuthorizeContext.hasRight('read')) {
-            return null
-        }
-
         Entity entity = new Entity(id: id, name: 'name', createdBy: 'system')
 
-        map.clear()
-        map['apiName'] = 'entity_get'
-        map['entity'] = entity
-        callback = entityAuthorizeCallbackFactory.create(map)
-        authorizeService.authorize(callback)
+        def callback = entityAuthorizeCallbackFactory.create('entity_get', entity)
+        return authorizeService.authorizeAndThen(callback) {
+            if (!AuthorizeContext.hasRights('owner') && !AuthorizeContext.hasRights('admin')) {
+                entity.name = null
+            }
 
-        if (!AuthorizeContext.hasRight('owner') && !AuthorizeContext.hasRight('admin')) {
-            entity.name = null
-        }
+            if (!AuthorizeContext.hasRights('admin')) {
+                entity.createdBy = null
+            }
 
-        if (!AuthorizeContext.hasRight('admin')) {
-            entity.createdBy = null
-        }
-        return entity
+            return Promise.pure(entity)
+        }.wrapped().get()
     }
 }

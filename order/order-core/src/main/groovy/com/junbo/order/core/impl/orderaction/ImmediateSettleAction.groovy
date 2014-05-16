@@ -50,7 +50,8 @@ class ImmediateSettleAction extends BaseOrderEventAwareAction {
         orderInternalService.markSettlement(order)
         Promise promise =
                 facadeContainer.billingFacade.createBalance(
-                        CoreBuilder.buildBalance(context.orderServiceContext.order, BalanceType.DEBIT))
+                        CoreBuilder.buildBalance(context.orderServiceContext.order, BalanceType.DEBIT),
+                        context?.orderServiceContext?.apiContext?.asyncCharge)
         return promise.syncRecover { Throwable throwable ->
             LOGGER.error('name=Order_ImmediateSettle_Error', throwable)
             throw facadeContainer.billingFacade.convertError(throwable).exception()

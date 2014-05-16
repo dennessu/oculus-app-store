@@ -26,4 +26,5 @@ public interface OrderInternalService {
 
     void markSettlement(Order order);
 
+    Promise<Order> cancelOrder(Order order);
 }

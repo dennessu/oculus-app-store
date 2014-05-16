@@ -8,7 +8,8 @@ package com.junbo.common.id;
 /**
  * Created by liangfu on 4/22/14.
  */
-@IdResourcePath("/users/{userId}/tele-attempts/{0}")
+@IdResourcePath(value = "/users/{userId}/tele-attempts/{0}",
+        regex = "/users/(?<userId>[0-9A-Z]+)/tele-attempts/(?<id>[0-9A-Z]+)")
 public class UserTeleAttemptId extends Id {
 
     public UserTeleAttemptId() {}

@@ -24,9 +24,11 @@ import com.junbo.identity.spec.v1.resource.UserCredentialVerifyAttemptResource
 import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
 import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
+import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.TokenService
 import com.junbo.oauth.core.service.UserService
+import com.junbo.oauth.db.generator.TokenGenerator
 import com.junbo.oauth.db.repo.EmailVerifyCodeRepository
 import com.junbo.oauth.db.repo.ResetPasswordCodeRepository
 import com.junbo.oauth.spec.model.AccessToken
@@ -35,6 +37,7 @@ import com.junbo.oauth.spec.model.ResetPasswordCode
 import com.junbo.oauth.spec.model.UserInfo
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
+import org.glassfish.jersey.server.ContainerRequest
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
@@ -50,11 +53,14 @@ class UserServiceImpl implements UserService {
 
     private static final String EMAIL_SOURCE = 'SilkCloud'
     private static final String EMAIL_ACTION = 'EmailVerification'
-    private static final String EMAIL_VERIFY_PATH = 'oauth2/verify-email'
+    private static final String EMAIL_VERIFY_PATH = 'oauth2/authorize'
+    private static final String EMAIL_VERIFY_EVENT = 'verify'
     private static final String EMAIL_RESET_PASSWORD_PATH = 'oauth2/reset-password'
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl)
 
     private TokenService tokenService
+
+    private TokenGenerator tokenGenerator
 
     private UserPersonalInfoResource userPersonalInfoResource
 
@@ -66,13 +72,16 @@ class UserServiceImpl implements UserService {
 
     private EmailTemplateResource emailTemplateResource
 
-    private EmailVerifyCodeRepository emailVerifyCodeRepository
-
     private ResetPasswordCodeRepository resetPasswordCodeRepository
 
     @Required
     void setTokenService(TokenService tokenService) {
         this.tokenService = tokenService
+    }
+
+    @Required
+    void setTokenGenerator(TokenGenerator tokenGenerator) {
+        this.tokenGenerator = tokenGenerator
     }
 
     @Required
@@ -99,11 +108,6 @@ class UserServiceImpl implements UserService {
     @Required
     void setEmailTemplateResource(EmailTemplateResource emailTemplateResource) {
         this.emailTemplateResource = emailTemplateResource
-    }
-
-    @Required
-    void setEmailVerifyCodeRepository(EmailVerifyCodeRepository emailVerifyCodeRepository) {
-        this.emailVerifyCodeRepository = emailVerifyCodeRepository
     }
 
     @Required
@@ -144,7 +148,7 @@ class UserServiceImpl implements UserService {
         }
 
         return userResource.get(new UserId(accessToken.userId), new UserGetOptions()).then { User user ->
-            return this.getUserEmail(user).then { String email ->
+            return this.getDefaultUserEmail(user).then { String email ->
                 if (email == null) {
                     return Promise.pure(new UserInfo(sub: user.id.toString(), name: user.username, email: ''))
                 }
@@ -155,55 +159,41 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    Promise<Void> verifyEmailByAuthHeader(String authorization, String locale, URI baseUri) {
-        if (!StringUtils.hasText(authorization)) {
-            throw AppExceptions.INSTANCE.missingAuthorization().exception()
-        }
-
-        AccessToken accessToken = tokenService.extractAccessToken(authorization)
-
-        if (accessToken == null) {
-            throw AppExceptions.INSTANCE.invalidAccessToken().exception()
-        }
-
-        if (accessToken.isExpired()) {
-            throw AppExceptions.INSTANCE.expiredAccessToken().exception()
-        }
-
-        return this.verifyEmailByUserId(new UserId(accessToken.userId), locale, baseUri)
-    }
-
-    @Override
-    Promise<Void> verifyEmailByUserId(UserId userId, String locale, URI baseUri) {
+    Promise<Void> sendVerifyEmail(UserId userId, ActionContextWrapper contextWrapper) {
         if (userId == null || userId.value == null) {
             throw AppExceptions.INSTANCE.missingUserId().exception()
         }
+
+        def request = (ContainerRequest) contextWrapper.request
 
         return userResource.get(userId, new UserGetOptions()).then { User user ->
             if (user == null) {
                 throw AppExceptions.INSTANCE.errorCallingIdentity().exception()
             }
 
-            return this.getUserEmail(user).then { String email ->
+            return this.getDefaultUserEmail(user).then { String email ->
                 if (email == null) {
-                    throw AppExceptions.INSTANCE.errorCallingIdentity().exception()
+                    throw AppExceptions.INSTANCE.missingDefaultUserEmail().exception()
                 }
 
                 EmailVerifyCode code = new EmailVerifyCode(
+                        code: tokenGenerator.generateEmailVerifyCode(),
                         userId: (user.id as UserId).value,
                         email: email)
 
-                emailVerifyCodeRepository.save(code)
+                contextWrapper.emailVerifyCode = code
 
-                UriBuilder uriBuilder = UriBuilder.fromUri(baseUri)
+                UriBuilder uriBuilder = UriBuilder.fromUri(request.baseUri)
                 uriBuilder.path(EMAIL_VERIFY_PATH)
+                uriBuilder.queryParam(OAuthParameters.CONVERSATION_ID, contextWrapper.conversationId)
                 uriBuilder.queryParam(OAuthParameters.EMAIL_VERIFY_CODE, code.code)
-                uriBuilder.queryParam(OAuthParameters.LOCALE, locale)
+                uriBuilder.queryParam(OAuthParameters.LOCALE, contextWrapper.viewLocale)
+                uriBuilder.queryParam(OAuthParameters.EVENT, EMAIL_VERIFY_EVENT)
 
                 QueryParam queryParam = new QueryParam(
                         source: EMAIL_SOURCE,
                         action: EMAIL_ACTION,
-                        locale: locale
+                        locale: contextWrapper.viewLocale
                 )
 
                 return this.sendEmail(queryParam, user, email, uriBuilder)
@@ -222,9 +212,9 @@ class UserServiceImpl implements UserService {
                 throw AppExceptions.INSTANCE.errorCallingIdentity().exception()
             }
 
-            return this.getUserEmail(user).then { String email ->
+            return this.getDefaultUserEmail(user).then { String email ->
                 if (email == null) {
-                    throw AppExceptions.INSTANCE.errorCallingIdentity().exception()
+                    throw AppExceptions.INSTANCE.missingDefaultUserEmail().exception()
                 }
 
                 ResetPasswordCode code = new ResetPasswordCode(
@@ -273,15 +263,16 @@ class UserServiceImpl implements UserService {
         return this.resetPasswordByUserId(userId, locale, baseUri)
     }
 
-    private Promise<String> getUserEmail(User user) {
+    private Promise<String> getDefaultUserEmail(User user) {
         if (user == null) {
             throw AppExceptions.INSTANCE.errorCallingIdentity().exception()
         }
 
         for (int i = 0; i < user.emails.size(); i++) {
             def userPersonalInfoLink = user.emails.get(i)
-            // if no default email, pick the last email as possible
-            if (userPersonalInfoLink.isDefault || i == (user.emails.size() - 1)) {
+            // use default email only, the email doesn't need to be verified at the moment
+            // when sending verify-email email and reset-password email
+            if (userPersonalInfoLink.isDefault) {
                 return userPersonalInfoResource.get(userPersonalInfoLink.value, new UserPersonalInfoGetOptions()).then { UserPersonalInfo info ->
                     if (info == null) {
                         return Promise.pure(new UserInfo(sub: user.id.toString(), name: user.username, email: ''))
@@ -293,7 +284,7 @@ class UserServiceImpl implements UserService {
                         userEmail = email.value
                     }
                     catch (Exception e) {
-                        userEmail = ''
+                        return Promise.pure(null)
                     }
 
                     return Promise.pure(userEmail)

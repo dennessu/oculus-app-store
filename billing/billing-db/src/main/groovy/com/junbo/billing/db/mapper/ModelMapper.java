@@ -36,12 +36,14 @@ public interface ModelMapper {
             @Mapping(source = "type", target = "typeId", explicitMethod = "convertBalanceType"),
             @Mapping(source = "status", target = "statusId", explicitMethod = "convertBalanceStatus"),
             @Mapping(source = "taxStatus", target = "taxStatusId", explicitMethod = "convertTaxStatus"),
+            @Mapping(source = "propertySet", target = "propertySet", explicitMethod = "convertPropertySet"),
             @Mapping(source = "createdTime", target = "insertedDate", excluded = true, bidirectional = false),
             @Mapping(source = "updatedTime", target = "updatedDate", excluded = true, bidirectional = false),
     })
     BalanceEntity toBalanceEntity(Balance balance, MappingContext context);
 
     @Mappings({
+            @Mapping(source = "propertySet", target = "propertySet", explicitMethod = "convertPropertySet"),
             @Mapping(source = "createdTime", target = "insertedDate", excluded = true, bidirectional = false),
             @Mapping(source = "updatedTime", target = "updatedDate", excluded = true, bidirectional = false),
     })
@@ -64,12 +66,14 @@ public interface ModelMapper {
             @Mapping(source = "typeId", target = "type", explicitMethod = "convertBalanceType"),
             @Mapping(source = "statusId", target = "status", explicitMethod = "convertBalanceStatus"),
             @Mapping(source = "taxStatusId", target = "taxStatus", explicitMethod = "convertTaxStatus"),
+            @Mapping(source = "propertySet", target = "propertySet", explicitMethod = "convertPropertySet"),
             @Mapping(source = "createdTime", target = "insertedDate", excluded = true, bidirectional = false),
             @Mapping(source = "updatedTime", target = "updatedDate", excluded = true, bidirectional = false),
     })
     Balance toBalance(BalanceEntity entity, MappingContext context);
 
     @Mappings({
+            @Mapping(source = "propertySet", target = "propertySet", explicitMethod = "convertPropertySet"),
             @Mapping(source = "createdTime", target = "insertedDate", excluded = true, bidirectional = false),
             @Mapping(source = "updatedTime", target = "updatedDate", excluded = true, bidirectional = false),
     })

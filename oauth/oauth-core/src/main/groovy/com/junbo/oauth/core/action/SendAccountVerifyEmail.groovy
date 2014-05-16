@@ -15,7 +15,6 @@ import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.UserService
 import groovy.transform.CompileStatic
-import org.glassfish.jersey.server.ContainerRequest
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
@@ -40,9 +39,8 @@ class SendAccountVerifyEmail implements Action {
         def contextWrapper = new ActionContextWrapper(context)
         def user = contextWrapper.user
         Assert.notNull(user, 'user is null')
-        def request = (ContainerRequest) contextWrapper.request
 
-        return userService.verifyEmailByUserId((UserId)(user.id), contextWrapper.viewLocale, request.baseUri).recover { Throwable e ->
+        return userService.sendVerifyEmail((UserId)(user.id), contextWrapper).recover { Throwable e ->
             handleException(e, contextWrapper)
             // Return success no matter the email has been sent or not
             return Promise.pure(new ActionResult('success'))

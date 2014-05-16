@@ -9,7 +9,7 @@ package com.junbo.common.id;
 /**
  * string type token set id.
  */
-@IdResourcePath("/token-sets/{0}")
+@IdResourcePath(value = "/token-sets/{0}", regex = "/token-sets/(?<id>[0-9A-Z]+)")
 public class TokenSetId extends Id {
     public TokenSetId(){
 

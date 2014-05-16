@@ -1,0 +1,14 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile junboProject(':authorization-common')
+    compile junboProject(':authorization-db')
+
+    compile junboProject(':authorization-lib')
+
+    processor junboProject(':oom-processor')
+}
+
+ext {
+    processorClass = 'com.junbo.oom.processor.MappingProcessor'
+}

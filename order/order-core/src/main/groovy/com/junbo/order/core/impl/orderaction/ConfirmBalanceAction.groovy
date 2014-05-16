@@ -50,7 +50,7 @@ class ConfirmBalanceAction extends BaseOrderEventAwareAction {
                 throw AppErrors.INSTANCE.balanceConfirmFailed().exception()
             }
             def balanceConfirmed = false
-            return Promise.each(unconfirmedBalances.iterator()) { Balance unconfirmedBalance ->
+            return Promise.each(unconfirmedBalances) { Balance unconfirmedBalance ->
                 return facadeContainer.billingFacade.confirmBalance(unconfirmedBalance)
                         .syncRecover { Throwable throwable ->
                     LOGGER.error('name=Confirm_Balance_Error', throwable)

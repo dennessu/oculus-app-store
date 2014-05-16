@@ -31,8 +31,6 @@ class ValidateEmailVerifyCode implements Action {
             throw AppExceptions.INSTANCE.invalidVerificationCode().exception()
         }
 
-        contextWrapper.emailVerifyCode = code
-
         return Promise.pure(null)
     }
 }

@@ -10,6 +10,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.impl.common.*
 import com.junbo.order.core.impl.internal.OrderInternalService
+import com.junbo.order.db.entity.enums.OrderStatus
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
@@ -127,6 +128,39 @@ class OrderInternalServiceImpl implements OrderInternalService {
         }
         return completeOrder(order)
     }
+
+    @Override
+    @Transactional
+    Promise<Order> cancelOrder(Order order) {
+
+        def isCancelable = CoreUtils.checkOrderCancelable(order)
+        if (!isCancelable) {
+            LOGGER.info('name=Order_Is_Not_Cancelable, orderId = {}, orderStatus={}', order.id.value, order.status)
+            throw AppErrors.INSTANCE.orderNotCancelable().exception()
+        }
+        LOGGER.info('name=Order_Is_Cancelable, orderId = {}, orderStatus={}', order.id.value, order.status)
+
+        // TODO: reverse authorize if physical goods
+
+        // TODO: refund deposit if preorder
+        return refundDeposit(order).then { Order o ->
+            // mark order status canceled
+            order.status = OrderStatus.CANCELED.name()
+            // update item fulfillment history
+
+            // persist
+            orderRepository.updateOrder(o, true)
+
+            return Promise.pure(o)
+        }
+    }
+
+    @Override
+    @Transactional
+    Promise<Order> refundDeposit(Order order) {
+        return Promise.pure(order)
+    }
+
 
     @Override
     @Transactional

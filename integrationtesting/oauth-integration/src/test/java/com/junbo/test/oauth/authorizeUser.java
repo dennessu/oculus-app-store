@@ -60,7 +60,7 @@ public class authorizeUser {
         TokenInfo tokenInfo = Oauth.GetTokenInfo(accessToken);
         assertEquals("validate token->client is correct", Oauth.DefaultClientId, tokenInfo.getClientId());
         assertEquals("validate token->scopes is correct", Oauth.DefaultClientScopes, tokenInfo.getScopes());
-        User storedUser = Identity.GetUserByUserId(tokenInfo.getSub());
+        User storedUser = Identity.UserGetByUserId(tokenInfo.getSub());
         assertEquals("validate token->binded user is correct", userName, storedUser.getUsername());
     }
 
@@ -91,7 +91,7 @@ public class authorizeUser {
         TokenInfo tokenInfo = Oauth.GetTokenInfo(accessToken);
         assertEquals("validate token->client is correct", Oauth.DefaultClientId, tokenInfo.getClientId());
         assertEquals("validate token->scopes is correct", Oauth.DefaultClientScopes, tokenInfo.getScopes());
-        User storedUser = Identity.GetUserByUserId(tokenInfo.getSub());
+        User storedUser = Identity.UserGetByUserId(tokenInfo.getSub());
         assertEquals("validate token->binded user is correct", userName, storedUser.getUsername());
     }
 

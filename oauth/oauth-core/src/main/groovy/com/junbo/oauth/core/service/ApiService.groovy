@@ -13,13 +13,13 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface ApiService {
-    ApiDefinition getApi(String authorization, String apiName)
+    ApiDefinition getApi(String apiName)
 
-    List<ApiDefinition> getAllApis(String authorization)
+    List<ApiDefinition> getAllApis()
 
-    ApiDefinition saveApi(String authorization, ApiDefinition apiDefinition)
+    ApiDefinition saveApi(ApiDefinition apiDefinition)
 
-    ApiDefinition updateApi(String authorization, String apiName, ApiDefinition apiDefinition)
+    ApiDefinition updateApi(String apiName, ApiDefinition apiDefinition)
 
-    void deleteApi(String authorization, String apiName)
+    void deleteApi(String apiName)
 }

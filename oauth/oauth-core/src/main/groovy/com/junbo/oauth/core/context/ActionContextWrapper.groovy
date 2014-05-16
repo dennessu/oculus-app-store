@@ -53,6 +53,7 @@ class ActionContextWrapper {
     public static final String EMAIL_VERIFY_CODE = 'email_verify_code'
     public static final String RESET_PASSWORD_CODE = 'reset_password_code'
     public static final String THIRD_PARTY_ACCOUNT = 'third_party_account'
+    public static final String SUB_FLOW_NAME = 'sub_flow_name'
 
     @Delegate
     private final ActionContext actionContext
@@ -242,11 +243,11 @@ class ActionContextWrapper {
     }
 
     User getUser() {
-        return (User) actionContext.requestScope[USER]
+        return (User) actionContext.flowScope[USER]
     }
 
     void setUser(User user) {
-        actionContext.requestScope[USER] = user
+        actionContext.flowScope[USER] = user
     }
 
     UserCredential getUserCredential() {
@@ -321,11 +322,11 @@ class ActionContextWrapper {
         actionContext.flowScope[VIEW_LOCALE] = locale
     }
 
-    String getEmailVerifyCode() {
-        return (String) actionContext.flowScope[EMAIL_VERIFY_CODE]
+    EmailVerifyCode getEmailVerifyCode() {
+        return (EmailVerifyCode) actionContext.flowScope[EMAIL_VERIFY_CODE]
     }
 
-    void setEmailVerifyCode(String code) {
+    void setEmailVerifyCode(EmailVerifyCode code) {
         actionContext.flowScope[EMAIL_VERIFY_CODE] = code
     }
 
@@ -354,5 +355,13 @@ class ActionContextWrapper {
 
     void setThirdPartyAccount(ThirdPartyAccount thirdPartyAccount) {
         actionContext.flowScope[THIRD_PARTY_ACCOUNT] = thirdPartyAccount
+    }
+
+    String getSubFlowName() {
+        return actionContext.flowScope[SUB_FLOW_NAME] as String
+    }
+
+    void setSubFlowName(String subFlowName) {
+        actionContext.flowScope[SUB_FLOW_NAME] = subFlowName
     }
 }

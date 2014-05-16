@@ -12,7 +12,7 @@ create table cart (
   user_logged_in boolean not null,
   client_id varchar(100) not null,
   cart_name	varchar(100) not null,
-  resource_age bigint not null,
+  resource_age int not null,
   properties varchar(4000) default null,
   created_time timestamp not null,
   updated_time timestamp not null,

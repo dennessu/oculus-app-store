@@ -9,14 +9,15 @@ import com.junbo.common.id.TosId
 import com.junbo.identity.spec.v1.model.Tos
 import com.junbo.identity.spec.v1.option.list.TosListOptions
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.core.annotations.ReadMethod
+import com.junbo.sharding.dualwrite.annotations.ReadMethod
+import com.junbo.sharding.repo.BaseRepository
 import groovy.transform.CompileStatic
 
 /**
  * Created by liangfu on 4/9/14.
  */
 @CompileStatic
-interface TosRepository extends IdentityBaseRepository<Tos, TosId> {
+interface TosRepository extends BaseRepository<Tos, TosId> {
     @ReadMethod
     Promise<List<Tos>> search(TosListOptions options)
 }

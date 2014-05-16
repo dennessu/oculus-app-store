@@ -8,6 +8,7 @@ package com.junbo.oauth.core.service
 import com.junbo.common.id.UserId
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.langur.core.promise.Promise
+import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.spec.model.UserInfo
 import groovy.transform.CompileStatic
 
@@ -21,9 +22,7 @@ interface UserService {
 
     Promise<UserInfo> getUserInfo(String authorization)
 
-    Promise<Void> verifyEmailByAuthHeader(String authorization, String locale, URI baseUri)
-
-    Promise<Void> verifyEmailByUserId(UserId userId, String locale, URI baseUri)
+    Promise<Void> sendVerifyEmail(UserId userId, ActionContextWrapper contextWrapper)
 
     // csr can issue password reset flow to any verified user in csr tool, the authorization header need to prove
     // the caller has csr privilege.

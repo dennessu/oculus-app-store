@@ -17,6 +17,7 @@ import java.io.IOException;
 public class ContextFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
+        Context.clear();
         Context.get().setRequestContext(requestContext);
     }
 }

@@ -8,7 +8,7 @@ package com.junbo.common.id;
 /**
  * RoleAssignmentId.
  */
-@IdResourcePath("/role-assignments/{0}")
+@IdResourcePath(value = "/role-assignments/{0}", regex = "/role-assignments/(?<id>[0-9A-Z]+)")
 public class RoleAssignmentId extends Id {
     public RoleAssignmentId() {
 

@@ -4,11 +4,6 @@
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
-    <aop:aspectj-autoproxy/>
-
-    <bean id="authorizeAspect" class="com.junbo.authorization.interceptor.AuthorizeAspect">
-        <property name="authorizeService" ref="authorizeService"/>
-    </bean>
 
     <bean id="entityAuthorizeCallbackFactory" class="com.junbo.authorization.EntityAuthorizeCallbackFactory"/>
 
@@ -23,17 +18,23 @@
 
     <bean id="apiEndpoint" class="com.junbo.authorization.MockApiEndpoint"/>
 
-    <bean id="conditionEvaluator" class="com.junbo.authorization.service.impl.SPELConditionEvaluator"/>
+    <bean id="conditionEvaluator" class="com.junbo.authorization.SPELConditionEvaluator"/>
 
     <bean id="httpHeaders" class="com.junbo.authorization.MockHttpHeaders"/>
 
-    <bean id="authorizeService" class="com.junbo.authorization.service.impl.AuthorizeServiceImpl">
-        <property name="tokenEndpoint" ref="tokenEndpoint"/>
-        <property name="tokenInfoEndpoint" ref="tokenInfoEndpoint"/>
+    <bean id="authorizeService" class="com.junbo.authorization.AuthorizeServiceImpl">
         <property name="apiEndpoint" ref="apiEndpoint"/>
-        <property name="serviceClientId" value="client"/>
-        <property name="serviceClientSecret" value="secret"/>
-        <property name="conditionEvaluator" ref="conditionEvaluator"/>
-        <property name="authorizeEnabled" value="true"/>
+        <property name="tokenInfoParser" ref="tokenInfoParser"/>
+        <property name="conditionEvaluators">
+            <list>
+                <ref bean="conditionEvaluator"/>
+            </list>
+        </property>
+        <property name="useDummyRights" value="true"/>
+    </bean>
+
+    <bean id="tokenInfoParser" class="com.junbo.authorization.TokenInfoParserImpl">
+        <property name="tokenInfoEndpoint" ref="tokenInfoEndpoint"/>
+        <property name="useDummyTokenInfo" value="true"/>
     </bean>
 </beans>

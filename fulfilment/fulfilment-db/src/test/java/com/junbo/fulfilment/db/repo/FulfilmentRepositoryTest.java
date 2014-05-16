@@ -2,7 +2,6 @@ package com.junbo.fulfilment.db.repo;
 
 import com.junbo.fulfilment.db.BaseTest;
 import com.junbo.fulfilment.spec.model.FulfilmentItem;
-import com.junbo.fulfilment.spec.constant.FulfilmentStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -21,7 +20,7 @@ public class FulfilmentRepositoryTest extends BaseTest {
 
     private FulfilmentItem buildFulfilmentItem() {
         FulfilmentItem item = new FulfilmentItem();
-        item.setRequestId(123L);
+        item.setRequestId(generateLong());
         item.setOrderItemId(100L);
         item.setOfferId(12345L);
         item.setTimestamp(System.currentTimeMillis());

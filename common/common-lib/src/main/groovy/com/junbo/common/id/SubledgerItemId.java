@@ -9,7 +9,7 @@ package com.junbo.common.id;
 /**
  * Java doc for SubledgerItemId.
  */
-@IdResourcePath("/subledger-items/{0}")
+@IdResourcePath(value = "/subledger-items/{0}", regex = "/subledger-items/(?<id>[0-9A-Z]+)")
 public class SubledgerItemId extends Id {
 
     public SubledgerItemId() {}

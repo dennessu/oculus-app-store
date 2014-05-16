@@ -17,6 +17,7 @@
         <property name="rsaCipherService" ref="rsaCipherService" />
         <property name="versionSeparator" value="${crypto.core.versionSeparator}" />
         <property name="validator" ref="cryptoMessageValidator" />
+        <property name="enableEncrypt" value="${crypto.core.enable}" />
     </bean>
 
     <bean id="defaultMasterKeyResource" class="com.junbo.crypto.rest.resource.MasterKeyResourceImpl" scope="prototype">

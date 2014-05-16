@@ -53,7 +53,8 @@ class WebPaymentChargeAction extends BaseOrderEventAwareAction {
         }
         Promise promise =
                 facadeContainer.billingFacade.createBalance(
-                        CoreBuilder.buildBalance(context.orderServiceContext.order, BalanceType.DEBIT))
+                        CoreBuilder.buildBalance(context.orderServiceContext.order, BalanceType.DEBIT),
+                        context?.orderServiceContext?.apiContext?.asyncCharge)
         return promise.syncRecover { Throwable throwable ->
             LOGGER.error('name=Order_WebPaymentCharge_Error', throwable)
             throw facadeContainer.billingFacade.convertError(throwable).exception()

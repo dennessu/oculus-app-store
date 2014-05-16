@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:aop="http://www.springframework.org/schema/aop"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
-
-    <aop:aspectj-autoproxy/>
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="tokenEndpoint" class="com.junbo.oauth.spec.endpoint.proxy.TokenEndpointClientProxy">
         <constructor-arg name="client" ref="commonAsyncHttpClient"/>
@@ -34,19 +30,21 @@
         <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
-    <bean id="conditionEvaluator" class="com.junbo.authorization.service.impl.SPELConditionEvaluator"/>
-
-    <bean id="authorizeService" class="com.junbo.authorization.service.impl.AuthorizeServiceImpl">
-        <property name="tokenEndpoint" ref="tokenEndpoint"/>
+    <bean id="tokenInfoParser" class="com.junbo.authorization.TokenInfoParserImpl">
         <property name="tokenInfoEndpoint" ref="tokenInfoEndpoint"/>
-        <property name="apiEndpoint" ref="apiEndpoint"/>
-        <property name="serviceClientId" value="${authorize.service.client.id}"/>
-        <property name="serviceClientSecret" value="${authorize.service.client.secret}"/>
-        <property name="conditionEvaluator" ref="conditionEvaluator"/>
-        <property name="authorizeEnabled" value="${authorize.enabled}"/>
+        <property name="useDummyTokenInfo" value="true"/>
     </bean>
 
-    <bean id="authorizeAspect" class="com.junbo.authorization.interceptor.AuthorizeAspect">
-        <property name="authorizeService" ref="authorizeService"/>
+    <bean id="spelConditionEvaluator" class="com.junbo.authorization.SPELConditionEvaluator"/>
+
+    <bean id="authorizeService" class="com.junbo.authorization.AuthorizeServiceImpl">
+        <property name="apiEndpoint" ref="apiEndpoint"/>
+        <property name="tokenInfoParser" ref="tokenInfoParser"/>
+        <property name="conditionEvaluators">
+            <list>
+                <ref bean="spelConditionEvaluator"/>
+            </list>
+        </property>
+        <property name="useDummyRights" value="true"/>
     </bean>
 </beans>

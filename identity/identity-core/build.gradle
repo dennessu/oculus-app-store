@@ -4,7 +4,13 @@ dependencies {
     compile junboProject(':identity-common')
     compile junboProject(':identity-data')
 
+    compile (libraries.spring_security)
+
     processor junboProject(':oom-processor')
+
+    compile (junboProject(':authorization-lib')) {
+        exclude group: 'com.junbo.identity', module: 'identity-spec'
+    }
 }
 
 ext {

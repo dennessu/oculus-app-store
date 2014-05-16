@@ -5,50 +5,100 @@
  */
 package com.junbo.oauth.api.endpoint
 
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.authorization.TokenInfoParser
 import com.junbo.langur.core.promise.Promise
+import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.ApiService
 import com.junbo.oauth.spec.endpoint.ApiEndpoint
 import com.junbo.oauth.spec.model.ApiDefinition
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
-import javax.ws.rs.core.Response
-
 /**
  * ApiEndpointImpl.
  */
 @CompileStatic
+@SuppressWarnings('UnnecessaryGetter')
 class ApiEndpointImpl implements ApiEndpoint {
+
+    private static final String API_MANAGE_SCOPE = 'api.manage'
+
+    private static final String API_INFO_SCOPE = 'api.info'
+
     private ApiService apiService
+
+    private TokenInfoParser tokenInfoParser
 
     @Required
     void setApiService(ApiService apiService) {
         this.apiService = apiService
     }
 
-    @Override
-    Promise<List<ApiDefinition>> getAllApis(String authorization) {
-        return Promise.pure(apiService.getAllApis(authorization))
+    @Required
+    void setTokenInfoParser(TokenInfoParser tokenInfoParser) {
+        this.tokenInfoParser = tokenInfoParser
     }
 
     @Override
-    Promise<ApiDefinition> getApi(String authorization, String apiName) {
-        return Promise.pure(apiService.getApi(authorization, apiName))
+    Promise<List<ApiDefinition>> getAllApis() {
+
+        return tokenInfoParser.parseAndThen {
+            if (!AuthorizeContext.hasScopes(API_INFO_SCOPE)) {
+                return Promise.pure([])
+            }
+
+            return Promise.pure(apiService.allApis);
+        }
     }
 
     @Override
-    Promise<ApiDefinition> postApi(String authorization, ApiDefinition apiDefinition) {
-        return Promise.pure(apiService.saveApi(authorization, apiDefinition))
+    Promise<ApiDefinition> getApi(String apiName) {
+
+        return tokenInfoParser.parseAndThen {
+            if (!AuthorizeContext.hasScopes(API_INFO_SCOPE)) {
+                return Promise.pure(null)
+            }
+
+            return Promise.pure(apiService.getApi(apiName));
+        }
     }
 
     @Override
-    Promise<ApiDefinition> putApi(String authorization, String apiName, ApiDefinition apiDefinition) {
-        return Promise.pure(apiService.updateApi(authorization, apiName, apiDefinition))
+    Promise<ApiDefinition> postApi(ApiDefinition apiDefinition) {
+
+        return tokenInfoParser.parseAndThen {
+            if (!AuthorizeContext.hasScopes(API_MANAGE_SCOPE)) {
+                throw AppExceptions.INSTANCE.insufficientScope().exception()
+            }
+
+            return Promise.pure(apiService.saveApi(apiDefinition));
+        }
     }
 
     @Override
-    Promise<Response> deleteApi(String authorization, String apiName) {
-        apiService.deleteApi(authorization, apiName)
-        return Promise.pure(Response.noContent().build())
+    Promise<ApiDefinition> putApi(String apiName, ApiDefinition apiDefinition) {
+
+        return tokenInfoParser.parseAndThen {
+            if (!AuthorizeContext.hasScopes(API_MANAGE_SCOPE)) {
+                throw AppExceptions.INSTANCE.insufficientScope().exception()
+            }
+
+            return Promise.pure(apiService.updateApi(apiName, apiDefinition))
+        }
+    }
+
+    @Override
+    Promise<Void> deleteApi(String apiName) {
+
+        return tokenInfoParser.parseAndThen {
+            if (!AuthorizeContext.hasScopes(API_MANAGE_SCOPE)) {
+                throw AppExceptions.INSTANCE.insufficientScope().exception()
+            }
+
+            apiService.deleteApi(apiName)
+
+            return Promise.pure(null)
+        }
     }
 }

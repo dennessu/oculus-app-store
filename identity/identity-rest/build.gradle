@@ -20,7 +20,7 @@ dependencies {
 
     compile junboProject(':oom-core')
     compile (libraries.jersey_common)
-    compile junboProject(':authorization-lib')
+
     compile junboProject(':oauth-spec')
 
     compile junboProject(':identity-core')

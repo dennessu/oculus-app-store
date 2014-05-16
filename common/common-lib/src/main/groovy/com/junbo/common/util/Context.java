@@ -7,6 +7,11 @@ package com.junbo.common.util;
 
 import com.junbo.common.routing.model.DataAccessPolicy;
 import com.junbo.configuration.topo.Topology;
+import com.junbo.langur.core.promise.Promise;
+import com.junbo.langur.core.promise.ThreadLocalRequireNew;
+import groovy.lang.Closure;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import java.util.ArrayList;
@@ -19,6 +24,7 @@ import java.util.List;
 public class Context {
     private Context() { }
 
+    private static final Logger logger = LoggerFactory.getLogger(Context.class);
     private static final ThreadLocal<Data> context = new ThreadLocal<>();
 
     public static final String X_REQUEST_ID = "x-request-id";
@@ -36,6 +42,9 @@ public class Context {
         private Integer dataCenterId;
         private Topology topology;
         private DataAccessPolicy dataAccessPolicy;
+
+        private List<?> pendingActions;
+        private List<Promise> pendingTasks = new ArrayList();
 
         public Date getCurrentDate() {
             if (currentDate == null) {
@@ -127,6 +136,63 @@ public class Context {
 
         public void setDataAccessPolicy(DataAccessPolicy dataAccessPolicy) {
             this.dataAccessPolicy = dataAccessPolicy;
+        }
+
+        public List<?> getPendingActions() {
+            return pendingActions;
+        }
+
+        public void setPendingActions(List<?> pendingActions) {
+            this.pendingActions = pendingActions;
+        }
+
+        /**
+         * Register pending tasks.
+         * The tasks is not in the main Promise chain of the current API call, so we used ThreadLocalRequireNew to wrap
+         * the creation of the Promise. Please MAKE SURE the Promise is created in the closure passed in.
+         *
+         * The tasks will be drained automatically before returning from RestAdapter.
+         * @param closure The closure which generates the promise.
+         */
+        public void registerPendingTask(Closure<Promise> closure) {
+            try (ThreadLocalRequireNew scope = new ThreadLocalRequireNew()) {
+                Promise promise = closure.call();
+                this.pendingTasks.add(promise);
+            }
+        }
+
+        /**
+         * Register pending tasks.
+         * The tasks is not in the main Promise chain of the current API call, so we used ThreadLocalRequireNew to wrap
+         * the creation of the Promise. Please MAKE SURE the Promise is created in the closure passed in.
+         *
+         * The tasks will be drained automatically before returning from RestAdapter.
+         * @param func The function which generates the promise.
+         */
+        public void registerPendingTask(Promise.Func0<Promise> func) {
+            try (ThreadLocalRequireNew scope = new ThreadLocalRequireNew()) {
+                Promise promise = func.apply();
+                this.pendingTasks.add(promise);
+            }
+        }
+
+        /**
+         * Drains all pending tasks. If there is any exception in the task, log errors and ignore.
+         * @return The promise that all pending tasks are drained.
+         */
+        public Promise<Void> drainPendingTasks() {
+            return Promise.each(pendingTasks, new Promise.Func<Promise, Promise>() {
+                @Override
+                public Promise<Void> apply(Promise promise) {
+                    return promise.recover(new Promise.Func<Throwable, Promise<Void>>() {
+                        @Override
+                        public Promise<Void> apply(Throwable ex) {
+                            logger.error("Exception in Context.drainTasks: " + ex);
+                            return Promise.pure(null);
+                        }
+                    });
+                }
+            });
         }
     }
 

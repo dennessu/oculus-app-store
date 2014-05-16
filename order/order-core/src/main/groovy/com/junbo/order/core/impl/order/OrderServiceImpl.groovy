@@ -20,6 +20,7 @@ import com.junbo.order.core.impl.common.TransactionHelper
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
+import com.junbo.order.db.entity.enums.OrderActionType
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
@@ -71,7 +72,7 @@ class OrderServiceImpl implements OrderService {
         order.tentative = false
         orderValidator.validateSettleOrderRequest(order)
 
-        def orderServiceContext = initOrderServiceContext(order)
+        def orderServiceContext = initOrderServiceContext(order, context)
         Throwable error
         return flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_TENTATIVE).then { String flowName ->
             // Prepare Flow Request
@@ -97,7 +98,7 @@ class OrderServiceImpl implements OrderService {
         LOGGER.info('name=Update_Tentative_Order. orderId: {}', order.id.value)
 
         setHonoredTime(order)
-        def orderServiceContext = initOrderServiceContext(order)
+        def orderServiceContext = initOrderServiceContext(order, context)
         return prepareOrder(order).then {
             return flowSelector.select(orderServiceContext, OrderServiceOperation.UPDATE_TENTATIVE).then { String flowName ->
                 // Prepare Flow Request
@@ -116,7 +117,7 @@ class OrderServiceImpl implements OrderService {
     @Override
     Promise<Order> updateNonTentativeOrder(Order order, ApiContext context) {
         LOGGER.info('name=Update_Non_Tentative_Order. orderId: {}', order.id.value)
-        def orderServiceContext = initOrderServiceContext(order)
+        def orderServiceContext = initOrderServiceContext(order, context)
         return prepareOrder(order).then {
             return flowSelector.select(
                     orderServiceContext, OrderServiceOperation.UPDATE_NON_TENTATIVE).then { String flowName ->
@@ -140,7 +141,7 @@ class OrderServiceImpl implements OrderService {
         order.id = null
         setHonoredTime(order)
 
-        def orderServiceContext = initOrderServiceContext(order)
+        def orderServiceContext = initOrderServiceContext(order, context)
         return prepareOrder(order).then {
             return flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE_TENTATIVE).then { String flowName ->
                 // Prepare Flow Request
@@ -183,9 +184,31 @@ class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     Promise<OrderEvent> updateOrderByOrderEvent(OrderEvent event) {
-        LOGGER.info('name=Update_Order_By_Order_Event. orderId: {}', event.order.value)
+
+        switch (event.action) {
+            case OrderActionType.CANCEL.name():
+                LOGGER.info('name=Cancel_Order. orderId: {}, action:{}, status{}',
+                        event.order.value, event.action, event.status)
+                break
+            case OrderActionType.CHARGE.name():
+                LOGGER.info('name=Update_Charge_Status. orderId: {}, action:{}, status{}',
+                        event.order.value, event.action, event.status)
+                break
+            case OrderActionType.FULFILL.name():
+                LOGGER.info('name=Update_Fulfillment_Status. orderId: {}, action:{}, status{}',
+                        event.order.value, event.action, event.status)
+                break
+            default:
+                LOGGER.error('name=Event_Action_Not_Supported. orderId: {}, action:{}, status{}',
+                        event.order.value, event.action, event.status)
+                throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
+        }
+
+        LOGGER.info('name=Update_Order_By_Order_Event. orderId: {}, action:{}, status{}',
+                event.order.value, event.action, event.status)
+
         return getOrderByOrderId(event.order.value).then { Order order ->
-            def orderServiceContext = initOrderServiceContext(order)
+            def orderServiceContext = initOrderServiceContext(order, null)
             orderServiceContext.orderEvent = event
             return flowSelector.select(orderServiceContext, OrderServiceOperation.UPDATE).then { String flowName ->
                 // Prepare Flow Request
@@ -225,8 +248,9 @@ class OrderServiceImpl implements OrderService {
         }
     }
 
-    private OrderServiceContext initOrderServiceContext(Order order) {
+    private OrderServiceContext initOrderServiceContext(Order order, ApiContext apiContext) {
         OrderServiceContext context = new OrderServiceContext(order)
+        context.apiContext = apiContext
         return context
     }
 
@@ -240,7 +264,7 @@ class OrderServiceImpl implements OrderService {
     }
 
     private Promise<Object> prepareOrder(Order order) {
-        return Promise.each(order.orderItems.iterator()) { OrderItem item -> // get item type from catalog
+        return Promise.each(order.orderItems) { OrderItem item -> // get item type from catalog
             return facadeContainer.catalogFacade.getOfferRevision(item.offer.value).syncThen { OrderOfferRevision offer ->
                 if (offer == null) {
                     throw AppErrors.INSTANCE.offerNotFound(item.offer.value?.toString()).exception()

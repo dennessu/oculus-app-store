@@ -12,7 +12,6 @@ import com.junbo.oauth.spec.model.MatrixRow
 import groovy.transform.CompileStatic
 
 import javax.ws.rs.PathParam
-import javax.ws.rs.core.Response
 
 /**
  * MockApiEndpoint.
@@ -29,29 +28,28 @@ class MockApiEndpoint implements ApiEndpoint {
     }
 
     @Override
-    Promise<List<ApiDefinition>> getAllApis(String authorization) {
+    Promise<List<ApiDefinition>> getAllApis() {
         return Promise.pure([api].asList())
     }
 
     @Override
-    Promise<ApiDefinition> getApi(String authorization,
-                                  @PathParam("apiName") String apiName) {
+    Promise<ApiDefinition> getApi(@PathParam("apiName") String apiName) {
 
         return Promise.pure(api)
     }
 
     @Override
-    Promise<ApiDefinition> postApi(String authorization, ApiDefinition apiDefinition) {
+    Promise<ApiDefinition> postApi(ApiDefinition apiDefinition) {
         return null
     }
 
     @Override
-    Promise<ApiDefinition> putApi(String authorization, String apiName, ApiDefinition apiDefinition) {
+    Promise<ApiDefinition> putApi(String apiName, ApiDefinition apiDefinition) {
         return null
     }
 
     @Override
-    Promise<Response> deleteApi(String authorization, String apiName) {
+    Promise<Void> deleteApi(String apiName) {
         return null
     }
 }

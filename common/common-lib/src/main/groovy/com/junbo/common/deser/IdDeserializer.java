@@ -7,7 +7,6 @@
 package com.junbo.common.deser;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,7 +34,7 @@ public class IdDeserializer<T extends Id>
     }
 
     @Override
-    public T deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    public T deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         ObjectMapper mapper = ObjectMapperProvider.instance();
         Link ref = mapper.readValue(jp, Link.class);
 
@@ -45,11 +44,7 @@ public class IdDeserializer<T extends Id>
             if (ref != null) {
                 id.setValue(IdFormatter.decodeId(this.clazz, ref.getId()));
             }
-        }
-        catch (InstantiationException e) {
-            logger.error("Resource Id deserialization failed", e);
-        }
-        catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             logger.error("Resource Id deserialization failed", e);
         }
 

@@ -88,6 +88,7 @@ class CouchDataLoader {
         CouchDataLoader loader = new CouchDataLoader(dbUri)
 
         loader.populateData()
+        System.exit(0)
     }
 
     void populateData() {

@@ -31,6 +31,8 @@ public class ErrorCode {
 
     public static final String INVALID_PROPERTIES = "INVALID_PROPERTIES";
 
+    public static final String NO_VALIDATED_USER_EMAIL = "NO_VALIDATED_USER_EMAIL";
+
     public static final String EMAIL_TEMPLATE_NOT_FOUND = "EMAIL_TEMPLATE_NOT_FOUND";
 
     public static final String TEMPLATE_NAME_ALREADY_EXIST = "TEMPLATE_NAME_ALREADY_EXIST";

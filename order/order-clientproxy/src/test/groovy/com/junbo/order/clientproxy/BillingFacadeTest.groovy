@@ -21,7 +21,7 @@ class BillingFacadeTest extends BaseTest {
     @Test(enabled = true)
     void testCreateBalance() {
         def balance = TestBuilder.buildBalance()
-        def promise = billingFacade.createBalance(balance)
+        def promise = billingFacade.createBalance(balance, null)
         promise?.then(new Promise.Func<Balance, Promise>() {
             @Override
             Promise apply(Balance b1) {

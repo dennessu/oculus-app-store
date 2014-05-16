@@ -7,9 +7,9 @@ package com.junbo.common.util;
 
 /**
  * Java doc.
- * @param <T>
+ * @param <K>
  */
-public interface Identifiable<T> {
-    T getId();
-    void setId(T id);
+public interface Identifiable<K> {
+    K getId();
+    void setId(K id);
 }

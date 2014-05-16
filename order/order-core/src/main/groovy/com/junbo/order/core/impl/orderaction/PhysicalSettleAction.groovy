@@ -75,7 +75,8 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
                     Balance balance = CoreBuilder.buildPartialChargeBalance(context.orderServiceContext.order,
                             BalanceType.DEBIT, taxedBalance)
                     // post balance with tax info
-                    return facadeContainer.billingFacade.createBalance(balance).syncRecover { Throwable throwable ->
+                    return facadeContainer.billingFacade.createBalance(balance,
+                            context?.orderServiceContext?.apiContext?.asyncCharge).syncRecover { Throwable throwable ->
                         LOGGER.error('name=Order_PhysicalSettle_CompleteCharge_Error', throwable)
                         // TODO: retry/refund when failing to charge the remaining amount
                         throw facadeContainer.billingFacade.convertError(throwable).exception()
@@ -113,7 +114,8 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
         orderInternalService.markSettlement(context.orderServiceContext.order)
         Balance balance = CoreBuilder.buildPartialChargeBalance(context.orderServiceContext.order,
                 BalanceType.DEBIT, null)
-        Promise promise = facadeContainer.billingFacade.createBalance(balance)
+        Promise promise = facadeContainer.billingFacade.createBalance(balance,
+                context?.orderServiceContext?.apiContext?.asyncCharge)
         return promise.syncRecover {  Throwable throwable ->
             LOGGER.error('name=Order_PhysicalSettle_Error', throwable)
             context.orderServiceContext.order.tentative = true

@@ -11,9 +11,11 @@ import java.lang.reflect.Field;
  * Created by kg on 2/14/14.
  */
 class Snapshot {
-
     private static final Field threadLocalsField;
     private static final Field inheritableThreadLocalsField;
+
+    private static final ThreadLocal<String> dummyThreadLocal = new ThreadLocal<>();
+    private static final InheritableThreadLocal<String> dummyInheritableThreadLocal = new InheritableThreadLocal<>();
 
     static {
         try {
@@ -36,9 +38,16 @@ class Snapshot {
     public Snapshot() {
         classLoader = Thread.currentThread().getContextClassLoader();
 
+        // ensure the threadLocal is not null
+        dummyThreadLocal.set("keepme");
+        dummyInheritableThreadLocal.set("keepme");
+
         try {
             threadLocals = threadLocalsField.get(Thread.currentThread());
             inheritableThreadLocals = inheritableThreadLocalsField.get(Thread.currentThread());
+
+            assert threadLocals != null;
+            assert inheritableThreadLocals != null;
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
@@ -48,7 +57,6 @@ class Snapshot {
 
     public void resume() {
         Thread.currentThread().setContextClassLoader(classLoader);
-
 
         try {
             threadLocalsField.set(Thread.currentThread(), threadLocals);

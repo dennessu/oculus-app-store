@@ -4,71 +4,54 @@ import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
-import java.util.concurrent.Semaphore
+import java.util.concurrent.atomic.AtomicInteger
 /**
  * Created by fzhang on 4/23/2014.
  */
 @CompileStatic
 @Component('orderAsyncBillingFacade')
-class BillingFacadeAsyncImpl extends BillingFacadeImpl implements InitializingBean {
+class BillingFacadeAsyncImpl extends BillingFacadeImpl {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(BillingFacadeAsyncImpl)
 
-    private Semaphore syncChargeLock
+    private final AtomicInteger pendingUserNumber = new AtomicInteger()
 
-    private int syncChargeCapacity
+    private int pendingUserNumberLimit
 
-    @Value('${order.balance.sync.capacity}')
-    void setSyncChargeCapacity(int syncChargeCapacity) {
-        this.syncChargeCapacity = syncChargeCapacity
-    }
-
-    int getSyncChargeCapacity() {
-        return syncChargeCapacity
+    @Value('${order.balance.async.pending.limit}')
+    void setPendingUserNumberLimit(int pendingUserNumberLimit) {
+        this.pendingUserNumberLimit = pendingUserNumberLimit
     }
 
     @Override
-    Promise<Balance> createBalance(Balance balance) {
-        balance.isAsyncCharge = !syncChargeLock.tryAcquire()
+    Promise<Balance> createBalance(Balance balance, Boolean isAsyncCharge) {
+        boolean exceedPendingLimit =  pendingUserNumber.incrementAndGet() > pendingUserNumberLimit
         Promise<Balance> result
+
         try {
-            if (balance.isAsyncCharge) {
-                LOGGER.info('name=CreateBalanceWithAsyncCharge, orderId={}', balance.orderId)
-            }
-
-            result = super.createBalance(balance)
-
+            result = super.createBalance(balance, isAsyncCharge == null ? exceedPendingLimit : isAsyncCharge)
             return result.syncRecover { Throwable throwable ->
-                release(balance.isAsyncCharge)
+                pendingUserNumber.decrementAndGet()
                 throw throwable
             }.syncThen { Balance b ->
-                release(balance.isAsyncCharge)
+                if (b.isAsyncCharge) {
+                    LOGGER.info('name=CreateBalanceWithAsyncCharge, orderId={}', balance.orderId)
+                }
+                this.pendingUserNumber.decrementAndGet()
                 return b
             }
-
         } finally {
             if (result == null) { // error in createBalance, release the
-                release(balance.isAsyncCharge)
+                pendingUserNumber.decrementAndGet()
             }
         }
     }
 
-    int getSyncChargeLockPermit() {
-        return syncChargeLock.availablePermits()
+    int getPendingUserNumberInt() {
+        return pendingUserNumber.get()
     }
 
-    private void release(boolean isAsyncCharge) {
-        if (!isAsyncCharge) {
-            syncChargeLock.release()
-        }
-    }
-
-    @Override
-    void afterPropertiesSet() throws Exception {
-        syncChargeLock = new Semaphore(syncChargeCapacity)
-    }
 }

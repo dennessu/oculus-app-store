@@ -43,7 +43,7 @@
             <wf:on-render>
                 <wf:action ref="loginView"/>
             </wf:on-render>
-            <wf:transition on="next" to="LOGIN_SUCCESS">
+            <wf:transition on="next" to="PRE_LOGIN_SUCCESS">
                 <wf:action ref="validateCaptcha"/>
                 <wf:action ref="authenticateUserAuthorize"/>
             </wf:transition>
@@ -56,6 +56,12 @@
             </wf:transition>
             <wf:transition on="cancel" to="CANCEL_VIEW"/>
         </wf:view-state>
+
+        <wf:action-state id="PRE_LOGIN_SUCCESS">
+            <wf:action ref="checkEmailVerified"/>
+            <wf:transition on="emailVerifyRequired" to="EMAIL_VERIFY_REQUIRED" />
+            <wf:transition on="*" to="LOGIN_SUCCESS" />
+        </wf:action-state>
 
         <wf:view-state id="LOGIN_SUCCESS">
             <wf:on-render>
@@ -71,7 +77,7 @@
             <wf:on-render>
                 <wf:action ref="registerView"/>
             </wf:on-render>
-            <wf:transition on="next" to="REGISTER_SUCCESS">
+            <wf:transition on="next" to="EMAIL_VERIFY_REQUIRED">
                 <wf:action ref="validateRegister"/>
                 <wf:action ref="validateCaptcha"/>
                 <wf:action ref="createUser"/>
@@ -82,16 +88,6 @@
             <wf:transition on="cancel" to="CANCEL_VIEW"/>
         </wf:view-state>
 
-        <wf:view-state id="REGISTER_SUCCESS">
-            <wf:on-render>
-                <wf:action ref="redirectToAuth"/>
-            </wf:on-render>
-            <wf:transition on="*" to="CHECK_CONSENT">
-                <wf:action ref="saveLoginState"/>
-                <wf:action ref="grantRememberMeToken"/>
-            </wf:transition>
-        </wf:view-state>
-
         <wf:action-state id="CHECK_USER_AUTHENTICATOR">
             <wf:action ref="checkAuthenticator"/>
             <wf:transition on="suggestUpgrade" to="REDIRECT_TO_THIRD_PARTY_UPGRADE"/>
@@ -99,9 +95,9 @@
         </wf:action-state>
 
         <wf:view-state id="REDIRECT_TO_THIRD_PARTY_UPGRADE">
-            <wf:on-entry>
+            <wf:on-render>
                 <wf:action ref="redirectToThirdPartyUpgrade"/>
-            </wf:on-entry>
+            </wf:on-render>
             <wf:transition on="*" to="THIRD_PARTY_UPGRADE_VIEW"/>
         </wf:view-state>
 
@@ -126,16 +122,16 @@
         </wf:action-state>
 
         <wf:view-state id="REDIRECT_TO_CONSENT">
-            <wf:on-entry>
+            <wf:on-render>
                 <wf:action ref="redirectToConsent"/>
-            </wf:on-entry>
+            </wf:on-render>
             <wf:transition on="*" to="CONSENT_VIEW"/>
         </wf:view-state>
 
         <wf:view-state id="CONSENT_VIEW">
-            <wf:on-entry>
+            <wf:on-render>
                 <wf:action ref="consentView"/>
-            </wf:on-entry>
+            </wf:on-render>
             <wf:transition on="next" to="CONSENT_SUCCESS">
                 <wf:action ref="saveConsent"/>
             </wf:transition>
@@ -147,6 +143,33 @@
                 <wf:action ref="redirectToAuth"/>
             </wf:on-render>
             <wf:transition on="*" to="END"/>
+        </wf:view-state>
+
+        <wf:view-state id="EMAIL_VERIFY_REQUIRED">
+            <wf:on-render>
+                <wf:action ref="emailVerifyRequiredView"/>
+            </wf:on-render>
+            <wf:transition on="verify" to="REDIRECT_TO_EMAIL_VERIFY_RESULT">
+                <wf:action ref="verifyEmail"/>
+            </wf:transition>
+            <wf:transition on="resend" to="EMAIL_VERIFY_REQUIRED">
+                <wf:action ref="sendAccountVerifyEmail"/>
+            </wf:transition>
+        </wf:view-state>
+
+        <wf:view-state id="REDIRECT_TO_EMAIL_VERIFY_RESULT">
+            <wf:on-render>
+                <wf:action ref="redirectToEmailVerifyResult"/>
+            </wf:on-render>
+            <wf:transition on="*" to="EMAIL_VERIFY_RESULT_VIEW"/>
+        </wf:view-state>
+
+        <wf:view-state id="EMAIL_VERIFY_RESULT_VIEW">
+            <wf:on-render>
+                <wf:action ref="emailVerifyView"/>
+            </wf:on-render>
+            <wf:transition on="success" to="LOGIN_SUCCESS"/>
+            <wf:transition on="failed" to="ACCESS_DENIED" />
         </wf:view-state>
 
         <wf:end-state id="END">
@@ -332,5 +355,25 @@
 
     <bean id="linkThirdPartyAccount" class="com.junbo.oauth.core.action.LinkThirdPartyAccount">
         <property name="authenticatorResource" ref="authenticatorResource"/>
+    </bean>
+
+
+    <bean id="checkEmailVerified" class="com.junbo.oauth.core.action.CheckEmailVerified">
+        <property name="userResource" ref="userResource"/>
+        <property name="userPersonalInfoResource" ref="userPersonalInfoResource"/>
+    </bean>
+
+    <bean id="emailVerifyRequiredView" class="com.junbo.oauth.core.view.EmailVerifyRequiredView"/>
+
+    <bean id="verifyEmail" class="com.junbo.oauth.core.action.VerifyEmail">
+        <property name="emailVerifyCodeRepository" ref="emailVerifyCodeRepository"/>
+        <property name="userPersonalInfoResource" ref="userPersonalInfoResource"/>
+        <property name="userResource" ref="userResource"/>
+    </bean>
+
+    <bean id="emailVerifyView" class="com.junbo.oauth.core.view.EmailVerifyView"/>
+
+    <bean id="redirectToEmailVerifyResult" class="com.junbo.oauth.core.view.RedirectToPage">
+        <property name="pageUrl" value="${oauth.core.portal.verifyUri}"/>
     </bean>
 </beans>

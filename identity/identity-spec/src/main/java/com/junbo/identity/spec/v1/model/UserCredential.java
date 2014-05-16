@@ -105,7 +105,7 @@ public class UserCredential extends ResourceMeta implements Identifiable<UserCre
     }
 
     @Override
-    public String getResourceAge() {
+    public Integer getResourceAge() {
         // resource Age won't return due to it isn't a resource
         return null;
     }

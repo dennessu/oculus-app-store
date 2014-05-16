@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Type class to convert between String and JSON.
  */
-public class ListJsonUserType implements UserType{
+public class ListJsonUserType implements UserType {
     @Override
     public int[] sqlTypes() {
         return new int[] {Types.JAVA_OBJECT};

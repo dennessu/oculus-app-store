@@ -132,7 +132,13 @@ ext {
     set("drm-clientproxy-version", '0.0.1-SNAPSHOT')
     set("drm-app-version", '0.0.1-SNAPSHOT')
 
+    set("authorization-app-version", '0.0.1-SNAPSHOT')
+    set("authorization-common-version", '0.0.1-SNAPSHOT')
+    set("authorization-core-version", '0.0.1-SNAPSHOT')
+    set("authorization-db-version", '0.0.1-SNAPSHOT')
     set("authorization-lib-version", '0.0.1-SNAPSHOT')
+    set("authorization-rest-version", '0.0.1-SNAPSHOT')
+    set("authorization-spec-version", '0.0.1-SNAPSHOT')
 
     set("notification-core-version", '0.0.1-SNAPSHOT')
 

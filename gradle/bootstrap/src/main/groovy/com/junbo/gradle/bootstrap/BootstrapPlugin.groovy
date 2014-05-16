@@ -275,7 +275,8 @@ class BootstrapPlugin implements Plugin<Project> {
                         }
                     }
 
-                    tasks.build.dependsOn 'codenarc'
+                    // disable codenarc by default, it's toooooooo slow
+                    // tasks.build.dependsOn 'codenarc'
                 }
             }
 

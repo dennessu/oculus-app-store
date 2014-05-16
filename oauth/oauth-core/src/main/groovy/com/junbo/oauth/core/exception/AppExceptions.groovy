@@ -333,4 +333,7 @@ interface AppExceptions {
     @ErrorDef(httpStatusCode = 400, code = '20074', description = 'The login or username parameter is missing',
             field = 'login or username')
     AppError missingLoginOrUsername()
+
+    @ErrorDef(httpStatusCode = 400, code = '20075', description = 'There is no default email on user')
+    AppError missingDefaultUserEmail()
 }

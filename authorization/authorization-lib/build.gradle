@@ -22,7 +22,11 @@ dependencies {
     compile(libraries.aspectjrt)
     compile(libraries.aspectjweaver)
 
+    compile junboProject(':oom-core')
+
     compile junboProject(':oauth-spec')
+    compile junboProject(':identity-spec')
+    compile junboProject(':authorization-spec')
 
     testCompile(libraries.spring_test)
 }
