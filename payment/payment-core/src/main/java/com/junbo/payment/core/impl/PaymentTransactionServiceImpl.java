@@ -21,7 +21,6 @@ import com.junbo.payment.spec.model.PaymentProperties;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -51,7 +50,6 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         addPaymentEvent(request, createEvent);
         //commit the transaction with trackingUuid
         saveAndCommitPayment(request);
-        //call braintree.
         return provider.credit(pi, request).recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(Throwable throwable) {
@@ -92,7 +90,6 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         addPaymentEvent(request, createEvent);
         //commit the transaction with trackingUuid
         saveAndCommitPayment(request);
-        //call braintree.
         return provider.authorize(pi, request).recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(Throwable throwable) {
@@ -331,7 +328,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
                                 }
                                 PaymentEvent reportEvent = createPaymentEvent(result
                                         , PaymentEventType.REPORT_EVENT, paymentStatus, SUCCESS_EVENT_RESPONSE);
-                                reportPaymentEvent(reportEvent);
+                                reportPaymentEvent(reportEvent, null);
                                 result.setStatus(paymentStatus.toString());
                                 result.getPaymentEvents().add(reportEvent);
                                 return Promise.pure(result);
@@ -368,15 +365,26 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
     }
 
     @Override
-    public void reportPaymentEvent(PaymentEvent event) {
+    public Promise<PaymentTransaction> reportPaymentEvent(PaymentEvent event, PaymentProperties paymentProperties) {
         if(event.getPaymentId() == null){
             LOGGER.error("the payment id is missing for the event.");
+            throw AppClientExceptions.INSTANCE.invalidPaymentId("null paymentId").exception();
+        }
+        PaymentTransaction payment = paymentRepository.getByPaymentId(event.getPaymentId());
+        if(payment == null){
             throw AppClientExceptions.INSTANCE.invalidPaymentId(event.getPaymentId().toString()).exception();
         }
         LOGGER.info("report event for payment:" + event.getPaymentId());
         paymentRepository.updatePayment(event.getPaymentId()
                     , PaymentUtil.getPaymentStatus(event.getStatus()), null);
         paymentRepository.savePaymentEvent(event.getPaymentId(), Arrays.asList(event));
+        payment.setPaymentEvents(Arrays.asList(event));
+        if(paymentProperties != null){
+            PaymentInstrument pi = getPaymentInstrument(payment);
+            final PaymentProviderService provider = getPaymentProviderService(pi);
+            return provider.confirmNotify(payment, paymentProperties);
+        }
+        return Promise.pure(payment);
     }
 
     @Override
@@ -462,16 +470,6 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         }
     }
 
-    private PaymentProviderService getPaymentProviderService(PaymentInstrument pi) {
-        PaymentProviderService provider = providerRoutingService.getPaymentProvider(
-                PaymentUtil.getPIType(pi.getType()));
-        if(provider == null){
-            throw AppServerExceptions.INSTANCE.providerNotFound(
-                    PaymentUtil.getPIType(pi.getType()).toString()).exception();
-        }
-        return provider;
-    }
-
     private void validateReverse(Long paymentId, PaymentTransaction request, PaymentTransaction existedTransaction){
         if(existedTransaction == null){
             LOGGER.error("the payment id is invalid for the event." + paymentId);
@@ -493,18 +491,5 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
             request.setPaymentEvents(new ArrayList<PaymentEvent>());
         }
         request.getPaymentEvents().add(event);
-    }
-
-    private PaymentEvent createPaymentEvent(PaymentTransaction request,
-             PaymentEventType eventType, PaymentStatus status, String response) {
-        PaymentEvent event = new PaymentEvent();
-        event.setPaymentId(request.getId());
-        event.setType(eventType.toString());
-        event.setStatus(status.toString());
-        event.setChargeInfo(request.getChargeInfo());
-        //TODO: need more detailed json request/response
-        event.setRequest(CommonUtil.toJson(request, FILTER));
-        event.setResponse(response);
-        return event;
     }
 }

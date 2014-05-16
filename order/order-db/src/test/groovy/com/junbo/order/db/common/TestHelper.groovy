@@ -7,9 +7,14 @@
 package com.junbo.order.db.common
 import com.junbo.order.db.entity.*
 import com.junbo.order.db.entity.enums.*
+import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.apache.commons.lang.RandomStringUtils
+import org.springframework.beans.BeansException
+import org.springframework.context.ApplicationContext
+import org.springframework.context.ApplicationContextAware
+import org.springframework.stereotype.Component
 
 import java.security.SecureRandom
 /**
@@ -18,7 +23,8 @@ import java.security.SecureRandom
 
 @CompileStatic
 @TypeChecked
-class TestHelper {
+@Component
+class TestHelper implements ApplicationContextAware {
 
     private static final int DEFAULT_PRICE = 10
 
@@ -26,12 +32,18 @@ class TestHelper {
 
     private static final int RAND_INT_MAX = 100
 
-    private static long nextId = System.currentTimeMillis()
+    private static IdGenerator idGenerator
+
+    private static IdGenerator orderIdGenerator
 
     private static SecureRandom rand = new SecureRandom()
 
     static long generateId() {
-        return nextId++
+        return idGenerator.nextId(0)
+    }
+
+    static long generateOrderId() {
+        return orderIdGenerator.nextId(0)
     }
 
     static UUID generateUUID() {
@@ -40,7 +52,7 @@ class TestHelper {
 
     static long generateLong() {
         sleep(1)
-        return nextId++
+        return System.currentTimeMillis()
     }
 
     static <T> T randEnum(Class<T> enumType) {
@@ -49,7 +61,7 @@ class TestHelper {
 
     static OrderEntity generateOrder() {
         OrderEntity order = new OrderEntity()
-        order.setOrderId(generateId())
+        order.setOrderId(generateOrderId())
         order.setUserId(generateLong())
         order.setCountry('US')
         order.setCurrency('USD')
@@ -73,8 +85,8 @@ class TestHelper {
     static OrderItemEntity generateOrderItem() {
         OrderItemEntity entity = new OrderItemEntity()
         def rand = new SecureRandom()
-        entity.setOrderItemId(rand.nextLong())
-        entity.setOrderId(rand.nextLong())
+        entity.setOrderItemId(generateId())
+        entity.setOrderId(generateOrderId())
         entity.setOrderItemType(ItemType.DIGITAL)
         entity.setProductItemId(generateLong().toString())
         entity.setUnitPrice(BigDecimal.valueOf(DEFAULT_PRICE))
@@ -94,7 +106,7 @@ class TestHelper {
         OrderDiscountInfoEntity entity = new OrderDiscountInfoEntity()
         def rand = new SecureRandom()
         entity.setDiscountInfoId(generateId())
-        entity.setOrderId(generateLong())
+        entity.setOrderId(generateOrderId())
         entity.setOrderItemId(generateLong())
         entity.setDiscountType(DiscountType.OFFER_DISCOUNT)
         entity.setDiscountAmount(BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)))
@@ -108,8 +120,8 @@ class TestHelper {
 
     static OrderEventEntity generateOrderEventEntity() {
         OrderEventEntity orderEventEntity = new OrderEventEntity()
-        orderEventEntity.setOrderId(generateId())
-        orderEventEntity.setEventId(generateLong())
+        orderEventEntity.setOrderId(generateOrderId())
+        orderEventEntity.setEventId(generateId())
         orderEventEntity.setActionId(OrderActionType.FULFILL)
         orderEventEntity.setStatusId(EventStatus.COMPLETED)
         orderEventEntity.trackingUuid = UUID.randomUUID()
@@ -122,7 +134,7 @@ class TestHelper {
         OrderItemFulfillmentHistoryEntity entity = new OrderItemFulfillmentHistoryEntity()
         entity.setHistoryId(generateId())
         entity.setFulfillmentEventId(randEnum(FulfillmentAction))
-        entity.setOrderId(generateLong())
+        entity.setOrderId(generateOrderId())
         entity.setOrderItemId(generateLong())
         entity.setTrackingUuid(generateUUID())
         entity.setFulfillmentId(RandomStringUtils.randomAlphabetic(20))
@@ -133,7 +145,7 @@ class TestHelper {
         def entity = new OrderBillingHistoryEntity()
         entity.historyId = generateId()
         entity.billingEventId = randEnum(BillingAction)
-        entity.setOrderId(generateLong())
+        entity.setOrderId(generateOrderId())
         entity.balanceId = RandomStringUtils.randomAlphabetic(20)
         entity.totalAmount = BigDecimal.TEN
         return entity
@@ -202,5 +214,11 @@ class TestHelper {
         entity.setUpdatedBy('Tester')
         entity.setStatus(SubledgerItemStatus.PENDING)
         return entity
+    }
+
+    @Override
+    void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        orderIdGenerator = (IdGenerator)applicationContext.getBean("oculus40IdGenerator")
+        idGenerator = (IdGenerator)applicationContext.getBean("oculus48IdGenerator")
     }
 }

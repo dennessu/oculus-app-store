@@ -21,10 +21,6 @@ dependencies {
     compile junboProject(':oom-core')
     compile (libraries.jersey_common)
 
-    compile (junboProject(':authorization-lib')) {
-        exclude group: 'com.junbo.identity', module: 'identity-spec'
-    }
-
     compile junboProject(':oauth-spec')
 
     compile junboProject(':identity-core')

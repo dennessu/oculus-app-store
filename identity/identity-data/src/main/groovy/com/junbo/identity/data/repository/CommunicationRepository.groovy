@@ -4,14 +4,15 @@ import com.junbo.common.id.CommunicationId
 import com.junbo.identity.spec.v1.model.Communication
 import com.junbo.identity.spec.v1.option.list.CommunicationListOptions
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.core.annotations.ReadMethod
+import com.junbo.sharding.dualwrite.annotations.ReadMethod
+import com.junbo.sharding.repo.BaseRepository
 import groovy.transform.CompileStatic
 
 /**
  * Created by liangfu on 4/24/14.
  */
 @CompileStatic
-interface CommunicationRepository extends IdentityBaseRepository<Communication, CommunicationId> {
+interface CommunicationRepository extends BaseRepository<Communication, CommunicationId> {
     @ReadMethod
     Promise<List<Communication>> search(CommunicationListOptions options)
 }

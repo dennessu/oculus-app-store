@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Required
  * ApiEndpointImpl.
  */
 @CompileStatic
+@SuppressWarnings('UnnecessaryGetter')
 class ApiEndpointImpl implements ApiEndpoint {
 
     private static final String API_MANAGE_SCOPE = 'api.manage'
@@ -47,7 +48,7 @@ class ApiEndpointImpl implements ApiEndpoint {
                 return Promise.pure([])
             }
 
-            return Promise.pure(apiService.getAllApis());
+            return Promise.pure(apiService.allApis);
         }
     }
 

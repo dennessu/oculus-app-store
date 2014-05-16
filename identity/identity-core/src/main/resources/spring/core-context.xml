@@ -543,81 +543,91 @@
     </bean>
 
     <bean id="userFilter" class="com.junbo.identity.core.service.filter.UserFilter">
-
         <property name="readableProperties">
-            <list>
-                <value>id</value>
-                <value>username</value>
-                <value>preferredLocale</value>
-                <value>preferredTimezone</value>
-                <value>isAnonymous</value>
-                <value>status</value>
-                <value>addresses</value>
-                <value>phones</value>
-                <value>emails</value>
-                <value>name</value>
-                <value>dob</value>
-                <value>textMessages</value>
-                <value>qqs</value>
-                <value>whatsApps</value>
-                <value>passport</value>
-                <value>governmentId</value>
-                <value>driversLicense</value>
-                <value>gender</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
+            <map>
+                <entry key="read">
+                    <list>
+                        <value>id</value>
+                        <value>username</value>
+                        <value>preferredLocale</value>
+                        <value>preferredTimezone</value>
+                        <value>isAnonymous</value>
+                        <value>status</value>
+                        <value>addresses</value>
+                        <value>phones</value>
+                        <value>emails</value>
+                        <value>name</value>
+                        <value>dob</value>
+                        <value>textMessages</value>
+                        <value>qqs</value>
+                        <value>whatsApps</value>
+                        <value>passport</value>
+                        <value>governmentId</value>
+                        <value>driversLicense</value>
+                        <value>gender</value>
+                        <value>resourceAge</value>
+                        <value>createdTime</value>
+                        <value>updatedTime</value>
+                    </list>
+                </entry>
+            </map>
         </property>
 
         <property name="writablePropertiesForCreate">
-            <list>
-                <value>username</value>
-                <value>preferredLocale</value>
-                <value>preferredTimezone</value>
-                <value>isAnonymous</value>
-                <value>status</value>
-                <value>addresses</value>
-                <value>phones</value>
-                <value>emails</value>
-                <value>name</value>
-                <value>dob</value>
-                <value>textMessages</value>
-                <value>qqs</value>
-                <value>whatsApps</value>
-                <value>passport</value>
-                <value>governmentId</value>
-                <value>driversLicense</value>
-                <value>gender</value>
-            </list>
+            <map>
+                <entry key="create">
+                    <list>
+                        <value>username</value>
+                        <value>preferredLocale</value>
+                        <value>preferredTimezone</value>
+                        <value>isAnonymous</value>
+                        <value>status</value>
+                        <value>addresses</value>
+                        <value>phones</value>
+                        <value>emails</value>
+                        <value>name</value>
+                        <value>dob</value>
+                        <value>textMessages</value>
+                        <value>qqs</value>
+                        <value>whatsApps</value>
+                        <value>passport</value>
+                        <value>governmentId</value>
+                        <value>driversLicense</value>
+                        <value>gender</value>
+                    </list>
+                </entry>
+            </map>
         </property>
 
         <property name="writablePropertiesForUpdate">
-            <list>
-                <value>id</value>
-                <value>username</value>
-                <value>preferredLocale</value>
-                <value>preferredTimezone</value>
-                <value>isAnonymous</value>
-                <value>status</value>
-                <value>addresses</value>
-                <value>phones</value>
-                <value>emails</value>
-                <value>name</value>
-                <value>dob</value>
-                <value>textMessages</value>
-                <value>qqs</value>
-                <value>whatsApps</value>
-                <value>passport</value>
-                <value>governmentId</value>
-                <value>driversLicense</value>
-                <value>gender</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
+            <map>
+                <entry key="update">
+                    <list>
+                        <value>id</value>
+                        <value>username</value>
+                        <value>preferredLocale</value>
+                        <value>preferredTimezone</value>
+                        <value>isAnonymous</value>
+                        <value>status</value>
+                        <value>addresses</value>
+                        <value>phones</value>
+                        <value>emails</value>
+                        <value>name</value>
+                        <value>dob</value>
+                        <value>textMessages</value>
+                        <value>qqs</value>
+                        <value>whatsApps</value>
+                        <value>passport</value>
+                        <value>governmentId</value>
+                        <value>driversLicense</value>
+                        <value>gender</value>
+                        <value>resourceAge</value>
+                        <value>createdTime</value>
+                        <value>updatedTime</value>
+                    </list>
+                </entry>
+            </map>
         </property>
-
     </bean>
 
     <bean id="userPersonalInfoFilter" class="com.junbo.identity.core.service.filter.UserPersonalInfoFilter">
@@ -966,35 +976,4 @@
             </list>
         </property>
     </bean>
-
-    <bean id="securityQuestionFilter" class="com.junbo.identity.core.service.filter.SecurityQuestionFilter">
-        <property name="readableProperties">
-            <list>
-                <value>id</value>
-                <value>value</value>
-                <value>active</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForCreate">
-            <list>
-                <value>value</value>
-            </list>
-        </property>
-
-        <property name="writablePropertiesForUpdate">
-            <list>
-                <value>id</value>
-                <value>value</value>
-                <value>active</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-    </bean>
-
 </beans>

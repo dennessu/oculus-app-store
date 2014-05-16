@@ -49,8 +49,7 @@ public class ItemResourceImpl implements ItemResource {
     public Promise<Item> getItem(ItemId itemId) {
         final Item item = itemService.getEntity(itemId.getValue());
 
-        AuthorizeCallback callback = itemAuthorizeCallbackFactory.create("items.get", item);
-
+        AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create("items.get", item);
         return authorizeService.authorizeAndThen(callback, new Promise.Func0<Promise<Item>>() {
             @Override
             public Promise<Item> apply() {
@@ -66,7 +65,7 @@ public class ItemResourceImpl implements ItemResource {
 
     @Override
     public Promise<Item> update(final ItemId itemId, final Item item) {
-        AuthorizeCallback callback = itemAuthorizeCallbackFactory.create("items.put", item);
+        AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create("items.put", item);
         return authorizeService.authorizeAndThen(callback, new Promise.Func0<Promise<Item>>() {
             @Override
             public Promise<Item> apply() {

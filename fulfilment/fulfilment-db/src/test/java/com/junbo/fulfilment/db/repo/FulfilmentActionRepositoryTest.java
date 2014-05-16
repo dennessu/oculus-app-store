@@ -53,7 +53,7 @@ public class FulfilmentActionRepositoryTest extends BaseTest {
 
     private FulfilmentAction buildFulfilmentAction() {
         FulfilmentAction action = new FulfilmentAction();
-        action.setFulfilmentId(123L);
+        action.setFulfilmentId(generateLong());
         action.setResult("test result");
         action.setStatus(FulfilmentStatus.SUCCEED);
         action.setType(FulfilmentActionType.GRANT_ENTITLEMENT);

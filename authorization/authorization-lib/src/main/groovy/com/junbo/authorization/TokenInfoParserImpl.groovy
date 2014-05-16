@@ -62,16 +62,17 @@ public class TokenInfoParserImpl implements TokenInfoParser, ApplicationContextA
         return tokenInfoEndpoint.getTokenInfo(accessToken)
     }
 
-    public <T> Promise<T> parseAndThen(Closure<Promise<T>> closure) {
+    @Override
+    public <T> Promise<T> parseAndThen(Closure<Promise> closure) {
         return parse().then { TokenInfo tokenInfo ->
             return TokenInfoScope.with(tokenInfo, closure)
         }
     }
 
     @Override
-    def <T> Promise<T> parseAndThen(Promise.Func0<Promise<T>> closure) {
+    public <T> Promise<T> parseAndThen(Promise.Func0<Promise<T>> func) {
         return parse().then { TokenInfo tokenInfo ->
-            return TokenInfoScope.with(tokenInfo, closure)
+            return TokenInfoScope.with(tokenInfo, func)
         }
     }
 

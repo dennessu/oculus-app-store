@@ -9,9 +9,10 @@ package com.junbo.payment.core.impl;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.core.PaymentCallbackService;
-import com.junbo.payment.core.util.PaymentUtil;
+import com.junbo.payment.core.PaymentTransactionService;
 import com.junbo.payment.db.repository.PaymentRepository;
-import com.junbo.payment.spec.enums.PaymentStatus;
+import com.junbo.payment.spec.enums.PaymentEventType;
+import com.junbo.payment.spec.model.PaymentEvent;
 import com.junbo.payment.spec.model.PaymentProperties;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import org.slf4j.Logger;
@@ -24,7 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class PaymentCallbackServiceImpl implements PaymentCallbackService{
     private static final Logger LOGGER = LoggerFactory.getLogger(PaymentCallbackServiceImpl.class);
-    private static final String CONFIRMED_STATUS = "AUTHORISED";
+    protected static final String SUCCESS_EVENT_RESPONSE = "{\"result\": \"OK\"}";
+    private PaymentTransactionService paymentTransactionService;
     @Autowired
     private PaymentRepository paymentRepository;
     @Override
@@ -35,12 +37,17 @@ public class PaymentCallbackServiceImpl implements PaymentCallbackService{
             throw AppClientExceptions.INSTANCE.invalidPaymentId(paymentId.toString()).exception();
         }
         paymentRepository.addPaymentProperties(paymentId, properties);
-        //for adyen
-        if(!CommonUtil.isNullOrEmpty(properties.getPspReference())
-                && !CommonUtil.isNullOrEmpty(properties.getAuthResult())
-                && properties.getAuthResult().equalsIgnoreCase(CONFIRMED_STATUS)){
-            paymentRepository.updatePayment(paymentId, PaymentUtil.getPaymentStatus(
-                    PaymentStatus.SETTLED.toString()), properties.getPspReference());
-        }
+        //report a payment notify event to notify corresponding partner
+        PaymentEvent event = new PaymentEvent();
+        event.setPaymentId(paymentId);
+        event.setType(PaymentEventType.NOTIFY.toString());
+        event.setStatus(existedTransaction.getStatus());
+        event.setRequest(CommonUtil.toJson(properties, null));
+        event.setResponse(SUCCESS_EVENT_RESPONSE);
+        paymentTransactionService.reportPaymentEvent(event, properties);
+    }
+
+    public void setPaymentTransactionService(PaymentTransactionService paymentTransactionService) {
+        this.paymentTransactionService = paymentTransactionService;
     }
 }

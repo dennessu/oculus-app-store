@@ -415,7 +415,7 @@ public class TeleSignRequest {
 	 *			[Required] Your TeleSign API Key. Also known as your Secret
 	 *			Key, and your Shared Cryptographic Key. It s a bese64-encoded
 	 *			string value.
-	 * @return A String containing the Base64-encoded hash-based message
+	 * @return A String containing the Base64-encoded shaHash-based message
 	 *		 authentication code.
 	 * @throws java.security.SignatureException
 	 *			 Failed to generate HMAC. IllegalArgumentException - if

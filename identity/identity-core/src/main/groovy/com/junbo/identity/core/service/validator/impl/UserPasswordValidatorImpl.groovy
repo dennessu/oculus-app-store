@@ -2,6 +2,8 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPasswordId
+import com.junbo.identity.core.service.credential.CredentialHash
+import com.junbo.identity.core.service.credential.CredentialHashFactory
 import com.junbo.identity.core.service.util.CipherHelper
 import com.junbo.identity.core.service.validator.UserPasswordValidator
 import com.junbo.identity.data.repository.UserPasswordRepository
@@ -19,12 +21,15 @@ import org.springframework.util.StringUtils
  * Created by liangfu on 3/31/14.
  */
 @CompileStatic
+@SuppressWarnings('UnnecessaryGetter')
 class UserPasswordValidatorImpl implements UserPasswordValidator {
-    private static final Integer SALT_LENGTH = 20
-
     private UserRepository userRepository
 
     private UserPasswordRepository userPasswordRepository
+
+    private Integer currentCredentialVersion
+
+    private CredentialHashFactory credentialHashFactory
 
     @Override
     Promise<UserPassword> validateForGet(UserId userId, UserPasswordId userPasswordId) {
@@ -85,10 +90,16 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
             throw AppErrors.INSTANCE.fieldInvalid('active').exception()
         }
 
-        String salt = CipherHelper.generateCipherRandomStr(SALT_LENGTH)
-        String pepper = CipherHelper.generateCipherRandomStr(SALT_LENGTH)
+        List<CredentialHash> credentialHashList = credentialHashFactory.getAllCredentialHash()
+        CredentialHash matched = credentialHashList.find { CredentialHash credentialHash ->
+            return credentialHash.handles(currentCredentialVersion)
+        }
+        if (matched == null) {
+            throw new IllegalStateException('No matched version: ' + currentCredentialVersion + ' for CredentialHash')
+        }
+
         userPassword.setStrength(CipherHelper.calcPwdStrength(userPassword.value))
-        userPassword.setPasswordHash(CipherHelper.generateCipherHashV1(userPassword.value, salt, pepper))
+        userPassword.setPasswordHash(matched.hash(userPassword.value))
         userPassword.setUserId(userId)
         userPassword.setActive(true)
 
@@ -113,16 +124,12 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
                 throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
             }
 
-            String[] hashInfo = userPasswordList.get(0).passwordHash.split(CipherHelper.COLON)
-            if (hashInfo.length != 4) {
-                throw AppErrors.INSTANCE.userPinIncorrect().exception()
+            List<CredentialHash> credentialHashList = credentialHashFactory.getAllCredentialHash()
+            CredentialHash matched = credentialHashList.find { CredentialHash hash ->
+                return hash.matches(oldPassword, userPasswordList.get(0).passwordHash)
             }
 
-            String salt = hashInfo[1]
-            String pepper = hashInfo[2]
-
-            if (CipherHelper.generateCipherHashV1(oldPassword, salt, pepper)
-                    != userPasswordList.get(0).passwordHash) {
+            if (matched == null) {
                 throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
             }
             return Promise.pure(null)
@@ -162,5 +169,15 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
     @Required
     void setUserPasswordRepository(UserPasswordRepository userPasswordRepository) {
         this.userPasswordRepository = userPasswordRepository
+    }
+
+    @Required
+    void setCurrentCredentialVersion(Integer currentCredentialVersion) {
+        this.currentCredentialVersion = currentCredentialVersion
+    }
+
+    @Required
+    void setCredentialHashFactory(CredentialHashFactory credentialHashFactory) {
+        this.credentialHashFactory = credentialHashFactory
     }
 }

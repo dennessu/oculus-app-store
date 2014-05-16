@@ -1,4 +1,4 @@
-#pgha demo steps
+#pgha demo on Mac steps
 
 #purge all
 ./purge.sh

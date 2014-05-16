@@ -8,14 +8,15 @@ package com.junbo.identity.data.repository
 import com.junbo.common.id.DeviceId
 import com.junbo.identity.spec.v1.model.Device
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.core.annotations.ReadMethod
+import com.junbo.sharding.dualwrite.annotations.ReadMethod
+import com.junbo.sharding.repo.BaseRepository
 import groovy.transform.CompileStatic
 
 /**
  * Created by xiali_000 on 4/8/2014.
  */
 @CompileStatic
-interface DeviceRepository extends IdentityBaseRepository<Device, DeviceId> {
+interface DeviceRepository extends BaseRepository<Device, DeviceId> {
     @ReadMethod
     Promise<Device> searchBySerialNumber(String externalRef)
 }

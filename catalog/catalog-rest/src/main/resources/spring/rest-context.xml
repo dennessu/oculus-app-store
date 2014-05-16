@@ -44,10 +44,10 @@
     <bean id="defaultPriceTierResourceRouter" parent="routingRouterBase" />
 
     <bean id="itemAuthorizeCallbackFactory" class="com.junbo.catalog.rest.auth.ItemAuthorizeCallbackFactory">
-        <property name="groupResource" ref="groupResource"/>
-        <property name="userGroupMembershipResource" ref="userGroupMembershipResource"/>
-        <property name="roleResource" ref="roleService"/>
-        <property name="roleAssignmentResource" ref="roleAssignmentService"/>
+        <property name="groupResource" ref="groupResourceClientProxy"/>
+        <property name="userGroupMembershipResource" ref="userGroupMembershipResourceClientProxy"/>
+        <property name="roleResource" ref="roleResourceClientProxy"/>
+        <property name="roleAssignmentResource" ref="roleAssignmentResourceClientProxy"/>
     </bean>
 
 </beans>

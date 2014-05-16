@@ -5,7 +5,6 @@
  */
 package com.junbo.authorization
 
-import com.junbo.authorization.ConditionEvaluator
 import groovy.transform.CompileStatic
 import org.springframework.expression.Expression
 import org.springframework.expression.ExpressionParser

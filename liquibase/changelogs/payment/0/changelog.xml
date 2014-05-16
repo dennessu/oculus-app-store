@@ -810,7 +810,8 @@
 				  ,(10,'REFUND','refund a transaction', '2014-02-14', 'wenhongzhu')
 				  ,(11,'REPORT_EVENT','provider reports a new event', '2014-02-14', 'wenhongzhu')
 				  ,(12,'CREDIT_CREATE','create a credit transaction', '2014-02-14', 'wenhongzhu')
-				  ,(13,'CREDIT','credit transaction', '2014-02-14', 'wenhongzhu');
+				  ,(13,'CREDIT','credit transaction', '2014-02-14', 'wenhongzhu')
+				  ,(14,'NOTIFY','Notify event from Client or Provider', '2014-02-14', 'wenhongzhu');
         ]]>
         </sql>
     </changeSet>

@@ -23,17 +23,13 @@
         </property>
     </bean>
 
-    <bean id="cryptoBaseRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" abstract="true">
-        <property name="persistentMode" value="CLOUDANT_READ_WRITE"/>
-    </bean>
-
-    <bean id="masterkeyRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="cryptoBaseRepository">
+    <bean id="masterkeyRepository" parent="baseRepository">
         <property name="repositoryInterface" value="com.junbo.crypto.data.dao.MasterKeyDAO"/>
-        <property name="cloudantRepositoryTarget" ref="cloudantMasterKeyRepo" />
+        <property name="cloudantRepositoryImpl" ref="cloudantMasterKeyRepo" />
     </bean>
 
-    <bean id="userkeyRepository" class="com.junbo.sharding.core.RepositoryFactoryBean" parent="cryptoBaseRepository">
+    <bean id="userkeyRepository" parent="baseRepository">
         <property name="repositoryInterface" value="com.junbo.crypto.data.dao.UserCryptoKeyDAO" />
-        <property name="cloudantRepositoryTarget" ref="cloudantUserCryptoKeyRepo" />
+        <property name="cloudantRepositoryImpl" ref="cloudantUserCryptoKeyRepo" />
     </bean>
 </beans>

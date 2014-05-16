@@ -23,10 +23,12 @@ import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.db.repo.EmailVerifyCodeRepository
 import com.junbo.oauth.spec.model.EmailVerifyCode
+import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.Assert
 import org.springframework.util.StringUtils
 
 /**
@@ -60,16 +62,18 @@ class VerifyEmail implements Action {
     @Override
     Promise<ActionResult> execute(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
-        String code = contextWrapper.emailVerifyCode
+        def parameterMap = contextWrapper.parameterMap
+        String code = parameterMap.getFirst(OAuthParameters.EMAIL_VERIFY_CODE)
 
         if (StringUtils.isEmpty(code)) {
             contextWrapper.errors.add(AppExceptions.INSTANCE.missingEmailVerifyCode().error())
             return Promise.pure(new ActionResult('error'))
         }
 
-        EmailVerifyCode emailVerifyCode = emailVerifyCodeRepository.getAndRemove(code)
+        EmailVerifyCode emailVerifyCode = contextWrapper.emailVerifyCode
+        Assert.notNull(emailVerifyCode, 'emailVerifyCode is null')
 
-        if (emailVerifyCode == null) {
+        if (emailVerifyCode.code != code) {
             contextWrapper.errors.add(AppExceptions.INSTANCE.invalidEmailVerifyCode(code).error())
             return Promise.pure(new ActionResult('error'))
         }
@@ -87,7 +91,7 @@ class VerifyEmail implements Action {
             Closure process = null
             process = { ActionResult actionResult ->
                 if (actionResult.id == 'error') {
-                    return actionResult
+                    return Promise.pure(actionResult)
                 }
 
                 if (!iter.hasNext() || actionResult.id == 'success') {

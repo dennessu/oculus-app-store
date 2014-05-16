@@ -7,7 +7,7 @@
 package com.junbo.common.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.junbo.common.id.UserId;
+import com.junbo.common.jackson.annotation.UserId;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
@@ -17,11 +17,13 @@ public class AdminInfo {
 
     @ApiModelProperty(position = 1, required = false,
             value = "[Client Immutable] The user who created the resource.")
-    private UserId createdBy;
+    @UserId
+    private Long createdBy;
 
     @ApiModelProperty(position = 2, required = false,
             value = "[Client Immutable] The user who updated the resource.")
-    private UserId updatedBy;
+    @UserId
+    private Long updatedBy;
 
     @JsonIgnore
     private String createdByClient;
@@ -29,19 +31,19 @@ public class AdminInfo {
     @JsonIgnore
     private String updatedByClient;
 
-    public UserId getCreatedBy() {
+    public Long getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(UserId createdBy) {
+    public void setCreatedBy(Long createdBy) {
         this.createdBy = createdBy;
     }
 
-    public UserId getUpdatedBy() {
+    public Long getUpdatedBy() {
         return updatedBy;
     }
 
-    public void setUpdatedBy(UserId updatedBy) {
+    public void setUpdatedBy(Long updatedBy) {
         this.updatedBy = updatedBy;
     }
 

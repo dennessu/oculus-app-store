@@ -5,12 +5,6 @@
  */
 package com.junbo.authorization
 
-import com.junbo.authorization.AuthorizeCallback
-import com.junbo.authorization.AuthorizeContext
-import com.junbo.authorization.RightsScope
-import com.junbo.authorization.AuthorizeService
-import com.junbo.authorization.ConditionEvaluator
-import com.junbo.authorization.TokenInfoParser
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.spec.endpoint.ApiEndpoint
 import com.junbo.oauth.spec.model.ApiDefinition
@@ -100,16 +94,16 @@ class AuthorizeServiceImpl implements AuthorizeService {
     }
 
     @Override
-    def <T> Promise<T> authorizeAndThen(AuthorizeCallback callback, Closure<Promise<T>> closure) {
+    public <T> Promise<T> authorizeAndThen(AuthorizeCallback<T> callback, Closure<Promise> closure) {
         return authorize(callback).then { Set<String> rights ->
             return RightsScope.with(rights, closure)
         }
     }
 
     @Override
-    def <T> Promise<T> authorizeAndThen(AuthorizeCallback callback, Promise.Func0<Promise<T>> closure) {
+    public <T> Promise<T> authorizeAndThen(AuthorizeCallback<T> callback, Promise.Func0<Promise<T>> func) {
         return authorize(callback).then { Set<String> rights ->
-            return RightsScope.with(rights, closure)
+            return RightsScope.with(rights, func)
         }
     }
 

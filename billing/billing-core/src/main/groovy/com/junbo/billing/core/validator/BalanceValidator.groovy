@@ -137,13 +137,34 @@ class BalanceValidator {
         if (balance.type == BalanceType.REFUND.name()) {
             Balance originalBalance = balanceRepository.getBalance(balance.originalBalanceId.value)
             List<Balance> refundeds = balanceRepository.getRefundBalancesByOriginalId(balance.originalBalanceId.value)
-            BigDecimal totalRefunded;
+            BigDecimal totalRefunded
             for (Balance refunded : refundeds) {
                 totalRefunded += refunded.totalAmount
             }
             if (totalRefunded + balance.totalAmount > originalBalance.totalAmount) {
+                LOGGER.error('for the original balance {}, refund total {} exceeded, original amount {}, refunded {}',
+                    originalBalance.balanceId, balance.totalAmount, originalBalance.totalAmount, totalRefunded)
                 throw AppErrors.INSTANCE.balanceRefundTotalExceeded(balance.totalAmount, originalBalance.totalAmount,
                 totalRefunded).exception()
+            }
+            for (BalanceItem refundItem : balance.balanceItems) {
+                BalanceItem originalItem = originalBalance.getBalanceItem(refundItem.originalBalanceItemId)
+                BigDecimal itemRefunded
+                for (Balance refunded : refundeds) {
+                    for (BalanceItem refundedItem : refunded.balanceItems) {
+                        if (refundedItem.originalBalanceItemId == refundItem.originalBalanceItemId) {
+                            itemRefunded += refundedItem.amount
+                            //todo: think about the refund tax
+                        }
+                    }
+                }
+                if (itemRefunded + refundItem.amount > originalItem.amount) {
+                    LOGGER.error('for the original balance item {}, refund amount {} exceeded, original amount {}, ' +
+                            'refunded {}', refundItem.originalBalanceItemId, refundItem.amount,
+                            originalItem.amount, itemRefunded)
+                    throw AppErrors.INSTANCE.balanceItemRefundTotalExceeded(refundItem.amount,
+                            originalItem.amount, itemRefunded).exception()
+                }
             }
         }
     }

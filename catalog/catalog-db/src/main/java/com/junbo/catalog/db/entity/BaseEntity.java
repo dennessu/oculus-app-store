@@ -6,7 +6,7 @@
 
 package com.junbo.catalog.db.entity;
 
-import com.junbo.catalog.db.dao.DateUserType;
+import com.junbo.common.hibernate.DateUserType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;

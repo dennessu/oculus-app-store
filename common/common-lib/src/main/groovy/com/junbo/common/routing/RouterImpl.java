@@ -5,9 +5,9 @@
  */
 package com.junbo.common.routing;
 
-import com.junbo.common.id.Id;
 import com.junbo.common.routing.model.DataAccessPolicy;
 import com.junbo.common.util.Context;
+import com.junbo.common.util.Utils;
 import com.junbo.configuration.topo.DataCenters;
 import com.junbo.configuration.topo.Topology;
 import com.junbo.langur.core.routing.Router;
@@ -86,14 +86,7 @@ public class RouterImpl implements Router {
     }
 
     private void resolveShard(Object routingParam) {
-        long oculusId;
-        if (routingParam instanceof Long) {
-            oculusId = (Long)routingParam;
-        } else if (routingParam instanceof Id) {
-            oculusId = ((Id)routingParam).getValue();
-        } else {
-            throw new RuntimeException("Unknown routing parameter type: " + routingParam.getClass());
-        }
+        long oculusId = Utils.keyToLong(routingParam);
 
         // both Oculus40Id and Oculus48Id share the same bit layout for dc and shard
         int dc = (int)((oculusId >> 2) & 0xF);

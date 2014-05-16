@@ -2,12 +2,14 @@ package com.junbo.test.fulfilment;
 
 import com.junbo.test.common.libs.ConfigPropertiesHelper;
 import com.junbo.test.fulfilment.utility.FulfilmentTestDataProvider;
+import com.junbo.test.fulfilment.utility.FulfimentValidationHelper;
 
 /**
  * Created by weiyu_000 on 5/14/14.
  */
 public class BaseTestClass {
     protected FulfilmentTestDataProvider testDataProvider= new FulfilmentTestDataProvider();
+    protected FulfimentValidationHelper validationHelper = new FulfimentValidationHelper();
 
     public BaseTestClass() {
         super();

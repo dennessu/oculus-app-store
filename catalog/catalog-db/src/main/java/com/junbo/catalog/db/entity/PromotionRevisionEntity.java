@@ -6,8 +6,8 @@
 
 package com.junbo.catalog.db.entity;
 
-import com.junbo.catalog.db.dao.DateUserType;
-import com.junbo.catalog.db.dao.StringJsonUserType;
+import com.junbo.common.hibernate.DateUserType;
+import com.junbo.common.hibernate.StringJsonUserType;
 import com.junbo.catalog.spec.model.promotion.PromotionType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;

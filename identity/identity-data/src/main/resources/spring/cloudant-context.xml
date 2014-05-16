@@ -130,6 +130,8 @@
         <property name="cryptoResource" ref="identityCryptoResource" />
         <property name="dbName" value="non_exists" />
         <property name="idGenerator" ref="oculus48IdGenerator" />
+        <!-- make this configurable-->
+        <property name="salt" value="UUID-RANDOM-SALT-TO-CONFIGURE" />
     </bean>
 
     <bean id="cloudantCommunicationRepository" class="com.junbo.identity.data.repository.impl.cloudant.CommunicationRepositoryCloudantImpl" parent="cloudantClient">

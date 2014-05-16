@@ -5,6 +5,7 @@
  */
 package com.junbo.test.fulfilment.apihelper;
 
+import com.junbo.fulfilment.spec.model.FulfilmentItem;
 import com.junbo.fulfilment.spec.model.FulfilmentRequest;
 
 /**
@@ -20,8 +21,8 @@ public interface FulfilmentService {
 
     String getFulfilmentByOrderId(String orderId, int expectedResponseCode) throws Exception;
 
-    String getFulfilment(String fulfilmentId) throws Exception;
+    FulfilmentItem getFulfilment(String fulfilmentId) throws Exception;
 
-    String getFulfilment(String fulfilmentId, int expectedResponseCode) throws Exception;
+    FulfilmentItem getFulfilment(String fulfilmentId, int expectedResponseCode) throws Exception;
 
 }
