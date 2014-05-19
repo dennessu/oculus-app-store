@@ -386,11 +386,7 @@
         <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
         <property name="userRepository" ref="userRepository" />
         <property name="userTeleRepository" ref="userTeleRepository" />
-        <property name="allowedLanguages">
-            <list>
-                <value>en_US</value>
-            </list>
-        </property>
+        <property name="localeRepository" ref="cloudantLocaleRepository" />
         <property name="maxSMSRequestsPerHour" value="${identity.conf.maxSMSRequestsPerHour}" />
         <property name="maxTeleCodeExpireTime" value="${identity.conf.maxTeleCodeExpireTime}" />
         <property name="minTemplateLength" value="1" />

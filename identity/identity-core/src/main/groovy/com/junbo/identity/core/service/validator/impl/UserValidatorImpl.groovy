@@ -248,8 +248,8 @@ class UserValidatorImpl implements UserValidator {
                             }
                         }
 
-                        if (user.id != userPersonalInfo.id) {
-                            throw AppErrors.INSTANCE.fieldInvalid('userPersonalInfoLin.value').exception()
+                        if (user.id != userPersonalInfo.userId) {
+                            throw AppErrors.INSTANCE.fieldInvalid('userPersonalInfo.value').exception()
                         }
 
                         // todo:    Temp disable default userPersonalInfoLink need verified email

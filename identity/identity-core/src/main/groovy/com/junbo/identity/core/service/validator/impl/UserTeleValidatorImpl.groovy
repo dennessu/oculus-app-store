@@ -7,6 +7,7 @@ import com.junbo.identity.core.service.util.CodeGenerator
 import com.junbo.identity.core.service.validator.UserTeleValidator
 import com.junbo.identity.data.identifiable.TeleVerifyType
 import com.junbo.identity.data.identifiable.UserStatus
+import com.junbo.identity.data.repository.LocaleRepository
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.data.repository.UserTeleRepository
@@ -34,8 +35,8 @@ class UserTeleValidatorImpl implements UserTeleValidator {
     private UserRepository userRepository
     private UserTeleRepository userTeleRepository
     private UserPersonalInfoRepository userPersonalInfoRepository
+    private LocaleRepository localeRepository
 
-    private List<String> allowedLanguages
     private Integer minTemplateLength
     private Integer maxTemplateLength
 
@@ -246,15 +247,6 @@ class UserTeleValidatorImpl implements UserTeleValidator {
             throw AppErrors.INSTANCE.fieldInvalid('userId', userId.toString()).exception()
         }
 
-        // todo:    Need to check the language from the locale id list.
-        /*
-        if (userTeleCode.sentLanguage != null) {
-            if (!(userTeleCode.sentLanguage in allowedLanguages)) {
-                throw AppErrors.INSTANCE.fieldInvalid('sentLanguage', allowedLanguages.join(',')).exception()
-            }
-        }
-        */
-
         if (userTeleCode.template != null) {
             if (userTeleCode.template.length() > maxTemplateLength) {
                 throw AppErrors.INSTANCE.fieldTooLong('template', maxTemplateLength).exception()
@@ -280,21 +272,37 @@ class UserTeleValidatorImpl implements UserTeleValidator {
         }
 
         return validatePhoneNumber(userId, userTeleCode.phoneNumber).then {
-            return userRepository.get(userId).then { User existing ->
-                if (existing == null) {
-                    throw AppErrors.INSTANCE.userNotFound(userId).exception()
-                }
+            return validateLocale(userTeleCode).then {
+                return userRepository.get(userId).then { User existing ->
+                    if (existing == null) {
+                        throw AppErrors.INSTANCE.userNotFound(userId).exception()
+                    }
 
-                if (existing.status != UserStatus.ACTIVE.toString()) {
-                    throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
-                }
+                    if (existing.status != UserStatus.ACTIVE.toString()) {
+                        throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
+                    }
 
-                if (existing.isAnonymous) {
-                    throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
-                }
+                    if (existing.isAnonymous) {
+                        throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
+                    }
 
-                return Promise.pure(null)
+                    return Promise.pure(null)
+                }
             }
+        }
+    }
+
+    private Promise<Void> validateLocale(UserTeleCode userTeleCode) {
+        if (userTeleCode.sentLocale == null) {
+            return Promise.pure(null)
+        }
+
+        return localeRepository.get(userTeleCode.sentLocale).then { com.junbo.identity.spec.v1.model.Locale locale ->
+            if (locale == null) {
+                throw AppErrors.INSTANCE.localeNotFound(userTeleCode.sentLocale).exception()
+            }
+
+            return Promise.pure(null)
         }
     }
 
@@ -368,8 +376,8 @@ class UserTeleValidatorImpl implements UserTeleValidator {
     }
 
     @Required
-    void setAllowedLanguages(List<String> allowedLanguages) {
-        this.allowedLanguages = allowedLanguages
+    void setLocaleRepository(LocaleRepository localeRepository) {
+        this.localeRepository = localeRepository
     }
 
     @Required
