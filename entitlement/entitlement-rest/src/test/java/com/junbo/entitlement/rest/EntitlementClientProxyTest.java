@@ -48,22 +48,22 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
     @Test(enabled = false)
     public void testCreate() throws ExecutionException, InterruptedException {
         Entitlement entitlement = buildAnEntitlement();
-        entitlement = entitlementResourceClientProxy.postEntitlement(entitlement).get();
+        entitlement = entitlementResourceClientProxy.postEntitlement(entitlement).wrapped().get();
         Assert.assertNotNull(entitlement.getEntitlementId());
     }
 
     @Test(enabled = false)
     public void testUpdate() throws ExecutionException, InterruptedException {
-        Entitlement entitlement = entitlementResourceClientProxy.postEntitlement(buildAnEntitlement()).get();
+        Entitlement entitlement = entitlementResourceClientProxy.postEntitlement(buildAnEntitlement()).wrapped().get();
         Date now = new Date();
         entitlement.setExpirationTime(now);
-        entitlement = entitlementResourceClientProxy.updateEntitlement(new EntitlementId(entitlement.getEntitlementId()), entitlement).get();
+        entitlement = entitlementResourceClientProxy.updateEntitlement(new EntitlementId(entitlement.getEntitlementId()), entitlement).wrapped().get();
         Assert.assertTrue(Math.abs(entitlement.getExpirationTime().getTime() - now.getTime()) <= 1000);
     }
 
     @Test(enabled = false)
     public void testDelete() throws ExecutionException, InterruptedException {
-        Entitlement entitlement = entitlementResourceClientProxy.postEntitlement(buildAnEntitlement()).get();
+        Entitlement entitlement = entitlementResourceClientProxy.postEntitlement(buildAnEntitlement()).wrapped().get();
         entitlementResourceClientProxy.deleteEntitlement(new EntitlementId(entitlement.getEntitlementId()));
         try {
             entitlementResourceClientProxy.getEntitlement(new EntitlementId(entitlement.getEntitlementId()));
@@ -75,11 +75,11 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
     @Test(enabled = false)
     public void testTransfer() throws ExecutionException, InterruptedException {
         Long targetId = idGenerator.nextId();
-        Entitlement entitlement = entitlementResourceClientProxy.postEntitlement(buildAnEntitlement()).get();
+        Entitlement entitlement = entitlementResourceClientProxy.postEntitlement(buildAnEntitlement()).wrapped().get();
         EntitlementTransfer transfer = new EntitlementTransfer();
         transfer.setEntitlementId(entitlement.getEntitlementId());
         transfer.setTargetUserId(targetId);
-        Entitlement newEntitlement = entitlementResourceClientProxy.transferEntitlement(transfer).get();
+        Entitlement newEntitlement = entitlementResourceClientProxy.transferEntitlement(transfer).wrapped().get();
         Assert.assertEquals(newEntitlement.getUserId(), targetId);
         Assert.assertNotEquals(newEntitlement.getEntitlementId(), entitlement.getEntitlementId());
         Assert.assertEquals(newEntitlement.getItemId(), entitlement.getItemId());
@@ -96,10 +96,10 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
         Long userId = idGenerator.nextId();
         Entitlement entitlement = buildAnEntitlement();
         entitlement.setUserId(userId);
-        entitlementResourceClientProxy.postEntitlement(entitlement).get();
-        entitlementResourceClientProxy.postEntitlement(entitlement).get();
+        entitlementResourceClientProxy.postEntitlement(entitlement).wrapped().get();
+        entitlementResourceClientProxy.postEntitlement(entitlement).wrapped().get();
         EntitlementSearchParam searchParam = new EntitlementSearchParam.Builder(new UserId(userId)).isActive(true).lastModifiedTime("2014-01-01T00:00:00Z").build();
-        Results<Entitlement> result = entitlementResourceClientProxy.searchEntitlements(searchParam, new PageMetadata()).get();
+        Results<Entitlement> result = entitlementResourceClientProxy.searchEntitlements(searchParam, new PageMetadata()).wrapped().get();
         Assert.assertEquals(result.getItems().size(), 2);
         searchParam.setIsBanned(true);
         searchParam.setIsActive(null);
