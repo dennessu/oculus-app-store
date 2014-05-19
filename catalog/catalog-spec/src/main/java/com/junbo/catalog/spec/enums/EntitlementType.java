@@ -13,7 +13,7 @@ import java.util.List;
  * EntitlementType enum.
  */
 public enum EntitlementType {
-    DOWNLOAD, RUN, ONLINE_ACCESS, SUBSCRIPTION;
+    DOWNLOAD, RUN, DEVELOPER;
 
     public static final List<EntitlementType> ALL = Arrays.asList(EntitlementType.values());
 
