@@ -6,6 +6,7 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.CommunicationId;
 import com.junbo.common.id.UserCommunicationId;
 import com.junbo.common.id.UserId;
@@ -34,7 +35,7 @@ public class UserCommunication extends ResourceMeta implements Identifiable<User
     private CommunicationId communicationId;
 
     @ApiModelProperty(position = 4, required = false, value = "Feature expansion of the opt-ins resource.")
-    private Map<String, String> futureExpansion = new HashMap<>();
+    private Map<String, JsonNode> futureExpansion = new HashMap<>();
 
     @Override
     public UserCommunicationId getId() {
@@ -68,11 +69,11 @@ public class UserCommunication extends ResourceMeta implements Identifiable<User
     }
 
 
-    public Map<String, String> getFutureExpansion() {
+    public Map<String, JsonNode> getFutureExpansion() {
         return futureExpansion;
     }
 
-    public void setFutureExpansion(Map<String, String> futureExpansion) {
+    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
         this.futureExpansion = futureExpansion;
         support.setPropertyAssigned("futureExpansion");
     }
