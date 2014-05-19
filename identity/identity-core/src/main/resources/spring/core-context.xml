@@ -253,6 +253,7 @@
                 <value>longName</value>
                 <value>localeName</value>
                 <value>fallbackLocale</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -265,6 +266,7 @@
                 <value>longName</value>
                 <value>localeName</value>
                 <value>fallbackLocale</value>
+                <value>futureExpansion</value>
             </list>
         </property>
         <property name="writablePropertiesForUpdate">
@@ -275,6 +277,7 @@
                 <value>longName</value>
                 <value>localeName</value>
                 <value>fallbackLocale</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
             </list>
         </property>

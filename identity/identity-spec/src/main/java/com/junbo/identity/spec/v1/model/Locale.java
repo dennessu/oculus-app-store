@@ -6,6 +6,7 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.model.ResourceMeta;
 import com.junbo.common.util.Identifiable;
@@ -39,7 +40,7 @@ public class Locale extends ResourceMeta implements Identifiable<LocaleId> {
     private LocaleId fallbackLocale;
 
     @ApiModelProperty(position = 7, required = false, value = "Feature expansion of the locale resource.")
-    private Map<String, String> futureExpansion = new HashMap<>();
+    private Map<String, JsonNode> futureExpansion = new HashMap<>();
 
     public String getShortName() {
         return shortName;
@@ -96,11 +97,11 @@ public class Locale extends ResourceMeta implements Identifiable<LocaleId> {
         support.setPropertyAssigned("fallbackLocale");
     }
 
-    public Map<String, String> getFutureExpansion() {
+    public Map<String, JsonNode> getFutureExpansion() {
         return futureExpansion;
     }
 
-    public void setFutureExpansion(Map<String, String> futureExpansion) {
+    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
         this.futureExpansion = futureExpansion;
         support.setPropertyAssigned("futureExpansion");
     }
