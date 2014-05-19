@@ -26,6 +26,8 @@ class AuthorizeServiceImpl implements AuthorizeService {
 
     private Map<String, ConditionEvaluator> conditionEvaluators
 
+    private Boolean disabled
+
     @Required
     void setApiDefinitionEndpoint(ApiDefinitionEndpoint apiEndpoint) {
         this.apiDefinitionEndpoint = apiEndpoint
@@ -46,8 +48,17 @@ class AuthorizeServiceImpl implements AuthorizeService {
         }
     }
 
+    @Required
+    void setDisabled(Boolean disabled) {
+        this.disabled = disabled
+    }
+
     @Override
     public Set<String> authorize(AuthorizeCallback callback) {
+        if (disabled) {
+            return Collections.emptySet()
+        }
+
         ApiDefinition api = getApiDefinition(callback.apiName)
 
         if (api == null) {
