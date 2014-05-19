@@ -17,8 +17,10 @@
     </bean>
 
     <bean id="commonAsyncHttpClient" class="com.ning.http.client.AsyncHttpClient">
+        <!-- disable for now until we found the root cause.
         <constructor-arg name="httpProvider" ref="grizzlyAsyncHttpProvider"/>
         <constructor-arg name="config" ref="asyncHttpClientConfig"/>
+        -->
     </bean>
 
     <bean id="commonPathParamTranscoder" class="com.junbo.common.json.IdPathParamTranscoder"/>
