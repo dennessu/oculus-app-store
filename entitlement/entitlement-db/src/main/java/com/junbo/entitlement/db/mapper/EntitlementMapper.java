@@ -27,7 +27,7 @@ public class EntitlementMapper {
             return null;
         }
         Entitlement entitlement = new Entitlement();
-        entitlement.setEntitlementId(entitlementEntity.getEntitlementId());
+        entitlement.setEntitlementId(entitlementEntity.getpId());
         entitlement.setResourceAge(entitlementEntity.getRev());
         entitlement.setUserId(entitlementEntity.getUserId());
         entitlement.setItemId(entitlementEntity.getItemId());
@@ -36,10 +36,10 @@ public class EntitlementMapper {
         entitlement.setGrantTime(entitlementEntity.getGrantTime());
         entitlement.setFutureExpansion(entitlementEntity.getFutureExpansion());
         entitlement.setCreatedTime(entitlementEntity.getCreatedTime());
-        entitlement.setUpdatedTime(entitlementEntity.getModifiedTime());
+        entitlement.setUpdatedTime(entitlementEntity.getUpdatedTime());
         AdminInfo adminInfo = new AdminInfo();
-        adminInfo.setCreatedBy(Long.valueOf(entitlementEntity.getCreatedBy()));
-        adminInfo.setUpdatedBy(Long.valueOf(entitlementEntity.getModifiedBy()));
+        adminInfo.setCreatedBy(entitlementEntity.getCreatedBy());
+        adminInfo.setUpdatedBy(entitlementEntity.getUpdatedBy());
         entitlement.setAdminInfo(adminInfo);
         if (entitlementEntity.getExpirationTime().getTime() == EntitlementConsts.NEVER_EXPIRE.getTime()) {
             entitlement.setExpirationTime(null);
@@ -60,7 +60,7 @@ public class EntitlementMapper {
     public EntitlementEntity toEntitlementEntity(Entitlement entitlement) {
         EntitlementEntity entitlementEntity = new EntitlementEntity();
         entitlementEntity.setTrackingUuid(entitlement.getTrackingUuid());
-        entitlementEntity.setEntitlementId(entitlement.getEntitlementId());
+        entitlementEntity.setpId(entitlement.getEntitlementId());
         if (entitlement.getResourceAge() != null) {
             entitlementEntity.setRev(entitlement.getResourceAge());
         }

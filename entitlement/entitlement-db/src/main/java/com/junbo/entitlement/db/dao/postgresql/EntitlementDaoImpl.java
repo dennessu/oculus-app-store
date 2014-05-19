@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.entitlement.db.dao.hibernate;
+package com.junbo.entitlement.db.dao.postgresql;
 
 import com.junbo.common.id.ItemId;
 import com.junbo.entitlement.common.def.EntitlementConsts;

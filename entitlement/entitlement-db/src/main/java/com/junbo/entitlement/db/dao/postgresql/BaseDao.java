@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.entitlement.db.dao.hibernate;
+package com.junbo.entitlement.db.dao.postgresql;
 
 import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.lib.CommonUtils;
@@ -27,7 +27,7 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * Base dao for hibernate Dao.
+ * Base dao for postgresql Dao.
  *
  * @param <T> Entity type
  */
@@ -54,13 +54,13 @@ public class BaseDao<T extends Entity> {
     }
 
     public T insert(T t) {
-        t.setId(generateId(t.getShardMasterId()));
+        t.setpId(generateId(t.getShardMasterId()));
         Date now = EntitlementContext.current().getNow();
         t.setIsDeleted(false);
-        t.setCreatedBy("177536427572383");  //TODO
+        t.setCreatedBy(177536427572383L);  //TODO
         t.setCreatedTime(now);
-        t.setModifiedBy("177536427572383"); //TODO
-        t.setModifiedTime(now);
+        t.setUpdatedBy(177536427572383L); //TODO
+        t.setUpdatedTime(now);
         t.setIsDeleted(false);
         t.setRev(0);
         return get((Long) currentSession(t.getShardMasterId()).save(t));
@@ -72,11 +72,11 @@ public class BaseDao<T extends Entity> {
     }
 
     public T update(T t) {
-        T existed = (T) currentSession(t.getShardMasterId()).load(entityType, t.getId());
+        T existed = (T) currentSession(t.getShardMasterId()).load(entityType, t.getpId());
         t.setCreatedTime(existed.getCreatedTime());
         t.setCreatedBy(existed.getCreatedBy());
-        t.setModifiedBy("177536427572383"); //TODO
-        t.setModifiedTime(EntitlementContext.current().getNow());
+        t.setUpdatedBy(177536427572383L); //TODO
+        t.setUpdatedTime(EntitlementContext.current().getNow());
         if (t.getIsDeleted() == null || !t.getIsDeleted()) {
             t.setIsDeleted(false);
         }
