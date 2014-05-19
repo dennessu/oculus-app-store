@@ -6,6 +6,7 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.GroupId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.jackson.annotation.HateoasLink;
@@ -13,6 +14,9 @@ import com.junbo.common.model.Link;
 import com.junbo.common.util.Identifiable;
 import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by liangfu on 4/3/14.
@@ -37,6 +41,9 @@ public class Group extends ResourceMeta implements Identifiable<GroupId> {
     @ApiModelProperty(position = 4, required = false, value = "[Nullable]Users in this group.")
     @HateoasLink("/users?groupId={id}")
     private Link users;
+
+    @ApiModelProperty(position = 5, required = false, value = "The future expansion.")
+    private Map<String, JsonNode> futureExpansion = new HashMap<>();
 
     private UserId ownerUserId;
 
@@ -94,5 +101,14 @@ public class Group extends ResourceMeta implements Identifiable<GroupId> {
 
     public void setOwnerUserId(UserId ownerUserId) {
         this.ownerUserId = ownerUserId;
+    }
+
+    public Map<String, JsonNode> getFutureExpansion() {
+        return futureExpansion;
+    }
+
+    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
+        this.futureExpansion = futureExpansion;
+        support.setPropertyAssigned("futureExpansion");
     }
 }

@@ -108,7 +108,6 @@
         <property name="writablePropertiesForCreate">
             <list>
                 <value>currencyCode</value>
-                <value>countries</value>
                 <value>symbol</value>
                 <value>symbolPosition</value>
                 <value>decimalSymbol</value>
@@ -124,7 +123,6 @@
             <list>
                 <value>id</value>
                 <value>currencyCode</value>
-                <value>countries</value>
                 <value>symbol</value>
                 <value>symbolPosition</value>
                 <value>decimalSymbol</value>
@@ -160,7 +158,6 @@
                 <value>serialNumber</value>
                 <value>firmwareVersion</value>
                 <value>components</value>
-                <value>users</value>
                 <value>futureExpansion</value>
             </list>
         </property>
@@ -171,7 +168,6 @@
                 <value>serialNumber</value>
                 <value>firmwareVersion</value>
                 <value>components</value>
-                <value>users</value>
                 <value>futureExpansion</value>
                 <value>resourceAge</value>
             </list>
@@ -214,13 +210,15 @@
         </property>
     </bean>
 
-
     <bean id="groupFilter" class="com.junbo.identity.core.service.filter.GroupFilter">
         <property name="readableProperties">
             <list>
                 <value>id</value>
                 <value>name</value>
                 <value>active</value>
+                <value>futureExpansion</value>
+                <value>userMemberships</value>
+                <value>users</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -231,6 +229,7 @@
             <list>
                 <value>name</value>
                 <value>active</value>
+                <value>futureExpansion</value>
             </list>
         </property>
 
@@ -239,6 +238,7 @@
                 <value>id</value>
                 <value>name</value>
                 <value>active</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
             </list>
         </property>
