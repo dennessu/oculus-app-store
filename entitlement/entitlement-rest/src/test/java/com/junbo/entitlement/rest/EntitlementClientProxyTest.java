@@ -45,14 +45,14 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
     @Qualifier("oculus48IdGenerator")
     private IdGenerator idGenerator;
 
-    @Test(enabled = true)
+    @Test(enabled = false)
     public void testCreate() throws ExecutionException, InterruptedException {
         Entitlement entitlement = buildAnEntitlement();
         entitlement = entitlementResourceClientProxy.postEntitlement(entitlement).get();
         Assert.assertNotNull(entitlement.getEntitlementId());
     }
 
-    @Test(enabled = true)
+    @Test(enabled = false)
     public void testUpdate() throws ExecutionException, InterruptedException {
         Entitlement entitlement = entitlementResourceClientProxy.postEntitlement(buildAnEntitlement()).get();
         Date now = new Date();
@@ -61,7 +61,7 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
         Assert.assertTrue(Math.abs(entitlement.getExpirationTime().getTime() - now.getTime()) <= 1000);
     }
 
-    @Test(enabled = true)
+    @Test(enabled = false)
     public void testDelete() throws ExecutionException, InterruptedException {
         Entitlement entitlement = entitlementResourceClientProxy.postEntitlement(buildAnEntitlement()).get();
         entitlementResourceClientProxy.deleteEntitlement(new EntitlementId(entitlement.getEntitlementId()));
@@ -72,7 +72,7 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
         }
     }
 
-    @Test(enabled = true)
+    @Test(enabled = false)
     public void testTransfer() throws ExecutionException, InterruptedException {
         Long targetId = idGenerator.nextId();
         Entitlement entitlement = entitlementResourceClientProxy.postEntitlement(buildAnEntitlement()).get();
@@ -91,7 +91,7 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
         }
     }
 
-    @Test(enabled = true)
+    @Test(enabled = false)
     public void testSearch() throws ExecutionException, InterruptedException {
         Long userId = idGenerator.nextId();
         Entitlement entitlement = buildAnEntitlement();

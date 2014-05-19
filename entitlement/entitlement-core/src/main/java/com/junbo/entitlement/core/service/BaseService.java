@@ -7,7 +7,6 @@
 package com.junbo.entitlement.core.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.junbo.catalog.spec.enums.EntitlementType;
 import com.junbo.catalog.spec.model.item.EntitlementDef;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.common.id.EntitlementId;
@@ -139,7 +138,7 @@ public class BaseService {
 
     private void validateConsumable(Entitlement entitlement) {
         ItemRevision item = getItem(entitlement.getItemId());
-        EntitlementDef def = filter(item.getEntitlementDefs(), toType(entitlement.getType()));
+        EntitlementDef def = filter(item.getEntitlementDefs(), entitlement.getType());
         if (def == null) {
             throw AppErrors.INSTANCE.common("there is no entitlementDef with type [" +
                     entitlement.getType() + "] in item [" + entitlement.getItemId() + "]").exception();
@@ -241,7 +240,7 @@ public class BaseService {
         return IdFormatter.encodeId(new EntitlementId(id));
     }
 
-    protected EntitlementDef filter(List<EntitlementDef> defs, EntitlementType type) {
+    protected EntitlementDef filter(List<EntitlementDef> defs, String type) {
         if (defs == null) {
             return null;
         }
@@ -250,14 +249,10 @@ public class BaseService {
                 if (def.getType() == null) {
                     return def;
                 }
-            } else if (type.equals(def.getType())) {
+            } else if (type.equalsIgnoreCase(def.getType())) {
                 return def;
             }
         }
         return null;
-    }
-
-    protected EntitlementType toType(String type) {
-        return type == null ? null : EntitlementType.valueOf(type.toUpperCase());
     }
 }

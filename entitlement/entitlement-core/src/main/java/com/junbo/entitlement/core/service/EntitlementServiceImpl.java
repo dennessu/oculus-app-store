@@ -55,7 +55,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
     private Entitlement merge(Entitlement entitlement) {
         ItemRevision item = getItem(entitlement.getItemId());
-        EntitlementDef def = filter(item.getEntitlementDefs(), toType(entitlement.getType()));
+        EntitlementDef def = filter(item.getEntitlementDefs(), entitlement.getType());
         if (!def.getConsumable()) {
             return entitlementRepository.insert(entitlement);
         }

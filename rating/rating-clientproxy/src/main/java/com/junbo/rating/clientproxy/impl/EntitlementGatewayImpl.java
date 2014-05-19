@@ -39,7 +39,7 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
         }
         EntitlementSearchParam param = new EntitlementSearchParam();
         param.setUserId(new UserId(userId));
-        param.setDefinitionIds(entitlementDefinitionIds);
+//        param.setDefinitionIds(entitlementDefinitionIds);  TODO:
 
         PageMetadata pagingOption = new PageMetadata();
         pagingOption.setStart(Constants.DEFAULT_PAGE_START);
@@ -58,7 +58,7 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
             }
 
             for (Entitlement entitlement : entitlements) {
-                result.add(entitlement.getEntitlementDefinitionId());
+//                result.add(entitlement.getEntitlementDefinitionId()); TODO:
             }
 
             pagingOption.setStart(pagingOption.getStart() + Constants.DEFAULT_PAGE_SIZE);
