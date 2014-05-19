@@ -6,11 +6,16 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.junbo.common.id.ClientId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserTeleBackupCodeAttemptId;
 import com.junbo.common.util.Identifiable;
 import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by liangfu on 4/22/14.
@@ -35,10 +40,14 @@ public class UserTeleBackupCodeAttempt extends ResourceMeta implements Identifia
     private String userAgent;
 
     @ApiModelProperty(position = 6, required = false, value = "The client id of the verify attempt caller.")
-    private String clientId;
+    private ClientId clientId;
 
     @ApiModelProperty(position = 7, required = false, value = "[Client Immutable]Whether the attempt is success.")
     private Boolean succeeded;
+
+    @ApiModelProperty(position = 8, required = false, value = "The future expansion of the user tele backup code " +
+            "attempt resource.")
+    private Map<String, JsonNode> futureExpansion = new HashMap<>();
 
     public UserTeleBackupCodeAttemptId getId() {
         return id;
@@ -87,11 +96,11 @@ public class UserTeleBackupCodeAttempt extends ResourceMeta implements Identifia
         support.setPropertyAssigned("userAgent");
     }
 
-    public String getClientId() {
+    public ClientId getClientId() {
         return clientId;
     }
 
-    public void setClientId(String clientId) {
+    public void setClientId(ClientId clientId) {
         this.clientId = clientId;
         support.setPropertyAssigned("clientId");
     }
@@ -103,5 +112,14 @@ public class UserTeleBackupCodeAttempt extends ResourceMeta implements Identifia
     public void setSucceeded(Boolean succeeded) {
         this.succeeded = succeeded;
         support.setPropertyAssigned("succeeded");
+    }
+
+    public Map<String, JsonNode> getFutureExpansion() {
+        return futureExpansion;
+    }
+
+    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
+        this.futureExpansion = futureExpansion;
+        support.setPropertyAssigned("futureExpansion");
     }
 }

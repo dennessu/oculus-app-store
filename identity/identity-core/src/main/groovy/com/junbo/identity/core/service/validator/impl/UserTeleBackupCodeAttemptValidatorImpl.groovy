@@ -139,6 +139,8 @@ class UserTeleBackupCodeAttemptValidatorImpl implements UserTeleBackupCodeAttemp
             }
         }
 
+        /*
+        // todo:    Need to refactor clientId validation according to marshall's requirement
         if (attempt.clientId != null) {
             if (attempt.clientId.length() > maxClientIdLength) {
                 throw AppErrors.INSTANCE.fieldTooLong('clientId', maxClientIdLength).exception()
@@ -147,6 +149,7 @@ class UserTeleBackupCodeAttemptValidatorImpl implements UserTeleBackupCodeAttemp
                 throw AppErrors.INSTANCE.fieldTooShort('clientId', minClientIdLength).exception()
             }
         }
+        */
 
         return userRepository.get(userId).then { User user ->
             if (user == null) {

@@ -1034,6 +1034,7 @@
                 <value>userAgent</value>
                 <value>clientId</value>
                 <value>succeeded</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -1047,6 +1048,7 @@
                 <value>ipAddress</value>
                 <value>userAgent</value>
                 <value>clientId</value>
+                <value>futureExpansion</value>
             </list>
         </property>
 

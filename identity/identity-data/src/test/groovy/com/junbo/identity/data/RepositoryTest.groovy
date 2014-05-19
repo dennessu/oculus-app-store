@@ -593,7 +593,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         attempt.setUserId(userId)
         attempt.setVerifyCode(UUID.randomUUID().toString())
         attempt.setUserAgent(UUID.randomUUID().toString())
-        attempt.setClientId(UUID.randomUUID().toString())
+        attempt.setClientId(new ClientId(123L))
         attempt.setIpAddress(UUID.randomUUID().toString())
         attempt.setSucceeded(true)
 
