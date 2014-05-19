@@ -57,6 +57,7 @@ class TestBuilder {
         order.discounts = []
         order.discounts.add(buildDiscount('AAA', orderItem))
         order.locale = new LocaleId('en_US')
+        order.honoredTime = new Date()
         return order
     }
 
@@ -76,6 +77,7 @@ class TestBuilder {
         orderItem.setOffer(new OfferId(generateLong()))
         orderItem.quantity = 1
         orderItem.unitPrice = 10.00G
+        orderItem.honoredTime = new Date()
         return orderItem
     }
 

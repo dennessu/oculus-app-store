@@ -33,6 +33,7 @@ class CancelOrderAction extends BaseOrderEventAwareAction {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def order = context.orderServiceContext.order
 
+        assert(order != null)
         return orderInternalService.cancelOrder(order).then { Order o ->
             return Promise.pure(null)
         }
