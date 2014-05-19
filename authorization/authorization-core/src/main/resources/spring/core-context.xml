@@ -12,5 +12,7 @@
     <bean id="roleAssignmentFilter" class="com.junbo.authorization.core.filter.RoleAssignmentFilterImpl"/>
 
     <bean id="roleAssignmentValidator" class="com.junbo.authorization.core.validator.RoleAssignmentValidatorImpl">
+        <property name="roleAssignmentRepository" ref="roleAssignmentRepository"/>
+        <property name="roleRepository" ref="roleRepository"/>
     </bean>
 </beans>
