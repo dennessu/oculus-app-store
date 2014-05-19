@@ -8,6 +8,7 @@ package com.junbo.subscription.clientproxy.impl;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import com.junbo.payment.spec.resource.PaymentTransactionResource;
 import com.junbo.subscription.clientproxy.PaymentGateway;
+import com.junbo.subscription.common.exception.SubscriptionExceptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,15 @@ public class PaymentGatewayImpl implements PaymentGateway {
     private PaymentTransactionResource paymentResource;
 
     public PaymentTransaction chargePayment(PaymentTransaction tx){
-        return tx;
+        try{
+            PaymentTransaction response = paymentResource.postPaymentCharge(tx).get();
+
+            return response;
+        }catch (Exception e) {
+            LOGGER.error("Error occurred during calling [Payment] component.", e);
+            throw SubscriptionExceptions.INSTANCE.gatewayFailure("payment").exception();
+        }
+
     }
 
 }
