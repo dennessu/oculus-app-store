@@ -47,10 +47,11 @@
                 <value>countryCode</value>
                 <value>defaultLocale</value>
                 <value>defaultCurrency</value>
-                <value>futureExpansion</value>
-                <value>supportedLocales</value>
+                <value>ratingBoards</value>
                 <value>subCountries</value>
-                <value>localeKeys</value>
+                <value>supportedLocales</value>
+                <value>locales</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -61,10 +62,11 @@
                 <value>countryCode</value>
                 <value>defaultLocale</value>
                 <value>defaultCurrency</value>
-                <value>futureExpansion</value>
-                <value>supportedLocales</value>
+                <value>ratingBoards</value>
                 <value>subCountries</value>
-                <value>localeKeys</value>
+                <value>supportedLocales</value>
+                <value>locales</value>
+                <value>futureExpansion</value>
             </list>
         </property>
         <property name="writablePropertiesForUpdate">
@@ -73,10 +75,11 @@
                 <value>countryCode</value>
                 <value>defaultLocale</value>
                 <value>defaultCurrency</value>
-                <value>futureExpansion</value>
-                <value>supportedLocales</value>
+                <value>ratingBoards</value>
                 <value>subCountries</value>
-                <value>localeKeys</value>
+                <value>supportedLocales</value>
+                <value>locales</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
             </list>
         </property>

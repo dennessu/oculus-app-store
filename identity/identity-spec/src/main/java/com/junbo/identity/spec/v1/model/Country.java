@@ -40,7 +40,7 @@ public class Country extends ResourceMeta implements Identifiable<CountryId> {
     private CurrencyId defaultCurrency;
 
     @ApiModelProperty(position = 5, required = true, value = "The array of Links to the ageRating Boards supported in the country.")
-    private List<RatingBoardId> ratingBoardId = new ArrayList<>();
+    private List<RatingBoardId> ratingBoards = new ArrayList<>();
 
     @ApiModelProperty(position = 6, required = true, value = "Sub country object mapping.")
     private Map<String, SubCountry> subCountries = new HashMap<>();
@@ -49,7 +49,7 @@ public class Country extends ResourceMeta implements Identifiable<CountryId> {
     private List<LocaleId> supportedLocales = new ArrayList<>();
 
     @ApiModelProperty(position = 8, required = true, value = "Localizable properties")
-    private Map<String, JsonNode> locales = new HashMap<>();
+    private Map<String, String> locales = new HashMap<>();
 
     @ApiModelProperty(position = 9, required = true, value = "The future expansion of the country resource.")
     private Map<String, JsonNode> futureExpansion = new HashMap<>();
@@ -91,14 +91,6 @@ public class Country extends ResourceMeta implements Identifiable<CountryId> {
         support.setPropertyAssigned("defaultCurrency");
     }
 
-    public List<RatingBoardId> getRatingBoardId() {
-        return ratingBoardId;
-    }
-
-    public void setRatingBoardId(List<RatingBoardId> ratingBoardId) {
-        this.ratingBoardId = ratingBoardId;
-    }
-
     public Map<String, JsonNode> getFutureExpansion() {
         return futureExpansion;
     }
@@ -126,11 +118,20 @@ public class Country extends ResourceMeta implements Identifiable<CountryId> {
         support.setPropertyAssigned("subCountries");
     }
 
-    public Map<String, JsonNode> getLocales() {
+    public List<RatingBoardId> getRatingBoards() {
+        return ratingBoards;
+    }
+
+    public void setRatingBoards(List<RatingBoardId> ratingBoards) {
+        this.ratingBoards = ratingBoards;
+        support.setPropertyAssigned("ratingBoards");
+    }
+
+    public Map<String, String> getLocales() {
         return locales;
     }
 
-    public void setLocales(Map<String, JsonNode> locales) {
+    public void setLocales(Map<String, String> locales) {
         this.locales = locales;
         support.setPropertyAssigned("locales");
     }
