@@ -41,7 +41,7 @@ public class RouterImpl implements Router {
             return null;
         }
 
-        DataAccessPolicy policy = DataAccessConfigs.instance().getPolicy(resourceClass, Context.get().getHttpMethod());
+        DataAccessPolicy policy = DataAccessPolicies.instance().getHttpDataAccessPolicy(Context.get().getHttpMethod(), resourceClass);
         if (policy != null) {
             Context.get().setDataAccessPolicy(policy);
         }

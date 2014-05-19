@@ -1,10 +1,15 @@
 package com.junbo.sharding.dualwrite
+
+import com.junbo.common.routing.DataAccessPolicies
+import com.junbo.common.routing.model.DataAccessAction
 import com.junbo.common.routing.model.DataAccessPolicy
 import com.junbo.common.util.Context
 import com.junbo.sharding.dualwrite.annotations.DeleteMethod
 import com.junbo.sharding.dualwrite.annotations.ReadMethod
 import com.junbo.sharding.dualwrite.annotations.WriteMethod
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 import java.lang.reflect.InvocationHandler
 import java.lang.reflect.Method
@@ -14,6 +19,8 @@ import java.lang.reflect.Proxy
  */
 @CompileStatic
 class RepositoryProxy implements InvocationHandler {
+    private static final Logger logger = LoggerFactory.getLogger(RepositoryProxy.class);
+
     private final Class<?> repositoryInterface
 
     private DataAccessStrategy sqlOnlyStrategy;
@@ -55,13 +62,14 @@ class RepositoryProxy implements InvocationHandler {
 
     @Override
     Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        def dataAccessStrategy = getEffectiveStrategy()
-
         if (method.getAnnotation(ReadMethod) != null) {
+            def dataAccessStrategy = getEffectiveStrategy(DataAccessAction.READ, repositoryInterface)
             return dataAccessStrategy.invokeReadMethod(method, args);
         } else if (method.getAnnotation(WriteMethod) != null) {
+            def dataAccessStrategy = getEffectiveStrategy(DataAccessAction.WRITE, repositoryInterface)
             return dataAccessStrategy.invokeWriteMethod(method, args);
         } else if (method.getAnnotation(DeleteMethod) != null) {
+            def dataAccessStrategy = getEffectiveStrategy(DataAccessAction.WRITE, repositoryInterface)
             return dataAccessStrategy.invokeDeleteMethod(method, args);
         }
 
@@ -80,9 +88,25 @@ class RepositoryProxy implements InvocationHandler {
                 "Unspecified Read/Write/Delete annotation on method ${method.name} of Class: ${repositoryInterface.canonicalName}");
     }
 
-    private DataAccessStrategy getEffectiveStrategy() {
+    private DataAccessStrategy getEffectiveStrategy(DataAccessAction action, Class<?> repositoryInterface) {
+
+        DataAccessPolicy policy = Context.get().dataAccessPolicy;
+        if (policy == null) {
+            // within an http call
+            if (Context.get().getRequestContext() != null) {
+                logger.error("Cannot find policy from Context in HTTP call. Action: $action, Repo: ${repositoryInterface.name}");
+                throw new RuntimeException("Cannot find effective dataAccessPolicy in HTTP call! url: ${Context.get().requestContext.uriInfo.requestUri}");
+            }
+            // fallback.
+            policy = DataAccessPolicies.instance().getDataAccessPolicy(action, repositoryInterface);
+
+            if (policy == null) {
+                throw new RuntimeException("Cannot find effective dataAccessPolicy after fallback! Action: $action, Repo: ${repositoryInterface.name}");
+            }
+        }
+
         DataAccessStrategy result;
-        switch (Context.get().dataAccessPolicy) {
+        switch (policy) {
             case DataAccessPolicy.CLOUDANT_FIRST:
                 result = cloudantFirstStrategy;
                 break;
@@ -96,8 +120,6 @@ class RepositoryProxy implements InvocationHandler {
                 result = sqlOnlyStrategy;
                 break;
         }
-        // TODO: hack
-        result = cloudantOnlyStrategy;
         if (result == null) {
             throw new RuntimeException("Execution policy ${Context.get().dataAccessPolicy} is not supported in current Repository ${repositoryInterface.name}");
         }

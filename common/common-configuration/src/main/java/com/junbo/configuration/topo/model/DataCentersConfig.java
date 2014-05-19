@@ -62,7 +62,7 @@ public class DataCentersConfig {
         return datacenterByName.get(dcName);
     }
 
-    private static final String DATACENTER_REGEX_SINGLE_ENTRY = "\\s*(?<url>[^;,]+)\\s*;\\s*(?<id>\\d+)\\s*;\\s*(?<name>[^;,]+)\\s*(,|$|(,\\s*$))";
+    private static final String DATACENTER_REGEX_SINGLE_ENTRY = "\\s*(?<url>[^\\s;,]+)\\s*;\\s*(?<id>\\d+)\\s*;\\s*(?<name>[^\\s;,]+)\\s*(,|$|(,\\s*$))";
     private static final String DATACENTER_REGEX_FULL = "^(" + DATACENTER_REGEX_SINGLE_ENTRY + ")+$";
     private static final Pattern DATACENTER_PATTERN_SINGLE_ENTRY = Pattern.compile(DATACENTER_REGEX_SINGLE_ENTRY);
     private static final Pattern DATACENTER_PATTERN_FULL = Pattern.compile(DATACENTER_REGEX_FULL);
