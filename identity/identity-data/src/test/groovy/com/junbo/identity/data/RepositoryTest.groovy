@@ -527,7 +527,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         def userId = new UserId(idGenerator.nextId())
         UserTeleAttempt userTeleAttempt = new UserTeleAttempt()
         userTeleAttempt.setVerifyCode(UUID.randomUUID().toString())
-        userTeleAttempt.setClientId(UUID.randomUUID().toString())
+        userTeleAttempt.setClientId(new ClientId(123L))
         userTeleAttempt.setUserId(userId)
         userTeleAttempt.setIpAddress(UUID.randomUUID().toString())
         userTeleAttempt.setSucceeded(true)
