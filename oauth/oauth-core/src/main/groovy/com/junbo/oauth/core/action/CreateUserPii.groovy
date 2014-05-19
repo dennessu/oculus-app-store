@@ -73,7 +73,7 @@ class CreateUserPii implements Action {
 
         Date dob = contextWrapper.dob
 
-        UserName name = new UserName(firstName: firstName, lastName: lastName, nickName: nickname)
+        UserName name = new UserName(firstName: firstName, familyName: lastName, nickName: nickname)
 
         UserPersonalInfo namePii = new UserPersonalInfo(
                 userId: user.id as UserId,
@@ -84,19 +84,19 @@ class CreateUserPii implements Action {
         UserPersonalInfo emailPii = new UserPersonalInfo(
                 userId: user.id as UserId,
                 type: 'EMAIL',
-                value: ObjectMapperProvider.instance().valueToTree(new Email(value: email))
+                value: ObjectMapperProvider.instance().valueToTree(new Email(info: email))
         )
 
         UserPersonalInfo genderPii = new UserPersonalInfo(
                 userId: user.id as UserId,
                 type: 'GENDER',
-                value: ObjectMapperProvider.instance().valueToTree(new UserGender(value: gender.name()))
+                value: ObjectMapperProvider.instance().valueToTree(new UserGender(info: gender.name()))
         )
 
         UserPersonalInfo dobPii = new UserPersonalInfo(
                 userId: user.id as UserId,
                 type: 'DOB',
-                value: ObjectMapperProvider.instance().valueToTree(new UserDOB(birthday: dob))
+                value: ObjectMapperProvider.instance().valueToTree(new UserDOB(info: dob))
         )
 
         return userPersonalInfoResource.create(namePii).recover { Throwable e ->

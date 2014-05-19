@@ -273,7 +273,7 @@ class UserServiceImpl implements UserService {
                     String userEmail
                     try {
                         com.junbo.identity.spec.v1.model.Email email = ObjectMapperProvider.instance().treeToValue(info.value, com.junbo.identity.spec.v1.model.Email)
-                        userEmail = email.value
+                        userEmail = email.info
                     }
                     catch (Exception e) {
                         return Promise.pure(null)

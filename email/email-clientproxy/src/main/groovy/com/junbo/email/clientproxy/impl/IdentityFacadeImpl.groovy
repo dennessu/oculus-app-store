@@ -58,7 +58,7 @@ class IdentityFacadeImpl implements IdentityFacade {
                         try {
                             if (info.lastValidateTime != null) {
                                 Email email = ObjectMapperProvider.instance().treeToValue(info.value, Email)
-                                return Promise.pure(email.value)
+                                return Promise.pure(email.info)
                             }
 
                             return Promise.pure(null)
