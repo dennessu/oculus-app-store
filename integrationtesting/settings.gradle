@@ -8,6 +8,7 @@ include 'identity-integration'
 include 'oauth-integration'
 include 'payment-integration'
 include 'fulfilment-integration'
+include 'order-integration'
 
 include 'integration-buyerscenario'
 include 'integration-catalogscenario'
