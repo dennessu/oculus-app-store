@@ -19,6 +19,8 @@ public interface TransactionDao {
 
     TransactionEntity insert(TransactionEntity transactionEntity);
 
+    void update(TransactionEntity transactionEntity);
+
     List<TransactionEntity> getByWalletId(Long walletId);
 
     TransactionEntity getByTrackingUuid(Long shardMasterId, UUID uuid);

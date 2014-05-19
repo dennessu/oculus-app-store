@@ -27,6 +27,7 @@ public class TransactionEntity extends EntityWithCreated {
     private TransactionType type;
     private BigDecimal amount;
     private Long offerId;
+    private BigDecimal unrefundedAmount;
 
     @Column(name = "tracking_uuid")
     @Type(type = "pg-uuid")
@@ -64,6 +65,15 @@ public class TransactionEntity extends EntityWithCreated {
 
     public void setAmount(BigDecimal mount) {
         this.amount = mount;
+    }
+
+    @Column(name = "unrefunded_amount")
+    public BigDecimal getUnrefundedAmount() {
+        return unrefundedAmount;
+    }
+
+    public void setUnrefundedAmount(BigDecimal unrefundedAmount) {
+        this.unrefundedAmount = unrefundedAmount;
     }
 
     @Column(name = "offer_id")
