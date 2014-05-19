@@ -146,6 +146,9 @@
                 <value>type</value>
                 <value>serialNumber</value>
                 <value>firmwareVersion</value>
+                <value>components</value>
+                <value>users</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -156,6 +159,9 @@
                 <value>type</value>
                 <value>serialNumber</value>
                 <value>firmwareVersion</value>
+                <value>components</value>
+                <value>users</value>
+                <value>futureExpansion</value>
             </list>
         </property>
         <property name="writablePropertiesForUpdate">
@@ -164,6 +170,9 @@
                 <value>type</value>
                 <value>serialNumber</value>
                 <value>firmwareVersion</value>
+                <value>components</value>
+                <value>users</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
             </list>
         </property>
@@ -173,7 +182,11 @@
         <property name="readableProperties">
             <list>
                 <value>id</value>
-                <value>description</value>
+                <value>typeCode</value>
+                <value>availableFirmwares</value>
+                <value>instructionManual</value>
+                <value>componentTypes</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -181,17 +194,26 @@
         </property>
         <property name="writablePropertiesForCreate">
             <list>
-                <value>description</value>
+                <value>typeCode</value>
+                <value>availableFirmwares</value>
+                <value>instructionManual</value>
+                <value>componentTypes</value>
+                <value>futureExpansion</value>
             </list>
         </property>
         <property name="writablePropertiesForUpdate">
             <list>
                 <value>id</value>
-                <value>description</value>
+                <value>typeCode</value>
+                <value>availableFirmwares</value>
+                <value>instructionManual</value>
+                <value>componentTypes</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
             </list>
         </property>
     </bean>
+
 
     <bean id="groupFilter" class="com.junbo.identity.core.service.filter.GroupFilter">
         <property name="readableProperties">

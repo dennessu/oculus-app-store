@@ -6,6 +6,7 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.enumid.DeviceTypeId;
 import com.junbo.common.id.DeviceId;
 import com.junbo.common.jackson.annotation.HateoasLink;
@@ -45,7 +46,7 @@ public class Device extends ResourceMeta implements Identifiable<DeviceId> {
     private Link users;
 
     @ApiModelProperty(position = 6, required = false, value = "Feature expansion of the device resource.")
-    private Map<String, String> futureExpansion = new HashMap<>();
+    private Map<String, JsonNode> futureExpansion = new HashMap<>();
 
     public DeviceId getId() {
         return id;
@@ -102,11 +103,11 @@ public class Device extends ResourceMeta implements Identifiable<DeviceId> {
         support.setPropertyAssigned("type");
     }
 
-    public Map<String, String> getFutureExpansion() {
+    public Map<String, JsonNode> getFutureExpansion() {
         return futureExpansion;
     }
 
-    public void setFutureExpansion(Map<String, String> futureExpansion) {
+    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
         this.futureExpansion = futureExpansion;
         support.setPropertyAssigned("futureExpansion");
     }
