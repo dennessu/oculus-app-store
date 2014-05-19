@@ -5,20 +5,24 @@
  */
 package com.junbo.test.catalog.item;
 
-import com.junbo.common.model.Link;
+import com.junbo.catalog.spec.model.attribute.ItemAttribute;
+import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.test.catalog.ItemAttributeService;
+import com.junbo.test.catalog.OfferService;
+import com.junbo.test.catalog.impl.ItemAttributeServiceImpl;
+import com.junbo.test.catalog.impl.OfferServiceImpl;
+import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.catalog.impl.ItemServiceImpl;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.test.common.apihelper.identity.UserService;
-import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.catalog.ItemService;
 import com.junbo.test.common.property.*;
 
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.Assert;
-
-import java.lang.reflect.Field;
 import java.util.*;
 
 /**
@@ -33,6 +37,13 @@ public class TestPostItem extends BaseTestClass {
     private final String itemRequiredPara = "itemWithRequiredPara";
     private final String defaultItem = "defaultItem";
     private final String initRevValue = "1";
+    private String developerId;
+
+    @BeforeClass
+    private void PrepareTestData() throws Exception {
+        UserService userService = UserServiceImpl.instance();
+        developerId = userService.PostUser();
+    }
 
     @Property(
             priority = Priority.Dailies,
@@ -50,9 +61,6 @@ public class TestPostItem extends BaseTestClass {
     )
     @Test
     public void testPostItem() throws Exception {
-        UserService userService = UserServiceImpl.instance();
-        String developerId = userService.PostUser();
-
         //Post test items only with required parameters
         Item testItemRequired = itemService.prepareItemEntity(itemRequiredPara, developerId);
         Item itemRtn1 = itemService.postItem(testItemRequired);
@@ -76,7 +84,7 @@ public class TestPostItem extends BaseTestClass {
             description = "Test post items with invalid values",
             steps = {
                     "1. Prepare an item",
-                    "2. Set the required parameters to null or other invalid values",
+                    "2. test invalid values(like null, not null and some invalid enum values)",
                     "3. Try to post it and verify the expected error"
             }
     )
@@ -84,50 +92,75 @@ public class TestPostItem extends BaseTestClass {
     public void testPostItemInvalidScenarios() throws Exception {
         UserService userService = UserServiceImpl.instance();
         String developerId = userService.PostUser();
-        String[] fieldsCantBeNull = new String[]{"ownerId", "type"};
-        String[] fieldsMustBeNull = new String[]{"currentRevision", "entitlementDefId"};
-        Map<String , Object> invalidValues = new HashMap<>();
+
         List<Long> genres = new ArrayList<>();
-        Link revisions = new Link();
-        revisions.setId("0");
-        revisions.setHref("invalidHref");
         genres.add(0L);
         genres.add(1L);
-        invalidValues.put("type", "invalidType");
-        invalidValues.put("revisions", revisions);
-        invalidValues.put("defaultOffer", 0L);
-        invalidValues.put("genres", genres);
 
-        Item testItem;
+        //test ownerId is null
+        Item testItem = itemService.prepareItemEntity(defaultItem, developerId);
+        testItem.setOwnerId(null);
+        verifyExpectedError(testItem);
 
-        for (int i = 0; i < fieldsCantBeNull.length; i ++) {
-            case
-            testItem = itemService.prepareItemEntity(defaultItem, developerId);
-            itemField.set(testItem, null);
-            verifyExpectedError(testItem);
-        }
+        //test currentRevision is not null
+        testItem = itemService.prepareItemEntity(defaultItem, developerId);
+        testItem.setCurrentRevisionId(0L);
+        verifyExpectedError(testItem);
 
-        for (Field itemField : itemFields) {
-            if (Arrays.asList(fieldsCantBeNull).contains(itemField.getName())) {
-                testItem = itemService.prepareItemEntity(defaultItem, developerId);
-                itemField.set(testItem, null);
-                verifyExpectedError(testItem);
-            }
-            if (Arrays.asList(fieldsMustBeNull).contains(itemField.getName())) {
-                testItem = itemService.prepareItemEntity(defaultItem, developerId);
-                itemField.set(testItem, 0L);
-                verifyExpectedError(testItem);
-            }
-            if (invalidValues.containsKey(itemField.getName())) {
-                testItem = itemService.prepareItemEntity(defaultItem, developerId);
-                itemField.set(testItem, invalidValues.get(itemField.getName()));
-            }
-        }
-
-        //verify rev
+        //test rev
         testItem = itemService.prepareItemEntity(defaultItem, developerId);
         testItem.setRev(initRevValue);
         verifyExpectedError(testItem);
+
+        //test type is invalid enums
+        testItem = itemService.prepareItemEntity(defaultItem, developerId);
+        testItem.setType("invalid type");
+        verifyExpectedError(testItem);
+
+        //test defaultOffer is not existed
+        testItem = itemService.prepareItemEntity(defaultItem, developerId);
+        testItem.setDefaultOffer(0L);
+        verifyExpectedError(testItem);
+
+        //test genres is not existed
+        testItem = itemService.prepareItemEntity(defaultItem, developerId);
+        testItem.setGenres(genres);
+        verifyExpectedError(testItem);
+    }
+
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "CatalogIntegration",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Test post items with existed values(default offer, genres)",
+            steps = {
+                    "1. Prepare an item",
+                    "2. Prepare an offer and genres for the item use",
+                    "3. Post the item with the prepared offer and genres"
+            }
+    )
+    @Test
+    public void testPostItemWithExistedValues() throws Exception {
+
+        OfferService offerService = OfferServiceImpl.instance();
+        Offer offer = offerService.postDefaultOffer();
+
+        ItemAttributeService itemAttributeService = ItemAttributeServiceImpl.instance();
+        ItemAttribute itemAttribute1 = itemAttributeService.postDefaultItemAttribute();
+        ItemAttribute itemAttribute2 = itemAttributeService.postDefaultItemAttribute();
+        List<Long> genres = new ArrayList<>();
+        genres.add(itemAttribute1.getId());
+        genres.add(itemAttribute2.getId());
+
+        Item testItem = itemService.prepareItemEntity(defaultItem, developerId);
+        testItem.setDefaultOffer(offer.getOfferId());
+        testItem.setGenres(genres);
+
+        Item itemPosted = itemService.postItem(testItem);
+        Assert.assertEquals(itemPosted.getDefaultOffer(), offer.getOfferId());
+        Assert.assertEquals(itemPosted.getGenres(), genres);
     }
 
     private void checkItemRequiredParams(Item itemActual, Item itemExpected) {
@@ -147,11 +180,12 @@ public class TestPostItem extends BaseTestClass {
 
     private void verifyExpectedError(Item item) {
         try {
-            //Error code 400 means "Missing Input field"
+            //Error code 400 means "Missing Input field", "Unnecessary field found" or "invalid value"
             itemService.postItem(item, 400);
             Assert.fail("Post item should fail");
         }
         catch (Exception ex) {
         }
     }
+
 }
