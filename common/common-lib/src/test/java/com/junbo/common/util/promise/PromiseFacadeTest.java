@@ -31,7 +31,7 @@ public class PromiseFacadeTest {
             public Promise<String> apply(Long chargeResult) {
                 return Promise.pure("hello:" + chargeResult);
             }
-        }).wrapped().get();
+        }).get();
     }
 
     @Test
@@ -49,6 +49,6 @@ public class PromiseFacadeTest {
                 Assert.assertEquals(chargeResult, new Long(123L), "charge result should match.");
                 return Promise.pure("hello:" + chargeResult);
             }
-        }).wrapped().get();
+        }).get();
     }
 }

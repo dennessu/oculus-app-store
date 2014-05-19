@@ -64,7 +64,7 @@ class ActionTest {
         Promise<ActionResult> result = executor.execute(seq1, new ActionContext())
 
         try {
-            result.wrapped().get()
+            result.get()
             Assert.fail('test failure')
         }
         catch (ExecutionException ex) {
@@ -114,7 +114,7 @@ class ActionTest {
         )
 
         Promise<ActionResult> result = executor.execute(branch1, new ActionContext())
-        result.wrapped().get()
+        result.get()
         assert (result)
     }
 
@@ -132,7 +132,7 @@ class ActionTest {
             return Promise.pure(s)
         }
 
-        promise.wrapped().get()
+        promise.get()
         assert (promise)
     }
 }

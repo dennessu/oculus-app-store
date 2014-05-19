@@ -102,11 +102,11 @@
     <bean id="defaultRoleResourceRouter" parent="routingRouterBase" />
     <bean id="defaultRoleAssignmentResourceRouter" parent="routingRouterBase" />
 
-    <bean id="userAuthorizeCallbackFactory" class="com.junbo.identity.rest.resource.auth.UserAuthorizeCallbackFactory">
-        <property name="roleResource" ref="roleResourceClientProxy"/>
-        <property name="roleAssignmentResource" ref="roleAssignmentResourceClientProxy"/>
-        <property name="groupResource" ref="groupResourceClientProxy"/>
-        <property name="userGroupMembershipResource" ref="userGroupMembershipResourceClientProxy"/>
+    <bean id="userAuthorizeCallbackFactory" class="com.junbo.identity.rest.resource.auth.UserAuthorizeCallbackFactory"
+          parent="abstractAuthorizeCallbackFactory">
     </bean>
 
+    <bean id="userPersonalInfoAuthorizeCallbackFactory" class="com.junbo.identity.rest.resource.auth.UserPersonalInfoAuthorizeCallbackFactory"
+          parent="abstractAuthorizeCallbackFactory">
+    </bean>
 </beans>

@@ -1,11 +1,15 @@
 package com.junbo.authorization
 
+import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserId
-import com.junbo.langur.core.promise.Promise
+import com.junbo.common.util.IdFormatter
 import com.junbo.oauth.spec.endpoint.TokenInfoEndpoint
 import com.junbo.oauth.spec.model.TokenInfo
 import com.junbo.oauth.spec.model.TokenType
 import groovy.transform.CompileStatic
+import net.sf.ehcache.Cache
+import net.sf.ehcache.Ehcache
+import net.sf.ehcache.Element
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
@@ -27,7 +31,9 @@ public class TokenInfoParserImpl implements TokenInfoParser, ApplicationContextA
 
     private TokenInfoEndpoint tokenInfoEndpoint
 
-    private Boolean useDummyTokenInfo
+    private Boolean allowTestAccessToken
+
+    private Ehcache tokenInfoCache
 
     void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext
@@ -39,40 +45,59 @@ public class TokenInfoParserImpl implements TokenInfoParser, ApplicationContextA
     }
 
     @Required
-    void setUseDummyTokenInfo(Boolean useDummyTokenInfo) {
-        this.useDummyTokenInfo = useDummyTokenInfo
+    void setAllowTestAccessToken(Boolean allowTestAccessToken) {
+        this.allowTestAccessToken = allowTestAccessToken
     }
 
-    Promise<TokenInfo> parse() {
+    @Required
+    void setTokenInfoCache(Cache tokenInfoCache) {
+        this.tokenInfoCache = tokenInfoCache
+    }
 
-        if (useDummyTokenInfo) {
-            def tokenInfo = new TokenInfo(
-                    sub: new UserId(1234567890),
-                    expiresIn: Long.MAX_VALUE,
-                    scopes: AuthorizeContext.SUPER_RIGHT,
-                    clientId: "dummyClientId"
-            )
-
-            return Promise.pure(tokenInfo)
-        }
+    TokenInfo parse() {
 
         String accessToken = parseAccessToken()
 
-        // todo: try catch and throw 401 if invalid
-        return tokenInfoEndpoint.getTokenInfo(accessToken)
-    }
-
-    @Override
-    public <T> Promise<T> parseAndThen(Closure<Promise> closure) {
-        return parse().then { TokenInfo tokenInfo ->
-            return TokenInfoScope.with(tokenInfo, closure)
+        if (accessToken == null) {
+            return null
         }
-    }
 
-    @Override
-    public <T> Promise<T> parseAndThen(Promise.Func0<Promise<T>> func) {
-        return parse().then { TokenInfo tokenInfo ->
-            return TokenInfoScope.with(tokenInfo, func)
+        if (allowTestAccessToken) {
+
+            if (accessToken.startsWith('TEST:')) { // TEST:USERID:CLIENTID:SCOPES
+                def parts = accessToken.split(':')
+
+                UserId sub = (parts.length <= 1 || parts[1].empty) ? null : new UserId(IdFormatter.decodeId(UserId, parts[1]))
+                String clientId = (parts.length <= 2 || parts[2].empty) ? 'unknownClient' : parts[2]
+                String scopes = (parts.length <= 3 || parts[3].empty) ? '' : parts[3]
+
+                def tokenInfo = new TokenInfo(
+                        sub: sub,
+                        expiresIn: Long.MAX_VALUE,
+                        scopes: scopes,
+                        clientId: clientId
+                )
+
+                return tokenInfo
+            }
+        }
+
+        Element cachedElement = tokenInfoCache.get(accessToken)
+        if (cachedElement != null) {
+            return (TokenInfo) cachedElement.objectValue
+        }
+
+        try {
+            def tokenInfo = tokenInfoEndpoint.getTokenInfo(accessToken).get()
+            tokenInfoCache.put(new Element(accessToken, tokenInfo))
+
+            return tokenInfo
+        } catch (AppErrorException ex) {
+            if (ex.error.httpStatusCode / 100 == 4) {
+                throw AuthErrors.INSTANCE.invalidAccessToken().exception()
+            } else {
+                throw new RuntimeException('Failed to parse access token', ex)
+            }
         }
     }
 

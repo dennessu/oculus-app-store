@@ -23,7 +23,7 @@ class UserAuthorizeCallback extends AbstractAuthorizeCallback<User> {
 
     @Override
     String getApiName() {
-        return '/users'
+        return 'users'
     }
 
     @Override

@@ -5,6 +5,7 @@
  */
 package com.junbo.authorization.filter
 
+import com.junbo.authorization.AuthErrors
 import com.junbo.common.json.PropertyAssignedAwareSupport
 import com.junbo.oom.core.MappingContext
 import com.junbo.oom.core.filter.PropertyMappingEvent
@@ -27,7 +28,7 @@ class CreateFilter implements PropertyMappingFilter {
         boolean writable = context.isPropertyWritable(event.sourcePropertyName)
         if (!writable) {
             if (PropertyAssignedAwareSupport.isPropertyAssigned(event.source, event.sourcePropertyName)) {
-                throw FilterErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
+                throw AuthErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
             }
         }
     }

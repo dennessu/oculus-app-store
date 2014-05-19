@@ -5,6 +5,7 @@
  */
 package com.junbo.authorization.filter
 
+import com.junbo.authorization.AuthErrors
 import com.junbo.common.json.PropertyAssignedAwareSupport
 import com.junbo.oom.core.MappingContext
 import com.junbo.oom.core.filter.PropertyMappingEvent
@@ -36,13 +37,13 @@ class PutFilter implements PropertyMappingFilter {
 
             if (readable && !writable) { // readonly
                 if (different) {
-                    throw FilterErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
+                    throw AuthErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
                 }
             }
 
             if (!readable && !writable) {
                 if (PropertyAssignedAwareSupport.isPropertyAssigned(event.source, event.sourcePropertyName)) {
-                    throw FilterErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
+                    throw AuthErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
                 } else {
                     event.sourceProperty = event.alternativeSourceProperty
                 }
@@ -61,13 +62,13 @@ class PutFilter implements PropertyMappingFilter {
 
             if (readable && !writable) { // readonly
                 if (different) {
-                    throw FilterErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
+                    throw AuthErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
                 }
             }
 
             if (!readable && !writable) {
                 if (PropertyAssignedAwareSupport.isPropertyAssigned(event.source, event.sourcePropertyName)) {
-                    throw FilterErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
+                    throw AuthErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
                 } else {
                     if (!alternativeSourcePropertyIsNull) {
                         event.sourceProperty = event.sourcePropertyType.newInstance()

@@ -115,11 +115,11 @@ class TokenServiceImpl implements TokenService {
 
         AccessToken accessToken = accessTokenRepository.get(tokenValue)
         if (accessToken == null) {
-            throw AppExceptions.INSTANCE.invalidAuthorization().exception()
+            throw AppExceptions.INSTANCE.invalidAccessToken(tokenValue).exception()
         }
 
         if (accessToken.isExpired()) {
-            throw AppExceptions.INSTANCE.expiredAccessToken().exception()
+            throw AppExceptions.INSTANCE.expiredAccessToken(tokenValue).exception()
         }
 
         return accessToken

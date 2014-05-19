@@ -33,6 +33,11 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]${par
         }
     }
 
+    if (__accessTokenProvider != null) {
+        String __accessToken = __accessTokenProvider.getAccessToken();
+        __requestBuilder.addHeader("Authorization", "Bearer " + __accessToken);
+    }
+
     [#list parameters as parameter]
         [@includeModel model=parameter indent=true/]
     [/#list]

@@ -34,7 +34,7 @@ public class EntitlementDefinitionFacadeImpl implements EntitlementDefinitionFac
         try {
             LOGGER.info("Getting entitlementDefinition [{}] started.", definitionId);
             EntitlementDefinition definition = definitionClientProxy.getEntitlementDefinition(
-                    new EntitlementDefinitionId(definitionId)).wrapped().get();
+                    new EntitlementDefinitionId(definitionId)).get();
             LOGGER.info("Getting entitlementDefinition [{}] finished.", definitionId);
             return definition;
         } catch (Exception e) {
@@ -47,7 +47,7 @@ public class EntitlementDefinitionFacadeImpl implements EntitlementDefinitionFac
     public List<EntitlementDefinition> getDefinitions(EntitlementDefSearchParams params) {
         try {
             Results<EntitlementDefinition> definitions = definitionClientProxy.getEntitlementDefinitions(
-                    params, new PageableGetOptions().ensurePagingValid()).wrapped().get();
+                    params, new PageableGetOptions().ensurePagingValid()).get();
             return definitions.getItems();
         } catch (Exception e) {
             return Collections.emptyList();

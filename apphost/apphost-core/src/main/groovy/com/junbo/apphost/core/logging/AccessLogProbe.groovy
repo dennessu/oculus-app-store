@@ -60,7 +60,13 @@ class AccessLogProbe extends HttpServerProbe.Adapter {
 
     private static String getRemoteHost(Request request) {
 
-        String value = request.remoteAddr // request.remoteHost could timeout in some cases...
+        String value = null
+
+        try {
+            value = request.remoteAddr // request.remoteHost could timeout in some cases...
+        } catch (NullPointerException ignore) {
+        }
+
         return value == null ? '-' : value
     }
 
