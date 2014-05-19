@@ -814,6 +814,7 @@
                 <value>tosId</value>
                 <value>userId</value>
                 <value>agreementTime</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -824,6 +825,7 @@
             <list>
                 <value>tosId</value>
                 <value>agreementTime</value>
+                <value>futureExpansion</value>
             </list>
         </property>
 
@@ -832,9 +834,8 @@
                 <value>id</value>
                 <value>tosUri</value>
                 <value>agreementTime</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
             </list>
         </property>
     </bean>
