@@ -7,6 +7,8 @@ package com.junbo.ewallet.db.dao;
 
 import com.junbo.ewallet.db.entity.LotTransactionEntity;
 
+import java.util.List;
+
 /**
  * interface of LotTransactionDao.
  */
@@ -14,4 +16,8 @@ public interface LotTransactionDao {
     LotTransactionEntity get(Long id);
 
     LotTransactionEntity insert(LotTransactionEntity lotTransactionEntity);
+
+    void update(LotTransactionEntity lotTransactionEntity);
+
+    List<LotTransactionEntity> getByTransactionId(Long transactionId);
 }

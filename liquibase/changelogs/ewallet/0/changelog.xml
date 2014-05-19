@@ -59,6 +59,7 @@
 
             insert into lot_type values( 1, 'CASH', '', '2014-01-10');
             insert into lot_type values( 2, 'PROMOTION', '', '2014-01-10');
+            insert into lot_type values( 3, 'REFUND', '', '2014-01-10');
 
             create table transaction (
               id bigint not null,
@@ -66,6 +67,7 @@
               ewallet_id bigint not null,
               type int not null,
               amount numeric not null,
+              unrefunded_amount numeric default null,
               offer_id bigint,
               created_time timestamp not null,
               created_by varchar(256) not null,
@@ -80,9 +82,10 @@
               primary key (id)
             );
 
-            insert into transaction_type values( 1, 'Create', '', '2014-01-10');
-            insert into transaction_type values( 2, 'Credit', '', '2014-01-10');
-            insert into transaction_type values( 3, 'Debit', '', '2014-01-10');
+            insert into transaction_type values( 0, 'Create', '', '2014-01-10');
+            insert into transaction_type values( 1, 'Credit', '', '2014-01-10');
+            insert into transaction_type values( 2, 'Debit', '', '2014-01-10');
+            insert into transaction_type values( 3, 'Refund', '', '2014-01-10');
             insert into transaction_type values( 4, 'Delete', '', '2014-01-10');
             
 
@@ -92,7 +95,9 @@
               ewallet_lot_id bigint not null,
               transaction_id bigint not null,
               type int not null,
+              wallet_lot_type int,
               amount numeric,
+              unrefunded_amount numeric,
               created_time timestamp not null,
               created_by varchar(256) not null,
               primary key (id)

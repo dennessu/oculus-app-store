@@ -75,6 +75,7 @@ public class WalletMapper {
         transaction.setOfferId(transactionEntity.getOfferId());
         transaction.setCreatedBy(transactionEntity.getCreatedBy());
         transaction.setCreatedTime(transactionEntity.getCreatedTime());
+        transaction.setUnrefundedAmount(transactionEntity.getUnrefundedAmount());
         return transaction;
     }
 }

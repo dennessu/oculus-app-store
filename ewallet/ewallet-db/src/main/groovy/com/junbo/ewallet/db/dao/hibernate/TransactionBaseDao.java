@@ -56,6 +56,10 @@ public class TransactionBaseDao<T extends EntityWithCreated> {
         return get((Long) currentSession(t.getShardMasterId()).save(t));
     }
 
+    public void update(T t) {
+        currentSession(t.getShardMasterId()).update(t);
+    }
+
     protected Long generateId(Long shardId) {
         return idGenerator.nextId(shardId);
     }

@@ -15,7 +15,8 @@ import javax.ws.rs.NotSupportedException;
  */
 public enum TransactionType implements Identifiable<Integer> {
     CREDIT(1),
-    DEBIT(2);
+    DEBIT(2),
+    REFUND(3);
 
     private Integer id;
 
