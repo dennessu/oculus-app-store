@@ -743,6 +743,7 @@
                 <value>id</value>
                 <value>userId</value>
                 <value>securityQuestion</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -754,6 +755,7 @@
                 <value>securityQuestion</value>
                 <value>userId</value>
                 <value>answer</value>
+                <value>futureExpansion</value>
             </list>
         </property>
 
@@ -763,6 +765,7 @@
                 <value>userId</value>
                 <value>securityQuestion</value>
                 <value>answer</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>

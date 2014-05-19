@@ -7,11 +7,15 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserSecurityQuestionId;
 import com.junbo.common.util.Identifiable;
 import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by liangfu on 4/3/14.
@@ -32,6 +36,9 @@ public class UserSecurityQuestion extends ResourceMeta implements Identifiable<U
     @ApiModelProperty(position = 4, required = true, value = "[Nullable]Users")
     @JsonProperty("user")
     private UserId userId;
+
+    @ApiModelProperty(position = 5, required = false, value = "The future expansion of user SecurityQuestion resource.")
+    private Map<String, JsonNode> futureExpansion = new HashMap<>();
 
     @JsonIgnore
     private String answerHash;
@@ -82,5 +89,14 @@ public class UserSecurityQuestion extends ResourceMeta implements Identifiable<U
         this.userId = userId;
         support.setPropertyAssigned("userId");
         support.setPropertyAssigned("user");
+    }
+
+    public Map<String, JsonNode> getFutureExpansion() {
+        return futureExpansion;
+    }
+
+    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
+        this.futureExpansion = futureExpansion;
+        support.setPropertyAssigned("futureExpansion");
     }
 }
