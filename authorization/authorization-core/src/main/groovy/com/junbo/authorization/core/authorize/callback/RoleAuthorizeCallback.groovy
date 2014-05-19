@@ -41,7 +41,7 @@ class RoleAuthorizeCallback extends AbstractAuthorizeCallback<Role> {
             }
 
             if (filterLinkId instanceof GroupId) {
-                Group group = factory.groupResource.get(filterLinkId as GroupId, new GroupGetOptions()).wrapped().get()
+                Group group = factory.groupResource.get(filterLinkId as GroupId, new GroupGetOptions()).get()
 
                 if (group == null) {
                     return false

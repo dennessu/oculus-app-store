@@ -57,9 +57,9 @@ public class BaseDao<T extends Entity> {
         t.setId(generateId(t.getShardMasterId()));
         Date now = EntitlementContext.current().getNow();
         t.setIsDeleted(false);
-        t.setCreatedBy("DEFAULT");  //TODO
+        t.setCreatedBy("177536427572383");  //TODO
         t.setCreatedTime(now);
-        t.setModifiedBy("DEFAULT"); //TODO
+        t.setModifiedBy("177536427572383"); //TODO
         t.setModifiedTime(now);
         t.setIsDeleted(false);
         t.setRev(0);
@@ -75,7 +75,7 @@ public class BaseDao<T extends Entity> {
         T existed = (T) currentSession(t.getShardMasterId()).load(entityType, t.getId());
         t.setCreatedTime(existed.getCreatedTime());
         t.setCreatedBy(existed.getCreatedBy());
-        t.setModifiedBy("DEFAULT"); //TODO
+        t.setModifiedBy("177536427572383"); //TODO
         t.setModifiedTime(EntitlementContext.current().getNow());
         if (t.getIsDeleted() == null || !t.getIsDeleted()) {
             t.setIsDeleted(false);

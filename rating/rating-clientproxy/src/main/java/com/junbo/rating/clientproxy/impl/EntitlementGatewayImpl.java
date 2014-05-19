@@ -39,7 +39,7 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
         }
         EntitlementSearchParam param = new EntitlementSearchParam();
         param.setUserId(new UserId(userId));
-        param.setDefinitionIds(entitlementDefinitionIds);
+//        param.setDefinitionIds(entitlementDefinitionIds);  TODO:
 
         PageMetadata pagingOption = new PageMetadata();
         pagingOption.setStart(Constants.DEFAULT_PAGE_START);
@@ -51,14 +51,14 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
             try {
                 entitlements.addAll(
                         entitlementResource.searchEntitlements(
-                                param, pagingOption).wrapped().get().getItems());
+                                param, pagingOption).get().getItems());
             } catch (Exception e) {
                 LOGGER.error("Error occurred during calling [Entitlement] component.", e);
                 throw AppErrors.INSTANCE.entitlementGatewayError().exception();
             }
 
             for (Entitlement entitlement : entitlements) {
-                result.add(entitlement.getEntitlementDefinitionId());
+//                result.add(entitlement.getEntitlementDefinitionId()); TODO:
             }
 
             pagingOption.setStart(pagingOption.getStart() + Constants.DEFAULT_PAGE_SIZE);

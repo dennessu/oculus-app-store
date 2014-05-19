@@ -8,7 +8,10 @@ package com.junbo.entitlement.common.def;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Consts for entitlement.
@@ -22,9 +25,11 @@ public class EntitlementConsts {
     public static final int DEFAULT_PAGE_NUMBER = 0;
     public static final String NEXT_END = "END";
 
-    public static final String NO_TYPE = "NO_TYPE";
+    public static final String NO_TYPE = "NULL";
     public static final Date NEVER_EXPIRE = new Date(253402185600000L);
     public static final Integer UNCONSUMABLE_USECOUNT = Integer.MAX_VALUE;
 
     public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+    public static final Set<String> ALLOWED_TYPE = new HashSet<>(Arrays.asList(new String[]{"DOWNLOAD", "RUN", "DEVELOPER"}));
 }

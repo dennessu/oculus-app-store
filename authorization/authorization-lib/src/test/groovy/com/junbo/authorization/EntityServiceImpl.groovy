@@ -42,7 +42,7 @@ class EntityServiceImpl implements EntityService {
         Entity entity = new Entity(id: id, name: 'name', createdBy: 'system')
 
         def callback = entityAuthorizeCallbackFactory.create(entity)
-        return authorizeService.authorizeAndThen(callback) {
+        return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('owner') && !AuthorizeContext.hasRights('admin')) {
                 entity.name = null
             }
@@ -52,6 +52,6 @@ class EntityServiceImpl implements EntityService {
             }
 
             return Promise.pure(entity)
-        }.wrapped().get()
+        }.get()
     }
 }

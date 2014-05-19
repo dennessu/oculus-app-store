@@ -10,6 +10,7 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.spec.endpoint.TokenEndpoint
+import com.junbo.oauth.spec.model.AccessTokenRequest
 import com.junbo.oauth.spec.model.AccessTokenResponse
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
@@ -72,11 +73,26 @@ class TokenEndpointImpl implements TokenEndpoint {
      * @return The granted access token.
      */
     @Override
-    Promise<AccessTokenResponse> postToken(MultivaluedMap<String, String> formParams) {
+    Promise<AccessTokenResponse> postToken(AccessTokenRequest request) {
         // Prepare the request scope.
         Map<String, Object> requestScope = new HashMap<>()
         requestScope[ActionContextWrapper.REQUEST] = request
+
+        MultivaluedMap<String, String> formParams = new MultivaluedHashMap<>()
+
+        formParams.putSingle(OAuthParameters.CLIENT_ID, request.clientId)
+        formParams.putSingle(OAuthParameters.CLIENT_SECRET, request.clientSecret)
+        formParams.putSingle(OAuthParameters.GRANT_TYPE, request.grantType)
+        formParams.putSingle(OAuthParameters.CODE, request.code)
+        formParams.putSingle(OAuthParameters.SCOPE, request.scope)
+        formParams.putSingle(OAuthParameters.REDIRECT_URI, request.redirectUri)
+        formParams.putSingle(OAuthParameters.USERNAME, request.username)
+        formParams.putSingle(OAuthParameters.PASSWORD, request.password)
+        formParams.putSingle(OAuthParameters.REFRESH_TOKEN, request.refreshToken)
+        formParams.putSingle(OAuthParameters.NONCE, request.nonce)
+
         requestScope[ActionContextWrapper.PARAMETER_MAP] = formParams
+
         requestScope[ActionContextWrapper.HEADER_MAP] = httpHeaders.requestHeaders
         requestScope[ActionContextWrapper.COOKIE_MAP] = httpHeaders.cookies
 
@@ -85,40 +101,5 @@ class TokenEndpointImpl implements TokenEndpoint {
             ActionContextWrapper wrapper = new ActionContextWrapper(context)
             return Promise.pure(wrapper.accessTokenResponse)
         }
-    }
-
-    /**
-     * The POST method of the grant token endpoint, with the explicit parameters.
-     * @param clientId The client id.
-     * @param clientSecret The client secret.
-     * @param grantType The grant type ({@link com.junbo.oauth.spec.model.GrantType}).
-     * @param code The authorization code.
-     * @param scope The scope of the request.
-     * @param redirectUri The redirect uri used in the authorization code flow.
-     * @param username The username used in the password flow.
-     * @param password The password used in the password flow.
-     * @param refreshToken The refresh token used in the refresh token flow.
-     * @param nonce The nonce used in the openid connect flow.
-     * @return The granted access token.
-     */
-    @Override
-    Promise<AccessTokenResponse> postToken(String clientId, String clientSecret, String grantType, String code,
-                                           String scope, String redirectUri, String username, String password,
-                                           String refreshToken, String nonce) {
-        // Prepare the multi valued map
-        MultivaluedMap<String, String> formParams = new MultivaluedHashMap<>()
-
-        formParams.putSingle(OAuthParameters.CLIENT_ID, clientId)
-        formParams.putSingle(OAuthParameters.CLIENT_SECRET, clientSecret)
-        formParams.putSingle(OAuthParameters.GRANT_TYPE, grantType)
-        formParams.putSingle(OAuthParameters.CODE, code)
-        formParams.putSingle(OAuthParameters.SCOPE, scope)
-        formParams.putSingle(OAuthParameters.REDIRECT_URI, redirectUri)
-        formParams.putSingle(OAuthParameters.USERNAME, username)
-        formParams.putSingle(OAuthParameters.PASSWORD, password)
-        formParams.putSingle(OAuthParameters.REFRESH_TOKEN, refreshToken)
-        formParams.putSingle(OAuthParameters.NONCE, nonce)
-
-        return postToken(formParams)
     }
 }

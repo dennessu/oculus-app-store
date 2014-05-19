@@ -128,10 +128,10 @@ public class WalletRepository {
         }
     }
 
-    public Transaction refund(Wallet wallet, RefundRequest refundRequest) {
+    public Transaction refund(Wallet wallet, Long transactionId, RefundRequest refundRequest) {
         wallet.setBalance(wallet.getBalance().add(refundRequest.getAmount()));
         walletDao.update(mapper.toWalletEntity(wallet));
-        TransactionEntity debitTransaction = transactionDao.get(refundRequest.getTransactionId());
+        TransactionEntity debitTransaction = transactionDao.get(transactionId);
         debitTransaction.setUnrefundedAmount(debitTransaction.getUnrefundedAmount().subtract(refundRequest.getAmount()));
         transactionDao.update(debitTransaction);
 
@@ -139,7 +139,7 @@ public class WalletRepository {
                 transactionDao.insert(buildRefundTransaction(
                         refundRequest.getTrackingUuid(), wallet.getWalletId(), refundRequest));
 
-        List<LotTransactionEntity> lotTransactions = lotTransactionDao.getByTransactionId(refundRequest.getTransactionId());
+        List<LotTransactionEntity> lotTransactions = lotTransactionDao.getByTransactionId(transactionId);
         refund(lotTransactions, refundRequest.getAmount(), transaction.getId());
         return mapper.toTransaction(transaction);
     }

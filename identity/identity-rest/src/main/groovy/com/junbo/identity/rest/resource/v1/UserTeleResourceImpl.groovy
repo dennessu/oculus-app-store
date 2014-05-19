@@ -4,8 +4,8 @@ import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTeleId
 import com.junbo.common.model.Results
+import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.clientproxy.TeleSign
-import com.junbo.identity.core.service.Created201Marker
 import com.junbo.identity.core.service.filter.UserTeleFilter
 import com.junbo.identity.core.service.validator.UserTeleValidator
 import com.junbo.identity.data.repository.UserTeleRepository

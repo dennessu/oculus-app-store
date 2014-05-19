@@ -6,10 +6,8 @@
 
 package com.junbo.entitlement.rest.resource;
 
-import com.junbo.common.id.EntitlementDefinitionId;
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.ItemId;
-import com.junbo.common.id.UserId;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
 import com.junbo.common.util.IdFormatter;
@@ -97,11 +95,11 @@ public class EntitlementResourceImpl implements EntitlementResource {
             builder = builder.queryParam("isActive", searchParam.getIsActive());
         }
         if (searchParam.getIsBanned() != null) {
-            builder = builder.queryParam("isBanned", searchParam.getIsBanned());
+            builder = builder.queryParam("isSuspended", searchParam.getIsBanned());
         }
-        if (!CollectionUtils.isEmpty(searchParam.getDefinitionIds())) {
-            for (EntitlementDefinitionId definitionId : searchParam.getDefinitionIds()) {
-                builder = builder.queryParam("definitionIds", IdFormatter.encodeId(definitionId));
+        if (!CollectionUtils.isEmpty(searchParam.getItemIds())) {
+            for (ItemId itemId : searchParam.getItemIds()) {
+                builder = builder.queryParam("itemIds", IdFormatter.encodeId(itemId));
             }
         }
         builder = CommonUtils.buildPageParams(builder,
@@ -115,26 +113,6 @@ public class EntitlementResourceImpl implements EntitlementResource {
                 entitlementTransfer.getTrackingUuid());
         return Promise.pure(existing != null ? existing :
                 entitlementService.transferEntitlement(entitlementTransfer));
-    }
-
-    @Override
-    public Promise<Boolean> isDeveloper(UserId userId) {
-        return Promise.pure(entitlementService.isDeveloper(userId.getValue()));
-    }
-
-    @Override
-    public Promise<Entitlement> grantDeveloperEntitlement(UserId userId) {
-        return Promise.pure(entitlementService.grantDeveloperEntitlement(userId.getValue()));
-    }
-
-    @Override
-    public Promise<Boolean> canDownload(UserId userId, ItemId itemId) {
-        return Promise.pure(entitlementService.canDownload(userId.getValue(), itemId.getValue()));
-    }
-
-    @Override
-    public Promise<Boolean> canAccess(UserId userId, ItemId itemId) {
-        return Promise.pure(entitlementService.canAccess(userId.getValue(), itemId.getValue()));
     }
 
     private Entitlement getByTrackingUuid(Long shardMasterId, UUID trackingUuid) {

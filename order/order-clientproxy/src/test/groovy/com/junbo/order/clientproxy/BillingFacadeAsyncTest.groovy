@@ -50,7 +50,7 @@ class BillingFacadeAsyncTest extends BaseTest {
         semaphore.release(15)
 
         for (int i = 0;i < 15; ++i) {
-            Balance result = balanceList[i].wrapped().get()
+            Balance result = balanceList[i].get()
             if (i < 10) {
                 assert !result.isAsyncCharge
             } else {
@@ -78,7 +78,7 @@ class BillingFacadeAsyncTest extends BaseTest {
 
         for (flag = 0; flag < 15; ++flag) {
             try {
-                billingFacadeAsync.createBalance(new Balance()).wrapped().get()
+                billingFacadeAsync.createBalance(new Balance()).get()
                 assert false
             } catch (RuntimeException) {
             }

@@ -34,7 +34,7 @@ public class EmailServiceTest extends BaseTest {
         List<String> placeholderNames = new ArrayList<>();
         placeholderNames.add("unittest");
         template.setPlaceholderNames(placeholderNames);
-        this.template = templateService.postEmailTemplate(template).wrapped().get();
+        this.template = templateService.postEmailTemplate(template).get();
 
         Email email = new Email();
         email.setTemplateId(this.template.getId());
@@ -51,21 +51,21 @@ public class EmailServiceTest extends BaseTest {
 
     @Test
     public void testPostEmail() throws Exception {
-        Email result = emailService.postEmail(email).wrapped().get();
+        Email result = emailService.postEmail(email).get();
         Assert.assertNotNull(result, "Failed to post email");
         Assert.assertEquals(result.getStatus(),"PENDING", "Email post failed");
     }
 
     @Test
     public void testGetEmail() throws Exception {
-        Email result = emailService.postEmail(email).wrapped().get();
-        Email getEmail = emailService.getEmail(result.getId().getValue()).wrapped().get();
+        Email result = emailService.postEmail(email).get();
+        Email getEmail = emailService.getEmail(result.getId().getValue()).get();
         Assert.assertNotNull(getEmail, "Email get failed");
     }
 
     @Test
     public void testUpdateEmail() throws Exception {
-        Email result = emailService.postEmail(email).wrapped().get();
+        Email result = emailService.postEmail(email).get();
         Date scheduleTime = new Date(System.currentTimeMillis() + 5000000);
         Long id = result.getId().getValue();
         result.setId(null);
@@ -74,16 +74,16 @@ public class EmailServiceTest extends BaseTest {
         result.setCreatedBy(null);
         result.setCreatedTime(null);
         result.setScheduleTime(scheduleTime);
-        Email update = emailService.updateEmail(id, result).wrapped().get();
+        Email update = emailService.updateEmail(id, result).get();
         Assert.assertNotNull(update, "Email should not be null");
         Assert.assertEquals(update.getScheduleTime(), scheduleTime, "Email update failed");
     }
 
     @Test
     public void testDeleteEmail() throws Exception {
-        Email result = emailService.postEmail(email).wrapped().get();
+        Email result = emailService.postEmail(email).get();
         emailService.deleteEmail(result.getId().getValue());
-        Email deleteEmail = emailService.getEmail(result.getId().getValue()).wrapped().get();
+        Email deleteEmail = emailService.getEmail(result.getId().getValue()).get();
         Assert.assertNull(deleteEmail, "Email delete failed");
     }
 }

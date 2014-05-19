@@ -86,9 +86,23 @@ class CoreBuilder {
         return  balance
     }
 
+    static Balance buildRefundDepositBalance(Balance originalBalance) {
+        assert (originalBalance != null)
+
+        Balance balance = null
+        balance = buildRefundBalance(originalBalance)
+
+        originalBalance.balanceItems.each { BalanceItem item ->
+            def balanceItem = buildBalanceItem(item)
+            balanceItem.originalBalanceItemId = balanceItem.balanceItemId
+            balanceItem.balanceItemId = null
+            balance.addBalanceItem(balanceItem)
+        }
+        return balance
+    }
+
     static Balance buildBalance(Order order) {
         Balance balance = new Balance()
-        balance.trackingUuid = UUID.randomUUID()
         balance.country = order.country.value
         balance.currency = order.currency.value
         balance.orderId = order.id
@@ -99,6 +113,26 @@ class CoreBuilder {
         balance.providerConfirmUrl = order.providerConfirmUrl
         balance.successRedirectUrl = order.successRedirectUrl
         balance.cancelRedirectUrl = order.cancelRedirectUrl
+
+        return balance
+    }
+
+    static Balance buildRefundBalance(Balance originalBalance) {
+        Balance balance = new Balance()
+        balance.country = originalBalance.country
+        balance.currency = originalBalance.currency
+        balance.orderId = originalBalance.orderId
+        balance.userId = originalBalance.userId
+        balance.piId = originalBalance.piId
+        balance.trackingUuid = UUID.randomUUID()
+        balance.shippingAddressId = originalBalance.shippingAddressId
+        balance.providerConfirmUrl = originalBalance.providerConfirmUrl
+        balance.successRedirectUrl = originalBalance.successRedirectUrl
+        balance.cancelRedirectUrl = originalBalance.cancelRedirectUrl
+        balance.originalBalanceId = originalBalance.balanceId
+        balance.type = BalanceType.REFUND.name()
+        balance.originalBalanceId = balance.balanceId
+        balance.balanceId = null
 
         return balance
     }
@@ -115,6 +149,19 @@ class CoreBuilder {
             discountItem.discountAmount = item.totalDiscount
             balanceItem.addDiscountItem(discountItem)
         }
+        return balanceItem
+    }
+
+    static BalanceItem buildBalanceItem(BalanceItem item) {
+        if (item == null) {
+            return null
+        }
+
+        BalanceItem balanceItem = new BalanceItem()
+        balanceItem.amount = item.amount
+        DiscountItem discountItem = new DiscountItem()
+        discountItem.discountAmount = item.discountAmount
+        balanceItem.addDiscountItem(discountItem)
         return balanceItem
     }
 

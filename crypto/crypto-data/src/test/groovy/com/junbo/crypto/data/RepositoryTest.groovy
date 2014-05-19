@@ -31,13 +31,13 @@ class RepositoryTest extends AbstractTestNGSpringContextTests {
     public void testMasterKeyRepo() {
         MasterKey masterKey = new MasterKey()
         masterKey.setEncryptValue(UUID.randomUUID().toString())
-        MasterKey newMaster = masterKeyRepo.create(masterKey).wrapped().get()
+        MasterKey newMaster = masterKeyRepo.create(masterKey).get()
 
-        masterKey = masterKeyRepo.get(newMaster.id).wrapped().get()
+        masterKey = masterKeyRepo.get(newMaster.id).get()
 
         assert newMaster.encryptValue == masterKey.encryptValue
 
-        List<MasterKey> list = masterKeyRepo.getAllMaterKeys().wrapped().get()
+        List<MasterKey> list = masterKeyRepo.getAllMaterKeys().get()
         assert list.size() != 0
     }
 
@@ -48,13 +48,13 @@ class RepositoryTest extends AbstractTestNGSpringContextTests {
         userCryptoKey.setEncryptValue(UUID.randomUUID().toString())
         userCryptoKey.setUserId(userId)
 
-        UserCryptoKey newUserCryptoKey = userCryptoKeyRepo.create(userCryptoKey).wrapped().get()
+        UserCryptoKey newUserCryptoKey = userCryptoKeyRepo.create(userCryptoKey).get()
 
-        userCryptoKey = userCryptoKeyRepo.get(newUserCryptoKey.id).wrapped().get()
+        userCryptoKey = userCryptoKeyRepo.get(newUserCryptoKey.id).get()
 
         assert userCryptoKey.encryptValue == newUserCryptoKey.encryptValue
 
-        List<UserCryptoKey> list = userCryptoKeyRepo.getAllUserCryptoKeys(userId).wrapped().get()
+        List<UserCryptoKey> list = userCryptoKeyRepo.getAllUserCryptoKeys(userId).get()
         assert list.size() != 0
     }
 }

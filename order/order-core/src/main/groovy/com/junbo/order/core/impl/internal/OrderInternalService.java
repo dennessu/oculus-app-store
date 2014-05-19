@@ -5,6 +5,7 @@
  */
 package com.junbo.order.core.impl.internal;
 
+import com.junbo.billing.spec.model.Balance;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.order.spec.model.Order;
 import com.junbo.order.spec.model.OrderQueryParam;
@@ -27,4 +28,9 @@ public interface OrderInternalService {
     void markSettlement(Order order);
 
     Promise<Order> cancelOrder(Order order);
+
+    Promise<Void> refundDeposit(Order order);
+
+    Promise<List<Balance>> getBalancesByOrderId(Long orderId);
+
 }

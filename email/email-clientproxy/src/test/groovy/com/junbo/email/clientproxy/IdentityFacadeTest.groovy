@@ -17,7 +17,7 @@ class IdentityFacadeTest extends BaseTest {
 
     @Test(enabled = false)
     void testGetUser() {
-        def user = identityFacade.getUser(123L).wrapped().get()
+        def user = identityFacade.getUser(123L).get()
         assert user != null
         assert user.status == 'ACTIVE'
     }

@@ -5,6 +5,9 @@
  */
 package com.junbo.common.error;
 
+import com.junbo.common.id.Id;
+import com.junbo.common.util.IdFormatter;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -137,7 +140,18 @@ public class ErrorProxy implements InvocationHandler {
 
         int index = 0;
         for (Object arg : args) {
-            pattern = pattern.replace("{"+index+"}", arg == null ? "null" : arg.toString());
+
+            String argStr = "null";
+
+            if (arg != null) {
+                if (arg instanceof Id) {
+                    argStr = IdFormatter.encodeId((Id) arg);
+                } else {
+                    argStr = arg.toString();
+                }
+            }
+
+            pattern = pattern.replace("{"+index+"}", argStr);
             index++;
         }
 

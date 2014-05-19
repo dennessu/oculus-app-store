@@ -30,11 +30,10 @@
                 <ref bean="conditionEvaluator"/>
             </list>
         </property>
-        <property name="useDummyRights" value="true"/>
     </bean>
 
     <bean id="tokenInfoParser" class="com.junbo.authorization.TokenInfoParserImpl">
         <property name="tokenInfoEndpoint" ref="tokenInfoEndpoint"/>
-        <property name="useDummyTokenInfo" value="true"/>
+        <property name="allowTestAccessToken" value="true"/>
     </bean>
 </beans>
