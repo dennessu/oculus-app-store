@@ -17,6 +17,7 @@ import org.springframework.util.CollectionUtils
 @CompileStatic
 class CommunicationValidatorImpl implements CommunicationValidator {
 
+    // todo:    Refactor validation according to marshall's new schema
     private CommunicationRepository communicationRepository
 
     @Required
@@ -56,6 +57,7 @@ class CommunicationValidatorImpl implements CommunicationValidator {
             throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
         }
 
+        /*
         return communicationRepository.search(new CommunicationListOptions(name: communication.name)).
                 then { List<Communication> existing ->
             if (!CollectionUtils.isEmpty(existing)) {
@@ -64,6 +66,8 @@ class CommunicationValidatorImpl implements CommunicationValidator {
 
             return Promise.pure(null)
         }
+        */
+        return Promise.pure(null)
     }
 
     @Override
@@ -86,9 +90,11 @@ class CommunicationValidatorImpl implements CommunicationValidator {
 
         checkBasicCommunicationInfo(communication)
 
+        /*
         if (communication.name != oldCommunication.name) {
             throw AppErrors.INSTANCE.fieldInvalid('name').exception()
         }
+        */
 
         return Promise.pure(null)
     }
@@ -98,12 +104,14 @@ class CommunicationValidatorImpl implements CommunicationValidator {
             throw new IllegalArgumentException('communication is null')
         }
 
+        /*
         if (communication.name == null) {
             throw AppErrors.INSTANCE.fieldRequired('name').exception()
         }
         if (communication.description == null) {
             throw AppErrors.INSTANCE.fieldRequired('description').exception()
         }
+        */
         if (communication.regions == null) {
             throw AppErrors.INSTANCE.fieldRequired('regions').exception()
         }

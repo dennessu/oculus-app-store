@@ -28,12 +28,6 @@ public class Communication extends ResourceMeta implements Identifiable<Communic
     @JsonProperty("self")
     private CommunicationId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "The name of communication.")
-    private String name;
-
-    @ApiModelProperty(position = 3, required = true, value = "The description of communication.")
-    private String description;
-
     @ApiModelProperty(position = 4, required = true, value = "An array of links to every locales the given communication is available in.")
     private List<LocaleId> translations = new ArrayList<>();
 
@@ -55,24 +49,6 @@ public class Communication extends ResourceMeta implements Identifiable<Communic
         this.id = id;
         support.setPropertyAssigned("id");
         support.setPropertyAssigned("self");
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-        support.setPropertyAssigned("name");
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-        support.setPropertyAssigned("description");
     }
 
     public List<CountryId> getRegions() {

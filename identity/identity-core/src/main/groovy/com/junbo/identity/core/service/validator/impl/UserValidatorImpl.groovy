@@ -192,7 +192,6 @@ class UserValidatorImpl implements UserValidator {
             }
             return validateAddresses(user)
         }.then {
-
             return validateEmails(user)
         }.then {
             return validatePhones(user)
@@ -217,7 +216,7 @@ class UserValidatorImpl implements UserValidator {
         }
     }
 
-    Promise<Void> validateUserPersonalInfoLinkIterator(Iterator<UserPersonalInfoLink> it, String type) {
+    Promise<Void> validateUserPersonalInfoLinkIterator(User user, Iterator<UserPersonalInfoLink> it, String type) {
         if (it.hasNext()) {
             UserPersonalInfoLink userPersonalInfoLink = it.next();
 
@@ -241,6 +240,10 @@ class UserValidatorImpl implements UserValidator {
                             }
                         }
 
+                        if (user.id != userPersonalInfo.id) {
+                            throw AppErrors.INSTANCE.fieldInvalid('userPersonalInfoLin.value').exception()
+                        }
+
                         // todo:    Temp disable default userPersonalInfoLink need verified email
                         /*
                         if (userPersonalInfoLink.isDefault == true) {
@@ -253,7 +256,7 @@ class UserValidatorImpl implements UserValidator {
                         }
                         */
 
-                        return validateUserPersonalInfoLinkIterator(it, type)
+                        return validateUserPersonalInfoLinkIterator(user, it, type)
                     }
         }
         return Promise.pure(null)
@@ -319,7 +322,7 @@ class UserValidatorImpl implements UserValidator {
     Promise<Void> validateAddresses(User user) {
         if (user.addresses != null) {
             checkSinglePersonalInfoLink(user.addresses)
-            return validateUserPersonalInfoLinkIterator(user.addresses.iterator(),
+            return validateUserPersonalInfoLinkIterator(user, user.addresses.iterator(),
                     UserPersonalInfoType.ADDRESS.toString())
         }
 
@@ -329,7 +332,7 @@ class UserValidatorImpl implements UserValidator {
     Promise<Void> validateEmails(User user) {
         if (user.emails != null) {
             checkSinglePersonalInfoLink(user.emails)
-            return validateUserPersonalInfoLinkIterator(user.emails.iterator(),
+            return validateUserPersonalInfoLinkIterator(user, user.emails.iterator(),
                     UserPersonalInfoType.EMAIL.toString())
         }
         return Promise.pure(null)
@@ -338,7 +341,8 @@ class UserValidatorImpl implements UserValidator {
     Promise<Void> validatePhones(User user) {
         if (user.phones != null) {
             checkSinglePersonalInfoLink(user.phones)
-            return validateUserPersonalInfoLinkIterator(user.phones.iterator(), UserPersonalInfoType.PHONE.toString())
+            return validateUserPersonalInfoLinkIterator(user, user.phones.iterator(),
+                    UserPersonalInfoType.PHONE.toString())
         }
 
         return Promise.pure(null)
@@ -363,7 +367,7 @@ class UserValidatorImpl implements UserValidator {
     Promise<Void> validateSMS(User user) {
         if (user.textMessages != null) {
             checkSinglePersonalInfoLink(user.textMessages)
-            return validateUserPersonalInfoLinkIterator(user.textMessages.iterator(),
+            return validateUserPersonalInfoLinkIterator(user, user.textMessages.iterator(),
                     UserPersonalInfoType.SMS.toString())
         }
         return Promise.pure(null)
@@ -372,7 +376,7 @@ class UserValidatorImpl implements UserValidator {
     Promise<Void> validateQQ(User user) {
         if (user.qqs != null) {
             checkSinglePersonalInfoLink(user.qqs)
-            return validateUserPersonalInfoLinkIterator(user.qqs.iterator(), UserPersonalInfoType.QQ.toString())
+            return validateUserPersonalInfoLinkIterator(user, user.qqs.iterator(), UserPersonalInfoType.QQ.toString())
         }
         return Promise.pure(null)
     }
@@ -380,7 +384,7 @@ class UserValidatorImpl implements UserValidator {
     Promise<Void> validateWhatsApp(User user) {
         if (user.whatsApps != null) {
             checkSinglePersonalInfoLink(user.whatsApps)
-            return validateUserPersonalInfoLinkIterator(user.whatsApps.iterator(),
+            return validateUserPersonalInfoLinkIterator(user, user.whatsApps.iterator(),
                     UserPersonalInfoType.WHATSAPP.toString())
         }
         return Promise.pure(null)

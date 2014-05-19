@@ -11,12 +11,10 @@
         <property name="readableProperties">
             <list>
                 <value>id</value>
-                <value>name</value>
-                <value>description</value>
-                <value>allowedIn</value>
                 <value>locales</value>
                 <value>regions</value>
                 <value>translations</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -24,23 +22,19 @@
         </property>
         <property name="writablePropertiesForCreate">
             <list>
-                <value>name</value>
-                <value>description</value>
-                <value>allowedIn</value>
                 <value>locales</value>
                 <value>regions</value>
                 <value>translations</value>
+                <value>futureExpansion</value>
             </list>
         </property>
         <property name="writablePropertiesForUpdate">
             <list>
                 <value>id</value>
-                <value>name</value>
-                <value>description</value>
-                <value>allowedIn</value>
                 <value>locales</value>
                 <value>regions</value>
                 <value>translations</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
             </list>
         </property>
