@@ -48,7 +48,6 @@
                 <constructor-arg name="name" value="TOKEN_INFO"/>
             </bean>
         </property>
-
     </bean>
 
     <bean id="spelConditionEvaluator" class="com.junbo.authorization.SPELConditionEvaluator"/>
@@ -65,6 +64,7 @@
                 <ref bean="spelConditionEvaluator"/>
             </list>
         </property>
+        <property name="disabled" value="true"/>
     </bean>
 
     <!-- cache -->
