@@ -23,6 +23,10 @@ public class RoleListOptions extends PagingListOptions {
     @QueryParam("filterLink")
     private String filterLink;
 
+    private String filterLinkIdType;
+
+    private Long filterLinkId;
+
     public String getName() {
         return name;
     }
@@ -53,5 +57,21 @@ public class RoleListOptions extends PagingListOptions {
 
     public void setFilterLink(String filterLink) {
         this.filterLink = filterLink;
+    }
+
+    public String getFilterLinkIdType() {
+        return filterLinkIdType;
+    }
+
+    public void setFilterLinkIdType(String filterLinkIdType) {
+        this.filterLinkIdType = filterLinkIdType;
+    }
+
+    public Long getFilterLinkId() {
+        return filterLinkId;
+    }
+
+    public void setFilterLinkId(Long filterLinkId) {
+        this.filterLinkId = filterLinkId;
     }
 }

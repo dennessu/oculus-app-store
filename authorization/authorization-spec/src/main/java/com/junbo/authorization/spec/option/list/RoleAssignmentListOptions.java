@@ -20,6 +20,10 @@ public class RoleAssignmentListOptions extends PagingListOptions {
     @QueryParam("assignee")
     private String assignee;
 
+    private String assigneeIdType;
+
+    private Long assigneeId;
+
     public RoleId getRoleId() {
         return roleId;
     }
@@ -34,5 +38,21 @@ public class RoleAssignmentListOptions extends PagingListOptions {
 
     public void setAssignee(String assignee) {
         this.assignee = assignee;
+    }
+
+    public String getAssigneeIdType() {
+        return assigneeIdType;
+    }
+
+    public void setAssigneeIdType(String assigneeIdType) {
+        this.assigneeIdType = assigneeIdType;
+    }
+
+    public Long getAssigneeId() {
+        return assigneeId;
+    }
+
+    public void setAssigneeId(Long assigneeId) {
+        this.assigneeId = assigneeId;
     }
 }

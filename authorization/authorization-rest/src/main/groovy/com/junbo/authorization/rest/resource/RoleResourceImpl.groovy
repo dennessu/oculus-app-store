@@ -130,7 +130,7 @@ class RoleResourceImpl implements RoleResource {
             def results = new Results<Role>(items: [])
 
             return roleRepository.findByRoleName(options.name, options.targetType,
-                    options.filterType, options.filterLink).then { Role role ->
+                    options.filterType, options.filterLinkIdType, options.filterLinkId).then { Role role ->
                 Role filtered = roleFilter.filterForGet(role)
 
                 if (filtered != null) {

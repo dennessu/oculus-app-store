@@ -62,8 +62,9 @@ class RoleRepositoryCloudantImpl extends CloudantClient<Role> implements RoleRep
     }
 
     @Override
-    Promise<Role> findByRoleName(String roleName, String targetType, String filterType, String filterLink) {
-        String key = "$roleName:$targetType:$filterType:$filterLink"
+    Promise<Role> findByRoleName(String roleName, String targetType, String filterType,
+                                 String filterLinkIdType, Long filterLinkId) {
+        String key = "$roleName:$targetType:$filterType:$filterLinkIdType:$filterLinkId"
         def list = super.queryView('by_role_name', key)
         return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)
     }
@@ -73,8 +74,9 @@ class RoleRepositoryCloudantImpl extends CloudantClient<Role> implements RoleRep
                     'by_role_name': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
                                     '  emit(doc.name + \':\' + doc.target.targetType + \':\'' +
-                                    ' + doc.target.filterType + \':\' + doc.target.filterLink.href, doc._id)' +
-                                        '}',
+                                    ' + doc.target.filterType + \':\' + doc.target.filterLinkIdType + \':\'' +
+                                    ' + doc.target.filterLinkId, doc._id)' +
+                                    '}',
                             resultClass: String)
             ]
     )

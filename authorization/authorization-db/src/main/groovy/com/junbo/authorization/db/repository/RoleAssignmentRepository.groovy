@@ -27,5 +27,5 @@ interface RoleAssignmentRepository {
     Promise<Void> delete(RoleAssignmentId id);
 
     @ReadMethod
-    Promise<RoleAssignment> findByRoleIdAssignee(RoleId roleId, String assignee)
+    Promise<RoleAssignment> findByRoleIdAssignee(RoleId roleId, String assigneeIdType, Long assigneeId)
 }

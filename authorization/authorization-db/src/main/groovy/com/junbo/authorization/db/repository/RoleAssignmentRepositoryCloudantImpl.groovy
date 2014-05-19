@@ -52,8 +52,8 @@ class RoleAssignmentRepositoryCloudantImpl extends CloudantClient<RoleAssignment
     }
 
     @Override
-    Promise<RoleAssignment> findByRoleIdAssignee(RoleId roleId, String assignee) {
-        String key = "$roleId:$assignee"
+    Promise<RoleAssignment> findByRoleIdAssignee(RoleId roleId, String assigneeIdType, Long assigneeId) {
+        String key = "$roleId:$assigneeIdType:$assigneeId"
         def list = super.queryView('by_role_id', key)
         return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)
     }
@@ -67,7 +67,7 @@ class RoleAssignmentRepositoryCloudantImpl extends CloudantClient<RoleAssignment
         views: [
             'by_role_id': new CloudantViews.CloudantView(
                 map: 'function(doc) {' +
-                    '  emit(doc.roleId + \':\' + doc.assignee.href, doc._id)' +
+                    '  emit(doc.roleId + \':\' + doc.assigneeIdType + \':\' + doc.assigneeId, doc._id)' +
                     '}',
                 resultClass: String)
         ]
