@@ -48,19 +48,19 @@ class AuthorizeServiceImpl implements AuthorizeService {
 
     @Override
     public Set<String> authorize(AuthorizeCallback callback) {
-
         ApiDefinition api = getApiDefinition(callback.apiName)
 
         if (api == null) {
-            throw new RuntimeException("api ${callback.apiName} not found")
+            return Collections.emptySet()
         }
-
-        def tokenScopes = AuthorizeContext.currentScopes as Set<String>
-        def scopes = api.scopes.keySet().intersect(tokenScopes)
 
         Set<String> rights = []
 
-        for (String scopeName : scopes) {
+        for (String scopeName : api.scopes.keySet()) {
+            if (!AuthorizeContext.hasScopes(scopeName)) {
+                continue
+            }
+
             List<MatrixRow> matrixRows = api.scopes[scopeName]
 
             for (MatrixRow row : matrixRows) {
