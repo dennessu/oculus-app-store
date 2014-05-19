@@ -1,8 +1,12 @@
 #!/bin/bash
 source common.sh
 
+#check running under 'postgres'
+checkAccount $DEPLOYMENT_ACCOUNT
+
 echo "create database data folder $MASTER_DATA_PATH"
 mkdir -p $MASTER_DATA_PATH
+chmod 700 $MASTER_DATA_PATH
 
 echo "create database backup folder $MASTER_BACKUP_PATH"
 mkdir -p $MASTER_BACKUP_PATH
@@ -11,7 +15,7 @@ echo "create database archive folder $MASTER_ARCHIVE_PATH"
 mkdir -p $MASTER_ARCHIVE_PATH
 
 echo "initialize master database..."
-initdb -D $MASTER_DATA_PATH --nodename master_db
+$PGBIN_PATH/pg_ctl -D $MASTER_DATA_PATH initdb
 
 echo "configure pg_hba.conf..."
 cp -f pg_hba.conf.template $MASTER_DATA_PATH/pg_hba.conf
@@ -28,7 +32,7 @@ hot_standby = on
 EOF
 
 echo "start master database..."
-pg_ctl -D $MASTER_DATA_PATH start
+$PGBIN_PATH/pg_ctl -D $MASTER_DATA_PATH start
 
 while ! echo exit | nc $MASTER_HOST $MASTER_DB_PORT; do sleep 1 && echo "waiting for master database startup..."; done
 echo "master database started successfully!"
