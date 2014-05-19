@@ -1,10 +1,18 @@
 package com.junbo.identity.core.service.validator.impl
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.junbo.common.enumid.CountryId
+import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.CommunicationId
+import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.validator.CommunicationValidator
 import com.junbo.identity.data.repository.CommunicationRepository
+import com.junbo.identity.data.repository.CountryRepository
+import com.junbo.identity.data.repository.LocaleRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Communication
+import com.junbo.identity.spec.v1.model.CommunicationLocale
+import com.junbo.identity.spec.v1.model.Country
 import com.junbo.identity.spec.v1.option.list.CommunicationListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -17,12 +25,49 @@ import org.springframework.util.CollectionUtils
 @CompileStatic
 class CommunicationValidatorImpl implements CommunicationValidator {
 
-    // todo:    Refactor validation according to marshall's new schema
     private CommunicationRepository communicationRepository
+    private LocaleRepository localeRepository
+    private CountryRepository countryRepository
+
+    private Integer minCommunicationLocaleName
+    private Integer maxCommunicationLocaleName
+
+    private Integer minCommunicationLocaleDescription
+    private Integer maxCommunicationLocaleDescription
 
     @Required
     void setCommunicationRepository(CommunicationRepository communicationRepository) {
         this.communicationRepository = communicationRepository
+    }
+
+    @Required
+    void setLocaleRepository(LocaleRepository localeRepository) {
+        this.localeRepository = localeRepository
+    }
+
+    @Required
+    void setCountryRepository(CountryRepository countryRepository) {
+        this.countryRepository = countryRepository
+    }
+
+    @Required
+    void setMinCommunicationLocaleName(Integer minCommunicationLocaleName) {
+        this.minCommunicationLocaleName = minCommunicationLocaleName
+    }
+
+    @Required
+    void setMaxCommunicationLocaleName(Integer maxCommunicationLocaleName) {
+        this.maxCommunicationLocaleName = maxCommunicationLocaleName
+    }
+
+    @Required
+    void setMinCommunicationLocaleDescription(Integer minCommunicationLocaleDescription) {
+        this.minCommunicationLocaleDescription = minCommunicationLocaleDescription
+    }
+
+    @Required
+    void setMaxCommunicationLocaleDescription(Integer maxCommunicationLocaleDescription) {
+        this.maxCommunicationLocaleDescription = maxCommunicationLocaleDescription
     }
 
     @Override
@@ -51,23 +96,14 @@ class CommunicationValidatorImpl implements CommunicationValidator {
 
     @Override
     Promise<Void> validateForCreate(Communication communication) {
-        checkBasicCommunicationInfo(communication)
-
-        if (communication.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
-        }
-
-        /*
-        return communicationRepository.search(new CommunicationListOptions(name: communication.name)).
-                then { List<Communication> existing ->
-            if (!CollectionUtils.isEmpty(existing)) {
-                throw AppErrors.INSTANCE.fieldDuplicate('name').exception()
+        return checkBasicCommunicationInfo(communication).then {
+            if (communication.id != null) {
+                throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
             }
 
+            // todo:    Do we need to determine which communications are the same??
             return Promise.pure(null)
         }
-        */
-        return Promise.pure(null)
     }
 
     @Override
@@ -88,38 +124,117 @@ class CommunicationValidatorImpl implements CommunicationValidator {
             throw AppErrors.INSTANCE.fieldInvalid('id').exception()
         }
 
-        checkBasicCommunicationInfo(communication)
+        return checkBasicCommunicationInfo(communication).then {
+            // todo:    Confirm with carlos which fields aren't valid to update
+            /*
+            if (communication.name != oldCommunication.name) {
+                throw AppErrors.INSTANCE.fieldInvalid('name').exception()
+            }
+            */
 
-        /*
-        if (communication.name != oldCommunication.name) {
-            throw AppErrors.INSTANCE.fieldInvalid('name').exception()
+            return Promise.pure(null)
         }
-        */
-
-        return Promise.pure(null)
     }
 
-    private void checkBasicCommunicationInfo(Communication communication) {
+    private Promise<Void> checkBasicCommunicationInfo(Communication communication) {
         if (communication == null) {
             throw new IllegalArgumentException('communication is null')
         }
 
-        /*
-        if (communication.name == null) {
-            throw AppErrors.INSTANCE.fieldRequired('name').exception()
-        }
-        if (communication.description == null) {
-            throw AppErrors.INSTANCE.fieldRequired('description').exception()
-        }
-        */
-        if (communication.regions == null) {
+        if (CollectionUtils.isEmpty(communication.regions)) {
             throw AppErrors.INSTANCE.fieldRequired('regions').exception()
         }
-        if (communication.translations == null) {
+        if (CollectionUtils.isEmpty(communication.translations)) {
             throw AppErrors.INSTANCE.fieldRequired('translations').exception()
         }
-        if (communication.locales == null) {
+        if (communication.locales == null || communication.locales.isEmpty()) {
             throw AppErrors.INSTANCE.fieldRequired('locales').exception()
+        }
+
+        return checkRegions(communication).then {
+            return checkTranslations(communication)
+        }.then {
+            communication.locales.each { Map.Entry<String, JsonNode> entry ->
+                CommunicationLocale locale = (CommunicationLocale)JsonHelper.jsonNodeToObj(entry.value,
+                        CommunicationLocale)
+                if (locale.name == null) {
+                    throw AppErrors.INSTANCE.fieldRequired('value.name').exception()
+                }
+                if (locale.name.length() > maxCommunicationLocaleName) {
+                    throw AppErrors.INSTANCE.fieldTooLong('value.name', maxCommunicationLocaleName).exception()
+                }
+                if (locale.name.length() < minCommunicationLocaleName) {
+                    throw AppErrors.INSTANCE.fieldTooShort('value.name', minCommunicationLocaleName).exception()
+                }
+
+                if (locale.description == null) {
+                    throw AppErrors.INSTANCE.fieldRequired('value.description').exception()
+                }
+                if (locale.description.length() > maxCommunicationLocaleDescription) {
+                    throw AppErrors.INSTANCE.fieldTooLong('value.description', maxCommunicationLocaleDescription).
+                            exception()
+                }
+                if (locale.description.length() < minCommunicationLocaleName) {
+                    throw AppErrors.INSTANCE.fieldTooShort('value.description', minCommunicationLocaleDescription).
+                            exception()
+                }
+
+                return Promise.pure(null)
+            }
+
+            return Promise.pure(null)
+        }
+    }
+
+    private Promise<Void> checkRegions(Communication communication) {
+        if (CollectionUtils.isEmpty(communication.regions)) {
+            return Promise.pure(null)
+        }
+
+        Collection<CountryId> countryIdList = communication.regions.unique { CountryId countryId ->
+            return countryId
+        }
+
+        if (countryIdList.size() != communication.regions.size()) {
+            throw AppErrors.INSTANCE.fieldInvalid('regions').exception()
+        }
+
+        Promise.each(communication.regions) { CountryId countryId ->
+            return countryRepository.get(countryId).then { Country country ->
+                if (country == null) {
+                    throw AppErrors.INSTANCE.countryNotFound(countryId).exception()
+                }
+
+                return Promise.pure(null)
+            }
+        }.then {
+            return Promise.pure(null)
+        }
+    }
+
+    private Promise<Void> checkTranslations(Communication communication) {
+        if (CollectionUtils.isEmpty(communication.translations)) {
+            return Promise.pure(null)
+        }
+
+        Collection<LocaleId> localeIdList = communication.translations.unique { LocaleId localeId ->
+            return localeId
+        }
+
+        if (localeIdList.size() != communication.translations.size()) {
+            throw AppErrors.INSTANCE.fieldInvalid('translations').exception()
+        }
+
+        Promise.each(communication.translations) { LocaleId localeId ->
+            return localeRepository.get(localeId).then { com.junbo.identity.spec.v1.model.Locale locale ->
+                if (locale == null) {
+                    throw AppErrors.INSTANCE.localeNotFound(localeId).exception()
+                }
+
+                return Promise.pure(null)
+            }
+        }.then {
+            return Promise.pure(null)
         }
     }
 }

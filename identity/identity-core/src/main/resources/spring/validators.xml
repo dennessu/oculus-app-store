@@ -308,6 +308,12 @@
 
     <bean id="communicationValidator" class="com.junbo.identity.core.service.validator.impl.CommunicationValidatorImpl">
         <property name="communicationRepository" ref="communicationRepository"/>
+        <property name="localeRepository" ref="cloudantLocaleRepository" />
+        <property name="countryRepository" ref="cloudantCountryRepository" />
+        <property name="minCommunicationLocaleDescription" value="1" />
+        <property name="maxCommunicationLocaleDescription" value="255" />
+        <property name="minCommunicationLocaleName" value="1" />
+        <property name="maxCommunicationLocaleName" value="255" />
     </bean>
 
     <bean id="countryValidator" class="com.junbo.identity.core.service.validator.impl.CountryValidatorImpl">
