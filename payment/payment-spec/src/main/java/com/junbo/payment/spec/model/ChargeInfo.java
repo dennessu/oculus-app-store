@@ -17,6 +17,7 @@ public class ChargeInfo {
     private String currency;
     private BigDecimal amount;
     private String businessDescriptor;
+    private String ipAddress;
     private List<Item> items;
 
     public String getCountry() {
@@ -49,6 +50,14 @@ public class ChargeInfo {
 
     public void setBusinessDescriptor(String businessDescriptor) {
         this.businessDescriptor = businessDescriptor;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
     }
 
     public List<Item> getItems() {

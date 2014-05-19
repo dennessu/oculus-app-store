@@ -6,6 +6,7 @@
 
 package com.junbo.payment.core;
 
+import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.spec.model.PaymentProperties;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,5 +15,5 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public interface PaymentCallbackService {
     @Transactional
-    void addPaymentProperties(Long paymentId, PaymentProperties properties);
+    Promise<Void> addPaymentProperties(Long paymentId, PaymentProperties properties);
 }
