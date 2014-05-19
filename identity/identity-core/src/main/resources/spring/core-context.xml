@@ -618,6 +618,7 @@
                         <value>governmentId</value>
                         <value>driversLicense</value>
                         <value>gender</value>
+                        <value>futureExpansion</value>
                         <value>resourceAge</value>
                         <value>createdTime</value>
                         <value>updatedTime</value>
@@ -647,6 +648,7 @@
                         <value>governmentId</value>
                         <value>driversLicense</value>
                         <value>gender</value>
+                        <value>futureExpansion</value>
                     </list>
                 </entry>
             </map>
@@ -674,9 +676,8 @@
                         <value>governmentId</value>
                         <value>driversLicense</value>
                         <value>gender</value>
+                        <value>futureExpansion</value>
                         <value>resourceAge</value>
-                        <value>createdTime</value>
-                        <value>updatedTime</value>
                     </list>
                 </entry>
             </map>
