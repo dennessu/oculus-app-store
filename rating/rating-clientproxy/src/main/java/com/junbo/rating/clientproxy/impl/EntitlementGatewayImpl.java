@@ -5,7 +5,8 @@
  */
 
 package com.junbo.rating.clientproxy.impl;
-import com.junbo.common.id.EntitlementDefinitionId;
+
+import com.junbo.common.id.ItemId;
 import com.junbo.common.id.UserId;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
@@ -32,14 +33,14 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
     private EntitlementResource entitlementResource;
 
     @Override
-    public Set<Long> getEntitlements(Long userId, Set<Long> definitionIds) {
-        Set<EntitlementDefinitionId> entitlementDefinitionIds = new HashSet<>();
-        for (Long definitionId : definitionIds) {
-            entitlementDefinitionIds.add(new EntitlementDefinitionId(definitionId));
+    public Set<Long> getEntitlements(Long userId, Set<Long> itemIds) {
+        Set<ItemId> items = new HashSet<>();
+        for (Long itemId : itemIds) {
+            items.add(new ItemId(itemId));
         }
         EntitlementSearchParam param = new EntitlementSearchParam();
         param.setUserId(new UserId(userId));
-//        param.setDefinitionIds(entitlementDefinitionIds);  TODO:
+        param.setItemIds(items);
 
         PageMetadata pagingOption = new PageMetadata();
         pagingOption.setStart(Constants.DEFAULT_PAGE_START);
@@ -58,7 +59,7 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
             }
 
             for (Entitlement entitlement : entitlements) {
-//                result.add(entitlement.getEntitlementDefinitionId()); TODO:
+                result.add(entitlement.getItemId());
             }
 
             pagingOption.setStart(pagingOption.getStart() + Constants.DEFAULT_PAGE_SIZE);
