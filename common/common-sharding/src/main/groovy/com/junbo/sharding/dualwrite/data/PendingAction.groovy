@@ -4,6 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.sharding.dualwrite.data
+
 import com.junbo.common.cloudant.CloudantEntity
 import com.junbo.common.model.ResourceMeta
 import com.junbo.common.util.Identifiable
@@ -26,7 +27,6 @@ public class PendingAction extends ResourceMeta implements Identifiable<UUID> {
 
     public void setId(UUID id) {
         this.id = id;
-        support.setPropertyAssigned("id");
     }
 
     public CloudantEntity getSavedEntity() {
@@ -35,7 +35,6 @@ public class PendingAction extends ResourceMeta implements Identifiable<UUID> {
 
     public void setSavedEntity(CloudantEntity savedEntity) {
         this.savedEntity = savedEntity;
-        support.setPropertyAssigned("savedEntity");
     }
 
     public Long getDeletedKey() {
@@ -44,7 +43,6 @@ public class PendingAction extends ResourceMeta implements Identifiable<UUID> {
 
     public void setDeletedKey(Long deletedKey) {
         this.deletedKey = deletedKey;
-        support.setPropertyAssigned("deletedKey");
     }
 
     public Long getChangedEntityId() {

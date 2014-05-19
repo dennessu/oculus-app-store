@@ -7,14 +7,14 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.RoleId;
+import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
-import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Role.
  */
-public class Role extends ResourceMeta implements Identifiable<RoleId> {
+public class Role extends PropertyAssignedAwareResourceMeta implements Identifiable<RoleId> {
     @ApiModelProperty(position = 1, required = true, value = "[Nullable]The id of the role resource.")
     @JsonProperty("self")
     private RoleId id;
