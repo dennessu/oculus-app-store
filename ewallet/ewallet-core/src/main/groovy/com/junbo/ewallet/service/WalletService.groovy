@@ -33,5 +33,5 @@ interface WalletService {
 
     List<Wallet> getWallets(UserId userId)
 
-    Transaction refund(Long walletId, RefundRequest refundRequest)
+    Transaction refund(Long transactionId, RefundRequest refundRequest)
 }

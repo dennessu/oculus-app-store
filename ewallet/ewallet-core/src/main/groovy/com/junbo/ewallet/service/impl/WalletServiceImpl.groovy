@@ -199,14 +199,13 @@ class WalletServiceImpl implements WalletService {
 
     @Override
     @Transactional
-    Transaction refund(Long walletId, RefundRequest refundRequest) {
+    Transaction refund(Long transactionId, RefundRequest refundRequest) {
         validateAmount(refundRequest.amount)
-        validateNotNull(refundRequest.transactionId, 'transactionId')
 
-        Transaction debitTransaction = transactionRepo.get(refundRequest.transactionId)
+        Transaction debitTransaction = transactionRepo.get(transactionId)
         if (debitTransaction == null) {
             throw AppErrors.INSTANCE.fieldNotCorrect("transactionId",
-                    "transaction [" + refundRequest.transactionId + "] not found").exception()
+                    "transaction [" + transactionId + "] not found").exception()
         }
         if (!debitTransaction.getType().equals("DEBIT")) {
             throw AppErrors.INSTANCE.fieldNotCorrect("transactionId",
@@ -217,16 +216,17 @@ class WalletServiceImpl implements WalletService {
                     "there is not enough money to refund").exception()
         }
 
-        Wallet wallet = get(walletId)
+        Wallet wallet = get(debitTransaction.getWalletId())
         if (wallet == null) {
             throw AppErrors.INSTANCE.common('wallet not found').exception()
         }
         checkUserId(wallet.userId)
+        validateEquals(refundRequest.currency, wallet.currency, "currency")
         if (wallet.status.equalsIgnoreCase(Status.LOCKED.toString())) {
-            throw AppErrors.INSTANCE.locked(walletId).exception()
+            throw AppErrors.INSTANCE.locked(wallet.walletId).exception()
         }
 
-        return walletRepo.refund(wallet, refundRequest)
+        return walletRepo.refund(wallet, transactionId, refundRequest)
     }
 
     private void validateAmount(BigDecimal amount) {

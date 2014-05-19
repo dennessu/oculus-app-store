@@ -140,11 +140,6 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
         if (ItemType.DIGITAL.is(item.getType())) {
             addEntitlementIfNotExist(entitlementDefs, EntitlementType.DOWNLOAD, false);
             addEntitlementIfNotExist(entitlementDefs, EntitlementType.RUN, false);
-        } else if (ItemType.SUBSCRIPTION.is(item.getType())) {
-            // TODO: consumable or not?
-            addEntitlementIfNotExist(entitlementDefs, EntitlementType.SUBSCRIPTION, false);
-        } else if (ItemType.VIRTUAL.is(item.getType())) {
-            addEntitlementIfNotExist(entitlementDefs, EntitlementType.ONLINE_ACCESS, false);
         }
     }
 
@@ -174,9 +169,10 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
             if (ItemType.DIGITAL.is(item.getType())) {
                 entitlementDef.setType(EntitlementType.DOWNLOAD.name());
             } else if (ItemType.SUBSCRIPTION.is(item.getType())) {
-                entitlementDef.setType(EntitlementType.SUBSCRIPTION.name());
+                entitlementDef.setType(com.junbo.catalog.spec.model.entitlementdef.EntitlementType.SUBSCRIPTION.name());
             } else if (ItemType.VIRTUAL.is(item.getType())) {
-                entitlementDef.setType(EntitlementType.ONLINE_ACCESS.name());
+                entitlementDef.setType(
+                        com.junbo.catalog.spec.model.entitlementdef.EntitlementType.ONLINE_ACCESS.name());
             }
             entitlementDef.setTag(Utils.encodeId(item.getItemId()));
             Long entitlementDefId = entitlementDefService.createEntitlementDefinition(entitlementDef);
