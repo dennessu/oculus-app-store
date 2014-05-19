@@ -41,7 +41,7 @@ public class ItemFacadeImpl implements ItemFacade {
         try {
             LOGGER.info("Getting item [{}] started.", itemId);
             item = itemClient.getItem(
-                    new ItemId(itemId)).wrapped().get();
+                    new ItemId(itemId)).get();
             LOGGER.info("Getting item [{}] finished.", itemId);
         } catch (Exception e) {
             LOGGER.error("Getting item [{" + itemId + "}] failed.", e);
@@ -54,7 +54,7 @@ public class ItemFacadeImpl implements ItemFacade {
         try {
             LOGGER.info("Getting itemRevision [{}] started.", revisionId);
             itemRevision = itemRevisionClient.getItemRevision(
-                    new ItemRevisionId(revisionId)).wrapped().get();
+                    new ItemRevisionId(revisionId)).get();
             LOGGER.info("Getting itemRevision [{}] finished.", revisionId);
         } catch (Exception e) {
             LOGGER.error("Getting itemRevision [{" + revisionId + "}] failed.", e);
@@ -70,7 +70,7 @@ public class ItemFacadeImpl implements ItemFacade {
         try {
             LOGGER.info("Getting itemRevisions by hostItemId [{}] started.", hostItemId);
             itemRevisions = itemRevisionClient.getItemRevisions(
-                    options).wrapped().get().getItems();
+                    options).get().getItems();
             LOGGER.info("Getting itemRevisions by hostItemId [{}] finished.", hostItemId);
         } catch (Exception e) {
             LOGGER.error("Getting itemRevisions by hostItemId [{" + hostItemId + "}] failed.", e);
