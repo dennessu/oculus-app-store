@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Required
 @CompileStatic
 class CurrencyValidatorImpl implements CurrencyValidator {
 
+    // todo:    Need to implement the validation according to marshall's requirement
+
     private CurrencyRepository currencyRepository
 
     @Required
@@ -103,8 +105,8 @@ class CurrencyValidatorImpl implements CurrencyValidator {
         if (currency.symbol == null) {
             throw AppErrors.INSTANCE.fieldRequired('symbol').exception()
         }
-        if (currency.locales == null) {
-            throw AppErrors.INSTANCE.fieldRequired('locales').exception()
+        if (currency.localeKeys == null) {
+            throw AppErrors.INSTANCE.fieldRequired('localeKeys').exception()
         }
         if (currency.futureExpansion == null) {
             throw AppErrors.INSTANCE.fieldRequired('futureExpansion').exception()

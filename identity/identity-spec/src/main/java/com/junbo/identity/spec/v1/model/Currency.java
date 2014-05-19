@@ -56,7 +56,7 @@ public class Currency extends ResourceMeta implements Identifiable<CurrencyId> {
     private Integer digitGroupingLength;
 
     @ApiModelProperty(position = 11, required = true, value = "The supported locales of the currency resource.")
-    private Map<String, JsonNode> locales = new HashMap<>();
+    private Map<String, String> localeKeys = new HashMap<>();
 
     @ApiModelProperty(position = 12, required = true, value = "The future expansion of the currency resource.")
     private Map<String, JsonNode> futureExpansion = new HashMap<>();
@@ -152,15 +152,6 @@ public class Currency extends ResourceMeta implements Identifiable<CurrencyId> {
         support.setPropertyAssigned("digitGroupingLength");
     }
 
-    public Map<String, JsonNode> getLocales() {
-        return locales;
-    }
-
-    public void setLocales(Map<String, JsonNode> locales) {
-        this.locales = locales;
-        support.setPropertyAssigned("locales");
-    }
-
     public Map<String, JsonNode> getFutureExpansion() {
         return futureExpansion;
     }
@@ -168,5 +159,14 @@ public class Currency extends ResourceMeta implements Identifiable<CurrencyId> {
     public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
         this.futureExpansion = futureExpansion;
         support.setPropertyAssigned("futureExpansion");
+    }
+
+    public Map<String, String> getLocaleKeys() {
+        return localeKeys;
+    }
+
+    public void setLocaleKeys(Map<String, String> localeKeys) {
+        this.localeKeys = localeKeys;
+        support.setPropertyAssigned("localeKeys");
     }
 }

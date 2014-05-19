@@ -92,7 +92,13 @@
                 <value>currencyCode</value>
                 <value>countries</value>
                 <value>symbol</value>
-                <value>locales</value>
+                <value>symbolPosition</value>
+                <value>decimalSymbol</value>
+                <value>numberAfterDecimal</value>
+                <value>negativeFormat</value>
+                <value>digitGroupingSymbol</value>
+                <value>digitGroupingLength</value>
+                <value>localeKeys</value>
                 <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
@@ -104,7 +110,13 @@
                 <value>currencyCode</value>
                 <value>countries</value>
                 <value>symbol</value>
-                <value>locales</value>
+                <value>symbolPosition</value>
+                <value>decimalSymbol</value>
+                <value>numberAfterDecimal</value>
+                <value>negativeFormat</value>
+                <value>digitGroupingSymbol</value>
+                <value>digitGroupingLength</value>
+                <value>localeKeys</value>
                 <value>futureExpansion</value>
             </list>
         </property>
@@ -114,7 +126,13 @@
                 <value>currencyCode</value>
                 <value>countries</value>
                 <value>symbol</value>
-                <value>locales</value>
+                <value>symbolPosition</value>
+                <value>decimalSymbol</value>
+                <value>numberAfterDecimal</value>
+                <value>negativeFormat</value>
+                <value>digitGroupingSymbol</value>
+                <value>digitGroupingLength</value>
+                <value>localeKeys</value>
                 <value>futureExpansion</value>
                 <value>resourceAge</value>
             </list>
