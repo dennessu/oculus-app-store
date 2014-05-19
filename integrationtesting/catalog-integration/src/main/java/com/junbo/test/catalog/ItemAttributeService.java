@@ -24,6 +24,7 @@ public interface ItemAttributeService {
     Results<ItemAttribute> getItemAttributes(HashMap<String, List<String>> httpPara) throws Exception;
     Results<ItemAttribute> getItemAttributes(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception;
 
+    ItemAttribute postDefaultItemAttribute() throws Exception;
     ItemAttribute postItemAttribute(ItemAttribute itemAttribute) throws Exception;
     ItemAttribute postItemAttribute(ItemAttribute itemAttribute, int expectedResponseCode) throws Exception;
 

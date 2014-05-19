@@ -6,6 +6,8 @@
 package com.junbo.test.catalog.impl;
 
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
+import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
+import com.junbo.test.catalog.enums.CatalogItemAttributeType;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.catalog.ItemAttributeService;
 import com.junbo.common.json.JsonMessageTranscoder;
@@ -13,6 +15,7 @@ import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.common.id.ItemAttributeId;
+import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.libs.RestUrl;
 import com.junbo.common.model.Results;
 
@@ -68,6 +71,21 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
         }
 
         return itemAttributeResults;
+    }
+
+    public ItemAttribute postDefaultItemAttribute() throws Exception {
+        ItemAttribute attribute = new ItemAttribute();
+        HashMap<String, SimpleLocaleProperties> locales = new HashMap<>();
+
+        attribute.setType(CatalogItemAttributeType.GENRE.getType());
+
+        SimpleLocaleProperties attributeProperties = new SimpleLocaleProperties();
+        attributeProperties.setName("testItemAttribute_" + RandomFactory.getRandomStringOfAlphabet(10));
+        attributeProperties.setDescription(RandomFactory.getRandomStringOfAlphabetOrNumeric(30));
+        locales.put("en_US", attributeProperties);
+        attribute.setLocales(locales);
+
+        return postItemAttribute(attribute, 200);
     }
 
     public ItemAttribute postItemAttribute(ItemAttribute attribute) throws Exception {
