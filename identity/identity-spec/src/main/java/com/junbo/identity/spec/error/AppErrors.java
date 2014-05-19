@@ -59,7 +59,7 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 400, code = "2000007", description = "Field {0} required.", field = "{0}")
     AppError fieldRequired(String field);
 
-    @ErrorDef(httpStatusCode = 404, code = "2000008", description = "User {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 404, code = "2000008", description = "User {0} not found.")
     AppError userNotFound(UserId userId);
 
     @ErrorDef(httpStatusCode = 404, code = "2000009", description = "Group {0} not found.", field = "{0}")
@@ -89,7 +89,7 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 404, code = "2000017", description = "User {0} is not in valid status.", field = "{0}")
     AppError userInInvalidStatus(UserId userId);
 
-    @ErrorDef(httpStatusCode = 404, code = "2000018", description = "Username {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 404, code = "2000018", description = "Username {0} not found.")
     AppError userNotFound(String username);
 
     @ErrorDef(httpStatusCode = 404, code = "2000019", description = "User password is incorrect.")
@@ -204,4 +204,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 403, code = "10001", description = "Invalid Access")
     AppError invalidAccess();
+
+    @ErrorDef(httpStatusCode = 400, code = "10001", description = "Request body is empty")
+    AppError requestBodyRequired();
 }

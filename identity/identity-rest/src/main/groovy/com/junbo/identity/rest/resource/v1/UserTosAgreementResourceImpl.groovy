@@ -4,7 +4,7 @@ import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTosAgreementId
 import com.junbo.common.model.Results
-import com.junbo.identity.core.service.Created201Marker
+import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.UserTosFilter
 import com.junbo.identity.core.service.validator.UserTosValidator
 import com.junbo.identity.data.repository.UserTosRepository
@@ -47,7 +47,7 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
 
         return userTosValidator.validateForCreate(userId, userTos).then {
             return userTosRepository.create(userTos).then { UserTosAgreement newUserTos ->
-                created201Marker.mark((Id)newUserTos.id)
+                created201Marker.mark((Id) newUserTos.id)
 
                 newUserTos = userTosFilter.filterForGet(newUserTos, null)
                 return Promise.pure(newUserTos)

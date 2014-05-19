@@ -7,9 +7,5 @@ import com.junbo.oauth.spec.model.TokenInfo
  * Created by Shenhua on 5/14/2014.
  */
 interface TokenInfoParser {
-    Promise<TokenInfo> parse()
-
-    public <T> Promise<T> parseAndThen(Closure<Promise> closure)
-
-    public <T> Promise<T> parseAndThen(Promise.Func0<Promise<T>> func)
+    TokenInfo parse()
 }

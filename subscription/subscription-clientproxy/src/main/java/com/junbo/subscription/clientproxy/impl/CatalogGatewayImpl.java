@@ -62,7 +62,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
         try {
             // TODO
             com.junbo.catalog.spec.model.offer.Offer offer =
-                    offerResource.getOffer(new OfferId(offerId)).wrapped().get();
+                    offerResource.getOffer(new OfferId(offerId)).get();
 
             if (offer == null) {
                 throw new ResourceNotFoundException(
@@ -79,7 +79,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
         try {
             // TODO
             OfferRevision offerRev =
-                    offerRevResource.getOfferRevision(new OfferRevisionId(offerRevId)).wrapped().get();
+                    offerRevResource.getOfferRevision(new OfferRevisionId(offerRevId)).get();
 
             if (offerRev == null) {
                 throw new ResourceNotFoundException(
@@ -96,7 +96,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
         try {
             // TODO
             Item item =
-                    itemResource.getItem(new ItemId(itemId)).wrapped().get();
+                    itemResource.getItem(new ItemId(itemId)).get();
 
             if (item == null) {
                 throw new ResourceNotFoundException(

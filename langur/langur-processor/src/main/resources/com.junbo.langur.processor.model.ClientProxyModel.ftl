@@ -20,12 +20,20 @@ import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture;
 public class ${className} implements ${interfaceType} {
 
     private final AsyncHttpClient __client;
+
     private final String __target;
+
     private final MultivaluedMap<String, String> __headers;
+
     private final MessageTranscoder __transcoder;
+
     private final PathParamTranscoder __pathParamTranscoder;
+
     private final QueryParamTranscoder __queryParamTranscoder;
+
     private final ExceptionHandler __exceptionHandler;
+
+    private AccessTokenProvider __accessTokenProvider;
 
     public ${className}(AsyncHttpClient client, MessageTranscoder transcoder, PathParamTranscoder pathParamTranscoder,
                                 QueryParamTranscoder queryParamTranscoder, ExceptionHandler exceptionHandler, String target) {
@@ -49,6 +57,10 @@ public class ${className} implements ${interfaceType} {
         __exceptionHandler = exceptionHandler;
         __target = target;
         __headers = headers;
+    }
+
+    public void setAccessTokenProvider(AccessTokenProvider accessTokenProvider) {
+        __accessTokenProvider = accessTokenProvider;
     }
 
     [#list clientMethods as clientMethod]

@@ -15,11 +15,11 @@ class CartClient {
     CartResource cartResource
 
     Cart getPrimaryCart(UserId userId) {
-        return resource().getCartPrimary(userId).wrapped().get()
+        return resource().getCartPrimary(userId).get()
     }
 
     Cart updateCart(UserId userId, CartId cartId, Cart cart) {
-        return resource().updateCart(userId, cartId, cart).wrapped().get()
+        return resource().updateCart(userId, cartId, cart).get()
     }
 
     CartResource resource() {

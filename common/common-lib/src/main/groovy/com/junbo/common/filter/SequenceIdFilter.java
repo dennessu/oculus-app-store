@@ -6,6 +6,7 @@
 package com.junbo.common.filter;
 
 import com.junbo.common.util.Context;
+import org.slf4j.MDC;
 
 import javax.annotation.Priority;
 import javax.ws.rs.container.*;
@@ -31,6 +32,8 @@ public class SequenceIdFilter implements ContainerRequestFilter, ContainerRespon
             requestId = Integer.toHexString(sequenceId.getAndIncrement());
             requestContext.getHeaders().putSingle(Context.X_REQUEST_ID, requestId);
         }
+
+        MDC.put(Context.X_REQUEST_ID, requestId);
     }
 
     @Override

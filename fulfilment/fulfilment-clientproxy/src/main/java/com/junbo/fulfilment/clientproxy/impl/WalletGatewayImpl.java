@@ -28,7 +28,7 @@ public class WalletGatewayImpl implements WalletGateway {
     @Override
     public Transaction credit(CreditRequest request) {
         try {
-            return walletResource.credit(request).wrapped().get();
+            return walletResource.credit(request).get();
         } catch (Exception e) {
             LOGGER.error("Error occurred during calling [Wallet] component.", e);
             throw AppErrors.INSTANCE.gatewayFailure("wallet").exception();

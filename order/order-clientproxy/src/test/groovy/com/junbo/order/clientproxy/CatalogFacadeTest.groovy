@@ -16,7 +16,7 @@ class CatalogFacadeTest extends BaseTest {
 
     @Test
     void testGetOffer() {
-        def offer = catalogFacade.getOfferRevision(new Random().nextLong(), new Date()).wrapped().get()
+        def offer = catalogFacade.getOfferRevision(new Random().nextLong(), new Date()).get()
         assert (offer != null)
     }
 }

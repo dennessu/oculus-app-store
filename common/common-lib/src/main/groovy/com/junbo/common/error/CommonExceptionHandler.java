@@ -29,7 +29,12 @@ public class CommonExceptionHandler implements ExceptionHandler {
     @Override
     public void handleExceptionResponse(Response response) {
         try {
-            Error error = messageTranscoder.<Error>decode(new TypeReference<Error>() {}, response.getResponseBody());
+            Error error = messageTranscoder.decode(new TypeReference<Error>() {}, response.getResponseBody());
+
+            if (error == null) {
+                throw new ClientResponseException("Error response is null or empty", response);
+            }
+
             throw getAppError(response.getStatusCode(), error).exception();
         } catch (java.io.IOException e) {
             throw new ClientResponseException("Unable to unmarshall the error response", response, e);
@@ -37,6 +42,10 @@ public class CommonExceptionHandler implements ExceptionHandler {
     }
 
     private AppError getAppError(final int statusCode, final Error error) {
+        if (error == null) {
+            throw new IllegalArgumentException("error is null");
+        }
+
         return new AppError() {
             @Override
             public int getHttpStatusCode() {
@@ -77,6 +86,16 @@ public class CommonExceptionHandler implements ExceptionHandler {
             @Override
             public Error error() {
                 return error;
+            }
+
+            @Override
+            public String toString() {
+                return "ClientProxyError" +
+                        " { httpStatusCode=" + getHttpStatusCode() +
+                        ", code=" + getCode() +
+                        ", message=" + getDescription() +
+                        ", field=" + getField() +
+                        ", causes=" + getCauses() + " }";
             }
         };
     }

@@ -51,7 +51,7 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
             try {
                 entitlements.addAll(
                         entitlementResource.searchEntitlements(
-                                param, pagingOption).wrapped().get().getItems());
+                                param, pagingOption).get().getItems());
             } catch (Exception e) {
                 LOGGER.error("Error occurred during calling [Entitlement] component.", e);
                 throw AppErrors.INSTANCE.entitlementGatewayError().exception();

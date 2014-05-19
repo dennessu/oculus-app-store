@@ -3,7 +3,7 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
-import com.junbo.identity.core.service.Created201Marker
+import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.UserCredentialFilter
 import com.junbo.identity.core.service.validator.UserCredentialValidator
 import com.junbo.identity.data.identifiable.CredentialType
