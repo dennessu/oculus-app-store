@@ -46,7 +46,7 @@ public class OfferRevision extends BaseRevisionModel {
     private List<Long> subOffers;
     @ApiModelProperty(position = 25, required = true, value = "Items")
     private List<ItemEntry> items = new ArrayList<>();
-    @CountryId
+    //@CountryId
     //@ApiModelProperty(position = 26, required = true, value = "Eligible countries")
     //private List<String> eligibleCountries;
     @ApiModelProperty(position = 27, required = true, value = "Event actions")
