@@ -9,10 +9,7 @@ import com.junbo.ewallet.spec.def.Status
 import com.junbo.ewallet.spec.def.WalletLotType
 import com.junbo.ewallet.spec.def.WalletType
 import com.junbo.ewallet.spec.error.AppErrors
-import com.junbo.ewallet.spec.model.CreditRequest
-import com.junbo.ewallet.spec.model.DebitRequest
-import com.junbo.ewallet.spec.model.Transaction
-import com.junbo.ewallet.spec.model.Wallet
+import com.junbo.ewallet.spec.model.*
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
@@ -152,6 +149,10 @@ class WalletServiceImpl implements WalletService {
         validateAmount(debitRequest.amount)
 
         Wallet wallet = get(walletId)
+        if (wallet == null) {
+            throw AppErrors.INSTANCE.common('wallet not found').exception()
+        }
+        checkUserId(wallet.userId)
         if (wallet.status.equalsIgnoreCase(Status.LOCKED.toString())) {
             throw AppErrors.INSTANCE.locked(walletId).exception()
         }
@@ -167,25 +168,6 @@ class WalletServiceImpl implements WalletService {
         }
 
         return result
-    }
-
-    private void validateAmount(BigDecimal amount) {
-        if (amount == null) {
-            throw AppErrors.INSTANCE.missingField('amount').exception()
-        } else if (amount <= 0) {
-            throw AppErrors.INSTANCE.fieldNotCorrect('amount', 'Amount should be positive.').exception()
-        }
-    }
-
-    private void validateExpirationDate(Date expirationDate) {
-        if (expirationDate != null) {
-            Date now = new Date()
-            if (expirationDate.before(now)) {
-                throw AppErrors.INSTANCE.fieldNotCorrect(
-                        'expirationDate', 'expirationDate should not be before now.')
-                        .exception()
-            }
-        }
     }
 
     @Override
@@ -213,6 +195,57 @@ class WalletServiceImpl implements WalletService {
         validateNotNull(userId, "userId")
         checkUserId(userId.value)
         return walletRepo.getAll(userId.value)
+    }
+
+    @Override
+    @Transactional
+    Transaction refund(Long transactionId, RefundRequest refundRequest) {
+        validateAmount(refundRequest.amount)
+
+        Transaction debitTransaction = transactionRepo.get(transactionId)
+        if (debitTransaction == null) {
+            throw AppErrors.INSTANCE.fieldNotCorrect("transactionId",
+                    "transaction [" + transactionId + "] not found").exception()
+        }
+        if (!debitTransaction.getType().equals("DEBIT")) {
+            throw AppErrors.INSTANCE.fieldNotCorrect("transactionId",
+                    "transaction with type [" + debitTransaction.getType() + " ] not supported").exception()
+        }
+        if (debitTransaction.unrefundedAmount.compareTo(refundRequest.amount) < 0) {
+            throw AppErrors.INSTANCE.fieldNotCorrect("amount",
+                    "there is not enough money to refund").exception()
+        }
+
+        Wallet wallet = get(debitTransaction.getWalletId())
+        if (wallet == null) {
+            throw AppErrors.INSTANCE.common('wallet not found').exception()
+        }
+        checkUserId(wallet.userId)
+        validateEquals(refundRequest.currency, wallet.currency, "currency")
+        if (wallet.status.equalsIgnoreCase(Status.LOCKED.toString())) {
+            throw AppErrors.INSTANCE.locked(wallet.walletId).exception()
+        }
+
+        return walletRepo.refund(wallet, transactionId, refundRequest)
+    }
+
+    private void validateAmount(BigDecimal amount) {
+        if (amount == null) {
+            throw AppErrors.INSTANCE.missingField('amount').exception()
+        } else if (amount <= 0) {
+            throw AppErrors.INSTANCE.fieldNotCorrect('amount', 'Amount should be positive.').exception()
+        }
+    }
+
+    private void validateExpirationDate(Date expirationDate) {
+        if (expirationDate != null) {
+            Date now = new Date()
+            if (expirationDate.before(now)) {
+                throw AppErrors.INSTANCE.fieldNotCorrect(
+                        'expirationDate', 'expirationDate should not be before now.')
+                        .exception()
+            }
+        }
     }
 
     private void checkUserId(Long userId) {

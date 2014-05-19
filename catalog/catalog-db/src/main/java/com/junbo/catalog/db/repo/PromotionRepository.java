@@ -36,7 +36,7 @@ public class PromotionRepository implements BaseEntityRepository<Promotion> {
     }
 
     public List<Promotion> getEffectivePromotions(PromotionsGetOptions options) {
-        List<PromotionEntity> promotionEntities = promotionDao.getEffectivePromotions(options);
+        List<PromotionEntity> promotionEntities = promotionDao.getPromotions(options);
         List<Promotion> promotions = new ArrayList<>();
         for (PromotionEntity offerEntity : promotionEntities) {
             promotions.add(PromotionMapper.toModel(offerEntity));

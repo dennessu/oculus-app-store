@@ -13,13 +13,13 @@ import com.junbo.catalog.db.repo.ItemAttributeRepository;
 import com.junbo.catalog.db.repo.ItemRepository;
 import com.junbo.catalog.db.repo.ItemRevisionRepository;
 import com.junbo.catalog.db.repo.OfferRepository;
+import com.junbo.catalog.spec.enums.EntitlementType;
 import com.junbo.catalog.spec.enums.ItemAttributeType;
 import com.junbo.catalog.spec.enums.ItemType;
 import com.junbo.catalog.spec.enums.Status;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import com.junbo.catalog.spec.model.item.*;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.common.error.AppError;
@@ -78,6 +78,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
     @Override
     public ItemRevision createRevision(ItemRevision revision) {
         validateRevisionCreation(revision);
+        generateEntitlementDef(revision);
         Long revisionId = itemRevisionRepo.create(revision);
         return itemRevisionRepo.get(revisionId);
     }
@@ -92,6 +93,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
             throw AppErrors.INSTANCE.validation("Cannot update an approved revision").exception();
         }
         validateRevisionUpdate(revision, oldRevision);
+        generateEntitlementDef(revision);
         return super.updateRevision(revisionId, revision);
     }
 
@@ -129,6 +131,34 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
         return "item-revision";
     }
 
+    private void generateEntitlementDef(ItemRevision revision) {
+        Item item = itemRepo.get(revision.getItemId());
+        if (revision.getEntitlementDefs() == null) {
+            revision.setEntitlementDefs(new ArrayList<EntitlementDef>());
+        }
+        List<EntitlementDef> entitlementDefs = revision.getEntitlementDefs();
+        if (ItemType.DIGITAL.is(item.getType())) {
+            addEntitlementIfNotExist(entitlementDefs, EntitlementType.DOWNLOAD, false);
+            addEntitlementIfNotExist(entitlementDefs, EntitlementType.RUN, false);
+        }
+    }
+
+    private void addEntitlementIfNotExist(List<EntitlementDef> entitlementDefs,
+                                          EntitlementType entitlementType, boolean consumable) {
+        boolean exists = false;
+        for (EntitlementDef entitlementDef : entitlementDefs) {
+            if (entitlementType.is(entitlementDef.getType())) {
+                exists = true;
+            }
+        }
+        if (!exists) {
+            EntitlementDef entitlementDef = new EntitlementDef();
+            entitlementDef.setType(entitlementType.name());
+            entitlementDef.setConsumable(consumable);
+            entitlementDefs.add(entitlementDef);
+        }
+    }
+
     private void generateEntitlementDef(Item item) {
         if (ItemType.DIGITAL.is(item.getType())
                 || ItemType.SUBSCRIPTION.is(item.getType())
@@ -139,9 +169,10 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
             if (ItemType.DIGITAL.is(item.getType())) {
                 entitlementDef.setType(EntitlementType.DOWNLOAD.name());
             } else if (ItemType.SUBSCRIPTION.is(item.getType())) {
-                entitlementDef.setType(EntitlementType.SUBSCRIPTION.name());
+                entitlementDef.setType(com.junbo.catalog.spec.model.entitlementdef.EntitlementType.SUBSCRIPTION.name());
             } else if (ItemType.VIRTUAL.is(item.getType())) {
-                entitlementDef.setType(EntitlementType.ONLINE_ACCESS.name());
+                entitlementDef.setType(
+                        com.junbo.catalog.spec.model.entitlementdef.EntitlementType.ONLINE_ACCESS.name());
             }
             entitlementDef.setTag(Utils.encodeId(item.getItemId()));
             Long entitlementDefId = entitlementDefService.createEntitlementDefinition(entitlementDef);

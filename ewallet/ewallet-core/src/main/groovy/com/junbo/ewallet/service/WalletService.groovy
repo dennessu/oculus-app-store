@@ -1,11 +1,9 @@
 package com.junbo.ewallet.service
 
 import com.junbo.common.id.UserId
-import com.junbo.ewallet.spec.model.CreditRequest
-import com.junbo.ewallet.spec.model.DebitRequest
-import com.junbo.ewallet.spec.model.Transaction
-import com.junbo.ewallet.spec.model.Wallet
+import com.junbo.ewallet.spec.model.*
 import groovy.transform.CompileStatic
+
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
@@ -34,4 +32,6 @@ interface WalletService {
     Transaction getTransactionByTrackingUuid(Long shardMasterId, UUID trackingUuid)
 
     List<Wallet> getWallets(UserId userId)
+
+    Transaction refund(Long transactionId, RefundRequest refundRequest)
 }

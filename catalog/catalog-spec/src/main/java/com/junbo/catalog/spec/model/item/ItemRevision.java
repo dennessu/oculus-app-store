@@ -80,6 +80,9 @@ public class ItemRevision extends BaseRevisionModel {
     private Map<String, ItemRevisionLocaleProperties> locales;
     @ApiModelProperty(position = 41, required = true, value = "Country properties of the item revision")
     private Map<String, ItemRevisionCountryProperties> countries;
+    @ApiModelProperty(position = 42, required = true,
+            value = " Information used to create entitlements when an end-user purchases this Item/Item-Revision")
+    private List<EntitlementDef> entitlementDefs;
 
     public String getSku() {
         return sku;
@@ -199,6 +202,14 @@ public class ItemRevision extends BaseRevisionModel {
 
     public void setCountries(Map<String, ItemRevisionCountryProperties> countries) {
         this.countries = countries;
+    }
+
+    public List<EntitlementDef> getEntitlementDefs() {
+        return entitlementDefs;
+    }
+
+    public void setEntitlementDefs(List<EntitlementDef> entitlementDefs) {
+        this.entitlementDefs = entitlementDefs;
     }
 
     @Override

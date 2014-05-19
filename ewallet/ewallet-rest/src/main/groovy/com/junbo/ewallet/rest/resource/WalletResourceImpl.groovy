@@ -5,20 +5,15 @@
  */
 
 package com.junbo.ewallet.rest.resource
-
 import com.junbo.common.id.UserId
 import com.junbo.common.id.WalletId
 import com.junbo.common.model.Results
 import com.junbo.ewallet.service.WalletService
-import com.junbo.ewallet.spec.model.CreditRequest
-import com.junbo.ewallet.spec.model.DebitRequest
-import com.junbo.ewallet.spec.model.Transaction
-import com.junbo.ewallet.spec.model.Wallet
+import com.junbo.ewallet.spec.model.*
 import com.junbo.ewallet.spec.resource.WalletResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
-
 /**
  * WalletResource Impl.
  */
@@ -78,6 +73,16 @@ class WalletResourceImpl implements WalletResource {
             return Promise.pure(existed)
         }
         Transaction result = walletService.debit(walletId.value, debitRequest)
+        return Promise.pure(result)
+    }
+
+    @Override
+    Promise<Transaction> refund(Long transactionId, RefundRequest refundRequest) {
+        Transaction existed = getTransactionByTrackingUuid(transactionId, refundRequest.trackingUuid)
+        if (existed != null) {
+            return Promise.pure(existed)
+        }
+        Transaction result = walletService.refund(transactionId, refundRequest)
         return Promise.pure(result)
     }
 

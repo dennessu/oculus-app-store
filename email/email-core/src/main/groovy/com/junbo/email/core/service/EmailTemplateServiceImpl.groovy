@@ -6,7 +6,6 @@
 package com.junbo.email.core.service
 
 import com.junbo.common.id.EmailTemplateId
-import com.junbo.common.model.Link
 import com.junbo.common.model.Results
 import com.junbo.email.core.EmailTemplateService
 import com.junbo.email.core.validator.EmailTemplateValidator
@@ -20,8 +19,6 @@ import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 
 import javax.transaction.Transactional
-import javax.ws.rs.core.UriBuilder
-import javax.ws.rs.core.UriInfo
 
 /**
  * Impl of EmailTemplateService.
@@ -36,9 +33,6 @@ import javax.ws.rs.core.UriInfo
 
     @Autowired
     private EmailTemplateValidator templateValidator
-
-    @Autowired
-    private UriInfo uriInfo
 
     Promise<EmailTemplate> postEmailTemplate(EmailTemplate template) {
         this.build(template)
@@ -68,35 +62,11 @@ import javax.ws.rs.core.UriInfo
     Promise<Results<EmailTemplate>> getEmailTemplates(QueryParam queryParam) {
         def queries = this.buildQueryParam(queryParam)
         List<EmailTemplate> templates = templateRepository.getEmailTemplates(queries, null)
-        Results<EmailTemplate> results = buildResults(templates, queryParam)
-        return Promise.pure(results)
-    }
-
-    private Results<EmailTemplate> buildResults(List<EmailTemplate> templates,
-                                                QueryParam queryParam) {
         Results<EmailTemplate> results = new Results<>()
         if (templates != null) {
-            results.setItems(templates)
-            results.setSelf(this.buildLink(queryParam))
-            results.setHasNext(false)
+           results.setItems(templates)
         }
-        return  results
-    }
-
-    private Link buildLink(QueryParam queryParam) {
-        Link link = new Link()
-        UriBuilder uri = uriInfo.baseUriBuilder.path('email-templates')
-        if (queryParam?.source != null) {
-            uri.queryParam('source', queryParam.source)
-        }
-        if (queryParam?.action != null) {
-            uri.queryParam('action', queryParam.action)
-        }
-        if (queryParam?.locale != null) {
-            uri.queryParam('locale', queryParam.locale)
-        }
-        link.setHref(uri.toTemplate())
-        return link
+        return Promise.pure(results)
     }
 
     private void build(EmailTemplate template) {
