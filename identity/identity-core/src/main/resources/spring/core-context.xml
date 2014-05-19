@@ -848,6 +848,7 @@
                 <value>userId</value>
                 <value>active</value>
                 <value>strength</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -859,6 +860,7 @@
                 <value>expiresBy</value>
                 <value>changeAtNextLogin</value>
                 <value>value</value>
+                <value>futureExpansion</value>
             </list>
         </property>
 
@@ -877,6 +879,7 @@
                 <value>changeAtNextLogin</value>
                 <value>userId</value>
                 <value>active</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -888,6 +891,7 @@
                 <value>expiresBy</value>
                 <value>changeAtNextLogin</value>
                 <value>value</value>
+                <value>futureExpansion</value>
             </list>
         </property>
 

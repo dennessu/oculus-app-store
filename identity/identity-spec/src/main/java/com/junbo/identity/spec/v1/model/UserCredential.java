@@ -6,6 +6,7 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.UserCredentialId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.model.ResourceMeta;
@@ -13,6 +14,8 @@ import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by liangfu on 4/3/14.
@@ -39,6 +42,9 @@ public class UserCredential extends ResourceMeta implements Identifiable<UserCre
 
     @ApiModelProperty(position = 6, required = false, value = "Whether need to change credential next login.")
     private Boolean changeAtNextLogin;
+
+    @ApiModelProperty(position = 7, required = false, value = "The future expansion of user credential resource.")
+    private Map<String, JsonNode> futureExpansion = new HashMap<>();
 
     @Override
     public UserCredentialId getId() {
@@ -108,5 +114,14 @@ public class UserCredential extends ResourceMeta implements Identifiable<UserCre
     public Integer getResourceAge() {
         // resource Age won't return due to it isn't a resource
         return null;
+    }
+
+    public Map<String, JsonNode> getFutureExpansion() {
+        return futureExpansion;
+    }
+
+    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
+        this.futureExpansion = futureExpansion;
+        support.setPropertyAssigned("futureExpansion");
     }
 }
