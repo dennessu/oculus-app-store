@@ -2,7 +2,7 @@ client	client	{
     "client_name": "client",
     "redirect_uris": [
         "http://*",
-        "https://*"
+        "https://*",
         "http://localhost/login"
     ],
     "default_redirect_uri": "http://localhost/login",
