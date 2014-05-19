@@ -135,6 +135,8 @@ class OrderInternalServiceImpl implements OrderInternalService {
     @Transactional
     Promise<Order> cancelOrder(Order order) {
 
+        assert(order != null)
+
         def isCancelable = CoreUtils.checkOrderStatusCancelable(order)
         if (!isCancelable) {
             LOGGER.info('name=Order_Is_Not_Cancelable, orderId = {}, orderStatus={}', order.id.value, order.status)
@@ -142,18 +144,19 @@ class OrderInternalServiceImpl implements OrderInternalService {
         }
         LOGGER.info('name=Order_Is_Cancelable, orderId = {}, orderStatus={}', order.id.value, order.status)
 
+        order.status = OrderStatus.CANCELED.name()
+        orderRepository.updateOrder(order, true)
+
         // TODO: reverse authorize if physical goods
 
-        return refundDeposit(order).then { Order o ->
-            // mark order status canceled
-            order.status = OrderStatus.CANCELED.name()
-            // update item fulfillment history
+        // TODO: cancel paypal confirm
 
-            // persist
-            orderRepository.updateOrder(o, true)
-
-            return Promise.pure(o)
+        if (order.status == OrderStatus.PREORDERED.name()) {
+            return refundDeposit(order).then { Order o ->
+                return Promise.pure(o)
+            }
         }
+        return Promise.pure(order)
     }
 
     @Override

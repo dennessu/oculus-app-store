@@ -302,7 +302,6 @@ public final class Promise<T> {
     @Deprecated
     public void onFailure(final Callback<Throwable> action) {
         final Callback<Throwable> wrapped = Wrapper.wrap(action);
-        ;
 
         Futures.addCallback(future, new FutureCallback<T>() {
             @Override

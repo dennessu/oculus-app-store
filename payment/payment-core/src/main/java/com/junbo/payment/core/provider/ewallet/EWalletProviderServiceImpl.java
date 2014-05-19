@@ -8,10 +8,7 @@ package com.junbo.payment.core.provider.ewallet;
 
 import com.junbo.common.id.WalletId;
 import com.junbo.ewallet.spec.def.WalletType;
-import com.junbo.ewallet.spec.model.CreditRequest;
-import com.junbo.ewallet.spec.model.DebitRequest;
-import com.junbo.ewallet.spec.model.Transaction;
-import com.junbo.ewallet.spec.model.Wallet;
+import com.junbo.ewallet.spec.model.*;
 import com.junbo.ewallet.spec.resource.WalletResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.common.CommonUtil;
@@ -219,8 +216,41 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
     }
 
     @Override
-    public Promise<PaymentTransaction> refund(String transactionId, PaymentTransaction request) {
-        throw AppServerExceptions.INSTANCE.serviceNotImplemented(getProviderName() + "_refund").exception();
+    public Promise<PaymentTransaction> refund(String transactionId, final PaymentTransaction request) {
+        if(request.getChargeInfo() == null || request.getChargeInfo().getAmount() == null){
+            throw AppClientExceptions.INSTANCE.missingAmount().exception();
+        }
+        RefundRequest refundRequest = new RefundRequest();
+        refundRequest.setTrackingUuid(UUID.randomUUID());
+        refundRequest.setAmount(request.getChargeInfo().getAmount());
+        refundRequest.setCurrency(request.getChargeInfo().getCurrency());
+        Long walletTransactionId = null;
+        try{
+            walletTransactionId = Long.parseLong(transactionId);
+        }catch (Exception ex){
+            throw AppServerExceptions.INSTANCE.noExternalTokenFoundForPayment(transactionId).exception();
+        }
+        return walletClient.refund(walletTransactionId, refundRequest)
+                .recover(new Promise.Func<Throwable, Promise<Transaction>>() {
+                    @Override
+                    public Promise<Transaction> apply(Throwable throwable) {
+                        ProxyExceptionResponse proxyResponse = new ProxyExceptionResponse(throwable);
+                        LOGGER.error("refund declined by " + getProviderName() +
+                                "; error detail: " + proxyResponse.getBody());
+                        throw AppServerExceptions.INSTANCE.providerProcessError(
+                                PROVIDER_NAME, proxyResponse.getBody()).exception();
+                    }
+                }).then(new Promise.Func<Transaction, Promise<PaymentTransaction>>() {
+                    @Override
+                    public Promise<PaymentTransaction> apply(Transaction transaction) {
+                        if (transaction == null || transaction.getTransactionId() == null) {
+                            throw AppServerExceptions.INSTANCE.providerProcessError(
+                                    PROVIDER_NAME, "No transaction happens").exception();
+                        }
+                        request.setStatus(PaymentStatus.REFUNDED.toString());
+                        return Promise.pure(request);
+                    }
+                });
     }
 
     @Override

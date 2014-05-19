@@ -6,6 +6,7 @@
 
 package com.junbo.payment.core.impl;
 
+import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.core.PaymentCallbackService;
@@ -30,7 +31,7 @@ public class PaymentCallbackServiceImpl implements PaymentCallbackService{
     @Autowired
     private PaymentRepository paymentRepository;
     @Override
-    public void addPaymentProperties(Long paymentId, PaymentProperties properties) {
+    public Promise<Void> addPaymentProperties(Long paymentId, PaymentProperties properties) {
         PaymentTransaction existedTransaction = paymentRepository.getByPaymentId(paymentId);
         if(existedTransaction == null){
             LOGGER.error("the payment id is invalid.");
@@ -44,7 +45,13 @@ public class PaymentCallbackServiceImpl implements PaymentCallbackService{
         event.setStatus(existedTransaction.getStatus());
         event.setRequest(CommonUtil.toJson(properties, null));
         event.setResponse(SUCCESS_EVENT_RESPONSE);
-        paymentTransactionService.reportPaymentEvent(event, properties);
+        return paymentTransactionService.reportPaymentEvent(event, properties)
+                .then(new Promise.Func<PaymentTransaction, Promise<Void>>() {
+                    @Override
+                    public Promise<Void> apply(PaymentTransaction paymentTransaction) {
+                        return Promise.pure(null);
+                    }
+                });
     }
 
     public void setPaymentTransactionService(PaymentTransactionService paymentTransactionService) {
