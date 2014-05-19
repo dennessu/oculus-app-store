@@ -6,6 +6,7 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.id.TosId;
 import com.junbo.common.model.ResourceMeta;
@@ -45,7 +46,7 @@ public class Tos extends ResourceMeta implements Identifiable<TosId> {
     private String state;
 
     @ApiModelProperty(position = 8, required = false, value = "Feature expansion of the tos resource.")
-    private Map<String, String> futureExpansion = new HashMap<>();
+    private Map<String, JsonNode> futureExpansion = new HashMap<>();
 
     @Override
     public TosId getId() {
@@ -112,11 +113,11 @@ public class Tos extends ResourceMeta implements Identifiable<TosId> {
         support.setPropertyAssigned("version");
     }
 
-    public Map<String, String> getFutureExpansion() {
+    public Map<String, JsonNode> getFutureExpansion() {
         return futureExpansion;
     }
 
-    public void setFutureExpansion(Map<String, String> futureExpansion) {
+    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
         this.futureExpansion = futureExpansion;
         support.setPropertyAssigned("futureExpansion");
     }

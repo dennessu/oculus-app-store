@@ -287,10 +287,13 @@
         <property name="readableProperties">
             <list>
                 <value>id</value>
-                <value>localeId</value>
+                <value>type</value>
+                <value>countries</value>
+                <value>version</value>
                 <value>title</value>
                 <value>content</value>
                 <value>state</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -299,20 +302,26 @@
 
         <property name="writablePropertiesForCreate">
             <list>
-                <value>localeId</value>
+                <value>type</value>
+                <value>countries</value>
+                <value>version</value>
                 <value>title</value>
                 <value>content</value>
                 <value>state</value>
+                <value>futureExpansion</value>
             </list>
         </property>
 
         <property name="writablePropertiesForUpdate">
             <list>
                 <value>id</value>
-                <value>localeId</value>
+                <value>type</value>
+                <value>countries</value>
+                <value>version</value>
                 <value>title</value>
                 <value>content</value>
                 <value>state</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
             </list>
         </property>
