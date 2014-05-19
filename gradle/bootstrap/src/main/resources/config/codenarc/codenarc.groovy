@@ -282,14 +282,14 @@ ruleset {
         ClassName
         ClassNameSameAsFilename
         ConfusingMethodName
-        FieldName
+        // FieldName
         InterfaceName
         MethodName
         ObjectOverrideMisspelledMethodName
         PackageName
         ParameterName
         PropertyName
-        VariableName
+        // VariableName
 
         // rulesets/security.xml
         FileCreateTempFile
@@ -335,20 +335,20 @@ ruleset {
         UnnecessaryDefInFieldDeclaration
         UnnecessaryDefInMethodDeclaration
         UnnecessaryDefInVariableDeclaration
-        UnnecessaryDotClass
+        // UnnecessaryDotClass
         UnnecessaryDoubleInstantiation
         // UnnecessaryElseStatement
         UnnecessaryFinalOnPrivateMethod
         UnnecessaryFloatInstantiation
         // UnnecessaryGString
-        UnnecessaryGetter
+        // UnnecessaryGetter
         // UnnecessaryIfStatement
         UnnecessaryInstanceOfCheck
         UnnecessaryInstantiationToGetClass
         UnnecessaryIntegerInstantiation
         UnnecessaryLongInstantiation
         UnnecessaryModOne
-        UnnecessaryNullCheck
+        // UnnecessaryNullCheck
         UnnecessaryNullCheckBeforeInstanceOf
         // UnnecessaryObjectReferences
         // UnnecessaryOverridingMethod

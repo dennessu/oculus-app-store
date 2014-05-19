@@ -92,7 +92,10 @@ class IdUtil {
             }
         }
 
-        return matchingClass.newInstance(IdFormatter.decodeId(matchingClass, id)) as Id
+        if (matchingClass != null && id != null) {
+            return matchingClass.newInstance(IdFormatter.decodeId(matchingClass, id)) as Id
+        }
+        return null
     }
 
     static String toHref(Id value) {

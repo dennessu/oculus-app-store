@@ -1,9 +1,8 @@
 package com.junbo.ewallet.core
+
+import com.junbo.ewallet.db.repo.TransactionSupport
 import com.junbo.ewallet.service.WalletService
-import com.junbo.ewallet.spec.model.CreditRequest
-import com.junbo.ewallet.spec.model.DebitRequest
-import com.junbo.ewallet.spec.model.Transaction
-import com.junbo.ewallet.spec.model.Wallet
+import com.junbo.ewallet.spec.model.*
 import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,6 +17,7 @@ import org.testng.Assert
 import org.testng.annotations.Test
 
 import javax.ws.rs.WebApplicationException
+
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
@@ -37,6 +37,8 @@ class WalletServiceTest extends AbstractTestNGSpringContextTests {
     @Qualifier('oculus48IdGenerator')
     protected IdGenerator idGenerator
 
+    @Autowired
+    private TransactionSupport transactionSupport;
     @Autowired
     private WalletService walletService
 
@@ -70,6 +72,31 @@ class WalletServiceTest extends AbstractTestNGSpringContextTests {
         walletService.debit(wallet.walletId, debitRequest)
         wallet = walletService.get(wallet.walletId)
         Assert.assertEquals(wallet.balance, new BigDecimal(3))
+    }
+
+    @Test
+    public void testRefund() {
+        Wallet wallet = walletService.add(buildAWallet())
+        CreditRequest creditRequest = buildACreditRequest()
+        creditRequest.setWalletId(wallet.walletId)
+        walletService.credit(creditRequest)
+
+        DebitRequest debitRequest = buildADebitRequest()
+        debitRequest.amount = new BigDecimal(5)
+        walletService.debit(wallet.walletId, debitRequest)
+
+        Transaction transaction = walletService.getTransactions(wallet.walletId).get(1)
+        wallet = walletService.get(wallet.walletId)
+        Assert.assertEquals(wallet.balance, new BigDecimal(5))
+
+        RefundRequest refundRequest = buildARefundRequest(transaction.transactionId)
+        walletService.refund(wallet.walletId, refundRequest)
+        wallet = walletService.get(wallet.walletId)
+        Assert.assertEquals(wallet.balance, new BigDecimal(7))
+
+        walletService.refund(wallet.walletId, refundRequest)
+        wallet = walletService.get(wallet.walletId)
+        Assert.assertEquals(wallet.balance, new BigDecimal(9))
     }
 
     @Test(expectedExceptions = [WebApplicationException])
@@ -114,7 +141,7 @@ class WalletServiceTest extends AbstractTestNGSpringContextTests {
         return wallet
     }
 
-    private CreditRequest buildACreditRequest(){
+    private CreditRequest buildACreditRequest() {
         CreditRequest creditRequest = new CreditRequest()
         creditRequest.setCreditType(com.junbo.ewallet.spec.def.WalletLotType.CASH.toString())
         creditRequest.setOfferId(idGenerator.nextId())
@@ -126,6 +153,13 @@ class WalletServiceTest extends AbstractTestNGSpringContextTests {
         DebitRequest request = new DebitRequest()
         request.setAmount(new BigDecimal(17))
         request.setOfferId(idGenerator.nextId())
+        return request
+    }
+
+    private RefundRequest buildARefundRequest(Long transactionId) {
+        RefundRequest request = new RefundRequest()
+        request.setTransactionId(transactionId)
+        request.setAmount(new BigDecimal(2))
         return request
     }
 }

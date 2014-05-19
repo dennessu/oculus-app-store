@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="emailHash" class="com.junbo.identity.data.hash.impl.EmailHashImpl">
+        <property name="salt" value="${identity.conf.indexHashSalt}" />
+        <property name="algorithm" value="${identity.conf.indexHashAlgorithm}" />
+    </bean>
+
+    <bean id="phoneHash" class="com.junbo.identity.data.hash.impl.PhoneHashImpl">
+        <property name="salt" value="${identity.conf.indexHashSalt}" />
+        <property name="algorithm" value="${identity.conf.indexHashAlgorithm}" />
+    </bean>
+
+    <bean id="wipedHash" class="com.junbo.identity.data.hash.impl.WipedHashImpl">
+        <property name="salt" value="${identity.conf.indexHashSalt}" />
+    </bean>
+
+    <bean id="addressHash" class="com.junbo.identity.data.hash.impl.AddressHashImpl">
+        <property name="salt" value="${identity.conf.indexHashSalt}" />
+    </bean>
+
+    <bean id="dobHash" class="com.junbo.identity.data.hash.impl.DobHashImpl">
+        <property name="salt" value="${identity.conf.indexHashSalt}" />
+    </bean>
+
+    <bean id="driversLicenseHash" class="com.junbo.identity.data.hash.impl.DriversLicenseHashImpl">
+        <property name="salt" value="${identity.conf.indexHashSalt}" />
+    </bean>
+
+    <bean id="genderHash" class="com.junbo.identity.data.hash.impl.GenderHashImpl">
+        <property name="salt" value="${identity.conf.indexHashSalt}" />
+    </bean>
+
+    <bean id="governmentIdHash" class="com.junbo.identity.data.hash.impl.GovernmentIdHashImpl">
+        <property name="salt" value="${identity.conf.indexHashSalt}" />
+    </bean>
+
+    <bean id="nameHash" class="com.junbo.identity.data.hash.impl.NameHashImpl">
+        <property name="salt" value="${identity.conf.indexHashSalt}" />
+    </bean>
+
+    <bean id="passportHash" class="com.junbo.identity.data.hash.impl.PassportHashImpl">
+        <property name="salt" value="${identity.conf.indexHashSalt}" />
+    </bean>
+
+    <bean id="qqHash" class="com.junbo.identity.data.hash.impl.QQHashImpl">
+        <property name="salt" value="${identity.conf.indexHashSalt}" />
+    </bean>
+
+    <bean id="smsHash" class="com.junbo.identity.data.hash.impl.SmsHashImpl">
+        <property name="salt" value="${identity.conf.indexHashSalt}" />
+    </bean>
+
+    <bean id="whatsAppHash" class="com.junbo.identity.data.hash.impl.WhatsAppHashImpl">
+        <property name="salt" value="${identity.conf.indexHashSalt}" />
+    </bean>
+
+    <bean id="piiHashFactory" class="com.junbo.identity.data.hash.impl.PiiHashFactoryImpl">
+        <constructor-arg name="piiHashList">
+            <list>
+                <ref bean="addressHash" />
+                <ref bean="dobHash" />
+                <ref bean="driversLicenseHash" />
+                <ref bean="emailHash" />
+                <ref bean="genderHash" />
+                <ref bean="governmentIdHash" />
+                <ref bean="nameHash" />
+                <ref bean="passportHash" />
+                <ref bean="phoneHash" />
+                <ref bean="qqHash" />
+                <ref bean="smsHash" />
+                <ref bean="whatsAppHash" />
+                <ref bean="wipedHash" />
+            </list>
+        </constructor-arg>
+    </bean>
+</beans>

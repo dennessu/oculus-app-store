@@ -63,9 +63,8 @@ public class PaymentClientProxyTest extends BaseTest {
 
     @Test(enabled = false)
     public void addPIAndAuthSettle() throws ExecutionException, InterruptedException {
-        final UserId userId = new UserId(getLongId());
         PaymentInstrument pi = getPaymentInstrument();
-
+        final UserId userId = new UserId(pi.getUserId());
         final PaymentInstrument result = piClient.postPaymentInstrument(pi).wrapped().get();
         Assert.assertNotNull(result.getId());
         final PaymentInstrument getResult = piClient.getById(new PaymentInstrumentId(result.getId())).wrapped().get();
@@ -183,9 +182,8 @@ public class PaymentClientProxyTest extends BaseTest {
 
     @Test(enabled = false)
     public void addPIAndAuthPartialSettle() throws ExecutionException, InterruptedException {
-        final UserId userId = new UserId(getLongId());
         PaymentInstrument pi = getPaymentInstrument();
-
+        final UserId userId = new UserId(pi.getUserId());
         final PaymentInstrument result = piClient.postPaymentInstrument(pi).wrapped().get();
         Assert.assertNotNull(result.getId());
         PaymentTransaction trx = new PaymentTransaction(){
@@ -222,10 +220,51 @@ public class PaymentClientProxyTest extends BaseTest {
     }
 
     @Test(enabled = false)
-    public void addPIAndAuthReverse() throws ExecutionException, InterruptedException {
-        final UserId userId = new UserId(getLongId());
-        PaymentInstrument pi = getPaymentInstrument();
+    public void settleRefund() throws ExecutionException, InterruptedException {
+        //manual step needed: find a settled/settling transaction from BrainTree, and update a transaction in local
+        // DB with external_token equals to the BT's transaction's ID
+        Long trasnactionId = 402849792L;
+        final Long userID = 1493188608L;
+        PaymentTransaction trx = new PaymentTransaction(){
+            {
+                setTrackingUuid(generateUUID());
+                setUserId(userID);
+                setChargeInfo(new ChargeInfo(){
+                    {
+                        setBillingRefId("123");
+                        setCurrency("USD");
+                        setAmount(new BigDecimal(3.00));
+                    }
+                });
+            }
+        };
+        PaymentTransaction paymentResult = paymentClient.refundPayment(new PaymentId(trasnactionId), trx).wrapped().get();
+        Assert.assertEquals(paymentResult.getStatus().toUpperCase(), PaymentStatus.REFUNDED.toString());
+        //Continue Partial Refund
+        trx.setTrackingUuid(generateUUID());
+        paymentResult = paymentClient.refundPayment(new PaymentId(trasnactionId), trx).wrapped().get();
+        Assert.assertEquals(paymentResult.getStatus().toUpperCase(), PaymentStatus.REFUNDED.toString());
+        //Continue Refund all the left
+        trx.setChargeInfo(null);
+        trx.setTrackingUuid(generateUUID());
+        paymentResult = paymentClient.refundPayment(new PaymentId(trasnactionId), trx).wrapped().get();
+        PaymentTransaction getResult = paymentClient.getPayment(new PaymentId(paymentResult.getId())).wrapped().get();
+        Assert.assertEquals(getResult.getStatus().toUpperCase(), PaymentStatus.REFUNDED.toString());
+        boolean exception = false;
+        try{
+            trx.setTrackingUuid(generateUUID());
+            paymentResult = paymentClient.refundPayment(new PaymentId(trasnactionId), trx).wrapped().get();
+        }catch(Exception ex){
+            //exprcted exception as all the money has been refunded
+            exception = true;
+        }
+        Assert.assertTrue(exception);
+    }
 
+    @Test(enabled = false)
+    public void addPIAndAuthReverse() throws ExecutionException, InterruptedException {
+        PaymentInstrument pi = getPaymentInstrument();
+        final UserId userId = new UserId(pi.getUserId());
         final PaymentInstrument result = piClient.postPaymentInstrument(pi).wrapped().get();
         Assert.assertNotNull(result.getId());
         PaymentTransaction trx = new PaymentTransaction(){
@@ -257,9 +296,8 @@ public class PaymentClientProxyTest extends BaseTest {
 
     @Test(enabled = false)
     public void addPIAndChargeReverse() throws ExecutionException, InterruptedException {
-        final UserId userId = new UserId(getLongId());
         PaymentInstrument pi = getPaymentInstrument();
-
+        final UserId userId = new UserId(pi.getUserId());
         final PaymentInstrument result = piClient.postPaymentInstrument(pi).wrapped().get();
         Assert.assertNotNull(result.getId());
         PaymentTransaction trx = new PaymentTransaction(){
@@ -291,9 +329,8 @@ public class PaymentClientProxyTest extends BaseTest {
 
     @Test(enabled = false)
     public void addPIAndAuthFailed() throws ExecutionException, InterruptedException {
-        final UserId userId = new UserId(getLongId());
         PaymentInstrument pi = getPaymentInstrument();
-
+        final UserId userId = new UserId(pi.getUserId());
         final PaymentInstrument result = piClient.postPaymentInstrument(pi).wrapped().get();
         Assert.assertNotNull(result.getId());
         PaymentTransaction trx = new PaymentTransaction(){
@@ -321,9 +358,8 @@ public class PaymentClientProxyTest extends BaseTest {
 
     @Test(enabled = false)
     public void addPIAndAuthCaptureFailed() throws Exception {
-        final UserId userId = new UserId(getLongId());
         PaymentInstrument pi = getPaymentInstrument();
-
+        final UserId userId = new UserId(pi.getUserId());
         final PaymentInstrument result = piClient.postPaymentInstrument(pi).wrapped().get();
         Assert.assertNotNull(result.getId());
         PaymentTransaction trx = new PaymentTransaction(){
@@ -374,9 +410,8 @@ public class PaymentClientProxyTest extends BaseTest {
 
     @Test(enabled = false)
     public void addPIAndAuthReverseFailed() throws Exception {
-        final UserId userId = new UserId(getLongId());
         PaymentInstrument pi = getPaymentInstrument();
-
+        final UserId userId = new UserId(pi.getUserId());
         final PaymentInstrument result = piClient.postPaymentInstrument(pi).wrapped().get();
         Assert.assertNotNull(result.getId());
         PaymentTransaction trx = new PaymentTransaction(){

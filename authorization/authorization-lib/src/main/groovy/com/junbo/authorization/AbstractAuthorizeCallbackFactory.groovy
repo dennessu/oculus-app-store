@@ -57,5 +57,5 @@ abstract class AbstractAuthorizeCallbackFactory<T> implements AuthorizeCallbackF
         this.userGroupMembershipResource = userGroupMembershipResource
     }
 
-    abstract AuthorizeCallback<T> create(String apiName, T entity)
+    abstract AuthorizeCallback<T> create(T entity)
 }

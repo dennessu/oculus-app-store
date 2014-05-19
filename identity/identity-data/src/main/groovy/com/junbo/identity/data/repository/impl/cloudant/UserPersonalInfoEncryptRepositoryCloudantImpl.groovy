@@ -8,6 +8,8 @@ import com.junbo.crypto.spec.model.CryptoMessage
 import com.junbo.crypto.spec.resource.CryptoResource
 import com.junbo.identity.common.util.HashHelper
 import com.junbo.identity.common.util.JsonHelper
+import com.junbo.identity.data.hash.PiiHash
+import com.junbo.identity.data.hash.PiiHashFactory
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.repository.EncryptUserPersonalInfoRepository
 import com.junbo.identity.data.repository.UserPersonalInfoIdToUserIdLinkRepository
@@ -30,9 +32,7 @@ import org.springframework.util.CollectionUtils
 class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserPersonalInfo>
         implements UserPersonalInfoRepository {
 
-    private static final String ALGORITHM = 'SHA-256'
-
-    private String salt
+    private PiiHashFactory piiHashFactory
 
     private UserPersonalInfoIdToUserIdLinkRepository userIdLinkRepository
 
@@ -97,9 +97,9 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
 
     @Override
     Promise<List<UserPersonalInfo>> searchByEmail(String email) {
-        String hash = HashHelper.shaHash(UserPersonalInfoType.EMAIL.toString() + ":" + email, salt, ALGORITHM)
+        PiiHash hash = getPiiHash(UserPersonalInfoType.EMAIL.toString())
 
-        return encryptUserPersonalInfoRepository.searchByHashValue(hash).then {
+        return encryptUserPersonalInfoRepository.searchByHashValue(hash.generateHash(email)).then {
             List<EncryptUserPersonalInfo> userPersonalInfos ->
                 if (CollectionUtils.isEmpty(userPersonalInfos)) {
                     return Promise.pure(null)
@@ -108,6 +108,11 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
                 List<UserPersonalInfo> infos = new ArrayList<>()
                 return Promise.each(userPersonalInfos) { EncryptUserPersonalInfo personalInfo ->
                     return get(personalInfo.userPersonalInfoId).then { UserPersonalInfo userPersonalInfo ->
+                        if (userPersonalInfo == null ||
+                            userPersonalInfo.type != UserPersonalInfoType.EMAIL.toString()) {
+                            return Promise.pure(null)
+                        }
+
                         Email emailObj = (Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Email)
                         if (emailObj.value == email) {
                             infos.add(userPersonalInfo)
@@ -122,9 +127,9 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
 
     @Override
     Promise<List<UserPersonalInfo>> searchByPhoneNumber(String phoneNumber) {
-        String hash = HashHelper.shaHash(UserPersonalInfoType.PHONE.toString() + ":" + phoneNumber, salt, ALGORITHM)
+        PiiHash hash = getPiiHash(UserPersonalInfoType.PHONE.toString())
 
-        return encryptUserPersonalInfoRepository.searchByHashValue(hash).then {
+        return encryptUserPersonalInfoRepository.searchByHashValue(hash.generateHash(phoneNumber)).then {
             List<EncryptUserPersonalInfo> userPersonalInfos ->
                 if (CollectionUtils.isEmpty(userPersonalInfos)) {
                     return Promise.pure(null)
@@ -133,6 +138,11 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
                 List<UserPersonalInfo> infos = new ArrayList<>()
                 return Promise.each(userPersonalInfos) { EncryptUserPersonalInfo personalInfo ->
                     return get(personalInfo.userPersonalInfoId).then { UserPersonalInfo userPersonalInfo ->
+                        if (userPersonalInfo == null ||
+                            userPersonalInfo.type != UserPersonalInfoType.PHONE.toString()) {
+                            return Promise.pure(null)
+                        }
+
                         PhoneNumber phoneObj = (PhoneNumber)JsonHelper.jsonNodeToObj(userPersonalInfo.value,
                                 PhoneNumber)
                         if (phoneObj.value == phoneNumber) {
@@ -159,7 +169,8 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
             EncryptUserPersonalInfo encryptUserPersonalInfo = new EncryptUserPersonalInfo()
             encryptUserPersonalInfo.encryptUserPersonalInfo = messageValue.value
             encryptUserPersonalInfo.userPersonalInfoId = (UserPersonalInfoId)model.id
-            encryptUserPersonalInfo.hashSearchInfo = calcSearchHash(model)
+            PiiHash piiHash = getPiiHash(model.type)
+            encryptUserPersonalInfo.hashSearchInfo = piiHash.generateHash(model.value)
 
             UserPersonalInfoIdToUserIdLink link = new UserPersonalInfoIdToUserIdLink(
                     userId: model.userId,
@@ -184,7 +195,8 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
             EncryptUserPersonalInfo encryptUserPersonalInfo = new EncryptUserPersonalInfo()
             encryptUserPersonalInfo.encryptUserPersonalInfo = messageValue.value
             encryptUserPersonalInfo.userPersonalInfoId = (UserPersonalInfoId)model.id
-            encryptUserPersonalInfo.hashSearchInfo = calcSearchHash(model)
+            PiiHash piiHash = getPiiHash(model.type)
+            encryptUserPersonalInfo.hashSearchInfo = piiHash.generateHash(model.value)
 
             return encryptUserPersonalInfoRepository.update(encryptUserPersonalInfo).then {
                 EncryptUserPersonalInfo info ->
@@ -214,19 +226,20 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
         throw new IllegalStateException('Delete is not supported')
     }
 
-    // todo:    Move it to factory model
-    private String calcSearchHash(UserPersonalInfo userPersonalInfo) {
-        if (userPersonalInfo.type == UserPersonalInfoType.EMAIL.toString()) {
-            Email email = (Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Email)
-            return HashHelper.shaHash(UserPersonalInfoType.EMAIL.toString() + ":" + email.value, salt,
-                    ALGORITHM)
-        } else if (userPersonalInfo.type == UserPersonalInfoType.PHONE.toString()) {
-            PhoneNumber phoneNumber = (PhoneNumber)JsonHelper.jsonNodeToObj(userPersonalInfo.value, PhoneNumber)
-            return HashHelper.shaHash(UserPersonalInfoType.PHONE.toString() + ":" + phoneNumber.value, salt,
-                    ALGORITHM)
-        } else {
-            return null;
+    private PiiHash getPiiHash(String type) {
+        PiiHash hash = piiHashFactory.getAllPiiHashes().find { PiiHash piiHash ->
+            return piiHash.handles(type)
         }
+        if (hash == null) {
+            throw new IllegalStateException('No hash implementation for type ' + type)
+        }
+
+        return hash
+    }
+
+    @Required
+    void setPiiHashFactory(PiiHashFactory piiHashFactory) {
+        this.piiHashFactory = piiHashFactory
     }
 
     @Required
@@ -247,10 +260,5 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     @Required
     void setIdGenerator(IdGenerator idGenerator) {
         this.idGenerator = idGenerator
-    }
-
-    @Required
-    void setSalt(String salt) {
-        this.salt = salt
     }
 }

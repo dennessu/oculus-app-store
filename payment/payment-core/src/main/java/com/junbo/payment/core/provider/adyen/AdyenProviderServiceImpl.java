@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.junbo.common.util.PromiseFacade;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.common.CommonUtil;
+import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.core.util.PaymentUtil;
@@ -229,6 +230,7 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
         if(result != null && result.getResultCode().equals("Authorised")){
             paymentRequest.setWebPaymentInfo(null);
             paymentRequest.setStatus(PaymentStatus.SETTLED.toString());
+            paymentRequest.setExternalToken(result.getPspReference());
             return paymentRequest;
         }
         throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "No Result").exception();
@@ -240,13 +242,59 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
     }
 
     @Override
-    public Promise<PaymentTransaction> reverse(String transactionId, PaymentTransaction paymentRequest) {
-        throw AppServerExceptions.INSTANCE.serviceNotImplemented("authorize").exception();
+    public Promise<PaymentTransaction> reverse(final String transactionId, final PaymentTransaction paymentRequest) {
+        return PromiseFacade.PAYMENT.decorate(new Callable<PaymentTransaction>() {
+            @Override
+            public PaymentTransaction call() throws Exception {
+                ModificationRequest refundReq = new ModificationRequest();
+                refundReq.setMerchantAccount(merchantAccount);
+                refundReq.setOriginalReference(transactionId);
+                ModificationResult cancelResult = null;
+                try{
+                    cancelResult = service.cancel(refundReq);
+                } catch (RemoteException e) {
+                    throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, e.toString()).exception();
+                }
+                if(cancelResult != null){
+                    cancelResult.getResponse();
+                    paymentRequest.setStatus(PaymentStatus.REVERSED.toString());
+                }else{
+                    throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "No Response").exception();
+                }
+                return paymentRequest;
+            }
+        });
     }
 
     @Override
-    public Promise<PaymentTransaction> refund(String transactionId, PaymentTransaction request) {
-        throw AppServerExceptions.INSTANCE.serviceNotImplemented("authorize").exception();
+    public Promise<PaymentTransaction> refund(final String transactionId, final PaymentTransaction request) {
+        return PromiseFacade.PAYMENT.decorate(new Callable<PaymentTransaction>() {
+            @Override
+            public PaymentTransaction call() throws Exception {
+                if(request.getChargeInfo() == null || request.getChargeInfo().getAmount() == null){
+                    throw AppClientExceptions.INSTANCE.missingAmount().exception();
+                }
+                ModificationRequest refundReq = new ModificationRequest();
+                refundReq.setMerchantAccount(merchantAccount);
+                refundReq.setOriginalReference(transactionId);
+                //TODO: need calculate amount according to currency ISO, hard code * 100 first
+                refundReq.setModificationAmount(new Amount(request.getChargeInfo().getCurrency(),
+                        request.getChargeInfo().getAmount().longValue() * 100));
+                ModificationResult refundResult = null;
+                try{
+                    refundResult = service.refund(refundReq);
+                } catch (RemoteException e) {
+                    throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, e.toString()).exception();
+                }
+                if(refundResult != null){
+                    refundResult.getResponse();
+                    request.setStatus(PaymentStatus.REFUNDED.toString());
+                }else{
+                    throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "No Response").exception();
+                }
+                return request;
+            }
+        });
     }
 
     @Override

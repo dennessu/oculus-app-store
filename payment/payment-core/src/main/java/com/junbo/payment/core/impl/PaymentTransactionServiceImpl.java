@@ -261,10 +261,8 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         final PaymentEventType eventType;
         if(PaymentStatus.valueOf(existedTransaction.getStatus()).equals(PaymentStatus.AUTHORIZED)){
             eventType = PaymentEventType.AUTH_REVERSE;
-        }else if(PaymentStatus.valueOf(existedTransaction.getStatus()).equals(PaymentStatus.SETTLEMENT_SUBMITTED)){
-            eventType = PaymentEventType.SUBMIT_SETTLE_REVERSE;
         }else{
-            throw AppServerExceptions.INSTANCE.invalidPaymentStatus(existedTransaction.getStatus()).exception();
+            eventType = PaymentEventType.SUBMIT_SETTLE_REVERSE;
         }
         PaymentInstrument pi = getPaymentInstrument(existedTransaction);
         PaymentStatus createStatus = PaymentStatus.REVERSE_CREATED;

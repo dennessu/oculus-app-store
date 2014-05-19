@@ -21,7 +21,7 @@
         <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
     </bean>
 
-    <bean id="apiEndpoint" class="com.junbo.oauth.spec.endpoint.proxy.ApiEndpointClientProxy">
+    <bean id="apiDefinitionEndpoint" class="com.junbo.oauth.spec.endpoint.proxy.ApiDefinitionEndpointClientProxy">
         <constructor-arg name="client" ref="commonAsyncHttpClient"/>
         <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
         <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
@@ -38,7 +38,7 @@
     <bean id="spelConditionEvaluator" class="com.junbo.authorization.SPELConditionEvaluator"/>
 
     <bean id="authorizeService" class="com.junbo.authorization.AuthorizeServiceImpl">
-        <property name="apiEndpoint" ref="apiEndpoint"/>
+        <property name="apiDefinitionEndpoint" ref="apiDefinitionEndpoint"/>
         <property name="tokenInfoParser" ref="tokenInfoParser"/>
         <property name="conditionEvaluators">
             <list>

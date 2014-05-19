@@ -41,7 +41,7 @@ class EntityServiceImpl implements EntityService {
     Entity get(Long id) {
         Entity entity = new Entity(id: id, name: 'name', createdBy: 'system')
 
-        def callback = entityAuthorizeCallbackFactory.create('entity_get', entity)
+        def callback = entityAuthorizeCallbackFactory.create(entity)
         return authorizeService.authorizeAndThen(callback) {
             if (!AuthorizeContext.hasRights('owner') && !AuthorizeContext.hasRights('admin')) {
                 entity.name = null

@@ -5,28 +5,19 @@
  */
 package com.junbo.authorization.core.filter
 
-import com.junbo.authorization.filter.AbstractResourceFilter
 import com.junbo.authorization.spec.model.Role
-import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Autowired
 
 /**
  * RoleFilter.
  */
 @CompileStatic
-class RoleFilter extends AbstractResourceFilter<Role> {
+interface RoleFilter {
+    Role filterForPost(Role role)
 
-    @Autowired
-    protected SelfMapper selfMapper
+    Role filterForPut(Role role, Role oldRole)
 
-    @Override
-    protected Role filter(Role role, MappingContext context) {
-        return selfMapper.filterRole(role, context)
-    }
+    Role filterForPatch(Role role, Role oldRole)
 
-    @Override
-    protected Role merge(Role source, Role base, MappingContext context) {
-        return selfMapper.mergeRole(source, base, context)
-    }
+    Role filterForGet(Role role)
 }

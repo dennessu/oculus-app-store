@@ -176,8 +176,39 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
     }
 
     @Override
-    public Promise<PaymentTransaction> refund(String transactionId, PaymentTransaction request) {
-        throw AppServerExceptions.INSTANCE.serviceNotImplemented("refund").exception();
+    public Promise<PaymentTransaction> refund(final String transactionId, final PaymentTransaction request) {
+        return PromiseFacade.PAYMENT.decorate(new Callable<PaymentTransaction>() {
+            @Override
+            public PaymentTransaction call() throws Exception {
+                RefundTransactionReq refundReq = new RefundTransactionReq();
+                RefundTransactionRequestType requestType = new RefundTransactionRequestType();
+                requestType.setTransactionID(transactionId);
+                if(request.getChargeInfo() == null || request.getChargeInfo().getAmount() == null){
+                    requestType.setRefundType(RefundType.FULL);
+                }else{
+                    //Partial Refund
+                    CurrencyCodeType currency = CurrencyCodeType.fromValue(request.getChargeInfo().getCurrency());
+                    requestType.setRefundType(RefundType.PARTIAL);
+                    BasicAmountType refundAmount = new BasicAmountType();
+                    refundAmount.setCurrencyID(currency);
+                    refundAmount.setValue(request.getChargeInfo().getAmount().toString());
+                    requestType.setAmount(refundAmount);
+                }
+                refundReq.setRefundTransactionRequest(requestType);
+                RefundTransactionResponseType refundResponse = null;
+                try {
+                    refundResponse = service.refundTransaction(refundReq);
+                } catch (Exception ex){
+                    handleException(ex);
+                }
+                if(isSuccessAck(refundResponse.getAck())){
+                    request.setStatus(PaymentStatus.REFUNDED.toString());
+                }else{
+                    handleErrorResponse(refundResponse);
+                }
+                return request;
+            }
+        });
     }
 
     @Override

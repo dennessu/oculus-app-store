@@ -23,7 +23,8 @@ public class PIType extends ResourceMeta implements Identifiable<PITypeId> {
     @JsonProperty("self")
     private PITypeId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "The type code of payment instrument resource.")
+    @ApiModelProperty(position = 2, required = true, value = "The type code of payment instrument resource, " +
+            "could be one of [CREDITCARD | DIRECTDEBIT | STOREDVALUE | PAYPAL | OTHERS]")
     private String typeCode;
 
     @ApiModelProperty(position = 3, required = true, value = "whether the PI is recurring-able or not.")

@@ -100,7 +100,7 @@ class PITypeValidatorImpl implements PITypeValidator {
             Enum.valueOf(com.junbo.common.id.PIType, piType.typeCode)
         }
         catch (IllegalArgumentException e) {
-            throw AppErrors.INSTANCE.fieldInvalid('typeCode', '[CREDITCARD, DIRECTDEBIT, WALLET, PAYPAL]').exception()
+            throw AppErrors.INSTANCE.fieldInvalid('typeCode', com.junbo.common.id.PIType.allTypes()).exception()
         }
         if (CollectionUtils.isEmpty(piType.locales)) {
             throw AppErrors.INSTANCE.fieldRequired('locales').exception()
