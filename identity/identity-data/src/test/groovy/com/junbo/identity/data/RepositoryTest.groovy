@@ -505,7 +505,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userTeleCode.setActive(true)
         userTeleCode.setExpiresBy(after30Mins)
         userTeleCode.setPhoneNumber(phoneNumber)
-        userTeleCode.setSentLanguage('en_US')
+        userTeleCode.setSentLocale(new LocaleId('en_US'))
         userTeleCode.setTemplate('xxxxx')
         userTeleCode.setVerifyCode(UUID.randomUUID().toString())
         userTeleCode.setVerifyType('CALL')

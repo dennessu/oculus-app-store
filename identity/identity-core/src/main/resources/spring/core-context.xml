@@ -909,11 +909,12 @@
                 <value>id</value>
                 <value>userId</value>
                 <value>phoneNumber</value>
-                <value>sentLanguage</value>
+                <value>sentLocale</value>
                 <value>template</value>
                 <value>verifyType</value>
                 <value>expiresBy</value>
                 <value>active</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -924,12 +925,13 @@
             <list>
                 <value>userId</value>
                 <value>phoneNumber</value>
-                <value>sentLanguage</value>
+                <value>sentLocale</value>
                 <value>verifyCode</value>
                 <value>template</value>
                 <value>verifyType</value>
                 <value>expiresBy</value>
                 <value>active</value>
+                <value>futureExpansion</value>
             </list>
         </property>
 
@@ -938,15 +940,14 @@
                 <value>id</value>
                 <value>userId</value>
                 <value>phoneNumber</value>
-                <value>sentLanguage</value>
+                <value>sentLocale</value>
                 <value>verifyCode</value>
                 <value>template</value>
                 <value>verifyType</value>
                 <value>expiresBy</value>
                 <value>active</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
             </list>
         </property>
     </bean>

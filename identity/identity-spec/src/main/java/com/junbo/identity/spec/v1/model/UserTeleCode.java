@@ -7,6 +7,8 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.common.id.UserTeleId;
@@ -15,6 +17,8 @@ import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by liangfu on 4/22/14.
@@ -33,7 +37,7 @@ public class UserTeleCode extends ResourceMeta implements Identifiable<UserTeleI
     private UserPersonalInfoId phoneNumber;
 
     @ApiModelProperty(position = 4, required = false, value = "The language to sent to the user.")
-    private String sentLanguage;
+    private LocaleId sentLocale;
 
     @JsonIgnore
     private String verifyCode;
@@ -49,6 +53,9 @@ public class UserTeleCode extends ResourceMeta implements Identifiable<UserTeleI
 
     @ApiModelProperty(position = 9, required = false, value = "[Client Immutable]Whether user Tele resource is active.")
     private Boolean active;
+
+    @ApiModelProperty(position = 10, required = false, value = "The future expansion of user tele resource.")
+    private Map<String, JsonNode> futureExpansion = new HashMap<>();
 
     public UserTeleId getId() {
         return id;
@@ -77,15 +84,6 @@ public class UserTeleCode extends ResourceMeta implements Identifiable<UserTeleI
     public void setPhoneNumber(UserPersonalInfoId phoneNumber) {
         this.phoneNumber = phoneNumber;
         support.setPropertyAssigned("phoneNumber");
-    }
-
-    public String getSentLanguage() {
-        return sentLanguage;
-    }
-
-    public void setSentLanguage(String sentLanguage) {
-        this.sentLanguage = sentLanguage;
-        support.setPropertyAssigned("sentLanguage");
     }
 
     public String getVerifyCode() {
@@ -131,5 +129,23 @@ public class UserTeleCode extends ResourceMeta implements Identifiable<UserTeleI
     public void setActive(Boolean active) {
         this.active = active;
         support.setPropertyAssigned("active");
+    }
+
+    public LocaleId getSentLocale() {
+        return sentLocale;
+    }
+
+    public void setSentLocale(LocaleId sentLocale) {
+        this.sentLocale = sentLocale;
+        support.setPropertyAssigned("sentLocale");
+    }
+
+    public Map<String, JsonNode> getFutureExpansion() {
+        return futureExpansion;
+    }
+
+    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
+        this.futureExpansion = futureExpansion;
+        support.setPropertyAssigned("futureExpansion");
     }
 }

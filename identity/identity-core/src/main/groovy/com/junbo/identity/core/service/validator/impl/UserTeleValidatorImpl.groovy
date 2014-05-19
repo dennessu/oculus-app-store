@@ -246,11 +246,14 @@ class UserTeleValidatorImpl implements UserTeleValidator {
             throw AppErrors.INSTANCE.fieldInvalid('userId', userId.toString()).exception()
         }
 
+        // todo:    Need to check the language from the locale id list.
+        /*
         if (userTeleCode.sentLanguage != null) {
             if (!(userTeleCode.sentLanguage in allowedLanguages)) {
                 throw AppErrors.INSTANCE.fieldInvalid('sentLanguage', allowedLanguages.join(',')).exception()
             }
         }
+        */
 
         if (userTeleCode.template != null) {
             if (userTeleCode.template.length() > maxTemplateLength) {

@@ -40,9 +40,11 @@ class TeleSignImpl implements TeleSign {
         return userPersonalInfoRepository.get(userTeleCode.phoneNumber).then { UserPersonalInfo userPersonalInfo ->
 
             PhoneNumber phoneNumber = (PhoneNumber)JsonHelper.jsonNodeToObj(userPersonalInfo.value, PhoneNumber)
+
             VerifyResponse response = null
             try {
-                response = verify.sms(phoneNumber.info, userTeleCode.sentLanguage, userTeleCode.verifyCode,
+                // todo:    Get locale language according to id. Hard-code it here.
+                response = verify.sms(phoneNumber.info, "en_US", userTeleCode.verifyCode,
                         userTeleCode.template)
             } catch (Exception e) {
                 throw AppErrors.INSTANCE.teleSignProviderError(e.message).exception()
@@ -58,7 +60,8 @@ class TeleSignImpl implements TeleSign {
             PhoneNumber phoneNumber = (PhoneNumber)JsonHelper.jsonNodeToObj(userPersonalInfo.value, PhoneNumber)
             VerifyResponse response = null
             try {
-                response = verify.call(phoneNumber.info, userTeleCode.sentLanguage)
+                // todo:    Get locale language according to id. Hard-code it here.
+                response = verify.call(phoneNumber.info, "en_US")
             } catch (Exception e) {
                 throw AppErrors.INSTANCE.teleSignProviderError(e.message).exception()
             }
