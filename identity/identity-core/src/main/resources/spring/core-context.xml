@@ -326,6 +326,7 @@
                 <value>locales</value>
                 <value>capableOfRecurring</value>
                 <value>isRefundable</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -333,11 +334,11 @@
         </property>
         <property name="writablePropertiesForCreate">
             <list>
-                <value>id</value>
                 <value>typeCode</value>
                 <value>locales</value>
                 <value>capableOfRecurring</value>
                 <value>isRefundable</value>
+                <value>futureExpansion</value>
             </list>
         </property>
         <property name="writablePropertiesForUpdate">
@@ -347,6 +348,7 @@
                 <value>locales</value>
                 <value>capableOfRecurring</value>
                 <value>isRefundable</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
             </list>
         </property>
