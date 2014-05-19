@@ -6,6 +6,7 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.ClientId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserSecurityQuestionId;
@@ -13,6 +14,9 @@ import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId;
 import com.junbo.common.model.ResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by liangfu on 4/3/14.
@@ -48,6 +52,9 @@ public class UserSecurityQuestionVerifyAttempt extends ResourceMeta
     @ApiModelProperty(position = 8, required = true, value = "User resource.")
     @JsonProperty("user")
     private UserId userId;
+
+    @ApiModelProperty(position = 9, required = false, value = "The future expansion of userSecurityQuestion resource.")
+    private Map<String, JsonNode> futureExpansion = new HashMap<>();
 
     public UserSecurityQuestionVerifyAttemptId getId() {
         return id;
@@ -123,5 +130,14 @@ public class UserSecurityQuestionVerifyAttempt extends ResourceMeta
         this.userId = userId;
         support.setPropertyAssigned("userId");
         support.setPropertyAssigned("user");
+    }
+
+    public Map<String, JsonNode> getFutureExpansion() {
+        return futureExpansion;
+    }
+
+    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
+        this.futureExpansion = futureExpansion;
+        support.setPropertyAssigned("futureExpansion");
     }
 }
