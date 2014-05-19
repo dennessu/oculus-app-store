@@ -11,14 +11,14 @@ import java.util.Date;
  * Created by liangfu on 4/26/14.
  */
 public class UserDOB {
-    private Date birthday;
+    private Date info;
 
-    public Date getBirthday() {
-        return birthday;
+    public Date getInfo() {
+        return info;
     }
 
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
+    public void setInfo(Date info) {
+        this.info = info;
     }
 
     @Override
@@ -28,13 +28,13 @@ public class UserDOB {
 
         UserDOB userDOB = (UserDOB) o;
 
-        if (birthday != null ? !birthday.equals(userDOB.birthday) : userDOB.birthday != null) return false;
+        if (info != null ? !info.equals(userDOB.info) : userDOB.info != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return birthday != null ? birthday.hashCode() : 0;
+        return info != null ? info.hashCode() : 0;
     }
 }

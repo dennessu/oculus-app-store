@@ -5,40 +5,19 @@
  */
 package com.junbo.identity.spec.v1.model;
 
-import java.util.Date;
-
 /**
  * Created by liangfu on 4/26/14.
  */
 public class Email {
-    private String value;
+    // Will treat as lower-case
+    private String info;
 
-    private Boolean isValidated;
-
-    private Date validateTime;
-
-    public String getValue() {
-        return value;
+    public String getInfo() {
+        return info;
     }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public Boolean getIsValidated() {
-        return isValidated;
-    }
-
-    public void setIsValidated(Boolean isValidated) {
-        this.isValidated = isValidated;
-    }
-
-    public Date getValidateTime() {
-        return validateTime;
-    }
-
-    public void setValidateTime(Date validateTime) {
-        this.validateTime = validateTime;
+    public void setInfo(String info) {
+        this.info = info;
     }
 
     @Override
@@ -48,18 +27,13 @@ public class Email {
 
         Email email = (Email) o;
 
-        if (isValidated != null ? !isValidated.equals(email.isValidated) : email.isValidated != null) return false;
-        if (validateTime != null ? !validateTime.equals(email.validateTime) : email.validateTime != null) return false;
-        if (value != null ? !value.equals(email.value) : email.value != null) return false;
+        if (info != null ? !info.equals(email.info) : email.info != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = value != null ? value.hashCode() : 0;
-        result = 31 * result + (isValidated != null ? isValidated.hashCode() : 0);
-        result = 31 * result + (validateTime != null ? validateTime.hashCode() : 0);
-        return result;
+        return info != null ? info.hashCode() : 0;
     }
 }

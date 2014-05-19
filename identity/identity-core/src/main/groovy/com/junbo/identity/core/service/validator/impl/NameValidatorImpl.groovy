@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Required
  */
 @CompileStatic
 class NameValidatorImpl implements PiiValidator {
+    // todo:    Need to refactor according to marshall's requirement
     private Integer minFirstNameLength
     private Integer maxFirstNameLength
 
@@ -75,16 +76,6 @@ class NameValidatorImpl implements PiiValidator {
             if (name.middleName.length() < minMiddleNameLength) {
                 throw AppErrors.INSTANCE.fieldTooShort('middleName', minMiddleNameLength).exception()
             }
-        }
-
-        if (name.lastName == null) {
-            throw AppErrors.INSTANCE.fieldRequired('lastName').exception()
-        }
-        if (name.lastName.length() > maxLastNameLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('lastName', maxLastNameLength).exception()
-        }
-        if (name.lastName.length() < minLastNameLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('lastName', minLastNameLength).exception()
         }
 
         nickNameValidator.validateNickName(name.nickName)

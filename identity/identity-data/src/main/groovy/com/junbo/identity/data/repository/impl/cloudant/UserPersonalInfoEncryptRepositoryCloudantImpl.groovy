@@ -114,7 +114,7 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
                         }
 
                         Email emailObj = (Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Email)
-                        if (emailObj.value == email) {
+                        if (emailObj.info == email) {
                             infos.add(userPersonalInfo)
                         }
                         return Promise.pure(null)
@@ -145,7 +145,7 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
 
                         PhoneNumber phoneObj = (PhoneNumber)JsonHelper.jsonNodeToObj(userPersonalInfo.value,
                                 PhoneNumber)
-                        if (phoneObj.value == phoneNumber) {
+                        if (phoneObj.info == phoneNumber) {
                             infos.add(userPersonalInfo)
                         }
                         return Promise.pure(null)

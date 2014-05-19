@@ -42,7 +42,7 @@ class TeleSignImpl implements TeleSign {
             PhoneNumber phoneNumber = (PhoneNumber)JsonHelper.jsonNodeToObj(userPersonalInfo.value, PhoneNumber)
             VerifyResponse response = null
             try {
-                response = verify.sms(phoneNumber.value, userTeleCode.sentLanguage, userTeleCode.verifyCode,
+                response = verify.sms(phoneNumber.info, userTeleCode.sentLanguage, userTeleCode.verifyCode,
                         userTeleCode.template)
             } catch (Exception e) {
                 throw AppErrors.INSTANCE.teleSignProviderError(e.message).exception()
@@ -58,7 +58,7 @@ class TeleSignImpl implements TeleSign {
             PhoneNumber phoneNumber = (PhoneNumber)JsonHelper.jsonNodeToObj(userPersonalInfo.value, PhoneNumber)
             VerifyResponse response = null
             try {
-                response = verify.call(phoneNumber.value, userTeleCode.sentLanguage)
+                response = verify.call(phoneNumber.info, userTeleCode.sentLanguage)
             } catch (Exception e) {
                 throw AppErrors.INSTANCE.teleSignProviderError(e.message).exception()
             }

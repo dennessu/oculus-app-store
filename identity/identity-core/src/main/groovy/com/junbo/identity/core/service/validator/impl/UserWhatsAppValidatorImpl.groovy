@@ -47,12 +47,12 @@ class UserWhatsAppValidatorImpl implements PiiValidator {
     }
 
     private void checkUserWhatsApp(UserWhatsApp userWhatsApp) {
-        if (userWhatsApp.value != null) {
-            if (userWhatsApp.value.length() > maxWhatsAppLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('whatsApp', maxWhatsAppLength).exception()
+        if (userWhatsApp.info != null) {
+            if (userWhatsApp.info.length() > maxWhatsAppLength) {
+                throw AppErrors.INSTANCE.fieldTooLong('value.info', maxWhatsAppLength).exception()
             }
-            if (userWhatsApp.value.length() < minWhatsAppLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('whatsApp', maxWhatsAppLength).exception()
+            if (userWhatsApp.info.length() < minWhatsAppLength) {
+                throw AppErrors.INSTANCE.fieldTooShort('value.info', maxWhatsAppLength).exception()
             }
         }
     }

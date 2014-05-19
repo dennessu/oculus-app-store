@@ -49,12 +49,12 @@ class GovernmentIDValidatorImpl implements PiiValidator {
     }
 
     private void checkUserGovernmentId(UserGovernmentID userGovernmentID) {
-        if (userGovernmentID.value != null) {
-            if (userGovernmentID.value.length() > maxGovernmentIDLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('value', maxGovernmentIDLength).exception()
+        if (userGovernmentID.info != null) {
+            if (userGovernmentID.info.length() > maxGovernmentIDLength) {
+                throw AppErrors.INSTANCE.fieldTooLong('value.info', maxGovernmentIDLength).exception()
             }
-            if (userGovernmentID.value.length() < minGovernmentIDLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('value', minGovernmentIDLength).exception()
+            if (userGovernmentID.info.length() < minGovernmentIDLength) {
+                throw AppErrors.INSTANCE.fieldTooShort('value.info', minGovernmentIDLength).exception()
             }
         }
     }

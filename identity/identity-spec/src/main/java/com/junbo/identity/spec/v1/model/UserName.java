@@ -11,13 +11,13 @@ package com.junbo.identity.spec.v1.model;
 public class UserName {
     private String firstName;
 
+    private String givenName;
+
     private String middleName;
 
-    private String lastName;
+    private String familyName;
 
     private String nickName;
-
-    private String displayName;
 
     public String getFirstName() {
         return firstName;
@@ -35,14 +35,6 @@ public class UserName {
         this.middleName = middleName;
     }
 
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
     public String getNickName() {
         return nickName;
     }
@@ -51,12 +43,20 @@ public class UserName {
         this.nickName = nickName;
     }
 
-    public String getDisplayName() {
-        return displayName;
+    public String getGivenName() {
+        return givenName;
     }
 
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
+    public void setGivenName(String givenName) {
+        this.givenName = givenName;
+    }
+
+    public String getFamilyName() {
+        return familyName;
+    }
+
+    public void setFamilyName(String familyName) {
+        this.familyName = familyName;
     }
 
     @Override
@@ -66,10 +66,7 @@ public class UserName {
 
         UserName userName = (UserName) o;
 
-        if (displayName != null ? !displayName.equals(userName.displayName) : userName.displayName != null)
-            return false;
         if (firstName != null ? !firstName.equals(userName.firstName) : userName.firstName != null) return false;
-        if (lastName != null ? !lastName.equals(userName.lastName) : userName.lastName != null) return false;
         if (middleName != null ? !middleName.equals(userName.middleName) : userName.middleName != null) return false;
         if (nickName != null ? !nickName.equals(userName.nickName) : userName.nickName != null) return false;
 
@@ -80,9 +77,7 @@ public class UserName {
     public int hashCode() {
         int result = firstName != null ? firstName.hashCode() : 0;
         result = 31 * result + (middleName != null ? middleName.hashCode() : 0);
-        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
         result = 31 * result + (nickName != null ? nickName.hashCode() : 0);
-        result = 31 * result + (displayName != null ? displayName.hashCode() : 0);
         return result;
     }
 }

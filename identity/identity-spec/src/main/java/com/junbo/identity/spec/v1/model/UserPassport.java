@@ -9,14 +9,14 @@ package com.junbo.identity.spec.v1.model;
  * Created by liangfu on 4/26/14.
  */
 public class UserPassport {
-    private String value;
+    private String info;
 
-    public String getValue() {
-        return value;
+    public String getInfo() {
+        return info;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setInfo(String info) {
+        this.info = info;
     }
 
     @Override
@@ -26,13 +26,13 @@ public class UserPassport {
 
         UserPassport that = (UserPassport) o;
 
-        if (value != null ? !value.equals(that.value) : that.value != null) return false;
+        if (info != null ? !info.equals(that.info) : that.info != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return value != null ? value.hashCode() : 0;
+        return info != null ? info.hashCode() : 0;
     }
 }

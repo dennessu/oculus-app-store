@@ -37,6 +37,8 @@ import java.util.regex.Pattern
 @SuppressWarnings('UnnecessaryGetter')
 class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAttemptValidator {
 
+    // Todo:    Refactor this code according to marshall's requirement
+
     private static final String MAIL_IDENTIFIER = "@"
 
     private UserCredentialVerifyAttemptRepository userLoginAttemptRepository
@@ -188,8 +190,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     }
 
                     UserPersonalInfo personalInfo = personalInfos.find { UserPersonalInfo userPersonalInfo ->
-                        Email email = (Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Email)
-                        return email.isValidated == true
+                        return userPersonalInfo.isValidated == true
                     }
 
                     if (personalInfo == null) {
