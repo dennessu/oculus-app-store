@@ -87,6 +87,9 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     @Override
     Promise<List<UserPersonalInfo>> searchByUserIdAndType(UserId userId, String type) {
         return searchByUserId(userId).then { List<UserPersonalInfo> userPersonalInfoList ->
+            if (CollectionUtils.isEmpty(userPersonalInfoList)) {
+                return Promise.pure(null)
+            }
             userPersonalInfoList.removeAll { UserPersonalInfo userPersonalInfo ->
                 return userPersonalInfo.type != type
             }
@@ -209,6 +212,11 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     Promise<UserPersonalInfo> get(UserPersonalInfoId id) {
         return encryptUserPersonalInfoRepository.searchByUserPersonalInfoId(id).then {
             EncryptUserPersonalInfo encryptUserPersonalInfo ->
+
+                if (encryptUserPersonalInfo == null) {
+                    return Promise.pure(null)
+                }
+
                 return userIdLinkRepository.searchByUserPersonalInfoId(id).then { UserPersonalInfoIdToUserIdLink link ->
                     CryptoMessage cryptoMessage = new CryptoMessage(
                             value: encryptUserPersonalInfo.encryptUserPersonalInfo

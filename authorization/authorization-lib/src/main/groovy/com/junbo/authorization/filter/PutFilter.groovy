@@ -71,7 +71,7 @@ class PutFilter implements PropertyMappingFilter {
                     throw AuthErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
                 } else {
                     if (!alternativeSourcePropertyIsNull) {
-                        event.sourceProperty = event.sourcePropertyType.newInstance()
+                        event.sourceProperty = initInstance(event.sourcePropertyType)
                     }
                 }
             }
@@ -84,5 +84,15 @@ class PutFilter implements PropertyMappingFilter {
 
     @Override
     void endPropertyMapping(PropertyMappingEvent event, MappingContext context) {
+    }
+
+    private Object initInstance(Class cls) {
+        if (cls == Map.class) {
+            return new HashMap()
+        } else if (cls == List.class) {
+            return new ArrayList()
+        } else {
+            return cls.newInstance()
+        }
     }
 }
