@@ -71,7 +71,7 @@ class PatchFilter implements PropertyMappingFilter {
                     }
                 } else {
                     if (!alternativeSourcePropertyIsNull) {
-                        event.sourceProperty = event.sourcePropertyType.newInstance()
+                        event.sourceProperty = initInstance(event.sourcePropertyType)
                     }
                 }
             }
@@ -81,7 +81,7 @@ class PatchFilter implements PropertyMappingFilter {
                     throw AppErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
                 } else {
                     if (!alternativeSourcePropertyIsNull) {
-                        event.sourceProperty = event.sourcePropertyType.newInstance()
+                        event.sourceProperty = initInstance(event.sourcePropertyType)
                     }
                 }
             }
@@ -91,7 +91,7 @@ class PatchFilter implements PropertyMappingFilter {
                     event.alternativeSourceProperty = null
                 } else {
                     if (!alternativeSourcePropertyIsNull) {
-                        event.sourceProperty = event.sourcePropertyType.newInstance()
+                        event.sourceProperty = initInstance(event.sourcePropertyType)
                     }
                 }
             }
@@ -100,5 +100,15 @@ class PatchFilter implements PropertyMappingFilter {
 
     @Override
     void endPropertyMapping(PropertyMappingEvent event, MappingContext context) {
+    }
+
+    private Object initInstance(Class cls) {
+        if (cls == Map.class) {
+            return new HashMap()
+        } else if (cls == List.class) {
+            return new ArrayList()
+        } else {
+            return cls.newInstance()
+        }
     }
 }

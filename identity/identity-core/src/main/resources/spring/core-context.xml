@@ -570,6 +570,7 @@
                 <value>id</value>
                 <value>userId</value>
                 <value>groupId</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -580,6 +581,7 @@
             <list>
                 <value>userId</value>
                 <value>groupId</value>
+                <value>futureExpansion</value>
             </list>
         </property>
 
@@ -587,9 +589,8 @@
             <list>
                 <value>id</value>
                 <value>groupId</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
             </list>
         </property>
     </bean>
