@@ -67,7 +67,7 @@ class ActionTest {
             result.get()
             Assert.fail('test failure')
         }
-        catch (ExecutionException ex) {
+        catch (Exception ex) {
             assert (ex.cause)
         }
     }

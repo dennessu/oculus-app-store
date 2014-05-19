@@ -17,7 +17,7 @@ import java.util.concurrent.ExecutionException;
  * PromiseShellTest.
  */
 public class PromiseFacadeTest {
-    @Test(expectedExceptions = ExecutionException.class)
+    @Test(expectedExceptions = RuntimeException.class)
     public void testFailure() throws Exception {
         PromiseFacade.PAYMENT.decorate(new Callable<Long>() {
             public Long call() throws Exception {
