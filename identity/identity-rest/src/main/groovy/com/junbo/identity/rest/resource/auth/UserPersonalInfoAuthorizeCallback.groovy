@@ -24,7 +24,7 @@ class UserPersonalInfoAuthorizeCallback extends AbstractAuthorizeCallback<UserPe
 
     @Override
     String getApiName() {
-        return '/persona-info'
+        return 'personal-info'
     }
 
     @Override
