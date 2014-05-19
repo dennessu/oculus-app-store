@@ -995,6 +995,7 @@
                 <value>verifyCode</value>
                 <value>expiresBy</value>
                 <value>active</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -1007,6 +1008,7 @@
                 <value>verifyCode</value>
                 <value>expiresBy</value>
                 <value>active</value>
+                <value>futureExpansion</value>
             </list>
         </property>
 
@@ -1016,9 +1018,8 @@
                 <value>verifyCode</value>
                 <value>expiresBy</value>
                 <value>active</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
             </list>
         </property>
     </bean>
