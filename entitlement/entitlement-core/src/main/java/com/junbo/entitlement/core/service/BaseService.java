@@ -7,6 +7,8 @@
 package com.junbo.entitlement.core.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.junbo.catalog.spec.enums.EntitlementType;
+import com.junbo.catalog.spec.model.item.EntitlementDef;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.util.IdFormatter;
@@ -25,6 +27,7 @@ import org.springframework.util.StringUtils;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 /**
@@ -136,14 +139,18 @@ public class BaseService {
 
     private void validateConsumable(Entitlement entitlement) {
         ItemRevision item = getItem(entitlement.getItemId());
-        //TODO: check item's entitlementDef properties
-//        if (item != null && entitlement.getUseCount() == null) {
-//            throw AppErrors.INSTANCE.fieldNotCorrect("useCount",
-//                    "useCount should not be null when entitlementDefinition is consumable").exception();
-//        } else if (item != null && entitlement.getUseCount() != null) {  //TODO: check item's entitlementDef properties
-//            throw AppErrors.INSTANCE.fieldNotCorrect("useCount",
-//                    "useCount should be null when entitlementDefinition is not consumable").exception();
-//        }
+        EntitlementDef def = filter(item.getEntitlementDefs(), toType(entitlement.getType()));
+        if (def == null) {
+            throw AppErrors.INSTANCE.common("there is no entitlementDef with type [" +
+                    entitlement.getType() + "] in item [" + entitlement.getItemId() + "]").exception();
+        }
+        if (def.getConsumable() && entitlement.getUseCount() == null) {
+            throw AppErrors.INSTANCE.fieldNotCorrect("useCount",
+                    "useCount should not be null when entitlementDefinition is consumable").exception();
+        } else if (!def.getConsumable() && entitlement.getUseCount() != null) {
+            throw AppErrors.INSTANCE.fieldNotCorrect("useCount",
+                    "useCount should be null when entitlementDefinition is not consumable").exception();
+        }
     }
 
     private void validateEquals(Object actual, Object expected, String fieldName) {
@@ -232,5 +239,25 @@ public class BaseService {
 
     protected String formatId(Long id) {
         return IdFormatter.encodeId(new EntitlementId(id));
+    }
+
+    protected EntitlementDef filter(List<EntitlementDef> defs, EntitlementType type) {
+        if (defs == null) {
+            return null;
+        }
+        for (EntitlementDef def : defs) {
+            if (type == null) {
+                if (def.getType() == null) {
+                    return def;
+                }
+            } else if (type.equals(def.getType())) {
+                return def;
+            }
+        }
+        return null;
+    }
+
+    protected EntitlementType toType(String type) {
+        return type == null ? null : EntitlementType.valueOf(type.toUpperCase());
     }
 }

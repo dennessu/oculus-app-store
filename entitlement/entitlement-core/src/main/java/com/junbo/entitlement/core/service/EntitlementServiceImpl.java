@@ -6,6 +6,7 @@
 
 package com.junbo.entitlement.core.service;
 
+import com.junbo.catalog.spec.model.item.EntitlementDef;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.common.id.ItemId;
 import com.junbo.entitlement.common.lib.CloneUtils;
@@ -54,8 +55,8 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
     private Entitlement merge(Entitlement entitlement) {
         ItemRevision item = getItem(entitlement.getItemId());
-        //TODO: check item's entitlementDef properties
-        if (item != null) {
+        EntitlementDef def = filter(item.getEntitlementDefs(), toType(entitlement.getType()));
+        if (!def.getConsumable()) {
             return entitlementRepository.insert(entitlement);
         }
 

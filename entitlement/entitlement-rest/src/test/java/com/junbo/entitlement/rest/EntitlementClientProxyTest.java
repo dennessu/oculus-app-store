@@ -6,10 +6,7 @@
 package com.junbo.entitlement.rest;
 
 import com.junbo.catalog.spec.enums.Status;
-import com.junbo.catalog.spec.model.item.Binary;
-import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.catalog.spec.model.item.ItemRevision;
-import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
+import com.junbo.catalog.spec.model.item.*;
 import com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy;
 import com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxy;
 import com.junbo.common.error.AppErrorException;
@@ -30,10 +27,7 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -51,14 +45,14 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
     @Qualifier("oculus48IdGenerator")
     private IdGenerator idGenerator;
 
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void testCreate() throws ExecutionException, InterruptedException {
         Entitlement entitlement = buildAnEntitlement();
         entitlement = entitlementResourceClientProxy.postEntitlement(entitlement).get();
         Assert.assertNotNull(entitlement.getEntitlementId());
     }
 
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void testUpdate() throws ExecutionException, InterruptedException {
         Entitlement entitlement = entitlementResourceClientProxy.postEntitlement(buildAnEntitlement()).get();
         Date now = new Date();
@@ -67,7 +61,7 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
         Assert.assertTrue(Math.abs(entitlement.getExpirationTime().getTime() - now.getTime()) <= 1000);
     }
 
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void testDelete() throws ExecutionException, InterruptedException {
         Entitlement entitlement = entitlementResourceClientProxy.postEntitlement(buildAnEntitlement()).get();
         entitlementResourceClientProxy.deleteEntitlement(new EntitlementId(entitlement.getEntitlementId()));
@@ -78,7 +72,7 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
         }
     }
 
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void testTransfer() throws ExecutionException, InterruptedException {
         Long targetId = idGenerator.nextId();
         Entitlement entitlement = entitlementResourceClientProxy.postEntitlement(buildAnEntitlement()).get();
@@ -97,7 +91,7 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
         }
     }
 
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void testSearch() throws ExecutionException, InterruptedException {
         Long userId = idGenerator.nextId();
         Entitlement entitlement = buildAnEntitlement();
@@ -108,7 +102,8 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
         Results<Entitlement> result = entitlementResourceClientProxy.searchEntitlements(searchParam, new PageMetadata()).get();
         Assert.assertEquals(result.getItems().size(), 2);
         searchParam.setIsBanned(true);
-        result = entitlementResourceClientProxy.searchEntitlements(searchParam, new PageMetadata()).get();
+        searchParam.setIsActive(null);
+        result = entitlementResourceClientProxy.searchEntitlements(searchParam, new PageMetadata()).wrapped().get();
         Assert.assertEquals(result.getItems().size(), 0);
     }
 
@@ -121,14 +116,10 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
         item.setOwnerId(idGenerator.nextId());
         item.setGenres(new ArrayList<Long>());
         try {
-<<<<<<< HEAD
-            definition = entitlementDefinitionResourceClientProxy.postEntitlementDefinition(definition).get();
-=======
             item = itemResourceClientProxy.create(item).wrapped().get();
             ItemRevision revision = itemRevisionResourceClientProxy.createItemRevision(buildAnItemRevision(item)).wrapped().get();
             revision.setStatus(Status.APPROVED.name());
             itemRevisionResourceClientProxy.updateItemRevision(new ItemRevisionId(revision.getRevisionId()), revision).wrapped().get();
->>>>>>> update entitlement according to new design
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -155,6 +146,12 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
         locale.setName("name");
         locales.put("default", locale);
         itemRevision.setLocales(locales);
+
+        List<EntitlementDef> defs = new ArrayList<>();
+        EntitlementDef def = new EntitlementDef();
+        def.setConsumable(false);
+        defs.add(def);
+        itemRevision.setEntitlementDefs(defs);
 
         return itemRevision;
     }

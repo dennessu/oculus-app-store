@@ -139,7 +139,6 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
         entitlement.setItemId(idGenerator.nextId());
         final ItemRevision item = new ItemRevision();
         item.setItemId(entitlement.getItemId());
-        //TODO: set consumable properties
         PermanentCache.ITEM_REVISION.get(item.getItemId(), new Callable<Object>() {
             @Override
             public Object call() throws Exception {
