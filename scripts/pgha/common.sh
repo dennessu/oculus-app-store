@@ -2,10 +2,17 @@
 
 # set environment variables
 export USERNAME=ubuntu
+
+export DEPLOYMENT_ACCOUNT=postgres
 export DEPLOYMENT_PATH='/tmp/pgha'
+
 export DATA_PATH='/tmp/data'
 export BACKUP_PATH='/tmp/backup'
 export ARCHIVE_PATH='/tmp/archive'
+
+export PGBIN_PATH='/usr/lib/postgresql/9.3/bin'
+export PGLOCK_PATH='/run/postgresql'
+export PGUSER='postgres'
 
 export MASTER_HOST=54.254.246.13
 export MASTER_ADDRESS=$USERNAME@$MASTER_HOST
@@ -42,4 +49,12 @@ function forceKill {
     else
 	    echo "no process running with [$port] port..."
     fi
+}
+
+# check shell running account
+function checkAccount {
+	if [[ $(whoami) -ne $1 ]]; then
+   		echo "This script must be run as $1"
+   		exit 1
+	fi
 }

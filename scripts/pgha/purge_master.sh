@@ -1,6 +1,9 @@
 #!/bin/bash
 source common.sh
 
+#check running under 'postgres'
+checkAccount $DEPLOYMENT_ACCOUNT
+
 echo "kill postgres instance with port [$MASTER_DB_PORT]..."
 forceKill $MASTER_DB_PORT
 

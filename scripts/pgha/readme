@@ -1,0 +1,20 @@
+#upload all deployment scripts to remote master/slave servers
+upload_scripts.sh
+
+#pre validation
+	-after you install postgresql on ubuntu, it will start up a databas instance automatically, kill it
+	-make sure no db instance running with 5432 port
+	-make sure /run/postgresql is clean and can be written by 'postgres' account
+	-running all following scripts with 'postgres' account
+
+#prepare a clean environemnt
+purge_master.sh 
+purge_slave.sh
+
+#create and configure master database
+setup_maseter.sh
+
+#do master base backup
+base_backup.sh
+
+

@@ -17,6 +17,7 @@ import com.junbo.catalog.spec.resource.ItemResource;
 import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.catalog.spec.resource.OfferRevisionResource;
 import com.junbo.common.id.OfferRevisionId;
+import com.junbo.subscription.common.util.Constant;
 import org.testng.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -25,6 +26,7 @@ import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Catalog Gateway test.
@@ -79,6 +81,16 @@ public class CatalogGatewayTest extends AbstractTestNGSpringContextTests {
         Price price = new Price();
         price.setPriceType(PriceType.FREE.name());
         offerRevision.setPrice(price);
+
+        offerRevision.setEventActions(new HashMap<String, List<Action>>() {{
+            put(Constant.EVENT_PURCHASE, new ArrayList<Action>() {{
+                add(new Action() {{
+                    setType(Constant.ACTION_CHARGE);
+                   // setStoredValueAmount(new BigDecimal("123.45"));
+                   // setStoredValueCurrency("USD");
+                }});
+            }});
+        }});
 
         Long offerRevisionId = createOfferRevision(offerRevision);
         Assert.assertNotNull(offerRevisionId);
