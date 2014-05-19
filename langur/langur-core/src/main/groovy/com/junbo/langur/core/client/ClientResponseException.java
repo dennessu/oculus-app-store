@@ -8,6 +8,8 @@ package com.junbo.langur.core.client;
 
 import com.ning.http.client.Response;
 
+import java.io.IOException;
+
 /**
  * Java doc.
  */
@@ -34,8 +36,20 @@ public class ClientResponseException extends RuntimeException {
     }
 
     private static String generateMessage(String message, Response response) {
+        if (response == null) {
+            return message;
+        }
+
         // more detailed messages.
-        return message + " Response: " + response;
+        String responseText = "HTTP " + response.getStatusCode() + ' ' + response.getStatusText();
+
+        try {
+            responseText += ' ' + response.getResponseBody();
+        } catch(IOException ex) {
+            responseText += ' ' + response.toString();
+        }
+
+        return message + " Response: " + responseText;
     }
 
     public Response getResponse(){

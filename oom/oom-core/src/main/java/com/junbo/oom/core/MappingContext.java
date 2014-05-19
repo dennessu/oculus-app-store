@@ -156,6 +156,6 @@ public class MappingContext {
             return false;
         }
 
-        return readableProperties.hasItSelfMarked();
+        return writableProperties.hasItSelfMarked();
     }
 }

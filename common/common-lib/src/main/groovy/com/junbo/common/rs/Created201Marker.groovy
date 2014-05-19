@@ -6,6 +6,8 @@
 package com.junbo.common.rs
 
 import com.google.common.base.Function
+import com.junbo.common.id.Id
+import com.junbo.common.util.IdFormatter
 import groovy.transform.CompileStatic
 import org.glassfish.jersey.server.ContainerResponse
 import org.glassfish.jersey.server.internal.process.RespondingContext
@@ -39,7 +41,8 @@ class Created201Marker {
 
         // process response header
         if (requestContext != null && respondingContext != null) {
-            def location = requestContext.uriInfo.absolutePath.toString() + '/' + resourceId.toString()
+            def location = requestContext.uriInfo.absolutePath.toString() + '/' +
+                    ((resourceId instanceof Id) ? IdFormatter.encodeId((Id) resourceId) : resourceId.toString())
 
             respondingContext.push(
                     { ContainerResponse response ->

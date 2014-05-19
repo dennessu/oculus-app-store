@@ -6,6 +6,7 @@
 package com.junbo.authorization.filter
 
 import com.junbo.authorization.AuthorizeContext
+import com.junbo.authorization.AuthErrors
 import com.junbo.oom.core.BeanMarker
 import com.junbo.oom.core.MappingContext
 import com.junbo.oom.core.filter.PropertiesToIncludeFilter
@@ -43,11 +44,16 @@ abstract class AbstractResourceFilter<T> implements ResourceFilter<T> {
     }
 
     private Set<String> calculateReadableProperties() {
-        Set<String> result = []
+        Set<String> result = null
 
         for (String right : readableProperties.keySet()) {
             if (AuthorizeContext.hasRights(right)) {
                 List<String> properties = readableProperties.get(right)
+
+                if (result == null) {
+                    result = []
+                }
+
                 result.addAll(properties)
             }
         }
@@ -56,11 +62,16 @@ abstract class AbstractResourceFilter<T> implements ResourceFilter<T> {
     }
 
     private Set<String> calculateWritablePropertiesForCreate() {
-        Set<String> result = []
+        Set<String> result = null
 
         for (String right : writablePropertiesForCreate.keySet()) {
             if (AuthorizeContext.hasRights(right)) {
                 List<String> properties = writablePropertiesForCreate.get(right)
+
+                if (result == null) {
+                    result = []
+                }
+
                 result.addAll(properties)
             }
         }
@@ -69,11 +80,16 @@ abstract class AbstractResourceFilter<T> implements ResourceFilter<T> {
     }
 
     private Set<String> calculateWritablePropertiesForUpdate() {
-        Set<String> result = []
+        Set<String> result = null
 
         for (String right : writablePropertiesForUpdate.keySet()) {
             if (AuthorizeContext.hasRights(right)) {
                 List<String> properties = writablePropertiesForUpdate.get(right)
+
+                if (result == null) {
+                    result = []
+                }
+
                 result.addAll(properties)
             }
         }
@@ -88,8 +104,14 @@ abstract class AbstractResourceFilter<T> implements ResourceFilter<T> {
         }
 
         def context = new MappingContext()
-        context.writableProperties = new BeanMarker()
-        context.writableProperties.markProperties(calculateWritablePropertiesForCreate())
+
+        def writableProperties = calculateWritablePropertiesForCreate()
+        if (writableProperties != null) {
+            context.writableProperties = new BeanMarker()
+            context.writableProperties.markProperties(writableProperties)
+        } else {
+            throw AuthErrors.INSTANCE.itemNotWritable().exception()
+        }
 
         def createFilter = new CreateFilter()
         def writablePropertiesFilter = new WritablePropertiesFilter()
@@ -111,11 +133,20 @@ abstract class AbstractResourceFilter<T> implements ResourceFilter<T> {
         }
 
         def context = new MappingContext()
-        context.readableProperties = new BeanMarker()
-        context.readableProperties.markProperties(calculateReadableProperties())
 
-        context.writableProperties = new BeanMarker()
-        context.writableProperties.markProperties(calculateWritablePropertiesForUpdate())
+        def readableProperties = calculateReadableProperties()
+        if (readableProperties != null) {
+            context.readableProperties = new BeanMarker()
+            context.readableProperties.markProperties(readableProperties)
+        }
+
+        def writableProperties = calculateWritablePropertiesForUpdate()
+        if (writableProperties != null) {
+            context.writableProperties = new BeanMarker()
+            context.writableProperties.markProperties(writableProperties)
+        } else {
+            throw AuthErrors.INSTANCE.itemNotWritable().exception()
+        }
 
         def putFilter = new PutFilter()
         def readablePropertiesFilter = new ReadablePropertiesFilter()
@@ -139,11 +170,20 @@ abstract class AbstractResourceFilter<T> implements ResourceFilter<T> {
         }
 
         def context = new MappingContext()
-        context.readableProperties = new BeanMarker()
-        context.readableProperties.markProperties(calculateReadableProperties())
 
-        context.writableProperties = new BeanMarker()
-        context.writableProperties.markProperties(calculateWritablePropertiesForUpdate())
+        def readableProperties = calculateReadableProperties()
+        if (readableProperties != null) {
+            context.readableProperties = new BeanMarker()
+            context.readableProperties.markProperties(readableProperties)
+        }
+
+        def writableProperties = calculateWritablePropertiesForUpdate()
+        if (writableProperties != null) {
+            context.writableProperties = new BeanMarker()
+            context.writableProperties.markProperties(writableProperties)
+        } else {
+            throw AuthErrors.INSTANCE.itemNotWritable().exception()
+        }
 
         def patchFilter = new PatchFilter()
         def readablePropertiesFilter = new ReadablePropertiesFilter()
@@ -167,11 +207,13 @@ abstract class AbstractResourceFilter<T> implements ResourceFilter<T> {
         }
 
         def context = new MappingContext()
-        context.readableProperties = new BeanMarker()
-        context.readableProperties.markProperties(calculateReadableProperties())
 
-        if (!context.isItemReadable()) {
-            return null;
+        def readableProperties = calculateReadableProperties()
+        if (readableProperties != null) {
+            context.readableProperties = new BeanMarker()
+            context.readableProperties.markProperties(calculateReadableProperties())
+        } else {
+            return null
         }
 
         def readFilter = new ReadFilter()

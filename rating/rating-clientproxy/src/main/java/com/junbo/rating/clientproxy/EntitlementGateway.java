@@ -12,5 +12,5 @@ import java.util.Set;
  * Entitlement gateway interface.
  */
 public interface EntitlementGateway {
-    Set<Long> getEntitlements(Long userId, Set<Long> entitlementDefinitionIds);
+    Set<Long> getEntitlements(Long userId, Set<Long> itemIds);
 }

@@ -133,7 +133,7 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
         }
         PaymentInstrument pi = null;
         try{
-            pi = paymentInstrumentService.getById(request.getPaymentInstrumentId()).wrapped().get();
+            pi = paymentInstrumentService.getById(request.getPaymentInstrumentId()).get();
         }catch(Exception ex){
             throw AppServerExceptions.INSTANCE.invalidPI().exception();
         }

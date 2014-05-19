@@ -13,8 +13,11 @@ import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.common.Price;
 import com.junbo.entitlement.spec.model.Entitlement;
+import com.junbo.payment.spec.model.ChargeInfo;
+import com.junbo.payment.spec.model.PaymentTransaction;
 import com.junbo.subscription.clientproxy.CatalogGateway;
 import com.junbo.subscription.clientproxy.EntitlementGateway;
+import com.junbo.subscription.clientproxy.PaymentGateway;
 import com.junbo.subscription.common.exception.SubscriptionExceptions;
 import com.junbo.subscription.core.SubscriptionService;
 import com.junbo.subscription.db.entity.SubscriptionStatus;
@@ -25,6 +28,7 @@ import com.junbo.subscription.spec.model.SubscriptionEntitlement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -47,6 +51,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Autowired
     private EntitlementGateway entitlementGateway;
+
+    @Autowired
+    private PaymentGateway paymentGateway;
 
     @Override
     public Subscription getSubscription(Long subscriptionId) {
@@ -136,4 +143,27 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         subscriptionEntitlementRepository.insert(subscriptionEntitlement);
 
     }
+
+
+    private Subscription charge(Subscription subscription) {
+        PaymentTransaction paymentTransaction = new PaymentTransaction();
+
+        paymentTransaction.setTrackingUuid(UUID.randomUUID());
+        paymentTransaction.setUserId(subscription.getUserId());
+        paymentTransaction.setPaymentInstrumentId(subscription.getPaymentMethodId());
+        paymentTransaction.setBillingRefId(subscription.getSubscriptionId().toString());
+
+        ChargeInfo chargeInfo = new ChargeInfo();
+        chargeInfo.setCurrency("USD");
+        chargeInfo.setAmount(new BigDecimal(19.99));
+        chargeInfo.setCountry("US");
+        paymentTransaction.setChargeInfo(chargeInfo);
+
+        //LOGGER.info('name=Charge_Balance. balance currency: {}, amount: {}, pi id: {}',balance.currency, balance.totalAmount, balance.piId);
+        paymentTransaction = paymentGateway.chargePayment(paymentTransaction);
+
+        return subscription;
+
+    }
+
 }

@@ -10,6 +10,7 @@ import com.junbo.authorization.spec.model.RoleAssignment
 import com.junbo.authorization.spec.option.list.RoleAssignmentListOptions
 import com.junbo.authorization.spec.option.list.RoleListOptions
 import com.junbo.authorization.spec.option.model.RoleFilterType
+import com.junbo.common.id.GroupId
 import com.junbo.common.id.RoleId
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
@@ -20,6 +21,7 @@ import com.junbo.identity.spec.v1.model.UserGroup
 import com.junbo.identity.spec.v1.option.list.GroupListOptions
 import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
 import groovy.transform.CompileStatic
+import net.sf.ehcache.Element
 
 /**
  * AuthorizeCallback.
@@ -73,7 +75,7 @@ abstract class AbstractAuthorizeCallback<T> implements AuthorizeCallback<T> {
         throw new RuntimeException("Unable to get entityId from ${entity} with propertyPath ${propertyPath}")
     }
 
-    boolean ownedByCurrentUser() {
+    Boolean getOwnedByCurrentUser() {
         def currentUserId = AuthorizeContext.currentUserId
         if (currentUserId == null) {
             return false
@@ -86,7 +88,7 @@ abstract class AbstractAuthorizeCallback<T> implements AuthorizeCallback<T> {
         return false
     }
 
-    boolean ownedByCurrentClient() {
+    Boolean getOwnedByCurrentClient() {
         def currentClientId = AuthorizeContext.currentClientId
         if (currentClientId == null) {
             return false
@@ -99,40 +101,61 @@ abstract class AbstractAuthorizeCallback<T> implements AuthorizeCallback<T> {
         return false
     }
 
-    boolean inGroup(String groupName) {
+    Boolean inGroup(String groupName) {
         def currentUserId = AuthorizeContext.currentUserId
         if (currentUserId == null) {
             return false
         }
 
-        Results<Group> results = factory.groupResource.list(new GroupListOptions(
-                name: groupName
-        )).wrapped().get()
-
-        if (results.items.empty) {
-            return false;
-        }
-
-        Group group = results.items.get(0);
-
-        Results<UserGroup> userGroups = factory.userGroupMembershipResource.list(new UserGroupListOptions(
-                userId: currentUserId
-        )).wrapped().get();
-
-        def userGroup = userGroups.items.find { UserGroup item -> item.groupId == group.id }
-
-        if (userGroup == null) {
+        GroupId groupId = getGroupIdByName(groupName)
+        if (groupId == null) {
             return false
         }
 
-        return true
+        List<GroupId> groupIds = getGroupIdsByUserId(currentUserId)
+
+        return groupIds.contains(groupId)
     }
 
-    boolean hasRole(String roleName) {
+    private List<GroupId> getGroupIdsByUserId(UserId userId) {
+        Element cachedElement = factory.groupIdsByUserIdCache.get(userId)
+        if (cachedElement != null) {
+            return (List<GroupId>) cachedElement.objectValue
+        }
+
+        Results<UserGroup> userGroups = factory.userGroupMembershipResource.list(new UserGroupListOptions(
+                userId: userId
+        )).get();
+
+        List<GroupId> groupIds = userGroups.items.empty ?
+                (List<GroupId>) Collections.emptyList() :
+                userGroups.items.collect { UserGroup userGroup -> userGroup.groupId }
+
+        factory.groupIdsByUserIdCache.put(new Element(userId, groupIds))
+        return groupIds
+    }
+
+    private GroupId getGroupIdByName(String groupName) {
+        Element cachedElement = factory.groupIdByNameCache.get(groupName)
+        if (cachedElement != null) {
+            return (GroupId) cachedElement.objectValue
+        }
+
+        Results<Group> results = factory.groupResource.list(new GroupListOptions(
+                name: groupName
+        )).get()
+
+        GroupId groupId = results.items.empty ? (GroupId) null : (GroupId) results.items.get(0).id
+        factory.groupIdByNameCache.put(new Element(groupName, groupId))
+
+        return groupId
+    }
+
+    Boolean hasRole(String roleName) {
         return hasRole('self', roleName)
     }
 
-    boolean hasRole(String propertyPath, String roleName) {
+    Boolean hasRole(String propertyPath, String roleName) {
         if (propertyPath == null || propertyPath.empty) {
             throw new IllegalArgumentException('propertyPath is null or empty')
         }
@@ -160,7 +183,7 @@ abstract class AbstractAuthorizeCallback<T> implements AuthorizeCallback<T> {
                 targetType: targetType,
                 filterType: RoleFilterType.SINGLEINSTANCEFILTER,
                 filterLink: filterLink
-        )).wrapped().get()
+        )).get()
 
         if (roles.items.empty) {
             return false
@@ -170,7 +193,7 @@ abstract class AbstractAuthorizeCallback<T> implements AuthorizeCallback<T> {
 
         Results<UserGroup> userGroups = factory.userGroupMembershipResource.list(new UserGroupListOptions(
                 userId: currentUserId
-        )).wrapped().get();
+        )).get();
 
 
         def assignee = []
@@ -184,7 +207,7 @@ abstract class AbstractAuthorizeCallback<T> implements AuthorizeCallback<T> {
         Results<RoleAssignment> roleAssignments = factory.roleAssignmentResource.list(new RoleAssignmentListOptions(
                 roleId: (RoleId) role.id,
                 assignee: assignee.join(',')
-        )).wrapped().get()
+        )).get()
 
 
         if (roleAssignments.items.empty) {

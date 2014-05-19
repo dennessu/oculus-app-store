@@ -7,24 +7,35 @@
 package com.junbo.entitlement.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.junbo.entitlement.db.entity.def.MapJsonUserType;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Entitlement Entity.
  */
 @javax.persistence.Entity
 @Table(name = "entitlement")
+@TypeDefs(@TypeDef(name = "json-map", typeClass = MapJsonUserType.class))
 public class EntitlementEntity extends Entity {
     private Long entitlementId;
     private Long userId;
     private Boolean isBanned;
-    private Long entitlementDefinitionId;
+    private Long itemId;
     private Date grantTime;
     private Date expirationTime;
     private Integer useCount;
     private String type;
+    private Map<String, JsonNode> futureExpansion;
 
     @Id
     @Column(name = "entitlement_id")
@@ -45,13 +56,13 @@ public class EntitlementEntity extends Entity {
         this.userId = userId;
     }
 
-    @Column(name = "entitlement_definition_id")
-    public Long getEntitlementDefinitionId() {
-        return entitlementDefinitionId;
+    @Column(name = "item_id")
+    public Long getItemId() {
+        return itemId;
     }
 
-    public void setEntitlementDefinitionId(Long entitlementDefinitionId) {
-        this.entitlementDefinitionId = entitlementDefinitionId;
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
     }
 
     @Column(name = "grant_time")
@@ -97,6 +108,16 @@ public class EntitlementEntity extends Entity {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Column(name = "future_expansion")
+    @Type(type = "json-map")
+    public Map<String, JsonNode> getFutureExpansion() {
+        return futureExpansion;
+    }
+
+    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
+        this.futureExpansion = futureExpansion;
     }
 
     @JsonIgnore

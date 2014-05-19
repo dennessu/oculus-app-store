@@ -147,13 +147,21 @@ class UserValidatorImpl implements UserValidator {
 
     private Promise<Void> validateUserInfo(User user) {
         if (user.username != null) {
-            if (user.isAnonymous == true) {
-                throw AppErrors.INSTANCE.fieldInvalid('isAnonymous', false.toString()).exception()
+            if (user.isAnonymous == null) {
+                user.isAnonymous = false
+            }
+
+            if (user.isAnonymous) {
+                throw AppErrors.INSTANCE.fieldInvalid('isAnonymous', "false").exception()
             }
             usernameValidator.validateUsername(user.username)
         } else {
-            if (user.isAnonymous == false) {
-                throw AppErrors.INSTANCE.fieldInvalid('isAnonymous', true.toString()).exception()
+            if (user.isAnonymous == null) {
+                user.isAnonymous = true
+            }
+
+            if (!user.isAnonymous) {
+                throw AppErrors.INSTANCE.fieldInvalid('isAnonymous', "true").exception()
             }
         }
 
@@ -166,7 +174,7 @@ class UserValidatorImpl implements UserValidator {
         }
 
         if (user.isAnonymous == null) {
-            throw AppErrors.INSTANCE.fieldInvalid('isAnonymous').exception()
+            throw AppErrors.INSTANCE.fieldRequired('isAnonymous').exception()
         }
 
         if (user.status != null) {

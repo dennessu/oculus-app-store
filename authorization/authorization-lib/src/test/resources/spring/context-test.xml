@@ -24,17 +24,30 @@
 
     <bean id="authorizeService" class="com.junbo.authorization.AuthorizeServiceImpl">
         <property name="apiDefinitionEndpoint" ref="apiEndpoint"/>
-        <property name="tokenInfoParser" ref="tokenInfoParser"/>
         <property name="conditionEvaluators">
             <list>
                 <ref bean="conditionEvaluator"/>
             </list>
         </property>
-        <property name="useDummyRights" value="true"/>
+        <property name="apiDefinitionCache">
+            <bean factory-bean="authorizeCacheManager" factory-method="getCache">
+                <constructor-arg name="name" value="API_DEFINITION"/>
+            </bean>
+        </property>
+        <property name="disabled" value="true"/>
     </bean>
 
     <bean id="tokenInfoParser" class="com.junbo.authorization.TokenInfoParserImpl">
         <property name="tokenInfoEndpoint" ref="tokenInfoEndpoint"/>
-        <property name="useDummyTokenInfo" value="true"/>
+        <property name="allowTestAccessToken" value="true"/>
+        <property name="tokenInfoCache">
+            <bean factory-bean="authorizeCacheManager" factory-method="getCache">
+                <constructor-arg name="name" value="TOKEN_INFO"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="authorizeCacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+        <property name="configLocation" value="ehcache/authorizeCacheManager.xml"/>
     </bean>
 </beans>

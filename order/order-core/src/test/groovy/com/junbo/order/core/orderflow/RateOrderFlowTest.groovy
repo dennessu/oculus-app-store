@@ -39,14 +39,14 @@ class RateOrderFlowTest extends BaseTest{
 
         def context = executor.start(
                 'MOCK_RATE_ORDER',
-                requestScope).wrapped().get()
+                requestScope).get()
         // Check the order is same as the returned order
         def o = ActionUtils.getOrderActionContext(context).orderServiceContext.order
         assert (o != null)
         o.discounts?.each { Discount d ->
             d.ownerOrderItem = null
         }
-        def getOrder = orderService.getOrderByOrderId(o.id.value).wrapped().get()
+        def getOrder = orderService.getOrderByOrderId(o.id.value).get()
         assert (o.id.value == getOrder.id.value)
         assert (o.discounts.size() == getOrder.discounts.size())
         assert (o.orderItems.size() == getOrder.orderItems.size())

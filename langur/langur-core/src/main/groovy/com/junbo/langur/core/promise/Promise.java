@@ -11,6 +11,7 @@ import com.google.common.util.concurrent.*;
 import groovy.lang.Closure;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -69,8 +70,24 @@ public final class Promise<T> {
         this.future = future;
     }
 
-    public ListenableFuture<T> wrapped() {
+    // use get() instead.
+    private ListenableFuture<T> wrapped() {
         return future;
+    }
+
+    public T get() {
+        try {
+            return future.get();
+        } catch (ExecutionException ex) {
+            Throwable cause = ex.getCause();
+            if (cause instanceof RuntimeException) {
+                throw (RuntimeException) cause;
+            }
+
+            throw new RuntimeException(cause);
+        } catch (InterruptedException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     public static <T> Promise<T> pure(T t) {
@@ -284,7 +301,8 @@ public final class Promise<T> {
     // the sequence of the invocation is not guaranteed. Disable for now.
     @Deprecated
     public void onFailure(final Callback<Throwable> action) {
-        final Callback<Throwable> wrapped = Wrapper.wrap(action);;
+        final Callback<Throwable> wrapped = Wrapper.wrap(action);
+        ;
 
         Futures.addCallback(future, new FutureCallback<T>() {
             @Override

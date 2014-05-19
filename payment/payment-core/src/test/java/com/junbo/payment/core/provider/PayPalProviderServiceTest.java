@@ -52,20 +52,20 @@ public class PayPalProviderServiceTest extends BaseTest {
             }
         });
 
-        PaymentTransaction result = paymentService.charge(payment).wrapped().get();
+        PaymentTransaction result = paymentService.charge(payment).get();
         Assert.assertNotNull(result.getWebPaymentInfo().getToken());
         PaymentProperties properties = new PaymentProperties();
         properties.setExternalAccessToken(result.getWebPaymentInfo().getToken());
         properties.setExternalPayerId("CCZA9BJT9NKTS");
         //manual step: should go to the redirectRUL and save the PAYER_ID and token
         paymentCallbackService.addPaymentProperties(result.getId(), properties);
-        PaymentTransaction newStatus = paymentService.getUpdatedTransaction(result.getId()).wrapped().get();
+        PaymentTransaction newStatus = paymentService.getUpdatedTransaction(result.getId()).get();
         Assert.assertEquals(newStatus.getStatus(), PaymentStatus.UNCONFIRMED.toString());
         //manual step: should go to the redirectRUL and save the PAYER_ID and token
-        result = paymentService.confirm(result.getId(), payment).wrapped().get();
+        result = paymentService.confirm(result.getId(), payment).get();
         Assert.assertNotNull(result.getExternalToken());
         Assert.assertNotNull(result.getStatus(), PaymentStatus.SETTLED.toString());
-        newStatus = paymentService.getUpdatedTransaction(result.getId()).wrapped().get();
+        newStatus = paymentService.getUpdatedTransaction(result.getId()).get();
         Assert.assertEquals(newStatus.getStatus(), PaymentStatus.SETTLED.toString());
     }
 
@@ -98,24 +98,24 @@ public class PayPalProviderServiceTest extends BaseTest {
             }
         });
 
-        PaymentTransaction result = paymentService.charge(payment).wrapped().get();
+        PaymentTransaction result = paymentService.charge(payment).get();
         Assert.assertNotNull(result.getWebPaymentInfo().getToken());
         PaymentProperties properties = new PaymentProperties();
         properties.setExternalAccessToken(result.getWebPaymentInfo().getToken());
         properties.setExternalPayerId("CCZA9BJT9NKTS");
         //manual step: should go to the redirectRUL and save the PAYER_ID and token
         paymentCallbackService.addPaymentProperties(result.getId(), properties);
-        PaymentTransaction newStatus = paymentService.getUpdatedTransaction(result.getId()).wrapped().get();
+        PaymentTransaction newStatus = paymentService.getUpdatedTransaction(result.getId()).get();
         Assert.assertEquals(newStatus.getStatus(), PaymentStatus.UNCONFIRMED.toString());
         //manual step: should go to the redirectRUL and save the PAYER_ID and token
         payment.setTrackingUuid(generateUUID());
-        result = paymentService.confirm(result.getId(), payment).wrapped().get();
+        result = paymentService.confirm(result.getId(), payment).get();
         Assert.assertNotNull(result.getExternalToken());
         Assert.assertNotNull(result.getStatus(), PaymentStatus.SETTLED.toString());
-        newStatus = paymentService.getUpdatedTransaction(result.getId()).wrapped().get();
+        newStatus = paymentService.getUpdatedTransaction(result.getId()).get();
         Assert.assertEquals(newStatus.getStatus(), PaymentStatus.SETTLED.toString());
         payment.setTrackingUuid(generateUUID());
-        PaymentTransaction refundTrx = paymentService.refund(result.getId(), payment).wrapped().get();
+        PaymentTransaction refundTrx = paymentService.refund(result.getId(), payment).get();
         Assert.assertEquals(refundTrx.getStatus(), PaymentStatus.REFUNDED.toString());
     }
 

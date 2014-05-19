@@ -4,8 +4,10 @@ import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
 import com.junbo.order.clientproxy.model.OrderOfferItem
 import com.junbo.order.clientproxy.model.OrderOfferRevision
+import com.junbo.order.db.entity.enums.BillingAction
 import com.junbo.order.db.entity.enums.ItemType
 import com.junbo.order.db.entity.enums.OrderStatus
+import com.junbo.order.spec.model.BillingHistory
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
 import groovy.transform.CompileStatic
@@ -28,13 +30,17 @@ class CoreUtils {
             item.item.type == OFFER_ITEM_TYPE_PHYSICAL
         }
 
-        if (hasPhysical) { return ItemType.PHYSICAL }
+        if (hasPhysical) {
+            return ItemType.PHYSICAL
+        }
 
         Boolean hasStoredValue = offer.orderOfferItems?.any { OrderOfferItem item ->
             item.item.type == OFFER_ITEM_TYPE_STORED_VALUE
         }
 
-        if (hasStoredValue) { return ItemType.STORED_VALUE }
+        if (hasStoredValue) {
+            return ItemType.STORED_VALUE
+        }
 
         return ItemType.DIGITAL
     }
@@ -67,7 +73,7 @@ class CoreUtils {
         return false
     }
 
-    static Boolean isChargeCompleted (List<Balance> balances) {
+    static Boolean isChargeCompleted(List<Balance> balances) {
         if (CollectionUtils.isEmpty(balances)) {
             return false
         }
@@ -89,11 +95,52 @@ class CoreUtils {
         return false
     }
 
-    static Boolean checkOrderCancelable(Order order) {
+    static Boolean checkOrderStatusCancelable(Order order) {
 
         // TODO: check authorized
         if (order.status == OrderStatus.OPEN || order.status == OrderStatus.PREORDERED) {
             return true
+        }
+        return false
+    }
+
+    static BillingHistory getLatestBillingHistory(Order order) {
+        if (CollectionUtils.isEmpty(order.billingHistories)) {
+            return null
+        }
+
+        order.billingHistories.sort { BillingHistory bh ->
+            bh.createdTime
+        }.reverse(true)
+
+        return order.billingHistories[0]
+    }
+
+    static Boolean isValidBalance(Balance balance) {
+        if (balance.status == BalanceStatus.CANCELLED ||
+                balance.status == BalanceStatus.ERROR ||
+                balance.status == BalanceStatus.FAILED) {
+            return false
+        }
+        return true
+    }
+
+    static Boolean checkDepositOrderRefundable(Order order, List<Balance> balances) {
+
+        BillingHistory bh = getLatestBillingHistory(order)
+        if (bh.billingEvent != BillingAction.DEPOSIT) {
+            return false
+        }
+        // check there's only one deposit balance and the balance id is same with the billinghistory
+        List<Balance> validBalances = balances.findAll { Balance ba ->
+            ba.status == isValidBalance(ba)
+        }.toList()
+
+        if (validBalances != null && validBalances.size() == 1) {
+            def depositBalance = validBalances[0]
+            if (depositBalance.type == BalanceType.DEBIT && depositBalance.balanceId == bh.balanceId) {
+                return true
+            }
         }
         return false
     }

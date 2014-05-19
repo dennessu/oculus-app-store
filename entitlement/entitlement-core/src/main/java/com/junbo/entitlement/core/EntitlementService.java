@@ -30,13 +30,5 @@ public interface EntitlementService {
 
     Entitlement transferEntitlement(EntitlementTransfer entitlementTransfer);
 
-    Entitlement grantDeveloperEntitlement(Long userId);
-
-    Boolean isDeveloper(Long userId);
-
-    Boolean canDownload(Long userId, Long itemId);
-
-    Boolean canAccess(Long userId, Long itemId);
-
     Entitlement getByTrackingUuid(Long shardMasterId, UUID trackingUuid);
 }

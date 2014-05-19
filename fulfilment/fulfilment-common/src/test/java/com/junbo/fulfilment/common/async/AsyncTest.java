@@ -86,7 +86,7 @@ public class AsyncTest {
 
                 return Promise.pure(null);
             }
-        }).wrapped().get();
+        }).get();
     }
 
     @Test
@@ -125,7 +125,7 @@ public class AsyncTest {
 
                 return Promise.pure(null);
             }
-        }).wrapped().get();
+        }).get();
     }
 
     private void logThreadInfo() {

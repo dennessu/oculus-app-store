@@ -1,10 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="
-       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <bean id="commonAsyncHttpClient" class="com.ning.http.client.AsyncHttpClient" />
+    <context:component-scan base-package="com.junbo.common.rs"/>
+
+    <bean id="asyncHttpClientConfig" class="com.ning.http.client.AsyncHttpClientConfigBean">
+        <!-- TODO: a lot of things to configure here -->
+    </bean>
+
+    <bean id="grizzlyAsyncHttpProvider" class="com.ning.http.client.providers.grizzly.GrizzlyAsyncHttpProvider">
+        <constructor-arg ref="asyncHttpClientConfig"/>
+    </bean>
+
+    <bean id="commonAsyncHttpClient" class="com.ning.http.client.AsyncHttpClient">
+        <constructor-arg name="httpProvider" ref="grizzlyAsyncHttpProvider"/>
+        <constructor-arg name="config" ref="asyncHttpClientConfig"/>
+    </bean>
+
     <bean id="commonPathParamTranscoder" class="com.junbo.common.json.IdPathParamTranscoder"/>
     <bean id="commonQueryParamTranscoder" class="com.junbo.common.json.QueryParamTranscoderImpl"/>
     <bean id="commonTranscoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
@@ -25,4 +41,5 @@
     </bean>
 
     <bean id="cloudantDefaultMarshaller" class="com.junbo.common.cloudant.CloudantDefaultMarshaller" />
+
 </beans>

@@ -27,11 +27,11 @@ class BalanceServiceTest extends BaseTest {
     @Test
     void testManualCaptureBalance() {
         Balance balance = generateBalance(BalanceType.MANUAL_CAPTURE)
-        balance = balanceService.addBalance(balance)?.wrapped().get()
+        balance = balanceService.addBalance(balance)?.get()
 
         assert balance != null
 
-        Balance returnedBalance = balanceService.getBalance(balance.balanceId.value)?.wrapped().get()
+        Balance returnedBalance = balanceService.getBalance(balance.balanceId.value)?.get()
 
         assert returnedBalance != null
         assert returnedBalance.status == BalanceStatus.PENDING_CAPTURE.name()
@@ -47,11 +47,11 @@ class BalanceServiceTest extends BaseTest {
     @Test
     void testDebitBalance() {
         Balance balance = generateBalance(BalanceType.DEBIT)
-        balance = balanceService.addBalance(balance)?.wrapped().get()
+        balance = balanceService.addBalance(balance)?.get()
 
         assert balance != null
 
-        Balance returnedBalance = balanceService.getBalance(balance.balanceId.value)?.wrapped().get()
+        Balance returnedBalance = balanceService.getBalance(balance.balanceId.value)?.get()
 
         assert returnedBalance != null
         assert returnedBalance.status == BalanceStatus.AWAITING_PAYMENT.name()
@@ -66,17 +66,17 @@ class BalanceServiceTest extends BaseTest {
     @Test
     void testCaptureBalance() {
         Balance balance = generateBalance(BalanceType.MANUAL_CAPTURE)
-        balance = balanceService.addBalance(balance)?.wrapped().get()
+        balance = balanceService.addBalance(balance)?.get()
 
         assert balance != null
 
         Balance captureBalance = new Balance()
         captureBalance.balanceId = balance.balanceId
-        captureBalance = balanceService.captureBalance(captureBalance)?.wrapped().get()
+        captureBalance = balanceService.captureBalance(captureBalance)?.get()
 
         assert captureBalance != null
 
-        Balance returnedBalance = balanceService.getBalance(balance.balanceId.value)?.wrapped().get()
+        Balance returnedBalance = balanceService.getBalance(balance.balanceId.value)?.get()
 
         assert returnedBalance != null
         assert returnedBalance.status == BalanceStatus.AWAITING_PAYMENT.name()
