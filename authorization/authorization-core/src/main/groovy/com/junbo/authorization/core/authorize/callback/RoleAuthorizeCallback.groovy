@@ -34,7 +34,7 @@ class RoleAuthorizeCallback extends AbstractAuthorizeCallback<Role> {
         Role entity = getEntity()
 
         if (entity != null && entity.target != null && entity.target.filterLink != null) {
-            Id filterLinkId = IdUtil.fromHref(entity.target.filterLink.href)
+            Id filterLinkId = IdUtil.fromLink(entity.target.filterLink)
 
             if (filterLinkId instanceof UserId) {
                 return filterLinkId as UserId == currentUserId

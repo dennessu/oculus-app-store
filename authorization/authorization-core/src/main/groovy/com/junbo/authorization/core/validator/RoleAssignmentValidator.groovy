@@ -15,7 +15,7 @@ interface RoleAssignmentValidator {
 
     Promise<Void> validateForGet(RoleAssignmentId roleAssignmentId)
 
-    Promise<Void> validateForUpdate(RoleAssignment roleAssignment, RoleAssignment oldRoleAssignment)
+    Promise<Void> validateForDelete(RoleAssignment roleAssignment)
 
     Promise<Void> validateForList(RoleAssignmentListOptions options)
 }
