@@ -54,8 +54,8 @@ public interface WalletResource {
     Promise<Transaction> debit(@PathParam("walletId") WalletId walletId, DebitRequest debitRequest);
 
     @POST
-    @Path("{walletId}/refund")
-    Promise<Transaction> refund(@PathParam("walletId") WalletId walletId, RefundRequest refundRequest);
+    @Path("/refund/{transactionId}")
+    Promise<Transaction> refund(@PathParam("transactionId") Long transactionId, RefundRequest refundRequest);
 
     //    @ApiOperation("Get transactions of a wallet")
     @GET

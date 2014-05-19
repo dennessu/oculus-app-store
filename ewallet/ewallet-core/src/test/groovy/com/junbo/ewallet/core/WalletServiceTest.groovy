@@ -90,11 +90,11 @@ class WalletServiceTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(wallet.balance, new BigDecimal(5))
 
         RefundRequest refundRequest = buildARefundRequest(transaction.transactionId)
-        walletService.refund(wallet.walletId, refundRequest)
+        walletService.refund(transaction.transactionId, refundRequest)
         wallet = walletService.get(wallet.walletId)
         Assert.assertEquals(wallet.balance, new BigDecimal(7))
 
-        walletService.refund(wallet.walletId, refundRequest)
+        walletService.refund(transaction.transactionId, refundRequest)
         wallet = walletService.get(wallet.walletId)
         Assert.assertEquals(wallet.balance, new BigDecimal(9))
     }
@@ -158,8 +158,8 @@ class WalletServiceTest extends AbstractTestNGSpringContextTests {
 
     private RefundRequest buildARefundRequest(Long transactionId) {
         RefundRequest request = new RefundRequest()
-        request.setTransactionId(transactionId)
         request.setAmount(new BigDecimal(2))
+        request.setCurrency("USD")
         return request
     }
 }
