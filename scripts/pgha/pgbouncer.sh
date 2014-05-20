@@ -1,9 +1,12 @@
 #!/bin/bash
 source common.sh
 
+#check running under specified account
+checkAccount $DEPLOYMENT_ACCOUNT
+
 TARGET_DB_HOST=$1
 TARGET_DB_PORT=$2
-PROXY_DB_HOST=$3
+PROXY_DB_HOST=localhost
 PROXY_DB_PORT=$4
 
 echo "create pgbouncer home"
@@ -35,11 +38,15 @@ default_pool_size = $PGBOUNCER_DEFAULT_POOL_SIZE
 ignore_startup_parameters = extra_float_digits
 EOF
 
-echo "kill pgbouncer process with port [$PROXY_DB_HOST]..."
-forceKill $PROXY_DB_HOST
+echo "kill pgbouncer process with port [$PROXY_DB_PORT]..."
+forceKill $PROXY_DB_PORT
+
+echo "remove pgbouncer socket and pid files"
+rm -f $PGBOUNCER_SOCKET_PATH/.s.PGSQL.$PROXY_DB_PORT
+rm -f $PGBOUNCER_PID
 
 echo "start pgbouncer..."
 $PGBOUNCER_BIN/pgbouncer -d -v $PGBOUNCER_CONF
 
-while ! echo exit | nc $PROXY_DB_HOST $PROXY_DB_HOST; do sleep 1 && echo "waiting for pgbouncer proxy..."; done
+while ! echo exit | nc $PROXY_DB_HOST $PROXY_DB_PORT; do sleep 1 && echo "waiting for pgbouncer proxy..."; done
 echo "pgbouncer proxy started successfully!"

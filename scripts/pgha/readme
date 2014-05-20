@@ -4,8 +4,13 @@ sudo apt-get install postgresql-9.3
 
 #add path
 sudo rm /usr/bin/psql
+sudo rm /usr/bin/dropdb
+sudo rm /usr/bin/createdb
+
 sudo ln -s /usr/lib/postgresql/9.3/bin/psql /usr/bin/psql
 sudo ln -s /usr/lib/postgresql/9.3/bin/pg_ctl /usr/bin/pg_ctl
+sudo ln -s /usr/lib/postgresql/9.3/bin/createdb /usr/bin/createdb
+sudo ln -s /usr/lib/postgresql/9.3/bin/dropdb /usr/bin/dropdb
 
 #clean up existing db instance
 sudo kill $(fuser -n tcp 5432 2> /dev/null)
