@@ -146,9 +146,7 @@
     <bean id="encryptUserPersonalInfocloudantClient" class="com.junbo.common.cloudant.CloudantClient" abstract="true">
         <property name="asyncHttpClient" ref="commonAsyncHttpClient" />
         <property name="cloudantDBUri" value="${encrypt.user.personalinfo.cloudant.url}" />
-        <property name="marshaller">
-            <bean class="com.junbo.common.cloudant.CloudantDefaultMarshaller" />
-        </property>
+        <property name="marshaller" ref="cloudantDefaultMarshaller" />
     </bean>
 
     <bean id="cloudantEncryptUserPersonalInfoRepository" class="com.junbo.identity.data.repository.impl.cloudant.EncryptUserPersonalInfoRepositoryImpl" parent="encryptUserPersonalInfocloudantClient">

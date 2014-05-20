@@ -353,32 +353,14 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
     }
 
     protected String marshall(Object obj) {
-        if (obj == null || obj instanceof CloudantModel) {
-            return CloudantModelMarshaller.marshall((CloudantModel)obj)
-        } else if (obj instanceof CloudantEntity) {
-            return marshaller.marshall((CloudantEntity)obj)
-        } else {
-            throw new CloudantException("Unknown class to marshall: $obj")
-        }
+        return marshaller.marshall(obj)
     }
 
     protected <T> T unmarshall(String str, Class<T> cls) {
-        if (CloudantEntity.isAssignableFrom(cls)) {
-            return marshaller.unmarshall(str, cls)
-        } else if (CloudantModel.isAssignableFrom(cls)) {
-            return CloudantModelMarshaller.unmarshall(str, cls)
-        } else {
-            throw new CloudantException("Unknown class to unmarshall: $cls")
-        }
+        return marshaller.unmarshall(str, cls)
     }
 
     protected <T> T unmarshall(String str, Class<T> cls, Class<?> parameterClass) {
-        if (CloudantEntity.isAssignableFrom(cls)) {
-            return marshaller.unmarshall(str, cls, parameterClass)
-        } else if (CloudantModel.isAssignableFrom(cls)) {
-            return CloudantModelMarshaller.unmarshall(str, cls, parameterClass)
-        } else {
-            throw new CloudantException("Unknown class to unmarshall: $cls")
-        }
+        return marshaller.unmarshall(str, cls, parameterClass)
     }
 }

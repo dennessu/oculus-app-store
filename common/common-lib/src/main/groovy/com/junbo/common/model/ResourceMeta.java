@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.junbo.common.cloudant.CloudantEntity;
+import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
+import com.junbo.common.cloudant.json.annotations.CloudantProperty;
 import com.junbo.common.jackson.annotation.UserId;
 import com.junbo.common.jackson.deserializer.IntFromStringDeserializer;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -40,6 +42,7 @@ public abstract class ResourceMeta implements CloudantEntity {
 
     @ApiModelProperty(position = 1003, required = false,
             value = "[Client Immutable] The created datetime of the resource.")
+    @CloudantIgnore
     private AdminInfo adminInfo;
 
     @JsonIgnore
@@ -57,9 +60,11 @@ public abstract class ResourceMeta implements CloudantEntity {
     private String updatedByClient;
 
     @JsonIgnore
+    @CloudantProperty("_id")
     private String cloudantId;
 
     @JsonIgnore
+    @CloudantProperty("_rev")
     private String cloudantRev;
 
     public Integer getResourceAge() {

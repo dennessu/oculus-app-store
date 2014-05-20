@@ -1,15 +1,15 @@
 package com.junbo.common.cloudant.model
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.junbo.common.cloudant.json.annotations.CloudantProperty
 import groovy.transform.CompileStatic
 
 /**
  * CloudantResponse.
  */
 @CompileStatic
-class CloudantResponse implements CloudantModel {
+class CloudantResponse {
     Boolean ok
     String id
-    @JsonProperty('rev')
+    @CloudantProperty('rev')
     String revision
 }

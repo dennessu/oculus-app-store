@@ -1,40 +1,42 @@
 package com.junbo.common.cloudant
-import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JavaType
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.util.ISO8601DateFormat
-import com.junbo.common.cloudant.model.CloudantModel
+import com.junbo.common.cloudant.json.CloudantObjectMapper
 import groovy.transform.CompileStatic
 
 /**
  * Json Marshaller implementation.
- * Used internally for marshalling com.junbo.common.cloudant.model.*
+ * Used internally for entity persistence and other.
  */
 @CompileStatic
-class CloudantModelMarshaller {
-    private CloudantModelMarshaller() { }
+class CloudantMarshaller {
+    private static CloudantMarshaller instance = new CloudantMarshaller(CloudantObjectMapper.instance())
 
-    private static ObjectMapper objectMapper
+    static CloudantMarshaller instance() {
+        return instance
+    }
+
+    static void setInstance(CloudantMarshaller instance) {
+        CloudantMarshaller.instance = instance
+    }
+
+    private CloudantMarshaller(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper
+    }
 
     /**
-     * Initialize the objectMapper here.
+     * static Fastxml jackson ObjectMapper used for marshall and unmarshall.
      */
-    static {
-        // Intentionally not using ObjectMapperProvider to get the raw serialization result
-        objectMapper = new ObjectMapper()
-        objectMapper.setDateFormat(new ISO8601DateFormat());
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-    }
+    private ObjectMapper objectMapper;
 
     /**
      * Method to marshall an object into a json string.
      * @param object The object to be marshaled.
      * @return The json string of the input object.
      */
-    static String marshall(CloudantModel object) throws JsonProcessingException {
+    @Override
+    String marshall(Object object) throws JsonProcessingException {
         return objectMapper.writeValueAsString(object)
     }
 
@@ -44,7 +46,8 @@ class CloudantModelMarshaller {
      * @param clazz The target class of the unmarshalled object.
      * @return The unmashalled Object of the given class.
      */
-    static <T extends CloudantModel> T unmarshall(String string, Class<T> clazz) throws IOException {
+    @Override
+    <T> T unmarshall(String string, Class<T> clazz) throws IOException {
         return objectMapper.readValue(string, clazz)
     }
 
@@ -55,7 +58,8 @@ class CloudantModelMarshaller {
      * @param parameterClass The generic class generic part.
      * @return The unmashalled Object of the given generic class.
      */
-    static <T extends CloudantModel> T unmarshall(String string, Class<?> parametrized, Class<?> parameterClass) throws IOException {
+    @Override
+    <T> T unmarshall(String string, Class<?> parametrized, Class<?> parameterClass) throws IOException {
         // Construct the JavaType with the given parametrized class and generic type.
         JavaType javaType = objectMapper.typeFactory.constructParametricType(parametrized, parameterClass)
         return objectMapper.readValue(string, javaType)

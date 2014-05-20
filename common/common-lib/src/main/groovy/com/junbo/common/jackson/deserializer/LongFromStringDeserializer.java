@@ -12,16 +12,16 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import java.io.IOException;
 
 /**
- * IntFromStringDeserializer.
+ * LongFromStringDeserializer.
  */
-public class IntFromStringDeserializer extends JsonDeserializer<Integer> {
+public class LongFromStringDeserializer extends JsonDeserializer<Long> {
 
     @Override
-    public Integer deserialize(JsonParser jsonParser, DeserializationContext context) throws IOException {
+    public Long deserialize(JsonParser jsonParser, DeserializationContext context) throws IOException {
         String value = jsonParser.getValueAsString();
         if (value == null || value.length() == 0) {
             return null;
         }
-        return Integer.parseInt(jsonParser.getValueAsString());
+        return Long.parseLong(jsonParser.getValueAsString());
     }
 }
