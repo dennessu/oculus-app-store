@@ -15,10 +15,9 @@ class IdentityFacadeTest extends BaseTest {
     @Resource(name = 'mockIdentityFacade')
     private IdentityFacade identityFacade
 
-    @Test(enabled = false)
-    void testGetUser() {
-        def user = identityFacade.getUser(123L).get()
-        assert user != null
-        assert user.status == 'ACTIVE'
+    @Test
+    void testGetUserEmail() {
+        def userEmail = identityFacade.getUserEmail(123L).wrapped().get()
+        assert userEmail != null
     }
 }

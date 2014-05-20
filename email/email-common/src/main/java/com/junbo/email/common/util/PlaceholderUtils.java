@@ -61,10 +61,10 @@ public class PlaceholderUtils {
     }
 
     public static boolean compare(List<String> subList, List<String> supList) {
-        if(subList == null) {
+        if(subList == null || subList.size() == 0) {
             return true;
         }
-        if(supList == null) {
+        if(supList == null || supList.size() == 0) {
             return false;
         }
         List<String> list1 = new ArrayList<>();

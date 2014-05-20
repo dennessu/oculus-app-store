@@ -10,7 +10,6 @@ import com.junbo.email.spec.error.AppErrors
 import com.junbo.email.spec.model.Email
 import com.junbo.email.spec.model.EmailTemplate
 import com.junbo.email.spec.model.Model
-import com.junbo.identity.spec.v1.model.User
 import groovy.transform.CompileStatic
 import org.springframework.util.StringUtils
 
@@ -32,15 +31,6 @@ abstract class CommonValidator {
 
     void setEmailPattern(String emailPattern) {
         this.emailPattern = Pattern.compile(emailPattern)
-    }
-
-    protected void validateUser(User user) {
-        if (user == null) {
-            throw AppErrors.INSTANCE.invalidUserId('').exception()
-        }
-        if (user.status != 'ACTIVE') {
-            throw AppErrors.INSTANCE.invalidUserStatus('').exception()
-        }
     }
 
     protected void validateScheduleTime(Email email, boolean required) {
@@ -74,15 +64,18 @@ abstract class CommonValidator {
         if (template == null) {
             throw AppErrors.INSTANCE.templateNotFound().exception()
         }
-        if (template.placeholderNames != null && email.replacements == null) {
-            throw AppErrors.INSTANCE.invalidProperty('replacements').exception()
+        if (template.placeholderNames?.any() && !email.replacements?.any()) {
+            throw AppErrors.INSTANCE.invalidReplacements('replacements').exception()
         }
-        if (template.placeholderNames != null) {
+        if (!template.placeholderNames?.any() && email.replacements?.any()) {
+            throw AppErrors.INSTANCE.invalidReplacements('replacements').exception()
+        }
+        if (template.placeholderNames?.any()) {
             List<String> placeholderNames = template.placeholderNames.collect { String placeholderName ->
                 placeholderName.toLowerCase() }
             for (String key : email.replacements.keySet()) {
                 if (!placeholderNames.contains(key.replaceAll('\\d*(:\\w*)?$', '').toLowerCase())) {
-                    throw AppErrors.INSTANCE.invalidProperty(key).exception()
+                    throw AppErrors.INSTANCE.invalidReplacements(key).exception()
                 }
             }
         }
