@@ -19,6 +19,7 @@
         <property name="topology" ref="routingTopologyBase" />
         <property name="crossDcRoutingEnabled" value="${common.routing.crossDcRoutingEnabled}" />
         <property name="inDcRoutingEnabled" value="${common.routing.inDcRoutingEnabled}" />
+        <property name="defaultPolicy" value="${common.routing.defaultPolicy}" />
     </bean>
 
     <bean id="routingTopologyBase" class="com.junbo.configuration.topo.Topology">
