@@ -77,18 +77,6 @@
         <property name="sqlRepositoryImpl" ref="sqlUserTosRepository" />
     </bean>
 
-    <bean id="roleAssignmentRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.RoleAssignmentRepository"/>
-        <property name="cloudantRepositoryImpl" ref="cloudantRoleAssignmentRepository" />
-        <property name="sqlRepositoryImpl" ref="sqlRoleAssignmentRepository" />
-    </bean>
-
-    <bean id="roleRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.RoleRepository"/>
-        <property name="cloudantRepositoryImpl" ref="cloudantRoleRepository" />
-        <property name="sqlRepositoryImpl" ref="sqlRoleRepository" />
-    </bean>
-
     <bean id="tosRepository" parent="baseRepository">
         <property name="repositoryInterface" value="com.junbo.identity.data.repository.TosRepository"/>
         <property name="cloudantRepositoryImpl" ref="cloudantTosRepository" />

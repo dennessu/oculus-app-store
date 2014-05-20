@@ -64,12 +64,6 @@ public interface SelfMapper {
     Device filterDevice(Device device, MappingContext context);
     Device mergeDevice(Device source, Device base, MappingContext context);
 
-    Role filterRole(Role role, MappingContext context);
-    Role mergeRole(Role source, Role base, MappingContext context);
-
-    RoleAssignment filterRoleAssignment(RoleAssignment roleAssignment, MappingContext context);
-    RoleAssignment mergeRoleAssignment(RoleAssignment source, RoleAssignment base, MappingContext context);
-
     Tos filterTos(Tos tos, MappingContext context);
     Tos mergeTos(Tos source, Tos base, MappingContext context);
 
