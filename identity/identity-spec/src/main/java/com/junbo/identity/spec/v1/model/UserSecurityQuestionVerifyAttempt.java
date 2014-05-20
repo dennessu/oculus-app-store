@@ -11,7 +11,7 @@ import com.junbo.common.id.ClientId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserSecurityQuestionId;
 import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId;
-import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * Created by liangfu on 4/3/14.
  */
-public class UserSecurityQuestionVerifyAttempt extends ResourceMeta
+public class UserSecurityQuestionVerifyAttempt extends PropertyAssignedAwareResourceMeta
         implements Identifiable<UserSecurityQuestionVerifyAttemptId> {
 
     @ApiModelProperty(position = 1, required = true,

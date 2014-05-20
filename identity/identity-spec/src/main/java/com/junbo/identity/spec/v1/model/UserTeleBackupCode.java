@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserTeleBackupCodeId;
-import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * Created by liangfu on 4/22/14.
  */
-public class UserTeleBackupCode extends ResourceMeta implements Identifiable<UserTeleBackupCodeId> {
+public class UserTeleBackupCode extends PropertyAssignedAwareResourceMeta implements Identifiable<UserTeleBackupCodeId> {
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The id of UserTeleCode resource.")
     @JsonProperty("self")
     private UserTeleBackupCodeId id;

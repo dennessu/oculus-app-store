@@ -11,7 +11,7 @@ import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.enumid.RatingBoardId;
-import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * Created by xiali_000 on 4/21/2014.
  */
-public class Country extends ResourceMeta implements Identifiable<CountryId> {
+public class Country extends PropertyAssignedAwareResourceMeta implements Identifiable<CountryId> {
 
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The id of the country resource.")
     @JsonProperty("self")

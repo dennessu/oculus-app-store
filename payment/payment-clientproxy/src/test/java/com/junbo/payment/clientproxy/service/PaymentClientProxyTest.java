@@ -220,7 +220,7 @@ public class PaymentClientProxyTest extends BaseTest {
     }
 
     @Test(enabled = false)
-    public void settleRefund() throws ExecutionException, InterruptedException {
+    public void settleRefundCreditCard() throws ExecutionException, InterruptedException {
         //manual step needed: find a settled/settling transaction from BrainTree, and update a transaction in local
         // DB with external_token equals to the BT's transaction's ID
         Long trasnactionId = 402849792L;
@@ -259,6 +259,56 @@ public class PaymentClientProxyTest extends BaseTest {
             exception = true;
         }
         Assert.assertTrue(exception);
+    }
+
+    @Test(enabled = false)
+    public void settleRefundSV() throws ExecutionException, InterruptedException {
+        PaymentInstrument pi = getPaymentInstrument();
+        final UserId userId = new UserId(pi.getUserId());
+        pi.setType(PIType.STOREDVALUE.getId());
+        pi.getTypeSpecificDetails().setStoredValueCurrency("usd");
+        final PaymentInstrument result = piClient.postPaymentInstrument(pi).get();
+        Assert.assertNotNull(result.getId());
+        //credit balance
+        CreditRequest cr = new CreditRequest();
+        cr.setUserId(userId.getValue());
+        BigDecimal amount = new BigDecimal("1000.00");
+        cr.setAmount(amount);
+        cr.setCurrency("usd");
+        walletClient.credit(cr).get();
+        PaymentInstrument getResult =  piClient.getById(new PaymentInstrumentId(result.getId())).get();
+        Assert.assertTrue(getResult.getTypeSpecificDetails().getStoredValueBalance().equals(amount));
+        PaymentTransaction trx = new PaymentTransaction(){
+            {
+                setTrackingUuid(generateUUID());
+                setUserId(userId.getValue());
+                setPaymentInstrumentId(result.getId());
+                setBillingRefId(BILLING_REF_ID);
+                setChargeInfo(new ChargeInfo(){
+                    {
+                        setCurrency("USD");
+                        setAmount(new BigDecimal("15.00"));
+                    }
+                });
+            }
+        };
+        PaymentTransaction paymentResult = paymentClient.postPaymentCharge(trx).get();
+        Assert.assertEquals(paymentResult.getStatus().toUpperCase(), PaymentStatus.SETTLED.toString());
+        //get Balance again
+        PaymentInstrument getResult2 =  piClient.getById(new PaymentInstrumentId(result.getId())).get();
+        Assert.assertTrue(getResult2.getTypeSpecificDetails().getStoredValueBalance().equals(new BigDecimal("985.00")));
+        //Credit Balance and get again
+        trx.getChargeInfo().setAmount(new BigDecimal("1000.00"));
+        PaymentTransaction creditResult = paymentClient.postPaymentCredit(trx).get();
+        Assert.assertEquals(creditResult.getStatus().toUpperCase(), PaymentStatus.SETTLED.toString());
+        PaymentInstrument getResult3 =  piClient.getById(new PaymentInstrumentId(result.getId())).get();
+        Assert.assertTrue(getResult3.getTypeSpecificDetails().getStoredValueBalance().equals(new BigDecimal("1985.00")));
+        trx.getChargeInfo().setAmount(new BigDecimal("15.00"));
+        trx.setTrackingUuid(generateUUID());
+        PaymentTransaction refundResult = paymentClient.refundPayment(new PaymentId(paymentResult.getId()), trx).get();
+        Assert.assertEquals(refundResult.getStatus().toUpperCase(), PaymentStatus.REFUNDED.toString());
+        PaymentInstrument getResult4 =  piClient.getById(new PaymentInstrumentId(result.getId())).get();
+        Assert.assertTrue(getResult4.getTypeSpecificDetails().getStoredValueBalance().equals(new BigDecimal("2000.00")));
     }
 
     @Test(enabled = false)

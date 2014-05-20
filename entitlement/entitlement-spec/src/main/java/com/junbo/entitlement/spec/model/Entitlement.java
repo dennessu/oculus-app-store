@@ -69,8 +69,6 @@ public class Entitlement extends ResourceMeta implements Identifiable<com.junbo.
 
     public void setEntitlementId(Long entitlementId) {
         this.entitlementId = entitlementId;
-        support.setPropertyAssigned("self");
-        support.setPropertyAssigned("entitlementId");
     }
 
     public Long getUserId() {
@@ -79,8 +77,6 @@ public class Entitlement extends ResourceMeta implements Identifiable<com.junbo.
 
     public void setUserId(Long userId) {
         this.userId = userId;
-        support.setPropertyAssigned("user");
-        support.setPropertyAssigned("userId");
     }
 
     public Date getGrantTime() {
@@ -89,7 +85,6 @@ public class Entitlement extends ResourceMeta implements Identifiable<com.junbo.
 
     public void setGrantTime(Date grantTime) {
         this.grantTime = grantTime;
-        support.setPropertyAssigned("grantTime");
     }
 
     public Date getExpirationTime() {
@@ -98,7 +93,6 @@ public class Entitlement extends ResourceMeta implements Identifiable<com.junbo.
 
     public void setExpirationTime(Date expirationTime) {
         this.expirationTime = expirationTime;
-        support.setPropertyAssigned("expirationTime");
     }
 
     public Integer getUseCount() {
@@ -107,7 +101,6 @@ public class Entitlement extends ResourceMeta implements Identifiable<com.junbo.
 
     public void setUseCount(Integer useCount) {
         this.useCount = useCount;
-        support.setPropertyAssigned("useCount");
     }
 
     public Boolean getIsActive() {
@@ -116,7 +109,6 @@ public class Entitlement extends ResourceMeta implements Identifiable<com.junbo.
 
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
-        support.setPropertyAssigned("isActive");
     }
 
     public Boolean getIsBanned() {
@@ -125,8 +117,6 @@ public class Entitlement extends ResourceMeta implements Identifiable<com.junbo.
 
     public void setIsBanned(Boolean isBanned) {
         this.isBanned = isBanned;
-        support.setPropertyAssigned("isSuspended");
-        support.setPropertyAssigned("isBanned");
     }
 
     public UUID getTrackingUuid() {
@@ -143,8 +133,6 @@ public class Entitlement extends ResourceMeta implements Identifiable<com.junbo.
 
     public void setType(String type) {
         this.type = type;
-        support.setPropertyAssigned("entitlementType");
-        support.setPropertyAssigned("type");
     }
 
     public Long getItemId() {
@@ -153,8 +141,6 @@ public class Entitlement extends ResourceMeta implements Identifiable<com.junbo.
 
     public void setItemId(Long itemId) {
         this.itemId = itemId;
-        support.setPropertyAssigned("item");
-        support.setPropertyAssigned("itemId");
     }
 
     public Map<String, JsonNode> getFutureExpansion() {
@@ -163,7 +149,6 @@ public class Entitlement extends ResourceMeta implements Identifiable<com.junbo.
 
     public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
         this.futureExpansion = futureExpansion;
-        support.setPropertyAssigned("futureExpansion");
     }
 
     @Override

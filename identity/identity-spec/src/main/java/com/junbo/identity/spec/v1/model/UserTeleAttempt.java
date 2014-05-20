@@ -11,8 +11,8 @@ import com.junbo.common.id.ClientId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserTeleAttemptId;
 import com.junbo.common.id.UserTeleId;
+import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
-import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.HashMap;
@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * Created by liangfu on 4/22/14.
  */
-public class UserTeleAttempt extends ResourceMeta implements Identifiable<UserTeleAttemptId> {
+public class UserTeleAttempt extends PropertyAssignedAwareResourceMeta implements Identifiable<UserTeleAttemptId> {
 
     @ApiModelProperty(position = 1, required = true,
             value = "[Client Immutable]The id of the userTele attempt resource.")

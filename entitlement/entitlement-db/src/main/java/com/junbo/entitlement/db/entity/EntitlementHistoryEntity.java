@@ -6,7 +6,11 @@
 
 package com.junbo.entitlement.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.junbo.common.cloudant.CloudantEntity;
+import com.junbo.common.id.EntitlementId;
+import com.junbo.common.util.Identifiable;
 import com.junbo.entitlement.db.entity.def.MapJsonUserType;
 import com.junbo.entitlement.db.entity.def.Shardable;
 import org.hibernate.annotations.Type;
@@ -14,7 +18,6 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.Column;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.util.Date;
@@ -26,22 +29,15 @@ import java.util.Map;
 @javax.persistence.Entity
 @Table(name = "entitlement_history")
 @TypeDefs(@TypeDef(name = "json-map", typeClass = MapJsonUserType.class))
-public class EntitlementHistoryEntity implements Shardable {
-    private Long entitlementHistoryId;
+public class EntitlementHistoryEntity extends Entity implements Shardable, CloudantEntity, Identifiable<EntitlementId> {
     private String action;
     private Long entitlementId;
-    private Integer rev;
     private Long userId;
     private Long itemId;
     private Boolean isBanned;
     private Date grantTime;
     private Date expirationTime;
     private Integer useCount;
-    private Boolean isDeleted;
-    private Date createdTime;
-    private String createdBy;
-    private Date modifiedTime;
-    private String modifiedBy;
     private Map<String, JsonNode> futureExpansion;
 
     public EntitlementHistoryEntity() {
@@ -49,8 +45,8 @@ public class EntitlementHistoryEntity implements Shardable {
 
     public EntitlementHistoryEntity(String action, EntitlementEntity entitlementEntity) {
         this.action = action;
-        this.entitlementId = entitlementEntity.getEntitlementId();
-        this.rev = entitlementEntity.getRev();
+        this.entitlementId = entitlementEntity.getpId();
+        this.setRev(entitlementEntity.getRev());
         this.itemId = entitlementEntity.getItemId();
         this.userId = entitlementEntity.getUserId();
         this.isBanned = entitlementEntity.getIsBanned();
@@ -58,21 +54,11 @@ public class EntitlementHistoryEntity implements Shardable {
         this.grantTime = entitlementEntity.getGrantTime();
         this.expirationTime = entitlementEntity.getExpirationTime();
         this.useCount = entitlementEntity.getUseCount();
-        this.isDeleted = entitlementEntity.getIsDeleted();
+        this.setIsDeleted(entitlementEntity.getIsDeleted());
         this.setCreatedBy(entitlementEntity.getCreatedBy());
         this.setCreatedTime(entitlementEntity.getCreatedTime());
-        this.setModifiedBy(entitlementEntity.getModifiedBy());
-        this.setModifiedTime(entitlementEntity.getModifiedTime());
-    }
-
-    @Id
-    @Column(name = "entitlement_history_id")
-    public Long getEntitlementHistoryId() {
-        return entitlementHistoryId;
-    }
-
-    public void setEntitlementHistoryId(Long entitlementHistoryId) {
-        this.entitlementHistoryId = entitlementHistoryId;
+        this.setUpdatedTime(entitlementEntity.getUpdatedTime());
+        this.setUpdatedBy(entitlementEntity.getUpdatedBy());
     }
 
     @Column(name = "action")
@@ -91,15 +77,6 @@ public class EntitlementHistoryEntity implements Shardable {
 
     public void setEntitlementId(Long entitlementId) {
         this.entitlementId = entitlementId;
-    }
-
-    @Column(name = "rev")
-    public Integer getRev() {
-        return rev;
-    }
-
-    public void setRev(Integer rev) {
-        this.rev = rev;
     }
 
     @Column(name = "user_id")
@@ -166,54 +143,22 @@ public class EntitlementHistoryEntity implements Shardable {
         this.useCount = useCount;
     }
 
-    @Column(name = "created_time")
-    public Date getCreatedTime() {
-        return createdTime;
-    }
-
-    public void setCreatedTime(Date createdTime) {
-        this.createdTime = createdTime;
-    }
-
-    @Column(name = "created_by")
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    @Column(name = "modified_time")
-    public Date getModifiedTime() {
-        return modifiedTime;
-    }
-
-    public void setModifiedTime(Date modifiedTime) {
-        this.modifiedTime = modifiedTime;
-    }
-
-    @Column(name = "modified_by")
-    public String getModifiedBy() {
-        return modifiedBy;
-    }
-
-    public void setModifiedBy(String modifiedBy) {
-        this.modifiedBy = modifiedBy;
-    }
-
-    @Column(name = "is_deleted")
-    public Boolean getIsDeleted() {
-        return isDeleted;
-    }
-
-    public void setIsDeleted(Boolean isDeleted) {
-        this.isDeleted = isDeleted;
-    }
-
     @Transient
     @Override
+    @JsonIgnore
     public Long getShardMasterId() {
         return entitlementId;
+    }
+
+    @Override
+    @Transient
+    public EntitlementId getId() {
+        return new EntitlementId(this.getpId());
+    }
+
+    @Override
+    @Transient
+    public void setId(EntitlementId id) {
+        this.setpId(id.getValue());
     }
 }

@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.CommunicationId;
 import com.junbo.common.id.UserCommunicationId;
 import com.junbo.common.id.UserId;
-import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * Created by liangfu on 4/3/14.
  */
-public class UserCommunication extends ResourceMeta implements Identifiable<UserCommunicationId> {
+public class UserCommunication extends PropertyAssignedAwareResourceMeta implements Identifiable<UserCommunicationId> {
 
     @ApiModelProperty(position = 1, required = true, value = "[Nullable]The id of user optin resource.")
     @JsonProperty("self")

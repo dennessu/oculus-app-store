@@ -10,8 +10,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.TosId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserTosAgreementId;
+import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
-import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * Created by liangfu on 4/3/14.
  */
-public class UserTosAgreement extends ResourceMeta implements Identifiable<UserTosAgreementId> {
+public class UserTosAgreement extends PropertyAssignedAwareResourceMeta implements Identifiable<UserTosAgreementId> {
 
     @ApiModelProperty(position = 1, required = true, value = "[Nullable]The id of the user agreement resource.")
     @JsonProperty("self")

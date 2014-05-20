@@ -109,9 +109,13 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     }
 
     public Offer prepareOfferEntity(String fileName) throws Exception {
+        return prepareOfferEntity(fileName, getUserId());
+    }
+
+    public Offer prepareOfferEntity(String fileName, String userId) throws Exception {
         String strOfferContent = readFileContent(String.format("testOffers/%s.json", fileName));
         Offer offerForPost = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {}, strOfferContent);
-        offerForPost.setOwnerId(IdConverter.hexStringToId(UserId.class, getUserId()));
+        offerForPost.setOwnerId(IdConverter.hexStringToId(UserId.class, userId));
         return offerForPost;
     }
 

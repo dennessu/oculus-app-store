@@ -10,8 +10,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.GroupId;
 import com.junbo.common.id.UserGroupId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
-import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.HashMap;
@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * Created by liangfu on 4/3/14.
  */
-public class UserGroup extends ResourceMeta implements Identifiable<UserGroupId> {
+public class UserGroup extends PropertyAssignedAwareResourceMeta implements Identifiable<UserGroupId> {
 
     @ApiModelProperty(position = 1, required = true,
             value = "[Nullable]The id of the user group membership resource.")

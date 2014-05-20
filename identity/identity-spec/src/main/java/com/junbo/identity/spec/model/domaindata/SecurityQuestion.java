@@ -7,13 +7,13 @@ package com.junbo.identity.spec.model.domaindata;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.SecurityQuestionId;
+import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
-import com.junbo.common.model.ResourceMeta;
 
 /**
  * Created by kg on 3/12/14.
  */
-public class SecurityQuestion extends ResourceMeta implements Identifiable<SecurityQuestionId> {
+public class SecurityQuestion extends PropertyAssignedAwareResourceMeta implements Identifiable<SecurityQuestionId> {
 
     @JsonProperty("self")
     private SecurityQuestionId id;
