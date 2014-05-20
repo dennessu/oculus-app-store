@@ -19,4 +19,7 @@ rm -rf $SLAVE_BACKUP_PATH
 echo 'remove archive data'
 rm -rf $SLAVE_ARCHIVE_PATH
 
+echo 'remove pgbouncer data'
+rm -rf $PGBOUNCER_PATH
+
 echo 'purge slave finished!'

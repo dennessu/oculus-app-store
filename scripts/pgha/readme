@@ -22,6 +22,9 @@ connect to the remote machine you want to login to, to the file ~/.ssh/authorize
 copy the pub key to other servers for ssh purpose(/home/silkcloud/.ssh/id_rsa.pub)
 chmod 600 ~/.ssh/id_rsa*
 
+#install pgbouncer
+sudo apt-get install -y pgbouncer
+
 #upload all deployment scripts to remote master/slave servers
 upload_scripts.sh
 
@@ -45,3 +48,11 @@ purge_slave.sh
 
 #restore slave from backup
 setup_slave.sh
+
+#build bi-sync between master/slave archive folders
+
+#primary/secondary pgbouncer proxies point to master db
+#run following script on master/slave servers
+pgbouncer_master.sh
+
+
