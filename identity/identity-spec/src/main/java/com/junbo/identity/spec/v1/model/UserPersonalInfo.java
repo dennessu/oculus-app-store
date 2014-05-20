@@ -25,20 +25,19 @@ public class UserPersonalInfo extends PropertyAssignedAwareResourceMeta implemen
     private UserPersonalInfoId id;
 
     @ApiModelProperty(position = 2, required = true, value = "The type of user personal info resource, it must be in " +
-            "[ADDRESS, " +
+            "[WIPED," +
+            "ADDRESS, " +
             "EMAIL, " +
             "PHONE, " +
-            "GIVEN_NAME, " +
-            "FAMILY_NAME, " +
-            "MIDDLE_NAME, " +
-            "NICK_NAME, " +
+            "NAME, " +
             "DOB, " +
             "SMS, " +
             "QQ, " +
             "WHATSAPP, " +
             "PASSPORT - e.g., \"USA 123456789\", " +
             "GOVERNMENT_ID - SSN or equivalent in other countries, " +
-            "DRIVERS_LICENSE - e.g., \"USA CA 12345\" ].")
+            "DRIVERS_LICENSE - e.g., \"USA CA 12345\" ]" +
+            "GENDER.")
     private String type;
 
     @ApiModelProperty(position = 3, required = true, value = "The userPersonal information, it must be json structure.")
@@ -47,11 +46,11 @@ public class UserPersonalInfo extends PropertyAssignedAwareResourceMeta implemen
     @ApiModelProperty(position = 4, required = false, value = "Last validated time, if null, it isn't validated.")
     private Date lastValidateTime;
 
-    @ApiModelProperty(position = 5, required = false, value = "Whether the value is normalized or not.")
-    private Boolean isNormalized;
+    @ApiModelProperty(position = 5, required = false, value = "[Nullable]Whether the personal info is validated.")
+    private Boolean isValidated;
 
-    @ApiModelProperty(position = 6, required = false, value = "User resource link label.")
-    private String label;
+    @ApiModelProperty(position = 6, required = false, value = "Whether the value is normalized or not.")
+    private Boolean isNormalized;
 
     @ApiModelProperty(position = 7, required = true, value = "User resource.")
     @JsonProperty("user")
@@ -103,15 +102,6 @@ public class UserPersonalInfo extends PropertyAssignedAwareResourceMeta implemen
         support.setPropertyAssigned("isNormalized");
     }
 
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-        support.setPropertyAssigned("label");
-    }
-
     public UserId getUserId() {
         return userId;
     }
@@ -120,6 +110,15 @@ public class UserPersonalInfo extends PropertyAssignedAwareResourceMeta implemen
         this.userId = userId;
         support.setPropertyAssigned("userId");
         support.setPropertyAssigned("user");
+    }
+
+    public Boolean getIsValidated() {
+        return isValidated;
+    }
+
+    public void setIsValidated(Boolean isValidated) {
+        this.isValidated = isValidated;
+        support.setPropertyAssigned("isValidated");
     }
 }
 

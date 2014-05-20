@@ -21,26 +21,18 @@ public class Address{
 
     private String city;
 
-    private String postalCode;
+    private String phoneNumber;
 
-    private String countryName;
+    private String subCountry;
 
     @JsonProperty("country")
     private CountryId countryId;
 
+    private String postalCode;
+
     private String firstName;
 
     private String lastName;
-
-    private String phoneNumber;
-
-    private Boolean isWellFormed;
-
-    private Boolean isNormalized;
-
-    private String subCountryCode;
-
-    private String subCountryName;
 
     public String getStreet1() {
         return street1;
@@ -74,36 +66,12 @@ public class Address{
         this.postalCode = postalCode;
     }
 
-    public String getCountryName() {
-        return countryName;
-    }
-
-    public void setCountryName(String countryName) {
-        this.countryName = countryName;
-    }
-
     public CountryId getCountryId() {
         return countryId;
     }
 
     public void setCountryId(CountryId countryId) {
         this.countryId = countryId;
-    }
-
-    public String getSubCountryCode() {
-        return subCountryCode;
-    }
-
-    public void setSubCountryCode(String subCountryCode) {
-        this.subCountryCode = subCountryCode;
-    }
-
-    public String getSubCountryName() {
-        return subCountryName;
-    }
-
-    public void setSubCountryName(String subCountryName) {
-        this.subCountryName = subCountryName;
     }
 
     public String getFirstName() {
@@ -130,28 +98,20 @@ public class Address{
         this.phoneNumber = phoneNumber;
     }
 
-    public Boolean getIsWellFormed() {
-        return isWellFormed;
-    }
-
-    public void setIsWellFormed(Boolean isWellFormed) {
-        this.isWellFormed = isWellFormed;
-    }
-
-    public Boolean getIsNormalized() {
-        return isNormalized;
-    }
-
-    public void setIsNormalized(Boolean isNormalized) {
-        this.isNormalized = isNormalized;
-    }
-
     public String getStreet3() {
         return street3;
     }
 
     public void setStreet3(String street3) {
         this.street3 = street3;
+    }
+
+    public String getSubCountry() {
+        return subCountry;
+    }
+
+    public void setSubCountry(String subCountry) {
+        this.subCountry = subCountry;
     }
 
     @Override
@@ -169,15 +129,10 @@ public class Address{
         if (this.street3 != address.street3) return false;
         if (this.city != address.city) return false;
         if (this.postalCode != address.postalCode) return false;
-        if (this.countryName != address.countryName) return false;
         if (this.countryId != address.countryId) return false;
         if (this.firstName != address.firstName) return false;
         if (this.lastName != address.lastName) return false;
         if (this.phoneNumber != address.phoneNumber) return false;
-        if (this.isWellFormed != address.isWellFormed) return false;
-        if (this.isNormalized != address.isNormalized) return false;
-        if (this.subCountryCode != address.subCountryCode) return false;
-        if (this.subCountryName != address.subCountryName) return false;
 
         return true;
     }

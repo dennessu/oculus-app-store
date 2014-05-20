@@ -193,14 +193,15 @@
     </bean>
 
     <bean id="nameValidator" class="com.junbo.identity.core.service.validator.impl.NameValidatorImpl">
-        <property name="displayNameValidator" ref="displayNameValidator" />
         <property name="nickNameValidator" ref="nickNameValidator" />
-        <property name="minFirstNameLength" value="1" />
-        <property name="maxFirstNameLength" value="255" />
-        <property name="minMiddleNameLength" value="0" />
+        <property name="minFamilyNameLength" value="1" />
+        <property name="maxFamilyNameLength" value="255" />
+        <property name="minFullNameLength" value="1" />
+        <property name="maxFullNameLength" value="255" />
+        <property name="minGivenNameLength" value="1" />
+        <property name="maxGivenNameLength" value="255" />
+        <property name="minMiddleNameLength" value="1" />
         <property name="maxMiddleNameLength" value="255" />
-        <property name="minLastNameLength" value="1" />
-        <property name="maxLastNameLength" value="255" />
     </bean>
 
     <bean id="passportValidator" class="com.junbo.identity.core.service.validator.impl.PassportValidatorImpl">
@@ -303,19 +304,52 @@
         <property name="defaultTimezone" value="UTC-07:00"/>
     </bean>
 
-    <bean id="displayNameValidator" class="com.junbo.identity.core.service.validator.impl.DisplayNameValidatorImpl">
-    </bean>
-
     <bean id="communicationValidator" class="com.junbo.identity.core.service.validator.impl.CommunicationValidatorImpl">
         <property name="communicationRepository" ref="communicationRepository"/>
+        <property name="localeRepository" ref="cloudantLocaleRepository" />
+        <property name="countryRepository" ref="cloudantCountryRepository" />
+        <property name="minCommunicationLocaleDescription" value="1" />
+        <property name="maxCommunicationLocaleDescription" value="255" />
+        <property name="minCommunicationLocaleName" value="1" />
+        <property name="maxCommunicationLocaleName" value="255" />
     </bean>
 
     <bean id="countryValidator" class="com.junbo.identity.core.service.validator.impl.CountryValidatorImpl">
         <property name="countryRepository" ref="countryRepository"/>
+        <property name="localeRepository" ref="cloudantLocaleRepository" />
+        <property name="currencyRepository" ref="cloudantCurrencyRepository" />
+        <property name="allowedLocaleKeys">
+            <list>
+                <value>shortNameKey</value>
+                <value>longNameKey</value>
+            </list>
+        </property>
+        <property name="minLocaleKeyValueLength" value="1" />
+        <property name="maxLocaleKeyValueLength" value="255" />
+        <property name="minSubCountryShortNameLength" value="1" />
+        <property name="maxSubCountryShortNameLength" value="255" />
+        <property name="minSubCountryLongNameLength" value="1" />
+        <property name="maxSubCountryLongNameLength" value="255" />
     </bean>
 
     <bean id="currencyValidator" class="com.junbo.identity.core.service.validator.impl.CurrencyValidatorImpl">
         <property name="currencyRepository" ref="currencyRepository"/>
+        <property name="allowedLocaleKeys">
+            <list>
+                <value>shortName</value>
+                <value>longName</value>
+            </list>
+        </property>
+        <property name="minLocaleKeyValueLength" value="1" />
+        <property name="maxLocaleKeyValueLength" value="255" />
+        <property name="minDecimalSymbolLength" value="1" />
+        <property name="maxDecimalSymbolLength" value="255" />
+        <property name="minDigitGroupingSymbolLength" value="1" />
+        <property name="maxDigitGroupingSymbolLength" value="255" />
+        <property name="minNumberAfterDecimalLength" value="0" />
+        <property name="maxNumberAfterDecimalLength" value="3" />
+        <property name="minSymbolLength" value="1" />
+        <property name="maxSymbolLength" value="10" />
     </bean>
 
     <bean id="localeValidator" class="com.junbo.identity.core.service.validator.impl.LocaleValidatorImpl">
@@ -353,16 +387,6 @@
         <property name="contentMaxLength" value="1073741824"/>
     </bean>
 
-    <bean id="roleValidator" class="com.junbo.identity.core.service.validator.impl.RoleValidatorImpl">
-        <property name="roleRepository" ref="roleRepository"/>
-    </bean>
-
-    <bean id="roleAssignmentValidator"
-          class="com.junbo.identity.core.service.validator.impl.RoleAssignmentValidatorImpl">
-        <property name="roleAssignmentRepository" ref="roleAssignmentRepository"/>
-        <property name="roleRepository" ref="roleRepository"/>
-    </bean>
-
     <bean id="piiValidatorFactory" class="com.junbo.identity.core.service.validator.impl.PiiValidatorFactoryImpl">
         <constructor-arg>
             <list>
@@ -386,11 +410,7 @@
         <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
         <property name="userRepository" ref="userRepository" />
         <property name="userTeleRepository" ref="userTeleRepository" />
-        <property name="allowedLanguages">
-            <list>
-                <value>en_US</value>
-            </list>
-        </property>
+        <property name="localeRepository" ref="cloudantLocaleRepository" />
         <property name="maxSMSRequestsPerHour" value="${identity.conf.maxSMSRequestsPerHour}" />
         <property name="maxTeleCodeExpireTime" value="${identity.conf.maxTeleCodeExpireTime}" />
         <property name="minTemplateLength" value="1" />

@@ -6,7 +6,6 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.model.Link;
@@ -56,10 +55,7 @@ public class Currency extends PropertyAssignedAwareResourceMeta implements Ident
     private Integer digitGroupingLength;
 
     @ApiModelProperty(position = 11, required = true, value = "The supported locales of the currency resource.")
-    private Map<String, JsonNode> locales = new HashMap<>();
-
-    @ApiModelProperty(position = 12, required = true, value = "The future expansion of the currency resource.")
-    private Map<String, JsonNode> futureExpansion = new HashMap<>();
+    private Map<String, String> localeKeys = new HashMap<>();
 
     public CurrencyId getId() {
         return id;
@@ -152,21 +148,12 @@ public class Currency extends PropertyAssignedAwareResourceMeta implements Ident
         support.setPropertyAssigned("digitGroupingLength");
     }
 
-    public Map<String, JsonNode> getLocales() {
-        return locales;
+    public Map<String, String> getLocaleKeys() {
+        return localeKeys;
     }
 
-    public void setLocales(Map<String, JsonNode> locales) {
-        this.locales = locales;
-        support.setPropertyAssigned("locales");
-    }
-
-    public Map<String, JsonNode> getFutureExpansion() {
-        return futureExpansion;
-    }
-
-    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
-        this.futureExpansion = futureExpansion;
-        support.setPropertyAssigned("futureExpansion");
+    public void setLocaleKeys(Map<String, String> localeKeys) {
+        this.localeKeys = localeKeys;
+        support.setPropertyAssigned("localeKeys");
     }
 }

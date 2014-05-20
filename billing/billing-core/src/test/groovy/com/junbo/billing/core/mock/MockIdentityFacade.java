@@ -32,7 +32,7 @@ public class MockIdentityFacade implements IdentityFacade {
 
         address.setStreet1("No. 1000, Twin Dolphin Dr");
         address.setCity("Redwood City");
-        address.setSubCountryName("CA");
+        address.setSubCountry("CA");
         address.setCountryId(new CountryId("US"));
         address.setPostalCode("94065");
 

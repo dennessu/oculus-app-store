@@ -9,7 +9,6 @@ package com.junbo.entitlement.spec.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.jackson.annotation.EntitlementId;
 import com.junbo.common.jackson.annotation.ItemId;
 import com.junbo.common.jackson.annotation.UserId;
@@ -18,7 +17,6 @@ import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -56,9 +54,6 @@ public class Entitlement extends ResourceMeta implements Identifiable<com.junbo.
     @ApiModelProperty(position = 9, required = true, value = "enumeration; values are \"DOWNLOAD\" and \"RUN\"")
     @JsonProperty("entitlementType")
     private String type;
-    @ApiModelProperty(position = 10, required = true, value = "[non optional, non nullable, possibly empty]Used to add properties between major API revisions." +
-            " In next major API version, all these properties will be refactored into the main body and futureExpansion will again be empty")
-    Map<String, JsonNode> futureExpansion;
 
     @JsonIgnore
     private UUID trackingUuid;
@@ -141,14 +136,6 @@ public class Entitlement extends ResourceMeta implements Identifiable<com.junbo.
 
     public void setItemId(Long itemId) {
         this.itemId = itemId;
-    }
-
-    public Map<String, JsonNode> getFutureExpansion() {
-        return futureExpansion;
-    }
-
-    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
-        this.futureExpansion = futureExpansion;
     }
 
     @Override

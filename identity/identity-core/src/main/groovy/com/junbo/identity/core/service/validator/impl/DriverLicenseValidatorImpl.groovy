@@ -48,12 +48,12 @@ class DriverLicenseValidatorImpl implements PiiValidator {
     }
 
     private void checkDriverLicense(UserDriverLicense userDriverLicense) {
-        if (userDriverLicense.value != null) {
-            if (userDriverLicense.value.length() > maxDriverLicenseLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('value', maxDriverLicenseLength).exception()
+        if (userDriverLicense.info != null) {
+            if (userDriverLicense.info.length() > maxDriverLicenseLength) {
+                throw AppErrors.INSTANCE.fieldTooLong('value.info', maxDriverLicenseLength).exception()
             }
-            if (userDriverLicense.value.length() < minDriverLicenseLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('value', minDriverLicenseLength).exception()
+            if (userDriverLicense.info.length() < minDriverLicenseLength) {
+                throw AppErrors.INSTANCE.fieldTooShort('value.info', minDriverLicenseLength).exception()
             }
         }
     }

@@ -150,8 +150,16 @@ class UserGroupValidatorImpl implements UserGroupValidator {
                 return userGroupRepository.search(new UserGroupListOptions(
                         userId: userGroup.userId,
                         groupId: userGroup.groupId
-                )).then { List<UserGroup> existingUserDeviceList ->
-                    if (!CollectionUtils.isEmpty(existingUserDeviceList)) {
+                )).then { List<UserGroup> existingUserGroupList ->
+                    if (CollectionUtils.isEmpty(existingUserGroupList)) {
+                        return Promise.pure(null)
+                    }
+
+                    existingUserGroupList.removeAll { UserGroup existing ->
+                        return existing.id == userGroup.id
+                    }
+
+                    if (!CollectionUtils.isEmpty(existingUserGroupList)) {
                         throw AppErrors.INSTANCE.fieldInvalid('groupId').exception()
                     }
 

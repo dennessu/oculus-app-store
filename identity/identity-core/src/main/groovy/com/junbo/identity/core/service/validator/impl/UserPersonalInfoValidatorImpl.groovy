@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Required
 @CompileStatic
 class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
 
+    // todo:    Refactor according to marshal's requirement
+
     private UserPersonalInfoRepository userPersonalInfoRepository
     private UserRepository userRepository
 
@@ -117,14 +119,6 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
             throw AppErrors.INSTANCE.fieldInvalid('type', allowedValues.join(',')).exception()
         }
 
-        if (userPersonalInfo.label != null) {
-            if (userPersonalInfo.label.length() > maxLabelLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('label', maxLabelLength).exception()
-            }
-            if (userPersonalInfo.label.length() < minLabelLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('label', minLabelLength).exception()
-            }
-        }
         if (userPersonalInfo.lastValidateTime != null) {
             if (userPersonalInfo.lastValidateTime.after(new Date())) {
                 throw AppErrors.INSTANCE.fieldInvalid('lastValidateTime').exception()

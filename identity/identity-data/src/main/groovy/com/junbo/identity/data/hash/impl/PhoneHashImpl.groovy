@@ -32,7 +32,7 @@ class PhoneHashImpl implements PiiHash {
         PhoneNumber phoneNumber = (PhoneNumber)JsonHelper.jsonNodeToObj(jsonNode, PhoneNumber)
         assert phoneNumber != null
 
-        return generateHash(phoneNumber.value)
+        return generateHash(phoneNumber.info)
     }
 
     @Override

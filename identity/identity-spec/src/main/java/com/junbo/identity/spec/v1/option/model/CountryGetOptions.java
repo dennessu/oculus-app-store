@@ -5,8 +5,20 @@
  */
 package com.junbo.identity.spec.v1.option.model;
 
+import javax.ws.rs.QueryParam;
+
 /**
  * Created by xiali_000 on 4/21/2014.
  */
 public class CountryGetOptions {
+    @QueryParam("properties")
+    private String properties;
+
+    public String getProperties() {
+        return properties;
+    }
+
+    public void setProperties(String properties) {
+        this.properties = properties;
+    }
 }

@@ -8,6 +8,7 @@
 package com.junbo.identity.data.mapper;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.id.*;
 import com.junbo.common.util.EnumRegistry;
@@ -431,5 +432,12 @@ public class CommonMapper {
             return null;
         }
         return new CommunicationId(id);
+    }
+
+    public JsonNode jsonNodeCopy(JsonNode jsonNode) {
+        if (jsonNode == null) {
+            return null;
+        }
+        return jsonNode.deepCopy();
     }
 }

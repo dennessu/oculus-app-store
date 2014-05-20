@@ -21,7 +21,6 @@ import java.util.regex.Pattern
  */
 @CompileStatic
 class UserEmailValidatorImpl implements PiiValidator {
-
     private List<Pattern> allowedEmailPatterns
     private Integer minEmailLength
     private Integer maxEmailLength
@@ -53,9 +52,7 @@ class UserEmailValidatorImpl implements PiiValidator {
             checkUserEmail(email)
 
             // If user want to promote validate from false to true, need to check again
-            if (email.value != oldEmail.value
-            || (email.isValidated == true  && email.isValidated != oldEmail.isValidated)
-            ) {
+            if (email.info.toLowerCase() != oldEmail.info.toLowerCase()) {
                 return checkAdvanceUserEmail(email)
             }
 
@@ -66,34 +63,29 @@ class UserEmailValidatorImpl implements PiiValidator {
     }
 
     private void checkUserEmail(Email email) {
-        if (email.value == null) {
-            throw AppErrors.INSTANCE.fieldInvalid('value').exception()
+        if (email.info == null) {
+            throw AppErrors.INSTANCE.fieldInvalid('value.info').exception()
         }
 
-        if (email.value.length() < minEmailLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('value', minEmailLength).exception()
+        if (email.info.length() < minEmailLength) {
+            throw AppErrors.INSTANCE.fieldTooShort('value.info', minEmailLength).exception()
         }
-        if (email.value.length() > maxEmailLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('value', maxEmailLength).exception()
+        if (email.info.length() > maxEmailLength) {
+            throw AppErrors.INSTANCE.fieldTooLong('value.info', maxEmailLength).exception()
         }
 
         if (!allowedEmailPatterns.any {
-            Pattern pattern -> pattern.matcher(email.value).matches()
+            Pattern pattern -> pattern.matcher(email.info.toLowerCase()).matches()
         }) {
-            throw AppErrors.INSTANCE.fieldInvalid('value').exception()
+            throw AppErrors.INSTANCE.fieldInvalid('value.info').exception()
         }
     }
 
     private Promise<Void> checkAdvanceUserEmail(Email email) {
-        return userPersonalInfoRepository.searchByEmail(email.value).then { List<UserPersonalInfo> existing ->
-            existing.removeAll { UserPersonalInfo userPersonalInfo ->
-                // Only validated mail can't be added twice
-                Email existingEmail = (Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Email)
-                return existingEmail.isValidated != true
-            }
-
+        return userPersonalInfoRepository.searchByEmail(email.info.toLowerCase()).then {
+            List<UserPersonalInfo> existing ->
             if (!CollectionUtils.isEmpty(existing)) {
-                throw AppErrors.INSTANCE.fieldDuplicate('value').exception()
+                throw AppErrors.INSTANCE.fieldDuplicate('value.info').exception()
             }
 
             return Promise.pure(null)

@@ -6,10 +6,12 @@
 
 package com.junbo.common.model;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.json.PropertyAssignedAware;
 import com.junbo.common.json.PropertyAssignedAwareSupport;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * The base class for all resource using propertyAssignedAware with system properties.
@@ -65,6 +67,12 @@ public abstract class PropertyAssignedAwareResourceMeta extends ResourceMeta imp
     public void setUpdatedByClient(String updatedByClient) {
         super.setUpdatedByClient(updatedByClient);
         support.setPropertyAssigned("updatedByClient");
+    }
+
+    @Override
+    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
+        super.setFutureExpansion(futureExpansion);
+        support.setPropertyAssigned("futureExpansion");
     }
 
     @Override

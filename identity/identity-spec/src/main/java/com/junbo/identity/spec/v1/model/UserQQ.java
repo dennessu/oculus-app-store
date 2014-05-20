@@ -9,14 +9,14 @@ package com.junbo.identity.spec.v1.model;
  * Created by liangfu on 4/26/14.
  */
 public class UserQQ {
-    private String qq;
+    private String info;
 
-    public String getQq() {
-        return qq;
+    public String getInfo() {
+        return info;
     }
 
-    public void setQq(String qq) {
-        this.qq = qq;
+    public void setInfo(String info) {
+        this.info = info;
     }
 
     @Override
@@ -26,13 +26,13 @@ public class UserQQ {
 
         UserQQ userQQ = (UserQQ) o;
 
-        if (qq != null ? !qq.equals(userQQ.qq) : userQQ.qq != null) return false;
+        if (info != null ? !info.equals(userQQ.info) : userQQ.info != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return qq != null ? qq.hashCode() : 0;
+        return info != null ? info.hashCode() : 0;
     }
 }

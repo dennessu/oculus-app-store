@@ -6,6 +6,7 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.id.ClientId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserTeleAttemptId;
 import com.junbo.common.id.UserTeleId;
@@ -41,7 +42,7 @@ public class UserTeleAttempt extends PropertyAssignedAwareResourceMeta implement
     private String userAgent;
 
     @ApiModelProperty(position = 7, required = false, value = "The client id of the verify attempt caller.")
-    private String clientId;
+    private ClientId clientId;
 
     @ApiModelProperty(position = 8, required = false, value = "[Client Immutable]Whether the attempt is success.")
     private Boolean succeeded;
@@ -103,11 +104,11 @@ public class UserTeleAttempt extends PropertyAssignedAwareResourceMeta implement
         support.setPropertyAssigned("userAgent");
     }
 
-    public String getClientId() {
+    public ClientId getClientId() {
         return clientId;
     }
 
-    public void setClientId(String clientId) {
+    public void setClientId(ClientId clientId) {
         this.clientId = clientId;
         support.setPropertyAssigned("clientId");
     }

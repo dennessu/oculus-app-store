@@ -13,9 +13,7 @@ import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by liangfu on 4/3/14.
@@ -43,9 +41,6 @@ public class Tos extends PropertyAssignedAwareResourceMeta implements Identifiab
 
     @ApiModelProperty(position = 7, required = true, value = "Tos state, it must in [DRAFT, APPROVED, OBSOLETE].")
     private String state;
-
-    @ApiModelProperty(position = 8, required = false, value = "Feature expansion of the tos resource.")
-    private Map<String, String> futureExpansion = new HashMap<>();
 
     @Override
     public TosId getId() {
@@ -110,14 +105,5 @@ public class Tos extends PropertyAssignedAwareResourceMeta implements Identifiab
     public void setVersion(String version) {
         this.version = version;
         support.setPropertyAssigned("version");
-    }
-
-    public Map<String, String> getFutureExpansion() {
-        return futureExpansion;
-    }
-
-    public void setFutureExpansion(Map<String, String> futureExpansion) {
-        this.futureExpansion = futureExpansion;
-        support.setPropertyAssigned("futureExpansion");
     }
 }

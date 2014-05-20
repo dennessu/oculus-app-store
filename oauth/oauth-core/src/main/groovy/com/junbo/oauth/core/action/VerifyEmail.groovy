@@ -109,7 +109,7 @@ class VerifyEmail implements Action {
 
                     Email email = ObjectMapperProvider.instance().treeToValue(personalInfo.value, Email)
 
-                    if (email.value == emailVerifyCode.email) {
+                    if (email.info == emailVerifyCode.email) {
                         personalInfo.lastValidateTime = new Date()
                         personalInfo.value = ObjectMapperProvider.instance().valueToTree(email)
                         return userPersonalInfoResource.put(piiLink.value, personalInfo).recover { Throwable e ->

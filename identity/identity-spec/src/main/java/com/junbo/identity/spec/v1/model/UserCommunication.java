@@ -13,9 +13,6 @@ import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created by liangfu on 4/3/14.
  */
@@ -32,9 +29,6 @@ public class UserCommunication extends PropertyAssignedAwareResourceMeta impleme
     @ApiModelProperty(position = 3, required = true, value = "Link to the communication resource.")
     @JsonProperty("communication")
     private CommunicationId communicationId;
-
-    @ApiModelProperty(position = 4, required = false, value = "Feature expansion of the opt-ins resource.")
-    private Map<String, String> futureExpansion = new HashMap<>();
 
     @Override
     public UserCommunicationId getId() {
@@ -65,15 +59,5 @@ public class UserCommunication extends PropertyAssignedAwareResourceMeta impleme
         this.communicationId = communicationId;
         support.setPropertyAssigned("communication");
         support.setPropertyAssigned("communicationId");
-    }
-
-
-    public Map<String, String> getFutureExpansion() {
-        return futureExpansion;
-    }
-
-    public void setFutureExpansion(Map<String, String> futureExpansion) {
-        this.futureExpansion = futureExpansion;
-        support.setPropertyAssigned("futureExpansion");
     }
 }
