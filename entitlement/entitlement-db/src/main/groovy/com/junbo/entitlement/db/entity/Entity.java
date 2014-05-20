@@ -6,6 +6,7 @@
 
 package com.junbo.entitlement.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.entitlement.db.entity.def.Shardable;
 
 import javax.persistence.Column;
@@ -19,6 +20,7 @@ import java.util.Date;
  */
 @MappedSuperclass
 public abstract class Entity implements Shardable {
+    @JsonIgnore
     private Long pId;
     private Boolean isDeleted;
     private Date createdTime;
