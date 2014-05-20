@@ -152,12 +152,16 @@ public class Entitlement extends ResourceMeta implements Identifiable<com.junbo.
     }
 
     @Override
+    @JsonIgnore
     public com.junbo.common.id.EntitlementId getId() {
         return new com.junbo.common.id.EntitlementId(entitlementId);
     }
 
     @Override
+    @JsonIgnore
     public void setId(com.junbo.common.id.EntitlementId id) {
-        this.entitlementId = id.getValue();
+        if (id != null) {
+            this.entitlementId = id.getValue();
+        }
     }
 }
