@@ -209,7 +209,7 @@ class CountryValidatorImpl implements CountryValidator {
     }
 
     private Promise<Void> checkRatingBoards(Country country) {
-        // todo:    How to check rating board
+        // Will accept all rating Boards input. It is oculus's resource. Will always trust this.
         if (country.ratingBoards != null) {
             return Promise.pure(null)
         }

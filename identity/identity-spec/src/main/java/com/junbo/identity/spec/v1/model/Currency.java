@@ -58,7 +58,7 @@ public class Currency extends PropertyAssignedAwareResourceMeta implements Ident
     @ApiModelProperty(position = 11, required = true, value = "The supported locales of the currency resource.")
     private Map<String, String> localeKeys = new HashMap<>();
 
-    @ApiModelProperty(position = 12, required = true, value = "The future expansion of the currency resource.")
+    @ApiModelProperty(position = 12, required = false, value = "The future expansion of the currency resource.")
     private Map<String, JsonNode> futureExpansion = new HashMap<>();
 
     public CurrencyId getId() {

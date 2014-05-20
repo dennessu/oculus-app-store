@@ -336,6 +336,22 @@
 
     <bean id="currencyValidator" class="com.junbo.identity.core.service.validator.impl.CurrencyValidatorImpl">
         <property name="currencyRepository" ref="currencyRepository"/>
+        <property name="allowedLocaleKeys">
+            <list>
+                <value>shortName</value>
+                <value>longName</value>
+            </list>
+        </property>
+        <property name="minLocaleKeyValueLength" value="1" />
+        <property name="maxLocaleKeyValueLength" value="255" />
+        <property name="minDecimalSymbolLength" value="1" />
+        <property name="maxDecimalSymbolLength" value="255" />
+        <property name="minDigitGroupingSymbolLength" value="1" />
+        <property name="maxDigitGroupingSymbolLength" value="255" />
+        <property name="minNumberAfterDecimalLength" value="0" />
+        <property name="maxNumberAfterDecimalLength" value="3" />
+        <property name="minSymbolLength" value="1" />
+        <property name="maxSymbolLength" value="10" />
     </bean>
 
     <bean id="localeValidator" class="com.junbo.identity.core.service.validator.impl.LocaleValidatorImpl">
