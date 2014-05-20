@@ -7,6 +7,7 @@ package com.junbo.test.catalog.item;
 
 import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.catalog.impl.ItemServiceImpl;
+import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.catalog.ItemService;
@@ -20,9 +21,9 @@ import org.testng.Assert;
  * Time: 4/21/2014
  * For testing catalog delet item(s) API
  */
-public class TestDeleteItem {
+public class TestDeleteItem extends BaseTestClass {
 
-    private LogHelper logger = new LogHelper(TestGetItem.class);
+    private LogHelper logger = new LogHelper(TestDeleteItem.class);
 
     @Property(
             priority = Priority.Dailies,
@@ -61,4 +62,5 @@ public class TestDeleteItem {
         item = itemService.getItem(item.getItemId());
         Assert.assertNotNull(item);
     }
+
 }
