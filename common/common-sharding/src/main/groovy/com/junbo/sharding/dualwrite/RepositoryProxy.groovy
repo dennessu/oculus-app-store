@@ -94,8 +94,9 @@ class RepositoryProxy implements InvocationHandler {
         if (policy == null) {
             // within an http call
             if (Context.get().getRequestContext() != null) {
-                logger.error("Cannot find policy from Context in HTTP call. Action: $action, Repo: ${repositoryInterface.name}");
-                throw new RuntimeException("Cannot find effective dataAccessPolicy in HTTP call! url: ${Context.get().requestContext.uriInfo.requestUri}");
+                // logger.error("Cannot find policy from Context in HTTP call. Action: $action, Repo: ${repositoryInterface.name}");
+                // throw new RuntimeException("Cannot find effective dataAccessPolicy in HTTP call! url: ${Context.get().requestContext.uriInfo.requestUri}");
+                policy = DataAccessPolicy.CLOUDANT_FIRST;
             }
             // fallback.
             policy = DataAccessPolicies.instance().getDataAccessPolicy(action, repositoryInterface);
