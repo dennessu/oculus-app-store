@@ -100,8 +100,6 @@ class CommunicationValidatorImpl implements CommunicationValidator {
             if (communication.id != null) {
                 throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
             }
-
-            // todo:    Do we need to determine which communications are the same??
             return Promise.pure(null)
         }
     }
@@ -125,12 +123,6 @@ class CommunicationValidatorImpl implements CommunicationValidator {
         }
 
         return checkBasicCommunicationInfo(communication).then {
-            // todo:    Confirm with carlos which fields aren't valid to update
-            /*
-            if (communication.name != oldCommunication.name) {
-                throw AppErrors.INSTANCE.fieldInvalid('name').exception()
-            }
-            */
 
             return Promise.pure(null)
         }

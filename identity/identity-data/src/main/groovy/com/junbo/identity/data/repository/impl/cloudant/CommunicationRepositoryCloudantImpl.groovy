@@ -30,8 +30,19 @@ class CommunicationRepositoryCloudantImpl extends CloudantClient<Communication> 
 
     @Override
     Promise<List<Communication>> search(CommunicationListOptions options) {
-        if (options.name != null) {
-            return Promise.pure(super.queryView('by_name', options.name))
+        if (options.region != null && options.translation != null) {
+            List list = super.queryView('by_region', options.region.value)
+            list.removeAll { Communication communication ->
+                return !communication.translations.contains(options.translation)
+            }
+
+            return Promise.pure(list)
+        }
+        if (options.region != null) {
+            return Promise.pure(super.queryView('by_region', options.region.value))
+        }
+        if (options.translation != null) {
+            return Promise.pure(super.queryView('by_translation', options.translation.value))
         }
 
         return Promise.pure(super.cloudantGetAll())
@@ -63,13 +74,27 @@ class CommunicationRepositoryCloudantImpl extends CloudantClient<Communication> 
         return Promise.pure(null)
     }
 
+    // Won't support translation_region to aovid translation * region view
     protected CloudantViews views = new CloudantViews(
-        views: [
-            'by_name': new CloudantViews.CloudantView(
-                map: 'function(doc) {' +
-                        '  emit(doc.name, doc._id)' +
-                        '}',
-                resultClass: String)
-        ]
+            views: [
+                    'by_region': new CloudantViews.CloudantView(
+                            map: 'function(doc) {' +
+                                    'if (doc.regions) {' +
+                                        'for (var i in doc.regions) {' +
+                                            'emit(doc.regions[i].value, doc._id)' +
+                                        '}' +
+                                    '}' +
+                                    '}',
+                            resultClass: String),
+                    'by_translation': new CloudantViews.CloudantView(
+                            map: 'function(doc) {' +
+                                    'if (doc.translations) {' +
+                                        'for (var i in doc.translations) {' +
+                                            'emit(doc.translations[i].value, doc._id)' +
+                                        '}' +
+                                    '}' +
+                                    '}',
+                            resultClass: String)
+            ]
     )
 }

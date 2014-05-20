@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.spec.v1.option.list;
 
+import com.junbo.common.enumid.CountryId;
+import com.junbo.common.enumid.LocaleId;
 import com.junbo.identity.spec.options.list.PagingGetOptions;
 
 import javax.ws.rs.QueryParam;
@@ -13,14 +15,25 @@ import javax.ws.rs.QueryParam;
  * Created by xiali_000 on 4/21/2014.
  */
 public class CommunicationListOptions extends PagingGetOptions {
-    @QueryParam("name")
-    private String name;
+    @QueryParam("region")
+    private CountryId region;
 
-    public String getName() {
-        return name;
+    @QueryParam("translation")
+    private LocaleId translation;
+
+    public CountryId getRegion() {
+        return region;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setRegion(CountryId region) {
+        this.region = region;
+    }
+
+    public LocaleId getTranslation() {
+        return translation;
+    }
+
+    public void setTranslation(LocaleId translation) {
+        this.translation = translation;
     }
 }

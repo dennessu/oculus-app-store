@@ -16,7 +16,7 @@ import groovy.transform.CompileStatic
 class CountryRepositoryCloudantImpl extends CloudantClient<Country> implements CountryRepository {
     @Override
     protected CloudantViews getCloudantViews() {
-        return null
+        return views
     }
 
     @Override
@@ -45,6 +45,37 @@ class CountryRepositoryCloudantImpl extends CloudantClient<Country> implements C
 
     @Override
     Promise<List<Country>> search(CountryListOptions options) {
+        if (options.currencyId != null && options.localeId != null) {
+            List list = super.queryView('by_default_currency', options.currencyId.value)
+            list.removeAll { Country country ->
+                return country.defaultLocale != options.localeId
+            }
+            return Promise.pure(list)
+        }
+
+        if (options.currencyId != null) {
+            return Promise.pure(super.queryView('by_default_currency', options.currencyId.value))
+        }
+
+        if (options.localeId != null) {
+            return Promise.pure(super.queryView('by_default_locale', options.localeId.value))
+        }
+
         return Promise.pure(super.cloudantGetAll())
     }
+
+    protected CloudantViews views = new CloudantViews(
+            views: [
+                    'by_default_currency': new CloudantViews.CloudantView(
+                            map: 'function(doc) {' +
+                                    'emit(doc.defaultCurrency.value, doc._id)' +
+                                  '}',
+                            resultClass: String),
+                    'by_default_locale': new CloudantViews.CloudantView(
+                            map: 'function(doc) {' +
+                                    'emit(doc.defaultLocale.value, doc._id)' +
+                                  '}',
+                            resultClass: String)
+            ]
+    )
 }

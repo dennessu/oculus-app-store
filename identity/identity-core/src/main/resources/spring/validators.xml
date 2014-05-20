@@ -318,6 +318,20 @@
 
     <bean id="countryValidator" class="com.junbo.identity.core.service.validator.impl.CountryValidatorImpl">
         <property name="countryRepository" ref="countryRepository"/>
+        <property name="localeRepository" ref="cloudantLocaleRepository" />
+        <property name="currencyRepository" ref="cloudantCurrencyRepository" />
+        <property name="allowedLocaleKeys">
+            <list>
+                <value>shortNameKey</value>
+                <value>longNameKey</value>
+            </list>
+        </property>
+        <property name="minLocaleKeyValueLength" value="1" />
+        <property name="maxLocaleKeyValueLength" value="255" />
+        <property name="minSubCountryShortNameLength" value="1" />
+        <property name="maxSubCountryShortNameLength" value="255" />
+        <property name="minSubCountryLongNameLength" value="1" />
+        <property name="maxSubCountryLongNameLength" value="255" />
     </bean>
 
     <bean id="currencyValidator" class="com.junbo.identity.core.service.validator.impl.CurrencyValidatorImpl">

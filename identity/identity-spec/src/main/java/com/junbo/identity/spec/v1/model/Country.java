@@ -49,6 +49,7 @@ public class Country extends PropertyAssignedAwareResourceMeta implements Identi
     private List<LocaleId> supportedLocales = new ArrayList<>();
 
     @ApiModelProperty(position = 8, required = true, value = "Localizable properties")
+    @JsonProperty("localeKeys")
     private Map<String, String> locales = new HashMap<>();
 
     @ApiModelProperty(position = 9, required = true, value = "The future expansion of the country resource.")
