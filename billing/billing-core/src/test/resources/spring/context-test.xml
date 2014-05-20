@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <import resource="classpath*:spring/*-context.xml"/>
+    <import resource="classpath*:spring/transaction.xml"/>
+
+    <context:component-scan base-package="com.junbo.billing.db"/>
+    <context:component-scan base-package="com.junbo.billing.core"/>
+
+    <bean id="mockPaymentFacade" class="com.junbo.billing.core.mock.MockPaymentFacade" />
+    <bean id="mockIdentityFacade" class="com.junbo.billing.core.mock.MockIdentityFacade" />
+    <bean id="mockTaxFacade" class="com.junbo.billing.core.mock.MockTaxFacade" />
+
+    <bean id="mockBalanceValidator" class="com.junbo.billing.core.validator.BalanceValidator">
+        <property name="identityFacade" ref="mockIdentityFacade" />
+        <property name="paymentFacade" ref="mockPaymentFacade" />
+    </bean>
+
+    <bean id="mockTransactionService" class="com.junbo.billing.core.service.TransactionServiceImpl">
+        <property name="paymentFacade" ref="mockPaymentFacade" />
+    </bean>
+
+    <bean id="mockTaxService" class="com.junbo.billing.core.service.TaxServiceImpl">
+        <constructor-arg name="map">
+            <map>
+                <entry key="MOCK" value-ref="mockTaxFacade"/>
+            </map>
+        </constructor-arg>
+        <constructor-arg name="providerName" value="MOCK"/>
+        <property name="identityFacade" ref="mockIdentityFacade" />
+        <property name="paymentFacade" ref="mockPaymentFacade" />
+    </bean>
+
+    <bean id="mockBalanceService" class="com.junbo.billing.core.service.BalanceServiceImpl">
+        <property name="balanceValidator" ref="mockBalanceValidator" />
+        <property name="transactionService" ref="mockTransactionService" />
+        <property name="taxService" ref="mockTaxService" />
+    </bean>
+    
+</beans>

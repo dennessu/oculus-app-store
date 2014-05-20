@@ -27,13 +27,19 @@ import org.springframework.beans.factory.annotation.Qualifier
  */
 @CompileStatic
 class BalanceValidator {
-    @Autowired
-    @Qualifier(value='billingIdentityFacade')
     IdentityFacade identityFacade
 
-    @Autowired
-    @Qualifier(value='billingPaymentFacade')
     PaymentFacade paymentFacade
+
+    @Autowired
+    void setIdentityFacade(@Qualifier('billingIdentityFacade')IdentityFacade identityFacade) {
+        this.identityFacade = identityFacade
+    }
+
+    @Autowired
+    void setPaymentFacade(@Qualifier('billingPaymentFacade')PaymentFacade paymentFacade) {
+        this.paymentFacade = paymentFacade
+    }
 
     @Autowired
     CurrencyService currencyService

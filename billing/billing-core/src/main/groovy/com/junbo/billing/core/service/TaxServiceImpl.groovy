@@ -19,6 +19,8 @@ import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 
 import javax.annotation.Resource
 
@@ -27,11 +29,19 @@ import javax.annotation.Resource
  */
 @CompileStatic
 class TaxServiceImpl implements TaxService {
-    @Resource(name='billingPaymentFacade')
     PaymentFacade paymentFacade
 
-    @Resource(name='billingIdentityFacade')
     IdentityFacade identityFacade
+
+    @Autowired
+    void setIdentityFacade(@Qualifier('billingIdentityFacade')IdentityFacade identityFacade) {
+        this.identityFacade = identityFacade
+    }
+
+    @Autowired
+    void setPaymentFacade(@Qualifier('billingPaymentFacade')PaymentFacade paymentFacade) {
+        this.paymentFacade = paymentFacade
+    }
 
     TaxFacade taxFacade
 

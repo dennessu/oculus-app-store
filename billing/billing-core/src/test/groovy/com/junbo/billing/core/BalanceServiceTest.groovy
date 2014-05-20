@@ -1,6 +1,5 @@
 package com.junbo.billing.core
 
-import com.junbo.billing.core.service.BalanceService
 import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.enums.TransactionStatus
@@ -13,16 +12,12 @@ import com.junbo.common.id.OrderId
 import com.junbo.common.id.OrderItemId
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.common.id.UserId
-import org.springframework.beans.factory.annotation.Autowired
 import org.testng.annotations.Test
 
 /**
  * Created by xmchen on 14-3-14.
  */
 class BalanceServiceTest extends BaseTest {
-
-    @Autowired
-    BalanceService balanceService
 
     @Test
     void testManualCaptureBalance() {
@@ -31,7 +26,7 @@ class BalanceServiceTest extends BaseTest {
 
         assert balance != null
 
-        Balance returnedBalance = balanceService.getBalance(balance.balanceId.value)?.get()
+        Balance returnedBalance = balanceService.getBalance(balance.balanceId)?.get()
 
         assert returnedBalance != null
         assert returnedBalance.status == BalanceStatus.PENDING_CAPTURE.name()
@@ -51,7 +46,7 @@ class BalanceServiceTest extends BaseTest {
 
         assert balance != null
 
-        Balance returnedBalance = balanceService.getBalance(balance.balanceId.value)?.get()
+        Balance returnedBalance = balanceService.getBalance(balance.balanceId)?.get()
 
         assert returnedBalance != null
         assert returnedBalance.status == BalanceStatus.AWAITING_PAYMENT.name()
@@ -76,13 +71,13 @@ class BalanceServiceTest extends BaseTest {
 
         assert captureBalance != null
 
-        Balance returnedBalance = balanceService.getBalance(balance.balanceId.value)?.get()
+        Balance returnedBalance = balanceService.getBalance(balance.balanceId)?.get()
 
         assert returnedBalance != null
         assert returnedBalance.status == BalanceStatus.AWAITING_PAYMENT.name()
         assert returnedBalance.type == BalanceType.MANUAL_CAPTURE.name()
 
-        Transaction transaction = returnedBalance.getTransactions()[0]
+        Transaction transaction = returnedBalance.getTransactions()[1]
 
         assert transaction != null
         assert transaction.status == TransactionStatus.SUCCESS.name()
@@ -91,12 +86,13 @@ class BalanceServiceTest extends BaseTest {
 
     private Balance generateBalance(BalanceType type) {
         Balance balance = new Balance()
+        balance.trackingUuid = generateUUID()
         balance.country = 'US'
         balance.currency = 'USD'
         balance.orderId = new OrderId(12345)
         balance.piId = new PaymentInstrumentId(54321)
         balance.type = type.name()
-        balance.userId = new UserId(98765)
+        balance.userId = new UserId(idGenerator.nextId())
 
         BalanceItem item = new BalanceItem()
         item.orderItemId = new OrderItemId(9999)
