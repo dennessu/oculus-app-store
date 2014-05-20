@@ -6,7 +6,7 @@
 
 package com.junbo.rating.core.handler;
 
-import com.junbo.catalog.spec.model.promotion.Criterion;
+import com.junbo.catalog.spec.model.promotion.criterion.Criterion;
 import com.junbo.rating.core.context.RatingContext;
 import org.springframework.util.Assert;
 

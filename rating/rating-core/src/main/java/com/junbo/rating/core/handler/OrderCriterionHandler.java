@@ -6,7 +6,7 @@
 
 package com.junbo.rating.core.handler;
 
-import com.junbo.catalog.spec.model.promotion.OrderCriterion;
+import com.junbo.catalog.spec.model.promotion.criterion.OrderCriterion;
 import com.junbo.rating.core.context.RatingContext;
 import com.junbo.rating.spec.model.RatingResultEntry;
 

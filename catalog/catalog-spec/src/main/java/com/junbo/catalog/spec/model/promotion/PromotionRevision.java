@@ -9,6 +9,7 @@ package com.junbo.catalog.spec.model.promotion;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.BaseRevisionModel;
+import com.junbo.catalog.spec.model.promotion.criterion.Criterion;
 import com.junbo.common.jackson.annotation.CurrencyId;
 import com.junbo.common.jackson.annotation.PromotionId;
 import com.junbo.common.jackson.annotation.PromotionRevisionId;

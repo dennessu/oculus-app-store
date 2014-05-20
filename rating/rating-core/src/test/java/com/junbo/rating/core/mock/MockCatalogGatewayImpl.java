@@ -10,6 +10,7 @@ import com.junbo.catalog.spec.enums.PriceType;
 import com.junbo.catalog.spec.model.domaindata.ShippingMethod;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.promotion.*;
+import com.junbo.catalog.spec.model.promotion.criterion.*;
 import com.junbo.rating.clientproxy.CatalogGateway;
 import com.junbo.rating.spec.fusion.EntryType;
 import com.junbo.rating.spec.fusion.LinkedEntry;
@@ -182,9 +183,9 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
             setEndDate(generateDate("2014-12-29 00:00:00"));
             setBenefit(benefit);
             setCriteria(new ArrayList<Criterion>() {{
-                add(new ScopeCriterion() {{
+                add(new OfferScopeCriterion() {{
                     setPredicate(Predicate.INCLUDE_OFFER);
-                    setEntities(new ArrayList<Long>() {{
+                    setOffers(new ArrayList<Long>() {{
                         add(102L);
                         add(103L);
                     }});
@@ -212,9 +213,9 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
                         add(400L);
                     }});
                 }});
-                add(new ScopeCriterion() {{
+                add(new OfferScopeCriterion() {{
                     setPredicate(Predicate.INCLUDE_OFFER);
-                    setEntities(new ArrayList<Long>() {{
+                    setOffers(new ArrayList<Long>() {{
                         add(100L);
                         add(101L);
                     }});
@@ -250,9 +251,9 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
                         add(403L);
                     }});
                 }});
-                add(new ScopeCriterion() {{
+                add(new OfferScopeCriterion() {{
                     setPredicate(Predicate.INCLUDE_OFFER);
-                    setEntities(new ArrayList<Long>() {{
+                    setOffers(new ArrayList<Long>() {{
                         add(107L);
                     }});
                 }});
