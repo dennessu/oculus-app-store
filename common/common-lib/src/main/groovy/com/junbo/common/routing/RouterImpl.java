@@ -11,16 +11,20 @@ import com.junbo.common.util.Utils;
 import com.junbo.configuration.topo.DataCenters;
 import com.junbo.configuration.topo.Topology;
 import com.junbo.langur.core.routing.Router;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 
 /**
  * The implementation of router.
  */
 public class RouterImpl implements Router {
+    private static final Logger logger = LoggerFactory.getLogger(RouterImpl.class);
 
     private Topology topology;
     private boolean crossDcRoutingEnabled;
     private boolean inDcRoutingEnabled;
+    private DataAccessPolicy defaultPolicy;
 
     @Required
     public void setTopology(Topology topology) {
@@ -35,17 +39,27 @@ public class RouterImpl implements Router {
         this.inDcRoutingEnabled = inDcRoutingEnabled;
     }
 
+    public void setDefaultPolicy(DataAccessPolicy defaultPolicy) {
+        this.defaultPolicy = defaultPolicy;
+    }
+
     @Override
     public String getTargetUrl(Class<?> resourceClass, Object[] routingParams, boolean fallbackToAnyLocal) {
-        if (routingParams == null || routingParams.length == 0) {
+
+        DataAccessPolicy policy = DataAccessPolicies.instance().getHttpDataAccessPolicy(Context.get().getHttpMethod(), resourceClass);
+        if (policy == null) {
+            policy = defaultPolicy;
+        }
+        if (logger.isDebugEnabled()) {
+            logger.debug("Setting effective dataAccessPolicy in call. url: {}, policy: {}", Context.get().getRequestContext().getUriInfo().getRequestUri(), policy);
+        }
+        Context.get().setDataAccessPolicy(policy);
+
+        if (policy == null || policy == DataAccessPolicy.CLOUDANT_FIRST || policy == DataAccessPolicy.CLOUDANT_ONLY) {
             return null;
         }
 
-        DataAccessPolicy policy = DataAccessPolicies.instance().getHttpDataAccessPolicy(Context.get().getHttpMethod(), resourceClass);
-        if (policy != null) {
-            Context.get().setDataAccessPolicy(policy);
-        }
-        if (policy == null || policy == DataAccessPolicy.CLOUDANT_FIRST || policy == DataAccessPolicy.CLOUDANT_ONLY) {
+        if (routingParams == null || routingParams.length == 0) {
             return null;
         }
 

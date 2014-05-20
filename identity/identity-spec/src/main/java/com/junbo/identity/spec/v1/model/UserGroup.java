@@ -6,16 +6,12 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.GroupId;
 import com.junbo.common.id.UserGroupId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by liangfu on 4/3/14.
@@ -34,9 +30,6 @@ public class UserGroup extends PropertyAssignedAwareResourceMeta implements Iden
     @ApiModelProperty(position = 3, required = true, value = "The group resource.")
     @JsonProperty("group")
     private GroupId groupId;
-
-    @ApiModelProperty(position = 4, required = true, value = "The future expansion of user group.")
-    private Map<String, JsonNode> futureExpansion = new HashMap<>();
 
     public UserGroupId getId() {
         return id;
@@ -66,14 +59,5 @@ public class UserGroup extends PropertyAssignedAwareResourceMeta implements Iden
         this.groupId = groupId;
         support.setPropertyAssigned("groupId");
         support.setPropertyAssigned("group");
-    }
-
-    public Map<String, JsonNode> getFutureExpansion() {
-        return futureExpansion;
-    }
-
-    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
-        this.futureExpansion = futureExpansion;
-        support.setPropertyAssigned("futureExpansion");
     }
 }

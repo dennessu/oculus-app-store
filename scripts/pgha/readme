@@ -1,3 +1,27 @@
+#install postgres
+sudo apt-get update
+sudo apt-get install postgresql-9.3
+
+#add path
+sudo rm /usr/bin/psql
+sudo ln -s /usr/lib/postgresql/9.3/bin/psql /usr/bin/psql
+sudo ln -s /usr/lib/postgresql/9.3/bin/pg_ctl /usr/bin/pg_ctl
+
+#clean up existing db instance
+sudo kill $(fuser -n tcp 5432 2> /dev/null)
+# rm all files in /var/run/postgresql
+sudo chown silkcloud /var/run/postgresql
+
+#create account
+sudo adduser silkcloud
+sudo su - silkcloud
+
+#create ssh key
+ssh-keygen -t rsa 
+connect to the remote machine you want to login to, to the file ~/.ssh/authorized_keys add the contents of your that id_rsa.pub file
+copy the pub key to other servers for ssh purpose(/home/silkcloud/.ssh/id_rsa.pub)
+chmod 600 ~/.ssh/id_rsa*
+
 #upload all deployment scripts to remote master/slave servers
 upload_scripts.sh
 
@@ -7,9 +31,8 @@ upload_scripts.sh
 	-make sure /run/postgresql is clean and can be written by 'postgres' account
 	-running all following scripts with 'postgres' account
 
-#prepare a clean environemnt
+#prepare a clean master environment
 purge_master.sh 
-purge_slave.sh
 
 #create and configure master database
 setup_maseter.sh
@@ -17,4 +40,8 @@ setup_maseter.sh
 #do master base backup
 base_backup.sh
 
+#prepare a clean slave environment
+purge_slave.sh
 
+#restore slave from backup
+setup_slave.sh

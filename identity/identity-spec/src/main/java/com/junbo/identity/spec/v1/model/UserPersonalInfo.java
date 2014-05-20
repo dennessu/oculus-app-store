@@ -14,8 +14,6 @@ import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by liangfu on 4/24/14.
@@ -57,9 +55,6 @@ public class UserPersonalInfo extends PropertyAssignedAwareResourceMeta implemen
     @ApiModelProperty(position = 7, required = true, value = "User resource.")
     @JsonProperty("user")
     private UserId userId;
-
-    @ApiModelProperty(position = 8, required = false, value = "The future expansion of user personal info resource.")
-    private Map<String, JsonNode> futureExpansion = new HashMap<>();
 
     public UserPersonalInfoId getId() {
         return id;
@@ -124,15 +119,6 @@ public class UserPersonalInfo extends PropertyAssignedAwareResourceMeta implemen
     public void setIsValidated(Boolean isValidated) {
         this.isValidated = isValidated;
         support.setPropertyAssigned("isValidated");
-    }
-
-    public Map<String, JsonNode> getFutureExpansion() {
-        return futureExpansion;
-    }
-
-    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
-        this.futureExpansion = futureExpansion;
-        support.setPropertyAssigned("futureExpansion");
     }
 }
 

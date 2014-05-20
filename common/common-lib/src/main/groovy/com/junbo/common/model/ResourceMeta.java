@@ -8,15 +8,20 @@ package com.junbo.common.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.junbo.common.cloudant.CloudantEntity;
+import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
+import com.junbo.common.cloudant.json.annotations.CloudantProperty;
 import com.junbo.common.jackson.annotation.UserId;
 import com.junbo.common.jackson.deserializer.IntFromStringDeserializer;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The base class for all resource with system properties.
@@ -40,7 +45,11 @@ public abstract class ResourceMeta implements CloudantEntity {
 
     @ApiModelProperty(position = 1003, required = false,
             value = "[Client Immutable] The created datetime of the resource.")
+    @CloudantIgnore
     private AdminInfo adminInfo;
+
+    @ApiModelProperty(position = 1004, required = false, value = "Feature expansion of the resource.")
+    private Map<String, JsonNode> futureExpansion = new HashMap<>();
 
     @JsonIgnore
     @UserId
@@ -57,9 +66,11 @@ public abstract class ResourceMeta implements CloudantEntity {
     private String updatedByClient;
 
     @JsonIgnore
+    @CloudantProperty("_id")
     private String cloudantId;
 
     @JsonIgnore
+    @CloudantProperty("_rev")
     private String cloudantRev;
 
     public Integer getResourceAge() {
@@ -140,5 +151,13 @@ public abstract class ResourceMeta implements CloudantEntity {
 
     public void setUpdatedByClient(String updatedByClient) {
         this.updatedByClient = updatedByClient;
+    }
+
+    public Map<String, JsonNode> getFutureExpansion() {
+        return futureExpansion;
+    }
+
+    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
+        this.futureExpansion = futureExpansion;
     }
 }

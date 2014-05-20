@@ -19,128 +19,67 @@
         </property>
     </bean>
 
-    <!-- proxy -->
-    <bean id="asyncHttpClient" class="com.ning.http.client.AsyncHttpClient" />
-
-    <bean id="pathParamTranscoder" class="com.junbo.common.json.IdPathParamTranscoder"/>
-    <bean id="transcoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
-    <bean id="queryParamTranscoder" class="com.junbo.common.json.QueryParamTranscoderImpl"/>
-
-    <bean id="order.identityUserClient" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy">
-        <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="transcoder" ref="transcoder"/>
-        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg name="target" value="${clientproxy.identity.url}"/>
-        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
+    <bean id="order.identityUserClient" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
     </bean>
 
-    <bean id="order.identityUserPersonalInfoClient" class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy">
-        <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="transcoder" ref="transcoder"/>
-        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg name="target" value="${clientproxy.identity.url}"/>
-        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
+    <bean id="order.identityUserPersonalInfoClient" class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
     </bean>
 
-    <bean id="order.billingBalanceClient" class="com.junbo.billing.spec.resource.proxy.BalanceResourceClientProxy">
-        <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="transcoder" ref="transcoder"/>
-        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg name="target" value="${clientproxy.billing.url}"/>
-        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
+    <bean id="order.billingBalanceClient"
+          class="com.junbo.billing.spec.resource.proxy.BalanceResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.billing.url}"/>
     </bean>
 
-    <bean id="order.billingCurrencyClient" class="com.junbo.billing.spec.resource.proxy.BillingCurrencyResourceClientProxy">
-        <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="transcoder" ref="transcoder"/>
-        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg name="target" value="${clientproxy.billing.url}"/>
-        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
+    <bean id="order.billingCurrencyClient" class="com.junbo.billing.spec.resource.proxy.BillingCurrencyResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.billing.url}"/>
     </bean>
 
-    <bean id="order.ratingClient" class="com.junbo.rating.spec.resource.proxy.RatingResourceClientProxy">
-        <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="transcoder" ref="transcoder"/>
-        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg name="target" value="${clientproxy.rating.url}"/>
-        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
+    <bean id="order.ratingClient"
+          class="com.junbo.rating.spec.resource.proxy.RatingResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.rating.url}"/>
     </bean>
 
-    <bean id="order.offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy">
-        <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="transcoder" ref="transcoder"/>
-        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg name="target" value="${clientproxy.catalog.url}"/>
-        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
+    <bean id="order.offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.catalog.url}"/>
     </bean>
 
-    <bean id="order.offerItemClient" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy">
-        <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="transcoder" ref="transcoder"/>
-        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg name="target" value="${clientproxy.catalog.url}"/>
-        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
+    <bean id="order.offerItemClient" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.catalog.url}"/>
     </bean>
 
-    <bean id="order.offerRevisionClient" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxy">
-        <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="transcoder" ref="transcoder"/>
-        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg name="target" value="${clientproxy.catalog.url}"/>
-        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
+    <bean id="order.offerRevisionClient" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.catalog.url}"/>
     </bean>
 
-    <bean id="order.offerItemRevisionClient" class="com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxy">
-        <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="transcoder" ref="transcoder"/>
-        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg name="target" value="${clientproxy.catalog.url}"/>
-        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
+    <bean id="order.offerItemRevisionClient"
+          class="com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.catalog.url}"/>
     </bean>
 
-    <bean id="order.fulfilmentClient" class="com.junbo.fulfilment.spec.resource.proxy.FulfilmentResourceClientProxy">
-        <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="transcoder" ref="transcoder"/>
-        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg name="target" value="${clientproxy.fulfilment.url}"/>
-        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
+    <bean id="order.fulfilmentClient"
+          class="com.junbo.fulfilment.spec.resource.proxy.FulfilmentResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.fulfilment.url}"/>
     </bean>
 
-    <bean id="order.paymentInstrumentClient" class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy">
-        <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="transcoder" ref="transcoder"/>
-        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg name="target" value="${clientproxy.payment.url}"/>
-        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
+    <bean id="order.paymentInstrumentClient"
+          class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.payment.url}"/>
     </bean>
 
-    <bean id="order.emailClient" class="com.junbo.email.spec.resource.proxy.EmailResourceClientProxy">
-        <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="transcoder" ref="transcoder"/>
-        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg name="target" value="${clientproxy.email.url}"/>
-        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
+    <bean id="order.emailClient" class="com.junbo.email.spec.resource.proxy.EmailResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.email.url}"/>
     </bean>
 
-    <bean id="order.emailTemplateClient" class="com.junbo.email.spec.resource.proxy.EmailTemplateResourceClientProxy">
-        <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="transcoder" ref="transcoder"/>
-        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg name="target" value="${clientproxy.email.url}"/>
-        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
+    <bean id="order.emailTemplateClient" class="com.junbo.email.spec.resource.proxy.EmailTemplateResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.email.url}"/>
     </bean>
 
     <!-- cache -->

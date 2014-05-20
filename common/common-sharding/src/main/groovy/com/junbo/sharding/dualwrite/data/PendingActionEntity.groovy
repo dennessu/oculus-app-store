@@ -5,6 +5,7 @@
  */
 package com.junbo.sharding.dualwrite.data
 import com.junbo.common.cloudant.CloudantEntity
+import com.junbo.common.cloudant.json.annotations.CloudantProperty
 import com.junbo.common.hibernate.StringJsonUserType
 import com.junbo.common.util.Identifiable
 import groovy.transform.CompileStatic
@@ -61,9 +62,11 @@ public class PendingActionEntity implements CloudantEntity, Identifiable<UUID> {
     private boolean deleted;
 
     @Transient
+    @CloudantProperty("_id")
     private String cloudantId;
 
     @Transient
+    @CloudantProperty("_rev")
     private String cloudantRev;
 
     public String getCloudantId() {

@@ -37,8 +37,6 @@
     <bean id="userSecurityQuestionAttemptDAO" class="com.junbo.identity.data.dao.impl.UserSecurityQuestionAttemptDAOImpl" parent="identityBaseDAO" />
     <bean id="deviceDAO" class="com.junbo.identity.data.dao.impl.DeviceDAOImpl" parent="identityBaseDAO" />
     <bean id="tosDAO" class="com.junbo.identity.data.dao.impl.TosDAOImpl" parent="identityBaseDAO" />
-    <bean id="roleDAO" class="com.junbo.identity.data.dao.impl.RoleDAOImpl" parent="identityBaseDAO"/>
-    <bean id="roleAssignmentDAO" class="com.junbo.identity.data.dao.impl.RoleAssignmentDAOImpl" parent="identityBaseDAO"/>
     <bean id="userAddressDAO" class="com.junbo.identity.data.dao.impl.UserAddressDAOImpl" parent="identityBaseDAO" />
     <bean id="userTeleDAO" class="com.junbo.identity.data.dao.impl.UserTeleDAOImpl" parent="identityBaseDAO" />
     <bean id="userTeleAttemptDAO" class="com.junbo.identity.data.dao.impl.UserTeleAttemptDAOImpl" parent="identityBaseDAO" />
@@ -105,14 +103,6 @@
         <property name="tosDAO" ref="tosDAO"/>
     </bean>
 
-    <bean id="sqlRoleRepository" class="com.junbo.identity.data.repository.impl.sql.RoleRepositorySqlImpl">
-        <property name="roleDAO" ref="roleDAO"/>
-    </bean>
-
-    <bean id="sqlRoleAssignmentRepository" class="com.junbo.identity.data.repository.impl.sql.RoleAssignmentRepositorySqlImpl">
-        <property name="roleAssignmentDAO" ref="roleAssignmentDAO"/>
-    </bean>
-
     <bean id="sqlUserTeleRepository" class="com.junbo.identity.data.repository.impl.sql.UserTeleRepositorySqlImpl">
         <property name="userTeleDAO" ref="userTeleDAO" />
         <property name="modelMapper" ref="modelMapper" />
@@ -143,8 +133,6 @@
                 <bean class="com.junbo.identity.data.view.DeviceExternalRefView" />
                 <bean class="com.junbo.identity.data.view.UserDeviceIdView" />
                 <bean class="com.junbo.identity.data.view.UserGroupIdView"/>
-                <bean class="com.junbo.identity.data.view.RoleNameView"/>
-                <bean class="com.junbo.identity.data.view.RoleAssignmentRoleIdAssigneeView"/>
                 <bean class="com.junbo.identity.data.view.UserOptinCommunicationView" />
                 <bean class="com.junbo.identity.data.view.CommunicationNameView" />
             </list>

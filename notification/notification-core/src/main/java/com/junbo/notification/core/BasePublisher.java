@@ -5,6 +5,8 @@
  */
 package com.junbo.notification.core;
 
+import com.junbo.common.util.Context;
+import org.slf4j.MDC;
 import org.springframework.jms.core.JmsTemplate;
 
 import javax.jms.Destination;
@@ -63,6 +65,9 @@ public abstract class BasePublisher {
     private static Message wrap(Message message, String eventId) {
         try {
             message.setStringProperty(Constant.EVENT_ID, eventId);
+
+            String requestId = MDC.get(Context.X_REQUEST_ID);
+            message.setStringProperty(Constant.REQUEST_ID, requestId);
 
             return message;
         } catch (JMSException e) {

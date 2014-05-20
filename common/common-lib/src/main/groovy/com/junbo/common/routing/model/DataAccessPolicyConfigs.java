@@ -128,7 +128,7 @@ public class DataAccessPolicyConfigs {
     }
 
     private static final String DATAACCESS_REGEX_SINGLE_ENTRY = "\\s*(?<action>[^\\s:,]+)\\s*:\\s*(?<resource>[^\\s:,]+)\\s*:\\s*(?<policy>[^\\s:,]+)\\s*(,|$|(,\\s*$))";
-    private static final String DATAACCESS_REGEX_FULL = "^(" + DATAACCESS_REGEX_SINGLE_ENTRY + ")+$";
+    private static final String DATAACCESS_REGEX_FULL = "^(" + DATAACCESS_REGEX_SINGLE_ENTRY + ")*$";
     private static final Pattern DATAACCESS_PATTERN_SINGLE_ENTRY = Pattern.compile(DATAACCESS_REGEX_SINGLE_ENTRY);
     private static final Pattern DATAACCESS_PATTERN_FULL = Pattern.compile(DATAACCESS_REGEX_FULL);
     private void parseDataAccessConfigs(String dataAccessConfigs) {

@@ -40,11 +40,6 @@ class BalanceServiceImpl implements BalanceService {
     @Autowired
     BalanceRepository balanceRepository
 
-    @Autowired
-    TransactionService transactionService
-
-    @Autowired
-    TaxService taxService
 
     @Autowired
     CurrencyService currencyService
@@ -53,10 +48,28 @@ class BalanceServiceImpl implements BalanceService {
     AsyncChargePublisher asyncChargePublisher
 
     @Autowired
+    PlatformTransactionManager transactionManager
+
+    TransactionService transactionService
+
+    @Autowired
+    void setTransactionService(TransactionService transactionService) {
+        this.transactionService = transactionService
+    }
+
     BalanceValidator balanceValidator
 
     @Autowired
-    PlatformTransactionManager transactionManager
+    void setBalanceValidator(BalanceValidator balanceValidator) {
+        this.balanceValidator = balanceValidator
+    }
+
+    TaxService taxService
+
+    @Autowired
+    void setTaxService(TaxService taxService) {
+        this.taxService = taxService
+    }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BalanceServiceImpl)
 
@@ -80,6 +93,26 @@ class BalanceServiceImpl implements BalanceService {
 
         if (balance.type == BalanceType.REFUND.name()) {
             balanceValidator.validateRefund(balance)
+
+            Balance originalBalance = balanceRepository.getBalance(balance.originalBalanceId.value)
+            if (originalBalance == null) {
+                throw AppErrors.INSTANCE.balanceNotFound(balance.originalBalanceId.value.toString()).exception()
+            }
+            balanceValidator.validateBalanceStatus(originalBalance.status,
+                    [BalanceStatus.COMPLETED.name(), BalanceStatus.AWAITING_PAYMENT.name()])
+
+            if (balance.balanceItems == null || balance.balanceItems.size() == 0) {
+                // if there is no balance items input, assume full refund
+                for (BalanceItem item : originalBalance.balanceItems) {
+                    def refundItem = new BalanceItem()
+                    refundItem.originalBalanceItemId = item.balanceItemId
+                    refundItem.amount = item.amount
+                    refundItem.orderId = item.orderId
+                    refundItem.orderItemId = item.orderItemId
+                    balance.addBalanceItem(refundItem)
+                }
+            }
+
         }
 
         return balanceValidator.validateUser(balance.userId).then {
@@ -152,7 +185,7 @@ class BalanceServiceImpl implements BalanceService {
     Promise<Balance> captureBalance(Balance balance) {
 
         Balance savedBalance = balanceValidator.validateBalanceId(balance.balanceId)
-        balanceValidator.validateBalanceStatus(balance.status, BalanceStatus.PENDING_CAPTURE.name())
+        balanceValidator.validateBalanceStatus(savedBalance.status, BalanceStatus.PENDING_CAPTURE.name())
         balanceValidator.validateTransactionNotEmpty(savedBalance.balanceId, savedBalance.transactions)
 
         if (balance.totalAmount != null && balance.totalAmount > savedBalance.totalAmount) {

@@ -6,7 +6,6 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.TosId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserTosAgreementId;
@@ -15,8 +14,6 @@ import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by liangfu on 4/3/14.
@@ -37,9 +34,6 @@ public class UserTosAgreement extends PropertyAssignedAwareResourceMeta implemen
 
     @ApiModelProperty(position = 4, required = false, value = "[Nullable]The tos accept time.")
     private Date agreementTime;
-
-    @ApiModelProperty(position = 5, required = false, value = "The future expansion of user tos agreement resource.")
-    private Map<String, JsonNode> futureExpansion = new HashMap<>();
 
     public UserTosAgreementId getId() {
         return id;
@@ -78,14 +72,5 @@ public class UserTosAgreement extends PropertyAssignedAwareResourceMeta implemen
     public void setAgreementTime(Date agreementTime) {
         this.agreementTime = agreementTime;
         support.setPropertyAssigned("agreementTime");
-    }
-
-    public Map<String, JsonNode> getFutureExpansion() {
-        return futureExpansion;
-    }
-
-    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
-        this.futureExpansion = futureExpansion;
-        support.setPropertyAssigned("futureExpansion");
     }
 }

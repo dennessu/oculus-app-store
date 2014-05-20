@@ -21,7 +21,7 @@ public interface AppErrors {
     AppError invalidEmailId(String id);
 
     @ErrorDef(httpStatusCode = 404, code = ErrorCode.USER_NOT_FOUND,
-            description ="User with id {0} not found")
+            description ="User {0} not found", field = "user")
     AppError invalidUserId(String userId);
 
     @ErrorDef(httpStatusCode = 404, code = ErrorCode.USER_EMAIL_NOT_FOUND,
@@ -33,19 +33,19 @@ public interface AppErrors {
     AppError invalidUserStatus(String userId);
 
     @ErrorDef(httpStatusCode = 404, code = ErrorCode.EMAIL_SCHEDULE_NOT_FOUND,
-            description ="Email schedule with id {0} not found")
+            description ="Email schedule {0} not found", field = "id")
     AppError emailScheduleNotFound(String id);
 
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.MISSING_FIELD_VALUE,
-            description ="Field {0} has missing value")
+            description ="Field {0} has missing value", field = "{0}")
     AppError missingField(String field);
 
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_FIELD_VALUE,
-            description ="Field {0} is invalid")
+            description ="Field {0} is invalid", field = "{0}")
     AppError invalidField(String field);
 
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.UNNECESSARY_FILED,
-            description ="Field {0} is unnecessary")
+            description ="Field {0} is unnecessary", field = "{0}")
     AppError unnecessaryField(String field);
 
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_PARAMETER,
@@ -64,14 +64,14 @@ public interface AppErrors {
             description ="Template with specified source, action and locale is already exists")
     AppError emailTemplateAlreadyExist();
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.TEMPLATE_NAME_ALREADY_EXIST,
-            description ="The PlaceholderNames Filed missing subject placeholder",
-            field = "PlaceholderNames")
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_PLACEHOLDERNAMES,
+            description ="The placeholderNames filed missing subject placeholder",
+            field = "placeholderNames")
     AppError invalidPlaceholderNames();
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_PROPERTIES,
-            description = "The properties {0} is invalid")
-    AppError invalidProperty(String property);
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_REPLACEMENTS,
+            description = "The {0} is invalid", field = "replacements")
+    AppError invalidReplacements(String replacement);
 
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.NO_VALIDATED_USER_EMAIL,
             description = "There is no validated default email in this user")
@@ -88,4 +88,8 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 500, code = ErrorCode.INTERNAL_ERROR,
             description = "Internal error, reason: {0}")
     AppError internalError(String reason);
+
+    @ErrorDef(httpStatusCode = 500, code = ErrorCode.USER_EMAIL_FETCH_ERROR,
+            description = "Failed to fetch user email address")
+    AppError fetchUserEmailError();
 }

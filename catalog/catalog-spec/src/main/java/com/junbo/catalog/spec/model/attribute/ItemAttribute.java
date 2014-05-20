@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.BaseModel;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.common.jackson.annotation.ItemAttributeId;
+import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotNull;
@@ -18,7 +19,7 @@ import java.util.Map;
 /**
  * Item Attribute.
  */
-public class ItemAttribute extends BaseModel implements Attribute {
+public class ItemAttribute extends BaseModel implements Attribute, Identifiable<Long> {
     @ItemAttributeId
     @JsonProperty("self")
     @ApiModelProperty(position = 1, required = true, value = "Attribute id")

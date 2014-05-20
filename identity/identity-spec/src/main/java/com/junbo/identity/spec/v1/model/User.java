@@ -7,7 +7,6 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.jackson.annotation.HateoasLink;
@@ -16,9 +15,7 @@ import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by liangfu on 4/3/14.
@@ -140,9 +137,6 @@ public class User extends PropertyAssignedAwareResourceMeta implements Identifia
     @ApiModelProperty(position = 21, required = false, value = "[Nullable]User entitlements.")
     @HateoasLink("/entitlements?userId={id}")
     private Link entitlements;
-
-    @ApiModelProperty(position = 22, required = false, value = "The future expansion of user resource.")
-    private Map<String, JsonNode> futureExpansion = new HashMap<>();
 
     @JsonIgnore
     private String canonicalUsername;
@@ -443,14 +437,5 @@ public class User extends PropertyAssignedAwareResourceMeta implements Identifia
     public void setGender(UserPersonalInfoLink gender) {
         this.gender = gender;
         support.setPropertyAssigned("gender");
-    }
-
-    public Map<String, JsonNode> getFutureExpansion() {
-        return futureExpansion;
-    }
-
-    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
-        this.futureExpansion = futureExpansion;
-        support.setPropertyAssigned("futureExpansion");
     }
 }

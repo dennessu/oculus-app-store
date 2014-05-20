@@ -73,7 +73,7 @@ class CreateAnonymousUser implements Action {
             }
 
             UserName name = new UserName(
-                    firstName: thirdPartyAccount.firstName,
+                    givenName: thirdPartyAccount.firstName,
                     familyName: thirdPartyAccount.lastName,
                     nickName: thirdPartyAccount.nickName
             )

@@ -38,9 +38,6 @@ public class Communication extends PropertyAssignedAwareResourceMeta implements 
             "all the translation for this communication object in the locale.")
     private Map<String, JsonNode> locales = new HashMap<>();
 
-    @ApiModelProperty(position = 7, required = true, value = " [non nullable, possibly empty] The future expansion of the communication resource.")
-    private Map<String, JsonNode> futureExpansion = new HashMap<>();
-
     public CommunicationId getId() {
         return id;
     }
@@ -76,14 +73,5 @@ public class Communication extends PropertyAssignedAwareResourceMeta implements 
     public void setLocales(Map<String, JsonNode> locales) {
         this.locales = locales;
         support.setPropertyAssigned("locales");
-    }
-
-    public Map<String, JsonNode> getFutureExpansion() {
-        return futureExpansion;
-    }
-
-    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
-        this.futureExpansion = futureExpansion;
-        support.setPropertyAssigned("futureExpansion");
     }
 }

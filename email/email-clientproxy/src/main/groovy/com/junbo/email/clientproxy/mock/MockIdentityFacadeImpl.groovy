@@ -13,14 +13,6 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class MockIdentityFacadeImpl implements IdentityFacade {
 
-    Promise<User> getUser(Long userId) {
-        User user = new User()
-        user.setId(new UserId(userId))
-        user.setStatus('ACTIVE')
-        user.setPreferredLocale(new LocaleId('en_US'))
-        return Promise.pure(user)
-    }
-
     Promise<String> getUserEmail(Long userId) {
         String email = 'csr@silkcloud.com'
         return Promise.pure(email)

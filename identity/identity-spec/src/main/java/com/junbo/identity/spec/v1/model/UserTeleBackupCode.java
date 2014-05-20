@@ -6,7 +6,6 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserTeleBackupCodeId;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
@@ -14,8 +13,6 @@ import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by liangfu on 4/22/14.
@@ -37,9 +34,6 @@ public class UserTeleBackupCode extends PropertyAssignedAwareResourceMeta implem
 
     @ApiModelProperty(position = 5, required = false, value = "[Client Immutable]Whether user Tele resource is active.")
     private Boolean active;
-
-    @ApiModelProperty(position = 6, required = false, value = "The future expansion of user tele backup code resource.")
-    private Map<String, JsonNode> futureExpansion = new HashMap<>();
 
     public UserTeleBackupCodeId getId() {
         return id;
@@ -86,14 +80,5 @@ public class UserTeleBackupCode extends PropertyAssignedAwareResourceMeta implem
     public void setActive(Boolean active) {
         this.active = active;
         support.setPropertyAssigned("active");
-    }
-
-    public Map<String, JsonNode> getFutureExpansion() {
-        return futureExpansion;
-    }
-
-    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
-        this.futureExpansion = futureExpansion;
-        support.setPropertyAssigned("futureExpansion");
     }
 }

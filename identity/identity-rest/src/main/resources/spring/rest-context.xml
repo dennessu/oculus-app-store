@@ -35,21 +35,6 @@
     <bean id="defaultUserTeleBackupCodeResource" class="com.junbo.identity.rest.resource.v1.UserTeleBackupCodeResourceImpl" scope="prototype" />
     <bean id="defaultUserTeleBackupCodeAttemptResource" class="com.junbo.identity.rest.resource.v1.UserTeleBackupCodeAttemptResourceImpl" scope="prototype" />
 
-    <!--<bean id="defaultRoleResource" class="com.junbo.identity.rest.resource.v1.RoleResourceImpl" scope="prototype">-->
-        <!--<property name="created201Marker" ref="created201Marker"/>-->
-        <!--<property name="roleFilter" ref="roleFilter"/>-->
-        <!--<property name="roleRepository" ref="roleRepository"/>-->
-        <!--<property name="roleValidator" ref="roleValidator"/>-->
-    <!--</bean>-->
-
-    <!--<bean id="defaultRoleAssignmentResource" class="com.junbo.identity.rest.resource.v1.RoleAssignmentResourceImpl"-->
-          <!--scope="prototype">-->
-        <!--<property name="created201Marker" ref="created201Marker"/>-->
-        <!--<property name="roleAssignmentFilter" ref="roleAssignmentFilter"/>-->
-        <!--<property name="roleAssignmentRepository" ref="roleAssignmentRepository"/>-->
-        <!--<property name="roleAssignmentValidator" ref="roleAssignmentValidator"/>-->
-    <!--</bean>-->
-
     <bean id="defaultAuthenticatorResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.AuthenticatorResourceClientProxyFactory"/>
     <bean id="defaultUserCommunicationResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserCommunicationResourceClientProxyFactory"/>
     <bean id="defaultUserCredentialResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserCredentialResourceClientProxyFactory"/>
@@ -73,8 +58,6 @@
     <bean id="defaultUserTeleAttemptResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserTeleAttemptResourceClientProxyFactory"/>
     <bean id="defaultUserTeleBackupCodeResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserTeleBackupCodeResourceClientProxyFactory"/>
     <bean id="defaultUserTeleBackupCodeAttemptResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserTeleBackupCodeAttemptResourceClientProxyFactory"/>
-    <!--<bean id="defaultRoleResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.RoleResourceClientProxyFactory"/>-->
-    <!--<bean id="defaultRoleAssignmentResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.RoleAssignmentResourceClientProxyFactory"/>-->
 
     <bean id="defaultAuthenticatorResourceRouter" parent="routingRouterBase" />
     <bean id="defaultUserCommunicationResourceRouter" parent="routingRouterBase" />
@@ -99,8 +82,6 @@
     <bean id="defaultUserTeleAttemptResourceRouter" parent="routingRouterBase" />
     <bean id="defaultUserTeleBackupCodeResourceRouter" parent="routingRouterBase" />
     <bean id="defaultUserTeleBackupCodeAttemptResourceRouter" parent="routingRouterBase" />
-    <!--<bean id="defaultRoleResourceRouter" parent="routingRouterBase" />-->
-    <!--<bean id="defaultRoleAssignmentResourceRouter" parent="routingRouterBase" />-->
 
     <bean id="userAuthorizeCallbackFactory" class="com.junbo.identity.rest.resource.auth.UserAuthorizeCallbackFactory"
           parent="abstractAuthorizeCallbackFactory">

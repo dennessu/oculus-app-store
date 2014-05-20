@@ -6,13 +6,9 @@
 
     <context:component-scan base-package="com.junbo.billing.db.*"/>
 
-    <bean id="billingBalanceClient" class="com.junbo.billing.spec.resource.proxy.BalanceResourceClientProxy">
-        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
-        <constructor-arg name="transcoder" ref="commonTranscoder"/>
-        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
-        <constructor-arg name="target" value="${clientproxy.billing.url}"/>
-        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
+    <bean id="billingBalanceClient" class="com.junbo.billing.spec.resource.proxy.BalanceResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.billing.url}"/>
     </bean>
 
     <bean id="billingBillingFacade" class="com.junbo.billing.jobs.BillingFacadeImpl" />

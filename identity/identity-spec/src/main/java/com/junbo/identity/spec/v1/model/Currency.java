@@ -6,7 +6,6 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.model.Link;
@@ -57,9 +56,6 @@ public class Currency extends PropertyAssignedAwareResourceMeta implements Ident
 
     @ApiModelProperty(position = 11, required = true, value = "The supported locales of the currency resource.")
     private Map<String, String> localeKeys = new HashMap<>();
-
-    @ApiModelProperty(position = 12, required = false, value = "The future expansion of the currency resource.")
-    private Map<String, JsonNode> futureExpansion = new HashMap<>();
 
     public CurrencyId getId() {
         return id;
@@ -150,15 +146,6 @@ public class Currency extends PropertyAssignedAwareResourceMeta implements Ident
     public void setDigitGroupingLength(Integer digitGroupingLength) {
         this.digitGroupingLength = digitGroupingLength;
         support.setPropertyAssigned("digitGroupingLength");
-    }
-
-    public Map<String, JsonNode> getFutureExpansion() {
-        return futureExpansion;
-    }
-
-    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
-        this.futureExpansion = futureExpansion;
-        support.setPropertyAssigned("futureExpansion");
     }
 
     public Map<String, String> getLocaleKeys() {

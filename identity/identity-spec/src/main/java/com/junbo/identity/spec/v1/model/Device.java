@@ -6,7 +6,6 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.enumid.DeviceTypeId;
 import com.junbo.common.id.DeviceId;
 import com.junbo.common.jackson.annotation.HateoasLink;
@@ -16,9 +15,7 @@ import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by liangfu on 4/3/14.
@@ -44,9 +41,6 @@ public class Device extends PropertyAssignedAwareResourceMeta implements Identif
     @ApiModelProperty(position = 5, required = false, value = "[Nullable]The users linked with this device")
     @HateoasLink("/users?deviceId={id}")
     private Link users;
-
-    @ApiModelProperty(position = 6, required = false, value = "Feature expansion of the device resource.")
-    private Map<String, JsonNode> futureExpansion = new HashMap<>();
 
     public DeviceId getId() {
         return id;
@@ -101,14 +95,5 @@ public class Device extends PropertyAssignedAwareResourceMeta implements Identif
     public void setType(DeviceTypeId type) {
         this.type = type;
         support.setPropertyAssigned("type");
-    }
-
-    public Map<String, JsonNode> getFutureExpansion() {
-        return futureExpansion;
-    }
-
-    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
-        this.futureExpansion = futureExpansion;
-        support.setPropertyAssigned("futureExpansion");
     }
 }

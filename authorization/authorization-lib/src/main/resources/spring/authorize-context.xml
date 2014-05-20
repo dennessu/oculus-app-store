@@ -3,33 +3,17 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="tokenEndpoint" class="com.junbo.oauth.spec.endpoint.proxy.TokenEndpointClientProxy">
-        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
-        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
-        <constructor-arg name="transcoder" ref="commonTranscoder"/>
-        <constructor-arg name="target" value="${authorize.oauth.endpoint}"/>
-        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
+    <bean id="tokenEndpoint" class="com.junbo.oauth.spec.endpoint.proxy.TokenEndpointClientProxy" parent="baseClientProxy">
+        <property name="target" value="${authorize.oauth.endpoint}"/>
     </bean>
 
-    <bean id="tokenInfoEndpoint" class="com.junbo.oauth.spec.endpoint.proxy.TokenInfoEndpointClientProxy">
-        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
-        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
-        <constructor-arg name="transcoder" ref="commonTranscoder"/>
-        <constructor-arg name="target" value="${authorize.oauth.endpoint}"/>
-        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
+    <bean id="tokenInfoEndpoint" class="com.junbo.oauth.spec.endpoint.proxy.TokenInfoEndpointClientProxy" parent="baseClientProxy">
+        <property name="target" value="${authorize.oauth.endpoint}"/>
     </bean>
 
     <bean id="authlib_apiDefinitionEndpoint"
-          class="com.junbo.oauth.spec.endpoint.proxy.ApiDefinitionEndpointClientProxy">
-        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
-        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
-        <constructor-arg name="transcoder" ref="commonTranscoder"/>
-        <constructor-arg name="target" value="${authorize.oauth.endpoint}"/>
-        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
-        <property name="accessTokenProvider" ref="authlib_accessTokenProvider"/>
+          class="com.junbo.oauth.spec.endpoint.proxy.ApiDefinitionEndpointClientProxy" parent="baseClientProxy">
+        <property name="target" value="${authorize.oauth.endpoint}"/>
     </bean>
 
     <bean id="authlib_accessTokenProvider" class="com.junbo.authorization.ClientCredentialsAccessTokenProvider">

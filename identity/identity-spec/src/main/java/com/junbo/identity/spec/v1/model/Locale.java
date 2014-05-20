@@ -6,14 +6,10 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by xiali_000 on 4/21/2014.
@@ -38,9 +34,6 @@ public class Locale extends PropertyAssignedAwareResourceMeta implements Identif
 
     @ApiModelProperty(position = 6, required = false, value = "The fallback locale.")
     private LocaleId fallbackLocale;
-
-    @ApiModelProperty(position = 7, required = false, value = "Feature expansion of the locale resource.")
-    private Map<String, JsonNode> futureExpansion = new HashMap<>();
 
     public String getShortName() {
         return shortName;
@@ -95,14 +88,5 @@ public class Locale extends PropertyAssignedAwareResourceMeta implements Identif
     public void setFallbackLocale(LocaleId fallbackLocale) {
         this.fallbackLocale = fallbackLocale;
         support.setPropertyAssigned("fallbackLocale");
-    }
-
-    public Map<String, JsonNode> getFutureExpansion() {
-        return futureExpansion;
-    }
-
-    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
-        this.futureExpansion = futureExpansion;
-        support.setPropertyAssigned("futureExpansion");
     }
 }

@@ -17,10 +17,8 @@
     </bean>
 
     <bean id="commonAsyncHttpClient" class="com.ning.http.client.AsyncHttpClient">
-        <!-- disable for now until we found the root cause.
         <constructor-arg name="httpProvider" ref="grizzlyAsyncHttpProvider"/>
         <constructor-arg name="config" ref="asyncHttpClientConfig"/>
-        -->
     </bean>
 
     <bean id="commonPathParamTranscoder" class="com.junbo.common.json.IdPathParamTranscoder"/>
@@ -29,6 +27,15 @@
     <bean id="commonIgnoreUnknownTranscoder" class="com.junbo.common.json.JsonMessageIgnoreUnknownTranscoder"/>
     <bean id="commonExceptionHandler" class="com.junbo.common.error.CommonExceptionHandler">
         <property name="messageTranscoder" ref="commonTranscoder"/>
+    </bean>
+
+    <bean id="baseClientProxy" class="com.junbo.langur.core.client.AbstractClientProxy" abstract="true">
+        <property name="client" ref="commonAsyncHttpClient"/>
+        <property name="exceptionHandler" ref="commonExceptionHandler"/>
+        <property name="executor" ref="junboThreadPool"/>
+        <property name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
+        <property name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+        <property name="transcoder" ref="commonTranscoder"/>
     </bean>
 
     <bean id="defaultAfterInvocationFilter" class="com.junbo.common.filter.RestAdapterAfterInvocationFilter" />
@@ -40,8 +47,10 @@
         <property name="asyncHttpClient" ref="commonAsyncHttpClient" />
         <property name="cloudantDBUri" value="${common.cloudant.url}" />
         <property name="marshaller" ref="cloudantDefaultMarshaller" />
+        <property name="cloudantUser" value="${common.cloudant.user}" />
+        <property name="cloudantPassword" value="${common.cloudant.password}" />
     </bean>
 
-    <bean id="cloudantDefaultMarshaller" class="com.junbo.common.cloudant.CloudantDefaultMarshaller" />
+    <bean id="cloudantDefaultMarshaller" class="com.junbo.common.cloudant.CloudantMarshaller" factory-method="instance" />
 
 </beans>

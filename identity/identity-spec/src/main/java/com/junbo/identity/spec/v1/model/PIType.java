@@ -36,9 +36,6 @@ public class PIType extends PropertyAssignedAwareResourceMeta implements Identif
     @ApiModelProperty(position = 5, required = true, value = "The description of payment instrument resource.")
     private Map<String, JsonNode> locales = new HashMap<>();
 
-    @ApiModelProperty(position = 6, required = false, value = "The future expansion of PI type.")
-    private Map<String, JsonNode> futureExpansion = new HashMap<>();
-
     public String getTypeCode() {
         return typeCode;
     }
@@ -83,14 +80,5 @@ public class PIType extends PropertyAssignedAwareResourceMeta implements Identif
         this.id = id;
         support.setPropertyAssigned("id");
         support.setPropertyAssigned("self");
-    }
-
-    public Map<String, JsonNode> getFutureExpansion() {
-        return futureExpansion;
-    }
-
-    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
-        this.futureExpansion = futureExpansion;
-        support.setPropertyAssigned("futureExpansion");
     }
 }

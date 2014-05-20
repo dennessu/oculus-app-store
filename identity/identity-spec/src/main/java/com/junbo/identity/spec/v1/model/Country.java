@@ -6,7 +6,6 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.enumid.LocaleId;
@@ -52,9 +51,6 @@ public class Country extends PropertyAssignedAwareResourceMeta implements Identi
     @JsonProperty("localeKeys")
     private Map<String, String> locales = new HashMap<>();
 
-    @ApiModelProperty(position = 9, required = true, value = "The future expansion of the country resource.")
-    private Map<String, JsonNode> futureExpansion = new HashMap<>();
-
     public CountryId getId() {
         return id;
     }
@@ -90,15 +86,6 @@ public class Country extends PropertyAssignedAwareResourceMeta implements Identi
     public void setDefaultCurrency(CurrencyId defaultCurrency) {
         this.defaultCurrency = defaultCurrency;
         support.setPropertyAssigned("defaultCurrency");
-    }
-
-    public Map<String, JsonNode> getFutureExpansion() {
-        return futureExpansion;
-    }
-
-    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
-        this.futureExpansion = futureExpansion;
-        support.setPropertyAssigned("futureExpansion");
     }
 
     public List<LocaleId> getSupportedLocales() {
