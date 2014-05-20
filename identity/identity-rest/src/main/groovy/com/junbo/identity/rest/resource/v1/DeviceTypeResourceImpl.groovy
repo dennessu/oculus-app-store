@@ -2,7 +2,7 @@ package com.junbo.identity.rest.resource.v1
 
 import com.junbo.common.enumid.DeviceTypeId
 import com.junbo.common.model.Results
-import com.junbo.identity.core.service.Created201Marker
+import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.DeviceTypeFilter
 import com.junbo.identity.core.service.validator.DeviceTypeValidator
 import com.junbo.identity.data.repository.DeviceTypeRepository

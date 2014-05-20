@@ -66,7 +66,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         FulfilmentRequest request = prepareFulfilmentRequest(offerId);
 
         try {
-            request = fulfilmentResource.fulfill(request).wrapped().get();
+            request = fulfilmentResource.fulfill(request).get();
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
@@ -81,7 +81,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
 
         FulfilmentRequest retrievedRequest = null;
         try {
-            retrievedRequest = fulfilmentResource.getByOrderId(new OrderId(orderId)).wrapped().get();
+            retrievedRequest = fulfilmentResource.getByOrderId(new OrderId(orderId)).get();
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
@@ -93,7 +93,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
 
         FulfilmentItem retrievedFulfilmentItem = null;
         try {
-            retrievedFulfilmentItem = fulfilmentResource.getByFulfilmentId(new FulfilmentId(fulfilmentId)).wrapped().get();
+            retrievedFulfilmentItem = fulfilmentResource.getByFulfilmentId(new FulfilmentId(fulfilmentId)).get();
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
@@ -112,7 +112,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         request.setTrackingGuid(trackingGuid);
 
         try {
-            request = fulfilmentResource.fulfill(request).wrapped().get();
+            request = fulfilmentResource.fulfill(request).get();
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
@@ -122,7 +122,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         request2.setTrackingGuid(trackingGuid);
 
         try {
-            request2 = fulfilmentResource.fulfill(request2).wrapped().get();
+            request2 = fulfilmentResource.fulfill(request2).get();
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
@@ -141,7 +141,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         request.setOrderId(orderId);
 
         try {
-            request = fulfilmentResource.fulfill(request).wrapped().get();
+            request = fulfilmentResource.fulfill(request).get();
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
@@ -151,13 +151,9 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         request2.setOrderId(orderId);
 
         try {
-            fulfilmentResource.fulfill(request2).wrapped().get();
+            fulfilmentResource.fulfill(request2).get();
         } catch (ClientResponseException e) {
             Assert.fail("should not reach here");
-        } catch (InterruptedException e) {
-            Assert.fail("should not reach here");
-        } catch (ExecutionException e) {
-            //good
         }
     }
 

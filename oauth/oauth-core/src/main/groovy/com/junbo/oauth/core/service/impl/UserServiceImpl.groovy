@@ -139,14 +139,6 @@ class UserServiceImpl implements UserService {
 
         AccessToken accessToken = tokenService.extractAccessToken(authorization)
 
-        if (accessToken == null) {
-            throw AppExceptions.INSTANCE.invalidAccessToken().exception()
-        }
-
-        if (accessToken.isExpired()) {
-            throw AppExceptions.INSTANCE.expiredAccessToken().exception()
-        }
-
         return userResource.get(new UserId(accessToken.userId), new UserGetOptions()).then { User user ->
             return this.getDefaultUserEmail(user).then { String email ->
                 if (email == null) {

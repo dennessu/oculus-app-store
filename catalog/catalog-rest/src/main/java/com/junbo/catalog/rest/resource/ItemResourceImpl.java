@@ -9,7 +9,7 @@ package com.junbo.catalog.rest.resource;
 import com.junbo.authorization.AuthorizeCallback;
 import com.junbo.authorization.AuthorizeContext;
 import com.junbo.authorization.AuthorizeService;
-import com.junbo.catalog.common.util.Utils;
+import com.junbo.authorization.RightsScope;
 import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.rest.auth.ItemAuthorizeCallbackFactory;
 import com.junbo.catalog.spec.error.AppErrors;
@@ -18,10 +18,12 @@ import com.junbo.catalog.spec.model.item.ItemsGetOptions;
 import com.junbo.catalog.spec.resource.ItemResource;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.model.Results;
+import com.junbo.common.util.IdFormatter;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,22 +42,42 @@ public class ItemResourceImpl implements ItemResource {
     @Override
     public Promise<Results<Item>> getItems(ItemsGetOptions options) {
         List<Item> offers = itemService.getItems(options);
+
+        final List<Item> filteredOffers = new ArrayList<>();
+        for (final Item item : offers) {
+            AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create(item);
+            RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Void>() {
+                @Override
+                public Void apply() {
+                    if (AuthorizeContext.hasRights("read")) {
+                        filteredOffers.add(item);
+                    }
+
+                    return null;
+                }
+            });
+        }
+
         Results<Item> results = new Results<>();
-        results.setItems(offers);
+        results.setItems(filteredOffers);
         return Promise.pure(results);
     }
 
     @Override
-    public Promise<Item> getItem(ItemId itemId) {
+    public Promise<Item> getItem(final ItemId itemId) {
         final Item item = itemService.getEntity(itemId.getValue());
 
-        AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create("items.get", item);
-        return authorizeService.authorizeAndThen(callback, new Promise.Func0<Promise<Item>>() {
+        if (item == null) {
+            throw AppErrors.INSTANCE.notFound("Item", IdFormatter.encodeId(itemId)).exception();
+        }
+
+        AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create(item);
+        return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<Item>>() {
             @Override
             public Promise<Item> apply() {
 
                 if (!AuthorizeContext.hasRights("read")) {
-                    throw AppErrors.INSTANCE.notFound("Item", Utils.encodeId(item.getItemId())).exception();
+                    throw AppErrors.INSTANCE.notFound("Item", IdFormatter.encodeId(itemId)).exception();
                 }
 
                 return Promise.pure(item);
@@ -65,8 +87,8 @@ public class ItemResourceImpl implements ItemResource {
 
     @Override
     public Promise<Item> update(final ItemId itemId, final Item item) {
-        AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create("items.put", item);
-        return authorizeService.authorizeAndThen(callback, new Promise.Func0<Promise<Item>>() {
+        AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create(item);
+        return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<Item>>() {
             @Override
             public Promise<Item> apply() {
 
@@ -77,17 +99,44 @@ public class ItemResourceImpl implements ItemResource {
                 return Promise.pure(itemService.updateEntity(itemId.getValue(), item));
             }
         });
-
     }
 
     @Override
-    public Promise<Item> create(Item item) {
-        return Promise.pure(itemService.createEntity(item));
+    public Promise<Item> create(final Item item) {
+        AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create(item);
+        return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<Item>>() {
+            @Override
+            public Promise<Item> apply() {
+
+                if (!AuthorizeContext.hasRights("create")) {
+                    throw AppErrors.INSTANCE.accessDenied().exception();
+                }
+
+                return Promise.pure(itemService.createEntity(item));
+            }
+        });
     }
 
     @Override
-    public Promise<Response> delete(ItemId itemId) {
-        itemService.deleteEntity(itemId.getValue());
-        return Promise.pure(Response.status(204).build());
+    public Promise<Response> delete(final ItemId itemId) {
+        final Item item = itemService.getEntity(itemId.getValue());
+
+        if (item == null) {
+            throw AppErrors.INSTANCE.notFound("Item", IdFormatter.encodeId(itemId)).exception();
+        }
+
+        AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create(item);
+        return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<Response>>() {
+            @Override
+            public Promise<Response> apply() {
+
+                if (!AuthorizeContext.hasRights("delete")) {
+                    throw AppErrors.INSTANCE.accessDenied().exception();
+                }
+
+                itemService.deleteEntity(itemId.getValue());
+                return Promise.pure(Response.status(204).build());
+            }
+        });
     }
 }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <bean id="defaultRoleResource" class="com.junbo.authorization.rest.resource.RoleResourceImpl" scope="prototype">
+        <property name="roleRepository" ref="roleRepository"/>
+        <property name="authorizeService" ref="authorizeService"/>
+        <property name="created201Marker" ref="created201Marker"/>
+        <property name="roleFilter" ref="roleFilter"/>
+        <property name="roleValidator" ref="roleValidator"/>
+    </bean>
+
+    <bean id="defaultRoleAssignmentResource" class="com.junbo.authorization.rest.resource.RoleAssignmentResourceImpl" scope="prototype">
+        <property name="roleAssignmentFilter" ref="roleAssignmentFilter"/>
+        <property name="roleAssignmentRepository" ref="roleAssignmentRepository"/>
+        <property name="created201Marker" ref="created201Marker"/>
+        <property name="roleAssignmentValidator" ref="roleAssignmentValidator"/>
+    </bean>
+
+    <bean id="defaultRoleResourceClientFactory" class="com.junbo.authorization.spec.resource.proxy.RoleResourceClientProxyFactory"/>
+
+    <bean id="defaultRoleAssignmentResourceClientFactory" class="com.junbo.authorization.spec.resource.proxy.RoleAssignmentResourceClientProxyFactory"/>
+
+    <bean id="defaultRoleResourceRouter" parent="routingRouterBase" />
+
+    <bean id="defaultRoleAssignmentResourceRouter" parent="routingRouterBase" />
+</beans>

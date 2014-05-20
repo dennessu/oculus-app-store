@@ -10,6 +10,8 @@ import com.junbo.authorization.spec.resource.RoleResource
 import com.junbo.identity.spec.v1.resource.GroupResource
 import com.junbo.identity.spec.v1.resource.UserGroupMembershipResource
 import groovy.transform.CompileStatic
+import net.sf.ehcache.Ehcache
+import org.springframework.beans.factory.annotation.Required
 
 /**
  * AuthorizeCallbackFactory.
@@ -17,18 +19,23 @@ import groovy.transform.CompileStatic
 @CompileStatic
 abstract class AbstractAuthorizeCallbackFactory<T> implements AuthorizeCallbackFactory<T> {
 
-    private RoleResource roleResource;
+    private RoleResource roleResource
 
-    private RoleAssignmentResource roleAssignmentResource;
+    private RoleAssignmentResource roleAssignmentResource
 
-    private GroupResource groupResource;
+    private GroupResource groupResource
 
-    private UserGroupMembershipResource userGroupMembershipResource;
+    private UserGroupMembershipResource userGroupMembershipResource
+
+    private Ehcache groupIdsByUserIdCache
+
+    private Ehcache groupIdByNameCache
 
     RoleResource getRoleResource() {
         return roleResource
     }
 
+    @Required
     void setRoleResource(RoleResource roleResource) {
         this.roleResource = roleResource
     }
@@ -37,6 +44,7 @@ abstract class AbstractAuthorizeCallbackFactory<T> implements AuthorizeCallbackF
         return roleAssignmentResource
     }
 
+    @Required
     void setRoleAssignmentResource(RoleAssignmentResource roleAssignmentResource) {
         this.roleAssignmentResource = roleAssignmentResource
     }
@@ -45,6 +53,7 @@ abstract class AbstractAuthorizeCallbackFactory<T> implements AuthorizeCallbackF
         return groupResource
     }
 
+    @Required
     void setGroupResource(GroupResource groupResource) {
         this.groupResource = groupResource
     }
@@ -53,9 +62,28 @@ abstract class AbstractAuthorizeCallbackFactory<T> implements AuthorizeCallbackF
         return userGroupMembershipResource
     }
 
+    @Required
     void setUserGroupMembershipResource(UserGroupMembershipResource userGroupMembershipResource) {
         this.userGroupMembershipResource = userGroupMembershipResource
     }
 
-    abstract AuthorizeCallback<T> create(String apiName, T entity)
+    Ehcache getGroupIdsByUserIdCache() {
+        return groupIdsByUserIdCache
+    }
+
+    @Required
+    void setGroupIdsByUserIdCache(Ehcache groupIdsByUserIdCache) {
+        this.groupIdsByUserIdCache = groupIdsByUserIdCache
+    }
+
+    Ehcache getGroupIdByNameCache() {
+        return groupIdByNameCache
+    }
+
+    @Required
+    void setGroupIdByNameCache(Ehcache groupIdByNameCache) {
+        this.groupIdByNameCache = groupIdByNameCache
+    }
+
+    abstract AuthorizeCallback<T> create(T entity)
 }

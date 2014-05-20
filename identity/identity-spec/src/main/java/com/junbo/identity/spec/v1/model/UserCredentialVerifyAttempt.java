@@ -9,14 +9,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.ClientId;
 import com.junbo.common.id.UserCredentialVerifyAttemptId;
 import com.junbo.common.id.UserId;
-import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by liangfu on 4/3/14.
  */
-public class UserCredentialVerifyAttempt extends ResourceMeta implements Identifiable<UserCredentialVerifyAttemptId> {
+public class UserCredentialVerifyAttempt extends PropertyAssignedAwareResourceMeta implements Identifiable<UserCredentialVerifyAttemptId> {
 
     @ApiModelProperty(position = 1, required = true,
             value = "[Nullable]The id of user credential attempt resource.")

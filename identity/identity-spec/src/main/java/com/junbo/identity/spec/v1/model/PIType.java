@@ -8,7 +8,7 @@ package com.junbo.identity.spec.v1.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.PITypeId;
-import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -18,12 +18,13 @@ import java.util.Map;
 /**
  * Created by haomin on 14-4-25.
  */
-public class PIType extends ResourceMeta implements Identifiable<PITypeId> {
+public class PIType extends PropertyAssignedAwareResourceMeta implements Identifiable<PITypeId> {
     @ApiModelProperty(position = 1, required = true, value = "The id of payment instrument type resource.")
     @JsonProperty("self")
     private PITypeId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "The type code of payment instrument resource.")
+    @ApiModelProperty(position = 2, required = true, value = "The type code of payment instrument resource, " +
+            "could be one of [CREDITCARD | DIRECTDEBIT | STOREDVALUE | PAYPAL | OTHERS]")
     private String typeCode;
 
     @ApiModelProperty(position = 3, required = true, value = "whether the PI is recurring-able or not.")

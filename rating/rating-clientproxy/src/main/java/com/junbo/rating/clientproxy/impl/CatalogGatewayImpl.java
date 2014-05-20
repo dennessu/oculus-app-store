@@ -73,7 +73,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
     @Override
     public Item getItem(Long itemId) {
         try {
-            return itemResource.getItem(new ItemId(itemId)).wrapped().get();
+            return itemResource.getItem(new ItemId(itemId)).get();
         } catch (Exception e) {
             LOGGER.error("Error occurring when getting Item [" + itemId + "].", e);
             throw AppErrors.INSTANCE.catalogGatewayError().exception();
@@ -84,7 +84,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
     public RatingOffer getOffer(Long offerId, String timestamp) {
         Offer offer;
         try {
-            offer = offerResource.getOffer(new OfferId(offerId)).wrapped().get();
+            offer = offerResource.getOffer(new OfferId(offerId)).get();
         } catch (Exception e) {
             LOGGER.error("Error occurring when getting Offer [" + offerId + "].", e);
             throw AppErrors.INSTANCE.catalogGatewayError().exception();
@@ -101,7 +101,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
         if (timestamp == null) {
             try {
                 offerRevision = offerRevisionResource.getOfferRevision(
-                        new OfferRevisionId(offer.getCurrentRevisionId())).wrapped().get();
+                        new OfferRevisionId(offer.getCurrentRevisionId())).get();
             } catch (Exception e) {
                 LOGGER.error("Error occurring when getting Offer Revision [" + offer.getCurrentRevisionId() + "]", e);
                 throw AppErrors.INSTANCE.catalogGatewayError().exception();
@@ -119,7 +119,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
                 PriceTier priceTier;
                 try {
                     priceTier = priceTierResource.getPriceTier(
-                            new PriceTierId(offerRevision.getPrice().getPriceTier())).wrapped().get();
+                            new PriceTierId(offerRevision.getPrice().getPriceTier())).get();
                 } catch (Exception e) {
                     throw AppErrors.INSTANCE.catalogGatewayError().exception();
                 }
@@ -161,7 +161,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
         while(true) {
             List<Promotion> promotions = new ArrayList<>();
             try {
-                promotions.addAll(promotionResource.getPromotions(options).wrapped().get().getItems());
+                promotions.addAll(promotionResource.getPromotions(options).get().getItems());
             } catch (Exception e) {
                 LOGGER.error("Error occurring when getting promotions.", e);
                 throw AppErrors.INSTANCE.catalogGatewayError().exception();
@@ -185,7 +185,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
         PromotionRevisionsGetOptions revisionOptions = new PromotionRevisionsGetOptions();
         revisionOptions.setRevisionIds(revisionIds);
         try {
-            results.addAll(promotionRevisionResource.getPromotionRevisions(revisionOptions).wrapped().get().getItems());
+            results.addAll(promotionRevisionResource.getPromotionRevisions(revisionOptions).get().getItems());
         } catch (Exception e) {
             LOGGER.error("Error occurring when getting Promotion Revisions.", e);
             throw AppErrors.INSTANCE.catalogGatewayError().exception();
@@ -205,7 +205,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
         options.setOfferIds(Arrays.asList(new OfferId(offerId)));
         options.setTimestamp(timestamp);
         try {
-            revisions = offerRevisionResource.getOfferRevisions(options).wrapped().get().getItems();
+            revisions = offerRevisionResource.getOfferRevisions(options).get().getItems();
         } catch (Exception e) {
             LOGGER.error("Error occurring when getting Offer Revision " +
                     "with offerId [" + offerId + "] and timestamp [" + timestamp + "].", e);

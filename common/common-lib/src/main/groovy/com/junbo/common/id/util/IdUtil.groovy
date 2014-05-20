@@ -3,6 +3,7 @@ package com.junbo.common.id.util
 import com.junbo.common.enumid.EnumId
 import com.junbo.common.id.Id
 import com.junbo.common.id.IdResourcePath
+import com.junbo.common.model.Link
 import com.junbo.common.util.IdFormatter
 import com.junbo.common.util.Utils
 import com.junbo.configuration.ConfigService
@@ -78,8 +79,8 @@ class IdUtil {
         }
     }
 
-    static Id fromHref(String href) {
-        href = href.replace(resourcePathPrefix, '')
+    static Id fromLink(Link link) {
+        String href = link.href.replace(resourcePathPrefix, '')
         Class matchingClass = null
         String id = null
 
@@ -92,7 +93,10 @@ class IdUtil {
             }
         }
 
-        return matchingClass.newInstance(IdFormatter.decodeId(matchingClass, id)) as Id
+        if (matchingClass != null && id != null && (id == link.id || link.id == null)) {
+            return matchingClass.newInstance(IdFormatter.decodeId(matchingClass, id)) as Id
+        }
+        return null
     }
 
     static String toHref(Id value) {

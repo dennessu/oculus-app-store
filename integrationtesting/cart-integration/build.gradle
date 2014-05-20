@@ -32,8 +32,9 @@ mavenCentral()
  */
 
 dependencies {
-    compile junboProject(':cart-spec')    
+    compile junboProject(':cart-spec')
     compile junboProject(':common-testlib')
+    compile junboProject(':identity-integration')
 
     testCompile(libraries.junit)
     testCompile(libraries.testng)

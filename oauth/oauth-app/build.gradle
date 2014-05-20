@@ -11,8 +11,10 @@ dependencies {
         exclude group: 'com.junbo.oauth', module: 'oauth-spec'
     }
 
+    runtime junboProject(':authorization-rest')
     runtime junboProject(':crypto-rest')
     runtime junboProject(':email-rest')
 
     compile junboProject(':oauth-api')
+    compile junboProject(':email-jobs')
 }

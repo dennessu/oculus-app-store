@@ -7,13 +7,13 @@ package com.junbo.identity.spec.v1.model;
 
 import com.junbo.common.id.EncryptUserPersonalInfoId;
 import com.junbo.common.id.UserPersonalInfoId;
-import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
 
 /**
  * Created by liangfu on 5/14/14.
  */
-public class EncryptUserPersonalInfo extends ResourceMeta implements Identifiable<EncryptUserPersonalInfoId> {
+public class EncryptUserPersonalInfo extends PropertyAssignedAwareResourceMeta implements Identifiable<EncryptUserPersonalInfoId> {
 
     private EncryptUserPersonalInfoId id;
 

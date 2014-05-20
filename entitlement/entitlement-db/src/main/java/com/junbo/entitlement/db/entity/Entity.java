@@ -7,26 +7,36 @@
 package com.junbo.entitlement.db.entity;
 
 import com.junbo.entitlement.db.entity.def.Shardable;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
+import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * Base Entity.
  */
 @MappedSuperclass
 public abstract class Entity implements Shardable {
+    private Long pId;
     private Boolean isDeleted;
     private Date createdTime;
-    private String createdBy;
-    private Date modifiedTime;
-    private String modifiedBy;
-    private UUID trackingUuid;
+    private Long createdBy;
+    private Date updatedTime;
+    private Long updatedBy;
     private Integer rev;
+    private String cloudantRev;
+
+    @Id
+    @Column(name = "id")
+    public Long getpId() {
+        return pId;
+    }
+
+    public void setpId(Long pId) {
+        this.pId = pId;
+    }
 
     @Column(name = "is_deleted")
     public Boolean getIsDeleted() {
@@ -47,40 +57,30 @@ public abstract class Entity implements Shardable {
     }
 
     @Column(name = "created_by")
-    public String getCreatedBy() {
+    public Long getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(String createdBy) {
+    public void setCreatedBy(Long createdBy) {
         this.createdBy = createdBy;
     }
 
     @Column(name = "modified_time")
-    public Date getModifiedTime() {
-        return modifiedTime;
+    public Date getUpdatedTime() {
+        return updatedTime;
     }
 
-    public void setModifiedTime(Date modifiedTime) {
-        this.modifiedTime = modifiedTime;
+    public void setUpdatedTime(Date updatedTime) {
+        this.updatedTime = updatedTime;
     }
 
     @Column(name = "modified_by")
-    public String getModifiedBy() {
-        return modifiedBy;
+    public Long getUpdatedBy() {
+        return updatedBy;
     }
 
-    public void setModifiedBy(String modifiedBy) {
-        this.modifiedBy = modifiedBy;
-    }
-
-    @Column(name = "tracking_uuid")
-    @Type(type = "pg-uuid")
-    public UUID getTrackingUuid() {
-        return trackingUuid;
-    }
-
-    public void setTrackingUuid(UUID trackingUuid) {
-        this.trackingUuid = trackingUuid;
+    public void setUpdatedBy(Long updatedBy) {
+        this.updatedBy = updatedBy;
     }
 
     @Column(name = "rev")
@@ -93,7 +93,29 @@ public abstract class Entity implements Shardable {
     }
 
     @Transient
-    public abstract Long getId();
+    public String getCloudantRev() {
+        return cloudantRev;
+    }
 
-    public abstract void setId(Long id);
+    public void setCloudantRev(String cloudantRev) {
+        this.cloudantRev = cloudantRev;
+    }
+
+    @Transient
+    public Integer getResourceAge() {
+        return rev;
+    }
+
+    public void setResourceAge(Integer resourceAge) {
+        this.rev = resourceAge;
+    }
+
+    @Transient
+    public String getCloudantId() {
+        return pId.toString();
+    }
+
+    public void setCloudantId(String id) {
+        this.pId = Long.parseLong(id);
+    }
 }

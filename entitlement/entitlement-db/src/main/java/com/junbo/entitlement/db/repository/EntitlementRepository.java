@@ -69,7 +69,7 @@ public class EntitlementRepository {
         return entitlementMapper.toEntitlement(entitlementDao.getByTrackingUuid(shardMasterId, trackingUuid));
     }
 
-    public Entitlement get(Long userId, Long entitlementDefinitionId) {
-        return entitlementMapper.toEntitlement(entitlementDao.get(userId, entitlementDefinitionId));
+    public Entitlement get(Long userId, Long itemId, String type) {
+        return entitlementMapper.toEntitlement(entitlementDao.get(userId, itemId, type));
     }
 }

@@ -5,6 +5,7 @@
  */
 package com.junbo.authorization.rest.resource
 
+import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.core.filter.RoleFilter
 import com.junbo.authorization.core.validator.RoleValidator
 import com.junbo.authorization.db.repository.RoleRepository
@@ -19,6 +20,7 @@ import com.junbo.common.rs.Created201Marker
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.context.annotation.Scope
 import org.springframework.transaction.annotation.Transactional
 
 /**
@@ -26,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional
  */
 @CompileStatic
 @Transactional
+@Scope('prototype')
 class RoleResourceImpl implements RoleResource {
     private RoleRepository roleRepository
 
@@ -34,6 +37,8 @@ class RoleResourceImpl implements RoleResource {
     private RoleFilter roleFilter
 
     private Created201Marker created201Marker
+
+    private AuthorizeService authorizeService
 
     @Required
     void setRoleRepository(RoleRepository roleRepository) {
@@ -55,32 +60,39 @@ class RoleResourceImpl implements RoleResource {
         this.created201Marker = created201Marker
     }
 
+    @Required
+    void setAuthorizeService(AuthorizeService authorizeService) {
+        this.authorizeService = authorizeService
+    }
+
     @Override
     Promise<Role> create(Role role) {
-        Role filtered = roleFilter.filterForCreate(role)
+        Role filtered = roleFilter.filterForPost(role)
         return roleValidator.validateForCreate(filtered).then {
             return roleRepository.create(filtered).then { Role newRole ->
                 created201Marker.mark((Id) newRole.id)
 
-                return Promise.pure(roleFilter.filterForGet(newRole, null))
+                return Promise.pure(roleFilter.filterForGet(newRole))
             }
         }
     }
 
     @Override
     Promise<Role> get(RoleId roleId) {
-        return roleValidator.validateForGet(roleId).then { Role role ->
-            if (role == null) {
-                throw AppErrors.INSTANCE.roleNotFound(roleId).exception()
-            }
+        return roleValidator.validateForGet(roleId).then {
+            return roleRepository.get(roleId).then { Role role ->
+                if (role == null) {
+                    throw AppErrors.INSTANCE.roleNotFound(roleId).exception()
+                }
 
-            return Promise.pure(roleFilter.filterForGet(role, null))
+                return Promise.pure(roleFilter.filterForGet(role))
+            }
         }
     }
 
     @Override
     Promise<Role> patch(RoleId roleId, Role role) {
-        return roleValidator.validateForGet(roleId).then { Role oldRole ->
+        return get(roleId).then { Role oldRole ->
             if (oldRole == null) {
                 throw AppErrors.INSTANCE.roleNotFound(roleId).exception()
             }
@@ -89,7 +101,7 @@ class RoleResourceImpl implements RoleResource {
 
             return roleValidator.validateForUpdate(filtered, oldRole).then {
                 return roleRepository.update(filtered).then { Role newRole ->
-                    return Promise.pure(roleFilter.filterForGet(newRole, null))
+                    return Promise.pure(roleFilter.filterForGet(newRole))
                 }
             }
         }
@@ -97,7 +109,7 @@ class RoleResourceImpl implements RoleResource {
 
     @Override
     Promise<Role> put(RoleId roleId, Role role) {
-        return roleValidator.validateForGet(roleId).then { Role oldRole ->
+        return get(roleId).then { Role oldRole ->
             if (oldRole == null) {
                 throw AppErrors.INSTANCE.roleNotFound(roleId).exception()
             }
@@ -106,7 +118,7 @@ class RoleResourceImpl implements RoleResource {
 
             return roleValidator.validateForUpdate(filtered, oldRole).then {
                 return roleRepository.update(filtered).then { Role newRole ->
-                    return Promise.pure(roleFilter.filterForGet(newRole, null))
+                    return Promise.pure(roleFilter.filterForGet(newRole))
                 }
             }
         }
@@ -118,8 +130,8 @@ class RoleResourceImpl implements RoleResource {
             def results = new Results<Role>(items: [])
 
             return roleRepository.findByRoleName(options.name, options.targetType,
-                    options.filterType, options.filterLink).then { Role role ->
-                Role filtered = roleFilter.filterForGet(role, null)
+                    options.filterType, options.filterLinkIdType, options.filterLinkId).then { Role role ->
+                Role filtered = roleFilter.filterForGet(role)
 
                 if (filtered != null) {
                     results.items.add(filtered)

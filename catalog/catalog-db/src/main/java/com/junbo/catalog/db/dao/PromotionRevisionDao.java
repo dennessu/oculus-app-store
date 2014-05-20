@@ -15,5 +15,5 @@ import java.util.List;
  * Promotion revision DAO definition.
  */
 public interface PromotionRevisionDao extends BaseDao<PromotionRevisionEntity> {
-    List<PromotionRevisionEntity> getRevisions(PromotionRevisionsGetOptions options);
+    List<PromotionRevisionEntity> getEffectiveRevisions(PromotionRevisionsGetOptions options);
 }

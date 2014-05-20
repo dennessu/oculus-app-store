@@ -2,10 +2,11 @@ package com.junbo.identity.rest.resource.v1
 
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
+import com.junbo.authorization.RightsScope
 import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
-import com.junbo.identity.core.service.Created201Marker
+import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.UserFilter
 import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.validator.UserValidator
@@ -58,11 +59,11 @@ class UserResourceImpl implements UserResource {
     @Override
     Promise<User> create(User user) {
         if (user == null) {
-            throw new IllegalArgumentException('user is null')
+            throw AppErrors.INSTANCE.requestBodyRequired().exception()
         }
 
-        def callback = userAuthorizeCallbackFactory.create('users', user)
-        return authorizeService.authorizeAndThen(callback) {
+        def callback = userAuthorizeCallbackFactory.create(user)
+        return RightsScope.with(authorizeService.authorize(callback)) {
             user = userFilter.filterForCreate(user)
 
             return userValidator.validateForCreate(user).then {
@@ -83,7 +84,7 @@ class UserResourceImpl implements UserResource {
         }
 
         if (user == null) {
-            throw new IllegalArgumentException('user is null')
+            throw AppErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return userRepository.get(userId).then { User oldUser ->
@@ -91,8 +92,8 @@ class UserResourceImpl implements UserResource {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
 
-            def callback = userAuthorizeCallbackFactory.create('users', user)
-            return authorizeService.authorizeAndThen(callback) {
+            def callback = userAuthorizeCallbackFactory.create(oldUser)
+            return RightsScope.with(authorizeService.authorize(callback)) {
                 user = userFilter.filterForPut(user, oldUser)
 
                 return userValidator.validateForUpdate(user, oldUser).then {
@@ -120,8 +121,8 @@ class UserResourceImpl implements UserResource {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
 
-            def callback = userAuthorizeCallbackFactory.create('users', user)
-            return authorizeService.authorizeAndThen(callback) {
+            def callback = userAuthorizeCallbackFactory.create(oldUser)
+            return RightsScope.with(authorizeService.authorize(callback)) {
                 user = userFilter.filterForPatch(user, oldUser)
 
                 return userValidator.validateForUpdate(user, oldUser).then {
@@ -146,9 +147,13 @@ class UserResourceImpl implements UserResource {
 
         return userValidator.validateForGet(userId).then { User user ->
 
-            def callback = userAuthorizeCallbackFactory.create('users', user)
-            return authorizeService.authorizeAndThen(callback) {
+            def callback = userAuthorizeCallbackFactory.create(user)
+            return RightsScope.with(authorizeService.authorize(callback)) {
                 user = userFilter.filterForGet(user, getOptions.properties?.split(',') as List<String>)
+
+                if (user == null) {
+                    throw AppErrors.INSTANCE.userNotFound(userId).exception()
+                }
 
                 return Promise.pure(user)
             }
@@ -160,6 +165,19 @@ class UserResourceImpl implements UserResource {
         return userValidator.validateForSearch(listOptions).then {
             def resultList = new Results<User>(items: [])
 
+            def filterUser = { User user ->
+                def callback = userAuthorizeCallbackFactory.create(user)
+                return RightsScope.with(authorizeService.authorize(callback)) {
+                    user = userFilter.filterForGet(user, listOptions.properties?.split(',') as List<String>)
+
+                    if (user != null) {
+                        resultList.items.add(user)
+                    }
+
+                    return Promise.pure(null)
+                }
+            }
+
             if (listOptions.username != null) {
                 String canonicalUsername = normalizeService.normalize(listOptions.username)
                 return userRepository.getUserByCanonicalUsername(canonicalUsername).then { User user ->
@@ -167,14 +185,7 @@ class UserResourceImpl implements UserResource {
                         return Promise.pure(resultList)
                     }
 
-                    def callback = userAuthorizeCallbackFactory.create('users', user)
-                    return authorizeService.authorizeAndThen(callback) {
-                        user = userFilter.filterForGet(user, listOptions.properties?.split(',') as List<String>)
-
-                        if (user != null) {
-                            resultList.items.add(user)
-                        }
-
+                    return filterUser(user).then {
                         return Promise.pure(resultList)
                     }
                 }
@@ -183,18 +194,7 @@ class UserResourceImpl implements UserResource {
                         groupId: listOptions.groupId
                 )).then { List<UserGroup> userGroupList ->
                     return Promise.each(userGroupList) { UserGroup userGroup ->
-                        return userValidator.validateForGet(userGroup.userId).then { User existing ->
-                            def callback = userAuthorizeCallbackFactory.create('users', existing)
-                            return authorizeService.authorizeAndThen(callback) {
-                                existing = userFilter.filterForGet(existing, listOptions.properties?.split(',') as List<String>)
-
-                                if (existing != null) {
-                                    resultList.items.add(existing)
-                                }
-
-                                return Promise.pure(null)
-                            }
-                        }
+                        return userValidator.validateForGet(userGroup.userId).then(filterUser)
                     }.then {
                         return Promise.pure(resultList)
                     }
@@ -210,8 +210,8 @@ class UserResourceImpl implements UserResource {
         }
 
         return userValidator.validateForGet(userId).then { User user ->
-            def callback = userAuthorizeCallbackFactory.create('users', user)
-            return authorizeService.authorizeAndThen(callback) {
+            def callback = userAuthorizeCallbackFactory.create(user)
+            return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('delete')) {
                     throw AppErrors.INSTANCE.invalidAccess().exception()
                 }

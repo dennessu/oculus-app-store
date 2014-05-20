@@ -1,16 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="
-       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <bean id="commonAsyncHttpClient" class="com.ning.http.client.AsyncHttpClient" />
+    <context:component-scan base-package="com.junbo.common.rs"/>
+
+    <bean id="asyncHttpClientConfig" class="com.ning.http.client.AsyncHttpClientConfigBean">
+        <!-- TODO: a lot of things to configure here -->
+    </bean>
+
+    <bean id="grizzlyAsyncHttpProvider" class="com.ning.http.client.providers.grizzly.GrizzlyAsyncHttpProvider">
+        <constructor-arg ref="asyncHttpClientConfig"/>
+    </bean>
+
+    <bean id="commonAsyncHttpClient" class="com.ning.http.client.AsyncHttpClient">
+        <constructor-arg name="httpProvider" ref="grizzlyAsyncHttpProvider"/>
+        <constructor-arg name="config" ref="asyncHttpClientConfig"/>
+    </bean>
+
     <bean id="commonPathParamTranscoder" class="com.junbo.common.json.IdPathParamTranscoder"/>
     <bean id="commonQueryParamTranscoder" class="com.junbo.common.json.QueryParamTranscoderImpl"/>
     <bean id="commonTranscoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
     <bean id="commonIgnoreUnknownTranscoder" class="com.junbo.common.json.JsonMessageIgnoreUnknownTranscoder"/>
     <bean id="commonExceptionHandler" class="com.junbo.common.error.CommonExceptionHandler">
         <property name="messageTranscoder" ref="commonTranscoder"/>
+    </bean>
+
+    <bean id="baseClientProxy" class="com.junbo.langur.core.client.AbstractClientProxy" abstract="true">
+        <property name="client" ref="commonAsyncHttpClient"/>
+        <property name="exceptionHandler" ref="commonExceptionHandler"/>
+        <property name="executor" ref="junboThreadPool"/>
+        <property name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
+        <property name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+        <property name="transcoder" ref="commonTranscoder"/>
     </bean>
 
     <bean id="defaultAfterInvocationFilter" class="com.junbo.common.filter.RestAdapterAfterInvocationFilter" />
@@ -22,7 +47,10 @@
         <property name="asyncHttpClient" ref="commonAsyncHttpClient" />
         <property name="cloudantDBUri" value="${common.cloudant.url}" />
         <property name="marshaller" ref="cloudantDefaultMarshaller" />
+        <property name="cloudantUser" value="${common.cloudant.user}" />
+        <property name="cloudantPassword" value="${common.cloudant.password}" />
     </bean>
 
-    <bean id="cloudantDefaultMarshaller" class="com.junbo.common.cloudant.CloudantDefaultMarshaller" />
+    <bean id="cloudantDefaultMarshaller" class="com.junbo.common.cloudant.CloudantMarshaller" factory-method="instance" />
+
 </beans>

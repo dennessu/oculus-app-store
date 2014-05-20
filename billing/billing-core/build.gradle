@@ -9,4 +9,5 @@ dependencies {
     compile junboProject(':notification-core')
 
     testCompile (libraries.spring_test)
+    testCompile junboProject(':configuration-data')
 }

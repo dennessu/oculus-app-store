@@ -8,9 +8,7 @@
         <property name="asyncHttpClient" ref="commonAsyncHttpClient" />
         <property name="cloudantDBUri" value="${crypto.masterkey.cloudant.url}" />
         <property name="idGenerator" ref="oculus48IdGenerator" />
-        <property name="marshaller">
-            <bean class="com.junbo.common.cloudant.CloudantDefaultMarshaller" />
-        </property>
+        <property name="marshaller" ref="cloudantDefaultMarshaller" />
     </bean>
 
     <bean id="cloudantUserCryptoKeyRepo" class="com.junbo.crypto.data.repo.impl.cloudant.CloudantUserCryptoKeyRepoImpl">
@@ -18,9 +16,7 @@
         <property name="cloudantDBUri" value="${crypto.userkey.cloudant.url}" />
         <property name="idGenerator" ref="oculus48IdGenerator" />
         <property name="asyncHttpClient" ref="commonAsyncHttpClient" />
-        <property name="marshaller">
-            <bean class="com.junbo.common.cloudant.CloudantDefaultMarshaller" />
-        </property>
+        <property name="marshaller" ref="cloudantDefaultMarshaller" />
     </bean>
 
     <bean id="masterkeyRepository" parent="baseRepository">

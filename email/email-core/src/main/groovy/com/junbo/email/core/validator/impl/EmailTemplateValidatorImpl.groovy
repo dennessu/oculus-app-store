@@ -38,7 +38,7 @@ class EmailTemplateValidatorImpl extends CommonValidator implements EmailTemplat
     @Override
     void validateDelete(Long id) {
         if (id == null) {
-            throw AppErrors.INSTANCE.invalidEmailId('').exception()
+            throw AppErrors.INSTANCE.missingField('id').exception()
         }
     }
 

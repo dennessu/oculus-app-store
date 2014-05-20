@@ -202,11 +202,12 @@ class MandrillProviderImpl implements EmailProvider {
 
     private Promise<List<MandrillResponse>> send(BoundRequestBuilder requestBuilder, List<MandrillResponse> responses) {
         return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover { Throwable throwable ->
-            throw AppErrors.INSTANCE.emailSendError('').exception()
+            LOGGER.error('Fail to process the request.', throwable)
+            throw AppErrors.INSTANCE.emailSendError('process request failed').exception()
         }.then { Response response ->
             if (response == null) {
                 LOGGER.error('Fail to get the response')
-                throw AppErrors.INSTANCE.emailSendError('Fail to get the response').exception()
+                throw AppErrors.INSTANCE.emailSendError('the response is null').exception()
             }
             responses.addAll(parseResponse(response))
             return Promise.pure(responses)

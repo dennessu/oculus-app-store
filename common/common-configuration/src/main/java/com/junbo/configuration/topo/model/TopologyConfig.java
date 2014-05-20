@@ -113,7 +113,7 @@ public class TopologyConfig {
             APPSERVER_REGEX_IP_COMP + "\\." +
             APPSERVER_REGEX_IP_COMP + "):(?<port>\\d+)\\s*;";
     private static final String APPSERVER_REGEX_SHARDS = "\\s*(?<shardsfrom>\\d+)(\\.\\.(?<shardsto>\\d+))?\\s*;";
-    private static final String APPSERVER_REGEX_DC = "\\s*(?<dc>[^;,]+)\\s*";
+    private static final String APPSERVER_REGEX_DC = "\\s*(?<dc>[^\\s;,]+)\\s*";
     private static final String APPSERVER_REGEX_SINGLE_ENTRY = APPSERVER_REGEX_IP + APPSERVER_REGEX_SHARDS + APPSERVER_REGEX_DC + "(,|$|(,\\s*$))";
     private static final String APPSERVER_REGEX_FULL = "^(" + APPSERVER_REGEX_SINGLE_ENTRY + ")+$";
 

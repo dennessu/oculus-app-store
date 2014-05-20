@@ -51,13 +51,7 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
         template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
         return template.execute(new TransactionCallback<PaymentInstrument>() {
             public PaymentInstrument doInTransaction(TransactionStatus txnStatus) {
-                try {
-                    return piService.add(request).wrapped().get();
-                } catch (InterruptedException e) {
-                    return null;
-                } catch (ExecutionException e) {
-                    return null;
-                }
+                return piService.add(request).get();
             }
         });
     }

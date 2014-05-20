@@ -8,6 +8,7 @@ package com.junbo.ewallet.db.entity;
 
 import com.junbo.ewallet.db.entity.def.IdentifiableType;
 import com.junbo.ewallet.db.entity.def.TransactionType;
+import com.junbo.ewallet.spec.def.WalletLotType;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
@@ -25,7 +26,9 @@ public class LotTransactionEntity extends EntityWithCreated {
     private Long walletLotId;
     private Long transactionId;
     private TransactionType type;
+    private WalletLotType walletLotType;
     private BigDecimal amount;
+    private BigDecimal unrefundedAmount;
 
     @Column(name = "ewallet_id")
     public Long getWalletId() {
@@ -64,6 +67,16 @@ public class LotTransactionEntity extends EntityWithCreated {
         this.type = type;
     }
 
+    @Column(name = "wallet_lot_type")
+    @Type(type = IdentifiableType.TYPE)
+    public WalletLotType getWalletLotType() {
+        return walletLotType;
+    }
+
+    public void setWalletLotType(WalletLotType walletLotType) {
+        this.walletLotType = walletLotType;
+    }
+
     @Column(name = "amount")
     public BigDecimal getAmount() {
         return amount;
@@ -71,6 +84,15 @@ public class LotTransactionEntity extends EntityWithCreated {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
+    }
+
+    @Column(name = "unrefunded_amount")
+    public BigDecimal getUnrefundedAmount() {
+        return unrefundedAmount;
+    }
+
+    public void setUnrefundedAmount(BigDecimal unrefundedAmount) {
+        this.unrefundedAmount = unrefundedAmount;
     }
 
     @Transient

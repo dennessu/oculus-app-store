@@ -17,6 +17,4 @@ interface EmailValidator {
     void validateUpdate(Email email)
 
     void validateDelete(Long id)
-
-    void validateUser(User user)
 }

@@ -10,6 +10,7 @@ package com.junbo.notification.core;
  */
 public final class Constant {
     public static final String EVENT_ID = "EVENT_ID";
+    public static final String REQUEST_ID = "REQUEST_ID";
 
     private Constant() {
 

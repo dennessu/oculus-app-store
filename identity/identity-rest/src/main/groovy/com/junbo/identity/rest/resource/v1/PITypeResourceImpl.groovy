@@ -2,7 +2,7 @@ package com.junbo.identity.rest.resource.v1
 
 import com.junbo.common.id.PITypeId
 import com.junbo.common.model.Results
-import com.junbo.identity.core.service.Created201Marker
+import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.PITypeFilter
 import com.junbo.identity.core.service.validator.PITypeValidator
 import com.junbo.identity.data.repository.PITypeRepository

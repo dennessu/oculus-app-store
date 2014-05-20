@@ -50,6 +50,7 @@
           abstract="true">
         <property name="connectionFactory" ref="connectionFactory"/>
         <property name="sessionAcknowledgeMode" value="2"/>
+        <property name="taskExecutor" ref="junboThreadPool"/>
     </bean>
 
     <!-- queue -->

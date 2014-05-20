@@ -49,6 +49,11 @@ public interface PaymentTransactionResource {
     Promise<PaymentTransaction> reversePayment(@PathParam("paymentId") PaymentId paymentId,
                                                PaymentTransaction request);
 
+    @PUT
+    @Path("/{paymentId}/refund")
+    Promise<PaymentTransaction> refundPayment(@PathParam("paymentId") PaymentId paymentId,
+                                               PaymentTransaction request);
+
     @GET
     @Path("/{paymentId}")
     Promise<PaymentTransaction> getPayment(@PathParam("paymentId") PaymentId paymentId);

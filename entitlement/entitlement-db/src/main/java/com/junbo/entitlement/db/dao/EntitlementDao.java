@@ -28,5 +28,5 @@ public interface EntitlementDao {
 
     EntitlementEntity getByTrackingUuid(Long shardMasterId, UUID trackingUuid);
 
-    EntitlementEntity get(Long userId, Long entitlementDefinitionId);
+    EntitlementEntity get(Long userId, Long itemId, String type);
 }

@@ -6,7 +6,7 @@
 
 package com.junbo.catalog.spec.model.promotion;
 
-import com.junbo.common.jackson.annotation.EntitlementDefinitionId;
+import com.junbo.common.jackson.annotation.ItemId;
 
 import java.util.List;
 
@@ -14,14 +14,14 @@ import java.util.List;
  * Entitlement criterion.
  */
 public class EntitlementCriterion extends Criterion {
-    @EntitlementDefinitionId
-    private List<Long> entitlements;
+    @ItemId
+    private List<Long> items;
 
-    public List<Long> getEntitlements() {
-        return entitlements;
+    public List<Long> getItems() {
+        return items;
     }
 
-    public void setEntitlements(List<Long> entitlements) {
-        this.entitlements = entitlements;
+    public void setItems(List<Long> items) {
+        this.items = items;
     }
 }

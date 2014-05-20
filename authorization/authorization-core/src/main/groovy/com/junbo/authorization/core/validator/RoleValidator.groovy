@@ -18,7 +18,7 @@ import groovy.transform.CompileStatic
 interface RoleValidator {
     Promise<Void> validateForCreate(Role role)
 
-    Promise<Role> validateForGet(RoleId roleId)
+    Promise<Void> validateForGet(RoleId roleId)
 
     Promise<Void> validateForUpdate(Role role, Role oldRole)
 

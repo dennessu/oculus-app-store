@@ -4,7 +4,7 @@ import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTeleAttemptId
 import com.junbo.common.model.Results
-import com.junbo.identity.core.service.Created201Marker
+import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.UserTeleAttemptFilter
 import com.junbo.identity.core.service.validator.UserTeleAttemptValidator
 import com.junbo.identity.data.repository.UserTeleAttemptRepository

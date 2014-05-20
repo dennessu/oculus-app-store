@@ -9,53 +9,59 @@ package com.junbo.entitlement.spec.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.junbo.common.jackson.annotation.EntitlementDefinitionId;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.jackson.annotation.EntitlementId;
+import com.junbo.common.jackson.annotation.ItemId;
 import com.junbo.common.jackson.annotation.UserId;
+import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 
 /**
  * Entitlement Model.
  */
-@JsonPropertyOrder(value = {"entitlementId", "rev", "userId", "isActive", "isBanned",
-        "entitlementDefinitionId", "grantTime", "expirationTime", "useCount"})
-public class Entitlement {
-    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] entitlement id")
+@JsonPropertyOrder(value = {"entitlementId", "userId", "itemId", "isActive", "isBanned",
+        "grantTime", "expirationTime", "useCount", "type", "futureExpansion",
+        "resourceAge", "createdTime", "updatedTime", "adminInfo"})
+public class Entitlement extends ResourceMeta implements Identifiable<com.junbo.common.id.EntitlementId> {
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] Link to this entitlement resource")
     @JsonProperty("self")
     @EntitlementId
     private Long entitlementId;
-    @ApiModelProperty(position = 2, required = true, value = "[Client Immutable]")
-    private String rev;
-    @ApiModelProperty(position = 3, required = true, value = "the user this entitlement belongs to")
+    @ApiModelProperty(position = 2, required = true, value = "Link to the User that is granted access by this entitlement")
     @UserId
     @JsonProperty("user")
     private Long userId;
-    @ApiModelProperty(position = 4, required = true, value = "[Client Immutable]")
+    @ApiModelProperty(position = 4, required = true, value = "[Client Immutable] True if/only if the entitlement is active;" +
+            " false when the entitlement is out of date, useCount is 0, or someone manually set isSuspended to true")
     private Boolean isActive;
-    @ApiModelProperty(position = 5, required = true, value = "[Client Immutable]")
+    @ApiModelProperty(position = 5, required = true, value = "True if/only if this entitlement is suspended, e.g., by CSR or other authorized agent")
     @JsonProperty("isSuspended")
     private Boolean isBanned;
-    @ApiModelProperty(position = 6, required = true, value = "grant time")
+    @ApiModelProperty(position = 6, required = true, value = "the timestamp when this entitlement was granted; must be ISO 8601")
     private Date grantTime;
-    @ApiModelProperty(position = 7, required = true, value = "null represents for never expires")
+    @ApiModelProperty(position = 7, required = true, value = "the timestamp when this entitlement expires (must be ISO 8601), or null to mean it never expires")
     private Date expirationTime;
     @ApiModelProperty(position = 8, required = true,
-            value = "must be a non-negative number" +
-                    " if the entitlementDefinition's isConsumable is true," +
-                    " otherwise must be null")
+            value = "a non-negative number if this is a consumable entitlement; otherwise null")
     private Integer useCount;
-    @ApiModelProperty(position = 9, required = true, value = "the entitlementDefinition associated with entitlement")
-    @EntitlementDefinitionId
-    @JsonProperty("entitlementDefinition")
-    private Long entitlementDefinitionId;
+    @ApiModelProperty(position = 3, required = true, value = "Link to the Item that is granted to the user by this entitlement")
+    @ItemId
+    @JsonProperty("item")
+    private Long itemId;
+    @ApiModelProperty(position = 9, required = true, value = "enumeration; values are \"DOWNLOAD\" and \"RUN\"")
+    @JsonProperty("entitlementType")
+    private String type;
+    @ApiModelProperty(position = 10, required = true, value = "[non optional, non nullable, possibly empty]Used to add properties between major API revisions." +
+            " In next major API version, all these properties will be refactored into the main body and futureExpansion will again be empty")
+    Map<String, JsonNode> futureExpansion;
 
     @JsonIgnore
     private UUID trackingUuid;
-    @JsonIgnore
-    private String type;
 
     public Long getEntitlementId() {
         return entitlementId;
@@ -71,14 +77,6 @@ public class Entitlement {
 
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    public Long getEntitlementDefinitionId() {
-        return entitlementDefinitionId;
-    }
-
-    public void setEntitlementDefinitionId(Long entitlementDefinitionId) {
-        this.entitlementDefinitionId = entitlementDefinitionId;
     }
 
     public Date getGrantTime() {
@@ -121,14 +119,6 @@ public class Entitlement {
         this.isBanned = isBanned;
     }
 
-    public String getRev() {
-        return rev;
-    }
-
-    public void setRev(String rev) {
-        this.rev = rev;
-    }
-
     public UUID getTrackingUuid() {
         return trackingUuid;
     }
@@ -143,5 +133,31 @@ public class Entitlement {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Long getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
+    }
+
+    public Map<String, JsonNode> getFutureExpansion() {
+        return futureExpansion;
+    }
+
+    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
+        this.futureExpansion = futureExpansion;
+    }
+
+    @Override
+    public com.junbo.common.id.EntitlementId getId() {
+        return new com.junbo.common.id.EntitlementId(entitlementId);
+    }
+
+    @Override
+    public void setId(com.junbo.common.id.EntitlementId id) {
+        this.entitlementId = id.getValue();
     }
 }

@@ -7,34 +7,38 @@
 package com.junbo.entitlement.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.junbo.common.cloudant.CloudantEntity;
+import com.junbo.common.id.EntitlementId;
+import com.junbo.common.util.Identifiable;
+import com.junbo.entitlement.db.entity.def.MapJsonUserType;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Entitlement Entity.
  */
 @javax.persistence.Entity
 @Table(name = "entitlement")
-public class EntitlementEntity extends Entity {
-    private Long entitlementId;
+@TypeDefs(@TypeDef(name = "json-map", typeClass = MapJsonUserType.class))
+public class EntitlementEntity extends Entity implements CloudantEntity, Identifiable<EntitlementId> {
     private Long userId;
     private Boolean isBanned;
-    private Long entitlementDefinitionId;
+    private Long itemId;
     private Date grantTime;
     private Date expirationTime;
     private Integer useCount;
     private String type;
-
-    @Id
-    @Column(name = "entitlement_id")
-    public Long getEntitlementId() {
-        return entitlementId;
-    }
-
-    public void setEntitlementId(Long entitlementId) {
-        this.entitlementId = entitlementId;
-    }
+    private Map<String, JsonNode> futureExpansion;
+    private UUID trackingUuid;
 
     @Column(name = "user_id")
     public Long getUserId() {
@@ -45,13 +49,13 @@ public class EntitlementEntity extends Entity {
         this.userId = userId;
     }
 
-    @Column(name = "entitlement_definition_id")
-    public Long getEntitlementDefinitionId() {
-        return entitlementDefinitionId;
+    @Column(name = "item_id")
+    public Long getItemId() {
+        return itemId;
     }
 
-    public void setEntitlementDefinitionId(Long entitlementDefinitionId) {
-        this.entitlementDefinitionId = entitlementDefinitionId;
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
     }
 
     @Column(name = "grant_time")
@@ -99,16 +103,24 @@ public class EntitlementEntity extends Entity {
         this.type = type;
     }
 
-    @JsonIgnore
-    @Transient
-    @Override
-    public Long getId() {
-        return this.entitlementId;
+    @Column(name = "future_expansion")
+    @Type(type = "json-map")
+    public Map<String, JsonNode> getFutureExpansion() {
+        return futureExpansion;
     }
 
-    @Override
-    public void setId(Long id) {
-        this.entitlementId = id;
+    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
+        this.futureExpansion = futureExpansion;
+    }
+
+    @Column(name = "tracking_uuid")
+    @Type(type = "pg-uuid")
+    public UUID getTrackingUuid() {
+        return trackingUuid;
+    }
+
+    public void setTrackingUuid(UUID trackingUuid) {
+        this.trackingUuid = trackingUuid;
     }
 
     @JsonIgnore
@@ -116,5 +128,17 @@ public class EntitlementEntity extends Entity {
     @Override
     public Long getShardMasterId() {
         return userId;
+    }
+
+    @Override
+    @Transient
+    public EntitlementId getId() {
+        return new EntitlementId(this.getpId());
+    }
+
+    @Override
+    @Transient
+    public void setId(EntitlementId id) {
+        this.setpId(id.getValue());
     }
 }

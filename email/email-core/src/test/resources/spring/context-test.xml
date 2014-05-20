@@ -7,23 +7,4 @@
     <import resource="classpath*:spring/*-context.xml"/>
     <import resource="classpath*:spring/transaction.xml"/>
 
-    <context:component-scan base-package="com.junbo.email.db"/>
-    <context:component-scan base-package="com.junbo.email.core"/>
-
-    <!--<bean id="emailNotificationTest" class="com.junbo.email.core.EmailNotificationTest">-->
-        <!--&lt;!&ndash;<property name="brokerUrl" value="${notification.activemq.brokerURL}"/>&ndash;&gt;-->
-        <!--<property name="brokerUrl" value="tcp://0.0.0.0:61616"/>-->
-    <!--</bean>-->
-    <!--<bean id="emailTestPublisher" class="com.junbo.email.core.EmailPublisher" parent="basePublisher">-->
-        <!--<property name="template" ref="emailJmsTemplate"/>-->
-        <!--<property name="destination" ref="emailQueue"/>-->
-    <!--</bean>-->
-
-    <!--<bean id="emailTestListener" class="com.junbo.email.core.EmailListener"/>-->
-
-    <!--<bean id="emailTestListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer"-->
-          <!--parent="baseListenerContainer">-->
-        <!--<property name="destination" ref="emailQueue"/>-->
-        <!--<property name="messageListener" ref="emailTestListener"/>-->
-    <!--</bean>-->
 </beans>

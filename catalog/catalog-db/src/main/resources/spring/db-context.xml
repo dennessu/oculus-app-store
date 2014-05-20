@@ -91,16 +91,23 @@
     </bean>
 
     <!-- Repository -->
-    <bean id="itemRepository" class="com.junbo.catalog.db.repo.ItemRepository"/>
-    <bean id="itemRevisionRepository" class="com.junbo.catalog.db.repo.ItemRevisionRepository"/>
-    <bean id="offerRepository" class="com.junbo.catalog.db.repo.OfferRepository"/>
-    <bean id="offerRevisionRepository" class="com.junbo.catalog.db.repo.OfferRevisionRepository"/>
+    <bean id="itemRepository" class="com.junbo.catalog.db.repo.impl.sql.ItemRepositoryImpl"/>
+    <bean id="itemRevisionRepository" class="com.junbo.catalog.db.repo.impl.sql.ItemRevisionRepositoryImpl"/>
+    <bean id="offerRepository" class="com.junbo.catalog.db.repo.impl.sql.OfferRepositoryImpl"/>
+    <bean id="offerRevisionRepository" class="com.junbo.catalog.db.repo.impl.sql.OfferRevisionRepositoryImpl"/>
+    <bean id="itemAttributeRepository" class="com.junbo.catalog.db.repo.impl.cloudant.ItemAttributeRepositoryImpl" parent="cloudantClient">
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+        <property name="dbName" value="item_attribute"/>
+        <property name="cloudantDBUri" value="${catalog.cloudant.url}" />
+        <property name="cloudantUser" value="${catalog.cloudant.user}" />
+        <property name="cloudantPassword" value="${catalog.cloudant.password}" />
+    </bean>
+    <!--bean id="itemAttributeRepository" class="com.junbo.catalog.db.repo.impl.sql.ItemAttributeRepositoryImpl"/-->
+    <bean id="offerAttributeRepository" class="com.junbo.catalog.db.repo.impl.sql.OfferAttributeRepositoryImpl"/>
+    <bean id="priceTierRepository" class="com.junbo.catalog.db.repo.impl.sql.PriceTierRepositoryImpl"/>
+
     <bean id="promotionRevisionRepository" class="com.junbo.catalog.db.repo.PromotionRevisionRepository"/>
     <bean id="promotionRepository" class="com.junbo.catalog.db.repo.PromotionRepository"/>
     <bean id="entitlementDefinitionRepository" class="com.junbo.catalog.db.repo.EntitlementDefinitionRepository"/>
-
-    <bean id="itemAttributeRepository" class="com.junbo.catalog.db.repo.ItemAttributeRepository"/>
-    <bean id="offerAttributeRepository" class="com.junbo.catalog.db.repo.OfferAttributeRepository"/>
-    <bean id="priceTierRepository" class="com.junbo.catalog.db.repo.PriceTierRepository"/>
     <bean id="itemOfferRelationsRepository" class="com.junbo.catalog.db.repo.ItemOfferRelationsRepository"/>
 </beans>

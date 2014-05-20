@@ -7,6 +7,8 @@ package ${packageName};
 import com.junbo.langur.core.client.*;
 import com.ning.http.client.AsyncHttpClient;
 
+import java.util.concurrent.Executor;
+
 import ${resourceType};
 
 public class ${className} implements ClientProxyFactory<${resourceName}> {
@@ -35,17 +37,22 @@ public class ${className} implements ClientProxyFactory<${resourceName}> {
     @org.springframework.beans.factory.annotation.Qualifier("routingHeadersProvider")
     private HeadersProvider __headersProvider;
 
+    @org.springframework.beans.factory.annotation.Autowired
+    @org.springframework.beans.factory.annotation.Qualifier("routingExecutor")
+    private Executor __executor;
+
     public ${className}() { }
 
     public ${className}(AsyncHttpClient client, MessageTranscoder transcoder, PathParamTranscoder pathParamTranscoder,
             QueryParamTranscoder queryParamTranscoder, ExceptionHandler exceptionHandler,
-            HeadersProvider headersProvider) {
+            HeadersProvider headersProvider, Executor executor) {
         assert client != null : "client is null";
         assert transcoder != null : "transcoder is null";
         assert pathParamTranscoder != null : "pathParamTranscoder is null";
         assert queryParamTranscoder != null : "queryParamTranscoder is null";
         assert exceptionHandler != null : "exceptionHandler is null";
         assert headersProvider != null : "headersProvider is null";
+        assert executor != null : "executor is null";
 
         __client = client;
         __transcoder = transcoder;
@@ -53,9 +60,19 @@ public class ${className} implements ClientProxyFactory<${resourceName}> {
         __queryParamTranscoder = queryParamTranscoder;
         __exceptionHandler = exceptionHandler;
         __headersProvider = headersProvider;
+        __executor = executor;
     }
 
     public ${resourceName} create(String targetUrl) {
-        return new ${resourceName}ClientProxy(__client, __transcoder, __pathParamTranscoder, __queryParamTranscoder, __exceptionHandler, targetUrl, __headersProvider.getHeaders());
+        ${resourceName}ClientProxy clientProxy = new ${resourceName}ClientProxy();
+        clientProxy.setClient(__client);
+        clientProxy.setTranscoder(__transcoder);
+        clientProxy.setPathParamTranscoder(__pathParamTranscoder);
+        clientProxy.setQueryParamTranscoder(__queryParamTranscoder);
+        clientProxy.setExceptionHandler(__exceptionHandler);
+        clientProxy.setTarget(targetUrl);
+        clientProxy.setHeaders(__headersProvider.getHeaders());
+        clientProxy.setExecutor(__executor);
+        return clientProxy;
     }
 }

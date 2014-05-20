@@ -7,16 +7,17 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.GroupId;
+import com.junbo.common.id.UserId;
 import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.model.Link;
+import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
-import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by liangfu on 4/3/14.
  */
-public class Group extends ResourceMeta implements Identifiable<GroupId> {
+public class Group extends PropertyAssignedAwareResourceMeta implements Identifiable<GroupId> {
 
     @ApiModelProperty(position = 1, required = true, value = "[Nullable]The id of the group resource.")
     @JsonProperty("self")
@@ -36,6 +37,8 @@ public class Group extends ResourceMeta implements Identifiable<GroupId> {
     @ApiModelProperty(position = 4, required = false, value = "[Nullable]Users in this group.")
     @HateoasLink("/users?groupId={id}")
     private Link users;
+
+    private UserId ownerUserId;
 
     @Override
     public GroupId getId() {
@@ -83,5 +86,13 @@ public class Group extends ResourceMeta implements Identifiable<GroupId> {
     public void setUsers(Link users) {
         this.users = users;
         support.setPropertyAssigned("users");
+    }
+
+    public UserId getOwnerUserId() {
+        return ownerUserId;
+    }
+
+    public void setOwnerUserId(UserId ownerUserId) {
+        this.ownerUserId = ownerUserId;
     }
 }

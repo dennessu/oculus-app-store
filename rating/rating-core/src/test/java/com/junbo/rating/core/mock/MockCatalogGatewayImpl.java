@@ -208,7 +208,7 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
             setCriteria(new ArrayList<Criterion>() {{
                 add(new EntitlementCriterion() {{
                     setPredicate(Predicate.EXCLUDE_ENTITLEMENT);
-                    setEntitlements(new ArrayList<Long>() {{
+                    setItems(new ArrayList<Long>() {{
                         add(400L);
                     }});
                 }});
@@ -238,14 +238,14 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
             setCriteria(new ArrayList<Criterion>() {{
                 add(new EntitlementCriterion() {{
                     setPredicate(Predicate.EXCLUDE_ENTITLEMENT);
-                    setEntitlements(new ArrayList<Long>() {{
+                    setItems(new ArrayList<Long>() {{
                         add(401L);
                         add(402L);
                     }});
                 }});
                 add(new EntitlementCriterion() {{
                     setPredicate(Predicate.INCLUDE_ENTITLEMENT);
-                    setEntitlements(new ArrayList<Long>() {{
+                    setItems(new ArrayList<Long>() {{
                         add(400L);
                         add(403L);
                     }});
@@ -275,7 +275,7 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
             setCriteria(new ArrayList<Criterion>() {{
                 add(new EntitlementCriterion() {{
                     setPredicate(Predicate.INCLUDE_ENTITLEMENT);
-                    setEntitlements(new ArrayList<Long>() {{
+                    setItems(new ArrayList<Long>() {{
                         add(400L);
                     }});
                 }});

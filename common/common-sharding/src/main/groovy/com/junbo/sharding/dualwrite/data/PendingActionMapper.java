@@ -67,7 +67,7 @@ public class PendingActionMapper {
         if (savedEntityType != null) {
             try {
                 Class cls = Class.forName(savedEntityType);
-                result.setSavedEntity(marshaller.unmarshall(savedEntityJson, cls));
+                result.setSavedEntity((CloudantEntity)marshaller.unmarshall(savedEntityJson, cls));
             } catch (ClassNotFoundException ex) {
                 throw new RuntimeException("Failed to find class " + savedEntityType, ex);
             } catch (IOException ex) {

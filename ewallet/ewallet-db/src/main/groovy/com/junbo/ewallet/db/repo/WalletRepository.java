@@ -19,17 +19,11 @@ import com.junbo.ewallet.db.entity.def.TransactionType;
 import com.junbo.ewallet.db.mapper.WalletMapper;
 import com.junbo.ewallet.spec.def.WalletLotType;
 import com.junbo.ewallet.spec.def.WalletType;
-import com.junbo.ewallet.spec.model.CreditRequest;
-import com.junbo.ewallet.spec.model.DebitRequest;
-import com.junbo.ewallet.spec.model.Transaction;
-import com.junbo.ewallet.spec.model.Wallet;
+import com.junbo.ewallet.spec.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * repo of wallet.
@@ -84,7 +78,6 @@ public class WalletRepository {
 
     public Transaction debit(Wallet wallet, DebitRequest debitRequest) {
         wallet.setBalance(wallet.getBalance().subtract(debitRequest.getAmount()));
-        wallet.setTrackingUuid(debitRequest.getTrackingUuid());
         WalletEntity resultEntity = mapper.toWalletEntity(wallet);
         walletDao.update(resultEntity);
 
@@ -135,6 +128,50 @@ public class WalletRepository {
         }
     }
 
+    public Transaction refund(Wallet wallet, Long transactionId, RefundRequest refundRequest) {
+        wallet.setBalance(wallet.getBalance().add(refundRequest.getAmount()));
+        walletDao.update(mapper.toWalletEntity(wallet));
+        TransactionEntity debitTransaction = transactionDao.get(transactionId);
+        debitTransaction.setUnrefundedAmount(debitTransaction.getUnrefundedAmount().subtract(refundRequest.getAmount()));
+        transactionDao.update(debitTransaction);
+
+        TransactionEntity transaction =
+                transactionDao.insert(buildRefundTransaction(
+                        refundRequest.getTrackingUuid(), wallet.getWalletId(), refundRequest));
+
+        List<LotTransactionEntity> lotTransactions = lotTransactionDao.getByTransactionId(transactionId);
+        refund(lotTransactions, refundRequest.getAmount(), transaction.getId());
+        return mapper.toTransaction(transaction);
+    }
+
+    private void refund(List<LotTransactionEntity> lotTransactions, BigDecimal amount, Long transactionId) {
+        Date now = new Date();
+        Boolean refundEnded = false;
+        for (LotTransactionEntity lotTransaction : lotTransactions) {
+            WalletLotEntity lot = walletLotDao.get(lotTransaction.getWalletLotId());
+            if (amount.subtract(lotTransaction.getUnrefundedAmount()).compareTo(BigDecimal.ZERO) <= 0) {
+                lot.setRemainingAmount(lot.getRemainingAmount().add(amount));
+                lotTransaction.setUnrefundedAmount(lotTransaction.getUnrefundedAmount().subtract(amount));
+                lotTransactionDao.insert(buildRefundLotTransaction(lot, amount, transactionId));
+                refundEnded = true;
+            } else {
+                lot.setRemainingAmount(lot.getRemainingAmount().add(lotTransaction.getUnrefundedAmount()));
+                lotTransactionDao.insert(buildRefundLotTransaction(lot, lotTransaction.getUnrefundedAmount(), transactionId));
+                amount = amount.subtract(lotTransaction.getUnrefundedAmount());
+                lotTransaction.setUnrefundedAmount(BigDecimal.ZERO);
+            }
+
+            if (lot.getExpirationDate() != null && lot.getExpirationDate().before(now)) {
+                lot.setExpirationDate(null);  //enable lot
+            }
+            walletLotDao.update(lot);
+            lotTransactionDao.update(lotTransaction);
+            if (refundEnded) {
+                break;
+            }
+        }
+    }
+
     public Wallet getByTrackingUuid(Long shardMasterId, UUID uuid) {
         return mapper.toWallet(walletDao.getByTrackingUuid(shardMasterId, uuid));
     }
@@ -166,6 +203,16 @@ public class WalletRepository {
         transactionEntity.setAmount(debitRequest.getAmount());
         transactionEntity.setOfferId(debitRequest.getOfferId());
         transactionEntity.setType(TransactionType.DEBIT);
+        transactionEntity.setUnrefundedAmount(debitRequest.getAmount());
+        return transactionEntity;
+    }
+
+    private TransactionEntity buildRefundTransaction(UUID trackingUuid, Long walletId, RefundRequest refundRequest) {
+        TransactionEntity transactionEntity = new TransactionEntity();
+        transactionEntity.setTrackingUuid(trackingUuid);
+        transactionEntity.setWalletId(walletId);
+        transactionEntity.setAmount(refundRequest.getAmount());
+        transactionEntity.setType(TransactionType.REFUND);
         return transactionEntity;
     }
 
@@ -174,9 +221,11 @@ public class WalletRepository {
         LotTransactionEntity lotTransaction = new LotTransactionEntity();
         lotTransaction.setTransactionId(transactionId);
         lotTransaction.setType(TransactionType.DEBIT);
+        lotTransaction.setWalletLotType(lotEntity.getType());
         lotTransaction.setWalletId(lotEntity.getWalletId());
         lotTransaction.setWalletLotId(lotEntity.getId());
         lotTransaction.setAmount(amount);
+        lotTransaction.setUnrefundedAmount(amount);
         return lotTransaction;
     }
 
@@ -184,9 +233,21 @@ public class WalletRepository {
         LotTransactionEntity lotTransaction = new LotTransactionEntity();
         lotTransaction.setTransactionId(transactionId);
         lotTransaction.setType(TransactionType.CREDIT);
+        lotTransaction.setWalletLotType(lotEntity.getType());
         lotTransaction.setWalletId(lotEntity.getWalletId());
         lotTransaction.setWalletLotId(lotEntity.getId());
         lotTransaction.setAmount(lotEntity.getRemainingAmount());
+        return lotTransaction;
+    }
+
+    private LotTransactionEntity buildRefundLotTransaction(WalletLotEntity lotEntity, BigDecimal amount, Long transactionId) {
+        LotTransactionEntity lotTransaction = new LotTransactionEntity();
+        lotTransaction.setTransactionId(transactionId);
+        lotTransaction.setType(TransactionType.REFUND);
+        lotTransaction.setWalletLotType(lotEntity.getType());
+        lotTransaction.setWalletId(lotEntity.getWalletId());
+        lotTransaction.setWalletLotId(lotEntity.getId());
+        lotTransaction.setAmount(amount);
         return lotTransaction;
     }
 

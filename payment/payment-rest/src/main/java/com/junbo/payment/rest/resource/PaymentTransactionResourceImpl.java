@@ -58,6 +58,11 @@ public class PaymentTransactionResourceImpl implements PaymentTransactionResourc
     }
 
     @Override
+    public Promise<PaymentTransaction> refundPayment(PaymentId paymentId, PaymentTransaction request) {
+        return paymentService.refund(paymentId.getValue(), request);
+    }
+
+    @Override
     public Promise<PaymentTransaction> getPayment(PaymentId paymentId) {
         return paymentService.getTransaction(paymentId.getValue());
     }

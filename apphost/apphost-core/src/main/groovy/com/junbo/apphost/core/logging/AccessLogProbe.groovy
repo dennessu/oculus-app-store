@@ -27,7 +27,27 @@ class AccessLogProbe extends HttpServerProbe.Adapter {
 
     @Override
     void onRequestReceiveEvent(HttpServerFilter filter, Connection connection, Request request) {
-        request.setAttribute(ATTRIBUTE_TIME_STAMP, System.currentTimeMillis())
+        def requestMillis = System.currentTimeMillis()
+        request.setAttribute(ATTRIBUTE_TIME_STAMP, requestMillis)
+
+        if (LOGGER.isDebugEnabled()) {
+            // %h %D %u %t \"%r\" %s %b \"%{Referer}i\" \"%{User-agent}i\"
+
+            def remoteHost = getRemoteHost(request)
+            def remoteUser = getRemoteUser(request)
+            def requestTimestamp = DATE_FORMAT.get().format(new Date(requestMillis))
+            def method = getRequestMethod(request)
+            def uri = getRequestURI(request)
+            def query = getRequestQuery(request)
+            def protocol = getRequestProtocol(request)
+            def referer = getRequestHeader(request, 'Referer')
+            def userAgent = getRequestHeader(request, 'User-agent')
+
+            String record = "$remoteHost - $remoteUser $requestTimestamp \"$method $uri$query $protocol\"" +
+                    " - - \"$referer\" \"$userAgent\""
+
+            LOGGER.debug(record)
+        }
     }
 
     @Override
@@ -60,7 +80,13 @@ class AccessLogProbe extends HttpServerProbe.Adapter {
 
     private static String getRemoteHost(Request request) {
 
-        String value = request.remoteAddr // request.remoteHost could timeout in some cases...
+        String value = null
+
+        try {
+            value = request.remoteAddr // request.remoteHost could timeout in some cases...
+        } catch (NullPointerException ignore) {
+        }
+
         return value == null ? '-' : value
     }
 

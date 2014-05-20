@@ -20,7 +20,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * RoleAssignmentResource.
  */
-@Api("roleAssignments")
+@Api("authorization")
 @RestResource
 @Path("/role-assignments")
 @Produces({MediaType.APPLICATION_JSON})
@@ -36,16 +36,11 @@ public interface RoleAssignmentResource {
     @Path("/{roleAssignmentId}")
     Promise<RoleAssignment> get(@PathParam("roleAssignmentId") RoleAssignmentId roleAssignmentId);
 
-    @POST
-    @Path("/{roleAssignmentId}")
-    Promise<RoleAssignment> patch(@PathParam("roleAssignmentId") RoleAssignmentId roleAssignmentId,
-                                  RoleAssignment roleAssignment);
 
-    @ApiOperation("Full update one role assignment")
-    @PUT
-    @Path("/{roleAssignmentId}")
-    Promise<RoleAssignment> put(@PathParam("roleAssignmentId") RoleAssignmentId roleAssignmentId,
-                                RoleAssignment roleAssignment);
+    @ApiOperation("Delete a role assignment")
+    @DELETE
+    @Path("/{roleAssignment}")
+    Promise<Void> delete(@PathParam("roleAssignment") RoleAssignmentId roleAssignmentId);
 
     @ApiOperation("search role assignment")
     @GET

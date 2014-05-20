@@ -41,7 +41,7 @@ public class AdyenProviderServiceTest extends BaseTest {
                 setAmount(new BigDecimal(1500.00));
             }
         });
-        PaymentTransaction result = paymentService.charge(payment).wrapped().get();
+        PaymentTransaction result = paymentService.charge(payment).get();
         Assert.assertNotNull(result.getWebPaymentInfo().getRedirectURL());
         Assert.assertEquals(result.getStatus(), PaymentStatus.UNCONFIRMED.toString());
         //manual pay through redirectURL
@@ -49,12 +49,12 @@ public class AdyenProviderServiceTest extends BaseTest {
         properties.setPspReference("ut1234");
         properties.setAuthResult("AUTHORISED");
         paymentCallbackService.addPaymentProperties(result.getId(), properties);
-        result = paymentService.getUpdatedTransaction(result.getId()).wrapped().get();
+        result = paymentService.getUpdatedTransaction(result.getId()).get();
         Assert.assertNotNull(result.getExternalToken());
         Assert.assertNotNull(result.getStatus(), PaymentStatus.SETTLED.toString());
         boolean exception = false;
         try{
-            result = paymentService.confirm(result.getId(), payment).wrapped().get();
+            result = paymentService.confirm(result.getId(), payment).get();
         }catch (Exception ex){
             exception = true;
         }
@@ -63,8 +63,100 @@ public class AdyenProviderServiceTest extends BaseTest {
         //Charge the user again, this time. there should be no ReturnURL and the transaction becomes settled immediately as we use recurring
         payment.setTrackingUuid(generateUUID());
         payment.setId(null);
-        result = paymentService.charge(payment).wrapped().get();
+        result = paymentService.charge(payment).get();
         Assert.assertNull(result.getWebPaymentInfo());
         Assert.assertEquals(result.getStatus(), PaymentStatus.SETTLED.toString());
+    }
+
+    @Test(enabled = false)
+    public void testChargeAndCancel() throws ExecutionException, InterruptedException {
+        PaymentInstrument piRequest = buildBasePIRequest();
+        piRequest.setType(PIType.OTHERS.getId());
+        PaymentInstrument request = addPI(piRequest);
+        PaymentTransaction payment = new PaymentTransaction();
+        payment.setBillingRefId("123");
+        payment.setUserId(userId);
+        payment.setPaymentInstrumentId(request.getId());
+        payment.setTrackingUuid(generateUUID());
+        payment.setChargeInfo(new ChargeInfo() {
+            {
+                setCurrency("EUR");
+                setAmount(new BigDecimal(1500.00));
+            }
+        });
+        PaymentTransaction result = paymentService.charge(payment).get();
+        Assert.assertNotNull(result.getWebPaymentInfo().getRedirectURL());
+        Assert.assertEquals(result.getStatus(), PaymentStatus.UNCONFIRMED.toString());
+        //manual pay through redirectURL
+        PaymentProperties properties = new PaymentProperties();
+        properties.setPspReference("ut1234");
+        properties.setAuthResult("AUTHORISED");
+        paymentCallbackService.addPaymentProperties(result.getId(), properties).get();
+        result = paymentService.getUpdatedTransaction(result.getId()).get();
+        Assert.assertNotNull(result.getExternalToken());
+        Assert.assertNotNull(result.getStatus(), PaymentStatus.SETTLED.toString());
+        boolean exception = false;
+        try{
+            result = paymentService.confirm(result.getId(), payment).get();
+        }catch (Exception ex){
+            exception = true;
+        }
+        //since the transaction is settled, so the exception should be true.
+        Assert.assertTrue(exception);
+        //Charge the user again, this time. there should be no ReturnURL and the transaction becomes settled immediately as we use recurring
+        payment.setTrackingUuid(generateUUID());
+        payment.setId(null);
+        result = paymentService.charge(payment).get();
+        Assert.assertNull(result.getWebPaymentInfo());
+        Assert.assertEquals(result.getStatus(), PaymentStatus.SETTLED.toString());
+        payment.setChargeInfo(null);
+        result = paymentService.reverse(result.getId(), payment).get();
+        Assert.assertEquals(result.getStatus(), PaymentStatus.REVERSED.toString());
+    }
+
+    @Test(enabled = false)
+    public void testChargeAndRefund() throws ExecutionException, InterruptedException {
+        PaymentInstrument piRequest = buildBasePIRequest();
+        piRequest.setType(PIType.OTHERS.getId());
+        PaymentInstrument request = addPI(piRequest);
+        PaymentTransaction payment = new PaymentTransaction();
+        payment.setBillingRefId("123");
+        payment.setUserId(userId);
+        payment.setPaymentInstrumentId(request.getId());
+        payment.setTrackingUuid(generateUUID());
+        payment.setChargeInfo(new ChargeInfo() {
+            {
+                setCountry("DE");
+                setCurrency("EUR");
+                setAmount(new BigDecimal(1500.00));
+            }
+        });
+        PaymentTransaction result = paymentService.charge(payment).get();
+        Assert.assertNotNull(result.getWebPaymentInfo().getRedirectURL());
+        Assert.assertEquals(result.getStatus(), PaymentStatus.UNCONFIRMED.toString());
+        //manual pay through redirectURL
+        PaymentProperties properties = new PaymentProperties();
+        properties.setPspReference("ut1234");
+        properties.setAuthResult("AUTHORISED");
+        paymentCallbackService.addPaymentProperties(result.getId(), properties).get();
+        result = paymentService.getUpdatedTransaction(result.getId()).get();
+        Assert.assertNotNull(result.getExternalToken());
+        Assert.assertNotNull(result.getStatus(), PaymentStatus.SETTLED.toString());
+        boolean exception = false;
+        try{
+            result = paymentService.confirm(result.getId(), payment).get();
+        }catch (Exception ex){
+            exception = true;
+        }
+        //since the transaction is settled, so the exception should be true.
+        Assert.assertTrue(exception);
+        //Charge the user again, this time. there should be no ReturnURL and the transaction becomes settled immediately as we use recurring
+        payment.setTrackingUuid(generateUUID());
+        payment.setId(null);
+        result = paymentService.charge(payment).get();
+        Assert.assertNull(result.getWebPaymentInfo());
+        Assert.assertEquals(result.getStatus(), PaymentStatus.SETTLED.toString());
+        result = paymentService.refund(result.getId(), payment).get();
+        Assert.assertEquals(result.getStatus(), PaymentStatus.REFUNDED.toString());
     }
 }

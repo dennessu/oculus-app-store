@@ -20,7 +20,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * RoleResource.
  */
-@Api("roles")
+@Api("authorization")
 @RestResource
 @Path("/roles")
 @Produces({MediaType.APPLICATION_JSON})

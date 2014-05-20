@@ -2,6 +2,7 @@ package com.junbo.common.id.util
 
 import com.junbo.common.id.AddressId
 import com.junbo.common.id.Id
+import com.junbo.common.model.Link
 import org.testng.Assert
 import org.testng.annotations.Test
 
@@ -11,8 +12,8 @@ import org.testng.annotations.Test
 class IdUtilTest {
     @Test
     void testFromHref() {
-        String href = '/v1/addresses/6B54FDB4BC9F'
-        Id id = IdUtil.fromHref(href)
+        Link link = new Link(href: '/v1/addresses/6B54FDB4BC9F', id: '6B54FDB4BC9F')
+        Id id = IdUtil.fromLink(link)
         Assert.assertTrue(id instanceof AddressId)
         Assert.assertEquals(id.value, 33570816L)
     }

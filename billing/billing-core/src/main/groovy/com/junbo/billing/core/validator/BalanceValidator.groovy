@@ -27,13 +27,19 @@ import org.springframework.beans.factory.annotation.Qualifier
  */
 @CompileStatic
 class BalanceValidator {
-    @Autowired
-    @Qualifier(value='billingIdentityFacade')
     IdentityFacade identityFacade
 
-    @Autowired
-    @Qualifier(value='billingPaymentFacade')
     PaymentFacade paymentFacade
+
+    @Autowired
+    void setIdentityFacade(@Qualifier('billingIdentityFacade')IdentityFacade identityFacade) {
+        this.identityFacade = identityFacade
+    }
+
+    @Autowired
+    void setPaymentFacade(@Qualifier('billingPaymentFacade')PaymentFacade paymentFacade) {
+        this.paymentFacade = paymentFacade
+    }
 
     @Autowired
     CurrencyService currencyService
@@ -137,13 +143,34 @@ class BalanceValidator {
         if (balance.type == BalanceType.REFUND.name()) {
             Balance originalBalance = balanceRepository.getBalance(balance.originalBalanceId.value)
             List<Balance> refundeds = balanceRepository.getRefundBalancesByOriginalId(balance.originalBalanceId.value)
-            BigDecimal totalRefunded;
+            BigDecimal totalRefunded = 0
             for (Balance refunded : refundeds) {
                 totalRefunded += refunded.totalAmount
             }
             if (totalRefunded + balance.totalAmount > originalBalance.totalAmount) {
+                LOGGER.error('for the original balance {}, refund total {} exceeded, original amount {}, refunded {}',
+                    originalBalance.balanceId, balance.totalAmount, originalBalance.totalAmount, totalRefunded)
                 throw AppErrors.INSTANCE.balanceRefundTotalExceeded(balance.totalAmount, originalBalance.totalAmount,
                 totalRefunded).exception()
+            }
+            for (BalanceItem refundItem : balance.balanceItems) {
+                BalanceItem originalItem = originalBalance.getBalanceItem(refundItem.originalBalanceItemId)
+                BigDecimal itemRefunded = 0
+                for (Balance refunded : refundeds) {
+                    for (BalanceItem refundedItem : refunded.balanceItems) {
+                        if (refundedItem.originalBalanceItemId == refundItem.originalBalanceItemId) {
+                            itemRefunded += refundedItem.amount
+                            //todo: think about the refund tax
+                        }
+                    }
+                }
+                if (itemRefunded + refundItem.amount > originalItem.amount) {
+                    LOGGER.error('for the original balance item {}, refund amount {} exceeded, original amount {}, ' +
+                            'refunded {}', refundItem.originalBalanceItemId, refundItem.amount,
+                            originalItem.amount, itemRefunded)
+                    throw AppErrors.INSTANCE.balanceItemRefundTotalExceeded(refundItem.amount,
+                            originalItem.amount, itemRefunded).exception()
+                }
             }
         }
     }
@@ -182,15 +209,14 @@ class BalanceValidator {
             throw AppErrors.INSTANCE.fieldMissingValue('originalBalanceId').exception()
         }
 
-        if (balance.balanceItems == null || balance.balanceItems.size() == 0) {
-            throw AppErrors.INSTANCE.fieldMissingValue('balanceItems').exception()
-        }
-
-        validateBalanceStatus(balance.status, [BalanceStatus.COMPLETED.name(), BalanceStatus.AWAITING_PAYMENT.name()])
-
-        for (BalanceItem item : balance.balanceItems) {
-            if (item.originalBalanceItemId == null) {
-                throw AppErrors.INSTANCE.fieldMissingValue('balanceItems.originalBalanceItemId').exception()
+        if (balance.balanceItems != null) {
+            for (BalanceItem item : balance.balanceItems) {
+                if (item.originalBalanceItemId == null) {
+                    throw AppErrors.INSTANCE.fieldMissingValue('balanceItems.originalBalanceItemId').exception()
+                }
+                if (item.amount == null) {
+                    throw AppErrors.INSTANCE.fieldMissingValue('balanceItems.amount').exception()
+                }
             }
         }
     }

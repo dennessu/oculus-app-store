@@ -1,15 +1,14 @@
 package com.junbo.common.cloudant.model
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.junbo.common.cloudant.json.annotations.CloudantProperty
 import groovy.transform.CompileStatic
-
 /**
  * CloudantSearchResult.
  */
 
 @CompileStatic
-class CloudantSearchResult<T> implements CloudantModel {
-    @JsonProperty('total_rows')
+class CloudantSearchResult<T> {
+    @CloudantProperty('total_rows')
     Long totalRows
     Long offset
 

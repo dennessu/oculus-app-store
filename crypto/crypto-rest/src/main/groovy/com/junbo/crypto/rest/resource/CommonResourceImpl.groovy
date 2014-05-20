@@ -201,7 +201,7 @@ abstract class CommonResourceImpl {
         return masterKeyRepo.getAllMaterKeys().then { List<MasterKey> masterKeyList ->
 
             if (CollectionUtils.isEmpty(masterKeyList)) {
-                return Promise.pure(0)
+                return Promise.pure(null)
             }
 
             MasterKey key = masterKeyList.max(new Comparator<MasterKey>() {

@@ -14,10 +14,10 @@ import java.io.IOException;
 /**
  * IntFromStringDeserializer.
  */
-public class IntFromStringDeserializer extends JsonDeserializer<Object> {
+public class IntFromStringDeserializer extends JsonDeserializer<Integer> {
 
     @Override
-    public Object deserialize(JsonParser jsonParser, DeserializationContext context) throws IOException {
+    public Integer deserialize(JsonParser jsonParser, DeserializationContext context) throws IOException {
         String value = jsonParser.getValueAsString();
         if (value == null || value.length() == 0) {
             return null;

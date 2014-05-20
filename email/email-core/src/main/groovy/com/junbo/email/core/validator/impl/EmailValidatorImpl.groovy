@@ -5,6 +5,8 @@
  */
 package com.junbo.email.core.validator.impl
 
+import com.junbo.common.id.EmailId
+import com.junbo.email.common.util.IdUtils
 import com.junbo.email.core.validator.EmailValidator
 import com.junbo.email.db.repo.EmailScheduleRepository
 import com.junbo.email.spec.error.AppErrors
@@ -49,28 +51,23 @@ class EmailValidatorImpl extends CommonValidator implements EmailValidator {
     @Override
     void validateDelete(Long id) {
         if (id == null) {
-            throw AppErrors.INSTANCE.invalidEmailId('').exception()
+            throw AppErrors.INSTANCE.missingField('id').exception()
         }
         if (emailScheduleRepository.getEmailSchedule(id) == null) {
-            throw AppErrors.INSTANCE.emailScheduleNotFound('').exception()
+            throw AppErrors.INSTANCE.emailScheduleNotFound(IdUtils.encodeEmailId(id)).exception()
         }
-    }
-
-    @Override
-    void validateUser(User user) {
-        super.validateUser(user)
     }
 
     private void validateEmailSchedule(Email email) {
         Email schedule = emailScheduleRepository.getEmailSchedule(email.id.value)
         if (schedule == null) {
-            throw AppErrors.INSTANCE.emailScheduleNotFound('').exception()
+            throw AppErrors.INSTANCE.emailScheduleNotFound(IdUtils.encodeId(email.id)).exception()
         }
     }
 
     private void validateEmailId(Email email) {
         if (email.id != null) {
-            throw AppErrors.INSTANCE.invalidEmailId('').exception()
+            throw AppErrors.INSTANCE.unnecessaryField('self').exception()
         }
     }
 
@@ -79,7 +76,7 @@ class EmailValidatorImpl extends CommonValidator implements EmailValidator {
             throw AppErrors.INSTANCE.invalidPayload().exception()
         }
         if (email.userId == null && email.recipients == null) {
-            throw AppErrors.INSTANCE.missingField('user or recipients').exception()
+            throw AppErrors.INSTANCE.missingField('recipients').exception()
         }
         if (email.recipients != null) {
             for (String recipient : email.recipients) {

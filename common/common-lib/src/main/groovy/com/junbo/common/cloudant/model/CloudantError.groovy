@@ -6,7 +6,7 @@ import groovy.transform.CompileStatic
  * CloudantError.
  */
 @CompileStatic
-class CloudantError implements CloudantModel {
+class CloudantError {
     String error
     String reason
 }

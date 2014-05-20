@@ -20,10 +20,6 @@
         "preconditionItems": [{"href": "https://api.oculusvr.com/v1/items/1230", "id": "1230"}],
         "exclusionItems": [{"href": "https://api.oculusvr.com/v1/items/120", "id": "120"}]
     },
-    "eligibleCountries": [
-        {"href": "https://api.oculusvr.com/v1/countries/US", "id": "US"},
-        {"href": "https://api.oculusvr.com/v1/countries/CN", "id": "CN"}
-    ],
     "eventActions" : {
         "PURCHASE": [{
             "type": "CREDIT_WALLET",
