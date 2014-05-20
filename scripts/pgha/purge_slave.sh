@@ -1,7 +1,7 @@
 #!/bin/bash
 source common.sh
 
-#check running under 'postgres'
+#check running under specified account
 checkAccount $DEPLOYMENT_ACCOUNT
 
 echo "kill postgres instance with port [$SLAVE_DB_PORT]..."

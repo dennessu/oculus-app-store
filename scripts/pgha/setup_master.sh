@@ -1,7 +1,7 @@
 #!/bin/bash
 source common.sh
 
-#check running under 'postgres'
+#check running under specified account
 checkAccount $DEPLOYMENT_ACCOUNT
 
 echo "create database data folder $MASTER_DATA_PATH"

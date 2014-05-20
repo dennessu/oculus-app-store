@@ -13,6 +13,7 @@ export ARCHIVE_PATH='/tmp/archive'
 export PGBIN_PATH='/usr/lib/postgresql/9.3/bin'
 export PGLOCK_PATH='/run/postgresql'
 export PGUSER='silkcloud'
+export PROMOTE_TRIGGER_FILE='/tmp/bring_me_up'
 
 export MASTER_HOST=54.254.246.13
 export MASTER_ADDRESS=$USERNAME@$MASTER_HOST
