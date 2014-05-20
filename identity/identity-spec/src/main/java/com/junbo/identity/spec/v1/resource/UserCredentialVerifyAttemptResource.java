@@ -21,7 +21,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * Created by liangfu on 4/3/14.
  */
-@Api("credentialAttempts")
+@Api("credential-attempts")
 @RestResource
 @Path("/credential-attempts")
 @Produces({MediaType.APPLICATION_JSON})
