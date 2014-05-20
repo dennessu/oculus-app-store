@@ -96,7 +96,7 @@ public class DataCenters {
             validateCurrentDataCenter(newData);
             this.data = newData;
         } catch (Exception ex) {
-            logger.error("Failed to load new topology configuration: \n" +
+            logger.error("Failed to load new datacenters configuration: \n" +
                 "dataCenters: " + this.dataCentersConfig.get(), ex);
             // continue to use existing configuration.
         }

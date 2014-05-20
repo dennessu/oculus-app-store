@@ -2,10 +2,11 @@ package com.junbo.identity.rest.resource.v1
 
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
+import com.junbo.authorization.RightsScope
 import com.junbo.common.id.Id
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.model.Results
-import com.junbo.identity.core.service.Created201Marker
+import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.UserPersonalInfoFilter
 import com.junbo.identity.core.service.validator.UserPersonalInfoValidator
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
@@ -52,7 +53,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
         }
 
         def callback = userPersonalInfoAuthorizeCallbackFactory.create(userPii)
-        return authorizeService.authorizeAndThen(callback) {
+        return RightsScope.with(authorizeService.authorize(callback)) {
             userPii = userPersonalInfoFilter.filterForCreate(userPii)
 
             return userPersonalInfoValidator.validateForCreate(userPii).then {
@@ -78,7 +79,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
 
         return userPersonalInfoValidator.validateForGet(userPiiId).then { UserPersonalInfo userPii ->
             def callback = userPersonalInfoAuthorizeCallbackFactory.create(userPii)
-            return authorizeService.authorizeAndThen(callback) {
+            return RightsScope.with(authorizeService.authorize(callback)) {
 
                 userPii = userPersonalInfoFilter.filterForGet(userPii, getOptions.properties?.split(',') as List)
                 return Promise.pure(userPii)
@@ -102,7 +103,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
             }
 
             def callback = userPersonalInfoAuthorizeCallbackFactory.create(oldUserPersonalInfo)
-            return authorizeService.authorizeAndThen(callback) {
+            return RightsScope.with(authorizeService.authorize(callback)) {
                 userPersonalInfo = userPersonalInfoFilter.filterForPatch(userPersonalInfo, oldUserPersonalInfo)
 
                 return userPersonalInfoValidator.validateForUpdate(userPersonalInfo, oldUserPersonalInfo).then {
@@ -131,7 +132,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
             }
 
             def callback = userPersonalInfoAuthorizeCallbackFactory.create(oldUserPersonalInfo)
-            return authorizeService.authorizeAndThen(callback) {
+            return RightsScope.with(authorizeService.authorize(callback)) {
                 userPii = userPersonalInfoFilter.filterForPut(userPii, oldUserPersonalInfo)
 
                 return userPersonalInfoValidator.validateForUpdate(userPii, oldUserPersonalInfo).then {
@@ -152,7 +153,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
 
         return userPersonalInfoValidator.validateForGet(userPiiId).then { UserPersonalInfo userPii ->
             def callback = userPersonalInfoAuthorizeCallbackFactory.create(userPii)
-            return authorizeService.authorizeAndThen(callback) {
+            return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('delete')) {
                     throw AppErrors.INSTANCE.invalidAccess().exception()
                 }
@@ -173,7 +174,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
 
             return Promise.each(userPersonalInfoList) { UserPersonalInfo userPersonalInfo ->
                 def callback = userPersonalInfoAuthorizeCallbackFactory.create(userPersonalInfo)
-                return authorizeService.authorizeAndThen(callback) {
+                return RightsScope.with(authorizeService.authorize(callback)) {
                     userPersonalInfo = userPersonalInfoFilter.filterForGet(userPersonalInfo,
                             listOptions.properties?.split(',') as List<String>)
 

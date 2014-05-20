@@ -1,6 +1,9 @@
 #!/bin/bash
 source common.sh
 
+#check running under 'postgres'
+checkAccount $DEPLOYMENT_ACCOUNT
+
 echo "kill postgres instance with port [$MASTER_DB_PORT]..."
 forceKill $MASTER_DB_PORT
 
@@ -16,4 +19,4 @@ rm -rf $MASETER_BACKUP_PATH
 echo 'remove archive data'
 rm -rf $MASTER_ARCHIVE_PATH
 
-echo 'purge finished!'
+echo 'purge maseter finished!'

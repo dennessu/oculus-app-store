@@ -26,6 +26,7 @@ public interface OfferService {
 
     Offer postDefaultOffer() throws Exception;
     Offer prepareOfferEntity(String fileName) throws Exception;
+    Offer prepareOfferEntity(String fileName, String userId) throws Exception;
     Offer postOffer(Offer offer) throws Exception;
     Offer postOffer(Offer offer, int expectedResponseCode) throws Exception;
 

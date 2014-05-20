@@ -38,11 +38,11 @@ public class TokenClientProxyTest extends BaseTest {
                 setUsageLimit("1");
             }
         };
-        OrderRequest result = tokenClient.postOrder(order).wrapped().get();
+        OrderRequest result = tokenClient.postOrder(order).get();
         Assert.assertEquals(result.getStatus(), OrderStatus.COMPLETED.toString());
         Assert.assertEquals(result.getTokenItems().size(), 1);
 
-        OrderRequest getResult = tokenClient.getOrderById(new TokenOrderId(result.getId())).wrapped().get();
+        OrderRequest getResult = tokenClient.getOrderById(new TokenOrderId(result.getId())).get();
         Assert.assertEquals(result.getStatus(), OrderStatus.COMPLETED.toString());
         Assert.assertEquals(result.getId(), getResult.getId());
         TokenConsumption consumption= new TokenConsumption(){
@@ -52,7 +52,7 @@ public class TokenClientProxyTest extends BaseTest {
             }
         };
         String tokenString = result.getTokenItems().get(0).getEncryptedString();
-        TokenItem consumeResult = tokenClient.consumeToken(tokenString, consumption).wrapped().get();
+        TokenItem consumeResult = tokenClient.consumeToken(tokenString, consumption).get();
         Assert.assertEquals(consumeResult.getStatus(), ItemStatus.USED.toString());
         Assert.assertEquals(consumeResult.getTokenConsumptions().size(), 1);
         Assert.assertEquals(consumeResult.getTokenConsumptions().get(0).getProduct(), new Long(10000L));
@@ -73,14 +73,14 @@ public class TokenClientProxyTest extends BaseTest {
                 setUsageLimit("1");
             }
         };
-        OrderRequest result = tokenClient.postOrder(order).wrapped().get();
+        OrderRequest result = tokenClient.postOrder(order).get();
         String tokenString = result.getTokenItems().get(0).getEncryptedString();
-        TokenItem item = tokenClient.getToken(tokenString).wrapped().get();
+        TokenItem item = tokenClient.getToken(tokenString).get();
         Assert.assertEquals(item.getStatus(), ItemStatus.ACTIVATED.toString());
         item.setStatus(ItemStatus.BLACKLISTED.toString());
         item.setDisableReason("ut");
-        TokenItem updatedItem = tokenClient.updateToken(tokenString, item).wrapped().get();
-        item = tokenClient.getToken(tokenString).wrapped().get();
+        TokenItem updatedItem = tokenClient.updateToken(tokenString, item).get();
+        item = tokenClient.getToken(tokenString).get();
         Assert.assertEquals(item.getStatus(), ItemStatus.BLACKLISTED.toString());
         TokenConsumption consumption= new TokenConsumption(){
             {
@@ -89,7 +89,7 @@ public class TokenClientProxyTest extends BaseTest {
             }
         };
         try{
-            TokenItem consumeResult = tokenClient.consumeToken(tokenString, consumption).wrapped().get();
+            TokenItem consumeResult = tokenClient.consumeToken(tokenString, consumption).get();
         }catch (Exception ex){
             if(ex instanceof AppClientExceptions){
                 String code = ((AppClientExceptions) ex).invalidToken().getCode();
@@ -97,11 +97,11 @@ public class TokenClientProxyTest extends BaseTest {
         }
         item.setStatus(ItemStatus.ACTIVATED.toString());
         item.setDisableReason("ut");
-        updatedItem = tokenClient.updateToken(tokenString, item).wrapped().get();
-        item = tokenClient.getToken(tokenString).wrapped().get();
+        updatedItem = tokenClient.updateToken(tokenString, item).get();
+        item = tokenClient.getToken(tokenString).get();
         Assert.assertEquals(item.getStatus(), ItemStatus.ACTIVATED.toString());
-        TokenItem consumeResult = tokenClient.consumeToken(tokenString, consumption).wrapped().get();
-        item = tokenClient.getToken(tokenString).wrapped().get();
+        TokenItem consumeResult = tokenClient.consumeToken(tokenString, consumption).get();
+        item = tokenClient.getToken(tokenString).get();
         Assert.assertEquals(item.getStatus(), ItemStatus.USED.toString());
     }
 }

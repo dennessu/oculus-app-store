@@ -3,26 +3,34 @@ API about entitlement. trackingUuid is only used for post and put.
 
 ##resource entitlement
 
-       { 
-            "self": { 
-                "href": "https://data.oculusvr.com/v1/entitlements/123",
-                "id": “123”
-            },
-            "rev": "k930dkd03kdk3k3k5", 
-            "isActive": true, 
-            “isSuspended”: false, 
-            "user": {
-                "href": "https://data.oculusvr.com/v1/users/123",
-                "id": “123”
-            },
-            "grantTime": "2014-01-01T00:00:00Z", 
-            "expirationTime": "2014-04-01T00:00:00Z",
-            "useCount": 10,
-            "entitlementDefinition": {
-                "href": "https://data.oculusvr.com/v1/entitlement-definitions/123",
-                "id": “123”
-            }
-        }
+       {
+           "self": {                 //client immutable
+               "href": "/v1/entitlements/123",
+               "id": “123”
+           },
+           "user": {
+               "href": "/v1/users/123",
+               "id": “123”
+           },
+           "item": {
+               "href": "/v1/items/123",
+               "id": "123"
+           },
+           "isActive": true,         //client immutable
+           "isSuspended": false,
+           "grantTime": "2014-01-01T00:00:00Z",
+           "expirationTime": "2014-04-01T00:00:00Z",
+           "useCount": null,
+           "entitlementType": "DOWNLOAD",
+           "futureExpansion": {},                    //required, never null, empty (‘{}’) if no properties at this time
+           "rev": "k930dkd03kdk3k3k5",
+           "createdTime": "2013-01-01T01:32:53Z",  //client immutable; must be ISO 8601
+           "updatedTime": "2013-01-01T01:32:53Z",  //client immutable; must be ISO 8601
+           "admininfo": {                            //present only for highly authorized users/processes and only when ?adminInfo=true is specified
+               "createdBy": {"href": "/v1/users/1234", "id": "1234"}, //client immutable
+               "updatedBy": {"href": "/v1/users/1234", "id": "1234"}  //client immutable
+          }
+       }
 
 ##resource entitlement list
 
@@ -32,147 +40,65 @@ API about entitlement. trackingUuid is only used for post and put.
                 "id": ""
             },
             "items": 
-            [{ 
-                "self": { 
-                    "href": "https://data.oculusvr.com/v1/entitlements/123",
-                    "id": “123”
-                },
-                "rev": "k930dkd03kdk3k3k5", 
-                "isActive": true, 
-                “isSuspended”: false, 
-                "user": {
-                    "href": "https://data.oculusvr.com/v1/users/123",
-                    "id": “123”
-                },
-                "grantTime": "2014-01-01T00:00:00Z", 
-                "expirationTime": "2014-04-01T00:00:00Z",
-                "useCount": 10,
-                "entitlementDefinition": {
-                    "href": "https://data.oculusvr.com/v1/entitlement-definitions/123",
-                    "id": “123”
+            [{
+                 "self": {                 //client immutable
+                     "href": "/v1/entitlements/123",
+                     "id": “123”
+                 },
+                 "user": {
+                     "href": "/v1/users/123",
+                     "id": “123”
+                 },
+                 "item": {
+                     "href": "/v1/items/123",
+                     "id": "123"
+                 },
+                 "isActive": true,         //client immutable
+                 "isSuspended": false,
+                 "grantTime": "2014-01-01T00:00:00Z",
+                 "expirationTime": "2014-04-01T00:00:00Z",
+                 "useCount": null,
+                 "entitlementType": "DOWNLOAD",
+                 "futureExpansion": {},                    //required, never null, empty (‘{}’) if no properties at this time
+                 "rev": "k930dkd03kdk3k3k5",
+                 "createdTime": "2013-01-01T01:32:53Z",  //client immutable; must be ISO 8601
+                 "updatedTime": "2013-01-01T01:32:53Z",  //client immutable; must be ISO 8601
+                 "admininfo": {                            //present only for highly authorized users/processes and only when ?adminInfo=true is specified
+                     "createdBy": {"href": "/v1/users/1234", "id": "1234"}, //client immutable
+                     "updatedBy": {"href": "/v1/users/1234", "id": "1234"}  //client immutable
                 }
-            },
-            { 
-                "self": { 
-                    "href": "https://data.oculusvr.com/v1/entitlements/123",
-                    "id": “234”
+             },
+            {
+                "self": {                 //client immutable
+                    "href": "/v1/entitlements/456",
+                    "id": “456”
                 },
-                "rev": "k930dkd03kdk3k3k5", 
-                "isActive": true, 
-                “isSuspended”: false, 
                 "user": {
-                    "href": "https://data.oculusvr.com/v1/users/123",
+                    "href": "/v1/users/123",
                     "id": “123”
                 },
-                "grantTime": "2014-01-01T00:00:00Z", 
+                "item": {
+                    "href": "/v1/items/234",
+                    "id": "234"
+                },
+                "isActive": true,         //client immutable
+                "isSuspended": false,
+                "grantTime": "2014-01-01T00:00:00Z",
                 "expirationTime": "2014-04-01T00:00:00Z",
-                "useCount": 10,
-                "entitlementDefinition": {
-                    "href": "https://data.oculusvr.com/v1/entitlement-definitions/123",
-                    "id": “124”
-                }
+                "useCount": null,
+                "entitlementType": "DOWNLOAD",
+                "futureExpansion": {},                    //required, never null, empty (‘{}’) if no properties at this time
+                "rev": "k930dkd03kdk3k3k5",
+                "createdTime": "2013-01-01T01:32:53Z",  //client immutable; must be ISO 8601
+                "updatedTime": "2013-01-01T01:32:53Z",  //client immutable; must be ISO 8601
+                "admininfo": {                            //present only for highly authorized users/processes and only when ?adminInfo=true is specified
+                    "createdBy": {"href": "/v1/users/1234", "id": "1234"}, //client immutable
+                    "updatedBy": {"href": "/v1/users/1234", "id": "1234"}  //client immutable
+               }
             }],
             "next": "END"
         }
 
-##resource entitlementDefinition
-
-        { 
-            "self": {
-                "href": "https://data.oculusvr.com/v1/entitlement-definitions/123",
-                "id": “123”
-            },
-            "rev": "k930dkd03kdk3k3k5", 
-            "developer": {
-                href": "https://data.oculusvr.com/v1/users/12345",
-                id": “12345”
-            },
-            "allowedClients": [
-                {
-                    “href”: “https://data.oculusvr.com/v1/oauth2/clients/12345”,
-                    “id”: "12345"
-                },
-                {
-                    “href”: “https://data.oculusvr.com/v1/oauth2/clients/23456”,
-                    “id”: "23456"
-                }
-            ],
-            "isConsumable": true,
-            "type": "ONLINE_ACCESS",
-            "item": {
-                "href": "https://data.oculusvr.com/v1/items/23456", 
-                "id": "23456"
-            },
-            "name": "ONLINE_ACCESS"
-        }
-
-
-##resource entitlementDefinition list
-
-        {
-            "self":{
-                "href": "https://data.oculusvr.com/v1/entitlement-definitions?type=ONLINE_ACCESS",
-                "id": ""
-            },
-            "items": 
-            [{ 
-                "self": {
-                    "href": "https://data.oculusvr.com/v1/entitlement-definitions/123",
-                    "id": “123”
-                },
-                "rev": "k930dkd03kdk3k3k5", 
-                "developer": {
-                    href": "https://data.oculusvr.com/v1/users/12345",
-                    id": “12345”
-                },
-                "allowedClients": [
-                    {
-                        “href”: “https://data.oculusvr.com/v1/oauth2/clients/12345”,
-                        “id”: "12345"
-                    },
-                    {
-                        “href”: “https://data.oculusvr.com/v1/oauth2/clients/23456”,
-                        “id”: "23456"
-                    }
-                ],
-                "isConsumable": true,
-                "type": "ONLINE_ACCESS",
-                "item": {
-                    "href": "https://data.oculusvr.com/v1/items/23456", 
-                    "id": "23456"
-                },
-                "name": "ONLINE_ACCESS"
-            },
-            { 
-                "self": {
-                    "href": "https://data.oculusvr.com/v1/entitlement-definitions/123",
-                    "id": "124"
-                },
-                "rev": "k930dkd03kdk3k3k5", 
-                "developer": {
-                    href": "https://data.oculusvr.com/v1/users/12345",
-                    id": “12345”
-                },
-                "allowedClients": [
-                    {
-                        “href”: “https://data.oculusvr.com/v1/oauth2/clients/12345”,
-                        “id”: "12345"
-                    },
-                    {
-                        “href”: “https://data.oculusvr.com/v1/oauth2/clients/23456”,
-                        “id”: "23456"
-                    }
-                ],
-                "isConsumable": true,
-                "type": "ONLINE_ACCESS",
-                "item": {
-                    "href": "https://data.oculusvr.com/v1/items/234564", 
-                    "id": "234564"
-                },
-                "name": "ONLINE_ACCESS"
-            }],
-            "next": "https://data.oculusvr.com/v1/entitlement-definitions?type=ONLINE_ACCESS&start=50"
-        }
 
 ## /entitlements/{id}
 ###GET
@@ -214,7 +140,7 @@ create a new entitlement
     the created [entitlement](#resource-entitlement)
 
 
-##GET /entitlements?userId={userId}&isActive={isActive}&isSuspended={isSuspended}&definitionIds={definitionIds}&type={type}
+##GET /entitlements?userId={userId}&isActive={isActive}&isSuspended={isSuspended}&itemIds={itemIds}&type={type}
 get and filter all entitlements for specified user.
 
 + Parameters
@@ -223,7 +149,7 @@ get and filter all entitlements for specified user.
     + isActive(optional)
     + isSuspended(optional)
     + type(optional)
-    + definitionIds(optional)...can have more than one
+    + itemIds(optional)...can have more than one
     + startGrantTime(optional)
     + endGrantTime(optional)
     + startExpirationTime(optional)
@@ -255,59 +181,3 @@ transfer an entitlement to another user
     the transferred [entitlement](#resource-entitlement)
 
 + Response 400 (application/json)
-
-## /entitlement-definitions/{id}
-###GET
-get entitlementDefinition by entitlementDefinition Id
-
-+ Response 200 (application/json)
-
-    the [entitlementDefinition](#resource-entitlementdefinition)
-
-+ Response 404
-
-###PUT
-update an existing entitlementDefinition
-
-+ Request (application/json)
-
-    the entire [entitlementDefinition](#resource-entitlementdefinition) which needs to be updated
-
-+ Response 200 (application/json)
-
-    the updated [entitlementDefinition](#resource-entitlementdefinition)
-
-###DELETE
-delete an existing entitlementDefinition
-
-+ Response 204
-
-+ Response 404 (application/json)
-
-##POST /entitlement-definitions
-create a new entitlementDefinition
-
-+ Request (application/json)
-
-    the [entitlementDefinition](#resource-entitlementdefinition) which needs to be created
-
-+ Response 200 (application/json)
-
-    the created [entitlementDefinition](#resource-entitlementdefinition)
-
-
-##GET /entitlement-definitions?developerId={developerId}&clientId={clientId}&isConsumable={isConsumable}&types={types}&itemId={itemId}&names={names}
-get and filter entitlementDefinitions.
-
-+ Parameters
-
-    + developerId(required)
-    + clientId(optional)
-    + isConsumable(optional)
-    + types(optional)...can have more than one
-    + itemId(optional)
-    + names(optional)...can have more than one
-
-+ Response 200 (application/json)
-
-    the result [entitlementDefinitions](#resource-entitlementdefinition-list)        

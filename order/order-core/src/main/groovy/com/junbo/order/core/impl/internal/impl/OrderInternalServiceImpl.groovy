@@ -4,12 +4,14 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.order.core.impl.internal.impl
+
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.impl.common.*
 import com.junbo.order.core.impl.internal.OrderInternalService
+import com.junbo.order.db.entity.enums.BillingAction
 import com.junbo.order.db.entity.enums.OrderStatus
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
@@ -133,34 +135,65 @@ class OrderInternalServiceImpl implements OrderInternalService {
     @Transactional
     Promise<Order> cancelOrder(Order order) {
 
-        def isCancelable = CoreUtils.checkOrderCancelable(order)
+        assert(order != null)
+
+        def isCancelable = CoreUtils.checkOrderStatusCancelable(order)
         if (!isCancelable) {
             LOGGER.info('name=Order_Is_Not_Cancelable, orderId = {}, orderStatus={}', order.id.value, order.status)
             throw AppErrors.INSTANCE.orderNotCancelable().exception()
         }
         LOGGER.info('name=Order_Is_Cancelable, orderId = {}, orderStatus={}', order.id.value, order.status)
 
+        order.status = OrderStatus.CANCELED.name()
+        orderRepository.updateOrder(order, true)
+
         // TODO: reverse authorize if physical goods
 
-        // TODO: refund deposit if preorder
-        return refundDeposit(order).then { Order o ->
-            // mark order status canceled
-            order.status = OrderStatus.CANCELED.name()
-            // update item fulfillment history
+        // TODO: cancel paypal confirm
 
-            // persist
-            orderRepository.updateOrder(o, true)
+        if (order.status == OrderStatus.PREORDERED.name()) {
+            return refundDeposit(order).then { Order o ->
+                return Promise.pure(o)
+            }
+        }
+        return Promise.pure(order)
+    }
 
-            return Promise.pure(o)
+    @Override
+    Promise<Void> refundDeposit(Order order) {
+        if(CoreUtils.isFreeOrder(order)) {
+            return Promise.pure(null)
+        }
+        BillingHistory bh = CoreUtils.getLatestBillingHistory(order)
+        assert(bh != null)
+        if (bh.billingEvent == BillingAction.DEPOSIT) {
+            return facadeContainer.billingFacade.getBalancesByOrderId(order.id.value).syncRecover {
+                Throwable ex ->
+            }.then { List<Balance> bls ->
+                if(CoreUtils.checkDepositOrderRefundable(order, bls)) {
+                    return facadeContainer.billingFacade.createBalance(
+                            CoreBuilder.buildRefundDepositBalance(bls[0]), false).syncRecover { Throwable ex ->
+                    }.then { Balance refunded ->
+                        if (refunded != null) {
+                            throw AppErrors.INSTANCE.billingChargeFailed().exception()
+                        }
+                        return Promise.pure(null)
+                    }
+                }
+            }
         }
     }
 
     @Override
     @Transactional
-    Promise<Order> refundDeposit(Order order) {
-        return Promise.pure(order)
+    Promise<List<Balance>> getBalancesByOrderId(Long orderId) {
+        return facadeContainer.billingFacade.getBalancesByOrderId(orderId).syncRecover { Throwable throwable ->
+            LOGGER.error('name=Get_Balances_Error', throwable)
+            throw facadeContainer.billingFacade.convertError(throwable).exception()
+        }.then { List<Balance> balances ->
+            return Promise.pure(balances)
+        }
     }
-
 
     @Override
     @Transactional

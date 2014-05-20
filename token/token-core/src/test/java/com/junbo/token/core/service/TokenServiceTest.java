@@ -37,10 +37,10 @@ public class TokenServiceTest extends BaseTest {
                 setUsageLimit("1");
             }
         };
-        OrderRequest result = tokenService.createOrderRequest(request).wrapped().get();
+        OrderRequest result = tokenService.createOrderRequest(request).get();
         Assert.assertNotNull(result.getTokenItems());
         Assert.assertNotNull(result.getId());
-        OrderRequest getResult = tokenService.getOrderRequest(result.getId()).wrapped().get();
+        OrderRequest getResult = tokenService.getOrderRequest(result.getId()).get();
         Assert.assertEquals(getResult.getQuantity(), (Long)2L);
         Assert.assertEquals(result.getOfferIds().get(0), getResult.getOfferIds().get(0));
     }
@@ -70,10 +70,10 @@ public class TokenServiceTest extends BaseTest {
             }
 
         };
-        OrderRequest result = tokenService.createOrderRequest(request).wrapped().get();
+        OrderRequest result = tokenService.createOrderRequest(request).get();
         Assert.assertNotNull(result.getTokenItems());
         Assert.assertNotNull(result.getId());
-        OrderRequest getResult = tokenService.getOrderRequest(result.getId()).wrapped().get();
+        OrderRequest getResult = tokenService.getOrderRequest(result.getId()).get();
         Assert.assertEquals(getResult.getQuantity(), (Long)2L);
         Assert.assertEquals(result.getOfferIds().get(0), getResult.getOfferIds().get(0));
     }
@@ -103,7 +103,7 @@ public class TokenServiceTest extends BaseTest {
             }
 
         };
-        OrderRequest result = tokenService.createOrderRequest(request).wrapped().get();
+        OrderRequest result = tokenService.createOrderRequest(request).get();
         Assert.assertNotNull(result.getTokenItems());
         Assert.assertNotNull(result.getId());
         TokenConsumption consumption = new TokenConsumption(){
@@ -112,9 +112,9 @@ public class TokenServiceTest extends BaseTest {
                 setUserId(generateLong());
             }
         };
-        TokenItem consumedItem = tokenService.consumeToken(item.getEncryptedString(), consumption).wrapped().get();
+        TokenItem consumedItem = tokenService.consumeToken(item.getEncryptedString(), consumption).get();
         Assert.assertEquals(consumedItem.getStatus(), ItemStatus.USED.toString());
-        TokenItem getItem = tokenService.getToken(item.getEncryptedString()).wrapped().get();
+        TokenItem getItem = tokenService.getToken(item.getEncryptedString()).get();
         Assert.assertEquals(getItem.getStatus(), ItemStatus.USED.toString());
     }
 }

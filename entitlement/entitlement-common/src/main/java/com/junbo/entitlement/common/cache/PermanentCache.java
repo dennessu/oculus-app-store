@@ -18,7 +18,7 @@ import java.util.concurrent.ExecutionException;
  * permanent cache.
  */
 public enum PermanentCache {
-    ENTITLEMENT_DEFINITION;
+    ITEM_REVISION;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PermanentCache.class);
     private Cache<Object, Object> cache = CacheBuilder.newBuilder().maximumSize(100).build();

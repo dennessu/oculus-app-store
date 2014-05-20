@@ -93,8 +93,8 @@ public class EntitlementTesting extends TestClass {
         Entitlement etGet = EntitlementService.getEntitlement(IdConverter.idToHexString(new EntitlementId(etCreated.getEntitlementId())));
         assertEquals("validate userId in entitlement is correct",
                 etCreated.getUserId(), etGet.getUserId());
-        assertEquals("validate userId in entitlement definition is correct",
-                etCreated.getEntitlementDefinitionId(), etGet.getEntitlementDefinitionId());
+        // assertEquals("validate userId in entitlement definition is correct",
+               // etCreated., etGet.getEntitlementDefinitionId());
     }
 
     @Property(
@@ -187,7 +187,7 @@ public class EntitlementTesting extends TestClass {
         developerEntitlement.setUserId(developerUser.getId().getValue());
         // create DEVELOPER definitionId
         long developerEDId = IdConverter.hexStringToId(EntitlementDefinitionId.class, "0");
-        developerEntitlement.setEntitlementDefinitionId(developerEDId);
+        //developerEntitlement.setEntitlementDefinitionId(developerEDId);
         EntitlementService.grantEntitlement(developerEntitlement);
         return developerUser;
     }
@@ -199,7 +199,8 @@ public class EntitlementTesting extends TestClass {
         ed.setType(entitlementType);
         ed.setDeveloperId(developer.getId().getValue());
         EntitlementDefinition edRtn = eds.postEntitlementDefinition(ed);
-        entitlement.setEntitlementDefinitionId(edRtn.getEntitlementDefId());
+        //entitlement.setEntitlementDefinitionId(edRtn.getEntitlementDefId());
+        //FOLLOW https://oculus.atlassian.net/wiki/pages/viewpage.action?spaceKey=SER&title=Resource%3A+entitlements
         entitlement.setUserId(user.getId().getValue());
         return EntitlementService.grantEntitlement(entitlement);
     }

@@ -1,30 +1,27 @@
 package com.junbo.common.cloudant.model
 
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.junbo.common.cloudant.json.annotations.CloudantIgnore
+import com.junbo.common.cloudant.json.annotations.CloudantProperty
 import groovy.transform.CompileStatic
-
 /**
  * CloudantViews.
  */
 @CompileStatic
-class CloudantViews implements CloudantModel {
-    @JsonProperty('_id')
+class CloudantViews {
+    @CloudantProperty('_id')
     String id
 
-    @JsonProperty('_rev')
+    @CloudantProperty('_rev')
     String revision
 
     String language = 'javascript'
 
     Map<String, CloudantView> views
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     static class CloudantView {
         String map
         String reduce
-        @JsonIgnore
+        @CloudantIgnore
         Class resultClass
     }
 }

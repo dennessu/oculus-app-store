@@ -136,11 +136,11 @@ interface AppExceptions {
 
     @ErrorDef(httpStatusCode = 400, code = '20034', description = 'The access_token {0} is invalid',
             field = 'access_token')
-    AppError invalidAccessToken()
+    AppError invalidAccessToken(accessToken)
 
     @ErrorDef(httpStatusCode = 401, code = '20035', description = 'The access_token {0} is already expired',
             field = 'access_token')
-    AppError expiredAccessToken()
+    AppError expiredAccessToken(accessToken)
 
     @ErrorDef(httpStatusCode = 400, code = '20036', description = 'The Authorization header is missing',
             field = 'authorization')
@@ -336,4 +336,7 @@ interface AppExceptions {
 
     @ErrorDef(httpStatusCode = 400, code = '20075', description = 'There is no default email on user')
     AppError missingDefaultUserEmail()
+
+    @ErrorDef(httpStatusCode = 404, code = '20076', description = 'Api definition {0} not found')
+    AppError apiDefinitionNotFound(String apiName)
 }

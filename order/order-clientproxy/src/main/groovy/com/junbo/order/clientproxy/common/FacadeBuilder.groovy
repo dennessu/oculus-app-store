@@ -80,6 +80,7 @@ class FacadeBuilder {
         request.currency = order.currency
         request.userId = order.user?.value
         request.shippingMethodId = order.shippingMethod
+        assert(order.honoredTime != null)
         request.time = DATE_FORMATTER.get().format(order.honoredTime)
         request.includeCrossOfferPromos = true
         List<RatingItem> ratingItems = []

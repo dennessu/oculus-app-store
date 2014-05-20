@@ -9,23 +9,24 @@ package com.junbo.sharding.dualwrite.test
 import com.junbo.common.cloudant.CloudantEntity
 import com.junbo.common.id.UserId
 import com.junbo.common.model.ResourceMeta
-import com.junbo.common.util.Identifiable;
-import com.junbo.sharding.dualwrite.data.PendingAction;
+import com.junbo.common.util.Identifiable
+import com.junbo.sharding.dualwrite.data.PendingAction
 import com.junbo.sharding.dualwrite.data.PendingActionRepository
 import com.junbo.sharding.dualwrite.data.PendingActionRepositoryCloudantImpl
-import com.junbo.sharding.dualwrite.data.PendingActionRepositorySqlImpl;
-import groovy.transform.CompileStatic;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import com.junbo.sharding.dualwrite.data.PendingActionRepositorySqlImpl
+import groovy.transform.CompileStatic
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.TestExecutionListeners
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests
+import org.springframework.test.context.transaction.TransactionConfiguration
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener
 import org.springframework.transaction.annotation.Transactional
-import org.testng.annotations.Test;
+import org.testng.annotations.Test
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals
+import static org.testng.Assert.assertNull;
 
 /**
  * Java doc for IdGeneratorTest.
@@ -79,22 +80,22 @@ public class PendingActionRepoTest extends AbstractTestNGSpringContextTests {
 
         PendingAction savedEntity = createSavedEntityPendingAction();
 
-        PendingAction newPending = repo.create(savedEntity).wrapped().get();
+        PendingAction newPending = repo.create(savedEntity).get();
         assertEquals(newPending.getChangedEntityId(), savedEntity.getChangedEntityId())
         assertEquals(newPending.getSavedEntity(), savedEntity.getSavedEntity())
 
         newPending.deletedKey = 54321L;
 
-        newPending = repo.update(newPending).wrapped().get();
+        newPending = repo.update(newPending).get();
         assertEquals(newPending.deletedKey, 54321L)
 
-        newPending = repo.get(newPending.id).wrapped().get()
+        newPending = repo.get(newPending.id).get()
         assertEquals(newPending.deletedKey, 54321L)
         assertEquals(newPending.getChangedEntityId(), savedEntity.getChangedEntityId())
         assertEquals((FakeEntity)newPending.getSavedEntity(), (FakeEntity)savedEntity.getSavedEntity())
 
-        repo.delete(newPending.id).wrapped().get()
-        newPending = repo.get(newPending.id).wrapped().get()
+        repo.delete(newPending.id).get()
+        newPending = repo.get(newPending.id).get()
         assertNull(newPending)
     }
 

@@ -11,6 +11,8 @@ import com.google.common.util.concurrent.*;
 import groovy.lang.Closure;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -69,8 +71,24 @@ public final class Promise<T> {
         this.future = future;
     }
 
-    public ListenableFuture<T> wrapped() {
+    // use get() instead.
+    private ListenableFuture<T> wrapped() {
         return future;
+    }
+
+    public T get() {
+        try {
+            return future.get();
+        } catch (ExecutionException ex) {
+            Throwable cause = ex.getCause();
+            if (cause instanceof RuntimeException) {
+                throw (RuntimeException) cause;
+            }
+
+            throw new RuntimeException(cause);
+        } catch (InterruptedException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     public static <T> Promise<T> pure(T t) {
@@ -224,6 +242,17 @@ public final class Promise<T> {
         }));
     }
 
+    public <R> Promise<R> then(final Func<? super T, Promise<R>> func, final Executor executor) {
+        final Func<? super T, Promise<R>> wrapped = Wrapper.wrap(func);
+
+        return wrap(Futures.transform(future, new AsyncFunction<T, R>() {
+            @Override
+            public ListenableFuture<R> apply(T input) {
+                return wrapped.apply(input).wrapped();
+            }
+        }, executor));
+    }
+
     public <R> Promise<R> then(final Closure closure) {
         return then(new Func<T, Promise<R>>() {
             @Override
@@ -232,6 +261,16 @@ public final class Promise<T> {
                 return (Promise<R>) closure.call(t);
             }
         });
+    }
+
+    public <R> Promise<R> then(final Closure closure, final Executor executor) {
+        return then(new Func<T, Promise<R>>() {
+            @Override
+            @SuppressWarnings("unchecked")
+            public Promise<R> apply(T t) {
+                return (Promise<R>) closure.call(t);
+            }
+        }, executor);
     }
 
     public <R> Promise<R> syncThen(final Func<? super T, R> func) {
@@ -284,7 +323,7 @@ public final class Promise<T> {
     // the sequence of the invocation is not guaranteed. Disable for now.
     @Deprecated
     public void onFailure(final Callback<Throwable> action) {
-        final Callback<Throwable> wrapped = Wrapper.wrap(action);;
+        final Callback<Throwable> wrapped = Wrapper.wrap(action);
 
         Futures.addCallback(future, new FutureCallback<T>() {
             @Override

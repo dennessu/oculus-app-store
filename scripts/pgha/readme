@@ -1,0 +1,35 @@
+#install postgres
+sudo apt-get update
+sudo apt-get install postgresql-9.3
+sudo kill $(fuser -n tcp 5432 2> /dev/null)
+sudo rm /usr/bin/psql
+sudo ln -s /usr/lib/postgresql/9.3/bin/psql /usr/bin/psql
+sudo ln -s /usr/lib/postgresql/9.3/bin/pg_ctl /usr/bin/pg_ctl
+
+#create account
+sudo adduser silkcloud
+sudo su - silkcloud
+
+#upload all deployment scripts to remote master/slave servers
+upload_scripts.sh
+
+#pre validation
+	-after you install postgresql on ubuntu, it will start up a databas instance automatically, kill it
+	-make sure no db instance running with 5432 port
+	-make sure /run/postgresql is clean and can be written by 'postgres' account
+	-running all following scripts with 'postgres' account
+
+#prepare a clean master environment
+purge_master.sh 
+
+#create and configure master database
+setup_maseter.sh
+
+#do master base backup
+base_backup.sh
+
+#prepare a clean slave environment
+purge_slave.sh
+
+#restore slave from backup
+setup_slave.sh

@@ -5,18 +5,19 @@
  */
 package com.junbo.authorization.spec.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.RoleAssignmentId;
 import com.junbo.common.id.RoleId;
 import com.junbo.common.model.Link;
+import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
-import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * RoleAssignment.
  */
-public class RoleAssignment extends ResourceMeta implements Identifiable<RoleAssignmentId> {
+public class RoleAssignment extends PropertyAssignedAwareResourceMeta implements Identifiable<RoleAssignmentId> {
     @ApiModelProperty(position = 1, required = true,
             value = "[Nullable]The id of the role assignment resource.")
     @JsonProperty("self")
@@ -27,6 +28,12 @@ public class RoleAssignment extends ResourceMeta implements Identifiable<RoleAss
 
     @ApiModelProperty(position = 3, required = true, value = "The assignee. User or group.")
     private Link assignee;
+
+    @JsonIgnore
+    private String assigneeType;
+
+    @JsonIgnore
+    private Long assigneeId;
 
     @Override
     public RoleAssignmentId getId() {
@@ -54,5 +61,21 @@ public class RoleAssignment extends ResourceMeta implements Identifiable<RoleAss
 
     public void setAssignee(Link assignee) {
         this.assignee = assignee;
+    }
+
+    public String getAssigneeType() {
+        return assigneeType;
+    }
+
+    public void setAssigneeType(String assigneeType) {
+        this.assigneeType = assigneeType;
+    }
+
+    public Long getAssigneeId() {
+        return assigneeId;
+    }
+
+    public void setAssigneeId(Long assigneeId) {
+        this.assigneeId = assigneeId;
     }
 }

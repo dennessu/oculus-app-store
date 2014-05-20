@@ -5,6 +5,7 @@
  */
 package com.junbo.authorization.spec.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.common.json.PropertyAssignedAware;
 import com.junbo.common.json.PropertyAssignedAwareSupport;
 import com.junbo.common.model.Link;
@@ -25,6 +26,12 @@ public class RoleTarget implements PropertyAssignedAware {
 
     @ApiModelProperty(position = 3, required = true, value = "The filter link. Needs to be an item resource.")
     private Link filterLink;
+
+    @JsonIgnore
+    private String filterLinkIdType;
+
+    @JsonIgnore
+    private Long filterLinkId;
 
     public String getTargetType() {
         return targetType;
@@ -51,6 +58,22 @@ public class RoleTarget implements PropertyAssignedAware {
     public void setFilterLink(Link filterLink) {
         this.filterLink = filterLink;
         support.setPropertyAssigned("filterLink");
+    }
+
+    public String getFilterLinkIdType() {
+        return filterLinkIdType;
+    }
+
+    public void setFilterLinkIdType(String filterLinkIdType) {
+        this.filterLinkIdType = filterLinkIdType;
+    }
+
+    public Long getFilterLinkId() {
+        return filterLinkId;
+    }
+
+    public void setFilterLinkId(Long filterLinkId) {
+        this.filterLinkId = filterLinkId;
     }
 
     @Override

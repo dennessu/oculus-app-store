@@ -65,7 +65,7 @@ class OrderValidator {
         if (piids == null || piids.isEmpty()) {
             return this
         }
-        def pi = facadeContainer.paymentFacade.getPaymentInstrument(piids[0].value).wrapped().get()
+        def pi = facadeContainer.paymentFacade.getPaymentInstrument(piids[0].value).get()
         if (PIType.get(pi?.type) == PIType.PAYPAL) {
             notNull(successRedirectUrl, 'successRedirectUrl')
             notNull(cancelRedirectUrl, 'cancelRedirectUrl')

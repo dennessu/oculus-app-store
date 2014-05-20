@@ -2,7 +2,7 @@ package com.junbo.identity.rest.resource.v1
 
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.model.Results
-import com.junbo.identity.core.service.Created201Marker
+import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.CountryFilter
 import com.junbo.identity.core.service.validator.CountryValidator
 import com.junbo.identity.data.repository.CountryRepository

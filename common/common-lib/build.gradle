@@ -3,6 +3,7 @@ apply plugin: 'groovy'
 dependencies {
     compile junboProject(':common-configuration')
     compile junboProject(':langur-core')
+    compile junboProject(':apphost-core')
 
     compile (libraries.rs_api)
 
@@ -32,6 +33,9 @@ dependencies {
     compile (libraries.hibernate_core)
     compile (libraries.hibernate_entitymanager)
     compile (libraries.hibernate_annotation)
+
+    compile (libraries.grizzly_http_server)
+    compile (libraries.grizzly_websockets)
 
     testRuntime junboProject(':configuration-data')
 }

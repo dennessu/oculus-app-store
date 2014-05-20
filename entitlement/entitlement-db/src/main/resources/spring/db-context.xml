@@ -46,12 +46,23 @@
     <tx:annotation-driven/>
 
     <!-- Dao -->
-    <bean id="entitlementBaseDao" class="com.junbo.entitlement.db.dao.hibernate.BaseDao" abstract="true"/>
+    <bean id="entitlementBaseDao" class="com.junbo.entitlement.db.dao.postgresql.BaseDao" abstract="true"/>
 
-    <bean id="entitlementDao" class="com.junbo.entitlement.db.dao.hibernate.EntitlementDaoImpl" parent="entitlementBaseDao">
+    <bean id="entitlementDao" class="com.junbo.entitlement.db.dao.postgresql.EntitlementDaoImpl" parent="entitlementBaseDao">
         <property name="entityType" value="com.junbo.entitlement.db.entity.EntitlementEntity"/>
     </bean>
-    <bean id="entitlementHistoryDao" class="com.junbo.entitlement.db.dao.hibernate.EntitlementHistoryDaoImpl"/>
+    <bean id="entitlementHistoryDao" class="com.junbo.entitlement.db.dao.postgresql.EntitlementHistoryDaoImpl" parent="entitlementBaseDao">
+        <property name="entityType" value="com.junbo.entitlement.db.entity.EntitlementHistoryEntity"/>
+    </bean>
+
+    <!--
+    <bean id="entitlementDao" class="com.junbo.entitlement.db.dao.cloudant.EntitlementDaoImpl" parent="cloudantClient">
+        <property name="dbName" value="entitlement"/>
+    </bean>
+    <bean id="entitlementHistoryDao" class="com.junbo.entitlement.db.dao.cloudant.EntitlementHistoryDaoImpl" parent="cloudantClient">
+        <property name="dbName" value="entitlement_history"/>
+    </bean>
+    -->
 
     <!-- repository -->
     <bean id="entitlementRepository" class="com.junbo.entitlement.db.repository.EntitlementRepository"/>

@@ -6,6 +6,7 @@
 
 package com.junbo.entitlement.db;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.UserId;
 import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.lib.EntitlementContext;
@@ -26,6 +27,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -142,8 +144,8 @@ public class EntitlementRepoTest extends AbstractTestNGSpringContextTests {
         entitlement.setGrantTime(new Date(114, 0, 22));
         entitlement.setExpirationTime(new Date(114, 0, 28));
         entitlement.setIsBanned(false);
-
-        entitlement.setEntitlementDefinitionId(idGenerator.nextId());
+        entitlement.setFutureExpansion(new HashMap<String, JsonNode>());
+        entitlement.setItemId(idGenerator.nextId());
         return entitlement;
     }
 }

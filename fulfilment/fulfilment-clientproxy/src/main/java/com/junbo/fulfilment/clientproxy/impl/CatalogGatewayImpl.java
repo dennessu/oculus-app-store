@@ -71,7 +71,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
             options.setOfferIds(Arrays.asList(new OfferId(offerId)));
             options.setTimestamp(timestamp);
 
-            Results<OfferRevision> revisions = offerRevisionResource.getOfferRevisions(options).wrapped().get();
+            Results<OfferRevision> revisions = offerRevisionResource.getOfferRevisions(options).get();
 
             if (revisions == null || CollectionUtils.isEmpty(revisions.getItems())) {
                 LOGGER.error("Offer [" + offerId + "] with timestamp [" + timestamp + "] does not exist");
@@ -91,7 +91,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
             options.setItemIds(Arrays.asList(new ItemId(itemId)));
             options.setTimestamp(timestamp);
 
-            Results<ItemRevision> revisions = itemRevisionResource.getItemRevisions(options).wrapped().get();
+            Results<ItemRevision> revisions = itemRevisionResource.getItemRevisions(options).get();
 
             if (revisions == null || CollectionUtils.isEmpty(revisions.getItems())) {
                 LOGGER.error("Item [" + itemId + "] with timestamp [" + timestamp + "] does not exist");

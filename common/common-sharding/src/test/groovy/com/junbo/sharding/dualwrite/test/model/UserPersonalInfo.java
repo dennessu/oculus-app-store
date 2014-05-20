@@ -24,8 +24,6 @@ public class UserPersonalInfo extends ResourceMeta implements Identifiable<UserP
 
     public void setId(UserPersonalInfoId id) {
         this.id = id;
-        support.setPropertyAssigned("id");
-        support.setPropertyAssigned("self");
     }
 
     public String getType() {
@@ -34,7 +32,6 @@ public class UserPersonalInfo extends ResourceMeta implements Identifiable<UserP
 
     public void setType(String type) {
         this.type = type;
-        support.setPropertyAssigned("type");
     }
 
     public JsonNode getValue() {
@@ -43,7 +40,6 @@ public class UserPersonalInfo extends ResourceMeta implements Identifiable<UserP
 
     public void setValue(JsonNode value) {
         this.value = value;
-        support.setPropertyAssigned("value");
     }
 
     public Date getLastValidateTime() {
@@ -52,7 +48,6 @@ public class UserPersonalInfo extends ResourceMeta implements Identifiable<UserP
 
     public void setLastValidateTime(Date lastValidateTime) {
         this.lastValidateTime = lastValidateTime;
-        support.setPropertyAssigned("lastValidateTime");
     }
 
     public Boolean getIsNormalized() {
@@ -61,7 +56,6 @@ public class UserPersonalInfo extends ResourceMeta implements Identifiable<UserP
 
     public void setIsNormalized(Boolean isNormalized) {
         this.isNormalized = isNormalized;
-        support.setPropertyAssigned("isNormalized");
     }
 
     public String getLabel() {
@@ -70,7 +64,6 @@ public class UserPersonalInfo extends ResourceMeta implements Identifiable<UserP
 
     public void setLabel(String label) {
         this.label = label;
-        support.setPropertyAssigned("label");
     }
 
     public UserId getUserId() {
@@ -79,7 +72,5 @@ public class UserPersonalInfo extends ResourceMeta implements Identifiable<UserP
 
     public void setUserId(UserId userId) {
         this.userId = userId;
-        support.setPropertyAssigned("userId");
-        support.setPropertyAssigned("user");
     }
 }

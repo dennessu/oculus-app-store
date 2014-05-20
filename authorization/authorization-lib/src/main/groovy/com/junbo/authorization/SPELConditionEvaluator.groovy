@@ -41,7 +41,7 @@ class SPELConditionEvaluator implements ConditionEvaluator {
         Expression exp = parsedExpressions.get(expStr)
         if (exp == null) {
             exp = parser.parseExpression(expStr)
-            exp = parsedExpressions.putIfAbsent(expStr, exp)
+            exp = parsedExpressions.putIfAbsent(expStr, exp) ?: exp
         }
 
         return exp

@@ -14,8 +14,6 @@
         </property>
     </bean>
 
-    <bean id="cartTestExceptionHandler" class="com.junbo.cart.test.util.ExceptionHandler"/>
-
     <!-- Config service -->
     <bean id="configService" class="com.junbo.configuration.impl.ConfigServiceImpl" />
     <bean id="configPropertyPlaceholderConfigurer" class="com.junbo.configuration.impl.ConfigPropertyPlaceholderConfigurer" />
@@ -27,30 +25,14 @@
         </property>
     </bean>
 
-    <bean id="asyncHttpClientFactory" class="com.junbo.cart.test.util.AsyncHttpClientFactory"/>
-    <bean id="httpClient" class="com.ning.http.client.AsyncHttpClient"
-          factory-bean="asyncHttpClientFactory" factory-method="createAsyncHttpClient"/>
-
-    <bean id="pathParamTranscoder" class="com.junbo.common.json.IdPathParamTranscoder"/>
-    <bean id="transcoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
-    <bean id="queryParamTranscoder" class="com.junbo.common.json.QueryParamTranscoderImpl"/>
-
-    <bean id="userResource" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy">
-        <constructor-arg ref="httpClient"/>
-        <constructor-arg name="transcoder" ref="transcoder"/>
-        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg value="${cart.test.client.identity.url}"/>
-        <constructor-arg name="exceptionHandler" ref="cartTestExceptionHandler"/>
+    <bean id="userResource" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${cart.test.client.identity.url}"/>
     </bean>
 
-    <bean id="cartResource" class="com.junbo.cart.spec.resource.proxy.CartResourceClientProxy">
-        <constructor-arg ref="httpClient"/>
-        <constructor-arg name="transcoder" ref="transcoder"/>
-        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg value="${cart.test.client.cart.url}"/>
-        <constructor-arg name="exceptionHandler" ref="cartTestExceptionHandler"/>
+    <bean id="cartResource" class="com.junbo.cart.spec.resource.proxy.CartResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${cart.test.client.cart.url}"/>
     </bean>
 
     <bean id="identityClient" class="com.junbo.cart.test.client.IdentityClient">

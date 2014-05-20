@@ -22,5 +22,6 @@ public interface RoleRepository {
 
     Promise<Role> get(RoleId id)
 
-    Promise<Role> findByRoleName(String roleName, String targetType, String filterType, String filterLink)
+    Promise<Role> findByRoleName(String roleName, String targetType, String filterType,
+                                 String filterLinkIdType, Long filterLinkId)
 }

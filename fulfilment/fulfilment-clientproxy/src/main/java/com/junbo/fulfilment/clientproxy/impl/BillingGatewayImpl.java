@@ -65,7 +65,7 @@ public class BillingGatewayImpl implements BillingGateway {
     public ShippingAddress getShippingAddress(Long userId, Long shippingAddressId) {
         try {
             UserPersonalInfo retrieved =
-                    userPersonalInfoResource.get(new UserPersonalInfoId(shippingAddressId), new UserPersonalInfoGetOptions()).wrapped().get();
+                    userPersonalInfoResource.get(new UserPersonalInfoId(shippingAddressId), new UserPersonalInfoGetOptions()).get();
 
             if (retrieved == null) {
                 LOGGER.error("ShippingAddress [" + shippingAddressId + "] does not exist");

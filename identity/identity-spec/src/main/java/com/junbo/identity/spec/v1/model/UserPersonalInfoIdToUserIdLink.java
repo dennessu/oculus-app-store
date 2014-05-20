@@ -8,13 +8,13 @@ package com.junbo.identity.spec.v1.model;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.common.id.UserPersonalInfoIdToUserIdLinkId;
-import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
 
 /**
  * Created by liangfu on 5/14/14.
  */
-public class UserPersonalInfoIdToUserIdLink extends ResourceMeta
+public class UserPersonalInfoIdToUserIdLink extends PropertyAssignedAwareResourceMeta
         implements Identifiable<UserPersonalInfoIdToUserIdLinkId> {
 
     private UserPersonalInfoIdToUserIdLinkId id;

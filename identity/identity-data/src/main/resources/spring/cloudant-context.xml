@@ -22,18 +22,6 @@
         <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
 
-    <bean id="cloudantRoleAssignmentRepository" class="com.junbo.identity.data.repository.impl.cloudant.RoleAssignmentRepositoryCloudantImpl" parent="cloudantClient">
-        <property name="dbName" value="role_assignment"/>
-        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
-        <property name="idGenerator" ref="oculus48IdGenerator"/>
-    </bean>
-
-    <bean id="cloudantRoleRepository" class="com.junbo.identity.data.repository.impl.cloudant.RoleRepositoryCloudantImpl" parent="cloudantClient">
-        <property name="dbName" value="role"/>
-        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
-        <property name="idGenerator" ref="oculus48IdGenerator"/>
-    </bean>
-
     <bean id="cloudantTosRepository" class="com.junbo.identity.data.repository.impl.cloudant.TosRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="tos"/>
         <property name="shardAlgorithm" ref="userShardAlgorithm"/>
@@ -78,13 +66,13 @@
     </bean>
 
     <bean id="cloudantUserSecurityQuestionAttemptRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserSecurityQuestionAttemptRepositoryCloudantImpl" parent="cloudantClient">
-        <property name="dbName" value="user_secqurity_question_attempt"/>
+        <property name="dbName" value="user_security_question_attempt"/>
         <property name="shardAlgorithm" ref="userShardAlgorithm"/>
         <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
 
     <bean id="cloudantUserSecurityQuestionRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserSecurityQuestionRepositoryCloudantImpl" parent="cloudantClient">
-        <property name="dbName" value="user_secqurity_question"/>
+        <property name="dbName" value="user_security_question"/>
         <property name="shardAlgorithm" ref="userShardAlgorithm"/>
         <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
@@ -158,9 +146,7 @@
     <bean id="encryptUserPersonalInfocloudantClient" class="com.junbo.common.cloudant.CloudantClient" abstract="true">
         <property name="asyncHttpClient" ref="commonAsyncHttpClient" />
         <property name="cloudantDBUri" value="${encrypt.user.personalinfo.cloudant.url}" />
-        <property name="marshaller">
-            <bean class="com.junbo.common.cloudant.CloudantDefaultMarshaller" />
-        </property>
+        <property name="marshaller" ref="cloudantDefaultMarshaller" />
     </bean>
 
     <bean id="cloudantEncryptUserPersonalInfoRepository" class="com.junbo.identity.data.repository.impl.cloudant.EncryptUserPersonalInfoRepositoryImpl" parent="encryptUserPersonalInfocloudantClient">

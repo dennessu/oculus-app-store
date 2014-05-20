@@ -8,6 +8,8 @@ package com.junbo.common.jackson.annotation;
 
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.junbo.common.cloudant.json.annotations.CloudantAnnotationsInside;
+import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
 
 import java.lang.annotation.*;
 
@@ -18,6 +20,8 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @JacksonAnnotationsInside
 @JsonIgnore
+@CloudantAnnotationsInside
+@CloudantIgnore
 @Target(ElementType.FIELD)
 public @interface HateoasLink {
     String value();

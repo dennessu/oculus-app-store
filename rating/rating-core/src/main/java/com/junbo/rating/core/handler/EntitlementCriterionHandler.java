@@ -29,16 +29,16 @@ public class EntitlementCriterionHandler implements CriterionHandler<Entitlement
         }
 
         Set<Long> entitlements =
-                entitlementGateway.getEntitlements(context.getUserId(), Sets.newHashSet(criterion.getEntitlements()));
+                entitlementGateway.getEntitlements(context.getUserId(), Sets.newHashSet(criterion.getItems()));
 
         switch(criterion.getPredicate()) {
             case INCLUDE_ENTITLEMENT:
-                if (Collections.disjoint(entitlements, criterion.getEntitlements())) {
+                if (Collections.disjoint(entitlements, criterion.getItems())) {
                     return false;
                 }
                 break;
             case EXCLUDE_ENTITLEMENT:
-                if (!Collections.disjoint(entitlements, criterion.getEntitlements())) {
+                if (!Collections.disjoint(entitlements, criterion.getItems())) {
                     return false;
                 }
         }

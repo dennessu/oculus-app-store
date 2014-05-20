@@ -6,7 +6,8 @@
 
 package com.junbo.entitlement.core;
 
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
+import com.junbo.catalog.spec.model.item.EntitlementDef;
+import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.common.error.AppErrorException;
 import com.junbo.common.id.UserId;
 import com.junbo.entitlement.common.cache.PermanentCache;
@@ -28,6 +29,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.WebApplicationException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -136,14 +138,18 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
         entitlement.setUserId(idGenerator.nextId());
         entitlement.setGrantTime(new Date(114, 0, 22));
         entitlement.setExpirationTime(new Date(114, 0, 28));
-        entitlement.setEntitlementDefinitionId(idGenerator.nextId());
-        final EntitlementDefinition definition = new EntitlementDefinition();
-        definition.setEntitlementDefId(entitlement.getEntitlementDefinitionId());
-        definition.setConsumable(false);
-        PermanentCache.ENTITLEMENT_DEFINITION.get("id#" + definition.getEntitlementDefId(), new Callable<Object>() {
+        entitlement.setItemId(idGenerator.nextId());
+        final ItemRevision item = new ItemRevision();
+        item.setItemId(entitlement.getItemId());
+        List<EntitlementDef> defs = new ArrayList<>();
+        EntitlementDef def = new EntitlementDef();
+        def.setConsumable(false);
+        defs.add(def);
+        item.setEntitlementDefs(defs);
+        PermanentCache.ITEM_REVISION.get(item.getItemId(), new Callable<Object>() {
             @Override
             public Object call() throws Exception {
-                return definition;
+                return item;
             }
         });
         return entitlement;

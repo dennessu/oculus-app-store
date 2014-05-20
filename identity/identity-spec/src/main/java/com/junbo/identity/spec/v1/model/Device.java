@@ -10,7 +10,7 @@ import com.junbo.common.enumid.DeviceTypeId;
 import com.junbo.common.id.DeviceId;
 import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.model.Link;
-import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * Created by liangfu on 4/3/14.
  */
-public class Device extends ResourceMeta implements Identifiable<DeviceId> {
+public class Device extends PropertyAssignedAwareResourceMeta implements Identifiable<DeviceId> {
 
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The id of device resource.")
     @JsonProperty("self")

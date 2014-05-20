@@ -13,9 +13,5 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface AuthorizeService {
-    Promise<Set<String>> authorize(AuthorizeCallback callback)
-
-    public <T> Promise<T> authorizeAndThen(AuthorizeCallback<T> callback, Closure<Promise> closure)
-
-    public <T> Promise<T> authorizeAndThen(AuthorizeCallback<T> callback, Promise.Func0<Promise<T>> func)
+    Set<String> authorize(AuthorizeCallback callback)
 }

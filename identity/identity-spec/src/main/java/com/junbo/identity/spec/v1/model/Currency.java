@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.model.Link;
-import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * Created by xiali_000 on 4/21/2014.
  */
-public class Currency extends ResourceMeta implements Identifiable<CurrencyId> {
+public class Currency extends PropertyAssignedAwareResourceMeta implements Identifiable<CurrencyId> {
 
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The id of the currency resource.")
     @JsonProperty("self")

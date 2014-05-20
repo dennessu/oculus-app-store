@@ -167,6 +167,8 @@ ext {
     set("oauth-integration-version", '0.0.1-SNAPSHOT')
     set("payment-integration-version", '0.0.1-SNAPSHOT')
     set("fulfilment-integration-version", '0.0.1-SNAPSHOT')
+    set("order-integration-version", '0.0.1-SNAPSHOT')
+
 
     set("integration-buyerscenario-version", '0.0.1-SNAPSHOT')
     set("integration-catalogscenario-version", '0.0.1-SNAPSHOT')

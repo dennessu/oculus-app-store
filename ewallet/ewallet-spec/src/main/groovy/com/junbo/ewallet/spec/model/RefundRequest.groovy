@@ -14,6 +14,6 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class RefundRequest {
     UUID trackingUuid
-    Long transactionId
     BigDecimal amount
+    String currency
 }

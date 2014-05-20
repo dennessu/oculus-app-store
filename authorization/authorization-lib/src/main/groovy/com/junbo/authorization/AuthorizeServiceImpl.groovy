@@ -5,11 +5,13 @@
  */
 package com.junbo.authorization
 
-import com.junbo.langur.core.promise.Promise
+import com.junbo.common.error.AppErrorException
 import com.junbo.oauth.spec.endpoint.ApiDefinitionEndpoint
-import com.junbo.oauth.spec.model.MatrixRow
 import com.junbo.oauth.spec.model.ApiDefinition
+import com.junbo.oauth.spec.model.MatrixRow
 import groovy.transform.CompileStatic
+import net.sf.ehcache.Ehcache
+import net.sf.ehcache.Element
 import org.springframework.beans.factory.annotation.Required
 
 /**
@@ -20,15 +22,20 @@ class AuthorizeServiceImpl implements AuthorizeService {
 
     private ApiDefinitionEndpoint apiDefinitionEndpoint
 
+    private Ehcache apiDefinitionCache
+
     private Map<String, ConditionEvaluator> conditionEvaluators
 
-    private TokenInfoParser tokenInfoParser
-
-    private Boolean useDummyRights
+    private Boolean disabled
 
     @Required
     void setApiDefinitionEndpoint(ApiDefinitionEndpoint apiEndpoint) {
         this.apiDefinitionEndpoint = apiEndpoint
+    }
+
+    @Required
+    void setApiDefinitionCache(Ehcache apiDefinitionCache) {
+        this.apiDefinitionCache = apiDefinitionCache
     }
 
     @Required
@@ -42,72 +49,68 @@ class AuthorizeServiceImpl implements AuthorizeService {
     }
 
     @Required
-    void setUseDummyRights(Boolean useDummyRights) {
-        this.useDummyRights = useDummyRights
-    }
-
-    @Required
-    void setTokenInfoParser(TokenInfoParser tokenInfoParser) {
-        this.tokenInfoParser = tokenInfoParser
+    void setDisabled(Boolean disabled) {
+        this.disabled = disabled
     }
 
     @Override
-    public Promise<Set<String>> authorize(AuthorizeCallback callback) {
-
-        if (useDummyRights) {
-            return Promise.pure([AuthorizeContext.SUPER_RIGHT] as Set)
+    public Set<String> authorize(AuthorizeCallback callback) {
+        if (disabled) {
+            return Collections.emptySet()
         }
 
-        return tokenInfoParser.parseAndThen {
-            return getApiDefinition(callback.apiName).then { ApiDefinition api ->
-                if (api == null) {
-                    throw new RuntimeException("api ${callback.apiName} not found")
+        ApiDefinition api = getApiDefinition(callback.apiName)
+
+        if (api == null) {
+            return Collections.emptySet()
+        }
+
+        Set<String> rights = []
+
+        for (String scopeName : api.scopes.keySet()) {
+            if (!AuthorizeContext.hasScopes(scopeName)) {
+                continue
+            }
+
+            List<MatrixRow> matrixRows = api.scopes[scopeName]
+
+            for (MatrixRow row : matrixRows) {
+                def conditionEvaluator = conditionEvaluators.get(row.scriptType)
+                if (!conditionEvaluator) {
+                    throw new RuntimeException("scriptType ${row.scriptType} not supported")
                 }
 
-                def tokenScopes = AuthorizeContext.currentScopes as Set<String>
-                def scopes = api.scopes.keySet().intersect(tokenScopes)
+                if (conditionEvaluator.evaluate(row.precondition, callback)) {
+                    rights.addAll(row.rights)
 
-                Set<String> rights = []
-
-                for (String scopeName : scopes) {
-                    List<MatrixRow> matrixRows = api.scopes[scopeName]
-
-                    for (MatrixRow row : matrixRows) {
-                        def conditionEvaluator = conditionEvaluators.get(row.scriptType)
-                        if (conditionEvaluator) {
-                            throw new RuntimeException("scriptType ${row.scriptType} not supported")
-                        }
-
-                        if (conditionEvaluator.evaluate(row.precondition, callback)) {
-                            rights.addAll(row.rights)
-
-                            if (row.breakOnMatch) {
-                                break
-                            }
-                        }
+                    if (row.breakOnMatch) {
+                        break
                     }
                 }
-
-                return Promise.pure(rights)
             }
         }
+
+        return rights
     }
 
-    @Override
-    public <T> Promise<T> authorizeAndThen(AuthorizeCallback<T> callback, Closure<Promise> closure) {
-        return authorize(callback).then { Set<String> rights ->
-            return RightsScope.with(rights, closure)
+    private ApiDefinition getApiDefinition(String apiName) {
+
+        Element cachedElement = apiDefinitionCache.get(apiName)
+        if (cachedElement != null) {
+            return (ApiDefinition) cachedElement.objectValue
         }
-    }
 
-    @Override
-    public <T> Promise<T> authorizeAndThen(AuthorizeCallback<T> callback, Promise.Func0<Promise<T>> func) {
-        return authorize(callback).then { Set<String> rights ->
-            return RightsScope.with(rights, func)
+        try {
+            def apiDefinition = apiDefinitionEndpoint.get(apiName).get()
+            apiDefinitionCache.put(new Element(apiName, apiDefinition))
+
+            return apiDefinition
+        } catch (AppErrorException ex) {
+            if (ex.error.httpStatusCode == 404) {
+                return null
+            } else {
+                throw new RuntimeException("Failed to get api definition for $apiName", ex)
+            }
         }
-    }
-
-    private Promise<ApiDefinition> getApiDefinition(String apiName) {
-        return apiDefinitionEndpoint.get(apiName)
     }
 }

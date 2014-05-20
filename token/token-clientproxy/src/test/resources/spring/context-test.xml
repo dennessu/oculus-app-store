@@ -6,17 +6,8 @@
 
     <import resource="classpath*:spring/*-context.xml"/>
 
-    <bean id="asyncHttpClient" class="com.ning.http.client.AsyncHttpClient"/>
-    <bean id="transcoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
-    <bean id="pathParamTranscoder" class="com.junbo.common.json.IdPathParamTranscoder" />
-    <bean id="queryParamTranscoder" class="com.junbo.common.json.QueryParamTranscoderImpl" />
-
-    <bean id="tokenClient" class="com.junbo.token.spec.resource.proxy.TokenResourceClientProxy">
-        <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="target" value="http://localhost:8080/rest"/>
-        <constructor-arg name="transcoder" ref="transcoder"/>
-        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder" />
+    <bean id="tokenClient" class="com.junbo.token.spec.resource.proxy.TokenResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="http://localhost:8080/rest"/>
     </bean>
 
 </beans>

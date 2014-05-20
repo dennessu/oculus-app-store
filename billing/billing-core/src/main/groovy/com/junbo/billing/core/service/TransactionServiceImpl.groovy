@@ -27,6 +27,7 @@ import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
 
 /**
@@ -38,8 +39,12 @@ class TransactionServiceImpl implements TransactionService {
     @Autowired
     TransactionRepository transactionRepository
 
-    @Autowired
     PaymentFacade paymentFacade
+
+    @Autowired
+    void setPaymentFacade(@Qualifier('billingPaymentFacade')PaymentFacade paymentFacade) {
+        this.paymentFacade = paymentFacade
+    }
 
     final static Long UNCONFIRMED_TIMEOUT_HOURS = 3 * 60 * 60 * 1000L
 

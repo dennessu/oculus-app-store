@@ -40,11 +40,6 @@ class BalanceServiceImpl implements BalanceService {
     @Autowired
     BalanceRepository balanceRepository
 
-    @Autowired
-    TransactionService transactionService
-
-    @Autowired
-    TaxService taxService
 
     @Autowired
     CurrencyService currencyService
@@ -53,10 +48,28 @@ class BalanceServiceImpl implements BalanceService {
     AsyncChargePublisher asyncChargePublisher
 
     @Autowired
+    PlatformTransactionManager transactionManager
+
+    TransactionService transactionService
+
+    @Autowired
+    void setTransactionService(TransactionService transactionService) {
+        this.transactionService = transactionService
+    }
+
     BalanceValidator balanceValidator
 
     @Autowired
-    PlatformTransactionManager transactionManager
+    void setBalanceValidator(BalanceValidator balanceValidator) {
+        this.balanceValidator = balanceValidator
+    }
+
+    TaxService taxService
+
+    @Autowired
+    void setTaxService(TaxService taxService) {
+        this.taxService = taxService
+    }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BalanceServiceImpl)
 
@@ -152,7 +165,7 @@ class BalanceServiceImpl implements BalanceService {
     Promise<Balance> captureBalance(Balance balance) {
 
         Balance savedBalance = balanceValidator.validateBalanceId(balance.balanceId)
-        balanceValidator.validateBalanceStatus(balance.status, BalanceStatus.PENDING_CAPTURE.name())
+        balanceValidator.validateBalanceStatus(savedBalance.status, BalanceStatus.PENDING_CAPTURE.name())
         balanceValidator.validateTransactionNotEmpty(savedBalance.balanceId, savedBalance.transactions)
 
         if (balance.totalAmount != null && balance.totalAmount > savedBalance.totalAmount) {
