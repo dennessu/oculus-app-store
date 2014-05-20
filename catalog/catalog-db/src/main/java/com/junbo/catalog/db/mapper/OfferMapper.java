@@ -33,7 +33,7 @@ public class OfferMapper {
         entity.setCategories(model.getCategories());
         entity.setCreatedBy(String.valueOf(model.getOwnerId()));
         entity.setUpdatedBy(String.valueOf(model.getOwnerId()));
-        entity.setRev(model.getRev()==null ? null : Integer.valueOf(model.getRev()));
+        entity.setRev(model.getResourceAge());
     }
 
     public static Offer toModel(OfferEntity entity) {
@@ -49,7 +49,7 @@ public class OfferMapper {
         model.setCategories(entity.getCategories());
         model.setCreatedTime(entity.getCreatedTime());
         model.setUpdatedTime(entity.getUpdatedTime());
-        model.setRev(entity.getRev().toString());
+        model.setResourceAge(entity.getRev());
         return model;
     }
 }

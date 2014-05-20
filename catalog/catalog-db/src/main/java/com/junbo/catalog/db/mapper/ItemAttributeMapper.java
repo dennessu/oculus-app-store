@@ -29,7 +29,7 @@ public class ItemAttributeMapper {
         dbEntity.setType(attribute.getType());
         dbEntity.setParentId(attribute.getParentId());
         dbEntity.setPayload(Utils.toJson(attribute));
-        dbEntity.setRev(attribute.getRev()==null ? null : Integer.valueOf(attribute.getRev()));
+        dbEntity.setRev(attribute.getResourceAge());
     }
 
     public static ItemAttribute toModel(ItemAttributeEntity dbEntity) {
@@ -42,7 +42,7 @@ public class ItemAttributeMapper {
         attribute.setType(dbEntity.getType());
         attribute.setCreatedTime(dbEntity.getCreatedTime());
         attribute.setUpdatedTime(dbEntity.getUpdatedTime());
-        attribute.setRev(dbEntity.getRev().toString());
+        attribute.setResourceAge(dbEntity.getRev());
         return attribute;
     }
 }

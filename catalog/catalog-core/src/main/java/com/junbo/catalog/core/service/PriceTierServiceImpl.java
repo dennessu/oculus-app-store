@@ -56,7 +56,7 @@ public class PriceTierServiceImpl implements PriceTierService {
 
     @Override
     public PriceTier create(PriceTier priceTier) {
-        if (!StringUtils.isEmpty(priceTier.getRev())) {
+        if (priceTier.getResourceAge() != null) {
             throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
         }
         Long attributeId = priceTierRepo.create(priceTier);
@@ -81,7 +81,7 @@ public class PriceTierServiceImpl implements PriceTierService {
     private void validateCreation(PriceTier priceTier) {
         checkRequestNotNull(priceTier);
         List<AppError> errors = new ArrayList<>();
-        if (!StringUtils.isEmpty(priceTier.getRev())) {
+        if (priceTier.getResourceAge() != null) {
             errors.add(AppErrors.INSTANCE.unnecessaryField("rev"));
         }
 
@@ -97,8 +97,9 @@ public class PriceTierServiceImpl implements PriceTierService {
         if (!oldPriceTier.getId().equals(priceTier.getId())) {
             errors.add(AppErrors.INSTANCE.fieldNotMatch("self.id", priceTier.getId(), oldPriceTier.getId()));
         }
-        if (!oldPriceTier.getRev().equals(priceTier.getRev())) {
-            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", priceTier.getRev(), oldPriceTier.getRev()));
+        if (!oldPriceTier.getResourceAge().equals(priceTier.getResourceAge())) {
+            errors.add(AppErrors.INSTANCE
+                    .fieldNotMatch("rev", priceTier.getResourceAge(), oldPriceTier.getResourceAge()));
         }
 
         validateCommon(priceTier, errors);
