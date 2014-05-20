@@ -3,7 +3,7 @@
 # set environment variables
 export USERNAME=ubuntu
 
-export DEPLOYMENT_ACCOUNT=postgres
+export DEPLOYMENT_ACCOUNT='silkcloud'
 export DEPLOYMENT_PATH='/tmp/pgha'
 
 export DATA_PATH='/tmp/data'
@@ -12,7 +12,7 @@ export ARCHIVE_PATH='/tmp/archive'
 
 export PGBIN_PATH='/usr/lib/postgresql/9.3/bin'
 export PGLOCK_PATH='/run/postgresql'
-export PGUSER='postgres'
+export PGUSER='silkcloud'
 
 export MASTER_HOST=54.254.246.13
 export MASTER_ADDRESS=$USERNAME@$MASTER_HOST
@@ -41,20 +41,18 @@ set -e
 
 # kill process with specified port
 function forceKill {
-	port=$1
-
-	if (lsof -i:$port -t)
+	if (fuser -n tcp $1 2> /dev/null)
     then
-	    kill -n 9 $(lsof -i:$port -t)
+	    kill $(fuser -n tcp $1 2> /dev/null)
     else
-	    echo "no process running with [$port] port..."
-    fi
+	    echo "no process running with [$1] port..."
+    fi    
 }
 
 # check shell running account
 function checkAccount {
-	if [[ $(whoami) -ne $1 ]]; then
-   		echo "This script must be run as $1"
+	if [ "$(whoami)" != "$1" ]; then
+   		echo "this script must be run as $1"
    		exit 1
 	fi
 }

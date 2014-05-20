@@ -19,4 +19,4 @@ rm -rf $MASETER_BACKUP_PATH
 echo 'remove archive data'
 rm -rf $MASTER_ARCHIVE_PATH
 
-echo 'purge finished!'
+echo 'purge maseter finished!'
