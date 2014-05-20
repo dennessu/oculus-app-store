@@ -51,10 +51,14 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def order = context.orderServiceContext.order
         if (completeCharge) {
+            /* physical goods fulfilled
+            1. TODO: regular physical goods with CC: capture the authorized balance
+            2. preorder with CC: charge the remaining amount of preorder
+            3. paypal: balance is already fully charged, skip this action
+             */
             return orderServiceContextBuilder.getPaymentInstruments(context.orderServiceContext)
                     .then { List<PaymentInstrument> pis ->
                 if (PIType.get(pis[0].type) == PIType.PAYPAL) {
-                    // for web payment, balance is already fully charged at web payment flow
                     return Promise.pure(actionContext)
                 }
                 // complete charge, update the balance to the remaining amount
@@ -83,6 +87,11 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
                         }
                         def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(resultBalance)
                         if (billingHistory.billingEvent != null) {
+                            if (billingHistory.billingEvent == BillingAction.CHARGE.name()) {
+                                order.payments?.get(0)?.paymentAmount = order.payments?.get(0)?.paymentAmount == null ?
+                                        billingHistory.totalAmount :
+                                        order.payments?.get(0)?.paymentAmount + billingHistory.totalAmount
+                            }
                             def savedHistory = orderRepository.createBillingHistory(order.id.value, billingHistory)
                             if (order.billingHistories == null) {
                                 order.billingHistories = [savedHistory]
@@ -99,8 +108,10 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
                 }
             }
         }
+
+        // partial charge
+        // for preorder only
         orderInternalService.markSettlement(context.orderServiceContext.order)
-        // partial charge, post a 50$ balance
         Balance balance = CoreBuilder.buildPartialChargeBalance(context.orderServiceContext.order,
                 BalanceType.DEBIT, null)
         Promise promise = facadeContainer.billingFacade.createBalance(balance,
@@ -120,6 +131,7 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
                 if (billingHistory.billingEvent == BillingAction.CHARGE.name()) {
                     // partial charge
                     billingHistory.billingEvent = BillingAction.DEPOSIT.name()
+                    order.payments?.get(0)?.paymentAmount = billingHistory.totalAmount
                 }
                 def savedHistory = orderRepository.createBillingHistory(order.id.value, billingHistory)
                 if (order.billingHistories == null) {

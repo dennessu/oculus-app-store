@@ -18,6 +18,9 @@ public class PageMetadata {
     @QueryParam("count")
     private Integer count;
 
+    @QueryParam("bookmark")
+    private String bookmark;
+
     public Integer getStart() {
         return start;
     }
@@ -32,5 +35,13 @@ public class PageMetadata {
 
     public void setCount(Integer count) {
         this.count = count;
+    }
+
+    public String getBookmark() {
+        return bookmark;
+    }
+
+    public void setBookmark(String bookmark) {
+        this.bookmark = bookmark;
     }
 }

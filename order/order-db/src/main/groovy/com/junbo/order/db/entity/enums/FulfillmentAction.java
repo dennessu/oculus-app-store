@@ -19,7 +19,8 @@ public enum FulfillmentAction implements Identifiable<Short> {
     PREORDER(3),
     SHIP(4),
     DELIVER(5),
-    REPLACE(6);
+    REPLACE(6),
+    PENDING_FULFILL(7);
 
 
     private FulfillmentAction(int id) {

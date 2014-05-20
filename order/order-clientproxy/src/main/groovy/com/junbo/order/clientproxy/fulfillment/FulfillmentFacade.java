@@ -6,6 +6,7 @@
 
 package com.junbo.order.clientproxy.fulfillment;
 
+import com.junbo.common.id.OrderId;
 import com.junbo.fulfilment.spec.model.FulfilmentRequest;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.order.spec.model.Order;
@@ -17,4 +18,5 @@ public interface FulfillmentFacade {
 
     Promise<FulfilmentRequest> postFulfillment(Order order);
 
+    Promise<FulfilmentRequest> getFulfillment(OrderId orderId);
 }
