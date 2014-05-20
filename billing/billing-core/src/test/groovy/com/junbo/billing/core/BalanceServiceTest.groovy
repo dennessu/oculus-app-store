@@ -84,6 +84,28 @@ class BalanceServiceTest extends BaseTest {
         assert transaction.type == TransactionType.CAPTURE.name()
     }
 
+    @Test
+    void testFullRefundBalance() {
+        Balance balance = generateBalance(BalanceType.DEBIT)
+        balance = balanceService.addBalance(balance)?.get()
+
+        assert balance != null
+
+        Balance refundBalance = new Balance()
+        refundBalance.userId = new UserId(idGenerator.nextId())
+        refundBalance.originalBalanceId = balance.balanceId
+        refundBalance.type = BalanceType.REFUND.name()
+        refundBalance.trackingUuid = generateUUID()
+        refundBalance.piId = new PaymentInstrumentId(54321)
+        refundBalance.orderId = new OrderId(12345)
+        refundBalance.country = 'US'
+        refundBalance.currency = 'USD'
+
+        balance = balanceService.addBalance(refundBalance)?.get()
+        assert balance != null
+
+    }
+
     private Balance generateBalance(BalanceType type) {
         Balance balance = new Balance()
         balance.trackingUuid = generateUUID()
@@ -97,7 +119,7 @@ class BalanceServiceTest extends BaseTest {
         BalanceItem item = new BalanceItem()
         item.orderItemId = new OrderItemId(9999)
         item.financeId = "1234"
-        item.amount = 19.99
+        item.amount = 17.99
         DiscountItem discount = new DiscountItem()
         discount.discountAmount = 2.00
         item.addDiscountItem(discount)
