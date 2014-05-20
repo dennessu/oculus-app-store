@@ -27,7 +27,7 @@ public class OrderTesting extends BaseOrderTestClass {
 
     @Property(
             priority = Priority.BVT,
-            features = "OrderStatus",
+            features = "GET /Orders?userId={key}",
             component = Component.Order,
             owner = "ZhaoYunlong",
             status = Status.Enable,
@@ -35,14 +35,22 @@ public class OrderTesting extends BaseOrderTestClass {
             steps = {
                     "1. Post a new user",
                     "2. Post new credit card to user.",
-                    "3. Post an order without setting tentative",
-                    "4. Post another order and set tentative to false",
-                    "5. Post an order without setting tentative",
-
+                    "3. Post an order without setting tentative (OPEN)",
+                    "4. Post another order and set tentative to false (COMPLETED)",
+                    "5. Post new paypal to user",
+                    "6. Post an order without setting tentative (PENDING CHARGED)",
+                    "7. Post another order and complete paypal checkout (COMPLETED)",
+                    "8. Post ewallet to user",
+                    "9. Credit insufficient balance",
+                    "10. Post an order and set tentative to false (FAILED)",
+                    "11. Credit enough balance ",
+                    "12. Post an order with physical good and set tentative to false (PENDING FULFIL)",
+                    "13. Get orders by user id",
+                    "14. Verify orders response"
             }
     )
     @Test
-    public void testDigitalGoodCheckoutByCreditCard() throws Exception {
+    public void testOrderStatus() throws Exception {
         String uid = testDataProvider.createUser();
 
         ArrayList<String> offerList = new ArrayList<>();
@@ -52,8 +60,13 @@ public class OrderTesting extends BaseOrderTestClass {
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
 
-        String orderId = testDataProvider.postOrder(
+        String orderId_Open = testDataProvider.postOrder(
                 uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
+
+        String orderId_Completed = testDataProvider.postOrder(
+                uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
+
+        testDataProvider.updateOrderTentative(orderId_Completed,false);
     }
 
 }
