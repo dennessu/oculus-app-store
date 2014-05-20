@@ -66,5 +66,5 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]${par
                 return Promise.pure(null);
             }
         }
-    });
+    }, __executor);
 }

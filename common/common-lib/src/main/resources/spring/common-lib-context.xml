@@ -31,6 +31,15 @@
         <property name="messageTranscoder" ref="commonTranscoder"/>
     </bean>
 
+    <bean id="baseClientProxy" class="com.junbo.langur.core.client.AbstractClientProxy" abstract="true">
+        <property name="client" ref="commonAsyncHttpClient"/>
+        <property name="exceptionHandler" ref="commonExceptionHandler"/>
+        <property name="executor" ref="junboThreadPool"/>
+        <property name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
+        <property name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+        <property name="transcoder" ref="commonTranscoder"/>
+    </bean>
+
     <bean id="defaultAfterInvocationFilter" class="com.junbo.common.filter.RestAdapterAfterInvocationFilter" />
 
     <bean id="oculus40IdShuffle" class="com.junbo.common.shuffle.Oculus40Id" />

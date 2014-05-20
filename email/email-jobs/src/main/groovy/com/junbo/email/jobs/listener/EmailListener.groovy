@@ -78,11 +78,13 @@ class EmailListener extends BaseListener {
             LOGGER.error("EmailTemplate id should be not null")
             return
         }
+
         def template = this.findEmailTemplate(email.templateId.value)
         def result = emailProvider.sendEmail(email, template).then { Email retEmail ->
             this.updateEmail(retEmail)
             return Promise.pure(retEmail)
-        }
+        }.get()
+
         assert result != null, 'Email should be not null'
     }
 

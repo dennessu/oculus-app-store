@@ -4,9 +4,6 @@ import com.junbo.apphost.core.logging.AccessLogProbe
 import groovy.transform.CompileStatic
 import org.glassfish.grizzly.http.server.*
 import org.glassfish.grizzly.nio.transport.TCPNIOTransport
-import org.glassfish.grizzly.threadpool.AbstractThreadPool
-import org.glassfish.grizzly.threadpool.JunboThreadPool
-import org.glassfish.grizzly.threadpool.ThreadPoolConfig
 import org.glassfish.hk2.api.InjectionResolver
 import org.glassfish.hk2.api.ServiceLocator
 import org.glassfish.hk2.api.TypeLiteral
@@ -32,7 +29,7 @@ import org.springframework.core.io.support.EncodedResource
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.util.ClassUtils
 
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.ExecutorService
 
 /**
  * Created by kg on 4/21/2014.
@@ -50,33 +47,16 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean, Applica
 
     private ServiceLocator serviceLocator
 
-    private int corePoolSize = AbstractThreadPool.DEFAULT_MIN_THREAD_COUNT
-
-    private int maxPoolSize = AbstractThreadPool.DEFAULT_MAX_THREAD_COUNT
-
-    private int keepAliveTimeMillis = AbstractThreadPool.DEFAULT_IDLE_THREAD_KEEPALIVE_TIMEOUT
-
-    private int queueLimit = AbstractThreadPool.DEFAULT_MAX_TASKS_QUEUED
+    private ExecutorService executorService
 
     @Required
     void setUri(URI uri) {
         this.uri = uri
     }
 
-    void setCorePoolSize(int corePoolSize) {
-        this.corePoolSize = corePoolSize
-    }
-
-    void setMaxPoolSize(int maxPoolSize) {
-        this.maxPoolSize = maxPoolSize
-    }
-
-    void setKeepAliveTimeMillis(int keepAliveTimeMillis) {
-        this.keepAliveTimeMillis = keepAliveTimeMillis
-    }
-
-    void setQueueLimit(int queueLimit) {
-        this.queueLimit = queueLimit
+    @Required
+    void setExecutorService(ExecutorService executorService) {
+        this.executorService = executorService
     }
 
     @Override
@@ -96,15 +76,8 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean, Applica
         NetworkListener listener = new NetworkListener('grizzly', host, port)
 
         TCPNIOTransport transport = listener.transport
+        transport.setWorkerThreadPool(executorService)
 
-        ThreadPoolConfig threadPoolConfig = ThreadPoolConfig.defaultConfig()
-
-        threadPoolConfig.corePoolSize = corePoolSize
-        threadPoolConfig.maxPoolSize = maxPoolSize
-        threadPoolConfig.setKeepAliveTime(keepAliveTimeMillis, TimeUnit.MILLISECONDS)
-        threadPoolConfig.queueLimit = queueLimit
-
-        transport.setWorkerThreadPool(new JunboThreadPool(threadPoolConfig))
         httpServer.addListener(listener)
 
         def config = httpServer.serverConfiguration

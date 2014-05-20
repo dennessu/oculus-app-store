@@ -6,12 +6,14 @@
 
     <import resource="classpath*:spring/common-context.xml"/>
     <import resource="classpath*:spring/common-lib-context.xml"/>
+    <import resource="classpath*:spring/threadpool-context.xml"/>
 
     <alias alias="routingAsyncHttpClient" name="commonAsyncHttpClient" />
     <alias alias="routingPathParamTranscoder" name="commonPathParamTranscoder" />
     <alias alias="routingQueryParamTranscoder" name="commonQueryParamTranscoder" />
     <alias alias="routingTranscoder" name="commonTranscoder" />
     <alias alias="routingExceptionHandler" name="commonExceptionHandler" />
+    <alias alias="routingExecutor" name="junboThreadPool" />
 
     <bean id="routingHeadersProvider" class="com.junbo.common.routing.HeadersProviderImpl" />
 

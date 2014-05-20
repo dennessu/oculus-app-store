@@ -33,13 +33,8 @@
         <property name="userResource" ref="userResourceClientProxy"/>
     </bean>
 
-    <bean id="userResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy">
-        <constructor-arg name="client" ref="httpClient"/>
-        <constructor-arg name="transcoder" ref="transcoder"/>
-        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder"/>
-        <constructor-arg value="${clientproxy.identity.url}"/>
-        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
+    <bean id="userResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
     </bean>
 
     <bean id="mockUserClient" class="com.junbo.cart.core.client.impl.MockUserClientImpl">
