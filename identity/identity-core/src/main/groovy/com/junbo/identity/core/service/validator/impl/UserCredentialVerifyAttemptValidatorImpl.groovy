@@ -36,9 +36,6 @@ import java.util.regex.Pattern
 @CompileStatic
 @SuppressWarnings('UnnecessaryGetter')
 class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAttemptValidator {
-
-    // Todo:    Refactor this code according to marshall's requirement
-
     private static final String MAIL_IDENTIFIER = "@"
 
     private UserCredentialVerifyAttemptRepository userLoginAttemptRepository
@@ -183,7 +180,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
 
     private Promise<User> findUser(UserCredentialVerifyAttempt userLoginAttempt) {
         if (isEmail(userLoginAttempt.username)) {
-            return userPersonalInfoRepository.searchByEmail(userLoginAttempt.username).
+            return userPersonalInfoRepository.searchByEmail(userLoginAttempt.username.toLowerCase()).
                 then { List<UserPersonalInfo> personalInfos ->
                     if (CollectionUtils.isEmpty(personalInfos)) {
                         throw AppErrors.INSTANCE.userNotFound(userLoginAttempt.username).exception()

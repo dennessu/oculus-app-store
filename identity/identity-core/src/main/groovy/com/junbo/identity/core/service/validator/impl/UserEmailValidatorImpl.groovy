@@ -21,9 +21,6 @@ import java.util.regex.Pattern
  */
 @CompileStatic
 class UserEmailValidatorImpl implements PiiValidator {
-
-    // todo:    Need to add userEmail validation according to marshall's requirement
-
     private List<Pattern> allowedEmailPatterns
     private Integer minEmailLength
     private Integer maxEmailLength
@@ -55,7 +52,7 @@ class UserEmailValidatorImpl implements PiiValidator {
             checkUserEmail(email)
 
             // If user want to promote validate from false to true, need to check again
-            if (email.info != oldEmail.info) {
+            if (email.info.toLowerCase() != oldEmail.info.toLowerCase()) {
                 return checkAdvanceUserEmail(email)
             }
 
@@ -78,14 +75,15 @@ class UserEmailValidatorImpl implements PiiValidator {
         }
 
         if (!allowedEmailPatterns.any {
-            Pattern pattern -> pattern.matcher(email.info).matches()
+            Pattern pattern -> pattern.matcher(email.info.toLowerCase()).matches()
         }) {
             throw AppErrors.INSTANCE.fieldInvalid('value.info').exception()
         }
     }
 
     private Promise<Void> checkAdvanceUserEmail(Email email) {
-        return userPersonalInfoRepository.searchByEmail(email.info).then { List<UserPersonalInfo> existing ->
+        return userPersonalInfoRepository.searchByEmail(email.info.toLowerCase()).then {
+            List<UserPersonalInfo> existing ->
             if (!CollectionUtils.isEmpty(existing)) {
                 throw AppErrors.INSTANCE.fieldDuplicate('value.info').exception()
             }

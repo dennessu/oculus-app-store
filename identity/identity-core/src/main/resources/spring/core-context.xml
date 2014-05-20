@@ -363,69 +363,6 @@
         </property>
     </bean>
 
-    <bean id="roleFilter" class="com.junbo.identity.core.service.filter.RoleFilter">
-        <property name="readableProperties">
-            <list>
-                <value>id</value>
-                <value>name</value>
-                <value>resourceType</value>
-                <value>resourceId</value>
-                <value>subResourceType</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-        <property name="writablePropertiesForCreate">
-            <list>
-                <value>name</value>
-                <value>resourceType</value>
-                <value>resourceId</value>
-                <value>subResourceType</value>
-            </list>
-        </property>
-        <property name="writablePropertiesForUpdate">
-            <list>
-                <value>name</value>
-                <value>resourceType</value>
-                <value>resourceId</value>
-                <value>subResourceType</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="roleAssignmentFilter" class="com.junbo.identity.core.service.filter.RoleAssignmentFilter">
-        <property name="readableProperties">
-            <list>
-                <value>id</value>
-                <value>roleId</value>
-                <value>assigneeType</value>
-                <value>assigneeId</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-        <property name="writablePropertiesForCreate">
-            <list>
-                <value>roleId</value>
-                <value>assigneeType</value>
-                <value>assigneeId</value>
-            </list>
-        </property>
-        <property name="writablePropertiesForUpdate">
-            <list>
-                <value>roleId</value>
-                <value>assigneeType</value>
-                <value>assigneeId</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-    </bean>
-
     <bean id="userAuthenticatorFilter" class="com.junbo.identity.core.service.filter.UserAuthenticatorFilter">
         <property name="readableProperties">
             <list>

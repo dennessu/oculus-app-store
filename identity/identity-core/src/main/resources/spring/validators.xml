@@ -387,16 +387,6 @@
         <property name="contentMaxLength" value="1073741824"/>
     </bean>
 
-    <bean id="roleValidator" class="com.junbo.identity.core.service.validator.impl.RoleValidatorImpl">
-        <property name="roleRepository" ref="roleRepository"/>
-    </bean>
-
-    <bean id="roleAssignmentValidator"
-          class="com.junbo.identity.core.service.validator.impl.RoleAssignmentValidatorImpl">
-        <property name="roleAssignmentRepository" ref="roleAssignmentRepository"/>
-        <property name="roleRepository" ref="roleRepository"/>
-    </bean>
-
     <bean id="piiValidatorFactory" class="com.junbo.identity.core.service.validator.impl.PiiValidatorFactoryImpl">
         <constructor-arg>
             <list>
