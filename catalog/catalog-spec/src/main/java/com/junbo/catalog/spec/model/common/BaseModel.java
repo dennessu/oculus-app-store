@@ -6,7 +6,9 @@
 
 package com.junbo.catalog.spec.model.common;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.junbo.common.cloudant.CloudantEntity;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.Null;
@@ -17,7 +19,7 @@ import java.util.Map;
 /**
  * Base model.
  */
-public class BaseModel {
+public class BaseModel implements CloudantEntity {
     @ApiModelProperty(position = 1000, required = true,
             value = "[Client Immutable] The revision of the resource. Used for optimistic locking.")
     private String rev;
@@ -35,6 +37,9 @@ public class BaseModel {
 
     @ApiModelProperty(position = 1004, required = true, value = "The future expansion properties.")
     private Map<String, JsonNode> futureExpansion = new HashMap<>();
+
+    @JsonIgnore
+    private String cloudantId;
 
     public Date getCreatedTime() {
         return createdTime;
@@ -74,5 +79,54 @@ public class BaseModel {
 
     public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
         this.futureExpansion = futureExpansion;
+    }
+
+    @Override
+    public String getCloudantId() {
+        return cloudantId;
+    }
+
+    @Override
+    public void setCloudantId(String id) {
+        this.cloudantId = id;
+    }
+
+    @Override
+    public String getCloudantRev() {
+        return null;
+    }
+
+    @Override
+    public void setCloudantRev(String rev) {
+    }
+
+    @Override
+    public Integer getResourceAge() {
+        return rev==null ? null : Integer.parseInt(rev);
+    }
+
+    @Override
+    public void setResourceAge(Integer resourceAge) {
+        this.rev = resourceAge.toString();
+    }
+
+    @Override
+    public Long getCreatedBy() {
+        return null;
+    }
+
+    @Override
+    public void setCreatedBy(Long createdBy) {
+
+    }
+
+    @Override
+    public Long getUpdatedBy() {
+        return null;
+    }
+
+    @Override
+    public void setUpdatedBy(Long updatedBy) {
+
     }
 }

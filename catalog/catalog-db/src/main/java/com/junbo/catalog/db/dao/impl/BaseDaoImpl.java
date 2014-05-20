@@ -55,7 +55,7 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
     }
 
     public Long create(T entity) {
-        entity.setId(idGenerator.nextId());
+        entity.setId(idGenerator.nextId(0));
         entity.setCreatedTime(Utils.now());
         if (StringUtils.isEmpty(entity.getCreatedBy())) {
             entity.setCreatedBy(Constants.DEFAULT_USER_ID);

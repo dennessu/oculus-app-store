@@ -6,6 +6,7 @@ import com.junbo.common.cloudant.model.*
 import com.junbo.common.util.Identifiable
 import com.junbo.common.util.Utils
 import com.ning.http.client.AsyncHttpClient
+import com.ning.http.client.Realm
 import com.ning.http.client.Response
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.InitializingBean
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Required
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.util.Assert
+import org.springframework.util.StringUtils
 
 import javax.ws.rs.core.UriBuilder
 import java.lang.reflect.ParameterizedType
@@ -28,6 +30,8 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
 
     protected CloudantMarshaller marshaller
 
+    protected String cloudantUser
+    protected String cloudantPassword
     protected String cloudantDBUri
     protected String dbName
     protected boolean silentPassResourceAgeCheck
@@ -42,6 +46,16 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
     @Required
     void setMarshaller(CloudantMarshaller marshaller) {
         this.marshaller = marshaller
+    }
+
+    @Required
+    void setCloudantUser(String cloudantUser) {
+        this.cloudantUser = cloudantUser
+    }
+
+    @Required
+    void setCloudantPassword(String cloudantPassword) {
+        this.cloudantPassword = cloudantPassword
     }
 
     @Required
@@ -293,6 +307,12 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
         uriBuilder.path(path)
 
         def requestBuilder = getRequestBuilder(method, uriBuilder.toTemplate())
+
+        if (!StringUtils.isEmpty(cloudantUser)) {
+            Realm realm = new Realm.RealmBuilder().setPrincipal(cloudantUser).setPassword(cloudantPassword)
+                    .setUsePreemptiveAuth(true).setScheme(Realm.AuthScheme.BASIC).build();
+            requestBuilder.setRealm(realm);
+        }
 
         if (body != null) {
             def payload = marshall(body)
