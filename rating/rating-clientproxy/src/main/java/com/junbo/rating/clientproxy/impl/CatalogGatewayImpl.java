@@ -66,10 +66,6 @@ public class CatalogGatewayImpl implements CatalogGateway{
     @Qualifier("promotionRevisionClient")
     private PromotionRevisionResource promotionRevisionResource;
 
-    @Autowired
-    @Qualifier("entitlementDefinitionClient")
-    private EntitlementDefinitionResource entitlementDefinitionResource;
-
     @Override
     public Item getItem(Long itemId) {
         try {

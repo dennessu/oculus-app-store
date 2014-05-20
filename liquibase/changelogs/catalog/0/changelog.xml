@@ -30,6 +30,7 @@
               item_id                 bigint            not null,
               status                  varchar(64)       not null,
               owner_id                bigint            not null,
+              host_item_ids           bigint[]          null,
               payload                 json              not null,
               timestamp               bigint            null,
               deleted                 boolean           not null default false,

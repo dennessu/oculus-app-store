@@ -59,9 +59,4 @@
           parent="baseClientProxy">
         <property name="target" value="${clientproxy.entitlement.url}"/>
     </bean>
-
-    <bean id="entitlementDefinitionClient"
-          class="com.junbo.catalog.spec.resource.proxy.EntitlementDefinitionResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.catalog.url}"/>
-    </bean>
 </beans>

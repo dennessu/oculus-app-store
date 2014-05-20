@@ -10,6 +10,7 @@ import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
 import com.junbo.common.id.OfferId;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -19,7 +20,7 @@ public interface OfferRevisionRepository extends BaseRevisionRepository<OfferRev
     Long create(OfferRevision offerRevision);
     OfferRevision get(Long revisionId);
     List<OfferRevision> getRevisions(OfferRevisionsGetOptions options);
-    List<OfferRevision> getRevisions(List<OfferId> offerIds, Long timestamp);
+    List<OfferRevision> getRevisions(Collection<OfferId> offerIds, Long timestamp);
     Long update(OfferRevision revision);
     void delete(Long revisionId);
 }

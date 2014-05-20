@@ -11,24 +11,26 @@ import com.junbo.common.id.ItemAttributeId;
 import com.junbo.common.id.ItemId;
 
 import javax.ws.rs.QueryParam;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Items get options.
  */
 public class ItemsGetOptions extends PageableGetOptions {
     @QueryParam("itemId")
-    private List<ItemId> itemIds;
+    private Collection<ItemId> itemIds;
     @QueryParam("type")
     private String type;
     @QueryParam("genre")
     private ItemAttributeId genre;
+    @QueryParam("hostItemId")
+    private ItemId hostItemId;
 
-    public List<ItemId> getItemIds() {
+    public Collection<ItemId> getItemIds() {
         return itemIds;
     }
 
-    public void setItemIds(List<ItemId> itemIds) {
+    public void setItemIds(Collection<ItemId> itemIds) {
         this.itemIds = itemIds;
     }
 
@@ -46,5 +48,13 @@ public class ItemsGetOptions extends PageableGetOptions {
 
     public void setGenre(ItemAttributeId genre) {
         this.genre = genre;
+    }
+
+    public ItemId getHostItemId() {
+        return hostItemId;
+    }
+
+    public void setHostItemId(ItemId hostItemId) {
+        this.hostItemId = hostItemId;
     }
 }
