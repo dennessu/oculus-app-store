@@ -9,7 +9,7 @@ package com.junbo.identity.spec.v1.model;
  * Created by liangfu on 4/26/14.
  */
 public class UserName {
-    private String firstName;
+    private String fullName;
 
     private String givenName;
 
@@ -19,12 +19,12 @@ public class UserName {
 
     private String nickName;
 
-    public String getFirstName() {
-        return firstName;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getMiddleName() {
@@ -66,7 +66,7 @@ public class UserName {
 
         UserName userName = (UserName) o;
 
-        if (firstName != null ? !firstName.equals(userName.firstName) : userName.firstName != null) return false;
+        if (fullName != null ? !fullName.equals(userName.fullName) : userName.fullName != null) return false;
         if (middleName != null ? !middleName.equals(userName.middleName) : userName.middleName != null) return false;
         if (nickName != null ? !nickName.equals(userName.nickName) : userName.nickName != null) return false;
 
@@ -75,7 +75,7 @@ public class UserName {
 
     @Override
     public int hashCode() {
-        int result = firstName != null ? firstName.hashCode() : 0;
+        int result = fullName != null ? fullName.hashCode() : 0;
         result = 31 * result + (middleName != null ? middleName.hashCode() : 0);
         result = 31 * result + (nickName != null ? nickName.hashCode() : 0);
         return result;
