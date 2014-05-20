@@ -30,6 +30,8 @@ public class EntitlementConsts {
     public static final Integer UNCONSUMABLE_USECOUNT = Integer.MAX_VALUE;
 
     public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    public static final String MIN_DATE = "1900-01-01T00:00:00Z";
+    public static final String MAX_DATE = "9999-12-31T23:59:59Z";
 
     public static final Set<String> ALLOWED_TYPE = new HashSet<>(Arrays.asList(new String[]{"DOWNLOAD", "RUN", "DEVELOPER"}));
 }

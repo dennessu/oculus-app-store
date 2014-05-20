@@ -12,6 +12,7 @@ import com.junbo.order.core.impl.common.BillingEventHistoryBuilder
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
+import com.junbo.order.db.entity.enums.BillingAction
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import groovy.transform.CompileStatic
@@ -70,6 +71,9 @@ class AuthSettleAction extends BaseOrderEventAwareAction {
             CoreBuilder.fillTaxInfo(order, resultBalance)
             def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(resultBalance)
             if (billingHistory.billingEvent != null) {
+                if (billingHistory.billingEvent == BillingAction.AUTHORIZE.name()) {
+                    order.payments?.get(0)?.paymentAmount = billingHistory.totalAmount
+                }
                 def savedHistory = orderRepository.createBillingHistory(order.id.value, billingHistory)
                 if (order.billingHistories == null) {
                     order.billingHistories = [savedHistory]

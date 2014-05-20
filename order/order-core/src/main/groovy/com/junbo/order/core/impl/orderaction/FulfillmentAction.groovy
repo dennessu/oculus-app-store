@@ -1,7 +1,5 @@
 package com.junbo.order.core.impl.orderaction
 
-import com.junbo.catalog.spec.enums.ItemType
-import com.junbo.fulfilment.spec.constant.FulfilmentStatus
 import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.langur.core.promise.Promise
@@ -11,11 +9,11 @@ import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.annotation.OrderEventAwareAfter
 import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.CoreBuilder
+import com.junbo.order.core.impl.common.FulfillmentEventHistoryBuilder
 import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.error.ErrorUtils
-import com.junbo.order.spec.model.FulfillmentHistory
 import com.junbo.order.spec.model.OrderItem
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -66,8 +64,9 @@ class  FulfillmentAction extends BaseOrderEventAwareAction {
                 OrderItem orderItem = order.orderItems?.find { OrderItem item ->
                     item.orderItemId?.value == fulfilmentItem.orderItemId
                 }
-                def fulfillmentHistory = toFulfillmentHistory(fulfilmentResult, fulfilmentItem, orderItem)
-                def fulfillmentEventStatus = getFulfillmentEventStatus(fulfilmentItem)
+                def fulfillmentHistory = FulfillmentEventHistoryBuilder.buildFulfillmentHistory(
+                        fulfilmentResult, fulfilmentItem, orderItem)
+                def fulfillmentEventStatus = FulfillmentEventHistoryBuilder.getFulfillmentEventStatus(fulfilmentItem)
 
                 // aggregate fulfillment event status to update order event status
                 if (orderEventStatus == null ||
@@ -87,51 +86,5 @@ class  FulfillmentAction extends BaseOrderEventAwareAction {
 
             return CoreBuilder.buildActionResultForOrderEventAwareAction(context, orderEventStatus)
         }
-    }
-
-    private static FulfillmentHistory toFulfillmentHistory(FulfilmentRequest fulfilmentResult,
-                                                       FulfilmentItem fulfilmentItem, OrderItem orderItem) {
-        def fulfillmentHistory = new FulfillmentHistory()
-        fulfillmentHistory.trackingUuid = UUID.fromString(fulfilmentResult.trackingGuid)
-        fulfillmentHistory.fulfillmentEvent = getFulfillmentEvent(fulfilmentItem, orderItem)
-        fulfillmentHistory.orderItemId = fulfilmentItem.orderItemId
-        fulfillmentHistory.fulfillmentId = fulfilmentItem.fulfilmentId
-        return fulfillmentHistory
-    }
-
-    private static String getFulfillmentEvent(FulfilmentItem fulfilmentItem, OrderItem orderItem) {
-        if (orderItem == null) {
-            return null
-        }
-        switch (fulfilmentItem.status) {
-            case FulfilmentStatus.PENDING:
-                if (orderItem.type == ItemType.PHYSICAL.name()) {
-                    return com.junbo.order.db.entity.enums.FulfillmentAction.PREORDER.name()
-                }
-                return null
-            case FulfilmentStatus.SUCCEED:
-                if (orderItem.type == ItemType.PHYSICAL.name()) {
-                    return com.junbo.order.db.entity.enums.FulfillmentAction.SHIP.name()
-                }
-                if (orderItem.type == ItemType.DIGITAL.name()) {
-                    return com.junbo.order.db.entity.enums.FulfillmentAction.FULFILL.name()
-                }
-                return null
-        }
-        return null
-    }
-
-    private static EventStatus getFulfillmentEventStatus(FulfilmentItem fulfilmentItem) {
-        switch (fulfilmentItem.status) {
-            case FulfilmentStatus.PENDING:
-                return EventStatus.PENDING
-            case FulfilmentStatus.SUCCEED:
-                return EventStatus.COMPLETED
-            case FulfilmentStatus.FAILED:
-                return EventStatus.FAILED
-        }
-        LOGGER.warn('name=Unknown_Fulfillment_Status, fulfilmentId={}, orderItemId={}, status={}',
-                fulfilmentItem.fulfilmentId.toString(), fulfilmentItem.orderItemId.toString(), fulfilmentItem.status)
-        return null
     }
 }

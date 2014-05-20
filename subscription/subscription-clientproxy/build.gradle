@@ -12,6 +12,7 @@ dependencies {
     compile junboProject(':entitlement-spec')
     compile junboProject(':payment-spec')
     compile junboProject(':subscription-common')
+    compile junboProject(':rating-spec')
 
     testCompile(libraries.spring_test)
     processor junboProject(':langur-processor')

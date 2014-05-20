@@ -42,4 +42,8 @@
     <bean id="paymentClient" class="com.junbo.payment.spec.resource.proxy.PaymentTransactionResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.payment.url}"/>
     </bean>
+
+    <bean id="ratingClient" class="com.junbo.rating.spec.resource.proxy.RatingResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.rating.url}"/>
+    </bean>
 </beans>

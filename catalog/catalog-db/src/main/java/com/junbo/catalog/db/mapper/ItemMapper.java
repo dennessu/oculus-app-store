@@ -34,7 +34,7 @@ public class ItemMapper {
         entity.setPayload(Utils.toJson(model));
         entity.setCreatedBy(String.valueOf(model.getOwnerId()));
         entity.setUpdatedBy(String.valueOf(model.getOwnerId()));
-        entity.setRev(model.getRev()==null ? null : Integer.valueOf(model.getRev()));
+        entity.setRev(model.getResourceAge());
     }
 
     public static Item toModel(ItemEntity entity) {
@@ -49,7 +49,7 @@ public class ItemMapper {
         model.setGenres(entity.getGenres());
         model.setCreatedTime(entity.getCreatedTime());
         model.setUpdatedTime(entity.getUpdatedTime());
-        model.setRev(entity.getRev().toString());
+        model.setResourceAge(entity.getRev());
         return model;
     }
 }

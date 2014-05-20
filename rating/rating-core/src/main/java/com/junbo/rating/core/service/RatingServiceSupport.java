@@ -10,6 +10,7 @@ import com.junbo.catalog.spec.enums.ItemType;
 import com.junbo.catalog.spec.enums.PriceType;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.promotion.*;
+import com.junbo.catalog.spec.model.promotion.criterion.Criterion;
 import com.junbo.rating.clientproxy.CatalogGateway;
 import com.junbo.rating.common.util.Func;
 import com.junbo.rating.common.util.Utils;

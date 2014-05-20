@@ -6,7 +6,7 @@
 
 package com.junbo.rating.core.handler;
 
-import com.junbo.catalog.spec.model.promotion.CouponCriterion;
+import com.junbo.catalog.spec.model.promotion.criterion.CouponCriterion;
 import com.junbo.rating.core.context.RatingContext;
 
 import java.util.HashSet;

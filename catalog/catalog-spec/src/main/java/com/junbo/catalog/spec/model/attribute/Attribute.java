@@ -22,6 +22,6 @@ public interface Attribute {
     void setParentId(Long parentId);
     Map<String, SimpleLocaleProperties> getLocales();
     void setLocales(Map<String, SimpleLocaleProperties> locales);
-    String getRev();
-    void setRev(String rev);
+    Integer getResourceAge();
+    void setResourceAge(Integer rev);
 }

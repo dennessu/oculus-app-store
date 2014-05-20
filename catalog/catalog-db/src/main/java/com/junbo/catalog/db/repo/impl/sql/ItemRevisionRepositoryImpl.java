@@ -16,6 +16,7 @@ import com.junbo.common.id.ItemId;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -43,7 +44,7 @@ public class ItemRevisionRepositoryImpl implements ItemRevisionRepository {
         return revisions;
     }
 
-    public List<ItemRevision> getRevisions(List<ItemId> itemIds, Long timestamp) {
+    public List<ItemRevision> getRevisions(Collection<ItemId> itemIds, Long timestamp) {
         List<ItemRevisionEntity> revisionEntities = new ArrayList<>();
         for (ItemId itemId : itemIds) {
             ItemRevisionEntity revisionEntity = itemRevisionDao.getRevision(itemId.getValue(), timestamp);
@@ -51,6 +52,18 @@ public class ItemRevisionRepositoryImpl implements ItemRevisionRepository {
                 revisionEntities.add(revisionEntity);
             }
         }
+        List<ItemRevision> revisions = new ArrayList<>();
+        for (ItemRevisionEntity revisionEntity : revisionEntities) {
+            revisions.add(ItemRevisionMapper.toModel(revisionEntity));
+        }
+
+        return revisions;
+    }
+
+    @Override
+    public List<ItemRevision> getRevisions(Long hostItemId) {
+        List<ItemRevisionEntity> revisionEntities = itemRevisionDao.getRevisions(hostItemId);
+
         List<ItemRevision> revisions = new ArrayList<>();
         for (ItemRevisionEntity revisionEntity : revisionEntities) {
             revisions.add(ItemRevisionMapper.toModel(revisionEntity));

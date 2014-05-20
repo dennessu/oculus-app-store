@@ -17,7 +17,6 @@ import com.junbo.catalog.spec.model.promotion.PromotionRevision;
 import com.junbo.catalog.spec.model.promotion.PromotionRevisionsGetOptions;
 import com.junbo.catalog.spec.model.promotion.PromotionsGetOptions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, P
 
     @Override
     public Promotion createEntity(Promotion promotion) {
-        if (!StringUtils.isEmpty(promotion.getRev())) {
+        if (promotion.getResourceAge() != null) {
             throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
         }
         validatePromotion(promotion);
@@ -49,7 +48,7 @@ public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, P
 
     @Override
     public PromotionRevision createRevision(PromotionRevision revision) {
-        if (!StringUtils.isEmpty(revision.getRev())) {
+        if (revision.getResourceAge() != null) {
             throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
         }
         validateRevision(revision);

@@ -28,7 +28,7 @@ public class PriceTierMapper {
     public static void fillDBEntity(PriceTier priceTier, PriceTierEntity dbEntity) {
         dbEntity.setId(priceTier.getId());
         dbEntity.setPayload(Utils.toJson(priceTier));
-        dbEntity.setRev(priceTier.getRev()==null ? null : Integer.valueOf(priceTier.getRev()));
+        dbEntity.setRev(priceTier.getResourceAge());
     }
 
     public static PriceTier toModel(PriceTierEntity dbEntity) {
@@ -39,7 +39,7 @@ public class PriceTierMapper {
         priceTier.setId(dbEntity.getId());
         priceTier.setCreatedTime(dbEntity.getCreatedTime());
         priceTier.setUpdatedTime(dbEntity.getUpdatedTime());
-        priceTier.setRev(dbEntity.getRev().toString());
+        priceTier.setResourceAge(dbEntity.getRev());
         return priceTier;
     }
 }

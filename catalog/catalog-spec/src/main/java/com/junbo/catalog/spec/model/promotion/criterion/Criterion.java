@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.catalog.spec.model.promotion;
+package com.junbo.catalog.spec.model.promotion.criterion;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -14,7 +14,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  */
 @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property="criterionType")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = ScopeCriterion.class, name = "ScopeCriterion"),
+        @JsonSubTypes.Type(value = OfferScopeCriterion.class, name = "OfferScopeCriterion"),
+        @JsonSubTypes.Type(value = CategoryScopeCriterion.class, name = "CategoryScopeCriterion"),
         @JsonSubTypes.Type(value = EntitlementCriterion.class, name = "EntitlementCriterion"),
         @JsonSubTypes.Type(value = CouponCriterion.class, name = "CouponCriterion"),
         @JsonSubTypes.Type(value = OrderCriterion.class, name = "OrderCriterion")

@@ -23,14 +23,12 @@ import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.item.*;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.common.error.AppError;
+import com.junbo.common.id.ItemId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Item service implementation.
@@ -72,7 +70,31 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
 
     @Override
     public List<Item> getItems(ItemsGetOptions options) {
-        return itemRepo.getItems(options);
+        if (options.getHostItemId() != null) {
+            List<ItemRevision> itemRevisions = itemRevisionRepo.getRevisions(options.getHostItemId().getValue());
+            if (CollectionUtils.isEmpty(itemRevisions)) {
+                return Collections.emptyList();
+            }
+            Set<ItemId> itemIds = new HashSet<>();
+            for (ItemRevision itemRevision : itemRevisions) {
+                itemIds.add(new ItemId(itemRevision.getItemId()));
+            }
+            itemRevisions = itemRevisionRepo.getRevisions(itemIds, System.currentTimeMillis());
+            itemIds.clear();
+            for (ItemRevision itemRevision : itemRevisions) {
+                if (itemRevision.getIapHostItemIds() != null
+                        && itemRevision.getIapHostItemIds().contains(options.getHostItemId().getValue())) {
+                    itemIds.add(new ItemId(itemRevision.getItemId()));
+                }
+            }
+            if (CollectionUtils.isEmpty(itemIds)) {
+                return Collections.emptyList();
+            }
+            options.setItemIds(itemIds);
+            return itemRepo.getItems(options);
+        } else {
+            return itemRepo.getItems(options);
+        }
     }
 
     @Override
@@ -183,7 +205,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
     private void validateItemCreation(Item item) {
         checkRequestNotNull(item);
         List<AppError> errors = new ArrayList<>();
-        if (!StringUtils.isEmpty(item.getRev())) {
+        if (item.getResourceAge() != null) {
             errors.add(AppErrors.INSTANCE.unnecessaryField("rev"));
         }
         if (item.getCurrentRevisionId() != null) {
@@ -207,8 +229,8 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
             errors.add(AppErrors.INSTANCE
                     .fieldNotCorrect("currentRevision", "The field can only be changed through revision approve"));
         }
-        if (!oldItem.getRev().equals(item.getRev())) {
-            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", item.getRev(), oldItem.getRev()));
+        if (!oldItem.getResourceAge().equals(item.getResourceAge())) {
+            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", item.getResourceAge(), oldItem.getResourceAge()));
         }
 
         validateItemCommon(item, errors);
@@ -253,8 +275,8 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
     private void validateRevisionCreation(ItemRevision revision) {
         checkRequestNotNull(revision);
         List<AppError> errors = new ArrayList<>();
-        if (!StringUtils.isEmpty(revision.getRev())) {
-            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", revision.getRev(), null));
+        if (revision.getResourceAge() != null) {
+            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", revision.getResourceAge(), null));
         }
         if (!Status.DRAFT.is(revision.getStatus())) {
             errors.add(AppErrors.INSTANCE.fieldNotMatch("status", revision.getStatus(), Status.DRAFT));
@@ -275,8 +297,9 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
             errors.add(AppErrors.INSTANCE
                     .fieldNotMatch("revisionId", revision.getRevisionId(), oldRevision.getRevisionId()));
         }
-        if (!oldRevision.getRev().equals(revision.getRev())) {
-            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", revision.getRev(), oldRevision.getRev()));
+        if (!oldRevision.getResourceAge().equals(revision.getResourceAge())) {
+            errors.add(AppErrors.INSTANCE
+                    .fieldNotMatch("rev", revision.getResourceAge(), oldRevision.getResourceAge()));
         }
         if (revision.getStatus()==null || !Status.contains(revision.getStatus())) {
             errors.add(AppErrors.INSTANCE.fieldNotCorrect("status", "Valid statuses: " + Status.ALL));

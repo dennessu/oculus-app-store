@@ -16,6 +16,7 @@ import com.junbo.common.id.OfferId;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -43,7 +44,7 @@ public class OfferRevisionRepositoryImpl implements OfferRevisionRepository {
         return revisions;
     }
 
-    public List<OfferRevision> getRevisions(List<OfferId> offerIds, Long timestamp) {
+    public List<OfferRevision> getRevisions(Collection<OfferId> offerIds, Long timestamp) {
         List<OfferRevisionEntity> revisionEntities = new ArrayList<>();
         for (OfferId offerId : offerIds) {
             OfferRevisionEntity revisionEntity = offerRevisionDao.getRevision(offerId.getValue(), timestamp);
