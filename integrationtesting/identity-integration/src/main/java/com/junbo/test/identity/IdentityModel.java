@@ -58,8 +58,8 @@ public class IdentityModel {
 //        localeName.setLongName("USD_LONG");
 //        locales.put("en_US", JsonHelper.ObjectToJsonNode(localeName));
 //        country.setLocales(locales);
-        List<RatingBoardId> ratingBoardIds = new ArrayList<>();
-        country.setRatingBoardId(ratingBoardIds);
+        List<RatingBoardId> ratingBoards = new ArrayList<>();
+        country.setRatingBoards(ratingBoards);
         Map<String, SubCountry> subCountryMap = new HashMap<>();
         SubCountry subCountry1 = new SubCountry();
         subCountry1.setShortNameKey("US_NY_SHORT");
@@ -84,17 +84,21 @@ public class IdentityModel {
         //currency.setDecimalSymbol(".");
         //currency.setDigitGroupingLength(3);
         //currency.setDigitGroupingSymbol(",");
-        Map<String, JsonNode> locales = new HashMap<>();
-        LocaleName localeName = new LocaleName();
-        localeName.setShortName("USD_SHORT");
-        localeName.setLongName("USD_LONG");
-        locales.put("en_US", JsonHelper.ObjectToJsonNode(localeName));
-        currency.setLocales(locales);
+        Map<String, String> localeKeys = new HashMap<>();
+        localeKeys.put("shortName", "USD_SHORT");
+        localeKeys.put("longName", "USD_LONG");
+        currency.setLocaleKeys(localeKeys);
         //currency.setNegativeFormat("BRACE");
         //currency.setNumberAfterDecimal(2);
         currency.setSymbol("$");
         //currency.setSymbolPosition("BEFORE");
         return currency;
+    }
+
+    public static Email DefaultEmail() throws Exception {
+        Email email = new Email();
+        email.setInfo(RandomHelper.randomAlphabetic(8) + "@163.com");
+        return email;
     }
 
     public static Locale DefaultLocale() throws Exception {
@@ -113,10 +117,36 @@ public class IdentityModel {
         return user;
     }
 
-    public static UserPersonalInfo DefaultUserPersonalInfo() throws Exception {
+    /**
+     * copied from com\junbo\identity\data\identifiable\UserPersonalInfoType.groovy.
+     */
+    public static enum UserPersonalInfoType {
+        ADDRESS,
+        DOB,
+        DRIVERS_LICENSE,
+        EMAIL,
+        GENDER,
+        GOVERNMENT_ID,
+        NAME,
+        PASSPORT,
+        PHONE,
+        QQ,
+        SMS,
+        WHATSAPP,
+        WIPED
+    }
+
+    public static UserPersonalInfo DefaultUserPersonalInfoAddress() throws Exception {
         UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
-        userPersonalInfo.setType("ADDRESS");
+        userPersonalInfo.setType(UserPersonalInfoType.ADDRESS.name());
         userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(DefaultAddress()));
+        return userPersonalInfo;
+    }
+
+    public static UserPersonalInfo DefaultUserPersonalInfoEmail() throws Exception {
+        UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
+        userPersonalInfo.setType(UserPersonalInfoType.EMAIL.name());
+        userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(DefaultEmail()));
         return userPersonalInfo;
     }
 }
