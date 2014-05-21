@@ -6,11 +6,11 @@
 
 package com.junbo.entitlement.db.dao;
 
+import com.junbo.common.model.Results;
 import com.junbo.entitlement.db.entity.EntitlementEntity;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -23,7 +23,7 @@ public interface EntitlementDao {
 
     EntitlementEntity update(EntitlementEntity entitlement);
 
-    List<EntitlementEntity> getBySearchParam(EntitlementSearchParam entitlementSearchParam,
+    Results<EntitlementEntity> getBySearchParam(EntitlementSearchParam entitlementSearchParam,
                                              PageMetadata pageMetadata);
 
     EntitlementEntity getByTrackingUuid(Long shardMasterId, UUID trackingUuid);

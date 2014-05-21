@@ -24,11 +24,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import javax.ws.rs.BeanParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -67,25 +65,23 @@ public class EntitlementResourceImpl implements EntitlementResource {
     }
 
     @Override
-    public Promise<Results<Entitlement>> searchEntitlements(@BeanParam EntitlementSearchParam searchParam, @BeanParam PageMetadata pageMetadata) {
-        List<Entitlement> entitlements = entitlementService.searchEntitlement(searchParam, pageMetadata);
-        Results<Entitlement> result = new Results<Entitlement>();
-        result.setItems(entitlements);
+    public Promise<Results<Entitlement>> searchEntitlements(EntitlementSearchParam searchParam, PageMetadata pageMetadata) {
+        Results<Entitlement> result = entitlementService.searchEntitlement(searchParam, pageMetadata);
 
         Link link = new Link();
-        if (entitlements.size() <
+        if (result.getItems().size() <
                 (pageMetadata.getCount() == null
                         ? EntitlementConsts.DEFAULT_PAGE_SIZE : pageMetadata.getCount())) {
             link.setHref(EntitlementConsts.NEXT_END);
         } else {
-            link.setHref(buildNextUrl(searchParam, pageMetadata));
+            link.setHref(buildNextUrl(searchParam, pageMetadata, result.getNext()));
         }
         result.setNext(link);
         return Promise.pure(result);
     }
 
     private String buildNextUrl(
-            EntitlementSearchParam searchParam, PageMetadata pageMetadata) {
+            EntitlementSearchParam searchParam, PageMetadata pageMetadata, Link next) {
         UriBuilder builder = uriInfo.getBaseUriBuilder().path("entitlements");
         builder.queryParam("userId", IdFormatter.encodeId(searchParam.getUserId()));
         if (!StringUtils.isEmpty(searchParam.getType())) {
@@ -97,13 +93,16 @@ public class EntitlementResourceImpl implements EntitlementResource {
         if (searchParam.getIsBanned() != null) {
             builder = builder.queryParam("isSuspended", searchParam.getIsBanned());
         }
+        if (searchParam.getHostItemId() != null) {
+            builder = builder.queryParam("hostItemId", IdFormatter.encodeId(searchParam.getHostItemId()));
+        }
         if (!CollectionUtils.isEmpty(searchParam.getItemIds())) {
             for (ItemId itemId : searchParam.getItemIds()) {
                 builder = builder.queryParam("itemIds", IdFormatter.encodeId(itemId));
             }
         }
         builder = CommonUtils.buildPageParams(builder,
-                pageMetadata.getStart(), pageMetadata.getCount());
+                pageMetadata.getStart(), pageMetadata.getCount(), next.getHref());
         return builder.toTemplate();
     }
 

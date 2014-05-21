@@ -6,7 +6,6 @@
 
 package com.junbo.entitlement.db.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.cloudant.CloudantEntity;
 import com.junbo.common.id.EntitlementId;
@@ -145,21 +144,18 @@ public class EntitlementHistoryEntity extends Entity implements Shardable, Cloud
 
     @Transient
     @Override
-    @JsonIgnore
     public Long getShardMasterId() {
         return entitlementId;
     }
 
     @Override
     @Transient
-    @JsonIgnore
     public EntitlementId getId() {
         return new EntitlementId(this.getpId());
     }
 
     @Override
     @Transient
-    @JsonIgnore
     public void setId(EntitlementId id) {
         this.setpId(id.getValue());
     }

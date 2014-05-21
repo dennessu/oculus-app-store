@@ -7,6 +7,7 @@
 package com.junbo.entitlement.db.mapper;
 
 import com.junbo.common.model.AdminInfo;
+import com.junbo.common.model.Results;
 import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.db.entity.EntitlementEntity;
@@ -95,6 +96,13 @@ public class EntitlementMapper {
             entitlements.add(toEntitlement(entitlementEntity));
         }
         return entitlements;
+    }
+
+    public Results<Entitlement> toEntitlementResults(Results<EntitlementEntity> entityResults){
+        Results<Entitlement> results = new Results<>();
+        results.setNext(entityResults.getNext());
+        results.setItems(toEntitlementList(entityResults.getItems()));
+        return results;
     }
 
     private Boolean isActive(EntitlementEntity entitlementEntity) {

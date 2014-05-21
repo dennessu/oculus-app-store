@@ -27,10 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * CatalogGatewayImpl.
@@ -68,7 +65,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
     protected OfferRevision retrieveOfferRevision(Long offerId, Long timestamp) {
         try {
             OfferRevisionsGetOptions options = new OfferRevisionsGetOptions();
-            options.setOfferIds(Arrays.asList(new OfferId(offerId)));
+            options.setOfferIds(new HashSet(Arrays.asList(new OfferId(offerId))));
             options.setTimestamp(timestamp);
 
             Results<OfferRevision> revisions = offerRevisionResource.getOfferRevisions(options).get();
@@ -88,7 +85,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
     protected ItemRevision retrieveItemRevision(Long itemId, Long timestamp) {
         try {
             ItemRevisionsGetOptions options = new ItemRevisionsGetOptions();
-            options.setItemIds(Arrays.asList(new ItemId(itemId)));
+            options.setItemIds(new HashSet(Arrays.asList(new ItemId(itemId))));
             options.setTimestamp(timestamp);
 
             Results<ItemRevision> revisions = itemRevisionResource.getItemRevisions(options).get();

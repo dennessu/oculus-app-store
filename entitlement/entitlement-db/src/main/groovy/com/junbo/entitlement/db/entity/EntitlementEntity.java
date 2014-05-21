@@ -6,11 +6,14 @@
 
 package com.junbo.entitlement.db.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.cloudant.CloudantEntity;
+import com.junbo.common.cloudant.json.annotations.CloudantDeserialize;
+import com.junbo.common.cloudant.json.annotations.CloudantSerialize;
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.util.Identifiable;
+import com.junbo.entitlement.db.entity.def.DateDeserializer;
+import com.junbo.entitlement.db.entity.def.DateSerializer;
 import com.junbo.entitlement.db.entity.def.MapJsonUserType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -33,7 +36,11 @@ public class EntitlementEntity extends Entity implements CloudantEntity, Identif
     private Long userId;
     private Boolean isBanned;
     private Long itemId;
+    @CloudantSerialize(DateSerializer.class)
+    @CloudantDeserialize(DateDeserializer.class)
     private Date grantTime;
+    @CloudantSerialize(DateSerializer.class)
+    @CloudantDeserialize(DateDeserializer.class)
     private Date expirationTime;
     private Integer useCount;
     private String type;
@@ -125,21 +132,18 @@ public class EntitlementEntity extends Entity implements CloudantEntity, Identif
 
     @Transient
     @Override
-    @JsonIgnore
     public Long getShardMasterId() {
         return userId;
     }
 
     @Override
     @Transient
-    @JsonIgnore
     public EntitlementId getId() {
         return new EntitlementId(this.getpId());
     }
 
     @Override
     @Transient
-    @JsonIgnore
     public void setId(EntitlementId id) {
         this.setpId(id.getValue());
     }

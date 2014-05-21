@@ -4,15 +4,21 @@ source common.sh
 #check running under specified account
 checkAccount $DEPLOYMENT_ACCOUNT
 
+echo "kill postgres instance with port [$MASTER_DB_PORT]..."
+forceKill $MASTER_DB_PORT
+
 echo "create database data folder $MASTER_DATA_PATH"
-mkdir -p $MASTER_DATA_PATH
+rm -rf $MASTER_DATA_PATH
+mkdir $MASTER_DATA_PATH
 chmod 700 $MASTER_DATA_PATH
 
 echo "create database backup folder $MASTER_BACKUP_PATH"
-mkdir -p $MASTER_BACKUP_PATH
+rm -rf $MASTER_BACKUP_PATH
+mkdir $MASTER_BACKUP_PATH
 
 echo "create database archive folder $MASTER_ARCHIVE_PATH"
-mkdir -p $MASTER_ARCHIVE_PATH
+rm -rf $MASTER_ARCHIVE_PATH
+mkdir $MASTER_ARCHIVE_PATH
 
 echo "initialize master database..."
 $PGBIN_PATH/pg_ctl -D $MASTER_DATA_PATH initdb
