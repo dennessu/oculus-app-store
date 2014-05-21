@@ -6,6 +6,7 @@
 
 package com.junbo.entitlement.db.repository;
 
+import com.junbo.common.model.Results;
 import com.junbo.entitlement.db.dao.EntitlementDao;
 import com.junbo.entitlement.db.dao.EntitlementHistoryDao;
 import com.junbo.entitlement.db.entity.EntitlementEntity;
@@ -17,7 +18,6 @@ import com.junbo.entitlement.spec.model.PageMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -52,8 +52,8 @@ public class EntitlementRepository {
         return entitlementMapper.toEntitlement(result);
     }
 
-    public List<Entitlement> getBySearchParam(EntitlementSearchParam searchParam, PageMetadata pageMetadata) {
-        return entitlementMapper.toEntitlementList(
+    public Results<Entitlement> getBySearchParam(EntitlementSearchParam searchParam, PageMetadata pageMetadata) {
+        return entitlementMapper.toEntitlementResults(
                 entitlementDao.getBySearchParam(
                         searchParam, pageMetadata == null ? new PageMetadata() : pageMetadata));
     }

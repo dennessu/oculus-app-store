@@ -7,7 +7,7 @@ package com.junbo.entitlement.clientproxy.catalog.impl;
 
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
-import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
+import com.junbo.catalog.spec.model.item.ItemsGetOptions;
 import com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy;
 import com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxy;
 import com.junbo.common.id.ItemId;
@@ -63,21 +63,22 @@ public class ItemFacadeImpl implements ItemFacade {
     }
 
     @Override
-    public Set<Long> getItemIdsByHostItemId(Long hostItemId){
-        List<ItemRevision> itemRevisions = new LinkedList<>();
-        ItemRevisionsGetOptions options = new ItemRevisionsGetOptions();
-        //TODO: need to get by HostItemId
+    public Set<Long> getItemIdsByHostItemId(Long hostItemId) {
+        List<Item> items = new LinkedList<>();
+        ItemsGetOptions options = new ItemsGetOptions();
+        options.setHostItemId(new ItemId(hostItemId));
+        options.setSize(20000);  //TODO: need to find a way to solve this problem
+        options.setStart(0);
         try {
-            LOGGER.info("Getting itemRevisions by hostItemId [{}] started.", hostItemId);
-            itemRevisions = itemRevisionClient.getItemRevisions(
-                    options).get().getItems();
-            LOGGER.info("Getting itemRevisions by hostItemId [{}] finished.", hostItemId);
+            LOGGER.info("Getting items by hostItemId [{}] started.", hostItemId);
+            items = itemClient.getItems(options).get().getItems();
+            LOGGER.info("Getting items by hostItemId [{}] finished.", hostItemId);
         } catch (Exception e) {
-            LOGGER.error("Getting itemRevisions by hostItemId [{" + hostItemId + "}] failed.", e);
+            LOGGER.error("Getting items by hostItemId [{" + hostItemId + "}] failed.", e);
         }
         Set<Long> itemIds = new HashSet<>();
-        for(ItemRevision revision : itemRevisions){
-            itemIds.add(revision.getItemId());
+        for (Item item : items) {
+            itemIds.add(item.getItemId());
         }
         return itemIds;
     }

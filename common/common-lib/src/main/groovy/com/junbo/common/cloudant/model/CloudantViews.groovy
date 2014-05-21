@@ -17,8 +17,10 @@ class CloudantViews {
     String language = 'javascript'
 
     Map<String, CloudantView> views
+    Map<String, CloudantView> indexes
 
     static class CloudantView {
+        String index
         String map
         String reduce
         @CloudantIgnore
