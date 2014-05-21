@@ -14,8 +14,8 @@ scp base_backup.sh $MASTER_DEPLOYMENT_PATH
 scp pg_hba.conf.template $MASTER_DEPLOYMENT_PATH
 
 scp pgbouncer.sh $MASTER_DEPLOYMENT_PATH
-scp ./pgbouncer/primary_pgbouncer_master.sh  $MASTER_DEPLOYMENT_PATH/pgbouncer_master.sh
-scp ./pgbouncer/primary_pgbouncer_slave.sh  $MASTER_DEPLOYMENT_PATH/pgbouncer_slave.sh
+scp pgbouncer_master.sh  $MASTER_DEPLOYMENT_PATH/pgbouncer_master.sh
+scp pgbouncer_slave.sh  $MASTER_DEPLOYMENT_PATH/pgbouncer_slave.sh
 
 #slave
 ssh $SLAVE_ADDRESS << ENDSSH
@@ -28,6 +28,6 @@ scp purge_slave.sh $SLAVE_DEPLOYMENT_PATH
 scp setup_slave.sh $SLAVE_DEPLOYMENT_PATH
 scp pg_hba.conf.template $SLAVE_DEPLOYMENT_PATH
 
-scp pgbouncer.sh $MASTER_DEPLOYMENT_PATH
-scp ./pgbouncer/secondary_pgbouncer_master.sh  $MASTER_DEPLOYMENT_PATH/pgbouncer_master.sh
-scp ./pgbouncer/secondary_pgbouncer_slave.sh  $MASTER_DEPLOYMENT_PATH/pgbouncer_slave.sh
+scp pgbouncer.sh $SLAVE_DEPLOYMENT_PATH
+scp pgbouncer_master.sh  $SLAVE_DEPLOYMENT_PATH/pgbouncer_master.sh
+scp pgbouncer_slave.sh  $SLAVE_DEPLOYMENT_PATH/pgbouncer_slave.sh
