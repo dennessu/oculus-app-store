@@ -28,11 +28,15 @@ public class IdentityModel {
 
     }
 
+    public static final String DefaultCountry = "US";
+    public static final String DefaultCurrency = "USD";
+    public static final String DefaultLocale = "en_US";
+
     public static Address DefaultAddress() throws Exception {
         Address address = new Address();
         address.setCity("Irvine");
         CountryId countryId = new CountryId();
-        countryId.setValue("US");
+        countryId.setValue(DefaultCountry);
         address.setCountryId(countryId);
         address.setFirstName(RandomHelper.randomAlphabetic(10));
         address.setLastName(RandomHelper.randomAlphabetic(10));
@@ -44,20 +48,17 @@ public class IdentityModel {
 
     public static Country DefaultCountry() throws Exception {
         Country country = new Country();
-        country.setCountryCode("US");
+        country.setCountryCode(DefaultCountry);
         CurrencyId currencyId = new CurrencyId();
-        currencyId.setValue("USD");
+        currencyId.setValue(DefaultCurrency);
         country.setDefaultCurrency(currencyId);
         LocaleId localeId = new LocaleId();
-        localeId.setValue("en_US");
+        localeId.setValue(DefaultLocale);
         country.setDefaultLocale(localeId);
-        //TODO fields to be uncommented once code complete.
-//        Map<String, JsonNode> locales = new HashMap<>();
-//        LocaleName localeName = new LocaleName();
-//        localeName.setShortName("USD_SHORT");
-//        localeName.setLongName("USD_LONG");
-//        locales.put("en_US", JsonHelper.ObjectToJsonNode(localeName));
-//        country.setLocales(locales);
+        Map<String, String> locales = new HashMap<>();
+        locales.put("shortName", "USD_SHORT");
+        locales.put("longName", "USD_LONG");
+        country.setLocales(locales);
         List<RatingBoardId> ratingBoards = new ArrayList<>();
         country.setRatingBoards(ratingBoards);
         Map<String, SubCountry> subCountryMap = new HashMap<>();
@@ -78,20 +79,19 @@ public class IdentityModel {
     }
 
     public static Currency DefaultCurrency() throws Exception {
-        //TODO fields to be uncommented once code complete.
         Currency currency = new Currency();
-        currency.setCurrencyCode("USD");
-        //currency.setDecimalSymbol(".");
-        //currency.setDigitGroupingLength(3);
-        //currency.setDigitGroupingSymbol(",");
+        currency.setCurrencyCode(DefaultCurrency);
+        currency.setDecimalSymbol(".");
+        currency.setDigitGroupingLength(3);
+        currency.setDigitGroupingSymbol(",");
         Map<String, String> localeKeys = new HashMap<>();
         localeKeys.put("shortName", "USD_SHORT");
         localeKeys.put("longName", "USD_LONG");
         currency.setLocaleKeys(localeKeys);
-        //currency.setNegativeFormat("BRACE");
-        //currency.setNumberAfterDecimal(2);
+        currency.setNegativeFormat("BRACE");
+        currency.setNumberAfterDecimal(2);
         currency.setSymbol("$");
-        //currency.setSymbolPosition("BEFORE");
+        currency.setSymbolPosition("BEFORE");
         return currency;
     }
 
@@ -103,7 +103,7 @@ public class IdentityModel {
 
     public static Locale DefaultLocale() throws Exception {
         Locale locale = new Locale();
-        locale.setLocaleCode("en_US");
+        locale.setLocaleCode(DefaultLocale);
         locale.setLocaleName("English(US)");
         locale.setLongName("English (United States)");
         locale.setShortName("English(US)");

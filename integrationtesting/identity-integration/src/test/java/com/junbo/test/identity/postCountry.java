@@ -29,12 +29,16 @@ public class postCountry {
 
     @Test(groups = "bvt")
     public void postCountry() throws Exception {
-        Country posted = Identity.CountryPostDefault();
         try {
+            Identity.LocalePostDefault();
+            Identity.CurrencyPostDefault();
+            Country posted = Identity.CountryPostDefault();
             Country stored = Identity.CountryGetByCountryId(posted.getId().getValue());
             Validator.Validate("validate country", posted, stored);
         } finally {
-            Identity.CountryDeleteByCountryId(posted.getId().getValue());
+            Identity.CountryDeleteByCountryId(IdentityModel.DefaultCountry);
+            Identity.CurrencyDeleteByCurrencyCode(IdentityModel.DefaultCurrency);
+            Identity.LocaleDeleteByLocaleId(IdentityModel.DefaultLocale);
         }
     }
 }
