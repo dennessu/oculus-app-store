@@ -195,15 +195,17 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
         cryptoMessage.value = marshaller.marshall(model)
 
         return cryptoResource.encrypt(model.userId, cryptoMessage).then { CryptoMessage messageValue ->
-            EncryptUserPersonalInfo encryptUserPersonalInfo = new EncryptUserPersonalInfo()
-            encryptUserPersonalInfo.encryptUserPersonalInfo = messageValue.value
-            encryptUserPersonalInfo.userPersonalInfoId = (UserPersonalInfoId)model.id
-            PiiHash piiHash = getPiiHash(model.type)
-            encryptUserPersonalInfo.hashSearchInfo = piiHash.generateHash(model.value)
 
-            return encryptUserPersonalInfoRepository.update(encryptUserPersonalInfo).then {
+            return encryptUserPersonalInfoRepository.searchByUserPersonalInfoId((UserPersonalInfoId)model.id).then {
                 EncryptUserPersonalInfo info ->
-                    return get(info.userPersonalInfoId)
+
+                    PiiHash piiHash = getPiiHash(model.type)
+                    info.hashSearchInfo = piiHash.generateHash(model.value)
+                    info.encryptUserPersonalInfo = messageValue.value
+
+                    return encryptUserPersonalInfoRepository.update(info).then { EncryptUserPersonalInfo updateInfo ->
+                            return get(updateInfo.userPersonalInfoId)
+                    }
             }
         }
     }
@@ -222,7 +224,13 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
                             value: encryptUserPersonalInfo.encryptUserPersonalInfo
                     )
                     return cryptoResource.decrypt(link.userId, cryptoMessage).then { CryptoMessage decrypt ->
-                        return Promise.pure(marshaller.unmarshall(decrypt.value , UserPersonalInfo))
+                        UserPersonalInfo userPersonalInfo = marshaller.unmarshall(decrypt.value, UserPersonalInfo)
+                        userPersonalInfo.createdBy = encryptUserPersonalInfo.createdBy
+                        userPersonalInfo.createdTime = encryptUserPersonalInfo.createdTime
+                        userPersonalInfo.updatedBy = encryptUserPersonalInfo.updatedBy
+                        userPersonalInfo.updatedTime = encryptUserPersonalInfo.updatedTime
+                        userPersonalInfo.resourceAge = encryptUserPersonalInfo.resourceAge
+                        return Promise.pure(userPersonalInfo)
                     }
                 }
 

@@ -65,16 +65,13 @@
         <property name="allowedIpAddressPatterns">
             <list>
                 <!-- IPv4Pattern -->
-                <value>(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}</value>
+                <value>${identity.conf.IPV4Pattern}</value>
                 <!-- IPv6Pattern -->
-                <value>(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}</value>
+                <value>${identity.conf.IPV6Pattern}</value>
                 <!-- IPv6Pattern_HEXCompressed -->
-                <value>((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)::((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)
-                </value>
+                <value>${identity.conf.IPV6HEXCompressedPattern}</value>
                 <!-- IPv6Pattern_6Hex4Dec -->
-                <value>((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)
-                    ::((?:[0-9A-Fa-f]{1,4}:)*)(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}
-                </value>
+                <value>${identity.conf.IPV6HEX4DecPattern}</value>
             </list>
         </property>
         <property name="userAgentMinLength" value="1"/>
@@ -133,16 +130,13 @@
         <property name="allowedIPPatterns">
             <list>
                 <!-- IPv4Pattern -->
-                <value>(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}</value>
+                <value>${identity.conf.IPV4Pattern}</value>
                 <!-- IPv6Pattern -->
-                <value>(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}</value>
+                <value>${identity.conf.IPV6Pattern}</value>
                 <!-- IPv6Pattern_HEXCompressed -->
-                <value>((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)::((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)
-                </value>
+                <value>${identity.conf.IPV6HEXCompressedPattern}</value>
                 <!-- IPv6Pattern_6Hex4Dec -->
-                <value>((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)
-                    ::((?:[0-9A-Fa-f]{1,4}:)*)(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}
-                </value>
+                <value>${identity.conf.IPV6HEX4DecPattern}</value>
             </list>
         </property>
         <property name="clientIdMinLength" value="1"/>
@@ -255,8 +249,6 @@
     </bean>
 
     <bean id="userPersonalInfoValidator" class="com.junbo.identity.core.service.validator.impl.UserPersonalInfoValidatorImpl">
-        <property name="minLabelLength" value="1" />
-        <property name="maxLabelLength" value="255" />
         <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
         <property name="userRepository" ref="userRepository" />
         <property name="piiValidatorFactory" ref="piiValidatorFactory" />
@@ -419,7 +411,6 @@
         <property name="maxReuseSeconds" value="${identity.conf.tele.maxReuseTime}" />
     </bean>
 
-    <!-- // todo:   Need to make all those values configurable-->
     <bean id="userTeleAttemptValidator" class="com.junbo.identity.core.service.validator.impl.UserTeleAttemptValidatorImpl">
         <property name="userRepository" ref="userRepository" />
         <property name="userTeleRepository" ref="userTeleRepository" />
@@ -429,16 +420,13 @@
         <property name="allowedIPPatterns">
             <list>
                 <!-- IPv4Pattern -->
-                <value>(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}</value>
+                <value>${identity.conf.IPV4Pattern}</value>
                 <!-- IPv6Pattern -->
-                <value>(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}</value>
+                <value>${identity.conf.IPV6Pattern}</value>
                 <!-- IPv6Pattern_HEXCompressed -->
-                <value>((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)::((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)
-                </value>
+                <value>${identity.conf.IPV6HEXCompressedPattern}</value>
                 <!-- IPv6Pattern_6Hex4Dec -->
-                <value>((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)
-                    ::((?:[0-9A-Fa-f]{1,4}:)*)(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}
-                </value>
+                <value>${identity.conf.IPV6HEX4DecPattern}</value>
             </list>
         </property>
         <property name="minClientIdLength" value="1" />
@@ -462,16 +450,13 @@
         <property name="allowedIPPatterns">
             <list>
                 <!-- IPv4Pattern -->
-                <value>(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}</value>
+                <value>${identity.conf.IPV4Pattern}</value>
                 <!-- IPv6Pattern -->
-                <value>(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}</value>
+                <value>${identity.conf.IPV6Pattern}</value>
                 <!-- IPv6Pattern_HEXCompressed -->
-                <value>((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)::((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)
-                </value>
+                <value>${identity.conf.IPV6HEXCompressedPattern}</value>
                 <!-- IPv6Pattern_6Hex4Dec -->
-                <value>((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)
-                    ::((?:[0-9A-Fa-f]{1,4}:)*)(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}
-                </value>
+                <value>${identity.conf.IPV6HEX4DecPattern}</value>
             </list>
         </property>
         <property name="minClientIdLength" value="1" />

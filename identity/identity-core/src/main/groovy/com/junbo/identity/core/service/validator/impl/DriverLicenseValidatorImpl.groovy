@@ -42,7 +42,7 @@ class DriverLicenseValidatorImpl implements PiiValidator {
                 UserDriverLicense)
 
         if (userDriverLicense != oldUserDriverLicense) {
-            checkDriverLicense(userDriverLicense)
+            throw AppErrors.INSTANCE.fieldInvalidException('value', 'value can\'t be updated.').exception()
         }
         return Promise.pure(null)
     }

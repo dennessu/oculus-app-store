@@ -22,15 +22,14 @@ import org.springframework.beans.factory.annotation.Required
 @CompileStatic
 class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
 
-    // todo:    Refactor according to marshal's requirement
+    /*
+    * The userPersonalInfo validation: https://oculus.atlassian.net/wiki/display/SER/Resource%3A+userPersonalInfo
+    * */
 
     private UserPersonalInfoRepository userPersonalInfoRepository
     private UserRepository userRepository
 
     private PiiValidatorFactory piiValidatorFactory
-
-    private Integer minLabelLength
-    private Integer maxLabelLength
 
     @Override
     Promise<UserPersonalInfo> validateForGet(UserPersonalInfoId userPersonalInfoId) {
@@ -90,9 +89,18 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
             throw AppErrors.INSTANCE.fieldInvalid('id', oldUserPersonalInfo.id.toString()).exception()
         }
 
+        if (userPersonalInfo.userId != oldUserPersonalInfo.userId) {
+            throw AppErrors.INSTANCE.fieldInvalidException('userId', 'userId can\'t be updated.').exception()
+        }
+
+        if (userPersonalInfo.type != oldUserPersonalInfo.type) {
+            throw AppErrors.INSTANCE.fieldInvalidException('type', 'type can\'t be updated.').exception()
+        }
+
         if (userPersonalInfo.id == null) {
             throw AppErrors.INSTANCE.fieldRequired('id').exception()
         }
+
         return checkBasicPersonalInfo(userPersonalInfo).then {
             return checkAdvancedUpdate(userPersonalInfo, oldUserPersonalInfo)
         }
@@ -145,6 +153,19 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
         }
     }
 
+    Promise<Void> iterateValidateCreate(Iterator<PiiValidator> iterator, UserPersonalInfo userPersonalInfo) {
+        if (iterator.hasNext()) {
+            PiiValidator piiValidator = iterator.next()
+            if (piiValidator.handles(userPersonalInfo.type)) {
+                return piiValidator.validateCreate(userPersonalInfo.value, userPersonalInfo.userId).then {
+                    return iterateValidateCreate(iterator, userPersonalInfo)
+                }
+            }
+            return iterateValidateCreate(iterator, userPersonalInfo)
+        }
+        return Promise.pure(null)
+    }
+
     Promise<Void> checkAdvancedUpdate(UserPersonalInfo userPersonalInfo, UserPersonalInfo oldUserPersonalInfo) {
         List<PiiValidator> piiValidatorList = piiValidatorFactory.validators
         return iterateValidateUpdate(piiValidatorList.iterator(), userPersonalInfo, oldUserPersonalInfo).then {
@@ -160,19 +181,6 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
                 return Promise.pure(null)
             }
         }
-    }
-
-    Promise<Void> iterateValidateCreate(Iterator<PiiValidator> iterator, UserPersonalInfo userPersonalInfo) {
-        if (iterator.hasNext()) {
-            PiiValidator piiValidator = iterator.next()
-            if (piiValidator.handles(userPersonalInfo.type)) {
-                return piiValidator.validateCreate(userPersonalInfo.value, userPersonalInfo.userId).then {
-                    return iterateValidateCreate(iterator, userPersonalInfo)
-                }
-            }
-            return iterateValidateCreate(iterator, userPersonalInfo)
-        }
-        return Promise.pure(null)
     }
 
     Promise<Void> iterateValidateUpdate(Iterator<PiiValidator> iterator, UserPersonalInfo userPersonalInfo,
@@ -193,16 +201,6 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
     @Required
     void setUserPersonalInfoRepository(UserPersonalInfoRepository userPersonalInfoRepository) {
         this.userPersonalInfoRepository = userPersonalInfoRepository
-    }
-
-    @Required
-    void setMinLabelLength(Integer minLabelLength) {
-        this.minLabelLength = minLabelLength
-    }
-
-    @Required
-    void setMaxLabelLength(Integer maxLabelLength) {
-        this.maxLabelLength = maxLabelLength
     }
 
     @Required

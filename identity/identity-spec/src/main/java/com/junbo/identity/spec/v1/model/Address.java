@@ -21,8 +21,6 @@ public class Address{
 
     private String city;
 
-    private String phoneNumber;
-
     private String subCountry;
 
     @JsonProperty("country")
@@ -90,14 +88,6 @@ public class Address{
         this.lastName = lastName;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
     public String getStreet3() {
         return street3;
     }
@@ -132,7 +122,6 @@ public class Address{
         if (this.countryId != address.countryId) return false;
         if (this.firstName != address.firstName) return false;
         if (this.lastName != address.lastName) return false;
-        if (this.phoneNumber != address.phoneNumber) return false;
 
         return true;
     }

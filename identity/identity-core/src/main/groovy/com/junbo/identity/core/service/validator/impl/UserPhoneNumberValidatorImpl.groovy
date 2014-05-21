@@ -50,12 +50,7 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
         PhoneNumber oldPhoneNumber = (PhoneNumber)JsonHelper.jsonNodeToObj(oldValue, PhoneNumber)
 
         if (phoneNumber != oldPhoneNumber) {
-            checkUserPhone(phoneNumber)
-
-            if (phoneNumber.info != oldPhoneNumber.info) {
-                return checkAdvanceUserPhone(phoneNumber, userId)
-            }
-            return Promise.pure(null)
+            throw AppErrors.INSTANCE.fieldInvalidException('value', 'value can\'t be updated.').exception()
         }
         return Promise.pure(null)
     }

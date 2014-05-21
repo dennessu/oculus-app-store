@@ -53,7 +53,7 @@ class NameValidatorImpl implements PiiValidator {
         UserName oldName = (UserName)JsonHelper.jsonNodeToObj(oldValue, UserName)
 
         if (name != oldName) {
-            checkName(name)
+            throw AppErrors.INSTANCE.fieldInvalidException('value', 'value can\'t be updated.').exception()
         }
         return Promise.pure(null)
     }
