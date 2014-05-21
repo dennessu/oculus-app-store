@@ -12,14 +12,14 @@ import com.junbo.common.id.OfferAttributeId;
 import com.junbo.common.id.OfferId;
 
 import javax.ws.rs.QueryParam;
-import java.util.Collection;
+import java.util.Set;
 
 /**
  * Offers get options.
  */
 public class OffersGetOptions extends PageableGetOptions {
     @QueryParam("offerId")
-    private Collection<OfferId> offerIds;
+    private Set<OfferId> offerIds;
     @QueryParam("published")
     private Boolean published;
     @QueryParam("category")
@@ -27,11 +27,11 @@ public class OffersGetOptions extends PageableGetOptions {
     @QueryParam("itemId")
     private ItemId itemId;
 
-    public Collection<OfferId> getOfferIds() {
+    public Set<OfferId> getOfferIds() {
         return offerIds;
     }
 
-    public void setOfferIds(Collection<OfferId> offerIds) {
+    public void setOfferIds(Set<OfferId> offerIds) {
         this.offerIds = offerIds;
     }
 
