@@ -8,6 +8,14 @@ echo "create database data folder $SLAVE_DATA_PATH"
 mkdir -p $SLAVE_DATA_PATH
 chmod 700 $SLAVE_DATA_PATH
 
+echo "create database backup folder $SLAVE_BACKUP_PATH"
+rm -rf $SLAVE_BACKUP_PATH
+mkdir $SLAVE_BACKUP_PATH
+
+echo "create database archive folder $SLAVE_ARCHIVE_PATH"
+rm -rf $SLAVE_ARCHIVE_PATH
+mkdir $SLAVE_ARCHIVE_PATH
+
 echo "copy backup file from remote master"
 rsync -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_BACKUP_PATH/* $SLAVE_DATA_PATH
 

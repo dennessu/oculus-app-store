@@ -7,8 +7,8 @@ checkAccount $DEPLOYMENT_ACCOUNT
 echo "kill postgres instance with port [$SLAVE_DB_PORT]..."
 forceKill $SLAVE_DB_PORT
 
-echo "kill pgbouncer instance with port [$SECONDARY_PGBOUNCER_PORT]..."
-forceKill $SECONDARY_PGBOUNCER_PORT
+echo "kill pgbouncer instance with port [$PGBOUNCER_PORT]..."
+forceKill $PGBOUNCER_PORT
 
 echo 'remove database data'
 rm -rf $SLAVE_DATA_PATH
