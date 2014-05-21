@@ -20,7 +20,7 @@ public class Locale extends PropertyAssignedAwareResourceMeta implements Identif
     @JsonProperty("self")
     private LocaleId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "The locale code of the locale.")
+    @ApiModelProperty(position = 2, required = true, value = "The locale code of the locale. It must be the format en_US or en-US.")
     private String localeCode;
 
     @ApiModelProperty(position = 3, required = false, value = "The short name of the locale.")

@@ -40,7 +40,7 @@ class ValidatorUtil {
             throw new IllegalArgumentException('locale is null')
         }
 
-        String[] parts = locale.split('_')
+        String[] parts = locale.split('-')
         switch (parts.length) {
             case 3:
                 return isValidLocale(new java.util.Locale(parts[0], parts[1], parts[2]))
