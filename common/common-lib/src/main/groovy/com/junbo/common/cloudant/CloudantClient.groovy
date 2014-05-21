@@ -331,7 +331,10 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
         }
 
         try {
-            return requestBuilder.execute().get()
+            Response response = requestBuilder.execute().get()
+            String responseBody = response.responseBody // always consume the response body.
+
+            return response
         } catch (IOException e) {
             throw new CloudantConnectException('Exception happened while executing request to cloudant DB', e)
         }

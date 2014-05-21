@@ -240,7 +240,10 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
         }
 
         try {
-            return requestBuilder.execute().get()
+            Response response = requestBuilder.execute().get()
+            String responseBody = response.responseBody // always consume the response body.
+
+            return response
         } catch (IOException e) {
             throw new DBConnectException('Exception happened while executing request to couch DB', e)
         }
