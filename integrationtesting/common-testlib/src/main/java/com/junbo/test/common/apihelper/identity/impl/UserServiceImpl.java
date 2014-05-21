@@ -104,7 +104,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
         userPersonalInfo.setType("EMAIL");
         userPersonalInfo.setUserId(userId);
-        String str = "{\"value\":\"" + RandomFactory.getRandomEmailAddress() + "\"}";
+        String str = "{\"info\":\"" + RandomFactory.getRandomEmailAddress() + "\"}";
         ObjectMapper mapper = new ObjectMapper();
         JsonNode value = mapper.readTree(str);
         userPersonalInfo.setValue(value);
