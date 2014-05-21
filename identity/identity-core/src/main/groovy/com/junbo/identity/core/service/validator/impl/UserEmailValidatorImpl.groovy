@@ -13,6 +13,7 @@ import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.StringUtils
 
 import java.util.regex.Pattern
 
@@ -48,15 +49,11 @@ class UserEmailValidatorImpl implements PiiValidator {
         Email email = (Email)JsonHelper.jsonNodeToObj(value, Email)
         Email oldEmail = (Email)JsonHelper.jsonNodeToObj(oldValue, Email)
 
+        email.info = StringUtils.isEmpty(email.info) ? email.info : email.info.toLowerCase()
+        oldEmail.info = StringUtils.isEmpty(oldEmail.info) ? oldEmail.info : oldEmail.info.toLowerCase()
+
         if (email != oldEmail) {
-            checkUserEmail(email)
-
-            // If user want to promote validate from false to true, need to check again
-            if (email.info.toLowerCase() != oldEmail.info.toLowerCase()) {
-                return checkAdvanceUserEmail(email)
-            }
-
-            return Promise.pure(null)
+            throw AppErrors.INSTANCE.fieldInvalidException('value', 'value can\'t be updated').exception()
         }
 
         return Promise.pure(null)

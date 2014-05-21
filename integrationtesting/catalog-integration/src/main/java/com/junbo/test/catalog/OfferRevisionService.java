@@ -37,8 +37,8 @@ public interface OfferRevisionService {
     OfferRevision postOfferRevision(OfferRevision offerRevision) throws Exception;
     OfferRevision postOfferRevision(OfferRevision offerRevision, int expectedResponseCode) throws Exception;
 
-    OfferRevision updateOfferRevision(OfferRevision offerRevision) throws Exception;
-    OfferRevision updateOfferRevision(OfferRevision offerRevision, int expectedResponseCode) throws Exception;
+    OfferRevision updateOfferRevision(Long offerRevisionId, OfferRevision offerRevision) throws Exception;
+    OfferRevision updateOfferRevision(Long offerRevisionId, OfferRevision offerRevision, int expectedResponseCode) throws Exception;
 
     void deleteOfferRevision(Long offerRevisionId) throws Exception;
     void deleteOfferRevision(Long offerRevisionId, int expectedResponseCode) throws Exception;

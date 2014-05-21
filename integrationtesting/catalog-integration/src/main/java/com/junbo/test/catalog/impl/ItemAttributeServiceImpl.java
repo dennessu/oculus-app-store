@@ -101,13 +101,13 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
         return attributePost;
     }
 
-    public ItemAttribute updateItemAttribute(ItemAttribute attribute) throws Exception {
-        return updateItemAttribute(attribute, 200);
+    public ItemAttribute updateItemAttribute(Long itemAttributeId, ItemAttribute attribute) throws Exception {
+        return updateItemAttribute(itemAttributeId, attribute, 200);
     }
 
-    public ItemAttribute updateItemAttribute(ItemAttribute attribute, int expectedResponseCode) throws Exception {
+    public ItemAttribute updateItemAttribute(Long itemAttributeId, ItemAttribute attribute, int expectedResponseCode) throws Exception {
         String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(ItemAttributeId.class,
-                attribute.getId());
+                itemAttributeId);
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, attribute, expectedResponseCode);
         ItemAttribute itemAttributePut = new JsonMessageTranscoder().decode(new TypeReference<ItemAttribute>() {},
                 responseBody);

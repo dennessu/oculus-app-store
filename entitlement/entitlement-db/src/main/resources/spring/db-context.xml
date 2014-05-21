@@ -60,16 +60,10 @@
     </bean>
 
     <!--
-    <bean id="entitlementCloudantClient" class="com.junbo.entitlement.db.dao.cloudant.EntitlementCloudantClient" abstract="true">
-        <property name="asyncHttpClient" ref="commonAsyncHttpClient" />
-        <property name="cloudantDBUri" value="http://silkcloudtest1.cloudant.com/;dc0" />
-        <property name="marshaller" ref="cloudantDefaultMarshaller" />
-    </bean>
-
-    <bean id="entitlementDao" class="com.junbo.entitlement.db.dao.cloudant.EntitlementDaoImpl" parent="entitlementCloudantClient">
+    <bean id="entitlementDao" class="com.junbo.entitlement.db.dao.cloudant.EntitlementDaoImpl" parent="cloudantClient">
         <property name="dbName" value="entitlement"/>
     </bean>
-    <bean id="entitlementHistoryDao" class="com.junbo.entitlement.db.dao.cloudant.EntitlementHistoryDaoImpl" parent="entitlementCloudantClient">
+    <bean id="entitlementHistoryDao" class="com.junbo.entitlement.db.dao.cloudant.EntitlementHistoryDaoImpl" parent="cloudantClient">
         <property name="dbName" value="entitlement_history"/>
     </bean>
     -->

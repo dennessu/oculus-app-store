@@ -31,8 +31,8 @@ public interface ItemService {
     Item postItem(Item item) throws Exception;
     Item postItem(Item item, int expectedResponseCode) throws Exception;
 
-    Item updateItem(Item item) throws Exception;
-    Item updateItem(Item item, int expectedResponseCode) throws Exception;
+    Item updateItem(Long itemId, Item item) throws Exception;
+    Item updateItem(Long itemId, Item item, int expectedResponseCode) throws Exception;
 
     void deleteItem(Long itemId) throws Exception;
     void deleteItem(Long itemId, int expectedResponseCode) throws Exception;

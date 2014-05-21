@@ -55,9 +55,13 @@ purge_slave.sh
 setup_slave.sh
 
 #build bi-sync between master/slave archive folders
+master_cron.sh
+slave_cron.sh
 
 #primary/secondary pgbouncer proxies point to master db
-#run following script on master/slave servers
+#run following script on both master/slave servers
 pgbouncer_master.sh
 
+#test master to slave replication
+test/master2slave.sh
 

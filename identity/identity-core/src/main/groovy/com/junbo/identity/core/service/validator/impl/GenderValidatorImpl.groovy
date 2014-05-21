@@ -40,7 +40,7 @@ class GenderValidatorImpl implements PiiValidator {
         UserGender oldUserGender = (UserGender)JsonHelper.jsonNodeToObj(oldValue, UserGender)
 
         if (userGender != oldUserGender) {
-            checkUserGender(userGender)
+            throw AppErrors.INSTANCE.fieldInvalidException('value', 'value can\'t be updated.').exception()
         }
         return null
     }

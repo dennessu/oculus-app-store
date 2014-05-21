@@ -9,6 +9,7 @@ export DEPLOYMENT_PATH='/tmp/pgha'
 export DATA_PATH='/tmp/data'
 export BACKUP_PATH='/tmp/backup'
 export ARCHIVE_PATH='/tmp/archive'
+export CRON_PATH='/tmp/pgcron'
 
 export PGBIN_PATH='/usr/lib/postgresql/9.3/bin'
 export PGLOCK_PATH='/run/postgresql'

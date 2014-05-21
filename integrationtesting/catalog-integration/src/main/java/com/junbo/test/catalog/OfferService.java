@@ -30,8 +30,8 @@ public interface OfferService {
     Offer postOffer(Offer offer) throws Exception;
     Offer postOffer(Offer offer, int expectedResponseCode) throws Exception;
 
-    Offer updateOffer(Offer offer) throws Exception;
-    Offer updateOffer(Offer offer, int expectedResponseCode) throws Exception;
+    Offer updateOffer(Long offerId, Offer offer) throws Exception;
+    Offer updateOffer(Long offerId, Offer offer, int expectedResponseCode) throws Exception;
 
     String getOfferIdByName(String offerName) throws  Exception;
 

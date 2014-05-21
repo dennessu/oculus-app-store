@@ -112,7 +112,7 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
         EntitlementSearchParam searchParam = new EntitlementSearchParam();
         searchParam.setUserId(new UserId(userId));
         searchParam.setIsActive(true);
-        List<Entitlement> entitlements = entitlementService.searchEntitlement(searchParam, new PageMetadata());
+        List<Entitlement> entitlements = entitlementService.searchEntitlement(searchParam, new PageMetadata()).getItems();
 
         Assert.assertEquals(entitlements.size(), 0);
     }
