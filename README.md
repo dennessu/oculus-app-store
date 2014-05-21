@@ -115,21 +115,6 @@ The following guide is for setting up windows as the development and testing env
     ```
 
     It should show the gradle version.
-
-#### Add aws-artifactory to hosts
-`aws-artifactory` is a shared artifactory server used by the development team. The code always uses the name `aws-artifactory` to access it. Run the following command to map IP address to the name.
-
-1. Open an elevated command line window.
-
-    ```bat
-    powershell Start-Process cmd.exe -Verb RunAs
-    ```
-
-1. Type the following command.
-
-    ```bat
-    echo 54.254.249.206 aws-artifactory >> C:\Windows\System32\drivers\etc\hosts
-    ```
         
 #### Install IntelliJ IDEA (Optional)
 This step is optional. IntelliJ IDEA is the recommended IDE for developing Java and Groovy code. Download and install [IntelliJ IDEA 13 Community Edition](http://www.jetbrains.com/idea/download/).
@@ -250,13 +235,6 @@ Note: If you don't want to change the coreutils preference, you can create anoth
 1. Verify CouchDB is running by accessing [http://localhost:5984/\_utils](http://localhost:5984/_utils). It should show the "Apache CouchDB - Futon" page.
 
 
-#### Add aws-artifactory to hosts
-`aws-artifactory` is a shared artifactory server used by the development team. The code always uses the name `aws-artifactory` to access it. Run the following command to map IP address to the name.
-
-```bash
-sudo bash -c 'echo 54.254.249.206 aws-artifactory >> /etc/hosts'
-```
-
 #### Install IntelliJ IDEA (Optional)
 IntelliJ IDEA is the recommended IDE for developing Java and Groovy code. Download and install [IntelliJ IDEA 13 Community Edition](http://www.jetbrains.com/idea/download/).
 
@@ -282,19 +260,6 @@ In windows, do the following steps in cygwin terminal. For OS X and Linux, open 
     mkdir owp-main
     git clone git@github.com:junbo/main.git owp-main
     ```
-
-1. Trust aws-artifactory server cert.
-
-    ```bash
-    cd ~/owp-main/scripts/setup
-    keytool -import -alias aws-artifactory -keystore $JAVA_HOME/jre/lib/security/cacerts -file ./aws-artifactory.cer -trustcacerts
-    ```
-
-The default Java key store password is:
-
-```
-changeit
-```
 
 ### Full Build
 
