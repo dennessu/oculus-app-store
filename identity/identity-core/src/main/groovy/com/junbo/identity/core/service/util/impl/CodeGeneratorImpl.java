@@ -18,10 +18,10 @@ import java.util.Random;
 @CompileStatic
 public class CodeGeneratorImpl implements CodeGenerator {
 
-    private static final char[] DEFAULT_CODEC = "1234567890".toCharArray();
     private final Random random = new SecureRandom();
+
     private Integer codeLength;
-    private Integer backupCodeLength;
+    private String codec;
 
     private String generate(int length) {
         byte[] bytes = new byte[length];
@@ -34,20 +34,15 @@ public class CodeGeneratorImpl implements CodeGenerator {
         char[] chars = new char[bytes.length];
 
         for (int i = 0; i < bytes.length; i++) {
-            chars[i] = DEFAULT_CODEC[((bytes[i] & 0xFF) % DEFAULT_CODEC.length)];
+            chars[i] = codec.charAt(((bytes[i] & 0xFF) % codec.length()));
         }
 
         return new String(chars);
     }
 
     @Override
-    public String generateTeleCode() {
+    public String generateCode() {
         return generate(codeLength);
-    }
-
-    @Override
-    public String generateTeleBackupCode() {
-        return generate(backupCodeLength);
     }
 
     @Required
@@ -56,7 +51,7 @@ public class CodeGeneratorImpl implements CodeGenerator {
     }
 
     @Required
-    public void setBackupCodeLength(Integer backupCodeLength) {
-        this.backupCodeLength = backupCodeLength;
+    public void setCodec(String codec) {
+        this.codec = codec;
     }
 }
