@@ -152,7 +152,24 @@ public class HttpclientHelper {
 //                Object obj = GsonHelper.GsonDeserializer(
 //                        new InputStreamReader(entity.getContent()), cls);
             T type = JsonHelper.JsonDeserializer(new InputStreamReader(responseEntity.getContent()), cls);
-            EntityUtils.consume(entity);
+            EntityUtils.consume(responseEntity);
+            return type;
+        } finally {
+            response.close();
+        }
+    }
+
+    public static <T> T SimpleJsonPut(String requestURI, String objJson, Class<T> cls) throws Exception {
+        HttpPut httpPut = new HttpPut(requestURI);
+        httpPut.addHeader("Content-Type", "application/json");
+        httpPut.setEntity(new StringEntity(objJson));
+        CloseableHttpResponse response = httpclient.execute(httpPut);
+
+        try {
+            System.out.println(response.getStatusLine());
+            HttpEntity responseEntity = response.getEntity();
+            T type = JsonHelper.JsonDeserializer(new InputStreamReader(responseEntity.getContent()), cls);
+            EntityUtils.consume(responseEntity);
             return type;
         } finally {
             response.close();
