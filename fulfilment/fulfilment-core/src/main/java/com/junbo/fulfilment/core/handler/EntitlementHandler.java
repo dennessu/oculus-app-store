@@ -32,6 +32,7 @@ public class EntitlementHandler extends HandlerSupport<EntitlementContext> {
                 Entitlement entitlement = new Entitlement();
 
                 entitlement.setType(meta.getType());
+                entitlement.setItemId(action.getItemId());
                 entitlement.setUserId(context.getUserId());
 
                 // for non-consumable, always null

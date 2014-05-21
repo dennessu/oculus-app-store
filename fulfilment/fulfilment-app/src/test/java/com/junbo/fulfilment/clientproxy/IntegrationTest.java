@@ -1,13 +1,11 @@
 package com.junbo.fulfilment.clientproxy;
 
+import com.junbo.catalog.spec.enums.EntitlementType;
 import com.junbo.catalog.spec.enums.ItemType;
 import com.junbo.catalog.spec.enums.PriceType;
 import com.junbo.catalog.spec.enums.Status;
 import com.junbo.catalog.spec.model.common.Price;
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
-import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.catalog.spec.model.item.ItemRevision;
-import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
+import com.junbo.catalog.spec.model.item.*;
 import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.common.id.FulfilmentId;
 import com.junbo.common.id.OrderId;
@@ -31,7 +29,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 @ContextConfiguration(locations = {"classpath:spring/context-test.xml"})
 public class IntegrationTest extends AbstractTestNGSpringContextTests {
@@ -177,24 +174,58 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         }};
     }
 
-    private Long prepareEntitlementDef() {
-        EntitlementDefinition def = new EntitlementDefinition();
-        def.setTag("TEST_TAG");
-        def.setType("DOWNLOAD");
-        def.setDeveloperId(12345L);
-
-        return megaGateway.createEntitlementDef(def);
-    }
-
     private Long prepareOffer() {
-        final Long entitlementDefId = prepareEntitlementDef();
+        Long ownerId = 123L;
 
+        // create item
+        Item item = new Item();
+        item.setType(ItemType.DIGITAL.name());
+        item.setOwnerId(ownerId);
+
+        final Long itemId = megaGateway.createItem(item);
+        Assert.assertNotNull(itemId);
+
+        // create item revision
+        ItemRevision itemRevision = new ItemRevision();
+        itemRevision.setItemId(itemId);
+        itemRevision.setOwnerId(ownerId);
+        itemRevision.setStatus(Status.DRAFT.name());
+        itemRevision.setBinaries(new HashMap<String, Binary>() {{
+            put("key", new Binary());
+        }});
+        itemRevision.setLocales(new HashMap<String, ItemRevisionLocaleProperties>() {{
+            put("en_US", new ItemRevisionLocaleProperties() {{
+                setName("test-offer");
+            }});
+        }});
+        itemRevision.setSku("test_sku");
+        itemRevision.setEntitlementDefs(new ArrayList<EntitlementDef>() {{
+            add(new EntitlementDef() {{
+                setType(EntitlementType.DOWNLOAD.toString());
+                setConsumable(false);
+            }});
+            add(new EntitlementDef() {{
+                setType(EntitlementType.RUN.toString());
+                setConsumable(false);
+            }});
+        }});
+
+        Long itemRevisionId = megaGateway.createItemRevision(itemRevision);
+        Assert.assertNotNull(itemRevisionId);
+
+        // approve item
+        ItemRevision retrievedItemRevision = megaGateway.getItemRevision(itemRevisionId);
+        retrievedItemRevision.setStatus(Status.APPROVED.name());
+        megaGateway.updateItemRevision(retrievedItemRevision);
+
+        // create offer
         Offer offer = new Offer();
         offer.setOwnerId(getRandomLong());
 
         Long offerId = megaGateway.createOffer(offer);
         Assert.assertNotNull(offerId);
 
+        // create offer revision
         OfferRevision offerRevision = new OfferRevision();
         offerRevision.setOfferId(offerId);
         offerRevision.setOwnerId(12345L);
@@ -212,7 +243,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
             put(Constant.EVENT_PURCHASE, new ArrayList<Action>() {{
                 add(new Action() {{
                     setType(Constant.ACTION_GRANT_ENTITLEMENT);
-                    setEntitlementDefId(entitlementDefId);
+                    setItemId(itemId);
                 }});
             }});
         }});

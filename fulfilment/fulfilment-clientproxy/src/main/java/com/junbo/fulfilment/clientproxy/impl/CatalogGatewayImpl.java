@@ -12,7 +12,6 @@ import com.junbo.catalog.spec.model.offer.Action;
 import com.junbo.catalog.spec.model.offer.ItemEntry;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
-import com.junbo.catalog.spec.resource.EntitlementDefinitionResource;
 import com.junbo.catalog.spec.resource.ItemRevisionResource;
 import com.junbo.catalog.spec.resource.OfferRevisionResource;
 import com.junbo.common.id.ItemId;
@@ -43,10 +42,6 @@ public class CatalogGatewayImpl implements CatalogGateway {
     @Autowired
     @Qualifier("itemRevisionClient")
     private ItemRevisionResource itemRevisionResource;
-
-    @Autowired
-    @Qualifier("entitlementDefClient")
-    private EntitlementDefinitionResource entitlementDefClient;
 
     @Override
     public Offer getOffer(Long offerId, Long timestamp) {
