@@ -42,7 +42,7 @@ class GovernmentIDValidatorImpl implements PiiValidator {
         UserGovernmentID oldUserGovernmentId = (UserGovernmentID)JsonHelper.jsonNodeToObj(oldValue, UserGovernmentID)
 
         if (userGovernmentID != oldUserGovernmentId) {
-            checkUserGovernmentId(userGovernmentID)
+            throw AppErrors.INSTANCE.fieldInvalidException('value', 'value can\'t be updated.').exception()
         }
 
         return Promise.pure(null)

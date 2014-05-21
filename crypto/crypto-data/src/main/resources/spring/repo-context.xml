@@ -3,20 +3,24 @@
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="cloudantMasterKeyRepo" class="com.junbo.crypto.data.repo.impl.cloudant.CloudantMasterKeyRepoImpl">
+    <bean id="cloudantMasterKeyRepo" class="com.junbo.crypto.data.repo.impl.cloudant.CloudantMasterKeyRepoImpl" parent="cloudantClient">
         <property name="dbName" value="master_key"/>
         <property name="asyncHttpClient" ref="commonAsyncHttpClient" />
         <property name="cloudantDBUri" value="${crypto.masterkey.cloudant.url}" />
         <property name="idGenerator" ref="oculus48IdGenerator" />
         <property name="marshaller" ref="cloudantDefaultMarshaller" />
+        <property name="cloudantUser" value="${crypto.masterkey.cloudant.user}" />
+        <property name="cloudantPassword" value="${crypto.masterkey.cloudant.password}" />
     </bean>
 
-    <bean id="cloudantUserCryptoKeyRepo" class="com.junbo.crypto.data.repo.impl.cloudant.CloudantUserCryptoKeyRepoImpl">
+    <bean id="cloudantUserCryptoKeyRepo" class="com.junbo.crypto.data.repo.impl.cloudant.CloudantUserCryptoKeyRepoImpl" parent="cloudantClient">
         <property name="dbName" value="user_crypt_key" />
         <property name="cloudantDBUri" value="${crypto.userkey.cloudant.url}" />
         <property name="idGenerator" ref="oculus48IdGenerator" />
         <property name="asyncHttpClient" ref="commonAsyncHttpClient" />
         <property name="marshaller" ref="cloudantDefaultMarshaller" />
+        <property name="cloudantUser" value="${crypto.userkey.cloudant.user}" />
+        <property name="cloudantPassword" value="${crypto.userkey.cloudant.password}" />
     </bean>
 
     <bean id="masterkeyRepository" parent="baseRepository">

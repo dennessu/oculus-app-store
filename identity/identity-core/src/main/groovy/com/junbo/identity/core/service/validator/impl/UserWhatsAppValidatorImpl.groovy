@@ -41,7 +41,7 @@ class UserWhatsAppValidatorImpl implements PiiValidator {
         UserWhatsApp oldUserWhatsApp = (UserWhatsApp)JsonHelper.jsonNodeToObj(oldValue, UserWhatsApp)
 
         if (userWhatsApp != oldUserWhatsApp) {
-            checkUserWhatsApp(userWhatsApp)
+            throw AppErrors.INSTANCE.fieldInvalidException('value', 'value can\'t be updated.').exception()
         }
         return Promise.pure(null)
     }

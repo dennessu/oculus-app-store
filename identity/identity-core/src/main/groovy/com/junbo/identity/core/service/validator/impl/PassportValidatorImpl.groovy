@@ -41,7 +41,7 @@ class PassportValidatorImpl implements PiiValidator {
         UserPassport oldUserPassport = (UserPassport)JsonHelper.jsonNodeToObj(oldValue, UserPassport)
 
         if (userPassport != oldUserPassport) {
-            checkUserPassport(userPassport)
+            throw AppErrors.INSTANCE.fieldInvalidException('value', 'value can\'t be updated.').exception()
         }
         return Promise.pure(null)
     }

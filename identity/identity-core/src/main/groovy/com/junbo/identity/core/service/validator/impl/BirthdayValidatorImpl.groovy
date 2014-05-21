@@ -41,7 +41,7 @@ class BirthdayValidatorImpl implements PiiValidator {
         UserDOB oldUserDOB = (UserDOB)JsonHelper.jsonNodeToObj(oldValue, UserDOB)
 
         if (userDOB != oldUserDOB) {
-            checkBirthdayInfo(userDOB)
+            throw AppErrors.INSTANCE.fieldInvalidException('value', 'value can\'t be updated.').exception()
         }
 
         return Promise.pure(null)
