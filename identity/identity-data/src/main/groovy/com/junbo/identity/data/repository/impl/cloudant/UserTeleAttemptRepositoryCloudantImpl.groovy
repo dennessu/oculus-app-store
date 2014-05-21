@@ -72,7 +72,7 @@ class UserTeleAttemptRepositoryCloudantImpl  extends CloudantClient<UserTeleAtte
             views: [
                 'by_user_id_tele_id': new CloudantViews.CloudantView(
                     map: 'function(doc) {' +
-                            '  emit(doc.userId.value.toString() + \':\' + doc.userTeleId.value.toString() , doc._id)' +
+                            '  emit(doc.userId + \':\' + doc.userTeleId , doc._id)' +
                             '}',
                     resultClass: String)
             ]

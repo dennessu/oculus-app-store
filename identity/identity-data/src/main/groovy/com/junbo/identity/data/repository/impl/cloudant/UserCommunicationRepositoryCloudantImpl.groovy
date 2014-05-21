@@ -83,17 +83,17 @@ class UserCommunicationRepositoryCloudantImpl extends CloudantClient<UserCommuni
             views: [
                     'by_user_id': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.userId.value.toString(), doc._id)' +
+                                    '  emit(doc.userId, doc._id)' +
                                     '}',
                             resultClass: String),
                     'by_communication_id': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.communicationId.value.toString(), doc._id)' +
+                                    '  emit(doc.communicationId, doc._id)' +
                                     '}',
                             resultClass: String),
                     'by_user_id_communication_id': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                '  emit(doc.userId.value.toString() + \':\' + doc.communicationId.value.toString(), ' +
+                                '  emit(doc.userId + \':\' + doc.communicationId, ' +
                                 'doc._id)' +
                                 '}',
                             resultClass: String)
