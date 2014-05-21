@@ -29,9 +29,6 @@ import java.util.regex.Pattern
  */
 @CompileStatic
 class UserTeleAttemptValidatorImpl implements UserTeleAttemptValidator {
-
-    // todo:    Need to refactor user tele attempt validation according to marshall's requirement.
-
     private UserRepository userRepository
     private UserTeleRepository userTeleRepository
     private UserTeleAttemptRepository userTeleAttemptRepository

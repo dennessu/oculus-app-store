@@ -23,7 +23,6 @@ class WipedHashImpl implements PiiHash {
 
     @Override
     String generateHash(JsonNode jsonNode) {
-        // todo:    Later add hash here
         return null
     }
 
