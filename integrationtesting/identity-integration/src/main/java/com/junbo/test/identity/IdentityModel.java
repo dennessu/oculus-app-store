@@ -38,9 +38,6 @@ public class IdentityModel {
         CountryId countryId = new CountryId();
         countryId.setValue(DefaultCountry);
         address.setCountryId(countryId);
-        address.setFirstName(RandomHelper.randomAlphabetic(10));
-        address.setLastName(RandomHelper.randomAlphabetic(10));
-        address.setPhoneNumber("16018984661");
         address.setPostalCode("92612");
         address.setStreet1("19800 MacArthur Blvd");
         return address;
