@@ -49,13 +49,5 @@ public class postUserPersonalInfoLink {
         User updated = Identity.UserPut(user);
         User storedUser = Identity.UserGetByUserId(user.getId());
         Validator.Validate("validate user", updated, storedUser);
-
-        User user1 = Identity.UserPostDefault();
-        emails.clear();
-        userPersonalInfoLink.setUserId(user1.getId());
-        emails.add(userPersonalInfoLink);
-        user1.setEmails(emails);
-
-        Identity.UserPut(user1);
     }
 }
