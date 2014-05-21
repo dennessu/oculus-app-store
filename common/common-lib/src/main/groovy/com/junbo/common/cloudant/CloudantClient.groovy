@@ -330,7 +330,7 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
     }
 
     private CloudantQueryResult internalSearch(String searchName, String queryString, Integer limit, String bookmark) {
-        CloudantViews.CloudantView cloudantView = cloudantViews.indexes[searchName]
+        CloudantViews.CloudantIndex cloudantView = cloudantViews.indexes[searchName]
         if (cloudantView == null) {
             throw new CloudantException("The index $searchName does not exist")
         }

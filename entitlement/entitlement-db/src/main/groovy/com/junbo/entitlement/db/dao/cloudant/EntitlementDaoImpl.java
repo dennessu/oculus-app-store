@@ -188,7 +188,7 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
 
     protected CloudantViews views = new CloudantViews() {{
         Map<String, CloudantView> viewMap = new HashMap<>();
-        Map<String, CloudantView> indexMap = new HashMap<>();
+        Map<String, CloudantIndex> indexMap = new HashMap<>();
 
         CloudantView byTrackingUuid = new CloudantView();
         byTrackingUuid.setMap("function(doc) {" +
@@ -205,7 +205,7 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
         byUserIdAndItemIdAndType.setResultClass(String.class);
         viewMap.put("byUserIdAndItemIdAndType", byUserIdAndItemIdAndType);
 
-        CloudantView searchIndex = new CloudantView();
+        CloudantIndex searchIndex = new CloudantIndex();
         searchIndex.setIndex("function(doc) {" +
                 "index(\'userId\', doc.userId);" +
                 "index(\'isDeleted\', doc.isDeleted);" +
