@@ -5,6 +5,7 @@
  */
 package com.junbo.fulfilment.clientproxy.impl;
 
+import com.junbo.catalog.spec.model.item.EntitlementDef;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
 import com.junbo.catalog.spec.model.offer.Action;
@@ -141,6 +142,8 @@ public class CatalogGatewayImpl implements CatalogGateway {
             if (actions != null) {
                 for (Action action : actions) {
                     OfferAction offerAction = new OfferAction();
+
+                    offerAction.setItemId(action.getItemId());
                     offerAction.setType(action.getType());
                     offerAction.setProperties(buildActionProperties(action));
 
@@ -157,12 +160,21 @@ public class CatalogGatewayImpl implements CatalogGateway {
         item.setItemId(itemRevision.getItemId());
         item.setSku(itemRevision.getSku());
 
+        item.setEntitlementMetas(new ArrayList<EntitlementMeta>());
+
+        for (EntitlementDef def : itemRevision.getEntitlementDefs()) {
+            EntitlementMeta meta = new EntitlementMeta();
+            meta.setConsumable(def.getConsumable());
+            meta.setType(def.getType());
+
+            item.getEntitlementMetas().add(meta);
+        }
+
         return item;
     }
 
     private Map<String, Object> buildActionProperties(Action action) {
         Map<String, Object> result = new HashMap<>();
-        result.put(Constant.ENTITLEMENT_DEF_ID, action.getEntitlementDefId());
         result.put(Constant.ITEM_ID, action.getItemId());
         result.put(Constant.STORED_VALUE_CURRENCY, action.getStoredValueCurrency());
         result.put(Constant.STORED_VALUE_AMOUNT, action.getStoredValueAmount());

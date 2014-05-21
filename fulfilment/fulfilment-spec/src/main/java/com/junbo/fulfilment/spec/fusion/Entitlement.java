@@ -12,6 +12,7 @@ import java.util.Date;
  */
 public class Entitlement {
     private Long userId;
+    private String type;
     private Date grantTime;
     private Date expirationTime;
     private Long entitlementDefinitionId;
@@ -55,5 +56,13 @@ public class Entitlement {
 
     public void setUseCount(Integer useCount) {
         this.useCount = useCount;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
