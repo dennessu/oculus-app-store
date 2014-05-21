@@ -36,7 +36,7 @@ class CatalogFacadeImpl implements CatalogFacade {
     Promise<List<Offer>> getOffers(List<OfferId> offerIds) {
         OffersGetOptions options = new OffersGetOptions()
         options.setSize(Integer.MAX_VALUE)
-        options.setOfferIds(offerIds)
+        options.setOfferIds(new HashSet(offerIds))
         return offerResource.getOffers(options).recover {
             LOGGER.error('Failed to get offer')
             throw AppErrors.INSTANCE.fetchOfferFailed().exception()
