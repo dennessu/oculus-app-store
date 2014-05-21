@@ -29,12 +29,12 @@ public class postLocale {
 
     @Test(groups = "bvt")
     public void postLocale() throws Exception {
-        Locale posted = Identity.LocalePostDefault();
         try {
+            Locale posted = Identity.LocalePostDefault();
             Locale stored = Identity.LocaleGetByLocaleId(posted.getId().getValue());
             Validator.Validate("validate locale", posted, stored);
         } finally {
-            Identity.LocaleDeleteByLocaleId(posted.getId().getValue());
+            Identity.LocaleDeleteByLocaleId(IdentityModel.DefaultLocale);
         }
     }
 }
