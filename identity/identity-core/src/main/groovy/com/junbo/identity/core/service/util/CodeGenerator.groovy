@@ -9,7 +9,5 @@ package com.junbo.identity.core.service.util
  * Created by liangfu on 5/6/14.
  */
 interface CodeGenerator {
-    String generateTeleCode()
-
-    String generateTeleBackupCode()
+    String generateCode()
 }

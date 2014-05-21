@@ -213,7 +213,7 @@ class UserTeleValidatorImpl implements UserTeleValidator {
     private Promise<Void> fillCode(UserId userId, UserTeleCode userTeleCode) {
         return userTeleRepository.searchTeleCode(userId, userTeleCode.phoneNumber).then { List<UserTeleCode> codeList ->
             if (CollectionUtils.isEmpty(codeList)) {
-                userTeleCode.verifyCode = codeGenerator.generateTeleCode()
+                userTeleCode.verifyCode = codeGenerator.generateCode()
             }
 
             UserTeleCode teleCode = codeList.find { UserTeleCode code ->
@@ -227,7 +227,7 @@ class UserTeleValidatorImpl implements UserTeleValidator {
             if (teleCode != null) {
                 userTeleCode.verifyCode = teleCode.verifyCode
             } else {
-                userTeleCode.verifyCode = codeGenerator.generateTeleCode()
+                userTeleCode.verifyCode = codeGenerator.generateCode()
             }
 
             return Promise.pure(null)
