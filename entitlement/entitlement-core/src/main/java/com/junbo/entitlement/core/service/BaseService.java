@@ -215,7 +215,7 @@ public class BaseService {
 
     protected void checkItem(Long itemId) {
         if (itemId == null) {
-            throw AppErrors.INSTANCE.missingField("item").exception()
+            throw AppErrors.INSTANCE.missingField("item").exception();
         }
         ItemRevision item = getItem(itemId);
         if (item == null) {
