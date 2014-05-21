@@ -17,15 +17,17 @@ import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.Assert
-import org.springframework.util.StringUtils
 
 /**
  * CreateUserCredential.
  */
 @CompileStatic
 class CreateUserCredential implements Action {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CreateUserCredential)
     private UserCredentialResource userCredentialResource
 
     @Required
@@ -43,22 +45,20 @@ class CreateUserCredential implements Action {
 
         String password = parameterMap.getFirst(OAuthParameters.PASSWORD)
 
-        if (StringUtils.isEmpty(password)) {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.missingPassword().error())
-            return Promise.pure(new ActionResult('error'))
-        }
+        String pin = parameterMap.getFirst(OAuthParameters.PIN)
 
-        UserCredential userCredential = new UserCredential(
+        UserCredential passwordCredential = new UserCredential(
                 value: password,
                 type: 'PASSWORD'
         )
 
-        return userCredentialResource.create((UserId) user.id, userCredential).recover { Throwable throwable ->
-            if (throwable instanceof AppErrorException) {
-                contextWrapper.errors.add(((AppErrorException) throwable).error.error())
-            } else {
-                contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingIdentity().error())
-            }
+        UserCredential pinCredential = new UserCredential(
+                value: pin,
+                type: 'PIN'
+        )
+
+        return userCredentialResource.create((UserId) user.id, passwordCredential).recover { Throwable throwable ->
+            handleException(throwable, contextWrapper)
 
             return Promise.pure(null)
         }.then { UserCredential newUserCredential ->
@@ -66,8 +66,32 @@ class CreateUserCredential implements Action {
                 return Promise.pure(new ActionResult('error'))
             }
 
-            contextWrapper.userCredential = newUserCredential
             return Promise.pure(new ActionResult('success'))
+        }.then { ActionResult result ->
+            if (result.id == 'error') {
+                return Promise.pure(result)
+            }
+
+            return userCredentialResource.create(user.id as UserId, pinCredential).recover { Throwable throwable ->
+                handleException(throwable, contextWrapper)
+
+                return Promise.pure(null)
+            }.then { UserCredential newUserCredential ->
+                if (newUserCredential == null) {
+                    return Promise.pure(new ActionResult('error'))
+                }
+
+                return Promise.pure(new ActionResult('success'))
+            }
+        }
+    }
+
+    private static void handleException(Throwable throwable, ActionContextWrapper contextWrapper) {
+        LOGGER.error('Error calling the identity service', throwable)
+        if (throwable instanceof AppErrorException) {
+            contextWrapper.errors.add(((AppErrorException) throwable).error.error())
+        } else {
+            contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingIdentity().error())
         }
     }
 }

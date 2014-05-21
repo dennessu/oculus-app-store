@@ -10,6 +10,7 @@ import com.junbo.oauth.core.context.ActionContextWrapper
 import groovy.transform.CompileStatic
 
 import javax.ws.rs.core.NewCookie
+import javax.ws.rs.core.Response.ResponseBuilder
 
 /**
  * CookieUtil.
@@ -27,6 +28,15 @@ class CookieUtil {
 
         List<NewCookie> responseCookieList = wrapper.responseCookieList
         responseCookieList.add(cookie)
+    }
+
+    static void setCookie(ResponseBuilder responseBuilder, String cookieName,
+                          String value, int maxAge = NewCookie.DEFAULT_MAX_AGE, boolean httpOnly = true) {
+        def secure = false // todo: read it from configuration service
+
+        NewCookie cookie = new NewCookie(cookieName, value,
+                null, null, null, maxAge, secure, httpOnly)
+        responseBuilder.cookie(cookie)
     }
 
     static void clearCookie(ActionContext context, String cookieName) {
