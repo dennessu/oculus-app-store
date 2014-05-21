@@ -136,13 +136,13 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
         return itemRevisionPost;
     }
 
-    public ItemRevision updateItemRevision(ItemRevision itemRevision) throws Exception {
-        return updateItemRevision(itemRevision, 200);
+    public ItemRevision updateItemRevision(Long itemRevisionId, ItemRevision itemRevision) throws Exception {
+        return updateItemRevision(itemRevisionId, itemRevision, 200);
     }
 
-    public ItemRevision updateItemRevision(ItemRevision itemRevision, int expectedResponseCode) throws Exception {
+    public ItemRevision updateItemRevision(Long itemRevisionId, ItemRevision itemRevision, int expectedResponseCode) throws Exception {
         String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(ItemRevisionId.class,
-                itemRevision.getRevisionId());
+                itemRevisionId);
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, itemRevision, expectedResponseCode);
         ItemRevision itemRevisionPut = new JsonMessageTranscoder().decode(new TypeReference<ItemRevision>() {},
                 responseBody);

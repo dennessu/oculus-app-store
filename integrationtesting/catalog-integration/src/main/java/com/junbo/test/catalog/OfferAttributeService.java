@@ -28,8 +28,8 @@ public interface OfferAttributeService {
     OfferAttribute postOfferAttribute(OfferAttribute offerAttribute) throws Exception;
     OfferAttribute postOfferAttribute(OfferAttribute offerAttribute, int expectedResponseCode) throws Exception;
 
-    OfferAttribute updateOfferAttribute(OfferAttribute offerAttribute) throws Exception;
-    OfferAttribute updateOfferAttribute(OfferAttribute offerAttribute, int expectedResponseCode) throws Exception;
+    OfferAttribute updateOfferAttribute(Long offerAttributeId, OfferAttribute offerAttribute) throws Exception;
+    OfferAttribute updateOfferAttribute(Long offerAttributeId, OfferAttribute offerAttribute, int expectedResponseCode) throws Exception;
 
     void deleteOfferAttribute(Long offerAttributeId) throws Exception;
     void deleteOfferAttribute(Long offerAttributeId, int expectedResponseCode) throws Exception;

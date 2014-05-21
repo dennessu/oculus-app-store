@@ -230,7 +230,7 @@ public class Catalog extends TestClass {
         //Approve the item revision
         itemRevisionRtn.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
         logger.LogSample("Update item Revision's status to APPROVED");
-        itemRevisionService.updateItemRevision(itemRevisionRtn);
+        itemRevisionService.updateItemRevision(itemRevisionRtn.getRevisionId(), itemRevisionRtn);
 
         //verify the item's currentRevisionId equals to item Revision ID
         itemRtn = itemServiceAPI.getItem(digitalItemGet.getItemId());
@@ -303,7 +303,7 @@ public class Catalog extends TestClass {
 
         //Approve the offer revision
         offerRevisionRtn.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
-        offerRevisionServiceAPI.updateOfferRevision(offerRevisionRtn);
+        offerRevisionServiceAPI.updateOfferRevision(offerRevisionRtn.getRevisionId(), offerRevisionRtn);
 
         //verify the offer published status and currentOfferRevisionId
         offerGet = offerServiceAPI.getOffer(offer.getOfferId());
@@ -425,7 +425,7 @@ public class Catalog extends TestClass {
 
         //3. Approve the item revision
         itemRevision.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
-        itemRevisionService.updateItemRevision(itemRevision);
+        itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision);
 
         //4. Post an offer
         Offer offer = offerService.postDefaultOffer();
@@ -435,7 +435,7 @@ public class Catalog extends TestClass {
 
         //6. Approve the offer revision
         offerRevision.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
-        offerRevisionService.updateOfferRevision(offerRevision);
+        offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
 
         //Check the offer status
         offer = offerService.getOffer(offer.getOfferId());

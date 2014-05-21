@@ -99,13 +99,13 @@ public class OfferAttributeServiceImpl extends HttpClientBase implements OfferAt
         return attributePost;
     }
 
-    public OfferAttribute updateOfferAttribute(OfferAttribute attribute) throws Exception {
-        return updateOfferAttribute(attribute, 200);
+    public OfferAttribute updateOfferAttribute(Long offerAttributeId, OfferAttribute attribute) throws Exception {
+        return updateOfferAttribute(offerAttributeId, attribute, 200);
     }
 
-    public OfferAttribute updateOfferAttribute(OfferAttribute attribute, int expectedResponseCode) throws Exception {
+    public OfferAttribute updateOfferAttribute(Long offerAttributeId, OfferAttribute attribute, int expectedResponseCode) throws Exception {
         String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(OfferAttributeId.class,
-                attribute.getId());
+                offerAttributeId);
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, attribute, expectedResponseCode);
         OfferAttribute offerAttributePut = new JsonMessageTranscoder().decode(new TypeReference<OfferAttribute>() {},
                 responseBody);

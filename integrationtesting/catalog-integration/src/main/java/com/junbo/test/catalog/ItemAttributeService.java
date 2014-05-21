@@ -28,8 +28,8 @@ public interface ItemAttributeService {
     ItemAttribute postItemAttribute(ItemAttribute itemAttribute) throws Exception;
     ItemAttribute postItemAttribute(ItemAttribute itemAttribute, int expectedResponseCode) throws Exception;
 
-    ItemAttribute updateItemAttribute(ItemAttribute itemAttribute) throws Exception;
-    ItemAttribute updateItemAttribute(ItemAttribute itemAttribute, int expectedResponseCode) throws Exception;
+    ItemAttribute updateItemAttribute(Long itemAttributeId, ItemAttribute itemAttribute) throws Exception;
+    ItemAttribute updateItemAttribute(Long itemAttributeId, ItemAttribute itemAttribute, int expectedResponseCode) throws Exception;
 
     void deleteItemAttribute(Long itemAttributeId) throws Exception;
     void deleteItemAttribute(Long itemAttributeId, int expectedResponseCode) throws Exception;
