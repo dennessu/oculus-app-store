@@ -6,7 +6,11 @@
 
 package com.junbo.entitlement.db.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.junbo.common.cloudant.json.annotations.CloudantDeserialize;
+import com.junbo.common.cloudant.json.annotations.CloudantProperty;
+import com.junbo.common.cloudant.json.annotations.CloudantSerialize;
+import com.junbo.entitlement.db.entity.def.DateDeserializer;
+import com.junbo.entitlement.db.entity.def.DateSerializer;
 import com.junbo.entitlement.db.entity.def.Shardable;
 
 import javax.persistence.Column;
@@ -20,14 +24,21 @@ import java.util.Date;
  */
 @MappedSuperclass
 public abstract class Entity implements Shardable {
-    @JsonIgnore
+    //Temp work around. TODO
+    @CloudantProperty("_id")
     private Long pId;
     private Boolean isDeleted;
+    @CloudantSerialize(DateSerializer.class)
+    @CloudantDeserialize(DateDeserializer.class)
     private Date createdTime;
     private Long createdBy;
+    @CloudantSerialize(DateSerializer.class)
+    @CloudantDeserialize(DateDeserializer.class)
     private Date updatedTime;
     private Long updatedBy;
     private Integer rev;
+    //Temp work around. TODO
+    @CloudantProperty("_rev")
     private String cloudantRev;
 
     @Id

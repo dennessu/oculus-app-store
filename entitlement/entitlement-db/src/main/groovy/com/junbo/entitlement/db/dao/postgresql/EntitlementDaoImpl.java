@@ -7,6 +7,7 @@
 package com.junbo.entitlement.db.dao.postgresql;
 
 import com.junbo.common.id.ItemId;
+import com.junbo.common.model.Results;
 import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.def.Function;
 import com.junbo.entitlement.common.lib.CommonUtils;
@@ -27,7 +28,7 @@ import java.util.*;
  */
 public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements EntitlementDao {
     @Override
-    public List<EntitlementEntity> getBySearchParam(
+    public Results<EntitlementEntity> getBySearchParam(
             EntitlementSearchParam entitlementSearchParam, PageMetadata pageMetadata) {
         StringBuilder queryStringBuilder = new StringBuilder(
                 "select * from entitlement" +
@@ -43,7 +44,9 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
         Query q = currentSession(entitlementSearchParam.getUserId().getValue()).createSQLQuery(
                 queryStringBuilder.toString()).addEntity(EntitlementEntity.class);
         q = addPageMeta(addParams(q, params), pageMetadata);
-        return q.list();
+        Results<EntitlementEntity> results = new Results<>();
+        results.setItems(q.list());
+        return results;
     }
 
     private void addSearchParam(EntitlementSearchParam entitlementSearchParam,
