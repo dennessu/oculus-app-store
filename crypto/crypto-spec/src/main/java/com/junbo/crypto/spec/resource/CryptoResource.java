@@ -9,7 +9,6 @@ import com.junbo.common.id.UserId;
 import com.junbo.crypto.spec.model.CryptoMessage;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
-import com.wordnik.swagger.annotations.Api;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -17,7 +16,6 @@ import javax.ws.rs.core.MediaType;
 /**
  * Created by liangfu on 5/6/14.
  */
-@Api(value = "crypto")
 @RestResource
 @Path("/crypto/{userId}")
 @Produces({MediaType.APPLICATION_JSON})

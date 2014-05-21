@@ -22,8 +22,6 @@ import org.springframework.beans.factory.annotation.Required
  */
 @CompileStatic
 class TosRepositorySqlImpl implements TosRepository {
-    // todo:    Liangfu:    In fact here we don't want any db, we just want to use cdn to store tos
-    // So we just implement the simplest case here
     private TosDAO tosDAO
     private ModelMapper modelMapper
 
