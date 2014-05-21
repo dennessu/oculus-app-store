@@ -10,23 +10,23 @@ import com.junbo.catalog.spec.model.common.PageableGetOptions;
 import com.junbo.common.id.ItemAttributeId;
 
 import javax.ws.rs.QueryParam;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Attributes get options.
  */
 public class ItemAttributesGetOptions extends PageableGetOptions {
     @QueryParam("id")
-    private List<ItemAttributeId> attributeIds;
+    private Set<ItemAttributeId> attributeIds;
 
     @QueryParam("type")
     private String attributeType;
 
-    public List<ItemAttributeId> getAttributeIds() {
+    public Set<ItemAttributeId> getAttributeIds() {
         return attributeIds;
     }
 
-    public void setAttributeIds(List<ItemAttributeId> attributeIds) {
+    public void setAttributeIds(Set<ItemAttributeId> attributeIds) {
         this.attributeIds = attributeIds;
     }
 
