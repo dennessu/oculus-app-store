@@ -132,12 +132,12 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         return offerPost;
     }
 
-    public Offer updateOffer(Offer offer) throws Exception {
-        return updateOffer(offer, 200);
+    public Offer updateOffer(Long offerId, Offer offer) throws Exception {
+        return updateOffer(offerId, offer, 200);
     }
 
-    public Offer updateOffer(Offer offer, int expectedResponseCode) throws Exception {
-        String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(OfferId.class, offer.getOfferId());
+    public Offer updateOffer(Long offerId, Offer offer, int expectedResponseCode) throws Exception {
+        String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(OfferId.class, offerId);
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, offer, expectedResponseCode);
         Offer offerPut = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {},
                 responseBody);
@@ -318,7 +318,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
         OfferRevision offerRevision = offerRevisionService.postOfferRevision(offerRevisionForPost);
         offerRevision.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
-        offerRevisionService.updateOfferRevision(offerRevision);
+        offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
         this.getOffer(offer.getOfferId());
     }
 
@@ -361,7 +361,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         //Post and then approve the item revision
         ItemRevision itemRevisionPost = itemRevisionService.postItemRevision(itemRevision);
         itemRevisionPost.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
-        itemRevisionService.updateItemRevision(itemRevisionPost);
+        itemRevisionService.updateItemRevision(itemRevisionPost.getRevisionId(), itemRevisionPost);
         return itemService.getItem(itemPost.getItemId());
     }
 

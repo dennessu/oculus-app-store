@@ -104,12 +104,12 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
         return itemPost;
     }
 
-    public Item updateItem(Item item) throws Exception {
-        return updateItem(item, 200);
+    public Item updateItem(Long itemId, Item item) throws Exception {
+        return updateItem(itemId, item, 200);
     }
 
-    public Item updateItem(Item item, int expectedResponseCode) throws Exception {
-        String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(ItemId.class, item.getItemId());
+    public Item updateItem(Long itemId, Item item, int expectedResponseCode) throws Exception {
+        String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(ItemId.class, itemId);
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, item, expectedResponseCode);
         Item itemPut = new JsonMessageTranscoder().decode(new TypeReference<Item>() {},
                 responseBody);

@@ -90,8 +90,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         userPersonalInfo.setType("ADDRESS");
         userPersonalInfo.setUserId(userId);
         String str = "{\"street1\":\"19800 MacArthur Blvd\",\"city\":\"Irvine\",\"postalCode\":\"92612\"," +
-                "\"firstName\":\"Mike\",\"lastName\":\"MyName\",\"phoneNumber\":\"16018984661\"," +
-                "\"country\":{\"id\":\"US\"}}";
+                "\"firstName\":\"Mike\",\"lastName\":\"MyName\",\"country\":{\"id\":\"US\"}}";
         ObjectMapper mapper = new ObjectMapper();
         JsonNode value = mapper.readTree(str);
         userPersonalInfo.setValue(value);

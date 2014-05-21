@@ -84,7 +84,7 @@ public class TestPutItem {
         item.setDefaultOffer(offer.getOfferId());
         item.setOwnerId(userId);
 
-        Item itemPut = itemService.updateItem(item);
+        Item itemPut = itemService.updateItem(item.getItemId(), item);
 
         //Verification
         Assert.assertEquals(itemPut.getGenres(), genres);
@@ -102,7 +102,7 @@ public class TestPutItem {
             steps = {
                     "1. Prepare a default item",
                     "2. test invalid values(like null, not null and some invalid enum values)",
-                    "3. Verify the action could be successful"
+                    "3. Verify the expected error"
             }
     )
     @Test
@@ -114,34 +114,36 @@ public class TestPutItem {
 
         //Prepare an item
         Item item = itemService.postDefaultItem(CatalogItemType.getRandom());
+        Item itemForPut = item;
+        Long itemId = item.getItemId();
 
         //update itself id
         item.setItemId(1L);
-        verifyExpectedError(item);
+        verifyExpectedError(itemId, item);
 
         //test rev
         item.setResourceAge(0);
-        verifyExpectedError(item);
+        verifyExpectedError(itemId, item);
 
         //test ownerId is null
         item.setOwnerId(null);
-        verifyExpectedError(item);
+        verifyExpectedError(itemId, item);
 
         //can't update current revision id
         item.setCurrentRevisionId(0L);
-        verifyExpectedError(item);
+        verifyExpectedError(itemId, item);
 
         //test type is invalid enums
         item.setType("invalid type");
-        verifyExpectedError(item);
+        verifyExpectedError(itemId, item);
 
         //test defaultOffer is not existed
         item.setDefaultOffer(0L);
-        verifyExpectedError(item);
+        verifyExpectedError(itemId, item);
 
         //test genres is not existed
         item.setGenres(genresInvalid);
-        verifyExpectedError(item);
+        verifyExpectedError(itemId, item);
 
         //test genres type is category
         OfferAttributeService offerAttributeService = OfferAttributeServiceImpl.instance();
@@ -149,24 +151,24 @@ public class TestPutItem {
         genresCategory.add(offerAttribute.getId());
 
         item.setGenres(genresCategory);
-        verifyExpectedError(item);
+        verifyExpectedError(itemId, item);
 
         //todo: type should not be updated
         if (item.getType().equalsIgnoreCase(CatalogItemType.DIGITAL.getItemType()) ) {
             item.setType(CatalogItemType.PHYSICAL.getItemType());
-            verifyExpectedError(item);
+            verifyExpectedError(itemId, item);
         }
         else {
             item.setType(CatalogItemType.DIGITAL.getItemType());
-            verifyExpectedError(item);
+            verifyExpectedError(itemId, item);
         }
 
     }
 
-    private void verifyExpectedError(Item item) {
+    private void verifyExpectedError(Long itemId, Item item) {
         try {
             //Error code 400 means "Missing Input field", "Unnecessary field found" or "invalid value"
-            itemService.updateItem(item, 400);
+            itemService.updateItem(itemId, item, 400);
             Assert.fail("Put item should fail");
         }
         catch (Exception ex) {

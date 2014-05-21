@@ -208,7 +208,7 @@ public class TestPostItem extends BaseTestClass {
 
         //Approve the item revision
         itemRevisionPosted.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
-        itemRevisionService.updateItemRevision(itemRevisionPosted);
+        itemRevisionService.updateItemRevision(itemRevisionPosted.getRevisionId(), itemRevisionPosted);
     }
 
     private void checkItemRequiredParams(Item itemActual, Item itemExpected) {

@@ -218,14 +218,14 @@ public class TestGetItem extends BaseTestClass {
         listItemId.add(itemId5);
 
         //set type Digital firstly
-        listType.add(CatalogItemType.DIGITAL.getItemType());
+        listType.add(CatalogItemType.PHYSICAL.getItemType());
         paraMap.put("itemId", listItemId);
         paraMap.put("type", listType);
         verifyGetItemsScenarios(paraMap, 1, itemId1);
 
         //set type to physical
         listType.clear();
-        listType.add(CatalogItemType.PHYSICAL.getItemType());
+        listType.add(CatalogItemType.DIGITAL.getItemType());
         paraMap.put("type", listType);
         verifyGetItemsScenarios(paraMap, 1, itemId2);
 

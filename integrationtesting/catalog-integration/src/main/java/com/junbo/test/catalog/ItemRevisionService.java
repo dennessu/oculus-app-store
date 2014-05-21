@@ -32,8 +32,8 @@ public interface ItemRevisionService {
     ItemRevision postItemRevision(ItemRevision itemRevision) throws Exception;
     ItemRevision postItemRevision(ItemRevision itemRevision, int expectedResponseCode) throws Exception;
 
-    ItemRevision updateItemRevision(ItemRevision itemRevision) throws Exception;
-    ItemRevision updateItemRevision(ItemRevision itemRevision, int expectedResponseCode) throws Exception;
+    ItemRevision updateItemRevision(Long itemRevisionId, ItemRevision itemRevision) throws Exception;
+    ItemRevision updateItemRevision(Long itemRevisionId, ItemRevision itemRevision, int expectedResponseCode) throws Exception;
 
     void deleteItemRevision(Long itemRevisionId) throws Exception;
     void deleteItemRevision(Long itemRevisionId, int expectedResponseCode) throws Exception;
