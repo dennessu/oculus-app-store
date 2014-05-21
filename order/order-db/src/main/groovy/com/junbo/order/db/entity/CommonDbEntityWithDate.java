@@ -7,8 +7,6 @@
 package com.junbo.order.db.entity;
 
 import com.junbo.order.db.ValidationMessages;
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
@@ -24,10 +22,10 @@ import java.util.Date;
 @MappedSuperclass
 public abstract class CommonDbEntityWithDate implements Serializable, Shardable {
     protected Date createdTime;
-    protected String createdBy;
+    protected Long createdBy;
     protected Date updatedTime;
-    protected String updatedBy;
-    protected Long resourceAge;
+    protected Long updatedBy;
+    protected Integer resourceAge;
 
     @Column(name = "CREATED_TIME")
     @NotNull(message = ValidationMessages.MISSING_VALUE)
@@ -39,12 +37,11 @@ public abstract class CommonDbEntityWithDate implements Serializable, Shardable 
     }
 
     @Column(name = "CREATED_BY")
-    @NotEmpty(message = ValidationMessages.MISSING_VALUE)
-    @Length(max=128, message=ValidationMessages.TOO_LONG)
-    public String getCreatedBy() {
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public Long getCreatedBy() {
         return createdBy;
     }
-    public void setCreatedBy(String createdBy) {
+    public void setCreatedBy(Long createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -58,22 +55,20 @@ public abstract class CommonDbEntityWithDate implements Serializable, Shardable 
     }
 
     @Column(name = "UPDATED_BY")
-    @NotEmpty(message = ValidationMessages.MISSING_VALUE)
-    @Length(max=128, message=ValidationMessages.TOO_LONG)
-    public String getUpdatedBy() {
+    public Long getUpdatedBy() {
         return updatedBy;
     }
-    public void setUpdatedBy(String updatedBy) {
+    public void setUpdatedBy(Long updatedBy) {
         this.updatedBy = updatedBy;
     }
 
     @Column(name = "RESOURCE_AGE")
     @Version
-    public Long getResourceAge() {
+    public Integer getResourceAge() {
         return resourceAge;
     }
 
-    public void setResourceAge(Long resourceAge) {
+    public void setResourceAge(Integer resourceAge) {
         this.resourceAge = resourceAge;
     }
 

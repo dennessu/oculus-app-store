@@ -39,7 +39,7 @@ public class OrderItemPreorderInfoDaoTest extends BaseTest {
         OrderItemPreorderInfoEntity entity = TestHelper.generateOrderItemPreorderInfoEntity();
         entity.setOrderItemPreorderInfoId(idGenerator.nextId(PreorderId.class));
         Long id = orderItemPreorderInfoDao.create(entity);
-        entity.setUpdatedBy("ANOTHER");
+        entity.setUpdatedBy(123L);
         orderItemPreorderInfoDao.update(entity);
         OrderItemPreorderInfoEntity returnedEntity = orderItemPreorderInfoDao.read(id);
 

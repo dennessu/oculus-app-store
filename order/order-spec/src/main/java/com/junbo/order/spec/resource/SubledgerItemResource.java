@@ -7,6 +7,7 @@ package com.junbo.order.spec.resource;
 
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.langur.core.routing.RouteBy;
 import com.junbo.order.spec.model.SubledgerItem;
 
 import javax.ws.rs.Consumes;
@@ -25,6 +26,7 @@ import javax.ws.rs.core.MediaType;
 public interface SubledgerItemResource {
 
     @POST
+    @RouteBy("subledgerItem.getSubledger()")
     Promise<SubledgerItem> createSubledgerItem(SubledgerItem subledgerItem);
 
 }

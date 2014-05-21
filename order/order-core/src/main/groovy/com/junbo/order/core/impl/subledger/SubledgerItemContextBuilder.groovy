@@ -6,7 +6,7 @@ import com.junbo.common.id.OfferId
 import com.junbo.common.id.UserId
 import com.junbo.order.clientproxy.catalog.CatalogFacade
 import com.junbo.order.clientproxy.model.OrderOfferRevision
-import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.SubledgerItem
 import groovy.transform.CompileStatic
@@ -21,8 +21,8 @@ import javax.annotation.Resource
 @Component('subledgerItemContextBuilder')
 class SubledgerItemContextBuilder {
 
-    @Resource(name = 'orderRepository')
-    OrderRepository orderRepository
+    @Resource(name = 'orderRepositoryFacade')
+    OrderRepositoryFacade orderRepository
 
     @Resource(name = 'cachedCatalogFacade')
     CatalogFacade catalogFacade

@@ -49,7 +49,7 @@
     <bean id="mockOrderService" class="com.junbo.order.core.impl.order.OrderServiceImpl">
         <property name="facadeContainer" ref="mockFacadeContainer"/>
         <property name="flowExecutor" ref="flowExecutor"/>
-        <property name="orderRepository" ref="orderRepository"/>
+        <property name="orderRepository" ref="orderRepositoryFacade"/>
         <property name="orderInternalService" ref="mockOrderInternalService"/>
     </bean>
 

@@ -8,7 +8,7 @@ import com.junbo.order.core.OrderEventService
 import com.junbo.order.core.impl.common.FulfillmentEventHistoryBuilder
 import com.junbo.order.core.impl.common.ParamUtils
 import com.junbo.order.db.entity.enums.OrderActionType
-import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.error.ErrorUtils
 import com.junbo.order.spec.model.OrderEvent
@@ -29,8 +29,8 @@ import javax.annotation.Resource
 @TypeChecked
 @Service('orderEventService')
 class OrderEventServiceImpl implements OrderEventService {
-    @Resource
-    OrderRepository orderRepository
+    @Resource(name = 'orderRepositoryFacade')
+    OrderRepositoryFacade orderRepository
 
     @Resource(name = 'orderFacadeContainer')
     FacadeContainer facadeContainer
@@ -72,7 +72,7 @@ class OrderEventServiceImpl implements OrderEventService {
                         def fulfillmentHistory = FulfillmentEventHistoryBuilder.buildFulfillmentHistory(
                             fulfillment, fulfilmentItem, event)
                         if (fulfillmentHistory.fulfillmentEvent != null) {
-                            orderRepository.createFulfillmentHistory(event.order.value, fulfillmentHistory)
+                            orderRepository.createFulfillmentHistory(fulfillmentHistory)
                         }
                     }
                     return Promise.pure(event)

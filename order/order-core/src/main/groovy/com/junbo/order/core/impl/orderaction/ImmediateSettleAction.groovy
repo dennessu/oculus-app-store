@@ -13,7 +13,7 @@ import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.entity.enums.BillingAction
-import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -32,7 +32,7 @@ class ImmediateSettleAction extends BaseOrderEventAwareAction {
     @Qualifier('orderFacadeContainer')
     FacadeContainer facadeContainer
     @Autowired
-    OrderRepository orderRepository
+    OrderRepositoryFacade orderRepository
     @Autowired
     OrderServiceContextBuilder orderServiceContextBuilder
     @Autowired
@@ -73,7 +73,8 @@ class ImmediateSettleAction extends BaseOrderEventAwareAction {
                 if (billingHistory.billingEvent == BillingAction.CHARGE.name()) {
                     order.payments?.get(0)?.paymentAmount = billingHistory.totalAmount
                 }
-                def savedHistory = orderRepository.createBillingHistory(order.id.value, billingHistory)
+                def savedHistory = orderRepository.createBillingHistory(order.getId().value, billingHistory)
+
                 if (order.billingHistories == null) {
                     order.billingHistories = [savedHistory]
                 }

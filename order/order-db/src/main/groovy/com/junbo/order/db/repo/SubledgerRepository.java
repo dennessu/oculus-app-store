@@ -10,10 +10,12 @@ import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.SubledgerId;
 import com.junbo.common.id.UserId;
+import com.junbo.langur.core.promise.Promise;
 import com.junbo.order.spec.model.PageParam;
 import com.junbo.order.spec.model.Subledger;
-import com.junbo.order.spec.model.SubledgerItem;
 import com.junbo.order.spec.model.SubledgerParam;
+import com.junbo.sharding.dualwrite.annotations.ReadMethod;
+import com.junbo.sharding.repo.BaseRepository;
 
 import java.util.Date;
 import java.util.List;
@@ -21,26 +23,13 @@ import java.util.List;
 /**
  * Created by fzhang on 4/2/2014.
  */
-public interface SubledgerRepository {
+public interface SubledgerRepository extends BaseRepository<Subledger, SubledgerId> {
 
-    Subledger createSubledger(Subledger subledger);
+    @ReadMethod
+    Promise<List<Subledger>> list(SubledgerParam subledgerParam, PageParam pageParam);
 
-    Subledger updateSubledger(Subledger subledger);
-
-    Subledger getSubledger(SubledgerId subledgerId);
-
-    List<Subledger> getSubledgers(SubledgerParam subledgerParam,
-                                  PageParam pageParam);
-
-    Subledger findSubledger(UserId sellerId, String payoutStatus,
-                                          OfferId offerId, Date startTime,  CurrencyId currency,
-                                          CountryId country);
-
-    SubledgerItem createSubledgerItem(SubledgerItem subledgerItem);
-
-    List<SubledgerItem> getSubledgerItem(Object shardKey, String status, PageParam pageParam);
-
-    SubledgerItem updateSubledgerItem(SubledgerItem subledgerItem);
+    @ReadMethod
+    Promise<Subledger> find(UserId sellerId, String payoutStatus,
+                            OfferId offerId, Date startTime, CurrencyId currency,
+                            CountryId country);
 }
-
-

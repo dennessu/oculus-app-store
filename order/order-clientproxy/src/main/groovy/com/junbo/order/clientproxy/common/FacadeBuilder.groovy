@@ -1,5 +1,4 @@
 package com.junbo.order.clientproxy.common
-
 import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.common.id.UserId
 import com.junbo.email.spec.model.Email
@@ -16,7 +15,6 @@ import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 
 import java.text.SimpleDateFormat
-
 /**
  * Created by LinYi on 14-3-4.
  */
@@ -48,7 +46,7 @@ class FacadeBuilder {
     static FulfilmentRequest buildFulfilmentRequest(Order order) {
         FulfilmentRequest request = new FulfilmentRequest()
         request.userId = order.user.value
-        request.orderId = order.id.value
+        request.orderId = order.getId().value
         request.trackingGuid = UUID.randomUUID()
         request.shippingMethodId = order?.shippingMethod
         request.shippingAddressId = order?.shippingAddress?.value
@@ -61,7 +59,7 @@ class FacadeBuilder {
 
     private static FulfilmentItem buildFulfilmentItem(OrderItem orderItem) {
         FulfilmentItem item = new FulfilmentItem()
-        item.orderItemId = orderItem.orderItemId.value
+        item.orderItemId = orderItem.getId().value
         item.offerId = orderItem.offer.value
         item.timestamp = orderItem.honoredTime?.time
         item.quantity = orderItem.quantity
@@ -100,7 +98,7 @@ class FacadeBuilder {
         email.templateId = template.id
         // TODO: update email address as IDENTITY component
         Map<String, String> properties = [:]
-        properties.put(ORDER_NUMBER, order.id.value.toString())
+        properties.put(ORDER_NUMBER, order.getId().value.toString())
         Date now = new Date()
         properties.put(ORDER_DATE, DATE_FORMATTER.get().format(now))
         properties.put(NAME, user.username)

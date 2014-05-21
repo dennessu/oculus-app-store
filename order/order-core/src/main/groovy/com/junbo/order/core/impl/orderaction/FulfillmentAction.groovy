@@ -11,7 +11,7 @@ import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.common.FulfillmentEventHistoryBuilder
 import com.junbo.order.db.entity.enums.EventStatus
-import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.error.ErrorUtils
 import com.junbo.order.spec.model.OrderItem
@@ -34,7 +34,7 @@ class  FulfillmentAction extends BaseOrderEventAwareAction {
     @Qualifier('orderFacadeContainer')
     FacadeContainer facadeContainer
     @Autowired
-    OrderRepository orderRepository
+    OrderRepositoryFacade orderRepository
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FulfillmentAction)
 
@@ -62,7 +62,7 @@ class  FulfillmentAction extends BaseOrderEventAwareAction {
 
             fulfilmentResult.items.each { FulfilmentItem fulfilmentItem ->
                 OrderItem orderItem = order.orderItems?.find { OrderItem item ->
-                    item.orderItemId?.value == fulfilmentItem.orderItemId
+                    item.getId()?.value == fulfilmentItem.orderItemId
                 }
                 def fulfillmentHistory = FulfillmentEventHistoryBuilder.buildFulfillmentHistory(
                         fulfilmentResult, fulfilmentItem, orderItem)
@@ -74,7 +74,7 @@ class  FulfillmentAction extends BaseOrderEventAwareAction {
                     orderEventStatus = fulfillmentEventStatus
                 }
                 if (fulfillmentHistory.fulfillmentEvent != null) {
-                    def savedHistory = orderRepository.createFulfillmentHistory(order.id.value, fulfillmentHistory)
+                    def savedHistory = orderRepository.createFulfillmentHistory(fulfillmentHistory)
                     if (orderItem.fulfillmentHistories == null) {
                         orderItem.fulfillmentHistories = [savedHistory]
                     }

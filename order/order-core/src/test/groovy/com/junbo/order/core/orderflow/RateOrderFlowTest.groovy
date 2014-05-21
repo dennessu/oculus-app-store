@@ -9,7 +9,7 @@ import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
-import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.model.Discount
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -27,7 +27,7 @@ class RateOrderFlowTest extends BaseTest{
     @Qualifier('mockOrderService')
     OrderService orderService
     @Autowired
-    OrderRepository repo
+    OrderRepositoryFacade repo
     @Resource(name = 'mockFacadeContainer')
     FacadeContainer facadeContainer
 
@@ -57,8 +57,8 @@ class RateOrderFlowTest extends BaseTest{
         def balance = CoreBuilder.buildBalance(order)
         facadeContainer.billingFacade.createBalance(balance, false)
 
-        def getOrder = orderService.getOrderByOrderId(o.id.value).get()
-        assert (o.id.value == getOrder.id.value)
+        def getOrder = orderService.getOrderByOrderId(o.getId().value).get()
+        assert (o.getId().value == getOrder.getId().value)
         assert (o.discounts.size() == getOrder.discounts.size())
         assert (o.orderItems.size() == getOrder.orderItems.size())
         assert (o.totalAmount == getOrder.totalAmount)

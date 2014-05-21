@@ -98,7 +98,7 @@ class CoreUtils {
     static Boolean checkOrderStatusCancelable(Order order) {
 
         // TODO: check authorized
-        if(order.tentative)
+        if (order.tentative)
             return false
         if (order.status == OrderStatus.OPEN.name() ||
                 order.status == OrderStatus.PREORDERED.name() ||

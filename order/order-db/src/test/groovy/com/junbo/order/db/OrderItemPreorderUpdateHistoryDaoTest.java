@@ -36,7 +36,7 @@ public class OrderItemPreorderUpdateHistoryDaoTest extends BaseTest {
     public void testUpdate() {
         OrderItemPreorderUpdateHistoryEntity entity = TestHelper.generateOrderItemPreorderUpdateHistoryEntity();
         Long id = orderItemPreorderUpdateHistoryDao.create(entity);
-        entity.setUpdatedBy("ANOTHER");
+        entity.setUpdatedBy(456L);
         orderItemPreorderUpdateHistoryDao.update(entity);
         OrderItemPreorderUpdateHistoryEntity returnedEntity = orderItemPreorderUpdateHistoryDao.read(id);
 

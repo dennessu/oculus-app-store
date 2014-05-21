@@ -9,6 +9,7 @@ import com.junbo.oom.core.MappingContext
 import com.junbo.order.db.BaseTest
 import com.junbo.order.db.common.TestHelper
 import com.junbo.order.db.mapper.ModelMapper
+import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.model.Discount
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
@@ -19,10 +20,10 @@ import org.testng.annotations.Test
 /**
  * Created by fzhang on 14-3-12.
  */
-class OrderRepositoryTest extends BaseTest {
+class OrderRepositoryFacadeTest extends BaseTest {
 
     @Autowired
-    private OrderRepository orderRepository
+    private OrderRepositoryFacade orderRepository
 
     @Autowired
     ModelMapper modelMapper
@@ -52,10 +53,10 @@ class OrderRepositoryTest extends BaseTest {
 
         // remove id and check
         order.orderItems.each {
-            it.orderItemId = null
+            it.id = null
         }
         order.discounts.each {
-            it.discountInfoId = null
+            it.id = null
             it.orderItemId = null
             it.orderId = null
         }
@@ -78,12 +79,12 @@ class OrderRepositoryTest extends BaseTest {
     }
 
     void verifyByRead(Order order) {
-        assertOrderEquals(orderRepository.getOrder(order.id.value), order)
+        assertOrderEquals(orderRepository.getOrder(order.getId().value), order)
 
         // verify items
-        assertListEquals(orderRepository.getOrderItems(order.id.value), order.orderItems,
+        assertListEquals(orderRepository.getOrderItems(order.getId().value), order.orderItems,
                 { OrderItem it ->
-                    return it.orderItemId
+                    return it.id
                 },
                 { OrderItem actual, OrderItem expected ->
                     assertOrderItemEquals(actual, expected)
@@ -91,9 +92,9 @@ class OrderRepositoryTest extends BaseTest {
         )
 
         // verify discounts
-        assertListEquals(orderRepository.getDiscounts(order.id.value), order.discounts,
+        assertListEquals(orderRepository.getDiscounts(order.getId().value), order.discounts,
                 { Discount it ->
-                    return it.discountInfoId
+                    return it.id
                 },
                 { Discount actual, Discount expected ->
                     assertDiscountEquals(actual, expected)
@@ -101,14 +102,14 @@ class OrderRepositoryTest extends BaseTest {
         )
 
         // verify pi
-        assert new HashSet<PaymentInstrumentId>(orderRepository.getPayments(order.id.value).
+        assert new HashSet<PaymentInstrumentId>(orderRepository.getPayments(order.getId().value).
                 collect {it -> return it.paymentInstrument}) ==
                 new HashSet<PaymentInstrumentId>(order.payments.collect {it -> return it.paymentInstrument})
     }
 
     private OrderItem createOrderItem() {
         def item = modelMapper.toOrderItemModel(TestHelper.generateOrderItem(), new MappingContext())
-        item.orderItemId = null
+        item.id = null
         item.orderId = null
         return item
     }
@@ -116,7 +117,7 @@ class OrderRepositoryTest extends BaseTest {
     private Discount createDiscount(Order order, OrderItem orderItem) {
         def item = modelMapper.toDiscountModel(TestHelper.generateOrderDiscountInfoEntity(), new MappingContext())
         item.orderId = null
-        item.discountInfoId = null
+        item.id = null
         item.orderItemId = null
         item.ownerOrderItem = orderItem
         return item
@@ -147,7 +148,7 @@ class OrderRepositoryTest extends BaseTest {
     }
 
     void assertDiscountEquals(Discount actual, Discount expected) {
-        assert actual.discountInfoId == expected.discountInfoId
+        assert actual.id == expected.id
 
         assert actual.discountAmount == expected.discountAmount
         assert actual.orderId == expected.orderId

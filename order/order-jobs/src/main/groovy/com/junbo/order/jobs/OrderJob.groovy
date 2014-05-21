@@ -7,7 +7,7 @@
 package com.junbo.order.jobs
 
 import com.junbo.order.core.impl.common.TransactionHelper
-import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.PageParam
 import groovy.transform.CompileStatic
@@ -28,7 +28,7 @@ class OrderJob implements InitializingBean {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderJob)
 
-    OrderRepository orderRepository
+    OrderRepositoryFacade orderRepository
 
     int orderProcessNumLimit
 

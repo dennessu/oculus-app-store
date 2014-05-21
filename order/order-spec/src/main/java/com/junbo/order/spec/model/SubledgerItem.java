@@ -10,15 +10,17 @@ import com.junbo.common.id.OfferId;
 import com.junbo.common.id.OrderItemId;
 import com.junbo.common.id.SubledgerId;
 import com.junbo.common.id.SubledgerItemId;
+import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.util.Identifiable;
 
 import java.math.BigDecimal;
 
 /**
  * Created by chriszhu on 2/10/14.
  */
-public class SubledgerItem extends BaseOrderResource {
+public class SubledgerItem extends ResourceMeta implements Identifiable<SubledgerItemId> {
     @JsonProperty("self")
-    private SubledgerItemId subledgerItemId;
+    private SubledgerItemId id;
     private SubledgerId subledger;
     private SubledgerItemId originalSubledgerItem;
     private BigDecimal totalAmount;
@@ -27,12 +29,12 @@ public class SubledgerItem extends BaseOrderResource {
     private String subledgerItemAction;
     private String status;
 
-    public SubledgerItemId getSubledgerItemId() {
-        return subledgerItemId;
+    public SubledgerItemId getId() {
+        return id;
     }
 
-    public void setSubledgerItemId(SubledgerItemId subledgerItemId) {
-        this.subledgerItemId = subledgerItemId;
+    public void setId(SubledgerItemId id) {
+        this.id = id;
     }
 
     public SubledgerId getSubledger() {

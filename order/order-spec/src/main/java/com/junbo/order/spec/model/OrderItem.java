@@ -9,11 +9,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.OrderId;
 import com.junbo.common.id.OrderItemId;
 import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.common.jackson.annotation.ShippingMethodId;
+import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
@@ -30,9 +33,9 @@ import java.util.List;
         "fulfillmentIds", "preorderInfo", "properties"
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class OrderItem extends BaseOrderResource {
+public class OrderItem extends ResourceMeta implements Identifiable<OrderItemId> {
     @JsonIgnore
-    private OrderItemId orderItemId;
+    private OrderItemId id;
     @JsonIgnore
     private OrderId orderId;
     @JsonIgnore
@@ -67,26 +70,33 @@ public class OrderItem extends BaseOrderResource {
 
     @JsonIgnore
     private Date honorUntilTime;
+
     @JsonIgnore
     private Date honoredTime;
     // end of ratingInfo
 
     @JsonIgnore
+    @CloudantIgnore
     private PreorderInfo preorderInfo;
 
     @JsonProperty("futureExpansion")
     private String properties;
 
+    // transient, read from billing
+    @CloudantIgnore
     private List<OrderTaxItem> taxes;
 
+    @CloudantIgnore
     private List<FulfillmentHistory> fulfillmentHistories;
 
-    public OrderItemId getOrderItemId() {
-        return orderItemId;
+    @Override
+    public OrderItemId getId() {
+        return id;
     }
 
-    public void setOrderItemId(OrderItemId orderItemId) {
-        this.orderItemId = orderItemId;
+    @Override
+    public void setId(OrderItemId id) {
+        this.id = id;
     }
 
     public OrderId getOrderId() {

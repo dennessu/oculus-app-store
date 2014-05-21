@@ -53,10 +53,10 @@ class CreateSubledgerItemAction extends BaseOrderEventAwareAction {
                 if (subledger != null) {
                     // link to subledger only if matching subledger found. If not found, let the back-end job to create
                     // the subledger so as to avoid concurrent creation of same subledger
-                    LOGGER.debug('name=Subledger_For_SubledgerItem_Found, orderItemId={}', orderItem.orderItemId)
-                    subledgerItem.subledger = subledger.subledgerId
+                    LOGGER.debug('name=Subledger_For_SubledgerItem_Found, orderItemId={}', orderItem.id)
+                    subledgerItem.subledger = subledger.getId()
                 } else {
-                    LOGGER.debug('name=Subledger_For_SubledgerItem_Not_Found, orderItemId={}', orderItem.orderItemId)
+                    LOGGER.debug('name=Subledger_For_SubledgerItem_Not_Found, orderItemId={}', orderItem.id)
                 }
 
                 subledgerService.createSubledgerItem(subledgerItem)
@@ -70,7 +70,7 @@ class CreateSubledgerItemAction extends BaseOrderEventAwareAction {
         // todo handle refund subledger item logic
         def subledgerItem = new SubledgerItem(
                 totalAmount: order.isTaxInclusive ? orderItem.totalAmount - orderItem.totalTax : orderItem.totalAmount,
-                orderItem: orderItem.orderItemId,
+                orderItem: orderItem.getId(),
                 offer: new OfferId(offer.catalogOfferRevision.offerId),
                 subledgerItemAction: SubledgerItemAction.CHARGE.name()
         )

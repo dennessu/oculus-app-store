@@ -13,14 +13,14 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
-import com.junbo.common.deser.EnumIdDeserizlizer;
-import com.junbo.common.deser.IdDeserializer;
+import com.junbo.common.jackson.deserializer.EnumIdDeserizlizer;
+import com.junbo.common.jackson.deserializer.IdDeserializer;
 import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.jackson.common.CustomDeserializationContext;
 import com.junbo.common.jackson.common.CustomSerializerModifier;
 import com.junbo.common.jackson.common.CustomSerializerProvider;
-import com.junbo.common.ser.EnumIdSerializer;
-import com.junbo.common.ser.IdSerializer;
+import com.junbo.common.jackson.serializer.EnumIdSerializer;
+import com.junbo.common.jackson.serializer.IdSerializer;
 
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;

@@ -23,7 +23,6 @@ import java.util.UUID;
 @Table(name = "ORDER_ITEM_FULFILLMENT_HISTORY")
 public class OrderItemFulfillmentHistoryEntity extends CommonDbEntityWithDate {
     private Long historyId;
-    private Long orderId;
     private Long orderItemId;
     private UUID trackingUuid;
     private String fulfillmentId;
@@ -37,16 +36,6 @@ public class OrderItemFulfillmentHistoryEntity extends CommonDbEntityWithDate {
 
     public void setHistoryId(Long historyId) {
         this.historyId = historyId;
-    }
-
-    @Column(name = "ORDER_ID")
-    @NotNull(message = ValidationMessages.MISSING_VALUE)
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
     }
 
     @Column(name = "ORDER_ITEM_ID")
