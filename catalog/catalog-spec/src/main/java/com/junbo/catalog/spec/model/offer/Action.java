@@ -6,9 +6,7 @@
 
 package com.junbo.catalog.spec.model.offer;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.CurrencyId;
-import com.junbo.common.jackson.annotation.EntitlementDefinitionId;
 import com.junbo.common.jackson.annotation.ItemId;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -21,10 +19,6 @@ public class Action {
     @ApiModelProperty(position = 1, required = true, value = "action type",
             allowableValues = "GRANT_ENTITLEMENT, DELIVER_PHYSICAL_GOODS, CREDIT_WALLET")
     private String type;
-    @EntitlementDefinitionId
-    @JsonProperty("entitlementDefinition")
-    @ApiModelProperty(position = 2, required = true, value = "entitlement definition")
-    private Long entitlementDefId;
     @ApiModelProperty(position = 3, required = true, value = "properties")
     @ItemId
     private Long itemId;
@@ -40,14 +34,6 @@ public class Action {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public Long getEntitlementDefId() {
-        return entitlementDefId;
-    }
-
-    public void setEntitlementDefId(Long entitlementDefId) {
-        this.entitlementDefId = entitlementDefId;
     }
 
     public Long getItemId() {
