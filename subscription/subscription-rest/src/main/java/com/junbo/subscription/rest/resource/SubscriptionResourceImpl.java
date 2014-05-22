@@ -23,7 +23,7 @@ public class SubscriptionResourceImpl implements SubscriptionResource {
     private SubscriptionService subscriptionService;
 
     @Override
-    public Promise<Subscription> getSubscription(HttpHeaders httpHeaders, SubscriptionId subscriptionId){
+    public Promise<Subscription> getSubscriptionById(HttpHeaders httpHeaders, SubscriptionId subscriptionId){
         Subscription subscription = subscriptionService.getSubscription(subscriptionId.getValue());
         return Promise.pure(subscription);
     }

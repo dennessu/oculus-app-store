@@ -7,14 +7,33 @@
 package com.junbo.subscription.core.event;
 
 import com.junbo.subscription.core.SubscriptionEvent;
+import com.junbo.subscription.core.action.FullfilmentAction;
+import com.junbo.subscription.db.entity.SubscriptionStatus;
+import com.junbo.subscription.db.repository.SubscriptionRepository;
 import com.junbo.subscription.spec.model.Subscription;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Create Subscription.
  */
 public class SubscriptionCreateEvent implements SubscriptionEvent {
+    @Autowired
+    private SubscriptionRepository subscriptionRepository;
+
+    @Autowired
+    private FullfilmentAction fullfilmentAction;
+
     @Override
     public Subscription execute(Subscription subscription){
+        subscription.setStatus(SubscriptionStatus.CREATED.toString());
+        subscription = subscriptionRepository.insert(subscription);
+
+        fullfilmentAction.execute(subscription);
+
+        subscription.setStatus(SubscriptionStatus.ENABLED.toString());
+        subscription = subscriptionRepository.update(subscription);
+        subscription.setPaymentMethodId(111L);
+
         return  subscription;
     }
 }

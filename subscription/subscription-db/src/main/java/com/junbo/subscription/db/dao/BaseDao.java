@@ -59,11 +59,11 @@ public class BaseDao<T extends com.junbo.subscription.db.entity.Entity> {
     }
 
     public Long update(T t) {
-        currentSession(t.getShardMasterId()).update(t);
         if(t.getModifiedTime() == null){
             t.setModifiedTime(new Date());
             t.setModifiedBy("INTERNAL");
         }
+        currentSession(t.getShardMasterId()).merge(t);
         return t.getId();
     }
 

@@ -12,5 +12,7 @@
     <bean id="subscriptionService" class="com.junbo.subscription.core.service.SubscriptionServiceImpl"/>
 
     <bean id="subscriptionRepository" class="com.junbo.subscription.db.repository.SubscriptionRepository" />
+    <bean id="fullfilmentAction" class="com.junbo.subscription.core.action.FullfilmentAction" />
+    <bean id="subscriptionCreateEvent" class="com.junbo.subscription.core.event.SubscriptionCreateEvent" />
 
 </beans>
