@@ -7,6 +7,7 @@ package com.junbo.test.catalog.impl;
 
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.apihelper.identity.UserService;
+import com.junbo.test.common.libs.ConfigPropertiesHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.common.json.JsonMessageTranscoder;
@@ -14,7 +15,6 @@ import com.junbo.langur.core.client.TypeReference;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
-import com.junbo.test.common.libs.RestUrl;
 import com.junbo.test.catalog.ItemService;
 import com.junbo.common.model.Results;
 import com.junbo.common.id.ItemId;
@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class ItemServiceImpl extends HttpClientBase implements ItemService {
 
-    private final String catalogServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.CATALOG) + "items";
+    private final String catalogServerURL = ConfigPropertiesHelper.instance().getProperty("defaultCatalogEndpointV1") + "/items";
     private final String defaultItemFileName = "defaultItem";
     private static ItemService instance;
 

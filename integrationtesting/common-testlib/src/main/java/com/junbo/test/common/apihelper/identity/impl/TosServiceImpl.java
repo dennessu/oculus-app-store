@@ -6,6 +6,7 @@
 package com.junbo.test.common.apihelper.identity.impl;
 
 import com.junbo.test.common.apihelper.identity.TosService;
+import com.junbo.test.common.libs.ConfigPropertiesHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.Entities.enums.TosState;
 import com.junbo.common.json.JsonMessageTranscoder;
@@ -13,7 +14,7 @@ import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.identity.spec.v1.model.Tos;
-import com.junbo.test.common.libs.RestUrl;
+
 import com.junbo.common.model.Results;
 import com.junbo.common.id.TosId;
 
@@ -27,7 +28,7 @@ import java.util.List;
  */
 public class TosServiceImpl extends HttpClientBase implements TosService {
 
-    private final String tosUrl = RestUrl.getRestUrl(RestUrl.ComponentName.IDENTITY) + "tos";
+    private final String tosUrl = ConfigPropertiesHelper.instance().getProperty("defaultIdentityEndPointV1") + "/tos";
     private static TosService instance;
 
     public static synchronized TosService instance() {

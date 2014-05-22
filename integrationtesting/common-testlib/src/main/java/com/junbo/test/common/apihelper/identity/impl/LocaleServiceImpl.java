@@ -6,11 +6,11 @@
 package com.junbo.test.common.apihelper.identity.impl;
 
 import com.junbo.test.common.apihelper.identity.LocaleService;
+import com.junbo.test.common.libs.ConfigPropertiesHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.identity.spec.v1.model.Locale;
-import com.junbo.test.common.libs.RestUrl;
 import com.junbo.common.model.Results;
 
 /**
@@ -20,7 +20,7 @@ import com.junbo.common.model.Results;
  */
 public class LocaleServiceImpl extends HttpClientBase implements LocaleService {
 
-    private final String localeURL = RestUrl.getRestUrl(RestUrl.ComponentName.IDENTITY) + "locales";
+    private final String localeURL = ConfigPropertiesHelper.instance().getProperty("defaultIdentityEndPointV1") + "/locales";
     private static LocaleService instance;
 
     public static synchronized LocaleService instance() {

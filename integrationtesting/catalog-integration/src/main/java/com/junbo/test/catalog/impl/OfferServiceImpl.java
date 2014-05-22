@@ -23,11 +23,11 @@ import com.junbo.test.catalog.ItemRevisionService;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.libs.ConfigPropertiesHelper;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.catalog.OfferService;
 import com.junbo.test.catalog.ItemService;
-import com.junbo.test.common.libs.RestUrl;
 import com.junbo.common.model.Results;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.UserId;
@@ -47,7 +47,7 @@ import java.util.List;
  */
 public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
-    private final String catalogServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.CATALOG) + "offers";
+    private final String catalogServerURL = ConfigPropertiesHelper.instance().getProperty("defaultCatalogEndpointV1") + "/offers";
     private final String defaultStoredValueItemRevisionFileName = "defaultStoredValueItemRevision";
     private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";

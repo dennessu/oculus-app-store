@@ -5,18 +5,18 @@
  */
 package com.junbo.test.catalog.impl;
 
-import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.test.catalog.enums.CatalogItemAttributeType;
+import com.junbo.catalog.spec.model.attribute.ItemAttribute;
+import com.junbo.test.common.libs.ConfigPropertiesHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.catalog.ItemAttributeService;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
+import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.common.id.ItemAttributeId;
-import com.junbo.test.common.libs.RandomFactory;
-import com.junbo.test.common.libs.RestUrl;
 import com.junbo.common.model.Results;
 
 import java.util.HashMap;
@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttributeService {
 
-    private final String catalogServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.CATALOG) + "item-attributes";
+    private final String catalogServerURL = ConfigPropertiesHelper.instance().getProperty("defaultCatalogEndpointV1") + "/item-attributes";
     private static ItemAttributeService instance;
 
     public static synchronized ItemAttributeService instance() {
@@ -65,9 +65,9 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
         Results<ItemAttribute> itemAttributeResults =  new JsonMessageTranscoder().decode(
                 new TypeReference<Results<ItemAttribute>>() {}, responseBody);
 
-        for (ItemAttribute itemattribute : itemAttributeResults.getItems()){
-            String attributeRtnId = IdConverter.idLongToHexString(ItemAttributeId.class, itemattribute.getId());
-            Master.getInstance().addItemAttribute(attributeRtnId, itemattribute);
+        for (ItemAttribute itemAttribute : itemAttributeResults.getItems()){
+            String attributeRtnId = IdConverter.idLongToHexString(ItemAttributeId.class, itemAttribute.getId());
+            Master.getInstance().addItemAttribute(attributeRtnId, itemAttribute);
         }
 
         return itemAttributeResults;
