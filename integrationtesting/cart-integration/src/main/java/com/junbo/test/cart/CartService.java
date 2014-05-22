@@ -30,7 +30,7 @@ import java.util.concurrent.Future;
  */
 public class CartService {
 
-    private static String commerceUrl = ConfigHelper.getSetting("defaultCommerceURI");
+    private static String commerceUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1");
     private static LogHelper logger = new LogHelper(Cart.class);
     private static AsyncHttpClient asyncClient = new AsyncHttpClient(new AsyncHttpClientConfig.Builder().build());
 

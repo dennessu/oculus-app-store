@@ -340,7 +340,7 @@ public class CartTesting extends TestClass {
         addCouponInCart(cart, testCoupon1);
         CartService.addCart(user.getId(), cart);
 
-        long invalidCartId = 12345L;
+        long invalidCartId = 12345l;
         logger.LogSample("Get user's cart with an invalid cart id");
         CartService.getCart(user.getId(), new CartId(invalidCartId), 404);
     }
