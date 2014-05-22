@@ -8,16 +8,15 @@ package com.junbo.catalog.db.repo;
 
 import com.junbo.catalog.db.BaseTest;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
-import com.junbo.catalog.spec.model.attribute.ItemAttributesGetOptions;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.List;
-
 public class ItemAttributeRepoTest extends BaseTest {
     @Autowired
+    @Qualifier("itemAttributeCloudantRepo")
     private ItemAttributeRepository attributeRepo;
 
     @Test(enabled = false)
@@ -25,8 +24,8 @@ public class ItemAttributeRepoTest extends BaseTest {
         ItemAttribute entity = buildAttributeEntity();
         Long id = attributeRepo.create(entity);
         Assert.assertNotNull(attributeRepo.get(id), "Entity should not be null.");
-        List<ItemAttribute> attributeList = attributeRepo.getAttributes(new ItemAttributesGetOptions());
-        System.out.println(attributeList.size());
+        //List<ItemAttribute> attributeList = attributeRepo.getAttributes(new ItemAttributesGetOptions());
+        //System.out.println(attributeList.size());
     }
 
     private ItemAttribute buildAttributeEntity() {

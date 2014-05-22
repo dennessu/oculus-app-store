@@ -11,7 +11,7 @@ import com.junbo.catalog.db.repo.ItemAttributeRepository;
 import com.junbo.catalog.spec.enums.ItemAttributeType;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.attribute.ItemAttributesGetOptions;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,13 +20,17 @@ import java.util.List;
  * Item attribute service implementation.
  */
 public class ItemAttributeServiceImpl extends AttributeServiceSupport<ItemAttribute> implements ItemAttributeService {
-    @Autowired
     private ItemAttributeRepository attributeRepo;
     private static final List<String> ATTRIBUTE_TYPES = new ArrayList<>();
     static {
         for (ItemAttributeType type : ItemAttributeType.values()) {
             ATTRIBUTE_TYPES.add(type.name());
         }
+    }
+
+    @Required
+    public void setAttributeRepo(ItemAttributeRepository attributeRepo) {
+        this.attributeRepo = attributeRepo;
     }
 
     @Override

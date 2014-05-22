@@ -59,4 +59,14 @@ public class Promotion extends BaseEntityModel {
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
     }
+
+    @Override
+    public Long getId() {
+        return promotionId;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.promotionId = id;
+    }
 }

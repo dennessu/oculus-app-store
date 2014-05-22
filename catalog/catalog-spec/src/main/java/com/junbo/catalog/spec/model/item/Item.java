@@ -116,4 +116,14 @@ public class Item extends BaseEntityModel {
     public void setDefaultOffer(Long defaultOffer) {
         this.defaultOffer = defaultOffer;
     }
+
+    @Override
+    public Long getId() {
+        return itemId;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.itemId = id;
+    }
 }

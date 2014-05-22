@@ -17,10 +17,7 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Item repository.
@@ -58,7 +55,16 @@ public class ItemAttributeRepositoryImpl extends CloudantClient<ItemAttribute> i
         } else if (!StringUtils.isEmpty(options.getAttributeType())){
             return super.queryView("by_type", options.getAttributeType());
         } else {
-            return super.cloudantGetAll();
+            List<ItemAttribute> attributes = super.cloudantGetAll();
+            Iterator<ItemAttribute> iterator = attributes.iterator();
+            while (iterator.hasNext()) {
+                ItemAttribute attribute = iterator.next();
+                if (attribute == null || attribute.getId() == null) {
+                    iterator.remove();
+                }
+            }
+
+            return attributes;
         }
     }
 
@@ -71,15 +77,19 @@ public class ItemAttributeRepositoryImpl extends CloudantClient<ItemAttribute> i
         super.cloudantDelete(attributeId.toString());
     }
 
-    @Override
-    protected CloudantViews getCloudantViews() {
-        CloudantViews views = new CloudantViews();
+    private CloudantViews cloudantViews = new CloudantViews() {{
+        Map<String, CloudantViews.CloudantView> viewMap = new HashMap<>();
+
         CloudantViews.CloudantView view = new CloudantViews.CloudantView();
         view.setMap("function(doc) {emit(doc.type, doc._id)}");
         view.setResultClass(String.class);
-        Map<String, CloudantViews.CloudantView> viewMap = new HashMap<>();
         viewMap.put("by_type", view);
-        views.setViews(viewMap);
-        return views;
+
+        setViews(viewMap);
+    }};
+
+    @Override
+    protected CloudantViews getCloudantViews() {
+        return cloudantViews;
     }
 }

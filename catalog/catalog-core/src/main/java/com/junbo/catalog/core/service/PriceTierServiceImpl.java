@@ -15,7 +15,7 @@ import com.junbo.catalog.spec.model.pricetier.PriceTier;
 import com.junbo.catalog.spec.model.pricetier.PriceTiersGetOptions;
 import com.junbo.common.error.AppError;
 import com.junbo.common.id.PriceTierId;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -27,8 +27,12 @@ import java.util.List;
  * Price tier service implementation.
  */
 public class PriceTierServiceImpl implements PriceTierService {
-    @Autowired
     private PriceTierRepository priceTierRepo;
+
+    @Required
+    public void setPriceTierRepo(PriceTierRepository priceTierRepo) {
+        this.priceTierRepo = priceTierRepo;
+    }
 
     @Override
     public PriceTier getPriceTier(Long tierId) {
