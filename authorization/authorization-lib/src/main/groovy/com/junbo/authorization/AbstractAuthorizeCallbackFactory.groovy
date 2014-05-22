@@ -31,6 +31,10 @@ abstract class AbstractAuthorizeCallbackFactory<T> implements AuthorizeCallbackF
 
     private Ehcache groupIdByNameCache
 
+    private Ehcache roleCache
+
+    private Ehcache roleAssignmentCache
+
     RoleResource getRoleResource() {
         return roleResource
     }
@@ -83,6 +87,24 @@ abstract class AbstractAuthorizeCallbackFactory<T> implements AuthorizeCallbackF
     @Required
     void setGroupIdByNameCache(Ehcache groupIdByNameCache) {
         this.groupIdByNameCache = groupIdByNameCache
+    }
+
+    Ehcache getRoleCache() {
+        return roleCache
+    }
+
+    @Required
+    void setRoleCache(Ehcache roleCache) {
+        this.roleCache = roleCache
+    }
+
+    Ehcache getRoleAssignmentCache() {
+        return roleAssignmentCache
+    }
+
+    @Required
+    void setRoleAssignmentCache(Ehcache roleAssignmentCache) {
+        this.roleAssignmentCache = roleAssignmentCache
     }
 
     abstract AuthorizeCallback<T> create(T entity)

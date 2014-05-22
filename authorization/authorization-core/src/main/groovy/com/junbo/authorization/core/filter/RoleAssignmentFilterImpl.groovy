@@ -39,6 +39,10 @@ class RoleAssignmentFilterImpl implements RoleAssignmentFilter {
 
     @Override
     RoleAssignment filterForGet(RoleAssignment roleAssignment) {
+        if (roleAssignment == null) {
+            return null
+        }
+
         if (!AuthorizeContext.hasRights(ADMIN_RIGHT)) {
             roleAssignment.adminInfo = null
         }
