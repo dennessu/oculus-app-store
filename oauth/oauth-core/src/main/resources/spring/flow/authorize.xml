@@ -381,7 +381,7 @@
         <property name="pageUrl" value="${oauth.core.portal.verifyUri}"/>
     </bean>
 
-    <bean id="redirectToPaymentMethod" class="com.junbo.oauth.core.view.RedirectToPage">
+    <bean id="redirectToPaymentMethod" class="com.junbo.oauth.core.view.RedirectToPaymentMethodView">
         <property name="pageUrl" value="${oauth.core.portal.paymentMethodUri}"/>
     </bean>
 
