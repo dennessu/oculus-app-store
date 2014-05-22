@@ -92,7 +92,7 @@
         <property name="userResource" ref="userResource"/>
         <property name="userPersonalInfoResource" ref="userPersonalInfoResource"/>
         <property name="loginStateRepository" ref="loginStateRepository"/>
-        <property name="redirectUri" value="${oauth.core.portal.emailVerifyRedirectUri}"/>
+        <property name="redirectUri" value="${oauth.core.portal.emailVerifiedUri}"/>
     </bean>
 
     <bean id="defaultEmailVerifyEndpointClientFactory" class="com.junbo.oauth.spec.endpoint.proxy.EmailVerifyEndpointClientProxyFactory"/>

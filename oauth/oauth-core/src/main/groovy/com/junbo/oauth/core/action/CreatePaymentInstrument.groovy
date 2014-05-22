@@ -72,7 +72,7 @@ class CreatePaymentInstrument implements Action {
         if (throwable instanceof AppErrorException) {
             contextWrapper.errors.add(((AppErrorException) throwable).error.error())
         } else {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingIdentity().error())
+            contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingPayment().error())
         }
     }
 }
