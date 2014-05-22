@@ -100,7 +100,7 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
     public void testSearchEntitlements() {
         EntitlementContext.current().setNow(new Date(114, 1, 10));
         Long userId = idGenerator.nextId();
-        for (int i = 0; i < 48; i++) {
+        for (int i = 0; i < 5; i++) {
             Entitlement entitlementEntity = buildAnEntitlement();
             entitlementEntity.setUserId(userId);
             entitlementEntity.setExpirationTime(new Date(114, 2, 20));
@@ -113,8 +113,11 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
         searchParam.setUserId(new UserId(userId));
         searchParam.setIsActive(true);
         List<Entitlement> entitlements = entitlementService.searchEntitlement(searchParam, new PageMetadata()).getItems();
-
         Assert.assertEquals(entitlements.size(), 0);
+
+        searchParam.setIsActive(false);
+        entitlements = entitlementService.searchEntitlement(searchParam, new PageMetadata()).getItems();
+        Assert.assertEquals(entitlements.size(), 5);
     }
 
     @Test

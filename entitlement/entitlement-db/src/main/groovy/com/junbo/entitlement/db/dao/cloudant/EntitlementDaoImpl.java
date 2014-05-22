@@ -13,7 +13,6 @@ import com.junbo.common.id.ItemId;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
 import com.junbo.entitlement.common.def.EntitlementConsts;
-import com.junbo.entitlement.common.lib.CommonUtils;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.db.dao.EntitlementDao;
 import com.junbo.entitlement.db.entity.EntitlementEntity;
@@ -48,9 +47,9 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
     @Override
     public EntitlementEntity insert(EntitlementEntity entitlement) {
         entitlement.setpId(generateId(entitlement.getShardMasterId()));
-        entitlement.setUpdatedBy(123L); //TODO
-        entitlement.setUpdatedTime(new Date()); //TODO
         entitlement.setIsDeleted(false);
+        entitlement.setUpdatedBy(123L);
+        entitlement.setUpdatedTime(new Date());
         return super.cloudantPost(entitlement);
     }
 
@@ -97,20 +96,20 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
             sb.append(" AND isBanned:" + entitlementSearchParam.getIsBanned());
         }
         if (!StringUtils.isEmpty(entitlementSearchParam.getType())) {
-            sb.append("AND type:" + entitlementSearchParam.getType().toUpperCase());
+            sb.append(" AND type:" + entitlementSearchParam.getType().toUpperCase());
         }
 
-        String now = CommonUtils.dateToLongString(EntitlementContext.current().getNow());
+        Long now = EntitlementContext.current().getNow().getTime();
         if (Boolean.FALSE.equals(entitlementSearchParam.getIsActive())) {
-            sb.append(" AND ( grantTime:{'" + now + "' TO " + EntitlementConsts.MAX_DATE + "}" +
-                    " OR expirationTime:{'" + EntitlementConsts.MIN_DATE + "' TO " + now + "}" +
+            sb.append(" AND ( grantTime:{" + now + " TO " + EntitlementConsts.MAX_DATE + "}" +
+                    " OR expirationTime:{" + EntitlementConsts.MIN_DATE + " TO " + now + "}" +
                     " OR useCount:0" +
                     " OR isBanned:true )");
         } else if (Boolean.TRUE.equals(entitlementSearchParam.getIsActive())) {
             sb.append(
-                    " AND useCount:[{1 TO " + EntitlementConsts.UNCONSUMABLE_USECOUNT + "}" +
-                            " AND grantTime:{'" + EntitlementConsts.MIN_DATE + "' TO " + now + "}" +
-                            " AND expirationTime:{'" + now + "' TO " + EntitlementConsts.MAX_DATE + "}" +
+                    " AND useCount:{1 TO " + EntitlementConsts.UNCONSUMABLE_USECOUNT + "}" +
+                            " AND grantTime:{" + EntitlementConsts.MIN_DATE + " TO " + now + "}" +
+                            " AND expirationTime:{" + now + " TO " + EntitlementConsts.MAX_DATE + "}" +
                             " AND isBanned:false");
         }
 
@@ -130,44 +129,44 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
 
         Boolean isStartGrantNull = StringUtils.isEmpty(entitlementSearchParam.getStartGrantTime());
         Boolean isEndGrantNull = StringUtils.isEmpty(entitlementSearchParam.getEndGrantTime());
-        String endGrant = null;
+        Long endGrant = null;
         if (!isEndGrantNull) {
-            endGrant = CommonUtils.dateToLongString(EntitlementConsts.DATE_FORMAT.parse(entitlementSearchParam.getEndGrantTime()));
+            endGrant = parse(entitlementSearchParam.getEndGrantTime());
         }
         if (isStartGrantNull) {
             if (!isEndGrantNull) {
-                sb.append(" AND grantTime:{'" + EntitlementConsts.MIN_DATE + "' TO " + endGrant + "}");
+                sb.append(" AND grantTime:{" + EntitlementConsts.MIN_DATE + " TO " + endGrant + "}");
             }
         } else {
-            String startGrant = CommonUtils.dateToLongString(EntitlementConsts.DATE_FORMAT.parse(entitlementSearchParam.getStartGrantTime()));
+            Long startGrant = parse(entitlementSearchParam.getStartGrantTime());
             if (isEndGrantNull) {
-                sb.append(" AND grantTime:{'" + startGrant + "' TO " + EntitlementConsts.MAX_DATE + "}");
+                sb.append(" AND grantTime:{" + startGrant + " TO " + EntitlementConsts.MAX_DATE + "}");
             } else {
-                sb.append(" AND grantTime:{'" + startGrant + "' TO " + endGrant + "}");
+                sb.append(" AND grantTime:{" + startGrant + " TO " + endGrant + "}");
             }
         }
 
         Boolean isStartExpirationNull = StringUtils.isEmpty(entitlementSearchParam.getStartExpirationTime());
         Boolean isEndExpirationNull = StringUtils.isEmpty(entitlementSearchParam.getEndExpirationTime());
-        String endExpiration = null;
+        Long endExpiration = null;
         if (!isEndExpirationNull) {
-            endExpiration = CommonUtils.dateToLongString(EntitlementConsts.DATE_FORMAT.parse(entitlementSearchParam.getEndExpirationTime()));
+            endExpiration = parse(entitlementSearchParam.getEndExpirationTime());
         }
         if (isStartExpirationNull) {
             if (!isEndExpirationNull) {
-                sb.append(" AND expirationTime:{'" + EntitlementConsts.MIN_DATE + "' TO " + endExpiration + "}");
+                sb.append(" AND expirationTime:{" + EntitlementConsts.MIN_DATE + " TO " + endExpiration + "}");
             }
         } else {
-            String startExpiration = CommonUtils.dateToLongString(EntitlementConsts.DATE_FORMAT.parse(entitlementSearchParam.getStartExpirationTime()));
+            Long startExpiration = parse(entitlementSearchParam.getStartExpirationTime());
             if (isEndExpirationNull) {
-                sb.append(" AND expirationTime:{'" + startExpiration + "' TO " + EntitlementConsts.MAX_DATE + "}");
+                sb.append(" AND expirationTime:{" + startExpiration + " TO " + EntitlementConsts.MAX_DATE + "}");
             } else {
-                sb.append(" AND expirationTime:{'" + startExpiration + "' TO " + endExpiration + "}");
+                sb.append(" AND expirationTime:{" + startExpiration + " TO " + endExpiration + "}");
             }
         }
 
         if (!StringUtils.isEmpty(entitlementSearchParam.getLastModifiedTime())) {
-            sb.append(" AND updatedTime:{'" + entitlementSearchParam.getLastModifiedTime() + "' TO " + EntitlementConsts.MAX_DATE + "}");
+            sb.append(" AND updatedTime:{" + parse(entitlementSearchParam.getLastModifiedTime()) + " TO " + EntitlementConsts.MAX_DATE + "}");
         }
 
         return sb.toString();
@@ -212,6 +211,7 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
                 "index(\'type\', doc.type);" +
                 "index(\'isBanned\', doc.isBanned);" +
                 "index(\'itemId\', doc.itemId);" +
+                "index(\'useCount\', doc.useCount);" +
                 "index(\'grantTime\', doc.grantTime);" +
                 "index(\'expirationTime\', doc.expirationTime);" +
                 "index(\'updatedTime\', doc.updatedTime);}");
@@ -222,8 +222,8 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
         setIndexes(indexMap);
     }};
 
-    private String format(Date date) {
-        return EntitlementConsts.DATE_FORMAT.format(date);
+    private Long parse(String date) throws ParseException {
+        return EntitlementConsts.DATE_FORMAT.parse(date).getTime();
     }
 
     private String longToString(Long value) {

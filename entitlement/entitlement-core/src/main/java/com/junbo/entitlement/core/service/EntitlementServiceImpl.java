@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Set;
 import java.util.UUID;
@@ -115,6 +116,10 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             return;
         }
         Set<Long> itemIds = itemFacade.getItemIdsByHostItemId(entitlementSearchParam.getHostItemId().getValue());
+        if (CollectionUtils.isEmpty(itemIds)) {
+            throw AppErrors.INSTANCE.fieldNotCorrect("hostItemId",
+                    "there is no item with hostItemId [" + entitlementSearchParam.getHostItemId() + "]").exception();
+        }
         for (Long itemId : itemIds) {
             entitlementSearchParam.getItemIds().add(new ItemId(itemId));
         }
