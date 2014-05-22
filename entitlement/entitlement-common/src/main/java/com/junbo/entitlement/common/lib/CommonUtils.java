@@ -11,7 +11,6 @@ import com.junbo.entitlement.common.def.Function;
 import org.springframework.util.StringUtils;
 
 import javax.ws.rs.core.UriBuilder;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -51,9 +50,5 @@ public class CommonUtils {
             result.add(function.apply(t));
         }
         return result;
-    }
-
-    public static String dateToLongString(Date date){
-        return String.format("%015d", date.getTime());
     }
 }
