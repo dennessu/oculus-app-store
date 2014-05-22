@@ -6,11 +6,11 @@
 package com.junbo.test.common.apihelper.email.impl;
 
 import com.junbo.test.common.apihelper.email.EmailService;
+import com.junbo.test.common.libs.ConfigPropertiesHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.common.libs.LogHelper;
-import com.junbo.test.common.libs.RestUrl;
 import com.junbo.email.spec.model.Email;
 
 /**
@@ -20,7 +20,7 @@ import com.junbo.email.spec.model.Email;
  */
 public class EmailServiceImpl extends HttpClientBase implements EmailService {
 
-    private static String emailUrl = RestUrl.getRestUrl(RestUrl.ComponentName.COMMERCE) + "emails";
+    private static String emailUrl = ConfigPropertiesHelper.instance().getProperty("defaultCommerceEndpointV1") + "/emails";
 
     private LogHelper logger = new LogHelper(EmailServiceImpl.class);
 

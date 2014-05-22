@@ -36,7 +36,7 @@ import java.util.List;
  */
 public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRevisionService {
 
-    private final String catalogServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.CATALOG) + "offer-revisions";
+    private final String catalogServerURL = ConfigPropertiesHelper.instance().getProperty("defaultCatalogEndpointV1") + "/offer-revisions";
     private final String defaultStoredValueItemRevisionFileName = "defaultStoredValueItemRevision";
     private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";

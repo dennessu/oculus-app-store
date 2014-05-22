@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class UserServiceImpl extends HttpClientBase implements UserService {
 
-    private final String identityServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.IDENTITY) + "users";
+    private final String identityServerURL = ConfigPropertiesHelper.instance().getProperty("defaultIdentityEndPointV1") + "/users";
     private static UserService instance;
 
     public static synchronized UserService instance() {
@@ -47,7 +47,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         User userForPost = new User();
         userForPost.setIsAnonymous(false);
         userForPost.setStatus("ACTIVE");
-        userForPost.setUsername("testUser_" + RandomFactory.getRandomStringOfAlphabet(10));
+        userForPost.setUsername(RandomFactory.getRandomStringOfAlphabet(10));
 
         String responseBody = restApiCall(HTTPMethod.POST, identityServerURL, userForPost, 201);
         User userGet = new JsonMessageTranscoder().decode(new TypeReference<User>() {},
@@ -116,7 +116,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     }
 
     private UserPersonalInfo postUserPersonalInfo(UserPersonalInfo userPersonalInfo, int expectedResponseCode) throws Exception {
-        String serverURL = RestUrl.getRestUrl(RestUrl.ComponentName.IDENTITY) + "personal-info";
+        String serverURL = ConfigPropertiesHelper.instance().getProperty("defaultIdentityEndPointV1") + "/personal-info";
         String responseBody = restApiCall(HTTPMethod.POST, serverURL, userPersonalInfo, expectedResponseCode);
         return new JsonMessageTranscoder().decode(new TypeReference<UserPersonalInfo>() {}, responseBody);
     }

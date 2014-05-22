@@ -6,6 +6,7 @@
 package com.junbo.test.catalog.impl;
 
 import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
+import com.junbo.test.common.libs.ConfigPropertiesHelper;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.catalog.enums.CatalogItemType;
@@ -17,7 +18,6 @@ import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.common.id.ItemRevisionId;
-import com.junbo.test.common.libs.RestUrl;
 import com.junbo.common.model.Results;
 
 import java.util.HashMap;
@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevisionService {
 
-    private final String catalogServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.CATALOG) + "item-revisions";
+    private final String catalogServerURL = ConfigPropertiesHelper.instance().getProperty("defaultCatalogEndpointV1") + "/item-revisions";
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
     private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
     private final String defaultStoredValueItemRevisionFileName = "defaultStoredValueItemRevision";

@@ -56,10 +56,10 @@ public final class ConfigPropertiesHelper {
         String config = System.getProperty("test.config");
         if (config != null && config.length() > 0 && !config.startsWith("${")) {
             logger.logInfo("test config: " + config);
-            loadTestProperties(String.format("testconfig/%s.config", config));
+            loadTestProperties(String.format("%s.properties", config));
         }
         else {
-            loadTestProperties("testconfig/default.config");
+            loadTestProperties("testConfig.properties");
         }
     }
 
