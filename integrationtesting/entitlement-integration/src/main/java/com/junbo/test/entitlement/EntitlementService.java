@@ -27,7 +27,7 @@ import static org.testng.AssertJUnit.assertEquals;
  */
 public class EntitlementService {
 
-    private static String commerceUrl = ConfigHelper.getSetting("defaultCommerceURI");
+    private static String commerceUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1");
     private static LogHelper logger = new LogHelper(Entitlement.class);
     private static AsyncHttpClient asyncClient = new AsyncHttpClient(new AsyncHttpClientConfig.Builder().build());
 
@@ -41,7 +41,7 @@ public class EntitlementService {
     public static Entitlement grantEntitlement(Entitlement entitlement, int expectedResponseCode) throws Exception {
         String requestBody = new JsonMessageTranscoder().encode(entitlement);
 
-        String entitlementEndpointUrl = commerceUrl + "entitlements/";
+        String entitlementEndpointUrl = commerceUrl + "/entitlements/";
 
         Request req = new RequestBuilder("POST")
                 .setUrl(entitlementEndpointUrl)
@@ -68,7 +68,7 @@ public class EntitlementService {
     }
 
     public static Entitlement getEntitlement(String entitlementId, int expectedResponseCode) throws Exception {
-        String entitlementGetURI = commerceUrl + "entitlements/" + entitlementId;
+        String entitlementGetURI = commerceUrl + "/entitlements/" + entitlementId;
         Request req = new RequestBuilder("GET")
                 .setUrl(entitlementGetURI)
                 .addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue)
@@ -96,7 +96,7 @@ public class EntitlementService {
 
         String requestBody = new JsonMessageTranscoder().encode(entitlement);
 
-        String entitlementEndpointUrl = commerceUrl + "entitlements/" + entitlementId;
+        String entitlementEndpointUrl = commerceUrl + "/entitlements/" + entitlementId;
 
         Request req = new RequestBuilder("PUT")
                 .setUrl(entitlementEndpointUrl)
@@ -123,7 +123,7 @@ public class EntitlementService {
 
     public static void deleteEntitlement(String entitlementId, int expectedResponseCode)
             throws Exception {
-        String entitlementGetURI = commerceUrl + "entitlements/" + entitlementId;
+        String entitlementGetURI = commerceUrl + "/entitlements/" + entitlementId;
         Request req = new RequestBuilder("DELETE")
                 .setUrl(entitlementGetURI)
                 .addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue)
@@ -140,7 +140,7 @@ public class EntitlementService {
     }
 
     public static Results<Entitlement> getEntitlements(String userId, int expectedResponseCode) throws Exception {
-        String entitlementEndpointUrl = commerceUrl + "entitlements/" + "?userId=" + userId;
+        String entitlementEndpointUrl = commerceUrl + "/entitlements/" + "?userId=" + userId;
         Request req = new RequestBuilder("GET")
                 .setUrl(entitlementEndpointUrl)
                 .addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue)
