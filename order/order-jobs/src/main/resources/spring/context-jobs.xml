@@ -47,7 +47,7 @@
     <bean id="orderJob" class="com.junbo.order.jobs.OrderJob" >
         <property name="threadPoolTaskExecutor" ref="orderJobAsyncTaskExecutor"/>
         <property name="orderProcessor" ref="orderChargeProcessor"/>
-        <property name="orderRepository" ref="orderRepository"/>
+        <property name="orderRepository" ref="orderRepositoryFacade"/>
         <property name="statusToProcess">
             <list>
                 <value>PENDING_CHARGE</value>
