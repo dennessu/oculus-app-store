@@ -133,6 +133,9 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     @Qualifier('piTypeRepository')
     private PITypeRepository piTypeRepository
 
+    @Autowired
+    @Qualifier('organizationRepository')
+    private OrganizationRepository organizationRepository
 
     @Test
     public void testCountryRepository() {
@@ -626,8 +629,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userPersonalInfo.setLastValidateTime(new Date())
         userPersonalInfo.setUserId(userId)
         Email email = new Email()
-        email.value = UUID.randomUUID().toString()
-        email.value = false
+        email.info = UUID.randomUUID().toString()
         ObjectMapper objectMapper = new ObjectMapper()
         userPersonalInfo.setValue(objectMapper.valueToTree(email))
 
@@ -635,5 +637,21 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         newUserPersonalInfo = userPersonalInfoRepository.get(newUserPersonalInfo.id).get()
 
         assert newUserPersonalInfo.type == userPersonalInfo.type
+    }
+
+    @Test
+    public void testOrganizationRepository() {
+        UserId ownerId = new UserId(idGenerator.nextId())
+        Organization organization = new Organization()
+        organization.ownerId = ownerId
+        Organization newOrganization = organizationRepository.create(organization).get()
+
+        newOrganization = organizationRepository.get(newOrganization.id).get()
+
+        assert organization.id == newOrganization.id
+
+        List<Organization> organizationList = organizationRepository.searchByOwner(ownerId, Integer.MAX_VALUE, 0).get()
+
+        assert organizationList.size() != 0
     }
 }

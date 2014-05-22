@@ -202,6 +202,9 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 404, code = "2000056", description = "User {0} is not in valid status.", field = "{0}")
     AppError userInInvalidStatus(String username);
 
+    @ErrorDef(httpStatusCode = 404, code = "2000057", description = "Organization {0} is not found.", field = "{0}")
+    AppError organizationNotFound(OrganizationId organizationId);
+
     @ErrorDef(httpStatusCode = 403, code = "10001", description = "Invalid Access")
     AppError invalidAccess();
 

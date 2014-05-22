@@ -152,4 +152,9 @@
         <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserPersonalInfoIdToUserIdLinkRepository" />
         <property name="cloudantRepositoryImpl" ref="cloudantUserPersonalInfoIdToUserIdLinkRepository" />
     </bean>
+
+    <bean id="organizationRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.OrganizationRepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantOrganizationRepository" />
+    </bean>
 </beans>
