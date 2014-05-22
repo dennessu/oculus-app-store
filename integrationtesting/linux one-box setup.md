@@ -73,17 +73,57 @@
    3). start activemq: ./apache-activemq-5.9.1-bin/activemq start
    4). check status: http://<ip>:8161/ (usr&pwd: admin/admin)
 
-10. copy bundles and start service
+10. install encrypt cert
+
+    Check $JAVA_HOME and $JAVA_HOME/lib/security/encryptKeyStore.jks exists, if not, please do the following steps:
+
+    1): run command: update-alternatives --display java
+
+        It will display it as: Current "BEST" version is /usr/lib/jvm/jre-1.7.0-openjdk.x86_64/bin/java
+
+        Your java home should be in "/usr/lib/jvm/jre-1.7.0-openjdk.x86_64"
+
+    2): Set up JAVA_HOME = /usr/lib/jvm/jre-1.7.0-openjdk.x86_64
+        Open up the profile in your terminal using vi:
+            sudo vi /etc/profile
+                Set the JAVA_HOME environment variable using the following syntax:
+            export JAVA_HOME=/usr/lib/jvm/jdk1.6.0_32
+                Don’t forget to set the PATH variable too:
+            export PATH=$PATH:/usr/lib/jvm/jdk1.6.0_32/bin
+                You can now logout and login back to the session for the settings you’ve made to take effect immediately, or just type the following for an immediate effect:
+            source /etc/profile
+
+            or:
+            . /etc/profile
+
+    3): import cert:
+
+        openssl genrsa -out ca.key 2048
+
+        openssl req -new -key ca.key -out ca.csr
+
+        // generate self signed key with 10 years valid time
+        openssl x509 -req -days 3650 -in ca.csr -signkey ca.key -out ca.crt
+
+        openssl pkcs12 -export -name test -in ca.crt -inkey ca.key -out keystore.p12
+
+        keytool -importkeystore -destkeystore $JAVA_HOME/lib/security/encryptKeyStore.jks -srckeystore keystore.p12 -srcstoretype pkcs12 -alias test
+
+        Please remember the keyStore password in 1-box should be: changeit
+
+        The test cert's password should be: 123456
+
+11. copy bundles and start service
    1). in source branch /main/apphost
    2). gradle installApp
    3). /apphost/apphost-cli/build/install/apphost-cli to onebox
    4). killd old one and run ./startup.sh to start identity/catalog/commerce on 8080
 
-11. startup docs bundle
+12. startup docs bundle
    1). go to main/bootstrap/docs-bundle
    2). gradle installApp
    3). copy bootstrap/docs-bundle/build/install/docs-bundle to onebox
    4). kill old one and run ./startup.sh to start docs on 8079
    5). use http://oneboxip:8079/ to check docs
    
-12. populate catalog data(TBD)
+13. populate catalog data(TBD)
