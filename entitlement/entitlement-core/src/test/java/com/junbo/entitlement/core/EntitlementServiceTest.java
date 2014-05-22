@@ -10,7 +10,7 @@ import com.junbo.catalog.spec.model.item.EntitlementDef;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.common.error.AppErrorException;
 import com.junbo.common.id.UserId;
-import com.junbo.entitlement.common.cache.PermanentCache;
+import com.junbo.entitlement.common.cache.CommonCache;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
@@ -149,7 +149,7 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
         def.setConsumable(false);
         defs.add(def);
         item.setEntitlementDefs(defs);
-        PermanentCache.ITEM_REVISION.get(item.getItemId(), new Callable<Object>() {
+        CommonCache.ITEM_REVISION.get(item.getItemId(), new Callable<Object>() {
             @Override
             public Object call() throws Exception {
                 return item;

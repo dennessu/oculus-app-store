@@ -12,7 +12,7 @@ import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.entitlement.clientproxy.catalog.ItemFacade;
-import com.junbo.entitlement.common.cache.PermanentCache;
+import com.junbo.entitlement.common.cache.CommonCache;
 import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.spec.error.AppErrors;
@@ -192,7 +192,7 @@ public class BaseService {
     }
 
     protected void checkOauth(final Entitlement entitlement) {
-        ItemRevision item = (ItemRevision) PermanentCache.ITEM_REVISION.get(
+        ItemRevision item = (ItemRevision) CommonCache.ITEM_REVISION.get(
                 entitlement.getItemId(), new Callable<Object>() {
             @Override
             public Object call() throws Exception {
@@ -214,9 +214,7 @@ public class BaseService {
     }
 
     protected void checkItem(Long itemId) {
-        if (itemId == null) {
-            throw AppErrors.INSTANCE.missingField("item").exception();
-        }
+        validateNotNull(itemId, "item");
         ItemRevision item = getItem(itemId);
         if (item == null) {
             throw AppErrors.INSTANCE.fieldNotCorrect("item",
@@ -230,7 +228,7 @@ public class BaseService {
         if (itemId == null) {
             return null;
         }
-        return (ItemRevision) PermanentCache.ITEM_REVISION.get(
+        return (ItemRevision) CommonCache.ITEM_REVISION.get(
                 itemId, new Callable<Object>() {
             @Override
             public Object call() throws Exception {
