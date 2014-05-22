@@ -5,12 +5,14 @@
  */
 package com.junbo.fulfilment.clientproxy.impl;
 
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
-import com.junbo.catalog.spec.resource.*;
+import com.junbo.catalog.spec.resource.ItemResource;
+import com.junbo.catalog.spec.resource.ItemRevisionResource;
+import com.junbo.catalog.spec.resource.OfferResource;
+import com.junbo.catalog.spec.resource.OfferRevisionResource;
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.ItemRevisionId;
 import com.junbo.common.id.OfferRevisionId;

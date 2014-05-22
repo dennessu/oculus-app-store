@@ -7,7 +7,6 @@
 package com.junbo.catalog.core.service;
 
 import com.junbo.catalog.common.util.Utils;
-import com.junbo.catalog.core.EntitlementDefinitionService;
 import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.db.repo.ItemAttributeRepository;
 import com.junbo.catalog.db.repo.ItemRepository;
@@ -19,7 +18,6 @@ import com.junbo.catalog.spec.enums.ItemType;
 import com.junbo.catalog.spec.enums.Status;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.item.*;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.common.error.AppError;
@@ -33,13 +31,11 @@ import java.util.*;
 /**
  * Item service implementation.
  */
-public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevision> implements ItemService {
+public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevision> implements ItemService {
     @Autowired
     private ItemRepository itemRepo;
     @Autowired
     private ItemRevisionRepository itemRevisionRepo;
-    @Autowired
-    private EntitlementDefinitionService entitlementDefService;
     @Autowired
     private ItemAttributeRepository itemAttributeRepo;
     @Autowired
@@ -51,7 +47,6 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
 
         Long itemId = itemRepo.create(item);
         item.setItemId(itemId);
-        generateEntitlementDef(item);
         itemRepo.update(item);
 
         return itemRepo.get(itemId);
@@ -108,7 +103,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
     @Override
     public ItemRevision updateRevision(Long revisionId, ItemRevision revision) {
         ItemRevision oldRevision = itemRevisionRepo.get(revisionId);
-        if (oldRevision==null) {
+        if (oldRevision == null) {
             throw AppErrors.INSTANCE.notFound("item-revision", Utils.encodeId(revisionId)).exception();
         }
         if (Status.APPROVED.is(oldRevision.getStatus())) {
@@ -121,7 +116,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
 
     @Override
     public List<ItemRevision> getRevisions(ItemRevisionsGetOptions options) {
-        if (options.getTimestamp()!=null) {
+        if (options.getTimestamp() != null) {
             if (CollectionUtils.isEmpty(options.getItemIds())) {
                 throw AppErrors.INSTANCE.validation("itemId must be specified when timestamp is present.").exception();
             }
@@ -181,27 +176,6 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
         }
     }
 
-    private void generateEntitlementDef(Item item) {
-        if (ItemType.DIGITAL.is(item.getType())
-                || ItemType.SUBSCRIPTION.is(item.getType())
-                || ItemType.VIRTUAL.is(item.getType())) {
-            EntitlementDefinition entitlementDef = new EntitlementDefinition();
-            entitlementDef.setDeveloperId(item.getOwnerId());
-            entitlementDef.setItemId(item.getItemId());
-            if (ItemType.DIGITAL.is(item.getType())) {
-                entitlementDef.setType(EntitlementType.DOWNLOAD.name());
-            } else if (ItemType.SUBSCRIPTION.is(item.getType())) {
-                entitlementDef.setType(com.junbo.catalog.spec.model.entitlementdef.EntitlementType.SUBSCRIPTION.name());
-            } else if (ItemType.VIRTUAL.is(item.getType())) {
-                entitlementDef.setType(
-                        com.junbo.catalog.spec.model.entitlementdef.EntitlementType.ONLINE_ACCESS.name());
-            }
-            entitlementDef.setTag(Utils.encodeId(item.getItemId()));
-            Long entitlementDefId = entitlementDefService.createEntitlementDefinition(entitlementDef);
-            item.setEntitlementDefId(entitlementDefId);
-        }
-    }
-
     private void validateItemCreation(Item item) {
         checkRequestNotNull(item);
         List<AppError> errors = new ArrayList<>();
@@ -241,10 +215,10 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
     }
 
     private void validateItemCommon(Item item, List<AppError> errors) {
-        if (item.getOwnerId()==null) {
+        if (item.getOwnerId() == null) {
             errors.add(AppErrors.INSTANCE.missingField("developer"));
         }
-        if (item.getType()==null || !ItemType.contains(item.getType())) {
+        if (item.getType() == null || !ItemType.contains(item.getType())) {
             errors.add(AppErrors.INSTANCE.fieldNotCorrect("type", "Valid types: " + Arrays.asList(ItemType.values())));
         }
         if (item.getDefaultOffer() != null) {
@@ -301,7 +275,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
             errors.add(AppErrors.INSTANCE
                     .fieldNotMatch("rev", revision.getResourceAge(), oldRevision.getResourceAge()));
         }
-        if (revision.getStatus()==null || !Status.contains(revision.getStatus())) {
+        if (revision.getStatus() == null || !Status.contains(revision.getStatus())) {
             errors.add(AppErrors.INSTANCE.fieldNotCorrect("status", "Valid statuses: " + Status.ALL));
         }
 
@@ -346,7 +320,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
                 String locale = entry.getKey();
                 ItemRevisionLocaleProperties properties = entry.getValue();
                 // TODO: check locale is a valid locale
-                if (properties==null) {
+                if (properties == null) {
                     errors.add(AppErrors.INSTANCE.missingField("locales." + locale));
                 } else {
                     if (StringUtils.isEmpty(properties.getName())) {
