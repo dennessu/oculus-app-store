@@ -5,7 +5,6 @@
  */
 package com.junbo.test.common.apihelper.identity.impl;
 
-import com.junbo.test.common.apihelper.identity.LocaleService;
 import com.junbo.identity.spec.v1.model.UserPersonalInfoLink;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.identity.spec.v1.model.UserPersonalInfo;
@@ -14,7 +13,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.junbo.identity.spec.v1.model.Locale;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.common.model.Results;
@@ -33,7 +31,6 @@ import java.util.List;
 public class UserServiceImpl extends HttpClientBase implements UserService {
 
     private final String identityServerURL = RestUrl.getRestUrl(RestUrl.ComponentName.IDENTITY) + "users";
-    private final String defaultUser = "defaultUser";
     private static UserService instance;
 
     public static synchronized UserService instance() {
@@ -47,7 +44,10 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     }
 
     public String PostUser() throws Exception {
-        String userForPost = prepareUserEntity(defaultUser);
+        User userForPost = new User();
+        userForPost.setIsAnonymous(false);
+        userForPost.setStatus("ACTIVE");
+        userForPost.setUsername("testUser_" + RandomFactory.getRandomStringOfAlphabet(10));
 
         String responseBody = restApiCall(HTTPMethod.POST, identityServerURL, userForPost, 201);
         User userGet = new JsonMessageTranscoder().decode(new TypeReference<User>() {},
@@ -117,35 +117,8 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
 
     private UserPersonalInfo postUserPersonalInfo(UserPersonalInfo userPersonalInfo, int expectedResponseCode) throws Exception {
         String serverURL = RestUrl.getRestUrl(RestUrl.ComponentName.IDENTITY) + "personal-info";
-
         String responseBody = restApiCall(HTTPMethod.POST, serverURL, userPersonalInfo, expectedResponseCode);
-        UserPersonalInfo piGet = new JsonMessageTranscoder().decode(new TypeReference<UserPersonalInfo>() {},
-                responseBody);
-
-        return piGet;
-    }
-
-    private String prepareUserEntity(String fileName) throws Exception {
-
-        String strUser = readFileContent(String.format("testUsers/%s.json", fileName));
-
-        //Try to find if en_US locale exists;if not, post it
-        LocaleService localeService = LocaleServiceImpl.instance();
-        Results<Locale> locales = localeService.getLocales();
-        Boolean isExist = false;
-        for (Locale locale : locales.getItems()) {
-            if (locale.getLocaleCode().equalsIgnoreCase("en_US")){
-                isExist = true;
-            }
-        }
-
-        //Not found, post en_US default locale
-        if (!isExist) {
-            localeService.postDefaultLocale();
-        }
-
-        strUser = strUser.replace("RANDOMUSERNAME", RandomFactory.getRandomStringOfAlphabet(10));
-        return strUser;
+        return new JsonMessageTranscoder().decode(new TypeReference<UserPersonalInfo>() {}, responseBody);
     }
 
     public String PostUser(User user) throws Exception {
@@ -204,7 +177,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
 
     public List<String> GetUserByUserName(String userName, int expectedResponseCode) throws Exception {
 
-        HashMap<String, List<String>> paraMap = new HashMap();
+        HashMap<String, List<String>> paraMap = new HashMap<>();
         List<String> listUsername = new ArrayList<>();
         listUsername.add(userName);
 
