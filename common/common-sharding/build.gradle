@@ -27,5 +27,4 @@ dependencies {
     compile (libraries.btm)
 
     testCompile (libraries.spring_test)
-    testRuntime junboProject(':configuration-data')
 }

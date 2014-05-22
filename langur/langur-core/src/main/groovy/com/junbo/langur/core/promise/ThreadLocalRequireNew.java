@@ -5,12 +5,17 @@
  */
 package com.junbo.langur.core.promise;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.Field;
 
 /**
  * Create a new thread local context.
  */
 public class ThreadLocalRequireNew implements AutoCloseable {
+    private static final Logger logger = LoggerFactory.getLogger(Snapshot.class);
+
     private static final Field threadLocalsField;
     private static final Field inheritableThreadLocalsField;
 
@@ -44,6 +49,10 @@ public class ThreadLocalRequireNew implements AutoCloseable {
             throw new RuntimeException(e);
         }
 
+        if (logger.isDebugEnabled()) {
+            logger.debug("ThreadLocal RequireNew: Forced new threadlocal from tid {}, oldtls: {} : {}",
+                    Thread.currentThread().getId(), threadLocals, inheritableThreadLocals);
+        }
         // more things could be added. e.g. call stack, transaction context, etc.
     }
 
@@ -58,6 +67,10 @@ public class ThreadLocalRequireNew implements AutoCloseable {
             throw new RuntimeException(e);
         }
 
+        if (logger.isDebugEnabled()) {
+            logger.debug("ThreadLocal RequireNew: Resumed old threadlocal from tid {}, oldtls: {} : {}",
+                    Thread.currentThread().getId(), threadLocals, inheritableThreadLocals);
+        }
         // more things could be added. e.g. call stack, transaction context, etc.
     }
 }
