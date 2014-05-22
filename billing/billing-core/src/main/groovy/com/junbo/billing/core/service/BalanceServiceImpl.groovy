@@ -154,7 +154,7 @@ class BalanceServiceImpl implements BalanceService {
                         updateAndCommitBalance(savedBalance, EventActionType.CHARGE)
                         throw throwable
                     }.then { Balance returnedBalance ->
-                        return Promise.pure(balanceRepository.updateBalance(returnedBalance, EventActionType.CHARGE))
+                        return Promise.pure(updateAndCommitBalance(returnedBalance, EventActionType.CHARGE))
                     }
                 }
             }
