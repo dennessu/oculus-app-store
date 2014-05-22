@@ -28,7 +28,7 @@ public class UserCredentialVerifyAttempt extends PropertyAssignedAwareResourceMe
     @JsonProperty("user")
     private UserId userId;
 
-    @ApiModelProperty(position = 3, required = false, value = "User name.")
+    @ApiModelProperty(position = 3, required = false, value = "User name or email address.")
     private String username;
 
     @ApiModelProperty(position = 4, required = true,

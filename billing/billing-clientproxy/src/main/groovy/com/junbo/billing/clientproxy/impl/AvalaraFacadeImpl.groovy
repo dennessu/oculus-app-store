@@ -90,7 +90,7 @@ class AvalaraFacadeImpl implements TaxFacade {
             address.street2 = response.address.line2
             address.street3 = response.address.line3
             address.city = response.address.city
-            address.subCountryCode = response.address.region
+            address.subCountry = response.address.region
             address.postalCode = response.address.postalCode
             address.countryId = new CountryId(response.address.country)
         } else {
@@ -280,7 +280,7 @@ class AvalaraFacadeImpl implements TaxFacade {
         avalaraAddress.line2 = address.street2
         avalaraAddress.line3 = address.street3
         avalaraAddress.city = address.city
-        avalaraAddress.region = address.subCountryCode
+        avalaraAddress.region = address.subCountry
         avalaraAddress.postalCode = address.postalCode
         avalaraAddress.country = address.countryId.value
 

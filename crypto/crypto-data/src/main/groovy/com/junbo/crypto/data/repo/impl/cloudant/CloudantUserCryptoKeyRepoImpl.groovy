@@ -71,12 +71,12 @@ class CloudantUserCryptoKeyRepoImpl extends CloudantClient<UserCryptoKey> implem
             views: [
                     'by_user_id': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.userId.value.toString(), doc._id)' +
+                                    '  emit(doc.userId, doc._id)' +
                                     '}',
                             resultClass: String),
                     'by_user_id_key_version': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.userId.value.toString() + \':\' + doc.keyVersion.toString(), doc._id)' +
+                                    '  emit(doc.userId + \':\' + doc.keyVersion.toString(), doc._id)' +
                                     '}',
                             resultClass: String)
             ]

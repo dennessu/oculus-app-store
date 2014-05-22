@@ -18,5 +18,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface RouteBy {
     String[] value();
-    boolean fallbackToAnyLocal() default false;
+    boolean fallbackToAnyLocal() default true;
 }

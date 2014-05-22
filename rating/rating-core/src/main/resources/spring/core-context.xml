@@ -12,7 +12,8 @@
     <bean id="orderRatingService" class="com.junbo.rating.core.service.OrderRatingService"/>
 
     <!--Handlers-->
-    <bean id="scopeCriterionHandler" class="com.junbo.rating.core.handler.ScopeCriterionHandler"/>
+    <bean id="offerScopeCriterionHandler" class="com.junbo.rating.core.handler.OfferScopeCriterionHandler"/>
+    <bean id="categoryScopeCriterionHandler" class="com.junbo.rating.core.handler.CategoryScopeCriterionHandler"/>
     <bean id="entitlementCriterionHandler" class="com.junbo.rating.core.handler.EntitlementCriterionHandler"/>
     <bean id="couponCriterionHandler" class="com.junbo.rating.core.handler.CouponCriterionHandler"/>
     <bean id="orderCriterionHandler" class="com.junbo.rating.core.handler.OrderCriterionHandler"/>
@@ -22,10 +23,10 @@
     <bean id="handlerRegister" class="com.junbo.rating.core.handler.HandlerRegister">
         <property name="register">
             <util:map id="handlerRegisterMap">
-                <entry key="INCLUDE_OFFER" value-ref="scopeCriterionHandler"/>
-                <entry key="EXCLUDE_OFFER" value-ref="scopeCriterionHandler"/>
-                <entry key="INCLUDE_CATEGORY" value-ref="scopeCriterionHandler"/>
-                <entry key="EXCLUDE_CATEGORY" value-ref="scopeCriterionHandler"/>
+                <entry key="INCLUDE_OFFER" value-ref="offerScopeCriterionHandler"/>
+                <entry key="EXCLUDE_OFFER" value-ref="offerScopeCriterionHandler"/>
+                <entry key="INCLUDE_CATEGORY" value-ref="categoryScopeCriterionHandler"/>
+                <entry key="EXCLUDE_CATEGORY" value-ref="categoryScopeCriterionHandler"/>
                 <entry key="INCLUDE_ENTITLEMENT" value-ref="entitlementCriterionHandler"/>
                 <entry key="EXCLUDE_ENTITLEMENT" value-ref="entitlementCriterionHandler"/>
                 <entry key="HAS_COUPON" value-ref="couponCriterionHandler"/>

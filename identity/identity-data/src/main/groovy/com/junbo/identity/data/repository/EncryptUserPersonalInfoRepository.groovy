@@ -15,7 +15,7 @@ import groovy.transform.CompileStatic
 interface EncryptUserPersonalInfoRepository extends BaseRepository<EncryptUserPersonalInfo, EncryptUserPersonalInfoId> {
 
     @ReadMethod
-    Promise<List<EncryptUserPersonalInfo>> searchByUserPersonalInfoId(UserPersonalInfoId userPersonalInfoId)
+    Promise<EncryptUserPersonalInfo> searchByUserPersonalInfoId(UserPersonalInfoId userPersonalInfoId)
 
     @ReadMethod
     Promise<List<EncryptUserPersonalInfo>> searchByHashValue(String hashSearchInfo)

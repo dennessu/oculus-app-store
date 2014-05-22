@@ -34,9 +34,8 @@ public class LocaleServiceImpl extends HttpClientBase implements LocaleService {
     }
 
     public Locale postDefaultLocale() throws Exception {
-
         Locale locale = new Locale();
-        locale.setLocaleCode("en_US");
+        locale.setLocaleCode("en-US");
         locale.setLocaleName("US");
         locale.setLongName("en_US");
         locale.setShortName("US");
@@ -50,10 +49,7 @@ public class LocaleServiceImpl extends HttpClientBase implements LocaleService {
 
     public Locale postLocale(Locale locale, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.POST, localeURL, locale, expectedResponseCode);
-        Locale localeGet = new JsonMessageTranscoder().decode(new TypeReference<Locale>() {},
-                responseBody);
-
-        return localeGet;
+        return new JsonMessageTranscoder().decode(new TypeReference<Locale>() {}, responseBody);
     }
 
     public Results<Locale> getLocales() throws Exception {
@@ -62,10 +58,7 @@ public class LocaleServiceImpl extends HttpClientBase implements LocaleService {
 
     public Results<Locale> getLocales(int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.GET, localeURL, expectedResponseCode);
-        Results<Locale> localesGet = new JsonMessageTranscoder().decode(new TypeReference<Results<Locale>>() {},
-                responseBody);
-
-        return localesGet;
+        return new JsonMessageTranscoder().decode(new TypeReference<Results<Locale>>() {}, responseBody);
     }
 
     public Locale getLocale(String localeId) throws Exception {
@@ -75,10 +68,7 @@ public class LocaleServiceImpl extends HttpClientBase implements LocaleService {
     public Locale getLocale(String localeId, int expectedResponseCode) throws Exception {
         String url = localeURL + "/" + localeId;
         String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
-        Locale localeGet = new JsonMessageTranscoder().decode(new TypeReference<Locale>() {},
-                responseBody);
-
-        return localeGet;
+        return new JsonMessageTranscoder().decode(new TypeReference<Locale>() {}, responseBody);
     }
 
     public Locale updateLocale(Locale locale) throws Exception {
@@ -87,12 +77,8 @@ public class LocaleServiceImpl extends HttpClientBase implements LocaleService {
 
     public Locale updateLocale(Locale locale, int expectedResponseCode) throws Exception {
         String putUrl = localeURL + "/" + locale.getId().toString();
-
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, locale, expectedResponseCode);
-        Locale localePut = new JsonMessageTranscoder().decode(new TypeReference<Locale>() {},
-                responseBody);
-
-        return localePut;
+        return new JsonMessageTranscoder().decode(new TypeReference<Locale>() {}, responseBody);
     }
 
     public void deleteLocale(String localeId) throws Exception {

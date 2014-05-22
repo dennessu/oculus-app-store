@@ -41,18 +41,18 @@ class SMSValidatorImpl implements PiiValidator {
         UserSMS userSMS = (UserSMS)JsonHelper.jsonNodeToObj(value, UserSMS)
         UserSMS oldUserSMS = (UserSMS)JsonHelper.jsonNodeToObj(oldValue, UserSMS)
         if (userSMS != oldUserSMS) {
-            checkUserSMS(userSMS)
+            throw AppErrors.INSTANCE.fieldInvalidException('value', 'value can\'t be updated.').exception()
         }
         return Promise.pure(null)
     }
 
     private void checkUserSMS(UserSMS userSMS) {
-        if (userSMS.textMessage != null) {
-            if (userSMS.textMessage.length() > maxTextMessageLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('textMessage', maxTextMessageLength).exception()
+        if (userSMS.info != null) {
+            if (userSMS.info.length() > maxTextMessageLength) {
+                throw AppErrors.INSTANCE.fieldTooLong('value.info', maxTextMessageLength).exception()
             }
-            if (userSMS.textMessage.length() < minTextMessageLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('textMessage', minTextMessageLength).exception()
+            if (userSMS.info.length() < minTextMessageLength) {
+                throw AppErrors.INSTANCE.fieldTooShort('value.info', minTextMessageLength).exception()
             }
         }
     }

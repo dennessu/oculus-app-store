@@ -7,7 +7,7 @@
 package com.junbo.rating.core.handler;
 
 import com.google.common.collect.Sets;
-import com.junbo.catalog.spec.model.promotion.EntitlementCriterion;
+import com.junbo.catalog.spec.model.promotion.criterion.EntitlementCriterion;
 import com.junbo.rating.clientproxy.EntitlementGateway;
 import com.junbo.rating.core.context.RatingContext;
 import org.springframework.beans.factory.annotation.Autowired;

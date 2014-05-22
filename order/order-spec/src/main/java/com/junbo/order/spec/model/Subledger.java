@@ -12,6 +12,8 @@ import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.SubledgerId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.util.Identifiable;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -20,12 +22,12 @@ import java.util.Date;
  * Created by chriszhu on 2/10/14.
  */
 @JsonPropertyOrder(value = {
-        "subledgerId", "seller", "offer", "country", "currency",
+        "id", "seller", "offer", "country", "currency",
         "payoutStatus", "totalAmount", "startTime", "endTime", "resourceAge"
 })
-public class Subledger extends BaseOrderResource {
+public class Subledger extends ResourceMeta implements Identifiable<SubledgerId> {
     @JsonProperty("self")
-    private SubledgerId subledgerId;
+    private SubledgerId id;
     private UserId seller;
     private OfferId offer;
     private String payoutStatus;
@@ -35,12 +37,12 @@ public class Subledger extends BaseOrderResource {
     private CurrencyId currency;
     private BigDecimal totalAmount;
 
-    public SubledgerId getSubledgerId() {
-        return subledgerId;
+    public SubledgerId getId() {
+        return id;
     }
 
-    public void setSubledgerId(SubledgerId subledgerId) {
-        this.subledgerId = subledgerId;
+    public void setId(SubledgerId id) {
+        this.id = id;
     }
 
     public UserId getSeller() {

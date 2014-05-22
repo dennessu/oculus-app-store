@@ -21,7 +21,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * Created by liangfu on 4/3/14.
  */
-@Api(value = "userPersonalInfo")
+@Api(value = "personal-info")
 @RestResource
 @Path("/personal-info")
 @Produces({MediaType.APPLICATION_JSON})

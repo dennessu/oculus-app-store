@@ -29,7 +29,6 @@ import java.util.regex.Pattern
  */
 @CompileStatic
 class UserTeleAttemptValidatorImpl implements UserTeleAttemptValidator {
-
     private UserRepository userRepository
     private UserTeleRepository userTeleRepository
     private UserTeleAttemptRepository userTeleAttemptRepository
@@ -147,6 +146,7 @@ class UserTeleAttemptValidatorImpl implements UserTeleAttemptValidator {
             }
         }
 
+        /*
         if (attempt.clientId != null) {
             if (attempt.clientId.length() > maxClientIdLength) {
                 throw AppErrors.INSTANCE.fieldTooLong('clientId', maxClientIdLength).exception()
@@ -155,6 +155,7 @@ class UserTeleAttemptValidatorImpl implements UserTeleAttemptValidator {
                 throw AppErrors.INSTANCE.fieldTooShort('clientId', minClientIdLength).exception()
             }
         }
+        */
 
         return userRepository.get(userId).then { User user ->
             if (user == null) {

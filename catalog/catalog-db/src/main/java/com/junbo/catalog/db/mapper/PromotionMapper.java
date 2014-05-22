@@ -31,7 +31,7 @@ public class PromotionMapper {
         entity.setType(model.getType());
         entity.setCurrentRevisionId(model.getCurrentRevisionId());
         entity.setPayload(Utils.toJsonWithType(model));
-        entity.setRev(model.getRev()==null ? null : Integer.valueOf(model.getRev()));
+        entity.setRev(model.getResourceAge());
     }
 
     public static Promotion toModel(PromotionEntity entity) {
@@ -44,7 +44,7 @@ public class PromotionMapper {
         model.setOwnerId(entity.getOwnerId());
         model.setCreatedTime(entity.getCreatedTime());
         model.setUpdatedTime(entity.getUpdatedTime());
-        model.setRev(entity.getRev().toString());
+        model.setResourceAge(entity.getRev());
         return model;
     }
 }

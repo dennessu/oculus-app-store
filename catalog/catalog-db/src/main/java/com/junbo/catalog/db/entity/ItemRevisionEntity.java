@@ -6,19 +6,22 @@
 
 package com.junbo.catalog.db.entity;
 
+import com.junbo.common.hibernate.LongArrayUserType;
 import com.junbo.common.hibernate.StringJsonUserType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Item DB entity.
  */
 @Entity
 @Table(name="item_revision")
-@TypeDefs(@TypeDef(name="json-string", typeClass=StringJsonUserType.class))
+@TypeDefs({@TypeDef(name="json-string", typeClass=StringJsonUserType.class),
+        @TypeDef(name="long-array", typeClass=LongArrayUserType.class)})
 public class ItemRevisionEntity extends BaseEntity {
     private Long revisionId;
     private Long itemId;
@@ -26,6 +29,7 @@ public class ItemRevisionEntity extends BaseEntity {
     private Long ownerId;
     private String status;
     private Long timestamp;
+    private List<Long> hostItemIds;
     private String payload;
 
     @Id
@@ -72,6 +76,16 @@ public class ItemRevisionEntity extends BaseEntity {
 
     public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    @Column(name = "host_item_ids")
+    @Type(type = "long-array")
+    public List<Long> getHostItemIds() {
+        return hostItemIds;
+    }
+
+    public void setHostItemIds(List<Long> hostItemIds) {
+        this.hostItemIds = hostItemIds;
     }
 
     @Column(name = "payload")

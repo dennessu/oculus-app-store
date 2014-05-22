@@ -10,14 +10,14 @@ package com.junbo.identity.spec.v1.model;
  */
 public class UserSMS {
 
-    private String textMessage;
+    private String info;
 
-    public String getTextMessage() {
-        return textMessage;
+    public String getInfo() {
+        return info;
     }
 
-    public void setTextMessage(String textMessage) {
-        this.textMessage = textMessage;
+    public void setInfo(String info) {
+        this.info = info;
     }
 
     @Override
@@ -27,13 +27,13 @@ public class UserSMS {
 
         UserSMS userSMS = (UserSMS) o;
 
-        if (textMessage != null ? !textMessage.equals(userSMS.textMessage) : userSMS.textMessage != null) return false;
+        if (info != null ? !info.equals(userSMS.info) : userSMS.info != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return textMessage != null ? textMessage.hashCode() : 0;
+        return info != null ? info.hashCode() : 0;
     }
 }

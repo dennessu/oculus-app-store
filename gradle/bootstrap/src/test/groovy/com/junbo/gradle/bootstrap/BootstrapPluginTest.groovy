@@ -15,7 +15,7 @@ class BootstrapPluginTest {
         project.ext.set("project_group", "com.junbo.sample")
         project.ext.set("test-version", "0.0.1-SNAPSHOT")
 
-        project.ext.set("artifactory_contextUrl", "https://aws-artifactory:8443/artifactory")
+        project.ext.set("artifactory_contextUrl", "https://arti.silkcloud.info:8444/artifactory")
         project.ext.set("artifactory_user", "username")
         project.ext.set("artifactory_password", "password")
 

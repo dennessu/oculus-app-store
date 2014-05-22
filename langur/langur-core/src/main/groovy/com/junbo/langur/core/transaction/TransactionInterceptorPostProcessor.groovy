@@ -15,7 +15,7 @@ class TransactionInterceptorPostProcessor implements BeanFactoryPostProcessor {
 
     @Override
     void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        String[] beanNames = beanFactory.getBeanNamesForType(TransactionInterceptor)
+        String[] beanNames = beanFactory.getBeanNamesForType(TransactionInterceptor, true, false)
 
         for (String beanName : beanNames) {
             BeanDefinition beanDefinition = beanFactory.getBeanDefinition(beanName)

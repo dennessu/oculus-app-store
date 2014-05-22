@@ -40,7 +40,7 @@ public class TestGetItem extends BaseTestClass {
             description = "Test Get an Item by itemId(valid, invalid scenarios)",
             steps = {
                     "1. Prepare an item",
-                    "2. Get the item by Id, check its curated status",
+                    "2. Get the item by Id",
                     "3. Verify not able to get the item by invalid Id",
                     "4. Release the item",
                     "5. Get the item by Id again, verify the behavior is successful"
@@ -218,14 +218,14 @@ public class TestGetItem extends BaseTestClass {
         listItemId.add(itemId5);
 
         //set type Digital firstly
-        listType.add(CatalogItemType.DIGITAL.getItemType());
+        listType.add(CatalogItemType.PHYSICAL.getItemType());
         paraMap.put("itemId", listItemId);
         paraMap.put("type", listType);
         verifyGetItemsScenarios(paraMap, 1, itemId1);
 
         //set type to physical
         listType.clear();
-        listType.add(CatalogItemType.PHYSICAL.getItemType());
+        listType.add(CatalogItemType.DIGITAL.getItemType());
         paraMap.put("type", listType);
         verifyGetItemsScenarios(paraMap, 1, itemId2);
 
@@ -237,13 +237,23 @@ public class TestGetItem extends BaseTestClass {
     }
 
     private void verifyGetItemsScenarios(HashMap<String, List<String>> paraMap, int expectedRtnSize, String... itemId) throws Exception{
-        Results<Item> itemRtnId = itemService.getItems(paraMap);
+        Results<Item> itemRtn = itemService.getItems(paraMap);
 
-        Assert.assertEquals(itemRtnId.getItems().size(), expectedRtnSize);
+        Assert.assertEquals(itemRtn.getItems().size(), expectedRtnSize);
 
         for (String itemGetId : itemId) {
             Item item = itemService.getItem(IdConverter.hexStringToId(ItemId.class, itemGetId));
-            itemRtnId.getItems().contains(item);
+            Assert.assertTrue(isContain(itemRtn, item));
         }
+    }
+
+    private boolean isContain(Results<Item> itemResults, Item item) {
+        boolean contain = false;
+        for (Item item1 : itemResults.getItems()){
+            if (item.getItemId().equals(item1.getItemId())) {
+                contain = true;
+            }
+        }
+        return contain;
     }
 }

@@ -73,8 +73,8 @@ public class BaseDaoImpl<T extends CommonDbEntityWithDate> implements BaseDao<T>
 
     public Long create(T t) {
         // TODO Honor passed-in clientId
-        t.setUpdatedBy("dev");
-        t.setCreatedBy("dev");
+        t.setUpdatedBy(0L);
+        t.setCreatedBy(0L);
         Date now = new Date();
         t.setCreatedTime(now);
         t.setUpdatedTime(now);
@@ -93,7 +93,7 @@ public class BaseDaoImpl<T extends CommonDbEntityWithDate> implements BaseDao<T>
     }
 
     public void update(T t) {
-        t.setUpdatedBy("dev");
+        t.setUpdatedBy(0L);
         Date now = new Date();
         t.setUpdatedTime(now);
         Session session = this.getSession(t.getShardId());

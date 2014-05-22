@@ -95,7 +95,7 @@ class AuthenticateUser implements Action {
 
         // HACK
         // TODO: wait for identity response of captcha required
-        boolean captchaRequired = true
+        boolean captchaRequired = false
 
         return userService.authenticateUser(username, password, clientId, remoteAddress, userAgent).recover { Throwable e ->
             if (e instanceof AppErrorException) {

@@ -94,22 +94,22 @@ class UserAuthenticatorRepositoryCloudantImpl extends CloudantClient<UserAuthent
                             resultClass: String),
                     'by_user_id_auth_type': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.user.value + \':\' + doc.type, doc._id)' +
+                                    '  emit(doc.userId + \':\' + doc.type, doc._id)' +
                                     '}',
                             resultClass: String),
                     'by_user_id_externalId': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.user.value + \':\' + doc.externalId, doc._id)' +
+                                    '  emit(doc.userId + \':\' + doc.externalId, doc._id)' +
                                     '}',
                             resultClass: String),
                     'by_user_id_auth_type_externalId': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.user.value + \':\' + doc.type + \':\' + doc.externalId, doc._id)' +
+                                    '  emit(doc.userId + \':\' + doc.type + \':\' + doc.externalId, doc._id)' +
                                     '}',
                             resultClass: String),
                     'by_user_id': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.user.value, doc._id)' +
+                                    '  emit(doc.userId, doc._id)' +
                                     '}',
                             resultClass: String)
             ]

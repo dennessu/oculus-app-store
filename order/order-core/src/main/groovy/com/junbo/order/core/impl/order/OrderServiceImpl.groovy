@@ -21,7 +21,7 @@ import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.db.entity.enums.OrderActionType
-import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
 import groovy.transform.CompileStatic
@@ -46,7 +46,7 @@ class OrderServiceImpl implements OrderService {
     @Autowired
     FacadeContainer facadeContainer
     @Autowired
-    OrderRepository orderRepository
+    OrderRepositoryFacade orderRepository
     @Autowired
     FlowSelector flowSelector
     @Autowired
@@ -95,7 +95,7 @@ class OrderServiceImpl implements OrderService {
 
     @Override
     Promise<Order> updateTentativeOrder(Order order, ApiContext context) {
-        LOGGER.info('name=Update_Tentative_Order. orderId: {}', order.id.value)
+        LOGGER.info('name=Update_Tentative_Order. orderId: {}', order.getId().value)
 
         setHonoredTime(order)
         def orderServiceContext = initOrderServiceContext(order, context)
@@ -116,7 +116,7 @@ class OrderServiceImpl implements OrderService {
 
     @Override
     Promise<Order> updateNonTentativeOrder(Order order, ApiContext context) {
-        LOGGER.info('name=Update_Non_Tentative_Order. orderId: {}', order.id.value)
+        LOGGER.info('name=Update_Non_Tentative_Order. orderId: {}', order.getId().value)
         def orderServiceContext = initOrderServiceContext(order, context)
         return prepareOrder(order).then {
             return flowSelector.select(

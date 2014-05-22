@@ -4,7 +4,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.core.impl.internal.OrderInternalService
-import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,8 +18,8 @@ import javax.annotation.Resource
 @TypeChecked
 class MarkSettleAction implements Action {
 
-    @Resource(name = 'orderRepository')
-    OrderRepository repo
+    @Resource(name = 'orderRepositoryFacade')
+    OrderRepositoryFacade repo
     @Autowired
     OrderInternalService orderInternalService
 

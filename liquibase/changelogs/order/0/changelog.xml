@@ -30,9 +30,9 @@
                     properties varchar(4000) default null,
 					resource_age bigint not null,
                     created_time timestamp not null,
-                    created_by varchar(128) not null,
+                    created_by bigint not null,
                     updated_time timestamp not null,
-                    updated_by varchar(128) not null,
+                    updated_by bigint not null,
                     primary key (order_id)
                 );
                 create unique index user_order_index on user_order (user_id, order_id);
@@ -44,9 +44,9 @@
                     status_id smallint not null,
 					resource_age bigint not null,
                     created_time timestamp not null,
-                    created_by varchar(128) not null,
+                    created_by bigint not null,
                     updated_time timestamp not null,
-                    updated_by varchar(128) not null,
+                    updated_by bigint not null,
                     order_id bigint not null,
                     tracking_uuid uuid not null,
                     event_tracking_uuid uuid not null,
@@ -74,9 +74,9 @@
                     is_deleted boolean not null,
 					resource_age bigint not null,
                     created_time timestamp not null,
-                    created_by varchar(128) not null,
+                    created_by bigint not null,
                     updated_time timestamp not null,
-                    updated_by varchar(128) not null,
+                    updated_by bigint not null,
                     primary key (order_item_id)
                 );
                 create unique index item_order_time_index on order_item (order_item_id, order_id, updated_time, created_time);
@@ -93,9 +93,9 @@
                     is_deleted boolean not null,
 					resource_age bigint not null,
                     created_time timestamp not null,
-                    created_by varchar(128) not null,
+                    created_by bigint not null,
                     updated_time timestamp not null,
-                    updated_by varchar(128) not null,
+                    updated_by bigint not null,
                     primary key (order_item_discount_info_id)
                 );
                 create unique index discount_order_index on order_discount_info (order_item_discount_info_id, order_id);
@@ -105,9 +105,9 @@
                     billing_event_id smallint not null,
 					resource_age bigint not null,
                     created_time timestamp not null,
-                    created_by varchar(128) not null,
+                    created_by bigint not null,
                     updated_time timestamp not null,
-                    updated_by varchar(128) not null,
+                    updated_by bigint not null,
                     order_id bigint not null,
                     total_amount decimal NOT NULL,
                     balance_id varchar(128) not null,
@@ -120,16 +120,15 @@
                     fulfillment_event_id smallint not null,
 					resource_age bigint not null,
                     created_time timestamp not null,
-                    created_by varchar(128) not null,
+                    created_by bigint not null,
                     updated_time timestamp not null,
-                    updated_by varchar(128) not null,
-                    order_id bigint not null,
+                    updated_by bigint not null,
                     order_item_id bigint not null,
                     tracking_uuid uuid not null,
                     fulfillment_id varchar(128) not null,
                     primary key (history_id)
                 );
-                create unique index fulfillment_history_order_item_time_index on order_item_fulfillment_history (history_id, order_id, order_item_id, updated_time);
+                create unique index fulfillment_history_order_item_time_index on order_item_fulfillment_history (history_id, order_item_id, updated_time);
                 create unique index fulfillment_history_tracking_uuid_index on order_item_fulfillment_history (history_id, tracking_uuid);
 
                 create table order_item_preorder_info (
@@ -140,9 +139,9 @@
                     release_time timestamp not null,
 					resource_age bigint not null,
                     created_time timestamp not null,
-                    created_by varchar(128) not null,
+                    created_by bigint not null,
                     updated_time timestamp not null,
-                    updated_by varchar(128) not null,
+                    updated_by bigint not null,
                     primary key (order_item_preorder_info_id)
                 );
                 create unique index preorder_info_order_item_time_index on order_item_preorder_info (order_item_preorder_info_id, order_item_id, billing_time, pre_notification_time, release_time);
@@ -154,9 +153,9 @@
                     status_id smallint not null,
 					resource_age bigint not null,
                     created_time timestamp not null,
-                    created_by varchar(128) not null,
+                    created_by bigint not null,
                     updated_time timestamp not null,
-                    updated_by varchar(128) not null,
+                    updated_by bigint not null,
                     order_item_id bigint not null,
                     primary key (event_id)
                 );
@@ -170,7 +169,7 @@
                     update_before_value varchar(128) not null,
                     update_after_value varchar(128) not null,
                     updated_time timestamp not null,
-                    updated_by varchar(128) not null,
+                    updated_by bigint not null,
                     primary key (order_item_preorder_update_history_id)
                 );
                 create unique index history_order_item_time_index on order_item_preorder_update_history (order_item_preorder_update_history_id, order_item_id, updated_time);
@@ -184,9 +183,9 @@
                     is_tax_exempt boolean not null,
 					resource_age bigint not null,
                     created_time timestamp not null,
-                    created_by varchar(128) not null,
+                    created_by bigint not null,
                     updated_time timestamp not null,
-                    updated_by varchar(128) not null,
+                    updated_by bigint not null,
                     primary key (order_item_tax_info_id)
                 );
                 create unique index tax_item_time_index on order_item_tax_info (order_item_tax_info_id, order_item_tax_info_id, created_time, updated_time);
@@ -199,9 +198,9 @@
                     is_deleted boolean not null,
 					resource_age bigint not null,
                     created_time timestamp not null,
-                    created_by varchar(128) not null,
+                    created_by bigint not null,
                     updated_time timestamp not null,
-                    updated_by varchar(128) not null,
+                    updated_by bigint not null,
                     primary key (order_payment_info_id)
                 );
                 create unique index payment_order_index on order_payment_info (order_payment_info_id, order_payment_info_id, payment_method_id);
@@ -221,9 +220,9 @@
                     property varchar(4000) default null,
 					resource_age bigint not null,
                     created_time timestamp not null,
-                    created_by varchar(128) not null,
+                    created_by bigint not null,
                     updated_time timestamp not null,
-                    updated_by varchar(128) not null,
+                    updated_by bigint not null,
                     primary key (subledger_id)
                 );
 
@@ -233,9 +232,9 @@
                     status_id smallint not null,
 					resource_age bigint not null,
                     created_time timestamp not null,
-                    created_by varchar(128) not null,
+                    created_by bigint not null,
                     updated_time timestamp not null,
-                    updated_by varchar(128) not null,
+                    updated_by bigint not null,
                     subledger_id bigint not null,
                     primary key (event_id)
                 );
@@ -251,9 +250,9 @@
                     total_amount decimal not null,
 					resource_age bigint not null,
                     created_time timestamp not null,
-                    created_by varchar(128) not null,
+                    created_by bigint not null,
                     updated_time timestamp not null,
-                    updated_by varchar(128) not null,
+                    updated_by bigint not null,
                     primary key (subledger_item_id)
                 );
 
@@ -263,9 +262,9 @@
                     status_id smallint not null,
 					resource_age bigint not null,
                     created_time timestamp not null,
-                    created_by varchar(128) not null,
+                    created_by bigint not null,
                     updated_time timestamp not null,
-                    updated_by varchar(128) not null,
+                    updated_by bigint not null,
                     subledger_item_id bigint not null,
                     primary key (event_id)
                 );

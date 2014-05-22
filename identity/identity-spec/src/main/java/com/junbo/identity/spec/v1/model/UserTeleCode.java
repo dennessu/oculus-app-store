@@ -7,6 +7,7 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.common.id.UserTeleId;
@@ -33,7 +34,7 @@ public class UserTeleCode extends PropertyAssignedAwareResourceMeta implements I
     private UserPersonalInfoId phoneNumber;
 
     @ApiModelProperty(position = 4, required = false, value = "The language to sent to the user.")
-    private String sentLanguage;
+    private LocaleId sentLocale;
 
     @JsonIgnore
     private String verifyCode;
@@ -79,15 +80,6 @@ public class UserTeleCode extends PropertyAssignedAwareResourceMeta implements I
         support.setPropertyAssigned("phoneNumber");
     }
 
-    public String getSentLanguage() {
-        return sentLanguage;
-    }
-
-    public void setSentLanguage(String sentLanguage) {
-        this.sentLanguage = sentLanguage;
-        support.setPropertyAssigned("sentLanguage");
-    }
-
     public String getVerifyCode() {
         return verifyCode;
     }
@@ -131,5 +123,14 @@ public class UserTeleCode extends PropertyAssignedAwareResourceMeta implements I
     public void setActive(Boolean active) {
         this.active = active;
         support.setPropertyAssigned("active");
+    }
+
+    public LocaleId getSentLocale() {
+        return sentLocale;
+    }
+
+    public void setSentLocale(LocaleId sentLocale) {
+        this.sentLocale = sentLocale;
+        support.setPropertyAssigned("sentLocale");
     }
 }

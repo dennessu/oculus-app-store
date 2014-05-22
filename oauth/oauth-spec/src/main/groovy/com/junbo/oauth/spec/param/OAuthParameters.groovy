@@ -54,6 +54,19 @@ class OAuthParameters {
     public static final String DOB = 'dob'
     public static final String GENDER = 'gender'
     public static final String EMAIL = 'email'
+    public static final String PIN = 'pin'
+
+    public static final String ADDRESS1 = 'address1'
+    public static final String ADDRESS2 = 'address2'
+    public static final String CITY = 'city'
+    public static final String SUB_COUNTRY = 'sub_country'
+    public static final String COUNTRY = 'country'
+    public static final String ZIP_CODE = 'zip_code'
+
+    public static final String CARD_NUMBER = 'card_number'
+    public static final String NAME_ON_CARD = 'name_on_card'
+    public static final String EXPIRATION_DATE = 'expiration_date'
+    public static final String CVV = 'cvv'
 
     public static final String COOKIE_LOGIN_STATE = 'ls'
     public static final String COOKIE_SESSION_STATE = 'ss'

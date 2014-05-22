@@ -49,14 +49,7 @@
 6. Generating SSH Keys got github access:
     https://help.github.com/articles/generating-ssh-keys
 
-7. aws-artifactory setup
-   1). echo 54.254.249.206 aws-artifactory >> /etc/hosts
-   2). download source code by git clone
-   3). set up key:
-        cd ~/owp-main/bootstrap/setup
-        keytool -import -alias aws-artifactory -keystore $JAVA_HOME/jre/lib/security/cacerts -file ./aws-artifactory.cer -trustcacerts
-
-8. Install python
+7. Install python
   1). Yum install gcc
   2). wget http://python.org/ftp/python/2.7.3/Python-2.7.3.tar.bz2
   3). tar -jxvf Python-2.7.3.tar.bz2
@@ -68,29 +61,29 @@
   9). make distclean
   10). ln -s /usr/local/bin/python2.7 /usr/bin/python
 
-9. db setup: 
+8. db setup:
    1). git clone source code to /home/sourcecode/main
    2). run git pull to pull latest code
    3). run ./setupdb.sh to drop old database and create new database in localhost.
    note: all the old data will be removed by this script.
 
-10. install ActiveMQ
+9. install ActiveMQ
    1). Download activeMQ from http://activemq.apache.org/activemq-591-release.html.   
    2). tar -zxvf apache-activemq-5.9.1-bin.tar.gz
    3). start activemq: ./apache-activemq-5.9.1-bin/activemq start
    4). check status: http://<ip>:8161/ (usr&pwd: admin/admin)
 
-11. copy bundles and start service
+10. copy bundles and start service
    1). in source branch /main/apphost
    2). gradle installApp
    3). /apphost/apphost-cli/build/install/apphost-cli to onebox
    4). killd old one and run ./startup.sh to start identity/catalog/commerce on 8080
 
-12. startup docs bundle
+11. startup docs bundle
    1). go to main/bootstrap/docs-bundle
    2). gradle installApp
    3). copy bootstrap/docs-bundle/build/install/docs-bundle to onebox
    4). kill old one and run ./startup.sh to start docs on 8079
    5). use http://oneboxip:8079/ to check docs
    
-13. populate catalog data(TBD) 
+12. populate catalog data(TBD)

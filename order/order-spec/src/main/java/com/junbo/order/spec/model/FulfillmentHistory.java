@@ -6,13 +6,15 @@
 package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.util.Identifiable;
 
 import java.util.UUID;
 
 /**
  * Created by LinYi on 2/10/14.
  */
-public class FulfillmentHistory extends BaseOrderResource {
+public class FulfillmentHistory extends ResourceMeta implements Identifiable<Long> {
     @JsonIgnore
     private Long id;
     @JsonIgnore

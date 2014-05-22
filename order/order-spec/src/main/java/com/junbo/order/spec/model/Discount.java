@@ -10,6 +10,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.OrderId;
 import com.junbo.common.id.OrderItemId;
 import com.junbo.common.id.PromotionId;
+import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
@@ -17,9 +19,9 @@ import java.math.BigDecimal;
 /**
  * Created by LinYi on 2/10/14.
  */
-public class Discount extends BaseOrderResource {
+public class Discount extends ResourceMeta implements Identifiable<Long> {
     @JsonIgnore
-    private Long discountInfoId;
+    private Long id;
     @JsonIgnore
     private OrderId orderId;
     @JsonIgnore
@@ -45,12 +47,14 @@ public class Discount extends BaseOrderResource {
     @JsonIgnore
     private OrderItem ownerOrderItem;
 
-    public Long getDiscountInfoId() {
-        return discountInfoId;
+    @Override
+    public Long getId() {
+        return id;
     }
 
-    public void setDiscountInfoId(Long discountInfoId) {
-        this.discountInfoId = discountInfoId;
+    @Override
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public OrderId getOrderId() {

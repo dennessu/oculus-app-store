@@ -110,7 +110,7 @@ class UserTeleBackupCodeValidatorImpl implements UserTeleBackupCodeValidator {
             throw AppErrors.INSTANCE.fieldNotWritable('verifyCode').exception()
         }
 
-        userTeleBackupCode.verifyCode = codeGenerator.generateTeleBackupCode()
+        userTeleBackupCode.verifyCode = codeGenerator.generateCode()
 
         return checkBasicUserTeleBackupCode(userTeleBackupCode)
     }

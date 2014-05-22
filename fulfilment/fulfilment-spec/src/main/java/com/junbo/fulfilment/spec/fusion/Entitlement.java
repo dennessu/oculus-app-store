@@ -12,9 +12,10 @@ import java.util.Date;
  */
 public class Entitlement {
     private Long userId;
+    private String type;
+    private Long itemId;
     private Date grantTime;
     private Date expirationTime;
-    private Long entitlementDefinitionId;
     private Integer useCount;
 
     public Long getUserId() {
@@ -41,19 +42,27 @@ public class Entitlement {
         this.expirationTime = expirationTime;
     }
 
-    public Long getEntitlementDefinitionId() {
-        return entitlementDefinitionId;
-    }
-
-    public void setEntitlementDefinitionId(Long entitlementDefinitionId) {
-        this.entitlementDefinitionId = entitlementDefinitionId;
-    }
-
     public Integer getUseCount() {
         return useCount;
     }
 
     public void setUseCount(Integer useCount) {
         this.useCount = useCount;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Long getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
     }
 }

@@ -66,10 +66,6 @@ public class CatalogGatewayImpl implements CatalogGateway{
     @Qualifier("promotionRevisionClient")
     private PromotionRevisionResource promotionRevisionResource;
 
-    @Autowired
-    @Qualifier("entitlementDefinitionClient")
-    private EntitlementDefinitionResource entitlementDefinitionResource;
-
     @Override
     public Item getItem(Long itemId) {
         try {
@@ -202,7 +198,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
     private OfferRevision getOfferRevisionByTimestamp(Long offerId, Long timestamp) {
         List<OfferRevision> revisions;
         OfferRevisionsGetOptions options = new OfferRevisionsGetOptions();
-        options.setOfferIds(Arrays.asList(new OfferId(offerId)));
+        options.setOfferIds(new HashSet<OfferId>(Arrays.asList(new OfferId(offerId))));
         options.setTimestamp(timestamp);
         try {
             revisions = offerRevisionResource.getOfferRevisions(options).get().getItems();

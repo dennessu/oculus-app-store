@@ -9,6 +9,7 @@ package com.junbo.entitlement.core.service;
 import com.junbo.catalog.spec.model.item.EntitlementDef;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.common.id.ItemId;
+import com.junbo.common.model.Results;
 import com.junbo.entitlement.common.lib.CloneUtils;
 import com.junbo.entitlement.core.EntitlementService;
 import com.junbo.entitlement.db.repository.EntitlementRepository;
@@ -21,8 +22,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -97,17 +98,17 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
     @Override
     @Transactional
-    public List<Entitlement> searchEntitlement(EntitlementSearchParam entitlementSearchParam,
-                                               PageMetadata pageMetadata) {
+    public Results<Entitlement> searchEntitlement(EntitlementSearchParam entitlementSearchParam,
+                                                  PageMetadata pageMetadata) {
         validateNotNull(entitlementSearchParam.getUserId(), "userId");
         checkUser(entitlementSearchParam.getUserId().getValue());
         fillClient(entitlementSearchParam);
         fillHostItemId(entitlementSearchParam);
         checkSearchDateFormat(entitlementSearchParam);
         checkIsActiveAndIsBanned(entitlementSearchParam);
-        List<Entitlement> entitlementEntities = entitlementRepository.getBySearchParam(
+        Results<Entitlement> results = entitlementRepository.getBySearchParam(
                 entitlementSearchParam, pageMetadata);
-        return entitlementEntities;
+        return results;
     }
 
     private void fillHostItemId(EntitlementSearchParam entitlementSearchParam) {
@@ -115,6 +116,10 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             return;
         }
         Set<Long> itemIds = itemFacade.getItemIdsByHostItemId(entitlementSearchParam.getHostItemId().getValue());
+        if (CollectionUtils.isEmpty(itemIds)) {
+            throw AppErrors.INSTANCE.fieldNotCorrect("hostItemId",
+                    "there is no item with hostItemId [" + entitlementSearchParam.getHostItemId() + "]").exception();
+        }
         for (Long itemId : itemIds) {
             entitlementSearchParam.getItemIds().add(new ItemId(itemId));
         }

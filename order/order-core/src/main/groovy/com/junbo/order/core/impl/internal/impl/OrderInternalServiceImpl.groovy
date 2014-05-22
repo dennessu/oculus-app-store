@@ -13,7 +13,7 @@ import com.junbo.order.core.impl.common.*
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.db.entity.enums.BillingAction
 import com.junbo.order.db.entity.enums.OrderStatus
-import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
 import com.junbo.rating.spec.model.request.RatingRequest
@@ -39,7 +39,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
     @Resource(name = 'orderFacadeContainer')
     FacadeContainer facadeContainer
     @Autowired
-    OrderRepository orderRepository
+    OrderRepositoryFacade orderRepository
     @Qualifier('orderTransactionHelper')
     @Autowired
     TransactionHelper transactionHelper
@@ -139,10 +139,10 @@ class OrderInternalServiceImpl implements OrderInternalService {
 
         def isCancelable = CoreUtils.checkOrderStatusCancelable(order)
         if (!isCancelable) {
-            LOGGER.info('name=Order_Is_Not_Cancelable, orderId = {}, orderStatus={}', order.id.value, order.status)
+            LOGGER.info('name=Order_Is_Not_Cancelable, orderId = {}, orderStatus={}', order.getId().value, order.status)
             throw AppErrors.INSTANCE.orderNotCancelable().exception()
         }
-        LOGGER.info('name=Order_Is_Cancelable, orderId = {}, orderStatus={}', order.id.value, order.status)
+        LOGGER.info('name=Order_Is_Cancelable, orderId = {}, orderStatus={}', order.getId().value, order.status)
 
         order.status = OrderStatus.CANCELED.name()
         orderRepository.updateOrder(order, true)
@@ -161,16 +161,16 @@ class OrderInternalServiceImpl implements OrderInternalService {
 
     @Override
     Promise<Void> refundDeposit(Order order) {
-        if(CoreUtils.isFreeOrder(order)) {
+        if (CoreUtils.isFreeOrder(order)) {
             return Promise.pure(null)
         }
         BillingHistory bh = CoreUtils.getLatestBillingHistory(order)
         assert(bh != null)
         if (bh.billingEvent == BillingAction.DEPOSIT) {
-            return facadeContainer.billingFacade.getBalancesByOrderId(order.id.value).syncRecover {
+            return facadeContainer.billingFacade.getBalancesByOrderId(order.getId().value).syncRecover {
                 Throwable ex ->
             }.then { List<Balance> bls ->
-                if(CoreUtils.checkDepositOrderRefundable(order, bls)) {
+                if (CoreUtils.checkDepositOrderRefundable(order, bls)) {
                     return facadeContainer.billingFacade.createBalance(
                             CoreBuilder.buildRefundDepositBalance(bls[0]), false).syncRecover { Throwable ex ->
                     }.then { Balance refunded ->
@@ -215,25 +215,25 @@ class OrderInternalServiceImpl implements OrderInternalService {
 
     Promise<Order> completeOrder(Order order) {
         // order items
-        order.orderItems = orderRepository.getOrderItems(order.id.value)
+        order.orderItems = orderRepository.getOrderItems(order.getId().value)
         if (order.orderItems == null) {
             throw AppErrors.INSTANCE.orderItemNotFound().exception()
         }
         order.orderItems.each { OrderItem orderItem ->
-            List<PreorderInfo> preorderInfoList = orderRepository.getPreorderInfo(orderItem.orderItemId.value)
+            List<PreorderInfo> preorderInfoList = orderRepository.getPreorderInfo(orderItem.getId().value)
             if (preorderInfoList?.size() > 0) {
                 orderItem.preorderInfo = preorderInfoList[0]
             }
-            orderItem.fulfillmentHistories = orderRepository.getFulfillmentHistories(orderItem.orderItemId.value)
+            orderItem.fulfillmentHistories = orderRepository.getFulfillmentHistories(orderItem.getId().value)
         }
         // payment instrument
-        order.setPayments(orderRepository.getPayments(order.id.value))
+        order.setPayments(orderRepository.getPayments(order.getId().value))
         // discount
-        order.setDiscounts(orderRepository.getDiscounts(order.id.value))
+        order.setDiscounts(orderRepository.getDiscounts(order.getId().value))
         // event
-        order.setBillingHistories(orderRepository.getBillingHistories(order.id.value))
+        order.setBillingHistories(orderRepository.getBillingHistories(order.getId().value))
         // tax
-        return facadeContainer.billingFacade.getBalancesByOrderId(order.id.value).then { List<Balance> balances ->
+        return facadeContainer.billingFacade.getBalancesByOrderId(order.getId().value).then { List<Balance> balances ->
             // TODO: handle the case when the size of taxed balances > 1
             def taxedBalance = balances.find { Balance balance ->
                 balance.balanceItems?.taxItems?.size() > 0
@@ -241,16 +241,16 @@ class OrderInternalServiceImpl implements OrderInternalService {
             if (taxedBalance != null) {
                 CoreBuilder.fillTaxInfo(order, taxedBalance)
             }
-            return Promise.pure(refreshOrderStatus(order))
+            return Promise.pure(order)
         }
     }
 
     @Override
     Order refreshOrderStatus(Order order) {
         transactionHelper.executeInTransaction {
-            def oldOrder = orderRepository.getOrder(order.id.value)
+            def oldOrder = orderRepository.getOrder(order.getId().value)
             order.status = OrderStatusBuilder.buildOrderStatus(oldOrder,
-                    orderRepository.getOrderEvents(order.id.value, null))
+                    orderRepository.getOrderEvents(order.getId().value, null))
             if (order.status != oldOrder.status) {
                 oldOrder.status = order.status
                 orderRepository.updateOrder(oldOrder, true)
@@ -263,7 +263,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
     @Transactional
     void markSettlement(Order order) {
 
-        def latest = orderRepository.getOrder(order.id.value)
+        def latest = orderRepository.getOrder(order.getId().value)
 
         if (!latest?.tentative) {
             throw AppErrors.INSTANCE.orderNotTentative().exception()

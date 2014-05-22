@@ -91,14 +91,31 @@ public class Identity {
                 User.class);
     }
 
+    public static User UserPut(User user) throws Exception {
+        return (User) HttpclientHelper.SimpleJsonPut(
+                DefaultIdentityV1UserURI + "/" + IdFormatter.encodeId(user.getId()),
+                JsonHelper.JsonSerializer(user),
+                User.class);
+    }
+
     public static User UserGetByUserId(UserId userId) throws Exception {
         return (User) HttpclientHelper.SimpleGet(
                 DefaultIdentityV1UserURI + "/" + IdFormatter.encodeId(userId),
                 User.class);
     }
 
-    public static UserPersonalInfo UserPersonalInfoPostDefault(UserId userId) throws Exception {
-        UserPersonalInfo userPersonalInfo = IdentityModel.DefaultUserPersonalInfo();
+    public static UserPersonalInfo UserPersonalInfoPostByType(UserId userId, IdentityModel.UserPersonalInfoType type)
+            throws Exception {
+        UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
+        switch (type) {
+            case ADDRESS:
+                userPersonalInfo = IdentityModel.DefaultUserPersonalInfoAddress();
+                break;
+            case EMAIL:
+                userPersonalInfo = IdentityModel.DefaultUserPersonalInfoEmail();
+                break;
+            default:
+        }
         userPersonalInfo.setUserId(userId);
         return (UserPersonalInfo) HttpclientHelper.SimpleJsonPost(
                 DefaultIdentityV1UserPersonalInfoURI,

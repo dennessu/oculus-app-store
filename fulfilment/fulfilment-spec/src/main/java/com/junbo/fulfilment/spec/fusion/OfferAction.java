@@ -11,6 +11,8 @@ import java.util.Map;
  * OfferAction.
  */
 public class OfferAction {
+    private Long itemId;
+
     private String type;
 
     private Map<String, Object> properties;
@@ -29,5 +31,13 @@ public class OfferAction {
 
     public void setProperties(Map<String, Object> properties) {
         this.properties = properties;
+    }
+
+    public Long getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
     }
 }

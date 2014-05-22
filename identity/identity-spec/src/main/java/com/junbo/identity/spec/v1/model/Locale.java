@@ -11,9 +11,6 @@ import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created by xiali_000 on 4/21/2014.
  */
@@ -23,7 +20,7 @@ public class Locale extends PropertyAssignedAwareResourceMeta implements Identif
     @JsonProperty("self")
     private LocaleId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "The locale code of the locale.")
+    @ApiModelProperty(position = 2, required = true, value = "The locale code of the locale. It must be the format en_US or en-US.")
     private String localeCode;
 
     @ApiModelProperty(position = 3, required = false, value = "The short name of the locale.")
@@ -37,9 +34,6 @@ public class Locale extends PropertyAssignedAwareResourceMeta implements Identif
 
     @ApiModelProperty(position = 6, required = false, value = "The fallback locale.")
     private LocaleId fallbackLocale;
-
-    @ApiModelProperty(position = 7, required = false, value = "Feature expansion of the locale resource.")
-    private Map<String, String> futureExpansion = new HashMap<>();
 
     public String getShortName() {
         return shortName;
@@ -94,14 +88,5 @@ public class Locale extends PropertyAssignedAwareResourceMeta implements Identif
     public void setFallbackLocale(LocaleId fallbackLocale) {
         this.fallbackLocale = fallbackLocale;
         support.setPropertyAssigned("fallbackLocale");
-    }
-
-    public Map<String, String> getFutureExpansion() {
-        return futureExpansion;
-    }
-
-    public void setFutureExpansion(Map<String, String> futureExpansion) {
-        this.futureExpansion = futureExpansion;
-        support.setPropertyAssigned("futureExpansion");
     }
 }

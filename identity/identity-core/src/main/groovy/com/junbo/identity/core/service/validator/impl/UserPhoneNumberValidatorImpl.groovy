@@ -50,37 +50,32 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
         PhoneNumber oldPhoneNumber = (PhoneNumber)JsonHelper.jsonNodeToObj(oldValue, PhoneNumber)
 
         if (phoneNumber != oldPhoneNumber) {
-            checkUserPhone(phoneNumber)
-
-            if (phoneNumber.value != oldPhoneNumber.value) {
-                return checkAdvanceUserPhone(phoneNumber, userId)
-            }
-            return Promise.pure(null)
+            throw AppErrors.INSTANCE.fieldInvalidException('value', 'value can\'t be updated.').exception()
         }
         return Promise.pure(null)
     }
 
     private void checkUserPhone(PhoneNumber phoneNumber) {
-        if (phoneNumber.value == null) {
-            throw AppErrors.INSTANCE.fieldRequired('value').exception()
+        if (phoneNumber.info == null) {
+            throw AppErrors.INSTANCE.fieldRequired('value.info').exception()
         }
 
-        if (phoneNumber.value.length() > maxValueLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('value', maxValueLength).exception()
+        if (phoneNumber.info.length() > maxValueLength) {
+            throw AppErrors.INSTANCE.fieldTooLong('value.info', maxValueLength).exception()
         }
-        if (phoneNumber.value.length() < minValueLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('value', minValueLength).exception()
+        if (phoneNumber.info.length() < minValueLength) {
+            throw AppErrors.INSTANCE.fieldTooShort('value.info', minValueLength).exception()
         }
 
         if (!allowedValuePatterns.any {
-            Pattern pattern -> pattern.matcher(phoneNumber.value).matches()
+            Pattern pattern -> pattern.matcher(phoneNumber.info).matches()
         }) {
             throw AppErrors.INSTANCE.fieldInvalid('value').exception()
         }
     }
 
     private Promise<Void> checkAdvanceUserPhone(PhoneNumber phoneNumber, UserId userId) {
-        return userPersonalInfoRepository.searchByPhoneNumber(phoneNumber.value).then {
+        return userPersonalInfoRepository.searchByPhoneNumber(phoneNumber.info).then {
             List<UserPersonalInfo> existing ->
                 if (existing != null) {
                     // check this phone number is not used by this user

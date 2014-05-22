@@ -339,4 +339,23 @@ interface AppExceptions {
 
     @ErrorDef(httpStatusCode = 404, code = '20076', description = 'Api definition {0} not found')
     AppError apiDefinitionNotFound(String apiName)
+
+    @ErrorDef(httpStatusCode = 400, code = '20077', description = 'The pin parameter is missing',
+            field = 'pin')
+    AppError missingPin()
+
+    @ErrorDef(httpStatusCode = 400, code = '20078', description = 'The pin parameter is invalid',
+            field = 'pin')
+    AppError invalidPin()
+
+    @ErrorDef(httpStatusCode = 400, code = '20079', description = 'The {0} parameter is missing',
+            field = '{0}')
+    AppError missingParameter(String parameter)
+
+    @ErrorDef(httpStatusCode = 400, code = '20080', description = 'The {0} parameter is invalid',
+            field = '{0}')
+    AppError invalidParameter(String parameter)
+
+    @ErrorDef(httpStatusCode = 500, code = '20081', description = 'Error happened while calling the payment')
+    AppError errorCallingPayment()
 }

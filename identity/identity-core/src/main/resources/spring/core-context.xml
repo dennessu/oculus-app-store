@@ -11,12 +11,10 @@
         <property name="readableProperties">
             <list>
                 <value>id</value>
-                <value>name</value>
-                <value>description</value>
-                <value>allowedIn</value>
                 <value>locales</value>
                 <value>regions</value>
                 <value>translations</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -24,23 +22,19 @@
         </property>
         <property name="writablePropertiesForCreate">
             <list>
-                <value>name</value>
-                <value>description</value>
-                <value>allowedIn</value>
                 <value>locales</value>
                 <value>regions</value>
                 <value>translations</value>
+                <value>futureExpansion</value>
             </list>
         </property>
         <property name="writablePropertiesForUpdate">
             <list>
                 <value>id</value>
-                <value>name</value>
-                <value>description</value>
-                <value>allowedIn</value>
                 <value>locales</value>
                 <value>regions</value>
                 <value>translations</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
             </list>
         </property>
@@ -53,10 +47,11 @@
                 <value>countryCode</value>
                 <value>defaultLocale</value>
                 <value>defaultCurrency</value>
-                <value>futureExpansion</value>
-                <value>supportedLocales</value>
+                <value>ratingBoards</value>
                 <value>subCountries</value>
-                <value>localeKeys</value>
+                <value>supportedLocales</value>
+                <value>locales</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -67,10 +62,11 @@
                 <value>countryCode</value>
                 <value>defaultLocale</value>
                 <value>defaultCurrency</value>
-                <value>futureExpansion</value>
-                <value>supportedLocales</value>
+                <value>ratingBoards</value>
                 <value>subCountries</value>
-                <value>localeKeys</value>
+                <value>supportedLocales</value>
+                <value>locales</value>
+                <value>futureExpansion</value>
             </list>
         </property>
         <property name="writablePropertiesForUpdate">
@@ -79,10 +75,11 @@
                 <value>countryCode</value>
                 <value>defaultLocale</value>
                 <value>defaultCurrency</value>
-                <value>futureExpansion</value>
-                <value>supportedLocales</value>
+                <value>ratingBoards</value>
                 <value>subCountries</value>
-                <value>localeKeys</value>
+                <value>supportedLocales</value>
+                <value>locales</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
             </list>
         </property>
@@ -95,7 +92,13 @@
                 <value>currencyCode</value>
                 <value>countries</value>
                 <value>symbol</value>
-                <value>locales</value>
+                <value>symbolPosition</value>
+                <value>decimalSymbol</value>
+                <value>numberAfterDecimal</value>
+                <value>negativeFormat</value>
+                <value>digitGroupingSymbol</value>
+                <value>digitGroupingLength</value>
+                <value>localeKeys</value>
                 <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
@@ -105,9 +108,14 @@
         <property name="writablePropertiesForCreate">
             <list>
                 <value>currencyCode</value>
-                <value>countries</value>
                 <value>symbol</value>
-                <value>locales</value>
+                <value>symbolPosition</value>
+                <value>decimalSymbol</value>
+                <value>numberAfterDecimal</value>
+                <value>negativeFormat</value>
+                <value>digitGroupingSymbol</value>
+                <value>digitGroupingLength</value>
+                <value>localeKeys</value>
                 <value>futureExpansion</value>
             </list>
         </property>
@@ -115,9 +123,14 @@
             <list>
                 <value>id</value>
                 <value>currencyCode</value>
-                <value>countries</value>
                 <value>symbol</value>
-                <value>locales</value>
+                <value>symbolPosition</value>
+                <value>decimalSymbol</value>
+                <value>numberAfterDecimal</value>
+                <value>negativeFormat</value>
+                <value>digitGroupingSymbol</value>
+                <value>digitGroupingLength</value>
+                <value>localeKeys</value>
                 <value>futureExpansion</value>
                 <value>resourceAge</value>
             </list>
@@ -131,6 +144,9 @@
                 <value>type</value>
                 <value>serialNumber</value>
                 <value>firmwareVersion</value>
+                <value>components</value>
+                <value>users</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -141,6 +157,8 @@
                 <value>type</value>
                 <value>serialNumber</value>
                 <value>firmwareVersion</value>
+                <value>components</value>
+                <value>futureExpansion</value>
             </list>
         </property>
         <property name="writablePropertiesForUpdate">
@@ -149,6 +167,8 @@
                 <value>type</value>
                 <value>serialNumber</value>
                 <value>firmwareVersion</value>
+                <value>components</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
             </list>
         </property>
@@ -158,7 +178,11 @@
         <property name="readableProperties">
             <list>
                 <value>id</value>
-                <value>description</value>
+                <value>typeCode</value>
+                <value>availableFirmwares</value>
+                <value>instructionManual</value>
+                <value>componentTypes</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -166,13 +190,21 @@
         </property>
         <property name="writablePropertiesForCreate">
             <list>
-                <value>description</value>
+                <value>typeCode</value>
+                <value>availableFirmwares</value>
+                <value>instructionManual</value>
+                <value>componentTypes</value>
+                <value>futureExpansion</value>
             </list>
         </property>
         <property name="writablePropertiesForUpdate">
             <list>
                 <value>id</value>
-                <value>description</value>
+                <value>typeCode</value>
+                <value>availableFirmwares</value>
+                <value>instructionManual</value>
+                <value>componentTypes</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
             </list>
         </property>
@@ -184,6 +216,9 @@
                 <value>id</value>
                 <value>name</value>
                 <value>active</value>
+                <value>futureExpansion</value>
+                <value>userMemberships</value>
+                <value>users</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -194,6 +229,7 @@
             <list>
                 <value>name</value>
                 <value>active</value>
+                <value>futureExpansion</value>
             </list>
         </property>
 
@@ -202,6 +238,7 @@
                 <value>id</value>
                 <value>name</value>
                 <value>active</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
             </list>
         </property>
@@ -216,6 +253,7 @@
                 <value>longName</value>
                 <value>localeName</value>
                 <value>fallbackLocale</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -228,6 +266,7 @@
                 <value>longName</value>
                 <value>localeName</value>
                 <value>fallbackLocale</value>
+                <value>futureExpansion</value>
             </list>
         </property>
         <property name="writablePropertiesForUpdate">
@@ -238,6 +277,7 @@
                 <value>longName</value>
                 <value>localeName</value>
                 <value>fallbackLocale</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
             </list>
         </property>
@@ -247,10 +287,13 @@
         <property name="readableProperties">
             <list>
                 <value>id</value>
-                <value>localeId</value>
+                <value>type</value>
+                <value>countries</value>
+                <value>version</value>
                 <value>title</value>
                 <value>content</value>
                 <value>state</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -259,20 +302,26 @@
 
         <property name="writablePropertiesForCreate">
             <list>
-                <value>localeId</value>
+                <value>type</value>
+                <value>countries</value>
+                <value>version</value>
                 <value>title</value>
                 <value>content</value>
                 <value>state</value>
+                <value>futureExpansion</value>
             </list>
         </property>
 
         <property name="writablePropertiesForUpdate">
             <list>
                 <value>id</value>
-                <value>localeId</value>
+                <value>type</value>
+                <value>countries</value>
+                <value>version</value>
                 <value>title</value>
                 <value>content</value>
                 <value>state</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
             </list>
         </property>
@@ -286,91 +335,30 @@
                 <value>locales</value>
                 <value>capableOfRecurring</value>
                 <value>isRefundable</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
             </list>
         </property>
         <property name="writablePropertiesForCreate">
+            <list>
+                <value>typeCode</value>
+                <value>locales</value>
+                <value>capableOfRecurring</value>
+                <value>isRefundable</value>
+                <value>futureExpansion</value>
+            </list>
+        </property>
+        <property name="writablePropertiesForUpdate">
             <list>
                 <value>id</value>
                 <value>typeCode</value>
                 <value>locales</value>
                 <value>capableOfRecurring</value>
                 <value>isRefundable</value>
-            </list>
-        </property>
-        <property name="writablePropertiesForUpdate">
-            <list>
-                <value>id</value>
-                <value>typeCode</value>
-                <value>locales</value>
-                <value>capableOfRecurring</value>
-                <value>isRefundable</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="roleFilter" class="com.junbo.identity.core.service.filter.RoleFilter">
-        <property name="readableProperties">
-            <list>
-                <value>id</value>
-                <value>name</value>
-                <value>resourceType</value>
-                <value>resourceId</value>
-                <value>subResourceType</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-        <property name="writablePropertiesForCreate">
-            <list>
-                <value>name</value>
-                <value>resourceType</value>
-                <value>resourceId</value>
-                <value>subResourceType</value>
-            </list>
-        </property>
-        <property name="writablePropertiesForUpdate">
-            <list>
-                <value>name</value>
-                <value>resourceType</value>
-                <value>resourceId</value>
-                <value>subResourceType</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="roleAssignmentFilter" class="com.junbo.identity.core.service.filter.RoleAssignmentFilter">
-        <property name="readableProperties">
-            <list>
-                <value>id</value>
-                <value>roleId</value>
-                <value>assigneeType</value>
-                <value>assigneeId</value>
-                <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
-            </list>
-        </property>
-        <property name="writablePropertiesForCreate">
-            <list>
-                <value>roleId</value>
-                <value>assigneeType</value>
-                <value>assigneeId</value>
-            </list>
-        </property>
-        <property name="writablePropertiesForUpdate">
-            <list>
-                <value>roleId</value>
-                <value>assigneeType</value>
-                <value>assigneeId</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
             </list>
         </property>
     </bean>
@@ -414,6 +402,7 @@
                 <value>id</value>
                 <value>communicationId</value>
                 <value>userId</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -424,6 +413,7 @@
             <list>
                 <value>userId</value>
                 <value>communicationId</value>
+                <value>futureExpansion</value>
             </list>
         </property>
 
@@ -431,9 +421,8 @@
             <list>
                 <value>id</value>
                 <value>communicationId</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
             </list>
         </property>
     </bean>
@@ -518,6 +507,7 @@
                 <value>id</value>
                 <value>userId</value>
                 <value>groupId</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -528,6 +518,7 @@
             <list>
                 <value>userId</value>
                 <value>groupId</value>
+                <value>futureExpansion</value>
             </list>
         </property>
 
@@ -535,9 +526,8 @@
             <list>
                 <value>id</value>
                 <value>groupId</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
             </list>
         </property>
     </bean>
@@ -565,6 +555,7 @@
                         <value>governmentId</value>
                         <value>driversLicense</value>
                         <value>gender</value>
+                        <value>futureExpansion</value>
                         <value>resourceAge</value>
                         <value>createdTime</value>
                         <value>updatedTime</value>
@@ -594,6 +585,7 @@
                         <value>governmentId</value>
                         <value>driversLicense</value>
                         <value>gender</value>
+                        <value>futureExpansion</value>
                     </list>
                 </entry>
             </map>
@@ -621,9 +613,8 @@
                         <value>governmentId</value>
                         <value>driversLicense</value>
                         <value>gender</value>
+                        <value>futureExpansion</value>
                         <value>resourceAge</value>
-                        <value>createdTime</value>
-                        <value>updatedTime</value>
                     </list>
                 </entry>
             </map>
@@ -689,6 +680,7 @@
                 <value>id</value>
                 <value>userId</value>
                 <value>securityQuestion</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -700,6 +692,7 @@
                 <value>securityQuestion</value>
                 <value>userId</value>
                 <value>answer</value>
+                <value>futureExpansion</value>
             </list>
         </property>
 
@@ -709,6 +702,7 @@
                 <value>userId</value>
                 <value>securityQuestion</value>
                 <value>answer</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -726,6 +720,7 @@
                 <value>userAgent</value>
                 <value>clientId</value>
                 <value>succeeded</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -740,6 +735,7 @@
                 <value>ipAddress</value>
                 <value>userAgent</value>
                 <value>clientId</value>
+                <value>futureExpansion</value>
             </list>
         </property>
 
@@ -755,6 +751,7 @@
                 <value>tosId</value>
                 <value>userId</value>
                 <value>agreementTime</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -765,6 +762,7 @@
             <list>
                 <value>tosId</value>
                 <value>agreementTime</value>
+                <value>futureExpansion</value>
             </list>
         </property>
 
@@ -773,9 +771,8 @@
                 <value>id</value>
                 <value>tosUri</value>
                 <value>agreementTime</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
             </list>
         </property>
     </bean>
@@ -789,6 +786,7 @@
                 <value>userId</value>
                 <value>active</value>
                 <value>strength</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -800,6 +798,7 @@
                 <value>expiresBy</value>
                 <value>changeAtNextLogin</value>
                 <value>value</value>
+                <value>futureExpansion</value>
             </list>
         </property>
 
@@ -818,6 +817,7 @@
                 <value>changeAtNextLogin</value>
                 <value>userId</value>
                 <value>active</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -829,6 +829,7 @@
                 <value>expiresBy</value>
                 <value>changeAtNextLogin</value>
                 <value>value</value>
+                <value>futureExpansion</value>
             </list>
         </property>
 
@@ -846,11 +847,12 @@
                 <value>id</value>
                 <value>userId</value>
                 <value>phoneNumber</value>
-                <value>sentLanguage</value>
+                <value>sentLocale</value>
                 <value>template</value>
                 <value>verifyType</value>
                 <value>expiresBy</value>
                 <value>active</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -861,12 +863,13 @@
             <list>
                 <value>userId</value>
                 <value>phoneNumber</value>
-                <value>sentLanguage</value>
+                <value>sentLocale</value>
                 <value>verifyCode</value>
                 <value>template</value>
                 <value>verifyType</value>
                 <value>expiresBy</value>
                 <value>active</value>
+                <value>futureExpansion</value>
             </list>
         </property>
 
@@ -875,15 +878,14 @@
                 <value>id</value>
                 <value>userId</value>
                 <value>phoneNumber</value>
-                <value>sentLanguage</value>
+                <value>sentLocale</value>
                 <value>verifyCode</value>
                 <value>template</value>
                 <value>verifyType</value>
                 <value>expiresBy</value>
                 <value>active</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
             </list>
         </property>
     </bean>
@@ -899,6 +901,7 @@
                 <value>userAgent</value>
                 <value>clientId</value>
                 <value>succeeded</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -913,6 +916,7 @@
                 <value>ipAddress</value>
                 <value>userAgent</value>
                 <value>clientId</value>
+                <value>futureExpansion</value>
             </list>
         </property>
 
@@ -929,6 +933,7 @@
                 <value>verifyCode</value>
                 <value>expiresBy</value>
                 <value>active</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -941,6 +946,7 @@
                 <value>verifyCode</value>
                 <value>expiresBy</value>
                 <value>active</value>
+                <value>futureExpansion</value>
             </list>
         </property>
 
@@ -950,9 +956,8 @@
                 <value>verifyCode</value>
                 <value>expiresBy</value>
                 <value>active</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
-                <value>createdTime</value>
-                <value>updatedTime</value>
             </list>
         </property>
     </bean>
@@ -967,6 +972,7 @@
                 <value>userAgent</value>
                 <value>clientId</value>
                 <value>succeeded</value>
+                <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
@@ -980,6 +986,7 @@
                 <value>ipAddress</value>
                 <value>userAgent</value>
                 <value>clientId</value>
+                <value>futureExpansion</value>
             </list>
         </property>
 

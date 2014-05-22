@@ -6,7 +6,6 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.enumid.LocaleId;
@@ -40,7 +39,7 @@ public class Country extends PropertyAssignedAwareResourceMeta implements Identi
     private CurrencyId defaultCurrency;
 
     @ApiModelProperty(position = 5, required = true, value = "The array of Links to the ageRating Boards supported in the country.")
-    private List<RatingBoardId> ratingBoardId = new ArrayList<>();
+    private List<RatingBoardId> ratingBoards = new ArrayList<>();
 
     @ApiModelProperty(position = 6, required = true, value = "Sub country object mapping.")
     private Map<String, SubCountry> subCountries = new HashMap<>();
@@ -49,10 +48,8 @@ public class Country extends PropertyAssignedAwareResourceMeta implements Identi
     private List<LocaleId> supportedLocales = new ArrayList<>();
 
     @ApiModelProperty(position = 8, required = true, value = "Localizable properties")
-    private Map<String, JsonNode> locales = new HashMap<>();
-
-    @ApiModelProperty(position = 9, required = true, value = "The future expansion of the country resource.")
-    private Map<String, JsonNode> futureExpansion = new HashMap<>();
+    @JsonProperty("localeKeys")
+    private Map<String, String> locales = new HashMap<>();
 
     public CountryId getId() {
         return id;
@@ -91,23 +88,6 @@ public class Country extends PropertyAssignedAwareResourceMeta implements Identi
         support.setPropertyAssigned("defaultCurrency");
     }
 
-    public List<RatingBoardId> getRatingBoardId() {
-        return ratingBoardId;
-    }
-
-    public void setRatingBoardId(List<RatingBoardId> ratingBoardId) {
-        this.ratingBoardId = ratingBoardId;
-    }
-
-    public Map<String, JsonNode> getFutureExpansion() {
-        return futureExpansion;
-    }
-
-    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
-        this.futureExpansion = futureExpansion;
-        support.setPropertyAssigned("futureExpansion");
-    }
-
     public List<LocaleId> getSupportedLocales() {
         return supportedLocales;
     }
@@ -126,11 +106,20 @@ public class Country extends PropertyAssignedAwareResourceMeta implements Identi
         support.setPropertyAssigned("subCountries");
     }
 
-    public Map<String, JsonNode> getLocales() {
+    public List<RatingBoardId> getRatingBoards() {
+        return ratingBoards;
+    }
+
+    public void setRatingBoards(List<RatingBoardId> ratingBoards) {
+        this.ratingBoards = ratingBoards;
+        support.setPropertyAssigned("ratingBoards");
+    }
+
+    public Map<String, String> getLocales() {
         return locales;
     }
 
-    public void setLocales(Map<String, JsonNode> locales) {
+    public void setLocales(Map<String, String> locales) {
         this.locales = locales;
         support.setPropertyAssigned("locales");
     }

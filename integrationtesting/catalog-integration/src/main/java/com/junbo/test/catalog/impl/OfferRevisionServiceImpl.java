@@ -101,13 +101,13 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
         return offerRevisionPost;
     }
 
-    public OfferRevision updateOfferRevision(OfferRevision offerRevision) throws Exception {
-        return updateOfferRevision(offerRevision, 200);
+    public OfferRevision updateOfferRevision(Long offerRevisionId, OfferRevision offerRevision) throws Exception {
+        return updateOfferRevision(offerRevisionId, offerRevision, 200);
     }
 
-    public OfferRevision updateOfferRevision(OfferRevision offerRevision, int expectedResponseCode) throws Exception {
+    public OfferRevision updateOfferRevision(Long offerRevisionId, OfferRevision offerRevision, int expectedResponseCode) throws Exception {
         String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(OfferRevisionId.class,
-                offerRevision.getRevisionId());
+                offerRevisionId);
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, offerRevision, expectedResponseCode);
         OfferRevision offerRevisionPut = new JsonMessageTranscoder().decode(
                 new TypeReference<OfferRevision>() {}, responseBody);
@@ -235,7 +235,7 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
 
         //Approve the item revision
         itemRevisionPost.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
-        itemRevisionService.updateItemRevision(itemRevisionPost);
+        itemRevisionService.updateItemRevision(itemRevisionPost.getRevisionId(), itemRevisionPost);
 
         return itemService.getItem(item.getItemId());
     }

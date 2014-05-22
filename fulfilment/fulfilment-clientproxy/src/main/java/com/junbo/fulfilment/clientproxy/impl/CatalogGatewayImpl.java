@@ -5,13 +5,13 @@
  */
 package com.junbo.fulfilment.clientproxy.impl;
 
+import com.junbo.catalog.spec.model.item.EntitlementDef;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
 import com.junbo.catalog.spec.model.offer.Action;
 import com.junbo.catalog.spec.model.offer.ItemEntry;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
-import com.junbo.catalog.spec.resource.EntitlementDefinitionResource;
 import com.junbo.catalog.spec.resource.ItemRevisionResource;
 import com.junbo.catalog.spec.resource.OfferRevisionResource;
 import com.junbo.common.id.ItemId;
@@ -27,10 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * CatalogGatewayImpl.
@@ -45,10 +42,6 @@ public class CatalogGatewayImpl implements CatalogGateway {
     @Autowired
     @Qualifier("itemRevisionClient")
     private ItemRevisionResource itemRevisionResource;
-
-    @Autowired
-    @Qualifier("entitlementDefClient")
-    private EntitlementDefinitionResource entitlementDefClient;
 
     @Override
     public Offer getOffer(Long offerId, Long timestamp) {
@@ -68,7 +61,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
     protected OfferRevision retrieveOfferRevision(Long offerId, Long timestamp) {
         try {
             OfferRevisionsGetOptions options = new OfferRevisionsGetOptions();
-            options.setOfferIds(Arrays.asList(new OfferId(offerId)));
+            options.setOfferIds(new HashSet(Arrays.asList(new OfferId(offerId))));
             options.setTimestamp(timestamp);
 
             Results<OfferRevision> revisions = offerRevisionResource.getOfferRevisions(options).get();
@@ -88,7 +81,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
     protected ItemRevision retrieveItemRevision(Long itemId, Long timestamp) {
         try {
             ItemRevisionsGetOptions options = new ItemRevisionsGetOptions();
-            options.setItemIds(Arrays.asList(new ItemId(itemId)));
+            options.setItemIds(new HashSet(Arrays.asList(new ItemId(itemId))));
             options.setTimestamp(timestamp);
 
             Results<ItemRevision> revisions = itemRevisionResource.getItemRevisions(options).get();
@@ -144,6 +137,8 @@ public class CatalogGatewayImpl implements CatalogGateway {
             if (actions != null) {
                 for (Action action : actions) {
                     OfferAction offerAction = new OfferAction();
+
+                    offerAction.setItemId(action.getItemId());
                     offerAction.setType(action.getType());
                     offerAction.setProperties(buildActionProperties(action));
 
@@ -160,12 +155,21 @@ public class CatalogGatewayImpl implements CatalogGateway {
         item.setItemId(itemRevision.getItemId());
         item.setSku(itemRevision.getSku());
 
+        item.setEntitlementMetas(new ArrayList<EntitlementMeta>());
+
+        for (EntitlementDef def : itemRevision.getEntitlementDefs()) {
+            EntitlementMeta meta = new EntitlementMeta();
+            meta.setConsumable(def.getConsumable());
+            meta.setType(def.getType());
+
+            item.getEntitlementMetas().add(meta);
+        }
+
         return item;
     }
 
     private Map<String, Object> buildActionProperties(Action action) {
         Map<String, Object> result = new HashMap<>();
-        result.put(Constant.ENTITLEMENT_DEF_ID, action.getEntitlementDefId());
         result.put(Constant.ITEM_ID, action.getItemId());
         result.put(Constant.STORED_VALUE_CURRENCY, action.getStoredValueCurrency());
         result.put(Constant.STORED_VALUE_AMOUNT, action.getStoredValueAmount());

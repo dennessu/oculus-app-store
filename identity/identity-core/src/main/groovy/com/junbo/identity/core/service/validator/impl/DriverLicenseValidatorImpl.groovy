@@ -42,18 +42,18 @@ class DriverLicenseValidatorImpl implements PiiValidator {
                 UserDriverLicense)
 
         if (userDriverLicense != oldUserDriverLicense) {
-            checkDriverLicense(userDriverLicense)
+            throw AppErrors.INSTANCE.fieldInvalidException('value', 'value can\'t be updated.').exception()
         }
         return Promise.pure(null)
     }
 
     private void checkDriverLicense(UserDriverLicense userDriverLicense) {
-        if (userDriverLicense.value != null) {
-            if (userDriverLicense.value.length() > maxDriverLicenseLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('value', maxDriverLicenseLength).exception()
+        if (userDriverLicense.info != null) {
+            if (userDriverLicense.info.length() > maxDriverLicenseLength) {
+                throw AppErrors.INSTANCE.fieldTooLong('value.info', maxDriverLicenseLength).exception()
             }
-            if (userDriverLicense.value.length() < minDriverLicenseLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('value', minDriverLicenseLength).exception()
+            if (userDriverLicense.info.length() < minDriverLicenseLength) {
+                throw AppErrors.INSTANCE.fieldTooShort('value.info', minDriverLicenseLength).exception()
             }
         }
     }

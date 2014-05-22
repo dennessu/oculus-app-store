@@ -12,7 +12,7 @@ import com.junbo.order.core.impl.common.BillingEventHistoryBuilder
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
-import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
@@ -29,7 +29,7 @@ class WebPaymentChargeAction extends BaseOrderEventAwareAction {
     @Qualifier('orderFacadeContainer')
     FacadeContainer facadeContainer
     @Autowired
-    OrderRepository orderRepository
+    OrderRepositoryFacade orderRepository
     @Autowired
     OrderServiceContextBuilder orderServiceContextBuilder
     @Autowired
@@ -74,13 +74,13 @@ class WebPaymentChargeAction extends BaseOrderEventAwareAction {
                 throw AppErrors.INSTANCE.billingChargeFailed().exception()
             }
             order.providerConfirmUrl = balance.providerConfirmUrl
-            def oldOrder = orderRepository.getOrder(order.id.value)
+            def oldOrder = orderRepository.getOrder(order.getId().value)
             oldOrder.providerConfirmUrl = order.providerConfirmUrl
             orderRepository.updateOrder(oldOrder, true)
             CoreBuilder.fillTaxInfo(order, balance)
             def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(balance)
             if (billingHistory.billingEvent != null) {
-                def savedHistory = orderRepository.createBillingHistory(order.id.value, billingHistory)
+                def savedHistory = orderRepository.createBillingHistory(order.getId().value, billingHistory)
                 if (order.billingHistories == null) {
                     order.billingHistories = [savedHistory]
                 }

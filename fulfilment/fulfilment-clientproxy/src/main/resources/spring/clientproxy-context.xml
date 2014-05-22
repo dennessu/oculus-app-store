@@ -33,12 +33,6 @@
         <property name="target" value="${clientproxy.catalog.url}"/>
     </bean>
 
-    <bean id="entitlementDefClient"
-          class="com.junbo.catalog.spec.resource.proxy.EntitlementDefinitionResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.catalog.url}"/>
-    </bean>
-
     <bean id="shippingAddressClient"
           class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.identity.url}"/>

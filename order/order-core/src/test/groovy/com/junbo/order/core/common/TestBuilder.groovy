@@ -72,7 +72,7 @@ class TestBuilder {
 
     static OrderItem buildOrderItem() {
         def orderItem = new OrderItem()
-        orderItem.setOrderItemId(new OrderItemId(generateLong()))
+        orderItem.setId(new OrderItemId(generateLong()))
         orderItem.setType(ItemType.DIGITAL.toString())
         orderItem.setOffer(new OfferId(generateLong()))
         orderItem.quantity = 1
@@ -113,7 +113,7 @@ class TestBuilder {
     static FulfilmentRequest buildFulfilmentRequest(Order order) {
         def request = new FulfilmentRequest()
         request.items = []
-        request.orderId = order.id.value
+        request.orderId = order.getId().value
         request.trackingGuid = UUID.randomUUID().toString()
         return request
     }
@@ -121,7 +121,7 @@ class TestBuilder {
     static FulfilmentItem buildFulfilmentItem(String itemStatus, OrderItem orderItem) {
         def item = new FulfilmentItem()
         item.fulfilmentId = generateLong()
-        item.orderItemId = orderItem.orderItemId.value
+        item.orderItemId = orderItem.getId().value
         item.status = itemStatus
         return item
     }

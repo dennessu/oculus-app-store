@@ -15,7 +15,6 @@ import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.springframework.beans.factory.annotation.Autowired
 import org.testng.annotations.Test
-
 /**
  * Created by LinYi on 14-2-25.
  */
@@ -35,8 +34,8 @@ class MapperTest extends BaseTest {
         OrderEntity returnedOrderEntity = modelMapper.toOrderEntity(orderModel, context)
         assert orderModel != null :  'Fail to map order entity to model.'
         assert returnedOrderEntity != null :'Fail to map order model to entity.'
-        assert orderModel.id.value == orderEntity.orderId :  'The order Id should not be different.'
-        assert orderModel.id.value == returnedOrderEntity.orderId : 'The order Id should not be different.'
+        assert orderModel.getId().value == orderEntity.orderId :  'The order Id should not be different.'
+        assert orderModel.getId().value == returnedOrderEntity.orderId : 'The order Id should not be different.'
         assert orderEntity.tentative == returnedOrderEntity.tentative
     }
 
@@ -49,7 +48,7 @@ class MapperTest extends BaseTest {
         OrderItemEntity returnedOrderItemEntity = modelMapper.toOrderItemEntity(orderItemModel, context)
         assert orderItemModel != null :  'Fail to map order item entity to model.'
         assert returnedOrderItemEntity != null :  'Fail to map order item model to entity.'
-        assert (orderItemModel.orderItemId.value == orderItemEntity.orderItemId)
+        assert orderItemModel.getId().value == orderItemEntity.orderItemId
     }
 
     @Test(enabled = true)
@@ -63,7 +62,7 @@ class MapperTest extends BaseTest {
         assert returnedOrderDiscountInfoEntity != null : 'Fail to map discount model to entity.'
         assert discount.orderItemId.value == orderDiscountInfoEntity.orderItemId :
                 'The order discount Id should not be different.'
-        assert discount.discountInfoId ==  returnedOrderDiscountInfoEntity.discountInfoId :
+        assert discount.id ==  returnedOrderDiscountInfoEntity.discountInfoId :
                 'The order discount Id should not be different.'
     }
 

@@ -13,7 +13,7 @@ import com.junbo.order.core.impl.orderaction.FulfillmentAction
 import com.junbo.order.core.impl.orderaction.context.OrderActionResult
 import com.junbo.order.core.matcher.Matcher
 import com.junbo.order.db.entity.enums.EventStatus
-import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.FulfillmentHistory
 import org.easymock.EasyMock
@@ -35,7 +35,7 @@ class FulfillmentActionTest extends BaseTest{
     void setUp() {
         fulfillmentAction.facadeContainer = new FacadeContainer()
         fulfillmentAction.facadeContainer.fulfillmentFacade = EasyMock.createMock(FulfillmentFacade.class)
-        fulfillmentAction.orderRepository = EasyMock.createMock(OrderRepository.class)
+        fulfillmentAction.orderRepository = EasyMock.createMock(OrderRepositoryFacade.class)
     }
 
     @Test(enabled = true)
@@ -63,7 +63,7 @@ class FulfillmentActionTest extends BaseTest{
 
         EasyMock.expect(fulfillmentAction.facadeContainer.fulfillmentFacade.postFulfillment(
                 EasyMock.same(order))).andReturn(Promise.pure(fulfilmentResult))
-        EasyMock.expect(fulfillmentAction.orderRepository.createFulfillmentHistory(EasyMock.eq(order.id.value),
+        EasyMock.expect(fulfillmentAction.orderRepository.createFulfillmentHistory(
                 Matcher.memberEquals(fulfillmentHistories[0]))).andReturn(null)
 
         EasyMock.replay(fulfillmentAction.facadeContainer.fulfillmentFacade, fulfillmentAction.orderRepository)

@@ -6,7 +6,6 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.model.Link;
@@ -40,26 +39,11 @@ public class Currency extends PropertyAssignedAwareResourceMeta implements Ident
     @ApiModelProperty(position = 5, required = true, value = "Position to put the symbol when show currency number (BEFORE, AFTER, etc).")
     private String symbolPosition;
 
-    @ApiModelProperty(position = 6, required = true, value = "The symbol of the currency decimal.")
-    private String decimalSymbol;
-
     @ApiModelProperty(position = 7, required = true, value = "The number of digits after decimal.")
     private Integer numberAfterDecimal;
 
-    @ApiModelProperty(position = 8, required = true, value = "Format for the negative currency (MINUS,BRACE, etc).")
-    private String negativeFormat;
-
-    @ApiModelProperty(position = 9, required = true, value = "The symbol of the digital grouping (,)")
-    private String digitGroupingSymbol;
-
-    @ApiModelProperty(position = 10, required = true, value = "The length of digits to group together.")
-    private Integer digitGroupingLength;
-
     @ApiModelProperty(position = 11, required = true, value = "The supported locales of the currency resource.")
-    private Map<String, JsonNode> locales = new HashMap<>();
-
-    @ApiModelProperty(position = 12, required = true, value = "The future expansion of the currency resource.")
-    private Map<String, JsonNode> futureExpansion = new HashMap<>();
+    private Map<String, String> localeKeys = new HashMap<>();
 
     public CurrencyId getId() {
         return id;
@@ -107,15 +91,6 @@ public class Currency extends PropertyAssignedAwareResourceMeta implements Ident
         support.setPropertyAssigned("symbolPosition");
     }
 
-    public String getDecimalSymbol() {
-        return decimalSymbol;
-    }
-
-    public void setDecimalSymbol(String decimalSymbol) {
-        this.decimalSymbol = decimalSymbol;
-        support.setPropertyAssigned("decimalSymbol");
-    }
-
     public Integer getNumberAfterDecimal() {
         return numberAfterDecimal;
     }
@@ -125,48 +100,12 @@ public class Currency extends PropertyAssignedAwareResourceMeta implements Ident
         support.setPropertyAssigned("numberAfterDecimal");
     }
 
-    public String getNegativeFormat() {
-        return negativeFormat;
+    public Map<String, String> getLocaleKeys() {
+        return localeKeys;
     }
 
-    public void setNegativeFormat(String negativeFormat) {
-        this.negativeFormat = negativeFormat;
-        support.setPropertyAssigned("negativeFormat");
-    }
-
-    public String getDigitGroupingSymbol() {
-        return digitGroupingSymbol;
-    }
-
-    public void setDigitGroupingSymbol(String digitGroupingSymbol) {
-        this.digitGroupingSymbol = digitGroupingSymbol;
-        support.setPropertyAssigned("digitGroupingSymbol");
-    }
-
-    public Integer getDigitGroupingLength() {
-        return digitGroupingLength;
-    }
-
-    public void setDigitGroupingLength(Integer digitGroupingLength) {
-        this.digitGroupingLength = digitGroupingLength;
-        support.setPropertyAssigned("digitGroupingLength");
-    }
-
-    public Map<String, JsonNode> getLocales() {
-        return locales;
-    }
-
-    public void setLocales(Map<String, JsonNode> locales) {
-        this.locales = locales;
-        support.setPropertyAssigned("locales");
-    }
-
-    public Map<String, JsonNode> getFutureExpansion() {
-        return futureExpansion;
-    }
-
-    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
-        this.futureExpansion = futureExpansion;
-        support.setPropertyAssigned("futureExpansion");
+    public void setLocaleKeys(Map<String, String> localeKeys) {
+        this.localeKeys = localeKeys;
+        support.setPropertyAssigned("localeKeys");
     }
 }

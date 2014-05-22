@@ -4,8 +4,8 @@ import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.order.clientproxy.model.OrderOfferRevision
 import com.junbo.order.db.entity.enums.PayoutStatus
-import com.junbo.order.db.repo.OrderRepository
-import com.junbo.order.db.repo.SubledgerRepository
+import com.junbo.order.db.repo.facade.OrderRepositoryFacade
+import com.junbo.order.db.repo.facade.SubledgerRepositoryFacade
 import com.junbo.order.spec.model.Subledger
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Value
@@ -23,11 +23,11 @@ class SubledgerHelper {
 
     private static final int MONTH_A_YEAR = 12
 
-    @Resource(name = 'subledgerRepository')
-    SubledgerRepository subledgerRepository
+    @Resource(name = 'subledgerRepositoryFacade')
+    SubledgerRepositoryFacade subledgerRepository
 
-    @Resource(name = 'orderRepository')
-    OrderRepository orderRepository
+    @Resource(name = 'orderRepositoryFacade')
+    OrderRepositoryFacade orderRepository
 
     @Resource(name = 'subledgerItemContextBuilder')
     SubledgerItemContextBuilder subledgerItemContextBuilder

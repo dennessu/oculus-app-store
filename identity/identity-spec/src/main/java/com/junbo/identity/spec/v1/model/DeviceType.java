@@ -37,9 +37,6 @@ public class DeviceType extends PropertyAssignedAwareResourceMeta implements Ide
     @ApiModelProperty(position = 5, required = true, value = "[Nullable] The array of component type list.")
     private List<DeviceType> componentTypes = new ArrayList<>();
 
-    @ApiModelProperty(position = 6, required = false, value = "Feature expansion of the device type resource.")
-    private Map<String, String> futureExpansion = new HashMap<>();
-
     public DeviceTypeId getId() {
         return id;
     }
@@ -84,14 +81,5 @@ public class DeviceType extends PropertyAssignedAwareResourceMeta implements Ide
     public void setComponentTypes(List<DeviceType> componentTypes) {
         this.componentTypes = componentTypes;
         support.setPropertyAssigned("componentTypes");
-    }
-
-    public Map<String, String> getFutureExpansion() {
-        return futureExpansion;
-    }
-
-    public void setFutureExpansion(Map<String, String> futureExpansion) {
-        this.futureExpansion = futureExpansion;
-        support.setPropertyAssigned("futureExpansion");
     }
 }

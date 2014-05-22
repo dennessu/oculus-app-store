@@ -8,6 +8,7 @@ package com.junbo.entitlement.common.lib;
 
 import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.def.Function;
+import org.springframework.util.StringUtils;
 
 import javax.ws.rs.core.UriBuilder;
 import java.util.HashSet;
@@ -20,14 +21,20 @@ public class CommonUtils {
     private CommonUtils() {
     }
 
-    public static UriBuilder buildPageParams(UriBuilder builder, Integer start, Integer count) {
-        if (start == null) {
+    public static UriBuilder buildPageParams(UriBuilder builder, Integer start, Integer count, String bookmark) {
+        Boolean hasStart = StringUtils.isEmpty(bookmark);
+        if (hasStart && start == null) {
             start = EntitlementConsts.DEFAULT_PAGE_NUMBER;
         }
         if (count == null) {
             count = EntitlementConsts.DEFAULT_PAGE_SIZE;
         }
-        return builder.queryParam("start", start + count).queryParam("count", count);
+        if (hasStart) {
+            builder = builder.queryParam("start", start + count);
+        } else {
+            builder = builder.queryParam("bookmark", bookmark);
+        }
+        return builder.queryParam("count", count);
     }
 
     public static Boolean isNotNull(Object o) {

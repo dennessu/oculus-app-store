@@ -18,6 +18,9 @@ public class UserPersonalInfoLink {
     @ApiModelProperty(position = 1, required = true, value = "Whether this link is default.")
     private Boolean isDefault;
 
+    @ApiModelProperty(position = 2, required = false, value = "Label of this link.")
+    private String label;
+
     @ApiModelProperty(position = 3, required = true, value = "Resource Link to the userPersonalInfo resource.")
     private UserPersonalInfoId value;
 
@@ -30,6 +33,14 @@ public class UserPersonalInfoLink {
 
     public void setIsDefault(Boolean isDefault) {
         this.isDefault = isDefault;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public UserPersonalInfoId getValue() {

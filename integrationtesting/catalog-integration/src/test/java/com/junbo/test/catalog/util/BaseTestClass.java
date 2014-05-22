@@ -32,7 +32,7 @@ public class BaseTestClass extends TestClass {
 
         //Approve the item revision
         itemRevision.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
-        itemRevisionService.updateItemRevision(itemRevision);
+        itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision);
     }
 
 }

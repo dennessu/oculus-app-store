@@ -41,14 +41,14 @@ class BirthdayValidatorImpl implements PiiValidator {
         UserDOB oldUserDOB = (UserDOB)JsonHelper.jsonNodeToObj(oldValue, UserDOB)
 
         if (userDOB != oldUserDOB) {
-            checkBirthdayInfo(userDOB)
+            throw AppErrors.INSTANCE.fieldInvalidException('value', 'value can\'t be updated.').exception()
         }
 
         return Promise.pure(null)
     }
 
     private void checkBirthdayInfo(UserDOB userDOB) {
-        Date birthday = userDOB.birthday
+        Date birthday = userDOB.info
         if (birthday == null) {
             throw new IllegalArgumentException('birthday is null')
         }
@@ -56,14 +56,14 @@ class BirthdayValidatorImpl implements PiiValidator {
         def after = Calendar.instance
 
         if (birthday.after(after.time)) {
-            throw AppErrors.INSTANCE.fieldInvalid('DOB').exception()
+            throw AppErrors.INSTANCE.fieldInvalid('value.info').exception()
         }
 
         def before = Calendar.instance
         before.add(Calendar.YEAR, -timespanInYears)
 
         if (birthday.before(before.time)) {
-            throw AppErrors.INSTANCE.fieldInvalid('DOB').exception()
+            throw AppErrors.INSTANCE.fieldInvalid('value.info').exception()
         }
     }
 

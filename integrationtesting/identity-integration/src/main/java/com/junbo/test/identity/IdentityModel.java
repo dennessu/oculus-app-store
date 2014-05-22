@@ -28,15 +28,16 @@ public class IdentityModel {
 
     }
 
+    public static final String DefaultCountry = "US";
+    public static final String DefaultCurrency = "USD";
+    public static final String DefaultLocale = "en_US";
+
     public static Address DefaultAddress() throws Exception {
         Address address = new Address();
         address.setCity("Irvine");
         CountryId countryId = new CountryId();
-        countryId.setValue("US");
+        countryId.setValue(DefaultCountry);
         address.setCountryId(countryId);
-        address.setFirstName(RandomHelper.randomAlphabetic(10));
-        address.setLastName(RandomHelper.randomAlphabetic(10));
-        address.setPhoneNumber("16018984661");
         address.setPostalCode("92612");
         address.setStreet1("19800 MacArthur Blvd");
         return address;
@@ -44,22 +45,19 @@ public class IdentityModel {
 
     public static Country DefaultCountry() throws Exception {
         Country country = new Country();
-        country.setCountryCode("US");
+        country.setCountryCode(DefaultCountry);
         CurrencyId currencyId = new CurrencyId();
-        currencyId.setValue("USD");
+        currencyId.setValue(DefaultCurrency);
         country.setDefaultCurrency(currencyId);
         LocaleId localeId = new LocaleId();
-        localeId.setValue("en_US");
+        localeId.setValue(DefaultLocale);
         country.setDefaultLocale(localeId);
-        //TODO fields to be uncommented once code complete.
-//        Map<String, JsonNode> locales = new HashMap<>();
-//        LocaleName localeName = new LocaleName();
-//        localeName.setShortName("USD_SHORT");
-//        localeName.setLongName("USD_LONG");
-//        locales.put("en_US", JsonHelper.ObjectToJsonNode(localeName));
-//        country.setLocales(locales);
-        List<RatingBoardId> ratingBoardIds = new ArrayList<>();
-        country.setRatingBoardId(ratingBoardIds);
+        Map<String, String> locales = new HashMap<>();
+        locales.put("shortName", "USD_SHORT");
+        locales.put("longName", "USD_LONG");
+        country.setLocales(locales);
+        List<RatingBoardId> ratingBoards = new ArrayList<>();
+        country.setRatingBoards(ratingBoards);
         Map<String, SubCountry> subCountryMap = new HashMap<>();
         SubCountry subCountry1 = new SubCountry();
         subCountry1.setShortNameKey("US_NY_SHORT");
@@ -78,28 +76,31 @@ public class IdentityModel {
     }
 
     public static Currency DefaultCurrency() throws Exception {
-        //TODO fields to be uncommented once code complete.
         Currency currency = new Currency();
-        currency.setCurrencyCode("USD");
-        //currency.setDecimalSymbol(".");
-        //currency.setDigitGroupingLength(3);
-        //currency.setDigitGroupingSymbol(",");
-        Map<String, JsonNode> locales = new HashMap<>();
-        LocaleName localeName = new LocaleName();
-        localeName.setShortName("USD_SHORT");
-        localeName.setLongName("USD_LONG");
-        locales.put("en_US", JsonHelper.ObjectToJsonNode(localeName));
-        currency.setLocales(locales);
-        //currency.setNegativeFormat("BRACE");
-        //currency.setNumberAfterDecimal(2);
+        currency.setCurrencyCode(DefaultCurrency);
+        currency.setDecimalSymbol(".");
+        currency.setDigitGroupingLength(3);
+        currency.setDigitGroupingSymbol(",");
+        Map<String, String> localeKeys = new HashMap<>();
+        localeKeys.put("shortName", "USD_SHORT");
+        localeKeys.put("longName", "USD_LONG");
+        currency.setLocaleKeys(localeKeys);
+        currency.setNegativeFormat("BRACE");
+        currency.setNumberAfterDecimal(2);
         currency.setSymbol("$");
-        //currency.setSymbolPosition("BEFORE");
+        currency.setSymbolPosition("BEFORE");
         return currency;
+    }
+
+    public static Email DefaultEmail() throws Exception {
+        Email email = new Email();
+        email.setInfo(RandomHelper.randomAlphabetic(8) + "@163.com");
+        return email;
     }
 
     public static Locale DefaultLocale() throws Exception {
         Locale locale = new Locale();
-        locale.setLocaleCode("en_US");
+        locale.setLocaleCode(DefaultLocale);
         locale.setLocaleName("English(US)");
         locale.setLongName("English (United States)");
         locale.setShortName("English(US)");
@@ -113,10 +114,36 @@ public class IdentityModel {
         return user;
     }
 
-    public static UserPersonalInfo DefaultUserPersonalInfo() throws Exception {
+    /**
+     * copied from com\junbo\identity\data\identifiable\UserPersonalInfoType.groovy.
+     */
+    public static enum UserPersonalInfoType {
+        ADDRESS,
+        DOB,
+        DRIVERS_LICENSE,
+        EMAIL,
+        GENDER,
+        GOVERNMENT_ID,
+        NAME,
+        PASSPORT,
+        PHONE,
+        QQ,
+        SMS,
+        WHATSAPP,
+        WIPED
+    }
+
+    public static UserPersonalInfo DefaultUserPersonalInfoAddress() throws Exception {
         UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
-        userPersonalInfo.setType("ADDRESS");
+        userPersonalInfo.setType(UserPersonalInfoType.ADDRESS.name());
         userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(DefaultAddress()));
+        return userPersonalInfo;
+    }
+
+    public static UserPersonalInfo DefaultUserPersonalInfoEmail() throws Exception {
+        UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
+        userPersonalInfo.setType(UserPersonalInfoType.EMAIL.name());
+        userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(DefaultEmail()));
         return userPersonalInfo;
     }
 }

@@ -18,7 +18,6 @@
     <bean id="defaultPromotionRevisionResource" class="com.junbo.catalog.rest.resource.PromotionRevisionResourceImpl" scope="prototype"/>
     <bean id="defaultItemAttributeResource" class="com.junbo.catalog.rest.resource.ItemAttributeResourceImpl" scope="prototype"/>
     <bean id="defaultOfferAttributeResource" class="com.junbo.catalog.rest.resource.OfferAttributeResourceImpl" scope="prototype"/>
-    <bean id="defaultEntitlementDefinitionResource" class="com.junbo.catalog.rest.resource.EntitlementDefinitionResourceImpl" scope="prototype"/>
     <bean id="defaultPriceTierResource" class="com.junbo.catalog.rest.resource.PriceTierResourceImpl" scope="prototype"/>
 
     <bean id="defaultItemResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxyFactory"/>
@@ -29,7 +28,6 @@
     <bean id="defaultPromotionRevisionResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.PromotionRevisionResourceClientProxyFactory"/>
     <bean id="defaultItemAttributeResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.ItemAttributeResourceClientProxyFactory"/>
     <bean id="defaultOfferAttributeResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.OfferAttributeResourceClientProxyFactory"/>
-    <bean id="defaultEntitlementDefinitionResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.EntitlementDefinitionResourceClientProxyFactory"/>
     <bean id="defaultPriceTierResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.PriceTierResourceClientProxyFactory"/>
 
     <bean id="defaultItemResourceRouter" parent="routingRouterBase" />
@@ -43,8 +41,6 @@
     <bean id="defaultEntitlementDefinitionResourceRouter" parent="routingRouterBase" />
     <bean id="defaultPriceTierResourceRouter" parent="routingRouterBase" />
 
-    <bean id="itemAuthorizeCallbackFactory" class="com.junbo.catalog.rest.auth.ItemAuthorizeCallbackFactory"
-            parent="abstractAuthorizeCallbackFactory">
+    <bean id="itemAuthorizeCallbackFactory" class="com.junbo.catalog.rest.auth.ItemAuthorizeCallbackFactory" parent="abstractAuthorizeCallbackFactory">
     </bean>
-
 </beans>

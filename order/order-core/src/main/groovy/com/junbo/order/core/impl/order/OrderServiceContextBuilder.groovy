@@ -12,7 +12,6 @@ import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.clientproxy.model.OrderOfferRevision
-import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.order.spec.model.PaymentInfo
@@ -33,8 +32,6 @@ import org.springframework.util.CollectionUtils
 @TypeChecked
 class OrderServiceContextBuilder {
 
-    @Autowired
-    OrderRepository orderRepository
     @Autowired
     @Qualifier('orderFacadeContainer')
     FacadeContainer facadeContainer
@@ -88,7 +85,7 @@ class OrderServiceContextBuilder {
             return Promise.pure(null)
         }
         return facadeContainer.billingFacade.getBalancesByOrderId(
-                context.order.id.value).syncThen { List<Balance> bas ->
+                context.order.getId().value).syncThen { List<Balance> bas ->
             context.balances = bas
             return bas
         }

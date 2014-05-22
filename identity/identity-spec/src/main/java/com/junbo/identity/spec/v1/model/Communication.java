@@ -28,12 +28,6 @@ public class Communication extends PropertyAssignedAwareResourceMeta implements 
     @JsonProperty("self")
     private CommunicationId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "The name of communication.")
-    private String name;
-
-    @ApiModelProperty(position = 3, required = true, value = "The description of communication.")
-    private String description;
-
     @ApiModelProperty(position = 4, required = true, value = "An array of links to every locales the given communication is available in.")
     private List<LocaleId> translations = new ArrayList<>();
 
@@ -44,9 +38,6 @@ public class Communication extends PropertyAssignedAwareResourceMeta implements 
             "all the translation for this communication object in the locale.")
     private Map<String, JsonNode> locales = new HashMap<>();
 
-    @ApiModelProperty(position = 7, required = true, value = " [non nullable, possibly empty] The future expansion of the communication resource.")
-    private Map<String, JsonNode> futureExpansion = new HashMap<>();
-
     public CommunicationId getId() {
         return id;
     }
@@ -55,24 +46,6 @@ public class Communication extends PropertyAssignedAwareResourceMeta implements 
         this.id = id;
         support.setPropertyAssigned("id");
         support.setPropertyAssigned("self");
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-        support.setPropertyAssigned("name");
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-        support.setPropertyAssigned("description");
     }
 
     public List<CountryId> getRegions() {
@@ -100,14 +73,5 @@ public class Communication extends PropertyAssignedAwareResourceMeta implements 
     public void setLocales(Map<String, JsonNode> locales) {
         this.locales = locales;
         support.setPropertyAssigned("locales");
-    }
-
-    public Map<String, JsonNode> getFutureExpansion() {
-        return futureExpansion;
-    }
-
-    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
-        this.futureExpansion = futureExpansion;
-        support.setPropertyAssigned("futureExpansion");
     }
 }

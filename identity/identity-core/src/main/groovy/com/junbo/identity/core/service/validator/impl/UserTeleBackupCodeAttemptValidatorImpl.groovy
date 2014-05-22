@@ -139,15 +139,6 @@ class UserTeleBackupCodeAttemptValidatorImpl implements UserTeleBackupCodeAttemp
             }
         }
 
-        if (attempt.clientId != null) {
-            if (attempt.clientId.length() > maxClientIdLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('clientId', maxClientIdLength).exception()
-            }
-            if (attempt.clientId.length() < minClientIdLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('clientId', minClientIdLength).exception()
-            }
-        }
-
         return userRepository.get(userId).then { User user ->
             if (user == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()

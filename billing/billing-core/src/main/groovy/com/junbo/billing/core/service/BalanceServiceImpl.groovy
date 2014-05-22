@@ -93,6 +93,26 @@ class BalanceServiceImpl implements BalanceService {
 
         if (balance.type == BalanceType.REFUND.name()) {
             balanceValidator.validateRefund(balance)
+
+            Balance originalBalance = balanceRepository.getBalance(balance.originalBalanceId.value)
+            if (originalBalance == null) {
+                throw AppErrors.INSTANCE.balanceNotFound(balance.originalBalanceId.value.toString()).exception()
+            }
+            balanceValidator.validateBalanceStatus(originalBalance.status,
+                    [BalanceStatus.COMPLETED.name(), BalanceStatus.AWAITING_PAYMENT.name()])
+
+            if (balance.balanceItems == null || balance.balanceItems.size() == 0) {
+                // if there is no balance items input, assume full refund
+                for (BalanceItem item : originalBalance.balanceItems) {
+                    def refundItem = new BalanceItem()
+                    refundItem.originalBalanceItemId = item.balanceItemId
+                    refundItem.amount = item.amount
+                    refundItem.orderId = item.orderId
+                    refundItem.orderItemId = item.orderItemId
+                    balance.addBalanceItem(refundItem)
+                }
+            }
+
         }
 
         return balanceValidator.validateUser(balance.userId).then {

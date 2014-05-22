@@ -56,7 +56,6 @@ public class CatalogGatewayTest extends BaseTest {
                     new ArrayList<Action>() {{
                         add(new Action() {{
                             setType(Constant.ACTION_GRANT_ENTITLEMENT);
-                            setEntitlementDefId(12345L);
                         }});
                     }});
         }});

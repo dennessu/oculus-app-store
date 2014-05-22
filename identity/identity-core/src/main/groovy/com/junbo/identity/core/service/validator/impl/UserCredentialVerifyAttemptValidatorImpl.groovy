@@ -36,7 +36,6 @@ import java.util.regex.Pattern
 @CompileStatic
 @SuppressWarnings('UnnecessaryGetter')
 class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAttemptValidator {
-
     private static final String MAIL_IDENTIFIER = "@"
 
     private UserCredentialVerifyAttemptRepository userLoginAttemptRepository
@@ -181,15 +180,14 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
 
     private Promise<User> findUser(UserCredentialVerifyAttempt userLoginAttempt) {
         if (isEmail(userLoginAttempt.username)) {
-            return userPersonalInfoRepository.searchByEmail(userLoginAttempt.username).
+            return userPersonalInfoRepository.searchByEmail(userLoginAttempt.username.toLowerCase()).
                 then { List<UserPersonalInfo> personalInfos ->
                     if (CollectionUtils.isEmpty(personalInfos)) {
                         throw AppErrors.INSTANCE.userNotFound(userLoginAttempt.username).exception()
                     }
 
                     UserPersonalInfo personalInfo = personalInfos.find { UserPersonalInfo userPersonalInfo ->
-                        Email email = (Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Email)
-                        return email.isValidated == true
+                        return userPersonalInfo.isValidated == true
                     }
 
                     if (personalInfo == null) {

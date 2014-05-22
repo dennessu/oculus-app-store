@@ -61,7 +61,7 @@ class IdentityFacadeImpl implements IdentityFacade {
                         throw AppErrors.INSTANCE.noValidatedUserEmail().exception()
                     }
                     def email = ObjectMapperProvider.instance().treeToValue(info.value, Email)
-                    return Promise.pure(email.value)
+                    return Promise.pure(email.info)
                 } catch (Exception e) {
                     LOGGER.error("Failed to convert user address:", e)
                     throw AppErrors.INSTANCE.noValidatedUserEmail().exception()

@@ -13,6 +13,7 @@ import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.StringUtils
 
 import java.util.regex.Pattern
 
@@ -21,7 +22,6 @@ import java.util.regex.Pattern
  */
 @CompileStatic
 class UserEmailValidatorImpl implements PiiValidator {
-
     private List<Pattern> allowedEmailPatterns
     private Integer minEmailLength
     private Integer maxEmailLength
@@ -49,51 +49,40 @@ class UserEmailValidatorImpl implements PiiValidator {
         Email email = (Email)JsonHelper.jsonNodeToObj(value, Email)
         Email oldEmail = (Email)JsonHelper.jsonNodeToObj(oldValue, Email)
 
+        email.info = StringUtils.isEmpty(email.info) ? email.info : email.info.toLowerCase()
+        oldEmail.info = StringUtils.isEmpty(oldEmail.info) ? oldEmail.info : oldEmail.info.toLowerCase()
+
         if (email != oldEmail) {
-            checkUserEmail(email)
-
-            // If user want to promote validate from false to true, need to check again
-            if (email.value != oldEmail.value
-            || (email.isValidated == true  && email.isValidated != oldEmail.isValidated)
-            ) {
-                return checkAdvanceUserEmail(email)
-            }
-
-            return Promise.pure(null)
+            throw AppErrors.INSTANCE.fieldInvalidException('value', 'value can\'t be updated').exception()
         }
 
         return Promise.pure(null)
     }
 
     private void checkUserEmail(Email email) {
-        if (email.value == null) {
-            throw AppErrors.INSTANCE.fieldInvalid('value').exception()
+        if (email.info == null) {
+            throw AppErrors.INSTANCE.fieldInvalid('value.info').exception()
         }
 
-        if (email.value.length() < minEmailLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('value', minEmailLength).exception()
+        if (email.info.length() < minEmailLength) {
+            throw AppErrors.INSTANCE.fieldTooShort('value.info', minEmailLength).exception()
         }
-        if (email.value.length() > maxEmailLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('value', maxEmailLength).exception()
+        if (email.info.length() > maxEmailLength) {
+            throw AppErrors.INSTANCE.fieldTooLong('value.info', maxEmailLength).exception()
         }
 
         if (!allowedEmailPatterns.any {
-            Pattern pattern -> pattern.matcher(email.value).matches()
+            Pattern pattern -> pattern.matcher(email.info.toLowerCase()).matches()
         }) {
-            throw AppErrors.INSTANCE.fieldInvalid('value').exception()
+            throw AppErrors.INSTANCE.fieldInvalid('value.info').exception()
         }
     }
 
     private Promise<Void> checkAdvanceUserEmail(Email email) {
-        return userPersonalInfoRepository.searchByEmail(email.value).then { List<UserPersonalInfo> existing ->
-            existing.removeAll { UserPersonalInfo userPersonalInfo ->
-                // Only validated mail can't be added twice
-                Email existingEmail = (Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Email)
-                return existingEmail.isValidated != true
-            }
-
+        return userPersonalInfoRepository.searchByEmail(email.info.toLowerCase()).then {
+            List<UserPersonalInfo> existing ->
             if (!CollectionUtils.isEmpty(existing)) {
-                throw AppErrors.INSTANCE.fieldDuplicate('value').exception()
+                throw AppErrors.INSTANCE.fieldDuplicate('value.info').exception()
             }
 
             return Promise.pure(null)

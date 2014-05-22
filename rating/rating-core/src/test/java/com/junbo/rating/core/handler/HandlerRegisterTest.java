@@ -6,8 +6,8 @@
 
 package com.junbo.rating.core.handler;
 
-import com.junbo.catalog.spec.model.promotion.Predicate;
-import com.junbo.catalog.spec.model.promotion.ScopeCriterion;
+import com.junbo.catalog.spec.model.promotion.criterion.OfferScopeCriterion;
+import com.junbo.catalog.spec.model.promotion.criterion.Predicate;
 import com.junbo.rating.core.BaseTest;
 import com.junbo.rating.core.context.RatingContext;
 import com.junbo.rating.spec.model.RatableItem;
@@ -22,11 +22,11 @@ import java.util.ArrayList;
 public class HandlerRegisterTest extends BaseTest{
     @Test
     public void test() {
-        ScopeCriterion criterion = new ScopeCriterion();
+        OfferScopeCriterion criterion = new OfferScopeCriterion();
         criterion.setPredicate(Predicate.INCLUDE_OFFER);
         Long itemId = generateId();
-        criterion.setEntities(new ArrayList<Long>());
-        criterion.getEntities().add(itemId);
+        criterion.setOffers(new ArrayList<Long>());
+        criterion.getOffers().add(itemId);
 
         RatingContext context = new RatingContext();
         RatableItem item = new RatableItem();

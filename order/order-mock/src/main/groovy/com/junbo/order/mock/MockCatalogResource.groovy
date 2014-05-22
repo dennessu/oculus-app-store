@@ -26,7 +26,7 @@ class MockCatalogResource extends BaseMock implements OfferRevisionResource {
     @Override
     Promise<Results<OfferRevision>> getOfferRevisions(@BeanParam OfferRevisionsGetOptions options) {
         Results<OfferRevision> ors = new Results<>()
-        ors.items = [generateOfferRevision()]
+        ors.items = [generateOfferRevision()] as LinkedList
         return Promise.pure(ors)
     }
 

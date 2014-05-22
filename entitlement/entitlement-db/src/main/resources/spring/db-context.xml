@@ -34,8 +34,10 @@
                 <entry key="hibernate.jdbc.batch_size" value="${sharding.hibernate.jdbc.batch_size}"/>
                 <entry key="hibernate.show_sql" value="${sharding.hibernate.show_sql}"/>
                 <entry key="hibernate.multiTenancy" value="SCHEMA"/>
-                <entry key="hibernate.current_session_context_class" value="com.junbo.sharding.hibernate.MultiTenantJTASessionContext"/>
-                <entry key="hibernate.tenant_identifier_resolver" value="com.junbo.sharding.hibernate.ShardCurrentTenantIdentifierResolver"/>
+                <entry key="hibernate.current_session_context_class"
+                       value="com.junbo.sharding.hibernate.MultiTenantJTASessionContext"/>
+                <entry key="hibernate.tenant_identifier_resolver"
+                       value="com.junbo.sharding.hibernate.ShardCurrentTenantIdentifierResolver"/>
                 <entry key="hibernate.multi_tenant_connection_provider" value-ref="entitlementDataSource"/>
                 <entry key="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
             </map>
@@ -45,13 +47,15 @@
 
     <tx:annotation-driven/>
 
-    <!-- Dao -->
+    <!-- Hibernate Dao -->
     <bean id="entitlementBaseDao" class="com.junbo.entitlement.db.dao.postgresql.BaseDao" abstract="true"/>
 
-    <bean id="entitlementDao" class="com.junbo.entitlement.db.dao.postgresql.EntitlementDaoImpl" parent="entitlementBaseDao">
+    <bean id="entitlementDao" class="com.junbo.entitlement.db.dao.postgresql.EntitlementDaoImpl"
+          parent="entitlementBaseDao">
         <property name="entityType" value="com.junbo.entitlement.db.entity.EntitlementEntity"/>
     </bean>
-    <bean id="entitlementHistoryDao" class="com.junbo.entitlement.db.dao.postgresql.EntitlementHistoryDaoImpl" parent="entitlementBaseDao">
+    <bean id="entitlementHistoryDao" class="com.junbo.entitlement.db.dao.postgresql.EntitlementHistoryDaoImpl"
+          parent="entitlementBaseDao">
         <property name="entityType" value="com.junbo.entitlement.db.entity.EntitlementHistoryEntity"/>
     </bean>
 

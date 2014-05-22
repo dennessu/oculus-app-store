@@ -87,6 +87,9 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     @Override
     Promise<List<UserPersonalInfo>> searchByUserIdAndType(UserId userId, String type) {
         return searchByUserId(userId).then { List<UserPersonalInfo> userPersonalInfoList ->
+            if (CollectionUtils.isEmpty(userPersonalInfoList)) {
+                return Promise.pure(null)
+            }
             userPersonalInfoList.removeAll { UserPersonalInfo userPersonalInfo ->
                 return userPersonalInfo.type != type
             }
@@ -99,7 +102,7 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     Promise<List<UserPersonalInfo>> searchByEmail(String email) {
         PiiHash hash = getPiiHash(UserPersonalInfoType.EMAIL.toString())
 
-        return encryptUserPersonalInfoRepository.searchByHashValue(hash.generateHash(email)).then {
+        return encryptUserPersonalInfoRepository.searchByHashValue(hash.generateHash(email.toLowerCase())).then {
             List<EncryptUserPersonalInfo> userPersonalInfos ->
                 if (CollectionUtils.isEmpty(userPersonalInfos)) {
                     return Promise.pure(null)
@@ -114,7 +117,7 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
                         }
 
                         Email emailObj = (Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Email)
-                        if (emailObj.value == email) {
+                        if (emailObj.info.toLowerCase() == email.toLowerCase()) {
                             infos.add(userPersonalInfo)
                         }
                         return Promise.pure(null)
@@ -145,7 +148,7 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
 
                         PhoneNumber phoneObj = (PhoneNumber)JsonHelper.jsonNodeToObj(userPersonalInfo.value,
                                 PhoneNumber)
-                        if (phoneObj.value == phoneNumber) {
+                        if (phoneObj.info == phoneNumber) {
                             infos.add(userPersonalInfo)
                         }
                         return Promise.pure(null)
@@ -192,15 +195,17 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
         cryptoMessage.value = marshaller.marshall(model)
 
         return cryptoResource.encrypt(model.userId, cryptoMessage).then { CryptoMessage messageValue ->
-            EncryptUserPersonalInfo encryptUserPersonalInfo = new EncryptUserPersonalInfo()
-            encryptUserPersonalInfo.encryptUserPersonalInfo = messageValue.value
-            encryptUserPersonalInfo.userPersonalInfoId = (UserPersonalInfoId)model.id
-            PiiHash piiHash = getPiiHash(model.type)
-            encryptUserPersonalInfo.hashSearchInfo = piiHash.generateHash(model.value)
 
-            return encryptUserPersonalInfoRepository.update(encryptUserPersonalInfo).then {
+            return encryptUserPersonalInfoRepository.searchByUserPersonalInfoId((UserPersonalInfoId)model.id).then {
                 EncryptUserPersonalInfo info ->
-                    return get(info.userPersonalInfoId)
+
+                    PiiHash piiHash = getPiiHash(model.type)
+                    info.hashSearchInfo = piiHash.generateHash(model.value)
+                    info.encryptUserPersonalInfo = messageValue.value
+
+                    return encryptUserPersonalInfoRepository.update(info).then { EncryptUserPersonalInfo updateInfo ->
+                            return get(updateInfo.userPersonalInfoId)
+                    }
             }
         }
     }
@@ -209,12 +214,23 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     Promise<UserPersonalInfo> get(UserPersonalInfoId id) {
         return encryptUserPersonalInfoRepository.searchByUserPersonalInfoId(id).then {
             EncryptUserPersonalInfo encryptUserPersonalInfo ->
+
+                if (encryptUserPersonalInfo == null) {
+                    return Promise.pure(null)
+                }
+
                 return userIdLinkRepository.searchByUserPersonalInfoId(id).then { UserPersonalInfoIdToUserIdLink link ->
                     CryptoMessage cryptoMessage = new CryptoMessage(
                             value: encryptUserPersonalInfo.encryptUserPersonalInfo
                     )
                     return cryptoResource.decrypt(link.userId, cryptoMessage).then { CryptoMessage decrypt ->
-                        return Promise.pure(marshaller.unmarshall(decrypt.value , UserPersonalInfo))
+                        UserPersonalInfo userPersonalInfo = marshaller.unmarshall(decrypt.value, UserPersonalInfo)
+                        userPersonalInfo.createdBy = encryptUserPersonalInfo.createdBy
+                        userPersonalInfo.createdTime = encryptUserPersonalInfo.createdTime
+                        userPersonalInfo.updatedBy = encryptUserPersonalInfo.updatedBy
+                        userPersonalInfo.updatedTime = encryptUserPersonalInfo.updatedTime
+                        userPersonalInfo.resourceAge = encryptUserPersonalInfo.resourceAge
+                        return Promise.pure(userPersonalInfo)
                     }
                 }
 

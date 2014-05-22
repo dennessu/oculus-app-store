@@ -40,19 +40,19 @@ class QQValidatorImpl implements PiiValidator {
         UserQQ oldUserQQ = (UserQQ)JsonHelper.jsonNodeToObj(oldValue, UserQQ)
 
         if (userQQ != oldUserQQ) {
-            checkUserQQ(userQQ)
+            throw AppErrors.INSTANCE.fieldInvalidException('value', 'value can\'t be updated.').exception()
         }
         return Promise.pure(null)
     }
 
     private void checkUserQQ(UserQQ userQQ) {
-        if (userQQ.qq != null) {
-            if (userQQ.qq.length() > maxQQLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('qq', maxQQLength).exception()
+        if (userQQ.info != null) {
+            if (userQQ.info.length() > maxQQLength) {
+                throw AppErrors.INSTANCE.fieldTooLong('value.info', maxQQLength).exception()
             }
 
-            if (userQQ.qq.length() < minQQLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('qq', minQQLength).exception()
+            if (userQQ.info.length() < minQQLength) {
+                throw AppErrors.INSTANCE.fieldTooShort('value.info', minQQLength).exception()
             }
         }
     }

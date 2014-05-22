@@ -65,16 +65,13 @@
         <property name="allowedIpAddressPatterns">
             <list>
                 <!-- IPv4Pattern -->
-                <value>(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}</value>
+                <value>${identity.conf.IPV4Pattern}</value>
                 <!-- IPv6Pattern -->
-                <value>(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}</value>
+                <value>${identity.conf.IPV6Pattern}</value>
                 <!-- IPv6Pattern_HEXCompressed -->
-                <value>((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)::((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)
-                </value>
+                <value>${identity.conf.IPV6HEXCompressedPattern}</value>
                 <!-- IPv6Pattern_6Hex4Dec -->
-                <value>((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)
-                    ::((?:[0-9A-Fa-f]{1,4}:)*)(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}
-                </value>
+                <value>${identity.conf.IPV6HEX4DecPattern}</value>
             </list>
         </property>
         <property name="userAgentMinLength" value="1"/>
@@ -133,16 +130,13 @@
         <property name="allowedIPPatterns">
             <list>
                 <!-- IPv4Pattern -->
-                <value>(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}</value>
+                <value>${identity.conf.IPV4Pattern}</value>
                 <!-- IPv6Pattern -->
-                <value>(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}</value>
+                <value>${identity.conf.IPV6Pattern}</value>
                 <!-- IPv6Pattern_HEXCompressed -->
-                <value>((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)::((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)
-                </value>
+                <value>${identity.conf.IPV6HEXCompressedPattern}</value>
                 <!-- IPv6Pattern_6Hex4Dec -->
-                <value>((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)
-                    ::((?:[0-9A-Fa-f]{1,4}:)*)(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}
-                </value>
+                <value>${identity.conf.IPV6HEX4DecPattern}</value>
             </list>
         </property>
         <property name="clientIdMinLength" value="1"/>
@@ -193,14 +187,15 @@
     </bean>
 
     <bean id="nameValidator" class="com.junbo.identity.core.service.validator.impl.NameValidatorImpl">
-        <property name="displayNameValidator" ref="displayNameValidator" />
         <property name="nickNameValidator" ref="nickNameValidator" />
-        <property name="minFirstNameLength" value="1" />
-        <property name="maxFirstNameLength" value="255" />
-        <property name="minMiddleNameLength" value="0" />
+        <property name="minFamilyNameLength" value="1" />
+        <property name="maxFamilyNameLength" value="255" />
+        <property name="minFullNameLength" value="1" />
+        <property name="maxFullNameLength" value="255" />
+        <property name="minGivenNameLength" value="1" />
+        <property name="maxGivenNameLength" value="255" />
+        <property name="minMiddleNameLength" value="1" />
         <property name="maxMiddleNameLength" value="255" />
-        <property name="minLastNameLength" value="1" />
-        <property name="maxLastNameLength" value="255" />
     </bean>
 
     <bean id="passportValidator" class="com.junbo.identity.core.service.validator.impl.PassportValidatorImpl">
@@ -254,8 +249,6 @@
     </bean>
 
     <bean id="userPersonalInfoValidator" class="com.junbo.identity.core.service.validator.impl.UserPersonalInfoValidatorImpl">
-        <property name="minLabelLength" value="1" />
-        <property name="maxLabelLength" value="255" />
         <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
         <property name="userRepository" ref="userRepository" />
         <property name="piiValidatorFactory" ref="piiValidatorFactory" />
@@ -303,23 +296,58 @@
         <property name="defaultTimezone" value="UTC-07:00"/>
     </bean>
 
-    <bean id="displayNameValidator" class="com.junbo.identity.core.service.validator.impl.DisplayNameValidatorImpl">
-    </bean>
-
     <bean id="communicationValidator" class="com.junbo.identity.core.service.validator.impl.CommunicationValidatorImpl">
         <property name="communicationRepository" ref="communicationRepository"/>
+        <property name="localeRepository" ref="cloudantLocaleRepository" />
+        <property name="countryRepository" ref="cloudantCountryRepository" />
+        <property name="minCommunicationLocaleDescription" value="1" />
+        <property name="maxCommunicationLocaleDescription" value="255" />
+        <property name="minCommunicationLocaleName" value="1" />
+        <property name="maxCommunicationLocaleName" value="255" />
     </bean>
 
     <bean id="countryValidator" class="com.junbo.identity.core.service.validator.impl.CountryValidatorImpl">
         <property name="countryRepository" ref="countryRepository"/>
+        <property name="localeRepository" ref="cloudantLocaleRepository" />
+        <property name="currencyRepository" ref="cloudantCurrencyRepository" />
+        <property name="allowedLocaleKeys">
+            <list>
+                <value>shortNameKey</value>
+                <value>longNameKey</value>
+            </list>
+        </property>
+        <property name="minLocaleKeyValueLength" value="1" />
+        <property name="maxLocaleKeyValueLength" value="255" />
+        <property name="minSubCountryShortNameLength" value="1" />
+        <property name="maxSubCountryShortNameLength" value="255" />
+        <property name="minSubCountryLongNameLength" value="1" />
+        <property name="maxSubCountryLongNameLength" value="255" />
     </bean>
 
     <bean id="currencyValidator" class="com.junbo.identity.core.service.validator.impl.CurrencyValidatorImpl">
         <property name="currencyRepository" ref="currencyRepository"/>
+        <property name="allowedLocaleKeys">
+            <list>
+                <value>shortName</value>
+                <value>longName</value>
+            </list>
+        </property>
+        <property name="minLocaleKeyValueLength" value="1" />
+        <property name="maxLocaleKeyValueLength" value="255" />
+        <property name="minNumberAfterDecimalLength" value="0" />
+        <property name="maxNumberAfterDecimalLength" value="3" />
+        <property name="minSymbolLength" value="1" />
+        <property name="maxSymbolLength" value="10" />
     </bean>
 
     <bean id="localeValidator" class="com.junbo.identity.core.service.validator.impl.LocaleValidatorImpl">
         <property name="localeRepository" ref="localeRepository"/>
+        <property name="minShortNameLength" value="1" />
+        <property name="maxShortNameLength" value="255" />
+        <property name="minLongNameLength" value="1" />
+        <property name="maxLongNameLength" value="255" />
+        <property name="minLocaleNameLength" value="1" />
+        <property name="maxLocaleNameLength" value="255" />
     </bean>
 
     <bean id="piTypeValidator" class="com.junbo.identity.core.service.validator.impl.PITypeValidatorImpl">
@@ -353,16 +381,6 @@
         <property name="contentMaxLength" value="1073741824"/>
     </bean>
 
-    <bean id="roleValidator" class="com.junbo.identity.core.service.validator.impl.RoleValidatorImpl">
-        <property name="roleRepository" ref="roleRepository"/>
-    </bean>
-
-    <bean id="roleAssignmentValidator"
-          class="com.junbo.identity.core.service.validator.impl.RoleAssignmentValidatorImpl">
-        <property name="roleAssignmentRepository" ref="roleAssignmentRepository"/>
-        <property name="roleRepository" ref="roleRepository"/>
-    </bean>
-
     <bean id="piiValidatorFactory" class="com.junbo.identity.core.service.validator.impl.PiiValidatorFactoryImpl">
         <constructor-arg>
             <list>
@@ -386,20 +404,15 @@
         <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
         <property name="userRepository" ref="userRepository" />
         <property name="userTeleRepository" ref="userTeleRepository" />
-        <property name="allowedLanguages">
-            <list>
-                <value>en_US</value>
-            </list>
-        </property>
+        <property name="localeRepository" ref="cloudantLocaleRepository" />
         <property name="maxSMSRequestsPerHour" value="${identity.conf.maxSMSRequestsPerHour}" />
         <property name="maxTeleCodeExpireTime" value="${identity.conf.maxTeleCodeExpireTime}" />
         <property name="minTemplateLength" value="1" />
         <property name="maxTemplateLength" value="255" />
-        <property name="codeGenerator" ref="codeGenerator" />
+        <property name="codeGenerator" ref="teleCodeGenerator" />
         <property name="maxReuseSeconds" value="${identity.conf.tele.maxReuseTime}" />
     </bean>
 
-    <!-- // todo:   Need to make all those values configurable-->
     <bean id="userTeleAttemptValidator" class="com.junbo.identity.core.service.validator.impl.UserTeleAttemptValidatorImpl">
         <property name="userRepository" ref="userRepository" />
         <property name="userTeleRepository" ref="userTeleRepository" />
@@ -409,16 +422,13 @@
         <property name="allowedIPPatterns">
             <list>
                 <!-- IPv4Pattern -->
-                <value>(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}</value>
+                <value>${identity.conf.IPV4Pattern}</value>
                 <!-- IPv6Pattern -->
-                <value>(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}</value>
+                <value>${identity.conf.IPV6Pattern}</value>
                 <!-- IPv6Pattern_HEXCompressed -->
-                <value>((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)::((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)
-                </value>
+                <value>${identity.conf.IPV6HEXCompressedPattern}</value>
                 <!-- IPv6Pattern_6Hex4Dec -->
-                <value>((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)
-                    ::((?:[0-9A-Fa-f]{1,4}:)*)(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}
-                </value>
+                <value>${identity.conf.IPV6HEX4DecPattern}</value>
             </list>
         </property>
         <property name="minClientIdLength" value="1" />
@@ -432,7 +442,7 @@
     <bean id="userTeleBackupCodeValidator" class="com.junbo.identity.core.service.validator.impl.UserTeleBackupCodeValidatorImpl">
         <property name="userRepository" ref="userRepository" />
         <property name="userTeleBackupCodeRepository" ref="userTeleBackupCodeRepository" />
-        <property name="codeGenerator" ref="codeGenerator" />
+        <property name="codeGenerator" ref="teleBackupCodeGenerator" />
     </bean>
 
     <bean id="userTeleBackupCodeAttemptValidator" class="com.junbo.identity.core.service.validator.impl.UserTeleBackupCodeAttemptValidatorImpl">
@@ -442,16 +452,13 @@
         <property name="allowedIPPatterns">
             <list>
                 <!-- IPv4Pattern -->
-                <value>(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}</value>
+                <value>${identity.conf.IPV4Pattern}</value>
                 <!-- IPv6Pattern -->
-                <value>(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}</value>
+                <value>${identity.conf.IPV6Pattern}</value>
                 <!-- IPv6Pattern_HEXCompressed -->
-                <value>((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)::((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)
-                </value>
+                <value>${identity.conf.IPV6HEXCompressedPattern}</value>
                 <!-- IPv6Pattern_6Hex4Dec -->
-                <value>((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)
-                    ::((?:[0-9A-Fa-f]{1,4}:)*)(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}
-                </value>
+                <value>${identity.conf.IPV6HEX4DecPattern}</value>
             </list>
         </property>
         <property name="minClientIdLength" value="1" />
@@ -481,10 +488,14 @@
         </constructor-arg>
     </bean>
 
-    <!-- todo:  Later we can merge all those beans using one bean -->
-    <bean id="codeGenerator" class="com.junbo.identity.core.service.util.impl.CodeGeneratorImpl">
+    <bean id="teleCodeGenerator" class="com.junbo.identity.core.service.util.impl.CodeGeneratorImpl">
+        <property name="codec" value="${identity.conf.tele.codec}" />
         <property name="codeLength" value="${identity.conf.tele.codeLength}" />
-        <property name="backupCodeLength" value="${identity.conf.tele.backupCodeLength}" />
+    </bean>
+
+    <bean id="teleBackupCodeGenerator" class="com.junbo.identity.core.service.util.impl.CodeGeneratorImpl">
+        <property name="codec" value="${identity.conf.tele.backupCodec}" />
+        <property name="codeLength" value="${identity.conf.tele.backupCodeLength}" />
     </bean>
 
     <bean id="shaSaltGenerator" class="com.junbo.identity.core.service.util.impl.SHASaltGeneratorImpl">

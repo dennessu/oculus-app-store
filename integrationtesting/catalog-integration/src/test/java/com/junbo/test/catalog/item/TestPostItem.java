@@ -5,25 +5,26 @@
  */
 package com.junbo.test.catalog.item;
 
-import com.junbo.catalog.spec.model.attribute.ItemAttribute;
-import com.junbo.catalog.spec.model.offer.Offer;
-import com.junbo.test.catalog.ItemAttributeService;
-import com.junbo.test.catalog.OfferService;
-import com.junbo.test.catalog.impl.ItemAttributeServiceImpl;
-import com.junbo.test.catalog.impl.OfferServiceImpl;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.catalog.spec.model.attribute.OfferAttribute;
+import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.test.common.apihelper.identity.UserService;
-import com.junbo.test.catalog.impl.ItemServiceImpl;
+import com.junbo.test.catalog.enums.CatalogEntityStatus;
+import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.test.catalog.util.BaseTestClass;
+import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.common.libs.LogHelper;
-import com.junbo.test.catalog.ItemService;
 import com.junbo.test.common.property.*;
+import com.junbo.test.catalog.impl.*;
+import com.junbo.test.catalog.*;
 
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.Assert;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
   * @author Jason
@@ -36,7 +37,7 @@ public class TestPostItem extends BaseTestClass {
     private ItemService itemService = ItemServiceImpl.instance();
     private final String itemRequiredPara = "itemWithRequiredPara";
     private final String defaultItem = "defaultItem";
-    private final String initRevValue = "1";
+    private final Integer initRevValue = 1;
     private String developerId;
 
     @BeforeClass
@@ -81,59 +82,6 @@ public class TestPostItem extends BaseTestClass {
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
-            description = "Test post items with invalid values",
-            steps = {
-                    "1. Prepare an item",
-                    "2. test invalid values(like null, not null and some invalid enum values)",
-                    "3. Try to post it and verify the expected error"
-            }
-    )
-    @Test
-    public void testPostItemInvalidScenarios() throws Exception {
-        UserService userService = UserServiceImpl.instance();
-        String developerId = userService.PostUser();
-
-        List<Long> genres = new ArrayList<>();
-        genres.add(0L);
-        genres.add(1L);
-
-        //test ownerId is null
-        Item testItem = itemService.prepareItemEntity(defaultItem, developerId);
-        testItem.setOwnerId(null);
-        verifyExpectedError(testItem);
-
-        //test currentRevision is not null
-        testItem = itemService.prepareItemEntity(defaultItem, developerId);
-        testItem.setCurrentRevisionId(0L);
-        verifyExpectedError(testItem);
-
-        //test rev
-        testItem = itemService.prepareItemEntity(defaultItem, developerId);
-        testItem.setRev(initRevValue);
-        verifyExpectedError(testItem);
-
-        //test type is invalid enums
-        testItem = itemService.prepareItemEntity(defaultItem, developerId);
-        testItem.setType("invalid type");
-        verifyExpectedError(testItem);
-
-        //test defaultOffer is not existed
-        testItem = itemService.prepareItemEntity(defaultItem, developerId);
-        testItem.setDefaultOffer(0L);
-        verifyExpectedError(testItem);
-
-        //test genres is not existed
-        testItem = itemService.prepareItemEntity(defaultItem, developerId);
-        testItem.setGenres(genres);
-        verifyExpectedError(testItem);
-    }
-
-    @Property(
-            priority = Priority.Comprehensive,
-            features = "CatalogIntegration",
-            component = Component.Catalog,
-            owner = "JasonFu",
-            status = Status.Enable,
             description = "Test post items with existed values(default offer, genres)",
             steps = {
                     "1. Prepare an item",
@@ -163,13 +111,113 @@ public class TestPostItem extends BaseTestClass {
         Assert.assertEquals(itemPosted.getGenres(), genres);
     }
 
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "CatalogIntegration",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Test post items with invalid values",
+            steps = {
+                    "1. Prepare an item",
+                    "2. test invalid values(like null, not null and some invalid enum values)",
+                    "3. Try to post it and verify the expected error"
+            }
+    )
+    @Test
+    public void testPostItemInvalidScenarios() throws Exception {
+        UserService userService = UserServiceImpl.instance();
+        String developerId = userService.PostUser();
+
+        List<Long> genresCategory = new ArrayList<>();
+        List<Long> genresInvalid = new ArrayList<>();
+        genresInvalid.add(0L);
+        genresInvalid.add(1L);
+
+        //test ownerId is null
+        Item testItem = itemService.prepareItemEntity(defaultItem, developerId);
+        testItem.setOwnerId(null);
+        verifyExpectedError(testItem);
+
+        //test currentRevision is not null
+        testItem = itemService.prepareItemEntity(defaultItem, developerId);
+        testItem.setCurrentRevisionId(0L);
+        verifyExpectedError(testItem);
+
+        //test rev
+        testItem = itemService.prepareItemEntity(defaultItem, developerId);
+        testItem.setResourceAge(initRevValue);
+        verifyExpectedError(testItem);
+
+        //test type is invalid enums
+        testItem = itemService.prepareItemEntity(defaultItem, developerId);
+        testItem.setType("invalid type");
+        verifyExpectedError(testItem);
+
+        //test defaultOffer is not existed
+        testItem = itemService.prepareItemEntity(defaultItem, developerId);
+        testItem.setDefaultOffer(0L);
+        verifyExpectedError(testItem);
+
+        //test genres is not existed
+        testItem = itemService.prepareItemEntity(defaultItem, developerId);
+        testItem.setGenres(genresInvalid);
+        verifyExpectedError(testItem);
+
+        //test genres type is category
+        OfferAttributeService offerAttributeService = OfferAttributeServiceImpl.instance();
+        OfferAttribute offerAttribute = offerAttributeService.postDefaultOfferAttribute();
+        genresCategory.add(offerAttribute.getId());
+
+        testItem = itemService.prepareItemEntity(defaultItem, developerId);
+        testItem.setGenres(genresCategory);
+        verifyExpectedError(testItem);
+
+        //put all invalid scenarios together
+        testItem = itemService.prepareItemEntity(defaultItem, developerId);
+        testItem.setOwnerId(null);
+        testItem.setCurrentRevisionId(0L);
+        testItem.setResourceAge(initRevValue);
+        testItem.setType("invalid type");
+        testItem.setDefaultOffer(0L);
+        testItem.setGenres(genresCategory);
+        verifyExpectedError(testItem);
+
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "CatalogIntegration",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Disable,
+            description = "Test Post developer item",
+            steps = {
+            }
+    )
+    @Test
+    public void testPostDeveloperItem() throws Exception {
+        ItemService itemService = ItemServiceImpl.instance();
+        Item testItem = itemService.prepareItemEntity("developerItem");
+        Item itemPosted = itemService.postItem(testItem);
+
+        ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
+        ItemRevision itemRevision = itemRevisionService.prepareItemRevisionEntity("developerItemRevision");
+        itemRevision.setItemId(itemPosted.getItemId());
+        ItemRevision itemRevisionPosted = itemRevisionService.postItemRevision(itemRevision);
+
+        //Approve the item revision
+        itemRevisionPosted.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
+        itemRevisionService.updateItemRevision(itemRevisionPosted.getRevisionId(), itemRevisionPosted);
+    }
+
     private void checkItemRequiredParams(Item itemActual, Item itemExpected) {
         Assert.assertEquals(itemActual.getType(), itemExpected.getType());
         Assert.assertEquals(itemActual.getOwnerId(), itemExpected.getOwnerId());
     }
 
     private void checkItemOptionalParams(Item itemActual, Item itemExpected) {
-        Assert.assertEquals(itemActual.getRev(), initRevValue);
+        Assert.assertEquals(itemActual.getResourceAge(), initRevValue);
         Assert.assertEquals(itemActual.getAdminInfo(), itemExpected.getAdminInfo());
         Assert.assertEquals(itemActual.getFutureExpansion(), itemExpected.getFutureExpansion());
         Assert.assertEquals(itemActual.getGenres(), itemExpected.getGenres());

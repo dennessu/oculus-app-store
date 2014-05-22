@@ -5,11 +5,14 @@
  */
 package com.junbo.test.catalog.impl;
 
+import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
+import com.junbo.test.catalog.enums.CatalogOfferAttributeType;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.catalog.OfferAttributeService;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
+import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.common.id.OfferAttributeId;
@@ -69,6 +72,20 @@ public class OfferAttributeServiceImpl extends HttpClientBase implements OfferAt
         return attributeGet;
     }
 
+    public OfferAttribute postDefaultOfferAttribute() throws Exception {
+        OfferAttribute offerAttribute = new OfferAttribute();
+        HashMap<String, SimpleLocaleProperties> locales = new HashMap<>();
+
+        SimpleLocaleProperties attributeProperties = new SimpleLocaleProperties();
+        attributeProperties.setName("testOfferAttribute_" + RandomFactory.getRandomStringOfAlphabet(10));
+        attributeProperties.setDescription(RandomFactory.getRandomStringOfAlphabetOrNumeric(30));
+        locales.put("en_US", attributeProperties);
+        offerAttribute.setLocales(locales);
+        offerAttribute.setType(CatalogOfferAttributeType.getRandom());
+
+        return postOfferAttribute(offerAttribute, 200);
+    }
+
     public OfferAttribute postOfferAttribute(OfferAttribute attribute) throws Exception {
         return postOfferAttribute(attribute, 200);
     }
@@ -82,13 +99,13 @@ public class OfferAttributeServiceImpl extends HttpClientBase implements OfferAt
         return attributePost;
     }
 
-    public OfferAttribute updateOfferAttribute(OfferAttribute attribute) throws Exception {
-        return updateOfferAttribute(attribute, 200);
+    public OfferAttribute updateOfferAttribute(Long offerAttributeId, OfferAttribute attribute) throws Exception {
+        return updateOfferAttribute(offerAttributeId, attribute, 200);
     }
 
-    public OfferAttribute updateOfferAttribute(OfferAttribute attribute, int expectedResponseCode) throws Exception {
+    public OfferAttribute updateOfferAttribute(Long offerAttributeId, OfferAttribute attribute, int expectedResponseCode) throws Exception {
         String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(OfferAttributeId.class,
-                attribute.getId());
+                offerAttributeId);
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, attribute, expectedResponseCode);
         OfferAttribute offerAttributePut = new JsonMessageTranscoder().decode(new TypeReference<OfferAttribute>() {},
                 responseBody);

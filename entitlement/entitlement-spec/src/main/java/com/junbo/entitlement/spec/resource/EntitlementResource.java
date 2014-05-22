@@ -57,6 +57,7 @@ public interface EntitlementResource {
     @GET
     Promise<Results<Entitlement>> searchEntitlements(@BeanParam EntitlementSearchParam searchParam,
                                                      @BeanParam PageMetadata pageMetadata);
+
     @POST
     @Path("/transfer")
     @Consumes({MediaType.APPLICATION_JSON})
