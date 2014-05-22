@@ -5,18 +5,21 @@
  */
 package com.junbo.test.order.apihelper.impl;
 
+import com.junbo.common.id.OrderId;
 import com.junbo.common.json.JsonMessageTranscoder;
+import com.junbo.common.model.Results;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.order.spec.model.OrderEvent;
 import com.junbo.order.spec.model.Order;
 
 import com.junbo.test.common.apihelper.HttpClientBase;
-import com.junbo.test.common.apihelper.order.OrderService;
+import com.junbo.test.order.apihelper.OrderService;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.libs.RestUrl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -107,13 +110,26 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
     }
 
     @Override
-    public List<String> getOrderByUserId(String userId) throws Exception {
-        return null;
+    public List<String> getOrdersByUserId(String userId) throws Exception {
+        return getOrdersByUserId(userId, 200);
     }
 
     @Override
-    public List<String> getOrderByUserId(String userId, int expectedResponseCode) throws Exception {
-        return null;
+    public List<String> getOrdersByUserId(String userId, int expectedResponseCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.GET, orderUrl + "orders?userId=" + userId, expectedResponseCode);
+
+        Results<Order> orderResults = new JsonMessageTranscoder().decode(
+                new TypeReference<Results<Order>>() {
+                }, responseBody);
+
+        List<Order> orderList = orderResults.getItems();
+        List<String> orderIdList = new ArrayList<>();
+        for (Order order : orderList) {
+            String orderId = IdConverter.idLongToHexString(OrderId.class, order.getId().getValue());
+            Master.getInstance().addOrder(orderId, order);
+            orderIdList.add(orderId);
+        }
+        return orderIdList;
     }
 
     @Override
