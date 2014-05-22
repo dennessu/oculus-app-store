@@ -5,7 +5,6 @@
  */
 package com.junbo.identity.core.service.filter;
 
-import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
 import com.junbo.identity.spec.model.users.UserPassword;
 import com.junbo.identity.spec.model.users.UserPin;
 import com.junbo.identity.spec.v1.model.*;
@@ -25,9 +24,6 @@ public interface SelfMapper {
 
     Group filterGroup(Group group, MappingContext context);
     Group mergeGroup(Group source, Group base, MappingContext context);
-
-    SecurityQuestion filterSecurityQuestion(SecurityQuestion securityQuestion, MappingContext context);
-    SecurityQuestion mergeSecurityQuestion(SecurityQuestion source, SecurityQuestion base, MappingContext context);
 
     UserAuthenticator filterUserAuthenticator(UserAuthenticator userAuthenticator, MappingContext context);
     UserAuthenticator mergeUserAuthenticator(UserAuthenticator source, UserAuthenticator base, MappingContext context);
@@ -105,4 +101,7 @@ public interface SelfMapper {
 
     UserPersonalInfo filterUserPersonalInfo(UserPersonalInfo userPersonalInfo, MappingContext context);
     UserPersonalInfo mergeUserPersonalInfo(UserPersonalInfo source, UserPersonalInfo base, MappingContext context);
+
+    Organization filterOrganization(Organization organization, MappingContext context);
+    Organization mergeOrganization(Organization source, Organization base, MappingContext context);
 }

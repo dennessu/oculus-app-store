@@ -143,6 +143,11 @@
         <property name="idGenerator" ref="oculus48IdGenerator" />
     </bean>
 
+    <bean id="cloudantOrganizationRepository" class="com.junbo.identity.data.repository.impl.cloudant.OrganizationRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="organization" />
+        <property name="idGenerator" ref="oculus48IdGenerator" />
+    </bean>
+
     <bean id="encryptUserPersonalInfocloudantClient" class="com.junbo.common.cloudant.CloudantClient" abstract="true">
         <property name="asyncHttpClient" ref="commonAsyncHttpClient" />
         <property name="cloudantDBUri" value="${encrypt.user.personalinfo.cloudant.url}" />

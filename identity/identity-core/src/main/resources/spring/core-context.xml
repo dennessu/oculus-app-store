@@ -995,4 +995,33 @@
             </list>
         </property>
     </bean>
+
+    <bean id="organizationFilter" class="com.junbo.identity.core.service.filter.OrganizationFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>ownerId</value>
+                <value>futureExpansion</value>
+                <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>ownerId</value>
+                <value>futureExpansion</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>ownerId</value>
+                <value>futureExpansion</value>
+                <value>resourceAge</value>
+            </list>
+        </property>
+    </bean>
 </beans>

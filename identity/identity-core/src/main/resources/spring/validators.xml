@@ -298,8 +298,8 @@
 
     <bean id="communicationValidator" class="com.junbo.identity.core.service.validator.impl.CommunicationValidatorImpl">
         <property name="communicationRepository" ref="communicationRepository"/>
-        <property name="localeRepository" ref="cloudantLocaleRepository" />
-        <property name="countryRepository" ref="cloudantCountryRepository" />
+        <property name="localeRepository" ref="localeRepository" />
+        <property name="countryRepository" ref="countryRepository" />
         <property name="minCommunicationLocaleDescription" value="1" />
         <property name="maxCommunicationLocaleDescription" value="255" />
         <property name="minCommunicationLocaleName" value="1" />
@@ -308,8 +308,8 @@
 
     <bean id="countryValidator" class="com.junbo.identity.core.service.validator.impl.CountryValidatorImpl">
         <property name="countryRepository" ref="countryRepository"/>
-        <property name="localeRepository" ref="cloudantLocaleRepository" />
-        <property name="currencyRepository" ref="cloudantCurrencyRepository" />
+        <property name="localeRepository" ref="localeRepository" />
+        <property name="currencyRepository" ref="currencyRepository" />
         <property name="allowedLocaleKeys">
             <list>
                 <value>shortNameKey</value>
@@ -404,7 +404,7 @@
         <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
         <property name="userRepository" ref="userRepository" />
         <property name="userTeleRepository" ref="userTeleRepository" />
-        <property name="localeRepository" ref="cloudantLocaleRepository" />
+        <property name="localeRepository" ref="localeRepository" />
         <property name="maxSMSRequestsPerHour" value="${identity.conf.maxSMSRequestsPerHour}" />
         <property name="maxTeleCodeExpireTime" value="${identity.conf.maxTeleCodeExpireTime}" />
         <property name="minTemplateLength" value="1" />
@@ -469,6 +469,11 @@
         <property name="maxVerifyCodeLength" value="255" />
         <property name="maxRetryCount" value="${identity.conf.maxTeleCodeAttemptNumber}" />
         <property name="transactionManager" ref="transactionManager" />
+    </bean>
+
+    <bean id="organizationValidator" class="com.junbo.identity.core.service.validator.impl.OrganizationValidatorImpl">
+        <property name="organizationRepository" ref="organizationRepository" />
+        <property name="userRepository" ref="userRepository" />
     </bean>
 
     <bean id="bcryptCredentialHash" class="com.junbo.identity.core.service.credential.impl.BcryptCredentialHash">
