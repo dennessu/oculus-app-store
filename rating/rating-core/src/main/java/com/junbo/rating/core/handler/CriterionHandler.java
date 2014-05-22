@@ -7,12 +7,12 @@
 package com.junbo.rating.core.handler;
 
 import com.junbo.catalog.spec.model.promotion.criterion.Criterion;
-import com.junbo.rating.core.context.RatingContext;
+import com.junbo.rating.core.context.PriceRatingContext;
 
 /**
  * Created by lizwu on 2/21/14.
  * @param <T> different criteria of promotion
  */
 public interface CriterionHandler<T extends Criterion> {
-    boolean validate(T criterion, RatingContext context);
+    boolean validate(T criterion, PriceRatingContext context);
 }

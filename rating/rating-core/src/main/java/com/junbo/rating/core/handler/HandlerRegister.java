@@ -7,7 +7,7 @@
 package com.junbo.rating.core.handler;
 
 import com.junbo.catalog.spec.model.promotion.criterion.Criterion;
-import com.junbo.rating.core.context.RatingContext;
+import com.junbo.rating.core.context.PriceRatingContext;
 import org.springframework.util.Assert;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,7 +22,7 @@ public final class HandlerRegister {
         this.register = register;
     }
 
-    public static boolean isSatisfied(Criterion criterion, RatingContext context) {
+    public static boolean isSatisfied(Criterion criterion, PriceRatingContext context) {
         Assert.notNull(criterion, "criterion");
         Assert.notNull(criterion.getPredicate(), "predicate");
 

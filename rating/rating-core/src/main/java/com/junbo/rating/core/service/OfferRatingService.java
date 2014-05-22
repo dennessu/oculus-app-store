@@ -8,7 +8,7 @@ package com.junbo.rating.core.service;
 
 import com.junbo.catalog.spec.model.promotion.PromotionRevision;
 import com.junbo.catalog.spec.model.promotion.PromotionType;
-import com.junbo.rating.core.context.RatingContext;
+import com.junbo.rating.core.context.PriceRatingContext;
 import com.junbo.rating.spec.error.AppErrors;
 import com.junbo.rating.spec.model.Currency;
 import com.junbo.rating.spec.model.Money;
@@ -23,17 +23,13 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by lizwu on 2/7/14.
+ * Offer Rating Service.
  */
 public class OfferRatingService extends RatingServiceSupport{
     private static final Logger LOGGER = LoggerFactory.getLogger(OfferRatingService.class);
 
-    public void offerRating(RatingContext context) {
-        rate(context);
-    }
-
     @Override
-    public void rate(RatingContext context) {
+    public void rate(PriceRatingContext context) {
         initContext(context);
         filterByCurrency(context);
         filterByEffectiveDate(context);
@@ -41,12 +37,12 @@ public class OfferRatingService extends RatingServiceSupport{
         findBestPrice(context);
     }
 
-    private void initContext(RatingContext context) {
+    private void initContext(PriceRatingContext context) {
         context.getRules().putAll(getPromotionRulesByTypes(PromotionType.OFFER_PROMOTION));
         fillOffer(context);
     }
 
-    private void findBestPrice(RatingContext context) {
+    private void findBestPrice(PriceRatingContext context) {
         Map<Long, Set<PromotionRevision>> candidates = context.getCandidates();
         Currency currency = context.getCurrency();
 

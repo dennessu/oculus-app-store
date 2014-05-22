@@ -6,7 +6,7 @@
 
 package com.junbo.rating.core.builder;
 
-import com.junbo.rating.core.context.RatingContext;
+import com.junbo.rating.core.context.PriceRatingContext;
 import com.junbo.rating.spec.model.RatingResultEntry;
 import com.junbo.rating.spec.model.request.*;
 
@@ -18,7 +18,7 @@ import java.util.HashSet;
  */
 public class RatingResultBuilder {
 
-    public static RatingRequest buildForOrder(RatingContext context) {
+    public static RatingRequest buildForOrder(PriceRatingContext context) {
         RatingRequest result = new RatingRequest();
         result.setUserId(context.getUserId());
         result.setCurrency(context.getCurrency().getCode());
@@ -58,7 +58,7 @@ public class RatingResultBuilder {
         return result;
     }
 
-    public static RatingRequest buildForOffers(RatingContext context) {
+    public static RatingRequest buildForOffers(PriceRatingContext context) {
         RatingRequest result = new RatingRequest();
         result.setUserId(context.getUserId());
         result.setCurrency(context.getCurrency().getCode());

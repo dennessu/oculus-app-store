@@ -9,6 +9,7 @@ package com.junbo.rating.core.handler;
 import com.junbo.catalog.spec.model.promotion.criterion.OfferScopeCriterion;
 import com.junbo.catalog.spec.model.promotion.criterion.Predicate;
 import com.junbo.rating.core.BaseTest;
+import com.junbo.rating.core.context.PriceRatingContext;
 import com.junbo.rating.core.context.RatingContext;
 import com.junbo.rating.spec.model.RatableItem;
 import org.testng.Assert;
@@ -28,7 +29,7 @@ public class HandlerRegisterTest extends BaseTest{
         criterion.setOffers(new ArrayList<Long>());
         criterion.getOffers().add(itemId);
 
-        RatingContext context = new RatingContext();
+        PriceRatingContext context = new PriceRatingContext();
         RatableItem item = new RatableItem();
         item.setOfferId(itemId);
         context.setCurrentItem(item);
