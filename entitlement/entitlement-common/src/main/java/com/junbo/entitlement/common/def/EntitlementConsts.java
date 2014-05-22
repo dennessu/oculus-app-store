@@ -25,13 +25,14 @@ public class EntitlementConsts {
     public static final int DEFAULT_PAGE_NUMBER = 0;
     public static final String NEXT_END = "END";
 
-    public static final String NO_TYPE = "NULL";
-    public static final Date NEVER_EXPIRE = new Date(253402185600000L);
-    public static final Integer UNCONSUMABLE_USECOUNT = Integer.MAX_VALUE;
-
     public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-    public static final String MIN_DATE = "000000000000000";
-    public static final String MAX_DATE = "253402185600000";
+    private static final Long NEVER_EXPIRE_LONG = 253402271999000L;   //DATE_FORMAT.parse("9999-12-31T23:59:59Z").getTime()
+    public static final Long MIN_DATE = 0L;
+    public static final Long MAX_DATE = NEVER_EXPIRE_LONG + 1;
+
+    public static final String NO_TYPE = "NULL";
+    public static final Date NEVER_EXPIRE = new Date(NEVER_EXPIRE_LONG);
+    public static final Integer UNCONSUMABLE_USECOUNT = Integer.MAX_VALUE;
 
     public static final Set<String> ALLOWED_TYPE = new HashSet<>(Arrays.asList(new String[]{"DOWNLOAD", "RUN", "DEVELOPER"}));
 }

@@ -5,7 +5,6 @@
  */
 package com.junbo.test.catalogscenario;
 
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
@@ -309,80 +308,6 @@ public class Catalog extends TestClass {
         offerGet = offerServiceAPI.getOffer(offer.getOfferId());
         Assert.assertEquals(offerGet.getPublished(), Boolean.TRUE);
         Assert.assertEquals(offerGet.getCurrentRevisionId(), offerRevisionRtn.getRevisionId());
-    }
-
-    @Property(
-            priority = Priority.BVT,
-            features = "CatalogScenarios",
-            component = Component.Catalog,
-            owner = "JasonFu",
-            status = Status.Enable,
-            description = "Test EntitlementDefinition Post/Get",
-            steps = {
-                    "1. Post an EntitlementDefinition",
-                    "2. Get the EntitlementDefinition by EntitlementDefinition ID",
-                    "3. Get EntitlementDefinition by some search conditions",
-                    "4. Get all EntitlementDefinition without any search condition",
-                    "5. Update the EntitlementDefinition",
-                    "6. Delete the EntitlementDefinition"
-            }
-    )
-    @Test
-    public void testEntitlementDefinitionManagement() throws Exception {
-
-        HashMap<String, List<String>> paraMap = new HashMap<>();
-        EntitlementDefinitionService entitlementDefinitionService = EntitlementDefinitionServiceImpl.instance();
-
-        ///Post an entitlement definition and verify it got posted
-        logger.LogSample("Post an entitlement definition");
-        EntitlementDefinition edRtn = entitlementDefinitionService.postDefaultEntitlementDefinition(EntitlementType.getRandomType());
-        Assert.assertNotNull(edRtn);
-
-        //Get the entitlement definition by its id and assert the return value is not null
-        logger.LogSample("Get the entitlement definition by its id");
-        EntitlementDefinition edGet = entitlementDefinitionService.getEntitlementDefinition(edRtn.getEntitlementDefId());
-        Assert.assertNotNull(edGet);
-
-        //Get entitlement definitions by some get conditions, like type and id.
-        logger.LogSample("Get entitlement definitions by its id and type");
-        List<String> listType = new ArrayList<>();
-        listType.add(edRtn.getType());
-        List<String> listEDId = new ArrayList<>();
-        String edId = IdConverter.idLongToHexString(EntitlementDefinitionId.class, edGet.getEntitlementDefId());
-        listEDId.add(edId);
-
-        paraMap.put("type", listType);
-        paraMap.put("id", listEDId);
-        Results<EntitlementDefinition> edResult = entitlementDefinitionService.getEntitlementDefinitions(paraMap);
-        Assert.assertNotNull(edResult);
-
-        //Get all entitlement definitions without any search condition
-        logger.LogSample("Get all entitlement definitions(without any search condition)");
-        paraMap.clear();
-        edResult = entitlementDefinitionService.getEntitlementDefinitions(paraMap);
-        Assert.assertNotNull(edResult);
-
-        //update the entitlement definition
-        edRtn = entitlementDefinitionService.getEntitlementDefinition(edRtn.getEntitlementDefId());
-        String edTag = RandomFactory.getRandomStringOfAlphabet(5);
-        edRtn.setTag(edTag);
-
-        logger.LogSample("Update entitlement definition");
-        edRtn = entitlementDefinitionService.updateEntitlementDefinition(edRtn);
-        Assert.assertEquals(edRtn.getTag(), edTag);
-
-        //Delete the entitlement definition
-        logger.LogSample("Delete entitlement definition");
-        entitlementDefinitionService.deleteEntitlementDefinition(edRtn.getEntitlementDefId());
-
-        //search the entitlement definition again, and verify we could not found it.
-        try {
-            entitlementDefinitionService.getEntitlementDefinition(edRtn.getEntitlementDefId(), 404);
-            Assert.fail("couldn't find an entitlement definition which has been deleted");
-        }
-        catch (Exception ex) {
-            Assert.assertTrue(ex.getMessage().contains(String.format("entitlementDefinition [%s] not found", edId)));
-        }
     }
 
     @Property(

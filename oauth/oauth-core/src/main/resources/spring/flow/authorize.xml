@@ -59,7 +59,7 @@
 
         <wf:action-state id="PRE_LOGIN_SUCCESS">
             <wf:action ref="checkEmailVerified"/>
-            <wf:transition on="emailVerifyRequired" to="EMAIL_VERIFY_REQUIRED" />
+            <wf:transition on="emailVerifyRequired" to="EMAIL_VERIFY_REQUIRED_VIEW" />
             <wf:transition on="*" to="LOGIN_SUCCESS" />
         </wf:action-state>
 
@@ -156,22 +156,29 @@
             <wf:on-render>
                 <wf:action ref="paymentMethodView"/>
             </wf:on-render>
-            <wf:transition on="next" to="EMAIL_VERIFY_REQUIRED">
+            <wf:transition on="next" to="REDIRECT_TO_EMAIL_VERIFY_REQUIRED">
                 <wf:action ref="validatePaymentMethod"/>
                 <wf:action ref="createAddress"/>
                 <wf:action ref="createPaymentInstrument"/>
             </wf:transition>
-            <wf:transition on="skip" to="EMAIL_VERIFY_REQUIRED"/>
+            <wf:transition on="skip" to="REDIRECT_TO_EMAIL_VERIFY_REQUIRED"/>
         </wf:view-state>
 
-        <wf:view-state id="EMAIL_VERIFY_REQUIRED">
+        <wf:view-state id="REDIRECT_TO_EMAIL_VERIFY_REQUIRED">
+            <wf:on-render>
+                <wf:action ref="redirectToEmailVerifyRequired"/>
+            </wf:on-render>
+            <wf:transition on="*" to="EMAIL_VERIFY_REQUIRED_VIEW"/>
+        </wf:view-state>
+
+        <wf:view-state id="EMAIL_VERIFY_REQUIRED_VIEW">
             <wf:on-render>
                 <wf:action ref="emailVerifyRequiredView"/>
             </wf:on-render>
             <wf:transition on="next" to="LOGIN_SUCCESS">
                 <wf:action ref="checkEmailVerified"/>
             </wf:transition>
-            <wf:transition on="resend" to="EMAIL_VERIFY_REQUIRED">
+            <wf:transition on="resend" to="EMAIL_VERIFY_REQUIRED_VIEW">
                 <wf:action ref="sendAccountVerifyEmail"/>
             </wf:transition>
         </wf:view-state>
@@ -367,6 +374,10 @@
         <property name="userPersonalInfoResource" ref="userPersonalInfoResource"/>
     </bean>
 
+    <bean id="redirectToEmailVerifyRequired" class="com.junbo.oauth.core.view.RedirectToPageView">
+        <property name="pageUrl" value="oauth.core.portal.emailVerifyRequiredUri"/>
+    </bean>
+
     <bean id="emailVerifyRequiredView" class="com.junbo.oauth.core.view.EmailVerifyRequiredView"/>
 
     <bean id="verifyEmail" class="com.junbo.oauth.core.action.VerifyEmail">
@@ -381,7 +392,7 @@
         <property name="pageUrl" value="${oauth.core.portal.verifyUri}"/>
     </bean>
 
-    <bean id="redirectToPaymentMethod" class="com.junbo.oauth.core.view.RedirectToPaymentMethodView">
+    <bean id="redirectToPaymentMethod" class="com.junbo.oauth.core.view.RedirectToPageView">
         <property name="pageUrl" value="${oauth.core.portal.paymentMethodUri}"/>
     </bean>
 

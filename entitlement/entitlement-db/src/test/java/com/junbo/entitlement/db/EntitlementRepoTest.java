@@ -62,7 +62,7 @@ public class EntitlementRepoTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(updatedEntitlement.getIsActive(), Boolean.FALSE);
     }
 
-    @Test
+    @Test(enabled = true)
     public void testSearch() {
         Long userId = idGenerator.nextId();
         for (int i = 0; i < 48; i++) {
@@ -102,12 +102,20 @@ public class EntitlementRepoTest extends AbstractTestNGSpringContextTests {
     //test for cloudant search
     @Test(enabled = false)
     public void testCloudantSearch() {
+        Date now = new Date();
         Long userId = idGenerator.nextId();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 4; i++) {
             Entitlement entitlementEntity = buildAnEntitlement();
             entitlementEntity.setUserId(userId);
             entitlementRepository.insert(entitlementEntity);
         }
+        Entitlement entitlementEntity = buildAnEntitlement();
+        entitlementEntity.setUserId(userId);
+        entitlementEntity.setExpirationTime(null);
+        entitlementEntity.setUseCount(10);
+        entitlementRepository.insert(entitlementEntity);
+        entitlementEntity.setUseCount(0);
+        entitlementRepository.insert(entitlementEntity);
 
         EntitlementSearchParam searchParam = new EntitlementSearchParam();
         searchParam.setUserId(new UserId(userId));
@@ -116,6 +124,7 @@ public class EntitlementRepoTest extends AbstractTestNGSpringContextTests {
         PageMetadata pageMetadata = new PageMetadata();
         pageMetadata.setCount(3);
 
+        //test page
         Results<Entitlement> list1 = entitlementRepository.getBySearchParam(searchParam, pageMetadata);
         Assert.assertEquals(list1.getItems().size(), 3);
 
@@ -123,17 +132,50 @@ public class EntitlementRepoTest extends AbstractTestNGSpringContextTests {
         List<Entitlement> list2 = entitlementRepository.getBySearchParam(searchParam, pageMetadata).getItems();
         Assert.assertEquals(list2.size(), 2);
 
-        pageMetadata.setCount(100);
+        //test isBanned
         pageMetadata.setBookmark(null);
+        searchParam.setIsBanned(true);
+        List<Entitlement> list7 = entitlementRepository.getBySearchParam(searchParam, pageMetadata).getItems();
+        Assert.assertEquals(list7.size(), 0);
+
+        //test isActive true
+        searchParam.setIsActive(true);
+        searchParam.setIsBanned(null);
+        List<Entitlement> list8 = entitlementRepository.getBySearchParam(searchParam, pageMetadata).getItems();
+        Assert.assertEquals(list8.size(), 1);
+
+        //test type
+        searchParam.setType("download");
+        List<Entitlement> list9 = entitlementRepository.getBySearchParam(searchParam, pageMetadata).getItems();
+        Assert.assertEquals(list9.size(), 0);
+        searchParam.setType("null");
+        List<Entitlement> list10 = entitlementRepository.getBySearchParam(searchParam, pageMetadata).getItems();
+        Assert.assertEquals(list10.size(), 1);
+
+        //test grantTime range
+        pageMetadata.setCount(100);
+        searchParam.setIsActive(false);
         searchParam.setStartGrantTime(EntitlementConsts.DATE_FORMAT.format(new Date(114, 0, 20)));
         searchParam.setEndGrantTime(EntitlementConsts.DATE_FORMAT.format(new Date(114, 0, 25)));
         List<Entitlement> list3 = entitlementRepository.getBySearchParam(searchParam, pageMetadata).getItems();
         Assert.assertEquals(list3.size(), 5);
 
+        //test expirationTime range
+        searchParam.setStartExpirationTime(EntitlementConsts.DATE_FORMAT.format(new Date(114, 0, 27)));
+        searchParam.setEndExpirationTime(EntitlementConsts.DATE_FORMAT.format(new Date(114, 0, 29)));
+        List<Entitlement> list4 = entitlementRepository.getBySearchParam(searchParam, pageMetadata).getItems();
+        Assert.assertEquals(list4.size(), 4);
+
+        //test lastModifiedTime
+        searchParam.setLastModifiedTime(EntitlementConsts.DATE_FORMAT.format(now));
+        List<Entitlement> list5 = entitlementRepository.getBySearchParam(searchParam, pageMetadata).getItems();
+        Assert.assertEquals(list5.size(), 4);
+
+        //test grantTime range
         searchParam.setStartGrantTime(EntitlementConsts.DATE_FORMAT.format(new Date(114, 0, 23)));
         searchParam.setEndGrantTime(EntitlementConsts.DATE_FORMAT.format(new Date(114, 0, 24)));
-        List<Entitlement> list5 = entitlementRepository.getBySearchParam(searchParam, pageMetadata).getItems();
-        Assert.assertEquals(list5.size(), 0);
+        List<Entitlement> list6 = entitlementRepository.getBySearchParam(searchParam, pageMetadata).getItems();
+        Assert.assertEquals(list6.size(), 0);
     }
 
     private Entitlement buildAnEntitlement() {

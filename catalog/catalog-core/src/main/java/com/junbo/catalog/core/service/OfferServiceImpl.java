@@ -433,7 +433,6 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
                     ) && !definedActions.get(itemEntry.getItemId()).contains(ActionType.GRANT_ENTITLEMENT.name())) {
                 Action action = new Action();
                 action.setType(ActionType.GRANT_ENTITLEMENT.name());
-                action.setEntitlementDefId(item.getEntitlementDefId());
                 action.setItemId(itemEntry.getItemId());
                 purchaseActions.add(action);
             } /*else if (ItemType.STORED_VALUE.is(item.getType())) {

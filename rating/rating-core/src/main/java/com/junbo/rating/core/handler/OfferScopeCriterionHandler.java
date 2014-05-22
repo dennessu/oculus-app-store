@@ -7,7 +7,7 @@
 package com.junbo.rating.core.handler;
 
 import com.junbo.catalog.spec.model.promotion.criterion.OfferScopeCriterion;
-import com.junbo.rating.core.context.RatingContext;
+import com.junbo.rating.core.context.PriceRatingContext;
 import com.junbo.rating.spec.model.RatableItem;
 
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class OfferScopeCriterionHandler implements CriterionHandler<OfferScopeCriterion> {
     @Override
-    public boolean validate(OfferScopeCriterion criterion, RatingContext context) {
+    public boolean validate(OfferScopeCriterion criterion, PriceRatingContext context) {
         RatableItem item = context.getCurrentItem();
         List<Long> entities = criterion.getOffers();
         switch (criterion.getPredicate()) {

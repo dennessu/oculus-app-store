@@ -73,9 +73,6 @@
     <bean id="offerRevisionDao" class="com.junbo.catalog.db.dao.impl.OfferRevisionDaoImpl" parent="catalogBaseDao">
         <property name="entityType" value="com.junbo.catalog.db.entity.OfferRevisionEntity"/>
     </bean>
-    <bean id="entitlementDefinitionDao" class="com.junbo.catalog.db.dao.impl.EntitlementDefinitionDaoImpl" parent="catalogBaseDao">
-        <property name="entityType" value="com.junbo.catalog.db.entity.EntitlementDefinitionEntity"/>
-    </bean>
 
     <bean id="itemAttributeDao" class="com.junbo.catalog.db.dao.impl.ItemAttributeDaoImpl" parent="catalogBaseDao">
         <property name="entityType" value="com.junbo.catalog.db.entity.ItemAttributeEntity"/>
@@ -108,6 +105,5 @@
 
     <bean id="promotionRevisionRepository" class="com.junbo.catalog.db.repo.PromotionRevisionRepository"/>
     <bean id="promotionRepository" class="com.junbo.catalog.db.repo.PromotionRepository"/>
-    <bean id="entitlementDefinitionRepository" class="com.junbo.catalog.db.repo.EntitlementDefinitionRepository"/>
     <bean id="itemOfferRelationsRepository" class="com.junbo.catalog.db.repo.ItemOfferRelationsRepository"/>
 </beans>

@@ -20,7 +20,7 @@ import java.util.Date;
 public class DateDeserializer extends JsonDeserializer<Date> {
     @Override
     public Date deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-        String value = jp.getValueAsString();
+        Long value = jp.getValueAsLong();
         return new Date(Long.valueOf(value));
     }
 }

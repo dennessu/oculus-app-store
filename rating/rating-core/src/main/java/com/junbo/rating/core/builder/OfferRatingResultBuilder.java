@@ -6,7 +6,7 @@
 
 package com.junbo.rating.core.builder;
 
-import com.junbo.rating.core.context.RatingContext;
+import com.junbo.rating.core.context.PriceRatingContext;
 import com.junbo.rating.spec.model.RatingResultEntry;
 import com.junbo.rating.spec.model.request.OfferRatingItem;
 import com.junbo.rating.spec.model.request.OfferRatingRequest;
@@ -21,7 +21,7 @@ public class OfferRatingResultBuilder {
     private OfferRatingResultBuilder() {
     }
 
-    public static OfferRatingRequest build(RatingContext context) {
+    public static OfferRatingRequest build(PriceRatingContext context) {
         OfferRatingRequest result = new OfferRatingRequest();
         result.setUserId(context.getUserId());
         result.setCurrency(context.getCurrency().getCode());

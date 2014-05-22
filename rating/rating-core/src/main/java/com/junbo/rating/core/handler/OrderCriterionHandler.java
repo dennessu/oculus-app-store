@@ -7,7 +7,7 @@
 package com.junbo.rating.core.handler;
 
 import com.junbo.catalog.spec.model.promotion.criterion.OrderCriterion;
-import com.junbo.rating.core.context.RatingContext;
+import com.junbo.rating.core.context.PriceRatingContext;
 import com.junbo.rating.spec.model.RatingResultEntry;
 
 import java.math.BigDecimal;
@@ -17,7 +17,7 @@ import java.math.BigDecimal;
  */
 public class OrderCriterionHandler implements CriterionHandler<OrderCriterion> {
     @Override
-    public boolean validate(OrderCriterion criterion, RatingContext context) {
+    public boolean validate(OrderCriterion criterion, PriceRatingContext context) {
         switch (criterion.getPredicate()) {
             case ORDER_ABSOLUTE_VALUE_ABOVE:
                 BigDecimal totalAmount = context.getOrderResult().getOriginalAmount().getValue();
@@ -37,7 +37,7 @@ public class OrderCriterionHandler implements CriterionHandler<OrderCriterion> {
         return false;
     }
 
-    private int getQuantity(RatingContext context) {
+    private int getQuantity(PriceRatingContext context) {
         int quantity = 0;
         for (RatingResultEntry entry : context.getEntries()) {
             quantity += entry.getQuantity();

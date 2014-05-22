@@ -9,7 +9,7 @@ package com.junbo.rating.core.handler;
 import com.google.common.collect.Sets;
 import com.junbo.catalog.spec.model.promotion.criterion.EntitlementCriterion;
 import com.junbo.rating.clientproxy.EntitlementGateway;
-import com.junbo.rating.core.context.RatingContext;
+import com.junbo.rating.core.context.PriceRatingContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -22,7 +22,7 @@ public class EntitlementCriterionHandler implements CriterionHandler<Entitlement
     private EntitlementGateway entitlementGateway;
 
     @Override
-    public boolean validate(EntitlementCriterion criterion, RatingContext context) {
+    public boolean validate(EntitlementCriterion criterion, PriceRatingContext context) {
         //anonymous user
         if(context.getUserId() == null){
             return false;

@@ -8,7 +8,7 @@ package com.junbo.rating.core.service;
 
 import com.junbo.rating.core.BaseTest;
 import com.junbo.rating.core.builder.RatingResultBuilder;
-import com.junbo.rating.core.context.RatingContext;
+import com.junbo.rating.core.context.PriceRatingContext;
 import com.junbo.rating.spec.model.Currency;
 import com.junbo.rating.spec.model.RatableItem;
 import com.junbo.rating.spec.model.request.RatingRequest;
@@ -29,7 +29,7 @@ public class OrderRatingServiceTest extends BaseTest {
 
     @Test
     public void testGeneral() {
-        RatingContext context = new RatingContext();
+        PriceRatingContext context = new PriceRatingContext();
         context.setUserId(generateId());
         context.setCurrency(Currency.findByCode("USD"));
         RatableItem item = new RatableItem();
@@ -51,7 +51,7 @@ public class OrderRatingServiceTest extends BaseTest {
         item.setShippingMethodId(400L);
         context.getItems().add(item);
 
-        orderRatingService.orderRating(context);
+        orderRatingService.rate(context);
         RatingRequest result = RatingResultBuilder.buildForOrder(context);
 
         Assert.assertNotNull(result);
@@ -65,7 +65,7 @@ public class OrderRatingServiceTest extends BaseTest {
 
     @Test
     public void testEntitlement() {
-        RatingContext context = new RatingContext();
+        PriceRatingContext context = new PriceRatingContext();
         context.setUserId(generateId());
         context.setCurrency(Currency.findByCode("USD"));
         RatableItem item = new RatableItem();
@@ -74,7 +74,7 @@ public class OrderRatingServiceTest extends BaseTest {
         context.setItems(new HashSet<RatableItem>());
         context.getItems().add(item);
 
-        orderRatingService.orderRating(context);
+        orderRatingService.rate(context);
         RatingRequest result = RatingResultBuilder.buildForOrder(context);
 
         Assert.assertNotNull(result);

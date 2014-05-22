@@ -10,7 +10,7 @@ import com.junbo.catalog.spec.model.domaindata.ShippingMethod;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.promotion.PromotionRevision;
 import com.junbo.catalog.spec.model.promotion.PromotionType;
-import com.junbo.rating.core.context.RatingContext;
+import com.junbo.rating.core.context.PriceRatingContext;
 import com.junbo.rating.spec.error.AppErrors;
 import com.junbo.rating.spec.fusion.LinkedEntry;
 import com.junbo.rating.spec.fusion.RatingOffer;
@@ -25,17 +25,13 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by lizwu on 2/7/14.
+ * Order Rating Service.
  */
 public class OrderRatingService extends RatingServiceSupport{
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderRatingService.class);
 
-    public void orderRating(RatingContext context) {
-        rate(context);
-    }
-
     @Override
-    public void rate(RatingContext context) {
+    public void rate(PriceRatingContext context) {
         initContext(context);
         filterByCurrency(context);
         filterByEffectiveDate(context);
@@ -45,13 +41,13 @@ public class OrderRatingService extends RatingServiceSupport{
         calculateShippingFee(context);
     }
 
-    private void initContext(RatingContext context) {
+    private void initContext(PriceRatingContext context) {
         context.getRules().putAll(
                 getPromotionRulesByTypes(PromotionType.OFFER_PROMOTION, PromotionType.ORDER_PROMOTION));
         fillOffer(context);
     }
 
-    private void findBestPrice(RatingContext context) {
+    private void findBestPrice(PriceRatingContext context) {
         Map<Long, Set<PromotionRevision>> candidates = context.getCandidates();
         Currency currency = context.getCurrency();
 
@@ -92,7 +88,7 @@ public class OrderRatingService extends RatingServiceSupport{
         }
     }
 
-    private void calculateOrderLevelPromotion(RatingContext context) {
+    private void calculateOrderLevelPromotion(PriceRatingContext context) {
         Money totalAmount = new Money(BigDecimal.ZERO, context.getCurrency().getCode());
         for (RatingResultEntry entry : context.getEntries()) {
             //calculate the total amount of line items in current order
@@ -132,7 +128,7 @@ public class OrderRatingService extends RatingServiceSupport{
         context.setOrderResult(result);
     }
 
-    private void calculateShippingFee(RatingContext context) {
+    private void calculateShippingFee(PriceRatingContext context) {
         BigDecimal shippingFee = BigDecimal.ZERO;
         Map<Long, Integer> shippingDetail = new HashMap<>();
 

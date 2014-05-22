@@ -11,6 +11,6 @@ import com.junbo.rating.core.context.RatingContext;
 /**
  * Created by lizwu on 2/7/14.
  */
-public interface RatingService {
-    void rate(RatingContext context);
+public interface RatingService<T extends RatingContext> {
+    void rate(T context);
 }

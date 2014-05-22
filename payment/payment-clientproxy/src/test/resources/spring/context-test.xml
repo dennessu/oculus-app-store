@@ -7,22 +7,14 @@
     <import resource="classpath*:spring/*-context.xml"/>
     <import resource="classpath*:spring/transaction.xml"/>
 
-    <bean id="piClient" class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy">
-        <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="target" value="http://localhost:8080/v1"/>
-        <constructor-arg name="transcoder" ref="transcoder"/>
-        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder" />
-        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
+    <bean id="piClient" class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="http://localhost:8080/v1"/>
     </bean>
 
-    <bean id="paymentClient" class="com.junbo.payment.spec.resource.proxy.PaymentTransactionResourceClientProxy">
-        <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="target" value="http://localhost:8080/v1"/>
-        <constructor-arg name="transcoder" ref="transcoder"/>
-        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder" />
-        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
+    <bean id="paymentClient" class="com.junbo.payment.spec.resource.proxy.PaymentTransactionResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="http://localhost:8080/v1"/>
     </bean>
 
 </beans>

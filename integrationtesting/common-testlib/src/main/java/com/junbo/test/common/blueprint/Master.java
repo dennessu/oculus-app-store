@@ -5,7 +5,6 @@
  */
 package com.junbo.test.common.blueprint;
 
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
@@ -50,7 +49,6 @@ public class Master {
     private Map<String, Offer> offers;
     private Map<String, ItemRevision> itemRevisions;
     private Map<String, OfferRevision> offerRevisions;
-    private Map<String, EntitlementDefinition> entitlementDefinitions;
     private Map<String, Order> orders;
     private Map<String, ItemAttribute> itemAttributes;
     private Map<String, OfferAttribute> offerAttributes;
@@ -68,7 +66,6 @@ public class Master {
         this.initializeItemRevisions();
         this.initializeOffers();
         this.initializeOfferRevisions();
-        this.initializeEntitlementDefinitions();
         this.initializeOrders();
         this.initializeItemAttributes();
         this.initializeOfferAttributes();
@@ -118,13 +115,6 @@ public class Master {
             this.offerRevisions = new HashMap<>();
         }
         this.offerRevisions.clear();
-    }
-
-    public void initializeEntitlementDefinitions() {
-        if (this.entitlementDefinitions == null) {
-            this.entitlementDefinitions = new HashMap<>();
-        }
-        this.entitlementDefinitions.clear();
     }
 
     public void initializeOrders() {
@@ -218,14 +208,7 @@ public class Master {
         this.offerRevisions.put(offerRevisionId, offerRevision);
     }
 
-    public void addEntitlementDefinition(String entitlementDefinitionId, EntitlementDefinition entitlementDefinition) {
-        if (this.entitlementDefinitions.containsKey(entitlementDefinitionId)) {
-            this.entitlementDefinitions.remove(entitlementDefinitionId);
-        }
-        this.entitlementDefinitions.put(entitlementDefinitionId, entitlementDefinition);
-    }
-
-    public void addOrder(String orderId, Order order) {
+   public void addOrder(String orderId, Order order) {
         if (this.orders.containsKey(orderId)) {
             this.orders.remove(orderId);
         }
@@ -350,10 +333,6 @@ public class Master {
         return this.offerAttributes.get(attributeId);
     }
 
-    public EntitlementDefinition getEntitlementDefinition(String entitlementDefinitionId) {
-        return this.entitlementDefinitions.get(entitlementDefinitionId);
-    }
-
     public Entitlement getEntitlement(String entitlementId) {
         return this.entitlements.get(entitlementId);
     }
@@ -379,12 +358,6 @@ public class Master {
     public void removeBalance(String balanceId) {
         if (this.balances.containsKey(balanceId)) {
             this.balances.remove(balanceId);
-        }
-    }
-
-    public void removeEntitlementDefinition(String entitlementDefinitionId) {
-        if (this.entitlementDefinitions.containsKey(entitlementDefinitionId)) {
-            this.entitlementDefinitions.remove(entitlementDefinitionId);
         }
     }
 

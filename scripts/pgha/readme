@@ -63,5 +63,16 @@ slave_cron.sh
 pgbouncer_master.sh
 
 #test master to slave replication
-test/master2slave.sh
+test_master2slave.sh
 
+#run following script on slave server
+failover.sh
+
+#test slave (new master) to master (original master) replication
+test_slave2master.sh
+
+#run following script on master server
+failback.sh
+
+#test master to slave replication
+test_master2slave.sh

@@ -46,6 +46,24 @@ public class PaymentClientProxyTest extends BaseTest {
         final PaymentInstrument updateResult =  piClient.update(piid,getResult).get();
         Assert.assertEquals(updateResult.getBillingAddressId(), newPIIId);
         Assert.assertEquals(updateResult.getPhoneNumber(), newPIIId);
+        //updated PI should be able to auth as well:
+        PaymentTransaction trx = new PaymentTransaction(){
+            {
+                setTrackingUuid(generateUUID());
+                setUserId(userId.getValue());
+                setPaymentInstrumentId(result.getId());
+                setBillingRefId(BILLING_REF_ID);
+                setChargeInfo(new ChargeInfo(){
+                    {
+                        setCurrency("USD");
+                        setAmount(new BigDecimal(11.00));
+                    }
+                });
+            }
+        };
+        PaymentTransaction paymentResult = paymentClient.postPaymentAuthorization(trx).get();
+        Assert.assertEquals(paymentResult.getStatus().toUpperCase(), PaymentStatus.AUTHORIZED.toString());
+
         final PaymentInstrument getUpdatedResult = piClient.getById(new PaymentInstrumentId(result.getId())).get();
         Assert.assertEquals(updateResult.getBillingAddressId(), newPIIId);
         Assert.assertEquals(updateResult.getPhoneNumber(), newPIIId);

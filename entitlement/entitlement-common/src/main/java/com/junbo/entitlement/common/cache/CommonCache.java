@@ -5,7 +5,6 @@
  */
 package com.junbo.entitlement.common.cache;
 
-import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import org.slf4j.Logger;
@@ -13,15 +12,16 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * permanent cache.
  */
-public enum PermanentCache {
+public enum CommonCache {
     ITEM_REVISION;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PermanentCache.class);
-    private Cache<Object, Object> cache = CacheBuilder.newBuilder().maximumSize(100).build();
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommonCache.class);
+    private com.google.common.cache.Cache cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(1, TimeUnit.HOURS).build();
 
     public Object get(Object key) {
         return cache.getIfPresent(key);

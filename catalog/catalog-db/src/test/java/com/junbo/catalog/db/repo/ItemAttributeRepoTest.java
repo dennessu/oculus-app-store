@@ -20,7 +20,7 @@ public class ItemAttributeRepoTest extends BaseTest {
     @Autowired
     private ItemAttributeRepository attributeRepo;
 
-    @Test
+    @Test(enabled = false)
     public void testCreateAndGet() {
         ItemAttribute entity = buildAttributeEntity();
         Long id = attributeRepo.create(entity);
