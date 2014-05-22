@@ -334,10 +334,6 @@
         </property>
         <property name="minLocaleKeyValueLength" value="1" />
         <property name="maxLocaleKeyValueLength" value="255" />
-        <property name="minDecimalSymbolLength" value="1" />
-        <property name="maxDecimalSymbolLength" value="255" />
-        <property name="minDigitGroupingSymbolLength" value="1" />
-        <property name="maxDigitGroupingSymbolLength" value="255" />
         <property name="minNumberAfterDecimalLength" value="0" />
         <property name="maxNumberAfterDecimalLength" value="3" />
         <property name="minSymbolLength" value="1" />

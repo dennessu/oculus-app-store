@@ -2,7 +2,6 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.identity.common.util.ValidatorUtil
-import com.junbo.identity.data.identifiable.NegativeFormat
 import com.junbo.identity.data.identifiable.SymbolPosition
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Currency
@@ -26,14 +25,8 @@ class CurrencyValidatorImpl implements CurrencyValidator {
     private Integer minSymbolLength
     private Integer maxSymbolLength
 
-    private Integer minDecimalSymbolLength
-    private Integer maxDecimalSymbolLength
-
     private Integer minNumberAfterDecimalLength
     private Integer maxNumberAfterDecimalLength
-
-    private Integer minDigitGroupingSymbolLength
-    private Integer maxDigitGroupingSymbolLength
 
     private Integer minLocaleKeyValueLength
     private Integer maxLocaleKeyValueLength
@@ -59,16 +52,6 @@ class CurrencyValidatorImpl implements CurrencyValidator {
     }
 
     @Required
-    void setMinDecimalSymbolLength(Integer minDecimalSymbolLength) {
-        this.minDecimalSymbolLength = minDecimalSymbolLength
-    }
-
-    @Required
-    void setMaxDecimalSymbolLength(Integer maxDecimalSymbolLength) {
-        this.maxDecimalSymbolLength = maxDecimalSymbolLength
-    }
-
-    @Required
     void setMinNumberAfterDecimalLength(Integer minNumberAfterDecimalLength) {
         this.minNumberAfterDecimalLength = minNumberAfterDecimalLength
     }
@@ -76,16 +59,6 @@ class CurrencyValidatorImpl implements CurrencyValidator {
     @Required
     void setMaxNumberAfterDecimalLength(Integer maxNumberAfterDecimalLength) {
         this.maxNumberAfterDecimalLength = maxNumberAfterDecimalLength
-    }
-
-    @Required
-    void setMinDigitGroupingSymbolLength(Integer minDigitGroupingSymbolLength) {
-        this.minDigitGroupingSymbolLength = minDigitGroupingSymbolLength
-    }
-
-    @Required
-    void setMaxDigitGroupingSymbolLength(Integer maxDigitGroupingSymbolLength) {
-        this.maxDigitGroupingSymbolLength = maxDigitGroupingSymbolLength
     }
 
     @Required
@@ -194,16 +167,6 @@ class CurrencyValidatorImpl implements CurrencyValidator {
             throw AppErrors.INSTANCE.fieldInvalid('symbolPosition', SymbolPosition.values().join(',')).exception()
         }
 
-        if (currency.decimalSymbol == null) {
-            throw AppErrors.INSTANCE.fieldRequired('decimalSymbol').exception()
-        }
-        if (currency.decimalSymbol.length() > maxDecimalSymbolLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('decimalSymbol', maxDecimalSymbolLength).exception()
-        }
-        if (currency.decimalSymbol.length() < minDecimalSymbolLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('decimalSymbol', minDecimalSymbolLength).exception()
-        }
-
         if (currency.numberAfterDecimal == null) {
             throw AppErrors.INSTANCE.fieldRequired('numberAfterDecimal').exception()
         }
@@ -212,29 +175,6 @@ class CurrencyValidatorImpl implements CurrencyValidator {
         }
         if (currency.numberAfterDecimal < minNumberAfterDecimalLength) {
             throw AppErrors.INSTANCE.fieldTooShort('numberAfterDecimal', minNumberAfterDecimalLength).exception()
-        }
-
-        if (currency.negativeFormat == null) {
-            throw AppErrors.INSTANCE.fieldRequired('negativeFormat').exception()
-        }
-        if (!NegativeFormat.values().any { NegativeFormat negativeFormat ->
-            return negativeFormat.toString() == currency.negativeFormat
-        }) {
-            throw AppErrors.INSTANCE.fieldInvalid('negativeFormat', NegativeFormat.values().join(',')).exception()
-        }
-
-        if (currency.digitGroupingSymbol == null) {
-            throw AppErrors.INSTANCE.fieldRequired('digitGroupingSymbol').exception()
-        }
-        if (currency.digitGroupingSymbol.length() < minDigitGroupingSymbolLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('digitGroupingSymbol', minDigitGroupingSymbolLength).exception()
-        }
-        if (currency.digitGroupingSymbol.length() > maxDigitGroupingSymbolLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('digitGroupingSymbol', maxDigitGroupingSymbolLength).exception()
-        }
-
-        if (currency.digitGroupingLength == null) {
-            throw AppErrors.INSTANCE.fieldRequired('digitGroupingLength').exception()
         }
 
         if (currency.localeKeys == null) {
