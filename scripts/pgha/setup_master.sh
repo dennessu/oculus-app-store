@@ -35,6 +35,8 @@ max_wal_senders = 3
 port = $MASTER_DB_PORT
 listen_addresses = '*'
 hot_standby = on
+max_prepared_transactions = 100
+max_connections = 100
 EOF
 
 echo "start master database..."
