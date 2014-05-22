@@ -2,9 +2,9 @@
 source "$(git rev-parse --show-toplevel)/scripts/common.sh"; # this comment is needed, see common.sh for detail
 
 if [ -z "$*" ]; then
-    GRADLE_CMD="gradle"
+    GRADLE_CMD="gradle --continue"
 else
-    GRADLE_CMD="gradle $*"
+    GRADLE_CMD="gradle $* --continue"
 fi
 function run_gradle {
     pushd $1
