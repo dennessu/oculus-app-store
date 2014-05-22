@@ -235,6 +235,12 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
                 setName("test-offer");
             }});
         }});
+        offerRevision.setItems(new ArrayList<ItemEntry>() {{
+            add(new ItemEntry() {{
+                setQuantity(1);
+                setItemId(itemId);
+            }});
+        }});
 
         Price price = new Price();
         price.setPriceType(PriceType.FREE.name());
@@ -279,6 +285,9 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
                 setName("test-offer");
             }});
         }});
+        itemRevision.setBinaries(new HashMap<String, Binary>() {{
+            put("key", new Binary());
+        }});
         itemRevision.setSku("test_sku");
 
         Long itemRevisionId = megaGateway.createItemRevision(itemRevision);
@@ -316,7 +325,14 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
                     setType(Constant.ACTION_CREDIT_WALLET);
                     setStoredValueAmount(new BigDecimal("123.45"));
                     setStoredValueCurrency("USD");
+                    setItemId(itemId);
                 }});
+            }});
+        }});
+        offerRevision.setItems(new ArrayList<ItemEntry>() {{
+            add(new ItemEntry() {{
+                setQuantity(1);
+                setItemId(itemId);
             }});
         }});
 
