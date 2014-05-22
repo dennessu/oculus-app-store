@@ -78,14 +78,10 @@ public class IdentityModel {
     public static Currency DefaultCurrency() throws Exception {
         Currency currency = new Currency();
         currency.setCurrencyCode(DefaultCurrency);
-        currency.setDecimalSymbol(".");
-        currency.setDigitGroupingLength(3);
-        currency.setDigitGroupingSymbol(",");
         Map<String, String> localeKeys = new HashMap<>();
         localeKeys.put("shortName", "USD_SHORT");
         localeKeys.put("longName", "USD_LONG");
         currency.setLocaleKeys(localeKeys);
-        currency.setNegativeFormat("BRACE");
         currency.setNumberAfterDecimal(2);
         currency.setSymbol("$");
         currency.setSymbolPosition("BEFORE");
