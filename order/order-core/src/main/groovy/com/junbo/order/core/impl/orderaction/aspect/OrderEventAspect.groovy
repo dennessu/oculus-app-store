@@ -13,7 +13,7 @@ import com.junbo.order.core.impl.orderaction.BaseOrderEventAwareAction
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.db.entity.enums.EventStatus
 import com.junbo.order.db.entity.enums.OrderActionType
-import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.model.OrderEvent
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -37,8 +37,8 @@ import javax.annotation.Resource
 @TypeChecked
 class OrderEventAspect {
 
-    @Resource(name = 'orderRepository')
-    OrderRepository repo
+    @Resource(name = 'orderRepositoryFacade')
+    OrderRepositoryFacade repo
     @Resource(name = 'orderServiceContextBuilder')
     OrderServiceContextBuilder builder
     @Resource(name = 'orderTransactionHelper')
@@ -174,7 +174,7 @@ class OrderEventAspect {
 
     private OrderId getOrderId(JoinPoint jp) {
         def context = getOrderActionContext(jp)
-        return context?.orderServiceContext?.order?.id
+        return context?.orderServiceContext?.order?.getId()
     }
 
     @SuppressWarnings('UnnecessaryGetter')

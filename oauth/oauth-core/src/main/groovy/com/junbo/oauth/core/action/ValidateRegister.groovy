@@ -33,6 +33,7 @@ class ValidateRegister implements Action {
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
             Pattern.compile('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$', Pattern.CASE_INSENSITIVE);
 
+    public static final Pattern VALID_PIN_REGEX = Pattern.compile('\\d{4}')
 
     @Override
     Promise<ActionResult> execute(ActionContext context) {
@@ -45,15 +46,20 @@ class ValidateRegister implements Action {
             contextWrapper.errors.add(AppExceptions.INSTANCE.missingUsername().error())
         }
 
-        String nickname = parameterMap.getFirst(OAuthParameters.NICK_NAME)
-        if (StringUtils.isEmpty(nickname)) {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.missingNickName().error())
-        }
-
         String password = parameterMap.getFirst(OAuthParameters.PASSWORD)
 
         if (StringUtils.isEmpty(password)) {
             contextWrapper.errors.add(AppExceptions.INSTANCE.missingPassword().error())
+        }
+
+        String pin = parameterMap.getFirst(OAuthParameters.PIN)
+
+        if (StringUtils.isEmpty(pin)) {
+            contextWrapper.errors.add(AppExceptions.INSTANCE.missingPin().error())
+        } else {
+            if (!VALID_PIN_REGEX.matcher(pin).find()) {
+                contextWrapper.errors.add(AppExceptions.INSTANCE.invalidPin().error())
+            }
         }
 
         String email = parameterMap.getFirst(OAuthParameters.EMAIL)
@@ -80,9 +86,7 @@ class ValidateRegister implements Action {
 
         String genderStr = parameterMap.getFirst(OAuthParameters.GENDER)
 
-        if (StringUtils.isEmpty(genderStr)) {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.missingGender().error())
-        } else {
+        if (!StringUtils.isEmpty(genderStr)) {
             try {
                 contextWrapper.gender = Gender.valueOf(genderStr.toUpperCase())
             } catch (IllegalArgumentException e) {

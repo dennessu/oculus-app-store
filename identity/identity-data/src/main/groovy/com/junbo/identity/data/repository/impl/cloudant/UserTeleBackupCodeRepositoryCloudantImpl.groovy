@@ -71,12 +71,12 @@ class UserTeleBackupCodeRepositoryCloudantImpl extends CloudantClient<UserTeleBa
             views: [
                     'by_user_id': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.userId.value.toString(), doc._id)' +
+                                    '  emit(doc.userId, doc._id)' +
                                     '}',
                             resultClass: String),
                     'by_user_id_active': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.userId.value.toString() + \':\' + doc.active.toString(), doc._id)' +
+                                    '  emit(doc.userId + \':\' + doc.active.toString(), doc._id)' +
                                     '}',
                             resultClass: String)
             ]

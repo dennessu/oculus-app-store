@@ -234,6 +234,7 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
         for (OfferAction action : offer.getActions()) {
             FulfilmentAction fulfilmentAction = new FulfilmentAction();
 
+            fulfilmentAction.setItemId(action.getItemId());
             fulfilmentAction.setType(action.getType());
             fulfilmentAction.setStatus(FulfilmentStatus.PENDING);
             fulfilmentAction.setProperties(action.getProperties());

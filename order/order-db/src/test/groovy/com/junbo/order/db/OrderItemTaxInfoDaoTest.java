@@ -41,7 +41,7 @@ public class OrderItemTaxInfoDaoTest extends BaseTest {
         OrderItemTaxInfoEntity entity = generateOrderItemTaxInfoEntity();
         entity.setOrderItemId(idGenerator.nextId(OrderItemId.class));
         Long id = orderItemTaxInfoDao.create(entity);
-        entity.setUpdatedBy("ANOTHER");
+        entity.setUpdatedBy(123L);
         orderItemTaxInfoDao.update(entity);
         OrderItemTaxInfoEntity returnedEntity = orderItemTaxInfoDao.read(id);
 
@@ -60,9 +60,9 @@ public class OrderItemTaxInfoDaoTest extends BaseTest {
         entity.setIsTaxInclusive(false);
         entity.setTaxCode("TEST_TAX_CODE");
         entity.setCreatedTime(new Date());
-        entity.setCreatedBy("TESTER");
+        entity.setCreatedBy(123L);
         entity.setUpdatedTime(new Date());
-        entity.setUpdatedBy("Tester");
+        entity.setUpdatedBy(456L);
         return entity;
     }
 }

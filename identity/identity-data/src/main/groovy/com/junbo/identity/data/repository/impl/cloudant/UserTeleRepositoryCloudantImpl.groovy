@@ -62,7 +62,7 @@ class UserTeleRepositoryCloudantImpl extends CloudantClient<UserTeleCode> implem
             views: [
                 'by_user_id_phone_number': new CloudantViews.CloudantView(
                     map: 'function(doc) {' +
-                            '  emit(doc.userId.value.toString() + \':\' + doc.phoneNumber.value.toString(), doc._id)' +
+                            '  emit(doc.userId + \':\' + doc.phoneNumber, doc._id)' +
                             '}',
                     resultClass: String)
             ]

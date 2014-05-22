@@ -66,8 +66,8 @@ class TestHelper implements ApplicationContextAware {
         order.setCountry('US')
         order.setCurrency('USD')
         order.setCreatedTime(new Date())
-        order.setCreatedBy('Test')
-        order.setUpdatedBy('Test')
+        order.setCreatedBy(123L)
+        order.setUpdatedBy(456L)
         order.setUpdatedTime(new Date())
         order.setOrderStatusId(OrderStatus.OPEN)
         order.setTentative(rand.nextBoolean())
@@ -92,8 +92,8 @@ class TestHelper implements ApplicationContextAware {
         entity.setUnitPrice(BigDecimal.valueOf(DEFAULT_PRICE))
         entity.setQuantity(Integer.valueOf(DEFAULT_QUANTITY))
         entity.setCreatedTime(new Date())
-        entity.setCreatedBy('Test')
-        entity.setUpdatedBy('Test')
+        entity.setCreatedBy(123L)
+        entity.setUpdatedBy(123L)
         entity.setUpdatedTime(new Date())
         entity.setTotalAmount(BigDecimal.valueOf(DEFAULT_PRICE))
         entity.setTotalDiscount(BigDecimal.valueOf(DEFAULT_PRICE))
@@ -112,9 +112,9 @@ class TestHelper implements ApplicationContextAware {
         entity.setDiscountAmount(BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)))
         entity.setDiscountRate(BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)))
         entity.setCreatedTime(new Date())
-        entity.setCreatedBy('Tester')
+        entity.setCreatedBy(123L)
         entity.setUpdatedTime(new Date())
-        entity.setUpdatedBy('Tester')
+        entity.setUpdatedBy(123L)
         return entity
     }
 
@@ -134,7 +134,6 @@ class TestHelper implements ApplicationContextAware {
         OrderItemFulfillmentHistoryEntity entity = new OrderItemFulfillmentHistoryEntity()
         entity.setHistoryId(generateId())
         entity.setFulfillmentEventId(randEnum(FulfillmentAction))
-        entity.setOrderId(generateOrderId())
         entity.setOrderItemId(generateLong())
         entity.setTrackingUuid(generateUUID())
         entity.setFulfillmentId(RandomStringUtils.randomAlphabetic(20))
@@ -159,9 +158,9 @@ class TestHelper implements ApplicationContextAware {
         entity.setPreNotificationDate(new Date())
         entity.setReleaseDate(new Date())
         entity.setCreatedTime(new Date())
-        entity.setCreatedBy('Tester')
+        entity.setCreatedBy(123L)
         entity.setUpdatedTime(new Date())
-        entity.setUpdatedBy('Tester')
+        entity.setUpdatedBy(123L)
         return entity
     }
 
@@ -175,7 +174,7 @@ class TestHelper implements ApplicationContextAware {
         entity.setUpdateBeforeValue('BEFORE_UPDATE')
         entity.setUpdateAfterValue('AFTER_UPDATE')
         entity.setUpdatedTime(new Date())
-        entity.setUpdatedBy('TESTER')
+        entity.setUpdatedBy(123L)
         return entity
     }
 
@@ -187,9 +186,9 @@ class TestHelper implements ApplicationContextAware {
         entity.setCurrency(RandomStringUtils.randomAlphabetic(3))
         entity.setTotalAmount(BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)))
         entity.setCreatedTime(new Date())
-        entity.setCreatedBy('TESTER')
+        entity.setCreatedBy(123L)
         entity.setUpdatedTime(new Date())
-        entity.setUpdatedBy('TESTER')
+        entity.setUpdatedBy(123L)
         entity.setStartTime(new Date())
         entity.setEndTime(new Date())
         entity.setPayoutStatus(PayoutStatus.PENDING)
@@ -207,11 +206,11 @@ class TestHelper implements ApplicationContextAware {
         entity.setOriginalSubledgerItemId(generateLong())
         entity.setTotalAmount(BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)))
         entity.setCreatedTime(new Date())
-        entity.setCreatedBy('TESTER')
+        entity.setCreatedBy(123L)
         entity.setUpdatedTime(new Date())
         entity.setSubledgerItemAction(SubledgerItemAction.CHARGE)
         entity.setProductItemId(generateId().toString())
-        entity.setUpdatedBy('Tester')
+        entity.setUpdatedBy(123L)
         entity.setStatus(SubledgerItemStatus.PENDING)
         return entity
     }

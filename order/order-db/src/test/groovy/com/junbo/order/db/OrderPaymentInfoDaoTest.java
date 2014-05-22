@@ -37,7 +37,7 @@ public class OrderPaymentInfoDaoTest extends BaseTest {
     public void testUpdate() {
         OrderPaymentInfoEntity orderPaymentInfoEntity = generateOrderPaymentInfoEntity();
         Long id = orderPaymentInfoDao.create(orderPaymentInfoEntity);
-        orderPaymentInfoEntity.setUpdatedBy("ANOTHER");
+        orderPaymentInfoEntity.setUpdatedBy(123L);
         orderPaymentInfoDao.update(orderPaymentInfoEntity);
         OrderPaymentInfoEntity returnedEntity = orderPaymentInfoDao.read(id);
 
@@ -78,9 +78,9 @@ public class OrderPaymentInfoDaoTest extends BaseTest {
         entity.setPaymentInstrumentId("TEST_PAYMENT_METHOD_ID");
         entity.setPaymentInstrumentType("TEST_PAYMENT_METHOD_TYPE");
         entity.setCreatedTime(new Date());
-        entity.setCreatedBy("TESTER");
+        entity.setCreatedBy(123L);
         entity.setUpdatedTime(new Date());
-        entity.setUpdatedBy("TESTER");
+        entity.setUpdatedBy(456L);
         return entity;
     }
 }

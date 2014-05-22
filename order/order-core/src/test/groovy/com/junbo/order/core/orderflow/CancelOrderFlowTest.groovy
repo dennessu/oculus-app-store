@@ -13,7 +13,7 @@ import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.db.entity.enums.OrderStatus
-import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.testng.annotations.Test
@@ -31,7 +31,7 @@ class CancelOrderFlowTest extends BaseTest {
     @Qualifier('mockOrderService')
     OrderService orderService
     @Autowired
-    OrderRepository repo
+    OrderRepositoryFacade repo
     @Resource(name = 'mockFacadeContainer')
     FacadeContainer facadeContainer
     @Resource(name = 'mockOrderInternalService')
@@ -65,8 +65,8 @@ class CancelOrderFlowTest extends BaseTest {
         def balance = CoreBuilder.buildBalance(order)
         facadeContainer.billingFacade.createBalance(balance, false)
 
-        def getOrder = orderService.getOrderByOrderId(o.id.value).wrapped().get()
-        assert (o.id.value == getOrder.id.value)
+        def getOrder = orderService.getOrderByOrderId(o.getId().value).wrapped().get()
+        assert (o.getId().value == getOrder.getId().value)
         assert (o.status == OrderStatus.CANCELED.name())
     }
 }

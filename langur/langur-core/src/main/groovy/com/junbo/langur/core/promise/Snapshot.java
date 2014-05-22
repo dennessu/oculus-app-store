@@ -5,12 +5,17 @@
  */
 package com.junbo.langur.core.promise;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.Field;
 
 /**
  * Created by kg on 2/14/14.
  */
 class Snapshot {
+    private static final Logger logger = LoggerFactory.getLogger(Snapshot.class);
+
     private static final Field threadLocalsField;
     private static final Field inheritableThreadLocalsField;
 
@@ -52,6 +57,9 @@ class Snapshot {
             throw new RuntimeException(e);
         }
 
+        if (logger.isDebugEnabled()) {
+            logger.debug("ThreadLocal Snapshot: Stored threadlocal from tid {}, {} : {}", Thread.currentThread().getId(), threadLocals, inheritableThreadLocals);
+        }
         // more things could be added. e.g. call stack, transaction context, etc.
     }
 
@@ -65,6 +73,9 @@ class Snapshot {
             throw new RuntimeException(e);
         }
 
+        if (logger.isDebugEnabled()) {
+            logger.debug("ThreadLocal Snapshot: Resumed threadlocal from tid {}, {} : {}", Thread.currentThread().getId(), threadLocals, inheritableThreadLocals);
+        }
         // more things could be added. e.g. call stack, transaction context, etc.
     }
 }

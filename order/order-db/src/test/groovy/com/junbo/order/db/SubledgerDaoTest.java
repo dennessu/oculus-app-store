@@ -41,7 +41,7 @@ public class SubledgerDaoTest extends BaseTest {
         SubledgerEntity entity = TestHelper.generateSubledgerEntity();
         entity.setSubledgerId(idGenerator.nextId(SubledgerId.class));
         Long id = subledgerDao.create(entity);
-        entity.setUpdatedBy("ANOTHER");
+        entity.setUpdatedBy(123L);
         subledgerDao.update(entity);
         SubledgerEntity returnedEntity = subledgerDao.read(id);
 

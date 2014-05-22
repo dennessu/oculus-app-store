@@ -53,7 +53,7 @@ class UserServiceImpl implements UserService {
 
     private static final String EMAIL_SOURCE = 'SilkCloud'
     private static final String EMAIL_ACTION = 'EmailVerification'
-    private static final String EMAIL_VERIFY_PATH = 'oauth2/authorize'
+    private static final String EMAIL_VERIFY_PATH = 'oauth2/verify-email'
     private static final String EMAIL_VERIFY_EVENT = 'verify'
     private static final String EMAIL_RESET_PASSWORD_PATH = 'oauth2/reset-password'
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl)
@@ -73,6 +73,8 @@ class UserServiceImpl implements UserService {
     private EmailTemplateResource emailTemplateResource
 
     private ResetPasswordCodeRepository resetPasswordCodeRepository
+
+    private EmailVerifyCodeRepository emailVerifyCodeRepository
 
     @Required
     void setTokenService(TokenService tokenService) {
@@ -113,6 +115,11 @@ class UserServiceImpl implements UserService {
     @Required
     void setResetPasswordCodeRepository(ResetPasswordCodeRepository resetPasswordCodeRepository) {
         this.resetPasswordCodeRepository = resetPasswordCodeRepository
+    }
+
+    @Required
+    void setEmailVerifyCodeRepository(EmailVerifyCodeRepository emailVerifyCodeRepository) {
+        this.emailVerifyCodeRepository = emailVerifyCodeRepository
     }
 
     @Override
@@ -169,18 +176,15 @@ class UserServiceImpl implements UserService {
                 }
 
                 EmailVerifyCode code = new EmailVerifyCode(
-                        code: tokenGenerator.generateEmailVerifyCode(),
                         userId: (user.id as UserId).value,
                         email: email)
 
-                contextWrapper.emailVerifyCode = code
+                emailVerifyCodeRepository.save(code)
 
                 UriBuilder uriBuilder = UriBuilder.fromUri(request.baseUri)
                 uriBuilder.path(EMAIL_VERIFY_PATH)
-                uriBuilder.queryParam(OAuthParameters.CONVERSATION_ID, contextWrapper.conversationId)
                 uriBuilder.queryParam(OAuthParameters.EMAIL_VERIFY_CODE, code.code)
                 uriBuilder.queryParam(OAuthParameters.LOCALE, contextWrapper.viewLocale)
-                uriBuilder.queryParam(OAuthParameters.EVENT, EMAIL_VERIFY_EVENT)
 
                 QueryParam queryParam = new QueryParam(
                         source: EMAIL_SOURCE,

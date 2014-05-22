@@ -33,6 +33,4 @@ public interface MegaGateway {
     Long updateItemRevision(ItemRevision itemRevision);
 
     Entitlement getEntitlement(Long entitlementId);
-
-    Long createEntitlementDef(EntitlementDefinition def);
 }

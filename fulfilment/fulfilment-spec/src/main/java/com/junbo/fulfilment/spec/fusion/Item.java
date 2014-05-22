@@ -5,12 +5,15 @@
  */
 package com.junbo.fulfilment.spec.fusion;
 
+import java.util.List;
+
 /**
  * Item.
  */
 public class Item {
     private Long itemId;
     private String sku;
+    private List<EntitlementMeta> entitlementMetas;
 
     public Long getItemId() {
         return itemId;
@@ -26,5 +29,13 @@ public class Item {
 
     public void setSku(String sku) {
         this.sku = sku;
+    }
+
+    public List<EntitlementMeta> getEntitlementMetas() {
+        return entitlementMetas;
+    }
+
+    public void setEntitlementMetas(List<EntitlementMeta> entitlementMetas) {
+        this.entitlementMetas = entitlementMetas;
     }
 }

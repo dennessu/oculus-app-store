@@ -7,13 +7,15 @@
 package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.util.Identifiable;
 
 import java.math.BigDecimal;
 
 /**
  * Created by fzhang on 14-3-11.
  */
-public class BillingHistory extends BaseOrderResource {
+public class BillingHistory extends ResourceMeta implements Identifiable<Long> {
 
     @JsonIgnore
     private Long id;

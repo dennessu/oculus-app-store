@@ -44,10 +44,10 @@ class CoreBuilder {
 
         order.orderItems.eachWithIndex { OrderItem item, int i ->
             def balanceItem = buildBalanceItem(item)
-            if (item.orderItemId == null) {
+            if (item.id == null) {
                 balanceItem.orderItemId = new OrderItemId(i)
             } else {
-                balanceItem.orderItemId = item.orderItemId
+                balanceItem.orderItemId = item.getId()
             }
             balance.addBalanceItem(balanceItem)
         }
@@ -74,10 +74,10 @@ class CoreBuilder {
         order.orderItems.eachWithIndex { OrderItem item, int i ->
             def balanceItem = buildOrUpdatePartialChargeBalanceItem(item, taxedBalance)
             if (taxedBalance == null) {
-                if (item.orderItemId == null) {
+                if (item.id == null) {
                     balanceItem.orderItemId = new OrderItemId(i)
                 } else {
-                    balanceItem.orderItemId = item.orderItemId
+                    balanceItem.orderItemId = item.getId()
                 }
                 balance.addBalanceItem(balanceItem)
             }
@@ -105,7 +105,7 @@ class CoreBuilder {
         Balance balance = new Balance()
         balance.country = order.country.value
         balance.currency = order.currency.value
-        balance.orderId = order.id
+        balance.orderId = order.getId()
         balance.userId = order.user
         balance.piId = order.payments?.get(0)?.paymentInstrument
         balance.trackingUuid = UUID.randomUUID()
@@ -177,7 +177,7 @@ class CoreBuilder {
         if (taxedBalance != null) {
             // complete charge
             balanceItem = taxedBalance.balanceItems.find { BalanceItem taxedItem ->
-                taxedItem.orderItemId.value == item.orderItemId.value
+                taxedItem.orderItemId.value == item.getId().value
             }
             balanceItem.amount = item.totalAmount - partialChargeAmount
             taxedBalance.totalAmount -= partialChargeAmount
@@ -260,7 +260,7 @@ class CoreBuilder {
         }
 
         order.orderItems.eachWithIndex { OrderItem orderItem, int i ->
-            def orderItemId = orderItem.orderItemId == null ? new OrderItemId(i) : orderItem.orderItemId
+            def orderItemId = orderItem.id == null ? new OrderItemId(i) : orderItem.id
             def balanceItem = balance.balanceItems.find { BalanceItem balanceItem ->
                 return balanceItem.orderItemId == orderItemId
             }

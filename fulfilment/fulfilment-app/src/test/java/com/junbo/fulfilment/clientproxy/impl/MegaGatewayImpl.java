@@ -44,10 +44,6 @@ public class MegaGatewayImpl implements MegaGateway {
     @Qualifier("entitlementClient")
     private EntitlementResource entitlementResource;
 
-    @Autowired
-    @Qualifier("entitlementDefClient")
-    private EntitlementDefinitionResource entitlementDefResource;
-
     @Override
     public Long createOffer(Offer offer) {
         try {
@@ -130,15 +126,6 @@ public class MegaGatewayImpl implements MegaGateway {
             return entitlementResource.getEntitlement(new EntitlementId(entitlementId)).get();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Entitlement] component service.", e);
-        }
-    }
-
-    @Override
-    public Long createEntitlementDef(EntitlementDefinition def) {
-        try {
-            return entitlementDefResource.postEntitlementDefinition(def).get().getEntitlementDefId();
-        } catch (Exception e) {
-            throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
     }
 }

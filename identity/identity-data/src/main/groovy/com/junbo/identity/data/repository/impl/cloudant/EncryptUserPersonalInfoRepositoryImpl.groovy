@@ -78,7 +78,7 @@ class EncryptUserPersonalInfoRepositoryImpl extends CloudantClient<EncryptUserPe
                             resultClass: String),
                     'by_user_personal_info_id': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.userPersonalInfoId.value.toString(), doc._id)' +
+                                    '  emit(doc.userPersonalInfoId, doc._id)' +
                                     '}',
                             resultClass: String)
             ]

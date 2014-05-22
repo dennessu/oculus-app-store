@@ -73,7 +73,7 @@ class UserSecurityQuestionRepositoryCloudantImpl extends CloudantClient<UserSecu
         views: [
             'by_user_id': new CloudantViews.CloudantView(
                 map: 'function(doc) {' +
-                    '    emit(doc.userId.value.toString(), doc._id)' +
+                    '    emit(doc.userId, doc._id)' +
                     '}',
                 resultClass: String)
         ]

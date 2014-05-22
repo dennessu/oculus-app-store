@@ -9,14 +9,18 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.OrderId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPersonalInfoId;
+import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.jackson.annotation.ShippingMethodId;
 import com.junbo.common.model.Link;
+import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
@@ -32,7 +36,7 @@ import java.util.List;
         "shippingAddress", "paymentInstruments", "refundOrders", "discounts", "orderItems"
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Order extends BaseOrderResource {
+public class Order extends ResourceMeta implements Identifiable<OrderId> {
     @ApiModelProperty(required = true, position = 10, value = "[Client Immutable] The order id.")
     @JsonProperty("self")
     private OrderId id;
@@ -105,14 +109,19 @@ public class Order extends BaseOrderResource {
 
     @ApiModelProperty(required = true, position = 160, value = "The discounts. " +
             "It might be empty if there is no discounts at this time.")
+    @CloudantIgnore
     private List<Discount> discounts;
+
     @ApiModelProperty(required = true, position = 140, value = "The order items. ")
+    @CloudantIgnore
     private List<OrderItem> orderItems;
 
     @ApiModelProperty(required = true, position = 170, value = "[Client Immutable]]The link to the order events. ")
+    @HateoasLink("/order-events?orderId={id}")
     private Link orderEvents;
 
     @ApiModelProperty(required = true, position = 180, value = "[Client Immutable]]The link to the balances. ")
+    @HateoasLink("/balances?orderId={id}")
     private Link balances;
 
     // urls for web payment

@@ -13,19 +13,9 @@
 
     <bean id="megaGatway" class="com.junbo.fulfilment.clientproxy.impl.MegaGatewayImpl"/>
 
-    <bean id="fulfilmentClient" class="com.junbo.fulfilment.spec.resource.proxy.FulfilmentResourceClientProxy">
-        <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="target" value="${clientproxy.fulfilment.url}"/>
-        <constructor-arg name="transcoder">
-            <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
-        </constructor-arg>
-        <constructor-arg name="pathParamTranscoder">
-            <bean class="com.junbo.common.json.IdPathParamTranscoder"/>
-        </constructor-arg>
-        <constructor-arg name="queryParamTranscoder">
-            <bean class="com.junbo.common.json.QueryParamTranscoderImpl"/>
-        </constructor-arg>
-        <constructor-arg name="exceptionHandler" ref="commonExceptionHandler"/>
+    <bean id="fulfilmentClient" class="com.junbo.fulfilment.spec.resource.proxy.FulfilmentResourceClientProxy"
+            parent="baseClientProxy">
+        <property name="target" value="${clientproxy.fulfilment.url}"/>
     </bean>
 
     <bean id="emailPublisher" class="com.junbo.fulfilment.notification.EmailPublisher" parent="basePublisher">
