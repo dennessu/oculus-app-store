@@ -28,9 +28,9 @@ public interface OrderService {
 
     String postQuote(Order order, int expectedResponseCode) throws Exception;
 
-    List<String> getOrderByUserId(String userId) throws Exception;
+    List<String> getOrdersByUserId(String userId) throws Exception;
 
-    List<String> getOrderByUserId(String userId, int expectedResponseCode) throws Exception;
+    List<String> getOrdersByUserId(String userId, int expectedResponseCode) throws Exception;
 
     String getOrderByOrderId(String orderId) throws Exception;
 

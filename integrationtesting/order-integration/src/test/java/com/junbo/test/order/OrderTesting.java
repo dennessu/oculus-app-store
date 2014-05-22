@@ -61,8 +61,6 @@ public class OrderTesting extends BaseOrderTestClass {
         String orderId1 = testDataProvider.postOrder(
                 uid, Country.DEFAULT, Currency.DEFAULT, payPalId, false, offerList);
 
-        orderId1 = testDataProvider.getOrder(orderId1);
-
         expectedOrderStatus.put(orderId1, OrderStatus.OPEN);
 
         String orderId2 = testDataProvider.postOrder(
@@ -74,9 +72,9 @@ public class OrderTesting extends BaseOrderTestClass {
         order.setCancelRedirectUrl("http://www.abc.com/cancel/");
         orderId2 = testDataProvider.updateOrder(order);
 
-        orderId2 = testDataProvider.getOrder(orderId2);
-
         expectedOrderStatus.put(orderId2, OrderStatus.PENDING_CHARGE);
+
+        testDataProvider.getOrdersByUserId(uid);
 
         validationHelper.validateOrderStatus(expectedOrderStatus);
     }
@@ -118,16 +116,12 @@ public class OrderTesting extends BaseOrderTestClass {
         String orderId_Open = testDataProvider.postOrder(
                 uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
 
-        orderId_Open = testDataProvider.getOrder(orderId_Open);
-
         expectedOrderStatus.put(orderId_Open, OrderStatus.OPEN);
 
         String orderId_Completed = testDataProvider.postOrder(
                 uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
 
         testDataProvider.updateOrderTentative(orderId_Completed, false);
-
-        orderId_Completed = testDataProvider.getOrder(orderId_Completed);
 
         expectedOrderStatus.put(orderId_Completed, OrderStatus.COMPLETED);
 
@@ -143,12 +137,11 @@ public class OrderTesting extends BaseOrderTestClass {
                 uid, Country.DEFAULT, Currency.DEFAULT, ewalletId, false, offerList);
 
         testDataProvider.updateOrderTentative(order_Insufficient, false, 409);
-
-        order_Insufficient = testDataProvider.getOrder(order_Insufficient);
         expectedOrderStatus.put(order_Insufficient, OrderStatus.OPEN);
 
         testDataProvider.creditWallet(uid, new BigDecimal(100));
 
+        testDataProvider.getOrdersByUserId(uid);
         validationHelper.validateOrderStatus(expectedOrderStatus);
 
         expectedOrderStatus.clear();
@@ -156,8 +149,8 @@ public class OrderTesting extends BaseOrderTestClass {
         String order_PendingFulfil = testDataProvider.updateOrderTentative(order_Insufficient, false, 200);
         expectedOrderStatus.put(order_PendingFulfil, OrderStatus.PENDING_FULFILL);
 
+        testDataProvider.getOrdersByUserId(uid);
         validationHelper.validateOrderStatus(expectedOrderStatus);
-
     }
 
 }

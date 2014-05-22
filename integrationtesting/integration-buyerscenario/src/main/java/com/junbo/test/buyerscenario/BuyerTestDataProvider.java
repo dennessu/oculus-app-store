@@ -34,9 +34,6 @@ import com.junbo.test.catalog.impl.OfferServiceImpl;
 import com.junbo.order.spec.model.Order;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
-import com.junbo.test.common.apihelper.order.OrderService;
-import com.junbo.test.common.apihelper.order.impl.OrderServiceImpl;
-
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
@@ -44,6 +41,9 @@ import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.entitlement.EntitlementService;
+import com.junbo.test.order.apihelper.OrderService;
+import com.junbo.test.order.apihelper.impl.OrderServiceImpl;
+import com.junbo.test.order.utility.OrderTestDataProvider;
 import com.junbo.test.payment.apihelper.PaymentService;
 import com.junbo.test.payment.apihelper.impl.PaymentServiceImpl;
 import com.junbo.test.payment.utility.PaymentTestDataProvider;
@@ -56,13 +56,13 @@ import java.util.List;
  * Created by Yunlong on 3/20/14.
  */
 public class BuyerTestDataProvider extends BaseTestDataProvider {
-    private UserService identityClient = UserServiceImpl.instance();
-    private ItemService itemClient = ItemServiceImpl.instance();
-    private OfferService offerClient = OfferServiceImpl.instance();
-    private CartService cartClient = CartServiceImpl.getInstance();
-    private OrderService orderClient = OrderServiceImpl.getInstance();
-    private PaymentService paymentClient = PaymentServiceImpl.getInstance();
-    private PaymentTestDataProvider paymentProvider = new PaymentTestDataProvider();
+    protected UserService identityClient = UserServiceImpl.instance();
+    protected ItemService itemClient = ItemServiceImpl.instance();
+    protected OfferService offerClient = OfferServiceImpl.instance();
+    protected CartService cartClient = CartServiceImpl.getInstance();
+    protected OrderTestDataProvider orderProvider = new OrderTestDataProvider();
+    protected PaymentService paymentClient = PaymentServiceImpl.getInstance();
+    protected PaymentTestDataProvider paymentProvider = new PaymentTestDataProvider();
 
     private LogHelper logger = new LogHelper(BuyerTestDataProvider.class);
 
@@ -126,19 +126,11 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
     }
 
     public void creditWallet(String uid) throws Exception {
-        CreditRequest creditRequest = new CreditRequest();
-        creditRequest.setCurrency("usd");
-        creditRequest.setUserId(IdConverter.hexStringToId(UserId.class, uid));
-        creditRequest.setAmount(new BigDecimal(500));
-        paymentClient.creditWallet(creditRequest);
+       paymentProvider.creditWallet(uid);
     }
 
     public void creditWallet(String uid, BigDecimal amount) throws Exception {
-        CreditRequest creditRequest = new CreditRequest();
-        creditRequest.setCurrency("usd");
-        creditRequest.setUserId(IdConverter.hexStringToId(UserId.class, uid));
-        creditRequest.setAmount(amount);
-        paymentClient.creditWallet(creditRequest);
+        paymentProvider.creditWallet(uid,amount);
     }
 
 /*    public String postShippingAddressToUser(String uid, ShippingAddressInfo shippingAddressInfo) throws Exception {
@@ -170,38 +162,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
                             boolean hasPhysicalGood, ArrayList<String> offers, int expectedResponseCode)
             throws Exception {
 
-        Order order = new Order();
-        order.setUser(new UserId(IdConverter.hexStringToId(UserId.class, uid)));
-        order.setCountry(new CountryId(country.toString()));
-        order.setCurrency(new CurrencyId(currency.toString()));
-        List<PaymentInfo> paymentInfos = new ArrayList<>();
-        PaymentInfo paymentInfo = new PaymentInfo();
-        paymentInfo.setPaymentInstrument(new PaymentInstrumentId(
-                IdConverter.hexStringToId(PaymentInstrumentId.class, paymentInstrumentId)));
-        paymentInfos.add(paymentInfo);
-        order.setPayments(paymentInfos);
-        order.setShippingMethod(0L);
-
-        if (hasPhysicalGood) {
-            order.setShippingMethod(01L);
-            order.setShippingAddress(Master.getInstance().getUser(uid).getAddresses().get(0).getValue());
-        }
-
-        List<OrderItem> orderItemList = new ArrayList<>();
-        for (int i = 0; i < offers.size(); i++) {
-            OfferId offerId = new OfferId(
-                    IdConverter.hexStringToId(OfferId.class, offerClient.getOfferIdByName(offers.get(i))));
-
-            OrderItem orderItem = new OrderItem();
-            orderItem.setQuantity(1);
-            //orderItem.setQuantity(Integer.valueOf(RandomFactory.getRandomLong(1L, 1L).toString()));
-            orderItem.setOffer(offerId);
-            orderItemList.add(orderItem);
-        }
-        order.setOrderItems(orderItemList);
-        order.setTentative(true);
-        order.setLocale(new LocaleId("en_US"));
-        return orderClient.postOrder(order, expectedResponseCode);
+       return orderProvider.postOrder(uid,country,currency,paymentInstrumentId,hasPhysicalGood,offers,expectedResponseCode);
     }
 
     public String postOrderByCartId(String uid, String cartId, Country country, Currency currency,
@@ -248,7 +209,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
 
         order.setLocale(new LocaleId("en_US"));
         logger.LogSample("Post an order");
-        return orderClient.postOrder(order);
+        return orderProvider.postOrder(order);
     }
 
 
@@ -257,10 +218,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
     }
 
     public String updateOrderTentative(String orderId, boolean isTentative, int expectedResponseCode) throws Exception {
-        Order order = Master.getInstance().getOrder(orderClient.getOrderByOrderId(orderId));
-        order.setTentative(isTentative);
-        logger.LogSample("Put an order");
-        return orderClient.updateOrder(order, expectedResponseCode);
+        return orderProvider.updateOrderTentative(orderId,isTentative,expectedResponseCode);
     }
 
     public void emptyCartByCartId(String uid, String cartId) throws Exception {
@@ -272,11 +230,11 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
     }
 
     public String updateOrder(Order order) throws Exception {
-        return orderClient.updateOrder(order);
+       return orderProvider.updateOrder(order);
     }
 
     public String getOrder(String orderId) throws Exception {
-        return orderClient.getOrderByOrderId(orderId);
+        return orderProvider.getOrder(orderId);
     }
 
     public Results<Entitlement> getEntitlementByUserId(String uid) throws Exception {

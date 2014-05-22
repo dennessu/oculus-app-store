@@ -50,6 +50,21 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
         paymentClient.creditWallet(creditRequest);
     }
 
+    public void creditWallet(String uid, BigDecimal amount) throws Exception {
+        CreditRequest creditRequest = new CreditRequest();
+        creditRequest.setCurrency("usd");
+        creditRequest.setUserId(IdConverter.hexStringToId(UserId.class, uid));
+        creditRequest.setAmount(amount);
+        paymentClient.creditWallet(creditRequest);
+    }
+
+    public void creditWallet(String uid) throws Exception {
+        CreditRequest creditRequest = new CreditRequest();
+        creditRequest.setCurrency("usd");
+        creditRequest.setUserId(IdConverter.hexStringToId(UserId.class, uid));
+        creditRequest.setAmount(new BigDecimal(500));
+        paymentClient.creditWallet(creditRequest);
+    }
 
     public String postPaymentInstrument(String uid, PaymentInstrumentBase paymentInfo) throws Exception {
 

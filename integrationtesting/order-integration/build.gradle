@@ -28,7 +28,9 @@ dependencies {
     compile junboProject(':payment-spec')
     compile junboProject(':common-testlib')
     compile junboProject(':order-spec')
-    compile junboProject(':integration-buyerscenario')
+    compile junboProject(':catalog-integration')
+    compile junboProject(':common-testlib')
+    compile junboProject(':payment-integration')
 
     compile(libraries.asyncclient)
 
