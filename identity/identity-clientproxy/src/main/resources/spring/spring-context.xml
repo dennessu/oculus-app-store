@@ -14,4 +14,8 @@
           parent="baseClientProxy">
         <property name="target" value="${clientproxy.crypto.url}"/>
     </bean>
+
+    <bean id="userCryptoResourceClientProxy" class="com.junbo.crypto.spec.resource.proxy.UserCryptoResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.crypto.url}" />
+    </bean>
 </beans>

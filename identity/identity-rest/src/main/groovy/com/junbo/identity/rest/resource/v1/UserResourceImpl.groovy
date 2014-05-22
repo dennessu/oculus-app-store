@@ -7,6 +7,8 @@ import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
+import com.junbo.crypto.spec.model.UserCryptoKey
+import com.junbo.crypto.spec.resource.UserCryptoResource
 import com.junbo.identity.core.service.filter.UserFilter
 import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.validator.UserValidator
@@ -23,6 +25,7 @@ import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
 
 /**
@@ -48,6 +51,10 @@ class UserResourceImpl implements UserResource {
     private UserFilter userFilter
 
     @Autowired
+    @Qualifier('userCryptoResourceClientProxy')
+    private UserCryptoResource userCryptoResource
+
+    @Autowired
     private NormalizeService normalizeService
 
     @Autowired
@@ -68,10 +75,15 @@ class UserResourceImpl implements UserResource {
 
             return userValidator.validateForCreate(user).then {
                 return userRepository.create(user).then { User newUser ->
-                    created201Marker.mark((Id) newUser.id)
 
-                    newUser = userFilter.filterForGet(newUser, null)
-                    return Promise.pure(newUser)
+                    return userCryptoResource.create(new UserCryptoKey(
+                            userId: (UserId)newUser.id
+                    )).then {
+                        created201Marker.mark((Id) newUser.id)
+
+                        newUser = userFilter.filterForGet(newUser, null)
+                        return Promise.pure(newUser)
+                    }
                 }
             }
         }
