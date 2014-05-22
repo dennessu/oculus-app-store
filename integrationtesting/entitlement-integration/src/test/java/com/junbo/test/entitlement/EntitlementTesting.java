@@ -5,17 +5,24 @@
  */
 package com.junbo.test.entitlement;
 
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
-import com.junbo.common.id.EntitlementDefinitionId;
+import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.common.id.EntitlementId;
+import com.junbo.common.id.OfferRevisionId;
 import com.junbo.common.model.Results;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.identity.spec.v1.model.User;
+import com.junbo.test.catalog.ItemRevisionService;
+import com.junbo.test.catalog.ItemService;
+import com.junbo.test.catalog.OfferService;
+import com.junbo.test.catalog.enums.CatalogEntityStatus;
+import com.junbo.test.catalog.enums.EntitlementType;
+import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
+import com.junbo.test.catalog.impl.ItemServiceImpl;
+import com.junbo.test.catalog.impl.OfferServiceImpl;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.Utility.TestClass;
-import com.junbo.test.catalog.EntitlementDefinitionService;
-import com.junbo.test.catalog.impl.EntitlementDefinitionServiceImpl;
-import com.junbo.test.catalog.enums.EntitlementType;
+import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.Component;
@@ -44,6 +51,7 @@ public class EntitlementTesting extends TestClass {
     }
 
     private LogHelper logger = new LogHelper(EntitlementTesting.class);
+    private long developerItemId = -1;
 
     @Property(
             priority = Priority.Dailies,
@@ -94,7 +102,7 @@ public class EntitlementTesting extends TestClass {
         assertEquals("validate userId in entitlement is correct",
                 etCreated.getUserId(), etGet.getUserId());
         // assertEquals("validate userId in entitlement definition is correct",
-               // etCreated., etGet.getEntitlementDefinitionId());
+        // etCreated., etGet.getEntitlementDefinitionId());
     }
 
     @Property(
@@ -185,23 +193,45 @@ public class EntitlementTesting extends TestClass {
         User developerUser = Identity.UserPostDefault(); // create an developer
         Entitlement developerEntitlement = new Entitlement();
         developerEntitlement.setUserId(developerUser.getId().getValue());
-        // create DEVELOPER definitionId
-        long developerEDId = IdConverter.hexStringToId(EntitlementDefinitionId.class, "0");
-        //developerEntitlement.setEntitlementDefinitionId(developerEDId);
+        if (this.developerItemId == -1) {
+            postDeveloperItem();
+        }
+        developerEntitlement.setItemId(developerItemId);
+        developerEntitlement.setType(EntitlementType.DEVELOPER.getType());
         EntitlementService.grantEntitlement(developerEntitlement);
         return developerUser;
     }
 
     private Entitlement CreateEntitlement(User user, User developer, String entitlementType) throws Exception {
-        EntitlementDefinitionService eds = EntitlementDefinitionServiceImpl.instance();
         Entitlement entitlement = new Entitlement();
-        EntitlementDefinition ed = new EntitlementDefinition();
-        ed.setType(entitlementType);
-        ed.setDeveloperId(developer.getId().getValue());
-        EntitlementDefinition edRtn = eds.postEntitlementDefinition(ed);
-        //entitlement.setEntitlementDefinitionId(edRtn.getEntitlementDefId());
-        //FOLLOW https://oculus.atlassian.net/wiki/pages/viewpage.action?spaceKey=SER&title=Resource%3A+entitlements
         entitlement.setUserId(user.getId().getValue());
+        entitlement.setType(entitlementType);
+        if (entitlementType == EntitlementType.DOWNLOAD.getType()) ;
+        {
+            OfferService offerClient = OfferServiceImpl.instance();
+            String offerId=offerClient.getOfferIdByName("testOffer_CartCheckout_digital1");
+            String orId = IdConverter.idLongToHexString(
+                    OfferRevisionId.class, Master.getInstance().getOffer(offerId).getCurrentRevisionId());
+            long itemId = Master.getInstance().getOfferRevision(orId).getItems().get(0).getItemId();
+            entitlement.setItemId(itemId);
+        }
         return EntitlementService.grantEntitlement(entitlement);
     }
+
+    private void postDeveloperItem() throws Exception {
+        ItemService itemService = ItemServiceImpl.instance();
+        Item testItem = itemService.prepareItemEntity("developerItem");
+        Item itemPosted = itemService.postItem(testItem);
+
+        ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
+        ItemRevision itemRevision = itemRevisionService.prepareItemRevisionEntity("developerItemRevision");
+        itemRevision.setItemId(itemPosted.getItemId());
+        ItemRevision itemRevisionPosted = itemRevisionService.postItemRevision(itemRevision);
+
+        //Approve the item revision
+        itemRevisionPosted.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
+        ItemRevision itemRevisionPut = itemRevisionService.updateItemRevision(itemRevisionPosted.getRevisionId(),itemRevisionPosted);
+        this.developerItemId = itemRevisionPut.getItemId();
+    }
+
 }

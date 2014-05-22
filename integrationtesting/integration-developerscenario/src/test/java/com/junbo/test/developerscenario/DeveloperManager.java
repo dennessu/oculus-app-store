@@ -7,14 +7,13 @@ package com.junbo.test.developerscenario;
 
 import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.offer.Offer;
-import com.junbo.common.id.EntitlementDefinitionId;
 import com.junbo.common.id.UserId;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.test.catalog.EntitlementDefinitionService;
-import com.junbo.test.common.Utility.TestClass;
 import com.junbo.test.catalog.OfferService;
 import com.junbo.test.catalog.impl.EntitlementDefinitionServiceImpl;
 import com.junbo.test.catalog.impl.OfferServiceImpl;
+import com.junbo.test.common.Utility.TestClass;
 import com.junbo.test.common.apihelper.entitlement.EntitlementService;
 import com.junbo.test.common.apihelper.entitlement.impl.EntitlementServiceImpl;
 import com.junbo.test.common.apihelper.identity.UserService;
@@ -77,7 +76,7 @@ public class DeveloperManager extends TestClass {
         entitlementDefinition.setType(entitlementType);
         entitlementDefinition.setTag("");
         EntitlementDefinition edGet = eds.postEntitlementDefinition(entitlementDefinition);
-        developerEntitlement.setEntitlementDefinitionId(edGet.getEntitlementDefId());
+        //developerEntitlement.setEntitlementDefinitionId(edGet.getEntitlementDefId());
 
         //developerEntitlement.setDeveloperId(Master.getInstance().getUser(partnerUser).getId().getValue());
         //developerEntitlement.setType(entitlementType);
