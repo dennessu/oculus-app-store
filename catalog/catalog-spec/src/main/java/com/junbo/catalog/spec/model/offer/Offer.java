@@ -103,4 +103,14 @@ public class Offer extends BaseEntityModel {
     public void setEnvironment(String environment) {
         this.environment = environment;
     }
+
+    @Override
+    public Long getId() {
+        return offerId;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.offerId = id;
+    }
 }

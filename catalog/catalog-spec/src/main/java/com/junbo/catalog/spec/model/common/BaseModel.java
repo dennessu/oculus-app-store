@@ -8,6 +8,7 @@ package com.junbo.catalog.spec.model.common;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.HashMap;
@@ -16,7 +17,7 @@ import java.util.Map;
 /**
  * Base model.
  */
-public class BaseModel extends ResourceMeta {
+public abstract class BaseModel extends ResourceMeta implements Identifiable<Long> {
     @ApiModelProperty(position = 2000, required = true, value = "The future expansion properties.")
     private Map<String, JsonNode> futureExpansion = new HashMap<>();
 

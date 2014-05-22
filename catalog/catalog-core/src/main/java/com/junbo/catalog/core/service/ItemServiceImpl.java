@@ -22,7 +22,7 @@ import com.junbo.catalog.spec.model.item.*;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.common.error.AppError;
 import com.junbo.common.id.ItemId;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -32,14 +32,30 @@ import java.util.*;
  * Item service implementation.
  */
 public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevision> implements ItemService {
-    @Autowired
     private ItemRepository itemRepo;
-    @Autowired
     private ItemRevisionRepository itemRevisionRepo;
-    @Autowired
     private ItemAttributeRepository itemAttributeRepo;
-    @Autowired
     private OfferRepository offerRepo;
+
+    @Required
+    public void setItemRevisionRepo(ItemRevisionRepository itemRevisionRepo) {
+        this.itemRevisionRepo = itemRevisionRepo;
+    }
+
+    @Required
+    public void setItemAttributeRepo(ItemAttributeRepository itemAttributeRepo) {
+        this.itemAttributeRepo = itemAttributeRepo;
+    }
+
+    @Required
+    public void setItemRepo(ItemRepository itemRepo) {
+        this.itemRepo = itemRepo;
+    }
+
+    @Required
+    public void setOfferRepo(OfferRepository offerRepo) {
+        this.offerRepo = offerRepo;
+    }
 
     @Override
     public Item createEntity(Item item) {

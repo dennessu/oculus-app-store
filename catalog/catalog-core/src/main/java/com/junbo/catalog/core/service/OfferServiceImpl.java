@@ -16,8 +16,8 @@ import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.*;
-import com.junbo.common.error.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.junbo.common.error.AppError;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -27,16 +27,36 @@ import java.util.*;
  * Offer service implementation.
  */
 public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevision> implements OfferService {
-    @Autowired
     private OfferRepository offerRepo;
-    @Autowired
     private OfferRevisionRepository offerRevisionRepo;
-    @Autowired
     private ItemRepository itemRepo;
-    @Autowired
     private ItemOfferRelationsRepository relationsRepo;
-    @Autowired
     private OfferAttributeRepository offerAttributeRepo;
+
+    @Required
+    public void setOfferRepo(OfferRepository offerRepo) {
+        this.offerRepo = offerRepo;
+    }
+
+    @Required
+    public void setOfferRevisionRepo(OfferRevisionRepository offerRevisionRepo) {
+        this.offerRevisionRepo = offerRevisionRepo;
+    }
+
+    @Required
+    public void setItemRepo(ItemRepository itemRepo) {
+        this.itemRepo = itemRepo;
+    }
+
+    @Required
+    public void setRelationsRepo(ItemOfferRelationsRepository relationsRepo) {
+        this.relationsRepo = relationsRepo;
+    }
+
+    @Required
+    public void setOfferAttributeRepo(OfferAttributeRepository offerAttributeRepo) {
+        this.offerAttributeRepo = offerAttributeRepo;
+    }
 
     @Override
     public Offer createEntity(Offer offer) {

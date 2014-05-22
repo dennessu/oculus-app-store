@@ -2,16 +2,9 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
-
-    <import resource="classpath*:spring/common-context.xml"/>
-    <import resource="classpath*:spring/transaction.xml"/>
-    <import resource="classpath*:spring/sharding-context.xml"/>
-
-    <context:annotation-config/>
-    <tx:annotation-driven/>
-
-    <context:component-scan base-package="com.junbo.catalog.db"/>
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <bean id="catalogDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${catalog.db.jdbcUrls}"/>
@@ -92,14 +85,7 @@
     <bean id="itemRevisionRepository" class="com.junbo.catalog.db.repo.impl.sql.ItemRevisionRepositoryImpl"/>
     <bean id="offerRepository" class="com.junbo.catalog.db.repo.impl.sql.OfferRepositoryImpl"/>
     <bean id="offerRevisionRepository" class="com.junbo.catalog.db.repo.impl.sql.OfferRevisionRepositoryImpl"/>
-    <bean id="itemAttributeRepository" class="com.junbo.catalog.db.repo.impl.cloudant.ItemAttributeRepositoryImpl" parent="cloudantClient">
-        <property name="idGenerator" ref="oculus48IdGenerator"/>
-        <property name="dbName" value="item_attribute"/>
-        <property name="cloudantDBUri" value="${catalog.cloudant.url}" />
-        <property name="cloudantUser" value="${catalog.cloudant.user}" />
-        <property name="cloudantPassword" value="${catalog.cloudant.password}" />
-    </bean>
-    <!--bean id="itemAttributeRepository" class="com.junbo.catalog.db.repo.impl.sql.ItemAttributeRepositoryImpl"/-->
+    <bean id="itemAttributeRepository" class="com.junbo.catalog.db.repo.impl.sql.ItemAttributeRepositoryImpl"/>
     <bean id="offerAttributeRepository" class="com.junbo.catalog.db.repo.impl.sql.OfferAttributeRepositoryImpl"/>
     <bean id="priceTierRepository" class="com.junbo.catalog.db.repo.impl.sql.PriceTierRepositoryImpl"/>
 

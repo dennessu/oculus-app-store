@@ -123,6 +123,16 @@ public class PromotionRevision extends BaseRevisionModel {
     }
 
     @Override
+    public Long getId() {
+        return revisionId;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.revisionId = id;
+    }
+
+    @Override
     @JsonIgnore
     public Long getEntityId() {
         return promotionId;

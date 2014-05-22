@@ -11,7 +11,7 @@ import com.junbo.catalog.db.repo.OfferAttributeRepository;
 import com.junbo.catalog.spec.enums.OfferAttributeType;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,6 @@ import java.util.List;
  */
 public class OfferAttributeServiceImpl extends AttributeServiceSupport<OfferAttribute>
         implements OfferAttributeService {
-    @Autowired
     private OfferAttributeRepository attributeRepo;
 
     private static final List<String> ATTRIBUTE_TYPES = new ArrayList<>();
@@ -29,6 +28,11 @@ public class OfferAttributeServiceImpl extends AttributeServiceSupport<OfferAttr
         for (OfferAttributeType type : OfferAttributeType.values()) {
             ATTRIBUTE_TYPES.add(type.name());
         }
+    }
+
+    @Required
+    public void setAttributeRepo(OfferAttributeRepository attributeRepo) {
+        this.attributeRepo = attributeRepo;
     }
 
     @Override
