@@ -5,7 +5,6 @@
  */
 package com.junbo.test.catalogscenario;
 
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
