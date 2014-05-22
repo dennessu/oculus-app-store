@@ -40,7 +40,10 @@ public class UserPersonalInfo extends PropertyAssignedAwareResourceMeta implemen
             "GENDER.")
     private String type;
 
-    @ApiModelProperty(position = 3, required = true, value = "The userPersonal information, it must be json structure.")
+    @ApiModelProperty(position = 3, required = true, value = "The userPersonal information, it must be json structure." +
+            "ADDRESS Type[street1(string),street2(string),street3(string),city(string),phoneNumber(string),subCountry(string)," +
+            "country(link),postalCode(string),firstName(string),lastName(string)];" +
+            "Other Types[info(string)]")
     private JsonNode value;
 
     @ApiModelProperty(position = 4, required = false, value = "Last validated time, if null, it isn't validated.")
