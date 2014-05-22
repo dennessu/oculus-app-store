@@ -36,9 +36,9 @@ public class SubscriptionServiceTest extends AbstractTestNGSpringContextTests {
         subscription.setTrackingUuid(UUID.randomUUID());
         subscription.setUserId(1493188608L);
         subscription.setOfferId(1L);
-        subscription = subscriptionService.addSubscription(subscription);
+        Subscription subs = subscriptionService.addSubscription(subscription);
 
-        Assert.assertEquals(subscription.getUserId(), subscriptionService.getSubscription(subscription.getId()).getUserId());
+        Assert.assertEquals(subscription.getUserId(), subscriptionService.getSubscription(subs.getId()).getUserId());
 
     }
 

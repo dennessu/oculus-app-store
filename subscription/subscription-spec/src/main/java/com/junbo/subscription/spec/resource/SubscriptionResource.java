@@ -31,7 +31,7 @@ public interface SubscriptionResource {
 
     @GET
     @Path("/{subscriptionId}")
-    Promise<Subscription> getSubscription(@Context HttpHeaders httpHeaders,
+    Promise<Subscription> getSubscriptionById(@Context HttpHeaders httpHeaders,
                                                  @PathParam("subscriptionId") SubscriptionId subscriptionId);
 
 }
