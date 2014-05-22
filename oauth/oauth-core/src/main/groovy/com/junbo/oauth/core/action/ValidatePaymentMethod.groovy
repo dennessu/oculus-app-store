@@ -63,9 +63,12 @@ class ValidatePaymentMethod implements Action {
 
             String subCountry = parameterMap.getFirst(OAuthParameters.SUB_COUNTRY)
 
+            // todo: enable this validation when country resource setup properly, now we just disable it
+            /*
             if (!country.subCountries.containsKey(subCountry)) {
                 contextWrapper.errors.add(AppExceptions.INSTANCE.invalidParameter(OAuthParameters.SUB_COUNTRY).error())
             }
+            */
 
 
             if (!contextWrapper.errors.isEmpty()) {
