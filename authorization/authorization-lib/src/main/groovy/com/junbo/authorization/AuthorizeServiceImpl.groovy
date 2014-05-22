@@ -107,6 +107,7 @@ class AuthorizeServiceImpl implements AuthorizeService {
             return apiDefinition
         } catch (AppErrorException ex) {
             if (ex.error.httpStatusCode == 404) {
+                apiDefinitionCache.put(new Element(apiName, null))
                 return null
             } else {
                 throw new RuntimeException("Failed to get api definition for $apiName", ex)

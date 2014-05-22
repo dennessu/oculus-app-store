@@ -40,6 +40,10 @@ class RoleFilterImpl implements RoleFilter {
 
     @Override
     Role filterForGet(Role role) {
+        if (role == null) {
+            return null
+        }
+
         if (!AuthorizeContext.hasRights(ADMIN_RIGHT)) {
             role.adminInfo = null
         }
