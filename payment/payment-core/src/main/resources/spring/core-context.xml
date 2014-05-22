@@ -51,6 +51,9 @@
         <property name="authPassword" value="${payment.provider.adyen.password}"/>
     </bean>
 
+    <bean id="adyenCCProviderService" class="com.junbo.payment.core.provider.adyen.AdyenCCProivderServiceImpl" parent="adyenProviderService">
+    </bean>
+
     <bean id="providerRoutingService" class="com.junbo.payment.core.provider.impl.ProviderRoutingServiceImpl"/>
 
     <!-- regiester brainTreeRestProviderService for async and brainTreePaymentProviderService for sync call -->

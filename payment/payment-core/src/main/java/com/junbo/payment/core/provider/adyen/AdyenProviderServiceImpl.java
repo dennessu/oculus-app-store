@@ -46,12 +46,13 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
     private static final Logger LOGGER = LoggerFactory.getLogger(AdyenProviderServiceImpl.class);
     private static final String PROVIDER_NAME = "Adyen";
     private static final String CONFIRMED_STATUS = "AUTHORISED";
-    private static final String RECURRING = "RECURRING";
-    private static final String CANCEL_STATE = "[cancel-received]";
-    private static final String REFUND_STATE = "[refund-received]";
+    protected static final String RECURRING = "RECURRING";
+    protected static final String CANCEL_STATE = "[cancel-received]";
+    protected static final String REFUND_STATE = "[refund-received]";
+    protected static final String CAPTURE_STATE = "[capture-received]";
     private static final String AUTH_USER = "javax.xml.rpc.security.auth.username";
     private static final String AUTH_PWD = "javax.xml.rpc.security.auth.password";
-    private static final String TEMP_EMAIL = "test@123.com";
+    protected static final String TEMP_EMAIL = "test@123.com";
     private static final int SHIP_DELAY = 1;
     private static final int VALID_HOURS = 3;
     private String redirectURL;
@@ -62,8 +63,8 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
     private String skinSecret;
     private String authUser;
     private String authPassword;
-    private PaymentPortType service;
-    private RecurringPortType recurService;
+    protected PaymentPortType service;
+    protected RecurringPortType recurService;
     @Autowired
     private PaymentInstrumentRepository paymentInstrumentRepository;
     @Autowired
@@ -139,17 +140,21 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
                     paymentRequest.setStatus(PaymentStatus.UNCONFIRMED.toString());
                     return paymentRequest;
                 }else{
-                    return doReferenceCharge(pi.getExternalToken(), paymentRequest);
+                    PaymentResult adyenResult = doReferenceCharge(pi.getExternalToken(), paymentRequest);
+                    paymentRequest.setWebPaymentInfo(null);
+                    paymentRequest.setStatus(PaymentStatus.SETTLED.toString());
+                    paymentRequest.setExternalToken(adyenResult.getPspReference());
+                    return paymentRequest;
                 }
             }
         });
     }
 
-    private RecurringDetail getRecurringReference(Long piId) {
+    protected RecurringDetail getRecurringReference(Long shopperRef) {
         RecurringDetailsRequest request = new RecurringDetailsRequest();
         request.setMerchantAccount(merchantAccount);
         request.setRecurring(new Recurring(RECURRING, null));
-        request.setShopperReference(nullToEmpty(piId.toString()));
+        request.setShopperReference(nullToEmpty(shopperRef.toString()));
         RecurringDetailsResult result = null;
         try {
             result = recurService.listRecurringDetails(request);
@@ -214,7 +219,7 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
         return strRequest.toString();
     }
 
-    private PaymentTransaction doReferenceCharge(String recurringReference, PaymentTransaction paymentRequest){
+    protected PaymentResult doReferenceCharge(String recurringReference, PaymentTransaction paymentRequest){
         PaymentRequest request = new PaymentRequest();
         request.setMerchantAccount(merchantAccount);
         request.setSelectedRecurringDetailReference(recurringReference);
@@ -233,10 +238,7 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, e.toString()).exception();
         }
         if(result != null && result.getResultCode().equals("Authorised")){
-            paymentRequest.setWebPaymentInfo(null);
-            paymentRequest.setStatus(PaymentStatus.SETTLED.toString());
-            paymentRequest.setExternalToken(result.getPspReference());
-            return paymentRequest;
+            return result;
         }
         throw AppServerExceptions.INSTANCE.providerProcessError(
                 PROVIDER_NAME, result == null ? "No Result" : result.getRefusalReason()).exception();
@@ -321,6 +323,12 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
         }
         //get the recurring info and save it back as pi external token:
         RecurringDetail recurringReference = getRecurringReference(payment.getPaymentInstrumentId());
+        updateExternalToken(payment.getPaymentInstrumentId(), recurringReference);
+        //TODO: send back ACK [accepted] to adyen for notifications
+        return Promise.pure(payment);
+    }
+
+    protected void updateExternalToken(Long piId, RecurringDetail recurringReference) {
         if(recurringReference != null){
             String label = recurringReference.getVariant();
             String accountNum = null;
@@ -340,11 +348,9 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
                     label = "Elv";
                 }
             }
-            paymentInstrumentRepository.updateExternalInfo(payment.getPaymentInstrumentId(),
+            paymentInstrumentRepository.updateExternalInfo(piId,
                     recurringReference.getRecurringDetailReference(), label, accountNum);
         }
-        //TODO: send back ACK [accepted] to adyen for notifications
-        return Promise.pure(payment);
     }
 
     @Override
