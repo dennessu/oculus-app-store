@@ -6,10 +6,20 @@
 
 package com.junbo.catalog.spec.model.common;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.validation.constraints.Null;
+
 /**
  * Base entity model.
  */
 public abstract class BaseEntityModel extends BaseModel {
+    // workaround fastjson de-serialize issue
+    @Null
+    @JsonIgnore
+    @JSONField(serialize = false)
+    private transient Long id;
     public abstract Long getCurrentRevisionId();
     public abstract void setCurrentRevisionId(Long currentRevisionId);
 }

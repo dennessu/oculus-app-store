@@ -6,8 +6,11 @@
 
 package com.junbo.catalog.spec.model.common;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wordnik.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.Null;
 
 /**
  * Base entity revision model.
@@ -38,4 +41,10 @@ public abstract class BaseRevisionModel extends BaseModel {
 
     @JsonIgnore
     public abstract Long getEntityId();
+
+    // workaround fastjson de-serialize issue
+    @Null
+    @JsonIgnore
+    @JSONField(serialize = false)
+    private transient Long id;
 }
