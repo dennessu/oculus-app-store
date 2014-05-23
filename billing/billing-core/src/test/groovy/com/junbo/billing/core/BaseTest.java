@@ -11,10 +11,8 @@ import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 
-import javax.sql.DataSource;
 import java.util.UUID;
 
 /**
@@ -22,7 +20,7 @@ import java.util.UUID;
  */
 
 @ContextConfiguration(locations = {"classpath:spring/context-test.xml"})
-public abstract class BaseTest extends AbstractTransactionalTestNGSpringContextTests {
+public abstract class BaseTest extends AbstractTestNGSpringContextTests {
 
     protected BalanceService balanceService;
 
@@ -37,11 +35,5 @@ public abstract class BaseTest extends AbstractTransactionalTestNGSpringContextT
 
     protected UUID generateUUID() {
         return UUID.randomUUID();
-    }
-
-    @Override
-    @Qualifier("billingDataSource")
-    public void setDataSource(DataSource dataSource) {
-        super.setDataSource(dataSource);
     }
 }

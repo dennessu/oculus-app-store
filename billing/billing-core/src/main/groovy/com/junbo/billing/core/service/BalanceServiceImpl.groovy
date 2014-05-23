@@ -34,7 +34,6 @@ import org.springframework.transaction.support.TransactionCallback
  * Created by xmchen on 14-1-26.
  */
 @CompileStatic
-@Transactional
 class BalanceServiceImpl implements BalanceService {
 
     @Autowired
@@ -83,6 +82,7 @@ class BalanceServiceImpl implements BalanceService {
     }
 
     @Override
+    @Transactional
     Promise<Balance> addBalance(Balance balance) {
 
         Balance tmpBalance = checkTrackingUUID(balance.trackingUuid)
@@ -162,6 +162,7 @@ class BalanceServiceImpl implements BalanceService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     Promise<Balance> quoteBalance(Balance balance) {
 
         return balanceValidator.validateUser(balance.userId).then {
@@ -182,6 +183,7 @@ class BalanceServiceImpl implements BalanceService {
     }
 
     @Override
+    @Transactional
     Promise<Balance> captureBalance(Balance balance) {
 
         Balance savedBalance = balanceValidator.validateBalanceId(balance.balanceId)
@@ -203,6 +205,7 @@ class BalanceServiceImpl implements BalanceService {
     }
 
     @Override
+    @Transactional
     Promise<Balance> confirmBalance(Balance balance) {
 
         Balance savedBalance = balanceValidator.validateBalanceId(balance.balanceId)
@@ -220,6 +223,7 @@ class BalanceServiceImpl implements BalanceService {
     }
 
     @Override
+    @Transactional
     Promise<Balance> checkBalance(Balance balance) {
 
         Balance savedBalance = balanceValidator.validateBalanceId(balance.balanceId)
@@ -243,6 +247,7 @@ class BalanceServiceImpl implements BalanceService {
     }
 
     @Override
+    @Transactional
     Promise<Balance> processAsyncBalance(Balance balance) {
 
         Balance savedBalance = balanceValidator.validateBalanceId(balance.balanceId)
@@ -261,12 +266,14 @@ class BalanceServiceImpl implements BalanceService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     Promise<Balance> getBalance(BalanceId balanceId) {
         Balance savedBalance = balanceValidator.validateBalanceId(balanceId)
         return Promise.pure(savedBalance)
     }
 
     @Override
+    @Transactional(readOnly = true)
     Promise<List<Balance>> getBalances(OrderId orderId) {
         if (orderId == null) {
             throw AppErrors.INSTANCE.fieldMissingValue('orderId').exception()
@@ -282,6 +289,7 @@ class BalanceServiceImpl implements BalanceService {
     }
 
     @Override
+    @Transactional
     Promise<Balance> putBalance(Balance balance) {
 
         if (balance.shippingAddressId == null) {
