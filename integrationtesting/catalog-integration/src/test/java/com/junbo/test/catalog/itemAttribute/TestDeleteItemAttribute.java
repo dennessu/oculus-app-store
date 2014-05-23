@@ -26,7 +26,7 @@ public class TestDeleteItemAttribute extends BaseTestClass {
 
     @Property(
             priority = Priority.Dailies,
-            features = "CatalogIntegration",
+            features = "Delete v1/item-attributes/{itemAttributeId}",
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,

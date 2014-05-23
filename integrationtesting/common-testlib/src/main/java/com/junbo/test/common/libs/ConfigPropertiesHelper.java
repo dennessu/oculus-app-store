@@ -7,6 +7,7 @@ package com.junbo.test.common.libs;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Enumeration;
 import java.util.Properties;
 
 /**
@@ -24,13 +25,13 @@ public final class ConfigPropertiesHelper {
     public static synchronized ConfigPropertiesHelper instance() {
         if (instance == null) {
             instance = new ConfigPropertiesHelper();
-            init();
+            initProperties();
         }
         return instance;
     }
 
     /**
-     * Gets a property value from key propertyName.  Throws IllegalArgumentException if property not found
+     * Gets a property value
      * @param propertyName
      * @return
      */
@@ -43,7 +44,7 @@ public final class ConfigPropertiesHelper {
     }
 
     /**
-     * Gets a property with key propertyName.  Returns defaultValue if no property found.
+     * Gets a property, returns defaultValue if no property found.
      * @param propertyName
      * @param defaultValue
      * @return
@@ -52,9 +53,9 @@ public final class ConfigPropertiesHelper {
         return System.getProperty(propertyName, defaultValue);
     }
 
-    private static void init() {
+    private static void initProperties() {
         String config = System.getProperty("test.config");
-        if (config != null && config.length() > 0 && !config.startsWith("${")) {
+        if (config != null && config.length() > 0) {
             logger.logInfo("test config: " + config);
             loadTestProperties(String.format("%s.properties", config));
         }
@@ -72,20 +73,23 @@ public final class ConfigPropertiesHelper {
             }
             else {
                 throw new RuntimeException("Could not find the '" + path + "' properties file in the " +
-                        "resource directory, as specified in test.config.");
+                        "resource directory.");
             }
         } catch(IOException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
 
         logger.logInfo("**** Setting system properties from " + path + ":");
-        for (Object key : props.keySet()) {
-            if (!System.getProperties().containsKey(key) ||
-                    System.getProperty((String)key).startsWith("${")) {
-                System.setProperty((String)key, props.getProperty((String)key));
-                logger.logInfo(key + ": " + System.getProperty((String)key));
-            } else {
-                logger.logInfo("ALREADY SET - " + key + ": " + System.getProperty((String)key));
+        Enumeration<?> propertyNames = props.propertyNames();
+        while (propertyNames.hasMoreElements()) {
+            String key = (String) propertyNames.nextElement();
+            String value = props.getProperty(key);
+            if (!System.getProperties().containsKey(key)) {
+                System.setProperty(key, value);
+                logger.logInfo(key + ": " + System.getProperty(key));
+            }
+            else {
+                logger.logInfo("ALREADY SET - " + key + ": " + System.getProperty(key));
             }
         }
         logger.logInfo("**** Finished loading " + path);
