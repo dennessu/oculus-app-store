@@ -134,7 +134,7 @@ public class OrderTesting extends BaseOrderTestClass {
         testDataProvider.creditWallet(uid, new BigDecimal(20));
 
         String order_Insufficient = testDataProvider.postOrder(
-                uid, Country.DEFAULT, Currency.DEFAULT, ewalletId, false, offerList);
+                uid, Country.DEFAULT, Currency.DEFAULT, ewalletId, true, offerList);
 
         testDataProvider.updateOrderTentative(order_Insufficient, false, 409);
         expectedOrderStatus.put(order_Insufficient, OrderStatus.OPEN);

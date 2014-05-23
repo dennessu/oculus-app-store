@@ -20,6 +20,7 @@ import com.junbo.test.common.libs.*;
 import com.junbo.common.id.UserId;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -103,6 +104,8 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
         userPersonalInfo.setType("EMAIL");
         userPersonalInfo.setUserId(userId);
+        GregorianCalendar gc = new GregorianCalendar();
+        userPersonalInfo.setLastValidateTime(gc.getTime());
         String str = "{\"info\":\"" + RandomFactory.getRandomEmailAddress() + "\"}";
         ObjectMapper mapper = new ObjectMapper();
         JsonNode value = mapper.readTree(str);
