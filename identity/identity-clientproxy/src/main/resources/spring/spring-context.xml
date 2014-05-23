@@ -18,4 +18,24 @@
     <bean id="userCryptoResourceClientProxy" class="com.junbo.crypto.spec.resource.proxy.UserCryptoResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.crypto.url}" />
     </bean>
+
+    <bean id="identityAccessTokenProvider" class="com.junbo.authorization.ClientCredentialsAccessTokenProvider">
+        <property name="scope" value="identity.service"/>
+        <property name="deflectionInSeconds" value="300"/>
+        <property name="clientSecret" value="secret"/>
+        <property name="clientId" value="service"/>
+        <property name="tokenEndpoint" ref="tokenEndpoint"/>
+    </bean>
+
+    <bean id="userResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
+        <property name="accessTokenProvider" ref="identityAccessTokenProvider"/>
+    </bean>
+
+    <bean id="userPersonalInfoResourceClientProxy"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
+        <property name="accessTokenProvider" ref="identityAccessTokenProvider"/>
+    </bean>
 </beans>

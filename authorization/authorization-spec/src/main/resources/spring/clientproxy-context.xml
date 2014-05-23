@@ -3,7 +3,6 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-
     <bean id="roleResourceClientProxy" class="com.junbo.authorization.spec.resource.proxy.RoleResourceClientProxy"
           parent="baseClientProxy">
         <property name="target" value="${clientproxy.authorization.url}"/>

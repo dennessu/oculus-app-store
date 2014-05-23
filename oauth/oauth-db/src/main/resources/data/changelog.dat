@@ -45,6 +45,33 @@ client	client	{
     "need_consent": false
 }
 
+client	service	{
+    "client_name": "service",
+    "redirect_uris": [],
+    "scopes": [
+        "identity.service",
+        "commerce.service",
+        "catalog.service"
+    ],
+    "default_scopes": [
+        "identity.service",
+        "commerce.service",
+        "catalog.service"
+    ],
+    "response_types": [
+        "ID_TOKEN",
+        "CODE",
+        "TOKEN"
+    ],
+    "grant_types": [
+        "CLIENT_CREDENTIALS"
+    ],
+    "id_token_issuer": "www.junbo.com",
+    "logout_redirect_uris": [],
+    "client_secret": "secret",
+    "need_consent": false
+}
+
 scope	identity	{
     "description": "Scope to get the identity information ok"
 }
@@ -57,61 +84,70 @@ scope	offline	{
     "description": "Scope to allow offline access of the service. If offline scope is presented, a refresh token will be issued"
 }
 
-api	user_get	{
+api	users	{
    "scopes": {
        "identity": [{
-           "precondition": "owner",
-           "rights": ["read"]
-       }, {
-           "precondition": "group('guest')",
-           "rights": ["read"]
-       }, {
-           "precondition": "role('admin')",
-           "rights": ["read"]
+           "precondition": "getOwnedByCurrentUser()",
+           "rights": ["read", "write"],
+           "scriptType": "SPEL"
+       }],
+       "identity.service": [{
+           "precondition": "true",
+           "rights": ["read", "write"],
+           "scriptType": "SPEL"
        }]
    }
 }
 
-api	item_get	{
+api	roles	{
    "scopes": {
-       "catalog": [
-           {
-               "precondition": "owner",
-               "rights": [
-                   "read"
-               ]
-           },
-           {
-               "precondition": "group('guest')",
-               "rights": [
-                   "read"
-               ]
-           },
-           {
-               "precondition": "role('admin')",
-               "rights": [
-                   "read"
-               ]
-           }
-       ]
+       "identity": [{
+           "precondition": "getOwnedByCurrentUser()",
+           "rights": ["read", "write"],
+           "scriptType": "SPEL"
+       }],
+       "identity.service": [{
+           "precondition": "true",
+           "rights": ["read", "write"],
+           "scriptType": "SPEL"
+       }]
    }
 }
 
-api	item_create	{
+api	role-assignments	{
    "scopes": {
-        "catalog.write": [
-            {
-                "precondition": "owner",
-                "rights": [
-                    "create"
-                ]
-            },
-            {
-                "precondition": "group('csr')",
-                "rights": [
-                    "create"
-                ]
-            }
-        ]
+       "identity": [{
+           "precondition": "getOwnedByCurrentUser()",
+           "rights": ["read", "write"],
+           "scriptType": "SPEL"
+       }],
+       "identity.service": [{
+           "precondition": "true",
+           "rights": ["read", "write"],
+           "scriptType": "SPEL"
+       }]
+   }
+}
+
+api	items	{
+   "scopes": {
+       "catalog": [
+           {
+               "precondition": "getOwnedByCurrentUser()",
+               "rights": [
+                   "read", "write"
+               ],
+               "scriptType": "SPEL"
+           }
+       ],
+       "catalog.service": [
+           {
+               "precondition": "true",
+               "rights": [
+                   "read", "write"
+               ],
+               "scriptType": "SPEL"
+           }
+       ]
    }
 }

@@ -15,4 +15,15 @@
         <property name="roleAssignmentRepository" ref="roleAssignmentRepository"/>
         <property name="roleRepository" ref="roleRepository"/>
     </bean>
+
+    <bean id="roleAuthorizeCallbackFactory"
+          class="com.junbo.authorization.core.authorize.callback.RoleAuthorizeCallbackFactory"
+          parent="abstractAuthorizeCallbackFactory">
+        <property name="ownerCallbacks">
+            <map>
+                <entry key="com.junbo.common.id.ItemId" value-ref="itemOwnerCallback"/>
+            </map>
+        </property>
+    </bean>
+
 </beans>

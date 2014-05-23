@@ -7,10 +7,10 @@ import com.junbo.common.id.Id
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
+import com.junbo.identity.auth.UserPersonalInfoAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserPersonalInfoFilter
 import com.junbo.identity.core.service.validator.UserPersonalInfoValidator
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
-import com.junbo.identity.rest.resource.auth.UserPersonalInfoAuthorizeCallbackFactory
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.option.list.UserPersonalInfoListOptions

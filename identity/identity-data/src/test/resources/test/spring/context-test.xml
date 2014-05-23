@@ -15,4 +15,5 @@
     <import resource="classpath*:spring/spring-context.xml" />
     <import resource="classpath*:spring/data-context.xml" />
     <import resource="classpath*:spring/threadpool-context.xml"/>
+    <import resource="classpath*:spring/authorize-context.xml"/>
 </beans>

@@ -83,4 +83,6 @@
             </bean>
         </property>
     </bean>
+
+    <bean id="authorizationUtil" class="com.junbo.authorization.util.AuthorizationUtil"/>
 </beans>

@@ -35,7 +35,7 @@ class RoleAssignmentValidatorImpl implements RoleAssignmentValidator {
     }
 
     @Override
-    Promise<Void> validateForCreate(RoleAssignment roleAssignment) {
+    Promise<Role> validateForCreate(RoleAssignment roleAssignment) {
         Assert.notNull(roleAssignment, 'roleAssignment is null')
 
         if (roleAssignment.roleId == null) {
@@ -46,7 +46,7 @@ class RoleAssignmentValidatorImpl implements RoleAssignmentValidator {
             throw AppErrors.INSTANCE.fieldRequired('assignee').exception()
         }
 
-        return roleRepository.get(roleAssignment.roleId).then { Role role
+        return roleRepository.get(roleAssignment.roleId).then { Role role ->
             if (role == null) {
                 throw AppErrors.INSTANCE.fieldInvalid('roleId').exception()
             }
@@ -60,7 +60,7 @@ class RoleAssignmentValidatorImpl implements RoleAssignmentValidator {
             roleAssignment.assigneeType = resourceId.class.canonicalName
             roleAssignment.assigneeId = resourceId.value
 
-            return Promise.pure(null)
+            return Promise.pure(role)
         }
     }
 

@@ -2,4 +2,16 @@
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="catalogAccessTokenProvider" class="com.junbo.authorization.ClientCredentialsAccessTokenProvider">
+        <property name="scope" value="catalog.service"/>
+        <property name="deflectionInSeconds" value="300"/>
+        <property name="clientSecret" value="secret"/>
+        <property name="clientId" value="service"/>
+        <property name="tokenEndpoint" ref="tokenEndpoint"/>
+    </bean>
+
+    <bean id="itemResourceClientProxy" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.catalog.url}"/>
+        <property name="accessTokenProvider" ref="catalogAccessTokenProvider"/>
+    </bean>
 </beans>

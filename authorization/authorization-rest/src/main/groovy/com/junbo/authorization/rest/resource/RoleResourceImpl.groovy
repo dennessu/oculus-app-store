@@ -5,7 +5,10 @@
  */
 package com.junbo.authorization.rest.resource
 
+import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
+import com.junbo.authorization.RightsScope
+import com.junbo.authorization.core.authorize.callback.RoleAuthorizeCallbackFactory
 import com.junbo.authorization.core.filter.RoleFilter
 import com.junbo.authorization.core.validator.RoleValidator
 import com.junbo.authorization.db.repository.RoleRepository
@@ -40,6 +43,8 @@ class RoleResourceImpl implements RoleResource {
 
     private AuthorizeService authorizeService
 
+    private RoleAuthorizeCallbackFactory roleAuthorizeCallbackFactory
+
     @Required
     void setRoleRepository(RoleRepository roleRepository) {
         this.roleRepository = roleRepository
@@ -65,14 +70,26 @@ class RoleResourceImpl implements RoleResource {
         this.authorizeService = authorizeService
     }
 
+    @Required
+    void setRoleAuthorizeCallbackFactory(RoleAuthorizeCallbackFactory roleAuthorizeCallbackFactory) {
+        this.roleAuthorizeCallbackFactory = roleAuthorizeCallbackFactory
+    }
+
     @Override
     Promise<Role> create(Role role) {
-        Role filtered = roleFilter.filterForPost(role)
-        return roleValidator.validateForCreate(filtered).then {
-            return roleRepository.create(filtered).then { Role newRole ->
-                created201Marker.mark((Id) newRole.id)
+        def callback = roleAuthorizeCallbackFactory.create(role)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('write')) {
+                throw AppErrors.INSTANCE.forbidden().exception()
+            }
 
-                return Promise.pure(roleFilter.filterForGet(newRole))
+            Role filtered = roleFilter.filterForPost(role)
+            return roleValidator.validateForCreate(filtered).then {
+                return roleRepository.create(filtered).then { Role newRole ->
+                    created201Marker.mark((Id) newRole.id)
+
+                    return Promise.pure(roleFilter.filterForGet(newRole))
+                }
             }
         }
     }

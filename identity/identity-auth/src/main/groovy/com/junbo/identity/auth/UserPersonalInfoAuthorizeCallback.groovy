@@ -3,31 +3,30 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.rest.resource.auth
+package com.junbo.identity.auth
 
 import com.junbo.authorization.AbstractAuthorizeCallback
-import com.junbo.authorization.AbstractAuthorizeCallbackFactory
 import com.junbo.common.id.UserId
-import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import groovy.transform.CompileStatic
 
 /**
  * Created by Shenhua on 5/14/2014.
  */
 @CompileStatic
-class UserAuthorizeCallback extends AbstractAuthorizeCallback<User> {
+class UserPersonalInfoAuthorizeCallback extends AbstractAuthorizeCallback<UserPersonalInfo> {
 
-    UserAuthorizeCallback(UserAuthorizeCallbackFactory factory, User entity) {
+    UserPersonalInfoAuthorizeCallback(UserPersonalInfoAuthorizeCallbackFactory factory, UserPersonalInfo entity) {
         super(factory, entity)
     }
 
     @Override
     String getApiName() {
-        return 'users'
+        return 'personal-info'
     }
 
     @Override
     protected UserId getUserOwnerId() {
-        return (UserId) ((User) entity).id
+        return ((UserPersonalInfo) entity).userId
     }
 }

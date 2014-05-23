@@ -11,7 +11,7 @@ import com.junbo.authorization.AuthorizeContext;
 import com.junbo.authorization.AuthorizeService;
 import com.junbo.authorization.RightsScope;
 import com.junbo.catalog.core.ItemService;
-import com.junbo.catalog.rest.auth.ItemAuthorizeCallbackFactory;
+import com.junbo.catalog.auth.ItemAuthorizeCallbackFactory;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemsGetOptions;

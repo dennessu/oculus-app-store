@@ -86,11 +86,5 @@
     <bean id="defaultUserTeleBackupCodeAttemptResourceRouter" parent="routingRouterBase" />
     <bean id="defaultOrganizationResourceRouter" parent="routingRouterBase" />
 
-    <bean id="userAuthorizeCallbackFactory" class="com.junbo.identity.rest.resource.auth.UserAuthorizeCallbackFactory"
-          parent="abstractAuthorizeCallbackFactory">
-    </bean>
 
-    <bean id="userPersonalInfoAuthorizeCallbackFactory" class="com.junbo.identity.rest.resource.auth.UserPersonalInfoAuthorizeCallbackFactory"
-          parent="abstractAuthorizeCallbackFactory">
-    </bean>
 </beans>

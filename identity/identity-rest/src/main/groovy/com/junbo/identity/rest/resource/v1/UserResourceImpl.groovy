@@ -9,12 +9,12 @@ import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.crypto.spec.model.UserCryptoKey
 import com.junbo.crypto.spec.resource.UserCryptoResource
+import com.junbo.identity.auth.UserAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserFilter
 import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.validator.UserValidator
 import com.junbo.identity.data.repository.UserGroupRepository
 import com.junbo.identity.data.repository.UserRepository
-import com.junbo.identity.rest.resource.auth.UserAuthorizeCallbackFactory
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserGroup

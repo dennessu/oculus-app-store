@@ -8,7 +8,9 @@ dependencies {
     compile (libraries.guava)
 
     compile junboProject(':identity-spec')
+    compile junboProject(':catalog-spec')
     compile junboProject(':authorization-spec')
+    compile junboProject(':authorization-lib')
 
     processor junboProject(':langur-processor')
     processor (libraries.log4j)

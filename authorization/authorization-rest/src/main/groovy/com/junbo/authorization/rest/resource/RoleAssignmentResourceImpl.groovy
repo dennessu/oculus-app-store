@@ -5,9 +5,15 @@
 */
 package com.junbo.authorization.rest.resource
 
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.authorization.AuthorizeService
+import com.junbo.authorization.RightsScope
+
+import com.junbo.authorization.core.authorize.callback.RoleAuthorizeCallbackFactory
 import com.junbo.authorization.core.filter.RoleAssignmentFilter
 import com.junbo.authorization.core.validator.RoleAssignmentValidator
 import com.junbo.authorization.db.repository.RoleAssignmentRepository
+import com.junbo.authorization.db.repository.RoleRepository
 import com.junbo.authorization.spec.error.AppErrors
 import com.junbo.authorization.spec.model.Role
 import com.junbo.authorization.spec.model.RoleAssignment
@@ -30,6 +36,9 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 @Scope('prototype')
 class RoleAssignmentResourceImpl implements RoleAssignmentResource {
+
+    private RoleRepository roleRepository
+
     private RoleAssignmentRepository roleAssignmentRepository
 
     private RoleAssignmentValidator roleAssignmentValidator
@@ -37,6 +46,15 @@ class RoleAssignmentResourceImpl implements RoleAssignmentResource {
     private RoleAssignmentFilter roleAssignmentFilter
 
     private Created201Marker created201Marker
+
+    private AuthorizeService authorizeService
+
+    private RoleAuthorizeCallbackFactory roleAuthorizeCallbackFactory
+
+    @Required
+    void setRoleRepository(RoleRepository roleRepository) {
+        this.roleRepository = roleRepository
+    }
 
     @Required
     void setRoleAssignmentRepository(RoleAssignmentRepository roleAssignmentRepository) {
@@ -58,14 +76,30 @@ class RoleAssignmentResourceImpl implements RoleAssignmentResource {
         this.created201Marker = created201Marker
     }
 
+    @Required
+    void setAuthorizeService(AuthorizeService authorizeService) {
+        this.authorizeService = authorizeService
+    }
+
+    @Required
+    void setRoleAuthorizeCallbackFactory(RoleAuthorizeCallbackFactory roleAuthorizeCallbackFactory) {
+        this.roleAuthorizeCallbackFactory = roleAuthorizeCallbackFactory
+    }
+
     @Override
     Promise<RoleAssignment> create(RoleAssignment roleAssignment) {
         RoleAssignment filtered = roleAssignmentFilter.filterForPost(roleAssignment)
-        return roleAssignmentValidator.validateForCreate(filtered).then {
-            return roleAssignmentRepository.create(filtered).then { RoleAssignment newRoleAssignment ->
-                created201Marker.mark((Id) (newRoleAssignment.id))
+        return roleAssignmentValidator.validateForCreate(filtered).then { Role role ->
+            def callback = roleAuthorizeCallbackFactory.create(role)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('write')) {
+                    throw AppErrors.INSTANCE.forbidden().exception()
+                }
+                return roleAssignmentRepository.create(filtered).then { RoleAssignment newRoleAssignment ->
+                    created201Marker.mark((Id) (newRoleAssignment.id))
 
-                return Promise.pure(roleAssignmentFilter.filterForGet(newRoleAssignment))
+                    return Promise.pure(roleAssignmentFilter.filterForGet(newRoleAssignment))
+                }
             }
         }
     }

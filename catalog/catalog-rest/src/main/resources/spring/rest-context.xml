@@ -37,6 +37,4 @@
     <bean id="defaultEntitlementDefinitionResourceRouter" parent="routingRouterBase" />
     <bean id="defaultPriceTierResourceRouter" parent="routingRouterBase" />
 
-    <bean id="itemAuthorizeCallbackFactory" class="com.junbo.catalog.rest.auth.ItemAuthorizeCallbackFactory" parent="abstractAuthorizeCallbackFactory">
-    </bean>
 </beans>

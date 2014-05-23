@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.catalog.rest.auth;
+package com.junbo.catalog.auth;
 
 import com.junbo.authorization.AbstractAuthorizeCallback;
 import com.junbo.authorization.AbstractAuthorizeCallbackFactory;

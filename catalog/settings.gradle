@@ -6,5 +6,6 @@ include 'catalog-core'
 include 'catalog-rest'
 
 include 'catalog-clientproxy'
+include 'catalog-auth'
 
 include 'catalog-app'

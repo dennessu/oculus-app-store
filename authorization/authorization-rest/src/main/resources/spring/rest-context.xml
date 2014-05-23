@@ -12,6 +12,7 @@
         <property name="created201Marker" ref="created201Marker"/>
         <property name="roleFilter" ref="roleFilter"/>
         <property name="roleValidator" ref="roleValidator"/>
+        <property name="roleAuthorizeCallbackFactory" ref="roleAuthorizeCallbackFactory"/>
     </bean>
 
     <bean id="defaultRoleAssignmentResource" class="com.junbo.authorization.rest.resource.RoleAssignmentResourceImpl" scope="prototype">
@@ -19,6 +20,8 @@
         <property name="roleAssignmentRepository" ref="roleAssignmentRepository"/>
         <property name="created201Marker" ref="created201Marker"/>
         <property name="roleAssignmentValidator" ref="roleAssignmentValidator"/>
+        <property name="authorizeService" ref="authorizeService"/>
+        <property name="roleAssignmentCallbackFactory" ref="roleAssignmentAuthorizeCallbackFactory"/>
     </bean>
 
     <bean id="defaultRoleResourceClientFactory" class="com.junbo.authorization.spec.resource.proxy.RoleResourceClientProxyFactory"/>

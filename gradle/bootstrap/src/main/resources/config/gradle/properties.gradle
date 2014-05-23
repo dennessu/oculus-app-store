@@ -17,6 +17,7 @@ ext {
     set("identity-rest-version", '0.0.1-SNAPSHOT')
     set("identity-spec-version", '0.0.1-SNAPSHOT')
     set("identity-app-version", '0.0.1-SNAPSHOT')
+    set("identity-auth-version", '0.0.1-SNAPSHOT')
 
     set("oauth-common-version", '0.0.1-SNAPSHOT')
     set("oauth-core-version", '0.0.1-SNAPSHOT')
@@ -42,6 +43,7 @@ ext {
     set("catalog-spec-version", '0.0.1-SNAPSHOT')
     set("catalog-clientproxy-version", '0.0.1-SNAPSHOT')
     set("catalog-app-version", '0.0.1-SNAPSHOT')
+    set("catalog-auth-version", '0.0.1-SNAPSHOT')
 
     set("entitlement-common-version", '0.0.1-SNAPSHOT')
     set("entitlement-core-version", '0.0.1-SNAPSHOT')

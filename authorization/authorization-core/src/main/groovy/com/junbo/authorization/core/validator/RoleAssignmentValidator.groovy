@@ -1,5 +1,6 @@
 package com.junbo.authorization.core.validator
 
+import com.junbo.authorization.spec.model.Role
 import com.junbo.authorization.spec.model.RoleAssignment
 import com.junbo.authorization.spec.option.list.RoleAssignmentListOptions
 import com.junbo.common.id.RoleAssignmentId
@@ -11,7 +12,7 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface RoleAssignmentValidator {
-    Promise<Void> validateForCreate(RoleAssignment roleAssignment)
+    Promise<Role> validateForCreate(RoleAssignment roleAssignment)
 
     Promise<Void> validateForGet(RoleAssignmentId roleAssignmentId)
 
