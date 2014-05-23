@@ -10,11 +10,11 @@ import com.junbo.common.model.Results;
 import com.junbo.ewallet.spec.model.CreditRequest;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.test.common.libs.ConfigPropertiesHelper;
 import com.junbo.test.payment.apihelper.PaymentService;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
-import com.junbo.test.common.libs.RestUrl;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 
@@ -26,7 +26,8 @@ import java.util.List;
  */
 public class PaymentServiceImpl extends HttpClientBase implements PaymentService {
 
-    private static String paymentInstrumentUrl = RestUrl.getRestUrl(RestUrl.ComponentName.COMMERCE);
+    private static String paymentInstrumentUrl = ConfigPropertiesHelper.instance().
+            getProperty("defaultCommerceEndpointV1");
 
     private LogHelper logger = new LogHelper(PaymentServiceImpl.class);
 

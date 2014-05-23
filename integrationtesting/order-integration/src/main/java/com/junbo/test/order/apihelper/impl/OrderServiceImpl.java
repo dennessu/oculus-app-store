@@ -13,11 +13,11 @@ import com.junbo.order.spec.model.OrderEvent;
 import com.junbo.order.spec.model.Order;
 
 import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.test.common.libs.ConfigPropertiesHelper;
 import com.junbo.test.order.apihelper.OrderService;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
-import com.junbo.test.common.libs.RestUrl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,8 @@ import java.util.List;
  */
 public class OrderServiceImpl extends HttpClientBase implements OrderService {
 
-    private static String orderUrl = RestUrl.getRestUrl(RestUrl.ComponentName.COMMERCE);
+    private static String orderUrl = ConfigPropertiesHelper.instance().
+            getProperty("defaultCommerceEndpointV1");
 
     private LogHelper logger = new LogHelper(OrderServiceImpl.class);
 
