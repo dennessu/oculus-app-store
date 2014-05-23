@@ -33,9 +33,6 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
     private UserAuthenticatorRepository userAuthenticatorRepository
 
     @Autowired
-    private Created201Marker created201Marker
-
-    @Autowired
     private UserAuthenticatorFilter userAuthenticatorFilter
 
     @Autowired
@@ -51,7 +48,7 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
 
         return userAuthenticatorValidator.validateForCreate(userAuthenticator).then {
             return userAuthenticatorRepository.create(userAuthenticator).then { UserAuthenticator newUserAuthenticator ->
-                created201Marker.mark((Id)newUserAuthenticator.id)
+                Created201Marker.mark((Id)newUserAuthenticator.id)
 
                 newUserAuthenticator = userAuthenticatorFilter.filterForGet(newUserAuthenticator, null)
                 return Promise.pure(newUserAuthenticator)

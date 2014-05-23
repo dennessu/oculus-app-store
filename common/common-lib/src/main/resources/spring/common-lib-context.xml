@@ -34,6 +34,7 @@
         <property name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
         <property name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
         <property name="transcoder" ref="commonTranscoder"/>
+        <property name="inProcessCallable" value="${common.clientproxy.inProcessCallable}"/>
     </bean>
 
     <bean id="defaultAfterInvocationFilter" class="com.junbo.common.filter.RestAdapterAfterInvocationFilter" />

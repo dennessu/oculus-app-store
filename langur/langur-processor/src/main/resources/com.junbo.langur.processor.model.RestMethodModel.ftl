@@ -7,6 +7,9 @@ ${annotation}
 public void ${methodName}([#list parameters as parameter][@includeModel model=parameter/],[/#list]
     @javax.ws.rs.container.Suspended final javax.ws.rs.container.AsyncResponse __asyncResponse) {
 
+    com.junbo.langur.core.context.JunboHttpContext.JunboHttpContextData __junboHttpContextData = __createJunboHttpContextData();
+    final com.junbo.langur.core.context.JunboHttpContextScope __scope = new com.junbo.langur.core.context.JunboHttpContextScope(__junboHttpContextData);
+
     Promise<${returnType}> future;
 
     try {
@@ -41,13 +44,17 @@ public void ${methodName}([#list parameters as parameter][@includeModel model=pa
         });
     } catch (Throwable ex) {
         __asyncResponse.resume(ex);
+        __scope.close();
         return;
     }
 
     future.onSuccess(new Promise.Callback<${returnType}>() {
         @Override
         public void invoke(${returnType} result) {
+            __processResponseData();
+
             __asyncResponse.resume(result);
+            __scope.close();
         }
     });
 
@@ -55,6 +62,7 @@ public void ${methodName}([#list parameters as parameter][@includeModel model=pa
         @Override
         public void invoke(Throwable result) {
             __asyncResponse.resume(result);
+            __scope.close();
         }
     });
 }

@@ -26,4 +26,6 @@ class ClientMethodModel {
     String contentType
 
     List<String> accepts
+
+    boolean inProcessCallable
 }

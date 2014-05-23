@@ -31,15 +31,12 @@ import org.springframework.transaction.annotation.Transactional
  */
 @CompileStatic
 @Transactional
-@Scope('prototype')
 class RoleResourceImpl implements RoleResource {
     private RoleRepository roleRepository
 
     private RoleValidator roleValidator
 
     private RoleFilter roleFilter
-
-    private Created201Marker created201Marker
 
     private AuthorizeService authorizeService
 
@@ -58,11 +55,6 @@ class RoleResourceImpl implements RoleResource {
     @Required
     void setRoleFilter(RoleFilter roleFilter) {
         this.roleFilter = roleFilter
-    }
-
-    @Required
-    void setCreated201Marker(Created201Marker created201Marker) {
-        this.created201Marker = created201Marker
     }
 
     @Required
@@ -86,7 +78,7 @@ class RoleResourceImpl implements RoleResource {
             Role filtered = roleFilter.filterForPost(role)
             return roleValidator.validateForCreate(filtered).then {
                 return roleRepository.create(filtered).then { Role newRole ->
-                    created201Marker.mark((Id) newRole.id)
+                    Created201Marker.mark((Id) newRole.id)
 
                     return Promise.pure(roleFilter.filterForGet(newRole))
                 }

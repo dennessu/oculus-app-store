@@ -30,9 +30,6 @@ class UserTeleBackupCodeResourceImpl implements UserTeleBackupCodeResource {
     private UserTeleBackupCodeRepository userTeleBackupCodeRepository
 
     @Autowired
-    private Created201Marker created201Marker
-
-    @Autowired
     private UserTeleBackupCodeFilter userTeleBackupCodeFilter
 
     @Autowired
@@ -48,7 +45,7 @@ class UserTeleBackupCodeResourceImpl implements UserTeleBackupCodeResource {
 
         return userTeleBackupCodeValidator.validateForCreate(userId, userTeleBackupCode).then {
             return userTeleBackupCodeRepository.create(userTeleBackupCode).then { UserTeleBackupCode newBackupCode ->
-                created201Marker.mark((Id)newBackupCode.id)
+                Created201Marker.mark((Id)newBackupCode.id)
 
                 newBackupCode = userTeleBackupCodeFilter.filterForGet(newBackupCode, null)
                 return Promise.pure(newBackupCode)

@@ -35,9 +35,6 @@ class UserTeleBackupCodeAttemptResourceImpl implements UserTeleBackupCodeAttempt
     private UserTeleBackupCodeAttemptRepository userTeleBackupCodeAttemptRepository
 
     @Autowired
-    private Created201Marker created201Marker
-
-    @Autowired
     private UserTeleBackupCodeAttemptFilter userTeleBackupCodeAttemptFilter
 
     @Autowired
@@ -63,7 +60,7 @@ class UserTeleBackupCodeAttemptResourceImpl implements UserTeleBackupCodeAttempt
             return createInNewTran(userTeleBackupCodeAttempt).then { UserTeleBackupCodeAttempt attempt ->
 
                 if (attempt.succeeded == true) {
-                    created201Marker.mark((Id)attempt.id)
+                    Created201Marker.mark((Id)attempt.id)
 
                     attempt = userTeleBackupCodeAttemptFilter.filterForGet(attempt, null)
                     return Promise.pure(attempt)

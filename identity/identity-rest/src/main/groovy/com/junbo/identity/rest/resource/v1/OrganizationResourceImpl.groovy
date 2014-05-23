@@ -31,9 +31,6 @@ class OrganizationResourceImpl implements OrganizationResource {
     private OrganizationRepository organizationRepository
 
     @Autowired
-    private Created201Marker created201Marker
-
-    @Autowired
     private OrganizationFilter organizationFilter
 
     @Autowired
@@ -45,7 +42,7 @@ class OrganizationResourceImpl implements OrganizationResource {
 
         return organizationValidator.validateForCreate(organization).then {
             return organizationRepository.create(organization).then { Organization newOrganization ->
-                created201Marker.mark((Id) newOrganization.id)
+                Created201Marker.mark((Id) newOrganization.id)
 
                 newOrganization = organizationFilter.filterForGet(newOrganization, null)
                 return Promise.pure(newOrganization)

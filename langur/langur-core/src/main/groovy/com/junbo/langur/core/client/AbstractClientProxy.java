@@ -1,12 +1,16 @@
 // CHECKSTYLE:OFF
 package com.junbo.langur.core.client;
 
+import com.google.common.collect.HashMultimap;
+import com.junbo.langur.core.context.JunboHttpContext;
 import com.ning.http.client.AsyncHttpClient;
 import groovy.transform.CompileStatic;
 import org.springframework.beans.factory.annotation.Required;
 
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executor;
 
 /**
@@ -31,6 +35,8 @@ public abstract class AbstractClientProxy {
     protected AccessTokenProvider __accessTokenProvider;
 
     protected Executor __executor;
+
+    protected boolean __inProcessCallable;
 
     @Required
     public void setClient(AsyncHttpClient __client) {
@@ -73,5 +79,27 @@ public abstract class AbstractClientProxy {
     @Required
     public void setExecutor(Executor __executor) {
         this.__executor = __executor;
+    }
+
+    public void setInProcessCallable(boolean inProcessCallable) {
+        this.__inProcessCallable = inProcessCallable;
+    }
+
+
+    protected JunboHttpContext.JunboHttpContextData __createJunboHttpContextData(com.ning.http.client.Request request) {
+        JunboHttpContext.JunboHttpContextData httpContextData = new JunboHttpContext.JunboHttpContextData();
+
+        httpContextData.setRequestMethod(request.getMethod());
+        httpContextData.setRequestUri(request.getOriginalURI());
+        httpContextData.setRequestHeaders(HashMultimap.<String, String>create());
+
+        for (Map.Entry<String, List<String>> entry : request.getHeaders()) {
+            httpContextData.getRequestHeaders().putAll(entry.getKey(), entry.getValue());
+        }
+
+        httpContextData.setResponseHeaders(HashMultimap.<String, String>create());
+        httpContextData.setResponseStatus(-1);
+
+        return httpContextData;
     }
 }

@@ -36,9 +36,6 @@ import org.springframework.transaction.annotation.Transactional
 class UserResourceImpl implements UserResource {
 
     @Autowired
-    private Created201Marker created201Marker
-
-    @Autowired
     private UserRepository userRepository
 
     @Autowired
@@ -79,7 +76,7 @@ class UserResourceImpl implements UserResource {
                     return userCryptoResource.create(new UserCryptoKey(
                             userId: (UserId)newUser.id
                     )).then {
-                        created201Marker.mark((Id) newUser.id)
+                        Created201Marker.mark((Id) newUser.id)
 
                         newUser = userFilter.filterForGet(newUser, null)
                         return Promise.pure(newUser)

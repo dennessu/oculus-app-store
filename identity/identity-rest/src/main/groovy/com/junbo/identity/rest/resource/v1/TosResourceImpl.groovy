@@ -33,9 +33,6 @@ class TosResourceImpl implements TosResource {
     private TosRepository tosRepository
 
     @Autowired
-    private Created201Marker created201Marker
-
-    @Autowired
     private TosFilter tosFilter
 
     @Autowired
@@ -47,7 +44,7 @@ class TosResourceImpl implements TosResource {
 
         return tosValidator.validateForCreate(tos).then {
             return tosRepository.create(tos).then { Tos newTos ->
-                created201Marker.mark((Id) newTos.id)
+                Created201Marker.mark((Id) newTos.id)
 
                 newTos = tosFilter.filterForGet(newTos, null)
                 return Promise.pure(newTos)

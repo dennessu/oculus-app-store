@@ -27,9 +27,6 @@ class PITypeResourceImpl implements PITypeResource {
     private PITypeRepository piTypeRepository
 
     @Autowired
-    private Created201Marker created201Marker
-
-    @Autowired
     private PITypeFilter piTypeFilter
 
     @Autowired
@@ -50,7 +47,7 @@ class PITypeResourceImpl implements PITypeResource {
             piType.id = new PITypeId(piTypeEnum.id)
 
             return piTypeRepository.create(piType).then { PIType newPIType ->
-                created201Marker.mark(newPIType.id)
+                Created201Marker.mark(newPIType.id)
                 newPIType = piTypeFilter.filterForGet(newPIType, null)
                 return Promise.pure(newPIType)
             }

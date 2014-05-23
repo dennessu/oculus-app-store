@@ -26,9 +26,6 @@ class CommunicationResourceImpl implements CommunicationResource {
     private CommunicationRepository communicationRepository
 
     @Autowired
-    private Created201Marker created201Marker
-
-    @Autowired
     private CommunicationFilter communicationFilter
 
     @Autowired
@@ -44,7 +41,7 @@ class CommunicationResourceImpl implements CommunicationResource {
 
         return communicationValidator.validateForCreate(communication).then {
             return communicationRepository.create(communication).then { Communication newCommunication ->
-                created201Marker.mark(newCommunication.id)
+                Created201Marker.mark(newCommunication.id)
 
                 newCommunication = communicationFilter.filterForGet(newCommunication, null)
                 return Promise.pure(newCommunication)

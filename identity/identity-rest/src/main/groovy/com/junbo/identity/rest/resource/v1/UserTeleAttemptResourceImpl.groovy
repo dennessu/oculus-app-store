@@ -35,9 +35,6 @@ class UserTeleAttemptResourceImpl implements UserTeleAttemptResource {
     private UserTeleAttemptRepository userTeleAttemptRepository
 
     @Autowired
-    private Created201Marker created201Marker
-
-    @Autowired
     private UserTeleAttemptFilter userTeleAttemptFilter
 
     @Autowired
@@ -63,7 +60,7 @@ class UserTeleAttemptResourceImpl implements UserTeleAttemptResource {
             return createInNewTran(userTeleAttempt).then { UserTeleAttempt attempt ->
 
                 if (attempt.succeeded == true) {
-                    created201Marker.mark((Id)attempt.id)
+                    Created201Marker.mark((Id)attempt.id)
 
                     attempt.verifyCode = null
                     attempt = userTeleAttemptFilter.filterForGet(attempt, null)

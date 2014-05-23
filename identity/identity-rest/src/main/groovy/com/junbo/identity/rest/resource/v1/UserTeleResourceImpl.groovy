@@ -30,9 +30,6 @@ class UserTeleResourceImpl implements UserTeleResource {
     private UserTeleRepository userTeleRepository
 
     @Autowired
-    private Created201Marker created201Marker
-
-    @Autowired
     private UserTeleFilter userTeleFilter
 
     @Autowired
@@ -56,7 +53,7 @@ class UserTeleResourceImpl implements UserTeleResource {
         return userTeleValidator.validateForCreate(userId, userTeleCode).then {
             return teleSign.verifyCode(userTeleCode).then {
                 return userTeleRepository.create(userTeleCode).then { UserTeleCode newUserTeleCode ->
-                    created201Marker.mark((Id)newUserTeleCode.id)
+                    Created201Marker.mark((Id)newUserTeleCode.id)
 
                     newUserTeleCode = userTeleFilter.filterForGet(newUserTeleCode, null)
                     return Promise.pure(newUserTeleCode)

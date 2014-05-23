@@ -27,14 +27,10 @@ class CountryResourceImpl implements CountryResource {
     private CountryRepository countryRepository
 
     @Autowired
-    private Created201Marker created201Marker
-
-    @Autowired
     private CountryFilter countryFilter
 
     @Autowired
     private CountryValidator countryValidator
-
 
     @Override
     Promise<Country> create(Country country) {
@@ -46,7 +42,7 @@ class CountryResourceImpl implements CountryResource {
 
         return countryValidator.validateForCreate(country).then {
             return countryRepository.create(country).then { Country newCountry ->
-                created201Marker.mark(newCountry.id)
+                Created201Marker.mark(newCountry.id)
 
                 newCountry = countryFilter.filterForGet(newCountry, null)
                 return Promise.pure(newCountry)

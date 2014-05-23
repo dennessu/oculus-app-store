@@ -34,9 +34,6 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
     private UserCredentialVerifyAttemptRepository userCredentialVerifyAttemptRepository
 
     @Autowired
-    private Created201Marker created201Marker
-
-    @Autowired
     private UserCredentialVerifyAttemptFilter userCredentialVerifyAttemptFilter
 
     @Autowired
@@ -58,7 +55,7 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
             return createInNewTran(userCredentialAttempt).then { UserCredentialVerifyAttempt attempt ->
 
                 if (attempt.succeeded == true) {
-                    created201Marker.mark((Id)attempt.id)
+                    Created201Marker.mark((Id)attempt.id)
 
                     attempt = userCredentialVerifyAttemptFilter.filterForGet(attempt, null)
                     return Promise.pure(attempt)
