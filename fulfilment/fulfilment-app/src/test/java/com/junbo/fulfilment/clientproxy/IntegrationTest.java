@@ -43,7 +43,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
     @Qualifier("oculus48IdGenerator")
     private IdGenerator idGenerator;
 
-    @Test(enabled = true)
+    @Test(enabled = false)
     public void testBVT() {
         Long offerId = prepareOffer();
         Assert.assertNotNull(offerId, "offerId should not be null.");
