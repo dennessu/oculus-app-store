@@ -56,6 +56,9 @@ class OrderRepositorySqlImpl implements OrderRepository {
     @Override
     Promise<Order> get(OrderId id) {
         OrderEntity orderEntity = orderDao.read(id.value)
+        if (orderEntity == null) {
+            return Promise.pure(null)
+        }
         Order result = modelMapper.toOrderModel(orderEntity, new MappingContext())
         result.setPayments(getPayments(result.getId().value))
         return Promise.pure(result)
@@ -130,7 +133,7 @@ class OrderRepositorySqlImpl implements OrderRepository {
 
     @Override
     Promise<List<Order>> getByStatus(Object shardKey, List<String> statusList,
-                                  boolean updatedByAscending, PageParam pageParam) {
+                                     boolean updatedByAscending, PageParam pageParam) {
         return Promise.pure(orderDao.readByStatus((Integer) shardKey,
                 statusList.collect { String status -> OrderStatus.valueOf(status) },
                 updatedByAscending, pageParam?.start, pageParam?.count).collect { OrderEntity entity ->

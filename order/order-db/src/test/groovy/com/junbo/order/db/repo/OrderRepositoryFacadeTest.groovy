@@ -102,7 +102,7 @@ class OrderRepositoryFacadeTest extends BaseTest {
         )
 
         // verify pi
-        assert new HashSet<PaymentInstrumentId>(orderRepository.getPayments(order.getId().value).
+        assert new HashSet<PaymentInstrumentId>(order.payments.
                 collect {it -> return it.paymentInstrument}) ==
                 new HashSet<PaymentInstrumentId>(order.payments.collect {it -> return it.paymentInstrument})
     }

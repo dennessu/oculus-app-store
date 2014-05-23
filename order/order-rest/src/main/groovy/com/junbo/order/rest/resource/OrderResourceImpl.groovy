@@ -96,7 +96,7 @@ class OrderResourceImpl implements OrderResource {
                 // update shipping address after settlement
                 if (allowModification(oldOrder, order)) {
                     oldOrder.shippingAddress = order.shippingAddress
-                    return orderService.updateNonTentativeOrder(oldOrder,  new ApiContext(requestContext.headers))
+                    return orderService.updateNonTentativeOrder(oldOrder, new ApiContext(requestContext.headers))
                 }
                 LOGGER.error('name=Update_Not_Allow')
                 throw AppErrors.INSTANCE.invalidSettledOrderUpdate().exception()
@@ -111,6 +111,9 @@ class OrderResourceImpl implements OrderResource {
 
     @Override
     Promise<Results<Order>> getOrderByUserId(UserId userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
+        if (userId == null) {
+            throw AppErrors.INSTANCE.missingParameterField('userId').exception()
+        }
         return orderService.getOrdersByUserId(userId.value, orderQueryParam, pageParam).syncThen { List<Order> orders ->
             Results<Order> results = new Results<>()
             results.setItems(orders)

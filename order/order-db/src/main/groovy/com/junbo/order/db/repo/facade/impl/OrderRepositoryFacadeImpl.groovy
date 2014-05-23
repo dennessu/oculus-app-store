@@ -128,12 +128,6 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
     }
 
     @Override
-    List<PaymentInfo> getPayments(Long orderId) {
-        // TODO: this should be removed. PaymentInfo always loads with the order
-        return getOrder(orderId).getPayments()
-    }
-
-    @Override
     List<OrderEvent> getOrderEvents(Long orderId, PageParam pageParam) {
         return orderEventRepository.getByOrderId(orderId, pageParam).get();
     }

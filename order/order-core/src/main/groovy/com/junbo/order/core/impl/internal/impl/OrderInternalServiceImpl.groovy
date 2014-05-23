@@ -226,8 +226,6 @@ class OrderInternalServiceImpl implements OrderInternalService {
             }
             orderItem.fulfillmentHistories = orderRepository.getFulfillmentHistories(orderItem.getId().value)
         }
-        // payment instrument
-        order.setPayments(orderRepository.getPayments(order.getId().value))
         // discount
         order.setDiscounts(orderRepository.getDiscounts(order.getId().value))
         // event
