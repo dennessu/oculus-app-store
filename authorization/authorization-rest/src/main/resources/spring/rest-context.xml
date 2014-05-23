@@ -21,7 +21,8 @@
         <property name="created201Marker" ref="created201Marker"/>
         <property name="roleAssignmentValidator" ref="roleAssignmentValidator"/>
         <property name="authorizeService" ref="authorizeService"/>
-        <property name="roleAssignmentCallbackFactory" ref="roleAssignmentAuthorizeCallbackFactory"/>
+        <property name="roleAuthorizeCallbackFactory" ref="roleAuthorizeCallbackFactory"/>
+        <property name="roleRepository" ref="roleRepository"/>
     </bean>
 
     <bean id="defaultRoleResourceClientFactory" class="com.junbo.authorization.spec.resource.proxy.RoleResourceClientProxyFactory"/>
