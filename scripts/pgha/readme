@@ -46,7 +46,7 @@
 #[master] setup master database
 	$DEPLOYMENT_PATH/setup_master.sh
 
-#[master] base backup master database
+#[master] full base backup master database
 	$DEPLOYMENT_PATH/base_backup.sh
 
 #[slave] setup slave database
@@ -68,8 +68,52 @@
 	$DEPLOYMENT_PATH/test_master2slave.sh
 
 =====Planned Failover=====
-TBD
+#[slave] master failover to slave
+	$DEPLOYMENT_PATH/failover.sh
+
+#[master] start primary PGBouncer proxy (connect to slave db)
+	$DEPLOYMENT_PATH/pgbouncer_slave.sh
+
+#[slave] start secondary PGBouncer proxy (connect to slave db)
+	$DEPLOYMENT_PATH/pgbouncer_slave.sh
+
+#[master/slave] replication smoke test
+	$DEPLOYMENT_PATH/test_slave2master.sh
+
+#[master] slave failback to slave
+	$DEPLOYMENT_PATH/failback.sh
+
+#[master] start primary PGBouncer proxy (connect to master db)
+	$DEPLOYMENT_PATH/pgbouncer_slave.sh
+
+#[slave] start secondary PGBouncer proxy (connect to master db)
+	$DEPLOYMENT_PATH/pgbouncer_slave.sh
+
+#[master/slave] replication smoke test
+	$DEPLOYMENT_PATH/test_master2slave.sh
 
 =====Unplanned Failover=====
-TBD
+[SLAVE is broken]
+#[master] full base backup master database
+	$DEPLOYMENT_PATH/base_backup.sh
 
+#[slave] setup slave database
+	$DEPLOYMENT_PATH/setup_slave.sh
+
+#[slave] schedule archive log sync cron job
+	$DEPLOYMENT_PATH/slave_cron.sh
+
+#[slave] start secondary PGBouncer proxy (connect to master db)
+	$DEPLOYMENT_PATH/pgbouncer_master.sh
+
+#[master/slave] replication smoke test
+	$DEPLOYMENT_PATH/test_master2slave.sh
+
+[MASTER is broken]
+#[slave] promote slave to take traffic
+
+#[bastion] switch master/slave configuration and re-generate scripts
+	original slave -> master
+	original master -> slave
+
+# repeat normal replciation setup process
