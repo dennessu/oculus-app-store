@@ -26,7 +26,6 @@ touch $PROMOTE_TRIGGER_FILE
 
 echo "configure recovery.conf for old master..."
 ssh $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
-source $DEPLOYMENT_PATH/common.sh
 
 cat > $MASTER_DATA_PATH/recovery.conf <<EOF
 recovery_target_timeline = 'latest'
@@ -41,14 +40,4 @@ $PGBIN_PATH/pg_ctl -D $MASTER_DATA_PATH start
 
 while ! echo exit | nc $MASTER_HOST $MASTER_DB_PORT; do sleep 1 && echo "waiting for old master database..."; done
 echo "old master database started successfully!"
-
-pushd $DEPLOYMENT_PATH
-
-echo "start primary pgbouncer proxy..."
-./pgbouncer_slave.sh
-
-popd
 ENDSSH
-
-echo "start secondary pgbouncer proxy..."
-./pgbouncer_slave.sh

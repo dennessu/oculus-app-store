@@ -375,7 +375,7 @@
     </bean>
 
     <bean id="redirectToEmailVerifyRequired" class="com.junbo.oauth.core.view.RedirectToPageView">
-        <property name="pageUrl" value="oauth.core.portal.emailVerifyRequiredUri"/>
+        <property name="pageUrl" value="${oauth.core.portal.emailVerifyRequiredUri}"/>
     </bean>
 
     <bean id="emailVerifyRequiredView" class="com.junbo.oauth.core.view.EmailVerifyRequiredView"/>

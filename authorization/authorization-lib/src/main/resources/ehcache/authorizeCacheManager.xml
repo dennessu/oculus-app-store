@@ -12,8 +12,8 @@
            overflowToDisk="false"
            memoryStoreEvictionPolicy="LRU"
            eternal="false"
-           timeToLiveSeconds="18000"
-           timeToIdleSeconds="1800"/>
+           timeToLiveSeconds="3600"
+           timeToIdleSeconds="3600"/>
 
     <cache name="API_DEFINITION"
            maxElementsInMemory="2000"
@@ -21,8 +21,8 @@
            overflowToDisk="false"
            memoryStoreEvictionPolicy="LRU"
            eternal="false"
-           timeToLiveSeconds="18000"
-           timeToIdleSeconds="1800"/>
+           timeToLiveSeconds="5"
+           timeToIdleSeconds="5"/>
 
     <cache name="GROUP_IDS_BY_USER_ID"
            maxElementsInMemory="200000"
@@ -30,8 +30,8 @@
            overflowToDisk="false"
            memoryStoreEvictionPolicy="LRU"
            eternal="false"
-           timeToLiveSeconds="30"
-           timeToIdleSeconds="30"/>
+           timeToLiveSeconds="5"
+           timeToIdleSeconds="5"/>
 
     <cache name="GROUP_ID_BY_NAME"
            maxElementsInMemory="2000"
@@ -39,7 +39,24 @@
            overflowToDisk="false"
            memoryStoreEvictionPolicy="LRU"
            eternal="false"
-           timeToLiveSeconds="18000"
-           timeToIdleSeconds="1800"/>
+           timeToLiveSeconds="5"
+           timeToIdleSeconds="5"/>
 
+    <cache name="ROLE"
+           maxElementsInMemory="2000"
+           maxElementsOnDisk="0"
+           overflowToDisk="false"
+           memoryStoreEvictionPolicy="LRU"
+           eternal="false"
+           timeToLiveSeconds="5"
+           timeToIdleSeconds="5"/>
+
+    <cache name="ROLE_ASSIGNMENT"
+           maxElementsInMemory="2000"
+           maxElementsOnDisk="0"
+           overflowToDisk="false"
+           memoryStoreEvictionPolicy="LRU"
+           eternal="false"
+           timeToLiveSeconds="5"
+           timeToIdleSeconds="5"/>
 </ehcache>

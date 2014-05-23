@@ -1,78 +1,75 @@
-#install postgres
-sudo apt-get update
-sudo apt-get install postgresql-9.3
+=====Envrionment Preparation=====
+[Postgres Installation]
+#server info
+	os: ubuntu Linux
+	account: silkcloud
+	
+#install postgresql
+	sudo apt-get update
+	sudo apt-get install -y postgresql-9.3
+	
+#create link
+	sudo rm /usr/bin/psql
+	sudo rm /usr/bin/dropdb
+	sudo rm /usr/bin/createdb
+	sudo ln -s /usr/lib/postgresql/9.3/bin/psql /usr/bin/psql
+	sudo ln -s /usr/lib/postgresql/9.3/bin/pg_ctl /usr/bin/pg_ctl
+	sudo ln -s /usr/lib/postgresql/9.3/bin/createdb /usr/bin/createdb
+	sudo ln -s /usr/lib/postgresql/9.3/bin/dropdb /usr/bin/dropdb
 
-#add path
-sudo rm /usr/bin/psql
-sudo rm /usr/bin/dropdb
-sudo rm /usr/bin/createdb
+#clean up exisitng db instance
+	sudo kill $(fuser -n tcp 5432 2> /dev/null)
+	sudo chown silkcloud /var/run/postgresql
 
-sudo ln -s /usr/lib/postgresql/9.3/bin/psql /usr/bin/psql
-sudo ln -s /usr/lib/postgresql/9.3/bin/pg_ctl /usr/bin/pg_ctl
-sudo ln -s /usr/lib/postgresql/9.3/bin/createdb /usr/bin/createdb
-sudo ln -s /usr/lib/postgresql/9.3/bin/dropdb /usr/bin/dropdb
+[PGBouncer Installation]
+	#sudo apt-get install -y pgbouncer
 
-#clean up existing db instance
-sudo kill $(fuser -n tcp 5432 2> /dev/null)
-# rm all files in /var/run/postgresql
-sudo chown silkcloud /var/run/postgresql
+[SSH key]
+	ssh-keygen -t rsa (no passphase)
+	chmod 600 /home/silkcloud/.ssh/id_rsa*
+	connect to the remote machine you want to login to, edit /home/silkcloud/.ssh/authorized_keys and append the content of id_rsa.pub file
 
-#create account
-sudo adduser silkcloud
-sudo su - silkcloud
+=====Deloyment Preparation=====
+#[bastion] enlish source tree
+	https://github.com/junbo/main/tree/master/scripts/pgha
 
-#create ssh key
-ssh-keygen -t rsa 
-connect to the remote machine you want to login to, to the file ~/.ssh/authorized_keys add the contents of your that id_rsa.pub file
-copy the pub key to other servers for ssh purpose(/home/silkcloud/.ssh/id_rsa.pub)
-chmod 600 ~/.ssh/id_rsa*
+#[bastion] upload all PGHA scripts to master and slave servers
+	./upload_script.sh
 
-#install pgbouncer
-sudo apt-get install -y pgbouncer
+#[master] clean up master
+	$DEPLOYMENT_PATH/purge_master.sh
 
-#upload all deployment scripts to remote master/slave servers
-upload_scripts.sh
+#[slave] clean up slave
+	$DEPLOYMENT_PATH/purge_slave.sh
 
-#pre validation
-	-after you install postgresql on ubuntu, it will start up a databas instance automatically, kill it
-	-make sure no db instance running with 5432 port
-	-make sure /run/postgresql is clean and can be written by 'postgres' account
-	-running all following scripts with 'postgres' account
+=====Deployment=====
+#[master] setup master database
+	$DEPLOYMENT_PATH/setup_master.sh
 
-#prepare a clean master environment
-purge_master.sh 
+#[master] base backup master database
+	$DEPLOYMENT_PATH/base_backup.sh
 
-#create and configure master database
-setup_maseter.sh
+#[slave] setup slave database
+	$DEPLOYMENT_PATH/setup_slave.sh
 
-#do master base backup
-base_backup.sh
+#[master] schedule archive log sync cron job
+	$DEPLOYMENT_PATH/master_cron.sh
 
-#prepare a clean slave environment
-purge_slave.sh
+#[slave] schedule archive log sync cron job
+	$DEPLOYMENT_PATH/slave_cron.sh
 
-#restore slave from backup
-setup_slave.sh
+#[master] start primary PGBouncer proxy (connect to master db)
+	$DEPLOYMENT_PATH/pgbouncer_master.sh
 
-#build bi-sync between master/slave archive folders
-master_cron.sh
-slave_cron.sh
+#[slave] start secondary PGBouncer proxy (connect to master db)
+	$DEPLOYMENT_PATH/pgbouncer_master.sh
 
-#primary/secondary pgbouncer proxies point to master db
-#run following script on both master/slave servers
-pgbouncer_master.sh
+#[master/slave] replication smoke test
+	$DEPLOYMENT_PATH/test_master2slave.sh
 
-#test master to slave replication
-test_master2slave.sh
+=====Planned Failover=====
+TBD
 
-#run following script on slave server
-failover.sh
+=====Unplanned Failover=====
+TBD
 
-#test slave (new master) to master (original master) replication
-test_slave2master.sh
-
-#run following script on master server
-failback.sh
-
-#test master to slave replication
-test_master2slave.sh

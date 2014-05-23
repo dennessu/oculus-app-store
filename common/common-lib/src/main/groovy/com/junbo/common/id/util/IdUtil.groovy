@@ -22,11 +22,15 @@ import java.util.regex.Pattern
  */
 @CompileStatic
 class IdUtil {
+
     public static final List<Class> ID_CLASSES = []
+
     public static final List<Class> ENUM_ID_CLASSES = []
+
     private static final Map<Class, Pattern> RESOURCE_PATH_PATTERNS = [:]
     private static String resourcePathPrefix = 'v1'
     private static final Map<Class, String> RESOURCE_PATHS = [:]
+    private static final Map<Class, String> RESOURCE_TYPES = [:]
 
     static {
         ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(true);
@@ -52,6 +56,8 @@ class IdUtil {
                     RESOURCE_PATH_PATTERNS[cls] = Pattern.compile(regex)
 
                     RESOURCE_PATHS[cls] = pathAnno.value()
+
+                    RESOURCE_TYPES[cls] = pathAnno.resourceType()
                 }
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
@@ -108,6 +114,16 @@ class IdUtil {
         String href = formatIndexPlaceHolder(Utils.combineUrl(resourcePathPrefix, path), IdFormatter.encodeId(value));
         href = formatPropertyPlaceHolder(href, value.resourcePathPlaceHolder);
         return href;
+    }
+
+    static String getResourceType(Class idClass) {
+        String resourceType = RESOURCE_TYPES[idClass]
+
+        if (resourceType == null || resourceType.empty) {
+            throw new IllegalArgumentException("resourceType undefined for $idClass")
+        }
+
+        return resourceType;
     }
 
     private static String formatIndexPlaceHolder(String pattern, Object[] args) {

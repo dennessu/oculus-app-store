@@ -60,7 +60,7 @@ class RoleAssignmentRepositoryCloudantImpl extends CloudantClient<RoleAssignment
 
     @Override
     protected CloudantViews getCloudantViews() {
-        return null
+        return views
     }
 
     protected CloudantViews views = new CloudantViews(

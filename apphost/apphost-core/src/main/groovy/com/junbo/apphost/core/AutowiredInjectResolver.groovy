@@ -49,7 +49,7 @@ class AutowiredInjectResolver implements InjectionResolver<Autowired> {
             return ctx.getBean(beanName, bt)
         }
 
-        Map<String, ?> beans = ctx.getBeansOfType(bt)
+        Map<String, ?> beans = ctx.getBeansOfType(bt, true, false)
 
         if (beans == null || beans.size() != 1) {
             throw new IllegalArgumentException("No (or multiple) beans found. Resolution failed for type ${beanType}.")
