@@ -31,7 +31,7 @@ public final class ConfigPropertiesHelper {
     }
 
     /**
-     * Gets a property value
+     * Gets a property value.
      * @param propertyName
      * @return
      */
