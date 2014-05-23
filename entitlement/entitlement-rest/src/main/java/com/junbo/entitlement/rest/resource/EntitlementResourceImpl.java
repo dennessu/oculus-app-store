@@ -26,7 +26,6 @@ import org.springframework.util.StringUtils;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
 import java.util.UUID;
 
 /**
@@ -35,8 +34,6 @@ import java.util.UUID;
 public class EntitlementResourceImpl implements EntitlementResource {
     @Autowired
     private EntitlementService entitlementService;
-    @Autowired
-    private UriInfo uriInfo;
 
     @Override
     public Promise<Entitlement> getEntitlement(EntitlementId entitlementId) {
@@ -82,7 +79,7 @@ public class EntitlementResourceImpl implements EntitlementResource {
 
     private String buildNextUrl(
             EntitlementSearchParam searchParam, PageMetadata pageMetadata, Link next) {
-        UriBuilder builder = uriInfo.getBaseUriBuilder().path("entitlements");
+        UriBuilder builder = UriBuilder.fromPath("").path("entitlements");
         builder.queryParam("userId", IdFormatter.encodeId(searchParam.getUserId()));
         if (!StringUtils.isEmpty(searchParam.getType())) {
             builder = builder.queryParam("type", searchParam.getType());
@@ -102,7 +99,7 @@ public class EntitlementResourceImpl implements EntitlementResource {
             }
         }
         builder = CommonUtils.buildPageParams(builder,
-                pageMetadata.getStart(), pageMetadata.getCount(), next.getHref());
+                pageMetadata.getStart(), pageMetadata.getCount(), next == null ? null : next.getHref());
         return builder.toTemplate();
     }
 
