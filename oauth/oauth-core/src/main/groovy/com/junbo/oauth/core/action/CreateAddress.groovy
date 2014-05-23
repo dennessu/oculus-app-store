@@ -50,6 +50,11 @@ class CreateAddress implements Action {
         def parameterMap = contextWrapper.parameterMap
         def user = contextWrapper.user
 
+        // check the address already created or not
+        if (user.addresses != null && user.addresses.get(0) != null) {
+            return Promise.pure(new ActionResult('success'))
+        }
+
         Assert.notNull(user, 'user is null')
 
         String address1 = parameterMap.getFirst(OAuthParameters.ADDRESS1)

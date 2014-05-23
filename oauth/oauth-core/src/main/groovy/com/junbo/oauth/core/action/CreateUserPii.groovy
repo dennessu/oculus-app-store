@@ -65,8 +65,6 @@ class CreateUserPii implements Action {
 
         String lastName = parameterMap.getFirst(OAuthParameters.LAST_NAME)
 
-        String nickname = parameterMap.getFirst(OAuthParameters.NICK_NAME)
-
         String email = parameterMap.getFirst(OAuthParameters.EMAIL)
 
         Gender gender = contextWrapper.gender
