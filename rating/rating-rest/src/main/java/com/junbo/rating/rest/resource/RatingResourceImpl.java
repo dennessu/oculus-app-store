@@ -13,6 +13,7 @@ import com.junbo.rating.core.context.PriceRatingContext;
 import com.junbo.rating.core.context.SubsRatingContext;
 import com.junbo.rating.core.service.OfferRatingService;
 import com.junbo.rating.core.service.OrderRatingService;
+import com.junbo.rating.core.service.SubsRatingService;
 import com.junbo.rating.spec.model.request.OfferRatingRequest;
 import com.junbo.rating.spec.model.request.RatingRequest;
 import com.junbo.rating.spec.model.subscription.SubsRatingRequest;
@@ -28,6 +29,9 @@ public class RatingResourceImpl implements RatingResource{
 
     @Autowired
     private OrderRatingService orderRatingService;
+
+    @Autowired
+    private SubsRatingService subsRatingService;
 
     @Override
     public Promise<RatingRequest> priceRating(RatingRequest request) {
@@ -59,7 +63,11 @@ public class RatingResourceImpl implements RatingResource{
     @Override
     public Promise<SubsRatingRequest> subsRating(SubsRatingRequest request) {
         SubsRatingContext context = new SubsRatingContext();
+        context.fromRequest(request);
 
-        return null;
+        subsRatingService.rate(context);
+
+        SubsRatingRequest response = RatingResultBuilder.buildForSubs(context);
+        return Promise.pure(response);
     }
 }

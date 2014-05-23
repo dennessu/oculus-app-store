@@ -10,6 +10,7 @@
     <!--Rating Service-->
     <bean id="offerRatingService" class="com.junbo.rating.core.service.OfferRatingService"/>
     <bean id="orderRatingService" class="com.junbo.rating.core.service.OrderRatingService"/>
+    <bean id="subsRatingService" class="com.junbo.rating.core.service.SubsRatingService"/>
 
     <!--Handlers-->
     <bean id="offerScopeCriterionHandler" class="com.junbo.rating.core.handler.OfferScopeCriterionHandler"/>
@@ -32,6 +33,21 @@
                 <entry key="HAS_COUPON" value-ref="couponCriterionHandler"/>
                 <entry key="ORDER_ITEM_COUNT_ABOVE" value-ref="orderCriterionHandler"/>
                 <entry key="ORDER_ABSOLUTE_VALUE_ABOVE" value-ref="orderCriterionHandler"/>
+            </util:map>
+        </property>
+    </bean>
+
+    <!--Processors-->
+    <bean id="defaultProcessor" class="com.junbo.rating.core.processor.DefaultProcessor"/>
+    <bean id="cancelProcessor" class="com.junbo.rating.core.processor.CancelProcessor"/>
+
+    <!--Processor Register-->
+    <bean id="processorRegister" class="com.junbo.rating.core.processor.ProcessorRegister">
+        <property name="processorRegister">
+            <util:map id="processorRegisterMap">
+                <entry key="PURCHASE" value-ref="defaultProcessor"/>
+                <entry key="RENEW" value-ref="defaultProcessor"/>
+                <entry key="CANCEL" value-ref="cancelProcessor"/>
             </util:map>
         </property>
     </bean>

@@ -7,12 +7,10 @@
 package com.junbo.rating.clientproxy.impl;
 
 import com.junbo.catalog.spec.enums.PriceType;
+import com.junbo.catalog.spec.model.common.*;
 import com.junbo.catalog.spec.model.domaindata.ShippingMethod;
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.catalog.spec.model.offer.ItemEntry;
-import com.junbo.catalog.spec.model.offer.Offer;
-import com.junbo.catalog.spec.model.offer.OfferRevision;
-import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
+import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.catalog.spec.model.pricetier.PriceTier;
 import com.junbo.catalog.spec.model.promotion.Promotion;
 import com.junbo.catalog.spec.model.promotion.PromotionRevision;
@@ -24,10 +22,8 @@ import com.junbo.rating.clientproxy.CatalogGateway;
 import com.junbo.rating.common.util.Constants;
 import com.junbo.rating.common.util.Utils;
 import com.junbo.rating.spec.error.AppErrors;
-import com.junbo.rating.spec.fusion.EntryType;
-import com.junbo.rating.spec.fusion.LinkedEntry;
+import com.junbo.rating.spec.fusion.*;
 import com.junbo.rating.spec.fusion.Price;
-import com.junbo.rating.spec.fusion.RatingOffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,70 +74,18 @@ public class CatalogGatewayImpl implements CatalogGateway{
 
     @Override
     public RatingOffer getOffer(Long offerId, String timestamp) {
-        Offer offer;
-        try {
-            offer = offerResource.getOffer(new OfferId(offerId)).get();
-        } catch (Exception e) {
-            LOGGER.error("Error occurring when getting Offer [" + offerId + "].", e);
-            throw AppErrors.INSTANCE.catalogGatewayError().exception();
-        }
+        Offer offer = retrieveOffer(offerId);
 
-        RatingOffer result = new RatingOffer();
-        result.setId(offer.getOfferId());
+        OfferRevision offerRevision = timestamp == null ?
+                getCurrentRevision(offer.getCurrentRevisionId())
+                : getOfferRevisionByTimestamp(offerId, Utils.parseDateTime(timestamp));
 
+        RatingOffer result = wash(offerRevision);
+        result.setId(offerId);
         if (offer.getCategories() != null) {
             result.getCategories().addAll(offer.getCategories());
         }
 
-        OfferRevision offerRevision;
-        if (timestamp == null) {
-            try {
-                offerRevision = offerRevisionResource.getOfferRevision(
-                        new OfferRevisionId(offer.getCurrentRevisionId())).get();
-            } catch (Exception e) {
-                LOGGER.error("Error occurring when getting Offer Revision [" + offer.getCurrentRevisionId() + "]", e);
-                throw AppErrors.INSTANCE.catalogGatewayError().exception();
-            }
-        } else {
-            offerRevision = getOfferRevisionByTimestamp(offerId, Utils.parseDateTime(timestamp));
-        }
-
-        Map<String, BigDecimal> prices = new HashMap<>();
-        switch(PriceType.valueOf(offerRevision.getPrice().getPriceType())) {
-            case CUSTOM:
-                prices.putAll(offerRevision.getPrice().getPrices());
-                break;
-            case TIERED:
-                PriceTier priceTier;
-                try {
-                    priceTier = priceTierResource.getPriceTier(
-                            new PriceTierId(offerRevision.getPrice().getPriceTier())).get();
-                } catch (Exception e) {
-                    throw AppErrors.INSTANCE.catalogGatewayError().exception();
-                }
-                prices.putAll(priceTier.getPrices());
-                break;
-        }
-        result.setPrice(new Price(offerRevision.getPrice().getPriceType(), prices));
-
-        if (offerRevision.getItems() != null) {
-            for (ItemEntry entry : offerRevision.getItems()) {
-                LinkedEntry item = new LinkedEntry();
-                item.setEntryId(entry.getItemId());
-                item.setType(EntryType.ITEM);
-                item.setQuantity(entry.getQuantity() == null? 1 : entry.getQuantity());
-                result.getItems().add(item);
-            }
-        }
-
-        if (offerRevision.getSubOffers() != null) {
-            for (Long entry : offerRevision.getSubOffers()) {
-                LinkedEntry subOffer = new LinkedEntry();
-                subOffer.setEntryId(entry);
-                subOffer.setType(EntryType.OFFER);
-                result.getSubOffers().add(subOffer);
-            }
-        }
         return result;
     }
 
@@ -195,13 +139,39 @@ public class CatalogGatewayImpl implements CatalogGateway{
         return null;
     }
 
+    private Offer retrieveOffer(Long offerId) {
+        Offer offer;
+        try {
+            offer = offerResource.getOffer(new OfferId(offerId)).get();
+        } catch (Exception e) {
+            LOGGER.error("Error occurring when getting Offer [" + offerId + "].", e);
+            throw AppErrors.INSTANCE.catalogGatewayError().exception();
+        }
+        return offer;
+    }
+
+    private OfferRevision getCurrentRevision(Long revisionId) {
+        OfferRevision offerRevision;
+        try {
+            offerRevision = offerRevisionResource.getOfferRevision(
+                    new OfferRevisionId(revisionId)).get();
+        } catch (Exception e) {
+            LOGGER.error("Error occurring when getting Offer Revision [" + revisionId + "]", e);
+            throw AppErrors.INSTANCE.catalogGatewayError().exception();
+        }
+
+        return offerRevision;
+    }
+
     private OfferRevision getOfferRevisionByTimestamp(Long offerId, Long timestamp) {
-        List<OfferRevision> revisions;
+        List<OfferRevision> revisions = new ArrayList<>();
+
         OfferRevisionsGetOptions options = new OfferRevisionsGetOptions();
         options.setOfferIds(new HashSet<OfferId>(Arrays.asList(new OfferId(offerId))));
         options.setTimestamp(timestamp);
+
         try {
-            revisions = offerRevisionResource.getOfferRevisions(options).get().getItems();
+            revisions.addAll(offerRevisionResource.getOfferRevisions(options).get().getItems());
         } catch (Exception e) {
             LOGGER.error("Error occurring when getting Offer Revision " +
                     "with offerId [" + offerId + "] and timestamp [" + timestamp + "].", e);
@@ -214,5 +184,67 @@ public class CatalogGatewayImpl implements CatalogGateway{
         }
 
         return revisions.get(Constants.UNIQUE);
+    }
+
+    private Price getPrice(com.junbo.catalog.spec.model.common.Price price) {
+        Map<String, BigDecimal> prices = new HashMap<>();
+        switch(PriceType.valueOf(price.getPriceType())) {
+            case CUSTOM:
+                prices.putAll(price.getPrices());
+                break;
+            case TIERED:
+                PriceTier priceTier;
+                try {
+                    priceTier = priceTierResource.getPriceTier(
+                            new PriceTierId(price.getPriceTier())).get();
+                } catch (Exception e) {
+                    throw AppErrors.INSTANCE.catalogGatewayError().exception();
+                }
+                prices.putAll(priceTier.getPrices());
+                break;
+        }
+
+        return new Price(price.getPriceType(), prices);
+    }
+
+    private RatingOffer wash(OfferRevision offerRevision) {
+        RatingOffer offer = new RatingOffer();
+
+        offer.setPrice(getPrice(offerRevision.getPrice()));
+
+        if (offerRevision.getItems() != null) {
+            for (ItemEntry entry : offerRevision.getItems()) {
+                LinkedEntry item = new LinkedEntry();
+                item.setEntryId(entry.getItemId());
+                item.setType(EntryType.ITEM);
+                item.setQuantity(entry.getQuantity() == null? 1 : entry.getQuantity());
+                offer.getItems().add(item);
+            }
+        }
+
+        if (offerRevision.getSubOffers() != null) {
+            for (Long entry : offerRevision.getSubOffers()) {
+                LinkedEntry subOffer = new LinkedEntry();
+                subOffer.setEntryId(entry);
+                subOffer.setType(EntryType.OFFER);
+                offer.getSubOffers().add(subOffer);
+            }
+        }
+
+        if (offerRevision.getEventActions() != null) {
+            for (String eventType : offerRevision.getEventActions().keySet()) {
+                List<OfferAction> offerActions = new ArrayList<>();
+                List<Action> actions = offerRevision.getEventActions().get(eventType);
+                for (Action action : actions) {
+                    OfferAction offerAction = new OfferAction();
+                    offerAction.setType(action.getType());
+                    //offerAction.setPrice(action.getPrice()); TODO
+                    offerActions.add(offerAction);
+                }
+                offer.getEventActions().put(eventType, offerActions);
+            }
+        }
+
+        return offer;
     }
 }
