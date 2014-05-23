@@ -24,8 +24,8 @@ public class ItemAttributeRepositoryImpl implements ItemAttributeRepository {
     @Autowired
     private ItemAttributeDao attributeDao;
 
-    public Long create(ItemAttribute attribute) {
-        return attributeDao.create(ItemAttributeMapper.toDBEntity(attribute));
+    public ItemAttribute create(ItemAttribute attribute) {
+        return get(attributeDao.create(ItemAttributeMapper.toDBEntity(attribute)));
     }
 
     public ItemAttribute get(Long attributeId) {
@@ -43,10 +43,10 @@ public class ItemAttributeRepositoryImpl implements ItemAttributeRepository {
         return attributes;
     }
 
-    public Long update(ItemAttribute attribute) {
+    public ItemAttribute update(ItemAttribute attribute) {
         ItemAttributeEntity dbEntity = attributeDao.get(attribute.getId());
         ItemAttributeMapper.fillDBEntity(attribute, dbEntity);
-        return attributeDao.update(dbEntity);
+        return get(attributeDao.update(dbEntity));
     }
 
     public void delete(Long attributeId) {

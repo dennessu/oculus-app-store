@@ -22,8 +22,8 @@ public class ItemAttributeRepoTest extends BaseTest {
     @Test(enabled = false)
     public void testCreateAndGet() {
         ItemAttribute entity = buildAttributeEntity();
-        Long id = attributeRepo.create(entity);
-        Assert.assertNotNull(attributeRepo.get(id), "Entity should not be null.");
+        ItemAttribute attribute = attributeRepo.create(entity);
+        Assert.assertNotNull(attribute, "Entity should not be null.");
         //List<ItemAttribute> attributeList = attributeRepo.getAttributes(new ItemAttributesGetOptions());
         //System.out.println(attributeList.size());
     }

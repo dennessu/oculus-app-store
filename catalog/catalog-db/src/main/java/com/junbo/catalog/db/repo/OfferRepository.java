@@ -16,10 +16,10 @@ import java.util.List;
  * Offer repository.
  */
 public interface OfferRepository extends BaseEntityRepository<Offer> {
-    Long create(Offer offer);
+    Offer create(Offer offer);
     Offer get(Long offerId);
     List<Offer> getOffers(OffersGetOptions options);
     List<Offer> getOffers(Collection<Long> offerIds);
-    Long update(Offer offer);
+    Offer update(Offer offer);
     void delete(Long offerId);
 }

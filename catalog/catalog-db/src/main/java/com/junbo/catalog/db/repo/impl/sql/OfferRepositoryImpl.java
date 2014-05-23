@@ -25,8 +25,8 @@ public class OfferRepositoryImpl implements OfferRepository {
     @Autowired
     private OfferDao offerDao;
 
-    public Long create(Offer offer) {
-        return offerDao.create(OfferMapper.toDBEntity(offer));
+    public Offer create(Offer offer) {
+        return get(offerDao.create(OfferMapper.toDBEntity(offer)));
     }
 
     public Offer get(Long offerId) {
@@ -54,10 +54,10 @@ public class OfferRepositoryImpl implements OfferRepository {
     }
 
     @Override
-    public Long update(Offer offer) {
+    public Offer update(Offer offer) {
         OfferEntity dbEntity = offerDao.get(offer.getOfferId());
         OfferMapper.fillDBEntity(offer, dbEntity);
-        return offerDao.update(dbEntity);
+        return get(offerDao.update(dbEntity));
     }
 
     @Override

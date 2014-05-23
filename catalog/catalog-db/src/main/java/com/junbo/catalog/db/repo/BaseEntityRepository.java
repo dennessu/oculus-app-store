@@ -13,8 +13,8 @@ import com.junbo.catalog.spec.model.common.BaseEntityModel;
  * @param <T> the entity type.
  */
 public interface BaseEntityRepository<T extends BaseEntityModel>  {
-    Long create(T entity);
+    T create(T entity);
     T get(Long entityId);
-    Long update(T entity);
+    T update(T entity);
     void delete(Long entityId);
 }

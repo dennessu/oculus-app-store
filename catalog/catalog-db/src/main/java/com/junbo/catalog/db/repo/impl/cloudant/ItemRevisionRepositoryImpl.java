@@ -13,8 +13,11 @@ import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
 import com.junbo.common.cloudant.CloudantClient;
 import com.junbo.common.cloudant.model.CloudantViews;
 import com.junbo.common.id.ItemId;
+import com.junbo.common.id.ItemRevisionId;
 import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -29,12 +32,11 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
         this.idGenerator = idGenerator;
     }
 
-    public Long create(ItemRevision itemRevision) {
+    public ItemRevision create(ItemRevision itemRevision) {
         if (itemRevision.getRevisionId() == null) {
             itemRevision.setRevisionId(idGenerator.nextId());
         }
-        ItemRevision result = super.cloudantPost(itemRevision);
-        return result.getRevisionId();
+        return super.cloudantPost(itemRevision);
     }
 
     public ItemRevision get(Long revisionId) {
@@ -42,7 +44,24 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
     }
 
     public List<ItemRevision> getRevisions(ItemRevisionsGetOptions options) {
-        return null;
+        List<ItemRevision> itemRevisions = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(options.getRevisionIds())) {
+            for (ItemRevisionId revisionId : options.getRevisionIds()) {
+                ItemRevision revision = super.cloudantGet(revisionId.toString());
+                itemRevisions.add(revision);
+            }
+            Iterator<ItemRevision> iterator = itemRevisions.iterator();
+            while(iterator.hasNext()) {
+                ItemRevision revision = iterator.next();
+                if (!StringUtils.isEmpty(options.getStatus()) && !options.getStatus().equals(revision.getStatus())) {
+                    iterator.remove();
+                }
+            }
+        } else {
+
+        }
+
+        return itemRevisions;
     }
 
     public List<ItemRevision> getRevisions(Collection<ItemId> itemIds, Long timestamp) {
@@ -98,9 +117,8 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
     }
 
     @Override
-    public Long update(ItemRevision revision) {
-        ItemRevision result = super.cloudantPut(revision);
-        return result.getRevisionId();
+    public ItemRevision update(ItemRevision revision) {
+        return super.cloudantPut(revision);
     }
 
     @Override
@@ -109,7 +127,8 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
     }
 
     private CloudantViews cloudantViews = new CloudantViews() {{
-        Map<String, CloudantView> viewMap = new HashMap<String, CloudantViews.CloudantView>();
+        Map<String, CloudantView> viewMap = new HashMap<>();
+        Map<String, CloudantIndex> indexMap = new HashMap<>();
 
         CloudantViews.CloudantView view = new CloudantViews.CloudantView();
         view.setMap("function(doc) {emit(doc.itemId, doc._id)}");
@@ -128,6 +147,17 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
         view.setResultClass(String.class);
         viewMap.put("by_hostItemId", view);
 
+        CloudantIndex index = new CloudantIndex();
+        index.setResultClass(String.class);
+        index.setIndex("function(doc) {" +
+                "index(\'itemId\', doc.itemId);" +
+                "index(\'revisionId\', doc.revisionId);" +
+                "index(\'status\', doc.status);" +
+                "index(\'timeInMillis\', doc.timestamp);" +
+        "}");
+        indexMap.put("search", index);
+
+        setIndexes(indexMap);
         setViews(viewMap);
     }};
 

@@ -26,8 +26,8 @@ public class OfferRevisionRepositoryImpl implements OfferRevisionRepository {
     @Autowired
     private OfferRevisionDao offerRevisionDao;
 
-    public Long create(OfferRevision offerRevision) {
-        return offerRevisionDao.create(OfferRevisionMapper.toDBEntity(offerRevision));
+    public OfferRevision create(OfferRevision offerRevision) {
+        return get(offerRevisionDao.create(OfferRevisionMapper.toDBEntity(offerRevision)));
     }
 
     public OfferRevision get(Long revisionId) {
@@ -61,10 +61,10 @@ public class OfferRevisionRepositoryImpl implements OfferRevisionRepository {
     }
 
     @Override
-    public Long update(OfferRevision revision) {
+    public OfferRevision update(OfferRevision revision) {
         OfferRevisionEntity dbEntity = offerRevisionDao.get(revision.getRevisionId());
         OfferRevisionMapper.fillDBEntity(revision, dbEntity);
-        return offerRevisionDao.update(dbEntity);
+        return get(offerRevisionDao.update(dbEntity));
     }
 
     @Override

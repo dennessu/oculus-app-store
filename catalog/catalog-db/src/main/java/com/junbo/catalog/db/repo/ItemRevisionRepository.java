@@ -17,11 +17,11 @@ import java.util.List;
  * Offer revision repository.
  */
 public interface ItemRevisionRepository extends BaseRevisionRepository<ItemRevision> {
-    Long create(ItemRevision itemRevision);
+    ItemRevision create(ItemRevision itemRevision);
     ItemRevision get(Long revisionId);
     List<ItemRevision> getRevisions(ItemRevisionsGetOptions options);
     List<ItemRevision> getRevisions(Collection<ItemId> itemIds, Long timestamp);
     List<ItemRevision> getRevisions(Long hostItemId);
-    Long update(ItemRevision revision);
+    ItemRevision update(ItemRevision revision);
     void delete(Long revisionId);
 }

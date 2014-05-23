@@ -30,12 +30,11 @@ public class ItemAttributeRepositoryImpl extends CloudantClient<ItemAttribute> i
         this.idGenerator = idGenerator;
     }
 
-    public Long create(ItemAttribute attribute) {
+    public ItemAttribute create(ItemAttribute attribute) {
         if (attribute.getId() == null) {
             attribute.setId(idGenerator.nextId());
         }
-        ItemAttribute result = super.cloudantPost(attribute);
-        return result.getId();
+        return super.cloudantPost(attribute);
     }
 
     public ItemAttribute get(Long attributeId) {
@@ -68,9 +67,8 @@ public class ItemAttributeRepositoryImpl extends CloudantClient<ItemAttribute> i
         }
     }
 
-    public Long update(ItemAttribute attribute) {
-        ItemAttribute result = super.cloudantPut(attribute);
-        return result.getId();
+    public ItemAttribute update(ItemAttribute attribute) {
+        return super.cloudantPut(attribute);
     }
 
     public void delete(Long attributeId) {

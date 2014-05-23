@@ -25,8 +25,8 @@ public class ItemRepositoryImpl implements ItemRepository {
     private ItemDao itemDao;
 
     @Override
-    public Long create(Item item) {
-        return itemDao.create(ItemMapper.toDBEntity(item));
+    public Item create(Item item) {
+        return get(itemDao.create(ItemMapper.toDBEntity(item)));
     }
 
     @Override
@@ -45,10 +45,10 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public Long update(Item item) {
+    public Item update(Item item) {
         ItemEntity dbEntity = itemDao.get(item.getItemId());
         ItemMapper.fillDBEntity(item, dbEntity);
-        return itemDao.update(dbEntity);
+        return get(itemDao.update(dbEntity));
     }
 
     @Override
