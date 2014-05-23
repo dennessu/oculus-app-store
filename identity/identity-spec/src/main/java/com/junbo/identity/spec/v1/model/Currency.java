@@ -13,6 +13,7 @@ import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,6 +42,9 @@ public class Currency extends PropertyAssignedAwareResourceMeta implements Ident
 
     @ApiModelProperty(position = 7, required = true, value = "The number of digits after decimal.")
     private Integer numberAfterDecimal;
+
+    @ApiModelProperty(position = 8, required = true, value = "The min authorize amount for this currency.")
+    private BigDecimal minAuthAmount;
 
     @ApiModelProperty(position = 11, required = true, value = "The supported locales of the currency resource.")
     private Map<String, String> localeKeys = new HashMap<>();
@@ -98,6 +102,15 @@ public class Currency extends PropertyAssignedAwareResourceMeta implements Ident
     public void setNumberAfterDecimal(Integer numberAfterDecimal) {
         this.numberAfterDecimal = numberAfterDecimal;
         support.setPropertyAssigned("numberAfterDecimal");
+    }
+
+    public BigDecimal getMinAuthAmount() {
+        return minAuthAmount;
+    }
+
+    public void setMinAuthAmount(BigDecimal minAuthAmount) {
+        this.minAuthAmount = minAuthAmount;
+        support.setPropertyAssigned("minAuthAmount");
     }
 
     public Map<String, String> getLocaleKeys() {

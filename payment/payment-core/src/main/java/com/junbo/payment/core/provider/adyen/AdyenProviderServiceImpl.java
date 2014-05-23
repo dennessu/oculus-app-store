@@ -13,6 +13,8 @@ import com.adyen.services.recurring.*;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.junbo.common.util.PromiseFacade;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.payment.clientproxy.CountryServiceFacade;
+import com.junbo.payment.clientproxy.CurrencyServiceFacade;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
@@ -32,7 +34,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.core.Response;
 import javax.xml.rpc.Stub;
-import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -66,12 +67,16 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
     protected PaymentPortType service;
     protected RecurringPortType recurService;
     @Autowired
-    private PaymentInstrumentRepository paymentInstrumentRepository;
+    protected PaymentInstrumentRepository paymentInstrumentRepository;
     @Autowired
-    private PaymentRepository paymentRepository;
+    protected PaymentRepository paymentRepository;
+    @Autowired
+    protected CountryServiceFacade countryResource;
+    @Autowired
+    protected CurrencyServiceFacade currencyResource;
+
     @Override
     public void afterPropertiesSet() throws Exception {
-        //TODO: add API integration
         service = new PaymentLocator().getPaymentHttpPort(
                 new java.net.URL(paymentURL));
         recurService = new RecurringLocator().getRecurringHttpPort(
@@ -171,11 +176,11 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
     private String getRedirectInfo(PaymentInstrument pi, PaymentTransaction paymentRequest) {
         StringBuffer strRequest = new StringBuffer();
         StringBuffer strToSign = new StringBuffer();
-        //TODO: convert to long value before pass in
-        BigDecimal amount = paymentRequest.getChargeInfo().getAmount();
+        String currency = paymentRequest.getChargeInfo().getCurrency();
+        long amount = paymentRequest.getChargeInfo().getAmount().longValue()
+                * currencyResource.getNumberAfterDecimal(currency).get();
         strToSign.append(amount);
         strRequest.append("paymentAmount=" + amount);
-        String currency = paymentRequest.getChargeInfo().getCurrency();
         strToSign.append(currency);
         strRequest.append("&currencyCode=" + currency);
         //shipBeforeDate:
@@ -224,9 +229,10 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
         request.setMerchantAccount(merchantAccount);
         request.setSelectedRecurringDetailReference(recurringReference);
         request.setRecurring(new Recurring(RECURRING, null));
-        //TODO: need calculate amount according to currency ISO, hard code * 100 first
-        request.setAmount(new Amount(paymentRequest.getChargeInfo().getCurrency(),
-                paymentRequest.getChargeInfo().getAmount().longValue() * 100));
+        String currencyCode = paymentRequest.getChargeInfo().getCurrency();
+        request.setAmount(new Amount(currencyCode,
+                paymentRequest.getChargeInfo().getAmount().longValue()
+                        * currencyResource.getNumberAfterDecimal(currencyCode).get()));
         request.setReference(CommonUtil.encode(paymentRequest.getId()));
         request.setShopperEmail(TEMP_EMAIL);
         request.setShopperReference(nullToEmpty(paymentRequest.getPaymentInstrumentId().toString()));
@@ -288,9 +294,10 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
                 ModificationRequest refundReq = new ModificationRequest();
                 refundReq.setMerchantAccount(merchantAccount);
                 refundReq.setOriginalReference(transactionId);
-                //TODO: need calculate amount according to currency ISO, hard code * 100 first
-                refundReq.setModificationAmount(new Amount(request.getChargeInfo().getCurrency(),
-                        request.getChargeInfo().getAmount().longValue() * 100));
+                String currency = request.getChargeInfo().getCurrency();
+                refundReq.setModificationAmount(new Amount(currency,
+                        request.getChargeInfo().getAmount().longValue()
+                                * currencyResource.getNumberAfterDecimal(currency).get()));
                 ModificationResult refundResult = null;
                 try{
                     refundResult = service.refund(refundReq);
