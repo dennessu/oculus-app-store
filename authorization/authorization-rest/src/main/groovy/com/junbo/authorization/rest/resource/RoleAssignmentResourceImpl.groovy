@@ -34,7 +34,6 @@ import org.springframework.transaction.annotation.Transactional
  */
 @CompileStatic
 @Transactional
-@Scope('prototype')
 class RoleAssignmentResourceImpl implements RoleAssignmentResource {
 
     private RoleRepository roleRepository
@@ -44,8 +43,6 @@ class RoleAssignmentResourceImpl implements RoleAssignmentResource {
     private RoleAssignmentValidator roleAssignmentValidator
 
     private RoleAssignmentFilter roleAssignmentFilter
-
-    private Created201Marker created201Marker
 
     private AuthorizeService authorizeService
 
@@ -72,11 +69,6 @@ class RoleAssignmentResourceImpl implements RoleAssignmentResource {
     }
 
     @Required
-    void setCreated201Marker(Created201Marker created201Marker) {
-        this.created201Marker = created201Marker
-    }
-
-    @Required
     void setAuthorizeService(AuthorizeService authorizeService) {
         this.authorizeService = authorizeService
     }
@@ -96,7 +88,7 @@ class RoleAssignmentResourceImpl implements RoleAssignmentResource {
                     throw AppErrors.INSTANCE.forbidden().exception()
                 }
                 return roleAssignmentRepository.create(filtered).then { RoleAssignment newRoleAssignment ->
-                    created201Marker.mark((Id) (newRoleAssignment.id))
+                    Created201Marker.mark((Id) (newRoleAssignment.id))
 
                     return Promise.pure(roleAssignmentFilter.filterForGet(newRoleAssignment))
                 }

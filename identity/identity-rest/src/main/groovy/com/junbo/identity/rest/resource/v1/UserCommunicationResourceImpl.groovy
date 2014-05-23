@@ -28,9 +28,6 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
     private UserCommunicationRepository userCommunicationRepository
 
     @Autowired
-    private Created201Marker created201Marker
-
-    @Autowired
     private UserCommunicationFilter userCommunicationFilter
 
     @Autowired
@@ -47,7 +44,7 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
         return userCommunicationValidator.validateForCreate(userCommunication).then {
             return userCommunicationRepository.create(userCommunication).then {
                 UserCommunication newUserCommunication ->
-                created201Marker.mark((Id)newUserCommunication.id)
+                Created201Marker.mark((Id)newUserCommunication.id)
 
                 newUserCommunication = userCommunicationFilter.filterForGet(newUserCommunication, null)
                 return Promise.pure(newUserCommunication)

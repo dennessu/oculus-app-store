@@ -1,6 +1,6 @@
 [#-- @ftlvariable name="" type="com.junbo.langur.processor.model.ClientMethodModel" --]
 
-public Promise<${returnType}> ${methodName}([#list parameters as parameter]${parameter.paramType} ${parameter.paramName}[#if parameter_has_next], [/#if][/#list]) {
+public Promise<${returnType}> ${methodName}([#list parameters as parameter]final ${parameter.paramType} ${parameter.paramName}[#if parameter_has_next], [/#if][/#list]) {
 
     javax.ws.rs.core.UriBuilder __uriBuilder = UriBuilder.fromUri(__target);
     __uriBuilder.path("${path}");
@@ -38,16 +38,43 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]${par
         __requestBuilder.addHeader("Authorization", "Bearer " + __accessToken);
     }
 
+[#if inProcessCallable]
+    if (__inProcessCallable && __checkService() != null) {
+
+        [#list parameters as parameter]
+            [@includeModel model=parameter indent=true
+                includeEntity=false
+                includeForm=false
+                includeQuery=false
+            /]
+        [/#list]
+
+        __requestBuilder.setUrl(__uriBuilder.toTemplate());
+        com.ning.http.client.Request __request = __requestBuilder.build();
+
+        com.junbo.langur.core.context.JunboHttpContext.JunboHttpContextData __httpContextData =
+            __createJunboHttpContextData(__request);
+
+        return com.junbo.langur.core.context.JunboHttpContextScope.with(__httpContextData, new Promise.Func0<Promise<${returnType}>>() {
+            @Override
+            public Promise<${returnType}> apply() {
+                return __service.${methodName}([#list parameters as parameter]${parameter.paramName}[#if parameter_has_next], [/#if][/#list]);
+            }
+        });
+    }
+[/#if]
+
     [#list parameters as parameter]
         [@includeModel model=parameter indent=true/]
     [/#list]
 
     __requestBuilder.setUrl(__uriBuilder.toTemplate());
+    com.ning.http.client.Request __request = __requestBuilder.build();
 
     Promise<Response> __future;
 
     try {
-        __future = Promise.wrap(asGuavaFuture(__requestBuilder.execute()));
+        __future = Promise.wrap(asGuavaFuture(__client.executeRequest(__request)));
     } catch (java.io.IOException ex) {
         throw new RuntimeException(ex);
     }

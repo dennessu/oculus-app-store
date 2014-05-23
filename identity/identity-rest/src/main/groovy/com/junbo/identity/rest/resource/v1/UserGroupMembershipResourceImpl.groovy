@@ -28,9 +28,6 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
     private UserGroupRepository userGroupRepository
 
     @Autowired
-    private Created201Marker created201Marker
-
-    @Autowired
     private UserGroupFilter userGroupFilter
 
     @Autowired
@@ -46,7 +43,7 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
 
         return userGroupValidator.validateForCreate(userGroup).then {
             return userGroupRepository.create(userGroup).then { UserGroup newUserGroup ->
-                created201Marker.mark((Id)newUserGroup.id)
+                Created201Marker.mark((Id)newUserGroup.id)
 
                 newUserGroup = userGroupFilter.filterForGet(newUserGroup, null)
                 return Promise.pure(newUserGroup)

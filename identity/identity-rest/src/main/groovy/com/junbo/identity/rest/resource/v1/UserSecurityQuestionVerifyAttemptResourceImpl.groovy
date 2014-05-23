@@ -34,9 +34,6 @@ class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuest
     private UserSecurityQuestionAttemptRepository userSecurityQuestionAttemptRepository
 
     @Autowired
-    private Created201Marker created201Marker
-
-    @Autowired
     private UserSecurityQuestionAttemptFilter userSecurityQuestionAttemptFilter
 
     @Autowired
@@ -63,7 +60,7 @@ class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuest
             return createInNewTran(userSecurityQuestionAttempt).then { UserSecurityQuestionVerifyAttempt attempt ->
 
                 if (attempt.succeeded == true) {
-                    created201Marker.mark((Id)attempt.id)
+                    Created201Marker.mark((Id)attempt.id)
 
                     attempt = userSecurityQuestionAttemptFilter.filterForGet(attempt, null)
                     return Promise.pure(attempt)

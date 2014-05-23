@@ -26,9 +26,6 @@ class LocaleResourceImpl implements LocaleResource {
     private LocaleRepository localeRepository
 
     @Autowired
-    private Created201Marker created201Marker
-
-    @Autowired
     private LocaleFilter localeFilter
 
     @Autowired
@@ -45,7 +42,7 @@ class LocaleResourceImpl implements LocaleResource {
 
         return localeValidator.validateForCreate(locale).then {
             return localeRepository.create(locale).then { Locale newLocale ->
-                created201Marker.mark(newLocale.id)
+                Created201Marker.mark(newLocale.id)
                 newLocale = localeFilter.filterForGet(newLocale, null)
                 return Promise.pure(newLocale)
             }

@@ -37,9 +37,6 @@ class UserCredentialResourceImpl implements UserCredentialResource {
     private UserPinRepository userPinRepository
 
     @Autowired
-    private Created201Marker created201Marker
-
-    @Autowired
     private ModelMapper modelMapper
 
     @Autowired
@@ -81,7 +78,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                         UserCredential newUserCredential =
                                 modelMapper.passwordToCredential(userPassword, new MappingContext())
                         newUserCredential.type = CredentialType.PASSWORD.toString()
-                        created201Marker.mark((Id) newUserCredential.id)
+                        Created201Marker.mark((Id) newUserCredential.id)
 
                         newUserCredential = userCredentialFilter.filterForGet(newUserCredential, null)
                         return Promise.pure(newUserCredential)
@@ -104,7 +101,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
 
                         UserCredential newUserCredential = modelMapper.pinToCredential(userPin, new MappingContext())
                         newUserCredential.type = CredentialType.PIN.toString()
-                        created201Marker.mark((Id) newUserCredential.id)
+                        Created201Marker.mark((Id) newUserCredential.id)
 
                         newUserCredential = userCredentialFilter.filterForGet(newUserCredential, null)
                         return Promise.pure(newUserCredential)

@@ -19,5 +19,7 @@ class ClientProxyModel {
 
     String interfaceType
 
+    String interfaceSimpleType
+
     List<ClientMethodModel> clientMethods
 }

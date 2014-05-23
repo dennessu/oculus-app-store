@@ -39,9 +39,6 @@ class GroupResourceImpl implements GroupResource {
     private UserGroupRepository userGroupRepository
 
     @Autowired
-    private Created201Marker created201Marker
-
-    @Autowired
     private GroupFilter groupFilter
 
     @Autowired
@@ -53,7 +50,7 @@ class GroupResourceImpl implements GroupResource {
 
         return groupValidator.validateForCreate(group).then {
             return groupRepository.create(group).then { Group newGroup ->
-                created201Marker.mark((Id) newGroup.id)
+                Created201Marker.mark((Id) newGroup.id)
 
                 newGroup = groupFilter.filterForGet(newGroup, null)
                 return Promise.pure(newGroup)

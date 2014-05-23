@@ -29,9 +29,6 @@ import org.springframework.transaction.annotation.Transactional
 class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
 
     @Autowired
-    private Created201Marker created201Marker
-
-    @Autowired
     private UserPersonalInfoRepository userPersonalInfoRepository
 
     @Autowired
@@ -58,7 +55,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
 
             return userPersonalInfoValidator.validateForCreate(userPii).then {
                 return userPersonalInfoRepository.create(userPii).then { UserPersonalInfo newUserPii ->
-                    created201Marker.mark((Id) newUserPii.id)
+                    Created201Marker.mark((Id) newUserPii.id)
 
                     newUserPii = userPersonalInfoFilter.filterForGet(newUserPii, null)
                     return Promise.pure(newUserPii)

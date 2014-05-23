@@ -29,9 +29,6 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
     private UserSecurityQuestionRepository userSecurityQuestionRepository
 
     @Autowired
-    private Created201Marker created201Marker
-
-    @Autowired
     private UserSecurityQuestionFilter userSecurityQuestionFilter
 
     @Autowired
@@ -48,7 +45,7 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
         return userSecurityQuestionValidator.validateForCreate(userId, userSecurityQuestion).then {
            return userSecurityQuestionRepository.create(userSecurityQuestion).
                then { UserSecurityQuestion newUserSecurityQuestion ->
-                    created201Marker.mark((Id)newUserSecurityQuestion.id)
+                    Created201Marker.mark((Id)newUserSecurityQuestion.id)
 
                     newUserSecurityQuestion = userSecurityQuestionFilter.filterForGet(newUserSecurityQuestion, null)
                     return Promise.pure(newUserSecurityQuestion)

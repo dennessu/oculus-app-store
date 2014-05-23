@@ -29,9 +29,6 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
     private UserTosRepository userTosRepository
 
     @Autowired
-    private Created201Marker created201Marker
-
-    @Autowired
     private UserTosFilter userTosFilter
 
     @Autowired
@@ -47,7 +44,7 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
 
         return userTosValidator.validateForCreate(userId, userTos).then {
             return userTosRepository.create(userTos).then { UserTosAgreement newUserTos ->
-                created201Marker.mark((Id) newUserTos.id)
+                Created201Marker.mark((Id) newUserTos.id)
 
                 newUserTos = userTosFilter.filterForGet(newUserTos, null)
                 return Promise.pure(newUserTos)

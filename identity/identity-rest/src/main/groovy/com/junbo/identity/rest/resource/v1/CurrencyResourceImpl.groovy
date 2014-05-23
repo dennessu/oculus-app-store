@@ -26,9 +26,6 @@ class CurrencyResourceImpl implements CurrencyResource {
     private CurrencyRepository currencyRepository
 
     @Autowired
-    private Created201Marker created201Marker
-
-    @Autowired
     private CurrencyFilter currencyFilter
 
     @Autowired
@@ -44,7 +41,7 @@ class CurrencyResourceImpl implements CurrencyResource {
 
         return currencyValidator.validateForCreate(currency).then {
             return currencyRepository.create(currency).then { Currency newCurrency ->
-                created201Marker.mark(newCurrency.id)
+                Created201Marker.mark(newCurrency.id)
                 newCurrency = currencyFilter.filterForGet(newCurrency, null)
 
                 return Promise.pure(newCurrency)

@@ -12,7 +12,7 @@ import com.junbo.langur.core.routing.Router;
 [#list annotations as annotation]
 ${annotation}
 [/#list]
-public class ${className} {
+public class ${className} extends com.junbo.langur.core.adapter.AbstractRestAdapter {
 
     @org.springframework.beans.factory.annotation.Autowired
     @org.springframework.beans.factory.annotation.Qualifier("default${adapteeName}")

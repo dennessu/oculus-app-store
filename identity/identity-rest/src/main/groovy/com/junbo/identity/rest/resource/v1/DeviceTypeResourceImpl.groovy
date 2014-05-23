@@ -25,9 +25,6 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
     private DeviceTypeRepository deviceTypeRepository
 
     @Autowired
-    private Created201Marker created201Marker
-
-    @Autowired
     private DeviceTypeFilter deviceTypeFilter
 
     @Autowired
@@ -43,7 +40,7 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
 
         return deviceTypeValidator.validateForCreate(deviceType).then {
             return deviceTypeRepository.create(deviceType).then { DeviceType newDeviceType ->
-                created201Marker.mark(newDeviceType.id)
+                Created201Marker.mark(newDeviceType.id)
 
                 newDeviceType = deviceTypeFilter.filterForGet(newDeviceType, null)
                 return Promise.pure(newDeviceType)

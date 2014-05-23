@@ -6,23 +6,21 @@
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <bean id="defaultRoleResource" class="com.junbo.authorization.rest.resource.RoleResourceImpl" scope="prototype">
+    <bean id="defaultRoleResource" class="com.junbo.authorization.rest.resource.RoleResourceImpl">
         <property name="roleRepository" ref="roleRepository"/>
         <property name="authorizeService" ref="authorizeService"/>
-        <property name="created201Marker" ref="created201Marker"/>
         <property name="roleFilter" ref="roleFilter"/>
         <property name="roleValidator" ref="roleValidator"/>
         <property name="roleAuthorizeCallbackFactory" ref="roleAuthorizeCallbackFactory"/>
     </bean>
 
-    <bean id="defaultRoleAssignmentResource" class="com.junbo.authorization.rest.resource.RoleAssignmentResourceImpl" scope="prototype">
+    <bean id="defaultRoleAssignmentResource" class="com.junbo.authorization.rest.resource.RoleAssignmentResourceImpl">
+        <property name="roleRepository" ref="roleRepository"/>
         <property name="roleAssignmentFilter" ref="roleAssignmentFilter"/>
         <property name="roleAssignmentRepository" ref="roleAssignmentRepository"/>
-        <property name="created201Marker" ref="created201Marker"/>
         <property name="roleAssignmentValidator" ref="roleAssignmentValidator"/>
         <property name="authorizeService" ref="authorizeService"/>
         <property name="roleAuthorizeCallbackFactory" ref="roleAuthorizeCallbackFactory"/>
-        <property name="roleRepository" ref="roleRepository"/>
     </bean>
 
     <bean id="defaultRoleResourceClientFactory" class="com.junbo.authorization.spec.resource.proxy.RoleResourceClientProxyFactory"/>
