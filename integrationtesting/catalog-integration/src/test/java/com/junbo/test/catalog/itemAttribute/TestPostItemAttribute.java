@@ -31,7 +31,7 @@ public class TestPostItemAttribute extends BaseTestClass {
 
     @Property(
             priority = Priority.Dailies,
-            features = "CatalogIntegration",
+            features = "Post v1/item-attributes",
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
@@ -60,7 +60,7 @@ public class TestPostItemAttribute extends BaseTestClass {
 
     @Property(
             priority = Priority.Dailies,
-            features = "CatalogIntegration",
+            features = "Post v1/item-attributes",
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,

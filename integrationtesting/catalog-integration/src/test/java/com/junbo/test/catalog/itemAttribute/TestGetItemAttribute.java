@@ -35,7 +35,7 @@ public class TestGetItemAttribute extends BaseTestClass {
 
     @Property(
             priority = Priority.Dailies,
-            features = "CatalogIntegration",
+            features = "Get v1/item-attributes/{itemAttributeId}",
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
@@ -67,7 +67,7 @@ public class TestGetItemAttribute extends BaseTestClass {
 
     @Property(
             priority = Priority.Comprehensive,
-            features = "CatalogIntegration",
+            features = "Get v1/item-attributes?id=&id=",
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
@@ -115,11 +115,11 @@ public class TestGetItemAttribute extends BaseTestClass {
 
     @Property(
             priority = Priority.Comprehensive,
-            features = "CatalogIntegration",
+            features = "Get v1/item-attributes?id=&type=",
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
-            description = "Test Get item attribute(s) by Id(s)(valid, invalid scenarios)",
+            description = "Test Get item attribute(s) by Id(s) and type (valid, invalid scenarios)",
             steps = {
                     "1. Prepare 3 item attributes",
                     "2. Get the item attributes by their id and type"
@@ -180,16 +180,6 @@ public class TestGetItemAttribute extends BaseTestClass {
         for (ItemAttribute attribute : ItemAttributes) {
             Assert.assertTrue(isContain(itemAttributesGet, attribute));
         }
-    }
-
-    private boolean isContain(Results<ItemAttribute> itemAttributeResults, ItemAttribute itemAttribute) {
-        boolean contain = false;
-        for (ItemAttribute itemAttribute1 : itemAttributeResults.getItems()){
-            if (itemAttribute.getId().equals(itemAttribute1.getId())) {
-                contain = true;
-            }
-        }
-        return contain;
     }
 
 }

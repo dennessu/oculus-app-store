@@ -48,7 +48,7 @@ public class TestPostItem extends BaseTestClass {
 
     @Property(
             priority = Priority.Dailies,
-            features = "CatalogIntegration",
+            features = "Post v1/items",
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
@@ -78,7 +78,7 @@ public class TestPostItem extends BaseTestClass {
 
     @Property(
             priority = Priority.Comprehensive,
-            features = "CatalogIntegration",
+            features = "Post v1/items",
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
@@ -113,7 +113,7 @@ public class TestPostItem extends BaseTestClass {
 
     @Property(
             priority = Priority.Comprehensive,
-            features = "CatalogIntegration",
+            features = "Post v1/items",
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
@@ -187,7 +187,7 @@ public class TestPostItem extends BaseTestClass {
 
     @Property(
             priority = Priority.Dailies,
-            features = "CatalogIntegration",
+            features = "Post v1/items",
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Disable,

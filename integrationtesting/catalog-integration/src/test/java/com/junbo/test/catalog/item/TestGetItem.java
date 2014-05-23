@@ -33,7 +33,7 @@ public class TestGetItem extends BaseTestClass {
 
     @Property(
             priority = Priority.Dailies,
-            features = "CatalogIntegration",
+            features = "Get v1/items/{itemId}",
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
@@ -73,7 +73,7 @@ public class TestGetItem extends BaseTestClass {
 
     @Property(
             priority = Priority.Dailies,
-            features = "CatalogIntegration",
+            features = "Get v1/items?itemId=&itemId=",
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
@@ -109,7 +109,7 @@ public class TestGetItem extends BaseTestClass {
         paraMap.put("itemId", listItemId);
         verifyGetItemsScenarios(paraMap, 2, itemId[0], itemId[1]);
 
-        //Search the 5 items by their Ids, verify only return the 4 items
+        //Search the 5 items by their Ids, verify all could be got
         listItemId.add(itemId[2]);
         listItemId.add(itemId[3]);
         listItemId.add(itemId[4]);
@@ -161,20 +161,20 @@ public class TestGetItem extends BaseTestClass {
 
     @Property(
             priority = Priority.Comprehensive,
-            features = "CatalogIntegration",
+            features = "Get v1/items?itemId=&type=",
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
-            description = "Test Get item(s) by Id(s), curated, type and genre(valid, invalid scenarios)",
+            description = "Test Get item(s) by Id(s), type(valid, invalid scenarios)",
             steps = {
                     "1. Prepare some items",
-                    "2. Get the items by their ids, curated, type and genre(valid, invalid scenarios)",
+                    "2. Get the items by their ids, type(valid, invalid scenarios)",
                     "3. Release the items",
-                    "4. Get the items by their ids, curated, type and genre(valid, invalid scenarios) again"
+                    "4. Get the items by their ids, type(valid, invalid scenarios) again"
             }
     )
     @Test
-    public void testGetItemsByIdTypeGenre() throws Exception {
+    public void testGetItemsByIdType() throws Exception {
 
         //prepare 5 items for later use
         Item[] items = new Item[5];
@@ -197,10 +197,10 @@ public class TestGetItem extends BaseTestClass {
     private void verifyInvalidScenarios(Long itemId) throws Exception {
         try {
             itemService.getItem(itemId, 404);
-            Assert.fail("Shouldn't get items with wrong id, status or timestamp");
+            Assert.fail("Shouldn't get items with wrong id");
         }
         catch (Exception e) {
-            logger.logInfo("Expected exception: couldn't get items with wrong id, status or timestamp");
+            logger.logInfo("Expected exception: couldn't get items with wrong id");
         }
     }
 
@@ -217,13 +217,13 @@ public class TestGetItem extends BaseTestClass {
         listItemId.add(itemId4);
         listItemId.add(itemId5);
 
-        //set type Digital firstly
+        //set type PHYSICAL firstly
         listType.add(CatalogItemType.PHYSICAL.getItemType());
         paraMap.put("itemId", listItemId);
         paraMap.put("type", listType);
         verifyGetItemsScenarios(paraMap, 1, itemId1);
 
-        //set type to physical
+        //set type to DIGITAL
         listType.clear();
         listType.add(CatalogItemType.DIGITAL.getItemType());
         paraMap.put("type", listType);
@@ -247,13 +247,4 @@ public class TestGetItem extends BaseTestClass {
         }
     }
 
-    private boolean isContain(Results<Item> itemResults, Item item) {
-        boolean contain = false;
-        for (Item item1 : itemResults.getItems()){
-            if (item.getItemId().equals(item1.getItemId())) {
-                contain = true;
-            }
-        }
-        return contain;
-    }
 }
