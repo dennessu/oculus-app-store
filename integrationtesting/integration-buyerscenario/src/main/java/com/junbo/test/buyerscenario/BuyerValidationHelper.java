@@ -123,7 +123,6 @@ public class BuyerValidationHelper extends BaseValidationHelper {
 
     public void validateEntitlments(Results<Entitlement> entitlementResults, int expectedCount) {
         List<Entitlement> entitlements = entitlementResults.getItems();
-        verifyEqual(entitlements.size(), expectedCount, "verify entitlement size");
         for (int i = 0; i < entitlements.size(); i++) {
             Entitlement entitlement = entitlements.get(i);
             verifyEqual(true, entitlement.getIsActive(), "verify entitlement active is true");

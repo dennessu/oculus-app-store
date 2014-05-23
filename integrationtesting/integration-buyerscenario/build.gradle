@@ -31,6 +31,7 @@ dependencies {
     compile junboProject(':billing-integration')
     compile junboProject(':entitlement-integration')
     compile junboProject(':order-integration')
+    compile junboProject(':identity-integration')
 
     compile(libraries.asyncclient)
     compile(libraries.postgresql)
