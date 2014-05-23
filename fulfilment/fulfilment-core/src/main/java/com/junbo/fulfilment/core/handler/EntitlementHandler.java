@@ -5,6 +5,7 @@
  */
 package com.junbo.fulfilment.core.handler;
 
+import com.junbo.common.shuffle.Oculus48Id;
 import com.junbo.fulfilment.common.util.Utils;
 import com.junbo.fulfilment.core.context.EntitlementContext;
 import com.junbo.fulfilment.spec.fusion.Entitlement;
@@ -14,7 +15,6 @@ import com.junbo.fulfilment.spec.model.FulfilmentAction;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * EntitlementHandler.
@@ -22,7 +22,6 @@ import java.util.Map;
 public class EntitlementHandler extends HandlerSupport<EntitlementContext> {
     @Override
     protected Object handle(EntitlementContext context, FulfilmentAction action) {
-        Map<String, Object> prop = action.getProperties();
         List<String> results = new ArrayList<>();
 
         Item item = catalogGateway.getItem(action.getItemId(), action.getTimestamp());
@@ -40,7 +39,10 @@ public class EntitlementHandler extends HandlerSupport<EntitlementContext> {
                 entitlement.setUseCount(meta.getConsumable() ? 1 : null);
                 entitlement.setGrantTime(Utils.now());
 
-                results.add(entitlementGateway.grant(entitlement));
+                Long rawEntitlementid = entitlementGateway.grant(entitlement);
+
+                Oculus48Id.validateRawValue(rawEntitlementid);
+                results.add(Oculus48Id.format(Oculus48Id.shuffle(rawEntitlementid)));
             }
         }
 

@@ -25,7 +25,7 @@ public class EntitlementGatewayTest extends BaseTest {
         entitlement.setItemId(33570816L);
         entitlement.setUserId(33570816L);
 
-        String entitlementId = gateway.grant(entitlement);
+        Long entitlementId = gateway.grant(entitlement);
         Assert.assertNotNull(entitlementId, "entitlementId should not be null.");
     }
 }
