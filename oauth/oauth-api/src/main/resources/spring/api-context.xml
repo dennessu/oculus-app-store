@@ -92,7 +92,8 @@
         <property name="userResource" ref="userResource"/>
         <property name="userPersonalInfoResource" ref="userPersonalInfoResource"/>
         <property name="loginStateRepository" ref="loginStateRepository"/>
-        <property name="redirectUri" value="${oauth.core.portal.emailVerifiedUri}"/>
+        <property name="successRedirectUri" value="${oauth.core.portal.emailVerifySuccessUri}" />
+        <property name="failedRedirectUri" value="${oauth.core.portal.emailVerifyFailUri}" />
     </bean>
 
     <bean id="defaultEmailVerifyEndpointClientFactory" class="com.junbo.oauth.spec.endpoint.proxy.EmailVerifyEndpointClientProxyFactory"/>

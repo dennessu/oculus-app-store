@@ -50,7 +50,9 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
 
     private UserPersonalInfoResource userPersonalInfoResource
 
-    private String redirectUri
+    private String successRedirectUri
+
+    private String failedRedirectUri
 
     private LoginStateRepository loginStateRepository
 
@@ -70,8 +72,13 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
     }
 
     @Required
-    void setRedirectUri(String redirectUri) {
-        this.redirectUri = redirectUri
+    void setSuccessRedirectUri(String successRedirectUri) {
+        this.successRedirectUri = successRedirectUri
+    }
+
+    @Required
+    void setFailedRedirectUri(String failedRedirectUri) {
+        this.failedRedirectUri = failedRedirectUri
     }
 
     @Required
@@ -82,26 +89,30 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
     @Override
     Promise<Response> verifyEmail(String code, String locale) {
         if (StringUtils.isEmpty(code)) {
-            throw AppExceptions.INSTANCE.missingEmailVerifyCode().exception()
+            LOGGER.warn(AppExceptions.INSTANCE.missingEmailVerifyCode().description)
+            Response.ResponseBuilder responseBuilder = Response.status(Response.Status.FOUND)
+                    .location(UriBuilder.fromUri(failedRedirectUri).build())
+            return Promise.pure(responseBuilder.build())
         }
 
         EmailVerifyCode emailVerifyCode = emailVerifyCodeRepository.getAndRemove(code)
 
         if (emailVerifyCode == null) {
-            throw AppExceptions.INSTANCE.invalidEmailVerifyCode(code).exception()
+            LOGGER.warn(AppExceptions.INSTANCE.invalidEmailVerifyCode(code).description)
+            Response.ResponseBuilder responseBuilder = Response.status(Response.Status.FOUND)
+                    .location(UriBuilder.fromUri(failedRedirectUri).build())
+            return Promise.pure(responseBuilder.build())
         }
 
         return userResource.get(new UserId(emailVerifyCode.userId), new UserGetOptions()).recover { Throwable e ->
-            handleException(e)
-            return Promise.pure(null)
+            return handleException(e)
         }.then { User user ->
             UserPersonalInfoLink emailLink = user.emails.find { UserPersonalInfoLink link -> link.isDefault }
             Assert.notNull(emailLink, 'emailLink is null')
 
             return userPersonalInfoResource.get(emailLink.value as UserPersonalInfoId,
                     new UserPersonalInfoGetOptions()).recover { Throwable e ->
-                handleException(e)
-                return Promise.pure(null)
+                return handleException(e)
             }.then { UserPersonalInfo emailPii ->
                 Email email = ObjectMapperProvider.instance().treeToValue(emailPii.value, Email)
 
@@ -110,8 +121,7 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
                     emailPii.value = ObjectMapperProvider.instance().valueToTree(email)
                     return userPersonalInfoResource.put(emailPii.id as UserPersonalInfoId, emailPii)
                             .recover { Throwable e ->
-                        handleException(e)
-                        return Promise.pure(null)
+                        return handleException(e)
                     }.then { UserPersonalInfo updatedPersonalInfo ->
                         LoginState loginState = new LoginState(
                                 userId: emailVerifyCode.userId,
@@ -122,7 +132,7 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
 
 
                         Response.ResponseBuilder responseBuilder = Response.status(Response.Status.FOUND)
-                                .location(UriBuilder.fromUri(redirectUri).build())
+                                .location(UriBuilder.fromUri(successRedirectUri).build())
 
                         CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_LOGIN_STATE, loginState.id, -1)
                         CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_SESSION_STATE,
@@ -135,12 +145,10 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
         }
     }
 
-    private static void handleException(Throwable throwable) {
+    private Promise<Response> handleException(Throwable throwable) {
         LOGGER.error('Error calling the identity service', throwable)
-        if (throwable instanceof AppErrorException) {
-            throw throwable
-        } else {
-            throw AppExceptions.INSTANCE.errorCallingIdentity().exception()
-        }
+        Response.ResponseBuilder responseBuilder = Response.status(Response.Status.FOUND)
+                .location(UriBuilder.fromUri(failedRedirectUri).build())
+        return Promise.pure(responseBuilder.build())
     }
 }

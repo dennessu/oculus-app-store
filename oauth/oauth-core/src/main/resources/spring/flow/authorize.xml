@@ -396,7 +396,9 @@
         <property name="pageUrl" value="${oauth.core.portal.paymentMethodUri}"/>
     </bean>
 
-    <bean id="paymentMethodView" class="com.junbo.oauth.core.view.PaymentMethodView"/>
+    <bean id="paymentMethodView" class="com.junbo.oauth.core.view.PaymentMethodView">
+        <property name="btCSE" value="${payment.provider.braintree.CSE}" />
+    </bean>
 
     <bean id="validatePaymentMethod" class="com.junbo.oauth.core.action.ValidatePaymentMethod">
         <property name="countryResource" ref="countryResource"/>
