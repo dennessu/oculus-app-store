@@ -14,7 +14,6 @@ dependencies {
     runtime junboProject(':crypto-rest')
     runtime junboProject(':email-rest')
     runtime junboProject(':payment-rest')
-    runtime junboProject(':catalog-rest')
 
     compile junboProject(':oauth-api')
     compile junboProject(':email-jobs')

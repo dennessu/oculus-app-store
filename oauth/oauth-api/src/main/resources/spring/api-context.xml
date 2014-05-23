@@ -77,16 +77,6 @@
 
     <bean id="defaultScopeEndpointRouter" parent="routingRouterBase" />
 
-    <bean id="defaultApiDefinitionEndpoint" class="com.junbo.oauth.api.endpoint.ApiDefinitionEndpointImpl">
-        <property name="apiService" ref="apiService"/>
-        <property name="tokenInfoParser" ref="tokenInfoParser"/>
-
-    </bean>
-
-    <bean id="defaultApiDefinitionEndpointClientFactory" class="com.junbo.oauth.spec.endpoint.proxy.ApiDefinitionEndpointClientProxyFactory"/>
-
-    <bean id="defaultApiDefinitionEndpointRouter" parent="routingRouterBase" />
-
     <bean id="defaultEmailVerifyEndpoint" class="com.junbo.oauth.api.endpoint.EmailVerifyEndpointImpl">
         <property name="emailVerifyCodeRepository" ref="emailVerifyCodeRepository"/>
         <property name="userResource" ref="userResource"/>

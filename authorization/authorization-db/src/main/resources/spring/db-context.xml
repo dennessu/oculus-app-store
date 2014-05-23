@@ -14,4 +14,8 @@
         <property name="shardAlgorithm" ref="userShardAlgorithm"/>
         <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
+
+    <bean id="apiDefinitionRepository" class="com.junbo.authorization.db.repository.ApiDefinitionRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="api_definition"/>
+    </bean>
 </beans>

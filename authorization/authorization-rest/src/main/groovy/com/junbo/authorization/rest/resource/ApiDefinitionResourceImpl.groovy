@@ -3,24 +3,24 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.oauth.api.endpoint
+package com.junbo.authorization.rest.resource
 
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.TokenInfoParser
+import com.junbo.authorization.core.service.ApiService
+import com.junbo.authorization.spec.error.AppErrors
 import com.junbo.langur.core.promise.Promise
-import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.core.service.ApiService
-import com.junbo.oauth.spec.endpoint.ApiDefinitionEndpoint
-import com.junbo.oauth.spec.model.ApiDefinition
+import com.junbo.authorization.spec.resource.ApiDefinitionResource
+import com.junbo.authorization.spec.model.ApiDefinition
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
- * ApiDefinitionEndpointImpl.
+ * ApiDefinitionResourceImpl.
  */
 @CompileStatic
 @SuppressWarnings('UnnecessaryGetter')
-class ApiDefinitionEndpointImpl implements ApiDefinitionEndpoint {
+class ApiDefinitionResourceImpl implements ApiDefinitionResource {
 
     private static final String API_MANAGE_SCOPE = 'api.manage'
 
@@ -41,26 +41,16 @@ class ApiDefinitionEndpointImpl implements ApiDefinitionEndpoint {
     }
 
     @Override
-    Promise<List<ApiDefinition>> list() {
-
-        if (!AuthorizeContext.hasScopes(API_INFO_SCOPE)) {
-            return Promise.pure([])
-        }
-
-        return Promise.pure(apiService.allApis)
-    }
-
-    @Override
     Promise<ApiDefinition> get(String apiName) {
 
         if (!AuthorizeContext.hasScopes(API_INFO_SCOPE)) {
-            throw AppExceptions.INSTANCE.apiDefinitionNotFound(apiName).exception()
+            throw AppErrors.INSTANCE.resourceNotFound('api_definition', apiName).exception()
         }
 
         def apiDefinition = apiService.getApi(apiName)
 
         if (apiDefinition == null) {
-            throw AppExceptions.INSTANCE.apiDefinitionNotFound(apiName).exception()
+            throw AppErrors.INSTANCE.resourceNotFound('api_definition', apiName).exception()
         }
 
         return Promise.pure(apiDefinition)
@@ -70,7 +60,7 @@ class ApiDefinitionEndpointImpl implements ApiDefinitionEndpoint {
     Promise<ApiDefinition> create(ApiDefinition apiDefinition) {
 
         if (!AuthorizeContext.hasScopes(API_MANAGE_SCOPE)) {
-            throw AppExceptions.INSTANCE.insufficientScope().exception()
+            throw AppErrors.INSTANCE.insufficientScope().exception()
         }
 
         return Promise.pure(apiService.saveApi(apiDefinition))
@@ -80,7 +70,7 @@ class ApiDefinitionEndpointImpl implements ApiDefinitionEndpoint {
     Promise<ApiDefinition> update(String apiName, ApiDefinition apiDefinition) {
 
         if (!AuthorizeContext.hasScopes(API_MANAGE_SCOPE)) {
-            throw AppExceptions.INSTANCE.insufficientScope().exception()
+            throw AppErrors.INSTANCE.insufficientScope().exception()
         }
 
         return Promise.pure(apiService.updateApi(apiName, apiDefinition))
@@ -90,7 +80,7 @@ class ApiDefinitionEndpointImpl implements ApiDefinitionEndpoint {
     Promise<Void> delete(String apiName) {
 
         if (!AuthorizeContext.hasScopes(API_MANAGE_SCOPE)) {
-            throw AppExceptions.INSTANCE.insufficientScope().exception()
+            throw AppErrors.INSTANCE.insufficientScope().exception()
         }
 
         apiService.deleteApi(apiName)

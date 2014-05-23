@@ -67,10 +67,6 @@
         <property name="dbName" value="consent"/>
     </bean>
 
-    <bean id="apiDefinitionDAO" class="com.junbo.oauth.db.dao.couch.CouchApiDefinitionDAOImpl" parent="baseDAO">
-        <property name="dbName" value="api_definition"/>
-    </bean>
-
     <bean id="emailVerifyCodeDAO" class="com.junbo.oauth.db.dao.couch.CouchEmailVerifyCodeDAOImpl" parent="baseDAO">
         <property name="dbName" value="email_verify_code"/>
     </bean>
@@ -115,10 +111,6 @@
 
     <bean id="consentRepository" class="com.junbo.oauth.db.repo.impl.ConsentRepositoryImpl">
         <property name="consentDAO" ref="consentDAO"/>
-    </bean>
-
-    <bean id="apiDefinitionRepository" class="com.junbo.oauth.db.repo.impl.ApiDefinitionRepositoryImpl">
-        <property name="apiDefinitionDAO" ref="apiDefinitionDAO"/>
     </bean>
 
     <bean id="emailVerifyCodeRepository" class="com.junbo.oauth.db.repo.impl.EmailVerifyCodeRepositoryImpl">

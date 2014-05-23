@@ -3,13 +3,12 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.oauth.core.service.impl
+package com.junbo.authorization.core.service
 
-import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.core.service.ApiService
-import com.junbo.oauth.db.exception.DBUpdateConflictException
-import com.junbo.oauth.db.repo.ApiDefinitionRepository
-import com.junbo.oauth.spec.model.ApiDefinition
+import com.junbo.authorization.db.repository.ApiDefinitionRepository
+import com.junbo.authorization.spec.error.AppErrors
+import com.junbo.authorization.spec.model.ApiDefinition
+import com.junbo.common.cloudant.exception.CloudantUpdateConflictException
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
@@ -33,17 +32,12 @@ class ApiServiceImpl implements ApiService {
     }
 
     @Override
-    List<ApiDefinition> getAllApis() {
-        return apiDefinitionRepository.allApis
-    }
-
-    @Override
     ApiDefinition saveApi(ApiDefinition apiDefinition) {
 
         ApiDefinition existingApi = apiDefinitionRepository.getApi(apiDefinition.apiName)
 
         if (existingApi != null) {
-            throw AppExceptions.INSTANCE.duplicateEntityName('api', apiDefinition.apiName).exception()
+            throw AppErrors.INSTANCE.duplicateEntityName('api', apiDefinition.apiName).exception()
         }
 
         return apiDefinitionRepository.saveApi(apiDefinition)
@@ -53,23 +47,23 @@ class ApiServiceImpl implements ApiService {
     ApiDefinition updateApi(String apiName, ApiDefinition apiDefinition) {
 
         if (StringUtils.isEmpty(apiDefinition.revision)) {
-            throw AppExceptions.INSTANCE.missingRevision().exception()
+            throw AppErrors.INSTANCE.missingRevision().exception()
         }
 
         if (apiName != apiDefinition.apiName) {
-            throw AppExceptions.INSTANCE.mismatchEntityName().exception()
+            throw AppErrors.INSTANCE.mismatchEntityName().exception()
         }
 
         ApiDefinition existingApi = apiDefinitionRepository.getApi(apiName)
 
         if (apiDefinition.revision != existingApi.revision) {
-            throw AppExceptions.INSTANCE.updateConflict().exception()
+            throw AppErrors.INSTANCE.updateConflict('api_definition').exception()
         }
 
         try {
             apiDefinitionRepository.updateApi(apiDefinition)
-        } catch (DBUpdateConflictException ignore) {
-            throw AppExceptions.INSTANCE.updateConflict().exception()
+        } catch (CloudantUpdateConflictException ignore) {
+            throw AppErrors.INSTANCE.updateConflict('api_definition').exception()
         }
     }
 

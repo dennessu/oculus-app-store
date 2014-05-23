@@ -3,9 +3,9 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.oauth.core.service
+package com.junbo.authorization.core.service
 
-import com.junbo.oauth.spec.model.ApiDefinition
+import com.junbo.authorization.spec.model.ApiDefinition
 import groovy.transform.CompileStatic
 
 /**
@@ -14,8 +14,6 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface ApiService {
     ApiDefinition getApi(String apiName)
-
-    List<ApiDefinition> getAllApis()
 
     ApiDefinition saveApi(ApiDefinition apiDefinition)
 
