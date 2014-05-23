@@ -126,6 +126,10 @@ class IdUtil {
         return resourceType;
     }
 
+    static String getResourcePathPrefix() {
+        return resourcePathPrefix;
+    }
+
     private static String formatIndexPlaceHolder(String pattern, Object[] args) {
         if (pattern == null) {
             return null;
@@ -149,14 +153,13 @@ class IdUtil {
         }
 
         for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-            String key = (String)entry.key;
+            String key = (String) entry.key;
             Object value = entry.value;
             String encodedValue;
 
             if (value instanceof Id) {
-                encodedValue = IdFormatter.encodeId((Id)value);
-            }
-            else {
+                encodedValue = IdFormatter.encodeId((Id) value);
+            } else {
                 encodedValue = value.toString();
             }
 
