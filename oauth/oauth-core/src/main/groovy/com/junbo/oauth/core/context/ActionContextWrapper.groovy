@@ -54,6 +54,7 @@ class ActionContextWrapper {
     public static final String RESET_PASSWORD_CODE = 'reset_password_code'
     public static final String THIRD_PARTY_ACCOUNT = 'third_party_account'
     public static final String SUB_FLOW_NAME = 'sub_flow_name'
+    public static final String USER_DEFAULT_EMAIL = 'default_email'
 
     @Delegate
     private final ActionContext actionContext
@@ -259,11 +260,11 @@ class ActionContextWrapper {
     }
 
     Date getDob() {
-        return (Date) actionContext.requestScope[DOB]
+        return (Date) actionContext.flowScope[DOB]
     }
 
     void setDob(Date dob) {
-        actionContext.requestScope[DOB] = dob
+        actionContext.flowScope[DOB] = dob
     }
 
     Gender getGender() {
@@ -355,6 +356,14 @@ class ActionContextWrapper {
 
     void setThirdPartyAccount(ThirdPartyAccount thirdPartyAccount) {
         actionContext.flowScope[THIRD_PARTY_ACCOUNT] = thirdPartyAccount
+    }
+
+    String getUserDefaultEmail() {
+        return actionContext.flowScope[USER_DEFAULT_EMAIL] as String
+    }
+
+    void setUserDefaultEmail(String userDefaultEmail) {
+        actionContext.flowScope[USER_DEFAULT_EMAIL] = userDefaultEmail
     }
 
     String getSubFlowName() {

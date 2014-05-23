@@ -405,6 +405,7 @@
 
     <bean id="paymentMethodView" class="com.junbo.oauth.core.view.PaymentMethodView">
         <property name="btCSE" value="${payment.provider.braintree.CSE}" />
+        <property name="parentControlAge" value="18" />
     </bean>
 
     <bean id="validatePaymentMethod" class="com.junbo.oauth.core.action.ValidatePaymentMethod">

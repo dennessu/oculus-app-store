@@ -41,7 +41,7 @@ abstract class AbstractView implements Action {
 
         @Override
         int compare(com.junbo.common.error.Error o1, com.junbo.common.error.Error o2) {
-            return o1.code <=> o2.code
+            return ("${o1.code}${o1.field}" <=> "${o2.code}${o2.field}")
         }
     }
 

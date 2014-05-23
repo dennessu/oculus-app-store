@@ -235,23 +235,14 @@ interface AppExceptions {
     @ErrorDef(httpStatusCode = 400, code = '20055', description = 'cid is invalid', field = 'cid')
     AppError invalidCid()
 
-    @ErrorDef(httpStatusCode = 400, code = '20056', description = 'The nickname is missing', field = 'nickname')
-    AppError missingNickName()
-
     @ErrorDef(httpStatusCode = 400, code = '20057', description = 'The first name is missing', field = 'first_name')
     AppError missingFirstName()
 
     @ErrorDef(httpStatusCode = 400, code = '20058', description = 'The last name is missing', field = 'last_name')
     AppError missingLastName()
 
-    @ErrorDef(httpStatusCode = 400, code = '20059', description = 'The gender is missing', field = 'gender')
-    AppError missingGender()
-
     @ErrorDef(httpStatusCode = 400, code = '20060', description = 'The gender is invalid', field = 'gender')
     AppError invalidGender()
-
-    @ErrorDef(httpStatusCode = 400, code = '20061', description = 'The date of birth is missing', field = 'dob')
-    AppError missingDob()
 
     @ErrorDef(httpStatusCode = 400, code = '20062',
             description = 'The date of birth is invalid. Valid date format: YYYY-MM-DD', field = 'dob')
