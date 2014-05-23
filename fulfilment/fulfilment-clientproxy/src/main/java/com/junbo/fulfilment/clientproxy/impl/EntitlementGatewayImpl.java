@@ -28,13 +28,13 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
     private EntitlementResource entitlementResource;
 
     @Override
-    public String grant(com.junbo.fulfilment.spec.fusion.Entitlement input) {
+    public Long grant(com.junbo.fulfilment.spec.fusion.Entitlement input) {
         try {
             Entitlement entitlement = Utils.map(input, Entitlement.class);
             entitlement.setTrackingUuid(UUID.randomUUID());
 
             Entitlement result = entitlementResource.postEntitlement(entitlement).get();
-            return result.getEntitlementId().toString();
+            return result.getEntitlementId();
         } catch (Exception e) {
             LOGGER.error("Error occurred during calling [Entitlement] component.", e);
             throw AppErrors.INSTANCE.gatewayFailure("entitlement").exception();
