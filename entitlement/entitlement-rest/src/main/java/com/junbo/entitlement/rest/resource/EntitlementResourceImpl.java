@@ -8,6 +8,7 @@ package com.junbo.entitlement.rest.resource;
 
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.ItemId;
+import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
 import com.junbo.common.util.IdFormatter;
@@ -79,7 +80,7 @@ public class EntitlementResourceImpl implements EntitlementResource {
 
     private String buildNextUrl(
             EntitlementSearchParam searchParam, PageMetadata pageMetadata, Link next) {
-        UriBuilder builder = UriBuilder.fromPath("").path("entitlements");
+        UriBuilder builder = UriBuilder.fromPath(IdUtil.getResourcePathPrefix()).path("entitlements");
         builder.queryParam("userId", IdFormatter.encodeId(searchParam.getUserId()));
         if (!StringUtils.isEmpty(searchParam.getType())) {
             builder = builder.queryParam("type", searchParam.getType());
