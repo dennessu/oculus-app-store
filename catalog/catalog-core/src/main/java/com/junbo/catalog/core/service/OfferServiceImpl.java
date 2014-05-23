@@ -388,7 +388,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
                     errors.add(AppErrors.INSTANCE.fieldNotCorrect("items",
                             "Quantity should be greater than 0 for item " + Utils.encodeId(itemEntry.getItemId())));
                 } else if (itemEntry.getQuantity() > 1) {
-                    if (!(ItemType.STORED_VALUE.is(item.getType()) || ItemType.PHYSICAL.is(item.getType()))) {
+                    if (!(ItemType.VIRTUAL.is(item.getType()) || ItemType.PHYSICAL.is(item.getType()))) {
                         errors.add(AppErrors.INSTANCE.fieldNotCorrect("items",
                                 "'quantity' should be 1 for " + item.getType()
                                         + " item " + Utils.encodeId(itemEntry.getItemId())));
