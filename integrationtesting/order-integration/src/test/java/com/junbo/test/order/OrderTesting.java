@@ -74,6 +74,7 @@ public class OrderTesting extends BaseOrderTestClass {
 
         expectedOrderStatus.put(orderId2, OrderStatus.PENDING_CHARGE);
 
+        Master.getInstance().initializeOrders();
         testDataProvider.getOrdersByUserId(uid);
 
         validationHelper.validateOrderStatus(expectedOrderStatus);
@@ -141,6 +142,7 @@ public class OrderTesting extends BaseOrderTestClass {
 
         testDataProvider.creditWallet(uid, new BigDecimal(100));
 
+        Master.getInstance().initializeOrders();
         testDataProvider.getOrdersByUserId(uid);
         validationHelper.validateOrderStatus(expectedOrderStatus);
 
@@ -149,6 +151,7 @@ public class OrderTesting extends BaseOrderTestClass {
         String order_PendingFulfil = testDataProvider.updateOrderTentative(order_Insufficient, false, 200);
         expectedOrderStatus.put(order_PendingFulfil, OrderStatus.PENDING_FULFILL);
 
+        Master.getInstance().initializeOrders();
         testDataProvider.getOrdersByUserId(uid);
         validationHelper.validateOrderStatus(expectedOrderStatus);
     }
