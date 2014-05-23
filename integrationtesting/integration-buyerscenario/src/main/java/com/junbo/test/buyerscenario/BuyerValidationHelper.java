@@ -137,6 +137,7 @@ public class BuyerValidationHelper extends BaseValidationHelper {
                 ShardIdHelper.getShardIdByUid(uid), id);
         String resultPayload = dbHelper.executeScalar(sql, DBHelper.DBName.EMAIL);
 
+        Thread.sleep(5000);
         sql = String.format("select status from shard_%s.email_history where user_id=\'%s\'",
                 ShardIdHelper.getShardIdByUid(uid), id);
         String resultStatus = dbHelper.executeScalar(sql, DBHelper.DBName.EMAIL);
