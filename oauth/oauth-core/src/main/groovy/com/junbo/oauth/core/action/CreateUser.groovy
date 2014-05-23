@@ -35,12 +35,12 @@ class CreateUser implements Action {
         def contextWrapper = new ActionContextWrapper(context)
         def parameterMap = contextWrapper.parameterMap
 
-        // check user has been created or not
-        if (contextWrapper.user != null) {
+        String username = parameterMap.getFirst(OAuthParameters.USERNAME)
+
+        // check username has been created or not
+        if (contextWrapper.user != null && contextWrapper.user.username == username) {
             return Promise.pure(new ActionResult('success'))
         }
-
-        String username = parameterMap.getFirst(OAuthParameters.USERNAME)
 
         User user = new User(
                 username: username,
