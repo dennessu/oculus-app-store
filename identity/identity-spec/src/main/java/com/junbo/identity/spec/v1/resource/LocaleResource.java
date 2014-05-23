@@ -10,6 +10,7 @@ import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.Locale;
 import com.junbo.identity.spec.v1.option.list.LocaleListOptions;
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions;
+import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
@@ -23,6 +24,7 @@ import javax.ws.rs.core.MediaType;
  */
 @Api(value = "locales")
 @RestResource
+@InProcessCallable
 @Path("/locales")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
