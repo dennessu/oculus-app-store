@@ -12,7 +12,7 @@
     </bean>
 
     <bean id="authlib_apiDefinitionEndpoint"
-          class="com.junbo.oauth.spec.endpoint.proxy.ApiDefinitionEndpointClientProxy" parent="baseClientProxy">
+          class="com.junbo.authorization.spec.resource.proxy.ApiDefinitionResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${authorize.oauth.endpoint}"/>
         <property name="accessTokenProvider" ref="authlib_accessTokenProvider"/>
     </bean>

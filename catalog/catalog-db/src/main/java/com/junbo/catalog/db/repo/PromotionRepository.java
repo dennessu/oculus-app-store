@@ -26,8 +26,8 @@ public class PromotionRepository implements BaseEntityRepository<Promotion> {
     private PromotionDao promotionDao;
 
     @Override
-    public Long create(Promotion promotion) {
-        return promotionDao.create(PromotionMapper.toDBEntity(promotion));
+    public Promotion create(Promotion promotion) {
+        return get(promotionDao.create(PromotionMapper.toDBEntity(promotion)));
     }
 
     @Override
@@ -46,13 +46,13 @@ public class PromotionRepository implements BaseEntityRepository<Promotion> {
     }
 
     @Override
-    public Long update(Promotion promotion) {
+    public Promotion update(Promotion promotion) {
         PromotionEntity dbEntity = promotionDao.get(promotion.getPromotionId());
         if (dbEntity == null) {
             throw AppErrors.INSTANCE.notFound("offer", Utils.encodeId(promotion.getPromotionId())).exception();
         }
         PromotionMapper.fillDBEntity(promotion, dbEntity);
-        return promotionDao.update(dbEntity);
+        return get(promotionDao.update(dbEntity));
     }
 
     @Override

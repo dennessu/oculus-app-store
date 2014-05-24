@@ -20,6 +20,8 @@ public class RatingOffer {
     private List<LinkedEntry> items = new ArrayList<>();
     private List<LinkedEntry> subOffers = new ArrayList<>();
 
+    private Map<String, List<OfferAction>> eventActions = new HashMap<>();
+
     public Long getId() {
         return id;
     }
@@ -58,5 +60,13 @@ public class RatingOffer {
 
     public void setSubOffers(List<LinkedEntry> subOffers) {
         this.subOffers = subOffers;
+    }
+
+    public Map<String, List<OfferAction>> getEventActions() {
+        return eventActions;
+    }
+
+    public void setEventActions(Map<String, List<OfferAction>> eventActions) {
+        this.eventActions = eventActions;
     }
 }

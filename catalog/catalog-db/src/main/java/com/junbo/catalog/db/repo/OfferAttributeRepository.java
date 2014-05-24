@@ -15,9 +15,9 @@ import java.util.List;
  * Offer repository.
  */
 public interface OfferAttributeRepository extends AttributeRepository<OfferAttribute> {
-    Long create(OfferAttribute attribute);
+    OfferAttribute create(OfferAttribute attribute);
     OfferAttribute get(Long attributeId);
     List<OfferAttribute> getAttributes(OfferAttributesGetOptions options);
-    Long update(OfferAttribute attribute);
+    OfferAttribute update(OfferAttribute attribute);
     void delete(Long attributeId);
 }

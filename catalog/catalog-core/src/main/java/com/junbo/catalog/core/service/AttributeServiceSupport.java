@@ -38,8 +38,7 @@ public abstract class AttributeServiceSupport<T extends Attribute> {
 
     public T create(T attribute) {
         validateCreation(attribute);
-        Long attributeId = getRepo().create(attribute);
-        return getRepo().get(attributeId);
+        return getRepo().create(attribute);
     }
 
     public T update(Long attributeId, T attribute) {
@@ -49,9 +48,7 @@ public abstract class AttributeServiceSupport<T extends Attribute> {
         }
         validateUpdate(attribute, oldAttribute);
 
-        getRepo().update(attribute);
-
-        return getRepo().get(attributeId);
+        return getRepo().update(attribute);
     }
 
     public void deleteAttribute(Long attributeId) {

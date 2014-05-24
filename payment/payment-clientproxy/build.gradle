@@ -16,5 +16,6 @@ dependencies {
     processor (libraries.log4j)
 
     compile junboProject(':ewallet-spec')
+    compile junboProject(':identity-spec')
 }
 

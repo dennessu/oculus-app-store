@@ -15,9 +15,9 @@ import java.util.List;
  * Item repository.
  */
 public interface ItemAttributeRepository extends AttributeRepository<ItemAttribute> {
-    Long create(ItemAttribute attribute);
+    ItemAttribute create(ItemAttribute attribute);
     ItemAttribute get(Long attributeId);
     List<ItemAttribute> getAttributes(ItemAttributesGetOptions options);
-    Long update(ItemAttribute attribute);
+    ItemAttribute update(ItemAttribute attribute);
     void delete(Long attributeId);
 }

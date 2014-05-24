@@ -7,7 +7,9 @@ package com.junbo.subscription.core.action;
 
 import com.junbo.payment.spec.model.ChargeInfo;
 import com.junbo.payment.spec.model.PaymentTransaction;
+import com.junbo.rating.spec.model.request.OfferRatingRequest;
 import com.junbo.subscription.clientproxy.PaymentGateway;
+import com.junbo.subscription.clientproxy.RatingGateway;
 import com.junbo.subscription.core.SubscriptionAction;
 import com.junbo.subscription.spec.model.Subscription;
 import org.slf4j.Logger;
@@ -24,10 +26,20 @@ public class ChargeAction implements SubscriptionAction {
     private static final Logger LOGGER = LoggerFactory.getLogger(ChargeAction.class);
 
     @Autowired
+    private RatingGateway ratingGateway;
+
+    @Autowired
     private PaymentGateway paymentGateway;
 
     @Override
     public Subscription execute(Subscription subscription){
+        //Rating
+        OfferRatingRequest request = new OfferRatingRequest();
+        request.setCurrency("USD");
+        //request.setOffers(subscription.getOfferId());
+
+        OfferRatingRequest response = ratingGateway.offerRating(request);
+
         PaymentTransaction paymentTransaction = new PaymentTransaction();
 
         paymentTransaction.setTrackingUuid(UUID.randomUUID());
@@ -46,4 +58,5 @@ public class ChargeAction implements SubscriptionAction {
 
         return subscription;
     }
+
 }

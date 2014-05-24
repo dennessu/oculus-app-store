@@ -70,6 +70,7 @@ class ValidateRegister implements Action {
             if (!VALID_EMAIL_ADDRESS_REGEX.matcher(email).find()) {
                 contextWrapper.errors.add(AppExceptions.INSTANCE.invalidEmail(email).error())
             }
+            contextWrapper.userDefaultEmail = email
         }
 
         String firstName = parameterMap.getFirst(OAuthParameters.FIRST_NAME)
@@ -97,9 +98,7 @@ class ValidateRegister implements Action {
 
         String dobStr = parameterMap.getFirst(OAuthParameters.DOB)
 
-        if (StringUtils.isEmpty(dobStr)) {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.missingDob().error())
-        } else {
+        if (!StringUtils.isEmpty(dobStr)) {
             try {
                 DateFormat dateFormat = new SimpleDateFormat('yyyy-MM-dd', Locale.US)
                 contextWrapper.dob = dateFormat.parse(dobStr)

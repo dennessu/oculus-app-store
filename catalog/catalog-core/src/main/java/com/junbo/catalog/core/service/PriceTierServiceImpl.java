@@ -63,14 +63,12 @@ public class PriceTierServiceImpl implements PriceTierService {
         if (priceTier.getResourceAge() != null) {
             throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
         }
-        Long attributeId = priceTierRepo.create(priceTier);
-        return priceTierRepo.get(attributeId);
+        return priceTierRepo.create(priceTier);
     }
 
     @Override
     public PriceTier update(Long tierId, PriceTier priceTier) {
-        priceTierRepo.update(priceTier);
-        return priceTierRepo.get(tierId);
+        return priceTierRepo.update(priceTier);
     }
 
     @Override

@@ -51,7 +51,7 @@ public class TestPutItem {
 
     @Property(
             priority = Priority.Dailies,
-            features = "CatalogIntegration",
+            features = "Put v1/items/{itemId}",
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
@@ -94,7 +94,7 @@ public class TestPutItem {
 
     @Property(
             priority = Priority.Comprehensive,
-            features = "CatalogIntegration",
+            features = "Put v1/items/{itemId}",
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
@@ -114,53 +114,60 @@ public class TestPutItem {
 
         //Prepare an item
         Item item = itemService.postDefaultItem(CatalogItemType.getRandom());
-        Item itemForPut = item;
-        Long itemId = item.getItemId();
 
         //update itself id
+        Long itemId = item.getItemId();
         item.setItemId(1L);
         verifyExpectedError(itemId, item);
 
         //test rev
+        item = itemService.postDefaultItem(CatalogItemType.getRandom());
         item.setResourceAge(0);
-        verifyExpectedError(itemId, item);
+        verifyExpectedError(item.getItemId(), item);
 
         //test ownerId is null
+        item = itemService.postDefaultItem(CatalogItemType.getRandom());
         item.setOwnerId(null);
-        verifyExpectedError(itemId, item);
+        verifyExpectedError(item.getItemId(), item);
 
         //can't update current revision id
+        item = itemService.postDefaultItem(CatalogItemType.getRandom());
         item.setCurrentRevisionId(0L);
-        verifyExpectedError(itemId, item);
+        verifyExpectedError(item.getItemId(), item);
 
         //test type is invalid enums
+        item = itemService.postDefaultItem(CatalogItemType.getRandom());
         item.setType("invalid type");
-        verifyExpectedError(itemId, item);
+        verifyExpectedError(item.getItemId(), item);
 
         //test defaultOffer is not existed
+        item = itemService.postDefaultItem(CatalogItemType.getRandom());
         item.setDefaultOffer(0L);
-        verifyExpectedError(itemId, item);
+        verifyExpectedError(item.getItemId(), item);
 
         //test genres is not existed
+        item = itemService.postDefaultItem(CatalogItemType.getRandom());
         item.setGenres(genresInvalid);
-        verifyExpectedError(itemId, item);
+        verifyExpectedError(item.getItemId(), item);
 
         //test genres type is category
         OfferAttributeService offerAttributeService = OfferAttributeServiceImpl.instance();
         OfferAttribute offerAttribute = offerAttributeService.postDefaultOfferAttribute();
         genresCategory.add(offerAttribute.getId());
 
+        item = itemService.postDefaultItem(CatalogItemType.getRandom());
         item.setGenres(genresCategory);
-        verifyExpectedError(itemId, item);
+        verifyExpectedError(item.getItemId(), item);
 
         //todo: type should not be updated
+        item = itemService.postDefaultItem(CatalogItemType.getRandom());
         if (item.getType().equalsIgnoreCase(CatalogItemType.DIGITAL.getItemType()) ) {
             item.setType(CatalogItemType.PHYSICAL.getItemType());
-            verifyExpectedError(itemId, item);
+            verifyExpectedError(item.getItemId(), item);
         }
         else {
             item.setType(CatalogItemType.DIGITAL.getItemType());
-            verifyExpectedError(itemId, item);
+            verifyExpectedError(item.getItemId(), item);
         }
 
     }

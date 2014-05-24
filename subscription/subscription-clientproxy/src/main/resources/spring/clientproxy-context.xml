@@ -16,12 +16,14 @@
     <!-- fusion mock (will be removed in the future)-->
     <!--bean id="catalogGateway" class="com.junbo.subscription.clientproxy.impl.CatalogGatewayImpl"/>
     <bean id="entitlementGateway" class="com.junbo.subscription.clientproxy.impl.EntitlementGatewayImpl">
+    <bean id="ratingGateway" class="com.junbo.subscription.clientproxy.impl.RatingGatewayImpl">
     <bean id="paymentGateway" class="com.junbo.subscription.clientproxy.impl.PaymentGatewayImpl"/-->
 
 
     <bean id="catalogGateway" class="com.junbo.subscription.clientproxy.mock.MockCatalogGatewayImpl"/>
     <bean id="entitlementGateway" class="com.junbo.subscription.clientproxy.mock.MockEntitlementGatewayImpl"/>
     <bean id="paymentGateway" class="com.junbo.subscription.clientproxy.mock.MockPaymentGatewayImpl"/>
+    <bean id="ratingGateway" class="com.junbo.subscription.clientproxy.mock.MockRatingGatewayImpl"/>
 
     <bean id="offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.catalog.url}"/>

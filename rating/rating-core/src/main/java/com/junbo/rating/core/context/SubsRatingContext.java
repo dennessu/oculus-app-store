@@ -6,6 +6,9 @@
 
 package com.junbo.rating.core.context;
 
+import com.junbo.rating.spec.error.AppErrors;
+import com.junbo.rating.spec.model.Currency;
+import com.junbo.rating.spec.model.subscription.SubsRatingRequest;
 import com.junbo.rating.spec.model.subscription.SubsRatingType;
 
 import java.math.BigDecimal;
@@ -17,6 +20,18 @@ public class SubsRatingContext extends RatingContext {
     private Long offerId;
     private SubsRatingType type;
     private BigDecimal amount;
+
+    public void fromRequest(SubsRatingRequest request) {
+        Currency currency = Currency.findByCode(request.getCurrency());
+        if (currency == null) {
+            throw AppErrors.INSTANCE.currencyNotExist(request.getCurrency()).exception();
+        }
+
+        super.setCurrency(currency);
+
+        this.offerId = request.getOfferId();
+        this.type = request.getType();
+    }
 
     public Long getOfferId() {
         return offerId;

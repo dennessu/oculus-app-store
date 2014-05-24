@@ -40,4 +40,14 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 400, code = "10007",
             description = "Cannot purchase digital Offer: {0} with quantity of {1}.", field = "quantity")
     AppError incorrectQuantity(String offerId, int quantity);
+
+    @ErrorDef(httpStatusCode = 404, code = "10008",
+            description = "Price is not found in Actions.", field = "action")
+    AppError priceNotFound();
+
+    @ErrorDef(httpStatusCode = 404, code = "10009",
+            description = "Action with type {0} is not found.", field = "action")
+    AppError actionNotFound(String actionType);
+
+
 }

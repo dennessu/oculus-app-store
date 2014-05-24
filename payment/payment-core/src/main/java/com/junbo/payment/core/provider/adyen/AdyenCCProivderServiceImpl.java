@@ -9,6 +9,7 @@ package com.junbo.payment.core.provider.adyen;
 import com.adyen.services.common.Amount;
 import com.adyen.services.payment.*;
 import com.adyen.services.recurring.RecurringDetail;
+import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.util.PromiseFacade;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.common.exception.AppServerExceptions;
@@ -47,8 +48,9 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
             @Override
             public PaymentInstrument call() throws Exception {
                 //TODO: get the billing address country Code and find default currency & minAuthAmount
-                String defaultCurrency = "USD";
-                long minAuthAmount = 100L;
+                String defaultCountry = "US";
+                CurrencyId defaultCurrency = countryResource.getDefaultCurrency(defaultCountry).get();
+                long minAuthAmount = currencyResource.getMinAuthAmount(defaultCurrency).get();
                 Long piId = null;
                 if(request.getId() == null){
                     piId = idGenerator.nextId(request.getUserId());
@@ -57,8 +59,7 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                 PaymentRequest adyenRequest = new PaymentRequest();
                 adyenRequest.setMerchantAccount(getMerchantAccount());
                 adyenRequest.setRecurring(new Recurring(RECURRING, null));
-                //TODO: need calculate amount according to currency ISO, hard code * 100 first
-                adyenRequest.setAmount(new Amount(defaultCurrency, minAuthAmount));
+                adyenRequest.setAmount(new Amount(defaultCurrency.getValue(), minAuthAmount));
                 adyenRequest.setReference(piId.toString());
                 adyenRequest.setShopperEmail(TEMP_EMAIL);
                 adyenRequest.setShopperReference(piId.toString());
@@ -112,9 +113,10 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
             public PaymentTransaction call() throws Exception {
                 ModificationRequest request = new ModificationRequest();
                 request.setMerchantAccount(getMerchantAccount());
-                //TODO: need calculate amount according to currency ISO, hard code * 100 first
-                request.setModificationAmount(new Amount(paymentRequest.getChargeInfo().getCurrency(),
-                        paymentRequest.getChargeInfo().getAmount().longValue() * 100));
+                String currency = paymentRequest.getChargeInfo().getCurrency();
+                request.setModificationAmount(new Amount(currency,
+                        paymentRequest.getChargeInfo().getAmount().longValue()
+                                * currencyResource.getNumberAfterDecimal(currency).get()));
                 request.setOriginalReference(transactionId);
                 ModificationResult result = null;
                 try {

@@ -24,8 +24,8 @@ public class OfferAttributeRepositoryImpl implements OfferAttributeRepository {
     @Autowired
     private OfferAttributeDao attributeDao;
 
-    public Long create(OfferAttribute attribute) {
-        return attributeDao.create(OfferAttributeMapper.toDBEntity(attribute));
+    public OfferAttribute create(OfferAttribute attribute) {
+        return get(attributeDao.create(OfferAttributeMapper.toDBEntity(attribute)));
     }
 
     public OfferAttribute get(Long attributeId) {
@@ -43,10 +43,10 @@ public class OfferAttributeRepositoryImpl implements OfferAttributeRepository {
         return attributes;
     }
 
-    public Long update(OfferAttribute attribute) {
+    public OfferAttribute update(OfferAttribute attribute) {
         OfferAttributeEntity dbEntity = attributeDao.get(attribute.getId());
         OfferAttributeMapper.fillDBEntity(attribute, dbEntity);
-        return attributeDao.update(dbEntity);
+        return get(attributeDao.update(dbEntity));
     }
 
 

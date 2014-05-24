@@ -9,4 +9,5 @@ dependencies {
 
     compile junboProject(':payment-rest')
     compile junboProject(':ewallet-rest')
+    compile junboProject(':identity-rest')
 }

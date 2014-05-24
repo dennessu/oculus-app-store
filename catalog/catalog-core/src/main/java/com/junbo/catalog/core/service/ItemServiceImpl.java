@@ -61,11 +61,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
     public Item createEntity(Item item) {
         validateItemCreation(item);
 
-        Long itemId = itemRepo.create(item);
-        item.setItemId(itemId);
-        itemRepo.update(item);
-
-        return itemRepo.get(itemId);
+        return itemRepo.create(item);
     }
 
     @Override
@@ -75,8 +71,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
             throw AppErrors.INSTANCE.notFound("item", Utils.encodeId(itemId)).exception();
         }
         validateItemUpdate(item, oldItem);
-        itemRepo.update(item);
-        return itemRepo.get(itemId);
+        return itemRepo.update(item);
     }
 
     @Override
@@ -112,8 +107,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
     public ItemRevision createRevision(ItemRevision revision) {
         validateRevisionCreation(revision);
         generateEntitlementDef(revision);
-        Long revisionId = itemRevisionRepo.create(revision);
-        return itemRevisionRepo.get(revisionId);
+        return itemRevisionRepo.create(revision);
     }
 
     @Override

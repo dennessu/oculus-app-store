@@ -6,9 +6,9 @@
 package com.junbo.authorization
 
 import com.junbo.common.error.AppErrorException
-import com.junbo.oauth.spec.endpoint.ApiDefinitionEndpoint
-import com.junbo.oauth.spec.model.ApiDefinition
-import com.junbo.oauth.spec.model.MatrixRow
+import com.junbo.authorization.spec.resource.ApiDefinitionResource
+import com.junbo.authorization.spec.model.ApiDefinition
+import com.junbo.authorization.spec.model.MatrixRow
 import groovy.transform.CompileStatic
 import net.sf.ehcache.Ehcache
 import net.sf.ehcache.Element
@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Required
 @CompileStatic
 class AuthorizeServiceImpl implements AuthorizeService {
 
-    private ApiDefinitionEndpoint apiDefinitionEndpoint
+    private ApiDefinitionResource apiDefinitionEndpoint
 
     private Ehcache apiDefinitionCache
 
@@ -29,7 +29,7 @@ class AuthorizeServiceImpl implements AuthorizeService {
     private Boolean disabled
 
     @Required
-    void setApiDefinitionEndpoint(ApiDefinitionEndpoint apiEndpoint) {
+    void setApiDefinitionEndpoint(ApiDefinitionResource apiEndpoint) {
         this.apiDefinitionEndpoint = apiEndpoint
     }
 

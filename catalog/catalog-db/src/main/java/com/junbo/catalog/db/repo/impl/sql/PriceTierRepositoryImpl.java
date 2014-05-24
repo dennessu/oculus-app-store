@@ -23,9 +23,9 @@ public class PriceTierRepositoryImpl implements PriceTierRepository {
     @Autowired
     private PriceTierDao priceTierDao;
 
-    public Long create(PriceTier priceTier) {
+    public PriceTier create(PriceTier priceTier) {
         PriceTierEntity entity = PriceTierMapper.toDBEntity(priceTier);
-        return priceTierDao.create(entity);
+        return get(priceTierDao.create(entity));
     }
 
     public PriceTier get(Long id) {
@@ -43,10 +43,10 @@ public class PriceTierRepositoryImpl implements PriceTierRepository {
         return priceTiers;
     }
 
-    public Long update(PriceTier priceTier) {
+    public PriceTier update(PriceTier priceTier) {
         PriceTierEntity dbEntity = priceTierDao.get(priceTier.getId());
         PriceTierMapper.fillDBEntity(priceTier, dbEntity);
-        return priceTierDao.update(dbEntity);
+        return get(priceTierDao.update(dbEntity));
     }
 
     public void delete(Long tierId) {

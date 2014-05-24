@@ -26,8 +26,8 @@ public class ItemRevisionRepositoryImpl implements ItemRevisionRepository {
     @Autowired
     private ItemRevisionDao itemRevisionDao;
 
-    public Long create(ItemRevision itemRevision) {
-        return itemRevisionDao.create(ItemRevisionMapper.toDBEntity(itemRevision));
+    public ItemRevision create(ItemRevision itemRevision) {
+        return get(itemRevisionDao.create(ItemRevisionMapper.toDBEntity(itemRevision)));
     }
 
     public ItemRevision get(Long revisionId) {
@@ -73,10 +73,10 @@ public class ItemRevisionRepositoryImpl implements ItemRevisionRepository {
     }
 
     @Override
-    public Long update(ItemRevision revision) {
+    public ItemRevision update(ItemRevision revision) {
         ItemRevisionEntity dbEntity = itemRevisionDao.get(revision.getRevisionId());
         ItemRevisionMapper.fillDBEntity(revision, dbEntity);
-        return itemRevisionDao.update(dbEntity);
+        return get(itemRevisionDao.update(dbEntity));
     }
 
     @Override

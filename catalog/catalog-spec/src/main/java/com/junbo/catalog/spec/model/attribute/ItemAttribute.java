@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.spec.model.attribute;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.BaseModel;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
@@ -23,6 +24,7 @@ public class ItemAttribute extends BaseModel implements Attribute, Identifiable<
     @ItemAttributeId
     @JsonProperty("self")
     @ApiModelProperty(position = 1, required = true, value = "Attribute id")
+    @JSONField(serialize = false, deserialize = false)
     private Long id;
     @NotNull
     @ApiModelProperty(position = 2, required = true, value = "Attribute type", allowableValues = "GENRE")

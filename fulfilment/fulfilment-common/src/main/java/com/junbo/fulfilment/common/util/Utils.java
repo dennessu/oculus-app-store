@@ -8,32 +8,20 @@ package com.junbo.fulfilment.common.util;
 import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.alibaba.fastjson.serializer.PropertyFilter;
 import com.alibaba.fastjson.serializer.SerializeWriter;
-import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.impl.DefaultMapperFactory;
-import ma.glasnost.orika.metadata.ClassMap;
+import org.dozer.DozerBeanMapper;
+import org.dozer.Mapper;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Utils.
  */
 public final class Utils {
     // thread safe
-    private static List<ClassMap<?, ?>> classMapList = new ArrayList<>();
-    private static MapperFacade mapper = new DefaultMapperFactory.Builder().build().getMapperFacade();
-
-    public static void registerClassMap(ClassMap<?, ?>... classMaps) {
-        for (ClassMap<?, ?> classMap : classMaps) {
-            classMapList.add(classMap);
-        }
-
-        // rebuild the mapper
-        DefaultMapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
-        for (ClassMap<?, ?> classMap : classMapList) {
-            mapperFactory.registerClassMap(classMap);
-        }
-        mapper = mapperFactory.getMapperFacade();
-    }
+    private static Mapper mapper = new DozerBeanMapper();
 
     private Utils() {
 

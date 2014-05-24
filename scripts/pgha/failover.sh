@@ -14,17 +14,17 @@ source $DEPLOYMENT_PATH/common.sh
 echo "stop primary pgbouncer proxy"
 forceKill $PGBOUNCER_PORT
 
-echo "gracefully shutdown current master database..."
+echo "gracefully shutdown master database..."
 $PGBIN_PATH/pg_ctl stop -m fast -D $MASTER_DATA_PATH
 ENDSSH
 
 echo "copy unarchived log files..."
 rsync -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_DATA_PATH/pg_xlog/* $SLAVE_ARCHIVE_PATH
 
-echo "promote current slave database as new master..."
+echo "promote slave database to take traffic..."
 touch $PROMOTE_TRIGGER_FILE
 
-echo "configure recovery.conf for old master..."
+echo "configure recovery.conf for master..."
 ssh $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
 
 cat > $MASTER_DATA_PATH/recovery.conf <<EOF
@@ -35,9 +35,9 @@ primary_conninfo = 'user=$PGUSER host=$SLAVE_HOST port=$SLAVE_DB_PORT sslmode=pr
 trigger_file = '$PROMOTE_TRIGGER_FILE'
 EOF
 
-echo "start old master database..."
+echo "start master database..."
 $PGBIN_PATH/pg_ctl -D $MASTER_DATA_PATH start
 
-while ! echo exit | nc $MASTER_HOST $MASTER_DB_PORT; do sleep 1 && echo "waiting for old master database..."; done
-echo "old master database started successfully!"
+while ! echo exit | nc $MASTER_HOST $MASTER_DB_PORT; do sleep 1 && echo "waiting for master database..."; done
+echo "master database started successfully!"
 ENDSSH

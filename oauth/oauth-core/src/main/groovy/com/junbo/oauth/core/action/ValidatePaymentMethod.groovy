@@ -41,15 +41,18 @@ class ValidatePaymentMethod implements Action {
         def parameterMap = contextWrapper.parameterMap
 
         validateParameter(contextWrapper, OAuthParameters.ADDRESS1, null)
-        validateParameter(contextWrapper, OAuthParameters.CITY, null)
-        validateParameter(contextWrapper, OAuthParameters.SUB_COUNTRY, null)
+        //validateParameter(contextWrapper, OAuthParameters.CITY, null)
+        //validateParameter(contextWrapper, OAuthParameters.SUB_COUNTRY, null)
         validateParameter(contextWrapper, OAuthParameters.COUNTRY, null)
-        validateParameter(contextWrapper, OAuthParameters.ZIP_CODE, null)
+        //validateParameter(contextWrapper, OAuthParameters.ZIP_CODE, null)
 
         validateParameter(contextWrapper, OAuthParameters.CARD_NUMBER, CARD_NUMBER_PATTERN)
         validateParameter(contextWrapper, OAuthParameters.NAME_ON_CARD, null)
         validateParameter(contextWrapper, OAuthParameters.EXPIRATION_DATE, EXPIRATION_DATE_PATTERN)
 
+        if (!contextWrapper.errors.isEmpty()) {
+            return Promise.pure(new ActionResult('error'))
+        }
 
         String countryName = parameterMap.getFirst(OAuthParameters.COUNTRY)
 
@@ -61,7 +64,7 @@ class ValidatePaymentMethod implements Action {
                 return Promise.pure(new ActionResult('error'))
             }
 
-            String subCountry = parameterMap.getFirst(OAuthParameters.SUB_COUNTRY)
+            // String subCountry = parameterMap.getFirst(OAuthParameters.SUB_COUNTRY)
 
             // todo: enable this validation when country resource setup properly, now we just disable it
             /*
@@ -84,10 +87,10 @@ class ValidatePaymentMethod implements Action {
         String parameter = parameterMap.getFirst(parameterName)
 
         if (StringUtils.isEmpty(parameter)) {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.missingParameter(parameter).error())
+            contextWrapper.errors.add(AppExceptions.INSTANCE.missingParameter(parameterName).error())
         }
 
-        if (pattern != null) {
+        if (pattern != null && parameter != null) {
             if (!pattern.matcher(parameter).find()) {
                 contextWrapper.errors.add(AppExceptions.INSTANCE.invalidParameter(parameterName).error())
             }

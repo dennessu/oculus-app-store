@@ -31,7 +31,7 @@ public class TestPutItemAttribute extends BaseTestClass {
 
     @Property(
             priority = Priority.Dailies,
-            features = "CatalogIntegration",
+            features = "Put v1/item-attributes/{itemAttributeId}",
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
@@ -67,7 +67,7 @@ public class TestPutItemAttribute extends BaseTestClass {
 
     @Property(
             priority = Priority.Comprehensive,
-            features = "CatalogIntegration",
+            features = "Put v1/item-attributes/{itemAttributeId}",
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,

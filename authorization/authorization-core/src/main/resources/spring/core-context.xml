@@ -26,4 +26,8 @@
         </property>
     </bean>
 
+    <bean id="apiService" class="com.junbo.authorization.core.service.ApiServiceImpl">
+        <property name="apiDefinitionRepository" ref="apiDefinitionRepository"/>
+    </bean>
+
 </beans>

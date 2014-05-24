@@ -13,8 +13,8 @@ import com.junbo.catalog.spec.model.common.BaseRevisionModel;
  * @param <T> the entity type.
  */
 public interface BaseRevisionRepository<T extends BaseRevisionModel>  {
-    Long create(T revision);
+    T create(T revision);
     T get(Long revisionId);
-    Long update(T revision);
+    T update(T revision);
     void delete(Long entityId);
 }

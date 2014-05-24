@@ -16,6 +16,7 @@ class EmailVerifyRequiredView extends AbstractView {
         def contextWrapper = new ActionContextWrapper(context)
         def modelMap = [
                 'username': contextWrapper.user.username,
+                'email': contextWrapper.userDefaultEmail,
                 'locale': contextWrapper.viewLocale
         ]
 

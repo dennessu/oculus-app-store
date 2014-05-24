@@ -28,6 +28,7 @@
             <wf:action ref="validateLoginState"/>
             <wf:transition on="loginRequired" to="REDIRECT_TO_LOGIN"/>
             <wf:transition on="loginRequiredError" to="LOGIN_REQUIRED"/>
+            <wf:transition on="register" to="REDIRECT_TO_REGISTER" />
             <wf:transition on="*" to="CHECK_CONSENT"/>
         </wf:action-state>
 
@@ -35,8 +36,14 @@
             <wf:on-render>
                 <wf:action ref="redirectToLogin"/>
             </wf:on-render>
-            <wf:transition on="register" to="REGISTER_VIEW"/>
             <wf:transition on="*" to="LOGIN_VIEW"/>
+        </wf:view-state>
+
+        <wf:view-state id="REDIRECT_TO_REGISTER">
+            <wf:on-render>
+                <wf:action ref="redirectToRegister"/>
+            </wf:on-render>
+            <wf:transition on="*" to="REGISTER_VIEW"/>
         </wf:view-state>
 
         <wf:view-state id="LOGIN_VIEW">
@@ -398,6 +405,7 @@
 
     <bean id="paymentMethodView" class="com.junbo.oauth.core.view.PaymentMethodView">
         <property name="btCSE" value="${payment.provider.braintree.CSE}" />
+        <property name="parentControlAge" value="18" />
     </bean>
 
     <bean id="validatePaymentMethod" class="com.junbo.oauth.core.action.ValidatePaymentMethod">

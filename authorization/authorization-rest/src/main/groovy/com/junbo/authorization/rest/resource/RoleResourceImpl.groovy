@@ -23,7 +23,6 @@ import com.junbo.common.rs.Created201Marker
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-import org.springframework.context.annotation.Scope
 import org.springframework.transaction.annotation.Transactional
 
 /**
@@ -91,7 +90,7 @@ class RoleResourceImpl implements RoleResource {
         return roleValidator.validateForGet(roleId).then {
             return roleRepository.get(roleId).then { Role role ->
                 if (role == null) {
-                    throw AppErrors.INSTANCE.roleNotFound(roleId).exception()
+                    throw AppErrors.INSTANCE.resourceNotFound('role', roleId.toString()).exception()
                 }
 
                 return Promise.pure(roleFilter.filterForGet(role))
@@ -103,7 +102,7 @@ class RoleResourceImpl implements RoleResource {
     Promise<Role> patch(RoleId roleId, Role role) {
         return get(roleId).then { Role oldRole ->
             if (oldRole == null) {
-                throw AppErrors.INSTANCE.roleNotFound(roleId).exception()
+                throw AppErrors.INSTANCE.resourceNotFound('role', roleId.toString()).exception()
             }
 
             Role filtered = roleFilter.filterForPatch(role, oldRole)
@@ -120,7 +119,7 @@ class RoleResourceImpl implements RoleResource {
     Promise<Role> put(RoleId roleId, Role role) {
         return get(roleId).then { Role oldRole ->
             if (oldRole == null) {
-                throw AppErrors.INSTANCE.roleNotFound(roleId).exception()
+                throw AppErrors.INSTANCE.resourceNotFound('role', roleId.toString()).exception()
             }
 
             Role filtered = roleFilter.filterForPut(role, oldRole)

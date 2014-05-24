@@ -7,6 +7,7 @@
 package com.junbo.subscription.core.event;
 
 import com.junbo.subscription.core.SubscriptionEvent;
+import com.junbo.subscription.core.action.ChargeAction;
 import com.junbo.subscription.core.action.FullfilmentAction;
 import com.junbo.subscription.db.entity.SubscriptionStatus;
 import com.junbo.subscription.db.repository.SubscriptionRepository;
@@ -21,6 +22,8 @@ public class SubscriptionCreateEvent implements SubscriptionEvent {
     private SubscriptionRepository subscriptionRepository;
 
     @Autowired
+    private ChargeAction chargeAction;
+    @Autowired
     private FullfilmentAction fullfilmentAction;
 
     @Override
@@ -28,6 +31,7 @@ public class SubscriptionCreateEvent implements SubscriptionEvent {
         subscription.setStatus(SubscriptionStatus.CREATED.toString());
         subscription = subscriptionRepository.insert(subscription);
 
+        chargeAction.execute(subscription);
         fullfilmentAction.execute(subscription);
 
         subscription.setStatus(SubscriptionStatus.ENABLED.toString());

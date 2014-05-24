@@ -26,7 +26,6 @@ import com.junbo.common.rs.Created201Marker
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-import org.springframework.context.annotation.Scope
 import org.springframework.transaction.annotation.Transactional
 
 /**
@@ -100,7 +99,7 @@ class RoleAssignmentResourceImpl implements RoleAssignmentResource {
     Promise<Role> get(RoleAssignmentId roleAssignmentId) {
         return roleAssignmentValidator.validateForGet(roleAssignmentId).then { RoleAssignment roleAssignment ->
             if (roleAssignment == null) {
-                throw AppErrors.INSTANCE.roleAssignmentNotFound(roleAssignmentId).exception()
+                throw AppErrors.INSTANCE.resourceNotFound('role-assignment', roleAssignmentId.toString()).exception()
             }
 
             return Promise.pure(roleAssignmentFilter.filterForGet(roleAssignment))
@@ -111,7 +110,7 @@ class RoleAssignmentResourceImpl implements RoleAssignmentResource {
     Promise<Void> delete(RoleAssignmentId roleAssignmentId) {
         return get(roleAssignmentId).then { RoleAssignment roleAssignment ->
             if (roleAssignment == null) {
-                throw AppErrors.INSTANCE.roleAssignmentNotFound(roleAssignmentId).exception()
+                throw AppErrors.INSTANCE.resourceNotFound('role-assignment', roleAssignmentId.toString()).exception()
             }
 
             return roleAssignmentValidator.validateForDelete(roleAssignment).then {

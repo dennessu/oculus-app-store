@@ -8,8 +8,6 @@ package com.junbo.authorization.spec.error;
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.ErrorDef;
 import com.junbo.common.error.ErrorProxy;
-import com.junbo.common.id.RoleAssignmentId;
-import com.junbo.common.id.RoleId;
 
 /**
  * Interface for AppError.
@@ -49,12 +47,28 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 409, code = "2000013", description = "Param invalid due to {0}.", field = "{0}")
     AppError parameterInvalid(String message);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000035", description = "Role {0} not found.", field = "{0}")
-    AppError roleNotFound(RoleId roleId);
-
-    @ErrorDef(httpStatusCode = 409, code = "2000036", description = "RoleAssignment {0} not found.", field = "{0}")
-    AppError roleAssignmentNotFound(RoleAssignmentId roleAssignmentId);
+    @ErrorDef(httpStatusCode = 409, code = "2000035", description = "{0} {1} not found.", field = "{0}")
+    AppError resourceNotFound(String resourceName, String id);
 
     @ErrorDef(httpStatusCode = 403, code = "2000037", description = "The operation is forbidden.")
     AppError forbidden();
+
+    @ErrorDef(httpStatusCode = 409, code = "2000038", description = "The {0} name {1} already exists", field = "name")
+    AppError duplicateEntityName(String entityName, String value);
+
+    @ErrorDef(httpStatusCode = 400, code = "2000039", description = "The revision is not provided", field = "revision")
+    AppError missingRevision();
+
+    @ErrorDef(httpStatusCode = 400, code = "2000040", description = "The input name and entity name do not match")
+    AppError mismatchEntityName();
+
+    @ErrorDef(httpStatusCode = 409, code = "2000041",
+            description = "The {0} is updated by someone else, please re-get the {0} and try update again",
+            field = "{0}")
+    AppError updateConflict(String resourceName);
+
+    @ErrorDef(httpStatusCode = 403, code = "2000042",
+            description = "The access token does not have sufficient scope to make the request",
+            field = "access_token")
+    AppError insufficientScope();
 }

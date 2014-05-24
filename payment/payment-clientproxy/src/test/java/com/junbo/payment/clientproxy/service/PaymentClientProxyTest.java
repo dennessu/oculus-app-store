@@ -1,5 +1,6 @@
 package com.junbo.payment.clientproxy.service;
 
+import com.junbo.common.enumid.CountryId;
 import com.junbo.common.id.PIType;
 import com.junbo.common.id.PaymentId;
 import com.junbo.common.id.PaymentInstrumentId;
@@ -7,7 +8,12 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.model.Results;
 import com.junbo.ewallet.spec.model.CreditRequest;
 import com.junbo.ewallet.spec.resource.WalletResource;
+import com.junbo.identity.spec.v1.model.*;
+import com.junbo.identity.spec.v1.model.Address;
+import com.junbo.identity.spec.v1.resource.UserResource;
+import com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy;
 import com.junbo.payment.clientproxy.BaseTest;
+import com.junbo.payment.clientproxy.PersonalInfoFacade;
 import com.junbo.payment.spec.enums.PaymentEventType;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.*;
@@ -29,6 +35,10 @@ public class PaymentClientProxyTest extends BaseTest {
     private PaymentTransactionResourceClientProxy paymentClient;
     @Autowired
     private WalletResource walletClient;
+    @Autowired
+    private PersonalInfoFacade personalInfoFacade;
+    @Autowired
+    private UserResource userClient;
 
     @Test(enabled = false)
     public void addPIAndUpdatePI() throws ExecutionException, InterruptedException {
@@ -178,6 +188,15 @@ public class PaymentClientProxyTest extends BaseTest {
     }
 
     private PaymentInstrument getPaymentInstrument() {
+        User user = new User();
+        user.setUsername("utTest" + getLongId());
+        user = userClient.create(user).get();
+        final Long userId = user.getId().getValue();
+        com.junbo.identity.spec.v1.model.Address address = new Address();
+        address.setCountryId(new CountryId("US"));
+        address.setStreet1("1st street");
+        address.setPostalCode("12345");
+        final Long addressId = personalInfoFacade.createBillingAddress(userId, address).get().getValue();
         return new PaymentInstrument(){
                 {
                     setAccountName("ut");
@@ -185,9 +204,9 @@ public class PaymentClientProxyTest extends BaseTest {
                     setIsValidated(false);
                     setType(0L);
                     setTrackingUuid(generateUUID());
-                    setUserId(getLongId());
+                    setUserId(userId);
                     setLabel("my first card");
-                    setBillingAddressId(123L);
+                    setBillingAddressId(addressId);
                     setTypeSpecificDetails(new TypeSpecificDetails() {
                         {
                             setExpireDate("2025-12");

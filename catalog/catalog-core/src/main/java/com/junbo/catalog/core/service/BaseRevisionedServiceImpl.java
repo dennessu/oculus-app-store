@@ -41,8 +41,7 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
     @Override
     public E createEntity(E entity) {
         // TODO: revisions
-        Long entityId = getEntityRepo().create(entity);
-        return getEntityRepo().get(entityId);
+        return getEntityRepo().create(entity);
     }
 
     @Override
@@ -60,8 +59,7 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
                     .fieldNotMatch("rev", entity.getResourceAge(), existingEntity.getResourceAge()).exception();
         }
 
-        getEntityRepo().update(entity);
-        return getEntityRepo().get(entityId);
+        return getEntityRepo().update(entity);
     }
 
     @Override

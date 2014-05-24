@@ -61,8 +61,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     @Override
     public Offer createEntity(Offer offer) {
         validateOfferCreation(offer);
-        Long offerId = offerRepo.create(offer);
-        return offerRepo.get(offerId);
+        return offerRepo.create(offer);
     }
 
     @Override
@@ -72,8 +71,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             throw AppErrors.INSTANCE.notFound("offer", Utils.encodeId(offerId)).exception();
         }
         validateOfferUpdate(offer, oldOffer);
-        offerRepo.update(offer);
-        return offerRepo.get(offerId);
+        return offerRepo.update(offer);
     }
 
     @Override
@@ -103,8 +101,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     public OfferRevision createRevision(OfferRevision revision) {
         validateRevisionCreation(revision);
         generateEventActions(revision);
-        Long revisionId = offerRevisionRepo.create(revision);
-        return offerRevisionRepo.get(revisionId);
+        return offerRevisionRepo.create(revision);
     }
 
     @Override
@@ -388,7 +385,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
                     errors.add(AppErrors.INSTANCE.fieldNotCorrect("items",
                             "Quantity should be greater than 0 for item " + Utils.encodeId(itemEntry.getItemId())));
                 } else if (itemEntry.getQuantity() > 1) {
-                    if (!(ItemType.STORED_VALUE.is(item.getType()) || ItemType.PHYSICAL.is(item.getType()))) {
+                    if (!(ItemType.VIRTUAL.is(item.getType()) || ItemType.PHYSICAL.is(item.getType()))) {
                         errors.add(AppErrors.INSTANCE.fieldNotCorrect("items",
                                 "'quantity' should be 1 for " + item.getType()
                                         + " item " + Utils.encodeId(itemEntry.getItemId())));

@@ -8,14 +8,15 @@ package com.junbo.rating.core.service;
 
 import com.junbo.rating.core.RatingService;
 import com.junbo.rating.core.context.SubsRatingContext;
+import com.junbo.rating.core.processor.ProcessorRegister;
 
 /**
  * Subscription Rating Service.
  */
 
-public class SubsRatingServiceImpl implements RatingService<SubsRatingContext> {
+public class SubsRatingService implements RatingService<SubsRatingContext> {
     @Override
     public void rate(SubsRatingContext context) {
-
+        ProcessorRegister.doProcess(context);
     }
 }
