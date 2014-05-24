@@ -12,8 +12,6 @@ import com.junbo.subscription.spec.model.Subscription;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
 
@@ -31,7 +29,6 @@ public interface SubscriptionResource {
 
     @GET
     @Path("/{subscriptionId}")
-    Promise<Subscription> getSubscriptionById(@Context HttpHeaders httpHeaders,
-                                                 @PathParam("subscriptionId") SubscriptionId subscriptionId);
+    Promise<Subscription> getSubscriptionById(@PathParam("subscriptionId") SubscriptionId subscriptionId);
 
 }

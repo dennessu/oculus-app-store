@@ -84,4 +84,5 @@
         </property>
     </bean>
 
+    <bean id="tokenInfoParserFilter" class="com.junbo.authorization.TokenInfoParserFilter"/>
 </beans>

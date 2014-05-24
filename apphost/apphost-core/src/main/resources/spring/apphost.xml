@@ -25,6 +25,7 @@
         </property>
     </bean>
 
+    <!-- These are deprecated. Do not use them. -->
     <bean id="javax.ws.rs.core.UriInfo"
           class="javax.ws.rs.core.UriInfo" scope="hk2"/>
 

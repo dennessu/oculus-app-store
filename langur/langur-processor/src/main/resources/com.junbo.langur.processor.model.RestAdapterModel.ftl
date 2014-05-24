@@ -6,6 +6,8 @@ import com.junbo.langur.core.client.ClientProxyFactory;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.langur.core.filter.AfterInvocationFilter;
 import com.junbo.langur.core.routing.Router;
+import com.junbo.langur.core.context.JunboHttpContextScopeListener;
+import java.util.List;
 
 @org.springframework.stereotype.Component
 @org.springframework.context.annotation.Scope("prototype")
@@ -29,6 +31,9 @@ public class ${className} extends com.junbo.langur.core.adapter.AbstractRestAdap
     @org.springframework.beans.factory.annotation.Autowired(required = false)
     @org.springframework.beans.factory.annotation.Qualifier("defaultAfterInvocationFilter")
     private AfterInvocationFilter __afterInvocationFilter;
+
+    @org.springframework.beans.factory.annotation.Autowired
+    protected List<JunboHttpContextScopeListener> __junboHttpContextScopeListeners;
 
     public ${adapteeType} getAdaptee() {
         return __adaptee;

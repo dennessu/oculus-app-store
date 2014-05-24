@@ -5,9 +5,8 @@
  */
 package com.junbo.order.spec.model;
 
+import com.junbo.langur.core.context.JunboHttpContext;
 import org.springframework.util.CollectionUtils;
-
-import javax.ws.rs.core.MultivaluedMap;
 
 /**
  * Created by chriszhu on 2/7/14.
@@ -27,13 +26,14 @@ public class ApiContext {
     private String userIp;
     private Boolean asyncCharge;
 
-    public ApiContext(MultivaluedMap<String, String> httpHeaders) {
-        if (!CollectionUtils.isEmpty(httpHeaders.get(HEADER_USER_IP))) {
-            setUserIp(httpHeaders.get(HEADER_USER_IP).get(0));
+    public ApiContext() {
+
+        if (!CollectionUtils.isEmpty(JunboHttpContext.getRequestHeaders().get(HEADER_USER_IP))) {
+            setUserIp(JunboHttpContext.getRequestHeaders().getFirst(HEADER_USER_IP));
         }
 
-        if (!CollectionUtils.isEmpty(httpHeaders.get(QA_HEADER_ASYNC_CHARGE))) {
-            asyncCharge = Boolean.valueOf(httpHeaders.get(QA_HEADER_ASYNC_CHARGE).get(0));
+        if (!CollectionUtils.isEmpty(JunboHttpContext.getRequestHeaders().get(QA_HEADER_ASYNC_CHARGE))) {
+            asyncCharge = Boolean.valueOf(JunboHttpContext.getRequestHeaders().getFirst(QA_HEADER_ASYNC_CHARGE));
         }
     }
 

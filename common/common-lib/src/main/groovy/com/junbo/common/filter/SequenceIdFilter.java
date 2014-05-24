@@ -5,7 +5,6 @@
  */
 package com.junbo.common.filter;
 
-import com.junbo.common.util.Context;
 import org.slf4j.MDC;
 
 import javax.annotation.Priority;
@@ -21,25 +20,27 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Priority(Integer.MIN_VALUE)
 public class SequenceIdFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
+    public static final String X_REQUEST_ID = "X-Request-Id";
+
     private final AtomicInteger sequenceId = new AtomicInteger(new Random().nextInt());
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
 
-        String requestId = requestContext.getHeaders().getFirst(Context.X_REQUEST_ID);
+        String requestId = requestContext.getHeaders().getFirst(X_REQUEST_ID);
 
         if (requestId == null) {
             requestId = Integer.toHexString(sequenceId.getAndIncrement());
-            requestContext.getHeaders().putSingle(Context.X_REQUEST_ID, requestId);
+            requestContext.getHeaders().putSingle(X_REQUEST_ID, requestId);
         }
 
-        MDC.put(Context.X_REQUEST_ID, requestId);
+        MDC.put(X_REQUEST_ID, requestId);
     }
 
     @Override
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
 
-        String requestId = requestContext.getHeaders().getFirst(Context.X_REQUEST_ID);
-        responseContext.getHeaders().putSingle(Context.X_REQUEST_ID, requestId);
+        String requestId = requestContext.getHeaders().getFirst(X_REQUEST_ID);
+        responseContext.getHeaders().putSingle(X_REQUEST_ID, requestId);
     }
 }

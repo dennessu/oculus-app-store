@@ -5,7 +5,7 @@
  */
 package com.junbo.oauth.api.endpoint
 
-import com.junbo.common.util.IpUtil
+import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.oauth.core.context.ActionContextWrapper
@@ -14,7 +14,6 @@ import com.junbo.oauth.core.util.ResponseUtil
 import com.junbo.oauth.spec.endpoint.AuthorizeEndpoint
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
-import org.glassfish.grizzly.http.server.Request
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
@@ -64,15 +63,14 @@ class AuthorizeEndpointImpl implements AuthorizeEndpoint {
      * @return The raw javax.ws.rs response (mostly http response with response code of 302 Found)
      */
     @Override
-    Promise<Response> authorize(UriInfo uriInfo, HttpHeaders httpHeaders, ContainerRequestContext request,
-                                Request grizzlyRequest) {
+    Promise<Response> authorize(UriInfo uriInfo, HttpHeaders httpHeaders, ContainerRequestContext request) {
         // Prepare the requestScope.
         Map<String, Object> requestScope = new HashMap<>()
         requestScope[ActionContextWrapper.REQUEST] = request
         requestScope[ActionContextWrapper.PARAMETER_MAP] = uriInfo.queryParameters
         requestScope[ActionContextWrapper.HEADER_MAP] = httpHeaders.requestHeaders
         requestScope[ActionContextWrapper.COOKIE_MAP] = httpHeaders.cookies
-        requestScope[ActionContextWrapper.REMOTE_ADDRESS] = IpUtil.getClientIpFromRequest(grizzlyRequest)
+        requestScope[ActionContextWrapper.REMOTE_ADDRESS] = JunboHttpContext.requestIpAddress
 
         // Parse the conversation id and event.
         String conversationId = uriInfo.queryParameters.getFirst(OAuthParameters.CONVERSATION_ID)
@@ -97,13 +95,13 @@ class AuthorizeEndpointImpl implements AuthorizeEndpoint {
      */
     @Override
     Promise<Response> postAuthorize(HttpHeaders httpHeaders, MultivaluedMap<String, String> formParams,
-                                    ContainerRequestContext request, Request grizzlyRequest) {
+                                    ContainerRequestContext request) {
         // Prepare the requestScope.
         Map<String, Object> requestScope = new HashMap<>()
         requestScope[ActionContextWrapper.REQUEST] = request
         requestScope[ActionContextWrapper.PARAMETER_MAP] = formParams
         requestScope[ActionContextWrapper.HEADER_MAP] = httpHeaders.requestHeaders
-        requestScope[ActionContextWrapper.REMOTE_ADDRESS] = IpUtil.getClientIpFromRequest(grizzlyRequest)
+        requestScope[ActionContextWrapper.REMOTE_ADDRESS] = JunboHttpContext.requestIpAddress
 
         // Parse the conversation id and event.
         String conversationId = formParams.getFirst(OAuthParameters.CONVERSATION_ID)

@@ -10,6 +10,7 @@ import com.junbo.common.util.Context;
 import com.junbo.common.util.Utils;
 import com.junbo.configuration.topo.DataCenters;
 import com.junbo.configuration.topo.Topology;
+import com.junbo.langur.core.context.JunboHttpContext;
 import com.junbo.langur.core.routing.Router;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,12 +47,12 @@ public class RouterImpl implements Router {
     @Override
     public String getTargetUrl(Class<?> resourceClass, Object[] routingParams, boolean fallbackToAnyLocal) {
 
-        DataAccessPolicy policy = DataAccessPolicies.instance().getHttpDataAccessPolicy(Context.get().getHttpMethod(), resourceClass);
+        DataAccessPolicy policy = DataAccessPolicies.instance().getHttpDataAccessPolicy(JunboHttpContext.getRequestMethod(), resourceClass);
         if (policy == null) {
             policy = defaultPolicy;
         }
         if (logger.isDebugEnabled()) {
-            logger.debug("Setting effective dataAccessPolicy in call. url: {}, policy: {}", Context.get().getRequestContext().getUriInfo().getRequestUri(), policy);
+            logger.debug("Setting effective dataAccessPolicy in call. url: {}, policy: {}", JunboHttpContext.getRequestUri(), policy);
         }
         Context.get().setDataAccessPolicy(policy);
 

@@ -36,8 +36,8 @@
     <bean id="personalInfoFacade" class="com.junbo.payment.clientproxy.impl.PersonalInfoFacadeImpl">
         <property name="piiClient" ref="piiClient"></property>
     </bean>
-    <bean id="countryService" class="com.junbo.payment.clientproxy.impl.CountryServiceFacadeImpl"/>
-    <bean id="currencyService" class="com.junbo.payment.clientproxy.impl.CurrencyServiceFacadeImpl"/>
+    <bean id="countryServiceFacade" class="com.junbo.payment.clientproxy.impl.CountryServiceFacadeImpl"/>
+    <bean id="currencyServiceFacade" class="com.junbo.payment.clientproxy.impl.CurrencyServiceFacadeImpl"/>
     <bean id="mockPersonalInfoClientProxy" class="com.junbo.payment.clientproxy.MockPersonalInfoClientProxy"/>
 
 </beans>

@@ -49,6 +49,17 @@ class AutowiredInjectResolver implements InjectionResolver<Autowired> {
             return ctx.getBean(beanName, bt)
         }
 
+        // check if it wants to autowire a collection of beans of the given type
+        if (Collection.isAssignableFrom(bt)) {
+            if (beanType instanceof ParameterizedType) {
+                ParameterizedType pt = (ParameterizedType) beanType
+                bt = (Class<?>) pt.actualTypeArguments[0]
+
+                Map<String, ?> beans = ctx.getBeansOfType(bt, true, false)
+                return new ArrayList(beans.values())
+            }
+        }
+
         Map<String, ?> beans = ctx.getBeansOfType(bt, true, false)
 
         if (beans == null || beans.size() != 1) {

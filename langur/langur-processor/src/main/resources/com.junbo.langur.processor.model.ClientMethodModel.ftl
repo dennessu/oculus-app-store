@@ -15,12 +15,9 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
     __requestBuilder.addHeader("Content-Type", "${contentType}");
     [/#if]
 
-    // pass down the x-request-id if not specified in the request.
-    if (!__headers.containsKey(com.junbo.common.util.Context.X_REQUEST_ID)) {
-        String __requestId = com.junbo.common.util.Context.get().getRequestId();
-        if (__requestId != null) {
-            __requestBuilder.addHeader(com.junbo.common.util.Context.X_REQUEST_ID, __requestId);
-        }
+    String __requestId = org.slf4j.MDC.get("X-Request-Id");
+    if (__requestId != null) {
+        __requestBuilder.addHeader("X-Request-Id", __requestId);
     }
 
     for (java.util.Map.Entry<String, java.util.List<String>> entry : __headers.entrySet()) {
@@ -55,7 +52,7 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
         com.junbo.langur.core.context.JunboHttpContext.JunboHttpContextData __httpContextData =
             __createJunboHttpContextData(__request);
 
-        return com.junbo.langur.core.context.JunboHttpContextScope.with(__httpContextData, new Promise.Func0<Promise<${returnType}>>() {
+        return com.junbo.langur.core.context.JunboHttpContextScope.with(__httpContextData, __junboHttpContextScopeListeners, new Promise.Func0<Promise<${returnType}>>() {
             @Override
             public Promise<${returnType}> apply() {
                 return __service.${methodName}([#list parameters as parameter]${parameter.paramName}[#if parameter_has_next], [/#if][/#list]);

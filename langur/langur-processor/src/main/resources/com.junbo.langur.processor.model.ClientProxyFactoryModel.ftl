@@ -8,6 +8,8 @@ import com.junbo.langur.core.client.*;
 import com.ning.http.client.AsyncHttpClient;
 
 import java.util.concurrent.Executor;
+import com.junbo.langur.core.context.JunboHttpContextScopeListener;
+import java.util.List;
 
 import ${resourceType};
 
@@ -41,6 +43,9 @@ public class ${className} implements ClientProxyFactory<${resourceName}> {
     @org.springframework.beans.factory.annotation.Qualifier("routingExecutor")
     private Executor __executor;
 
+    @org.springframework.beans.factory.annotation.Autowired
+    protected List<JunboHttpContextScopeListener> __junboHttpContextScopeListeners;
+
     public ${className}() { }
 
     public ${className}(AsyncHttpClient client, MessageTranscoder transcoder, PathParamTranscoder pathParamTranscoder,
@@ -65,6 +70,7 @@ public class ${className} implements ClientProxyFactory<${resourceName}> {
 
     public ${resourceName} create(String targetUrl) {
         ${resourceName}ClientProxy clientProxy = new ${resourceName}ClientProxy();
+
         clientProxy.setClient(__client);
         clientProxy.setTranscoder(__transcoder);
         clientProxy.setPathParamTranscoder(__pathParamTranscoder);
@@ -73,6 +79,8 @@ public class ${className} implements ClientProxyFactory<${resourceName}> {
         clientProxy.setTarget(targetUrl);
         clientProxy.setHeaders(__headersProvider.getHeaders());
         clientProxy.setExecutor(__executor);
+        clientProxy.setJunboHttpContextScopeListeners(__junboHttpContextScopeListeners);
+
         return clientProxy;
     }
 }

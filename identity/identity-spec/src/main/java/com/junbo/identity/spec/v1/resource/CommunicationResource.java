@@ -10,6 +10,7 @@ import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.Communication;
 import com.junbo.identity.spec.v1.option.list.CommunicationListOptions;
 import com.junbo.identity.spec.v1.option.model.CommunicationGetOptions;
+import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
@@ -23,6 +24,7 @@ import javax.ws.rs.core.MediaType;
  */
 @Api(value = "communications")
 @RestResource
+@InProcessCallable
 @Path("/communications")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})

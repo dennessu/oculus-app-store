@@ -31,7 +31,7 @@ abstract class Created201Marker {
                     ((resourceId instanceof Id) ? IdFormatter.encodeId((Id) resourceId) : resourceId.toString())
 
             JunboHttpContext.responseStatus = 201
-            JunboHttpContext.responseHeaders.put('location', location)
+            JunboHttpContext.responseHeaders.add('Location', location)
         }
     }
 }

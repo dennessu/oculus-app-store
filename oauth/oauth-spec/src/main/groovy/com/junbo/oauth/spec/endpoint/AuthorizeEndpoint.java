@@ -9,7 +9,6 @@ import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
-import org.glassfish.grizzly.http.server.Request;
 
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -30,8 +29,7 @@ public interface AuthorizeEndpoint {
     @GET
     Promise<Response> authorize(@Context UriInfo uriInfo,
                                 @Context HttpHeaders httpHeaders,
-                                @Context ContainerRequestContext request,
-                                @Context Request grizzlyRequest);
+                                @Context ContainerRequestContext request);
 
     @ApiOperation(
             value = "Authorize the user",
@@ -40,6 +38,5 @@ public interface AuthorizeEndpoint {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     Promise<Response> postAuthorize(@Context HttpHeaders httpHeaders,
                                     MultivaluedMap<String, String> formParams,
-                                    @Context ContainerRequestContext request,
-                                    @Context Request grizzlyRequest);
+                                    @Context ContainerRequestContext request);
 }

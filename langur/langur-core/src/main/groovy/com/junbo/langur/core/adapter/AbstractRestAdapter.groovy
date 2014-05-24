@@ -1,9 +1,10 @@
 package com.junbo.langur.core.adapter
 
 import com.google.common.base.Function
-import com.google.common.collect.HashMultimap
+import com.junbo.langur.core.IpUtil
 import com.junbo.langur.core.context.JunboHttpContext
 import groovy.transform.CompileStatic
+import org.glassfish.grizzly.http.server.Request
 import org.glassfish.jersey.server.ContainerResponse
 import org.glassfish.jersey.server.internal.process.RespondingContext
 
@@ -22,18 +23,22 @@ abstract class AbstractRestAdapter {
     @Context
     private RespondingContext respondingContext
 
+    @Context
+    private Request grizzlyRequest
+
     JunboHttpContext.JunboHttpContextData __createJunboHttpContextData() {
 
         def httpContextData = new JunboHttpContext.JunboHttpContextData(
                 requestMethod: httpRequestContext.method,
                 requestUri: httpRequestContext.uriInfo.absolutePath,
-                requestHeaders: HashMultimap.create(),
-                responseStatus: -1,
-                responseHeaders: HashMultimap.create()
         )
 
-        for (def entry : httpRequestContext.getHeaders().entrySet()) {
-            httpContextData.requestHeaders.putAll(entry.key, entry.value)
+        for (Map.Entry<String, List<String>> entry : httpRequestContext.headers.entrySet()) {
+            httpContextData.requestHeaders.addAll(entry.key, entry.value)
+        }
+
+        if (grizzlyRequest != null) {
+            httpContextData.requestIpAddress = IpUtil.getClientIpFromRequest(grizzlyRequest)
         }
 
         return httpContextData
@@ -48,8 +53,10 @@ abstract class AbstractRestAdapter {
                 if (JunboHttpContext.responseStatus != -1) {
                     containerResponse.status = JunboHttpContext.responseStatus
 
-                    for (def entry : JunboHttpContext.responseHeaders.entries()) {
-                        containerResponse.headers.add(entry.key, entry.value)
+                    for (Map.Entry<String, List<String>> entry : JunboHttpContext.responseHeaders.entrySet()) {
+                        for (String value : entry.value) {
+                            containerResponse.headers.add(entry.key, value)
+                        }
                     }
                 }
 

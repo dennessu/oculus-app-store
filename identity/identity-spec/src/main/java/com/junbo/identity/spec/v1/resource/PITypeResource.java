@@ -10,6 +10,7 @@ import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.PIType;
 import com.junbo.identity.spec.v1.option.list.PITypeListOptions;
 import com.junbo.identity.spec.v1.option.model.PITypeGetOptions;
+import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
@@ -23,6 +24,7 @@ import javax.ws.rs.core.MediaType;
  */
 @Api(value = "payment-instrument-types")
 @RestResource
+@InProcessCallable
 @Path("/payment-instrument-types")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
