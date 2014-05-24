@@ -3,6 +3,7 @@ package com.junbo.authorization
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserId
 import com.junbo.common.util.IdFormatter
+import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.oauth.spec.endpoint.TokenInfoEndpoint
 import com.junbo.oauth.spec.model.TokenInfo
 import com.junbo.oauth.spec.model.TokenType
@@ -11,33 +12,23 @@ import net.sf.ehcache.Cache
 import net.sf.ehcache.Ehcache
 import net.sf.ehcache.Element
 import org.springframework.beans.factory.annotation.Required
-import org.springframework.context.ApplicationContext
-import org.springframework.context.ApplicationContextAware
 import org.springframework.util.Assert
-
-import javax.ws.rs.core.HttpHeaders
 
 /**
  * Created by Shenhua on 5/14/2014.
  */
 @CompileStatic
-public class TokenInfoParserImpl implements TokenInfoParser, ApplicationContextAware {
+public class TokenInfoParserImpl implements TokenInfoParser {
 
     private static final String AUTHORIZATION_HEADER = 'Authorization'
 
     private static final int TOKENS_LENGTH = 2
-
-    private ApplicationContext applicationContext
 
     private TokenInfoEndpoint tokenInfoEndpoint
 
     private Boolean allowTestAccessToken
 
     private Ehcache tokenInfoCache
-
-    void setApplicationContext(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext
-    }
 
     @Required
     void setTokenInfoEndpoint(TokenInfoEndpoint tokenInfoEndpoint) {
@@ -101,9 +92,9 @@ public class TokenInfoParserImpl implements TokenInfoParser, ApplicationContextA
         }
     }
 
-    private String parseAccessToken() {
-        HttpHeaders httpHeaders = applicationContext.getBean(HttpHeaders)
-        String authorization = httpHeaders.requestHeaders.getFirst(AUTHORIZATION_HEADER)
+    private static String parseAccessToken() {
+
+        String authorization = JunboHttpContext.requestHeaders.getFirst(AUTHORIZATION_HEADER)
 
         if (authorization == null) {
             return null
@@ -113,7 +104,7 @@ public class TokenInfoParserImpl implements TokenInfoParser, ApplicationContextA
         return accessToken
     }
 
-    static String extractAccessToken(String authorization) {
+    private static String extractAccessToken(String authorization) {
         Assert.notNull(authorization, 'authorization is null')
 
         String[] tokens = authorization.split(' ')

@@ -1,7 +1,9 @@
 package com.junbo.langur.core.context
 
-import com.google.common.collect.Multimap
 import groovy.transform.CompileStatic
+import org.glassfish.jersey.internal.util.collection.StringKeyIgnoreCaseMultivaluedMap
+
+import javax.ws.rs.core.MultivaluedMap
 
 /**
  * Created by kg on 5/23/2014.
@@ -17,11 +19,36 @@ class JunboHttpContext {
 
         URI requestUri
 
-        Multimap<String, String> requestHeaders
+        MultivaluedMap<String, String> requestHeaders
+
 
         Integer responseStatus
 
-        Multimap<String, String> responseHeaders
+        MultivaluedMap<String, String> responseHeaders
+
+
+        String requestIpAddress
+
+        Map<String, Object> properties
+
+        JunboHttpContextData() {
+
+            requestHeaders = new StringKeyIgnoreCaseMultivaluedMap<>()
+
+            responseStatus = -1
+            responseHeaders = new StringKeyIgnoreCaseMultivaluedMap<>()
+
+            properties = new HashMap<>()
+        }
+    }
+
+    static String getRequestIpAddress() {
+        def data = CURRENT_DATA.get()
+        if (data == null) {
+            return null
+        }
+
+        return data.requestIpAddress
     }
 
     static String getRequestMethod() {
@@ -42,7 +69,7 @@ class JunboHttpContext {
         return data.requestUri
     }
 
-    static Multimap<String, String> getRequestHeaders() {
+    static MultivaluedMap<String, String> getRequestHeaders() {
         def data = CURRENT_DATA.get()
         if (data == null) {
             return null
@@ -70,13 +97,22 @@ class JunboHttpContext {
     }
 
 
-    static Multimap<String, String> getResponseHeaders() {
+    static MultivaluedMap<String, String> getResponseHeaders() {
         def data = CURRENT_DATA.get()
         if (data == null) {
             throw new IllegalStateException('Current JunboHttpContextData is null')
         }
 
         return data.responseHeaders
+    }
+
+    static Map<String, Object> getProperties() {
+        def data = CURRENT_DATA.get()
+        if (data == null) {
+            throw new IllegalStateException('Current JunboHttpContextData is null')
+        }
+
+        return data.properties
     }
 
     static JunboHttpContextData getData() {

@@ -4,6 +4,7 @@ import com.junbo.common.routing.DataAccessPolicies
 import com.junbo.common.routing.model.DataAccessAction
 import com.junbo.common.routing.model.DataAccessPolicy
 import com.junbo.common.util.Context
+import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.sharding.dualwrite.annotations.DeleteMethod
 import com.junbo.sharding.dualwrite.annotations.ReadMethod
 import com.junbo.sharding.dualwrite.annotations.WriteMethod
@@ -93,9 +94,9 @@ class RepositoryProxy implements InvocationHandler {
         DataAccessPolicy policy = Context.get().dataAccessPolicy;
         if (policy == null) {
             // within an http call
-            if (Context.get().getRequestContext() != null) {
+            if (JunboHttpContext.requestUri != null) {
                 logger.error("Cannot find policy from Context in HTTP call. Action: $action, Repo: ${repositoryInterface.name}");
-                throw new RuntimeException("Cannot find effective dataAccessPolicy in HTTP call! url: ${Context.get().requestContext.uriInfo.requestUri}");
+                throw new RuntimeException("Cannot find effective dataAccessPolicy in HTTP call! url: ${JunboHttpContext.requestUri}");
             }
             // fallback.
             policy = DataAccessPolicies.instance().getDataAccessPolicy(action, repositoryInterface);

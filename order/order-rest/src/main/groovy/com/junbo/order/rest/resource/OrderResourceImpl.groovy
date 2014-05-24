@@ -1,6 +1,5 @@
 package com.junbo.order.rest.resource
 
-import com.junbo.order.spec.error.AppErrors
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
@@ -8,6 +7,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.common.OrderValidator
+import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.ApiContext
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderQueryParam
@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
-import javax.ws.rs.container.ContainerRequestContext
 //import javax.ws.rs.container.ContainerRequestContext
 //import javax.ws.rs.core.Context
 /**
@@ -33,9 +32,6 @@ import javax.ws.rs.container.ContainerRequestContext
 @Scope('prototype')
 @Component('defaultOrderResource')
 class OrderResourceImpl implements OrderResource {
-
-    @Autowired
-    private ContainerRequestContext requestContext
 
     @Autowired
     OrderService orderService
@@ -64,10 +60,10 @@ class OrderResourceImpl implements OrderResource {
         orderValidator.validateSettleOrderRequest(order)
         Boolean isTentative = order.tentative
         order.tentative = true
-        return orderService.createQuote(order, new ApiContext(requestContext.headers)).then { Order ratedOrder ->
+        return orderService.createQuote(order, new ApiContext()).then { Order ratedOrder ->
             if (!isTentative) {
                 ratedOrder.tentative = isTentative
-                return orderService.settleQuote(ratedOrder, new ApiContext(requestContext.headers))
+                return orderService.settleQuote(ratedOrder, new ApiContext())
             }
             return Promise.pure(ratedOrder)
         }
@@ -83,20 +79,20 @@ class OrderResourceImpl implements OrderResource {
             if (oldOrder.tentative) { // order not settle
                 if (order.tentative) {
                     return orderService.updateTentativeOrder(order,
-                            new ApiContext(requestContext.headers)).syncThen { Order result ->
+                            new ApiContext()).syncThen { Order result ->
                         return result
                     }
                 } else { // handle settle order scenario: the tentative flag is updated from true to false
                     oldOrder.successRedirectUrl = order.successRedirectUrl
                     oldOrder.cancelRedirectUrl = order.cancelRedirectUrl
-                    return orderService.settleQuote(oldOrder, new ApiContext(requestContext.headers))
+                    return orderService.settleQuote(oldOrder, new ApiContext())
                 }
             } else { // order already settle
                 LOGGER.info('name=Update_Non_Tentative_offer')
                 // update shipping address after settlement
                 if (allowModification(oldOrder, order)) {
                     oldOrder.shippingAddress = order.shippingAddress
-                    return orderService.updateNonTentativeOrder(oldOrder, new ApiContext(requestContext.headers))
+                    return orderService.updateNonTentativeOrder(oldOrder, new ApiContext())
                 }
                 LOGGER.error('name=Update_Not_Allow')
                 throw AppErrors.INSTANCE.invalidSettledOrderUpdate().exception()

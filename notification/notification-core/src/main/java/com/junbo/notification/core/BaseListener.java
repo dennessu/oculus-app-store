@@ -6,7 +6,7 @@
 
 package com.junbo.notification.core;
 
-import com.junbo.common.util.Context;
+import com.junbo.common.filter.SequenceIdFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -20,7 +20,6 @@ public abstract class BaseListener implements MessageListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageListener.class);
 
-
     public BaseListener() {
 
     }
@@ -31,7 +30,7 @@ public abstract class BaseListener implements MessageListener {
             String eventId = message.getStringProperty(Constant.EVENT_ID);
 
             String requestId = message.getStringProperty(Constant.REQUEST_ID);
-            MDC.put(Context.X_REQUEST_ID, requestId);
+            MDC.put(SequenceIdFilter.X_REQUEST_ID, requestId);
 
             LOGGER.info("Message Received: eventId = " + eventId);
 

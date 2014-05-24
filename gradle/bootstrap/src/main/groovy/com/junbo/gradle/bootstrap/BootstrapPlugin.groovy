@@ -339,7 +339,7 @@ class TimingsListener implements TaskExecutionListener, BuildListener {
     void afterExecute(Task task, TaskState taskState) {
         def ms = clock.timeInMs
         timings.add([ms, task.path])
-        task.project.logger.warn "${task.path} took ${ms}ms"
+        task.project.logger.info "${task.path} took ${ms}ms"
     }
 
     @Override

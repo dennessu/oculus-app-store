@@ -8,7 +8,7 @@ public void ${methodName}([#list parameters as parameter][@includeModel model=pa
     @javax.ws.rs.container.Suspended final javax.ws.rs.container.AsyncResponse __asyncResponse) {
 
     com.junbo.langur.core.context.JunboHttpContext.JunboHttpContextData __junboHttpContextData = __createJunboHttpContextData();
-    final com.junbo.langur.core.context.JunboHttpContextScope __scope = new com.junbo.langur.core.context.JunboHttpContextScope(__junboHttpContextData);
+    final com.junbo.langur.core.context.JunboHttpContextScope __scope = new com.junbo.langur.core.context.JunboHttpContextScope(__junboHttpContextData, __junboHttpContextScopeListeners);
 
     Promise<${returnType}> future;
 

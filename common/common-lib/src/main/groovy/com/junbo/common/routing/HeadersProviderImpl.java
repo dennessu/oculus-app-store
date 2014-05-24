@@ -5,11 +5,10 @@
  */
 package com.junbo.common.routing;
 
-import com.junbo.common.util.Context;
 import com.junbo.langur.core.client.HeadersProvider;
+import com.junbo.langur.core.context.JunboHttpContext;
+import org.glassfish.jersey.internal.util.collection.StringKeyIgnoreCaseMultivaluedMap;
 
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 
 /**
@@ -18,11 +17,11 @@ import javax.ws.rs.core.MultivaluedMap;
 public class HeadersProviderImpl implements HeadersProvider {
     @Override
     public MultivaluedMap<String, String> getHeaders() {
-        // forward all headers
-        ContainerRequestContext requestContext = Context.get().getRequestContext();
-        if (requestContext != null) {
-            return requestContext.getHeaders();
+
+        if (JunboHttpContext.getRequestHeaders() != null) {
+            return JunboHttpContext.getRequestHeaders();
         }
-        return new MultivaluedHashMap<>();
+
+        return new StringKeyIgnoreCaseMultivaluedMap<>();
     }
 }
