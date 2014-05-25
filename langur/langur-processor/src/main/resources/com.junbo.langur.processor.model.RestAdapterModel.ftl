@@ -32,8 +32,7 @@ public class ${className} extends com.junbo.langur.core.adapter.AbstractRestAdap
     @org.springframework.beans.factory.annotation.Qualifier("defaultAfterInvocationFilter")
     private AfterInvocationFilter __afterInvocationFilter;
 
-    @org.springframework.beans.factory.annotation.Autowired
-    protected List<JunboHttpContextScopeListener> __junboHttpContextScopeListeners;
+    protected List<JunboHttpContextScopeListener> __junboHttpContextScopeListeners = new java.util.ArrayList<>();
 
     public ${adapteeType} getAdaptee() {
         return __adaptee;

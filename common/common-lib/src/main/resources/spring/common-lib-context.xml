@@ -16,7 +16,7 @@
 
     <!-- due to https://github.com/AsyncHttpClient/async-http-client/issues/484, use the default provider: netty -->
     <bean id="commonAsyncHttpClient" class="com.ning.http.client.AsyncHttpClient">
-        <constructor-arg name="config" ref="asyncHttpClientConfig"/>
+        <constructor-arg ref="asyncHttpClientConfig" />
     </bean>
 
     <bean id="commonPathParamTranscoder" class="com.junbo.common.json.IdPathParamTranscoder"/>

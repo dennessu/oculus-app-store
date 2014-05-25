@@ -68,7 +68,7 @@ class SubledgerItemRepositorySqlImpl implements SubledgerItemRepository {
     }
 
     @Override
-    Promise<List<SubledgerItem>> list(Object shardKey, String status, PageParam pageParam) {
+    Promise<List<SubledgerItem>> getByStatus(Object shardKey, String status, PageParam pageParam) {
         List<SubledgerItem> result = []
         subledgerItemDao.getByStatus((Integer) shardKey,
                 SubledgerItemStatus.valueOf(status),

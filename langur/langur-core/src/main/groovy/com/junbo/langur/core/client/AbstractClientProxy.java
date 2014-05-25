@@ -41,7 +41,7 @@ public abstract class AbstractClientProxy {
 
     protected boolean __inProcessCallable;
 
-    @Autowired
+    @Autowired(required = false)
     protected List<JunboHttpContextScopeListener> __junboHttpContextScopeListeners;
 
     @Required

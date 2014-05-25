@@ -36,6 +36,7 @@ public class DualWriteQueue {
             if (trackTransactionActions) {
                 getPendingActions().add(pendingAction);
             }
+            return Promise.pure(null);
         }
     }
 
@@ -48,6 +49,7 @@ public class DualWriteQueue {
             if (trackTransactionActions) {
                 getPendingActions().add(pendingAction);
             }
+            return Promise.pure(null);
         }
     }
 
