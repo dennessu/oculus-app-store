@@ -2,7 +2,6 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.id.UserCredentialVerifyAttemptId
 import com.junbo.common.id.UserId
-import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.credential.CredentialHash
 import com.junbo.identity.core.service.credential.CredentialHashFactory
 import com.junbo.identity.core.service.normalize.NormalizeService
@@ -14,7 +13,10 @@ import com.junbo.identity.data.repository.*
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.UserPin
-import com.junbo.identity.spec.v1.model.*
+import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
+import com.junbo.identity.spec.v1.model.UserPersonalInfo
+import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
 import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
 import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
 import com.junbo.identity.spec.v1.option.list.UserPinListOptions
@@ -186,33 +188,49 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                         throw AppErrors.INSTANCE.userNotFound(userLoginAttempt.username).exception()
                     }
 
-                    UserPersonalInfo personalInfo = personalInfos.find { UserPersonalInfo userPersonalInfo ->
-                        return userPersonalInfo.isValidated == true
-                    }
+                    return getDefaultEmailUser(personalInfos).then { User user ->
+                        if (user == null) {
+                            throw AppErrors.INSTANCE.userNotFound(userLoginAttempt.username).exception()
+                        }
 
-                    if (personalInfo == null) {
-                        throw AppErrors.INSTANCE.userNotFound(userLoginAttempt.username).exception()
-                    }
+                        if (user.isAnonymous || user.status != UserStatus.ACTIVE.toString()) {
+                            throw AppErrors.INSTANCE.fieldInvalidException('value', 'User in invalid status.').
+                                    exception()
+                        }
 
-                    return userRepository.get(personalInfo.userId).then { User user ->
                         if (CollectionUtils.isEmpty(user.emails)) {
                             throw AppErrors.INSTANCE.userNotFound(userLoginAttempt.username).exception()
                         }
 
-                        if (user.emails.any { UserPersonalInfoLink link ->
-                            return link.value == personalInfo.id
-                            // todo:    No matter default or non-default can login
-                            // && (link.isDefault == true)
-                        }
-                        ) {
-                            return Promise.pure(user)
-                        }
-
-                        throw AppErrors.INSTANCE.fieldInvalid('username', 'Only primary mail can login').exception()
+                        return Promise.pure(user)
                     }
                 }
         } else {
             return userRepository.getUserByCanonicalUsername(normalizeService.normalize(userLoginAttempt.username))
+        }
+    }
+
+    Promise<User> getDefaultEmailUser(List<UserPersonalInfo> userPersonalInfoList) {
+        User user = null
+        return Promise.each(userPersonalInfoList){ UserPersonalInfo info ->
+            return userRepository.get(info.userId).then { User existing ->
+                if (existing == null || CollectionUtils.isEmpty(existing.emails)) {
+                    return Promise.pure(null)
+                }
+
+                UserPersonalInfoLink existingLink = existing.emails.find { UserPersonalInfoLink link ->
+                    return link.isDefault == true && link.value == info.id
+                }
+
+                if (existingLink != null) {
+                    user = existing
+                    return Promise.pure(Promise.BREAK)
+                }
+
+                return Promise.pure(null)
+            }
+        }.then {
+            return Promise.pure(user)
         }
     }
 

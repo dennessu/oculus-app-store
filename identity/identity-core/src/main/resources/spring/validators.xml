@@ -222,6 +222,7 @@
         <property name="minEmailLength" value="3" />
         <property name="maxEmailLength" value="255" />
         <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
+        <property name="userRepository" ref="userRepository" />
     </bean>
 
     <bean id="userPhoneNumberValidator" class="com.junbo.identity.core.service.validator.impl.UserPhoneNumberValidatorImpl">
