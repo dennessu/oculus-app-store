@@ -1,3 +1,8 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
 package com.junbo.common.cloudant
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.JavaType
@@ -10,18 +15,18 @@ import groovy.transform.CompileStatic
  * Used internally for entity persistence and other.
  */
 @CompileStatic
-class CloudantMarshaller {
-    private static CloudantMarshaller instance = new CloudantMarshaller(CloudantObjectMapper.instance())
+class DefaultCloudantMarshaller implements CloudantMarshaller {
+    private static DefaultCloudantMarshaller instance = new DefaultCloudantMarshaller(CloudantObjectMapper.instance())
 
-    static CloudantMarshaller instance() {
+    static DefaultCloudantMarshaller instance() {
         return instance
     }
 
-    static void setInstance(CloudantMarshaller instance) {
-        CloudantMarshaller.instance = instance
+    static void setInstance(DefaultCloudantMarshaller instance) {
+        DefaultCloudantMarshaller.instance = instance
     }
 
-    private CloudantMarshaller(ObjectMapper objectMapper) {
+    private DefaultCloudantMarshaller(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper
     }
 

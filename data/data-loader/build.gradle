@@ -1,0 +1,8 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile (libraries.apache_common_io)
+
+    compile junboProject(':common-lib')
+    compile junboProject(':authorization-spec')
+}
