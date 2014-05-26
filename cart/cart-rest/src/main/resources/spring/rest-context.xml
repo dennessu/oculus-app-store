@@ -30,7 +30,7 @@
     <bean id="queryParamTranscoder" class="com.junbo.common.json.QueryParamTranscoderImpl"/>
 
     <bean id="identityClient" class="com.junbo.cart.core.client.impl.IdentityClientImpl">
-        <property name="userResource" ref="userResourceClientProxy"/>
+        <property name="userResource" ref="cartUserResourceClientProxy"/>
     </bean>
 
     <bean id="cartUserResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy" parent="baseClientProxy">
