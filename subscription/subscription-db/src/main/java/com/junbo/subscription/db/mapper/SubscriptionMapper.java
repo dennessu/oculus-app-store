@@ -34,6 +34,10 @@ public class SubscriptionMapper {
         subscription.setSubsStartDate(subscriptionEntity.getSubsStartDate());
         subscription.setSubsEndDate(subscriptionEntity.getSubsEndDate());
         subscription.setAnniversaryDay(subscriptionEntity.getAnniversaryDay());
+        subscription.setCurrency(subscriptionEntity.getCurrency());
+        subscription.setCountry(subscriptionEntity.getCountry());
+        subscription.setPaymentMethodId(subscriptionEntity.getPiId());
+        subscription.setSource(subscriptionEntity.getSource());
 
         return subscription;
     }
@@ -48,6 +52,10 @@ public class SubscriptionMapper {
         subscriptionEntity.setSubsStartDate(subscription.getSubsStartDate());
         subscriptionEntity.setSubsEndDate(subscription.getSubsEndDate());
         subscriptionEntity.setAnniversaryDay(subscription.getAnniversaryDay());
+        subscriptionEntity.setPiId(subscription.getPaymentMethodId());
+        subscriptionEntity.setCurrency(subscription.getCurrency());
+        subscriptionEntity.setCountry(subscription.getCountry());
+        subscriptionEntity.setSource(subscription.getSource());
         return subscriptionEntity;
     }
 

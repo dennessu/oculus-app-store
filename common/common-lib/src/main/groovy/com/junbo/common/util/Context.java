@@ -136,6 +136,10 @@ public class Context {
         return context.get();
     }
 
+    public static void set(Data data) {
+        context.set(data);
+    }
+
     public static void clear() {
         context.set(null);
     }

@@ -96,7 +96,8 @@ class RepositoryProxy implements InvocationHandler {
             // within an http call
             if (JunboHttpContext.requestUri != null) {
                 logger.error("Cannot find policy from Context in HTTP call. Action: $action, Repo: ${repositoryInterface.name}");
-                throw new RuntimeException("Cannot find effective dataAccessPolicy in HTTP call! url: ${JunboHttpContext.requestUri}");
+                // TODO: in-proc call routing is not enabled yet
+                // throw new RuntimeException("Cannot find effective dataAccessPolicy in HTTP call! url: ${JunboHttpContext.requestUri}");
             }
             // fallback.
             policy = DataAccessPolicies.instance().getDataAccessPolicy(action, repositoryInterface);
