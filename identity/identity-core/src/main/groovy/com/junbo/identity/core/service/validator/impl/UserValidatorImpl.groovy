@@ -253,7 +253,8 @@ class UserValidatorImpl implements UserValidator {
 
                 // 2.	User’s default email is required to be globally unique - no two users can use the same email as their default email.
                 //      The first user set this email to default will get this email.
-                if (userPersonalInfoLink.isDefault == true) {
+                if (userPersonalInfoLink.isDefault == true
+                 && userPersonalInfo.type == UserPersonalInfoType.EMAIL.toString()) {
                     Email email = (Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Email)
 
                     return validateEmailNotUsed(user, iter, type, email).then {
