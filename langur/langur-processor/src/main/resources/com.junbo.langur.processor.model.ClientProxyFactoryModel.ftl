@@ -43,7 +43,8 @@ public class ${className} implements ClientProxyFactory<${resourceName}> {
     @org.springframework.beans.factory.annotation.Qualifier("routingExecutor")
     private Executor __executor;
 
-    protected List<JunboHttpContextScopeListener> __junboHttpContextScopeListeners = new java.util.ArrayList<>();
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    protected List<JunboHttpContextScopeListener> __junboHttpContextScopeListeners;
 
     public ${className}() { }
 
