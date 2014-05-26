@@ -6,6 +6,7 @@
 package com.junbo.crypto.spec.resource;
 
 import com.junbo.crypto.spec.model.UserCryptoKey;
+import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -19,6 +20,7 @@ import javax.ws.rs.core.MediaType;
  * Created by liangfu on 5/6/14.
  */
 @RestResource
+@InProcessCallable
 @Path("/crypto")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
