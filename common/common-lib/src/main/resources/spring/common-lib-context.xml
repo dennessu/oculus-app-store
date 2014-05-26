@@ -52,4 +52,5 @@
 
     <bean id="cloudantDefaultMarshaller" class="com.junbo.common.cloudant.CloudantMarshaller" factory-method="instance" />
 
+    <bean id="contextScopeListener" class="com.junbo.common.util.ContextScopeListener" />
 </beans>

@@ -6,7 +6,6 @@
 package com.junbo.common.filter;
 
 import com.junbo.common.filter.annotations.CacheMaxAge;
-import com.junbo.common.util.Context;
 import com.junbo.configuration.ConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,7 +14,7 @@ import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.core.*;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -54,7 +53,5 @@ public class ResponseFilter implements ContainerResponseFilter {
                 }
             }
         }
-
-        Context.clear();
     }
 }
