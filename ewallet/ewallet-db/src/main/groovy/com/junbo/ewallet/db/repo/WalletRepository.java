@@ -5,6 +5,7 @@
  */
 package com.junbo.ewallet.db.repo;
 
+import com.junbo.ewallet.common.def.WalletConst;
 import com.junbo.ewallet.common.util.Callback;
 import com.junbo.ewallet.db.dao.LotTransactionDao;
 import com.junbo.ewallet.db.dao.TransactionDao;
@@ -162,7 +163,7 @@ public class WalletRepository {
             }
 
             if (lot.getExpirationDate() != null && lot.getExpirationDate().before(now)) {
-                lot.setExpirationDate(null);  //enable lot
+                lot.setExpirationDate(WalletConst.NEVER_EXPIRE);  //enable lot
             }
             walletLotDao.update(lot);
             lotTransactionDao.update(lotTransaction);
@@ -182,7 +183,8 @@ public class WalletRepository {
         lotEntity.setType(WalletLotType.valueOf(creditRequest.getCreditType()));
         lotEntity.setTotalAmount(creditRequest.getAmount());
         lotEntity.setRemainingAmount(creditRequest.getAmount());
-        lotEntity.setExpirationDate(creditRequest.getExpirationDate());
+        lotEntity.setExpirationDate(
+                creditRequest.getExpirationDate() == null ? WalletConst.NEVER_EXPIRE : creditRequest.getExpirationDate());
         return lotEntity;
     }
 

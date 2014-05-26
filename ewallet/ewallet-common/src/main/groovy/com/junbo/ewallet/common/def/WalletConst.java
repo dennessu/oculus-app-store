@@ -6,6 +6,8 @@
 
 package com.junbo.ewallet.common.def;
 
+import java.util.Date;
+
 /**
  * Wallet Consts.
  */
@@ -13,4 +15,7 @@ public class WalletConst {
     public static final int ACTIVE = 1;
     public static final int LOCKED = 2;
     public static final int EXPIRED = 3;
+
+    private static final Long NEVER_EXPIRE_LONG = 253402271999000L;
+    public static final Date NEVER_EXPIRE = new Date(NEVER_EXPIRE_LONG);
 }
