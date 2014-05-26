@@ -15,6 +15,7 @@ import com.junbo.common.util.PromiseFacade;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.clientproxy.CountryServiceFacade;
 import com.junbo.payment.clientproxy.CurrencyServiceFacade;
+import com.junbo.payment.clientproxy.PersonalInfoFacade;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
@@ -74,6 +75,8 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
     protected CountryServiceFacade countryResource;
     @Autowired
     protected CurrencyServiceFacade currencyResource;
+    @Autowired
+    protected PersonalInfoFacade personalInfoFacade;
 
     @Override
     public void afterPropertiesSet() throws Exception {

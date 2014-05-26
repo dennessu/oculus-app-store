@@ -12,6 +12,7 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.identity.spec.v1.model.UserPersonalInfo;
+import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions;
 import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.clientproxy.PersonalInfoFacade;
@@ -50,7 +51,7 @@ public class PersonalInfoFacadeImpl implements PersonalInfoFacade {
         if(billingAddressId == null){
             return Promise.pure(null);
         }
-        return piiClient.get(new UserPersonalInfoId(billingAddressId), null)
+        return piiClient.get(new UserPersonalInfoId(billingAddressId), new UserPersonalInfoGetOptions())
                 .then(new Promise.Func<UserPersonalInfo, Promise<com.junbo.payment.spec.model.Address>>() {
                     @Override
                     public Promise<com.junbo.payment.spec.model.Address> apply(UserPersonalInfo userPersonalInfo) {

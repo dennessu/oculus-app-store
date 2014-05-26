@@ -47,10 +47,16 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
         return PromiseFacade.PAYMENT.decorate(new Callable<PaymentInstrument>() {
             @Override
             public PaymentInstrument call() throws Exception {
-                //TODO: get the billing address country Code and find default currency & minAuthAmount
-                String defaultCountry = "US";
+                /*
+                String defaultCountry = personalInfoFacade.getBillingAddress(
+                        request.getBillingAddressId()).get().getCountry();
                 CurrencyId defaultCurrency = countryResource.getDefaultCurrency(defaultCountry).get();
                 long minAuthAmount = currencyResource.getMinAuthAmount(defaultCurrency).get();
+                */
+                //TODO: need to enable the above code and delete the test code below:
+                CurrencyId defaultCurrency = new CurrencyId("USD");
+                long minAuthAmount = 100;
+                //end of TODO
                 Long piId = null;
                 if(request.getId() == null){
                     piId = idGenerator.nextId(request.getUserId());
