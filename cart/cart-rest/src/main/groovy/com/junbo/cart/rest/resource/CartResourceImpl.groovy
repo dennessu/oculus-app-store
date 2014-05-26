@@ -88,6 +88,6 @@ class CartResourceImpl implements CartResource {
     }
 
     private String getClientId() {
-        return 'dev'
+        return 'client'
     }
 }
