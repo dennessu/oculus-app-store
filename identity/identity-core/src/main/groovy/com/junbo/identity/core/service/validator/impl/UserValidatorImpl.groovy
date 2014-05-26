@@ -224,9 +224,9 @@ class UserValidatorImpl implements UserValidator {
         }
     }
 
-    Promise<Void> validateUserPersonalInfoLinkIterator(User user, Iterator<UserPersonalInfoLink> it, String type) {
-        if (it.hasNext()) {
-            UserPersonalInfoLink userPersonalInfoLink = it.next();
+    Promise<Void> validateUserPersonalInfoLinkIterator(User user, Iterator<UserPersonalInfoLink> iter, String type) {
+        if (iter.hasNext()) {
+            UserPersonalInfoLink userPersonalInfoLink = iter.next();
 
             if (userPersonalInfoLink.isDefault == null) {
                 throw AppErrors.INSTANCE.fieldRequired('isDefault').exception()
@@ -236,52 +236,69 @@ class UserValidatorImpl implements UserValidator {
                 throw AppErrors.INSTANCE.fieldRequired('value').exception()
             }
 
-            return userPersonalInfoRepository.get(userPersonalInfoLink.value).
-                    then { UserPersonalInfo userPersonalInfo ->
-                        if (userPersonalInfo == null) {
-                            throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPersonalInfoLink.value).exception()
-                        }
+            return userPersonalInfoRepository.get(userPersonalInfoLink.value).then { UserPersonalInfo userPersonalInfo ->
+                if (userPersonalInfo == null) {
+                    throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPersonalInfoLink.value).exception()
+                }
 
-                        if (type != null) {
-                            if (userPersonalInfo.type != type) {
-                                throw AppErrors.INSTANCE.fieldInvalid(userPersonalInfoLink.value.toString()).exception()
-                            }
-                        }
-
-                        if (user.id != userPersonalInfo.userId) {
-                            throw AppErrors.INSTANCE.fieldInvalid('userPersonalInfo.value').exception()
-                        }
-
-                        // todo:    Temp disable default userPersonalInfoLink need verified email
-                        /*
-                        if (userPersonalInfoLink.isDefault == true) {
-                            // Only default email can be set as default.
-                            Email email = (Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Email)
-                            if (email.isValidated != true) {
-                                throw AppErrors.INSTANCE.fieldInvalid('value',
-                                        'Only validated email can be set default.').exception()
-                            }
-                        }
-                        */
-
-                        return validateUserPersonalInfoLinkIterator(user, it, type)
+                if (type != null) {
+                    if (userPersonalInfo.type != type) {
+                        throw AppErrors.INSTANCE.fieldInvalid(userPersonalInfoLink.value.toString()).exception()
                     }
+                }
+
+                if (user.id != userPersonalInfo.userId) {
+                    throw AppErrors.INSTANCE.fieldInvalid('userPersonalInfo.value').exception()
+                }
+
+                // 2.	User’s default email is required to be globally unique - no two users can use the same email as their default email.
+                //      The first user set this email to default will get this email.
+                if (userPersonalInfoLink.isDefault == true) {
+                    Email email = (Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Email)
+
+                    return validateEmailNotUsed(user, iter, type, email).then {
+                        return validateUserPersonalInfoLinkIterator(user, iter, type)
+                    }
+                }
+
+                return validateUserPersonalInfoLinkIterator(user, iter, type)
+            }
         }
         return Promise.pure(null)
     }
 
-    Promise<UserPersonalInfo> validateUserPersonalInfoLink(UserPersonalInfoLink userPersonalInfoLink) {
-        if (userPersonalInfoLink.value == null) {
-            throw AppErrors.INSTANCE.fieldRequired('value').exception()
-        }
-        return userPersonalInfoRepository.get(userPersonalInfoLink.value).
-                then { UserPersonalInfo userPersonalInfo ->
-                    if (userPersonalInfo == null) {
-                        throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPersonalInfoLink.value).exception()
+    Promise<Void> validateEmailNotUsed(User user, Iterator<UserPersonalInfoLink> iter, String type, Email email) {
+        return userPersonalInfoRepository.searchByEmail(email.info.toLowerCase()).then { List<UserPersonalInfo> existing ->
+            if (CollectionUtils.isEmpty(existing)) {
+                return Promise.pure(null)
+            }
+
+            existing.removeAll { UserPersonalInfo info ->
+                return info.userId == user.id
+            }
+
+            if (CollectionUtils.isEmpty(existing)) {
+                return Promise.pure(null)
+            }
+
+            return Promise.each(existing) { UserPersonalInfo info ->
+                return userRepository.get(info.userId).then { User existingUser ->
+                    if (existingUser == null || CollectionUtils.isEmpty(existingUser.emails)) {
+                        return Promise.pure(null)
                     }
 
-                    return Promise.pure(userPersonalInfo)
+                    if (existingUser.emails.any { UserPersonalInfoLink link ->
+                        return link.isDefault == true && link.value == info.id
+                    }) {
+                        throw AppErrors.INSTANCE.fieldInvalidException('email.info', 'Mail already used.').exception()
+                    }
+
+                    return Promise.pure(null)
                 }
+            }.then {
+                return Promise.pure(null)
+            }
+        }
     }
 
     Promise<Void> validateUserPersonalInfoLink(UserPersonalInfoLink userPersonalInfoLink, String type) {
@@ -317,9 +334,12 @@ class UserValidatorImpl implements UserValidator {
     }
 
     private void checkSinglePersonalInfoLink(List<UserPersonalInfoLink> links) {
-        if (links != null) {
+        if (!CollectionUtils.isEmpty(links)) {
             Collection<UserPersonalInfoLink> defaultLinks = links.findAll { UserPersonalInfoLink link ->
                 return link.isDefault
+            }
+            if (CollectionUtils.isEmpty(defaultLinks)) {
+                throw AppErrors.INSTANCE.fieldInvalid('isDefault', 'Email must have at least one default.').exception()
             }
             if (!CollectionUtils.isEmpty(defaultLinks) && defaultLinks.size() > 1) {
                 throw AppErrors.INSTANCE.fieldInvalid('isDefault', 'Can only have one default.').exception()
