@@ -6,8 +6,10 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
+    <!--sql beans-->
+    <!-- -->
     <bean id="itemAttributeService" class="com.junbo.catalog.core.service.ItemAttributeServiceImpl">
-        <property name="attributeRepo" ref="itemAttributeCloudantRepo"/>
+        <property name="attributeRepo" ref="itemAttributeRepository"/>
     </bean>
     <bean id="offerAttributeService" class="com.junbo.catalog.core.service.OfferAttributeServiceImpl">
         <property name="attributeRepo" ref="offerAttributeRepository"/>
@@ -15,9 +17,8 @@
     <bean id="itemService" class="com.junbo.catalog.core.service.ItemServiceImpl">
         <property name="itemRepo" ref="itemRepository"/>
         <property name="offerRepo" ref="offerRepository"/>
-        <property name="itemAttributeRepo" ref="itemAttributeCloudantRepo"/>
+        <property name="itemAttributeRepo" ref="itemAttributeRepository"/>
         <property name="itemRevisionRepo" ref="itemRevisionRepository"/>
-        <!--property name="itemRevisionRepo" ref="itemRevisionCloudantRepo"/-->
     </bean>
     <bean id="offerService" class="com.junbo.catalog.core.service.OfferServiceImpl">
         <property name="itemRepo" ref="itemRepository"/>
@@ -26,8 +27,38 @@
         <property name="offerAttributeRepo" ref="offerAttributeRepository"/>
         <property name="relationsRepo" ref="itemOfferRelationsRepository"/>
     </bean>
-    <bean id="promotionService" class="com.junbo.catalog.core.service.PromotionServiceImpl"/>
     <bean id="priceTierService" class="com.junbo.catalog.core.service.PriceTierServiceImpl">
         <property name="priceTierRepo" ref="priceTierRepository"/>
     </bean>
+    <!-- -->
+    <!--end of sql beans-->
+
+    <!--cloudant beans-->
+    <!--
+    <bean id="itemAttributeService" class="com.junbo.catalog.core.service.ItemAttributeServiceImpl">
+        <property name="attributeRepo" ref="itemAttributeCloudantRepo"/>
+    </bean>
+    <bean id="offerAttributeService" class="com.junbo.catalog.core.service.OfferAttributeServiceImpl">
+        <property name="attributeRepo" ref="offerAttributeCloudantRepo"/>
+    </bean>
+    <bean id="itemService" class="com.junbo.catalog.core.service.ItemServiceImpl">
+        <property name="itemRepo" ref="itemCloudantRepo"/>
+        <property name="offerRepo" ref="offerCloudantRepo"/>
+        <property name="itemAttributeRepo" ref="itemAttributeCloudantRepo"/>
+        <property name="itemRevisionRepo" ref="itemRevisionCloudantRepo"/>
+    </bean>
+    <bean id="offerService" class="com.junbo.catalog.core.service.OfferServiceImpl">
+        <property name="itemRepo" ref="itemCloudantRepo"/>
+        <property name="offerRepo" ref="offerCloudantRepo"/>
+        <property name="offerRevisionRepo" ref="offerRevisionCloudantRepo"/>
+        <property name="offerAttributeRepo" ref="offerAttributeCloudantRepo"/>
+        <property name="relationsRepo" ref="itemOfferRelationsRepository"/>
+    </bean>
+    <bean id="priceTierService" class="com.junbo.catalog.core.service.PriceTierServiceImpl">
+        <property name="priceTierRepo" ref="priceTierCloudantRepo"/>
+    </bean>
+    -->
+    <!--end of cloudant beans-->
+
+    <bean id="promotionService" class="com.junbo.catalog.core.service.PromotionServiceImpl"/>
 </beans>

@@ -16,7 +16,7 @@ import java.util.Set;
  * Attributes get options.
  */
 public class OfferAttributesGetOptions extends PageableGetOptions {
-    @QueryParam("id")
+    @QueryParam("attributeId")
     private Set<OfferAttributeId> attributeIds;
 
     @QueryParam("type")

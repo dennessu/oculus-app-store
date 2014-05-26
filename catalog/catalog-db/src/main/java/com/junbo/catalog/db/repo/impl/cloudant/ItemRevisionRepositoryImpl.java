@@ -58,7 +58,7 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
                 }
             }
         } else {
-
+            //TODO:..
         }
 
         return itemRevisions;
@@ -154,7 +154,7 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
                 "index(\'revisionId\', doc.revisionId);" +
                 "index(\'status\', doc.status);" +
                 "index(\'timeInMillis\', doc.timestamp);" +
-        "}");
+            "}");
         indexMap.put("search", index);
 
         setIndexes(indexMap);

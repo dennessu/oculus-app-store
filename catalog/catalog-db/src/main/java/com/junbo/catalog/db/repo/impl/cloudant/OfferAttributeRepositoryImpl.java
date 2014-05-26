@@ -6,12 +6,12 @@
 
 package com.junbo.catalog.db.repo.impl.cloudant;
 
-import com.junbo.catalog.db.repo.ItemAttributeRepository;
-import com.junbo.catalog.spec.model.attribute.ItemAttribute;
-import com.junbo.catalog.spec.model.attribute.ItemAttributesGetOptions;
+import com.junbo.catalog.db.repo.OfferAttributeRepository;
+import com.junbo.catalog.spec.model.attribute.OfferAttribute;
+import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions;
 import com.junbo.common.cloudant.CloudantClient;
 import com.junbo.common.cloudant.model.CloudantViews;
-import com.junbo.common.id.ItemAttributeId;
+import com.junbo.common.id.OfferAttributeId;
 import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
@@ -20,9 +20,9 @@ import org.springframework.util.StringUtils;
 import java.util.*;
 
 /**
- * Item repository.
+ * Offer repository.
  */
-public class ItemAttributeRepositoryImpl extends CloudantClient<ItemAttribute> implements ItemAttributeRepository {
+public class OfferAttributeRepositoryImpl  extends CloudantClient<OfferAttribute> implements OfferAttributeRepository {
     private IdGenerator idGenerator;
 
     @Required
@@ -30,22 +30,22 @@ public class ItemAttributeRepositoryImpl extends CloudantClient<ItemAttribute> i
         this.idGenerator = idGenerator;
     }
 
-    public ItemAttribute create(ItemAttribute attribute) {
+    public OfferAttribute create(OfferAttribute attribute) {
         if (attribute.getId() == null) {
             attribute.setId(idGenerator.nextId());
         }
         return super.cloudantPost(attribute);
     }
 
-    public ItemAttribute get(Long attributeId) {
+    public OfferAttribute get(Long attributeId) {
         return super.cloudantGet(attributeId.toString());
     }
 
-    public List<ItemAttribute> getAttributes(ItemAttributesGetOptions options) {
+    public List<OfferAttribute> getAttributes(OfferAttributesGetOptions options) {
         if (!CollectionUtils.isEmpty(options.getAttributeIds())) {
-            List<ItemAttribute> attributes = new ArrayList<>();
-            for (ItemAttributeId attributeId : options.getAttributeIds()) {
-                ItemAttribute attribute = super.cloudantGet(attributeId.getValue().toString());
+            List<OfferAttribute> attributes = new ArrayList<>();
+            for (OfferAttributeId attributeId : options.getAttributeIds()) {
+                OfferAttribute attribute = super.cloudantGet(attributeId.getValue().toString());
                 if (attribute != null) {
                     attributes.add(attribute);
                 }
@@ -54,10 +54,10 @@ public class ItemAttributeRepositoryImpl extends CloudantClient<ItemAttribute> i
         } else if (!StringUtils.isEmpty(options.getAttributeType())){
             return super.queryView("by_type", options.getAttributeType());
         } else {
-            List<ItemAttribute> attributes = super.cloudantGetAll();
-            Iterator<ItemAttribute> iterator = attributes.iterator();
+            List<OfferAttribute> attributes = super.cloudantGetAll();
+            Iterator<OfferAttribute> iterator = attributes.iterator();
             while (iterator.hasNext()) {
-                ItemAttribute attribute = iterator.next();
+                OfferAttribute attribute = iterator.next();
                 if (attribute == null || attribute.getId() == null) {
                     iterator.remove();
                 }
@@ -67,26 +67,22 @@ public class ItemAttributeRepositoryImpl extends CloudantClient<ItemAttribute> i
         }
     }
 
-    public ItemAttribute update(ItemAttribute attribute) {
+    public OfferAttribute update(OfferAttribute attribute) {
         return super.cloudantPut(attribute);
     }
+
 
     public void delete(Long attributeId) {
         super.cloudantDelete(attributeId.toString());
     }
 
     private CloudantViews cloudantViews = new CloudantViews() {{
-        Map<String, CloudantViews.CloudantView> viewMap = new HashMap<>();
+        Map<String, CloudantView> viewMap = new HashMap<>();
 
         CloudantViews.CloudantView view = new CloudantViews.CloudantView();
         view.setMap("function(doc) {emit(doc.type, doc._id)}");
         view.setResultClass(String.class);
         viewMap.put("by_type", view);
-
-        view = new CloudantViews.CloudantView();
-        view.setMap("function(doc) {emit(doc._id, doc._id)}");
-        view.setResultClass(String.class);
-        viewMap.put("by_attributeId", view);
 
         setViews(viewMap);
     }};
