@@ -12,6 +12,7 @@ import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.EntitlementTransfer;
 import com.junbo.entitlement.spec.model.PageMetadata;
+import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
@@ -29,6 +30,7 @@ import javax.ws.rs.core.Response;
 @Path("/entitlements")
 @Produces({MediaType.APPLICATION_JSON})
 @RestResource
+@InProcessCallable
 public interface EntitlementResource {
     @ApiOperation("Get an entitlement by id")
     @GET

@@ -10,6 +10,7 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.id.WalletId;
 import com.junbo.common.model.Results;
 import com.junbo.ewallet.spec.model.*;
+import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -24,6 +25,7 @@ import javax.ws.rs.core.MediaType;
 @RestResource
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@InProcessCallable
 public interface WalletResource {
     //    @ApiOperation("Get a wallet by id")
     @GET
