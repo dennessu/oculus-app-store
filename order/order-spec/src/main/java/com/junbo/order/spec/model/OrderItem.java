@@ -27,10 +27,9 @@ import java.util.List;
  * Created by chriszhu on 2/7/14.
  */
 @JsonPropertyOrder(value = {
-        "id", "status", "type", "offer", "quantity", "shippingInfo",
-        "unitPrice", "totalAmount", "totalDiscount", "totalTax", "isTaxInclusive", "totalPreorderAmount",
-        "totalPreorderTax", "createdTime", "createdBy", "updatedTime", "updatedBy", "resourceAge",
-        "fulfillmentIds", "preorderInfo", "properties"
+        "offer", "quantity",
+        "unitPrice", "totalAmount", "totalTax", "totalDiscount",
+        "taxes", "fulfillmentHistories"
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderItem extends ResourceMeta implements Identifiable<OrderItemId> {
@@ -83,9 +82,11 @@ public class OrderItem extends ResourceMeta implements Identifiable<OrderItemId>
     private String properties;
 
     // transient, read from billing
+    @ApiModelProperty(required = true, position = 100, value = "[Client Immutable] The tax details of the item.")
     @CloudantIgnore
     private List<OrderTaxItem> taxes;
 
+    @ApiModelProperty(required = true, position = 110, value = "[Client Immutable] The fulfillment history the item.")
     @CloudantIgnore
     private List<FulfillmentHistory> fulfillmentHistories;
 

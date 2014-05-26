@@ -31,9 +31,13 @@ import java.util.List;
  * Created by chriszhu on 2/7/14.
  */
 @JsonPropertyOrder(value = {
-        "id", "user", "status", "country", "currency", "locale",
-        "tentative", "resourceAge", "ratingInfo", "shippingMethod",
-        "shippingAddress", "paymentInstruments", "refundOrders", "discounts", "orderItems"
+        "id", "user", "status", "tentative", "status", "country", "currency", "locale",
+        "shippingMethod", "shippingAddress",
+        "totalAmount", "totalTax", "isTaxInclusive", "totalDiscount", "totalShippingFee",
+        "totalShippingFeeDiscount", "honoredTime",
+        "resourceAge", "ratingInfo", "shippingMethod",
+        "orderItems", "payments", "discounts",
+        "successRedirectUrl", "cancelRedirectUrl", "providerConfirmUrl"
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Order extends ResourceMeta implements Identifiable<OrderId> {
@@ -88,7 +92,8 @@ public class Order extends ResourceMeta implements Identifiable<OrderId> {
     @JsonIgnore
     private Date honorUntilTime;
 
-    @JsonIgnore
+    @ApiModelProperty(required = true, position = 135, value = "The purchase time of the order")
+    @JsonProperty("purchaseTime")
     private Date honoredTime;
     // end of ratingInfo
 
@@ -120,13 +125,12 @@ public class Order extends ResourceMeta implements Identifiable<OrderId> {
     @HateoasLink("/order-events?orderId={id}")
     private Link orderEvents;
 
-    @ApiModelProperty(required = true, position = 180, value = "[Client Immutable]]The link to the balances. ")
-    @HateoasLink("/balances?orderId={id}")
-    private Link balances;
-
     // urls for web payment
+    @ApiModelProperty(required = true, position = 200, value = "[Client Immutable]]The redirect url on success. ")
     private String successRedirectUrl;
+    @ApiModelProperty(required = true, position = 210, value = "[Client Immutable]]The redirect url on cancellation. ")
     private String cancelRedirectUrl;
+    @ApiModelProperty(required = true, position = 220, value = "[Client Immutable]]The redirect url on confirmation. ")
     private String providerConfirmUrl;
     // end of urls
 
@@ -284,7 +288,6 @@ public class Order extends ResourceMeta implements Identifiable<OrderId> {
         this.locale = locale;
     }
 
-
     public List<PaymentInfo> getPayments() {
         return payments;
     }
@@ -299,14 +302,6 @@ public class Order extends ResourceMeta implements Identifiable<OrderId> {
 
     public void setOrderEvents(Link orderEvents) {
         this.orderEvents = orderEvents;
-    }
-
-    public Link getBalances() {
-        return balances;
-    }
-
-    public void setBalances(Link balances) {
-        this.balances = balances;
     }
 
     public String getSuccessRedirectUrl() {
@@ -340,4 +335,5 @@ public class Order extends ResourceMeta implements Identifiable<OrderId> {
     public void setBillingHistories(List<BillingHistory> billingHistories) {
         this.billingHistories = billingHistories;
     }
+
 }
