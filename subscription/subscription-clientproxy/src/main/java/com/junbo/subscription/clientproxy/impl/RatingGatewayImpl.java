@@ -5,7 +5,7 @@
  */
 package com.junbo.subscription.clientproxy.impl;
 
-import com.junbo.rating.spec.model.request.OfferRatingRequest;
+import com.junbo.rating.spec.model.subscription.SubsRatingRequest;
 import com.junbo.rating.spec.resource.RatingResource;
 import com.junbo.subscription.clientproxy.RatingGateway;
 import com.junbo.subscription.common.exception.SubscriptionExceptions;
@@ -24,9 +24,9 @@ public class RatingGatewayImpl implements RatingGateway {
     @Qualifier("ratingClient")
     private RatingResource ratingResource;
 
-    public OfferRatingRequest offerRating(OfferRatingRequest request){
+    public SubsRatingRequest subsRating(SubsRatingRequest request){
         try{
-            OfferRatingRequest response = ratingResource.offerRating(request).get();
+            SubsRatingRequest response = ratingResource.subsRating(request).get();
 
             return response;
         }catch (Exception e) {

@@ -7,7 +7,8 @@ package com.junbo.subscription.core.action;
 
 import com.junbo.payment.spec.model.ChargeInfo;
 import com.junbo.payment.spec.model.PaymentTransaction;
-import com.junbo.rating.spec.model.request.OfferRatingRequest;
+import com.junbo.rating.spec.model.subscription.SubsRatingRequest;
+import com.junbo.rating.spec.model.subscription.SubsRatingType;
 import com.junbo.subscription.clientproxy.PaymentGateway;
 import com.junbo.subscription.clientproxy.RatingGateway;
 import com.junbo.subscription.core.SubscriptionAction;
@@ -16,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
@@ -34,11 +34,12 @@ public class ChargeAction implements SubscriptionAction {
     @Override
     public Subscription execute(Subscription subscription){
         //Rating
-        OfferRatingRequest request = new OfferRatingRequest();
-        request.setCurrency("USD");
-        //request.setOffers(subscription.getOfferId());
+        SubsRatingRequest request = new SubsRatingRequest();
+        request.setCurrency(subscription.getCurrency());
+        request.setType(SubsRatingType.PURCHASE);
+        request.setOfferId(subscription.getOfferId());
 
-        OfferRatingRequest response = ratingGateway.offerRating(request);
+        SubsRatingRequest response = ratingGateway.subsRating(request);
 
         PaymentTransaction paymentTransaction = new PaymentTransaction();
 
@@ -48,9 +49,9 @@ public class ChargeAction implements SubscriptionAction {
         paymentTransaction.setBillingRefId(subscription.getSubscriptionId().toString());
 
         ChargeInfo chargeInfo = new ChargeInfo();
-        chargeInfo.setCurrency("USD");
-        chargeInfo.setAmount(new BigDecimal(19.99));
-        chargeInfo.setCountry("US");
+        chargeInfo.setCurrency(subscription.getCurrency());
+        chargeInfo.setAmount(request.getAmount());
+        chargeInfo.setCountry(subscription.getCountry());
         paymentTransaction.setChargeInfo(chargeInfo);
 
         //LOGGER.info('name=Charge_Balance. balance currency: {}, amount: {}, pi id: {}',balance.currency, balance.totalAmount, balance.piId);

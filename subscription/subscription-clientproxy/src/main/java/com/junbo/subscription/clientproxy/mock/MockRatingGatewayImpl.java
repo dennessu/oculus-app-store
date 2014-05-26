@@ -5,15 +5,18 @@
  */
 package com.junbo.subscription.clientproxy.mock;
 
-import com.junbo.rating.spec.model.request.OfferRatingRequest;
+import com.junbo.rating.spec.model.subscription.SubsRatingRequest;
 import com.junbo.subscription.clientproxy.impl.RatingGatewayImpl;
+
+import java.math.BigDecimal;
 
 /**
  * Created by Administrator on 14-5-20.
  */
 public class MockRatingGatewayImpl extends RatingGatewayImpl{
     @Override
-    public OfferRatingRequest offerRating(OfferRatingRequest request){
+    public SubsRatingRequest subsRating(SubsRatingRequest request){
+        request.setAmount(new BigDecimal(1.99));
         return request;
     }
 }

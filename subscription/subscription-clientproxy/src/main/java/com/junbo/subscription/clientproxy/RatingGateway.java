@@ -5,10 +5,11 @@
  */
 package com.junbo.subscription.clientproxy;
 
-import com.junbo.rating.spec.model.request.OfferRatingRequest;
+import com.junbo.rating.spec.model.subscription.SubsRatingRequest;
+
 /**
  * Created by Administrator on 14-5-20.
  */
 public interface RatingGateway {
-    OfferRatingRequest offerRating(OfferRatingRequest request);
+    SubsRatingRequest subsRating(SubsRatingRequest request);
 }

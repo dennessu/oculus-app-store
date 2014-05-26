@@ -73,6 +73,8 @@ public class SubscriptionDaoTest extends AbstractTestNGSpringContextTests {
         subscription.setOfferId(idGenerator.nextId());
         subscription.setSubsStartDate(new Date(114, 0, 22));
         subscription.setSubsEndDate(new Date(114, 0, 28));
+        subscription.setCountry("US");
+        subscription.setCurrency("USD");
 
         subscription.setStatus(SubscriptionStatus.ENABLED.toString());
         return subscription;

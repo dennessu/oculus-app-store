@@ -13,6 +13,8 @@
               tracking_uuid uuid not null,
               user_id bigint not null,
               pi_id bigint,
+              country_code char(2),
+              currency_code char(3),
               status_id smallint not null,
               item_id varchar(256) not null,
               subs_start_date timestamp,
