@@ -1,40 +1,44 @@
 =====Envrionment Preparation=====
 [Postgres Installation]
 #server info
-	os: ubuntu Linux
-	account: silkcloud
-	
+	os: Ubuntu Linux
+	linux accounts:
+		[devops] used to install software, in sudo list
+		[silkcloud] used to deployment PGHA, not included in sudo list
+	postgresql user:
+		[silkcloud] auto created by PGHA script
+
 #install postgresql
-	sudo apt-get update
-	sudo apt-get install -y postgresql-9.3
+	[devops] sudo apt-get update
+	[devops] sudo apt-get install -y postgresql-9.3
 	
 #create link
-	sudo rm /usr/bin/psql
-	sudo rm /usr/bin/dropdb
-	sudo rm /usr/bin/createdb
-	sudo ln -s /usr/lib/postgresql/9.3/bin/psql /usr/bin/psql
-	sudo ln -s /usr/lib/postgresql/9.3/bin/pg_ctl /usr/bin/pg_ctl
-	sudo ln -s /usr/lib/postgresql/9.3/bin/createdb /usr/bin/createdb
-	sudo ln -s /usr/lib/postgresql/9.3/bin/dropdb /usr/bin/dropdb
+	[devops] sudo rm /usr/bin/psql
+	[devops] sudo rm /usr/bin/dropdb
+	[devops] sudo rm /usr/bin/createdb
+	[devops] sudo ln -s /usr/lib/postgresql/9.3/bin/psql /usr/bin/psql
+	[devops] sudo ln -s /usr/lib/postgresql/9.3/bin/pg_ctl /usr/bin/pg_ctl
+	[devops] sudo ln -s /usr/lib/postgresql/9.3/bin/createdb /usr/bin/createdb
+	[devops] sudo ln -s /usr/lib/postgresql/9.3/bin/dropdb /usr/bin/dropdb
 
 #clean up exisitng db instance
-	sudo kill $(fuser -n tcp 5432 2> /dev/null)
-	sudo chown silkcloud /var/run/postgresql
+	[devops] sudo kill $(fuser -n tcp 5432 2> /dev/null)
+	[devops] sudo chown silkcloud /var/run/postgresql
 
 [PGBouncer Installation]
-	#sudo apt-get install -y pgbouncer
+	[devops] sudo apt-get install -y pgbouncer
 
 [SSH key]
-	ssh-keygen -t rsa (no passphase)
-	chmod 600 /home/silkcloud/.ssh/id_rsa*
-	connect to the remote machine you want to login to, edit /home/silkcloud/.ssh/authorized_keys and append the content of id_rsa.pub file
+	[devops] ssh-keygen -t rsa (no passphase)
+	[devops] chmod 600 /home/silkcloud/.ssh/id_rsa*
+	[devops] connect to the remote machine you want to login to, edit /home/silkcloud/.ssh/authorized_keys and append the content of id_rsa.pub file
 
 =====Deloyment Preparation=====
 #[bastion] enlish source tree
-	https://github.com/junbo/main/tree/master/scripts/pgha
+	[devops] https://github.com/junbo/main/tree/master/scripts/pgha
 
 #[bastion] upload all PGHA scripts to master and slave servers
-	./upload_script.sh
+	[devops] ./upload_script.sh
 
 #[master] clean up master
 	$DEPLOYMENT_PATH/purge_master.sh
