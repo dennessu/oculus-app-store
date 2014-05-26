@@ -9,6 +9,7 @@ import com.junbo.common.id.FulfilmentId;
 import com.junbo.common.id.OrderId;
 import com.junbo.fulfilment.spec.model.FulfilmentItem;
 import com.junbo.fulfilment.spec.model.FulfilmentRequest;
+import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -23,6 +24,7 @@ import javax.ws.rs.core.MediaType;
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
+@InProcessCallable
 public interface FulfilmentResource {
     @POST
     @Path("/")
