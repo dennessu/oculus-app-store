@@ -35,8 +35,10 @@ public class Communication extends PropertyAssignedAwareResourceMeta implements 
     @ApiModelProperty(position = 5, required = true, value = " An array of Country Links to the countries where the given communication is available.")
     private List<CountryId> regions = new ArrayList<>();
 
-    @ApiModelProperty(position = 6, required = true, value = "A mapping from locale-code to a JSON object containing all the locale-specific descriptions about this communication. " +
-            "Note: the 'locales' property provides localization of the communication's meta-data (e.g., for those who administrate or configure the communication)," +
+    @ApiModelProperty(position = 6, required = true, value = "A mapping from locale-code to a JSON object containing " +
+            "all the locale-specific descriptions about this communication. " +
+            "Note: the 'locales' property provides localization of the communication's meta-data " +
+            "(e.g., for those who administrate or configure the communication)," +
             " whereas the 'translations' property lists the localizations of the communication body (e.g., for readers). " +
             "They are different, e.g., it might be possible to use French to administrate a Chinese communication.")
     private Map<String, JsonNode> locales = new HashMap<>();
