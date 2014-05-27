@@ -10,6 +10,7 @@ import com.junbo.catalog.spec.model.common.PageableGetOptions;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.OfferAttributeId;
 import com.junbo.common.id.OfferId;
+import com.junbo.common.id.UserId;
 
 import javax.ws.rs.QueryParam;
 import java.util.Set;
@@ -26,6 +27,8 @@ public class OffersGetOptions extends PageableGetOptions {
     private OfferAttributeId category;
     @QueryParam("itemId")
     private ItemId itemId;
+    @QueryParam("developerId")
+    private UserId ownerId;
 
     public Set<OfferId> getOfferIds() {
         return offerIds;
@@ -57,5 +60,13 @@ public class OffersGetOptions extends PageableGetOptions {
 
     public void setItemId(ItemId itemId) {
         this.itemId = itemId;
+    }
+
+    public UserId getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(UserId ownerId) {
+        this.ownerId = ownerId;
     }
 }

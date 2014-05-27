@@ -96,8 +96,10 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
             if (CollectionUtils.isEmpty(itemIds)) {
                 return Collections.emptyList();
             }
-            options.setItemIds(itemIds);
-            return itemRepo.getItems(options);
+
+            ItemsGetOptions getOptions = new ItemsGetOptions();
+            getOptions.setItemIds(itemIds);
+            return itemRepo.getItems(getOptions);
         } else {
             return itemRepo.getItems(options);
         }
