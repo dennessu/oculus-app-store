@@ -4,8 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.sharding.dualwrite.strategies
-import bitronix.tm.BitronixTransaction
-import bitronix.tm.BitronixTransactionManager
+
 import com.junbo.common.cloudant.CloudantEntity
 import com.junbo.common.util.Context
 import com.junbo.langur.core.promise.Promise
@@ -19,7 +18,10 @@ import groovy.transform.CompileStatic
 import org.springframework.transaction.support.TransactionSynchronizationAdapter
 import org.springframework.transaction.support.TransactionSynchronizationManager
 
+import javax.transaction.Transaction
+import javax.transaction.TransactionManager
 import java.lang.reflect.Method
+
 /**
  * SyncDualWriteStrategy.
  *
@@ -37,14 +39,14 @@ public class SyncDualWriteStrategy implements DataAccessStrategy {
     private BaseRepository repositoryImpl;
     private DualWriteQueue dualWriteQueue;
     private PendingActionReplayer replayer;
-    private BitronixTransactionManager bitronixTransactionManager;
+    private TransactionManager transactionManager;
 
     private ThreadLocal<Stack<DualWriteTransactionSynchronization>> transactionStack = new ThreadLocal<>();
 
     public SyncDualWriteStrategy(BaseRepository repositoryImpl,
                                  PendingActionRepository pendingActionRepository,
                                  PendingActionReplayer replayer,
-                                 BitronixTransactionManager bitronixTransactionManager) {
+                                 TransactionManager transactionManager) {
 
         this.repositoryImpl = repositoryImpl;
 
@@ -53,7 +55,7 @@ public class SyncDualWriteStrategy implements DataAccessStrategy {
         this.dualWriteQueue = new DualWriteQueue(pendingActionRepository, true /* trackTransactionActions */);
 
         this.replayer = replayer;
-        this.bitronixTransactionManager = bitronixTransactionManager;
+        this.transactionManager = transactionManager;
     }
 
     @Override
@@ -99,11 +101,11 @@ public class SyncDualWriteStrategy implements DataAccessStrategy {
 
     private class DualWriteTransactionSynchronization extends TransactionSynchronizationAdapter {
         private List<PendingAction> pendingActions;
-        private BitronixTransaction transaction;
+        private Transaction transaction;
 
         public DualWriteTransactionSynchronization() {
             pendingActions = new ArrayList<>();
-            transaction = bitronixTransactionManager.currentTransaction;
+            transaction = transactionManager.transaction;
 
             if (transaction == null) {
                 throw new RuntimeException("SyncDualWriteStrategy can only be used within transactions.");
@@ -125,7 +127,7 @@ public class SyncDualWriteStrategy implements DataAccessStrategy {
         }
 
         public boolean isTransactionChanged() {
-            return bitronixTransactionManager.currentTransaction != this.transaction;
+            return transactionManager.transaction != this.transaction;
         }
 
         @Override
