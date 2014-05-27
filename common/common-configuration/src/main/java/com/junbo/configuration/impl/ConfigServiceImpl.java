@@ -8,8 +8,6 @@ package com.junbo.configuration.impl;
 
 import com.junbo.configuration.ConfigContext;
 import com.junbo.configuration.crypto.CipherService;
-import com.junbo.configuration.crypto.HexHelper;
-import com.junbo.configuration.crypto.Os;
 import com.junbo.configuration.crypto.impl.AESCipherServiceImpl;
 import com.junbo.utils.FileWatcher;
 import org.slf4j.Logger;
@@ -17,14 +15,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.nio.file.*;
 import java.nio.file.attribute.PosixFileAttributes;
 import java.nio.file.attribute.PosixFilePermission;
-import java.security.Key;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.JarEntry;
@@ -72,7 +68,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
     private Properties finalProperties = new Properties();
 
     private ConfigChangeListenerMap listeners = new ConfigChangeListenerMap();
-    private CipherService cipherService = new AESCipherServiceImpl();
+    private CipherService cipherService;
     private String keyStr;
     //endregion
 
@@ -287,6 +283,8 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
         // Read jar configuration files
         jarProperties = readJarProperties();
 
+        cipherService = new AESCipherServiceImpl(keyStr);
+
         Properties commandLineProperties = System.getProperties();
 
         finalProperties = new Properties();
@@ -333,45 +331,43 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
             return null;
         }
 
-        if (Os.isFamily(Os.FAMILY_UNIX)) {
-            // check permission, it must be owner read and write only
+        // check permission, it must be owner read and write only
+        try {
+            Set<PosixFilePermission> permissions = null;
             try {
-                Set<PosixFilePermission> permissions
-                        = Files.readAttributes(file.toPath(), PosixFileAttributes.class, LinkOption.NOFOLLOW_LINKS).permissions();
-
-                if (CollectionUtils.isEmpty(permissions)) {
-                    logger.error("Permission check invalid.");
-                    throw new IllegalAccessException("Permission check invalid.");
+                permissions = Files.readAttributes(file.toPath(), PosixFileAttributes.class, LinkOption.NOFOLLOW_LINKS).permissions();
+            } catch (UnsupportedOperationException unSupportedOperationEx) {
+                logger.warn("Skip permission check.");
+                try {
+                    return readKeyFile(file);
+                } catch (Exception e) {
+                    throw new RuntimeException("Error read key file", e);
                 }
+            }
 
-                // Only support OWNER_READ and OWNER_WRITE
-                if (permissions.size() > 2) {
+            if (CollectionUtils.isEmpty(permissions)) {
+                logger.error("Permission check invalid.");
+                throw new IllegalAccessException("Permission check invalid.");
+            }
+
+            // Only support OWNER_READ and OWNER_WRITE
+            if (permissions.size() > 2) {
+                logger.error("Permission only valid for OWNER_READ and OWNER_WRITE.");
+                throw new IllegalAccessException("Permission only valid for OWNER_READ and OWNER_WRITE.");
+            }
+
+            Iterator<PosixFilePermission> iter = permissions.iterator();
+            while (iter.hasNext()) {
+                PosixFilePermission permission = iter.next();
+                if (permission != PosixFilePermission.OWNER_READ && permission != PosixFilePermission.OWNER_WRITE) {
                     logger.error("Permission only valid for OWNER_READ and OWNER_WRITE.");
                     throw new IllegalAccessException("Permission only valid for OWNER_READ and OWNER_WRITE.");
                 }
-
-                Iterator<PosixFilePermission> iter = permissions.iterator();
-                while (iter.hasNext()) {
-                    PosixFilePermission permission = iter.next();
-                    if (permission != PosixFilePermission.OWNER_READ && permission != PosixFilePermission.OWNER_WRITE) {
-                        logger.error("Permission only valid for OWNER_READ and OWNER_WRITE.");
-                        throw new IllegalAccessException("Permission only valid for OWNER_READ and OWNER_WRITE.");
-                    }
-                }
-
-                return readKeyFile(file);
-            } catch (Exception e) {
-                logger.error("Load key file error: " + e.getMessage());
-                throw new RuntimeException("Load key file error: " + e.getMessage());
             }
-        } else {
-            logger.warn("Skip permission check.");
-            try {
-                return readKeyFile(file);
-            } catch (Exception e) {
-                logger.error("Error read key file");
-                throw new RuntimeException("Error read key file");
-            }
+
+            return readKeyFile(file);
+        } catch (Exception e) {
+            throw new RuntimeException("Load key file error: ", e);
         }
     }
 
@@ -393,17 +389,10 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
         }
 
         if (StringUtils.isEmpty(keyStr)) {
-            logger.error("Key is missing.");
             throw new RuntimeException("Key is missing.");
         }
 
-        Key key = stringToKey(keyStr);
-        return cipherService.decrypt(encryptedValue, key);
-    }
-
-    private Key stringToKey(String keyStr) {
-        byte [] bytes = HexHelper.hexStringToByteArray(keyStr);
-        return new SecretKeySpec(bytes, 0, bytes.length, cipherService.getKeyAlgorithm());
+        return cipherService.decrypt(encryptedValue);
     }
 
     private String readKeyFile(File file) throws IOException {
@@ -419,7 +408,6 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
 
         br.close();
         if (CollectionUtils.isEmpty(list) || list.size() > 2) {
-            logger.error("Invalid file format");
             throw new RuntimeException("Invalid file format");
         }
         return list.get(0);

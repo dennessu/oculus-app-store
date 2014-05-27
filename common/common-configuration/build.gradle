@@ -6,6 +6,7 @@ dependencies {
     compile (libraries.spring_context)
 
     compile (libraries.slf4j_api)
+    compile (libraries.common_codec)
 
     runtime junboProject(':configuration-data')
 }

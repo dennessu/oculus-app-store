@@ -1,6 +1,9 @@
+@Grab(group='commons-codec', module='commons-codec', version='1.7')
+import org.apache.commons.codec.binary.Hex
+
+import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
-import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 import java.security.Key
@@ -13,7 +16,7 @@ if (args[0] == 'genKey' && args.size() == 1) {
     KeyGenerator kgen = KeyGenerator.getInstance("AES");
     // Generate the secret key specs.
     SecretKey skey = kgen.generateKey();
-    println("key=" + byteArrayToHex(skey.getEncoded())+"\n")
+    println("key=" + new String(Hex.encodeHex(skey.getEncoded(), false)))
 } else if (args[0] == 'encrypt' && args.size() == 3) {
     byte [] IV = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     String ALGORITHM = 'AES/CBC/PKCS5Padding'
@@ -31,7 +34,7 @@ if (args[0] == 'genKey' && args.size() == 1) {
         Cipher cipher = Cipher.getInstance(ALGORITHM)
         IvParameterSpec ivspec = new IvParameterSpec(IV);
         cipher.init(Cipher.ENCRYPT_MODE, skey, ivspec);
-        def value = byteArrayToHex(cipher.doFinal(message.getBytes("UTF-8")))
+        def value = Hex.encodeHex(cipher.doFinal(message.getBytes("UTF-8")), false)
         println("encryptValue="+value+"\n")
     } catch (Exception e) {
         throw new IllegalStateException('Encrypt error: ' + e.message)
@@ -47,57 +50,7 @@ void printUsage() {
     System.exit(0)
 }
 
-String byteArrayToHex(byte[] bytes) {
-    StringBuilder sb = new StringBuilder();
-
-    for (int index = 0; index < bytes.length; index ++) {
-        sb.append(byteToChar((byte)(bytes[index] & 0x0F)));
-        sb.append(byteToChar((byte)((bytes[index] & 0xF0) >> 4)));
-    }
-    return sb.toString();
-}
-
-char byteToChar(byte b) {
-    if (b < 0 || b >=16) {
-        throw new IllegalArgumentException("byte is too large [0..15].");
-    }
-
-    if (b >= 0 && b <= 9) {
-        return (char)(((Integer)'0') + (Integer)b)
-    }
-
-    if (b >= 10 && b <= 15) {
-        return (char)(((Integer)'A') + (Integer)(b - 10))
-    }
-}
-
-byte extractByte(char c) {
-    if (c >= '0' && c <='9') {
-        return (byte)(((Integer)c - (Integer)'0') & 0x0F);
-    }
-
-    if (c >= 'A' && c <= 'F') {
-        return (byte)((((Integer)c - (Integer)'A') & 0x0F) + 0x0A);
-    }
-
-    throw new IllegalArgumentException("Incorrect hex character");
-}
-
-byte[] hexStringToByteArray(String s) {
-    byte[] bytes = new byte[s.length() / 2];
-    for (int index = 0; index < s.length(); ) {
-        byte tempLow = extractByte(s.charAt(index));
-        byte tempHigh = extractByte(s.charAt(index + 1));
-
-        byte value = (byte)(tempHigh << 4 | tempLow);
-        bytes[index/2] = value;
-        index += 2;
-    }
-
-    return bytes;
-}
-
 SecretKey stringToKey(String keyStr) {
-    byte [] bytes = hexStringToByteArray(keyStr)
-    return new SecretKeySpec(bytes, 0, bytes.length, 'AES');
+    byte [] bytes = Hex.decodeHex(keyStr.toCharArray())
+    return new SecretKeySpec(bytes, 0, bytes.length, 'AES')
 }

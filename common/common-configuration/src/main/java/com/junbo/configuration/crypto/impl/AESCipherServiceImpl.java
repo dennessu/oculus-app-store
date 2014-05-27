@@ -7,31 +7,34 @@
 package com.junbo.configuration.crypto.impl;
 
 import com.junbo.configuration.crypto.CipherService;
-import com.junbo.configuration.crypto.HexHelper;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
+import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by liangfu on 5/26/14.
  */
 public class AESCipherServiceImpl implements CipherService {
 
+    private Key key;
+
+    public AESCipherServiceImpl(String keyStr) {
+        this.key = stringToKey(keyStr);
+    }
+
     private static final Logger LOGGER = LoggerFactory.getLogger(AESCipherServiceImpl.class);
     private static final byte[] IV = new byte[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     private static final String ALGORITHM = "AES/CBC/PKCS5Padding";
 
     @Override
-    public String encrypt(String message, Key key) {
+    public String encrypt(String message) {
         if (message == null) {
             LOGGER.error("message to encrypt is null.");
             throw new RuntimeException("message is null");
@@ -46,35 +49,15 @@ public class AESCipherServiceImpl implements CipherService {
             Cipher cipher = Cipher.getInstance(ALGORITHM);
             IvParameterSpec ivspec = new IvParameterSpec(IV);
             cipher.init(Cipher.ENCRYPT_MODE, key, ivspec);
-            return HexHelper.byteArrayToHex(cipher.doFinal(message.getBytes("UTF-8")));
-        } catch (NoSuchAlgorithmException noAlgorithmEx) {
-            LOGGER.error("Encrypt: NoSuchAlgorithmException:    " + noAlgorithmEx.getMessage());
-            throw new RuntimeException("Encrypt: NoSuchAlgorithmException: " + noAlgorithmEx.getMessage());
-        } catch (NoSuchPaddingException noPaddingEx) {
-            LOGGER.error("Encrypt: NoSuchPaddingException:  " + noPaddingEx.getMessage());
-            throw new RuntimeException("Encrypt: NoSuchPaddingException:   " + noPaddingEx.getMessage());
-        } catch (InvalidKeyException invalidKeyEx) {
-            LOGGER.error("Encrypt: InvalidKeyException: " + invalidKeyEx.getMessage());
-            throw new RuntimeException("Encrypt: InvalidKeyException:  " + invalidKeyEx.getMessage());
-        } catch (InvalidAlgorithmParameterException invalidAlgorithmEx) {
-            LOGGER.error("Encrypt: InvalidAlgorithmParameterException:  " + invalidAlgorithmEx.getMessage());
-            throw new RuntimeException("Encrypt: InvalidAlgorithmParameterException:   " + invalidAlgorithmEx.getMessage());
-        } catch (IllegalBlockSizeException illegalBlockSizeEx) {
-            LOGGER.error("Encrypt: IllegalBlockSizeException:   " + illegalBlockSizeEx.getMessage());
-            throw new RuntimeException("Encrypt: IllegalBlockSizeException:    " + illegalBlockSizeEx.getMessage());
-        } catch (BadPaddingException badPaddingEx) {
-            LOGGER.error("Encrypt: BadPaddingException: " + badPaddingEx.getMessage());
-            throw new RuntimeException("Encrypt: BadPaddingException:  " + badPaddingEx.getMessage());
+            return new String(Hex.encodeHex(cipher.doFinal(message.getBytes("UTF-8"))));
         } catch (Exception e) {
-            LOGGER.error("Encrypt: " + e.getMessage());
-            throw new RuntimeException("Encrypt: " + e.getMessage());
+            throw new RuntimeException("Encrypt exception: ", e);
         }
-
     }
 
     @Override
-    public String decrypt(String encryptMessage, Key key) {
-        if (encryptMessage == null) {
+    public String decrypt(String encryptedMessage) {
+        if (encryptedMessage == null) {
             LOGGER.error("message to decrypt is null.");
             throw new RuntimeException("message is null");
         }
@@ -88,34 +71,22 @@ public class AESCipherServiceImpl implements CipherService {
             Cipher cipher = Cipher.getInstance(ALGORITHM);
             IvParameterSpec ivspec = new IvParameterSpec(IV);
             cipher.init(Cipher.DECRYPT_MODE, key, ivspec);
-            return new String(cipher.doFinal(HexHelper.hexStringToByteArray(encryptMessage)), "UTF-8");
-        } catch (NoSuchAlgorithmException noAlgorithmEx) {
-            LOGGER.error("Encrypt:  NoSuchAlgorithmException: " + noAlgorithmEx.getMessage());
-            throw new RuntimeException("Encrypt:  NoSuchAlgorithmException: " + noAlgorithmEx.getMessage());
-        } catch (NoSuchPaddingException noPaddingEx) {
-            LOGGER.error("Encrypt: NoSuchPaddingException:  " + noPaddingEx.getMessage());
-            throw new RuntimeException("Encrypt: NoSuchPaddingException:  " + noPaddingEx.getMessage());
-        } catch (InvalidKeyException invalidKeyEx) {
-            LOGGER.error("Encrypt: InvalidKeyException: " + invalidKeyEx.getMessage());
-            throw new RuntimeException("Encrypt: InvalidKeyException: " + invalidKeyEx.getMessage());
-        } catch (InvalidAlgorithmParameterException invalidAlgorithmEx) {
-            LOGGER.error("Encrypt: InvalidAlgorithmParameterException:  " + invalidAlgorithmEx.getMessage());
-            throw new RuntimeException("Encrypt: InvalidAlgorithmParameterException:   " + invalidAlgorithmEx.getMessage());
-        } catch (IllegalBlockSizeException illegalBlockSizeEx) {
-            LOGGER.error("Encrypt: IllegalBlockSizeException:   " + illegalBlockSizeEx.getMessage());
-            throw new RuntimeException("Encrypt: IllegalBlockSizeException:    " + illegalBlockSizeEx.getMessage());
-        } catch (BadPaddingException badPaddingEx) {
-            LOGGER.error("Encrypt: BadPaddingException: " + badPaddingEx.getMessage());
-            throw new RuntimeException("Encrypt: BadPaddingException:  " + badPaddingEx.getMessage());
+            return new String(cipher.doFinal(Hex.decodeHex(encryptedMessage.toCharArray())), "UTF-8");
         } catch (Exception e) {
-            LOGGER.error("Encrypt: " + e.getMessage());
-            throw new RuntimeException("Encrypt: " + e.getMessage());
+            throw new RuntimeException("Decrypt exception : ", e);
         }
-
     }
 
-    @Override
-    public String getKeyAlgorithm() {
-        return "AES";
+    private Key stringToKey(String keyStr) {
+        if (StringUtils.isEmpty(keyStr)) {
+            LOGGER.error("Key is not found.");
+            return null;
+        }
+        try {
+            byte [] bytes = Hex.decodeHex(keyStr.toCharArray());
+            return new SecretKeySpec(bytes, 0, bytes.length, "AES");
+        } catch (DecoderException decodeException) {
+            throw new RuntimeException("Key String to AES key: ", decodeException);
+        }
     }
 }

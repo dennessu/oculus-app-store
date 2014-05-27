@@ -6,13 +6,10 @@
 
 package com.junbo.configuration.crypto;
 
-import java.security.Key;
-
 /**
  * Created by liangfu on 5/7/14.
  */
 public interface CipherService {
-    String encrypt(String message, Key key);
-    String decrypt(String encryptMessage, Key key);
-    String getKeyAlgorithm();
+    String encrypt(String message);
+    String decrypt(String encryptedMessage);
 }
