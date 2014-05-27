@@ -62,7 +62,7 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
                 }
             }
         } else if (options.getPublished()==null && options.getOwnerId()==null && options.getCategory()==null) {
-            offers = super.queryView("by_offerId", null, options.getValidSize(), options.getValidStart(), true);
+            offers = super.queryView("by_offerId", null, options.getValidSize(), options.getValidStart(), false);
             options.setNextBookmark(null);
         } else {
             StringBuilder sb = new StringBuilder();

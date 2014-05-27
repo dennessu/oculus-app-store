@@ -11,11 +11,15 @@ import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
 import com.junbo.catalog.spec.resource.OfferRevisionResource;
 import com.junbo.common.id.OfferRevisionId;
+import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import java.util.List;
 
 /**
@@ -31,6 +35,25 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
         Results<OfferRevision> results = new Results<>();
         results.setItems(revisions);
         return Promise.pure(results);
+    }
+
+    private String buildNextUrl(OfferRevisionsGetOptions options) {
+        if (!CollectionUtils.isEmpty(options.getOfferIds()) || !CollectionUtils.isEmpty(options.getRevisionIds())) {
+            return null;
+        }
+
+        UriBuilder builder = UriBuilder.fromPath(IdUtil.getResourcePathPrefix()).path("items");
+        if (options.getStatus() != null) {
+            builder.queryParam("status", options.getStatus().toUpperCase());
+        }
+        builder.queryParam("size", options.getValidSize());
+        if (!StringUtils.isEmpty(options.getNextBookmark())) {
+            builder.queryParam("bookmark", options.getNextBookmark());
+        } else {
+            builder.queryParam("start", options.nextStart());
+        }
+
+        return builder.toTemplate();
     }
 
     @Override

@@ -48,17 +48,35 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
         if (!CollectionUtils.isEmpty(options.getRevisionIds())) {
             for (ItemRevisionId revisionId : options.getRevisionIds()) {
                 ItemRevision revision = super.cloudantGet(revisionId.toString());
-                itemRevisions.add(revision);
-            }
-            Iterator<ItemRevision> iterator = itemRevisions.iterator();
-            while(iterator.hasNext()) {
-                ItemRevision revision = iterator.next();
-                if (!StringUtils.isEmpty(options.getStatus()) && !options.getStatus().equals(revision.getStatus())) {
-                    iterator.remove();
+                if (revision==null) {
+                    continue;
+                } else if (!StringUtils.isEmpty(options.getStatus())
+                        && !options.getStatus().equalsIgnoreCase(revision.getStatus())) {
+                    continue;
+                } else {
+                    itemRevisions.add(revision);
                 }
             }
+        } else if (!CollectionUtils.isEmpty(options.getItemIds())) {
+            for (ItemId itemId : options.getItemIds()) {
+                List<ItemRevision> revisions = super.queryView("by_itemId", itemId.toString());
+                if (StringUtils.isEmpty(options.getStatus())) {
+                    continue;
+                }
+                Iterator<ItemRevision> iterator = revisions.iterator();
+                while (iterator.hasNext()) {
+                    ItemRevision revision = iterator.next();
+                    if (!options.getStatus().equalsIgnoreCase(revision.getStatus())) {
+                        iterator.remove();
+                    }
+                }
+                itemRevisions.addAll(revisions);
+            }
+        } else if (!StringUtils.isEmpty(options.getStatus())){
+            itemRevisions = super.queryView("by_status", options.getStatus().toUpperCase(),
+                    options.getValidSize(), options.getValidStart(), false);
         } else {
-            //TODO:..
+            itemRevisions = super.queryView("by_itemId", null, options.getValidSize(), options.getValidStart(), false);
         }
 
         return itemRevisions;
@@ -134,6 +152,11 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
         view.setMap("function(doc) {emit(doc.itemId, doc._id)}");
         view.setResultClass(String.class);
         viewMap.put("by_itemId", view);
+
+        view = new CloudantViews.CloudantView();
+        view.setMap("function(doc) {if (doc.status){ emit(doc.status, doc._id); }}");
+        view.setResultClass(String.class);
+        viewMap.put("by_status", view);
 
         view = new CloudantViews.CloudantView();
         view.setMap(

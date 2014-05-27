@@ -84,6 +84,9 @@ public class ItemResourceImpl implements ItemResource {
         if (!StringUtils.isEmpty(options.getType())) {
             builder.queryParam("type", options.getType());
         }
+        if (options.getOwnerId() != null) {
+            builder.queryParam("developerId", options.getOwnerId());
+        }
         builder.queryParam("size", options.getValidSize());
         if (!StringUtils.isEmpty(options.getNextBookmark())) {
             builder.queryParam("bookmark", options.getNextBookmark());

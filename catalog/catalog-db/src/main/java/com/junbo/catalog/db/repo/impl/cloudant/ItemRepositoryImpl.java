@@ -67,7 +67,7 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
                 }
             }
         } else if (StringUtils.isEmpty(options.getType()) && options.getGenre()==null && options.getOwnerId()==null) {
-            items = super.queryView("by_itemId", null, options.getValidSize(), options.getValidStart(), true);
+            items = super.queryView("by_itemId", null, options.getValidSize(), options.getValidStart(), false);
             options.setNextBookmark(null);
         } else {
             StringBuilder sb = new StringBuilder();
