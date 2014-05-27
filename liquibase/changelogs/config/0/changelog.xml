@@ -70,6 +70,7 @@
             insert into email_template(id,source,action,locale,name,provider_name,placeholder_names) values(4,'Oculus','AppApproval','en_US','Oculus.AppApproval.en_US','mandrill.com','["username","appname"]');
             insert into email_template(id,source,action,locale,name,provider_name,placeholder_names) values(5,'Oculus','EmailVerification','en_US','Oculus.EmailVerification.en_US','mandrill.com','["name","verify_link"]');
             insert into email_template(id,source,action,locale,name,provider_name,placeholder_names) values(6,'SilkCloud','EmailVerification','en_US','SilkCloud.EmailVerification.en_US','mandrill.com','["name","verify_link"]');
+            insert into email_template(id,source,action,locale,name,provider_name,placeholder_names) values(7,'Oculus','PasswordReset','en_US','Oculus.PasswordReset.en_US','mandrill.com','["name","reset_password_link"]');
 
         ]]>
         </sql>
