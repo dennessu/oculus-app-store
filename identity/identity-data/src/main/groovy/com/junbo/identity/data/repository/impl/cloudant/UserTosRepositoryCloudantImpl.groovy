@@ -2,6 +2,8 @@ package com.junbo.identity.data.repository.impl.cloudant
 
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
+import com.junbo.common.id.TosId
+import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTosAgreementId
 import com.junbo.identity.data.repository.UserTosRepository
 import com.junbo.identity.spec.v1.model.UserTosAgreement
@@ -66,6 +68,24 @@ class UserTosRepositoryCloudantImpl extends CloudantClient<UserTosAgreement> imp
     }
 
     @Override
+    Promise<List<UserTosAgreement>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+        def list = super.queryView('by_user_id', userId.toString(), limit, offset, false)
+        return Promise.pure(list)
+    }
+
+    @Override
+    Promise<List<UserTosAgreement>> searchByTosId(TosId tosId, Integer limit, Integer offset) {
+        def list = super.queryView('by_tos_id', tosId.toString(), limit, offset, false)
+        return Promise.pure(list)
+    }
+
+    @Override
+    Promise<List<UserTosAgreement>> searchByUserIdAndTosId(UserId userId, TosId tosId, Integer limit, Integer offset) {
+        def list = super.queryView('by_user_id_tos_id', "${userId.toString()}:${tosId.toString()}", limit, offset, false)
+        return Promise.pure(list)
+    }
+
+    @Override
     Promise<Void> delete(UserTosAgreementId id) {
         super.cloudantDelete(id.toString())
         return Promise.pure(null)
@@ -77,7 +97,18 @@ class UserTosRepositoryCloudantImpl extends CloudantClient<UserTosAgreement> imp
                             map: 'function(doc) {' +
                                     '  emit(doc.userId, doc._id)' +
                                     '}',
-                            resultClass: String)
+                            resultClass: String),
+                    'by_tos_id': new CloudantViews.CloudantView(
+                            map: 'function(doc) {' +
+                                    '  emit(doc.tosId, doc._id)' +
+                                    '}',
+                            resultClass: String),
+                    'by_user_id_tos_id': new CloudantViews.CloudantView(
+                            map: 'function(doc) {' +
+                                    ' emit(doc.userId + \':\' + doc.tosId, doc._id)' +
+                                    '}',
+                            resultClass: String
+                    )
             ]
     )
 }

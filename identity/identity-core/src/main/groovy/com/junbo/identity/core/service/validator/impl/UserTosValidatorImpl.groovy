@@ -3,6 +3,7 @@ package com.junbo.identity.core.service.validator.impl
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTosAgreementId
 import com.junbo.identity.core.service.validator.UserTosValidator
+import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.TosRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.data.repository.UserTosRepository
@@ -29,33 +30,18 @@ class UserTosValidatorImpl implements UserTosValidator {
     private TosRepository tosRepository
 
     @Override
-    Promise<UserTosAgreement> validateForGet(UserId userId, UserTosAgreementId userTosId) {
-
-        if (userId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userId').exception()
-        }
+    Promise<UserTosAgreement> validateForGet(UserTosAgreementId userTosId) {
 
         if (userTosId == null) {
             throw AppErrors.INSTANCE.parameterRequired('userTosId').exception()
         }
 
-        return userRepository.get(userId).then { User user ->
-            if (user == null) {
-                throw AppErrors.INSTANCE.userNotFound(userId).exception()
+        return userTosRepository.get(userTosId).then { UserTosAgreement userTos ->
+            if (userTos == null) {
+                throw AppErrors.INSTANCE.userTosAgreementNotFound(userTosId).exception()
             }
 
-            return userTosRepository.get(userTosId).then { UserTosAgreement userTos ->
-                if (userTos == null) {
-                    throw AppErrors.INSTANCE.userTosAgreementNotFound(userTosId).exception()
-                }
-
-                if (userId != userTos.userId) {
-                    throw AppErrors.INSTANCE.parameterInvalid('userId and userTosAgreementId doesn\'t match.').
-                            exception()
-                }
-
-                return Promise.pure(userTos)
-            }
+            return Promise.pure(userTos)
         }
     }
 
@@ -65,48 +51,33 @@ class UserTosValidatorImpl implements UserTosValidator {
             throw new IllegalArgumentException('options is null')
         }
 
-        if (options.userId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userId').exception()
+        if (options.userId == null && options.tosId == null) {
+            throw AppErrors.INSTANCE.parameterRequired('userId or tosId').exception()
         }
 
         return Promise.pure(null)
     }
 
     @Override
-    Promise<Void> validateForCreate(UserId userId, UserTosAgreement userTos) {
-        if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
-        }
-
+    Promise<Void> validateForCreate(UserTosAgreement userTos) {
         if (userTos.id != null) {
             throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
         }
-        if (userTos.userId != null && userTos.userId != userId) {
-            throw AppErrors.INSTANCE.fieldInvalid('userId', userTos.userId.toString()).exception()
-        }
         return checkBasicUserTosInfo(userTos).then {
-            return userTosRepository.search(new UserTosAgreementListOptions(
-                    userId: userId,
-                    tosId: userTos.tosId
-            )).then { List<UserTosAgreement> existing ->
+            return userTosRepository.searchByUserIdAndTosId(userTos.userId, userTos.tosId, Integer.MAX_VALUE, 0).then {
+                List<UserTosAgreement> existing ->
                 if (!CollectionUtils.isEmpty(existing)) {
                     throw AppErrors.INSTANCE.fieldDuplicate('tosId').exception()
                 }
 
-                userTos.setUserId(userId)
                 return Promise.pure(null)
             }
         }
     }
 
     @Override
-    Promise<Void> validateForUpdate(UserId userId, UserTosAgreementId userTosId,
-                                    UserTosAgreement userTos, UserTosAgreement oldUserTos) {
-        if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
-        }
-
-        return validateForGet(userId, userTosId).then {
+    Promise<Void> validateForUpdate(UserTosAgreementId userTosId, UserTosAgreement userTos, UserTosAgreement oldUserTos) {
+        return validateForGet(userTosId).then {
             return checkBasicUserTosInfo(userTos)
         }.then {
             if (userTos.id == null) {
@@ -122,14 +93,12 @@ class UserTosValidatorImpl implements UserTosValidator {
             }
 
             if (userTos.tosId != oldUserTos.tosId) {
-                return userTosRepository.search(new UserTosAgreementListOptions(
-                        userId: userId,
-                        tosId: userTos.tosId
-                )).then { List<UserTosAgreement> existing ->
+                return userTosRepository.searchByUserIdAndTosId(userTos.userId, userTos.tosId, Integer.MAX_VALUE, 0).then {
+                    List<UserTosAgreement> existing ->
                     if (!CollectionUtils.isEmpty(existing)) {
                         throw AppErrors.INSTANCE.fieldDuplicate('tosId').exception()
                     }
-                    userTos.setUserId(userId)
+
                     return Promise.pure(null)
                 }
             }
@@ -141,6 +110,10 @@ class UserTosValidatorImpl implements UserTosValidator {
     private Promise<Void> checkBasicUserTosInfo(UserTosAgreement userTos) {
         if (userTos == null) {
             throw new IllegalArgumentException('userTos is null')
+        }
+
+        if (userTos.userId == null) {
+            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
         }
 
         if (userTos.tosId == null) {
@@ -160,7 +133,17 @@ class UserTosValidatorImpl implements UserTosValidator {
                 throw AppErrors.INSTANCE.tosNotFound(userTos.tosId).exception()
             }
 
-            return Promise.pure(null)
+            return userRepository.get(userTos.userId).then { User user ->
+                if (user == null) {
+                    throw AppErrors.INSTANCE.userNotFound(userTos.userId).exception()
+                }
+
+                if (user.isAnonymous || user.status != UserStatus.ACTIVE.toString()) {
+                    throw AppErrors.INSTANCE.userInInvalidStatus(userTos.userId).exception()
+                }
+
+                return Promise.pure(null)
+            }
         }
     }
 

@@ -34,10 +34,10 @@ public class UserCredential extends PropertyAssignedAwareResourceMeta implements
     @ApiModelProperty(position = 4, required = true, value = "Credential type, it must be in [PASSWORD, PIN].")
     private String type;
 
-    @ApiModelProperty(position = 5, required = false, value = "Credential expire time.")
+    @ApiModelProperty(position = 5, required = false, value = "Credential expiration time, must be ISO 8601.")
     private Date expiresBy;
 
-    @ApiModelProperty(position = 6, required = false, value = "Whether need to change credential next login.")
+    @ApiModelProperty(position = 6, required = false, value = "Whether user need to change credential next time login.")
     private Boolean changeAtNextLogin;
 
     @Override

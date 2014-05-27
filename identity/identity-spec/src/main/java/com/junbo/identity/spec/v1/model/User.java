@@ -21,28 +21,25 @@ import java.util.List;
  * Created by liangfu on 4/3/14.
  */
 public class User extends PropertyAssignedAwareResourceMeta implements Identifiable<UserId> {
-    @ApiModelProperty(position = 1, required = true, value = "[Nullable]The id of user resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The Link to the User resource.")
     @JsonProperty("self")
     private UserId id;
 
     @ApiModelProperty(position = 2, required = true,
-            value = "The username of the user, it can be null if it is anonymous user or login through authenticators.")
+            value = "[Nullable] The username of the user, or null if isAnonymous or if this user logs in only through authenticators.")
     private String username;
 
-    @ApiModelProperty(position = 3, required = false, value = "The preferred locale of the user.")
+    @ApiModelProperty(position = 3, required = false, value = "Link to the the User's preferred Locale.")
     private LocaleId preferredLocale;
 
-    @ApiModelProperty(position = 4, required = false,
-            value = "The preferred timezone of the user, must be the format as UTC+08:00.")
+    @ApiModelProperty(position = 4, required = false, value = "The preferred timezone of the user, must be the format as UTC+08:00.")
     private String preferredTimezone;
 
-    @ApiModelProperty(position = 5, required = true, value = "Is Anonymous. " +
-            "If username is null and authenticator isn't null, the value will be true;" +
-            "else, the value is false. Anonymous user can't have authenticator.")
+    @ApiModelProperty(position = 5, required = true, value = "True if/only if this User is anonymous " +
+            "(happens when 'username' is non-null and/or the 'authenticators' list is non-empty)")
     private Boolean isAnonymous;
 
-    @ApiModelProperty(position = 5, required = false, value = "User status. " +
-            "It must be in [ACTIVE, SUSPEND, BANNED DELETED].")
+    @ApiModelProperty(position = 5, required = false, value = "User status. It must be in [ACTIVE, SUSPEND, BANNED DELETED].")
     private String status;
 
     @ApiModelProperty(position = 5, required = false, value = "The address book.")
@@ -54,34 +51,37 @@ public class User extends PropertyAssignedAwareResourceMeta implements Identifia
     @ApiModelProperty(position = 5, required = false, value = "The personal email information.")
     private List<UserPersonalInfoLink> emails;
 
-    @ApiModelProperty(position = 6, required = false, value = "The personal name information.")
+    @ApiModelProperty(position = 6, required = false, value = "The PersonalInfo resource that contains the user's name (given name, family name, etc.).")
     private UserPersonalInfoLink name;
 
-    @ApiModelProperty(position = 7, required = false, value = "The personal birthday information.")
+    @ApiModelProperty(position = 7, required = false, value = "The personalInfo Link to the personalInfo resource, which is date of birth of the user.")
     private UserPersonalInfoLink dob;
 
-    @ApiModelProperty(position = 8, required = false, value = "The personal textMessages information.")
+    @ApiModelProperty(position = 8, required = false, value = "The textMsg list, an array of personalInfo Links, " +
+            "the Links to the current txtMessage list that the user has,every link has a label such as \"secret1\".")
     private List<UserPersonalInfoLink> textMessages;
 
-    @ApiModelProperty(position = 9, required = false, value = "The personal qq information.")
+    @ApiModelProperty(position = 9, required = false, value = "The QQ list, an array of personalInfo Links, " +
+            "the Links to the current QQ list that the user has,every link has a label such as \"business QQ\".")
     private List<UserPersonalInfoLink> qqs;
 
-    @ApiModelProperty(position = 10, required = false, value = "The personal whatsapp information.")
+    @ApiModelProperty(position = 10, required = false, value = "The WhatsApp list, an array of personalInfo Links, " +
+            "the Links to the current WhatsApp list that the user has,every link has a label such as \"business WhatsApp\".")
     private List<UserPersonalInfoLink> whatsApps;
 
-    @ApiModelProperty(position = 11, required = false, value = "The personal passport information.")
+    @ApiModelProperty(position = 11, required = false, value = "The personalInfo Link to the personalInfo resource, which is Passport of the user.")
     private UserPersonalInfoLink passport;
 
-    @ApiModelProperty(position = 12, required = false, value = "The personal government id information.")
+    @ApiModelProperty(position = 12, required = false, value = "The personalInfo Link to the personalInfo resource, which is Government ID of the user.")
     private UserPersonalInfoLink governmentId;
 
-    @ApiModelProperty(position = 13, required = false, value = "The personal drivers license information.")
+    @ApiModelProperty(position = 13, required = false, value = "The personalInfo Link to the personalInfo resource, which is Driver License of the user.")
     private UserPersonalInfoLink driversLicense;
 
-    @ApiModelProperty(position = 14, required = false, value = "The personal gender information.")
+    @ApiModelProperty(position = 14, required = false, value = "The personalInfo Link to the personalInfo resource, which is Gender of the user.")
     private UserPersonalInfoLink gender;
 
-    @ApiModelProperty(position = 6, required = false, value = "[Nullable]User Group memberships.")
+    @ApiModelProperty(position = 6, required = false, value = " A link to the Groups resource, search the groups that contain the user.")
     @HateoasLink("/user-group-memberships?userId={id}")
     private Link groupMemeberships;
 
@@ -89,52 +89,55 @@ public class User extends PropertyAssignedAwareResourceMeta implements Identifia
     @HateoasLink("/groups?userId={id}")
     private Link groups;
 
-    @ApiModelProperty(position = 8, required = false, value = "[Nullable]Devices attaching to the user.")
+    @ApiModelProperty(position = 8, required = false, value = "Devices attaching to the user.")
     @HateoasLink("/devices?userId={id}")
     private Link devices;
 
-    @ApiModelProperty(position = 9, required = false,
-            value = "[Nullable]Authenticators attaching to the user.")
+    @ApiModelProperty(position = 9, required = false, value = "[Not nullable, possibly empty]Link to Authenticators attaching to the user.")
     @HateoasLink("/authenticators?userId={id}")
     private Link authenticators;
 
-    @ApiModelProperty(position = 10, required = false, value = "[Nullable]Tos user agree.")
-    @HateoasLink("/users/{id}/tos-agreements")
+    @ApiModelProperty(position = 10, required = false, value = "[Not nullable, possibly empty]Array of links to the Tos user agree record.")
+    @HateoasLink("tos-agreements?userId={id}")
     private Link tosAgreements;
 
-    @ApiModelProperty(position = 11, required = false, value = "[Nullable]User Credential history.")
+    @ApiModelProperty(position = 11, required = false, value = "[Client Immutable] A Link to UserCredential resource to Search user credentials of the user.")
     @HateoasLink("/users/{id}/credentials")
     private Link credentials;
 
-    @ApiModelProperty(position = 12, required = false, value = "[Nullable]User Credential Attempt history.")
+    @ApiModelProperty(position = 12, required = false, value = " [Client Immutable] A Link to CredentialAttempt-List resource to " +
+            "Search credential attempts of the user.")
     @HateoasLink("/credential-attempts?userId={id}")
     private Link credentialAttempts;
 
-    @ApiModelProperty(position = 13, required = false, value = "[Nullable]User selecting optins")
+    @ApiModelProperty(position = 13, required = false, value = "[Client Immutable] A Link to OptIn-List resource to Search opt-in of the user.")
     @HateoasLink("/opt-ins?userId={id}")
     private Link optins;
 
-    @ApiModelProperty(position = 15, required = false, value = "[Nullable]User Security questions")
+    @ApiModelProperty(position = 15, required = false, value = "[Client Immutable] A Link to SecurityQuestion-List resource to " +
+            "Search Security Questions of the user.")
     @HateoasLink("/users/{id}/security-questions")
     private Link securityQuestions;
 
-    @ApiModelProperty(position = 16, required = false, value = "[Nullable]User Security quesiton attempts.")
+    @ApiModelProperty(position = 16, required = false, value = "[Client Immutable] A Link to SecurityQuestionAttempt-List " +
+            "resource to Search Security Questions Attempts of the user.")
     @HateoasLink("/users/{id}/security-question-attempts")
     private Link securityQuestionAttempts;
 
-    @ApiModelProperty(position = 17, required = false, value = "[Nullable]User Payment Instruments.")
+    @ApiModelProperty(position = 17, required = false, value = "[Client Immutable] A Link to PaymentInstrument-List resource to " +
+            "Search Payment Instruments of the user.")
     @HateoasLink("/payment-instruments?userId={id}")
     private Link paymentInstruments;
 
-    @ApiModelProperty(position = 19, required = false, value = "[Nullable]User orders.")
+    @ApiModelProperty(position = 19, required = false, value = "[Client Immutable] A Link to Order-List resource to Search orders of the user.")
     @HateoasLink("/orders?userId={id}")
     private Link orders;
 
-    @ApiModelProperty(position = 20, required = false, value = "[Nullable]User cart.")
+    @ApiModelProperty(position = 20, required = false, value = "[Client Immutable] A Link to Cart-List resource to Search the primary cart of the user.")
     @HateoasLink("/users/{id}/carts/primary")
     private Link cart;
 
-    @ApiModelProperty(position = 21, required = false, value = "[Nullable]User entitlements.")
+    @ApiModelProperty(position = 21, required = false, value = "[Client Immutable] A Link to Entitlement-List resource to Search the entitlements of the user.")
     @HateoasLink("/entitlements?userId={id}")
     private Link entitlements;
 

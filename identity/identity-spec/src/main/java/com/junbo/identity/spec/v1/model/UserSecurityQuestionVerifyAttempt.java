@@ -21,31 +21,37 @@ public class UserSecurityQuestionVerifyAttempt extends PropertyAssignedAwareReso
         implements Identifiable<UserSecurityQuestionVerifyAttemptId> {
 
     @ApiModelProperty(position = 1, required = true,
-            value = "[Nullable]The id of user security question attempt.")
+            value = "[Client Immutable] Link to the user security question attempt.")
     @JsonProperty("self")
     private UserSecurityQuestionVerifyAttemptId id;
 
-    @ApiModelProperty(position = 2, required = false, value = "The ip address of the verify attempt caller.")
+    @ApiModelProperty(position = 2, required = false, value = "[Nullable]The ip address where the security question attempt is initiated.")
     private String ipAddress;
 
-    @ApiModelProperty(position = 3, required = false, value = "The user agent of the verify attempt caller.")
+    @ApiModelProperty(position = 3, required = false, value = "[Nullable]The agent where the UserSecurityQuestionVerifyAttempt is passed through. " +
+            "For example, if user do UserSecurityQuestionVerifyAttempt via a webkit from game \"Angry Bird\", " +
+            "the userAgent will be the Webkit(FireFox or Chrome, etc).")
     private String userAgent;
 
-    @ApiModelProperty(position = 4, required = false, value = "The client id of the verify attempt caller.")
+    @ApiModelProperty(position = 4, required = false, value = "The OAuth client ID for the component where the UserTeleAttempt is initiated. " +
+            "For example, if user do theUserTeleAttempt via a webkit from game \"Angry Bird\", " +
+            "the clientId will be the clientId string for the game \"Angry Bird\". " +
+            "The clientId is a string developer get from Oculus platform and embed into the game binary. " +
+            "It then get embedded to the game binary, and get passed everytime game binary call into Oculus API to identify the game.")
     private ClientId clientId;
 
-    @ApiModelProperty(position = 5, required = false, value = "[Nullable]Whether the attempt is success.")
+    @ApiModelProperty(position = 5, required = false, value = "[Client Immutable]Whether the attempt was success.")
     @JsonProperty("wasSuccessful")
     private Boolean succeeded;
 
     @ApiModelProperty(position = 6, required = true, value = "User security question answer.")
     private String value;
 
-    @ApiModelProperty(position = 7, required = true, value = "User security question resource.")
+    @ApiModelProperty(position = 7, required = true, value = "Link to User security question resource.")
     @JsonProperty("userSecurityQuestion")
     private UserSecurityQuestionId userSecurityQuestionId;
 
-    @ApiModelProperty(position = 8, required = true, value = "User resource.")
+    @ApiModelProperty(position = 8, required = true, value = "User who this security question verify attempt is for.")
     @JsonProperty("user")
     private UserId userId;
 

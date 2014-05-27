@@ -5,7 +5,6 @@
  */
 package com.junbo.identity.spec.v1.resource;
 
-import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserTosAgreementId;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.UserTosAgreement;
@@ -26,42 +25,37 @@ import javax.ws.rs.core.MediaType;
 @Api(value = "users")
 @RestResource
 @InProcessCallable
-@Path("/users/{userId}/tos-agreements")
+@Path("/tos-agreements")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public interface UserTosAgreementResource {
     @ApiOperation("Create one user tos agreement")
     @POST
-    Promise<UserTosAgreement> create(@PathParam("userId") UserId userId, UserTosAgreement userTosAgreement);
+    Promise<UserTosAgreement> create(UserTosAgreement userTosAgreement);
 
     @ApiOperation("Get one user tos agreement")
     @GET
     @Path("/{tosAgreementId}")
-    Promise<UserTosAgreement> get(@PathParam("userId") UserId userId,
-                                  @PathParam("tosAgreementId") UserTosAgreementId userTosAgreementId,
+    Promise<UserTosAgreement> get(@PathParam("tosAgreementId") UserTosAgreementId userTosAgreementId,
                                   @BeanParam UserTosAgreementGetOptions getOptions);
 
     @POST
     @Path("/{tosAgreementId}")
-    Promise<UserTosAgreement> patch(@PathParam("userId") UserId userId,
-                                    @PathParam("tosAgreementId") UserTosAgreementId userTosAgreementId,
+    Promise<UserTosAgreement> patch(@PathParam("tosAgreementId") UserTosAgreementId userTosAgreementId,
                                     UserTosAgreement userTosAgreement);
 
     @ApiOperation("Update one user tos agreement")
     @PUT
     @Path("/{tosAgreementId}")
-    Promise<UserTosAgreement> put(@PathParam("userId") UserId userId,
-                                  @PathParam("tosAgreementId") UserTosAgreementId userTosAgreementId,
+    Promise<UserTosAgreement> put(@PathParam("tosAgreementId") UserTosAgreementId userTosAgreementId,
                                   UserTosAgreement userTosAgreement);
 
     @ApiOperation("Delete one user tos agreement")
     @DELETE
     @Path("/{tosAgreementId}")
-    Promise<Void> delete(@PathParam("userId") UserId userId,
-                         @PathParam("tosAgreementId") UserTosAgreementId userTosAgreementId);
+    Promise<Void> delete(@PathParam("tosAgreementId") UserTosAgreementId userTosAgreementId);
 
     @ApiOperation("Search user tos agreements")
     @GET
-    Promise<Results<UserTosAgreement>> list(@PathParam("userId") UserId userId,
-                                            @BeanParam UserTosAgreementListOptions listOptions);
+    Promise<Results<UserTosAgreement>> list(@BeanParam UserTosAgreementListOptions listOptions);
 }

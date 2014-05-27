@@ -20,19 +20,19 @@ import java.util.Date;
  */
 public class UserTosAgreement extends PropertyAssignedAwareResourceMeta implements Identifiable<UserTosAgreementId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "[Nullable]The id of the user agreement resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The Link to the user tos agreement resource.")
     @JsonProperty("self")
     private UserTosAgreementId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "The user resource.")
+    @ApiModelProperty(position = 2, required = true, value = "Link to the user resource.")
     @JsonProperty("user")
     private UserId userId;
 
-    @ApiModelProperty(position = 3, required = true, value = "The tos resource.")
+    @ApiModelProperty(position = 3, required = true, value = "Link to the tos resource.")
     @JsonProperty("tos")
     private TosId tosId;
 
-    @ApiModelProperty(position = 4, required = false, value = "[Nullable]The tos accept time.")
+    @ApiModelProperty(position = 4, required = false, value = "[Nullable]The tos accept time, must be ISO 8601 format.")
     private Date agreementTime;
 
     public UserTosAgreementId getId() {

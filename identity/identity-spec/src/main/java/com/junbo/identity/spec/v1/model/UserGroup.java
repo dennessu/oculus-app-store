@@ -19,15 +19,15 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 public class UserGroup extends PropertyAssignedAwareResourceMeta implements Identifiable<UserGroupId> {
 
     @ApiModelProperty(position = 1, required = true,
-            value = "[Nullable]The id of the user group membership resource.")
+            value = "[Client Immutable]Link to the user group membership resource.")
     @JsonProperty("self")
     private UserGroupId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "The user resource.")
+    @ApiModelProperty(position = 2, required = true, value = "The user who associate with a group in this user Group membership.")
     @JsonProperty("user")
     private UserId userId;
 
-    @ApiModelProperty(position = 3, required = true, value = "The group resource.")
+    @ApiModelProperty(position = 3, required = true, value = "The group which associate with a user in this user group membership.")
     @JsonProperty("group")
     private GroupId groupId;
 
