@@ -4,7 +4,6 @@ import com.junbo.billing.clientproxy.IdentityFacade
 import com.junbo.billing.clientproxy.PaymentFacade
 import com.junbo.billing.core.service.CurrencyService
 import com.junbo.billing.db.repository.BalanceRepository
-import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.Balance

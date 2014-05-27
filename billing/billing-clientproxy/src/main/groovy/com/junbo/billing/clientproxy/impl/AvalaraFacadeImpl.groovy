@@ -63,12 +63,17 @@ class AvalaraFacadeImpl implements TaxFacade {
 
 
     @Override
-    Promise<Balance> calculateTax(Balance balance, Address shippingAddress, Address piAddress) {
+    Promise<Balance> calculateTaxQuote(Balance balance, Address shippingAddress, Address piAddress) {
         GetTaxRequest request = generateGetTaxRequest(balance, shippingAddress, piAddress)
         LOGGER.info('name=Get_Tax_Request, request={}', request.toString())
         return calculateTax(request).then { GetTaxResponse response ->
             return Promise.pure(updateBalance(response, balance))
         }
+    }
+
+    @Override
+    Promise<Balance> calculateTax(Balance balance, Address shippingAddress, Address piAddress) {
+        return calculateTaxQuote(balance, shippingAddress, piAddress)
     }
 
     @Override
