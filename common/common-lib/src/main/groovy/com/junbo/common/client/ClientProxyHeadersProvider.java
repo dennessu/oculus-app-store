@@ -28,13 +28,14 @@ public class ClientProxyHeadersProvider implements HeadersProvider {
         MultivaluedMap<String, String> result = new StringKeyIgnoreCaseMultivaluedMap<>();
         MultivaluedMap<String, String> source = JunboHttpContext.getRequestHeaders();
 
-        for (String key : forwardedHeaders) {
-            List<String> value = source.get(key);
-            if (value != null) {
-                result.put(key, value);
+        if (source != null) {
+            for (String key : forwardedHeaders) {
+                List<String> value = source.get(key);
+                if (value != null) {
+                    result.put(key, value);
+                }
             }
         }
-
         return result;
     }
 }
