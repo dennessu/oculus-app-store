@@ -33,49 +33,45 @@ class ScopeEndpointImpl implements ScopeEndpoint {
     /**
      * Endpoint to create a scope.
      * The requester should provide an access token with scope of 'scope.manage'.
-     * @param authorization The http header Authorization, contains the access token in Bearer format.
      * @param scope The request body of the to-be-created scope.
      * @return The created scope.
      */
     @Override
-    Promise<Scope> postScope(String authorization, Scope scope) {
-        return Promise.pure(scopeService.saveScope(authorization, scope))
+    Promise<Scope> postScope(Scope scope) {
+        return Promise.pure(scopeService.saveScope(scope))
     }
 
     /**
      * Endpoint to retrieve a scope's information.
      * The requester should provide an access token with scope of 'scope.info'.
-     * @param authorization The http header Authorization, contains the access token in Bearer format.
      * @param scopeName The scope name of the scope to be retrieved.
      * @return The scope information with the given scope name.
      */
     @Override
-    Promise<Scope> getScope(String authorization, String scopeName) {
-        return Promise.pure(scopeService.getScope(authorization, scopeName))
+    Promise<Scope> getScope(String scopeName) {
+        return Promise.pure(scopeService.getScope(scopeName))
     }
 
     /**
      * Endpoint to retrieve a list of scopes' information with given scope names list.
      * The requester should provide an access token with scope of 'scope.info'.
-     * @param authorization The http header Authorization, contains the access token in Bearer format.
      * @param scopeNames The scope names of the scope to be retrieved, delimited by comma
      * @return The scopes information with the given scope names.
      */
     @Override
-    Promise<List<Scope>> getByScopeNames(String authorization, String scopeNames) {
-        return Promise.pure(scopeService.getScopes(authorization, scopeNames))
+    Promise<List<Scope>> getByScopeNames(String scopeNames) {
+        return Promise.pure(scopeService.getScopes(scopeNames))
     }
 
     /**
      * Endpoint to update a scope's information.
      * The requester should provide an access token with scope of 'scope.manage'.
-     * @param authorization The http header Authorization, contains the access token in Bearer format.
      * @param scopeName The scope name of the scope to be updated.
      * @param scope The request body of the scope to be updated.
      * @return The full scope information (updated version).
      */
     @Override
-    Promise<Scope> putScope(String authorization, String scopeName, Scope scope) {
-        return Promise.pure(scopeService.updateScope(authorization, scopeName, scope))
+    Promise<Scope> putScope(String scopeName, Scope scope) {
+        return Promise.pure(scopeService.updateScope(scopeName, scope))
     }
 }

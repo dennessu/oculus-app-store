@@ -1,0 +1,4 @@
+{
+    "name": "identity.service",
+    "description": "Scope for the service account to get/create/update the identity information."
+}

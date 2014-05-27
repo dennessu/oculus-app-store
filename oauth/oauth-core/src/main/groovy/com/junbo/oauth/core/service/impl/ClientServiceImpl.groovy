@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.core.service.impl
 
+import com.junbo.authorization.AuthorizeContext
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.ClientService
 import com.junbo.oauth.core.service.ScopeService
@@ -13,8 +14,8 @@ import com.junbo.oauth.core.util.UriUtil
 import com.junbo.oauth.db.exception.DBUpdateConflictException
 import com.junbo.oauth.db.generator.TokenGenerator
 import com.junbo.oauth.db.repo.ClientRepository
-import com.junbo.oauth.spec.model.AccessToken
 import com.junbo.oauth.spec.model.Client
+import com.junbo.oauth.spec.model.TokenInfo
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
@@ -58,16 +59,15 @@ class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    Client saveClient(String authorization, Client client) {
-        AccessToken accessToken = tokenService.extractAccessToken(authorization)
-
-        if (!accessToken.scopes.contains(CLIENT_REGISTER_SCOPE)) {
+    Client saveClient(Client client) {
+        if (!AuthorizeContext.hasScopes(CLIENT_REGISTER_SCOPE)) {
             throw AppExceptions.INSTANCE.insufficientScope().exception()
         }
 
         validateClient(client)
 
-        client.ownerUserId = accessToken.userId
+        TokenInfo tokenInfo = AuthorizeContext.currentTokenInfo
+        client.ownerUserId = tokenInfo.sub.value
         String clientId = tokenGenerator.generateClientId()
         while (clientRepository.getClient(clientId) != null) {
             clientId = tokenGenerator.generateClientId()
@@ -82,22 +82,19 @@ class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    Client getClient(String authorization, String clientId) {
-        AccessToken accessToken = tokenService.extractAccessToken(authorization)
-
-        if (!accessToken.scopes.contains(CLIENT_REGISTER_SCOPE)) {
+    Client getClient(String clientId) {
+        if (!AuthorizeContext.hasScopes(CLIENT_REGISTER_SCOPE)) {
             throw AppExceptions.INSTANCE.insufficientScope().exception()
         }
 
         Client client = clientRepository.getClient(clientId)
 
+        TokenInfo tokenInfo = AuthorizeContext.currentTokenInfo
         if (client == null) {
-            client = clientRepository.getClient(accessToken.clientId)
-            tokenService.revokeAccessToken(accessToken.tokenValue, client)
             throw AppExceptions.INSTANCE.notExistClient(clientId).exception()
         }
 
-        if (client.ownerUserId != accessToken.userId) {
+        if (client.ownerUserId != tokenInfo.sub.value) {
             throw AppExceptions.INSTANCE.notClientOwner().exception()
         }
 
@@ -105,18 +102,14 @@ class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    Client getClientInfo(String authorization, String clientId) {
-        AccessToken accessToken = tokenService.extractAccessToken(authorization)
-
-        if (!accessToken.scopes.contains(CLIENT_INFO_SCOPE)) {
+    Client getClientInfo(String clientId) {
+        if (!AuthorizeContext.hasScopes(CLIENT_INFO_SCOPE)) {
             throw AppExceptions.INSTANCE.insufficientScope().exception()
         }
 
         Client client = clientRepository.getClient(clientId)
 
         if (client == null) {
-            client = clientRepository.getClient(accessToken.clientId)
-            tokenService.revokeAccessToken(accessToken.tokenValue, client)
             throw AppExceptions.INSTANCE.notExistClient(clientId).exception()
         }
 
@@ -129,12 +122,12 @@ class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    Client updateClient(String authorization, String clientId, Client client) {
+    Client updateClient(String clientId, Client client) {
         if (StringUtils.isEmpty(client.revision)) {
             throw AppExceptions.INSTANCE.missingRevision().exception()
         }
 
-        Client existingClient = getClient(authorization, clientId)
+        Client existingClient = getClient(clientId)
 
         if (client.revision != existingClient.revision) {
             throw AppExceptions.INSTANCE.updateConflict().exception()
@@ -177,15 +170,15 @@ class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    void deleteClient(String authorization, String clientId) {
-        Client client = getClient(authorization, clientId)
+    void deleteClient(String clientId) {
+        Client client = getClient(clientId)
 
         clientRepository.deleteClient(client)
     }
 
     @Override
-    Client resetSecret(String authorization, String clientId) {
-        Client client = getClient(authorization, clientId)
+    Client resetSecret(String clientId) {
+        Client client = getClient(clientId)
 
         client.clientSecret = tokenGenerator.generateClientSecret()
 

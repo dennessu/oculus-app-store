@@ -36,5 +36,5 @@
 
     <bean id="defaultApiDefinitionResourceClientFactory" class="com.junbo.authorization.spec.resource.proxy.ApiDefinitionResourceClientProxyFactory"/>
 
-    <bean id="defaultApiDefinitionEndpointRouter" parent="routingRouterBase" />
+    <bean id="defaultApiDefinitionResourceRouter" parent="routingRouterBase" />
 </beans>
