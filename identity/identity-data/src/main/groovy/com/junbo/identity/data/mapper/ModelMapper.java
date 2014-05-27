@@ -7,10 +7,8 @@
 package com.junbo.identity.data.mapper;
 
 import com.junbo.identity.data.entity.device.DeviceEntity;
-import com.junbo.identity.data.entity.domaindata.SecurityQuestionEntity;
 import com.junbo.identity.data.entity.group.GroupEntity;
 import com.junbo.identity.data.entity.user.*;
-import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
 import com.junbo.identity.spec.model.users.UserPassword;
 import com.junbo.identity.spec.model.users.UserPin;
 import com.junbo.identity.spec.v1.model.*;
@@ -42,9 +40,6 @@ public interface ModelMapper {
 
     UserPin toUserPin(UserPinEntity entity, MappingContext context);
     UserPinEntity toUserPin(UserPin entity, MappingContext context);
-
-    SecurityQuestion toSecurityQuestion(SecurityQuestionEntity entity, MappingContext context);
-    SecurityQuestionEntity toSecurityQuestion(SecurityQuestion entity, MappingContext context);
 
     UserEntity toUser(User user, MappingContext context);
     User toUser(UserEntity userEntity, MappingContext context);

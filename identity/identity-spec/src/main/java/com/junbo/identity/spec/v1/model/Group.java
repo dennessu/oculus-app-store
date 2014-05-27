@@ -19,22 +19,23 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  */
 public class Group extends PropertyAssignedAwareResourceMeta implements Identifiable<GroupId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "[Nullable]The id of the group resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Nullable]Link to this Group resource.")
     @JsonProperty("self")
     private GroupId id;
 
     @ApiModelProperty(position = 2, required = true, value = "The name of the group resource.")
     private String name;
 
-    @ApiModelProperty(position = 3, required = false, value = "[Nullable]The status of the group.")
+    @ApiModelProperty(position = 3, required = false, value = "[Nullable] The status of the group; When do POST call, " +
+            "the isActive maybe null if client doesn't provide so. When do GET call, the isActive will always have a value..")
     @JsonProperty("isActive")
     private Boolean active;
 
-    @ApiModelProperty(position = 5, required = false, value = "[Nullable]The membership in this group")
+    @ApiModelProperty(position = 5, required = false, value = "[Client Immutable] UserGroupMembership resources in this group.")
     @HateoasLink("/user-group-memberships?groupId={id}")
     private Link userMemberships;
 
-    @ApiModelProperty(position = 4, required = false, value = "[Nullable]Users in this group.")
+    @ApiModelProperty(position = 4, required = false, value = "[Client Immutable] Users in this group.")
     @HateoasLink("/users?groupId={id}")
     private Link users;
 

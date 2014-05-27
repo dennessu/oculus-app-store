@@ -5,12 +5,15 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
 
 /**
  * Created by liangfu on 4/26/14.
  */
 public class UserDOB {
+    @ApiModelProperty(position = 1, required = true, value = "The birthday of the user.")
     private Date info;
 
     public Date getInfo() {

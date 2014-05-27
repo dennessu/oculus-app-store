@@ -20,11 +20,11 @@ import java.util.List;
  */
 public class Tos extends PropertyAssignedAwareResourceMeta implements Identifiable<TosId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "[Nullable]The id of the tos resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The Link to the tos resource.")
     @JsonProperty("self")
     private TosId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "The type of the TOS, pick from an enum list (EULA, TOS, PP, etc).")
+    @ApiModelProperty(position = 2, required = true, value = "The type of the TOS, pick from an enum list (EULA, TOS, PP).")
     private String type;
 
     @ApiModelProperty(position = 3, required = true, value = "Array of links to Country resource, represents this tos is good in which country.")
