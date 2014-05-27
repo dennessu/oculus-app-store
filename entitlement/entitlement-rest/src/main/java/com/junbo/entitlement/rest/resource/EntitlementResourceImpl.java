@@ -15,6 +15,7 @@ import com.junbo.common.util.IdFormatter;
 import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.lib.CommonUtils;
 import com.junbo.entitlement.core.EntitlementService;
+import com.junbo.entitlement.spec.error.AppErrors;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.EntitlementTransfer;
@@ -44,6 +45,7 @@ public class EntitlementResourceImpl implements EntitlementResource {
 
     @Override
     public Promise<Entitlement> postEntitlement(Entitlement entitlement) {
+        checkBodyNotNull(entitlement);
         Entitlement existing = getByTrackingUuid(entitlement.getUserId(), entitlement.getTrackingUuid());
         return Promise.pure(existing != null ? existing :
                 entitlementService.addEntitlement(entitlement));
@@ -51,6 +53,7 @@ public class EntitlementResourceImpl implements EntitlementResource {
 
     @Override
     public Promise<Entitlement> updateEntitlement(EntitlementId entitlementId, Entitlement entitlement) {
+        checkBodyNotNull(entitlement);
         Entitlement existing = getByTrackingUuid(entitlement.getUserId(), entitlement.getTrackingUuid());
         return Promise.pure(existing != null ? existing :
                 entitlementService.updateEntitlement(entitlementId.getValue(), entitlement));
@@ -106,6 +109,7 @@ public class EntitlementResourceImpl implements EntitlementResource {
 
     @Override
     public Promise<Entitlement> transferEntitlement(EntitlementTransfer entitlementTransfer) {
+        checkBodyNotNull(entitlementTransfer);
         Entitlement existing = getByTrackingUuid(entitlementTransfer.getTargetUserId(),
                 entitlementTransfer.getTrackingUuid());
         return Promise.pure(existing != null ? existing :
@@ -119,5 +123,11 @@ public class EntitlementResourceImpl implements EntitlementResource {
             return existingEntitlement;
         }
         return null;
+    }
+
+    private void checkBodyNotNull(Object value){
+        if(value == null){
+            throw AppErrors.INSTANCE.common("body should not be null").exception();
+        }
     }
 }
