@@ -8,6 +8,7 @@ package com.junbo.test.order.apihelper;
 
 import com.junbo.order.spec.model.Order;
 import com.junbo.order.spec.model.OrderEvent;
+import com.junbo.order.spec.model.Subledger;
 
 import java.util.List;
 
@@ -51,5 +52,9 @@ public interface OrderService {
     String updateTentativeOrder(Order order) throws Exception;
 
     String updateTentativeOrder(Order order, int expectedResponseCode) throws Exception;
+
+    Subledger getSubledger() throws Exception;
+
+    Subledger getSubledger(int expectedResponseCode) throws Exception;
 
 }

@@ -5,8 +5,18 @@
  */
 package com.junbo.test.order;
 
+import com.junbo.order.spec.model.Order;
+import com.junbo.test.common.Entities.enums.Country;
+import com.junbo.test.common.Entities.enums.Currency;
+import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
+import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
+import com.junbo.test.common.Entities.paymentInstruments.PayPalInfo;
+import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.property.*;
 import org.testng.annotations.Test;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
 
 /**
  * Created by weiyu_000 on 5/26/14.
@@ -34,6 +44,29 @@ public class SubledgerTesting extends BaseOrderTestClass {
     )
     @Test
     public void testGetSubledger() throws Exception {
+        ArrayList<String> offerList = new ArrayList<>();
+        offerList.add(offer_digital_normal1);
+
+        String uid1 = testDataProvider.createUser();
+        CreditCardInfo creditCardInfo1 = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String creditCardId1 = testDataProvider.postPaymentInstrument(uid1, creditCardInfo1);
+
+        String order1 = testDataProvider.postOrder(
+                uid1, Country.DEFAULT, Currency.DEFAULT, creditCardId1, false, offerList);
+
+        testDataProvider.updateOrderTentative(order1, false);
+
+        CreditCardInfo creditCardInfo2 = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String creditCardId2 = testDataProvider.postPaymentInstrument(uid1, creditCardInfo2);
+
+        String order2 = testDataProvider.postOrder(
+                uid1, Country.DEFAULT, Currency.DEFAULT, creditCardId2, false, offerList);
+
+        testDataProvider.updateOrderTentative(order1, false);
+
+        testDataProvider.getSubledger();
+
+        //TODO verify subledger
 
     }
 
@@ -59,7 +92,54 @@ public class SubledgerTesting extends BaseOrderTestClass {
             }
     )
     @Test
-    public void testMixedOrderStatusSubledger() throws Exception {}
+    public void testMixedOrderStatusSubledger() throws Exception {
+        ArrayList<String> offerList = new ArrayList<>();
+        offerList.add(offer_digital_normal1);
+
+        String uid1 = testDataProvider.createUser();
+        CreditCardInfo creditCardInfo1 = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String creditCardId1 = testDataProvider.postPaymentInstrument(uid1, creditCardInfo1);
+
+        String order1 = testDataProvider.postOrder(
+                uid1, Country.DEFAULT, Currency.DEFAULT, creditCardId1, false, offerList);
+
+        offerList.clear();
+        offerList.add(offer_physical_normal1);
+        String order2 = testDataProvider.postOrder(
+                uid1, Country.DEFAULT, Currency.DEFAULT, creditCardId1, false, offerList);
+        testDataProvider.updateOrderTentative(order2, false);
+
+        String uid2 = testDataProvider.createUser();
+        PayPalInfo payPalInfo = PayPalInfo.getPayPalInfo(Country.DEFAULT);
+        String payPalId = testDataProvider.postPaymentInstrument(uid2, payPalInfo);
+
+        offerList.clear();
+        offerList.add(offer_digital_normal1);
+        String orderId3 = testDataProvider.postOrder(
+                uid2, Country.DEFAULT, Currency.DEFAULT, payPalId, false, offerList);
+
+        Order order = Master.getInstance().getOrder(orderId3);
+        order.setTentative(false);
+        order.setSuccessRedirectUrl("http://www.abc.com/");
+        order.setCancelRedirectUrl("http://www.abc.com/cancel/");
+        orderId3 = testDataProvider.updateOrder(order);
+
+        offerList.clear();
+        offerList.add(offer_physical_normal1);
+        EwalletInfo ewalletInfo = EwalletInfo.getEwalletInfo(Country.DEFAULT, Currency.DEFAULT);
+        String ewalletId = testDataProvider.postPaymentInstrument(uid2, ewalletInfo);
+        testDataProvider.creditWallet(uid2, new BigDecimal(100));
+
+        String order4 = testDataProvider.postOrder(
+                uid2, Country.DEFAULT, Currency.DEFAULT, ewalletId, true, offerList);
+
+        testDataProvider.updateOrderTentative(order4, false);
+
+        testDataProvider.getSubledger();
+
+        //TODO verify subledger
+
+    }
 
     @Property(
             priority = Priority.Dailies,
@@ -84,8 +164,7 @@ public class SubledgerTesting extends BaseOrderTestClass {
     @Test
     public void testRefundSubledger() throws Exception {
 
+        //TODO Waitting refund online
     }
-
-
 
 }

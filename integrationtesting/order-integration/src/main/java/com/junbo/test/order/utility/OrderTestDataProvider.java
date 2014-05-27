@@ -15,6 +15,7 @@ import com.junbo.common.id.UserId;
 import com.junbo.order.spec.model.Order;
 import com.junbo.order.spec.model.OrderItem;
 import com.junbo.order.spec.model.PaymentInfo;
+import com.junbo.order.spec.model.Subledger;
 import com.junbo.test.catalog.OfferService;
 import com.junbo.test.catalog.impl.OfferServiceImpl;
 import com.junbo.test.common.Entities.enums.Country;
@@ -122,6 +123,10 @@ public class OrderTestDataProvider {
 
     public String postOrder(Order order) throws Exception {
         return orderClient.postOrder(order);
+    }
+
+    public Subledger getSubledger() throws Exception{
+        return orderClient.getSubledger();
     }
 
 }
