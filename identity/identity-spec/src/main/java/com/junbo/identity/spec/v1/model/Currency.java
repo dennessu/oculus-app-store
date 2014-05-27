@@ -22,12 +22,13 @@ import java.util.Map;
  */
 public class Currency extends PropertyAssignedAwareResourceMeta implements Identifiable<CurrencyId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The id of the currency resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The Link to the currency resource.")
     @JsonProperty("self")
     private CurrencyId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "[Nullable]The currency code of the currency " +
-            "resource must be same with ID.")
+    @ApiModelProperty(position = 2, required = true, value = "[Nullable]The currency code of the currency resource; " +
+            "always the same with self.id; " +
+            "never displayed to users - use translationService(localeKeys.shortName) for that ")
     private String currencyCode;
 
     @ApiModelProperty(position = 3, required = false, value = "[Nullable]Countries link with default currency specified")
@@ -37,16 +38,17 @@ public class Currency extends PropertyAssignedAwareResourceMeta implements Ident
     @ApiModelProperty(position = 4, required = true, value = "The symbol of the currency resource.")
     private String symbol;
 
-    @ApiModelProperty(position = 5, required = true, value = "Position to put the symbol when show currency number (BEFORE, AFTER, etc).")
+    @ApiModelProperty(position = 5, required = true, value = "Position to put the symbol when show currency number (BEFORE, AFTER).")
     private String symbolPosition;
 
     @ApiModelProperty(position = 7, required = true, value = "The number of digits after decimal.")
     private Integer numberAfterDecimal;
 
-    @ApiModelProperty(position = 8, required = true, value = "The min authorize amount for this currency.")
+    @ApiModelProperty(position = 8, required = true, value = "The Minimal Amount of money for this currency to authorize and verify the payment Instrument.")
+    @JsonProperty("minimalAuthorizeAmount")
     private BigDecimal minAuthAmount;
 
-    @ApiModelProperty(position = 11, required = true, value = "The supported locales of the currency resource.")
+    @ApiModelProperty(position = 11, required = true, value = "Localizable properties and the corresponding Key value to look up via Translation service.")
     private Map<String, String> localeKeys = new HashMap<>();
 
     public CurrencyId getId() {
@@ -111,6 +113,7 @@ public class Currency extends PropertyAssignedAwareResourceMeta implements Ident
     public void setMinAuthAmount(BigDecimal minAuthAmount) {
         this.minAuthAmount = minAuthAmount;
         support.setPropertyAssigned("minAuthAmount");
+        support.setPropertyAssigned("minimalAuthorizeAmount");
     }
 
     public Map<String, String> getLocaleKeys() {

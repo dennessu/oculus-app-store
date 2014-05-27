@@ -24,30 +24,32 @@ import java.util.Map;
  */
 public class Country extends PropertyAssignedAwareResourceMeta implements Identifiable<CountryId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The id of the country resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The Link of the country resource.")
     @JsonProperty("self")
     private CountryId id;
 
     @ApiModelProperty(position = 2, required = true,
-            value = "[Nullable]The country code of the country resource, must be same with id. Client immutable; for query-convenience")
+            value = "[Nullable]The country code of the country resource, must be same as self.id.")
     private String countryCode;
 
-    @ApiModelProperty(position = 3, required = true, value = "The default locale of the country resource.")
+    @ApiModelProperty(position = 3, required = true, value = "Link to the Locale resource that the country should use by default.")
     private LocaleId defaultLocale;
 
-    @ApiModelProperty(position = 4, required = true, value = "The default currency of the country resource.")
+    @ApiModelProperty(position = 4, required = true, value = "Link to the Currency resource that the country should use by default.")
     private CurrencyId defaultCurrency;
 
-    @ApiModelProperty(position = 5, required = true, value = "The array of Links to the ageRating Boards supported in the country.")
+    @ApiModelProperty(position = 5, required = true, value = "The array of Links to the AgeRatingBoards supported in the country.")
     private List<RatingBoardId> ratingBoards = new ArrayList<>();
 
-    @ApiModelProperty(position = 6, required = true, value = "Sub country object mapping.")
+    @ApiModelProperty(position = 6, required = true, value = "Not optional, not nullable, possibly empty, a JSON object " +
+            "that maps from a code for the sub country (state, province, etc.) to a JSON object " +
+            "that contains the localization keys for the sub country's short and long names.")
     private Map<String, SubCountry> subCountries = new HashMap<>();
 
-    @ApiModelProperty(position = 7, required = true, value = "Array for supported locales in the country resource.")
+    @ApiModelProperty(position = 7, required = true, value = "Array for supported locale-Links to the locales appropriate for this country.")
     private List<LocaleId> supportedLocales = new ArrayList<>();
 
-    @ApiModelProperty(position = 8, required = true, value = "Localizable properties")
+    @ApiModelProperty(position = 8, required = true, value = "Localizable properties and the corresponding Key value to lookup in Translation service.")
     @JsonProperty("localeKeys")
     private Map<String, String> locales = new HashMap<>();
 

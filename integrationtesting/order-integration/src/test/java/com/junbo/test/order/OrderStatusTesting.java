@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * Created by weiyu_000 on 5/19/14.
  */
-public class OrderTesting extends BaseOrderTestClass {
+public class OrderStatusTesting extends BaseOrderTestClass {
 
     @Property(
             priority = Priority.BVT,
