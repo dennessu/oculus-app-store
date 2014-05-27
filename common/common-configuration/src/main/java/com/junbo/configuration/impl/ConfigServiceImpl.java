@@ -42,7 +42,7 @@ import java.util.jar.JarFile;
 public class ConfigServiceImpl implements com.junbo.configuration.ConfigService {
     //region private fields
     private static final String CONFIG_PROPERTY_FILE = "configuration.properties";
-    private static final String CONFIG_PASSWORD_KEY_FILE = "key.properties";
+    private static final String CONFIG_PASSWORD_KEY_FILE = "configuration.key";
     private static final String CONFIG_DIR_OPTS = "configDir";
     private static final String ACTIVE_ENV_OPTS = "activeEnv";
     private static final String ACTIVE_DC_OPTS = "activeDc";
@@ -310,10 +310,6 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
                 int endIndex = key.lastIndexOf(CRYPTOR_SUFFIX) - 1;
                 String newKey = key.substring(0, endIndex);
 
-                if (keyStr == null) {
-                    logger.error("Key is not found.");
-                    throw new RuntimeException("Key is not found.");
-                }
                 newProperties.put(newKey, decrypt(value));
             } else {
                 newProperties.put(key, value);
@@ -327,7 +323,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
         // check file exists
         File file = new File(path.toUri());
         if (!file.exists()) {
-            logger.warn("Key file doesn't exist.");
+            logger.warn("Key file doesn't exist: " + path.toUri().toString());
             return null;
         }
 
@@ -336,33 +332,23 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
             Set<PosixFilePermission> permissions = null;
             try {
                 permissions = Files.readAttributes(file.toPath(), PosixFileAttributes.class, LinkOption.NOFOLLOW_LINKS).permissions();
-            } catch (UnsupportedOperationException unSupportedOperationEx) {
-                logger.warn("Skip permission check.");
-                try {
-                    return readKeyFile(file);
-                } catch (Exception e) {
-                    throw new RuntimeException("Error read key file", e);
+
+                if (CollectionUtils.isEmpty(permissions)) {
+                    throw new IllegalAccessException("Permission check invalid.");
                 }
-            }
 
-            if (CollectionUtils.isEmpty(permissions)) {
-                logger.error("Permission check invalid.");
-                throw new IllegalAccessException("Permission check invalid.");
-            }
-
-            // Only support OWNER_READ and OWNER_WRITE
-            if (permissions.size() > 2) {
-                logger.error("Permission only valid for OWNER_READ and OWNER_WRITE.");
-                throw new IllegalAccessException("Permission only valid for OWNER_READ and OWNER_WRITE.");
-            }
-
-            Iterator<PosixFilePermission> iter = permissions.iterator();
-            while (iter.hasNext()) {
-                PosixFilePermission permission = iter.next();
-                if (permission != PosixFilePermission.OWNER_READ && permission != PosixFilePermission.OWNER_WRITE) {
-                    logger.error("Permission only valid for OWNER_READ and OWNER_WRITE.");
+                // Only support OWNER_READ and OWNER_WRITE
+                if (permissions.size() > 2) {
                     throw new IllegalAccessException("Permission only valid for OWNER_READ and OWNER_WRITE.");
                 }
+
+                for (PosixFilePermission permission : permissions) {
+                    if (permission != PosixFilePermission.OWNER_READ && permission != PosixFilePermission.OWNER_WRITE) {
+                        throw new IllegalAccessException("Permission only valid for OWNER_READ and OWNER_WRITE.");
+                    }
+                }
+            } catch (UnsupportedOperationException unSupportedOperationEx) {
+                logger.warn("Skip permission check.");
             }
 
             return readKeyFile(file);

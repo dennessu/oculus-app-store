@@ -36,13 +36,11 @@ public class AESCipherServiceImpl implements CipherService {
     @Override
     public String encrypt(String message) {
         if (message == null) {
-            LOGGER.error("message to encrypt is null.");
-            throw new RuntimeException("message is null");
+            throw new IllegalArgumentException("message is null");
         }
 
         if (key == null) {
-            LOGGER.error("key is null.");
-            throw new RuntimeException("key is null");
+            throw new IllegalStateException("key is null");
         }
 
         try {
@@ -58,13 +56,11 @@ public class AESCipherServiceImpl implements CipherService {
     @Override
     public String decrypt(String encryptedMessage) {
         if (encryptedMessage == null) {
-            LOGGER.error("message to decrypt is null.");
-            throw new RuntimeException("message is null");
+            throw new IllegalArgumentException("encryptedMessage is null");
         }
 
         if (key == null) {
-            LOGGER.error("key is null.");
-            throw new RuntimeException("key is null");
+            throw new IllegalStateException("key is null");
         }
 
         try {
@@ -79,7 +75,7 @@ public class AESCipherServiceImpl implements CipherService {
 
     private Key stringToKey(String keyStr) {
         if (StringUtils.isEmpty(keyStr)) {
-            LOGGER.error("Key is not found.");
+            LOGGER.warn("keyStr is empty.");
             return null;
         }
         try {
