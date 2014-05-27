@@ -39,7 +39,7 @@ public class SyncDualWriteStrategy implements DataAccessStrategy {
     private PendingActionReplayer replayer;
     private BitronixTransactionManager bitronixTransactionManager;
 
-    private static final ThreadLocal<Stack<DualWriteTransactionSynchronization>> transactionStack = new ThreadLocal<>();
+    private ThreadLocal<Stack<DualWriteTransactionSynchronization>> transactionStack = new ThreadLocal<>();
 
     public SyncDualWriteStrategy(BaseRepository repositoryImpl,
                                  PendingActionRepository pendingActionRepository,
