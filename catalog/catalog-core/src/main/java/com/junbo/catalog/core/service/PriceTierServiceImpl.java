@@ -53,8 +53,7 @@ public class PriceTierServiceImpl implements PriceTierService {
             }
             return priceTiers;
         } else {
-            options.ensurePagingValid();
-            return priceTierRepo.getPriceTiers(options.getStart(), options.getSize());
+            return priceTierRepo.getPriceTiers(options.getValidStart(), options.getValidSize());
         }
     }
 

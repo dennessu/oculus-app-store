@@ -14,23 +14,14 @@ import javax.ws.rs.QueryParam;
  * PageableGetOptions.
  */
 public class PageableGetOptions {
-    // paging params
     @QueryParam("start")
     private Integer start;
-
     @QueryParam("size")
     private Integer size;
+    @QueryParam("bookmark")
+    private String bookmark;
 
-    public PageableGetOptions ensurePagingValid() {
-        if (start == null || start < 0) {
-            start = Constants.DEFAULT_PAGING_START;
-        }
-        if (size == null || size < 0) {
-            size = Constants.DEFAULT_PAGING_SIZE;
-        }
-
-        return this;
-    }
+    private String nextBookmark;
 
     public Integer getStart() {
         return start;
@@ -46,5 +37,39 @@ public class PageableGetOptions {
 
     public void setSize(Integer size) {
         this.size = size;
+    }
+
+    public String getBookmark() {
+        return bookmark;
+    }
+
+    public void setBookmark(String bookmark) {
+        this.bookmark = bookmark;
+    }
+
+    public Integer getValidSize() {
+        if (size == null || size < 0) {
+            return Constants.DEFAULT_PAGING_SIZE;
+        }
+        return size;
+    }
+
+    public Integer getValidStart() {
+        if (start == null || start < 0) {
+            return Constants.DEFAULT_PAGING_START;
+        }
+        return start;
+    }
+
+    public Integer nextStart() {
+        return getValidStart() + getValidSize();
+    }
+
+    public String getNextBookmark() {
+        return nextBookmark;
+    }
+
+    public void setNextBookmark(String nextBookmark) {
+        this.nextBookmark = nextBookmark;
     }
 }

@@ -34,7 +34,7 @@
         <property name="asyncHttpClient" ref="commonAsyncHttpClient"/>
         <property name="couchDBUri" value="${common.cloudant.url}"/>
         <property name="couchDBUser" value="${common.cloudant.user}" />
-        <property name="couchDBPassword" value="${common.cloudant.password}" />"
+        <property name="couchDBPassword" value="${common.cloudant.password}" />
     </bean>
 
     <bean id="authorizationCodeDAO" class="com.junbo.oauth.db.dao.couch.CouchAuthorizationCodeDAOImpl" parent="baseDAO">

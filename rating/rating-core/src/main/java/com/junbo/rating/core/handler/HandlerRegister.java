@@ -6,8 +6,6 @@
 
 package com.junbo.rating.core.handler;
 
-import com.junbo.catalog.spec.model.promotion.criterion.Criterion;
-import com.junbo.rating.core.context.PriceRatingContext;
 import org.springframework.util.Assert;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,16 +20,15 @@ public final class HandlerRegister {
         this.register = register;
     }
 
-    public static boolean isSatisfied(Criterion criterion, PriceRatingContext context) {
-        Assert.notNull(criterion, "criterion");
-        Assert.notNull(criterion.getPredicate(), "predicate");
+    public static CriterionHandler getHandler(String predicate) {
+        Assert.notNull(predicate, "predicate");
 
-        CriterionHandler handler = register.get(criterion.getPredicate().toString());
+        CriterionHandler handler = register.get(predicate);
 
         if (handler == null) {
-            throw new IllegalStateException(criterion.getPredicate() + " handler is not registered.");
+            throw new IllegalStateException(predicate + " handler is not registered.");
         }
 
-        return handler.validate(criterion, context);
+        return handler;
     }
 }

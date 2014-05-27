@@ -12,10 +12,8 @@ import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.promotion.*;
 import com.junbo.catalog.spec.model.promotion.criterion.*;
 import com.junbo.rating.clientproxy.CatalogGateway;
-import com.junbo.rating.spec.fusion.EntryType;
-import com.junbo.rating.spec.fusion.LinkedEntry;
-import com.junbo.rating.spec.fusion.Price;
-import com.junbo.rating.spec.fusion.RatingOffer;
+import com.junbo.rating.common.util.Constants;
+import com.junbo.rating.spec.fusion.*;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -89,6 +87,16 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
                     setEntryId(201L);
                     setType(EntryType.ITEM);
                     setQuantity(1);
+                }});
+            }});
+            setEventActions(new HashMap<String, List<OfferAction>>() {{
+                put(Constants.PURCHASE_EVENT, new ArrayList<OfferAction>() {{
+                    add(new OfferAction() {{
+                        setType(Constants.CHARGE_ACTION);
+                        setPrice(new Price(PriceType.CUSTOM.name(), new HashMap<String, BigDecimal>() {{
+                            put("USD", new BigDecimal("9.99"));
+                        }}));
+                    }});
                 }});
             }});
         }};
