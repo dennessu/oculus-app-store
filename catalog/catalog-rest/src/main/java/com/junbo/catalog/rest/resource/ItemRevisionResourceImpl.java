@@ -46,7 +46,7 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
             return null;
         }
 
-        UriBuilder builder = UriBuilder.fromPath(IdUtil.getResourcePathPrefix()).path("items");
+        UriBuilder builder = UriBuilder.fromPath(IdUtil.getResourcePathPrefix()).path("item-revisions");
         if (options.getStatus() != null) {
             builder.queryParam("status", options.getStatus().toUpperCase());
         }

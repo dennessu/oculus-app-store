@@ -52,18 +52,10 @@ public class OfferAttributeRepositoryImpl  extends CloudantClient<OfferAttribute
             }
             return attributes;
         } else if (!StringUtils.isEmpty(options.getAttributeType())){
-            return super.queryView("by_type", options.getAttributeType());
+            return super.queryView("by_type", options.getAttributeType(),
+                    options.getValidSize(), options.getValidStart(), false);
         } else {
-            List<OfferAttribute> attributes = super.cloudantGetAll();
-            Iterator<OfferAttribute> iterator = attributes.iterator();
-            while (iterator.hasNext()) {
-                OfferAttribute attribute = iterator.next();
-                if (attribute == null || attribute.getId() == null) {
-                    iterator.remove();
-                }
-            }
-
-            return attributes;
+            return super.queryView("by_attributeId", null, options.getValidSize(), options.getValidStart(), false);
         }
     }
 
@@ -83,6 +75,11 @@ public class OfferAttributeRepositoryImpl  extends CloudantClient<OfferAttribute
         view.setMap("function(doc) {emit(doc.type, doc._id)}");
         view.setResultClass(String.class);
         viewMap.put("by_type", view);
+
+        view = new CloudantViews.CloudantView();
+        view.setMap("function(doc) {emit(doc._id, doc._id)}");
+        view.setResultClass(String.class);
+        viewMap.put("by_attributeId", view);
 
         setViews(viewMap);
     }};

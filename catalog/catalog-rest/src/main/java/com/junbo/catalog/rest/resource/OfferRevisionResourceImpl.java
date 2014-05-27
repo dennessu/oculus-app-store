@@ -42,7 +42,7 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
             return null;
         }
 
-        UriBuilder builder = UriBuilder.fromPath(IdUtil.getResourcePathPrefix()).path("items");
+        UriBuilder builder = UriBuilder.fromPath(IdUtil.getResourcePathPrefix()).path("offer-revisions");
         if (options.getStatus() != null) {
             builder.queryParam("status", options.getStatus().toUpperCase());
         }
