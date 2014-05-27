@@ -54,7 +54,7 @@ public class CipherServiceTest extends AbstractTestNGSpringContextTests {
 
         // Generate the secret key specs.
         SecretKey skey = kgen.generateKey();
-        skey.toString()
+
         String message = 'Hello World!'
         // Get the KeyGenerator
 
