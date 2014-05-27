@@ -6,20 +6,22 @@
 
 package com.junbo.subscription.core.event;
 
-import com.junbo.subscription.core.SubscriptionEvent;
+import com.junbo.subscription.core.SubscriptionEventService;
 import com.junbo.subscription.core.action.ChargeAction;
 import com.junbo.subscription.core.action.FullfilmentAction;
+import com.junbo.subscription.db.entity.SubscriptionEventType;
 import com.junbo.subscription.db.entity.SubscriptionStatus;
-import com.junbo.subscription.db.repository.SubscriptionRepository;
+import com.junbo.subscription.db.repository.SubscriptionEventRepository;
 import com.junbo.subscription.spec.model.Subscription;
+import com.junbo.subscription.spec.model.SubscriptionEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Create Subscription.
  */
-public class SubscriptionCreateEvent implements SubscriptionEvent {
+public class SubscriptionCreateEvent implements SubscriptionEventService {
     @Autowired
-    private SubscriptionRepository subscriptionRepository;
+    private SubscriptionEventRepository subscriptionEventRepository;
 
     @Autowired
     private ChargeAction chargeAction;
@@ -28,16 +30,21 @@ public class SubscriptionCreateEvent implements SubscriptionEvent {
 
     @Override
     public Subscription execute(Subscription subscription){
-        subscription.setStatus(SubscriptionStatus.CREATED.toString());
-        subscription = subscriptionRepository.insert(subscription);
+        SubscriptionEvent event = buildEvent(subscription, SubscriptionEventType.CREATED);
+        event = subscriptionEventRepository.insert(event);
 
-        chargeAction.execute(subscription);
-        fullfilmentAction.execute(subscription);
-
-        subscription.setStatus(SubscriptionStatus.ENABLED.toString());
-        subscription = subscriptionRepository.update(subscription);
-        subscription.setPaymentMethodId(111L);
+        chargeAction.execute(subscription, event);
+        fullfilmentAction.execute(subscription, event);
 
         return  subscription;
+    }
+
+    SubscriptionEvent buildEvent(Subscription subscription, SubscriptionEventType type){
+        SubscriptionEvent event = new SubscriptionEvent();
+        event.setSubscriptionId(subscription.getSubscriptionId());
+        event.setRetryCount(0);
+        event.setEventStatus(SubscriptionStatus.CREATED.toString());
+        event.setEventTypeId(type.toString());
+        return event;
     }
 }

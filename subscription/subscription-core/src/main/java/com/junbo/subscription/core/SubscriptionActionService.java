@@ -6,10 +6,11 @@
 package com.junbo.subscription.core;
 
 import com.junbo.subscription.spec.model.Subscription;
+import com.junbo.subscription.spec.model.SubscriptionEvent;
 
 /**
  * Created by Administrator on 14-5-21.
  */
-public interface SubscriptionAction {
-    Subscription execute(Subscription subscription);
+public interface SubscriptionActionService {
+    Subscription execute(Subscription subscription, SubscriptionEvent event);
 }

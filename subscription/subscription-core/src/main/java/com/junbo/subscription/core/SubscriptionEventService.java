@@ -10,6 +10,6 @@ import com.junbo.subscription.spec.model.Subscription;
 /**
  * Created by Administrator on 14-3-28.
  */
-public interface SubscriptionEvent {
+public interface SubscriptionEventService {
     Subscription execute(Subscription subscription);
 }

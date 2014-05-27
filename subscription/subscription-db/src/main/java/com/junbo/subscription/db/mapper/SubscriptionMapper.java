@@ -81,7 +81,7 @@ public class SubscriptionMapper {
         return event;
     }
 
-    public SubscriptionEventEntity toSubscriptionEntity(SubscriptionEvent event) {
+    public SubscriptionEventEntity toSubsEventEntity(SubscriptionEvent event) {
         SubscriptionEventEntity eventEntity = new SubscriptionEventEntity();
         eventEntity.setSubscriptionId(event.getSubscriptionId());
         eventEntity.setSubsEventId(event.getSubscriptionEventId());

@@ -5,8 +5,16 @@
  */
 package com.junbo.subscription.core.event;
 
+import com.junbo.subscription.core.SubscriptionEventService;
+import com.junbo.subscription.spec.model.Subscription;
+
 /**
  * Created by Administrator on 14-5-21.
  */
-public class SubscriptionCycleEvent {
+public class SubscriptionCycleEvent implements SubscriptionEventService {
+    @Override
+    public Subscription execute(Subscription subscription){
+        return  subscription;
+    }
+
 }
