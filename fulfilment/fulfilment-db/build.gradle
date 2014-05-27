@@ -23,7 +23,6 @@ dependencies {
 
     compile (libraries.bonecp_spring)
     compile (libraries.postgresql)
-    compile (libraries.btm)
 
     compile junboProject(":fulfilment-spec")
     compile junboProject(":fulfilment-common")

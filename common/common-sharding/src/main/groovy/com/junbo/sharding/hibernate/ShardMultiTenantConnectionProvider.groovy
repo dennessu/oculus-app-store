@@ -1,6 +1,6 @@
 package com.junbo.sharding.hibernate
 
-import bitronix.tm.resource.jdbc.PoolingDataSource
+import com.junbo.sharding.transaction.SimpleDataSourceProxy
 import groovy.transform.CompileStatic
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider
 import org.hibernate.service.UnknownUnwrapTypeException
@@ -15,14 +15,14 @@ import java.sql.SQLException
 @SuppressWarnings('JdbcConnectionReference')
 class ShardMultiTenantConnectionProvider implements MultiTenantConnectionProvider {
 
-    private final List<PoolingDataSource> dataSourceList
+    private final List<SimpleDataSourceProxy> dataSourceList
 
     private final List<String> schemaList
 
     private final SchemaSetter schemaSetter
 
     ShardMultiTenantConnectionProvider(
-            List<PoolingDataSource> dataSourceList,
+            List<SimpleDataSourceProxy> dataSourceList,
             List<String> schemaList,
             SchemaSetter schemaSetter) {
 

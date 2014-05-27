@@ -1,8 +1,9 @@
 package com.junbo.sharding.hibernate
 
-import bitronix.tm.resource.jdbc.ConnectionCustomizer
-import bitronix.tm.resource.jdbc.PooledConnectionProxy
+import com.jolbox.bonecp.ConnectionHandle
+import com.jolbox.bonecp.hooks.AbstractConnectionHook
 import groovy.transform.CompileStatic
+import org.springframework.jdbc.datasource.ConnectionProxy
 
 import java.sql.Connection
 import java.sql.SQLException
@@ -14,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap
  */
 @CompileStatic
 @SuppressWarnings('JdbcConnectionReference')
-class SchemaSetter implements ConnectionCustomizer {
+class SchemaSetter extends AbstractConnectionHook {
 
     private final Map<Connection, String> lastSchemaMap
 
@@ -23,23 +24,46 @@ class SchemaSetter implements ConnectionCustomizer {
     }
 
     @Override
-    void onAcquire(Connection connection, String uniqueName) {
-        lastSchemaMap.put(connection, 'public')
+    void onAcquire(ConnectionHandle connection) {
+        def internalConnection = connection.internalConnection
+        if (connection == null) {
+            throw new IllegalStateException('internalConnection is null')
+        }
+
+        def oldSchema = lastSchemaMap.put(internalConnection, 'public')
+
+        if (oldSchema != null) {
+            throw new IllegalStateException("oldSchema $oldSchema != null")
+        }
     }
 
     @Override
-    void onDestroy(Connection connection, String uniqueName) {
-        lastSchemaMap.remove(connection)
+    void onDestroy(ConnectionHandle connection) {
+        def internalConnection = connection.internalConnection
+        if (connection == null) {
+            throw new IllegalStateException('internalConnection is null')
+        }
+
+        def existingSchema = lastSchemaMap.remove(internalConnection)
+
+        if (existingSchema == null) {
+            throw new IllegalStateException("existingSchema $existingSchema == null")
+        }
     }
 
     void setSchema(Connection connection, String schema) throws SQLException {
-        if (connection instanceof PooledConnectionProxy) {
-            connection = ((PooledConnectionProxy) connection).proxiedDelegate
+        if (connection instanceof ConnectionProxy) {
+            connection = ((ConnectionProxy) connection).targetConnection
+        }
+
+        connection = ((ConnectionHandle) connection).internalConnection
+        if (connection == null) {
+            throw new IllegalStateException('internalConnection is null')
         }
 
         def lastSchema = lastSchemaMap.get(connection)
         if (lastSchema == null) {
-            throw new IllegalStateException('lastSchema is null')
+            throw new IllegalStateException("lastSchema for $connection is null")
         }
 
         if (lastSchema != schema) {
