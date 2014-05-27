@@ -1,7 +1,6 @@
 // CHECKSTYLE:OFF
 package com.junbo.langur.core.client;
 
-import com.google.common.collect.HashMultimap;
 import com.junbo.langur.core.context.JunboHttpContext;
 import com.junbo.langur.core.context.JunboHttpContextScopeListener;
 import com.ning.http.client.AsyncHttpClient;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Required;
 
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
@@ -34,6 +32,10 @@ public abstract class AbstractClientProxy {
     protected QueryParamTranscoder __queryParamTranscoder;
 
     protected ExceptionHandler __exceptionHandler;
+
+    protected HeadersProvider __headersProvider;
+
+    protected ResponseHandler __responseHandler;
 
     protected AccessTokenProvider __accessTokenProvider;
 
@@ -78,6 +80,14 @@ public abstract class AbstractClientProxy {
         this.__exceptionHandler = __exceptionHandler;
     }
 
+    public void setHeadersProvider(HeadersProvider __headersProvider) {
+        this.__headersProvider = __headersProvider;
+    }
+
+    public void setResponseHandler(ResponseHandler __responseHandler) {
+        this.__responseHandler = __responseHandler;
+    }
+
     public void setAccessTokenProvider(AccessTokenProvider __accessTokenProvider) {
         this.__accessTokenProvider = __accessTokenProvider;
     }
@@ -108,5 +118,15 @@ public abstract class AbstractClientProxy {
         httpContextData.setRequestIpAddress("0.0.0.0");
 
         return httpContextData;
+    }
+
+    protected void __addHeadersFromHeadersProvider(AsyncHttpClient.BoundRequestBuilder requestBuilder) {
+        if (__headersProvider != null) {
+            for (java.util.Map.Entry<String, java.util.List<String>> entry : __headersProvider.getHeaders().entrySet()) {
+                for (String value : entry.getValue()) {
+                    requestBuilder.addHeader(entry.getKey(), value);
+                }
+            }
+        }
     }
 }

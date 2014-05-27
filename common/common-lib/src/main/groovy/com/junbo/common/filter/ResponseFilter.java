@@ -40,10 +40,10 @@ public class ResponseFilter implements ContainerResponseFilter {
                        ContainerResponseContext responseContext) throws IOException {
         final MultivaluedMap<String, Object> headers = responseContext.getHeaders();
 
-        headers.add("Access-Control-Allow-Origin", configService.getConfigValue(ACCESS_CONTROL_ALLOW_ORIGIN_NAME));
-        headers.add("Access-Control-Allow-Headers", configService.getConfigValue(ACCESS_CONTROL_ALLOW_HEADER_NAME));
-        headers.add("Access-Control-Expose-Headers", configService.getConfigValue(ACCESS_CONTROL_EXPOSE_HEADERS_NAME));
-        headers.add("Access-Control-Allow-Methods", configService.getConfigValue(ACCESS_CONTROL_ALLOW_METHODS_NAME));
+        headers.putSingle("Access-Control-Allow-Origin", configService.getConfigValue(ACCESS_CONTROL_ALLOW_ORIGIN_NAME));
+        headers.putSingle("Access-Control-Allow-Headers", configService.getConfigValue(ACCESS_CONTROL_ALLOW_HEADER_NAME));
+        headers.putSingle("Access-Control-Expose-Headers", configService.getConfigValue(ACCESS_CONTROL_EXPOSE_HEADERS_NAME));
+        headers.putSingle("Access-Control-Allow-Methods", configService.getConfigValue(ACCESS_CONTROL_ALLOW_METHODS_NAME));
         
         if (responseContext.getStatus() / 100 == 2) {
             for (Annotation annotation : responseContext.getEntityAnnotations()) {

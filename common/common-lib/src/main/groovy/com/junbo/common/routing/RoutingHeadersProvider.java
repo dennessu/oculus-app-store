@@ -12,9 +12,9 @@ import org.glassfish.jersey.internal.util.collection.StringKeyIgnoreCaseMultival
 import javax.ws.rs.core.MultivaluedMap;
 
 /**
- * The implementation of headers provider.
+ * The implementation of headers provider when the call is forwareded by router.
  */
-public class HeadersProviderImpl implements HeadersProvider {
+public class RoutingHeadersProvider implements HeadersProvider {
     @Override
     public MultivaluedMap<String, String> getHeaders() {
 
