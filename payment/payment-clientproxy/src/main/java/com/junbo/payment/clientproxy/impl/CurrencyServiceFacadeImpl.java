@@ -25,6 +25,10 @@ public class CurrencyServiceFacadeImpl implements CurrencyServiceFacade {
     private CurrencyResourceClientProxy currencyResource;
 
     public Promise<Long> getMinAuthAmount(CurrencyId currencyId){
+        if(1 == 1){
+            return Promise.pure(new BigDecimal("100").longValue());
+        }
+        //TODO: enable get minAuthAmount and make currency * number after Decimal();
         if(currencyId == null){
             throw AppClientExceptions.INSTANCE.missingCurrency().exception();
         }
@@ -32,11 +36,16 @@ public class CurrencyServiceFacadeImpl implements CurrencyServiceFacade {
         if(currency == null){
             throw AppClientExceptions.INSTANCE.invalidCurrency(currencyId.getValue()).exception();
         }
-        //TODO: add minAuthAmount in currency * number after Decimal();
-        return Promise.pure(new BigDecimal("100").longValue());
+        return Promise.pure(currency.getMinAuthAmount().longValue());
+
     }
 
     public Promise<Integer> getNumberAfterDecimal(String currencyCode){
+        if(1 == 1){
+            return Promise.pure(100);
+        }
+        //TODO: enable get number of decimal later;
+
         if(CommonUtil.isNullOrEmpty(currencyCode)){
             throw AppClientExceptions.INSTANCE.invalidCurrency(currencyCode).exception();
         }
@@ -45,5 +54,6 @@ public class CurrencyServiceFacadeImpl implements CurrencyServiceFacade {
             throw AppClientExceptions.INSTANCE.invalidCurrency(currencyCode).exception();
         }
         return Promise.pure(currency.getNumberAfterDecimal());
+
     }
 }

@@ -8,6 +8,7 @@ package com.junbo.payment.spec.resource;
 
 
 import com.junbo.common.id.PaymentId;
+import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.spec.model.PaymentTransaction;
@@ -22,6 +23,7 @@ import javax.ws.rs.core.MediaType;
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
+@InProcessCallable
 public interface PaymentTransactionResource {
     @POST
     @Path("/credit")
