@@ -12,10 +12,12 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  */
 public class SubCountry {
 
-    @ApiModelProperty(position = 1, required = true, value = "Short name key of the sub country.")
+    @ApiModelProperty(position = 1, required = true, value = "Short name key of the sub country, must select from an ENUM list. " +
+            "Possible values are all supported translation keys in Translation service.")
     private String shortNameKey;
 
-    @ApiModelProperty(position = 2, required = true, value = "Long name key of the sub country.")
+    @ApiModelProperty(position = 2, required = true, value = "Long name key of the sub country, must select from an ENUM list. " +
+            "Possible values are all supported translation keys in Translation service.")
     private String longNameKey;
 
     public String getShortNameKey() {
