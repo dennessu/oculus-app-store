@@ -4,6 +4,8 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.sharding.dualwrite.strategies
+import bitronix.tm.BitronixTransaction
+import bitronix.tm.BitronixTransactionManager
 import com.junbo.common.cloudant.CloudantEntity
 import com.junbo.common.util.Context
 import com.junbo.langur.core.promise.Promise
@@ -14,7 +16,6 @@ import com.junbo.sharding.dualwrite.data.PendingAction
 import com.junbo.sharding.dualwrite.data.PendingActionRepository
 import com.junbo.sharding.repo.BaseRepository
 import groovy.transform.CompileStatic
-import org.springframework.transaction.support.TransactionSynchronization
 import org.springframework.transaction.support.TransactionSynchronizationAdapter
 import org.springframework.transaction.support.TransactionSynchronizationManager
 
@@ -36,11 +37,14 @@ public class SyncDualWriteStrategy implements DataAccessStrategy {
     private BaseRepository repositoryImpl;
     private DualWriteQueue dualWriteQueue;
     private PendingActionReplayer replayer;
-    private TransactionSynchronization transactionSynchronization;
+    private BitronixTransactionManager bitronixTransactionManager;
+
+    private ThreadLocal<Stack<DualWriteTransactionSynchronization>> transactionStack = new ThreadLocal<>();
 
     public SyncDualWriteStrategy(BaseRepository repositoryImpl,
                                  PendingActionRepository pendingActionRepository,
-                                 PendingActionReplayer replayer) {
+                                 PendingActionReplayer replayer,
+                                 BitronixTransactionManager bitronixTransactionManager) {
 
         this.repositoryImpl = repositoryImpl;
 
@@ -49,23 +53,7 @@ public class SyncDualWriteStrategy implements DataAccessStrategy {
         this.dualWriteQueue = new DualWriteQueue(pendingActionRepository, true /* trackTransactionActions */);
 
         this.replayer = replayer;
-
-        this.transactionSynchronization = new TransactionSynchronizationAdapter() {
-            @Override
-            void afterCommit() {
-                for (final PendingAction pendingAction in dualWriteQueue.pendingActions) {
-                    Context.get().registerPendingTask {
-                        // Note: The code in this brackets are run with a new ThreadLocal
-                        return replayer.replay(pendingAction);
-                    }
-                }
-            }
-
-            @Override
-            void afterCompletion(int status) {
-                dualWriteQueue.clear();
-            }
-        }
+        this.bitronixTransactionManager = bitronixTransactionManager;
     }
 
     @Override
@@ -75,10 +63,12 @@ public class SyncDualWriteStrategy implements DataAccessStrategy {
 
     @Override
     public Promise<CloudantEntity> invokeWriteMethod(Method method, Object[] args) {
-        setupTransactionSynchronization();
+
+        def synchronization = setupTransactionSynchronization();
+
         Promise<CloudantEntity> future = (Promise<CloudantEntity>)method.invoke(repositoryImpl, args);
         return future.then { CloudantEntity entity ->
-            return dualWriteQueue.save(entity).then {
+            return synchronization.save(entity).then {
                 return Promise.pure(entity);
             }
         }
@@ -88,14 +78,70 @@ public class SyncDualWriteStrategy implements DataAccessStrategy {
     public Promise<Void> invokeDeleteMethod(Method method, Object[] args) {
         assert args.length == 1 : "Unexpected argument length: " + String.valueOf(args.length);
 
-        setupTransactionSynchronization();
+        def synchronization = setupTransactionSynchronization();
         return ((Promise<Void>)method.invoke(repositoryImpl, args)).then {
-            return dualWriteQueue.delete(args[0]);
+            return synchronization.delete(args[0]);
         }
     }
 
-    private void setupTransactionSynchronization() {
-        // TransactionSynchronizationManager.synchronizations is a set. It's okay to add multiple times
-        TransactionSynchronizationManager.registerSynchronization(transactionSynchronization);
+    private DualWriteTransactionSynchronization setupTransactionSynchronization() {
+        if (transactionStack.get() == null) {
+            transactionStack.set(new Stack<>());
+        }
+        def theStack = transactionStack.get();
+        if (theStack.empty() || theStack.peek().isTransactionChanged()) {
+            theStack.push(new DualWriteTransactionSynchronization());
+            TransactionSynchronizationManager.registerSynchronization(theStack.peek());
+        }
+
+        return theStack.peek();
+    }
+
+    private class DualWriteTransactionSynchronization extends TransactionSynchronizationAdapter {
+        private List<PendingAction> pendingActions;
+        private BitronixTransaction transaction;
+
+        public DualWriteTransactionSynchronization() {
+            pendingActions = new ArrayList<>();
+            transaction = bitronixTransactionManager.currentTransaction;
+
+            if (transaction == null) {
+                throw new RuntimeException("SyncDualWriteStrategy can only be used within transactions.");
+            }
+        }
+
+        public Promise<Void> save(CloudantEntity entity) {
+            return dualWriteQueue.save(entity).then { PendingAction pendingAction ->
+                pendingActions.add(pendingAction);
+                return Promise.pure(null);
+            }
+        }
+
+        public Promise<Void> delete(Object key) {
+            return dualWriteQueue.delete(key).then { PendingAction pendingAction ->
+                pendingActions.add(pendingAction);
+                return Promise.pure(null);
+            }
+        }
+
+        public boolean isTransactionChanged() {
+            return bitronixTransactionManager.currentTransaction != this.transaction;
+        }
+
+        @Override
+        public void afterCommit() {
+            for (final PendingAction pendingAction in pendingActions) {
+                Context.get().registerPendingTask {
+                    // Note: The code in this brackets are run with a new ThreadLocal
+                    return replayer.replay(pendingAction);
+                }
+            }
+        }
+
+        @Override
+        public void afterCompletion(int status) {
+            pendingActions.clear();
+            transactionStack.get().pop();
+        }
     }
 }

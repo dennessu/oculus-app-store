@@ -14,4 +14,5 @@ import groovy.transform.CompileStatic
 class MandrillConfiguration {
     String key
     String url
+    Integer size
 }

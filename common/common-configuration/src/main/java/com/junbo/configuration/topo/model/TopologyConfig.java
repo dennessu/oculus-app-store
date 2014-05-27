@@ -73,6 +73,10 @@ public class TopologyConfig {
         return isHandledBy(shard, myAppServer.getIpAddress(), myAppServer.getPort());
     }
 
+    public String getSelfUrl() {
+        return String.format(appUrlTemplate, myAppServer.getIpPort());
+    }
+
     public int getNumberOfShards() {
         return appServers.length;
     }

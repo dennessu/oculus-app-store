@@ -32,8 +32,7 @@ public class ItemRevisionDaoImpl extends BaseDaoImpl<ItemRevisionEntity> impleme
                 if (!StringUtils.isEmpty(options.getStatus())) {
                     criteria.add(Restrictions.eq("status", options.getStatus()));
                 }
-                options.ensurePagingValid();
-                criteria.setFirstResult(options.getStart()).setMaxResults(options.getSize());
+                criteria.setFirstResult(options.getValidStart()).setMaxResults(options.getValidSize());
             }
         });
     }

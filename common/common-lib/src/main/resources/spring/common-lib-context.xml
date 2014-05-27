@@ -26,6 +26,14 @@
     <bean id="commonExceptionHandler" class="com.junbo.common.error.CommonExceptionHandler">
         <property name="messageTranscoder" ref="commonTranscoder"/>
     </bean>
+    <bean id="commonClientProxyHeadersProvider" class="com.junbo.common.client.ClientProxyHeadersProvider">
+        <property name="forwardedHeaders">
+            <list>
+                <value>X-Request-Id</value>
+                <value>X-Routing-Path</value>
+            </list>
+        </property>
+    </bean>
 
     <bean id="baseClientProxy" class="com.junbo.langur.core.client.AbstractClientProxy" abstract="true">
         <property name="client" ref="commonAsyncHttpClient"/>
@@ -33,6 +41,7 @@
         <property name="executor" ref="junboThreadPool"/>
         <property name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
         <property name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+        <property name="headersProvider" ref="commonClientProxyHeadersProvider"/>
         <property name="transcoder" ref="commonTranscoder"/>
         <property name="inProcessCallable" value="${common.clientproxy.inProcessCallable}"/>
     </bean>
@@ -50,7 +59,10 @@
         <property name="cloudantPassword" value="${common.cloudant.password}" />
     </bean>
 
-    <bean id="cloudantDefaultMarshaller" class="com.junbo.common.cloudant.CloudantMarshaller" factory-method="instance" />
+
+    <bean id="cloudantDefaultMarshaller" class="com.junbo.common.cloudant.DefaultCloudantMarshaller" factory-method="instance" />
 
     <bean id="contextScopeListener" class="com.junbo.common.util.ContextScopeListener" />
+
+    <bean id="polymorphicCloudantMarshaller" class="com.junbo.common.cloudant.PolymorphicCloudantMarshaller" factory-method="instance" />
 </beans>

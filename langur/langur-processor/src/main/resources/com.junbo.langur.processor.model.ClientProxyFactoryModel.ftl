@@ -40,6 +40,10 @@ public class ${className} implements ClientProxyFactory<${resourceName}> {
     private HeadersProvider __headersProvider;
 
     @org.springframework.beans.factory.annotation.Autowired
+    @org.springframework.beans.factory.annotation.Qualifier("routingResponseHandler")
+    private ResponseHandler __responseHandler;
+
+    @org.springframework.beans.factory.annotation.Autowired
     @org.springframework.beans.factory.annotation.Qualifier("routingExecutor")
     private Executor __executor;
 
@@ -48,9 +52,15 @@ public class ${className} implements ClientProxyFactory<${resourceName}> {
 
     public ${className}() { }
 
-    public ${className}(AsyncHttpClient client, MessageTranscoder transcoder, PathParamTranscoder pathParamTranscoder,
-            QueryParamTranscoder queryParamTranscoder, ExceptionHandler exceptionHandler,
-            HeadersProvider headersProvider, Executor executor) {
+    public ${className}(
+            AsyncHttpClient client,
+            MessageTranscoder transcoder,
+            PathParamTranscoder pathParamTranscoder,
+            QueryParamTranscoder queryParamTranscoder,
+            ExceptionHandler exceptionHandler,
+            HeadersProvider headersProvider,
+            ResponseHandler responseHandler,
+            Executor executor) {
         assert client != null : "client is null";
         assert transcoder != null : "transcoder is null";
         assert pathParamTranscoder != null : "pathParamTranscoder is null";
@@ -65,6 +75,7 @@ public class ${className} implements ClientProxyFactory<${resourceName}> {
         __queryParamTranscoder = queryParamTranscoder;
         __exceptionHandler = exceptionHandler;
         __headersProvider = headersProvider;
+        __responseHandler = responseHandler;
         __executor = executor;
     }
 
@@ -78,6 +89,7 @@ public class ${className} implements ClientProxyFactory<${resourceName}> {
         clientProxy.setExceptionHandler(__exceptionHandler);
         clientProxy.setTarget(targetUrl);
         clientProxy.setHeaders(__headersProvider.getHeaders());
+        clientProxy.setResponseHandler(__responseHandler);
         clientProxy.setExecutor(__executor);
         clientProxy.setJunboHttpContextScopeListeners(__junboHttpContextScopeListeners);
 

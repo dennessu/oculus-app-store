@@ -148,4 +148,13 @@ class CoreUtils {
         }
         return false
     }
+
+    static Boolean compareOrderRating(Order olderOrder, Order newOrder) {
+        return olderOrder.totalDiscount == newOrder.totalDiscount &&
+                olderOrder.totalAmount == newOrder.totalAmount &&
+                olderOrder.totalTax == newOrder.totalTax &&
+                olderOrder.totalShippingFee == newOrder.totalShippingFee &&
+                olderOrder.totalShippingFeeDiscount == newOrder.totalShippingFeeDiscount &&
+                olderOrder.isTaxInclusive == newOrder.isTaxInclusive
+    }
 }

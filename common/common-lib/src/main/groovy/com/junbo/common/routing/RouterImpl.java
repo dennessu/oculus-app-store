@@ -15,6 +15,9 @@ import com.junbo.langur.core.routing.Router;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.util.StringUtils;
+
+import javax.ws.rs.core.MultivaluedMap;
 
 /**
  * The implementation of router.
@@ -22,9 +25,16 @@ import org.springframework.beans.factory.annotation.Required;
 public class RouterImpl implements Router {
     private static final Logger logger = LoggerFactory.getLogger(RouterImpl.class);
 
+    private static final String X_ROUTING_PATH = "X-Routing-Path";
+    private static final String X_ROUTING_DC_SHARD = "X-Routing-DC-Shard";
+    private static final String X_DATAACCESS_MODE = "X-DataAccess-Mode";
+
     private Topology topology;
     private boolean crossDcRoutingEnabled;
     private boolean inDcRoutingEnabled;
+    private boolean showRoutingPath;
+    private boolean forceRoute;
+    private int maxRoutingHops;
     private DataAccessPolicy defaultPolicy;
 
     @Required
@@ -40,14 +50,115 @@ public class RouterImpl implements Router {
         this.inDcRoutingEnabled = inDcRoutingEnabled;
     }
 
+    public void setShowRoutingPath(boolean showRoutingPath) {
+        this.showRoutingPath = showRoutingPath;
+    }
+
+    public void setForceRoute(boolean forceRoute) {
+        this.forceRoute = forceRoute;
+    }
+
+    public void setMaxRoutingHops(int maxRoutingHops) {
+        this.maxRoutingHops = maxRoutingHops;
+    }
+
     public void setDefaultPolicy(DataAccessPolicy defaultPolicy) {
         this.defaultPolicy = defaultPolicy;
     }
 
     @Override
     public String getTargetUrl(Class<?> resourceClass, Object[] routingParams, boolean fallbackToAnyLocal) {
+        String result = getTargetUrlInternal(resourceClass, routingParams, fallbackToAnyLocal);
+        if (result != null) {
+            logger.info("Routing {} to {}", JunboHttpContext.getRequestUri(), result);
+        } else {
+            // no routing, run in current server
+            setOutputRoutingPath();
+        }
+        return result;
+    }
 
-        DataAccessPolicy policy = DataAccessPolicies.instance().getHttpDataAccessPolicy(JunboHttpContext.getRequestMethod(), resourceClass);
+    private String getTargetUrlInternal(Class<?> resourceClass, Object[] routingParams, boolean fallbackToAnyLocal) {
+        boolean isFirstRoute = setRoutingPath();
+        if (isFirstRoute && forceRoute) {
+            // force route to self
+            return topology.getSelfUrl();
+        }
+
+        DataAccessPolicy policy = resolveDataAccessPolicy(resourceClass);
+
+        if (policy == null || policy == DataAccessPolicy.CLOUDANT_FIRST || policy == DataAccessPolicy.CLOUDANT_ONLY) {
+            getDefault(false);
+        }
+
+        if (routingParams == null || routingParams.length == 0) {
+            return getDefault(false);
+        }
+
+        for (Object routingParam : routingParams) {
+            if (routingParam != null) {
+                return resolveRotingAddress(routingParam);
+            }
+        }
+
+        if (fallbackToAnyLocal) {
+            return getDefault(false);
+        }
+
+        // TODO: else throw exception? or deprecate the fallbackAnyLocal?
+        return getDefault(false);
+    }
+
+    private boolean setRoutingPath() {
+        boolean isFirstRoute = false;
+
+        MultivaluedMap<String, String> requestHeaders = JunboHttpContext.getRequestHeaders();
+        if (requestHeaders != null) {
+            String routingPath = requestHeaders.getFirst(X_ROUTING_PATH);
+            if (routingPath == null) {
+                // first routing
+                isFirstRoute = true;
+                routingPath = "";
+            }
+            routingPath += "-> " + topology.getSelfUrl();
+
+            int routingCount = StringUtils.countOccurrencesOf(routingPath, "->");
+            if (routingCount > maxRoutingHops) {
+                throw new RuntimeException("The API request hit max routing hops. " + JunboHttpContext.getRequestUri());
+            }
+
+            // put to requestHeaders so it can be forwarded when routing.
+            requestHeaders.putSingle(X_ROUTING_PATH, routingPath);
+        }
+        return isFirstRoute;
+    }
+
+    private void setOutputRoutingPath() {
+        MultivaluedMap<String, String> requestHeaders = JunboHttpContext.getRequestHeaders();
+        if (requestHeaders != null) {
+            String routingPath = requestHeaders.getFirst(X_ROUTING_PATH);
+            // put to responseHeaders so the client can see it.
+            if (showRoutingPath) {
+                JunboHttpContext.getResponseHeaders().putSingle(X_ROUTING_PATH, routingPath);
+            }
+        }
+    }
+
+    private DataAccessPolicy resolveDataAccessPolicy(Class<?> resourceClass) {
+        DataAccessPolicy policy = null;
+
+        MultivaluedMap<String, String> requestHeaders = JunboHttpContext.getRequestHeaders();
+        if (requestHeaders != null) {
+            String dataAccessMode = requestHeaders.getFirst(X_DATAACCESS_MODE);
+            if (dataAccessMode != null && dataAccessMode.length() != 0) {
+                policy = Enum.valueOf(DataAccessPolicy.class, dataAccessMode);
+                logger.debug("Forcing data access policy in call. url: {}, policy: {}", JunboHttpContext.getRequestUri(), policy);
+            }
+        }
+
+        if (policy == null) {
+            policy = DataAccessPolicies.instance().getHttpDataAccessPolicy(JunboHttpContext.getRequestMethod(), resourceClass);
+        }
         if (policy == null) {
             policy = defaultPolicy;
         }
@@ -55,30 +166,15 @@ public class RouterImpl implements Router {
             logger.debug("Setting effective dataAccessPolicy in call. url: {}, policy: {}", JunboHttpContext.getRequestUri(), policy);
         }
         Context.get().setDataAccessPolicy(policy);
-
-        if (policy == null || policy == DataAccessPolicy.CLOUDANT_FIRST || policy == DataAccessPolicy.CLOUDANT_ONLY) {
-            return null;
-        }
-
-        if (routingParams == null || routingParams.length == 0) {
-            return null;
-        }
-
-        for (Object routingParam : routingParams) {
-            if (routingParam != null) {
-                return resolveRotingAddress(resourceClass, routingParam);
-            }
-        }
-
-        if (fallbackToAnyLocal) {
-            return null;
-        }
-        return null;
+        return policy;
     }
 
-    private String resolveRotingAddress(Class<?> resourceClass, Object routingParam) {
+    private String resolveRotingAddress(Object routingParam) {
         resolveShard(routingParam);
+        return doRouting(false);
+    }
 
+    private String doRouting(boolean inGetDefault) {
         if (crossDcRoutingEnabled) {
             // route across data center
             DataCenters dcs = DataCenters.instance();
@@ -97,7 +193,7 @@ public class RouterImpl implements Router {
         }
 
         // can be handled by current server
-        return null;
+        return getDefault(inGetDefault);
     }
 
     private void resolveShard(Object routingParam) {
@@ -110,5 +206,35 @@ public class RouterImpl implements Router {
         Context.get().setDataCenterId(dc);
         Context.get().setShardId(shard);
         Context.get().setTopology(topology);
+    }
+
+    private String getDefault(boolean inGetDefault) {
+        if (inGetDefault) {
+            return null;
+        }
+
+        MultivaluedMap<String, String> requestHeaders = JunboHttpContext.getRequestHeaders();
+        if (requestHeaders != null) {
+            String forceShard = requestHeaders.getFirst(X_ROUTING_DC_SHARD);
+            if (forceShard == null || forceShard.length() == 0) {
+                return null;
+            }
+
+            String[] dcShard = forceShard.split(";");
+            if (dcShard.length != 2) {
+                throw new RuntimeException("Invalid routing DC shard hint. " + forceShard);
+            }
+            String dc = dcShard[0];
+            int shard = Integer.parseInt(dcShard[1]);
+
+            // set to context and doRouting again!
+            Context.get().setDataCenterId(DataCenters.instance().getDataCenter(dc).getId());
+            Context.get().setShardId(shard);
+            Context.get().setTopology(topology);
+
+            return doRouting(true);
+        }
+
+        return null;
     }
 }

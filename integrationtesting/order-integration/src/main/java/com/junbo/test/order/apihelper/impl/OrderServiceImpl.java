@@ -12,6 +12,7 @@ import com.junbo.langur.core.client.TypeReference;
 import com.junbo.order.spec.model.OrderEvent;
 import com.junbo.order.spec.model.Order;
 
+import com.junbo.order.spec.model.Subledger;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.libs.ConfigPropertiesHelper;
 import com.junbo.test.order.apihelper.OrderService;
@@ -89,6 +90,22 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
     @Override
     public String updateTentativeOrder(Order order, int expectedResponseCode) throws Exception {
         return null;
+    }
+
+    @Override
+    public Subledger getSubledger() throws Exception {
+        return getSubledger(200);
+    }
+
+    @Override
+    public Subledger getSubledger(int expectedResponseCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.GET, orderUrl + "subledger", expectedResponseCode);
+
+        Subledger subledgerResult = new JsonMessageTranscoder().decode(
+                new TypeReference<Subledger>() {
+                }, responseBody);
+
+        return subledgerResult;
     }
 
     @Override

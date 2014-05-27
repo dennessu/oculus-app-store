@@ -21,6 +21,7 @@ import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.db.entity.enums.OrderActionType
+import com.junbo.order.db.entity.enums.OrderStatus
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
@@ -162,7 +163,20 @@ class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     Promise<Order> getOrderByOrderId(Long orderId) {
-        return orderInternalService.getOrderByOrderId(orderId)
+        return orderInternalService.getOrderByOrderId(orderId).then { Order order ->
+            if (order.tentative && CoreUtils.isRateExpired(order)) {
+                // if the price rating result changes, return expired.
+                return orderInternalService.rateOrder(order).then { Order newOrder ->
+                    if(CoreUtils.compareOrderRating(order, newOrder)) {
+                        return Promise.pure(order)
+                    } else {
+                        order.status == OrderStatus.PRICE_RATING_CHANGED
+                        return Promise.pure(newOrder)
+                    }
+                }
+            }
+            return Promise.pure(order)
+        }
     }
 
     @Override

@@ -24,8 +24,7 @@ public class PromotionDaoImpl extends BaseDaoImpl<PromotionEntity> implements Pr
             @Override
             public void apply(Criteria criteria) {
                 addIdRestriction("promotionId", options.getPromotionIds(), criteria);
-                options.ensurePagingValid();
-                criteria.setMaxResults(options.getSize()).setFirstResult(options.getStart());
+                criteria.setMaxResults(options.getValidSize()).setFirstResult(options.getValidStart());
             }
         });
     }

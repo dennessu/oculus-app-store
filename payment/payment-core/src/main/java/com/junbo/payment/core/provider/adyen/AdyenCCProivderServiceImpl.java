@@ -12,9 +12,12 @@ import com.adyen.services.recurring.RecurringDetail;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.util.PromiseFacade;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.payment.clientproxy.PersonalInfoFacade;
+import com.junbo.payment.clientproxy.adyen.AdyenApi;
 import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.spec.enums.PaymentStatus;
+import com.junbo.payment.spec.model.Address;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import com.junbo.sharding.IdGenerator;
@@ -24,7 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.rmi.RemoteException;
-import java.util.Arrays;
+import java.util.*;
 import java.util.concurrent.Callable;
 
 /**
@@ -36,14 +39,19 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
     @Autowired
     @Qualifier("oculus48IdGenerator")
     private IdGenerator idGenerator;
+    @Autowired
+    @Qualifier("adyenRestClient")
+    private AdyenApi adyenRestClient;
+    @Autowired
+    private PersonalInfoFacade personalInfoFacade;
 
     @Override
     public String getProviderName() {
         return PROVIDER_NAME;
     }
-
     @Override
     public Promise<PaymentInstrument> add(final PaymentInstrument request) {
+        final Address address = personalInfoFacade.getBillingAddress(request.getBillingAddressId()).get();
         return PromiseFacade.PAYMENT.decorate(new Callable<PaymentInstrument>() {
             @Override
             public PaymentInstrument call() throws Exception {
@@ -75,10 +83,32 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                 //encrypted account number
                 encryptedInfo.setValue(request.getAccountNum());
                 adyenRequest.setAdditionalData((AnyType2AnyTypeMapEntry[]) Arrays.asList(encryptedInfo).toArray());
+                // Billing address
+                if(address != null){
+                    Card card = new Card();
+                    com.adyen.services.common.Address billingAddress = new com.adyen.services.common.Address();
+                    billingAddress.setCity(address.getCity());
+                    billingAddress.setCountry(address.getCountry());
+                    billingAddress.setPostalCode(address.getPostalCode());
+                    billingAddress.setStateOrProvince(address.getState());
+                    billingAddress.setStreet(address.getAddressLine1());
+                    card.setBillingAddress(billingAddress);
+                    adyenRequest.setCard(card);
+                }
                 PaymentResult result = null;
                 try {
                     result = service.authorise(adyenRequest);
-                } catch (RemoteException e) {
+                    //TODO: use Rest Call or SDK when anyone works
+                    /*
+                    AdyenPaymentRequest adyenPaymentRequest = new AdyenPaymentRequest();
+                    adyenPaymentRequest.setAction("action=Payment.authorise");
+                    ... setup other fields as above
+                    MultivaluedMap<String, String> headers = new MultivaluedHashMap<String, String>();
+                    headers.putSingle("Authorization", "Basic d3NAQ29tcGFueS5PY3VsdXM6I0J1Z3NmMHIkJiNCdWdzZjByJDE=");
+                    ((AdyenApiClientProxy)adyenRestClient).setHeaders(headers);
+                    result = adyenRestClient.authorise(adyenPaymentRequest).get();
+                    */
+                } catch (Exception e) {
                     throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, e.toString()).exception();
                 }
                 if(result != null && result.getResultCode().equals("Authorised")){

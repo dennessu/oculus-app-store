@@ -35,7 +35,7 @@ public class CloudantObjectMapper implements ContextResolver<ObjectMapper> {
     // thread safe
     private static ObjectMapper objectMapper = createObjectMapper();
 
-    private static ObjectMapper createObjectMapper() {
+    protected static ObjectMapper createObjectMapper() {
         ObjectMapper objectMapper = new ObjectMapper(null,
                 new CustomSerializerProvider(),
                 new CustomDeserializationContext());

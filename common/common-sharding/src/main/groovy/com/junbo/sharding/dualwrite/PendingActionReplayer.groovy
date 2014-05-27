@@ -36,7 +36,7 @@ public class PendingActionReplayer {
         this.transactionManager = transactionManager;
 
         this.transactionTemplate = new AsyncTransactionTemplate(transactionManager);
-        this.transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_NOT_SUPPORTED);
+        this.transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
     }
 
     public Promise<Void> replay(PendingAction action) {

@@ -124,6 +124,7 @@ ext {
     set("subscription-rest-version", '0.0.1-SNAPSHOT')
     set("subscription-spec-version", '0.0.1-SNAPSHOT')
     set("subscription-clientproxy-version", '0.0.1-SNAPSHOT')
+    set("subscription-jobs-version", '0.0.1-SNAPSHOT')
     set("subscription-app-version", '0.0.1-SNAPSHOT')
 
     set("drm-common-version", '0.0.1-SNAPSHOT')
@@ -157,6 +158,8 @@ ext {
     set("crypto-rest-version", '0.0.1-SNAPSHOT')
     set("crypto-spec-version", '0.0.1-SNAPSHOT')
     set("crypto-clientproxy-version", '0.0.1-SNAPSHOT')
+
+    set("data-loader-version", '0.0.1-SNAPSHOT')
 
     /// TEST
     set("common-testlib-version", '0.0.1-SNAPSHOT')

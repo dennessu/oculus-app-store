@@ -78,6 +78,10 @@ public class Topology implements InitializingBean {
         return topologyConfig.isHandledBySelf(shard);
     }
 
+    public String getSelfUrl() {
+        return topologyConfig.getSelfUrl();
+    }
+
     /**
      * Get the total number of shards int the topology.
      * @return

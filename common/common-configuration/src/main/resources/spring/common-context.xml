@@ -10,9 +10,9 @@
     <bean id="configPropertyPlaceholderConfigurer" class="com.junbo.configuration.impl.ConfigPropertyPlaceholderConfigurer" />
     <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
         <property name="converters">
-            <list>
+            <set>
                 <bean class="com.junbo.configuration.reloadable.impl.ReloadableConfigConverterFactory" />
-            </list>
+            </set>
         </property>
     </bean>
 

@@ -4,12 +4,10 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.sharding.dualwrite.data
-
 import com.junbo.common.cloudant.CloudantEntity
 import com.junbo.common.model.ResourceMeta
 import com.junbo.common.util.Identifiable
 import groovy.transform.CompileStatic
-
 /**
  * The pending action.
  */

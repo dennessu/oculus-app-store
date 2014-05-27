@@ -25,6 +25,11 @@ public class CountryServiceFacadeImpl implements CountryServiceFacade{
     private CountryResourceClientProxy countryResource;
 
     public Promise<CurrencyId> getDefaultCurrency(String country){
+        if(1 == 1){
+            return Promise.pure(new CurrencyId("US"));
+        }
+        //TODO: enable country service
+
         if(CommonUtil.isNullOrEmpty(country)){
             throw AppClientExceptions.INSTANCE.invalidCountry(country).exception();
         }
@@ -33,5 +38,6 @@ public class CountryServiceFacadeImpl implements CountryServiceFacade{
             throw AppClientExceptions.INSTANCE.invalidCountry(country).exception();
         }
         return Promise.pure(count.getDefaultCurrency());
+
     }
 }

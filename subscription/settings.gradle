@@ -7,4 +7,5 @@ include 'subscription-rest'
 
 include 'subscription-clientproxy'
 
+include 'subscription-jobs'
 include 'subscription-app'

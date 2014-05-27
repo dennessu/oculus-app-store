@@ -7,28 +7,26 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
 
     AsyncHttpClient.BoundRequestBuilder __requestBuilder = __client.prepare${httpMethodName}("http://127.0.0.1"); // the url will be overwritten later
 
-    [#list accepts as accept]
-    __requestBuilder.addHeader("Accept", "${accept}");
-    [/#list]
-
-    [#if contentType??]
-    __requestBuilder.addHeader("Content-Type", "${contentType}");
-    [/#if]
-
-    String __requestId = org.slf4j.MDC.get("X-Request-Id");
-    if (__requestId != null) {
-        __requestBuilder.addHeader("X-Request-Id", __requestId);
-    }
+    __addHeadersFromHeadersProvider(__requestBuilder);
 
     for (java.util.Map.Entry<String, java.util.List<String>> entry : __headers.entrySet()) {
         // skip headers already handled by ClientProxy
-        if (entry.getKey().equals("Accept") || entry.getKey().equals("Content-Type")) {
+        if (entry.getKey().equalsIgnoreCase("Accept") || entry.getKey().equalsIgnoreCase("Content-Type")) {
             continue;
         }
         for (String value : entry.getValue()) {
             __requestBuilder.addHeader(entry.getKey(), value);
         }
     }
+
+    [#list accepts as accept]
+    __requestBuilder.addHeader("Accept", "${accept}");
+    [/#list]
+
+    [#if contentType??]
+    __requestBuilder.setHeader("Content-Type", "${contentType}");
+    [/#if]
+
 
     if (__accessTokenProvider != null) {
         String __accessToken = __accessTokenProvider.getAccessToken();
@@ -79,6 +77,9 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
     return __future.then(new Promise.Func<Response, Promise<${returnType}>>() {
         @Override
         public Promise<${returnType}> apply(Response response) {
+            if (__responseHandler != null) {
+                __responseHandler.onResponse(response);
+            }
             if (response.getStatusCode() / 100 == 2) {
                 try {
                     return Promise.pure(__transcoder.<${returnType}>decode(new TypeReference<${returnType}>() {}, response.getResponseBody()));
