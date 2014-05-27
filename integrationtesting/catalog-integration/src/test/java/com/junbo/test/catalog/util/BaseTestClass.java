@@ -12,11 +12,15 @@ import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
 import com.junbo.test.catalog.enums.CatalogEntityStatus;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.test.catalog.impl.OfferServiceImpl;
+import com.junbo.test.catalog.impl.ItemServiceImpl;
 import com.junbo.test.catalog.OfferRevisionService;
 import com.junbo.test.catalog.ItemRevisionService;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.test.common.Utility.TestClass;
 import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.test.catalog.OfferService;
+import com.junbo.test.catalog.ItemService;
 import com.junbo.common.model.Results;
 
 /**
@@ -26,7 +30,8 @@ import com.junbo.common.model.Results;
  */
 public class BaseTestClass extends TestClass {
 
-    protected void releaseItem(Item item) throws Exception {
+    protected Item releaseItem(Item item) throws Exception {
+        ItemService itemService = ItemServiceImpl.instance();
         ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
 
         //Attach item revision to the item
@@ -35,17 +40,38 @@ public class BaseTestClass extends TestClass {
         //Approve the item revision
         itemRevision.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
         itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision);
+
+        return itemService.getItem(item.getItemId());
     }
 
-    protected void releaseOffer(Offer offer) throws Exception {
+    protected ItemRevision releaseItemRevision(ItemRevision itemRevision) throws Exception {
+        ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
+
+        //Approve the item revision
+        itemRevision.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
+        return itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision);
+    }
+
+    protected Offer releaseOffer(Offer offer) throws Exception {
+        OfferService offerService = OfferServiceImpl.instance();
         OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
 
         //Attach offer revision to the offer
         OfferRevision offerRevision = offerRevisionService.postDefaultOfferRevision(offer);
 
-        //Approve the item revision
+        //Approve the offer revision
         offerRevision.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
         offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
+
+        return offerService.getOffer(offer.getOfferId());
+    }
+
+    protected OfferRevision releaseOfferRevision(OfferRevision offerRevision) throws Exception {
+        OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
+
+        //Approve the offer revision
+        offerRevision.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
+        return offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
     }
 
     protected <T> boolean isContain (Results<T> results, T entity) {
