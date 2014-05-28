@@ -26,8 +26,7 @@ public class ItemAttributeDaoImpl extends BaseDaoImpl<ItemAttributeEntity> imple
                 if (options.getAttributeType() != null) {
                     criteria.add(Restrictions.eq("type", options.getAttributeType()));
                 }
-                options.ensurePagingValid();
-                criteria.setFirstResult(options.getStart()).setMaxResults(options.getSize());
+                criteria.setFirstResult(options.getValidStart()).setMaxResults(options.getValidSize());
             }
         });
     }

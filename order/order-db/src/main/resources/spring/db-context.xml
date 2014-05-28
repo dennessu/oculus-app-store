@@ -172,10 +172,15 @@
         <property name="sqlRepositoryImpl" ref="sqlSubledgerItemRepository" />
     </bean>
 
-    <bean id="subledgerRepository" parent="baseRepository">
+    <bean id="subledgerRepository" parent="baseRepository" >
         <property name="repositoryInterface" value="com.junbo.order.db.repo.SubledgerRepository"/>
         <property name="cloudantRepositoryImpl" ref="cloudantSubledgerRepository" />
         <property name="sqlRepositoryImpl" ref="sqlSubledgerRepository" />
+    </bean>
+
+    <bean id="subledgerRepositoryFacade" class="com.junbo.order.db.repo.facade.impl.SubledgerRepositoryFacadeImpl">
+        <property name="subledgerRepository" ref="subledgerRepository" />
+        <property name="subledgerItemRepository" ref="subledgerItemRepository" />
     </bean>
 
 </beans>

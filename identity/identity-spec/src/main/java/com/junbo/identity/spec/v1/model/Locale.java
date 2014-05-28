@@ -16,23 +16,25 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  */
 public class Locale extends PropertyAssignedAwareResourceMeta implements Identifiable<LocaleId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "[Nullable]The id of the locale resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The Link to the locale resource.")
     @JsonProperty("self")
     private LocaleId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "The locale code of the locale. It must be the format en_US or en-US.")
+    @ApiModelProperty(position = 2, required = true, value = "[Client Immutable] The locale code of the locale, " +
+            "the locale code should be \"language - Country\" to be compliance with W3C, for example \"en-US\" instead of \"en_US\". " +
+            "The Domain Object API server will implement the tolerance logic and treat \"en_US\" as \"en-US\". ")
     private String localeCode;
 
-    @ApiModelProperty(position = 3, required = false, value = "The short name of the locale.")
+    @ApiModelProperty(position = 3, required = false, value = "[Nullable]The short name of the locale.")
     private String shortName;
 
-    @ApiModelProperty(position = 4, required = false, value = "The long name of the locale.")
+    @ApiModelProperty(position = 4, required = false, value = "[Nullable]The long name of the locale.")
     private String longName;
 
-    @ApiModelProperty(position = 5, required = false, value = "The locale name of the locale.")
+    @ApiModelProperty(position = 5, required = false, value = "[Nullable]The locale name of the locale.")
     private String localeName;
 
-    @ApiModelProperty(position = 6, required = false, value = "The fallback locale.")
+    @ApiModelProperty(position = 6, required = false, value = "[Nullable] Link to the fallback locale.")
     private LocaleId fallbackLocale;
 
     public String getShortName() {

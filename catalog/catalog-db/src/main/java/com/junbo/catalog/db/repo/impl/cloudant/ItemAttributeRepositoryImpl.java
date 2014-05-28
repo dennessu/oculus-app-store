@@ -52,18 +52,10 @@ public class ItemAttributeRepositoryImpl extends CloudantClient<ItemAttribute> i
             }
             return attributes;
         } else if (!StringUtils.isEmpty(options.getAttributeType())){
-            return super.queryView("by_type", options.getAttributeType());
+            return super.queryView("by_type", options.getAttributeType(),
+                    options.getValidSize(), options.getValidStart(), false);
         } else {
-            List<ItemAttribute> attributes = super.cloudantGetAll();
-            Iterator<ItemAttribute> iterator = attributes.iterator();
-            while (iterator.hasNext()) {
-                ItemAttribute attribute = iterator.next();
-                if (attribute == null || attribute.getId() == null) {
-                    iterator.remove();
-                }
-            }
-
-            return attributes;
+            return super.queryView("by_attributeId", null, options.getValidSize(), options.getValidStart(), false);
         }
     }
 

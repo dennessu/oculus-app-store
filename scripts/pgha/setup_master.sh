@@ -8,23 +8,35 @@ echo "kill postgres instance with port [$MASTER_DB_PORT]..."
 forceKill $MASTER_DB_PORT
 
 echo "create database data folder $MASTER_DATA_PATH"
-rm -rf $MASTER_DATA_PATH
-mkdir $MASTER_DATA_PATH
-chmod 700 $MASTER_DATA_PATH
+createDir $MASTER_DATA_PATH
 
 echo "create database backup folder $MASTER_BACKUP_PATH"
-rm -rf $MASTER_BACKUP_PATH
-mkdir $MASTER_BACKUP_PATH
+createDir $MASTER_BACKUP_PATH 
 
 echo "create database archive folder $MASTER_ARCHIVE_PATH"
-rm -rf $MASTER_ARCHIVE_PATH
-mkdir $MASTER_ARCHIVE_PATH
+createDir $MASTER_ARCHIVE_PATH
 
 echo "initialize master database..."
 $PGBIN_PATH/pg_ctl -D $MASTER_DATA_PATH initdb
 
 echo "configure pg_hba.conf..."
-cp -f pg_hba.conf.template $MASTER_DATA_PATH/pg_hba.conf
+cat >> $MASTER_DATA_PATH/pg_hba.conf <<EOF
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+# "local" is for Unix domain socket connections only
+local   all             ${PGUSER}                               trust
+# IPv4 local connections:
+host    all             ${PGUSER}       127.0.0.1/32            trust
+host    all             ${PGUSER}       ${MASTER_HOST}/32       trust
+host    all             ${PGUSER}       ${SLAVE_HOST}/32        trust
+host    all             ${PGUSER}       ${REPLICATION_HOST}/32  trust
+# IPv6 local connections:
+host    all             ${PGUSER}       ::1/128                 trust
+# Allow replication connections from localhost, by a user with the
+# replication privilege.
+host    replication     ${PGUSER}       ${MASTER_HOST}/32       trust
+host    replication     ${PGUSER}       ${SLAVE_HOST}/32        trust
+EOF
 
 echo "configure postgres.conf..."
 cat >> $MASTER_DATA_PATH/postgresql.conf <<EOF

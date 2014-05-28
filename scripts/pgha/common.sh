@@ -15,18 +15,22 @@ export PGLOCK_PATH='/run/postgresql'
 export PGUSER='silkcloud'
 export PROMOTE_TRIGGER_FILE='/tmp/bring_me_up'
 
-#master/slave db
+#master info
 export MASTER_HOST=54.254.246.13
 export MASTER_DB_PORT=5432
 export MASTER_DATA_PATH=$DATA_PATH
 export MASTER_BACKUP_PATH=$BACKUP_PATH
 export MASTER_ARCHIVE_PATH=$ARCHIVE_PATH
 
+#slave info
 export SLAVE_HOST=54.255.148.38
 export SLAVE_DB_PORT=5432
 export SLAVE_DATA_PATH=$DATA_PATH
 export SLAVE_BACKUP_PATH=$BACKUP_PATH
 export SLAVE_ARCHIVE_PATH=$ARCHIVE_PATH
+
+#replication info
+export REPLICATION_HOST=54.255.148.38
 
 #pgbouncer
 export PRIMARY_PGBOUNCER_HOST=$MASTER_HOST
@@ -57,10 +61,17 @@ function forceKill {
     fi    
 }
 
-# check shell running account
+# check running account
 function checkAccount {
 	if [ "$(whoami)" != "$1" ]; then
    		echo "this script must be run as $1"
    		exit 1
 	fi
+}
+
+# create directory
+function createDir {
+	rm -rf $1
+	mkdir $1
+	chmod 700 $1
 }

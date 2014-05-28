@@ -149,7 +149,7 @@ public abstract class RatingServiceSupport implements RatingService<PriceRatingC
 
     protected boolean validatePromotion(PromotionRevision promotion, PriceRatingContext context) {
         for (Criterion criterion : promotion.getCriteria()) {
-            if (!HandlerRegister.isSatisfied(criterion, context)) {
+            if (!HandlerRegister.getHandler(criterion.getPredicate().toString()).validate(criterion, context)) {
                 return false;
             }
         }

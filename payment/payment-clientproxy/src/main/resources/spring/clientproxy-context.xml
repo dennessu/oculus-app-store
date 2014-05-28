@@ -36,8 +36,16 @@
     <bean id="personalInfoFacade" class="com.junbo.payment.clientproxy.impl.PersonalInfoFacadeImpl">
         <property name="piiClient" ref="piiClient"></property>
     </bean>
+
+    <bean id="adyenRestClient" class="com.junbo.payment.clientproxy.adyen.proxy.AdyenApiClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="https://pal-test.adyen.com/pal/adapter"/>
+    </bean>
+
+
     <bean id="countryServiceFacade" class="com.junbo.payment.clientproxy.impl.CountryServiceFacadeImpl"/>
     <bean id="currencyServiceFacade" class="com.junbo.payment.clientproxy.impl.CurrencyServiceFacadeImpl"/>
     <bean id="mockPersonalInfoClientProxy" class="com.junbo.payment.clientproxy.MockPersonalInfoClientProxy"/>
+
 
 </beans>

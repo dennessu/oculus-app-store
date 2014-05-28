@@ -12,9 +12,8 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface UserTosValidator {
-    Promise<UserTosAgreement> validateForGet(UserId userId, UserTosAgreementId userTosId)
+    Promise<UserTosAgreement> validateForGet(UserTosAgreementId userTosId)
     Promise<Void> validateForSearch(UserTosAgreementListOptions options)
-    Promise<Void> validateForCreate(UserId userId, UserTosAgreement userTos)
-    Promise<Void> validateForUpdate(UserId userId, UserTosAgreementId userTosId,
-                                    UserTosAgreement userTos, UserTosAgreement oldUserTos)
+    Promise<Void> validateForCreate(UserTosAgreement userTos)
+    Promise<Void> validateForUpdate(UserTosAgreementId userTosId, UserTosAgreement userTos, UserTosAgreement oldUserTos)
 }

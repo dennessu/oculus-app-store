@@ -1,10 +1,11 @@
 package com.junbo.sharding.hibernate
 
-import bitronix.tm.resource.common.ResourceBean
-import bitronix.tm.resource.jdbc.PoolingDataSource
-import bitronix.tm.utils.PropertyUtils
+import com.jolbox.bonecp.BoneCPDataSource
 import com.junbo.configuration.topo.DataCenters
+import com.junbo.sharding.transaction.SimpleDataSourceProxy
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.DisposableBean
 import org.springframework.beans.factory.FactoryBean
 import org.springframework.beans.factory.annotation.Required
@@ -17,39 +18,65 @@ import java.util.regex.Pattern
  */
 @CompileStatic
 class ShardMultiTenantConnectionProviderFactoryBean
-        extends ResourceBean
         implements FactoryBean<ShardMultiTenantConnectionProvider>, DisposableBean {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ShardMultiTenantConnectionProviderFactoryBean)
+
+    private String uniqueName
 
     private String jdbcUrls
 
-    private boolean enableJdbc4ConnectionTest
+    private String className
 
-    private boolean localAutoCommit
+    private int minPoolSize
+
+    private int maxPoolSize
+
+    private int partitionCount
+
+    private Properties driverProperties
+
+    void setUniqueName(String uniqueName) {
+        this.uniqueName = uniqueName
+    }
 
     @Required
     void setJdbcUrls(String jdbcUrls) {
         this.jdbcUrls = jdbcUrls
     }
 
-    void setEnableJdbc4ConnectionTest(boolean enableJdbc4ConnectionTest) {
-        this.enableJdbc4ConnectionTest = enableJdbc4ConnectionTest
+    @Required
+    void setClassName(String className) {
+        this.className = className
     }
 
-    void setLocalAutoCommit(boolean localAutoCommit) {
-        this.localAutoCommit = localAutoCommit
+    @Required
+    void setMinPoolSize(int minPoolSize) {
+        this.minPoolSize = minPoolSize
+    }
+
+    @Required
+    void setMaxPoolSize(int maxPoolSize) {
+        this.maxPoolSize = maxPoolSize
+    }
+
+    void setPartitionCount(int partitionCount) {
+        this.partitionCount = partitionCount
+    }
+
+    @Required
+    void setDriverProperties(Properties driverProperties) {
+        this.driverProperties = driverProperties
     }
 
     ShardMultiTenantConnectionProviderFactoryBean() {
         // default override
-        this.shareTransactionConnections = true
-        this.enableJdbc4ConnectionTest = true
-        this.localAutoCommit = true
-        this.allowLocalTransactions = true
+        this.partitionCount = 4
     }
 
     private final SchemaSetter schemaSetter = new SchemaSetter()
 
-    private Map<String, PoolingDataSource> dataSourceMap
+    private Map<String, SimpleDataSourceProxy> dataSourceMap
 
     private ShardMultiTenantConnectionProvider connectionProvider
 
@@ -63,7 +90,7 @@ class ShardMultiTenantConnectionProviderFactoryBean
             dataSourceMap = new HashMap<>()
 
             List<String> schemaList = []
-            List<PoolingDataSource> dataSourceList = []
+            List<SimpleDataSourceProxy> dataSourceList = []
 
             for (String url : jdbcUrls.split(',')) {
                 url = url.trim()
@@ -119,32 +146,49 @@ class ShardMultiTenantConnectionProviderFactoryBean
         if (connectionProvider != null) {
             connectionProvider = null
 
-            for (PoolingDataSource dataSource : dataSourceMap.values()) {
-                dataSource.close()
+            for (SimpleDataSourceProxy dataSource : dataSourceMap.values()) {
+                def boneCPDataSource = (BoneCPDataSource) dataSource.targetDataSource
+
+                try {
+                    boneCPDataSource.close()
+                } catch (Exception ex) {
+                    LOGGER.warn("Failed to close $boneCPDataSource", ex)
+                }
             }
+
             dataSourceMap = null
         }
     }
 
-    private PoolingDataSource getOrCreateDataSource(String url) {
-        def result = dataSourceMap.get(url)
+    private SimpleDataSourceProxy getOrCreateDataSource(String url) {
+        SimpleDataSourceProxy result = dataSourceMap.get(url)
+
         if (result == null) {
-            result = new PoolingDataSource()
-            PropertyUtils.setProperties(result, PropertyUtils.getProperties(this))
+            result = createSimpleDataSourceProxy(url)
 
-            result.uniqueName = result.uniqueName + '_' + dataSourceMap.size()
-            result.driverProperties.put('url', url)
-
-            result.enableJdbc4ConnectionTest = enableJdbc4ConnectionTest
-            result.localAutoCommit = localAutoCommit
-
-            result.addConnectionCustomizer(schemaSetter)
-            result.init()
             dataSourceMap.put(url, result)
         }
+
         return result
     }
 
+    private SimpleDataSourceProxy createSimpleDataSourceProxy(String url) {
+        BoneCPDataSource dataSource = new BoneCPDataSource()
+
+        dataSource.setDriverClass(className)
+        dataSource.setJdbcUrl(url)
+
+        dataSource.setPartitionCount(partitionCount)
+        dataSource.setMinConnectionsPerPartition((int) (minPoolSize + partitionCount - 1) / partitionCount)
+        dataSource.setMaxConnectionsPerPartition((int) (maxPoolSize + partitionCount - 1) / partitionCount)
+
+        dataSource.setUser(driverProperties.getProperty('user'))
+        dataSource.setPassword(driverProperties.getProperty('password'))
+
+        dataSource.setConnectionHook(schemaSetter)
+
+        return new SimpleDataSourceProxy(dataSource)
+    }
 
     private static final String PATTERN_STR = '^(0|[1-9][0-9]*)[\\.]{2}(0|[1-9][0-9]*)$'
     private static final Pattern PATTERN = Pattern.compile(PATTERN_STR)

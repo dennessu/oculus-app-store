@@ -50,7 +50,9 @@ abstract class AbstractRestAdapter {
 
                 if (JunboHttpContext.responseStatus != -1) {
                     containerResponse.status = JunboHttpContext.responseStatus
+                }
 
+                if (JunboHttpContext.responseHeaders != null) {
                     for (Map.Entry<String, List<String>> entry : JunboHttpContext.responseHeaders.entrySet()) {
                         for (String value : entry.value) {
                             containerResponse.headers.add(entry.key, value)

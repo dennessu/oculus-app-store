@@ -1,0 +1,9 @@
+apply plugin: 'java'
+
+dependencies {
+    compile junboProject(":subscription-db")
+    compile junboProject(":subscription-spec")
+    compile junboProject(":subscription-clientproxy")
+
+    testCompile(libraries.spring_test)
+}

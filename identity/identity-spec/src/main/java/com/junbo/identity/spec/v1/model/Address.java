@@ -8,29 +8,34 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.enumid.CountryId;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by xmchen on 14-4-15.
  */
 public class Address{
+    @ApiModelProperty(position = 1, required = true, value = "First address line")
     private String street1;
 
+    @ApiModelProperty(position = 2, required = false, value = "[Nullable] Second address line.")
     private String street2;
 
+    @ApiModelProperty(position = 3, required = false, value = "[Nullable] Third address line.")
     private String street3;
 
+    @ApiModelProperty(position = 4, required = true, value = "Name of the city.")
     private String city;
 
+    @ApiModelProperty(position = 5, required = false, value = "[Nullable] Non-null name of the state/province in countries that have these subcountries, " +
+            "otherwise null.")
     private String subCountry;
 
+    @ApiModelProperty(position = 6, required = true, value = "Link to the address's Country resource.")
     @JsonProperty("country")
     private CountryId countryId;
 
+    @ApiModelProperty(position = 7, required = false, value = "[Nullable] The address's postal/zip code, or null.")
     private String postalCode;
-
-    private String firstName;
-
-    private String lastName;
 
     public String getStreet1() {
         return street1;
@@ -72,22 +77,6 @@ public class Address{
         this.countryId = countryId;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
     public String getStreet3() {
         return street3;
     }
@@ -120,8 +109,6 @@ public class Address{
         if (this.city != address.city) return false;
         if (this.postalCode != address.postalCode) return false;
         if (this.countryId != address.countryId) return false;
-        if (this.firstName != address.firstName) return false;
-        if (this.lastName != address.lastName) return false;
 
         return true;
     }

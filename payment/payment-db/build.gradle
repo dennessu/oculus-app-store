@@ -29,7 +29,6 @@ dependencies {
 	
 	compile(libraries.postgresql)
     compile (libraries.bonecp_spring)
-    compile (libraries.btm)
 
     processor junboProject(':oom-processor')
 

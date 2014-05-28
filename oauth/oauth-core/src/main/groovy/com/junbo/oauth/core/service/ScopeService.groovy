@@ -13,13 +13,11 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface ScopeService {
-    Scope saveScope(String authorization, Scope scope)
-
-    Scope getScope(String authorization, String scopeName)
+    Scope saveScope(Scope scope)
 
     Scope getScope(String scopeName)
 
-    List<Scope> getScopes(String authorization, String scopeNames)
+    List<Scope> getScopes(String scopeNames)
 
-    Scope updateScope(String authorization, String scopeName, Scope scope)
+    Scope updateScope(String scopeName, Scope scope)
 }

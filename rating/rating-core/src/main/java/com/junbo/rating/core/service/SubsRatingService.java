@@ -17,6 +17,6 @@ import com.junbo.rating.core.processor.ProcessorRegister;
 public class SubsRatingService implements RatingService<SubsRatingContext> {
     @Override
     public void rate(SubsRatingContext context) {
-        ProcessorRegister.doProcess(context);
+        ProcessorRegister.getProcessor(context.getType().toString()).process(context);
     }
 }

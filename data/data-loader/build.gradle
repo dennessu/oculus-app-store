@@ -5,4 +5,6 @@ dependencies {
 
     compile junboProject(':common-lib')
     compile junboProject(':authorization-spec')
+    compile junboProject(':authorization-lib')
+    compile junboProject(':oauth-db')
 }

@@ -8,7 +8,7 @@ TARGET_DB_HOST=$1
 TARGET_DB_PORT=$2
 
 echo "create pgbouncer home"
-mkdir -p $PGBOUNCER_BASE
+createDir $PGBOUNCER_BASE
 
 echo "configure database users"
 cat > $PGBOUNCER_AUTH_FILE <<EOF

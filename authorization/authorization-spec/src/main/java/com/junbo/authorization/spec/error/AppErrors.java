@@ -47,7 +47,7 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 409, code = "2000013", description = "Param invalid due to {0}.", field = "{0}")
     AppError parameterInvalid(String message);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000035", description = "{0} {1} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 404, code = "2000035", description = "{0} {1} not found.", field = "{0}")
     AppError resourceNotFound(String resourceName, String id);
 
     @ErrorDef(httpStatusCode = 403, code = "2000037", description = "The operation is forbidden.")

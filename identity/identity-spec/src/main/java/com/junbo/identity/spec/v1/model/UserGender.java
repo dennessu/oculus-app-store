@@ -5,10 +5,13 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
 /**
  * Created by liangfu on 4/26/14.
  */
 public class UserGender {
+    @ApiModelProperty(position = 1, required = true, value = "The user's gender. It must be in [MALE, FEMALE]")
     private String info;
 
     public String getInfo() {

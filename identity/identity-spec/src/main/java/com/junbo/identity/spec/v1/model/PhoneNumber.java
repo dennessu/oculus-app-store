@@ -5,10 +5,14 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
 /**
  * Created by liangfu on 4/26/14.
  */
 public class PhoneNumber {
+    @ApiModelProperty(position = 1, required = true, value = "The phone number, it must be the format countryCode+phoneNumber," +
+            "eg, 8618612003645, 86 is countryCode for China, 18612003645 is the local phone number.")
     private String info;
 
     public String getInfo() {

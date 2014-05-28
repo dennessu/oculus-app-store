@@ -34,8 +34,7 @@ public class PromotionRevisionDaoImpl extends BaseDaoImpl<PromotionRevisionEntit
                 }
                 Date now = Utils.now();
                 criteria.add(Restrictions.and(Restrictions.lt("startDate", now), Restrictions.gt("endDate", now)));
-                options.ensurePagingValid();
-                criteria.setFirstResult(options.getStart()).setMaxResults(options.getSize());
+                criteria.setFirstResult(options.getValidStart()).setMaxResults(options.getValidSize());
             }
         });
     }

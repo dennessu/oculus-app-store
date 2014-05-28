@@ -1,7 +1,6 @@
 package com.junbo.identity.rest.resource.v1
 
 import com.junbo.common.id.Id
-import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTosAgreementId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -35,14 +34,14 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
     private UserTosValidator userTosValidator
 
     @Override
-    Promise<UserTosAgreement> create(UserId userId, UserTosAgreement userTos) {
+    Promise<UserTosAgreement> create(UserTosAgreement userTos) {
         if (userTos == null) {
             throw new IllegalArgumentException('userTos is null')
         }
 
         userTos = userTosFilter.filterForCreate(userTos)
 
-        return userTosValidator.validateForCreate(userId, userTos).then {
+        return userTosValidator.validateForCreate(userTos).then {
             return userTosRepository.create(userTos).then { UserTosAgreement newUserTos ->
                 Created201Marker.mark((Id) newUserTos.id)
 
@@ -53,13 +52,12 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
     }
 
     @Override
-    Promise<UserTosAgreement> get(UserId userId,
-                                  UserTosAgreementId userTosAgreementId, UserTosAgreementGetOptions getOptions) {
+    Promise<UserTosAgreement> get(UserTosAgreementId userTosAgreementId, UserTosAgreementGetOptions getOptions) {
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        return userTosValidator.validateForGet(userId, userTosAgreementId).then { UserTosAgreement newUserTos ->
+        return userTosValidator.validateForGet(userTosAgreementId).then { UserTosAgreement newUserTos ->
             newUserTos = userTosFilter.filterForGet(newUserTos,
                     getOptions.properties?.split(',') as List<String>)
 
@@ -68,12 +66,7 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
     }
 
     @Override
-    Promise<UserTosAgreement> patch(UserId userId, UserTosAgreementId userTosAgreementId,
-                                    UserTosAgreement userTos) {
-        if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
-        }
-
+    Promise<UserTosAgreement> patch(UserTosAgreementId userTosAgreementId, UserTosAgreement userTos) {
         if (userTosAgreementId == null) {
             throw new IllegalArgumentException('userTosId is null')
         }
@@ -89,7 +82,7 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
 
             userTos = userTosFilter.filterForPatch(userTos, oldUserTos)
 
-            return userTosValidator.validateForUpdate(userId, userTosAgreementId, userTos, oldUserTos).then {
+            return userTosValidator.validateForUpdate(userTosAgreementId, userTos, oldUserTos).then {
 
                 return userTosRepository.update(userTos).then { UserTosAgreement newUserTos ->
                     newUserTos = userTosFilter.filterForGet(newUserTos, null)
@@ -100,12 +93,7 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
     }
 
     @Override
-    Promise<UserTosAgreement> put(UserId userId, UserTosAgreementId userTosAgreementId,
-                                  UserTosAgreement userTos) {
-        if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
-        }
-
+    Promise<UserTosAgreement> put(UserTosAgreementId userTosAgreementId, UserTosAgreement userTos) {
         if (userTosAgreementId == null) {
             throw new IllegalArgumentException('userTosId is null')
         }
@@ -121,7 +109,7 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
 
             userTos = userTosFilter.filterForPut(userTos, oldUserTos)
 
-            return userTosValidator.validateForUpdate(userId, userTosAgreementId, userTos, oldUserTos).then {
+            return userTosValidator.validateForUpdate(userTosAgreementId, userTos, oldUserTos).then {
                 return userTosRepository.update(userTos).then { UserTosAgreement newUserTos ->
                     newUserTos = userTosFilter.filterForGet(newUserTos, null)
                     return Promise.pure(newUserTos)
@@ -131,21 +119,20 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
     }
 
     @Override
-    Promise<Void> delete(UserId userId, UserTosAgreementId userTosAgreementId) {
-        return userTosValidator.validateForGet(userId, userTosAgreementId).then {
+    Promise<Void> delete(UserTosAgreementId userTosAgreementId) {
+        return userTosValidator.validateForGet(userTosAgreementId).then {
             return userTosRepository.delete(userTosAgreementId)
         }
     }
 
     @Override
-    Promise<Results<UserTosAgreement>> list(UserId userId, UserTosAgreementListOptions listOptions) {
+    Promise<Results<UserTosAgreement>> list(UserTosAgreementListOptions listOptions) {
         if (listOptions == null) {
             throw new IllegalArgumentException('listOptions is null')
         }
-        listOptions.setUserId(userId)
 
         return userTosValidator.validateForSearch(listOptions).then {
-            return userTosRepository.search(listOptions).then { List<UserTosAgreement> userTosList ->
+            return search(listOptions).then { List<UserTosAgreement> userTosList ->
                 def result = new Results<UserTosAgreement>(items: [])
 
                 userTosList.each { UserTosAgreement newUserTos ->
@@ -161,6 +148,16 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
 
                 return Promise.pure(result)
             }
+        }
+    }
+
+    Promise<List<UserTosAgreement>> search(UserTosAgreementListOptions listOptions) {
+        if (listOptions.userId != null && listOptions.tosId != null) {
+            return userTosRepository.searchByUserIdAndTosId(listOptions.userId, listOptions.tosId, listOptions.limit, listOptions.offset)
+        } else if (listOptions.userId != null) {
+            return userTosRepository.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset)
+        } else if (listOptions.tosId != null) {
+            return userTosRepository.searchByTosId(listOptions.tosId, listOptions.limit, listOptions.offset)
         }
     }
 }

@@ -11,6 +11,7 @@ import com.junbo.billing.spec.model.Balance;
 import com.junbo.common.id.BalanceId;
 import com.junbo.common.id.OrderId;
 import com.junbo.common.model.Results;
+import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -24,6 +25,7 @@ import javax.ws.rs.core.MediaType;
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
+@InProcessCallable
 public interface BalanceResource {
     @POST
     Promise<Balance> postBalance(Balance balance);

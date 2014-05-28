@@ -12,23 +12,26 @@ import com.junbo.order.spec.model.Subledger
 import com.junbo.order.spec.model.SubledgerItem
 import com.junbo.order.spec.model.SubledgerParam
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.stereotype.Component
+import org.springframework.beans.factory.annotation.Required
 /**
  * Created by fzhang on 4/11/2014.
  */
 @CompileStatic
-@Component('subledgerRepositoryFacade')
 class SubledgerRepositoryFacadeImpl implements SubledgerRepositoryFacade {
 
-    @Autowired
-    @Qualifier('subledgerRepository')
     private SubledgerRepository subledgerRepository;
 
-    @Autowired
-    @Qualifier('subledgerItemRepository')
     private SubledgerItemRepository subledgerItemRepository;
+
+    @Required
+    void setSubledgerRepository(SubledgerRepository subledgerRepository) {
+        this.subledgerRepository = subledgerRepository
+    }
+
+    @Required
+    void setSubledgerItemRepository(SubledgerItemRepository subledgerItemRepository) {
+        this.subledgerItemRepository = subledgerItemRepository
+    }
 
     @Override
     Subledger createSubledger(Subledger subledger) {

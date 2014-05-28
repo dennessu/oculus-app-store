@@ -10,6 +10,7 @@ import com.junbo.catalog.db.repo.ItemRepository;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemsGetOptions;
 import com.junbo.common.cloudant.CloudantClient;
+import com.junbo.common.cloudant.model.CloudantSearchResult;
 import com.junbo.common.cloudant.model.CloudantViews;
 import com.junbo.common.id.ItemId;
 import com.junbo.sharding.IdGenerator;
@@ -58,16 +59,38 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
                 } else if (options.getGenre() != null
                         &&(item.getGenres()==null || !item.getGenres().contains(options.getGenre().getValue()))) {
                     continue;
+                } else if (options.getOwnerId() != null
+                        && !options.getOwnerId().getValue().equals(item.getOwnerId())) {
+                    continue;
                 } else {
                     items.add(item);
                 }
             }
-        } else if (!StringUtils.isEmpty(options.getType()) && options.getGenre() == null) {
-            items = super.queryView("by_type", options.getType());
-        } else if (options.getGenre() != null && StringUtils.isEmpty(options.getType())) {
-            items = super.queryView("by_genreId", options.getGenre().toString());
-        } else if (!StringUtils.isEmpty(options.getType()) && options.getGenre() != null) {
-            // TODO: search
+        } else if (StringUtils.isEmpty(options.getType()) && options.getGenre()==null && options.getOwnerId()==null) {
+            items = super.queryView("by_itemId", null, options.getValidSize(), options.getValidStart(), false);
+            options.setNextBookmark(null);
+        } else {
+            StringBuilder sb = new StringBuilder();
+            if (options.getGenre() != null) {
+                sb.append("genreId:'").append(options.getGenre().getValue()).append("'");
+            }
+            if (!StringUtils.isEmpty(options.getType())) {
+                if (sb.length() > 0) {
+                    sb.append(" AND ");
+                }
+                sb.append("type:'").append(options.getType()).append("'");
+            }
+            if (!StringUtils.isEmpty(options.getOwnerId())) {
+                if (sb.length() > 0) {
+                    sb.append(" AND ");
+                }
+                sb.append("ownerId:'").append(options.getOwnerId().getValue()).append("'");
+            }
+            CloudantSearchResult<Item> searchResult =
+                    super.search("search", sb.toString(), options.getValidSize(), options.getBookmark());
+            items = searchResult.getResults();
+            options.setNextBookmark(searchResult.getBookmark());
+            options.setStart(null);
         }
 
         return items;
@@ -88,28 +111,20 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
         Map<String, CloudantIndex> indexMap = new HashMap<>();
 
         CloudantViews.CloudantView view = new CloudantViews.CloudantView();
-        view.setMap("function(doc) {emit(doc.type, doc._id)}");
+        view.setMap("function(doc) {emit(doc.itemId, doc._id)}");
         view.setResultClass(String.class);
-        viewMap.put("by_type", view);
-
-        view = new CloudantViews.CloudantView();
-        view.setMap(
-                "function(doc) {" +
-                    "if (doc.genres) {" +
-                        "for (var idx in doc.genres) {" +
-                            "emit(doc.genres[idx], doc._id);" +
-                        "}" +
-                    "}" +
-                "}");
-        view.setResultClass(String.class);
-        viewMap.put("by_genreId", view);
+        viewMap.put("by_itemId", view);
 
         CloudantIndex index = new CloudantIndex();
         index.setResultClass(String.class);
         index.setIndex("function(doc) {" +
                 "index(\'type\', doc.type);" +
-                "index(\'genreId\', doc.genres);" +
-                "index(\'itemId\', doc.itemId);" +
+                "if (doc.genres) {" +
+                    "for (var idx in doc.genres) {" +
+                        "index(\'genreId\', doc.genres[idx]);" +
+                    "}" +
+                "}" +
+                "index(\'ownerId\', doc.ownerId);" +
             "}");
         indexMap.put("search", index);
 
