@@ -20,7 +20,10 @@ import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.CollectionUtils
 
 /**
- * Created by haomin on 14-4-25.
+ *  1): Locale & country existence check;
+ *  2): LocaleName length check;
+ *  3): LocaleDescription length check;
+ *  Created by haomin on 14-4-25.
  */
 @CompileStatic
 class CommunicationValidatorImpl implements CommunicationValidator {

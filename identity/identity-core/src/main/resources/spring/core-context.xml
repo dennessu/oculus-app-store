@@ -93,11 +93,8 @@
                 <value>countries</value>
                 <value>symbol</value>
                 <value>symbolPosition</value>
-                <value>decimalSymbol</value>
+                <value>minAuthAmount</value>
                 <value>numberAfterDecimal</value>
-                <value>negativeFormat</value>
-                <value>digitGroupingSymbol</value>
-                <value>digitGroupingLength</value>
                 <value>localeKeys</value>
                 <value>futureExpansion</value>
                 <value>resourceAge</value>
@@ -110,11 +107,8 @@
                 <value>currencyCode</value>
                 <value>symbol</value>
                 <value>symbolPosition</value>
-                <value>decimalSymbol</value>
+                <value>minAuthAmount</value>
                 <value>numberAfterDecimal</value>
-                <value>negativeFormat</value>
-                <value>digitGroupingSymbol</value>
-                <value>digitGroupingLength</value>
                 <value>localeKeys</value>
                 <value>futureExpansion</value>
             </list>
@@ -125,11 +119,8 @@
                 <value>currencyCode</value>
                 <value>symbol</value>
                 <value>symbolPosition</value>
-                <value>decimalSymbol</value>
+                <value>minAuthAmount</value>
                 <value>numberAfterDecimal</value>
-                <value>negativeFormat</value>
-                <value>digitGroupingSymbol</value>
-                <value>digitGroupingLength</value>
                 <value>localeKeys</value>
                 <value>futureExpansion</value>
                 <value>resourceAge</value>
