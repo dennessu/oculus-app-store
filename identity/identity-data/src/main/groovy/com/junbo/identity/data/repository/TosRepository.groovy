@@ -19,5 +19,5 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface TosRepository extends BaseRepository<Tos, TosId> {
     @ReadMethod
-    Promise<List<Tos>> search(TosListOptions options)
+    Promise<List<Tos>> searchAll(Integer limit, Integer offset)
 }

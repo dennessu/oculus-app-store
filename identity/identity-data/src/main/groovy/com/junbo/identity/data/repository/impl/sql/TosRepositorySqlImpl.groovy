@@ -65,6 +65,11 @@ class TosRepositorySqlImpl implements TosRepository {
     }
 
     @Override
+    Promise<List<Tos>> searchAll(Integer limit, Integer offset) {
+        return null
+    }
+
+    @Override
     Promise<List<Tos>> search(TosListOptions options) {
         List<TosEntity> entities = tosDAO.search(options)
 
