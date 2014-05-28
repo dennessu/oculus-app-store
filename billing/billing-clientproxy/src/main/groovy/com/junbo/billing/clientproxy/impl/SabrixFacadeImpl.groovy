@@ -182,6 +182,7 @@ class SabrixFacadeImpl implements TaxFacade {
         if (result.requestStatus?.isSuccess || result.requestStatus?.isPartialSuccess) {
             Invoice resultInvoice = result.invoice[0]
             balance.taxAmount = resultInvoice.totalTaxAmount
+            balance.taxIncluded = resultInvoice?.calculationDirection.equalsIgnoreCase('T')
             balance.balanceItems.eachWithIndex { BalanceItem item, int index ->
                 resultInvoice.line.each { Line line ->
                     if (index == line.lineNumber) {
