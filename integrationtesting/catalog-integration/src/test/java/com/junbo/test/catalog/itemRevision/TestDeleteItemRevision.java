@@ -9,6 +9,7 @@ import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.test.catalog.ItemRevisionService;
 import com.junbo.test.catalog.ItemService;
+import com.junbo.test.catalog.enums.CatalogEntityStatus;
 import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
 import com.junbo.test.catalog.impl.ItemServiceImpl;
@@ -39,12 +40,16 @@ public class TestDeleteItemRevision extends BaseTestClass {
             description = "Test delete an item revision by item revision Id",
             steps = {
                     "1. Prepare an item revision",
-                    "2. delete it and verify can't search it"
+                    "2. Delete it and verify can't search it",
+                    "3. Post another item revision, attach to an item and release it",
+                    "4. Delete the item revision",
+                    "5. Verify the currentRevisionId of item is null"
             }
     )
     @Test
     public void testDeleteItemRevision() throws Exception {
         ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
+        ItemService itemService = ItemServiceImpl.instance();
 
         //Prepare an item revision
         ItemRevision itemRevision = itemRevisionService.postDefaultItemRevision();
@@ -61,9 +66,16 @@ public class TestDeleteItemRevision extends BaseTestClass {
 
         Long invalidId = 0L;
         //delete non-existing item
-        itemRevision = itemRevisionService.postDefaultItemRevision();;
+        itemRevision = itemRevisionService.postDefaultItemRevision();
         itemRevisionService.deleteItemRevision(invalidId, 404);
         ItemRevision itemRevisionGet = itemRevisionService.getItemRevision(itemRevision.getRevisionId());
+        Assert.assertNotNull(itemRevisionGet);
+
+        releaseItemRevision(itemRevision);
+
+        //delete released item revision should be prohibited.
+        itemRevisionService.deleteItemRevision(itemRevision.getRevisionId(), 404);
+        itemRevisionGet = itemRevisionService.getItemRevision(itemRevision.getRevisionId());
         Assert.assertNotNull(itemRevisionGet);
     }
 
