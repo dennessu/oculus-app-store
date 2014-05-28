@@ -156,4 +156,61 @@ public class OrderStatusTesting extends BaseOrderTestClass {
         validationHelper.validateOrderStatus(expectedOrderStatus);
     }
 
+    @Property(
+            priority = Priority.BVT,
+            features = "GET /Orders?userId={key}",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test order status update",
+            steps = {
+                    "1. Post a new user",
+                    "2. Post new credit card to user.",
+                    "3. Post an order without setting tentative (OPEN)",
+                    "4. Put offer with new offer revision(price changed)",
+                    "5. Get order by user Id",
+                    "6. Verify order status has been changed to PRICE_RATING_CHANGED",
+                    "7. Put order",
+                    "8. Get order by user Id",
+                    "9. Verify order status has been changed to OPEN",
+                    "10. Put order tentative to false",
+                    "11. Get order by user Id",
+                    "12. Verify order status is completed"
+            }
+    )
+    @Test
+    public void testOrderStatusUpdate() throws Exception {
+        Map<String, OrderStatus> expectedOrderStatus = new HashMap<>();
+
+        String uid = testDataProvider.createUser();
+
+        ArrayList<String> offerList = new ArrayList<>();
+        offerList.add(offer_digital_normal1);
+
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
+
+        String orderId = testDataProvider.postOrder(
+                uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
+
+        testDataProvider.updateOfferPrice(offer_digital_normal1);
+
+        testDataProvider.getOrdersByUserId(uid);
+        expectedOrderStatus.put(orderId, OrderStatus.PRICE_RATING_CHANGED);
+        validationHelper.validateOrderStatus(expectedOrderStatus);
+
+        testDataProvider.updateOrder(Master.getInstance().getOrder(orderId));
+
+        expectedOrderStatus.clear();
+        expectedOrderStatus.put(orderId, OrderStatus.OPEN);
+        validationHelper.validateOrderStatus(expectedOrderStatus);
+
+        testDataProvider.updateOrderTentative(orderId,false);
+        testDataProvider.getOrdersByUserId(uid);
+
+        expectedOrderStatus.clear();
+        expectedOrderStatus.put(orderId, OrderStatus.COMPLETED);
+        validationHelper.validateOrderStatus(expectedOrderStatus);
+    }
+
 }
