@@ -54,11 +54,13 @@ class PITypeRepositoryCloudantImpl extends CloudantClient<PIType> implements PIT
     }
 
     @Override
-    Promise<List<PIType>> search(PITypeListOptions options) {
-        if (options.typeCode != null) {
-            return Promise.pure(super.queryView('by_typeCode', options.typeCode))
-        }
+    Promise<List<PIType>> searchByTypeCode(String typeCode, Integer limit, Integer offset) {
+        def list = super.queryView('by_typeCode', typeCode, limit, offset, false)
+        return Promise.pure(list)
+    }
 
+    @Override
+    Promise<List<PIType>> searchAll(Integer limit, Integer offset) {
         return Promise.pure(super.cloudantGetAll())
     }
 

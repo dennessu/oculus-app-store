@@ -14,5 +14,8 @@ import groovy.transform.CompileStatic
 @CompileStatic
 public interface PITypeRepository extends BaseRepository<PIType, PITypeId> {
     @ReadMethod
-    Promise<List<PIType>> search(PITypeListOptions options)
+    Promise<List<PIType>> searchByTypeCode(String typeCode, Integer limit, Integer offset)
+
+    @ReadMethod
+    Promise<List<PIType>> searchAll(Integer limit, Integer offset)
 }
