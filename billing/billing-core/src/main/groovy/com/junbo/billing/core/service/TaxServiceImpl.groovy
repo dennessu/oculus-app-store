@@ -22,8 +22,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 
-import javax.annotation.Resource
-
 /**
  * Created by LinYi on 14-3-10.
  */
@@ -93,13 +91,13 @@ class TaxServiceImpl implements TaxService {
                     return identityFacade.getAddress(pi.billingAddressId).then { Address address ->
                         return taxFacade.validateAddress(address)
                     }.then { Address validatedPiAddress ->
-                        return taxFacade.calculateTax(balance, validatedShippingAddress, validatedPiAddress)
+                        return taxFacade.calculateTaxQuote(balance, validatedShippingAddress, validatedPiAddress)
                     }
                 }
             }
             return identityFacade.getAddress(pi.billingAddressId).then { Address address ->
                 return taxFacade.validateAddress(address).then { Address validatedPiAddress ->
-                    return taxFacade.calculateTax(balance, null, validatedPiAddress)
+                    return taxFacade.calculateTaxQuote(balance, null, validatedPiAddress)
                 }
             }
         }

@@ -14,6 +14,8 @@ import com.junbo.langur.core.promise.Promise;
  * Created by LinYi on 14-3-13.
  */
 public interface TaxFacade {
+    Promise<Balance> calculateTaxQuote(Balance balance, Address shippingAddress, Address piAddress);
+
     Promise<Balance> calculateTax(Balance balance, Address shippingAddress, Address piAddress);
 
     Promise<Address> validateAddress(Address address);
