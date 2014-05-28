@@ -6,6 +6,7 @@
 
 package com.junbo.order.core.impl.order
 
+import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.common.error.AppErrorException
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.executor.FlowExecutor
@@ -167,7 +168,7 @@ class OrderServiceImpl implements OrderService {
             if (order.tentative && CoreUtils.isRateExpired(order)) {
                 // if the price rating result changes, return expired.
                 return orderInternalService.rateOrder(order).then { Order newOrder ->
-                    if(CoreUtils.compareOrderRating(order, newOrder)) {
+                    if (CoreUtils.compareOrderRating(order, newOrder)) {
                         return Promise.pure(order)
                     } else {
                         order.status == OrderStatus.PRICE_RATING_CHANGED
@@ -284,9 +285,22 @@ class OrderServiceImpl implements OrderService {
                     throw AppErrors.INSTANCE.offerNotFound(item.offer.value?.toString()).exception()
                 }
                 item.type = CoreUtils.getOfferType(offer).name()
+                updatePaymentDescription(order, offer.catalogOfferRevision)
             }
         }.syncThen {
             return null
+        }
+    }
+
+    private void updatePaymentDescription(Order order, OfferRevision offer) {
+        String locale = order.locale.value?.replace('-', '_')
+        String description = offer.locales[locale] != null ?
+                offer.locales[locale].shortDescription : offer.locales['DEFAULT']?.shortDescription
+        if (order.paymentDescription == null || order.paymentDescription == '') {
+            order.paymentDescription = description
+        }
+        else if (description != null) {
+            order.paymentDescription += ' & ' + description
         }
     }
 }

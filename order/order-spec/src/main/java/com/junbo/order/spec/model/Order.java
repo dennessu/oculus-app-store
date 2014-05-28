@@ -136,6 +136,9 @@ public class Order extends ResourceMeta implements Identifiable<OrderId> {
 
     private List<BillingHistory> billingHistories;
 
+    @JsonIgnore
+    private String paymentDescription;
+
     public OrderId getId() {
         return id;
     }
@@ -336,4 +339,11 @@ public class Order extends ResourceMeta implements Identifiable<OrderId> {
         this.billingHistories = billingHistories;
     }
 
+    public String getPaymentDescription() {
+        return paymentDescription;
+    }
+
+    public void setPaymentDescription(String paymentDescription) {
+        this.paymentDescription = paymentDescription;
+    }
 }
