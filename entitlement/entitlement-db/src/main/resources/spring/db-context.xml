@@ -11,28 +11,28 @@
     <bean id="entitlementDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${entitlement.db.jdbcUrls}"/>
         <property name="uniqueName" value="jdbc/entitlement"/>
-        <property name="className" value="${entitlement.db.driverClassName}"/>
-        <property name="minPoolSize" value="${entitlement.db.minPoolSize}"/>
-        <property name="maxPoolSize" value="${entitlement.db.maxPoolSize}"/>
+        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
+        <property name="minPoolSize" value="${entitlement.db.minConnectionsPerPartition}"/>
+        <property name="maxPoolSize" value="${entitlement.db.maxConnectionsPerPartition}"/>
         <property name="driverProperties">
             <props>
                 <prop key="user">${entitlement.db.username}</prop>
                 <prop key="password">${entitlement.db.password}</prop>
             </props>
         </property>
-
     </bean>
 
     <!-- SessionFactory for Hibernate -->
-    <bean id="entitlementSessionFactory" class="com.junbo.sharding.hibernate.LocalSessionFactoryWithListenerBean">
+    <bean id="entitlementSessionFactory"
+          class="com.junbo.sharding.hibernate.LocalSessionFactoryWithListenerBean">
         <property name="jtaTransactionManager" ref="transactionManager"/>
         <property name="hibernateProperties">
             <map>
-                <entry key="hibernate.dialect" value="${sharding.hibernate.dialect}"/>
-                <entry key="hibernate.max_fetch_depth" value="${sharding.hibernate.max_fetch_depth}"/>
-                <entry key="hibernate.jdbc.fetch_size" value="${sharding.hibernate.jdbc.fetch_size}"/>
-                <entry key="hibernate.jdbc.batch_size" value="${sharding.hibernate.jdbc.batch_size}"/>
-                <entry key="hibernate.show_sql" value="${sharding.hibernate.show_sql}"/>
+                <entry key="hibernate.dialect" value="${entitlement.hibernate.dialect}"/>
+                <entry key="hibernate.max_fetch_depth" value="${entitlement.hibernate.max_fetch_depth}"/>
+                <entry key="hibernate.jdbc.fetch_size" value="${entitlement.hibernate.fetch_size}"/>
+                <entry key="hibernate.jdbc.batch_size" value="${entitlement.hibernate.batch_size}"/>
+                <entry key="hibernate.show_sql" value="${entitlement.hibernate.show_sql}"/>
                 <entry key="hibernate.multiTenancy" value="SCHEMA"/>
                 <entry key="hibernate.current_session_context_class"
                        value="com.junbo.sharding.hibernate.MultiTenantJTASessionContext"/>
