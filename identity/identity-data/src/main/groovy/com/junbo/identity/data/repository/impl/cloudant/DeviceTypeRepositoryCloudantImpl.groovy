@@ -29,7 +29,7 @@ class DeviceTypeRepositoryCloudantImpl extends CloudantClient<DeviceType> implem
     }
 
     @Override
-    Promise<List<DeviceType>> search(DeviceTypeListOptions options) {
+    Promise<List<DeviceType>> searchAll(Integer limit, Integer offset) {
         return Promise.pure(super.cloudantGetAll())
     }
 

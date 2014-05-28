@@ -126,7 +126,7 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
         }
 
         return deviceTypeValidator.validateForSearch(listOptions).then {
-            return deviceTypeRepository.search(listOptions).then { List<DeviceType> deviceTypeList ->
+            return search(listOptions).then { List<DeviceType> deviceTypeList ->
                 def result = new Results<DeviceType>(items: [])
 
                 deviceTypeList.each { DeviceType newDeviceType ->
@@ -151,5 +151,9 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
         return deviceTypeValidator.validateForGet(deviceTypeId).then {
             return deviceTypeRepository.delete(deviceTypeId)
         }
+    }
+
+    private Promise<List<DeviceType>> search(DeviceTypeListOptions listOptions) {
+        return deviceTypeRepository.searchAll(listOptions.limit, listOptions.offset)
     }
 }
