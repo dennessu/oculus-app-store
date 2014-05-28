@@ -18,9 +18,12 @@ public class DBHelper {
     private LogHelper logger = new LogHelper(DBHelper.class);
 
     public DBHelper() {
-        this.postgresConnectionString = ConfigPropertiesHelper.instance().getProperty("db.postgresql.connectionstring");
-        this.postgresUserName = ConfigPropertiesHelper.instance().getProperty("db.postgresql.username");
-        this.postgresPassword = ConfigPropertiesHelper.instance().getProperty("db.postgresql.password");
+        try {
+            this.postgresConnectionString = ConfigPropertiesHelper.instance().getProperty("db.postgresql.connectionstring");
+            this.postgresUserName = ConfigPropertiesHelper.instance().getProperty("db.postgresql.username");
+            this.postgresPassword = ConfigPropertiesHelper.instance().getProperty("db.postgresql.password");
+        } catch (IllegalArgumentException ex) {
+        }
     }
 
     /**

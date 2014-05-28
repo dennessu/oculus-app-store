@@ -66,9 +66,27 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
     public BuyerTestDataProvider() {
     }
 
+    public String getCreditCard(String uid) throws Exception {
+        List<String> paymentList = paymentClient.getPaymentInstrumentsByUserId(uid);
+        //missing filter payment type only for fraud test
+        if (paymentList.size() > 0) {
+            return paymentList.get(0);
+        } else return null;
+    }
+
     public String createUser() throws Exception {
         return identityClient.PostUser();
     }
+
+    public String createUser(String userName, String emailAddress) throws Exception {
+        List<String> userList = identityClient.GetUserByUserName(userName);
+        if (userList.size() > 0) {
+            return userList.get(0);
+        }
+
+        return identityClient.PostUser(userName, emailAddress);
+    }
+
 
     public String getUserByUid(String userId) throws Exception {
         return identityClient.GetUserByUserId(userId);
@@ -122,11 +140,11 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
     }
 
     public void creditWallet(String uid) throws Exception {
-       paymentProvider.creditWallet(uid);
+        paymentProvider.creditWallet(uid);
     }
 
     public void creditWallet(String uid, BigDecimal amount) throws Exception {
-        paymentProvider.creditWallet(uid,amount);
+        paymentProvider.creditWallet(uid, amount);
     }
 
 /*    public String postShippingAddressToUser(String uid, ShippingAddressInfo shippingAddressInfo) throws Exception {
@@ -158,7 +176,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
                             boolean hasPhysicalGood, ArrayList<String> offers, int expectedResponseCode)
             throws Exception {
 
-       return orderProvider.postOrder(uid,country,currency,paymentInstrumentId,hasPhysicalGood,offers,expectedResponseCode);
+        return orderProvider.postOrder(uid, country, currency, paymentInstrumentId, hasPhysicalGood, offers, expectedResponseCode);
     }
 
     public String postOrderByCartId(String uid, String cartId, Country country, Currency currency,
@@ -214,7 +232,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
     }
 
     public String updateOrderTentative(String orderId, boolean isTentative, int expectedResponseCode) throws Exception {
-        return orderProvider.updateOrderTentative(orderId,isTentative,expectedResponseCode);
+        return orderProvider.updateOrderTentative(orderId, isTentative, expectedResponseCode);
     }
 
     public void emptyCartByCartId(String uid, String cartId) throws Exception {
@@ -226,7 +244,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
     }
 
     public String updateOrder(Order order) throws Exception {
-       return orderProvider.updateOrder(order);
+        return orderProvider.updateOrder(order);
     }
 
     public String getOrder(String orderId) throws Exception {
