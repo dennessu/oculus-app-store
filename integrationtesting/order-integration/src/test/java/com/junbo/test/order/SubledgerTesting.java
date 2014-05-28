@@ -62,9 +62,9 @@ public class SubledgerTesting extends BaseOrderTestClass {
         String order2 = testDataProvider.postOrder(
                 uid1, Country.DEFAULT, Currency.DEFAULT, creditCardId2, false, offerList);
 
-        testDataProvider.updateOrderTentative(order1, false);
+        testDataProvider.updateOrderTentative(order2, false);
 
-        testDataProvider.getSubledger();
+        testDataProvider.getSubledger(offer_digital_normal1);
 
         //TODO verify subledger
 
@@ -135,7 +135,7 @@ public class SubledgerTesting extends BaseOrderTestClass {
 
         testDataProvider.updateOrderTentative(order4, false);
 
-        testDataProvider.getSubledger();
+        testDataProvider.getSubledger(offer_digital_normal1);
 
         //TODO verify subledger
 
