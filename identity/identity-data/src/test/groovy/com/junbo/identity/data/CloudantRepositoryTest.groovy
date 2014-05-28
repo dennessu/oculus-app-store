@@ -297,7 +297,8 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         AuthenticatorListOptions getOption = new AuthenticatorListOptions()
         getOption.setExternalId(newValue)
-        List<UserAuthenticator> userAuthenticators = userAuthenticatorRepository.search(getOption).get()
+        List<UserAuthenticator> userAuthenticators = userAuthenticatorRepository.searchByExternalId(newValue, null,
+                null).get()
         assert userAuthenticators.size() != 0
     }
 
