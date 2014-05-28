@@ -133,7 +133,7 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
     @Override
     Promise<Results<UserCommunication>> list(UserOptinListOptions listOptions) {
         return userCommunicationValidator.validateForSearch(listOptions).then {
-            return userCommunicationRepository.search(listOptions).then { List<UserCommunication> userCommunications ->
+            return search(listOptions).then { List<UserCommunication> userCommunications ->
                 def result = new Results<UserCommunication>(items: [])
 
                 userCommunications.each { UserCommunication newUserCommunication ->
@@ -149,6 +149,20 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
 
                 return Promise.pure(result)
             }
+        }
+    }
+
+    private Promise<List<UserCommunication>> search(UserOptinListOptions listOptions) {
+        if (listOptions.userId != null && listOptions.communicationId != null) {
+            return userCommunicationRepository.searchByUserIdAndCommunicationId(listOptions.userId,
+                    listOptions.communicationId, listOptions.limit, listOptions.offset)
+        } else if (listOptions.userId != null) {
+            return userCommunicationRepository.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset)
+        } else if (listOptions.communicationId != null) {
+            return userCommunicationRepository.searchByCommunicationId(listOptions.communicationId, listOptions.limit,
+                    listOptions.offset)
+        } else {
+            throw new IllegalArgumentException('Unsupported search operation.')
         }
     }
 }
