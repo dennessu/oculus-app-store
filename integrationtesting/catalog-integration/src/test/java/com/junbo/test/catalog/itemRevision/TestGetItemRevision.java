@@ -295,7 +295,7 @@ public class TestGetItemRevision extends BaseTestClass {
         timeStamp.add(Long.toString(current.getTimeInMillis()));
         getOptions.put("timeInMillis", timeStamp);
         verifyGetResults(getOptions, 2, itemRevision2, itemRevision4);
-        
+
     }
 
     private void verifyInvalidScenarios(Long itemRevisionId) throws Exception {

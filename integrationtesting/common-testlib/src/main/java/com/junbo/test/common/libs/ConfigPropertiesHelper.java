@@ -5,10 +5,10 @@
  */
 package com.junbo.test.common.libs;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Properties;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author Jason
@@ -54,22 +54,25 @@ public final class ConfigPropertiesHelper {
     }
 
     private static void initProperties() {
+        String vmip = System.getProperty("vmip");
         String config = System.getProperty("test.config");
+
         if (config != null && config.length() > 0) {
             logger.logInfo("test config: " + config);
-            loadTestProperties(String.format("%s.properties", config));
+            loadTestProperties(String.format("%s.properties", config), vmip);
         }
         else {
-            loadTestProperties("testConfig.properties");
+            loadTestProperties("testConfig.properties", vmip);
         }
     }
 
-    private static void loadTestProperties(String path) {
+    private static void loadTestProperties(String path, String vmip) {
         Properties props = new Properties();
         try {
             InputStream io = instance.getClass().getClassLoader().getResourceAsStream(path);
             if (io != null) {
                 props.load(io);
+                io.close();
             }
             else {
                 throw new RuntimeException("Could not find the '" + path + "' properties file in the " +
@@ -84,6 +87,10 @@ public final class ConfigPropertiesHelper {
         while (propertyNames.hasMoreElements()) {
             String key = (String) propertyNames.nextElement();
             String value = props.getProperty(key);
+            if (vmip != null && vmip.length() > 0) {
+                value = value.replaceAll("localhost", vmip);
+            }
+
             if (!System.getProperties().containsKey(key)) {
                 System.setProperty(key, value);
                 logger.logInfo(key + ": " + System.getProperty(key));
