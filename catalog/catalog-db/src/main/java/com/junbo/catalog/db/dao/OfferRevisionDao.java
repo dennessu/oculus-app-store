@@ -17,4 +17,6 @@ import java.util.List;
 public interface OfferRevisionDao extends BaseDao<OfferRevisionEntity> {
     List<OfferRevisionEntity> getRevisions(OfferRevisionsGetOptions options);
     OfferRevisionEntity getRevision(Long offerId, Long timestamp);
+    List<OfferRevisionEntity> getRevisionsBySubOfferId(Long offerId);
+    List<OfferRevisionEntity> getRevisionsByItemId(Long itemId);
 }

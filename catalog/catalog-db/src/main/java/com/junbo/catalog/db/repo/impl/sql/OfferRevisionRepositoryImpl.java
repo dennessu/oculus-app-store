@@ -60,6 +60,26 @@ public class OfferRevisionRepositoryImpl implements OfferRevisionRepository {
         return revisions;
     }
 
+    public List<OfferRevision> getRevisions(Long itemId) {
+        List<OfferRevisionEntity> revisionEntities = offerRevisionDao.getRevisionsByItemId(itemId);
+        List<OfferRevision> revisions = new ArrayList<>();
+        for (OfferRevisionEntity revisionEntity : revisionEntities) {
+            revisions.add(OfferRevisionMapper.toModel(revisionEntity));
+        }
+
+        return revisions;
+    }
+
+    public List<OfferRevision> getRevisionsBySubOfferId(Long offerId) {
+        List<OfferRevisionEntity> revisionEntities = offerRevisionDao.getRevisionsBySubOfferId(offerId);
+        List<OfferRevision> revisions = new ArrayList<>();
+        for (OfferRevisionEntity revisionEntity : revisionEntities) {
+            revisions.add(OfferRevisionMapper.toModel(revisionEntity));
+        }
+
+        return revisions;
+    }
+
     @Override
     public OfferRevision update(OfferRevision revision) {
         OfferRevisionEntity dbEntity = offerRevisionDao.get(revision.getRevisionId());

@@ -112,6 +112,14 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
         return revisions;
     }
 
+    public List<OfferRevision> getRevisions(Long itemId) {
+        return super.queryView("by_itemId", itemId.toString());
+    }
+
+    public List<OfferRevision> getRevisionsBySubOfferId(Long offerId) {
+        return super.queryView("by_subOfferId", offerId.toString());
+    }
+
     @Override
     public OfferRevision update(OfferRevision revision) {
         return super.cloudantPut(revision);
@@ -135,6 +143,28 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
         view.setMap("function(doc) {if (doc.status){ emit(doc.status, doc._id); }}");
         view.setResultClass(String.class);
         viewMap.put("by_status", view);
+
+        view = new CloudantViews.CloudantView();
+        view.setMap("function(doc) {" +
+                "if (doc.items) {" +
+                    "for (var idx in doc.items) {" +
+                        "emit(doc.items[idx].itemId, doc._id);" +
+                    "}" +
+                "}" +
+            "}");
+        view.setResultClass(String.class);
+        viewMap.put("by_itemId", view);
+
+        view = new CloudantViews.CloudantView();
+        view.setMap("function(doc) {" +
+                "if (doc.subOffers) {" +
+                    "for (var idx in doc.subOffers) {" +
+                        "emit(doc.subOffers[idx], doc._id);" +
+                    "}" +
+                "}" +
+            "}");
+        view.setResultClass(String.class);
+        viewMap.put("by_subOfferId", view);
 
         CloudantIndex index = new CloudantIndex();
         index.setResultClass(String.class);

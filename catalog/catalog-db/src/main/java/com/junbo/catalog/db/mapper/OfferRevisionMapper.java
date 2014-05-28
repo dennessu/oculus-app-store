@@ -8,7 +8,12 @@ package com.junbo.catalog.db.mapper;
 
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.entity.OfferRevisionEntity;
+import com.junbo.catalog.spec.model.offer.ItemEntry;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
+import org.springframework.util.CollectionUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Offer revision mapper between model and DB entity.
@@ -30,6 +35,14 @@ public class OfferRevisionMapper {
         entity.setOfferId(model.getOfferId());
         entity.setStatus(model.getStatus());
         entity.setOwnerId(model.getOwnerId());
+        entity.setSubOfferIds(model.getSubOffers());
+        if (!CollectionUtils.isEmpty(model.getItems())) {
+            List<Long> items = new ArrayList<>();
+            for (ItemEntry itemEntry : model.getItems()) {
+                items.add(itemEntry.getItemId());
+            }
+            entity.setItemIds(items);
+        }
         entity.setTimestamp(model.getTimestamp());
         entity.setPayload(Utils.toJson(model));
         entity.setCreatedBy(String.valueOf(model.getOwnerId()));

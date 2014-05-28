@@ -21,6 +21,8 @@ public interface OfferRevisionRepository extends BaseRevisionRepository<OfferRev
     OfferRevision get(Long revisionId);
     List<OfferRevision> getRevisions(OfferRevisionsGetOptions options);
     List<OfferRevision> getRevisions(Collection<OfferId> offerIds, Long timestamp);
+    List<OfferRevision> getRevisions(Long itemId);
+    List<OfferRevision> getRevisionsBySubOfferId(Long offerId);
     OfferRevision update(OfferRevision revision);
     void delete(Long revisionId);
 }
