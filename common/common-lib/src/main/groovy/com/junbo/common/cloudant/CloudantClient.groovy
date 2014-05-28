@@ -37,7 +37,9 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
     protected String cloudantUser
     protected String cloudantPassword
     protected String cloudantDBUri
+    protected String dbNamePrefix
     protected String dbName
+    protected String fullDbName
     protected boolean silentPassResourceAgeCheck
 
     abstract protected CloudantViews getCloudantViews()
@@ -65,6 +67,10 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
     @Required
     void setCloudantDBUri(String cloudantDBUri) {
         this.cloudantDBUri = Utils.filterPerDataCenterConfig(cloudantDBUri, "cloudantDBUri")
+    }
+
+    void setDbNamePrefix(String dbNamePrefix) {
+        this.dbNamePrefix = dbNamePrefix
     }
 
     @Required
@@ -210,6 +216,13 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
 
     @Override
     void afterPropertiesSet() throws Exception {
+
+        if (dbNamePrefix != null) {
+            fullDbName = dbNamePrefix + dbName;
+        } else {
+            fullDbName = dbName;
+        }
+
         def response = executeRequest(HttpMethod.GET, '', [:], null)
         if (response.statusCode == HttpStatus.NOT_FOUND.value()) {
             response = executeRequest(HttpMethod.PUT, '', [:], null)
@@ -354,7 +367,7 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
 
     protected Response executeRequest(HttpMethod method, String path, Map<String, String> queryParams, Object body) {
         UriBuilder uriBuilder = UriBuilder.fromUri(cloudantDBUri)
-        uriBuilder.path(dbName)
+        uriBuilder.path(fullDbName)
         uriBuilder.path(path)
 
         def requestBuilder = getRequestBuilder(method, uriBuilder.toTemplate())
@@ -423,5 +436,4 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
         Integer limit
         String bookmark
     }
-
 }
