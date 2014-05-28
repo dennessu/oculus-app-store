@@ -83,7 +83,10 @@ public class BalanceEntityDaoImpl extends BaseDao implements BalanceEntityDao {
 
             List<BalanceEntity> balanceEntities = new ArrayList<>();
             for (Long id : balanceIds) {
-                balanceEntities.add(get(id));
+                BalanceEntity entity =  get(id);
+                if (entity != null) {
+                    balanceEntities.add(entity);
+                }
             }
             return balanceEntities;
         }
@@ -102,7 +105,10 @@ public class BalanceEntityDaoImpl extends BaseDao implements BalanceEntityDao {
 
             List<BalanceEntity> balanceEntities = new ArrayList<>();
             for (Long id : balanceIds) {
-                balanceEntities.add(get(id));
+                BalanceEntity entity =  get(id);
+                if (entity != null) {
+                    balanceEntities.add(entity);
+                }
             }
             return balanceEntities;
         }
@@ -121,7 +127,10 @@ public class BalanceEntityDaoImpl extends BaseDao implements BalanceEntityDao {
 
             List<BalanceEntity> balanceEntities = new ArrayList<>();
             for (Long id : balanceIds) {
-                balanceEntities.add(get(id));
+                BalanceEntity entity =  get(id);
+                if (entity != null) {
+                    balanceEntities.add(entity);
+                }
             }
             return balanceEntities;
         }
