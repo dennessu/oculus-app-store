@@ -22,7 +22,7 @@ import java.math.BigDecimal;
  */
 public class MockTaxFacade implements TaxFacade {
     @Override
-    public Promise<Balance> calculateTax(Balance balance, Address shippingAddress, Address piAddress) {
+    public Promise<Balance> calculateTaxQuote(Balance balance, Address shippingAddress, Address piAddress) {
         for(BalanceItem item : balance.getBalanceItems()) {
             TaxItem taxItem = new TaxItem();
             taxItem.setTaxAmount(item.getAmount().multiply(new BigDecimal("0.09")));
@@ -32,6 +32,11 @@ public class MockTaxFacade implements TaxFacade {
         }
         balance.setTaxStatus(TaxStatus.TAXED.name());
         return Promise.pure(balance);
+    }
+
+    @Override
+    public Promise<Balance> calculateTax(Balance balance, Address shippingAddress, Address piAddress) {
+        return calculateTaxQuote(balance, shippingAddress, piAddress);
     }
 
     @Override
