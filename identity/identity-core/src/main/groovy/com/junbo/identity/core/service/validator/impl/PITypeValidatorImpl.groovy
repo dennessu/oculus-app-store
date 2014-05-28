@@ -55,9 +55,7 @@ class PITypeValidatorImpl implements PITypeValidator {
             throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
         }
 
-        return piTypeRepository.search(new PITypeListOptions(
-            typeCode: piType.typeCode
-        )).then { List<PIType> existing ->
+        return piTypeRepository.searchByTypeCode(piType.typeCode, Integer.MAX_VALUE, 0).then { List<PIType> existing ->
             if (!CollectionUtils.isEmpty(existing)) {
                 throw AppErrors.INSTANCE.fieldDuplicate('typeCode').exception()
             }
