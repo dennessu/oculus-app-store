@@ -37,7 +37,6 @@ import com.junbo.test.payment.utility.PaymentTestDataProvider;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -162,8 +161,13 @@ public class OrderTestDataProvider {
         return orderClient.postOrder(order);
     }
 
-    public Subledger getSubledger() throws Exception {
-        return orderClient.getSubledger();
+    public Subledger getSubledger(String offerName) throws Exception {
+        String offerId = offerClient.getOfferIdByName(offerName);
+        Offer offer = Master.getInstance().getOffer(offerId);
+        String offerRevisionId = IdConverter.idLongToHexString(OfferRevisionId.class, offer.getCurrentRevisionId());
+        String sellerId = IdConverter.idLongToHexString(UserId.class,
+                Master.getInstance().getOfferRevision(offerRevisionId).getOwnerId());
+        return orderClient.getSubledger(sellerId);
     }
 
 }

@@ -53,8 +53,8 @@ public interface OrderService {
 
     String updateTentativeOrder(Order order, int expectedResponseCode) throws Exception;
 
-    Subledger getSubledger() throws Exception;
+    Subledger getSubledger(String sellerId) throws Exception;
 
-    Subledger getSubledger(int expectedResponseCode) throws Exception;
+    Subledger getSubledger(String sellerId, int expectedResponseCode) throws Exception;
 
 }
