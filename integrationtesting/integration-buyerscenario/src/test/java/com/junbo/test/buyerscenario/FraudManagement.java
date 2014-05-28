@@ -94,27 +94,31 @@ public class FraudManagement extends BaseTestClass {
         String uid1 = testDataProvider.createUser();
         String uid2 = testDataProvider.createUser();
         String uid3 = testDataProvider.createUser();
+        String uid4 = testDataProvider.createUser();
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
-        String creditCardId = testDataProvider.postPaymentInstrument(uid1, creditCardInfo);
+        String creditCardId1 = testDataProvider.postPaymentInstrument(uid1, creditCardInfo);
+        String creditCardId2 = testDataProvider.postPaymentInstrument(uid2, creditCardInfo);
+        String creditCardId3 = testDataProvider.postPaymentInstrument(uid3, creditCardInfo);
+        String creditCardId4 = testDataProvider.postPaymentInstrument(uid4, creditCardInfo);
 
         String order1 = testDataProvider.postOrder(
-                uid1, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
+                uid1, Country.DEFAULT, Currency.DEFAULT, creditCardId1, false, offerList);
 
         testDataProvider.updateOrderTentative(order1, false);
 
         String order2 = testDataProvider.postOrder(
-                uid1, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
+                uid2, Country.DEFAULT, Currency.DEFAULT, creditCardId2, false, offerList);
 
         testDataProvider.updateOrderTentative(order2, false);
 
         String order3 = testDataProvider.postOrder(
-                uid1, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
+                uid3, Country.DEFAULT, Currency.DEFAULT, creditCardId3, false, offerList);
 
         testDataProvider.updateOrderTentative(order3, false);
 
         String order4 = testDataProvider.postOrder(
-                uid1, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
+                uid4, Country.DEFAULT, Currency.DEFAULT, creditCardId4, false, offerList);
 
         testDataProvider.updateOrderTentative(order4, false);
     }
