@@ -127,7 +127,7 @@ class CurrencyResourceImpl implements CurrencyResource {
         }
 
         return currencyValidator.validateForSearch(listOptions).then {
-            return currencyRepository.search(listOptions).then { List<Currency> currencyList ->
+            return search(listOptions).then { List<Currency> currencyList ->
                 def result = new Results<Currency>(items: [])
 
                 currencyList.each { Currency newCurrency ->
@@ -151,5 +151,9 @@ class CurrencyResourceImpl implements CurrencyResource {
         return currencyValidator.validateForGet(currencyId).then {
             return currencyRepository.delete(currencyId)
         }
+    }
+
+    private Promise<List<Currency>> search(CurrencyListOptions listOptions) {
+        return currencyRepository.searchAll(listOptions.limit, listOptions.offset)
     }
 }
