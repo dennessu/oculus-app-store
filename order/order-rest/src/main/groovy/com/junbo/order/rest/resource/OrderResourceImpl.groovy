@@ -41,7 +41,7 @@ class OrderResourceImpl implements OrderResource {
 
     @Override
     Promise<Order> getOrderByOrderId(OrderId orderId) {
-        return orderService.getOrderByOrderId(orderId.value)
+        return orderService.getOrderByOrderId(orderId.value, true)
     }
 
     @Override
@@ -65,10 +65,12 @@ class OrderResourceImpl implements OrderResource {
         orderValidator.notNull(order, 'order').notNull(order.user, 'user')
 
         order.id = orderId
-        return orderService.getOrderByOrderId(orderId.value).then { Order oldOrder ->
+
+        return orderService.getOrderByOrderId(orderId.value, false).then { Order oldOrder ->
             // handle the update request per scenario
-            if (oldOrder.tentative) { // order not settle
+            if (oldOrder.tentative) { // order not settled
                 if (order.tentative) {
+                    // rate and update the tentative order
                     return orderService.updateTentativeOrder(order,
                             new ApiContext()).syncThen { Order result ->
                         return result

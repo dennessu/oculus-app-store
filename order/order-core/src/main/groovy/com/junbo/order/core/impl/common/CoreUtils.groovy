@@ -149,12 +149,23 @@ class CoreUtils {
         return false
     }
 
-    static Boolean compareOrderRating(Order olderOrder, Order newOrder) {
-        return olderOrder.totalDiscount == newOrder.totalDiscount &&
-                olderOrder.totalAmount == newOrder.totalAmount &&
-                olderOrder.totalTax == newOrder.totalTax &&
-                olderOrder.totalShippingFee == newOrder.totalShippingFee &&
-                olderOrder.totalShippingFeeDiscount == newOrder.totalShippingFeeDiscount &&
-                olderOrder.isTaxInclusive == newOrder.isTaxInclusive
+    static Boolean compareOrderRating(Order oldOrder, Order newOrder) {
+        return oldOrder.totalDiscount == newOrder.totalDiscount &&
+                oldOrder.totalAmount == newOrder.totalAmount &&
+                oldOrder.totalTax == newOrder.totalTax &&
+                oldOrder.totalShippingFee == newOrder.totalShippingFee &&
+                oldOrder.totalShippingFeeDiscount == newOrder.totalShippingFeeDiscount &&
+                oldOrder.isTaxInclusive == newOrder.isTaxInclusive
+    }
+
+    static Order copyOrderRating(Order order) {
+        def newOrder = new Order()
+        newOrder.totalAmount = order.totalAmount
+        newOrder.totalTax = order.totalTax
+        newOrder.totalShippingFee = order.totalShippingFee
+        newOrder.totalShippingFeeDiscount = order.totalShippingFeeDiscount
+        newOrder.isTaxInclusive = order.isTaxInclusive
+        newOrder.totalDiscount = order.totalDiscount
+        return newOrder
     }
 }

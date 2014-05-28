@@ -21,10 +21,12 @@ import com.junbo.common.cloudant.json.serializer.IdCloudantSerializer;
 import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.jackson.common.CustomDeserializationContext;
 import com.junbo.common.jackson.common.CustomSerializerProvider;
+import com.junbo.common.jackson.deserializer.BigDecimalFromStringDeserializer;
 import com.junbo.common.jackson.deserializer.LongFromStringDeserializer;
 
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
+import java.math.BigDecimal;
 
 /**
  * Created by minhao on 2/13/14.
@@ -59,6 +61,9 @@ public class CloudantObjectMapper implements ContextResolver<ObjectMapper> {
         // pass long as string, since the json long is not full 64-bit.
         module.addSerializer(Long.class, new ToStringSerializer());
         module.addDeserializer(Long.class, new LongFromStringDeserializer());
+
+        module.addSerializer(BigDecimal.class, new ToStringSerializer());
+        module.addDeserializer(BigDecimal.class, new BigDecimalFromStringDeserializer());
 
         for (Class cls : IdUtil.ID_CLASSES) {
             module.addSerializer(cls, new IdCloudantSerializer());

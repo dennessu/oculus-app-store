@@ -92,8 +92,7 @@ public class Order extends ResourceMeta implements Identifiable<OrderId> {
     @JsonIgnore
     private Date honorUntilTime;
 
-    @ApiModelProperty(required = true, position = 135, value = "The purchase time of the order")
-    @JsonProperty("purchaseTime")
+    @JsonIgnore
     private Date honoredTime;
     // end of ratingInfo
 
@@ -335,5 +334,4 @@ public class Order extends ResourceMeta implements Identifiable<OrderId> {
     public void setBillingHistories(List<BillingHistory> billingHistories) {
         this.billingHistories = billingHistories;
     }
-
 }
