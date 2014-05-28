@@ -80,10 +80,6 @@ public class RouterImpl implements Router {
 
     private String getTargetUrlInternal(Class<?> resourceClass, Object[] routingParams, boolean fallbackToAnyLocal) {
         boolean isFirstRoute = setRoutingPath();
-        if (isFirstRoute && forceRoute) {
-            // force route to self
-            return topology.getSelfUrl();
-        }
 
         DataAccessPolicy policy = resolveDataAccessPolicy(resourceClass);
 
@@ -93,6 +89,11 @@ public class RouterImpl implements Router {
 
         if (routingParams == null || routingParams.length == 0) {
             return getDefault(false);
+        }
+
+        if (isFirstRoute && forceRoute) {
+            // force route to self
+            return topology.getSelfUrl();
         }
 
         for (Object routingParam : routingParams) {
