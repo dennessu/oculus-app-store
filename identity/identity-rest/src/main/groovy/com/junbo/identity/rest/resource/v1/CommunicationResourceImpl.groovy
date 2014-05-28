@@ -120,7 +120,7 @@ class CommunicationResourceImpl implements CommunicationResource {
         }
 
         return communicationValidator.validateForSearch(listOptions).then {
-            return communicationRepository.search(listOptions).then { List<Communication> communicationList ->
+            return search(listOptions).then { List<Communication> communicationList ->
                 def result = new Results<Communication>(items: [])
 
                 communicationList.each { Communication newCommunication ->
@@ -144,6 +144,19 @@ class CommunicationResourceImpl implements CommunicationResource {
 
         return communicationValidator.validateForGet(communicationId).then { Communication communication ->
             return communicationRepository.delete(communicationId)
+        }
+    }
+
+    private Promise<List<Communication>> search(CommunicationListOptions listOptions) {
+        if (listOptions.region != null && listOptions.translation != null) {
+            return communicationRepository.searchByRegionAndTranslation(listOptions.region, listOptions.translation,
+                    listOptions.limit, listOptions.offset)
+        } else if (listOptions.region != null) {
+            return communicationRepository.searchByRegion(listOptions.region, listOptions.limit, listOptions.offset)
+        } else if (listOptions.translation != null) {
+            return communicationRepository.searchByTranslation(listOptions.translation, listOptions.limit, listOptions.offset)
+        } else {
+            return communicationRepository.searchAll(listOptions.limit, listOptions.offset)
         }
     }
 }
