@@ -128,7 +128,7 @@ class CountryResourceImpl implements CountryResource {
         }
 
         return countryValidator.validateForSearch(listOptions).then {
-            return countryRepository.search(listOptions).then { List<Country> countryList ->
+            return search(listOptions).then { List<Country> countryList ->
                 def result = new Results<Country>(items: [])
 
                 countryList.each { Country newCountry ->
@@ -152,6 +152,21 @@ class CountryResourceImpl implements CountryResource {
 
         return countryValidator.validateForGet(countryId).then {
             return countryRepository.delete(countryId)
+        }
+    }
+
+    private Promise<List<Country>> search(CountryListOptions countryListOptions) {
+        if (countryListOptions.currencyId != null && countryListOptions.localeId != null) {
+            return countryRepository.searchByDefaultCurrencyIdAndLocaleId(countryListOptions.currencyId,
+                    countryListOptions.localeId, countryListOptions.limit, countryListOptions.offset)
+        } else if (countryListOptions.currencyId != null) {
+            return countryRepository.searchByDefaultCurrencyId(countryListOptions.currencyId, countryListOptions.limit,
+                    countryListOptions.offset)
+        } else if (countryListOptions.localeId != null) {
+            return countryRepository.searchByDefaultLocaleId(countryListOptions.localeId, countryListOptions.limit,
+                    countryListOptions.offset)
+        } else {
+            return countryRepository.searchAll(countryListOptions.limit, countryListOptions.offset)
         }
     }
 }
