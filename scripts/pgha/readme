@@ -23,15 +23,24 @@
 
 #clean up exisitng db instance
 	[devops] sudo kill $(fuser -n tcp 5432 2> /dev/null)
-	[devops] sudo chown silkcloud /var/run/postgresql
+	[devops] sudo chown silkcloud:silkcloud /var/run/postgresql
 
 [PGBouncer Installation]
 	[devops] sudo apt-get install -y pgbouncer
+
+[Oidentd Installation]
+	[devops] sudo apt-get install oidentd 
+	[devops] /etc/init.d/oidentd start
 
 [SSH key]
 	[devops] ssh-keygen -t rsa (no passphase)
 	[devops] chmod 600 /home/silkcloud/.ssh/id_rsa*
 	[devops] connect to the remote machine you want to login to, edit /home/silkcloud/.ssh/authorized_keys and append the content of id_rsa.pub file
+
+[Open ports]
+	5432: postgresql database port
+	6543: pgbouncer proxy port
+	133:  oident server port
 
 =====Deloyment Preparation=====
 #[bastion] enlish source tree

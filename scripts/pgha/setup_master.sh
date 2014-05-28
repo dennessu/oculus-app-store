@@ -20,22 +20,21 @@ echo "initialize master database..."
 $PGBIN_PATH/pg_ctl -D $MASTER_DATA_PATH initdb
 
 echo "configure pg_hba.conf..."
-cat >> $MASTER_DATA_PATH/pg_hba.conf <<EOF
+cat > $MASTER_DATA_PATH/pg_hba.conf <<EOF
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 
 # "local" is for Unix domain socket connections only
-local   all             ${PGUSER}                               trust
+local   all             ${PGUSER}                               ident
 # IPv4 local connections:
-host    all             ${PGUSER}       127.0.0.1/32            trust
-host    all             ${PGUSER}       ${MASTER_HOST}/32       trust
-host    all             ${PGUSER}       ${SLAVE_HOST}/32        trust
-host    all             ${PGUSER}       ${REPLICATION_HOST}/32  trust
+host    all             ${PGUSER}       127.0.0.1/32            ident
+host    all             ${PGUSER}       ${MASTER_HOST}/32       ident
+host    all             ${PGUSER}       ${SLAVE_HOST}/32        ident
 # IPv6 local connections:
-host    all             ${PGUSER}       ::1/128                 trust
+host    all             ${PGUSER}       ::1/128                 ident
 # Allow replication connections from localhost, by a user with the
 # replication privilege.
-host    replication     ${PGUSER}       ${MASTER_HOST}/32       trust
-host    replication     ${PGUSER}       ${SLAVE_HOST}/32        trust
+host    replication     ${PGUSER}       ${MASTER_HOST}/32       ident
+host    replication     ${PGUSER}       ${SLAVE_HOST}/32        ident
 EOF
 
 echo "configure postgres.conf..."
