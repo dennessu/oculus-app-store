@@ -26,8 +26,8 @@ import java.util.List;
 
 /**
  * @author Jason
- * time 3/10/2014
- * User related API helper, including get/post/put user, update password and so on.
+ *         time 3/10/2014
+ *         User related API helper, including get/post/put user, update password and so on.
  */
 public class UserServiceImpl extends HttpClientBase implements UserService {
 
@@ -51,7 +51,8 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         userForPost.setUsername(RandomFactory.getRandomStringOfAlphabet(10));
 
         String responseBody = restApiCall(HTTPMethod.POST, identityServerURL, userForPost, 201);
-        User userGet = new JsonMessageTranscoder().decode(new TypeReference<User>() {},
+        User userGet = new JsonMessageTranscoder().decode(new TypeReference<User>() {
+        },
                 responseBody);
 
         String userId = IdConverter.idToHexString(userGet.getId());
@@ -85,13 +86,14 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
 
         return userId;
     }
+
     private UserPersonalInfo postAddress(UserId userId) throws Exception {
 
         UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
         userPersonalInfo.setType("ADDRESS");
         userPersonalInfo.setUserId(userId);
         String str = "{\"street1\":\"19800 MacArthur Blvd\",\"city\":\"Irvine\",\"postalCode\":\"92612\"," +
-                "\"firstName\":\"Mike\",\"lastName\":\"MyName\",\"country\":{\"id\":\"US\"}}";
+                "\"country\":{\"id\":\"US\"}}";
         ObjectMapper mapper = new ObjectMapper();
         JsonNode value = mapper.readTree(str);
         userPersonalInfo.setValue(value);
@@ -114,6 +116,25 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         return postUserPersonalInfo(userPersonalInfo);
     }
 
+    private UserPersonalInfo postEmail(UserId userId, String emailAddress) throws Exception {
+
+        UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
+        userPersonalInfo.setType("EMAIL");
+        userPersonalInfo.setUserId(userId);
+        GregorianCalendar gc = new GregorianCalendar();
+        userPersonalInfo.setLastValidateTime(gc.getTime());
+        String str = "{\"info\":\"" + RandomFactory.getRandomEmailAddress() + "\"}";
+        if (emailAddress != null && !emailAddress.isEmpty()) {
+            str = "{\"info\":\"" + emailAddress + "\"}";
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode value = mapper.readTree(str);
+        userPersonalInfo.setValue(value);
+
+        return postUserPersonalInfo(userPersonalInfo);
+    }
+
+
     private UserPersonalInfo postUserPersonalInfo(UserPersonalInfo userPersonalInfo) throws Exception {
         return postUserPersonalInfo(userPersonalInfo, 201);
     }
@@ -121,7 +142,8 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     private UserPersonalInfo postUserPersonalInfo(UserPersonalInfo userPersonalInfo, int expectedResponseCode) throws Exception {
         String serverURL = ConfigPropertiesHelper.instance().getProperty("defaultIdentityEndPointV1") + "/personal-info";
         String responseBody = restApiCall(HTTPMethod.POST, serverURL, userPersonalInfo, expectedResponseCode);
-        return new JsonMessageTranscoder().decode(new TypeReference<UserPersonalInfo>() {}, responseBody);
+        return new JsonMessageTranscoder().decode(new TypeReference<UserPersonalInfo>() {
+        }, responseBody);
     }
 
     public String PostUser(User user) throws Exception {
@@ -131,7 +153,8 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     public String PostUser(User user, int expectedResponseCode) throws Exception {
 
         String responseBody = restApiCall(HTTPMethod.POST, identityServerURL, user, expectedResponseCode);
-        User userGet = new JsonMessageTranscoder().decode(new TypeReference<User>() {},
+        User userGet = new JsonMessageTranscoder().decode(new TypeReference<User>() {
+        },
                 responseBody);
         String userId = IdConverter.idToHexString(userGet.getId());
         Master.getInstance().addUser(userId, userGet);
@@ -146,10 +169,58 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     public String PostUser(String payload, int expectedResponseCode) throws Exception {
 
         String responseBody = restApiCall(HTTPMethod.POST, identityServerURL, payload, expectedResponseCode);
-        User userGet = new JsonMessageTranscoder().decode(new TypeReference<User>() {},
+        User userGet = new JsonMessageTranscoder().decode(new TypeReference<User>() {
+        },
                 responseBody);
         String userId = IdConverter.idToHexString(userGet.getId());
         Master.getInstance().addUser(userId, userGet);
+
+        return userId;
+    }
+
+    @Override
+    public String PostUser(String userName, String emailAddress) throws Exception {
+        User userForPost = new User();
+        userForPost.setIsAnonymous(false);
+        userForPost.setStatus("ACTIVE");
+        userForPost.setUsername(RandomFactory.getRandomStringOfAlphabet(10));
+        if (userName != null && !userName.isEmpty()) {
+            userForPost.setUsername(userName);
+        }
+
+        String responseBody = restApiCall(HTTPMethod.POST, identityServerURL, userForPost, 201);
+        User userGet = new JsonMessageTranscoder().decode(new TypeReference<User>() {
+        },
+                responseBody);
+
+        String userId = IdConverter.idToHexString(userGet.getId());
+        Master.getInstance().addUser(userId, userGet);
+
+        UserId userIdDefault = userGet.getId();
+
+        //attach user email and address info
+        UserPersonalInfo email = postEmail(userIdDefault, emailAddress);
+        UserPersonalInfo address = postAddress(userIdDefault);
+
+        UserPersonalInfoLink piEmail = new UserPersonalInfoLink();
+        piEmail.setIsDefault(Boolean.TRUE);
+        piEmail.setUserId(userIdDefault);
+        piEmail.setValue(email.getId());
+
+        UserPersonalInfoLink piAddress = new UserPersonalInfoLink();
+        piAddress.setIsDefault(Boolean.TRUE);
+        piAddress.setUserId(userIdDefault);
+        piAddress.setValue(address.getId());
+
+        List<UserPersonalInfoLink> addresses = new ArrayList<>();
+        List<UserPersonalInfoLink> emails = new ArrayList<>();
+        addresses.add(piAddress);
+        emails.add(piEmail);
+
+        userGet.setAddresses(addresses);
+        userGet.setEmails(emails);
+
+        this.PutUser(userId, userGet);
 
         return userId;
     }
@@ -166,7 +237,8 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         }
 
         String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
-        User userGet = new JsonMessageTranscoder().decode(new TypeReference<User>() {},
+        User userGet = new JsonMessageTranscoder().decode(new TypeReference<User>() {
+        },
                 responseBody);
         String userRtnId = IdConverter.idToHexString(userGet.getId());
         Master.getInstance().addUser(userRtnId, userGet);
@@ -188,10 +260,11 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         String responseBody = restApiCall(HTTPMethod.GET, identityServerURL, null, expectedResponseCode, paraMap);
 
         Results<User> userGet = new JsonMessageTranscoder().decode(
-               new TypeReference<Results<User>>() {}, responseBody);
+                new TypeReference<Results<User>>() {
+                }, responseBody);
 
         List<String> listUserId = new ArrayList<>();
-        for (User user : userGet.getItems()){
+        for (User user : userGet.getItems()) {
             Master.getInstance().addUser(IdConverter.idToHexString(user.getId()), user);
             listUserId.add(IdConverter.idToHexString(user.getId()));
         }
@@ -206,7 +279,8 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
 
         String putUrl = identityServerURL + "/" + userId;
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, user, expectedResponseCode);
-        User userPut = new JsonMessageTranscoder().decode(new TypeReference<User>() {},
+        User userPut = new JsonMessageTranscoder().decode(new TypeReference<User>() {
+        },
                 responseBody);
         String userRtnId = IdConverter.idToHexString(userPut.getId());
         Master.getInstance().addUser(userRtnId, userPut);
