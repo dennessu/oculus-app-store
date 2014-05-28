@@ -11,5 +11,5 @@ import com.junbo.sharding.repo.BaseRepository
  */
 public interface CurrencyRepository extends BaseRepository<com.junbo.identity.spec.v1.model.Currency, CurrencyId> {
     @ReadMethod
-    Promise<List<com.junbo.identity.spec.v1.model.Currency>> search(CurrencyListOptions options)
+    Promise<List<com.junbo.identity.spec.v1.model.Currency>> searchAll(Integer limit, Integer offset)
 }
