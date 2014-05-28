@@ -70,5 +70,6 @@ public class UserAuthenticator extends PropertyAssignedAwareResourceMeta impleme
     public void setExternalId(String externalId) {
         this.externalId = externalId;
         support.setPropertyAssigned("externalId");
+        support.setPropertyAssigned("externalUserId");
     }
 }
