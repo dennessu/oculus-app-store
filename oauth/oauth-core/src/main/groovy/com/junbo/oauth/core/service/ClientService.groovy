@@ -13,15 +13,15 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface ClientService {
-    Client saveClient(String authorization, Client client)
+    Client saveClient(Client client)
 
-    Client getClient(String authorization, String clientId)
+    Client getClient(String clientId)
 
-    Client getClientInfo(String authorization, String clientId)
+    Client getClientInfo(String clientId)
 
-    Client updateClient(String authorization, String clientId, Client client)
+    Client updateClient(String clientId, Client client)
 
-    void deleteClient(String authorization, String clientId)
+    void deleteClient(String clientId)
 
-    Client resetSecret(String authorization, String clientId)
+    Client resetSecret(String clientId)
 }

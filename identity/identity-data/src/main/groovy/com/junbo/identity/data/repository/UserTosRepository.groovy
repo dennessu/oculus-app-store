@@ -5,9 +5,10 @@
  */
 package com.junbo.identity.data.repository
 
+import com.junbo.common.id.TosId
+import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTosAgreementId
 import com.junbo.identity.spec.v1.model.UserTosAgreement
-import com.junbo.identity.spec.v1.option.list.UserTosAgreementListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.dualwrite.annotations.ReadMethod
 import com.junbo.sharding.repo.BaseRepository
@@ -19,5 +20,11 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface UserTosRepository extends BaseRepository<UserTosAgreement, UserTosAgreementId> {
     @ReadMethod
-    Promise<List<UserTosAgreement>> search(UserTosAgreementListOptions getOption)
+    Promise<List<UserTosAgreement>> searchByUserId(UserId userId, Integer limit, Integer offset)
+
+    @ReadMethod
+    Promise<List<UserTosAgreement>> searchByTosId(TosId tosId, Integer limit, Integer offset)
+
+    @ReadMethod
+    Promise<List<UserTosAgreement>> searchByUserIdAndTosId(UserId userId, TosId tosId, Integer limit, Integer offset)
 }

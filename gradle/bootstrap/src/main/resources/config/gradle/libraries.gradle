@@ -64,7 +64,7 @@ ext {
         postgresql:             'org.postgresql:postgresql:9.3-1100-jdbc41',
 
         // datasource
-        bonecp_spring:          'com.jolbox:bonecp-spring:0.8.0-rc1',
+        bonecp_spring:          'com.jolbox:bonecp-spring:0.8.0.RELEASE',
 
         // log4j
         log4j:                  'log4j:log4j:1.2.17',
@@ -119,8 +119,6 @@ ext {
 
         spy_memcached:          'net.spy:spymemcached:2.10.4',
         easy_mock:              'org.easymock:easymock:3.2',
-
-        btm:                    'com.junbo.btm:btm:3.0.0-SNAPSHOT', // switch to org.codehaus.btm if release version available
 
         hamcrest_core:          'org.hamcrest:hamcrest-core:1.3',
 

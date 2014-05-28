@@ -28,6 +28,7 @@
     <bean id="mandrillConfiguration" class="com.junbo.email.clientproxy.impl.mandrill.MandrillConfiguration">
         <property name="url" value="${email.client.mandrill.url}"/>
         <property name="key" value="${email.client.mandrill.key}"/>
+        <property name="size" value="${email.client.mandrill.recipients.size}"/>
     </bean>
 
     <bean id="identityFacade" class="com.junbo.email.clientproxy.impl.IdentityFacadeImpl"/>

@@ -17,6 +17,7 @@ import com.junbo.subscription.common.exception.SubscriptionExceptions;
 import com.junbo.subscription.core.SubscriptionService;
 import com.junbo.subscription.core.event.SubscriptionCreateEvent;
 //import com.junbo.subscription.db.entity.SubscriptionStatus;
+import com.junbo.subscription.db.entity.SubscriptionStatus;
 import com.junbo.subscription.spec.model.Subscription;
 import com.junbo.subscription.db.repository.SubscriptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +62,14 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         validateOffer(subscription, subscription.getOfferId());
 
         //create subscription;
+        subscription.setStatus(SubscriptionStatus.CREATED.toString());
+        subscription = subscriptionRepository.insert(subscription);
+
         Subscription subs = subscriptionCreateEvent.execute(subscription);
+
+        subscription.setStatus(SubscriptionStatus.ENABLED.toString());
+        subs = subscriptionRepository.update(subs);
+
         return  subs;
     }
 

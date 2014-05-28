@@ -7,10 +7,11 @@ package com.junbo.subscription.core.action;
 
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.subscription.clientproxy.EntitlementGateway;
-import com.junbo.subscription.core.SubscriptionAction;
+import com.junbo.subscription.core.SubscriptionActionService;
 import com.junbo.subscription.db.repository.SubscriptionEntitlementRepository;
 import com.junbo.subscription.spec.model.Subscription;
 import com.junbo.subscription.spec.model.SubscriptionEntitlement;
+import com.junbo.subscription.spec.model.SubscriptionEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.UUID;
@@ -18,7 +19,7 @@ import java.util.UUID;
 /**
  * Created by Administrator on 14-5-21.
  */
-public class FullfilmentAction implements SubscriptionAction{
+public class FullfilmentAction implements SubscriptionActionService {
     @Autowired
     private SubscriptionEntitlementRepository subscriptionEntitlementRepository;
 
@@ -26,7 +27,7 @@ public class FullfilmentAction implements SubscriptionAction{
     private EntitlementGateway entitlementGateway;
 
     @Override
-    public Subscription execute(Subscription subscription){
+    public Subscription execute(Subscription subscription, SubscriptionEvent event){
         Entitlement entitlement = new Entitlement();
         entitlement.setUserId(subscription.getUserId());
         entitlement.setTrackingUuid(UUID.randomUUID());

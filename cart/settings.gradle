@@ -4,5 +4,4 @@ include 'cart-db'
 include 'cart-core'
 include 'cart-rest'
 include 'cart-app'
-include 'cart-integration'
 

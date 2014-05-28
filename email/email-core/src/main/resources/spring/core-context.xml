@@ -16,7 +16,7 @@
 
     <bean id="emailCommonValidator" class="com.junbo.email.core.validator.impl.CommonValidator" abstract="true">
         <property name="emailTemplateRepository" ref="emailTemplateRepository"/>
-        <property name="emailPattern" value="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$"/>
+        <property name="emailPattern" value="${email.address.pattern}"/>
     </bean>
     <bean id="emailValidator" class="com.junbo.email.core.validator.impl.EmailValidatorImpl" parent="emailCommonValidator">
         <property name="emailScheduleRepository" ref="emailScheduleRepository"/>

@@ -21,20 +21,21 @@ import java.util.Map;
  */
 public class DeviceType extends PropertyAssignedAwareResourceMeta implements Identifiable<DeviceTypeId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The id of the device type resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The link to the device type resource.")
     @JsonProperty("self")
     private DeviceTypeId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "[Client Immutable]The description of the device Type")
+    @ApiModelProperty(position = 2, required = true, value = "[Client Immutable]The code of this DeviceType; " +
+            "this is an enumeration (DK1, DKHD, DK2, CV1, HMD, DK2_CAMERA, etc.) and is always the same as self.id.")
     private String typeCode;
 
-    @ApiModelProperty(position = 3, required = true, value = "[Nullable] The available firmware list for the device type.")
+    @ApiModelProperty(position = 3, required = true, value = "[Nullable]Map from available firmware version to firmware URL for this DeviceType .")
     private Map<String, String> availableFirmwares = new HashMap<>();
 
-    @ApiModelProperty(position = 4, required = true, value = "[Nullable] The static url for instruction Manual.")
+    @ApiModelProperty(position = 4, required = true, value = "[Nullable]The static URL for Instruction Manual.")
     private String instructionManual;
 
-    @ApiModelProperty(position = 5, required = true, value = "[Nullable] The array of component type list.")
+    @ApiModelProperty(position = 5, required = true, value = "[Nullable]The array of component type list.")
     private List<DeviceType> componentTypes = new ArrayList<>();
 
     public DeviceTypeId getId() {

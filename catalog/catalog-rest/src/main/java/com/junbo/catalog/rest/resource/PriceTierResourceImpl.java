@@ -11,12 +11,17 @@ import com.junbo.catalog.spec.model.pricetier.PriceTier;
 import com.junbo.catalog.spec.model.pricetier.PriceTiersGetOptions;
 import com.junbo.catalog.spec.resource.PriceTierResource;
 import com.junbo.common.id.PriceTierId;
+import com.junbo.common.id.util.IdUtil;
+import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import java.util.List;
 
 /**
@@ -34,9 +39,28 @@ public class PriceTierResourceImpl implements PriceTierResource {
     @Override
     public Promise<Results<PriceTier>> getPriceTiers(@BeanParam PriceTiersGetOptions options) {
         List<PriceTier> attributes = priceTierService.getPriceTiers(options);
-        Results<PriceTier> resultList = new Results<>();
-        resultList.setItems(attributes);
-        return Promise.pure(resultList);
+        Results<PriceTier> results = new Results<>();
+        results.setItems(attributes);
+        Link nextLink = new Link();
+        nextLink.setHref(buildNextUrl(options));
+        results.setNext(nextLink);
+        return Promise.pure(results);
+    }
+
+    private String buildNextUrl(PriceTiersGetOptions options) {
+        if (!CollectionUtils.isEmpty(options.getPriceTierIds())) {
+            return null;
+        }
+
+        UriBuilder builder = UriBuilder.fromPath(IdUtil.getResourcePathPrefix()).path("price-tiers");
+        builder.queryParam("size", options.getValidSize());
+        if (!StringUtils.isEmpty(options.getNextBookmark())) {
+            builder.queryParam("bookmark", options.getNextBookmark());
+        } else {
+            builder.queryParam("start", options.nextStart());
+        }
+
+        return builder.toTemplate();
     }
 
     @Override

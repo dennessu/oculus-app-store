@@ -1,6 +1,5 @@
 package com.junbo.sharding.dualwrite
 
-import bitronix.tm.BitronixTransactionManager
 import com.junbo.common.cloudant.CloudantEntity
 import com.junbo.common.util.Identifiable
 import com.junbo.langur.core.promise.Promise
@@ -18,8 +17,10 @@ import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.transaction.PlatformTransactionManager
 
+import javax.transaction.TransactionManager
 import java.lang.reflect.Method
 import java.lang.reflect.ParameterizedType
+
 /**
  * Created by minhao on 4/20/14.
  */
@@ -35,7 +36,7 @@ class RepositoryFactoryBean<T> implements FactoryBean<T>, InitializingBean {
     private boolean sqlUseAsyncDualWrite;
 
     private PlatformTransactionManager platformTransactionManager
-    private BitronixTransactionManager bitronixTransactionManager
+    private TransactionManager transactionManager
 
     private DataAccessStrategy sqlOnlyStrategy;
     private DataAccessStrategy sqlFirstStrategy;
@@ -71,8 +72,8 @@ class RepositoryFactoryBean<T> implements FactoryBean<T>, InitializingBean {
         this.platformTransactionManager = platformTransactionManager
     }
 
-    public void setBitronixTransactionManager(BitronixTransactionManager bitronixTransactionManager) {
-        this.bitronixTransactionManager = bitronixTransactionManager
+    public void setTransactionManager(TransactionManager transactionManager) {
+        this.transactionManager = transactionManager
     }
 
     @Override
@@ -100,7 +101,7 @@ class RepositoryFactoryBean<T> implements FactoryBean<T>, InitializingBean {
                                 sqlPendingActionRepository,
                                 platformTransactionManager
                         ),
-                        bitronixTransactionManager
+                        transactionManager
                 );
             } else {
                 sqlFirstStrategy = new AsyncDualWriteStrategy(sqlRepositoryImpl, sqlPendingActionRepository);

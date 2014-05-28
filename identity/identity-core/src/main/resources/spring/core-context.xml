@@ -761,6 +761,7 @@
         <property name="writablePropertiesForCreate">
             <list>
                 <value>tosId</value>
+                <value>userId</value>
                 <value>agreementTime</value>
                 <value>futureExpansion</value>
             </list>
@@ -769,7 +770,7 @@
         <property name="writablePropertiesForUpdate">
             <list>
                 <value>id</value>
-                <value>tosUri</value>
+                <value>tosId</value>
                 <value>agreementTime</value>
                 <value>futureExpansion</value>
                 <value>resourceAge</value>

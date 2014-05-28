@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.data.repository.impl.sql
 
+import com.junbo.common.id.TosId
+import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTosAgreementId
 import com.junbo.identity.data.dao.UserTosDAO
 import com.junbo.identity.data.entity.user.UserTosAgreementEntity
@@ -56,9 +58,9 @@ class UserTosRepositorySqlImpl implements UserTosRepository {
     }
 
     @Override
-    Promise<List<UserTosAgreement>> search(UserTosAgreementListOptions getOption) {
+    Promise<List<UserTosAgreement>> search(UserId userId) {
         def result = []
-        def entities = userTosDAO.search(getOption.userId.value, getOption)
+        def entities = userTosDAO.search(userId.value, new UserTosAgreementListOptions())
 
         entities.each { UserTosAgreementEntity entity ->
             result.add(modelMapper.toUserTos(entity, new MappingContext()))
@@ -71,5 +73,20 @@ class UserTosRepositorySqlImpl implements UserTosRepository {
         userTosDAO.delete(id.value)
 
         return Promise.pure(null)
+    }
+
+    @Override
+    Promise<List<UserTosAgreement>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+        return null
+    }
+
+    @Override
+    Promise<List<UserTosAgreement>> searchByTosId(TosId tosId, Integer limit, Integer offset) {
+        return null
+    }
+
+    @Override
+    Promise<List<UserTosAgreement>> searchByUserIdAndTosId(UserId userId, TosId tosId, Integer limit, Integer offset) {
+        return null
     }
 }

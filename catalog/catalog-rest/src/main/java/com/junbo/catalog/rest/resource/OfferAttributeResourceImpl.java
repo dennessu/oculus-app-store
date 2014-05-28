@@ -11,12 +11,17 @@ import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions;
 import com.junbo.catalog.spec.resource.OfferAttributeResource;
 import com.junbo.common.id.OfferAttributeId;
+import com.junbo.common.id.util.IdUtil;
+import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import java.util.List;
 
 /**
@@ -34,9 +39,31 @@ public class OfferAttributeResourceImpl implements OfferAttributeResource {
     @Override
     public Promise<Results<OfferAttribute>> getAttributes(@BeanParam OfferAttributesGetOptions options) {
         List<OfferAttribute> attributes = attributeService.getAttributes(options);
-        Results<OfferAttribute> resultList = new Results<>();
-        resultList.setItems(attributes);
-        return Promise.pure(resultList);
+        Results<OfferAttribute> results = new Results<>();
+        results.setItems(attributes);
+        Link nextLink = new Link();
+        nextLink.setHref(buildNextUrl(options));
+        results.setNext(nextLink);
+        return Promise.pure(results);
+    }
+
+    private String buildNextUrl(OfferAttributesGetOptions options) {
+        if (!CollectionUtils.isEmpty(options.getAttributeIds())) {
+            return null;
+        }
+
+        UriBuilder builder = UriBuilder.fromPath(IdUtil.getResourcePathPrefix()).path("offer-attributes");
+        if (options.getAttributeType() != null) {
+            builder.queryParam("type", options.getAttributeType());
+        }
+        builder.queryParam("size", options.getValidSize());
+        if (!StringUtils.isEmpty(options.getNextBookmark())) {
+            builder.queryParam("bookmark", options.getNextBookmark());
+        } else {
+            builder.queryParam("start", options.nextStart());
+        }
+
+        return builder.toTemplate();
     }
 
     @Override

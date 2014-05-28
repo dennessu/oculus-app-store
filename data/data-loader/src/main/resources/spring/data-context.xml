@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <beans profile="utility">
+        <bean id="tokenEndpoint" class="com.junbo.oauth.spec.endpoint.proxy.TokenEndpointClientProxy" parent="baseClientProxy">
+            <property name="target" value="${authorize.oauth.endpoint}"/>
+        </bean>
+
+        <bean id="data_apiDefinitionEndpoint"
+              class="com.junbo.authorization.spec.resource.proxy.ApiDefinitionResourceClientProxy" parent="baseClientProxy">
+            <property name="target" value="${authorize.oauth.endpoint}"/>
+            <property name="accessTokenProvider" ref="data_accessTokenProvider"/>
+        </bean>
+
+        <bean id="data_scopeEndpoint" class="com.junbo.oauth.spec.endpoint.proxy.ScopeEndpointClientProxy" parent="baseClientProxy">
+            <property name="target" value="${authorize.oauth.endpoint}"/>
+            <property name="accessTokenProvider" ref="data_accessTokenProvider"/>
+        </bean>
+
+        <bean id="data_accessTokenProvider" class="com.junbo.authorization.ClientCredentialsAccessTokenProvider">
+            <property name="scope" value="api.manage client.register scope.manage"/>
+            <property name="deflectionInSeconds" value="300"/>
+            <property name="clientSecret" value="secret"/>
+            <property name="clientId" value="service"/>
+            <property name="tokenEndpoint" ref="tokenEndpoint"/>
+        </bean>
+
+        <bean id="baseDataHandler" class="com.junbo.data.handler.BaseDataHandler" abstract="true">
+            <property name="transcoder" ref="commonTranscoder"/>
+        </bean>
+
+        <bean id="clientDataHandler" class="com.junbo.data.handler.ClientDataHandler" parent="baseDataHandler">
+            <property name="clientRepository" ref="clientRepository"/>
+        </bean>
+
+        <bean id="apiDefinitionDataHandler" class="com.junbo.data.handler.ApiDefinitionDataHandler" parent="baseDataHandler">
+            <property name="apiDefinitionResource" ref="data_apiDefinitionEndpoint"/>
+        </bean>
+
+        <bean id="scopeDataHandler" class="com.junbo.data.handler.ScopeDataHandler" parent="baseDataHandler">
+            <property name="scopeEndpoint" ref="data_scopeEndpoint"/>
+        </bean>
+
+        <bean id="dataLoader" class="com.junbo.data.loader.DataLoader">
+            <property name="handlers">
+                <map>
+                    <entry key="client" value-ref="clientDataHandler"/>
+                    <entry key="api-definition" value-ref="apiDefinitionDataHandler"/>
+                    <entry key="scope" value-ref="scopeDataHandler"/>
+                </map>
+            </property>
+        </bean>
+    </beans>
+</beans>

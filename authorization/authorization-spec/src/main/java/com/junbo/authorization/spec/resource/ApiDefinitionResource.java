@@ -6,6 +6,7 @@
 package com.junbo.authorization.spec.resource;
 
 import com.junbo.authorization.spec.model.ApiDefinition;
+import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
@@ -19,6 +20,7 @@ import javax.ws.rs.core.MediaType;
 @Api("authorization")
 @Path("/api-definitions")
 @RestResource
+@InProcessCallable
 @Produces(MediaType.APPLICATION_JSON)
 public interface ApiDefinitionResource {
 

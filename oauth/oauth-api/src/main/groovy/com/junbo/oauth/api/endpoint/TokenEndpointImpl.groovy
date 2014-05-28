@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.api.endpoint
 
+import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.executor.FlowExecutor
@@ -14,15 +15,12 @@ import com.junbo.oauth.spec.model.AccessTokenRequest
 import com.junbo.oauth.spec.model.AccessTokenResponse
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
-import javax.ws.rs.core.HttpHeaders
 import javax.ws.rs.core.MultivaluedHashMap
 import javax.ws.rs.core.MultivaluedMap
-import javax.ws.rs.core.Request
 
 /**
  * Default {@link com.junbo.oauth.spec.endpoint.TokenEndpoint} implementation.
@@ -42,18 +40,6 @@ class TokenEndpointImpl implements TokenEndpoint {
      * The token flow name, by default 'grantTokenFlow'.
      */
     private String grantTokenFlow
-
-    /**
-     * The HttpHeaders in javax.ws.rs Context
-     */
-    @Autowired
-    private HttpHeaders httpHeaders
-
-    /**
-     * The Request in javax.ws.rs Context
-     */
-    @Autowired
-    private Request request
 
     @Required
     void setFlowExecutor(FlowExecutor flowExecutor) {
@@ -76,7 +62,6 @@ class TokenEndpointImpl implements TokenEndpoint {
     Promise<AccessTokenResponse> postToken(AccessTokenRequest request) {
         // Prepare the request scope.
         Map<String, Object> requestScope = new HashMap<>()
-        requestScope[ActionContextWrapper.REQUEST] = request
 
         MultivaluedMap<String, String> formParams = new MultivaluedHashMap<>()
 
@@ -93,8 +78,7 @@ class TokenEndpointImpl implements TokenEndpoint {
 
         requestScope[ActionContextWrapper.PARAMETER_MAP] = formParams
 
-        requestScope[ActionContextWrapper.HEADER_MAP] = httpHeaders.requestHeaders
-        requestScope[ActionContextWrapper.COOKIE_MAP] = httpHeaders.cookies
+        requestScope[ActionContextWrapper.HEADER_MAP] = JunboHttpContext.requestHeaders
 
         // Start a new conversation of grantTokenFlow in the flowExecutor.
         return flowExecutor.start(grantTokenFlow, requestScope).then { ActionContext context ->

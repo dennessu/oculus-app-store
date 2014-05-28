@@ -12,8 +12,11 @@ import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
 import com.junbo.common.cloudant.CloudantClient;
 import com.junbo.common.cloudant.model.CloudantViews;
 import com.junbo.common.id.OfferId;
+import com.junbo.common.id.OfferRevisionId;
 import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -40,10 +43,43 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
     }
 
     public List<OfferRevision> getRevisions(OfferRevisionsGetOptions options) {
-        List<OfferRevision> revisions = new ArrayList<>();
-        // TODO: search
+        List<OfferRevision> offerRevisions = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(options.getRevisionIds())) {
+            for (OfferRevisionId revisionId : options.getRevisionIds()) {
+                OfferRevision revision = super.cloudantGet(revisionId.toString());
+                if (revision==null) {
+                    continue;
+                } else if (!StringUtils.isEmpty(options.getStatus())
+                        && !options.getStatus().equalsIgnoreCase(revision.getStatus())) {
+                    continue;
+                } else {
+                    offerRevisions.add(revision);
+                }
+            }
+        } else if (!CollectionUtils.isEmpty(options.getOfferIds())) {
+            for (OfferId offerId : options.getOfferIds()) {
+                List<OfferRevision> revisions = super.queryView("by_offerId", offerId.toString());
+                if (StringUtils.isEmpty(options.getStatus())) {
+                    continue;
+                }
+                Iterator<OfferRevision> iterator = revisions.iterator();
+                while (iterator.hasNext()) {
+                    OfferRevision revision = iterator.next();
+                    if (!options.getStatus().equalsIgnoreCase(revision.getStatus())) {
+                        iterator.remove();
+                    }
+                }
+                offerRevisions.addAll(revisions);
+            }
+        } else if (!StringUtils.isEmpty(options.getStatus())){
+            offerRevisions = super.queryView("by_status", options.getStatus().toUpperCase(),
+                    options.getValidSize(), options.getValidStart(), false);
+        } else {
+            offerRevisions = super.queryView("by_offerId", null,
+                    options.getValidSize(), options.getValidStart(), false);
+        }
 
-        return revisions;
+        return offerRevisions;
     }
 
     public List<OfferRevision> getRevisions(Collection<OfferId> offerIds, Long timestamp) {
@@ -91,9 +127,14 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
         Map<String, CloudantIndex> indexMap = new HashMap<>();
 
         CloudantViews.CloudantView view = new CloudantViews.CloudantView();
-        view.setMap("function(doc) {emit(doc.offerId, doc._id)}");
+        view.setMap("function(doc) {emit(doc.offerId, doc._id);}");
         view.setResultClass(String.class);
         viewMap.put("by_offerId", view);
+
+        view = new CloudantViews.CloudantView();
+        view.setMap("function(doc) {if (doc.status){ emit(doc.status, doc._id); }}");
+        view.setResultClass(String.class);
+        viewMap.put("by_status", view);
 
         CloudantIndex index = new CloudantIndex();
         index.setResultClass(String.class);

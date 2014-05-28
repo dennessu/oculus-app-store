@@ -24,7 +24,5 @@ dependencies {
     compile (libraries.hibernate_entitymanager)
     compile (libraries.hibernate_annotation)
 
-    compile (libraries.btm)
-
     testCompile (libraries.spring_test)
 }

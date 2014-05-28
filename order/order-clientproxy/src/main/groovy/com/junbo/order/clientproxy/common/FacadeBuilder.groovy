@@ -70,7 +70,7 @@ class FacadeBuilder {
         RatingRequest request = new RatingRequest()
         List<String> coupons = []
         order.discounts?.each { Discount d ->
-            if (!d.coupon?.isEmpty()) {
+            if (d.coupon != null && !d.coupon.isEmpty()) {
                 coupons.add(d.coupon)
             }
         }

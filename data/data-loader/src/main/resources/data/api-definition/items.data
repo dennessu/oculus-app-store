@@ -1,0 +1,23 @@
+{
+    "apiName": "items",
+    "scopes": {
+        "catalog": [
+            {
+                "precondition": "getOwnedByCurrentUser()",
+                "rights": [
+                    "read", "write"
+                ],
+                "scriptType": "SPEL"
+            }
+        ],
+        "catalog.service": [
+            {
+                "precondition": "true",
+                "rights": [
+                    "read", "write"
+                ],
+                "scriptType": "SPEL"
+            }
+        ]
+    }
+}

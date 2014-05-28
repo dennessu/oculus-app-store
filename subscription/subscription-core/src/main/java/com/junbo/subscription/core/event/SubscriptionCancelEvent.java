@@ -5,13 +5,13 @@
  */
 package com.junbo.subscription.core.event;
 
-import com.junbo.subscription.core.SubscriptionEvent;
+import com.junbo.subscription.core.SubscriptionEventService;
 import com.junbo.subscription.spec.model.Subscription;
 
 /**
  * Cancel Subscription.
  */
-public class SubscriptionCancelEvent implements SubscriptionEvent {
+public class SubscriptionCancelEvent implements SubscriptionEventService {
     @Override
     public Subscription execute(Subscription subscription){
         return  subscription;

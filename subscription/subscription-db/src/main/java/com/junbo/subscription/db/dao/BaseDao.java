@@ -59,6 +59,9 @@ public class BaseDao<T extends com.junbo.subscription.db.entity.Entity> {
     }
 
     public Long update(T t) {
+        T existed = (T) currentSession(t.getShardMasterId()).get(classType, t.getId());
+        t.setCreatedBy(existed.getCreatedBy());
+        t.setCreatedTime(existed.getCreatedTime());
         if(t.getModifiedTime() == null){
             t.setModifiedTime(new Date());
             t.setModifiedBy("INTERNAL");

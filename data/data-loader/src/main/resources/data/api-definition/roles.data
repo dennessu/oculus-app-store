@@ -1,0 +1,15 @@
+{
+    "apiName": "roles",
+    "scopes": {
+        "identity": [{
+            "precondition": "getOwnedByCurrentUser()",
+            "rights": ["read", "write"],
+            "scriptType": "SPEL"
+        }],
+        "identity.service": [{
+            "precondition": "true",
+            "rights": ["read", "write"],
+            "scriptType": "SPEL"
+        }]
+    }
+}

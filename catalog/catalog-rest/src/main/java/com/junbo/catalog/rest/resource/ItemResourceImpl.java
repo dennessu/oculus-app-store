@@ -10,19 +10,24 @@ import com.junbo.authorization.AuthorizeCallback;
 import com.junbo.authorization.AuthorizeContext;
 import com.junbo.authorization.AuthorizeService;
 import com.junbo.authorization.RightsScope;
-import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.auth.ItemAuthorizeCallbackFactory;
+import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemsGetOptions;
 import com.junbo.catalog.spec.resource.ItemResource;
 import com.junbo.common.id.ItemId;
+import com.junbo.common.id.util.IdUtil;
+import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,16 +46,16 @@ public class ItemResourceImpl implements ItemResource {
 
     @Override
     public Promise<Results<Item>> getItems(ItemsGetOptions options) {
-        List<Item> offers = itemService.getItems(options);
+        List<Item> items = itemService.getItems(options);
 
-        final List<Item> filteredOffers = new ArrayList<>();
-        for (final Item item : offers) {
+        final List<Item> filteredItems = new ArrayList<>();
+        for (final Item item : items) {
             AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create(item);
             RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Void>() {
                 @Override
                 public Void apply() {
                     if (AuthorizeContext.hasRights("read")) {
-                        filteredOffers.add(item);
+                        filteredItems.add(item);
                     }
 
                     return null;
@@ -59,8 +64,37 @@ public class ItemResourceImpl implements ItemResource {
         }
 
         Results<Item> results = new Results<>();
-        results.setItems(filteredOffers);
+        results.setItems(filteredItems);
+        Link nextLink = new Link();
+        nextLink.setHref(buildNextUrl(options));
+        results.setNext(nextLink);
+
         return Promise.pure(results);
+    }
+
+    private String buildNextUrl(ItemsGetOptions options) {
+        if (!CollectionUtils.isEmpty(options.getItemIds()) || options.getHostItemId() != null) {
+            return null;
+        }
+
+        UriBuilder builder = UriBuilder.fromPath(IdUtil.getResourcePathPrefix()).path("items");
+        if (options.getGenre() != null) {
+            builder.queryParam("genre", IdFormatter.encodeId(options.getGenre()));
+        }
+        if (!StringUtils.isEmpty(options.getType())) {
+            builder.queryParam("type", options.getType());
+        }
+        if (options.getOwnerId() != null) {
+            builder.queryParam("developerId", options.getOwnerId());
+        }
+        builder.queryParam("size", options.getValidSize());
+        if (!StringUtils.isEmpty(options.getNextBookmark())) {
+            builder.queryParam("bookmark", options.getNextBookmark());
+        } else {
+            builder.queryParam("start", options.nextStart());
+        }
+
+        return builder.toTemplate();
     }
 
     @Override

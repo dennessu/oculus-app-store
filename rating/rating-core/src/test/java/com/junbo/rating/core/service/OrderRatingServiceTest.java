@@ -24,7 +24,6 @@ import java.util.HashSet;
  */
 public class OrderRatingServiceTest extends BaseTest {
     @Autowired
-
     private OrderRatingService orderRatingService;
 
     @Test

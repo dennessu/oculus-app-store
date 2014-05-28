@@ -5,18 +5,25 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
 /**
  * Created by liangfu on 4/26/14.
  */
 public class UserName {
+    @ApiModelProperty(position = 1, required = true, value = "The full name, or at least as much of it as we know.")
     private String fullName;
 
+    @ApiModelProperty(position = 2, required = false, value = "[Nullable] Null or the given name.")
     private String givenName;
 
+    @ApiModelProperty(position = 3, required = false, value = "[Nullable] Null or the middle name or perhaps the first letter of the middle name (middle initial).")
     private String middleName;
 
+    @ApiModelProperty(position = 4, required = false, value = "[Nullable] Null or the family name.")
     private String familyName;
 
+    @ApiModelProperty(position = 5, required = false, value = "[Nullable] Null or the preferred-name / nick-name.")
     private String nickName;
 
     public String getFullName() {

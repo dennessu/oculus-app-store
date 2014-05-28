@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.spec.endpoint;
 
+import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.oauth.spec.model.TokenInfo;
@@ -20,6 +21,7 @@ import javax.ws.rs.core.MediaType;
 @Api("oauth2")
 @Path("/oauth2/tokeninfo")
 @RestResource
+@InProcessCallable
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public interface TokenInfoEndpoint {

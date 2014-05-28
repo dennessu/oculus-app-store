@@ -22,23 +22,25 @@ import java.util.List;
  */
 public class Device extends PropertyAssignedAwareResourceMeta implements Identifiable<DeviceId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The id of device resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] A Link to this Device resource.")
     @JsonProperty("self")
     private DeviceId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "The Link to the device type of the device.")
+    @ApiModelProperty(position = 2, required = true, value = "The Link to the DeviceType of this device.")
     private DeviceTypeId type;
 
-    @ApiModelProperty(position = 3, required = true, value = "The serial number of the device.")
+    @ApiModelProperty(position = 3, required = true, value = "The serial number of this Device.")
     private String serialNumber;
 
-    @ApiModelProperty(position = 4, required = true, value = "The description of the device.")
+    @ApiModelProperty(position = 4, required = true, value = "The firmware version on this Device.")
     private String firmwareVersion;
 
-    @ApiModelProperty(position = 5, required = true, value = "[Nullable]The links to the component devices, for example HMD, camera, etc.")
+    @ApiModelProperty(position = 5, required = true, value = "[Nullable]The links to the component devices, " +
+            "for example when the device object is \"DK2\" it will has component \"HMD\" and \"camera\", " +
+            "when the device object itself is \"Camera\" the components attribute will be null.")
     private List<DeviceId> components = new ArrayList<>();
 
-    @ApiModelProperty(position = 5, required = false, value = "[Nullable]The users linked with this device")
+    @ApiModelProperty(position = 5, required = false, value = "[Nullable]The users linked with this device.")
     @HateoasLink("/users?deviceId={id}")
     private Link users;
 

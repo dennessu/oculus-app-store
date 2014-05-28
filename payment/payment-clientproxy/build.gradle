@@ -11,11 +11,16 @@ dependencies {
     testCompile (libraries.spring_test)
     testCompile junboProject(':configuration-data')
     testCompile junboProject(':common-sharding')
+    compile 'com.adyen.services:adyensdk:1.0-SNAPSHOT'
 
     processor junboProject(':langur-processor')
     processor (libraries.log4j)
 
     compile junboProject(':ewallet-spec')
     compile junboProject(':identity-spec')
+}
+
+ext {
+    processorClass = 'com.junbo.langur.processor.ClientProxyProcessor'
 }
 
