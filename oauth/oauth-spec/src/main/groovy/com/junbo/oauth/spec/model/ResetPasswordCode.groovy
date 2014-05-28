@@ -8,5 +8,6 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class ResetPasswordCode {
     String code
+    String email
     Long userId
 }

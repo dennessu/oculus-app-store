@@ -51,10 +51,10 @@ import javax.ws.rs.core.UriBuilder
 @CompileStatic
 class UserServiceImpl implements UserService {
 
-    private static final String EMAIL_SOURCE = 'SilkCloud'
-    private static final String EMAIL_ACTION = 'EmailVerification'
+    private static final String EMAIL_SOURCE = 'Oculus'
+    private static final String VERIFY_EMAIL_ACTION = 'EmailVerification'
+    private static final String RESET_PASSWORD_ACTION = 'PasswordReset'
     private static final String EMAIL_VERIFY_PATH = 'oauth2/verify-email'
-    private static final String EMAIL_VERIFY_EVENT = 'verify'
     private static final String EMAIL_RESET_PASSWORD_PATH = 'oauth2/reset-password'
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl)
 
@@ -188,7 +188,7 @@ class UserServiceImpl implements UserService {
 
                 QueryParam queryParam = new QueryParam(
                         source: EMAIL_SOURCE,
-                        action: EMAIL_ACTION,
+                        action: VERIFY_EMAIL_ACTION,
                         locale: contextWrapper.viewLocale
                 )
 
@@ -198,7 +198,7 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    Promise<Void> resetPasswordByUserId(UserId userId, String locale, URI baseUri) {
+    Promise<Void> sendResetPassword(UserId userId, String locale, URI baseUri) {
         if (userId == null || userId.value == null) {
             throw AppExceptions.INSTANCE.missingUserId().exception()
         }
@@ -214,7 +214,8 @@ class UserServiceImpl implements UserService {
                 }
 
                 ResetPasswordCode code = new ResetPasswordCode(
-                        userId: userId.value
+                        userId: userId.value,
+                        email: email
                 )
 
                 resetPasswordCodeRepository.save(code)
@@ -225,38 +226,14 @@ class UserServiceImpl implements UserService {
                 uriBuilder.queryParam(OAuthParameters.LOCALE, locale)
 
                 QueryParam queryParam = new QueryParam(
-                        // todo: change to reset password email template params
                         source: EMAIL_SOURCE,
-                        action: EMAIL_ACTION,
+                        action: RESET_PASSWORD_ACTION,
                         locale: locale
                 )
 
                 return this.sendEmail(queryParam, user, email, uriBuilder)
             }
         }
-    }
-
-    @Override
-    Promise<Void> resetPasswordByAuthHeader(String authorization, UserId userId, String locale, URI baseUri) {
-        /*
-        if (!StringUtils.hasText(authorization)) {
-            throw AppExceptions.INSTANCE.missingAuthorization().exception()
-        }
-
-        AccessToken accessToken = tokenService.extractAccessToken(authorization)
-
-        if (accessToken == null) {
-            throw AppExceptions.INSTANCE.invalidAccessToken().exception()
-        }
-
-        if (accessToken.isExpired()) {
-            throw AppExceptions.INSTANCE.expiredAccessToken().exception()
-        }*/
-
-        //todo: csr authorization header
-        //if (accessToken.scopes) {}
-
-        return this.resetPasswordByUserId(userId, locale, baseUri)
     }
 
     private Promise<String> getDefaultUserEmail(User user) {

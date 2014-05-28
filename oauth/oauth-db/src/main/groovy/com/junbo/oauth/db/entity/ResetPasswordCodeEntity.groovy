@@ -8,4 +8,5 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class ResetPasswordCodeEntity extends BaseEntity {
     Long userId
+    String email
 }

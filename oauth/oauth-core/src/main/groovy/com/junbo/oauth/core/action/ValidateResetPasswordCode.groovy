@@ -28,7 +28,7 @@ class ValidateResetPasswordCode implements Action {
         def contextWrapper = new ActionContextWrapper(context)
         String code = (String) context.requestScope[OAuthParameters.RESET_PASSWORD_CODE]
 
-        if (!tokenGenerator.isValidEmailVerifyCode(code)) {
+        if (!tokenGenerator.isValidResetPasswordCode(code)) {
             contextWrapper.errors.add(AppExceptions.INSTANCE.invalidVerificationCode().error())
             return Promise.pure(new ActionResult('error'))
         }

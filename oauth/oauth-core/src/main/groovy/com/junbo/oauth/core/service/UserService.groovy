@@ -24,10 +24,5 @@ interface UserService {
 
     Promise<Void> sendVerifyEmail(UserId userId, ActionContextWrapper contextWrapper)
 
-    // csr can issue password reset flow to any verified user in csr tool, the authorization header need to prove
-    // the caller has csr privilege.
-    Promise<Void> resetPasswordByAuthHeader(String authorization, UserId userId, String locale, URI baseUri)
-
-    // user can issue password reset flow in other security flow, like forget password flow
-    Promise<Void> resetPasswordByUserId(UserId userId, String locale, URI baseUri)
+    Promise<Void> sendResetPassword(UserId userId, String locale, URI baseUri)
 }

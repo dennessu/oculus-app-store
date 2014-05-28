@@ -37,7 +37,7 @@ public interface ResetPasswordEndpoint {
 
     @GET
     @Path("/reset-password")
-    Promise<Response> resetPasswordStart(@QueryParam("cid") String conversationId,
+    Promise<Response> resetPasswordLink(@QueryParam("cid") String conversationId,
                                          @QueryParam("rpc") String code,
                                     @QueryParam("locale") String locale);
     @POST
@@ -48,8 +48,7 @@ public interface ResetPasswordEndpoint {
 
     @POST
     @Path("/reset-password-pong")
-    Promise<Response> sendResetPasswordEmail(@HeaderParam("Authorization") String authorization,
-                                      @FormParam("locale") String locale,
+    Promise<Response> sendResetPasswordEmail(@FormParam("locale") String locale,
                                       @FormParam("userId") UserId userId,
                                       @Context ContainerRequestContext request);
 }

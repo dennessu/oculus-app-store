@@ -75,7 +75,7 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
     }
 
     @Override
-    Promise<Response> resetPasswordStart(String cid, String code, String locale) {
+    Promise<Response> resetPasswordLink(String cid, String code, String locale) {
         Map<String, Object> requestScope = new HashMap<>()
         requestScope[OAuthParameters.RESET_PASSWORD_CODE] = code
         requestScope[OAuthParameters.LOCALE] = locale
@@ -101,8 +101,8 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
     }
 
     @Override
-    Promise<Response> sendResetPasswordEmail(String authorization, String locale, UserId userId, ContainerRequestContext request) {
-        return userService.resetPasswordByAuthHeader(authorization, userId, locale, ((ContainerRequest)request).baseUri).then {
+    Promise<Response> sendResetPasswordEmail(String locale, UserId userId, ContainerRequestContext request) {
+        return userService.sendResetPassword(userId, locale, ((ContainerRequest)request).baseUri).then {
             return Promise.pure(Response.noContent().build())
         }
     }
