@@ -74,7 +74,7 @@ class TosResourceImpl implements TosResource {
     Promise<Results<Tos>> list(TosListOptions listOptions) {
         return tosValidator.validateForSearch(listOptions).then {
             def resultList = new Results<Tos>(items: [])
-            return tosRepository.search(listOptions).then { List<Tos> newToses ->
+            return search(listOptions).then { List<Tos> newToses ->
                 if (newToses == null) {
                     return Promise.pure(resultList)
                 }
@@ -122,5 +122,9 @@ class TosResourceImpl implements TosResource {
         return tosValidator.validateForGet(tosId).then {
             return tosRepository.delete(tosId)
         }
+    }
+
+    private Promise<List<Tos>> search(TosListOptions listOptions) {
+        return tosRepository.searchAll(listOptions.limit, listOptions.offset)
     }
 }

@@ -55,8 +55,8 @@ class TosRepositoryCloudantImpl extends CloudantClient<Tos> implements TosReposi
     }
 
     @Override
-    Promise<List<Tos>> search(TosListOptions options) {
-        return Promise.pure(null)
+    Promise<List<Tos>> searchAll(Integer limit, Integer offset) {
+        return Promise.pure(super.cloudantGetAll())
     }
 
     @Override
