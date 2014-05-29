@@ -118,10 +118,8 @@ class UserPinValidatorImpl implements UserPinValidator {
             return Promise.pure(null)
         }
 
-        return userPinRepository.search(new UserPinListOptions(
-                userId: userId,
-                active: true
-        )).then { List<UserPin> userPinList ->
+        return userPinRepository.searchByUserIdAndActiveStatus(userId, true, Integer.MAX_VALUE,
+                0).then { List<UserPin> userPinList ->
             if (userPinList == null || userPinList.size() == 0 || userPinList.size() > 1) {
                 throw AppErrors.INSTANCE.userPinIncorrect().exception()
             }

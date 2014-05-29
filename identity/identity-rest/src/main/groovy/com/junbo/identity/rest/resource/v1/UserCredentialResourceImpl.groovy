@@ -82,10 +82,8 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                     }
                 }
             } else if (obj instanceof UserPin) {
-                return userPinRepository.search(new UserPinListOptions(
-                        userId: userId,
-                        active: true
-                )).then { List<UserPin> pinList ->
+                return userPinRepository.searchByUserIdAndActiveStatus(userId, true, Integer.MAX_VALUE, 0).then {
+                    List<UserPin> pinList ->
                     return Promise.each(pinList) { UserPin userPin ->
                         userPin.active = false
                         return userPinRepository.update(userPin)
@@ -137,9 +135,8 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                     return Promise.pure(resultList)
                 }
             } else if (listOptions.type == CredentialType.PIN.toString()) {
-                UserPinListOptions options = new UserPinListOptions()
-                options.setUserId(listOptions.userId)
-                return userPinRepository.search(options).then { List<UserPin> userPinList ->
+                return userPinRepository.searchByUserId(listOptions.userId, listOptions.limit,
+                        listOptions.offset).then { List<UserPin> userPinList ->
                     if (userPinList == null) {
                         return Promise.pure(userPinList)
                     }

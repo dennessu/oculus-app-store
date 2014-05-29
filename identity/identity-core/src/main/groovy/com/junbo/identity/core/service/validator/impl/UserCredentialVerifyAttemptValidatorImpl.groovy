@@ -153,10 +153,8 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                 }
             }
             else {
-                return userPinRepository.search(new UserPinListOptions(
-                        userId: (UserId)user.id,
-                        active: true
-                )).then { List<UserPin> userPinList ->
+                return userPinRepository.searchByUserIdAndActiveStatus((UserId)user.id, true, Integer.MAX_VALUE,
+                        0).then { List<UserPin> userPinList ->
                     if (userPinList == null || userPinList.size() > 1) {
                         throw AppErrors.INSTANCE.userPinIncorrect().exception()
                     }

@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.data.repository.impl.sql
 
+import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPinId
 import com.junbo.identity.data.dao.UserPinDAO
 import com.junbo.identity.data.entity.user.UserPinEntity
@@ -57,14 +58,13 @@ class UserPinRepositorySqlImpl implements UserPinRepository {
     }
 
     @Override
-    Promise<List<UserPin>> search(UserPinListOptions getOption) {
-        List entities = userPinDAO.search(getOption.userId.value, getOption)
+    Promise<List<UserPin>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+        return Promise.pure(null)
+    }
 
-        List<UserPin> results = new ArrayList<UserPin>()
-        entities.each { UserPinEntity entity ->
-            results.add(modelMapper.toUserPin(entity, new MappingContext()))
-        }
-        return Promise.pure(results)
+    @Override
+    Promise<List<UserPin>> searchByUserIdAndActiveStatus(UserId userId, Boolean active, Integer limit, Integer offset) {
+        return Promise.pure(null)
     }
 
     @Override
