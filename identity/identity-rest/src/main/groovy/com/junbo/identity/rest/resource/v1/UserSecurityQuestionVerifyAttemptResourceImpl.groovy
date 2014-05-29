@@ -79,18 +79,17 @@ class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuest
         }
         listOptions.setUserId(userId)
         return userSecurityQuestionAttemptValidator.validateForSearch(listOptions).then {
-            return userSecurityQuestionAttemptRepository.search(listOptions).
-                    then { List<UserSecurityQuestionVerifyAttempt> userSecurityQuestionAttemptList ->
-                        def result = new Results<UserSecurityQuestionVerifyAttempt>(items: [])
+            return search(listOptions).then { List<UserSecurityQuestionVerifyAttempt> userSecurityQuestionAttemptList ->
+                    def result = new Results<UserSecurityQuestionVerifyAttempt>(items: [])
 
-                        userSecurityQuestionAttemptList.each { UserSecurityQuestionVerifyAttempt attempt ->
-                            attempt = userSecurityQuestionAttemptFilter.filterForGet(attempt,
-                                    listOptions.properties?.split(',') as List<String>)
-                            result.items.add(attempt)
-                        }
-
-                        return Promise.pure(result)
+                    userSecurityQuestionAttemptList.each { UserSecurityQuestionVerifyAttempt attempt ->
+                        attempt = userSecurityQuestionAttemptFilter.filterForGet(attempt,
+                                listOptions.properties?.split(',') as List<String>)
+                        result.items.add(attempt)
                     }
+
+                    return Promise.pure(result)
+                }
         }
     }
 
@@ -119,5 +118,17 @@ class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuest
                 }
             }
         )
+    }
+
+    private Promise<List<UserSecurityQuestionVerifyAttempt>> search(UserSecurityQuestionAttemptListOptions listOptions) {
+        if (listOptions.userId != null && listOptions.userSecurityQuestionId != null) {
+            return userSecurityQuestionAttemptRepository.searchByUserIdAndSecurityQuestionId(listOptions.userId,
+                    listOptions.userSecurityQuestionId, listOptions.limit, listOptions.offset)
+        } else if (listOptions.userId != null) {
+            return userSecurityQuestionAttemptRepository.searchByUserId(listOptions.userId, listOptions.limit,
+                    listOptions.offset)
+        } else {
+            throw new IllegalArgumentException('Unsupported search operation')
+        }
     }
 }

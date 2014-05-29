@@ -5,6 +5,8 @@
  */
 package com.junbo.identity.data.repository.impl.sql
 
+import com.junbo.common.id.UserId
+import com.junbo.common.id.UserSecurityQuestionId
 import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
 import com.junbo.identity.data.dao.UserSecurityQuestionAttemptDAO
 import com.junbo.identity.data.entity.user.UserSecurityQuestionAttemptEntity
@@ -63,14 +65,13 @@ class UserSecurityQuestionAttemptRepositorySqlImpl implements UserSecurityQuesti
     }
 
     @Override
-    Promise<List<UserSecurityQuestionVerifyAttempt>> search(UserSecurityQuestionAttemptListOptions getOption) {
-        List<UserSecurityQuestionAttemptEntity> entities =
-                userSecurityQuestionAttemptDAO.search(getOption.userId.value, getOption)
+    Promise<List<UserSecurityQuestionVerifyAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+        return Promise.pure(null)
+    }
 
-        List<UserSecurityQuestionVerifyAttempt> results = new ArrayList<>()
-        entities.each { UserSecurityQuestionAttemptEntity entity ->
-            results.add(modelMapper.toUserSecurityQuestionAttempt(entity, new MappingContext()))
-        }
-        return Promise.pure(results)
+    @Override
+    Promise<List<UserSecurityQuestionVerifyAttempt>> searchByUserIdAndSecurityQuestionId(UserId userId,
+                                     UserSecurityQuestionId userSecurityQuestionId, Integer limit, Integer offset) {
+        return Promise.pure(null)
     }
 }
