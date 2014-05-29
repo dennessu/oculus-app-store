@@ -153,10 +153,8 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
             return Promise.pure(null)
         }
 
-        return attemptRepository.search(new UserSecurityQuestionAttemptListOptions(
-                userId: attempt.userId,
-                userSecurityQuestionId: attempt.userSecurityQuestionId
-        )).then { List<UserSecurityQuestionVerifyAttempt> attemptList ->
+        return attemptRepository.searchByUserIdAndSecurityQuestionId(attempt.userId, attempt.userSecurityQuestionId,
+                Integer.MAX_VALUE, 0).then { List<UserSecurityQuestionVerifyAttempt> attemptList ->
             if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxRetryCount) {
                 return Promise.pure(null)
             }

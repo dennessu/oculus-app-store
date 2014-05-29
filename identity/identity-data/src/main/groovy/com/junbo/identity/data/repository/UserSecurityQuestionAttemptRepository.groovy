@@ -5,9 +5,10 @@
  */
 package com.junbo.identity.data.repository
 
+import com.junbo.common.id.UserId
+import com.junbo.common.id.UserSecurityQuestionId
 import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
 import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt
-import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionAttemptListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.dualwrite.annotations.ReadMethod
 import com.junbo.sharding.repo.BaseRepository
@@ -20,5 +21,9 @@ import groovy.transform.CompileStatic
 interface UserSecurityQuestionAttemptRepository
         extends BaseRepository<UserSecurityQuestionVerifyAttempt, UserSecurityQuestionVerifyAttemptId> {
     @ReadMethod
-    Promise<List<UserSecurityQuestionVerifyAttempt>> search(UserSecurityQuestionAttemptListOptions getOption)
+    Promise<List<UserSecurityQuestionVerifyAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset)
+
+    @ReadMethod
+    Promise<List<UserSecurityQuestionVerifyAttempt>> searchByUserIdAndSecurityQuestionId(UserId userId,
+                                         UserSecurityQuestionId userSecurityQuestionId, Integer limit, Integer offset)
 }
