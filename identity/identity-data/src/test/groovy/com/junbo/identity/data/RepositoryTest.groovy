@@ -373,7 +373,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         UserCredentialAttemptListOptions getOption = new UserCredentialAttemptListOptions()
         getOption.setUserId(new UserId(userId))
         List<UserCredentialVerifyAttempt> userLoginAttempts =
-                userCredentialVerifyAttemptRepository.search(getOption).get()
+                userCredentialVerifyAttemptRepository.searchByUserId(new UserId(userId), Integer.MAX_VALUE, 0).get()
         assert userLoginAttempts.size() != 0
     }
 

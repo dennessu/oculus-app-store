@@ -3,6 +3,7 @@ package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.UserCredentialVerifyAttemptId
+import com.junbo.common.id.UserId
 import com.junbo.identity.data.repository.UserCredentialVerifyAttemptRepository
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
@@ -56,14 +57,15 @@ class UserCredentialVerifyAttemptRepositoryCloudantImpl extends CloudantClient<U
     }
 
     @Override
-    Promise<List<UserCredentialVerifyAttempt>> search(UserCredentialAttemptListOptions getOption) {
-        def list = super.queryView('by_user_id', getOption.userId.value.toString(),
-                getOption.limit, getOption.offset, false)
-        if (getOption.type != null) {
-            list.removeAll { UserCredentialVerifyAttempt attempt ->
-                attempt.type != getOption.type
-            }
-        }
+    Promise<List<UserCredentialVerifyAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+        def list = super.queryView('by_user_id', userId.toString(), limit, offset, false)
+        return Promise.pure(list)
+    }
+
+    @Override
+    Promise<List<UserCredentialVerifyAttempt>> searchByUserIdAndCredentialType(UserId userId, String type,
+                                                                               Integer limit, Integer offset) {
+        def list = super.queryView('by_user_id_credential_type', "${userId.toString()}:${type}", limit, offset, false)
         return Promise.pure(list)
     }
 
@@ -78,6 +80,11 @@ class UserCredentialVerifyAttemptRepositoryCloudantImpl extends CloudantClient<U
             'by_user_id': new CloudantViews.CloudantView(
                 map: 'function(doc) {' +
                         '  emit(doc.userId, doc._id)' +
+                        '}',
+                resultClass: String),
+            'by_user_id_credential_type': new CloudantViews.CloudantView(
+                map: 'function(doc) {' +
+                        ' emit(doc.userId + \':\' + doc.type, doc._id)' +
                         '}',
                 resultClass: String)
         ]
