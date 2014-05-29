@@ -12,8 +12,8 @@ export CRON_PATH='/tmp/pgcron'
 
 export PGBIN_PATH='/usr/lib/postgresql/9.3/bin'
 export PGLOCK_PATH='/run/postgresql'
-export PGUSER='silkcloud'
 export PROMOTE_TRIGGER_FILE='/tmp/bring_me_up'
+export PGUSER='silkcloud'
 
 #master info
 export MASTER_HOST=54.254.246.13
@@ -42,7 +42,7 @@ export PGBOUNCER_BIN=/usr/sbin
 export PGBOUNCER_BASE='/tmp/pgbouncer'
 export PGBOUNCER_CONF=$PGBOUNCER_BASE/pgbouncer.conf
 export PGBOUNCER_PID=$PGBOUNCER_BASE/pgbouncer.pid
-export PGBOUNCER_AUTH_FILE=$PGBOUNCER_BASE/userlist.txt
+export PGBOUNCER_AUTH_FILE=~/pgbouncer_auth.txt
 export PGBOUNCER_SOCKET_PATH='/tmp'
 
 export PGBOUNCER_MAX_CONNECTIONS=100

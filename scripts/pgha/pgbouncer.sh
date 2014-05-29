@@ -10,11 +10,6 @@ TARGET_DB_PORT=$2
 echo "create pgbouncer home"
 createDir $PGBOUNCER_BASE
 
-echo "configure database users"
-cat > $PGBOUNCER_AUTH_FILE <<EOF
-"silkcloud" "silkcloud"
-EOF
-
 # primary pgbouncer proxy
 echo "generate primary pgbouncer configuration..."
 
@@ -27,7 +22,7 @@ logfile = $PGBOUNCER_BASE/pgbouncer.log
 pidfile = $PGBOUNCER_BASE/pgbouncer.pid
 listen_addr = *
 listen_port = $PGBOUNCER_PORT
-auth_type = trust
+auth_type = md5
 auth_file = $PGBOUNCER_AUTH_FILE
 pool_mode = session
 server_reset_query = DISCARD ALL
