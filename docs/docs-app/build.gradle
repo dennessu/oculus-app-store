@@ -19,6 +19,7 @@ dependencies {
     compile junboProject(':rating-spec')
     compile junboProject(':restriction-spec')
     compile junboProject(':email-spec')
+    compile junboProject(':authorization-spec')
 
     compile("com.wordnik:swagger-jersey2-jaxrs_2.10:${swaggerVersion}") {
         exclude group: "javax.ws.rs", module: "jsr311-api"
