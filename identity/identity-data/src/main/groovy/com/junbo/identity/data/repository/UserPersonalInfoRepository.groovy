@@ -14,14 +14,14 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface UserPersonalInfoRepository extends BaseRepository<UserPersonalInfo, UserPersonalInfoId> {
     @ReadMethod
-    Promise<List<UserPersonalInfo>> searchByUserId(UserId userId)
+    Promise<List<UserPersonalInfo>> searchByUserId(UserId userId, Integer limit, Integer offset)
 
     @ReadMethod
-    Promise<List<UserPersonalInfo>> searchByUserIdAndType(UserId userId, String type)
+    Promise<List<UserPersonalInfo>> searchByUserIdAndType(UserId userId, String type, Integer limit, Integer offset)
 
     @ReadMethod
-    Promise<List<UserPersonalInfo>> searchByEmail(String email)
+    Promise<List<UserPersonalInfo>> searchByEmail(String email, Integer limit, Integer offset)
 
     @ReadMethod
-    Promise<List<UserPersonalInfo>> searchByPhoneNumber(String phoneNumber)
+    Promise<List<UserPersonalInfo>> searchByPhoneNumber(String phoneNumber, Integer limit, Integer offset)
 }

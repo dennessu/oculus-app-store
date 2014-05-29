@@ -15,7 +15,7 @@ public interface UserPersonalInfoIdToUserIdLinkRepository extends
         BaseRepository<UserPersonalInfoIdToUserIdLink, UserPersonalInfoIdToUserIdLinkId> {
 
     @ReadMethod
-    Promise<List<UserPersonalInfoIdToUserIdLink>> searchByUserId(UserId userId)
+    Promise<List<UserPersonalInfoIdToUserIdLink>> searchByUserId(UserId userId, Integer limit, Integer offset)
 
     @ReadMethod
     Promise<UserPersonalInfoIdToUserIdLink> searchByUserPersonalInfoId(UserPersonalInfoId userPersonalInfoId)

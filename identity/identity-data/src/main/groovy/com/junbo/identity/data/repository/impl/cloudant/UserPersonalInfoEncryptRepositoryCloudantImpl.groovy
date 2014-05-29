@@ -48,8 +48,9 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     }
 
     @Override
-    Promise<List<UserPersonalInfo>> searchByUserId(UserId userId) {
-        return userIdLinkRepository.searchByUserId(userId).then { List<UserPersonalInfoIdToUserIdLink> links ->
+    Promise<List<UserPersonalInfo>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+        return userIdLinkRepository.searchByUserId(userId, limit, offset).then {
+            List<UserPersonalInfoIdToUserIdLink> links ->
             List<UserPersonalInfo> userPersonalInfoList = new ArrayList<>()
             if (CollectionUtils.isEmpty(links)) {
                 return Promise.pure(userPersonalInfoList)
@@ -85,8 +86,8 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     }
 
     @Override
-    Promise<List<UserPersonalInfo>> searchByUserIdAndType(UserId userId, String type) {
-        return searchByUserId(userId).then { List<UserPersonalInfo> userPersonalInfoList ->
+    Promise<List<UserPersonalInfo>> searchByUserIdAndType(UserId userId, String type, Integer limit, Integer offset) {
+        return searchByUserId(userId, limit, offset).then { List<UserPersonalInfo> userPersonalInfoList ->
             if (CollectionUtils.isEmpty(userPersonalInfoList)) {
                 return Promise.pure(null)
             }
@@ -99,7 +100,7 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     }
 
     @Override
-    Promise<List<UserPersonalInfo>> searchByEmail(String email) {
+    Promise<List<UserPersonalInfo>> searchByEmail(String email, Integer limit, Integer offset) {
         PiiHash hash = getPiiHash(UserPersonalInfoType.EMAIL.toString())
 
         return encryptUserPersonalInfoRepository.searchByHashValue(hash.generateHash(email.toLowerCase())).then {
@@ -129,7 +130,7 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     }
 
     @Override
-    Promise<List<UserPersonalInfo>> searchByPhoneNumber(String phoneNumber) {
+    Promise<List<UserPersonalInfo>> searchByPhoneNumber(String phoneNumber, Integer limit, Integer offset) {
         PiiHash hash = getPiiHash(UserPersonalInfoType.PHONE.toString())
 
         return encryptUserPersonalInfoRepository.searchByHashValue(hash.generateHash(phoneNumber)).then {

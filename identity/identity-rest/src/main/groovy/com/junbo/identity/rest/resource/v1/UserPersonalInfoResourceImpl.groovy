@@ -188,17 +188,17 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
 
         return userPersonalInfoValidator.validateForSearch(listOptions).then {
             if (listOptions.userId != null && listOptions.type != null) {
-                return userPersonalInfoRepository.searchByUserIdAndType(listOptions.userId, listOptions.type).
-                        then(filterUserPersonalInfos)
+                return userPersonalInfoRepository.searchByUserIdAndType(listOptions.userId, listOptions.type,
+                        listOptions.limit, listOptions.offset).then(filterUserPersonalInfos)
             } else if (listOptions.userId != null) {
-                return userPersonalInfoRepository.searchByUserId(listOptions.userId).
-                        then(filterUserPersonalInfos)
+                return userPersonalInfoRepository.searchByUserId(listOptions.userId, listOptions.limit,
+                        listOptions.offset).then(filterUserPersonalInfos)
             } else if (listOptions.email != null) {
-                return userPersonalInfoRepository.searchByEmail(listOptions.email).
-                        then(filterUserPersonalInfos)
+                return userPersonalInfoRepository.searchByEmail(listOptions.email, listOptions.limit,
+                        listOptions.offset).then(filterUserPersonalInfos)
             } else {
-                return userPersonalInfoRepository.searchByPhoneNumber(listOptions.phoneNumber).
-                        then(filterUserPersonalInfos)
+                return userPersonalInfoRepository.searchByPhoneNumber(listOptions.phoneNumber, listOptions.limit,
+                        listOptions.offset).then(filterUserPersonalInfos)
             }
         }
     }

@@ -180,8 +180,8 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
 
     private Promise<User> findUser(UserCredentialVerifyAttempt userLoginAttempt) {
         if (isEmail(userLoginAttempt.username)) {
-            return userPersonalInfoRepository.searchByEmail(userLoginAttempt.username.toLowerCase()).
-                then { List<UserPersonalInfo> personalInfos ->
+            return userPersonalInfoRepository.searchByEmail(userLoginAttempt.username.toLowerCase(), Integer.MAX_VALUE,
+                    0).then { List<UserPersonalInfo> personalInfos ->
                     if (CollectionUtils.isEmpty(personalInfos)) {
                         throw AppErrors.INSTANCE.userNotFound(userLoginAttempt.username).exception()
                     }

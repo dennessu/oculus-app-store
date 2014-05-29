@@ -26,8 +26,8 @@ class UserPersonalInfoIdToUserIdLinkRepositoryImpl extends CloudantClient<UserPe
     }
 
     @Override
-    Promise<List<UserPersonalInfoIdToUserIdLink>> searchByUserId(UserId userId) {
-        def list = super.queryView('by_user_id', userId.value.toString())
+    Promise<List<UserPersonalInfoIdToUserIdLink>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+        def list = super.queryView('by_user_id', userId.value.toString(), limit, offset, false)
 
         return Promise.pure(list)
     }
