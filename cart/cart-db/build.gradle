@@ -19,7 +19,7 @@ dependencies {
 
     compile junboProject(':oom-core')
     compile junboProject(':common-sharding')
-    compile (libraries.bonecp_spring)
+    compile (libraries.HikariCP)
 
     compile junboProject(':cart-common')
     compile junboProject(':cart-core')

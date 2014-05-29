@@ -18,7 +18,7 @@ dependencies {
     compile (libraries.postgresql)
     compile junboProject(':oom-core')
     compile junboProject(':common-configuration')
-    compile (libraries.bonecp_spring)
+    compile (libraries.HikariCP)
     compile junboProject(':common-sharding')
 
     processor junboProject(':oom-processor')
