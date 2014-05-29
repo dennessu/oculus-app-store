@@ -164,7 +164,8 @@ public class SqlRepositoryTest extends AbstractTestNGSpringContextTests {
 
         UserPasswordListOptions getOption = new UserPasswordListOptions()
         getOption.setUserId(new UserId(userId))
-        List<UserPassword> userPasswordList = userPasswordRepository.search(getOption).get()
+        List<UserPassword> userPasswordList = userPasswordRepository.searchByUserId(new UserId(userId),
+                Integer.MAX_VALUE, 0).get()
         assert userPasswordList.size() != 0
     }
 

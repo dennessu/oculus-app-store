@@ -116,10 +116,8 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
             return Promise.pure(null)
         }
 
-        return userPasswordRepository.search(new UserPasswordListOptions(
-                userId: userId,
-                active: true
-        )).then { List<UserPassword> userPasswordList ->
+        return userPasswordRepository.searchByUserIdAndActiveStatus(userId, true, Integer.MAX_VALUE, 0).then {
+            List<UserPassword> userPasswordList ->
             if (userPasswordList == null || userPasswordList.size() == 0 || userPasswordList.size() > 1) {
                 throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
             }

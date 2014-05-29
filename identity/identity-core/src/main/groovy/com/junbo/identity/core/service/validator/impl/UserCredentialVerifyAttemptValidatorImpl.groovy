@@ -132,10 +132,8 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             userLoginAttempt.setUserId((UserId)user.id)
 
             if (userLoginAttempt.type == CredentialType.PASSWORD.toString()) {
-                return userPasswordRepository.search(new UserPasswordListOptions(
-                        userId: (UserId)user.id,
-                        active: true
-                )).then { List<UserPassword> userPasswordList ->
+                return userPasswordRepository.searchByUserIdAndActiveStatus((UserId)user.id, true, Integer.MAX_VALUE,
+                        0).then { List<UserPassword> userPasswordList ->
                     if (CollectionUtils.isEmpty(userPasswordList) || userPasswordList.size() > 1) {
                         throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
                     }
