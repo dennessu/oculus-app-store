@@ -194,7 +194,7 @@ public class SqlRepositoryTest extends AbstractTestNGSpringContextTests {
 
         UserPinListOptions getOption = new UserPinListOptions()
         getOption.setUserId(new UserId(userId))
-        List<UserPin> userPins = userPinRepository.search(getOption).get()
+        List<UserPin> userPins = userPinRepository.searchByUserId(new UserId(userId), Integer.MAX_VALUE, 0).get()
         assert userPins.size() != 0
     }
 
