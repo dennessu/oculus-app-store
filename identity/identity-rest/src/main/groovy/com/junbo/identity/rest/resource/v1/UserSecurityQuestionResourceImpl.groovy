@@ -150,8 +150,7 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
         listOptions.setUserId(userId)
 
         return userSecurityQuestionValidator.validateForSearch(listOptions).then {
-            return userSecurityQuestionRepository.search(listOptions)
-                    .then { List<UserSecurityQuestion> userSecurityQuestionList ->
+            return search(listOptions).then { List<UserSecurityQuestion> userSecurityQuestionList ->
                 def result = new Results<UserSecurityQuestion>(items: [])
 
                 userSecurityQuestionList.each { UserSecurityQuestion newUserSecurityQuestion ->
@@ -167,6 +166,15 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
 
                 return Promise.pure(result)
             }
+        }
+    }
+
+    private Promise<List<UserSecurityQuestion>> search(UserSecurityQuestionListOptions listOptions) {
+        if (listOptions.userId != null) {
+            return userSecurityQuestionRepository.searchByUserId(listOptions.userId, listOptions.limit,
+                    listOptions.offset)
+        } else {
+            throw new IllegalArgumentException("Unsupported search operation.")
         }
     }
 }
