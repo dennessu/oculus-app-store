@@ -14,7 +14,6 @@ import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.UserPin
 import com.junbo.identity.spec.v1.model.UserCredential
 import com.junbo.identity.spec.v1.option.list.UserCredentialListOptions
-import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
 import com.junbo.identity.spec.v1.option.list.UserPinListOptions
 import com.junbo.identity.spec.v1.resource.UserCredentialResource
 import com.junbo.langur.core.promise.Promise
@@ -61,10 +60,8 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                 throw new IllegalArgumentException('userCredential mapping exception')
             }
             if (obj instanceof UserPassword) {
-                return userPasswordRepository.search(new UserPasswordListOptions(
-                        userId: userId,
-                        active: true
-                )).then { List<UserPassword> passwordList ->
+                return userPasswordRepository.searchByUserIdAndActiveStatus(userId, true, Integer.MAX_VALUE, 0).then {
+                    List<UserPassword> passwordList ->
                     return Promise.each(passwordList) { UserPassword userPassword ->
                         userPassword.active = false
                         return userPasswordRepository.update(userPassword)
@@ -72,7 +69,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                 }.then {
                     return userPasswordRepository.create((UserPassword)obj).then { UserPassword userPassword ->
                         if (userPassword == null) {
-                            throw new RuntimeException()
+                            throw new RuntimeException('Create Password exception')
                         }
 
                         UserCredential newUserCredential =
@@ -119,9 +116,8 @@ class UserCredentialResourceImpl implements UserCredentialResource {
         def resultList = new Results<UserCredential>(items: [])
         return userCredentialValidator.validateForSearch(userId, listOptions).then {
             if (listOptions.type == CredentialType.PASSWORD.toString()) {
-                UserPasswordListOptions options = new UserPasswordListOptions()
-                options.setUserId(listOptions.userId)
-                return userPasswordRepository.search(options).then { List<UserPassword> userPasswordList ->
+                return userPasswordRepository.searchByUserId(listOptions.userId, listOptions.limit,
+                        listOptions.offset).then { List<UserPassword> userPasswordList ->
                     if (userPasswordList == null) {
                         return Promise.pure(resultList)
                     }
