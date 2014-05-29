@@ -152,8 +152,7 @@ class UserTeleResourceImpl implements UserTeleResource {
         listOptions.setUserId(userId)
 
         return userTeleValidator.validateForSearch(listOptions).then {
-            return userTeleRepository.searchTeleCode(listOptions.userId, listOptions.phoneNumber).then {
-                List<UserTeleCode> userTeleCodeList ->
+            return search(listOptions).then { List<UserTeleCode> userTeleCodeList ->
                 def result = new Results<UserTeleCode>(items: [])
 
                 userTeleCodeList.each { UserTeleCode newUserTeleCode ->
@@ -167,6 +166,15 @@ class UserTeleResourceImpl implements UserTeleResource {
 
                 return Promise.pure(result)
             }
+        }
+    }
+
+    private Promise<List<UserTeleCode>> search(UserTeleListOptions listOptions) {
+        if (listOptions.userId != null && listOptions.phoneNumber != null) {
+            return userTeleRepository.searchTeleCodeByUserIdAndPhone(listOptions.userId, listOptions.phoneNumber,
+                    listOptions.limit, listOptions.offset)
+        } else {
+            throw new IllegalArgumentException('Unsupported search operation.')
         }
     }
 }
