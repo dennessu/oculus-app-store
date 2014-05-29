@@ -2,10 +2,11 @@ package com.junbo.identity.data.repository.impl.cloudant
 
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
+import com.junbo.common.id.GroupId
 import com.junbo.common.id.UserGroupId
+import com.junbo.common.id.UserId
 import com.junbo.identity.data.repository.UserGroupRepository
 import com.junbo.identity.spec.v1.model.UserGroup
-import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.ShardAlgorithm
@@ -54,24 +55,21 @@ class UserGroupRepositoryCloudantImpl extends CloudantClient<UserGroup> implemen
     }
 
     @Override
-    Promise<List<UserGroup>> search(UserGroupListOptions getOption) {
-        def result = []
-        if (getOption.userId != null) {
-            if (getOption.groupId != null) {
-                result = super.queryView('by_user_id_group_id',
-                        "${getOption.userId.value}:${getOption.groupId.value}",
-                        getOption.limit, getOption.offset, false)
-            }
-            else {
-                result = super.queryView('by_user_id', getOption.userId.toString(),
-                        getOption.limit, getOption.offset, false)
-            }
-        }
-        else if (getOption.groupId != null) {
-            result = super.queryView('by_group_id', getOption.groupId.toString(),
-                    getOption.limit, getOption.offset, false)
-        }
-        return Promise.pure(result)
+    Promise<List<UserGroup>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+        def list = super.queryView('by_user_id', userId.toString(), limit, offset, false)
+        return Promise.pure(list)
+    }
+
+    @Override
+    Promise<List<UserGroup>> searchByGroupId(GroupId groupId, Integer limit, Integer offset) {
+        def list = super.queryView('by_group_id', groupId.toString(), limit, offset, false)
+        return Promise.pure(list)
+    }
+
+    @Override
+    Promise<List<UserGroup>> searchByUserIdAndGroupId(UserId userId, GroupId groupId, Integer limit, Integer offset) {
+        def list = super.queryView('by_user_id_group_id', "${userId.value}:${groupId.value}", limit, offset, false)
+        return Promise.pure(list)
     }
 
     @Override

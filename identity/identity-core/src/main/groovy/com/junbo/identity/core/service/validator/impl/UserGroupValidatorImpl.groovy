@@ -69,10 +69,8 @@ class UserGroupValidatorImpl implements UserGroupValidator {
                 throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
             }
 
-            return userGroupRepository.search(new UserGroupListOptions(
-                    userId: userGroup.userId,
-                    groupId: userGroup.groupId
-            )).then { List<UserGroup> existing ->
+            return userGroupRepository.searchByUserIdAndGroupId(userGroup.userId, userGroup.groupId,
+                    Integer.MAX_VALUE, 0).then { List<UserGroup> existing ->
                 if (!CollectionUtils.isEmpty(existing)) {
                     throw AppErrors.INSTANCE.fieldDuplicate('groupId').exception()
                 }
@@ -101,10 +99,8 @@ class UserGroupValidatorImpl implements UserGroupValidator {
             }
 
             if (userGroup.groupId != oldUserGroup.groupId || userGroup.userId != oldUserGroup.userId) {
-                return userGroupRepository.search(new UserGroupListOptions(
-                        userId: userGroup.userId,
-                        groupId: userGroup.groupId
-                )).then { List<UserGroup> existing ->
+                return userGroupRepository.searchByUserIdAndGroupId(userGroup.userId, userGroup.groupId,
+                        Integer.MAX_VALUE, 0).then { List<UserGroup> existing ->
                     if (!CollectionUtils.isEmpty(existing)) {
                         throw AppErrors.INSTANCE.fieldDuplicate('groupId or userId').exception()
                     }
@@ -134,7 +130,7 @@ class UserGroupValidatorImpl implements UserGroupValidator {
                 throw AppErrors.INSTANCE.userNotFound(userGroup.userId).exception()
             }
 
-            if (existingUser.isAnonymous == true) {
+            if (existingUser.isAnonymous) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userGroup.userId).exception()
             }
 
@@ -143,14 +139,12 @@ class UserGroupValidatorImpl implements UserGroupValidator {
             }
 
             return groupRepository.get(userGroup.groupId).then { Group existingGroup ->
-                if (existingGroup == null || existingGroup.active == false) {
+                if (existingGroup == null || !existingGroup.active) {
                     throw AppErrors.INSTANCE.groupNotFound(userGroup.groupId).exception()
                 }
 
-                return userGroupRepository.search(new UserGroupListOptions(
-                        userId: userGroup.userId,
-                        groupId: userGroup.groupId
-                )).then { List<UserGroup> existingUserGroupList ->
+                return userGroupRepository.searchByUserIdAndGroupId(userGroup.userId, userGroup.groupId,
+                        Integer.MAX_VALUE, 0).then { List<UserGroup> existingUserGroupList ->
                     if (CollectionUtils.isEmpty(existingUserGroupList)) {
                         return Promise.pure(null)
                     }

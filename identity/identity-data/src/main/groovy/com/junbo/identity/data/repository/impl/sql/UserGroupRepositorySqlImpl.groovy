@@ -5,7 +5,9 @@
  */
 package com.junbo.identity.data.repository.impl.sql
 
+import com.junbo.common.id.GroupId
 import com.junbo.common.id.UserGroupId
+import com.junbo.common.id.UserId
 import com.junbo.identity.data.dao.UserGroupDAO
 import com.junbo.identity.data.entity.user.UserGroupEntity
 import com.junbo.identity.data.mapper.ModelMapper
@@ -72,6 +74,21 @@ class UserGroupRepositorySqlImpl implements UserGroupRepository {
             results.add(modelMapper.toUserGroup(entity, new MappingContext()))
         }
         return Promise.pure(results)
+    }
+
+    @Override
+    Promise<List<UserGroup>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+        return Promise.pure(null)
+    }
+
+    @Override
+    Promise<List<UserGroup>> searchByGroupId(GroupId groupId, Integer limit, Integer offset) {
+        return Promise.pure(null)
+    }
+
+    @Override
+    Promise<List<UserGroup>> searchByUserIdAndGroupId(UserId userId, GroupId groupId, Integer limit, Integer offset) {
+        return Promise.pure(null)
     }
 
     @Override

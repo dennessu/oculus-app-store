@@ -132,7 +132,7 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
         }
 
         return userGroupValidator.validateForSearch(listOptions).then {
-            return userGroupRepository.search(listOptions).then { List<UserGroup> userGroupList ->
+            return search(listOptions).then { List<UserGroup> userGroupList ->
                 def result = new Results<UserGroup>(items: [])
 
                 userGroupList.each { UserGroup newUserGroup ->
@@ -148,6 +148,19 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
 
                 return Promise.pure(result)
             }
+        }
+    }
+
+    private Promise<List<UserGroup>> search(UserGroupListOptions listOptions) {
+        if (listOptions.userId != null && listOptions.groupId != null) {
+            return userGroupRepository.searchByUserIdAndGroupId(listOptions.userId, listOptions.groupId,
+                    listOptions.limit, listOptions.offset)
+        } else if (listOptions.userId != null) {
+            return userGroupRepository.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset)
+        } else if (listOptions.groupId != null) {
+            return userGroupRepository.searchByGroupId(listOptions.groupId, listOptions.limit, listOptions.offset)
+        } else {
+            throw new IllegalArgumentException('Unsupported search operation.')
         }
     }
 }
