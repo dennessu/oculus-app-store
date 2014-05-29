@@ -239,10 +239,8 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             return Promise.pure(null)
         }
 
-        return userLoginAttemptRepository.search(new UserCredentialAttemptListOptions(
-                userId: (UserId)user.id,
-                type: userLoginAttempt.type
-        )).then { List<UserCredentialVerifyAttempt> attemptList ->
+        return userLoginAttemptRepository.searchByUserIdAndCredentialType((UserId)user.id, userLoginAttempt.type,
+                Integer.MAX_VALUE, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
             if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxRetryCount) {
                 return Promise.pure(null)
             }

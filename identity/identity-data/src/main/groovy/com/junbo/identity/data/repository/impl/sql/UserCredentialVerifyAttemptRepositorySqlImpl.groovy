@@ -6,6 +6,7 @@
 package com.junbo.identity.data.repository.impl.sql
 
 import com.junbo.common.id.UserCredentialVerifyAttemptId
+import com.junbo.common.id.UserId
 import com.junbo.identity.data.dao.UserCredentialVerifyAttemptDAO
 import com.junbo.identity.data.entity.user.UserCredentialVerifyAttemptEntity
 import com.junbo.identity.data.mapper.ModelMapper
@@ -60,14 +61,13 @@ class UserCredentialVerifyAttemptRepositorySqlImpl implements UserCredentialVeri
     }
 
     @Override
-    Promise<List<UserCredentialVerifyAttempt>> search(UserCredentialAttemptListOptions getOption) {
-        List entities = credentialVerifyAttemptDAO.search(getOption.userId.value, getOption)
+    Promise<List<UserCredentialVerifyAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+        return Promise.pure(null)
+    }
 
-        List<UserCredentialVerifyAttempt> results = new ArrayList<UserCredentialVerifyAttempt>()
-        entities.each { UserCredentialVerifyAttemptEntity entity ->
-            results.add(modelMapper.toUserCredentialVerifyAttempt(entity, new MappingContext()))
-        }
-        return Promise.pure(results)
+    @Override
+    Promise<List<UserCredentialVerifyAttempt>> searchByUserIdAndCredentialType(UserId userId, String type, Integer limit, Integer offset) {
+        return Promise.pure(null)
     }
 
     @Override

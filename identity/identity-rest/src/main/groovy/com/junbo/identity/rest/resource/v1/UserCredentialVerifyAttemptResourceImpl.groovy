@@ -73,7 +73,7 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
     @Override
     Promise<Results<UserCredentialVerifyAttempt>> list(UserCredentialAttemptListOptions listOptions) {
         return credentialVerifyAttemptValidator.validateForSearch(listOptions).then {
-            return userCredentialVerifyAttemptRepository.search(listOptions).then {
+            return search(listOptions).then {
                 List<UserCredentialVerifyAttempt> attempts ->
                 def result = new Results<UserCredentialVerifyAttempt>(items: [])
 
@@ -111,5 +111,17 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
                 return userCredentialVerifyAttemptRepository.create(userLoginAttempt)
             }
         })
+    }
+
+    private Promise<List<UserCredentialVerifyAttempt>> search(UserCredentialAttemptListOptions listOptions) {
+        if (listOptions.userId != null && listOptions.type != null) {
+            return userCredentialVerifyAttemptRepository.searchByUserIdAndCredentialType(listOptions.userId,
+                    listOptions.type, listOptions.limit, listOptions.offset)
+        } else if (listOptions.userId != null) {
+            return userCredentialVerifyAttemptRepository.searchByUserId(listOptions.userId, listOptions.limit,
+                    listOptions.offset)
+        } else {
+            throw new IllegalArgumentException('Unsupported search operation')
+        }
     }
 }
