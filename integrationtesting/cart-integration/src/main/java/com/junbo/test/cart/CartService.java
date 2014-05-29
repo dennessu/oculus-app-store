@@ -11,7 +11,7 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.client.TypeReference;
-import com.junbo.test.common.ConfigHelper;
+import com.junbo.test.common.libs.ConfigPropertiesHelper;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.libs.RestUrl;
@@ -30,7 +30,7 @@ import java.util.concurrent.Future;
  */
 public class CartService {
 
-    private static String commerceUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1");
+    private static String commerceUrl = ConfigPropertiesHelper.instance().getProperty("defaultCommerceEndpointV1");
     private static LogHelper logger = new LogHelper(Cart.class);
     private static AsyncHttpClient asyncClient = new AsyncHttpClient(new AsyncHttpClientConfig.Builder().build());
 
