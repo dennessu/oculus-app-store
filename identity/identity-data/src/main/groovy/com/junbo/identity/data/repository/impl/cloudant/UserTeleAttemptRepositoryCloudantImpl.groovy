@@ -2,7 +2,9 @@ package com.junbo.identity.data.repository.impl.cloudant
 
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
+import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTeleAttemptId
+import com.junbo.common.id.UserTeleId
 import com.junbo.identity.data.repository.UserTeleAttemptRepository
 import com.junbo.identity.spec.v1.model.UserTeleAttempt
 import com.junbo.identity.spec.v1.option.list.UserTeleAttemptListOptions
@@ -37,9 +39,17 @@ class UserTeleAttemptRepositoryCloudantImpl  extends CloudantClient<UserTeleAtte
     }
 
     @Override
-    Promise<List<UserTeleAttempt>> search(UserTeleAttemptListOptions listOptions) {
-        def list = super.queryView('by_user_id_tele_id', "${listOptions.userId.value}:${listOptions.userTeleId.value}",
-                listOptions.limit, listOptions.offset, false)
+    Promise<List<UserTeleAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+        def list = super.queryView('by_user_id', userId.toString(), limit, offset, false)
+
+        return Promise.pure(list)
+    }
+
+    @Override
+    Promise<List<UserTeleAttempt>> searchByUserIdAndUserTeleId(UserId userId, UserTeleId userTeleId,
+                                                               Integer limit, Integer offset) {
+        def list = super.queryView('by_user_id_tele_id', "${userId.toString()}:${userTeleId.toString()}", limit,
+                offset, false)
 
         return Promise.pure(list)
     }
@@ -73,6 +83,11 @@ class UserTeleAttemptRepositoryCloudantImpl  extends CloudantClient<UserTeleAtte
                 'by_user_id_tele_id': new CloudantViews.CloudantView(
                     map: 'function(doc) {' +
                             '  emit(doc.userId + \':\' + doc.userTeleId , doc._id)' +
+                            '}',
+                    resultClass: String),
+                'by_user_id': new CloudantViews.CloudantView(
+                    map: 'function(doc) {' +
+                            '  emit(doc.userId, doc._id)' +
                             '}',
                     resultClass: String)
             ]

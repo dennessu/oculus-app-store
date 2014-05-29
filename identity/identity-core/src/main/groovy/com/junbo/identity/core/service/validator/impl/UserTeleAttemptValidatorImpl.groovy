@@ -204,12 +204,8 @@ class UserTeleAttemptValidatorImpl implements UserTeleAttemptValidator {
             return Promise.pure(null)
         }
 
-        // todo:    Is it possible to add limitation and paging to control the size?
-        // todo:    How to sort by some column?
-        return userTeleAttemptRepository.search(new UserTeleAttemptListOptions(
-                userId: (UserId)user.id,
-                userTeleId: attempt.userTeleId
-        )).then { List<UserTeleAttempt> userTeleAttemptList ->
+        return userTeleAttemptRepository.searchByUserIdAndUserTeleId((UserId)user.id, attempt.userTeleId,
+                Integer.MAX_VALUE, 0).then { List<UserTeleAttempt> userTeleAttemptList ->
             if (CollectionUtils.isEmpty(userTeleAttemptList)
                     || userTeleAttemptList.size() < maxTeleCodeAttemptNumber) {
                 return Promise.pure(null)

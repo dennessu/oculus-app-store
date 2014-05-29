@@ -553,12 +553,8 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userTeleAttempt = userTeleAttemptRepository.update(newUserTeleAttempt).get()
         assert userTeleAttempt.ipAddress == newIpAddress
 
-        List<UserTeleAttempt> results = userTeleAttemptRepository.search(new UserTeleAttemptListOptions(
-                userId: userId,
-                userTeleId: userTeleId,
-                offset: 0,
-                limit: 100
-        )).get()
+        List<UserTeleAttempt> results = userTeleAttemptRepository.searchByUserIdAndUserTeleId(userId, userTeleId, 100,
+                0).get()
         assert results.size() != 0
     }
 
