@@ -341,7 +341,8 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         UserGroupListOptions getOption = new UserGroupListOptions()
         getOption.setUserId(new UserId(userId))
         getOption.setGroupId(new GroupId(1493188608L))
-        List<UserGroup> userGroups = userGroupRepository.search(getOption).get()
+        List<UserGroup> userGroups = userGroupRepository.searchByUserIdAndGroupId(new UserId(userId),
+                new GroupId(1493188608L), Integer.MAX_VALUE, 0).get()
 
         assert userGroups.size() != 0
     }

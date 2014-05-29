@@ -131,9 +131,8 @@ class GroupResourceImpl implements GroupResource {
                     return Promise.pure(resultList)
                 }
             } else {
-                return userGroupRepository.search(new UserGroupListOptions(
-                        userId: listOptions.userId
-                )).then { List<UserGroup> userGroupList ->
+                return userGroupRepository.searchByUserId(listOptions.userId, listOptions.limit,
+                        listOptions.offset).then { List<UserGroup> userGroupList ->
                     return fillUserGroups(userGroupList.iterator(), resultList, listOptions).then {
                         return Promise.pure(resultList)
                     }
