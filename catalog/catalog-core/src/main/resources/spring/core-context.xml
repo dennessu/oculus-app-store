@@ -7,7 +7,7 @@
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <!--sql beans-->
-    <!-- -->
+    <!--
     <bean id="itemAttributeService" class="com.junbo.catalog.core.service.ItemAttributeServiceImpl">
         <property name="attributeRepo" ref="itemAttributeRepository"/>
     </bean>
@@ -29,11 +29,11 @@
     <bean id="priceTierService" class="com.junbo.catalog.core.service.PriceTierServiceImpl">
         <property name="priceTierRepo" ref="priceTierRepository"/>
     </bean>
-    <!-- -->
+     -->
     <!--end of sql beans-->
 
     <!--cloudant beans-->
-    <!--
+    <!---->
     <bean id="itemAttributeService" class="com.junbo.catalog.core.service.ItemAttributeServiceImpl">
         <property name="attributeRepo" ref="itemAttributeCloudantRepo"/>
     </bean>
@@ -55,7 +55,7 @@
     <bean id="priceTierService" class="com.junbo.catalog.core.service.PriceTierServiceImpl">
         <property name="priceTierRepo" ref="priceTierCloudantRepo"/>
     </bean>
-    -->
+
     <!--end of cloudant beans-->
 
     <bean id="promotionService" class="com.junbo.catalog.core.service.PromotionServiceImpl"/>

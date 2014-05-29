@@ -36,7 +36,11 @@ public class PriceTierServiceImpl implements PriceTierService {
 
     @Override
     public PriceTier getPriceTier(Long tierId) {
-        return priceTierRepo.get(tierId);
+        PriceTier priceTier = priceTierRepo.get(tierId);
+        if (priceTier==null) {
+            throw AppErrors.INSTANCE.notFound("price-tiers", Utils.encodeId(tierId)).exception();
+        }
+        return priceTier;
     }
 
     @Override

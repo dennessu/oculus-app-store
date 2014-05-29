@@ -71,7 +71,9 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
 
     @Override
     public T getRevision(Long revisionId) {
-        return getRevisionRepo().get(revisionId);
+        T revision = getRevisionRepo().get(revisionId);
+        checkEntityNotNull(revisionId, revision, getRevisionType());
+        return revision;
     }
 
     @Override

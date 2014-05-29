@@ -106,7 +106,9 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
                     revision = itemRevision;
                 }
             }
-            revisions.add(revision);
+            if (revision != null) {
+                revisions.add(revision);
+            }
         }
 
         return revisions;
