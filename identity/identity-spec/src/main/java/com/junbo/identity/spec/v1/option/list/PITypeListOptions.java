@@ -16,11 +16,22 @@ public class PITypeListOptions extends PagingGetOptions {
     @QueryParam("typeCode")
     private String typeCode;
 
+    @QueryParam("properties")
+    private String properties;
+
     public String getTypeCode() {
         return typeCode;
     }
 
     public void setTypeCode(String typeCode) {
         this.typeCode = typeCode;
+    }
+
+    public String getProperties() {
+        return properties;
+    }
+
+    public void setProperties(String properties) {
+        this.properties = properties;
     }
 }

@@ -21,6 +21,9 @@ public class CountryListOptions extends PagingGetOptions {
     @QueryParam("defaultLocaleId")
     private LocaleId localeId;
 
+    @QueryParam("properties")
+    private String properties;
+
     public CurrencyId getCurrencyId() {
         return currencyId;
     }
@@ -35,5 +38,13 @@ public class CountryListOptions extends PagingGetOptions {
 
     public void setLocaleId(LocaleId localeId) {
         this.localeId = localeId;
+    }
+
+    public String getProperties() {
+        return properties;
+    }
+
+    public void setProperties(String properties) {
+        this.properties = properties;
     }
 }
