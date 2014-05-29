@@ -2,10 +2,10 @@ package com.junbo.identity.data.repository.impl.cloudant
 
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
+import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTeleBackupCodeId
 import com.junbo.identity.data.repository.UserTeleBackupCodeRepository
 import com.junbo.identity.spec.v1.model.UserTeleBackupCode
-import com.junbo.identity.spec.v1.option.list.UserTeleBackupCodeListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.ShardAlgorithm
@@ -28,19 +28,17 @@ class UserTeleBackupCodeRepositoryCloudantImpl extends CloudantClient<UserTeleBa
     }
 
     @Override
-    Promise<List<UserTeleBackupCode>> search(UserTeleBackupCodeListOptions listOptions) {
-        if (listOptions.active == null) {
-            def list = super.queryView('by_user_id', listOptions.userId.value.toString(),
-                    listOptions.limit, listOptions.offset, false)
+    Promise<List<UserTeleBackupCode>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+        def list = super.queryView('by_user_id', userId.toString(), limit, offset, false)
 
-            return Promise.pure(list)
-        } else {
-            def list = super.queryView('by_user_id_active',
-                    "${listOptions.userId.value.toString()}:${listOptions.active.toString()}", listOptions.limit,
-                    listOptions.offset, false)
+        return Promise.pure(list)
+    }
 
-            return Promise.pure(list)
-        }
+    @Override
+    Promise<List<UserTeleBackupCode>> searchByUserIdAndActiveStatus(UserId userId, Boolean active, Integer limit,
+                                                                    Integer offset) {
+        def list = super.queryView('by_user_id_active', "${userId.toString()}:${active}", limit, offset, false)
+        return Promise.pure(list)
     }
 
     @Override

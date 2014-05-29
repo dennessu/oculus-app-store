@@ -153,10 +153,8 @@ class UserTeleBackupCodeAttemptValidatorImpl implements UserTeleBackupCodeAttemp
 
             attempt.userId = userId
 
-            return userTeleBackupCodeRepository.search(new UserTeleBackupCodeListOptions(
-                    userId: userId,
-                    active: true
-            )).then { List<UserTeleBackupCode> userTeleBackupCodeList ->
+            return userTeleBackupCodeRepository.searchByUserIdAndActiveStatus(userId, true, Integer.MAX_VALUE,
+                    0).then { List<UserTeleBackupCode> userTeleBackupCodeList ->
                 if (CollectionUtils.isEmpty(userTeleBackupCodeList)) {
                     throw AppErrors.INSTANCE.userTeleBackupCodeIncorrect().exception()
                 }
