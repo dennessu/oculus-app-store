@@ -170,12 +170,14 @@ public class OrderStatusTesting extends BaseOrderTestClass {
                     "4. Put offer with new offer revision(price changed)",
                     "5. Get order by user Id",
                     "6. Verify order status has been changed to PRICE_RATING_CHANGED",
-                    "7. Put order",
-                    "8. Get order by user Id",
-                    "9. Verify order status has been changed to OPEN",
-                    "10. Put order tentative to false",
-                    "11. Get order by user Id",
-                    "12. Verify order status is completed"
+                    "7. Try ro put order tentative to false",
+                    "8. Verify response code is 409 with error msg",
+                    "9. Put order",
+                    "10. Get order by user Id",
+                    "11. Verify order status has been changed to OPEN",
+                    "12. Put order tentative to false",
+                    "13. Get order by user Id",
+                    "14. Verify order status is completed"
             }
     )
     @Test
@@ -199,13 +201,17 @@ public class OrderStatusTesting extends BaseOrderTestClass {
         expectedOrderStatus.put(orderId, OrderStatus.PRICE_RATING_CHANGED);
         validationHelper.validateOrderStatus(expectedOrderStatus);
 
+        testDataProvider.updateOrderTentative(orderId, false, 409);
+        testDataProvider.getOrdersByUserId(uid);
+        validationHelper.validateOrderStatus(expectedOrderStatus);
+
         testDataProvider.updateOrder(Master.getInstance().getOrder(orderId));
 
         expectedOrderStatus.clear();
         expectedOrderStatus.put(orderId, OrderStatus.OPEN);
         validationHelper.validateOrderStatus(expectedOrderStatus);
 
-        testDataProvider.updateOrderTentative(orderId,false);
+        testDataProvider.updateOrderTentative(orderId, false);
         testDataProvider.getOrdersByUserId(uid);
 
         expectedOrderStatus.clear();
