@@ -44,6 +44,7 @@ public class OrderEntity extends CommonDbEntityWithDate {
     private String providerConfirmUrl;
     private Date honorUntilTime;
     private Date honoredTime;
+    private String paymentDescription;
     // end of ratingInfo
 
     private String properties;
@@ -232,6 +233,15 @@ public class OrderEntity extends CommonDbEntityWithDate {
 
     public void setProviderConfirmUrl(String providerConfirmUrl) {
         this.providerConfirmUrl = providerConfirmUrl;
+    }
+
+    @Column(name = "PAYMENT_DESCRIPTION")
+    public String getPaymentDescription() {
+        return paymentDescription;
+    }
+
+    public void setPaymentDescription(String paymentDescription) {
+        this.paymentDescription = paymentDescription;
     }
 
     @Override

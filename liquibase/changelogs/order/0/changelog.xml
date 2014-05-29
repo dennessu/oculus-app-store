@@ -27,6 +27,7 @@
                     success_redirect_url varchar(128) default null,
                     cancel_redirect_url varchar(128) default null,
                     provider_confirm_url varchar(128) default null,
+                    payment_description varchar(4000) default null,
                     properties varchar(4000) default null,
 					resource_age bigint not null,
                     created_time timestamp not null,

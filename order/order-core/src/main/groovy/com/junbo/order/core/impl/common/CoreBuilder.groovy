@@ -1,5 +1,6 @@
 package com.junbo.order.core.impl.common
 import com.junbo.billing.spec.enums.BalanceType
+import com.junbo.billing.spec.enums.PropertyKey
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.DiscountItem
@@ -113,6 +114,9 @@ class CoreBuilder {
         balance.providerConfirmUrl = order.providerConfirmUrl
         balance.successRedirectUrl = order.successRedirectUrl
         balance.cancelRedirectUrl = order.cancelRedirectUrl
+        if (order.paymentDescription != null) {
+            balance.propertySet.put(PropertyKey.BALANCE_DESCRIPTION.name(), order.paymentDescription)
+        }
 
         return balance
     }
@@ -144,6 +148,7 @@ class CoreBuilder {
 
         BalanceItem balanceItem = new BalanceItem()
         balanceItem.amount = item.totalAmount
+        balanceItem.propertySet.put(PropertyKey.ITEM_TYPE.name(), item.type)
         if (item.totalDiscount > BigDecimal.ZERO) {
             DiscountItem discountItem = new DiscountItem()
             discountItem.discountAmount = item.totalDiscount
