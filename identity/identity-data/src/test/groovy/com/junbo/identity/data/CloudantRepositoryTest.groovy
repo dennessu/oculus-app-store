@@ -458,7 +458,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(newUserSecurityQuestion.getAnswerHash(), value)
 
         List<UserSecurityQuestion> securityQuestions = userSecurityQuestionRepository.
-                search(new UserSecurityQuestionListOptions(userId: new UserId(userId))).get()
+                searchByUserId(new UserId(userId), Integer.MAX_VALUE, 0).get()
         assert securityQuestions.size() != 0
     }
 
