@@ -75,7 +75,7 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
     }
 
     private Promise<Void> checkAdvanceUserPhone(PhoneNumber phoneNumber, UserId userId) {
-        return userPersonalInfoRepository.searchByPhoneNumber(phoneNumber.info).then {
+        return userPersonalInfoRepository.searchByPhoneNumber(phoneNumber.info, Integer.MAX_VALUE, 0).then {
             List<UserPersonalInfo> existing ->
                 if (existing != null) {
                     // check this phone number is not used by this user
@@ -99,8 +99,8 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
                     }
                 }
 
-                return userPersonalInfoRepository.searchByUserIdAndType(userId, UserPersonalInfoType.PHONE.toString())
-                        .then { List<UserPersonalInfo> userPersonalInfoList ->
+                return userPersonalInfoRepository.searchByUserIdAndType(userId, UserPersonalInfoType.PHONE.toString(),
+                        Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
 
                     if (CollectionUtils.isEmpty(userPersonalInfoList)) {
                         return Promise.pure(null)
