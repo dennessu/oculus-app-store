@@ -26,7 +26,7 @@ class SchemaSetter extends AbstractConnectionHook {
     @Override
     void onAcquire(ConnectionHandle connection) {
         def internalConnection = connection.internalConnection
-        if (connection == null) {
+        if (internalConnection == null) {
             throw new IllegalStateException('internalConnection is null')
         }
 
@@ -40,7 +40,7 @@ class SchemaSetter extends AbstractConnectionHook {
     @Override
     void onDestroy(ConnectionHandle connection) {
         def internalConnection = connection.internalConnection
-        if (connection == null) {
+        if (internalConnection == null) {
             throw new IllegalStateException('internalConnection is null')
         }
 
@@ -54,6 +54,10 @@ class SchemaSetter extends AbstractConnectionHook {
     void setSchema(Connection connection, String schema) throws SQLException {
         if (connection instanceof ConnectionProxy) {
             connection = ((ConnectionProxy) connection).targetConnection
+        }
+
+        if (!(connection instanceof ConnectionHandle)) {
+            throw new IllegalStateException('connection is not an instance of ConnectionHandle')
         }
 
         connection = ((ConnectionHandle) connection).internalConnection
@@ -70,7 +74,11 @@ class SchemaSetter extends AbstractConnectionHook {
             def statement = connection.createStatement()
 
             try {
-                statement.execute("SET SCHEMA '$schema'")
+                // has to rollback and commit. Otherwise SET SCHEMA could be rolled back by others.
+                statement.addBatch('ROLLBACK')
+                statement.addBatch("SET SCHEMA '$schema'")
+                statement.addBatch('COMMIT')
+                statement.executeBatch()
                 lastSchemaMap.put(connection, schema)
             } finally {
                 statement.close()
