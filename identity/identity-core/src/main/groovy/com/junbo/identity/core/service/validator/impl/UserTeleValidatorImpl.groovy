@@ -126,8 +126,8 @@ class UserTeleValidatorImpl implements UserTeleValidator {
 
                 return Promise.pure(null)
             }.then {
-                return userTeleRepository.searchTeleCode(userId, userTeleCode.phoneNumber).
-                        then { List<UserTeleCode> userTeleCodeList ->
+                return userTeleRepository.searchTeleCodeByUserIdAndPhone(userId, userTeleCode.phoneNumber,
+                        Integer.MAX_VALUE, 0).then { List<UserTeleCode> userTeleCodeList ->
                             if (CollectionUtils.isEmpty(userTeleCodeList)
                                     || userTeleCodeList.size() <= maxSMSRequestsPerHour) {
                                 return Promise.pure(null)
@@ -211,7 +211,8 @@ class UserTeleValidatorImpl implements UserTeleValidator {
     }
 
     private Promise<Void> fillCode(UserId userId, UserTeleCode userTeleCode) {
-        return userTeleRepository.searchTeleCode(userId, userTeleCode.phoneNumber).then { List<UserTeleCode> codeList ->
+        return userTeleRepository.searchTeleCodeByUserIdAndPhone(userId, userTeleCode.phoneNumber,
+                Integer.MAX_VALUE, 0).then { List<UserTeleCode> codeList ->
             if (CollectionUtils.isEmpty(codeList)) {
                 userTeleCode.verifyCode = codeGenerator.generateCode()
             }

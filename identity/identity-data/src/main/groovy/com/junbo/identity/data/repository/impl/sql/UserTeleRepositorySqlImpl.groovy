@@ -21,7 +21,8 @@ class UserTeleRepositorySqlImpl implements UserTeleRepository {
     private ModelMapper modelMapper
 
     @Override
-    Promise<List<UserTeleCode>> searchTeleCode(UserId userId, UserPersonalInfoId phoneNumber) {
+    Promise<List<UserTeleCode>> searchTeleCodeByUserIdAndPhone(UserId userId, UserPersonalInfoId phoneNumber,
+                                                               Integer limit, Integer offset) {
         // def entity = userTeleDAO.getActiveUserTeleCode(userId, phoneNumber)
 
         // return get(new UserTeleId(entity.id))

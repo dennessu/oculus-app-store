@@ -27,9 +27,10 @@ class UserTeleRepositoryCloudantImpl extends CloudantClient<UserTeleCode> implem
     }
 
     @Override
-    Promise<List<UserTeleCode>> searchTeleCode(UserId userId, UserPersonalInfoId phoneNumber) {
+    Promise<List<UserTeleCode>> searchTeleCodeByUserIdAndPhone(UserId userId, UserPersonalInfoId phoneNumber,
+                                                               Integer limit, Integer offset) {
         def list = super.queryView('by_user_id_phone_number',
-                "${userId.value.toString()}:${phoneNumber.value.toString()}", Integer.MAX_VALUE, 0, false)
+                "${userId.value.toString()}:${phoneNumber.value.toString()}", limit, offset, false)
 
         return Promise.pure(list)
     }
