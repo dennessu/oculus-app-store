@@ -17,7 +17,7 @@ dependencies {
     compile (libraries.log4j)
     compile (libraries.spy_memcached)
     compile (libraries.postgresql)
-    compile (libraries.bonecp_spring)
+    compile (libraries.HikariCP)
     compile (libraries.spring_orm)
 
     compile (libraries.hibernate_core)

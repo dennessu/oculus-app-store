@@ -21,8 +21,44 @@ class SimpleDataSourceProxy extends DelegatingDataSource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleDataSourceProxy)
 
-    SimpleDataSourceProxy(DataSource targetDataSource) {
+    private final String schema
+
+    SimpleDataSourceProxy(DataSource targetDataSource, String schema) {
         super(targetDataSource)
+
+        this.schema = schema
+    }
+
+
+    private Connection doGetConnection() throws SQLException {
+        def connection = super.connection
+
+        try {
+            def statement = connection.createStatement()
+
+            try {
+                // has to commit. Otherwise SET SCHEMA could be rolled back by others.
+                if (connection.autoCommit) {
+                    statement.execute("SET SCHEMA '$schema'")
+                } else {
+                    statement.addBatch("SET SCHEMA '$schema'")
+                    statement.addBatch('COMMIT')
+                    statement.executeBatch()
+                }
+            } finally {
+                statement.close()
+            }
+        } catch (SQLException ex) {
+            try {
+                connection.close()
+            } catch (Exception closeEx) {
+                LOGGER.warn("Failed to close connection $connection", closeEx)
+            }
+
+            throw ex
+        }
+
+        return connection
     }
 
     @Override
@@ -35,7 +71,7 @@ class SimpleDataSourceProxy extends DelegatingDataSource {
                 LOGGER.warn("dataSource [$targetDataSource] is used without a SimpleTransactionManager")
             }
 
-            return super.connection
+            return doGetConnection()
         }
 
         Connection con = txObject.getEnlistedConnection(this)
@@ -48,7 +84,7 @@ class SimpleDataSourceProxy extends DelegatingDataSource {
             return con;
         }
 
-        con = super.connection
+        con = doGetConnection()
 
         try {
             if (con.readOnly) {
@@ -64,12 +100,10 @@ class SimpleDataSourceProxy extends DelegatingDataSource {
             // Transaction Isolation Not Supported.
 
         } catch (SQLException ex) {
-            if (con != null) {
-                try {
-                    con.close()
-                } catch (Exception closeEx) {
-                    LOGGER.warn("Failed to close connection $con", closeEx)
-                }
+            try {
+                con.close()
+            } catch (Exception closeEx) {
+                LOGGER.warn("Failed to close connection $con", closeEx)
             }
 
             throw ex

@@ -19,7 +19,7 @@ dependencies {
     compile (libraries.hibernate_validator)
 
     compile (libraries.postgresql)
-    compile (libraries.bonecp_spring)
+    compile (libraries.HikariCP)
     compile (libraries.rs_api)
 
     compile (libraries.querydsl_jpa)

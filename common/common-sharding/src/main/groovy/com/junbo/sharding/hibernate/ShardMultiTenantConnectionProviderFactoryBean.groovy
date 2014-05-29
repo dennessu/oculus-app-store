@@ -1,8 +1,8 @@
 package com.junbo.sharding.hibernate
 
-import com.jolbox.bonecp.BoneCPDataSource
 import com.junbo.configuration.topo.DataCenters
 import com.junbo.sharding.transaction.SimpleDataSourceProxy
+import com.zaxxer.hikari.HikariDataSource
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -10,6 +10,7 @@ import org.springframework.beans.factory.DisposableBean
 import org.springframework.beans.factory.FactoryBean
 import org.springframework.beans.factory.annotation.Required
 
+import javax.sql.DataSource
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -31,8 +32,6 @@ class ShardMultiTenantConnectionProviderFactoryBean
     private int minPoolSize
 
     private int maxPoolSize
-
-    private int partitionCount
 
     private Properties driverProperties
 
@@ -60,23 +59,15 @@ class ShardMultiTenantConnectionProviderFactoryBean
         this.maxPoolSize = maxPoolSize
     }
 
-    void setPartitionCount(int partitionCount) {
-        this.partitionCount = partitionCount
-    }
-
     @Required
     void setDriverProperties(Properties driverProperties) {
         this.driverProperties = driverProperties
     }
 
     ShardMultiTenantConnectionProviderFactoryBean() {
-        // default override
-        this.partitionCount = 4
     }
 
-    private final SchemaSetter schemaSetter = new SchemaSetter()
-
-    private Map<String, SimpleDataSourceProxy> dataSourceMap
+    private Map<String, HikariDataSource> dataSourceMap
 
     private ShardMultiTenantConnectionProvider connectionProvider
 
@@ -89,7 +80,6 @@ class ShardMultiTenantConnectionProviderFactoryBean
 
             dataSourceMap = new HashMap<>()
 
-            List<String> schemaList = []
             List<SimpleDataSourceProxy> dataSourceList = []
 
             for (String url : jdbcUrls.split(',')) {
@@ -119,13 +109,11 @@ class ShardMultiTenantConnectionProviderFactoryBean
                 int count = range[1] - range[0] + 1
 
                 for (int i = 0; i < count; i++) {
-                    dataSourceList.add(getOrCreateDataSource(url))
-                    schemaList.add(schema)
+                    dataSourceList.add(createDataSourceProxy(url, schema))
                 }
             }
 
-            connectionProvider = new ShardMultiTenantConnectionProvider(
-                    dataSourceList, schemaList, schemaSetter)
+            connectionProvider = new ShardMultiTenantConnectionProvider(dataSourceList)
         }
 
         return connectionProvider
@@ -145,14 +133,14 @@ class ShardMultiTenantConnectionProviderFactoryBean
     void destroy() throws Exception {
         if (connectionProvider != null) {
             connectionProvider = null
+        }
 
-            for (SimpleDataSourceProxy dataSource : dataSourceMap.values()) {
-                def boneCPDataSource = (BoneCPDataSource) dataSource.targetDataSource
-
+        if (dataSourceMap != null) {
+            for (HikariDataSource dataSource : dataSourceMap.values()) {
                 try {
-                    boneCPDataSource.close()
+                    dataSource.close()
                 } catch (Exception ex) {
-                    LOGGER.warn("Failed to close $boneCPDataSource", ex)
+                    LOGGER.warn("Failed to close $dataSource", ex)
                 }
             }
 
@@ -160,34 +148,31 @@ class ShardMultiTenantConnectionProviderFactoryBean
         }
     }
 
-    private SimpleDataSourceProxy getOrCreateDataSource(String url) {
-        SimpleDataSourceProxy result = dataSourceMap.get(url)
+    private SimpleDataSourceProxy createDataSourceProxy(String url, String schema) {
+        DataSource dataSource = dataSourceMap.get(url)
 
-        if (result == null) {
-            result = createSimpleDataSourceProxy(url)
-
-            dataSourceMap.put(url, result)
+        if (dataSource == null) {
+            dataSource = createDataSource(url)
+            dataSourceMap.put(url, dataSource)
         }
 
-        return result
+        return new SimpleDataSourceProxy(dataSource, schema)
     }
 
-    private SimpleDataSourceProxy createSimpleDataSourceProxy(String url) {
-        BoneCPDataSource dataSource = new BoneCPDataSource()
+    private HikariDataSource createDataSource(String url) {
+        HikariDataSource dataSource = new HikariDataSource()
 
-        dataSource.setDriverClass(className)
+        dataSource.setDriverClassName(className)
         dataSource.setJdbcUrl(url)
 
-        dataSource.setPartitionCount(partitionCount)
-        dataSource.setMinConnectionsPerPartition((int) (minPoolSize + partitionCount - 1) / partitionCount)
-        dataSource.setMaxConnectionsPerPartition((int) (maxPoolSize + partitionCount - 1) / partitionCount)
+        dataSource.setMaximumPoolSize(maxPoolSize)
 
-        dataSource.setUser(driverProperties.getProperty('user'))
+        dataSource.setUsername(driverProperties.getProperty('user'))
         dataSource.setPassword(driverProperties.getProperty('password'))
 
-        dataSource.setConnectionHook(schemaSetter)
+        dataSource.setDataSourceProperties(driverProperties)
 
-        return new SimpleDataSourceProxy(dataSource)
+        return dataSource
     }
 
     private static final String PATTERN_STR = '^(0|[1-9][0-9]*)[\\.]{2}(0|[1-9][0-9]*)$'
