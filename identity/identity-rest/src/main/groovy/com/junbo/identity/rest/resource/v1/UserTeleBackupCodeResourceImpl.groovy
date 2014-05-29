@@ -144,8 +144,7 @@ class UserTeleBackupCodeResourceImpl implements UserTeleBackupCodeResource {
     @Override
     Promise<Results<UserTeleBackupCode>> list(UserId userId, UserTeleBackupCodeListOptions listOptions) {
         return userTeleBackupCodeValidator.validateForSearch(userId, listOptions).then {
-            return userTeleBackupCodeRepository.search(listOptions).then {
-                List<UserTeleBackupCode> userTeleBackupCodeList ->
+            return search(listOptions).then { List<UserTeleBackupCode> userTeleBackupCodeList ->
                     def result = new Results<UserTeleBackupCode>(items: [])
 
                     userTeleBackupCodeList.each { UserTeleBackupCode newUserTeleBackupCode ->
@@ -159,6 +158,17 @@ class UserTeleBackupCodeResourceImpl implements UserTeleBackupCodeResource {
 
                     return Promise.pure(result)
             }
+        }
+    }
+
+    private Promise<List<UserTeleBackupCode>> search(UserTeleBackupCodeListOptions listOptions) {
+        if (listOptions.userId != null && listOptions.active != null) {
+            return userTeleBackupCodeRepository.searchByUserIdAndActiveStatus(listOptions.userId, listOptions.active,
+                    listOptions.limit, listOptions.offset)
+        } else if (listOptions.userId != null) {
+            return userTeleBackupCodeRepository.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset)
+        } else {
+            throw new IllegalArgumentException('Unsupported search operation')
         }
     }
 }

@@ -583,11 +583,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         assert userTeleBackupCode.verifyCode == newVerifyCode
 
-        List<UserTeleBackupCode> results = userTeleBackupCodeRepository.search(new UserTeleBackupCodeListOptions(
-                userId: userId,
-                offset: 0,
-                limit: 100
-        )).get()
+        List<UserTeleBackupCode> results = userTeleBackupCodeRepository.searchByUserId(userId, 100, 0).get()
         assert results.size() != 0
     }
 

@@ -1,5 +1,6 @@
 package com.junbo.identity.data.repository.impl.sql
 
+import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTeleBackupCodeId
 import com.junbo.identity.data.dao.UserTeleBackupCodeDAO
 import com.junbo.identity.data.entity.user.UserTeleBackupCodeEntity
@@ -21,14 +22,13 @@ class UserTeleBackupCodeRepositorySqlImpl implements UserTeleBackupCodeRepositor
     private ModelMapper modelMapper
 
     @Override
-    Promise<List<UserTeleBackupCode>> search(UserTeleBackupCodeListOptions listOptions) {
-        def result = []
-        def list = userTeleBackupCodeDAO.search(listOptions)
+    Promise<List<UserTeleBackupCode>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+        return Promise.pure(null)
+    }
 
-        list.each { UserTeleBackupCodeEntity entity ->
-            result.add(modelMapper.toUserTeleBackupCode(entity, new MappingContext()))
-        }
-        return Promise.pure(result)
+    @Override
+    Promise<List<UserTeleBackupCode>> searchByUserIdAndActiveStatus(UserId userId, Boolean active, Integer limit, Integer offset) {
+        return Promise.pure(null)
     }
 
     @Override
