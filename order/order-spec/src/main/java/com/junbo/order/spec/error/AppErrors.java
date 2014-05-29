@@ -164,4 +164,8 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 409, code = ErrorCode.ORDER_CAN_NOT_BE_CANCELED,
             description = "Order can not be canceled")
     AppError orderNotCancelable();
+
+    @ErrorDef(httpStatusCode = 409, code = ErrorCode.ORDER_PRICE_CHANGED,
+            description = "Order price is changed")
+    AppError orderPriceChanged();
 }

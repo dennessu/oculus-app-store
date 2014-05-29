@@ -12,5 +12,5 @@ import com.junbo.sharding.repo.BaseRepository
  */
 public interface LocaleRepository extends BaseRepository<Locale, LocaleId> {
     @ReadMethod
-    Promise<List<Locale>> search(LocaleListOptions options)
+    Promise<List<Locale>> searchAll(Integer limit, Integer offset)
 }

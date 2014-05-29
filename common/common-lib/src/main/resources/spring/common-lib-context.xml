@@ -57,6 +57,7 @@
         <property name="marshaller" ref="cloudantDefaultMarshaller" />
         <property name="cloudantUser" value="${common.cloudant.user}" />
         <property name="cloudantPassword" value="${common.cloudant.password}" />
+        <property name="dbNamePrefix" value="${common.cloudant.dbNamePrefix}" />
     </bean>
 
 

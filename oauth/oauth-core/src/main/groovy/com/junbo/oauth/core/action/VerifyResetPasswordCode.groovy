@@ -2,8 +2,13 @@ package com.junbo.oauth.core.action
 
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserId
+import com.junbo.common.json.ObjectMapperProvider
+import com.junbo.identity.spec.v1.model.Email
 import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
+import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
+import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
 import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
@@ -28,6 +33,7 @@ class VerifyResetPasswordCode implements Action {
 
     private ResetPasswordCodeRepository resetPasswordCodeRepository
     private UserResource userResource
+    private UserPersonalInfoResource userPersonalInfoResource
 
     @Required
     void setResetPasswordCodeRepository(ResetPasswordCodeRepository resetPasswordCodeRepository) {
@@ -37,6 +43,11 @@ class VerifyResetPasswordCode implements Action {
     @Required
     void setUserResource(UserResource userResource) {
         this.userResource = userResource
+    }
+
+    @Required
+    void setUserPersonalInfoResource(UserPersonalInfoResource userPersonalInfoResource) {
+        this.userPersonalInfoResource = userPersonalInfoResource
     }
 
     @Override
@@ -56,6 +67,7 @@ class VerifyResetPasswordCode implements Action {
             return Promise.pure(new ActionResult('error'))
         }
 
+
         return userResource.get(new UserId(resetPasswordCode.userId), new UserGetOptions()).recover { Throwable e ->
             handleException(e, contextWrapper)
             return Promise.pure(new ActionResult('error'))
@@ -66,7 +78,39 @@ class VerifyResetPasswordCode implements Action {
 
             contextWrapper.user = user
 
-            return Promise.pure(new ActionResult('success'))
+            // set email as verified
+            for (int i = 0; i < user.emails.size(); i++) {
+                def userPersonalInfoLink = user.emails.get(i)
+                if (userPersonalInfoLink.isDefault) {
+                    return userPersonalInfoResource.get(userPersonalInfoLink.value, new UserPersonalInfoGetOptions()).then { UserPersonalInfo personalInfo ->
+                        if (personalInfo == null) {
+                            return Promise.pure(new ActionResult('error'))
+                        }
+
+                        Email email = ObjectMapperProvider.instance().treeToValue(personalInfo.value, Email)
+
+                        if (email.info == resetPasswordCode.email) {
+                            personalInfo.lastValidateTime = new Date()
+                            personalInfo.value = ObjectMapperProvider.instance().valueToTree(email)
+                            return userPersonalInfoResource.put(userPersonalInfoLink.value, personalInfo).recover { Throwable e ->
+                                handleException(e, contextWrapper)
+                                return Promise.pure(new ActionResult('error'))
+                            }.then { UserPersonalInfo updatedPersonalInfo ->
+                                if (updatedPersonalInfo == null) {
+                                    return Promise.pure(new ActionResult('error'))
+                                }
+
+                                return Promise.pure(new ActionResult('success'))
+                            }
+                        }
+
+                        return Promise.pure(new ActionResult('error'))
+                    }
+                }
+            }
+
+            LOGGER.error('default email not found or email in code does not match with default email')
+            return Promise.pure(new ActionResult('error'))
         }
     }
 

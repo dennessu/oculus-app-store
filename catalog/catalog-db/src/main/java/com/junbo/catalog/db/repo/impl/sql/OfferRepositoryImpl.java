@@ -13,6 +13,7 @@ import com.junbo.catalog.db.repo.OfferRepository;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OffersGetOptions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,6 +45,9 @@ public class OfferRepositoryImpl implements OfferRepository {
     }
 
     public List<Offer> getOffers(Collection<Long> offerIds) {
+        if (CollectionUtils.isEmpty(offerIds)) {
+            return new ArrayList<>();
+        }
         List<OfferEntity> offerEntities = offerDao.getOffers(offerIds);
         List<Offer> offers = new ArrayList<>();
         for (OfferEntity offerEntity : offerEntities) {

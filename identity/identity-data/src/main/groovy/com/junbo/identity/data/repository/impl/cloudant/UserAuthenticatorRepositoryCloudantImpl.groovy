@@ -3,6 +3,7 @@ package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.UserAuthenticatorId
+import com.junbo.common.id.UserId
 import com.junbo.identity.data.repository.UserAuthenticatorRepository
 import com.junbo.identity.spec.v1.model.UserAuthenticator
 import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
@@ -56,35 +57,45 @@ class UserAuthenticatorRepositoryCloudantImpl extends CloudantClient<UserAuthent
     }
 
     @Override
-    Promise<List<UserAuthenticator>> search(AuthenticatorListOptions getOption) {
-        def list = []
-        if (getOption.userId != null && getOption.userId.value != null) {
-            if (getOption.type != null && getOption.externalId != null) {
-                list = super.queryView('by_user_id_auth_type_externalId',
-                        "${getOption.userId.value}:${getOption.type}:${getOption.externalId}",
-                        getOption.limit, getOption.offset, false)
-            }
-            else if (getOption.type != null) {
-                list = super.queryView('by_user_id_auth_type', "${getOption.userId.value}:${getOption.type}",
-                        getOption.limit, getOption.offset, false)
-            }
-            else if (getOption.externalId != null) {
-                list = super.queryView('by_user_id_externalId', "${getOption.userId.value}:${getOption.externalId}",
-                        getOption.limit, getOption.offset, false)
-            }
-            else {
-                list = super.queryView('by_user_id', "${getOption.userId.value}",
-                        getOption.limit, getOption.offset, false)
-            }
-        }
-        else if (getOption != null && getOption.externalId != null) {
-            list = super.queryView('by_authenticator_externalId', getOption.externalId,
-                    getOption.limit, getOption.offset, false)
-        }
-
-        return list.size() > 0 ? Promise.pure(list) : Promise.pure(null)
+    Promise<List<UserAuthenticator>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+        def list = super.queryView('by_user_id', userId.toString(), limit, offset, false)
+        return Promise.pure(list)
     }
 
+    @Override
+    Promise<List<UserAuthenticator>> searchByUserIdAndType(UserId userId, String type, Integer limit, Integer offset) {
+        def list = super.queryView('by_user_id_auth_type', "${userId.toString()}:${type}", limit, offset, false)
+        return Promise.pure(list)
+    }
+
+    @Override
+    Promise<List<UserAuthenticator>> searchByExternalId(String externalId, Integer limit, Integer offset) {
+        def list = super.queryView('by_authenticator_externalId', externalId, limit, offset, false)
+        return Promise.pure(list)
+    }
+
+    @Override
+    Promise<List<UserAuthenticator>> searchByUserIdAndTypeAndExternalId(UserId userId, String type, String externalId,
+                                                                        Integer limit, Integer offset) {
+        def list = super.queryView('by_user_id_auth_type_externalId', "${userId.value}:${type}:${externalId}", limit,
+                offset, false)
+        return Promise.pure(list)
+    }
+
+    @Override
+    Promise<List<UserAuthenticator>> searchByUserIdAndExternalId(UserId userId, String externalId, Integer limit,
+                                                                 Integer offset) {
+        def list = super.queryView('by_user_id_externalId', "${userId.toString()}:${externalId}", limit, offset, false)
+        return Promise.pure(list)
+    }
+
+    @Override
+    Promise<List<UserAuthenticator>> searchByExternalIdAndType(String externalId, String type, Integer limit,
+                                                               Integer offset) {
+        def list = super.queryView('by_authenticator_externalId_auth_type', "${externalId}:${type}", limit, offset,
+                false)
+        return Promise.pure(list)
+    }
     protected CloudantViews views = new CloudantViews(
             views: [
                     'by_authenticator_externalId': new CloudantViews.CloudantView(
@@ -110,6 +121,11 @@ class UserAuthenticatorRepositoryCloudantImpl extends CloudantClient<UserAuthent
                     'by_user_id': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
                                     '  emit(doc.userId, doc._id)' +
+                                    '}',
+                            resultClass: String),
+                    'by_authenticator_externalId_auth_type': new CloudantViews.CloudantView(
+                            map: 'function(doc) {' +
+                                    ' emit(doc.externalId + \':\' + doc.type, doc._id)' +
                                     '}',
                             resultClass: String)
             ]

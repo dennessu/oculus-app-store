@@ -6,17 +6,19 @@
 
 package com.junbo.catalog.core.service;
 
-import com.junbo.catalog.common.util.EntityType;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.OfferService;
-import com.junbo.catalog.db.entity.ItemOfferRelationsEntity;
-import com.junbo.catalog.db.repo.*;
+import com.junbo.catalog.db.repo.ItemRepository;
+import com.junbo.catalog.db.repo.OfferAttributeRepository;
+import com.junbo.catalog.db.repo.OfferRepository;
+import com.junbo.catalog.db.repo.OfferRevisionRepository;
 import com.junbo.catalog.spec.enums.*;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.common.error.AppError;
+import com.junbo.common.id.OfferId;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -30,7 +32,6 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     private OfferRepository offerRepo;
     private OfferRevisionRepository offerRevisionRepo;
     private ItemRepository itemRepo;
-    private ItemOfferRelationsRepository relationsRepo;
     private OfferAttributeRepository offerAttributeRepo;
 
     @Required
@@ -46,11 +47,6 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     @Required
     public void setItemRepo(ItemRepository itemRepo) {
         this.itemRepo = itemRepo;
-    }
-
-    @Required
-    public void setRelationsRepo(ItemOfferRelationsRepository relationsRepo) {
-        this.relationsRepo = relationsRepo;
     }
 
     @Required
@@ -120,28 +116,6 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     }
 
     @Override
-    protected void postApproveActions(OfferRevision currentRevision, Long lastRevisionId) {
-        List<Long> subOffers = safeWrap(currentRevision.getSubOffers());
-        List<Long> items = convert(currentRevision.getItems());
-        if (lastRevisionId!=null) {
-            OfferRevision lastRevision = offerRevisionRepo.get(lastRevisionId);
-            if (lastRevision == null) {
-                throw AppErrors.INSTANCE.notFound("offer-revision", Utils.encodeId(lastRevisionId)).exception();
-            }
-            List<Long> lastSubOffers = safeWrap(lastRevision.getSubOffers());
-            List<Long> lastItems = convert(lastRevision.getItems());
-
-            createRelations(EntityType.OFFER, subtract(subOffers, lastSubOffers), currentRevision.getOfferId());
-            createRelations(EntityType.ITEM, subtract(items, lastItems), currentRevision.getOfferId());
-            removeRelations(EntityType.OFFER, subtract(lastSubOffers, subOffers), currentRevision.getOfferId());
-            removeRelations(EntityType.ITEM, subtract(lastItems, items), currentRevision.getOfferId());
-        } else {
-            createRelations(EntityType.OFFER, subOffers, currentRevision.getOfferId());
-            createRelations(EntityType.ITEM, items, currentRevision.getOfferId());
-        }
-    }
-
-    @Override
     protected OfferRepository getEntityRepo() {
         return offerRepo;
     }
@@ -162,70 +136,53 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     }
 
     private List<Offer> getOffersByItemId(Long itemId) {
-        Set<Long> offerIds = new HashSet<>();
-        List<ItemOfferRelationsEntity> relationsEntities = relationsRepo.getRelations(itemId, EntityType.ITEM);
-        if (CollectionUtils.isEmpty(relationsEntities)) {
+        List<OfferRevision> offerRevisions = offerRevisionRepo.getRevisions(itemId);
+        if (CollectionUtils.isEmpty(offerRevisions)) {
             return Collections.emptyList();
         }
-        for (ItemOfferRelationsEntity relationsEntity : relationsEntities) {
-            offerIds.add(relationsEntity.getParentOfferId());
-            getOfferIds(relationsEntity.getParentOfferId(), offerIds);
+
+        Set<Long> tempOfferIds = filterOfferIds(offerRevisions);
+        Set<Long> resultOfferIds = new HashSet<>(tempOfferIds);
+        for (Long offerId : tempOfferIds) {
+            findOfferIdsBySubOfferId(offerId, resultOfferIds);
         }
 
-        return offerRepo.getOffers(offerIds);
+        return offerRepo.getOffers(resultOfferIds);
     }
 
-    private void getOfferIds(Long offerId, Set<Long> offerIds) {
-        List<ItemOfferRelationsEntity> relationsEntities = relationsRepo.getRelations(offerId, EntityType.OFFER);
-        if (CollectionUtils.isEmpty(relationsEntities)) {
+    private Set<Long> filterOfferIds(List<OfferRevision> revisions) {
+        Set<OfferId> offerIds = new HashSet<>();
+        Set<Long> revisionIds = new HashSet<>();
+        for (OfferRevision offerRevision : revisions) {
+            offerIds.add(new OfferId(offerRevision.getOfferId()));
+            revisionIds.add(offerRevision.getRevisionId());
+        }
+
+        List<OfferRevision> offerRevisions = offerRevisionRepo.getRevisions(offerIds, Utils.currentTimestamp());
+
+        Set<Long> resultOfferIds = new HashSet<>();
+        for (OfferRevision revision : offerRevisions) {
+            if (revisionIds.contains(revision.getRevisionId())) {
+                resultOfferIds.add(revision.getOfferId());
+            }
+        }
+
+        return resultOfferIds;
+    }
+
+    private void findOfferIdsBySubOfferId(Long subOfferId, Set<Long> offerIds) {
+        List<OfferRevision> offerRevisions = offerRevisionRepo.getRevisionsBySubOfferId(subOfferId);
+        if (CollectionUtils.isEmpty(offerRevisions)) {
             return;
         }
 
-        for (ItemOfferRelationsEntity relationsEntity : relationsEntities) {
-            if (offerIds.contains(relationsEntity.getParentOfferId())) {
-                continue;
+        Set<Long> tempOfferIds = filterOfferIds(offerRevisions);
+
+        for (Long offerId : tempOfferIds) {
+            if (!offerIds.contains(offerId)) {
+                offerIds.add(offerId);
+                findOfferIdsBySubOfferId(offerId, offerIds);
             }
-            offerIds.add(relationsEntity.getParentOfferId());
-            getOfferIds(relationsEntity.getParentOfferId(), offerIds);
-        }
-    }
-
-    private List<Long> convert(List<ItemEntry> itemEntries) {
-        List<Long> items = new ArrayList<>();
-        if (itemEntries != null) {
-            for (ItemEntry itemEntry : itemEntries) {
-                items.add(itemEntry.getItemId());
-            }
-        }
-
-        return items;
-    }
-
-    private List<Long> safeWrap(List<Long> list) {
-        if (list != null) {
-            return new ArrayList<>(list);
-        }
-        return Collections.emptyList();
-    }
-
-    private void removeRelations(EntityType entityType, List<Long> entityIds, Long parentOfferId) {
-        if (!CollectionUtils.isEmpty(entityIds)) {
-            for (Long entityId : entityIds) {
-                relationsRepo.delete(entityType, entityId, parentOfferId);
-            }
-        }
-    }
-
-    private void createRelations(EntityType entityType, List<Long> entityIds, Long parentOfferId) {
-        if (CollectionUtils.isEmpty(entityIds)) {
-            return;
-        }
-        for (Long entityId : entityIds) {
-            ItemOfferRelationsEntity relationsEntity = new ItemOfferRelationsEntity();
-            relationsEntity.setEntityType(entityType.getValue());
-            relationsEntity.setEntityId(entityId);
-            relationsEntity.setParentOfferId(parentOfferId);
-            relationsRepo.create(relationsEntity);
         }
     }
 
@@ -397,12 +354,6 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             errors.add(AppErrors.INSTANCE
                     .validation("STORED_VALUE item is mutually exclusive with other items in an offer"));
         }
-    }
-
-    private List<Long> subtract(List<Long> list1, List<Long> list2) {
-        List<Long> result = new ArrayList<>(list1);
-        result.removeAll(list2);
-        return result;
     }
 
     private List<Action> preparePurchaseEvent(OfferRevision revision) {

@@ -9,7 +9,7 @@ package com.junbo.test.common.Entities.enums;
  * Enum for order status.
  *
  * @author Jason
- * Created on 5/14/2014.
+ *         Created on 5/14/2014.
  */
 public enum OrderStatus {
     OPEN("OPEN", 0),
@@ -22,7 +22,8 @@ public enum OrderStatus {
     CANCELED("CANCELED", 7),
     REFUNDED("REFUNDED", 8),
     PREORDERED("PREORDERED", 9),
-    PARTIAL_CHARGED("PARTIAL_CHARGED", 10);
+    PARTIAL_CHARGED("PARTIAL_CHARGED", 10),
+    PRICE_RATING_CHANGED("PRICE_RATING_CHANGED", 11);
 
     private String name;
     private int status;

@@ -219,7 +219,8 @@ public class SqlRepositoryTest extends AbstractTestNGSpringContextTests {
 
         AuthenticatorListOptions getOption = new AuthenticatorListOptions()
         getOption.setExternalId(newValue)
-        List<UserAuthenticator> userAuthenticators = userAuthenticatorRepository.search(getOption).get()
+        List<UserAuthenticator> userAuthenticators = userAuthenticatorRepository.searchByExternalId(newValue, null,
+                null).get()
         assert userAuthenticators.size() != 0
     }
 
@@ -297,7 +298,8 @@ public class SqlRepositoryTest extends AbstractTestNGSpringContextTests {
 
         UserOptinListOptions getOption = new UserOptinListOptions()
         getOption.setUserId(new UserId(userId))
-        List<UserCommunication> userOptins = userCommunicationRepository.search(getOption).get()
+        List<UserCommunication> userOptins = userCommunicationRepository.searchByUserId(new UserId(userId), null,
+                null).get()
         assert userOptins.size() != 0
     }
 

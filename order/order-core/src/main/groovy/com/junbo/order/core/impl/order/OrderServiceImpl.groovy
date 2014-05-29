@@ -36,7 +36,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.Resource
-
 /**
  * Created by chriszhu on 2/7/14.
  */
@@ -74,24 +73,30 @@ class OrderServiceImpl implements OrderService {
         order.tentative = false
         orderValidator.validateSettleOrderRequest(order)
 
-        def orderServiceContext = initOrderServiceContext(order, context)
-        Throwable error
-        return flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_TENTATIVE).then { String flowName ->
-            // Prepare Flow Request
-            Map<String, Object> requestScope = [:]
-            def orderActionContext = new OrderActionContext()
-            orderActionContext.orderServiceContext = orderServiceContext
-            orderActionContext.trackingUuid = UUID.randomUUID()
-            requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
-            return executeFlow(flowName, orderServiceContext, requestScope)
-        }.syncRecover { Throwable throwable ->
-            error = throwable
-        }.syncThen {
-            def result = orderInternalService.refreshOrderStatus(orderServiceContext.order)
-            if (error != null) {
-                throw error
+        // rate the order
+        return getOrderByOrderId(order.getId().value, true).then { Order ratedOrder ->
+            if (ratedOrder.status == OrderStatus.PRICE_RATING_CHANGED.name()) {
+                throw AppErrors.INSTANCE.orderPriceChanged().exception()
             }
-            return result
+            def orderServiceContext = initOrderServiceContext(ratedOrder, context)
+            Throwable error
+            return flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_TENTATIVE).then { String flowName ->
+                // Prepare Flow Request
+                Map<String, Object> requestScope = [:]
+                def orderActionContext = new OrderActionContext()
+                orderActionContext.orderServiceContext = orderServiceContext
+                orderActionContext.trackingUuid = UUID.randomUUID()
+                requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
+                return executeFlow(flowName, orderServiceContext, requestScope)
+            }.syncRecover { Throwable throwable ->
+                error = throwable
+            }.syncThen {
+                def result = orderInternalService.refreshOrderStatus(orderServiceContext.order)
+                if (error != null) {
+                    throw error
+                }
+                return result
+            }
         }
     }
 
@@ -163,17 +168,17 @@ class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    Promise<Order> getOrderByOrderId(Long orderId) {
+    Promise<Order> getOrderByOrderId(Long orderId, Boolean doRate = true) {
         return orderInternalService.getOrderByOrderId(orderId).then { Order order ->
-            if (order.tentative && CoreUtils.isRateExpired(order)) {
+            if (order.tentative && CoreUtils.isRateExpired(order) && doRate) {
                 // if the price rating result changes, return expired.
-                return orderInternalService.rateOrder(order).then { Order newOrder ->
-                    if (CoreUtils.compareOrderRating(order, newOrder)) {
-                        return Promise.pure(order)
-                    } else {
-                        order.status == OrderStatus.PRICE_RATING_CHANGED
-                        return Promise.pure(newOrder)
+                Order oldRatingInfo = CoreUtils.copyOrderRating(order)
+                order.honoredTime = new Date()
+                return orderInternalService.rateOrder(order).then { Order o ->
+                    if(!CoreUtils.compareOrderRating(oldRatingInfo, o)) {
+                        o.status = OrderStatus.PRICE_RATING_CHANGED
                     }
+                    return Promise.pure(o)
                 }
             }
             return Promise.pure(order)

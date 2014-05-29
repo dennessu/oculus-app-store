@@ -45,7 +45,7 @@ class LocaleRepositoryCloudantImpl extends CloudantClient<Locale> implements Loc
     }
 
     @Override
-    Promise<List<Locale>> search(LocaleListOptions options) {
+    Promise<List<Locale>> searchAll(Integer limit, Integer offset) {
         return Promise.pure(super.cloudantGetAll())
     }
 }

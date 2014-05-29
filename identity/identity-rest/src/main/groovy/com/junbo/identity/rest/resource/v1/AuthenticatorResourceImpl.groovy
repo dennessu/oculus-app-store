@@ -135,7 +135,7 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
         }
 
         return userAuthenticatorValidator.validateForSearch(listOptions).then {
-            return userAuthenticatorRepository.search(listOptions).then { List<UserAuthenticator> authenticatorList ->
+            return search(listOptions).then { List<UserAuthenticator> authenticatorList ->
                 def result = new Results<UserAuthenticator>(items: [])
 
                 authenticatorList.each { UserAuthenticator newUserAuthenticator ->
@@ -162,6 +162,29 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
 
         return userAuthenticatorValidator.validateForGet(userAuthenticatorId).then { UserAuthenticator authenticator ->
             return userAuthenticatorRepository.delete(userAuthenticatorId)
+        }
+    }
+
+    private Promise<List<UserAuthenticator>> search(AuthenticatorListOptions listOptions) {
+        if (listOptions.userId != null && listOptions.type != null && listOptions.externalId != null) {
+            return userAuthenticatorRepository.searchByUserIdAndTypeAndExternalId(listOptions.userId, listOptions.type,
+                    listOptions.externalId, listOptions.limit, listOptions.offset)
+        } else if (listOptions.userId != null && listOptions.type != null) {
+            return userAuthenticatorRepository.searchByUserIdAndType(listOptions.userId, listOptions.type,
+                    listOptions.limit, listOptions.offset)
+        } else if (listOptions.userId != null && listOptions.externalId != null) {
+            return userAuthenticatorRepository.searchByUserIdAndExternalId(listOptions.userId, listOptions.externalId,
+                    listOptions.limit, listOptions.offset)
+        } else if (listOptions.externalId != null && listOptions.type != null) {
+            return userAuthenticatorRepository.searchByExternalIdAndType(listOptions.externalId, listOptions.type,
+                    listOptions.limit, listOptions.offset)
+        } else if (listOptions.userId != null) {
+            return userAuthenticatorRepository.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset)
+        } else if (listOptions.externalId != null) {
+            return userAuthenticatorRepository.searchByExternalId(listOptions.externalId, listOptions.limit,
+                    listOptions.offset)
+        } else {
+            throw new IllegalArgumentException('Unsupported search operation')
         }
     }
 }

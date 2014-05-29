@@ -93,13 +93,13 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
     }
 
     @Override
-    public Subledger getSubledger() throws Exception {
-        return getSubledger(200);
+    public Subledger getSubledger(String sellerId) throws Exception {
+        return getSubledger(sellerId, 200);
     }
 
     @Override
-    public Subledger getSubledger(int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.GET, orderUrl + "subledger", expectedResponseCode);
+    public Subledger getSubledger(String sellerId, int expectedResponseCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.GET, orderUrl + "subledgers?=" + sellerId, expectedResponseCode);
 
         Subledger subledgerResult = new JsonMessageTranscoder().decode(
                 new TypeReference<Subledger>() {

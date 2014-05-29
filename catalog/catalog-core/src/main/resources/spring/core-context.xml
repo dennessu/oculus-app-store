@@ -25,7 +25,6 @@
         <property name="offerRepo" ref="offerRepository"/>
         <property name="offerRevisionRepo" ref="offerRevisionRepository"/>
         <property name="offerAttributeRepo" ref="offerAttributeRepository"/>
-        <property name="relationsRepo" ref="itemOfferRelationsRepository"/>
     </bean>
     <bean id="priceTierService" class="com.junbo.catalog.core.service.PriceTierServiceImpl">
         <property name="priceTierRepo" ref="priceTierRepository"/>
@@ -52,7 +51,6 @@
         <property name="offerRepo" ref="offerCloudantRepo"/>
         <property name="offerRevisionRepo" ref="offerRevisionCloudantRepo"/>
         <property name="offerAttributeRepo" ref="offerAttributeCloudantRepo"/>
-        <property name="relationsRepo" ref="itemOfferRelationsRepository"/>
     </bean>
     <bean id="priceTierService" class="com.junbo.catalog.core.service.PriceTierServiceImpl">
         <property name="priceTierRepo" ref="priceTierCloudantRepo"/>

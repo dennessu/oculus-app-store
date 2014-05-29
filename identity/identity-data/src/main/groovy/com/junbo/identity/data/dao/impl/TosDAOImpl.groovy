@@ -48,9 +48,6 @@ class TosDAOImpl extends BaseDAO implements TosDAO {
     @Override
     List<TosEntity> search(TosListOptions options) {
         Criteria criteria = currentSession(0).createCriteria(TosEntity)
-        if (options.locale != null) {
-            criteria.add(Restrictions.eq('locale', options.locale))
-        }
         criteria.addOrder(Order.asc('id'))
         if (options.limit != null) {
             criteria.setMaxResults(options.limit)

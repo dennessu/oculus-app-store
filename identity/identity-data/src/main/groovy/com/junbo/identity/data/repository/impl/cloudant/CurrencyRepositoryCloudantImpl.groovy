@@ -44,7 +44,7 @@ class CurrencyRepositoryCloudantImpl extends CloudantClient<Currency> implements
     }
 
     @Override
-    Promise<List<Currency>> search(CurrencyListOptions options) {
+    Promise<List<Currency>> searchAll(Integer limit, Integer offset) {
         return Promise.pure(super.cloudantGetAll())
     }
 }

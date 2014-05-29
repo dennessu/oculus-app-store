@@ -6,17 +6,23 @@
 
 package com.junbo.test.order.utility;
 
+import com.junbo.catalog.spec.model.common.Price;
+import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.OfferId;
+import com.junbo.common.id.OfferRevisionId;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.UserId;
 import com.junbo.order.spec.model.Order;
 import com.junbo.order.spec.model.OrderItem;
 import com.junbo.order.spec.model.PaymentInfo;
 import com.junbo.order.spec.model.Subledger;
+import com.junbo.test.catalog.OfferRevisionService;
 import com.junbo.test.catalog.OfferService;
+import com.junbo.test.catalog.impl.OfferRevisionServiceImpl;
 import com.junbo.test.catalog.impl.OfferServiceImpl;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
@@ -32,6 +38,7 @@ import com.junbo.test.payment.utility.PaymentTestDataProvider;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by weiyu_000 on 5/19/14.
@@ -39,6 +46,7 @@ import java.util.List;
 public class OrderTestDataProvider {
     protected OrderService orderClient = OrderServiceImpl.getInstance();
     protected OfferService offerClient = OfferServiceImpl.instance();
+    protected OfferRevisionService offerRevisionClient = OfferRevisionServiceImpl.instance();
     protected UserService identityClient = UserServiceImpl.instance();
     protected PaymentTestDataProvider paymentProvider = new PaymentTestDataProvider();
 
@@ -52,6 +60,34 @@ public class OrderTestDataProvider {
 
     public void creditWallet(String uid, BigDecimal amount) throws Exception {
         paymentProvider.creditWallet(uid, amount);
+    }
+
+    public void updateOfferPrice(String offerName) throws Exception {
+        String offerId = offerClient.getOfferIdByName(offerName);
+
+        Offer offer = Master.getInstance().getOffer(offerId);
+
+        String offerRevisionId = IdConverter.idLongToHexString(OfferRevisionId.class,
+                offer.getCurrentRevisionId());
+
+        OfferRevision offerRevision = Master.getInstance().getOfferRevision(offerRevisionId);
+        Price price = offerRevision.getPrice();
+        Map<String, BigDecimal> originPrices = price.getPrices();
+        BigDecimal currentPrice = originPrices.get(Currency.DEFAULT.toString());
+        if (currentPrice.compareTo(new BigDecimal(10)) >= 0) {
+            originPrices.remove(Currency.DEFAULT.toString());
+            originPrices.put(Currency.DEFAULT.toString(), new BigDecimal(9));
+        } else {
+            originPrices.remove(Currency.DEFAULT.toString());
+            originPrices.put(Currency.DEFAULT.toString(), new BigDecimal(11));
+        }
+        price.setPrices(originPrices);
+
+        offerRevision.setResourceAge(null);
+        offerRevision.setStatus("DRAFT");
+        OfferRevision offerRevisionUpdated = offerRevisionClient.postOfferRevision(offerRevision);
+        offerRevisionUpdated.setStatus("APPROVED");
+        offerRevisionClient.updateOfferRevision(offerRevisionUpdated.getRevisionId(), offerRevisionUpdated);
     }
 
     public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
@@ -125,8 +161,13 @@ public class OrderTestDataProvider {
         return orderClient.postOrder(order);
     }
 
-    public Subledger getSubledger() throws Exception{
-        return orderClient.getSubledger();
+    public Subledger getSubledger(String offerName) throws Exception {
+        String offerId = offerClient.getOfferIdByName(offerName);
+        Offer offer = Master.getInstance().getOffer(offerId);
+        String offerRevisionId = IdConverter.idLongToHexString(OfferRevisionId.class, offer.getCurrentRevisionId());
+        String sellerId = IdConverter.idLongToHexString(UserId.class,
+                Master.getInstance().getOfferRevision(offerRevisionId).getOwnerId());
+        return orderClient.getSubledger(sellerId);
     }
 
 }

@@ -62,10 +62,9 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
                 throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
             }
 
-            return userCommunicationRepository.search(new UserOptinListOptions(
-                    userId: userCommunication.userId,
-                    communicationId: userCommunication.communicationId
-            )).then { List<UserCommunication> existing ->
+            return userCommunicationRepository.searchByUserIdAndCommunicationId(userCommunication.userId,
+                    userCommunication.communicationId, Integer.MAX_VALUE, 0
+            ).then { List<UserCommunication> existing ->
                 if (!CollectionUtils.isEmpty(existing)) {
                     throw AppErrors.INSTANCE.fieldDuplicate('communicationId').exception()
                 }
@@ -103,10 +102,8 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
             }
 
             if (userCommunication.communicationId != oldUserCommunication.communicationId) {
-                return userCommunicationRepository.search(new UserOptinListOptions(
-                        userId: userCommunication.userId,
-                        communicationId: userCommunication.communicationId
-                )).then { List<UserCommunication> existing ->
+                return userCommunicationRepository.searchByUserIdAndCommunicationId(userCommunication.userId,
+                        userCommunication.communicationId, Integer.MAX_VALUE, 0).then { List<UserCommunication> existing ->
                     if (!CollectionUtils.isEmpty(existing)) {
                         throw AppErrors.INSTANCE.fieldDuplicate('communicationId').exception()
                     }

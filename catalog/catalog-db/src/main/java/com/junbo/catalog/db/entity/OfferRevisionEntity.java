@@ -6,24 +6,29 @@
 
 package com.junbo.catalog.db.entity;
 
+import com.junbo.common.hibernate.LongArrayUserType;
 import com.junbo.common.hibernate.StringJsonUserType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Offer DB entity.
  */
 @Entity
 @Table(name="offer_revision")
-@TypeDefs(@TypeDef(name="json-string", typeClass=StringJsonUserType.class))
+@TypeDefs({@TypeDef(name="json-string", typeClass=StringJsonUserType.class),
+        @TypeDef(name="long-array", typeClass=LongArrayUserType.class)})
 public class OfferRevisionEntity extends BaseEntity {
     private Long revisionId;
     private Long offerId;
     private Long ownerId;
     private String status;
+    private List<Long> itemIds;
+    private List<Long> subOfferIds;
     private Long timestamp;
     private String payload;
 
@@ -62,6 +67,26 @@ public class OfferRevisionEntity extends BaseEntity {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    @Column(name = "item_ids")
+    @Type(type = "long-array")
+    public List<Long> getItemIds() {
+        return itemIds;
+    }
+
+    public void setItemIds(List<Long> itemIds) {
+        this.itemIds = itemIds;
+    }
+
+    @Column(name = "sub_offer_ids")
+    @Type(type = "long-array")
+    public List<Long> getSubOfferIds() {
+        return subOfferIds;
+    }
+
+    public void setSubOfferIds(List<Long> subOfferIds) {
+        this.subOfferIds = subOfferIds;
     }
 
     @Column(name = "timestamp")

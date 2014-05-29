@@ -90,11 +90,9 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
                 throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
             }
 
-            return userAuthenticatorRepository.search(new AuthenticatorListOptions(
-                    userId: userAuthenticator.userId,
-                    type: userAuthenticator.type,
-                    externalId: userAuthenticator.externalId
-            )).then { List<UserAuthenticator> existing ->
+            return userAuthenticatorRepository.searchByUserIdAndTypeAndExternalId(userAuthenticator.userId,
+                    userAuthenticator.type, userAuthenticator.externalId, Integer.MAX_VALUE, 0).then {
+                List<UserAuthenticator> existing ->
                 if (!CollectionUtils.isEmpty(existing)) {
                     throw AppErrors.INSTANCE.fieldDuplicate('externalId').exception()
                 }
@@ -128,11 +126,8 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
 
             if (authenticator.externalId != oldAuthenticator.externalId
              || authenticator.type != oldAuthenticator.type) {
-                return userAuthenticatorRepository.search(new AuthenticatorListOptions(
-                        userId: authenticator.userId,
-                        externalId: authenticator.externalId,
-                        type: authenticator.type
-                )).then {
+                return userAuthenticatorRepository.searchByUserIdAndTypeAndExternalId(authenticator.userId,
+                        authenticator.type, authenticator.externalId, Integer.MAX_VALUE, 0).then {
                     List<UserAuthenticator> existing ->
                         if (!CollectionUtils.isEmpty(existing)) {
                             throw AppErrors.INSTANCE.fieldDuplicate('type or externalId').exception()

@@ -38,7 +38,7 @@ class ResetPasswordCodeRepositoryImpl implements ResetPasswordCodeRepository {
     @Override
     void save(ResetPasswordCode resetPasswordCode) {
         if (resetPasswordCode.code == null) {
-            resetPasswordCode.code = tokenGenerator.generateEmailVerifyCode()
+            resetPasswordCode.code = tokenGenerator.generateResetPasswordCode()
         }
 
         resetPasswordCodeDAO.save(unwrap(resetPasswordCode))
@@ -51,7 +51,8 @@ class ResetPasswordCodeRepositoryImpl implements ResetPasswordCodeRepository {
 
         return new ResetPasswordCode(
             code: entity.id,
-            userId: entity.userId
+            userId: entity.userId,
+            email: entity.email
         )
     }
 
@@ -62,7 +63,8 @@ class ResetPasswordCodeRepositoryImpl implements ResetPasswordCodeRepository {
 
         return new ResetPasswordCodeEntity(
             id: entity.code,
-            userId: entity.userId
+            userId: entity.userId,
+            email: entity.email
         )
     }
 }

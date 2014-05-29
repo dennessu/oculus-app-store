@@ -126,7 +126,7 @@ class LocaleResourceImpl implements LocaleResource {
         }
 
         return localeValidator.validateForSearch(listOptions).then {
-            return localeRepository.search(listOptions).then { List<Locale> localeList ->
+            return search(listOptions).then { List<Locale> localeList ->
                 def result = new Results<Locale>(items: [])
 
                 localeList.each { Locale newLocale ->
@@ -151,5 +151,9 @@ class LocaleResourceImpl implements LocaleResource {
         return localeValidator.validateForGet(localeId).then {
             return localeRepository.delete(localeId)
         }
+    }
+
+    private Promise<List<Locale>> search(LocaleListOptions listOptions) {
+        return localeRepository.searchAll(listOptions.limit, listOptions.offset)
     }
 }

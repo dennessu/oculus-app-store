@@ -89,12 +89,8 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
             Long lastRevisionId = entity.getCurrentRevisionId();
             entity.setCurrentRevisionId(revisionId);
             getEntityRepo().update(entity);
-            postApproveActions(revision, lastRevisionId);
         }
         return getRevisionRepo().get(revisionId);
-    }
-
-    protected void postApproveActions(T currentRevision, Long lastRevisionId) {
     }
 
     @Override

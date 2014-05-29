@@ -47,4 +47,22 @@ public class OfferRevisionDaoImpl extends BaseDaoImpl<OfferRevisionEntity> imple
             }
         });
     }
+
+    public List<OfferRevisionEntity> getRevisionsBySubOfferId(final Long offerId) {
+        return findAllBy(new Action<Criteria>() {
+            @Override
+            public void apply(Criteria criteria) {
+                criteria.add(Restrictions.sqlRestriction(offerId + "=ANY(sub_offer_ids)"));
+            }
+        });
+    }
+
+    public List<OfferRevisionEntity> getRevisionsByItemId(final Long itemId) {
+        return findAllBy(new Action<Criteria>() {
+            @Override
+            public void apply(Criteria criteria) {
+                criteria.add(Restrictions.sqlRestriction(itemId + "=ANY(item_ids)"));
+            }
+        });
+    }
 }
