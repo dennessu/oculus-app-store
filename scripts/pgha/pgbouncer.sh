@@ -4,6 +4,9 @@ source common.sh
 #check running under specified account
 checkAccount $DEPLOYMENT_ACCOUNT
 
+#chmod pgbouncer auth file
+chmod 600 $PGBOUNCER_AUTH_FILE
+
 TARGET_DB_HOST=$1
 TARGET_DB_PORT=$2
 

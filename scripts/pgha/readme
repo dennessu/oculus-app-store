@@ -56,7 +56,7 @@
 	[silkcloud] $DEPLOYMENT_PATH/purge_slave.sh
 
 #[master/slave]
-	[silkcloud] create pgbouncer auth file in ~/pgbouncer_auth.txt with file mode 600 (e.g. "silkcloud" "b0ec365f1e60dcab5bf425e722fba8cb")
+	[silkcloud] create pgbouncer auth file in ~/pgbouncer_auth.txt and chmod 600
 
 #[master/slave] (FOR DEMO ONLY)
 	[silkcloud] echo "*:6543:*:silkcloud:abc123" > ~/.pgpass
