@@ -68,7 +68,7 @@ class UserTeleBackupCodeAttemptValidatorImpl implements UserTeleBackupCodeAttemp
                 throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
 
-            if (user.isAnonymous == true) {
+            if (user.isAnonymous) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
 
@@ -147,7 +147,7 @@ class UserTeleBackupCodeAttemptValidatorImpl implements UserTeleBackupCodeAttemp
             if (user.status != UserStatus.ACTIVE.toString()) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
-            if (user.isAnonymous == true) {
+            if (user.isAnonymous) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
 
@@ -176,13 +176,12 @@ class UserTeleBackupCodeAttemptValidatorImpl implements UserTeleBackupCodeAttemp
     }
 
     private Promise<Void> checkMaximumRetryCount(User user, UserTeleBackupCodeAttempt attempt) {
-        if (attempt.succeeded == true) {
+        if (attempt.succeeded) {
             return Promise.pure(null)
         }
 
-        return userTeleBackupCodeAttemptRepository.search(new UserTeleBackupCodeAttemptListOptions(
-                userId:(UserId)user.id
-        )).then { List<UserTeleBackupCodeAttempt> attemptList ->
+        return userTeleBackupCodeAttemptRepository.searchByUserId((UserId)user.id, Integer.MAX_VALUE,
+                0).then { List<UserTeleBackupCodeAttempt> attemptList ->
             if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxRetryCount) {
                 return Promise.pure(null)
             }
@@ -196,7 +195,7 @@ class UserTeleBackupCodeAttemptValidatorImpl implements UserTeleBackupCodeAttemp
 
             int index = 0
             for ( ; index < maxRetryCount; index++) {
-                if (attemptList.get(index).succeeded == true) {
+                if (attemptList.get(index).succeeded) {
                     break
                 }
             }

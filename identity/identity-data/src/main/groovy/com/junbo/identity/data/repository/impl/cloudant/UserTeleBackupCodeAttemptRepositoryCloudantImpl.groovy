@@ -2,6 +2,7 @@ package com.junbo.identity.data.repository.impl.cloudant
 
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
+import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTeleBackupCodeAttemptId
 import com.junbo.identity.data.repository.UserTeleBackupCodeAttemptRepository
 import com.junbo.identity.spec.v1.model.UserTeleBackupCodeAttempt
@@ -28,9 +29,8 @@ class UserTeleBackupCodeAttemptRepositoryCloudantImpl extends CloudantClient<Use
     }
 
     @Override
-    Promise<List<UserTeleBackupCodeAttempt>> search(UserTeleBackupCodeAttemptListOptions listOptions) {
-        def list = super.queryView('by_user_id', listOptions.userId.value.toString(),
-                listOptions.limit, listOptions.offset, false)
+    Promise<List<UserTeleBackupCodeAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+        def list = super.queryView('by_user_id', userId.toString(), limit, offset, false)
 
         return Promise.pure(list)
     }

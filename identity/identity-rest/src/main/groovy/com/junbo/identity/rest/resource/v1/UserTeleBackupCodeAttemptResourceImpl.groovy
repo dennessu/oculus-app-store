@@ -90,8 +90,7 @@ class UserTeleBackupCodeAttemptResourceImpl implements UserTeleBackupCodeAttempt
     @Override
     Promise<Results<UserTeleBackupCodeAttempt>> list(UserId userId, UserTeleBackupCodeAttemptListOptions listOptions) {
         return userTeleBackupCodeAttemptValidator.validateForSearch(userId, listOptions).then {
-            return userTeleBackupCodeAttemptRepository.search(listOptions).
-                    then { List<UserTeleBackupCodeAttempt> attemptList ->
+            return search(listOptions).then { List<UserTeleBackupCodeAttempt> attemptList ->
                 def result = new Results<UserTeleBackupCodeAttempt>(items: [])
 
                 attemptList.each { UserTeleBackupCodeAttempt attempt ->
@@ -114,5 +113,14 @@ class UserTeleBackupCodeAttemptResourceImpl implements UserTeleBackupCodeAttempt
             }
         }
         )
+    }
+
+    private Promise<List<UserTeleBackupCodeAttempt>> search(UserTeleBackupCodeAttemptListOptions listOptions) {
+        if (listOptions.userId != null) {
+            return userTeleBackupCodeAttemptRepository.searchByUserId(listOptions.userId, listOptions.limit,
+                    listOptions.offset)
+        } else {
+            throw new IllegalArgumentException('Nosupported search operation.')
+        }
     }
 }
