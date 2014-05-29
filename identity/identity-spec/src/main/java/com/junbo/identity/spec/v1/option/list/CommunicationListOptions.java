@@ -21,6 +21,9 @@ public class CommunicationListOptions extends PagingGetOptions {
     @QueryParam("translation")
     private LocaleId translation;
 
+    @QueryParam("properties")
+    private String properties;
+
     public CountryId getRegion() {
         return region;
     }
@@ -35,5 +38,13 @@ public class CommunicationListOptions extends PagingGetOptions {
 
     public void setTranslation(LocaleId translation) {
         this.translation = translation;
+    }
+
+    public String getProperties() {
+        return properties;
+    }
+
+    public void setProperties(String properties) {
+        this.properties = properties;
     }
 }
