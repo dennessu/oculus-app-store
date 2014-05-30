@@ -4,6 +4,7 @@ import com.junbo.configuration.topo.DataCenters
 import com.junbo.sharding.transaction.SimpleDataSourceProxy
 import com.zaxxer.hikari.HikariDataSource
 import groovy.transform.CompileStatic
+import org.glassfish.jersey.message.internal.DataSourceProvider
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.DisposableBean
@@ -69,6 +70,8 @@ class ShardMultiTenantConnectionProviderFactoryBean
 
     private Map<String, HikariDataSource> dataSourceMap
 
+    private Map<String, SimpleDataSourceProxy> dataSourceProxyMap
+
     private ShardMultiTenantConnectionProvider connectionProvider
 
     @Override
@@ -79,6 +82,7 @@ class ShardMultiTenantConnectionProviderFactoryBean
             }
 
             dataSourceMap = new HashMap<>()
+            dataSourceProxyMap = new HashMap<>()
 
             List<SimpleDataSourceProxy> dataSourceList = []
 
@@ -156,7 +160,15 @@ class ShardMultiTenantConnectionProviderFactoryBean
             dataSourceMap.put(url, dataSource)
         }
 
-        return new SimpleDataSourceProxy(dataSource, schema)
+        def key = "$url:$schema"
+        SimpleDataSourceProxy dataSourceProxy = dataSourceProxyMap.get(key)
+
+        if (dataSourceProxy == null) {
+            dataSourceProxy = new SimpleDataSourceProxy(dataSource, schema)
+            dataSourceProxyMap.put(key, dataSourceProxy)
+        }
+
+        return dataSourceProxy
     }
 
     private HikariDataSource createDataSource(String url) {
