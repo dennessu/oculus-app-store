@@ -51,7 +51,7 @@ class TosRepositoryCloudantImpl extends CloudantClient<Tos> implements TosReposi
 
     @Override
     Promise<Tos> update(Tos model) {
-        throw new IllegalStateException('update tos not support')
+        return Promise.pure((Tos)super.cloudantPut(model))
     }
 
     @Override
