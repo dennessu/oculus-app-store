@@ -25,7 +25,7 @@ class DeviceTypeRepositoryCloudantImpl extends CloudantClient<DeviceType> implem
 
     @Override
     protected CloudantViews getCloudantViews() {
-        return null
+        return views
     }
 
     @Override
@@ -34,9 +34,14 @@ class DeviceTypeRepositoryCloudantImpl extends CloudantClient<DeviceType> implem
     }
 
     @Override
+    Promise<List<DeviceType>> searchByDeviceTypeCode(String typeCode, Integer limit, Integer offset) {
+        def list = super.queryView('by_type_code', typeCode, limit, offset, false)
+        return Promise.pure(list)
+    }
+
+    @Override
     Promise<DeviceType> create(DeviceType deviceType) {
         if (deviceType.id == null) {
-            // hard code to shard 0 for all device type
             deviceType.id = new DeviceTypeId(deviceType.typeCode)
         }
 
@@ -58,4 +63,14 @@ class DeviceTypeRepositoryCloudantImpl extends CloudantClient<DeviceType> implem
         super.cloudantDelete(id.value.toString())
         return Promise.pure(null)
     }
+
+    protected CloudantViews views = new CloudantViews(
+            views: [
+                    'by_type_code': new CloudantViews.CloudantView(
+                            map: 'function(doc) {' +
+                                    '  emit(doc.typeCode, doc._id)' +
+                                    '}',
+                            resultClass: String)
+            ]
+    )
 }

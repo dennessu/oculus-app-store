@@ -17,6 +17,15 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
+ * Check minimum and maximum subCountry's shortName length
+ * Check minimum and maximum subCountry's longName length
+ * Check minimum and maximum localeKey's value length
+ * Check locales's allowed keys
+ * Check countryCode is valid
+ * Check defaultLocale id valid
+ * Check defaultCurrency id valid
+ * Check supportedLocales's locale id valid
+ * Check no duplicate countryCode
  * Created by haomin on 14-4-25.
  */
 @CompileStatic

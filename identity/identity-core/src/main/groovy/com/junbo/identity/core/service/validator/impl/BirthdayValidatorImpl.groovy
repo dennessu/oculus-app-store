@@ -12,6 +12,8 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
+ * 1):  Check not null;
+ * 2):  Check the age in an range.
  * Created by kg on 3/17/14.
  */
 @CompileStatic
