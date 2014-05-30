@@ -5,6 +5,7 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
+ * Check timeZone valid.
  * Created by kg on 3/18/14.
  * REF: http://en.wikipedia.org/wiki/Tz_database
  */

@@ -94,7 +94,7 @@ class TosResourceImpl implements TosResource {
     }
 
     @Override
-    Promise<Tos> put(TosId tosId, Tos tos) {
+    Promise<Tos> patch(TosId tosId, Tos tos) {
         if (tosId == null) {
             throw new IllegalArgumentException('tosId is null')
         }
@@ -108,11 +108,13 @@ class TosResourceImpl implements TosResource {
                 throw AppErrors.INSTANCE.tosNotFound(tosId).exception()
             }
 
-            tos = tosFilter.filterForPut(tos, oldTos)
+            tos = tosFilter.filterForPatch(tos, oldTos)
 
-            return tosRepository.update(tos).then { Tos newTos ->
-                newTos = tosFilter.filterForGet(newTos, null)
-                return Promise.pure(newTos)
+            return tosValidator.validateForUpdate(tosId, tos, oldTos).then {
+                return tosRepository.update(tos).then { Tos newTos ->
+                    newTos = tosFilter.filterForGet(newTos, null)
+                    return Promise.pure(newTos)
+                }
             }
         }
     }
