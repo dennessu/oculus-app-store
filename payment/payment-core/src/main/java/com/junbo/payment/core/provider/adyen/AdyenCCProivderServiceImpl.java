@@ -14,6 +14,9 @@ import com.junbo.common.util.PromiseFacade;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.clientproxy.PersonalInfoFacade;
 import com.junbo.payment.clientproxy.adyen.AdyenApi;
+import com.junbo.payment.clientproxy.adyen.proxy.AdyenApiClientProxy;
+import com.junbo.payment.common.CommonUtil;
+import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.spec.enums.PaymentStatus;
@@ -26,6 +29,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.concurrent.Callable;
@@ -51,7 +58,6 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
     }
     @Override
     public Promise<PaymentInstrument> add(final PaymentInstrument request) {
-        final Address address = personalInfoFacade.getBillingAddress(request.getBillingAddressId()).get();
         return PromiseFacade.PAYMENT.decorate(new Callable<PaymentInstrument>() {
             @Override
             public PaymentInstrument call() throws Exception {
@@ -84,6 +90,10 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                 encryptedInfo.setValue(request.getAccountNum());
                 adyenRequest.setAdditionalData((AnyType2AnyTypeMapEntry[]) Arrays.asList(encryptedInfo).toArray());
                 // Billing address
+                Address address = null;
+                if(request.getBillingAddressId() != null){
+                    address = personalInfoFacade.getBillingAddress(request.getBillingAddressId()).get();
+                }
                 if(address != null){
                     Card card = new Card();
                     com.adyen.services.common.Address billingAddress = new com.adyen.services.common.Address();
@@ -97,21 +107,23 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                 }
                 PaymentResult result = null;
                 try {
-                    result = service.authorise(adyenRequest);
-                    //TODO: use Rest Call or SDK when anyone works
-                    /*
-                    AdyenPaymentRequest adyenPaymentRequest = new AdyenPaymentRequest();
-                    adyenPaymentRequest.setAction("action=Payment.authorise");
-                    ... setup other fields as above
+                    //TODO: enable SDK if Adyen fixed
+                    //result = service.authorise(adyenRequest);
+                    //Rest call
                     MultivaluedMap<String, String> headers = new MultivaluedHashMap<String, String>();
                     headers.putSingle("Authorization", "Basic d3NAQ29tcGFueS5PY3VsdXM6I0J1Z3NmMHIkJiNCdWdzZjByJDE=");
+                    headers.putSingle("Accept", "text/html");
                     ((AdyenApiClientProxy)adyenRestClient).setHeaders(headers);
-                    result = adyenRestClient.authorise(adyenPaymentRequest).get();
-                    */
+                    StringBuffer sbReq = getRawRequest(defaultCurrency, minAuthAmount, piId, request);
+                    String restResponse = adyenRestClient.authorise(sbReq.toString()).get();
+                    if(CommonUtil.isNullOrEmpty(restResponse)){
+                        throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "no response").exception();
+                    }
+                    result = getPaymentResult(restResponse);
                 } catch (Exception e) {
                     throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, e.toString()).exception();
                 }
-                if(result != null && result.getResultCode().equals("Authorised")){
+                if(result != null && result.getResultCode().equalsIgnoreCase(CONFIRMED_STATUS)){
                     RecurringDetail recurringDetail = getRecurringReference(piId);
                     if(recurringDetail != null && recurringDetail.getCard() != null){
                         request.setExternalToken(recurringDetail.getRecurringDetailReference());
@@ -131,6 +143,56 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                 return request;
             }
         });
+    }
+
+    private PaymentResult getPaymentResult(String restResponse) {
+        PaymentResult result = null;
+        String[] resultTokens = restResponse.split("&");
+        Map<String, String> resultMap = new HashMap<>();
+        for(String resultField : resultTokens){
+            String[] fieldTokens = resultField.split("=");
+            if(fieldTokens == null || fieldTokens.length != 2){
+                LOGGER.error("error parse result:" + restResponse);
+                throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "error response").exception();
+            }
+            resultMap.put(fieldTokens[0], fieldTokens[1]);
+        }
+        if(CONFIRMED_STATUS.equalsIgnoreCase(resultMap.get("paymentResult.resultCode"))){
+            result = new PaymentResult();
+            result.setResultCode(CONFIRMED_STATUS);
+        }else{
+            String refusedReason = "refused:";
+            if(resultMap.get("paymentResult.refusalReason") != null){
+                refusedReason += resultMap.get("paymentResult.refusalReason");
+            }
+            LOGGER.error("adyen refused:" + restResponse);
+            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, refusedReason).exception();
+        }
+        return result;
+    }
+
+    private StringBuffer getRawRequest(CurrencyId defaultCurrency, long minAuthAmount, Long piId, PaymentInstrument request) throws UnsupportedEncodingException {
+        StringBuffer sbReq = new StringBuffer();
+        sbReq.append("action=Payment.authorise");
+        sbReq.append("&paymentRequest.card.cvc=" + request.getTypeSpecificDetails().getEncryptedCvmCode());
+        sbReq.append("&paymentRequest.card.holderName=" + request.getAccountName());
+        String expireDate = request.getTypeSpecificDetails().getExpireDate();
+        String[] tokens = expireDate.split("-");
+        if (tokens == null || tokens.length < 2) {
+            throw AppClientExceptions.INSTANCE.invalidExpireDateFormat(expireDate).exception();
+        }
+        sbReq.append("&paymentRequest.card.expiryMonth=" + URLEncoder.encode(String.valueOf(tokens[1]), "UTF-8"));
+        sbReq.append("&paymentRequest.card.expiryYear=" + URLEncoder.encode(String.valueOf(tokens[0]), "UTF-8"));
+        sbReq.append("&paymentRequest.amount.currency=" + URLEncoder.encode(defaultCurrency.getValue(), "UTF-8"));
+        sbReq.append("&paymentRequest.amount.value=" + minAuthAmount);
+        sbReq.append("&paymentRequest.merchantAccount=" + URLEncoder.encode(getMerchantAccount(), "UTF-8"));
+        sbReq.append("&paymentRequest.reference=" + piId.toString());
+        sbReq.append("&paymentRequest.additionalData.card.encrypted.json=" + URLEncoder.encode(request.getAccountNum(), "UTF-8"));
+        sbReq.append("&paymentRequest.shopperEmail=" + URLEncoder.encode(request.getUserInfo().getEmail(), "UTF-8"));
+        sbReq.append("&paymentRequest.shopperReference=" + piId.toString());
+        sbReq.append("&paymentRequest.recurring.contract=" + RECURRING);
+        sbReq.append("&paymentRequest.shopperInteraction=ContAuth");
+        return sbReq;
     }
 
     @Override
