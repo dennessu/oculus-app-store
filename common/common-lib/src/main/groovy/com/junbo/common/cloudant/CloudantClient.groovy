@@ -301,7 +301,7 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
             query.put('descending', 'true')
         }
         if (includeDocs) {
-            query.put('include_docs', includeDocs)
+            query.put('include_docs', includeDocs.toString())
         }
 
         def response = executeRequest(HttpMethod.GET, Utils.combineUrl(VIEW_PATH, viewName), query, null)
@@ -315,9 +315,14 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
         return unmarshall(response.responseBody, CloudantQueryResult, cloudantView.resultClass, entityClass)
     }
 
-    protected List<T> queryView(String viewName, String key, Integer limit, Integer skip,
+    protected CloudantQueryResult queryView(String viewName, String key, Integer limit, Integer skip,
                                 boolean descending, boolean includeDocs) {
-        CloudantQueryResult searchResult = internalQueryView(viewName, key, limit, skip, descending, includeDocs)
+        return internalQueryView(viewName, key, limit, skip, descending, includeDocs)
+    }
+
+    protected List<T> queryView(String viewName, String key, Integer limit, Integer skip,
+                                boolean descending) {
+        CloudantQueryResult searchResult = internalQueryView(viewName, key, limit, skip, descending, true)
         if (searchResult.rows != null) {
             return searchResult.rows.collect { CloudantQueryResult.ResultObject result ->
                 return (T)result.doc
@@ -327,26 +332,16 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
         return []
     }
 
-    protected List<T> queryView(String viewName, String key, Integer limit, Integer skip,
-                                boolean descending) {
-        return queryView(viewName, key, limit, skip, descending, true)
-    }
-
     protected List<T> queryView(String viewName, String key) {
-        return queryView(viewName, key, null, null, false, true)
+        return queryView(viewName, key, null, null, false)
     }
 
-    protected List<T> queryView(String viewName, String key, boolean includeDocs) {
+    protected CloudantQueryResult queryView(String viewName, String key, boolean includeDocs) {
         return queryView(viewName, key, null, null, false, includeDocs)
     }
 
     protected CloudantSearchResult<T> search(String searchName, String queryString, Integer limit, String bookmark) {
-        return search(searchName, queryString, limit, bookmark, true);
-    }
-
-    protected CloudantSearchResult<T> search(String searchName, String queryString, Integer limit, String bookmark,
-                                             boolean includeDocs) {
-        CloudantQueryResult searchResult = internalSearch(searchName, queryString, limit, bookmark, includeDocs)
+        CloudantQueryResult searchResult = internalSearch(searchName, queryString, limit, bookmark, true)
         if (searchResult.rows != null) {
             return new CloudantSearchResult<T>(
                     results: searchResult.rows.collect { CloudantQueryResult.ResultObject result ->
@@ -359,6 +354,11 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
         return new CloudantSearchResult<T>(
                 results: []
         )
+    }
+
+    protected CloudantQueryResult search(String searchName, String queryString, Integer limit, String bookmark,
+                                             boolean includeDocs) {
+        return internalSearch(searchName, queryString, limit, bookmark, includeDocs)
     }
 
     private CloudantQueryResult internalSearch(String searchName, String queryString, Integer limit, String bookmark,
