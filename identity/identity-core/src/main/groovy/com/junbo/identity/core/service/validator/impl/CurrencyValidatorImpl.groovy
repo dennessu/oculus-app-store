@@ -13,6 +13,12 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
+ * Check localeKey's key list
+ * Check minimum and maximum localeKey's value's length
+ * Check minimum and maximum symbol length
+ * Check minimum and maximum numberAfterDecimal length
+ * Check minimum and maximum minAuthAmount length
+ * Check currencyCode duplicate
  * Created by liangfu on 4/10/14.
  */
 @CompileStatic
@@ -30,6 +36,9 @@ class CurrencyValidatorImpl implements CurrencyValidator {
 
     private Integer minLocaleKeyValueLength
     private Integer maxLocaleKeyValueLength
+
+    private Integer minMinAuthAmount
+    private Integer maxMinAuthAmount
 
     @Required
     void setCurrencyRepository(CurrencyRepository currencyRepository) {
@@ -69,6 +78,16 @@ class CurrencyValidatorImpl implements CurrencyValidator {
     @Required
     void setMaxLocaleKeyValueLength(Integer maxLocaleKeyValueLength) {
         this.maxLocaleKeyValueLength = maxLocaleKeyValueLength
+    }
+
+    @Required
+    void setMinMinAuthAmount(Integer minMinAuthAmount) {
+        this.minMinAuthAmount = minMinAuthAmount
+    }
+
+    @Required
+    void setMaxMinAuthAmount(Integer maxMinAuthAmount) {
+        this.maxMinAuthAmount = maxMinAuthAmount
     }
 
     @Override
@@ -175,6 +194,18 @@ class CurrencyValidatorImpl implements CurrencyValidator {
         }
         if (currency.numberAfterDecimal < minNumberAfterDecimalLength) {
             throw AppErrors.INSTANCE.fieldTooShort('numberAfterDecimal', minNumberAfterDecimalLength).exception()
+        }
+
+        if (currency.minAuthAmount == null) {
+            throw AppErrors.INSTANCE.fieldRequired('minAuthAmount').exception()
+        }
+        if (currency.minAuthAmount < minMinAuthAmount) {
+            throw AppErrors.INSTANCE.fieldInvalidException('minAuthAmount',
+                    'minAuthAmount invalid, must bigger than ' + minMinAuthAmount).exception()
+        }
+        if (currency.minAuthAmount > maxMinAuthAmount) {
+            throw AppErrors.INSTANCE.fieldInvalidException('minAuthAmount',
+                    'minAuthAmount invalid, must less than ' + maxMinAuthAmount).exception()
         }
 
         if (currency.localeKeys == null) {

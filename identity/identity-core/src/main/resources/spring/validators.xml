@@ -339,6 +339,8 @@
         <property name="maxNumberAfterDecimalLength" value="3" />
         <property name="minSymbolLength" value="1" />
         <property name="maxSymbolLength" value="10" />
+        <property name="minMinAuthAmount" value="0" />
+        <property name="maxMinAuthAmount" value="10" />
     </bean>
 
     <bean id="localeValidator" class="com.junbo.identity.core.service.validator.impl.LocaleValidatorImpl">
@@ -371,6 +373,22 @@
 
     <bean id="deviceTypeValidator" class="com.junbo.identity.core.service.validator.impl.DeviceTypeValidatorImpl">
         <property name="deviceTypeRepository" ref="deviceTypeRepository"/>
+        <property name="allowedDeviceTypeCodeList">
+            <list>
+                <value>DK1</value>
+                <value>DKHD</value>
+                <value>DK2</value>
+                <value>CV1</value>
+                <value>HMD</value>
+                <value>DK2_CAMERA</value>
+            </list>
+        </property>
+        <property name="minAvailableFirmwaresKeyLength" value="1" />
+        <property name="maxAvailableFirmwaresKeyLength" value="255" />
+        <property name="minAvailableFirmwaresValueLength" value="1" />
+        <property name="maxAvailableFirmwaresValueLength" value="255" />
+        <property name="maxInstructionManualLength" value="255" />
+        <property name="minInstructionManualLength" value="1" />
     </bean>
 
     <bean id="tosValidator" class="com.junbo.identity.core.service.validator.impl.TosValidatorImpl">

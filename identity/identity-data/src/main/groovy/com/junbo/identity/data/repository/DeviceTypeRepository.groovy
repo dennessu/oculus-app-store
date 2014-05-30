@@ -13,4 +13,7 @@ import com.junbo.sharding.repo.BaseRepository
 public interface DeviceTypeRepository extends BaseRepository<DeviceType, DeviceTypeId> {
     @ReadMethod
     Promise<List<DeviceType>> searchAll(Integer limit, Integer offset)
+
+    @ReadMethod
+    Promise<List<DeviceType>> searchByDeviceTypeCode(String typeCode, Integer limit, Integer offset)
 }

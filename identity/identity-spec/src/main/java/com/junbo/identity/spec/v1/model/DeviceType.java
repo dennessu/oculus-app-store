@@ -35,8 +35,8 @@ public class DeviceType extends PropertyAssignedAwareResourceMeta implements Ide
     @ApiModelProperty(position = 4, required = true, value = "[Nullable]The static URL for Instruction Manual.")
     private String instructionManual;
 
-    @ApiModelProperty(position = 5, required = true, value = "[Nullable]The array of component type list.")
-    private List<DeviceType> componentTypes = new ArrayList<>();
+    @ApiModelProperty(position = 5, required = false, value = "[Nullable]The array of component type list.")
+    private List<DeviceTypeId> componentTypes = new ArrayList<>();
 
     public DeviceTypeId getId() {
         return id;
@@ -75,11 +75,11 @@ public class DeviceType extends PropertyAssignedAwareResourceMeta implements Ide
         support.setPropertyAssigned("instructionManual");
     }
 
-    public List<DeviceType> getComponentTypes() {
+    public List<DeviceTypeId> getComponentTypes() {
         return componentTypes;
     }
 
-    public void setComponentTypes(List<DeviceType> componentTypes) {
+    public void setComponentTypes(List<DeviceTypeId> componentTypes) {
         this.componentTypes = componentTypes;
         support.setPropertyAssigned("componentTypes");
     }
