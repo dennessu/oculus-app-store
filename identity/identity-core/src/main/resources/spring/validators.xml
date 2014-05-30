@@ -355,6 +355,8 @@
 
     <bean id="piTypeValidator" class="com.junbo.identity.core.service.validator.impl.PITypeValidatorImpl">
         <property name="piTypeRepository" ref="piTypeRepository"/>
+        <property name="minLocaleNameLength" value="1" />
+        <property name="maxLocaleNameLength" value="255" />
     </bean>
 
     <bean id="groupValidator" class="com.junbo.identity.core.service.validator.impl.GroupValidatorImpl">

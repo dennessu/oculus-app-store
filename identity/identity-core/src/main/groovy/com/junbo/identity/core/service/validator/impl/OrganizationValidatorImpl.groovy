@@ -14,6 +14,7 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
+ * Check owner exists
  * Created by liangfu on 5/22/14.
  */
 @CompileStatic
