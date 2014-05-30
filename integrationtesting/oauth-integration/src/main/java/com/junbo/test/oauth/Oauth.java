@@ -5,12 +5,14 @@
  */
 package com.junbo.test.oauth;
 
+import com.junbo.common.id.UserId;
+import com.junbo.identity.spec.v1.model.UserPersonalInfo;
 import com.junbo.oauth.spec.model.AccessTokenResponse;
 import com.junbo.oauth.spec.model.TokenInfo;
-import com.junbo.test.common.ConfigHelper;
-import com.junbo.test.common.HttpclientHelper;
-import com.junbo.test.common.JsonHelper;
-import com.junbo.test.common.RandomHelper;
+import com.junbo.test.common.*;
+import com.junbo.test.common.libs.IdConverter;
+import com.junbo.test.common.libs.ShardIdHelper;
+import com.junbo.test.identity.Identity;
 import org.apache.http.Header;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -21,6 +23,8 @@ import javax.ws.rs.NotFoundException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.testng.AssertJUnit.assertEquals;
 
 /**
  * @author dw
@@ -50,7 +54,7 @@ public class Oauth {
     public static final String DefaultFNRedirectURI = "redirect_uri";
     public static final String DefaultFNEvent = "event";
 
-    // identity user related
+    // register user related
     public static final String DefaultFNUserName = "username";
     public static final String DefaultFNPassword = "password";
     public static final String DefaultFNEmail = "email";
@@ -59,9 +63,9 @@ public class Oauth {
     public static final String DefaultFNLastName = "last_name";
     public static final String DefaultFNGender = "gender";
     public static final String DefaultFNDoB = "dob";
+    public static final String DefaultFNPin = "pin";
 
     public static final String DefaultUserPwd = "1234qwerASDF";
-    public static final String DefaultUserEmail = "leoltd@163.com";
 
     public static String GetLoginCid() throws Exception {
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(
@@ -72,7 +76,7 @@ public class Oauth {
         try {
             String tarHeader = "Location";
             for (Header h : response.getAllHeaders()) {
-                if (h.toString().contains(tarHeader)) {
+                if (h.toString().startsWith(tarHeader)) {
                     return GetPropertyValueFromString(h.toString(), DefaultFNCid, "&");
                 }
             }
@@ -116,7 +120,7 @@ public class Oauth {
         try {
             String tarHeader = "Location";
             for (Header h : response.getAllHeaders()) {
-                if (h.toString().contains(tarHeader)) {
+                if (h.toString().startsWith(tarHeader)) {
                     return GetPropertyValueFromString(h.toString(), DefaultFNCode, "&");
                 }
             }
@@ -160,12 +164,14 @@ public class Oauth {
         nvps.add(new BasicNameValuePair(DefaultFNEvent, "next"));
         nvps.add(new BasicNameValuePair(DefaultFNUserName, userName));
         nvps.add(new BasicNameValuePair(DefaultFNPassword, DefaultUserPwd));
-        nvps.add(new BasicNameValuePair(DefaultFNEmail, DefaultUserEmail));
+        String email = RandomHelper.randomAlphabetic(10).toLowerCase() + "@163.com";
+        nvps.add(new BasicNameValuePair(DefaultFNEmail, email));
         nvps.add(new BasicNameValuePair(DefaultFNNickName, RandomHelper.randomAlphabetic(15)));
         nvps.add(new BasicNameValuePair(DefaultFNFirstName, RandomHelper.randomAlphabetic(15)));
         nvps.add(new BasicNameValuePair(DefaultFNLastName, RandomHelper.randomAlphabetic(15)));
         nvps.add(new BasicNameValuePair(DefaultFNGender, "male"));
         nvps.add(new BasicNameValuePair(DefaultFNDoB, "1980-01-01"));
+        nvps.add(new BasicNameValuePair(DefaultFNPin, RandomHelper.randomNumeric(6)));
 
         CloseableHttpResponse response = HttpclientHelper.SimplePost(DefaultAuthorizeURI, nvps, false);
         try {
@@ -174,15 +180,17 @@ public class Oauth {
             return responseString;
         } finally {
             response.close();
+            UserPersonalInfo userPersonalInfo = Identity.UserPersonalInfoGetByUserEmail(email);
+            VerifyEmail(GetEmailVerificationLink(userPersonalInfo.getUserId().getValue()));
         }
     }
 
     public static String GetAuthCodeAfterRegisterUser(String cid) throws Exception {
-        CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI + "?cid=" + cid, false);
+        CloseableHttpResponse response = RunPostRegistrationFlow(cid);
         try {
             String tarHeader = "Location";
             for (Header h : response.getAllHeaders()) {
-                if (h.toString().contains(tarHeader)) {
+                if (h.toString().startsWith(tarHeader)) {
                     return GetPropertyValueFromString(h.toString(), DefaultFNCode, "&");
                 }
             }
@@ -194,11 +202,11 @@ public class Oauth {
     }
 
     public static String GetLoginStateAfterRegisterUser(String cid) throws Exception {
-        CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI + "?cid=" + cid, false);
+        CloseableHttpResponse response = RunPostRegistrationFlow(cid);
         try {
             String tarHeader = "Set-Cookie";
             for (Header h : response.getAllHeaders()) {
-                if (h.toString().contains(tarHeader)) {
+                if (h.toString().startsWith(tarHeader)) {
                     return GetPropertyValueFromString(h.toString(), DefaultFNLoginState, ";");
                 }
             }
@@ -209,6 +217,24 @@ public class Oauth {
         }
     }
 
+    private static CloseableHttpResponse RunPostRegistrationFlow(String cid) throws Exception {
+        // get payment method view
+        CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI + "?cid=" + cid, false);
+        response.close();
+        // skip payment method view
+        response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI + "?cid=" + cid + "&event=skip", false);
+        response.close();
+        // get email verification view
+        response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI + "?cid=" + cid, false);
+        response.close();
+        // goto next
+        response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI + "?cid=" + cid + "&event=next", false);
+        response.close();
+        // get auth code
+        response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI + "?cid=" + cid, false);
+        return response;
+    }
+
     private static String GetPropertyValueFromString(String input, String property, String splitor) throws Exception {
         String[] results = input.split(splitor);
         for (String s : results) {
@@ -217,6 +243,35 @@ public class Oauth {
             }
         }
         throw new NotFoundException("Did not found expected property: " + property + " in " + input);
+    }
+
+    public static String GetEmailVerificationLink(Long userId) throws Exception {
+        String query = String.format("select payload from shard_%s.email_history where user_id=%s;",
+                ShardIdHelper.getShardIdByUid(IdConverter.idLongToHexString(UserId.class, userId)), userId);
+        String result = PostgresqlHelper.QuerySingleRowSingleColumn(query, "email");
+        for (String s : result.split(",")) {
+            if (s.contains("verify_link")) {
+                return s.replace("\"verify_link\":\"", "").replace("\"", "").replace("}", "");
+            }
+        }
+        throw new Exception("verify_link is not found in:\r\n" + result);
+    }
+
+    public static void VerifyEmail(String link) throws Exception {
+        CloseableHttpResponse response = HttpclientHelper.SimpleGet(link, false);
+        try {
+            String tarHeader = "Location";
+            for (Header h : response.getAllHeaders()) {
+                if (h.toString().startsWith(tarHeader)) {
+                    assertEquals("validate email verify success", true, h.toString().contains("email-verify-success"));
+                    return;
+                }
+            }
+            throw new NotFoundException(
+                    "Did not found expected response header: " + tarHeader + " in response");
+        } finally {
+            response.close();
+        }
     }
 
     // ****** start API sample logging ******
