@@ -8,6 +8,7 @@ package com.junbo.payment.core.impl;
 
 import com.junbo.common.id.PIType;
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
+import com.junbo.payment.clientproxy.UserInfoFacade;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
@@ -27,6 +28,7 @@ import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.PaymentEvent;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
+import com.junbo.payment.spec.model.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,11 +69,17 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
     protected PlatformTransactionManager transactionManager;
     @Autowired
     protected TrackingUuidRepository trackingUuidRepository;
+    protected UserInfoFacade userInfoFacade;
 
     protected void validateRequest(PaymentTransaction request, boolean needChargeInfo, boolean supportChargeInfo){
         if(request.getUserId() == null){
             throw AppClientExceptions.INSTANCE.missingUserId().exception();
         }
+        UserInfo user = userInfoFacade.getUserInfo(request.getUserId()).get();
+        if(user == null){
+            throw AppClientExceptions.INSTANCE.invalidUserId(request.getUserId().toString()).exception();
+        }
+        request.setUserInfo(user);
         if(request.getTrackingUuid() == null){
             throw AppClientExceptions.INSTANCE.missingTrackingUuid().exception();
         }
@@ -237,5 +245,9 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
                     PaymentUtil.getPIType(pi.getType()).toString()).exception();
         }
         return provider;
+    }
+
+    public void setUserInfoFacade(UserInfoFacade userInfoFacade) {
+        this.userInfoFacade = userInfoFacade;
     }
 }

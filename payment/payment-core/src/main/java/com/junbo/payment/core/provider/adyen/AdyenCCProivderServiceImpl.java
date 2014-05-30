@@ -75,7 +75,7 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                 adyenRequest.setRecurring(new Recurring(RECURRING, null));
                 adyenRequest.setAmount(new Amount(defaultCurrency.getValue(), minAuthAmount));
                 adyenRequest.setReference(piId.toString());
-                adyenRequest.setShopperEmail(TEMP_EMAIL);
+                adyenRequest.setShopperEmail(request.getUserInfo().getEmail());
                 adyenRequest.setShopperReference(piId.toString());
                 adyenRequest.setShopperInteraction("ContAuth");
                 AnyType2AnyTypeMapEntry encryptedInfo = new AnyType2AnyTypeMapEntry();
@@ -135,7 +135,7 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
 
     @Override
     public Promise<PaymentTransaction> authorize(PaymentInstrument pi, PaymentTransaction paymentRequest) {
-        PaymentResult adyenResult = doReferenceCharge(pi.getExternalToken(), paymentRequest);
+        PaymentResult adyenResult = doReferenceCharge(pi, paymentRequest);
         paymentRequest.setWebPaymentInfo(null);
         paymentRequest.setStatus(PaymentStatus.AUTHORIZED.toString());
         paymentRequest.setExternalToken(adyenResult.getPspReference());

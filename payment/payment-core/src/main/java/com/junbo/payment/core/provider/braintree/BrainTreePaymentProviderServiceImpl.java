@@ -97,7 +97,7 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
                             throw AppClientExceptions.INSTANCE.invalidExpireDateFormat(expireDate).exception();
                         }
                         CreditCardRequest ccRequest = new CreditCardRequest()
-                                .customerId(getOrCreateCustomerId(request.getUserId().toString()))
+                                .customerId(getOrCreateCustomerId(request.getUserInfo()))
                                 .number(request.getAccountNum())
                                 .expirationMonth(String.valueOf(tokens[1]))
                                 .expirationYear(String.valueOf(tokens[0]))
@@ -286,6 +286,17 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
             LOGGER.error("gateway validations errors message: " + error.getMessage());
             sbErrorCodes.append(error.getCode()).append("&");
         }
+        if(result.getTransaction() != null){
+            Transaction resultTrx = result.getTransaction();
+            Transaction.GatewayRejectionReason rejectReason = resultTrx.getGatewayRejectionReason();
+            if(rejectReason != null){
+                sbErrorCodes.append("Risk:" + resultTrx.getGatewayRejectionReason().toString()).append("&");
+            }
+            String avsError = result.getTransaction().getAvsErrorResponseCode();
+            if(!CommonUtil.isNullOrEmpty(avsError)){
+                sbErrorCodes.append("Avs:" + avsError);
+            }
+        }
         LOGGER.error("gateway validations errors with codes: " + sbErrorCodes.toString());
         throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, sbErrorCodes.toString()).exception();
     }
@@ -399,7 +410,8 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
         return request;
     }
 
-    private String getOrCreateCustomerId(String customerId){
+    private String getOrCreateCustomerId(UserInfo userInfo){
+        String customerId = userInfo.getUserId().toString();
         Customer customer = null;
         try{
             customer = gateway.customer().find(customerId);
@@ -407,11 +419,14 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
             //Ignore Not Found exception
         }
         if(customer != null) {
-            return customerId;
+            return userInfo.getUserId().toString();
         }
         CustomerRequest request = new CustomerRequest()
                 .id(customerId)
-                .company(companyName);
+                .company(companyName)
+                .firstName(userInfo.getFirstName())
+                .lastName(userInfo.getLastName())
+                .email(userInfo.getEmail());
         Result<Customer> dummyCustomer = null;
         try{
             dummyCustomer = gateway.customer().create(request);

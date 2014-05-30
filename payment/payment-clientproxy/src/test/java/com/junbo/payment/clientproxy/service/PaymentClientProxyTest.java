@@ -5,11 +5,13 @@ import com.junbo.common.id.PIType;
 import com.junbo.common.id.PaymentId;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.common.model.Results;
 import com.junbo.ewallet.spec.model.CreditRequest;
 import com.junbo.ewallet.spec.resource.WalletResource;
 import com.junbo.identity.spec.v1.model.*;
 import com.junbo.identity.spec.v1.model.Address;
+import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource;
 import com.junbo.identity.spec.v1.resource.UserResource;
 import com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy;
 import com.junbo.payment.clientproxy.BaseTest;
@@ -24,6 +26,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
@@ -37,6 +40,8 @@ public class PaymentClientProxyTest extends BaseTest {
     private WalletResource walletClient;
     @Autowired
     private PersonalInfoFacade personalInfoFacade;
+    @Autowired
+    private UserPersonalInfoResource piiClient;
     @Autowired
     private UserResource userClient;
 
@@ -192,6 +197,40 @@ public class PaymentClientProxyTest extends BaseTest {
         user.setUsername("utTest" + getLongId());
         user = userClient.create(user).get();
         final Long userId = user.getId().getValue();
+        final Email email = new Email();
+        email.setInfo("uttest" + userId + "@junbo.com");
+        UserPersonalInfo emailInfo = new UserPersonalInfo(){
+            {
+                setUserId(new UserId(userId));
+                setType("EMAIL");
+                setValue(ObjectMapperProvider.instance().valueToTree(email));
+            }
+        };
+        UserPersonalInfo emailPerInfo = piiClient.create(emailInfo).get();
+
+        final UserName userName = new UserName();
+        userName.setFamilyName("ut"+ userId);
+        userName.setGivenName("payment");
+        userName.setFullName("payment ut");
+        UserPersonalInfo userNameInfo = new UserPersonalInfo(){
+            {
+                setUserId(new UserId(userId));
+                setType("NAME");
+                setValue(ObjectMapperProvider.instance().valueToTree(userName));
+            }
+        };
+        UserPersonalInfo userNamePerInfo = piiClient.create(userNameInfo).get();
+        UserPersonalInfoLink nameLink = new UserPersonalInfoLink();
+        nameLink.setValue(userNamePerInfo.getId());
+        nameLink.setUserId(new UserId(userId));
+        user.setName(nameLink);
+        UserPersonalInfoLink emailLink = new UserPersonalInfoLink();
+        emailLink.setValue(emailPerInfo.getId());
+        emailLink.setUserId(new UserId(userId));
+        emailLink.setIsDefault(true);
+        user.setEmails(Arrays.asList(emailLink));
+        userClient.put(new UserId(userId), user).get();
+
         com.junbo.identity.spec.v1.model.Address address = new Address();
         address.setCountryId(new CountryId("US"));
         address.setStreet1("1st street");

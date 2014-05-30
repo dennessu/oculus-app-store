@@ -54,7 +54,6 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
     protected static final String CAPTURE_STATE = "[capture-received]";
     private static final String AUTH_USER = "javax.xml.rpc.security.auth.username";
     private static final String AUTH_PWD = "javax.xml.rpc.security.auth.password";
-    protected static final String TEMP_EMAIL = "test@123.com";
     private static final int SHIP_DELAY = 1;
     private static final int VALID_HOURS = 3;
     private String redirectURL;
@@ -148,7 +147,7 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
                     paymentRequest.setStatus(PaymentStatus.UNCONFIRMED.toString());
                     return paymentRequest;
                 }else{
-                    PaymentResult adyenResult = doReferenceCharge(pi.getExternalToken(), paymentRequest);
+                    PaymentResult adyenResult = doReferenceCharge(pi, paymentRequest);
                     paymentRequest.setWebPaymentInfo(null);
                     paymentRequest.setStatus(PaymentStatus.SETTLED.toString());
                     paymentRequest.setExternalToken(adyenResult.getPspReference());
@@ -209,8 +208,9 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
         strRequest.append("&sessionValidity=" + format2.format(calValid.getTime()));
         //shopperEmail
         //TODO: get user email
-        strToSign.append(TEMP_EMAIL);
-        strRequest.append("&shopperEmail=" + TEMP_EMAIL);
+        String email = paymentRequest.getUserInfo().getEmail();
+        strToSign.append(email);
+        strRequest.append("&shopperEmail=" + email);
         //"shopperReference": user piid other than userId, as we only get recurring token for each PI
         String shopperReference = nullToEmpty(pi.getId().toString());
         strToSign.append(shopperReference);
@@ -224,22 +224,26 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
         if(!CommonUtil.isNullOrEmpty(paymentRequest.getChargeInfo().getCountry())){
             strRequest.append("&countryCode=" + paymentRequest.getChargeInfo().getCountry());
         }
+        if(!CommonUtil.isNullOrEmpty(paymentRequest.getChargeInfo().getIpAddress())){
+            strRequest.append("&shopperIP=" + paymentRequest.getChargeInfo().getIpAddress());
+        }
         return strRequest.toString();
     }
 
-    protected PaymentResult doReferenceCharge(String recurringReference, PaymentTransaction paymentRequest){
+    protected PaymentResult doReferenceCharge(PaymentInstrument pi, PaymentTransaction paymentRequest){
         PaymentRequest request = new PaymentRequest();
         request.setMerchantAccount(merchantAccount);
-        request.setSelectedRecurringDetailReference(recurringReference);
+        request.setSelectedRecurringDetailReference(pi.getExternalToken());
         request.setRecurring(new Recurring(RECURRING, null));
         String currencyCode = paymentRequest.getChargeInfo().getCurrency();
         request.setAmount(new Amount(currencyCode,
                 paymentRequest.getChargeInfo().getAmount().longValue()
                         * currencyResource.getNumberAfterDecimal(currencyCode).get()));
         request.setReference(CommonUtil.encode(paymentRequest.getId()));
-        request.setShopperEmail(TEMP_EMAIL);
+        request.setShopperEmail(paymentRequest.getUserInfo().getEmail());
         request.setShopperReference(nullToEmpty(paymentRequest.getPaymentInstrumentId().toString()));
         request.setShopperInteraction("ContAuth");
+        request.setShopperIP(paymentRequest.getChargeInfo().getIpAddress());
         PaymentResult result = null;
         try {
             result = service.authorise(request);

@@ -50,6 +50,8 @@ public class PaymentTransaction {
     @FilterIn
     @JsonIgnore
     PaymentProperties paymentProperties;
+    @JsonIgnore
+    private UserInfo userInfo;
 
     public UUID getTrackingUuid() {
         return trackingUuid;
@@ -161,5 +163,13 @@ public class PaymentTransaction {
 
     public void setPaymentProperties(PaymentProperties paymentProperties) {
         this.paymentProperties = paymentProperties;
+    }
+
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
     }
 }

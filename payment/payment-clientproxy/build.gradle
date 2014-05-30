@@ -10,6 +10,8 @@ dependencies {
 
     testCompile (libraries.spring_test)
     testCompile junboProject(':configuration-data')
+    testCompile junboProject(':common-lib')
+    testCompile junboProject(':langur-core')
     testCompile junboProject(':common-sharding')
     compile 'com.adyen.services:adyensdk:1.0-SNAPSHOT'
 

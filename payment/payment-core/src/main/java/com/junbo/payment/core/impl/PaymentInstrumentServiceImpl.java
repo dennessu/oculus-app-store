@@ -8,6 +8,7 @@ package com.junbo.payment.core.impl;
 
 import com.junbo.common.id.PIType;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.payment.clientproxy.UserInfoFacade;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
@@ -46,6 +47,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     private TrackingUuidRepository trackingUuidRepository;
     @Autowired
     private PITypeRepository piTypeRepository;
+    protected UserInfoFacade userInfoFacade;
 
     @Override
     public Promise<PaymentInstrument> add(final PaymentInstrument request) {
@@ -217,6 +219,11 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         if(request.getUserId() == null){
             throw AppClientExceptions.INSTANCE.missingUserId().exception();
         }
+        UserInfo user = userInfoFacade.getUserInfo(request.getUserId()).get();
+        if(user == null){
+            throw AppClientExceptions.INSTANCE.invalidUserId(request.getUserId().toString()).exception();
+        }
+        request.setUserInfo(user);
         if(request.getType() == null){
             throw AppClientExceptions.INSTANCE.missingPIType().exception();
         }
@@ -252,5 +259,9 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
             throw AppClientExceptions.INSTANCE.resourceNotFound("payment_instrument").exception();
         }
         return result;
+    }
+
+    public void setUserInfoFacade(UserInfoFacade userInfoFacade) {
+        this.userInfoFacade = userInfoFacade;
     }
 }

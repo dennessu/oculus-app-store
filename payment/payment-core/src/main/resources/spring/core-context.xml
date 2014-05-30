@@ -8,9 +8,13 @@
     <context:component-scan base-package="com.junbo.payment.core"/>
 
     <!-- payment method serivce -->
-    <bean id="paymentInstrumentService" class="com.junbo.payment.core.impl.PaymentInstrumentServiceImpl"></bean>
+    <bean id="paymentInstrumentService" class="com.junbo.payment.core.impl.PaymentInstrumentServiceImpl">
+        <property name="userInfoFacade" ref="userInfoFacade"/>
+    </bean>
 
-    <bean id="paymentService" class="com.junbo.payment.core.impl.PaymentTransactionServiceImpl"></bean>
+    <bean id="paymentService" class="com.junbo.payment.core.impl.PaymentTransactionServiceImpl">
+        <property name="userInfoFacade" ref="userInfoFacade"/>
+    </bean>
 
     <bean id="paymentCallbackService" class="com.junbo.payment.core.impl.PaymentCallbackServiceImpl">
         <property name="paymentTransactionService" ref="paymentService"/>
