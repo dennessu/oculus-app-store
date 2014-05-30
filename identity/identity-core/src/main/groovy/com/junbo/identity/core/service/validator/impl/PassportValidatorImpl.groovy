@@ -12,6 +12,7 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
+ * Check minimum and maximum passport length
  * Created by liangfu on 4/26/14.
  */
 @CompileStatic

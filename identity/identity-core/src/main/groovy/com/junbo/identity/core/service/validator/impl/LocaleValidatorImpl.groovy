@@ -12,6 +12,11 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
+ * Check localeCode not null and no duplicate
+ * Check minimum and maximum shortName length
+ * Check minimum and maximum longName length
+ * Check minimum and maximum localeName length
+ * Check fallbackLocale exists and fallbackLocale doesn't equals to itself.
  * Created by kg on 3/17/14.
  */
 @CompileStatic
