@@ -87,7 +87,11 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
                         .validation("offerId must be specified when timeInMillis is present.").exception();
             }
 
-            return offerRevisionRepo.getRevisions(options.getOfferIds(), options.getTimestamp());
+            Set<Long> offerIds = new HashSet<>();
+            for (OfferId offerId : options.getOfferIds()) {
+                offerIds.add(offerId.getValue());
+            }
+            return offerRevisionRepo.getRevisions(offerIds, options.getTimestamp());
         } else {
             return offerRevisionRepo.getRevisions(options);
         }
@@ -151,10 +155,10 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     }
 
     private Set<Long> filterOfferIds(List<OfferRevision> revisions) {
-        Set<OfferId> offerIds = new HashSet<>();
+        Set<Long> offerIds = new HashSet<>();
         Set<Long> revisionIds = new HashSet<>();
         for (OfferRevision offerRevision : revisions) {
-            offerIds.add(new OfferId(offerRevision.getOfferId()));
+            offerIds.add(offerRevision.getOfferId());
             revisionIds.add(offerRevision.getRevisionId());
         }
 

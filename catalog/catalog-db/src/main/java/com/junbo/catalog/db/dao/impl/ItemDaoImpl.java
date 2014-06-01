@@ -13,6 +13,7 @@ import com.junbo.catalog.spec.model.item.ItemsGetOptions;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -35,6 +36,16 @@ public class ItemDaoImpl extends BaseDaoImpl<ItemEntity> implements ItemDao {
                     criteria.add(Restrictions.eq("ownerId", options.getOwnerId().getValue()));
                 }
                 criteria.setFirstResult(options.getValidStart()).setMaxResults(options.getValidSize());
+            }
+        });
+    }
+
+    @Override
+    public List<ItemEntity> getItems(final Collection<Long> itemIds) {
+        return findAllBy(new Action<Criteria>() {
+            @Override
+            public void apply(Criteria criteria) {
+                criteria.add(Restrictions.in("itemId", itemIds));
             }
         });
     }

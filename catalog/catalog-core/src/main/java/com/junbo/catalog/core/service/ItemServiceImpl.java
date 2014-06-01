@@ -76,33 +76,38 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
 
     @Override
     public List<Item> getItems(ItemsGetOptions options) {
-        if (options.getHostItemId() != null) {
+        if (!StringUtils.isEmpty(options.getQuery())) {
+            // TODO
+            return null;
+        }else if (options.getHostItemId() != null) {
             List<ItemRevision> itemRevisions = itemRevisionRepo.getRevisions(options.getHostItemId().getValue());
-            if (CollectionUtils.isEmpty(itemRevisions)) {
-                return Collections.emptyList();
-            }
-            Set<ItemId> itemIds = new HashSet<>();
-            for (ItemRevision itemRevision : itemRevisions) {
-                itemIds.add(new ItemId(itemRevision.getItemId()));
-            }
-            itemRevisions = itemRevisionRepo.getRevisions(itemIds, System.currentTimeMillis());
-            itemIds.clear();
-            for (ItemRevision itemRevision : itemRevisions) {
-                if (itemRevision.getIapHostItemIds() != null
-                        && itemRevision.getIapHostItemIds().contains(options.getHostItemId().getValue())) {
-                    itemIds.add(new ItemId(itemRevision.getItemId()));
-                }
-            }
-            if (CollectionUtils.isEmpty(itemIds)) {
-                return Collections.emptyList();
-            }
+            Set<Long> itemIds = filterItemIds(itemRevisions);
 
-            ItemsGetOptions getOptions = new ItemsGetOptions();
-            getOptions.setItemIds(itemIds);
-            return itemRepo.getItems(getOptions);
+            return itemRepo.getItems(itemIds);
         } else {
             return itemRepo.getItems(options);
         }
+    }
+
+    private Set<Long> filterItemIds(List<ItemRevision> revisions) {
+        if (CollectionUtils.isEmpty(revisions)) {
+            return Collections.emptySet();
+        }
+        Set<Long> itemIds = new HashSet<>();
+        Set<Long> revisionIds = new HashSet<>();
+        for (ItemRevision itemRevision : revisions) {
+            itemIds.add(itemRevision.getItemId());
+            revisionIds.add(itemRevision.getRevisionId());
+        }
+        List<ItemRevision> itemRevisions = itemRevisionRepo.getRevisions(itemIds, System.currentTimeMillis());
+        itemIds.clear();
+        for (ItemRevision itemRevision : itemRevisions) {
+            if (revisionIds.contains(itemRevision.getRevisionId())) {
+                itemIds.add(itemRevision.getItemId());
+            }
+        }
+
+        return itemIds;
     }
 
     @Override
@@ -132,9 +137,11 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
             if (CollectionUtils.isEmpty(options.getItemIds())) {
                 throw AppErrors.INSTANCE.validation("itemId must be specified when timestamp is present.").exception();
             }
-
-            return itemRevisionRepo.getRevisions(options.getItemIds(), options.getTimestamp());
-
+            Set<Long> itemIds = new HashSet<>();
+            for (ItemId itemId : options.getItemIds()) {
+                itemIds.add(itemId.getValue());
+            }
+            return itemRevisionRepo.getRevisions(itemIds, options.getTimestamp());
         } else {
             return itemRevisionRepo.getRevisions(options);
         }
@@ -239,9 +246,6 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
                 errors.add(AppErrors.INSTANCE.fieldNotCorrect("defaultOffer",
                         "Cannot find offer " + Utils.encodeId(item.getDefaultOffer())));
             }
-        }
-        if (item.getEntitlementDefId() != null) {
-            errors.add(AppErrors.INSTANCE.unnecessaryField("entitlementDefId"));
         }
         if (!CollectionUtils.isEmpty(item.getGenres())) {
             for (Long genreId : item.getGenres()) {

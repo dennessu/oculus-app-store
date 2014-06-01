@@ -28,6 +28,8 @@ public class ItemsGetOptions extends PageableGetOptions {
     private ItemId hostItemId;
     @QueryParam("developerId")
     private UserId ownerId;
+    @QueryParam("query")
+    private String query;
 
     public Set<ItemId> getItemIds() {
         return itemIds;
@@ -67,5 +69,13 @@ public class ItemsGetOptions extends PageableGetOptions {
 
     public void setOwnerId(UserId ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
     }
 }

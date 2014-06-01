@@ -18,10 +18,7 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Item repository.
@@ -96,6 +93,22 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
         return items;
     }
 
+    public List<Item> getItems(Collection<Long> itemIds) {
+        if (CollectionUtils.isEmpty(itemIds)) {
+            return Collections.emptyList();
+        }
+
+        List<Item> items = new ArrayList<>();
+        for (Long itemId : itemIds) {
+            Item item = super.cloudantGet(itemId.toString());
+            if (item != null) {
+                items.add(item);
+            }
+        }
+
+        return items;
+    }
+
     @Override
     public Item update(Item item) {
         return super.cloudantPut(item);
@@ -119,12 +132,17 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
         index.setResultClass(String.class);
         index.setIndex("function(doc) {" +
                 "index(\'type\', doc.type);" +
+                "index(\'default\', doc.type);" +
                 "if (doc.genres) {" +
                     "for (var idx in doc.genres) {" +
                         "index(\'genreId\', doc.genres[idx]);" +
+                        "index(\'default\', doc.genres[idx]);" +
                     "}" +
                 "}" +
                 "index(\'ownerId\', doc.ownerId);" +
+                "index(\'default\', doc.ownerId);" +
+                "index(\'itemId\', doc.itemId);" +
+                "index(\'default\', doc.itemId);" +
             "}");
         indexMap.put("search", index);
 

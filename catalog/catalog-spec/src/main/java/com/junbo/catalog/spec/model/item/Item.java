@@ -6,7 +6,6 @@
 
 package com.junbo.catalog.spec.model.item;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.BaseEntityModel;
 import com.junbo.common.jackson.annotation.*;
@@ -49,9 +48,6 @@ public class Item extends BaseEntityModel {
     @OfferId
     @ApiModelProperty(position = 28, required = true, value = "Default offer")
     private Long defaultOffer;
-
-    @JsonIgnore
-    private Long entitlementDefId;
 
     public Long getItemId() {
         return itemId;
@@ -99,14 +95,6 @@ public class Item extends BaseEntityModel {
 
     public void setGenres(List<Long> genres) {
         this.genres = genres;
-    }
-
-    public Long getEntitlementDefId() {
-        return entitlementDefId;
-    }
-
-    public void setEntitlementDefId(Long entitlementDefId) {
-        this.entitlementDefId = entitlementDefId;
     }
 
     public Long getDefaultOffer() {
