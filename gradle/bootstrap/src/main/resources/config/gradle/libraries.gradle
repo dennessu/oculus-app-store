@@ -40,6 +40,9 @@ ext {
 
         common_beanutils:       'commons-beanutils:commons-beanutils:1.8.3',
 
+        // quartz
+        quartz_scheduler:       'org.quartz-scheduler:quartz:2.2.1',
+
         // javax
         rs_api:                 'javax.ws.rs:javax.ws.rs-api:2.0',
         servlet_api:            'javax.servlet:javax.servlet-api:3.1.0',
