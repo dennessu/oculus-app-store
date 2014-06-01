@@ -67,6 +67,9 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             throw AppErrors.INSTANCE.notFound("offer", Utils.encodeId(offerId)).exception();
         }
         validateOfferUpdate(offer, oldOffer);
+
+        offer.setApprovedRevisions(oldOffer.getApprovedRevisions());
+        offer.setActiveRevision(oldOffer.getActiveRevision());
         return offerRepo.update(offer);
     }
 
@@ -116,7 +119,39 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         validateRevisionUpdate(revision, oldRevision);
         generateEventActions(revision);
 
-        return super.updateRevision(revisionId, revision);
+        if (Status.APPROVED.is(revision.getStatus())) {
+            Long timestamp = Utils.currentTimestamp();
+            revision.setTimestamp(timestamp);
+            if (revision.getStartTime() == null || revision.getCreatedTime().getTime() < timestamp) {
+                revision.setStartTime(new Date(timestamp));
+            }
+            Offer offer = offerRepo.get(revision.getOfferId());
+            offer.setPublished(true);
+            offer.setCurrentRevisionId(revisionId);
+            offer.setActiveRevision(revision);
+            if (offer.getApprovedRevisions() == null) {
+                offer.setApprovedRevisions(new ArrayList<RevisionInfo>());
+            }
+            offer.getApprovedRevisions().add(getRevisionInfo(revision, timestamp));
+
+            offerRepo.update(offer);
+        }
+
+        return offerRevisionRepo.update(revision);
+    }
+
+    private RevisionInfo getRevisionInfo(OfferRevision revision, Long timestamp) {
+        RevisionInfo revisionInfo = new RevisionInfo();
+        revisionInfo.setApprovedTime(timestamp);
+        revisionInfo.setRevisionId(revision.getRevisionId());
+        revisionInfo.setStartTime(revision.getStartTime().getTime());
+        if (revision.getEndTIme() != null) {
+            revisionInfo.setEndTime(revision.getEndTIme().getTime());
+        } else {
+            revisionInfo.setEndTime(Utils.maxDate().getTime());
+        }
+
+        return revisionInfo;
     }
 
     @Override

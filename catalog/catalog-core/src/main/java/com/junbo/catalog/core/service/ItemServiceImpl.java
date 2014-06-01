@@ -130,15 +130,14 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
         Item item = itemRepo.get(revision.getItemId());
         generateEntitlementDef(revision, item.getType());
 
-        Long timestamp = Utils.currentTimestamp();
         if (Status.APPROVED.is(revision.getStatus())) {
-            revision.setTimestamp(timestamp);
+            revision.setTimestamp(Utils.currentTimestamp());
 
             item.setCurrentRevisionId(revisionId);
             item.setActiveRevision(revision);
             itemRepo.update(item);
         }
-        return getRevisionRepo().update(revision);
+        return itemRevisionRepo.update(revision);
     }
 
     @Override
