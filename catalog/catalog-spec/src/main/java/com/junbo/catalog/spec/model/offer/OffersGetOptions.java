@@ -29,7 +29,7 @@ public class OffersGetOptions extends PageableGetOptions {
     private ItemId itemId;
     @QueryParam("publisherId")
     private UserId ownerId;
-    @QueryParam("query")
+    @QueryParam("q")
     private String query;
 
     public Set<OfferId> getOfferIds() {

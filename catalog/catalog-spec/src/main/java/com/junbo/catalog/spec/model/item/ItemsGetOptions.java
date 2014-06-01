@@ -28,7 +28,7 @@ public class ItemsGetOptions extends PageableGetOptions {
     private ItemId hostItemId;
     @QueryParam("developerId")
     private UserId ownerId;
-    @QueryParam("query")
+    @QueryParam("q")
     private String query;
 
     public Set<ItemId> getItemIds() {

@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.spec.model.item;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.BaseEntityModel;
 import com.junbo.common.jackson.annotation.*;
@@ -49,6 +50,10 @@ public class Item extends BaseEntityModel {
     @ApiModelProperty(position = 28, required = true, value = "Default offer")
     private Long defaultOffer;
 
+    // current revision used for index & search
+    @JsonIgnore
+    private ItemRevision activeRevision;
+
     public Long getItemId() {
         return itemId;
     }
@@ -65,10 +70,12 @@ public class Item extends BaseEntityModel {
         this.type = type;
     }
 
+    @Override
     public Long getCurrentRevisionId() {
         return currentRevisionId;
     }
 
+    @Override
     public void setCurrentRevisionId(Long currentRevisionId) {
         this.currentRevisionId = currentRevisionId;
     }
@@ -103,6 +110,14 @@ public class Item extends BaseEntityModel {
 
     public void setDefaultOffer(Long defaultOffer) {
         this.defaultOffer = defaultOffer;
+    }
+
+    public ItemRevision getActiveRevision() {
+        return activeRevision;
+    }
+
+    public void setActiveRevision(ItemRevision activeRevision) {
+        this.activeRevision = activeRevision;
     }
 
     @Override

@@ -63,6 +63,12 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
                     items.add(item);
                 }
             }
+        } else if (!StringUtils.isEmpty(options.getQuery())) {
+            CloudantSearchResult<Item> searchResult =
+                    super.search("search", options.getQuery(), options.getValidSize(), options.getBookmark());
+            items = searchResult.getResults();
+            options.setNextBookmark(searchResult.getBookmark());
+            options.setStart(null);
         } else if (StringUtils.isEmpty(options.getType()) && options.getGenre()==null && options.getOwnerId()==null) {
             items = super.queryView("by_itemId", null, options.getValidSize(), options.getValidStart(), false);
             options.setNextBookmark(null);
@@ -134,15 +140,62 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
                 "index(\'type\', doc.type);" +
                 "index(\'default\', doc.type);" +
                 "if (doc.genres) {" +
-                    "for (var idx in doc.genres) {" +
-                        "index(\'genreId\', doc.genres[idx]);" +
-                        "index(\'default\', doc.genres[idx]);" +
+                    "for (var genreIdx in doc.genres) {" +
+                        "index(\'genreId\', doc.genres[genreIdx]);" +
+                        "index(\'default\', doc.genres[genreIdx]);" +
                     "}" +
                 "}" +
                 "index(\'ownerId\', doc.ownerId);" +
                 "index(\'default\', doc.ownerId);" +
                 "index(\'itemId\', doc.itemId);" +
                 "index(\'default\', doc.itemId);" +
+                "if (doc.activeRevision) {" +
+                    "index(\'revisionId\', doc.activeRevision.revisionId);" +
+                    "index(\'default\', doc.activeRevision.revisionId);" +
+                    "if (doc.activeRevision.sku) {" +
+                        "index(\'sku\', doc.activeRevision.sku);" +
+                        "index(\'default\', doc.activeRevision.sku);" +
+                    "}" +
+                    "if (doc.activeRevision.iapHostItemIds) {" +
+                        "for (var iapIdx in doc.activeRevision.iapHostItemIds) {" +
+                            "index(\'hostItemId\', doc.activeRevision.iapHostItemIds[iapIdx]);" +
+                            "index(\'default\', doc.activeRevision.iapHostItemIds[iapIdx]);" +
+                        "}" +
+                     "}" +
+                    "if (doc.activeRevision.gameModes) {" +
+                        "for (var modeIdx in doc.activeRevision.gameModes) {" +
+                            "index(\'gameMode\', doc.activeRevision.gameModes[modeIdx]);" +
+                            "index(\'default\', doc.activeRevision.gameModes[modeIdx]);" +
+                        "}" +
+                    "}" +
+                    "if (doc.activeRevision.platforms) {" +
+                        "for (var platformIdx in doc.activeRevision.platforms) {" +
+                            "index(\'platform\', doc.activeRevision.platforms[platformIdx]);" +
+                            "index(\'default\', doc.activeRevision.platforms[platformIdx]);" +
+                        "}" +
+                    "}" +
+                    "if (doc.activeRevision.locales) {" +
+                        "for (var localeIdx in doc.activeRevision.locales) {" +
+                            "var locale = doc.activeRevision.locales[localeIdx];" +
+                            "if (locale.name) {" +
+                                "index(\'name\', locale.name);" +
+                                "index(\'default\', locale.name);" +
+                            "}" +
+                            "if (locale.revisionNotes) {" +
+                                "index(\'revisionNotes\', locale.revisionNotes);" +
+                                "index(\'default\', locale.revisionNotes);" +
+                            "}" +
+                            "if (locale.longDescription) {" +
+                                "index(\'longDescription\', locale.longDescription);" +
+                                "index(\'default\', locale.longDescription);" +
+                            "}" +
+                            "if (locale.shortDescription) {" +
+                                "index(\'shortDescription\', locale.shortDescription);" +
+                                "index(\'default\', locale.shortDescription);" +
+                            "}" +
+                        "}" +
+                    "}" +
+                "}" +
             "}");
         indexMap.put("search", index);
 
