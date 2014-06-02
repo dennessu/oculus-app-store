@@ -14,4 +14,6 @@ dependencies {
 
     compile (libraries.logback_classic)
     compile (libraries.logback_core)
+
+    compile junboProject(':common-configuration')
 }
