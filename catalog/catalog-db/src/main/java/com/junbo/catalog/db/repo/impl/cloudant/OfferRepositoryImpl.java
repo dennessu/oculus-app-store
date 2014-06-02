@@ -134,9 +134,13 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
         index.setIndex("function(doc) {" +
                 "index(\'offerId\', doc.offerId);" +
                 "index(\'default\', doc.offerId);" +
-                "index(\'published\', doc.published);" +
-                "index(\'environment\', doc.environment);" +
-                "index(\'default\', doc.environment);" +
+                "if (doc.published != null && doc.published != undefined) {" +
+                    "index(\'published\', doc.published);" +
+                "}" +
+                "if (doc.environment) {" +
+                    "index(\'environment\', doc.environment);" +
+                    "index(\'default\', doc.environment);" +
+                "}" +
                 "if (doc.categories) {" +
                     "for (var idx in doc.categories) {" +
                         "index(\'categoryId\', doc.categories[idx]);" +
@@ -145,6 +149,9 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
                 "}" +
                 "index(\'ownerId\', doc.ownerId);" +
                 "index(\'default\', doc.ownerId);" +
+                "if (!doc.currentRevisionId) {" +
+                    "index(\'scheduledPublish\', true);" +
+                "}" +
                 "if (doc.activeRevision) {" +
                     "index(\'revisionId\', doc.activeRevision.revisionId);" +
                     "index(\'default\', doc.activeRevision.revisionId);" +

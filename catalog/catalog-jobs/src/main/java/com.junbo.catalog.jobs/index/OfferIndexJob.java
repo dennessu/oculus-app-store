@@ -47,7 +47,8 @@ public class OfferIndexJob {
 
     private void updateActiveRevision() {
         OffersGetOptions options = new OffersGetOptions();
-        options.setPublished(true);
+        options.setSize(20);
+        options.setQuery("scheduledPublish:true AND published:true");
         List<Offer> offers = offerService.getOffers(options);
         while (!CollectionUtils.isEmpty(offers)) {
             Iterator<Offer> iterator = offers.iterator();
@@ -57,10 +58,9 @@ public class OfferIndexJob {
                         && offer.getCurrentRevisionId().equals(offer.getActiveRevision().getRevisionId())) {
                     continue;
                 } else if (offer.getCurrentRevisionId()==null) {
-                    LOGGER.warn("Offer " + offer.getOfferId() + " is published, but no current revision.");
-                    // TODO: TBD
-                    //offer.setPublished(false);
-                    //offerService.updateEntity(offer.getOfferId(), offer);
+                    LOGGER.info("No active revision for published offer " + offer.getOfferId());
+                    offer.setActiveRevision(null);
+                    offerService.updateEntity(offer.getOfferId(), offer);
                     continue;
                 }
 
@@ -69,9 +69,6 @@ public class OfferIndexJob {
                 try {
                     offer.setActiveRevision(offerService.getRevision(offer.getCurrentRevisionId()));
                     offerService.updateEntity(offer.getOfferId(), offer);
-                    for (int i=0; i<10000; i++) {
-                        System.out.println(i*10+2);
-                    }
                 } catch (Exception e) {
                     LOGGER.error("Error updating offer " + offer.getOfferId(), e);
                 }

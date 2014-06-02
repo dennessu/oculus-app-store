@@ -103,19 +103,22 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         return offers;
     }
 
-    private Long getCurrentRevisionId(List<RevisionInfo> approvedRevisions) {
+    private Long getCurrentRevisionId(Map<Long, RevisionInfo> approvedRevisions) {
         if (approvedRevisions == null) {
             return null;
         }
         Long timestamp = Utils.currentTimestamp();
-        for (int i = approvedRevisions.size()-1; i >= 0; i--) {
-            RevisionInfo revisionInfo = approvedRevisions.get(i);
-            if (revisionInfo.getStartTime() <= timestamp && revisionInfo.getEndTime() > timestamp) {
-                return revisionInfo.getRevisionId();
+        Long revisionId = null;
+        Long approvedTime = 0L;
+        for (RevisionInfo revisionInfo : approvedRevisions.values()) {
+            if (revisionInfo.getApprovedTime() > approvedTime
+                    && revisionInfo.getStartTime() <= timestamp && revisionInfo.getEndTime() > timestamp) {
+                revisionId = revisionInfo.getRevisionId();
+                approvedTime = revisionInfo.getApprovedTime();
             }
         }
 
-        return null;
+        return revisionId;
     }
 
     @Override
@@ -176,6 +179,9 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
                 && revision.getEndTIme() == null || revision.getEndTIme().after(Utils.maxDate())) {
             offer.setCurrentRevisionId(revision.getRevisionId());
             offer.setActiveRevision(revision);
+            if (offer.getApprovedRevisions() != null) {
+                offer.getApprovedRevisions().clear();
+            }
         } else {
             offer.setCurrentRevisionId(null);
         }
@@ -184,9 +190,9 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             offer.setActiveRevision(revision);
         }
         if (offer.getApprovedRevisions() == null) {
-            offer.setApprovedRevisions(new ArrayList<RevisionInfo>());
+            offer.setApprovedRevisions(new HashMap<Long, RevisionInfo>());
         }
-        offer.getApprovedRevisions().add(getRevisionInfo(revision, timestamp));
+        offer.getApprovedRevisions().put(revision.getRevisionId(), getRevisionInfo(revision, timestamp));
 
         offerRepo.update(offer);
     }
