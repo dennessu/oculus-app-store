@@ -3,6 +3,8 @@ apply plugin: 'bootstrap'
 buildscript {
     repositories {
         mavenLocal()
+        mavenCentral()
+        jcenter()
         maven {
             credentials {
                 username "${artifactory_user}"
