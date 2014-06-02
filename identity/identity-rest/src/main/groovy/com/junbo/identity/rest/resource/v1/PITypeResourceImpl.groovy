@@ -1,5 +1,6 @@
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.id.PITypeId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 @CompileStatic
 class PITypeResourceImpl implements PITypeResource {
+    private static final String IDENTITY_ADMIN_SCOPE = 'identity.admin'
 
     @Autowired
     private PITypeRepository piTypeRepository
@@ -36,6 +38,10 @@ class PITypeResourceImpl implements PITypeResource {
     Promise<PIType> create(PIType piType) {
         if (piType == null) {
             throw new IllegalArgumentException('piType is null')
+        }
+
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
         }
 
         piType = piTypeFilter.filterForCreate(piType)
@@ -64,6 +70,10 @@ class PITypeResourceImpl implements PITypeResource {
             throw new IllegalArgumentException('piType is null')
         }
 
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
+        }
+
         return piTypeRepository.get(piTypeId).then { PIType oldPIType ->
             if (oldPIType == null) {
                 throw AppErrors.INSTANCE.piTypeNotFound(piTypeId).exception()
@@ -88,6 +98,10 @@ class PITypeResourceImpl implements PITypeResource {
 
         if (piType == null) {
             throw new IllegalArgumentException('piType is null')
+        }
+
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
         }
 
         return piTypeRepository.get(piTypeId).then { PIType oldPIType ->
@@ -152,6 +166,11 @@ class PITypeResourceImpl implements PITypeResource {
         if (piTypeId != null) {
             throw new IllegalArgumentException('piTypeId is null')
         }
+
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
+        }
+
         return piTypeValidator.validateForGet(piTypeId).then {
             return piTypeRepository.delete(piTypeId)
         }

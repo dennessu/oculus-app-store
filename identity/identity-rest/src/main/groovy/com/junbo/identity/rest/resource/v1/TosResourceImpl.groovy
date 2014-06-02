@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.id.Id
 import com.junbo.common.id.TosId
 import com.junbo.common.model.Results
@@ -28,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 @CompileStatic
 class TosResourceImpl implements TosResource {
+    private static final String IDENTITY_ADMIN_SCOPE = 'identity.admin'
 
     @Autowired
     private TosRepository tosRepository
@@ -40,6 +42,10 @@ class TosResourceImpl implements TosResource {
 
     @Override
     Promise<Tos> create(Tos tos) {
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
+        }
+
         tos = tosFilter.filterForCreate(tos)
 
         return tosValidator.validateForCreate(tos).then {
@@ -103,6 +109,10 @@ class TosResourceImpl implements TosResource {
             throw new IllegalArgumentException('tos is null')
         }
 
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
+        }
+
         return tosRepository.get(tosId).then { Tos oldTos ->
             if (oldTos == null) {
                 throw AppErrors.INSTANCE.tosNotFound(tosId).exception()
@@ -121,6 +131,10 @@ class TosResourceImpl implements TosResource {
 
     @Override
     Promise<Void> delete(TosId tosId) {
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
+        }
+
         return tosValidator.validateForGet(tosId).then {
             return tosRepository.delete(tosId)
         }

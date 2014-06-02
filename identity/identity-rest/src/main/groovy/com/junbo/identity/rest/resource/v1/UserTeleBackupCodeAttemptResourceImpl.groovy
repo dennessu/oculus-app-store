@@ -1,10 +1,14 @@
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.authorization.AuthorizeService
+import com.junbo.authorization.RightsScope
 import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTeleBackupCodeAttemptId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
+import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserTeleBackupCodeAttemptFilter
 import com.junbo.identity.core.service.validator.UserTeleBackupCodeAttemptValidator
 import com.junbo.identity.data.repository.UserTeleBackupCodeAttemptRepository
@@ -30,6 +34,7 @@ import javax.transaction.Transactional
 @CompileStatic
 @Transactional
 class UserTeleBackupCodeAttemptResourceImpl implements UserTeleBackupCodeAttemptResource {
+    private static final String IDENTITY_SERVICE_SCOPE = 'identity.service'
 
     @Autowired
     private UserTeleBackupCodeAttemptRepository userTeleBackupCodeAttemptRepository
@@ -43,6 +48,12 @@ class UserTeleBackupCodeAttemptResourceImpl implements UserTeleBackupCodeAttempt
     @Autowired
     private PlatformTransactionManager transactionManager
 
+    @Autowired
+    private AuthorizeService authorizeService
+
+    @Autowired
+    private UserPropertyAuthorizeCallbackFactory authorizeCallbackFactory
+
     @Override
     Promise<UserTeleBackupCodeAttempt> create(UserId userId, UserTeleBackupCodeAttempt userTeleBackupCodeAttempt) {
         if (userId == null) {
@@ -51,6 +62,10 @@ class UserTeleBackupCodeAttemptResourceImpl implements UserTeleBackupCodeAttempt
 
         if (userTeleBackupCodeAttempt == null) {
             throw new IllegalArgumentException('userTeleBackupCodeAttempt is null')
+        }
+
+        if (!AuthorizeContext.hasScopes(IDENTITY_SERVICE_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
         }
 
         userTeleBackupCodeAttempt = userTeleBackupCodeAttemptFilter.filterForCreate(userTeleBackupCodeAttempt)
@@ -78,28 +93,50 @@ class UserTeleBackupCodeAttemptResourceImpl implements UserTeleBackupCodeAttempt
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        return userTeleBackupCodeAttemptValidator.validateForGet(userId, userTeleBackupCodeAttemptId).
-                then { UserTeleBackupCodeAttempt attempt ->
-            attempt = userTeleBackupCodeAttemptFilter.filterForGet(attempt,
-                    getOptions.properties?.split(',') as List<String>)
+        if (userId == null) {
+            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+        }
 
-            return Promise.pure(attempt)
+        def callback = authorizeCallbackFactory.create(userId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('read')) {
+                throw AppErrors.INSTANCE.invalidAccess().exception()
+            }
+
+            return userTeleBackupCodeAttemptValidator.validateForGet(userId, userTeleBackupCodeAttemptId).
+                    then { UserTeleBackupCodeAttempt attempt ->
+                attempt = userTeleBackupCodeAttemptFilter.filterForGet(attempt,
+                        getOptions.properties?.split(',') as List<String>)
+
+                return Promise.pure(attempt)
+            }
         }
     }
 
     @Override
     Promise<Results<UserTeleBackupCodeAttempt>> list(UserId userId, UserTeleBackupCodeAttemptListOptions listOptions) {
-        return userTeleBackupCodeAttemptValidator.validateForSearch(userId, listOptions).then {
-            return search(listOptions).then { List<UserTeleBackupCodeAttempt> attemptList ->
-                def result = new Results<UserTeleBackupCodeAttempt>(items: [])
+        if (userId == null) {
+            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+        }
 
-                attemptList.each { UserTeleBackupCodeAttempt attempt ->
-                    attempt = userTeleBackupCodeAttemptFilter.filterForGet(attempt,
-                            listOptions.properties?.split(',') as List<String>)
-                    result.items.add(attempt)
+        def callback = authorizeCallbackFactory.create(userId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('read')) {
+                throw AppErrors.INSTANCE.invalidAccess().exception()
+            }
+
+            return userTeleBackupCodeAttemptValidator.validateForSearch(userId, listOptions).then {
+                return search(listOptions).then { List<UserTeleBackupCodeAttempt> attemptList ->
+                    def result = new Results<UserTeleBackupCodeAttempt>(items: [])
+
+                    attemptList.each { UserTeleBackupCodeAttempt attempt ->
+                        attempt = userTeleBackupCodeAttemptFilter.filterForGet(attempt,
+                                listOptions.properties?.split(',') as List<String>)
+                        result.items.add(attempt)
+                    }
+
+                    return Promise.pure(result)
                 }
-
-                return Promise.pure(result)
             }
         }
     }

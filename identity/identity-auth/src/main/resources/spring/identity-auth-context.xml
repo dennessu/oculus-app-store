@@ -6,8 +6,8 @@
           parent="abstractAuthorizeCallbackFactory">
     </bean>
 
-    <bean id="userPersonalInfoAuthorizeCallbackFactory"
-          class="com.junbo.identity.auth.UserPersonalInfoAuthorizeCallbackFactory"
+    <bean id="userPropertyAuthorizeCallbackFactory"
+          class="com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory"
           parent="abstractAuthorizeCallbackFactory">
     </bean>
 </beans>
