@@ -1,10 +1,14 @@
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.authorization.AuthorizeService
+import com.junbo.authorization.RightsScope
 import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
+import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserSecurityQuestionAttemptFilter
 import com.junbo.identity.core.service.validator.UserSecurityQuestionAttemptValidator
 import com.junbo.identity.data.repository.UserSecurityQuestionAttemptRepository
@@ -29,6 +33,7 @@ import org.springframework.transaction.support.TransactionCallback
 @Transactional
 @CompileStatic
 class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuestionVerifyAttemptResource {
+    private static final String IDENTITY_SERVICE_SCOPE = 'identity.service'
 
     @Autowired
     private UserSecurityQuestionAttemptRepository userSecurityQuestionAttemptRepository
@@ -42,6 +47,12 @@ class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuest
     @Autowired
     private PlatformTransactionManager transactionManager
 
+    @Autowired
+    private AuthorizeService authorizeService
+
+    @Autowired
+    private UserPropertyAuthorizeCallbackFactory authorizeCallbackFactory
+
     @Override
     Promise<UserSecurityQuestionVerifyAttempt> create(
             UserId userId, UserSecurityQuestionVerifyAttempt userSecurityQuestionAttempt) {
@@ -51,6 +62,10 @@ class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuest
 
         if (userSecurityQuestionAttempt == null) {
             throw new IllegalArgumentException('userSecurityQuestionAttempt')
+        }
+
+        if (!AuthorizeContext.hasScopes(IDENTITY_SERVICE_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
         }
 
         userSecurityQuestionAttempt = userSecurityQuestionAttemptFilter.filterForCreate(userSecurityQuestionAttempt)
@@ -77,19 +92,33 @@ class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuest
         if (listOptions == null) {
             throw new IllegalArgumentException('userId is null')
         }
-        listOptions.setUserId(userId)
-        return userSecurityQuestionAttemptValidator.validateForSearch(listOptions).then {
-            return search(listOptions).then { List<UserSecurityQuestionVerifyAttempt> userSecurityQuestionAttemptList ->
+
+        if (userId == null) {
+            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+        }
+
+        def callback = authorizeCallbackFactory.create(userId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('read')) {
+                throw AppErrors.INSTANCE.invalidAccess().exception()
+            }
+
+            listOptions.setUserId(userId)
+            return userSecurityQuestionAttemptValidator.validateForSearch(listOptions).then {
+                return search(listOptions).then { List<UserSecurityQuestionVerifyAttempt> userSecurityQuestionAttemptList ->
                     def result = new Results<UserSecurityQuestionVerifyAttempt>(items: [])
 
                     userSecurityQuestionAttemptList.each { UserSecurityQuestionVerifyAttempt attempt ->
-                        attempt = userSecurityQuestionAttemptFilter.filterForGet(attempt,
-                                listOptions.properties?.split(',') as List<String>)
-                        result.items.add(attempt)
+                            attempt = userSecurityQuestionAttemptFilter.filterForGet(attempt,
+                                    listOptions.properties?.split(',') as List<String>)
+                        if (attempt != null) {
+                            result.items.add(attempt)
+                        }
                     }
 
                     return Promise.pure(result)
                 }
+            }
         }
     }
 
@@ -100,13 +129,24 @@ class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuest
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        return userSecurityQuestionAttemptValidator.validateForGet(userId, id).
-                then { UserSecurityQuestionVerifyAttempt attempt ->
-                    attempt = userSecurityQuestionAttemptFilter.filterForGet(attempt,
-                            getOptions.properties?.split(',') as List<String>)
+        if (userId == null) {
+            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+        }
 
-                    return Promise.pure(attempt)
-                }
+        def callback = authorizeCallbackFactory.create(userId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('read')) {
+                throw AppErrors.INSTANCE.invalidAccess().exception()
+            }
+
+            return userSecurityQuestionAttemptValidator.validateForGet(userId, id).
+                    then { UserSecurityQuestionVerifyAttempt attempt ->
+                attempt = userSecurityQuestionAttemptFilter.filterForGet(attempt,
+                        getOptions.properties?.split(',') as List<String>)
+
+                return Promise.pure(attempt)
+            }
+        }
     }
 
     Promise<UserSecurityQuestionVerifyAttempt> createInNewTran(UserSecurityQuestionVerifyAttempt userLoginAttempt) {

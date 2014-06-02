@@ -7,6 +7,7 @@ package com.junbo.identity.auth
 
 import com.junbo.authorization.AbstractAuthorizeCallback
 import com.junbo.common.id.UserId
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import groovy.transform.CompileStatic
 
@@ -14,19 +15,19 @@ import groovy.transform.CompileStatic
  * Created by Shenhua on 5/14/2014.
  */
 @CompileStatic
-class UserPersonalInfoAuthorizeCallback extends AbstractAuthorizeCallback<UserPersonalInfo> {
+class UserPropertyAuthorizeCallback extends AbstractAuthorizeCallback<User> {
 
-    UserPersonalInfoAuthorizeCallback(UserPersonalInfoAuthorizeCallbackFactory factory, UserPersonalInfo entity) {
+    UserPropertyAuthorizeCallback(UserPropertyAuthorizeCallbackFactory factory, User entity) {
         super(factory, entity)
     }
 
     @Override
     String getApiName() {
-        return 'personal-info'
+        return 'user-property'
     }
 
     @Override
     protected UserId getUserOwnerId() {
-        return ((UserPersonalInfo) entity).userId
+        return ((User) entity).id as UserId
     }
 }

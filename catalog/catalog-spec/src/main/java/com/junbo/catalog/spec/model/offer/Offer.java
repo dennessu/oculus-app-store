@@ -14,6 +14,7 @@ import com.junbo.common.model.Link;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Offer model.
@@ -54,7 +55,7 @@ public class Offer extends BaseEntityModel {
     private OfferRevision activeRevision;
 
     @JsonIgnore
-    private List<RevisionInfo> approvedRevisions;
+    private Map<Long, RevisionInfo> approvedRevisions;
 
     public Long getOfferId() {
         return offerId;
@@ -120,11 +121,11 @@ public class Offer extends BaseEntityModel {
         this.activeRevision = activeRevision;
     }
 
-    public List<RevisionInfo> getApprovedRevisions() {
+    public Map<Long, RevisionInfo> getApprovedRevisions() {
         return approvedRevisions;
     }
 
-    public void setApprovedRevisions(List<RevisionInfo> approvedRevisions) {
+    public void setApprovedRevisions(Map<Long, RevisionInfo> approvedRevisions) {
         this.approvedRevisions = approvedRevisions;
     }
 

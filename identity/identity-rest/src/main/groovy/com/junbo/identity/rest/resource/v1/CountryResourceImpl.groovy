@@ -1,5 +1,6 @@
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 @CompileStatic
 class CountryResourceImpl implements CountryResource {
+    private static final String IDENTITY_ADMIN_SCOPE = 'identity.admin'
 
     @Autowired
     private CountryRepository countryRepository
@@ -36,6 +38,10 @@ class CountryResourceImpl implements CountryResource {
     Promise<Country> create(Country country) {
         if (country == null) {
             throw new IllegalArgumentException('country is null')
+        }
+
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
         }
 
         country = countryFilter.filterForCreate(country)
@@ -58,6 +64,10 @@ class CountryResourceImpl implements CountryResource {
 
         if (country == null) {
             throw new IllegalArgumentException('country is null')
+        }
+
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
         }
 
         return countryRepository.get(countryId).then { Country oldCountry ->
@@ -84,6 +94,10 @@ class CountryResourceImpl implements CountryResource {
 
         if (country == null) {
             throw new IllegalArgumentException('country is null')
+        }
+
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
         }
 
         return countryRepository.get(countryId).then { Country oldCountry ->
@@ -148,6 +162,10 @@ class CountryResourceImpl implements CountryResource {
     Promise<Void> delete(CountryId countryId) {
         if (countryId == null) {
             throw new IllegalArgumentException('countryId is null')
+        }
+
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
         }
 
         return countryValidator.validateForGet(countryId).then {

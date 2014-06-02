@@ -1,9 +1,13 @@
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.authorization.AuthorizeService
+import com.junbo.authorization.RightsScope
 import com.junbo.common.id.Id
 import com.junbo.common.id.UserCredentialVerifyAttemptId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
+import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserCredentialVerifyAttemptFilter
 import com.junbo.identity.core.service.validator.UserCredentialVerifyAttemptValidator
 import com.junbo.identity.data.identifiable.CredentialType
@@ -29,6 +33,7 @@ import org.springframework.transaction.support.TransactionCallback
 @Transactional
 @CompileStatic
 class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAttemptResource {
+    private static final String IDENTITY_SERVICE_SCOPE = 'identity.service'
 
     @Autowired
     private UserCredentialVerifyAttemptRepository userCredentialVerifyAttemptRepository
@@ -42,10 +47,20 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
     @Autowired
     private PlatformTransactionManager transactionManager
 
+    @Autowired
+    private AuthorizeService authorizeService
+
+    @Autowired
+    private UserPropertyAuthorizeCallbackFactory authorizeCallbackFactory
+
     @Override
     Promise<UserCredentialVerifyAttempt> create(UserCredentialVerifyAttempt userCredentialAttempt) {
         if (userCredentialAttempt == null) {
             throw new IllegalArgumentException('userLoginAttempt is null')
+        }
+
+        if (!AuthorizeContext.hasScopes(IDENTITY_SERVICE_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
         }
 
         userCredentialAttempt = userCredentialVerifyAttemptFilter.filterForCreate(userCredentialAttempt)
@@ -73,17 +88,29 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
     @Override
     Promise<Results<UserCredentialVerifyAttempt>> list(UserCredentialAttemptListOptions listOptions) {
         return credentialVerifyAttemptValidator.validateForSearch(listOptions).then {
-            return search(listOptions).then {
-                List<UserCredentialVerifyAttempt> attempts ->
-                def result = new Results<UserCredentialVerifyAttempt>(items: [])
-
-                attempts.each { UserCredentialVerifyAttempt attempt ->
-                    attempt = userCredentialVerifyAttemptFilter.filterForGet(attempt,
-                            listOptions.properties?.split(',') as List<String>)
-                    result.items.add(attempt)
+            def callback = authorizeCallbackFactory.create(listOptions.userId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('read')) {
+                    throw AppErrors.INSTANCE.invalidAccess().exception()
                 }
 
-                return Promise.pure(result)
+                return search(listOptions).then {
+                    List<UserCredentialVerifyAttempt> attempts ->
+                    def result = new Results<UserCredentialVerifyAttempt>(items: [])
+
+                    return Promise.each(attempts) { UserCredentialVerifyAttempt attempt ->
+
+                        attempt = userCredentialVerifyAttemptFilter.filterForGet(attempt,
+                                listOptions.properties?.split(',') as List<String>)
+                        if (attempt != null && AuthorizeContext.hasRights('read')) {
+                            result.items.add(attempt)
+                        }
+
+                        return Promise.pure(null)
+                    }.then {
+                        return Promise.pure(result)
+                    }
+                }
             }
         }
     }
@@ -96,10 +123,17 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
         }
 
         return credentialVerifyAttemptValidator.validateForGet(id).then { UserCredentialVerifyAttempt attempt ->
-            attempt = userCredentialVerifyAttemptFilter.filterForGet(attempt,
-                    getOptions.properties?.split(',') as List<String>)
+            def callback = authorizeCallbackFactory.create(attempt.userId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('read')) {
+                    throw AppErrors.INSTANCE.userLoginAttemptNotFound(attempt.id as UserCredentialVerifyAttemptId).exception()
+                }
 
-            return Promise.pure(attempt)
+                attempt = userCredentialVerifyAttemptFilter.filterForGet(attempt,
+                        getOptions.properties?.split(',') as List<String>)
+
+                return Promise.pure(attempt)
+            }
         }
     }
 

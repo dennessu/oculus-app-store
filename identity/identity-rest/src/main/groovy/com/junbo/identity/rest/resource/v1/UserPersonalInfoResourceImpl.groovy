@@ -7,7 +7,7 @@ import com.junbo.common.id.Id
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
-import com.junbo.identity.auth.UserPersonalInfoAuthorizeCallbackFactory
+import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserPersonalInfoFilter
 import com.junbo.identity.core.service.validator.UserPersonalInfoValidator
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
@@ -41,7 +41,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
     private AuthorizeService authorizeService
 
     @Autowired
-    private UserPersonalInfoAuthorizeCallbackFactory userPersonalInfoAuthorizeCallbackFactory
+    private UserPropertyAuthorizeCallbackFactory userPropertyAuthorizeCallbackFactory
 
     @Override
     Promise<UserPersonalInfo> create(UserPersonalInfo userPii) {
@@ -49,8 +49,12 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
             throw new IllegalArgumentException('userPii is null')
         }
 
-        def callback = userPersonalInfoAuthorizeCallbackFactory.create(userPii)
+        def callback = userPropertyAuthorizeCallbackFactory.create(userPii.userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('create')) {
+                throw AppErrors.INSTANCE.invalidAccess().exception()
+            }
+
             userPii = userPersonalInfoFilter.filterForCreate(userPii)
 
             return userPersonalInfoValidator.validateForCreate(userPii).then {
@@ -75,8 +79,11 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
         }
 
         return userPersonalInfoValidator.validateForGet(userPiiId).then { UserPersonalInfo userPii ->
-            def callback = userPersonalInfoAuthorizeCallbackFactory.create(userPii)
+            def callback = userPropertyAuthorizeCallbackFactory.create(userPii.userId)
             return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('read')) {
+                    throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPiiId).exception()
+                }
 
                 userPii = userPersonalInfoFilter.filterForGet(userPii, getOptions.properties?.split(',') as List)
                 return Promise.pure(userPii)
@@ -99,8 +106,12 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
                 throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPiiId).exception()
             }
 
-            def callback = userPersonalInfoAuthorizeCallbackFactory.create(oldUserPersonalInfo)
+            def callback = userPropertyAuthorizeCallbackFactory.create(oldUserPersonalInfo.userId)
             return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('update')) {
+                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                }
+
                 userPersonalInfo = userPersonalInfoFilter.filterForPatch(userPersonalInfo, oldUserPersonalInfo)
 
                 return userPersonalInfoValidator.validateForUpdate(userPersonalInfo, oldUserPersonalInfo).then {
@@ -128,8 +139,12 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
                 throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPiiId).exception()
             }
 
-            def callback = userPersonalInfoAuthorizeCallbackFactory.create(oldUserPersonalInfo)
+            def callback = userPropertyAuthorizeCallbackFactory.create(oldUserPersonalInfo.userId)
             return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('update')) {
+                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                }
+
                 userPii = userPersonalInfoFilter.filterForPut(userPii, oldUserPersonalInfo)
 
                 return userPersonalInfoValidator.validateForUpdate(userPii, oldUserPersonalInfo).then {
@@ -149,7 +164,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
         }
 
         return userPersonalInfoValidator.validateForGet(userPiiId).then { UserPersonalInfo userPii ->
-            def callback = userPersonalInfoAuthorizeCallbackFactory.create(userPii)
+            def callback = userPropertyAuthorizeCallbackFactory.create(userPii.userId)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('delete')) {
                     throw AppErrors.INSTANCE.invalidAccess().exception()
@@ -170,12 +185,12 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
             def resultList = new Results<UserPersonalInfo>(items: [])
 
             return Promise.each(userPersonalInfoList) { UserPersonalInfo userPersonalInfo ->
-                def callback = userPersonalInfoAuthorizeCallbackFactory.create(userPersonalInfo)
+                def callback = userPropertyAuthorizeCallbackFactory.create(userPersonalInfo.userId)
                 return RightsScope.with(authorizeService.authorize(callback)) {
                     userPersonalInfo = userPersonalInfoFilter.filterForGet(userPersonalInfo,
                             listOptions.properties?.split(',') as List<String>)
 
-                    if (userPersonalInfo != null) {
+                    if (userPersonalInfo != null && AuthorizeContext.hasRights('read')) {
                         resultList.items.add(userPersonalInfo)
                     }
 

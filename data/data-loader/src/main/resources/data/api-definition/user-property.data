@@ -1,14 +1,14 @@
 {
-    "apiName": "users",
+    "apiName": "user-property",
     "scopes": {
         "identity": [{
             "precondition": "getOwnedByCurrentUser()",
-            "rights": ["read", "update"],
+            "rights": ["read", "create", "update", "delete"],
             "scriptType": "SPEL"
         }],
         "identity.service": [{
             "precondition": "true",
-            "rights": ["read", "create", "update", "search", "delete"],
+            "rights": ["read", "create", "update", "delete"],
             "scriptType": "SPEL"
         }]
     }
