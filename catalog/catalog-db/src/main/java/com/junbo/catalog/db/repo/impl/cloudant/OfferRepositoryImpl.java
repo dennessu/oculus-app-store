@@ -16,6 +16,7 @@ import com.junbo.common.id.OfferId;
 import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -61,6 +62,12 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
                     offers.add(offer);
                 }
             }
+        } else if (!StringUtils.isEmpty(options.getQuery())) {
+            CloudantSearchResult<Offer> searchResult =
+                    super.search("search", options.getQuery(), options.getValidSize(), options.getBookmark());
+            offers = searchResult.getResults();
+            options.setNextBookmark(searchResult.getBookmark());
+            options.setStart(null);
         } else if (options.getPublished()==null && options.getOwnerId()==null && options.getCategory()==null) {
             offers = super.queryView("by_offerId", null, options.getValidSize(), options.getValidStart(), false);
             options.setNextBookmark(null);
@@ -125,14 +132,44 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
         CloudantIndex index = new CloudantIndex();
         index.setResultClass(String.class);
         index.setIndex("function(doc) {" +
+                "index(\'offerId\', doc.offerId);" +
+                "index(\'default\', doc.offerId);" +
                 "index(\'published\', doc.published);" +
                 "index(\'environment\', doc.environment);" +
+                "index(\'default\', doc.environment);" +
                 "if (doc.categories) {" +
                     "for (var idx in doc.categories) {" +
                         "index(\'categoryId\', doc.categories[idx]);" +
+                        "index(\'default\', doc.categories[idx]);" +
                     "}" +
                 "}" +
                 "index(\'ownerId\', doc.ownerId);" +
+                "index(\'default\', doc.ownerId);" +
+                "if (doc.activeRevision) {" +
+                    "index(\'revisionId\', doc.activeRevision.revisionId);" +
+                    "index(\'default\', doc.activeRevision.revisionId);" +
+                    "if (doc.activeRevision.locales) {" +
+                        "for (var localeIdx in doc.activeRevision.locales) {" +
+                            "var locale = doc.activeRevision.locales[localeIdx];" +
+                            "if (locale.name) {" +
+                                "index(\'name\', locale.name);" +
+                                "index(\'default\', locale.name);" +
+                            "}" +
+                            "if (locale.revisionNotes) {" +
+                                "index(\'revisionNotes\', locale.revisionNotes);" +
+                                "index(\'default\', locale.revisionNotes);" +
+                            "}" +
+                            "if (locale.longDescription) {" +
+                                "index(\'longDescription\', locale.longDescription);" +
+                                "index(\'default\', locale.longDescription);" +
+                            "}" +
+                            "if (locale.shortDescription) {" +
+                                "index(\'shortDescription\', locale.shortDescription);" +
+                                "index(\'default\', locale.shortDescription);" +
+                            "}" +
+                        "}" +
+                    "}" +
+                "}" +
             "}");
         indexMap.put("search", index);
 

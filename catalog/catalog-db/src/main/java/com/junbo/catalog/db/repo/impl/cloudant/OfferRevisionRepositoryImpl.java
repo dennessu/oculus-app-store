@@ -31,6 +31,7 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
         this.idGenerator = idGenerator;
     }
 
+    @Override
     public OfferRevision create(OfferRevision offerRevision) {
         if (offerRevision.getRevisionId() == null) {
             offerRevision.setRevisionId(idGenerator.nextId());
@@ -38,10 +39,12 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
         return super.cloudantPost(offerRevision);
     }
 
+    @Override
     public OfferRevision get(Long revisionId) {
         return super.cloudantGet(revisionId.toString());
     }
 
+    @Override
     public List<OfferRevision> getRevisions(OfferRevisionsGetOptions options) {
         List<OfferRevision> offerRevisions = new ArrayList<>();
         if (!CollectionUtils.isEmpty(options.getRevisionIds())) {
@@ -82,16 +85,8 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
         return offerRevisions;
     }
 
-    public List<OfferRevision> getRevisions(Collection<OfferId> offerIds, Long timestamp) {
-        Set<Long> longOfferIds = new HashSet<>();
-        for (OfferId offerId : offerIds) {
-            longOfferIds.add(offerId.getValue());
-        }
-
-        return internalGetRevisions(longOfferIds, timestamp);
-    }
-
-    private List<OfferRevision> internalGetRevisions(Collection<Long> offerIds, Long timestamp) {
+    @Override
+    public List<OfferRevision> getRevisions(Collection<Long> offerIds, Long timestamp) {
         List<OfferRevision> revisions = new ArrayList<>();
         for (Long offerId : offerIds) {
             List<OfferRevision> itemRevisions = super.queryView("by_offerId", offerId.toString());
@@ -114,10 +109,12 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
         return revisions;
     }
 
+    @Override
     public List<OfferRevision> getRevisions(Long itemId) {
         return super.queryView("by_itemId", itemId.toString());
     }
 
+    @Override
     public List<OfferRevision> getRevisionsBySubOfferId(Long offerId) {
         return super.queryView("by_subOfferId", offerId.toString());
     }

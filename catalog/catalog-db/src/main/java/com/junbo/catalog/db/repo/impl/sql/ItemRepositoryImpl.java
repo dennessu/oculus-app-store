@@ -15,6 +15,7 @@ import com.junbo.catalog.spec.model.item.ItemsGetOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -36,6 +37,17 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     public List<Item> getItems(ItemsGetOptions options) {
         List<ItemEntity> itemEntities = itemDao.getItems(options);
+        List<Item> items = new ArrayList<>();
+        for (ItemEntity itemEntity : itemEntities) {
+            items.add(ItemMapper.toModel(itemEntity));
+        }
+
+        return items;
+    }
+
+    @Override
+    public List<Item> getItems(Collection<Long> itemIds) {
+        List<ItemEntity> itemEntities = itemDao.getItems(itemIds);
         List<Item> items = new ArrayList<>();
         for (ItemEntity itemEntity : itemEntities) {
             items.add(ItemMapper.toModel(itemEntity));

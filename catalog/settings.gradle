@@ -8,4 +8,5 @@ include 'catalog-rest'
 include 'catalog-clientproxy'
 include 'catalog-auth'
 
+include 'catalog-jobs'
 include 'catalog-app'
