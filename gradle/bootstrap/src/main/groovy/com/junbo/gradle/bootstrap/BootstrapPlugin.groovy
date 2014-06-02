@@ -111,9 +111,6 @@ class BootstrapPlugin implements Plugin<Project> {
 
                 sourceSets {
                     main {
-                        java {
-                            srcDir generatedSrc
-                        }
                         resources {
                             srcDir generatedRes
                         }
@@ -186,7 +183,7 @@ class BootstrapPlugin implements Plugin<Project> {
 
                 task('sourcesJar', type: Jar) {
                     classifier = 'sources'
-                    from sourceSets.main.allSource
+                    from sourceSets.main.allSource, generatedSrc.path
                 }
 
                 publishing {
@@ -232,7 +229,6 @@ class BootstrapPlugin implements Plugin<Project> {
                     codenarc libraries.log4j
                     codenarc libraries.groovy
                 }
-
 
                 compileGroovy.dependsOn configurations.processor
                 compileGroovy.doFirst {

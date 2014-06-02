@@ -1,11 +1,13 @@
-package com.junbo.apphost.core
+package com.junbo.apphost.core.health
 
+import com.junbo.apphost.core.AutowiredInjectResolver
 import com.junbo.apphost.core.logging.AccessLogProbe
 import groovy.transform.CompileStatic
-import org.glassfish.grizzly.http.server.*
+import org.glassfish.grizzly.http.server.HttpHandler
+import org.glassfish.grizzly.http.server.HttpServer
+import org.glassfish.grizzly.http.server.NetworkListener
 import org.glassfish.grizzly.nio.transport.TCPNIOTransport
 import org.glassfish.hk2.api.InjectionResolver
-import org.glassfish.hk2.api.ServiceLocator
 import org.glassfish.hk2.api.TypeLiteral
 import org.glassfish.hk2.utilities.binding.AbstractBinder
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpContainer
@@ -25,9 +27,6 @@ import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
 import org.springframework.context.ApplicationListener
 import org.springframework.context.event.ContextRefreshedEvent
-import org.springframework.core.io.Resource
-import org.springframework.core.io.support.EncodedResource
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.util.ClassUtils
 
 import java.util.concurrent.ExecutorService
@@ -36,18 +35,16 @@ import java.util.concurrent.ExecutorService
  * Created by kg on 4/21/2014.
  */
 @CompileStatic
-class GrizzlyHttpServerBean implements InitializingBean, DisposableBean,
+class HealthHttpServerBean implements InitializingBean, DisposableBean,
         ApplicationContextAware, ApplicationListener<ContextRefreshedEvent>, BeanNameAware {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GrizzlyHttpServerBean)
+    private static final Logger LOGGER = LoggerFactory.getLogger(HealthHttpServerBean)
 
     private URI uri
 
     private ApplicationContext applicationContext
 
     private HttpServer httpServer
-
-    private ServiceLocator serviceLocator
 
     private ExecutorService executorService
 
@@ -82,7 +79,7 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean,
         httpServer = new HttpServer()
 
         // configure listener
-        NetworkListener listener = new NetworkListener('grizzly', host, port)
+        NetworkListener listener = new NetworkListener('health', host, port)
 
         TCPNIOTransport transport = listener.transport
         transport.setWorkerThreadPool(executorService)
@@ -95,15 +92,7 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean,
         // handle Jersey resources
         HttpHandler jerseyHandler = buildJerseyHandler()
 
-        // handle static resources
-        def staticHandler = new CLStaticHttpHandler(ClassUtils.defaultClassLoader, ['static/'] as String[]) {
-            @Override
-            protected void onMissingResource(Request request, Response response) throws Exception {
-                jerseyHandler.service(request, response)
-            }
-        }
-
-        config.addHttpHandler(staticHandler, uri.path)
+        config.addHttpHandler(jerseyHandler, uri.path)
 
         config.setPassTraceRequest(true)
         config.monitoringConfig.webServerConfig.addProbes(new AccessLogProbe())
@@ -113,31 +102,31 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean,
         // configure resourceConfig
         def resourceConfig = new ResourceConfig()
 
-        readDistinctLines('classpath*:/jersey/components').each { String line ->
-            LOGGER.info("Registering component class $line")
+        resourceConfig.packages('com.junbo.apphost.core.health')
 
+        def components = [
+                'com.junbo.common.error.RestExceptionMapper',
+                'com.junbo.common.json.JacksonFeature',
+                'com.junbo.common.json.ObjectMapperProvider'
+        ]
+
+        components.each { String line ->
             def componentClass = ClassUtils.defaultClassLoader.loadClass(line)
             resourceConfig.register(componentClass)
-        }
-
-        readDistinctLines('classpath*:/jersey/packages').each { String line ->
-            LOGGER.info("Registering package $line")
-
-            resourceConfig.packages(line)
         }
 
         def customBinder = new AbstractBinder() {
             @Override
             protected void configure() {
                 bind(new AutowiredInjectResolver(applicationContext)).
-                        to(new TypeLiteral<InjectionResolver<Autowired>>() { } )
+                        to(new TypeLiteral<InjectionResolver<Autowired>>() {})
             }
         }
 
         // create handler
         ApplicationHandler applicationHandler = new ApplicationHandler(resourceConfig, customBinder)
 
-        serviceLocator = applicationHandler.serviceLocator
+        def serviceLocator = applicationHandler.serviceLocator
 
         HttpHandler handler = null
         for (ContainerProvider cp : Providers.getProviders(serviceLocator, ContainerProvider)) {
@@ -164,17 +153,5 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean,
     void destroy() throws Exception {
         LOGGER.info("Shutting down [$beanName]...")
         httpServer.shutdown()
-    }
-
-    ServiceLocator getServiceLocator() {
-        return serviceLocator
-    }
-
-    private static Collection<String> readDistinctLines(String resourcePath) {
-        def resourcePatternResolver = new PathMatchingResourcePatternResolver()
-
-        return resourcePatternResolver.getResources(resourcePath).collectMany { Resource resource ->
-            new EncodedResource(resource).inputStream.readLines()
-        }.collect { String line -> line.trim() }.findAll { String line -> !line.empty }.unique()
     }
 }

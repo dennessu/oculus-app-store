@@ -25,6 +25,13 @@
         </property>
     </bean>
 
+    <bean id="healthHttpServer" class="com.junbo.apphost.core.health.HealthHttpServerBean">
+        <property name="uri">
+            <value type="java.net.URI">${apphost.server.health.uri}</value>
+        </property>
+        <property name="executorService" ref="junboThreadPool"/>
+    </bean>
+
     <!-- These are deprecated. Do not use them. -->
     <bean id="javax.ws.rs.core.UriInfo"
           class="javax.ws.rs.core.UriInfo" scope="hk2"/>
