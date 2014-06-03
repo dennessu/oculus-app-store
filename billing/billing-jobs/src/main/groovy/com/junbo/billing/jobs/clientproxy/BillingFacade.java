@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.billing.jobs;
+package com.junbo.billing.jobs.clientproxy;
 
 import com.junbo.billing.spec.model.Balance;
 import com.junbo.langur.core.promise.Promise;
