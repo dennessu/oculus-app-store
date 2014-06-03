@@ -12,7 +12,10 @@
     "price":{
         "priceType": "CUSTOM",
         "priceTier": null,
-        "prices": {"USD":1000}
+        "prices": {
+            "US": {"USD": 10},
+            "JP": {"JPY": 1000.0}
+        }
     },
     "restrictions":{
         "limitPerCustomer": 10,
