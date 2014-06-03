@@ -1,6 +1,7 @@
 package com.junbo.data.handler
 
 import com.junbo.common.error.AppErrorException
+import com.junbo.common.id.PITypeId
 import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.PIType
 import com.junbo.identity.spec.v1.option.list.PITypeListOptions
@@ -46,7 +47,7 @@ class PITypeDataHandler extends BaseDataHandler {
                         "with new resourceAge: $piType.resourceAge")
                 piType.id = existing.id
                 piType.resourceAge = existing.resourceAge
-                piTypeResource.put(existing.id, piType)
+                piTypeResource.put((PITypeId)existing.id, piType)
             } else {
                 logger.debug("$piType.typeCode already exists, skipped!")
             }
