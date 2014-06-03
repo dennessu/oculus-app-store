@@ -8,8 +8,8 @@ package com.junbo.identity.spec.v1.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.ClientId;
 import com.junbo.common.id.UserId;
-import com.junbo.common.id.UserTeleAttemptId;
-import com.junbo.common.id.UserTeleId;
+import com.junbo.common.id.UserTFAAttemptId;
+import com.junbo.common.id.UserTFAId;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -17,16 +17,16 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 /**
  * Created by liangfu on 4/22/14.
  */
-public class UserTeleAttempt extends PropertyAssignedAwareResourceMeta implements Identifiable<UserTeleAttemptId> {
+public class UserTFAAttempt extends PropertyAssignedAwareResourceMeta implements Identifiable<UserTFAAttemptId> {
 
     @ApiModelProperty(position = 1, required = true,
-            value = "[Client Immutable]The id of the userTele attempt resource.")
+            value = "[Client Immutable]The id of the user TFA attempt resource.")
     @JsonProperty("self")
-    private UserTeleAttemptId id;
+    private UserTFAAttemptId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "User Tele resource.")
-    @JsonProperty("userTele")
-    private UserTeleId userTeleId;
+    @ApiModelProperty(position = 2, required = true, value = "User TFA resource.")
+    @JsonProperty("userTFA")
+    private UserTFAId userTFAId;
 
     @ApiModelProperty(position = 3, required = true, value = "User resource.")
     @JsonProperty("user")
@@ -47,24 +47,24 @@ public class UserTeleAttempt extends PropertyAssignedAwareResourceMeta implement
     @ApiModelProperty(position = 8, required = false, value = "[Client Immutable]Whether the attempt is success.")
     private Boolean succeeded;
 
-    public UserTeleAttemptId getId() {
-        return id;
-    }
-
-    public void setId(UserTeleAttemptId id) {
+    public void setId(UserTFAAttemptId id) {
         this.id = id;
         support.setPropertyAssigned("id");
         support.setPropertyAssigned("self");
     }
 
-    public UserTeleId getUserTeleId() {
-        return userTeleId;
+    public UserTFAAttemptId getId() {
+        return id;
     }
 
-    public void setUserTeleId(UserTeleId userTeleId) {
-        this.userTeleId = userTeleId;
-        support.setPropertyAssigned("userTeleId");
-        support.setPropertyAssigned("userTele");
+    public UserTFAId getUserTFAId() {
+        return userTFAId;
+    }
+
+    public void setUserTFAId(UserTFAId userTFAId) {
+        this.userTFAId = userTFAId;
+        support.setPropertyAssigned("userTFAId");
+        support.setPropertyAssigned("userTFA");
     }
 
     public UserId getUserId() {

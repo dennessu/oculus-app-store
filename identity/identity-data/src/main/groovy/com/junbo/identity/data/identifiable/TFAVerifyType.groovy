@@ -9,13 +9,13 @@ import javax.ws.rs.NotSupportedException
  * Created by liangfu on 4/30/14.
  */
 @CompileStatic
-enum TeleVerifyType implements Identifiable<Short> {
+enum TFAVerifyType implements Identifiable<Short> {
     CALL((short)1),
     SMS((short)2)
 
     private final Short id
 
-    TeleVerifyType(Short id) {
+    TFAVerifyType(Short id) {
         this.id = id
     }
 
@@ -26,6 +26,6 @@ enum TeleVerifyType implements Identifiable<Short> {
 
     @Override
     void setId(Short id) {
-        throw new NotSupportedException('enum TeleVerifyType not settable')
+        throw new NotSupportedException('enum TFAVerifyType not settable')
     }
 }

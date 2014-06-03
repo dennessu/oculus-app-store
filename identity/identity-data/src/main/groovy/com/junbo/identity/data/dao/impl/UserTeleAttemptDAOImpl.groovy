@@ -2,7 +2,7 @@ package com.junbo.identity.data.dao.impl
 
 import com.junbo.identity.data.dao.UserTeleAttemptDAO
 import com.junbo.identity.data.entity.user.UserTeleAttemptEntity
-import com.junbo.identity.spec.v1.option.list.UserTeleAttemptListOptions
+import com.junbo.identity.spec.v1.option.list.UserTFAAttemptListOptions
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
 import org.hibernate.criterion.Order
@@ -40,7 +40,7 @@ class UserTeleAttemptDAOImpl extends BaseDAO implements UserTeleAttemptDAO {
     }
 
     @Override
-    List<UserTeleAttemptEntity> searchByUserId(Long userId, UserTeleAttemptListOptions listOptions) {
+    List<UserTeleAttemptEntity> searchByUserId(Long userId, UserTFAAttemptListOptions listOptions) {
         Criteria criteria = currentSession(userId).createCriteria(UserTeleAttemptEntity)
         criteria.add(Restrictions.eq('userId', userId))
 

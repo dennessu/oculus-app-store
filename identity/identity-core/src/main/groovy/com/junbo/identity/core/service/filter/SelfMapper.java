@@ -66,11 +66,11 @@ public interface SelfMapper {
     UserCredential filterUserCredential(UserCredential userCredential, MappingContext context);
     UserCredential mergeUserCredential(UserCredential source, UserCredential base, MappingContext context);
 
-    UserTeleCode filterUserTeleCode(UserTeleCode userTeleCode, MappingContext context);
-    UserTeleCode mergeUserTeleCode(UserTeleCode source, UserTeleCode base, MappingContext context);
+    UserTFA filterUserTeleCode(UserTFA userTeleCode, MappingContext context);
+    UserTFA mergeUserTeleCode(UserTFA source, UserTFA base, MappingContext context);
 
-    UserTeleAttempt filterUserTeleAttempt(UserTeleAttempt attempt, MappingContext context);
-    UserTeleAttempt mergeUserTeleAttempt(UserTeleAttempt source, UserTeleAttempt base, MappingContext context);
+    UserTFAAttempt filterUserTeleAttempt(UserTFAAttempt attempt, MappingContext context);
+    UserTFAAttempt mergeUserTeleAttempt(UserTFAAttempt source, UserTFAAttempt base, MappingContext context);
 
     UserTeleBackupCode filterUserTeleBackupCode(UserTeleBackupCode userTeleBackupCode, MappingContext context);
     UserTeleBackupCode mergeUserTeleBackupCode(UserTeleBackupCode source, UserTeleBackupCode base,

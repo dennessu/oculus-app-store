@@ -83,13 +83,13 @@
         <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
 
-    <bean id="cloudantUserTeleRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserTeleRepositoryCloudantImpl" parent="cloudantClient">
+    <bean id="cloudantUserTFARepository" class="com.junbo.identity.data.repository.impl.cloudant.UserTFARepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="user_tele" />
         <property name="shardAlgorithm" ref="userShardAlgorithm" />
         <property name="idGenerator" ref="oculus48IdGenerator" />
     </bean>
 
-    <bean id="cloudantUserTeleAttemptRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserTeleAttemptRepositoryCloudantImpl" parent="cloudantClient">
+    <bean id="cloudantUserTFAAttemptRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserTFAAttemptRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="user_tele_code_attempt" />
         <property name="shardAlgorithm" ref="userShardAlgorithm" />
         <property name="idGenerator" ref="oculus48IdGenerator" />

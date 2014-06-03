@@ -83,15 +83,15 @@
         <property name="sqlRepositoryImpl" ref="sqlTosRepository" />
     </bean>
 
-    <bean id="userTeleRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTeleRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantUserTeleRepository" />
+    <bean id="userTFARepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTFARepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantUserTFARepository" />
         <property name="sqlRepositoryImpl" ref="sqlUserTeleRepository" />
     </bean>
 
-    <bean id="userTeleAttemptRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTeleAttemptRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantUserTeleAttemptRepository" />
+    <bean id="userTFAAttemptRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTFAAttemptRepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantUserTFAAttemptRepository" />
         <property name="sqlRepositoryImpl" ref="sqlUserTeleAttemptRepository" />
     </bean>
 

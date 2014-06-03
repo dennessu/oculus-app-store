@@ -7,9 +7,8 @@ package com.junbo.identity.spec.error;
 
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
-import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.enumid.DeviceTypeId;
-import com.junbo.common.id.PITypeId;
+import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.ErrorDef;
 import com.junbo.common.error.ErrorProxy;
@@ -155,8 +154,8 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 409, code = "2000038", description = "Address {0} not found.", field = "{0}")
     AppError addressNotFound(AddressId addressId);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000039", description = "User Tele code {0} not found.", field = "{0}")
-    AppError userTeleCodeNotFound(UserTeleId userTeleId);
+    @ErrorDef(httpStatusCode = 409, code = "2000039", description = "User TFA code {0} not found.", field = "{0}")
+    AppError userTFANotFound(UserTFAId userTFAId);
 
     @ErrorDef(httpStatusCode = 409, code = "2000040", description = "Country {0} not found.", field = "{0}")
     AppError countryNotFound(CountryId countryId);
@@ -182,11 +181,11 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 409, code = "2000050", description = "TeleSign provider error.")
     AppError teleSignProviderError(String message);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000051", description = "User Tele attempt {0} not found.", field = "{0}")
-    AppError userTeleAttemptNotFound(UserTeleAttemptId userTeleAttemptId);
+    @ErrorDef(httpStatusCode = 409, code = "2000051", description = "User TFA attempt {0} not found.", field = "{0}")
+    AppError userTFAAttemptNotFound(UserTFAAttemptId userTFAAttemptId);
 
-    @ErrorDef(httpStatusCode = 404, code = "2000052", description = "User tele code is incorrect.")
-    AppError userTeleCodeIncorrect();
+    @ErrorDef(httpStatusCode = 404, code = "2000052", description = "User TFA code is incorrect.")
+    AppError userTFACodeIncorrect();
 
     @ErrorDef(httpStatusCode = 409, code = "2000053", description = "User Tele backup code {0} not found.",
             field = "{0}")

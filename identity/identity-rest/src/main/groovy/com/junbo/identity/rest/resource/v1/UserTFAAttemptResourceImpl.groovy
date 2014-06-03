@@ -5,18 +5,18 @@ import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
 import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
-import com.junbo.common.id.UserTeleAttemptId
+import com.junbo.common.id.UserTFAAttemptId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
-import com.junbo.identity.core.service.filter.UserTeleAttemptFilter
-import com.junbo.identity.core.service.validator.UserTeleAttemptValidator
-import com.junbo.identity.data.repository.UserTeleAttemptRepository
+import com.junbo.identity.core.service.filter.UserTFAAttemptFilter
+import com.junbo.identity.core.service.validator.UserTFAAttemptValidator
+import com.junbo.identity.data.repository.UserTFAAttemptRepository
 import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.v1.model.UserTeleAttempt
-import com.junbo.identity.spec.v1.option.list.UserTeleAttemptListOptions
-import com.junbo.identity.spec.v1.option.model.UserTeleAttemptGetOptions
-import com.junbo.identity.spec.v1.resource.UserTeleAttemptResource
+import com.junbo.identity.spec.v1.model.UserTFAAttempt
+import com.junbo.identity.spec.v1.option.list.UserTFAAttemptListOptions
+import com.junbo.identity.spec.v1.option.model.UserTFAAttemptGetOptions
+import com.junbo.identity.spec.v1.resource.UserTFAAttemptResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate
 import groovy.transform.CompileStatic
@@ -33,17 +33,17 @@ import javax.transaction.Transactional
  */
 @CompileStatic
 @Transactional
-class UserTeleAttemptResourceImpl implements UserTeleAttemptResource {
+class UserTFAAttemptResourceImpl implements UserTFAAttemptResource {
     private static final String IDENTITY_SERVICE_SCOPE = 'identity.service'
 
     @Autowired
-    private UserTeleAttemptRepository userTeleAttemptRepository
+    private UserTFAAttemptRepository userTFAAttemptRepository
 
     @Autowired
-    private UserTeleAttemptFilter userTeleAttemptFilter
+    private UserTFAAttemptFilter userTFAAttemptFilter
 
     @Autowired
-    private UserTeleAttemptValidator userTeleAttemptValidator
+    private UserTFAAttemptValidator userTFAAttemptValidator
 
     @Autowired
     private PlatformTransactionManager transactionManager
@@ -55,7 +55,7 @@ class UserTeleAttemptResourceImpl implements UserTeleAttemptResource {
     private UserPropertyAuthorizeCallbackFactory authorizeCallbackFactory
 
     @Override
-    Promise<UserTeleAttempt> create(UserId userId, UserTeleAttempt userTeleAttempt) {
+    Promise<UserTFAAttempt> create(UserId userId, UserTFAAttempt userTeleAttempt) {
         if (userId == null) {
             throw new IllegalArgumentException('userId is null')
         }
@@ -68,28 +68,27 @@ class UserTeleAttemptResourceImpl implements UserTeleAttemptResource {
             throw AppErrors.INSTANCE.invalidAccess().exception()
         }
 
-        userTeleAttempt = userTeleAttemptFilter.filterForCreate(userTeleAttempt)
+        userTeleAttempt = userTFAAttemptFilter.filterForCreate(userTeleAttempt)
 
-        return userTeleAttemptValidator.validateForCreate(userId, userTeleAttempt).then {
+        return userTFAAttemptValidator.validateForCreate(userId, userTeleAttempt).then {
 
-            return createInNewTran(userTeleAttempt).then { UserTeleAttempt attempt ->
+            return createInNewTran(userTeleAttempt).then { UserTFAAttempt attempt ->
 
                 if (attempt.succeeded == true) {
                     Created201Marker.mark((Id)attempt.id)
 
                     attempt.verifyCode = null
-                    attempt = userTeleAttemptFilter.filterForGet(attempt, null)
+                    attempt = userTFAAttemptFilter.filterForGet(attempt, null)
                     return Promise.pure(attempt)
                 }
 
-                throw AppErrors.INSTANCE.userTeleCodeIncorrect().exception()
+                throw AppErrors.INSTANCE.userTFACodeIncorrect().exception()
             }
         }
     }
 
     @Override
-    Promise<UserTeleAttempt> get(UserId userId, UserTeleAttemptId userTeleAttemptId,
-                                 UserTeleAttemptGetOptions getOptions) {
+    Promise<UserTFAAttempt> get(UserId userId, UserTFAAttemptId userTFAAttemptId, UserTFAAttemptGetOptions getOptions) {
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')
         }
@@ -104,8 +103,8 @@ class UserTeleAttemptResourceImpl implements UserTeleAttemptResource {
                 throw AppErrors.INSTANCE.invalidAccess().exception()
             }
 
-            return userTeleAttemptValidator.validateForGet(userId, userTeleAttemptId).then { UserTeleAttempt attempt ->
-                attempt = userTeleAttemptFilter.filterForGet(attempt, getOptions.properties?.split(',') as List<String>)
+            return userTFAAttemptValidator.validateForGet(userId, userTFAAttemptId).then { UserTFAAttempt attempt ->
+                attempt = userTFAAttemptFilter.filterForGet(attempt, getOptions.properties?.split(',') as List<String>)
 
                 return Promise.pure(attempt)
             }
@@ -113,7 +112,7 @@ class UserTeleAttemptResourceImpl implements UserTeleAttemptResource {
     }
 
     @Override
-    Promise<Results<UserTeleAttempt>> list(UserId userId, UserTeleAttemptListOptions listOptions) {
+    Promise<Results<UserTFAAttempt>> list(UserId userId, UserTFAAttemptListOptions listOptions) {
         if (userId == null) {
             throw AppErrors.INSTANCE.fieldRequired('userId').exception()
         }
@@ -124,12 +123,12 @@ class UserTeleAttemptResourceImpl implements UserTeleAttemptResource {
                 throw AppErrors.INSTANCE.invalidAccess().exception()
             }
 
-            return userTeleAttemptValidator.validateForSearch(userId, listOptions).then {
-                return search(listOptions).then { List<UserTeleAttempt> attemptList ->
-                    def result = new Results<UserTeleAttempt>(items: [])
+            return userTFAAttemptValidator.validateForSearch(userId, listOptions).then {
+                return search(listOptions).then { List<UserTFAAttempt> attemptList ->
+                    def result = new Results<UserTFAAttempt>(items: [])
 
-                    attemptList.each { UserTeleAttempt attempt ->
-                        attempt = userTeleAttemptFilter.filterForGet(attempt,
+                    attemptList.each { UserTFAAttempt attempt ->
+                        attempt = userTFAAttemptFilter.filterForGet(attempt,
                                 listOptions.properties?.split(',') as List<String>)
                         attempt.verifyCode = null
                         result.items.add(attempt)
@@ -141,22 +140,23 @@ class UserTeleAttemptResourceImpl implements UserTeleAttemptResource {
         }
     }
 
-    Promise<UserTeleAttempt> createInNewTran(UserTeleAttempt attempt) {
+    Promise<UserTFAAttempt> createInNewTran(UserTFAAttempt attempt) {
         AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager)
         template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
-        return template.execute(new TransactionCallback<Promise<UserTeleAttempt>>() {
-            Promise<UserTeleAttempt> doInTransaction(TransactionStatus txnStatus) {
-                return userTeleAttemptRepository.create(attempt)
+        return template.execute(new TransactionCallback<Promise<UserTFAAttempt>>() {
+            Promise<UserTFAAttempt> doInTransaction(TransactionStatus txnStatus) {
+                return userTFAAttemptRepository.create(attempt)
             }
         }
         )
     }
 
-    private Promise<List<UserTeleAttempt>> search(UserTeleAttemptListOptions listOptions) {
-        if (listOptions.userId != null && listOptions.userTeleId != null) {
-
+    private Promise<List<UserTFAAttempt>> search(UserTFAAttemptListOptions listOptions) {
+        if (listOptions.userId != null && listOptions.userTFAId != null) {
+            return userTFAAttemptRepository.searchByUserIdAndUserTFAId(listOptions.userId, listOptions.userTFAId,
+                    listOptions.limit, listOptions.offset)
         } else if (listOptions.userId != null) {
-            return userTeleAttemptRepository.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset)
+            return userTFAAttemptRepository.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset)
         } else {
             throw new IllegalArgumentException('Nosupported search operation.')
         }

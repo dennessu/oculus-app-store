@@ -3,11 +3,10 @@ package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.UserId
-import com.junbo.common.id.UserTeleAttemptId
-import com.junbo.common.id.UserTeleId
-import com.junbo.identity.data.repository.UserTeleAttemptRepository
-import com.junbo.identity.spec.v1.model.UserTeleAttempt
-import com.junbo.identity.spec.v1.option.list.UserTeleAttemptListOptions
+import com.junbo.common.id.UserTFAAttemptId
+import com.junbo.common.id.UserTFAId
+import com.junbo.identity.data.repository.UserTFAAttemptRepository
+import com.junbo.identity.spec.v1.model.UserTFAAttempt
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.ShardAlgorithm
@@ -18,8 +17,8 @@ import org.springframework.beans.factory.annotation.Required
  * Created by liangfu on 4/23/14.
  */
 @CompileStatic
-class UserTeleAttemptRepositoryCloudantImpl  extends CloudantClient<UserTeleAttempt>
-        implements UserTeleAttemptRepository {
+class UserTFAAttemptRepositoryCloudantImpl extends CloudantClient<UserTFAAttempt>
+        implements UserTFAAttemptRepository {
     private ShardAlgorithm shardAlgorithm
     private IdGenerator idGenerator
 
@@ -39,50 +38,50 @@ class UserTeleAttemptRepositoryCloudantImpl  extends CloudantClient<UserTeleAtte
     }
 
     @Override
-    Promise<List<UserTeleAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+    Promise<List<UserTFAAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset) {
         def list = super.queryView('by_user_id', userId.toString(), limit, offset, false)
 
         return Promise.pure(list)
     }
 
     @Override
-    Promise<List<UserTeleAttempt>> searchByUserIdAndUserTeleId(UserId userId, UserTeleId userTeleId,
+    Promise<List<UserTFAAttempt>> searchByUserIdAndUserTFAId(UserId userId, UserTFAId userTFAId,
                                                                Integer limit, Integer offset) {
-        def list = super.queryView('by_user_id_tele_id', "${userId.toString()}:${userTeleId.toString()}", limit,
+        def list = super.queryView('by_user_id_tfa_id', "${userId.toString()}:${userTFAId.toString()}", limit,
                 offset, false)
 
         return Promise.pure(list)
     }
 
     @Override
-    Promise<UserTeleAttempt> create(UserTeleAttempt entity) {
+    Promise<UserTFAAttempt> create(UserTFAAttempt entity) {
         if (entity.id == null) {
-            entity.id = new UserTeleAttemptId(idGenerator.nextId(entity.userId.value))
+            entity.id = new UserTFAAttemptId(idGenerator.nextId(entity.userId.value))
         }
-        return Promise.pure((UserTeleAttempt)super.cloudantPost(entity))
+        return Promise.pure((UserTFAAttempt)super.cloudantPost(entity))
     }
 
     @Override
-    Promise<UserTeleAttempt> update(UserTeleAttempt entity) {
-        return Promise.pure((UserTeleAttempt)super.cloudantPut(entity))
+    Promise<UserTFAAttempt> update(UserTFAAttempt entity) {
+        return Promise.pure((UserTFAAttempt)super.cloudantPut(entity))
     }
 
     @Override
-    Promise<UserTeleAttempt> get(UserTeleAttemptId id) {
-        return Promise.pure((UserTeleAttempt)super.cloudantGet(id.toString()))
+    Promise<UserTFAAttempt> get(UserTFAAttemptId id) {
+        return Promise.pure((UserTFAAttempt)super.cloudantGet(id.toString()))
     }
 
     @Override
-    Promise<Void> delete(UserTeleAttemptId id) {
+    Promise<Void> delete(UserTFAAttemptId id) {
         super.cloudantDelete(id.toString())
         return Promise.pure(null)
     }
 
     protected CloudantViews views = new CloudantViews(
             views: [
-                'by_user_id_tele_id': new CloudantViews.CloudantView(
+                'by_user_id_tfa_id': new CloudantViews.CloudantView(
                     map: 'function(doc) {' +
-                            '  emit(doc.userId + \':\' + doc.userTeleId , doc._id)' +
+                            '  emit(doc.userId + \':\' + doc.userTFAId , doc._id)' +
                             '}',
                     resultClass: String),
                 'by_user_id': new CloudantViews.CloudantView(

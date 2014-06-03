@@ -18,7 +18,7 @@ import java.util.Date;
  * Created by liangfu on 4/22/14.
  */
 public class UserTeleBackupCode extends PropertyAssignedAwareResourceMeta implements Identifiable<UserTeleBackupCodeId> {
-    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The id of UserTeleCode resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The id of UserTFA resource.")
     @JsonProperty("self")
     private UserTeleBackupCodeId id;
 

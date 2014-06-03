@@ -5,19 +5,19 @@ import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
 import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
-import com.junbo.common.id.UserTeleId
+import com.junbo.common.id.UserTFAId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.clientproxy.TeleSign
-import com.junbo.identity.core.service.filter.UserTeleFilter
-import com.junbo.identity.core.service.validator.UserTeleValidator
-import com.junbo.identity.data.repository.UserTeleRepository
+import com.junbo.identity.core.service.filter.UserTFAFilter
+import com.junbo.identity.core.service.validator.UserTFAValidator
+import com.junbo.identity.data.repository.UserTFARepository
 import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.v1.model.UserTeleCode
-import com.junbo.identity.spec.v1.option.list.UserTeleListOptions
-import com.junbo.identity.spec.v1.option.model.UserTeleGetOptions
-import com.junbo.identity.spec.v1.resource.UserTeleResource
+import com.junbo.identity.spec.v1.model.UserTFA
+import com.junbo.identity.spec.v1.option.list.UserTFAListOptions
+import com.junbo.identity.spec.v1.option.model.UserTFAGetOptions
+import com.junbo.identity.spec.v1.resource.UserTFAResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
@@ -28,16 +28,16 @@ import org.springframework.transaction.annotation.Transactional
  */
 @CompileStatic
 @Transactional
-class UserTeleResourceImpl implements UserTeleResource {
+class UserTFAResourceImpl implements UserTFAResource {
 
     @Autowired
-    private UserTeleRepository userTeleRepository
+    private UserTFARepository userTFARepository
 
     @Autowired
-    private UserTeleFilter userTeleFilter
+    private UserTFAFilter userTFAFilter
 
     @Autowired
-    private UserTeleValidator userTeleValidator
+    private UserTFAValidator userTFAValidator
 
     @Autowired
     private TeleSign teleSign
@@ -49,9 +49,9 @@ class UserTeleResourceImpl implements UserTeleResource {
     private UserPropertyAuthorizeCallbackFactory authorizeCallbackFactory
 
     @Override
-    Promise<UserTeleCode> create(UserId userId, UserTeleCode userTeleCode) {
+    Promise<UserTFA> create(UserId userId, UserTFA userTeleCode) {
         if (userTeleCode == null) {
-            throw new IllegalArgumentException('userTeleCode is null')
+            throw new IllegalArgumentException('userTFA is null')
         }
 
         if (userTeleCode.userId != null && userTeleCode.userId != userId) {
@@ -64,14 +64,14 @@ class UserTeleResourceImpl implements UserTeleResource {
                 throw AppErrors.INSTANCE.invalidAccess().exception()
             }
 
-            userTeleCode = userTeleFilter.filterForCreate(userTeleCode)
+            userTeleCode = userTFAFilter.filterForCreate(userTeleCode)
 
-            return userTeleValidator.validateForCreate(userId, userTeleCode).then {
+            return userTFAValidator.validateForCreate(userId, userTeleCode).then {
                 return teleSign.verifyCode(userTeleCode).then {
-                    return userTeleRepository.create(userTeleCode).then { UserTeleCode newUserTeleCode ->
+                    return userTFARepository.create(userTeleCode).then { UserTFA newUserTeleCode ->
                         Created201Marker.mark((Id) newUserTeleCode.id)
 
-                        newUserTeleCode = userTeleFilter.filterForGet(newUserTeleCode, null)
+                        newUserTeleCode = userTFAFilter.filterForGet(newUserTeleCode, null)
                         return Promise.pure(newUserTeleCode)
                     }
                 }
@@ -80,7 +80,7 @@ class UserTeleResourceImpl implements UserTeleResource {
     }
 
     @Override
-    Promise<UserTeleCode> get(UserId userId, UserTeleId userTeleId, UserTeleGetOptions getOptions) {
+    Promise<UserTFA> get(UserId userId, UserTFAId userTFAId, UserTFAGetOptions getOptions) {
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')
         }
@@ -95,8 +95,8 @@ class UserTeleResourceImpl implements UserTeleResource {
                 throw AppErrors.INSTANCE.invalidAccess().exception()
             }
 
-            return userTeleValidator.validateForGet(userId, userTeleId).then { UserTeleCode newUserTeleCode ->
-                newUserTeleCode = userTeleFilter.filterForGet(newUserTeleCode,
+            return userTFAValidator.validateForGet(userId, userTFAId).then { UserTFA newUserTeleCode ->
+                newUserTeleCode = userTFAFilter.filterForGet(newUserTeleCode,
                         getOptions.properties?.split(',') as List<String>)
 
                 return Promise.pure(newUserTeleCode)
@@ -105,17 +105,17 @@ class UserTeleResourceImpl implements UserTeleResource {
     }
 
     @Override
-    Promise<UserTeleCode> patch(UserId userId, UserTeleId userTeleId, UserTeleCode userTeleCode) {
+    Promise<UserTFA> patch(UserId userId, UserTFAId userTFAId, UserTFA userTFA) {
         if (userId == null) {
             throw new IllegalArgumentException('userId is null')
         }
 
-        if (userTeleId == null) {
-            throw new IllegalArgumentException('userTeleId is null')
+        if (userTFAId == null) {
+            throw new IllegalArgumentException('userTFAId is null')
         }
 
-        if (userTeleCode == null) {
-            throw new IllegalArgumentException('userTeleCode is null')
+        if (userTFA == null) {
+            throw new IllegalArgumentException('userTFA is null')
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -124,17 +124,17 @@ class UserTeleResourceImpl implements UserTeleResource {
                 throw AppErrors.INSTANCE.invalidAccess().exception()
             }
 
-            return userTeleRepository.get(userTeleId).then { UserTeleCode oldUserTeleCode ->
+            return userTFARepository.get(userTFAId).then { UserTFA oldUserTeleCode ->
                 if (oldUserTeleCode == null) {
-                    throw AppErrors.INSTANCE.userTeleCodeNotFound(userTeleId).exception()
+                    throw AppErrors.INSTANCE.userTFANotFound(userTFAId).exception()
                 }
 
-                userTeleCode = userTeleFilter.filterForPatch(userTeleCode, oldUserTeleCode)
+                userTFA = userTFAFilter.filterForPatch(userTFA, oldUserTeleCode)
 
-                return userTeleValidator.validateForUpdate(userId, userTeleId, userTeleCode, oldUserTeleCode).then {
+                return userTFAValidator.validateForUpdate(userId, userTFAId, userTFA, oldUserTeleCode).then {
 
-                    return userTeleRepository.update(userTeleCode).then { UserTeleCode newUserTele ->
-                        newUserTele = userTeleFilter.filterForGet(newUserTele, null)
+                    return userTFARepository.update(userTFA).then { UserTFA newUserTele ->
+                        newUserTele = userTFAFilter.filterForGet(newUserTele, null)
                         return Promise.pure(newUserTele)
                     }
                 }
@@ -143,17 +143,17 @@ class UserTeleResourceImpl implements UserTeleResource {
     }
 
     @Override
-    Promise<UserTeleCode> put(UserId userId, UserTeleId userTeleId, UserTeleCode userTeleCode) {
+    Promise<UserTFA> put(UserId userId, UserTFAId userTFAId, UserTFA userTFA) {
         if (userId == null) {
             throw new IllegalArgumentException('userId is null')
         }
 
-        if (userTeleId == null) {
-            throw new IllegalArgumentException('userTeleId is null')
+        if (userTFAId == null) {
+            throw new IllegalArgumentException('userTFAId is null')
         }
 
-        if (userTeleCode == null) {
-            throw new IllegalArgumentException('userTeleCode is null')
+        if (userTFA == null) {
+            throw new IllegalArgumentException('userTFA is null')
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -162,16 +162,16 @@ class UserTeleResourceImpl implements UserTeleResource {
                 throw AppErrors.INSTANCE.invalidAccess().exception()
             }
 
-            return userTeleRepository.get(userTeleId).then { UserTeleCode oldUserTeleCode ->
+            return userTFARepository.get(userTFAId).then { UserTFA oldUserTeleCode ->
                 if (oldUserTeleCode == null) {
-                    throw AppErrors.INSTANCE.userTeleCodeNotFound(userTeleId).exception()
+                    throw AppErrors.INSTANCE.userTFANotFound(userTFAId).exception()
                 }
 
-                userTeleCode = userTeleFilter.filterForPut(userTeleCode, oldUserTeleCode)
+                userTFA = userTFAFilter.filterForPut(userTFA, oldUserTeleCode)
 
-                return userTeleValidator.validateForUpdate(userId, userTeleId, userTeleCode, oldUserTeleCode).then {
-                    return userTeleRepository.update(userTeleCode).then { UserTeleCode newUserTeleCode ->
-                        newUserTeleCode = userTeleFilter.filterForGet(newUserTeleCode, null)
+                return userTFAValidator.validateForUpdate(userId, userTFAId, userTFA, oldUserTeleCode).then {
+                    return userTFARepository.update(userTFA).then { UserTFA newUserTeleCode ->
+                        newUserTeleCode = userTFAFilter.filterForGet(newUserTeleCode, null)
                         return Promise.pure(newUserTeleCode)
                     }
                 }
@@ -180,7 +180,7 @@ class UserTeleResourceImpl implements UserTeleResource {
     }
 
     @Override
-    Promise<Void> delete(UserId userId, UserTeleId userTeleId) {
+    Promise<Void> delete(UserId userId, UserTFAId userTFAId) {
         if (userId == null) {
             throw AppErrors.INSTANCE.fieldRequired('userId').exception()
         }
@@ -191,14 +191,14 @@ class UserTeleResourceImpl implements UserTeleResource {
                 throw AppErrors.INSTANCE.invalidAccess().exception()
             }
 
-            return userTeleValidator.validateForGet(userId, userTeleId).then {
-                return userTeleRepository.delete(userTeleId)
+            return userTFAValidator.validateForGet(userId, userTFAId).then {
+                return userTFARepository.delete(userTFAId)
             }
         }
     }
 
     @Override
-    Promise<Results<UserTeleCode>> list(UserId userId, UserTeleListOptions listOptions) {
+    Promise<Results<UserTFA>> list(UserId userId, UserTFAListOptions listOptions) {
         if (listOptions == null) {
             throw new IllegalArgumentException('listOptions is null')
         }
@@ -209,18 +209,18 @@ class UserTeleResourceImpl implements UserTeleResource {
 
         def callback = authorizeCallbackFactory.create(userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
-            def result = new Results<UserTeleCode>(items: [])
+            def result = new Results<UserTFA>(items: [])
             if (!AuthorizeContext.hasRights('read')) {
                 return Promise.pure(result)
             }
 
             listOptions.setUserId(userId)
 
-            return userTeleValidator.validateForSearch(listOptions).then {
-                return search(listOptions).then { List<UserTeleCode> userTeleCodeList ->
-                    userTeleCodeList.each { UserTeleCode newUserTeleCode ->
+            return userTFAValidator.validateForSearch(listOptions).then {
+                return search(listOptions).then { List<UserTFA> userTeleCodeList ->
+                    userTeleCodeList.each { UserTFA newUserTeleCode ->
                         if (newUserTeleCode != null) {
-                            newUserTeleCode = userTeleFilter.filterForGet(newUserTeleCode,
+                            newUserTeleCode = userTFAFilter.filterForGet(newUserTeleCode,
                                     listOptions.properties?.split(',') as List<String>)
 
                             result.items.add(newUserTeleCode)
@@ -233,9 +233,9 @@ class UserTeleResourceImpl implements UserTeleResource {
         }
     }
 
-    private Promise<List<UserTeleCode>> search(UserTeleListOptions listOptions) {
-        if (listOptions.userId != null && listOptions.phoneNumber != null) {
-            return userTeleRepository.searchTeleCodeByUserIdAndPhone(listOptions.userId, listOptions.phoneNumber,
+    private Promise<List<UserTFA>> search(UserTFAListOptions listOptions) {
+        if (listOptions.userId != null && listOptions.personalInfo != null) {
+            return userTFARepository.searchTFACodeByUserIdAndPersonalInfoId(listOptions.userId, listOptions.personalInfo,
                     listOptions.limit, listOptions.offset)
         } else {
             throw new IllegalArgumentException('Unsupported search operation.')

@@ -74,14 +74,14 @@ class UserTeleBackupCodeAttemptResourceImpl implements UserTeleBackupCodeAttempt
 
             return createInNewTran(userTeleBackupCodeAttempt).then { UserTeleBackupCodeAttempt attempt ->
 
-                if (attempt.succeeded == true) {
+                if (attempt.succeeded) {
                     Created201Marker.mark((Id)attempt.id)
 
                     attempt = userTeleBackupCodeAttemptFilter.filterForGet(attempt, null)
                     return Promise.pure(attempt)
                 }
 
-                throw AppErrors.INSTANCE.userTeleCodeIncorrect().exception()
+                throw AppErrors.INSTANCE.userTFACodeIncorrect().exception()
             }
         }
     }

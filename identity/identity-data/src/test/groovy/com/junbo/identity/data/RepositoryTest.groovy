@@ -98,12 +98,12 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     private DeviceRepository deviceRepository
 
     @Autowired
-    @Qualifier('userTeleRepository')
-    private UserTeleRepository userTeleRepository
+    @Qualifier('userTFARepository')
+    private UserTFARepository userTFARepository
 
     @Autowired
-    @Qualifier('userTeleAttemptRepository')
-    private UserTeleAttemptRepository userTeleAttemptRepository
+    @Qualifier('userTFAAttemptRepository')
+    private UserTFAAttemptRepository userTFAAttemptRepository
 
     @Autowired
     @Qualifier('userTeleBackupCodeRepository')
@@ -509,51 +509,51 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         }
         def id = idGenerator.nextId()
         def phoneNumber = new UserPersonalInfoId(idGenerator.nextId())
-        UserTeleCode userTeleCode = new UserTeleCode()
+        UserTFA userTeleCode = new UserTFA()
         userTeleCode.setUserId(new UserId(id))
         userTeleCode.setActive(true)
         userTeleCode.setExpiresBy(after30Mins)
-        userTeleCode.setPhoneNumber(phoneNumber)
+        userTeleCode.setPersonalInfo(phoneNumber)
         userTeleCode.setSentLocale(new LocaleId('en_US'))
         userTeleCode.setTemplate('xxxxx')
         userTeleCode.setVerifyCode(UUID.randomUUID().toString())
         userTeleCode.setVerifyType('CALL')
 
-        UserTeleCode newUserTeleCode = userTeleRepository.create(userTeleCode).get()
-        newUserTeleCode = userTeleRepository.get((UserTeleId)newUserTeleCode.id).get()
+        UserTFA newUserTeleCode = userTFARepository.create(userTeleCode).get()
+        newUserTeleCode = userTFARepository.get((UserTFAId)newUserTeleCode.id).get()
 
-        assert userTeleCode.phoneNumber == newUserTeleCode.phoneNumber
+        assert userTeleCode.personalInfo == newUserTeleCode.personalInfo
 
         UserPersonalInfoId newPhoneNumber = new UserPersonalInfoId(idGenerator.nextId())
-        newUserTeleCode.setPhoneNumber(newPhoneNumber)
-        userTeleCode = userTeleRepository.update(newUserTeleCode).get()
-        assert userTeleCode.phoneNumber == newPhoneNumber
+        newUserTeleCode.setPersonalInfo(newPhoneNumber)
+        userTeleCode = userTFARepository.update(newUserTeleCode).get()
+        assert userTeleCode.personalInfo == newPhoneNumber
     }
 
     @Test
     public void testUserTeleAttemptRepository() {
-        def userTeleId = new UserTeleId(idGenerator.nextId())
+        def userTeleId = new UserTFAId(idGenerator.nextId())
         def userId = new UserId(idGenerator.nextId())
-        UserTeleAttempt userTeleAttempt = new UserTeleAttempt()
+        UserTFAAttempt userTeleAttempt = new UserTFAAttempt()
         userTeleAttempt.setVerifyCode(UUID.randomUUID().toString())
         userTeleAttempt.setClientId(new ClientId(123L))
         userTeleAttempt.setUserId(userId)
         userTeleAttempt.setIpAddress(UUID.randomUUID().toString())
         userTeleAttempt.setSucceeded(true)
         userTeleAttempt.setUserAgent(UUID.randomUUID().toString())
-        userTeleAttempt.setUserTeleId(userTeleId)
+        userTeleAttempt.setUserTFAId(userTeleId)
 
-        UserTeleAttempt newUserTeleAttempt = userTeleAttemptRepository.create(userTeleAttempt).get()
-        newUserTeleAttempt = userTeleAttemptRepository.get((UserTeleAttemptId)newUserTeleAttempt.id).get()
+        UserTFAAttempt newUserTeleAttempt = userTFAAttemptRepository.create(userTeleAttempt).get()
+        newUserTeleAttempt = userTFAAttemptRepository.get((UserTFAAttemptId)newUserTeleAttempt.id).get()
 
         assert userTeleAttempt.ipAddress == newUserTeleAttempt.ipAddress
 
         String newIpAddress = UUID.randomUUID().toString()
         newUserTeleAttempt.setIpAddress(newIpAddress)
-        userTeleAttempt = userTeleAttemptRepository.update(newUserTeleAttempt).get()
+        userTeleAttempt = userTFAAttemptRepository.update(newUserTeleAttempt).get()
         assert userTeleAttempt.ipAddress == newIpAddress
 
-        List<UserTeleAttempt> results = userTeleAttemptRepository.searchByUserIdAndUserTeleId(userId, userTeleId, 100,
+        List<UserTFAAttempt> results = userTFAAttemptRepository.searchByUserIdAndUserTFAId(userId, userTeleId, 100,
                 0).get()
         assert results.size() != 0
     }

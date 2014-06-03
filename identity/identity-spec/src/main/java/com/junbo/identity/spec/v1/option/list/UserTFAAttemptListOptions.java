@@ -6,7 +6,7 @@
 package com.junbo.identity.spec.v1.option.list;
 
 import com.junbo.common.id.UserId;
-import com.junbo.common.id.UserPersonalInfoId;
+import com.junbo.common.id.UserTFAId;
 import com.junbo.identity.spec.options.list.PagingGetOptions;
 
 import javax.ws.rs.QueryParam;
@@ -14,16 +14,15 @@ import javax.ws.rs.QueryParam;
 /**
  * Created by liangfu on 4/22/14.
  */
-public class UserTeleListOptions extends PagingGetOptions {
-
+public class UserTFAAttemptListOptions extends PagingGetOptions {
     @QueryParam("properties")
     private String properties;
 
     @QueryParam("userId")
     private UserId userId;
 
-    @QueryParam("phoneNumber")
-    private UserPersonalInfoId phoneNumber;
+    @QueryParam("userTFAId")
+    private UserTFAId userTFAId;
 
     public String getProperties() {
         return properties;
@@ -41,11 +40,11 @@ public class UserTeleListOptions extends PagingGetOptions {
         this.userId = userId;
     }
 
-    public UserPersonalInfoId getPhoneNumber() {
-        return phoneNumber;
+    public UserTFAId getUserTFAId() {
+        return userTFAId;
     }
 
-    public void setPhoneNumber(UserPersonalInfoId phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setUserTFAId(UserTFAId userTFAId) {
+        this.userTFAId = userTFAId;
     }
 }

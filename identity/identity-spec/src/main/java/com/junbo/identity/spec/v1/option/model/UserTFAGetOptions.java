@@ -10,7 +10,7 @@ import javax.ws.rs.QueryParam;
 /**
  * Created by liangfu on 4/22/14.
  */
-public class UserTeleAttemptGetOptions {
+public class UserTFAGetOptions {
 
     @QueryParam("properties")
     private String properties;

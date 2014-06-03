@@ -1,17 +1,17 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.id.UserId
-import com.junbo.common.id.UserTeleAttemptId
-import com.junbo.identity.core.service.validator.UserTeleAttemptValidator
+import com.junbo.common.id.UserTFAAttemptId
+import com.junbo.identity.core.service.validator.UserTFAAttemptValidator
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.UserRepository
-import com.junbo.identity.data.repository.UserTeleAttemptRepository
-import com.junbo.identity.data.repository.UserTeleRepository
+import com.junbo.identity.data.repository.UserTFAAttemptRepository
+import com.junbo.identity.data.repository.UserTFARepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserTeleAttempt
-import com.junbo.identity.spec.v1.model.UserTeleCode
-import com.junbo.identity.spec.v1.option.list.UserTeleAttemptListOptions
+import com.junbo.identity.spec.v1.model.UserTFAAttempt
+import com.junbo.identity.spec.v1.model.UserTFA
+import com.junbo.identity.spec.v1.option.list.UserTFAAttemptListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate
 import groovy.transform.CompileStatic
@@ -28,10 +28,10 @@ import java.util.regex.Pattern
  * Created by liangfu on 5/4/14.
  */
 @CompileStatic
-class UserTeleAttemptValidatorImpl implements UserTeleAttemptValidator {
+class UserTFAAttemptValidatorImpl implements UserTFAAttemptValidator {
     private UserRepository userRepository
-    private UserTeleRepository userTeleRepository
-    private UserTeleAttemptRepository userTeleAttemptRepository
+    private UserTFARepository userTFARepository
+    private UserTFAAttemptRepository userTFAAttemptRepository
 
     private Integer minVerifyCodeLength
     private Integer maxVerifyCodeLength
@@ -48,7 +48,7 @@ class UserTeleAttemptValidatorImpl implements UserTeleAttemptValidator {
     private PlatformTransactionManager transactionManager
 
     @Override
-    Promise<UserTeleAttempt> validateForGet(UserId userId, UserTeleAttemptId attemptId) {
+    Promise<UserTFAAttempt> validateForGet(UserId userId, UserTFAAttemptId attemptId) {
         if (userId == null) {
             throw new IllegalArgumentException('userId is null')
         }
@@ -66,13 +66,13 @@ class UserTeleAttemptValidatorImpl implements UserTeleAttemptValidator {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
 
-            if (existingUser.isAnonymous == true) {
+            if (existingUser.isAnonymous) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
 
-            return userTeleAttemptRepository.get(attemptId).then { UserTeleAttempt userTeleAttempt ->
+            return userTFAAttemptRepository.get(attemptId).then { UserTFAAttempt userTeleAttempt ->
                 if (userTeleAttempt == null) {
-                    throw AppErrors.INSTANCE.userTeleAttemptNotFound(attemptId).exception()
+                    throw AppErrors.INSTANCE.userTFAAttemptNotFound(attemptId).exception()
                 }
 
                 if (userTeleAttempt.userId != userId) {
@@ -86,7 +86,7 @@ class UserTeleAttemptValidatorImpl implements UserTeleAttemptValidator {
     }
 
     @Override
-    Promise<Void> validateForSearch(UserId userId, UserTeleAttemptListOptions options) {
+    Promise<Void> validateForSearch(UserId userId, UserTFAAttemptListOptions options) {
         if (userId == null) {
             throw new IllegalArgumentException('userId is null')
         }
@@ -99,7 +99,7 @@ class UserTeleAttemptValidatorImpl implements UserTeleAttemptValidator {
     }
 
     @Override
-    Promise<Void> validateForCreate(UserId userId, UserTeleAttempt attempt) {
+    Promise<Void> validateForCreate(UserId userId, UserTFAAttempt attempt) {
         if (userId == null) {
             throw new IllegalArgumentException('userId is null')
         }
@@ -111,8 +111,8 @@ class UserTeleAttemptValidatorImpl implements UserTeleAttemptValidator {
         if (attempt.id != null) {
             throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
         }
-        if (attempt.userTeleId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('userTeleId').exception()
+        if (attempt.userTFAId == null) {
+            throw AppErrors.INSTANCE.fieldRequired('userTFAId').exception()
         }
 
         if (attempt.verifyCode == null) {
@@ -146,17 +146,6 @@ class UserTeleAttemptValidatorImpl implements UserTeleAttemptValidator {
             }
         }
 
-        /*
-        if (attempt.clientId != null) {
-            if (attempt.clientId.length() > maxClientIdLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('clientId', maxClientIdLength).exception()
-            }
-            if (attempt.clientId.length() < minClientIdLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('clientId', minClientIdLength).exception()
-            }
-        }
-        */
-
         return userRepository.get(userId).then { User user ->
             if (user == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
@@ -164,29 +153,29 @@ class UserTeleAttemptValidatorImpl implements UserTeleAttemptValidator {
             if (user.status != UserStatus.ACTIVE.toString()) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
-            if (user.isAnonymous == true) {
+            if (user.isAnonymous) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
 
-            return userTeleRepository.get(attempt.userTeleId).then { UserTeleCode userTeleCode ->
-                if (userTeleCode == null) {
-                    throw AppErrors.INSTANCE.userTeleCodeNotFound(attempt.userTeleId).exception()
+            return userTFARepository.get(attempt.userTFAId).then { UserTFA userTFA ->
+                if (userTFA == null) {
+                    throw AppErrors.INSTANCE.userTFANotFound(attempt.userTFAId).exception()
                 }
 
-                if (userTeleCode.userId != userId) {
+                if (userTFA.userId != userId) {
                     throw AppErrors.INSTANCE.fieldInvalidException('userId',
-                            'userId isn\'t matched to userTeleId.').exception()
+                            'userId isn\'t matched to userTFAId.').exception()
                 }
 
-                if (userTeleCode.active != true) {
-                    throw AppErrors.INSTANCE.fieldInvalidException('userTeleId', 'Tele code isn\'t active.').exception()
+                if (!userTFA.active) {
+                    throw AppErrors.INSTANCE.fieldInvalidException('userTFAId', 'Tele code isn\'t active.').exception()
                 }
 
-                if (userTeleCode.expiresBy.before(new Date())) {
-                    throw AppErrors.INSTANCE.fieldInvalidException('userTeleId', 'Tele code expired.').exception()
+                if (userTFA.expiresBy.before(new Date())) {
+                    throw AppErrors.INSTANCE.fieldInvalidException('userTFAId', 'Tele code expired.').exception()
                 }
 
-                if (userTeleCode.verifyCode == attempt.verifyCode) {
+                if (userTFA.verifyCode == attempt.verifyCode) {
                     attempt.succeeded = true
                 } else {
                     attempt.succeeded = false
@@ -199,21 +188,21 @@ class UserTeleAttemptValidatorImpl implements UserTeleAttemptValidator {
         }
     }
 
-    private Promise<Void> checkMaximumRetryCount(User user, UserTeleAttempt attempt) {
-        if (attempt.succeeded == true) {
+    private Promise<Void> checkMaximumRetryCount(User user, UserTFAAttempt attempt) {
+        if (attempt.succeeded) {
             return Promise.pure(null)
         }
 
-        return userTeleAttemptRepository.searchByUserIdAndUserTeleId((UserId)user.id, attempt.userTeleId,
-                Integer.MAX_VALUE, 0).then { List<UserTeleAttempt> userTeleAttemptList ->
+        return userTFAAttemptRepository.searchByUserIdAndUserTFAId((UserId)user.id, attempt.userTFAId,
+                Integer.MAX_VALUE, 0).then { List<UserTFAAttempt> userTeleAttemptList ->
             if (CollectionUtils.isEmpty(userTeleAttemptList)
                     || userTeleAttemptList.size() < maxTeleCodeAttemptNumber) {
                 return Promise.pure(null)
             }
 
-            userTeleAttemptList.sort(new Comparator<UserTeleAttempt>() {
+            userTeleAttemptList.sort(new Comparator<UserTFAAttempt>() {
                 @Override
-                int compare(UserTeleAttempt o1, UserTeleAttempt o2) {
+                int compare(UserTFAAttempt o1, UserTFAAttempt o2) {
                     return o2.createdTime <=> o1.createdTime
                 }
             }
@@ -221,7 +210,7 @@ class UserTeleAttemptValidatorImpl implements UserTeleAttemptValidator {
 
             int size = 0;
             for (; size < maxTeleCodeAttemptNumber; size++) {
-                if (userTeleAttemptList.get(size).succeeded == true) {
+                if (userTeleAttemptList.get(size).succeeded) {
                     break
                 }
             }
@@ -229,7 +218,7 @@ class UserTeleAttemptValidatorImpl implements UserTeleAttemptValidator {
             if (size == maxTeleCodeAttemptNumber) {
                 user.status = UserStatus.SUSPEND.toString()
                 return createInNewTran(user).then {
-                    throw AppErrors.INSTANCE.fieldInvalid('userTeleId',
+                    throw AppErrors.INSTANCE.fieldInvalid('userTFAId',
                             'UserTele attempt reaches the maximum.').exception()
                 }
             }
@@ -254,13 +243,13 @@ class UserTeleAttemptValidatorImpl implements UserTeleAttemptValidator {
     }
 
     @Required
-    void setUserTeleRepository(UserTeleRepository userTeleRepository) {
-        this.userTeleRepository = userTeleRepository
+    void setUserTFARepository(UserTFARepository userTFARepository) {
+        this.userTFARepository = userTFARepository
     }
 
     @Required
-    void setUserTeleAttemptRepository(UserTeleAttemptRepository userTeleAttemptRepository) {
-        this.userTeleAttemptRepository = userTeleAttemptRepository
+    void setUserTFAAttemptRepository(UserTFAAttemptRepository userTFAAttemptRepository) {
+        this.userTFAAttemptRepository = userTFAAttemptRepository
     }
 
     @Required

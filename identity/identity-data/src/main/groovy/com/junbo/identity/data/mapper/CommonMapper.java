@@ -364,32 +364,32 @@ public class CommonMapper {
         return value.toString();
     }
 
-    public Long toUserTeleId(UserTeleId id) {
+    public Long toUserTFAId(UserTFAId id) {
         if (id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    public UserTeleId toUserTeleId(Long id) {
+    public UserTFAId toUserTFAId(Long id) {
         if (id == null) {
             return null;
         }
-        return new UserTeleId(id);
+        return new UserTFAId(id);
     }
 
-    public Long toUserTeleAttemptId(UserTeleAttemptId id) {
+    public Long toUserTFAAttemptId(UserTFAAttemptId id) {
         if (id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    public UserTeleAttemptId toUserTeleAttemptId(Long id) {
+    public UserTFAAttemptId toUserTFAAttemptId(Long id) {
         if (id == null) {
             return null;
         }
-        return new UserTeleAttemptId(id);
+        return new UserTFAAttemptId(id);
     }
 
     public Long toUserTeleBackupCodeId(UserTeleBackupCodeId id) {

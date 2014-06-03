@@ -4,9 +4,9 @@ import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
-import com.junbo.common.id.UserTeleId
-import com.junbo.identity.data.repository.UserTeleRepository
-import com.junbo.identity.spec.v1.model.UserTeleCode
+import com.junbo.common.id.UserTFAId
+import com.junbo.identity.data.repository.UserTFARepository
+import com.junbo.identity.spec.v1.model.UserTFA
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.ShardAlgorithm
@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Required
  * Created by liangfu on 4/23/14.
  */
 @CompileStatic
-class UserTeleRepositoryCloudantImpl extends CloudantClient<UserTeleCode> implements UserTeleRepository  {
+class UserTFARepositoryCloudantImpl extends CloudantClient<UserTFA> implements UserTFARepository  {
     private ShardAlgorithm shardAlgorithm
     private IdGenerator idGenerator
 
@@ -27,43 +27,43 @@ class UserTeleRepositoryCloudantImpl extends CloudantClient<UserTeleCode> implem
     }
 
     @Override
-    Promise<List<UserTeleCode>> searchTeleCodeByUserIdAndPhone(UserId userId, UserPersonalInfoId phoneNumber,
+    Promise<List<UserTFA>> searchTFACodeByUserIdAndPersonalInfoId(UserId userId, UserPersonalInfoId personalInfo,
                                                                Integer limit, Integer offset) {
-        def list = super.queryView('by_user_id_phone_number',
-                "${userId.value.toString()}:${phoneNumber.value.toString()}", limit, offset, false)
+        def list = super.queryView('by_user_id_personal_info',
+                "${userId.toString()}:${personalInfo.toString()}", limit, offset, false)
 
         return Promise.pure(list)
     }
 
     @Override
-    Promise<UserTeleCode> create(UserTeleCode entity) {
+    Promise<UserTFA> create(UserTFA entity) {
         if (entity.id == null) {
-            entity.id = new UserTeleId(idGenerator.nextId(entity.userId.value))
+            entity.id = new UserTFAId(idGenerator.nextId(entity.userId.value))
         }
-        return Promise.pure((UserTeleCode)super.cloudantPost(entity))
+        return Promise.pure((UserTFA)super.cloudantPost(entity))
     }
 
     @Override
-    Promise<UserTeleCode> update(UserTeleCode entity) {
-        return Promise.pure((UserTeleCode)super.cloudantPut(entity))
+    Promise<UserTFA> update(UserTFA entity) {
+        return Promise.pure((UserTFA)super.cloudantPut(entity))
     }
 
     @Override
-    Promise<UserTeleCode> get(UserTeleId id) {
-        return Promise.pure((UserTeleCode)super.cloudantGet(id.toString()))
+    Promise<UserTFA> get(UserTFAId id) {
+        return Promise.pure((UserTFA)super.cloudantGet(id.toString()))
     }
 
     @Override
-    Promise<Void> delete(UserTeleId id) {
+    Promise<Void> delete(UserTFAId id) {
         super.cloudantDelete(id.toString())
         return Promise.pure(null)
     }
 
     protected CloudantViews views = new CloudantViews(
             views: [
-                'by_user_id_phone_number': new CloudantViews.CloudantView(
+                'by_user_id_personal_info': new CloudantViews.CloudantView(
                     map: 'function(doc) {' +
-                            '  emit(doc.userId + \':\' + doc.phoneNumber, doc._id)' +
+                            '  emit(doc.userId + \':\' + doc.personalInfo, doc._id)' +
                             '}',
                     resultClass: String)
             ]

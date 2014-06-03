@@ -438,23 +438,23 @@
         </constructor-arg>
     </bean>
 
-    <bean id="userTeleValidator" class="com.junbo.identity.core.service.validator.impl.UserTeleValidatorImpl">
+    <bean id="userTFAValidator" class="com.junbo.identity.core.service.validator.impl.UserTFAValidatorImpl">
         <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
         <property name="userRepository" ref="userRepository" />
-        <property name="userTeleRepository" ref="userTeleRepository" />
+        <property name="userTFARepository" ref="userTFARepository" />
         <property name="localeRepository" ref="localeRepository" />
         <property name="maxSMSRequestsPerHour" value="${identity.conf.maxSMSRequestsPerHour}" />
-        <property name="maxTeleCodeExpireTime" value="${identity.conf.maxTeleCodeExpireTime}" />
+        <property name="maxTFACodeExpireTime" value="${identity.conf.maxTeleCodeExpireTime}" />
         <property name="minTemplateLength" value="1" />
         <property name="maxTemplateLength" value="255" />
         <property name="codeGenerator" ref="teleCodeGenerator" />
         <property name="maxReuseSeconds" value="${identity.conf.tele.maxReuseTime}" />
     </bean>
 
-    <bean id="userTeleAttemptValidator" class="com.junbo.identity.core.service.validator.impl.UserTeleAttemptValidatorImpl">
+    <bean id="userTFAAttemptValidator" class="com.junbo.identity.core.service.validator.impl.UserTFAAttemptValidatorImpl">
         <property name="userRepository" ref="userRepository" />
-        <property name="userTeleRepository" ref="userTeleRepository" />
-        <property name="userTeleAttemptRepository" ref="userTeleAttemptRepository" />
+        <property name="userTFARepository" ref="userTFARepository" />
+        <property name="userTFAAttemptRepository" ref="userTFAAttemptRepository" />
         <property name="minVerifyCodeLength" value="1" />
         <property name="maxVerifyCodeLength" value="255" />
         <property name="allowedIPPatterns">

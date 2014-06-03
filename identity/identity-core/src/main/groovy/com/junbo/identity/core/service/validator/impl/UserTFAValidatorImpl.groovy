@@ -2,20 +2,20 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
-import com.junbo.common.id.UserTeleId
+import com.junbo.common.id.UserTFAId
 import com.junbo.identity.core.service.util.CodeGenerator
-import com.junbo.identity.core.service.validator.UserTeleValidator
-import com.junbo.identity.data.identifiable.TeleVerifyType
+import com.junbo.identity.core.service.validator.UserTFAValidator
+import com.junbo.identity.data.identifiable.TFAVerifyType
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.LocaleRepository
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.data.repository.UserRepository
-import com.junbo.identity.data.repository.UserTeleRepository
+import com.junbo.identity.data.repository.UserTFARepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
-import com.junbo.identity.spec.v1.model.UserTeleCode
-import com.junbo.identity.spec.v1.option.list.UserTeleListOptions
+import com.junbo.identity.spec.v1.model.UserTFA
+import com.junbo.identity.spec.v1.option.list.UserTFAListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
@@ -25,15 +25,15 @@ import org.springframework.util.CollectionUtils
  * Created by liangfu on 4/24/14.
  */
 @CompileStatic
-class UserTeleValidatorImpl implements UserTeleValidator {
-    private Integer maxTeleCodeExpireTime
+class UserTFAValidatorImpl implements UserTFAValidator {
+    private Integer maxTFACodeExpireTime
     private Integer maxSMSRequestsPerHour
     private Integer maxReuseSeconds
 
     private CodeGenerator codeGenerator
 
     private UserRepository userRepository
-    private UserTeleRepository userTeleRepository
+    private UserTFARepository userTFARepository
     private UserPersonalInfoRepository userPersonalInfoRepository
     private LocaleRepository localeRepository
 
@@ -41,13 +41,13 @@ class UserTeleValidatorImpl implements UserTeleValidator {
     private Integer maxTemplateLength
 
     @Override
-    Promise<UserTeleCode> validateForGet(UserId userId, UserTeleId userTeleId) {
+    Promise<UserTFA> validateForGet(UserId userId, UserTFAId userTFAId) {
         if (userId == null) {
             throw AppErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
-        if (userTeleId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userTeleId').exception()
+        if (userTFAId == null) {
+            throw AppErrors.INSTANCE.parameterRequired('userTFAId').exception()
         }
 
         return userRepository.get(userId).then { User existing ->
@@ -59,26 +59,26 @@ class UserTeleValidatorImpl implements UserTeleValidator {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
 
-            if (existing.isAnonymous == true) {
+            if (existing.isAnonymous) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
 
-            return userTeleRepository.get(userTeleId).then { UserTeleCode existingUserTeleCode ->
-                if (existingUserTeleCode == null) {
-                    throw AppErrors.INSTANCE.userTeleCodeNotFound(userTeleId).exception()
+            return userTFARepository.get(userTFAId).then { UserTFA existingUserTFACode ->
+                if (existingUserTFACode == null) {
+                    throw AppErrors.INSTANCE.userTFANotFound(userTFAId).exception()
                 }
 
-                if (existingUserTeleCode.userId != userId) {
-                    throw AppErrors.INSTANCE.parameterInvalid('userTeleCodeId and userId doesn\'t match.').exception()
+                if (existingUserTFACode.userId != userId) {
+                    throw AppErrors.INSTANCE.parameterInvalid('userTFACodeId and userId doesn\'t match.').exception()
                 }
 
-                return Promise.pure(existingUserTeleCode)
+                return Promise.pure(existingUserTFACode)
             }
         }
     }
 
     @Override
-    Promise<Void> validateForSearch(UserTeleListOptions options) {
+    Promise<Void> validateForSearch(UserTFAListOptions options) {
         if (options == null) {
             throw new IllegalArgumentException('options is null')
         }
@@ -87,21 +87,21 @@ class UserTeleValidatorImpl implements UserTeleValidator {
             throw AppErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
-        if (options.phoneNumber == null) {
-            throw AppErrors.INSTANCE.parameterRequired('phoneNumber').exception()
+        if (options.personalInfo == null) {
+            throw AppErrors.INSTANCE.parameterRequired('personalInfo').exception()
         }
 
         return Promise.pure(null)
     }
 
     @Override
-    Promise<Void> validateForCreate(UserId userId, UserTeleCode userTeleCode) {
+    Promise<Void> validateForCreate(UserId userId, UserTFA userTeleCode) {
 
         if (userTeleCode.verifyCode != null) {
             throw AppErrors.INSTANCE.fieldNotWritable('verifyCode').exception()
         }
 
-        return basicTeleCodeCheck(userId, userTeleCode).then {
+        return basicTFACheck(userId, userTeleCode).then {
             return fillCode(userId, userTeleCode)
         }.then {
                 if (userTeleCode.id != null) {
@@ -118,7 +118,7 @@ class UserTeleValidatorImpl implements UserTeleValidator {
 
                 Calendar cal = Calendar.instance
                 cal.setTime(new Date())
-                cal.add(Calendar.SECOND, maxTeleCodeExpireTime)
+                cal.add(Calendar.SECOND, maxTFACodeExpireTime)
                 userTeleCode.expiresBy = cal.time
 
                 userTeleCode.active = true
@@ -126,16 +126,16 @@ class UserTeleValidatorImpl implements UserTeleValidator {
 
                 return Promise.pure(null)
             }.then {
-                return userTeleRepository.searchTeleCodeByUserIdAndPhone(userId, userTeleCode.phoneNumber,
-                        Integer.MAX_VALUE, 0).then { List<UserTeleCode> userTeleCodeList ->
+                return userTFARepository.searchTFACodeByUserIdAndPersonalInfoId(userId, userTeleCode.personalInfo,
+                        Integer.MAX_VALUE, 0).then { List<UserTFA> userTeleCodeList ->
                             if (CollectionUtils.isEmpty(userTeleCodeList)
                                     || userTeleCodeList.size() <= maxSMSRequestsPerHour) {
                                 return Promise.pure(null)
                             }
 
-                            userTeleCodeList.sort(new Comparator<UserTeleCode> () {
+                            userTeleCodeList.sort(new Comparator<UserTFA> () {
                                 @Override
-                                int compare(UserTeleCode o1, UserTeleCode o2) {
+                                int compare(UserTFA o1, UserTFA o2) {
                                     Date o1LastChangedTime = o1.updatedTime == null ? o1.createdTime : o1.updatedTime
                                     Date o2LastChangedTime = o2.updatedTime == null ? o2.createdTime : o2.updatedTime
 
@@ -144,7 +144,7 @@ class UserTeleValidatorImpl implements UserTeleValidator {
                             }
                             )
 
-                            UserTeleCode teleCode = userTeleCodeList.get(maxSMSRequestsPerHour - 1)
+                            UserTFA teleCode = userTeleCodeList.get(maxSMSRequestsPerHour - 1)
                             Date lastChangeTime = teleCode.updatedTime == null ? teleCode.createdTime : teleCode.updatedTime
 
                             Calendar cal = Calendar.instance
@@ -161,63 +161,62 @@ class UserTeleValidatorImpl implements UserTeleValidator {
     }
 
     @Override
-    Promise<Void> validateForUpdate(UserId userId, UserTeleId userTeleId, UserTeleCode userTeleCode,
-                                    UserTeleCode oldUserTeleCode) {
+    Promise<Void> validateForUpdate(UserId userId, UserTFAId userTFAId, UserTFA userTFA, UserTFA oldUserTFA) {
 
-        if (userTeleCode.verifyCode != null && userTeleCode.verifyCode != oldUserTeleCode.verifyCode) {
+        if (userTFA.verifyCode != null && userTFA.verifyCode != oldUserTFA.verifyCode) {
             throw AppErrors.INSTANCE.fieldNotWritable('verifyCode').exception()
         }
 
-        return basicTeleCodeCheck(userId, userTeleCode).then {
-            return userTeleRepository.get(userTeleId).then { UserTeleCode teleCode ->
-                if (teleCode == null) {
-                    throw AppErrors.INSTANCE.userTeleCodeNotFound(userTeleId).exception()
+        return basicTFACheck(userId, userTFA).then {
+            return userTFARepository.get(userTFAId).then { UserTFA tfa ->
+                if (tfa == null) {
+                    throw AppErrors.INSTANCE.userTFANotFound(userTFAId).exception()
                 }
 
                 return Promise.pure(null)
             }
         }.then {
-            if (userTeleCode.id == null) {
+            if (userTFA.id == null) {
                 throw AppErrors.INSTANCE.fieldRequired('id').exception()
             }
 
-            if (userTeleCode.expiresBy == null) {
+            if (userTFA.expiresBy == null) {
                 throw AppErrors.INSTANCE.fieldRequired('expiresBy').exception()
             }
 
-            if (userTeleCode.active == null) {
+            if (userTFA.active == null) {
                 throw AppErrors.INSTANCE.fieldRequired('active').exception()
             }
 
-            // TeleCode can't update teleCode number & verifyCode & userId
-            if (userTeleCode.phoneNumber != oldUserTeleCode.phoneNumber) {
-                throw AppErrors.INSTANCE.fieldInvalid('phoneNumber').exception()
+            // TeleCode can't update tfa number & verifyCode & userId
+            if (userTFA.personalInfo != oldUserTFA.personalInfo) {
+                throw AppErrors.INSTANCE.fieldInvalid('personalInfo').exception()
             }
 
-            if (userTeleCode.userId != userId) {
+            if (userTFA.userId != userId) {
                 throw AppErrors.INSTANCE.fieldInvalid('userId', userId.toString()).exception()
             }
 
-            if (userTeleCode.userId != oldUserTeleCode.userId) {
-                throw AppErrors.INSTANCE.fieldInvalid('userId', oldUserTeleCode.userId.toString()).exception()
+            if (userTFA.userId != oldUserTFA.userId) {
+                throw AppErrors.INSTANCE.fieldInvalid('userId', oldUserTFA.userId.toString()).exception()
             }
 
-            if (userTeleCode.verifyCode != oldUserTeleCode.verifyCode) {
-                throw AppErrors.INSTANCE.fieldInvalid('verifyCode', oldUserTeleCode.verifyCode).exception()
+            if (userTFA.verifyCode != oldUserTFA.verifyCode) {
+                throw AppErrors.INSTANCE.fieldInvalid('verifyCode', oldUserTFA.verifyCode).exception()
             }
 
             return Promise.pure(null)
         }
     }
 
-    private Promise<Void> fillCode(UserId userId, UserTeleCode userTeleCode) {
-        return userTeleRepository.searchTeleCodeByUserIdAndPhone(userId, userTeleCode.phoneNumber,
-                Integer.MAX_VALUE, 0).then { List<UserTeleCode> codeList ->
+    private Promise<Void> fillCode(UserId userId, UserTFA userTFA) {
+        return userTFARepository.searchTFACodeByUserIdAndPersonalInfoId(userId, userTFA.personalInfo,
+                Integer.MAX_VALUE, 0).then { List<UserTFA> codeList ->
             if (CollectionUtils.isEmpty(codeList)) {
-                userTeleCode.verifyCode = codeGenerator.generateCode()
+                userTFA.verifyCode = codeGenerator.generateCode()
             }
 
-            UserTeleCode teleCode = codeList.find { UserTeleCode code ->
+            UserTFA tfa = codeList.find { UserTFA code ->
                 Calendar calendar = Calendar.instance
                 calendar.setTime(new Date())
                 calendar.add(Calendar.SECOND, -maxReuseSeconds)
@@ -225,55 +224,55 @@ class UserTeleValidatorImpl implements UserTeleValidator {
                 return date.after(calendar.time)
             }
 
-            if (teleCode != null) {
-                userTeleCode.verifyCode = teleCode.verifyCode
+            if (tfa != null) {
+                userTFA.verifyCode = tfa.verifyCode
             } else {
-                userTeleCode.verifyCode = codeGenerator.generateCode()
+                userTFA.verifyCode = codeGenerator.generateCode()
             }
 
             return Promise.pure(null)
         }
     }
 
-    private Promise<Void> basicTeleCodeCheck(UserId userId, UserTeleCode userTeleCode) {
+    private Promise<Void> basicTFACheck(UserId userId, UserTFA userTFA) {
         if (userId == null) {
             throw new IllegalArgumentException('userId is null')
         }
 
-        if (userTeleCode == null) {
-            throw new IllegalArgumentException('userTeleCode is null')
+        if (userTFA == null) {
+            throw new IllegalArgumentException('userTFA is null')
         }
 
-        if (userTeleCode.userId != null && userTeleCode.userId != userId) {
+        if (userTFA.userId != null && userTFA.userId != userId) {
             throw AppErrors.INSTANCE.fieldInvalid('userId', userId.toString()).exception()
         }
 
-        if (userTeleCode.template != null) {
-            if (userTeleCode.template.length() > maxTemplateLength) {
+        if (userTFA.template != null) {
+            if (userTFA.template.length() > maxTemplateLength) {
                 throw AppErrors.INSTANCE.fieldTooLong('template', maxTemplateLength).exception()
             }
-            if (userTeleCode.template.length() < minTemplateLength) {
+            if (userTFA.template.length() < minTemplateLength) {
                 throw AppErrors.INSTANCE.fieldTooShort('template', minTemplateLength).exception()
             }
         }
 
-        if (userTeleCode.verifyType == null) {
+        if (userTFA.verifyType == null) {
             throw AppErrors.INSTANCE.fieldRequired('verifyType').exception()
         }
 
-        List<String> allowedVerifyTypes = TeleVerifyType.values().collect { TeleVerifyType teleVerifyType ->
-            teleVerifyType.toString()
+        List<String> allowedVerifyTypes = TFAVerifyType.values().collect { TFAVerifyType verifyType ->
+            verifyType.toString()
         }
-        if (!(userTeleCode.verifyType in allowedVerifyTypes)) {
+        if (!(userTFA.verifyType in allowedVerifyTypes)) {
             throw AppErrors.INSTANCE.fieldInvalid('verifyType', allowedVerifyTypes.join(',')).exception()
         }
 
-        if (userTeleCode.phoneNumber == null) {
-            throw AppErrors.INSTANCE.fieldRequired('phoneNumber').exception()
+        if (userTFA.personalInfo == null) {
+            throw AppErrors.INSTANCE.fieldRequired('personalInfo').exception()
         }
 
-        return validatePhoneNumber(userId, userTeleCode.phoneNumber).then {
-            return validateLocale(userTeleCode).then {
+        return validatePhoneNumber(userId, userTFA.personalInfo).then {
+            return validateLocale(userTFA).then {
                 return userRepository.get(userId).then { User existing ->
                     if (existing == null) {
                         throw AppErrors.INSTANCE.userNotFound(userId).exception()
@@ -293,14 +292,14 @@ class UserTeleValidatorImpl implements UserTeleValidator {
         }
     }
 
-    private Promise<Void> validateLocale(UserTeleCode userTeleCode) {
-        if (userTeleCode.sentLocale == null) {
+    private Promise<Void> validateLocale(UserTFA userTFA) {
+        if (userTFA.sentLocale == null) {
             return Promise.pure(null)
         }
 
-        return localeRepository.get(userTeleCode.sentLocale).then { com.junbo.identity.spec.v1.model.Locale locale ->
+        return localeRepository.get(userTFA.sentLocale).then { com.junbo.identity.spec.v1.model.Locale locale ->
             if (locale == null) {
-                throw AppErrors.INSTANCE.localeNotFound(userTeleCode.sentLocale).exception()
+                throw AppErrors.INSTANCE.localeNotFound(userTFA.sentLocale).exception()
             }
 
             return Promise.pure(null)
@@ -322,13 +321,13 @@ class UserTeleValidatorImpl implements UserTeleValidator {
             }
 
             if (user.phones == null) {
-                throw AppErrors.INSTANCE.fieldInvalidException('phoneNumber', 'user has no phones').exception()
+                throw AppErrors.INSTANCE.fieldInvalidException('personalInfo', 'user has no phones').exception()
             }
 
             return validateUserPhoneLinkList(user.phones.iterator(), phoneNumber).then { Boolean exists ->
                 if (!exists) {
-                    throw AppErrors.INSTANCE.fieldInvalidException('phoneNumber',
-                            'phoneNumber isn\'t under user.').exception()
+                    throw AppErrors.INSTANCE.fieldInvalidException('personalInfo',
+                            'personalInfo isn\'t under user.').exception()
                 }
 
                 return Promise.pure(null)
@@ -352,11 +351,6 @@ class UserTeleValidatorImpl implements UserTeleValidator {
     }
 
     @Required
-    void setMaxTeleCodeExpireTime(Integer maxTeleCodeExpireTime) {
-        this.maxTeleCodeExpireTime = maxTeleCodeExpireTime
-    }
-
-    @Required
     void setMaxSMSRequestsPerHour(Integer maxSMSRequestsPerHour) {
         this.maxSMSRequestsPerHour = maxSMSRequestsPerHour
     }
@@ -367,8 +361,13 @@ class UserTeleValidatorImpl implements UserTeleValidator {
     }
 
     @Required
-    void setUserTeleRepository(UserTeleRepository userTeleRepository) {
-        this.userTeleRepository = userTeleRepository
+    void setMaxTFACodeExpireTime(Integer maxTFACodeExpireTime) {
+        this.maxTFACodeExpireTime = maxTFACodeExpireTime
+    }
+
+    @Required
+    void setUserTFARepository(UserTFARepository userTFARepository) {
+        this.userTFARepository = userTFARepository
     }
 
     @Required

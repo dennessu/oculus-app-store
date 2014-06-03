@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPersonalInfoId;
-import com.junbo.common.id.UserTeleId;
+import com.junbo.common.id.UserTFAId;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -20,18 +20,18 @@ import java.util.Date;
 /**
  * Created by liangfu on 4/22/14.
  */
-public class UserTeleCode extends PropertyAssignedAwareResourceMeta implements Identifiable<UserTeleId> {
+public class UserTFA extends PropertyAssignedAwareResourceMeta implements Identifiable<UserTFAId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The id of UserTeleCode resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The id of UserTFA resource.")
     @JsonProperty("self")
-    private UserTeleId id;
+    private UserTFAId id;
 
     @ApiModelProperty(position = 2, required = false, value = "[Client Immutable]The id of user resource.")
     @JsonProperty("user")
     private UserId userId;
 
     @ApiModelProperty(position = 3, required = true, value = "User Phone number used to verify.")
-    private UserPersonalInfoId phoneNumber;
+    private UserPersonalInfoId personalInfo;
 
     @ApiModelProperty(position = 4, required = false, value = "The language to sent to the user.")
     private LocaleId sentLocale;
@@ -51,14 +51,14 @@ public class UserTeleCode extends PropertyAssignedAwareResourceMeta implements I
     @ApiModelProperty(position = 9, required = false, value = "[Client Immutable]Whether user Tele resource is active.")
     private Boolean active;
 
-    public UserTeleId getId() {
-        return id;
-    }
-
-    public void setId(UserTeleId id) {
+    public void setId(UserTFAId id) {
         this.id = id;
         support.setPropertyAssigned("id");
         support.setPropertyAssigned("self");
+    }
+
+    public UserTFAId getId() {
+        return id;
     }
 
     public UserId getUserId() {
@@ -71,13 +71,13 @@ public class UserTeleCode extends PropertyAssignedAwareResourceMeta implements I
         support.setPropertyAssigned("user");
     }
 
-    public UserPersonalInfoId getPhoneNumber() {
-        return phoneNumber;
+    public UserPersonalInfoId getPersonalInfo() {
+        return personalInfo;
     }
 
-    public void setPhoneNumber(UserPersonalInfoId phoneNumber) {
-        this.phoneNumber = phoneNumber;
-        support.setPropertyAssigned("phoneNumber");
+    public void setPersonalInfo(UserPersonalInfoId personalInfo) {
+        this.personalInfo = personalInfo;
+        support.setPropertyAssigned("personalInfo");
     }
 
     public String getVerifyCode() {
