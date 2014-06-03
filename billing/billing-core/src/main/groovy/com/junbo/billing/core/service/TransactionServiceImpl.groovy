@@ -51,7 +51,7 @@ class TransactionServiceImpl implements TransactionService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionServiceImpl)
 
     @Override
-    Promise<Balance> processBalance(Balance balance) {
+    Promise<Balance> processBalance(Balance balance, Balance originalBalance) {
 
         BalanceType balanceType = BalanceType.valueOf(balance.type)
         switch (balanceType) {
@@ -60,7 +60,7 @@ class TransactionServiceImpl implements TransactionService {
             case BalanceType.MANUAL_CAPTURE:
                 return authorize(balance)
             case BalanceType.REFUND:
-                return refund(balance)
+                return refund(balance, originalBalance)
             default:
                 throw AppErrors.INSTANCE.invalidBalanceType(balance.type).exception()
         }
@@ -273,8 +273,38 @@ class TransactionServiceImpl implements TransactionService {
         }
     }
 
-    private Promise<Balance> refund(Balance balance) {
-        return Promise.pure(balance)
+    private Promise<Balance> refund(Balance balance, Balance originalBalance) {
+
+        def transaction = new Transaction()
+        transaction.setAmount(balance.totalAmount)
+        transaction.setCurrency(balance.currency)
+        transaction.setType(TransactionType.REFUND.name())
+        transaction.setPiId(balance.piId)
+        transaction.setTransactionTime(new Date())
+
+        def paymentTransaction = generatePaymentTransaction(balance)
+        Long paymentId = getPaymentIdByRef(originalBalance.transactions[0].paymentRefId)
+        LOGGER.info('name=Refund_Balance. balance currency: {}, amount: {}, pi id: {}',
+                balance.currency, balance.totalAmount, balance.piId)
+        return paymentFacade.postPaymentRefund(paymentId, paymentTransaction).recover { Throwable throwable ->
+            LOGGER.error('name=Refund_Balance_Error. error in post payment refund', throwable)
+            transaction.setStatus(TransactionStatus.ERROR.name())
+            balance.addTransaction(transaction)
+            balance.setStatus(BalanceStatus.FAILED.name())
+
+            if (throwable instanceof AppErrorException) {
+                throw AppErrors.INSTANCE.paymentProcessingFailed(balance.piId.value.toString()).exception()
+            }
+            throw throwable
+        }.then { PaymentTransaction pt ->
+            LOGGER.info('name=Refund_Balance. payment id: {}, status: {}', pt.id, pt.status)
+            transaction.setPaymentRefId(pt.id.toString())
+            transaction.setStatus(getTransactionStatusByPaymentStatus(pt.status).name())
+            balance.setStatus(getBalanceStatusByPaymentStatus(pt.status).name())
+
+            balance.addTransaction(transaction)
+            return Promise.pure(balance)
+        }
     }
 
     private PaymentTransaction generatePaymentTransaction(Balance balance) {
@@ -327,9 +357,11 @@ class TransactionServiceImpl implements TransactionService {
             case PaymentStatus.SETTLEMENT_SUBMITTED.name():
             case PaymentStatus.SETTLING.name():
             case PaymentStatus.SETTLED.name():
+            case PaymentStatus.REFUNDED.name():
                 return TransactionStatus.SUCCESS
             case PaymentStatus.SETTLEMENT_SUBMIT_DECLINED.name():
             case PaymentStatus.AUTH_DECLINED.name():
+            case PaymentStatus.REFUND_DECLINED.name():
                 return TransactionStatus.DECLINE
             case PaymentStatus.UNCONFIRMED.name():
                 return TransactionStatus.UNCONFIRMED
@@ -345,10 +377,12 @@ class TransactionServiceImpl implements TransactionService {
                 return BalanceStatus.AWAITING_PAYMENT
             case PaymentStatus.SETTLEMENT_SUBMIT_DECLINED.name():
             case PaymentStatus.AUTH_DECLINED.name():
+            case PaymentStatus.REFUND_DECLINED.name():
                 return BalanceStatus.FAILED
             case PaymentStatus.UNCONFIRMED.name():
                 return BalanceStatus.UNCONFIRMED
             case PaymentStatus.SETTLED.name():
+            case PaymentStatus.REFUNDED.name():
                 return BalanceStatus.COMPLETED
             case PaymentStatus.AUTHORIZED.name():
                 return BalanceStatus.PENDING_CAPTURE
