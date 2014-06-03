@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.CollectionUtils
 
 /**
+ * Check user valid
+ * Check group valid
  * Created by liangfu on 3/25/14.
  */
 @CompileStatic

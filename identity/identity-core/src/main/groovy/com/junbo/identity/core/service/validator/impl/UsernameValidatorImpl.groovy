@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Required
 import java.util.regex.Pattern
 
 /**
+ * Check username minimum and maximum length
+ * Check allowed pattern and not allowed pattern
  * Created by kg on 3/17/14.
  */
 @CompileStatic

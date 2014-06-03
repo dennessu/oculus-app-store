@@ -13,6 +13,8 @@
                 <value>TWITTER</value>
             </list>
         </property>
+        <property name="minExternalIdLength" value="1" />
+        <property name="maxExternalIdLength" value="255" />
     </bean>
 
     <bean id="userCommunicationValidator" class="com.junbo.identity.core.service.validator.impl.UserCommunicationValidatorImpl">
@@ -60,7 +62,6 @@
         <property name="userPinRepository" ref="userPinRepository"/>
         <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
         <property name="normalizeService" ref="normalizeService" />
-        <property name="usernameValidator" ref="usernameValidator"/>
         <property name="credentialHashFactory" ref="credentialHashFactory" />
         <property name="allowedIpAddressPatterns">
             <list>
