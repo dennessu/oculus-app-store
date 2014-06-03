@@ -28,18 +28,22 @@
 
         <bean id="data_countryResource" class="com.junbo.identity.spec.v1.resource.proxy.CountryResourceClientProxy" parent="baseClientProxy">
             <property name="target" value="${clientproxy.identity.url}"/>
+            <property name="accessTokenProvider" ref="data_accessTokenProvider"/>
         </bean>
 
         <bean id="data_currencyResource" class="com.junbo.identity.spec.v1.resource.proxy.CurrencyResourceClientProxy" parent="baseClientProxy">
             <property name="target" value="${clientproxy.identity.url}"/>
+            <property name="accessTokenProvider" ref="data_accessTokenProvider"/>
         </bean>
 
         <bean id="data_localeResource" class="com.junbo.identity.spec.v1.resource.proxy.LocaleResourceClientProxy" parent="baseClientProxy">
             <property name="target" value="${clientproxy.identity.url}"/>
+            <property name="accessTokenProvider" ref="data_accessTokenProvider"/>
         </bean>
 
         <bean id="data_piTypeResource" class="com.junbo.identity.spec.v1.resource.proxy.PITypeResourceClientProxy" parent="baseClientProxy">
             <property name="target" value="${clientproxy.identity.url}"/>
+            <property name="accessTokenProvider" ref="data_accessTokenProvider"/>
         </bean>
 
         <bean id="baseDataHandler" class="com.junbo.data.handler.BaseDataHandler" abstract="true">

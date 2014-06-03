@@ -14,7 +14,6 @@ import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.clientproxy.CountryServiceFacade;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 
 
