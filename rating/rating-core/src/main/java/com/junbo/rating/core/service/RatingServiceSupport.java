@@ -157,20 +157,25 @@ public abstract class RatingServiceSupport implements RatingService<PriceRatingC
         return true;
     }
 
-    protected Money getPrice(RatingOffer offer, String currency) {
+    protected Money getPrice(RatingOffer offer, String country, String currency) {
         Price price = offer.getPrice();
         if (price == null) {
             return Money.NOT_FOUND;
         }
 
-        if (price.getPriceType().equalsIgnoreCase(PriceType.FREE.name())) {
+        if (PriceType.FREE.name().equalsIgnoreCase(price.getPriceType())) {
             return new Money(BigDecimal.ZERO, currency);
         }
 
-        Map<String, BigDecimal> prices = price.getPrices();
+        if (price.getPrices() == null || !price.getPrices().containsKey(country)) {
+            return Money.NOT_FOUND;
+        }
+
+        Map<String, BigDecimal> prices = price.getPrices().get(country);
         if (!prices.containsKey(currency)) {
             return Money.NOT_FOUND;
         }
+
         return new Money(prices.get(currency), currency);
     }
 

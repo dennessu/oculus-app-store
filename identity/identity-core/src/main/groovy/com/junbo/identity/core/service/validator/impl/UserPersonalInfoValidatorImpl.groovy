@@ -17,6 +17,7 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
+ * Checks is here:  https://oculus.atlassian.net/wiki/display/SER/Resource%3A+userPersonalInfo
  * Created by liangfu on 4/26/14.
  */
 @CompileStatic

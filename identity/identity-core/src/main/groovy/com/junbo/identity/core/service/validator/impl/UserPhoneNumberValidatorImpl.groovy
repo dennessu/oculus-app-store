@@ -17,6 +17,10 @@ import org.springframework.util.CollectionUtils
 import java.util.regex.Pattern
 
 /**
+ * Check phone format
+ * Check phone minimum and maximum length
+ * Check user's maximum phone number
+ * Check maximum new phone numbers per month
  * Created by liangfu on 3/31/14.
  */
 @CompileStatic

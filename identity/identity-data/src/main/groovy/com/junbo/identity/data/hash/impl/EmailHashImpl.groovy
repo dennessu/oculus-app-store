@@ -32,12 +32,12 @@ class EmailHashImpl implements PiiHash {
         Email email = (Email)JsonHelper.jsonNodeToObj(jsonNode, Email)
         assert email != null
 
-        return generateHash(email.info.toLowerCase())
+        return generateHash(email.info.toLowerCase(Locale.ENGLISH))
     }
 
     @Override
     String generateHash(String mail) {
-        return HashHelper.shaHash(mail.toLowerCase(), salt, algorithm)
+        return HashHelper.shaHash(mail.toLowerCase(Locale.ENGLISH), salt, algorithm)
     }
 
     @Required

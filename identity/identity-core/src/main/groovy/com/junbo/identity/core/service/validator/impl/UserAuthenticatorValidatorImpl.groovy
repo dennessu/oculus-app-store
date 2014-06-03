@@ -15,6 +15,9 @@ import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.CollectionUtils
 
 /**
+ * Check allowed types
+ * Check user valid (not anonymous user, not non-active user)
+ * Check ExternalId's minimum and maximum length
  * Created by liangfu on 3/27/14.
  */
 @CompileStatic
@@ -25,6 +28,9 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
     private UserAuthenticatorRepository userAuthenticatorRepository
 
     private List<String> allowedTypes
+
+    private Integer minExternalIdLength
+    private Integer maxExternalIdLength
 
     @Required
     void setUserRepository(UserRepository userRepository) {
@@ -39,6 +45,16 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
     @Required
     void setAllowedTypes(List<String> allowedTypes) {
         this.allowedTypes = allowedTypes
+    }
+
+    @Required
+    void setMinExternalIdLength(Integer minExternalIdLength) {
+        this.minExternalIdLength = minExternalIdLength
+    }
+
+    @Required
+    void setMaxExternalIdLength(Integer maxExternalIdLength) {
+        this.maxExternalIdLength = maxExternalIdLength
     }
 
     @Override
@@ -165,6 +181,12 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
 
             if (userAuthenticator.externalId == null) {
                 throw AppErrors.INSTANCE.fieldRequired('externalId').exception()
+            }
+            if (userAuthenticator.externalId.length() < minExternalIdLength) {
+                throw AppErrors.INSTANCE.fieldTooShort('externalId', minExternalIdLength).exception()
+            }
+            if (userAuthenticator.externalId.length() > maxExternalIdLength) {
+                throw AppErrors.INSTANCE.fieldTooLong('externalId', maxExternalIdLength).exception()
             }
 
             if (userAuthenticator.type == null) {

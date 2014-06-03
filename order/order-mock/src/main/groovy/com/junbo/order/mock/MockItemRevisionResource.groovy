@@ -57,7 +57,7 @@ class MockItemRevisionResource extends BaseMock implements ItemRevisionResource 
                 itemId: generateLong(),
                 msrp: new Price(
                         priceType: 'CUSTOM',
-                        prices: ['USD': 9.99G, 'CNY': 19.99G]
+                        prices: ['US':['USD': 9.99G], 'CN':['CNY': 19.99G]] as Map<String, Map<String, BigDecimal>>
                 )
         )
     }

@@ -6,6 +6,7 @@
 
 package com.junbo.rating.spec.model.subscription;
 
+import com.junbo.common.jackson.annotation.CountryId;
 import com.junbo.common.jackson.annotation.CurrencyId;
 import com.junbo.common.jackson.annotation.OfferId;
 
@@ -20,6 +21,9 @@ public class SubsRatingRequest {
 
     @OfferId
     private Long offerId;
+
+    @CountryId
+    private String country;
 
     @CurrencyId
     private String currency;
@@ -41,6 +45,14 @@ public class SubsRatingRequest {
 
     public void setOfferId(Long offerId) {
         this.offerId = offerId;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     public String getCurrency() {

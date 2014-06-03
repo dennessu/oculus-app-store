@@ -7,6 +7,7 @@
 package com.junbo.rating.spec.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.jackson.annotation.CountryId;
 import com.junbo.common.jackson.annotation.CurrencyId;
 import com.junbo.common.jackson.annotation.ShippingMethodId;
 import com.junbo.common.jackson.annotation.UserId;
@@ -30,32 +31,37 @@ public class RatingRequest {
     @JsonProperty("user")
     private Long userId;
 
-    @ApiModelProperty(position = 3, required = true, value = "Currency code.")
+    @ApiModelProperty(position = 3, required = true, value = "Country.")
+    @NotNull
+    @CountryId
+    private String country;
+
+    @ApiModelProperty(position = 4, required = true, value = "Currency code.")
     @NotNull
     @CurrencyId
     private String currency;
 
-    @ApiModelProperty(position = 4, required = true, value = "Coupon codes.")
+    @ApiModelProperty(position = 5, required = true, value = "Coupon codes.")
     private Set<String> coupons = new HashSet<>();
 
-    @ApiModelProperty(position = 5, required = true, value = "Line items to be rated.")
+    @ApiModelProperty(position = 6, required = true, value = "Line items to be rated.")
     private Set<RatingItem> lineItems;
 
-    @ApiModelProperty(position = 6, required = true, value = "Get offers by specific timestamp.")
+    @ApiModelProperty(position = 7, required = true, value = "Get offers by specific timestamp.")
     private String time;
 
-    @ApiModelProperty(position = 7, required = true,
+    @ApiModelProperty(position = 8, required = true,
             value = "Default shipping method " +
                     "for physical goods which have no specified shipping method.")
     @ShippingMethodId
     @JsonProperty("defaultShippingMethod")
     private Long shippingMethodId;
 
-    @ApiModelProperty(position = 8, required = true, value = "[Client Immutable] Details about calculation result of an order.")
+    @ApiModelProperty(position = 9, required = true, value = "[Client Immutable] Details about calculation result of an order.")
     @Null
     private RatingSummary ratingSummary;
 
-    @ApiModelProperty(position = 9, required = true, value = "[Client Immutable] Details about calculation result of shipping fee.")
+    @ApiModelProperty(position = 10, required = true, value = "[Client Immutable] Details about calculation result of shipping fee.")
     @Null
     private ShippingSummary shippingSummary;
 
@@ -73,6 +79,14 @@ public class RatingRequest {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     public String getCurrency() {

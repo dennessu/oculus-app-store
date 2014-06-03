@@ -76,9 +76,7 @@ class OrderResourceImpl implements OrderResource {
                         return result
                     }
                 } else { // handle settle order scenario: the tentative flag is updated from true to false
-                    oldOrder.successRedirectUrl = order.successRedirectUrl
-                    oldOrder.cancelRedirectUrl = order.cancelRedirectUrl
-                    return orderService.settleQuote(oldOrder, new ApiContext())
+                    return orderService.settleQuote(order, new ApiContext())
                 }
             } else { // order already settle
                 LOGGER.info('name=Update_Non_Tentative_offer')

@@ -75,6 +75,7 @@ class FacadeBuilder {
             }
         }
         request.coupons = ((String[])coupons?.toArray()) as Set
+        request.country = order.country
         request.currency = order.currency
         request.userId = order.user?.value
         request.shippingMethodId = order.shippingMethod
