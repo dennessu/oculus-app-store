@@ -9,7 +9,7 @@ package com.junbo.order.db.mapper;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.id.*;
-import com.junbo.order.db.entity.enums.*;
+import com.junbo.order.spec.model.enums.*;
 import com.junbo.order.spec.error.AppErrors;
 import org.springframework.stereotype.Component;
 

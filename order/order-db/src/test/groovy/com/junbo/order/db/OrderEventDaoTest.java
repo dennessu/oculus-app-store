@@ -11,7 +11,7 @@ import com.junbo.common.id.OrderId;
 import com.junbo.order.db.common.TestHelper;
 import com.junbo.order.db.dao.OrderEventDao;
 import com.junbo.order.db.entity.OrderEventEntity;
-import com.junbo.order.db.entity.enums.OrderActionType;
+import com.junbo.order.spec.model.enums.OrderActionType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;

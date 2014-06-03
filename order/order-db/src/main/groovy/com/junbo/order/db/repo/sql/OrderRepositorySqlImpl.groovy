@@ -13,7 +13,7 @@ import com.junbo.order.db.dao.OrderDao
 import com.junbo.order.db.dao.OrderPaymentInfoDao
 import com.junbo.order.db.entity.OrderEntity
 import com.junbo.order.db.entity.OrderPaymentInfoEntity
-import com.junbo.order.db.entity.enums.OrderStatus
+import com.junbo.order.spec.model.enums.OrderStatus
 import com.junbo.order.db.mapper.ModelMapper
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.db.repo.util.RepositoryFuncSet

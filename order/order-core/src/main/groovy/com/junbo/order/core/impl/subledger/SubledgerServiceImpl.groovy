@@ -3,9 +3,9 @@ import com.junbo.common.id.SubledgerId
 import com.junbo.order.core.SubledgerService
 import com.junbo.order.core.impl.common.OrderValidator
 import com.junbo.order.core.impl.common.ParamUtils
-import com.junbo.order.db.entity.enums.PayoutStatus
-import com.junbo.order.db.entity.enums.SubledgerItemAction
-import com.junbo.order.db.entity.enums.SubledgerItemStatus
+import com.junbo.order.spec.model.enums.PayoutStatus
+import com.junbo.order.spec.model.enums.SubledgerItemAction
+import com.junbo.order.spec.model.enums.SubledgerItemStatus
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.db.repo.facade.SubledgerRepositoryFacade
 import com.junbo.order.spec.error.AppErrors

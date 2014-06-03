@@ -8,7 +8,7 @@ package com.junbo.order.db.dao.impl;
 
 import com.junbo.order.db.dao.SubledgerDao;
 import com.junbo.order.db.entity.SubledgerEntity;
-import com.junbo.order.db.entity.enums.PayoutStatus;
+import com.junbo.order.spec.model.enums.PayoutStatus;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;

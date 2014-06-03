@@ -8,7 +8,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import com.junbo.order.db.dao.SubledgerDao
 import com.junbo.order.db.entity.SubledgerEntity
-import com.junbo.order.db.entity.enums.PayoutStatus
+import com.junbo.order.spec.model.enums.PayoutStatus
 import com.junbo.order.db.mapper.ModelMapper
 import com.junbo.order.db.repo.SubledgerRepository
 import com.junbo.order.db.repo.util.Utils

@@ -15,9 +15,9 @@ import com.junbo.order.core.OrderServiceOperation
 import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
-import com.junbo.order.db.entity.enums.EventStatus
-import com.junbo.order.db.entity.enums.OrderActionType
-import com.junbo.order.db.entity.enums.OrderStatus
+import com.junbo.order.spec.model.enums.EventStatus
+import com.junbo.order.spec.model.enums.OrderActionType
+import com.junbo.order.spec.model.enums.OrderStatus
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic

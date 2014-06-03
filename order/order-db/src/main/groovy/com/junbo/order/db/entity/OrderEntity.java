@@ -7,7 +7,7 @@
 package com.junbo.order.db.entity;
 
 import com.junbo.order.db.ValidationMessages;
-import com.junbo.order.db.entity.enums.OrderStatus;
+import com.junbo.order.spec.model.enums.OrderStatus;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Length;
 

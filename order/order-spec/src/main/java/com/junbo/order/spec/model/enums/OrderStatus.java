@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.order.db.entity.enums;
+package com.junbo.order.spec.model.enums;
 
 import com.junbo.common.util.Identifiable;
 

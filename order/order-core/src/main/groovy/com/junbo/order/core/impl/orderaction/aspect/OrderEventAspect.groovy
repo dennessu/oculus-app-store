@@ -11,8 +11,8 @@ import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.BaseOrderEventAwareAction
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
-import com.junbo.order.db.entity.enums.EventStatus
-import com.junbo.order.db.entity.enums.OrderActionType
+import com.junbo.order.spec.model.enums.EventStatus
+import com.junbo.order.spec.model.enums.OrderActionType
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.model.OrderEvent
 import groovy.transform.CompileStatic

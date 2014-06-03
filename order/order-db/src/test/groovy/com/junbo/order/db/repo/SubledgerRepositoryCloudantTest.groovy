@@ -2,7 +2,7 @@ package com.junbo.order.db.repo
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.order.db.BaseTest
 import com.junbo.order.db.common.TestHelper
-import com.junbo.order.db.entity.enums.PayoutStatus
+import com.junbo.order.spec.model.enums.PayoutStatus
 import com.junbo.order.db.repo.cloudant.SubledgerRepositoryCloudantImpl
 import com.junbo.order.spec.model.PageParam
 import com.junbo.order.spec.model.SubledgerParam

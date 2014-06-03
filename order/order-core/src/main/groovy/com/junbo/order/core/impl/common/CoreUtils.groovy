@@ -4,9 +4,9 @@ import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
 import com.junbo.order.clientproxy.model.OrderOfferItem
 import com.junbo.order.clientproxy.model.OrderOfferRevision
-import com.junbo.order.db.entity.enums.BillingAction
-import com.junbo.order.db.entity.enums.ItemType
-import com.junbo.order.db.entity.enums.OrderStatus
+import com.junbo.order.spec.model.enums.BillingAction
+import com.junbo.order.spec.model.enums.ItemType
+import com.junbo.order.spec.model.enums.OrderStatus
 import com.junbo.order.spec.model.BillingHistory
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem

@@ -10,7 +10,7 @@ import com.junbo.common.id.OrderEventId;
 import com.junbo.order.db.common.TestHelper;
 import com.junbo.order.db.dao.OrderBillingHistoryDao;
 import com.junbo.order.db.entity.OrderBillingHistoryEntity;
-import com.junbo.order.db.entity.enums.BillingAction;
+import com.junbo.order.spec.model.enums.BillingAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;

@@ -8,7 +8,7 @@ import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.common.OrderStatusBuilder
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
-import com.junbo.order.db.entity.enums.EventStatus
+import com.junbo.order.spec.model.enums.EventStatus
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.model.OrderEvent
 import groovy.transform.CompileStatic

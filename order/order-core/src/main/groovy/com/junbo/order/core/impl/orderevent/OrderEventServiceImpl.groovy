@@ -7,7 +7,7 @@ import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.OrderEventService
 import com.junbo.order.core.impl.common.FulfillmentEventHistoryBuilder
 import com.junbo.order.core.impl.common.ParamUtils
-import com.junbo.order.db.entity.enums.OrderActionType
+import com.junbo.order.spec.model.enums.OrderActionType
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.error.ErrorUtils

@@ -10,7 +10,7 @@ import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.UserId
 import com.junbo.order.db.entity.*
-import com.junbo.order.db.entity.enums.*
+import com.junbo.order.spec.model.enums.*
 import com.junbo.order.spec.model.Subledger
 import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic

@@ -4,8 +4,8 @@ import com.junbo.catalog.spec.enums.ItemType
 import com.junbo.fulfilment.spec.constant.FulfilmentStatus
 import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
-import com.junbo.order.db.entity.enums.EventStatus
-import com.junbo.order.db.entity.enums.FulfillmentAction
+import com.junbo.order.spec.model.enums.EventStatus
+import com.junbo.order.spec.model.enums.FulfillmentAction
 import com.junbo.order.spec.model.FulfillmentHistory
 import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.OrderItem

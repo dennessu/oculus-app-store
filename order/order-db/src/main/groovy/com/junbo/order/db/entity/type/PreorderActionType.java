@@ -6,7 +6,7 @@
 
 package com.junbo.order.db.entity.type;
 
-import com.junbo.order.db.entity.enums.PreorderAction;
+import com.junbo.order.spec.model.enums.PreorderAction;
 
 /**
  * Created by LinYi on 14-3-7.

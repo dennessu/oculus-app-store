@@ -3,20 +3,23 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.order.db.entity.enums;
+package com.junbo.order.spec.model.enums;
 
 import com.junbo.common.util.Identifiable;
 
 import javax.ws.rs.NotSupportedException;
 
 /**
- * Created by LinYi on 2/10/14.
+ * Created by chriszhu on 2/25/14.
  */
-public enum DiscountType implements Identifiable<Short> {
-    OFFER_DISCOUNT(0),
-    ORDER_DISCOUNT(1);
+public enum PreorderAction implements Identifiable<Short> {
+    PREORDER(0),
+    CHARGE(1),
+    FULFILL(2),
+    PRE_RELEASE_NOTIFY(3),
+    RELEASE_NOTIFY(4);
 
-    private DiscountType(int id) {
+    private PreorderAction(int id) {
         this.id = (short) id;
     }
 
@@ -29,7 +32,7 @@ public enum DiscountType implements Identifiable<Short> {
 
     @Override
     public void setId(Short id) {
-        throw new NotSupportedException("enum DiscountType not settable");
+        throw new NotSupportedException("enum PreorderAction not settable");
     }
 
 }

@@ -12,7 +12,7 @@ import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.FulfillmentAction
 import com.junbo.order.core.impl.orderaction.context.OrderActionResult
 import com.junbo.order.core.matcher.Matcher
-import com.junbo.order.db.entity.enums.EventStatus
+import com.junbo.order.spec.model.enums.EventStatus
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.FulfillmentHistory
@@ -50,13 +50,13 @@ class FulfillmentActionTest extends BaseTest{
         def fulfillmentHistories = [new FulfillmentHistory(), new FulfillmentHistory()]
         fulfillmentHistories[0].with {
             trackingUuid = UUID.fromString(fulfilmentResult.trackingGuid)
-            fulfillmentEvent = com.junbo.order.db.entity.enums.FulfillmentAction.FULFILL.toString()
+            fulfillmentEvent = com.junbo.order.spec.model.enums.FulfillmentAction.FULFILL.toString()
             orderItemId = fulfilmentResult.items[0].orderItemId
             fulfillmentId =  fulfilmentResult.items[0].fulfilmentId
         }
         fulfillmentHistories[1].with {
             trackingUuid = UUID.fromString(fulfilmentResult.trackingGuid)
-            fulfillmentEvent = com.junbo.order.db.entity.enums.FulfillmentAction.FULFILL.toString()
+            fulfillmentEvent = com.junbo.order.spec.model.enums.FulfillmentAction.FULFILL.toString()
             orderItemId = fulfilmentResult.items[1].orderItemId
             fulfillmentId =  fulfilmentResult.items[1].fulfilmentId
         }

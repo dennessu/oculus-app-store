@@ -11,8 +11,8 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.impl.common.*
 import com.junbo.order.core.impl.internal.OrderInternalService
-import com.junbo.order.db.entity.enums.BillingAction
-import com.junbo.order.db.entity.enums.OrderStatus
+import com.junbo.order.spec.model.enums.BillingAction
+import com.junbo.order.spec.model.enums.OrderStatus
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
