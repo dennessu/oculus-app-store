@@ -6,8 +6,8 @@
         "priceType": "CUSTOM",
         "priceTier": null,
         "prices": {
-            "USD": 9.99,
-            "JPY": 1000
+            "US": {"USD": 10},
+            "JP": {"JPY": 1000.0}
         }
     },
     "supportedInputDevices": ["KEYBOARD", "MOUSE"],
