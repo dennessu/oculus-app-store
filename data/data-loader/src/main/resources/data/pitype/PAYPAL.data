@@ -1,0 +1,10 @@
+{
+    "typeCode": "PAYPAL",
+    "locales" : {
+        "en_US": {
+            "description": "PayPal"
+        }
+    },
+    "isRefundable": false,
+    "capableOfRecurring": false
+}

@@ -14,6 +14,7 @@ import com.junbo.payment.clientproxy.CurrencyServiceFacade;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 
 import java.math.BigDecimal;
 
@@ -21,8 +22,12 @@ import java.math.BigDecimal;
  * currency service facade.
  */
 public class CurrencyServiceFacadeImpl implements CurrencyServiceFacade {
-    @Autowired
     private CurrencyResourceClientProxy currencyResource;
+
+    @Required
+    public void setCurrencyResource(CurrencyResourceClientProxy currencyResource) {
+        this.currencyResource = currencyResource;
+    }
 
     public Promise<Long> getMinAuthAmount(CurrencyId currencyId){
         if(1 == 1){
