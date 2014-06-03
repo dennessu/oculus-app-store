@@ -27,6 +27,9 @@ class AutowiredInjectResolver implements InjectionResolver<Autowired> {
 
     @Override
     Object resolve(Injectee injectee, ServiceHandle<?> root) {
+        if (injectee.requiredType == ApplicationContext) {
+            return ctx
+        }
 
         AnnotatedElement parent = injectee.parent
         String beanName = null

@@ -1,10 +1,14 @@
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.authorization.AuthorizeService
+import com.junbo.authorization.RightsScope
 import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTeleBackupCodeId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
+import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserTeleBackupCodeFilter
 import com.junbo.identity.core.service.validator.UserTeleBackupCodeValidator
 import com.junbo.identity.data.repository.UserTeleBackupCodeRepository
@@ -35,20 +39,37 @@ class UserTeleBackupCodeResourceImpl implements UserTeleBackupCodeResource {
     @Autowired
     private UserTeleBackupCodeValidator userTeleBackupCodeValidator
 
+    @Autowired
+    private AuthorizeService authorizeService
+
+    @Autowired
+    private UserPropertyAuthorizeCallbackFactory authorizeCallbackFactory
+
     @Override
     Promise<UserTeleBackupCode> create(UserId userId, UserTeleBackupCode userTeleBackupCode) {
         if (userTeleBackupCode == null) {
             throw new IllegalArgumentException('userTeleBackupCode is null')
         }
 
-        userTeleBackupCode = userTeleBackupCodeFilter.filterForCreate(userTeleBackupCode)
+        if (userId == null) {
+            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+        }
 
-        return userTeleBackupCodeValidator.validateForCreate(userId, userTeleBackupCode).then {
-            return userTeleBackupCodeRepository.create(userTeleBackupCode).then { UserTeleBackupCode newBackupCode ->
-                Created201Marker.mark((Id)newBackupCode.id)
+        def callback = authorizeCallbackFactory.create(userId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('create')) {
+                throw AppErrors.INSTANCE.invalidAccess().exception()
+            }
 
-                newBackupCode = userTeleBackupCodeFilter.filterForGet(newBackupCode, null)
-                return Promise.pure(newBackupCode)
+            userTeleBackupCode = userTeleBackupCodeFilter.filterForCreate(userTeleBackupCode)
+
+            return userTeleBackupCodeValidator.validateForCreate(userId, userTeleBackupCode).then {
+                return userTeleBackupCodeRepository.create(userTeleBackupCode).then { UserTeleBackupCode newBackupCode ->
+                    Created201Marker.mark((Id) newBackupCode.id)
+
+                    newBackupCode = userTeleBackupCodeFilter.filterForGet(newBackupCode, null)
+                    return Promise.pure(newBackupCode)
+                }
             }
         }
     }
@@ -60,12 +81,23 @@ class UserTeleBackupCodeResourceImpl implements UserTeleBackupCodeResource {
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        return userTeleBackupCodeValidator.validateForGet(userId, userTeleBackupCodeId).
-                then { UserTeleBackupCode newUserTeleBackupCode ->
-                    newUserTeleBackupCode = userTeleBackupCodeFilter.filterForGet(newUserTeleBackupCode,
+        if (userId == null) {
+            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+        }
+
+        def callback = authorizeCallbackFactory.create(userId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('read')) {
+                throw AppErrors.INSTANCE.userNotFound(userId).exception()
+            }
+
+            return userTeleBackupCodeValidator.validateForGet(userId, userTeleBackupCodeId).
+                    then { UserTeleBackupCode newUserTeleBackupCode ->
+                newUserTeleBackupCode = userTeleBackupCodeFilter.filterForGet(newUserTeleBackupCode,
                         getOptions.properties?.split(',') as List<String>)
 
-                    return Promise.pure(newUserTeleBackupCode)
+                return Promise.pure(newUserTeleBackupCode)
+            }
         }
     }
 
@@ -84,19 +116,26 @@ class UserTeleBackupCodeResourceImpl implements UserTeleBackupCodeResource {
             throw new IllegalArgumentException('userTeleBackupCode is null')
         }
 
-        return userTeleBackupCodeRepository.get(userTeleBackupCodeId).then { UserTeleBackupCode oldBackupCode ->
-            if (oldBackupCode == null) {
-                throw AppErrors.INSTANCE.userTeleBackupCodeNotFound(userTeleBackupCodeId).exception()
+        def callback = authorizeCallbackFactory.create(userId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('update')) {
+                throw AppErrors.INSTANCE.invalidAccess().exception()
             }
 
-            userTeleBackupCode = userTeleBackupCodeFilter.filterForPatch(userTeleBackupCode, oldBackupCode)
+            return userTeleBackupCodeRepository.get(userTeleBackupCodeId).then { UserTeleBackupCode oldBackupCode ->
+                if (oldBackupCode == null) {
+                    throw AppErrors.INSTANCE.userTeleBackupCodeNotFound(userTeleBackupCodeId).exception()
+                }
 
-            return userTeleBackupCodeValidator.
-                    validateForUpdate(userId, userTeleBackupCodeId, userTeleBackupCode, oldBackupCode).then {
+                userTeleBackupCode = userTeleBackupCodeFilter.filterForPatch(userTeleBackupCode, oldBackupCode)
 
-                return userTeleBackupCodeRepository.update(userTeleBackupCode).then { UserTeleBackupCode newCode ->
-                    newCode = userTeleBackupCodeFilter.filterForGet(newCode, null)
-                    return Promise.pure(newCode)
+                return userTeleBackupCodeValidator.
+                        validateForUpdate(userId, userTeleBackupCodeId, userTeleBackupCode, oldBackupCode).then {
+
+                    return userTeleBackupCodeRepository.update(userTeleBackupCode).then { UserTeleBackupCode newCode ->
+                        newCode = userTeleBackupCodeFilter.filterForGet(newCode, null)
+                        return Promise.pure(newCode)
+                    }
                 }
             }
         }
@@ -117,18 +156,25 @@ class UserTeleBackupCodeResourceImpl implements UserTeleBackupCodeResource {
             throw new IllegalArgumentException('userTeleBackupCode is null')
         }
 
-        return userTeleBackupCodeRepository.get(userTeleBackupCodeId).then { UserTeleBackupCode oldBackupCode ->
-            if (oldBackupCode == null) {
-                throw AppErrors.INSTANCE.userTeleBackupCodeNotFound(userTeleBackupCodeId).exception()
+        def callback = authorizeCallbackFactory.create(userId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('update')) {
+                throw AppErrors.INSTANCE.invalidAccess().exception()
             }
 
-            userTeleBackupCode = userTeleBackupCodeFilter.filterForPut(userTeleBackupCode, oldBackupCode)
+            return userTeleBackupCodeRepository.get(userTeleBackupCodeId).then { UserTeleBackupCode oldBackupCode ->
+                if (oldBackupCode == null) {
+                    throw AppErrors.INSTANCE.userTeleBackupCodeNotFound(userTeleBackupCodeId).exception()
+                }
 
-            return userTeleBackupCodeValidator.
-                    validateForUpdate(userId, userTeleBackupCodeId, userTeleBackupCode, oldBackupCode).then {
-                return userTeleBackupCodeRepository.update(userTeleBackupCode).then { UserTeleBackupCode newCode ->
-                    newCode = userTeleBackupCodeFilter.filterForGet(newCode, null)
-                    return Promise.pure(newCode)
+                userTeleBackupCode = userTeleBackupCodeFilter.filterForPut(userTeleBackupCode, oldBackupCode)
+
+                return userTeleBackupCodeValidator.
+                        validateForUpdate(userId, userTeleBackupCodeId, userTeleBackupCode, oldBackupCode).then {
+                    return userTeleBackupCodeRepository.update(userTeleBackupCode).then { UserTeleBackupCode newCode ->
+                        newCode = userTeleBackupCodeFilter.filterForGet(newCode, null)
+                        return Promise.pure(newCode)
+                    }
                 }
             }
         }
@@ -136,17 +182,37 @@ class UserTeleBackupCodeResourceImpl implements UserTeleBackupCodeResource {
 
     @Override
     Promise<Void> delete(UserId userId, UserTeleBackupCodeId userTeleBackupCodeId) {
-        return userTeleBackupCodeValidator.validateForGet(userId, userTeleBackupCodeId).then {
-            return userTeleBackupCodeRepository.delete(userTeleBackupCodeId)
+        if (userId == null) {
+            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+        }
+
+        def callback = authorizeCallbackFactory.create(userId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('delete')) {
+                throw AppErrors.INSTANCE.invalidAccess().exception()
+            }
+
+            return userTeleBackupCodeValidator.validateForGet(userId, userTeleBackupCodeId).then {
+                return userTeleBackupCodeRepository.delete(userTeleBackupCodeId)
+            }
         }
     }
 
     @Override
     Promise<Results<UserTeleBackupCode>> list(UserId userId, UserTeleBackupCodeListOptions listOptions) {
-        return userTeleBackupCodeValidator.validateForSearch(userId, listOptions).then {
-            return search(listOptions).then { List<UserTeleBackupCode> userTeleBackupCodeList ->
-                    def result = new Results<UserTeleBackupCode>(items: [])
+        if (userId == null) {
+            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+        }
 
+        def callback = authorizeCallbackFactory.create(userId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            def result = new Results<UserTeleBackupCode>(items: [])
+            if (!AuthorizeContext.hasRights('read')) {
+                return Promise.pure(result)
+            }
+
+            return userTeleBackupCodeValidator.validateForSearch(userId, listOptions).then {
+                return search(listOptions).then { List<UserTeleBackupCode> userTeleBackupCodeList ->
                     userTeleBackupCodeList.each { UserTeleBackupCode newUserTeleBackupCode ->
                         if (newUserTeleBackupCode != null) {
                             newUserTeleBackupCode = userTeleBackupCodeFilter.filterForGet(newUserTeleBackupCode,
@@ -157,6 +223,7 @@ class UserTeleBackupCodeResourceImpl implements UserTeleBackupCodeResource {
                     }
 
                     return Promise.pure(result)
+                }
             }
         }
     }

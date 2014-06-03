@@ -37,4 +37,8 @@ public class JsonHelper {
         ObjectMapper objectMapper = provider.getContext(Object.class);
         return objectMapper.valueToTree(obj);
     }
+
+    public static Object JsonNodeToObject(JsonNode jsonNode, Class cls) throws Exception {
+        return ObjectMapperProvider.instance().treeToValue(jsonNode, cls);
+    }
 }

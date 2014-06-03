@@ -1,10 +1,14 @@
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.authorization.AuthorizeService
+import com.junbo.authorization.RightsScope
 import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTeleId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
+import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.clientproxy.TeleSign
 import com.junbo.identity.core.service.filter.UserTeleFilter
 import com.junbo.identity.core.service.validator.UserTeleValidator
@@ -38,6 +42,12 @@ class UserTeleResourceImpl implements UserTeleResource {
     @Autowired
     private TeleSign teleSign
 
+    @Autowired
+    private AuthorizeService authorizeService
+
+    @Autowired
+    private UserPropertyAuthorizeCallbackFactory authorizeCallbackFactory
+
     @Override
     Promise<UserTeleCode> create(UserId userId, UserTeleCode userTeleCode) {
         if (userTeleCode == null) {
@@ -48,15 +58,22 @@ class UserTeleResourceImpl implements UserTeleResource {
             throw AppErrors.INSTANCE.fieldInvalid('userId', userId.toString()).exception()
         }
 
-        userTeleCode = userTeleFilter.filterForCreate(userTeleCode)
+        def callback = authorizeCallbackFactory.create(userId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('create')) {
+                throw AppErrors.INSTANCE.invalidAccess().exception()
+            }
 
-        return userTeleValidator.validateForCreate(userId, userTeleCode).then {
-            return teleSign.verifyCode(userTeleCode).then {
-                return userTeleRepository.create(userTeleCode).then { UserTeleCode newUserTeleCode ->
-                    Created201Marker.mark((Id)newUserTeleCode.id)
+            userTeleCode = userTeleFilter.filterForCreate(userTeleCode)
 
-                    newUserTeleCode = userTeleFilter.filterForGet(newUserTeleCode, null)
-                    return Promise.pure(newUserTeleCode)
+            return userTeleValidator.validateForCreate(userId, userTeleCode).then {
+                return teleSign.verifyCode(userTeleCode).then {
+                    return userTeleRepository.create(userTeleCode).then { UserTeleCode newUserTeleCode ->
+                        Created201Marker.mark((Id) newUserTeleCode.id)
+
+                        newUserTeleCode = userTeleFilter.filterForGet(newUserTeleCode, null)
+                        return Promise.pure(newUserTeleCode)
+                    }
                 }
             }
         }
@@ -68,11 +85,22 @@ class UserTeleResourceImpl implements UserTeleResource {
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        return userTeleValidator.validateForGet(userId, userTeleId).then { UserTeleCode newUserTeleCode ->
-            newUserTeleCode = userTeleFilter.filterForGet(newUserTeleCode,
-                    getOptions.properties?.split(',') as List<String>)
+        if (userId == null) {
+            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+        }
 
-            return Promise.pure(newUserTeleCode)
+        def callback = authorizeCallbackFactory.create(userId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('read')) {
+                throw AppErrors.INSTANCE.invalidAccess().exception()
+            }
+
+            return userTeleValidator.validateForGet(userId, userTeleId).then { UserTeleCode newUserTeleCode ->
+                newUserTeleCode = userTeleFilter.filterForGet(newUserTeleCode,
+                        getOptions.properties?.split(',') as List<String>)
+
+                return Promise.pure(newUserTeleCode)
+            }
         }
     }
 
@@ -90,18 +118,25 @@ class UserTeleResourceImpl implements UserTeleResource {
             throw new IllegalArgumentException('userTeleCode is null')
         }
 
-        return userTeleRepository.get(userTeleId).then { UserTeleCode oldUserTeleCode ->
-            if (oldUserTeleCode == null) {
-                throw AppErrors.INSTANCE.userTeleCodeNotFound(userTeleId).exception()
+        def callback = authorizeCallbackFactory.create(userId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('update')) {
+                throw AppErrors.INSTANCE.invalidAccess().exception()
             }
 
-            userTeleCode = userTeleFilter.filterForPatch(userTeleCode, oldUserTeleCode)
+            return userTeleRepository.get(userTeleId).then { UserTeleCode oldUserTeleCode ->
+                if (oldUserTeleCode == null) {
+                    throw AppErrors.INSTANCE.userTeleCodeNotFound(userTeleId).exception()
+                }
 
-            return userTeleValidator.validateForUpdate(userId, userTeleId, userTeleCode, oldUserTeleCode).then {
+                userTeleCode = userTeleFilter.filterForPatch(userTeleCode, oldUserTeleCode)
 
-                return userTeleRepository.update(userTeleCode).then { UserTeleCode newUserTele ->
-                    newUserTele = userTeleFilter.filterForGet(newUserTele, null)
-                    return Promise.pure(newUserTele)
+                return userTeleValidator.validateForUpdate(userId, userTeleId, userTeleCode, oldUserTeleCode).then {
+
+                    return userTeleRepository.update(userTeleCode).then { UserTeleCode newUserTele ->
+                        newUserTele = userTeleFilter.filterForGet(newUserTele, null)
+                        return Promise.pure(newUserTele)
+                    }
                 }
             }
         }
@@ -121,17 +156,24 @@ class UserTeleResourceImpl implements UserTeleResource {
             throw new IllegalArgumentException('userTeleCode is null')
         }
 
-        return userTeleRepository.get(userTeleId).then { UserTeleCode oldUserTeleCode ->
-            if (oldUserTeleCode == null) {
-                throw AppErrors.INSTANCE.userTeleCodeNotFound(userTeleId).exception()
+        def callback = authorizeCallbackFactory.create(userId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('update')) {
+                throw AppErrors.INSTANCE.invalidAccess().exception()
             }
 
-            userTeleCode = userTeleFilter.filterForPut(userTeleCode, oldUserTeleCode)
+            return userTeleRepository.get(userTeleId).then { UserTeleCode oldUserTeleCode ->
+                if (oldUserTeleCode == null) {
+                    throw AppErrors.INSTANCE.userTeleCodeNotFound(userTeleId).exception()
+                }
 
-            return userTeleValidator.validateForUpdate(userId, userTeleId, userTeleCode, oldUserTeleCode).then {
-                return userTeleRepository.update(userTeleCode).then { UserTeleCode newUserTeleCode ->
-                    newUserTeleCode = userTeleFilter.filterForGet(newUserTeleCode, null)
-                    return Promise.pure(newUserTeleCode)
+                userTeleCode = userTeleFilter.filterForPut(userTeleCode, oldUserTeleCode)
+
+                return userTeleValidator.validateForUpdate(userId, userTeleId, userTeleCode, oldUserTeleCode).then {
+                    return userTeleRepository.update(userTeleCode).then { UserTeleCode newUserTeleCode ->
+                        newUserTeleCode = userTeleFilter.filterForGet(newUserTeleCode, null)
+                        return Promise.pure(newUserTeleCode)
+                    }
                 }
             }
         }
@@ -139,8 +181,19 @@ class UserTeleResourceImpl implements UserTeleResource {
 
     @Override
     Promise<Void> delete(UserId userId, UserTeleId userTeleId) {
-        return userTeleValidator.validateForGet(userId, userTeleId).then {
-            return userTeleRepository.delete(userTeleId)
+        if (userId == null) {
+            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+        }
+
+        def callback = authorizeCallbackFactory.create(userId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('delete')) {
+                throw AppErrors.INSTANCE.invalidAccess().exception()
+            }
+
+            return userTeleValidator.validateForGet(userId, userTeleId).then {
+                return userTeleRepository.delete(userTeleId)
+            }
         }
     }
 
@@ -149,22 +202,33 @@ class UserTeleResourceImpl implements UserTeleResource {
         if (listOptions == null) {
             throw new IllegalArgumentException('listOptions is null')
         }
-        listOptions.setUserId(userId)
 
-        return userTeleValidator.validateForSearch(listOptions).then {
-            return search(listOptions).then { List<UserTeleCode> userTeleCodeList ->
-                def result = new Results<UserTeleCode>(items: [])
+        if (userId == null) {
+            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+        }
 
-                userTeleCodeList.each { UserTeleCode newUserTeleCode ->
-                    if (newUserTeleCode != null) {
-                        newUserTeleCode = userTeleFilter.filterForGet(newUserTeleCode,
-                                listOptions.properties?.split(',') as List<String>)
-
-                        result.items.add(newUserTeleCode)
-                    }
-                }
-
+        def callback = authorizeCallbackFactory.create(userId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            def result = new Results<UserTeleCode>(items: [])
+            if (!AuthorizeContext.hasRights('read')) {
                 return Promise.pure(result)
+            }
+
+            listOptions.setUserId(userId)
+
+            return userTeleValidator.validateForSearch(listOptions).then {
+                return search(listOptions).then { List<UserTeleCode> userTeleCodeList ->
+                    userTeleCodeList.each { UserTeleCode newUserTeleCode ->
+                        if (newUserTeleCode != null) {
+                            newUserTeleCode = userTeleFilter.filterForGet(newUserTeleCode,
+                                    listOptions.properties?.split(',') as List<String>)
+
+                            result.items.add(newUserTeleCode)
+                        }
+                    }
+
+                    return Promise.pure(result)
+                }
             }
         }
     }

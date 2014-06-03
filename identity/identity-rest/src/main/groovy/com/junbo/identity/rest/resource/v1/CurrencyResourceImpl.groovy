@@ -1,5 +1,6 @@
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -22,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 @CompileStatic
 class CurrencyResourceImpl implements CurrencyResource {
+    private static final String IDENTITY_ADMIN_SCOPE = 'identity.admin'
+
     @Autowired
     private CurrencyRepository currencyRepository
 
@@ -35,6 +38,10 @@ class CurrencyResourceImpl implements CurrencyResource {
     Promise<Currency> create(Currency currency) {
         if (currency == null) {
             throw new IllegalArgumentException('country is null')
+        }
+
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
         }
 
         currency = currencyFilter.filterForCreate(currency)
@@ -57,6 +64,10 @@ class CurrencyResourceImpl implements CurrencyResource {
 
         if (currency == null) {
             throw new IllegalArgumentException('currency is null')
+        }
+
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
         }
 
         return currencyRepository.get(currencyId).then { Currency oldCurrency ->
@@ -84,6 +95,11 @@ class CurrencyResourceImpl implements CurrencyResource {
         if (currency == null) {
             throw new IllegalArgumentException('currency is null')
         }
+
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
+        }
+
 
         return currencyRepository.get(currencyId).then { Currency oldCurrency ->
             if (oldCurrency == null) {

@@ -42,6 +42,7 @@ ext {
     set("catalog-rest-version", '0.0.1-SNAPSHOT')
     set("catalog-spec-version", '0.0.1-SNAPSHOT')
     set("catalog-clientproxy-version", '0.0.1-SNAPSHOT')
+    set("catalog-jobs-version", '0.0.1-SNAPSHOT')
     set("catalog-app-version", '0.0.1-SNAPSHOT')
     set("catalog-auth-version", '0.0.1-SNAPSHOT')
 

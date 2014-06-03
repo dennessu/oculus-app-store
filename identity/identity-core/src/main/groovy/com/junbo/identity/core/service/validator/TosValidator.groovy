@@ -14,4 +14,5 @@ interface TosValidator {
     Promise<Tos> validateForGet(TosId tosId)
     Promise<Void> validateForSearch(TosListOptions options)
     Promise<Void> validateForCreate(Tos tos)
+    Promise<Void> validateForUpdate(TosId tosId, Tos tos, Tos oldTos)
 }

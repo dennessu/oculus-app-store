@@ -5,10 +5,14 @@
  */
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.authorization.AuthorizeService
+import com.junbo.authorization.RightsScope
 import com.junbo.common.id.Id
 import com.junbo.common.id.UserAuthenticatorId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
+import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserAuthenticatorFilter
 import com.junbo.identity.core.service.validator.UserAuthenticatorValidator
 import com.junbo.identity.data.repository.UserAuthenticatorRepository
@@ -38,20 +42,33 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
     @Autowired
     private UserAuthenticatorValidator userAuthenticatorValidator
 
+    @Autowired
+    private UserPropertyAuthorizeCallbackFactory authorizeCallbackFactory
+
+    @Autowired
+    private AuthorizeService authorizeService
+
     @Override
     Promise<UserAuthenticator> create(UserAuthenticator userAuthenticator) {
         if (userAuthenticator == null) {
             throw new IllegalArgumentException('userAuthenticator is null')
         }
 
-        userAuthenticator = userAuthenticatorFilter.filterForCreate(userAuthenticator)
+        def callback = authorizeCallbackFactory.create(userAuthenticator.userId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (AuthorizeContext.hasRights('create')) {
+                throw AppErrors.INSTANCE.invalidAccess().exception()
+            }
 
-        return userAuthenticatorValidator.validateForCreate(userAuthenticator).then {
-            return userAuthenticatorRepository.create(userAuthenticator).then { UserAuthenticator newUserAuthenticator ->
-                Created201Marker.mark((Id)newUserAuthenticator.id)
+            userAuthenticator = userAuthenticatorFilter.filterForCreate(userAuthenticator)
 
-                newUserAuthenticator = userAuthenticatorFilter.filterForGet(newUserAuthenticator, null)
-                return Promise.pure(newUserAuthenticator)
+            return userAuthenticatorValidator.validateForCreate(userAuthenticator).then {
+                return userAuthenticatorRepository.create(userAuthenticator).then { UserAuthenticator newUserAuthenticator ->
+                    Created201Marker.mark((Id) newUserAuthenticator.id)
+
+                    newUserAuthenticator = userAuthenticatorFilter.filterForGet(newUserAuthenticator, null)
+                    return Promise.pure(newUserAuthenticator)
+                }
             }
         }
     }
@@ -72,13 +89,20 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
                 throw AppErrors.INSTANCE.userAuthenticatorNotFound(userAuthenticatorId).exception()
             }
 
-            userAuthenticator = userAuthenticatorFilter.filterForPut(userAuthenticator, oldUserAuthenticator)
+            def callback = authorizeCallbackFactory.create(userAuthenticator.userId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (AuthorizeContext.hasRights('update')) {
+                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                }
 
-            return userAuthenticatorValidator.validateForUpdate(
-                    userAuthenticatorId, userAuthenticator, oldUserAuthenticator).then {
-                return userAuthenticatorRepository.update(userAuthenticator).then { UserAuthenticator newUserAuthenticator ->
-                    newUserAuthenticator = userAuthenticatorFilter.filterForGet(newUserAuthenticator, null)
-                    return Promise.pure(newUserAuthenticator)
+                userAuthenticator = userAuthenticatorFilter.filterForPut(userAuthenticator, oldUserAuthenticator)
+
+                return userAuthenticatorValidator.validateForUpdate(
+                        userAuthenticatorId, userAuthenticator, oldUserAuthenticator).then {
+                    return userAuthenticatorRepository.update(userAuthenticator).then { UserAuthenticator newUserAuthenticator ->
+                        newUserAuthenticator = userAuthenticatorFilter.filterForGet(newUserAuthenticator, null)
+                        return Promise.pure(newUserAuthenticator)
+                    }
                 }
             }
         }
@@ -100,13 +124,20 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
                 throw AppErrors.INSTANCE.userAuthenticatorNotFound(userAuthenticatorId).exception()
             }
 
-            userAuthenticator = userAuthenticatorFilter.filterForPatch(userAuthenticator, oldUserAuthenticator)
+            def callback = authorizeCallbackFactory.create(userAuthenticator.userId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (AuthorizeContext.hasRights('update')) {
+                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                }
 
-            return userAuthenticatorValidator.validateForUpdate(
-                    userAuthenticatorId, userAuthenticator, oldUserAuthenticator).then {
-                return userAuthenticatorRepository.update(userAuthenticator).then { UserAuthenticator newUserAuthenticator ->
-                    newUserAuthenticator = userAuthenticatorFilter.filterForGet(newUserAuthenticator, null)
-                    return Promise.pure(newUserAuthenticator)
+                userAuthenticator = userAuthenticatorFilter.filterForPatch(userAuthenticator, oldUserAuthenticator)
+
+                return userAuthenticatorValidator.validateForUpdate(
+                        userAuthenticatorId, userAuthenticator, oldUserAuthenticator).then {
+                    return userAuthenticatorRepository.update(userAuthenticator).then { UserAuthenticator newUserAuthenticator ->
+                        newUserAuthenticator = userAuthenticatorFilter.filterForGet(newUserAuthenticator, null)
+                        return Promise.pure(newUserAuthenticator)
+                    }
                 }
             }
         }
@@ -120,10 +151,17 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
         }
 
         return userAuthenticatorValidator.validateForGet(userAuthenticatorId).then { UserAuthenticator authenticator ->
-            authenticator = userAuthenticatorFilter.filterForGet(authenticator,
-                    getOptions.properties?.split(',') as List<String>)
+            def callback = authorizeCallbackFactory.create(authenticator.userId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('read')) {
+                    throw AppErrors.INSTANCE.userAuthenticatorNotFound(userAuthenticatorId).exception()
+                }
 
-            return Promise.pure(authenticator)
+                authenticator = userAuthenticatorFilter.filterForGet(authenticator,
+                        getOptions.properties?.split(',') as List<String>)
+
+                return Promise.pure(authenticator)
+            }
         }
 
     }
@@ -139,13 +177,16 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
                 def result = new Results<UserAuthenticator>(items: [])
 
                 authenticatorList.each { UserAuthenticator newUserAuthenticator ->
-                    if (newUserAuthenticator != null) {
-                        newUserAuthenticator = userAuthenticatorFilter.filterForGet(newUserAuthenticator,
-                                listOptions.properties?.split(',') as List<String>)
-                    }
+                    def callback = authorizeCallbackFactory.create(newUserAuthenticator.userId)
+                    return RightsScope.with(authorizeService.authorize(callback)) {
+                        if (newUserAuthenticator != null) {
+                            newUserAuthenticator = userAuthenticatorFilter.filterForGet(newUserAuthenticator,
+                                    listOptions.properties?.split(',') as List<String>)
+                        }
 
-                    if (newUserAuthenticator != null) {
-                        result.items.add(newUserAuthenticator)
+                        if (newUserAuthenticator != null && AuthorizeContext.hasRights('read')) {
+                            result.items.add(newUserAuthenticator)
+                        }
                     }
                 }
 
@@ -161,7 +202,14 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
         }
 
         return userAuthenticatorValidator.validateForGet(userAuthenticatorId).then { UserAuthenticator authenticator ->
-            return userAuthenticatorRepository.delete(userAuthenticatorId)
+            def callback = authorizeCallbackFactory.create(authenticator.userId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('delete')) {
+                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                }
+
+                return userAuthenticatorRepository.delete(userAuthenticatorId)
+            }
         }
     }
 

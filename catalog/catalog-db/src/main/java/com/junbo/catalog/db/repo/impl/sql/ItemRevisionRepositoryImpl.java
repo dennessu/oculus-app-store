@@ -12,7 +12,6 @@ import com.junbo.catalog.db.mapper.ItemRevisionMapper;
 import com.junbo.catalog.db.repo.ItemRevisionRepository;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
-import com.junbo.common.id.ItemId;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -26,14 +25,17 @@ public class ItemRevisionRepositoryImpl implements ItemRevisionRepository {
     @Autowired
     private ItemRevisionDao itemRevisionDao;
 
+    @Override
     public ItemRevision create(ItemRevision itemRevision) {
         return get(itemRevisionDao.create(ItemRevisionMapper.toDBEntity(itemRevision)));
     }
 
+    @Override
     public ItemRevision get(Long revisionId) {
         return ItemRevisionMapper.toModel(itemRevisionDao.get(revisionId));
     }
 
+    @Override
     public List<ItemRevision> getRevisions(ItemRevisionsGetOptions options) {
         List<ItemRevisionEntity> revisionEntities = itemRevisionDao.getRevisions(options);
         List<ItemRevision> revisions = new ArrayList<>();
@@ -44,10 +46,11 @@ public class ItemRevisionRepositoryImpl implements ItemRevisionRepository {
         return revisions;
     }
 
-    public List<ItemRevision> getRevisions(Collection<ItemId> itemIds, Long timestamp) {
+    @Override
+    public List<ItemRevision> getRevisions(Collection<Long> itemIds, Long timestamp) {
         List<ItemRevisionEntity> revisionEntities = new ArrayList<>();
-        for (ItemId itemId : itemIds) {
-            ItemRevisionEntity revisionEntity = itemRevisionDao.getRevision(itemId.getValue(), timestamp);
+        for (Long itemId : itemIds) {
+            ItemRevisionEntity revisionEntity = itemRevisionDao.getRevision(itemId, timestamp);
             if (revisionEntity != null) {
                 revisionEntities.add(revisionEntity);
             }

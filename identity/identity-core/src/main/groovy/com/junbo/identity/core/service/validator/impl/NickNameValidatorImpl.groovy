@@ -6,13 +6,13 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
+ * Check minimum and maximum nickName length
  * Created by kg on 3/17/14.
  */
 @CompileStatic
 class NickNameValidatorImpl implements NickNameValidator {
 
     private Integer nickNameMinLength
-
     private Integer nickNameMaxLength
 
     @Required

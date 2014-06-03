@@ -12,7 +12,6 @@ import com.junbo.catalog.db.mapper.OfferRevisionMapper;
 import com.junbo.catalog.db.repo.OfferRevisionRepository;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
-import com.junbo.common.id.OfferId;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -26,14 +25,17 @@ public class OfferRevisionRepositoryImpl implements OfferRevisionRepository {
     @Autowired
     private OfferRevisionDao offerRevisionDao;
 
+    @Override
     public OfferRevision create(OfferRevision offerRevision) {
         return get(offerRevisionDao.create(OfferRevisionMapper.toDBEntity(offerRevision)));
     }
 
+    @Override
     public OfferRevision get(Long revisionId) {
         return OfferRevisionMapper.toModel(offerRevisionDao.get(revisionId));
     }
 
+    @Override
     public List<OfferRevision> getRevisions(OfferRevisionsGetOptions options) {
         List<OfferRevisionEntity> revisionEntities = offerRevisionDao.getRevisions(options);
         List<OfferRevision> revisions = new ArrayList<>();
@@ -44,10 +46,11 @@ public class OfferRevisionRepositoryImpl implements OfferRevisionRepository {
         return revisions;
     }
 
-    public List<OfferRevision> getRevisions(Collection<OfferId> offerIds, Long timestamp) {
+    @Override
+    public List<OfferRevision> getRevisions(Collection<Long> offerIds, Long timestamp) {
         List<OfferRevisionEntity> revisionEntities = new ArrayList<>();
-        for (OfferId offerId : offerIds) {
-            OfferRevisionEntity revisionEntity = offerRevisionDao.getRevision(offerId.getValue(), timestamp);
+        for (Long offerId : offerIds) {
+            OfferRevisionEntity revisionEntity = offerRevisionDao.getRevision(offerId, timestamp);
             if (revisionEntity != null) {
                 revisionEntities.add(revisionEntity);
             }
@@ -60,6 +63,7 @@ public class OfferRevisionRepositoryImpl implements OfferRevisionRepository {
         return revisions;
     }
 
+    @Override
     public List<OfferRevision> getRevisions(Long itemId) {
         List<OfferRevisionEntity> revisionEntities = offerRevisionDao.getRevisionsByItemId(itemId);
         List<OfferRevision> revisions = new ArrayList<>();
@@ -70,6 +74,7 @@ public class OfferRevisionRepositoryImpl implements OfferRevisionRepository {
         return revisions;
     }
 
+    @Override
     public List<OfferRevision> getRevisionsBySubOfferId(Long offerId) {
         List<OfferRevisionEntity> revisionEntities = offerRevisionDao.getRevisionsBySubOfferId(offerId);
         List<OfferRevision> revisions = new ArrayList<>();

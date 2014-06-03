@@ -47,7 +47,7 @@ import java.util.concurrent.Callable;
 public class AdyenProviderServiceImpl extends AbstractPaymentProviderService implements InitializingBean {
     private static final Logger LOGGER = LoggerFactory.getLogger(AdyenProviderServiceImpl.class);
     private static final String PROVIDER_NAME = "Adyen";
-    private static final String CONFIRMED_STATUS = "AUTHORISED";
+    protected static final String CONFIRMED_STATUS = "AUTHORISED";
     protected static final String RECURRING = "RECURRING";
     protected static final String CANCEL_STATE = "[cancel-received]";
     protected static final String REFUND_STATE = "[refund-received]";

@@ -42,8 +42,11 @@ public class AdyenCCProviderServiceTest  extends BaseTest {
     @Test(enabled = false)
     public void testAddPI(){
         PaymentInstrument request = buildPIRequest();
+        request.setBillingAddressId(null);
+        request.getTypeSpecificDetails().setExpireDate("2016-06");
+        request.getTypeSpecificDetails().setEncryptedCvmCode("737");
         //AccountNumber is the js encrypted value for card : 4111111111111111, 737, 2016-06
-        request.setAccountNum("4111111111111111");
+        request.setAccountNum("adyenjs_0_1_4$F7wAyg3KGFWTZx49/JEqbhJfUtHW6pGzgpQuVcXKS0imvTVY7YJMO7tRi7ABYpwCGo8b9pvRcg7139vJOpDxqDKAXtKSU4G6PdI6MPFsHzaBaslGUvOZ4X1W+jwjruHizk/9O5a1sn8kE976g4ulhrrjJbf6DKI95UMmE6zGd7Osq//NbTnZGAELlBUpiv7qHCDQUay59uiJ/Missgr9ZYZfZPOMePc1y6bIE4754rfsQwycRY1czD9nG74vgRYHVplung0pJzNnd6EnYkji4j0yc/ZPfkOHpnJ9e0IBpE3U1Ijvm8TQiF19kmjqcPqh0j+UNysKyl1rp2c3nwqNtg==$jT6Yj594M+XkdUvZa9d/2QCDI8d+KYy7uCEFdpKiGZtTO0R54dBjr8G4oHKpL3XTU6gQqv/NMNpM47etpJbtxURQ6WAgtzpLLvf06Gfl7R443uNCRKlbMsEwwwUTA+WwNWhriKLXRH/t");
         PaymentInstrument result = null;
         result = mockAdyenPIService.add(request).get();
         Assert.assertNotNull(result.getExternalToken());
@@ -51,20 +54,20 @@ public class AdyenCCProviderServiceTest  extends BaseTest {
 
     @Test(enabled = false)
     public void testAddPIAndAuthCapture(){
-        /*
         PaymentInstrument request = buildPIRequest();
+        request.setBillingAddressId(null);
+        request.getTypeSpecificDetails().setExpireDate("2016-06");
+        request.getTypeSpecificDetails().setEncryptedCvmCode("737");
         //AccountNumber is the js encrypted value for card : 4111111111111111, 737, 2016-06
-        request.setAccountNum("4111111111111111");
+        request.setAccountNum("adyenjs_0_1_4$F7wAyg3KGFWTZx49/JEqbhJfUtHW6pGzgpQuVcXKS0imvTVY7YJMO7tRi7ABYpwCGo8b9pvRcg7139vJOpDxqDKAXtKSU4G6PdI6MPFsHzaBaslGUvOZ4X1W+jwjruHizk/9O5a1sn8kE976g4ulhrrjJbf6DKI95UMmE6zGd7Osq//NbTnZGAELlBUpiv7qHCDQUay59uiJ/Missgr9ZYZfZPOMePc1y6bIE4754rfsQwycRY1czD9nG74vgRYHVplung0pJzNnd6EnYkji4j0yc/ZPfkOHpnJ9e0IBpE3U1Ijvm8TQiF19kmjqcPqh0j+UNysKyl1rp2c3nwqNtg==$jT6Yj594M+XkdUvZa9d/2QCDI8d+KYy7uCEFdpKiGZtTO0R54dBjr8G4oHKpL3XTU6gQqv/NMNpM47etpJbtxURQ6WAgtzpLLvf06Gfl7R443uNCRKlbMsEwwwUTA+WwNWhriKLXRH/t");
         PaymentInstrument result = null;
         result = mockAdyenPIService.add(request).get();
         Assert.assertNotNull(result.getExternalToken());
-        */
+
         PaymentTransaction payment = new PaymentTransaction();
         payment.setBillingRefId("123");
         payment.setUserId(userId);
-        //TODO: do a work around here for test use find an Id in DB with HPP:
-        payment.setPaymentInstrumentId(2197815296L);
-        //end of hack
+        payment.setPaymentInstrumentId(result.getId());
         payment.setTrackingUuid(generateUUID());
         payment.setChargeInfo(new ChargeInfo() {
             {
@@ -82,20 +85,20 @@ public class AdyenCCProviderServiceTest  extends BaseTest {
 
     @Test(enabled = false)
     public void testAddPIAndChargeRefund(){
-        /*
         PaymentInstrument request = buildPIRequest();
+        request.setBillingAddressId(null);
+        request.getTypeSpecificDetails().setExpireDate("2016-06");
+        request.getTypeSpecificDetails().setEncryptedCvmCode("737");
         //AccountNumber is the js encrypted value for card : 4111111111111111, 737, 2016-06
-        request.setAccountNum("4111111111111111");
+        request.setAccountNum("adyenjs_0_1_4$F7wAyg3KGFWTZx49/JEqbhJfUtHW6pGzgpQuVcXKS0imvTVY7YJMO7tRi7ABYpwCGo8b9pvRcg7139vJOpDxqDKAXtKSU4G6PdI6MPFsHzaBaslGUvOZ4X1W+jwjruHizk/9O5a1sn8kE976g4ulhrrjJbf6DKI95UMmE6zGd7Osq//NbTnZGAELlBUpiv7qHCDQUay59uiJ/Missgr9ZYZfZPOMePc1y6bIE4754rfsQwycRY1czD9nG74vgRYHVplung0pJzNnd6EnYkji4j0yc/ZPfkOHpnJ9e0IBpE3U1Ijvm8TQiF19kmjqcPqh0j+UNysKyl1rp2c3nwqNtg==$jT6Yj594M+XkdUvZa9d/2QCDI8d+KYy7uCEFdpKiGZtTO0R54dBjr8G4oHKpL3XTU6gQqv/NMNpM47etpJbtxURQ6WAgtzpLLvf06Gfl7R443uNCRKlbMsEwwwUTA+WwNWhriKLXRH/t");
         PaymentInstrument result = null;
         result = mockAdyenPIService.add(request).get();
         Assert.assertNotNull(result.getExternalToken());
-        */
+
         PaymentTransaction payment = new PaymentTransaction();
         payment.setBillingRefId("123");
         payment.setUserId(userId);
-        //TODO: do a work around here for test use find an Id in DB with HPP:
-        payment.setPaymentInstrumentId(2197815296L);
-        //end of hack
+        payment.setPaymentInstrumentId(result.getId());
         payment.setTrackingUuid(generateUUID());
         payment.setChargeInfo(new ChargeInfo() {
             {

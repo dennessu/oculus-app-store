@@ -355,6 +355,8 @@
 
     <bean id="piTypeValidator" class="com.junbo.identity.core.service.validator.impl.PITypeValidatorImpl">
         <property name="piTypeRepository" ref="piTypeRepository"/>
+        <property name="minLocaleNameLength" value="1" />
+        <property name="maxLocaleNameLength" value="255" />
     </bean>
 
     <bean id="groupValidator" class="com.junbo.identity.core.service.validator.impl.GroupValidatorImpl">
@@ -393,11 +395,27 @@
 
     <bean id="tosValidator" class="com.junbo.identity.core.service.validator.impl.TosValidatorImpl">
         <property name="tosRepository" ref="tosRepository"/>
-        <property name="localeRepository" ref="localeRepository" />
+        <property name="countryRepository" ref="countryRepository" />
         <property name="titleMinLength" value="1"/>
         <property name="titleMaxLength" value="255"/>
         <property name="contentMinLength" value="1"/>
         <property name="contentMaxLength" value="1073741824"/>
+        <property name="minVersionLength" value="1" />
+        <property name="maxVersionLength" value="255" />
+        <property name="allowedTosTypes">
+            <list>
+                <value>EULA</value>
+                <value>TOS</value>
+                <value>PP</value>
+            </list>
+        </property>
+        <property name="tosStatus">
+            <list>
+                <value>DRAFT</value>
+                <value>APPROVED</value>
+                <value>OBSOLETE</value>
+            </list>
+        </property>
     </bean>
 
     <bean id="piiValidatorFactory" class="com.junbo.identity.core.service.validator.impl.PiiValidatorFactoryImpl">

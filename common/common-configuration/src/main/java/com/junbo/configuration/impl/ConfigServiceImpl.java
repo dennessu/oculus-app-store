@@ -56,7 +56,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
     private static final String CONFIG_PATH = "junbo/conf";
     private static final String FILE_FORMAT = "utf-8";
 
-    private static final String CRYPTOR_SUFFIX = "encrypted";
+    private static final String CRYPTO_SUFFIX = ".encrypted";
 
     private static Logger logger = LoggerFactory.getLogger(ConfigServiceImpl.class);
 
@@ -90,6 +90,27 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
     @Override
     public Properties getAllConfigItems() {
         return finalProperties;
+    }
+
+    @Override
+    public Properties getAllConfigItemsMasked() {
+
+        Properties properties = new Properties();
+
+        for (Map.Entry entry : finalProperties.entrySet()) {
+            String key = entry.getKey().toString();
+            String value = entry.getValue().toString();
+
+            if (key.endsWith(CRYPTO_SUFFIX)) {
+                // ignored
+            } else if (finalProperties.contains(key + CRYPTO_SUFFIX)) {
+                value = "*****";
+            }
+
+            properties.put(key, value);
+        }
+
+        return properties;
     }
 
     @Override
@@ -300,20 +321,18 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
 
         Properties newProperties = new Properties();
 
-        Iterator<Map.Entry<Object, Object>> iter = properties.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry<Object, Object> entry = iter.next();
+        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
             String key = entry.getKey().toString();
             String value = entry.getValue().toString();
 
-            if (key.endsWith(CRYPTOR_SUFFIX)) {
-                int endIndex = key.lastIndexOf(CRYPTOR_SUFFIX) - 1;
+            if (key.endsWith(CRYPTO_SUFFIX)) {
+                int endIndex = key.lastIndexOf(CRYPTO_SUFFIX);
                 String newKey = key.substring(0, endIndex);
 
                 newProperties.put(newKey, decrypt(value));
-            } else {
-                newProperties.put(key, value);
             }
+
+            newProperties.put(key, value);
         }
 
         return newProperties;

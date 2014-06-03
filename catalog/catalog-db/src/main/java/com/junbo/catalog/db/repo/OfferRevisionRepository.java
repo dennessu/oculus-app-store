@@ -8,7 +8,6 @@ package com.junbo.catalog.db.repo;
 
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
-import com.junbo.common.id.OfferId;
 
 import java.util.Collection;
 import java.util.List;
@@ -20,7 +19,7 @@ public interface OfferRevisionRepository extends BaseRevisionRepository<OfferRev
     OfferRevision create(OfferRevision offerRevision);
     OfferRevision get(Long revisionId);
     List<OfferRevision> getRevisions(OfferRevisionsGetOptions options);
-    List<OfferRevision> getRevisions(Collection<OfferId> offerIds, Long timestamp);
+    List<OfferRevision> getRevisions(Collection<Long> offerIds, Long timestamp);
     List<OfferRevision> getRevisions(Long itemId);
     List<OfferRevision> getRevisionsBySubOfferId(Long offerId);
     OfferRevision update(OfferRevision revision);
