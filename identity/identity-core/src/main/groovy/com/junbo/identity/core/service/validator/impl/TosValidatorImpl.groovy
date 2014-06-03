@@ -4,7 +4,6 @@ import com.junbo.common.enumid.CountryId
 import com.junbo.common.id.TosId
 import com.junbo.identity.core.service.validator.TosValidator
 import com.junbo.identity.data.repository.CountryRepository
-import com.junbo.identity.data.repository.LocaleRepository
 import com.junbo.identity.data.repository.TosRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Country

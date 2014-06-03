@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.CollectionUtils
 
 /**
+ * Check user valid (not anonymous user, non-active user)
+ * Check communication exists
  * Created by liangfu on 3/31/14.
  */
 @CompileStatic
@@ -133,7 +135,7 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
                 throw AppErrors.INSTANCE.userNotFound(userCommunication.userId).exception()
             }
 
-            if (existingUser.isAnonymous == true) {
+            if (existingUser.isAnonymous) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userCommunication.userId).exception()
             }
 

@@ -103,7 +103,7 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     Promise<List<UserPersonalInfo>> searchByEmail(String email, Integer limit, Integer offset) {
         PiiHash hash = getPiiHash(UserPersonalInfoType.EMAIL.toString())
 
-        return encryptUserPersonalInfoRepository.searchByHashValue(hash.generateHash(email.toLowerCase())).then {
+        return encryptUserPersonalInfoRepository.searchByHashValue(hash.generateHash(email.toLowerCase(Locale.ENGLISH))).then {
             List<EncryptUserPersonalInfo> userPersonalInfos ->
                 if (CollectionUtils.isEmpty(userPersonalInfos)) {
                     return Promise.pure(null)
@@ -118,7 +118,7 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
                         }
 
                         Email emailObj = (Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Email)
-                        if (emailObj.info.toLowerCase() == email.toLowerCase()) {
+                        if (emailObj.info.toLowerCase(Locale.ENGLISH) == email.toLowerCase(Locale.ENGLISH)) {
                             infos.add(userPersonalInfo)
                         }
                         return Promise.pure(null)

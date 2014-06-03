@@ -17,6 +17,8 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
+ * Check allowed types only password and pin
+ * Call password and pin validator
  * Created by liangfu on 4/9/14.
  */
 @CompileStatic

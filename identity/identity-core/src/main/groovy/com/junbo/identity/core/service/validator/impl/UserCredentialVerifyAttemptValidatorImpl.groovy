@@ -6,7 +6,6 @@ import com.junbo.identity.core.service.credential.CredentialHash
 import com.junbo.identity.core.service.credential.CredentialHashFactory
 import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.validator.UserCredentialVerifyAttemptValidator
-import com.junbo.identity.core.service.validator.UsernameValidator
 import com.junbo.identity.data.identifiable.CredentialType
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.*
@@ -18,8 +17,6 @@ import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
 import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
-import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
-import com.junbo.identity.spec.v1.option.list.UserPinListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate
 import groovy.transform.CompileStatic
@@ -33,6 +30,10 @@ import org.springframework.util.CollectionUtils
 import java.util.regex.Pattern
 
 /**
+ * Check userValid (non-anonymous and active user.)
+ * Check IP patterns
+ * Check userAgent minimum and maximum length
+ * Check maxRetry number
  * Created by liangfu on 3/28/14.
  */
 @CompileStatic
@@ -45,8 +46,6 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     private UserPasswordRepository userPasswordRepository
     private UserPinRepository userPinRepository
     private UserPersonalInfoRepository userPersonalInfoRepository
-
-    private UsernameValidator usernameValidator
 
     private List<Pattern> allowedIpAddressPatterns
     private Integer userAgentMinLength
@@ -75,7 +74,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     throw AppErrors.INSTANCE.userNotFound(userLoginAttempt.userId).exception()
                 }
 
-                if (user.isAnonymous == true) {
+                if (user.isAnonymous) {
                     throw AppErrors.INSTANCE.userInInvalidStatus(userLoginAttempt.userId).exception()
                 }
 
@@ -125,7 +124,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                 throw AppErrors.INSTANCE.userInInvalidStatus(userLoginAttempt.username).exception()
             }
 
-            if (user.isAnonymous == true) {
+            if (user.isAnonymous) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userLoginAttempt.username).exception()
             }
 
@@ -178,7 +177,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
 
     private Promise<User> findUser(UserCredentialVerifyAttempt userLoginAttempt) {
         if (isEmail(userLoginAttempt.username)) {
-            return userPersonalInfoRepository.searchByEmail(userLoginAttempt.username.toLowerCase(), Integer.MAX_VALUE,
+            return userPersonalInfoRepository.searchByEmail(userLoginAttempt.username.toLowerCase(Locale.ENGLISH), Integer.MAX_VALUE,
                     0).then { List<UserPersonalInfo> personalInfos ->
                     if (CollectionUtils.isEmpty(personalInfos)) {
                         throw AppErrors.INSTANCE.userNotFound(userLoginAttempt.username).exception()
@@ -215,7 +214,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                 }
 
                 UserPersonalInfoLink existingLink = existing.emails.find { UserPersonalInfoLink link ->
-                    return link.isDefault == true && link.value == info.id
+                    return link.isDefault && link.value == info.id
                 }
 
                 if (existingLink != null) {
@@ -231,7 +230,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     }
 
     private Promise<Void> checkMaximumRetryCount(User user, UserCredentialVerifyAttempt userLoginAttempt) {
-        if (userLoginAttempt.succeeded == true) {
+        if (userLoginAttempt.succeeded) {
             return Promise.pure(null)
         }
 
@@ -250,7 +249,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
 
             int index = 0
             for ( ; index < maxRetryCount; index++) {
-                if (attemptList.get(index).succeeded == true) {
+                if (attemptList.get(index).succeeded) {
                     break
                 }
             }
@@ -350,11 +349,6 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     @Required
     void setUserAgentMaxLength(Integer userAgentMaxLength) {
         this.userAgentMaxLength = userAgentMaxLength
-    }
-
-    @Required
-    void setUsernameValidator(UsernameValidator usernameValidator) {
-        this.usernameValidator = usernameValidator
     }
 
     @Required

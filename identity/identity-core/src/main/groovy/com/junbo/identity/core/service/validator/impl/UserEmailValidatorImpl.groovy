@@ -21,6 +21,7 @@ import org.springframework.util.StringUtils
 import java.util.regex.Pattern
 
 /**
+ * Please check resource.
  * Created by liangfu on 3/31/14.
  */
 @CompileStatic
@@ -53,8 +54,8 @@ class UserEmailValidatorImpl implements PiiValidator {
         Email email = (Email)JsonHelper.jsonNodeToObj(value, Email)
         Email oldEmail = (Email)JsonHelper.jsonNodeToObj(oldValue, Email)
 
-        email.info = StringUtils.isEmpty(email.info) ? email.info : email.info.toLowerCase()
-        oldEmail.info = StringUtils.isEmpty(oldEmail.info) ? oldEmail.info : oldEmail.info.toLowerCase()
+        email.info = StringUtils.isEmpty(email.info) ? email.info : email.info.toLowerCase(Locale.ENGLISH)
+        oldEmail.info = StringUtils.isEmpty(oldEmail.info) ? oldEmail.info : oldEmail.info.toLowerCase(Locale.ENGLISH)
 
         if (email != oldEmail) {
             throw AppErrors.INSTANCE.fieldInvalidException('value', 'value can\'t be updated').exception()
@@ -76,7 +77,7 @@ class UserEmailValidatorImpl implements PiiValidator {
         }
 
         if (!allowedEmailPatterns.any {
-            Pattern pattern -> pattern.matcher(email.info.toLowerCase()).matches()
+            Pattern pattern -> pattern.matcher(email.info.toLowerCase(Locale.ENGLISH)).matches()
         }) {
             throw AppErrors.INSTANCE.fieldInvalid('value.info').exception()
         }
@@ -85,7 +86,7 @@ class UserEmailValidatorImpl implements PiiValidator {
     private Promise<Void> checkAdvanceUserEmail(Email email) {
         // 2.	User’s default email is required to be globally unique - no two users can use the same email as their default email.
         //      The first user set this email to default will get this email.
-        return userPersonalInfoRepository.searchByEmail(email.info.toLowerCase(), Integer.MAX_VALUE, 0).then {
+        return userPersonalInfoRepository.searchByEmail(email.info.toLowerCase(Locale.ENGLISH), Integer.MAX_VALUE, 0).then {
             List<UserPersonalInfo> existing ->
             if (CollectionUtils.isEmpty(existing)) {
                 return Promise.pure(null)
@@ -105,7 +106,7 @@ class UserEmailValidatorImpl implements PiiValidator {
                         return userPersonalInfoRepository.get(link.value).then { UserPersonalInfo userPersonalInfo ->
                             Email existingEmail = (Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Email)
 
-                            if (existingEmail.info.toLowerCase() == email.info.toLowerCase()) {
+                            if (existingEmail.info.toLowerCase(Locale.ENGLISH) == email.info.toLowerCase(Locale.ENGLISH)) {
                                 throw AppErrors.INSTANCE.fieldInvalid('value.info', 'Mail is already used.').exception()
                             }
 
@@ -118,7 +119,7 @@ class UserEmailValidatorImpl implements PiiValidator {
             }.then {
                 // 1:   All emails are treated case-insensitive - no matter what case is provided by the API-client,
                 //      the value in the resource is always forced to lower-case.
-                email.info = email.info.toLowerCase()
+                email.info = email.info.toLowerCase(Locale.ENGLISH)
                 return Promise.pure(null)
             }
         }
