@@ -54,8 +54,14 @@
 
     <bean id="rawDataTranscoder" class="com.junbo.payment.clientproxy.adyen.RawDataTranscoder"/>
 
-    <bean id="countryServiceFacade" class="com.junbo.payment.clientproxy.impl.CountryServiceFacadeImpl"/>
-    <bean id="currencyServiceFacade" class="com.junbo.payment.clientproxy.impl.CurrencyServiceFacadeImpl"/>
+    <bean id="countryServiceFacade" class="com.junbo.payment.clientproxy.impl.CountryServiceFacadeImpl">
+        <property name="countryResource" ref="countryClient" />
+    </bean>
+
+    <bean id="currencyServiceFacade" class="com.junbo.payment.clientproxy.impl.CurrencyServiceFacadeImpl">
+        <property name="currencyResource" ref="currencyClient"/>
+    </bean>
+
     <bean id="mockPersonalInfoClientProxy" class="com.junbo.payment.clientproxy.MockPersonalInfoClientProxy"/>
 
 

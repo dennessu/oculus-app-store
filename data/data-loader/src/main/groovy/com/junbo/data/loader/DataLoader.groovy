@@ -19,43 +19,31 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 @CompileStatic
 class DataLoader implements InitializingBean {
     private Map<String, DataHandler> handlers
+    private List<String> dataList
 
     @Required
     void setHandlers(Map<String, DataHandler> handlers) {
         this.handlers = handlers
     }
 
+    @Required
+    void setDataList(List<String> dataList) {
+        this.dataList = dataList
+    }
+
     @Override
     void afterPropertiesSet() throws Exception {
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(this.class.classLoader)
-        Resource[] clients = resolver.getResources('data/client/*.data')
 
-        for (Resource resource : clients) {
-            DataHandler handler = handlers[getParentPath(resource.URI)]
-            if (handler != null) {
-                String content = IOUtils.toString(resource.URI)
-                handler.handle(content)
-            }
-        }
-
-        Resource[] resources = resolver.getResources('data/**/*.data')
-        for (Resource resource : resources) {
-            String parentPath = getParentPath(resource.URI)
-            if (parentPath != 'client') {
-                DataHandler handler = handlers[parentPath]
+        for (String data : dataList) {
+            Resource[] resources = resolver.getResources("data/$data/*.data")
+            for (Resource resource : resources) {
+                DataHandler handler = handlers[data]
                 if (handler != null) {
                     String content = IOUtils.toString(resource.URI)
                     handler.handle(content)
                 }
             }
         }
-    }
-
-    private static String getParentPath(URI uri) {
-        String[] tokens = uri.toString().split('/')
-        if (tokens.length >= 2) {
-            return tokens[tokens.length - 2]
-        }
-        return null
     }
 }
