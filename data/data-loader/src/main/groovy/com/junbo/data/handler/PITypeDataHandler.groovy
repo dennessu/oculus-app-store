@@ -45,7 +45,7 @@ class PITypeDataHandler extends BaseDataHandler {
             if (alwaysOverwrite || (piType.resourceAge != null && piType.resourceAge > existing.resourceAge)) {
                 logger.debug("Overwrite PIType $piType.typeCode of resourceAge $existing.resourceAge " +
                         "with new resourceAge: $piType.resourceAge")
-                piType.id = existing.id
+                piType.id = (PITypeId)existing.id
                 piType.resourceAge = existing.resourceAge
                 piTypeResource.put((PITypeId)existing.id, piType)
             } else {
