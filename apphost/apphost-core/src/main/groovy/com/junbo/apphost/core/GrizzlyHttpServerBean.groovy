@@ -13,6 +13,7 @@ import org.glassfish.jersey.internal.inject.Providers
 import org.glassfish.jersey.server.ApplicationHandler
 import org.glassfish.jersey.server.ResourceConfig
 import org.glassfish.jersey.server.spi.ContainerProvider
+import org.glassfish.jersey.server.wadl.WadlApplicationContext
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.BeansException
@@ -56,6 +57,10 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean,
     @Required
     void setUri(URI uri) {
         this.uri = uri
+    }
+
+    URI getUri() {
+        return uri
     }
 
     @Required
@@ -138,6 +143,11 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean,
         ApplicationHandler applicationHandler = new ApplicationHandler(resourceConfig, customBinder)
 
         serviceLocator = applicationHandler.serviceLocator
+
+        def wadlApplicationContext = (WadlApplicationContext) serviceLocator.getService(WadlApplicationContext)
+        if (wadlApplicationContext != null) {
+            wadlApplicationContext.wadlGenerationEnabled = false
+        }
 
         HttpHandler handler = null
         for (ContainerProvider cp : Providers.getProviders(serviceLocator, ContainerProvider)) {
