@@ -7,7 +7,6 @@
 package com.junbo.billing.clientproxy.impl.sabrix
 
 import com.thoughtworks.xstream.annotations.XStreamAlias
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute
 import groovy.transform.CompileStatic
 
 /**
@@ -16,11 +15,9 @@ import groovy.transform.CompileStatic
 @CompileStatic
 @XStreamAlias("REGISTRATIONS")
 class Registrations {
-    @XStreamAsAttribute
     @XStreamAlias('BUYER_ROLE')
     String buyerRole
 
-    @XStreamAsAttribute
     @XStreamAlias('SELLER_ROLE')
     String sellerRole
 

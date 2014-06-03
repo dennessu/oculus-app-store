@@ -8,6 +8,7 @@ package com.junbo.billing.clientproxy.impl.sabrix
 
 import com.thoughtworks.xstream.annotations.XStreamAlias
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute
+import com.thoughtworks.xstream.annotations.XStreamImplicit
 import groovy.transform.CompileStatic
 
 /**
@@ -20,48 +21,37 @@ class Line {
     @XStreamAlias('ID')
     Integer id
 
-    @XStreamAsAttribute
     @XStreamAlias('BILL_TO')
     SabrixAddress billTo
 
-    @XStreamAsAttribute
     @XStreamAlias('SHIP_TO')
     SabrixAddress shipTo
 
-    @XStreamAsAttribute
     @XStreamAlias('SHIP_FROM')
     SabrixAddress shipFrom
 
-    @XStreamAsAttribute
     @XStreamAlias('TRANSACTION_TYPE')
     String transactionType
 
-    @XStreamAsAttribute
     @XStreamAlias('PRODUCT_CODE')
     String productCode
 
-    @XStreamAsAttribute
     @XStreamAlias('GROSS_AMOUNT')
     Double grossAmount
 
-    @XStreamAsAttribute
     @XStreamAlias('LINE_NUMBER')
     Integer lineNumber
 
-    @XStreamAsAttribute
     @XStreamAlias('IS_EXEMPT')
     Exempt isExempt
 
-    @XStreamAsAttribute
     @XStreamAlias('REGISTRATIONS')
     Registrations registrations
 
-    @XStreamAsAttribute
     @XStreamAlias('TOTAL_TAX_AMOUNT')
     Double totalTaxAmount
 
-    @XStreamAsAttribute
-    @XStreamAlias('TAX')
+    @XStreamImplicit(itemFieldName="TAX")
     List<Tax> tax
 
 

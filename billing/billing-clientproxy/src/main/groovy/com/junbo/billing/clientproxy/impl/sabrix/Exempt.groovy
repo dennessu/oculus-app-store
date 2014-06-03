@@ -7,7 +7,6 @@
 package com.junbo.billing.clientproxy.impl.sabrix
 
 import com.thoughtworks.xstream.annotations.XStreamAlias
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute
 import groovy.transform.CompileStatic
 
 /**
@@ -16,7 +15,6 @@ import groovy.transform.CompileStatic
 @CompileStatic
 @XStreamAlias("IS_EXEMPT")
 class Exempt {
-    @XStreamAsAttribute
     @XStreamAlias('ALL')
     Boolean all
 

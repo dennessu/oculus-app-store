@@ -12,16 +12,13 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit
 import groovy.transform.CompileStatic
 
 /**
- * Batch level input for tax calculation.
+ * Batch level output for tax calculation.
  */
 @CompileStatic
-@XStreamAlias("INDATA")
-class Batch {
-    @XStreamAlias('USERNAME')
-    String username
-
-    @XStreamAlias('PASSWORD')
-    String password
+@XStreamAlias("OUTDATA")
+class TaxCalculationResponse {
+    @XStreamAlias('REQUEST_STATUS')
+    RequestStatus requestStatus
 
     @XStreamImplicit(itemFieldName="INVOICE")
     List<Invoice> invoice

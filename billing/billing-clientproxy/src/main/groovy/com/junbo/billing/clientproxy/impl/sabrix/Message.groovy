@@ -7,7 +7,6 @@
 package com.junbo.billing.clientproxy.impl.sabrix
 
 import com.thoughtworks.xstream.annotations.XStreamAlias
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute
 import groovy.transform.CompileStatic
 
 /**
@@ -16,23 +15,18 @@ import groovy.transform.CompileStatic
 @CompileStatic
 @XStreamAlias("MESSAGE")
 class Message {
-    @XStreamAsAttribute
     @XStreamAlias('LOCATION')
     String location
 
-    @XStreamAsAttribute
     @XStreamAlias('CATEGORY')
     String category
 
-    @XStreamAsAttribute
     @XStreamAlias('CODE')
     String code
 
-    @XStreamAsAttribute
     @XStreamAlias('MESSAGE_TEXT')
     String messageText
 
-    @XStreamAsAttribute
     @XStreamAlias('SEVERITY')
     Integer severity
 

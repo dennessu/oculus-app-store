@@ -7,7 +7,7 @@
 package com.junbo.billing.clientproxy.impl.sabrix
 
 import com.thoughtworks.xstream.annotations.XStreamAlias
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute
+import com.thoughtworks.xstream.annotations.XStreamImplicit
 import groovy.transform.CompileStatic
 
 /**
@@ -17,67 +17,61 @@ import groovy.transform.CompileStatic
 @XStreamAlias("INVOICE")
 class Invoice {
     // input
-    @XStreamAsAttribute
     @XStreamAlias('INVOICE_DATE')
-    Date invoiceDate
+    String invoiceDate
 
-    @XStreamAsAttribute
+    @XStreamAlias('EXTERNAL_COMPANY_ID')
+    String externalCompanyId
+
+    @XStreamAlias('COMPANY_ROLE')
+    String companyRole
+
+    @XStreamAlias('COMPANY_NAME')
+    String companyName
+
     @XStreamAlias('CURRENCY_CODE')
     String currencyCode
 
-    @XStreamAsAttribute
-    @XStreamAlias('CALCULATION_DIRECTION')
-    String calculationDirection
-
-    @XStreamAsAttribute
-    @XStreamAlias('LINE')
+    @XStreamImplicit(itemFieldName="LINE")
     List<Line> line
 
-    @XStreamAsAttribute
-    @XStreamAlias('INVOICE_NUBMER')
+    @XStreamAlias('INVOICE_NUMBER')
     String invoiceNumber
 
-    @XStreamAsAttribute
     @XStreamAlias('IS_AUDITED')
     Boolean isAudited
 
-    @XStreamAsAttribute
     @XStreamAlias('ORIGINAL_INVOICE_DATE')
     Date originalInvoiceDate
 
-    @XStreamAsAttribute
     @XStreamAlias('ORIGINAL_INVOICE_NUMBER')
     String originalInvoiceNumber
 
-    @XStreamAsAttribute
     @XStreamAlias('NATURE_OF_TRANSACTION_CODE')
     String natureOfTransactionCode
 
-    @XStreamAsAttribute
     @XStreamAlias('BILL_TO')
     SabrixAddress billTo
 
-    @XStreamAsAttribute
     @XStreamAlias('SHIP_TO')
     SabrixAddress shipTo
 
-    @XStreamAsAttribute
     @XStreamAlias('SHIP_FROM')
     SabrixAddress shipFrom
     // end of input
 
     // output
-    @XStreamAsAttribute
     @XStreamAlias('REQUEST_STATUS')
     RequestStatus requestStatus
 
-    @XStreamAsAttribute
     @XStreamAlias('TOTAL_TAX_AMOUNT')
     Double totalTaxAmount
 
-    @XStreamAsAttribute
     @XStreamAlias('MESSAGE')
     List<Message> message
+
+    @XStreamAlias('CALCULATION_DIRECTION')
+    String calculationDirection
     // end of output
 
 

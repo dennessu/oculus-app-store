@@ -49,14 +49,17 @@
     </bean>
     <bean id="sabrixFacade" class="com.junbo.billing.clientproxy.impl.SabrixFacadeImpl" />
     <bean id="sabrixConfiguration" class="com.junbo.billing.clientproxy.impl.sabrix.SabrixConfiguration">
+        <property name="companyName" value="${sabrix.companyName}"/>
         <property name="companyRole" value="${sabrix.companyRole}"/>
         <property name="externalCompanyId" value="${sabrix.externalCompanyId}"/>
         <property name="username" value="${sabrix.username}"/>
         <property name="password" value="${sabrix.password}"/>
+        <property name="version" value="${sabrix.version}"/>
         <property name="shipFromCity" value="${shipFrom.address.city}"/>
         <property name="shipFromState" value="${shipFrom.address.state}"/>
         <property name="shipFromPostalCode" value="${shipFrom.address.postal.code}"/>
         <property name="shipFromCountry" value="${shipFrom.address.country}"/>
+        <property name="baseUrl" value="${sabrix.baseUrl}"/>
     </bean>
     <bean id="billingAsyncHttpClient" class="com.ning.http.client.AsyncHttpClient"/>
     <bean id="transcoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
