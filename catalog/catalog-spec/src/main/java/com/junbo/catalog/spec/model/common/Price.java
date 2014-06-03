@@ -22,7 +22,7 @@ public class Price {
     @ApiModelProperty(position = 2, required = true, value = "price tier")
     private Long priceTier;
     @ApiModelProperty(position = 3, required = true, value = "prices")
-    private Map<String, BigDecimal> prices;
+    private Map<String, Map<String, BigDecimal>> prices;
 
     public String getPriceType() {
         return priceType;
@@ -40,11 +40,11 @@ public class Price {
         this.priceTier = priceTier;
     }
 
-    public Map<String, BigDecimal> getPrices() {
+    public Map<String, Map<String, BigDecimal>> getPrices() {
         return prices;
     }
 
-    public void setPrices(Map<String, BigDecimal> prices) {
+    public void setPrices(Map<String, Map<String, BigDecimal>> prices) {
         this.prices = prices;
     }
 }

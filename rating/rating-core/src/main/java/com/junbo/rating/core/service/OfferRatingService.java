@@ -51,7 +51,7 @@ public class OfferRatingService extends RatingServiceSupport{
             Set<PromotionRevision> promotions = candidates.get(offerId) == null?
                     new HashSet<PromotionRevision>() : candidates.get(offerId);
 
-            Money originalPrice = getPrice(item.getOffer(), currency.getCode());
+            Money originalPrice = getPrice(item.getOffer(), context.getCountry(), currency.getCode());
             if (originalPrice == Money.NOT_FOUND) {
                 LOGGER.error("Price of Offer [" + offerId + "] is not found for Currency [" + currency + "].");
                 throw AppErrors.INSTANCE.priceNotFound(item.getOfferId().toString()).exception();

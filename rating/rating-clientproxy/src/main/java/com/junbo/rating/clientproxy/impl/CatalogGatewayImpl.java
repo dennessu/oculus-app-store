@@ -187,7 +187,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
     }
 
     private Price getPrice(com.junbo.catalog.spec.model.common.Price price) {
-        Map<String, BigDecimal> prices = new HashMap<>();
+        Map<String, Map<String, BigDecimal>> prices = new HashMap<>();
         switch(PriceType.valueOf(price.getPriceType())) {
             case CUSTOM:
                 prices.putAll(price.getPrices());

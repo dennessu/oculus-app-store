@@ -22,6 +22,7 @@ public class SubsRatingContext extends RatingContext {
     private BigDecimal amount;
 
     public void fromRequest(SubsRatingRequest request) {
+        super.setCountry(request.getCountry());
         Currency currency = Currency.findByCode(request.getCurrency());
         if (currency == null) {
             throw AppErrors.INSTANCE.currencyNotExist(request.getCurrency()).exception();

@@ -73,8 +73,10 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
     private RatingOffer genOffer100() {
         return new RatingOffer() {{
             setId(100L);
-            setPrice(new Price(PriceType.CUSTOM.name(), new HashMap<String, BigDecimal>() {{
-                put("USD", new BigDecimal("9.99"));
+            setPrice(new Price(PriceType.CUSTOM.name(), new HashMap<String, Map<String, BigDecimal>>() {{
+                put("US", new HashMap<String, BigDecimal>() {{
+                    put("USD", new BigDecimal("9.99"));
+                }});
             }}));
             setCategories(new ArrayList<Long>());
             setItems(new ArrayList<LinkedEntry>() {{
@@ -93,8 +95,10 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
                 put(Constants.PURCHASE_EVENT, new ArrayList<OfferAction>() {{
                     add(new OfferAction() {{
                         setType(Constants.CHARGE_ACTION);
-                        setPrice(new Price(PriceType.CUSTOM.name(), new HashMap<String, BigDecimal>() {{
-                            put("USD", new BigDecimal("9.99"));
+                        setPrice(new Price(PriceType.CUSTOM.name(), new HashMap<String, Map<String, BigDecimal>>() {{
+                            put("US", new HashMap<String, BigDecimal>() {{
+                                put("USD", new BigDecimal("9.99"));
+                            }});
                         }}));
                     }});
                 }});
@@ -105,8 +109,10 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
     private RatingOffer genOffer102() {
         return new RatingOffer() {{
             setId(102L);
-            setPrice(new Price(PriceType.CUSTOM.name(), new HashMap<String, BigDecimal>() {{
-                put("USD", new BigDecimal("9.99"));
+            setPrice(new Price(PriceType.CUSTOM.name(), new HashMap<String, Map<String, BigDecimal>>() {{
+                put("US", new HashMap<String, BigDecimal>() {{
+                    put("USD", new BigDecimal("9.99"));
+                }});
             }}));
             setCategories(new ArrayList<Long>());
             setItems(new ArrayList<LinkedEntry>() {{
@@ -128,8 +134,10 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
     private RatingOffer genOffer107() {
         return new RatingOffer() {{
             setId(107L);
-            setPrice(new Price(PriceType.CUSTOM.name(), new HashMap<String, BigDecimal>() {{
-                put("USD", new BigDecimal("1.99"));
+            setPrice(new Price(PriceType.CUSTOM.name(), new HashMap<String, Map<String, BigDecimal>>() {{
+                put("US", new HashMap<String, BigDecimal>() {{
+                    put("USD", new BigDecimal("1.99"));
+                }});
             }}));
             setCategories(new ArrayList<Long>());
             setItems(new ArrayList<LinkedEntry>() {{
@@ -145,8 +153,10 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
     private RatingOffer genOffer109() {
         return new RatingOffer() {{
             setId(109L);
-            setPrice(new Price(PriceType.CUSTOM.name(), new HashMap<String, BigDecimal>() {{
-                put("USD", new BigDecimal("9.99"));
+            setPrice(new Price(PriceType.CUSTOM.name(), new HashMap<String, Map<String, BigDecimal>>() {{
+                put("US", new HashMap<String, BigDecimal>() {{
+                    put("USD", new BigDecimal("9.99"));
+                }});
             }}));
             setCategories(new ArrayList<Long>());
             setSubOffers(new ArrayList<LinkedEntry>() {{
