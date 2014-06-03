@@ -5,9 +5,9 @@
  */
 package com.junbo.crypto.core
 
-import com.junbo.crypto.common.HexHelper
 import com.junbo.crypto.core.service.CipherService
 import com.junbo.crypto.core.service.KeyStoreService
+import org.apache.commons.codec.binary.Hex
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.test.context.ContextConfiguration
@@ -87,8 +87,8 @@ public class CipherServiceTest extends AbstractTestNGSpringContextTests {
         Integer size = Math.abs(random.nextInt() % 50)
         String value = generate(size * 2)
 
-        byte[] encodeValue = HexHelper.hexStringToByteArray(value);
-        String decodedValue = HexHelper.byteArrayToHex(encodeValue);
+        byte[] encodeValue = Hex.decodeHex(value.toCharArray())
+        String decodedValue = Hex.encodeHex(encodeValue)
 
         assert  decodedValue == value
     }

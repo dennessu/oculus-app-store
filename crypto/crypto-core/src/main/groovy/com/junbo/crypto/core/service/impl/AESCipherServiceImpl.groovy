@@ -1,9 +1,9 @@
 package com.junbo.crypto.core.service.impl
 
-import com.junbo.crypto.common.HexHelper
 import com.junbo.crypto.core.service.CipherService
 import com.junbo.crypto.spec.error.AppErrors
 import groovy.transform.CompileStatic
+import org.apache.commons.codec.binary.Hex
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -45,7 +45,7 @@ class AESCipherServiceImpl implements CipherService {
             Cipher cipher = Cipher.getInstance(ALGORITHM)
             IvParameterSpec ivspec = new IvParameterSpec(IV);
             cipher.init(Cipher.ENCRYPT_MODE, key, ivspec);
-            return HexHelper.byteArrayToHex(cipher.doFinal(message.getBytes("UTF-8")));
+            return new String(Hex.encodeHex(cipher.doFinal(message.getBytes("UTF-8"))));
         } catch (NoSuchAlgorithmException noAlgorithmEx) {
             throw AppErrors.INSTANCE.noSuchAlgorithmException("Encrypt: " + noAlgorithmEx.message).exception()
         } catch (NoSuchPaddingException noPaddingEx) {
@@ -78,7 +78,7 @@ class AESCipherServiceImpl implements CipherService {
             Cipher cipher = Cipher.getInstance(ALGORITHM);
             IvParameterSpec ivspec = new IvParameterSpec(IV);
             cipher.init(Cipher.DECRYPT_MODE, key, ivspec);
-            return new String(cipher.doFinal(HexHelper.hexStringToByteArray(encryptMessage)), "UTF-8");
+            return new String(cipher.doFinal(Hex.decodeHex(encryptMessage.toCharArray())), "UTF-8");
         } catch (NoSuchAlgorithmException noAlgorithmEx) {
             throw AppErrors.INSTANCE.noSuchAlgorithmException("Encrypt: " + noAlgorithmEx.message).exception()
         } catch (NoSuchPaddingException noPaddingEx) {
