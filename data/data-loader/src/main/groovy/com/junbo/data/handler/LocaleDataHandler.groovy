@@ -40,7 +40,15 @@ class LocaleDataHandler extends BaseDataHandler {
         }
 
         if (existing != null) {
-            logger.debug("$locale.localeCode already exists, skipped!")
+            if (alwaysOverwrite || (locale.resourceAge != null && locale.resourceAge > existing.resourceAge)) {
+                logger.debug("Overwrite Locale $locale.localeName of resourceAge $existing.resourceAge " +
+                        "with new resourceAge: $locale.resourceAge")
+
+                locale.resourceAge = existing.resourceAge
+                localeResource.put(new LocaleId(locale.localeName), locale)
+            } else {
+                logger.debug("$locale.localeCode already exists, skipped!")
+            }
         } else {
             logger.debug('Create new locale with this content')
             localeResource.create(locale)

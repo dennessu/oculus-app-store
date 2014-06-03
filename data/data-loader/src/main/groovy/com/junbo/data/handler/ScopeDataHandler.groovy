@@ -44,7 +44,7 @@ class ScopeDataHandler extends BaseDataHandler {
 
         if (existing != null) {
             int currentRevision = getRevision(existing.revision)
-            if (scope.revision != null && getRevision(scope.revision) > currentRevision) {
+            if (alwaysOverwrite || (scope.revision != null && getRevision(scope.revision) > currentRevision)) {
                 logger.debug("Overwrite Scope $existing.name of revision $existing.revision " +
                         "with new revision: $scope.revision")
 
