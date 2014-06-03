@@ -24,17 +24,3 @@ ext {
             'com.junbo.langur.processor.ClientProxyFactoryProcessor'
     ].join(',')
 }
-
-
-apply plugin: 'grgit-release'
-import org.ajoberstar.grgit.*
-
-def releaseVersion
-release {
-    grgit = Grgit.open(project.file('../../.'))
-    releaseVersion = version
-}
-
-gradle.taskGraph.whenReady {
-    project.version = releaseVersion
-}

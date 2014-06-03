@@ -23,4 +23,4 @@ goto setup
 
 IF NOT DEFINED JAVA_OPTS set JAVA_OPTS=
 
-"c:\Program Files\Java\jdk1.7.0_51\bin\java.exe" -cp "%CP%" %JAVA_OPTS% liquibase.integration.commandline.Main %CMD_LINE_ARGS%
+java -cp "%CP%" %JAVA_OPTS% liquibase.integration.commandline.Main %CMD_LINE_ARGS%

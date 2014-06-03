@@ -58,18 +58,6 @@ class BootstrapPlugin implements Plugin<Project> {
         rootProject.subprojects {
             def subProject = it
 
-            buildscript {
-                repositories {
-                    mavenLocal()
-                    mavenCentral()
-                    jcenter()
-                }
-
-                dependencies {
-                    classpath 'org.ajoberstar:gradle-git:0.8.0'
-                }
-            }
-
             group = 'com.junbo.' + project.name.split('-', 2)[0]
             version = property("${project.name}-version")
 
@@ -192,7 +180,6 @@ class BootstrapPlugin implements Plugin<Project> {
                     }
                 }
 
-                /*
                 subProject.apply plugin: 'maven-publish'
 
                 task('sourcesJar', type: Jar) {
@@ -228,7 +215,6 @@ class BootstrapPlugin implements Plugin<Project> {
                 }
 
                 task('install').dependsOn 'publishToMavenLocal', 'build'
-                */
             }
 
             plugins.withType(GroovyPlugin) {
