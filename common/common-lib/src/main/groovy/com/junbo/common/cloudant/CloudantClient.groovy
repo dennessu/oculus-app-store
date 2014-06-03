@@ -280,8 +280,9 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
         }
     }
 
-    private CloudantQueryResult internalQueryView(String viewName, String key, Integer limit,
-                                                  Integer skip, boolean descending, boolean includeDocs) {
+    private CloudantQueryResult internalQueryView(String viewName, String key, String startKey, String endKey,
+                                                  Integer limit, Integer skip, boolean descending,
+                                                  boolean includeDocs) {
         CloudantViews.CloudantView cloudantView = cloudantViews.views[viewName]
         if (cloudantView == null) {
             throw new CloudantException("The view $viewName does not exist")
@@ -290,6 +291,12 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
         def query = [:]
         if (key != null) {
             query.put('key', "\"$key\"")
+        }
+        if (startKey != null) {
+            query.put('startkey', "\"$startKey\"")
+        }
+        if (endKey != null) {
+            query.put('endkey', "\"$endKey\"")
         }
         if (limit != null) {
             query.put('limit', limit.toString())
@@ -317,12 +324,12 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
 
     protected CloudantQueryResult queryView(String viewName, String key, Integer limit, Integer skip,
                                 boolean descending, boolean includeDocs) {
-        return internalQueryView(viewName, key, limit, skip, descending, includeDocs)
+        return internalQueryView(viewName, key, null, null, limit, skip, descending, includeDocs)
     }
 
     protected List<T> queryView(String viewName, String key, Integer limit, Integer skip,
                                 boolean descending) {
-        CloudantQueryResult searchResult = internalQueryView(viewName, key, limit, skip, descending, true)
+        CloudantQueryResult searchResult = internalQueryView(viewName, key, null, null, limit, skip, descending, true)
         if (searchResult.rows != null) {
             return searchResult.rows.collect { CloudantQueryResult.ResultObject result ->
                 return (T)result.doc
@@ -340,6 +347,18 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
         return queryView(viewName, key, null, null, false, includeDocs)
     }
 
+    protected List<T> queryView(String viewName, String startKey, String endKey, Integer limit, Integer skip,
+                                boolean descending, boolean includeDocs) {
+        CloudantQueryResult searchResult =
+                internalQueryView(viewName, null, startKey, endKey, limit, skip, descending, includeDocs)
+        if (searchResult.rows != null) {
+            return searchResult.rows.collect { CloudantQueryResult.ResultObject result ->
+                return (T)(result.doc)
+            }
+        }
+
+        return []
+    }
     protected CloudantSearchResult<T> search(String searchName, String queryString, Integer limit, String bookmark) {
         CloudantQueryResult searchResult = internalSearch(searchName, queryString, limit, bookmark, true)
         if (searchResult.rows != null) {
