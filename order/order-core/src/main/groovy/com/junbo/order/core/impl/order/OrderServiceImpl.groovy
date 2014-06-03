@@ -69,8 +69,9 @@ class OrderServiceImpl implements OrderService {
 
     @Override
     Promise<Order> settleQuote(Order order, ApiContext context) {
+        // order is the request
+
         LOGGER.info('name=Settle_Tentative_Order. userId: {}', order.user.value)
-        order.tentative = false
         orderValidator.validateSettleOrderRequest(order)
 
         // rate the order
@@ -78,6 +79,12 @@ class OrderServiceImpl implements OrderService {
             if (ratedOrder.status == OrderStatus.PRICE_RATING_CHANGED.name()) {
                 throw AppErrors.INSTANCE.orderPriceChanged().exception()
             }
+
+            // TODO: compare the reqeust and the order persisted
+            orderValidator.validateSettleOrderRequest(ratedOrder)
+            ratedOrder.successRedirectUrl = order.successRedirectUrl
+            ratedOrder.cancelRedirectUrl = order.cancelRedirectUrl
+
             def orderServiceContext = initOrderServiceContext(ratedOrder, context)
             Throwable error
             return flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_TENTATIVE).then { String flowName ->
