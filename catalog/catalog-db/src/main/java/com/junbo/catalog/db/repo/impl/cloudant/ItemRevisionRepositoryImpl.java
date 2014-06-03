@@ -63,14 +63,13 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
         } else if (!CollectionUtils.isEmpty(options.getItemIds())) {
             for (ItemId itemId : options.getItemIds()) {
                 List<ItemRevision> revisions = super.queryView("by_itemId", itemId.toString());
-                if (StringUtils.isEmpty(options.getStatus())) {
-                    continue;
-                }
-                Iterator<ItemRevision> iterator = revisions.iterator();
-                while (iterator.hasNext()) {
-                    ItemRevision revision = iterator.next();
-                    if (!options.getStatus().equalsIgnoreCase(revision.getStatus())) {
-                        iterator.remove();
+                if (!StringUtils.isEmpty(options.getStatus())) {
+                    Iterator<ItemRevision> iterator = revisions.iterator();
+                    while (iterator.hasNext()) {
+                        ItemRevision revision = iterator.next();
+                        if (!options.getStatus().equalsIgnoreCase(revision.getStatus())) {
+                            iterator.remove();
+                        }
                     }
                 }
                 itemRevisions.addAll(revisions);
