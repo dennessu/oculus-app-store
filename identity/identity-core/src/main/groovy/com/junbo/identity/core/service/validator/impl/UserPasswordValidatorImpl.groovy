@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 
 /**
+ * Check user valid
  * Created by liangfu on 3/31/14.
  */
 @CompileStatic

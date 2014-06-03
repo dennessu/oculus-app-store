@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 
 /**
+ * Check user's pin minimum and maximum length
  * Created by liangfu on 3/31/14.
  */
 @CompileStatic

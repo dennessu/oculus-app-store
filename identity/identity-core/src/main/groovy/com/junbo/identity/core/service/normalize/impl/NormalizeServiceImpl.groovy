@@ -26,6 +26,6 @@ class NormalizeServiceImpl implements NormalizeService {
 
         def result = StringUtils.deleteAny(name, charsToDelete)
 
-        return result.toLowerCase()
+        return result.toLowerCase(Locale.ENGLISH)
     }
 }

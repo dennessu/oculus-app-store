@@ -47,8 +47,8 @@ class GetGitPropertiesTask extends DefaultTask {
             def sdf = new SimpleDateFormat('yyyy-MM-dd HH:mm:ss.SSS Z')
 
             properties.put('build.time', sdf.format(new Date()))
-            properties.put('build.user.name', conf.getString('user', null, 'name'))
-            properties.put('build.user.email', conf.getString('user', null, 'email'))
+            properties.put('build.user.name', conf.getString('user', null, 'name') ?: '')
+            properties.put('build.user.email', conf.getString('user', null, 'email') ?: '')
 
             properties.put('branch', repo.branch)
             properties.put('commit.id', commit.name)

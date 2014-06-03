@@ -256,7 +256,7 @@ class UserValidatorImpl implements UserValidator {
     }
 
     Promise<Void> validateEmailNotUsed(User user, Email email) {
-        return userPersonalInfoRepository.searchByEmail(email.info.toLowerCase(), Integer.MAX_VALUE,
+        return userPersonalInfoRepository.searchByEmail(email.info.toLowerCase(Locale.ENGLISH), Integer.MAX_VALUE,
                 0).then { List<UserPersonalInfo> existing ->
             if (CollectionUtils.isEmpty(existing)) {
                 return Promise.pure(null)
