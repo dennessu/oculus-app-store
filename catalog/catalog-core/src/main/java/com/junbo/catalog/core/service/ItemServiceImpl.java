@@ -78,35 +78,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
 
     @Override
     public List<Item> getItems(ItemsGetOptions options) {
-        if (options.getHostItemId() != null) {
-            List<ItemRevision> itemRevisions = itemRevisionRepo.getRevisions(options.getHostItemId().getValue());
-            Set<Long> itemIds = filterItemIds(itemRevisions);
-
-            return itemRepo.getItems(itemIds);
-        } else {
-            return itemRepo.getItems(options);
-        }
-    }
-
-    private Set<Long> filterItemIds(List<ItemRevision> revisions) {
-        if (CollectionUtils.isEmpty(revisions)) {
-            return Collections.emptySet();
-        }
-        Set<Long> itemIds = new HashSet<>();
-        Set<Long> revisionIds = new HashSet<>();
-        for (ItemRevision itemRevision : revisions) {
-            itemIds.add(itemRevision.getItemId());
-            revisionIds.add(itemRevision.getRevisionId());
-        }
-        List<ItemRevision> itemRevisions = itemRevisionRepo.getRevisions(itemIds, System.currentTimeMillis());
-        itemIds.clear();
-        for (ItemRevision itemRevision : itemRevisions) {
-            if (revisionIds.contains(itemRevision.getRevisionId())) {
-                itemIds.add(itemRevision.getItemId());
-            }
-        }
-
-        return itemIds;
+        return itemRepo.getItems(options);
     }
 
     @Override

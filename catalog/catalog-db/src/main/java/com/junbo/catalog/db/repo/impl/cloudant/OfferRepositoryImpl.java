@@ -68,10 +68,7 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
             offers = searchResult.getResults();
             options.setNextBookmark(searchResult.getBookmark());
             options.setStart(null);
-        } else if (options.getPublished()==null && options.getOwnerId()==null && options.getCategory()==null) {
-            offers = super.queryView("by_offerId", null, options.getValidSize(), options.getValidStart(), false);
-            options.setNextBookmark(null);
-        } else {
+        } else if (options.getCategory() != null || options.getPublished() != null || options.getOwnerId() != null) {
             StringBuilder sb = new StringBuilder();
             if (options.getCategory() != null) {
                 sb.append("categoryId:'").append(options.getCategory().getValue()).append("'");
@@ -93,6 +90,9 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
             offers = searchResult.getResults();
             options.setNextBookmark(searchResult.getBookmark());
             options.setStart(null);
+        } else {
+            offers = super.queryView("by_offerId", null, options.getValidSize(), options.getValidStart(), false);
+            options.setNextBookmark(null);
         }
 
         return offers;
