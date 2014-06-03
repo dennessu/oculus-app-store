@@ -62,12 +62,14 @@ class AuthSettleAction extends BaseOrderEventAwareAction {
                 throw AppErrors.INSTANCE.
                         billingConnectionError().exception()
             }
-            if (resultBalance.status != BalanceStatus.PENDING_CAPTURE.name()) {
+            if (resultBalance.status != BalanceStatus.PENDING_CAPTURE.name()
+                    && balance.status != BalanceStatus.QUEUING.name()) {
                 LOGGER.error('name=Order_AuthSettle_Failed')
                 throw AppErrors.INSTANCE.
                         billingChargeFailed().exception()
             }
             context.orderServiceContext.order.tentative = false
+            context.orderServiceContext.isAsyncCharge = balance.isAsyncCharge
             CoreBuilder.fillTaxInfo(order, resultBalance)
             def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(resultBalance)
             if (billingHistory.billingEvent != null) {

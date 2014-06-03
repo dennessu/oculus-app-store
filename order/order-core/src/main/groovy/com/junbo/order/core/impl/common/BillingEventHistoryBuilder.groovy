@@ -26,6 +26,7 @@ class BillingEventHistoryBuilder {
             case BalanceStatus.PENDING_CAPTURE:
                 return EventStatus.COMPLETED
 
+            case BalanceStatus.QUEUING:
             case BalanceStatus.UNCONFIRMED:
             case BalanceStatus.INIT:
                 return EventStatus.PENDING

@@ -35,6 +35,8 @@ class OrderServiceContext {
     List<PaymentInstrument> paymentInstruments
     List<Balance> balances
     Address shippingAddress
+    Boolean isAsyncCharge
+
     /**
      * Offers in order in map structure
      */

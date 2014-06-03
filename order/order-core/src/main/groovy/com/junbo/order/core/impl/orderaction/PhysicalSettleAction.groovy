@@ -85,6 +85,7 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
                             LOGGER.error('name=Order_PhysicalSettle_CompleteCharge_Error_Balance_Null')
                             throw AppErrors.INSTANCE.billingConnectionError().exception()
                         }
+                        context.orderServiceContext.isAsyncCharge = resultBalance.isAsyncCharge
                         def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(resultBalance)
                         if (billingHistory.billingEvent != null) {
                             if (billingHistory.billingEvent == BillingAction.CHARGE.name()) {
@@ -126,6 +127,7 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
                 throw AppErrors.INSTANCE.
                         billingConnectionError().exception()
             }
+            context.orderServiceContext.isAsyncCharge = resultBalance.isAsyncCharge
             def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(resultBalance)
             if (billingHistory.billingEvent != null) {
                 if (billingHistory.billingEvent == BillingAction.CHARGE.name()) {
