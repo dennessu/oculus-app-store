@@ -7,7 +7,7 @@
 package com.junbo.billing.clientproxy.impl.sabrix
 
 import com.thoughtworks.xstream.annotations.XStreamAlias
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute
+import com.thoughtworks.xstream.annotations.XStreamImplicit
 import groovy.transform.CompileStatic
 
 /**
@@ -16,12 +16,10 @@ import groovy.transform.CompileStatic
 @CompileStatic
 @XStreamAlias("ADDRESS_VALIDATION_RESPONSE")
 class AddressValidationResponse {
-    @XStreamAsAttribute
-    @XStreamAlias('ADDRESS')
+    @XStreamImplicit(itemFieldName="ADDRESS")
     List<ResponseAddress> address
 
-    @XStreamAsAttribute
-    @XStreamAlias('MESSAGE')
+    @XStreamImplicit(itemFieldName="MESSAGE")
     List<Message> message
 
     @Override

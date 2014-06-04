@@ -7,7 +7,6 @@
 package com.junbo.billing.clientproxy.impl.sabrix
 
 import com.thoughtworks.xstream.annotations.XStreamAlias
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute
 import groovy.transform.CompileStatic
 
 /**
@@ -16,27 +15,21 @@ import groovy.transform.CompileStatic
 @CompileStatic
 @XStreamAlias("ADDRESS")
 class SabrixAddress {
-    @XStreamAsAttribute
     @XStreamAlias('COUNTRY')
     String country
 
-    @XStreamAsAttribute
     @XStreamAlias('STATE')
     String state
 
-    @XStreamAsAttribute
     @XStreamAlias('PROVINCE')
     String province
 
-    @XStreamAsAttribute
     @XStreamAlias('COUNTY')
     String county
 
-    @XStreamAsAttribute
     @XStreamAlias('CITY')
     String city
 
-    @XStreamAsAttribute
     @XStreamAlias('POSTCODE')
     String postcode
 

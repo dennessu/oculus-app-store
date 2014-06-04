@@ -7,24 +7,30 @@
 package com.junbo.billing.clientproxy.impl.sabrix
 
 import com.thoughtworks.xstream.annotations.XStreamAlias
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute
 import groovy.transform.CompileStatic
 
 /**
  * County type of address validation response.
  */
 @CompileStatic
-@XStreamAlias("COUNTY")
+@XStreamAlias('COUNTY')
 class County {
-    @XStreamAsAttribute
     @XStreamAlias('NAME')
     String name
+
+    @XStreamAlias('CODE3')
+    String code3
+
+    @XStreamAlias('ISOCODE')
+    String isocode
 
 
     @Override
     public String toString() {
         return "County{" +
                 "name='" + name + '\'' +
+                ", code3='" + code3 + '\'' +
+                ", isocode='" + isocode + '\'' +
                 '}';
     }
 }

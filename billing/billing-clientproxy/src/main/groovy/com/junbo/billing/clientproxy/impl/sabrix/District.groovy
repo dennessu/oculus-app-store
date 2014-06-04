@@ -10,11 +10,11 @@ import com.thoughtworks.xstream.annotations.XStreamAlias
 import groovy.transform.CompileStatic
 
 /**
- * City type of address validation response.
+ * District type of address validation response.
  */
 @CompileStatic
-@XStreamAlias("CITY")
-class City {
+@XStreamAlias('DISTRICT')
+class District {
     @XStreamAlias('NAME')
     String name
 
@@ -27,7 +27,7 @@ class City {
 
     @Override
     public String toString() {
-        return "City{" +
+        return "County{" +
                 "name='" + name + '\'' +
                 ", code3='" + code3 + '\'' +
                 ", isocode='" + isocode + '\'' +

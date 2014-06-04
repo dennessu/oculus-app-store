@@ -7,7 +7,6 @@
 package com.junbo.billing.clientproxy.impl.sabrix
 
 import com.thoughtworks.xstream.annotations.XStreamAlias
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute
 import groovy.transform.CompileStatic
 
 /**
@@ -16,27 +15,21 @@ import groovy.transform.CompileStatic
 @CompileStatic
 @XStreamAlias("TAX")
 class Tax {
-    @XStreamAsAttribute
     @XStreamAlias('AUTHORITY_TYPE')
     String authorityType
 
-    @XStreamAsAttribute
     @XStreamAlias('AUTHORITY_NAME')
     String authorityName
 
-    @XStreamAsAttribute
     @XStreamAlias('IS_EXEMPT')
     Boolean isExempt
 
-    @XStreamAsAttribute
     @XStreamAlias('TAX_TYPE')
     String taxType
 
-    @XStreamAsAttribute
     @XStreamAlias('TAX_RATE')
     Double taxRate
 
-    @XStreamAsAttribute
     @XStreamAlias('TAX_AMOUNT')
     TaxAmount taxAmount
 

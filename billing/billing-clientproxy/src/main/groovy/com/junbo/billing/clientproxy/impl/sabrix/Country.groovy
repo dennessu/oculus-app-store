@@ -7,7 +7,6 @@
 package com.junbo.billing.clientproxy.impl.sabrix
 
 import com.thoughtworks.xstream.annotations.XStreamAlias
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute
 import groovy.transform.CompileStatic
 
 /**
@@ -16,19 +15,25 @@ import groovy.transform.CompileStatic
 @CompileStatic
 @XStreamAlias("COUNTRY")
 class Country {
-    @XStreamAsAttribute
     @XStreamAlias('NAME')
     String name
 
-    @XStreamAsAttribute
     @XStreamAlias('CODE')
     String code
+
+    @XStreamAlias('CODE3')
+    String code3
+
+    @XStreamAlias('ISOCODE')
+    String isocode
 
     @Override
     public String toString() {
         return "Country{" +
                 "name='" + name + '\'' +
                 ", code='" + code + '\'' +
+                ", code3='" + code3 + '\'' +
+                ", isocode='" + isocode + '\'' +
                 '}';
     }
 }
