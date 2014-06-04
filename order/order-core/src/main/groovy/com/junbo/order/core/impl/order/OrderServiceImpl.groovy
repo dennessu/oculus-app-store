@@ -198,10 +198,19 @@ class OrderServiceImpl implements OrderService {
     @Transactional
     Promise<List<Order>> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
         return orderInternalService.getOrdersByUserId(userId, orderQueryParam, pageParam).then { List<Order> orders ->
+            List<Order> ods = []
             return Promise.each(orders) { Order order ->
                 if (order.tentative) {
-                    return refreshTentativeOrderPrice(order)
+                    return refreshTentativeOrderPrice(order).then { Order o ->
+                        ods << o
+                        return Promise.pure(o)
+                    }
+                } else {
+                    ods << order
+                    return Promise.pure(order)
                 }
+            }.then {
+                return Promise.pure(ods)
             }
         }
     }
