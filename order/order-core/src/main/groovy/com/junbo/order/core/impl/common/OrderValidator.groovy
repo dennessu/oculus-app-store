@@ -1,6 +1,7 @@
 package com.junbo.order.core.impl.common
 import com.junbo.common.id.PIType
 import com.junbo.common.id.PaymentInstrumentId
+import com.junbo.identity.spec.v1.model.Currency;
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.spec.error.AppErrors
@@ -51,8 +52,8 @@ class OrderValidator {
     }
 
     Promise<OrderValidator> validCurrency(String currencyString, String fieldName) {
-        return facadeContainer.billingFacade.getCurrency(currencyString).syncThen {
-            com.junbo.billing.spec.model.Currency currency ->
+        return facadeContainer.identityFacade.getCurrency(currencyString).syncThen {
+            Currency currency ->
             if (currency == null) {
                 throw AppErrors.INSTANCE.fieldInvalid(fieldName, 'not a valid currency').exception()
             }

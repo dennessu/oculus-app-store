@@ -6,14 +6,17 @@
 
 package com.junbo.order.clientproxy.identity.impl
 
+import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.identity.spec.v1.model.Address
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
+import com.junbo.identity.spec.v1.option.model.CurrencyGetOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
+import com.junbo.identity.spec.v1.resource.CurrencyResource
 import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
 import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
@@ -34,6 +37,9 @@ class IdentityFacadeImpl implements IdentityFacade {
 
     @Resource(name='order.identityUserPersonalInfoClient')
     UserPersonalInfoResource userPersonalInfoResource
+
+    @Resource(name='order.identityCurrencyClient')
+    CurrencyResource currencyResource
 
     @Override
     Promise<User> getUser(Long userId) {
@@ -71,5 +77,10 @@ class IdentityFacadeImpl implements IdentityFacade {
             }
         }
 
+    }
+
+    @Override
+    Promise<com.junbo.identity.spec.v1.model.Currency> getCurrency(String currency) {
+        return currencyResource.get(new CurrencyId(currency), new CurrencyGetOptions())
     }
 }

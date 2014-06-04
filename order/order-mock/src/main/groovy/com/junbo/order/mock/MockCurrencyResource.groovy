@@ -1,28 +1,53 @@
 package com.junbo.order.mock
 
-import com.junbo.billing.spec.resource.BillingCurrencyResource
+import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.model.Results
+import com.junbo.identity.spec.v1.option.list.CurrencyListOptions
+import com.junbo.identity.spec.v1.option.model.CurrencyGetOptions
+import com.junbo.identity.spec.v1.model.Currency
+import com.junbo.identity.spec.v1.resource.CurrencyResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
-import groovy.transform.TypeChecked
+import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
-import javax.ws.rs.PathParam
-
 /**
- * Created by fzhang on 14-3-27.
+ * Created by xmchen on 14-6-4.
  */
 @CompileStatic
-@TypeChecked
 @Component('mockCurrencyResource')
-class MockCurrencyResource implements BillingCurrencyResource {
+@Scope('prototype')
+class MockCurrencyResource extends BaseMock implements CurrencyResource {
     @Override
-    Promise<Results<com.junbo.billing.spec.model.Currency>> getCurrencies() {
-        return Promise.pure(null)
+    Promise<Currency> create(Currency currency) {
+        return null
     }
 
     @Override
-    Promise<com.junbo.billing.spec.model.Currency> getCurrency(@PathParam('name') String name) {
-        return Promise.pure(null)
+    Promise<Currency> put(CurrencyId currencyId, Currency currency) {
+        return null
+    }
+
+    @Override
+    Promise<Currency> patch(CurrencyId currencyId, Currency currency) {
+        return null
+    }
+
+    @Override
+    Promise<Currency> get(CurrencyId currencyId,CurrencyGetOptions getOptions) {
+        Currency currency = new Currency()
+        currency.setId(currencyId)
+        currency.setCurrencyCode('USD')
+        return Promise.pure(currency)
+    }
+
+    @Override
+    Promise<Results<Currency>> list(CurrencyListOptions listOptions) {
+        return null
+    }
+
+    @Override
+    Promise<Void> delete(CurrencyId currencyId) {
+        return null
     }
 }

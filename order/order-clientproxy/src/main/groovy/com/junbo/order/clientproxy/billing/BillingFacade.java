@@ -7,11 +7,9 @@
 package com.junbo.order.clientproxy.billing;
 
 import com.junbo.billing.spec.model.Balance;
-import com.junbo.billing.spec.model.Currency;
 import com.junbo.common.error.AppError;
 import com.junbo.langur.core.promise.Promise;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -24,8 +22,6 @@ public interface BillingFacade {
     Promise<Balance> getBalanceById(Long balanceId);
     Promise<List<Balance>> getBalancesByOrderId(Long orderId);
     Promise<Balance> quoteBalance(Balance balance);
-    Promise<Collection<Currency>> getCurrencies();
-    Promise<Currency> getCurrency(String name);
     Promise<Balance> confirmBalance(Balance balance);
 
     AppError convertError(Throwable error);

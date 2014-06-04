@@ -33,8 +33,8 @@
         <property name="target" value="${clientproxy.billing.url}"/>
     </bean>
 
-    <bean id="order.billingCurrencyClient" class="com.junbo.billing.spec.resource.proxy.BillingCurrencyResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.billing.url}"/>
+    <bean id="order.identityCurrencyClient" class="com.junbo.identity.spec.v1.resource.proxy.CurrencyResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.order.url}"/>
     </bean>
 
     <bean id="order.ratingClient"
