@@ -49,6 +49,7 @@ class FacadeBuilder {
         request.orderId = order.getId().value
         request.trackingGuid = UUID.randomUUID()
         request.shippingMethodId = order?.shippingMethod
+        // TODO: pass shipping infos to fulfillment
         request.shippingAddressId = order?.shippingAddress?.value
         request.items = []
         order.orderItems?.each { OrderItem item ->

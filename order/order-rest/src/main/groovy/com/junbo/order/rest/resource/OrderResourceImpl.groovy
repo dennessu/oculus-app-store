@@ -83,6 +83,8 @@ class OrderResourceImpl implements OrderResource {
                 // update shipping address after settlement
                 if (allowModification(oldOrder, order)) {
                     oldOrder.shippingAddress = order.shippingAddress
+                    oldOrder.shippingToPhone = order.shippingToPhone
+                    oldOrder.shippingToName = order.shippingToName
                     return orderService.updateNonTentativeOrder(oldOrder, new ApiContext())
                 }
                 LOGGER.error('name=Update_Not_Allow')
@@ -93,7 +95,9 @@ class OrderResourceImpl implements OrderResource {
 
     boolean allowModification(Order oldOrder, Order order) {
         // TODO: check the modification is allowed
-        return order.shippingAddress != null ? order.shippingAddress != oldOrder.shippingAddress : false
+        return (order.shippingAddress != null ? order.shippingAddress != oldOrder.shippingAddress : false) ||
+                (order.shippingToName != null ? order.shippingToName != oldOrder.shippingToName : false) ||
+                (order.shippingToPhone != null ? order.shippingToPhone != oldOrder.shippingToPhone : false)
     }
 
     @Override

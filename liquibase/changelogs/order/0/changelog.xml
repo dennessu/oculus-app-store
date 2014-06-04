@@ -16,6 +16,8 @@
                     locale varchar(5) not null,
                     shipping_method_id bigint default null,
                     shipping_address_id bigint default null,
+                    shipping_name_id bigint default null,
+                    shipping_phone_id bigint default null,
                     total_amount decimal not null,
                     total_tax decimal not null,
                     is_tax_inclusive boolean not null,

@@ -88,8 +88,10 @@ class OrderValidator {
             // validate pi is there if amount is zero
             if (!order.tentative) {
                 if (CoreUtils.hasPhysicalOffer(order)) {
-                    notNull(order.shippingMethod, 'shippingMethodId')
-                    notNull(order.shippingAddress, 'shippingAddressId')
+                    notNull(order.shippingMethod, 'shippingMethod')
+                    notNull(order.shippingAddress, 'shippingToAddress')
+                    notNull(order.shippingToName, 'shippingToName')
+                    notNull(order.shippingToPhone, 'shippingToPhone')
                 }
                 if (!CoreUtils.isFreeOrder(order)) {
                     notEmpty(order.payments, 'payments')
