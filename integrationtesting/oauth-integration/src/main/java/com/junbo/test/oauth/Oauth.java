@@ -250,11 +250,11 @@ public class Oauth {
                 ShardIdHelper.getShardIdByUid(IdConverter.idLongToHexString(UserId.class, userId)), userId);
         String result = PostgresqlHelper.QuerySingleRowSingleColumn(query, "email");
         for (String s : result.split(",")) {
-            if (s.contains("verify_link")) {
-                return s.replace("\"verify_link\":\"", "").replace("\"", "").replace("}", "");
+            if (s.contains("link")) {
+                return s.replace("\"link\":\"", "").replace("\"", "").replace("}", "");
             }
         }
-        throw new Exception("verify_link is not found in:\r\n" + result);
+        throw new Exception("link is not found in:\r\n" + result);
     }
 
     public static void VerifyEmail(String link) throws Exception {

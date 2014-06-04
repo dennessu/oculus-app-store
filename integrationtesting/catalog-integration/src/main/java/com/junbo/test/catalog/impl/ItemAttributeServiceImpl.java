@@ -8,7 +8,7 @@ package com.junbo.test.catalog.impl;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.test.catalog.enums.CatalogItemAttributeType;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
-import com.junbo.test.common.libs.ConfigPropertiesHelper;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.catalog.ItemAttributeService;
 import com.junbo.common.json.JsonMessageTranscoder;
@@ -23,13 +23,13 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- @author Jason
-  * Time: 3/14/2014
-  * The implementation for Attribute related APIs
+ * @author Jason
+ *         Time: 3/14/2014
+ *         The implementation for Attribute related APIs
  */
 public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttributeService {
 
-    private final String catalogServerURL = ConfigPropertiesHelper.instance().getProperty("defaultCatalogEndpointV1") + "/item-attributes";
+    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "/item-attributes";
     private static ItemAttributeService instance;
 
     public static synchronized ItemAttributeService instance() {
@@ -49,7 +49,8 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
     public ItemAttribute getItemAttribute(Long attributeId, int expectedResponseCode) throws Exception {
         String url = catalogServerURL + "/" + IdConverter.idLongToHexString(ItemAttributeId.class, attributeId);
         String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
-        ItemAttribute attributeGet = new JsonMessageTranscoder().decode(new TypeReference<ItemAttribute>() {},
+        ItemAttribute attributeGet = new JsonMessageTranscoder().decode(new TypeReference<ItemAttribute>() {
+        },
                 responseBody);
         String attributeRtnId = IdConverter.idLongToHexString(ItemAttributeId.class, attributeGet.getId());
         Master.getInstance().addItemAttribute(attributeRtnId, attributeGet);
@@ -62,10 +63,11 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
 
     public Results<ItemAttribute> getItemAttributes(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara);
-        Results<ItemAttribute> itemAttributeResults =  new JsonMessageTranscoder().decode(
-                new TypeReference<Results<ItemAttribute>>() {}, responseBody);
+        Results<ItemAttribute> itemAttributeResults = new JsonMessageTranscoder().decode(
+                new TypeReference<Results<ItemAttribute>>() {
+                }, responseBody);
 
-        for (ItemAttribute itemAttribute : itemAttributeResults.getItems()){
+        for (ItemAttribute itemAttribute : itemAttributeResults.getItems()) {
             String attributeRtnId = IdConverter.idLongToHexString(ItemAttributeId.class, itemAttribute.getId());
             Master.getInstance().addItemAttribute(attributeRtnId, itemAttribute);
         }
@@ -94,7 +96,8 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
 
     public ItemAttribute postItemAttribute(ItemAttribute attribute, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, attribute, expectedResponseCode);
-        ItemAttribute attributePost = new JsonMessageTranscoder().decode(new TypeReference<ItemAttribute>() {},
+        ItemAttribute attributePost = new JsonMessageTranscoder().decode(new TypeReference<ItemAttribute>() {
+        },
                 responseBody);
         String attributeRtnId = IdConverter.idLongToHexString(ItemAttributeId.class, attributePost.getId());
         Master.getInstance().addItemAttribute(attributeRtnId, attributePost);
@@ -109,7 +112,8 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
         String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(ItemAttributeId.class,
                 itemAttributeId);
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, attribute, expectedResponseCode);
-        ItemAttribute itemAttributePut = new JsonMessageTranscoder().decode(new TypeReference<ItemAttribute>() {},
+        ItemAttribute itemAttributePut = new JsonMessageTranscoder().decode(new TypeReference<ItemAttribute>() {
+        },
                 responseBody);
         String itemAttributeRtnId = IdConverter.idLongToHexString(ItemAttributeId.class,
                 itemAttributePut.getId());

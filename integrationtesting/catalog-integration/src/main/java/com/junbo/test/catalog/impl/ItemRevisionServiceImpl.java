@@ -6,7 +6,7 @@
 package com.junbo.test.catalog.impl;
 
 import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
-import com.junbo.test.common.libs.ConfigPropertiesHelper;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.catalog.enums.CatalogItemType;
@@ -24,13 +24,13 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
-  * @author Jason
-  * Time: 4/17/2014
-  * The implementation for Item Revision related APIs
+ * @author Jason
+ *         Time: 4/17/2014
+ *         The implementation for Item Revision related APIs
  */
 public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevisionService {
 
-    private final String catalogServerURL = ConfigPropertiesHelper.instance().getProperty("defaultCatalogEndpointV1") + "/item-revisions";
+    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "/item-revisions";
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
     private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
     private final String defaultStoredValueItemRevisionFileName = "defaultStoredValueItemRevision";
@@ -53,7 +53,8 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
     public ItemRevision getItemRevision(Long revisionId, int expectedResponseCode) throws Exception {
         String url = catalogServerURL + "/" + IdConverter.idLongToHexString(ItemRevisionId.class, revisionId);
         String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode);
-        ItemRevision itemRevision = new JsonMessageTranscoder().decode(new TypeReference<ItemRevision>() {},
+        ItemRevision itemRevision = new JsonMessageTranscoder().decode(new TypeReference<ItemRevision>() {
+        },
                 responseBody);
         String itemRevisionRtnId = IdConverter.idLongToHexString(ItemRevisionId.class, itemRevision.getRevisionId());
         Master.getInstance().addItemRevision(itemRevisionRtnId, itemRevision);
@@ -67,8 +68,9 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
     public Results<ItemRevision> getItemRevisions(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara);
         Results<ItemRevision> itemRevisionGet = new JsonMessageTranscoder().decode(
-                new TypeReference<Results<ItemRevision>>() {}, responseBody);
-        for (ItemRevision itemRevision : itemRevisionGet.getItems()){
+                new TypeReference<Results<ItemRevision>>() {
+                }, responseBody);
+        for (ItemRevision itemRevision : itemRevisionGet.getItems()) {
             String itemRevisionRtnId = IdConverter.idLongToHexString(ItemRevisionId.class,
                     itemRevision.getRevisionId());
             Master.getInstance().addItemRevision(itemRevisionRtnId, itemRevision);
@@ -91,11 +93,9 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
 
         if (item.getType().equalsIgnoreCase(CatalogItemType.DIGITAL.getItemType())) {
             itemRevisionForPost = prepareItemRevisionEntity(defaultDigitalItemRevisionFileName);
-        }
-        else if (item.getType().equalsIgnoreCase(CatalogItemType.STORED_VALUE.getItemType())) {
+        } else if (item.getType().equalsIgnoreCase(CatalogItemType.STORED_VALUE.getItemType())) {
             itemRevisionForPost = prepareItemRevisionEntity(defaultStoredValueItemRevisionFileName);
-        }
-        else {
+        } else {
             itemRevisionForPost = prepareItemRevisionEntity(defaultPhysicalItemRevisionFileName);
         }
 
@@ -108,7 +108,8 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
     public ItemRevision prepareItemRevisionEntity(String fileName) throws Exception {
 
         String strItem = readFileContent(String.format("testItemRevisions/%s.json", fileName));
-        ItemRevision itemRevisionForPost = new JsonMessageTranscoder().decode(new TypeReference<ItemRevision>() {},
+        ItemRevision itemRevisionForPost = new JsonMessageTranscoder().decode(new TypeReference<ItemRevision>() {
+        },
                 strItem);
 
         //set locales
@@ -128,7 +129,8 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
     public ItemRevision postItemRevision(ItemRevision itemRevision, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, itemRevision, expectedResponseCode);
         ItemRevision itemRevisionPost = new JsonMessageTranscoder().decode(
-                new TypeReference<ItemRevision>() {}, responseBody);
+                new TypeReference<ItemRevision>() {
+                }, responseBody);
         String itemRevisionRtnId = IdConverter.idLongToHexString(ItemRevisionId.class,
                 itemRevisionPost.getRevisionId());
         Master.getInstance().addItemRevision(itemRevisionRtnId, itemRevisionPost);
@@ -144,7 +146,8 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
         String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(ItemRevisionId.class,
                 itemRevisionId);
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, itemRevision, expectedResponseCode);
-        ItemRevision itemRevisionPut = new JsonMessageTranscoder().decode(new TypeReference<ItemRevision>() {},
+        ItemRevision itemRevisionPut = new JsonMessageTranscoder().decode(new TypeReference<ItemRevision>() {
+        },
                 responseBody);
         String itemRevisionRtnId = IdConverter.idLongToHexString(ItemRevisionId.class, itemRevisionPut.getRevisionId());
         Master.getInstance().addItemRevision(itemRevisionRtnId, itemRevisionPut);

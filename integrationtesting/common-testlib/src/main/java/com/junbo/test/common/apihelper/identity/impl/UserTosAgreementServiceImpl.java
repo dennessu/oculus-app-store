@@ -5,17 +5,17 @@
  */
 package com.junbo.test.common.apihelper.identity.impl;
 
-import com.junbo.test.common.apihelper.identity.UserTosAgreementService;
-import com.junbo.test.common.libs.ConfigPropertiesHelper;
-import com.junbo.identity.spec.v1.model.UserTosAgreement;
-import com.junbo.test.common.apihelper.HttpClientBase;
-import com.junbo.common.json.JsonMessageTranscoder;
-import com.junbo.langur.core.client.TypeReference;
-import com.junbo.common.id.UserTosAgreementId;
-import com.junbo.test.common.libs.IdConverter;
-import com.junbo.common.model.Results;
-import com.junbo.common.id.UserId;
 import com.junbo.common.id.TosId;
+import com.junbo.common.id.UserId;
+import com.junbo.common.id.UserTosAgreementId;
+import com.junbo.common.json.JsonMessageTranscoder;
+import com.junbo.common.model.Results;
+import com.junbo.identity.spec.v1.model.UserTosAgreement;
+import com.junbo.langur.core.client.TypeReference;
+import com.junbo.test.common.ConfigHelper;
+import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.test.common.apihelper.identity.UserTosAgreementService;
+import com.junbo.test.common.libs.IdConverter;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class UserTosAgreementServiceImpl extends HttpClientBase implements UserTosAgreementService {
 
-        private final String utaUrl = ConfigPropertiesHelper.instance().getProperty("defaultIdentityEndPointV1") + "/users/%s/tos-agreements";
+        private final String utaUrl = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/users/%s/tos-agreements";
         private static UserTosAgreementService instance;
 
     public static synchronized UserTosAgreementService instance() {

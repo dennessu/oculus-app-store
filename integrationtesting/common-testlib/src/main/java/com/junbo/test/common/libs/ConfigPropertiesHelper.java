@@ -17,7 +17,7 @@ import java.io.InputStream;
  */
 public final class ConfigPropertiesHelper {
 
-    private static LogHelper logger =  new LogHelper(ConfigPropertiesHelper.class);
+    private static LogHelper logger = new LogHelper(ConfigPropertiesHelper.class);
     private static ConfigPropertiesHelper instance;
 
     private ConfigPropertiesHelper() {}

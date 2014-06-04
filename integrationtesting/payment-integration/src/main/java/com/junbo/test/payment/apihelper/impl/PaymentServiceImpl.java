@@ -6,17 +6,17 @@
 package com.junbo.test.payment.apihelper.impl;
 
 import com.junbo.common.id.PaymentInstrumentId;
+import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.common.model.Results;
 import com.junbo.ewallet.spec.model.CreditRequest;
+import com.junbo.langur.core.client.TypeReference;
 import com.junbo.payment.spec.model.PaymentInstrument;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
-import com.junbo.test.common.libs.ConfigPropertiesHelper;
-import com.junbo.test.payment.apihelper.PaymentService;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
-import com.junbo.common.json.JsonMessageTranscoder;
-import com.junbo.langur.core.client.TypeReference;
+import com.junbo.test.payment.apihelper.PaymentService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +26,7 @@ import java.util.List;
  */
 public class PaymentServiceImpl extends HttpClientBase implements PaymentService {
 
-    private static String paymentInstrumentUrl = ConfigPropertiesHelper.instance().
-            getProperty("defaultCommerceEndpointV1");
+    private static String paymentInstrumentUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1");
 
     private LogHelper logger = new LogHelper(PaymentServiceImpl.class);
 
@@ -58,7 +57,8 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
 
         PaymentInstrument paymentInstrumentResult = new JsonMessageTranscoder().decode(
                 new TypeReference<PaymentInstrument>() {
-                }, responseBody);
+                }, responseBody
+        );
 
         paymentInstrumentId = IdConverter.idLongToHexString(
                 PaymentInstrumentId.class, paymentInstrumentResult.getId().longValue());
@@ -80,7 +80,8 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
 
         Results<PaymentInstrument> paymentInstrumentResults = new JsonMessageTranscoder().decode(
                 new TypeReference<Results<PaymentInstrument>>() {
-                }, responseBody);
+                }, responseBody
+        );
 
         List<String> paymentInstrumentList = new ArrayList<>();
 
@@ -108,7 +109,8 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
 
         PaymentInstrument paymentInstrumentResult = new JsonMessageTranscoder().decode(
                 new TypeReference<PaymentInstrument>() {
-                }, responseBody);
+                }, responseBody
+        );
 
         String paymentInstrumentId = IdConverter.idLongToHexString(
                 PaymentInstrumentId.class, paymentInstrumentResult.getId().longValue());
@@ -132,7 +134,8 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
 
         PaymentInstrument paymentInstrumentResult = new JsonMessageTranscoder().decode(
                 new TypeReference<PaymentInstrument>() {
-                }, responseBody);
+                }, responseBody
+        );
 
         String paymentInstrumentId = IdConverter.idLongToHexString(
                 PaymentInstrumentId.class, paymentInstrumentResult.getId().longValue());

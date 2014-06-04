@@ -5,6 +5,8 @@
  */
 package com.junbo.test.common.libs;
 
+import com.junbo.test.common.ConfigHelper;
+
 /**
  * Created by jiefeng on 14-3-19.
  */
@@ -41,18 +43,18 @@ public final class RestUrl {
     public static String getRestUrl(String componentName) {
 
         return "http://" +
-                ConfigPropertiesHelper.instance().getProperty(componentName + ".host") +
+                ConfigHelper.getSetting(componentName + ".host") +
                 ":" +
-                ConfigPropertiesHelper.instance().getProperty(componentName + ".port") +
+                ConfigHelper.getSetting(componentName + ".port") +
                 "/rest/";
     }
 
     public static String getRestUrl(ComponentName componentName) {
 
         return "http://" +
-                ConfigPropertiesHelper.instance().getProperty(componentName.getComponentName() + ".host") +
+                ConfigHelper.getSetting(componentName.getComponentName() + ".host") +
                 ":" +
-                ConfigPropertiesHelper.instance().getProperty(componentName.getComponentName() + ".port") +
+                ConfigHelper.getSetting(componentName.getComponentName() + ".port") +
                 "/v1/";
     }
 

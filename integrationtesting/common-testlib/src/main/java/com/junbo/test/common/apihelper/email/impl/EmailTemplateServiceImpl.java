@@ -5,21 +5,21 @@
  */
 package com.junbo.test.common.apihelper.email.impl;
 
-import com.junbo.test.common.apihelper.email.EmailTemplateService;
-import com.junbo.test.common.libs.ConfigPropertiesHelper;
-import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.common.json.JsonMessageTranscoder;
-import com.junbo.langur.core.client.TypeReference;
-import com.junbo.email.spec.model.EmailTemplate;
-import com.junbo.test.common.libs.LogHelper;
 import com.junbo.common.model.Results;
+import com.junbo.email.spec.model.EmailTemplate;
+import com.junbo.langur.core.client.TypeReference;
+import com.junbo.test.common.ConfigHelper;
+import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.test.common.apihelper.email.EmailTemplateService;
+import com.junbo.test.common.libs.LogHelper;
 
 /**
  * Created by jason on 5/14/2014.
  */
 public class EmailTemplateServiceImpl extends HttpClientBase implements EmailTemplateService {
 
-    private static String emailTemplateUrl = ConfigPropertiesHelper.instance().getProperty("defaultCommerceEndpointV1") + "/email-templates";
+    private static String emailTemplateUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1") + "/email-templates";
 
     private LogHelper logger = new LogHelper(EmailTemplateServiceImpl.class);
 
