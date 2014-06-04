@@ -25,5 +25,5 @@ import java.lang.annotation.RetentionPolicy;
 @JsonSerialize(using = ResourceIdSerializer.class)
 @JsonDeserialize(using = ResourceIdDeserializer.class)
 @ResourcePath("/personal-info")
-public @interface ShippingAddressId {
+public @interface ShippingToNameId {
 }
