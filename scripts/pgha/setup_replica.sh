@@ -23,10 +23,6 @@ host    all             ${PGUSER}       ${SLAVE_HOST}/32        ident
 host    all             ${PGUSER}       ${REPLICA_HOST}/32      ident
 # IPv6 local connections:
 host    all             ${PGUSER}       ::1/128                 ident
-# Allow replication connections from localhost, by a user with the
-# replication privilege.
-host    replication     ${PGUSER}       ${MASTER_HOST}/32       ident
-host    replication     ${PGUSER}       ${SLAVE_HOST}/32        ident
 EOF
 
 echo "configure postgres.conf..."
@@ -34,8 +30,8 @@ cat >> $REPLICA_DATA_PATH/postgresql.conf <<EOF
 port = $REPLICA_DB_PORT
 EOF
 
-echo "start slave database..."
-$PGBIN_PATH/pg_ctl -D $SLAVE_DATA_PATH start
+echo "start replica database..."
+$PGBIN_PATH/pg_ctl -D $REPLICA_DATA_PATH start
 
-while ! echo exit | nc $SLAVE_HOST $SLAVE_DB_PORT; do sleep 1 && echo "waiting for slave database..."; done
-echo "slave database started successfully!"
+while ! echo exit | nc $REPLICA_HOST $REPLICA_DB_PORT; do sleep 1 && echo "waiting for replica database..."; done
+echo "replica database started successfully!"

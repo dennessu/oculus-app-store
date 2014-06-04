@@ -37,6 +37,7 @@
 	[devops] sudo apt-get install gcc
 	[devops] sudo apt-get install python-all
 	[devops] sudo apt-get install python-dev
+	[devops] sudo apt-get install python-psycopg2
 	[devops] sudo apt-get install libpq-dev
 	[devops] sudo apt-get install postgresql-server-dev-9.3
 
@@ -46,9 +47,9 @@
 	[devops] sudo make install
 
 [SSH key]
-	[devops] ssh-keygen -t rsa (no passphase)
-	[devops] chmod 600 /home/silkcloud/.ssh/id_rsa*
-	[devops] connect to the remote machine you want to login to, edit /home/silkcloud/.ssh/authorized_keys and append the content of id_rsa.pub file
+	[silkcloud] ssh-keygen -t rsa (no passphase)
+	[silkcloud] chmod 600 /home/silkcloud/.ssh/id_rsa*
+	[silkcloud] connect to the remote machine you want to login to, edit /home/silkcloud/.ssh/authorized_keys and append the content of id_rsa.pub file
 
 [Open ports]
 	5432: postgresql database port
@@ -99,6 +100,9 @@
 
 #[master/slave] replication smoke test
 	$DEPLOYMENT_PATH/test_master2slave.sh
+
+#[replica] setup replica database
+	$DEPLOYMENT_PATH/setup_replica.sh
 
 =====Planned Failover=====
 #[slave] master failover to slave
