@@ -287,7 +287,7 @@ class UserServiceImpl implements UserService {
                     recipients: [email].asList(),
                     replacements: [
                             'name': user.username,
-                            'verify_link': uriBuilder.build().toString()
+                            'link': uriBuilder.build().toString()
                     ]
             )
 

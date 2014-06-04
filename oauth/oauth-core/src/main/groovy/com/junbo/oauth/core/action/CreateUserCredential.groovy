@@ -21,6 +21,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.Assert
+import org.springframework.util.StringUtils
 
 /**
  * CreateUserCredential.
@@ -52,11 +53,6 @@ class CreateUserCredential implements Action {
                 type: 'PASSWORD'
         )
 
-        UserCredential pinCredential = new UserCredential(
-                value: pin,
-                type: 'PIN'
-        )
-
         return userCredentialResource.create((UserId) user.id, passwordCredential).recover { Throwable throwable ->
             handleException(throwable, contextWrapper)
 
@@ -72,17 +68,26 @@ class CreateUserCredential implements Action {
                 return Promise.pure(result)
             }
 
-            return userCredentialResource.create(user.id as UserId, pinCredential).recover { Throwable throwable ->
-                handleException(throwable, contextWrapper)
+            if (!StringUtils.isEmpty(pin)) {
+                UserCredential pinCredential = new UserCredential(
+                        value: pin,
+                        type: 'PIN'
+                )
 
-                return Promise.pure(null)
-            }.then { UserCredential newUserCredential ->
-                if (newUserCredential == null) {
-                    return Promise.pure(new ActionResult('error'))
+                return userCredentialResource.create(user.id as UserId, pinCredential).recover { Throwable throwable ->
+                    handleException(throwable, contextWrapper)
+
+                    return Promise.pure(null)
+                }.then { UserCredential newUserCredential ->
+                    if (newUserCredential == null) {
+                        return Promise.pure(new ActionResult('error'))
+                    }
+
+                    return Promise.pure(new ActionResult('success'))
                 }
-
-                return Promise.pure(new ActionResult('success'))
             }
+
+            return Promise.pure(new ActionResult('success'))
         }
     }
 

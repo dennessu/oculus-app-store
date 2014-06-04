@@ -89,21 +89,17 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
     }
 
     @Override
-    Promise<Response> resetPassword(String conversationId, String event, MultivaluedMap<String, String> formParams) {
+    Promise<Response> resetPassword(String conversationId, String event, String locale, UserId userId,
+                                    ContainerRequestContext request, MultivaluedMap<String, String> formParams) {
+        if (conversationId == null) {
+            return userService.sendResetPassword(userId, locale, ((ContainerRequest)request).baseUri).then {
+                return Promise.pure(Response.noContent().build())
+            }
+        }
+
         Map<String, Object> requestScope = new HashMap<>()
         requestScope[ActionContextWrapper.PARAMETER_MAP] = formParams
 
-        if (conversationId == null) {
-            throw new ConversationNotfFoundException()
-        }
-
         return flowExecutor.resume(conversationId, event ?: '', requestScope).then(ResponseUtil.WRITE_RESPONSE_CLOSURE)
-    }
-
-    @Override
-    Promise<Response> sendResetPasswordEmail(String locale, UserId userId, ContainerRequestContext request) {
-        return userService.sendResetPassword(userId, locale, ((ContainerRequest)request).baseUri).then {
-            return Promise.pure(Response.noContent().build())
-        }
     }
 }
