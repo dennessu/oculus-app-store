@@ -14,8 +14,10 @@
 	
 #create link
 	[devops] sudo rm /usr/bin/psql
+	[devops] sudo rm /usr/bin/pg_ctl
 	[devops] sudo rm /usr/bin/dropdb
 	[devops] sudo rm /usr/bin/createdb
+
 	[devops] sudo ln -s /usr/lib/postgresql/9.3/bin/psql /usr/bin/psql
 	[devops] sudo ln -s /usr/lib/postgresql/9.3/bin/pg_ctl /usr/bin/pg_ctl
 	[devops] sudo ln -s /usr/lib/postgresql/9.3/bin/createdb /usr/bin/createdb
@@ -68,6 +70,9 @@
 
 #[slave] clean up slave
 	[silkcloud] $DEPLOYMENT_PATH/purge_slave.sh
+
+#[replica] clean up replica
+	[silkcloud] $DEPLOYMENT_PATH/purge_replica.sh
 
 #[master/slave]
 	[silkcloud] create pgbouncer auth file in ~/pgbouncer_auth.txt and chmod 600

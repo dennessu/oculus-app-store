@@ -9,6 +9,9 @@ export DATA_PATH='/tmp/data'
 export BACKUP_PATH='/tmp/backup'
 export ARCHIVE_PATH='/tmp/archive'
 export CRON_PATH='/tmp/pgcron'
+export SKYTOOL_PATH='/tmp/skytool'
+export SKYTOOL_PID_PATH=$SKYTOOL_PATH/pid
+export SKYTOOL_LOG_PATH=$SKYTOOL_PATH/log
 
 export PGBIN_PATH='/usr/lib/postgresql/9.3/bin'
 export PGLOCK_PATH='/run/postgresql'
@@ -61,6 +64,19 @@ function forceKill {
     else
 	    echo "no process running with [$1] port..."
     fi    
+}
+
+function forceKillPid {
+    if [ -f $1 ];then
+      cat $1 | xargs kill -9
+    elif [ -d $1 ];then
+   	  for f in $1/*
+	    do
+		  cat $f | xargs kill -9
+        done
+   	else
+   	  echo "path [$1] does not exist"
+    fi
 }
 
 # check running account
