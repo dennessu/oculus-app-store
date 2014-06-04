@@ -64,4 +64,7 @@
     <bean id="updateOrderAction" class="com.junbo.order.core.impl.orderaction.SaveOrderAction">
         <property name="newOrder" value="false"/>
     </bean>
+
+    <bean id="asyncChargeCheckAction" class="com.junbo.order.core.impl.orderaction.AsyncChargeCheckAction"/>
+
 </beans>

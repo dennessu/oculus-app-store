@@ -3,22 +3,27 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.order.db.entity.enums;
+package com.junbo.order.spec.model.enums;
 
 import com.junbo.common.util.Identifiable;
 
 import javax.ws.rs.NotSupportedException;
 
 /**
- * Created by fzhang on 4/2/2014.
+ * Created by chriszhu on 2/25/14.
  */
-public enum PayoutStatus implements Identifiable<Short> {
+public enum FulfillmentAction implements Identifiable<Short> {
+    FULFILL(0),
+    REVERSE(1),
+    RETURN(2),
+    PREORDER(3),
+    SHIP(4),
+    DELIVER(5),
+    REPLACE(6),
+    PENDING_FULFILL(7);
 
-    PENDING(0),
-    COMPLETED(1),
-    FAILED(2);
 
-    private PayoutStatus(int id) {
+    private FulfillmentAction(int id) {
         this.id = (short) id;
     }
 
@@ -31,7 +36,7 @@ public enum PayoutStatus implements Identifiable<Short> {
 
     @Override
     public void setId(Short id) {
-        throw new NotSupportedException("enum PayoutStatus not settable");
+        throw new NotSupportedException("enum FulfillmentAction not settable");
     }
 
 }

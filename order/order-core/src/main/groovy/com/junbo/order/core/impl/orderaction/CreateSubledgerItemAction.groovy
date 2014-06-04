@@ -8,7 +8,7 @@ import com.junbo.order.clientproxy.model.OrderOfferRevision
 import com.junbo.order.core.SubledgerService
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.core.impl.subledger.SubledgerHelper
-import com.junbo.order.db.entity.enums.SubledgerItemAction
+import com.junbo.order.spec.model.enums.SubledgerItemAction
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.order.spec.model.SubledgerItem

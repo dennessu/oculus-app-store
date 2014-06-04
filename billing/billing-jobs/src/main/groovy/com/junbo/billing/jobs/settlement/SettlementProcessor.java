@@ -7,7 +7,7 @@
 package com.junbo.billing.jobs.settlement;
 
 import com.junbo.billing.db.repository.BalanceRepository;
-import com.junbo.billing.jobs.BillingFacade;
+import com.junbo.billing.jobs.clientproxy.BillingFacade;
 import com.junbo.billing.spec.model.Balance;
 import com.junbo.common.id.BalanceId;
 import com.junbo.langur.core.promise.Promise;

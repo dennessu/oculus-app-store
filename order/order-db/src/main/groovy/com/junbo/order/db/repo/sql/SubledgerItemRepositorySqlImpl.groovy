@@ -5,7 +5,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import com.junbo.order.db.dao.SubledgerItemDao
 import com.junbo.order.db.entity.SubledgerItemEntity
-import com.junbo.order.db.entity.enums.SubledgerItemStatus
+import com.junbo.order.spec.model.enums.SubledgerItemStatus
 import com.junbo.order.db.mapper.ModelMapper
 import com.junbo.order.db.repo.SubledgerItemRepository
 import com.junbo.order.db.repo.util.Utils

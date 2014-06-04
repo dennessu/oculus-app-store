@@ -3,21 +3,25 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.order.db.entity.enums;
+package com.junbo.order.spec.model.enums;
 
 import com.junbo.common.util.Identifiable;
 
 import javax.ws.rs.NotSupportedException;
 
 /**
- * Created by LinYi on 2/10/14.
+ * Created by chriszhu on 2/25/14.
  */
-public enum OrderType implements Identifiable<Short> {
-    PAY_IN(0),
-    REFUND(1),
-    PAY_OUT(2);
+public enum BillingAction implements Identifiable<Short> {
+    CHARGE(0),
+    AUTHORIZE(1),
+    CREDIT(2),
+    REFUND(3),
+    CAPTURE(4),
+    DEPOSIT(5),
+    PENDING_CHARGE(6);
 
-    private OrderType(int id) {
+    private BillingAction(int id) {
         this.id = (short) id;
     }
 
@@ -30,8 +34,7 @@ public enum OrderType implements Identifiable<Short> {
 
     @Override
     public void setId(Short id) {
-        throw new NotSupportedException("enum OrderType not settable");
+        throw new NotSupportedException("enum DiscountType not settable");
     }
-
 
 }

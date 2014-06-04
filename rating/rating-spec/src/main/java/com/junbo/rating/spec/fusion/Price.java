@@ -14,9 +14,9 @@ import java.util.*;
  */
 public class Price {
     private String priceType;
-    private Map<String, BigDecimal> prices;
+    private Map<String, Map<String, BigDecimal>> prices;
 
-    public Price(String priceType, Map<String, BigDecimal> prices) {
+    public Price(String priceType, Map<String, Map<String, BigDecimal>> prices) {
         this.priceType = priceType;
         this.prices = prices;
     }
@@ -29,11 +29,11 @@ public class Price {
         this.priceType = priceType;
     }
 
-    public Map<String, BigDecimal> getPrices() {
+    public Map<String, Map<String, BigDecimal>> getPrices() {
         return prices;
     }
 
-    public void setPrices(Map<String, BigDecimal> prices) {
+    public void setPrices(Map<String, Map<String, BigDecimal>> prices) {
         this.prices = prices;
     }
 }

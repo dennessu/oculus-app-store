@@ -1,6 +1,6 @@
 package com.junbo.order.core.impl.common
 
-import com.junbo.order.db.entity.enums.PayoutStatus
+import com.junbo.order.spec.model.enums.PayoutStatus
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.OrderQueryParam
 import com.junbo.order.spec.model.PageParam

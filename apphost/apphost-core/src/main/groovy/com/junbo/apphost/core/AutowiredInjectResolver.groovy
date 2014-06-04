@@ -27,7 +27,9 @@ class AutowiredInjectResolver implements InjectionResolver<Autowired> {
 
     @Override
     Object resolve(Injectee injectee, ServiceHandle<?> root) {
-        if (injectee.requiredType == ApplicationContext) {
+        if (injectee.requiredType instanceof Class &&
+                ApplicationContext.isAssignableFrom((Class<?>) injectee.requiredType)) {
+
             return ctx
         }
 

@@ -8,7 +8,7 @@ package com.junbo.order.db.dao.impl;
 
 import com.junbo.order.db.dao.OrderDao;
 import com.junbo.order.db.entity.OrderEntity;
-import com.junbo.order.db.entity.enums.OrderStatus;
+import com.junbo.order.spec.model.enums.OrderStatus;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;

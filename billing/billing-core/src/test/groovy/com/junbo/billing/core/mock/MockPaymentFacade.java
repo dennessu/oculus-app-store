@@ -64,6 +64,13 @@ public class MockPaymentFacade implements PaymentFacade {
     public Promise<PaymentTransaction> postPaymentCheck(Long paymentId) {
         PaymentTransaction request = new PaymentTransaction();
         request.setId(paymentId);
+        request.setStatus(PaymentStatus.REFUNDED.name());
+        return Promise.pure(request);
+    }
+
+    @Override
+    public Promise<PaymentTransaction> postPaymentRefund(Long paymentId, PaymentTransaction request) {
+        request.setId(paymentId);
         request.setStatus(PaymentStatus.SETTLED.name());
         return Promise.pure(request);
     }

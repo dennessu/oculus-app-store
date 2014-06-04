@@ -3,21 +3,21 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.order.db.entity.enums;
+package com.junbo.order.spec.model.enums;
 
 import com.junbo.common.util.Identifiable;
 
 import javax.ws.rs.NotSupportedException;
 
 /**
- * Created by fzhang on 4/2/2014.
+ * Created by LinYi on 2/10/14.
  */
-public enum SubledgerItemStatus implements Identifiable<Short> {
+public enum ItemType implements Identifiable<Short> {
+    DIGITAL(0),
+    PHYSICAL(1),
+    STORED_VALUE(2);
 
-    PENDING(0),
-    PROCESSED(1);
-
-    private SubledgerItemStatus(int id) {
+    private ItemType(int id) {
         this.id = (short) id;
     }
 
@@ -30,7 +30,7 @@ public enum SubledgerItemStatus implements Identifiable<Short> {
 
     @Override
     public void setId(Short id) {
-        throw new NotSupportedException("enum SubledgerItemStatus not settable");
+        throw new NotSupportedException("enum ItemType not settable");
     }
 
 }

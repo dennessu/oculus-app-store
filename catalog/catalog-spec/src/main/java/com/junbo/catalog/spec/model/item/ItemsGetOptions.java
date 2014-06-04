@@ -22,7 +22,7 @@ public class ItemsGetOptions extends PageableGetOptions {
     private Set<ItemId> itemIds;
     @QueryParam("type")
     private String type;
-    @QueryParam("genre")
+    @QueryParam("genreId")
     private ItemAttributeId genre;
     @QueryParam("hostItemId")
     private ItemId hostItemId;

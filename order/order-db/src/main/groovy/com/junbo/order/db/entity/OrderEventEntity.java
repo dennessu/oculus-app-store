@@ -7,8 +7,8 @@
 package com.junbo.order.db.entity;
 
 import com.junbo.order.db.ValidationMessages;
-import com.junbo.order.db.entity.enums.EventStatus;
-import com.junbo.order.db.entity.enums.OrderActionType;
+import com.junbo.order.spec.model.enums.EventStatus;
+import com.junbo.order.spec.model.enums.OrderActionType;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;

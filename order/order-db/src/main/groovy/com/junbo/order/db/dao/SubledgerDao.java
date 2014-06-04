@@ -7,7 +7,7 @@
 package com.junbo.order.db.dao;
 
 import com.junbo.order.db.entity.SubledgerEntity;
-import com.junbo.order.db.entity.enums.PayoutStatus;
+import com.junbo.order.spec.model.enums.PayoutStatus;
 
 import java.util.Date;
 import java.util.List;

@@ -53,6 +53,10 @@ public interface AppErrors {
             description = "Order not tentative")
     AppError orderNotTentative();
 
+    @ErrorDef(httpStatusCode = 409, code = ErrorCode.ORDER_CONCURRENT_UPDATE,
+            description = "Concurrent update of order detected")
+    AppError orderConcurrentUpdate();
+
     @ErrorDef(httpStatusCode = 404, code = UserErrorCode.USER_NOT_FOUND,
             description = "User not found {0}")
     AppError userNotFound(String userId);
@@ -148,6 +152,10 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 404, code = ErrorCode.SUBLEDGER_NOT_FOUND,
             description = "SubledgerNotFound")
     AppError subledgerNotFound();
+
+    @ErrorDef(httpStatusCode = 404, code = ErrorCode.SUBLEDGER_CONCURRENT_UPDATE,
+            description = "Concurrent update of subledger detected")
+    AppError subledgerConcurrentUpdate();
 
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_SETTLED_ORDER_UPDATE,
             description = "Invalid settled order update")

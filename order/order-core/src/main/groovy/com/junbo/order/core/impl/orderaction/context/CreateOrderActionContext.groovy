@@ -1,6 +1,6 @@
 package com.junbo.order.core.impl.orderaction.context
 
-import com.junbo.order.db.entity.enums.OrderActionType
+import com.junbo.order.spec.model.enums.OrderActionType
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 /**

@@ -11,7 +11,14 @@
         <property name="target" value="${clientproxy.billing.url}"/>
     </bean>
 
-    <bean id="billingBillingFacade" class="com.junbo.billing.jobs.BillingFacadeImpl" />
+    <bean id="billingBillingFacade" class="com.junbo.billing.jobs.clientproxy.BillingFacadeImpl" />
+
+    <bean id="billingOrderEventClient" class="com.junbo.order.spec.resource.proxy.OrderEventResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.order.url}"/>
+    </bean>
+
+    <bean id="billingOrderFacade" class="com.junbo.billing.jobs.clientproxy.OrderFacadeImpl" />
 
     <bean id="asyncChargeListener" class="com.junbo.billing.jobs.asyncCharge.AsyncChargeListener" />
 

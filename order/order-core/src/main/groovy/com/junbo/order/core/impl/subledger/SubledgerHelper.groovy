@@ -3,7 +3,7 @@ import com.google.common.math.IntMath
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.order.clientproxy.model.OrderOfferRevision
-import com.junbo.order.db.entity.enums.PayoutStatus
+import com.junbo.order.spec.model.enums.PayoutStatus
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.db.repo.facade.SubledgerRepositoryFacade
 import com.junbo.order.spec.model.Subledger

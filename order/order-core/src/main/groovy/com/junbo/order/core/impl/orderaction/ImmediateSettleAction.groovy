@@ -12,7 +12,7 @@ import com.junbo.order.core.impl.common.BillingEventHistoryBuilder
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
-import com.junbo.order.db.entity.enums.BillingAction
+import com.junbo.order.spec.model.enums.BillingAction
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import groovy.transform.CompileStatic
@@ -61,12 +61,16 @@ class ImmediateSettleAction extends BaseOrderEventAwareAction {
                 throw AppErrors.INSTANCE.
                         billingConnectionError().exception()
             }
+
             if (balance.status != BalanceStatus.AWAITING_PAYMENT.name() &&
-                    balance.status != BalanceStatus.COMPLETED.name()) {
+                    balance.status != BalanceStatus.COMPLETED.name() &&
+                    balance.status != BalanceStatus.QUEUING.name()) {
                 LOGGER.error('name=Order_ImmediateSettle_Failed')
                 throw AppErrors.INSTANCE.
                         billingChargeFailed().exception()
             }
+
+            context.orderServiceContext.isAsyncCharge = balance.isAsyncCharge
             CoreBuilder.fillTaxInfo(order, balance)
             def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(balance)
             if (billingHistory.billingEvent != null) {

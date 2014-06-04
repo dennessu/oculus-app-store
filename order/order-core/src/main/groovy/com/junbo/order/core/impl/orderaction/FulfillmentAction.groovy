@@ -10,7 +10,7 @@ import com.junbo.order.core.annotation.OrderEventAwareAfter
 import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.common.FulfillmentEventHistoryBuilder
-import com.junbo.order.db.entity.enums.EventStatus
+import com.junbo.order.spec.model.enums.EventStatus
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.error.ErrorUtils

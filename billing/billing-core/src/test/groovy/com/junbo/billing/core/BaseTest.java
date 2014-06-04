@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import java.util.UUID;
 
@@ -20,6 +21,7 @@ import java.util.UUID;
  */
 
 @ContextConfiguration(locations = {"classpath:spring/context-test.xml"})
+@TransactionConfiguration(defaultRollback = true)
 public abstract class BaseTest extends AbstractTestNGSpringContextTests {
 
     protected BalanceService balanceService;

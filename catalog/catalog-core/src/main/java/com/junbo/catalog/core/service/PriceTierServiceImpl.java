@@ -117,11 +117,19 @@ public class PriceTierServiceImpl implements PriceTierService {
         if (CollectionUtils.isEmpty(priceTier.getPrices())) {
             errors.add(AppErrors.INSTANCE.missingField("prices"));
         } else {
-            for (String currency : priceTier.getPrices().keySet()) {
-                if (priceTier.getPrices().get(currency) == null
-                        || priceTier.getPrices().get(currency).compareTo(BigDecimal.ZERO) <= 0) {
+            for (String country : priceTier.getPrices().keySet()) {
+                if (priceTier.getPrices().get(country) == null) {
                     errors.add(AppErrors.INSTANCE
-                            .fieldNotCorrect("prices." + currency, "Price amount should greater than 0"));
+                            .fieldNotCorrect("prices." + country, "Prices should be configured"));
+                } else {
+                    for (String currency : priceTier.getPrices().get(country).keySet()) {
+                        BigDecimal amount = priceTier.getPrices().get(country).get(currency);
+                        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+                            errors.add(AppErrors.INSTANCE
+                                    .fieldNotCorrect("prices." + country + "." + currency,
+                                            "Price amount should greater than 0"));
+                        }
+                    }
                 }
             }
         }

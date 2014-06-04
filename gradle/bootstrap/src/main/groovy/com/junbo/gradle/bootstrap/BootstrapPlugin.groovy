@@ -32,6 +32,7 @@ class BootstrapPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project rootProject) {
+
         rootProject.task('createWrapper', type: Wrapper) {
             gradleVersion = '1.11'
         }

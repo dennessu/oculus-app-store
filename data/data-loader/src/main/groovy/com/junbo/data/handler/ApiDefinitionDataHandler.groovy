@@ -43,11 +43,12 @@ class ApiDefinitionDataHandler extends BaseDataHandler {
         }
 
         if (existing != null) {
-            if (apiDefinition.resourceAge != null && apiDefinition.resourceAge > existing.resourceAge) {
+            if (alwaysOverwrite || (apiDefinition.resourceAge != null
+                    && apiDefinition.resourceAge > existing.resourceAge)) {
                 logger.debug("Overwrite ApiDefinition of revision $existing.revision " +
                         "with new revision: $apiDefinition.revision")
 
-                apiDefinition.revision = existing.revision
+                apiDefinition.resourceAge = existing.resourceAge
                 apiDefinitionResource.update(apiDefinition.apiName, apiDefinition)
             } else {
                 logger.debug('The content revision is lower than the current revision, skip this content')

@@ -9,7 +9,7 @@ import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.annotation.OrderEventAwareAfter
 import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.BillingEventHistoryBuilder
-import com.junbo.order.db.entity.enums.BillingAction
+import com.junbo.order.spec.model.enums.BillingAction
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import groovy.transform.CompileStatic

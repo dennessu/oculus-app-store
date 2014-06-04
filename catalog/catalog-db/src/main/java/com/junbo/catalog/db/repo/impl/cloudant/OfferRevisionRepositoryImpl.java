@@ -62,14 +62,13 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
         } else if (!CollectionUtils.isEmpty(options.getOfferIds())) {
             for (OfferId offerId : options.getOfferIds()) {
                 List<OfferRevision> revisions = super.queryView("by_offerId", offerId.toString());
-                if (StringUtils.isEmpty(options.getStatus())) {
-                    continue;
-                }
-                Iterator<OfferRevision> iterator = revisions.iterator();
-                while (iterator.hasNext()) {
-                    OfferRevision revision = iterator.next();
-                    if (!options.getStatus().equalsIgnoreCase(revision.getStatus())) {
-                        iterator.remove();
+                if (!StringUtils.isEmpty(options.getStatus())) {
+                    Iterator<OfferRevision> iterator = revisions.iterator();
+                    while (iterator.hasNext()) {
+                        OfferRevision revision = iterator.next();
+                        if (!options.getStatus().equalsIgnoreCase(revision.getStatus())) {
+                            iterator.remove();
+                        }
                     }
                 }
                 offerRevisions.addAll(revisions);

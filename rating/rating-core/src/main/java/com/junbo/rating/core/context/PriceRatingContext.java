@@ -50,6 +50,7 @@ public class PriceRatingContext extends RatingContext {
     public void fromRequest(OfferRatingRequest request) {
         super.setUserId(request.getUserId());
         this.timestamp = request.getTime();
+        super.setCountry(request.getCountry());
 
         Currency currency = Currency.findByCode(request.getCurrency());
         if (currency == null) {
@@ -69,6 +70,7 @@ public class PriceRatingContext extends RatingContext {
         super.setUserId(request.getUserId());
         this.timestamp = request.getTime();
         this.defaultShippingMethod = request.getShippingMethodId();
+        super.setCountry(request.getCountry());
 
         Currency currency = Currency.findByCode(request.getCurrency());
         if (currency == null) {

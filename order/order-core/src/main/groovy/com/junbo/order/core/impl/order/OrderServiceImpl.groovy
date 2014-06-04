@@ -21,8 +21,8 @@ import com.junbo.order.core.impl.common.TransactionHelper
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
-import com.junbo.order.db.entity.enums.OrderActionType
-import com.junbo.order.db.entity.enums.OrderStatus
+import com.junbo.order.spec.model.enums.OrderActionType
+import com.junbo.order.spec.model.enums.OrderStatus
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
@@ -69,8 +69,9 @@ class OrderServiceImpl implements OrderService {
 
     @Override
     Promise<Order> settleQuote(Order order, ApiContext context) {
+        // order is the request
+
         LOGGER.info('name=Settle_Tentative_Order. userId: {}', order.user.value)
-        order.tentative = false
         orderValidator.validateSettleOrderRequest(order)
 
         // rate the order
@@ -78,6 +79,12 @@ class OrderServiceImpl implements OrderService {
             if (ratedOrder.status == OrderStatus.PRICE_RATING_CHANGED.name()) {
                 throw AppErrors.INSTANCE.orderPriceChanged().exception()
             }
+
+            // TODO: compare the reqeust and the order persisted
+            orderValidator.validateSettleOrderRequest(ratedOrder)
+            ratedOrder.successRedirectUrl = order.successRedirectUrl
+            ratedOrder.cancelRedirectUrl = order.cancelRedirectUrl
+
             def orderServiceContext = initOrderServiceContext(ratedOrder, context)
             Throwable error
             return flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_TENTATIVE).then { String flowName ->
@@ -170,16 +177,8 @@ class OrderServiceImpl implements OrderService {
     @Transactional
     Promise<Order> getOrderByOrderId(Long orderId, Boolean doRate = true) {
         return orderInternalService.getOrderByOrderId(orderId).then { Order order ->
-            if (order.tentative && CoreUtils.isRateExpired(order) && doRate) {
-                // if the price rating result changes, return expired.
-                Order oldRatingInfo = CoreUtils.copyOrderRating(order)
-                order.honoredTime = new Date()
-                return orderInternalService.rateOrder(order).then { Order o ->
-                    if(!CoreUtils.compareOrderRating(oldRatingInfo, o)) {
-                        o.status = OrderStatus.PRICE_RATING_CHANGED
-                    }
-                    return Promise.pure(o)
-                }
+            if (doRate) {
+                return refreshTentativeOrderPrice(order)
             }
             return Promise.pure(order)
         }
@@ -198,7 +197,13 @@ class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     Promise<List<Order>> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
-        return orderInternalService.getOrdersByUserId(userId, orderQueryParam, pageParam)
+        return orderInternalService.getOrdersByUserId(userId, orderQueryParam, pageParam).then { List<Order> orders ->
+            return Promise.each(orders) { Order order ->
+                if (order.tentative) {
+                    return refreshTentativeOrderPrice(order)
+                }
+            }
+        }
     }
 
     @Override
@@ -246,6 +251,21 @@ class OrderServiceImpl implements OrderService {
                 return orderServiceContext.orderEvent
             }
         }
+    }
+
+    private Promise<Order> refreshTentativeOrderPrice(Order order) {
+        if (order.tentative && CoreUtils.isRateExpired(order)) {
+            // if the price rating result changes, return expired.
+            Order oldRatingInfo = CoreUtils.copyOrderRating(order)
+            order.honoredTime = new Date()
+            return orderInternalService.rateOrder(order).then { Order o ->
+                if(!CoreUtils.compareOrderRating(oldRatingInfo, o)) {
+                    o.status = OrderStatus.PRICE_RATING_CHANGED
+                }
+                return Promise.pure(o)
+            }
+        }
+        return Promise.pure(order)
     }
 
     private Promise<OrderServiceContext> executeFlow(

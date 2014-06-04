@@ -7,11 +7,13 @@ import com.junbo.common.id.UserId
 import com.junbo.order.db.repo.SubledgerItemRepository
 import com.junbo.order.db.repo.SubledgerRepository
 import com.junbo.order.db.repo.facade.SubledgerRepositoryFacade
+import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.PageParam
 import com.junbo.order.spec.model.Subledger
 import com.junbo.order.spec.model.SubledgerItem
 import com.junbo.order.spec.model.SubledgerParam
 import groovy.transform.CompileStatic
+import org.hibernate.StaleObjectStateException
 import org.springframework.beans.factory.annotation.Required
 /**
  * Created by fzhang on 4/11/2014.
@@ -40,7 +42,16 @@ class SubledgerRepositoryFacadeImpl implements SubledgerRepositoryFacade {
 
     @Override
     Subledger updateSubledger(Subledger subledger) {
-        return subledgerRepository.update(subledger).get();
+        try {
+            return subledgerRepository.update(subledger).syncRecover { Throwable ex ->
+                if (ex instanceof StaleObjectStateException) {
+                    throw AppErrors.INSTANCE.subledgerConcurrentUpdate().exception()
+                }
+                throw ex
+            }.get()
+        } catch (StaleObjectStateException ex) {
+            throw AppErrors.INSTANCE.orderConcurrentUpdate().exception()
+        }
     }
 
     @Override

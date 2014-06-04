@@ -91,15 +91,17 @@ class BalanceServiceImpl implements BalanceService {
             return Promise.pure(tmpBalance)
         }
 
+        Balance originalBalance = null
         if (balance.type == BalanceType.REFUND.name()) {
             balanceValidator.validateRefund(balance)
 
-            Balance originalBalance = balanceRepository.getBalance(balance.originalBalanceId.value)
+            originalBalance = balanceRepository.getBalance(balance.originalBalanceId.value)
             if (originalBalance == null) {
                 throw AppErrors.INSTANCE.balanceNotFound(balance.originalBalanceId.value.toString()).exception()
             }
             balanceValidator.validateBalanceStatus(originalBalance.status,
                     [BalanceStatus.COMPLETED.name(), BalanceStatus.AWAITING_PAYMENT.name()])
+            balanceValidator.validateTransactionNotEmpty(originalBalance.balanceId, originalBalance.transactions)
 
             if (balance.balanceItems == null || balance.balanceItems.size() == 0) {
                 // if there is no balance items input, assume full refund
@@ -150,7 +152,8 @@ class BalanceServiceImpl implements BalanceService {
                         savedBalance.setStatus(BalanceStatus.QUEUING.name())
                         return Promise.pure(balanceRepository.updateBalance(savedBalance, EventActionType.QUEUE))
                     }
-                    return transactionService.processBalance(savedBalance).recover { Throwable throwable ->
+                    return transactionService.processBalance(savedBalance, originalBalance).recover {
+                        Throwable throwable ->
                         updateAndCommitBalance(savedBalance, EventActionType.CHARGE)
                         throw throwable
                     }.then { Balance returnedBalance ->
@@ -257,7 +260,11 @@ class BalanceServiceImpl implements BalanceService {
             throw AppErrors.INSTANCE.notAsyncChargeBalance(balance.balanceId.value.toString()).exception()
         }
 
-        return transactionService.processBalance(savedBalance).recover { Throwable throwable ->
+        Balance originalBalance = null
+        if (balance.type == BalanceType.REFUND.name()) {
+            originalBalance = balanceRepository.getBalance(balance.originalBalanceId.value)
+        }
+        return transactionService.processBalance(savedBalance, originalBalance).recover { Throwable throwable ->
             updateAndCommitBalance(savedBalance, EventActionType.ASYNC_CHARGE)
             throw throwable
         }.then { Balance returnedBalance ->

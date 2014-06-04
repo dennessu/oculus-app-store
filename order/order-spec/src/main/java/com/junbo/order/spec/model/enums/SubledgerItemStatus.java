@@ -3,23 +3,21 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.order.db.entity.enums;
+package com.junbo.order.spec.model.enums;
 
 import com.junbo.common.util.Identifiable;
 
 import javax.ws.rs.NotSupportedException;
 
 /**
- * Created by chriszhu on 2/25/14.
+ * Created by fzhang on 4/2/2014.
  */
-public enum PreorderAction implements Identifiable<Short> {
-    PREORDER(0),
-    CHARGE(1),
-    FULFILL(2),
-    PRE_RELEASE_NOTIFY(3),
-    RELEASE_NOTIFY(4);
+public enum SubledgerItemStatus implements Identifiable<Short> {
 
-    private PreorderAction(int id) {
+    PENDING(0),
+    PROCESSED(1);
+
+    private SubledgerItemStatus(int id) {
         this.id = (short) id;
     }
 
@@ -32,7 +30,7 @@ public enum PreorderAction implements Identifiable<Short> {
 
     @Override
     public void setId(Short id) {
-        throw new NotSupportedException("enum PreorderAction not settable");
+        throw new NotSupportedException("enum SubledgerItemStatus not settable");
     }
 
 }

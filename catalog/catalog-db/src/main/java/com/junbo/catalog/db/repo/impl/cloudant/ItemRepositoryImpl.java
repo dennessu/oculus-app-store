@@ -69,10 +69,10 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
             items = searchResult.getResults();
             options.setNextBookmark(searchResult.getBookmark());
             options.setStart(null);
-        } else if (StringUtils.isEmpty(options.getType()) && options.getGenre()==null && options.getOwnerId()==null) {
-            items = super.queryView("by_itemId", null, options.getValidSize(), options.getValidStart(), false);
-            options.setNextBookmark(null);
-        } else {
+        } else if (options.getGenre() != null
+                || !StringUtils.isEmpty(options.getType())
+                || options.getOwnerId() != null
+                || options.getHostItemId() != null) {
             StringBuilder sb = new StringBuilder();
             if (options.getGenre() != null) {
                 sb.append("genreId:'").append(options.getGenre().getValue()).append("'");
@@ -89,11 +89,20 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
                 }
                 sb.append("ownerId:'").append(options.getOwnerId().getValue()).append("'");
             }
+            if (options.getHostItemId() != null) {
+                if (sb.length() > 0) {
+                    sb.append(" AND ");
+                }
+                sb.append("hostItemId:'").append(options.getHostItemId()).append("'");
+            }
             CloudantSearchResult<Item> searchResult =
                     super.search("search", sb.toString(), options.getValidSize(), options.getBookmark());
             items = searchResult.getResults();
             options.setNextBookmark(searchResult.getBookmark());
             options.setStart(null);
+        } else {
+            items = super.queryView("by_itemId", null, options.getValidSize(), options.getValidStart(), false);
+            options.setNextBookmark(null);
         }
 
         return items;

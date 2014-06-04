@@ -12,9 +12,11 @@ import com.junbo.order.db.repo.*
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.db.repo.util.RepositoryFuncSet
 import com.junbo.order.db.repo.util.Utils
+import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
+import org.hibernate.StaleObjectStateException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
@@ -67,17 +69,21 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
 
     @Override
     Order updateOrder(Order order, boolean updateOnlyOrder) {
-        return ((Promise<Order>)orderRepository.update(order).then { Order savedOrder ->
-            if (!updateOnlyOrder) {
-                return saveOrderItems(savedOrder.getId(), order.orderItems).then {
-                    return saveDiscounts(savedOrder.getId(), order.discounts)
-                }.then {
-                    return Promise.pure(order);
-                };
-            } else {
-                return Promise.pure(order);
-            }
-        }).get()
+        try {
+            return ((Promise<Order>)orderRepository.update(order).then { Order savedOrder ->
+                if (!updateOnlyOrder) {
+                    return saveOrderItems(savedOrder.getId(), order.orderItems).then {
+                        return saveDiscounts(savedOrder.getId(), order.discounts)
+                    }.then {
+                        return Promise.pure(order)
+                    }
+                } else {
+                    return Promise.pure(order)
+                }
+            }).get()
+        } catch (StaleObjectStateException ex) {
+            throw AppErrors.INSTANCE.orderConcurrentUpdate().exception()
+        }
     }
 
     @Override
