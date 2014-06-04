@@ -5,19 +5,21 @@
  */
 package com.junbo.test.common.apihelper.identity.impl;
 
-import com.junbo.identity.spec.v1.model.UserPersonalInfoLink;
-import com.junbo.test.common.apihelper.identity.UserService;
-import com.junbo.identity.spec.v1.model.UserPersonalInfo;
-import com.junbo.test.common.apihelper.HttpClientBase;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.junbo.common.json.JsonMessageTranscoder;
-import com.junbo.langur.core.client.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.junbo.test.common.blueprint.Master;
-import com.junbo.identity.spec.v1.model.User;
-import com.junbo.common.model.Results;
-import com.junbo.test.common.libs.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.id.UserId;
+import com.junbo.common.json.JsonMessageTranscoder;
+import com.junbo.common.model.Results;
+import com.junbo.identity.spec.v1.model.User;
+import com.junbo.identity.spec.v1.model.UserPersonalInfo;
+import com.junbo.identity.spec.v1.model.UserPersonalInfoLink;
+import com.junbo.langur.core.client.TypeReference;
+import com.junbo.test.common.ConfigHelper;
+import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.test.common.apihelper.identity.UserService;
+import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.libs.IdConverter;
+import com.junbo.test.common.libs.RandomFactory;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -31,7 +33,7 @@ import java.util.List;
  */
 public class UserServiceImpl extends HttpClientBase implements UserService {
 
-    private final String identityServerURL = ConfigPropertiesHelper.instance().getProperty("defaultIdentityEndPointV1") + "/users";
+    private final String identityServerURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/users";
     private static UserService instance;
 
     public static synchronized UserService instance() {
@@ -183,7 +185,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     }
 
     private UserPersonalInfo postUserPersonalInfo(UserPersonalInfo userPersonalInfo, int expectedResponseCode) throws Exception {
-        String serverURL = ConfigPropertiesHelper.instance().getProperty("defaultIdentityEndPointV1") + "/personal-info";
+        String serverURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/personal-info";
         String responseBody = restApiCall(HTTPMethod.POST, serverURL, userPersonalInfo, expectedResponseCode);
         return new JsonMessageTranscoder().decode(new TypeReference<UserPersonalInfo>() {
         }, responseBody);

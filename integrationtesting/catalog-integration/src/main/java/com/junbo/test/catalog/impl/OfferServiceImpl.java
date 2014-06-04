@@ -5,37 +5,36 @@
  */
 package com.junbo.test.catalog.impl;
 
-import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties;
-import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
-
-import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
-import com.junbo.test.common.apihelper.identity.UserService;
-import com.junbo.test.catalog.enums.CatalogEntityStatus;
-import com.junbo.catalog.spec.model.offer.OfferRevision;
-import com.junbo.catalog.spec.model.item.ItemRevision;
-import com.junbo.test.common.apihelper.HttpClientBase;
-import com.junbo.catalog.spec.model.offer.ItemEntry;
-import com.junbo.test.catalog.enums.CatalogItemType;
-import com.junbo.common.json.JsonMessageTranscoder;
-import com.junbo.test.catalog.OfferRevisionService;
-import com.junbo.langur.core.client.TypeReference;
-import com.junbo.test.catalog.ItemRevisionService;
-import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.test.common.blueprint.Master;
-import com.junbo.test.common.libs.ConfigPropertiesHelper;
-import com.junbo.test.common.libs.IdConverter;
-import com.junbo.test.common.libs.LogHelper;
-import com.junbo.test.catalog.OfferService;
-import com.junbo.test.catalog.ItemService;
-import com.junbo.common.model.Results;
+import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
+import com.junbo.catalog.spec.model.offer.ItemEntry;
+import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.json.JsonMessageTranscoder;
+import com.junbo.common.model.Results;
+import com.junbo.langur.core.client.TypeReference;
+import com.junbo.test.catalog.ItemRevisionService;
+import com.junbo.test.catalog.ItemService;
+import com.junbo.test.catalog.OfferRevisionService;
+import com.junbo.test.catalog.OfferService;
+import com.junbo.test.catalog.enums.CatalogEntityStatus;
+import com.junbo.test.catalog.enums.CatalogItemType;
+import com.junbo.test.common.ConfigHelper;
+import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.test.common.apihelper.identity.UserService;
+import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.libs.IdConverter;
+import com.junbo.test.common.libs.LogHelper;
 
-import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +46,7 @@ import java.util.List;
  */
 public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
-    private final String catalogServerURL = ConfigPropertiesHelper.instance().getProperty("defaultCatalogEndpointV1") + "/offers";
+    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "/offers";
     private final String defaultStoredValueItemRevisionFileName = "defaultStoredValueItemRevision";
     private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";

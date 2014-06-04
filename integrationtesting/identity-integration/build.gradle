@@ -5,8 +5,7 @@ sourceCompatibility = '1.7'
 
 test {
     useTestNG()
-    systemProperty 'test.config', System.properties['test.config']
-    systemProperty 'vmip', System.properties['vmip']
+    systemProperty 'profile', System.properties['profile']
     options {
         listeners << 'org.testng.reporters.XMLReporter'
         listeners << 'com.junbo.test.common.property.PropertyTransformer'
@@ -14,6 +13,7 @@ test {
     testLogging {
         events "passed", "skipped", "failed"
     }
+    ext.configFile = "testConfig.properties"
     // show standard out and standard error of the test JVM(s) on the console
     testLogging.showStandardStreams = true
 }

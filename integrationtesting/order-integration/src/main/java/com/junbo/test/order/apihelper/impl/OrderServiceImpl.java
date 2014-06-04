@@ -9,16 +9,15 @@ import com.junbo.common.id.OrderId;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.client.TypeReference;
-import com.junbo.order.spec.model.OrderEvent;
 import com.junbo.order.spec.model.Order;
-
+import com.junbo.order.spec.model.OrderEvent;
 import com.junbo.order.spec.model.Subledger;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
-import com.junbo.test.common.libs.ConfigPropertiesHelper;
-import com.junbo.test.order.apihelper.OrderService;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
+import com.junbo.test.order.apihelper.OrderService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +27,7 @@ import java.util.List;
  */
 public class OrderServiceImpl extends HttpClientBase implements OrderService {
 
-    private static String orderUrl = ConfigPropertiesHelper.instance().
-            getProperty("defaultCommerceEndpointV1");
+    private static String orderUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1");
 
     private LogHelper logger = new LogHelper(OrderServiceImpl.class);
 
@@ -103,7 +101,8 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
 
         Subledger subledgerResult = new JsonMessageTranscoder().decode(
                 new TypeReference<Subledger>() {
-                }, responseBody);
+                }, responseBody
+        );
 
         return subledgerResult;
     }
@@ -119,7 +118,8 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
 
         Order orderResult = new JsonMessageTranscoder().decode(
                 new TypeReference<Order>() {
-                }, responseBody);
+                }, responseBody
+        );
 
         String orderId = IdConverter.idToHexString(orderResult.getId());
         Master.getInstance().addOrder(orderId, orderResult);
@@ -138,7 +138,8 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
 
         Results<Order> orderResults = new JsonMessageTranscoder().decode(
                 new TypeReference<Results<Order>>() {
-                }, responseBody);
+                }, responseBody
+        );
 
         List<Order> orderList = orderResults.getItems();
         List<String> orderIdList = new ArrayList<>();
@@ -162,7 +163,8 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
 
         Order orderResult = new JsonMessageTranscoder().decode(
                 new TypeReference<Order>() {
-                }, responseBody);
+                }, responseBody
+        );
 
         String responseOrderId = IdConverter.idToHexString(orderResult.getId());
         Master.getInstance().addOrder(orderId, orderResult);
@@ -184,7 +186,8 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
         if (expectedResponseCode == 200) {
             Order orderResult = new JsonMessageTranscoder().decode(
                     new TypeReference<Order>() {
-                    }, responseBody);
+                    }, responseBody
+            );
 
             String responseOrderId = IdConverter.idToHexString(orderResult.getId());
             Master.getInstance().addOrder(orderId, orderResult);

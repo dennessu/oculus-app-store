@@ -11,7 +11,7 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.client.TypeReference;
-import com.junbo.test.common.libs.ConfigPropertiesHelper;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.libs.RestUrl;
@@ -30,7 +30,7 @@ import java.util.concurrent.Future;
  */
 public class CartService {
 
-    private static String commerceUrl = ConfigPropertiesHelper.instance().getProperty("defaultCommerceEndpointV1");
+    private static String commerceUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1");
     private static LogHelper logger = new LogHelper(Cart.class);
     private static AsyncHttpClient asyncClient = new AsyncHttpClient(new AsyncHttpClientConfig.Builder().build());
 
@@ -60,8 +60,9 @@ public class CartService {
         Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
         if (expectedResponseCode == 200) {
             return (new JsonMessageTranscoder().decode(new TypeReference<Cart>() {
-            },
-                    nettyResponse.getResponseBody()));
+                                                       },
+                    nettyResponse.getResponseBody()
+            ));
         }
         return null;
     }
@@ -87,8 +88,9 @@ public class CartService {
         Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
         if (expectedResponseCode == 200) {
             return (new JsonMessageTranscoder().decode(new TypeReference<Cart>() {
-            },
-                    nettyResponse.getResponseBody()));
+                                                       },
+                    nettyResponse.getResponseBody()
+            ));
         } else {
             return null;
         }
@@ -148,8 +150,9 @@ public class CartService {
         Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
         if (expectedResponseCode == 200) {
             Results<Cart> cartGet = new JsonMessageTranscoder().decode(new TypeReference<Results<Cart>>() {
-            },
-                    nettyResponse.getResponseBody());
+                                                                       },
+                    nettyResponse.getResponseBody()
+            );
             return cartGet;
         }
         return null;
@@ -179,8 +182,9 @@ public class CartService {
         Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
         if (expectedResponseCode == 200) {
             return (new JsonMessageTranscoder().decode(new TypeReference<Cart>() {
-            },
-                    nettyResponse.getResponseBody()));
+                                                       },
+                    nettyResponse.getResponseBody()
+            ));
         }
         return null;
     }
@@ -209,8 +213,9 @@ public class CartService {
         Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
         if (expectedResponseCode == 200) {
             return (new JsonMessageTranscoder().decode(new TypeReference<Cart>() {
-            },
-                    nettyResponse.getResponseBody()));
+                                                       },
+                    nettyResponse.getResponseBody()
+            ));
         }
         return null;
     }

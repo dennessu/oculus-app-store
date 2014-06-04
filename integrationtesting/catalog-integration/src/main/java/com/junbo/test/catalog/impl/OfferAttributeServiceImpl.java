@@ -5,19 +5,19 @@
  */
 package com.junbo.test.catalog.impl;
 
-import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
-import com.junbo.test.catalog.enums.CatalogOfferAttributeType;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
-import com.junbo.test.common.libs.ConfigPropertiesHelper;
-import com.junbo.test.common.apihelper.HttpClientBase;
-import com.junbo.test.catalog.OfferAttributeService;
+import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
+import com.junbo.common.id.OfferAttributeId;
 import com.junbo.common.json.JsonMessageTranscoder;
+import com.junbo.common.model.Results;
 import com.junbo.langur.core.client.TypeReference;
-import com.junbo.test.common.libs.RandomFactory;
+import com.junbo.test.catalog.OfferAttributeService;
+import com.junbo.test.catalog.enums.CatalogOfferAttributeType;
+import com.junbo.test.common.ConfigHelper;
+import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
-import com.junbo.common.id.OfferAttributeId;
-import com.junbo.common.model.Results;
+import com.junbo.test.common.libs.RandomFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class OfferAttributeServiceImpl extends HttpClientBase implements OfferAttributeService {
 
-    private final String catalogServerURL = ConfigPropertiesHelper.instance().getProperty("defaultCatalogEndpointV1") + "/offer-attributes";
+    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "/offer-attributes";
     private static OfferAttributeService instance;
 
     public static synchronized OfferAttributeService instance() {

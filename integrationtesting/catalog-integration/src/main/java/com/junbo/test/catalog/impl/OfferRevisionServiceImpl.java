@@ -9,6 +9,7 @@ import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties;
 import com.junbo.test.catalog.enums.CatalogEntityStatus;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.catalog.spec.model.offer.ItemEntry;
 import com.junbo.test.catalog.enums.CatalogItemType;
@@ -36,7 +37,7 @@ import java.util.List;
  */
 public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRevisionService {
 
-    private final String catalogServerURL = ConfigPropertiesHelper.instance().getProperty("defaultCatalogEndpointV1") + "/offer-revisions";
+    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "/offer-revisions";
     private final String defaultStoredValueItemRevisionFileName = "defaultStoredValueItemRevision";
     private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
