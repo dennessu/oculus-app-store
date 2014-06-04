@@ -2,6 +2,8 @@ package com.junbo.oauth.core.action
 
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserId
+import com.junbo.common.json.ObjectMapperProvider
+import com.junbo.identity.spec.v1.model.Email
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
@@ -56,6 +58,8 @@ class CheckEmailVerified implements Action {
                 return Promise.pure(new ActionResult('error'))
             }
 
+            contextWrapper.user = user
+
             UserPersonalInfoLink defaultEmail = user.emails.find { UserPersonalInfoLink link ->
                 link.isDefault
             }
@@ -83,6 +87,9 @@ class CheckEmailVerified implements Action {
                 if (personalInfo.lastValidateTime != null) {
                     return Promise.pure(new ActionResult('success'))
                 }
+
+                def email = ObjectMapperProvider.instance().treeToValue(personalInfo.value, Email)
+                contextWrapper.userDefaultEmail = email.info
 
                 return Promise.pure(new ActionResult('emailVerifyRequired'))
             }
