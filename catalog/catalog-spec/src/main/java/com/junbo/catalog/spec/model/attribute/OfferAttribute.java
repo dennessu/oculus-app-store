@@ -7,6 +7,7 @@
 package com.junbo.catalog.spec.model.attribute;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.BaseModel;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
@@ -35,6 +36,7 @@ public class OfferAttribute extends BaseModel implements Attribute {
     @ApiModelProperty(position = 4, required = false, value = "locale properties")
     private Map<String, SimpleLocaleProperties> locales;
 
+    @JsonIgnore
     public Long getId() {
         return id;
     }

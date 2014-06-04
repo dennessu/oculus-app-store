@@ -121,6 +121,7 @@ public class Item extends BaseEntityModel {
     }
 
     @Override
+    @JsonIgnore
     public Long getId() {
         return itemId;
     }

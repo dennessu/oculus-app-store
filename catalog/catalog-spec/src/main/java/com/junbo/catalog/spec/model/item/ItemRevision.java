@@ -213,6 +213,7 @@ public class ItemRevision extends BaseRevisionModel {
     }
 
     @Override
+    @JsonIgnore
     public Long getId() {
         return revisionId;
     }

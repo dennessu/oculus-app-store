@@ -130,6 +130,7 @@ public class Offer extends BaseEntityModel {
     }
 
     @Override
+    @JsonIgnore
     public Long getId() {
         return offerId;
     }

@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.spec.model.pricetier;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.catalog.spec.model.common.BaseModel;
@@ -31,6 +32,7 @@ public class PriceTier extends BaseModel {
     @ApiModelProperty(position = 3, required = true, value = "Locale properties")
     private Map<String, SimpleLocaleProperties> locales;
 
+    @JsonIgnore
     public Long getId() {
         return id;
     }

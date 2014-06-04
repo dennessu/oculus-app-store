@@ -181,6 +181,7 @@ public class OfferRevision extends BaseRevisionModel {
     }
 
     @Override
+    @JsonIgnore
     public Long getId() {
         return revisionId;
     }
