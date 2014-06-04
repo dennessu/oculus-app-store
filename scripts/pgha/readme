@@ -32,6 +32,19 @@
 	[devops] sudo apt-get install oidentd 
 	[devops] /etc/init.d/oidentd start
 
+[Skytool Londiste Installation]
+	[devops] sudo apt-get install make
+	[devops] sudo apt-get install gcc
+	[devops] sudo apt-get install python-all
+	[devops] sudo apt-get install python-dev
+	[devops] sudo apt-get install libpq-dev
+	[devops] sudo apt-get install postgresql-server-dev-9.3
+
+	[devops] download http://pgfoundry.org/frs/download.php/3622/skytools-3.2.tar.gz
+	[devops] ./configure --prefix=/usr/local
+	[devops] sudo make
+	[devops] sudo make install
+
 [SSH key]
 	[devops] ssh-keygen -t rsa (no passphase)
 	[devops] chmod 600 /home/silkcloud/.ssh/id_rsa*
