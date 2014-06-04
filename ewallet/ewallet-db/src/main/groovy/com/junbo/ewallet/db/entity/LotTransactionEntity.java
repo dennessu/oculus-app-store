@@ -6,8 +6,12 @@
 
 package com.junbo.ewallet.db.entity;
 
-import com.junbo.ewallet.db.entity.def.IdentifiableType;
-import com.junbo.ewallet.db.entity.def.TransactionType;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.junbo.common.cloudant.json.annotations.CloudantDeserialize;
+import com.junbo.common.cloudant.json.annotations.CloudantSerialize;
+import com.junbo.common.jackson.deserializer.BigDecimalFromStringDeserializer;
+import com.junbo.common.util.Identifiable;
+import com.junbo.ewallet.db.entity.def.*;
 import com.junbo.ewallet.spec.def.WalletLotType;
 import org.hibernate.annotations.Type;
 
@@ -21,14 +25,22 @@ import java.math.BigDecimal;
  */
 @javax.persistence.Entity
 @Table(name = "lot_transaction")
-public class LotTransactionEntity extends EntityWithCreated {
+public class LotTransactionEntity extends EntityWithCreated implements Identifiable<LotTransactionId> {
     private Long walletId;
     private Long walletLotId;
     private Long transactionId;
     private TransactionType type;
+    @CloudantSerialize(TypeSerializer.WalletLotTypeSerializer.class)
+    @CloudantDeserialize(TypeDeserializer.WalletLotTypeDeserializer.class)
     private WalletLotType walletLotType;
+    @CloudantDeserialize(BigDecimalFromStringDeserializer.class)
+    @CloudantSerialize(ToStringSerializer.class)
     private BigDecimal amount;
+    @CloudantDeserialize(BigDecimalFromStringDeserializer.class)
+    @CloudantSerialize(ToStringSerializer.class)
     private BigDecimal unrefundedAmount;
+
+    private Boolean isRefundEnded;
 
     @Column(name = "ewallet_id")
     public Long getWalletId() {
@@ -99,5 +111,25 @@ public class LotTransactionEntity extends EntityWithCreated {
     @Override
     public Long getShardMasterId() {
         return walletId;
+    }
+
+    @Transient
+    public Boolean getIsRefundEnded() {
+        return isRefundEnded;
+    }
+
+    public void setIsRefundEnded(Boolean isRefundEnded) {
+        this.isRefundEnded = isRefundEnded;
+    }
+
+    @Transient
+    @Override
+    public LotTransactionId getId() {
+        return new LotTransactionId(getpId());
+    }
+
+    @Override
+    public void setId(LotTransactionId id) {
+        this.setpId(id.getValue());
     }
 }

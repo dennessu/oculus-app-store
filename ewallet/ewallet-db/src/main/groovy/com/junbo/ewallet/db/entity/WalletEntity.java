@@ -6,7 +6,15 @@
 
 package com.junbo.ewallet.db.entity;
 
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.junbo.common.cloudant.json.annotations.CloudantDeserialize;
+import com.junbo.common.cloudant.json.annotations.CloudantSerialize;
+import com.junbo.common.jackson.deserializer.BigDecimalFromStringDeserializer;
+import com.junbo.common.util.Identifiable;
 import com.junbo.ewallet.db.entity.def.IdentifiableType;
+import com.junbo.ewallet.db.entity.def.TypeDeserializer;
+import com.junbo.ewallet.db.entity.def.TypeSerializer;
+import com.junbo.ewallet.db.entity.def.WalletId;
 import com.junbo.ewallet.spec.def.Status;
 import com.junbo.ewallet.spec.def.WalletType;
 import org.hibernate.annotations.Type;
@@ -22,12 +30,16 @@ import java.util.UUID;
  */
 @javax.persistence.Entity
 @Table(name = "ewallet")
-public class WalletEntity extends Entity {
+public class WalletEntity extends Entity implements Identifiable<WalletId> {
     private UUID trackingUuid;
     private Long userId;
+    @CloudantSerialize(TypeSerializer.WalletTypeSerializer.class)
+    @CloudantDeserialize(TypeDeserializer.WalletTypeDeserializer.class)
     private WalletType type;
     private Status status;
     private String currency;
+    @CloudantDeserialize(BigDecimalFromStringDeserializer.class)
+    @CloudantSerialize(ToStringSerializer.class)
     private BigDecimal balance;
 
     @Column(name = "tracking_uuid")
@@ -93,4 +105,14 @@ public class WalletEntity extends Entity {
         return userId;
     }
 
+    @Transient
+    @Override
+    public WalletId getId() {
+        return new WalletId(getpId());
+    }
+
+    @Override
+    public void setId(WalletId id) {
+        this.setpId(id.getValue());
+    }
 }

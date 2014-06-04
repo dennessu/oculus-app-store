@@ -36,7 +36,7 @@ public class WalletDaoImpl extends BaseDao<WalletEntity> implements WalletDao {
     }
 
     @Override
-    public List<WalletEntity> getAll(long userId) {
+    public List<WalletEntity> getAll(Long userId) {
         String queryString = "from WalletEntity where userId = (:userId)";
         Query q = currentSession(userId).createQuery(queryString).setParameter("userId", userId);
         return q.list();

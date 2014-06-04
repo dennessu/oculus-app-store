@@ -18,4 +18,6 @@ public class WalletConst {
 
     private static final Long NEVER_EXPIRE_LONG = 253402271999000L;
     public static final Date NEVER_EXPIRE = new Date(NEVER_EXPIRE_LONG);
+    public static final Long MIN_DATE = 0L;
+    public static final Long MAX_DATE = NEVER_EXPIRE_LONG + 1;
 }

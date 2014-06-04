@@ -26,5 +26,5 @@ public interface WalletDao {
 
     WalletEntity get(Long userId, WalletType type, String currency);
 
-    List<WalletEntity> getAll(long userId);
+    List<WalletEntity> getAll(Long userId);
 }

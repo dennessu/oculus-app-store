@@ -65,6 +65,27 @@
         <property name="entityType" value="com.junbo.ewallet.db.entity.WalletLotEntity"/>
     </bean>
 
+    <!-- CloudantDao -->
+    <!--<bean id="baseTransactionDao" class="com.junbo.ewallet.db.dao.cloudant.TransactionBaseDao" abstract="true" parent="cloudantClient"/>-->
+    <!--<bean id="transactionDao" class="com.junbo.ewallet.db.dao.cloudant.TransactionDaoImpl" parent="baseTransactionDao">-->
+        <!--<property name="entityType" value="com.junbo.ewallet.db.entity.TransactionEntity"/>-->
+        <!--<property name="dbName" value="wallet_transaction"/>-->
+    <!--</bean>-->
+    <!--<bean id="lotTransactionDao" class="com.junbo.ewallet.db.dao.cloudant.LotTransactionDaoImpl" parent="baseTransactionDao">-->
+        <!--<property name="entityType" value="com.junbo.ewallet.db.entity.LotTransactionEntity"/>-->
+        <!--<property name="dbName" value="wallet_lot_transaction"/>-->
+    <!--</bean>-->
+
+    <!--<bean id="baseDao" class="com.junbo.ewallet.db.dao.cloudant.BaseDao" abstract="true" parent="baseTransactionDao"/>-->
+    <!--<bean id="walletDao" class="com.junbo.ewallet.db.dao.cloudant.WalletDaoImpl" parent="baseDao">-->
+        <!--<property name="entityType" value="com.junbo.ewallet.db.entity.WalletEntity"/>-->
+        <!--<property name="dbName" value="wallet"/>-->
+    <!--</bean>-->
+    <!--<bean id="walletLotDao" class="com.junbo.ewallet.db.dao.cloudant.WalletLotDaoImpl" parent="baseDao">-->
+        <!--<property name="entityType" value="com.junbo.ewallet.db.entity.WalletLotEntity"/>-->
+        <!--<property name="dbName" value="wallet_lot"/>-->
+    <!--</bean>-->
+
     <!-- mapper -->
     <bean id="walletMapper" class="com.junbo.ewallet.db.mapper.WalletMapper"/>
 

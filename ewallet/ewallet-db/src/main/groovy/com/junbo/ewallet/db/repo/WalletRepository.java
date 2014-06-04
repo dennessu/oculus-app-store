@@ -72,7 +72,7 @@ public class WalletRepository {
                         creditRequest.getTrackingUuid(), wallet.getWalletId(), creditRequest));
 
         WalletLotEntity lotEntity = walletLotDao.insert(buildWalletLot(wallet.getWalletId(), creditRequest));
-        lotTransactionDao.insert(buildCreditLotTransaction(lotEntity, transaction.getId()));
+        lotTransactionDao.insert(buildCreditLotTransaction(lotEntity, transaction.getpId()));
 
         return mapper.toTransaction(transaction);
     }
@@ -87,7 +87,7 @@ public class WalletRepository {
                         debitRequest.getTrackingUuid(), wallet.getWalletId(), debitRequest));
 
         List<WalletLotEntity> lots = walletLotDao.getValidLot(wallet.getWalletId());
-        debit(resultEntity, lots, debitRequest.getAmount(), transaction.getId());
+        debit(resultEntity, lots, debitRequest.getAmount(), transaction.getpId());
 
         return mapper.toTransaction(transaction);
     }
@@ -121,7 +121,8 @@ public class WalletRepository {
             transactionSupport.executeInNewTransaction(new Callback() {
                 @Override
                 public void apply() {
-                    wallet.setBalance(walletLotDao.getValidAmount(wallet.getId()));
+                    BigDecimal validAmount = walletLotDao.getValidAmount(wallet.getpId());
+                    wallet.setBalance(validAmount == null ? BigDecimal.ZERO : validAmount);
                     walletDao.update(wallet);
                 }
             });
@@ -141,7 +142,7 @@ public class WalletRepository {
                         refundRequest.getTrackingUuid(), wallet.getWalletId(), refundRequest));
 
         List<LotTransactionEntity> lotTransactions = lotTransactionDao.getByTransactionId(transactionId);
-        refund(lotTransactions, refundRequest.getAmount(), transaction.getId());
+        refund(lotTransactions, refundRequest.getAmount(), transaction.getpId());
         return mapper.toTransaction(transaction);
     }
 
@@ -225,7 +226,7 @@ public class WalletRepository {
         lotTransaction.setType(TransactionType.DEBIT);
         lotTransaction.setWalletLotType(lotEntity.getType());
         lotTransaction.setWalletId(lotEntity.getWalletId());
-        lotTransaction.setWalletLotId(lotEntity.getId());
+        lotTransaction.setWalletLotId(lotEntity.getpId());
         lotTransaction.setAmount(amount);
         lotTransaction.setUnrefundedAmount(amount);
         return lotTransaction;
@@ -237,7 +238,7 @@ public class WalletRepository {
         lotTransaction.setType(TransactionType.CREDIT);
         lotTransaction.setWalletLotType(lotEntity.getType());
         lotTransaction.setWalletId(lotEntity.getWalletId());
-        lotTransaction.setWalletLotId(lotEntity.getId());
+        lotTransaction.setWalletLotId(lotEntity.getpId());
         lotTransaction.setAmount(lotEntity.getRemainingAmount());
         return lotTransaction;
     }
@@ -248,7 +249,7 @@ public class WalletRepository {
         lotTransaction.setType(TransactionType.REFUND);
         lotTransaction.setWalletLotType(lotEntity.getType());
         lotTransaction.setWalletId(lotEntity.getWalletId());
-        lotTransaction.setWalletLotId(lotEntity.getId());
+        lotTransaction.setWalletLotId(lotEntity.getpId());
         lotTransaction.setAmount(amount);
         return lotTransaction;
     }

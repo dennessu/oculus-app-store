@@ -50,8 +50,8 @@ public class TransactionBaseDao<T extends EntityWithCreated> {
 
     public T insert(T t) {
         Date now = new Date();
-        t.setId(generateId(t.getShardMasterId()));
-        t.setCreatedBy("DEFAULT"); //TODO
+        t.setpId(generateId(t.getShardMasterId()));
+        t.setCreatedBy(123L); //TODO
         t.setCreatedTime(now);
         return get((Long) currentSession(t.getShardMasterId()).save(t));
     }

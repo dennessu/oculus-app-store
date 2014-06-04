@@ -24,7 +24,7 @@ public class WalletMapper {
             return null;
         }
         Wallet wallet = new Wallet();
-        wallet.setWalletId(walletEntity.getId());
+        wallet.setWalletId(walletEntity.getpId());
         wallet.setBalance(walletEntity.getBalance());
         wallet.setCurrency(walletEntity.getCurrency());
         wallet.setStatus(walletEntity.getStatus().toString());
@@ -37,7 +37,7 @@ public class WalletMapper {
     public WalletEntity toWalletEntity(Wallet wallet) {
         WalletEntity walletEntity = new WalletEntity();
         walletEntity.setUserId(wallet.getUserId());
-        walletEntity.setId(wallet.getWalletId());
+        walletEntity.setpId(wallet.getWalletId());
         walletEntity.setStatus(Status.valueOf(wallet.getStatus().toUpperCase()));
         walletEntity.setType(WalletType.valueOf(wallet.getType().toUpperCase()));
         walletEntity.setCurrency(wallet.getCurrency().toUpperCase());
@@ -67,13 +67,13 @@ public class WalletMapper {
             return null;
         }
         Transaction transaction = new Transaction();
-        transaction.setTransactionId(transactionEntity.getId());
+        transaction.setTransactionId(transactionEntity.getpId());
         transaction.setWalletId(transactionEntity.getWalletId());
         transaction.setType(transactionEntity.getType().toString());
         transaction.setAmount(transactionEntity.getAmount());
         transaction.setType(transactionEntity.getType().toString());
         transaction.setOfferId(transactionEntity.getOfferId());
-        transaction.setCreatedBy(transactionEntity.getCreatedBy());
+        transaction.setCreatedBy(transactionEntity.getCreatedBy().toString());
         transaction.setCreatedTime(transactionEntity.getCreatedTime());
         transaction.setUnrefundedAmount(transactionEntity.getUnrefundedAmount());
         return transaction;
