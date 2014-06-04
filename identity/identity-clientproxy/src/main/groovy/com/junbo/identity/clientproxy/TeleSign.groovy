@@ -1,6 +1,6 @@
 package com.junbo.identity.clientproxy
 
-import com.junbo.identity.spec.v1.model.UserTeleCode
+import com.junbo.identity.spec.v1.model.UserTFA
 import com.junbo.langur.core.promise.Promise
 import com.telesign.verify.response.VerifyResponse
 import groovy.transform.CompileStatic
@@ -10,5 +10,5 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 public interface TeleSign {
-    Promise<VerifyResponse> verifyCode(UserTeleCode userTeleCode)
+    Promise<VerifyResponse> verifyCode(UserTFA userTeleCode)
 }

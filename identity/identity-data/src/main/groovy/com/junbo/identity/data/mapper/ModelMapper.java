@@ -85,17 +85,17 @@ public interface ModelMapper {
     Address toAddress(AddressEntity entity, MappingContext context);
     AddressEntity toAddress(Address entity, MappingContext context);
 
-    UserTeleCode toUserTeleCode(UserTeleCodeEntity entity, MappingContext context);
-    UserTeleCodeEntity toUserTeleCode(UserTeleCode entity, MappingContext context);
+    UserTFA toUserTeleCode(UserTeleCodeEntity entity, MappingContext context);
+    UserTeleCodeEntity toUserTeleCode(UserTFA entity, MappingContext context);
 
-    UserTeleAttempt toUserTeleAttempt(UserTeleAttemptEntity entity, MappingContext context);
-    UserTeleAttemptEntity toUserTeleAttempt(UserTeleAttempt entity, MappingContext context);
+    UserTFAAttempt toUserTeleAttempt(UserTeleAttemptEntity entity, MappingContext context);
+    UserTeleAttemptEntity toUserTeleAttempt(UserTFAAttempt entity, MappingContext context);
 
-    UserTeleBackupCode toUserTeleBackupCode(UserTeleBackupCodeEntity entity, MappingContext context);
-    UserTeleBackupCodeEntity toUserTeleBackupCode(UserTeleBackupCode entity, MappingContext context);
+    UserTFABackupCode toUserTeleBackupCode(UserTeleBackupCodeEntity entity, MappingContext context);
+    UserTeleBackupCodeEntity toUserTeleBackupCode(UserTFABackupCode entity, MappingContext context);
 
-    UserTeleBackupCodeAttempt toUserTeleBackupCodeAttempt(UserTeleBackupCodeAttemptEntity entity,
+    UserTFABackupCodeAttempt toUserTeleBackupCodeAttempt(UserTeleBackupCodeAttemptEntity entity,
                                                           MappingContext context);
-    UserTeleBackupCodeAttemptEntity toUserTeleBackupCodeAttempt(UserTeleBackupCodeAttempt entity,
+    UserTeleBackupCodeAttemptEntity toUserTeleBackupCodeAttempt(UserTFABackupCodeAttempt entity,
                                                           MappingContext context);
 }

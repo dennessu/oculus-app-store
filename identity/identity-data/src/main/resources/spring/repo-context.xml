@@ -83,27 +83,27 @@
         <property name="sqlRepositoryImpl" ref="sqlTosRepository" />
     </bean>
 
-    <bean id="userTeleRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTeleRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantUserTeleRepository" />
+    <bean id="userTFARepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTFARepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantUserTFARepository" />
         <property name="sqlRepositoryImpl" ref="sqlUserTeleRepository" />
     </bean>
 
-    <bean id="userTeleAttemptRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTeleAttemptRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantUserTeleAttemptRepository" />
+    <bean id="userTFAAttemptRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTFAAttemptRepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantUserTFAAttemptRepository" />
         <property name="sqlRepositoryImpl" ref="sqlUserTeleAttemptRepository" />
     </bean>
 
-    <bean id="userTeleBackupCodeRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTeleBackupCodeRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantUserTeleBackupCodeRepository" />
+    <bean id="userTFABackupCodeRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTFABackupCodeRepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantUserTFABackupCodeRepository" />
         <property name="sqlRepositoryImpl" ref="sqlUserTeleBackupCodeRepository" />
     </bean>
 
-    <bean id="userTeleBackupCodeAttemptRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTeleBackupCodeAttemptRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantUserTeleBackupCodeAttemptRepository" />
+    <bean id="userTFABackupCodeAttemptRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTFABackupCodeAttemptRepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantUserTFABackupCodeAttemptRepository" />
         <property name="sqlRepositoryImpl" ref="sqlUserTeleBackupCodeAttemptRepository" />
     </bean>
 

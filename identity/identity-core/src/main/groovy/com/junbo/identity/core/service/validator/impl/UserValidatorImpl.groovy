@@ -328,7 +328,7 @@ class UserValidatorImpl implements UserValidator {
                 return link.isDefault
             }
             if (CollectionUtils.isEmpty(defaultLinks)) {
-                throw AppErrors.INSTANCE.fieldInvalid('isDefault', 'Email must have at least one default.').exception()
+                throw AppErrors.INSTANCE.fieldInvalid('isDefault', 'UserPersonalInfos must have at least one default.').exception()
             }
             if (!CollectionUtils.isEmpty(defaultLinks) && defaultLinks.size() > 1) {
                 throw AppErrors.INSTANCE.fieldInvalid('isDefault', 'Can only have one default.').exception()

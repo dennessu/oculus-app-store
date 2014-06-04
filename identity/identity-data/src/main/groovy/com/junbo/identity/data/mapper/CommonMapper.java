@@ -364,60 +364,60 @@ public class CommonMapper {
         return value.toString();
     }
 
-    public Long toUserTeleId(UserTeleId id) {
+    public Long toUserTFAId(UserTFAId id) {
         if (id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    public UserTeleId toUserTeleId(Long id) {
+    public UserTFAId toUserTFAId(Long id) {
         if (id == null) {
             return null;
         }
-        return new UserTeleId(id);
+        return new UserTFAId(id);
     }
 
-    public Long toUserTeleAttemptId(UserTeleAttemptId id) {
+    public Long toUserTFAAttemptId(UserTFAAttemptId id) {
         if (id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    public UserTeleAttemptId toUserTeleAttemptId(Long id) {
+    public UserTFAAttemptId toUserTFAAttemptId(Long id) {
         if (id == null) {
             return null;
         }
-        return new UserTeleAttemptId(id);
+        return new UserTFAAttemptId(id);
     }
 
-    public Long toUserTeleBackupCodeId(UserTeleBackupCodeId id) {
+    public Long toUserTFABackupCodeId(UserTFABackupCodeId id) {
         if (id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    public UserTeleBackupCodeId toUserTeleBackupCodeId(Long id) {
+    public UserTFABackupCodeId toUserTFABackupCodeId(Long id) {
         if (id == null) {
             return null;
         }
-        return new UserTeleBackupCodeId(id);
+        return new UserTFABackupCodeId(id);
     }
 
-    public Long toUserTeleBackupCodeAttemptId(UserTeleBackupCodeAttemptId id) {
+    public Long toUserTFABackupCodeAttemptId(UserTFABackupCodeAttemptId id) {
         if (id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    public UserTeleBackupCodeAttemptId toUserTeleBackupCodeAttemptId(Long id) {
+    public UserTFABackupCodeAttemptId toUserTFABackupCodeAttemptId(Long id) {
         if (id == null) {
             return null;
         }
-        return new UserTeleBackupCodeAttemptId(id);
+        return new UserTFABackupCodeAttemptId(id);
     }
 
     public Long toCommunicationId(CommunicationId id) {

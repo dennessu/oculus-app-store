@@ -2,13 +2,13 @@ package com.junbo.identity.clientproxy.impl
 
 import com.junbo.identity.clientproxy.TeleSign
 import com.junbo.identity.common.util.JsonHelper
-import com.junbo.identity.data.identifiable.TeleVerifyType
+import com.junbo.identity.data.identifiable.TFAVerifyType
 import com.junbo.identity.data.repository.LocaleRepository
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.PhoneNumber
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
-import com.junbo.identity.spec.v1.model.UserTeleCode
+import com.junbo.identity.spec.v1.model.UserTFA
 import com.junbo.langur.core.promise.Promise
 import com.telesign.verify.Verify
 import com.telesign.verify.response.VerifyResponse
@@ -33,15 +33,15 @@ class TeleSignImpl implements TeleSign {
     }
 
     @Override
-    Promise<VerifyResponse> verifyCode(UserTeleCode userTeleCode) {
-        if (userTeleCode.verifyType == TeleVerifyType.SMS.toString()) {
+    Promise<VerifyResponse> verifyCode(UserTFA userTeleCode) {
+        if (userTeleCode.verifyType == TFAVerifyType.SMS.toString()) {
             return sms(userTeleCode)
         }
         return call(userTeleCode)
     }
 
-    private Promise<VerifyResponse> sms(UserTeleCode userTeleCode) {
-        return userPersonalInfoRepository.get(userTeleCode.phoneNumber).then { UserPersonalInfo userPersonalInfo ->
+    private Promise<VerifyResponse> sms(UserTFA userTeleCode) {
+        return userPersonalInfoRepository.get(userTeleCode.personalInfo).then { UserPersonalInfo userPersonalInfo ->
             PhoneNumber phoneNumber = (PhoneNumber)JsonHelper.jsonNodeToObj(userPersonalInfo.value, PhoneNumber)
 
             return getLocaleText(userTeleCode).then { String language ->
@@ -58,7 +58,7 @@ class TeleSignImpl implements TeleSign {
 
     }
 
-    private Promise<String> getLocaleText(UserTeleCode userTeleCode) {
+    private Promise<String> getLocaleText(UserTFA userTeleCode) {
         if (userTeleCode.sentLocale == null) {
             return Promise.pure(null)
         }
@@ -67,8 +67,8 @@ class TeleSignImpl implements TeleSign {
         }
     }
 
-    private Promise<VerifyResponse> call(UserTeleCode userTeleCode) {
-        return userPersonalInfoRepository.get(userTeleCode.phoneNumber).then { UserPersonalInfo userPersonalInfo ->
+    private Promise<VerifyResponse> call(UserTFA userTeleCode) {
+        return userPersonalInfoRepository.get(userTeleCode.personalInfo).then { UserPersonalInfo userPersonalInfo ->
             PhoneNumber phoneNumber = (PhoneNumber)JsonHelper.jsonNodeToObj(userPersonalInfo.value, PhoneNumber)
 
             return getLocaleText(userTeleCode).then { String language ->

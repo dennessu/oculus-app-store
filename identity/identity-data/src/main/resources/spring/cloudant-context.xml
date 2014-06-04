@@ -83,26 +83,26 @@
         <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
 
-    <bean id="cloudantUserTeleRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserTeleRepositoryCloudantImpl" parent="cloudantClient">
-        <property name="dbName" value="user_tele" />
+    <bean id="cloudantUserTFARepository" class="com.junbo.identity.data.repository.impl.cloudant.UserTFARepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_tfa" />
         <property name="shardAlgorithm" ref="userShardAlgorithm" />
         <property name="idGenerator" ref="oculus48IdGenerator" />
     </bean>
 
-    <bean id="cloudantUserTeleAttemptRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserTeleAttemptRepositoryCloudantImpl" parent="cloudantClient">
-        <property name="dbName" value="user_tele_code_attempt" />
+    <bean id="cloudantUserTFAAttemptRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserTFAAttemptRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_tfa_code_attempt" />
         <property name="shardAlgorithm" ref="userShardAlgorithm" />
         <property name="idGenerator" ref="oculus48IdGenerator" />
     </bean>
 
-    <bean id="cloudantUserTeleBackupCodeRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserTeleBackupCodeRepositoryCloudantImpl" parent="cloudantClient">
-        <property name="dbName" value="user_tele_back_up_code" />
+    <bean id="cloudantUserTFABackupCodeRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserTFABackupCodeRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_tfa_back_up_code" />
         <property name="shardAlgorithm" ref="userShardAlgorithm" />
         <property name="idGenerator" ref="oculus48IdGenerator" />
     </bean>
 
-    <bean id="cloudantUserTeleBackupCodeAttemptRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserTeleBackupCodeAttemptRepositoryCloudantImpl" parent="cloudantClient">
-        <property name="dbName" value="user_tele_back_up_code_attempt" />
+    <bean id="cloudantUserTFABackupCodeAttemptRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserTFABackupCodeAttemptRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_tfa_back_up_code_attempt" />
         <property name="shardAlgorithm" ref="userShardAlgorithm" />
         <property name="idGenerator" ref="oculus48IdGenerator" />
     </bean>
