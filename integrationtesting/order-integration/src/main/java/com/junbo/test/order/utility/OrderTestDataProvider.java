@@ -37,6 +37,7 @@ import com.junbo.test.payment.utility.PaymentTestDataProvider;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -72,14 +73,18 @@ public class OrderTestDataProvider {
 
         OfferRevision offerRevision = Master.getInstance().getOfferRevision(offerRevisionId);
         Price price = offerRevision.getPrice();
-        Map<String, BigDecimal> originPrices = price.getPrices();
-        BigDecimal currentPrice = originPrices.get(Currency.DEFAULT.toString());
+        Map<String, Map<String, BigDecimal>> originPrices = price.getPrices();
+        BigDecimal currentPrice = originPrices.get(Country.DEFAULT.toString()).get(Currency.DEFAULT.toString());
         if (currentPrice.compareTo(new BigDecimal(10)) >= 0) {
-            originPrices.remove(Currency.DEFAULT.toString());
-            originPrices.put(Currency.DEFAULT.toString(), new BigDecimal(9));
+            originPrices.remove(Country.DEFAULT.toString());
+            Map<String, BigDecimal> currencyMap = new HashMap<>();
+            currencyMap.put(Currency.DEFAULT.toString(),new BigDecimal(9));
+            originPrices.put(Country.DEFAULT.toString(), currencyMap);
         } else {
             originPrices.remove(Currency.DEFAULT.toString());
-            originPrices.put(Currency.DEFAULT.toString(), new BigDecimal(11));
+            Map<String, BigDecimal> currencyMap = new HashMap<>();
+            currencyMap.put(Currency.DEFAULT.toString(),new BigDecimal(11));
+            originPrices.put(Country.DEFAULT.toString(), currencyMap);
         }
         price.setPrices(originPrices);
 

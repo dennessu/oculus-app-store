@@ -95,7 +95,7 @@ public class BuyerValidationHelper extends BaseValidationHelper {
                     String currentOfferRevisionId = IdConverter.idLongToHexString(OfferRevisionId.class,
                             Master.getInstance().getOffer(offerId).getCurrentRevisionId());
                     BigDecimal unitPrice = Master.getInstance().getOfferRevision(currentOfferRevisionId).getPrice()
-                            .getPrices().get(currency.toString());
+                            .getPrices().get(country.toString()).get(currency.toString());
 
                     BigDecimal expectedOrderItemAmount = unitPrice.multiply(
                             new BigDecimal(offerItem.getQuantity())).setScale(2);
