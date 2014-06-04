@@ -49,6 +49,10 @@ class MandrillProviderImpl implements EmailProvider {
     }
 
     Promise<Email> sendEmail(Email email, EmailTemplate template) {
+        if (!this.configuration.enabled) {
+            email.setStatusReason('Skip the email send')
+            return Promise.pure(email)
+        }
         def collateRecipients = email.recipients.collate(this.configuration.size)
         def requests = collateRecipients.collect { List<String> recipients ->
             email.recipients = recipients
