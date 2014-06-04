@@ -10,7 +10,6 @@
 
     <bean id="balanceService" class="com.junbo.billing.core.service.BalanceServiceImpl"/>
     <bean id="transactionService" class="com.junbo.billing.core.service.TransactionServiceImpl"/>
-    <bean id="currencyService" class="com.junbo.billing.core.service.CurrencyServiceImpl"/>
     <bean id="taxService" class="com.junbo.billing.core.service.TaxServiceImpl">
         <constructor-arg name="map">
             <map>
@@ -19,16 +18,6 @@
             </map>
         </constructor-arg>
         <constructor-arg name="providerName" value="${tax.provider.name}"/>
-    </bean>
-
-    <!-- cache -->
-    <bean id="billingCacheManagerFactory" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-        <property name="configLocation">
-            <value>ehcache/ehcache.xml</value>
-        </property>
-    </bean>
-    <bean id="billingCacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
-        <property name="cacheManager" ref="billingCacheManagerFactory"/>
     </bean>
 
     <!-- publisher-->

@@ -27,6 +27,8 @@ public class ErrorCode {
 
     public static final String CURRENCY_NOT_FOUND = "CURRENCY_NOT_FOUND";
 
+    public static final String COUNTRY_NOT_FOUND = "COUNTRY_NOT_FOUND";
+
     public static final String PAYMENT_INSTRUMENT_NOT_FOUND = "PAYMENT_INSTRUMENT_NOT_FOUND";
 
     public static final String INVALID_BALANCE_TYPE = "INVALID_BALANCE_TYPE";

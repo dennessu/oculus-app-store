@@ -14,7 +14,6 @@ import com.junbo.billing.db.entity.BalanceEntity;
 import com.junbo.billing.db.entity.BalanceItemEntity;
 import com.junbo.billing.db.entity.DiscountItemEntity;
 import com.junbo.billing.db.entity.TaxItemEntity;
-import com.junbo.billing.db.entity.CurrencyEntity;
 import com.junbo.billing.db.entity.TransactionEntity;
 import com.junbo.billing.spec.model.*;
 
@@ -25,13 +24,6 @@ import com.junbo.billing.spec.model.*;
         CommonMapper.class
 })
 public interface ModelMapper {
-
-    @Mappings({
-            @Mapping(source = "createdTime", target = "insertedDate", excluded = true, bidirectional = false),
-            @Mapping(source = "updatedTime", target = "updatedDate", excluded = true, bidirectional = false),
-    })
-    Currency toCurrency(CurrencyEntity entity, MappingContext context);
-
     @Mappings({
             @Mapping(source = "type", target = "typeId", explicitMethod = "convertBalanceType"),
             @Mapping(source = "status", target = "statusId", explicitMethod = "convertBalanceStatus"),

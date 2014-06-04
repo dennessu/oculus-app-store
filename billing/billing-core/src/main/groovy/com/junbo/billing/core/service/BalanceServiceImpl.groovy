@@ -18,6 +18,7 @@ import com.junbo.billing.spec.model.*
 import com.junbo.common.id.BalanceId
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.PIType
+import com.junbo.identity.spec.v1.model.Currency;
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate
 import com.junbo.payment.spec.model.PaymentInstrument
@@ -38,10 +39,6 @@ class BalanceServiceImpl implements BalanceService {
 
     @Autowired
     BalanceRepository balanceRepository
-
-
-    @Autowired
-    CurrencyService currencyService
 
     @Autowired
     AsyncChargePublisher asyncChargePublisher
@@ -118,46 +115,48 @@ class BalanceServiceImpl implements BalanceService {
         }
 
         return balanceValidator.validateUser(balance.userId).then {
-            return balanceValidator.validatePI(balance.piId).then { PaymentInstrument pi ->
-                balanceValidator.validateBalanceType(balance.type)
-                balanceValidator.validateCurrency(balance.currency)
-                balanceValidator.validateCountry(balance.country)
-                balanceValidator.validateBalance(balance, false)
+            return balanceValidator.validateCountry(balance.country).then {
+                return balanceValidator.validateCurrency(balance.currency).then { Currency currency ->
+                    return balanceValidator.validatePI(balance.piId).then { PaymentInstrument pi ->
+                        balanceValidator.validateBalanceType(balance.type)
+                        balanceValidator.validateBalance(balance, false)
 
-                if (balance.isAsyncCharge == true && !SUPPORT_ASYNC_CHARGE_PI_TYPE.contains(pi.type)) {
-                    LOGGER.info('name=Not_Support_Async_Charge. pi type: ' + pi.type)
-                    balance.isAsyncCharge = false
-                }
-
-                return taxService.calculateTax(balance).then { Balance taxedBalance ->
-                    computeTotal(taxedBalance)
-                    balanceValidator.validateBalanceTotal(taxedBalance)
-
-                    // set the balance status to INIT
-                    taxedBalance.setStatus(BalanceStatus.INIT.name())
-                    if (taxedBalance.isAsyncCharge == null) {
-                        taxedBalance.isAsyncCharge = false
-                    }
-
-                    Balance savedBalance = saveAndCommitBalance(taxedBalance)
-
-                    if (savedBalance.isAsyncCharge) {
-                        LOGGER.info('name=Async_Charge_Balance. balance id: ' + savedBalance.balanceId.value)
-                        try {
-                            asyncChargePublisher.publish(savedBalance.balanceId.toString())
-                        } catch (Exception ex) {
-                            LOGGER.error('name=Async_Charge_Balance_Queue_Error. ', ex)
-                            return Promise.pure(savedBalance)
+                        if (balance.isAsyncCharge == true && !SUPPORT_ASYNC_CHARGE_PI_TYPE.contains(pi.type)) {
+                            LOGGER.info('name=Not_Support_Async_Charge. pi type: ' + pi.type)
+                            balance.isAsyncCharge = false
                         }
-                        savedBalance.setStatus(BalanceStatus.QUEUING.name())
-                        return Promise.pure(balanceRepository.updateBalance(savedBalance, EventActionType.QUEUE))
-                    }
-                    return transactionService.processBalance(savedBalance, originalBalance).recover {
-                        Throwable throwable ->
-                        updateAndCommitBalance(savedBalance, EventActionType.CHARGE)
-                        throw throwable
-                    }.then { Balance returnedBalance ->
-                        return Promise.pure(updateAndCommitBalance(returnedBalance, EventActionType.CHARGE))
+
+                        return taxService.calculateTax(balance).then { Balance taxedBalance ->
+                            computeTotal(taxedBalance, currency.numberAfterDecimal)
+                            balanceValidator.validateBalanceTotal(taxedBalance)
+
+                            // set the balance status to INIT
+                            taxedBalance.setStatus(BalanceStatus.INIT.name())
+                            if (taxedBalance.isAsyncCharge == null) {
+                                taxedBalance.isAsyncCharge = false
+                            }
+
+                            Balance savedBalance = saveAndCommitBalance(taxedBalance)
+
+                            if (savedBalance.isAsyncCharge) {
+                                LOGGER.info('name=Async_Charge_Balance. balance id: ' + savedBalance.balanceId.value)
+                                try {
+                                    asyncChargePublisher.publish(savedBalance.balanceId.toString())
+                                } catch (Exception ex) {
+                                    LOGGER.error('name=Async_Charge_Balance_Queue_Error. ', ex)
+                                    return Promise.pure(savedBalance)
+                                }
+                                savedBalance.setStatus(BalanceStatus.QUEUING.name())
+                                return Promise.pure(balanceRepository.updateBalance(savedBalance, EventActionType.QUEUE))
+                            }
+                            return transactionService.processBalance(savedBalance, originalBalance).recover {
+                                Throwable throwable ->
+                                updateAndCommitBalance(savedBalance, EventActionType.CHARGE)
+                                throw throwable
+                            }.then { Balance returnedBalance ->
+                                return Promise.pure(updateAndCommitBalance(returnedBalance, EventActionType.CHARGE))
+                            }
+                        }
                     }
                 }
             }
@@ -170,16 +169,18 @@ class BalanceServiceImpl implements BalanceService {
 
         return balanceValidator.validateUser(balance.userId).then {
             return balanceValidator.validatePI(balance.piId).then {
-                balanceValidator.validateBalanceType(balance.type)
-                balanceValidator.validateCurrency(balance.currency)
-                balanceValidator.validateCountry(balance.country)
-                balanceValidator.validateBalance(balance, true)
+                return balanceValidator.validateCountry(balance.country).then {
+                    return balanceValidator.validateCurrency(balance.currency).then { Currency currency ->
+                        balanceValidator.validateBalanceType(balance.type)
+                        balanceValidator.validateBalance(balance, true)
 
-                return taxService.calculateTax(balance).then { Balance taxedBalance ->
-                    computeTotal(taxedBalance)
-                    balanceValidator.validateBalanceTotal(taxedBalance)
+                        return taxService.calculateTax(balance).then { Balance taxedBalance ->
+                            computeTotal(taxedBalance, currency.numberAfterDecimal)
+                            balanceValidator.validateBalanceTotal(taxedBalance)
 
-                    return Promise.pure(taxedBalance)
+                            return Promise.pure(taxedBalance)
+                        }
+                    }
                 }
             }
         }
@@ -328,13 +329,11 @@ class BalanceServiceImpl implements BalanceService {
         } )
     }
 
-    private void computeTotal(Balance balance) {
+    private void computeTotal(Balance balance, Integer numberAfterDecimal) {
 
         BigDecimal amount = BigDecimal.ZERO
         BigDecimal discountTotal = BigDecimal.ZERO
         BigDecimal taxTotal = BigDecimal.ZERO
-
-        Currency currency = currencyService.getCurrencyByName(balance.currency)
 
         balance.balanceItems.each { BalanceItem item ->
             BigDecimal discount = BigDecimal.ZERO
@@ -351,8 +350,8 @@ class BalanceServiceImpl implements BalanceService {
                 }
             }
 
-            tax = currency.getValueByBaseUnits(tax)
-            discount = currency.getValueByBaseUnits(discount)
+            tax = tax.setScale(numberAfterDecimal, BigDecimal.ROUND_HALF_EVEN)
+            discount = discount.setScale(numberAfterDecimal, BigDecimal.ROUND_HALF_EVEN)
             item.setTaxAmount(tax)
             item.setDiscountAmount(discount)
 
@@ -371,7 +370,7 @@ class BalanceServiceImpl implements BalanceService {
         balance.setTaxAmount(taxTotal)
         balance.setDiscountAmount(discountTotal)
 
-        amount = currency.getValueByBaseUnits(amount)
+        amount = amount.setScale(numberAfterDecimal, BigDecimal.ROUND_HALF_EVEN)
         balance.setTotalAmount(amount)
     }
 }

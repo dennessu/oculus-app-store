@@ -45,6 +45,10 @@ public interface AppErrors {
             description ="Currency with name {0} not found")
     AppError currencyNotFound(String name);
 
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.COUNTRY_NOT_FOUND,
+            description ="Country with name {0} not found")
+    AppError countryNotFound(String name);
+
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.PAYMENT_INSTRUMENT_NOT_FOUND,
             description ="PI with id {0} not found")
     AppError piNotFound(String id);

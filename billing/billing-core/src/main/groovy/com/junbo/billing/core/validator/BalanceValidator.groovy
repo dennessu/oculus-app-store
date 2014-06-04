@@ -1,8 +1,9 @@
 package com.junbo.billing.core.validator
 
+import com.junbo.billing.clientproxy.CountryFacade
+import com.junbo.billing.clientproxy.CurrencyFacade
 import com.junbo.billing.clientproxy.IdentityFacade
 import com.junbo.billing.clientproxy.PaymentFacade
-import com.junbo.billing.core.service.CurrencyService
 import com.junbo.billing.db.repository.BalanceRepository
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.error.AppErrors
@@ -12,6 +13,8 @@ import com.junbo.billing.spec.model.Transaction
 import com.junbo.common.id.BalanceId
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.common.id.UserId
+import com.junbo.identity.spec.v1.model.Country
+import com.junbo.identity.spec.v1.model.Currency;
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.model.PaymentInstrument
@@ -30,6 +33,10 @@ class BalanceValidator {
 
     PaymentFacade paymentFacade
 
+    CurrencyFacade currencyFacade
+
+    CountryFacade countryFacade
+
     @Autowired
     void setIdentityFacade(@Qualifier('billingIdentityFacade')IdentityFacade identityFacade) {
         this.identityFacade = identityFacade
@@ -41,7 +48,14 @@ class BalanceValidator {
     }
 
     @Autowired
-    CurrencyService currencyService
+    void setCurrencyFacade(@Qualifier('billingCurrencyFacade')CurrencyFacade currencyFacade) {
+        this.currencyFacade = currencyFacade
+    }
+
+    @Autowired
+    void setCountryFacade(@Qualifier('billingCountryFacade')CountryFacade countryFacade) {
+        this.countryFacade = countryFacade
+    }
 
     @Autowired
     BalanceRepository balanceRepository
@@ -96,20 +110,30 @@ class BalanceValidator {
         }
     }
 
-    void validateCurrency(String currency) {
+    Promise<Currency> validateCurrency(String currency) {
         if (currency == null || currency.isEmpty()) {
             throw AppErrors.INSTANCE.fieldMissingValue('currency').exception()
         }
-        if (!currencyService.exists(currency)) {
+
+        return currencyFacade.getCurrency(currency).recover { Throwable throwable ->
+            LOGGER.error('error in get currency: ' + currency, throwable)
             throw AppErrors.INSTANCE.currencyNotFound(currency).exception()
+        }.then { Currency cur ->
+            return Promise.pure(cur)
         }
+
     }
 
-    void validateCountry(String country) {
+    Promise<Country> validateCountry(String country) {
         if (country == null || country.isEmpty()) {
             throw AppErrors.INSTANCE.fieldMissingValue('country').exception()
         }
-        //todo: more validation for country
+        return countryFacade.getCountry(country).recover { Throwable throwable ->
+            LOGGER.error('error in get country: ' + country, throwable)
+            throw AppErrors.INSTANCE.countryNotFound(country).exception()
+        }.then { Country c ->
+            return Promise.pure(c)
+        }
     }
 
     void validateBalance(Balance balance, Boolean isQuote) {

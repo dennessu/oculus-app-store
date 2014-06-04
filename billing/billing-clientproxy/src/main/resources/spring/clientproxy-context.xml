@@ -8,8 +8,7 @@
     <context:component-scan base-package="com.junbo.billing.clientproxy"/>
 
     <!-- proxy -->
-    <bean id="billingIdentityUserClient" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
-          parent="baseClientProxy">
+    <bean id="billingIdentityUserClient" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.identity.url}"/>
     </bean>
 
@@ -28,9 +27,19 @@
         <property name="target" value="${clientproxy.payment.url}"/>
     </bean>
 
+    <bean id="billingCurrencyClient" class="com.junbo.identity.spec.v1.resource.proxy.CurrencyResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
+    </bean>
+
+    <bean id="billingCountryClient" class="com.junbo.identity.spec.v1.resource.proxy.CountryResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
+    </bean>
+
     <!-- facade -->
     <bean id="billingIdentityFacade" class="com.junbo.billing.clientproxy.impl.IdentityFacadeImpl" />
     <bean id="billingPaymentFacade" class="com.junbo.billing.clientproxy.impl.PaymentFacadeImpl" />
+    <bean id="billingCurrencyFacade" class="com.junbo.billing.clientproxy.impl.CurrencyFacadeImpl" />
+    <bean id="billingCountryFacade" class="com.junbo.billing.clientproxy.impl.CountryFacadeImpl" />
 
     <!--<bean id="identityFacade" class="com.junbo.billing.clientproxy.mock.MockIdentityFacadeImpl" />
     <bean id="paymentFacade" class="com.junbo.billing.clientproxy.mock.MockPaymentFacadeImpl" />-->
