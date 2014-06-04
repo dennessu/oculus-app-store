@@ -63,6 +63,8 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         //attach user email and address info
         UserPersonalInfo email = postEmail(userIdDefault);
         UserPersonalInfo address = postAddress(userIdDefault);
+        UserPersonalInfo phone = postPhone(userIdDefault);
+        UserPersonalInfo name = postName(userIdDefault);
 
         UserPersonalInfoLink piEmail = new UserPersonalInfoLink();
         piEmail.setIsDefault(Boolean.TRUE);
@@ -74,13 +76,27 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         piAddress.setUserId(userIdDefault);
         piAddress.setValue(address.getId());
 
+        UserPersonalInfoLink piPhone = new UserPersonalInfoLink();
+        piPhone.setIsDefault(true);
+        piPhone.setUserId(userIdDefault);
+        piPhone.setValue(phone.getId());
+
+        UserPersonalInfoLink piName = new UserPersonalInfoLink();
+        piName.setIsDefault(true);
+        piName.setUserId(userIdDefault);
+        piName.setValue(name.getId());
+
         List<UserPersonalInfoLink> addresses = new ArrayList<>();
         List<UserPersonalInfoLink> emails = new ArrayList<>();
+        List<UserPersonalInfoLink> phones = new ArrayList<>();
         addresses.add(piAddress);
         emails.add(piEmail);
+        phones.add(piPhone);
 
         userGet.setAddresses(addresses);
         userGet.setEmails(emails);
+        userGet.setPhones(phones);
+        userGet.setName(piName);
 
         this.PutUser(userId, userGet);
 
@@ -94,6 +110,33 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         userPersonalInfo.setUserId(userId);
         String str = "{\"street1\":\"19800 MacArthur Blvd\",\"city\":\"Irvine\",\"postalCode\":\"92612\"," +
                 "\"country\":{\"id\":\"US\"}}";
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode value = mapper.readTree(str);
+        userPersonalInfo.setValue(value);
+
+        return postUserPersonalInfo(userPersonalInfo);
+    }
+
+    private UserPersonalInfo postName(UserId userId) throws Exception {
+        UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
+        userPersonalInfo.setType("NAME");
+        userPersonalInfo.setUserId(userId);
+        String str = "{\"fullName\":\"" + RandomFactory.getRandomStringOfAlphabet(5) +
+                "\",\"givenName\":\"" + RandomFactory.getRandomStringOfAlphabet(5) +
+                "\",\"middleName\":\"" + RandomFactory.getRandomStringOfAlphabet(5) +
+                "\",\"familyName\":\"" + RandomFactory.getRandomStringOfAlphabet(5) + "\"," +
+                "\"nickName\":\"" + RandomFactory.getRandomStringOfAlphabet(5) + "\"}";
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode value = mapper.readTree(str);
+        userPersonalInfo.setValue(value);
+        return postUserPersonalInfo(userPersonalInfo);
+    }
+
+    private UserPersonalInfo postPhone(UserId userId) throws Exception {
+        UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
+        userPersonalInfo.setType("PHONE");
+        userPersonalInfo.setUserId(userId);
+        String str = "{\"info\":\"" + "8613123210601" + "\"}";
         ObjectMapper mapper = new ObjectMapper();
         JsonNode value = mapper.readTree(str);
         userPersonalInfo.setValue(value);

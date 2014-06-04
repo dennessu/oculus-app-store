@@ -87,7 +87,7 @@ public class OrderTestDataProvider {
             originPrices.put(Country.DEFAULT.toString(), currencyMap);
         }
         price.setPrices(originPrices);
-
+        offerRevision.setId(null);
         offerRevision.setResourceAge(null);
         offerRevision.setStatus("DRAFT");
         OfferRevision offerRevisionUpdated = offerRevisionClient.postOfferRevision(offerRevision);
