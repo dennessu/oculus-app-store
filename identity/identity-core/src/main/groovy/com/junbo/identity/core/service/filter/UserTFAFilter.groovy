@@ -13,7 +13,7 @@ class UserTFAFilter extends ResourceFilterImpl<UserTFA> {
 
     @Override
     protected UserTFA filter(UserTFA userTFA, MappingContext context) {
-        UserTFA result = selfMapper.filterUserTeleCode(userTFA, context)
+        UserTFA result = selfMapper.filterUserTFACode(userTFA, context)
         if (userTFA.userId != null) {
             ((UserTFAId)(result.id)).resourcePathPlaceHolder.put('userId', userTFA.userId)
         }
@@ -22,6 +22,6 @@ class UserTFAFilter extends ResourceFilterImpl<UserTFA> {
 
     @Override
     protected UserTFA merge(UserTFA source, UserTFA base, MappingContext context) {
-        return selfMapper.mergeUserTeleCode(source, base, context)
+        return selfMapper.mergeUserTFACode(source, base, context)
     }
 }

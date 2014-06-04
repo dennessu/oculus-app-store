@@ -106,12 +106,12 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     private UserTFAAttemptRepository userTFAAttemptRepository
 
     @Autowired
-    @Qualifier('userTeleBackupCodeRepository')
-    private UserTeleBackupCodeRepository userTeleBackupCodeRepository
+    @Qualifier('userTFABackupCodeRepository')
+    private UserTFABackupCodeRepository userTFABackupCodeRepository
 
     @Autowired
-    @Qualifier('userTeleBackupCodeAttemptRepository')
-    private UserTeleBackupCodeAttemptRepository userTeleBackupCodeAttemptRepository
+    @Qualifier('userTFABackupCodeAttemptRepository')
+    private UserTFABackupCodeAttemptRepository userTFABackupCodeAttemptRepository
 
     @Autowired
     @Qualifier('userPersonalInfoRepository')
@@ -565,32 +565,32 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
             after30000Mins = (new Date()) + 30000.minutes
         }
         def userId = new UserId(idGenerator.nextId())
-        UserTeleBackupCode userTeleBackupCode = new UserTeleBackupCode()
+        UserTFABackupCode userTeleBackupCode = new UserTFABackupCode()
         userTeleBackupCode.setUserId(userId)
         userTeleBackupCode.setVerifyCode(UUID.randomUUID().toString())
         userTeleBackupCode.setActive(true)
         userTeleBackupCode.setExpiresBy(after30000Mins)
-        UserTeleBackupCode newUserTeleBackupCode =
-                userTeleBackupCodeRepository.create(userTeleBackupCode).get()
+        UserTFABackupCode newUserTeleBackupCode =
+                userTFABackupCodeRepository.create(userTeleBackupCode).get()
         newUserTeleBackupCode =
-                userTeleBackupCodeRepository.get((UserTeleBackupCodeId)newUserTeleBackupCode.id).get()
+                userTFABackupCodeRepository.get((UserTFABackupCodeId)newUserTeleBackupCode.id).get()
 
         assert userTeleBackupCode.verifyCode == newUserTeleBackupCode.verifyCode
 
         String newVerifyCode = UUID.randomUUID().toString()
         newUserTeleBackupCode.setVerifyCode(newVerifyCode)
-        userTeleBackupCode = userTeleBackupCodeRepository.update(newUserTeleBackupCode).get()
+        userTeleBackupCode = userTFABackupCodeRepository.update(newUserTeleBackupCode).get()
 
         assert userTeleBackupCode.verifyCode == newVerifyCode
 
-        List<UserTeleBackupCode> results = userTeleBackupCodeRepository.searchByUserId(userId, 100, 0).get()
+        List<UserTFABackupCode> results = userTFABackupCodeRepository.searchByUserId(userId, 100, 0).get()
         assert results.size() != 0
     }
 
     @Test
     public void testUserTeleBackupCodeAttemptRepository() {
         def userId = new UserId(idGenerator.nextId())
-        UserTeleBackupCodeAttempt attempt = new UserTeleBackupCodeAttempt()
+        UserTFABackupCodeAttempt attempt = new UserTFABackupCodeAttempt()
         attempt.setUserId(userId)
         attempt.setVerifyCode(UUID.randomUUID().toString())
         attempt.setUserAgent(UUID.randomUUID().toString())
@@ -598,18 +598,18 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         attempt.setIpAddress(UUID.randomUUID().toString())
         attempt.setSucceeded(true)
 
-        UserTeleBackupCodeAttempt newAttempt = userTeleBackupCodeAttemptRepository.create(attempt).get()
-        newAttempt = userTeleBackupCodeAttemptRepository.get(newAttempt.id).get()
+        UserTFABackupCodeAttempt newAttempt = userTFABackupCodeAttemptRepository.create(attempt).get()
+        newAttempt = userTFABackupCodeAttemptRepository.get(newAttempt.id).get()
 
         assert newAttempt.verifyCode == attempt.verifyCode
 
         String newVerifyCode = UUID.randomUUID().toString()
         newAttempt.setVerifyCode(newVerifyCode)
-        attempt = userTeleBackupCodeAttemptRepository.update(newAttempt).get()
+        attempt = userTFABackupCodeAttemptRepository.update(newAttempt).get()
 
         assert attempt.verifyCode == newVerifyCode
 
-        List<UserTeleBackupCodeAttempt> results = userTeleBackupCodeAttemptRepository.searchByUserId(userId, 100, 0).get()
+        List<UserTFABackupCodeAttempt> results = userTFABackupCodeAttemptRepository.searchByUserId(userId, 100, 0).get()
         assert results.size() != 0
     }
 

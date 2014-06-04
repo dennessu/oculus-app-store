@@ -392,32 +392,32 @@ public class CommonMapper {
         return new UserTFAAttemptId(id);
     }
 
-    public Long toUserTeleBackupCodeId(UserTeleBackupCodeId id) {
+    public Long toUserTFABackupCodeId(UserTFABackupCodeId id) {
         if (id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    public UserTeleBackupCodeId toUserTeleBackupCodeId(Long id) {
+    public UserTFABackupCodeId toUserTFABackupCodeId(Long id) {
         if (id == null) {
             return null;
         }
-        return new UserTeleBackupCodeId(id);
+        return new UserTFABackupCodeId(id);
     }
 
-    public Long toUserTeleBackupCodeAttemptId(UserTeleBackupCodeAttemptId id) {
+    public Long toUserTFABackupCodeAttemptId(UserTFABackupCodeAttemptId id) {
         if (id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    public UserTeleBackupCodeAttemptId toUserTeleBackupCodeAttemptId(Long id) {
+    public UserTFABackupCodeAttemptId toUserTFABackupCodeAttemptId(Long id) {
         if (id == null) {
             return null;
         }
-        return new UserTeleBackupCodeAttemptId(id);
+        return new UserTFABackupCodeAttemptId(id);
     }
 
     public Long toCommunicationId(CommunicationId id) {

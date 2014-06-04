@@ -32,8 +32,8 @@
     <bean id="defaultCommunicationResource" class="com.junbo.identity.rest.resource.v1.CommunicationResourceImpl" scope="prototype" />
     <bean id="defaultUserTFAResource" class="com.junbo.identity.rest.resource.v1.UserTFAResourceImpl" scope="prototype" />
     <bean id="defaultUserTFAAttemptResource" class="com.junbo.identity.rest.resource.v1.UserTFAAttemptResourceImpl" scope="prototype" />
-    <bean id="defaultUserTeleBackupCodeResource" class="com.junbo.identity.rest.resource.v1.UserTeleBackupCodeResourceImpl" scope="prototype" />
-    <bean id="defaultUserTeleBackupCodeAttemptResource" class="com.junbo.identity.rest.resource.v1.UserTeleBackupCodeAttemptResourceImpl" scope="prototype" />
+    <bean id="defaultUserTFABackupCodeResource" class="com.junbo.identity.rest.resource.v1.UserTFABackupCodeResourceImpl" scope="prototype" />
+    <bean id="defaultUserTFABackupCodeAttemptResource" class="com.junbo.identity.rest.resource.v1.UserTFABackupCodeAttemptResourceImpl" scope="prototype" />
     <bean id="defaultOrganizationResource" class="com.junbo.identity.rest.resource.v1.OrganizationResourceImpl" scope="prototype" />
 
     <bean id="defaultAuthenticatorResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.AuthenticatorResourceClientProxyFactory"/>
@@ -57,8 +57,8 @@
     <bean id="defaultCommunicationResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.CommunicationResourceClientProxyFactory"/>
     <bean id="defaultUserTFAResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserTFAResourceClientProxyFactory"/>
     <bean id="defaultUserTFAAttemptResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserTFAAttemptResourceClientProxyFactory"/>
-    <bean id="defaultUserTeleBackupCodeResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserTeleBackupCodeResourceClientProxyFactory"/>
-    <bean id="defaultUserTeleBackupCodeAttemptResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserTeleBackupCodeAttemptResourceClientProxyFactory"/>
+    <bean id="defaultUserTFABackupCodeResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserTFABackupCodeResourceClientProxyFactory"/>
+    <bean id="defaultUserTFABackupCodeAttemptResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserTFABackupCodeAttemptResourceClientProxyFactory"/>
     <bean id="defaultOrganizationResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.OrganizationResourceClientProxyFactory" />
 
     <bean id="defaultAuthenticatorResourceRouter" parent="routingRouterBase" />
@@ -82,8 +82,8 @@
     <bean id="defaultCommunicationResourceRouter" parent="routingRouterBase" />
     <bean id="defaultUserTFAResourceRouter" parent="routingRouterBase" />
     <bean id="defaultUserTFAAttemptResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultUserTeleBackupCodeResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultUserTeleBackupCodeAttemptResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultUserTFABackupCodeResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultUserTFABackupCodeAttemptResourceRouter" parent="routingRouterBase" />
     <bean id="defaultOrganizationResourceRouter" parent="routingRouterBase" />
 
 

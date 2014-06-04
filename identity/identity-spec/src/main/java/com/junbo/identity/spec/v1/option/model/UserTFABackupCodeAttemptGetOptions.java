@@ -10,7 +10,8 @@ import javax.ws.rs.QueryParam;
 /**
  * Created by liangfu on 4/22/14.
  */
-public class UserTeleBackupCodeGetOptions {
+public class UserTFABackupCodeAttemptGetOptions {
+
     @QueryParam("properties")
     private String properties;
 

@@ -118,7 +118,7 @@
         <property name="modelMapper" ref="modelMapper" />
     </bean>
 
-    <bean id="sqlUserTeleBackupCodeAttemptRepository" class="com.junbo.identity.data.repository.impl.sql.UserTeleBackupCodeAttemptRepositorySqlImpl">
+    <bean id="sqlUserTeleBackupCodeAttemptRepository" class="com.junbo.identity.data.repository.impl.sql.UserTFABackupCodeAttemptRepositorySqlImpl">
         <property name="userTeleBackupCodeAttemptDAO" ref="userTeleBackupCodeAttemptDAO" />
         <property name="modelMapper" ref="modelMapper" />
     </bean>

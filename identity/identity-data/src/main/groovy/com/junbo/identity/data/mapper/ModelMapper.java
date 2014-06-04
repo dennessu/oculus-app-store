@@ -91,11 +91,11 @@ public interface ModelMapper {
     UserTFAAttempt toUserTeleAttempt(UserTeleAttemptEntity entity, MappingContext context);
     UserTeleAttemptEntity toUserTeleAttempt(UserTFAAttempt entity, MappingContext context);
 
-    UserTeleBackupCode toUserTeleBackupCode(UserTeleBackupCodeEntity entity, MappingContext context);
-    UserTeleBackupCodeEntity toUserTeleBackupCode(UserTeleBackupCode entity, MappingContext context);
+    UserTFABackupCode toUserTeleBackupCode(UserTeleBackupCodeEntity entity, MappingContext context);
+    UserTeleBackupCodeEntity toUserTeleBackupCode(UserTFABackupCode entity, MappingContext context);
 
-    UserTeleBackupCodeAttempt toUserTeleBackupCodeAttempt(UserTeleBackupCodeAttemptEntity entity,
+    UserTFABackupCodeAttempt toUserTeleBackupCodeAttempt(UserTeleBackupCodeAttemptEntity entity,
                                                           MappingContext context);
-    UserTeleBackupCodeAttemptEntity toUserTeleBackupCodeAttempt(UserTeleBackupCodeAttempt entity,
+    UserTeleBackupCodeAttemptEntity toUserTeleBackupCodeAttempt(UserTFABackupCodeAttempt entity,
                                                           MappingContext context);
 }

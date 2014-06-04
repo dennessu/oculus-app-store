@@ -3,10 +3,9 @@ package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.UserId
-import com.junbo.common.id.UserTeleBackupCodeAttemptId
-import com.junbo.identity.data.repository.UserTeleBackupCodeAttemptRepository
-import com.junbo.identity.spec.v1.model.UserTeleBackupCodeAttempt
-import com.junbo.identity.spec.v1.option.list.UserTeleBackupCodeAttemptListOptions
+import com.junbo.common.id.UserTFABackupCodeAttemptId
+import com.junbo.identity.data.repository.UserTFABackupCodeAttemptRepository
+import com.junbo.identity.spec.v1.model.UserTFABackupCodeAttempt
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.ShardAlgorithm
@@ -17,8 +16,8 @@ import org.springframework.beans.factory.annotation.Required
  * Created by liangfu on 4/23/14.
  */
 @CompileStatic
-class UserTeleBackupCodeAttemptRepositoryCloudantImpl extends CloudantClient<UserTeleBackupCodeAttempt>
-        implements UserTeleBackupCodeAttemptRepository  {
+class UserTFABackupCodeAttemptRepositoryCloudantImpl extends CloudantClient<UserTFABackupCodeAttempt>
+        implements UserTFABackupCodeAttemptRepository  {
 
     private ShardAlgorithm shardAlgorithm
     private IdGenerator idGenerator
@@ -29,32 +28,32 @@ class UserTeleBackupCodeAttemptRepositoryCloudantImpl extends CloudantClient<Use
     }
 
     @Override
-    Promise<List<UserTeleBackupCodeAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+    Promise<List<UserTFABackupCodeAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset) {
         def list = super.queryView('by_user_id', userId.toString(), limit, offset, false)
 
         return Promise.pure(list)
     }
 
     @Override
-    Promise<UserTeleBackupCodeAttempt> create(UserTeleBackupCodeAttempt entity) {
+    Promise<UserTFABackupCodeAttempt> create(UserTFABackupCodeAttempt entity) {
         if (entity.id == null) {
-            entity.id = new UserTeleBackupCodeAttemptId(idGenerator.nextId(entity.userId.value))
+            entity.id = new UserTFABackupCodeAttemptId(idGenerator.nextId(entity.userId.value))
         }
-        return Promise.pure((UserTeleBackupCodeAttempt)super.cloudantPost(entity))
+        return Promise.pure((UserTFABackupCodeAttempt)super.cloudantPost(entity))
     }
 
     @Override
-    Promise<UserTeleBackupCodeAttempt> update(UserTeleBackupCodeAttempt entity) {
-        return Promise.pure((UserTeleBackupCodeAttempt)super.cloudantPut(entity))
+    Promise<UserTFABackupCodeAttempt> update(UserTFABackupCodeAttempt entity) {
+        return Promise.pure((UserTFABackupCodeAttempt)super.cloudantPut(entity))
     }
 
     @Override
-    Promise<UserTeleBackupCodeAttempt> get(UserTeleBackupCodeAttemptId id) {
-        return Promise.pure((UserTeleBackupCodeAttempt)super.cloudantGet(id.toString()))
+    Promise<UserTFABackupCodeAttempt> get(UserTFABackupCodeAttemptId id) {
+        return Promise.pure((UserTFABackupCodeAttempt)super.cloudantGet(id.toString()))
     }
 
     @Override
-    Promise<Void> delete(UserTeleBackupCodeAttemptId id) {
+    Promise<Void> delete(UserTFABackupCodeAttemptId id) {
         super.cloudantDelete(id.toString())
         return Promise.pure(null)
     }

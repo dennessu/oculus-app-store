@@ -2,7 +2,7 @@ package com.junbo.identity.data.dao.impl
 
 import com.junbo.identity.data.dao.UserTeleBackupCodeDAO
 import com.junbo.identity.data.entity.user.UserTeleBackupCodeEntity
-import com.junbo.identity.spec.v1.option.list.UserTeleBackupCodeListOptions
+import com.junbo.identity.spec.v1.option.list.UserTFABackupCodeListOptions
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
 import org.hibernate.criterion.Order
@@ -48,7 +48,7 @@ class UserTeleBackupCodeDAOImpl extends BaseDAO implements UserTeleBackupCodeDAO
     }
 
     @Override
-    List<UserTeleBackupCodeEntity> search(UserTeleBackupCodeListOptions listOptions) {
+    List<UserTeleBackupCodeEntity> search(UserTFABackupCodeListOptions listOptions) {
         Criteria criteria = currentSession(listOptions.userId.value).createCriteria(UserTeleBackupCodeEntity)
         criteria.add(Restrictions.eq('userId', listOptions.userId.value))
         criteria.addOrder(Order.asc('id'))

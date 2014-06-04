@@ -1,18 +1,17 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.id.UserId
-import com.junbo.common.id.UserTeleBackupCodeAttemptId
-import com.junbo.identity.core.service.validator.UserTeleBackupCodeAttemptValidator
+import com.junbo.common.id.UserTFABackupCodeAttemptId
+import com.junbo.identity.core.service.validator.UserTFABackupCodeAttemptValidator
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.UserRepository
-import com.junbo.identity.data.repository.UserTeleBackupCodeAttemptRepository
-import com.junbo.identity.data.repository.UserTeleBackupCodeRepository
+import com.junbo.identity.data.repository.UserTFABackupCodeAttemptRepository
+import com.junbo.identity.data.repository.UserTFABackupCodeRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserTeleBackupCode
-import com.junbo.identity.spec.v1.model.UserTeleBackupCodeAttempt
-import com.junbo.identity.spec.v1.option.list.UserTeleBackupCodeAttemptListOptions
-import com.junbo.identity.spec.v1.option.list.UserTeleBackupCodeListOptions
+import com.junbo.identity.spec.v1.model.UserTFABackupCode
+import com.junbo.identity.spec.v1.model.UserTFABackupCodeAttempt
+import com.junbo.identity.spec.v1.option.list.UserTFABackupCodeAttemptListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate
 import groovy.transform.CompileStatic
@@ -29,11 +28,11 @@ import java.util.regex.Pattern
  * Created by liangfu on 5/5/14.
  */
 @CompileStatic
-class UserTeleBackupCodeAttemptValidatorImpl implements UserTeleBackupCodeAttemptValidator {
+class UserTFABackupCodeAttemptValidatorImpl implements UserTFABackupCodeAttemptValidator {
 
     private UserRepository userRepository
-    private UserTeleBackupCodeRepository userTeleBackupCodeRepository
-    private UserTeleBackupCodeAttemptRepository userTeleBackupCodeAttemptRepository
+    private UserTFABackupCodeRepository userTFABackupCodeRepository
+    private UserTFABackupCodeAttemptRepository userTFABackupCodeAttemptRepository
 
     private Integer minVerifyCodeLength
     private Integer maxVerifyCodeLength
@@ -50,13 +49,13 @@ class UserTeleBackupCodeAttemptValidatorImpl implements UserTeleBackupCodeAttemp
     private PlatformTransactionManager transactionManager
 
     @Override
-    Promise<UserTeleBackupCodeAttempt> validateForGet(UserId userId, UserTeleBackupCodeAttemptId attemptId) {
+    Promise<UserTFABackupCodeAttempt> validateForGet(UserId userId, UserTFABackupCodeAttemptId attemptId) {
         if (userId == null) {
             throw new IllegalArgumentException('userId is null')
         }
 
         if (attemptId == null) {
-            throw new IllegalArgumentException('userTeleBackupCodeAttemptId is null')
+            throw new IllegalArgumentException('userTFABackupCodeAttemptId is null')
         }
 
         return userRepository.get(userId).then { User user ->
@@ -72,9 +71,9 @@ class UserTeleBackupCodeAttemptValidatorImpl implements UserTeleBackupCodeAttemp
                 throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
 
-            return userTeleBackupCodeAttemptRepository.get(attemptId).then { UserTeleBackupCodeAttempt attempt ->
+            return userTFABackupCodeAttemptRepository.get(attemptId).then { UserTFABackupCodeAttempt attempt ->
                 if (attempt == null) {
-                    throw AppErrors.INSTANCE.userTeleBackupCodeAttemptNotFound(attemptId).exception()
+                    throw AppErrors.INSTANCE.userTFABackupCodeAttemptNotFound(attemptId).exception()
                 }
 
                 if (attempt.userId != userId) {
@@ -87,7 +86,7 @@ class UserTeleBackupCodeAttemptValidatorImpl implements UserTeleBackupCodeAttemp
     }
 
     @Override
-    Promise<Void> validateForSearch(UserId userId, UserTeleBackupCodeAttemptListOptions options) {
+    Promise<Void> validateForSearch(UserId userId, UserTFABackupCodeAttemptListOptions options) {
         if (userId == null) {
             throw new IllegalArgumentException('userId is null')
         }
@@ -100,7 +99,7 @@ class UserTeleBackupCodeAttemptValidatorImpl implements UserTeleBackupCodeAttemp
     }
 
     @Override
-    Promise<Void> validateForCreate(UserId userId, UserTeleBackupCodeAttempt attempt) {
+    Promise<Void> validateForCreate(UserId userId, UserTFABackupCodeAttempt attempt) {
         if (userId == null) {
             throw new IllegalArgumentException('userId is null')
         }
@@ -153,15 +152,15 @@ class UserTeleBackupCodeAttemptValidatorImpl implements UserTeleBackupCodeAttemp
 
             attempt.userId = userId
 
-            return userTeleBackupCodeRepository.searchByUserIdAndActiveStatus(userId, true, Integer.MAX_VALUE,
-                    0).then { List<UserTeleBackupCode> userTeleBackupCodeList ->
-                if (CollectionUtils.isEmpty(userTeleBackupCodeList)) {
-                    throw AppErrors.INSTANCE.userTeleBackupCodeIncorrect().exception()
+            return userTFABackupCodeRepository.searchByUserIdAndActiveStatus(userId, true, Integer.MAX_VALUE,
+                    0).then { List<UserTFABackupCode> userTFABackupCodeList ->
+                if (CollectionUtils.isEmpty(userTFABackupCodeList)) {
+                    throw AppErrors.INSTANCE.userTFABackupCodeIncorrect().exception()
                 }
 
-                if (userTeleBackupCodeList.any { UserTeleBackupCode userTeleBackupCode ->
-                    return (userTeleBackupCode.active && userTeleBackupCode.expiresBy.after(new Date())
-                        && userTeleBackupCode.verifyCode == attempt.verifyCode)
+                if (userTFABackupCodeList.any { UserTFABackupCode userTFABackupCode ->
+                    return (userTFABackupCode.active && userTFABackupCode.expiresBy.after(new Date())
+                        && userTFABackupCode.verifyCode == attempt.verifyCode)
                 }) {
                     attempt.succeeded = true
                 } else {
@@ -173,20 +172,20 @@ class UserTeleBackupCodeAttemptValidatorImpl implements UserTeleBackupCodeAttemp
         }
     }
 
-    private Promise<Void> checkMaximumRetryCount(User user, UserTeleBackupCodeAttempt attempt) {
+    private Promise<Void> checkMaximumRetryCount(User user, UserTFABackupCodeAttempt attempt) {
         if (attempt.succeeded) {
             return Promise.pure(null)
         }
 
-        return userTeleBackupCodeAttemptRepository.searchByUserId((UserId)user.id, Integer.MAX_VALUE,
-                0).then { List<UserTeleBackupCodeAttempt> attemptList ->
+        return userTFABackupCodeAttemptRepository.searchByUserId((UserId)user.id, Integer.MAX_VALUE,
+                0).then { List<UserTFABackupCodeAttempt> attemptList ->
             if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxRetryCount) {
                 return Promise.pure(null)
             }
 
-            attemptList.sort(new Comparator<UserTeleBackupCodeAttempt>() {
+            attemptList.sort(new Comparator<UserTFABackupCodeAttempt>() {
                 @Override
-                int compare(UserTeleBackupCodeAttempt o1, UserTeleBackupCodeAttempt o2) {
+                int compare(UserTFABackupCodeAttempt o1, UserTFABackupCodeAttempt o2) {
                     return o2.createdTime <=> o1.createdTime
                 }
             })
@@ -225,13 +224,13 @@ class UserTeleBackupCodeAttemptValidatorImpl implements UserTeleBackupCodeAttemp
     }
 
     @Required
-    void setUserTeleBackupCodeRepository(UserTeleBackupCodeRepository userTeleBackupCodeRepository) {
-        this.userTeleBackupCodeRepository = userTeleBackupCodeRepository
+    void setUserTFABackupCodeRepository(UserTFABackupCodeRepository userTFABackupCodeRepository) {
+        this.userTFABackupCodeRepository = userTFABackupCodeRepository
     }
 
     @Required
-    void setUserTeleBackupCodeAttemptRepository(UserTeleBackupCodeAttemptRepository userTeleBackupCodeAttemptRepository) {
-        this.userTeleBackupCodeAttemptRepository = userTeleBackupCodeAttemptRepository
+    void setUserTFABackupCodeAttemptRepository(UserTFABackupCodeAttemptRepository userTFABackupCodeAttemptRepository) {
+        this.userTFABackupCodeAttemptRepository = userTFABackupCodeAttemptRepository
     }
 
     @Required

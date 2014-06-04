@@ -13,7 +13,7 @@ class UserTFAAttemptFilter extends ResourceFilterImpl<UserTFAAttempt> {
 
     @Override
     protected UserTFAAttempt filter(UserTFAAttempt userTeleAttempt, MappingContext context) {
-        UserTFAAttempt result = selfMapper.filterUserTeleAttempt(userTeleAttempt, context)
+        UserTFAAttempt result = selfMapper.filterUserTFAAttempt(userTeleAttempt, context)
         if (userTeleAttempt.userId != null) {
             ((UserTFAAttemptId)(result.id)).resourcePathPlaceHolder.put('userId', userTeleAttempt.userId)
         }
@@ -22,6 +22,6 @@ class UserTFAAttemptFilter extends ResourceFilterImpl<UserTFAAttempt> {
 
     @Override
     protected UserTFAAttempt merge(UserTFAAttempt source, UserTFAAttempt base, MappingContext context) {
-        return selfMapper.mergeUserTeleAttempt(source, base, context)
+        return selfMapper.mergeUserTFAAttempt(source, base, context)
     }
 }

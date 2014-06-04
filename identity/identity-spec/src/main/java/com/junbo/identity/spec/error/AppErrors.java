@@ -187,16 +187,16 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 404, code = "2000052", description = "User TFA code is incorrect.")
     AppError userTFACodeIncorrect();
 
-    @ErrorDef(httpStatusCode = 409, code = "2000053", description = "User Tele backup code {0} not found.",
+    @ErrorDef(httpStatusCode = 409, code = "2000053", description = "User TFA backup code {0} not found.",
             field = "{0}")
-    AppError userTeleBackupCodeNotFound(UserTeleBackupCodeId userTeleBackupCodeId);
+    AppError userTFABackupCodeNotFound(UserTFABackupCodeId userTFABackupCodeId);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000054", description = "User Tele backup code attempt {0} not found.",
+    @ErrorDef(httpStatusCode = 409, code = "2000054", description = "User TFA backup code attempt {0} not found.",
             field = "{0}")
-    AppError userTeleBackupCodeAttemptNotFound(UserTeleBackupCodeAttemptId userTeleBackupCodeAttemptId);
+    AppError userTFABackupCodeAttemptNotFound(UserTFABackupCodeAttemptId userTFABackupCodeAttemptId);
 
-    @ErrorDef(httpStatusCode = 404, code = "2000055", description = "User tele backup code is incorrect.")
-    AppError userTeleBackupCodeIncorrect();
+    @ErrorDef(httpStatusCode = 404, code = "2000055", description = "User TFA backup code is incorrect.")
+    AppError userTFABackupCodeIncorrect();
 
     @ErrorDef(httpStatusCode = 404, code = "2000056", description = "User {0} is not in valid status.", field = "{0}")
     AppError userInInvalidStatus(String username);

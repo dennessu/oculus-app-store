@@ -917,7 +917,7 @@
         </property>
     </bean>
 
-    <bean id="userTeleBackupCodeFilter" class="com.junbo.identity.core.service.filter.UserTeleBackupCodeFilter">
+    <bean id="userTeleBackupCodeFilter" class="com.junbo.identity.core.service.filter.UserTFABackupCodeFilter">
         <property name="readableProperties">
             <list>
                 <value>id</value>
@@ -954,7 +954,7 @@
         </property>
     </bean>
 
-    <bean id="userTeleBackupCodeAttemptFilter" class="com.junbo.identity.core.service.filter.UserTeleBackupCodeAttemptFilter">
+    <bean id="userTeleBackupCodeAttemptFilter" class="com.junbo.identity.core.service.filter.UserTFABackupCodeAttemptFilter">
         <property name="readableProperties">
             <list>
                 <value>id</value>

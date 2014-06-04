@@ -13,7 +13,7 @@ import javax.ws.rs.QueryParam;
 /**
  * Created by liangfu on 4/22/14.
  */
-public class UserTeleBackupCodeListOptions extends PagingGetOptions {
+public class UserTFABackupCodeListOptions extends PagingGetOptions {
 
     @QueryParam("properties")
     private String properties;

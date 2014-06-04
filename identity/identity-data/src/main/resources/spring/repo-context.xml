@@ -95,15 +95,15 @@
         <property name="sqlRepositoryImpl" ref="sqlUserTeleAttemptRepository" />
     </bean>
 
-    <bean id="userTeleBackupCodeRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTeleBackupCodeRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantUserTeleBackupCodeRepository" />
+    <bean id="userTFABackupCodeRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTFABackupCodeRepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantUserTFABackupCodeRepository" />
         <property name="sqlRepositoryImpl" ref="sqlUserTeleBackupCodeRepository" />
     </bean>
 
-    <bean id="userTeleBackupCodeAttemptRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTeleBackupCodeAttemptRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantUserTeleBackupCodeAttemptRepository" />
+    <bean id="userTFABackupCodeAttemptRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTFABackupCodeAttemptRepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantUserTFABackupCodeAttemptRepository" />
         <property name="sqlRepositoryImpl" ref="sqlUserTeleBackupCodeAttemptRepository" />
     </bean>
 

@@ -66,20 +66,20 @@ public interface SelfMapper {
     UserCredential filterUserCredential(UserCredential userCredential, MappingContext context);
     UserCredential mergeUserCredential(UserCredential source, UserCredential base, MappingContext context);
 
-    UserTFA filterUserTeleCode(UserTFA userTeleCode, MappingContext context);
-    UserTFA mergeUserTeleCode(UserTFA source, UserTFA base, MappingContext context);
+    UserTFA filterUserTFACode(UserTFA userTFACode, MappingContext context);
+    UserTFA mergeUserTFACode(UserTFA source, UserTFA base, MappingContext context);
 
-    UserTFAAttempt filterUserTeleAttempt(UserTFAAttempt attempt, MappingContext context);
-    UserTFAAttempt mergeUserTeleAttempt(UserTFAAttempt source, UserTFAAttempt base, MappingContext context);
+    UserTFAAttempt filterUserTFAAttempt(UserTFAAttempt attempt, MappingContext context);
+    UserTFAAttempt mergeUserTFAAttempt(UserTFAAttempt source, UserTFAAttempt base, MappingContext context);
 
-    UserTeleBackupCode filterUserTeleBackupCode(UserTeleBackupCode userTeleBackupCode, MappingContext context);
-    UserTeleBackupCode mergeUserTeleBackupCode(UserTeleBackupCode source, UserTeleBackupCode base,
-                                               MappingContext context);
+    UserTFABackupCode filterUserTFABackupCode(UserTFABackupCode userTFABackupCode, MappingContext context);
+    UserTFABackupCode mergeUserTFABackupCode(UserTFABackupCode source, UserTFABackupCode base,
+                                             MappingContext context);
 
-    UserTeleBackupCodeAttempt filterUserTeleBackupCodeAttempt(UserTeleBackupCodeAttempt userTeleBackupCodeAttempt,
-                                                              MappingContext context);
-    UserTeleBackupCodeAttempt mergeUserTeleBackupCodeAttempt(UserTeleBackupCodeAttempt source,
-                                               UserTeleBackupCodeAttempt base, MappingContext context);
+    UserTFABackupCodeAttempt filterUserTFABackupCodeAttempt(UserTFABackupCodeAttempt userTFABackupCodeAttempt,
+                                                            MappingContext context);
+    UserTFABackupCodeAttempt mergeUserTFABackupCodeAttempt(UserTFABackupCodeAttempt source,
+                                                           UserTFABackupCodeAttempt base, MappingContext context);
 
     DeviceType filterDeviceType(DeviceType deviceType, MappingContext context);
     DeviceType mergeDeviceType(DeviceType source, DeviceType base, MappingContext context);

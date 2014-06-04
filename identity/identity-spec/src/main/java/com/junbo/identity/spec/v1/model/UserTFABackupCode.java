@@ -7,7 +7,7 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
-import com.junbo.common.id.UserTeleBackupCodeId;
+import com.junbo.common.id.UserTFABackupCodeId;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -17,10 +17,10 @@ import java.util.Date;
 /**
  * Created by liangfu on 4/22/14.
  */
-public class UserTeleBackupCode extends PropertyAssignedAwareResourceMeta implements Identifiable<UserTeleBackupCodeId> {
+public class UserTFABackupCode extends PropertyAssignedAwareResourceMeta implements Identifiable<UserTFABackupCodeId> {
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The id of UserTFA resource.")
     @JsonProperty("self")
-    private UserTeleBackupCodeId id;
+    private UserTFABackupCodeId id;
 
     @ApiModelProperty(position = 2, required = true, value = "[Client Immutable]The id of user resource.")
     @JsonProperty("user")
@@ -35,11 +35,11 @@ public class UserTeleBackupCode extends PropertyAssignedAwareResourceMeta implem
     @ApiModelProperty(position = 5, required = false, value = "[Client Immutable]Whether user Tele resource is active.")
     private Boolean active;
 
-    public UserTeleBackupCodeId getId() {
+    public UserTFABackupCodeId getId() {
         return id;
     }
 
-    public void setId(UserTeleBackupCodeId id) {
+    public void setId(UserTFABackupCodeId id) {
         this.id = id;
         support.setPropertyAssigned("id");
         support.setPropertyAssigned("self");

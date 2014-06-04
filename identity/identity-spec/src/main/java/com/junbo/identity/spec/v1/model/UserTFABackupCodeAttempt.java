@@ -8,7 +8,7 @@ package com.junbo.identity.spec.v1.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.ClientId;
 import com.junbo.common.id.UserId;
-import com.junbo.common.id.UserTeleBackupCodeAttemptId;
+import com.junbo.common.id.UserTFABackupCodeAttemptId;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -16,11 +16,11 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 /**
  * Created by liangfu on 4/22/14.
  */
-public class UserTeleBackupCodeAttempt extends PropertyAssignedAwareResourceMeta implements Identifiable<UserTeleBackupCodeAttemptId> {
+public class UserTFABackupCodeAttempt extends PropertyAssignedAwareResourceMeta implements Identifiable<UserTFABackupCodeAttemptId> {
     @ApiModelProperty(position = 1, required = true,
             value = "[Client Immutable]The id of the userTele backup code attempt resource.")
     @JsonProperty("self")
-    private UserTeleBackupCodeAttemptId id;
+    private UserTFABackupCodeAttemptId id;
 
     @ApiModelProperty(position = 2, required = true, value = "User resource.")
     @JsonProperty("user")
@@ -41,11 +41,11 @@ public class UserTeleBackupCodeAttempt extends PropertyAssignedAwareResourceMeta
     @ApiModelProperty(position = 7, required = false, value = "[Client Immutable]Whether the attempt is success.")
     private Boolean succeeded;
 
-    public UserTeleBackupCodeAttemptId getId() {
+    public UserTFABackupCodeAttemptId getId() {
         return id;
     }
 
-    public void setId(UserTeleBackupCodeAttemptId id) {
+    public void setId(UserTFABackupCodeAttemptId id) {
         this.id = id;
         support.setPropertyAssigned("id");
         support.setPropertyAssigned("self");
