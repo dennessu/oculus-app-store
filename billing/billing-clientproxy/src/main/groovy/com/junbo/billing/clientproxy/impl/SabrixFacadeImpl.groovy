@@ -307,9 +307,8 @@ class SabrixFacadeImpl implements TaxFacade {
     }
 
     Promise<AddressValidationResponse> validateSabrixAddress(SabrixAddress address) {
-        // TODO: UPDATE URL
         String validateAddressUrl = configuration.baseUrl + 'sabrix/addressvalidation'
-        XStream xstream = new XStream()
+        XStream xstream = new XStream(new DomDriver("UTF-8", new XmlFriendlyNameCoder("_-", "_")))
         xstream.autodetectAnnotations(true)
         String content = xstream.toXML(address)
         def requestBuilder = buildRequest(validateAddressUrl, content)
@@ -317,6 +316,7 @@ class SabrixFacadeImpl implements TaxFacade {
             LOGGER.error('Error_Build_Sabrix_Request.', throwable)
             throw AppErrors.INSTANCE.addressValidationError('Fail to build request.').exception()
         }.then { Response response ->
+            xstream.processAnnotations(AddressValidationResponse)
             AddressValidationResponse addressValidationResponse =
                     (AddressValidationResponse)xstream.fromXML(response.responseBody)
             if (addressValidationResponse == null) {

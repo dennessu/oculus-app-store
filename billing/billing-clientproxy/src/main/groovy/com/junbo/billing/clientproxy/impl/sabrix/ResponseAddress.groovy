@@ -37,12 +37,12 @@ class ResponseAddress {
     @Override
     public String toString() {
         return "ResponseAddress{" +
-                "country=" + country.toString() +
-                ", province=" + province.toString() +
-                ", state=" + state.toString() +
-                ", county=" + county.toString() +
-                ", city=" + city.toString() +
-                ", postcode=" + postcode.toString() +
+                "country=" + country +
+                ", province=" + province +
+                ", state=" + state +
+                ", county=" + county +
+                ", city=" + city +
+                ", postcode=" + postcode +
                 '}';
     }
 }

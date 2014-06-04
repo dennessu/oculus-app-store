@@ -35,6 +35,9 @@ class Invoice {
     @XStreamImplicit(itemFieldName="LINE")
     List<Line> line
 
+    @XStreamImplicit(itemFieldName="USER_ELEMENT")
+    List<UserElement> userElement
+
     @XStreamAlias('INVOICE_NUMBER')
     String invoiceNumber
 
@@ -74,14 +77,16 @@ class Invoice {
     String calculationDirection
     // end of output
 
-
     @Override
     public String toString() {
         return "Invoice{" +
-                "invoiceDate=" + invoiceDate +
+                "invoiceDate='" + invoiceDate + '\'' +
+                ", externalCompanyId='" + externalCompanyId + '\'' +
+                ", companyRole='" + companyRole + '\'' +
+                ", companyName='" + companyName + '\'' +
                 ", currencyCode='" + currencyCode + '\'' +
-                ", calculationDirection='" + calculationDirection + '\'' +
                 ", line=" + line +
+                ", userElement=" + userElement +
                 ", invoiceNumber='" + invoiceNumber + '\'' +
                 ", isAudited=" + isAudited +
                 ", originalInvoiceDate=" + originalInvoiceDate +
@@ -93,6 +98,7 @@ class Invoice {
                 ", requestStatus=" + requestStatus +
                 ", totalTaxAmount=" + totalTaxAmount +
                 ", message=" + message +
+                ", calculationDirection='" + calculationDirection + '\'' +
                 '}';
     }
 }

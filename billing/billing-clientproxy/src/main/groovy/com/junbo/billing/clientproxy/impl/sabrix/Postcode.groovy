@@ -18,10 +18,19 @@ class Postcode {
     @XStreamAlias('NAME')
     String name
 
+    @XStreamAlias('CODE3')
+    String code3
+
+    @XStreamAlias('ISOCODE')
+    String isocode
+
+
     @Override
     public String toString() {
         return "Postcode{" +
                 "name='" + name + '\'' +
+                ", code3='" + code3 + '\'' +
+                ", isocode='" + isocode + '\'' +
                 '}';
     }
 }

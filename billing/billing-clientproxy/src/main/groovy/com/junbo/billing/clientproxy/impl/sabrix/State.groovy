@@ -21,12 +21,19 @@ class State {
     @XStreamAlias('CODE')
     String code
 
+    @XStreamAlias('CODE3')
+    String code3
+
+    @XStreamAlias('ISOCODE')
+    String isocode
 
     @Override
     public String toString() {
         return "State{" +
                 "name='" + name + '\'' +
                 ", code='" + code + '\'' +
+                ", code3='" + code3 + '\'' +
+                ", isocode='" + isocode + '\'' +
                 '}';
     }
 }

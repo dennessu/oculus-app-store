@@ -10,27 +10,23 @@ import com.thoughtworks.xstream.annotations.XStreamAlias
 import groovy.transform.CompileStatic
 
 /**
- * City type of address validation response.
+ * Custom attribute for Sabrix.
  */
 @CompileStatic
-@XStreamAlias("CITY")
-class City {
+@XStreamAlias("USER_ELEMENT")
+class UserElement {
     @XStreamAlias('NAME')
     String name
 
-    @XStreamAlias('CODE3')
-    String code3
-
-    @XStreamAlias('ISOCODE')
-    String isocode
+    @XStreamAlias('VALUE')
+    String value
 
 
     @Override
     public String toString() {
-        return "City{" +
+        return "UserElement{" +
                 "name='" + name + '\'' +
-                ", code3='" + code3 + '\'' +
-                ", isocode='" + isocode + '\'' +
+                ", value='" + value + '\'' +
                 '}';
     }
 }

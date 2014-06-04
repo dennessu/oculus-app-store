@@ -32,6 +32,13 @@ class SabrixFacadeTest extends BaseTest{
         Assert.assertEquals(balanceWithTax.taxStatus, TaxStatus.TAXED.name(), "Fail to calculate tax.");
     }
 
+    @Test(enabled = false)
+    void testAddressValidation() {
+        def address = buildAddress()
+        Address validatedAddress = sabrixFacade.validateAddress(address).get()
+        Assert.assertNotNull(validatedAddress, "Fail to validate address.");
+    }
+
     Address buildAddress() {
         def address = new Address()
         address.countryId = new CountryId('US')
