@@ -23,12 +23,14 @@ public class OffersGetOptions extends PageableGetOptions {
     private Set<OfferId> offerIds;
     @QueryParam("published")
     private Boolean published;
-    @QueryParam("category")
+    @QueryParam("categoryId")
     private OfferAttributeId category;
     @QueryParam("itemId")
     private ItemId itemId;
     @QueryParam("publisherId")
     private UserId ownerId;
+    @QueryParam("q")
+    private String query;
 
     public Set<OfferId> getOfferIds() {
         return offerIds;
@@ -68,5 +70,13 @@ public class OffersGetOptions extends PageableGetOptions {
 
     public void setOwnerId(UserId ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
     }
 }

@@ -11,7 +11,6 @@ import com.junbo.authorization.spec.model.ApiDefinition
 import com.junbo.common.cloudant.exception.CloudantUpdateConflictException
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-import org.springframework.util.StringUtils
 
 /**
  * ApiServiceImpl.
@@ -46,8 +45,8 @@ class ApiServiceImpl implements ApiService {
     @Override
     ApiDefinition updateApi(String apiName, ApiDefinition apiDefinition) {
 
-        if (StringUtils.isEmpty(apiDefinition.revision)) {
-            throw AppErrors.INSTANCE.missingRevision().exception()
+        if (apiDefinition.resourceAge == null) {
+            throw AppErrors.INSTANCE.missingResourceAge().exception()
         }
 
         if (apiName != apiDefinition.apiName) {
@@ -56,7 +55,7 @@ class ApiServiceImpl implements ApiService {
 
         ApiDefinition existingApi = apiDefinitionRepository.getApi(apiName)
 
-        if (apiDefinition.revision != existingApi.revision) {
+        if (apiDefinition.resourceAge != existingApi.resourceAge) {
             throw AppErrors.INSTANCE.updateConflict('api_definition').exception()
         }
 

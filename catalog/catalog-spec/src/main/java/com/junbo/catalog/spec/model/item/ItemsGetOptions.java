@@ -22,12 +22,14 @@ public class ItemsGetOptions extends PageableGetOptions {
     private Set<ItemId> itemIds;
     @QueryParam("type")
     private String type;
-    @QueryParam("genre")
+    @QueryParam("genreId")
     private ItemAttributeId genre;
     @QueryParam("hostItemId")
     private ItemId hostItemId;
     @QueryParam("developerId")
     private UserId ownerId;
+    @QueryParam("q")
+    private String query;
 
     public Set<ItemId> getItemIds() {
         return itemIds;
@@ -67,5 +69,13 @@ public class ItemsGetOptions extends PageableGetOptions {
 
     public void setOwnerId(UserId ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
     }
 }

@@ -50,8 +50,9 @@ public class Item extends BaseEntityModel {
     @ApiModelProperty(position = 28, required = true, value = "Default offer")
     private Long defaultOffer;
 
+    // current revision used for index & search
     @JsonIgnore
-    private Long entitlementDefId;
+    private ItemRevision activeRevision;
 
     public Long getItemId() {
         return itemId;
@@ -69,10 +70,12 @@ public class Item extends BaseEntityModel {
         this.type = type;
     }
 
+    @Override
     public Long getCurrentRevisionId() {
         return currentRevisionId;
     }
 
+    @Override
     public void setCurrentRevisionId(Long currentRevisionId) {
         this.currentRevisionId = currentRevisionId;
     }
@@ -101,20 +104,20 @@ public class Item extends BaseEntityModel {
         this.genres = genres;
     }
 
-    public Long getEntitlementDefId() {
-        return entitlementDefId;
-    }
-
-    public void setEntitlementDefId(Long entitlementDefId) {
-        this.entitlementDefId = entitlementDefId;
-    }
-
     public Long getDefaultOffer() {
         return defaultOffer;
     }
 
     public void setDefaultOffer(Long defaultOffer) {
         this.defaultOffer = defaultOffer;
+    }
+
+    public ItemRevision getActiveRevision() {
+        return activeRevision;
+    }
+
+    public void setActiveRevision(ItemRevision activeRevision) {
+        this.activeRevision = activeRevision;
     }
 
     @Override

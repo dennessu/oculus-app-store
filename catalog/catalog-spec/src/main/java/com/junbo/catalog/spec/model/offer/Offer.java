@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.spec.model.offer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.BaseEntityModel;
 import com.junbo.common.jackson.annotation.*;
@@ -13,6 +14,7 @@ import com.junbo.common.model.Link;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Offer model.
@@ -47,6 +49,13 @@ public class Offer extends BaseEntityModel {
 
     @ApiModelProperty(position = 26, required = true, value = "Environment", allowableValues = "DEV, STAGING, PROD")
     private String environment;
+
+    // current revision used for index & search, periodically updated by backend job
+    @JsonIgnore
+    private OfferRevision activeRevision;
+
+    @JsonIgnore
+    private Map<Long, RevisionInfo> approvedRevisions;
 
     public Long getOfferId() {
         return offerId;
@@ -102,6 +111,22 @@ public class Offer extends BaseEntityModel {
 
     public void setEnvironment(String environment) {
         this.environment = environment;
+    }
+
+    public OfferRevision getActiveRevision() {
+        return activeRevision;
+    }
+
+    public void setActiveRevision(OfferRevision activeRevision) {
+        this.activeRevision = activeRevision;
+    }
+
+    public Map<Long, RevisionInfo> getApprovedRevisions() {
+        return approvedRevisions;
+    }
+
+    public void setApprovedRevisions(Map<Long, RevisionInfo> approvedRevisions) {
+        this.approvedRevisions = approvedRevisions;
     }
 
     @Override

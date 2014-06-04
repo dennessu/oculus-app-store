@@ -1,5 +1,6 @@
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.id.CommunicationId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -22,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 @CompileStatic
 class CommunicationResourceImpl implements CommunicationResource {
+    private static final String IDENTITY_ADMIN_SCOPE = 'identity.admin'
+
     @Autowired
     private CommunicationRepository communicationRepository
 
@@ -35,6 +38,10 @@ class CommunicationResourceImpl implements CommunicationResource {
     Promise<Communication> create(Communication communication) {
         if (communication == null) {
             throw new IllegalArgumentException('communication is null')
+        }
+
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
         }
 
         communication = communicationFilter.filterForCreate(communication)
@@ -57,6 +64,10 @@ class CommunicationResourceImpl implements CommunicationResource {
 
         if (communication == null) {
             throw new IllegalArgumentException('communication is null')
+        }
+
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
         }
 
         return communicationRepository.get(communicationId).then { Communication oldCommunication ->
@@ -83,6 +94,10 @@ class CommunicationResourceImpl implements CommunicationResource {
 
         if (communication == null) {
             throw new IllegalArgumentException('communication is null')
+        }
+
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
         }
 
         return communicationRepository.get(communicationId).then { Communication oldCommunication ->
@@ -140,6 +155,10 @@ class CommunicationResourceImpl implements CommunicationResource {
     Promise<Void> delete(CommunicationId communicationId) {
         if (communicationId == null) {
             throw new IllegalArgumentException('communicationId is null')
+        }
+
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
         }
 
         return communicationValidator.validateForGet(communicationId).then { Communication communication ->

@@ -61,7 +61,9 @@ class JunboApplication {
         }
     }
 
-    private static class JunboApplicationContext extends ClassPathXmlApplicationContext {
+    static class JunboApplicationContext extends ClassPathXmlApplicationContext {
+
+        boolean isRefreshed = false
 
         JunboApplicationContext(String[] configLocations, boolean refresh) throws BeansException {
             super(configLocations, refresh)
@@ -75,12 +77,24 @@ class JunboApplication {
         }
 
         @Override
+        protected void prepareRefresh() {
+            isRefreshed = false
+            super.prepareRefresh()
+        }
+
+        @Override
+        protected void finishRefresh() {
+            super.finishRefresh()
+            isRefreshed = true
+        }
+
+        @Override
         protected DefaultListableBeanFactory createBeanFactory() {
             return new JunboBeanFactory(internalParentBeanFactory)
         }
     }
 
-    private static class JunboBeanFactory extends DefaultListableBeanFactory {
+    static class JunboBeanFactory extends DefaultListableBeanFactory {
 
         private static final Logger LOGGER = LoggerFactory.getLogger(JunboBeanFactory)
 

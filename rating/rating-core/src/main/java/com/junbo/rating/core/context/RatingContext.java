@@ -14,6 +14,7 @@ import com.junbo.rating.spec.model.Currency;
 
 public abstract class RatingContext {
     private Long userId;
+    private String country;
     private Currency currency;
 
     public Long getUserId() {
@@ -22,6 +23,14 @@ public abstract class RatingContext {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     public Currency getCurrency() {

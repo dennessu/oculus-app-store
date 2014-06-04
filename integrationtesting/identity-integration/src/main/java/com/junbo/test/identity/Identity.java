@@ -5,8 +5,10 @@
  */
 package com.junbo.test.identity;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPersonalInfoId;
+import com.junbo.common.model.Results;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.identity.spec.v1.model.*;
 import com.junbo.test.common.ConfigHelper;
@@ -128,6 +130,12 @@ public class Identity {
         return (UserPersonalInfo) HttpclientHelper.SimpleGet(
                 DefaultIdentityV1UserPersonalInfoURI + "/" + IdFormatter.encodeId(userPersonalInfoId),
                 UserPersonalInfo.class);
+    }
+
+    public static UserPersonalInfo UserPersonalInfoGetByUserEmail(String email) throws Exception {
+        JsonNode jsonNode = JsonHelper.ObjectToJsonNode((HttpclientHelper.SimpleGet(
+                DefaultIdentityV1UserPersonalInfoURI + "?email=" + email, (Results.class))).getItems().get(0));
+        return (UserPersonalInfo) JsonHelper.JsonNodeToObject(jsonNode, UserPersonalInfo.class);
     }
 
     // ****** start API sample logging ******

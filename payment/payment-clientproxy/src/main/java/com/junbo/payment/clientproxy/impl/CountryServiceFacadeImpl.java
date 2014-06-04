@@ -14,15 +14,19 @@ import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.clientproxy.CountryServiceFacade;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 
 
 /**
  * country service facade.
  */
 public class CountryServiceFacadeImpl implements CountryServiceFacade{
-    @Autowired
     private CountryResourceClientProxy countryResource;
+
+    @Required
+    public void setCountryResource(CountryResourceClientProxy countryResource) {
+        this.countryResource = countryResource;
+    }
 
     public Promise<CurrencyId> getDefaultCurrency(String country){
         if(1 == 1){

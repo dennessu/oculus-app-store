@@ -35,6 +35,11 @@ public class TestConfigService implements ConfigService, AutoCloseable {
     }
 
     @Override
+    public Properties getAllConfigItemsMasked() {
+        return properties;
+    }
+
+    @Override
     public void addListener(String configKey, ConfigService.ConfigListener listener) {
         this.listener = listener;
     }

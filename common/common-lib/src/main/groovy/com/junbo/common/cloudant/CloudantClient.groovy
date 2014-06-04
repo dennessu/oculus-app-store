@@ -207,7 +207,8 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
                     " reason: $cloudantError.reason")
         }
 
-        def cloudantSearchResult = unmarshall(response.responseBody, CloudantQueryResult, CloudantQueryResult.AllResultEntity)
+        def cloudantSearchResult =unmarshall(response.responseBody,
+                CloudantQueryResult, CloudantQueryResult.AllResultEntity, Object.class)
 
         return cloudantSearchResult.rows.collect { CloudantQueryResult.ResultObject result ->
             return cloudantGet(result.id)
@@ -279,8 +280,9 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
         }
     }
 
-    private CloudantQueryResult internalQueryView(String viewName, String key, Integer limit,
-                                                  Integer skip, boolean descending) {
+    private CloudantQueryResult internalQueryView(String viewName, String key, String startKey, String endKey,
+                                                  Integer limit, Integer skip, boolean descending,
+                                                  boolean includeDocs) {
         CloudantViews.CloudantView cloudantView = cloudantViews.views[viewName]
         if (cloudantView == null) {
             throw new CloudantException("The view $viewName does not exist")
@@ -289,6 +291,12 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
         def query = [:]
         if (key != null) {
             query.put('key', "\"$key\"")
+        }
+        if (startKey != null) {
+            query.put('startkey', "\"$startKey\"")
+        }
+        if (endKey != null) {
+            query.put('endkey', "\"$endKey\"")
         }
         if (limit != null) {
             query.put('limit', limit.toString())
@@ -299,6 +307,9 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
         if (descending) {
             query.put('descending', 'true')
         }
+        if (includeDocs) {
+            query.put('include_docs', includeDocs.toString())
+        }
 
         def response = executeRequest(HttpMethod.GET, Utils.combineUrl(VIEW_PATH, viewName), query, null)
 
@@ -308,14 +319,20 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
                     " reason: $cloudantError.reason")
         }
 
-        return unmarshall(response.responseBody, CloudantQueryResult, cloudantView.resultClass)
+        return unmarshall(response.responseBody, CloudantQueryResult, cloudantView.resultClass, entityClass)
     }
 
-    protected List<T> queryView(String viewName, String key, Integer limit, Integer skip, boolean descending) {
-        CloudantQueryResult searchResult = internalQueryView(viewName, key, limit, skip, descending)
+    protected CloudantQueryResult queryView(String viewName, String key, Integer limit, Integer skip,
+                                boolean descending, boolean includeDocs) {
+        return internalQueryView(viewName, key, null, null, limit, skip, descending, includeDocs)
+    }
+
+    protected List<T> queryView(String viewName, String key, Integer limit, Integer skip,
+                                boolean descending) {
+        CloudantQueryResult searchResult = internalQueryView(viewName, key, null, null, limit, skip, descending, true)
         if (searchResult.rows != null) {
             return searchResult.rows.collect { CloudantQueryResult.ResultObject result ->
-                return cloudantGet(result.id)
+                return (T)result.doc
             }
         }
 
@@ -326,12 +343,28 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
         return queryView(viewName, key, null, null, false)
     }
 
+    protected CloudantQueryResult queryView(String viewName, String key, boolean includeDocs) {
+        return queryView(viewName, key, null, null, false, includeDocs)
+    }
+
+    protected List<T> queryView(String viewName, String startKey, String endKey, Integer limit, Integer skip,
+                                boolean descending, boolean includeDocs) {
+        CloudantQueryResult searchResult =
+                internalQueryView(viewName, null, startKey, endKey, limit, skip, descending, includeDocs)
+        if (searchResult.rows != null) {
+            return searchResult.rows.collect { CloudantQueryResult.ResultObject result ->
+                return (T)(result.doc)
+            }
+        }
+
+        return []
+    }
     protected CloudantSearchResult<T> search(String searchName, String queryString, Integer limit, String bookmark) {
-        CloudantQueryResult searchResult = internalSearch(searchName, queryString, limit, bookmark)
+        CloudantQueryResult searchResult = internalSearch(searchName, queryString, limit, bookmark, true)
         if (searchResult.rows != null) {
             return new CloudantSearchResult<T>(
                     results: searchResult.rows.collect { CloudantQueryResult.ResultObject result ->
-                        return cloudantGet(result.id)
+                        return result.doc
                     },
                     bookmark: searchResult.bookmark
             )
@@ -342,7 +375,13 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
         )
     }
 
-    private CloudantQueryResult internalSearch(String searchName, String queryString, Integer limit, String bookmark) {
+    protected CloudantQueryResult search(String searchName, String queryString, Integer limit, String bookmark,
+                                             boolean includeDocs) {
+        return internalSearch(searchName, queryString, limit, bookmark, includeDocs)
+    }
+
+    private CloudantQueryResult internalSearch(String searchName, String queryString, Integer limit, String bookmark,
+                                               boolean includeDocs) {
         CloudantViews.CloudantIndex cloudantView = cloudantViews.indexes[searchName]
         if (cloudantView == null) {
             throw new CloudantException("The index $searchName does not exist")
@@ -351,7 +390,8 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
         def searchRequest = new SearchRequest(
                 query: queryString,
                 limit: limit,
-                bookmark: bookmark
+                bookmark: bookmark,
+                include_docs: includeDocs
         )
 
         def response = executeRequest(HttpMethod.POST, Utils.combineUrl(SEARCH_PATH, searchName), [:], searchRequest)
@@ -362,7 +402,7 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
                     " reason: $cloudantError.reason")
         }
 
-        return unmarshall(response.responseBody, CloudantQueryResult, cloudantView.resultClass)
+        return unmarshall(response.responseBody, CloudantQueryResult, cloudantView.resultClass, entityClass)
     }
 
     protected Response executeRequest(HttpMethod method, String path, Map<String, String> queryParams, Object body) {
@@ -426,7 +466,7 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
         return marshaller.unmarshall(str, cls)
     }
 
-    protected <T> T unmarshall(String str, Class<T> cls, Class<?> parameterClass) {
+    protected <T> T unmarshall(String str, Class<T> cls, Class<?>... parameterClass) {
         return marshaller.unmarshall(str, cls, parameterClass)
     }
 
@@ -435,5 +475,6 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
         String query
         Integer limit
         String bookmark
+        Boolean include_docs
     }
 }

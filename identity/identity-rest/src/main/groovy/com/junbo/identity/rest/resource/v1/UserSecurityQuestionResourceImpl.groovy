@@ -1,10 +1,14 @@
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.authorization.AuthorizeService
+import com.junbo.authorization.RightsScope
 import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
+import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserSecurityQuestionFilter
 import com.junbo.identity.core.service.validator.UserSecurityQuestionValidator
 import com.junbo.identity.data.repository.UserSecurityQuestionRepository
@@ -34,22 +38,35 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
     @Autowired
     private UserSecurityQuestionValidator userSecurityQuestionValidator
 
+    @Autowired
+    private AuthorizeService authorizeService
+
+    @Autowired
+    private UserPropertyAuthorizeCallbackFactory authorizeCallbackFactory
+
     @Override
     Promise<UserSecurityQuestion> create(UserId userId, UserSecurityQuestion userSecurityQuestion) {
         if (userSecurityQuestion == null) {
             throw new IllegalArgumentException('userSecurityQuestion is null')
         }
 
-        userSecurityQuestion = userSecurityQuestionFilter.filterForCreate(userSecurityQuestion)
+        def callback = authorizeCallbackFactory.create(userSecurityQuestion.userId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('create')) {
+                throw AppErrors.INSTANCE.invalidAccess().exception()
+            }
 
-        return userSecurityQuestionValidator.validateForCreate(userId, userSecurityQuestion).then {
-           return userSecurityQuestionRepository.create(userSecurityQuestion).
-               then { UserSecurityQuestion newUserSecurityQuestion ->
-                    Created201Marker.mark((Id)newUserSecurityQuestion.id)
+            userSecurityQuestion = userSecurityQuestionFilter.filterForCreate(userSecurityQuestion)
 
-                    newUserSecurityQuestion = userSecurityQuestionFilter.filterForGet(newUserSecurityQuestion, null)
-                    return Promise.pure(newUserSecurityQuestion)
-               }
+            return userSecurityQuestionValidator.validateForCreate(userId, userSecurityQuestion).then {
+                return userSecurityQuestionRepository.create(userSecurityQuestion).
+                        then { UserSecurityQuestion newUserSecurityQuestion ->
+                            Created201Marker.mark((Id) newUserSecurityQuestion.id)
+
+                            newUserSecurityQuestion = userSecurityQuestionFilter.filterForGet(newUserSecurityQuestion, null)
+                            return Promise.pure(newUserSecurityQuestion)
+                        }
+            }
         }
     }
 
@@ -62,10 +79,17 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
 
         return userSecurityQuestionValidator.validateForGet(userId, userSecurityQuestionId).
             then { UserSecurityQuestion newUserSecurityQuestion ->
+            def callback = authorizeCallbackFactory.create(newUserSecurityQuestion.userId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('get')) {
+                    throw AppErrors.INSTANCE.userNotFound(userId).exception()
+                }
+
                 newUserSecurityQuestion = userSecurityQuestionFilter.filterForGet(newUserSecurityQuestion,
                         getOptions.properties?.split(',') as List<String>)
 
-            return Promise.pure(newUserSecurityQuestion)
+                return Promise.pure(newUserSecurityQuestion)
+            }
         }
     }
 
@@ -81,21 +105,28 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
         }
 
         return userSecurityQuestionRepository.get(userSecurityQuestionId).then {
-                UserSecurityQuestion oldUserSecurityQuestion ->
-            if (oldUserSecurityQuestion == null) {
-                throw AppErrors.INSTANCE.userSecurityQuestionNotFound(userSecurityQuestionId).exception()
-            }
+            UserSecurityQuestion oldUserSecurityQuestion ->
+            def callback = authorizeCallbackFactory.create(userSecurityQuestion.userId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('update')) {
+                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                }
 
-            userSecurityQuestion = userSecurityQuestionFilter.
-                    filterForPatch(userSecurityQuestion, oldUserSecurityQuestion)
+                if (oldUserSecurityQuestion == null) {
+                    throw AppErrors.INSTANCE.userSecurityQuestionNotFound(userSecurityQuestionId).exception()
+                }
 
-            return userSecurityQuestionValidator.validateForUpdate(
-                    userId, userSecurityQuestionId, userSecurityQuestion, oldUserSecurityQuestion).then {
+                userSecurityQuestion = userSecurityQuestionFilter.
+                        filterForPatch(userSecurityQuestion, oldUserSecurityQuestion)
 
-                return userSecurityQuestionRepository.update(userSecurityQuestion).
-                        then { UserSecurityQuestion newUserSecurityQuestion ->
-                    newUserSecurityQuestion = userSecurityQuestionFilter.filterForGet(newUserSecurityQuestion, null)
-                    return Promise.pure(newUserSecurityQuestion)
+                return userSecurityQuestionValidator.validateForUpdate(
+                        userId, userSecurityQuestionId, userSecurityQuestion, oldUserSecurityQuestion).then {
+
+                    return userSecurityQuestionRepository.update(userSecurityQuestion).
+                            then { UserSecurityQuestion newUserSecurityQuestion ->
+                        newUserSecurityQuestion = userSecurityQuestionFilter.filterForGet(newUserSecurityQuestion, null)
+                        return Promise.pure(newUserSecurityQuestion)
+                    }
                 }
             }
         }
@@ -112,21 +143,28 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
             throw new IllegalArgumentException('userSecurityQuestion is null')
         }
 
-        return userSecurityQuestionRepository.get(userSecurityQuestionId).then {
-            UserSecurityQuestion oldUserSecurityQuestion ->
-            if (oldUserSecurityQuestion == null) {
-                throw AppErrors.INSTANCE.userSecurityQuestionNotFound(userSecurityQuestionId).exception()
+        def callback = authorizeCallbackFactory.create(userSecurityQuestion.userId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('update')) {
+                throw AppErrors.INSTANCE.invalidAccess().exception()
             }
 
-            userSecurityQuestion = userSecurityQuestionFilter.
-                    filterForPut(userSecurityQuestion, oldUserSecurityQuestion)
+            return userSecurityQuestionRepository.get(userSecurityQuestionId).then {
+                UserSecurityQuestion oldUserSecurityQuestion ->
+                if (oldUserSecurityQuestion == null) {
+                    throw AppErrors.INSTANCE.userSecurityQuestionNotFound(userSecurityQuestionId).exception()
+                }
 
-            return userSecurityQuestionValidator.validateForUpdate(
-                    userId, userSecurityQuestionId, userSecurityQuestion, oldUserSecurityQuestion).then {
-                return userSecurityQuestionRepository.update(userSecurityQuestion).
-                        then { UserSecurityQuestion newUserSecurityQuestion ->
-                    newUserSecurityQuestion = userSecurityQuestionFilter.filterForGet(newUserSecurityQuestion, null)
-                    return Promise.pure(newUserSecurityQuestion)
+                userSecurityQuestion = userSecurityQuestionFilter.
+                        filterForPut(userSecurityQuestion, oldUserSecurityQuestion)
+
+                return userSecurityQuestionValidator.validateForUpdate(
+                        userId, userSecurityQuestionId, userSecurityQuestion, oldUserSecurityQuestion).then {
+                    return userSecurityQuestionRepository.update(userSecurityQuestion).
+                            then { UserSecurityQuestion newUserSecurityQuestion ->
+                        newUserSecurityQuestion = userSecurityQuestionFilter.filterForGet(newUserSecurityQuestion, null)
+                        return Promise.pure(newUserSecurityQuestion)
+                    }
                 }
             }
         }
@@ -134,8 +172,16 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
 
     @Override
     Promise<Void> delete(UserId userId, UserSecurityQuestionId userSecurityQuestionId) {
-        return userSecurityQuestionValidator.validateForGet(userId, userSecurityQuestionId).then {
-            return userSecurityQuestionRepository.delete(userSecurityQuestionId)
+        return userSecurityQuestionValidator.validateForGet(userId, userSecurityQuestionId)
+                .then { UserSecurityQuestion userSecurityQuestion ->
+            def callback = authorizeCallbackFactory.create(userSecurityQuestion.userId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('delete')) {
+                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                }
+
+                return userSecurityQuestionRepository.delete(userSecurityQuestionId)
+            }
         }
     }
 
@@ -147,24 +193,36 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
         if (listOptions == null) {
             throw new IllegalArgumentException('listOptions is null')
         }
-        listOptions.setUserId(userId)
 
-        return userSecurityQuestionValidator.validateForSearch(listOptions).then {
-            return search(listOptions).then { List<UserSecurityQuestion> userSecurityQuestionList ->
-                def result = new Results<UserSecurityQuestion>(items: [])
-
-                userSecurityQuestionList.each { UserSecurityQuestion newUserSecurityQuestion ->
-                    if (newUserSecurityQuestion != null) {
-                        newUserSecurityQuestion = userSecurityQuestionFilter.filterForGet(newUserSecurityQuestion,
-                                listOptions.properties?.split(',') as List<String>)
-                    }
-
-                    if (newUserSecurityQuestion != null) {
-                        result.items.add(newUserSecurityQuestion)
-                    }
-                }
-
+        def callback = authorizeCallbackFactory.create(userId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            def result = new Results<UserSecurityQuestion>(items: [])
+            if (!AuthorizeContext.hasRights('read')) {
                 return Promise.pure(result)
+            }
+
+            listOptions.setUserId(userId)
+
+            return userSecurityQuestionValidator.validateForSearch(listOptions).then {
+                return search(listOptions).then { List<UserSecurityQuestion> userSecurityQuestionList ->
+
+
+                    return Promise.each(userSecurityQuestionList) { UserSecurityQuestion newUserSecurityQuestion ->
+
+                        if (newUserSecurityQuestion != null) {
+                            newUserSecurityQuestion = userSecurityQuestionFilter.filterForGet(newUserSecurityQuestion,
+                                    listOptions.properties?.split(',') as List<String>)
+                        }
+
+                        if (newUserSecurityQuestion != null) {
+                            result.items.add(newUserSecurityQuestion)
+                        }
+
+                        return Promise.pure(null)
+                    }
+                }.then {
+                    return Promise.pure(result)
+                }
             }
         }
     }

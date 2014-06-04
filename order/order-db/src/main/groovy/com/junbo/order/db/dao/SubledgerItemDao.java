@@ -7,7 +7,7 @@
 package com.junbo.order.db.dao;
 
 import com.junbo.order.db.entity.SubledgerItemEntity;
-import com.junbo.order.db.entity.enums.SubledgerItemStatus;
+import com.junbo.order.spec.model.enums.SubledgerItemStatus;
 
 import java.util.List;
 

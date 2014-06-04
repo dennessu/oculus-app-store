@@ -37,7 +37,7 @@ public interface TosResource {
     @ApiOperation("Update a tos")
     @POST
     @Path("/{tosId}")
-    Promise<Tos> put(@PathParam("tosId") TosId tosId, Tos tos);
+    Promise<Tos> patch(@PathParam("tosId") TosId tosId, Tos tos);
 
     @ApiOperation("Get a tos info")
     @GET

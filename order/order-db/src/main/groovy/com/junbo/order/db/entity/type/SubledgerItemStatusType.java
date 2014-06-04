@@ -5,7 +5,7 @@
  */
 package com.junbo.order.db.entity.type;
 
-import com.junbo.order.db.entity.enums.SubledgerItemStatus;
+import com.junbo.order.spec.model.enums.SubledgerItemStatus;
 
 /**
  * Created by fzhang on 4/2/2014.

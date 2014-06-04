@@ -8,7 +8,7 @@ package com.junbo.order.db.dao.impl;
 
 import com.junbo.order.db.dao.SubledgerItemDao;
 import com.junbo.order.db.entity.SubledgerItemEntity;
-import com.junbo.order.db.entity.enums.SubledgerItemStatus;
+import com.junbo.order.spec.model.enums.SubledgerItemStatus;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;

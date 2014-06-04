@@ -43,13 +43,25 @@
     </bean>
 
     <bean id="adyenRestClient" class="com.junbo.payment.clientproxy.adyen.proxy.AdyenApiClientProxy"
-          parent="baseClientProxy">
+          parent="rawDataBaseClientproxy">
         <property name="target" value="https://pal-test.adyen.com/pal/adapter"/>
     </bean>
 
+    <bean id="rawDataBaseClientproxy" class="com.junbo.langur.core.client.AbstractClientProxy"
+          parent="baseClientProxy"  abstract="true">
+        <property name="transcoder" ref="rawDataTranscoder"/>
+    </bean>
 
-    <bean id="countryServiceFacade" class="com.junbo.payment.clientproxy.impl.CountryServiceFacadeImpl"/>
-    <bean id="currencyServiceFacade" class="com.junbo.payment.clientproxy.impl.CurrencyServiceFacadeImpl"/>
+    <bean id="rawDataTranscoder" class="com.junbo.payment.clientproxy.adyen.RawDataTranscoder"/>
+
+    <bean id="countryServiceFacade" class="com.junbo.payment.clientproxy.impl.CountryServiceFacadeImpl">
+        <property name="countryResource" ref="countryClient" />
+    </bean>
+
+    <bean id="currencyServiceFacade" class="com.junbo.payment.clientproxy.impl.CurrencyServiceFacadeImpl">
+        <property name="currencyResource" ref="currencyClient"/>
+    </bean>
+
     <bean id="mockPersonalInfoClientProxy" class="com.junbo.payment.clientproxy.MockPersonalInfoClientProxy"/>
 
 

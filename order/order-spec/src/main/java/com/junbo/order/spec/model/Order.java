@@ -36,6 +36,7 @@ import java.util.List;
         "totalAmount", "totalTax", "isTaxInclusive", "totalDiscount", "totalShippingFee",
         "totalShippingFeeDiscount", "honoredTime",
         "resourceAge", "ratingInfo", "shippingMethod",
+        "shippingToAddress", "shippingToName", "shippingToPhone",
         "orderItems", "payments", "discounts",
         "successRedirectUrl", "cancelRedirectUrl", "providerConfirmUrl"
 })
@@ -101,10 +102,22 @@ public class Order extends ResourceMeta implements Identifiable<OrderId> {
     @ApiModelProperty(required = true, position = 75, value = "The shipping method. Required for physical goods. " +
             "It might be null if there is no shipping method at this time.")
     private Long shippingMethod;
+
+    @JsonProperty("shippingToAddress")
     @ApiModelProperty(required = true, position = 76, value = "The shipping address. Required for physical goods. " +
             "It might be null if there is no shipping address at this time.")
     private UserPersonalInfoId shippingAddress;
+
+    @ApiModelProperty(required = true, position = 77, value = "The shipping user name. Required for physical goods. " +
+            "It might be null if there is no shipping user name at this time.")
+    private UserPersonalInfoId shippingToName;
+
+    @ApiModelProperty(required = true, position = 78, value = "The shipping user contact phone. Required for physical goods. " +
+            "It might be null if there is no shipping contact phone at this time.")
+    private UserPersonalInfoId shippingToPhone;
     // end of shippingInfo
+
+
 
     @ApiModelProperty(required = true, position = 150, value = "The payments instruments. " +
             "Required if the order is not free. " +
@@ -344,5 +357,21 @@ public class Order extends ResourceMeta implements Identifiable<OrderId> {
 
     public void setPaymentDescription(String paymentDescription) {
         this.paymentDescription = paymentDescription;
+    }
+
+    public UserPersonalInfoId getShippingToName() {
+        return shippingToName;
+    }
+
+    public void setShippingToName(UserPersonalInfoId shippingToName) {
+        this.shippingToName = shippingToName;
+    }
+
+    public UserPersonalInfoId getShippingToPhone() {
+        return shippingToPhone;
+    }
+
+    public void setShippingToPhone(UserPersonalInfoId shippingToPhone) {
+        this.shippingToPhone = shippingToPhone;
     }
 }

@@ -27,4 +27,6 @@ public interface PaymentFacade {
     Promise<PaymentTransaction> postPaymentConfirm(Long paymentId, PaymentTransaction request);
 
     Promise<PaymentTransaction> postPaymentCheck(Long paymentId);
+
+    Promise<PaymentTransaction> postPaymentRefund(Long paymentId, PaymentTransaction request);
 }

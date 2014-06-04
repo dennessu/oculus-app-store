@@ -12,7 +12,7 @@ import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
-import com.junbo.order.db.entity.enums.OrderStatus
+import com.junbo.order.spec.model.enums.OrderStatus
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier

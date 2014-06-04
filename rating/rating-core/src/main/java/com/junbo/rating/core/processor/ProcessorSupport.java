@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lizwu on 5/22/14.
@@ -33,14 +34,14 @@ public abstract class ProcessorSupport implements Processor{
 
         for (OfferAction action : actions) {
             if (actionType.equalsIgnoreCase(action.getType())) {
-                return retrievePrice(action.getPrice(), context.getCurrency().getCode());
+                return retrievePrice(action.getPrice(), context.getCountry(), context.getCurrency().getCode());
             }
         }
 
         throw AppErrors.INSTANCE.actionNotFound(actionType).exception();
     }
 
-    private BigDecimal retrievePrice(Price price, String currency) {
+    private BigDecimal retrievePrice(Price price, String country, String currency) {
         if (price == null) {
             throw AppErrors.INSTANCE.priceNotFound().exception();
         }
@@ -49,10 +50,15 @@ public abstract class ProcessorSupport implements Processor{
             return BigDecimal.ZERO;
         }
 
-        if (!price.getPrices().containsKey(currency)) {
+        if (price.getPrices() == null || !price.getPrices().containsKey(country)) {
             throw AppErrors.INSTANCE.priceNotFound().exception();
         }
 
-        return price.getPrices().get(currency);
+        Map<String, BigDecimal> prices = price.getPrices().get(country);
+        if (!prices.containsKey(currency)) {
+            throw AppErrors.INSTANCE.priceNotFound().exception();
+        }
+
+        return prices.get(currency);
     }
 }

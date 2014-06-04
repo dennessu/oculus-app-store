@@ -12,7 +12,7 @@ import com.junbo.order.core.impl.common.BillingEventHistoryBuilder
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
-import com.junbo.order.db.entity.enums.BillingAction
+import com.junbo.order.spec.model.enums.BillingAction
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.payment.spec.model.PaymentInstrument
@@ -85,6 +85,7 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
                             LOGGER.error('name=Order_PhysicalSettle_CompleteCharge_Error_Balance_Null')
                             throw AppErrors.INSTANCE.billingConnectionError().exception()
                         }
+                        context.orderServiceContext.isAsyncCharge = resultBalance.isAsyncCharge
                         def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(resultBalance)
                         if (billingHistory.billingEvent != null) {
                             if (billingHistory.billingEvent == BillingAction.CHARGE.name()) {
@@ -126,6 +127,7 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
                 throw AppErrors.INSTANCE.
                         billingConnectionError().exception()
             }
+            context.orderServiceContext.isAsyncCharge = resultBalance.isAsyncCharge
             def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(resultBalance)
             if (billingHistory.billingEvent != null) {
                 if (billingHistory.billingEvent == BillingAction.CHARGE.name()) {

@@ -6,7 +6,7 @@
 
 package com.junbo.order.db.entity.type;
 
-import com.junbo.order.db.entity.enums.OrderType;
+import com.junbo.order.spec.model.enums.OrderType;
 
 /**
  * Created by LinYi on 14-3-7.

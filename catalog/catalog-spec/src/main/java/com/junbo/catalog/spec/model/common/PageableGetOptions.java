@@ -7,6 +7,7 @@
 package com.junbo.catalog.spec.model.common;
 
 import com.junbo.catalog.common.util.Constants;
+import org.springframework.util.StringUtils;
 
 import javax.ws.rs.QueryParam;
 
@@ -71,5 +72,11 @@ public class PageableGetOptions {
 
     public void setNextBookmark(String nextBookmark) {
         this.nextBookmark = nextBookmark;
+    }
+
+    public void nextPage() {
+        if (!StringUtils.isEmpty(nextBookmark)) {
+            setBookmark(nextBookmark);
+        }
     }
 }

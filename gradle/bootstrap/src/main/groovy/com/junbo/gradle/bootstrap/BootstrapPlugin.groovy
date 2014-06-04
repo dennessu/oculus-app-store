@@ -1,4 +1,5 @@
 package com.junbo.gradle.bootstrap
+
 import org.apache.tools.ant.util.TeeOutputStream
 import org.gradle.BuildListener
 import org.gradle.BuildResult
@@ -23,6 +24,7 @@ import org.gradle.util.Clock
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
+
 /**
  * Created by kg on 1/21/14.
  */
@@ -30,6 +32,7 @@ class BootstrapPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project rootProject) {
+
         rootProject.task('createWrapper', type: Wrapper) {
             gradleVersion = '1.11'
         }
@@ -104,12 +107,21 @@ class BootstrapPlugin implements Plugin<Project> {
                     testCompile libraries.testng
                 }
 
+                def generatedSrc = file "$buildDir/generated-src"
+                def generatedRes = file "$buildDir/generated-res"
+
+                sourceSets {
+                    main {
+                        resources {
+                            srcDir generatedRes
+                        }
+                    }
+                }
+
                 compileJava.dependsOn configurations.processor
                 compileJava.doFirst {
-                    def generated = file "$buildDir/generated-src"
-                    generated.mkdirs()
-
-                    compileJava.options.compilerArgs.addAll '-s', generated.path
+                    generatedSrc.mkdirs()
+                    compileJava.options.compilerArgs.addAll '-s', generatedSrc.path
 
                     if (!configurations.processor.empty) {
                         compileJava.options.compilerArgs.addAll '-processorpath', configurations.processor.asPath
@@ -172,7 +184,7 @@ class BootstrapPlugin implements Plugin<Project> {
 
                 task('sourcesJar', type: Jar) {
                     classifier = 'sources'
-                    from sourceSets.main.allSource, "$buildDir/generated-src"
+                    from sourceSets.main.allSource, generatedSrc.path
                 }
 
                 publishing {
@@ -221,10 +233,10 @@ class BootstrapPlugin implements Plugin<Project> {
 
                 compileGroovy.dependsOn configurations.processor
                 compileGroovy.doFirst {
-                    def generated = file "$buildDir/generated-src"
-                    generated.mkdirs()
+                    def generatedSrc = file "$buildDir/generated-src"
+                    generatedSrc.mkdirs()
 
-                    compileGroovy.options.compilerArgs.addAll '-s', generated.path
+                    compileGroovy.options.compilerArgs.addAll '-s', generatedSrc.path
 
                     if (!configurations.processor.empty) {
                         compileGroovy.options.compilerArgs.addAll '-processorpath', configurations.processor.asPath
@@ -309,6 +321,8 @@ class BootstrapPlugin implements Plugin<Project> {
             }
         }
 
+        rootProject.apply plugin: "git-properties"
+
         rootProject.task('cleanupReport')  {
             rootProject.delete "build/xml-report"
         }
@@ -323,49 +337,4 @@ class BootstrapPlugin implements Plugin<Project> {
             }
         }
     }
-}
-
-// Log timings per task.
-class TimingsListener implements TaskExecutionListener, BuildListener {
-    private Clock clock
-    private timings = []
-
-    @Override
-    void beforeExecute(Task task) {
-        clock = new org.gradle.util.Clock()
-    }
-
-    @Override
-    void afterExecute(Task task, TaskState taskState) {
-        def ms = clock.timeInMs
-        timings.add([ms, task.path])
-        task.project.logger.info "${task.path} took ${ms}ms"
-    }
-
-    @Override
-    void buildFinished(BuildResult result) {
-        if (result.failure == null) {
-            println "Task timings (Top 10):"
-
-            def count = 0
-            for (timing in timings.sort { -it[0] }) {
-                printf "%7sms  %s\n", timing
-
-                count++
-                if (count >= 10) break;
-            }
-        }
-    }
-
-    @Override
-    void buildStarted(Gradle gradle) {}
-
-    @Override
-    void projectsEvaluated(Gradle gradle) {}
-
-    @Override
-    void projectsLoaded(Gradle gradle) {}
-
-    @Override
-    void settingsEvaluated(Settings settings) {}
 }

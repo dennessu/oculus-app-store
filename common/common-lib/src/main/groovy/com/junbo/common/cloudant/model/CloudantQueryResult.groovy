@@ -7,18 +7,19 @@ import groovy.transform.CompileStatic
  */
 
 @CompileStatic
-class CloudantQueryResult<T> {
+class CloudantQueryResult<T, V> {
     @CloudantProperty('total_rows')
     Long totalRows
     Long offset
     String bookmark
 
-    List<ResultObject<T>> rows
+    List<ResultObject<T, V>> rows
 
-    static class ResultObject<T> {
+    static class ResultObject<T, V> {
         String id
         String key
         T value
+        V doc
     }
 
     static class AllResultEntity {

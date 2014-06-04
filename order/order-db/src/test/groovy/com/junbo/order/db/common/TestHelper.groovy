@@ -5,8 +5,13 @@
  */
 
 package com.junbo.order.db.common
+import com.junbo.common.enumid.CountryId
+import com.junbo.common.enumid.CurrencyId
+import com.junbo.common.id.OfferId
+import com.junbo.common.id.UserId
 import com.junbo.order.db.entity.*
-import com.junbo.order.db.entity.enums.*
+import com.junbo.order.spec.model.enums.*
+import com.junbo.order.spec.model.Subledger
 import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -197,6 +202,19 @@ class TestHelper implements ApplicationContextAware {
         return entity
     }
 
+    static Subledger generateSubledger() {
+        return new Subledger(
+            seller: new UserId(generateId()),
+            offer: new OfferId(generateId()),
+            payoutStatus: PayoutStatus.COMPLETED.name(),
+            startTime: new Date(),
+            endTime: new Date(),
+            country: new CountryId('US'),
+            currency: new CurrencyId(RandomStringUtils.randomAlphabetic(3)),
+            totalAmount: BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX))
+        )
+    }
+
     static SubledgerItemEntity generateSubledgerItemEntity() {
         SubledgerItemEntity entity = new SubledgerItemEntity()
         def rand = new SecureRandom()
@@ -221,3 +239,4 @@ class TestHelper implements ApplicationContextAware {
         idGenerator = (IdGenerator)applicationContext.getBean("oculus48IdGenerator")
     }
 }
+

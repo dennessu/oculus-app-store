@@ -1,6 +1,6 @@
 package com.junbo.order.core.impl.orderaction.context
 
-import com.junbo.order.db.entity.enums.EventStatus
+import com.junbo.order.spec.model.enums.EventStatus
 import groovy.transform.CompileStatic
 
 /**

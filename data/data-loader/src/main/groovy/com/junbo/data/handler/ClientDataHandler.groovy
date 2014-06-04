@@ -38,7 +38,7 @@ class ClientDataHandler extends BaseDataHandler {
 
         if (existing != null) {
             int currentRevision = getRevision(existing.revision)
-            if (client.revision != null && getRevision(client.revision) > currentRevision) {
+            if (alwaysOverwrite || (client.revision != null && getRevision(client.revision) > currentRevision)) {
                 logger.debug("Overwrite Client $client.clientId of revision $existing.revision " +
                         "with new revision: $client.revision")
 

@@ -68,6 +68,10 @@ class UserResourceImpl implements UserResource {
 
         def callback = userAuthorizeCallbackFactory.create(user)
         return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('create')) {
+                throw AppErrors.INSTANCE.invalidAccess().exception()
+            }
+
             user = userFilter.filterForCreate(user)
 
             return userValidator.validateForCreate(user).then {
@@ -103,6 +107,10 @@ class UserResourceImpl implements UserResource {
 
             def callback = userAuthorizeCallbackFactory.create(oldUser)
             return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('update')) {
+                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                }
+
                 user = userFilter.filterForPut(user, oldUser)
 
                 return userValidator.validateForUpdate(user, oldUser).then {
@@ -132,6 +140,10 @@ class UserResourceImpl implements UserResource {
 
             def callback = userAuthorizeCallbackFactory.create(oldUser)
             return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('update')) {
+                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                }
+
                 user = userFilter.filterForPatch(user, oldUser)
 
                 return userValidator.validateForUpdate(user, oldUser).then {
@@ -158,6 +170,10 @@ class UserResourceImpl implements UserResource {
 
             def callback = userAuthorizeCallbackFactory.create(user)
             return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('read')) {
+                    throw AppErrors.INSTANCE.userNotFound(userId).exception()
+                }
+
                 user = userFilter.filterForGet(user, getOptions.properties?.split(',') as List<String>)
 
                 if (user == null) {
@@ -177,6 +193,10 @@ class UserResourceImpl implements UserResource {
             def filterUser = { User user ->
                 def callback = userAuthorizeCallbackFactory.create(user)
                 return RightsScope.with(authorizeService.authorize(callback)) {
+                    if (!AuthorizeContext.hasRights('search')) {
+                        throw AppErrors.INSTANCE.invalidAccess().exception()
+                    }
+
                     user = userFilter.filterForGet(user, listOptions.properties?.split(',') as List<String>)
 
                     if (user != null) {

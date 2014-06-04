@@ -3,8 +3,8 @@ package com.junbo.order.core.impl.common
 import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
-import com.junbo.order.db.entity.enums.BillingAction
-import com.junbo.order.db.entity.enums.EventStatus
+import com.junbo.order.spec.model.enums.BillingAction
+import com.junbo.order.spec.model.enums.EventStatus
 import com.junbo.order.spec.model.BillingHistory
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
@@ -26,6 +26,7 @@ class BillingEventHistoryBuilder {
             case BalanceStatus.PENDING_CAPTURE:
                 return EventStatus.COMPLETED
 
+            case BalanceStatus.QUEUING:
             case BalanceStatus.UNCONFIRMED:
             case BalanceStatus.INIT:
                 return EventStatus.PENDING

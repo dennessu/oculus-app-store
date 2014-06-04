@@ -71,44 +71,21 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
             throw AppErrors.INSTANCE.notFound("item", Utils.encodeId(itemId)).exception();
         }
         validateItemUpdate(item, oldItem);
+
+        item.setActiveRevision(oldItem.getActiveRevision());
         return itemRepo.update(item);
     }
 
     @Override
     public List<Item> getItems(ItemsGetOptions options) {
-        if (options.getHostItemId() != null) {
-            List<ItemRevision> itemRevisions = itemRevisionRepo.getRevisions(options.getHostItemId().getValue());
-            if (CollectionUtils.isEmpty(itemRevisions)) {
-                return Collections.emptyList();
-            }
-            Set<ItemId> itemIds = new HashSet<>();
-            for (ItemRevision itemRevision : itemRevisions) {
-                itemIds.add(new ItemId(itemRevision.getItemId()));
-            }
-            itemRevisions = itemRevisionRepo.getRevisions(itemIds, System.currentTimeMillis());
-            itemIds.clear();
-            for (ItemRevision itemRevision : itemRevisions) {
-                if (itemRevision.getIapHostItemIds() != null
-                        && itemRevision.getIapHostItemIds().contains(options.getHostItemId().getValue())) {
-                    itemIds.add(new ItemId(itemRevision.getItemId()));
-                }
-            }
-            if (CollectionUtils.isEmpty(itemIds)) {
-                return Collections.emptyList();
-            }
-
-            ItemsGetOptions getOptions = new ItemsGetOptions();
-            getOptions.setItemIds(itemIds);
-            return itemRepo.getItems(getOptions);
-        } else {
-            return itemRepo.getItems(options);
-        }
+        return itemRepo.getItems(options);
     }
 
     @Override
     public ItemRevision createRevision(ItemRevision revision) {
         validateRevisionCreation(revision);
-        generateEntitlementDef(revision);
+        Item item = itemRepo.get(revision.getItemId());
+        generateEntitlementDef(revision, item.getType());
         return itemRevisionRepo.create(revision);
     }
 
@@ -122,8 +99,17 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
             throw AppErrors.INSTANCE.validation("Cannot update an approved revision").exception();
         }
         validateRevisionUpdate(revision, oldRevision);
-        generateEntitlementDef(revision);
-        return super.updateRevision(revisionId, revision);
+        Item item = itemRepo.get(revision.getItemId());
+        generateEntitlementDef(revision, item.getType());
+
+        if (Status.APPROVED.is(revision.getStatus())) {
+            revision.setTimestamp(Utils.currentTimestamp());
+
+            item.setCurrentRevisionId(revisionId);
+            item.setActiveRevision(revision);
+            itemRepo.update(item);
+        }
+        return itemRevisionRepo.update(revision);
     }
 
     @Override
@@ -132,9 +118,11 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
             if (CollectionUtils.isEmpty(options.getItemIds())) {
                 throw AppErrors.INSTANCE.validation("itemId must be specified when timestamp is present.").exception();
             }
-
-            return itemRevisionRepo.getRevisions(options.getItemIds(), options.getTimestamp());
-
+            Set<Long> itemIds = new HashSet<>();
+            for (ItemId itemId : options.getItemIds()) {
+                itemIds.add(itemId.getValue());
+            }
+            return itemRevisionRepo.getRevisions(itemIds, options.getTimestamp());
         } else {
             return itemRevisionRepo.getRevisions(options);
         }
@@ -160,13 +148,12 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
         return "item-revision";
     }
 
-    private void generateEntitlementDef(ItemRevision revision) {
-        Item item = itemRepo.get(revision.getItemId());
+    private void generateEntitlementDef(ItemRevision revision, String itemType) {
         if (revision.getEntitlementDefs() == null) {
             revision.setEntitlementDefs(new ArrayList<EntitlementDef>());
         }
         List<EntitlementDef> entitlementDefs = revision.getEntitlementDefs();
-        if (ItemType.DIGITAL.is(item.getType())) {
+        if (ItemType.DIGITAL.is(itemType)) {
             addEntitlementIfNotExist(entitlementDefs, EntitlementType.DOWNLOAD, false);
             addEntitlementIfNotExist(entitlementDefs, EntitlementType.RUN, false);
         }
@@ -239,9 +226,6 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
                 errors.add(AppErrors.INSTANCE.fieldNotCorrect("defaultOffer",
                         "Cannot find offer " + Utils.encodeId(item.getDefaultOffer())));
             }
-        }
-        if (item.getEntitlementDefId() != null) {
-            errors.add(AppErrors.INSTANCE.unnecessaryField("entitlementDefId"));
         }
         if (!CollectionUtils.isEmpty(item.getGenres())) {
             for (Long genreId : item.getGenres()) {

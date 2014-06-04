@@ -8,8 +8,8 @@ package com.junbo.order.db.entity;
 
 import com.junbo.common.util.Identifiable;
 import com.junbo.order.db.ValidationMessages;
-import com.junbo.order.db.entity.enums.SubledgerItemAction;
-import com.junbo.order.db.entity.enums.SubledgerItemStatus;
+import com.junbo.order.spec.model.enums.SubledgerItemAction;
+import com.junbo.order.spec.model.enums.SubledgerItemStatus;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;

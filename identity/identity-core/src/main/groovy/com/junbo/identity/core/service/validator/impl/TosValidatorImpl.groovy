@@ -1,14 +1,17 @@
 package com.junbo.identity.core.service.validator.impl
 
+import com.junbo.common.enumid.CountryId
 import com.junbo.common.id.TosId
 import com.junbo.identity.core.service.validator.TosValidator
-import com.junbo.identity.data.repository.LocaleRepository
+import com.junbo.identity.data.repository.CountryRepository
 import com.junbo.identity.data.repository.TosRepository
 import com.junbo.identity.spec.error.AppErrors
+import com.junbo.identity.spec.v1.model.Country
 import com.junbo.identity.spec.v1.model.Tos
 import com.junbo.identity.spec.v1.option.list.TosListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Required
 
 /**
@@ -18,7 +21,13 @@ import org.springframework.beans.factory.annotation.Required
 class TosValidatorImpl implements TosValidator {
 
     private TosRepository tosRepository
-    private LocaleRepository localeRepository
+    private CountryRepository countryRepository
+
+    private List<String> allowedTosTypes
+    private List<String> tosStatus
+
+    private Integer minVersionLength
+    private Integer maxVersionLength
 
     private Integer titleMinLength
     private Integer titleMaxLength
@@ -60,11 +69,42 @@ class TosValidatorImpl implements TosValidator {
         }
     }
 
+    @Override
+    Promise<Void> validateForUpdate(TosId tosId, Tos tos, Tos oldTos) {
+        if (tos.id == null) {
+            throw AppErrors.INSTANCE.fieldRequired('id').exception()
+        }
+
+        if (tosId != tos.id) {
+            throw AppErrors.INSTANCE.fieldInvalid('id', tosId.toString()).exception()
+        }
+
+        return checkBasicTosInfo(tos).then {
+            return Promise.pure(null)
+        }
+    }
+
     private Promise<Void> checkBasicTosInfo(Tos tos) {
         if (tos == null) {
             throw new IllegalArgumentException('tos is null')
         }
 
+        if (tos.type == null) {
+            throw AppErrors.INSTANCE.fieldRequired('type').exception()
+        }
+        if (!(tos.type in allowedTosTypes)) {
+            throw AppErrors.INSTANCE.fieldInvalid('type', allowedTosTypes.join(',')).exception()
+        }
+
+        if (tos.version == null) {
+            throw AppErrors.INSTANCE.fieldRequired('version').exception()
+        }
+        if (tos.version.length() < minVersionLength) {
+            throw AppErrors.INSTANCE.fieldTooShort('version', minVersionLength).exception()
+        }
+        if (tos.version.length() > maxVersionLength) {
+            throw AppErrors.INSTANCE.fieldTooLong('version', maxVersionLength).exception()
+        }
 
         if (tos.title == null) {
             throw AppErrors.INSTANCE.fieldRequired('title').exception()
@@ -86,7 +126,23 @@ class TosValidatorImpl implements TosValidator {
             throw AppErrors.INSTANCE.fieldTooShort('content', contentMinLength).exception()
         }
 
-        return Promise.pure(null)
+        if (tos.state != null && !(tos.state in tosStatus)) {
+            throw AppErrors.INSTANCE.fieldInvalid('state', tosStatus.join(',')).exception()
+        }
+
+        if (CollectionUtils.isEmpty(tos.countries)) {
+            throw AppErrors.INSTANCE.fieldRequired('countries').exception()
+        }
+
+        return Promise.each(tos.countries) { CountryId countryId ->
+            return countryRepository.get(countryId).then { Country country ->
+                if (country == null) {
+                    throw AppErrors.INSTANCE.countryNotFound(countryId).exception()
+                }
+
+                return Promise.pure(null)
+            }
+        }
     }
 
     @Required
@@ -115,7 +171,27 @@ class TosValidatorImpl implements TosValidator {
     }
 
     @Required
-    void setLocaleRepository(LocaleRepository localeRepository) {
-        this.localeRepository = localeRepository
+    void setCountryRepository(CountryRepository countryRepository) {
+        this.countryRepository = countryRepository
+    }
+
+    @Required
+    void setAllowedTosTypes(List<String> allowedTosTypes) {
+        this.allowedTosTypes = allowedTosTypes
+    }
+
+    @Required
+    void setTosStatus(List<String> tosStatus) {
+        this.tosStatus = tosStatus
+    }
+
+    @Required
+    void setMinVersionLength(Integer minVersionLength) {
+        this.minVersionLength = minVersionLength
+    }
+
+    @Required
+    void setMaxVersionLength(Integer maxVersionLength) {
+        this.maxVersionLength = maxVersionLength
     }
 }

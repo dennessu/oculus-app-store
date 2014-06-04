@@ -1,7 +1,7 @@
 package com.junbo.order.jobs
 import com.junbo.common.id.OrderId
 import com.junbo.order.core.impl.common.TransactionHelper
-import com.junbo.order.db.entity.enums.OrderStatus
+import com.junbo.order.spec.model.enums.OrderStatus
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.PageParam

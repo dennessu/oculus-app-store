@@ -9,6 +9,7 @@ package com.junbo.catalog.db.repo;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemsGetOptions;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -18,6 +19,7 @@ public interface ItemRepository extends BaseEntityRepository<Item> {
     Item create(Item item);
     Item get(Long entityId);
     List<Item> getItems(ItemsGetOptions options);
+    List<Item> getItems(Collection<Long> itemIds);
     Item update(Item item);
     void delete(Long itemId);
 }

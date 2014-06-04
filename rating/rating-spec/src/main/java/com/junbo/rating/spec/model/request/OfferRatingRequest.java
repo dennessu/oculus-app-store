@@ -7,6 +7,7 @@
 package com.junbo.rating.spec.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.jackson.annotation.CountryId;
 import com.junbo.common.jackson.annotation.CurrencyId;
 import com.junbo.common.jackson.annotation.UserId;
 
@@ -20,6 +21,9 @@ public class OfferRatingRequest {
     @JsonProperty("user")
     private Long userId;
 
+    @CountryId
+    private String country;
+
     @CurrencyId
     private String currency;
 
@@ -32,6 +36,14 @@ public class OfferRatingRequest {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     public String getCurrency() {

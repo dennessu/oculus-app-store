@@ -1,0 +1,32 @@
+{
+  "countryCode": "US",
+  "defaultLocale": {
+    "href": "/v1/locales/en-US",
+    "id": "en-US"
+  },
+  "defaultCurrency": {
+    "href": "/v1/currencies/USD",
+    "id": "USD"
+  },
+  "ratingBoards": [
+    {
+      "href": "/v1/age-rating-boards/ESRB",
+      "id": "ESRB"
+    }
+  ],
+  "subCountries": {
+    "NY": { "shortNameKey": "US_NY_SHORT", "longNameKey": "US_NY_LONG" },
+    "CA": { "shortNameKey": "US_CA_SHORT", "longNameKey": "US_CA_LONG" }
+  },
+  "supportedLocales": [
+    {
+      "href": "/v1/locales/en-US",
+      "id": "en-US"
+    }
+ ],
+ "localeKeys": {
+   "shortNameKey": "US_SHORT",
+   "longNameKey": "US_LONG"
+ },
+ "futureExpansion": {}
+}

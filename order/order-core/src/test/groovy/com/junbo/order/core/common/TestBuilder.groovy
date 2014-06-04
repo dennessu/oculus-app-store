@@ -11,10 +11,10 @@ import com.junbo.langur.core.webflow.state.Conversation
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
-import com.junbo.order.db.entity.enums.DiscountType
-import com.junbo.order.db.entity.enums.EventStatus
-import com.junbo.order.db.entity.enums.ItemType
-import com.junbo.order.db.entity.enums.OrderActionType
+import com.junbo.order.spec.model.enums.DiscountType
+import com.junbo.order.spec.model.enums.EventStatus
+import com.junbo.order.spec.model.enums.ItemType
+import com.junbo.order.spec.model.enums.OrderActionType
 import com.junbo.order.spec.model.Discount
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderEvent
@@ -52,6 +52,8 @@ class TestBuilder {
         order.setPayments([])
         order.payments.add(new PaymentInfo(paymentInstrument: new PaymentInstrumentId(generateLong())))
         order.setShippingAddress(new UserPersonalInfoId(generateLong()))
+        order.setShippingToName(new UserPersonalInfoId(generateLong()))
+        order.setShippingToPhone(new UserPersonalInfoId(generateLong()))
         order.setShippingMethod(generateLong())
         order.setTentative(true)
         order.discounts = []

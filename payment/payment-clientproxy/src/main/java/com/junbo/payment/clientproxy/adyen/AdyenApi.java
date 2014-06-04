@@ -6,7 +6,6 @@
 
 package com.junbo.payment.clientproxy.adyen;
 
-import com.adyen.services.payment.PaymentResult;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -20,6 +19,6 @@ import javax.ws.rs.Path;
 @Path("/")
 public interface AdyenApi {
     @POST
-    @Path("/httppost")
-    Promise<PaymentResult> authorise(AdyenPaymentRequest request);
+    @Path("httppost")
+    Promise<String> authorise(String request);
 }

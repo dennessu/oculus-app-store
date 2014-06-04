@@ -13,6 +13,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import java.lang.reflect.InvocationHandler
+import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.lang.reflect.Proxy
 /**
@@ -63,15 +64,19 @@ class RepositoryProxy implements InvocationHandler {
 
     @Override
     Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if (method.getAnnotation(ReadMethod) != null) {
-            def dataAccessStrategy = getEffectiveStrategy(DataAccessAction.READ, repositoryInterface)
-            return dataAccessStrategy.invokeReadMethod(method, args);
-        } else if (method.getAnnotation(WriteMethod) != null) {
-            def dataAccessStrategy = getEffectiveStrategy(DataAccessAction.WRITE, repositoryInterface)
-            return dataAccessStrategy.invokeWriteMethod(method, args);
-        } else if (method.getAnnotation(DeleteMethod) != null) {
-            def dataAccessStrategy = getEffectiveStrategy(DataAccessAction.WRITE, repositoryInterface)
-            return dataAccessStrategy.invokeDeleteMethod(method, args);
+        try {
+            if (method.getAnnotation(ReadMethod) != null) {
+                def dataAccessStrategy = getEffectiveStrategy(DataAccessAction.READ, repositoryInterface)
+                return dataAccessStrategy.invokeReadMethod(method, args);
+            } else if (method.getAnnotation(WriteMethod) != null) {
+                def dataAccessStrategy = getEffectiveStrategy(DataAccessAction.WRITE, repositoryInterface)
+                return dataAccessStrategy.invokeWriteMethod(method, args);
+            } else if (method.getAnnotation(DeleteMethod) != null) {
+                def dataAccessStrategy = getEffectiveStrategy(DataAccessAction.WRITE, repositoryInterface)
+                return dataAccessStrategy.invokeDeleteMethod(method, args);
+            }
+        } catch (InvocationTargetException ex) {
+            throw ex.getTargetException()
         }
 
         final String methodName = method.name

@@ -49,6 +49,8 @@ public interface ConfigService {
      */
     Properties getAllConfigItems();
 
+    Properties getAllConfigItemsMasked();
+
     /**
      * Add listener to a specified configuration key.
      * @param configKey The configuration key to listen.

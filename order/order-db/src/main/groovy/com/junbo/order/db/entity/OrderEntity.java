@@ -7,7 +7,7 @@
 package com.junbo.order.db.entity;
 
 import com.junbo.order.db.ValidationMessages;
-import com.junbo.order.db.entity.enums.OrderStatus;
+import com.junbo.order.spec.model.enums.OrderStatus;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Length;
 
@@ -30,6 +30,8 @@ public class OrderEntity extends CommonDbEntityWithDate {
     private String country;
     private String locale;
     private Long shippingAddressId;
+    private Long shippingNameId;
+    private Long shippingPhoneId;
     private Long shippingMethodId;
 
     // expand ratingInfo to simplify oom
@@ -79,6 +81,22 @@ public class OrderEntity extends CommonDbEntityWithDate {
     @Column(name = "SHIPPING_ADDRESS_ID")
     public Long getShippingAddressId() { return shippingAddressId; }
     public void setShippingAddressId(Long shippingAddressId) { this.shippingAddressId = shippingAddressId; }
+
+    @Column(name = "SHIPPING_NAME_ID")
+    public Long getShippingNameId() {
+        return shippingNameId;
+    }
+    public void setShippingNameId(Long shippingNameId) {
+        this.shippingNameId = shippingNameId;
+    }
+
+    @Column(name = "SHIPPING_PHONE_ID")
+    public Long getShippingPhoneId() {
+        return shippingPhoneId;
+    }
+    public void setShippingPhoneId(Long shippingPhoneId) {
+        this.shippingPhoneId = shippingPhoneId;
+    }
 
     @Column(name = "SHIPPING_METHOD_ID")
     public Long getShippingMethodId() { return shippingMethodId; }

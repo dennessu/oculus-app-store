@@ -67,16 +67,58 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             throw AppErrors.INSTANCE.notFound("offer", Utils.encodeId(offerId)).exception();
         }
         validateOfferUpdate(offer, oldOffer);
-        return offerRepo.update(offer);
+
+        offer.setCurrentRevisionId(oldOffer.getCurrentRevisionId());
+        offer.setApprovedRevisions(oldOffer.getApprovedRevisions());
+        offer.setActiveRevision(oldOffer.getActiveRevision());
+
+        Offer updatedOffer = offerRepo.update(offer);
+        updatedOffer.setCurrentRevisionId(oldOffer.getCurrentRevisionId());
+        return updatedOffer;
+    }
+
+    @Override
+    public Offer getEntity(Long entityId) {
+        Offer offer = getEntityRepo().get(entityId);
+        checkEntityNotNull(entityId, offer, getEntityType());
+        offer.setCurrentRevisionId(getCurrentRevisionId(offer.getApprovedRevisions()));
+        return offer;
     }
 
     @Override
     public List<Offer> getOffers(OffersGetOptions options) {
+        List<Offer> offers;
         if (options.getItemId() != null) {
-            return getOffersByItemId(options.getItemId().getValue());
+            offers = getOffersByItemId(options.getItemId().getValue());
         } else {
-            return offerRepo.getOffers(options);
+            offers = offerRepo.getOffers(options);
         }
+
+        for (Offer offer : offers) {
+            if (offer.getCurrentRevisionId() == null) {
+                offer.setCurrentRevisionId(getCurrentRevisionId(offer.getApprovedRevisions()));
+            }
+        }
+
+        return offers;
+    }
+
+    private Long getCurrentRevisionId(Map<Long, RevisionInfo> approvedRevisions) {
+        if (approvedRevisions == null) {
+            return null;
+        }
+        Long timestamp = Utils.currentTimestamp();
+        Long revisionId = null;
+        Long approvedTime = 0L;
+        for (RevisionInfo revisionInfo : approvedRevisions.values()) {
+            if (revisionInfo.getApprovedTime() > approvedTime
+                    && revisionInfo.getStartTime() <= timestamp && revisionInfo.getEndTime() > timestamp) {
+                revisionId = revisionInfo.getRevisionId();
+                approvedTime = revisionInfo.getApprovedTime();
+            }
+        }
+
+        return revisionId;
     }
 
     @Override
@@ -87,7 +129,11 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
                         .validation("offerId must be specified when timeInMillis is present.").exception();
             }
 
-            return offerRevisionRepo.getRevisions(options.getOfferIds(), options.getTimestamp());
+            Set<Long> offerIds = new HashSet<>();
+            for (OfferId offerId : options.getOfferIds()) {
+                offerIds.add(offerId.getValue());
+            }
+            return offerRevisionRepo.getRevisions(offerIds, options.getTimestamp());
         } else {
             return offerRevisionRepo.getRevisions(options);
         }
@@ -112,7 +158,57 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         validateRevisionUpdate(revision, oldRevision);
         generateEventActions(revision);
 
-        return super.updateRevision(revisionId, revision);
+        if (Status.APPROVED.is(revision.getStatus())) {
+            Long timestamp = Utils.currentTimestamp();
+            revision.setTimestamp(timestamp);
+            if (revision.getStartTime() == null || revision.getCreatedTime().getTime() < timestamp) {
+                revision.setStartTime(new Date(timestamp));
+            }
+
+            updateOfferForApprovedRevision(revision, timestamp);
+        }
+
+        return offerRevisionRepo.update(revision);
+    }
+
+    private void updateOfferForApprovedRevision(OfferRevision revision, Long timestamp) {
+        Offer offer = offerRepo.get(revision.getOfferId());
+        offer.setPublished(true);
+
+        if (revision.getStartTime().getTime() <= timestamp
+                && revision.getEndTIme() == null || revision.getEndTIme().after(Utils.maxDate())) {
+            offer.setCurrentRevisionId(revision.getRevisionId());
+            offer.setActiveRevision(revision);
+            if (offer.getApprovedRevisions() != null) {
+                offer.getApprovedRevisions().clear();
+            }
+        } else {
+            offer.setCurrentRevisionId(null);
+        }
+        if (revision.getStartTime().getTime() >= timestamp
+                && revision.getEndTIme() == null || revision.getEndTIme().getTime() >= timestamp) {
+            offer.setActiveRevision(revision);
+        }
+        if (offer.getApprovedRevisions() == null) {
+            offer.setApprovedRevisions(new HashMap<Long, RevisionInfo>());
+        }
+        offer.getApprovedRevisions().put(revision.getRevisionId(), getRevisionInfo(revision, timestamp));
+
+        offerRepo.update(offer);
+    }
+
+    private RevisionInfo getRevisionInfo(OfferRevision revision, Long timestamp) {
+        RevisionInfo revisionInfo = new RevisionInfo();
+        revisionInfo.setApprovedTime(timestamp);
+        revisionInfo.setRevisionId(revision.getRevisionId());
+        revisionInfo.setStartTime(revision.getStartTime().getTime());
+        if (revision.getEndTIme() != null) {
+            revisionInfo.setEndTime(revision.getEndTIme().getTime());
+        } else {
+            revisionInfo.setEndTime(Utils.maxDate().getTime());
+        }
+
+        return revisionInfo;
     }
 
     @Override
@@ -151,10 +247,10 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     }
 
     private Set<Long> filterOfferIds(List<OfferRevision> revisions) {
-        Set<OfferId> offerIds = new HashSet<>();
+        Set<Long> offerIds = new HashSet<>();
         Set<Long> revisionIds = new HashSet<>();
         for (OfferRevision offerRevision : revisions) {
-            offerIds.add(new OfferId(offerRevision.getOfferId()));
+            offerIds.add(offerRevision.getOfferId());
             revisionIds.add(offerRevision.getRevisionId());
         }
 
@@ -212,10 +308,10 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         if (!oldOffer.getOfferId().equals(offer.getOfferId())) {
             errors.add(AppErrors.INSTANCE.fieldNotMatch("self.id", offer.getOfferId(), oldOffer.getOfferId()));
         }
-        if (!isEqual(offer.getCurrentRevisionId(), oldOffer.getCurrentRevisionId())) {
+        /*if (!isEqual(offer.getCurrentRevisionId(), oldOffer.getCurrentRevisionId())) {
             errors.add(AppErrors.INSTANCE
                     .fieldNotCorrect("currentRevision", "The field can only be changed through revision approve"));
-        }
+        }*/
         if (!oldOffer.getResourceAge().equals(offer.getResourceAge())) {
             errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", offer.getResourceAge(), oldOffer.getResourceAge()));
         }

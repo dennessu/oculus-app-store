@@ -32,6 +32,7 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
         this.idGenerator = idGenerator;
     }
 
+    @Override
     public ItemRevision create(ItemRevision itemRevision) {
         if (itemRevision.getRevisionId() == null) {
             itemRevision.setRevisionId(idGenerator.nextId());
@@ -39,10 +40,12 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
         return super.cloudantPost(itemRevision);
     }
 
+    @Override
     public ItemRevision get(Long revisionId) {
         return super.cloudantGet(revisionId.toString());
     }
 
+    @Override
     public List<ItemRevision> getRevisions(ItemRevisionsGetOptions options) {
         List<ItemRevision> itemRevisions = new ArrayList<>();
         if (!CollectionUtils.isEmpty(options.getRevisionIds())) {
@@ -60,14 +63,13 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
         } else if (!CollectionUtils.isEmpty(options.getItemIds())) {
             for (ItemId itemId : options.getItemIds()) {
                 List<ItemRevision> revisions = super.queryView("by_itemId", itemId.toString());
-                if (StringUtils.isEmpty(options.getStatus())) {
-                    continue;
-                }
-                Iterator<ItemRevision> iterator = revisions.iterator();
-                while (iterator.hasNext()) {
-                    ItemRevision revision = iterator.next();
-                    if (!options.getStatus().equalsIgnoreCase(revision.getStatus())) {
-                        iterator.remove();
+                if (!StringUtils.isEmpty(options.getStatus())) {
+                    Iterator<ItemRevision> iterator = revisions.iterator();
+                    while (iterator.hasNext()) {
+                        ItemRevision revision = iterator.next();
+                        if (!options.getStatus().equalsIgnoreCase(revision.getStatus())) {
+                            iterator.remove();
+                        }
                     }
                 }
                 itemRevisions.addAll(revisions);
@@ -82,38 +84,8 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
         return itemRevisions;
     }
 
-    public List<ItemRevision> getRevisions(Collection<ItemId> itemIds, Long timestamp) {
-        Set<Long> longItemIds = new HashSet<>();
-        for (ItemId itemId : itemIds) {
-            longItemIds.add(itemId.getValue());
-        }
-
-        return internalGetRevisions(longItemIds, timestamp);
-    }
-
     @Override
-    public List<ItemRevision> getRevisions(Long hostItemId) {
-        List<ItemRevision> itemRevisions = super.queryView("by_hostItemId", hostItemId.toString());
-        Set<Long> itemIds = new HashSet<>();
-        Set<Long> itemRevisionIds = new HashSet<>();
-        for (ItemRevision itemRevision : itemRevisions) {
-            itemIds.add(itemRevision.getItemId());
-            itemRevisionIds.add(itemRevision.getRevisionId());
-        }
-
-        itemRevisions = internalGetRevisions(itemIds, Utils.currentTimestamp());
-        Iterator<ItemRevision> iterator = itemRevisions.iterator();
-        while(iterator.hasNext()) {
-            ItemRevision revision = iterator.next();
-            if (!itemRevisionIds.contains(revision.getRevisionId())) {
-                iterator.remove();
-            }
-        }
-
-        return itemRevisions;
-    }
-
-    private List<ItemRevision> internalGetRevisions(Collection<Long> itemIds, Long timestamp) {
+    public List<ItemRevision> getRevisions(Collection<Long> itemIds, Long timestamp) {
         List<ItemRevision> revisions = new ArrayList<>();
         for (Long itemId : itemIds) {
             List<ItemRevision> itemRevisions = super.queryView("by_itemId", itemId.toString());
@@ -134,6 +106,28 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
         }
 
         return revisions;
+    }
+
+    @Override
+    public List<ItemRevision> getRevisions(Long hostItemId) {
+        List<ItemRevision> itemRevisions = super.queryView("by_hostItemId", hostItemId.toString());
+        Set<Long> itemIds = new HashSet<>();
+        Set<Long> itemRevisionIds = new HashSet<>();
+        for (ItemRevision itemRevision : itemRevisions) {
+            itemIds.add(itemRevision.getItemId());
+            itemRevisionIds.add(itemRevision.getRevisionId());
+        }
+
+        itemRevisions = getRevisions(itemIds, Utils.currentTimestamp());
+        Iterator<ItemRevision> iterator = itemRevisions.iterator();
+        while(iterator.hasNext()) {
+            ItemRevision revision = iterator.next();
+            if (!itemRevisionIds.contains(revision.getRevisionId())) {
+                iterator.remove();
+            }
+        }
+
+        return itemRevisions;
     }
 
     @Override
