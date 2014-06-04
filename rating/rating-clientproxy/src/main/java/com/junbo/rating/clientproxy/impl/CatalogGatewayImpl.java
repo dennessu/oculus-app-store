@@ -7,15 +7,15 @@
 package com.junbo.rating.clientproxy.impl;
 
 import com.junbo.catalog.spec.enums.PriceType;
-import com.junbo.catalog.spec.model.common.*;
+//import com.junbo.catalog.spec.model.common.*;
 import com.junbo.catalog.spec.model.domaindata.ShippingMethod;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.catalog.spec.model.pricetier.PriceTier;
-import com.junbo.catalog.spec.model.promotion.Promotion;
+//import com.junbo.catalog.spec.model.promotion.Promotion;
 import com.junbo.catalog.spec.model.promotion.PromotionRevision;
-import com.junbo.catalog.spec.model.promotion.PromotionRevisionsGetOptions;
-import com.junbo.catalog.spec.model.promotion.PromotionsGetOptions;
+//import com.junbo.catalog.spec.model.promotion.PromotionRevisionsGetOptions;
+//import com.junbo.catalog.spec.model.promotion.PromotionsGetOptions;
 import com.junbo.catalog.spec.resource.*;
 import com.junbo.common.id.*;
 import com.junbo.rating.clientproxy.CatalogGateway;
@@ -93,7 +93,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
     public List<PromotionRevision> getPromotions() {
         List<PromotionRevision> results = new ArrayList<>();
 
-        PromotionsGetOptions options = new PromotionsGetOptions();
+        /*PromotionsGetOptions options = new PromotionsGetOptions();
         options.setStart(Constants.DEFAULT_PAGE_START);
         options.setSize(Constants.DEFAULT_PAGE_SIZE);
 
@@ -129,7 +129,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
         } catch (Exception e) {
             LOGGER.error("Error occurring when getting Promotion Revisions.", e);
             throw AppErrors.INSTANCE.catalogGatewayError().exception();
-        }
+        }*/
 
         return results;
     }
