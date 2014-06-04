@@ -15,4 +15,5 @@ class MandrillConfiguration {
     String key
     String url
     Integer size
+    Boolean enabled
 }
