@@ -32,6 +32,13 @@ class OrganizationRepositoryCloudantImpl extends CloudantClient<Organization> im
     }
 
     @Override
+    Promise<List<Organization>> searchByName(String name, Integer limit, Integer offset) {
+        def result = super.queryView('by_name', name, limit, offset, false)
+
+        return Promise.pure(result)
+    }
+
+    @Override
     Promise<Organization> get(OrganizationId id) {
         return Promise.pure((Organization)super.cloudantGet(id.toString()))
     }
@@ -62,6 +69,11 @@ class OrganizationRepositoryCloudantImpl extends CloudantClient<Organization> im
                                     '  emit(doc.ownerId, doc._id)' +
                                     '}',
                             resultClass: String),
+                    'by_name': new CloudantViews.CloudantView(
+                            map: 'function(doc) {' +
+                                    '  emit(doc.name, doc._id)' +
+                                    '}',
+                            resultClass: String)
                    ]
     )
 
