@@ -98,7 +98,7 @@ public class Oculus48Id {
    }
 
    public static String format(Long id) {
-       String idStr = Long.toHexString(id).toUpperCase();
+       String idStr = Long.toHexString(id).toLowerCase();
        String displayStr = "";
        for(int i=1; i<=OCULUS48_DECIMAL_LENGTH; i++) {
            if(i <= idStr.length()) {

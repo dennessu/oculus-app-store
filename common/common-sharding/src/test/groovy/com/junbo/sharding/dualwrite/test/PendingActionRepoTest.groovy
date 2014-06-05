@@ -8,6 +8,7 @@ package com.junbo.sharding.dualwrite.test
 
 import com.junbo.common.id.UserId
 import com.junbo.common.model.ResourceMeta
+import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.dualwrite.data.PendingAction
 import com.junbo.sharding.dualwrite.data.PendingActionRepository
 import com.junbo.sharding.dualwrite.data.PendingActionRepositoryCloudantImpl
@@ -34,6 +35,10 @@ import static org.testng.Assert.assertNull
 @Transactional("transactionManager")
 @CompileStatic
 public class PendingActionRepoTest extends AbstractTestNGSpringContextTests {
+
+    @Autowired
+    @Qualifier("oculus48IdGenerator")
+    private IdGenerator idGenerator;
 
     @Autowired
     @Qualifier("pendingActionSqlRepo")
@@ -99,16 +104,16 @@ public class PendingActionRepoTest extends AbstractTestNGSpringContextTests {
     private PendingAction createSavedEntityPendingAction() {
         PendingAction pendingAction = new PendingAction();
         pendingAction.setId(null);
-        pendingAction.setChangedEntityId(12345L);
+        pendingAction.setChangedEntityId(idGenerator.nextId());
         pendingAction.setSavedEntity(createFakeEntity());
-        pendingAction.setDeletedKey(54321L);
+        pendingAction.setDeletedKey(778899L);
 
         return pendingAction;
     }
 
     private FakeEntity createFakeEntity() {
         FakeEntity fakeEntity = new FakeEntity();
-        fakeEntity.setId(new UserId(54321L));
+        fakeEntity.setId(new UserId(idGenerator.nextId()));
         fakeEntity.setUsername("Hello World");
 
         return fakeEntity;

@@ -19,13 +19,12 @@ import javax.persistence.*
 @Table(name = "pending_action")
 @TypeDef(name = "json-string", typeClass = StringJsonUserType.class)
 @CompileStatic
-public class PendingActionEntity implements CloudantEntity<UUID> {
+public class PendingActionEntity implements CloudantEntity<Long> {
 
     @Id
     @Column(name = "id")
-    @Type(type = "pg-uuid")
     @CloudantProperty("_id")
-    private UUID id;
+    private Long id;
 
     @Column(name = "saved_entity_type")
     private String savedEntityType;
@@ -70,7 +69,7 @@ public class PendingActionEntity implements CloudantEntity<UUID> {
     }
 
     public void setCloudantId(String cloudantId) {
-        this.id = UUID.fromString(cloudantId);
+        this.id = Long.parseLong(cloudantId);
     }
 
     public String getCloudantRev() {
@@ -81,11 +80,11 @@ public class PendingActionEntity implements CloudantEntity<UUID> {
         this.cloudantRev = cloudantRev;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

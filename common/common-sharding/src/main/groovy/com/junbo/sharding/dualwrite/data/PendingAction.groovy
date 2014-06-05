@@ -11,18 +11,18 @@ import groovy.transform.CompileStatic
  * The pending action.
  */
 @CompileStatic
-public class PendingAction extends ResourceMeta<UUID> {
+public class PendingAction extends ResourceMeta<Long> {
 
-    private UUID id;
+    private Long id;
     private CloudantEntity savedEntity;
     private Long deletedKey;
     private Long changedEntityId;
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

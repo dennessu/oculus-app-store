@@ -7,6 +7,7 @@ package com.junbo.sharding.dualwrite.data
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.langur.core.promise.Promise
+import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 /**
@@ -19,6 +20,7 @@ public class PendingActionRepositoryCloudantImpl extends CloudantClient<PendingA
 
     private boolean hardDelete;
     private PendingActionMapper mapper;
+    private IdGenerator idGenerator;
 
     @Required
     void setMapper(PendingActionMapper mapper) {
@@ -33,13 +35,18 @@ public class PendingActionRepositoryCloudantImpl extends CloudantClient<PendingA
         return hardDelete
     }
 
+    @Required
+    void setIdGenerator(IdGenerator idGenerator) {
+        this.idGenerator = idGenerator
+    }
+
     @Override
     protected CloudantViews getCloudantViews() {
         return views
     }
 
     @Override
-    public Promise<PendingAction> get(UUID id) {
+    public Promise<PendingAction> get(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("id is null");
         }
@@ -58,7 +65,7 @@ public class PendingActionRepositoryCloudantImpl extends CloudantClient<PendingA
             throw new IllegalArgumentException('model is null')
         }
         if (model.id == null) {
-            model.id = UUID.randomUUID()
+            model.id = idGenerator.nextId(model.getChangedEntityId());
         }
         PendingActionEntity entity = mapper.map(model)
         return this.cloudantPost(entity).then {
@@ -74,7 +81,7 @@ public class PendingActionRepositoryCloudantImpl extends CloudantClient<PendingA
     }
 
     @Override
-    public Promise<Void> delete(UUID id) {
+    public Promise<Void> delete(Long id) {
         return this.cloudantDelete(id.toString())
     }
 
