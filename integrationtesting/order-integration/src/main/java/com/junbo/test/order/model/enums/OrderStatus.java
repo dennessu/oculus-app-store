@@ -3,14 +3,15 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.test.common.Entities.enums;
+package com.junbo.test.order.model.enums;
 
 /**
- * Enum for order status.
+ * Enum for order order status.
  *
- * @author Jason
- *         Created on 5/14/2014.
+ * @author Yunlongzhao
+ *         Created on 6/5/2014.
  */
+
 public enum OrderStatus {
     OPEN("OPEN", 0),
     PENDING_CHARGE("PENDING_CHARGE", 1),
@@ -23,7 +24,8 @@ public enum OrderStatus {
     REFUNDED("REFUNDED", 8),
     PREORDERED("PREORDERED", 9),
     PARTIAL_CHARGED("PARTIAL_CHARGED", 10),
-    PRICE_RATING_CHANGED("PRICE_RATING_CHANGED", 11);
+    PRICE_RATING_CHANGED("PRICE_RATING_CHANGED", 11),
+    ERROR("ERROR", -1);
 
     private String name;
     private int status;

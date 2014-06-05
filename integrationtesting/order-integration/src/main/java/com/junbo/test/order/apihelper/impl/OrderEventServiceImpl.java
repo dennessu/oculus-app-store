@@ -8,10 +8,10 @@ package com.junbo.test.order.apihelper.impl;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.order.spec.model.OrderEvent;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.order.OrderEventService;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.libs.LogHelper;
-import com.junbo.test.common.libs.RestUrl;
 
 /**
  @author Jason
@@ -20,7 +20,7 @@ import com.junbo.test.common.libs.RestUrl;
  */
 public class OrderEventServiceImpl extends HttpClientBase implements OrderEventService {
 
-    private static String orderEventUrl = RestUrl.getRestUrl(RestUrl.ComponentName.COMMERCE) + "order-events";
+    private static String orderEventUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1") + "order-events";
 
     private LogHelper logger = new LogHelper(OrderEventServiceImpl.class);
 
