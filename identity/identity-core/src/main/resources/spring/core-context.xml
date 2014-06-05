@@ -993,6 +993,18 @@
             <list>
                 <value>id</value>
                 <value>ownerId</value>
+                <value>name</value>
+                <value>billingAddress</value>
+                <value>shippingAddress</value>
+                <value>shippingName</value>
+                <value>shippingPhone</value>
+                <value>isValidated</value>
+                <value>type</value>
+                <value>taxType</value>
+                <value>taxId</value>
+                <value>payoutInstrument</value>
+                <value>payoutTaxProfile</value>
+                <value>annualTaxReportIds</value>
                 <value>futureExpansion</value>
                 <value>resourceAge</value>
                 <value>createdTime</value>
@@ -1003,6 +1015,18 @@
         <property name="writablePropertiesForCreate">
             <list>
                 <value>ownerId</value>
+                <value>name</value>
+                <value>billingAddress</value>
+                <value>shippingAddress</value>
+                <value>shippingName</value>
+                <value>shippingPhone</value>
+                <value>isValidated</value>
+                <value>type</value>
+                <value>taxType</value>
+                <value>taxId</value>
+                <value>payoutInstrument</value>
+                <value>payoutTaxProfile</value>
+                <value>annualTaxReportIds</value>
                 <value>futureExpansion</value>
             </list>
         </property>
@@ -1011,8 +1035,22 @@
             <list>
                 <value>id</value>
                 <value>ownerId</value>
+                <value>name</value>
+                <value>billingAddress</value>
+                <value>shippingAddress</value>
+                <value>shippingName</value>
+                <value>shippingPhone</value>
+                <value>isValidated</value>
+                <value>type</value>
+                <value>taxType</value>
+                <value>taxId</value>
+                <value>payoutInstrument</value>
+                <value>payoutTaxProfile</value>
+                <value>annualTaxReportIds</value>
                 <value>futureExpansion</value>
                 <value>resourceAge</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
             </list>
         </property>
     </bean>
