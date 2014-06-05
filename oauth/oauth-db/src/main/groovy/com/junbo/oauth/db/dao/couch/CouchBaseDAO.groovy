@@ -169,6 +169,12 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
 
     @Override
     void afterPropertiesSet() throws Exception {
+        if (dbNamePrefix != null) {
+            fullDbName = dbNamePrefix + dbName;
+        } else {
+            fullDbName = dbName;
+        }
+
         def response = executeRequest(HttpMethod.GET, '', [:], null)
         if (response.statusCode == HttpStatus.NOT_FOUND.value()) {
             response = executeRequest(HttpMethod.PUT, '', [:], null)
@@ -193,12 +199,6 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
                     putViews(couchViews)
                 }
             }
-        }
-
-        if (dbNamePrefix != null) {
-            fullDbName = dbNamePrefix + dbName;
-        } else {
-            fullDbName = dbName;
         }
     }
 
