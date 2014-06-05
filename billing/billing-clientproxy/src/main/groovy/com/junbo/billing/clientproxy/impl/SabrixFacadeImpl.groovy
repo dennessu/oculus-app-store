@@ -7,6 +7,7 @@
 package com.junbo.billing.clientproxy.impl
 
 import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
+import com.junbo.billing.clientproxy.impl.sabrix.Entity
 import com.junbo.billing.clientproxy.impl.sabrix.TaxCalculationResponse
 import com.thoughtworks.xstream.io.xml.DomDriver
 import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder
@@ -134,7 +135,7 @@ class SabrixFacadeImpl implements TaxFacade {
         Invoice invoice = new Invoice()
         invoice.companyName = configuration.companyName
         invoice.companyRole = configuration.companyRole
-        invoice.externalCompanyId = configuration.externalCompanyId
+        invoice.externalCompanyId = getEntity(piAddress).externalCompanyId
         invoice.invoiceNumber = balance.orderId?.value
         invoice.invoiceDate = DATE_FORMATTER.get().format(new Date())
         invoice.currencyCode = balance.currency
@@ -167,6 +168,17 @@ class SabrixFacadeImpl implements TaxFacade {
         }
 
         return lines
+    }
+
+    Entity getEntity(Address piAddress) {
+        Entity entity = EnumSet.allOf(Entity).find { Entity entity ->
+            entity.country == piAddress.countryId.value
+        }
+        if (entity == null) {
+            return Entity.US_ENTITY
+        }
+
+        return entity
     }
 
     String getTransactionType(BalanceItem item) {

@@ -60,7 +60,6 @@
     <bean id="sabrixConfiguration" class="com.junbo.billing.clientproxy.impl.sabrix.SabrixConfiguration">
         <property name="companyName" value="${sabrix.companyName}"/>
         <property name="companyRole" value="${sabrix.companyRole}"/>
-        <property name="externalCompanyId" value="${sabrix.externalCompanyId}"/>
         <property name="username" value="${sabrix.username}"/>
         <property name="password" value="${sabrix.password}"/>
         <property name="version" value="${sabrix.version}"/>
