@@ -36,6 +36,8 @@ abstract class CommonResourceImpl {
 
     protected KeyStoreService keyStoreService
 
+    protected Boolean enableUserKeyEncrypt
+
     @Required
     void setVersionSeparator(String versionSeparator) {
         this.versionSeparator = versionSeparator
@@ -66,7 +68,12 @@ abstract class CommonResourceImpl {
         this.keyStoreService = keyStoreService
     }
 
-    // Used to encrypt and decrypt userKey
+    @Required
+    void setEnableUserKeyEncrypt(Boolean enableUserKeyEncrypt) {
+        this.enableUserKeyEncrypt = enableUserKeyEncrypt
+    }
+
+// Used to encrypt and decrypt userKey
     protected Promise<String> symmetricDecryptUserKey(String encryptedUserKey) {
         String[] userKeyInfo = (String [])encryptedUserKey.split(versionSeparator)
         if (userKeyInfo == null || userKeyInfo.length != 2) {
@@ -139,8 +146,44 @@ abstract class CommonResourceImpl {
         return maxVersion.toString() + versionSeparator + rsaCipherService.encrypt(rawMaterKey, publicKey)
     }
 
-    // Used to encrypt and decrypt user message
-    protected Promise<String> symmetricDecryptUserMessage(UserId userId, String message) {
+    // Used to encrypt and decrypt user message by masterKey
+    protected Promise<String> symmetricDecryptUserMessageByMasterKey(String encryptedMessage) {
+        String[] messageInfo = (String [])encryptedMessage.split(versionSeparator)
+        if (messageInfo == null || messageInfo.length != 2) {
+            throw new IllegalArgumentException('message should be separated by ' + versionSeparator)
+        }
+
+        Integer masterKeyVersion = Integer.parseInt(messageInfo[0])
+        String messageEncryptValue = messageInfo[1]
+        return masterKeyRepo.getMasterKeyByVersion(masterKeyVersion).then { MasterKey masterKey ->
+            if (masterKey == null) {
+                throw new IllegalArgumentException('master key with version: ' + masterKeyVersion + ' not found.')
+            }
+
+            String decryptedMasterKey = asymmetricDecryptMasterKey(masterKey.encryptValue)
+
+            Key masterKeyLoaded = stringToKey(decryptedMasterKey)
+
+            return Promise.pure(aesCipherService.decrypt(messageEncryptValue, masterKeyLoaded))
+        }
+    }
+
+    protected Promise<String> symmetricEncryptUserMessageByMasterKey(String rawMessage) {
+        return getCurrentMasterKey().then { MasterKey masterKey ->
+            if (masterKey == null) {
+                throw new IllegalArgumentException('master key doesn\'t exist in current system')
+            }
+
+            String decryptedMasterKey = asymmetricDecryptMasterKey(masterKey.encryptValue)
+            Key masterKeyLoaded = stringToKey(decryptedMasterKey)
+
+            return Promise.pure(masterKey.keyVersion.toString() +
+                    versionSeparator + aesCipherService.encrypt(rawMessage, masterKeyLoaded))
+        }
+    }
+
+    // Used to encrypt and decrypt user message by userKey
+    protected Promise<String> symmetricDecryptUserMessageByUserKey(UserId userId, String message) {
         String[] messageInfo = (String [])message.split(versionSeparator)
 
         if (messageInfo == null || messageInfo.length != 2) {
@@ -164,7 +207,7 @@ abstract class CommonResourceImpl {
         }
     }
 
-    protected Promise<String> symmetricEncryptUserMessage(UserId userId, String message) {
+    protected Promise<String> symmetricEncryptUserMessageByUserKey(UserId userId, String message) {
         return getCurrentUserCryptoKey(userId).then { Integer userKeyVersion ->
             return userCryptoKeyRepo.getUserCryptoKeyByVersion(userId, userKeyVersion).then { UserCryptoKey key ->
                 if (key == null) {
