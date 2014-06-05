@@ -12,8 +12,7 @@ import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.SubledgerId;
 import com.junbo.common.id.UserId;
-import com.junbo.common.model.ResourceMeta;
-import com.junbo.common.util.Identifiable;
+import com.junbo.common.model.ResourceMetaForDualWrite;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -25,7 +24,7 @@ import java.util.Date;
         "id", "seller", "offer", "country", "currency",
         "payoutStatus", "totalAmount", "startTime", "endTime", "resourceAge"
 })
-public class Subledger extends ResourceMeta implements Identifiable<SubledgerId> {
+public class Subledger extends ResourceMetaForDualWrite<SubledgerId> {
     @JsonProperty("self")
     private SubledgerId id;
     private UserId seller;

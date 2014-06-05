@@ -79,47 +79,38 @@
 
     <bean id="cloudantBillingHistoryRepository" class="com.junbo.order.db.repo.cloudant.BillingHistoryRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="order_billing_history"/>
-        <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
 
     <bean id="cloudantDiscountRepository" class="com.junbo.order.db.repo.cloudant.DiscountRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="order_discount"/>
-        <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
 
     <bean id="cloudantFulfillmentHistoryRepository" class="com.junbo.order.db.repo.cloudant.FulfillmentHistoryRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="order_fulfillment_history"/>
-        <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
 
     <bean id="cloudantOrderEventRepository" class="com.junbo.order.db.repo.cloudant.OrderEventRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="order_event"/>
-        <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
 
     <bean id="cloudantOrderItemRepository" class="com.junbo.order.db.repo.cloudant.OrderItemRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="order_item"/>
-        <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
 
     <bean id="cloudantOrderRepository" class="com.junbo.order.db.repo.cloudant.OrderRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="order"/>
-        <property name="idGenerator" ref="oculus40IdGenerator"/>
     </bean>
 
     <bean id="cloudantPreorderInfoRepository" class="com.junbo.order.db.repo.cloudant.PreorderInfoRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="order_preorder_info"/>
-        <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
 
     <bean id="cloudantSubledgerItemRepository" class="com.junbo.order.db.repo.cloudant.SubledgerItemRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="subledger_item"/>
-        <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
 
     <bean id="cloudantSubledgerRepository" class="com.junbo.order.db.repo.cloudant.SubledgerRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="subledger"/>
-        <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
 
     <!-- dual-write repositories -->

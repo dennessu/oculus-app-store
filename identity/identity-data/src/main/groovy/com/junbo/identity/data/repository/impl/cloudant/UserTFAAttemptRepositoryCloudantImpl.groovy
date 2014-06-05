@@ -39,18 +39,14 @@ class UserTFAAttemptRepositoryCloudantImpl extends CloudantClient<UserTFAAttempt
 
     @Override
     Promise<List<UserTFAAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        def list = super.queryView('by_user_id', userId.toString(), limit, offset, false)
-
-        return Promise.pure(list)
+        return super.queryView('by_user_id', userId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<List<UserTFAAttempt>> searchByUserIdAndUserTFAId(UserId userId, UserTFAId userTFAId,
                                                                Integer limit, Integer offset) {
-        def list = super.queryView('by_user_id_tfa_id', "${userId.toString()}:${userTFAId.toString()}", limit,
+        return super.queryView('by_user_id_tfa_id', "${userId.toString()}:${userTFAId.toString()}", limit,
                 offset, false)
-
-        return Promise.pure(list)
     }
 
     @Override
@@ -58,23 +54,22 @@ class UserTFAAttemptRepositoryCloudantImpl extends CloudantClient<UserTFAAttempt
         if (entity.id == null) {
             entity.id = new UserTFAAttemptId(idGenerator.nextId(entity.userId.value))
         }
-        return Promise.pure((UserTFAAttempt)super.cloudantPost(entity))
+        return super.cloudantPost(entity)
     }
 
     @Override
     Promise<UserTFAAttempt> update(UserTFAAttempt entity) {
-        return Promise.pure((UserTFAAttempt)super.cloudantPut(entity))
+        return super.cloudantPut(entity)
     }
 
     @Override
     Promise<UserTFAAttempt> get(UserTFAAttemptId id) {
-        return Promise.pure((UserTFAAttempt)super.cloudantGet(id.toString()))
+        return super.cloudantGet(id.toString())
     }
 
     @Override
     Promise<Void> delete(UserTFAAttemptId id) {
-        super.cloudantDelete(id.toString())
-        return Promise.pure(null)
+        return super.cloudantDelete(id.toString())
     }
 
     protected CloudantViews views = new CloudantViews(

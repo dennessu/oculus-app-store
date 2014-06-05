@@ -62,7 +62,7 @@ public class BaseDao<T extends Entity> {
         t.setUpdatedBy(177536427572383L); //TODO
         t.setUpdatedTime(now);
         t.setIsDeleted(false);
-        t.setRev(0);
+        t.setResourceAge(0);
         return get((Long) currentSession(t.getShardMasterId()).save(t));
     }
 
@@ -80,7 +80,7 @@ public class BaseDao<T extends Entity> {
         if (t.getIsDeleted() == null || !t.getIsDeleted()) {
             t.setIsDeleted(false);
         }
-        t.setRev(existed.getRev() + 1);
+        t.setResourceAge(existed.getResourceAge() + 1);
         return (T) currentSession(t.getShardMasterId()).merge(t);
     }
 

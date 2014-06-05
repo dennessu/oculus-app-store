@@ -1,11 +1,13 @@
 package com.junbo.order.db.repo
 import com.junbo.common.enumid.CurrencyId
+import com.junbo.common.id.SubledgerId
 import com.junbo.order.db.BaseTest
 import com.junbo.order.db.common.TestHelper
 import com.junbo.order.spec.model.enums.PayoutStatus
 import com.junbo.order.db.repo.cloudant.SubledgerRepositoryCloudantImpl
 import com.junbo.order.spec.model.PageParam
 import com.junbo.order.spec.model.SubledgerParam
+import com.junbo.sharding.IdGenerator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.testng.annotations.Test
@@ -13,6 +15,10 @@ import org.testng.annotations.Test
  * Created by fzhang on 5/29/2014.
  */
 class SubledgerRepositoryCloudantTest extends BaseTest {
+
+    @Autowired
+    @Qualifier('oculus48IdGenerator')
+    private IdGenerator idGenerator
 
     @Autowired
     @Qualifier('cloudantSubledgerRepository')
@@ -23,7 +29,7 @@ class SubledgerRepositoryCloudantTest extends BaseTest {
         Date startTime = new Date();
         def subledger = TestHelper.generateSubledger()
         def sellerId = subledger.seller
-        subledger.id = null
+        subledger.id = new SubledgerId(idGenerator.nextId())
         subledger.startTime = startTime;
 
         def created = subledgerRepositoryCloudant.create(subledger).get()
@@ -53,7 +59,7 @@ class SubledgerRepositoryCloudantTest extends BaseTest {
             Date time = new Date(startTime.time + i * 1000)
             for (int j = 0; j < 2; ++j) {
                 def subledger = TestHelper.generateSubledger()
-                subledger.id = null
+                subledger.id = new SubledgerId(idGenerator.nextId())
                 subledger.startTime = time
                 subledger.payoutStatus = sample.payoutStatus
                 subledger.seller = sample.seller

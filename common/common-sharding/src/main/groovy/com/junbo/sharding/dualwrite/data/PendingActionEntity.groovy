@@ -7,7 +7,6 @@ package com.junbo.sharding.dualwrite.data
 import com.junbo.common.cloudant.CloudantEntity
 import com.junbo.common.cloudant.json.annotations.CloudantProperty
 import com.junbo.common.hibernate.StringJsonUserType
-import com.junbo.common.util.Identifiable
 import groovy.transform.CompileStatic
 import org.hibernate.annotations.Type
 import org.hibernate.annotations.TypeDef
@@ -20,11 +19,12 @@ import javax.persistence.*
 @Table(name = "pending_action")
 @TypeDef(name = "json-string", typeClass = StringJsonUserType.class)
 @CompileStatic
-public class PendingActionEntity implements CloudantEntity, Identifiable<UUID> {
+public class PendingActionEntity implements CloudantEntity<UUID> {
 
     @Id
     @Column(name = "id")
     @Type(type = "pg-uuid")
+    @CloudantProperty("_id")
     private UUID id;
 
     @Column(name = "saved_entity_type")
@@ -62,19 +62,15 @@ public class PendingActionEntity implements CloudantEntity, Identifiable<UUID> {
     private boolean deleted;
 
     @Transient
-    @CloudantProperty("_id")
-    private String cloudantId;
-
-    @Transient
     @CloudantProperty("_rev")
     private String cloudantRev;
 
     public String getCloudantId() {
-        return cloudantId;
+        return this.id.toString();
     }
 
     public void setCloudantId(String cloudantId) {
-        this.cloudantId = cloudantId;
+        this.id = UUID.fromString(cloudantId);
     }
 
     public String getCloudantRev() {

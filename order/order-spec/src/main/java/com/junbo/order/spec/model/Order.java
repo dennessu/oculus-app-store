@@ -19,8 +19,7 @@ import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.jackson.annotation.ShippingMethodId;
 import com.junbo.common.model.Link;
-import com.junbo.common.model.ResourceMeta;
-import com.junbo.common.util.Identifiable;
+import com.junbo.common.model.ResourceMetaForDualWrite;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
@@ -41,7 +40,7 @@ import java.util.List;
         "successRedirectUrl", "cancelRedirectUrl", "providerConfirmUrl"
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Order extends ResourceMeta implements Identifiable<OrderId> {
+public class Order extends ResourceMetaForDualWrite<OrderId> {
     @ApiModelProperty(required = true, position = 10, value = "[Client Immutable] The order id.")
     @JsonProperty("self")
     private OrderId id;

@@ -10,13 +10,12 @@ import com.junbo.common.id.CommunicationId;
 import com.junbo.common.id.UserCommunicationId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
-import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by liangfu on 4/3/14.
  */
-public class UserCommunication extends PropertyAssignedAwareResourceMeta implements Identifiable<UserCommunicationId> {
+public class UserCommunication extends PropertyAssignedAwareResourceMeta<UserCommunicationId> {
 
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The Link of user optin resource, " +
             "OptIn represents a link between a user and a communication, it means user decides to subscribe to the communication.")

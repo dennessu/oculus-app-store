@@ -6,10 +6,8 @@
 
 package com.junbo.sharding.dualwrite.test
 
-import com.junbo.common.cloudant.CloudantEntity
 import com.junbo.common.id.UserId
 import com.junbo.common.model.ResourceMeta
-import com.junbo.common.util.Identifiable
 import com.junbo.sharding.dualwrite.data.PendingAction
 import com.junbo.sharding.dualwrite.data.PendingActionRepository
 import com.junbo.sharding.dualwrite.data.PendingActionRepositoryCloudantImpl
@@ -26,8 +24,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.testng.annotations.Test
 
 import static org.testng.Assert.assertEquals
-import static org.testng.Assert.assertNull;
-
+import static org.testng.Assert.assertNull
 /**
  * Java doc for IdGeneratorTest.
  */
@@ -117,7 +114,7 @@ public class PendingActionRepoTest extends AbstractTestNGSpringContextTests {
         return fakeEntity;
     }
 
-    private static class FakeEntity extends ResourceMeta implements CloudantEntity, Identifiable<UserId> {
+    private static class FakeEntity extends ResourceMeta<UserId> {
         private UserId id;
         private String username;
 

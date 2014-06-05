@@ -36,12 +36,12 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
         if (offerRevision.getRevisionId() == null) {
             offerRevision.setRevisionId(idGenerator.nextId());
         }
-        return super.cloudantPost(offerRevision);
+        return super.cloudantPost(offerRevision).get();
     }
 
     @Override
     public OfferRevision get(Long revisionId) {
-        return super.cloudantGet(revisionId.toString());
+        return super.cloudantGet(revisionId.toString()).get();
     }
 
     @Override
@@ -49,7 +49,7 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
         List<OfferRevision> offerRevisions = new ArrayList<>();
         if (!CollectionUtils.isEmpty(options.getRevisionIds())) {
             for (OfferRevisionId revisionId : options.getRevisionIds()) {
-                OfferRevision revision = super.cloudantGet(revisionId.toString());
+                OfferRevision revision = super.cloudantGet(revisionId.toString()).get();
                 if (revision==null) {
                     continue;
                 } else if (!StringUtils.isEmpty(options.getStatus())
@@ -61,7 +61,7 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
             }
         } else if (!CollectionUtils.isEmpty(options.getOfferIds())) {
             for (OfferId offerId : options.getOfferIds()) {
-                List<OfferRevision> revisions = super.queryView("by_offerId", offerId.toString());
+                List<OfferRevision> revisions = super.queryView("by_offerId", offerId.toString()).get();
                 if (!StringUtils.isEmpty(options.getStatus())) {
                     Iterator<OfferRevision> iterator = revisions.iterator();
                     while (iterator.hasNext()) {
@@ -75,10 +75,10 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
             }
         } else if (!StringUtils.isEmpty(options.getStatus())){
             offerRevisions = super.queryView("by_status", options.getStatus().toUpperCase(),
-                    options.getValidSize(), options.getValidStart(), false);
+                    options.getValidSize(), options.getValidStart(), false).get();
         } else {
             offerRevisions = super.queryView("by_offerId", null,
-                    options.getValidSize(), options.getValidStart(), false);
+                    options.getValidSize(), options.getValidStart(), false).get();
         }
 
         return offerRevisions;
@@ -88,7 +88,7 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
     public List<OfferRevision> getRevisions(Collection<Long> offerIds, Long timestamp) {
         List<OfferRevision> revisions = new ArrayList<>();
         for (Long offerId : offerIds) {
-            List<OfferRevision> itemRevisions = super.queryView("by_offerId", offerId.toString());
+            List<OfferRevision> itemRevisions = super.queryView("by_offerId", offerId.toString()).get();
             OfferRevision revision = null;
             Long maxTimestamp = 0L;
             for (OfferRevision itemRevision : itemRevisions) {
@@ -110,22 +110,22 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
 
     @Override
     public List<OfferRevision> getRevisions(Long itemId) {
-        return super.queryView("by_itemId", itemId.toString());
+        return super.queryView("by_itemId", itemId.toString()).get();
     }
 
     @Override
     public List<OfferRevision> getRevisionsBySubOfferId(Long offerId) {
-        return super.queryView("by_subOfferId", offerId.toString());
+        return super.queryView("by_subOfferId", offerId.toString()).get();
     }
 
     @Override
     public OfferRevision update(OfferRevision revision) {
-        return super.cloudantPut(revision);
+        return super.cloudantPut(revision).get();
     }
 
     @Override
     public void delete(Long revisionId) {
-        super.cloudantDelete(revisionId.toString());
+        super.cloudantDelete(revisionId.toString()).get();
     }
 
     private CloudantViews cloudantViews = new CloudantViews() {{

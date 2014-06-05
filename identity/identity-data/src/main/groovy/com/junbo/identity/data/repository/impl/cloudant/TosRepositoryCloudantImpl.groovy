@@ -1,17 +1,14 @@
 package com.junbo.identity.data.repository.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.TosId
 import com.junbo.identity.data.repository.TosRepository
 import com.junbo.identity.spec.v1.model.Tos
-import com.junbo.identity.spec.v1.option.list.TosListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.ShardAlgorithm
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-
 /**
  * Created by haomin on 14-4-10.
  */
@@ -32,7 +29,7 @@ class TosRepositoryCloudantImpl extends CloudantClient<Tos> implements TosReposi
 
     @Override
     Promise<Tos> get(TosId tosId) {
-        return Promise.pure((Tos)super.cloudantGet(tosId.toString()))
+        return super.cloudantGet(tosId.toString())
     }
 
     @Override
@@ -40,23 +37,22 @@ class TosRepositoryCloudantImpl extends CloudantClient<Tos> implements TosReposi
         if (tos.id == null) {
             tos.id = new TosId(idGenerator.nextId())
         }
-        return Promise.pure((Tos)super.cloudantPost(tos))
+        return super.cloudantPost(tos)
     }
 
     @Override
     Promise<Void> delete(TosId tosId) {
-        super.cloudantDelete(tosId.toString())
-        return Promise.pure(null)
+        return super.cloudantDelete(tosId.toString())
     }
 
     @Override
     Promise<Tos> update(Tos model) {
-        return Promise.pure((Tos)super.cloudantPut(model))
+        return super.cloudantPut(model)
     }
 
     @Override
     Promise<List<Tos>> searchAll(Integer limit, Integer offset) {
-        return Promise.pure(super.cloudantGetAll())
+        return super.cloudantGetAll()
     }
 
     @Override

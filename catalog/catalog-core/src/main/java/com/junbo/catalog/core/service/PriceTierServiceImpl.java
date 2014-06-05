@@ -63,21 +63,20 @@ public class PriceTierServiceImpl implements PriceTierService {
 
     @Override
     public PriceTier create(PriceTier priceTier) {
-        if (priceTier.getResourceAge() != null) {
-            throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
-        }
+        validateCreation(priceTier);
         return priceTierRepo.create(priceTier);
     }
 
     @Override
     public PriceTier update(Long tierId, PriceTier priceTier) {
+        validateUpdate(priceTier);
         return priceTierRepo.update(priceTier);
     }
 
     @Override
     public void delete(Long tierId) {
         PriceTier priceTier = priceTierRepo.get(tierId);
-        if (priceTier==null) {
+        if (priceTier == null) {
             throw AppErrors.INSTANCE.notFound("price-tier", Utils.encodeId(tierId)).exception();
         }
         priceTierRepo.delete(tierId);
@@ -86,7 +85,7 @@ public class PriceTierServiceImpl implements PriceTierService {
     private void validateCreation(PriceTier priceTier) {
         checkRequestNotNull(priceTier);
         List<AppError> errors = new ArrayList<>();
-        if (priceTier.getResourceAge() != null) {
+        if (priceTier.getRev() != null) {
             errors.add(AppErrors.INSTANCE.unnecessaryField("rev"));
         }
 
@@ -96,17 +95,12 @@ public class PriceTierServiceImpl implements PriceTierService {
         }
     }
 
-    private void validateUpdate(PriceTier priceTier, PriceTier oldPriceTier) {
+    private void validateUpdate(PriceTier priceTier) {
         checkRequestNotNull(priceTier);
         List<AppError> errors = new ArrayList<>();
-        if (!oldPriceTier.getId().equals(priceTier.getId())) {
-            errors.add(AppErrors.INSTANCE.fieldNotMatch("self.id", priceTier.getId(), oldPriceTier.getId()));
+        if (priceTier.getRev() == null) {
+            errors.add(AppErrors.INSTANCE.missingField("rev"));
         }
-        if (!oldPriceTier.getResourceAge().equals(priceTier.getResourceAge())) {
-            errors.add(AppErrors.INSTANCE
-                    .fieldNotMatch("rev", priceTier.getResourceAge(), oldPriceTier.getResourceAge()));
-        }
-
         validateCommon(priceTier, errors);
         if (!errors.isEmpty()) {
             throw AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();

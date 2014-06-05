@@ -26,9 +26,7 @@ class OrganizationRepositoryCloudantImpl extends CloudantClient<Organization> im
 
     @Override
     Promise<List<Organization>> searchByOwner(UserId ownerId, Integer limit, Integer offset) {
-        def result = super.queryView('by_owner_id', ownerId.value.toString(), limit, offset, false)
-
-        return Promise.pure(result)
+        return super.queryView('by_owner_id', ownerId.value.toString(), limit, offset, false)
     }
 
     @Override
@@ -40,7 +38,7 @@ class OrganizationRepositoryCloudantImpl extends CloudantClient<Organization> im
 
     @Override
     Promise<Organization> get(OrganizationId id) {
-        return Promise.pure((Organization)super.cloudantGet(id.toString()))
+        return super.cloudantGet(id.toString())
     }
 
     @Override
@@ -48,18 +46,17 @@ class OrganizationRepositoryCloudantImpl extends CloudantClient<Organization> im
         if (model.id == null) {
             model.id = new OrganizationId(idGenerator.nextId(model.ownerId.value))
         }
-        return Promise.pure((Organization)super.cloudantPost(model))
+        return super.cloudantPost(model)
     }
 
     @Override
     Promise<Organization> update(Organization model) {
-        return Promise.pure((Organization)super.cloudantPut(model))
+        return super.cloudantPut(model)
     }
 
     @Override
     Promise<Void> delete(OrganizationId id) {
-        super.cloudantDelete(id.toString())
-        return Promise.pure(null)
+        return super.cloudantDelete(id.toString())
     }
 
     protected CloudantViews views = new CloudantViews(

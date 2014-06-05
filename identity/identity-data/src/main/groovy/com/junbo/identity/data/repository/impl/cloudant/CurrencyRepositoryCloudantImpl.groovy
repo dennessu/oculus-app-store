@@ -1,14 +1,11 @@
 package com.junbo.identity.data.repository.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.identity.data.repository.CurrencyRepository
-import com.junbo.identity.spec.v1.option.list.CurrencyListOptions
-import com.junbo.langur.core.promise.Promise
 import com.junbo.identity.spec.v1.model.Currency
+import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
-
 /**
  * Created by minhao on 4/24/14.
  */
@@ -24,27 +21,26 @@ class CurrencyRepositoryCloudantImpl extends CloudantClient<Currency> implements
         if (model.id == null) {
             model.id = new CurrencyId(model.currencyCode)
         }
-        return Promise.pure((Currency)super.cloudantPost(model))
+        return super.cloudantPost(model)
     }
 
     @Override
     Promise<Currency> update(Currency model) {
-        return Promise.pure((Currency)super.cloudantPut(model))
+        return super.cloudantPut(model)
     }
 
     @Override
     Promise<Currency> get(CurrencyId id) {
-        return Promise.pure((Currency)super.cloudantGet(id.toString()))
+        return super.cloudantGet(id.toString())
     }
 
     @Override
     Promise<Void> delete(CurrencyId id) {
-        super.cloudantDelete(id.value)
-        return Promise.pure(null)
+        return super.cloudantDelete(id.value)
     }
 
     @Override
     Promise<List<Currency>> searchAll(Integer limit, Integer offset) {
-        return Promise.pure(super.cloudantGetAll())
+        return super.cloudantGetAll()
     }
 }

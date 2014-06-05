@@ -43,12 +43,13 @@ public class PendingActionRepositoryCloudantImpl extends CloudantClient<PendingA
         if (id == null) {
             throw new IllegalArgumentException("id is null");
         }
-        PendingActionEntity entity = this.cloudantGet(id.toString());
-        if (entity != null && entity.isDeleted()) {
-            return Promise.pure(null);
-        }
+        return this.cloudantGet(id.toString()).then { PendingActionEntity entity ->
+            if (entity != null && entity.isDeleted()) {
+                return Promise.pure(null);
+            }
 
-        return Promise.pure(mapper.map(entity));
+            return Promise.pure(mapper.map(entity));
+        };
     }
 
     @Override
@@ -60,20 +61,21 @@ public class PendingActionRepositoryCloudantImpl extends CloudantClient<PendingA
             model.id = UUID.randomUUID()
         }
         PendingActionEntity entity = mapper.map(model)
-        this.cloudantPost(entity)
-
-        return get(model.getId())
+        return this.cloudantPost(entity).then {
+            return get(model.getId())
+        }
     }
 
     @Override
     public Promise<PendingAction> update(PendingAction model) {
-        return Promise.pure(mapper.map(this.cloudantPut(mapper.map(model))))
+        return this.cloudantPut(mapper.map(model)).then { PendingActionEntity entity ->
+            return Promise.pure(mapper.map(entity))
+        }
     }
 
     @Override
     public Promise<Void> delete(UUID id) {
-        this.cloudantDelete(id.toString())
-        return Promise.pure(null)
+        return this.cloudantDelete(id.toString())
     }
 
     @Override

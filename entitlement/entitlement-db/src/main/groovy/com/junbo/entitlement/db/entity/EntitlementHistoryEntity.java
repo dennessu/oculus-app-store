@@ -9,7 +9,6 @@ package com.junbo.entitlement.db.entity;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.cloudant.CloudantEntity;
 import com.junbo.common.id.EntitlementId;
-import com.junbo.common.util.Identifiable;
 import com.junbo.entitlement.db.entity.def.MapJsonUserType;
 import com.junbo.entitlement.db.entity.def.Shardable;
 import org.hibernate.annotations.Type;
@@ -28,7 +27,7 @@ import java.util.Map;
 @javax.persistence.Entity
 @Table(name = "entitlement_history")
 @TypeDefs(@TypeDef(name = "json-map", typeClass = MapJsonUserType.class))
-public class EntitlementHistoryEntity extends Entity implements Shardable, CloudantEntity, Identifiable<EntitlementId> {
+public class EntitlementHistoryEntity extends Entity implements Shardable, CloudantEntity<EntitlementId> {
     private String action;
     private Long entitlementId;
     private Long userId;
@@ -45,7 +44,7 @@ public class EntitlementHistoryEntity extends Entity implements Shardable, Cloud
     public EntitlementHistoryEntity(String action, EntitlementEntity entitlementEntity) {
         this.action = action;
         this.entitlementId = entitlementEntity.getpId();
-        this.setRev(entitlementEntity.getRev());
+        this.setResourceAge(entitlementEntity.getResourceAge());
         this.itemId = entitlementEntity.getItemId();
         this.userId = entitlementEntity.getUserId();
         this.isBanned = entitlementEntity.getIsBanned();

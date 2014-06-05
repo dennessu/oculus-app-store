@@ -10,7 +10,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
-import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
@@ -18,7 +17,7 @@ import java.util.Date;
 /**
  * Created by liangfu on 4/24/14.
  */
-public class UserPersonalInfo extends PropertyAssignedAwareResourceMeta implements Identifiable<UserPersonalInfoId> {
+public class UserPersonalInfo extends PropertyAssignedAwareResourceMeta<UserPersonalInfoId> {
 
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] Link to this PersonalInfo resource.")
     @JsonProperty("self")

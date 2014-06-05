@@ -10,15 +10,14 @@ import com.junbo.common.id.OfferId;
 import com.junbo.common.id.OrderItemId;
 import com.junbo.common.id.SubledgerId;
 import com.junbo.common.id.SubledgerItemId;
-import com.junbo.common.model.ResourceMeta;
-import com.junbo.common.util.Identifiable;
+import com.junbo.common.model.ResourceMetaForDualWrite;
 
 import java.math.BigDecimal;
 
 /**
  * Created by chriszhu on 2/10/14.
  */
-public class SubledgerItem extends ResourceMeta implements Identifiable<SubledgerItemId> {
+public class SubledgerItem extends ResourceMetaForDualWrite<SubledgerItemId> {
     @JsonProperty("self")
     private SubledgerItemId id;
     private SubledgerId subledger;

@@ -285,7 +285,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     private void validateOfferCreation(Offer offer) {
         checkRequestNotNull(offer);
         List<AppError> errors = new ArrayList<>();
-        if (offer.getResourceAge() != null) {
+        if (offer.getRev() != null) {
             errors.add(AppErrors.INSTANCE.unnecessaryField("rev"));
         }
         if (Boolean.TRUE.equals(offer.getPublished())) {
@@ -312,8 +312,8 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             errors.add(AppErrors.INSTANCE
                     .fieldNotCorrect("currentRevision", "The field can only be changed through revision approve"));
         }*/
-        if (!oldOffer.getResourceAge().equals(offer.getResourceAge())) {
-            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", offer.getResourceAge(), oldOffer.getResourceAge()));
+        if (!oldOffer.getRev().equals(offer.getRev())) {
+            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", offer.getRev(), oldOffer.getRev()));
         }
 
         validateOfferCommon(offer, errors);
@@ -345,8 +345,8 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     private void validateRevisionCreation(OfferRevision revision) {
         checkRequestNotNull(revision);
         List<AppError> errors = new ArrayList<>();
-        if (revision.getResourceAge() != null) {
-            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", revision.getResourceAge(), null));
+        if (revision.getRev() != null) {
+            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", revision.getRev(), null));
         }
         if (!Status.DRAFT.is(revision.getStatus())) {
             errors.add(AppErrors.INSTANCE.fieldNotMatch("status", revision.getStatus(), Status.DRAFT));
@@ -366,9 +366,9 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             errors.add(AppErrors.INSTANCE
                     .fieldNotMatch("revisionId", revision.getRevisionId(), oldRevision.getRevisionId()));
         }
-        if (!oldRevision.getResourceAge().equals(revision.getResourceAge())) {
+        if (!oldRevision.getRev().equals(revision.getRev())) {
             errors.add(AppErrors.INSTANCE
-                    .fieldNotMatch("rev", revision.getResourceAge(), oldRevision.getResourceAge()));
+                    .fieldNotMatch("rev", revision.getRev(), oldRevision.getRev()));
         }
         if (revision.getStatus()==null || !Status.contains(revision.getStatus())) {
             errors.add(AppErrors.INSTANCE.fieldNotCorrect("status", "Valid statuses: " + Status.ALL));

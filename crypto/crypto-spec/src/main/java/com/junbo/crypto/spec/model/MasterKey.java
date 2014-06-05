@@ -6,15 +6,16 @@
 package com.junbo.crypto.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
 import com.junbo.common.id.MasterKeyId;
 import com.junbo.common.model.ResourceMeta;
-import com.junbo.common.util.Identifiable;
 
 /**
  * Created by liangfu on 5/12/14.
  */
-public class MasterKey extends ResourceMeta implements Identifiable<MasterKeyId> {
+public class MasterKey extends ResourceMeta<MasterKeyId> {
 
+    @CloudantIgnore
     private MasterKeyId id;
 
     private String value;

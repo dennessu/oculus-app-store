@@ -28,14 +28,12 @@ class RepositoryProxy implements InvocationHandler {
     private DataAccessStrategy sqlOnlyStrategy;
     private DataAccessStrategy sqlFirstStrategy;
     private DataAccessStrategy cloudantOnlyStrategy;
-    private DataAccessStrategy cloudantFirstStrategy;
 
     static <T> T newProxyInstance(
             Class<T> repositoryInterface,
             DataAccessStrategy sqlOnlyStrategy,
             DataAccessStrategy sqlFirstStrategy,
-            DataAccessStrategy cloudantOnlyStrategy,
-            DataAccessStrategy cloudantFirstStrategy) {
+            DataAccessStrategy cloudantOnlyStrategy) {
 
         return (T)Proxy.newProxyInstance(
                 repositoryInterface.classLoader,
@@ -44,22 +42,19 @@ class RepositoryProxy implements InvocationHandler {
                         repositoryInterface,
                         sqlOnlyStrategy,
                         sqlFirstStrategy,
-                        cloudantOnlyStrategy,
-                        cloudantFirstStrategy))
+                        cloudantOnlyStrategy))
     }
 
     private RepositoryProxy(
             Class<?> repositoryInterface,
             DataAccessStrategy sqlOnlyStrategy,
             DataAccessStrategy sqlFirstStrategy,
-            DataAccessStrategy cloudantOnlyStrategy,
-            DataAccessStrategy cloudantFirstStrategy) {
+            DataAccessStrategy cloudantOnlyStrategy) {
 
         this.repositoryInterface = repositoryInterface
         this.sqlOnlyStrategy = sqlOnlyStrategy
         this.sqlFirstStrategy = sqlFirstStrategy
         this.cloudantOnlyStrategy = cloudantOnlyStrategy
-        this.cloudantFirstStrategy = cloudantFirstStrategy
     }
 
     @Override
@@ -100,7 +95,7 @@ class RepositoryProxy implements InvocationHandler {
         if (policy == null) {
             // within an http call
             if (JunboHttpContext.requestUri != null) {
-                logger.error("Cannot find policy from Context in HTTP call. Action: $action, Repo: ${repositoryInterface.name}");
+                logger.warn("Cannot find policy from Context in HTTP call. Action: $action, Repo: ${repositoryInterface.name}");
                 // TODO: in-proc call routing is not enabled yet
                 // throw new RuntimeException("Cannot find effective dataAccessPolicy in HTTP call! url: ${JunboHttpContext.requestUri}");
             }
@@ -114,9 +109,6 @@ class RepositoryProxy implements InvocationHandler {
 
         DataAccessStrategy result;
         switch (policy) {
-            case DataAccessPolicy.CLOUDANT_FIRST:
-                result = cloudantFirstStrategy;
-                break;
             case DataAccessPolicy.CLOUDANT_ONLY:
                 result = cloudantOnlyStrategy;
                 break;

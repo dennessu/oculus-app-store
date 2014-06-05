@@ -8,11 +8,10 @@ package com.junbo.sharding.dualwrite.test.model;
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.model.ResourceMeta;
-import com.junbo.common.util.Identifiable;
 
 import java.util.List;
 
-public class User extends ResourceMeta implements Identifiable<UserId> {
+public class User extends ResourceMeta<UserId> {
     private UserId id;
     private String username;
     private LocaleId preferredLocale;

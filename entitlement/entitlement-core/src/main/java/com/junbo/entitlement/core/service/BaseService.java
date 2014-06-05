@@ -63,7 +63,7 @@ public class BaseService {
     protected void validateCreate(Entitlement entitlement) {
         checkItem(entitlement.getItemId());
         checkOauth(entitlement);
-        if (entitlement.getResourceAge() != null) {
+        if (entitlement.getRev() != null) {
             throw AppErrors.INSTANCE.fieldNotCorrect("rev",
                     "rev can not be set when created").exception();
         }
@@ -86,19 +86,19 @@ public class BaseService {
     }
 
     protected void validateUpdateId(Long entitlementId, Entitlement entitlement) {
-        if (entitlement.getEntitlementId() == null) {
+        if (entitlement.getId() == null) {
             throw AppErrors.INSTANCE.missingField("id").exception();
         }
-        if (!entitlementId.equals(entitlement.getEntitlementId())) {
+        if (!entitlementId.equals(entitlement.getId())) {
             throw AppErrors.INSTANCE.fieldNotMatch("id",
-                    formatId(entitlement.getEntitlementId()),
+                    formatId(entitlement.getId()),
                     formatId(entitlementId)).exception();
         }
     }
 
     protected void validateUpdate(Entitlement entitlement, Entitlement existingEntitlement) {
         checkOauth(existingEntitlement);
-        validateEquals(entitlement.getResourceAge(), existingEntitlement.getResourceAge(), "rev");
+        validateEquals(entitlement.getRev(), existingEntitlement.getRev(), "rev");
         validateEquals(formatId(entitlement.getUserId()), formatId(existingEntitlement.getUserId()), "user");
         validateEquals(entitlement.getType(), existingEntitlement.getType(), "entitlementType");
         validateEquals(formatId(entitlement.getItemId()),
@@ -120,9 +120,9 @@ public class BaseService {
         checkUser(existingEntitlement.getUserId());
         checkTargetUser(transfer.getTargetUserId());
         if (existingEntitlement.getIsBanned()) {
-            LOGGER.error("Entitlement [{}] can not be transferred.", existingEntitlement.getEntitlementId());
+            LOGGER.error("Entitlement [{}] can not be transferred.", existingEntitlement.getId());
             throw AppErrors.INSTANCE.notTransferable(
-                    formatId(existingEntitlement.getEntitlementId()),
+                    formatId(existingEntitlement.getId()),
                     "Banned entitlement can not be transferred.")
                     .exception();
         }

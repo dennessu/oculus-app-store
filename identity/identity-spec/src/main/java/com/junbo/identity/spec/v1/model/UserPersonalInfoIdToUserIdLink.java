@@ -9,13 +9,11 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.common.id.UserPersonalInfoIdToUserIdLinkId;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
-import com.junbo.common.util.Identifiable;
 
 /**
  * Created by liangfu on 5/14/14.
  */
-public class UserPersonalInfoIdToUserIdLink extends PropertyAssignedAwareResourceMeta
-        implements Identifiable<UserPersonalInfoIdToUserIdLinkId> {
+public class UserPersonalInfoIdToUserIdLink extends PropertyAssignedAwareResourceMeta<UserPersonalInfoIdToUserIdLinkId> {
 
     private UserPersonalInfoIdToUserIdLinkId id;
 

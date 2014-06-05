@@ -19,7 +19,7 @@ import java.util.Date;
  * Base entity.
  */
 @MappedSuperclass
-public abstract class Entity extends EntityWithCreated {
+public abstract class Entity<K> extends EntityWithCreated<K> {
     private Long updatedBy;
     @CloudantSerialize(DateSerializer.class)
     @CloudantDeserialize(DateDeserializer.class)

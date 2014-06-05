@@ -29,9 +29,7 @@ class UserTFABackupCodeAttemptRepositoryCloudantImpl extends CloudantClient<User
 
     @Override
     Promise<List<UserTFABackupCodeAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        def list = super.queryView('by_user_id', userId.toString(), limit, offset, false)
-
-        return Promise.pure(list)
+        return super.queryView('by_user_id', userId.toString(), limit, offset, false)
     }
 
     @Override
@@ -39,23 +37,22 @@ class UserTFABackupCodeAttemptRepositoryCloudantImpl extends CloudantClient<User
         if (entity.id == null) {
             entity.id = new UserTFABackupCodeAttemptId(idGenerator.nextId(entity.userId.value))
         }
-        return Promise.pure((UserTFABackupCodeAttempt)super.cloudantPost(entity))
+        return super.cloudantPost(entity)
     }
 
     @Override
     Promise<UserTFABackupCodeAttempt> update(UserTFABackupCodeAttempt entity) {
-        return Promise.pure((UserTFABackupCodeAttempt)super.cloudantPut(entity))
+        return super.cloudantPut(entity)
     }
 
     @Override
     Promise<UserTFABackupCodeAttempt> get(UserTFABackupCodeAttemptId id) {
-        return Promise.pure((UserTFABackupCodeAttempt)super.cloudantGet(id.toString()))
+        return super.cloudantGet(id.toString())
     }
 
     @Override
     Promise<Void> delete(UserTFABackupCodeAttemptId id) {
-        super.cloudantDelete(id.toString())
-        return Promise.pure(null)
+        return super.cloudantDelete(id.toString())
     }
 
     protected CloudantViews views = new CloudantViews(

@@ -23,10 +23,12 @@ import com.junbo.common.jackson.common.CustomDeserializationContext;
 import com.junbo.common.jackson.common.CustomSerializerProvider;
 import com.junbo.common.jackson.deserializer.BigDecimalFromStringDeserializer;
 import com.junbo.common.jackson.deserializer.LongFromStringDeserializer;
+import com.junbo.common.jackson.deserializer.UUIDFromStringDeserializer;
 
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 import java.math.BigDecimal;
+import java.util.UUID;
 
 /**
  * Created by minhao on 2/13/14.
@@ -56,7 +58,13 @@ public class CloudantObjectMapper implements ContextResolver<ObjectMapper> {
                 .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
                 .withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
 
-        SimpleModule module = new SimpleModule(CloudantObjectMapper.class.getName());
+        SimpleModule module = new SimpleModule(CloudantObjectMapper.class.getName()) {
+            public void setupModule(SetupContext context) {
+                super.setupModule(context);
+                context.addBeanSerializerModifier(new CloudantSerializerModifier());
+                context.addBeanDeserializerModifier(new CloudantDeserializerModifier());
+            }
+        };
 
         // pass long as string, since the json long is not full 64-bit.
         module.addSerializer(Long.class, new ToStringSerializer());
@@ -64,6 +72,9 @@ public class CloudantObjectMapper implements ContextResolver<ObjectMapper> {
 
         module.addSerializer(BigDecimal.class, new ToStringSerializer());
         module.addDeserializer(BigDecimal.class, new BigDecimalFromStringDeserializer());
+
+        module.addSerializer(UUID.class, new ToStringSerializer());
+        module.addDeserializer(UUID.class, new UUIDFromStringDeserializer());
 
         for (Class cls : IdUtil.ID_CLASSES) {
             module.addSerializer(cls, new IdCloudantSerializer());

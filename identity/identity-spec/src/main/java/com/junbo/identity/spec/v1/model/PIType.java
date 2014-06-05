@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.PITypeId;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
-import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.HashMap;
@@ -18,7 +17,7 @@ import java.util.Map;
 /**
  * Created by haomin on 14-4-25.
  */
-public class PIType extends PropertyAssignedAwareResourceMeta implements Identifiable<PITypeId> {
+public class PIType extends PropertyAssignedAwareResourceMeta<PITypeId> {
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The link to payment instrument type resource.")
     @JsonProperty("self")
     private PITypeId id;

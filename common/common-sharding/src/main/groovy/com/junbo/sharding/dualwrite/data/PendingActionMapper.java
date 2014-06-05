@@ -43,6 +43,7 @@ public class PendingActionMapper {
         result.setDeletedKey(pendingAction.getDeletedKey());
         result.setChangedEntityId(pendingAction.getChangedEntityId());
         result.setResourceAge(pendingAction.getResourceAge());
+        result.setCloudantRev(pendingAction.getCloudantRev());
         result.setCreatedTime(pendingAction.getCreatedTime());
         if (pendingAction.getCreatedBy() != null) {
             result.setCreatedBy(pendingAction.getCreatedBy());
@@ -78,6 +79,7 @@ public class PendingActionMapper {
         result.setDeletedKey(pendingAction.getDeletedKey());
         result.setChangedEntityId(pendingAction.getChangedEntityId());
         result.setResourceAge(pendingAction.getResourceAge());
+        result.setCloudantRev(pendingAction.getCloudantRev());
         result.setCreatedTime(pendingAction.getCreatedTime());
         if (pendingAction.getCreatedBy() != null) {
             result.setCreatedBy(pendingAction.getCreatedBy());

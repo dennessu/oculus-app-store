@@ -5,7 +5,7 @@
  */
 package com.junbo.common.cloudant.json;
 
-import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.util.VersionUtil;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
@@ -13,11 +13,10 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.PropertyName;
 import com.fasterxml.jackson.databind.introspect.Annotated;
+import com.fasterxml.jackson.databind.introspect.AnnotatedField;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
-import com.junbo.common.cloudant.json.annotations.CloudantDeserialize;
-import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
-import com.junbo.common.cloudant.json.annotations.CloudantProperty;
-import com.junbo.common.cloudant.json.annotations.CloudantSerialize;
+import com.junbo.common.cloudant.CloudantEntity;
+import com.junbo.common.cloudant.json.annotations.*;
 
 import java.lang.annotation.Annotation;
 
@@ -28,7 +27,7 @@ import java.lang.annotation.Annotation;
  *  CloudantIgnore,
  *  CloudantSerializer,
  *  CloudantDeserializer,
- *  CloudantAnnotationInside,
+ *  CloudantAnnotationsInside,
  *  CloudantProperty
  */
 public class CloudantAnnotationIntrospector extends AnnotationIntrospector {
@@ -42,13 +41,13 @@ public class CloudantAnnotationIntrospector extends AnnotationIntrospector {
 
     @Override
     public boolean isAnnotationBundle(Annotation annotation) {
-        return annotation.annotationType().getAnnotation(JacksonAnnotationsInside.class) != null;
+        return annotation.annotationType().getAnnotation(CloudantAnnotationsInside.class) != null;
     }
 
     @Override
     public boolean hasIgnoreMarker(AnnotatedMember member) {
         CloudantIgnore ignore = member.getAnnotation(CloudantIgnore.class);
-        return ignore != null;
+        return ignore != null || isSelfProperty(member);
     }
 
     @Override
@@ -69,6 +68,7 @@ public class CloudantAnnotationIntrospector extends AnnotationIntrospector {
         if (annotation != null) {
             return new PropertyName(annotation.value());
         }
+
         return null;
     }
 
@@ -81,6 +81,7 @@ public class CloudantAnnotationIntrospector extends AnnotationIntrospector {
                 return deserializerCls;
             }
         }
+
         return null;
     }
 
@@ -90,6 +91,20 @@ public class CloudantAnnotationIntrospector extends AnnotationIntrospector {
         if (annotation != null) {
             return new PropertyName(annotation.value());
         }
+
         return null;
+    }
+
+    private boolean isSelfProperty(Annotated annotated) {
+        if (annotated instanceof AnnotatedField) {
+            AnnotatedField field = (AnnotatedField)annotated;
+            if (CloudantEntity.class.isAssignableFrom(field.getDeclaringClass())) {
+                JsonProperty annotation = annotated.getAnnotation(JsonProperty.class);
+                if (annotation != null && "self".equals(annotation.value())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

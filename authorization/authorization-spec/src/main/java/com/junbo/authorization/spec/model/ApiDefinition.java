@@ -7,7 +7,6 @@
 package com.junbo.authorization.spec.model;
 
 import com.junbo.common.model.ResourceMeta;
-import com.junbo.common.util.Identifiable;
 import groovy.transform.CompileStatic;
 
 import java.util.List;
@@ -17,7 +16,7 @@ import java.util.Map;
  * ApiDefinition.
  */
 @CompileStatic
-public class ApiDefinition extends ResourceMeta implements Identifiable<String> {
+public class ApiDefinition extends ResourceMeta<String> {
     private String apiName;
     private Map<String, List<MatrixRow>> scopes;
     private String revision;

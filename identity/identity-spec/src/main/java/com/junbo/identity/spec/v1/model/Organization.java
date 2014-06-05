@@ -8,7 +8,6 @@ package com.junbo.identity.spec.v1.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.*;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
-import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ import java.util.List;
 /**
  * Created by liangfu on 5/22/14.
  */
-public class Organization extends PropertyAssignedAwareResourceMeta implements Identifiable<OrganizationId> {
+public class Organization extends PropertyAssignedAwareResourceMeta<OrganizationId> {
     @ApiModelProperty(position = 1, required = true, value = "[Nullable]The id of organization resource.")
     @JsonProperty("self")
     private OrganizationId id;

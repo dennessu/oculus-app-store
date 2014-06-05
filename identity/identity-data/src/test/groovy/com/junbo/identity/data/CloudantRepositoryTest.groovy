@@ -164,7 +164,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         String newSerialNumber = UUID.randomUUID().toString()
         newDevice.setSerialNumber(newSerialNumber)
-        deviceRepository.update(newDevice)
+        deviceRepository.update(newDevice).get()
 
         device = deviceRepository.get((DeviceId)newDevice.id).get()
         assert device.serialNumber == newSerialNumber
@@ -186,7 +186,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         String newValue = 'test2 ' + UUID.randomUUID().toString()
         newGroup.setName(newValue)
-        groupRepository.update(newGroup)
+        groupRepository.update(newGroup).get()
         newGroup = groupRepository.get(group.getId()).get()
         Assert.assertEquals(newValue, newGroup.getName())
 
@@ -205,7 +205,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         Tos getTos = tosRepository.get(tos.getId()).get()
         Assert.assertEquals(tos.title, getTos.title)
 
-        tosRepository.delete(tos.getId())
+        tosRepository.delete(tos.getId()).get()
 
         Tos delTos = tosRepository.get(tos.getId()).get()
         Assert.assertNull(delTos)
@@ -232,7 +232,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         Boolean newValue = !userPassword.getActive()
         newUserPassword.setActive(newValue)
-        userPasswordRepository.update(newUserPassword)
+        userPasswordRepository.update(newUserPassword).get()
         newUserPassword = userPasswordRepository.get(newUserPassword.getId()).get()
         Assert.assertEquals(newValue, newUserPassword.getActive())
 
@@ -267,7 +267,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         Boolean newValue = !userPIN.getActive()
         newUserPin.setActive(newValue)
-        userPinRepository.update(newUserPin)
+        userPinRepository.update(newUserPin).get()
         newUserPin = userPinRepository.get(newUserPin.getId()).get()
         Assert.assertEquals(newValue, newUserPin.getActive())
 
@@ -292,7 +292,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         String newValue = UUID.randomUUID().toString()
         newUserAuthenticator.setExternalId(newValue)
-        userAuthenticatorRepository.update(newUserAuthenticator)
+        userAuthenticatorRepository.update(newUserAuthenticator).get()
         newUserAuthenticator = userAuthenticatorRepository.get(authenticator.getId()).get()
 
         Assert.assertEquals(newValue, newUserAuthenticator.externalId)
@@ -371,7 +371,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         CommunicationId newCommunicationId = new CommunicationId(idGenerator.nextId())
         userOptin.setCommunicationId(newCommunicationId)
-        userCommunicationRepository.update(userOptin)
+        userCommunicationRepository.update(userOptin).get()
 
         newUserOptin = userCommunicationRepository.get(userOptin.getId()).get()
         Assert.assertEquals(newCommunicationId, newUserOptin.getCommunicationId())
@@ -452,7 +452,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         String value = UUID.randomUUID().toString()
         newUserSecurityQuestion.setAnswerHash(value)
-        userSecurityQuestionRepository.update(newUserSecurityQuestion)
+        userSecurityQuestionRepository.update(newUserSecurityQuestion).get()
 
         newUserSecurityQuestion = userSecurityQuestionRepository.get(userSecurityQuestion.getId()).get()
         Assert.assertEquals(newUserSecurityQuestion.getAnswerHash(), value)
@@ -475,7 +475,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(userTos.getTosId(), newUserTos.getTosId())
 
         newUserTos.setTosId(new TosId(456L))
-        userTosRepository.update(newUserTos)
+        userTosRepository.update(newUserTos).get()
 
         newUserTos = userTosRepository.get(userTos.getId()).get()
         Assert.assertEquals(new TosId(456L), newUserTos.getTosId())

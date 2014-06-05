@@ -32,23 +32,23 @@ public class PriceTierRepositoryImpl extends CloudantClient<PriceTier> implement
         if (priceTier.getId() == null) {
             priceTier.setId(idGenerator.nextId());
         }
-        return super.cloudantPost(priceTier);
+        return super.cloudantPost(priceTier).get();
     }
 
     public PriceTier get(Long tierId) {
-        return super.cloudantGet(tierId.toString());
+        return super.cloudantGet(tierId.toString()).get();
     }
 
     public List<PriceTier> getPriceTiers(int start, int size) {
-        return super.queryView("by_tierId", null, size, start, true);
+        return super.queryView("by_tierId", null, size, start, true).get();
     }
 
     public PriceTier update(PriceTier priceTier) {
-        return super.cloudantPut(priceTier);
+        return super.cloudantPut(priceTier).get();
     }
 
     public void delete(Long tierId) {
-        super.cloudantDelete(tierId.toString());
+        super.cloudantDelete(tierId.toString()).get();
     }
 
     private CloudantViews cloudantViews = new CloudantViews() {{

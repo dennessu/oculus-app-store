@@ -44,21 +44,6 @@ class ApiServiceImpl implements ApiService {
 
     @Override
     ApiDefinition updateApi(String apiName, ApiDefinition apiDefinition) {
-
-        if (apiDefinition.resourceAge == null) {
-            throw AppErrors.INSTANCE.missingResourceAge().exception()
-        }
-
-        if (apiName != apiDefinition.apiName) {
-            throw AppErrors.INSTANCE.mismatchEntityName().exception()
-        }
-
-        ApiDefinition existingApi = apiDefinitionRepository.getApi(apiName)
-
-        if (apiDefinition.resourceAge != existingApi.resourceAge) {
-            throw AppErrors.INSTANCE.updateConflict('api_definition').exception()
-        }
-
         try {
             apiDefinitionRepository.updateApi(apiDefinition)
         } catch (CloudantUpdateConflictException ignore) {

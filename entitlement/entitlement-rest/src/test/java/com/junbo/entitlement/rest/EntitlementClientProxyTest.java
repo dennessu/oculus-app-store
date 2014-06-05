@@ -49,7 +49,7 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
     public void testCreate() throws ExecutionException, InterruptedException {
         Entitlement entitlement = buildAnEntitlement();
         entitlement = entitlementResourceClientProxy.postEntitlement(entitlement).get();
-        Assert.assertNotNull(entitlement.getEntitlementId());
+        Assert.assertNotNull(entitlement.getId());
     }
 
     @Test(enabled = false)
@@ -57,16 +57,16 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
         Entitlement entitlement = entitlementResourceClientProxy.postEntitlement(buildAnEntitlement()).get();
         Date now = new Date();
         entitlement.setExpirationTime(now);
-        entitlement = entitlementResourceClientProxy.updateEntitlement(new EntitlementId(entitlement.getEntitlementId()), entitlement).get();
+        entitlement = entitlementResourceClientProxy.updateEntitlement(new EntitlementId(entitlement.getId()), entitlement).get();
         Assert.assertTrue(Math.abs(entitlement.getExpirationTime().getTime() - now.getTime()) <= 1000);
     }
 
     @Test(enabled = false)
     public void testDelete() throws ExecutionException, InterruptedException {
         Entitlement entitlement = entitlementResourceClientProxy.postEntitlement(buildAnEntitlement()).get();
-        entitlementResourceClientProxy.deleteEntitlement(new EntitlementId(entitlement.getEntitlementId()));
+        entitlementResourceClientProxy.deleteEntitlement(new EntitlementId(entitlement.getId()));
         try {
-            entitlementResourceClientProxy.getEntitlement(new EntitlementId(entitlement.getEntitlementId()));
+            entitlementResourceClientProxy.getEntitlement(new EntitlementId(entitlement.getId()));
         } catch (AppErrorException e) {
             Assert.assertEquals(e.getResponse().getStatus(), 404);
         }
@@ -77,15 +77,15 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
         Long targetId = idGenerator.nextId();
         Entitlement entitlement = entitlementResourceClientProxy.postEntitlement(buildAnEntitlement()).get();
         EntitlementTransfer transfer = new EntitlementTransfer();
-        transfer.setEntitlementId(entitlement.getEntitlementId());
+        transfer.setEntitlementId(entitlement.getId());
         transfer.setTargetUserId(targetId);
         Entitlement newEntitlement = entitlementResourceClientProxy.transferEntitlement(transfer).get();
         Assert.assertEquals(newEntitlement.getUserId(), targetId);
-        Assert.assertNotEquals(newEntitlement.getEntitlementId(), entitlement.getEntitlementId());
+        Assert.assertNotEquals(newEntitlement.getId(), entitlement.getId());
         Assert.assertEquals(newEntitlement.getItemId(), entitlement.getItemId());
         Assert.assertEquals(newEntitlement.getGrantTime(), entitlement.getGrantTime());
         try {
-            entitlementResourceClientProxy.getEntitlement(new EntitlementId(entitlement.getEntitlementId()));
+            entitlementResourceClientProxy.getEntitlement(new EntitlementId(entitlement.getId()));
         } catch (AppErrorException e) {
             Assert.assertEquals(e.getResponse().getStatus(), 404);
         }

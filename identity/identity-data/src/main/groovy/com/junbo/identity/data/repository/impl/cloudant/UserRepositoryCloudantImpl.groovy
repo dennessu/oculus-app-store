@@ -50,28 +50,28 @@ class UserRepositoryCloudantImpl extends CloudantClient<User> implements UserRep
         if (user.id == null) {
             user.id = new UserId(idGenerator.nextId())
         }
-        return Promise.pure((User)super.cloudantPost(user))
+        return super.cloudantPost(user)
     }
 
     @Override
     Promise<User> update(User user) {
-        return Promise.pure((User)super.cloudantPut(user))
+        return super.cloudantPut(user)
     }
 
     @Override
     Promise<User> get(UserId userId) {
-        return Promise.pure((User)super.cloudantGet(userId.toString()))
+        return super.cloudantGet(userId.toString())
     }
 
     @Override
     Promise<Void> delete(UserId userId) {
-        super.cloudantDelete(userId.toString())
-        return Promise.pure(null)
+        return super.cloudantDelete(userId.toString())
     }
 
     @Override
     Promise<User> getUserByCanonicalUsername(String canonicalUsername) {
-        def list = super.queryView('by_canonical_username', canonicalUsername)
-        return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)
+        return super.queryView('by_canonical_username', canonicalUsername).then { List<User> list ->
+            return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)
+        }
     }
 }

@@ -34,6 +34,6 @@ public class EntitlementHistoryDaoImpl extends CloudantClient<EntitlementHistory
     @Override
     public EntitlementHistoryEntity insert(EntitlementHistoryEntity entitlementHistory) {
         entitlementHistory.setpId(generateId(entitlementHistory.getShardMasterId()));
-        return super.cloudantPost(entitlementHistory);
+        return super.cloudantPost(entitlementHistory).get();
     }
 }
