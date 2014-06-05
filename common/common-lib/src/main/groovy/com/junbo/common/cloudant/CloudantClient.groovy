@@ -431,6 +431,7 @@ abstract class CloudantClient<T extends CloudantEntity> implements InitializingB
 
         if (method == HttpMethod.PUT || method == HttpMethod.POST) {
             requestBuilder.addHeader('Content-Type', 'application/json')
+            requestBuilder.setBodyEncoding("UTF-8");
         }
 
         try {
