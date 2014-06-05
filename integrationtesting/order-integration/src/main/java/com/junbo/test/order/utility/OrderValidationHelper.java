@@ -7,7 +7,7 @@
 package com.junbo.test.order.utility;
 
 import com.junbo.order.spec.model.Order;
-import com.junbo.test.common.Entities.enums.OrderStatus;
+import com.junbo.test.order.model.enums.OrderStatus;
 import com.junbo.test.common.Utility.BaseValidationHelper;
 import com.junbo.test.common.blueprint.Master;
 
