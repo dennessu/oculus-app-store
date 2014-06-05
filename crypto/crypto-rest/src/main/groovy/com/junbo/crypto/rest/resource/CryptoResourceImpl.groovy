@@ -27,29 +27,46 @@ class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
 
     @Override
     Promise<CryptoMessage> encrypt(UserId userId, CryptoMessage rawMessage) {
-        if (enableEncrypt != true) {
+        if (!enableEncrypt) {
             return Promise.pure(rawMessage)
         }
         return validator.validateEncrypt(userId, rawMessage).then {
-            return symmetricEncryptUserMessage(userId, rawMessage.value).then { String encryptMessage ->
-                CryptoMessage result = new CryptoMessage()
-                result.value = encryptMessage
-                return Promise.pure(result)
+            if (enableUserKeyEncrypt) {
+                return symmetricEncryptUserMessageByUserKey(userId, rawMessage.value).then { String encryptMessage ->
+                    CryptoMessage result = new CryptoMessage()
+                    result.value = encryptMessage
+                    return Promise.pure(result)
+                }
+            } else {
+                return symmetricEncryptUserMessageByMasterKey(rawMessage.value).then { String encryptMessage ->
+                    CryptoMessage result = new CryptoMessage()
+                    result.value = encryptMessage
+                    return Promise.pure(result)
+                }
             }
         }
     }
 
     @Override
     Promise<CryptoMessage> decrypt(UserId userId, CryptoMessage encryptMessage) {
-        if (enableEncrypt != true) {
+        if (!enableEncrypt) {
             return Promise.pure(encryptMessage)
         }
         return validator.validateDecrypt(userId, encryptMessage).then {
-            return symmetricDecryptUserMessage(userId, encryptMessage.value).then { String rawMessage ->
-                CryptoMessage result = new CryptoMessage()
-                result.value = rawMessage
+            if (enableUserKeyEncrypt) {
+                return symmetricDecryptUserMessageByUserKey(userId, encryptMessage.value).then { String rawMessage ->
+                    CryptoMessage result = new CryptoMessage()
+                    result.value = rawMessage
 
-                return Promise.pure(result)
+                    return Promise.pure(result)
+                }
+            } else {
+                return symmetricDecryptUserMessageByMasterKey(encryptMessage.value).then { String rawMessage ->
+                    CryptoMessage result = new CryptoMessage()
+                    result.value = rawMessage
+
+                    return Promise.pure(result)
+                }
             }
         }
     }
