@@ -18,7 +18,7 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  */
 public class UserTFABackupCodeAttempt extends PropertyAssignedAwareResourceMeta implements Identifiable<UserTFABackupCodeAttemptId> {
     @ApiModelProperty(position = 1, required = true,
-            value = "[Client Immutable]The id of the userTele backup code attempt resource.")
+            value = "[Client Immutable]The id of the userTFA backup code attempt resource.")
     @JsonProperty("self")
     private UserTFABackupCodeAttemptId id;
 
@@ -26,7 +26,7 @@ public class UserTFABackupCodeAttempt extends PropertyAssignedAwareResourceMeta 
     @JsonProperty("user")
     private UserId userId;
 
-    @ApiModelProperty(position = 3, required = true, value = "User tele backup verify code.")
+    @ApiModelProperty(position = 3, required = true, value = "User TFA backup verify code.")
     private String verifyCode;
 
     @ApiModelProperty(position = 4, required = false, value = "The ip address of the verify attempt caller.")
