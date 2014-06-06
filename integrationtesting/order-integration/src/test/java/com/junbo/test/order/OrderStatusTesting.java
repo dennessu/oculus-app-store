@@ -268,12 +268,21 @@ public class OrderStatusTesting extends BaseOrderTestClass {
     )
     @Test
     public void testCheckoutFailure() throws Exception {
+        String uid = testDataProvider.createUser();
 
+        ArrayList<String> offerList = new ArrayList<>();
+        offerList.add(offer_digital_normal1);
+        offerList.add(offer_digital_normal2);
+
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
+
+        testDataProvider.invalidateCreditCard(uid, creditCardId);
+
+        String orderId =  testDataProvider.postOrder(
+                uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
+
+        testDataProvider.updateOrderTentative(orderId,false);
     }
-
-
-
-
-
 
 }
