@@ -29,14 +29,25 @@ class SabrixFacadeTest extends BaseTest{
         def address = buildAddress()
         Balance balanceWithTax = sabrixFacade.calculateTaxQuote(physicalBalance, address, address).get()
         Assert.assertNotNull(balanceWithTax, "Fail to calculate tax.");
-        Assert.assertEquals(balanceWithTax.taxStatus, TaxStatus.TAXED.name(), "Fail to calculate tax.");
+        Assert.assertEquals(balanceWithTax.taxStatus, TaxStatus.TAXED.name(), "Fail to calculate tax.")
     }
 
     @Test(enabled = false)
     void testAddressValidation() {
         def address = buildAddress()
         Address validatedAddress = sabrixFacade.validateAddress(address).get()
-        Assert.assertNotNull(validatedAddress, "Fail to validate address.");
+        Assert.assertNotNull(validatedAddress, "Fail to validate address.")
+    }
+
+    @Test(enabled = false)
+    void testVatIdValidation() {
+        def id = 'IE6388047V'
+        String message = sabrixFacade.validateVatId(id).get()
+        Assert.assertEquals(message, 'Yes, valid VAT number.', "Fail to validate VAT ID.")
+
+        def invalidId = '12345'
+        String errorMessage = sabrixFacade.validateVatId(invalidId).get()
+        Assert.assertTrue(errorMessage.contains('Error'))
     }
 
     Address buildAddress() {

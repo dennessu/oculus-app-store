@@ -70,7 +70,7 @@ class Invoice {
     @XStreamAlias('TOTAL_TAX_AMOUNT')
     Double totalTaxAmount
 
-    @XStreamAlias('MESSAGE')
+    @XStreamImplicit(itemFieldName="MESSAGE")
     List<Message> message
 
     @XStreamAlias('CALCULATION_DIRECTION')

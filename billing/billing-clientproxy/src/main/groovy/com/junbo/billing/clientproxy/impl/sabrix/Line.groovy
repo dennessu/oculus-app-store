@@ -54,7 +54,6 @@ class Line {
     @XStreamImplicit(itemFieldName="TAX")
     List<Tax> tax
 
-
     @Override
     public String toString() {
         return "Line{" +

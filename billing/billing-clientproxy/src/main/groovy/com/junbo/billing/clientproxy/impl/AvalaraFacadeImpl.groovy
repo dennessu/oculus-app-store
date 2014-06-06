@@ -89,6 +89,11 @@ class AvalaraFacadeImpl implements TaxFacade {
         return Promise.pure(address)
     }
 
+    @Override
+    Promise<String> validateVatId(String vatId) {
+        return Promise.pure('Avalara DO NOT support VAT ID validation.')
+    }
+
     Address updateAddress(ValidateAddressResponse response, Address address) {
         if (response != null && response.resultCode == SeverityLevel.Success) {
             address.street1 = response.address.line1

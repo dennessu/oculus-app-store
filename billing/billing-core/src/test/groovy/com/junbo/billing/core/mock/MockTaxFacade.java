@@ -43,4 +43,9 @@ public class MockTaxFacade implements TaxFacade {
     public Promise<Address> validateAddress(Address address) {
         return Promise.pure(address);
     }
+
+    @Override
+    public Promise<String> validateVatId(String vatId) {
+        return Promise.pure("Yes, valid VAT number.");
+    }
 }

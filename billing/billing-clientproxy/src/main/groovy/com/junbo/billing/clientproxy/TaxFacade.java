@@ -19,4 +19,6 @@ public interface TaxFacade {
     Promise<Balance> calculateTax(Balance balance, Address shippingAddress, Address piAddress);
 
     Promise<Address> validateAddress(Address address);
+
+    Promise<String> validateVatId(String vatId);
 }
