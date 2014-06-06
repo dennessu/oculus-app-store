@@ -54,7 +54,7 @@ class ApiDefinitionDataHandler extends BaseDataHandler {
             }
         } else {
             logger.debug("Create new ApiDefinition $apiDefinition.apiName with this content.")
-            apiDefinitionResource.create(apiDefinition)
+            apiDefinitionResource.create(apiDefinition).get()
         }
     }
 }

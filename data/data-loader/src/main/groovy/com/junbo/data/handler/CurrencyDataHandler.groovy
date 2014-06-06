@@ -44,13 +44,13 @@ class CurrencyDataHandler extends BaseDataHandler {
                 logger.debug("Overwrite Currency $currency.currencyCode with this content.")
                 currency.id = (CurrencyId)existing.id
                 currency.rev = existing.rev
-                currencyResource.put(new CurrencyId(currency.currencyCode), currency)
+                currencyResource.patch(new CurrencyId(currency.currencyCode), currency).get()
             } else {
                 logger.debug("$currency.currencyCode already exists, skipped!")
             }
         } else {
             logger.debug('Create new currency with this content')
-            currencyResource.create(currency)
+            currencyResource.create(currency).get()
         }
     }
 }

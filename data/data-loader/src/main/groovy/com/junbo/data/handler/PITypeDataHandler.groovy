@@ -46,13 +46,13 @@ class PITypeDataHandler extends BaseDataHandler {
                 logger.debug("Overwrite PIType $piType.typeCode with this content")
                 piType.id = (PITypeId)existing.id
                 piType.rev = existing.rev
-                piTypeResource.put((PITypeId)existing.id, piType)
+                piTypeResource.patch((PITypeId)existing.id, piType).get()
             } else {
                 logger.debug("$piType.typeCode already exists, skipped!")
             }
         } else {
             logger.debug('Create new piType with this content')
-            piTypeResource.create(piType)
+            piTypeResource.create(piType).get()
         }
     }
 }

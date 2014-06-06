@@ -46,13 +46,13 @@ class ScopeDataHandler extends BaseDataHandler {
             if (alwaysOverwrite) {
                 logger.debug("Overwrite Scope $existing.name with this content")
                 scope.revision = existing.revision
-                scopeEndpoint.putScope(scope.name, scope)
+                scopeEndpoint.putScope(scope.name, scope).get()
             } else {
                 logger.debug("The Scope $scope.name exists, skip this content")
             }
         } else {
             logger.debug("Create new Scope $scope.name with this content")
-            scopeEndpoint.postScope(scope)
+            scopeEndpoint.postScope(scope).get()
         }
     }
 }

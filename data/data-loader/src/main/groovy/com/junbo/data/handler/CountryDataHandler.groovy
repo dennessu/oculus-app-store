@@ -44,13 +44,13 @@ class CountryDataHandler extends BaseDataHandler {
                 logger.debug("Overwrite Country $country.countryCode with this content.")
                 country.id = (CountryId)existing.id
                 country.rev = existing.rev
-                countryResource.put(new CountryId(country.countryCode), country)
+                countryResource.patch(new CountryId(country.countryCode), country).get()
             } else {
                 logger.debug("$country.countryCode already exists, skipped!")
             }
         } else {
             logger.debug('Create new country with this content')
-            countryResource.create(country)
+            countryResource.create(country).get()
         }
     }
 }

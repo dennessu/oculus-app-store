@@ -44,13 +44,13 @@ class LocaleDataHandler extends BaseDataHandler {
                 logger.debug("Overwrite Locale $locale.localeName with this content")
                 locale.id = (LocaleId)existing.id
                 locale.rev = existing.rev
-                localeResource.put(new LocaleId(locale.localeName), locale)
+                localeResource.patch(locale.id as LocaleId, locale).get()
             } else {
                 logger.debug("$locale.localeCode already exists, skipped!")
             }
         } else {
             logger.debug('Create new locale with this content')
-            localeResource.create(locale)
+            localeResource.create(locale).get()
         }
     }
 }
