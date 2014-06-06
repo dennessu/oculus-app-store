@@ -78,12 +78,12 @@ public class OrderTestDataProvider {
         if (currentPrice.compareTo(new BigDecimal(10)) >= 0) {
             originPrices.remove(Country.DEFAULT.toString());
             Map<String, BigDecimal> currencyMap = new HashMap<>();
-            currencyMap.put(Currency.DEFAULT.toString(),new BigDecimal(9));
+            currencyMap.put(Currency.DEFAULT.toString(), new BigDecimal(9));
             originPrices.put(Country.DEFAULT.toString(), currencyMap);
         } else {
             originPrices.remove(Currency.DEFAULT.toString());
             Map<String, BigDecimal> currencyMap = new HashMap<>();
-            currencyMap.put(Currency.DEFAULT.toString(),new BigDecimal(11));
+            currencyMap.put(Currency.DEFAULT.toString(), new BigDecimal(11));
             originPrices.put(Country.DEFAULT.toString(), currencyMap);
         }
         price.setPrices(originPrices);
@@ -173,6 +173,10 @@ public class OrderTestDataProvider {
         String sellerId = IdConverter.idLongToHexString(UserId.class,
                 Master.getInstance().getOfferRevision(offerRevisionId).getOwnerId());
         return orderClient.getSubledger(sellerId);
+    }
+
+    public void invalidateCreditCard(String uid, String paymentId) throws Exception {
+        paymentProvider.invalidateCreditCard(uid, paymentId);
     }
 
 }
