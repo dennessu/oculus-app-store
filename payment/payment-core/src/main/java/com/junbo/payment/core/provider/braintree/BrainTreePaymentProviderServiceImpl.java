@@ -105,7 +105,7 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
                                 .cvv(request.getTypeSpecificDetails().getEncryptedCvmCode())
                                 .options()
                                 .failOnDuplicatePaymentMethod(false)
-                                .verifyCard(request.getIsValidated())
+                                .verifyCard(request.getLastValidatedTime() != null)
                                 .done();
                         //Add billing Address
                         if (request.getAddress() != null) {
