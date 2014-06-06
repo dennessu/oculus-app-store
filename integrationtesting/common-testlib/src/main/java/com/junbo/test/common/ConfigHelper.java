@@ -19,7 +19,7 @@ public final class ConfigHelper {
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
             String configFile = "testConfig.properties";
             String profile = System.getProperty("profile", "test");
-            if (!profile.equals("test") && !profile.equals("local")) {
+            if (!profile.equals("test") && !profile.equals("local") && !profile.trim().isEmpty()) {
                 configFile = profile + ".properties";
             }
             properties.load(loader.getResourceAsStream(configFile));
