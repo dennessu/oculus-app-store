@@ -70,9 +70,10 @@ public class EntitlementServiceImpl implements EntitlementService {
         logger.LogResponse(nettyResponse);
         Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
         Entitlement rtnEntitlement = new JsonMessageTranscoder().decode(new TypeReference<Entitlement>() {
-        },
-                nettyResponse.getResponseBody());
-        String rtnEntitlementId = IdConverter.idToHexString(new EntitlementId(rtnEntitlement.getEntitlementId()));
+                                                                        },
+                nettyResponse.getResponseBody()
+        );
+        String rtnEntitlementId = IdConverter.idToHexString(new EntitlementId(rtnEntitlement.getId()));
         Master.getInstance().addEntitlement(rtnEntitlementId, rtnEntitlement);
         return rtnEntitlementId;
     }
@@ -105,12 +106,13 @@ public class EntitlementServiceImpl implements EntitlementService {
         Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
         Results<Entitlement> rtnEntitlements =
                 new JsonMessageTranscoder().decode(new TypeReference<Results<Entitlement>>() {
-                },
-                        nettyResponse.getResponseBody());
+                                                   },
+                        nettyResponse.getResponseBody()
+                );
         List<String> rtnEntitlementIds = new ArrayList<>();
 
         for (Entitlement en : rtnEntitlements.getItems()) {
-            String rtnEntitlementId = IdConverter.idToHexString(new EntitlementId(en.getEntitlementId()));
+            String rtnEntitlementId = IdConverter.idToHexString(new EntitlementId(en.getId()));
             Master.getInstance().addEntitlement(rtnEntitlementId, en);
             rtnEntitlementIds.add(rtnEntitlementId);
         }
