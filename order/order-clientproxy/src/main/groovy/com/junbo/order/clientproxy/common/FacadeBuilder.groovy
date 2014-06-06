@@ -48,9 +48,11 @@ class FacadeBuilder {
         request.userId = order.user.value
         request.orderId = order.getId().value
         request.trackingGuid = UUID.randomUUID()
-        request.shippingMethodId = order?.shippingMethod
+        request.shippingMethodId = order.shippingMethod
         // TODO: pass shipping infos to fulfillment
-        request.shippingAddressId = order?.shippingAddress?.value
+        request.shippingAddressId = order.shippingAddress?.value
+        request.shippingToNameId = order.shippingToName?.value
+        request.shippingToPhoneId = order.shippingToPhone?.value
         request.items = []
         order.orderItems?.each { OrderItem item ->
             request.items << buildFulfilmentItem(item)
