@@ -4,6 +4,7 @@ import com.junbo.billing.spec.enums.PropertyKey
 import com.junbo.billing.spec.enums.TaxStatus
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
+import com.junbo.billing.spec.model.VatIdValidationResponse
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.id.OrderId
 import com.junbo.identity.spec.v1.model.Address
@@ -28,26 +29,26 @@ class SabrixFacadeTest extends BaseTest{
         def physicalBalance = buildBalance(true)
         def address = buildAddress()
         Balance balanceWithTax = sabrixFacade.calculateTaxQuote(physicalBalance, address, address).get()
-        Assert.assertNotNull(balanceWithTax, "Fail to calculate tax.");
-        Assert.assertEquals(balanceWithTax.taxStatus, TaxStatus.TAXED.name(), "Fail to calculate tax.")
+        Assert.assertNotNull(balanceWithTax, 'Fail to calculate tax.');
+        Assert.assertEquals(balanceWithTax.taxStatus, TaxStatus.TAXED.name(), 'Fail to calculate tax.')
     }
 
     @Test(enabled = false)
     void testAddressValidation() {
         def address = buildAddress()
         Address validatedAddress = sabrixFacade.validateAddress(address).get()
-        Assert.assertNotNull(validatedAddress, "Fail to validate address.")
+        Assert.assertNotNull(validatedAddress, 'Fail to validate address.')
     }
 
     @Test(enabled = false)
     void testVatIdValidation() {
         def id = 'IE6388047V'
-        String message = sabrixFacade.validateVatId(id).get()
-        Assert.assertEquals(message, 'Yes, valid VAT number.', "Fail to validate VAT ID.")
+        VatIdValidationResponse response = sabrixFacade.validateVatId(id).get()
+        Assert.assertEquals(response.status, 'VALID', 'Fail to validate valid VAT ID.')
 
         def invalidId = '12345'
-        String errorMessage = sabrixFacade.validateVatId(invalidId).get()
-        Assert.assertTrue(errorMessage.contains('Error'))
+        VatIdValidationResponse errorResponse = sabrixFacade.validateVatId(invalidId).get()
+        Assert.assertEquals(errorResponse.status, 'INVALID', 'Fail to validate invalid VAT ID.')
     }
 
     Address buildAddress() {

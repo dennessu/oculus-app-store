@@ -13,7 +13,7 @@ import groovy.transform.CompileStatic
  * Postcode type of address validation response.
  */
 @CompileStatic
-@XStreamAlias("POSTCODE")
+@XStreamAlias('POSTCODE')
 class Postcode {
     @XStreamAlias('NAME')
     String name

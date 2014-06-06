@@ -14,9 +14,9 @@ import groovy.transform.CompileStatic
  * Registration validation request for VAT ID validation.
  */
 @CompileStatic
-@XStreamAlias("REGISTRATION_VALIDATION_REQUEST")
+@XStreamAlias('REGISTRATION_VALIDATION_REQUEST')
 class RegistrationValidationRequest {
-    @XStreamImplicit(itemFieldName="REGISTRATION")
+    @XStreamImplicit(itemFieldName='REGISTRATION')
     List<String> registration
 
 

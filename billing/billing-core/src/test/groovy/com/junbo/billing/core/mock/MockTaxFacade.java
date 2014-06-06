@@ -12,6 +12,7 @@ import com.junbo.billing.spec.enums.TaxStatus;
 import com.junbo.billing.spec.model.Balance;
 import com.junbo.billing.spec.model.BalanceItem;
 import com.junbo.billing.spec.model.TaxItem;
+import com.junbo.billing.spec.model.VatIdValidationResponse;
 import com.junbo.identity.spec.v1.model.Address;
 import com.junbo.langur.core.promise.Promise;
 
@@ -45,7 +46,9 @@ public class MockTaxFacade implements TaxFacade {
     }
 
     @Override
-    public Promise<String> validateVatId(String vatId) {
-        return Promise.pure("Yes, valid VAT number.");
+    public Promise<VatIdValidationResponse> validateVatId(String vatId) {
+        VatIdValidationResponse response = new VatIdValidationResponse();
+        response.setStatus("VALID");
+        return Promise.pure(response);
     }
 }

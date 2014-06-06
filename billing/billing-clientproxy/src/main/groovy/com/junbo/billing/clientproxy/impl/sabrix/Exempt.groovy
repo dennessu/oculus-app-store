@@ -13,7 +13,7 @@ import groovy.transform.CompileStatic
  * Exempt rule for tax calculation.
  */
 @CompileStatic
-@XStreamAlias("IS_EXEMPT")
+@XStreamAlias('IS_EXEMPT')
 class Exempt {
     @XStreamAlias('ALL')
     Boolean all

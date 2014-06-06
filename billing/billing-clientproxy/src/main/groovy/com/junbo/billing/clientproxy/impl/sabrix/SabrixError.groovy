@@ -13,7 +13,7 @@ import groovy.transform.CompileStatic
  * Error type for Sabrix tax engine.
  */
 @CompileStatic
-@XStreamAlias("ERROR")
+@XStreamAlias('ERROR')
 class SabrixError {
     @XStreamAlias('CODE')
     String code

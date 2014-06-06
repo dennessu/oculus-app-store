@@ -13,7 +13,7 @@ import groovy.transform.CompileStatic
  * Custom attribute for Sabrix.
  */
 @CompileStatic
-@XStreamAlias("USER_ELEMENT")
+@XStreamAlias('USER_ELEMENT')
 class UserElement {
     @XStreamAlias('NAME')
     String name

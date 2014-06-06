@@ -13,7 +13,7 @@ import groovy.transform.CompileStatic
  * Registration response for VAT ID validation.
  */
 @CompileStatic
-@XStreamAlias("REGISTRATION_RESPONSE")
+@XStreamAlias('REGISTRATION_RESPONSE')
 class RegistrationResponse {
     @XStreamAlias('REGISTRATION')
     String registration

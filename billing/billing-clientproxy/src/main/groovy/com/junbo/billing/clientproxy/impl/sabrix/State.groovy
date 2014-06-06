@@ -13,7 +13,7 @@ import groovy.transform.CompileStatic
  * State type of address validation response.
  */
 @CompileStatic
-@XStreamAlias("STATE")
+@XStreamAlias('STATE')
 class State {
     @XStreamAlias('NAME')
     String name

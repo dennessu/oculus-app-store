@@ -13,7 +13,7 @@ import groovy.transform.CompileStatic
  * Address Type of Sabrix tax engine.
  */
 @CompileStatic
-@XStreamAlias("ADDRESS")
+@XStreamAlias('ADDRESS')
 class SabrixAddress {
     @XStreamAlias('COUNTRY')
     String country

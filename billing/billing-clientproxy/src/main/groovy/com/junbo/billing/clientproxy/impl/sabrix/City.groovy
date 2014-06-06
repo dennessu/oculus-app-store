@@ -13,7 +13,7 @@ import groovy.transform.CompileStatic
  * City type of address validation response.
  */
 @CompileStatic
-@XStreamAlias("CITY")
+@XStreamAlias('CITY')
 class City {
     @XStreamAlias('NAME')
     String name
