@@ -41,37 +41,34 @@ class UserPasswordRepositoryCloudantImpl extends CloudantClient<UserPassword> im
             userPassword.id = new UserPasswordId(idGenerator.nextId(userPassword.userId.value))
         }
         userPassword.value = null
-        return Promise.pure((UserPassword)super.cloudantPost(userPassword))
+        return super.cloudantPost(userPassword)
     }
 
     @Override
     Promise<UserPassword> update(UserPassword userPassword) {
         userPassword.value = null
-        return Promise.pure((UserPassword)super.cloudantPut(userPassword))
+        return super.cloudantPut(userPassword)
     }
 
     @Override
     Promise<UserPassword> get(UserPasswordId id) {
-        return Promise.pure((UserPassword)super.cloudantGet(id.toString()))
+        return super.cloudantGet(id.toString())
     }
 
     @Override
     Promise<List<UserPassword>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        def list = super.queryView('by_user_id', userId.toString(), limit, offset, false)
-        return Promise.pure(list)
+        return super.queryView('by_user_id', userId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<List<UserPassword>> searchByUserIdAndActiveStatus(UserId userId, Boolean active, Integer limit,
                                                               Integer offset) {
-        def list = super.queryView('by_user_id_active_status', "${userId.toString()}:${active}", limit, offset, false)
-        return Promise.pure(list)
+        return super.queryView('by_user_id_active_status', "${userId.toString()}:${active}", limit, offset, false)
     }
 
     @Override
     Promise<Void> delete(UserPasswordId id) {
-        super.cloudantDelete(id.toString())
-        return Promise.pure(null)
+        return super.cloudantDelete(id.toString())
     }
 
     protected CloudantViews views = new CloudantViews(

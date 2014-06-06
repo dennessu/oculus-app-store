@@ -8,10 +8,10 @@ package com.junbo.test.payment.apihelper.impl;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.payment.spec.model.PaymentTransaction;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
-import com.junbo.test.common.libs.RestUrl;
 import com.junbo.test.payment.apihelper.PaymentTransactionService;
 import com.junbo.common.json.JsonMessageTranscoder;
 
@@ -22,7 +22,7 @@ import com.junbo.common.json.JsonMessageTranscoder;
  */
 public class PaymentTransactionServiceImpl extends HttpClientBase implements PaymentTransactionService {
 
-    private static String paymentTransactionUrl = RestUrl.getRestUrl(RestUrl.ComponentName.COMMERCE) + "payment-transactions";
+    private static String paymentTransactionUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1") + "payment-transactions";
 
     private LogHelper logger = new LogHelper(PaymentServiceImpl.class);
 

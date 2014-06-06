@@ -28,8 +28,9 @@ public class EntitlementMapper {
             return null;
         }
         Entitlement entitlement = new Entitlement();
-        entitlement.setEntitlementId(entitlementEntity.getpId());
-        entitlement.setResourceAge(entitlementEntity.getRev());
+        entitlement.setId(entitlementEntity.getpId());
+        entitlement.setResourceAge(entitlementEntity.getResourceAge());
+        entitlement.setCloudantRev(entitlementEntity.getCloudantRev());
         entitlement.setUserId(entitlementEntity.getUserId());
         entitlement.setItemId(entitlementEntity.getItemId());
         entitlement.setIsActive(isActive(entitlementEntity));
@@ -61,10 +62,11 @@ public class EntitlementMapper {
     public EntitlementEntity toEntitlementEntity(Entitlement entitlement) {
         EntitlementEntity entitlementEntity = new EntitlementEntity();
         entitlementEntity.setTrackingUuid(entitlement.getTrackingUuid());
-        entitlementEntity.setpId(entitlement.getEntitlementId());
+        entitlementEntity.setpId(entitlement.getId());
         if (entitlement.getResourceAge() != null) {
-            entitlementEntity.setRev(entitlement.getResourceAge());
+            entitlementEntity.setResourceAge(entitlement.getResourceAge());
         }
+        entitlementEntity.setCloudantRev(entitlement.getCloudantRev());
         entitlementEntity.setItemId(
                 entitlement.getItemId());
         entitlementEntity.setUserId(entitlement.getUserId());

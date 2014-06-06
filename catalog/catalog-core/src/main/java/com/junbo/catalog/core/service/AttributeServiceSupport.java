@@ -42,12 +42,7 @@ public abstract class AttributeServiceSupport<T extends Attribute> {
     }
 
     public T update(Long attributeId, T attribute) {
-        T oldAttribute = getRepo().get(attributeId);
-        if (oldAttribute==null) {
-            throw AppErrors.INSTANCE.notFound(getEntityType(), Utils.encodeId(attributeId)).exception();
-        }
-        validateUpdate(attribute, oldAttribute);
-
+        validateUpdate(attribute);
         return getRepo().update(attribute);
     }
 
@@ -62,7 +57,7 @@ public abstract class AttributeServiceSupport<T extends Attribute> {
     private void validateCreation(T attribute) {
         checkRequestNotNull(attribute);
         List<AppError> errors = new ArrayList<>();
-        if (attribute.getResourceAge() != null) {
+        if (attribute.getRev() != null) {
             errors.add(AppErrors.INSTANCE.unnecessaryField("rev"));
         }
 
@@ -72,16 +67,12 @@ public abstract class AttributeServiceSupport<T extends Attribute> {
         }
     }
 
-    private void validateUpdate(T attribute, T oldAttribute) {
+    private void validateUpdate(T attribute) {
         checkRequestNotNull(attribute);
         List<AppError> errors = new ArrayList<>();
-        if (!oldAttribute.getId().equals(attribute.getId())) {
-            errors.add(AppErrors.INSTANCE.fieldNotMatch("self.id", attribute.getId(), oldAttribute.getId()));
+        if (attribute.getRev() == null) {
+            errors.add(AppErrors.INSTANCE.missingField("rev"));
         }
-        if (!oldAttribute.getResourceAge().equals(attribute.getResourceAge())) {
-            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", attribute.getResourceAge(), oldAttribute.getResourceAge()));
-        }
-
         validateCommon(attribute, errors);
         if (!errors.isEmpty()) {
             throw AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();

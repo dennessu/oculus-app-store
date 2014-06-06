@@ -38,7 +38,7 @@ public class LotTransactionDaoImpl extends TransactionBaseDao<LotTransactionEnti
     @Override
     public List<LotTransactionEntity> getByTransactionId(Long transactionId) {
         String key = transactionId.toString() + ":false";
-        List<LotTransactionEntity> results = super.queryView("byTransactionIdAndIsRefundEnded", key);
+        List<LotTransactionEntity> results = super.queryView("byTransactionIdAndIsRefundEnded", key).get();
         Collections.sort(results, new Comparator<LotTransactionEntity>() {
             @Override
             public int compare(LotTransactionEntity o1, LotTransactionEntity o2) {

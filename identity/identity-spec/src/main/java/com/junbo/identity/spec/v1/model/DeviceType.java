@@ -8,7 +8,6 @@ package com.junbo.identity.spec.v1.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.enumid.DeviceTypeId;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
-import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
@@ -19,7 +18,7 @@ import java.util.Map;
 /**
  * Created by xiali_000 on 4/21/2014.
  */
-public class DeviceType extends PropertyAssignedAwareResourceMeta implements Identifiable<DeviceTypeId> {
+public class DeviceType extends PropertyAssignedAwareResourceMeta<DeviceTypeId> {
 
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The link to the device type resource.")
     @JsonProperty("self")

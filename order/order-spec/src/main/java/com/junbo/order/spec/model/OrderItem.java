@@ -15,8 +15,7 @@ import com.junbo.common.id.OrderId;
 import com.junbo.common.id.OrderItemId;
 import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.common.jackson.annotation.ShippingMethodId;
-import com.junbo.common.model.ResourceMeta;
-import com.junbo.common.util.Identifiable;
+import com.junbo.common.model.ResourceMetaForDualWrite;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
@@ -32,11 +31,13 @@ import java.util.List;
         "taxes", "fulfillmentHistories"
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class OrderItem extends ResourceMeta implements Identifiable<OrderItemId> {
+public class OrderItem extends ResourceMetaForDualWrite<OrderItemId> {
     @JsonIgnore
     private OrderItemId id;
+
     @JsonIgnore
     private OrderId orderId;
+
     @JsonIgnore
     private String type;
 

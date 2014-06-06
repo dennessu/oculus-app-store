@@ -42,53 +42,50 @@ class UserTosRepositoryCloudantImpl extends CloudantClient<UserTosAgreement> imp
         if (entity.id == null) {
             entity.id = new UserTosAgreementId(idGenerator.nextId(entity.userId.value))
         }
-        return Promise.pure((UserTosAgreement)super.cloudantPost(entity))
+        return super.cloudantPost(entity)
     }
 
     @Override
     Promise<UserTosAgreement> update(UserTosAgreement entity) {
-        return Promise.pure((UserTosAgreement)super.cloudantPut(entity))
+        return super.cloudantPut(entity)
     }
 
     @Override
     Promise<UserTosAgreement> get(UserTosAgreementId id) {
-        return Promise.pure((UserTosAgreement)super.cloudantGet(id.toString()))
+        return super.cloudantGet(id.toString())
     }
 
     @Override
     Promise<List<UserTosAgreement>> search(UserTosAgreementListOptions getOption) {
-        def list = super.queryView('by_user_id', getOption.userId.value.toString(),
-                getOption.limit, getOption.offset, false)
-        if (getOption.tosId != null) {
-            list.retainAll { UserTosAgreement agreement ->
-                agreement.tosId == getOption.tosId
+        return super.queryView('by_user_id', getOption.userId.value.toString(),
+                getOption.limit, getOption.offset, false).then { List<UserTosAgreement> list ->
+            if (getOption.tosId != null) {
+                list.retainAll { UserTosAgreement agreement ->
+                    agreement.tosId == getOption.tosId
+                }
             }
+            return Promise.pure(list)
         }
-        return Promise.pure(list)
     }
 
     @Override
     Promise<List<UserTosAgreement>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        def list = super.queryView('by_user_id', userId.toString(), limit, offset, false)
-        return Promise.pure(list)
+        return super.queryView('by_user_id', userId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<List<UserTosAgreement>> searchByTosId(TosId tosId, Integer limit, Integer offset) {
-        def list = super.queryView('by_tos_id', tosId.toString(), limit, offset, false)
-        return Promise.pure(list)
+        return super.queryView('by_tos_id', tosId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<List<UserTosAgreement>> searchByUserIdAndTosId(UserId userId, TosId tosId, Integer limit, Integer offset) {
-        def list = super.queryView('by_user_id_tos_id', "${userId.toString()}:${tosId.toString()}", limit, offset, false)
-        return Promise.pure(list)
+        return super.queryView('by_user_id_tos_id', "${userId.toString()}:${tosId.toString()}", limit, offset, false)
     }
 
     @Override
     Promise<Void> delete(UserTosAgreementId id) {
-        super.cloudantDelete(id.toString())
-        return Promise.pure(null)
+        return super.cloudantDelete(id.toString())
     }
 
     protected CloudantViews views = new CloudantViews(

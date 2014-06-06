@@ -43,6 +43,11 @@ public abstract class Id extends Object implements Serializable, PropertyAssigne
         support.setPropertyAssigned("value");
     }
 
+    public void setCloudantId(String id) {
+        this.value = Long.parseLong(id);
+        support.setPropertyAssigned("value");
+    }
+
     public Properties getResourcePathPlaceHolder() {
         if (resourcePathPlaceHolder == null) {
             resourcePathPlaceHolder = new Properties();

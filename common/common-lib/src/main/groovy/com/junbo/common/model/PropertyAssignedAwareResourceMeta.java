@@ -16,14 +16,13 @@ import java.util.Map;
 /**
  * The base class for all resource using propertyAssignedAware with system properties.
  */
-public abstract class PropertyAssignedAwareResourceMeta extends ResourceMeta implements PropertyAssignedAware {
+public abstract class PropertyAssignedAwareResourceMeta<K> extends ResourceMeta<K> implements PropertyAssignedAware {
 
     protected final PropertyAssignedAwareSupport support = new PropertyAssignedAwareSupport();
 
     @Override
-    public void setResourceAge(Integer resourceAge) {
-        super.setResourceAge(resourceAge);
-        support.setPropertyAssigned("resourceAge");
+    public void setRev(String rev) {
+        super.setRev(rev);
         support.setPropertyAssigned("rev");
     }
 

@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserTFABackupCodeId;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
-import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
@@ -17,7 +16,7 @@ import java.util.Date;
 /**
  * Created by liangfu on 4/22/14.
  */
-public class UserTFABackupCode extends PropertyAssignedAwareResourceMeta implements Identifiable<UserTFABackupCodeId> {
+public class UserTFABackupCode extends PropertyAssignedAwareResourceMeta<UserTFABackupCodeId> {
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The id of UserTFA resource.")
     @JsonProperty("self")
     private UserTFABackupCodeId id;

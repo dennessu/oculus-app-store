@@ -10,7 +10,6 @@ import com.junbo.common.id.TosId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserTosAgreementId;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
-import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
@@ -18,7 +17,7 @@ import java.util.Date;
 /**
  * Created by liangfu on 4/3/14.
  */
-public class UserTosAgreement extends PropertyAssignedAwareResourceMeta implements Identifiable<UserTosAgreementId> {
+public class UserTosAgreement extends PropertyAssignedAwareResourceMeta<UserTosAgreementId> {
 
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The Link to the user tos agreement resource.")
     @JsonProperty("self")

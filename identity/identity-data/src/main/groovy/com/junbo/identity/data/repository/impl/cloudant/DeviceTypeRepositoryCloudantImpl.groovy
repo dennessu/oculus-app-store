@@ -1,16 +1,13 @@
 package com.junbo.identity.data.repository.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.enumid.DeviceTypeId
 import com.junbo.identity.data.repository.DeviceTypeRepository
 import com.junbo.identity.spec.v1.model.DeviceType
-import com.junbo.identity.spec.v1.option.list.DeviceTypeListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-
 /**
  * Created by haomin on 14-4-25.
  */
@@ -30,13 +27,12 @@ class DeviceTypeRepositoryCloudantImpl extends CloudantClient<DeviceType> implem
 
     @Override
     Promise<List<DeviceType>> searchAll(Integer limit, Integer offset) {
-        return Promise.pure(super.cloudantGetAll())
+        return super.cloudantGetAll()
     }
 
     @Override
     Promise<List<DeviceType>> searchByDeviceTypeCode(String typeCode, Integer limit, Integer offset) {
-        def list = super.queryView('by_type_code', typeCode, limit, offset, false)
-        return Promise.pure(list)
+        return super.queryView('by_type_code', typeCode, limit, offset, false)
     }
 
     @Override
@@ -45,23 +41,22 @@ class DeviceTypeRepositoryCloudantImpl extends CloudantClient<DeviceType> implem
             deviceType.id = new DeviceTypeId(deviceType.typeCode)
         }
 
-        return Promise.pure((DeviceType)super.cloudantPost(deviceType))
+        return super.cloudantPost(deviceType)
     }
 
     @Override
     Promise<DeviceType> update(DeviceType deviceType) {
-        return Promise.pure((DeviceType)super.cloudantPut(deviceType))
+        return super.cloudantPut(deviceType)
     }
 
     @Override
     Promise<DeviceType> get(DeviceTypeId id) {
-        return Promise.pure((DeviceType)super.cloudantGet(id.toString()))
+        return super.cloudantGet(id.toString())
     }
 
     @Override
     Promise<Void> delete(DeviceTypeId id) {
-        super.cloudantDelete(id.value.toString())
-        return Promise.pure(null)
+        return super.cloudantDelete(id.value.toString())
     }
 
     protected CloudantViews views = new CloudantViews(

@@ -4,11 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.common.model.ResourceMeta;
-import com.junbo.common.util.Identifiable;
 
 import java.util.Date;
 
-public class UserPersonalInfo extends ResourceMeta implements Identifiable<UserPersonalInfoId> {
+public class UserPersonalInfo extends ResourceMeta<UserPersonalInfoId> {
 
     private UserPersonalInfoId id;
     private String type;

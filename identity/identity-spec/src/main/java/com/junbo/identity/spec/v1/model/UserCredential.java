@@ -6,10 +6,10 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
 import com.junbo.common.id.UserCredentialId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
-import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
@@ -17,9 +17,10 @@ import java.util.Date;
 /**
  * Created by liangfu on 4/3/14.
  */
-public class UserCredential extends PropertyAssignedAwareResourceMeta implements Identifiable<UserCredentialId> {
+public class UserCredential extends PropertyAssignedAwareResourceMeta<UserCredentialId> {
 
     @JsonIgnore
+    @CloudantIgnore
     private UserCredentialId id;
 
     @JsonIgnore

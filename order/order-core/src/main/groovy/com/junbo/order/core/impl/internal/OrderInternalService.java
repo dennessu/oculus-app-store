@@ -31,6 +31,8 @@ public interface OrderInternalService {
 
     Promise<Void> refundDeposit(Order order);
 
+    Promise<Order> refundOrder(Order order);
+
     Promise<List<Balance>> getBalancesByOrderId(Long orderId);
 
 }

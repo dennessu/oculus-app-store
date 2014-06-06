@@ -174,7 +174,6 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
     private StringBuffer getRawRequest(CurrencyId defaultCurrency, long minAuthAmount, Long piId, PaymentInstrument request) throws UnsupportedEncodingException {
         StringBuffer sbReq = new StringBuffer();
         sbReq.append("action=Payment.authorise");
-        sbReq.append("&paymentRequest.card.cvc=" + request.getTypeSpecificDetails().getEncryptedCvmCode());
         sbReq.append("&paymentRequest.card.holderName=" + request.getAccountName());
         String expireDate = request.getTypeSpecificDetails().getExpireDate();
         String[] tokens = expireDate.split("-");

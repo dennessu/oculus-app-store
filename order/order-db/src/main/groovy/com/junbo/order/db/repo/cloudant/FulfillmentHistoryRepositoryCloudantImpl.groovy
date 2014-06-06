@@ -8,29 +8,15 @@ import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.db.repo.FulfillmentHistoryRepository
 import com.junbo.order.spec.model.FulfillmentHistory
-import com.junbo.sharding.IdGenerator
-import com.junbo.sharding.repo.BaseCloudantRepository
+import com.junbo.sharding.repo.BaseCloudantRepositoryForDualWrite
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
-import org.springframework.beans.factory.annotation.Required
 /**
  * Created by chriszhu on 2/18/14.
  */
 @CompileStatic
 @TypeChecked
-class FulfillmentHistoryRepositoryCloudantImpl extends BaseCloudantRepository<FulfillmentHistory, Long> implements FulfillmentHistoryRepository {
-
-    private IdGenerator idGenerator
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
-
-    @Override
-    protected Long generateId() {
-        return idGenerator.nextId();
-    }
+class FulfillmentHistoryRepositoryCloudantImpl extends BaseCloudantRepositoryForDualWrite<FulfillmentHistory, Long> implements FulfillmentHistoryRepository {
 
     @Override
     protected CloudantViews getCloudantViews() {
@@ -39,8 +25,7 @@ class FulfillmentHistoryRepositoryCloudantImpl extends BaseCloudantRepository<Fu
 
     @Override
     Promise<List<FulfillmentHistory>> getByOrderItemId(Long orderItemId) {
-        List<FulfillmentHistory> list = super.queryView('by_order_item', orderItemId.toString());
-        return Promise.pure(list);
+        return super.queryView('by_order_item', orderItemId.toString());
     }
 
     private CloudantViews views = new CloudantViews(

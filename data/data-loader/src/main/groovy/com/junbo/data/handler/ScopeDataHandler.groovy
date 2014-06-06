@@ -43,25 +43,16 @@ class ScopeDataHandler extends BaseDataHandler {
         }
 
         if (existing != null) {
-            int currentRevision = getRevision(existing.revision)
-            if (alwaysOverwrite || (scope.revision != null && getRevision(scope.revision) > currentRevision)) {
-                logger.debug("Overwrite Scope $existing.name of revision $existing.revision " +
-                        "with new revision: $scope.revision")
-
+            if (alwaysOverwrite) {
+                logger.debug("Overwrite Scope $existing.name with this content")
                 scope.revision = existing.revision
-                scopeEndpoint.putScope(scope.name, scope)
+                scopeEndpoint.putScope(scope.name, scope).get()
             } else {
-                logger.debug("The Scope $scope.name revision of ApiDefinition $existing.name is lower" +
-                        " than the current revision, skip this content")
+                logger.debug("The Scope $scope.name exists, skip this content")
             }
         } else {
             logger.debug("Create new Scope $scope.name with this content")
-            scopeEndpoint.postScope(scope)
+            scopeEndpoint.postScope(scope).get()
         }
-    }
-
-    private static int getRevision(String revision) {
-        String[] tokens = revision.split('-')
-        return Integer.parseInt(tokens[0])
     }
 }

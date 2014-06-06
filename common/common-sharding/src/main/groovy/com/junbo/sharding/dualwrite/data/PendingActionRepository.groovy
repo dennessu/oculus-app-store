@@ -12,7 +12,7 @@ import groovy.transform.CompileStatic
  * The pending action.
  */
 @CompileStatic
-public interface PendingActionRepository extends BaseRepository<PendingAction, UUID> {
+public interface PendingActionRepository extends BaseRepository<PendingAction, Long> {
 
     Promise<List<PendingAction>> list(Integer dc, Integer shardId, int maxSize);
 }

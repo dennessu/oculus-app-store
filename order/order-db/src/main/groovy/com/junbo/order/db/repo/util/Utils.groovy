@@ -1,12 +1,10 @@
 package com.junbo.order.db.repo.util
-
 import com.google.common.collect.HashMultimap
-import com.junbo.common.model.ResourceMeta
+import com.junbo.common.model.ResourceMetaForDualWrite
 import com.junbo.order.db.entity.CommonDbEntityWithDate
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
 /**
  * Created by fzhang on 4/11/2014.
  */
@@ -55,7 +53,7 @@ class Utils {
                 field, numCreated, numUpdated, numDeleted)
     }
 
-    static void fillDateInfo(ResourceMeta baseModelWithDate, CommonDbEntityWithDate commonDbEntityWithDate) {
+    static void fillDateInfo(ResourceMetaForDualWrite baseModelWithDate, CommonDbEntityWithDate commonDbEntityWithDate) {
         baseModelWithDate.createdBy = commonDbEntityWithDate.createdBy
         baseModelWithDate.createdTime = commonDbEntityWithDate.createdTime
         baseModelWithDate.updatedByClient = commonDbEntityWithDate.updatedBy

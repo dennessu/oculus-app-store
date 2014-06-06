@@ -1,5 +1,4 @@
 package com.junbo.crypto.data.repo.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.UserCryptoKeyId
@@ -26,9 +25,8 @@ class CloudantUserCryptoKeyRepoImpl extends CloudantClient<UserCryptoKey> implem
 
     @Override
     Promise<List<UserCryptoKey>> getAllUserCryptoKeys(UserId userId) {
-        def list = super.queryView('by_user_id', userId.value.toString(),
+        return super.queryView('by_user_id', userId.value.toString(),
                 Integer.MAX_VALUE, 0, false)
-        return Promise.pure(list)
     }
 
     @Override
@@ -36,7 +34,7 @@ class CloudantUserCryptoKeyRepoImpl extends CloudantClient<UserCryptoKey> implem
         if (model.id == null) {
             model.id = new UserCryptoKeyId(idGenerator.nextId(model.userId.value))
         }
-        return Promise.pure((UserCryptoKey)super.cloudantPost(model))
+        return super.cloudantPost(model)
     }
 
     @Override
@@ -46,25 +44,25 @@ class CloudantUserCryptoKeyRepoImpl extends CloudantClient<UserCryptoKey> implem
 
     @Override
     Promise<UserCryptoKey> get(UserCryptoKeyId id) {
-        return Promise.pure((UserCryptoKey)super.cloudantGet(id.toString()))
+        return super.cloudantGet(id.toString())
     }
 
     @Override
     Promise<Void> delete(UserCryptoKeyId id) {
-        super.cloudantDelete(id.toString())
-        return Promise.pure(null)
+        return super.cloudantDelete(id.toString())
     }
 
     @Override
     Promise<UserCryptoKey> getUserCryptoKeyByVersion(UserId userId, Integer version) {
-        def list = super.queryView('by_user_id_key_version', "${userId.value.toString()}:${version.toString()}",
-                Integer.MAX_VALUE, 0, false)
+        return super.queryView('by_user_id_key_version', "${userId.value.toString()}:${version.toString()}",
+                Integer.MAX_VALUE, 0, false).then { List<UserCryptoKey> list ->
 
-        if (CollectionUtils.isEmpty(list)) {
-            return Promise.pure(null)
+            if (CollectionUtils.isEmpty(list)) {
+                return Promise.pure(null)
+            }
+
+            return Promise.pure((UserCryptoKey)list.get(0))
         }
-
-        return Promise.pure((UserCryptoKey)list.get(0))
     }
 
     protected CloudantViews views = new CloudantViews(

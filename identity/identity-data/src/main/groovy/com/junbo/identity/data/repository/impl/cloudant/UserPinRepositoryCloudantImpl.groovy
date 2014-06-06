@@ -1,18 +1,15 @@
 package com.junbo.identity.data.repository.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPinId
 import com.junbo.identity.data.repository.UserPinRepository
 import com.junbo.identity.spec.model.users.UserPin
-import com.junbo.identity.spec.v1.option.list.UserPinListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.ShardAlgorithm
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-
 /**
  * Created by haomin on 14-4-10.
  */
@@ -42,36 +39,33 @@ class UserPinRepositoryCloudantImpl extends CloudantClient<UserPin> implements U
             userPin.id = new UserPinId(idGenerator.nextId(userPin.userId.value))
         }
         userPin.value = null
-        return Promise.pure((UserPin)super.cloudantPost(userPin))
+        return super.cloudantPost(userPin)
     }
 
     @Override
     Promise<UserPin> update(UserPin userPin) {
         userPin.value = null
-        return Promise.pure((UserPin)super.cloudantPut(userPin))
+        return super.cloudantPut(userPin)
     }
 
     @Override
     Promise<UserPin> get(UserPinId id) {
-        return Promise.pure((UserPin)super.cloudantGet(id.toString()))
+        return super.cloudantGet(id.toString())
     }
 
     @Override
     Promise<List<UserPin>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        def list = super.queryView('by_user_id', userId.toString(), limit, offset, false)
-        return Promise.pure(list)
+        return super.queryView('by_user_id', userId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<List<UserPin>> searchByUserIdAndActiveStatus(UserId userId, Boolean active, Integer limit, Integer offset) {
-        def list = super.queryView('by_user_id_active_status', "${userId.toString()}:${active}", limit, offset, false)
-        return Promise.pure(list)
+        return super.queryView('by_user_id_active_status', "${userId.toString()}:${active}", limit, offset, false)
     }
 
     @Override
     Promise<Void> delete(UserPinId id) {
-        super.cloudantDelete(id.toString())
-        return Promise.pure(null)
+        return super.cloudantDelete(id.toString())
     }
 
     protected CloudantViews views = new CloudantViews(

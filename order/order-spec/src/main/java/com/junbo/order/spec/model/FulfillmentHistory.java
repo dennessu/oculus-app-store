@@ -6,23 +6,26 @@
 package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.junbo.common.model.ResourceMeta;
-import com.junbo.common.util.Identifiable;
+import com.junbo.common.model.ResourceMetaForDualWrite;
 
 import java.util.UUID;
 
 /**
  * Created by LinYi on 2/10/14.
  */
-public class FulfillmentHistory extends ResourceMeta implements Identifiable<Long> {
+public class FulfillmentHistory extends ResourceMetaForDualWrite<Long> {
     @JsonIgnore
     private Long id;
+
     @JsonIgnore
     private Long orderItemId;
+
     @JsonIgnore
     private UUID trackingUuid;
+
     @JsonIgnore
     private String fulfillmentId;
+
     private String fulfillmentEvent;
 
     public Long getId() {

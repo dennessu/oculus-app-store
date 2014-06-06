@@ -11,7 +11,6 @@ import com.junbo.common.cloudant.CloudantEntity;
 import com.junbo.common.cloudant.json.annotations.CloudantDeserialize;
 import com.junbo.common.cloudant.json.annotations.CloudantSerialize;
 import com.junbo.common.id.EntitlementId;
-import com.junbo.common.util.Identifiable;
 import com.junbo.entitlement.db.entity.def.DateDeserializer;
 import com.junbo.entitlement.db.entity.def.DateSerializer;
 import com.junbo.entitlement.db.entity.def.MapJsonUserType;
@@ -32,7 +31,7 @@ import java.util.UUID;
 @javax.persistence.Entity
 @Table(name = "entitlement")
 @TypeDefs(@TypeDef(name = "json-map", typeClass = MapJsonUserType.class))
-public class EntitlementEntity extends Entity implements CloudantEntity, Identifiable<EntitlementId> {
+public class EntitlementEntity extends Entity implements CloudantEntity<EntitlementId> {
     private Long userId;
     private Boolean isBanned;
     private Long itemId;

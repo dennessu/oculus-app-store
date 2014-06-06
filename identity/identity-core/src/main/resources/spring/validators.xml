@@ -512,6 +512,7 @@
     <bean id="organizationValidator" class="com.junbo.identity.core.service.validator.impl.OrganizationValidatorImpl">
         <property name="organizationRepository" ref="organizationRepository" />
         <property name="userRepository" ref="userRepository" />
+        <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
     </bean>
 
     <bean id="bcryptCredentialHash" class="com.junbo.identity.core.service.credential.impl.BcryptCredentialHash">

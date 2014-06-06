@@ -29,7 +29,7 @@ class RoleAssignmentRepositoryCloudantImpl extends CloudantClient<RoleAssignment
 
     @Override
     Promise<RoleAssignment> get(RoleAssignmentId id) {
-        return Promise.pure((RoleAssignment)super.cloudantGet(id.toString()))
+        return cloudantGet(id.toString())
     }
 
     @Override
@@ -37,25 +37,25 @@ class RoleAssignmentRepositoryCloudantImpl extends CloudantClient<RoleAssignment
         if (roleAssignment.id == null) {
             roleAssignment.id = new RoleAssignmentId(idGenerator.nextId())
         }
-        return Promise.pure((RoleAssignment)super.cloudantPost(roleAssignment))
+        return cloudantPost(roleAssignment)
     }
 
     @Override
     Promise<RoleAssignment> update(RoleAssignment model) {
-        return Promise.pure((RoleAssignment)super.cloudantPut(model))
+        return cloudantPut(model)
     }
 
     @Override
     Promise<Void> delete(RoleAssignmentId id) {
-        super.cloudantDelete(id.toString())
-        return Promise.pure(null)
+        return cloudantDelete(id.toString())
     }
 
     @Override
     Promise<RoleAssignment> findByRoleIdAssignee(RoleId roleId, String assigneeIdType, Long assigneeId) {
         String key = "$roleId:$assigneeIdType:$assigneeId"
-        def list = super.queryView('by_role_id', key)
-        return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)
+        return queryView('by_role_id', key).then { List<RoleAssignment> list ->
+            return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)
+        }
     }
 
     @Override

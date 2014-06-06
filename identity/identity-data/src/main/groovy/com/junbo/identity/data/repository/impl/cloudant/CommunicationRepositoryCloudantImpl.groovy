@@ -33,21 +33,22 @@ class CommunicationRepositoryCloudantImpl extends CloudantClient<Communication> 
     @Override
     Promise<List<Communication>> search(CommunicationListOptions options) {
         if (options.region != null && options.translation != null) {
-            List list = super.queryView('by_region', options.region.value)
-            list.removeAll { Communication communication ->
-                return !communication.translations.contains(options.translation)
-            }
+            return super.queryView('by_region', options.region.value).then { List<Communication> list ->
+                list.removeAll { Communication communication ->
+                    return !communication.translations.contains(options.translation)
+                }
 
-            return Promise.pure(list)
+                return Promise.pure(list)
+            }
         }
         if (options.region != null) {
-            return Promise.pure(super.queryView('by_region', options.region.value))
+            return super.queryView('by_region', options.region.value)
         }
         if (options.translation != null) {
-            return Promise.pure(super.queryView('by_translation', options.translation.value))
+            return super.queryView('by_translation', options.translation.value)
         }
 
-        return Promise.pure(super.cloudantGetAll())
+        return super.cloudantGetAll()
     }
 
     @Override
@@ -57,47 +58,43 @@ class CommunicationRepositoryCloudantImpl extends CloudantClient<Communication> 
             model.id = new CommunicationId(idGenerator.nextIdByShardId(0))
         }
 
-        return Promise.pure((Communication)super.cloudantPost(model))
+        return super.cloudantPost(model)
     }
 
     @Override
     Promise<Communication> update(Communication model) {
-        return Promise.pure((Communication)super.cloudantPut(model))
+        return super.cloudantPut(model)
     }
 
     @Override
     Promise<Communication> get(CommunicationId id) {
-        return Promise.pure((Communication)super.cloudantGet(id.toString()))
+        return super.cloudantGet(id.toString())
     }
 
     @Override
     Promise<Void> delete(CommunicationId id) {
-        super.cloudantDelete(id.toString())
-        return Promise.pure(null)
+        return super.cloudantDelete(id.toString())
     }
 
     @Override
     Promise<List<Communication>> searchByTranslation(LocaleId translation, Integer limit, Integer offset) {
-        def list = super.queryView('by_translation', translation.toString(), limit, offset, false)
-        return Promise.pure(list)
+        return super.queryView('by_translation', translation.toString(), limit, offset, false)
     }
 
     @Override
     Promise<List<Communication>> searchByRegion(CountryId region, Integer limit, Integer offset) {
-        def list = super.queryView('by_region', region.toString(), limit, offset, false)
-        return Promise.pure(list)
+        return super.queryView('by_region', region.toString(), limit, offset, false)
     }
 
     @Override
     Promise<List<Communication>> searchByRegionAndTranslation(CountryId region, LocaleId translation, Integer limit, Integer offset) {
-        def list = super.queryView('by_region_and_translation', "${region.value}:${translation.value}", limit, offset, false)
-        return Promise.pure(list)
+        return super.queryView('by_region_and_translation', "${region.value}:${translation.value}", limit, offset, false)
     }
 
     @Override
     Promise<List<Communication>> searchAll(Integer limit, Integer offset) {
         // todo:    CloudantGetAll should support limit, offset and descending
-        return Promise.pure(super.cloudantGetAll())
+        return super.cloudantGetAll()
     }
 
     protected CloudantViews views = new CloudantViews(

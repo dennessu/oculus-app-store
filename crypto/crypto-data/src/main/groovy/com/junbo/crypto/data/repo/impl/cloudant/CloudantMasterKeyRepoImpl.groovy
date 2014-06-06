@@ -25,7 +25,7 @@ class CloudantMasterKeyRepoImpl extends CloudantClient<MasterKey> implements Mas
 
     @Override
     Promise<List<MasterKey>> getAllMaterKeys() {
-        return Promise.pure(super.cloudantGetAll())
+        return cloudantGetAll()
     }
 
     @Override
@@ -34,18 +34,18 @@ class CloudantMasterKeyRepoImpl extends CloudantClient<MasterKey> implements Mas
             model.id = new MasterKeyId(idGenerator.nextId())
         }
 
-        return Promise.pure((MasterKey)super.cloudantPost(model))
+        return cloudantPost(model)
     }
 
     @Override
     Promise<MasterKey> getMasterKeyByVersion(Integer version) {
-        def list = super.queryView('by_key_version', version.toString(),
-                Integer.MAX_VALUE, 0, false)
+        return super.queryView('by_key_version', version.toString(), Integer.MAX_VALUE, 0, false).then { List<MasterKey> list ->
 
-        if (CollectionUtils.isEmpty(list)) {
-            return Promise.pure(null)
+            if (CollectionUtils.isEmpty(list)) {
+                return Promise.pure(null)
+            }
+            return Promise.pure((MasterKey)list.get(0))
         }
-        return Promise.pure((MasterKey)list.get(0))
     }
 
     @Override
@@ -55,7 +55,7 @@ class CloudantMasterKeyRepoImpl extends CloudantClient<MasterKey> implements Mas
 
     @Override
     Promise<MasterKey> get(MasterKeyId id) {
-        return Promise.pure((MasterKey)super.cloudantGet(id.toString()))
+        return cloudantGet(id.toString())
     }
 
     protected CloudantViews views = new CloudantViews(
@@ -70,8 +70,7 @@ class CloudantMasterKeyRepoImpl extends CloudantClient<MasterKey> implements Mas
 
     @Override
     Promise<Void> delete(MasterKeyId id) {
-        super.cloudantDelete(id.toString())
-        return Promise.pure(null)
+        return cloudantDelete(id.toString())
     }
 
     @Required

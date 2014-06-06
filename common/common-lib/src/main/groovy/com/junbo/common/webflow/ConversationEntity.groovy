@@ -5,16 +5,16 @@
  */
 package com.junbo.common.webflow
 
+import com.junbo.common.cloudant.json.annotations.CloudantIgnore
 import com.junbo.common.model.ResourceMeta
-import com.junbo.common.util.Identifiable
 import com.junbo.langur.core.webflow.state.FlowState
 import groovy.transform.CompileStatic
-
 /**
  * ConversationEntity.
  */
 @CompileStatic
-class ConversationEntity extends ResourceMeta implements Identifiable<String>   {
+class ConversationEntity extends ResourceMeta<String> {
+    @CloudantIgnore
     String id
 
     Map<String, Object> scope

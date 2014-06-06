@@ -44,7 +44,7 @@ public class WalletLotDaoImpl extends BaseDao<WalletLotEntity> implements Wallet
     @Override
     public List<WalletLotEntity> getValidLot(Long walletId) {
         String key = "walletId:'" + walletId + "' AND isActive:true AND expirationDate:{" + new Date().getTime() + " TO " + WalletConst.MAX_DATE + "}";
-        List<WalletLotEntity> lots = super.search("search", key, 200, null).getResults();
+        List<WalletLotEntity> lots = super.search("search", key, 200, null).get().getResults();
         Collections.sort(lots, new Comparator<WalletLotEntity>() {
             @Override
             public int compare(WalletLotEntity o1, WalletLotEntity o2) {
@@ -57,7 +57,7 @@ public class WalletLotDaoImpl extends BaseDao<WalletLotEntity> implements Wallet
     @Override
     public BigDecimal getValidAmount(Long walletId) {
         String key = "walletId:'" + walletId + "' AND isActive:true AND expirationDate:{" + new Date().getTime() + " TO " + WalletConst.MAX_DATE + "}";
-        List<WalletLotEntity> lots = super.search("search", key, 200, null).getResults();
+        List<WalletLotEntity> lots = super.search("search", key, 200, null).get().getResults();
         BigDecimal result = BigDecimal.ZERO;
         for (WalletLotEntity lot : lots) {
             result = result.add(lot.getRemainingAmount());

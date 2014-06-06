@@ -42,6 +42,10 @@
         <property name="orderInternalService" ref="mockOrderInternalService"/>
     </bean>
 
+    <bean id="mockRefundOrderAction" class="com.junbo.order.core.impl.orderaction.RefundOrderAction">
+        <property name="orderInternalService" ref="mockOrderInternalService"/>
+    </bean>
+
     <bean id="mockValidatePaymentInstrumentsAction" class="com.junbo.order.core.impl.orderaction.ValidatePaymentInstrumentsAction">
         <property name="orderServiceContextBuilder" ref="mockOrderServiceContextBuilder"/>
     </bean>
@@ -80,6 +84,7 @@
 
     <bean id="mockIdentityFacade" class="com.junbo.order.clientproxy.identity.impl.IdentityFacadeImpl">
         <property name="userResource" ref="mockIdentityResource"/>
+        <property name="currencyResource" ref="mockCurrencyResource"/>
     </bean>
 
     <bean id="mockCatalogFacade" class="com.junbo.order.clientproxy.catalog.impl.CatalogFacadeImpl">

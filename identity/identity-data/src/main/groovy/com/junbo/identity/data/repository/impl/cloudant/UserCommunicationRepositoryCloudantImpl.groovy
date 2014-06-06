@@ -1,5 +1,4 @@
 package com.junbo.identity.data.repository.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.CommunicationId
@@ -7,13 +6,11 @@ import com.junbo.common.id.UserCommunicationId
 import com.junbo.common.id.UserId
 import com.junbo.identity.data.repository.UserCommunicationRepository
 import com.junbo.identity.spec.v1.model.UserCommunication
-import com.junbo.identity.spec.v1.option.list.UserOptinListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.ShardAlgorithm
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-
 /**
  * Created by haomin on 14-4-11.
  */
@@ -42,44 +39,40 @@ class UserCommunicationRepositoryCloudantImpl extends CloudantClient<UserCommuni
         if (entity.id == null) {
             entity.id = new UserCommunicationId(idGenerator.nextId(entity.userId.value))
         }
-        return Promise.pure((UserCommunication)super.cloudantPost(entity))
+        return super.cloudantPost(entity)
     }
 
     @Override
     Promise<UserCommunication> update(UserCommunication entity) {
-        return Promise.pure((UserCommunication)super.cloudantPut(entity))
+        return super.cloudantPut(entity)
     }
 
     @Override
     Promise<UserCommunication> get(UserCommunicationId id) {
-        return Promise.pure((UserCommunication)super.cloudantGet(id.toString()))
+        return super.cloudantGet(id.toString())
     }
 
     @Override
     Promise<List<UserCommunication>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        def list = super.queryView('by_user_id', userId.toString(), limit, offset, false)
-        return Promise.pure(list)
+        return super.queryView('by_user_id', userId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<List<UserCommunication>> searchByCommunicationId(CommunicationId communicationId, Integer limit,
                                                              Integer offset) {
-        def list = super.queryView('by_communication_id', communicationId.toString(), limit, offset, false)
-        return Promise.pure(list)
+        return super.queryView('by_communication_id', communicationId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<List<UserCommunication>> searchByUserIdAndCommunicationId(UserId userId, CommunicationId communicationId,
                                                                       Integer limit, Integer offset) {
-        def list = super.queryView('by_user_id_communication_id', "${userId.toString()}:${communicationId.toString()}",
+        return super.queryView('by_user_id_communication_id', "${userId.toString()}:${communicationId.toString()}",
                 limit, offset, false)
-        return Promise.pure(list)
     }
 
     @Override
     Promise<Void> delete(UserCommunicationId id) {
-        super.cloudantDelete(id.toString())
-        return Promise.pure(null)
+        return super.cloudantDelete(id.toString())
     }
 
     protected CloudantViews views = new CloudantViews(

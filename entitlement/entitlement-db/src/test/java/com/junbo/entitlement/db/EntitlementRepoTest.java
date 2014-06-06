@@ -180,7 +180,7 @@ public class EntitlementRepoTest extends AbstractTestNGSpringContextTests {
 
     private Entitlement buildAnEntitlement() {
         Entitlement entitlement = new Entitlement();
-        entitlement.setEntitlementId(new Random().nextLong());
+        entitlement.setId(new Random().nextLong());
         entitlement.setUserId(idGenerator.nextId());
         entitlement.setGrantTime(new Date(114, 0, 22));
         entitlement.setExpirationTime(new Date(114, 0, 28));

@@ -6,24 +6,23 @@
 package com.junbo.sharding.dualwrite.data
 import com.junbo.common.cloudant.CloudantEntity
 import com.junbo.common.model.ResourceMeta
-import com.junbo.common.util.Identifiable
 import groovy.transform.CompileStatic
 /**
  * The pending action.
  */
 @CompileStatic
-public class PendingAction extends ResourceMeta implements Identifiable<UUID> {
+public class PendingAction extends ResourceMeta<Long> {
 
-    private UUID id;
+    private Long id;
     private CloudantEntity savedEntity;
     private Long deletedKey;
     private Long changedEntityId;
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

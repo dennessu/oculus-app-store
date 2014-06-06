@@ -43,17 +43,17 @@ class RoleRepositoryCloudantImpl extends CloudantClient<Role> implements RoleRep
         if (role.id == null) {
             role.id = new RoleId(idGenerator.nextId())
         }
-        return Promise.pure((Role)super.cloudantPost(role))
+        return cloudantPost(role)
     }
 
     @Override
     Promise<Role> get(RoleId roleId) {
-        return Promise.pure((Role)super.cloudantGet(roleId.toString()))
+        return super.cloudantGet(roleId.toString())
     }
 
     @Override
     Promise<Role> update(Role role) {
-        return Promise.pure((Role)super.cloudantPut(role))
+        return super.cloudantPut(role)
     }
 
     @Override
@@ -65,8 +65,9 @@ class RoleRepositoryCloudantImpl extends CloudantClient<Role> implements RoleRep
     Promise<Role> findByRoleName(String roleName, String targetType, String filterType,
                                  String filterLinkIdType, Long filterLinkId) {
         String key = "$roleName:$targetType:$filterType:$filterLinkIdType:$filterLinkId"
-        def list = super.queryView('by_role_name', key)
-        return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)
+        return queryView('by_role_name', key).then { List<Role> list ->
+            return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)
+        }
     }
 
     protected CloudantViews views = new CloudantViews(

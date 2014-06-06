@@ -127,11 +127,12 @@ class LocaleValidatorImpl implements LocaleValidator {
             throw AppErrors.INSTANCE.fieldInvalid('id').exception()
         }
 
-        if (locale.localeCode != oldLocale.localeCode) {
-            throw AppErrors.INSTANCE.fieldInvalid('localeCode').exception()
+        return checkBasicLocaleInfo(locale).then {
+            if (locale.localeCode != oldLocale.localeCode) {
+                throw AppErrors.INSTANCE.fieldInvalid('localeCode').exception()
+            }
+            return Promise.pure(null)
         }
-
-        return checkBasicLocaleInfo(locale)
     }
 
     private Promise<Void> checkBasicLocaleInfo(Locale locale) {

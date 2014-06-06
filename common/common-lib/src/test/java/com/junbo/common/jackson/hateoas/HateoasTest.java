@@ -48,7 +48,7 @@ public class HateoasTest {
 
         assertEquals(
                 jsonNode.get("subLink1").get("href").asText(),
-                Utils.combineUrl(urlPrefix, "/users/6B54FFB0BC9E/orders/3650-6702-5565"));
+                Utils.combineUrl(urlPrefix, "/users/6b54ffb0bc9e/orders/3650-6702-5565"));
 
         assertEquals(jsonNode.get("subLink2").getNodeType(), JsonNodeType.NULL);
         assertEquals(jsonNode.get("superLink").getNodeType(), JsonNodeType.NULL);
@@ -69,15 +69,15 @@ public class HateoasTest {
 
         assertEquals(
                 jsonNode.get("subLink1").get("href").asText(),
-                Utils.combineUrl(urlPrefix, "/users/6B54FFB0BC9E/orders/3650-6702-5565"));
+                Utils.combineUrl(urlPrefix, "/users/6b54ffb0bc9e/orders/3650-6702-5565"));
 
         assertEquals(
                 jsonNode.get("subLink2").get("href").asText(),
-                Utils.combineUrl(urlPrefix, "/friends/6355EF9DBDA1/3687-3240-1275"));
+                Utils.combineUrl(urlPrefix, "/friends/6355ef9dbda1/3687-3240-1275"));
 
         assertEquals(
                 jsonNode.get("superLink").get("href").asText(),
-                Utils.combineUrl(urlPrefix, "/users/6B54FFB0BC9E/orders/3650-6702-5565/friends/6355EF9DBDA1/3687-3240-1275/end"));
+                Utils.combineUrl(urlPrefix, "/users/6b54ffb0bc9e/orders/3650-6702-5565/friends/6355ef9dbda1/3687-3240-1275/end"));
 
         assertAllLinksNull(testEntity);
         testDeserialize(testEntity, json);
@@ -99,7 +99,7 @@ public class HateoasTest {
 
         assertEquals(
                 jsonNode.get("subLink2").get("href").asText(),
-                Utils.combineUrl(urlPrefix, "/friends/6B54FFB0BC9E/3650-6702-5565"));
+                Utils.combineUrl(urlPrefix, "/friends/6b54ffb0bc9e/3650-6702-5565"));
 
         assertEquals(jsonNode.get("superLink").getNodeType(), JsonNodeType.NULL);
 

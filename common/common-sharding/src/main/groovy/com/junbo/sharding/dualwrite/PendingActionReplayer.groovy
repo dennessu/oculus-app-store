@@ -70,6 +70,10 @@ public class PendingActionReplayer {
             if (savedEntity == null) {
                 return repository.create(entity);
             }
+            if (entity.resourceAge == null || savedEntity.resourceAge == null) {
+                logger.error("ResourceAge is null for dual-write resource. Id: ${entity.id}");
+                throw new RuntimeException("ResourceAge is null for entity.")
+            }
             if (entity.resourceAge > savedEntity.resourceAge) {
                 return repository.update(entity);
             }

@@ -4,6 +4,7 @@ import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
 import com.junbo.order.clientproxy.model.OrderOfferItem
 import com.junbo.order.clientproxy.model.OrderOfferRevision
+import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.enums.BillingAction
 import com.junbo.order.spec.model.enums.ItemType
 import com.junbo.order.spec.model.enums.OrderStatus
@@ -103,6 +104,50 @@ class CoreUtils {
         if (order.status == OrderStatus.OPEN.name() ||
                 order.status == OrderStatus.PREORDERED.name() ||
                 order.status == OrderStatus.PENDING_CHARGE.name()) {
+            return true
+        }
+        return false
+    }
+
+    static Order diffRefundOrder(Order existingOrder, Order request, Integer numberAfterDecimal) {
+        Order diffOrder = new Order()
+        diffOrder.setId(existingOrder.getId())
+
+        existingOrder.orderItems.each {OrderItem i ->
+            OrderItem diffItem = new OrderItem()
+            diffItem.offer = i.offer
+            diffItem.setId(i.getId())
+            OrderItem requestItem = request.orderItems?.find { OrderItem ii ->
+                i.offer == ii.offer
+            }
+            if(requestItem == null) {
+                diffItem.quantity = i.quantity
+                diffItem.totalAmount = i.totalAmount
+            } else {
+                if( i.quantity > requestItem.quantity) {
+                    diffItem.quantity == i.quantity - requestItem.quantity
+                    // TODO: use currency decimal
+                    diffItem.totalAmount = (diffItem.quantity * i.totalAmount / i.quantity).setScale(
+                            numberAfterDecimal, BigDecimal.ROUND_HALF_EVEN)
+                    requestItem.totalAmount = requestItem.totalAmount - diffItem.totalAmount
+                } else if(i.quantity == requestItem.quantity && i.totalAmount > requestItem.totalAmount) {
+                    diffItem.quantity = 0
+                    diffItem.totalAmount = i.totalAmount - requestItem.totalAmount
+                } else {
+                    throw AppErrors.INSTANCE.orderNoItemRefund().exception()
+                }
+            }
+        }
+        return diffOrder
+    }
+
+    static Boolean checkOrderStatusRefundable(Order order) {
+
+        if (order.tentative)
+            return false
+        if (order.status == OrderStatus.CHARGED.name() ||
+                order.status == OrderStatus.COMPLETED.name() ||
+                order.status == OrderStatus.PARTIAL_CHARGED.name()) {
             return true
         }
         return false

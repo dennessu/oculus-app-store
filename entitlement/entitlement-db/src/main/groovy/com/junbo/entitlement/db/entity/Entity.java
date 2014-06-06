@@ -36,8 +36,9 @@ public abstract class Entity implements Shardable {
     @CloudantDeserialize(DateDeserializer.class)
     private Date updatedTime;
     private Long updatedBy;
-    private Integer rev;
-    //Temp work around. TODO
+
+    private Integer resourceAge;
+
     @CloudantProperty("_rev")
     private String cloudantRev;
 
@@ -97,12 +98,12 @@ public abstract class Entity implements Shardable {
     }
 
     @Column(name = "rev")
-    public Integer getRev() {
-        return rev;
+    public Integer getResourceAge() {
+        return resourceAge;
     }
 
-    public void setRev(Integer rev) {
-        this.rev = rev;
+    public void setResourceAge(Integer rev) {
+        this.resourceAge = rev;
     }
 
     @Transient
@@ -112,15 +113,6 @@ public abstract class Entity implements Shardable {
 
     public void setCloudantRev(String cloudantRev) {
         this.cloudantRev = cloudantRev;
-    }
-
-    @Transient
-    public Integer getResourceAge() {
-        return rev;
-    }
-
-    public void setResourceAge(Integer resourceAge) {
-        this.rev = resourceAge;
     }
 
     @Transient

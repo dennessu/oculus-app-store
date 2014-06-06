@@ -26,7 +26,7 @@ class ApiDefinitionDataHandler extends BaseDataHandler {
 
     @Override
     void handle(String content) {
-        ApiDefinition apiDefinition = null
+        ApiDefinition apiDefinition
 
         try {
             apiDefinition = transcoder.decode(new TypeReference<ApiDefinition>() {}, content) as ApiDefinition
@@ -43,19 +43,18 @@ class ApiDefinitionDataHandler extends BaseDataHandler {
         }
 
         if (existing != null) {
-            if (alwaysOverwrite || (apiDefinition.resourceAge != null
-                    && apiDefinition.resourceAge > existing.resourceAge)) {
-                logger.debug("Overwrite ApiDefinition of revision $existing.revision " +
-                        "with new revision: $apiDefinition.revision")
-
-                apiDefinition.resourceAge = existing.resourceAge
-                apiDefinitionResource.update(apiDefinition.apiName, apiDefinition)
-            } else {
-                logger.debug('The content revision is lower than the current revision, skip this content')
+            if (alwaysOverwrite) {
+                logger.debug("Overwrite ApiDefinition $apiDefinition.apiName with this content.")
+                apiDefinition.id = existing.id
+                apiDefinition.rev = existing.rev
+                apiDefinitionResource.update(apiDefinition.apiName, apiDefinition).get()
+            }
+            else {
+                logger.debug("ApiDefinition $apiDefinition.apiName already exists, skip this content.")
             }
         } else {
-            logger.debug('Create new ApiDefinition with this content')
-            apiDefinitionResource.create(apiDefinition)
+            logger.debug("Create new ApiDefinition $apiDefinition.apiName with this content.")
+            apiDefinitionResource.create(apiDefinition).get()
         }
     }
 }
