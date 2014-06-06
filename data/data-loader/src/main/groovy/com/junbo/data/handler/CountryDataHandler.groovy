@@ -40,11 +40,10 @@ class CountryDataHandler extends BaseDataHandler {
         }
 
         if (existing != null) {
-            if (alwaysOverwrite || (country.resourceAge != null && country.resourceAge > existing.resourceAge)) {
-                logger.debug("Overwrite Country $country.countryCode of resourceAge $existing.resourceAge " +
-                        "with new resourceAge: $country.resourceAge")
-
-                country.resourceAge = existing.resourceAge
+            if (alwaysOverwrite) {
+                logger.debug("Overwrite Country $country.countryCode with this content.")
+                country.id = (CountryId)existing.id
+                country.rev = existing.rev
                 countryResource.put(new CountryId(country.countryCode), country)
             } else {
                 logger.debug("$country.countryCode already exists, skipped!")

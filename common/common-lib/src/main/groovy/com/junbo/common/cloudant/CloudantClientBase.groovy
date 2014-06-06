@@ -125,6 +125,8 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
 
     @Override
     Promise<T> cloudantPut(T entity) {
+        // force update cloudantId
+        entity.setCloudantId(entity.getId().toString())
         return executeRequest(HttpMethod.PUT, entity.cloudantId, [:], entity).syncThen { Response response ->
             if (response.statusCode != HttpStatus.CREATED.value()) {
                 CloudantError cloudantError = unmarshall(response.responseBody, CloudantError)

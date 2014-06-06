@@ -40,11 +40,10 @@ class CurrencyDataHandler extends BaseDataHandler {
         }
 
         if (existing != null) {
-            if (alwaysOverwrite || (currency.resourceAge != null && currency.resourceAge > existing.resourceAge)) {
-                logger.debug("Overwrite Currency $currency.currencyCode of resourceAge $existing.resourceAge " +
-                        "with new resourceAge: $currency.resourceAge")
-
-                currency.resourceAge = existing.resourceAge
+            if (alwaysOverwrite) {
+                logger.debug("Overwrite Currency $currency.currencyCode with this content.")
+                currency.id = (CurrencyId)existing.id
+                currency.rev = existing.rev
                 currencyResource.put(new CurrencyId(currency.currencyCode), currency)
             } else {
                 logger.debug("$currency.currencyCode already exists, skipped!")

@@ -19,7 +19,6 @@ import java.util.Map;
 public class ApiDefinition extends ResourceMeta<String> {
     private String apiName;
     private Map<String, List<MatrixRow>> scopes;
-    private String revision;
 
     @Override
     public String getId() {
@@ -45,13 +44,5 @@ public class ApiDefinition extends ResourceMeta<String> {
 
     public void setScopes(Map<String, List<MatrixRow>> scopes) {
         this.scopes = scopes;
-    }
-
-    public String getRevision() {
-        return revision;
-    }
-
-    public void setRevision(String revision) {
-        this.revision = revision;
     }
 }

@@ -37,25 +37,17 @@ class ClientDataHandler extends BaseDataHandler {
         Client existing = clientRepository.getClient(client.clientId)
 
         if (existing != null) {
-            int currentRevision = getRevision(existing.revision)
-            if (alwaysOverwrite || (client.revision != null && getRevision(client.revision) > currentRevision)) {
-                logger.debug("Overwrite Client $client.clientId of revision $existing.revision " +
-                        "with new revision: $client.revision")
-
+            if (alwaysOverwrite) {
+                logger.debug("Overwrite Client $client.clientId with this content.")
+                client.clientId = existing.clientId
                 client.revision = existing.revision
                 clientRepository.updateClient(client)
             } else {
-                logger.debug("The Client $client.clientId revision is lower than the current revision," +
-                        " skip this content")
+                logger.debug("The Client $client.clientId already exists, skip this content.")
             }
         } else {
-            logger.debug("Create new Client $client.clientId with this content")
+            logger.debug("Create new Client $client.clientId with this content.")
             clientRepository.saveClient(client)
         }
-    }
-
-    private static int getRevision(String revision) {
-        String[] tokens = revision.split('-')
-        return Integer.parseInt(tokens[0])
     }
 }

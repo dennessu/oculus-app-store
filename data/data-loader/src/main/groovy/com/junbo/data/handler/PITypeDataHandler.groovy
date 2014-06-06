@@ -24,7 +24,7 @@ class PITypeDataHandler extends BaseDataHandler {
 
     @Override
     void handle(String content) {
-        PIType piType = null
+        PIType piType
 
         try {
             piType = transcoder.decode(new TypeReference<PIType>() {}, content) as PIType
@@ -42,11 +42,10 @@ class PITypeDataHandler extends BaseDataHandler {
 
         if (results != null && results.items != null && !results.items.empty) {
             PIType existing = results.items.get(0)
-            if (alwaysOverwrite || (piType.resourceAge != null && piType.resourceAge > existing.resourceAge)) {
-                logger.debug("Overwrite PIType $piType.typeCode of resourceAge $existing.resourceAge " +
-                        "with new resourceAge: $piType.resourceAge")
+            if (alwaysOverwrite) {
+                logger.debug("Overwrite PIType $piType.typeCode with this content")
                 piType.id = (PITypeId)existing.id
-                piType.resourceAge = existing.resourceAge
+                piType.rev = existing.rev
                 piTypeResource.put((PITypeId)existing.id, piType)
             } else {
                 logger.debug("$piType.typeCode already exists, skipped!")
