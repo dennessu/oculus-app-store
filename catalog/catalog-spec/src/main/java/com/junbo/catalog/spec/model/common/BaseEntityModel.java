@@ -6,32 +6,20 @@
 
 package com.junbo.catalog.spec.model.common;
 
-import com.wordnik.swagger.annotations.ApiModelProperty;
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.validation.constraints.Null;
 
 /**
  * Base entity model.
  */
 public abstract class BaseEntityModel extends BaseModel {
-   /* @NotNull
-    @ApiModelProperty(position = 10, required = true, value = "Friendly identifier")
-    @JsonProperty("friendlyIdentifier")
-    private String name;
-*/
-    //@ApiModelProperty(position = 11, required = true, value = "Curated")
-   // @JsonProperty("isCurated")
-   // private Boolean curated;
-
-    @ApiModelProperty(position = 1003, required = true, value = "[Client Immutable] rev")
-    private String rev;
-
+    // workaround fastjson de-serialize issue
+    @Null
+    @JsonIgnore
+    @JSONField(serialize = false)
+    private transient Long id;
     public abstract Long getCurrentRevisionId();
     public abstract void setCurrentRevisionId(Long currentRevisionId);
-
-    public String getRev() {
-        return rev;
-    }
-
-    public void setRev(String rev) {
-        this.rev = rev;
-    }
 }

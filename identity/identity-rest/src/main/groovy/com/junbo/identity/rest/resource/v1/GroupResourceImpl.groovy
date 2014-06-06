@@ -8,7 +8,7 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.common.id.GroupId
 import com.junbo.common.id.Id
 import com.junbo.common.model.Results
-import com.junbo.identity.core.service.Created201Marker
+import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.GroupFilter
 import com.junbo.identity.core.service.validator.GroupValidator
 import com.junbo.identity.data.repository.GroupRepository
@@ -39,9 +39,6 @@ class GroupResourceImpl implements GroupResource {
     private UserGroupRepository userGroupRepository
 
     @Autowired
-    private Created201Marker created201Marker
-
-    @Autowired
     private GroupFilter groupFilter
 
     @Autowired
@@ -52,8 +49,8 @@ class GroupResourceImpl implements GroupResource {
         group = groupFilter.filterForCreate(group)
 
         return groupValidator.validateForCreate(group).then {
-            groupRepository.create(group).then { Group newGroup ->
-                created201Marker.mark((Id) newGroup.id)
+            return groupRepository.create(group).then { Group newGroup ->
+                Created201Marker.mark((Id) newGroup.id)
 
                 newGroup = groupFilter.filterForGet(newGroup, null)
                 return Promise.pure(newGroup)
@@ -71,8 +68,8 @@ class GroupResourceImpl implements GroupResource {
 
             group = groupFilter.filterForPut(group, oldGroup)
 
-            groupValidator.validateForUpdate(groupId, group, oldGroup).then {
-                groupRepository.update(group).then { Group newGroup ->
+            return groupValidator.validateForUpdate(groupId, group, oldGroup).then {
+                return groupRepository.update(group).then { Group newGroup ->
                     newGroup = groupFilter.filterForGet(newGroup, null)
                     return Promise.pure(newGroup)
                 }
@@ -83,15 +80,15 @@ class GroupResourceImpl implements GroupResource {
     @Override
     Promise<Group> patch(GroupId groupId, Group group) {
 
-        groupValidator.validateForGet(groupId).then { Group oldGroup ->
+        return groupValidator.validateForGet(groupId).then { Group oldGroup ->
             if (oldGroup == null) {
                 throw AppErrors.INSTANCE.groupNotFound(groupId).exception()
             }
 
             group = groupFilter.filterForPatch(group, oldGroup)
 
-            groupValidator.validateForUpdate(groupId, group, oldGroup).then {
-                groupRepository.update(group).then { Group newGroup ->
+            return groupValidator.validateForUpdate(groupId, group, oldGroup).then {
+                return groupRepository.update(group).then { Group newGroup ->
                     newGroup = groupFilter.filterForGet(newGroup, null)
                     return Promise.pure(newGroup)
                 }
@@ -106,7 +103,7 @@ class GroupResourceImpl implements GroupResource {
         }
 
         return groupValidator.validateForGet(groupId).then {
-            groupRepository.get(groupId).then { Group newGroup ->
+            return groupRepository.get(groupId).then { Group newGroup ->
                 if (newGroup == null) {
                     throw AppErrors.INSTANCE.groupNotFound(groupId).exception()
                 }
@@ -119,7 +116,7 @@ class GroupResourceImpl implements GroupResource {
 
     @Override
     Promise<Results<Group>> list(GroupListOptions listOptions) {
-        groupValidator.validateForSearch(listOptions).then {
+        return groupValidator.validateForSearch(listOptions).then {
             def resultList = new Results<Group>(items: [])
             if (listOptions.name != null) {
                 return groupRepository.searchByName(listOptions.name).then { Group newGroup ->
@@ -134,9 +131,8 @@ class GroupResourceImpl implements GroupResource {
                     return Promise.pure(resultList)
                 }
             } else {
-                return userGroupRepository.search(new UserGroupListOptions(
-                        userId: listOptions.userId
-                )).then { List<UserGroup> userGroupList ->
+                return userGroupRepository.searchByUserId(listOptions.userId, listOptions.limit,
+                        listOptions.offset).then { List<UserGroup> userGroupList ->
                     return fillUserGroups(userGroupList.iterator(), resultList, listOptions).then {
                         return Promise.pure(resultList)
                     }
@@ -163,9 +159,7 @@ class GroupResourceImpl implements GroupResource {
     @Override
     Promise<Void> delete(GroupId groupId) {
         return groupValidator.validateForGet(groupId).then {
-            groupRepository.delete(groupId)
-
-            return Promise.pure(null)
+            return groupRepository.delete(groupId)
         }
     }
 }

@@ -2,12 +2,12 @@ apply plugin: 'java'
 
 
 dependencies {
-    compile project(":payment-common")
-    compile project(":payment-spec")
+    compile junboProject(":payment-common")
+    compile junboProject(":payment-spec")
 
-    compile (libraries.common_lib)
-    compile (libraries.common_sharding)
-    compile (libraries.common_configuration)
+    compile junboProject(':common-lib')
+    compile junboProject(':common-sharding')
+    compile junboProject(':common-configuration')
 	
 	compile(libraries.persistence_api)
 	compile(libraries.validation_api)
@@ -19,7 +19,7 @@ dependencies {
 	compile(libraries.spring_jdbc)
 	compile(libraries.spring_orm)
 
-    compile (libraries.oom)
+    compile junboProject(':oom-core')
 	
 	compile(libraries.hibernate_core)
 	compile(libraries.hibernate_annotation)
@@ -28,10 +28,9 @@ dependencies {
 	compile(libraries.common_lang)
 	
 	compile(libraries.postgresql)
-    compile (libraries.bonecp_spring)
-    compile (libraries.btm)
+    compile (libraries.HikariCP)
 
-    processor (libraries.oom_processor)
+    processor junboProject(':oom-processor')
 
     testCompile(libraries.spring_test)
 }

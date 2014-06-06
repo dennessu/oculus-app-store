@@ -6,8 +6,9 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.PITypeId;
-import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -17,22 +18,23 @@ import java.util.Map;
 /**
  * Created by haomin on 14-4-25.
  */
-public class PIType extends ResourceMeta implements Identifiable<PITypeId> {
-    @ApiModelProperty(position = 1, required = true, value = "The id of payment instrument type resource.")
+public class PIType extends PropertyAssignedAwareResourceMeta implements Identifiable<PITypeId> {
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The link to payment instrument type resource.")
     @JsonProperty("self")
     private PITypeId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "The type code of payment instrument resource.")
+    @ApiModelProperty(position = 2, required = true, value = "The type code of payment instrument resource, " +
+            "ENUM value include (CREDITCARD, DIRECTDEBIT, STOREDVALUE, PAYPAL, OTHERS)")
     private String typeCode;
 
-    @ApiModelProperty(position = 3, required = true, value = "The description of payment instrument resource.")
-    private Map<String, LocaleName> locales = new HashMap<>();
-
-    @ApiModelProperty(position = 4, required = true, value = "whether the PI is recurring-able or not.")
+    @ApiModelProperty(position = 3, required = true, value = "whether the PI is recurring-able or not.")
     private Boolean capableOfRecurring;
 
-    @ApiModelProperty(position = 5, required = true, value = "whether the PI is refund-able or not.")
+    @ApiModelProperty(position = 4, required = true, value = "Whether the PI is refund-able or not.")
     private Boolean isRefundable;
+
+    @ApiModelProperty(position = 5, required = true, value = "The description of payment instrument resource.")
+    private Map<String, JsonNode> locales = new HashMap<>();
 
     public String getTypeCode() {
         return typeCode;
@@ -43,11 +45,11 @@ public class PIType extends ResourceMeta implements Identifiable<PITypeId> {
         support.setPropertyAssigned("typeCode");
     }
 
-    public Map<String, LocaleName> getLocales() {
+    public Map<String, JsonNode> getLocales() {
         return locales;
     }
 
-    public void setLocales(Map<String, LocaleName> locales) {
+    public void setLocales(Map<String, JsonNode> locales) {
         this.locales = locales;
         support.setPropertyAssigned("locales");
     }

@@ -12,10 +12,7 @@ import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.spec.enums.PaymentStatus;
-import com.junbo.payment.spec.model.Item;
-import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.payment.spec.model.PaymentTransaction;
-import com.junbo.payment.spec.model.WebPaymentInfo;
+import com.junbo.payment.spec.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -143,7 +140,7 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
                 requestDetails.setCancelURL(paymentRequest.getWebPaymentInfo().getCancelURL());
 
                 requestDetails.setPaymentDetails(paymentDetailsList);
-
+                requestDetails.setBuyerEmail(pi.getAccountNum());
                 SetExpressCheckoutRequestType setRequest = new SetExpressCheckoutRequestType(requestDetails);
                 setRequest.setVersion(apiVersion);
 
@@ -174,8 +171,44 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
     }
 
     @Override
-    public Promise<PaymentTransaction> refund(String transactionId, PaymentTransaction request) {
-        throw AppServerExceptions.INSTANCE.serviceNotImplemented("refund").exception();
+    public Promise<PaymentTransaction> confirmNotify(PaymentTransaction payment, PaymentProperties properties){
+        return Promise.pure(payment);
+    }
+
+    @Override
+    public Promise<PaymentTransaction> refund(final String transactionId, final PaymentTransaction request) {
+        return PromiseFacade.PAYMENT.decorate(new Callable<PaymentTransaction>() {
+            @Override
+            public PaymentTransaction call() throws Exception {
+                RefundTransactionReq refundReq = new RefundTransactionReq();
+                RefundTransactionRequestType requestType = new RefundTransactionRequestType();
+                requestType.setTransactionID(transactionId);
+                if(request.getChargeInfo() == null || request.getChargeInfo().getAmount() == null){
+                    requestType.setRefundType(RefundType.FULL);
+                }else{
+                    //Partial Refund
+                    CurrencyCodeType currency = CurrencyCodeType.fromValue(request.getChargeInfo().getCurrency());
+                    requestType.setRefundType(RefundType.PARTIAL);
+                    BasicAmountType refundAmount = new BasicAmountType();
+                    refundAmount.setCurrencyID(currency);
+                    refundAmount.setValue(request.getChargeInfo().getAmount().toString());
+                    requestType.setAmount(refundAmount);
+                }
+                refundReq.setRefundTransactionRequest(requestType);
+                RefundTransactionResponseType refundResponse = null;
+                try {
+                    refundResponse = service.refundTransaction(refundReq);
+                } catch (Exception ex){
+                    handleException(ex);
+                }
+                if(isSuccessAck(refundResponse.getAck())){
+                    request.setStatus(PaymentStatus.REFUNDED.toString());
+                }else{
+                    handleErrorResponse(refundResponse);
+                }
+                return request;
+            }
+        });
     }
 
     @Override
@@ -184,10 +217,17 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
     }
 
     @Override
-    public Promise<PaymentTransaction> getByTransactionToken(final String token) {
+    public Promise<PaymentTransaction> getByTransactionToken(final PaymentTransaction request) {
         return PromiseFacade.PAYMENT.decorate(new Callable<PaymentTransaction>() {
             @Override
             public PaymentTransaction call() throws Exception {
+                String token = request.getExternalToken();
+                if(CommonUtil.isNullOrEmpty(token) && request.getPaymentProperties() != null){
+                    token = request.getPaymentProperties().getExternalAccessToken();
+                }
+                if(CommonUtil.isNullOrEmpty(token)){
+                    return null;
+                }
                 GetExpressCheckoutDetailsRequestType getExpressCheckoutDetailsRequest =
                         new GetExpressCheckoutDetailsRequestType(token);
                 getExpressCheckoutDetailsRequest.setVersion(apiVersion);
@@ -229,6 +269,11 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
         return PromiseFacade.PAYMENT.decorate(new Callable<PaymentTransaction>() {
             @Override
             public PaymentTransaction call() throws Exception {
+                PaymentProperties properties = paymentRequest.getPaymentProperties();
+                if(properties != null){
+                    paymentRequest.getWebPaymentInfo().setToken(properties.getExternalAccessToken());
+                    paymentRequest.getWebPaymentInfo().setPayerId(properties.getExternalPayerId());
+                }
                 PaymentDetailsType paymentDetail = new PaymentDetailsType();
                 paymentDetail.setNotifyURL("http://replaceIpnUrl.com");
                 BasicAmountType orderTotal = new BasicAmountType();

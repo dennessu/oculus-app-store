@@ -1,6 +1,5 @@
 package com.junbo.order.clientproxy
 import com.junbo.billing.spec.model.Balance
-import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.billing.BillingFacade
 import com.junbo.order.clientproxy.common.TestBuilder
@@ -22,7 +21,7 @@ class BillingFacadeTest extends BaseTest {
     @Test(enabled = true)
     void testCreateBalance() {
         def balance = TestBuilder.buildBalance()
-        def promise = billingFacade.createBalance(balance)
+        def promise = billingFacade.createBalance(balance, null)
         promise?.then(new Promise.Func<Balance, Promise>() {
             @Override
             Promise apply(Balance b1) {
@@ -36,21 +35,6 @@ class BillingFacadeTest extends BaseTest {
                 } )
             }
         } )
-        assert (promise != null)
-    }
-
-    @Test(enabled = true)
-    void testGetShippingAddress() {
-//        def balance = TestBuilder.buildBalance();
-        def promise = billingFacade.getShippingAddress(TestBuilder.generateLong(), TestBuilder.generateLong())
-        promise.then(new Promise.Func<ShippingAddress, Promise>() {
-            @Override
-            Promise apply(ShippingAddress shippingAddress) {
-                assert(shippingAddress != null)
-                assert(shippingAddress.lastName == 'Ocean')
-            }
-        } )
-
         assert (promise != null)
     }
 }

@@ -50,21 +50,21 @@ public class BaseDao<T extends Entity> {
 
     public T insert(T t) {
         Date now = new Date();
-        t.setId(generateId(t.getShardMasterId()));
-        t.setCreatedBy("DEFAULT"); //TODO
+        t.setpId(generateId(t.getShardMasterId()));
+        t.setCreatedBy(123L); //TODO
         t.setCreatedTime(now);
-        t.setModifiedBy("DEFAULT");   //TODO
-        t.setModifiedTime(now);
+        t.setUpdatedBy(123L);   //TODO
+        t.setUpdatedTime(now);
         return get((Long) currentSession(t.getShardMasterId()).save(t));
     }
 
     public T update(T t) {
-        T existed = (T) currentSession(t.getShardMasterId()).get(entityType, t.getId());
+        T existed = (T) currentSession(t.getShardMasterId()).get(entityType, t.getpId());
         t.setCreatedTime(existed.getCreatedTime());
         t.setCreatedBy(existed.getCreatedBy());
         Date now = new Date();
-        t.setModifiedBy("DEFAULT"); //TODO
-        t.setModifiedTime(now);
+        t.setUpdatedBy(123L); //TODO
+        t.setUpdatedTime(now);
         return (T) currentSession(t.getShardMasterId()).merge(t);
     }
 

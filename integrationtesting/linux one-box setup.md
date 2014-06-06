@@ -49,14 +49,7 @@
 6. Generating SSH Keys got github access:
     https://help.github.com/articles/generating-ssh-keys
 
-7. aws-artifactory setup
-   1). echo 54.254.249.206 aws-artifactory >> /etc/hosts
-   2). download source code by git clone
-   3). set up key:
-        cd ~/owp-main/bootstrap/setup
-        keytool -import -alias aws-artifactory -keystore $JAVA_HOME/jre/lib/security/cacerts -file ./aws-artifactory.cer -trustcacerts
-
-8. Install python
+7. Install python
   1). Yum install gcc
   2). wget http://python.org/ftp/python/2.7.3/Python-2.7.3.tar.bz2
   3). tar -jxvf Python-2.7.3.tar.bz2
@@ -68,23 +61,69 @@
   9). make distclean
   10). ln -s /usr/local/bin/python2.7 /usr/bin/python
 
-9. db setup: 
+8. db setup:
    1). git clone source code to /home/sourcecode/main
    2). run git pull to pull latest code
    3). run ./setupdb.sh to drop old database and create new database in localhost.
    note: all the old data will be removed by this script.
 
-10. copy bundles and start service
+9. install ActiveMQ
+   1). Download activeMQ from http://activemq.apache.org/activemq-591-release.html.   
+   2). tar -zxvf apache-activemq-5.9.1-bin.tar.gz
+   3). start activemq: ./apache-activemq-5.9.1-bin/activemq start
+   4). check status: http://<ip>:8161/ (usr&pwd: admin/admin)
+
+10. install encrypt cert
+
+    Check $JAVA_HOME and $JAVA_HOME/lib/security/encryptKeyStore.jks exists, if not, please do the following steps:
+
+    1): run command: update-alternatives --display java
+
+        It will display it as: Current "BEST" version is /usr/lib/jvm/jre-1.7.0-openjdk.x86_64/bin/java
+
+        Your java home should be in "/usr/lib/jvm/jre-1.7.0-openjdk.x86_64"
+
+    2): Set up JAVA_HOME = /usr/lib/jvm/jre-1.7.0-openjdk.x86_64
+        Open up the profile in your terminal using vi:
+            sudo vi /etc/profile
+                Set the JAVA_HOME environment variable using the following syntax:
+            export JAVA_HOME=/usr/lib/jvm/jdk1.6.0_32
+                Don’t forget to set the PATH variable too:
+            export PATH=$PATH:/usr/lib/jvm/jdk1.6.0_32/bin
+                You can now logout and login back to the session for the settings you’ve made to take effect immediately, or just type the following for an immediate effect:
+            source /etc/profile
+
+            or:
+            . /etc/profile
+
+    3): import cert:
+
+        openssl genrsa -out ca.key 2048
+
+        openssl req -new -key ca.key -out ca.csr
+
+        // generate self signed key with 10 years valid time
+        openssl x509 -req -days 3650 -in ca.csr -signkey ca.key -out ca.crt
+
+        openssl pkcs12 -export -name test -in ca.crt -inkey ca.key -out keystore.p12
+
+        keytool -importkeystore -destkeystore $JAVA_HOME/lib/security/encryptKeyStore.jks -srckeystore keystore.p12 -srcstoretype pkcs12 -alias test
+
+        Please remember the keyStore password in 1-box should be: changeit
+
+        The test cert's password should be: 123456
+
+11. copy bundles and start service
    1). in source branch /main/apphost
    2). gradle installApp
    3). /apphost/apphost-cli/build/install/apphost-cli to onebox
    4). killd old one and run ./startup.sh to start identity/catalog/commerce on 8080
 
-11. startup docs bundle
+12. startup docs bundle
    1). go to main/bootstrap/docs-bundle
    2). gradle installApp
    3). copy bootstrap/docs-bundle/build/install/docs-bundle to onebox
    4). kill old one and run ./startup.sh to start docs on 8079
    5). use http://oneboxip:8079/ to check docs
    
-10. populate catalog data(TBD) 
+13. populate catalog data(TBD)

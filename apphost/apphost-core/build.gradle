@@ -14,4 +14,8 @@ dependencies {
 
     compile (libraries.logback_classic)
     compile (libraries.logback_core)
+
+    compile (libraries.jackson_databind)
+
+    compile junboProject(':common-configuration')
 }

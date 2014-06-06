@@ -9,7 +9,7 @@ package com.junbo.common.id;
 /**
  * Created by fzhang@wan-san.com on 2/13/14.
  */
-@IdResourcePath("/users/{userId}/carts/{0}")
+@IdResourcePath(value = "/users/{userId}/carts/{0}", regex = "/users/(?<userId>[0-9A-Z]+)/carts/(?<id>[0-9A-Z]+)")
 public class CartId extends Id {
 
     public CartId() {}

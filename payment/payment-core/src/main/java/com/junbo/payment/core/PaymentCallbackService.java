@@ -6,15 +6,14 @@
 
 package com.junbo.payment.core;
 
-import com.junbo.payment.spec.enums.PropertyField;
+import com.junbo.langur.core.promise.Promise;
+import com.junbo.payment.spec.model.PaymentProperties;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Map;
 
 /**
  * payment call back service.
  */
 public interface PaymentCallbackService {
     @Transactional
-    void addPaymentProperties(Long paymentId, Map<PropertyField, String> properties);
+    Promise<Void> addPaymentProperties(Long paymentId, PaymentProperties properties);
 }

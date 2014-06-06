@@ -2,21 +2,19 @@ apply plugin: 'java'
 
 dependencies {
     compile (libraries.rs_api)
-    compile (libraries.langur)
+    compile junboProject(':langur-core')
     compile (libraries.spring_beans)
     compile (libraries.spring_context)
     compile (libraries.guava)
     compile (libraries.spring_jdbc)
 
-    compile 'com.junbo.catalog:catalog-spec:0.0.1-SNAPSHOT'
-    compile 'com.junbo.entitlement:entitlement-spec:0.0.1-SNAPSHOT'
-    compile project(':subscription-common')
+    compile junboProject(':catalog-spec')
+    compile junboProject(':entitlement-spec')
+    compile junboProject(':payment-spec')
+    compile junboProject(':subscription-common')
+    compile junboProject(':rating-spec')
 
     testCompile(libraries.spring_test)
-    processor (libraries.langur_processor)
+    processor junboProject(':langur-processor')
     processor (libraries.log4j)
-}
-
-ext {
-    processorClass = 'com.junbo.langur.processor.RestAdapterProcessor,com.junbo.langur.processor.ClientProxyProcessor'
 }

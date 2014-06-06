@@ -1,23 +1,28 @@
 apply plugin: 'java'
 
 dependencies {
-    compile project(":payment-spec")
+    compile junboProject(":payment-spec")
 	compile (libraries.rs_api)
-    compile (libraries.langur)
+    compile junboProject(':langur-core')
     compile (libraries.spring_beans)
     compile (libraries.spring_context)
     compile (libraries.guava)
 
-    testCompile(libraries.spring_test)
-    testCompile(libraries.common_configuration_data)
-    testCompile (libraries.common_sharding)
+    testCompile (libraries.spring_test)
+    testCompile junboProject(':configuration-data')
+    testCompile junboProject(':common-lib')
+    testCompile junboProject(':langur-core')
+    testCompile junboProject(':common-sharding')
+    compile 'com.adyen.services:adyensdk:1.0-SNAPSHOT'
 
-    processor (libraries.langur_processor)
+    processor junboProject(':langur-processor')
     processor (libraries.log4j)
 
-    compile 'com.junbo.ewallet:ewallet-spec:0.0.1-SNAPSHOT'
+    compile junboProject(':ewallet-spec')
+    compile junboProject(':identity-spec')
 }
 
 ext {
-    processorClass = 'com.junbo.langur.processor.RestAdapterProcessor,com.junbo.langur.processor.ClientProxyProcessor'
+    processorClass = 'com.junbo.langur.processor.ClientProxyProcessor'
 }
+

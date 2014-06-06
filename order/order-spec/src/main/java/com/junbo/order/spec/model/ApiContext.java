@@ -5,9 +5,8 @@
  */
 package com.junbo.order.spec.model;
 
+import com.junbo.langur.core.context.JunboHttpContext;
 import org.springframework.util.CollectionUtils;
-
-import javax.ws.rs.core.MultivaluedMap;
 
 /**
  * Created by chriszhu on 2/7/14.
@@ -19,14 +18,22 @@ public class ApiContext {
     public static final String HEADER_ON_BEHALF_OF_REQUESTOR = "On-Behalf-Of-Requestor-Id";
     public static final String HEADER_USER_IP = "User_Ip";
 
+    public static final String QA_HEADER_ASYNC_CHARGE = "X-QA-Async-Charge";
+
     private String delegateUserId;
     private String requestorId;
     private String onBehalfOfRequestorId;
     private String userIp;
+    private Boolean asyncCharge;
 
-    public ApiContext(MultivaluedMap<String, String> httpHeaders) {
-        if (!CollectionUtils.isEmpty(httpHeaders.get(HEADER_USER_IP))) {
-            setUserIp(httpHeaders.get(HEADER_USER_IP).get(0));
+    public ApiContext() {
+
+        if (!CollectionUtils.isEmpty(JunboHttpContext.getRequestHeaders().get(HEADER_USER_IP))) {
+            setUserIp(JunboHttpContext.getRequestHeaders().getFirst(HEADER_USER_IP));
+        }
+
+        if (!CollectionUtils.isEmpty(JunboHttpContext.getRequestHeaders().get(QA_HEADER_ASYNC_CHARGE))) {
+            asyncCharge = Boolean.valueOf(JunboHttpContext.getRequestHeaders().getFirst(QA_HEADER_ASYNC_CHARGE));
         }
     }
 
@@ -60,5 +67,13 @@ public class ApiContext {
 
     public void setUserIp(String userIp) {
         this.userIp = userIp;
+    }
+
+    public Boolean getAsyncCharge() {
+        return asyncCharge;
+    }
+
+    public void setAsyncCharge(Boolean asyncCharge) {
+        this.asyncCharge = asyncCharge;
     }
 }

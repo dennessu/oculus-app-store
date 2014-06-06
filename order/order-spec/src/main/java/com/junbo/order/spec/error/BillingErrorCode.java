@@ -20,4 +20,6 @@ public class BillingErrorCode {
     public static final String BILLING_CHARGE_FAILED = "33002";
 
     public static final String BILLING_CONFIRM_BALANCE_FAILED = "33003";
+
+    public static final String BILLING_INSUFFICIENT_FUND = "33004";
 }

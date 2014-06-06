@@ -11,7 +11,5 @@ import com.junbo.identity.spec.v1.model.User
  * Interface of Identity Facade.
  */
 interface IdentityFacade {
-    Promise<User> getUser(Long userId)
-
     Promise<String> getUserEmail(Long userId)
 }

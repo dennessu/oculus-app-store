@@ -10,11 +10,12 @@ import com.junbo.catalog.spec.enums.ItemType;
 import com.junbo.catalog.spec.enums.PriceType;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.promotion.*;
+import com.junbo.catalog.spec.model.promotion.criterion.Criterion;
 import com.junbo.rating.clientproxy.CatalogGateway;
 import com.junbo.rating.common.util.Func;
 import com.junbo.rating.common.util.Utils;
 import com.junbo.rating.core.RatingService;
-import com.junbo.rating.core.context.RatingContext;
+import com.junbo.rating.core.context.PriceRatingContext;
 import com.junbo.rating.core.handler.HandlerRegister;
 import com.junbo.rating.spec.error.AppErrors;
 import com.junbo.rating.spec.fusion.*;
@@ -29,12 +30,12 @@ import java.util.*;
 /**
  * Created by lizwu on 2/7/14.
  */
-public abstract class RatingServiceSupport implements RatingService{
+public abstract class RatingServiceSupport implements RatingService<PriceRatingContext> {
     @Autowired
     @Qualifier("ratingCatalogGateway")
     protected CatalogGateway catalogGateway;
 
-    protected void fillOffer(RatingContext context) {
+    protected void fillOffer(PriceRatingContext context) {
         for (RatableItem item : context.getItems()) {
             item.setOffer(catalogGateway.getOffer(item.getOfferId(), context.getTimestamp()));
             validateLineItem(item, context.getTimestamp());
@@ -88,7 +89,7 @@ public abstract class RatingServiceSupport implements RatingService{
         return result;
     }
 
-    protected void filterByCurrency(final RatingContext context) {
+    protected void filterByCurrency(final PriceRatingContext context) {
         discardRule(context, new Func<PromotionRevision, Boolean>() {
             @Override
             public Boolean execute(PromotionRevision promotion) {
@@ -97,7 +98,7 @@ public abstract class RatingServiceSupport implements RatingService{
         });
     }
 
-    protected void filterByEffectiveDate(RatingContext context) {
+    protected void filterByEffectiveDate(PriceRatingContext context) {
         discardRule(context, new Func<PromotionRevision, Boolean>() {
             @Override
             public Boolean execute(PromotionRevision promotion) {
@@ -106,7 +107,7 @@ public abstract class RatingServiceSupport implements RatingService{
         });
     }
 
-    private void discardRule(RatingContext context, Func<PromotionRevision, Boolean> predicate) {
+    private void discardRule(PriceRatingContext context, Func<PromotionRevision, Boolean> predicate) {
         for (Set<PromotionRevision> entry : context.getRules().values()) {
             Iterator<PromotionRevision> iterator = entry.iterator();
             while (iterator.hasNext()) {
@@ -120,7 +121,7 @@ public abstract class RatingServiceSupport implements RatingService{
         }
     }
 
-    protected void findCandidates(RatingContext context) {
+    protected void findCandidates(PriceRatingContext context) {
         for (RatableItem item : context.getItems()) {
             context.setCurrentItem(item);
             context.getCandidates().put(item.getOfferId(), filterByCriteria(context));
@@ -130,7 +131,7 @@ public abstract class RatingServiceSupport implements RatingService{
 
 
 
-    private Set<PromotionRevision> filterByCriteria(RatingContext context) {
+    private Set<PromotionRevision> filterByCriteria(PriceRatingContext context) {
         Set<PromotionRevision> promotions = context.getRules().get(PromotionType.OFFER_PROMOTION);
         if (promotions == null) {
             return Collections.<PromotionRevision>emptySet();
@@ -146,9 +147,9 @@ public abstract class RatingServiceSupport implements RatingService{
         return candidates;
     }
 
-    protected boolean validatePromotion(PromotionRevision promotion, RatingContext context) {
+    protected boolean validatePromotion(PromotionRevision promotion, PriceRatingContext context) {
         for (Criterion criterion : promotion.getCriteria()) {
-            if (!HandlerRegister.isSatisfied(criterion, context)) {
+            if (!HandlerRegister.getHandler(criterion.getPredicate().toString()).validate(criterion, context)) {
                 return false;
             }
         }
@@ -156,20 +157,25 @@ public abstract class RatingServiceSupport implements RatingService{
         return true;
     }
 
-    protected Money getPrice(RatingOffer offer, String currency) {
+    protected Money getPrice(RatingOffer offer, String country, String currency) {
         Price price = offer.getPrice();
         if (price == null) {
             return Money.NOT_FOUND;
         }
 
-        if (price.getPriceType().equalsIgnoreCase(PriceType.FREE.name())) {
+        if (PriceType.FREE.name().equalsIgnoreCase(price.getPriceType())) {
             return new Money(BigDecimal.ZERO, currency);
         }
 
-        Map<String, BigDecimal> prices = price.getPrices();
+        if (price.getPrices() == null || !price.getPrices().containsKey(country)) {
+            return Money.NOT_FOUND;
+        }
+
+        Map<String, BigDecimal> prices = price.getPrices().get(country);
         if (!prices.containsKey(currency)) {
             return Money.NOT_FOUND;
         }
+
         return new Money(prices.get(currency), currency);
     }
 

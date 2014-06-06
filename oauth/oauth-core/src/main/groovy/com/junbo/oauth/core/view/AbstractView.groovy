@@ -10,7 +10,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.model.ViewModel
+import com.junbo.oauth.spec.model.ViewModel
 import groovy.transform.CompileStatic
 
 import javax.ws.rs.core.Response
@@ -25,7 +25,7 @@ abstract class AbstractView implements Action {
 
     @Override
     Promise<ActionResult> execute(ActionContext context) {
-        buildViewModel(context).then { ViewModel model ->
+        return buildViewModel(context).then { ViewModel model ->
 
             def responseBuilder = Response.status(Response.Status.OK)
             responseBuilder.entity(model)
@@ -37,11 +37,15 @@ abstract class AbstractView implements Action {
         }
     }
 
-    protected static class ErrorComparator implements Comparator<com.junbo.common.error.Error> {
+    private static class ErrorComparator implements Comparator<com.junbo.common.error.Error> {
 
         @Override
         int compare(com.junbo.common.error.Error o1, com.junbo.common.error.Error o2) {
-            return o1.code <=> o2.code
+            return ("${o1.code}${o1.field}" <=> "${o2.code}${o2.field}")
         }
+    }
+
+    protected static Comparator<com.junbo.common.error.Error> getErrorComparator() {
+        return new ErrorComparator()
     }
 }

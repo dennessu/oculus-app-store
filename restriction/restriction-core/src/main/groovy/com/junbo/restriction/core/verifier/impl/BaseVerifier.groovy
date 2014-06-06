@@ -10,12 +10,14 @@ import com.junbo.restriction.clientproxy.CatalogFacade
 import com.junbo.restriction.clientproxy.IdentityFacade
 import com.junbo.restriction.core.configuration.RestrictionConfiguration
 import com.junbo.restriction.spec.internal.Restriction
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 
 /**
  * Base Verifier.
  */
+@CompileStatic
 abstract class BaseVerifier {
     @Autowired
     protected RestrictionConfiguration configuration

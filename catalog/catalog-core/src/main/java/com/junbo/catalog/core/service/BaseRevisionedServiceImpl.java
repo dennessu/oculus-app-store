@@ -41,8 +41,7 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
     @Override
     public E createEntity(E entity) {
         // TODO: revisions
-        Long entityId = getEntityRepo().create(entity);
-        return getEntityRepo().get(entityId);
+        return getEntityRepo().create(entity);
     }
 
     @Override
@@ -55,12 +54,12 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
                     .exception();
         }
 
-        if (!existingEntity.getRev().equals(entity.getRev())) {
-            throw AppErrors.INSTANCE.fieldNotMatch("rev", entity.getRev(), existingEntity.getRev()).exception();
+        if (!existingEntity.getResourceAge().equals(entity.getResourceAge())) {
+            throw AppErrors.INSTANCE
+                    .fieldNotMatch("rev", entity.getResourceAge(), existingEntity.getResourceAge()).exception();
         }
 
-        getEntityRepo().update(entity);
-        return getEntityRepo().get(entityId);
+        return getEntityRepo().update(entity);
     }
 
     @Override
@@ -72,7 +71,9 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
 
     @Override
     public T getRevision(Long revisionId) {
-        return getRevisionRepo().get(revisionId);
+        T revision = getRevisionRepo().get(revisionId);
+        checkEntityNotNull(revisionId, revision, getRevisionType());
+        return revision;
     }
 
     @Override
@@ -90,18 +91,17 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
             Long lastRevisionId = entity.getCurrentRevisionId();
             entity.setCurrentRevisionId(revisionId);
             getEntityRepo().update(entity);
-            postApproveActions(revision, lastRevisionId);
         }
         return getRevisionRepo().get(revisionId);
-    }
-
-    protected void postApproveActions(T currentRevision, Long lastRevisionId) {
     }
 
     @Override
     public void deleteRevision(Long revisionId) {
         T existingRevision = getRevisionRepo().get(revisionId);
         checkEntityNotNull(revisionId, existingRevision, getRevisionType());
+        if (Status.APPROVED.is(existingRevision.getStatus())) {
+            throw AppErrors.INSTANCE.validation("Cannot delete an approved revision.").exception();
+        }
         getRevisionRepo().delete(revisionId);
     }
 

@@ -18,13 +18,13 @@ dependencies {
     compile (libraries.common_io)
 
     compile (libraries.jackson_jaxrs_json_provider)
-    compile (libraries.oom)
+    compile junboProject(':oom-core')
 
-    compile project(':fulfilment-spec')
-    compile project(':fulfilment-db')
-    compile project(':fulfilment-common')
-    compile project(':fulfilment-clientproxy')
-    compile project(':fulfilment-core')
+    compile junboProject(':fulfilment-spec')
+    compile junboProject(':fulfilment-db')
+    compile junboProject(':fulfilment-common')
+    compile junboProject(':fulfilment-clientproxy')
+    compile junboProject(':fulfilment-core')
 
-    processor (libraries.langur_processor)
+    processor junboProject(':langur-processor')
 }

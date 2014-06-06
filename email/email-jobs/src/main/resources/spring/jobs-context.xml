@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="emailListener" class="com.junbo.email.jobs.listener.EmailListener">
+        <property name="emailProvider" ref="emailProvider"/>
+        <property name="emailHistoryRepository" ref="emailHistoryRepository"/>
+        <property name="EmailTemplateRepository" ref="emailTemplateRepository"/>
+        <property name="transactionManager" ref="transactionManager"/>
+    </bean>
+
+    <bean id="emailListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer"
+          parent="baseListenerContainer">
+        <property name="destination" ref="emailQueue"/>
+        <property name="messageListener" ref="emailListener"/>
+    </bean>
+</beans>

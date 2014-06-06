@@ -7,12 +7,13 @@
 package com.junbo.order.jobs
 
 import com.junbo.order.core.impl.common.TransactionHelper
-import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.PageParam
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.InitializingBean
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 
 import javax.annotation.Resource
@@ -23,11 +24,11 @@ import java.util.concurrent.atomic.AtomicInteger
  * Created by xmchen on 14-4-2.
  */
 @CompileStatic
-class OrderJob {
+class OrderJob implements InitializingBean {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderJob)
 
-    OrderRepository orderRepository
+    OrderRepositoryFacade orderRepository
 
     int orderProcessNumLimit
 
@@ -121,5 +122,10 @@ class OrderJob {
                 iterator.remove()
             }
         }
+    }
+
+    @Override
+    void afterPropertiesSet() throws Exception {
+        assert orderProcessor != null, 'orderProcessor should not be null'
     }
 }

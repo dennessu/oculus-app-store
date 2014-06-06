@@ -1,0 +1,10 @@
+{
+    "typeCode": "CREDITCARD",
+    "locales" : {
+        "en_US": {
+            "description": "Credit Card"
+        }
+    },
+    "isRefundable": true,
+    "capableOfRecurring": true
+}

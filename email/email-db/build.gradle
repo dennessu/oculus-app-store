@@ -1,12 +1,12 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile (libraries.common_lib)
-    compile (libraries.langur)
-    compile (libraries.common_sharding)
-    compile (libraries.oom_processor)
-    compile (libraries.oom)
-    compile (libraries.common_configuration)
+    compile junboProject(':common-lib')
+    compile junboProject(':langur-core')
+
+    compile junboProject(':common-sharding')
+    compile junboProject(':oom-core')
+    compile junboProject(':common-configuration')
 
     compile (libraries.persistence_api)
     compile (libraries.validation_api)
@@ -27,12 +27,12 @@ dependencies {
 
     compile (libraries.postgresql)
 
-    compile (libraries.bonecp_spring)
+    compile (libraries.HikariCP)
     compile (libraries.rs_api)
 
     testCompile (libraries.guava)
     testCompile (libraries.spring_test)
 
-    compile project(':email-common')
-    compile project(':email-spec')
+    compile junboProject(':email-common')
+    compile junboProject(':email-spec')
 }

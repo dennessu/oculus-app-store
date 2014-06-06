@@ -2,10 +2,10 @@ package com.junbo.identity.data.repository.impl.cloudant
 
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
+import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPasswordId
 import com.junbo.identity.data.repository.UserPasswordRepository
 import com.junbo.identity.spec.model.users.UserPassword
-import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.ShardAlgorithm
@@ -56,14 +56,15 @@ class UserPasswordRepositoryCloudantImpl extends CloudantClient<UserPassword> im
     }
 
     @Override
-    Promise<List<UserPassword>> search(UserPasswordListOptions getOption) {
-        def list = super.queryView('by_user_id', getOption.userId.value.toString())
-        if (getOption.active != null) {
-            list.retainAll { UserPassword element ->
-                element.active == getOption.active
-            }
-        }
+    Promise<List<UserPassword>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+        def list = super.queryView('by_user_id', userId.toString(), limit, offset, false)
+        return Promise.pure(list)
+    }
 
+    @Override
+    Promise<List<UserPassword>> searchByUserIdAndActiveStatus(UserId userId, Boolean active, Integer limit,
+                                                              Integer offset) {
+        def list = super.queryView('by_user_id_active_status', "${userId.toString()}:${active}", limit, offset, false)
         return Promise.pure(list)
     }
 
@@ -77,8 +78,13 @@ class UserPasswordRepositoryCloudantImpl extends CloudantClient<UserPassword> im
             views: [
                     'by_user_id': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.userId.value.toString(), doc._id)' +
+                                    '  emit(doc.userId, doc._id)' +
                                     '}',
+                            resultClass: String),
+                    'by_user_id_active_status': new CloudantViews.CloudantView(
+                            map: 'function(doc) {' +
+                                    '  emit(doc.userId + \':\' + doc.active, doc._id)' +
+                                 '}',
                             resultClass: String)
             ]
     )

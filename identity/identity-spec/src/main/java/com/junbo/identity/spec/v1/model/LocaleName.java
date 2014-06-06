@@ -11,25 +11,14 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  * Created by liangfu on 4/24/14.
  */
 public class LocaleName {
-    @ApiModelProperty(position = 1, required = true, value = "short name of the locale.")
-    private String shortName;
+    @ApiModelProperty(position = 1, required = true, value = "The description of LocaleName.")
+    private String description;
 
-    @ApiModelProperty(position = 2, required = true, value = "long name of the locale.")
-    private String longName;
-
-    public String getShortName() {
-        return shortName;
+    public String getDescription() {
+        return description;
     }
 
-    public void setShortName(String shortName) {
-        this.shortName = shortName;
-    }
-
-    public String getLongName() {
-        return longName;
-    }
-
-    public void setLongName(String longName) {
-        this.longName = longName;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

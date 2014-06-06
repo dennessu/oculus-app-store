@@ -138,7 +138,7 @@ class CartServiceImpl implements CartService {
         return getCart(userId, cartId).then { Cart destCart ->
             return getCart(fromCart.user, fromCart.id).syncThen { Cart cart ->
                 destCart.offers.each {
-                    ((OfferItem) it).selected = false
+                    ((OfferItem) it).isSelected = false
                 }
                 cart.offers.each {
                     ((CartItem) it).id = null
@@ -179,7 +179,7 @@ class CartServiceImpl implements CartService {
             // update the offer and save
             o.offer = offerItem.offer
             o.quantity = offerItem.quantity
-            o.selected = offerItem.selected
+            o.isSelected = offerItem.isSelected
             cart.offers = mergeOffers(cart.offers)
             cartPersistService.updateCart(cart)
             return Promise.pure(cart)
@@ -207,7 +207,7 @@ class CartServiceImpl implements CartService {
                 offersMap[e.offer] = e
             } else {
                 current.quantity += e.quantity
-                current.selected |= e.selected
+                current.isSelected |= e.isSelected
                 if (current.id == null && e.id != null) {
                     current.id = e.id
                 }

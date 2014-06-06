@@ -2,7 +2,8 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionId
-import com.junbo.identity.core.service.util.CipherHelper
+import com.junbo.identity.core.service.credential.CredentialHash
+import com.junbo.identity.core.service.credential.CredentialHashFactory
 import com.junbo.identity.core.service.validator.UserSecurityQuestionValidator
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.UserRepository
@@ -15,19 +16,21 @@ import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Required
+
 /**
  * Created by liangfu on 3/31/14.
  */
 @CompileStatic
+@SuppressWarnings('UnnecessaryGetter')
 class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator {
-
-    private static final Integer SALT_LENGTH = 20
-
     private UserRepository userRepository
     private UserSecurityQuestionRepository userSecurityQuestionRepository
 
     private Integer minSecurityQuestionLength
     private Integer maxSecurityQuestionLength
+
+    private Integer currentCredentialVersion
+    private CredentialHashFactory credentialHashFactory
 
     private Integer minAnswerLength
     private Integer maxAnswerLength
@@ -99,7 +102,7 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
         }
 
         // Check whether this security question is used before
-        return userSecurityQuestionRepository.search(new UserSecurityQuestionListOptions(userId: userId)).then {
+        return userSecurityQuestionRepository.searchByUserId(userId, Integer.MAX_VALUE, 0).then {
             List<UserSecurityQuestion> userSecurityQuestionList ->
                 if (!CollectionUtils.isEmpty(userSecurityQuestionList)) {
                     boolean exists = userSecurityQuestionList.any { UserSecurityQuestion existing ->
@@ -110,10 +113,18 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
                     }
                 }
                 userSecurityQuestion.setUserId(userId)
-                String salt = CipherHelper.generateCipherRandomStr(SALT_LENGTH)
-                String pepper = CipherHelper.generateCipherRandomStr(SALT_LENGTH)
-                userSecurityQuestion.setAnswerHash(CipherHelper.generateCipherHashV1(
-                        userSecurityQuestion.answer, salt, pepper))
+
+                List<CredentialHash> credentialHashList = credentialHashFactory.getAllCredentialHash()
+                CredentialHash matched = credentialHashList.find { CredentialHash hash ->
+                    return hash.handles(currentCredentialVersion)
+                }
+
+                if (matched == null) {
+                    throw new IllegalStateException('No matched version: ' + currentCredentialVersion
+                            + ' for CredentialHash')
+                }
+
+                userSecurityQuestion.setAnswerHash(matched.hash(userSecurityQuestion.answer))
                 return Promise.pure(null)
         }
     }
@@ -155,7 +166,7 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
             }
 
             if (userSecurityQuestion.securityQuestion != oldUserSecurityQuestion.securityQuestion) {
-                userSecurityQuestionRepository.search(new UserSecurityQuestionListOptions(userId: userId)).then {
+                return userSecurityQuestionRepository.searchByUserId(userId, Integer.MAX_VALUE, 0).then {
                     List<UserSecurityQuestion> userSecurityQuestionList ->
                     boolean securityQuestionExists = userSecurityQuestionList.any { UserSecurityQuestion existing ->
                         return (existing.securityQuestion == userSecurityQuestion.securityQuestion)
@@ -215,6 +226,16 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
     @Required
     void setMaxSecurityQuestionLength(Integer maxSecurityQuestionLength) {
         this.maxSecurityQuestionLength = maxSecurityQuestionLength
+    }
+
+    @Required
+    void setCurrentCredentialVersion(Integer currentCredentialVersion) {
+        this.currentCredentialVersion = currentCredentialVersion
+    }
+
+    @Required
+    void setCredentialHashFactory(CredentialHashFactory credentialHashFactory) {
+        this.credentialHashFactory = credentialHashFactory
     }
 
     @Required

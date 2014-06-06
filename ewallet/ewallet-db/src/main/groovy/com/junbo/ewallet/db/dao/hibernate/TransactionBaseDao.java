@@ -50,10 +50,14 @@ public class TransactionBaseDao<T extends EntityWithCreated> {
 
     public T insert(T t) {
         Date now = new Date();
-        t.setId(generateId(t.getShardMasterId()));
-        t.setCreatedBy("DEFAULT"); //TODO
+        t.setpId(generateId(t.getShardMasterId()));
+        t.setCreatedBy(123L); //TODO
         t.setCreatedTime(now);
         return get((Long) currentSession(t.getShardMasterId()).save(t));
+    }
+
+    public void update(T t) {
+        currentSession(t.getShardMasterId()).update(t);
     }
 
     protected Long generateId(Long shardId) {

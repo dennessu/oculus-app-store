@@ -5,13 +5,13 @@
  */
 package com.junbo.oauth.core.service.impl
 
+import com.junbo.authorization.AuthorizeContext
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.ScopeService
 import com.junbo.oauth.core.service.TokenService
 import com.junbo.oauth.core.util.UriUtil
 import com.junbo.oauth.db.exception.DBUpdateConflictException
 import com.junbo.oauth.db.repo.ScopeRepository
-import com.junbo.oauth.spec.model.AccessToken
 import com.junbo.oauth.spec.model.Scope
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
@@ -39,10 +39,8 @@ class ScopeServiceImpl implements ScopeService {
     }
 
     @Override
-    Scope saveScope(String authorization, Scope scope) {
-        AccessToken accessToken = tokenService.extractAccessToken(authorization)
-
-        if (!accessToken.scopes.contains(SCOPE_MANAGE_SCOPE)) {
+    Scope saveScope(Scope scope) {
+        if (!AuthorizeContext.hasScopes(SCOPE_MANAGE_SCOPE)) {
             throw AppExceptions.INSTANCE.insufficientScope().exception()
         }
 
@@ -60,26 +58,13 @@ class ScopeServiceImpl implements ScopeService {
     }
 
     @Override
-    Scope getScope(String authorization, String scopeName) {
-        AccessToken accessToken = tokenService.extractAccessToken(authorization)
-
-        if (!accessToken.scopes.contains(SCOPE_INFO_SCOPE)) {
-            throw AppExceptions.INSTANCE.insufficientScope().exception()
-        }
-
-        return scopeRepository.getScope(scopeName)
-    }
-
-    @Override
     Scope getScope(String scopeName) {
         return scopeRepository.getScope(scopeName)
     }
 
     @Override
-    List<Scope> getScopes(String authorization, String scopeNames) {
-        AccessToken accessToken = tokenService.extractAccessToken(authorization)
-
-        if (!accessToken.scopes.contains(SCOPE_INFO_SCOPE)) {
+    List<Scope> getScopes(String scopeNames) {
+        if (!AuthorizeContext.hasScopes(SCOPE_INFO_SCOPE)) {
             throw AppExceptions.INSTANCE.insufficientScope().exception()
         }
 
@@ -97,14 +82,12 @@ class ScopeServiceImpl implements ScopeService {
     }
 
     @Override
-    Scope updateScope(String authorization, String scopeName, Scope scope) {
+    Scope updateScope(String scopeName, Scope scope) {
         if (StringUtils.isEmpty(scope.revision)) {
             throw AppExceptions.INSTANCE.missingRevision().exception()
         }
 
-        AccessToken accessToken = tokenService.extractAccessToken(authorization)
-
-        if (!accessToken.scopes.contains(SCOPE_MANAGE_SCOPE)) {
+        if (!AuthorizeContext.hasScopes(SCOPE_MANAGE_SCOPE)) {
             throw AppExceptions.INSTANCE.insufficientScope().exception()
         }
 

@@ -2,7 +2,8 @@ apply plugin: 'groovy'
 
 dependencies {
     compile 'org.quartz-scheduler:quartz:2.2.1'
-    compile project(':billing-spec')
-    compile project(':billing-db')
-    compile 'com.junbo.notification:notification-core:0.0.1-SNAPSHOT'
+    compile junboProject(':order-spec')
+    compile junboProject(':billing-spec')
+    compile junboProject(':billing-db')
+    compile junboProject(':notification-core')
 }

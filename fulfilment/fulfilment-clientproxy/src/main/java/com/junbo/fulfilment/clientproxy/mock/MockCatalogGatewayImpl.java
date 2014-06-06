@@ -5,12 +5,15 @@
  */
 package com.junbo.fulfilment.clientproxy.mock;
 
+import com.junbo.catalog.spec.enums.EntitlementType;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Action;
 import com.junbo.catalog.spec.model.offer.ItemEntry;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.fulfilment.clientproxy.impl.CatalogGatewayImpl;
 import com.junbo.fulfilment.common.util.Constant;
+import com.junbo.fulfilment.spec.fusion.EntitlementMeta;
+import com.junbo.fulfilment.spec.fusion.Item;
 import com.junbo.fulfilment.spec.fusion.ShippingMethod;
 
 import java.util.*;
@@ -81,9 +84,6 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
                 }});
                 add(new Action() {{
                     setType(Constant.ACTION_GRANT_ENTITLEMENT);
-                    setProperties(new HashMap<String, Object>() {{
-                        put(Constant.ENTITLEMENT_DEF_ID, "12345");
-                    }});
                 }});
             }});
         }});
@@ -113,9 +113,6 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
             put(Constant.EVENT_PURCHASE, new ArrayList<Action>() {{
                 add(new Action() {{
                     setType(Constant.ACTION_GRANT_ENTITLEMENT);
-                    setProperties(new HashMap<String, Object>() {{
-                        put(Constant.ENTITLEMENT_DEF_ID, "12345");
-                    }});
                 }});
             }});
         }});
@@ -190,5 +187,20 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
         result.setId(shippingMethodId);
 
         return result;
+    }
+
+    @Override
+    public Item getItem(Long itemId, Long timestamp) {
+        Item item = new Item();
+        item.setItemId(123L);
+        item.setSku("TEST_SKU");
+        item.setEntitlementMetas(new ArrayList<EntitlementMeta>() {{
+            add(new EntitlementMeta() {{
+                setType(EntitlementType.DOWNLOAD.toString());
+                setConsumable(false);
+            }});
+        }});
+
+        return item;
     }
 }

@@ -5,9 +5,12 @@
  */
 package com.junbo.langur.processor.model
 
+import groovy.transform.CompileStatic
+
 /**
  * Created by kevingu on 11/28/13.
  */
+@CompileStatic
 class ClientMethodModel {
 
     String methodName
@@ -23,4 +26,6 @@ class ClientMethodModel {
     String contentType
 
     List<String> accepts
+
+    boolean inProcessCallable
 }

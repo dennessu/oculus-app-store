@@ -9,15 +9,21 @@ package com.junbo.test.common.Entities.enums;
  * Created by Yunlong on 3/25/14.
  */
 public enum PaymentType {
-    CREDITCARD("CREDITCARD"),
-    DIRECTDEBIT("DIRECTDEBIT"),
-    PAYPAL("PAYPAL"),
-    EWALLET("WALLET");
+    CREDITCARD("CREDITCARD", 0L),
+    DIRECTDEBIT("DIRECTDEBIT", 0L),
+    PAYPAL("PAYPAL", 3L),
+    EWALLET("WALLET", 2L);
 
     private String name;
+    private Long type;
 
-    private PaymentType(String name) {
+    private PaymentType(String name, Long type) {
         this.name = name;
+        this.type = type;
+    }
+
+    public Long getValue() {
+        return this.type;
     }
 
     @Override

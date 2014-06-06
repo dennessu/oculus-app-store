@@ -2,29 +2,67 @@
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-    <bean id="asyncHttpClient" class="com.ning.http.client.AsyncHttpClient"/>
 
-    <bean id="transcoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
-    <bean id="pathParamTranscoder" class="com.junbo.common.json.IdPathParamTranscoder" />
-    <bean id="queryParamTranscoder" class="com.junbo.common.json.QueryParamTranscoderImpl" />
-
-    <bean id="brainTreeClient" class="com.junbo.payment.spec.internal.proxy.BrainTreeResourceClientProxy">
-        <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="target" value="${payment.clientproxy.braintree.target}"/>
-        <constructor-arg name="transcoder" ref="transcoder"/>
-        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder" />
+    <bean id="brainTreeClient" class="com.junbo.payment.spec.internal.proxy.BrainTreeResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${payment.clientproxy.braintree.target}"/>
     </bean>
 
-    <bean id="walletClient" class="com.junbo.ewallet.spec.resource.proxy.WalletResourceClientProxy">
-        <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="target" value="${clientproxy.ewallet.url}"/>
-        <constructor-arg name="transcoder" ref="transcoder"/>
-        <constructor-arg name="pathParamTranscoder" ref="pathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="queryParamTranscoder" />
+    <bean id="walletClient" class="com.junbo.ewallet.spec.resource.proxy.WalletResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.ewallet.url}"/>
     </bean>
 
-    <bean id="personalInfoFacade" class="com.junbo.payment.clientproxy.impl.PersonalInfoFacadeImpl"/>
+    <bean id="currencyClient" class="com.junbo.identity.spec.v1.resource.proxy.CurrencyResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
+    </bean>
+
+    <bean id="countryClient" class="com.junbo.identity.spec.v1.resource.proxy.CountryResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
+    </bean>
+
+    <bean id="piiClient" class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
+    </bean>
+
+    <bean id="userClient" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
+    </bean>
+
+    <bean id="personalInfoFacade" class="com.junbo.payment.clientproxy.impl.PersonalInfoFacadeImpl">
+        <property name="piiClient" ref="piiClient"></property>
+    </bean>
+
+    <bean id="userInfoFacade" class="com.junbo.payment.clientproxy.impl.UserInfoFacadeImpl">
+        <property name="piiClient" ref="piiClient"></property>
+        <property name="userResource" ref="userClient"></property>
+    </bean>
+
+    <bean id="adyenRestClient" class="com.junbo.payment.clientproxy.adyen.proxy.AdyenApiClientProxy"
+          parent="rawDataBaseClientproxy">
+        <property name="target" value="https://pal-test.adyen.com/pal/adapter"/>
+    </bean>
+
+    <bean id="rawDataBaseClientproxy" class="com.junbo.langur.core.client.AbstractClientProxy"
+          parent="baseClientProxy"  abstract="true">
+        <property name="transcoder" ref="rawDataTranscoder"/>
+    </bean>
+
+    <bean id="rawDataTranscoder" class="com.junbo.payment.clientproxy.adyen.RawDataTranscoder"/>
+
+    <bean id="countryServiceFacade" class="com.junbo.payment.clientproxy.impl.CountryServiceFacadeImpl">
+        <property name="countryResource" ref="countryClient" />
+    </bean>
+
+    <bean id="currencyServiceFacade" class="com.junbo.payment.clientproxy.impl.CurrencyServiceFacadeImpl">
+        <property name="currencyResource" ref="currencyClient"/>
+    </bean>
+
     <bean id="mockPersonalInfoClientProxy" class="com.junbo.payment.clientproxy.MockPersonalInfoClientProxy"/>
+
 
 </beans>

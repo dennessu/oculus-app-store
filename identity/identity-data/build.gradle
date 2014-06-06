@@ -1,10 +1,10 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile (libraries.common_lib)
-    compile (libraries.common_sharding)
-    compile (libraries.oom)
-    compile (libraries.common_configuration)
+    compile junboProject(':common-lib')
+    compile junboProject(':common-sharding')
+    compile junboProject(':oom-core')
+    compile junboProject(':common-configuration')
 
     compile (libraries.validation_api)
 
@@ -23,7 +23,7 @@ dependencies {
     compile (libraries.hibernate_validator)
 
     compile (libraries.postgresql)
-    compile (libraries.bonecp_spring)
+    compile (libraries.HikariCP)
     compile (libraries.rs_api)
 
     compile (libraries.querydsl_jpa)
@@ -31,13 +31,16 @@ dependencies {
 
     processor (libraries.querydsl_apt)
     processor (libraries.persistence_api)
-    processor (libraries.oom_processor)
+    processor junboProject(':oom-processor')
 
     testCompile (libraries.guava)
     testCompile (libraries.spring_test)
 
-    compile project(':identity-common')
-    compile project(':identity-spec')
+    compile junboProject(':identity-common')
+    compile junboProject(':identity-spec')
+    compile junboProject(':crypto-spec')
+
+    testCompile junboProject(':identity-clientproxy')
 }
 
 

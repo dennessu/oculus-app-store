@@ -71,10 +71,14 @@ class AuthenticateUser implements Action {
 
         // Get and validate the username and password from the query parameter.
         String username = parameterMap.getFirst(OAuthParameters.USERNAME)
+        if (!StringUtils.hasText(username)) {
+            // try to get login parameter from POST form, login param can be username or user-email
+            username = parameterMap.getFirst(OAuthParameters.LOGIN)
+        }
         String password = parameterMap.getFirst(OAuthParameters.PASSWORD)
 
         if (!StringUtils.hasText(username)) {
-            handleAppError(contextWrapper, AppExceptions.INSTANCE.missingUsername())
+            handleAppError(contextWrapper, AppExceptions.INSTANCE.missingLoginOrUsername())
         }
 
         if (!StringUtils.hasText(password)) {
@@ -91,9 +95,9 @@ class AuthenticateUser implements Action {
 
         // HACK
         // TODO: wait for identity response of captcha required
-        boolean captchaRequired = true
+        boolean captchaRequired = false
 
-        userService.authenticateUser(username, password, clientId, remoteAddress, userAgent).recover { Throwable e ->
+        return userService.authenticateUser(username, password, clientId, remoteAddress, userAgent).recover { Throwable e ->
             if (e instanceof AppErrorException) {
                 AppErrorException appError = (AppErrorException) e
                 // Exception happened while calling the identity service.
@@ -143,8 +147,10 @@ class AuthenticateUser implements Action {
             def oldLoginState = contextWrapper.loginState
             if (oldLoginState != null) {
                 loginState.id = oldLoginState.id
+                loginState.revision = oldLoginState.revision
+
                 if (loginState.userId == oldLoginState.userId) {
-                    loginState.sessionId = oldLoginState.id
+                    loginState.sessionId = oldLoginState.sessionId
                 }
             }
 

@@ -9,10 +9,7 @@ package com.junbo.catalog.spec.model.offer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.*;
-import com.junbo.common.jackson.annotation.CountryId;
-import com.junbo.common.jackson.annotation.OfferId;
-import com.junbo.common.jackson.annotation.OfferRevisionId;
-import com.junbo.common.jackson.annotation.UserId;
+import com.junbo.common.jackson.annotation.*;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
@@ -49,18 +46,27 @@ public class OfferRevision extends BaseRevisionModel {
     private List<Long> subOffers;
     @ApiModelProperty(position = 25, required = true, value = "Items")
     private List<ItemEntry> items = new ArrayList<>();
-    @CountryId
-    @ApiModelProperty(position = 26, required = true, value = "Eligible countries")
-    private List<String> eligibleCountries;
+    //@CountryId
+    //@ApiModelProperty(position = 26, required = true, value = "Eligible countries")
+    //private List<String> eligibleCountries;
     @ApiModelProperty(position = 27, required = true, value = "Event actions")
     private Map<String, List<Action>> eventActions;
-    @ApiModelProperty(position = 28, required = true, value = "Start effective time")
+    @ApiModelProperty(position = 28, required = true, value = "Start effective time [NOT AVAILABLE]")
     private Date startTime;
-    @ApiModelProperty(position = 29, required = true, value = "End effective time")
+    @ApiModelProperty(position = 29, required = true, value = "End effective time [NOT AVAILABLE]")
     private Date endTIme;
 
     @ApiModelProperty(position = 31, required = true, value = "Locale properties of the offer revision resource")
     private Map<String, OfferRevisionLocaleProperties> locales;
+    @ApiModelProperty(position = 32, required = true,
+            value = "The content ratings given to the offer by specific boards (ESRB, PEGI)")
+    @AgeRatingId
+    private Map<String, List<AgeRating>> ageRatings;
+    @ApiModelProperty(position = 33, required = true, value = "Offer pre-order price")
+    private Price preOrderPrice;
+    @ApiModelProperty(position = 34, required = true,
+            value = "Maps from a country-code-name to a JSON object containing the country-specific properties")
+    private Map<String, CountryProperties> countries;
 
     public Long getRevisionId() {
         return revisionId;
@@ -118,14 +124,6 @@ public class OfferRevision extends BaseRevisionModel {
         this.items = items;
     }
 
-    public List<String> getEligibleCountries() {
-        return eligibleCountries;
-    }
-
-    public void setEligibleCountries(List<String> eligibleCountries) {
-        this.eligibleCountries = eligibleCountries;
-    }
-
     public Map<String, List<Action>> getEventActions() {
         return eventActions;
     }
@@ -156,6 +154,41 @@ public class OfferRevision extends BaseRevisionModel {
 
     public void setLocales(Map<String, OfferRevisionLocaleProperties> locales) {
         this.locales = locales;
+    }
+
+    public Map<String, List<AgeRating>> getAgeRatings() {
+        return ageRatings;
+    }
+
+    public void setAgeRatings(Map<String, List<AgeRating>> ageRatings) {
+        this.ageRatings = ageRatings;
+    }
+
+    public Price getPreOrderPrice() {
+        return preOrderPrice;
+    }
+
+    public void setPreOrderPrice(Price preOrderPrice) {
+        this.preOrderPrice = preOrderPrice;
+    }
+
+    public Map<String, CountryProperties> getCountries() {
+        return countries;
+    }
+
+    public void setCountries(Map<String, CountryProperties> countries) {
+        this.countries = countries;
+    }
+
+    @Override
+    @JsonIgnore
+    public Long getId() {
+        return revisionId;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.revisionId = id;
     }
 
     @Override

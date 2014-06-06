@@ -8,6 +8,8 @@ package com.junbo.billing.spec.error;
 
 import com.junbo.common.error.*;
 
+import java.math.BigDecimal;
+
 /**
  * Interface for AppError.
  * HttpStatusCode please refer to http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
@@ -43,6 +45,10 @@ public interface AppErrors {
             description ="Currency with name {0} not found")
     AppError currencyNotFound(String name);
 
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.COUNTRY_NOT_FOUND,
+            description ="Country with name {0} not found")
+    AppError countryNotFound(String name);
+
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.PAYMENT_INSTRUMENT_NOT_FOUND,
             description ="PI with id {0} not found")
     AppError piNotFound(String id);
@@ -51,9 +57,13 @@ public interface AppErrors {
             description ="Balance type {0} invalid")
     AppError invalidBalanceType(String type);
 
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_BALANCE_TYPE,
+            description ="Balance type {0} invalid, expected types: {1}")
+    AppError invalidBalanceType(String type, String expectedTypes);
+
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_BALANCE_STATUS,
-            description ="Balance status {0} invalid")
-    AppError invalidBalanceStatus(String status);
+            description ="Balance status {0} invalid, expected status: {1}")
+    AppError invalidBalanceStatus(String status, String expectedStatus);
 
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_BALANCE_TOTAL,
             description ="Balance total amount {0} invalid")
@@ -83,7 +93,19 @@ public interface AppErrors {
             description ="The balance {0} is not an async charge balance")
     AppError notAsyncChargeBalance(String id);
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.BALANCE_ITEM_NOT_FOUND,
-            description ="The balance item {0} is not found")
-    AppError balanceItemNotFound(String id);
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.PAYMENT_PROCESSING_FAILED,
+            description ="The payment instrument {0} processing failed")
+    AppError paymentProcessingFailed(String id);
+
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.PAYMENT_INSUFFICIENT_FUND,
+            description ="The payment instrument {0} stored value balance insufficient")
+    AppError paymentInsufficientFund(String id);
+
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.BALANCE_REFUND_TOTAL_EXCEEDED,
+            description ="The refund balance total {0} exceeded, the original total {1}, refunded total {2}")
+    AppError balanceRefundTotalExceeded(BigDecimal refund, BigDecimal original, BigDecimal refunded);
+
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.BALANCE_ITEM_REFUND_TOTAL_EXCEEDED,
+            description ="The refund balance item total {0} exceeded, the original total {1}, refunded total {2}")
+    AppError balanceItemRefundTotalExceeded(BigDecimal refund, BigDecimal original, BigDecimal refunded);
 }

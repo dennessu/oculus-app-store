@@ -1,0 +1,12 @@
+{
+  "currencyCode": "USD",
+  "symbol": "$",
+  "symbolPosition": "BEFORE",
+  "numberAfterDecimal": 2,
+  "minimalAuthorizeAmount":1,
+  "localeKeys": {
+    "shortName": "USD_SHORT",
+    "longName": "USD_LONG"
+  },
+  "futureExpansion": {}
+}

@@ -38,8 +38,7 @@ public abstract class AttributeServiceSupport<T extends Attribute> {
 
     public T create(T attribute) {
         validateCreation(attribute);
-        Long attributeId = getRepo().create(attribute);
-        return getRepo().get(attributeId);
+        return getRepo().create(attribute);
     }
 
     public T update(Long attributeId, T attribute) {
@@ -49,9 +48,7 @@ public abstract class AttributeServiceSupport<T extends Attribute> {
         }
         validateUpdate(attribute, oldAttribute);
 
-        getRepo().update(attribute);
-
-        return getRepo().get(attributeId);
+        return getRepo().update(attribute);
     }
 
     public void deleteAttribute(Long attributeId) {
@@ -65,7 +62,7 @@ public abstract class AttributeServiceSupport<T extends Attribute> {
     private void validateCreation(T attribute) {
         checkRequestNotNull(attribute);
         List<AppError> errors = new ArrayList<>();
-        if (!StringUtils.isEmpty(attribute.getRev())) {
+        if (attribute.getResourceAge() != null) {
             errors.add(AppErrors.INSTANCE.unnecessaryField("rev"));
         }
 
@@ -81,8 +78,8 @@ public abstract class AttributeServiceSupport<T extends Attribute> {
         if (!oldAttribute.getId().equals(attribute.getId())) {
             errors.add(AppErrors.INSTANCE.fieldNotMatch("self.id", attribute.getId(), oldAttribute.getId()));
         }
-        if (!oldAttribute.getRev().equals(attribute.getRev())) {
-            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", attribute.getRev(), oldAttribute.getRev()));
+        if (!oldAttribute.getResourceAge().equals(attribute.getResourceAge())) {
+            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", attribute.getResourceAge(), oldAttribute.getResourceAge()));
         }
 
         validateCommon(attribute, errors);

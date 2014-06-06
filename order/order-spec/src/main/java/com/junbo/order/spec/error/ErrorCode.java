@@ -45,8 +45,16 @@ public class ErrorCode {
 
     public static final String EVENT_NOT_SUPPORTED = "20006";
 
+    public static final String ORDER_CAN_NOT_BE_CANCELED = "20007";
+
+    public static final String ORDER_PRICE_CHANGED = "20008";
+
+    public static final String ORDER_CONCURRENT_UPDATE = "20009";
+
     // subledger error starts from 20000
     public static final String SUBLEDGER_NOT_FOUND = "20200";
+
+    public static final String SUBLEDGER_CONCURRENT_UPDATE = "20201";
 
 
 }

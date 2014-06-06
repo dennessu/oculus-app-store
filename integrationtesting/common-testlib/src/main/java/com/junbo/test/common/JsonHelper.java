@@ -5,8 +5,8 @@
  */
 package com.junbo.test.common;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import com.junbo.common.json.ObjectMapperProvider;
 
 import java.io.Reader;
@@ -21,7 +21,9 @@ public class JsonHelper {
     }
 
     public static String JsonSerializer(Object obj) throws Exception {
-        return GsonHelper.GsonSerializer(obj);
+        ObjectMapperProvider provider = new ObjectMapperProvider();
+        ObjectMapper objectMapper = provider.getContext(Object.class);
+        return objectMapper.writeValueAsString(obj);
     }
 
     public static <T> T JsonDeserializer(Reader reader, Class<T> cls) throws Exception {
@@ -30,18 +32,13 @@ public class JsonHelper {
         return objectMapper.readValue(reader, cls);
     }
 
-    /**
-     * @author dw
-     */
-    public static class GsonHelper {
+    public static JsonNode ObjectToJsonNode(Object obj) throws Exception {
+        ObjectMapperProvider provider = new ObjectMapperProvider();
+        ObjectMapper objectMapper = provider.getContext(Object.class);
+        return objectMapper.valueToTree(obj);
+    }
 
-        private GsonHelper() {
-
-        }
-
-        public static String GsonSerializer(Object obj) throws Exception {
-            Gson gson = new Gson();
-            return gson.toJson(obj);
-        }
+    public static Object JsonNodeToObject(JsonNode jsonNode, Class cls) throws Exception {
+        return ObjectMapperProvider.instance().treeToValue(jsonNode, cls);
     }
 }

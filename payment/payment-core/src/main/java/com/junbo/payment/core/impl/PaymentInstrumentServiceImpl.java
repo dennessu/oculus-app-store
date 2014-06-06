@@ -8,6 +8,7 @@ package com.junbo.payment.core.impl;
 
 import com.junbo.common.id.PIType;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.payment.clientproxy.UserInfoFacade;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
@@ -26,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -45,6 +47,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     private TrackingUuidRepository trackingUuidRepository;
     @Autowired
     private PITypeRepository piTypeRepository;
+    protected UserInfoFacade userInfoFacade;
 
     @Override
     public Promise<PaymentInstrument> add(final PaymentInstrument request) {
@@ -155,12 +158,32 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     }
 
     @Override
-    public List<PaymentInstrument> searchPi(Long userId, PaymentInstrumentSearchParam searchParam, PageMetaData page) {
+    public Promise<List<PaymentInstrument>> searchPi(Long userId, PaymentInstrumentSearchParam searchParam, PageMetaData page) {
         if(userId == null){
             throw AppClientExceptions.INSTANCE.missingUserId().exception();
         }
-        List<PaymentInstrument> results = paymentInstrumentRepository.search(userId, searchParam, page);
-        return results;
+        if(!CommonUtil.isNullOrEmpty(searchParam.getType())){
+            PaymentUtil.getPIType(searchParam.getType());
+        }
+        final List<PaymentInstrument> results = paymentInstrumentRepository.search(userId, searchParam, page);
+        final List<PaymentInstrument> detailedResults = new ArrayList<PaymentInstrument>();
+        return Promise.each(results.iterator(), new Promise.Func<PaymentInstrument, Promise>() {
+            @Override
+            public Promise apply(PaymentInstrument paymentInstrument) {
+                return getById(paymentInstrument.getId()).then(new Promise.Func<PaymentInstrument, Promise<Void>>() {
+                    @Override
+                    public Promise<Void> apply(PaymentInstrument paymentInstrument) {
+                        detailedResults.add(paymentInstrument);
+                        return Promise.pure(null);
+                    }
+                });
+            }
+        }).then(new Promise.Func<Void, Promise<List<PaymentInstrument>>>() {
+            @Override
+            public Promise<List<PaymentInstrument>> apply(Void aVoid) {
+                return Promise.pure(detailedResults);
+            }
+        });
     }
 
     @Override
@@ -196,6 +219,11 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         if(request.getUserId() == null){
             throw AppClientExceptions.INSTANCE.missingUserId().exception();
         }
+        UserInfo user = userInfoFacade.getUserInfo(request.getUserId()).get();
+        if(user == null){
+            throw AppClientExceptions.INSTANCE.invalidUserId(request.getUserId().toString()).exception();
+        }
+        request.setUserInfo(user);
         if(request.getType() == null){
             throw AppClientExceptions.INSTANCE.missingPIType().exception();
         }
@@ -231,5 +259,9 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
             throw AppClientExceptions.INSTANCE.resourceNotFound("payment_instrument").exception();
         }
         return result;
+    }
+
+    public void setUserInfoFacade(UserInfoFacade userInfoFacade) {
+        this.userInfoFacade = userInfoFacade;
     }
 }

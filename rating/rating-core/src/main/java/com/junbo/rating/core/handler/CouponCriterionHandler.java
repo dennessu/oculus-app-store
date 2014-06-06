@@ -6,8 +6,8 @@
 
 package com.junbo.rating.core.handler;
 
-import com.junbo.catalog.spec.model.promotion.CouponCriterion;
-import com.junbo.rating.core.context.RatingContext;
+import com.junbo.catalog.spec.model.promotion.criterion.CouponCriterion;
+import com.junbo.rating.core.context.PriceRatingContext;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,7 +17,7 @@ import java.util.Set;
  */
 public class CouponCriterionHandler implements CriterionHandler<CouponCriterion> {
     @Override
-    public boolean validate(CouponCriterion criterion, RatingContext context) {
+    public boolean validate(CouponCriterion criterion, PriceRatingContext context) {
         Set<String> couponCodes = context.getCouponCodes().keySet();
 
         //TODO: call token to get couponClasses

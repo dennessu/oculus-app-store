@@ -6,10 +6,11 @@
 
 package com.junbo.entitlement.core.service;
 
-import com.junbo.common.id.EntitlementDefinitionId;
-import com.junbo.common.id.UserId;
+import com.junbo.catalog.spec.model.item.EntitlementDef;
+import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.common.id.ItemId;
+import com.junbo.common.model.Results;
 import com.junbo.entitlement.common.lib.CloneUtils;
-import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.core.EntitlementService;
 import com.junbo.entitlement.db.repository.EntitlementRepository;
 import com.junbo.entitlement.spec.error.AppErrors;
@@ -23,8 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -51,7 +51,24 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     public Entitlement addEntitlement(Entitlement entitlement) {
         fillCreate(entitlement);
         validateCreate(entitlement);
-        return entitlementRepository.insert(entitlement);
+        return merge(entitlement);
+    }
+
+    private Entitlement merge(Entitlement entitlement) {
+        ItemRevision item = getItem(entitlement.getItemId());
+        EntitlementDef def = filter(item.getEntitlementDefs(), entitlement.getType());
+        if (!def.getConsumable()) {
+            return entitlementRepository.insert(entitlement);
+        }
+
+        Entitlement existing = entitlementRepository.get(entitlement.getUserId(), entitlement.getItemId(), entitlement.getType());
+        if (existing == null) {
+            return entitlementRepository.insert(entitlement);
+        }
+
+        existing.setIsBanned(false);
+        existing.setUseCount(existing.getUseCount() + entitlement.getUseCount());
+        return entitlementRepository.update(existing);
     }
 
     @Override
@@ -81,19 +98,42 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
     @Override
     @Transactional
-    public List<Entitlement> searchEntitlement(EntitlementSearchParam entitlementSearchParam,
-                                               PageMetadata pageMetadata) {
+    public Results<Entitlement> searchEntitlement(EntitlementSearchParam entitlementSearchParam,
+                                                  PageMetadata pageMetadata) {
         validateNotNull(entitlementSearchParam.getUserId(), "userId");
         checkUser(entitlementSearchParam.getUserId().getValue());
         fillClient(entitlementSearchParam);
+        fillHostItemId(entitlementSearchParam);
         checkSearchDateFormat(entitlementSearchParam);
-        List<Entitlement> entitlementEntities = entitlementRepository.getBySearchParam(
+        checkIsActiveAndIsBanned(entitlementSearchParam);
+        Results<Entitlement> results = entitlementRepository.getBySearchParam(
                 entitlementSearchParam, pageMetadata);
-        return entitlementEntities;
+        return results;
+    }
+
+    private void fillHostItemId(EntitlementSearchParam entitlementSearchParam) {
+        if (entitlementSearchParam.getHostItemId() == null) {
+            return;
+        }
+        Set<Long> itemIds = itemFacade.getItemIdsByHostItemId(entitlementSearchParam.getHostItemId().getValue());
+        if (CollectionUtils.isEmpty(itemIds)) {
+            throw AppErrors.INSTANCE.fieldNotCorrect("hostItemId",
+                    "there is no item with hostItemId [" + entitlementSearchParam.getHostItemId() + "]").exception();
+        }
+        for (Long itemId : itemIds) {
+            entitlementSearchParam.getItemIds().add(new ItemId(itemId));
+        }
+    }
+
+    private void checkIsActiveAndIsBanned(EntitlementSearchParam entitlementSearchParam) {
+        if (Boolean.TRUE.equals(entitlementSearchParam.getIsBanned()) &&
+                Boolean.TRUE.equals(entitlementSearchParam.getIsActive())) {
+            throw AppErrors.INSTANCE.common("isActive and isSuspended can not be set to true at same time").exception();
+        }
     }
 
     private void fillClient(EntitlementSearchParam entitlementSearchParam) {
-        //TODO: get entitlementDef by clientId and then set the defIds to entitlementSearchParam.
+        //TODO: get item by clientId and then set the itemIds to entitlementSearchParam.
     }
 
     private void checkSearchDateFormat(EntitlementSearchParam entitlementSearchParam) {
@@ -121,54 +161,6 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         newEntitlement.setEntitlementId(null);
         newEntitlement.setUserId(entitlementTransfer.getTargetUserId());
         return entitlementRepository.insert(newEntitlement);
-    }
-
-    @Override
-    @Transactional
-    public Entitlement grantDeveloperEntitlement(Long userId) {
-        Entitlement entitlement = new Entitlement();
-        entitlement.setIsBanned(false);
-        entitlement.setUserId(userId);
-        entitlement.setGrantTime(EntitlementContext.current().getNow());
-        entitlement.setEntitlementDefinitionId(getDevDef().getEntitlementDefId());
-        entitlement.setType("DEVELOPER");
-        return entitlementRepository.insert(entitlement);
-    }
-
-    @Override
-    @Transactional
-    public Boolean isDeveloper(Long userId) {
-        EntitlementSearchParam searchParam = new EntitlementSearchParam
-                .Builder(new UserId(userId))
-                .definitionIds(
-                        Collections.singleton(
-                                new EntitlementDefinitionId(getDevDef().getEntitlementDefId()))).build();
-        List<Entitlement> result = entitlementRepository.getBySearchParam(searchParam, null);
-        return !CollectionUtils.isEmpty(result);
-    }
-
-    @Override
-    @Transactional
-    public Boolean canDownload(Long userId, Long itemId) {
-        EntitlementSearchParam searchParam = new EntitlementSearchParam
-                .Builder(new UserId(userId))
-                .definitionIds(
-                        Collections.singleton(
-                                new EntitlementDefinitionId(getDownloadDef(itemId).getEntitlementDefId()))).build();
-        List<Entitlement> result = entitlementRepository.getBySearchParam(searchParam, null);
-        return !CollectionUtils.isEmpty(result);
-    }
-
-    @Override
-    @Transactional
-    public Boolean canAccess(Long userId, Long itemId) {
-        EntitlementSearchParam searchParam = new EntitlementSearchParam
-                .Builder(new UserId(userId))
-                .definitionIds(
-                        Collections.singleton(
-                                new EntitlementDefinitionId(getAccessDef(itemId).getEntitlementDefId()))).build();
-        List<Entitlement> result = entitlementRepository.getBySearchParam(searchParam, null);
-        return !CollectionUtils.isEmpty(result);
     }
 
     @Override

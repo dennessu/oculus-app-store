@@ -6,6 +6,7 @@
 package com.junbo.test.billing.apihelper.impl;
 
 import com.junbo.billing.spec.model.Balance;
+import com.junbo.common.model.Results;
 import com.junbo.test.billing.apihelper.BalanceService;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.blueprint.Master;
@@ -13,6 +14,9 @@ import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.RestUrl;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Yunlong on 4/8/14.
@@ -30,6 +34,10 @@ public class BalanceServiceImpl extends HttpClientBase implements BalanceService
     private static String requestorId = "CheckoutService";
     private static String onBehalfOfRequestorId = "DigitalGameStore";
     private static String userIp = "157.123.45.67";
+    private static String fakeBalanceId = "\"self\" : {\n" +
+            "    \"href\" : \"http://api.oculusvr-demo.com:8081/v1/balances/0355ED747CDF\",\n" +
+            "    \"id\" : \"0355ED747CDF\"\n" +
+            "  }";
 
 
     public static synchronized BalanceService getInstance() {
@@ -83,7 +91,7 @@ public class BalanceServiceImpl extends HttpClientBase implements BalanceService
     public String getBalanceByBalanceId(String uid, String balanceId, int expectedResponseCode) throws Exception {
         setUserId(uid);
         String responseBody = restApiCall(HTTPMethod.GET, balanceUrl +
-                "/balances?balanceId=" + balanceId, expectedResponseCode);
+                "balances/" + balanceId, expectedResponseCode);
 
         Balance balanceResult =
                 new JsonMessageTranscoder().decode(
@@ -97,15 +105,16 @@ public class BalanceServiceImpl extends HttpClientBase implements BalanceService
     }
 
     @Override
-    public String getBalanceByOrderId(String uid, String orderId) throws Exception {
-        return getBalanceByOrderId(uid, orderId, 200);
+    public String quoteBalance(String uid, Balance balance) throws Exception {
+        return this.quoteBalance(uid, balance, 200);
     }
 
     @Override
-    public String getBalanceByOrderId(String uid, String orderId, int expectedResponseCode) throws Exception {
-        setUserId(uid);
-        String responseBody = restApiCall(HTTPMethod.GET, balanceUrl +
-                "balances?orderId=" + orderId, expectedResponseCode);
+    public String quoteBalance(String uid, Balance balance, int expectedResponseCode) throws Exception {
+        this.setUserId(uid);
+        String responseBody = restApiCall(HTTPMethod.POST, balanceUrl + "balances/quote", balance);
+
+        responseBody = responseBody.replace("\"self\" : null", fakeBalanceId);
 
         Balance balanceResult =
                 new JsonMessageTranscoder().decode(
@@ -115,6 +124,32 @@ public class BalanceServiceImpl extends HttpClientBase implements BalanceService
         String balanceId = IdConverter.idToHexString(balanceResult.getBalanceId());
         Master.getInstance().addBalances(balanceId, balanceResult);
 
-        return orderId;
+        return balanceId;
+    }
+
+    @Override
+    public List<String> getBalanceByOrderId(String uid, String orderId) throws Exception {
+        return getBalanceByOrderId(uid, orderId, 200);
+    }
+
+    @Override
+    public List<String> getBalanceByOrderId(String uid, String orderId, int expectedResponseCode) throws Exception {
+        setUserId(uid);
+        String responseBody = restApiCall(HTTPMethod.GET, balanceUrl +
+                "balances?orderId=" + orderId, expectedResponseCode);
+
+        Results<Balance> balanceResults =
+                new JsonMessageTranscoder().decode(
+                        new TypeReference<Results<Balance>>() {
+                        }, responseBody);
+
+        List<String> balanceList = new ArrayList<>();
+        for (Balance balanceResult : balanceResults.getItems()) {
+            String balanceId = IdConverter.idToHexString(balanceResult.getBalanceId());
+            balanceList.add(balanceId);
+            Master.getInstance().addBalances(balanceId, balanceResult);
+        }
+
+        return balanceList;
     }
 }

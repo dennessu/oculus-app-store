@@ -15,5 +15,5 @@ import java.util.List;
  * Promotion DAO definition.
  */
 public interface PromotionDao extends BaseDao<PromotionEntity> {
-    List<PromotionEntity> getEffectivePromotions(PromotionsGetOptions options);
+    List<PromotionEntity> getPromotions(PromotionsGetOptions options);
 }

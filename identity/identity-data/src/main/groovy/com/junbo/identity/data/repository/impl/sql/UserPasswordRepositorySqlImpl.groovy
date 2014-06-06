@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.data.repository.impl.sql
 
+import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPasswordId
 import com.junbo.identity.data.dao.UserPasswordDAO
 import com.junbo.identity.data.entity.user.UserPasswordEntity
@@ -57,14 +58,13 @@ class UserPasswordRepositorySqlImpl implements UserPasswordRepository {
     }
 
     @Override
-    Promise<List<UserPassword>> search(UserPasswordListOptions getOption) {
-        List entities = userPasswordDAO.search(getOption.userId.value, getOption)
+    Promise<List<UserPassword>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+        return Promise.pure(null)
+    }
 
-        List<UserPassword> results = new ArrayList<UserPassword>()
-        entities.each { UserPasswordEntity existing ->
-            results.add(modelMapper.toUserPassword(existing, new MappingContext()))
-        }
-        return Promise.pure(results)
+    @Override
+    Promise<List<UserPassword>> searchByUserIdAndActiveStatus(UserId userId, Boolean active, Integer limit, Integer offset) {
+        return Promise.pure(null)
     }
 
     @Override

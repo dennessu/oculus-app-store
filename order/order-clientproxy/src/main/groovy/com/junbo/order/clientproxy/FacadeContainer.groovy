@@ -24,7 +24,7 @@ class FacadeContainer {
     @Qualifier('orderPaymentFacade')
     PaymentFacade paymentFacade
     @Autowired
-    @Qualifier('orderBillingFacade')
+    @Qualifier('orderAsyncBillingFacade')
     BillingFacade billingFacade
     @Autowired
     @Qualifier('orderRatingFacade')

@@ -15,7 +15,6 @@ import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.springframework.beans.factory.annotation.Autowired
 import org.testng.annotations.Test
-
 /**
  * Created by LinYi on 14-2-25.
  */
@@ -35,8 +34,8 @@ class MapperTest extends BaseTest {
         OrderEntity returnedOrderEntity = modelMapper.toOrderEntity(orderModel, context)
         assert orderModel != null :  'Fail to map order entity to model.'
         assert returnedOrderEntity != null :'Fail to map order model to entity.'
-        assert orderModel.id.value == orderEntity.orderId :  'The order Id should not be different.'
-        assert orderModel.id.value == returnedOrderEntity.orderId : 'The order Id should not be different.'
+        assert orderModel.getId().value == orderEntity.orderId :  'The order Id should not be different.'
+        assert orderModel.getId().value == returnedOrderEntity.orderId : 'The order Id should not be different.'
         assert orderEntity.tentative == returnedOrderEntity.tentative
     }
 
@@ -49,7 +48,7 @@ class MapperTest extends BaseTest {
         OrderItemEntity returnedOrderItemEntity = modelMapper.toOrderItemEntity(orderItemModel, context)
         assert orderItemModel != null :  'Fail to map order item entity to model.'
         assert returnedOrderItemEntity != null :  'Fail to map order item model to entity.'
-        assert (orderItemModel.orderItemId.value == orderItemEntity.orderItemId)
+        assert orderItemModel.getId().value == orderItemEntity.orderItemId
     }
 
     @Test(enabled = true)
@@ -63,7 +62,7 @@ class MapperTest extends BaseTest {
         assert returnedOrderDiscountInfoEntity != null : 'Fail to map discount model to entity.'
         assert discount.orderItemId.value == orderDiscountInfoEntity.orderItemId :
                 'The order discount Id should not be different.'
-        assert discount.discountInfoId ==  returnedOrderDiscountInfoEntity.discountInfoId :
+        assert discount.id ==  returnedOrderDiscountInfoEntity.discountInfoId :
                 'The order discount Id should not be different.'
     }
 
@@ -85,40 +84,38 @@ class MapperTest extends BaseTest {
     }
 
     @Test(enabled = true)
-    void testOrderItemFulfillmentEventMapper() {
+    void testOrderItemFulfillmentHistoryMapper() {
         MappingContext context = new MappingContext()
 
-        OrderItemFulfillmentEventEntity orderItemFulfillmentEventEntity =
-                TestHelper.generateOrderItemFulfillmentEventEntity()
-        FulfillmentEvent fulfillmentEvent =
-                modelMapper.toFulfillmentEventModel(orderItemFulfillmentEventEntity, context)
-        OrderItemFulfillmentEventEntity returnedFulfillmentEventEntity =
-                modelMapper.toOrderItemFulfillmentEventEntity(fulfillmentEvent, context)
-        assert fulfillmentEvent != null : 'Fail to map fulfillment event entity to model.'
-        assert returnedFulfillmentEventEntity != null : 'Fail to map fulfillment event model to entity.'
-        assert fulfillmentEvent.id.value == orderItemFulfillmentEventEntity.eventId :
+        OrderItemFulfillmentHistoryEntity orderItemFulfillmentHistoryEntity =
+                TestHelper.generateOrderItemFulfillmentHistoryEntity()
+        FulfillmentHistory fulfillmentHistory =
+                modelMapper.toFulfillmentHistoryModel(orderItemFulfillmentHistoryEntity, context)
+        OrderItemFulfillmentHistoryEntity returnedFulfillmentHistoryEntity =
+                modelMapper.toOrderItemFulfillmentHistoryEntity(fulfillmentHistory, context)
+        assert fulfillmentHistory != null : 'Fail to map fulfillment event entity to model.'
+        assert returnedFulfillmentHistoryEntity != null : 'Fail to map fulfillment event model to entity.'
+        assert fulfillmentHistory.id == orderItemFulfillmentHistoryEntity.historyId :
                 'The fulfillment id should not be different.'
-        assert fulfillmentEvent.id.value ==  returnedFulfillmentEventEntity.eventId :
+        assert fulfillmentHistory.id ==  returnedFulfillmentHistoryEntity.historyId :
                 'The fulfillment id should not be different.'
     }
 
     @Test(enabled = true)
-    void testOrderBillingEventMapper() {
+    void testOrderBillingHistoryMapper() {
         MappingContext context = new MappingContext()
 
-        def orderBillingEventEntity = TestHelper.generateOrderBillingEventEntity()
+        def orderBillingHistoryEntity = TestHelper.generateOrderBillingHistoryEntity()
         def billingEvent =
-                modelMapper.toOrderBillingEventModel(orderBillingEventEntity, context)
-        def returnedOrderBillingEventEntity =
-                modelMapper.toOrderBillingEventEntity(billingEvent, context)
+                modelMapper.toOrderBillingHistoryModel(orderBillingHistoryEntity, context)
+        def returnedOrderBillingHistoryEntity =
+                modelMapper.toOrderBillingHistoryEntity(billingEvent, context)
         assert billingEvent != null : 'Fail to map billing event entity to model.'
-        assert returnedOrderBillingEventEntity != null : 'Fail to map billing event model to entity.'
-        assert billingEvent.balanceId == orderBillingEventEntity.balanceId :
+        assert returnedOrderBillingHistoryEntity != null : 'Fail to map billing event model to entity.'
+        assert billingEvent.balanceId == orderBillingHistoryEntity.balanceId :
                 'The balance should not be different.'
-        assert  billingEvent.balanceId == returnedOrderBillingEventEntity.balanceId :
+        assert  billingEvent.balanceId == returnedOrderBillingHistoryEntity.balanceId :
                 'The balance id should not be different.'
-        assert returnedOrderBillingEventEntity.action == orderBillingEventEntity.action
-        assert returnedOrderBillingEventEntity.status == orderBillingEventEntity.status
     }
 
     @Test(enabled = true)
@@ -176,9 +173,9 @@ class MapperTest extends BaseTest {
         SubledgerItemEntity returnedSubledgerItemEntity = modelMapper.toSubledgerItemEntity(subledgerItem, context)
         assert subledgerItem != null : 'Fail to map subledger item entity to model.'
         assert returnedSubledgerItemEntity != null : 'Fail to map subledger item model to entity.'
-        assert subledgerItem.orderItemId.value == subledgerItemEntity.orderItemId :
+        assert subledgerItem.orderItem.value == subledgerItemEntity.orderItemId :
                 'The order item id should not be different.'
-        assert subledgerItem.orderItemId.value == returnedSubledgerItemEntity.orderItemId :
+        assert subledgerItem.orderItem.value == returnedSubledgerItemEntity.orderItemId :
                 'The order item id should not be different.'
         assert subledgerItemEntity.productItemId == returnedSubledgerItemEntity.productItemId
     }

@@ -1,5 +1,4 @@
 package com.junbo.order.core.impl.orderaction
-
 import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
@@ -9,28 +8,28 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.annotation.OrderEventAwareAfter
 import com.junbo.order.core.annotation.OrderEventAwareBefore
-import com.junbo.order.core.impl.common.BillingEventBuilder
+import com.junbo.order.core.impl.common.BillingEventHistoryBuilder
 import com.junbo.order.core.impl.common.CoreBuilder
-import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
-import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
+import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
-
 /**
  * Charge Action for Web Payment.
  */
+@CompileStatic
 class WebPaymentChargeAction extends BaseOrderEventAwareAction {
     @Autowired
     @Qualifier('orderFacadeContainer')
     FacadeContainer facadeContainer
     @Autowired
-    OrderRepository orderRepository
+    OrderRepositoryFacade orderRepository
     @Autowired
     OrderServiceContextBuilder orderServiceContextBuilder
     @Autowired
@@ -54,11 +53,11 @@ class WebPaymentChargeAction extends BaseOrderEventAwareAction {
         }
         Promise promise =
                 facadeContainer.billingFacade.createBalance(
-                        CoreBuilder.buildBalance(context.orderServiceContext.order, BalanceType.DEBIT))
+                        CoreBuilder.buildBalance(context.orderServiceContext.order, BalanceType.DEBIT),
+                        context?.orderServiceContext?.apiContext?.asyncCharge)
         return promise.syncRecover { Throwable throwable ->
             LOGGER.error('name=Order_WebPaymentCharge_Error', throwable)
-            throw AppErrors.INSTANCE.
-                    billingConnectionError(CoreUtils.toAppErrors(throwable)).exception()
+            throw facadeContainer.billingFacade.convertError(throwable).exception()
         }.then { Balance balance ->
             if (balance == null) {
                 LOGGER.error('name=Order_WebPaymentCharge_Error_Balance_Null')
@@ -75,12 +74,24 @@ class WebPaymentChargeAction extends BaseOrderEventAwareAction {
                 throw AppErrors.INSTANCE.billingChargeFailed().exception()
             }
             order.providerConfirmUrl = balance.providerConfirmUrl
+            def oldOrder = orderRepository.getOrder(order.getId().value)
+            oldOrder.providerConfirmUrl = order.providerConfirmUrl
+            orderRepository.updateOrder(oldOrder, true)
             CoreBuilder.fillTaxInfo(order, balance)
-            def billingEvent = BillingEventBuilder.buildBillingEvent(balance)
-            orderRepository.createBillingEvent(order.id.value, billingEvent)
-            orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
+            def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(balance)
+            if (billingHistory.billingEvent != null) {
+                def savedHistory = orderRepository.createBillingHistory(order.getId().value, billingHistory)
+                if (order.billingHistories == null) {
+                    order.billingHistories = [savedHistory]
+                }
+                else {
+                    order.billingHistories.add(savedHistory)
+                }
+            }
+            return orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
                 // TODO: save order level tax
-                return CoreBuilder.buildActionResultForOrderEventAwareAction(context, billingEvent.status)
+                return CoreBuilder.buildActionResultForOrderEventAwareAction(context,
+                        BillingEventHistoryBuilder.buildEventStatusFromBalance(balance))
             }
         }
     }

@@ -11,31 +11,33 @@
     <bean id="entitlementDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${entitlement.db.jdbcUrls}"/>
         <property name="uniqueName" value="jdbc/entitlement"/>
-        <property name="className" value="${entitlement.db.driverClassName}"/>
-        <property name="minPoolSize" value="${entitlement.db.minPoolSize}"/>
-        <property name="maxPoolSize" value="${entitlement.db.maxPoolSize}"/>
+        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
+        <property name="minPoolSize" value="${entitlement.db.minConnectionsPerPartition}"/>
+        <property name="maxPoolSize" value="${entitlement.db.maxConnectionsPerPartition}"/>
         <property name="driverProperties">
             <props>
                 <prop key="user">${entitlement.db.username}</prop>
                 <prop key="password">${entitlement.db.password}</prop>
             </props>
         </property>
-
     </bean>
 
     <!-- SessionFactory for Hibernate -->
-    <bean id="entitlementSessionFactory" class="com.junbo.sharding.hibernate.LocalSessionFactoryWithListenerBean">
+    <bean id="entitlementSessionFactory"
+          class="com.junbo.sharding.hibernate.LocalSessionFactoryWithListenerBean">
         <property name="jtaTransactionManager" ref="transactionManager"/>
         <property name="hibernateProperties">
             <map>
-                <entry key="hibernate.dialect" value="${sharding.hibernate.dialect}"/>
-                <entry key="hibernate.max_fetch_depth" value="${sharding.hibernate.max_fetch_depth}"/>
-                <entry key="hibernate.jdbc.fetch_size" value="${sharding.hibernate.jdbc.fetch_size}"/>
-                <entry key="hibernate.jdbc.batch_size" value="${sharding.hibernate.jdbc.batch_size}"/>
-                <entry key="hibernate.show_sql" value="${sharding.hibernate.show_sql}"/>
+                <entry key="hibernate.dialect" value="${entitlement.hibernate.dialect}"/>
+                <entry key="hibernate.max_fetch_depth" value="${entitlement.hibernate.max_fetch_depth}"/>
+                <entry key="hibernate.jdbc.fetch_size" value="${entitlement.hibernate.fetch_size}"/>
+                <entry key="hibernate.jdbc.batch_size" value="${entitlement.hibernate.batch_size}"/>
+                <entry key="hibernate.show_sql" value="${entitlement.hibernate.show_sql}"/>
                 <entry key="hibernate.multiTenancy" value="SCHEMA"/>
-                <entry key="hibernate.current_session_context_class" value="com.junbo.sharding.hibernate.MultiTenantJTASessionContext"/>
-                <entry key="hibernate.tenant_identifier_resolver" value="com.junbo.sharding.hibernate.ShardCurrentTenantIdentifierResolver"/>
+                <entry key="hibernate.current_session_context_class"
+                       value="com.junbo.sharding.hibernate.MultiTenantJTASessionContext"/>
+                <entry key="hibernate.tenant_identifier_resolver"
+                       value="com.junbo.sharding.hibernate.ShardCurrentTenantIdentifierResolver"/>
                 <entry key="hibernate.multi_tenant_connection_provider" value-ref="entitlementDataSource"/>
                 <entry key="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
             </map>
@@ -45,13 +47,26 @@
 
     <tx:annotation-driven/>
 
-    <!-- Dao -->
-    <bean id="entitlementBaseDao" class="com.junbo.entitlement.db.dao.hibernate.BaseDao" abstract="true"/>
+    <!-- Hibernate Dao -->
+    <bean id="entitlementBaseDao" class="com.junbo.entitlement.db.dao.postgresql.BaseDao" abstract="true"/>
 
-    <bean id="entitlementDao" class="com.junbo.entitlement.db.dao.hibernate.EntitlementDaoImpl" parent="entitlementBaseDao">
+    <bean id="entitlementDao" class="com.junbo.entitlement.db.dao.postgresql.EntitlementDaoImpl"
+          parent="entitlementBaseDao">
         <property name="entityType" value="com.junbo.entitlement.db.entity.EntitlementEntity"/>
     </bean>
-    <bean id="entitlementHistoryDao" class="com.junbo.entitlement.db.dao.hibernate.EntitlementHistoryDaoImpl"/>
+    <bean id="entitlementHistoryDao" class="com.junbo.entitlement.db.dao.postgresql.EntitlementHistoryDaoImpl"
+          parent="entitlementBaseDao">
+        <property name="entityType" value="com.junbo.entitlement.db.entity.EntitlementHistoryEntity"/>
+    </bean>
+
+    <!--
+    <bean id="entitlementDao" class="com.junbo.entitlement.db.dao.cloudant.EntitlementDaoImpl" parent="cloudantClient">
+        <property name="dbName" value="entitlement"/>
+    </bean>
+    <bean id="entitlementHistoryDao" class="com.junbo.entitlement.db.dao.cloudant.EntitlementHistoryDaoImpl" parent="cloudantClient">
+        <property name="dbName" value="entitlement_history"/>
+    </bean>
+    -->
 
     <!-- repository -->
     <bean id="entitlementRepository" class="com.junbo.entitlement.db.repository.EntitlementRepository"/>

@@ -16,14 +16,14 @@ dependencies {
     compile (libraries.spring_web)
 
     compile (libraries.asyncclient)
-    compile (libraries.oom_processor)
-    compile (libraries.oom)
+    processor junboProject(':oom-processor')
+    compile junboProject(':oom-core')
     compile (libraries.jersey_common)
 	
-	 compile project(':payment-spec')
-    compile project(':payment-db')
-    compile project(':payment-common')
-    compile project(':payment-clientproxy')
-    compile project(':payment-core')
+	compile junboProject(':payment-spec')
+    compile junboProject(':payment-db')
+    compile junboProject(':payment-common')
+    compile junboProject(':payment-clientproxy')
+    compile junboProject(':payment-core')
 
 }

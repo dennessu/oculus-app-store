@@ -6,35 +6,14 @@
 
     <import resource="classpath*:spring/*-context.xml"/>
 
-    <!-- async http client -->
-    <bean id="asyncHttpClient" class="com.ning.http.client.AsyncHttpClient"/>
-
-    <bean id="offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy">
-        <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="target" value="${clientproxy.catalog.url}"/>
-        <constructor-arg name="transcoder">
-            <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
-        </constructor-arg>
-        <constructor-arg name="pathParamTranscoder">
-            <bean class="com.junbo.common.json.IdPathParamTranscoder"/>
-        </constructor-arg>
-        <constructor-arg name="queryParamTranscoder">
-            <bean class="com.junbo.common.json.QueryParamTranscoderImpl"/>
-        </constructor-arg>
+    <bean id="offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.catalog.url}"/>
     </bean>
 
-    <bean id="offerRevisionClient" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxy">
-        <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="target" value="${clientproxy.catalog.url}"/>
-        <constructor-arg name="transcoder">
-            <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
-        </constructor-arg>
-        <constructor-arg name="pathParamTranscoder">
-            <bean class="com.junbo.common.json.IdPathParamTranscoder"/>
-        </constructor-arg>
-        <constructor-arg name="queryParamTranscoder">
-            <bean class="com.junbo.common.json.QueryParamTranscoderImpl"/>
-        </constructor-arg>
+    <bean id="offerRevisionClient" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.catalog.url}"/>
     </bean>
 
 </beans>

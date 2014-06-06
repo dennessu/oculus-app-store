@@ -9,7 +9,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.enumid.LocaleId;
-import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.enumid.RatingBoardId;
+import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -21,33 +22,36 @@ import java.util.Map;
 /**
  * Created by xiali_000 on 4/21/2014.
  */
-public class Country extends ResourceMeta implements Identifiable<CountryId> {
+public class Country extends PropertyAssignedAwareResourceMeta implements Identifiable<CountryId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "[Nullable]The id of the country resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The Link of the country resource.")
     @JsonProperty("self")
     private CountryId id;
 
     @ApiModelProperty(position = 2, required = true,
-            value = "[Nullable]The country code of the country resource, must be same with id. Client immutable; for query-convenience")
+            value = "[Nullable]The country code of the country resource, must be same as self.id.")
     private String countryCode;
 
-    @ApiModelProperty(position = 3, required = true, value = "The default locale of the country resource.")
+    @ApiModelProperty(position = 3, required = true, value = "Link to the Locale resource that the country should use by default.")
     private LocaleId defaultLocale;
 
-    @ApiModelProperty(position = 4, required = true, value = "The default currency of the country resource.")
+    @ApiModelProperty(position = 4, required = true, value = "Link to the Currency resource that the country should use by default.")
     private CurrencyId defaultCurrency;
 
-    @ApiModelProperty(position = 5, required = true, value = "Sub country object mapping.")
+    @ApiModelProperty(position = 5, required = true, value = "The array of Links to the AgeRatingBoards supported in the country.")
+    private List<RatingBoardId> ratingBoards = new ArrayList<>();
+
+    @ApiModelProperty(position = 6, required = true, value = "Not optional, not nullable, possibly empty, a JSON object " +
+            "that maps from a code for the sub country (state, province, etc.) to a JSON object " +
+            "that contains the localization keys for the sub country's short and long names.")
     private Map<String, SubCountry> subCountries = new HashMap<>();
 
-    @ApiModelProperty(position = 6, required = true, value = "Array for supported locales in the country resource.")
+    @ApiModelProperty(position = 7, required = true, value = "Array for supported locale-Links to the locales appropriate for this country.")
     private List<LocaleId> supportedLocales = new ArrayList<>();
 
-    @ApiModelProperty(position = 7, required = true, value = "Locales")
-    private Map<String, LocaleName> locales = new HashMap<>();
-
-    @ApiModelProperty(position = 8, required = true, value = "The future expansion of the country resource.")
-    private Map<String, String> futureExpansion = new HashMap<>();
+    @ApiModelProperty(position = 8, required = true, value = "Localizable properties and the corresponding Key value to lookup in Translation service.")
+    @JsonProperty("localeKeys")
+    private Map<String, String> locales = new HashMap<>();
 
     public CountryId getId() {
         return id;
@@ -86,15 +90,6 @@ public class Country extends ResourceMeta implements Identifiable<CountryId> {
         support.setPropertyAssigned("defaultCurrency");
     }
 
-    public Map<String, String> getFutureExpansion() {
-        return futureExpansion;
-    }
-
-    public void setFutureExpansion(Map<String, String> futureExpansion) {
-        this.futureExpansion = futureExpansion;
-        support.setPropertyAssigned("futureExpansion");
-    }
-
     public List<LocaleId> getSupportedLocales() {
         return supportedLocales;
     }
@@ -113,11 +108,20 @@ public class Country extends ResourceMeta implements Identifiable<CountryId> {
         support.setPropertyAssigned("subCountries");
     }
 
-    public Map<String, LocaleName> getLocales() {
+    public List<RatingBoardId> getRatingBoards() {
+        return ratingBoards;
+    }
+
+    public void setRatingBoards(List<RatingBoardId> ratingBoards) {
+        this.ratingBoards = ratingBoards;
+        support.setPropertyAssigned("ratingBoards");
+    }
+
+    public Map<String, String> getLocales() {
         return locales;
     }
 
-    public void setLocales(Map<String, LocaleName> locales) {
+    public void setLocales(Map<String, String> locales) {
         this.locales = locales;
         support.setPropertyAssigned("locales");
     }

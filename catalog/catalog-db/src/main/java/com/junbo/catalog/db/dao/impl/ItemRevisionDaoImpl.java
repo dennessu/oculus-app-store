@@ -9,6 +9,7 @@ package com.junbo.catalog.db.dao.impl;
 import com.junbo.catalog.common.util.Action;
 import com.junbo.catalog.db.dao.ItemRevisionDao;
 import com.junbo.catalog.db.entity.ItemRevisionEntity;
+import com.junbo.catalog.spec.enums.Status;
 import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
@@ -31,11 +32,7 @@ public class ItemRevisionDaoImpl extends BaseDaoImpl<ItemRevisionEntity> impleme
                 if (!StringUtils.isEmpty(options.getStatus())) {
                     criteria.add(Restrictions.eq("status", options.getStatus()));
                 }
-                if (!StringUtils.isEmpty(options.getType())) {
-                    criteria.add(Restrictions.eq("type", options.getType()));
-                }
-                options.ensurePagingValid();
-                criteria.setFirstResult(options.getStart()).setMaxResults(options.getSize());
+                criteria.setFirstResult(options.getValidStart()).setMaxResults(options.getValidSize());
             }
         });
     }
@@ -48,6 +45,16 @@ public class ItemRevisionDaoImpl extends BaseDaoImpl<ItemRevisionEntity> impleme
                 criteria.add(Restrictions.le("timestamp", timestamp));
                 criteria.addOrder(Order.desc("timestamp"));
                 criteria.setMaxResults(1);
+            }
+        });
+    }
+
+    public List<ItemRevisionEntity> getRevisions(final Long hostItemId) {
+        return findAllBy(new Action<Criteria>() {
+            @Override
+            public void apply(Criteria criteria) {
+                criteria.add(Restrictions.sqlRestriction(hostItemId + "=ANY(host_item_ids)"));
+                criteria.add(Restrictions.eq("status", Status.APPROVED.name()));
             }
         });
     }

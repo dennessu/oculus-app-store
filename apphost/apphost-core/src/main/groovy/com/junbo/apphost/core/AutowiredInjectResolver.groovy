@@ -27,6 +27,11 @@ class AutowiredInjectResolver implements InjectionResolver<Autowired> {
 
     @Override
     Object resolve(Injectee injectee, ServiceHandle<?> root) {
+        if (injectee.requiredType instanceof Class &&
+                ApplicationContext.isAssignableFrom((Class<?>) injectee.requiredType)) {
+
+            return ctx
+        }
 
         AnnotatedElement parent = injectee.parent
         String beanName = null
@@ -49,7 +54,18 @@ class AutowiredInjectResolver implements InjectionResolver<Autowired> {
             return ctx.getBean(beanName, bt)
         }
 
-        Map<String, ?> beans = ctx.getBeansOfType(bt)
+        // check if it wants to autowire a collection of beans of the given type
+        if (Collection.isAssignableFrom(bt)) {
+            if (beanType instanceof ParameterizedType) {
+                ParameterizedType pt = (ParameterizedType) beanType
+                bt = (Class<?>) pt.actualTypeArguments[0]
+
+                Map<String, ?> beans = ctx.getBeansOfType(bt, true, false)
+                return new ArrayList(beans.values())
+            }
+        }
+
+        Map<String, ?> beans = ctx.getBeansOfType(bt, true, false)
 
         if (beans == null || beans.size() != 1) {
             throw new IllegalArgumentException("No (or multiple) beans found. Resolution failed for type ${beanType}.")

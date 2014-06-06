@@ -29,11 +29,15 @@ public class SubscriptionMapper {
         subscription.setSubscriptionId(subscriptionEntity.getSubscriptionId());
         subscription.setTrackingUuid(subscriptionEntity.getTrackingUuid());
         subscription.setUserId(subscriptionEntity.getUserId());
-        subscription.setOfferId(Long.getLong(subscriptionEntity.getItemId()));
+        subscription.setOfferId(Long.decode(subscriptionEntity.getItemId()));
         subscription.setStatus(subscriptionEntity.getStatusId().toString());
         subscription.setSubsStartDate(subscriptionEntity.getSubsStartDate());
         subscription.setSubsEndDate(subscriptionEntity.getSubsEndDate());
         subscription.setAnniversaryDay(subscriptionEntity.getAnniversaryDay());
+        subscription.setCurrency(subscriptionEntity.getCurrency());
+        subscription.setCountry(subscriptionEntity.getCountry());
+        subscription.setPaymentMethodId(subscriptionEntity.getPiId());
+        subscription.setSource(subscriptionEntity.getSource());
 
         return subscription;
     }
@@ -48,6 +52,10 @@ public class SubscriptionMapper {
         subscriptionEntity.setSubsStartDate(subscription.getSubsStartDate());
         subscriptionEntity.setSubsEndDate(subscription.getSubsEndDate());
         subscriptionEntity.setAnniversaryDay(subscription.getAnniversaryDay());
+        subscriptionEntity.setPiId(subscription.getPaymentMethodId());
+        subscriptionEntity.setCurrency(subscription.getCurrency());
+        subscriptionEntity.setCountry(subscription.getCountry());
+        subscriptionEntity.setSource(subscription.getSource());
         return subscriptionEntity;
     }
 
@@ -73,7 +81,7 @@ public class SubscriptionMapper {
         return event;
     }
 
-    public SubscriptionEventEntity toSubscriptionEntity(SubscriptionEvent event) {
+    public SubscriptionEventEntity toSubsEventEntity(SubscriptionEvent event) {
         SubscriptionEventEntity eventEntity = new SubscriptionEventEntity();
         eventEntity.setSubscriptionId(event.getSubscriptionId());
         eventEntity.setSubsEventId(event.getSubscriptionEventId());

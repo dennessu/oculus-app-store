@@ -6,12 +6,13 @@
 
 package com.junbo.configuration;
 
-import org.springframework.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.security.SecureRandom;
-import java.util.Arrays;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,114 +22,130 @@ import java.util.regex.Pattern;
  * range.
  */
 public class ConfigContext {
-    public static final int MAX_SHARD_NUM = 999;
+    private static final Logger logger = LoggerFactory.getLogger(ConfigContext.class);
 
     private String environment;
-    private String hostname;
-    private int[] shards;
+    private String datacenter;
+    private List<String> ipAddresses;
 
-    public ConfigContext(String environment) {
+    public ConfigContext(String environment, String datacenter, String ipv4Subnet) {
         this.environment = environment;
-        this.hostname = resolveHostName();
-        //this.shards = parseShards(shards);
+        this.datacenter = datacenter;
+        this.ipAddresses = getIpAddresses(ipv4Subnet);
     }
 
     public String getEnvironment() {
         return environment;
     }
 
-    public String getHostname() {
-        return hostname;
+    public String getDataCenter() {
+        return datacenter;
     }
 
-    public int[] getShards() {
-        return shards;
+    public List<String> getIpAddresses() {
+        return ipAddresses;
     }
 
-    //region shard parsing
-
-    private static final String SHARD_PARSING_SINGLE_GROUP = "(?<from>\\d+)(\\.\\.(?<to>\\d+))?((,?\\s*)|(\\s+)|$)";
-    private static final String SHARD_PARSING_FULL_GROUP = "^(" + SHARD_PARSING_SINGLE_GROUP + ")+$";
-
-    private static int[] parseShards(String shards) {
-        if (StringUtils.isEmpty(shards)) {
-            // defaults to all shards
-            shards = "0.." + MAX_SHARD_NUM;
-        }
-
-        if (!Pattern.matches(SHARD_PARSING_FULL_GROUP, shards)) {
-            throw new RuntimeException("Invalid shards configuration: " + shards);
-        }
-
-        int[] result = new int[MAX_SHARD_NUM + 1];
-        int resultCount = 0;
-
-        // format: m..n, x..y, ...
-        Pattern regex = Pattern.compile(SHARD_PARSING_SINGLE_GROUP);
-        Matcher matcher = regex.matcher(shards);
-
-        while (matcher.find()) {
-            int from = Integer.parseInt(matcher.group("from"));
-            int to = from;
-
-            String groupTo = matcher.group("to");
-            if (groupTo != null) {
-                to = Integer.parseInt(groupTo);
-            }
-
-            if (from > to || from < 0 || to > MAX_SHARD_NUM) {
-                throw new RuntimeException("Invalid shard range: " + matcher.group());
-            }
-
-            for (int i = from; i <= to; ++i) {
-                result[resultCount++] = i;
-            }
-        }
-
-        result = Arrays.copyOf(result, resultCount);
-        return result;
+    public boolean isSelfIpAddress(String ipAddress) {
+        return ipAddresses.contains(ipAddress);
     }
-    //endregion
 
-    //region get hostname
+    //region get ip addresses
 
-    private static String resolveHostName() {
-        String result = null;
-
-        result = System.getProperty("HOSTNAME");
-        if (result == null) {
-            result = System.getenv("HOSTNAME");
+    private List<String> getIpAddresses(String ipv4Subnet) {
+        Pattern subnetPattern = Pattern.compile("^(\\d+\\.\\d+\\.\\d+\\.\\d+)/(\\d+)$");
+        Matcher subnetMatcher = subnetPattern.matcher(ipv4Subnet);
+        if (!subnetMatcher.matches()) {
+            throw new RuntimeException("Invalid configuration ipv4Subnet: " + ipv4Subnet);
         }
-        if (result == null) {
-            result = System.getenv("COMPUTERNAME");
-        }
-        if (result == null) {
-            try {
-                result = java.net.InetAddress.getLocalHost().getHostName();
+
+        int subnetIp = 0;
+        int mask = 0;
+        try {
+            String subnetIpStr = subnetMatcher.group(1);
+            String subnetBitsStr = subnetMatcher.group(2);
+
+            int subnetBits = Integer.parseInt(subnetBitsStr);
+            if (!(0 <= subnetBits && subnetBits <= 32)) {
+                throw new RuntimeException("Subnet mask bits out of range: " + subnetBits);
             }
-            catch (Exception ex) {
-                // safe to ignore the exception here
-            }
+
+            mask = (int)(0xFFFFFFFFL << (32 - subnetBits));     // cast to long to prevent subnetBits == 32
+
+            subnetIp = parseIpAddress(subnetIpStr) & mask;
+        } catch (Exception ex) {
+            throw new RuntimeException("Invalid subnet configuration: " + ipv4Subnet);
         }
-        if (result == null) {
-            try {
-                Process hostname = Runtime.getRuntime().exec("hostname");
-                int ret = hostname.waitFor();
-                if (ret == 0) {
-                    try (BufferedReader input = new BufferedReader(new InputStreamReader(hostname.getInputStream()))) {
-                        result = input.readLine();
+
+        List<String> ipAddresses = new ArrayList<>();
+        try {
+            Enumeration<NetworkInterface> nie = NetworkInterface.getNetworkInterfaces();
+            while (nie.hasMoreElements()) {
+                NetworkInterface ni = nie.nextElement();
+
+                Enumeration<InetAddress> iae = ni.getInetAddresses();
+                while (iae.hasMoreElements()) {
+                    InetAddress addr = iae.nextElement();
+
+                    if (addr instanceof Inet4Address) {
+                        ipAddresses.add(addr.getHostAddress());
                     }
                 }
             }
-            catch (Exception e) {
-                // safe to ignore the exception here
+        } catch (Exception ex) {
+            if (environment != null && environment.equals("onebox")) {
+                logger.warn("Failed to get system ipAddress. Using 127.0.0.1 as default.", ex);
+                final String localhost = "127.0.0.1";
+                if (!ipAddresses.contains(localhost)) {
+                    ipAddresses.add(localhost);
+                }
+            } else {
+                throw new RuntimeException(ex);
             }
         }
-        if (result == null) {
-            // just random a host name
-            result = "unknown_host_" + new SecureRandom().nextInt(1000);
+
+        List<String> result = new ArrayList<>();
+        for (String address : ipAddresses) {
+            int ipAddress = parseIpAddress(address);
+            if (subnetIp == (ipAddress & mask)) {
+                // IP address is in the subnet.
+                result.add(address);
+                logger.info("Add ip address: " + address);
+            }
         }
+        if (result.size() == 0) {
+            throw new RuntimeException("No ip address found.");
+        }
+
         return result;
+    }
+
+    private static int parseIpAddress(String ipAddress) {
+        Pattern ipv4Pattern = Pattern.compile("^(\\d+)\\.(\\d+)\\.(\\d+)\\.(\\d+)$");
+
+        Matcher ipAddressMatcher = ipv4Pattern.matcher(ipAddress);
+        if (!ipAddressMatcher.matches()) {
+            throw new RuntimeException("Invalid ipAddress: " + ipAddress);
+        }
+
+        int ipAddressNumeric = ((parseIpAddressPart(ipAddressMatcher.group(1), ipAddress) & 0xFF) << 24) |
+                ((parseIpAddressPart(ipAddressMatcher.group(2), ipAddress) & 0xFF) << 16) |
+                ((parseIpAddressPart(ipAddressMatcher.group(3), ipAddress) & 0xFF) << 8) |
+                ((parseIpAddressPart(ipAddressMatcher.group(4), ipAddress) & 0xFF) << 0);
+
+        return ipAddressNumeric;
+    }
+
+    private static int parseIpAddressPart(String str, String ipAddress) {
+        try {
+            int p = Integer.parseInt(str);
+            if (0 <= p && p <= 255) {
+                return p;
+            }
+            throw new RuntimeException("Invalid ipAddress: " + ipAddress);
+        } catch (NumberFormatException ex) {
+            throw new RuntimeException("Invalid ipAddress: " + ipAddress);
+        }
     }
 
     //endregion

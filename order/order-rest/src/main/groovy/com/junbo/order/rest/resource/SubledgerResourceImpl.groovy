@@ -26,7 +26,7 @@ class SubledgerResourceImpl implements SubledgerResource {
 
     @Override
     Promise<Subledger> putSubledger(SubledgerId subledgerId, Subledger subledger) {
-        subledger.subledgerId = subledgerId
+        subledger.id = subledgerId
         def result = subledgerService.updateSubledger(subledger)
         return Promise.pure(result)
     }

@@ -1,7 +1,7 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile project(':langur-core')
+    compile junboProject(':langur-core')
 
     compile (libraries.rs_api)
     compile (libraries.freemarker)
@@ -10,4 +10,6 @@ dependencies {
     testCompile (libraries.slf4j_api)
     testCompile (libraries.spring_beans)
     testCompile (libraries.spring_context)
+
+    testRuntime junboProject(':common-lib')
 }

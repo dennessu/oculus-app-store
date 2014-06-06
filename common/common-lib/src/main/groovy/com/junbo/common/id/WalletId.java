@@ -9,7 +9,7 @@ package com.junbo.common.id;
 /**
  * Created by liangfu on 3/7/14.
  */
-@IdResourcePath("/wallets/{0}")
+@IdResourcePath(value = "/wallets/{0}", regex = "/wallets/(?<id>[0-9A-Z]+)")
 public class WalletId extends Id {
 
     public WalletId() {}

@@ -5,7 +5,9 @@
  */
 package com.junbo.identity.data.repository.impl.sql
 
+import com.junbo.common.id.CommunicationId
 import com.junbo.common.id.UserCommunicationId
+import com.junbo.common.id.UserId
 import com.junbo.identity.data.dao.UserCommunicationDAO
 import com.junbo.identity.data.entity.user.UserCommunicationEntity
 import com.junbo.identity.data.mapper.ModelMapper
@@ -75,6 +77,21 @@ class UserCommunicationRepositorySqlImpl implements UserCommunicationRepository 
             result.add(modelMapper.toUserOptin(i, new MappingContext()))
         }
         return Promise.pure(result)
+    }
+
+    @Override
+    Promise<List<UserCommunication>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+        return null
+    }
+
+    @Override
+    Promise<List<UserCommunication>> searchByCommunicationId(CommunicationId communicationId, Integer limit, Integer offset) {
+        return null
+    }
+
+    @Override
+    Promise<List<UserCommunication>> searchByUserIdAndCommunicationId(UserId userId, CommunicationId communicationId, Integer limit, Integer offset) {
+        return null
     }
 
     @Override

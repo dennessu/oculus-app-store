@@ -9,19 +9,21 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.OrderId;
-import com.junbo.common.id.PaymentInstrumentId;
-import com.junbo.common.id.ShippingAddressId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.id.UserPersonalInfoId;
+import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.jackson.annotation.ShippingMethodId;
 import com.junbo.common.model.Link;
+import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -29,12 +31,17 @@ import java.util.List;
  * Created by chriszhu on 2/7/14.
  */
 @JsonPropertyOrder(value = {
-        "id", "user", "status", "country", "currency", "locale",
-        "tentative", "resourceAge", "ratingInfo", "shippingMethod",
-        "shippingAddress", "paymentInstruments", "refundOrders", "discounts", "orderItems"
+        "id", "user", "status", "tentative", "status", "country", "currency", "locale",
+        "shippingMethod", "shippingAddress",
+        "totalAmount", "totalTax", "isTaxInclusive", "totalDiscount", "totalShippingFee",
+        "totalShippingFeeDiscount", "honoredTime",
+        "resourceAge", "ratingInfo", "shippingMethod",
+        "shippingToAddress", "shippingToName", "shippingToPhone",
+        "orderItems", "payments", "discounts",
+        "successRedirectUrl", "cancelRedirectUrl", "providerConfirmUrl"
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Order extends BaseOrderResource {
+public class Order extends ResourceMeta implements Identifiable<OrderId> {
     @ApiModelProperty(required = true, position = 10, value = "[Client Immutable] The order id.")
     @JsonProperty("self")
     private OrderId id;
@@ -95,38 +102,54 @@ public class Order extends BaseOrderResource {
     @ApiModelProperty(required = true, position = 75, value = "The shipping method. Required for physical goods. " +
             "It might be null if there is no shipping method at this time.")
     private Long shippingMethod;
+
+    @JsonProperty("shippingToAddress")
     @ApiModelProperty(required = true, position = 76, value = "The shipping address. Required for physical goods. " +
             "It might be null if there is no shipping address at this time.")
-    private ShippingAddressId shippingAddress;
+    private UserPersonalInfoId shippingAddress;
+
+    @ApiModelProperty(required = true, position = 77, value = "The shipping user name. Required for physical goods. " +
+            "It might be null if there is no shipping user name at this time.")
+    private UserPersonalInfoId shippingToName;
+
+    @ApiModelProperty(required = true, position = 78, value = "The shipping user contact phone. Required for physical goods. " +
+            "It might be null if there is no shipping contact phone at this time.")
+    private UserPersonalInfoId shippingToPhone;
     // end of shippingInfo
+
+
 
     @ApiModelProperty(required = true, position = 150, value = "The payments instruments. " +
             "Required if the order is not free. " +
             "It might be empty if there is no payments instruments at this time.")
     private List<PaymentInfo> payments;
-    @ApiModelProperty(required = true, position = 160, value = "The discounts. " +
-            "It might be empty if there is no discounts at this time.")
-
-    @JsonIgnore
-    private List<PaymentInstrumentId> paymentInstruments;
 
     @ApiModelProperty(required = true, position = 160, value = "The discounts. " +
             "It might be empty if there is no discounts at this time.")
+    @CloudantIgnore
     private List<Discount> discounts;
+
     @ApiModelProperty(required = true, position = 140, value = "The order items. ")
+    @CloudantIgnore
     private List<OrderItem> orderItems;
 
     @ApiModelProperty(required = true, position = 170, value = "[Client Immutable]]The link to the order events. ")
+    @HateoasLink("/order-events?orderId={id}")
     private Link orderEvents;
 
-    @ApiModelProperty(required = true, position = 180, value = "[Client Immutable]]The link to the balances. ")
-    private Link balances;
-
     // urls for web payment
+    @ApiModelProperty(required = true, position = 200, value = "[Client Immutable]]The redirect url on success. ")
     private String successRedirectUrl;
+    @ApiModelProperty(required = true, position = 210, value = "[Client Immutable]]The redirect url on cancellation. ")
     private String cancelRedirectUrl;
+    @ApiModelProperty(required = true, position = 220, value = "[Client Immutable]]The redirect url on confirmation. ")
     private String providerConfirmUrl;
     // end of urls
+
+    private List<BillingHistory> billingHistories;
+
+    @JsonIgnore
+    private String paymentDescription;
 
     public OrderId getId() {
         return id;
@@ -248,11 +271,11 @@ public class Order extends BaseOrderResource {
         this.shippingMethod = shippingMethod;
     }
 
-    public ShippingAddressId getShippingAddress() {
+    public UserPersonalInfoId getShippingAddress() {
         return shippingAddress;
     }
 
-    public void setShippingAddress(ShippingAddressId shippingAddress) {
+    public void setShippingAddress(UserPersonalInfoId shippingAddress) {
         this.shippingAddress = shippingAddress;
     }
 
@@ -280,19 +303,12 @@ public class Order extends BaseOrderResource {
         this.locale = locale;
     }
 
-
     public List<PaymentInfo> getPayments() {
         return payments;
     }
 
     public void setPayments(List<PaymentInfo> payments) {
         this.payments = payments;
-        if(payments != null) {
-            this.paymentInstruments = new ArrayList<>();
-            for (PaymentInfo paymentInfo : payments) {
-                this.paymentInstruments.add(paymentInfo.getPaymentInstrument());
-            }
-        }
     }
 
     public Link getOrderEvents() {
@@ -301,22 +317,6 @@ public class Order extends BaseOrderResource {
 
     public void setOrderEvents(Link orderEvents) {
         this.orderEvents = orderEvents;
-    }
-
-    public Link getBalances() {
-        return balances;
-    }
-
-    public void setBalances(Link balances) {
-        this.balances = balances;
-    }
-
-    public List<PaymentInstrumentId> getPaymentInstruments() {
-        return paymentInstruments;
-    }
-
-    public void setPaymentInstruments(List<PaymentInstrumentId> paymentInstruments) {
-        this.paymentInstruments = paymentInstruments;
     }
 
     public String getSuccessRedirectUrl() {
@@ -341,5 +341,37 @@ public class Order extends BaseOrderResource {
 
     public void setProviderConfirmUrl(String providerConfirmUrl) {
         this.providerConfirmUrl = providerConfirmUrl;
+    }
+
+    public List<BillingHistory> getBillingHistories() {
+        return billingHistories;
+    }
+
+    public void setBillingHistories(List<BillingHistory> billingHistories) {
+        this.billingHistories = billingHistories;
+    }
+
+    public String getPaymentDescription() {
+        return paymentDescription;
+    }
+
+    public void setPaymentDescription(String paymentDescription) {
+        this.paymentDescription = paymentDescription;
+    }
+
+    public UserPersonalInfoId getShippingToName() {
+        return shippingToName;
+    }
+
+    public void setShippingToName(UserPersonalInfoId shippingToName) {
+        this.shippingToName = shippingToName;
+    }
+
+    public UserPersonalInfoId getShippingToPhone() {
+        return shippingToPhone;
+    }
+
+    public void setShippingToPhone(UserPersonalInfoId shippingToPhone) {
+        this.shippingToPhone = shippingToPhone;
     }
 }

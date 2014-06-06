@@ -1,11 +1,14 @@
 include 'common-testlib'
 
+include 'billing-integration'
+include 'cart-integration'
+include 'catalog-integration'
+include 'entitlement-integration'
 include 'identity-integration'
 include 'oauth-integration'
-include 'cart-integration'
 include 'payment-integration'
-include 'catalog-integration'
-include 'billing-integration'
+include 'fulfilment-integration'
+include 'order-integration'
 
 include 'integration-buyerscenario'
 include 'integration-catalogscenario'

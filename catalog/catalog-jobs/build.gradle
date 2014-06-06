@@ -1,0 +1,8 @@
+apply plugin: 'java'
+
+dependencies {
+    compile junboProject(":catalog-spec")
+    compile junboProject(":catalog-core")
+
+    compile (libraries.quartz_scheduler)
+}

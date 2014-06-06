@@ -5,6 +5,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
+    <import resource="classpath*:spring/routing-context.xml"/>
+
     <context:component-scan base-package="com.junbo.identity.spec.v1.resource.adapter" />
     <context:component-scan base-package="com.junbo.identity.core.service" />
 
@@ -16,7 +18,6 @@
     <bean id="defaultGroupResource" class="com.junbo.identity.rest.resource.v1.GroupResourceImpl" scope="prototype" />
     <bean id="defaultUserResource" class="com.junbo.identity.rest.resource.v1.UserResourceImpl" scope="prototype" />
     <bean id="defaultUserPersonalInfoResource" class="com.junbo.identity.rest.resource.v1.UserPersonalInfoResourceImpl" scope="prototype" />
-    <bean id="defaultSecurityQuestionResource" class="com.junbo.identity.rest.resource.SecurityQuestionResourceImpl" scope="prototype" />
     <bean id="defaultDeviceResource" class="com.junbo.identity.rest.resource.v1.DeviceResourceImpl" scope="prototype" />
     <bean id="defaultTosResource" class="com.junbo.identity.rest.resource.v1.TosResourceImpl" scope="prototype" />
     <bean id="defaultUserGroupMembershipResource" class="com.junbo.identity.rest.resource.v1.UserGroupMembershipResourceImpl" scope="prototype"/>
@@ -29,19 +30,61 @@
     <bean id="defaultPITypeResource" class="com.junbo.identity.rest.resource.v1.PITypeResourceImpl" scope="prototype" />
     <bean id="defaultDeviceTypeResource" class="com.junbo.identity.rest.resource.v1.DeviceTypeResourceImpl" scope="prototype" />
     <bean id="defaultCommunicationResource" class="com.junbo.identity.rest.resource.v1.CommunicationResourceImpl" scope="prototype" />
+    <bean id="defaultUserTFAResource" class="com.junbo.identity.rest.resource.v1.UserTFAResourceImpl" scope="prototype" />
+    <bean id="defaultUserTFAAttemptResource" class="com.junbo.identity.rest.resource.v1.UserTFAAttemptResourceImpl" scope="prototype" />
+    <bean id="defaultUserTFABackupCodeResource" class="com.junbo.identity.rest.resource.v1.UserTFABackupCodeResourceImpl" scope="prototype" />
+    <bean id="defaultUserTFABackupCodeAttemptResource" class="com.junbo.identity.rest.resource.v1.UserTFABackupCodeAttemptResourceImpl" scope="prototype" />
+    <bean id="defaultOrganizationResource" class="com.junbo.identity.rest.resource.v1.OrganizationResourceImpl" scope="prototype" />
 
-    <bean id="defaultRoleResource" class="com.junbo.identity.rest.resource.v1.RoleResourceImpl" scope="prototype">
-        <property name="created201Marker" ref="created201Marker"/>
-        <property name="roleFilter" ref="roleFilter"/>
-        <property name="roleRepository" ref="roleRepository"/>
-        <property name="roleValidator" ref="roleValidator"/>
-    </bean>
+    <bean id="defaultAuthenticatorResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.AuthenticatorResourceClientProxyFactory"/>
+    <bean id="defaultUserCommunicationResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserCommunicationResourceClientProxyFactory"/>
+    <bean id="defaultUserCredentialResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserCredentialResourceClientProxyFactory"/>
+    <bean id="defaultUserCredentialVerifyAttemptResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserCredentialVerifyAttemptResourceClientProxyFactory"/>
+    <bean id="defaultGroupResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.GroupResourceClientProxyFactory"/>
+    <bean id="defaultUserResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxyFactory"/>
+    <bean id="defaultUserPersonalInfoResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxyFactory"/>
+    <bean id="defaultDeviceResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.DeviceResourceClientProxyFactory"/>
+    <bean id="defaultTosResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.TosResourceClientProxyFactory"/>
+    <bean id="defaultUserGroupMembershipResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserGroupMembershipResourceClientProxyFactory"/>
+    <bean id="defaultUserSecurityQuestionResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserSecurityQuestionResourceClientProxyFactory"/>
+    <bean id="defaultUserSecurityQuestionVerifyAttemptResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserSecurityQuestionVerifyAttemptResourceClientProxyFactory"/>
+    <bean id="defaultUserTosAgreementResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserTosAgreementResourceClientProxyFactory"/>
+    <bean id="defaultCountryResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.CountryResourceClientProxyFactory"/>
+    <bean id="defaultCurrencyResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.CurrencyResourceClientProxyFactory"/>
+    <bean id="defaultLocaleResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.LocaleResourceClientProxyFactory"/>
+    <bean id="defaultPITypeResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.PITypeResourceClientProxyFactory"/>
+    <bean id="defaultDeviceTypeResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.DeviceTypeResourceClientProxyFactory"/>
+    <bean id="defaultCommunicationResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.CommunicationResourceClientProxyFactory"/>
+    <bean id="defaultUserTFAResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserTFAResourceClientProxyFactory"/>
+    <bean id="defaultUserTFAAttemptResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserTFAAttemptResourceClientProxyFactory"/>
+    <bean id="defaultUserTFABackupCodeResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserTFABackupCodeResourceClientProxyFactory"/>
+    <bean id="defaultUserTFABackupCodeAttemptResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserTFABackupCodeAttemptResourceClientProxyFactory"/>
+    <bean id="defaultOrganizationResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.OrganizationResourceClientProxyFactory" />
 
-    <bean id="defaultRoleAssignmentResource" class="com.junbo.identity.rest.resource.v1.RoleAssignmentResourceImpl"
-          scope="prototype">
-        <property name="created201Marker" ref="created201Marker"/>
-        <property name="roleAssignmentFilter" ref="roleAssignmentFilter"/>
-        <property name="roleAssignmentRepository" ref="roleAssignmentRepository"/>
-        <property name="roleAssignmentValidator" ref="roleAssignmentValidator"/>
-    </bean>
+    <bean id="defaultAuthenticatorResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultUserCommunicationResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultUserCredentialResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultUserCredentialVerifyAttemptResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultGroupResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultUserResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultUserPersonalInfoResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultDeviceResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultTosResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultUserGroupMembershipResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultUserSecurityQuestionResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultUserSecurityQuestionVerifyAttemptResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultUserTosAgreementResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultCountryResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultCurrencyResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultLocaleResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultPITypeResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultDeviceTypeResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultCommunicationResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultUserTFAResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultUserTFAAttemptResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultUserTFABackupCodeResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultUserTFABackupCodeAttemptResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultOrganizationResourceRouter" parent="routingRouterBase" />
+
+
 </beans>

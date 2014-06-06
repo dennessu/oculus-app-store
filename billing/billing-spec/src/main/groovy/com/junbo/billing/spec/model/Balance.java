@@ -7,13 +7,11 @@
 package com.junbo.billing.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.billing.spec.enums.PropertyKey;
 import com.junbo.common.id.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by xmchen on 14-1-26.
@@ -37,7 +35,7 @@ public class Balance {
     private String country;
     private Date dueDate;
     private Boolean isAsyncCharge;
-    private ShippingAddressId shippingAddressId;
+    private UserPersonalInfoId shippingAddressId;
     private BalanceId originalBalanceId;
     private Boolean skipTaxCalculation;
 
@@ -45,13 +43,15 @@ public class Balance {
     private String cancelRedirectUrl;
     private String providerConfirmUrl;
 
-    private List<BalanceItem> balanceItems;
+    private Map<String, String> propertySet;
 
+    private List<BalanceItem> balanceItems;
     private List<Transaction> transactions;
 
     public Balance() {
         balanceItems = new ArrayList<>();
         transactions = new ArrayList<>();
+        propertySet = new HashMap<>();
     }
 
     public BalanceId getBalanceId() {
@@ -191,11 +191,11 @@ public class Balance {
         this.type = type;
     }
 
-    public ShippingAddressId getShippingAddressId() {
+    public UserPersonalInfoId getShippingAddressId() {
         return shippingAddressId;
     }
 
-    public void setShippingAddressId(ShippingAddressId shippingAddressId) {
+    public void setShippingAddressId(UserPersonalInfoId shippingAddressId) {
         this.shippingAddressId = shippingAddressId;
     }
 
@@ -253,5 +253,27 @@ public class Balance {
 
     public void setProviderConfirmUrl(String providerConfirmUrl) {
         this.providerConfirmUrl = providerConfirmUrl;
+    }
+
+    public Map<String, String> getPropertySet() {
+        return propertySet;
+    }
+
+    public void setPropertySet(Map<String, String> propertySet) {
+        if (propertySet == null) {
+            return;
+        }
+        this.propertySet = propertySet;
+    }
+
+    public void addProperty(PropertyKey key, String value) {
+        propertySet.put(key.name(), value);
+    }
+
+    public String getProperty(PropertyKey key) {
+        if (propertySet.containsKey(key.name())) {
+            return propertySet.get(key.name());
+        }
+        return null;
     }
 }

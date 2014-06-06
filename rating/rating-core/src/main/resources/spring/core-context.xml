@@ -10,9 +10,11 @@
     <!--Rating Service-->
     <bean id="offerRatingService" class="com.junbo.rating.core.service.OfferRatingService"/>
     <bean id="orderRatingService" class="com.junbo.rating.core.service.OrderRatingService"/>
+    <bean id="subsRatingService" class="com.junbo.rating.core.service.SubsRatingService"/>
 
     <!--Handlers-->
-    <bean id="scopeCriterionHandler" class="com.junbo.rating.core.handler.ScopeCriterionHandler"/>
+    <bean id="offerScopeCriterionHandler" class="com.junbo.rating.core.handler.OfferScopeCriterionHandler"/>
+    <bean id="categoryScopeCriterionHandler" class="com.junbo.rating.core.handler.CategoryScopeCriterionHandler"/>
     <bean id="entitlementCriterionHandler" class="com.junbo.rating.core.handler.EntitlementCriterionHandler"/>
     <bean id="couponCriterionHandler" class="com.junbo.rating.core.handler.CouponCriterionHandler"/>
     <bean id="orderCriterionHandler" class="com.junbo.rating.core.handler.OrderCriterionHandler"/>
@@ -22,15 +24,30 @@
     <bean id="handlerRegister" class="com.junbo.rating.core.handler.HandlerRegister">
         <property name="register">
             <util:map id="handlerRegisterMap">
-                <entry key="INCLUDE_OFFER" value-ref="scopeCriterionHandler"/>
-                <entry key="EXCLUDE_OFFER" value-ref="scopeCriterionHandler"/>
-                <entry key="INCLUDE_CATEGORY" value-ref="scopeCriterionHandler"/>
-                <entry key="EXCLUDE_CATEGORY" value-ref="scopeCriterionHandler"/>
+                <entry key="INCLUDE_OFFER" value-ref="offerScopeCriterionHandler"/>
+                <entry key="EXCLUDE_OFFER" value-ref="offerScopeCriterionHandler"/>
+                <entry key="INCLUDE_CATEGORY" value-ref="categoryScopeCriterionHandler"/>
+                <entry key="EXCLUDE_CATEGORY" value-ref="categoryScopeCriterionHandler"/>
                 <entry key="INCLUDE_ENTITLEMENT" value-ref="entitlementCriterionHandler"/>
                 <entry key="EXCLUDE_ENTITLEMENT" value-ref="entitlementCriterionHandler"/>
                 <entry key="HAS_COUPON" value-ref="couponCriterionHandler"/>
                 <entry key="ORDER_ITEM_COUNT_ABOVE" value-ref="orderCriterionHandler"/>
                 <entry key="ORDER_ABSOLUTE_VALUE_ABOVE" value-ref="orderCriterionHandler"/>
+            </util:map>
+        </property>
+    </bean>
+
+    <!--Processors-->
+    <bean id="defaultProcessor" class="com.junbo.rating.core.processor.DefaultProcessor"/>
+    <bean id="cancelProcessor" class="com.junbo.rating.core.processor.CancelProcessor"/>
+
+    <!--Processor Register-->
+    <bean id="processorRegister" class="com.junbo.rating.core.processor.ProcessorRegister">
+        <property name="processorRegister">
+            <util:map id="processorRegisterMap">
+                <entry key="PURCHASE" value-ref="defaultProcessor"/>
+                <entry key="RENEW" value-ref="defaultProcessor"/>
+                <entry key="CANCEL" value-ref="cancelProcessor"/>
             </util:map>
         </property>
     </bean>

@@ -7,10 +7,8 @@ package com.junbo.test.buyerscenario.util;
 
 import com.junbo.test.buyerscenario.BuyerTestDataProvider;
 import com.junbo.test.buyerscenario.BuyerValidationHelper;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Utility.TestClass;
-
-
-import com.junbo.test.common.libs.ConfigPropertiesHelper;
 
 /**
  @author Jason
@@ -25,6 +23,7 @@ public class BaseTestClass extends TestClass {
     protected String offer_digital_normal2;
     protected String offer_physical_normal1;
     protected String offer_physical_normal2;
+    protected String offer_storedValue_normal;
 
 
     public BaseTestClass() {
@@ -32,10 +31,11 @@ public class BaseTestClass extends TestClass {
     }
 
     private void loadOffers(){
-        offer_digital_normal1 = ConfigPropertiesHelper.instance().getProperty("testdata.offer.digital.normal1");
-        offer_digital_normal2 = ConfigPropertiesHelper.instance().getProperty("testdata.offer.digital.normal2");
-        offer_physical_normal1 = ConfigPropertiesHelper.instance().getProperty("testdata.offer.physical.normal1");
-        offer_physical_normal2 = ConfigPropertiesHelper.instance().getProperty("testdata.offer.physical.normal2");
+        offer_digital_normal1 = ConfigHelper.getSetting("testdata.offer.digital.normal1");
+        offer_digital_normal2 = ConfigHelper.getSetting("testdata.offer.digital.normal2");
+        offer_physical_normal1 = ConfigHelper.getSetting("testdata.offer.physical.normal1");
+        offer_physical_normal2 = ConfigHelper.getSetting("testdata.offer.physical.normal2");
+        offer_storedValue_normal = ConfigHelper.getSetting("testdata.offer.storedvalue.normal");
     }
 
 }

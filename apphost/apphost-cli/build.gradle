@@ -2,22 +2,34 @@ apply plugin: 'groovy'
 apply plugin: 'application'
 
 mainClassName = "com.junbo.apphost.core.JunboApplication"
+applicationDefaultJvmArgs = ["-Xmx1024m", "-Xms1024m", "-XX:PermSize=512m", "-XX:MaxPermSize=512m", "-Dspring.profiles.active=utility"]
 
 dependencies {
-    compile project(':apphost-core')
-    compile (libraries.common_configuration_data)
+    compile junboProject(':apphost-core')
+    compile junboProject(':configuration-data')
 
-    compile "com.junbo.identity:identity-rest:${junboVersion}"
-    compile "com.junbo.oauth:oauth-api:${junboVersion}"
-    compile "com.junbo.rating:rating-rest:${junboVersion}"
-    compile "com.junbo.entitlement:entitlement-rest:${junboVersion}"
-    compile "com.junbo.fulfilment:fulfilment-rest:${junboVersion}"
-    compile "com.junbo.cart:cart-rest:${junboVersion}"
-    compile "com.junbo.billing:billing-rest:${junboVersion}"
-    compile "com.junbo.order:order-rest:${junboVersion}"
-    compile "com.junbo.payment:payment-rest:${junboVersion}"
-    compile "com.junbo.email:email-rest:${junboVersion}"
-    compile "com.junbo.ewallet:ewallet-rest:${junboVersion}"
-    compile "com.junbo.catalog:catalog-rest:${junboVersion}"
+    compile junboProject(':identity-rest')
+    compile junboProject(':oauth-api')
+    compile junboProject(':entitlement-rest')
+    compile junboProject(':catalog-rest')
+    compile junboProject(':rating-rest')
+    compile junboProject(':ewallet-rest')
+    compile junboProject(':payment-rest')
+    compile junboProject(':billing-rest')
+    compile junboProject(':email-rest')
+    compile junboProject(':cart-rest')
+    compile junboProject(':fulfilment-rest')
+    compile junboProject(':order-rest')
+    compile junboProject(':crypto-rest')
+    compile junboProject(':authorization-rest')
+    compile junboProject(':data-loader')
+
+    compile junboProject(':billing-jobs')
+    compile junboProject(':order-jobs')
+    compile junboProject(':email-jobs')
+    compile junboProject(':catalog-jobs')
     // more to add
 }
+
+defaultTasks 'clean', 'install', 'installApp', 'distZip'
+

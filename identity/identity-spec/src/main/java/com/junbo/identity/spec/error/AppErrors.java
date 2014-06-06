@@ -7,8 +7,8 @@ package com.junbo.identity.spec.error;
 
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
+import com.junbo.common.enumid.DeviceTypeId;
 import com.junbo.common.enumid.LocaleId;
-import com.junbo.common.id.PITypeId;
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.ErrorDef;
 import com.junbo.common.error.ErrorProxy;
@@ -58,7 +58,7 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 400, code = "2000007", description = "Field {0} required.", field = "{0}")
     AppError fieldRequired(String field);
 
-    @ErrorDef(httpStatusCode = 404, code = "2000008", description = "User {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 404, code = "2000008", description = "User {0} not found.")
     AppError userNotFound(UserId userId);
 
     @ErrorDef(httpStatusCode = 404, code = "2000009", description = "Group {0} not found.", field = "{0}")
@@ -88,7 +88,7 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 404, code = "2000017", description = "User {0} is not in valid status.", field = "{0}")
     AppError userInInvalidStatus(UserId userId);
 
-    @ErrorDef(httpStatusCode = 404, code = "2000018", description = "Username {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 404, code = "2000018", description = "Username {0} not found.")
     AppError userNotFound(String username);
 
     @ErrorDef(httpStatusCode = 404, code = "2000019", description = "User password is incorrect.")
@@ -142,20 +142,20 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 409, code = "2000034", description = "Tos {0} not found.", field = "{0}")
     AppError tosNotFound(TosId tosId);
 
-    @ErrorDef(httpStatusCode = 404, code = "2000035", description = "Role {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 409, code = "2000035", description = "Role {0} not found.", field = "{0}")
     AppError roleNotFound(RoleId roleId);
 
-    @ErrorDef(httpStatusCode = 404, code = "2000036", description = "RoleAssignment {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 409, code = "2000036", description = "RoleAssignment {0} not found.", field = "{0}")
     AppError roleAssignmentNotFound(RoleAssignmentId roleAssignmentId);
 
-    @ErrorDef(httpStatusCode = 404, code = "2000037", description = "User Personal Info {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 409, code = "2000037", description = "User Personal Info {0} not found.", field = "{0}")
     AppError userPersonalInfoNotFound(UserPersonalInfoId userPersonalInfoId);
 
     @ErrorDef(httpStatusCode = 409, code = "2000038", description = "Address {0} not found.", field = "{0}")
     AppError addressNotFound(AddressId addressId);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000039", description = "User Tele code {0} not found.", field = "{0}")
-    AppError userTeleCodeNotFound(UserTeleId userTeleId);
+    @ErrorDef(httpStatusCode = 409, code = "2000039", description = "User TFA code {0} not found.", field = "{0}")
+    AppError userTFANotFound(UserTFAId userTFAId);
 
     @ErrorDef(httpStatusCode = 409, code = "2000040", description = "Country {0} not found.", field = "{0}")
     AppError countryNotFound(CountryId countryId);
@@ -177,4 +177,36 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 409, code = "2000046", description = "Field {0} invalid due to {1}.", field = "{0}")
     AppError fieldInvalidException(String field, String detail);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000050", description = "TeleSign provider error.")
+    AppError teleSignProviderError(String message);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000051", description = "User TFA attempt {0} not found.", field = "{0}")
+    AppError userTFAAttemptNotFound(UserTFAAttemptId userTFAAttemptId);
+
+    @ErrorDef(httpStatusCode = 404, code = "2000052", description = "User TFA code is incorrect.")
+    AppError userTFACodeIncorrect();
+
+    @ErrorDef(httpStatusCode = 409, code = "2000053", description = "User TFA backup code {0} not found.",
+            field = "{0}")
+    AppError userTFABackupCodeNotFound(UserTFABackupCodeId userTFABackupCodeId);
+
+    @ErrorDef(httpStatusCode = 409, code = "2000054", description = "User TFA backup code attempt {0} not found.",
+            field = "{0}")
+    AppError userTFABackupCodeAttemptNotFound(UserTFABackupCodeAttemptId userTFABackupCodeAttemptId);
+
+    @ErrorDef(httpStatusCode = 404, code = "2000055", description = "User TFA backup code is incorrect.")
+    AppError userTFABackupCodeIncorrect();
+
+    @ErrorDef(httpStatusCode = 404, code = "2000056", description = "User {0} is not in valid status.", field = "{0}")
+    AppError userInInvalidStatus(String username);
+
+    @ErrorDef(httpStatusCode = 404, code = "2000057", description = "Organization {0} is not found.", field = "{0}")
+    AppError organizationNotFound(OrganizationId organizationId);
+
+    @ErrorDef(httpStatusCode = 403, code = "10001", description = "Invalid Access")
+    AppError invalidAccess();
+
+    @ErrorDef(httpStatusCode = 400, code = "10001", description = "Request body is empty")
+    AppError requestBodyRequired();
 }

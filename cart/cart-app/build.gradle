@@ -4,9 +4,10 @@ apply plugin: 'application'
 mainClassName = "com.junbo.apphost.core.JunboApplication"
 
 dependencies {
-    runtime (libraries.apphost_core)
-    runtime (libraries.common_configuration_data)
+    runtime junboProject(':apphost-core')
+    runtime junboProject(':configuration-data')
 
-    compile project(':cart-rest')
-    compile "com.junbo.identity:identity-rest:${junboVersion}"
+    compile junboProject(':cart-rest')
+    runtime junboProject(':identity-rest')
+    runtime junboProject(':crypto-rest')
 }

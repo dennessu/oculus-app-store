@@ -51,4 +51,12 @@ public class Utils {
         Oculus48Id.validateRawValue(id);
         return Oculus48Id.format(Oculus48Id.shuffle(id));
     }
+
+    public static Long safeParseUserId(String userId) {
+        try {
+            return Long.parseLong(userId);
+        } catch (NumberFormatException e) {
+            return Long.parseLong(Constants.DEFAULT_USER_ID);
+        }
+    }
 }

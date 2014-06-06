@@ -1,0 +1,13 @@
+apply plugin: 'groovy'
+apply plugin: 'application'
+
+mainClassName = "com.junbo.apphost.core.JunboApplication"
+
+dependencies {
+    runtime junboProject(':apphost-core')
+    runtime junboProject(':configuration-data')
+    runtime junboProject(':crypto-rest')
+    runtime junboProject(':identity-rest')
+
+    compile junboProject(':authorization-rest')
+}

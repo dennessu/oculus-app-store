@@ -27,6 +27,8 @@ public class ErrorCode {
 
     public static final String CURRENCY_NOT_FOUND = "CURRENCY_NOT_FOUND";
 
+    public static final String COUNTRY_NOT_FOUND = "COUNTRY_NOT_FOUND";
+
     public static final String PAYMENT_INSTRUMENT_NOT_FOUND = "PAYMENT_INSTRUMENT_NOT_FOUND";
 
     public static final String INVALID_BALANCE_TYPE = "INVALID_BALANCE_TYPE";
@@ -48,4 +50,12 @@ public class ErrorCode {
     public static final String ADDRESS_VALIDATION_ERROR = "ADDRESS_VALIDATION_ERROR";
 
     public static final String NOT_ASYNC_CHARGE_BALANCE = "NOT_ASYNC_CHARGE_BALANCE";
+
+    public static final String PAYMENT_PROCESSING_FAILED = "PAYMENT_PROCESSING_FAILED";
+
+    public static final String PAYMENT_INSUFFICIENT_FUND = "PAYMENT_INSUFFICIENT_FUND";
+
+    public static final String BALANCE_REFUND_TOTAL_EXCEEDED = "BALANCE_REFUND_TOTAL_EXCEEDED";
+
+    public static final String BALANCE_ITEM_REFUND_TOTAL_EXCEEDED = "BALANCE_ITEM_REFUND_TOTAL_EXCEEDED";
 }

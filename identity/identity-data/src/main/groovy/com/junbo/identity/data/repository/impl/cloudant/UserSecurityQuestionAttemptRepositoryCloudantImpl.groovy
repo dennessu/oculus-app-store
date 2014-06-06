@@ -2,6 +2,8 @@ package com.junbo.identity.data.repository.impl.cloudant
 
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
+import com.junbo.common.id.UserId
+import com.junbo.common.id.UserSecurityQuestionId
 import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
 import com.junbo.identity.data.repository.UserSecurityQuestionAttemptRepository
 import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt
@@ -61,14 +63,16 @@ class UserSecurityQuestionAttemptRepositoryCloudantImpl extends CloudantClient<U
     }
 
     @Override
-    Promise<List<UserSecurityQuestionVerifyAttempt>> search(UserSecurityQuestionAttemptListOptions getOption) {
-        def list = super.queryView('by_user_id', getOption.userId.value.toString(),
-                getOption.limit, getOption.offset, false)
-        if (getOption.userSecurityQuestionId != null) {
-            list.removeAll { UserSecurityQuestionVerifyAttempt attempt ->
-                attempt.userSecurityQuestionId != getOption.userSecurityQuestionId
-            }
-        }
+    Promise<List<UserSecurityQuestionVerifyAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+        def list = super.queryView('by_user_id', userId.toString(), limit, offset, false)
+        return Promise.pure(list)
+    }
+
+    @Override
+    Promise<List<UserSecurityQuestionVerifyAttempt>> searchByUserIdAndSecurityQuestionId(UserId userId,
+                                     UserSecurityQuestionId userSecurityQuestionId, Integer limit, Integer offset) {
+        def list = super.queryView('by_user_id_security_question_id',
+                "${userId.toString()}:${userSecurityQuestionId.toString()}", limit, offset, false)
         return Promise.pure(list)
     }
 
@@ -76,7 +80,12 @@ class UserSecurityQuestionAttemptRepositoryCloudantImpl extends CloudantClient<U
             views: [
                     'by_user_id': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.userId.value.toString(), doc._id)' +
+                                    '  emit(doc.userId, doc._id)' +
+                                    '}',
+                            resultClass: String),
+                    'by_user_id_security_question_id': new CloudantViews.CloudantView(
+                            map: 'function(doc) {' +
+                                    '  emit(doc.userId + \':\' + doc.userSecurityQuestionId, doc._id)' +
                                     '}',
                             resultClass: String)
             ]

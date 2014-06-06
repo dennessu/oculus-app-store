@@ -12,7 +12,7 @@
 
 
     <bean id="emailDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
-        <property name="jdbcUrls" value="${email.db.url}"/>
+        <property name="jdbcUrls" value="${email.db.jdbcUrls}"/>
 
         <property name="uniqueName" value="jdbc/email"/>
         <property name="className" value="${email.db.driverClassName}"/>

@@ -6,19 +6,33 @@
 
 package com.junbo.notification.core;
 
+import com.junbo.common.filter.SequenceIdFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+
 import javax.jms.*;
 
 /**
  * BaseListener.
  */
 public abstract class BaseListener implements MessageListener {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageListener.class);
+
     public BaseListener() {
 
     }
 
     public void onMessage(Message message) {
+
         try {
             String eventId = message.getStringProperty(Constant.EVENT_ID);
+
+            String requestId = message.getStringProperty(Constant.REQUEST_ID);
+            MDC.put(SequenceIdFilter.X_REQUEST_ID, requestId);
+
+            LOGGER.info("Message Received: eventId = " + eventId);
 
             if (message instanceof TextMessage) {
                 onMessage(eventId, ((TextMessage) message).getText());

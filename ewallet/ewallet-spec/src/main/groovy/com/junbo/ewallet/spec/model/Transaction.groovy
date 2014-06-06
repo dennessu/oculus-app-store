@@ -6,6 +6,7 @@
 
 package com.junbo.ewallet.spec.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
@@ -30,4 +31,6 @@ class Transaction {
     Long offerId
     Date createdTime
     String createdBy
+    @JsonIgnore
+    BigDecimal unrefundedAmount
 }

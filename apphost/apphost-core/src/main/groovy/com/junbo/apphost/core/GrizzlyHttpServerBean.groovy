@@ -2,12 +2,8 @@ package com.junbo.apphost.core
 
 import com.junbo.apphost.core.logging.AccessLogProbe
 import groovy.transform.CompileStatic
-import org.glassfish.grizzly.http.server.CLStaticHttpHandler
-import org.glassfish.grizzly.http.server.HttpHandler
-import org.glassfish.grizzly.http.server.HttpServer
-import org.glassfish.grizzly.http.server.NetworkListener
-import org.glassfish.grizzly.http.server.Request
-import org.glassfish.grizzly.http.server.Response
+import org.glassfish.grizzly.http.server.*
+import org.glassfish.grizzly.nio.transport.TCPNIOTransport
 import org.glassfish.hk2.api.InjectionResolver
 import org.glassfish.hk2.api.ServiceLocator
 import org.glassfish.hk2.api.TypeLiteral
@@ -17,9 +13,11 @@ import org.glassfish.jersey.internal.inject.Providers
 import org.glassfish.jersey.server.ApplicationHandler
 import org.glassfish.jersey.server.ResourceConfig
 import org.glassfish.jersey.server.spi.ContainerProvider
+import org.glassfish.jersey.server.wadl.WadlApplicationContext
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.BeansException
+import org.springframework.beans.factory.BeanNameAware
 import org.springframework.beans.factory.DisposableBean
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Autowired
@@ -33,11 +31,14 @@ import org.springframework.core.io.support.EncodedResource
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.util.ClassUtils
 
+import java.util.concurrent.ExecutorService
+
 /**
  * Created by kg on 4/21/2014.
  */
 @CompileStatic
-class GrizzlyHttpServerBean implements InitializingBean, DisposableBean, ApplicationContextAware, ApplicationListener<ContextRefreshedEvent> {
+class GrizzlyHttpServerBean implements InitializingBean, DisposableBean,
+        ApplicationContextAware, ApplicationListener<ContextRefreshedEvent>, BeanNameAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GrizzlyHttpServerBean)
 
@@ -49,14 +50,32 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean, Applica
 
     private ServiceLocator serviceLocator
 
+    private ExecutorService executorService
+
+    private String beanName
+
     @Required
     void setUri(URI uri) {
         this.uri = uri
     }
 
+    URI getUri() {
+        return uri
+    }
+
+    @Required
+    void setExecutorService(ExecutorService executorService) {
+        this.executorService = executorService
+    }
+
     @Override
     void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext
+    }
+
+    @Override
+    void setBeanName(String name) {
+        this.beanName = name
     }
 
     @Override
@@ -69,9 +88,14 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean, Applica
 
         // configure listener
         NetworkListener listener = new NetworkListener('grizzly', host, port)
+
+        TCPNIOTransport transport = listener.transport
+        transport.setWorkerThreadPool(executorService)
+
         httpServer.addListener(listener)
 
         def config = httpServer.serverConfiguration
+        config.name = beanName
 
         // handle Jersey resources
         HttpHandler jerseyHandler = buildJerseyHandler()
@@ -120,6 +144,11 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean, Applica
 
         serviceLocator = applicationHandler.serviceLocator
 
+        def wadlApplicationContext = (WadlApplicationContext) serviceLocator.getService(WadlApplicationContext)
+        if (wadlApplicationContext != null) {
+            wadlApplicationContext.wadlGenerationEnabled = false
+        }
+
         HttpHandler handler = null
         for (ContainerProvider cp : Providers.getProviders(serviceLocator, ContainerProvider)) {
             handler = cp.createContainer(GrizzlyHttpContainer, applicationHandler)
@@ -137,13 +166,13 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean, Applica
 
     @Override
     void onApplicationEvent(ContextRefreshedEvent event) {
-        LOGGER.info('Starting GrizzlyHttpServer...')
+        LOGGER.info("Starting [$beanName]...")
         httpServer.start()
     }
 
     @Override
     void destroy() throws Exception {
-        LOGGER.info('Shutting down GrizzlyHttpServer...')
+        LOGGER.info("Shutting down [$beanName]...")
         httpServer.shutdown()
     }
 

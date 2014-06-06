@@ -53,6 +53,10 @@ public interface AppErrors {
             description = "Order not tentative")
     AppError orderNotTentative();
 
+    @ErrorDef(httpStatusCode = 409, code = ErrorCode.ORDER_CONCURRENT_UPDATE,
+            description = "Concurrent update of order detected")
+    AppError orderConcurrentUpdate();
+
     @ErrorDef(httpStatusCode = 404, code = UserErrorCode.USER_NOT_FOUND,
             description = "User not found {0}")
     AppError userNotFound(String userId);
@@ -73,7 +77,7 @@ public interface AppErrors {
             description = "Payment service connection error")
     AppError paymentConnectionError();
 
-    @ErrorDef(httpStatusCode = 403, code = ErrorCode.INVALID_FIELD,
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_FIELD,
             description = "{1}", field = "{0}")
     AppError fieldInvalid(String field, String message);
 
@@ -125,6 +129,10 @@ public interface AppErrors {
             description = "Billing charge failed")
     AppError billingChargeFailed();
 
+    @ErrorDef(httpStatusCode = 409, code = BillingErrorCode.BILLING_INSUFFICIENT_FUND,
+            description = "Insufficient fund")
+    AppError billingInsufficientFund();
+
     @ErrorDef(httpStatusCode = 404, code = ErrorCode.ORDER_EVENT_NOT_FOUND,
             description = "Order event not found")
     AppError orderEventNotFound();
@@ -145,6 +153,10 @@ public interface AppErrors {
             description = "SubledgerNotFound")
     AppError subledgerNotFound();
 
+    @ErrorDef(httpStatusCode = 404, code = ErrorCode.SUBLEDGER_CONCURRENT_UPDATE,
+            description = "Concurrent update of subledger detected")
+    AppError subledgerConcurrentUpdate();
+
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_SETTLED_ORDER_UPDATE,
             description = "Invalid settled order update")
     AppError invalidSettledOrderUpdate();
@@ -156,4 +168,12 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 400, code = BillingErrorCode.BILLING_CONFIRM_BALANCE_FAILED,
             description = "Fail to confirm balance")
     AppError balanceConfirmFailed();
+
+    @ErrorDef(httpStatusCode = 409, code = ErrorCode.ORDER_CAN_NOT_BE_CANCELED,
+            description = "Order can not be canceled")
+    AppError orderNotCancelable();
+
+    @ErrorDef(httpStatusCode = 409, code = ErrorCode.ORDER_PRICE_CHANGED,
+            description = "Order price is changed")
+    AppError orderPriceChanged();
 }

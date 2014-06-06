@@ -4,20 +4,22 @@ apply plugin: 'scala'
 def jettyVersion = '9.1.3.v20140225'
 
 dependencies {
-    compile "com.junbo.billing:billing-spec:${junboVersion}"
-    compile "com.junbo.cart:cart-spec:${junboVersion}"
-    compile "com.junbo.catalog:catalog-spec:${junboVersion}"
-    compile "com.junbo.drm:drm-spec:${junboVersion}"
-    compile "com.junbo.entitlement:entitlement-spec:${junboVersion}"
-    compile "com.junbo.ewallet:ewallet-spec:${junboVersion}"
-    compile "com.junbo.fulfilment:fulfilment-spec:${junboVersion}"
-    compile "com.junbo.identity:identity-spec:${junboVersion}"
-    compile "com.junbo.oauth:oauth-spec:${junboVersion}"
-    compile "com.junbo.order:order-spec:${junboVersion}"
-    compile "com.junbo.payment:payment-spec:${junboVersion}"
-    compile "com.junbo.rating:rating-spec:${junboVersion}"
-    compile "com.junbo.restriction:restriction-spec:${junboVersion}"
-    compile "com.junbo.email:email-spec:${junboVersion}"
+
+    compile junboProject(':billing-spec')
+    compile junboProject(':cart-spec')
+    compile junboProject(':catalog-spec')
+    compile junboProject(':drm-spec')
+    compile junboProject(':entitlement-spec')
+    compile junboProject(':ewallet-spec')
+    compile junboProject(':fulfilment-spec')
+    compile junboProject(':identity-spec')
+    compile junboProject(':oauth-spec')
+    compile junboProject(':order-spec')
+    compile junboProject(':payment-spec')
+    compile junboProject(':rating-spec')
+    compile junboProject(':restriction-spec')
+    compile junboProject(':email-spec')
+    compile junboProject(':authorization-spec')
 
     compile("com.wordnik:swagger-jersey2-jaxrs_2.10:${swaggerVersion}") {
         exclude group: "javax.ws.rs", module: "jsr311-api"

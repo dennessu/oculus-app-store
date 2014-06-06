@@ -11,31 +11,33 @@
     <bean id="ewalletDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${ewallet.db.jdbcUrls}"/>
         <property name="uniqueName" value="jdbc/ewallet"/>
-        <property name="className" value="${ewallet.db.driverClassName}"/>
-        <property name="minPoolSize" value="${ewallet.db.minPoolSize}"/>
-        <property name="maxPoolSize" value="${ewallet.db.maxPoolSize}"/>
+        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
+        <property name="minPoolSize" value="${ewallet.db.minConnectionsPerPartition}"/>
+        <property name="maxPoolSize" value="${ewallet.db.maxConnectionsPerPartition}"/>
         <property name="driverProperties">
             <props>
                 <prop key="user">${ewallet.db.username}</prop>
                 <prop key="password">${ewallet.db.password}</prop>
             </props>
         </property>
-
     </bean>
 
-   <!-- SessionFactory for Hibernate -->
-    <bean id="ewalletSessionFactory" class="com.junbo.sharding.hibernate.LocalSessionFactoryWithListenerBean">
+    <!-- SessionFactory for Hibernate -->
+    <bean id="ewalletSessionFactory"
+          class="com.junbo.sharding.hibernate.LocalSessionFactoryWithListenerBean">
         <property name="jtaTransactionManager" ref="transactionManager"/>
         <property name="hibernateProperties">
             <map>
-                <entry key="hibernate.dialect" value="${sharding.hibernate.dialect}"/>
-                <entry key="hibernate.max_fetch_depth" value="${sharding.hibernate.max_fetch_depth}"/>
-                <entry key="hibernate.jdbc.fetch_size" value="${sharding.hibernate.jdbc.fetch_size}"/>
-                <entry key="hibernate.jdbc.batch_size" value="${sharding.hibernate.jdbc.batch_size}"/>
-                <entry key="hibernate.show_sql" value="${sharding.hibernate.show_sql}"/>
+                <entry key="hibernate.dialect" value="${ewallet.hibernate.dialect}"/>
+                <entry key="hibernate.max_fetch_depth" value="${ewallet.hibernate.max_fetch_depth}"/>
+                <entry key="hibernate.jdbc.fetch_size" value="${ewallet.hibernate.fetch_size}"/>
+                <entry key="hibernate.jdbc.batch_size" value="${ewallet.hibernate.batch_size}"/>
+                <entry key="hibernate.show_sql" value="${ewallet.hibernate.show_sql}"/>
                 <entry key="hibernate.multiTenancy" value="SCHEMA"/>
-                <entry key="hibernate.current_session_context_class" value="com.junbo.sharding.hibernate.MultiTenantJTASessionContext"/>
-                <entry key="hibernate.tenant_identifier_resolver" value="com.junbo.sharding.hibernate.ShardCurrentTenantIdentifierResolver"/>
+                <entry key="hibernate.current_session_context_class"
+                       value="com.junbo.sharding.hibernate.MultiTenantJTASessionContext"/>
+                <entry key="hibernate.tenant_identifier_resolver"
+                       value="com.junbo.sharding.hibernate.ShardCurrentTenantIdentifierResolver"/>
                 <entry key="hibernate.multi_tenant_connection_provider" value-ref="ewalletDataSource"/>
                 <entry key="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
             </map>
@@ -62,6 +64,27 @@
     <bean id="walletLotDao" class="com.junbo.ewallet.db.dao.hibernate.WalletLotDaoImpl" parent="baseDao">
         <property name="entityType" value="com.junbo.ewallet.db.entity.WalletLotEntity"/>
     </bean>
+
+    <!-- CloudantDao -->
+    <!--<bean id="baseTransactionDao" class="com.junbo.ewallet.db.dao.cloudant.TransactionBaseDao" abstract="true" parent="cloudantClient"/>-->
+    <!--<bean id="transactionDao" class="com.junbo.ewallet.db.dao.cloudant.TransactionDaoImpl" parent="baseTransactionDao">-->
+        <!--<property name="entityType" value="com.junbo.ewallet.db.entity.TransactionEntity"/>-->
+        <!--<property name="dbName" value="wallet_transaction"/>-->
+    <!--</bean>-->
+    <!--<bean id="lotTransactionDao" class="com.junbo.ewallet.db.dao.cloudant.LotTransactionDaoImpl" parent="baseTransactionDao">-->
+        <!--<property name="entityType" value="com.junbo.ewallet.db.entity.LotTransactionEntity"/>-->
+        <!--<property name="dbName" value="wallet_lot_transaction"/>-->
+    <!--</bean>-->
+
+    <!--<bean id="baseDao" class="com.junbo.ewallet.db.dao.cloudant.BaseDao" abstract="true" parent="baseTransactionDao"/>-->
+    <!--<bean id="walletDao" class="com.junbo.ewallet.db.dao.cloudant.WalletDaoImpl" parent="baseDao">-->
+        <!--<property name="entityType" value="com.junbo.ewallet.db.entity.WalletEntity"/>-->
+        <!--<property name="dbName" value="wallet"/>-->
+    <!--</bean>-->
+    <!--<bean id="walletLotDao" class="com.junbo.ewallet.db.dao.cloudant.WalletLotDaoImpl" parent="baseDao">-->
+        <!--<property name="entityType" value="com.junbo.ewallet.db.entity.WalletLotEntity"/>-->
+        <!--<property name="dbName" value="wallet_lot"/>-->
+    <!--</bean>-->
 
     <!-- mapper -->
     <bean id="walletMapper" class="com.junbo.ewallet.db.mapper.WalletMapper"/>

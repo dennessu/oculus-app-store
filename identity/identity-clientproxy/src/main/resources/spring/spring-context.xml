@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="teleSign" class="com.junbo.identity.clientproxy.impl.TeleSignImpl">
+        <constructor-arg><value>${identity.conf.teleSign.customerId}</value></constructor-arg>
+        <constructor-arg><value>${identity.conf.teleSign.secretKey}</value></constructor-arg>
+        <constructor-arg ref="userPersonalInfoRepository"></constructor-arg>
+        <constructor-arg ref="localeRepository"></constructor-arg>
+    </bean>
+
+    <bean id="identityCryptoResource" class="com.junbo.crypto.spec.resource.proxy.CryptoResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.crypto.url}"/>
+    </bean>
+
+    <bean id="userCryptoResourceClientProxy" class="com.junbo.crypto.spec.resource.proxy.UserCryptoResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.crypto.url}" />
+    </bean>
+
+    <bean id="identityAccessTokenProvider" class="com.junbo.authorization.ClientCredentialsAccessTokenProvider">
+        <property name="scope" value="identity.service"/>
+        <property name="deflectionInSeconds" value="300"/>
+        <property name="clientSecret" value="secret"/>
+        <property name="clientId" value="service"/>
+        <property name="tokenEndpoint" ref="tokenEndpoint"/>
+    </bean>
+
+    <bean id="userResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
+        <property name="accessTokenProvider" ref="identityAccessTokenProvider"/>
+    </bean>
+
+    <bean id="userPersonalInfoResourceClientProxy"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
+        <property name="accessTokenProvider" ref="identityAccessTokenProvider"/>
+    </bean>
+</beans>

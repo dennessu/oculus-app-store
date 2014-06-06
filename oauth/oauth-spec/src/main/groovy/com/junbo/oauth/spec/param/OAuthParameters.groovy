@@ -29,6 +29,7 @@ class OAuthParameters {
     public static final String GRANT_TYPE = 'grant_type'
     public static final String SALT = 'salt'
     public static final String USERNAME = 'username'
+    public static final String LOGIN = 'login'
     public static final String PASSWORD = 'password'
     public static final String ACCESS_TOKEN = 'access_token'
     public static final String TOKEN_TYPE = 'token_type'
@@ -43,6 +44,8 @@ class OAuthParameters {
     public static final String SESSION_STATE = 'session_state'
     public static final String LOCALE = 'locale'
     public static final String EXTRA_PREFIX = 'extra_'
+    public static final String EMAIL_VERIFY_CODE = 'evc'
+    public static final String RESET_PASSWORD_CODE = 'rpc'
 
     public static final String ERROR = 'error'
     public static final String NICK_NAME = 'nickname'
@@ -51,9 +54,24 @@ class OAuthParameters {
     public static final String DOB = 'dob'
     public static final String GENDER = 'gender'
     public static final String EMAIL = 'email'
+    public static final String PIN = 'pin'
+
+    public static final String ADDRESS1 = 'address1'
+    public static final String ADDRESS2 = 'address2'
+    public static final String CITY = 'city'
+    public static final String SUB_COUNTRY = 'sub_country'
+    public static final String COUNTRY = 'country'
+    public static final String ZIP_CODE = 'zip_code'
+
+    public static final String CARD_NUMBER = 'card_number'
+    public static final String NAME_ON_CARD = 'name_on_card'
+    public static final String EXPIRATION_DATE = 'expiration_date'
+    public static final String CVV = 'cvv'
 
     public static final String COOKIE_LOGIN_STATE = 'ls'
     public static final String COOKIE_SESSION_STATE = 'ss'
     public static final String COOKIE_REMEMBER_ME = 'me'
+    public static final String FACEBOOK_AUTH = 'facebookAuth'
+    public static final String GOOGLE_AUTH = 'googleAuth'
 }
 

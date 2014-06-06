@@ -1,0 +1,17 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
+
+package com.junbo.rating.spec.model.subscription;
+
+/**
+ * Created by lizwu on 5/21/14.
+ */
+public enum SubsRatingType {
+    PURCHASE,
+    RENEW,
+    CANCEL,
+    EXTEND
+}

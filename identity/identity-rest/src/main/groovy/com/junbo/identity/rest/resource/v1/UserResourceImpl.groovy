@@ -1,9 +1,15 @@
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.authorization.AuthorizeService
+import com.junbo.authorization.RightsScope
 import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
-import com.junbo.identity.core.service.Created201Marker
+import com.junbo.common.rs.Created201Marker
+import com.junbo.crypto.spec.model.UserCryptoKey
+import com.junbo.crypto.spec.resource.UserCryptoResource
+import com.junbo.identity.auth.UserAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserFilter
 import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.validator.UserValidator
@@ -19,6 +25,7 @@ import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
 
 /**
@@ -27,9 +34,6 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 @CompileStatic
 class UserResourceImpl implements UserResource {
-
-    @Autowired
-    private Created201Marker created201Marker
 
     @Autowired
     private UserRepository userRepository
@@ -44,22 +48,44 @@ class UserResourceImpl implements UserResource {
     private UserFilter userFilter
 
     @Autowired
+    @Qualifier('userCryptoResourceClientProxy')
+    private UserCryptoResource userCryptoResource
+
+    @Autowired
     private NormalizeService normalizeService
+
+    @Autowired
+    private AuthorizeService authorizeService
+
+    @Autowired
+    private UserAuthorizeCallbackFactory userAuthorizeCallbackFactory
 
     @Override
     Promise<User> create(User user) {
         if (user == null) {
-            throw new IllegalArgumentException('user is null')
+            throw AppErrors.INSTANCE.requestBodyRequired().exception()
         }
 
-        user = userFilter.filterForCreate(user)
+        def callback = userAuthorizeCallbackFactory.create(user)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('create')) {
+                throw AppErrors.INSTANCE.invalidAccess().exception()
+            }
 
-        return userValidator.validateForCreate(user).then {
-            userRepository.create(user).then { User newUser ->
-                created201Marker.mark((Id) newUser.id)
+            user = userFilter.filterForCreate(user)
 
-                newUser = userFilter.filterForGet(newUser, null)
-                return Promise.pure(newUser)
+            return userValidator.validateForCreate(user).then {
+                return userRepository.create(user).then { User newUser ->
+
+                    return userCryptoResource.create(new UserCryptoKey(
+                            userId: (UserId)newUser.id
+                    )).then {
+                        Created201Marker.mark((Id) newUser.id)
+
+                        newUser = userFilter.filterForGet(newUser, null)
+                        return Promise.pure(newUser)
+                    }
+                }
             }
         }
     }
@@ -71,7 +97,7 @@ class UserResourceImpl implements UserResource {
         }
 
         if (user == null) {
-            throw new IllegalArgumentException('user is null')
+            throw AppErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return userRepository.get(userId).then { User oldUser ->
@@ -79,12 +105,19 @@ class UserResourceImpl implements UserResource {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
 
-            user = userFilter.filterForPut(user, oldUser)
+            def callback = userAuthorizeCallbackFactory.create(oldUser)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('update')) {
+                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                }
 
-            return userValidator.validateForUpdate(user, oldUser).then {
-                userRepository.update(user).then { User newUser ->
-                    newUser = userFilter.filterForGet(newUser, null)
-                    return Promise.pure(newUser)
+                user = userFilter.filterForPut(user, oldUser)
+
+                return userValidator.validateForUpdate(user, oldUser).then {
+                    return userRepository.update(user).then { User newUser ->
+                        newUser = userFilter.filterForGet(newUser, null)
+                        return Promise.pure(newUser)
+                    }
                 }
             }
         }
@@ -105,12 +138,19 @@ class UserResourceImpl implements UserResource {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
 
-            user = userFilter.filterForPatch(user, oldUser)
+            def callback = userAuthorizeCallbackFactory.create(oldUser)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('update')) {
+                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                }
 
-            return userValidator.validateForUpdate(user, oldUser).then {
-                return userRepository.update(user).then { User newUser ->
-                    newUser = userFilter.filterForGet(newUser, null)
-                    return Promise.pure(newUser)
+                user = userFilter.filterForPatch(user, oldUser)
+
+                return userValidator.validateForUpdate(user, oldUser).then {
+                    return userRepository.update(user).then { User newUser ->
+                        newUser = userFilter.filterForGet(newUser, null)
+                        return Promise.pure(newUser)
+                    }
                 }
             }
         }
@@ -127,9 +167,21 @@ class UserResourceImpl implements UserResource {
         }
 
         return userValidator.validateForGet(userId).then { User user ->
-            user = userFilter.filterForGet(user, getOptions.properties?.split(',') as List<String>)
 
-            return Promise.pure(user)
+            def callback = userAuthorizeCallbackFactory.create(user)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('read')) {
+                    throw AppErrors.INSTANCE.userNotFound(userId).exception()
+                }
+
+                user = userFilter.filterForGet(user, getOptions.properties?.split(',') as List<String>)
+
+                if (user == null) {
+                    throw AppErrors.INSTANCE.userNotFound(userId).exception()
+                }
+
+                return Promise.pure(user)
+            }
         }
     }
 
@@ -138,41 +190,45 @@ class UserResourceImpl implements UserResource {
         return userValidator.validateForSearch(listOptions).then {
             def resultList = new Results<User>(items: [])
 
-            if (listOptions.username != null) {
-                String canonicalUsername = normalizeService.normalize(listOptions.username)
-                return userRepository.getUserByCanonicalUsername(canonicalUsername).then { User user ->
+            def filterUser = { User user ->
+                def callback = userAuthorizeCallbackFactory.create(user)
+                return RightsScope.with(authorizeService.authorize(callback)) {
+                    if (!AuthorizeContext.hasRights('search')) {
+                        throw AppErrors.INSTANCE.invalidAccess().exception()
+                    }
+
+                    user = userFilter.filterForGet(user, listOptions.properties?.split(',') as List<String>)
+
                     if (user != null) {
-                        user = userFilter.filterForGet(user, listOptions.properties?.split(',') as List<String>)
                         resultList.items.add(user)
                     }
 
-                    return Promise.pure(resultList)
+                    return Promise.pure(null)
+                }
+            }
+
+            if (listOptions.username != null) {
+                String canonicalUsername = normalizeService.normalize(listOptions.username)
+                return userRepository.getUserByCanonicalUsername(canonicalUsername).then { User user ->
+                    if (user == null) {
+                        return Promise.pure(resultList)
+                    }
+
+                    return filterUser(user).then {
+                        return Promise.pure(resultList)
+                    }
                 }
             } else {
-                return userGroupRepository.search(new UserGroupListOptions(
-                    groupId: listOptions.groupId
-                )).then { List<UserGroup> userGroupList ->
-                    return fillUserGroups(userGroupList.iterator(), resultList, listOptions).then {
+                return userGroupRepository.searchByGroupId(listOptions.groupId, listOptions.limit,
+                        listOptions.offset).then { List<UserGroup> userGroupList ->
+                    return Promise.each(userGroupList) { UserGroup userGroup ->
+                        return userValidator.validateForGet(userGroup.userId).then(filterUser)
+                    }.then {
                         return Promise.pure(resultList)
                     }
                 }
             }
         }
-    }
-
-    private Promise<Void> fillUserGroups(Iterator<UserGroup> it, Results<User> resultList,
-                                         UserListOptions listOptions) {
-        if (it.hasNext()) {
-            UserGroup userGroup = it.next()
-            return userValidator.validateForGet(userGroup.userId).then { User existing ->
-                existing = userFilter.filterForGet(existing, listOptions.properties?.split(',') as List<String>)
-                resultList.items.add(existing)
-
-                return fillUserGroups(it, resultList, listOptions)
-            }
-        }
-
-        return Promise.pure(null)
     }
 
     @Override
@@ -181,10 +237,15 @@ class UserResourceImpl implements UserResource {
             throw new IllegalArgumentException('userId is null')
         }
 
-        return userValidator.validateForGet(userId).then {
-            userRepository.delete(userId)
+        return userValidator.validateForGet(userId).then { User user ->
+            def callback = userAuthorizeCallbackFactory.create(user)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('delete')) {
+                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                }
 
-            return Promise.pure(null)
+                return userRepository.delete(userId)
+            }
         }
     }
 }

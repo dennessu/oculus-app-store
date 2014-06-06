@@ -8,14 +8,14 @@ package com.junbo.catalog.spec.model.item;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.catalog.spec.model.common.*;
-import com.junbo.common.jackson.annotation.CurrencyId;
+import com.junbo.catalog.spec.model.common.AgeRating;
+import com.junbo.catalog.spec.model.common.BaseRevisionModel;
+import com.junbo.catalog.spec.model.common.Price;
+import com.junbo.common.jackson.annotation.ItemId;
 import com.junbo.common.jackson.annotation.ItemRevisionId;
-import com.junbo.common.jackson.annotation.OfferId;
 import com.junbo.common.jackson.annotation.UserId;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -29,15 +29,29 @@ public class ItemRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The id of item revision resource")
     private Long revisionId;
 
+    @ApiModelProperty(position = 2, required = true,
+            value = "An ID that helps to group like items. ex. TEAM_FORTRESS, this rollup ID would be applied to" +
+                    "all items that are team fortress (PC, MAC, LINUX, etc)")
+    private String rollupPackageName;
+
+    @ApiModelProperty(position = 3, required = true,
+            value = "Used to identify the item (app), used mainly for android")
+    private String packageName;
+
     @ApiModelProperty(position = 15, required = true, value = "Sku")
     private String sku;
+
+    @ItemId
+    @JsonProperty("iapHostItems")
+    @ApiModelProperty(position = 16, required = false, value = "The items in which the IAP item will be sold.")
+    private List<Long> iapHostItemIds;
 
     @UserId
     @JsonProperty("developer")
     @ApiModelProperty(position = 20, required = true, value = "Developer of the item revision resource")
     private Long ownerId;
 
-    @OfferId
+    @ItemId
     @JsonProperty("item")
     @ApiModelProperty(position = 21, required = true, value = "Item of the item revision")
     private Long itemId;
@@ -45,29 +59,30 @@ public class ItemRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 22, required = true, value = "Manufacturer's suggested retail price")
     private Price msrp;
 
-    @ApiModelProperty(position = 23, required = false, value = "Website for the item revision resource")
-    private String website;
-
     @ApiModelProperty(position = 24, required = true, value = "supported input devices",
             allowableValues = "KEYBOARD, MOUSE")
-    List<String> supportedInputDevices;
+    private List<String> supportedInputDevices;
     @ApiModelProperty(position = 25, required = true, value = "game modes",
             allowableValues = "SINGLE_PLAYER, MULTI_PLAYER, CO_OP")
-    String gameModes;
+    private List<String> gameModes;
     @ApiModelProperty(position = 26, required = true, value = "Download Link", allowableValues = "PC, MAC, LINUX")
     private Map<String, Binary> binaries;
 
-    @CurrencyId
-    @ApiModelProperty(position = 31, required = true, value = "Wallet currency")
-    private String storedValueCurrency;
-    @ApiModelProperty(position = 32, required = true, value = "Wallet amount")
-    private BigDecimal storedValueAmount;
+    @ApiModelProperty(position = 27, required = true, value = "The platform name, for digital goods only",
+            allowableValues = "PC, MAC, LINUX, ANDROID")
+    private List<String> platforms;
+
+    @ApiModelProperty(position = 28, required = true,
+            value = "The content ratings given to the item by specific boards (ESRB, PEGI)")
+    private Map<String, List<AgeRating>> ageRatings;
 
     @ApiModelProperty(position = 40, required = true, value = "Locale properties of the item revision")
     private Map<String, ItemRevisionLocaleProperties> locales;
     @ApiModelProperty(position = 41, required = true, value = "Country properties of the item revision")
     private Map<String, ItemRevisionCountryProperties> countries;
-
+    @ApiModelProperty(position = 42, required = true,
+            value = " Information used to create entitlements when an end-user purchases this Item/Item-Revision")
+    private List<EntitlementDef> entitlementDefs;
 
     public String getSku() {
         return sku;
@@ -75,6 +90,30 @@ public class ItemRevision extends BaseRevisionModel {
 
     public void setSku(String sku) {
         this.sku = sku;
+    }
+
+    public String getRollupPackageName() {
+        return rollupPackageName;
+    }
+
+    public void setRollupPackageName(String rollupPackageName) {
+        this.rollupPackageName = rollupPackageName;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
+    public List<Long> getIapHostItemIds() {
+        return iapHostItemIds;
+    }
+
+    public void setIapHostItemIds(List<Long> iapHostItemIds) {
+        this.iapHostItemIds = iapHostItemIds;
     }
 
     public Long getRevisionId() {
@@ -109,14 +148,6 @@ public class ItemRevision extends BaseRevisionModel {
         this.msrp = msrp;
     }
 
-    public String getWebsite() {
-        return website;
-    }
-
-    public void setWebsite(String website) {
-        this.website = website;
-    }
-
     public List<String> getSupportedInputDevices() {
         return supportedInputDevices;
     }
@@ -125,11 +156,11 @@ public class ItemRevision extends BaseRevisionModel {
         this.supportedInputDevices = supportedInputDevices;
     }
 
-    public String getGameModes() {
+    public List<String> getGameModes() {
         return gameModes;
     }
 
-    public void setGameModes(String gameModes) {
+    public void setGameModes(List<String> gameModes) {
         this.gameModes = gameModes;
     }
 
@@ -141,20 +172,20 @@ public class ItemRevision extends BaseRevisionModel {
         this.binaries = binaries;
     }
 
-    public String getStoredValueCurrency() {
-        return storedValueCurrency;
+    public List<String> getPlatforms() {
+        return platforms;
     }
 
-    public void setStoredValueCurrency(String storedValueCurrency) {
-        this.storedValueCurrency = storedValueCurrency;
+    public void setPlatforms(List<String> platforms) {
+        this.platforms = platforms;
     }
 
-    public BigDecimal getStoredValueAmount() {
-        return storedValueAmount;
+    public Map<String, List<AgeRating>> getAgeRatings() {
+        return ageRatings;
     }
 
-    public void setStoredValueAmount(BigDecimal storedValueAmount) {
-        this.storedValueAmount = storedValueAmount;
+    public void setAgeRatings(Map<String, List<AgeRating>> ageRatings) {
+        this.ageRatings = ageRatings;
     }
 
     public Map<String, ItemRevisionLocaleProperties> getLocales() {
@@ -171,6 +202,25 @@ public class ItemRevision extends BaseRevisionModel {
 
     public void setCountries(Map<String, ItemRevisionCountryProperties> countries) {
         this.countries = countries;
+    }
+
+    public List<EntitlementDef> getEntitlementDefs() {
+        return entitlementDefs;
+    }
+
+    public void setEntitlementDefs(List<EntitlementDef> entitlementDefs) {
+        this.entitlementDefs = entitlementDefs;
+    }
+
+    @Override
+    @JsonIgnore
+    public Long getId() {
+        return revisionId;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.revisionId = id;
     }
 
     @Override

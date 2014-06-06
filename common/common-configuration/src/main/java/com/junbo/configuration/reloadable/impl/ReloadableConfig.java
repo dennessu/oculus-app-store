@@ -7,6 +7,7 @@
 package com.junbo.configuration.reloadable.impl;
 
 import com.junbo.configuration.ConfigService;
+import com.junbo.configuration.ConfigServiceManager;
 import com.junbo.configuration.impl.ConfigServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,10 +21,10 @@ public abstract class ReloadableConfig<T> {
 
     private static Logger logger = LoggerFactory.getLogger(ReloadableConfig.class);
 
-    private ConfigService configService;
     private String key;
     private volatile String value;
     private volatile T parsedValue;
+    private ConfigService.ConfigListener configListener;
 
     //endregion
 
@@ -33,6 +34,10 @@ public abstract class ReloadableConfig<T> {
 
     public String getRaw() {
         return value;
+    }
+
+    public void setConfigListener(ConfigService.ConfigListener listener) {
+        this.configListener = listener;
     }
 
     @Override
@@ -45,10 +50,10 @@ public abstract class ReloadableConfig<T> {
     protected ReloadableConfig() {
     }
 
-    protected void initialize(ConfigService configService, String key) {
-        this.configService = configService;
+    protected void initialize(String key) {
         this.key = key;
 
+        ConfigService configService = ConfigServiceManager.instance();
         configService.addListener(key, new ConfigServiceImpl.ConfigListener() {
             @Override
             public void onConfigChanged(String key, String newValue) {
@@ -69,6 +74,10 @@ public abstract class ReloadableConfig<T> {
         try {
             parsedValue = parseValue(newValue);
             value = newValue;
+
+            if (configListener != null) {
+                configListener.onConfigChanged(this.key, newValue);
+            }
         }
         catch (Exception ex) {
             logger.warn(String.format("ReloadableConfig %s failed to parse new value: %s, using old value %s.",

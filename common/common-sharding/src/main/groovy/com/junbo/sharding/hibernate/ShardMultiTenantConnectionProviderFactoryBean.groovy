@@ -1,9 +1,12 @@
 package com.junbo.sharding.hibernate
 
-import bitronix.tm.resource.common.ResourceBean
-import bitronix.tm.resource.jdbc.PoolingDataSource
-import bitronix.tm.utils.PropertyUtils
+import com.junbo.configuration.topo.DataCenters
+import com.junbo.sharding.transaction.SimpleDataSourceProxy
+import com.zaxxer.hikari.HikariDataSource
 import groovy.transform.CompileStatic
+import org.glassfish.jersey.message.internal.DataSourceProvider
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.DisposableBean
 import org.springframework.beans.factory.FactoryBean
 import org.springframework.beans.factory.annotation.Required
@@ -17,39 +20,57 @@ import java.util.regex.Pattern
  */
 @CompileStatic
 class ShardMultiTenantConnectionProviderFactoryBean
-        extends ResourceBean
         implements FactoryBean<ShardMultiTenantConnectionProvider>, DisposableBean {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ShardMultiTenantConnectionProviderFactoryBean)
+
+    private String uniqueName
 
     private String jdbcUrls
 
-    private boolean enableJdbc4ConnectionTest
+    private String className
 
-    private boolean localAutoCommit
+    private int minPoolSize
+
+    private int maxPoolSize
+
+    private Properties driverProperties
+
+    void setUniqueName(String uniqueName) {
+        this.uniqueName = uniqueName
+    }
 
     @Required
     void setJdbcUrls(String jdbcUrls) {
         this.jdbcUrls = jdbcUrls
     }
 
-    void setEnableJdbc4ConnectionTest(boolean enableJdbc4ConnectionTest) {
-        this.enableJdbc4ConnectionTest = enableJdbc4ConnectionTest
+    @Required
+    void setClassName(String className) {
+        this.className = className
     }
 
-    void setLocalAutoCommit(boolean localAutoCommit) {
-        this.localAutoCommit = localAutoCommit
+    @Required
+    void setMinPoolSize(int minPoolSize) {
+        this.minPoolSize = minPoolSize
+    }
+
+    @Required
+    void setMaxPoolSize(int maxPoolSize) {
+        this.maxPoolSize = maxPoolSize
+    }
+
+    @Required
+    void setDriverProperties(Properties driverProperties) {
+        this.driverProperties = driverProperties
     }
 
     ShardMultiTenantConnectionProviderFactoryBean() {
-        // default override
-        this.shareTransactionConnections = true
-        this.enableJdbc4ConnectionTest = true
-        this.localAutoCommit = true
-        this.allowLocalTransactions = true
     }
 
-    private final SchemaSetter schemaSetter = new SchemaSetter()
+    private Map<String, HikariDataSource> dataSourceMap
 
-    private Map<String, PoolingDataSource> dataSourceMap
+    private Map<String, SimpleDataSourceProxy> dataSourceProxyMap
 
     private ShardMultiTenantConnectionProvider connectionProvider
 
@@ -61,9 +82,9 @@ class ShardMultiTenantConnectionProviderFactoryBean
             }
 
             dataSourceMap = new HashMap<>()
+            dataSourceProxyMap = new HashMap<>()
 
-            List<String> schemaList = []
-            List<PoolingDataSource> dataSourceList = []
+            List<SimpleDataSourceProxy> dataSourceList = []
 
             for (String url : jdbcUrls.split(',')) {
                 url = url.trim()
@@ -71,14 +92,20 @@ class ShardMultiTenantConnectionProviderFactoryBean
                     continue
                 }
 
-                def parts = url.split(';', 3)
-                if (parts.length != 3) {
-                    throw new IllegalArgumentException("jdbcUrl(url;schema;range) is invalid. $url")
+                def parts = url.split(';', 4)
+                if (parts.length != 4) {
+                    throw new IllegalArgumentException("jdbcUrl(url;schema;range;dc) is invalid. $url")
                 }
 
                 url = parts[0].trim()
                 def schema = parts[1].trim()
                 def range = parseRange(parts[2].trim())
+                def dc = parts[3].trim()
+
+                if (!DataCenters.instance().isLocalDataCenter(dc)) {
+                    // not in local dc
+                    continue;
+                }
 
                 if (range[0] != dataSourceList.size()) {
                     throw new IllegalArgumentException("Range $range is not in a row")
@@ -86,13 +113,11 @@ class ShardMultiTenantConnectionProviderFactoryBean
                 int count = range[1] - range[0] + 1
 
                 for (int i = 0; i < count; i++) {
-                    dataSourceList.add(getOrCreateDataSource(url))
-                    schemaList.add(schema)
+                    dataSourceList.add(createDataSourceProxy(url, schema))
                 }
             }
 
-            connectionProvider = new ShardMultiTenantConnectionProvider(
-                    dataSourceList, schemaList, schemaSetter)
+            connectionProvider = new ShardMultiTenantConnectionProvider(dataSourceList)
         }
 
         return connectionProvider
@@ -112,33 +137,55 @@ class ShardMultiTenantConnectionProviderFactoryBean
     void destroy() throws Exception {
         if (connectionProvider != null) {
             connectionProvider = null
+        }
 
-            for (PoolingDataSource dataSource : dataSourceMap.values()) {
-                dataSource.close()
+        if (dataSourceMap != null) {
+            for (HikariDataSource dataSource : dataSourceMap.values()) {
+                try {
+                    dataSource.close()
+                } catch (Exception ex) {
+                    LOGGER.warn("Failed to close $dataSource", ex)
+                }
             }
+
             dataSourceMap = null
         }
     }
 
-    private PoolingDataSource getOrCreateDataSource(String url) {
-        def result = dataSourceMap.get(url)
-        if (result == null) {
-            result = new PoolingDataSource()
-            PropertyUtils.setProperties(result, PropertyUtils.getProperties(this))
+    private SimpleDataSourceProxy createDataSourceProxy(String url, String schema) {
+        DataSource dataSource = dataSourceMap.get(url)
 
-            result.uniqueName = result.uniqueName + '_' + dataSourceMap.size()
-            result.driverProperties.put('url', url)
-
-            result.enableJdbc4ConnectionTest = enableJdbc4ConnectionTest
-            result.localAutoCommit = localAutoCommit
-
-            result.addConnectionCustomizer(schemaSetter)
-            result.init()
-            dataSourceMap.put(url, result)
+        if (dataSource == null) {
+            dataSource = createDataSource(url)
+            dataSourceMap.put(url, dataSource)
         }
-        return result
+
+        def key = "$url:$schema"
+        SimpleDataSourceProxy dataSourceProxy = dataSourceProxyMap.get(key)
+
+        if (dataSourceProxy == null) {
+            dataSourceProxy = new SimpleDataSourceProxy(dataSource, schema)
+            dataSourceProxyMap.put(key, dataSourceProxy)
+        }
+
+        return dataSourceProxy
     }
 
+    private HikariDataSource createDataSource(String url) {
+        HikariDataSource dataSource = new HikariDataSource()
+
+        dataSource.setDriverClassName(className)
+        dataSource.setJdbcUrl(url)
+
+        dataSource.setMaximumPoolSize(maxPoolSize)
+
+        dataSource.setUsername(driverProperties.getProperty('user'))
+        dataSource.setPassword(driverProperties.getProperty('password'))
+
+        dataSource.setDataSourceProperties(driverProperties)
+
+        return dataSource
+    }
 
     private static final String PATTERN_STR = '^(0|[1-9][0-9]*)[\\.]{2}(0|[1-9][0-9]*)$'
     private static final Pattern PATTERN = Pattern.compile(PATTERN_STR)

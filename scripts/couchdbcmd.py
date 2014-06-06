@@ -65,7 +65,7 @@ def readParams():
             return sys.argv.pop(0).strip()
         return default
     host = readOptionalArg("localhost:5984")
-    db = readOptionalArg()
+    dbPattern = readOptionalArg()
 
     # Validate params
     command = command.lower()
@@ -80,22 +80,25 @@ def readParams():
             error("Aborting...")
 
     if command in set(["drop"]):
-        if isNoneOrEmpty(db):
+        if isNoneOrEmpty(dbPattern):
             error("Argument db is required for " + command)
     
-    return (command, host, db)
+    return (command, host, dbPattern)
 
-def executeDbCommand(command, host, db):
+def executeDbCommand(command, host, dbPattern):
     if command == "listdbs":
-        print string.join(listdbs(host), "\r\n")
+        print string.join(listdbs(host, dbPattern), "\r\n")
     elif command == "dropall":
-        for db in listdbs(host):
+        for db in listdbs(host, dbPattern):
             dropdb(host, db)
-    elif command == "dropdb":
-        dropdb(host, db)
+    elif command == "drop":
+        # in this case dbPattern is the db name
+        drop(host, dbPattern)
 
-def listdbs(host):
-    return [db for db in curlJson(host + "/_all_dbs") if not db.startswith("_")]
+def listdbs(host, dbPattern):
+    if not dbPattern:
+        dbPattern = '.*'
+    return [db for db in curlJson(host + "/_all_dbs") if re.match(dbPattern, db) and not db.startswith("_")]
 
 def dropdb(host, dbName):
     info("Dropping database %s in %s..." % (dbName, host));
@@ -111,7 +114,7 @@ def curlJson(url, method = 'GET', body = None, headers = {}):
 def curl(url, method = 'GET', body = None, headers = {}, raiseOnError = True):
     conn = None
     try:
-        urlRegex = r'^(?P<protocol>http[s]?://)?(?P<host>[^/:]+)(:(?P<port>\d+))?(?P<path>(/|\?).*)$'
+        urlRegex = r'^(?P<protocol>http[s]?://)?((?P<userpass>([^/@:]*):([^/@:]*))@)?(?P<host>[^/:]+)(:(?P<port>\d+))?(?P<path>(/|\?).*)$'
         m = re.match(urlRegex, url)
         if m is None:
             raise Exception('Invalid url: ' + url)
@@ -121,16 +124,22 @@ def curl(url, method = 'GET', body = None, headers = {}, raiseOnError = True):
         port = m.group('port')
         path = m.group('path')
 
-        if not port:
-            if protocol == "https://":
-                port = 443
-            else:
-                port = 80
-        else:
-            port = int(port)
+        userpass = m.group('userpass')
 
         verbose(method + " " + url)
-        conn = httplib.HTTPConnection(host, port)
+        if port:
+            port = int(port)
+        if protocol == "https://":
+            conn = httplib.HTTPSConnection(host, port)
+        else:
+            conn = httplib.HTTPConnection(host, port)
+ 
+        if userpass:
+            import base64
+            base64String = base64.encodestring(userpass)
+            authheader = "Basic %s" % base64String
+            headers['Authorization'] = authheader
+
         # uncomment to turn on trace
         # conn.set_debuglevel(1)      # turn on trace
         conn.request(method, path, body, headers)

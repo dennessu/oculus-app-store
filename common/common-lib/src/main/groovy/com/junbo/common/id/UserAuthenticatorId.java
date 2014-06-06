@@ -8,7 +8,7 @@ package com.junbo.common.id;
 /**
  * Created by liangfu on 3/14/14.
  */
-@IdResourcePath("/authenticators/{0}")
+@IdResourcePath(value = "/authenticators/{0}", regex = "/authenticators/(?<id>[0-9A-Z]+)")
 public class UserAuthenticatorId extends Id {
     public UserAuthenticatorId() {}
     public UserAuthenticatorId(long value) {

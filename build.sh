@@ -1,10 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 source "$(git rev-parse --show-toplevel)/scripts/common.sh"; # this comment is needed, see common.sh for detail
 
 if [ -z "$*" ]; then
-    GRADLE_CMD="gradle clean build install"
+    GRADLE_CMD="gradle --continue"
 else
-    GRADLE_CMD="gradle $*"
+    GRADLE_CMD="gradle $* --continue"
 fi
 function run_gradle {
     pushd $1
@@ -12,8 +12,7 @@ function run_gradle {
     popd
 }
 
-while read p; do
-    if [[ ! -z "$p" && ! $p == \#* ]]; then
-        run_gradle $p
-    fi
-done < dirs
+cd `git rev-parse --show-toplevel`
+run_gradle gradle/bootstrap
+$GRADLE_CMD 
+

@@ -9,26 +9,33 @@ package com.junbo.catalog.spec.model.item;
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
 import com.junbo.common.id.ItemAttributeId;
 import com.junbo.common.id.ItemId;
+import com.junbo.common.id.UserId;
 
 import javax.ws.rs.QueryParam;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Items get options.
  */
 public class ItemsGetOptions extends PageableGetOptions {
     @QueryParam("itemId")
-    private List<ItemId> itemIds;
+    private Set<ItemId> itemIds;
     @QueryParam("type")
     private String type;
-    @QueryParam("genre")
+    @QueryParam("genreId")
     private ItemAttributeId genre;
+    @QueryParam("hostItemId")
+    private ItemId hostItemId;
+    @QueryParam("developerId")
+    private UserId ownerId;
+    @QueryParam("q")
+    private String query;
 
-    public List<ItemId> getItemIds() {
+    public Set<ItemId> getItemIds() {
         return itemIds;
     }
 
-    public void setItemIds(List<ItemId> itemIds) {
+    public void setItemIds(Set<ItemId> itemIds) {
         this.itemIds = itemIds;
     }
 
@@ -46,5 +53,29 @@ public class ItemsGetOptions extends PageableGetOptions {
 
     public void setGenre(ItemAttributeId genre) {
         this.genre = genre;
+    }
+
+    public ItemId getHostItemId() {
+        return hostItemId;
+    }
+
+    public void setHostItemId(ItemId hostItemId) {
+        this.hostItemId = hostItemId;
+    }
+
+    public UserId getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(UserId ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
     }
 }

@@ -7,10 +7,11 @@
 package com.junbo.order.core.impl.order
 
 import com.junbo.billing.spec.model.Balance
-import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.common.id.OfferId
+import com.junbo.identity.spec.v1.model.Address
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.order.clientproxy.model.OrderOfferRevision
+import com.junbo.order.spec.model.ApiContext
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderEvent
 import com.junbo.payment.spec.model.PaymentInstrument
@@ -30,9 +31,12 @@ class OrderServiceContext {
 
     Order order
     User user
+    ApiContext apiContext
     List<PaymentInstrument> paymentInstruments
     List<Balance> balances
-    ShippingAddress shippingAddress
+    Address shippingAddress
+    Boolean isAsyncCharge
+
     /**
      * Offers in order in map structure
      */

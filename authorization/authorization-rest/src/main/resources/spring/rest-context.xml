@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="defaultRoleResource" class="com.junbo.authorization.rest.resource.RoleResourceImpl">
+        <property name="roleRepository" ref="roleRepository"/>
+        <property name="authorizeService" ref="authorizeService"/>
+        <property name="roleFilter" ref="roleFilter"/>
+        <property name="roleValidator" ref="roleValidator"/>
+        <property name="roleAuthorizeCallbackFactory" ref="roleAuthorizeCallbackFactory"/>
+    </bean>
+
+    <bean id="defaultRoleAssignmentResource" class="com.junbo.authorization.rest.resource.RoleAssignmentResourceImpl">
+        <property name="roleRepository" ref="roleRepository"/>
+        <property name="roleAssignmentFilter" ref="roleAssignmentFilter"/>
+        <property name="roleAssignmentRepository" ref="roleAssignmentRepository"/>
+        <property name="roleAssignmentValidator" ref="roleAssignmentValidator"/>
+        <property name="authorizeService" ref="authorizeService"/>
+        <property name="roleAuthorizeCallbackFactory" ref="roleAuthorizeCallbackFactory"/>
+    </bean>
+
+    <bean id="defaultApiDefinitionResource" class="com.junbo.authorization.rest.resource.ApiDefinitionResourceImpl">
+        <property name="apiService" ref="apiService"/>
+        <property name="tokenInfoParser" ref="tokenInfoParser"/>
+    </bean>
+
+    <bean id="defaultRoleResourceClientFactory" class="com.junbo.authorization.spec.resource.proxy.RoleResourceClientProxyFactory"/>
+
+    <bean id="defaultRoleAssignmentResourceClientFactory" class="com.junbo.authorization.spec.resource.proxy.RoleAssignmentResourceClientProxyFactory"/>
+
+    <bean id="defaultRoleResourceRouter" parent="routingRouterBase" />
+
+    <bean id="defaultRoleAssignmentResourceRouter" parent="routingRouterBase" />
+
+    <bean id="defaultApiDefinitionResourceClientFactory" class="com.junbo.authorization.spec.resource.proxy.ApiDefinitionResourceClientProxyFactory"/>
+
+    <bean id="defaultApiDefinitionResourceRouter" parent="routingRouterBase" />
+</beans>

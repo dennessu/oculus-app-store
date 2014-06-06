@@ -46,11 +46,11 @@ class GetAccessTokenInfo implements Action {
         AccessToken accessToken = tokenService.getAccessToken(token)
 
         if (accessToken == null) {
-            throw AppExceptions.INSTANCE.invalidAccessToken().exception()
+            throw AppExceptions.INSTANCE.invalidAccessToken(token).exception()
         }
 
         if (accessToken.isExpired()) {
-            throw AppExceptions.INSTANCE.expiredAccessToken().exception()
+            throw AppExceptions.INSTANCE.expiredAccessToken(token).exception()
         }
 
         TokenInfo tokenInfo = new TokenInfo(

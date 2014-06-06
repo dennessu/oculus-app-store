@@ -7,7 +7,7 @@
 **/target/**
 build/
 target/
-
+/build.log
 
 # OS files
 Thumbs.db
@@ -18,6 +18,7 @@ Desktop.ini
 *.war
 !common/liquibase/lib/*
 !identity/identity-data/src/test/resources/*
+!identity/libs/*.jar
 
 # Output files
 *.class
@@ -53,3 +54,5 @@ activemq-data/
 # ignore diff orig file
 *.orig
 
+# ignore the personal configuration file
+common/configuration-data/src/main/resources/junbo/conf/onebox/common/personal.properties

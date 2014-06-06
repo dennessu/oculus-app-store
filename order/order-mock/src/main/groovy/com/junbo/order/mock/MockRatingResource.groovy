@@ -1,11 +1,14 @@
 package com.junbo.order.mock
+
 import com.junbo.langur.core.promise.Promise
 import com.junbo.rating.spec.model.request.*
+import com.junbo.rating.spec.model.subscription.SubsRatingRequest
 import com.junbo.rating.spec.resource.RatingResource
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
+
 /**
  * Created by chriszhu on 2/21/14.
  */
@@ -40,6 +43,11 @@ class MockRatingResource extends BaseMock implements RatingResource {
 
     @Override
     Promise<OfferRatingRequest> offerRating(OfferRatingRequest request) {
+        return null
+    }
+
+    @Override
+    Promise<SubsRatingRequest> subsRating(SubsRatingRequest request) {
         return null
     }
 }

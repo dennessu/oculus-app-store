@@ -1,7 +1,7 @@
 package com.junbo.identity.core.service.filter
 
 import com.junbo.common.json.PropertyAssignedAwareSupport
-import com.junbo.identity.core.service.util.FilterUtil
+import com.junbo.identity.common.util.FilterUtil
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.oom.core.MappingContext
 import com.junbo.oom.core.filter.PropertyMappingEvent
@@ -67,7 +67,7 @@ class PutFilter implements PropertyMappingFilter {
                     throw AppErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
                 } else {
                     if (!alternativeSourcePropertyIsNull) {
-                        event.sourceProperty = event.sourcePropertyType.newInstance()
+                        event.sourceProperty = initInstance(event.sourcePropertyType)
                     }
                 }
             }
@@ -80,5 +80,15 @@ class PutFilter implements PropertyMappingFilter {
 
     @Override
     void endPropertyMapping(PropertyMappingEvent event, MappingContext context) {
+    }
+
+    private Object initInstance(Class cls) {
+        if (cls == Map.class) {
+            return new HashMap()
+        } else if (cls == List.class) {
+            return new ArrayList()
+        } else {
+            return cls.newInstance()
+        }
     }
 }

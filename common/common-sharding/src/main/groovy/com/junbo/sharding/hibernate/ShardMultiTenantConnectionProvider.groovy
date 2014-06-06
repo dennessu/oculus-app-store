@@ -1,6 +1,6 @@
 package com.junbo.sharding.hibernate
 
-import bitronix.tm.resource.jdbc.PoolingDataSource
+import com.junbo.sharding.transaction.SimpleDataSourceProxy
 import groovy.transform.CompileStatic
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider
 import org.hibernate.service.UnknownUnwrapTypeException
@@ -15,36 +15,16 @@ import java.sql.SQLException
 @SuppressWarnings('JdbcConnectionReference')
 class ShardMultiTenantConnectionProvider implements MultiTenantConnectionProvider {
 
-    private final List<PoolingDataSource> dataSourceList
-
-    private final List<String> schemaList
-
-    private final SchemaSetter schemaSetter
+    private final List<SimpleDataSourceProxy> dataSourceList
 
     ShardMultiTenantConnectionProvider(
-            List<PoolingDataSource> dataSourceList,
-            List<String> schemaList,
-            SchemaSetter schemaSetter) {
+            List<SimpleDataSourceProxy> dataSourceList) {
 
         if (dataSourceList == null) {
             throw new IllegalArgumentException('dataSourceList is null')
         }
 
-        if (schemaList == null) {
-            throw new IllegalArgumentException('schemaList is null')
-        }
-
-        if (schemaList.size() != dataSourceList.size()) {
-            throw new IllegalArgumentException('schemaList.size != dataSourceList.size')
-        }
-
-        if (schemaSetter == null) {
-            throw new IllegalArgumentException('schemaSetter is null')
-        }
-
         this.dataSourceList = dataSourceList
-        this.schemaList = schemaList
-        this.schemaSetter = schemaSetter
     }
 
     @Override
@@ -65,18 +45,11 @@ class ShardMultiTenantConnectionProvider implements MultiTenantConnectionProvide
 
         int shardId = Integer.parseInt(tenantIdentifier)
 
-        if (shardId < 0 || shardId >= schemaList.size()) {
-            throw new IllegalArgumentException("shardId $shardId should be in [0, ${schemaList.size()})")
+        if (shardId < 0 || shardId >= dataSourceList.size()) {
+            throw new IllegalArgumentException("shardId $shardId should be in [0, ${dataSourceList.size()})")
         }
 
-        def dataSource = dataSourceList.get(shardId)
-        def schema = schemaList.get(shardId)
-
-        def connection = dataSource.connection
-
-        schemaSetter.setSchema(connection, schema)
-
-        return connection
+        return dataSourceList.get(shardId).connection
     }
 
     @Override
@@ -100,6 +73,7 @@ class ShardMultiTenantConnectionProvider implements MultiTenantConnectionProvide
         if (isUnwrappableAs(unwrapType)) {
             return (T) this
         }
+
         throw new UnknownUnwrapTypeException(unwrapType)
     }
 }

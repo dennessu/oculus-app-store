@@ -5,17 +5,23 @@
  */
 package com.junbo.test.catalog.util;
 
-import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.catalog.spec.model.attribute.OfferAttribute;
+import com.junbo.test.catalog.impl.OfferRevisionServiceImpl;
+import com.junbo.catalog.spec.model.attribute.ItemAttribute;
+import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
+import com.junbo.test.catalog.enums.CatalogEntityStatus;
+import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.item.ItemRevision;
-import com.junbo.common.id.ItemId;
+import com.junbo.test.catalog.impl.OfferServiceImpl;
+import com.junbo.test.catalog.impl.ItemServiceImpl;
+import com.junbo.test.catalog.OfferRevisionService;
+import com.junbo.test.catalog.ItemRevisionService;
+import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.test.common.Utility.TestClass;
-import com.junbo.test.common.apihelper.catalog.ItemRevisionService;
-import com.junbo.test.common.apihelper.catalog.ItemService;
-import com.junbo.test.common.apihelper.catalog.impl.ItemRevisionServiceImpl;
-import com.junbo.test.common.apihelper.catalog.impl.ItemServiceImpl;
-import com.junbo.test.common.blueprint.Master;
-import com.junbo.test.common.libs.EnumHelper;
-import com.junbo.test.common.libs.IdConverter;
+import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.test.catalog.OfferService;
+import com.junbo.test.catalog.ItemService;
+import com.junbo.common.model.Results;
 
 /**
  @author Jason
@@ -24,33 +30,85 @@ import com.junbo.test.common.libs.IdConverter;
  */
 public class BaseTestClass extends TestClass {
 
-    protected final String defaultItemFileName = "defaultItem";
-    protected final String defaultItemRevisionFileName = "defaultItemRevision";
-    protected final String defaultOfferFileName = "defaultOffer";
-    protected final String defaultDigitalOfferRevisionFileName = "defaultDigitalOfferRevision";
-    protected final String defaultPhysicalOfferRevisionFileName = "defaultPhysicalOfferRevision";
+    protected Item releaseItem(Item item) throws Exception {
+        ItemService itemService = ItemServiceImpl.instance();
+        ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
 
-    protected void releaseItem(Item item) throws Exception {
+        //Attach item revision to the item
+        ItemRevision itemRevision = itemRevisionService.postDefaultItemRevision(item);
 
-        if (item.getCurrentRevisionId() != null){
-            ItemService itemService = ItemServiceImpl.instance();
-            item.setCurated(true);
-            itemService.updateItem(item);
-        }
-        else {
-            ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
+        //Approve the item revision
+        itemRevision.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
+        itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision);
 
-            //Attach item revision to the item
-            ItemRevision itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultItemRevisionFileName, EnumHelper.CatalogItemType.getRandom());
-            itemRevision.setItemId(item.getItemId());
-            itemRevision.setType(item.getType());
-            itemRevision.setOwnerId(item.getOwnerId());
-            String itemRevisionId = itemRevisionService.postItemRevision(itemRevision);
-
-            //Approve the item revision
-            itemRevision = Master.getInstance().getItemRevision(itemRevisionId);
-            itemRevision.setStatus(EnumHelper.CatalogEntityStatus.APPROVED.getEntityStatus());
-            itemRevisionService.updateItemRevision(itemRevision);
-        }
+        return itemService.getItem(item.getItemId());
     }
+
+    protected ItemRevision releaseItemRevision(ItemRevision itemRevision) throws Exception {
+        ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
+
+        //Approve the item revision
+        itemRevision.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
+        return itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision);
+    }
+
+    protected Offer releaseOffer(Offer offer) throws Exception {
+        OfferService offerService = OfferServiceImpl.instance();
+        OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
+
+        //Attach offer revision to the offer
+        OfferRevision offerRevision = offerRevisionService.postDefaultOfferRevision(offer);
+
+        //Approve the offer revision
+        offerRevision.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
+        offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
+
+        return offerService.getOffer(offer.getOfferId());
+    }
+
+    protected OfferRevision releaseOfferRevision(OfferRevision offerRevision) throws Exception {
+        OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
+
+        //Approve the offer revision
+        offerRevision.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
+        return offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
+    }
+
+    protected <T> boolean isContain (Results<T> results, T entity) {
+        boolean contain = false;
+        for (T t : results.getItems()){
+            if (t instanceof Offer) {
+                if(((Offer) t).getOfferId().equals(((Offer) entity).getOfferId())) {
+                    contain = true;
+                }
+            }
+            else if (t instanceof OfferAttribute) {
+                if(((OfferAttribute) t).getId().equals(((OfferAttribute) entity).getId())) {
+                    contain = true;
+                }
+            }
+            else if (t instanceof OfferRevision) {
+                if(((OfferRevision) t).getRevisionId().equals(((OfferRevision) entity).getRevisionId())) {
+                    contain = true;
+                }
+            }
+            else if (t instanceof Item) {
+                if(((Item) t).getItemId().equals(((Item) entity).getItemId())) {
+                    contain = true;
+                }
+            }
+            else if (t instanceof ItemAttribute) {
+                if(((ItemAttribute) t).getId().equals(((ItemAttribute) entity).getId())) {
+                    contain = true;
+                }
+            }
+            else if (t instanceof ItemRevision) {
+                if(((ItemRevision) t).getRevisionId().equals(((ItemRevision) entity).getRevisionId())) {
+                    contain = true;
+                }
+            }
+        }
+        return contain;
+    }
+
 }

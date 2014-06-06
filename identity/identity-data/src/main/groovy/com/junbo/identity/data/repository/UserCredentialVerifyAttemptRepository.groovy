@@ -6,10 +6,12 @@
 package com.junbo.identity.data.repository
 
 import com.junbo.common.id.UserCredentialVerifyAttemptId
+import com.junbo.common.id.UserId
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.core.annotations.ReadMethod
+import com.junbo.sharding.dualwrite.annotations.ReadMethod
+import com.junbo.sharding.repo.BaseRepository
 import groovy.transform.CompileStatic
 
 /**
@@ -17,7 +19,11 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface UserCredentialVerifyAttemptRepository
-        extends IdentityBaseRepository<UserCredentialVerifyAttempt, UserCredentialVerifyAttemptId> {
+        extends BaseRepository<UserCredentialVerifyAttempt, UserCredentialVerifyAttemptId> {
     @ReadMethod
-    Promise<List<UserCredentialVerifyAttempt>> search(UserCredentialAttemptListOptions getOption)
+    Promise<List<UserCredentialVerifyAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset)
+
+    @ReadMethod
+    Promise<List<UserCredentialVerifyAttempt>> searchByUserIdAndCredentialType(UserId userId, String type,
+                                                                               Integer limit, Integer offset)
 }

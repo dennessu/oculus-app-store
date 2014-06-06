@@ -42,6 +42,7 @@ public enum TaxAuthority implements Identifiable<Short> {
     SURCHARGE((short)26),
     USWHT((short)27),
     BACKUPUSWHT((short)28),
+    IST((short)29),
 
     UNKNOWN((short)999);
 

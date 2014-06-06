@@ -13,7 +13,7 @@
     </bean>
 
     <bean id="cartDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
-        <property name="jdbcUrls" value="${cart.db.url}"/>
+        <property name="jdbcUrls" value="${cart.db.jdbcUrls}"/>
 
         <property name="uniqueName" value="jdbc/cart"/>
         <property name="className" value="${cart.db.driverClassName}"/>

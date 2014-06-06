@@ -7,6 +7,8 @@ dependencies {
     compile (libraries.jersey_server)
     compile (libraries.jersey_container_grizzly2_http)
 
+    compile (libraries.slf4j_api)
+
     //compile (libraries.swagger_annotations)
 
     compile (libraries.spring_aop)

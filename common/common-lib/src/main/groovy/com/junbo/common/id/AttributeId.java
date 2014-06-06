@@ -9,7 +9,7 @@ package com.junbo.common.id;
 /**
  * AttributeId.
  */
-@IdResourcePath("/attributes/{0}")
+@IdResourcePath(value = "/attributes/{0}", regex = "/attributes/(?<id>[0-9A-Z]+)")
 public class AttributeId extends Id {
 
     public AttributeId() {}

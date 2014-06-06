@@ -7,9 +7,13 @@ package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.junbo.common.enumid.CountryId;
+import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.SubledgerId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.util.Identifiable;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -18,43 +22,43 @@ import java.util.Date;
  * Created by chriszhu on 2/10/14.
  */
 @JsonPropertyOrder(value = {
-        "subledgerId", "sellerId", "offerId", "country", "currency",
+        "id", "seller", "offer", "country", "currency",
         "payoutStatus", "totalAmount", "startTime", "endTime", "resourceAge"
 })
-public class Subledger extends BaseOrderResource {
+public class Subledger extends ResourceMeta implements Identifiable<SubledgerId> {
     @JsonProperty("self")
-    private SubledgerId subledgerId;
-    private UserId sellerId;
-    private OfferId offerId;
+    private SubledgerId id;
+    private UserId seller;
+    private OfferId offer;
     private String payoutStatus;
     private Date startTime;
     private Date endTime;
-    private String country;
-    private String currency;
+    private CountryId country;
+    private CurrencyId currency;
     private BigDecimal totalAmount;
 
-    public SubledgerId getSubledgerId() {
-        return subledgerId;
+    public SubledgerId getId() {
+        return id;
     }
 
-    public void setSubledgerId(SubledgerId subledgerId) {
-        this.subledgerId = subledgerId;
+    public void setId(SubledgerId id) {
+        this.id = id;
     }
 
-    public UserId getSellerId() {
-        return sellerId;
+    public UserId getSeller() {
+        return seller;
     }
 
-    public void setSellerId(UserId sellerId) {
-        this.sellerId = sellerId;
+    public void setSeller(UserId seller) {
+        this.seller = seller;
     }
 
-    public OfferId getOfferId() {
-        return offerId;
+    public OfferId getOffer() {
+        return offer;
     }
 
-    public void setOfferId(OfferId offerId) {
-        this.offerId = offerId;
+    public void setOffer(OfferId offer) {
+        this.offer = offer;
     }
 
     public String getPayoutStatus() {
@@ -81,19 +85,19 @@ public class Subledger extends BaseOrderResource {
         this.endTime = endTime;
     }
 
-    public String getCountry() {
+    public CountryId getCountry() {
         return country;
     }
 
-    public void setCountry(String country) {
+    public void setCountry(CountryId country) {
         this.country = country;
     }
 
-    public String getCurrency() {
+    public CurrencyId getCurrency() {
         return currency;
     }
 
-    public void setCurrency(String currency) {
+    public void setCurrency(CurrencyId currency) {
         this.currency = currency;
     }
 

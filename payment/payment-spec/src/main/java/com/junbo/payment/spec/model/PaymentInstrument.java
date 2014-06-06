@@ -77,6 +77,8 @@ public class PaymentInstrument {
     @FilterIn
     @JsonIgnore
     private String externalToken;
+    @JsonIgnore
+    private UserInfo userInfo;
 
     public Long getId() {
         return id;
@@ -230,5 +232,13 @@ public class PaymentInstrument {
 
     public void setExternalToken(String externalToken) {
         this.externalToken = externalToken;
+    }
+
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
     }
 }

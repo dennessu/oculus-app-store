@@ -7,7 +7,7 @@
 package com.junbo.order.db.entity;
 
 import com.junbo.order.db.ValidationMessages;
-import com.junbo.order.db.entity.enums.OrderStatus;
+import com.junbo.order.spec.model.enums.OrderStatus;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Length;
 
@@ -30,6 +30,8 @@ public class OrderEntity extends CommonDbEntityWithDate {
     private String country;
     private String locale;
     private Long shippingAddressId;
+    private Long shippingNameId;
+    private Long shippingPhoneId;
     private Long shippingMethodId;
 
     // expand ratingInfo to simplify oom
@@ -39,8 +41,12 @@ public class OrderEntity extends CommonDbEntityWithDate {
     private BigDecimal totalDiscount;
     private BigDecimal totalShippingFee;
     private BigDecimal totalShippingFeeDiscount;
+    private String successRedirectUrl;
+    private String cancelRedirectUrl;
+    private String providerConfirmUrl;
     private Date honorUntilTime;
     private Date honoredTime;
+    private String paymentDescription;
     // end of ratingInfo
 
     private String properties;
@@ -75,6 +81,22 @@ public class OrderEntity extends CommonDbEntityWithDate {
     @Column(name = "SHIPPING_ADDRESS_ID")
     public Long getShippingAddressId() { return shippingAddressId; }
     public void setShippingAddressId(Long shippingAddressId) { this.shippingAddressId = shippingAddressId; }
+
+    @Column(name = "SHIPPING_NAME_ID")
+    public Long getShippingNameId() {
+        return shippingNameId;
+    }
+    public void setShippingNameId(Long shippingNameId) {
+        this.shippingNameId = shippingNameId;
+    }
+
+    @Column(name = "SHIPPING_PHONE_ID")
+    public Long getShippingPhoneId() {
+        return shippingPhoneId;
+    }
+    public void setShippingPhoneId(Long shippingPhoneId) {
+        this.shippingPhoneId = shippingPhoneId;
+    }
 
     @Column(name = "SHIPPING_METHOD_ID")
     public Long getShippingMethodId() { return shippingMethodId; }
@@ -202,6 +224,42 @@ public class OrderEntity extends CommonDbEntityWithDate {
 
     public void setLocale(String locale) {
         this.locale = locale;
+    }
+
+    @Column(name = "SUCCESS_REDIRECT_URL")
+    public String getSuccessRedirectUrl() {
+        return successRedirectUrl;
+    }
+
+    public void setSuccessRedirectUrl(String successRedirectUrl) {
+        this.successRedirectUrl = successRedirectUrl;
+    }
+
+    @Column(name = "CANCEL_REDIRECT_URL")
+    public String getCancelRedirectUrl() {
+        return cancelRedirectUrl;
+    }
+
+    public void setCancelRedirectUrl(String cancelRedirectUrl) {
+        this.cancelRedirectUrl = cancelRedirectUrl;
+    }
+
+    @Column(name = "PROVIDER_CONFIRM_URL")
+    public String getProviderConfirmUrl() {
+        return providerConfirmUrl;
+    }
+
+    public void setProviderConfirmUrl(String providerConfirmUrl) {
+        this.providerConfirmUrl = providerConfirmUrl;
+    }
+
+    @Column(name = "PAYMENT_DESCRIPTION")
+    public String getPaymentDescription() {
+        return paymentDescription;
+    }
+
+    public void setPaymentDescription(String paymentDescription) {
+        this.paymentDescription = paymentDescription;
     }
 
     @Override

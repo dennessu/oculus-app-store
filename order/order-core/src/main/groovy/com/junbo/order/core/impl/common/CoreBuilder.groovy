@@ -1,5 +1,6 @@
 package com.junbo.order.core.impl.common
 import com.junbo.billing.spec.enums.BalanceType
+import com.junbo.billing.spec.enums.PropertyKey
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.DiscountItem
@@ -11,9 +12,9 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.core.impl.orderaction.context.OrderActionResult
-import com.junbo.order.db.entity.enums.DiscountType
-import com.junbo.order.db.entity.enums.EventStatus
-import com.junbo.order.db.entity.enums.OrderActionType
+import com.junbo.order.spec.model.enums.DiscountType
+import com.junbo.order.spec.model.enums.EventStatus
+import com.junbo.order.spec.model.enums.OrderActionType
 import com.junbo.order.spec.model.Discount
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderEvent
@@ -44,10 +45,10 @@ class CoreBuilder {
 
         order.orderItems.eachWithIndex { OrderItem item, int i ->
             def balanceItem = buildBalanceItem(item)
-            if (item.orderItemId == null) {
+            if (item.id == null) {
                 balanceItem.orderItemId = new OrderItemId(i)
             } else {
-                balanceItem.orderItemId = item.orderItemId
+                balanceItem.orderItemId = item.getId()
             }
             balance.addBalanceItem(balanceItem)
         }
@@ -74,10 +75,10 @@ class CoreBuilder {
         order.orderItems.eachWithIndex { OrderItem item, int i ->
             def balanceItem = buildOrUpdatePartialChargeBalanceItem(item, taxedBalance)
             if (taxedBalance == null) {
-                if (item.orderItemId == null) {
+                if (item.id == null) {
                     balanceItem.orderItemId = new OrderItemId(i)
                 } else {
-                    balanceItem.orderItemId = item.orderItemId
+                    balanceItem.orderItemId = item.getId()
                 }
                 balance.addBalanceItem(balanceItem)
             }
@@ -86,19 +87,56 @@ class CoreBuilder {
         return  balance
     }
 
+    static Balance buildRefundDepositBalance(Balance originalBalance) {
+        assert (originalBalance != null)
+
+        Balance balance = null
+        balance = buildRefundBalance(originalBalance)
+
+        originalBalance.balanceItems.each { BalanceItem item ->
+            def balanceItem = buildBalanceItem(item)
+            balanceItem.originalBalanceItemId = balanceItem.balanceItemId
+            balanceItem.balanceItemId = null
+            balance.addBalanceItem(balanceItem)
+        }
+        return balance
+    }
+
     static Balance buildBalance(Order order) {
         Balance balance = new Balance()
-        balance.trackingUuid = UUID.randomUUID()
         balance.country = order.country.value
         balance.currency = order.currency.value
-        balance.orderId = order.id
+        balance.orderId = order.getId()
         balance.userId = order.user
-        balance.piId = order.paymentInstruments?.get(0)
+        balance.piId = order.payments?.get(0)?.paymentInstrument
         balance.trackingUuid = UUID.randomUUID()
         balance.shippingAddressId = order.shippingAddress
         balance.providerConfirmUrl = order.providerConfirmUrl
         balance.successRedirectUrl = order.successRedirectUrl
         balance.cancelRedirectUrl = order.cancelRedirectUrl
+        if (order.paymentDescription != null) {
+            balance.propertySet.put(PropertyKey.BALANCE_DESCRIPTION.name(), order.paymentDescription)
+        }
+
+        return balance
+    }
+
+    static Balance buildRefundBalance(Balance originalBalance) {
+        Balance balance = new Balance()
+        balance.country = originalBalance.country
+        balance.currency = originalBalance.currency
+        balance.orderId = originalBalance.orderId
+        balance.userId = originalBalance.userId
+        balance.piId = originalBalance.piId
+        balance.trackingUuid = UUID.randomUUID()
+        balance.shippingAddressId = originalBalance.shippingAddressId
+        balance.providerConfirmUrl = originalBalance.providerConfirmUrl
+        balance.successRedirectUrl = originalBalance.successRedirectUrl
+        balance.cancelRedirectUrl = originalBalance.cancelRedirectUrl
+        balance.originalBalanceId = originalBalance.balanceId
+        balance.type = BalanceType.REFUND.name()
+        balance.originalBalanceId = balance.balanceId
+        balance.balanceId = null
 
         return balance
     }
@@ -110,11 +148,25 @@ class CoreBuilder {
 
         BalanceItem balanceItem = new BalanceItem()
         balanceItem.amount = item.totalAmount
+        balanceItem.propertySet.put(PropertyKey.ITEM_TYPE.name(), item.type)
         if (item.totalDiscount > BigDecimal.ZERO) {
             DiscountItem discountItem = new DiscountItem()
             discountItem.discountAmount = item.totalDiscount
             balanceItem.addDiscountItem(discountItem)
         }
+        return balanceItem
+    }
+
+    static BalanceItem buildBalanceItem(BalanceItem item) {
+        if (item == null) {
+            return null
+        }
+
+        BalanceItem balanceItem = new BalanceItem()
+        balanceItem.amount = item.amount
+        DiscountItem discountItem = new DiscountItem()
+        discountItem.discountAmount = item.discountAmount
+        balanceItem.addDiscountItem(discountItem)
         return balanceItem
     }
 
@@ -130,7 +182,7 @@ class CoreBuilder {
         if (taxedBalance != null) {
             // complete charge
             balanceItem = taxedBalance.balanceItems.find { BalanceItem taxedItem ->
-                taxedItem.orderItemId.value == item.orderItemId.value
+                taxedItem.orderItemId.value == item.getId().value
             }
             balanceItem.amount = item.totalAmount - partialChargeAmount
             taxedBalance.totalAmount -= partialChargeAmount
@@ -213,7 +265,7 @@ class CoreBuilder {
         }
 
         order.orderItems.eachWithIndex { OrderItem orderItem, int i ->
-            def orderItemId = orderItem.orderItemId == null ? new OrderItemId(i) : orderItem.orderItemId
+            def orderItemId = orderItem.id == null ? new OrderItemId(i) : orderItem.id
             def balanceItem = balance.balanceItems.find { BalanceItem balanceItem ->
                 return balanceItem.orderItemId == orderItemId
             }

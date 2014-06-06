@@ -10,6 +10,7 @@ import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.langur.core.InProcessCallable;
 import com.junbo.payment.spec.model.PageMetaData;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam;
@@ -18,7 +19,6 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 /**
  * payment instrument resource interface.
@@ -28,6 +28,7 @@ import javax.ws.rs.core.Response;
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
+@InProcessCallable
 public interface PaymentInstrumentResource {
 
     @ApiOperation("Create a payment instrument")
@@ -43,7 +44,7 @@ public interface PaymentInstrumentResource {
     @ApiOperation("Delete a payment instrument")
     @DELETE
     @Path("payment-instruments/{paymentInstrumentId}")
-    Promise<Response> delete(@PathParam("paymentInstrumentId") PaymentInstrumentId paymentInstrumentId);
+    Promise<Void> delete(@PathParam("paymentInstrumentId") PaymentInstrumentId paymentInstrumentId);
 
     @ApiOperation("Put a payment instrument")
     @PUT

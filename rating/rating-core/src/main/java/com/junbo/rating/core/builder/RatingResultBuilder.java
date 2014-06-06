@@ -6,9 +6,11 @@
 
 package com.junbo.rating.core.builder;
 
-import com.junbo.rating.core.context.RatingContext;
+import com.junbo.rating.core.context.PriceRatingContext;
+import com.junbo.rating.core.context.SubsRatingContext;
 import com.junbo.rating.spec.model.RatingResultEntry;
 import com.junbo.rating.spec.model.request.*;
+import com.junbo.rating.spec.model.subscription.SubsRatingRequest;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -18,7 +20,7 @@ import java.util.HashSet;
  */
 public class RatingResultBuilder {
 
-    public static RatingRequest buildForOrder(RatingContext context) {
+    public static RatingRequest buildForOrder(PriceRatingContext context) {
         RatingRequest result = new RatingRequest();
         result.setUserId(context.getUserId());
         result.setCurrency(context.getCurrency().getCode());
@@ -58,7 +60,7 @@ public class RatingResultBuilder {
         return result;
     }
 
-    public static RatingRequest buildForOffers(RatingContext context) {
+    public static RatingRequest buildForOffers(PriceRatingContext context) {
         RatingRequest result = new RatingRequest();
         result.setUserId(context.getUserId());
         result.setCurrency(context.getCurrency().getCode());
@@ -79,6 +81,14 @@ public class RatingResultBuilder {
         return result;
     }
 
+    public static SubsRatingRequest buildForSubs(SubsRatingContext context) {
+        SubsRatingRequest result = new SubsRatingRequest();
+        result.setOfferId(context.getOfferId());
+        result.setCurrency(context.getCurrency().getCode());
+        result.setType(context.getType());
+        result.setAmount(context.getAmount());
+        return result;
+    }
 
     private RatingResultBuilder() {
     }

@@ -10,8 +10,6 @@
 
     <bean id="mockBillingFacade" class="com.junbo.order.clientproxy.billing.impl.BillingFacadeImpl">
         <property name="balanceResource" ref="mockBalanceResource"/>
-        <property name="shippingAddressResource" ref="mockShippingAddressResource"/>
-        <property name="billingCurrencyResource" ref="mockCurrencyResource"/>
     </bean>
 
     <bean id="mockRatingFacade" class="com.junbo.order.clientproxy.rating.impl.RatingFacadeImpl">
@@ -20,6 +18,7 @@
 
     <bean id="mockIdentityFacade" class="com.junbo.order.clientproxy.identity.impl.IdentityFacadeImpl">
         <property name="userResource" ref="mockIdentityResource"/>
+        <property name="currencyResource" ref="mockCurrencyResource"/>
     </bean>
 
     <bean id="mockCatalogFacade" class="com.junbo.order.clientproxy.catalog.impl.CatalogFacadeImpl">

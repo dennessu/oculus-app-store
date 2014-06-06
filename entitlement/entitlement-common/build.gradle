@@ -8,6 +8,6 @@ dependencies {
     compile (libraries.spring_core)
     compile (libraries.spring_expression)
     compile (libraries.spring_tx)
-    compile (libraries.langur)
+    compile junboProject(':langur-core')
     compile (libraries.guava)
 }

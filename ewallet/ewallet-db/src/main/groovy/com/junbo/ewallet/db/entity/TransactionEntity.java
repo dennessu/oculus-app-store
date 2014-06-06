@@ -6,7 +6,13 @@
 
 package com.junbo.ewallet.db.entity;
 
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.junbo.common.cloudant.json.annotations.CloudantDeserialize;
+import com.junbo.common.cloudant.json.annotations.CloudantSerialize;
+import com.junbo.common.jackson.deserializer.BigDecimalFromStringDeserializer;
+import com.junbo.common.util.Identifiable;
 import com.junbo.ewallet.db.entity.def.IdentifiableType;
+import com.junbo.ewallet.db.entity.def.TransactionId;
 import com.junbo.ewallet.db.entity.def.TransactionType;
 import org.hibernate.annotations.Type;
 
@@ -21,12 +27,17 @@ import java.util.UUID;
  */
 @javax.persistence.Entity
 @Table(name = "transaction")
-public class TransactionEntity extends EntityWithCreated {
+public class TransactionEntity extends EntityWithCreated implements Identifiable<TransactionId> {
     private UUID trackingUuid;
     private Long walletId;
     private TransactionType type;
+    @CloudantDeserialize(BigDecimalFromStringDeserializer.class)
+    @CloudantSerialize(ToStringSerializer.class)
     private BigDecimal amount;
     private Long offerId;
+    @CloudantDeserialize(BigDecimalFromStringDeserializer.class)
+    @CloudantSerialize(ToStringSerializer.class)
+    private BigDecimal unrefundedAmount;
 
     @Column(name = "tracking_uuid")
     @Type(type = "pg-uuid")
@@ -66,6 +77,15 @@ public class TransactionEntity extends EntityWithCreated {
         this.amount = mount;
     }
 
+    @Column(name = "unrefunded_amount")
+    public BigDecimal getUnrefundedAmount() {
+        return unrefundedAmount;
+    }
+
+    public void setUnrefundedAmount(BigDecimal unrefundedAmount) {
+        this.unrefundedAmount = unrefundedAmount;
+    }
+
     @Column(name = "offer_id")
     public Long getOfferId() {
         return offerId;
@@ -79,5 +99,16 @@ public class TransactionEntity extends EntityWithCreated {
     @Override
     public Long getShardMasterId() {
         return walletId;
+    }
+
+    @Transient
+    @Override
+    public TransactionId getId() {
+        return new TransactionId(getpId());
+    }
+
+    @Override
+    public void setId(TransactionId id) {
+        this.setpId(id.getValue());
     }
 }

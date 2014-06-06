@@ -64,7 +64,7 @@ class CatalogFacadeImpl implements CatalogFacade {
     Promise<OrderOfferRevision> getOfferRevision(Long offerId, Date honoredTime) {
         def entityGetOption = new OfferRevisionsGetOptions(
                 timestamp: honoredTime.time,
-                offerIds: [new OfferId(offerId)]
+                offerIds: [new OfferId(offerId)] as Set
         )
         return offerRevisionResource.getOfferRevisions(entityGetOption).syncRecover {
             // TODO add logger and exception
@@ -88,8 +88,8 @@ class CatalogFacadeImpl implements CatalogFacade {
                     orderOfferItems: []
             )
 
-            Promise.each(or.items?.iterator()) { ItemEntry ie ->
-                itemResource.getItem(new ItemId(ie.itemId)).syncRecover { Throwable ex ->
+            return Promise.each(or.items) { ItemEntry ie ->
+                return itemResource.getItem(new ItemId(ie.itemId)).syncRecover { Throwable ex ->
                     LOGGER.error('name=Failed_To_Get_Offer_Item. itemId: {}, timestamp: {}',
                             ie.itemId, honoredTime, ex)
                     throw AppErrors.INSTANCE.catalogConnectionError().exception()
@@ -108,7 +108,7 @@ class CatalogFacadeImpl implements CatalogFacade {
     Promise<OrderOfferItemRevision> getOfferItemRevision(Long itemId, Date honoredTime) {
         def entityGetOption = new ItemRevisionsGetOptions(
                 timestamp: honoredTime.time,
-                itemIds: [new ItemId(itemId)]
+                itemIds: [new ItemId(itemId)] as Set
         )
         return itemRevisionResource.getItemRevisions(entityGetOption).syncRecover { Throwable ex ->
             LOGGER.error('name=Failed_To_Get_Item_Revision. itemId: {}, timestamp: {}',

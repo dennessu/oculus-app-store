@@ -6,16 +6,17 @@
 package com.junbo.test.payment.apihelper.impl;
 
 import com.junbo.common.id.PaymentInstrumentId;
+import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.common.model.Results;
+import com.junbo.ewallet.spec.model.CreditRequest;
+import com.junbo.langur.core.client.TypeReference;
 import com.junbo.payment.spec.model.PaymentInstrument;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
-import com.junbo.test.payment.apihelper.PaymentService;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
-import com.junbo.test.common.libs.RestUrl;
-import com.junbo.common.json.JsonMessageTranscoder;
-import com.junbo.langur.core.client.TypeReference;
+import com.junbo.test.payment.apihelper.PaymentService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ import java.util.List;
  */
 public class PaymentServiceImpl extends HttpClientBase implements PaymentService {
 
-    private static String paymentInstrumentUrl = RestUrl.getRestUrl(RestUrl.ComponentName.COMMERCE);
+    private static String paymentInstrumentUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1");
 
     private LogHelper logger = new LogHelper(PaymentServiceImpl.class);
 
@@ -44,19 +45,20 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
     }
 
     @Override
-    public String getPaymentInstrumentByPaymentId(String uid, String paymentInstrumentId) throws Exception {
-        return getPaymentInstrumentByPaymentId(uid, paymentInstrumentId, 200);
+    public String getPaymentInstrumentByPaymentId(String paymentInstrumentId) throws Exception {
+        return getPaymentInstrumentByPaymentId(paymentInstrumentId, 200);
     }
 
     @Override
     public String getPaymentInstrumentByPaymentId(
-            String uid, String paymentInstrumentId, int expectedResponseCode) throws Exception {
+            String paymentInstrumentId, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.GET, paymentInstrumentUrl +
-                "users/" + uid + "/payment-instruments/" + paymentInstrumentId);
+                "payment-instruments/" + paymentInstrumentId);
 
         PaymentInstrument paymentInstrumentResult = new JsonMessageTranscoder().decode(
                 new TypeReference<PaymentInstrument>() {
-                }, responseBody);
+                }, responseBody
+        );
 
         paymentInstrumentId = IdConverter.idLongToHexString(
                 PaymentInstrumentId.class, paymentInstrumentResult.getId().longValue());
@@ -67,18 +69,19 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
     }
 
     @Override
-    public List<String> searchPaymentInstrumentsByUserId(String uid) throws Exception {
-        return searchPaymentInstrumentsByUserId(uid, 200);
+    public List<String> getPaymentInstrumentsByUserId(String uid) throws Exception {
+        return getPaymentInstrumentsByUserId(uid, 200);
     }
 
     @Override
-    public List<String> searchPaymentInstrumentsByUserId(String uid, int expectedResponseCode) throws Exception {
+    public List<String> getPaymentInstrumentsByUserId(String uid, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.GET, paymentInstrumentUrl +
-                "users/" + uid + "/payment-instruments/search", expectedResponseCode);
+                "payment-instruments?userId=" + uid, expectedResponseCode);
 
         Results<PaymentInstrument> paymentInstrumentResults = new JsonMessageTranscoder().decode(
                 new TypeReference<Results<PaymentInstrument>>() {
-                }, responseBody);
+                }, responseBody
+        );
 
         List<String> paymentInstrumentList = new ArrayList<>();
 
@@ -93,14 +96,21 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
     }
 
     @Override
+    public void creditWallet(CreditRequest creditRequest) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, paymentInstrumentUrl +
+                "wallets/credit", creditRequest, 200);
+    }
+
+    @Override
     public String postPaymentInstrument(PaymentInstrument paymentInstrument,
-                                              int expectedResponseCode) throws Exception {
+                                        int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.POST, paymentInstrumentUrl
-               + "payment-instruments", paymentInstrument, expectedResponseCode);
+                + "payment-instruments", paymentInstrument, expectedResponseCode);
 
         PaymentInstrument paymentInstrumentResult = new JsonMessageTranscoder().decode(
                 new TypeReference<PaymentInstrument>() {
-                }, responseBody);
+                }, responseBody
+        );
 
         String paymentInstrumentId = IdConverter.idLongToHexString(
                 PaymentInstrumentId.class, paymentInstrumentResult.getId().longValue());
@@ -120,11 +130,12 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
     public String updatePaymentInstrument(String uid, String paymentId, PaymentInstrument paymentInstrument,
                                           int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.PUT, paymentInstrumentUrl
-                + "users/" + uid + "/payment-instruments/" + paymentId, paymentInstrument, expectedResponseCode);
+                + "payment-instruments/" + paymentId, paymentInstrument, expectedResponseCode);
 
         PaymentInstrument paymentInstrumentResult = new JsonMessageTranscoder().decode(
                 new TypeReference<PaymentInstrument>() {
-                }, responseBody);
+                }, responseBody
+        );
 
         String paymentInstrumentId = IdConverter.idLongToHexString(
                 PaymentInstrumentId.class, paymentInstrumentResult.getId().longValue());
@@ -140,9 +151,9 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
 
     @Override
     public void deletePaymentInstrument(String uid, String paymentId, int expectedResponseCode) throws Exception {
-        restApiCall(HTTPMethod.DELETE, paymentInstrumentUrl + "users/" +
-                uid + "/payment-instruments/" + paymentId, expectedResponseCode);
+        restApiCall(HTTPMethod.DELETE, paymentInstrumentUrl + "payment-instruments/" + paymentId, expectedResponseCode);
         Master.getInstance().removePaymentInstrument(paymentId);
     }
+
 
 }

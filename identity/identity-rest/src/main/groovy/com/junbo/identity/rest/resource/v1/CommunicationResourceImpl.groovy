@@ -1,8 +1,9 @@
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.id.CommunicationId
 import com.junbo.common.model.Results
-import com.junbo.identity.core.service.Created201Marker
+import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.CommunicationFilter
 import com.junbo.identity.core.service.validator.CommunicationValidator
 import com.junbo.identity.data.repository.CommunicationRepository
@@ -22,11 +23,10 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 @CompileStatic
 class CommunicationResourceImpl implements CommunicationResource {
-    @Autowired
-    private CommunicationRepository communicationRepository
+    private static final String IDENTITY_ADMIN_SCOPE = 'identity.admin'
 
     @Autowired
-    private Created201Marker created201Marker
+    private CommunicationRepository communicationRepository
 
     @Autowired
     private CommunicationFilter communicationFilter
@@ -40,11 +40,15 @@ class CommunicationResourceImpl implements CommunicationResource {
             throw new IllegalArgumentException('communication is null')
         }
 
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
+        }
+
         communication = communicationFilter.filterForCreate(communication)
 
         return communicationValidator.validateForCreate(communication).then {
             return communicationRepository.create(communication).then { Communication newCommunication ->
-                created201Marker.mark(newCommunication.id)
+                Created201Marker.mark(newCommunication.id)
 
                 newCommunication = communicationFilter.filterForGet(newCommunication, null)
                 return Promise.pure(newCommunication)
@@ -60,6 +64,10 @@ class CommunicationResourceImpl implements CommunicationResource {
 
         if (communication == null) {
             throw new IllegalArgumentException('communication is null')
+        }
+
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
         }
 
         return communicationRepository.get(communicationId).then { Communication oldCommunication ->
@@ -86,6 +94,10 @@ class CommunicationResourceImpl implements CommunicationResource {
 
         if (communication == null) {
             throw new IllegalArgumentException('communication is null')
+        }
+
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
         }
 
         return communicationRepository.get(communicationId).then { Communication oldCommunication ->
@@ -123,7 +135,7 @@ class CommunicationResourceImpl implements CommunicationResource {
         }
 
         return communicationValidator.validateForSearch(listOptions).then {
-            return communicationRepository.search(listOptions).then { List<Communication> communicationList ->
+            return search(listOptions).then { List<Communication> communicationList ->
                 def result = new Results<Communication>(items: [])
 
                 communicationList.each { Communication newCommunication ->
@@ -145,9 +157,25 @@ class CommunicationResourceImpl implements CommunicationResource {
             throw new IllegalArgumentException('communicationId is null')
         }
 
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
+        }
+
         return communicationValidator.validateForGet(communicationId).then { Communication communication ->
-            communicationRepository.delete(communicationId)
-            return Promise.pure(null)
+            return communicationRepository.delete(communicationId)
+        }
+    }
+
+    private Promise<List<Communication>> search(CommunicationListOptions listOptions) {
+        if (listOptions.region != null && listOptions.translation != null) {
+            return communicationRepository.searchByRegionAndTranslation(listOptions.region, listOptions.translation,
+                    listOptions.limit, listOptions.offset)
+        } else if (listOptions.region != null) {
+            return communicationRepository.searchByRegion(listOptions.region, listOptions.limit, listOptions.offset)
+        } else if (listOptions.translation != null) {
+            return communicationRepository.searchByTranslation(listOptions.translation, listOptions.limit, listOptions.offset)
+        } else {
+            return communicationRepository.searchAll(listOptions.limit, listOptions.offset)
         }
     }
 }

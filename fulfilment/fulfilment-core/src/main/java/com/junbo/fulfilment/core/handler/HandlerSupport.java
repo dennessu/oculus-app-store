@@ -10,12 +10,15 @@ import com.junbo.fulfilment.clientproxy.CatalogGateway;
 import com.junbo.fulfilment.clientproxy.EntitlementGateway;
 import com.junbo.fulfilment.clientproxy.WalletGateway;
 import com.junbo.fulfilment.common.util.Callback;
+import com.junbo.fulfilment.common.util.Utils;
 import com.junbo.fulfilment.core.FulfilmentHandler;
 import com.junbo.fulfilment.core.context.FulfilmentContext;
 import com.junbo.fulfilment.core.service.TransactionSupport;
 import com.junbo.fulfilment.db.repo.FulfilmentActionRepository;
 import com.junbo.fulfilment.spec.constant.FulfilmentStatus;
 import com.junbo.fulfilment.spec.model.FulfilmentAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -26,6 +29,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class HandlerSupport<T extends FulfilmentContext>
         extends TransactionSupport
         implements FulfilmentHandler<T> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FulfilmentHandler.class);
+
     @Autowired
     protected CatalogGateway catalogGateway;
 
@@ -52,8 +57,12 @@ public abstract class HandlerSupport<T extends FulfilmentContext>
     public void process(T context) {
         for (final FulfilmentAction action : context.getActions()) {
             try {
-                action.setResult(handle(context, action));
+                LOGGER.info("Start processing action [" + action.getActionId() + "].");
+
+                action.setResult(Utils.toJson(handle(context, action)));
                 action.setStatus(FulfilmentStatus.SUCCEED);
+
+                LOGGER.info("Finish processing action [" + action.getActionId() + "].");
             } catch (Exception e) {
                 action.setStatus(FulfilmentStatus.FAILED);
             }
@@ -66,7 +75,7 @@ public abstract class HandlerSupport<T extends FulfilmentContext>
         }
     }
 
-    protected String handle(T context, FulfilmentAction action) {
+    protected Object handle(T context, FulfilmentAction action) {
         throw new RuntimeException("not implemented");
     }
 }

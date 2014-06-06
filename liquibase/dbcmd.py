@@ -175,29 +175,38 @@ def executeDbCommand(command, dbVersion, configFile):
         for shardId in configFile.shards.keys():
             createDb(shardId, configFile)
     elif command == "drop":
-        dropDb(configFile)
+        for shardId in configFile.shards.keys():
+	    dropDb(shardId, configFile)
     else:
         for shardId in configFile.shards.keys():
             liquibase(command, dbVersion, shardId, configFile)
 
 def createDb(shardId, configFile):
     shardConfig = configFile.getShardConfig(shardId)
-    info("Creating %s.%s in %s (shard %s)..." % 
-        (configFile.dbName, shardConfig.schema, configFile.env, shardConfig.shardId));
 
-    command = "bash ./scripts/createdb.sh '%s' '%s' '%s'" % (configFile.dbName, shardConfig.schema, shardConfig.loginUserName)
-    if shardConfig.loginPassword is not None:
-        command += (" '%s'" % shardConfig.loginPassword)
+    from urlparse import urlparse
+    uri = urlparse(shardConfig.jdbcUrl.replace('jdbc:postgresql:', ''))
+    host = uri.netloc.replace(':5432', '')
+    info("Creating %s.%s in %s %s (shard %s)..." % 
+        (configFile.dbName, shardConfig.schema, host, configFile.env, shardConfig.shardId));
+
+    command = "bash ./scripts/createdb.sh '%s' '%s' '%s'" % (configFile.dbName, shardConfig.schema, host)
     executeCommand(command)
 
-def dropDb(configFile):
-    info("Dropping database %s in %s..." % (configFile.dbName, configFile.env));
+def dropDb(shardId, configFile):
+    shardConfig = configFile.getShardConfig(shardId)
+
+    from urlparse import urlparse
+    uri = urlparse(shardConfig.jdbcUrl.replace('jdbc:postgresql:', ''))
+    host = uri.netloc.replace(':5432', '')
+
+    info("Dropping database %s in %s %s..." % (configFile.dbName, host, configFile.env));
     
     # Double check to avoid dropping in prod and int
     if configFile.env in set(["prod", "int"]):
         error("drop is not supported in %s" % configFile.env)
     
-    executeCommand("bash ./scripts/dropdb.sh '%s'" % configFile.dbName)
+    executeCommand("bash ./scripts/dropdb.sh '%s' '%s'" % (configFile.dbName, host))
 
 def liquibase(command, dbVersion, shardId, configFile):
     shardConfig = configFile.getShardConfig(shardId)

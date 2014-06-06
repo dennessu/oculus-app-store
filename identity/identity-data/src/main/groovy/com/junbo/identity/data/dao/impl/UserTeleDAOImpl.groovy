@@ -2,7 +2,6 @@ package com.junbo.identity.data.dao.impl
 
 import com.junbo.identity.data.dao.UserTeleDAO
 import com.junbo.identity.data.entity.user.UserTeleCodeEntity
-import com.junbo.identity.spec.v1.model.UserTeleCode
 import groovy.transform.CompileStatic
 import org.hibernate.Criteria
 import org.hibernate.criterion.Order
@@ -52,7 +51,7 @@ class UserTeleDAOImpl extends BaseDAO implements UserTeleDAO {
     UserTeleCodeEntity getActiveUserTeleCode(Long userId, String phoneNumber) {
         Criteria criteria = currentSession(userId).createCriteria(UserTeleCodeEntity)
         criteria.add(Restrictions.eq('userId', userId))
-        criteria.add(Restrictions.eq('phoneNumber', phoneNumber))
+        criteria.add(Restrictions.eq('personalInfo', phoneNumber))
         criteria.add(Restrictions.le('expiresBy', new Date()))
         criteria.addOrder(Order.desc('expiresBy'))
         criteria.setMaxResults(1)

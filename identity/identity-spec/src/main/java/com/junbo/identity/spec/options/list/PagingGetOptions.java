@@ -27,8 +27,8 @@ public class PagingGetOptions {
         this.offset = offset;
     }
 
-    @QueryParam("limit")
+    @QueryParam("count")
     private Integer limit;
-    @QueryParam("offset")
+    @QueryParam("cursor")
     private Integer offset;
 }

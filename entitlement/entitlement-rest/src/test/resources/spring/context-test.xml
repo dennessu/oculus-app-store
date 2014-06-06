@@ -7,4 +7,9 @@
     <import resource="classpath*:spring/*-context.xml"/>
     <import resource="classpath*:spring/transaction.xml"/>
 
+    <bean id="entitlementTestClient" class="com.junbo.entitlement.spec.resource.proxy.EntitlementResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.entitlement.url}"/>
+    </bean>
+
 </beans>

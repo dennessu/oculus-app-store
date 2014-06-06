@@ -5,15 +5,19 @@
  */
 package com.junbo.email.clientproxy.impl.mandrill
 
+import groovy.transform.CompileStatic
+
 /**
  * Status of Mandrill.
  */
+@CompileStatic
 enum SendStatus {
     SENT('sent'),
     QUEUED('queued'),
     INVALID('invalid'),
     REJECTED('rejected'),
-    SCHEDULED('scheduled')
+    SCHEDULED('scheduled'),
+    ERROR('error')
 
     final String status
 

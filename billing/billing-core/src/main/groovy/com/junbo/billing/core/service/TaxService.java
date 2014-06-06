@@ -7,7 +7,6 @@
 package com.junbo.billing.core.service;
 
 import com.junbo.billing.spec.model.Balance;
-import com.junbo.billing.spec.model.ShippingAddress;
 import com.junbo.identity.spec.v1.model.Address;
 import com.junbo.langur.core.promise.Promise;
 
@@ -17,8 +16,6 @@ import com.junbo.langur.core.promise.Promise;
 public interface TaxService {
 
     Promise<Balance> calculateTax(Balance balance);
-
-    Promise<ShippingAddress> validateShippingAddress(ShippingAddress shippingAddress);
 
     Promise<Address> validateAddress(Address address);
 }

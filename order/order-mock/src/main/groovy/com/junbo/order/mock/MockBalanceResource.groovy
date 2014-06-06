@@ -4,7 +4,9 @@ import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.resource.BalanceResource
 import com.junbo.common.id.BalanceId
 import com.junbo.common.id.OrderId
+import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
+import groovy.transform.CompileStatic
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
@@ -12,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap
 /**
  * Created by chriszhu on 2/20/14.
  */
+@CompileStatic
 @Component('mockBalanceResource')
 @Scope('prototype')
 class MockBalanceResource extends BaseMock implements BalanceResource {
@@ -50,10 +53,13 @@ class MockBalanceResource extends BaseMock implements BalanceResource {
     }
 
     @Override
-    Promise<List<Balance>> getBalances(OrderId orderId) {
-        return Promise.pure(balanceMap.values().findAll { Balance balance ->
+    Promise<Results<Balance>> getBalances(OrderId orderId) {
+        List<Balance> balances = balanceMap.values().findAll { Balance balance ->
             balance.orderId == orderId
-        })
+        }.toList()
+        Results<Balance> results = new Results<>()
+        results.items = balances
+        return Promise.pure(results)
     }
 
     @Override
@@ -78,6 +84,11 @@ class MockBalanceResource extends BaseMock implements BalanceResource {
 
     @Override
     Promise<Balance> processAsyncBalance(Balance balance) {
+        return null
+    }
+
+    @Override
+    Promise<Balance> checkBalance(Balance balance) {
         return null
     }
 }

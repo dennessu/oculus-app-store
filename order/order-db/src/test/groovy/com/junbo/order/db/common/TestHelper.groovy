@@ -5,11 +5,21 @@
  */
 
 package com.junbo.order.db.common
+import com.junbo.common.enumid.CountryId
+import com.junbo.common.enumid.CurrencyId
+import com.junbo.common.id.OfferId
+import com.junbo.common.id.UserId
 import com.junbo.order.db.entity.*
-import com.junbo.order.db.entity.enums.*
+import com.junbo.order.spec.model.enums.*
+import com.junbo.order.spec.model.Subledger
+import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.apache.commons.lang.RandomStringUtils
+import org.springframework.beans.BeansException
+import org.springframework.context.ApplicationContext
+import org.springframework.context.ApplicationContextAware
+import org.springframework.stereotype.Component
 
 import java.security.SecureRandom
 /**
@@ -18,7 +28,8 @@ import java.security.SecureRandom
 
 @CompileStatic
 @TypeChecked
-class TestHelper {
+@Component
+class TestHelper implements ApplicationContextAware {
 
     private static final int DEFAULT_PRICE = 10
 
@@ -26,12 +37,18 @@ class TestHelper {
 
     private static final int RAND_INT_MAX = 100
 
-    private static long nextId = System.currentTimeMillis()
+    private static IdGenerator idGenerator
+
+    private static IdGenerator orderIdGenerator
 
     private static SecureRandom rand = new SecureRandom()
 
     static long generateId() {
-        return nextId++
+        return idGenerator.nextId(0)
+    }
+
+    static long generateOrderId() {
+        return orderIdGenerator.nextId(0)
     }
 
     static UUID generateUUID() {
@@ -40,7 +57,7 @@ class TestHelper {
 
     static long generateLong() {
         sleep(1)
-        return nextId++
+        return System.currentTimeMillis()
     }
 
     static <T> T randEnum(Class<T> enumType) {
@@ -49,13 +66,13 @@ class TestHelper {
 
     static OrderEntity generateOrder() {
         OrderEntity order = new OrderEntity()
-        order.setOrderId(generateId())
+        order.setOrderId(generateOrderId())
         order.setUserId(generateLong())
         order.setCountry('US')
         order.setCurrency('USD')
         order.setCreatedTime(new Date())
-        order.setCreatedBy('Test')
-        order.setUpdatedBy('Test')
+        order.setCreatedBy(123L)
+        order.setUpdatedBy(456L)
         order.setUpdatedTime(new Date())
         order.setOrderStatusId(OrderStatus.OPEN)
         order.setTentative(rand.nextBoolean())
@@ -73,15 +90,15 @@ class TestHelper {
     static OrderItemEntity generateOrderItem() {
         OrderItemEntity entity = new OrderItemEntity()
         def rand = new SecureRandom()
-        entity.setOrderItemId(rand.nextLong())
-        entity.setOrderId(rand.nextLong())
+        entity.setOrderItemId(generateId())
+        entity.setOrderId(generateOrderId())
         entity.setOrderItemType(ItemType.DIGITAL)
         entity.setProductItemId(generateLong().toString())
         entity.setUnitPrice(BigDecimal.valueOf(DEFAULT_PRICE))
         entity.setQuantity(Integer.valueOf(DEFAULT_QUANTITY))
         entity.setCreatedTime(new Date())
-        entity.setCreatedBy('Test')
-        entity.setUpdatedBy('Test')
+        entity.setCreatedBy(123L)
+        entity.setUpdatedBy(123L)
         entity.setUpdatedTime(new Date())
         entity.setTotalAmount(BigDecimal.valueOf(DEFAULT_PRICE))
         entity.setTotalDiscount(BigDecimal.valueOf(DEFAULT_PRICE))
@@ -94,22 +111,22 @@ class TestHelper {
         OrderDiscountInfoEntity entity = new OrderDiscountInfoEntity()
         def rand = new SecureRandom()
         entity.setDiscountInfoId(generateId())
-        entity.setOrderId(generateLong())
+        entity.setOrderId(generateOrderId())
         entity.setOrderItemId(generateLong())
         entity.setDiscountType(DiscountType.OFFER_DISCOUNT)
         entity.setDiscountAmount(BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)))
         entity.setDiscountRate(BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)))
         entity.setCreatedTime(new Date())
-        entity.setCreatedBy('Tester')
+        entity.setCreatedBy(123L)
         entity.setUpdatedTime(new Date())
-        entity.setUpdatedBy('Tester')
+        entity.setUpdatedBy(123L)
         return entity
     }
 
     static OrderEventEntity generateOrderEventEntity() {
         OrderEventEntity orderEventEntity = new OrderEventEntity()
-        orderEventEntity.setOrderId(generateId())
-        orderEventEntity.setEventId(generateLong())
+        orderEventEntity.setOrderId(generateOrderId())
+        orderEventEntity.setEventId(generateId())
         orderEventEntity.setActionId(OrderActionType.FULFILL)
         orderEventEntity.setStatusId(EventStatus.COMPLETED)
         orderEventEntity.trackingUuid = UUID.randomUUID()
@@ -118,25 +135,23 @@ class TestHelper {
         return orderEventEntity
     }
 
-    static OrderItemFulfillmentEventEntity generateOrderItemFulfillmentEventEntity() {
-        OrderItemFulfillmentEventEntity entity = new OrderItemFulfillmentEventEntity()
-        entity.setEventId(generateId())
-        entity.setAction(FulfillmentAction.FULFILL)
-        entity.setStatus(EventStatus.COMPLETED)
-        entity.setOrderId(generateLong())
+    static OrderItemFulfillmentHistoryEntity generateOrderItemFulfillmentHistoryEntity() {
+        OrderItemFulfillmentHistoryEntity entity = new OrderItemFulfillmentHistoryEntity()
+        entity.setHistoryId(generateId())
+        entity.setFulfillmentEventId(randEnum(FulfillmentAction))
         entity.setOrderItemId(generateLong())
         entity.setTrackingUuid(generateUUID())
-        entity.setFulfillmentId('TEST_FULFILLMENT_ID')
+        entity.setFulfillmentId(RandomStringUtils.randomAlphabetic(20))
         return entity
     }
 
-    static OrderBillingEventEntity generateOrderBillingEventEntity() {
-        def entity = new OrderBillingEventEntity()
-        entity.eventId = generateId()
-        entity.action = randEnum(BillingAction)
-        entity.status = randEnum(EventStatus)
-        entity.setOrderId(generateLong())
+    static OrderBillingHistoryEntity generateOrderBillingHistoryEntity() {
+        def entity = new OrderBillingHistoryEntity()
+        entity.historyId = generateId()
+        entity.billingEventId = randEnum(BillingAction)
+        entity.setOrderId(generateOrderId())
         entity.balanceId = RandomStringUtils.randomAlphabetic(20)
+        entity.totalAmount = BigDecimal.TEN
         return entity
     }
 
@@ -148,9 +163,9 @@ class TestHelper {
         entity.setPreNotificationDate(new Date())
         entity.setReleaseDate(new Date())
         entity.setCreatedTime(new Date())
-        entity.setCreatedBy('Tester')
+        entity.setCreatedBy(123L)
         entity.setUpdatedTime(new Date())
-        entity.setUpdatedBy('Tester')
+        entity.setUpdatedBy(123L)
         return entity
     }
 
@@ -164,7 +179,7 @@ class TestHelper {
         entity.setUpdateBeforeValue('BEFORE_UPDATE')
         entity.setUpdateAfterValue('AFTER_UPDATE')
         entity.setUpdatedTime(new Date())
-        entity.setUpdatedBy('TESTER')
+        entity.setUpdatedBy(123L)
         return entity
     }
 
@@ -176,15 +191,28 @@ class TestHelper {
         entity.setCurrency(RandomStringUtils.randomAlphabetic(3))
         entity.setTotalAmount(BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)))
         entity.setCreatedTime(new Date())
-        entity.setCreatedBy('TESTER')
+        entity.setCreatedBy(123L)
         entity.setUpdatedTime(new Date())
-        entity.setUpdatedBy('TESTER')
+        entity.setUpdatedBy(123L)
         entity.setStartTime(new Date())
         entity.setEndTime(new Date())
         entity.setPayoutStatus(PayoutStatus.PENDING)
         entity.setProductItemId(generateId().toString())
         entity.setCountry('US')
         return entity
+    }
+
+    static Subledger generateSubledger() {
+        return new Subledger(
+            seller: new UserId(generateId()),
+            offer: new OfferId(generateId()),
+            payoutStatus: PayoutStatus.COMPLETED.name(),
+            startTime: new Date(),
+            endTime: new Date(),
+            country: new CountryId('US'),
+            currency: new CurrencyId(RandomStringUtils.randomAlphabetic(3)),
+            totalAmount: BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX))
+        )
     }
 
     static SubledgerItemEntity generateSubledgerItemEntity() {
@@ -196,12 +224,19 @@ class TestHelper {
         entity.setOriginalSubledgerItemId(generateLong())
         entity.setTotalAmount(BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)))
         entity.setCreatedTime(new Date())
-        entity.setCreatedBy('TESTER')
+        entity.setCreatedBy(123L)
         entity.setUpdatedTime(new Date())
         entity.setSubledgerItemAction(SubledgerItemAction.CHARGE)
         entity.setProductItemId(generateId().toString())
-        entity.setUpdatedBy('Tester')
+        entity.setUpdatedBy(123L)
         entity.setStatus(SubledgerItemStatus.PENDING)
         return entity
     }
+
+    @Override
+    void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        orderIdGenerator = (IdGenerator)applicationContext.getBean("oculus40IdGenerator")
+        idGenerator = (IdGenerator)applicationContext.getBean("oculus48IdGenerator")
+    }
 }
+

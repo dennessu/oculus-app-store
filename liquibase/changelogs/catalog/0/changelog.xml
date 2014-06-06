@@ -30,6 +30,7 @@
               item_id                 bigint            not null,
               status                  varchar(64)       not null,
               owner_id                bigint            not null,
+              host_item_ids           bigint[]          null,
               payload                 json              not null,
               timestamp               bigint            null,
               deleted                 boolean           not null default false,
@@ -66,6 +67,8 @@
               status                  varchar(64)       not null,
               owner_id                bigint            not null,
               payload                 json              not null,
+              item_ids                bigint[]          null,
+              sub_offer_ids           bigint[]          null,
               timestamp               bigint            null,
               deleted                 boolean           not null default false,
               created_by              varchar(64)       not null,
@@ -75,21 +78,6 @@
               rev                     int               not null,
 
               primary key (revision_id)
-            );
-
-            create table item_offer_relations (
-              id                      bigint            not null,
-              entity_type             int               not null,
-              entity_id               bigint            not null,
-              parent_offer_id         bigint            not null,
-              deleted                 boolean           not null default false,
-              created_by              varchar(64)       not null,
-              created_time            timestamp         not null,
-              updated_by              varchar(64)       default null,
-              updated_time            timestamp         default null,
-              rev                     int               not null,
-
-              primary key (id)
             );
 
             create table item_attribute (
@@ -142,11 +130,8 @@
             create table promotion (
                 promotion_id            bigint            not null,
                 type                    varchar(64)       not null,
-                curated                 boolean           not null default false,
                 owner_id                bigint            not null,
                 current_revision_id     bigint            null,
-                start_date              timestamp         null,
-                end_date                timestamp         null,
                 payload                 json              not null,
                 deleted                 boolean           not null default false,
                 created_by              varchar(64)       not null,
@@ -187,9 +172,10 @@
               rev                             int          not null,
               in_app_context                  json default null,
               type                            smallint     default null,
-              entitlement_group               varchar(64)  default null,
+              item_id                         bigint       default null,
               tag                             varchar(64)  not null,
               consumable                      boolean      not null,
+              external_notification           text         default null,
               created_by                      varchar(32)  not null,
               updated_by                      varchar(32)  default null,
               created_time                    timestamp    not null,
@@ -207,7 +193,7 @@
             LANGUAGE sql IMMUTABLE;
             CREATE INDEX entitlement_definition_in_app_context_gin_idx ON entitlement_definition
             USING GIN (json_val_arr(in_app_context));
-            insert into entitlement_definition values (177536427572383, 177536427572383, 0, null, 0, '', '', false, 'nanxin', null, '2014-02-10', null, null, false);
+            insert into entitlement_definition values (177536427572383, 177536427572383, 0, null, 0, null, '', false, null, 'nanxin', null, '2014-02-10', null, null, false);
         ]]>
         </sql>
     </changeSet>

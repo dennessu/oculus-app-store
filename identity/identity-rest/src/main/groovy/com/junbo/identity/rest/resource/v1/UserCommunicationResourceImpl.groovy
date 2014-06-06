@@ -1,9 +1,13 @@
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.authorization.AuthorizeService
+import com.junbo.authorization.RightsScope
 import com.junbo.common.id.Id
 import com.junbo.common.id.UserCommunicationId
 import com.junbo.common.model.Results
-import com.junbo.identity.core.service.Created201Marker
+import com.junbo.common.rs.Created201Marker
+import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserCommunicationFilter
 import com.junbo.identity.core.service.validator.UserCommunicationValidator
 import com.junbo.identity.data.repository.UserCommunicationRepository
@@ -28,13 +32,16 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
     private UserCommunicationRepository userCommunicationRepository
 
     @Autowired
-    private Created201Marker created201Marker
-
-    @Autowired
     private UserCommunicationFilter userCommunicationFilter
 
     @Autowired
     private UserCommunicationValidator userCommunicationValidator
+
+    @Autowired
+    private AuthorizeService authorizeService
+
+    @Autowired
+    private UserPropertyAuthorizeCallbackFactory authorizeCallbackFactory
 
     @Override
     Promise<UserCommunication> create(UserCommunication userCommunication) {
@@ -42,14 +49,22 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
             throw new IllegalArgumentException('userCommunication is null')
         }
 
-        userCommunication = userCommunicationFilter.filterForCreate(userCommunication)
+        def callback = authorizeCallbackFactory.create(userCommunication.userId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('create')) {
+                throw AppErrors.INSTANCE.invalidAccess().exception()
+            }
 
-        userCommunicationValidator.validateForCreate(userCommunication).then {
-            userCommunicationRepository.create(userCommunication).then { UserCommunication newUserCommunication ->
-                created201Marker.mark((Id)newUserCommunication.id)
+            userCommunication = userCommunicationFilter.filterForCreate(userCommunication)
 
-                newUserCommunication = userCommunicationFilter.filterForGet(newUserCommunication, null)
-                return Promise.pure(newUserCommunication)
+            return userCommunicationValidator.validateForCreate(userCommunication).then {
+                return userCommunicationRepository.create(userCommunication).then {
+                    UserCommunication newUserCommunication ->
+                    Created201Marker.mark((Id) newUserCommunication.id)
+
+                    newUserCommunication = userCommunicationFilter.filterForGet(newUserCommunication, null)
+                    return Promise.pure(newUserCommunication)
+                }
             }
         }
     }
@@ -60,11 +75,20 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        userCommunicationValidator.validateForGet(userCommunicationId).then { UserCommunication userCommunication ->
-            userCommunication = userCommunicationFilter.filterForGet(userCommunication,
-                    getOptions.properties?.split(',') as List<String>)
+        return userCommunicationValidator.validateForGet(userCommunicationId).then {
+            UserCommunication userCommunication ->
 
-            return Promise.pure(userCommunication)
+            def callback = authorizeCallbackFactory.create(userCommunication.userId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('read')) {
+                    throw AppErrors.INSTANCE.userOptinNotFound(userCommunicationId).exception()
+                }
+
+                userCommunication = userCommunicationFilter.filterForGet(userCommunication,
+                        getOptions.properties?.split(',') as List<String>)
+
+                return Promise.pure(userCommunication)
+            }
         }
     }
 
@@ -83,13 +107,21 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
                 throw AppErrors.INSTANCE.userOptinNotFound(userCommunicationId).exception()
             }
 
-            userCommunication = userCommunicationFilter.filterForPatch(userCommunication, oldUserOptin)
+            def callback = authorizeCallbackFactory.create(oldUserOptin.userId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('update')) {
+                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                }
 
-            userCommunicationValidator.validateForUpdate(userCommunicationId, userCommunication, oldUserOptin).then {
+                userCommunication = userCommunicationFilter.filterForPatch(userCommunication, oldUserOptin)
 
-                userCommunicationRepository.update(userCommunication).then { UserCommunication newUserCommunication ->
-                    newUserCommunication = userCommunicationFilter.filterForGet(newUserCommunication, null)
-                    return Promise.pure(newUserCommunication)
+                return userCommunicationValidator.validateForUpdate(userCommunicationId, userCommunication,
+                        oldUserOptin).then {
+                    return userCommunicationRepository.update(userCommunication).then {
+                        UserCommunication newUserCommunication ->
+                            newUserCommunication = userCommunicationFilter.filterForGet(newUserCommunication, null)
+                            return Promise.pure(newUserCommunication)
+                    }
                 }
             }
         }
@@ -110,13 +142,20 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
                 throw AppErrors.INSTANCE.userOptinNotFound(userCommunicationId).exception()
             }
 
-            userCommunication = userCommunicationFilter.filterForPut(userCommunication, oldUserOptin)
+            def callback = authorizeCallbackFactory.create(oldUserOptin.userId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('update')) {
+                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                }
 
-            return userCommunicationValidator.validateForUpdate(userCommunicationId, userCommunication, oldUserOptin)
-                    .then {
-                userCommunicationRepository.update(userCommunication).then { UserCommunication newUserCommunication ->
-                    newUserCommunication = userCommunicationFilter.filterForGet(newUserCommunication, null)
-                    return Promise.pure(newUserCommunication)
+                userCommunication = userCommunicationFilter.filterForPut(userCommunication, oldUserOptin)
+
+                return userCommunicationValidator.validateForUpdate(userCommunicationId, userCommunication, oldUserOptin)
+                        .then {
+                    return userCommunicationRepository.update(userCommunication).then { UserCommunication newUserCommunication ->
+                        newUserCommunication = userCommunicationFilter.filterForGet(newUserCommunication, null)
+                        return Promise.pure(newUserCommunication)
+                    }
                 }
             }
         }
@@ -125,31 +164,47 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
     @Override
     Promise<Void> delete(UserCommunicationId userCommunicationId) {
         return userCommunicationValidator.validateForGet(userCommunicationId).then {
-            userCommunicationRepository.delete(userCommunicationId)
-
-            return Promise.pure(null)
+            return userCommunicationRepository.delete(userCommunicationId)
         }
     }
 
     @Override
     Promise<Results<UserCommunication>> list(UserOptinListOptions listOptions) {
         return userCommunicationValidator.validateForSearch(listOptions).then {
-            userCommunicationRepository.search(listOptions).then { List<UserCommunication> userCommunications ->
+            return search(listOptions).then { List<UserCommunication> userCommunications ->
                 def result = new Results<UserCommunication>(items: [])
 
-                userCommunications.each { UserCommunication newUserCommunication ->
-                    if (newUserCommunication != null) {
-                        newUserCommunication = userCommunicationFilter.filterForGet(newUserCommunication,
-                                listOptions.properties?.split(',') as List<String>)
-                    }
+                return Promise.each(userCommunications) { UserCommunication newUserCommunication ->
+                    def callback = authorizeCallbackFactory.create(newUserCommunication.userId)
+                    return RightsScope.with(authorizeService.authorize(callback)) {
+                        if (newUserCommunication != null) {
+                            newUserCommunication = userCommunicationFilter.filterForGet(newUserCommunication,
+                                    listOptions.properties?.split(',') as List<String>)
+                        }
 
-                    if (newUserCommunication != null) {
-                        result.items.add(newUserCommunication)
+                        if (newUserCommunication != null && AuthorizeContext.hasRights('read')) {
+                            result.items.add(newUserCommunication)
+                        }
+                        return Promise.pure(null)
                     }
+                }.then {
+                    return Promise.pure(result)
                 }
-
-                return Promise.pure(result)
             }
+        }
+    }
+
+    private Promise<List<UserCommunication>> search(UserOptinListOptions listOptions) {
+        if (listOptions.userId != null && listOptions.communicationId != null) {
+            return userCommunicationRepository.searchByUserIdAndCommunicationId(listOptions.userId,
+                    listOptions.communicationId, listOptions.limit, listOptions.offset)
+        } else if (listOptions.userId != null) {
+            return userCommunicationRepository.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset)
+        } else if (listOptions.communicationId != null) {
+            return userCommunicationRepository.searchByCommunicationId(listOptions.communicationId, listOptions.limit,
+                    listOptions.offset)
+        } else {
+            throw new IllegalArgumentException('Unsupported search operation.')
         }
     }
 }

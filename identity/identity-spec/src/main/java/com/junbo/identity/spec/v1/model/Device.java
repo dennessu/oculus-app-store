@@ -6,40 +6,43 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.enumid.DeviceTypeId;
 import com.junbo.common.id.DeviceId;
-import com.junbo.common.id.DeviceTypeId;
 import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.model.Link;
-import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by liangfu on 4/3/14.
  */
-public class Device extends ResourceMeta implements Identifiable<DeviceId> {
+public class Device extends PropertyAssignedAwareResourceMeta implements Identifiable<DeviceId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "[Nullable]The id of device resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] A Link to this Device resource.")
     @JsonProperty("self")
     private DeviceId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "The type of the device.")
+    @ApiModelProperty(position = 2, required = true, value = "The Link to the DeviceType of this device.")
     private DeviceTypeId type;
 
-    @ApiModelProperty(position = 3, required = true, value = "The serial number of the device.")
+    @ApiModelProperty(position = 3, required = true, value = "The serial number of this Device.")
     private String serialNumber;
 
-    @ApiModelProperty(position = 4, required = true, value = "The description of the device.")
+    @ApiModelProperty(position = 4, required = true, value = "The firmware version on this Device.")
     private String firmwareVersion;
 
-    @ApiModelProperty(position = 5, required = false, value = "[Nullable]The users linked with this device")
+    @ApiModelProperty(position = 5, required = true, value = "[Nullable]The links to the component devices, " +
+            "for example when the device object is \"DK2\" it will has component \"HMD\" and \"camera\", " +
+            "when the device object itself is \"Camera\" the components attribute will be null.")
+    private List<DeviceId> components = new ArrayList<>();
+
+    @ApiModelProperty(position = 5, required = false, value = "[Nullable]The users linked with this device.")
     @HateoasLink("/users?deviceId={id}")
     private Link users;
-
-    @ApiModelProperty(position = 6, required = false, value = "Feature expansion of the device resource.")
-    private Map<String, String> futureExpansion;
 
     public DeviceId getId() {
         return id;
@@ -69,6 +72,15 @@ public class Device extends ResourceMeta implements Identifiable<DeviceId> {
         support.setPropertyAssigned("firmwareVersion");
     }
 
+    public List<DeviceId> getComponents() {
+        return components;
+    }
+
+    public void setComponents(List<DeviceId> components) {
+        this.components = components;
+        support.setPropertyAssigned("components");
+    }
+
     public Link getUsers() {
         return users;
     }
@@ -85,14 +97,5 @@ public class Device extends ResourceMeta implements Identifiable<DeviceId> {
     public void setType(DeviceTypeId type) {
         this.type = type;
         support.setPropertyAssigned("type");
-    }
-
-    public Map<String, String> getFutureExpansion() {
-        return futureExpansion;
-    }
-
-    public void setFutureExpansion(Map<String, String> futureExpansion) {
-        this.futureExpansion = futureExpansion;
-        support.setPropertyAssigned("futureExpansion");
     }
 }

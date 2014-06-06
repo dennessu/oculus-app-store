@@ -1,7 +1,7 @@
 package com.junbo.identity.data.dao
 
 import com.junbo.identity.data.entity.user.UserTeleBackupCodeAttemptEntity
-import com.junbo.identity.spec.v1.option.list.UserTeleBackupCodeAttemptListOptions
+import com.junbo.identity.spec.v1.option.list.UserTFABackupCodeAttemptListOptions
 import groovy.transform.CompileStatic
 
 /**
@@ -14,5 +14,5 @@ interface UserTeleBackupCodeAttemptDAO {
     UserTeleBackupCodeAttemptEntity get(Long id)
     void delete(Long id)
 
-    List<UserTeleBackupCodeAttemptEntity> search(UserTeleBackupCodeAttemptListOptions listOptions)
+    List<UserTeleBackupCodeAttemptEntity> search(UserTFABackupCodeAttemptListOptions listOptions)
 }

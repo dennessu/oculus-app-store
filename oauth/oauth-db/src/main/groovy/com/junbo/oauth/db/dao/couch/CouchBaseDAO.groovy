@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.db.dao.couch
 
+import com.junbo.common.util.Utils
 import com.junbo.oauth.common.JsonMarshaller
 import com.junbo.oauth.db.dao.BaseDAO
 import com.junbo.oauth.db.entity.BaseEntity
@@ -13,6 +14,7 @@ import com.junbo.oauth.db.exception.DBException
 import com.junbo.oauth.db.exception.DBUpdateConflictException
 import com.ning.http.client.AsyncHttpClient
 import com.ning.http.client.AsyncHttpClient.BoundRequestBuilder
+import com.ning.http.client.Realm
 import com.ning.http.client.Response
 import groovy.transform.CompileStatic
 //import junit.framework.Assert
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
+import org.springframework.util.StringUtils
 
 import javax.ws.rs.core.UriBuilder
 import java.lang.reflect.ParameterizedType
@@ -33,6 +36,8 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
     protected final Class<T> entityClass
     protected AsyncHttpClient asyncHttpClient
     protected String couchDBUri
+    protected String couchDBUser
+    protected String couchDBPassword
     protected String dbName
 
     @Required
@@ -42,7 +47,15 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
 
     @Required
     void setCouchDBUri(String couchDBUri) {
-        this.couchDBUri = couchDBUri
+        this.couchDBUri = Utils.filterPerDataCenterConfig(couchDBUri, "couchDBUri")
+    }
+
+    void setCouchDBUser(String couchDBUser) {
+        this.couchDBUser = couchDBUser
+    }
+
+    void setCouchDBPassword(String couchDBPassword) {
+        this.couchDBPassword = couchDBPassword
     }
 
     @Required
@@ -226,6 +239,12 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
 
         def requestBuilder = getRequestBuilder(method, uriBuilder.toTemplate())
 
+        if (!StringUtils.isEmpty(couchDBUser)) {
+            Realm realm = new Realm.RealmBuilder().setPrincipal(couchDBUser).setPassword(couchDBPassword)
+                    .setUsePreemptiveAuth(true).setScheme(Realm.AuthScheme.BASIC).build();
+            requestBuilder.setRealm(realm);
+        }
+
         if (body != null) {
             requestBuilder.setBody(JsonMarshaller.marshall(body))
         }
@@ -239,7 +258,10 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
         }
 
         try {
-            return requestBuilder.execute().get()
+            Response response = requestBuilder.execute().get()
+            String responseBody = response.responseBody // always consume the response body.
+
+            return response
         } catch (IOException e) {
             throw new DBConnectException('Exception happened while executing request to couch DB', e)
         }

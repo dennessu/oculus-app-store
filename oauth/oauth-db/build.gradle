@@ -1,4 +1,7 @@
 apply plugin: 'groovy'
+apply plugin: 'application'
+
+mainClassName = "com.junbo.oauth.db.data.CouchDataLoader"
 
 dependencies {
     compile(libraries.spring_aop)
@@ -15,6 +18,6 @@ dependencies {
 
     compile "redis.clients:jedis:2.2.1"
 
-    compile project(':oauth-spec')
-    compile project(':oauth-common')
+    compile junboProject(':oauth-spec')
+    compile junboProject(':oauth-common')
 }

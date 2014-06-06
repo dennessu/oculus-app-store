@@ -4,105 +4,54 @@
 
 package ${packageName};
 
-import com.junbo.common.error.AppError;
-import com.junbo.common.error.AppErrorException;
-import com.junbo.common.error.Error;
 import com.junbo.langur.core.client.*;
 import com.junbo.langur.core.promise.Promise;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.Response;
+import org.springframework.beans.factory.annotation.Required;
 
+import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriBuilder;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture;
 
 @org.springframework.stereotype.Component
-public class ${className} implements ${interfaceType} {
+public class ${className} extends AbstractClientProxy implements ${interfaceType},
+    org.springframework.context.ApplicationContextAware {
 
-    private final AsyncHttpClient __client;
+    private org.springframework.context.ApplicationContext __applicationContext;
 
-    private final String __target;
-
-    private final MultivaluedMap<String, Object> __headers;
-
-    private final MessageTranscoder __transcoder;
-
-    private final PathParamTranscoder __pathParamTranscoder;
-
-    private final QueryParamTranscoder __queryParamTranscoder;
-
-    public ${className}(AsyncHttpClient client, MessageTranscoder transcoder, PathParamTranscoder pathParamTranscoder,
-                                QueryParamTranscoder queryParamTranscoder, String target) {
-        this(client, transcoder, pathParamTranscoder, queryParamTranscoder, target, new javax.ws.rs.core.MultivaluedHashMap<String, Object>());
+    public void setApplicationContext(org.springframework.context.ApplicationContext applicationContext) throws org.springframework.beans.BeansException {
+        __applicationContext = applicationContext;
     }
 
-    public ${className}(AsyncHttpClient client, MessageTranscoder transcoder, PathParamTranscoder pathParamTranscoder,
-                            QueryParamTranscoder queryParamTranscoder, String target, MultivaluedMap<String, Object> headers) {
-        assert client != null : "client is null";
-        assert transcoder != null : "transcoder is null";
-        assert pathParamTranscoder != null : "pathParamTranscoder is null";
-        assert queryParamTranscoder != null : "queryParamTranscoder is null";
-        assert target != null : "target is null";
-        assert headers != null : "headers is null";
+    private volatile ${interfaceType} __service;
 
-        __client = client;
-        __transcoder = transcoder;
-        __pathParamTranscoder = pathParamTranscoder;
-        __queryParamTranscoder = queryParamTranscoder;
-        __target = target;
-        __headers = headers;
+    private boolean __serviceChecked;
+
+    private ${interfaceType} __checkService() {
+        if (__serviceChecked) {
+            return __service;
+        }
+
+        synchronized(this) {
+            if (__serviceChecked) {
+                return __service;
+            }
+
+            if (__applicationContext.containsBean("default${interfaceSimpleType}")) {
+                __service = __applicationContext.getBean("default${interfaceSimpleType}", ${interfaceType}.class);
+            }
+
+            __serviceChecked = true;
+            return __service;
+        }
     }
 
     [#list clientMethods as clientMethod]
         [@includeModel model=clientMethod indent=true/]
 
     [/#list]
-
-    private AppError getAppError(final int statusCode, final Error error) {
-        return new AppError() {
-            @Override
-            public int getHttpStatusCode() {
-                return statusCode;
-            }
-
-            @Override
-            public String getCode() {
-                return error.getCode();
-            }
-
-            @Override
-            public String getDescription() {
-                return error.getDescription();
-            }
-
-            @Override
-            public String getField() {
-                return error.getField();
-            }
-
-            @Override
-            public List<AppError> getCauses() {
-                List<AppError> causes = new ArrayList<>();
-                if (error.getCauses() != null) {
-                    for (Error innerError : error.getCauses()) {
-                        causes.add(getAppError(statusCode, innerError));
-                    }
-                }
-                return causes;
-            }
-
-            @Override
-            public AppErrorException exception() {
-                return new AppErrorException(this);
-            }
-
-            @Override
-            public Error error() {
-                return error;
-            }
-        };
-    }
 }

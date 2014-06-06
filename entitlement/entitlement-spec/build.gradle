@@ -1,10 +1,10 @@
 apply plugin: 'java'
 
 dependencies {
-    compile project(':entitlement-common')
+    compile junboProject(':entitlement-common')
 
-    compile (libraries.langur)
-    compile (libraries.common_lib)
+    compile junboProject(':langur-core')
+    compile junboProject(':common-lib')
 
     compile (libraries.rs_api)
     compile (libraries.guava)
@@ -15,12 +15,16 @@ dependencies {
     compile (libraries.jackson_annotations)
     compile (libraries.jackson_databind)
 
-    processor (libraries.langur_processor)
+    processor junboProject(':langur-processor')
     processor (libraries.log4j)
 }
 
 ext {
-    processorClass = 'com.junbo.langur.processor.RestAdapterProcessor,com.junbo.langur.processor.ClientProxyProcessor'
+    processorClass = [
+            'com.junbo.langur.processor.RestAdapterProcessor',
+            'com.junbo.langur.processor.ClientProxyProcessor',
+            'com.junbo.langur.processor.ClientProxyFactoryProcessor'
+    ].join(',')
 }
 
 

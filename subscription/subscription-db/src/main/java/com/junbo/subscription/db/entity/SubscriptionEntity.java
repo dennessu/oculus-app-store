@@ -26,6 +26,8 @@ public class SubscriptionEntity extends Entity {
     private UUID trackingUuid;
     private Long userId;
     private Long piId;
+    private String country;
+    private String currency;
     private SubscriptionStatus statusId;
     private String itemId;
     private Date subsStartDate;
@@ -67,6 +69,20 @@ public class SubscriptionEntity extends Entity {
         this.piId = piId;
     }
 
+    @Column(name = "country_code")
+    public String getCountry() { return country; }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    @Column(name = "currency_code")
+    public String getCurrency() { return currency; }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
     @Column(name = "status_id")
     public SubscriptionStatus getStatusId() {
         return statusId;
@@ -74,23 +90,6 @@ public class SubscriptionEntity extends Entity {
 
     public void setStatusId(SubscriptionStatus statusId) {
         this.statusId = statusId;
-    }
-
-    @Transient
-    @Override
-    public Long getId() {
-        return this.subscriptionId;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.subscriptionId = id;
-    }
-
-    @Override
-    @Transient
-    public Long getShardMasterId() {
-        return userId;
     }
 
     @Column(name = "item_id")
@@ -136,4 +135,22 @@ public class SubscriptionEntity extends Entity {
     public void setBillingMode(String billingMode) {
         this.billingMode = billingMode;
     }
+
+    @Transient
+    @Override
+    public Long getId() {
+        return this.subscriptionId;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.subscriptionId = id;
+    }
+
+    @Override
+    @Transient
+    public Long getShardMasterId() {
+        return userId;
+    }
+
 }

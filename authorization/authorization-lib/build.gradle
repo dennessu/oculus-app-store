@@ -1,8 +1,8 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile(libraries.langur)
-    compile(libraries.common_lib)
+    compile junboProject(':langur-core')
+    compile junboProject(':common-lib')
 
     compile(libraries.rs_api)
     compile(libraries.guava)
@@ -16,14 +16,20 @@ dependencies {
     compile(libraries.spring_orm)
     compile(libraries.spring_beans)
 
-
     compile(libraries.jackson_annotations)
     compile(libraries.jackson_databind)
 
     compile(libraries.aspectjrt)
     compile(libraries.aspectjweaver)
 
-    compile('com.junbo.oauth:oauth-spec:0.0.1-SNAPSHOT')
+    compile junboProject(':oom-core')
+
+    compile junboProject(':oauth-spec')
+    compile junboProject(':identity-spec')
+    compile junboProject(':authorization-spec')
+
+    compile 'net.sf.ehcache:ehcache-core:2.6.6'
+    compile 'org.springframework:spring-context-support:4.0.2.RELEASE'
 
     testCompile(libraries.spring_test)
 }

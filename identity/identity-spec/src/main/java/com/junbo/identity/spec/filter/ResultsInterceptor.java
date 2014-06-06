@@ -62,6 +62,7 @@ public class ResultsInterceptor implements ContainerResponseFilter {
 
         ContainerResponse response = (ContainerResponse)responseContext;
         Link ref = new Link();
+
         String requestUri = response.getRequestContext().getRequestUri().toString();
         requestUri = requestUri.replace(response.getRequestContext().getBaseUri().toString(),
                 selfHrefPrfix.endsWith("/") ? selfHrefPrfix : selfHrefPrfix + "/");

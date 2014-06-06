@@ -1,5 +1,5 @@
 task createWrapper(type: Wrapper) {
-    gradleVersion = '1.10'
+    gradleVersion = '1.11'
 }
 
 apply plugin: 'idea'
@@ -13,47 +13,20 @@ repositories {
     mavenLocal()
     mavenCentral()
     jcenter()
-
-    maven {
-        credentials {
-            username "${artifactory_user}"
-            password "${artifactory_password}"
-        }
-
-        url "${artifactory_contextUrl}/repo"
-    }
-
-}
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: "${artifactory_contextUrl}/libs-release-local") {
-                authentication(userName: "${artifactory_user}", password: "${artifactory_password}")
-            }
-
-            snapshotRepository(url: "${artifactory_contextUrl}/libs-snapshot-local") {
-                authentication(userName: "${artifactory_user}", password: "${artifactory_password}")
-            }
-        }
-    }
 }
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource, "$buildDir/generated-src"
-}
-
-artifacts {
-    archives sourcesJar
+tasks.withType(Upload) {
+    it.dependsOn 'build'
 }
 
 dependencies {
     compile gradleApi()
     compile localGroovy()
+
+    compile 'org.eclipse.jgit:org.eclipse.jgit:3.3.2.201404171909-r'
 
     testCompile 'org.testng:testng:6.8.7'
 }
@@ -78,3 +51,5 @@ idea {
         sourceDirs += file('src/main/webapp')
     }
 }
+
+defaultTasks 'clean', 'install'

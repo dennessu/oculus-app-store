@@ -118,7 +118,7 @@
     <!-- 2: Id generator proposed by oculus rift (Using 48 bits) -->
     <bean id="oculus48IdSchema" class="com.junbo.sharding.id.oculus.OculusIdSchema">
         <constructor-arg name="idType" value="2" />
-        <constructor-arg name="dataCenterId" value="${sharding.oculus48.sharding.dataCenterId}" />
+        <constructor-arg name="dataCenter" value="${activeDc}" />
         <constructor-arg name="bitsInDataCenterId" value="${sharding.oculus48.sharding.bitsInDataCenterId}" />
         <constructor-arg name="bitsInGlobalCounter" value="${sharding.oculus48.sharding.bitsInGlobalCounter}" />
         <constructor-arg name="bitsInLocalCounter" value="${sharding.oculus48.sharding.bitsInLocalCounter}" />
@@ -131,7 +131,7 @@
     <!-- 3: OrderId generator propsed by oculus rift (Using 40 bits) -->
     <bean id="oculus40IdSchema" class="com.junbo.sharding.id.oculus.OculusIdSchema">
         <constructor-arg name="idType" value="3" />
-        <constructor-arg name="dataCenterId" value="${sharding.oculus40.sharding.dataCenterId}" />
+        <constructor-arg name="dataCenter" value="${activeDc}" />
         <constructor-arg name="bitsInDataCenterId" value="${sharding.oculus40.sharding.bitsInDataCenterId}" />
         <constructor-arg name="bitsInGlobalCounter" value="${sharding.oculus40.sharding.bitsInGlobalCounter}" />
         <constructor-arg name="bitsInLocalCounter" value="${sharding.oculus40.sharding.bitsInLocalCounter}" />
@@ -150,17 +150,9 @@
         <constructor-arg name="idGenerator" ref="oculus48IdGenerator" />
     </bean>
 
-    <bean id="hashAlgorithm" class="com.junbo.sharding.DefaultHashAlgorithm"/>
+    <bean id="userShardAlgorithm" class="com.junbo.sharding.DefaultShardAlgorithm" />
 
-    <bean id="userShardAlgorithm" class="com.junbo.sharding.DefaultShardAlgorithm">
-        <property name="hashAlgorithm" ref="hashAlgorithm"/>
-        <property name="availableShards" value="2"/>
-    </bean>
-
-    <bean id="externalShardAlgorithm" class="com.junbo.sharding.DefaultShardAlgorithm">
-        <property name="hashAlgorithm" ref="hashAlgorithm"/>
-        <property name="availableShards" value="255"/>
-    </bean>
+    <bean id="externalShardAlgorithm" class="com.junbo.sharding.DefaultShardByHashAlgorithm" />
 
     <bean id="indexDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${index.db.jdbcUrls}"/>

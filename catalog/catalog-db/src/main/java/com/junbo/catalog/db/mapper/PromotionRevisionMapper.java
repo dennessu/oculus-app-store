@@ -34,7 +34,7 @@ public class PromotionRevisionMapper {
         entity.setStartDate(model.getStartDate());
         entity.setEndDate(model.getEndDate());
         entity.setPayload(Utils.toJsonWithType(model));
-        entity.setRev(model.getRev()==null ? null : Integer.valueOf(model.getRev()));
+        entity.setRev(model.getResourceAge());
     }
 
     public static PromotionRevision toModel(PromotionRevisionEntity entity) {
@@ -47,11 +47,9 @@ public class PromotionRevisionMapper {
         model.setStatus(entity.getStatus());
         model.setStartDate(entity.getStartDate());
         model.setEndDate(entity.getEndDate());
-        model.setCreatedBy(entity.getCreatedBy());
         model.setCreatedTime(entity.getCreatedTime());
-        model.setUpdatedBy(entity.getUpdatedBy());
         model.setUpdatedTime(entity.getUpdatedTime());
-        model.setRev(entity.getRev().toString());
+        model.setResourceAge(entity.getRev());
         return model;
     }
 }

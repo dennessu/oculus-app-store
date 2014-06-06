@@ -6,13 +6,12 @@
 package com.junbo.subscription.rest.resource;
 
 import com.junbo.common.id.SubscriptionId;
+import com.junbo.langur.core.promise.Promise;
 import com.junbo.subscription.core.SubscriptionService;
 import com.junbo.subscription.spec.model.Subscription;
 import com.junbo.subscription.spec.resource.SubscriptionResource;
-import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.ws.rs.core.HttpHeaders;
 import java.util.UUID;
 
 /**
@@ -23,7 +22,7 @@ public class SubscriptionResourceImpl implements SubscriptionResource {
     private SubscriptionService subscriptionService;
 
     @Override
-    public Promise<Subscription> getSubscription(HttpHeaders httpHeaders, SubscriptionId subscriptionId){
+    public Promise<Subscription> getSubscriptionById(SubscriptionId subscriptionId){
         Subscription subscription = subscriptionService.getSubscription(subscriptionId.getValue());
         return Promise.pure(subscription);
     }

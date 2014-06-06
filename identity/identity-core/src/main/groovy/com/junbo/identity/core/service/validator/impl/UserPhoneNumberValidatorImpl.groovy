@@ -1,39 +1,143 @@
 package com.junbo.identity.core.service.validator.impl
 
-import com.junbo.identity.core.service.validator.UserPhoneNumberValidator
+import com.fasterxml.jackson.databind.JsonNode
+import com.junbo.common.id.UserId
+import com.junbo.identity.common.util.JsonHelper
+import com.junbo.identity.core.service.validator.PiiValidator
+import com.junbo.identity.data.identifiable.UserPersonalInfoType
+import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.PhoneNumber
+import com.junbo.identity.spec.v1.model.UserPersonalInfo
+import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.CollectionUtils
 
 import java.util.regex.Pattern
 
 /**
+ * Check phone format
+ * Check phone minimum and maximum length
+ * Check user's maximum phone number
+ * Check maximum new phone numbers per month
  * Created by liangfu on 3/31/14.
  */
 @CompileStatic
-class UserPhoneNumberValidatorImpl implements UserPhoneNumberValidator {
+class UserPhoneNumberValidatorImpl implements PiiValidator {
     private Integer minValueLength
     private Integer maxValueLength
     private List<Pattern> allowedValuePatterns
 
+    private UserPersonalInfoRepository userPersonalInfoRepository
+    private Integer maxUserNumberPerPhone
+    private Integer maxNewPhoneNumberPerMonth
+
     @Override
-    void validate(PhoneNumber phoneNumber) {
-        if (phoneNumber.value == null) {
-            throw AppErrors.INSTANCE.fieldRequired('value').exception()
+    boolean handles(String type) {
+        if (type == UserPersonalInfoType.PHONE.toString()) {
+            return true
+        }
+        return false
+    }
+
+    @Override
+    Promise<Void> validateCreate(JsonNode value, UserId userId) {
+        PhoneNumber phoneNumber = (PhoneNumber)JsonHelper.jsonNodeToObj(value, PhoneNumber)
+        checkUserPhone(phoneNumber)
+        return checkAdvanceUserPhone(phoneNumber, userId)
+    }
+
+    @Override
+    Promise<Void> validateUpdate(JsonNode value, JsonNode oldValue, UserId userId) {
+        PhoneNumber phoneNumber = (PhoneNumber)JsonHelper.jsonNodeToObj(value, PhoneNumber)
+        PhoneNumber oldPhoneNumber = (PhoneNumber)JsonHelper.jsonNodeToObj(oldValue, PhoneNumber)
+
+        if (phoneNumber != oldPhoneNumber) {
+            throw AppErrors.INSTANCE.fieldInvalidException('value', 'value can\'t be updated.').exception()
+        }
+        return Promise.pure(null)
+    }
+
+    private void checkUserPhone(PhoneNumber phoneNumber) {
+        if (phoneNumber.info == null) {
+            throw AppErrors.INSTANCE.fieldRequired('value.info').exception()
         }
 
-        if (phoneNumber.value.length() > maxValueLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('value', maxValueLength).exception()
+        if (phoneNumber.info.length() > maxValueLength) {
+            throw AppErrors.INSTANCE.fieldTooLong('value.info', maxValueLength).exception()
         }
-        if (phoneNumber.value.length() < minValueLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('value', minValueLength).exception()
+        if (phoneNumber.info.length() < minValueLength) {
+            throw AppErrors.INSTANCE.fieldTooShort('value.info', minValueLength).exception()
         }
 
         if (!allowedValuePatterns.any {
-            Pattern pattern -> pattern.matcher(phoneNumber.value).matches()
+            Pattern pattern -> pattern.matcher(phoneNumber.info).matches()
         }) {
             throw AppErrors.INSTANCE.fieldInvalid('value').exception()
+        }
+    }
+
+    private Promise<Void> checkAdvanceUserPhone(PhoneNumber phoneNumber, UserId userId) {
+        return userPersonalInfoRepository.searchByPhoneNumber(phoneNumber.info, Integer.MAX_VALUE, 0).then {
+            List<UserPersonalInfo> existing ->
+                if (existing != null) {
+                    // check this phone number is not used by this user
+                    if (existing.any { UserPersonalInfo userPersonalInfo ->
+                        return userPersonalInfo.userId == userId
+                    }
+                    ) {
+                        throw AppErrors.INSTANCE.fieldDuplicate('value').exception()
+                    }
+
+                    // remove all phones not belonging to this user
+                    existing.unique { UserPersonalInfo userPersonalInfo ->
+                        return userPersonalInfo.userId
+                    }.removeAll { UserPersonalInfo userPersonalInfo ->
+                        userPersonalInfo.userId == userId
+                    }
+
+                    if (existing != null && existing.size() > maxUserNumberPerPhone) {
+                        throw AppErrors.INSTANCE.fieldInvalidException('value', 'Reach maximum phoneNumber users')
+                                .exception()
+                    }
+                }
+
+                return userPersonalInfoRepository.searchByUserIdAndType(userId, UserPersonalInfoType.PHONE.toString(),
+                        Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
+
+                    if (CollectionUtils.isEmpty(userPersonalInfoList)) {
+                        return Promise.pure(null)
+                    }
+
+                    // Even the phone is updated, we will treat this as new added
+                    userPersonalInfoList.sort( new Comparator<UserPersonalInfo>( ) {
+                        @Override
+                        int compare(UserPersonalInfo o1, UserPersonalInfo o2) {
+                            Date o1LastChangedTime = o1.updatedTime == null ? o1.createdTime : o1.updatedTime
+                            Date o2LastChangedTime = o2.updatedTime == null ? o2.createdTime : o2.updatedTime
+
+                            return o2LastChangedTime <=> o1LastChangedTime
+                        }
+                    }
+                    )
+
+                    if (userPersonalInfoList.size() > maxNewPhoneNumberPerMonth) {
+                        UserPersonalInfo userPersonalInfo = userPersonalInfoList.get(maxNewPhoneNumberPerMonth - 1)
+                        Date lastChangedTime = userPersonalInfo.updatedTime == null ?
+                                userPersonalInfo.createdTime : userPersonalInfo.updatedTime
+
+                        Calendar calendar = Calendar.instance
+                        calendar.setTime(new Date())
+                        calendar.add(Calendar.MONTH, -1)
+                        if (lastChangedTime.after(calendar.time)) {
+                            throw AppErrors.INSTANCE.fieldInvalidException('value',
+                                    "Reach maximum phoneNumber change numbers per month").exception()
+                        }
+                    }
+
+                    return Promise.pure(null)
+                }
         }
     }
 
@@ -52,5 +156,21 @@ class UserPhoneNumberValidatorImpl implements UserPhoneNumberValidator {
     @Required
     void setMaxValueLength(Integer maxValueLength) {
         this.maxValueLength = maxValueLength
+    }
+
+    @Required
+    void setUserPersonalInfoRepository(UserPersonalInfoRepository userPersonalInfoRepository) {
+        this.userPersonalInfoRepository = userPersonalInfoRepository
+    }
+
+    @Required
+    void setMaxUserNumberPerPhone(Integer maxUserNumberPerPhone) {
+        this.maxUserNumberPerPhone = maxUserNumberPerPhone
+    }
+
+    @Required
+
+    void setMaxNewPhoneNumberPerMonth(Integer maxNewPhoneNumberPerMonth) {
+        this.maxNewPhoneNumberPerMonth = maxNewPhoneNumberPerMonth
     }
 }

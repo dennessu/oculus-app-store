@@ -4,19 +4,8 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <bean id="asyncHttpClient" class="com.ning.http.client.AsyncHttpClient"/>
-
-    <bean id="walletProxy" class="com.junbo.ewallet.spec.resource.proxy.WalletResourceClientProxy">
-        <constructor-arg name="client" ref="asyncHttpClient"/>
-        <constructor-arg name="target" value="${clientproxy.ewallet.url}"/>
-        <constructor-arg name="transcoder">
-            <bean class="com.junbo.common.json.JsonMessageTranscoder"/>
-        </constructor-arg>
-        <constructor-arg name="pathParamTranscoder">
-            <bean class="com.junbo.common.json.IdPathParamTranscoder"/>
-        </constructor-arg>
-        <constructor-arg name="queryParamTranscoder">
-            <bean class="com.junbo.common.json.QueryParamTranscoderImpl"/>
-        </constructor-arg>
+    <bean id="walletProxy" class="com.junbo.ewallet.spec.resource.proxy.WalletResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.ewallet.url}"/>
     </bean>
 </beans>

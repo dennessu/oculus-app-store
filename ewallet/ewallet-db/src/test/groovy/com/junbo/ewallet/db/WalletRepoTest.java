@@ -5,8 +5,10 @@
  */
 package com.junbo.ewallet.db;
 
+import com.junbo.ewallet.common.util.Callback;
 import com.junbo.ewallet.db.entity.def.NotEnoughMoneyException;
 import com.junbo.ewallet.db.repo.TransactionRepository;
+import com.junbo.ewallet.db.repo.TransactionSupport;
 import com.junbo.ewallet.db.repo.WalletRepository;
 import com.junbo.ewallet.spec.def.Currency;
 import com.junbo.ewallet.spec.def.Status;
@@ -32,6 +34,8 @@ public class WalletRepoTest extends BaseTest {
     private WalletRepository walletRepo;
     @Autowired
     private TransactionRepository transactionRepo;
+    @Autowired
+    private TransactionSupport transactionSupport;
 
     @Test
     public void testCreate() {
@@ -65,22 +69,33 @@ public class WalletRepoTest extends BaseTest {
 
     @Test
     public void testExpiredWalletLot() {
-        Wallet wallet = walletRepo.create(buildAWallet());
-        CreditRequest creditRequest = buildACreditRequest();
-        creditRequest.setAmount(new BigDecimal(10));
-        creditRequest.setCreditType(WalletLotType.CASH.toString());
-        walletRepo.credit(wallet, creditRequest);
-        creditRequest.setCreditType(WalletLotType.PROMOTION.toString());
-        creditRequest.setExpirationDate(new Date(new Date().getTime() - 2000));
-        walletRepo.credit(wallet, creditRequest);
+        final Wallet[] wallet = new Wallet[1];
+        transactionSupport.executeInNewTransaction(new Callback() {
+            @Override
+            public void apply() {
+                wallet[0] = walletRepo.create(buildAWallet());
+                CreditRequest creditRequest = buildACreditRequest();
+                creditRequest.setAmount(new BigDecimal(10));
+                creditRequest.setCreditType(WalletLotType.CASH.toString());
+                walletRepo.credit(wallet[0], creditRequest);
+                creditRequest.setCreditType(WalletLotType.PROMOTION.toString());
+                creditRequest.setExpirationDate(new Date(new Date().getTime() - 20000000));
+                walletRepo.credit(wallet[0], creditRequest);
+            }
+        });
 
         DebitRequest debitRequest = buildADebitRequest();
         debitRequest.setAmount(new BigDecimal(17));
         try {
-            walletRepo.debit(wallet, debitRequest);
-        } catch (Exception e) {
+            walletRepo.debit(wallet[0], debitRequest);
+        } catch (NotEnoughMoneyException e) {
             Assert.assertEquals(e.getClass(), NotEnoughMoneyException.class);
-            Assert.assertEquals(walletRepo.get(wallet.getWalletId()).getBalance(), new BigDecimal(20));
+            transactionSupport.executeInNewTransaction(new Callback() {
+                @Override
+                public void apply() {
+                    Assert.assertEquals(walletRepo.get(wallet[0].getWalletId()).getBalance(), new BigDecimal(10));
+                }
+            });
         }
     }
 

@@ -7,21 +7,21 @@
 package com.junbo.configuration.impl;
 
 import com.junbo.configuration.ConfigContext;
+import com.junbo.configuration.crypto.CipherService;
+import com.junbo.configuration.crypto.impl.AESCipherServiceImpl;
 import com.junbo.utils.FileWatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.*;
 import java.lang.ref.WeakReference;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.WatchEvent;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Properties;
+import java.nio.file.*;
+import java.nio.file.attribute.PosixFileAttributes;
+import java.nio.file.attribute.PosixFilePermission;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -31,7 +31,10 @@ import java.util.jar.JarFile;
  * 1):  activeEnv:      If this environment(onebox/int/prod...) is configured,
  *                      it will load configuration from its environment configuration;
  *                      If this environment isn't configured, it will load from onebox environment by default;
- * 2):  configDir:      This is the override configuration file, if it is set,
+ * 2):  activeDc:       This is datacenter within the environment of current machine.
+ *                      It is used by API corss DC routing logic.
+ *                      If this datacenter isn't configured, it will use dc0 by default;
+ * 3):  configDir:      This is the override configuration file, if it is set,
  *                      it will override the same property in the configuration data, and we will watch this file;
  *                      if it isn't set, use configuration data.
  */
@@ -39,13 +42,21 @@ import java.util.jar.JarFile;
 public class ConfigServiceImpl implements com.junbo.configuration.ConfigService {
     //region private fields
     private static final String CONFIG_PROPERTY_FILE = "configuration.properties";
+    private static final String CONFIG_PASSWORD_KEY_FILE = "configuration.key";
     private static final String CONFIG_DIR_OPTS = "configDir";
     private static final String ACTIVE_ENV_OPTS = "activeEnv";
+    private static final String ACTIVE_DC_OPTS = "activeDc";
+    private static final String ACTIVE_SUBNET_OPTS = "subnet";
     private static final String SUFFIX_PROPERTY_FILE = ".properties";
     private static final String DEFAULT_FOLDER = "_default";
     private static final String DEFAULT_PROPERTIES_FILE = "_default.properties";
     private static final String DEFAULT_ENVIRONMENT = "onebox";
+    private static final String DEFAULT_DATACENTER = "dc0";
+    private static final String DEFAULT_SUBNET = "127.0.0.1/32";
     private static final String CONFIG_PATH = "junbo/conf";
+    private static final String FILE_FORMAT = "utf-8";
+
+    private static final String CRYPTO_SUFFIX = ".encrypted";
 
     private static Logger logger = LoggerFactory.getLogger(ConfigServiceImpl.class);
 
@@ -57,7 +68,8 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
     private Properties finalProperties = new Properties();
 
     private ConfigChangeListenerMap listeners = new ConfigChangeListenerMap();
-
+    private CipherService cipherService;
+    private String keyStr;
     //endregion
 
     public ConfigServiceImpl() {
@@ -81,25 +93,56 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
     }
 
     @Override
+    public Properties getAllConfigItemsMasked() {
+
+        Properties properties = new Properties();
+
+        for (Map.Entry entry : finalProperties.entrySet()) {
+            String key = entry.getKey().toString();
+            String value = entry.getValue().toString();
+
+            if (key.endsWith(CRYPTO_SUFFIX)) {
+                // ignored
+            } else if (finalProperties.contains(key + CRYPTO_SUFFIX)) {
+                value = "*****";
+            }
+
+            properties.put(key, value);
+        }
+
+        return properties;
+    }
+
+    @Override
     public void addListener(String configKey, ConfigListener listener) {
         listeners.addListener(configKey, listener);
     }
 
     //region private methods
 
-    private ConfigContext readConfigContext(Path path) {
-        logger.info("Reading config context from: " + path);
-        Properties properties = readProperties(path);
-        String environment = properties.getProperty("environment");
-        //String shards = properties.getProperty("shards");
+    private ConfigContext readConfigContext(Properties properties) {
+        String environment = readConfigContext("environment", ACTIVE_ENV_OPTS, properties, DEFAULT_ENVIRONMENT);
+        String datacenter = readConfigContext("datacenter", ACTIVE_DC_OPTS, properties, DEFAULT_DATACENTER);
+        String ip4vSubnet = readConfigContext("ipv4Subnet", ACTIVE_SUBNET_OPTS, properties, DEFAULT_SUBNET);
 
-        if (StringUtils.isEmpty(environment)) {
-            throw new RuntimeException(String.format(
-                    "Configuration context incomplete from path %s. environment=%s",
-                    path, environment));
+        return new ConfigContext(environment, datacenter, ip4vSubnet);
+    }
+
+    private String readConfigContext(String settingName, String settingKey, Properties properties, String defaultValue) {
+        String result = System.getProperty(settingKey);
+        if (StringUtils.isEmpty(result) && properties != null) {
+            result = properties.getProperty(settingKey);
         }
 
-        return new ConfigContext(environment);
+        if (StringUtils.isEmpty(result)) {
+            logger.info("No configContext {} configured, will use default {}='{}'", settingName, settingKey, defaultValue);
+            result = defaultValue;
+        }
+        else {
+            logger.info("ConfigContext {} is configured as {}='{}'", settingName, settingKey, result);
+        }
+        properties.setProperty(settingKey, result);
+        return result;
     }
 
     // This path is the configurationData first level Path
@@ -126,11 +169,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
 
             if (en.hasMoreElements()) {
                 URL url = en.nextElement();
-                List<String> strings = getJarFiles(url.getPath());
-                for(String string : strings) {
-                    InputStream inputStream1 = this.getClass().getClassLoader().getResourceAsStream(string);
-                    properties.load(inputStream1);
-                }
+                loadJarProperties(url.getPath(), properties);
             }
 
             // 3) {env}/_default.properties
@@ -147,40 +186,63 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
 
             if (en.hasMoreElements()) {
                 URL url = en.nextElement();
-                List<String> strings = getJarFiles(url.getPath());
-                for(String string : strings) {
-                    InputStream inputStream1 = this.getClass().getClassLoader().getResourceAsStream(string);
-                    properties.load(inputStream1);
-                }
+                loadJarProperties(url.getPath(), properties);
             }
         }
         catch (IOException ex) {
-            logger.warn("Failed to read jar file: ");
+            logger.error("Failed to read jar file.", ex);
+            throw new RuntimeException("Failed to read configuration jar file.", ex);
         }
 
         return properties;
     }
 
-    private List<String> getJarFiles(String jarPath) {
+    private void loadJarProperties(String jarPath, Properties properties) {
         List<String> resourcePathes = new ArrayList<String>();
         String[] jarInfo = jarPath.split("!");
+        if (jarInfo.length == 1) {
+            // this is loading from class file, not jar package
+            loadFolderProperties(jarInfo[0], properties);
+            return;
+        }
+
         String jarFilePath = jarInfo[0].substring(jarInfo[0].indexOf("/"));
         String packagePath = jarInfo[1].substring(1);
         try {
             JarFile jarFile = new JarFile(jarFilePath);
-            Enumeration<JarEntry> entrys = jarFile.entries();
-            while (entrys.hasMoreElements()) {
-                JarEntry jarEntry = entrys.nextElement();
+            Enumeration<JarEntry> entries = jarFile.entries();
+            while (entries.hasMoreElements()) {
+                JarEntry jarEntry = entries.nextElement();
                 String entryName = jarEntry.getName();
                 if (entryName.startsWith(packagePath) && entryName.endsWith(SUFFIX_PROPERTY_FILE)) {
                     resourcePathes.add(entryName);
                 }
             }
+        } catch (Exception ex) {
+            throw new RuntimeException("Failed to read from jar path: " + jarPath, ex);
         }
-        catch (Exception e) {
-            e.printStackTrace();
+
+        for (String string : resourcePathes) {
+            try (InputStream fileStream = this.getClass().getClassLoader().getResourceAsStream(string)) {
+                properties.load(fileStream);
+            } catch (IOException ex) {
+                throw new RuntimeException("Failed to read property file from resource: " + string, ex);
+            }
         }
-        return resourcePathes;
+    }
+
+    private void loadFolderProperties(String folder, Properties properties) {
+        for (File file : new File(folder).listFiles()) {
+            if (file.isDirectory()) {
+                loadFolderProperties(file.getAbsolutePath(), properties);
+            } else if (file.isFile()) {
+                try (InputStream fileStream = new FileInputStream(file.getAbsoluteFile())) {
+                    properties.load(fileStream);
+                } catch (IOException ex) {
+                    throw new RuntimeException("Failed to read file: " + file.getAbsolutePath(), ex);
+                }
+            }
+        }
     }
 
     private void loadJarEntry(Properties props, JarFile jarFile, String entryName) {
@@ -225,33 +287,93 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
     }
 
     private void loadConfig() {
-        String environment = System.getProperty(ACTIVE_ENV_OPTS);
-        if (StringUtils.isEmpty(environment)) {
-            logger.info("No environment configured, will use default environment=onebox.");
-            configContext = new ConfigContext(DEFAULT_ENVIRONMENT);
-        }
-        else {
-            logger.info("Environment is configured as environment=" + environment);
-            configContext = new ConfigContext(environment);
-        }
-
-        // Read jar configuration files
-        jarProperties = readJarProperties();
-
         String configDir = System.getProperty(CONFIG_DIR_OPTS);
+
         if (!StringUtils.isEmpty(configDir)) {
             logger.info("Scanning configuration from configDir: " + configDir);
+
+            Path keyFilePath = Paths.get(configDir, CONFIG_PASSWORD_KEY_FILE);
+            keyStr = loadAndCheckKeyFile(keyFilePath);
 
             Path configFilePath = Paths.get(configDir, CONFIG_PROPERTY_FILE);
             overrideProperties = readProperties(configFilePath);
         }
 
+        configContext = readConfigContext(overrideProperties);
+
+        // Read jar configuration files
+        jarProperties = readJarProperties();
+
+        cipherService = new AESCipherServiceImpl(keyStr);
+
         Properties commandLineProperties = System.getProperties();
 
         finalProperties = new Properties();
-        finalProperties.putAll(jarProperties);
-        finalProperties.putAll(overrideProperties);
-        finalProperties.putAll(commandLineProperties);
+        finalProperties.putAll(decryptProperties(jarProperties));
+        finalProperties.putAll(decryptProperties(overrideProperties));
+        finalProperties.putAll(decryptProperties(commandLineProperties));
+    }
+
+    private Properties decryptProperties(Properties properties) {
+        if (properties == null || properties.isEmpty()) {
+            return properties;
+        }
+
+        Properties newProperties = new Properties();
+
+        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+            String key = entry.getKey().toString();
+            String value = entry.getValue().toString();
+
+            if (key.endsWith(CRYPTO_SUFFIX)) {
+                int endIndex = key.lastIndexOf(CRYPTO_SUFFIX);
+                String newKey = key.substring(0, endIndex);
+
+                newProperties.put(newKey, decrypt(value));
+            }
+
+            newProperties.put(key, value);
+        }
+
+        return newProperties;
+    }
+
+    private String loadAndCheckKeyFile(Path path){
+        // check file exists
+        File file = new File(path.toUri());
+        if (!file.exists()) {
+            logger.warn("Key file doesn't exist: " + path.toUri().toString());
+            return null;
+        }
+
+        // check permission, it must be owner read and write only
+        try {
+            Set<PosixFilePermission> permissions = null;
+            try {
+                permissions = Files.readAttributes(file.toPath(), PosixFileAttributes.class, LinkOption.NOFOLLOW_LINKS).permissions();
+
+                if (CollectionUtils.isEmpty(permissions)) {
+                    throw new IllegalAccessException("Permission check invalid.");
+                }
+
+                // Only support OWNER_READ and OWNER_WRITE
+                if (permissions.size() > 2) {
+                    throw new IllegalAccessException("Permission only valid for OWNER_READ and OWNER_WRITE.");
+                }
+
+                for (PosixFilePermission permission : permissions) {
+                    if (permission != PosixFilePermission.OWNER_READ && permission != PosixFilePermission.OWNER_WRITE) {
+                        throw new IllegalAccessException("Permission only valid for OWNER_READ and OWNER_WRITE.");
+                    }
+                }
+            } catch (UnsupportedOperationException unSupportedOperationEx) {
+                logger.warn("Skip permission check.");
+            }
+
+            return readKeyFile(file);
+        } catch (Exception e) {
+            throw new RuntimeException("Load key file error: ", e);
+        }
     }
 
     private void watch(){
@@ -264,6 +386,36 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
                 }
             });
         }
+    }
+
+    private String decrypt(String encryptedValue) {
+        if (StringUtils.isEmpty(encryptedValue)) {
+            return encryptedValue;
+        }
+
+        if (StringUtils.isEmpty(keyStr)) {
+            throw new RuntimeException("Key is missing.");
+        }
+
+        return cipherService.decrypt(encryptedValue);
+    }
+
+    private String readKeyFile(File file) throws IOException {
+        FileInputStream fis = new FileInputStream(file);
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+
+        List<String> list = new ArrayList<>();
+        String line = null;
+        while ((line = br.readLine()) != null) {
+            list.add(line);
+        }
+
+        br.close();
+        if (CollectionUtils.isEmpty(list) || list.size() > 2) {
+            throw new RuntimeException("Invalid file format");
+        }
+        return list.get(0);
     }
 
     private static final class ConfigChangeListenerList {
@@ -310,6 +462,5 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
             }
         }
     }
-
     //endregion
 }

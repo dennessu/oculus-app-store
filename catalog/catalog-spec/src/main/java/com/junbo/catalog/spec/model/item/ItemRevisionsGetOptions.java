@@ -11,45 +11,35 @@ import com.junbo.common.id.ItemId;
 import com.junbo.common.id.ItemRevisionId;
 
 import javax.ws.rs.QueryParam;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Items get options.
  */
 public class ItemRevisionsGetOptions extends PageableGetOptions {
     @QueryParam("itemId")
-    private List<ItemId> itemIds;
+    private Set<ItemId> itemIds;
     @QueryParam("revisionId")
-    private List<ItemRevisionId> revisionIds;
-    @QueryParam("type")
-    private String type;
+    private Set<ItemRevisionId> revisionIds;
     @QueryParam("status")
     private String status;
     @QueryParam("timeInMillis")
     private Long timestamp;
 
-    public List<ItemId> getItemIds() {
+    public Set<ItemId> getItemIds() {
         return itemIds;
     }
 
-    public void setItemIds(List<ItemId> itemIds) {
+    public void setItemIds(Set<ItemId> itemIds) {
         this.itemIds = itemIds;
     }
 
-    public List<ItemRevisionId> getRevisionIds() {
+    public Set<ItemRevisionId> getRevisionIds() {
         return revisionIds;
     }
 
-    public void setRevisionIds(List<ItemRevisionId> revisionIds) {
+    public void setRevisionIds(Set<ItemRevisionId> revisionIds) {
         this.revisionIds = revisionIds;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getStatus() {

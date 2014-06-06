@@ -5,7 +5,6 @@
  */
 package com.junbo.fulfilment.clientproxy;
 
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Offer;
@@ -33,6 +32,4 @@ public interface MegaGateway {
     Long updateItemRevision(ItemRevision itemRevision);
 
     Entitlement getEntitlement(Long entitlementId);
-
-    Long createEntitlementDef(EntitlementDefinition def);
 }

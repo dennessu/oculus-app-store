@@ -4,6 +4,8 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.langur.processor.handler
+
+import com.junbo.langur.core.InProcessCallable
 import com.junbo.langur.processor.ProcessingException
 import com.junbo.langur.processor.model.ClientMethodModel
 import com.junbo.langur.processor.model.ClientParameterModel
@@ -50,6 +52,8 @@ class ClientProxyParser implements RestResourceHandler {
         clientProxy.interfaceType = elementUtils.getPackageOf(mapperType).qualifiedName.toString() + DOT +
                 mapperType.simpleName.toString()
 
+        clientProxy.interfaceSimpleType = mapperType.simpleName.toString()
+
         clientProxy.clientMethods = []
         ElementFilter.methodsIn(elementUtils.getAllMembers(mapperType)).each {
             ExecutableElement executableElement ->
@@ -87,6 +91,8 @@ class ClientProxyParser implements RestResourceHandler {
                 clientMethod.contentType = getContentType(mapperType, executableElement)
 
                 clientMethod.accepts = getAccepts(mapperType, executableElement)
+
+                clientMethod.inProcessCallable = getInProcessCallable(mapperType, executableElement)
 
                 clientProxy.clientMethods.add(clientMethod)
         }
@@ -158,6 +164,20 @@ class ClientProxyParser implements RestResourceHandler {
         }
 
         return [] as List
+    }
+
+    private static boolean getInProcessCallable(TypeElement mapperType, ExecutableElement methodElement) {
+
+        def produces = methodElement.getAnnotation(InProcessCallable)
+        if (produces == null) {
+            produces = mapperType.getAnnotation(InProcessCallable)
+        }
+
+        if (produces != null) {
+            return true
+        }
+
+        return false
     }
 
     private static String parseInnerParamType(TypeMirror typeMirror) {

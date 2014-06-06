@@ -6,14 +6,13 @@
 
 package com.junbo.catalog.db.entity;
 
-import com.junbo.catalog.db.dao.StringJsonUserType;
+import com.junbo.common.hibernate.StringJsonUserType;
 import com.junbo.catalog.spec.model.promotion.PromotionType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
-import java.util.Date;
 
 /**
  * Promotion DB entity.
@@ -26,8 +25,6 @@ public class PromotionEntity extends BaseEntity {
     private PromotionType type;
     private Long currentRevisionId;
     private Long ownerId;
-    private Date startDate;
-    private Date endDate;
     private String payload;
 
     @Id
@@ -65,24 +62,6 @@ public class PromotionEntity extends BaseEntity {
 
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
-    }
-
-    @Column(name = "start_date")
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-    @Column(name = "end_date")
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
     }
 
     @Column(name = "payload")

@@ -62,7 +62,6 @@ class Client {
 
     Set<String> contacts
 
-    @JsonIgnore
     String revision
 
     @JsonProperty('need_consent')

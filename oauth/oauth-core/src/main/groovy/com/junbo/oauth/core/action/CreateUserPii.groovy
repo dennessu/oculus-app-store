@@ -65,15 +65,13 @@ class CreateUserPii implements Action {
 
         String lastName = parameterMap.getFirst(OAuthParameters.LAST_NAME)
 
-        String nickname = parameterMap.getFirst(OAuthParameters.NICK_NAME)
-
         String email = parameterMap.getFirst(OAuthParameters.EMAIL)
 
         Gender gender = contextWrapper.gender
 
         Date dob = contextWrapper.dob
 
-        UserName name = new UserName(firstName: firstName, lastName: lastName, nickName: nickname)
+        UserName name = new UserName(givenName: firstName, familyName: lastName, fullName: "$firstName $lastName")
 
         UserPersonalInfo namePii = new UserPersonalInfo(
                 userId: user.id as UserId,
@@ -84,22 +82,26 @@ class CreateUserPii implements Action {
         UserPersonalInfo emailPii = new UserPersonalInfo(
                 userId: user.id as UserId,
                 type: 'EMAIL',
-                value: ObjectMapperProvider.instance().valueToTree(new Email(value: email))
+                value: ObjectMapperProvider.instance().valueToTree(new Email(info: email))
         )
 
-        UserPersonalInfo genderPii = new UserPersonalInfo(
-                userId: user.id as UserId,
-                type: 'GENDER',
-                value: ObjectMapperProvider.instance().valueToTree(new UserGender(value: gender.name()))
-        )
+        UserPersonalInfo genderPii = null
+
+        if (gender != null) {
+            genderPii = new UserPersonalInfo(
+                    userId: user.id as UserId,
+                    type: 'GENDER',
+                    value: ObjectMapperProvider.instance().valueToTree(new UserGender(info: gender.name()))
+            )
+        }
 
         UserPersonalInfo dobPii = new UserPersonalInfo(
                 userId: user.id as UserId,
                 type: 'DOB',
-                value: ObjectMapperProvider.instance().valueToTree(new UserDOB(birthday: dob))
+                value: ObjectMapperProvider.instance().valueToTree(new UserDOB(info: dob))
         )
 
-        userPersonalInfoResource.create(namePii).recover { Throwable e ->
+        return userPersonalInfoResource.create(namePii).recover { Throwable e ->
             handleException(e, contextWrapper)
             return Promise.pure(null)
         }.then { UserPersonalInfo newNamePii ->
@@ -114,23 +116,47 @@ class CreateUserPii implements Action {
 
             return Promise.pure(new ActionResult('next'))
         }.then { ActionResult result ->
+             if (result.id == 'error') {
+                return Promise.pure(result)
+            }
+
+            return userPersonalInfoResource.create(emailPii).recover { Throwable e ->
+                handleException(e, contextWrapper)
+                return Promise.pure(null)
+            }.then { UserPersonalInfo newEmailPii ->
+                if (newEmailPii == null) {
+                    return Promise.pure(new ActionResult('error'))
+                }
+
+                user.emails = [new UserPersonalInfoLink(
+                        isDefault: true,
+                        value: newEmailPii.id as UserPersonalInfoId
+                )]
+
+                return Promise.pure(new ActionResult('next'))
+            }
+        }.then { ActionResult result ->
             if (result.id == 'error') {
                 return Promise.pure(result)
             }
 
-            return userPersonalInfoResource.create(emailPii)
-        }.recover { Throwable e ->
-            handleException(e, contextWrapper)
-            return Promise.pure(null)
-        }.then { UserPersonalInfo newEmailPii ->
-            if (newEmailPii == null) {
-                return Promise.pure(new ActionResult('error'))
-            }
+            if (genderPii != null) {
+                return userPersonalInfoResource.create(genderPii).recover { Throwable e ->
+                    handleException(e, contextWrapper)
+                    return Promise.pure(null)
+                }.then { UserPersonalInfo newGenderPii ->
+                    if (newGenderPii == null) {
+                        return Promise.pure(new ActionResult('error'))
+                    }
 
-            user.emails = [new UserPersonalInfoLink(
-                    isDefault: true,
-                    value: newEmailPii.id as UserPersonalInfoId
-            )]
+                    user.gender = new UserPersonalInfoLink(
+                            isDefault: true,
+                            value: newGenderPii.id as UserPersonalInfoId
+                    )
+
+                    return Promise.pure(new ActionResult('next'))
+                }
+            }
 
             return Promise.pure(new ActionResult('next'))
         }.then { ActionResult result ->
@@ -138,58 +164,44 @@ class CreateUserPii implements Action {
                 return Promise.pure(result)
             }
 
-            return userPersonalInfoResource.create(genderPii)
-        }.recover { Throwable e ->
-            handleException(e, contextWrapper)
-            return Promise.pure(null)
-        }.then { UserPersonalInfo newGenderPii ->
-            if (newGenderPii == null) {
-                return Promise.pure(new ActionResult('error'))
+            return userPersonalInfoResource.create(dobPii).recover { Throwable e ->
+                handleException(e, contextWrapper)
+                return Promise.pure(null)
+            }.then { UserPersonalInfo newDobPii ->
+                if (newDobPii == null) {
+                    return Promise.pure(new ActionResult('error'))
+                }
+
+                user.dob = new UserPersonalInfoLink(
+                        isDefault: true,
+                        value: newDobPii.id as UserPersonalInfoId
+                )
+
+                return Promise.pure(new ActionResult('next'))
             }
-
-            user.gender = new UserPersonalInfoLink(
-                    isDefault: true,
-                    value: newGenderPii.id as UserPersonalInfoId
-            )
-
-            return Promise.pure(new ActionResult('next'))
         }.then { ActionResult result ->
             if (result.id == 'error') {
                 return Promise.pure(result)
             }
 
-            return userPersonalInfoResource.create(dobPii)
-        }.recover { Throwable e ->
-            handleException(e, contextWrapper)
-            return Promise.pure(null)
-        }.then { UserPersonalInfo newDobPii ->
-            if (newDobPii == null) {
-                return Promise.pure(new ActionResult('error'))
+            return userResource.put(user.id as UserId, user).recover { Throwable e ->
+                handleException(e, contextWrapper)
+                return Promise.pure(null)
+            }.then { User updatedUser ->
+                if (updatedUser == null) {
+                    return Promise.pure(new ActionResult('error'))
+                }
+
+                contextWrapper.user = updatedUser
+
+                LoginState loginState = new LoginState(
+                        userId: ((UserId) user.id).value,
+                        lastAuthDate: new Date()
+                )
+
+                contextWrapper.loginState = loginState
+                return Promise.pure(new ActionResult('success'))
             }
-
-            user.dob = new UserPersonalInfoLink(
-                    isDefault: true,
-                    value: newDobPii.id as UserPersonalInfoId
-            )
-
-            return userResource.put(user.id as UserId, user)
-        }.recover { Throwable e ->
-            handleException(e, contextWrapper)
-            return Promise.pure(null)
-        }.then { User updatedUser ->
-            if (updatedUser == null) {
-                return Promise.pure(new ActionResult('error'))
-            }
-
-            contextWrapper.user = updatedUser
-
-            LoginState loginState = new LoginState(
-                    userId: ((UserId) user.id).value,
-                    lastAuthDate: new Date()
-            )
-
-            contextWrapper.loginState = loginState
-            return Promise.pure(new ActionResult('success'))
         }
     }
 

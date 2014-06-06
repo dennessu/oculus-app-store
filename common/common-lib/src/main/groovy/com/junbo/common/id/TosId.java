@@ -9,7 +9,7 @@ package com.junbo.common.id;
 /**
  * Created by minhao on 2/13/14.
  */
-@IdResourcePath("/tos/{0}")
+@IdResourcePath(value = "/tos/{0}", regex = "/tos/(?<id>[0-9A-Z]+)")
 public class TosId extends Id {
 
     public TosId() {}

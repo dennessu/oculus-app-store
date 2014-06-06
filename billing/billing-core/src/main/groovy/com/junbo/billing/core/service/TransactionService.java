@@ -16,9 +16,11 @@ import java.math.BigDecimal;
  */
 public interface TransactionService {
 
-    Promise<Balance> processBalance(Balance balance);
+    Promise<Balance> processBalance(Balance balance, Balance originalBalance);
 
     Promise<Balance> captureBalance(Balance balance, BigDecimal amount);
 
     Promise<Balance> confirmBalance(Balance balance);
+
+    Promise<Balance> checkBalance(Balance balance);
 }

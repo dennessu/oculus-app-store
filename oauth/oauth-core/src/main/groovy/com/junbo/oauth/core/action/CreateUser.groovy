@@ -37,12 +37,17 @@ class CreateUser implements Action {
 
         String username = parameterMap.getFirst(OAuthParameters.USERNAME)
 
+        // check username has been created or not
+        if (contextWrapper.user != null && contextWrapper.user.username == username) {
+            return Promise.pure(new ActionResult('success'))
+        }
+
         User user = new User(
                 username: username,
                 isAnonymous: false
         )
 
-        userResource.create(user).recover { Throwable throwable ->
+        return userResource.create(user).recover { Throwable throwable ->
             if (throwable instanceof AppErrorException) {
                 contextWrapper.errors.add(((AppErrorException) throwable).error.error())
             } else {

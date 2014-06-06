@@ -10,14 +10,17 @@ import com.junbo.restriction.core.RestrictionService
 import com.junbo.restriction.core.configuration.RestrictionConfiguration
 import com.junbo.restriction.core.validator.RestrictionValidator
 import com.junbo.restriction.core.verifier.Verifier
+import com.junbo.restriction.spec.internal.Restriction
 import com.junbo.restriction.spec.model.AgeCheck
 import com.junbo.restriction.spec.model.Status
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Required
 
 /**
  * Impl of RestrictionService.
  */
+@CompileStatic
 class RestrictionServiceImpl implements RestrictionService {
 
     @Autowired
@@ -56,7 +59,7 @@ class RestrictionServiceImpl implements RestrictionService {
     }
 
     private boolean supportCountry(String country) {
-        return  configuration.restrictions.any {
+        return  configuration.restrictions.any { Restriction it ->
             it.country.equalsIgnoreCase(country)
         }
     }

@@ -11,9 +11,9 @@ import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.BaseOrderEventAwareAction
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
-import com.junbo.order.db.entity.enums.EventStatus
-import com.junbo.order.db.entity.enums.OrderActionType
-import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.spec.model.enums.EventStatus
+import com.junbo.order.spec.model.enums.OrderActionType
+import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.model.OrderEvent
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -37,8 +37,8 @@ import javax.annotation.Resource
 @TypeChecked
 class OrderEventAspect {
 
-    @Resource(name = 'orderRepository')
-    OrderRepository repo
+    @Resource(name = 'orderRepositoryFacade')
+    OrderRepositoryFacade repo
     @Resource(name = 'orderServiceContextBuilder')
     OrderServiceContextBuilder builder
     @Resource(name = 'orderTransactionHelper')
@@ -99,7 +99,7 @@ class OrderEventAspect {
         assert (orderEventAwareAfter != null)
         LOGGER.info('name=Save_Order_Event_AfterReturning. action: {}', orderEventAwareAfter.action())
 
-        rv.syncRecover { Throwable throwable ->
+        return rv.syncRecover { Throwable throwable ->
             def oe = getReturnedOrderEvent(jp, EventStatus.ERROR)
             if (oe != null && oe.order != null) {
                 transactionHelper.executeInNewTransaction {
@@ -174,7 +174,7 @@ class OrderEventAspect {
 
     private OrderId getOrderId(JoinPoint jp) {
         def context = getOrderActionContext(jp)
-        return context?.orderServiceContext?.order?.id
+        return context?.orderServiceContext?.order?.getId()
     }
 
     @SuppressWarnings('UnnecessaryGetter')

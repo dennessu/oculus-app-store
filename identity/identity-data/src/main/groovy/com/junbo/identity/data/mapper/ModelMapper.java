@@ -7,10 +7,8 @@
 package com.junbo.identity.data.mapper;
 
 import com.junbo.identity.data.entity.device.DeviceEntity;
-import com.junbo.identity.data.entity.domaindata.SecurityQuestionEntity;
 import com.junbo.identity.data.entity.group.GroupEntity;
 import com.junbo.identity.data.entity.user.*;
-import com.junbo.identity.spec.model.domaindata.SecurityQuestion;
 import com.junbo.identity.spec.model.users.UserPassword;
 import com.junbo.identity.spec.model.users.UserPin;
 import com.junbo.identity.spec.v1.model.*;
@@ -42,9 +40,6 @@ public interface ModelMapper {
 
     UserPin toUserPin(UserPinEntity entity, MappingContext context);
     UserPinEntity toUserPin(UserPin entity, MappingContext context);
-
-    SecurityQuestion toSecurityQuestion(SecurityQuestionEntity entity, MappingContext context);
-    SecurityQuestionEntity toSecurityQuestion(SecurityQuestion entity, MappingContext context);
 
     UserEntity toUser(User user, MappingContext context);
     User toUser(UserEntity userEntity, MappingContext context);
@@ -90,17 +85,17 @@ public interface ModelMapper {
     Address toAddress(AddressEntity entity, MappingContext context);
     AddressEntity toAddress(Address entity, MappingContext context);
 
-    UserTeleCode toUserTeleCode(UserTeleCodeEntity entity, MappingContext context);
-    UserTeleCodeEntity toUserTeleCode(UserTeleCode entity, MappingContext context);
+    UserTFA toUserTeleCode(UserTeleCodeEntity entity, MappingContext context);
+    UserTeleCodeEntity toUserTeleCode(UserTFA entity, MappingContext context);
 
-    UserTeleAttempt toUserTeleAttempt(UserTeleAttemptEntity entity, MappingContext context);
-    UserTeleAttemptEntity toUserTeleAttempt(UserTeleAttempt entity, MappingContext context);
+    UserTFAAttempt toUserTeleAttempt(UserTeleAttemptEntity entity, MappingContext context);
+    UserTeleAttemptEntity toUserTeleAttempt(UserTFAAttempt entity, MappingContext context);
 
-    UserTeleBackupCode toUserTeleBackupCode(UserTeleBackupCodeEntity entity, MappingContext context);
-    UserTeleBackupCodeEntity toUserTeleBackupCode(UserTeleBackupCode entity, MappingContext context);
+    UserTFABackupCode toUserTeleBackupCode(UserTeleBackupCodeEntity entity, MappingContext context);
+    UserTeleBackupCodeEntity toUserTeleBackupCode(UserTFABackupCode entity, MappingContext context);
 
-    UserTeleBackupCodeAttempt toUserTeleBackupCodeAttempt(UserTeleBackupCodeAttemptEntity entity,
+    UserTFABackupCodeAttempt toUserTeleBackupCodeAttempt(UserTeleBackupCodeAttemptEntity entity,
                                                           MappingContext context);
-    UserTeleBackupCodeAttemptEntity toUserTeleBackupCodeAttempt(UserTeleBackupCodeAttempt entity,
+    UserTeleBackupCodeAttemptEntity toUserTeleBackupCodeAttempt(UserTFABackupCodeAttempt entity,
                                                           MappingContext context);
 }

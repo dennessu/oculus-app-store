@@ -6,6 +6,7 @@
 
 package com.junbo.order.clientproxy.fulfillment.impl
 
+import com.junbo.common.id.OrderId
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.fulfilment.spec.resource.FulfilmentResource
 import com.junbo.langur.core.promise.Promise
@@ -36,5 +37,10 @@ class FulfillmentFacadeImpl implements FulfillmentFacade {
     @Override
     Promise<FulfilmentRequest> postFulfillment(Order order) {
         return fulfilmentResource.fulfill(FacadeBuilder.buildFulfilmentRequest(order))
+    }
+
+    @Override
+    Promise<FulfilmentRequest> getFulfillment(OrderId orderId) {
+        return fulfilmentResource.getByOrderId(orderId)
     }
 }

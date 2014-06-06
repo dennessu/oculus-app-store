@@ -2,8 +2,8 @@ package com.junbo.order.jobs.subledger
 import com.junbo.order.core.SubledgerService
 import com.junbo.order.core.impl.common.TransactionHelper
 import com.junbo.order.core.impl.subledger.SubledgerHelper
-import com.junbo.order.db.entity.enums.SubledgerItemStatus
-import com.junbo.order.db.repo.SubledgerRepository
+import com.junbo.order.spec.model.enums.SubledgerItemStatus
+import com.junbo.order.db.repo.facade.SubledgerRepositoryFacade
 import com.junbo.order.spec.model.PageParam
 import com.junbo.order.spec.model.SubledgerItem
 import groovy.transform.CompileStatic
@@ -31,8 +31,8 @@ class SubledgerAggregator {
     @Resource(name ='orderTransactionHelper')
     TransactionHelper transactionHelper
 
-    @Resource(name ='subledgerRepository')
-    SubledgerRepository subledgerRepository
+    @Resource(name ='subledgerRepositoryFacade')
+    SubledgerRepositoryFacade subledgerRepository
 
     @Value('${order.jobs.subledger.aggregate.limit}')
     int aggregateNumLimit
@@ -58,7 +58,7 @@ class SubledgerAggregator {
 
             subledgerItems.each { SubledgerItem subledgerItem ->
                 transactionHelper.executeInTransaction {
-                    if (subledgerItem.subledgerId == null) {
+                    if (subledgerItem.subledger == null) {
                         def subledgerItemContext =
                                 subledgerHelper.subledgerItemContextBuilder.buildContext(subledgerItem)
                         def subledger = subledgerHelper.getMatchingSubledger(subledgerItemContext)
@@ -68,7 +68,7 @@ class SubledgerAggregator {
                             subledger = subledgerService.createSubledger(subledger)
                         }
 
-                        subledgerItem.subledgerId = subledger.subledgerId
+                        subledgerItem.subledger = subledger.getId()
                         numItemMatchOperation++
                     }
                     subledgerService.aggregateSubledgerItem(subledgerItem)

@@ -6,6 +6,8 @@
 package com.junbo.subscription.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.jackson.annotation.CountryId;
+import com.junbo.common.jackson.annotation.CurrencyId;
 import com.junbo.common.jackson.annotation.OfferId;
 import com.junbo.common.jackson.annotation.SubscriptionId;
 import com.junbo.common.jackson.annotation.UserId;
@@ -44,6 +46,12 @@ public class Subscription {
     private String source;
 
     private Integer anniversaryDay;
+
+    @CountryId
+    private String country;
+
+    @CurrencyId
+    private String currency;
 
     public Subscription() {
     }
@@ -101,6 +109,23 @@ public class Subscription {
     public String getSource() { return source; }
 
     public void setSource(String source) {this.source = source;}
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
 
     public Long getId() {
         return subscriptionId;

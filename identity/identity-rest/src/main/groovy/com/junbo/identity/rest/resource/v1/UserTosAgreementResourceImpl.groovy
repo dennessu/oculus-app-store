@@ -1,10 +1,13 @@
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.authorization.AuthorizeService
+import com.junbo.authorization.RightsScope
 import com.junbo.common.id.Id
-import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTosAgreementId
 import com.junbo.common.model.Results
-import com.junbo.identity.core.service.Created201Marker
+import com.junbo.common.rs.Created201Marker
+import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserTosFilter
 import com.junbo.identity.core.service.validator.UserTosValidator
 import com.junbo.identity.data.repository.UserTosRepository
@@ -29,54 +32,66 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
     private UserTosRepository userTosRepository
 
     @Autowired
-    private Created201Marker created201Marker
-
-    @Autowired
     private UserTosFilter userTosFilter
 
     @Autowired
     private UserTosValidator userTosValidator
 
+    @Autowired
+    private AuthorizeService authorizeService
+
+    @Autowired
+    private UserPropertyAuthorizeCallbackFactory authorizeCallbackFactory
+
     @Override
-    Promise<UserTosAgreement> create(UserId userId, UserTosAgreement userTos) {
+    Promise<UserTosAgreement> create(UserTosAgreement userTos) {
         if (userTos == null) {
             throw new IllegalArgumentException('userTos is null')
         }
 
+
         userTos = userTosFilter.filterForCreate(userTos)
 
-        userTosValidator.validateForCreate(userId, userTos).then {
-            userTosRepository.create(userTos).then { UserTosAgreement newUserTos ->
-                created201Marker.mark((Id)newUserTos.id)
+        return userTosValidator.validateForCreate(userTos).then {
+            def callback = authorizeCallbackFactory.create(userTos.userId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('create')) {
+                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                }
 
-                newUserTos = userTosFilter.filterForGet(newUserTos, null)
+                return userTosRepository.create(userTos).then { UserTosAgreement newUserTos ->
+                    Created201Marker.mark((Id) newUserTos.id)
+
+                    newUserTos = userTosFilter.filterForGet(newUserTos, null)
+                    return Promise.pure(newUserTos)
+                }
+            }
+        }
+    }
+
+    @Override
+    Promise<UserTosAgreement> get(UserTosAgreementId userTosAgreementId, UserTosAgreementGetOptions getOptions) {
+        if (getOptions == null) {
+            throw new IllegalArgumentException('getOptions is null')
+        }
+
+        return userTosValidator.validateForGet(userTosAgreementId).then { UserTosAgreement newUserTos ->
+            def callback = authorizeCallbackFactory.create(newUserTos.userId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('read')) {
+                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                }
+
+                newUserTos = userTosFilter.filterForGet(newUserTos,
+                        getOptions.properties?.split(',') as List<String>)
+
                 return Promise.pure(newUserTos)
             }
         }
     }
 
     @Override
-    Promise<UserTosAgreement> get(UserId userId,
-                                  UserTosAgreementId userTosAgreementId, UserTosAgreementGetOptions getOptions) {
-        if (getOptions == null) {
-            throw new IllegalArgumentException('getOptions is null')
-        }
-
-        userTosValidator.validateForGet(userId, userTosAgreementId).then { UserTosAgreement newUserTos ->
-            newUserTos = userTosFilter.filterForGet(newUserTos,
-                    getOptions.properties?.split(',') as List<String>)
-
-            return Promise.pure(newUserTos)
-        }
-    }
-
-    @Override
-    Promise<UserTosAgreement> patch(UserId userId, UserTosAgreementId userTosAgreementId,
-                                    UserTosAgreement userTos) {
-        if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
-        }
-
+    Promise<UserTosAgreement> patch(UserTosAgreementId userTosAgreementId, UserTosAgreement userTos) {
         if (userTosAgreementId == null) {
             throw new IllegalArgumentException('userTosId is null')
         }
@@ -90,25 +105,27 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
                 throw AppErrors.INSTANCE.userTosAgreementNotFound(userTosAgreementId).exception()
             }
 
-            userTos = userTosFilter.filterForPatch(userTos, oldUserTos)
+            def callback = authorizeCallbackFactory.create(oldUserTos.userId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('update')) {
+                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                }
 
-            userTosValidator.validateForUpdate(userId, userTosAgreementId, userTos, oldUserTos).then {
+                userTos = userTosFilter.filterForPatch(userTos, oldUserTos)
 
-                userTosRepository.update(userTos).then { UserTosAgreement newUserTos ->
-                    newUserTos = userTosFilter.filterForGet(newUserTos, null)
-                    return Promise.pure(newUserTos)
+                return userTosValidator.validateForUpdate(userTosAgreementId, userTos, oldUserTos).then {
+
+                    return userTosRepository.update(userTos).then { UserTosAgreement newUserTos ->
+                        newUserTos = userTosFilter.filterForGet(newUserTos, null)
+                        return Promise.pure(newUserTos)
+                    }
                 }
             }
         }
     }
 
     @Override
-    Promise<UserTosAgreement> put(UserId userId, UserTosAgreementId userTosAgreementId,
-                                  UserTosAgreement userTos) {
-        if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
-        }
-
+    Promise<UserTosAgreement> put(UserTosAgreementId userTosAgreementId, UserTosAgreement userTos) {
         if (userTosAgreementId == null) {
             throw new IllegalArgumentException('userTosId is null')
         }
@@ -122,50 +139,76 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
                 throw AppErrors.INSTANCE.userTosAgreementNotFound(userTosAgreementId).exception()
             }
 
-            userTos = userTosFilter.filterForPut(userTos, oldUserTos)
+            def callback = authorizeCallbackFactory.create(oldUserTos.userId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('update')) {
+                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                }
 
-            return userTosValidator.validateForUpdate(userId, userTosAgreementId, userTos, oldUserTos).then {
-                userTosRepository.update(userTos).then { UserTosAgreement newUserTos ->
-                    newUserTos = userTosFilter.filterForGet(newUserTos, null)
-                    return Promise.pure(newUserTos)
+                userTos = userTosFilter.filterForPut(userTos, oldUserTos)
+
+                return userTosValidator.validateForUpdate(userTosAgreementId, userTos, oldUserTos).then {
+                    return userTosRepository.update(userTos).then { UserTosAgreement newUserTos ->
+                        newUserTos = userTosFilter.filterForGet(newUserTos, null)
+                        return Promise.pure(newUserTos)
+                    }
                 }
             }
         }
     }
 
     @Override
-    Promise<Void> delete(UserId userId, UserTosAgreementId userTosAgreementId) {
-        return userTosValidator.validateForGet(userId, userTosAgreementId).then {
-            userTosRepository.delete(userTosAgreementId)
+    Promise<Void> delete(UserTosAgreementId userTosAgreementId) {
+        return userTosValidator.validateForGet(userTosAgreementId).then { UserTosAgreement userTos ->
+            def callback = authorizeCallbackFactory.create(userTos.userId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('delete')) {
+                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                }
 
-            return Promise.pure(null)
+                return userTosRepository.delete(userTosAgreementId)
+            }
         }
     }
 
     @Override
-    Promise<Results<UserTosAgreement>> list(UserId userId, UserTosAgreementListOptions listOptions) {
+    Promise<Results<UserTosAgreement>> list(UserTosAgreementListOptions listOptions) {
         if (listOptions == null) {
             throw new IllegalArgumentException('listOptions is null')
         }
-        listOptions.setUserId(userId)
 
         return userTosValidator.validateForSearch(listOptions).then {
-            userTosRepository.search(listOptions).then { List<UserTosAgreement> userTosList ->
+            return search(listOptions).then { List<UserTosAgreement> userTosList ->
                 def result = new Results<UserTosAgreement>(items: [])
 
-                userTosList.each { UserTosAgreement newUserTos ->
-                    if (newUserTos != null) {
-                        newUserTos = userTosFilter.filterForGet(newUserTos,
-                                listOptions.properties?.split(',') as List<String>)
-                    }
+                return Promise.each(userTosList) { UserTosAgreement newUserTos ->
+                    def callback = authorizeCallbackFactory.create(newUserTos.userId)
+                    return RightsScope.with(authorizeService.authorize(callback)) {
+                        if (newUserTos != null) {
+                            newUserTos = userTosFilter.filterForGet(newUserTos,
+                                    listOptions.properties?.split(',') as List<String>)
+                        }
 
-                    if (newUserTos != null) {
-                        result.items.add(newUserTos)
+                        if (newUserTos != null && AuthorizeContext.hasRights('read')) {
+                            result.items.add(newUserTos)
+                        }
+
+                        return Promise.pure(null)
                     }
+                }.then {
+                    return Promise.pure(result)
                 }
-
-                return Promise.pure(result)
             }
+        }
+    }
+
+    Promise<List<UserTosAgreement>> search(UserTosAgreementListOptions listOptions) {
+        if (listOptions.userId != null && listOptions.tosId != null) {
+            return userTosRepository.searchByUserIdAndTosId(listOptions.userId, listOptions.tosId, listOptions.limit, listOptions.offset)
+        } else if (listOptions.userId != null) {
+            return userTosRepository.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset)
+        } else if (listOptions.tosId != null) {
+            return userTosRepository.searchByTosId(listOptions.tosId, listOptions.limit, listOptions.offset)
         }
     }
 }

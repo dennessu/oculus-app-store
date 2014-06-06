@@ -1,74 +1,120 @@
 package com.junbo.identity.core.service.validator.impl
 
-import com.junbo.identity.core.service.validator.DisplayNameValidator
-import com.junbo.identity.core.service.validator.NameValidator
+import com.fasterxml.jackson.databind.JsonNode
+import com.junbo.common.id.UserId
+import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.validator.NickNameValidator
+import com.junbo.identity.core.service.validator.PiiValidator
+import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserName
+import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
+ * Check fullName not null
+ * Check minimum and maximum fullName length
+ * Check minimum and maximum givenName length
+ * Check minimum and maximum middleName length
+ * Check minimum and maximum familyName length
+ * Check nickName valid
  * Created by kg on 3/17/14.
  */
 @CompileStatic
-class NameValidatorImpl implements NameValidator {
-    private Integer minFirstNameLength
-    private Integer maxFirstNameLength
+class NameValidatorImpl implements PiiValidator {
+    private Integer minFullNameLength
+    private Integer maxFullNameLength
 
     private Integer minMiddleNameLength
     private Integer maxMiddleNameLength
 
-    private Integer minLastNameLength
-    private Integer maxLastNameLength
+    private Integer minFamilyNameLength
+    private Integer maxFamilyNameLength
+
+    private Integer minGivenNameLength
+    private Integer maxGivenNameLength
 
     private NickNameValidator nickNameValidator
-    private DisplayNameValidator displayNameValidator
 
     @Override
-    void validateName(UserName name) {
-        if (name.firstName == null) {
-            throw AppErrors.INSTANCE.fieldRequired('firstName').exception()
+    boolean handles(String type) {
+        if (type == UserPersonalInfoType.NAME.toString()) {
+            return true
         }
-        if (name.firstName.length() > maxFirstNameLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('firstName', maxFirstNameLength).exception()
+        return false
+    }
+
+    @Override
+    Promise<Void> validateCreate(JsonNode value, UserId userId) {
+        UserName name = (UserName)JsonHelper.jsonNodeToObj(value, UserName)
+
+        checkName(name)
+        return Promise.pure(null)
+    }
+
+    @Override
+    Promise<Void> validateUpdate(JsonNode value, JsonNode oldValue, UserId userId) {
+        UserName name = (UserName)JsonHelper.jsonNodeToObj(value, UserName)
+        UserName oldName = (UserName)JsonHelper.jsonNodeToObj(oldValue, UserName)
+
+        if (name != oldName) {
+            throw AppErrors.INSTANCE.fieldInvalidException('value', 'value can\'t be updated.').exception()
         }
-        if (name.firstName.length() < minFirstNameLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('lastName', minFirstNameLength).exception()
+        return Promise.pure(null)
+    }
+
+    private void checkName(UserName name) {
+        if (name.fullName == null) {
+            throw AppErrors.INSTANCE.fieldRequired('value.fullName').exception()
+        }
+        if (name.fullName.length() < minFullNameLength) {
+            throw AppErrors.INSTANCE.fieldTooShort('value.fullName', minFullNameLength).exception()
+        }
+        if (name.fullName.length() > maxFullNameLength) {
+            throw AppErrors.INSTANCE.fieldTooLong('value.fullName', maxFullNameLength).exception()
+        }
+
+        if (name.givenName != null) {
+            if (name.givenName.length() > maxGivenNameLength) {
+                throw AppErrors.INSTANCE.fieldTooLong('value.givenName', maxGivenNameLength).exception()
+            }
+            if (name.givenName.length() < minGivenNameLength) {
+                throw AppErrors.INSTANCE.fieldTooShort('value.givenName', minGivenNameLength).exception()
+            }
+        }
+
+        if (name.familyName != null) {
+            if (name.familyName.length() > maxFamilyNameLength) {
+                throw AppErrors.INSTANCE.fieldTooLong('value.familyName', maxFamilyNameLength).exception()
+            }
+            if (name.familyName.length() < minFamilyNameLength) {
+                throw AppErrors.INSTANCE.fieldTooShort('value.familyName', minFamilyNameLength).exception()
+            }
         }
 
         if (name.middleName != null) {
             if (name.middleName.length() > maxMiddleNameLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('middleName', maxMiddleNameLength).exception()
+                throw AppErrors.INSTANCE.fieldTooLong('value.middleName', maxMiddleNameLength).exception()
             }
             if (name.middleName.length() < minMiddleNameLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('middleName', minMiddleNameLength).exception()
+                throw AppErrors.INSTANCE.fieldTooShort('value.middleName', minMiddleNameLength).exception()
             }
         }
 
-        if (name.lastName == null) {
-            throw AppErrors.INSTANCE.fieldRequired('lastName').exception()
+        if (name.nickName != null) {
+            nickNameValidator.validateNickName(name.nickName)
         }
-        if (name.lastName.length() > maxLastNameLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('lastName', maxLastNameLength).exception()
-        }
-        if (name.lastName.length() < minLastNameLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('lastName', minLastNameLength).exception()
-        }
-
-        nickNameValidator.validateNickName(name.nickName)
-
-        displayNameValidator.validate(name)
     }
 
     @Required
-    void setMinFirstNameLength(Integer minFirstNameLength) {
-        this.minFirstNameLength = minFirstNameLength
+    void setMinFullNameLength(Integer minFullNameLength) {
+        this.minFullNameLength = minFullNameLength
     }
 
     @Required
-    void setMaxFirstNameLength(Integer maxFirstNameLength) {
-        this.maxFirstNameLength = maxFirstNameLength
+    void setMaxFullNameLength(Integer maxFullNameLength) {
+        this.maxFullNameLength = maxFullNameLength
     }
 
     @Required
@@ -82,22 +128,27 @@ class NameValidatorImpl implements NameValidator {
     }
 
     @Required
-    void setMinLastNameLength(Integer minLastNameLength) {
-        this.minLastNameLength = minLastNameLength
+    void setMinFamilyNameLength(Integer minFamilyNameLength) {
+        this.minFamilyNameLength = minFamilyNameLength
     }
 
     @Required
-    void setMaxLastNameLength(Integer maxLastNameLength) {
-        this.maxLastNameLength = maxLastNameLength
+    void setMaxFamilyNameLength(Integer maxFamilyNameLength) {
+        this.maxFamilyNameLength = maxFamilyNameLength
+    }
+
+    @Required
+    void setMinGivenNameLength(Integer minGivenNameLength) {
+        this.minGivenNameLength = minGivenNameLength
+    }
+
+    @Required
+    void setMaxGivenNameLength(Integer maxGivenNameLength) {
+        this.maxGivenNameLength = maxGivenNameLength
     }
 
     @Required
     void setNickNameValidator(NickNameValidator nickNameValidator) {
         this.nickNameValidator = nickNameValidator
-    }
-
-    @Required
-    void setDisplayNameValidator(DisplayNameValidator displayNameValidator) {
-        this.displayNameValidator = displayNameValidator
     }
 }

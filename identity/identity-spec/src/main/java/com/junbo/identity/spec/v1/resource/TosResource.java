@@ -10,6 +10,7 @@ import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.Tos;
 import com.junbo.identity.spec.v1.option.list.TosListOptions;
 import com.junbo.identity.spec.v1.option.model.TosGetOptions;
+import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
@@ -23,6 +24,7 @@ import javax.ws.rs.core.MediaType;
  */
 @Api(value = "tos")
 @RestResource
+@InProcessCallable
 @Path("/tos")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
@@ -35,7 +37,7 @@ public interface TosResource {
     @ApiOperation("Update a tos")
     @POST
     @Path("/{tosId}")
-    Promise<Tos> put(@PathParam("tosId") TosId tosId, Tos tos);
+    Promise<Tos> patch(@PathParam("tosId") TosId tosId, Tos tos);
 
     @ApiOperation("Get a tos info")
     @GET

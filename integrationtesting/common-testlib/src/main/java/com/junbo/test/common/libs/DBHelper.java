@@ -5,6 +5,8 @@
  */
 package com.junbo.test.common.libs;
 
+import com.junbo.test.common.ConfigHelper;
+
 import java.sql.*;
 
 /**
@@ -18,9 +20,12 @@ public class DBHelper {
     private LogHelper logger = new LogHelper(DBHelper.class);
 
     public DBHelper() {
-        this.postgresConnectionString = ConfigPropertiesHelper.instance().getProperty("db.postgresql.connectionstring");
-        this.postgresUserName = ConfigPropertiesHelper.instance().getProperty("db.postgresql.username");
-        this.postgresPassword = ConfigPropertiesHelper.instance().getProperty("db.postgresql.password");
+        try {
+            this.postgresConnectionString = ConfigHelper.getSetting("db.postgresql.connectionstring");
+            this.postgresUserName = ConfigHelper.getSetting("db.postgresql.username");
+            this.postgresPassword = ConfigHelper.getSetting("db.postgresql.password");
+        } catch (IllegalArgumentException ex) {
+        }
     }
 
     /**
@@ -38,7 +43,8 @@ public class DBHelper {
         IDENTITY("identity"),
         ORDER("order"),
         PAYMENT("payment"),
-        SHARDING("sharding");
+        SHARDING("sharding"),
+        EWALLET("ewallet");
 
         private String dbName;
 

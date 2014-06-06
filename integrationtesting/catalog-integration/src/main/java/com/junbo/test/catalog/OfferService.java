@@ -1,0 +1,41 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
+package com.junbo.test.catalog;
+
+import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.common.model.Results;
+
+import java.util.HashMap;
+import java.util.List;
+
+/**
+ @author Jason
+  * Time: 3/14/2014
+  * The interface for Offer related APIs
+ */
+public interface OfferService {
+
+    Offer getOffer(Long offerId) throws Exception;
+    Offer getOffer(Long offerId, int expectedResponseCode) throws Exception;
+
+    Results<Offer> getOffers(HashMap<String, List<String>> httpPara) throws Exception;
+    Results<Offer> getOffers(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception;
+
+    Offer postDefaultOffer() throws Exception;
+    Offer prepareOfferEntity(String fileName) throws Exception;
+    Offer prepareOfferEntity(String fileName, String userId) throws Exception;
+    Offer postOffer(Offer offer) throws Exception;
+    Offer postOffer(Offer offer, int expectedResponseCode) throws Exception;
+
+    Offer updateOffer(Long offerId, Offer offer) throws Exception;
+    Offer updateOffer(Long offerId, Offer offer, int expectedResponseCode) throws Exception;
+
+    String getOfferIdByName(String offerName) throws  Exception;
+
+    void deleteOffer(Long offerId) throws Exception;
+    void deleteOffer(Long offerId, int expectedResponseCode) throws Exception;
+
+}

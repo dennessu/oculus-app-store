@@ -1,8 +1,9 @@
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.model.Results
-import com.junbo.identity.core.service.Created201Marker
+import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.CurrencyFilter
 import com.junbo.identity.core.service.validator.CurrencyValidator
 import com.junbo.identity.data.repository.CurrencyRepository
@@ -22,11 +23,10 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 @CompileStatic
 class CurrencyResourceImpl implements CurrencyResource {
-    @Autowired
-    private CurrencyRepository currencyRepository
+    private static final String IDENTITY_ADMIN_SCOPE = 'identity.admin'
 
     @Autowired
-    private Created201Marker created201Marker
+    private CurrencyRepository currencyRepository
 
     @Autowired
     private CurrencyFilter currencyFilter
@@ -40,11 +40,15 @@ class CurrencyResourceImpl implements CurrencyResource {
             throw new IllegalArgumentException('country is null')
         }
 
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
+        }
+
         currency = currencyFilter.filterForCreate(currency)
 
         return currencyValidator.validateForCreate(currency).then {
             return currencyRepository.create(currency).then { Currency newCurrency ->
-                created201Marker.mark(newCurrency.id)
+                Created201Marker.mark(newCurrency.id)
                 newCurrency = currencyFilter.filterForGet(newCurrency, null)
 
                 return Promise.pure(newCurrency)
@@ -60,6 +64,10 @@ class CurrencyResourceImpl implements CurrencyResource {
 
         if (currency == null) {
             throw new IllegalArgumentException('currency is null')
+        }
+
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
         }
 
         return currencyRepository.get(currencyId).then { Currency oldCurrency ->
@@ -88,6 +96,11 @@ class CurrencyResourceImpl implements CurrencyResource {
             throw new IllegalArgumentException('currency is null')
         }
 
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
+        }
+
+
         return currencyRepository.get(currencyId).then { Currency oldCurrency ->
             if (oldCurrency == null) {
                 throw AppErrors.INSTANCE.currencyNotFound(currencyId).exception()
@@ -112,7 +125,7 @@ class CurrencyResourceImpl implements CurrencyResource {
         }
 
         return currencyValidator.validateForGet(currencyId).then {
-            currencyRepository.get(currencyId).then { Currency newCurrency ->
+            return currencyRepository.get(currencyId).then { Currency newCurrency ->
                 if (newCurrency == null) {
                     throw AppErrors.INSTANCE.currencyNotFound(currencyId).exception()
                 }
@@ -130,7 +143,7 @@ class CurrencyResourceImpl implements CurrencyResource {
         }
 
         return currencyValidator.validateForSearch(listOptions).then {
-            return currencyRepository.search(listOptions).then { List<Currency> currencyList ->
+            return search(listOptions).then { List<Currency> currencyList ->
                 def result = new Results<Currency>(items: [])
 
                 currencyList.each { Currency newCurrency ->
@@ -154,5 +167,9 @@ class CurrencyResourceImpl implements CurrencyResource {
         return currencyValidator.validateForGet(currencyId).then {
             return currencyRepository.delete(currencyId)
         }
+    }
+
+    private Promise<List<Currency>> search(CurrencyListOptions listOptions) {
+        return currencyRepository.searchAll(listOptions.limit, listOptions.offset)
     }
 }

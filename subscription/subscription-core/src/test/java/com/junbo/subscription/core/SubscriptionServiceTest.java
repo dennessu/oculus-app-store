@@ -22,7 +22,7 @@ import java.util.Random;
 import java.util.UUID;
 
 @ContextConfiguration(locations = {"classpath:spring/context-test.xml"})
-@TransactionConfiguration(defaultRollback = true)
+@TransactionConfiguration(defaultRollback = false)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
 @Transactional("transactionManager")
 public class SubscriptionServiceTest extends AbstractTestNGSpringContextTests {
@@ -30,15 +30,15 @@ public class SubscriptionServiceTest extends AbstractTestNGSpringContextTests {
     @Autowired
     private SubscriptionService subscriptionService;
 
-    @Test
+    //@Test
     public void testAddSubscription() {
         Subscription subscription = new Subscription();
         subscription.setTrackingUuid(UUID.randomUUID());
         subscription.setUserId(1493188608L);
         subscription.setOfferId(1L);
-        subscription = subscriptionService.addSubscription(subscription);
+        Subscription subs = subscriptionService.addSubscription(subscription);
 
-        Assert.assertEquals(subscription.getUserId(), subscriptionService.getSubscription(subscription.getId()).getUserId());
+        Assert.assertEquals(subscription.getUserId(), subscriptionService.getSubscription(subs.getId()).getUserId());
 
     }
 

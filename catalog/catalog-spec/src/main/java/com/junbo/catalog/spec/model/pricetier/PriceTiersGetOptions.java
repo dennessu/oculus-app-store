@@ -16,7 +16,7 @@ import java.util.List;
  * Price tiers get options.
  */
 public class PriceTiersGetOptions extends PageableGetOptions {
-    @QueryParam("id")
+    @QueryParam("tierId")
     private List<PriceTierId> priceTierIds;
 
     public List<PriceTierId> getPriceTierIds() {

@@ -2,26 +2,23 @@ apply plugin: 'java'
 
 dependencies {
     compile (libraries.rs_api)
-    compile (libraries.langur)
+    compile junboProject(':langur-core')
+    compile junboProject(':common-lib')
 
     compile (libraries.spring_beans)
     compile (libraries.spring_context)
-    compile (libraries.langur)
     compile (libraries.guava)
 
-    compile project(":fulfilment-spec")
-    compile project(":fulfilment-common")
-    compile 'com.junbo.entitlement:entitlement-spec:0.0.1-SNAPSHOT'
-    compile 'com.junbo.catalog:catalog-spec:0.0.1-SNAPSHOT'
-    compile 'com.junbo.billing:billing-spec:0.0.1-SNAPSHOT'
-    compile 'com.junbo.ewallet:ewallet-spec:0.0.1-SNAPSHOT'
+    compile junboProject(":fulfilment-spec")
+    compile junboProject(":fulfilment-common")
+    compile junboProject(':entitlement-spec')
+    compile junboProject(':catalog-spec')
+    compile junboProject(':billing-spec')
+    compile junboProject(':identity-spec')
+    compile junboProject(':ewallet-spec')
 
     testCompile (libraries.spring_test)
 
-    processor (libraries.langur_processor)
+    processor junboProject(':langur-processor')
     processor (libraries.log4j)
-}
-
-ext {
-    processorClass = 'com.junbo.langur.processor.RestAdapterProcessor,com.junbo.langur.processor.ClientProxyProcessor'
 }

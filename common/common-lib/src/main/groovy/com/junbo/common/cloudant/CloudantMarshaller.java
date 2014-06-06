@@ -10,10 +10,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
 
 /**
- * The interface for Cloudant Marshaller.
+ * Created by Zhanxin on 5/26/2014.
  */
 public interface CloudantMarshaller {
-    String marshall(CloudantEntity object) throws JsonProcessingException;
-    <T extends CloudantEntity> T unmarshall(String string, Class<T> clazz) throws IOException;
-    <T extends CloudantEntity> T unmarshall(String string, Class<?> parametrized, Class<?> parameterClass) throws IOException;
+    String marshall(Object object) throws JsonProcessingException;
+    <T> T unmarshall(String string, Class<T> clazz) throws IOException;
+    <T> T unmarshall(String string, Class<?> parametrized, Class<?>... parameterClass) throws IOException;
 }

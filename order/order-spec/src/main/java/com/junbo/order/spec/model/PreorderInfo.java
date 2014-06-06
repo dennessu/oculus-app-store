@@ -6,8 +6,11 @@
 package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
 import com.junbo.common.id.OrderItemId;
 import com.junbo.common.id.PreorderId;
+import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.util.Identifiable;
 
 import java.util.Date;
 import java.util.List;
@@ -15,22 +18,25 @@ import java.util.List;
 /**
  * Created by LinYi on 2/10/14.
  */
-public class PreorderInfo extends BaseOrderResource {
+public class PreorderInfo extends ResourceMeta implements Identifiable<PreorderId> {
     @JsonIgnore
-    private PreorderId preorderInfoId;
+    private PreorderId id;
     private Date billingTime;
     private Date preNotificationTime;
     private Date releaseTime;
+
+    @CloudantIgnore
     private List<PreorderUpdateHistory> updateHistory;
+
     @JsonIgnore
     private OrderItemId orderItemId;
 
-    public PreorderId getPreorderInfoId() {
-        return preorderInfoId;
+    public PreorderId getId() {
+        return id;
     }
 
-    public void setPreorderInfoId(PreorderId preorderInfoId) {
-        this.preorderInfoId = preorderInfoId;
+    public void setId(PreorderId id) {
+        this.id = id;
     }
 
     public Date getBillingTime() {

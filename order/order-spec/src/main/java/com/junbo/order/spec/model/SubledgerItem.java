@@ -10,46 +10,47 @@ import com.junbo.common.id.OfferId;
 import com.junbo.common.id.OrderItemId;
 import com.junbo.common.id.SubledgerId;
 import com.junbo.common.id.SubledgerItemId;
+import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.util.Identifiable;
 
 import java.math.BigDecimal;
 
 /**
  * Created by chriszhu on 2/10/14.
  */
-public class SubledgerItem extends BaseOrderResource {
+public class SubledgerItem extends ResourceMeta implements Identifiable<SubledgerItemId> {
     @JsonProperty("self")
-    private SubledgerItemId subledgerItemId;
-    private SubledgerId subledgerId;
-    private SubledgerItemId originalSubledgerItemId;
+    private SubledgerItemId id;
+    private SubledgerId subledger;
+    private SubledgerItemId originalSubledgerItem;
     private BigDecimal totalAmount;
-    private OrderItemId orderItemId;
-    private OfferId offerId;
+    private OrderItemId orderItem;
+    private OfferId offer;
     private String subledgerItemAction;
     private String status;
-    private Integer resourceAge;
 
-    public SubledgerItemId getSubledgerItemId() {
-        return subledgerItemId;
+    public SubledgerItemId getId() {
+        return id;
     }
 
-    public void setSubledgerItemId(SubledgerItemId subledgerItemId) {
-        this.subledgerItemId = subledgerItemId;
+    public void setId(SubledgerItemId id) {
+        this.id = id;
     }
 
-    public SubledgerId getSubledgerId() {
-        return subledgerId;
+    public SubledgerId getSubledger() {
+        return subledger;
     }
 
-    public void setSubledgerId(SubledgerId subledgerId) {
-        this.subledgerId = subledgerId;
+    public void setSubledger(SubledgerId subledger) {
+        this.subledger = subledger;
     }
 
-    public SubledgerItemId getOriginalSubledgerItemId() {
-        return originalSubledgerItemId;
+    public SubledgerItemId getOriginalSubledgerItem() {
+        return originalSubledgerItem;
     }
 
-    public void setOriginalSubledgerItemId(SubledgerItemId originalSubledgerItemId) {
-        this.originalSubledgerItemId = originalSubledgerItemId;
+    public void setOriginalSubledgerItem(SubledgerItemId originalSubledgerItem) {
+        this.originalSubledgerItem = originalSubledgerItem;
     }
 
     public BigDecimal getTotalAmount() {
@@ -60,20 +61,20 @@ public class SubledgerItem extends BaseOrderResource {
         this.totalAmount = totalAmount;
     }
 
-    public OrderItemId getOrderItemId() {
-        return orderItemId;
+    public OrderItemId getOrderItem() {
+        return orderItem;
     }
 
-    public void setOrderItemId(OrderItemId orderItemId) {
-        this.orderItemId = orderItemId;
+    public void setOrderItem(OrderItemId orderItem) {
+        this.orderItem = orderItem;
     }
 
-    public OfferId getOfferId() {
-        return offerId;
+    public OfferId getOffer() {
+        return offer;
     }
 
-    public void setOfferId(OfferId offerId) {
-        this.offerId = offerId;
+    public void setOffer(OfferId offer) {
+        this.offer = offer;
     }
 
     public String getSubledgerItemAction() {

@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.spec.model.domaindata;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.ShippingMethodId;
 
@@ -27,6 +28,7 @@ public class ShippingMethod {
     private BigDecimal basePrice;
     private BigDecimal additionalPrice;
 
+    @JsonIgnore
     public Long getId() {
         return id;
     }

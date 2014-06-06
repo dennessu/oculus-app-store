@@ -5,13 +5,14 @@
  */
 package com.junbo.email.core.validator.impl
 
+import com.junbo.common.id.EmailId
+import com.junbo.email.common.util.IdUtils
 import com.junbo.email.core.validator.EmailValidator
 import com.junbo.email.db.repo.EmailScheduleRepository
 import com.junbo.email.spec.error.AppErrors
 import com.junbo.email.spec.model.Email
 import com.junbo.identity.spec.v1.model.User
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 
@@ -22,9 +23,13 @@ import org.springframework.util.StringUtils
 @Component
 class EmailValidatorImpl extends CommonValidator implements EmailValidator {
 
-    @Autowired
     private EmailScheduleRepository emailScheduleRepository
 
+    void setEmailScheduleRepository(EmailScheduleRepository emailScheduleRepository) {
+        this.emailScheduleRepository = emailScheduleRepository
+    }
+
+    @Override
     void validateCreate(Email email) {
         this.validateEmailId(email)
         this.validateCommonField(email)
@@ -33,6 +38,7 @@ class EmailValidatorImpl extends CommonValidator implements EmailValidator {
         super.validateEmailTemplate(email)
     }
 
+    @Override
     void validateUpdate(Email email) {
         this.validateCommonField(email)
         this.validateProhibitedFields(email)
@@ -42,29 +48,26 @@ class EmailValidatorImpl extends CommonValidator implements EmailValidator {
         this.validateEmailSchedule(email)
     }
 
+    @Override
     void validateDelete(Long id) {
         if (id == null) {
-            throw AppErrors.INSTANCE.invalidEmailId('').exception()
+            throw AppErrors.INSTANCE.missingField('id').exception()
         }
         if (emailScheduleRepository.getEmailSchedule(id) == null) {
-            throw AppErrors.INSTANCE.emailScheduleNotFound('').exception()
+            throw AppErrors.INSTANCE.emailScheduleNotFound(IdUtils.encodeEmailId(id)).exception()
         }
-    }
-
-    void validateUser(User user) {
-        super.validateUser(user)
     }
 
     private void validateEmailSchedule(Email email) {
         Email schedule = emailScheduleRepository.getEmailSchedule(email.id.value)
         if (schedule == null) {
-            throw AppErrors.INSTANCE.emailScheduleNotFound('').exception()
+            throw AppErrors.INSTANCE.emailScheduleNotFound(IdUtils.encodeId(email.id)).exception()
         }
     }
 
     private void validateEmailId(Email email) {
         if (email.id != null) {
-            throw AppErrors.INSTANCE.invalidEmailId('').exception()
+            throw AppErrors.INSTANCE.unnecessaryField('self').exception()
         }
     }
 
@@ -73,7 +76,14 @@ class EmailValidatorImpl extends CommonValidator implements EmailValidator {
             throw AppErrors.INSTANCE.invalidPayload().exception()
         }
         if (email.userId == null && email.recipients == null) {
-            throw AppErrors.INSTANCE.missingField('user or recipients').exception()
+            throw AppErrors.INSTANCE.missingField('recipients').exception()
+        }
+        if (email.recipients != null) {
+            for (String recipient : email.recipients) {
+                if (!super.validateEmailAddress(recipient)) {
+                   throw AppErrors.INSTANCE.invalidField('recipients').exception()
+                }
+            }
         }
         if (email.templateId == null) {
             throw AppErrors.INSTANCE.missingField('template').exception()

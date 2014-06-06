@@ -9,7 +9,7 @@ package com.junbo.order.db.mapper;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.id.*;
-import com.junbo.order.db.entity.enums.*;
+import com.junbo.order.spec.model.enums.*;
 import com.junbo.order.spec.error.AppErrors;
 import org.springframework.stereotype.Component;
 
@@ -329,15 +329,15 @@ public class CommonMapper {
         }
     }
 
-    public ShippingAddressId fromLongToShippingAddressId(Long shippingAddressId) {
+    public UserPersonalInfoId fromLongToUserPersonalInfoId(Long shippingAddressId) {
         if (shippingAddressId == null) {
             return null;
         }
 
-        return new ShippingAddressId(shippingAddressId);
+        return new UserPersonalInfoId(shippingAddressId);
     }
 
-    public Long fromShippingAddressIdToLong(ShippingAddressId shippingAddressId) {
+    public Long fromUserPersonalInfoIdToLong(UserPersonalInfoId shippingAddressId) {
         if (shippingAddressId == null) {
             return null;
         }
@@ -359,6 +359,22 @@ public class CommonMapper {
         }
 
         return offerId.getValue().toString();
+    }
+
+    public PaymentInstrumentId fromStringToPaymentInstrumentId(String paymentInstrumentId) {
+        if (paymentInstrumentId == null) {
+            return null;
+        }
+
+        return new PaymentInstrumentId(Long.parseLong(paymentInstrumentId));
+    }
+
+    public String fromPaymentInstrumentIdToString(PaymentInstrumentId paymentInstrumentId) {
+        if (paymentInstrumentId == null) {
+            return null;
+        }
+
+        return paymentInstrumentId.getValue().toString();
     }
 
     public OfferRevisionId fromStringToOfferRevisionId(String offerRevisionId) {

@@ -1,0 +1,166 @@
+<div class="controls">
+    <a ng-click="approveRevision()" class="btn btn-small btn-default" ng-if="revision.status=='DRAFT'">Publish</a>
+</div>
+<hr>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">General</h3>
+    </div>
+    <div class="panel-body form-horizontal">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Item Id</label>
+            <div class="col-sm-9">
+                <p class="form-control-static">{{ item.self.id }}</p>
+            </div>
+        </div>
+        <div ng-if="revision">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Revision Id</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static">{{ revision.self.id }}</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Status</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static">{{ revision.status }}</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Genre</label>
+                <div class="col-sm-9">
+                    <div ng-repeat="genre in revision.genres">
+                        <p class="form-control-static">
+                            <a href="#/attributes/{{genre.id}}" >{{ genre.id }}</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Rollup Package Name</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static">{{ revision.rollupPackageName }}</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Package Name</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static">{{ revision.packageName }}</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Sku</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static">{{ revision.sku }}</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Platforms</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static">{{ revision.platforms }}</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Game Modes</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static">{{ revision.gameModes }}</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Supported Input Devices</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static">{{ revision.supportedInputDevices }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Created Time</label>
+            <div class="col-sm-9">
+                <p class="form-control-static">{{ item.createdTime }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Locale Properties</h3>
+    </div>
+    <div class="panel-body form-horizontal">
+        <div ng-repeat="(locale, properties) in revision.locales">
+            <div class="form-group">
+                <span class="col-sm-3 control-label">{{ locale }}</span>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Name</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static">
+                        {{ properties.name }}
+                    </p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Revision Notes</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static">
+                        {{ properties.revisionNotes }}
+                    </p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Long Description</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static">
+                        {{ properties.longDescription }}
+                    </p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Short Description</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static">
+                        {{ properties.shortDescription }}
+                    </p>
+                </div>
+            </div>
+            <hr>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Binaries</h3>
+    </div>
+    <div class="panel-body form-horizontal">
+        <div ng-repeat="(platform, properties) in revision.binaries">
+            <div class="form-group">
+                <span class="col-sm-3 control-label">{{ platform }}</span>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Href</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static">
+                        {{ properties.href }}
+                    </p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Size</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static">
+                        {{ properties.size }}
+                    </p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Version</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static">
+                        {{ properties.version }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

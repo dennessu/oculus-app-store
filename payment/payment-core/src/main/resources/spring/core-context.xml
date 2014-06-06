@@ -8,11 +8,17 @@
     <context:component-scan base-package="com.junbo.payment.core"/>
 
     <!-- payment method serivce -->
-    <bean id="paymentInstrumentService" class="com.junbo.payment.core.impl.PaymentInstrumentServiceImpl"></bean>
+    <bean id="paymentInstrumentService" class="com.junbo.payment.core.impl.PaymentInstrumentServiceImpl">
+        <property name="userInfoFacade" ref="userInfoFacade"/>
+    </bean>
 
-    <bean id="paymentService" class="com.junbo.payment.core.impl.PaymentTransactionServiceImpl"></bean>
+    <bean id="paymentService" class="com.junbo.payment.core.impl.PaymentTransactionServiceImpl">
+        <property name="userInfoFacade" ref="userInfoFacade"/>
+    </bean>
 
-    <bean id="paymentCallbackService" class="com.junbo.payment.core.impl.PaymentCallbackServiceImpl"></bean>
+    <bean id="paymentCallbackService" class="com.junbo.payment.core.impl.PaymentCallbackServiceImpl">
+        <property name="paymentTransactionService" ref="paymentService"/>
+    </bean>
 
     <bean id="brainTreePaymentProviderService" class="com.junbo.payment.core.provider.braintree.BrainTreePaymentProviderServiceImpl">
         <property name="environment" value="${payment.provider.braintree.environment}"/>
@@ -38,6 +44,20 @@
         <property name="signature" value="${payment.provider.paypal.signature}"/>
     </bean>
 
+    <bean id="adyenProviderService" class="com.junbo.payment.core.provider.adyen.AdyenProviderServiceImpl">
+        <property name="redirectURL" value="${payment.provider.adyen.redirecturl}"/>
+        <property name="merchantAccount" value="${payment.provider.adyen.merchantaccount}"/>
+        <property name="skinCode" value="${payment.provider.adyen.skincode}"/>
+        <property name="skinSecret" value="${payment.provider.adyen.skinsecret}"/>
+        <property name="paymentURL" value="${payment.provider.adyen.paymenturl}"/>
+        <property name="recurringURL" value="${payment.provider.adyen.recurringurl}"/>
+        <property name="authUser" value="${payment.provider.adyen.user}"/>
+        <property name="authPassword" value="${payment.provider.adyen.password}"/>
+    </bean>
+
+    <bean id="adyenCCProviderService" class="com.junbo.payment.core.provider.adyen.AdyenCCProivderServiceImpl" parent="adyenProviderService">
+    </bean>
+
     <bean id="providerRoutingService" class="com.junbo.payment.core.provider.impl.ProviderRoutingServiceImpl"/>
 
     <!-- regiester brainTreeRestProviderService for async and brainTreePaymentProviderService for sync call -->
@@ -47,6 +67,7 @@
                 <entry key="BrainTree" value-ref="brainTreePaymentProviderService"/>
                 <entry key="Wallet" value-ref="walletProviderService"/>
                 <entry key="PayPal" value-ref="paypalProviderService"/>
+                <entry key="Adyen" value-ref="adyenProviderService"/>
             </util:map>
         </property>
     </bean>

@@ -1,49 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:aop="http://www.springframework.org/schema/aop"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <aop:aspectj-autoproxy/>
-
-    <bean id="tokenEndpoint" class="com.junbo.oauth.spec.endpoint.proxy.TokenEndpointClientProxy">
-        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
-        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
-        <constructor-arg name="transcoder" ref="commonTranscoder"/>
-        <constructor-arg name="target" value="${authorize.oauth.endpoint}"/>
+    <bean id="tokenEndpoint" class="com.junbo.oauth.spec.endpoint.proxy.TokenEndpointClientProxy" parent="baseClientProxy">
+        <property name="target" value="${authorize.oauth.endpoint}"/>
     </bean>
 
-    <bean id="tokenInfoEndpoint" class="com.junbo.oauth.spec.endpoint.proxy.TokenInfoEndpointClientProxy">
-        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
-        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
-        <constructor-arg name="transcoder" ref="commonTranscoder"/>
-        <constructor-arg name="target" value="${authorize.oauth.endpoint}"/>
+    <bean id="tokenInfoEndpoint" class="com.junbo.oauth.spec.endpoint.proxy.TokenInfoEndpointClientProxy" parent="baseClientProxy">
+        <property name="target" value="${authorize.oauth.endpoint}"/>
     </bean>
 
-    <bean id="apiEndpoint" class="com.junbo.oauth.spec.endpoint.proxy.ApiEndpointClientProxy">
-        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
-        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
-        <constructor-arg name="transcoder" ref="commonTranscoder"/>
-        <constructor-arg name="target" value="${authorize.oauth.endpoint}"/>
+    <bean id="authlib_apiDefinitionEndpoint"
+          class="com.junbo.authorization.spec.resource.proxy.ApiDefinitionResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${authorize.oauth.endpoint}"/>
+        <property name="accessTokenProvider" ref="authlib_accessTokenProvider"/>
     </bean>
 
-    <bean id="conditionEvaluator" class="com.junbo.authorization.service.impl.SPELConditionEvaluator"/>
-
-    <bean id="authorizeService" class="com.junbo.authorization.service.impl.AuthorizeServiceImpl">
+    <bean id="authlib_accessTokenProvider" class="com.junbo.authorization.ClientCredentialsAccessTokenProvider">
+        <property name="scope" value="api.info"/>
+        <property name="deflectionInSeconds" value="300"/>
+        <property name="clientSecret" value="secret"/>
+        <property name="clientId" value="client"/>
         <property name="tokenEndpoint" ref="tokenEndpoint"/>
-        <property name="tokenInfoEndpoint" ref="tokenInfoEndpoint"/>
-        <property name="apiEndpoint" ref="apiEndpoint"/>
-        <property name="serviceClientId" value="${authorize.service.client.id}"/>
-        <property name="serviceClientSecret" value="${authorize.service.client.secret}"/>
-        <property name="conditionEvaluator" ref="conditionEvaluator"/>
-        <property name="authorizeEnabled" value="${authorize.enabled}"/>
     </bean>
 
-    <bean id="authorizeAspect" class="com.junbo.authorization.interceptor.AuthorizeAspect">
-        <property name="authorizeService" ref="authorizeService"/>
+    <bean id="tokenInfoParser" class="com.junbo.authorization.TokenInfoParserImpl">
+        <property name="tokenInfoEndpoint" ref="tokenInfoEndpoint"/>
+        <property name="allowTestAccessToken" value="true"/>
+        <property name="tokenInfoCache">
+            <bean factory-bean="authorizeCacheManager" factory-method="getCache">
+                <constructor-arg name="name" value="TOKEN_INFO"/>
+            </bean>
+        </property>
     </bean>
+
+    <bean id="spelConditionEvaluator" class="com.junbo.authorization.SPELConditionEvaluator"/>
+
+    <bean id="authorizeService" class="com.junbo.authorization.AuthorizeServiceImpl">
+        <property name="apiDefinitionEndpoint" ref="authlib_apiDefinitionEndpoint"/>
+        <property name="apiDefinitionCache">
+            <bean factory-bean="authorizeCacheManager" factory-method="getCache">
+                <constructor-arg name="name" value="API_DEFINITION"/>
+            </bean>
+        </property>
+        <property name="conditionEvaluators">
+            <list>
+                <ref bean="spelConditionEvaluator"/>
+            </list>
+        </property>
+        <property name="disabled" value="true"/>
+    </bean>
+
+    <!-- cache -->
+    <bean id="authorizeCacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+        <property name="configLocation" value="ehcache/authorizeCacheManager.xml"/>
+    </bean>
+
+    <bean id="abstractAuthorizeCallbackFactory" class="com.junbo.authorization.AbstractAuthorizeCallbackFactory" abstract="true">
+        <property name="roleResource" ref="roleResourceClientProxy"/>
+        <property name="roleAssignmentResource" ref="roleAssignmentResourceClientProxy"/>
+        <property name="groupResource" ref="groupResourceClientProxy"/>
+        <property name="userGroupMembershipResource" ref="userGroupMembershipResourceClientProxy"/>
+        <property name="groupIdsByUserIdCache">
+            <bean factory-bean="authorizeCacheManager" factory-method="getCache">
+                <constructor-arg name="name" value="GROUP_IDS_BY_USER_ID"/>
+            </bean>
+        </property>
+        <property name="groupIdByNameCache">
+            <bean factory-bean="authorizeCacheManager" factory-method="getCache">
+                <constructor-arg name="name" value="GROUP_ID_BY_NAME"/>
+            </bean>
+        </property>
+        <property name="roleCache">
+            <bean factory-bean="authorizeCacheManager" factory-method="getCache">
+                <constructor-arg name="name" value="ROLE"/>
+            </bean>
+        </property>
+        <property name="roleAssignmentCache">
+            <bean factory-bean="authorizeCacheManager" factory-method="getCache">
+                <constructor-arg name="name" value="ROLE_ASSIGNMENT"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="tokenInfoParserFilter" class="com.junbo.authorization.TokenInfoParserFilter"/>
 </beans>

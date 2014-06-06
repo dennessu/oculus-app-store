@@ -8,22 +8,27 @@ package com.junbo.payment.core.impl;
 
 import com.junbo.common.id.PIType;
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
+import com.junbo.payment.clientproxy.UserInfoFacade;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.core.PaymentTransactionService;
+import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.core.provider.ProviderRoutingService;
+import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.db.mapper.PaymentAPI;
 import com.junbo.payment.db.mapper.TrackingUuid;
 import com.junbo.payment.db.repository.MerchantAccountRepository;
 import com.junbo.payment.db.repository.PaymentProviderRepository;
 import com.junbo.payment.db.repository.PaymentRepository;
 import com.junbo.payment.db.repository.TrackingUuidRepository;
+import com.junbo.payment.spec.enums.PaymentEventType;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.PaymentEvent;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
+import com.junbo.payment.spec.model.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +69,38 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
     protected PlatformTransactionManager transactionManager;
     @Autowired
     protected TrackingUuidRepository trackingUuidRepository;
+    protected UserInfoFacade userInfoFacade;
+
+    protected void validateRequest(PaymentTransaction request, boolean needChargeInfo, boolean supportChargeInfo){
+        if(request.getUserId() == null){
+            throw AppClientExceptions.INSTANCE.missingUserId().exception();
+        }
+        UserInfo user = userInfoFacade.getUserInfo(request.getUserId()).get();
+        if(user == null){
+            throw AppClientExceptions.INSTANCE.invalidUserId(request.getUserId().toString()).exception();
+        }
+        request.setUserInfo(user);
+        if(request.getTrackingUuid() == null){
+            throw AppClientExceptions.INSTANCE.missingTrackingUuid().exception();
+        }
+        if(CommonUtil.isNullOrEmpty(request.getBillingRefId())){
+            throw AppClientExceptions.INSTANCE.missingBillingRefId().exception();
+        }
+        if(needChargeInfo){
+            if(request.getChargeInfo() == null){
+                throw AppClientExceptions.INSTANCE.missingAmount().exception();
+            }
+            if(request.getChargeInfo().getAmount() == null){
+                throw AppClientExceptions.INSTANCE.missingAmount().exception();
+            }
+            if(CommonUtil.isNullOrEmpty(request.getChargeInfo().getCurrency())){
+                throw AppClientExceptions.INSTANCE.missingCurrency().exception();
+            }
+        }
+        if(!supportChargeInfo && request.getChargeInfo() != null){
+            throw AppClientExceptions.INSTANCE.fieldNotNeeded("chargeInfo").exception();
+        }
+    }
 
     //use new transaction for business data to avoid hibernate cache in the service level transaction
     protected PaymentTransaction getResultByTrackingUuid(final PaymentTransaction request, final PaymentAPI api) {
@@ -104,7 +141,7 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
         }
         PaymentInstrument pi = null;
         try{
-            pi = paymentInstrumentService.getById(request.getPaymentInstrumentId()).wrapped().get();
+            pi = paymentInstrumentService.getById(request.getPaymentInstrumentId()).get();
         }catch(Exception ex){
             throw AppServerExceptions.INSTANCE.invalidPI().exception();
         }
@@ -147,6 +184,16 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
         });
     }
 
+    protected PaymentTransaction getPaymentAndEvents(Long paymentId) {
+        final PaymentTransaction result = paymentRepository.getByPaymentId(paymentId);
+        if(result == null){
+            throw AppClientExceptions.INSTANCE.resourceNotFound("payment_transaction").exception();
+        }
+        final List<PaymentEvent> events = paymentRepository.getPaymentEventsByPaymentId(paymentId);
+        result.setPaymentEvents(events);
+        return result;
+    }
+
     protected PaymentTransaction saveAndCommitPayment(final PaymentTransaction request) {
         AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
         template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
@@ -175,5 +222,32 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
                 return events;
             }
         });
+    }
+
+    protected PaymentEvent createPaymentEvent(PaymentTransaction request,
+                                            PaymentEventType eventType, PaymentStatus status, String response) {
+        PaymentEvent event = new PaymentEvent();
+        event.setPaymentId(request.getId());
+        event.setType(eventType.toString());
+        event.setStatus(status.toString());
+        event.setChargeInfo(request.getChargeInfo());
+        //TODO: need more detailed json request/response
+        event.setRequest(CommonUtil.toJson(request, FILTER));
+        event.setResponse(response);
+        return event;
+    }
+
+    protected PaymentProviderService getPaymentProviderService(PaymentInstrument pi) {
+        PaymentProviderService provider = providerRoutingService.getPaymentProvider(
+                PaymentUtil.getPIType(pi.getType()));
+        if(provider == null){
+            throw AppServerExceptions.INSTANCE.providerNotFound(
+                    PaymentUtil.getPIType(pi.getType()).toString()).exception();
+        }
+        return provider;
+    }
+
+    public void setUserInfoFacade(UserInfoFacade userInfoFacade) {
+        this.userInfoFacade = userInfoFacade;
     }
 }

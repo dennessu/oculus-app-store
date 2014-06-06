@@ -27,12 +27,12 @@ public class WalletLotDaoImpl extends BaseDao<WalletLotEntity> implements Wallet
         String queryString = "select * from ewallet_lot" +
                 " where ewallet_id = (:walletId)" +
                 " and remaining > 0" +
-                " and (expiration_date is null or expiration_date >= (:now))" +
+                " and expiration_date >= (:now)" +
                 " order by type desc";
         Query q = currentSession(walletId).createSQLQuery(queryString)
                 .addEntity(WalletLotEntity.class)
                 .setLong("walletId", walletId)
-                .setDate("now", new Date());
+                .setTimestamp("now", new Date());
         return q.list();
     }
 
@@ -41,9 +41,9 @@ public class WalletLotDaoImpl extends BaseDao<WalletLotEntity> implements Wallet
         String queryString = "select sum(remaining) from ewallet_lot" +
                 " where ewallet_id = (:walletId)" +
                 " and remaining > 0" +
-                " and (expiration_date is null or expiration_date >= (:now))";
+                " and expiration_date >= (:now)";
         Query q = currentSession(walletId).createSQLQuery(queryString)
-                .setLong("walletId", walletId).setDate("now", new Date());
+                .setLong("walletId", walletId).setTimestamp("now", new Date());;
         return (BigDecimal) q.uniqueResult();
     }
 }

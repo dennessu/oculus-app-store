@@ -92,7 +92,7 @@ class FlowExecutorImpl implements FlowExecutor {
             return Promise.pure(context.newActionContext())
         }
 
-        handleEvent(context, event).then { FlowEvent nextEvent ->
+        return handleEvent(context, event).then { FlowEvent nextEvent ->
             return runEventLoop(context, nextEvent)
         }
     }

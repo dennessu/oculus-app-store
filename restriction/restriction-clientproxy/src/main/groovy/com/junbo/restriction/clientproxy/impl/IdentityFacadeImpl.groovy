@@ -5,7 +5,6 @@
  */
 package com.junbo.restriction.clientproxy.impl
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.identity.spec.v1.model.User

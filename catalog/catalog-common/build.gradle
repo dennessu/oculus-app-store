@@ -5,10 +5,10 @@ dependencies {
     compile (libraries.spring_core)
     compile (libraries.spring_expression)
     compile (libraries.spring_tx)
-    compile (libraries.langur)
+    compile junboProject(':langur-core')
     compile (libraries.fastjson)
     compile(libraries.jackson_jaxrs_json_provider)
-    compile (libraries.common_lib)
+    compile junboProject(':common-lib')
 
     compile (libraries.log4j)
     compile (libraries.slf4j_api)

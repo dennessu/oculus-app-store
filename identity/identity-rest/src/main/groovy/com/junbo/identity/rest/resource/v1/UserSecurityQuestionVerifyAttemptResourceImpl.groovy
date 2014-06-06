@@ -1,10 +1,14 @@
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.authorization.AuthorizeService
+import com.junbo.authorization.RightsScope
 import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
 import com.junbo.common.model.Results
-import com.junbo.identity.core.service.Created201Marker
+import com.junbo.common.rs.Created201Marker
+import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserSecurityQuestionAttemptFilter
 import com.junbo.identity.core.service.validator.UserSecurityQuestionAttemptValidator
 import com.junbo.identity.data.repository.UserSecurityQuestionAttemptRepository
@@ -29,12 +33,10 @@ import org.springframework.transaction.support.TransactionCallback
 @Transactional
 @CompileStatic
 class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuestionVerifyAttemptResource {
+    private static final String IDENTITY_SERVICE_SCOPE = 'identity.service'
 
     @Autowired
     private UserSecurityQuestionAttemptRepository userSecurityQuestionAttemptRepository
-
-    @Autowired
-    private Created201Marker created201Marker
 
     @Autowired
     private UserSecurityQuestionAttemptFilter userSecurityQuestionAttemptFilter
@@ -44,6 +46,12 @@ class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuest
 
     @Autowired
     private PlatformTransactionManager transactionManager
+
+    @Autowired
+    private AuthorizeService authorizeService
+
+    @Autowired
+    private UserPropertyAuthorizeCallbackFactory authorizeCallbackFactory
 
     @Override
     Promise<UserSecurityQuestionVerifyAttempt> create(
@@ -56,14 +64,18 @@ class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuest
             throw new IllegalArgumentException('userSecurityQuestionAttempt')
         }
 
+        if (!AuthorizeContext.hasScopes(IDENTITY_SERVICE_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
+        }
+
         userSecurityQuestionAttempt = userSecurityQuestionAttemptFilter.filterForCreate(userSecurityQuestionAttempt)
 
-        userSecurityQuestionAttemptValidator.validateForCreate(userId, userSecurityQuestionAttempt).then {
+        return userSecurityQuestionAttemptValidator.validateForCreate(userId, userSecurityQuestionAttempt).then {
 
-            createInNewTran(userSecurityQuestionAttempt).then { UserSecurityQuestionVerifyAttempt attempt ->
+            return createInNewTran(userSecurityQuestionAttempt).then { UserSecurityQuestionVerifyAttempt attempt ->
 
                 if (attempt.succeeded == true) {
-                    created201Marker.mark((Id)attempt.id)
+                    Created201Marker.mark((Id)attempt.id)
 
                     attempt = userSecurityQuestionAttemptFilter.filterForGet(attempt, null)
                     return Promise.pure(attempt)
@@ -80,20 +92,33 @@ class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuest
         if (listOptions == null) {
             throw new IllegalArgumentException('userId is null')
         }
-        listOptions.setUserId(userId)
-        userSecurityQuestionAttemptValidator.validateForSearch(listOptions).then {
-            userSecurityQuestionAttemptRepository.search(listOptions).
-                    then { List<UserSecurityQuestionVerifyAttempt> userSecurityQuestionAttemptList ->
-                        def result = new Results<UserSecurityQuestionVerifyAttempt>(items: [])
 
-                        userSecurityQuestionAttemptList.each { UserSecurityQuestionVerifyAttempt attempt ->
+        if (userId == null) {
+            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+        }
+
+        def callback = authorizeCallbackFactory.create(userId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('read')) {
+                throw AppErrors.INSTANCE.invalidAccess().exception()
+            }
+
+            listOptions.setUserId(userId)
+            return userSecurityQuestionAttemptValidator.validateForSearch(listOptions).then {
+                return search(listOptions).then { List<UserSecurityQuestionVerifyAttempt> userSecurityQuestionAttemptList ->
+                    def result = new Results<UserSecurityQuestionVerifyAttempt>(items: [])
+
+                    userSecurityQuestionAttemptList.each { UserSecurityQuestionVerifyAttempt attempt ->
                             attempt = userSecurityQuestionAttemptFilter.filterForGet(attempt,
                                     listOptions.properties?.split(',') as List<String>)
+                        if (attempt != null) {
                             result.items.add(attempt)
                         }
-
-                        return Promise.pure(result)
                     }
+
+                    return Promise.pure(result)
+                }
+            }
         }
     }
 
@@ -104,13 +129,24 @@ class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuest
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        return userSecurityQuestionAttemptValidator.validateForGet(userId, id).
-                then { UserSecurityQuestionVerifyAttempt attempt ->
-                    attempt = userSecurityQuestionAttemptFilter.filterForGet(attempt,
-                            getOptions.properties?.split(',') as List<String>)
+        if (userId == null) {
+            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+        }
 
-                    return Promise.pure(attempt)
-                }
+        def callback = authorizeCallbackFactory.create(userId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('read')) {
+                throw AppErrors.INSTANCE.invalidAccess().exception()
+            }
+
+            return userSecurityQuestionAttemptValidator.validateForGet(userId, id).
+                    then { UserSecurityQuestionVerifyAttempt attempt ->
+                attempt = userSecurityQuestionAttemptFilter.filterForGet(attempt,
+                        getOptions.properties?.split(',') as List<String>)
+
+                return Promise.pure(attempt)
+            }
+        }
     }
 
     Promise<UserSecurityQuestionVerifyAttempt> createInNewTran(UserSecurityQuestionVerifyAttempt userLoginAttempt) {
@@ -122,5 +158,17 @@ class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuest
                 }
             }
         )
+    }
+
+    private Promise<List<UserSecurityQuestionVerifyAttempt>> search(UserSecurityQuestionAttemptListOptions listOptions) {
+        if (listOptions.userId != null && listOptions.userSecurityQuestionId != null) {
+            return userSecurityQuestionAttemptRepository.searchByUserIdAndSecurityQuestionId(listOptions.userId,
+                    listOptions.userSecurityQuestionId, listOptions.limit, listOptions.offset)
+        } else if (listOptions.userId != null) {
+            return userSecurityQuestionAttemptRepository.searchByUserId(listOptions.userId, listOptions.limit,
+                    listOptions.offset)
+        } else {
+            throw new IllegalArgumentException('Unsupported search operation')
+        }
     }
 }

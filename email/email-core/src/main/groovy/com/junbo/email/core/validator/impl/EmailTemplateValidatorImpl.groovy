@@ -5,6 +5,7 @@
  */
 package com.junbo.email.core.validator.impl
 
+import com.junbo.email.common.util.PlaceholderUtils
 import com.junbo.email.core.validator.EmailTemplateValidator
 import com.junbo.email.spec.error.AppErrors
 import com.junbo.email.spec.model.EmailTemplate
@@ -20,21 +21,28 @@ import org.springframework.util.StringUtils
 @Component
 class EmailTemplateValidatorImpl extends CommonValidator implements EmailTemplateValidator {
 
+    @Override
     void validateCreate(EmailTemplate template) {
         this.validateCommonField(template)
+        this.validatePlaceholderNamesField(template)
         this.validateTemplateName(template.name)
     }
 
-    void validateUpdate(EmailTemplate template) {
+    @Override
+    void validateUpdate(EmailTemplate template, Long templateId) {
+        this.validateTemplateId(templateId)
         this.validateCommonField(template)
+        this.validatePlaceholderNamesField(template)
     }
 
+    @Override
     void validateDelete(Long id) {
         if (id == null) {
-            throw AppErrors.INSTANCE.invalidEmailId('').exception()
+            throw AppErrors.INSTANCE.missingField('id').exception()
         }
     }
 
+    @Override
     void validateGet(Pagination pagination) {
         if (pagination?.page != null && pagination.page < 1) {
             throw AppErrors.INSTANCE.invalidParameter('page').exception()
@@ -71,7 +79,23 @@ class EmailTemplateValidatorImpl extends CommonValidator implements EmailTemplat
     private void validateTemplateName(String name) {
         EmailTemplate template = emailTemplateRepository.getEmailTemplateByName(name)
         if (template != null) {
-            throw AppErrors.INSTANCE.emailTemplateAlreadyExist('').exception()
+            throw AppErrors.INSTANCE.emailTemplateAlreadyExist().exception()
+        }
+    }
+
+    private void validatePlaceholderNamesField(EmailTemplate template) {
+        if (!StringUtils.isEmpty(template.subject)) {
+            List<String> placeholders = PlaceholderUtils.retrievePlaceholders(template.subject);
+            if (!PlaceholderUtils.compare(placeholders, template.placeholderNames)) {
+                throw AppErrors.INSTANCE.invalidPlaceholderNames().exception()
+            }
+        }
+    }
+
+    private void validateTemplateId(Long id) {
+        EmailTemplate template = emailTemplateRepository.getEmailTemplate(id)
+        if (template == null) {
+            throw AppErrors.INSTANCE.templateNotFound().exception()
         }
     }
 }

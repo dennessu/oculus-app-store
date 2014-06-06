@@ -9,6 +9,7 @@ import com.junbo.cart.spec.model.Cart;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.client.TypeReference;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.cart.CartService;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
@@ -31,7 +32,7 @@ import java.util.concurrent.Future;
  */
 public class CartServiceImpl implements CartService {
 
-    private static String cartUrl = RestUrl.getRestUrl(RestUrl.ComponentName.COMMERCE);
+    private static String cartUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1");
 
     private LogHelper logger = new LogHelper(CartServiceImpl.class);
     private AsyncHttpClient asyncClient;

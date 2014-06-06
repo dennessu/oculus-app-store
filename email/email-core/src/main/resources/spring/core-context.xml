@@ -8,4 +8,18 @@
 
     <bean id="emailService" class="com.junbo.email.core.service.EmailServiceImpl"/>
     <bean id="templateService" class="com.junbo.email.core.service.EmailTemplateServiceImpl"/>
+
+    <bean id="emailPublisher" class="com.junbo.email.core.publisher.impl.EmailPublisherImpl" parent="basePublisher">
+        <property name="template" ref="emailJmsTemplate"/>
+        <property name="destination" ref="emailQueue"/>
+    </bean>
+
+    <bean id="emailCommonValidator" class="com.junbo.email.core.validator.impl.CommonValidator" abstract="true">
+        <property name="emailTemplateRepository" ref="emailTemplateRepository"/>
+        <property name="emailPattern" value="${email.address.pattern}"/>
+    </bean>
+    <bean id="emailValidator" class="com.junbo.email.core.validator.impl.EmailValidatorImpl" parent="emailCommonValidator">
+        <property name="emailScheduleRepository" ref="emailScheduleRepository"/>
+    </bean>
+    <bean id="templateValidator" class="com.junbo.email.core.validator.impl.EmailTemplateValidatorImpl" parent="emailCommonValidator"/>
 </beans>

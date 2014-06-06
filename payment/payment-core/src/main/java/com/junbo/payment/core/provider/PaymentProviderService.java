@@ -8,6 +8,7 @@ package com.junbo.payment.core.provider;
 
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.spec.model.PaymentInstrument;
+import com.junbo.payment.spec.model.PaymentProperties;
 import com.junbo.payment.spec.model.PaymentTransaction;
 
 import javax.ws.rs.core.Response;
@@ -25,13 +26,15 @@ public interface PaymentProviderService{
     Promise<Response> delete(PaymentInstrument pi);
     Promise<PaymentInstrument> getByInstrumentToken(String token);
 
+    Promise<PaymentTransaction> credit(PaymentInstrument pi, PaymentTransaction paymentRequest);
     Promise<PaymentTransaction> authorize(PaymentInstrument pi, PaymentTransaction paymentRequest);
     Promise<PaymentTransaction> capture(String transactionId, PaymentTransaction paymentRequest);
     Promise<PaymentTransaction> charge(PaymentInstrument pi, PaymentTransaction paymentRequest);
     Promise<PaymentTransaction> reverse(String transactionId, PaymentTransaction paymentRequest);
     Promise<PaymentTransaction> refund(String transactionId, PaymentTransaction request);
     List<PaymentTransaction> getByBillingRefId(String orderId);
-    Promise<PaymentTransaction> getByTransactionToken(String token);
+    Promise<PaymentTransaction> getByTransactionToken(PaymentTransaction paymentRequest);
 
     Promise<PaymentTransaction> confirm(String transactionId, PaymentTransaction paymentRequest);
+    Promise<PaymentTransaction> confirmNotify(PaymentTransaction paymentRequest, PaymentProperties properties);
 }

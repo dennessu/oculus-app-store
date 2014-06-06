@@ -8,12 +8,12 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.annotation.OrderEventAwareAfter
 import com.junbo.order.core.annotation.OrderEventAwareBefore
-import com.junbo.order.core.impl.common.BillingEventBuilder
+import com.junbo.order.core.impl.common.BillingEventHistoryBuilder
 import com.junbo.order.core.impl.common.CoreBuilder
-import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
-import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.spec.model.enums.BillingAction
+import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -32,7 +32,7 @@ class AuthSettleAction extends BaseOrderEventAwareAction {
     @Qualifier('orderFacadeContainer')
     FacadeContainer facadeContainer
     @Autowired
-    OrderRepository orderRepository
+    OrderRepositoryFacade orderRepository
     @Autowired
     OrderServiceContextBuilder orderServiceContextBuilder
     @Autowired
@@ -49,12 +49,12 @@ class AuthSettleAction extends BaseOrderEventAwareAction {
         def order = context.orderServiceContext.order
         orderInternalService.markSettlement(order)
         Balance balance = CoreBuilder.buildBalance(order, BalanceType.MANUAL_CAPTURE)
-        Promise promise = facadeContainer.billingFacade.createBalance(balance)
-        promise.syncRecover { Throwable throwable ->
+        Promise promise = facadeContainer.billingFacade.createBalance(balance,
+                context?.orderServiceContext?.apiContext?.asyncCharge)
+        return promise.syncRecover { Throwable throwable ->
             LOGGER.error('name=Order_AuthSettle_Error', throwable)
             context.orderServiceContext.order.tentative = true
-            throw AppErrors.INSTANCE.
-                    billingConnectionError(CoreUtils.toAppErrors(throwable)).exception()
+            throw facadeContainer.billingFacade.convertError(throwable).exception()
         }.then { Balance resultBalance ->
             context.orderServiceContext.order.tentative = true
             if (resultBalance == null) {
@@ -62,17 +62,32 @@ class AuthSettleAction extends BaseOrderEventAwareAction {
                 throw AppErrors.INSTANCE.
                         billingConnectionError().exception()
             }
-            if (resultBalance.status != BalanceStatus.PENDING_CAPTURE.name()) {
+            if (resultBalance.status != BalanceStatus.PENDING_CAPTURE.name()
+                    && balance.status != BalanceStatus.QUEUING.name()) {
                 LOGGER.error('name=Order_AuthSettle_Failed')
                 throw AppErrors.INSTANCE.
                         billingChargeFailed().exception()
             }
             context.orderServiceContext.order.tentative = false
+            context.orderServiceContext.isAsyncCharge = balance.isAsyncCharge
             CoreBuilder.fillTaxInfo(order, resultBalance)
-            def billingEvent = BillingEventBuilder.buildBillingEvent(resultBalance)
-            orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
+            def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(resultBalance)
+            if (billingHistory.billingEvent != null) {
+                if (billingHistory.billingEvent == BillingAction.AUTHORIZE.name()) {
+                    order.payments?.get(0)?.paymentAmount = billingHistory.totalAmount
+                }
+                def savedHistory = orderRepository.createBillingHistory(order.getId().value, billingHistory)
+                if (order.billingHistories == null) {
+                    order.billingHistories = [savedHistory]
+                }
+                else {
+                    order.billingHistories.add(savedHistory)
+                }
+            }
+            return orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
                 // TODO: save order level tax
-                return CoreBuilder.buildActionResultForOrderEventAwareAction(context, billingEvent.status)
+                return CoreBuilder.buildActionResultForOrderEventAwareAction(context,
+                        BillingEventHistoryBuilder.buildEventStatusFromBalance(resultBalance))
             }
         }
     }

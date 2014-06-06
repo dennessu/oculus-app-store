@@ -1,7 +1,9 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile project(':common-configuration')
+    compile junboProject(':common-configuration')
+    compile junboProject(':langur-core')
+    compile junboProject(':apphost-core')
 
     compile (libraries.rs_api)
 
@@ -14,7 +16,6 @@ dependencies {
     compile (libraries.jackson_core)
     compile (libraries.jackson_annotations)
     compile (libraries.jackson_databind)
-    compile (libraries.langur)
 
     compile (libraries.slf4j_api)
     compile (libraries.log4j_over_slf4j)
@@ -26,8 +27,15 @@ dependencies {
     compile (libraries.common_collection)
 
     compile (libraries.jersey_container_grizzly2_http)
-
     compile (libraries.spy_memcached)
-
     compile (libraries.swagger_annotations)
+
+    compile (libraries.hibernate_core)
+    compile (libraries.hibernate_entitymanager)
+    compile (libraries.hibernate_annotation)
+
+    compile (libraries.grizzly_http_server)
+    compile (libraries.grizzly_websockets)
+
+    testRuntime junboProject(':configuration-data')
 }

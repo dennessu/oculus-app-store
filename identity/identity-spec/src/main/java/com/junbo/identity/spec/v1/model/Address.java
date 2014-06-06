@@ -8,39 +8,34 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.enumid.CountryId;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by xmchen on 14-4-15.
  */
 public class Address{
+    @ApiModelProperty(position = 1, required = true, value = "First address line")
     private String street1;
 
+    @ApiModelProperty(position = 2, required = false, value = "[Nullable] Second address line.")
     private String street2;
 
+    @ApiModelProperty(position = 3, required = false, value = "[Nullable] Third address line.")
     private String street3;
 
+    @ApiModelProperty(position = 4, required = true, value = "Name of the city.")
     private String city;
 
-    private String postalCode;
+    @ApiModelProperty(position = 5, required = false, value = "[Nullable] Non-null name of the state/province in countries that have these subcountries, " +
+            "otherwise null.")
+    private String subCountry;
 
-    private String countryName;
-
+    @ApiModelProperty(position = 6, required = true, value = "Link to the address's Country resource.")
     @JsonProperty("country")
     private CountryId countryId;
 
-    private String firstName;
-
-    private String lastName;
-
-    private String phoneNumber;
-
-    private Boolean isWellFormed;
-
-    private Boolean isNormalized;
-
-    private String subCountryCode;
-
-    private String subCountryName;
+    @ApiModelProperty(position = 7, required = false, value = "[Nullable] The address's postal/zip code, or null.")
+    private String postalCode;
 
     public String getStreet1() {
         return street1;
@@ -74,14 +69,6 @@ public class Address{
         this.postalCode = postalCode;
     }
 
-    public String getCountryName() {
-        return countryName;
-    }
-
-    public void setCountryName(String countryName) {
-        this.countryName = countryName;
-    }
-
     public CountryId getCountryId() {
         return countryId;
     }
@@ -90,67 +77,39 @@ public class Address{
         this.countryId = countryId;
     }
 
-    public String getSubCountryCode() {
-        return subCountryCode;
-    }
-
-    public void setSubCountryCode(String subCountryCode) {
-        this.subCountryCode = subCountryCode;
-    }
-
-    public String getSubCountryName() {
-        return subCountryName;
-    }
-
-    public void setSubCountryName(String subCountryName) {
-        this.subCountryName = subCountryName;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public Boolean getIsWellFormed() {
-        return isWellFormed;
-    }
-
-    public void setIsWellFormed(Boolean isWellFormed) {
-        this.isWellFormed = isWellFormed;
-    }
-
-    public Boolean getIsNormalized() {
-        return isNormalized;
-    }
-
-    public void setIsNormalized(Boolean isNormalized) {
-        this.isNormalized = isNormalized;
-    }
-
     public String getStreet3() {
         return street3;
     }
 
     public void setStreet3(String street3) {
         this.street3 = street3;
+    }
+
+    public String getSubCountry() {
+        return subCountry;
+    }
+
+    public void setSubCountry(String subCountry) {
+        this.subCountry = subCountry;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+
+        Address address = (Address)obj;
+        if (this.street1 != address.street1) return false;
+        if (this.street2 != address.street2) return false;
+        if (this.street3 != address.street3) return false;
+        if (this.city != address.city) return false;
+        if (this.postalCode != address.postalCode) return false;
+        if (this.countryId != address.countryId) return false;
+
+        return true;
     }
 }

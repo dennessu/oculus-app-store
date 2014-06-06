@@ -6,7 +6,6 @@
 
 package com.junbo.order.db.mapper;
 
-import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.oom.core.Mapper;
 import com.junbo.oom.core.Mapping;
 import com.junbo.oom.core.MappingContext;
@@ -28,6 +27,8 @@ public interface ModelMapper {
             @Mapping(source = "user", target = "userId", excluded = false, bidirectional = false),
             @Mapping(source = "id", target = "orderId", excluded = false, bidirectional = false),
             @Mapping(source = "shippingAddress", target = "shippingAddressId", excluded = false, bidirectional = false),
+            @Mapping(source = "shippingToName", target = "shippingNameId", excluded = false, bidirectional = false),
+            @Mapping(source = "shippingToPhone", target = "shippingPhoneId", excluded = false, bidirectional = false),
             @Mapping(source = "shippingMethod", target = "shippingMethodId", excluded = false, bidirectional = false)
     })
     OrderEntity toOrderEntity(Order order, MappingContext context);
@@ -37,33 +38,40 @@ public interface ModelMapper {
             @Mapping(source = "userId", target = "user", excluded = false, bidirectional = false),
             @Mapping(source = "orderId", target = "id", excluded = false, bidirectional = false),
             @Mapping(source = "shippingAddressId", target = "shippingAddress", excluded = false, bidirectional = false),
+            @Mapping(source = "shippingNameId", target = "shippingToName", excluded = false, bidirectional = false),
+            @Mapping(source = "shippingPhoneId", target = "shippingToPhone", excluded = false, bidirectional = false),
             @Mapping(source = "shippingMethodId", target = "shippingMethod", excluded = false, bidirectional = false)
     })
     Order toOrderModel(OrderEntity orderEntity, MappingContext context);
 
     @Mappings({
+            @Mapping(source = "id", target = "orderItemId", excluded = false, bidirectional = false),
             @Mapping(source = "type", target = "orderItemType", excluded = false, bidirectional = false),
             @Mapping(source = "offer", target = "productItemId", excluded = false, bidirectional = false),
     })
     OrderItemEntity toOrderItemEntity(OrderItem orderItem, MappingContext context);
 
     @Mappings({
+            @Mapping(source = "orderItemId", target = "id", excluded = false, bidirectional = false),
             @Mapping(source = "orderItemType", target = "type", excluded = false, bidirectional = false),
             @Mapping(source = "productItemId", target = "offer", excluded = false, bidirectional = false),
     })
     OrderItem toOrderItemModel(OrderItemEntity orderItemEntity, MappingContext context);
 
     @Mappings({
+            @Mapping(source = "id", target = "discountInfoId", excluded = false, bidirectional = false),
             @Mapping(source = "promotion", target = "promotionId", excluded = false, bidirectional = false)
     })
     OrderDiscountInfoEntity toDiscountEntity(Discount discount, MappingContext context);
 
     @Mappings({
+            @Mapping(source = "discountInfoId", target = "id", excluded = false, bidirectional = false),
             @Mapping(source = "promotionId", target = "promotion", excluded = false, bidirectional = false)
     })
     Discount toDiscountModel(OrderDiscountInfoEntity discountEntity, MappingContext context);
 
     @Mappings({
+            @Mapping(source = "id", target = "eventId", excluded = false, bidirectional = false),
             @Mapping(source = "action", target = "actionId", excluded = false, bidirectional = false),
             @Mapping(source = "status", target = "statusId", excluded = false, bidirectional = false),
             @Mapping(source = "order", target = "orderId", excluded = false, bidirectional = false)
@@ -71,37 +79,51 @@ public interface ModelMapper {
     OrderEventEntity toOrderEventEntity(OrderEvent orderEvent, MappingContext context);
 
     @Mappings({
+            @Mapping(source = "eventId", target = "id", excluded = false, bidirectional = false),
             @Mapping(source = "actionId", target = "action", excluded = false, bidirectional = false),
             @Mapping(source = "statusId", target = "status", excluded = false, bidirectional = false),
             @Mapping(source = "orderId", target = "order", excluded = false, bidirectional = false),
     })
     OrderEvent toOrderEventModel(OrderEventEntity orderEventEntity, MappingContext context);
 
-    OrderPaymentInfoEntity toOrderPaymentInfoEntity(PaymentInstrumentId paymentInstrumentId, MappingContext context);
-    PaymentInstrumentId toPaymentInstrumentId(OrderPaymentInfoEntity orderPaymentInfoEntity, MappingContext context);
+    @Mappings({
+            @Mapping(source = "paymentInstrument", target = "paymentInstrumentId", excluded = false, bidirectional = false),
+    })
+    OrderPaymentInfoEntity toOrderPaymentInfoEntity(PaymentInfo paymentInfo, MappingContext context);
 
     @Mappings({
-            @Mapping(source = "id", target = "eventId", excluded = false, bidirectional = false),
-            @Mapping(source = "orderItem", target = "orderItemId", excluded = false, bidirectional = false)
+            @Mapping(source = "paymentInstrumentId", target = "paymentInstrument", excluded = false, bidirectional = false),
     })
-    OrderItemFulfillmentEventEntity toOrderItemFulfillmentEventEntity(FulfillmentEvent fulfillmentEvent,
+    PaymentInfo toPaymentInfo(OrderPaymentInfoEntity orderPaymentInfoEntity, MappingContext context);
+
+    @Mappings({
+            @Mapping(source = "id", target = "historyId", excluded = false, bidirectional = false),
+            @Mapping(source = "fulfillmentEvent", target = "fulfillmentEventId", excluded = false, bidirectional = false)
+    })
+    OrderItemFulfillmentHistoryEntity toOrderItemFulfillmentHistoryEntity(FulfillmentHistory fulfillmentHistory,
                                                                       MappingContext context);
 
     @Mappings({
-            @Mapping(source = "eventId", target = "id", excluded = false, bidirectional = false),
-            @Mapping(source = "orderItemId", target = "orderItem", excluded = false, bidirectional = false)
-
+            @Mapping(source = "historyId", target = "id", excluded = false, bidirectional = false),
+            @Mapping(source = "fulfillmentEventId", target = "fulfillmentEvent", excluded = false, bidirectional = false)
     })
-    FulfillmentEvent toFulfillmentEventModel(OrderItemFulfillmentEventEntity orderItemFulfillmentEventEntity,
+    FulfillmentHistory toFulfillmentHistoryModel(OrderItemFulfillmentHistoryEntity orderItemFulfillmentHistoryEntity,
                                              MappingContext context);
 
-    OrderBillingEventEntity toOrderBillingEventEntity(BillingEvent billingEvent,
+    @Mappings({
+            @Mapping(source = "id", target = "historyId", excluded = false, bidirectional = false),
+            @Mapping(source = "billingEvent", target = "billingEventId", excluded = false, bidirectional = false),
+    })
+    OrderBillingHistoryEntity toOrderBillingHistoryEntity(BillingHistory billingHistory,
                                                                       MappingContext context);
-
-    BillingEvent toOrderBillingEventModel(OrderBillingEventEntity orderBillingEventEntity,
+    @Mappings({
+            @Mapping(source = "historyId", target = "id", excluded = false, bidirectional = false),
+            @Mapping(source = "billingEventId", target = "billingEvent", excluded = false, bidirectional = false),
+    })
+    BillingHistory toOrderBillingHistoryModel(OrderBillingHistoryEntity orderBillingHistoryEntity,
                                              MappingContext context);
     @Mappings({
-            @Mapping(source = "orderItemPreorderInfoId", target = "preorderInfoId",
+            @Mapping(source = "orderItemPreorderInfoId", target = "id",
                     excluded = false, bidirectional = false),
             @Mapping(source = "billingDate", target = "billingTime", excluded = false, bidirectional = false),
             @Mapping(source = "preNotificationDate", target = "preNotificationTime",
@@ -111,7 +133,7 @@ public interface ModelMapper {
     PreorderInfo toPreOrderInfoModel(OrderItemPreorderInfoEntity orderItemPreorderInfoEntity, MappingContext context);
 
     @Mappings({
-            @Mapping(source = "preorderInfoId", target = "orderItemPreorderInfoId",
+            @Mapping(source = "id", target = "orderItemPreorderInfoId",
                     excluded = false, bidirectional = false),
             @Mapping(source = "billingTime", target = "billingDate", excluded = false, bidirectional = false),
             @Mapping(source = "preNotificationTime", target = "preNotificationDate",
@@ -121,6 +143,7 @@ public interface ModelMapper {
     OrderItemPreorderInfoEntity toOrderItemPreorderInfoEntity(PreorderInfo preorderInfo, MappingContext context);
 
     @Mappings({
+            @Mapping(source = "orderItemPreorderUpdateHistoryId", target = "id", excluded = false, bidirectional = false),
             @Mapping(source = "updateTypeId", target = "updatedType", excluded = false, bidirectional = false),
             @Mapping(source = "updateBeforeValue", target = "beforeValue", excluded = false, bidirectional = false),
             @Mapping(source = "updateAfterValue", target = "afterValue", excluded = false, bidirectional = false),
@@ -130,6 +153,7 @@ public interface ModelMapper {
                                                MappingContext context);
 
     @Mappings({
+            @Mapping(source = "id", target = "orderItemPreorderUpdateHistoryId", excluded = false, bidirectional = false),
             @Mapping(source = "updatedType", target = "updateTypeId", excluded = false, bidirectional = false),
             @Mapping(source = "beforeValue", target = "updateBeforeValue", excluded = false, bidirectional = false),
             @Mapping(source = "afterValue", target = "updateAfterValue", excluded = false, bidirectional = false),
@@ -139,22 +163,37 @@ public interface ModelMapper {
                                                                MappingContext context);
 
     @Mappings({
-            @Mapping(source = "productItemId", target = "offerId", excluded = false, bidirectional = false)
+            @Mapping(source = "subledgerId", target = "id", excluded = false, bidirectional = false),
+            @Mapping(source = "productItemId", target = "offer", excluded = false, bidirectional = false),
+            @Mapping(source = "sellerId", target = "seller", excluded = false, bidirectional = false)
     })
     Subledger toSubledgerModel(SubledgerEntity subledgerEntity, MappingContext context);
 
     @Mappings({
-            @Mapping(source = "offerId", target = "productItemId", excluded = false, bidirectional = false)
+            @Mapping(source = "id", target = "subledgerId", excluded = false, bidirectional = false),
+            @Mapping(source = "offer", target = "productItemId", excluded = false, bidirectional = false),
+            @Mapping(source = "seller", target = "sellerId", excluded = false, bidirectional = false),
+
     })
     SubledgerEntity toSubledgerEntity(Subledger subledger, MappingContext context);
 
     @Mappings({
-            @Mapping(source = "productItemId", target = "offerId", excluded = false, bidirectional = false)
+            @Mapping(source = "subledgerItemId", target = "id", excluded = false, bidirectional = false),
+            @Mapping(source = "productItemId", target = "offer", excluded = false, bidirectional = false),
+            @Mapping(source = "subledgerId", target = "subledger", excluded = false, bidirectional = false),
+            @Mapping(source = "orderItemId", target = "orderItem", excluded = false, bidirectional = false),
+            @Mapping(source = "originalSubledgerItemId", target = "originalSubledgerItem",
+                    excluded = false, bidirectional = false)
     })
     SubledgerItem toSubledgerItemModel(SubledgerItemEntity subledgerItemEntity, MappingContext context);
 
     @Mappings({
-            @Mapping(source = "offerId", target = "productItemId", excluded = false, bidirectional = false)
+            @Mapping(source = "id", target = "subledgerItemId", excluded = false, bidirectional = false),
+            @Mapping(source = "offer", target = "productItemId", excluded = false, bidirectional = false),
+            @Mapping(source = "subledger", target = "subledgerId", excluded = false, bidirectional = false),
+            @Mapping(source = "orderItem", target = "orderItemId", excluded = false, bidirectional = false),
+            @Mapping(source = "originalSubledgerItem", target = "originalSubledgerItemId",
+                    excluded = false, bidirectional = false)
     })
     SubledgerItemEntity toSubledgerItemEntity(SubledgerItem subledgerItem, MappingContext context);
 }

@@ -8,6 +8,7 @@ package com.junbo.payment.core;
 
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.spec.model.PaymentEvent;
+import com.junbo.payment.spec.model.PaymentProperties;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
  * payment transaction service.
  */
 public interface PaymentTransactionService {
+    @Transactional
+    Promise<PaymentTransaction> credit(PaymentTransaction request);
     @Transactional
     Promise<PaymentTransaction> authorize(PaymentTransaction request);
     @Transactional
@@ -27,10 +30,12 @@ public interface PaymentTransactionService {
     Promise<PaymentTransaction> reverse(Long paymentId, PaymentTransaction request);
     @Transactional
     Promise<PaymentTransaction> refund(Long paymentId, PaymentTransaction request);
+    @Transactional(readOnly = true)
+    Promise<PaymentTransaction> getTransaction(Long paymentId);
     @Transactional
     Promise<PaymentTransaction> getUpdatedTransaction(Long paymentId);
     @Transactional(readOnly = true)
     Promise<PaymentTransaction> getProviderTransaction(Long paymentId);
     @Transactional
-    void reportPaymentEvent(PaymentEvent event);
+    Promise<PaymentTransaction> reportPaymentEvent(PaymentEvent event, PaymentProperties paymentProperties);
 }

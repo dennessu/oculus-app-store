@@ -34,6 +34,8 @@ public class FulfilmentAction {
 
     private Map<String, Object> properties;
 
+    private Long itemId;
+
     private List<LinkedEntry> items;
 
     private Integer copyCount;
@@ -82,6 +84,14 @@ public class FulfilmentAction {
 
     public List<LinkedEntry> getItems() {
         return items;
+    }
+
+    public Long getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
     }
 
     public void setItems(List<LinkedEntry> items) {

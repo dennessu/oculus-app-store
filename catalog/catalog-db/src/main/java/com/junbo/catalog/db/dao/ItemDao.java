@@ -9,6 +9,7 @@ package com.junbo.catalog.db.dao;
 import com.junbo.catalog.db.entity.ItemEntity;
 import com.junbo.catalog.spec.model.item.ItemsGetOptions;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -16,4 +17,5 @@ import java.util.List;
  */
 public interface ItemDao extends BaseDao<ItemEntity> {
     List<ItemEntity> getItems(ItemsGetOptions options);
+    List<ItemEntity> getItems(Collection<Long> itemIds);
 }

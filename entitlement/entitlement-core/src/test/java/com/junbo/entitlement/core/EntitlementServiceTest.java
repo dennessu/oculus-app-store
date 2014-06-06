@@ -6,8 +6,11 @@
 
 package com.junbo.entitlement.core;
 
+import com.junbo.catalog.spec.model.item.EntitlementDef;
+import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.common.error.AppErrorException;
 import com.junbo.common.id.UserId;
+import com.junbo.entitlement.common.cache.CommonCache;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
@@ -26,8 +29,10 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.WebApplicationException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * Entitlement service test.
@@ -71,10 +76,11 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
     public void testUpdateEntitlement() {
         Entitlement entitlement = buildAnEntitlement();
         Entitlement addedEntitlement = entitlementService.addEntitlement(entitlement);
-        addedEntitlement.setUseCount(1);
+        Date now = new Date();
+        addedEntitlement.setExpirationTime(now);
         Entitlement updatedEntitlement = entitlementService.updateEntitlement(
                 addedEntitlement.getEntitlementId(), addedEntitlement);
-        Assert.assertEquals(updatedEntitlement.getUseCount(), (Integer) 1);
+        Assert.assertTrue(Math.abs(updatedEntitlement.getExpirationTime().getTime() - now.getTime()) <= 1000);
     }
 
     @Test
@@ -94,10 +100,9 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
     public void testSearchEntitlements() {
         EntitlementContext.current().setNow(new Date(114, 1, 10));
         Long userId = idGenerator.nextId();
-        for (int i = 0; i < 48; i++) {
+        for (int i = 0; i < 5; i++) {
             Entitlement entitlementEntity = buildAnEntitlement();
             entitlementEntity.setUserId(userId);
-            entitlementEntity.setEntitlementDefinitionId(idGenerator.nextId());
             entitlementEntity.setExpirationTime(new Date(114, 2, 20));
             entitlementService.addEntitlement(entitlementEntity);
         }
@@ -107,9 +112,12 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
         EntitlementSearchParam searchParam = new EntitlementSearchParam();
         searchParam.setUserId(new UserId(userId));
         searchParam.setIsActive(true);
-        List<Entitlement> entitlements = entitlementService.searchEntitlement(searchParam, new PageMetadata());
-
+        List<Entitlement> entitlements = entitlementService.searchEntitlement(searchParam, new PageMetadata()).getItems();
         Assert.assertEquals(entitlements.size(), 0);
+
+        searchParam.setIsActive(false);
+        entitlements = entitlementService.searchEntitlement(searchParam, new PageMetadata()).getItems();
+        Assert.assertEquals(entitlements.size(), 5);
     }
 
     @Test
@@ -130,11 +138,23 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
 
     private Entitlement buildAnEntitlement() {
         Entitlement entitlement = new Entitlement();
-
         entitlement.setUserId(idGenerator.nextId());
         entitlement.setGrantTime(new Date(114, 0, 22));
         entitlement.setExpirationTime(new Date(114, 0, 28));
-        entitlement.setEntitlementDefinitionId(idGenerator.nextId());
+        entitlement.setItemId(idGenerator.nextId());
+        final ItemRevision item = new ItemRevision();
+        item.setItemId(entitlement.getItemId());
+        List<EntitlementDef> defs = new ArrayList<>();
+        EntitlementDef def = new EntitlementDef();
+        def.setConsumable(false);
+        defs.add(def);
+        item.setEntitlementDefs(defs);
+        CommonCache.ITEM_REVISION.get(item.getItemId(), new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                return item;
+            }
+        });
         return entitlement;
     }
 }

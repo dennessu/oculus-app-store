@@ -9,25 +9,25 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.GroupId;
 import com.junbo.common.id.UserGroupId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
-import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by liangfu on 4/3/14.
  */
-public class UserGroup extends ResourceMeta implements Identifiable<UserGroupId> {
+public class UserGroup extends PropertyAssignedAwareResourceMeta implements Identifiable<UserGroupId> {
 
     @ApiModelProperty(position = 1, required = true,
-            value = "[Nullable]The id of the user group membership resource.")
+            value = "[Client Immutable]Link to the user group membership resource.")
     @JsonProperty("self")
     private UserGroupId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "The user resource.")
+    @ApiModelProperty(position = 2, required = true, value = "The user who associate with a group in this user Group membership.")
     @JsonProperty("user")
     private UserId userId;
 
-    @ApiModelProperty(position = 3, required = true, value = "The group resource.")
+    @ApiModelProperty(position = 3, required = true, value = "The group which associate with a user in this user group membership.")
     @JsonProperty("group")
     private GroupId groupId;
 

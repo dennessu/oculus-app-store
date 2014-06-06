@@ -21,5 +21,8 @@ public enum PaymentEventType {
     IMMEDIATE_SETTLE,
     REFUND_CREATE,
     REFUND,
-    REPORT_EVENT
+    REPORT_EVENT,
+    CREDIT_CREATE,
+    CREDIT,
+    NOTIFY
 }

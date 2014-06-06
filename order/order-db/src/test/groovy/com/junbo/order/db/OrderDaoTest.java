@@ -11,7 +11,7 @@ import com.junbo.common.id.UserId;
 import com.junbo.order.db.common.TestHelper;
 import com.junbo.order.db.dao.OrderDao;
 import com.junbo.order.db.entity.OrderEntity;
-import com.junbo.order.db.entity.enums.OrderStatus;
+import com.junbo.order.spec.model.enums.OrderStatus;
 import com.junbo.sharding.IdGeneratorFacade;
 import com.junbo.sharding.ShardAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;

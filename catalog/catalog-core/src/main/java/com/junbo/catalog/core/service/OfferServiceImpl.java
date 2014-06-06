@@ -6,18 +6,20 @@
 
 package com.junbo.catalog.core.service;
 
-import com.junbo.catalog.common.util.EntityType;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.OfferService;
-import com.junbo.catalog.db.entity.ItemOfferRelationsEntity;
-import com.junbo.catalog.db.repo.*;
+import com.junbo.catalog.db.repo.ItemRepository;
+import com.junbo.catalog.db.repo.OfferAttributeRepository;
+import com.junbo.catalog.db.repo.OfferRepository;
+import com.junbo.catalog.db.repo.OfferRevisionRepository;
 import com.junbo.catalog.spec.enums.*;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.*;
-import com.junbo.common.error.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.junbo.common.error.AppError;
+import com.junbo.common.id.OfferId;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -27,22 +29,35 @@ import java.util.*;
  * Offer service implementation.
  */
 public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevision> implements OfferService {
-    @Autowired
     private OfferRepository offerRepo;
-    @Autowired
     private OfferRevisionRepository offerRevisionRepo;
-    @Autowired
     private ItemRepository itemRepo;
-    @Autowired
-    private ItemOfferRelationsRepository relationsRepo;
-    @Autowired
     private OfferAttributeRepository offerAttributeRepo;
+
+    @Required
+    public void setOfferRepo(OfferRepository offerRepo) {
+        this.offerRepo = offerRepo;
+    }
+
+    @Required
+    public void setOfferRevisionRepo(OfferRevisionRepository offerRevisionRepo) {
+        this.offerRevisionRepo = offerRevisionRepo;
+    }
+
+    @Required
+    public void setItemRepo(ItemRepository itemRepo) {
+        this.itemRepo = itemRepo;
+    }
+
+    @Required
+    public void setOfferAttributeRepo(OfferAttributeRepository offerAttributeRepo) {
+        this.offerAttributeRepo = offerAttributeRepo;
+    }
 
     @Override
     public Offer createEntity(Offer offer) {
         validateOfferCreation(offer);
-        Long offerId = offerRepo.create(offer);
-        return offerRepo.get(offerId);
+        return offerRepo.create(offer);
     }
 
     @Override
@@ -52,17 +67,58 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             throw AppErrors.INSTANCE.notFound("offer", Utils.encodeId(offerId)).exception();
         }
         validateOfferUpdate(offer, oldOffer);
-        offerRepo.update(offer);
-        return offerRepo.get(offerId);
+
+        offer.setCurrentRevisionId(oldOffer.getCurrentRevisionId());
+        offer.setApprovedRevisions(oldOffer.getApprovedRevisions());
+        offer.setActiveRevision(oldOffer.getActiveRevision());
+
+        Offer updatedOffer = offerRepo.update(offer);
+        updatedOffer.setCurrentRevisionId(oldOffer.getCurrentRevisionId());
+        return updatedOffer;
+    }
+
+    @Override
+    public Offer getEntity(Long entityId) {
+        Offer offer = getEntityRepo().get(entityId);
+        checkEntityNotNull(entityId, offer, getEntityType());
+        offer.setCurrentRevisionId(getCurrentRevisionId(offer.getApprovedRevisions()));
+        return offer;
     }
 
     @Override
     public List<Offer> getOffers(OffersGetOptions options) {
+        List<Offer> offers;
         if (options.getItemId() != null) {
-            return getOffersByItemId(options.getItemId().getValue());
+            offers = getOffersByItemId(options.getItemId().getValue());
         } else {
-            return offerRepo.getOffers(options);
+            offers = offerRepo.getOffers(options);
         }
+
+        for (Offer offer : offers) {
+            if (offer.getCurrentRevisionId() == null) {
+                offer.setCurrentRevisionId(getCurrentRevisionId(offer.getApprovedRevisions()));
+            }
+        }
+
+        return offers;
+    }
+
+    private Long getCurrentRevisionId(Map<Long, RevisionInfo> approvedRevisions) {
+        if (approvedRevisions == null) {
+            return null;
+        }
+        Long timestamp = Utils.currentTimestamp();
+        Long revisionId = null;
+        Long approvedTime = 0L;
+        for (RevisionInfo revisionInfo : approvedRevisions.values()) {
+            if (revisionInfo.getApprovedTime() > approvedTime
+                    && revisionInfo.getStartTime() <= timestamp && revisionInfo.getEndTime() > timestamp) {
+                revisionId = revisionInfo.getRevisionId();
+                approvedTime = revisionInfo.getApprovedTime();
+            }
+        }
+
+        return revisionId;
     }
 
     @Override
@@ -73,7 +129,11 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
                         .validation("offerId must be specified when timeInMillis is present.").exception();
             }
 
-            return offerRevisionRepo.getRevisions(options.getOfferIds(), options.getTimestamp());
+            Set<Long> offerIds = new HashSet<>();
+            for (OfferId offerId : options.getOfferIds()) {
+                offerIds.add(offerId.getValue());
+            }
+            return offerRevisionRepo.getRevisions(offerIds, options.getTimestamp());
         } else {
             return offerRevisionRepo.getRevisions(options);
         }
@@ -83,8 +143,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     public OfferRevision createRevision(OfferRevision revision) {
         validateRevisionCreation(revision);
         generateEventActions(revision);
-        Long revisionId = offerRevisionRepo.create(revision);
-        return offerRevisionRepo.get(revisionId);
+        return offerRevisionRepo.create(revision);
     }
 
     @Override
@@ -99,29 +158,57 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         validateRevisionUpdate(revision, oldRevision);
         generateEventActions(revision);
 
-        return super.updateRevision(revisionId, revision);
+        if (Status.APPROVED.is(revision.getStatus())) {
+            Long timestamp = Utils.currentTimestamp();
+            revision.setTimestamp(timestamp);
+            if (revision.getStartTime() == null || revision.getCreatedTime().getTime() < timestamp) {
+                revision.setStartTime(new Date(timestamp));
+            }
+
+            updateOfferForApprovedRevision(revision, timestamp);
+        }
+
+        return offerRevisionRepo.update(revision);
     }
 
-    @Override
-    protected void postApproveActions(OfferRevision currentRevision, Long lastRevisionId) {
-        List<Long> subOffers = safeWrap(currentRevision.getSubOffers());
-        List<Long> items = convert(currentRevision.getItems());
-        if (lastRevisionId!=null) {
-            OfferRevision lastRevision = offerRevisionRepo.get(lastRevisionId);
-            if (lastRevision == null) {
-                throw AppErrors.INSTANCE.notFound("offer-revision", Utils.encodeId(lastRevisionId)).exception();
-            }
-            List<Long> lastSubOffers = safeWrap(lastRevision.getSubOffers());
-            List<Long> lastItems = convert(lastRevision.getItems());
+    private void updateOfferForApprovedRevision(OfferRevision revision, Long timestamp) {
+        Offer offer = offerRepo.get(revision.getOfferId());
+        offer.setPublished(true);
 
-            createRelations(EntityType.OFFER, subtract(subOffers, lastSubOffers), currentRevision.getOfferId());
-            createRelations(EntityType.ITEM, subtract(items, lastItems), currentRevision.getOfferId());
-            removeRelations(EntityType.OFFER, subtract(lastSubOffers, subOffers), currentRevision.getOfferId());
-            removeRelations(EntityType.ITEM, subtract(lastItems, items), currentRevision.getOfferId());
+        if (revision.getStartTime().getTime() <= timestamp
+                && revision.getEndTIme() == null || revision.getEndTIme().after(Utils.maxDate())) {
+            offer.setCurrentRevisionId(revision.getRevisionId());
+            offer.setActiveRevision(revision);
+            if (offer.getApprovedRevisions() != null) {
+                offer.getApprovedRevisions().clear();
+            }
         } else {
-            createRelations(EntityType.OFFER, subOffers, currentRevision.getOfferId());
-            createRelations(EntityType.ITEM, items, currentRevision.getOfferId());
+            offer.setCurrentRevisionId(null);
         }
+        if (revision.getStartTime().getTime() >= timestamp
+                && revision.getEndTIme() == null || revision.getEndTIme().getTime() >= timestamp) {
+            offer.setActiveRevision(revision);
+        }
+        if (offer.getApprovedRevisions() == null) {
+            offer.setApprovedRevisions(new HashMap<Long, RevisionInfo>());
+        }
+        offer.getApprovedRevisions().put(revision.getRevisionId(), getRevisionInfo(revision, timestamp));
+
+        offerRepo.update(offer);
+    }
+
+    private RevisionInfo getRevisionInfo(OfferRevision revision, Long timestamp) {
+        RevisionInfo revisionInfo = new RevisionInfo();
+        revisionInfo.setApprovedTime(timestamp);
+        revisionInfo.setRevisionId(revision.getRevisionId());
+        revisionInfo.setStartTime(revision.getStartTime().getTime());
+        if (revision.getEndTIme() != null) {
+            revisionInfo.setEndTime(revision.getEndTIme().getTime());
+        } else {
+            revisionInfo.setEndTime(Utils.maxDate().getTime());
+        }
+
+        return revisionInfo;
     }
 
     @Override
@@ -145,77 +232,60 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     }
 
     private List<Offer> getOffersByItemId(Long itemId) {
-        Set<Long> offerIds = new HashSet<>();
-        List<ItemOfferRelationsEntity> relationsEntities = relationsRepo.getRelations(itemId, EntityType.ITEM);
-        if (CollectionUtils.isEmpty(relationsEntities)) {
+        List<OfferRevision> offerRevisions = offerRevisionRepo.getRevisions(itemId);
+        if (CollectionUtils.isEmpty(offerRevisions)) {
             return Collections.emptyList();
         }
-        for (ItemOfferRelationsEntity relationsEntity : relationsEntities) {
-            offerIds.add(relationsEntity.getParentOfferId());
-            getOfferIds(relationsEntity.getParentOfferId(), offerIds);
+
+        Set<Long> tempOfferIds = filterOfferIds(offerRevisions);
+        Set<Long> resultOfferIds = new HashSet<>(tempOfferIds);
+        for (Long offerId : tempOfferIds) {
+            findOfferIdsBySubOfferId(offerId, resultOfferIds);
         }
 
-        return offerRepo.getOffers(offerIds);
+        return offerRepo.getOffers(resultOfferIds);
     }
 
-    private void getOfferIds(Long offerId, Set<Long> offerIds) {
-        List<ItemOfferRelationsEntity> relationsEntities = relationsRepo.getRelations(offerId, EntityType.OFFER);
-        if (CollectionUtils.isEmpty(relationsEntities)) {
+    private Set<Long> filterOfferIds(List<OfferRevision> revisions) {
+        Set<Long> offerIds = new HashSet<>();
+        Set<Long> revisionIds = new HashSet<>();
+        for (OfferRevision offerRevision : revisions) {
+            offerIds.add(offerRevision.getOfferId());
+            revisionIds.add(offerRevision.getRevisionId());
+        }
+
+        List<OfferRevision> offerRevisions = offerRevisionRepo.getRevisions(offerIds, Utils.currentTimestamp());
+
+        Set<Long> resultOfferIds = new HashSet<>();
+        for (OfferRevision revision : offerRevisions) {
+            if (revisionIds.contains(revision.getRevisionId())) {
+                resultOfferIds.add(revision.getOfferId());
+            }
+        }
+
+        return resultOfferIds;
+    }
+
+    private void findOfferIdsBySubOfferId(Long subOfferId, Set<Long> offerIds) {
+        List<OfferRevision> offerRevisions = offerRevisionRepo.getRevisionsBySubOfferId(subOfferId);
+        if (CollectionUtils.isEmpty(offerRevisions)) {
             return;
         }
 
-        for (ItemOfferRelationsEntity relationsEntity : relationsEntities) {
-            if (offerIds.contains(relationsEntity.getParentOfferId())) {
-                continue;
+        Set<Long> tempOfferIds = filterOfferIds(offerRevisions);
+
+        for (Long offerId : tempOfferIds) {
+            if (!offerIds.contains(offerId)) {
+                offerIds.add(offerId);
+                findOfferIdsBySubOfferId(offerId, offerIds);
             }
-            offerIds.add(relationsEntity.getParentOfferId());
-            getOfferIds(relationsEntity.getParentOfferId(), offerIds);
-        }
-    }
-
-    private List<Long> convert(List<ItemEntry> itemEntries) {
-        List<Long> items = new ArrayList<>();
-        if (itemEntries != null) {
-            for (ItemEntry itemEntry : itemEntries) {
-                items.add(itemEntry.getItemId());
-            }
-        }
-
-        return items;
-    }
-
-    private List<Long> safeWrap(List<Long> list) {
-        if (list != null) {
-            return new ArrayList<>(list);
-        }
-        return Collections.emptyList();
-    }
-
-    private void removeRelations(EntityType entityType, List<Long> entityIds, Long parentOfferId) {
-        if (!CollectionUtils.isEmpty(entityIds)) {
-            for (Long entityId : entityIds) {
-                relationsRepo.delete(entityType, entityId, parentOfferId);
-            }
-        }
-    }
-
-    private void createRelations(EntityType entityType, List<Long> entityIds, Long parentOfferId) {
-        if (CollectionUtils.isEmpty(entityIds)) {
-            return;
-        }
-        for (Long entityId : entityIds) {
-            ItemOfferRelationsEntity relationsEntity = new ItemOfferRelationsEntity();
-            relationsEntity.setEntityType(entityType.getValue());
-            relationsEntity.setEntityId(entityId);
-            relationsEntity.setParentOfferId(parentOfferId);
-            relationsRepo.create(relationsEntity);
         }
     }
 
     private void validateOfferCreation(Offer offer) {
         checkRequestNotNull(offer);
         List<AppError> errors = new ArrayList<>();
-        if (!StringUtils.isEmpty(offer.getRev())) {
+        if (offer.getResourceAge() != null) {
             errors.add(AppErrors.INSTANCE.unnecessaryField("rev"));
         }
         if (Boolean.TRUE.equals(offer.getPublished())) {
@@ -238,12 +308,12 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         if (!oldOffer.getOfferId().equals(offer.getOfferId())) {
             errors.add(AppErrors.INSTANCE.fieldNotMatch("self.id", offer.getOfferId(), oldOffer.getOfferId()));
         }
-        if (!isEqual(offer.getCurrentRevisionId(), oldOffer.getCurrentRevisionId())) {
+        /*if (!isEqual(offer.getCurrentRevisionId(), oldOffer.getCurrentRevisionId())) {
             errors.add(AppErrors.INSTANCE
                     .fieldNotCorrect("currentRevision", "The field can only be changed through revision approve"));
-        }
-        if (!oldOffer.getRev().equals(offer.getRev())) {
-            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", offer.getRev(), oldOffer.getRev()));
+        }*/
+        if (!oldOffer.getResourceAge().equals(offer.getResourceAge())) {
+            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", offer.getResourceAge(), oldOffer.getResourceAge()));
         }
 
         validateOfferCommon(offer, errors);
@@ -256,12 +326,6 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     private void validateOfferCommon(Offer offer, List<AppError> errors) {
         if (offer.getOwnerId()==null) {
             errors.add(AppErrors.INSTANCE.missingField("publisher"));
-        }
-        if (offer.getIapHostItemId() != null) {
-            Item item = itemRepo.get(offer.getIapHostItemId());
-            if (item == null) {
-                errors.add(AppErrors.INSTANCE.fieldNotCorrect("iapHostItem", "Item not found"));
-            }
         }
         if (!CollectionUtils.isEmpty(offer.getCategories())) {
             for (Long categoryId : offer.getCategories()) {
@@ -281,8 +345,8 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     private void validateRevisionCreation(OfferRevision revision) {
         checkRequestNotNull(revision);
         List<AppError> errors = new ArrayList<>();
-        if (!StringUtils.isEmpty(revision.getRev())) {
-            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", revision.getRev(), null));
+        if (revision.getResourceAge() != null) {
+            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", revision.getResourceAge(), null));
         }
         if (!Status.DRAFT.is(revision.getStatus())) {
             errors.add(AppErrors.INSTANCE.fieldNotMatch("status", revision.getStatus(), Status.DRAFT));
@@ -302,8 +366,9 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             errors.add(AppErrors.INSTANCE
                     .fieldNotMatch("revisionId", revision.getRevisionId(), oldRevision.getRevisionId()));
         }
-        if (!oldRevision.getRev().equals(revision.getRev())) {
-            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", revision.getRev(), oldRevision.getRev()));
+        if (!oldRevision.getResourceAge().equals(revision.getResourceAge())) {
+            errors.add(AppErrors.INSTANCE
+                    .fieldNotMatch("rev", revision.getResourceAge(), oldRevision.getResourceAge()));
         }
         if (revision.getStatus()==null || !Status.contains(revision.getStatus())) {
             errors.add(AppErrors.INSTANCE.fieldNotCorrect("status", "Valid statuses: " + Status.ALL));
@@ -358,29 +423,33 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     }
 
     private void validateItems(List<ItemEntry> items, List<AppError> errors) {
+        boolean hasSVItem = false;
         for (ItemEntry itemEntry : items) {
             Item item = itemRepo.get(itemEntry.getItemId());
             if (item == null) {
                 errors.add(AppErrors.INSTANCE.notFound("item", Utils.encodeId(itemEntry.getItemId())));
-            } else if (itemEntry.getQuantity() == null) {
-                itemEntry.setQuantity(1);
-            } else if (itemEntry.getQuantity() <= 0) {
-                errors.add(AppErrors.INSTANCE.fieldNotCorrect("items",
-                        "Quantity should be greater than 0 for item " + Utils.encodeId(itemEntry.getItemId())));
-            } else if (itemEntry.getQuantity() > 1) {
-                if (!(ItemType.STORED_VALUE.is(item.getType()) || ItemType.PHYSICAL.is(item.getType()))) {
+            } else {
+                if (item.getType().equals(ItemType.STORED_VALUE)) {
+                    hasSVItem = true;
+                }
+                if (itemEntry.getQuantity() == null) {
+                    itemEntry.setQuantity(1);
+                } else if (itemEntry.getQuantity() <= 0) {
                     errors.add(AppErrors.INSTANCE.fieldNotCorrect("items",
-                            "'quantity' should be 1 for " + item.getType()
-                                    + " item " + Utils.encodeId(itemEntry.getItemId())));
+                            "Quantity should be greater than 0 for item " + Utils.encodeId(itemEntry.getItemId())));
+                } else if (itemEntry.getQuantity() > 1) {
+                    if (!(ItemType.VIRTUAL.is(item.getType()) || ItemType.PHYSICAL.is(item.getType()))) {
+                        errors.add(AppErrors.INSTANCE.fieldNotCorrect("items",
+                                "'quantity' should be 1 for " + item.getType()
+                                        + " item " + Utils.encodeId(itemEntry.getItemId())));
+                    }
                 }
             }
         }
-    }
-
-    private List<Long> subtract(List<Long> list1, List<Long> list2) {
-        List<Long> result = new ArrayList<>(list1);
-        result.removeAll(list2);
-        return result;
+        if (hasSVItem && items.size() > 1) {
+            errors.add(AppErrors.INSTANCE
+                    .validation("STORED_VALUE item is mutually exclusive with other items in an offer"));
+        }
     }
 
     private List<Action> preparePurchaseEvent(OfferRevision revision) {
@@ -393,40 +462,54 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             revision.getEventActions().put(EventType.PURCHASE.name(), purchaseActions);
         }
 
-        removeAutoGeneratedActions(purchaseActions);
-
         return purchaseActions;
     }
 
-    private void removeAutoGeneratedActions(List<Action> purchaseActions) {
-        List<Action> autoGeneratedActions = new ArrayList<>();
-        for (Action action : purchaseActions) {
-            if (Boolean.TRUE.equals(action.isAutoGenerated())) {
-                autoGeneratedActions.add(action);
-            }
+    private Map<Long, Set<String>> adjustActions(List<ItemEntry> items, List<Action> purchaseActions) {
+        Map<Long, Set<String>> result = new HashMap<>();
+        for (ItemEntry itemEntry : items) {
+            result.put(itemEntry.getItemId(), new HashSet<String>());
         }
-        purchaseActions.removeAll(autoGeneratedActions);
+
+        Iterator<Action> iterator = purchaseActions.iterator();
+        while(iterator.hasNext()) {
+            Action action = iterator.next();
+            if (ActionType.CREDIT_WALLET.is(action.getType()) || action.getItemId() == null) {
+                continue;
+            }
+            if (!result.containsKey(action.getItemId())) {
+                iterator.remove();
+                continue;
+            }
+            result.get(action.getItemId()).add(action.getType());
+        }
+        return result;
     }
 
     private void generateEventActions(OfferRevision revision) {
         List<Action> purchaseActions = preparePurchaseEvent(revision);
+        Map<Long, Set<String>> definedActions = adjustActions(revision.getItems(), purchaseActions);
         for (ItemEntry itemEntry : revision.getItems()) {
             Item item = itemRepo.get(itemEntry.getItemId());
-            if (ItemType.DIGITAL.is(item.getType()) || ItemType.SUBSCRIPTION.is(item.getType())) {
+            if ((ItemType.DIGITAL.is(item.getType())
+                    || ItemType.SUBSCRIPTION.is(item.getType())
+                    || ItemType.VIRTUAL.is(item.getType())
+                    ) && !definedActions.get(itemEntry.getItemId()).contains(ActionType.GRANT_ENTITLEMENT.name())) {
                 Action action = new Action();
-                action.setAutoGenerated(true);
                 action.setType(ActionType.GRANT_ENTITLEMENT.name());
-                action.setEntitlementDefId(item.getEntitlementDefId());
+                action.setItemId(itemEntry.getItemId());
                 purchaseActions.add(action);
-            } else if (ItemType.STORED_VALUE.is(item.getType())) {
+            } /*else if (ItemType.STORED_VALUE.is(item.getType())) {
                 Action action = new Action();
                 action.setAutoGenerated(true);
                 action.setType(ActionType.CREDIT_WALLET.name());
                 action.setItemId(itemEntry.getItemId());
+                action.setStoredValueCurrency();
                 purchaseActions.add(action);
-            } else if (ItemType.PHYSICAL.is(item.getType())) {
+            } */
+            else if (ItemType.PHYSICAL.is(item.getType()) &&
+                    !definedActions.get(itemEntry.getItemId()).contains(ActionType.DELIVER_PHYSICAL_GOODS.name())) {
                 Action action = new Action();
-                action.setAutoGenerated(true);
                 action.setType(ActionType.DELIVER_PHYSICAL_GOODS.name());
                 action.setItemId(itemEntry.getItemId());
                 purchaseActions.add(action);

@@ -6,8 +6,11 @@
 
 package com.junbo.catalog.spec.model.common;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wordnik.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.Null;
 
 /**
  * Base entity revision model.
@@ -19,12 +22,6 @@ public abstract class BaseRevisionModel extends BaseModel {
 
     @JsonIgnore
     private Long timestamp;
-
-    @ApiModelProperty(position = 1001, required = false, value = "Future properties")
-    private ExtensibleProperties futureProperties;
-
-    @ApiModelProperty(position = 1002, required = true, value = "[Client Immutable] rev")
-    private String rev;
 
     public String getStatus() {
         return status;
@@ -42,22 +39,12 @@ public abstract class BaseRevisionModel extends BaseModel {
         this.status = status;
     }
 
-    public ExtensibleProperties getFutureProperties() {
-        return futureProperties;
-    }
-
-    public void setFutureProperties(ExtensibleProperties futureProperties) {
-        this.futureProperties = futureProperties;
-    }
-
-    public String getRev() {
-        return rev;
-    }
-
-    public void setRev(String rev) {
-        this.rev = rev;
-    }
-
     @JsonIgnore
     public abstract Long getEntityId();
+
+    // workaround fastjson de-serialize issue
+    @Null
+    @JsonIgnore
+    @JSONField(serialize = false)
+    private transient Long id;
 }

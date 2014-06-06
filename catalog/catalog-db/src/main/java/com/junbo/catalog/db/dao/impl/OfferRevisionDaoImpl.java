@@ -31,8 +31,7 @@ public class OfferRevisionDaoImpl extends BaseDaoImpl<OfferRevisionEntity> imple
                 if (!StringUtils.isEmpty(options.getStatus())) {
                     criteria.add(Restrictions.eq("status", options.getStatus()));
                 }
-                options.ensurePagingValid();
-                criteria.setFirstResult(options.getStart()).setMaxResults(options.getSize());
+                criteria.setFirstResult(options.getValidStart()).setMaxResults(options.getValidSize());
             }
         });
     }
@@ -45,6 +44,24 @@ public class OfferRevisionDaoImpl extends BaseDaoImpl<OfferRevisionEntity> imple
                 criteria.add(Restrictions.le("timestamp", timestamp));
                 criteria.addOrder(Order.desc("timestamp"));
                 criteria.setMaxResults(1);
+            }
+        });
+    }
+
+    public List<OfferRevisionEntity> getRevisionsBySubOfferId(final Long offerId) {
+        return findAllBy(new Action<Criteria>() {
+            @Override
+            public void apply(Criteria criteria) {
+                criteria.add(Restrictions.sqlRestriction(offerId + "=ANY(sub_offer_ids)"));
+            }
+        });
+    }
+
+    public List<OfferRevisionEntity> getRevisionsByItemId(final Long itemId) {
+        return findAllBy(new Action<Criteria>() {
+            @Override
+            public void apply(Criteria criteria) {
+                criteria.add(Restrictions.sqlRestriction(itemId + "=ANY(item_ids)"));
             }
         });
     }

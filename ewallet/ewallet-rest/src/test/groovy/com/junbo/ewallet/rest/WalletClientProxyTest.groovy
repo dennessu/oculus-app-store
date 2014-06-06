@@ -34,35 +34,35 @@ public class WalletClientProxyTest extends AbstractTestNGSpringContextTests {
     @Test(enabled = false)
     public void testCreate() {
         Wallet wallet = buildAWallet()
-        Wallet result = clientProxy.postWallet(wallet).wrapped().get()
+        Wallet result = clientProxy.postWallet(wallet).get()
         Assert.assertNotNull(result.walletId)
     }
 
     @Test(enabled = false)
     public void testUpdate() {
         Wallet wallet = buildAWallet()
-        Wallet result = clientProxy.postWallet(wallet).wrapped().get()
+        Wallet result = clientProxy.postWallet(wallet).get()
         result.setStatus(com.junbo.ewallet.spec.def.Status.LOCKED.toString())
-        result = clientProxy.updateWallet(new WalletId(result.walletId), result).wrapped().get()
+        result = clientProxy.updateWallet(new WalletId(result.walletId), result).get()
         Assert.assertEquals(result.status, com.junbo.ewallet.spec.def.Status.LOCKED.toString())
     }
 
     @Test(enabled = false)
     public void testCreditAndDebitAndGetTransactions() {
         Wallet wallet = buildAWallet()
-        wallet = clientProxy.postWallet(wallet).wrapped().get()
+        wallet = clientProxy.postWallet(wallet).get()
         def creditRequest = buildACreditRequest()
         creditRequest.setUserId(wallet.userId)
-        clientProxy.credit(creditRequest).wrapped().get()
-        wallet = clientProxy.getWallet(new WalletId(wallet.walletId)).wrapped().get()
+        clientProxy.credit(creditRequest).get()
+        wallet = clientProxy.getWallet(new WalletId(wallet.walletId)).get()
         Assert.assertEquals(wallet.balance, new BigDecimal(10))
-        clientProxy.credit(buildACreditRequest(wallet.walletId)).wrapped().get()
-        wallet = clientProxy.getWallet(new WalletId(wallet.walletId)).wrapped().get()
+        clientProxy.credit(buildACreditRequest(wallet.walletId)).get()
+        wallet = clientProxy.getWallet(new WalletId(wallet.walletId)).get()
         Assert.assertEquals(wallet.balance, new BigDecimal(20))
-        clientProxy.debit(new WalletId(wallet.walletId), buildADebitRequest()).wrapped().get()
-        wallet = clientProxy.getWallet(new WalletId(wallet.walletId)).wrapped().get()
+        clientProxy.debit(new WalletId(wallet.walletId), buildADebitRequest()).get()
+        wallet = clientProxy.getWallet(new WalletId(wallet.walletId)).get()
         Assert.assertEquals(wallet.balance, BigDecimal.ZERO)
-        Results<Transaction> transactionResults = clientProxy.getTransactions(new WalletId(wallet.walletId)).wrapped().get()
+        Results<Transaction> transactionResults = clientProxy.getTransactions(new WalletId(wallet.walletId)).get()
         Assert.assertEquals(transactionResults.items.size(), 3)
     }
 

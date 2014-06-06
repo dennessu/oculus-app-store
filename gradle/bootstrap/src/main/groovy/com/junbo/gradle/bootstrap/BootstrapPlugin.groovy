@@ -1,18 +1,30 @@
 package com.junbo.gradle.bootstrap
+
+import org.apache.tools.ant.util.TeeOutputStream
+import org.gradle.BuildListener
+import org.gradle.BuildResult
+import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
+import org.gradle.api.execution.TaskExecutionListener
+import org.gradle.api.initialization.Settings
+import org.gradle.api.invocation.Gradle
 import org.gradle.api.plugins.ApplicationPlugin
 import org.gradle.api.plugins.GroovyPlugin
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.quality.Checkstyle
-import org.gradle.api.plugins.quality.CodeNarc
-import org.gradle.api.tasks.Upload
+import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.api.tasks.JavaExec
+import org.gradle.api.tasks.TaskState
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.wrapper.Wrapper
+import org.gradle.util.Clock
 
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
+
 /**
  * Created by kg on 1/21/14.
  */
@@ -20,19 +32,20 @@ class BootstrapPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project rootProject) {
+
         rootProject.task('createWrapper', type: Wrapper) {
             gradleVersion = '1.11'
         }
 
+        rootProject.gradle.addListener(new TimingsListener())
+
+        def propertiesGradle = BootstrapPlugin.getResource("/config/gradle/properties.gradle")
+        rootProject.apply from: propertiesGradle.toURI()
+
+        def librariesGradle = BootstrapPlugin.getResource("/config/gradle/libraries.gradle")
+        rootProject.apply from: librariesGradle.toURI()
+
         rootProject.apply plugin: 'idea'
-
-        // unzip libraries.gradle on rootProject (identity, billing, etc.)
-        rootProject.file("$rootProject.projectDir/build").mkdirs()
-        def libPath = Paths.get("$rootProject.projectDir/build/libraries.gradle")
-        def libResource = BootstrapPlugin.getResourceAsStream("/config/gradle/libraries.gradle")
-        Files.copy(libResource, libPath, StandardCopyOption.REPLACE_EXISTING)
-
-        rootProject.apply from: "$rootProject.projectDir/build/libraries.gradle"
         rootProject.idea {
             project {
                 jdkName = 1.7
@@ -40,10 +53,12 @@ class BootstrapPlugin implements Plugin<Project> {
             }
         }
 
+        rootProject.defaultTasks 'clean', 'install'
+
         rootProject.subprojects {
             def subProject = it
 
-            group = "${project_group}"
+            group = 'com.junbo.' + project.name.split('-', 2)[0]
             version = property("${project.name}-version")
 
             apply plugin: 'idea'
@@ -60,8 +75,6 @@ class BootstrapPlugin implements Plugin<Project> {
                 }
             }
 
-            apply plugin: 'maven'
-
             repositories {
                 mavenLocal()
                 mavenCentral()
@@ -76,20 +89,6 @@ class BootstrapPlugin implements Plugin<Project> {
                     url "${artifactory_contextUrl}/repo"
                 }
 
-            }
-
-            uploadArchives {
-                repositories {
-                    mavenDeployer {
-                        repository(url: "${artifactory_contextUrl}/libs-release-local") {
-                            authentication(userName: "${artifactory_user}", password: "${artifactory_password}")
-                        }
-
-                        snapshotRepository(url: "${artifactory_contextUrl}/libs-snapshot-local") {
-                            authentication(userName: "${artifactory_user}", password: "${artifactory_password}")
-                        }
-                    }
-                }
             }
 
             configurations {
@@ -108,11 +107,21 @@ class BootstrapPlugin implements Plugin<Project> {
                     testCompile libraries.testng
                 }
 
-                compileJava.doFirst {
-                    def generated = file "$buildDir/generated-src"
-                    generated.mkdirs()
+                def generatedSrc = file "$buildDir/generated-src"
+                def generatedRes = file "$buildDir/generated-res"
 
-                    compileJava.options.compilerArgs.addAll '-s', generated.path
+                sourceSets {
+                    main {
+                        resources {
+                            srcDir generatedRes
+                        }
+                    }
+                }
+
+                compileJava.dependsOn configurations.processor
+                compileJava.doFirst {
+                    generatedSrc.mkdirs()
+                    compileJava.options.compilerArgs.addAll '-s', generatedSrc.path
 
                     if (!configurations.processor.empty) {
                         compileJava.options.compilerArgs.addAll '-processorpath', configurations.processor.asPath
@@ -121,15 +130,6 @@ class BootstrapPlugin implements Plugin<Project> {
                     if (processorClass) {
                         compileJava.options.compilerArgs.addAll '-processor', processorClass
                     }
-                }
-
-                task('sourcesJar', type: Jar) {
-                    classifier = 'sources'
-                    from sourceSets.main.allSource, "$buildDir/generated-src"
-                }
-
-                artifacts {
-                    archives sourcesJar
                 }
 
                 test {
@@ -171,10 +171,6 @@ class BootstrapPlugin implements Plugin<Project> {
                     it.dependsOn 'unzipCheckstyleConfigFile'
                 }
 
-                tasks.withType(Upload) {
-                    it.dependsOn 'build'
-                }
-
                 jar {
                     manifest {
                         attributes(
@@ -183,19 +179,64 @@ class BootstrapPlugin implements Plugin<Project> {
                         )
                     }
                 }
+
+                subProject.apply plugin: 'maven-publish'
+
+                task('sourcesJar', type: Jar) {
+                    classifier = 'sources'
+                    from sourceSets.main.allSource, generatedSrc.path
+                }
+
+                publishing {
+                    publications {
+                        junboBundle(MavenPublication) {
+                            from components.java
+
+                            artifact (sourcesJar) {
+                                classifier = 'sources'
+                            }
+                        }
+                    }
+
+                    repositories {
+                        maven {
+                            if (subProject.version.endsWith('-SNAPSHOT')) {
+                                url "${artifactory_contextUrl}/libs-snapshot-local"
+                            } else {
+                                url "${artifactory_contextUrl}/libs-release-local"
+                            }
+
+                            credentials {
+                                username = "${artifactory_user}"
+                                password = "${artifactory_password}"
+                            }
+                        }
+                    }
+                }
+
+                task('install').dependsOn 'publishToMavenLocal', 'build'
             }
 
             plugins.withType(GroovyPlugin) {
+                configurations {
+                    codenarc
+                }
 
                 dependencies {
                     compile libraries.groovy
+
+                    codenarc "org.codenarc:CodeNarc:0.21-J-SNAPSHOT"
+                    codenarc "com.junbo.gradle:bootstrap:0.0.1-SNAPSHOT"
+                    codenarc libraries.log4j
+                    codenarc libraries.groovy
                 }
 
+                compileGroovy.dependsOn configurations.processor
                 compileGroovy.doFirst {
-                    def generated = file "$buildDir/generated-src"
-                    generated.mkdirs()
+                    def generatedSrc = file "$buildDir/generated-src"
+                    generatedSrc.mkdirs()
 
-                    compileGroovy.options.compilerArgs.addAll '-s', generated.path
+                    compileGroovy.options.compilerArgs.addAll '-s', generatedSrc.path
 
                     if (!configurations.processor.empty) {
                         compileGroovy.options.compilerArgs.addAll '-processorpath', configurations.processor.asPath
@@ -206,35 +247,48 @@ class BootstrapPlugin implements Plugin<Project> {
                     }
                 }
 
-                subProject.apply plugin: 'codenarc'
+                // hardcoded source folder because pattern matching is not working in windows
+                def codenarcSourceFolder = file("$projectDir/src/main/groovy")
+                if (codenarcSourceFolder.exists()) {
+                    task('codenarc', dependsOn: 'jar', type: JavaExec) {
+                        def reportFile = "$buildDir/CodeNarcReport.html"
+                        def outputStream = new ByteArrayOutputStream()
 
-                codenarc {
-                    configFile = file("$buildDir/config/codenarc/codenarc.groovy")
-                    toolVersion = '0.20'
-                }
+                        classpath configurations.codenarc + tasks['jar'].outputs.files + configurations.compile
+                        main = 'org.codenarc.CodeNarc'
+                        standardOutput = new TeeOutputStream(standardOutput, outputStream)
 
-                codenarcTest {
-                    exclude "**/**"
-                }
+                        // only include main. test is not included
+                        args = ["-basedir=$codenarcSourceFolder",
+                                // disable, pattern matching is not working in windows somehow
+                                // "-includes=" + sourceSets.main.groovy.srcDirs.collect { "$it\\**.groovy" }.join(","),
+                                "-rulesetfiles=config/codenarc/codenarc.groovy",
+                                "-report=html:$reportFile"
+                        ].toList()
 
-                codenarcMain {
-                    exclude "**/**/package-info.java"
-                }
+                        doLast {
+                            def outputAsString = outputStream.toString()
+                            def compileErrorMatcher = outputAsString =~ /Compilation failed for /
+                            def resultMatcher = outputAsString =~ /CodeNarc completed: \(p1=(\d+); p2=(\d+); p3=(\d+)\)/
 
-                task('unzipCodenarcConfigFile') {
-                    outputs.upToDateWhen { codenarc.configFile.exists() }
+                            def p1Count = resultMatcher[0][1].toInteger()
+                            def p2Count = resultMatcher[0][2].toInteger()
+                            def p3Count = resultMatcher[0][3].toInteger()
 
-                    doLast {
-                        codenarc.configFile.parentFile.mkdirs()
+                            println "CodeNarc report is available at: $reportFile"
 
-                        def path = Paths.get(codenarc.configFile.canonicalPath)
-                        def resource = BootstrapPlugin.getResourceAsStream('/config/codenarc/codenarc.groovy')
-                        Files.copy(resource, path, StandardCopyOption.REPLACE_EXISTING)
+                            if (compileErrorMatcher.find()) {
+                                throw new GradleException("Compilation failures in CodeNarc run.")
+                            }
+
+                            if (p1Count + p2Count + p3Count > 0) {
+                                throw new GradleException("CodeNarc found violations.")
+                            }
+                        }
                     }
-                }
 
-                tasks.withType(CodeNarc) {
-                    it.dependsOn 'unzipCodenarcConfigFile'
+                    // disable codenarc by default, it's toooooooo slow
+                    // tasks.build.dependsOn 'codenarc'
                 }
             }
 
@@ -252,6 +306,8 @@ class BootstrapPlugin implements Plugin<Project> {
                     classpath = files(jar.archivePath)
                 }
             }
+
+            defaultTasks 'clean', 'install'
         }
 
         rootProject.apply plugin: "sonar-runner"
@@ -264,6 +320,8 @@ class BootstrapPlugin implements Plugin<Project> {
                 property "sonar.jdbc.password", ""
             }
         }
+
+        rootProject.apply plugin: "git-properties"
 
         rootProject.task('cleanupReport')  {
             rootProject.delete "build/xml-report"

@@ -7,16 +7,12 @@
 
     <context:annotation-config />
     <bean id="configService" class="com.junbo.configuration.ConfigServiceManager" factory-method="instance" />
-    <bean id="configPropertyPlaceholderConfigurer" class="com.junbo.configuration.impl.ConfigPropertyPlaceholderConfigurer">
-        <property name="configService" ref="configService" />
-    </bean>
+    <bean id="configPropertyPlaceholderConfigurer" class="com.junbo.configuration.impl.ConfigPropertyPlaceholderConfigurer" />
     <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
         <property name="converters">
-            <list>
-                <bean class="com.junbo.configuration.reloadable.impl.ReloadableConfigConverterFactory">
-                    <property name="configService" ref="configService" />
-                </bean>
-            </list>
+            <set>
+                <bean class="com.junbo.configuration.reloadable.impl.ReloadableConfigConverterFactory" />
+            </set>
         </property>
     </bean>
 

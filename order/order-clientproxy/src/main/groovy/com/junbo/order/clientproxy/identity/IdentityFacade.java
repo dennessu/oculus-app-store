@@ -6,6 +6,8 @@
 
 package com.junbo.order.clientproxy.identity;
 
+import com.junbo.identity.spec.v1.model.Address;
+import com.junbo.identity.spec.v1.model.Currency;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.langur.core.promise.Promise;
 
@@ -18,4 +20,8 @@ public interface IdentityFacade {
     Promise<User> getUser(Long userId);
 
     Promise<User> createUser(User user);
+
+    Promise<Address> getAddress(Long addressId);
+
+    Promise<Currency> getCurrency(String currency);
 }

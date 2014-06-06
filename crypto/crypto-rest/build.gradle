@@ -1,0 +1,12 @@
+import com.sun.org.apache.regexp.internal.recompile
+
+apply plugin: 'groovy'
+
+dependencies {
+    compile junboProject(':crypto-core')
+    compile junboProject(':crypto-spec')
+    compile junboProject(':crypto-common')
+    compile junboProject(':crypto-data')
+
+    compile junboProject(':common-lib')
+}

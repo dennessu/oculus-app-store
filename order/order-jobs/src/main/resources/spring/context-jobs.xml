@@ -12,7 +12,7 @@
         <property name="autoStartup" value="${order.jobs.scheduler.start}" />
         <property name="triggers">
             <list>
-                <ref bean="orderJobTrigger"/>
+                <!-- <ref bean="orderJobTrigger"/>  no functions needs order job, disable for now-->
                 <ref bean="subledgerJobTrigger"/>
             </list>
         </property>
@@ -46,7 +46,8 @@
 
     <bean id="orderJob" class="com.junbo.order.jobs.OrderJob" >
         <property name="threadPoolTaskExecutor" ref="orderJobAsyncTaskExecutor"/>
-        <property name="orderRepository" ref="orderRepository"/>
+        <property name="orderProcessor" ref="orderChargeProcessor"/>
+        <property name="orderRepository" ref="orderRepositoryFacade"/>
         <property name="statusToProcess">
             <list>
                 <value>PENDING_CHARGE</value>

@@ -1,9 +1,0 @@
-{
-    "username" : "RANDOMUSERNAME",
-    "preferredLocale" : {
-        "href" : "https://api.oculusvr.com/v1/locales/en_US",
-        "id" : "en_US"
-    },
-    "isAnonymous" : false,
-    "status" : "ACTIVE"
-}

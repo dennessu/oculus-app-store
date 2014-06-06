@@ -32,6 +32,12 @@ public class FulfilmentRequest {
     @ShippingAddressId
     private Long shippingAddressId;
 
+    @ShippingToNameId
+    private Long shippingToNameId;
+
+    @ShippingToPhoneId
+    private Long shippingToPhoneId;
+
     @ShippingMethodId
     private Long shippingMethodId;
 
@@ -99,5 +105,21 @@ public class FulfilmentRequest {
 
     public void setShippingMethodId(Long shippingMethodId) {
         this.shippingMethodId = shippingMethodId;
+    }
+
+    public Long getShippingToNameId() {
+        return shippingToNameId;
+    }
+
+    public void setShippingToNameId(Long shippingToNameId) {
+        this.shippingToNameId = shippingToNameId;
+    }
+
+    public Long getShippingToPhoneId() {
+        return shippingToPhoneId;
+    }
+
+    public void setShippingToPhoneId(Long shippingToPhoneId) {
+        this.shippingToPhoneId = shippingToPhoneId;
     }
 }

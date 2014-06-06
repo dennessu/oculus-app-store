@@ -11,14 +11,15 @@ import com.junbo.langur.core.webflow.state.Conversation
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
-import com.junbo.order.db.entity.enums.DiscountType
-import com.junbo.order.db.entity.enums.EventStatus
-import com.junbo.order.db.entity.enums.ItemType
-import com.junbo.order.db.entity.enums.OrderActionType
+import com.junbo.order.spec.model.enums.DiscountType
+import com.junbo.order.spec.model.enums.EventStatus
+import com.junbo.order.spec.model.enums.ItemType
+import com.junbo.order.spec.model.enums.OrderActionType
 import com.junbo.order.spec.model.Discount
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.OrderItem
+import com.junbo.order.spec.model.PaymentInfo
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -48,14 +49,17 @@ class TestBuilder {
         def userId = new UserId()
         userId.setValue(generateLong())
         order.setUser(userId)
-        order.setPaymentInstruments([])
-        order.paymentInstruments.add(new PaymentInstrumentId(generateLong()))
-        order.setShippingAddress(new ShippingAddressId(generateLong()))
+        order.setPayments([])
+        order.payments.add(new PaymentInfo(paymentInstrument: new PaymentInstrumentId(generateLong())))
+        order.setShippingAddress(new UserPersonalInfoId(generateLong()))
+        order.setShippingToName(new UserPersonalInfoId(generateLong()))
+        order.setShippingToPhone(new UserPersonalInfoId(generateLong()))
         order.setShippingMethod(generateLong())
         order.setTentative(true)
         order.discounts = []
         order.discounts.add(buildDiscount('AAA', orderItem))
         order.locale = new LocaleId('en_US')
+        order.honoredTime = new Date()
         return order
     }
 
@@ -70,10 +74,12 @@ class TestBuilder {
 
     static OrderItem buildOrderItem() {
         def orderItem = new OrderItem()
+        orderItem.setId(new OrderItemId(generateLong()))
         orderItem.setType(ItemType.DIGITAL.toString())
         orderItem.setOffer(new OfferId(generateLong()))
         orderItem.quantity = 1
         orderItem.unitPrice = 10.00G
+        orderItem.honoredTime = new Date()
         return orderItem
     }
 
@@ -109,15 +115,15 @@ class TestBuilder {
     static FulfilmentRequest buildFulfilmentRequest(Order order) {
         def request = new FulfilmentRequest()
         request.items = []
-        request.orderId = order.id.value
+        request.orderId = order.getId().value
         request.trackingGuid = UUID.randomUUID().toString()
         return request
     }
 
-    static FulfilmentItem buildFulfilmentItem(String itemStatus) {
+    static FulfilmentItem buildFulfilmentItem(String itemStatus, OrderItem orderItem) {
         def item = new FulfilmentItem()
         item.fulfilmentId = generateLong()
-        item.orderItemId = generateLong()
+        item.orderItemId = orderItem.getId().value
         item.status = itemStatus
         return item
     }

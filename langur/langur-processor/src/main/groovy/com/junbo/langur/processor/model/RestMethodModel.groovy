@@ -5,10 +5,15 @@
  */
 package com.junbo.langur.processor.model
 
+import groovy.transform.CompileStatic
+
 /**
  * Created by kevingu on 11/28/13.
  */
+@CompileStatic
 class RestMethodModel {
+
+    String adapteeType
 
     String methodName
 
@@ -17,4 +22,8 @@ class RestMethodModel {
     List<RestParameterModel> parameters
 
     List<String> annotations
+
+    List<String> routeParamExprs
+
+    boolean routeFallbackToAnyLocal
 }

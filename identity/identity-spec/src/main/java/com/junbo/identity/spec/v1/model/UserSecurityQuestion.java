@@ -9,27 +9,27 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserSecurityQuestionId;
+import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
-import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by liangfu on 4/3/14.
  */
-public class UserSecurityQuestion extends ResourceMeta implements Identifiable<UserSecurityQuestionId> {
+public class UserSecurityQuestion extends PropertyAssignedAwareResourceMeta implements Identifiable<UserSecurityQuestionId> {
 
     @ApiModelProperty(position = 1, required = true,
-            value = "[Nullable]The id of user security question resource.")
+            value = "[Client Immutable]Link to the user security question resource.")
     @JsonProperty("self")
     private UserSecurityQuestionId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "The security question.")
+    @ApiModelProperty(position = 2, required = true, value = "The text for the security question.")
     private String securityQuestion;
 
     @ApiModelProperty(position = 3, required = true, value = "The security question answer, this is write only field.")
     private String answer;
 
-    @ApiModelProperty(position = 4, required = true, value = "[Nullable]Users")
+    @ApiModelProperty(position = 4, required = true, value = "[Client Immutable] User Link to the owner the security question record.")
     @JsonProperty("user")
     private UserId userId;
 

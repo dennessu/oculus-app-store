@@ -28,11 +28,6 @@ public class Item extends BaseEntityModel {
             allowableValues = "PHYSICAL, DIGITAL, STORED_VALUE, SUBSCRIPTION, VIRTUAL")
     private String type;
 
-    @ItemId
-    @JsonProperty("iapHostItem")
-    @ApiModelProperty(position = 24, required = false, value = "The item in which the IAP item will be sold.")
-    private Long iapHostItemId;
-
     @ItemRevisionId
     @JsonProperty("currentRevision")
     @ApiModelProperty(position = 20, required = true, value = "The id of current revision")
@@ -47,19 +42,6 @@ public class Item extends BaseEntityModel {
     @ApiModelProperty(position = 22, required = true, value = "Developer of the item")
     private Long ownerId;
 
-    @ApiModelProperty(position = 23, required = true,
-            value = "An ID that helps to group like items. ex. TEAM_FORTRESS, this rollup ID would be applied to" +
-                    "all items that are team fortress (PC, MAC, LINUX, etc)")
-    private String rollupPackageName;
-
-    @ApiModelProperty(position = 24, required = true,
-            value = "Used to identify the item (app), used mainly for android")
-    private String packageName;
-
-    @ApiModelProperty(position = 25, required = true, value = "The platform name, for digital goods only",
-            allowableValues = "PC, MAC, LINUX, ANDROID")
-    private List<String> platforms;
-
     @ItemAttributeId
     @ApiModelProperty(position = 26, required = true, value = "Genres")
     private List<Long> genres;
@@ -68,8 +50,9 @@ public class Item extends BaseEntityModel {
     @ApiModelProperty(position = 28, required = true, value = "Default offer")
     private Long defaultOffer;
 
+    // current revision used for index & search
     @JsonIgnore
-    private Long entitlementDefId;
+    private ItemRevision activeRevision;
 
     public Long getItemId() {
         return itemId;
@@ -87,18 +70,12 @@ public class Item extends BaseEntityModel {
         this.type = type;
     }
 
-    public Long getIapHostItemId() {
-        return iapHostItemId;
-    }
-
-    public void setIapHostItemId(Long iapHostItemId) {
-        this.iapHostItemId = iapHostItemId;
-    }
-
+    @Override
     public Long getCurrentRevisionId() {
         return currentRevisionId;
     }
 
+    @Override
     public void setCurrentRevisionId(Long currentRevisionId) {
         this.currentRevisionId = currentRevisionId;
     }
@@ -119,30 +96,6 @@ public class Item extends BaseEntityModel {
         this.ownerId = ownerId;
     }
 
-    public String getRollupPackageName() {
-        return rollupPackageName;
-    }
-
-    public void setRollupPackageName(String rollupPackageName) {
-        this.rollupPackageName = rollupPackageName;
-    }
-
-    public String getPackageName() {
-        return packageName;
-    }
-
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
-    }
-
-    public List<String> getPlatforms() {
-        return platforms;
-    }
-
-    public void setPlatforms(List<String> platforms) {
-        this.platforms = platforms;
-    }
-
     public List<Long> getGenres() {
         return genres;
     }
@@ -151,19 +104,30 @@ public class Item extends BaseEntityModel {
         this.genres = genres;
     }
 
-    public Long getEntitlementDefId() {
-        return entitlementDefId;
-    }
-
-    public void setEntitlementDefId(Long entitlementDefId) {
-        this.entitlementDefId = entitlementDefId;
-    }
-
     public Long getDefaultOffer() {
         return defaultOffer;
     }
 
     public void setDefaultOffer(Long defaultOffer) {
         this.defaultOffer = defaultOffer;
+    }
+
+    public ItemRevision getActiveRevision() {
+        return activeRevision;
+    }
+
+    public void setActiveRevision(ItemRevision activeRevision) {
+        this.activeRevision = activeRevision;
+    }
+
+    @Override
+    @JsonIgnore
+    public Long getId() {
+        return itemId;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.itemId = id;
     }
 }

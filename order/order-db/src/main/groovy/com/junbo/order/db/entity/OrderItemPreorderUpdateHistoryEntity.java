@@ -28,7 +28,7 @@ public class OrderItemPreorderUpdateHistoryEntity {
     private String updateBeforeValue;
     private String updateAfterValue;
     private Date updatedTime;
-    private String updatedBy;
+    private Long updatedBy;
 
     @Id
     @Column(name = "ORDER_ITEM_PREORDER_UPDATE_HISTORY_ID")
@@ -105,13 +105,11 @@ public class OrderItemPreorderUpdateHistoryEntity {
     }
 
     @Column(name = "UPDATED_BY")
-    @NotEmpty(message = ValidationMessages.MISSING_VALUE)
-    @Length(max=128, message=ValidationMessages.TOO_LONG)
-    public String getUpdatedBy() {
+    public Long getUpdatedBy() {
         return updatedBy;
     }
 
-    public void setUpdatedBy(String updatedBy) {
+    public void setUpdatedBy(Long updatedBy) {
         this.updatedBy = updatedBy;
     }
 }

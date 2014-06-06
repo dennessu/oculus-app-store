@@ -5,29 +5,29 @@
  */
 package com.junbo.test.catalog.item;
 
-import com.junbo.test.catalog.ItemResource;
-import com.junbo.test.common.apihelper.catalog.ItemService;
-import com.junbo.test.common.apihelper.catalog.impl.ItemServiceImpl;
-import com.junbo.test.common.blueprint.Master;
-import com.junbo.test.common.libs.EnumHelper;
+import com.junbo.test.catalog.enums.CatalogItemType;
+import com.junbo.test.catalog.impl.ItemServiceImpl;
+import com.junbo.test.catalog.util.BaseTestClass;
+import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.common.libs.LogHelper;
+import com.junbo.test.catalog.ItemService;
 import com.junbo.test.common.property.*;
 
-import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.testng.Assert;
 
 /**
  * @author Jason
  * Time: 4/21/2014
  * For testing catalog delet item(s) API
  */
-public class TestDeleteItem {
+public class TestDeleteItem extends BaseTestClass {
 
-    private LogHelper logger = new LogHelper(TestGetItem.class);
+    private LogHelper logger = new LogHelper(TestDeleteItem.class);
 
     @Property(
             priority = Priority.Dailies,
-            features = "CatalogIntegration",
+            features = "Delete v1/items/{itemId}",
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
@@ -39,18 +39,17 @@ public class TestDeleteItem {
     )
     @Test
     public void testDeleteItem() throws Exception {
-
         ItemService itemService = ItemServiceImpl.instance();
+
         //Prepare an item
-        String itemId = itemService.postDefaultItem(EnumHelper.CatalogItemType.getRandom());
-        String invalidId = "000000000";
-        String itemRtnId;
+        Item item = itemService.postDefaultItem(CatalogItemType.getRandom());
+        Long invalidId = 0L;
 
-        ItemResource.instance().deleteItem(itemId);
+        itemService.deleteItem(item.getItemId());
 
-        //Expected status code is 404.
+        //Try to get the item, expected status code is 404.
         try {
-            itemRtnId = itemService.getItem(itemId, 404);
+            itemService.getItem(item.getItemId(), 404);
             Assert.fail("Couldn't find the deleted item");
         }
         catch (Exception ex)
@@ -58,9 +57,10 @@ public class TestDeleteItem {
         }
 
         //delete non-existing item
-        itemId = itemService.postDefaultItem(EnumHelper.CatalogItemType.getRandom());
-        ItemResource.instance().deleteItem(invalidId, 404);
-        itemRtnId = itemService.getItem(itemId);
-        Assert.assertNotNull(Master.getInstance().getItem(itemRtnId));
+        item = itemService.postDefaultItem(CatalogItemType.getRandom());
+        itemService.deleteItem(invalidId, 404);
+        item = itemService.getItem(item.getItemId());
+        Assert.assertNotNull(item);
     }
+
 }

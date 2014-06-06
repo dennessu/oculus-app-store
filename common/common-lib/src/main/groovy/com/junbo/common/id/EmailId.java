@@ -8,7 +8,7 @@ package com.junbo.common.id;
 /**
  * EmailId.
  */
-@IdResourcePath("/emails/{0}")
+@IdResourcePath(value = "/emails/{0}", regex = "/emails/(?<id>[0-9A-Z]+)")
 public class EmailId extends Id {
     public EmailId() {}
 

@@ -38,8 +38,9 @@ public class RestExceptionMapper implements ExceptionMapper<Exception>, Applicat
         }
 
         if ("true".equalsIgnoreCase(configService.getConfigValue("common.conf.debugMode"))) {
-            return ERRORS.internalServerError(exception.getMessage(), exception).exception().getResponse();
+            return ERRORS.internalServerError(exception).exception().getResponse();
         }
+
         return ERRORS.internalServerError().exception().getResponse();
     }
 
@@ -66,8 +67,8 @@ public class RestExceptionMapper implements ExceptionMapper<Exception>, Applicat
      */
     public interface Errors {
 
-        @ErrorDef(httpStatusCode = 500, code = "20001", description = "Internal Server Error : {0}. Exception : {1}.")
-        AppError internalServerError(String message, Exception e);
+        @ErrorDef(httpStatusCode = 500, code = "20001", description = "Internal Server Error. Exception: {0}.")
+        AppError internalServerError(Exception e);
 
         @ErrorDef(httpStatusCode = 500, code = "20001", description = "Internal Server Error.")
         AppError internalServerError();

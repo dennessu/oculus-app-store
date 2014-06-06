@@ -9,7 +9,7 @@ package com.junbo.common.id;
 /**
  * Created by minhao on 2/13/14.
  */
-@IdResourcePath("/opt-ins/{0}")
+@IdResourcePath(value = "/opt-ins/{0}", regex = "/opt-ins/(?<id>[0-9A-Z]+)")
 public class UserCommunicationId extends Id {
 
     public UserCommunicationId() {}

@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.spec.model.common;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -26,6 +27,7 @@ public class Image {
     @ApiModelProperty(position = 5, required = false, value = "The height of the image")
     private Integer height;
 
+    @JsonIgnore
     public String getId() {
         return id;
     }

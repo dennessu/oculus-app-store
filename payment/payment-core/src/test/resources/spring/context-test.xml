@@ -8,17 +8,32 @@
     <import resource="classpath*:spring/transaction.xml"/>
 
     <!-- fusion mock -->
+    <bean id="mockUserResource" class="com.junbo.payment.core.mock.MockUserResource"/>
     <bean id="mockPaymentProviderService" class="com.junbo.payment.core.mock.MockPaymentProviderServiceImpl"/>
     <bean id="mockProviderRoutingService" class="com.junbo.payment.core.mock.MockProviderRoutingServiceImpl"/>
     <bean id="mockWalletService" class="com.junbo.payment.core.mock.MockWalletServiceImpl"/>
     <!-- payment method serivce -->
     <bean id="mockPaymentInstrumentService" class="com.junbo.payment.core.impl.PaymentInstrumentServiceImpl">
         <property name="providerRoutingService" ref="mockProviderRoutingService"  />
+        <property name="userInfoFacade" ref="mockUserResource"/>
     </bean>
 
     <bean id="mockPaymentService" class="com.junbo.payment.core.impl.PaymentTransactionServiceImpl">
         <property name="providerRoutingService" ref="mockProviderRoutingService"  />
         <property name="paymentInstrumentService" ref="mockPaymentInstrumentService"  />
+        <property name="userInfoFacade" ref="mockUserResource"/>
+    </bean>
+
+    <bean id="mockAdyenProviderRoutingService" class="com.junbo.payment.core.mock.MockAdyenProviderRoutingServiceImpl"/>
+    <!-- payment method serivce -->
+    <bean id="mockAdyenPaymentInstrumentService" class="com.junbo.payment.core.impl.PaymentInstrumentServiceImpl">
+        <property name="providerRoutingService" ref="mockAdyenProviderRoutingService"  />
+        <property name="userInfoFacade" ref="mockUserResource"/>
+    </bean>
+    <bean id="mockAdyenPaymentService" class="com.junbo.payment.core.impl.PaymentTransactionServiceImpl">
+        <property name="providerRoutingService" ref="mockAdyenProviderRoutingService"  />
+        <property name="paymentInstrumentService" ref="mockAdyenPaymentInstrumentService"  />
+        <property name="userInfoFacade" ref="mockUserResource"/>
     </bean>
 
 </beans>

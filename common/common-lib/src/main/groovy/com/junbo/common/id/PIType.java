@@ -8,6 +8,7 @@ package com.junbo.common.id;
 
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -17,7 +18,8 @@ public enum PIType {
     CREDITCARD(0L),
     DIRECTDEBIT(1L),
     STOREDVALUE(2L),
-    PAYPAL(3L);
+    PAYPAL(3L),
+    OTHERS(4L);
 
     private final Long id;
     PIType(Long id){
@@ -39,5 +41,21 @@ public enum PIType {
     // This method can be used for reverse lookup purpose
     public static PIType get(Long id) {
         return (PIType)LOOKUP.get(id);
+    }
+
+    public static String allTypes() {
+        StringBuilder sb = new StringBuilder();
+        sb.append('[');
+
+        Iterator<PIType> iter = LOOKUP.values().iterator();
+        while (iter.hasNext()) {
+            sb.append(iter.next().name());
+            if (iter.hasNext()) {
+                sb.append('|');
+            }
+        }
+        sb.append(']');
+
+        return sb.toString();
     }
 }

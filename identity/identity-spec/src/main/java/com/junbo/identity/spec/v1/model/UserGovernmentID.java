@@ -5,18 +5,37 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
 /**
  * Created by liangfu on 4/26/14.
  */
 public class UserGovernmentID {
+    @ApiModelProperty(position = 1, required = true, value = "The user's government id.")
+    private String info;
 
-    private String value;
-
-    public String getValue() {
-        return value;
+    public String getInfo() {
+        return info;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserGovernmentID that = (UserGovernmentID) o;
+
+        if (info != null ? !info.equals(that.info) : that.info != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return info != null ? info.hashCode() : 0;
     }
 }

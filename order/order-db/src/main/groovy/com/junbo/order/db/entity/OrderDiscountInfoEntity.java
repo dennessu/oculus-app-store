@@ -7,7 +7,7 @@
 package com.junbo.order.db.entity;
 
 import com.junbo.order.db.ValidationMessages;
-import com.junbo.order.db.entity.enums.DiscountType;
+import com.junbo.order.spec.model.enums.DiscountType;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;

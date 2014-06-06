@@ -31,8 +31,11 @@ public class ItemRevisionMapper {
         entity.setStatus(model.getStatus());
         entity.setOwnerId(model.getOwnerId());
         entity.setTimestamp(model.getTimestamp());
+        entity.setHostItemIds(model.getIapHostItemIds());
         entity.setPayload(Utils.toJson(model));
-        entity.setRev(model.getRev()==null ? null : Integer.valueOf(model.getRev()));
+        entity.setCreatedBy(String.valueOf(model.getOwnerId()));
+        entity.setUpdatedBy(String.valueOf(model.getOwnerId()));
+        entity.setRev(model.getResourceAge());
     }
 
     public static ItemRevision toModel(ItemRevisionEntity entity) {
@@ -45,11 +48,10 @@ public class ItemRevisionMapper {
         model.setOwnerId(entity.getOwnerId());
         model.setRevisionId(entity.getRevisionId());
         model.setTimestamp(entity.getTimestamp());
-        model.setCreatedBy(entity.getCreatedBy());
+        model.setIapHostItemIds(entity.getHostItemIds());
         model.setCreatedTime(entity.getCreatedTime());
-        model.setUpdatedBy(entity.getUpdatedBy());
         model.setUpdatedTime(entity.getUpdatedTime());
-        model.setRev(entity.getRev().toString());
+        model.setResourceAge(entity.getRev());
         return model;
     }
 }

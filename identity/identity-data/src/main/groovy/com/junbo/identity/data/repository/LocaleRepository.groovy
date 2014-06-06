@@ -4,12 +4,13 @@ import com.junbo.common.enumid.LocaleId
 import com.junbo.identity.spec.v1.model.Locale
 import com.junbo.identity.spec.v1.option.list.LocaleListOptions
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.core.annotations.ReadMethod
+import com.junbo.sharding.dualwrite.annotations.ReadMethod
+import com.junbo.sharding.repo.BaseRepository
 
 /**
  * Created by minhao on 4/24/14.
  */
-public interface LocaleRepository extends IdentityBaseRepository<Locale, LocaleId> {
+public interface LocaleRepository extends BaseRepository<Locale, LocaleId> {
     @ReadMethod
-    Promise<List<Locale>> search(LocaleListOptions options)
+    Promise<List<Locale>> searchAll(Integer limit, Integer offset)
 }

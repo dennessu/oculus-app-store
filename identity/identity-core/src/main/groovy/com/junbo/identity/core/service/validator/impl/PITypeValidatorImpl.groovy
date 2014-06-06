@@ -1,15 +1,20 @@
 package com.junbo.identity.core.service.validator.impl
 
+import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.common.id.PITypeId
+import com.junbo.identity.common.util.JsonHelper
+import com.junbo.identity.common.util.ValidatorUtil
 import com.junbo.identity.core.service.validator.PITypeValidator
 import com.junbo.identity.data.repository.PITypeRepository
 import com.junbo.identity.spec.error.AppErrors
+import com.junbo.identity.spec.v1.model.LocaleName
 import com.junbo.identity.spec.v1.model.PIType
 import com.junbo.identity.spec.v1.option.list.PITypeListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.CollectionUtils
+import org.springframework.util.StringUtils
 
 /**
  * Created by haomin on 14-4-25.
@@ -19,9 +24,22 @@ class PITypeValidatorImpl implements PITypeValidator {
 
     private PITypeRepository piTypeRepository
 
+    private Integer minLocaleNameLength
+    private Integer maxLocaleNameLength
+
     @Required
     void setPiTypeRepository(PITypeRepository piTypeRepository) {
         this.piTypeRepository = piTypeRepository
+    }
+
+    @Required
+    void setMinLocaleNameLength(Integer minLocaleNameLength) {
+        this.minLocaleNameLength = minLocaleNameLength
+    }
+
+    @Required
+    void setMaxLocaleNameLength(Integer maxLocaleNameLength) {
+        this.maxLocaleNameLength = maxLocaleNameLength
     }
 
     @Override
@@ -55,9 +73,7 @@ class PITypeValidatorImpl implements PITypeValidator {
             throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
         }
 
-        return piTypeRepository.search(new PITypeListOptions(
-            typeCode: piType.typeCode
-        )).then { List<PIType> existing ->
+        return piTypeRepository.searchByTypeCode(piType.typeCode, Integer.MAX_VALUE, 0).then { List<PIType> existing ->
             if (!CollectionUtils.isEmpty(existing)) {
                 throw AppErrors.INSTANCE.fieldDuplicate('typeCode').exception()
             }
@@ -100,11 +116,38 @@ class PITypeValidatorImpl implements PITypeValidator {
             Enum.valueOf(com.junbo.common.id.PIType, piType.typeCode)
         }
         catch (IllegalArgumentException e) {
-            throw AppErrors.INSTANCE.fieldInvalid('typeCode', '[CREDITCARD, DIRECTDEBIT, WALLET, PAYPAL]').exception()
+            throw AppErrors.INSTANCE.fieldInvalid('typeCode', com.junbo.common.id.PIType.allTypes()).exception()
         }
         if (CollectionUtils.isEmpty(piType.locales)) {
             throw AppErrors.INSTANCE.fieldRequired('locales').exception()
         }
+        piType.locales.each { Map.Entry<String, JsonNode> entry ->
+            String key = entry.key
+            JsonNode value = entry.value
+
+            if (StringUtils.isEmpty(key)) {
+                throw AppErrors.INSTANCE.fieldRequired('locales.key').exception()
+            }
+            key = key.replace('_', '-')
+            if (!ValidatorUtil.isValidLocale(key)) {
+                throw AppErrors.INSTANCE.fieldInvalid('locales.key').exception()
+            }
+
+            if (value == null) {
+                throw AppErrors.INSTANCE.fieldInvalid('locales.value').exception()
+            }
+            LocaleName localeName = (LocaleName)JsonHelper.jsonNodeToObj(value, LocaleName)
+            if (localeName.description == null) {
+                throw AppErrors.INSTANCE.fieldInvalid('locales.value').exception()
+            }
+            if (localeName.description.length() < minLocaleNameLength) {
+                throw AppErrors.INSTANCE.fieldTooShort('locales.value', minLocaleNameLength).exception()
+            }
+            if (localeName.description.length() > maxLocaleNameLength) {
+                throw AppErrors.INSTANCE.fieldTooLong('locales.value', maxLocaleNameLength).exception()
+            }
+        }
+
         if (piType.capableOfRecurring == null) {
             throw AppErrors.INSTANCE.fieldRequired('capableOfRecurring').exception()
         }

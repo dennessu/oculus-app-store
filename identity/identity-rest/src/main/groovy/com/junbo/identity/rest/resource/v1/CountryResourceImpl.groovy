@@ -1,8 +1,9 @@
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.model.Results
-import com.junbo.identity.core.service.Created201Marker
+import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.CountryFilter
 import com.junbo.identity.core.service.validator.CountryValidator
 import com.junbo.identity.data.repository.CountryRepository
@@ -22,12 +23,10 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 @CompileStatic
 class CountryResourceImpl implements CountryResource {
+    private static final String IDENTITY_ADMIN_SCOPE = 'identity.admin'
 
     @Autowired
     private CountryRepository countryRepository
-
-    @Autowired
-    private Created201Marker created201Marker
 
     @Autowired
     private CountryFilter countryFilter
@@ -35,18 +34,21 @@ class CountryResourceImpl implements CountryResource {
     @Autowired
     private CountryValidator countryValidator
 
-
     @Override
     Promise<Country> create(Country country) {
         if (country == null) {
             throw new IllegalArgumentException('country is null')
         }
 
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
+        }
+
         country = countryFilter.filterForCreate(country)
 
         return countryValidator.validateForCreate(country).then {
             return countryRepository.create(country).then { Country newCountry ->
-                created201Marker.mark(newCountry.id)
+                Created201Marker.mark(newCountry.id)
 
                 newCountry = countryFilter.filterForGet(newCountry, null)
                 return Promise.pure(newCountry)
@@ -62,6 +64,10 @@ class CountryResourceImpl implements CountryResource {
 
         if (country == null) {
             throw new IllegalArgumentException('country is null')
+        }
+
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
         }
 
         return countryRepository.get(countryId).then { Country oldCountry ->
@@ -90,6 +96,10 @@ class CountryResourceImpl implements CountryResource {
             throw new IllegalArgumentException('country is null')
         }
 
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
+        }
+
         return countryRepository.get(countryId).then { Country oldCountry ->
             if (oldCountry == null) {
                 throw AppErrors.INSTANCE.countryNotFound(countryId).exception()
@@ -114,7 +124,7 @@ class CountryResourceImpl implements CountryResource {
         }
 
         return countryValidator.validateForGet(countryId).then {
-            countryRepository.get(countryId).then { Country newCountry ->
+            return countryRepository.get(countryId).then { Country newCountry ->
                 if (newCountry == null) {
                     throw AppErrors.INSTANCE.countryNotFound(countryId).exception()
                 }
@@ -132,7 +142,7 @@ class CountryResourceImpl implements CountryResource {
         }
 
         return countryValidator.validateForSearch(listOptions).then {
-            return countryRepository.search(listOptions).then { List<Country> countryList ->
+            return search(listOptions).then { List<Country> countryList ->
                 def result = new Results<Country>(items: [])
 
                 countryList.each { Country newCountry ->
@@ -154,8 +164,27 @@ class CountryResourceImpl implements CountryResource {
             throw new IllegalArgumentException('countryId is null')
         }
 
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
+        }
+
         return countryValidator.validateForGet(countryId).then {
             return countryRepository.delete(countryId)
+        }
+    }
+
+    private Promise<List<Country>> search(CountryListOptions countryListOptions) {
+        if (countryListOptions.currencyId != null && countryListOptions.localeId != null) {
+            return countryRepository.searchByDefaultCurrencyIdAndLocaleId(countryListOptions.currencyId,
+                    countryListOptions.localeId, countryListOptions.limit, countryListOptions.offset)
+        } else if (countryListOptions.currencyId != null) {
+            return countryRepository.searchByDefaultCurrencyId(countryListOptions.currencyId, countryListOptions.limit,
+                    countryListOptions.offset)
+        } else if (countryListOptions.localeId != null) {
+            return countryRepository.searchByDefaultLocaleId(countryListOptions.localeId, countryListOptions.limit,
+                    countryListOptions.offset)
+        } else {
+            return countryRepository.searchAll(countryListOptions.limit, countryListOptions.offset)
         }
     }
 }

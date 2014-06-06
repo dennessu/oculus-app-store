@@ -2,6 +2,7 @@ package com.junbo.identity.data.repository.impl.cloudant
 
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
+import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionId
 import com.junbo.identity.data.repository.UserSecurityQuestionRepository
 import com.junbo.identity.spec.v1.model.UserSecurityQuestion
@@ -57,9 +58,8 @@ class UserSecurityQuestionRepositoryCloudantImpl extends CloudantClient<UserSecu
     }
 
     @Override
-    Promise<List<UserSecurityQuestion>> search(UserSecurityQuestionListOptions getOption) {
-        def list = super.queryView('by_user_id', getOption.userId.value.toString(),
-                getOption.limit, getOption.offset, false)
+    Promise<List<UserSecurityQuestion>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+        def list = super.queryView('by_user_id', userId.toString(), limit, offset, false)
         return Promise.pure(list)
     }
 
@@ -73,7 +73,7 @@ class UserSecurityQuestionRepositoryCloudantImpl extends CloudantClient<UserSecu
         views: [
             'by_user_id': new CloudantViews.CloudantView(
                 map: 'function(doc) {' +
-                    '    emit(doc.userId.value.toString(), doc._id)' +
+                    '    emit(doc.userId, doc._id)' +
                     '}',
                 resultClass: String)
         ]

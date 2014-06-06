@@ -5,15 +5,18 @@
  */
 
 package com.junbo.rating.clientproxy.impl;
-import com.junbo.common.id.EntitlementDefinitionId;
+
+import com.junbo.common.id.ItemId;
 import com.junbo.common.id.UserId;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
-import com.junbo.entitlement.spec.resource.UserEntitlementResource;
+import com.junbo.entitlement.spec.resource.EntitlementResource;
 import com.junbo.rating.clientproxy.EntitlementGateway;
 import com.junbo.rating.common.util.Constants;
 import com.junbo.rating.spec.error.AppErrors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -23,36 +26,42 @@ import java.util.*;
  * Entitlement gateway.
  */
 public class EntitlementGatewayImpl implements EntitlementGateway {
+    private static final Logger LOGGER = LoggerFactory.getLogger(EntitlementGatewayImpl.class);
+
     @Autowired
-    @Qualifier("ratingUserEntitlementClient")
-    private UserEntitlementResource userEntitlementResource;
+    @Qualifier("ratingEntitlementClient")
+    private EntitlementResource entitlementResource;
 
     @Override
-    public Map<Long, Long> getEntitlements(Long userId, Set<Long> definitionIds) {
-        Set<EntitlementDefinitionId> entitlementDefinitionIds = new HashSet<>();
-        for (Long definitionId : definitionIds) {
-            entitlementDefinitionIds.add(new EntitlementDefinitionId(definitionId));
+    public Set<Long> getEntitlements(Long userId, Set<Long> itemIds) {
+        Set<ItemId> items = new HashSet<>();
+        for (Long itemId : itemIds) {
+            items.add(new ItemId(itemId));
         }
         EntitlementSearchParam param = new EntitlementSearchParam();
-        param.setDefinitionIds(entitlementDefinitionIds);
+        param.setUserId(new UserId(userId));
+        param.setItemIds(items);
 
         PageMetadata pagingOption = new PageMetadata();
         pagingOption.setStart(Constants.DEFAULT_PAGE_START);
         pagingOption.setCount(Constants.DEFAULT_PAGE_SIZE);
 
-        Map<Long, Long> result = new HashMap<>();
+        Set<Long> result = new HashSet<>();
         while(true) {
             List<Entitlement> entitlements = new ArrayList<Entitlement>();
             try {
                 entitlements.addAll(
-                        userEntitlementResource.getEntitlements(
-                                new UserId(userId), param, pagingOption).wrapped().get().getItems());
+                        entitlementResource.searchEntitlements(
+                                param, pagingOption).get().getItems());
             } catch (Exception e) {
+                LOGGER.error("Error occurred during calling [Entitlement] component.", e);
                 throw AppErrors.INSTANCE.entitlementGatewayError().exception();
             }
+
             for (Entitlement entitlement : entitlements) {
-                result.put(entitlement.getEntitlementDefinitionId(), entitlement.getEntitlementId());
+                result.add(entitlement.getItemId());
             }
+
             pagingOption.setStart(pagingOption.getStart() + Constants.DEFAULT_PAGE_SIZE);
             if (entitlements.size() < Constants.DEFAULT_PAGE_SIZE) {
                 break;

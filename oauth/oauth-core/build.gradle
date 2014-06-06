@@ -13,11 +13,12 @@ dependencies {
 
     compile(libraries.jersey_server)
 
-    compile(libraries.common_lib)
+    compile junboProject(':common-lib')
+    compile junboProject(':authorization-lib')
 
-    compile("com.nimbusds:nimbus-jose-jwt:2.22.1")
+    compile ("com.nimbusds:nimbus-jose-jwt:2.22.1")
 
-    compile project(':oauth-spec')
-    compile project(':oauth-db')
-    compile project(':oauth-clientproxy')
+    compile junboProject(':oauth-spec')
+    compile junboProject(':oauth-db')
+    compile junboProject(':oauth-clientproxy')
 }

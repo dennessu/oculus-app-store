@@ -2,7 +2,8 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPinId
-import com.junbo.identity.core.service.util.CipherHelper
+import com.junbo.identity.core.service.credential.CredentialHash
+import com.junbo.identity.core.service.credential.CredentialHashFactory
 import com.junbo.identity.core.service.validator.UserPinValidator
 import com.junbo.identity.data.repository.UserPinRepository
 import com.junbo.identity.data.repository.UserRepository
@@ -16,15 +17,19 @@ import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 
 /**
+ * Check user's pin minimum and maximum length
  * Created by liangfu on 3/31/14.
  */
 @CompileStatic
+@SuppressWarnings('UnnecessaryGetter')
 class UserPinValidatorImpl implements UserPinValidator {
-    private static final Integer SALT_LENGTH = 20
-
     private UserRepository userRepository
 
     private UserPinRepository userPinRepository
+
+    private CredentialHashFactory credentialHashFactory
+
+    private Integer currentCredentialVersion
 
     private Integer valueMinLength
     private Integer valueMaxLength
@@ -88,9 +93,16 @@ class UserPinValidatorImpl implements UserPinValidator {
             throw AppErrors.INSTANCE.fieldInvalid('active').exception()
         }
 
-        String salt = CipherHelper.generateCipherRandomStr(SALT_LENGTH)
-        String pepper = CipherHelper.generateCipherRandomStr(SALT_LENGTH)
-        userPin.setPinHash(CipherHelper.generateCipherHashV1(userPin.value, salt, pepper))
+        List<CredentialHash> credentialHashList = credentialHashFactory.getAllCredentialHash()
+        CredentialHash matched = credentialHashList.find { CredentialHash hash ->
+            return hash.handles(currentCredentialVersion)
+        }
+
+        if (matched == null) {
+            throw new IllegalStateException('No matched version: ' + currentCredentialVersion + ' for CredentialHash')
+        }
+
+        userPin.setPinHash(matched.hash(userPin.value))
         userPin.setUserId(userId)
         userPin.setActive(true)
 
@@ -107,22 +119,18 @@ class UserPinValidatorImpl implements UserPinValidator {
             return Promise.pure(null)
         }
 
-        userPinRepository.search(new UserPinListOptions(
-                userId: userId,
-                active: true
-        )).then { List<UserPin> userPinList ->
+        return userPinRepository.searchByUserIdAndActiveStatus(userId, true, Integer.MAX_VALUE,
+                0).then { List<UserPin> userPinList ->
             if (userPinList == null || userPinList.size() == 0 || userPinList.size() > 1) {
                 throw AppErrors.INSTANCE.userPinIncorrect().exception()
             }
 
-            String[] hashInfo = userPinList.get(0).pinHash.split(CipherHelper.COLON)
-            if (hashInfo.length != 4) {
-                throw AppErrors.INSTANCE.userPinIncorrect().exception()
+            List<CredentialHash> credentialHashList = credentialHashFactory.getAllCredentialHash()
+            CredentialHash matched = credentialHashList.find { CredentialHash hash ->
+                return hash.matches(oldPassword, userPinList.get(0).pinHash)
             }
-            String salt = hashInfo[1]
-            String pepper = hashInfo[2]
 
-            if (CipherHelper.generateCipherHashV1(oldPassword, salt, pepper) != userPinList.get(0).pinHash) {
+            if (matched == null) {
                 throw AppErrors.INSTANCE.userPinIncorrect().exception()
             }
             return Promise.pure(null)
@@ -161,6 +169,16 @@ class UserPinValidatorImpl implements UserPinValidator {
     @Required
     void setUserPinRepository(UserPinRepository userPinRepository) {
         this.userPinRepository = userPinRepository
+    }
+
+    @Required
+    void setCredentialHashFactory(CredentialHashFactory credentialHashFactory) {
+        this.credentialHashFactory = credentialHashFactory
+    }
+
+    @Required
+    void setCurrentCredentialVersion(Integer currentCredentialVersion) {
+        this.currentCredentialVersion = currentCredentialVersion
     }
 
     @Required

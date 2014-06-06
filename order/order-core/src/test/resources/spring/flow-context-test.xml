@@ -20,6 +20,11 @@
         <property name="facadeContainer" ref="mockFacadeContainer"/>
     </bean>
 
+    <bean id="mockSendEmailAction" class="com.junbo.order.core.impl.orderaction.SendEmailAction">
+        <property name="facadeContainer" ref="mockFacadeContainer"/>
+        <property name="orderServiceContextBuilder" ref="mockOrderServiceContextBuilder"/>
+    </bean>
+
     <bean id="mockImmediateSettleAction" class="com.junbo.order.core.impl.orderaction.ImmediateSettleAction">
         <property name="orderServiceContextBuilder" ref="mockOrderServiceContextBuilder"/>
         <property name="facadeContainer" ref="mockFacadeContainer"/>
@@ -33,6 +38,10 @@
         <property name="orderServiceContextBuilder" ref="mockOrderServiceContextBuilder"/>
     </bean>
 
+    <bean id="mockCancelOrderAction" class="com.junbo.order.core.impl.orderaction.CancelOrderAction">
+        <property name="orderInternalService" ref="mockOrderInternalService"/>
+    </bean>
+
     <bean id="mockValidatePaymentInstrumentsAction" class="com.junbo.order.core.impl.orderaction.ValidatePaymentInstrumentsAction">
         <property name="orderServiceContextBuilder" ref="mockOrderServiceContextBuilder"/>
     </bean>
@@ -40,7 +49,8 @@
     <bean id="mockOrderService" class="com.junbo.order.core.impl.order.OrderServiceImpl">
         <property name="facadeContainer" ref="mockFacadeContainer"/>
         <property name="flowExecutor" ref="flowExecutor"/>
-        <property name="orderRepository" ref="orderRepository"/>
+        <property name="orderRepository" ref="orderRepositoryFacade"/>
+        <property name="orderInternalService" ref="mockOrderInternalService"/>
     </bean>
 
     <bean id="mockFacadeContainer" class="com.junbo.order.clientproxy.FacadeContainer">
@@ -62,7 +72,6 @@
 
     <bean id="mockBillingFacade" class="com.junbo.order.clientproxy.billing.impl.BillingFacadeImpl">
         <property name="balanceResource" ref="mockBalanceResource"/>
-        <property name="shippingAddressResource" ref="mockShippingAddressResource"/>
     </bean>
 
     <bean id="mockRatingFacade" class="com.junbo.order.clientproxy.rating.impl.RatingFacadeImpl">

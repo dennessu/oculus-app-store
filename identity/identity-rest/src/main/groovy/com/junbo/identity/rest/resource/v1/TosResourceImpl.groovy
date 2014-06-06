@@ -5,10 +5,11 @@
  */
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.id.Id
 import com.junbo.common.id.TosId
 import com.junbo.common.model.Results
-import com.junbo.identity.core.service.Created201Marker
+import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.TosFilter
 import com.junbo.identity.core.service.validator.TosValidator
 import com.junbo.identity.data.repository.TosRepository
@@ -28,12 +29,10 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 @CompileStatic
 class TosResourceImpl implements TosResource {
+    private static final String IDENTITY_ADMIN_SCOPE = 'identity.admin'
 
     @Autowired
     private TosRepository tosRepository
-
-    @Autowired
-    private Created201Marker created201Marker
 
     @Autowired
     private TosFilter tosFilter
@@ -43,11 +42,15 @@ class TosResourceImpl implements TosResource {
 
     @Override
     Promise<Tos> create(Tos tos) {
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
+        }
+
         tos = tosFilter.filterForCreate(tos)
 
         return tosValidator.validateForCreate(tos).then {
-            tosRepository.create(tos).then { Tos newTos ->
-                created201Marker.mark((Id) newTos.id)
+            return tosRepository.create(tos).then { Tos newTos ->
+                Created201Marker.mark((Id) newTos.id)
 
                 newTos = tosFilter.filterForGet(newTos, null)
                 return Promise.pure(newTos)
@@ -62,7 +65,7 @@ class TosResourceImpl implements TosResource {
         }
 
         return tosValidator.validateForGet(tosId).then {
-            tosRepository.get(tosId).then { Tos newTos ->
+            return tosRepository.get(tosId).then { Tos newTos ->
                 if (newTos == null) {
                     throw AppErrors.INSTANCE.tosNotFound(tosId).exception()
                 }
@@ -75,9 +78,9 @@ class TosResourceImpl implements TosResource {
 
     @Override
     Promise<Results<Tos>> list(TosListOptions listOptions) {
-        tosValidator.validateForSearch(listOptions).then {
+        return tosValidator.validateForSearch(listOptions).then {
             def resultList = new Results<Tos>(items: [])
-            tosRepository.search(listOptions).then { List<Tos> newToses ->
+            return search(listOptions).then { List<Tos> newToses ->
                 if (newToses == null) {
                     return Promise.pure(resultList)
                 }
@@ -90,14 +93,14 @@ class TosResourceImpl implements TosResource {
                         resultList.items.add(newTos)
                     }
                 }
-            }
 
-            return Promise.pure(resultList)
+                return Promise.pure(resultList)
+            }
         }
     }
 
     @Override
-    Promise<Tos> put(TosId tosId, Tos tos) {
+    Promise<Tos> patch(TosId tosId, Tos tos) {
         if (tosId == null) {
             throw new IllegalArgumentException('tosId is null')
         }
@@ -106,24 +109,38 @@ class TosResourceImpl implements TosResource {
             throw new IllegalArgumentException('tos is null')
         }
 
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
+        }
+
         return tosRepository.get(tosId).then { Tos oldTos ->
             if (oldTos == null) {
                 throw AppErrors.INSTANCE.tosNotFound(tosId).exception()
             }
 
-            tos = tosFilter.filterForPut(tos, oldTos)
+            tos = tosFilter.filterForPatch(tos, oldTos)
 
-            tosRepository.update(tos).then { Tos newTos ->
-                newTos = tosFilter.filterForGet(newTos, null)
-                return Promise.pure(newTos)
+            return tosValidator.validateForUpdate(tosId, tos, oldTos).then {
+                return tosRepository.update(tos).then { Tos newTos ->
+                    newTos = tosFilter.filterForGet(newTos, null)
+                    return Promise.pure(newTos)
+                }
             }
         }
     }
 
     @Override
     Promise<Void> delete(TosId tosId) {
-        tosValidator.validateForGet(tosId).then {
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
+        }
+
+        return tosValidator.validateForGet(tosId).then {
             return tosRepository.delete(tosId)
         }
+    }
+
+    private Promise<List<Tos>> search(TosListOptions listOptions) {
+        return tosRepository.searchAll(listOptions.limit, listOptions.offset)
     }
 }

@@ -5,79 +5,85 @@
  */
 package com.junbo.test.buyerscenario;
 
-import com.junbo.billing.spec.model.ShippingAddress;
 import com.junbo.cart.spec.model.Cart;
 import com.junbo.cart.spec.model.item.OfferItem;
+import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.common.enumid.CountryId;
+import com.junbo.common.enumid.CurrencyId;
+import com.junbo.common.enumid.LocaleId;
+import com.junbo.common.id.ItemId;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.PaymentInstrumentId;
-import com.junbo.common.id.UserId;
-import com.junbo.identity.spec.v1.model.User;
+import com.junbo.common.model.Results;
+import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.order.spec.model.OrderItem;
-import com.junbo.payment.spec.model.Address;
-//import com.junbo.payment.spec.model.CreditCardRequest;
-import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.test.billing.apihelper.ShippingAddressService;
-import com.junbo.test.billing.apihelper.impl.ShippingAddressServiceImpl;
-import com.junbo.test.common.Entities.ShippingAddressInfo;
+import com.junbo.order.spec.model.PaymentInfo;
+import com.junbo.test.catalog.enums.CatalogItemType;
+import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
 import com.junbo.test.common.Utility.BaseTestDataProvider;
 
 import com.junbo.test.common.apihelper.cart.CartService;
 import com.junbo.test.common.apihelper.cart.impl.CartServiceImpl;
-import com.junbo.test.common.apihelper.catalog.ItemService;
-import com.junbo.test.common.apihelper.catalog.OfferService;
-import com.junbo.test.common.apihelper.catalog.impl.ItemServiceImpl;
-import com.junbo.test.common.apihelper.catalog.impl.OfferServiceImpl;
+import com.junbo.test.catalog.ItemService;
+import com.junbo.test.catalog.OfferService;
+import com.junbo.test.catalog.impl.ItemServiceImpl;
+import com.junbo.test.catalog.impl.OfferServiceImpl;
 import com.junbo.order.spec.model.Order;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
-import com.junbo.test.common.apihelper.order.OrderService;
-import com.junbo.test.common.apihelper.order.impl.OrderServiceImpl;
-
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
-import com.junbo.test.common.libs.EnumHelper;
-import com.junbo.test.common.libs.EnumHelper.UserStatus;
 import com.junbo.test.common.libs.IdConverter;
-import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.libs.RandomFactory;
+import com.junbo.test.entitlement.EntitlementService;
+import com.junbo.test.order.utility.OrderTestDataProvider;
 import com.junbo.test.payment.apihelper.PaymentService;
 import com.junbo.test.payment.apihelper.impl.PaymentServiceImpl;
+import com.junbo.test.payment.utility.PaymentTestDataProvider;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by Yunlong on 3/20/14.
  */
 public class BuyerTestDataProvider extends BaseTestDataProvider {
-    private UserService identityClient = UserServiceImpl.instance();
-    private ItemService itemClient = ItemServiceImpl.instance();
-    private OfferService offerClient = OfferServiceImpl.instance();
-    private CartService cartClient = CartServiceImpl.getInstance();
-    private OrderService orderClient = OrderServiceImpl.getInstance();
-    private PaymentService paymentClient = PaymentServiceImpl.getInstance();
-    private ShippingAddressService shippingClient = ShippingAddressServiceImpl.getInstance();
+    protected UserService identityClient = UserServiceImpl.instance();
+    protected ItemService itemClient = ItemServiceImpl.instance();
+    protected OfferService offerClient = OfferServiceImpl.instance();
+    protected CartService cartClient = CartServiceImpl.getInstance();
+    protected OrderTestDataProvider orderProvider = new OrderTestDataProvider();
+    protected PaymentService paymentClient = PaymentServiceImpl.getInstance();
+    protected PaymentTestDataProvider paymentProvider = new PaymentTestDataProvider();
 
     private LogHelper logger = new LogHelper(BuyerTestDataProvider.class);
-
 
     public BuyerTestDataProvider() {
     }
 
-    public String createUser(String email, String password, UserStatus status) throws Exception {
-        User userToPost = new User();
-        //userToPost.setUserName(email);
-        //userToPost.setPassword(password);
-        //userToPost.setStatus(status.getStatus());
-        logger.LogSample("Create a new user");
-        return identityClient.PostUser(userToPost);
+    public String getCreditCard(String uid) throws Exception {
+        List<String> paymentList = paymentClient.getPaymentInstrumentsByUserId(uid);
+        //missing filter payment type only for fraud test
+        if (paymentList.size() > 0) {
+            return paymentList.get(0);
+        } else return null;
     }
 
     public String createUser() throws Exception {
         return identityClient.PostUser();
+    }
+
+    public String createUser(String userName, String emailAddress) throws Exception {
+        List<String> userList = identityClient.GetUserByUserName(userName);
+        if (userList.size() > 0) {
+            return userList.get(0);
+        }
+
+        return identityClient.PostUser(userName, emailAddress);
     }
 
     public String getUserByUid(String userId) throws Exception {
@@ -85,85 +91,61 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
     }
 
     public String postDefaultItem() throws Exception {
-        return itemClient.postDefaultItem(EnumHelper.CatalogItemType.PHYSICAL);
+        Item item = itemClient.postDefaultItem(CatalogItemType.PHYSICAL);
+        return IdConverter.idLongToHexString(ItemId.class, item.getItemId());
     }
 
-    public String postDefaultOffer(EnumHelper.CatalogItemType itemType) throws Exception {
+    public String postDefaultOffer(CatalogItemType itemType) throws Exception {
         logger.LogSample("Post a offer");
-        return offerClient.postDefaultOffer(itemType);
+        Offer offer = offerClient.postDefaultOffer();
+        return IdConverter.idLongToHexString(OfferId.class, offer.getOfferId());
     }
 
-    public String postOffersToPrimaryCart(String uid, ArrayList<String> offers) throws Exception {
+    public String postOffersToPrimaryCart(String uid, boolean hasPhysicalGood, ArrayList<String> offers) throws Exception {
         String primaryCartId = cartClient.getCartPrimary(uid);
         Cart primaryCart = Master.getInstance().getCart(primaryCartId);
         List<OfferItem> offerItemList = new ArrayList<>();
-        List<String> couponItemList = new ArrayList<>();
         for (int i = 0; i < offers.size(); i++) {
             OfferItem offerItem = new OfferItem();
-            offerItem.setQuantity(RandomFactory.getRandomLong(1L, 5L));
-            offerItem.setSelected(true);
+            if (hasPhysicalGood) {
+                offerItem.setQuantity(RandomFactory.getRandomLong(1L, 5L));
+            } else {
+                offerItem.setQuantity(1L);
+            }
+            offerItem.setIsSelected(true);
             OfferId offerId = new OfferId(
                     IdConverter.hexStringToId(OfferId.class, offerClient.getOfferIdByName(offers.get(i))));
             offerItem.setOffer(offerId);
-
+            offerItem.setIsApproved(true);
             offerItemList.add(offerItem);
         }
         primaryCart.setOffers(offerItemList);
-        //primaryCart.setCouponCodes(couponItemList);
 
         Master.getInstance().addCart(primaryCartId, primaryCart);
         return cartClient.updateCart(uid, primaryCartId, primaryCart);
     }
 
-    public String postDefaultOffersToPrimaryCart(String uid, EnumHelper.CatalogItemType itemType) throws Exception {
+    public String postDefaultOffersToPrimaryCart(String uid, CatalogItemType itemType) throws Exception {
         String offerId = this.postDefaultOffer(itemType);
         //String offerId = IdConverter.idLongToHexString(OfferId.class, new OfferId(100001L).getValue());
         ArrayList<String> offerList = new ArrayList<>();
         offerList.add(offerId);
-        return this.postOffersToPrimaryCart(uid, offerList);
+        return this.postOffersToPrimaryCart(uid, false, offerList);
     }
 
-    public String mergeCart(String destinationUid, String sourceUid) throws Exception {
-        String sourceCartId = cartClient.getCartPrimary(sourceUid);
-        Cart sourceCart = Master.getInstance().getCart(sourceCartId);
-
-        String destinationCartId = cartClient.getCartPrimary(destinationUid);
-        //Cart destinationCart = Master.getInstance().getCart(destinationCartId);
-        logger.LogSample("Merge the carts");
-        return cartClient.mergeCart(destinationUid, destinationCartId, sourceCart);
+    public String postPaymentInstrument(String uid, PaymentInstrumentBase paymentInfo) throws Exception {
+        return paymentProvider.postPaymentInstrument(uid, paymentInfo);
     }
 
-    public String postCreditCardToUser(String uid, CreditCardInfo creditCardInfo) throws Exception {
-        PaymentInstrument paymentInstrument = new PaymentInstrument();
-        /*CreditCardRequest creditCardRequest = new CreditCardRequest();
-        //creditCardRequest.setType(creditCardInfo.getType().toString());
-        creditCardRequest.setExpireDate(creditCardInfo.getExpireDate());
-        creditCardRequest.setEncryptedCvmCode(creditCardInfo.getEncryptedCVMCode());*/
-
-        Address address = new Address();
-        address.setAddressLine1(creditCardInfo.getAddress().getAddressLine1());
-        address.setCity(creditCardInfo.getAddress().getCity());
-        address.setState(creditCardInfo.getAddress().getState());
-        address.setCountry(creditCardInfo.getAddress().getCountry());
-        address.setPostalCode(creditCardInfo.getAddress().getPostalCode());
-
-        ArrayList<Long> admins = new ArrayList<>();
-        admins.add(IdConverter.hexStringToId(UserId.class, uid));
-        paymentInstrument.setAdmins(admins);
-        paymentInstrument.setAccountName(creditCardInfo.getAccountName());
-        paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
-        //paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
-        paymentInstrument.setAddress(address);
-        /*paymentInstrument.setCreditCardRequest(creditCardRequest);
-        paymentInstrument.setIsValidated(creditCardInfo.isValidated());
-        paymentInstrument.setPhoneNum("650-253-0000");
-        paymentInstrument.setType(creditCardInfo.getType().toString());*/
-        paymentInstrument.setTrackingUuid(UUID.randomUUID());
-        logger.LogSample("Post a new credit card to user");
-        return paymentClient.postPaymentInstrument(paymentInstrument);
+    public void creditWallet(String uid) throws Exception {
+        paymentProvider.creditWallet(uid);
     }
 
-    public String postShippingAddressToUser(String uid, ShippingAddressInfo shippingAddressInfo) throws Exception {
+    public void creditWallet(String uid, BigDecimal amount) throws Exception {
+        paymentProvider.creditWallet(uid, amount);
+    }
+
+/*    public String postShippingAddressToUser(String uid, ShippingAddressInfo shippingAddressInfo) throws Exception {
         ShippingAddress shippingAddress = new ShippingAddress();
         shippingAddress.setStreet(shippingAddressInfo.getStreet());
         shippingAddress.setCity(shippingAddressInfo.getCity());
@@ -175,20 +157,33 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         shippingAddress.setPhoneNumber(shippingAddressInfo.getPhoneNumber());
         logger.LogSample("Post shipping address to user");
         return shippingClient.postShippingAddressToUser(uid, shippingAddress);
-    }
+    }*/
 
     public String postOrderByCartId(String uid, String cartId, Country country, Currency currency,
                                     String paymentInstrumentId) throws Exception {
         return postOrderByCartId(uid, cartId, country, currency, paymentInstrumentId, null);
     }
 
-    public String postOrderByCartId(String uid, String cartId, Country country, Currency currency,
-                                    String paymentInstrumentId, String shippingAddressId) throws Exception {
-        return this.postOrderByCartId(uid, cartId, country, currency, paymentInstrumentId, shippingAddressId, false);
+    public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
+                            boolean hasPhysicalGood, ArrayList<String> offers) throws Exception {
+
+        return this.postOrder(uid, country, currency, paymentInstrumentId, hasPhysicalGood, offers, 200);
+    }
+
+    public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
+                            boolean hasPhysicalGood, ArrayList<String> offers, int expectedResponseCode)
+            throws Exception {
+
+        return orderProvider.postOrder(uid, country, currency, paymentInstrumentId, hasPhysicalGood, offers, expectedResponseCode);
     }
 
     public String postOrderByCartId(String uid, String cartId, Country country, Currency currency,
-                                    String paymentInstrumentId, String shippingAddressId, boolean hasPhysicalGood)
+                                    String paymentInstrumentId, String shippingAddressId) throws Exception {
+        return this.postOrderByCartId(uid, cartId, country, currency, paymentInstrumentId, false);
+    }
+
+    public String postOrderByCartId(String uid, String cartId, Country country, Currency currency,
+                                    String paymentInstrumentId, boolean hasPhysicalGood)
             throws Exception {
         if (cartId == null) {
             cartId = cartClient.getCartPrimary(uid);
@@ -197,16 +192,15 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         Cart cart = Master.getInstance().getCart(cartId);
         Order order = new Order();
 
-        List<PaymentInstrumentId> paymentInstruments = new ArrayList<>();
-        paymentInstruments.add(new PaymentInstrumentId(
+        List<PaymentInfo> paymentInfos = new ArrayList<>();
+        PaymentInfo paymentInfo = new PaymentInfo();
+        paymentInfo.setPaymentInstrument(new PaymentInstrumentId(
                 IdConverter.hexStringToId(PaymentInstrumentId.class, paymentInstrumentId)));
+        paymentInfos.add(paymentInfo);
+        order.setPayments(paymentInfos);
         order.setUser(cart.getUser());
-        order.setCountry(country.toString());
-        order.setCurrency(currency.toString());
-        order.setPaymentInstruments(paymentInstruments);
-        if (shippingAddressId != null) {
-            order.setShippingAddress(Master.getInstance().getShippingAddress(shippingAddressId).getAddressId());
-        }
+        order.setCountry(new CountryId(country.toString()));
+        order.setCurrency(new CurrencyId(currency.toString()));
 
         List<OrderItem> orderItemList = new ArrayList<>();
         List<OfferItem> offerItemList = cart.getOffers();
@@ -220,21 +214,25 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         }
         if (hasPhysicalGood) {
             order.setShippingMethod(01L);
+            order.setShippingAddress(Master.getInstance().getUser(uid).getAddresses().get(0).getValue());
+            order.setShippingToName(Master.getInstance().getUser(uid).getName().getValue());
+            order.setShippingToPhone(Master.getInstance().getUser(uid).getPhones().get(0).getValue());
         }
         order.setOrderItems(orderItemList);
         order.setTentative(true);
-        order.setType("PAY_IN");
-        order.setLocale("en_US");
+
+        order.setLocale(new LocaleId("en_US"));
         logger.LogSample("Post an order");
-        return orderClient.postOrder(order);
+        return orderProvider.postOrder(order);
     }
 
 
     public String updateOrderTentative(String orderId, boolean isTentative) throws Exception {
-        Order order = Master.getInstance().getOrder(orderClient.getOrderByOrderId(orderId));
-        order.setTentative(isTentative);
-        logger.LogSample("Put an order");
-        return orderClient.updateOrder(order);
+        return this.updateOrderTentative(orderId, isTentative, 200);
+    }
+
+    public String updateOrderTentative(String orderId, boolean isTentative, int expectedResponseCode) throws Exception {
+        return orderProvider.updateOrderTentative(orderId, isTentative, expectedResponseCode);
     }
 
     public void emptyCartByCartId(String uid, String cartId) throws Exception {
@@ -245,4 +243,15 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         cartClient.updateCart(uid, cartId, new Cart());
     }
 
+    public String updateOrder(Order order) throws Exception {
+        return orderProvider.updateOrder(order);
+    }
+
+    public String getOrder(String orderId) throws Exception {
+        return orderProvider.getOrder(orderId);
+    }
+
+    public Results<Entitlement> getEntitlementByUserId(String uid) throws Exception {
+        return EntitlementService.getEntitlements(uid);
+    }
 }

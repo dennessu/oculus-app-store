@@ -1,8 +1,9 @@
 package com.junbo.identity.rest.resource.v1
 
-import com.junbo.common.id.DeviceTypeId
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.common.enumid.DeviceTypeId
 import com.junbo.common.model.Results
-import com.junbo.identity.core.service.Created201Marker
+import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.DeviceTypeFilter
 import com.junbo.identity.core.service.validator.DeviceTypeValidator
 import com.junbo.identity.data.repository.DeviceTypeRepository
@@ -20,12 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired
  */
 @CompileStatic
 class DeviceTypeResourceImpl implements DeviceTypeResource {
+    private static final String IDENTITY_ADMIN_SCOPE = 'identity.admin'
 
     @Autowired
     private DeviceTypeRepository deviceTypeRepository
-
-    @Autowired
-    private Created201Marker created201Marker
 
     @Autowired
     private DeviceTypeFilter deviceTypeFilter
@@ -39,11 +38,15 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
             throw new IllegalArgumentException('deviceType is null')
         }
 
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
+        }
+
         deviceType = deviceTypeFilter.filterForCreate(deviceType)
 
         return deviceTypeValidator.validateForCreate(deviceType).then {
             return deviceTypeRepository.create(deviceType).then { DeviceType newDeviceType ->
-                created201Marker.mark(newDeviceType.id)
+                Created201Marker.mark(newDeviceType.id)
 
                 newDeviceType = deviceTypeFilter.filterForGet(newDeviceType, null)
                 return Promise.pure(newDeviceType)
@@ -59,6 +62,10 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
 
         if (deviceType == null) {
             throw new IllegalArgumentException('country is null')
+        }
+
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
         }
 
         return deviceTypeRepository.get(deviceTypeId).then { DeviceType oldDeviceType ->
@@ -87,6 +94,10 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
             throw new IllegalArgumentException('deviceType is null')
         }
 
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
+        }
+
         return deviceTypeRepository.get(deviceTypeId).then { DeviceType oldDeviceType ->
             if (oldDeviceType == null) {
                 throw AppErrors.INSTANCE.deviceTypeNotFound(deviceTypeId).exception()
@@ -111,7 +122,7 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
         }
 
         return deviceTypeValidator.validateForGet(deviceTypeId).then {
-            deviceTypeRepository.get(deviceTypeId).then { DeviceType newDeviceType ->
+            return deviceTypeRepository.get(deviceTypeId).then { DeviceType newDeviceType ->
                 if (newDeviceType == null) {
                     throw AppErrors.INSTANCE.deviceTypeNotFound(deviceTypeId).exception()
                 }
@@ -129,7 +140,7 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
         }
 
         return deviceTypeValidator.validateForSearch(listOptions).then {
-            return deviceTypeRepository.search(listOptions).then { List<DeviceType> deviceTypeList ->
+            return search(listOptions).then { List<DeviceType> deviceTypeList ->
                 def result = new Results<DeviceType>(items: [])
 
                 deviceTypeList.each { DeviceType newDeviceType ->
@@ -151,8 +162,16 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
             throw new IllegalArgumentException('countryId is null')
         }
 
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
+        }
+
         return deviceTypeValidator.validateForGet(deviceTypeId).then {
             return deviceTypeRepository.delete(deviceTypeId)
         }
+    }
+
+    private Promise<List<DeviceType>> search(DeviceTypeListOptions listOptions) {
+        return deviceTypeRepository.searchAll(listOptions.limit, listOptions.offset)
     }
 }

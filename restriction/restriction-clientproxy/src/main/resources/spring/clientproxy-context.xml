@@ -4,35 +4,20 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <bean id="asyncHttpClient" class="com.ning.http.client.AsyncHttpClient" />
-
-    <bean id="pathParamTranscoder" class="com.junbo.common.json.IdPathParamTranscoder"/>
-    <bean id="transcoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
-    <bean id="queryParamTranscoder" class="com.junbo.common.json.QueryParamTranscoderImpl"/>
-
-    <bean id="restrictionIdentityUserClient" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy">
-        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
-        <constructor-arg name="transcoder" ref="commonTranscoder"/>
-        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
-        <constructor-arg name="target" value="${clientproxy.identity.url}"/>
+    <bean id="restrictionIdentityUserClient" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
     </bean>
 
-    <bean id="restrictionIdentityUserPersonalInfoClient" class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy">
-        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
-        <constructor-arg name="transcoder" ref="commonTranscoder"/>
-        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
-        <constructor-arg name="target" value="${clientproxy.identity.url}"/>
+    <bean id="restrictionIdentityUserPersonalInfoClient"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
     </bean>
 
 
-    <bean id="restrictionOfferClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy">
-        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
-        <constructor-arg name="transcoder" ref="commonTranscoder"/>
-        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
-        <constructor-arg name="target" value="${clientproxy.catalog.url}"/>
+    <bean id="restrictionOfferClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.catalog.url}"/>
     </bean>
 
     <bean id="catalogFacade" class="com.junbo.restriction.clientproxy.impl.CatalogFacadeImpl"/>

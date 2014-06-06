@@ -1,8 +1,9 @@
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.model.Results
-import com.junbo.identity.core.service.Created201Marker
+import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.LocaleFilter
 import com.junbo.identity.core.service.validator.LocaleValidator
 import com.junbo.identity.data.repository.LocaleRepository
@@ -22,11 +23,10 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 @CompileStatic
 class LocaleResourceImpl implements LocaleResource {
-    @Autowired
-    private LocaleRepository localeRepository
+    private static final String IDENTITY_ADMIN_SCOPE = 'identity.admin'
 
     @Autowired
-    private Created201Marker created201Marker
+    private LocaleRepository localeRepository
 
     @Autowired
     private LocaleFilter localeFilter
@@ -41,11 +41,15 @@ class LocaleResourceImpl implements LocaleResource {
             throw new IllegalArgumentException('locale is null')
         }
 
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
+        }
+
         locale = localeFilter.filterForCreate(locale)
 
         return localeValidator.validateForCreate(locale).then {
             return localeRepository.create(locale).then { Locale newLocale ->
-                created201Marker.mark(newLocale.id)
+                Created201Marker.mark(newLocale.id)
                 newLocale = localeFilter.filterForGet(newLocale, null)
                 return Promise.pure(newLocale)
             }
@@ -60,6 +64,10 @@ class LocaleResourceImpl implements LocaleResource {
 
         if (locale == null) {
             throw new IllegalArgumentException('locale is null')
+        }
+
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
         }
 
         return localeRepository.get(localeId).then { Locale oldLocale ->
@@ -88,6 +96,10 @@ class LocaleResourceImpl implements LocaleResource {
             throw new IllegalArgumentException('locale is null')
         }
 
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
+        }
+
         return localeRepository.get(localeId).then { Locale oldLocale ->
             if (oldLocale == null) {
                 throw AppErrors.INSTANCE.localeNotFound(localeId).exception()
@@ -111,7 +123,7 @@ class LocaleResourceImpl implements LocaleResource {
         }
 
         return localeValidator.validateForGet(localeId).then {
-            localeRepository.get(localeId).then { Locale newLocale ->
+            return localeRepository.get(localeId).then { Locale newLocale ->
                 if (newLocale == null) {
                     throw AppErrors.INSTANCE.localeNotFound(localeId).exception()
                 }
@@ -129,7 +141,7 @@ class LocaleResourceImpl implements LocaleResource {
         }
 
         return localeValidator.validateForSearch(listOptions).then {
-            return localeRepository.search(listOptions).then { List<Locale> localeList ->
+            return search(listOptions).then { List<Locale> localeList ->
                 def result = new Results<Locale>(items: [])
 
                 localeList.each { Locale newLocale ->
@@ -147,12 +159,20 @@ class LocaleResourceImpl implements LocaleResource {
 
     @Override
     Promise<Void> delete(LocaleId localeId) {
-        if (localeId != null) {
+        if (localeId == null) {
             throw new IllegalArgumentException('localeId is null')
+        }
+
+        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
+            throw AppErrors.INSTANCE.invalidAccess().exception()
         }
 
         return localeValidator.validateForGet(localeId).then {
             return localeRepository.delete(localeId)
         }
+    }
+
+    private Promise<List<Locale>> search(LocaleListOptions listOptions) {
+        return localeRepository.searchAll(listOptions.limit, listOptions.offset)
     }
 }

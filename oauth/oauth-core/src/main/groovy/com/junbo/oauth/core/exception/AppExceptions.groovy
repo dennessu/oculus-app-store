@@ -62,9 +62,6 @@ interface AppExceptions {
     @ErrorDef(httpStatusCode = 400, code = '20012', description = 'The display {0} is invalid', field = 'display')
     AppError invalidDisplay(String display)
 
-    @ErrorDef(httpStatusCode = 400, code = '20014', description = 'The login is required')
-    AppError loginRequired()
-
     @ErrorDef(httpStatusCode = 400, code = '20015', description = 'The response_type {0} is invalid',
             field = 'response_type')
     AppError invalidResponseType(String responseType)
@@ -91,8 +88,8 @@ interface AppExceptions {
     @ErrorDef(httpStatusCode = 400, code = '20021', description = 'The code parameter is missing', field = 'code')
     AppError missingCode()
 
-    @ErrorDef(httpStatusCode = 400, code = '20022', description = 'The username parameter is missing',
-            field = 'username')
+    @ErrorDef(httpStatusCode = 400, code = '20022', description = 'The login parameter is missing',
+            field = 'login')
     AppError missingUsername()
 
     @ErrorDef(httpStatusCode = 400, code = '20023', description = 'The password parameter is missing',
@@ -139,11 +136,11 @@ interface AppExceptions {
 
     @ErrorDef(httpStatusCode = 400, code = '20034', description = 'The access_token {0} is invalid',
             field = 'access_token')
-    AppError invalidAccessToken()
+    AppError invalidAccessToken(accessToken)
 
     @ErrorDef(httpStatusCode = 401, code = '20035', description = 'The access_token {0} is already expired',
             field = 'access_token')
-    AppError expiredAccessToken()
+    AppError expiredAccessToken(accessToken)
 
     @ErrorDef(httpStatusCode = 400, code = '20036', description = 'The Authorization header is missing',
             field = 'authorization')
@@ -238,23 +235,14 @@ interface AppExceptions {
     @ErrorDef(httpStatusCode = 400, code = '20055', description = 'cid is invalid', field = 'cid')
     AppError invalidCid()
 
-    @ErrorDef(httpStatusCode = 400, code = '20056', description = 'The nickname is missing', field = 'nickname')
-    AppError missingNickName()
-
     @ErrorDef(httpStatusCode = 400, code = '20057', description = 'The first name is missing', field = 'first_name')
     AppError missingFirstName()
 
     @ErrorDef(httpStatusCode = 400, code = '20058', description = 'The last name is missing', field = 'last_name')
     AppError missingLastName()
 
-    @ErrorDef(httpStatusCode = 400, code = '20059', description = 'The gender is missing', field = 'gender')
-    AppError missingGender()
-
     @ErrorDef(httpStatusCode = 400, code = '20060', description = 'The gender is invalid', field = 'gender')
     AppError invalidGender()
-
-    @ErrorDef(httpStatusCode = 400, code = '20061', description = 'The date of birth is missing', field = 'dob')
-    AppError missingDob()
 
     @ErrorDef(httpStatusCode = 400, code = '20062',
             description = 'The date of birth is invalid. Valid date format: YYYY-MM-DD', field = 'dob')
@@ -277,7 +265,7 @@ interface AppExceptions {
     AppError invalidRecaptcha(String message)
 
     @ErrorDef(httpStatusCode = 400, code = '20067',
-            description = 'The email verify code is missing', field = 'code')
+            description = 'The email verify code is missing', field = 'evc')
     AppError missingEmailVerifyCode()
 
     @ErrorDef(httpStatusCode = 400, code = '20068',
@@ -298,4 +286,67 @@ interface AppExceptions {
 
     @ErrorDef(httpStatusCode = 400, code = '20069', description = 'Invalid locale: {0}', field = 'locale')
     AppError invalidLocale(String locale)
+
+    @ErrorDef(httpStatusCode = 400, code = '20070',
+            description = 'The facebookAuth is missing', field = 'facebookAuth')
+    AppError missingFacebookAuth()
+
+    @ErrorDef(httpStatusCode = 400, code = '20071',
+            description = 'Invalid facebookAuth', field = 'facebookAuth')
+    AppError errorCallingFacebook()
+
+    @ErrorDef(httpStatusCode = 400, code = '20072',
+            description = 'The googleAuth is missing', field = 'googleAuth')
+    AppError missingGoogleAuth()
+
+    @ErrorDef(httpStatusCode = 400, code = '20073',
+            description = 'Invalid googleAuth', field = 'googleAuth')
+    AppError errorCallingGoogle()
+
+    @ErrorDef(httpStatusCode = 400, code = '20074', description = 'The state parameter is missing',
+            field = 'state')
+    AppError missingState()
+
+    @ErrorDef(httpStatusCode = 400, code = '20075', description = 'Missing user id')
+    AppError missingUserId()
+
+    @ErrorDef(httpStatusCode = 400, code = '20071', description = 'Invalid verification code')
+    AppError invalidVerificationCode()
+
+    @ErrorDef(httpStatusCode = 400, code = '20072',
+            description = 'The reset password code is missing', field = 'rpc')
+    AppError missingResetPasswordCode()
+
+    @ErrorDef(httpStatusCode = 400, code = '20073',
+            description = 'No account found with that email address.', field = 'email')
+    AppError noAccountFound()
+
+    @ErrorDef(httpStatusCode = 400, code = '20074', description = 'The login or username parameter is missing',
+            field = 'login or username')
+    AppError missingLoginOrUsername()
+
+    @ErrorDef(httpStatusCode = 400, code = '20075', description = 'There is no default email on user')
+    AppError missingDefaultUserEmail()
+
+    @ErrorDef(httpStatusCode = 404, code = '20076', description = 'Api definition {0} not found')
+    AppError apiDefinitionNotFound(String apiName)
+
+    @ErrorDef(httpStatusCode = 400, code = '20077', description = 'The pin parameter is missing',
+            field = 'pin')
+    AppError missingPin()
+
+    @ErrorDef(httpStatusCode = 400, code = '20078', description = 'The pin parameter is invalid',
+            field = 'pin')
+    AppError invalidPin()
+
+    @ErrorDef(httpStatusCode = 400, code = '20079', description = 'The {0} parameter is missing',
+            field = '{0}')
+    AppError missingParameter(String parameter)
+
+    @ErrorDef(httpStatusCode = 400, code = '20080', description = 'The {0} parameter is invalid',
+            field = '{0}')
+    AppError invalidParameter(String parameter)
+
+    @ErrorDef(httpStatusCode = 500, code = '20081', description = 'Error happened while calling the payment')
+    AppError errorCallingPayment()
 }

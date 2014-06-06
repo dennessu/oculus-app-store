@@ -7,8 +7,10 @@
 
     <context:component-scan base-package="com.junbo.oom.core.builtin"/>
     <context:component-scan base-package="com.junbo.order.db"/>
+
     <import resource="classpath*:spring/transaction.xml"/>
     <import resource="classpath*:spring/sharding-context.xml"/>
+    <import resource="classpath*:spring/dualwrite-context.xml"/>
 
     <bean id="orderDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${order.db.jdbcUrls}"/>
@@ -24,7 +26,6 @@
             </props>
         </property>
     </bean>
-
 
     <!-- SessonFactory for Hibernate -->
     <bean id="orderSessionFactory" class="com.junbo.sharding.hibernate.LocalSessionFactoryWithListenerBean">
@@ -72,6 +73,114 @@
     <bean id="orderViewQueryFactory" class="com.junbo.sharding.view.DefaultViewQueryFactory">
         <property name="entityViewRepository" ref="orderEntityViewRepository" />
         <property name="multimapDAO" ref="orderMultimapDAO" />
+    </bean>
+
+    <!-- cloudant repositories -->
+
+    <bean id="cloudantBillingHistoryRepository" class="com.junbo.order.db.repo.cloudant.BillingHistoryRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="order_billing_history"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="cloudantDiscountRepository" class="com.junbo.order.db.repo.cloudant.DiscountRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="order_discount"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="cloudantFulfillmentHistoryRepository" class="com.junbo.order.db.repo.cloudant.FulfillmentHistoryRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="order_fulfillment_history"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="cloudantOrderEventRepository" class="com.junbo.order.db.repo.cloudant.OrderEventRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="order_event"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="cloudantOrderItemRepository" class="com.junbo.order.db.repo.cloudant.OrderItemRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="order_item"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="cloudantOrderRepository" class="com.junbo.order.db.repo.cloudant.OrderRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="order"/>
+        <property name="idGenerator" ref="oculus40IdGenerator"/>
+    </bean>
+
+    <bean id="cloudantPreorderInfoRepository" class="com.junbo.order.db.repo.cloudant.PreorderInfoRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="order_preorder_info"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="cloudantSubledgerItemRepository" class="com.junbo.order.db.repo.cloudant.SubledgerItemRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="subledger_item"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="cloudantSubledgerRepository" class="com.junbo.order.db.repo.cloudant.SubledgerRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="subledger"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <!-- dual-write repositories -->
+
+    <bean id="billingHistoryRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.order.db.repo.BillingHistoryRepository"/>
+        <property name="cloudantRepositoryImpl" ref="cloudantBillingHistoryRepository" />
+        <property name="sqlRepositoryImpl" ref="sqlBillingHistoryRepository" />
+    </bean>
+
+    <bean id="discountRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.order.db.repo.DiscountRepository"/>
+        <property name="cloudantRepositoryImpl" ref="cloudantDiscountRepository" />
+        <property name="sqlRepositoryImpl" ref="sqlDiscountRepository" />
+    </bean>
+
+    <bean id="fulfillmentHistoryRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.order.db.repo.FulfillmentHistoryRepository"/>
+        <property name="cloudantRepositoryImpl" ref="cloudantFulfillmentHistoryRepository" />
+        <property name="sqlRepositoryImpl" ref="sqlFulfillmentHistoryRepository" />
+    </bean>
+
+    <bean id="orderEventRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.order.db.repo.OrderEventRepository"/>
+        <property name="cloudantRepositoryImpl" ref="cloudantOrderEventRepository" />
+        <property name="sqlRepositoryImpl" ref="sqlOrderEventRepository" />
+    </bean>
+
+    <bean id="orderItemRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.order.db.repo.OrderItemRepository"/>
+        <property name="cloudantRepositoryImpl" ref="cloudantOrderItemRepository" />
+        <property name="sqlRepositoryImpl" ref="sqlOrderItemRepository" />
+    </bean>
+
+    <bean id="orderRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.order.db.repo.OrderRepository"/>
+        <property name="cloudantRepositoryImpl" ref="cloudantOrderRepository" />
+        <property name="sqlRepositoryImpl" ref="sqlOrderRepository" />
+    </bean>
+
+    <bean id="preorderInfoRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.order.db.repo.PreorderInfoRepository"/>
+        <property name="cloudantRepositoryImpl" ref="cloudantPreorderInfoRepository" />
+        <property name="sqlRepositoryImpl" ref="sqlPreorderInfoRepository" />
+    </bean>
+
+    <bean id="subledgerItemRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.order.db.repo.SubledgerItemRepository"/>
+        <property name="cloudantRepositoryImpl" ref="cloudantSubledgerItemRepository" />
+        <property name="sqlRepositoryImpl" ref="sqlSubledgerItemRepository" />
+    </bean>
+
+    <bean id="subledgerRepository" parent="baseRepository" >
+        <property name="repositoryInterface" value="com.junbo.order.db.repo.SubledgerRepository"/>
+        <property name="cloudantRepositoryImpl" ref="cloudantSubledgerRepository" />
+        <property name="sqlRepositoryImpl" ref="sqlSubledgerRepository" />
+    </bean>
+
+    <bean id="subledgerRepositoryFacade" class="com.junbo.order.db.repo.facade.impl.SubledgerRepositoryFacadeImpl">
+        <property name="subledgerRepository" ref="subledgerRepository" />
+        <property name="subledgerItemRepository" ref="subledgerItemRepository" />
     </bean>
 
 </beans>

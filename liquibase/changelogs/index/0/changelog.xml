@@ -155,7 +155,7 @@
     <changeSet id="0.2" author='xmchen' context="PREDEPLOY">
         <sql><![CDATA[
         
-        create table balance_async_charge_status
+        create table balance_status
             (
               key character varying(255) NOT NULL,
               value bigint NOT NULL,
@@ -166,7 +166,7 @@
               deleted boolean NOT NULL
             );
             
-            create index idx_balance_async_charge_status on balance_async_charge_status(key, value);
+            create index idx_balance_status on balance_status(key, value);
 
         create table balance_tracking_uuid
             (

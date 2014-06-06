@@ -17,8 +17,6 @@ import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
 import javax.ws.rs.PathParam
-import javax.ws.rs.core.Context
-import javax.ws.rs.core.HttpHeaders
 
 /**
  * Created by chriszhu on 3/12/14.
@@ -47,11 +45,10 @@ class OrderEventResourceImpl implements OrderEventResource {
     }
 
     @Override
-    Promise<OrderEvent> createOrderEvent(OrderEvent orderEvent, @Context HttpHeaders headers) {
+    Promise<OrderEvent> createOrderEvent(OrderEvent orderEvent) {
         orderValidator.notNull(orderEvent, 'orderEvent').notNull(orderEvent.order, 'orderId')
-
         return orderService.updateOrderByOrderEvent(orderEvent).then { OrderEvent event ->
-            return Promise.pure(event)
+            return orderEventService.recordEventHistory(event)
         }
     }
 

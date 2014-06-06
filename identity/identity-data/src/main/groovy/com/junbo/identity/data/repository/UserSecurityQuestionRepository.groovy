@@ -5,18 +5,19 @@
  */
 package com.junbo.identity.data.repository
 
+import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionId
 import com.junbo.identity.spec.v1.model.UserSecurityQuestion
-import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionListOptions
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.core.annotations.ReadMethod
+import com.junbo.sharding.dualwrite.annotations.ReadMethod
+import com.junbo.sharding.repo.BaseRepository
 import groovy.transform.CompileStatic
 
 /**
  * Created by liangfu on 3/17/14.
  */
 @CompileStatic
-interface UserSecurityQuestionRepository extends IdentityBaseRepository<UserSecurityQuestion, UserSecurityQuestionId> {
+interface UserSecurityQuestionRepository extends BaseRepository<UserSecurityQuestion, UserSecurityQuestionId> {
     @ReadMethod
-    Promise<List<UserSecurityQuestion>> search(UserSecurityQuestionListOptions getOption)
+    Promise<List<UserSecurityQuestion>> searchByUserId(UserId userId, Integer limit, Integer offset)
 }

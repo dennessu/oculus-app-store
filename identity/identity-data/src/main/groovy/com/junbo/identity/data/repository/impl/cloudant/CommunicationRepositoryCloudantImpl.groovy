@@ -2,6 +2,8 @@ package com.junbo.identity.data.repository.impl.cloudant
 
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
+import com.junbo.common.enumid.CountryId
+import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.CommunicationId
 import com.junbo.identity.data.repository.CommunicationRepository
 import com.junbo.identity.spec.v1.model.Communication
@@ -30,8 +32,19 @@ class CommunicationRepositoryCloudantImpl extends CloudantClient<Communication> 
 
     @Override
     Promise<List<Communication>> search(CommunicationListOptions options) {
-        if (options.name != null) {
-            return Promise.pure(super.queryView('by_name', options.name))
+        if (options.region != null && options.translation != null) {
+            List list = super.queryView('by_region', options.region.value)
+            list.removeAll { Communication communication ->
+                return !communication.translations.contains(options.translation)
+            }
+
+            return Promise.pure(list)
+        }
+        if (options.region != null) {
+            return Promise.pure(super.queryView('by_region', options.region.value))
+        }
+        if (options.translation != null) {
+            return Promise.pure(super.queryView('by_translation', options.translation.value))
         }
 
         return Promise.pure(super.cloudantGetAll())
@@ -63,13 +76,61 @@ class CommunicationRepositoryCloudantImpl extends CloudantClient<Communication> 
         return Promise.pure(null)
     }
 
+    @Override
+    Promise<List<Communication>> searchByTranslation(LocaleId translation, Integer limit, Integer offset) {
+        def list = super.queryView('by_translation', translation.toString(), limit, offset, false)
+        return Promise.pure(list)
+    }
+
+    @Override
+    Promise<List<Communication>> searchByRegion(CountryId region, Integer limit, Integer offset) {
+        def list = super.queryView('by_region', region.toString(), limit, offset, false)
+        return Promise.pure(list)
+    }
+
+    @Override
+    Promise<List<Communication>> searchByRegionAndTranslation(CountryId region, LocaleId translation, Integer limit, Integer offset) {
+        def list = super.queryView('by_region_and_translation', "${region.value}:${translation.value}", limit, offset, false)
+        return Promise.pure(list)
+    }
+
+    @Override
+    Promise<List<Communication>> searchAll(Integer limit, Integer offset) {
+        // todo:    CloudantGetAll should support limit, offset and descending
+        return Promise.pure(super.cloudantGetAll())
+    }
+
     protected CloudantViews views = new CloudantViews(
-        views: [
-            'by_name': new CloudantViews.CloudantView(
-                map: 'function(doc) {' +
-                        '  emit(doc.name, doc._id)' +
-                        '}',
-                resultClass: String)
-        ]
+            views: [
+                    'by_region': new CloudantViews.CloudantView(
+                            map: 'function(doc) {' +
+                                    'if (doc.regions) {' +
+                                        'for (var i in doc.regions) {' +
+                                            'emit(doc.regions[i], doc._id)' +
+                                        '}' +
+                                    '}' +
+                                    '}',
+                            resultClass: String),
+                    'by_translation': new CloudantViews.CloudantView(
+                            map: 'function(doc) {' +
+                                    'if (doc.translations) {' +
+                                        'for (var i in doc.translations) {' +
+                                            'emit(doc.translations[i], doc._id)' +
+                                        '}' +
+                                    '}' +
+                                    '}',
+                            resultClass: String),
+                    'by_region_and_translation': new CloudantViews.CloudantView(
+                            map: 'function(doc) {' +
+                                    'if (doc.translations && doc.regions) {' +
+                                        'for (var i in doc.regions) {' +
+                                            'for (var j in doc.translations) {' +
+                                                'emit(doc.regions[i] + \':\' + doc.translations[j], doc._id)' +
+                                            '}' +
+                                        '}' +
+                                    '}' +
+                                    '}' ,
+                            resultClass: String)
+            ]
     )
 }

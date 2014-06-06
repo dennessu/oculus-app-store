@@ -43,5 +43,4 @@ public interface EmailResource {
     @DELETE
     @Path("/{id}")
     Promise<Response> deleteEmail(@PathParam("id") EmailId id);
-
 }

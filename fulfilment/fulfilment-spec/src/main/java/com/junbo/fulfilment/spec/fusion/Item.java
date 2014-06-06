@@ -5,7 +5,7 @@
  */
 package com.junbo.fulfilment.spec.fusion;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Item.
@@ -13,9 +13,7 @@ import java.math.BigDecimal;
 public class Item {
     private Long itemId;
     private String sku;
-
-    private BigDecimal storedValueAmount;
-    private String storedValueCurrency;
+    private List<EntitlementMeta> entitlementMetas;
 
     public Long getItemId() {
         return itemId;
@@ -33,19 +31,11 @@ public class Item {
         this.sku = sku;
     }
 
-    public BigDecimal getStoredValueAmount() {
-        return storedValueAmount;
+    public List<EntitlementMeta> getEntitlementMetas() {
+        return entitlementMetas;
     }
 
-    public void setStoredValueAmount(BigDecimal storedValueAmount) {
-        this.storedValueAmount = storedValueAmount;
-    }
-
-    public String getStoredValueCurrency() {
-        return storedValueCurrency;
-    }
-
-    public void setStoredValueCurrency(String storedValueCurrency) {
-        this.storedValueCurrency = storedValueCurrency;
+    public void setEntitlementMetas(List<EntitlementMeta> entitlementMetas) {
+        this.entitlementMetas = entitlementMetas;
     }
 }

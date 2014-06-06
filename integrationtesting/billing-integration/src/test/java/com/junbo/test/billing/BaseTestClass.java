@@ -7,8 +7,8 @@ package com.junbo.test.billing;
 
 import com.junbo.test.billing.utility.BillingTestDataProvider;
 import com.junbo.test.billing.utility.BillingValidationHelper;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Utility.TestClass;
-import com.junbo.test.common.libs.ConfigPropertiesHelper;
 
 /**
  * Created by Yunlong on 4/8/14.
@@ -28,10 +28,10 @@ public abstract class BaseTestClass extends TestClass {
     }
 
     private void loadOffers() {
-        offer_digital_normal1 = ConfigPropertiesHelper.instance().getProperty("testdata.offer.digital.normal1");
-        offer_digital_normal2 = ConfigPropertiesHelper.instance().getProperty("testdata.offer.digital.normal2");
-        offer_physical_normal1 = ConfigPropertiesHelper.instance().getProperty("testdata.offer.physical.normal1");
-        offer_physical_normal2 = ConfigPropertiesHelper.instance().getProperty("testdata.offer.physical.normal2");
+        offer_digital_normal1 = ConfigHelper.getSetting("testdata.offer.digital.normal1");
+        offer_digital_normal2 = ConfigHelper.getSetting("testdata.offer.digital.normal2");
+        offer_physical_normal1 = ConfigHelper.getSetting("testdata.offer.physical.normal1");
+        offer_physical_normal2 = ConfigHelper.getSetting("testdata.offer.physical.normal2");
     }
 
 }

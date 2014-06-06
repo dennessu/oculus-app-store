@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
+         updateCheck="true" monitoring="autodetect" dynamicConfig="true" name="authorizeCacheManager">
+
+    <diskStore path="java.io.tmpdir"/>
+
+    <cache name="TOKEN_INFO"
+           maxElementsInMemory="2000"
+           maxElementsOnDisk="0"
+           overflowToDisk="false"
+           memoryStoreEvictionPolicy="LRU"
+           eternal="false"
+           timeToLiveSeconds="3600"
+           timeToIdleSeconds="3600"/>
+
+    <cache name="API_DEFINITION"
+           maxElementsInMemory="2000"
+           maxElementsOnDisk="0"
+           overflowToDisk="false"
+           memoryStoreEvictionPolicy="LRU"
+           eternal="false"
+           timeToLiveSeconds="5"
+           timeToIdleSeconds="5"/>
+
+    <cache name="GROUP_IDS_BY_USER_ID"
+           maxElementsInMemory="200000"
+           maxElementsOnDisk="0"
+           overflowToDisk="false"
+           memoryStoreEvictionPolicy="LRU"
+           eternal="false"
+           timeToLiveSeconds="5"
+           timeToIdleSeconds="5"/>
+
+    <cache name="GROUP_ID_BY_NAME"
+           maxElementsInMemory="2000"
+           maxElementsOnDisk="0"
+           overflowToDisk="false"
+           memoryStoreEvictionPolicy="LRU"
+           eternal="false"
+           timeToLiveSeconds="5"
+           timeToIdleSeconds="5"/>
+
+    <cache name="ROLE"
+           maxElementsInMemory="2000"
+           maxElementsOnDisk="0"
+           overflowToDisk="false"
+           memoryStoreEvictionPolicy="LRU"
+           eternal="false"
+           timeToLiveSeconds="5"
+           timeToIdleSeconds="5"/>
+
+    <cache name="ROLE_ASSIGNMENT"
+           maxElementsInMemory="2000"
+           maxElementsOnDisk="0"
+           overflowToDisk="false"
+           memoryStoreEvictionPolicy="LRU"
+           eternal="false"
+           timeToLiveSeconds="5"
+           timeToIdleSeconds="5"/>
+</ehcache>

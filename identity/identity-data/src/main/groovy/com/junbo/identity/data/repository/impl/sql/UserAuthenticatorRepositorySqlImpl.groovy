@@ -6,6 +6,7 @@
 package com.junbo.identity.data.repository.impl.sql
 
 import com.junbo.common.id.UserAuthenticatorId
+import com.junbo.common.id.UserId
 import com.junbo.identity.data.dao.UserAuthenticatorDAO
 import com.junbo.identity.data.entity.user.UserAuthenticatorEntity
 import com.junbo.identity.data.mapper.ModelMapper
@@ -87,5 +88,35 @@ class UserAuthenticatorRepositorySqlImpl implements UserAuthenticatorRepository 
         authenticatorDAO.delete(id.value)
 
         return Promise.pure(null)
+    }
+
+    @Override
+    Promise<List<UserAuthenticator>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+        return null
+    }
+
+    @Override
+    Promise<List<UserAuthenticator>> searchByUserIdAndType(UserId userId, String type, Integer limit, Integer offset) {
+        return null
+    }
+
+    @Override
+    Promise<List<UserAuthenticator>> searchByExternalId(String externalId, Integer limit, Integer offset) {
+        return null
+    }
+
+    @Override
+    Promise<List<UserAuthenticator>> searchByUserIdAndTypeAndExternalId(UserId userId, String type, String externalId, Integer limit, Integer offset) {
+        return null
+    }
+
+    @Override
+    Promise<List<UserAuthenticator>> searchByUserIdAndExternalId(UserId userId, String externalId, Integer limit, Integer offset) {
+        return null
+    }
+
+    @Override
+    Promise<List<UserAuthenticator>> searchByExternalIdAndType(String externalId, String type, Integer limit, Integer offset) {
+        return null
     }
 }

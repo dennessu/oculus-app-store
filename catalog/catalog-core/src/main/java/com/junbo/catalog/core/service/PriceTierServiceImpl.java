@@ -15,7 +15,7 @@ import com.junbo.catalog.spec.model.pricetier.PriceTier;
 import com.junbo.catalog.spec.model.pricetier.PriceTiersGetOptions;
 import com.junbo.common.error.AppError;
 import com.junbo.common.id.PriceTierId;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -27,12 +27,20 @@ import java.util.List;
  * Price tier service implementation.
  */
 public class PriceTierServiceImpl implements PriceTierService {
-    @Autowired
     private PriceTierRepository priceTierRepo;
+
+    @Required
+    public void setPriceTierRepo(PriceTierRepository priceTierRepo) {
+        this.priceTierRepo = priceTierRepo;
+    }
 
     @Override
     public PriceTier getPriceTier(Long tierId) {
-        return priceTierRepo.get(tierId);
+        PriceTier priceTier = priceTierRepo.get(tierId);
+        if (priceTier==null) {
+            throw AppErrors.INSTANCE.notFound("price-tiers", Utils.encodeId(tierId)).exception();
+        }
+        return priceTier;
     }
 
     @Override
@@ -49,24 +57,21 @@ public class PriceTierServiceImpl implements PriceTierService {
             }
             return priceTiers;
         } else {
-            options.ensurePagingValid();
-            return priceTierRepo.getPriceTiers(options.getStart(), options.getSize());
+            return priceTierRepo.getPriceTiers(options.getValidStart(), options.getValidSize());
         }
     }
 
     @Override
     public PriceTier create(PriceTier priceTier) {
-        if (!StringUtils.isEmpty(priceTier.getRev())) {
+        if (priceTier.getResourceAge() != null) {
             throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
         }
-        Long attributeId = priceTierRepo.create(priceTier);
-        return priceTierRepo.get(attributeId);
+        return priceTierRepo.create(priceTier);
     }
 
     @Override
     public PriceTier update(Long tierId, PriceTier priceTier) {
-        priceTierRepo.update(priceTier);
-        return priceTierRepo.get(tierId);
+        return priceTierRepo.update(priceTier);
     }
 
     @Override
@@ -81,7 +86,7 @@ public class PriceTierServiceImpl implements PriceTierService {
     private void validateCreation(PriceTier priceTier) {
         checkRequestNotNull(priceTier);
         List<AppError> errors = new ArrayList<>();
-        if (!StringUtils.isEmpty(priceTier.getRev())) {
+        if (priceTier.getResourceAge() != null) {
             errors.add(AppErrors.INSTANCE.unnecessaryField("rev"));
         }
 
@@ -97,8 +102,9 @@ public class PriceTierServiceImpl implements PriceTierService {
         if (!oldPriceTier.getId().equals(priceTier.getId())) {
             errors.add(AppErrors.INSTANCE.fieldNotMatch("self.id", priceTier.getId(), oldPriceTier.getId()));
         }
-        if (!oldPriceTier.getRev().equals(priceTier.getRev())) {
-            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", priceTier.getRev(), oldPriceTier.getRev()));
+        if (!oldPriceTier.getResourceAge().equals(priceTier.getResourceAge())) {
+            errors.add(AppErrors.INSTANCE
+                    .fieldNotMatch("rev", priceTier.getResourceAge(), oldPriceTier.getResourceAge()));
         }
 
         validateCommon(priceTier, errors);
@@ -111,11 +117,19 @@ public class PriceTierServiceImpl implements PriceTierService {
         if (CollectionUtils.isEmpty(priceTier.getPrices())) {
             errors.add(AppErrors.INSTANCE.missingField("prices"));
         } else {
-            for (String currency : priceTier.getPrices().keySet()) {
-                if (priceTier.getPrices().get(currency) == null
-                        || priceTier.getPrices().get(currency).compareTo(BigDecimal.ZERO) <= 0) {
+            for (String country : priceTier.getPrices().keySet()) {
+                if (priceTier.getPrices().get(country) == null) {
                     errors.add(AppErrors.INSTANCE
-                            .fieldNotCorrect("prices." + currency, "Price amount should greater than 0"));
+                            .fieldNotCorrect("prices." + country, "Prices should be configured"));
+                } else {
+                    for (String currency : priceTier.getPrices().get(country).keySet()) {
+                        BigDecimal amount = priceTier.getPrices().get(country).get(currency);
+                        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+                            errors.add(AppErrors.INSTANCE
+                                    .fieldNotCorrect("prices." + country + "." + currency,
+                                            "Price amount should greater than 0"));
+                        }
+                    }
                 }
             }
         }

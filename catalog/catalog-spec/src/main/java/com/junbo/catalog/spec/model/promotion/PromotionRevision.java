@@ -9,6 +9,8 @@ package com.junbo.catalog.spec.model.promotion;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.BaseRevisionModel;
+import com.junbo.catalog.spec.model.promotion.criterion.Criterion;
+import com.junbo.common.jackson.annotation.CurrencyId;
 import com.junbo.common.jackson.annotation.PromotionId;
 import com.junbo.common.jackson.annotation.PromotionRevisionId;
 import com.junbo.common.jackson.annotation.UserId;
@@ -33,7 +35,10 @@ public class PromotionRevision extends BaseRevisionModel {
     private Long ownerId;
 
     private PromotionType type;
+
+    @CurrencyId
     private String currency;
+
     private Date startDate;
     private Date endDate;
 
@@ -115,6 +120,17 @@ public class PromotionRevision extends BaseRevisionModel {
 
     public boolean isEffective(Date current) {
         return startDate.before(current) && endDate.after(current);
+    }
+
+    @Override
+    @JsonIgnore
+    public Long getId() {
+        return revisionId;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.revisionId = id;
     }
 
     @Override

@@ -1,21 +1,24 @@
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.authorization.AuthorizeService
+import com.junbo.authorization.RightsScope
 import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
-import com.junbo.identity.core.service.Created201Marker
+import com.junbo.common.rs.Created201Marker
+import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserCredentialFilter
 import com.junbo.identity.core.service.validator.UserCredentialValidator
 import com.junbo.identity.data.identifiable.CredentialType
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.UserPasswordRepository
 import com.junbo.identity.data.repository.UserPinRepository
+import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.UserPin
 import com.junbo.identity.spec.v1.model.UserCredential
 import com.junbo.identity.spec.v1.option.list.UserCredentialListOptions
-import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
-import com.junbo.identity.spec.v1.option.list.UserPinListOptions
 import com.junbo.identity.spec.v1.resource.UserCredentialResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
@@ -37,9 +40,6 @@ class UserCredentialResourceImpl implements UserCredentialResource {
     private UserPinRepository userPinRepository
 
     @Autowired
-    private Created201Marker created201Marker
-
-    @Autowired
     private ModelMapper modelMapper
 
     @Autowired
@@ -47,6 +47,12 @@ class UserCredentialResourceImpl implements UserCredentialResource {
 
     @Autowired
     private UserCredentialValidator userCredentialValidator
+
+    @Autowired
+    private AuthorizeService authorizeService
+
+    @Autowired
+    private UserPropertyAuthorizeCallbackFactory authorizeCallbackFactory
 
     @Override
     Promise<UserCredential> create(UserId userId, UserCredential userCredential) {
@@ -57,61 +63,65 @@ class UserCredentialResourceImpl implements UserCredentialResource {
         if (userCredential == null) {
             throw new IllegalArgumentException('userCredential is null')
         }
-        userCredential = userCredentialFilter.filterForCreate(userCredential)
 
-        return userCredentialValidator.validateForCreate(userId, userCredential).then { Object obj ->
-            if (obj == null) {
-                throw new IllegalArgumentException('userCredential mapping exception')
+        def callback = authorizeCallbackFactory.create(userCredential.userId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('create')) {
+                throw AppErrors.INSTANCE.invalidAccess().exception()
             }
-            if (obj instanceof UserPassword) {
-                userPasswordRepository.search(new UserPasswordListOptions(
-                        userId: userId,
-                        active: true
-                )).then { List<UserPassword> passwordList ->
-                    passwordList.each { UserPassword userPassword ->
-                        userPassword.active = false
-                        userPasswordRepository.update(userPassword)
-                    }
+
+            userCredential = userCredentialFilter.filterForCreate(userCredential)
+
+            return userCredentialValidator.validateForCreate(userId, userCredential).then { Object obj ->
+                if (obj == null) {
+                    throw new IllegalArgumentException('userCredential mapping exception')
                 }
+                if (obj instanceof UserPassword) {
+                    return userPasswordRepository.searchByUserIdAndActiveStatus(userId, true, Integer.MAX_VALUE, 0).then {
+                        List<UserPassword> passwordList ->
+                            return Promise.each(passwordList) { UserPassword userPassword ->
+                                userPassword.active = false
+                                return userPasswordRepository.update(userPassword)
+                            }
+                    }.then {
+                        return userPasswordRepository.create((UserPassword) obj).then { UserPassword userPassword ->
+                            if (userPassword == null) {
+                                throw new RuntimeException('Create Password exception')
+                            }
 
-                return userPasswordRepository.create((UserPassword)obj).then { UserPassword userPassword ->
-                    if (userPassword == null) {
-                        throw new RuntimeException()
+                            UserCredential newUserCredential =
+                                    modelMapper.passwordToCredential(userPassword, new MappingContext())
+                            newUserCredential.type = CredentialType.PASSWORD.toString()
+                            Created201Marker.mark((Id) newUserCredential.id)
+
+                            newUserCredential = userCredentialFilter.filterForGet(newUserCredential, null)
+                            return Promise.pure(newUserCredential)
+                        }
                     }
+                } else if (obj instanceof UserPin) {
+                    return userPinRepository.searchByUserIdAndActiveStatus(userId, true, Integer.MAX_VALUE, 0).then {
+                        List<UserPin> pinList ->
+                            return Promise.each(pinList) { UserPin userPin ->
+                                userPin.active = false
+                                return userPinRepository.update(userPin)
+                            }
+                    }.then {
+                        return userPinRepository.create((UserPin) obj).then { UserPin userPin ->
+                            if (userPin == null) {
+                                throw new RuntimeException()
+                            }
 
-                    UserCredential newUserCredential =
-                            modelMapper.passwordToCredential(userPassword, new MappingContext())
-                    newUserCredential.type = CredentialType.PASSWORD.toString()
-                    created201Marker.mark((Id) newUserCredential.id)
+                            UserCredential newUserCredential = modelMapper.pinToCredential(userPin, new MappingContext())
+                            newUserCredential.type = CredentialType.PIN.toString()
+                            Created201Marker.mark((Id) newUserCredential.id)
 
-                    newUserCredential = userCredentialFilter.filterForGet(newUserCredential, null)
-                    return Promise.pure(newUserCredential)
-                }
-            } else if (obj instanceof UserPin) {
-                userPinRepository.search(new UserPinListOptions(
-                        userId: userId,
-                        active: true
-                )).then { List<UserPin> pinList ->
-                    pinList.each { UserPin userPin ->
-                        userPin.active = false
-                        userPinRepository.update(userPin)
+                            newUserCredential = userCredentialFilter.filterForGet(newUserCredential, null)
+                            return Promise.pure(newUserCredential)
+                        }
                     }
+                } else {
+                    throw new RuntimeException()
                 }
-
-                userPinRepository.create((UserPin)obj).then { UserPin userPin ->
-                    if (userPin == null) {
-                        throw new RuntimeException()
-                    }
-
-                    UserCredential newUserCredential = modelMapper.pinToCredential(userPin, new MappingContext())
-                    newUserCredential.type = CredentialType.PIN.toString()
-                    created201Marker.mark((Id) newUserCredential.id)
-
-                    newUserCredential = userCredentialFilter.filterForGet(newUserCredential, null)
-                    return Promise.pure(newUserCredential)
-                }
-            } else {
-                throw new RuntimeException()
             }
         }
     }
@@ -122,31 +132,34 @@ class UserCredentialResourceImpl implements UserCredentialResource {
         def resultList = new Results<UserCredential>(items: [])
         return userCredentialValidator.validateForSearch(userId, listOptions).then {
             if (listOptions.type == CredentialType.PASSWORD.toString()) {
-                UserPasswordListOptions options = new UserPasswordListOptions()
-                options.setUserId(listOptions.userId)
-                userPasswordRepository.search(options).then { List<UserPassword> userPasswordList ->
+                return userPasswordRepository.searchByUserId(listOptions.userId, listOptions.limit,
+                        listOptions.offset).then { List<UserPassword> userPasswordList ->
                     if (userPasswordList == null) {
                         return Promise.pure(resultList)
                     }
 
-                    userPasswordList.each { UserPassword userPassword ->
+                    return Promise.each(userPasswordList) { UserPassword userPassword ->
+                        def callback = authorizeCallbackFactory.create(userPassword.userId)
+                        return RightsScope.with(authorizeService.authorize(callback)) {
+                            UserCredential newUserCredential =
+                                    modelMapper.passwordToCredential(userPassword, new MappingContext())
+                            if (newUserCredential != null && AuthorizeContext.hasRights('read')) {
+                                newUserCredential.type = CredentialType.PASSWORD.toString()
+                                newUserCredential = userCredentialFilter.filterForGet(newUserCredential,
+                                        listOptions.properties?.split(',') as List<String>)
 
-                        UserCredential newUserCredential =
-                                modelMapper.passwordToCredential(userPassword, new MappingContext())
-                        if (newUserCredential != null) {
-                            newUserCredential.type = CredentialType.PASSWORD.toString()
-                            newUserCredential = userCredentialFilter.filterForGet(newUserCredential,
-                                    listOptions.properties?.split(',') as List<String>)
-
-                            resultList.items.add(newUserCredential)
+                                resultList.items.add(newUserCredential)
+                            }
+                            return Promise.pure(null)
                         }
+                    }.then {
+                        return Promise.pure(resultList)
                     }
-                    return Promise.pure(resultList)
+
                 }
             } else if (listOptions.type == CredentialType.PIN.toString()) {
-                UserPinListOptions options = new UserPinListOptions()
-                options.setUserId(listOptions.userId)
-                userPinRepository.search(options).then { List<UserPin> userPinList ->
+                return userPinRepository.searchByUserId(listOptions.userId, listOptions.limit,
+                        listOptions.offset).then { List<UserPin> userPinList ->
                     if (userPinList == null) {
                         return Promise.pure(userPinList)
                     }

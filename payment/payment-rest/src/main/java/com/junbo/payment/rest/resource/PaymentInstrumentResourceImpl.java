@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.GET;
-import javax.ws.rs.core.Response;
 import java.util.List;
 
 /**
@@ -49,9 +48,9 @@ public class PaymentInstrumentResourceImpl implements PaymentInstrumentResource 
     }
 
     @Override
-    public Promise<Response> delete(PaymentInstrumentId paymentInstrumentId) {
+    public Promise<Void> delete(PaymentInstrumentId paymentInstrumentId) {
         piService.delete(paymentInstrumentId.getValue());
-        return Promise.pure(Response.status(204).build());
+        return Promise.pure(null);
     }
 
     @Override
@@ -71,11 +70,16 @@ public class PaymentInstrumentResourceImpl implements PaymentInstrumentResource 
     @Override
     public Promise<Results<PaymentInstrument>> searchPaymentInstrument(
             @BeanParam PaymentInstrumentSearchParam searchParam, @BeanParam PageMetaData pageMetadata) {
-        List<PaymentInstrument> piRequests = piService.searchPi(searchParam.getUserId(), searchParam, pageMetadata);
-        Results<PaymentInstrument> result = new Results<PaymentInstrument>();
-        result.setItems(piRequests);
-        //result.setNext(CommonUtils.buildNextUrl(uriInfo));
-        return Promise.pure(result);
+        return piService.searchPi(searchParam.getUserId().getValue(), searchParam, pageMetadata)
+                .then(new Promise.Func<List<PaymentInstrument>, Promise<Results<PaymentInstrument>>>() {
+            @Override
+            public Promise<Results<PaymentInstrument>> apply(List<PaymentInstrument> paymentInstruments) {
+                Results<PaymentInstrument> result = new Results<PaymentInstrument>();
+                result.setItems(paymentInstruments);
+                //result.setNext(CommonUtils.buildNextUrl(uriInfo));
+                return Promise.pure(result);
+            }
+        });
     }
 
     @GET

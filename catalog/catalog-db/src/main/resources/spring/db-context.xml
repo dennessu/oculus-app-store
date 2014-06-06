@@ -2,16 +2,9 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
-
-    <import resource="classpath*:spring/common-context.xml"/>
-    <import resource="classpath*:spring/transaction.xml"/>
-    <import resource="classpath*:spring/sharding-context.xml"/>
-
-    <context:annotation-config/>
-    <tx:annotation-driven/>
-
-    <context:component-scan base-package="com.junbo.catalog.db"/>
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <bean id="catalogDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${catalog.db.jdbcUrls}"/>
@@ -73,9 +66,6 @@
     <bean id="offerRevisionDao" class="com.junbo.catalog.db.dao.impl.OfferRevisionDaoImpl" parent="catalogBaseDao">
         <property name="entityType" value="com.junbo.catalog.db.entity.OfferRevisionEntity"/>
     </bean>
-    <bean id="entitlementDefinitionDao" class="com.junbo.catalog.db.dao.impl.EntitlementDefinitionDaoImpl" parent="catalogBaseDao">
-        <property name="entityType" value="com.junbo.catalog.db.entity.EntitlementDefinitionEntity"/>
-    </bean>
 
     <bean id="itemAttributeDao" class="com.junbo.catalog.db.dao.impl.ItemAttributeDaoImpl" parent="catalogBaseDao">
         <property name="entityType" value="com.junbo.catalog.db.entity.ItemAttributeEntity"/>
@@ -86,21 +76,16 @@
     <bean id="priceTierDao" class="com.junbo.catalog.db.dao.impl.PriceTierDaoImpl" parent="catalogBaseDao">
         <property name="entityType" value="com.junbo.catalog.db.entity.PriceTierEntity"/>
     </bean>
-    <bean id="itemOfferRelationsDao" class="com.junbo.catalog.db.dao.impl.ItemOfferRelationsDaoImpl" parent="catalogBaseDao">
-        <property name="entityType" value="com.junbo.catalog.db.entity.ItemOfferRelationsEntity"/>
-    </bean>
 
     <!-- Repository -->
-    <bean id="itemRepository" class="com.junbo.catalog.db.repo.ItemRepository"/>
-    <bean id="itemRevisionRepository" class="com.junbo.catalog.db.repo.ItemRevisionRepository"/>
-    <bean id="offerRepository" class="com.junbo.catalog.db.repo.OfferRepository"/>
-    <bean id="offerRevisionRepository" class="com.junbo.catalog.db.repo.OfferRevisionRepository"/>
+    <bean id="itemRepository" class="com.junbo.catalog.db.repo.impl.sql.ItemRepositoryImpl"/>
+    <bean id="itemRevisionRepository" class="com.junbo.catalog.db.repo.impl.sql.ItemRevisionRepositoryImpl"/>
+    <bean id="offerRepository" class="com.junbo.catalog.db.repo.impl.sql.OfferRepositoryImpl"/>
+    <bean id="offerRevisionRepository" class="com.junbo.catalog.db.repo.impl.sql.OfferRevisionRepositoryImpl"/>
+    <bean id="itemAttributeRepository" class="com.junbo.catalog.db.repo.impl.sql.ItemAttributeRepositoryImpl"/>
+    <bean id="offerAttributeRepository" class="com.junbo.catalog.db.repo.impl.sql.OfferAttributeRepositoryImpl"/>
+    <bean id="priceTierRepository" class="com.junbo.catalog.db.repo.impl.sql.PriceTierRepositoryImpl"/>
+
     <bean id="promotionRevisionRepository" class="com.junbo.catalog.db.repo.PromotionRevisionRepository"/>
     <bean id="promotionRepository" class="com.junbo.catalog.db.repo.PromotionRepository"/>
-    <bean id="entitlementDefinitionRepository" class="com.junbo.catalog.db.repo.EntitlementDefinitionRepository"/>
-
-    <bean id="itemAttributeRepository" class="com.junbo.catalog.db.repo.ItemAttributeRepository"/>
-    <bean id="offerAttributeRepository" class="com.junbo.catalog.db.repo.OfferAttributeRepository"/>
-    <bean id="priceTierRepository" class="com.junbo.catalog.db.repo.PriceTierRepository"/>
-    <bean id="itemOfferRelationsRepository" class="com.junbo.catalog.db.repo.ItemOfferRelationsRepository"/>
 </beans>

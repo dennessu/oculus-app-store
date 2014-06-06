@@ -10,28 +10,33 @@ import com.junbo.catalog.spec.model.common.PageableGetOptions;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.OfferAttributeId;
 import com.junbo.common.id.OfferId;
+import com.junbo.common.id.UserId;
 
 import javax.ws.rs.QueryParam;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Offers get options.
  */
 public class OffersGetOptions extends PageableGetOptions {
     @QueryParam("offerId")
-    private List<OfferId> offerIds;
+    private Set<OfferId> offerIds;
     @QueryParam("published")
     private Boolean published;
-    @QueryParam("category")
+    @QueryParam("categoryId")
     private OfferAttributeId category;
     @QueryParam("itemId")
     private ItemId itemId;
+    @QueryParam("publisherId")
+    private UserId ownerId;
+    @QueryParam("q")
+    private String query;
 
-    public List<OfferId> getOfferIds() {
+    public Set<OfferId> getOfferIds() {
         return offerIds;
     }
 
-    public void setOfferIds(List<OfferId> offerIds) {
+    public void setOfferIds(Set<OfferId> offerIds) {
         this.offerIds = offerIds;
     }
 
@@ -57,5 +62,21 @@ public class OffersGetOptions extends PageableGetOptions {
 
     public void setItemId(ItemId itemId) {
         this.itemId = itemId;
+    }
+
+    public UserId getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(UserId ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
     }
 }

@@ -31,4 +31,8 @@ public class TransactionRepository {
     public Transaction getByTrackingUuid(Long shardMasterId, UUID uuid) {
         return mapper.toTransaction(transactionDao.getByTrackingUuid(shardMasterId, uuid));
     }
+
+    public Transaction get(long transactionId) {
+        return mapper.toTransaction(transactionDao.get(transactionId));
+    }
 }

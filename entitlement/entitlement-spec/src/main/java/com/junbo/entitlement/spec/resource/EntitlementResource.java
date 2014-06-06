@@ -7,13 +7,12 @@
 package com.junbo.entitlement.spec.resource;
 
 import com.junbo.common.id.EntitlementId;
-import com.junbo.common.id.ItemId;
-import com.junbo.common.id.UserId;
 import com.junbo.common.model.Results;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.EntitlementTransfer;
 import com.junbo.entitlement.spec.model.PageMetadata;
+import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
@@ -31,6 +30,7 @@ import javax.ws.rs.core.Response;
 @Path("/entitlements")
 @Produces({MediaType.APPLICATION_JSON})
 @RestResource
+@InProcessCallable
 public interface EntitlementResource {
     @ApiOperation("Get an entitlement by id")
     @GET
@@ -59,24 +59,9 @@ public interface EntitlementResource {
     @GET
     Promise<Results<Entitlement>> searchEntitlements(@BeanParam EntitlementSearchParam searchParam,
                                                      @BeanParam PageMetadata pageMetadata);
+
     @POST
     @Path("/transfer")
     @Consumes({MediaType.APPLICATION_JSON})
     Promise<Entitlement> transferEntitlement(@Valid EntitlementTransfer entitlementTransfer);
-
-    @GET
-    @Path("/developer/{userId}")
-    Promise<Boolean> isDeveloper(@PathParam("userId") UserId userId);
-
-    @POST
-    @Path("/developer/{userId}")
-    Promise<Entitlement> grantDeveloperEntitlement(@PathParam("userId") UserId userId);
-
-    @GET
-    @Path("/download/{userId}/{itemId}")
-    Promise<Boolean> canDownload(@PathParam("userId") UserId userId, @PathParam("itemId") ItemId itemId);
-
-    @GET
-    @Path("/access/{userId}/{itemId}")
-    Promise<Boolean> canAccess(@PathParam("userId") UserId userId, @PathParam("itemId") ItemId itemId);
 }

@@ -5,18 +5,16 @@
  */
 
 package com.junbo.order.core.impl.order
-
 import com.junbo.billing.spec.model.Balance
-import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.common.id.OfferId
-import com.junbo.common.id.PaymentInstrumentId
+import com.junbo.identity.spec.v1.model.Address
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.clientproxy.model.OrderOfferRevision
-import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.OrderItem
+import com.junbo.order.spec.model.PaymentInfo
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -35,8 +33,6 @@ import org.springframework.util.CollectionUtils
 class OrderServiceContextBuilder {
 
     @Autowired
-    OrderRepository orderRepository
-    @Autowired
     @Qualifier('orderFacadeContainer')
     FacadeContainer facadeContainer
 
@@ -51,16 +47,16 @@ class OrderServiceContextBuilder {
             return Promise.pure(context.paymentInstruments)
         }
 
-        List<PaymentInstrumentId> piids = context.order.paymentInstruments
+        List<PaymentInfo> payments = context.order.payments
 
-        if (piids == null || piids.isEmpty()) {
+        if (payments == null || payments.isEmpty()) {
             return Promise.pure(null)
         }
 
         List<PaymentInstrument> pis = []
-        return Promise.each(piids.iterator()) { PaymentInstrumentId piid ->
-            facadeContainer.paymentFacade.
-                    getPaymentInstrument(piid.value).syncRecover { Throwable throwable ->
+        return Promise.each(payments) { PaymentInfo paymentInfo ->
+            return facadeContainer.paymentFacade.
+                    getPaymentInstrument(paymentInfo.paymentInstrument.value).syncRecover { Throwable throwable ->
                 LOGGER.error('name=Order_GetPaymentInstrument_Error', throwable)
                 // TODO read the payment error
                 throw AppErrors.INSTANCE.paymentConnectionError().exception()
@@ -89,13 +85,13 @@ class OrderServiceContextBuilder {
             return Promise.pure(null)
         }
         return facadeContainer.billingFacade.getBalancesByOrderId(
-                context.order.id.value).syncThen { List<Balance> bas ->
+                context.order.getId().value).syncThen { List<Balance> bas ->
             context.balances = bas
             return bas
         }
     }
 
-    Promise<ShippingAddress> getShippingAddress(OrderServiceContext context) {
+    Promise<Address> getShippingAddress(OrderServiceContext context) {
         if (context == null || context.order == null || context.order.shippingAddress == null) {
             return Promise.pure(null)
         }
@@ -106,15 +102,15 @@ class OrderServiceContextBuilder {
         return refreshShippingAddress(context)
     }
 
-    Promise<ShippingAddress> refreshShippingAddress(OrderServiceContext context) {
+    Promise<Address> refreshShippingAddress(OrderServiceContext context) {
 
         if (context == null || context.order == null || context.order.shippingAddress == null) {
             return Promise.pure(null)
         }
-        return facadeContainer.billingFacade.getShippingAddress(
-                context.order.user.value, context.order.shippingAddress.value).syncThen { ShippingAddress sa ->
-            context.shippingAddress = sa
-            return sa
+        return facadeContainer.identityFacade.getAddress(context.order.shippingAddress.value).syncThen {
+            Address address ->
+            context.shippingAddress = address
+            return address
         }
     }
 
@@ -144,8 +140,8 @@ class OrderServiceContextBuilder {
         }
 
         List<OrderOfferRevision> offers = []
-        return Promise.each(context.order.orderItems.iterator()) { OrderItem oi ->
-            facadeContainer.catalogFacade.getOfferRevision(oi.offer.value).syncThen { OrderOfferRevision of ->
+        return Promise.each(context.order.orderItems) { OrderItem oi ->
+            return facadeContainer.catalogFacade.getOfferRevision(oi.offer.value).syncThen { OrderOfferRevision of ->
                 offers << of
             }
         }.syncThen {

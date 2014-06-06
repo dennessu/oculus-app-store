@@ -7,12 +7,13 @@
   <link rel="stylesheet" href="css/bootstrap.min.css"/>
 </head>
 <body>
-<div id="container" style="width:1000px; margin:0 auto;">
+<div id="container" style="width:1000px; margin:0 auto;" class="box">
   <ul class="menu" ng-controller="DeveloperInfoCtrl">
-    <li ng-show="email">{{ email }}</li>
-    <li ng-show="email" ng><a ng-click="Logout()" style="cursor: pointer;">Logout</a></li>
-    <li><a href="#/offers">Offers</a></li>
+    <li ng-if="email">{{ email }}</li>
+    <li ng-show="email"><a ng-click="Logout()" style="cursor: pointer;">Logout</a></li>
+    <li ng-show="!email"><a ng-click="Login()" style="cursor: pointer;">Login</a></li>
     <li><a href="#/items">Items</a></li>
+    <li><a href="#/offers">Offers</a></li>
   </ul>
 
   <div ng-view></div>

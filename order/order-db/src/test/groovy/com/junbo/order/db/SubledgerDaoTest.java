@@ -10,7 +10,7 @@ import com.junbo.common.id.SubledgerId;
 import com.junbo.order.db.common.TestHelper;
 import com.junbo.order.db.dao.SubledgerDao;
 import com.junbo.order.db.entity.SubledgerEntity;
-import com.junbo.order.db.entity.enums.PayoutStatus;
+import com.junbo.order.spec.model.enums.PayoutStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -41,7 +41,7 @@ public class SubledgerDaoTest extends BaseTest {
         SubledgerEntity entity = TestHelper.generateSubledgerEntity();
         entity.setSubledgerId(idGenerator.nextId(SubledgerId.class));
         Long id = subledgerDao.create(entity);
-        entity.setUpdatedBy("ANOTHER");
+        entity.setUpdatedBy(123L);
         subledgerDao.update(entity);
         SubledgerEntity returnedEntity = subledgerDao.read(id);
 

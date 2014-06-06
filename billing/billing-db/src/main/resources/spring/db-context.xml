@@ -62,12 +62,6 @@
         <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
 
-    <bean id="shippingAddressEntityDao"
-          class="com.junbo.billing.db.dao.impl.ShippingAddressEntityDaoImpl" parent="billingBaseDao" />
-
-    <bean id="billingCurrencyEntityDao"
-          class="com.junbo.billing.db.dao.impl.CurrencyEntityDaoImpl" parent="billingBaseDao" />
-
     <bean id="balanceEntityDao"
           class="com.junbo.billing.db.dao.impl.BalanceEntityDaoImpl" parent="billingBaseDao" />
 
@@ -96,16 +90,14 @@
     <bean id="billingCommonMapper" class="com.junbo.billing.db.mapper.CommonMapper" />
 
     <!--repository-->
-    <bean id="shippingAddressRepository" class="com.junbo.billing.db.repository.ShippingAddressRepositoryImpl"/>
     <bean id="balanceRepository" class="com.junbo.billing.db.repository.BalanceRepositoryImpl"/>
-    <bean id="billingCurrencyRepository" class="com.junbo.billing.db.repository.CurrencyRepositoryImpl"/>
     <bean id="billingTransactionRepository" class="com.junbo.billing.db.repository.TransactionRepositoryImpl"/>
 
     <!--INDEX VIEW-->
     <bean id="billingEntityViewRepository" class="com.junbo.sharding.view.DefaultEntityViewRepository">
         <property name="entityViews">
             <list>
-                <bean class="com.junbo.billing.db.view.BalanceAsyncChargeStatusView" />
+                <bean class="com.junbo.billing.db.view.BalanceStatusView" />
                 <bean class="com.junbo.billing.db.view.BalanceTrackingUuidView" />
             </list>
         </property>

@@ -5,26 +5,33 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
 /**
  * Created by liangfu on 4/26/14.
  */
 public class UserName {
-    private String firstName;
+    @ApiModelProperty(position = 1, required = true, value = "The full name, or at least as much of it as we know.")
+    private String fullName;
 
+    @ApiModelProperty(position = 2, required = false, value = "[Nullable] Null or the given name.")
+    private String givenName;
+
+    @ApiModelProperty(position = 3, required = false, value = "[Nullable] Null or the middle name or perhaps the first letter of the middle name (middle initial).")
     private String middleName;
 
-    private String lastName;
+    @ApiModelProperty(position = 4, required = false, value = "[Nullable] Null or the family name.")
+    private String familyName;
 
+    @ApiModelProperty(position = 5, required = false, value = "[Nullable] Null or the preferred-name / nick-name.")
     private String nickName;
 
-    private String displayName;
-
-    public String getFirstName() {
-        return firstName;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getMiddleName() {
@@ -35,14 +42,6 @@ public class UserName {
         this.middleName = middleName;
     }
 
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
     public String getNickName() {
         return nickName;
     }
@@ -51,11 +50,41 @@ public class UserName {
         this.nickName = nickName;
     }
 
-    public String getDisplayName() {
-        return displayName;
+    public String getGivenName() {
+        return givenName;
     }
 
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
+    public void setGivenName(String givenName) {
+        this.givenName = givenName;
+    }
+
+    public String getFamilyName() {
+        return familyName;
+    }
+
+    public void setFamilyName(String familyName) {
+        this.familyName = familyName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserName userName = (UserName) o;
+
+        if (fullName != null ? !fullName.equals(userName.fullName) : userName.fullName != null) return false;
+        if (middleName != null ? !middleName.equals(userName.middleName) : userName.middleName != null) return false;
+        if (nickName != null ? !nickName.equals(userName.nickName) : userName.nickName != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = fullName != null ? fullName.hashCode() : 0;
+        result = 31 * result + (middleName != null ? middleName.hashCode() : 0);
+        result = 31 * result + (nickName != null ? nickName.hashCode() : 0);
+        return result;
     }
 }

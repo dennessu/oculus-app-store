@@ -15,15 +15,15 @@ dependencies {
     compile (libraries.hibernate_annotation)
     compile (libraries.hibernate_validator)
     compile (libraries.postgresql)
-    compile (libraries.oom)
-    compile (libraries.common_lib)
-    compile (libraries.common_sharding)
-    compile (libraries.bonecp_spring)
+    compile junboProject(':oom-core')
+    compile junboProject(':common-lib')
+    compile junboProject(':common-sharding')
+    compile (libraries.HikariCP)
 
-    processor (libraries.oom_processor)
+    processor junboProject(':oom-processor')
 
     testCompile (libraries.guava)
     testCompile (libraries.spring_test)
 
-    compile project(':billing-spec')
+    compile junboProject(':billing-spec')
 }

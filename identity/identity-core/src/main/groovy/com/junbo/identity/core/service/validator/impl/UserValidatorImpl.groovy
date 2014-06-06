@@ -1,6 +1,7 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.id.UserId
+import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.validator.TimezoneValidator
 import com.junbo.identity.core.service.validator.UserValidator
@@ -11,6 +12,7 @@ import com.junbo.identity.data.repository.LocaleRepository
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
+import com.junbo.identity.spec.v1.model.Email
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
@@ -18,6 +20,7 @@ import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.CollectionUtils
 
 /**
  * Created by kg on 3/17/14.
@@ -103,6 +106,8 @@ class UserValidatorImpl implements UserValidator {
                         return Promise.pure(null)
                     }
                 }
+
+                return Promise.pure(null)
             }
 
             return Promise.pure(null)
@@ -142,13 +147,21 @@ class UserValidatorImpl implements UserValidator {
 
     private Promise<Void> validateUserInfo(User user) {
         if (user.username != null) {
-            if (user.isAnonymous == true) {
-                throw AppErrors.INSTANCE.fieldInvalid('isAnonymous', false.toString()).exception()
+            if (user.isAnonymous == null) {
+                user.isAnonymous = false
+            }
+
+            if (user.isAnonymous) {
+                throw AppErrors.INSTANCE.fieldInvalid('isAnonymous', "false").exception()
             }
             usernameValidator.validateUsername(user.username)
         } else {
-            if (user.isAnonymous == false) {
-                throw AppErrors.INSTANCE.fieldInvalid('isAnonymous', true.toString()).exception()
+            if (user.isAnonymous == null) {
+                user.isAnonymous = true
+            }
+
+            if (!user.isAnonymous) {
+                throw AppErrors.INSTANCE.fieldInvalid('isAnonymous', "true").exception()
             }
         }
 
@@ -161,7 +174,7 @@ class UserValidatorImpl implements UserValidator {
         }
 
         if (user.isAnonymous == null) {
-            throw AppErrors.INSTANCE.fieldInvalid('isAnonymous').exception()
+            throw AppErrors.INSTANCE.fieldRequired('isAnonymous').exception()
         }
 
         if (user.status != null) {
@@ -173,21 +186,8 @@ class UserValidatorImpl implements UserValidator {
         }
 
         return validateLocale(user).then {
-            if (user.addresses != null) {
-                boolean defaultExists = false
-                user.addresses.each { UserPersonalInfoLink link ->
-                    if (link.isDefault == true) {
-                        if (defaultExists == true) {
-                            throw AppErrors.INSTANCE.fieldInvalidException('isDefault', 'Multiple isDefault found.')
-                                    .exception()
-                        }
-                        defaultExists == true
-                    }
-                }
-            }
             return validateAddresses(user)
         }.then {
-
             return validateEmails(user)
         }.then {
             return validatePhones(user)
@@ -212,44 +212,82 @@ class UserValidatorImpl implements UserValidator {
         }
     }
 
-    Promise<Void> validateUserPersonalInfoLinkIterator(Iterator<UserPersonalInfoLink> it, String type) {
-        if (it.hasNext()) {
-            UserPersonalInfoLink userPersonalInfoLink = it.next();
+    Promise<Void> validateUserPersonalInfoLinkIterator(User user, Iterator<UserPersonalInfoLink> iter, String type) {
+        if (iter.hasNext()) {
+            UserPersonalInfoLink userPersonalInfoLink = iter.next();
+
+            if (userPersonalInfoLink.isDefault == null) {
+                throw AppErrors.INSTANCE.fieldRequired('isDefault').exception()
+            }
 
             if (userPersonalInfoLink.value == null) {
                 throw AppErrors.INSTANCE.fieldRequired('value').exception()
             }
 
-            return userPersonalInfoRepository.get(userPersonalInfoLink.value).
-                    then { UserPersonalInfo userPersonalInfo ->
-                        if (userPersonalInfo == null) {
-                            throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPersonalInfoLink.value).exception()
-                        }
+            return userPersonalInfoRepository.get(userPersonalInfoLink.value).then { UserPersonalInfo userPersonalInfo ->
+                if (userPersonalInfo == null) {
+                    throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPersonalInfoLink.value).exception()
+                }
 
-                        if (type != null) {
-                            if (userPersonalInfo.type != type) {
-                                throw AppErrors.INSTANCE.fieldInvalid(userPersonalInfoLink.value.toString()).exception()
-                            }
-                        }
-
-                        return validateUserPersonalInfoLinkIterator(it, type)
+                if (type != null) {
+                    if (userPersonalInfo.type != type) {
+                        throw AppErrors.INSTANCE.fieldInvalid(userPersonalInfoLink.value.toString()).exception()
                     }
+                }
+
+                if (user.id != userPersonalInfo.userId) {
+                    throw AppErrors.INSTANCE.fieldInvalid('userPersonalInfo.value').exception()
+                }
+
+                // 2.	User’s default email is required to be globally unique - no two users can use the same email as their default email.
+                //      The first user set this email to default will get this email.
+                if (userPersonalInfoLink.isDefault && userPersonalInfo.type == UserPersonalInfoType.EMAIL.toString()) {
+                    Email email = (Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Email)
+
+                    return validateEmailNotUsed(user, email).then {
+                        return validateUserPersonalInfoLinkIterator(user, iter, type)
+                    }
+                }
+
+                return validateUserPersonalInfoLinkIterator(user, iter, type)
+            }
         }
         return Promise.pure(null)
     }
 
-    Promise<UserPersonalInfo> validateUserPersonalInfoLink(UserPersonalInfoLink userPersonalInfoLink) {
-        if (userPersonalInfoLink.value == null) {
-            throw AppErrors.INSTANCE.fieldRequired('value').exception()
-        }
-        return userPersonalInfoRepository.get(userPersonalInfoLink.value).
-                then { UserPersonalInfo userPersonalInfo ->
-                    if (userPersonalInfo == null) {
-                        throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPersonalInfoLink.value).exception()
+    Promise<Void> validateEmailNotUsed(User user, Email email) {
+        return userPersonalInfoRepository.searchByEmail(email.info.toLowerCase(Locale.ENGLISH), Integer.MAX_VALUE,
+                0).then { List<UserPersonalInfo> existing ->
+            if (CollectionUtils.isEmpty(existing)) {
+                return Promise.pure(null)
+            }
+
+            existing.removeAll { UserPersonalInfo info ->
+                return info.userId == user.id
+            }
+
+            if (CollectionUtils.isEmpty(existing)) {
+                return Promise.pure(null)
+            }
+
+            return Promise.each(existing) { UserPersonalInfo info ->
+                return userRepository.get(info.userId).then { User existingUser ->
+                    if (existingUser == null || CollectionUtils.isEmpty(existingUser.emails)) {
+                        return Promise.pure(null)
                     }
 
-                    return Promise.pure(userPersonalInfo)
+                    if (existingUser.emails.any { UserPersonalInfoLink link ->
+                        return link.isDefault && link.value == info.id
+                    }) {
+                        throw AppErrors.INSTANCE.fieldInvalidException('email.info', 'Mail already used.').exception()
+                    }
+
+                    return Promise.pure(null)
                 }
+            }.then {
+                return Promise.pure(null)
+            }
+        }
     }
 
     Promise<Void> validateUserPersonalInfoLink(UserPersonalInfoLink userPersonalInfoLink, String type) {
@@ -284,9 +322,24 @@ class UserValidatorImpl implements UserValidator {
         return Promise.pure(null)
     }
 
+    private void checkSinglePersonalInfoLink(List<UserPersonalInfoLink> links) {
+        if (!CollectionUtils.isEmpty(links)) {
+            Collection<UserPersonalInfoLink> defaultLinks = links.findAll { UserPersonalInfoLink link ->
+                return link.isDefault
+            }
+            if (CollectionUtils.isEmpty(defaultLinks)) {
+                throw AppErrors.INSTANCE.fieldInvalid('isDefault', 'UserPersonalInfos must have at least one default.').exception()
+            }
+            if (!CollectionUtils.isEmpty(defaultLinks) && defaultLinks.size() > 1) {
+                throw AppErrors.INSTANCE.fieldInvalid('isDefault', 'Can only have one default.').exception()
+            }
+        }
+    }
+
     Promise<Void> validateAddresses(User user) {
         if (user.addresses != null) {
-            return validateUserPersonalInfoLinkIterator(user.addresses.iterator(),
+            checkSinglePersonalInfoLink(user.addresses)
+            return validateUserPersonalInfoLinkIterator(user, user.addresses.iterator(),
                     UserPersonalInfoType.ADDRESS.toString())
         }
 
@@ -295,7 +348,8 @@ class UserValidatorImpl implements UserValidator {
 
     Promise<Void> validateEmails(User user) {
         if (user.emails != null) {
-            return validateUserPersonalInfoLinkIterator(user.emails.iterator(),
+            checkSinglePersonalInfoLink(user.emails)
+            return validateUserPersonalInfoLinkIterator(user, user.emails.iterator(),
                     UserPersonalInfoType.EMAIL.toString())
         }
         return Promise.pure(null)
@@ -303,7 +357,9 @@ class UserValidatorImpl implements UserValidator {
 
     Promise<Void> validatePhones(User user) {
         if (user.phones != null) {
-            return validateUserPersonalInfoLinkIterator(user.phones.iterator(), UserPersonalInfoType.PHONE.toString())
+            checkSinglePersonalInfoLink(user.phones)
+            return validateUserPersonalInfoLinkIterator(user, user.phones.iterator(),
+                    UserPersonalInfoType.PHONE.toString())
         }
 
         return Promise.pure(null)
@@ -327,7 +383,8 @@ class UserValidatorImpl implements UserValidator {
 
     Promise<Void> validateSMS(User user) {
         if (user.textMessages != null) {
-            return validateUserPersonalInfoLinkIterator(user.textMessages.iterator(),
+            checkSinglePersonalInfoLink(user.textMessages)
+            return validateUserPersonalInfoLinkIterator(user, user.textMessages.iterator(),
                     UserPersonalInfoType.SMS.toString())
         }
         return Promise.pure(null)
@@ -335,14 +392,16 @@ class UserValidatorImpl implements UserValidator {
 
     Promise<Void> validateQQ(User user) {
         if (user.qqs != null) {
-            return validateUserPersonalInfoLinkIterator(user.qqs.iterator(), UserPersonalInfoType.QQ.toString())
+            checkSinglePersonalInfoLink(user.qqs)
+            return validateUserPersonalInfoLinkIterator(user, user.qqs.iterator(), UserPersonalInfoType.QQ.toString())
         }
         return Promise.pure(null)
     }
 
     Promise<Void> validateWhatsApp(User user) {
         if (user.whatsApps != null) {
-            return validateUserPersonalInfoLinkIterator(user.whatsApps.iterator(),
+            checkSinglePersonalInfoLink(user.whatsApps)
+            return validateUserPersonalInfoLinkIterator(user, user.whatsApps.iterator(),
                     UserPersonalInfoType.WHATSAPP.toString())
         }
         return Promise.pure(null)

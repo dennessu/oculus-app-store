@@ -5,12 +5,14 @@
  */
 package com.junbo.fulfilment.clientproxy.impl;
 
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
-import com.junbo.catalog.spec.resource.*;
+import com.junbo.catalog.spec.resource.ItemResource;
+import com.junbo.catalog.spec.resource.ItemRevisionResource;
+import com.junbo.catalog.spec.resource.OfferResource;
+import com.junbo.catalog.spec.resource.OfferRevisionResource;
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.ItemRevisionId;
 import com.junbo.common.id.OfferRevisionId;
@@ -44,14 +46,10 @@ public class MegaGatewayImpl implements MegaGateway {
     @Qualifier("entitlementClient")
     private EntitlementResource entitlementResource;
 
-    @Autowired
-    @Qualifier("entitlementDefClient")
-    private EntitlementDefinitionResource entitlementDefResource;
-
     @Override
     public Long createOffer(Offer offer) {
         try {
-            return offerResource.create(offer).wrapped().get().getOfferId();
+            return offerResource.create(offer).get().getOfferId();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
@@ -60,7 +58,7 @@ public class MegaGatewayImpl implements MegaGateway {
     @Override
     public Long createItem(Item item) {
         try {
-            return itemResource.create(item).wrapped().get().getItemId();
+            return itemResource.create(item).get().getItemId();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
@@ -69,7 +67,7 @@ public class MegaGatewayImpl implements MegaGateway {
     @Override
     public Long createOfferRevision(OfferRevision offerRevision) {
         try {
-            return offerRevisionResource.createOfferRevision(offerRevision).wrapped().get().getRevisionId();
+            return offerRevisionResource.createOfferRevision(offerRevision).get().getRevisionId();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
@@ -78,7 +76,7 @@ public class MegaGatewayImpl implements MegaGateway {
     @Override
     public Long createItemRevision(ItemRevision itemRevision) {
         try {
-            return itemRevisionResource.createItemRevision(itemRevision).wrapped().get().getRevisionId();
+            return itemRevisionResource.createItemRevision(itemRevision).get().getRevisionId();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
@@ -87,7 +85,7 @@ public class MegaGatewayImpl implements MegaGateway {
     @Override
     public OfferRevision getOfferRevision(Long offerRevisionId) {
         try {
-            return offerRevisionResource.getOfferRevision(new OfferRevisionId(offerRevisionId)).wrapped().get();
+            return offerRevisionResource.getOfferRevision(new OfferRevisionId(offerRevisionId)).get();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
@@ -96,7 +94,7 @@ public class MegaGatewayImpl implements MegaGateway {
     @Override
     public ItemRevision getItemRevision(Long itemRevisionId) {
         try {
-            return itemRevisionResource.getItemRevision(new ItemRevisionId(itemRevisionId)).wrapped().get();
+            return itemRevisionResource.getItemRevision(new ItemRevisionId(itemRevisionId)).get();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
@@ -107,7 +105,7 @@ public class MegaGatewayImpl implements MegaGateway {
         try {
             return offerRevisionResource.updateOfferRevision(
                     new OfferRevisionId(offerRevision.getRevisionId()),
-                    offerRevision).wrapped().get().getRevisionId();
+                    offerRevision).get().getRevisionId();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
@@ -118,7 +116,7 @@ public class MegaGatewayImpl implements MegaGateway {
         try {
             return itemRevisionResource.updateItemRevision(
                     new ItemRevisionId(itemRevision.getRevisionId()),
-                    itemRevision).wrapped().get().getRevisionId();
+                    itemRevision).get().getRevisionId();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
@@ -127,18 +125,9 @@ public class MegaGatewayImpl implements MegaGateway {
     @Override
     public Entitlement getEntitlement(Long entitlementId) {
         try {
-            return entitlementResource.getEntitlement(new EntitlementId(entitlementId)).wrapped().get();
+            return entitlementResource.getEntitlement(new EntitlementId(entitlementId)).get();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Entitlement] component service.", e);
-        }
-    }
-
-    @Override
-    public Long createEntitlementDef(EntitlementDefinition def) {
-        try {
-            return entitlementDefResource.postEntitlementDefinition(def).wrapped().get().getEntitlementDefId();
-        } catch (Exception e) {
-            throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
     }
 }

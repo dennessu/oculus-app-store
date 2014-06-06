@@ -14,11 +14,11 @@ public ListenableFuture<${returnType}> ${methodName}([#list parameters as parame
     }
 
     [#list accepts as accept]
-    __requestBuilder.addHeader("Accept", "${accept}");
+    __requestBuilder.setHeader("Accept", "${accept}");
     [/#list]
 
     [#if contentType??]
-    __requestBuilder.addHeader("Content-Type", "${contentType}");
+    __requestBuilder.setHeader("Content-Type", "${contentType}");
     [/#if]
 
     [#list parameters as parameter]

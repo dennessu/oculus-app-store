@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPersonalInfoId;
-import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -18,42 +18,39 @@ import java.util.Date;
 /**
  * Created by liangfu on 4/24/14.
  */
-public class UserPersonalInfo extends ResourceMeta implements Identifiable<UserPersonalInfoId> {
+public class UserPersonalInfo extends PropertyAssignedAwareResourceMeta implements Identifiable<UserPersonalInfoId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "[Nullable]The id of user personal info resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] Link to this PersonalInfo resource.")
     @JsonProperty("self")
     private UserPersonalInfoId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "The type of user personal info resource, it must be in " +
-            "[ADDRESS, " +
-            "EMAIL, " +
-            "PHONE, " +
-            "GIVEN_NAME, " +
-            "FAMILY_NAME, " +
-            "MIDDLE_NAME, " +
-            "NICK_NAME, " +
-            "DOB, " +
-            "SMS, " +
-            "QQ, " +
-            "WHATSAPP, " +
-            "PASSPORT - e.g., \"USA 123456789\", " +
-            "GOVERNMENT_ID - SSN or equivalent in other countries, " +
-            "DRIVERS_LICENSE - e.g., \"USA CA 12345\" ].")
+    @ApiModelProperty(position = 2, required = true, value = "Enumeration giving the type of information in the 'value' property. " +
+            "The enumerations are ADDRESS, EMAIL, PHONE, NAME, DOB, SMS, QQ, WHATSAPP, PASSPORT, GOVERNMENT_ID, DRIVERS_LICENSE, GENDER. " +
+            "The type is encrypted when storing the info into the DB.")
     private String type;
 
-    @ApiModelProperty(position = 3, required = true, value = "The userPersonal information, it must be json structure.")
+    @ApiModelProperty(position = 3, required = true, value = "The userPersonal information, it must be json structure." +
+            "ADDRESS Type[street1(string),street2(string),street3(string),city(string),phoneNumber(string),subCountry(string)," +
+            "country(link)];" +
+            "Other Types[info(string)]")
     private JsonNode value;
 
-    @ApiModelProperty(position = 4, required = false, value = "Last validated time, if null, it isn't validated.")
+    @ApiModelProperty(position = 4, required = false, value = "[Nullable] Null if the 'value' has not been validated, " +
+            "otherwise it shall be a timestamp (in ISO 8601 format) that indicates the last time 'value' was validated. " +
+            "Clients use PUT to control validation: changing it to null causes the server to forget any previous validation, " +
+            "and changing it to a timestamp causes the server to re-validate (the server adjusts the timestamp, or sets it to null if validation failed). " +
+            "The lastValidateTime property is encrypted when the PersonalInfo resource is stored into the DB.")
     private Date lastValidateTime;
 
-    @ApiModelProperty(position = 5, required = false, value = "Whether the value is normalized or not.")
+    @ApiModelProperty(position = 5, required = false, value = "[Client Immutable] True if/only if lastValidateTime is non-null and is recent enough. " +
+            "Used primarily for convenience in query-params, e.g., /personal-info?isValidated=true.")
+    private Boolean isValidated;
+
+    @ApiModelProperty(position = 6, required = true, value = "True if/only if the value is normalized, " +
+            "e.g., addresses and phone numbers can be put into some normalized form via a normalizer service.")
     private Boolean isNormalized;
 
-    @ApiModelProperty(position = 6, required = false, value = "User resource link label.")
-    private String label;
-
-    @ApiModelProperty(position = 7, required = false, value = "User resource.")
+    @ApiModelProperty(position = 7, required = true, value = "Link to the user resource.")
     @JsonProperty("user")
     private UserId userId;
 
@@ -103,15 +100,6 @@ public class UserPersonalInfo extends ResourceMeta implements Identifiable<UserP
         support.setPropertyAssigned("isNormalized");
     }
 
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-        support.setPropertyAssigned("label");
-    }
-
     public UserId getUserId() {
         return userId;
     }
@@ -120,6 +108,15 @@ public class UserPersonalInfo extends ResourceMeta implements Identifiable<UserP
         this.userId = userId;
         support.setPropertyAssigned("userId");
         support.setPropertyAssigned("user");
+    }
+
+    public Boolean getIsValidated() {
+        return isValidated;
+    }
+
+    public void setIsValidated(Boolean isValidated) {
+        this.isValidated = isValidated;
+        support.setPropertyAssigned("isValidated");
     }
 }
 

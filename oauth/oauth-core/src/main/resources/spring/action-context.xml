@@ -5,7 +5,10 @@
 
     <bean id="flowDefLoader" class="com.junbo.langur.core.webflow.definition.FlowDefLoaderImpl"/>
 
-    <bean id="stateRepository" class="com.junbo.langur.core.webflow.state.InMemoryStateRepository"/>
+    <bean id="stateRepository" class="com.junbo.common.webflow.CloudantStateRepositoryImpl" parent="cloudantClient">
+        <property name="dbName" value="oauth_flow_state"/>
+        <property name="marshaller" ref="polymorphicCloudantMarshaller"/>
+    </bean>
 
     <bean id="stateExecutorFactory" class="com.junbo.langur.core.webflow.executor.StateExecutorFactoryImpl"/>
 
@@ -84,6 +87,14 @@
         <property name="defaultLocale" value="en_US"/>
     </bean>
 
+    <bean id="validateEmailVerifyCode" class="com.junbo.oauth.core.action.ValidateEmailVerifyCode">
+        <property name="tokenGenerator" ref="tokenGenerator" />
+    </bean>
+
+    <bean id="validateResetPasswordCode" class="com.junbo.oauth.core.action.ValidateResetPasswordCode">
+        <property name="tokenGenerator" ref="tokenGenerator" />
+    </bean>
+
     <bean id="validateExtraParameters" class="com.junbo.oauth.core.action.ValidateExtraParameters"/>
 
     <bean id="logout" class="com.junbo.oauth.core.action.Logout">
@@ -95,9 +106,4 @@
     </bean>
 
     <bean id="redirect" class="com.junbo.oauth.core.action.Redirect"/>
-
-
-
-
-
 </beans>

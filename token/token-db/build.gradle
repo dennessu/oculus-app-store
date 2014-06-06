@@ -30,7 +30,6 @@ dependencies {
 	
 	compile(libraries.postgresql)
     compile (libraries.bonecp_spring)
-    compile (libraries.btm)
 
     testCompile(libraries.spring_test)
 }

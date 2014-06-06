@@ -8,6 +8,7 @@ package com.junbo.payment.db.repository;
 
 import com.junbo.common.id.PIType;
 import com.junbo.oom.core.MappingContext;
+import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.db.dao.paymentinstrument.AddressDao;
 import com.junbo.payment.db.dao.paymentinstrument.CreditCardPaymentInstrumentDao;
 import com.junbo.payment.db.dao.paymentinstrument.PaymentInstrumentDao;
@@ -45,8 +46,13 @@ public class PaymentInstrumentRepository {
 
     public void save(PaymentInstrument request){
         request.setRev("1");
+        Long piId = null;
         PaymentInstrumentEntity piEntity = paymentMapperExtension.toPIEntity(request);
-        Long piId = idGenerator.nextId(piEntity.getUserId());
+        if(request.getId() == null){
+            piId = idGenerator.nextId(piEntity.getUserId());
+        }else{
+            piId = request.getId();
+        }
         piEntity.setId(piId);
         paymentInstrumentDao.save(piEntity);
         if(PIType.get(request.getType()).equals(PIType.CREDITCARD)){
@@ -67,15 +73,41 @@ public class PaymentInstrumentRepository {
     }
 
     public void update(PaymentInstrument request){
-        PaymentInstrumentEntity pi = paymentMapperExtension.toPIEntity(request);
+        PaymentInstrumentEntity pi = paymentInstrumentDao.get(request.getId());
+        //setup column allowed to be updated:
         Long currentRev = Long.parseLong(request.getRev()) + 1;
         pi.setRev(currentRev.toString());
+        pi.setLabel(request.getLabel());
+        pi.setAccountNum(request.getAccountNum());
+        pi.setUserId(request.getUserId());
+        pi.setBillingAddressId(request.getBillingAddressId());
+        pi.setEmail(request.getEmail());
+        pi.setAccountName(request.getAccountName());
+        pi.setPhoneNumber(request.getPhoneNumber());
+        pi.setRelationToHolder(request.getRelationToHolder());
+        if(request.getIsActive() != null){
+            pi.setIsActive(request.getIsActive());
+        }
         paymentInstrumentDao.update(pi);
         if(PIType.get(request.getType()).equals(PIType.CREDITCARD)){
             ccPaymentInstrumentDao.update(paymentMapperImpl.toCreditCardEntity(
                     (CreditCardDetail)paymentMapperExtension.toSpecificDetail(request.getTypeSpecificDetails(),
                             PIType.CREDITCARD), new MappingContext()));
         }
+    }
+
+    public void updateExternalInfo(Long paymentInstrumentId, String externalToken, String label, String num){
+        PaymentInstrumentEntity entity = paymentInstrumentDao.get(paymentInstrumentId);
+        if(!CommonUtil.isNullOrEmpty(externalToken)){
+            entity.setExternalToken(externalToken);
+        }
+        if(!CommonUtil.isNullOrEmpty(label)){
+            entity.setLabel(entity.getLabel() == null ? label : entity.getLabel() + label);
+        }
+        if(!CommonUtil.isNullOrEmpty(num)){
+            entity.setAccountNum(num);
+        }
+        paymentInstrumentDao.update(entity);
     }
 
     public PaymentInstrument getByPIId(Long piId){
@@ -111,6 +143,16 @@ public class PaymentInstrumentRepository {
 
     public List<PaymentInstrument> search(Long userId,
             PaymentInstrumentSearchParam searchParam, PageMetaData pageMetadata) {
-        return getByUserId(userId);
+        List<PaymentInstrument> request = new ArrayList<PaymentInstrument>();
+        List<PaymentInstrumentEntity> piEntities = paymentInstrumentDao.getByUserAndType(userId,
+            CommonUtil.isNullOrEmpty(searchParam.getType()) ? null : PIType.valueOf(searchParam.getType()));
+        for(PaymentInstrumentEntity piEntity : piEntities){
+            if(!piEntity.isDeleted()){
+                PaymentInstrument piRequest = paymentMapperExtension.toPaymentInstrument(piEntity);
+                setAdditionalInfo(piEntity, piRequest);
+                request.add(piRequest);
+            }
+        }
+        return request;
     }
 }

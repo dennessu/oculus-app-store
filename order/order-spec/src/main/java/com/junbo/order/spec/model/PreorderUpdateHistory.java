@@ -7,11 +7,13 @@ package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.common.id.OrderItemId;
+import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.util.Identifiable;
 
 /**
  * Created by LinYi on 2/10/14.
  */
-public class PreorderUpdateHistory extends BaseOrderResource {
+public class PreorderUpdateHistory extends ResourceMeta implements Identifiable<Long> {
     private String updatedType;
     private String updatedColumn;
     private String beforeValue;
@@ -52,13 +54,13 @@ public class PreorderUpdateHistory extends BaseOrderResource {
     }
 
     @JsonIgnore
-    public Long getOrderItemPreorderUpdateHistoryId() {
+    public Long getId() {
         return id;
     }
 
-    public void setOrderItemPreorderUpdateHistoryId(Long orderItemPreorderUpdateHistoryId) {
+    public void setId(Long id) {
 
-        this.id = orderItemPreorderUpdateHistoryId;
+        this.id = id;
     }
 
     @JsonIgnore

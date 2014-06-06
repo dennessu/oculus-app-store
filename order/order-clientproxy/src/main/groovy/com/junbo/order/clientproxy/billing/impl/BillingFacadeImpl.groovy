@@ -1,17 +1,16 @@
 package com.junbo.order.clientproxy.billing.impl
 
+import com.junbo.billing.spec.error.ErrorCode
 import com.junbo.billing.spec.model.Balance
-import com.junbo.billing.spec.model.ShippingAddress
 import com.junbo.billing.spec.resource.BalanceResource
-import com.junbo.billing.spec.resource.BillingCurrencyResource
-import com.junbo.billing.spec.resource.ShippingAddressResource
+import com.junbo.common.error.AppError
 import com.junbo.common.id.BalanceId
 import com.junbo.common.id.OrderId
-import com.junbo.common.id.ShippingAddressId
-import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.billing.BillingFacade
+import com.junbo.order.spec.error.AppErrors
+import com.junbo.order.spec.error.ErrorUtils
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.springframework.stereotype.Component
@@ -27,15 +26,10 @@ import javax.annotation.Resource
 class BillingFacadeImpl implements BillingFacade {
     @Resource(name='order.billingBalanceClient')
     BalanceResource balanceResource
-    @Resource(name='order.billingShippingAddressClient')
-    ShippingAddressResource shippingAddressResource
-    @Resource(name='order.billingCurrencyClient')
-    BillingCurrencyResource billingCurrencyResource
-
-    private Map<String, com.junbo.billing.spec.model.Currency> currencyMap
 
     @Override
-    Promise<Balance> createBalance(Balance balance) {
+    Promise<Balance> createBalance(Balance balance, Boolean isAsyncCharge) {
+        balance.isAsyncCharge = isAsyncCharge
         return balanceResource.postBalance(balance)
     }
 
@@ -62,41 +56,24 @@ class BillingFacadeImpl implements BillingFacade {
     }
 
     @Override
-    Promise<ShippingAddress> getShippingAddress(Long userId, Long shippingAddressId) {
-        return shippingAddressResource.getShippingAddress(
-                new UserId(userId), new ShippingAddressId(shippingAddressId)) // provide the user id
-    }
-
-    @Override
     Promise<Balance> quoteBalance(Balance balance) {
         return balanceResource.quoteBalance(balance)
     }
 
     @Override
-    Promise<Collection<com.junbo.billing.spec.model.Currency>> getCurrencies() {
-        if (currencyMap != null) {
-            return Promise.pure(new ArrayList<com.junbo.billing.spec.model.Currency>(currencyMap.values()))
-        }
-
-        billingCurrencyResource.currencies.syncThen { Results<Currency> results ->
-            def val = new HashMap<>()
-            results?.items?.each { com.junbo.billing.spec.model.Currency currency ->
-                val[currency.name] = currency
-            }
-            currencyMap = val
-            return val.values()
-        }
-    }
-
-    @Override
-    Promise<com.junbo.billing.spec.model.Currency> getCurrency(String name) {
-        currencies.syncThen {
-            return currencyMap.get(name)
-        }
-    }
-
-    @Override
     Promise<Balance> confirmBalance(Balance balance) {
         return balanceResource.confirmBalance(balance)
+    }
+
+    @Override
+    AppError convertError(Throwable error) {
+        AppError e = ErrorUtils.toAppError(error)
+
+        if (e != null && e.code == ErrorCode.PAYMENT_INSUFFICIENT_FUND) {
+            return AppErrors.INSTANCE.billingInsufficientFund()
+        }
+
+        return AppErrors.INSTANCE.
+                billingConnectionError(ErrorUtils.toAppErrors(error))
     }
 }

@@ -15,9 +15,9 @@ import com.junbo.order.core.OrderServiceOperation
 import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
-import com.junbo.order.db.entity.enums.EventStatus
-import com.junbo.order.db.entity.enums.OrderActionType
-import com.junbo.order.db.entity.enums.OrderStatus
+import com.junbo.order.spec.model.enums.EventStatus
+import com.junbo.order.spec.model.enums.OrderActionType
+import com.junbo.order.spec.model.enums.OrderStatus
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
@@ -83,12 +83,21 @@ class DefaultFlowSelector implements FlowSelector {
                 }
                 LOGGER.error('name=Fulfillment_Event_Not_Support. action: {}, status:{}', event.action, event.status)
                 throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
+
             case OrderActionType.CHARGE.name():
                 if (event.status == EventStatus.COMPLETED.name()
                         && context.order.status == OrderStatus.PENDING_CHARGE.name()) {
                     return Promise.pure(FlowType.WEB_PAYMENT_SETTLE.name())
                 }
                 LOGGER.error('name=Charge_Event_Not_Support. action: {}, status:{}', event.action, event.status)
+                throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
+
+            case OrderActionType.CANCEL.name():
+                if (event.status == EventStatus.COMPLETED.name()
+                        && context.order.status == OrderStatus.PENDING_CHARGE.name()) {
+                    return Promise.pure(FlowType.CANCEL_ORDER.name())
+                }
+                LOGGER.error('name=Cancel_Event_Not_Support. action: {}, status:{}', event.action, event.status)
                 throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
             default:
                 LOGGER.error('name=Event_Not_Support. action: {}, status:{}', event.action, event.status)
@@ -100,11 +109,11 @@ class DefaultFlowSelector implements FlowSelector {
 
         assert(context != null && context.order != null)
 
-        if (CollectionUtils.isEmpty(context.order.paymentInstruments)) {
+        if (CollectionUtils.isEmpty(context.order.payments)) {
             return Promise.pure(FlowType.FREE_SETTLE.name())
         }
         // select order flow per payment info and product item info
-        orderServiceContextBuilder.getPaymentInstruments(context).then { List<PaymentInstrument> pis ->
+        return orderServiceContextBuilder.getPaymentInstruments(context).then { List<PaymentInstrument> pis ->
             // TODO: do not support multiple payment methods now
             assert(!CollectionUtils.isEmpty(pis))
             switch (PIType.get(pis[0].type)) {

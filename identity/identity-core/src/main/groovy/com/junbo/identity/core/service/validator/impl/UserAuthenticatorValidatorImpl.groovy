@@ -15,6 +15,9 @@ import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.CollectionUtils
 
 /**
+ * Check allowed types
+ * Check user valid (not anonymous user, not non-active user)
+ * Check ExternalId's minimum and maximum length
  * Created by liangfu on 3/27/14.
  */
 @CompileStatic
@@ -25,6 +28,9 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
     private UserAuthenticatorRepository userAuthenticatorRepository
 
     private List<String> allowedTypes
+
+    private Integer minExternalIdLength
+    private Integer maxExternalIdLength
 
     @Required
     void setUserRepository(UserRepository userRepository) {
@@ -39,6 +45,16 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
     @Required
     void setAllowedTypes(List<String> allowedTypes) {
         this.allowedTypes = allowedTypes
+    }
+
+    @Required
+    void setMinExternalIdLength(Integer minExternalIdLength) {
+        this.minExternalIdLength = minExternalIdLength
+    }
+
+    @Required
+    void setMaxExternalIdLength(Integer maxExternalIdLength) {
+        this.maxExternalIdLength = maxExternalIdLength
     }
 
     @Override
@@ -90,11 +106,9 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
                 throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
             }
 
-            return userAuthenticatorRepository.search(new AuthenticatorListOptions(
-                    userId: userAuthenticator.userId,
-                    type: userAuthenticator.type,
-                    externalId: userAuthenticator.externalId
-            )).then { List<UserAuthenticator> existing ->
+            return userAuthenticatorRepository.searchByUserIdAndTypeAndExternalId(userAuthenticator.userId,
+                    userAuthenticator.type, userAuthenticator.externalId, Integer.MAX_VALUE, 0).then {
+                List<UserAuthenticator> existing ->
                 if (!CollectionUtils.isEmpty(existing)) {
                     throw AppErrors.INSTANCE.fieldDuplicate('externalId').exception()
                 }
@@ -128,17 +142,15 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
 
             if (authenticator.externalId != oldAuthenticator.externalId
              || authenticator.type != oldAuthenticator.type) {
-                userAuthenticatorRepository.search(new AuthenticatorListOptions(
-                        userId: authenticator.userId,
-                        externalId: authenticator.externalId,
-                        type: authenticator.type
-                )).then {
+                return userAuthenticatorRepository.searchByUserIdAndTypeAndExternalId(authenticator.userId,
+                        authenticator.type, authenticator.externalId, Integer.MAX_VALUE, 0).then {
                     List<UserAuthenticator> existing ->
                         if (!CollectionUtils.isEmpty(existing)) {
                             throw AppErrors.INSTANCE.fieldDuplicate('type or externalId').exception()
                         }
+
+                        return Promise.pure(null)
                 }
-                return Promise.pure(null)
             }
 
             return Promise.pure(null)
@@ -169,6 +181,12 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
 
             if (userAuthenticator.externalId == null) {
                 throw AppErrors.INSTANCE.fieldRequired('externalId').exception()
+            }
+            if (userAuthenticator.externalId.length() < minExternalIdLength) {
+                throw AppErrors.INSTANCE.fieldTooShort('externalId', minExternalIdLength).exception()
+            }
+            if (userAuthenticator.externalId.length() > maxExternalIdLength) {
+                throw AppErrors.INSTANCE.fieldTooLong('externalId', maxExternalIdLength).exception()
             }
 
             if (userAuthenticator.type == null) {

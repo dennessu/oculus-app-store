@@ -7,6 +7,7 @@
 package com.junbo.payment.rest.resource;
 
 
+import com.junbo.common.id.PaymentId;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.core.PaymentTransactionService;
@@ -20,6 +21,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class PaymentTransactionResourceImpl implements PaymentTransactionResource{
     @Autowired
     private PaymentTransactionService paymentService;
+
+    @Override
+    public Promise<PaymentTransaction> postPaymentCredit(PaymentTransaction request) {
+        CommonUtil.preValidation(request);
+        return paymentService.credit(request);
+    }
+
     @Override
     public Promise<PaymentTransaction> postPaymentAuthorization(PaymentTransaction request) {
         CommonUtil.preValidation(request);
@@ -27,15 +35,15 @@ public class PaymentTransactionResourceImpl implements PaymentTransactionResourc
     }
 
     @Override
-    public Promise<PaymentTransaction> postPaymentCapture(Long paymentId, PaymentTransaction request) {
+    public Promise<PaymentTransaction> postPaymentCapture(PaymentId paymentId, PaymentTransaction request) {
         CommonUtil.preValidation(request);
-        return paymentService.capture(paymentId, request);
+        return paymentService.capture(paymentId.getValue(), request);
     }
 
     @Override
-    public Promise<PaymentTransaction> postPaymentConfirm(Long paymentId, PaymentTransaction request) {
+    public Promise<PaymentTransaction> postPaymentConfirm(PaymentId paymentId, PaymentTransaction request) {
         CommonUtil.preValidation(request);
-        return paymentService.confirm(paymentId, request);
+        return paymentService.confirm(paymentId.getValue(), request);
     }
 
     @Override
@@ -45,17 +53,22 @@ public class PaymentTransactionResourceImpl implements PaymentTransactionResourc
     }
 
     @Override
-    public Promise<PaymentTransaction> reversePayment(Long paymentId, PaymentTransaction request) {
-        return paymentService.reverse(paymentId, request);
+    public Promise<PaymentTransaction> reversePayment(PaymentId paymentId, PaymentTransaction request) {
+        return paymentService.reverse(paymentId.getValue(), request);
     }
 
     @Override
-    public Promise<PaymentTransaction> getPayment(Long paymentId) {
-        return paymentService.getUpdatedTransaction(paymentId);
+    public Promise<PaymentTransaction> refundPayment(PaymentId paymentId, PaymentTransaction request) {
+        return paymentService.refund(paymentId.getValue(), request);
     }
 
     @Override
-    public Promise<PaymentTransaction> getExternalPayment(Long paymentId) {
-        return paymentService.getProviderTransaction(paymentId);
+    public Promise<PaymentTransaction> getPayment(PaymentId paymentId) {
+        return paymentService.getTransaction(paymentId.getValue());
+    }
+
+    @Override
+    public Promise<PaymentTransaction> checkPaymentStatus(PaymentId paymentId) {
+        return paymentService.getUpdatedTransaction(paymentId.getValue());
     }
 }

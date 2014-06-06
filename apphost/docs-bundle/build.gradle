@@ -1,0 +1,9 @@
+apply plugin: 'application'
+
+mainClassName = "com.junbo.docs.app.Main"
+
+dependencies {
+    compile junboProject(':docs-app')
+}
+
+defaultTasks 'clean', 'install', 'installApp', 'distZip'

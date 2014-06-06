@@ -24,6 +24,12 @@ public class UserPersonalInfoListOptions extends PagingGetOptions {
     @QueryParam("type")
     private String type;
 
+    @QueryParam("email")
+    private String email;
+
+    @QueryParam("phoneNumber")
+    private String phoneNumber;
+
     public String getProperties() {
         return properties;
     }
@@ -46,5 +52,21 @@ public class UserPersonalInfoListOptions extends PagingGetOptions {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }

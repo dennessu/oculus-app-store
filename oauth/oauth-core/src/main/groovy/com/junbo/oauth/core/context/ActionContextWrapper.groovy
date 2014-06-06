@@ -44,11 +44,17 @@ class ActionContextWrapper {
     public static final String USER_CREDENTIAL = 'user_credential'
     public static final String DOB = 'dob'
     public static final String GENDER = 'gender'
+    public static final String FORGET_PASSWORD_EMAIL = 'forget_password_email'
     public static final String REMOTE_ADDRESS = 'remote_address'
     public static final String CAPTCHA_REQUIRED = 'captcha_required'
     public static final String CAPTCHA_SUCCEED = 'captcha_succeed'
     public static final String VIEW_LOCALE = 'view_locale'
     public static final String EXTRA_PARAM_MAP = 'extra_param_map'
+    public static final String EMAIL_VERIFY_CODE = 'email_verify_code'
+    public static final String RESET_PASSWORD_CODE = 'reset_password_code'
+    public static final String THIRD_PARTY_ACCOUNT = 'third_party_account'
+    public static final String SUB_FLOW_NAME = 'sub_flow_name'
+    public static final String USER_DEFAULT_EMAIL = 'default_email'
 
     @Delegate
     private final ActionContext actionContext
@@ -238,11 +244,11 @@ class ActionContextWrapper {
     }
 
     User getUser() {
-        return (User) actionContext.requestScope[USER]
+        return (User) actionContext.flowScope[USER]
     }
 
     void setUser(User user) {
-        actionContext.requestScope[USER] = user
+        actionContext.flowScope[USER] = user
     }
 
     UserCredential getUserCredential() {
@@ -254,11 +260,11 @@ class ActionContextWrapper {
     }
 
     Date getDob() {
-        return (Date) actionContext.requestScope[DOB]
+        return (Date) actionContext.flowScope[DOB]
     }
 
     void setDob(Date dob) {
-        actionContext.requestScope[DOB] = dob
+        actionContext.flowScope[DOB] = dob
     }
 
     Gender getGender() {
@@ -267,6 +273,14 @@ class ActionContextWrapper {
 
     void setGender(Gender gender) {
         actionContext.requestScope[GENDER] = gender
+    }
+
+    String getForgetPasswordEmail() {
+        return (String) actionContext.requestScope[FORGET_PASSWORD_EMAIL]
+    }
+
+    void setForgetPasswordEmail(String email) {
+        actionContext.requestScope[FORGET_PASSWORD_EMAIL] = email
     }
 
     String getRemoteAddress() {
@@ -309,6 +323,22 @@ class ActionContextWrapper {
         actionContext.flowScope[VIEW_LOCALE] = locale
     }
 
+    EmailVerifyCode getEmailVerifyCode() {
+        return (EmailVerifyCode) actionContext.flowScope[EMAIL_VERIFY_CODE]
+    }
+
+    void setEmailVerifyCode(EmailVerifyCode code) {
+        actionContext.flowScope[EMAIL_VERIFY_CODE] = code
+    }
+
+    String getResetPasswordCode() {
+        return (String) actionContext.flowScope[RESET_PASSWORD_CODE]
+    }
+
+    void setResetPasswordCode(String code) {
+        actionContext.flowScope[RESET_PASSWORD_CODE] = code
+    }
+
     Map<String, String> getExtraParameterMap() {
         if (actionContext.flowScope[EXTRA_PARAM_MAP] == null) {
             actionContext.flowScope[EXTRA_PARAM_MAP] = new HashMap<String, String>()
@@ -318,5 +348,29 @@ class ActionContextWrapper {
 
     void setExtraParameterMap(Map<String, String> extraMap) {
         actionContext.flowScope[EXTRA_PARAM_MAP] = extraMap
+    }
+
+    ThirdPartyAccount getThirdPartyAccount() {
+        return (ThirdPartyAccount) actionContext.flowScope[THIRD_PARTY_ACCOUNT]
+    }
+
+    void setThirdPartyAccount(ThirdPartyAccount thirdPartyAccount) {
+        actionContext.flowScope[THIRD_PARTY_ACCOUNT] = thirdPartyAccount
+    }
+
+    String getUserDefaultEmail() {
+        return actionContext.flowScope[USER_DEFAULT_EMAIL] as String
+    }
+
+    void setUserDefaultEmail(String userDefaultEmail) {
+        actionContext.flowScope[USER_DEFAULT_EMAIL] = userDefaultEmail
+    }
+
+    String getSubFlowName() {
+        return actionContext.flowScope[SUB_FLOW_NAME] as String
+    }
+
+    void setSubFlowName(String subFlowName) {
+        actionContext.flowScope[SUB_FLOW_NAME] = subFlowName
     }
 }

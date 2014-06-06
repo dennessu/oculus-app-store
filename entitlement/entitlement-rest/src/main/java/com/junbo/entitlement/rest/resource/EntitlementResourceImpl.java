@@ -6,16 +6,16 @@
 
 package com.junbo.entitlement.rest.resource;
 
-import com.junbo.common.id.EntitlementDefinitionId;
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.ItemId;
-import com.junbo.common.id.UserId;
+import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.lib.CommonUtils;
 import com.junbo.entitlement.core.EntitlementService;
+import com.junbo.entitlement.spec.error.AppErrors;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.EntitlementTransfer;
@@ -26,11 +26,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import javax.ws.rs.BeanParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -39,8 +36,6 @@ import java.util.UUID;
 public class EntitlementResourceImpl implements EntitlementResource {
     @Autowired
     private EntitlementService entitlementService;
-    @Autowired
-    private UriInfo uriInfo;
 
     @Override
     public Promise<Entitlement> getEntitlement(EntitlementId entitlementId) {
@@ -50,6 +45,7 @@ public class EntitlementResourceImpl implements EntitlementResource {
 
     @Override
     public Promise<Entitlement> postEntitlement(Entitlement entitlement) {
+        checkBodyNotNull(entitlement);
         Entitlement existing = getByTrackingUuid(entitlement.getUserId(), entitlement.getTrackingUuid());
         return Promise.pure(existing != null ? existing :
                 entitlementService.addEntitlement(entitlement));
@@ -57,6 +53,7 @@ public class EntitlementResourceImpl implements EntitlementResource {
 
     @Override
     public Promise<Entitlement> updateEntitlement(EntitlementId entitlementId, Entitlement entitlement) {
+        checkBodyNotNull(entitlement);
         Entitlement existing = getByTrackingUuid(entitlement.getUserId(), entitlement.getTrackingUuid());
         return Promise.pure(existing != null ? existing :
                 entitlementService.updateEntitlement(entitlementId.getValue(), entitlement));
@@ -69,26 +66,24 @@ public class EntitlementResourceImpl implements EntitlementResource {
     }
 
     @Override
-    public Promise<Results<Entitlement>> searchEntitlements(@BeanParam EntitlementSearchParam searchParam, @BeanParam PageMetadata pageMetadata) {
-        List<Entitlement> entitlements = entitlementService.searchEntitlement(searchParam, pageMetadata);
-        Results<Entitlement> result = new Results<Entitlement>();
-        result.setItems(entitlements);
+    public Promise<Results<Entitlement>> searchEntitlements(EntitlementSearchParam searchParam, PageMetadata pageMetadata) {
+        Results<Entitlement> result = entitlementService.searchEntitlement(searchParam, pageMetadata);
 
         Link link = new Link();
-        if (entitlements.size() <
+        if (result.getItems().size() <
                 (pageMetadata.getCount() == null
                         ? EntitlementConsts.DEFAULT_PAGE_SIZE : pageMetadata.getCount())) {
             link.setHref(EntitlementConsts.NEXT_END);
         } else {
-            link.setHref(buildNextUrl(searchParam, pageMetadata));
+            link.setHref(buildNextUrl(searchParam, pageMetadata, result.getNext()));
         }
         result.setNext(link);
         return Promise.pure(result);
     }
 
     private String buildNextUrl(
-            EntitlementSearchParam searchParam, PageMetadata pageMetadata) {
-        UriBuilder builder = uriInfo.getBaseUriBuilder().path("entitlements");
+            EntitlementSearchParam searchParam, PageMetadata pageMetadata, Link next) {
+        UriBuilder builder = UriBuilder.fromPath(IdUtil.getResourcePathPrefix()).path("entitlements");
         builder.queryParam("userId", IdFormatter.encodeId(searchParam.getUserId()));
         if (!StringUtils.isEmpty(searchParam.getType())) {
             builder = builder.queryParam("type", searchParam.getType());
@@ -97,44 +92,28 @@ public class EntitlementResourceImpl implements EntitlementResource {
             builder = builder.queryParam("isActive", searchParam.getIsActive());
         }
         if (searchParam.getIsBanned() != null) {
-            builder = builder.queryParam("isBanned", searchParam.getIsBanned());
+            builder = builder.queryParam("isSuspended", searchParam.getIsBanned());
         }
-        if (!CollectionUtils.isEmpty(searchParam.getDefinitionIds())) {
-            for (EntitlementDefinitionId definitionId : searchParam.getDefinitionIds()) {
-                builder = builder.queryParam("definitionIds", IdFormatter.encodeId(definitionId));
+        if (searchParam.getHostItemId() != null) {
+            builder = builder.queryParam("hostItemId", IdFormatter.encodeId(searchParam.getHostItemId()));
+        }
+        if (!CollectionUtils.isEmpty(searchParam.getItemIds())) {
+            for (ItemId itemId : searchParam.getItemIds()) {
+                builder = builder.queryParam("itemIds", IdFormatter.encodeId(itemId));
             }
         }
         builder = CommonUtils.buildPageParams(builder,
-                pageMetadata.getStart(), pageMetadata.getCount());
+                pageMetadata.getStart(), pageMetadata.getCount(), next == null ? null : next.getHref());
         return builder.toTemplate();
     }
 
     @Override
     public Promise<Entitlement> transferEntitlement(EntitlementTransfer entitlementTransfer) {
+        checkBodyNotNull(entitlementTransfer);
         Entitlement existing = getByTrackingUuid(entitlementTransfer.getTargetUserId(),
                 entitlementTransfer.getTrackingUuid());
         return Promise.pure(existing != null ? existing :
                 entitlementService.transferEntitlement(entitlementTransfer));
-    }
-
-    @Override
-    public Promise<Boolean> isDeveloper(UserId userId) {
-        return Promise.pure(entitlementService.isDeveloper(userId.getValue()));
-    }
-
-    @Override
-    public Promise<Entitlement> grantDeveloperEntitlement(UserId userId) {
-        return Promise.pure(entitlementService.grantDeveloperEntitlement(userId.getValue()));
-    }
-
-    @Override
-    public Promise<Boolean> canDownload(UserId userId, ItemId itemId) {
-        return Promise.pure(entitlementService.canDownload(userId.getValue(), itemId.getValue()));
-    }
-
-    @Override
-    public Promise<Boolean> canAccess(UserId userId, ItemId itemId) {
-        return Promise.pure(entitlementService.canAccess(userId.getValue(), itemId.getValue()));
     }
 
     private Entitlement getByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
@@ -144,5 +123,11 @@ public class EntitlementResourceImpl implements EntitlementResource {
             return existingEntitlement;
         }
         return null;
+    }
+
+    private void checkBodyNotNull(Object value){
+        if(value == null){
+            throw AppErrors.INSTANCE.common("body should not be null").exception();
+        }
     }
 }

@@ -8,7 +8,7 @@ import com.junbo.order.clientproxy.model.OrderOfferRevision
 import com.junbo.order.core.SubledgerService
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.core.impl.subledger.SubledgerHelper
-import com.junbo.order.db.entity.enums.SubledgerItemAction
+import com.junbo.order.spec.model.enums.SubledgerItemAction
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.order.spec.model.SubledgerItem
@@ -43,20 +43,20 @@ class CreateSubledgerItemAction extends BaseOrderEventAwareAction {
         def serviceContext = context.orderServiceContext
         def order = serviceContext.order
 
-        builder.getOffers(serviceContext).syncThen {
+        return builder.getOffers(serviceContext).syncThen {
             serviceContext.order.orderItems?.each { OrderItem orderItem ->
                 // todo ignore first party item
                 def offer = serviceContext.offersMap[orderItem.offer]
                 def subledgerItem = buildSubledgerItem(order, orderItem, offer)
-                def subledger = subledgerHelper.getMatchingSubledger(offer, order.country.value, order.currency.value, new Date())
+                def subledger = subledgerHelper.getMatchingSubledger(offer, order.country, order.currency, new Date())
 
                 if (subledger != null) {
                     // link to subledger only if matching subledger found. If not found, let the back-end job to create
                     // the subledger so as to avoid concurrent creation of same subledger
-                    LOGGER.debug('name=Subledger_For_SubledgerItem_Found, orderItemId={}', orderItem.orderItemId)
-                    subledgerItem.subledgerId = subledger.subledgerId
+                    LOGGER.debug('name=Subledger_For_SubledgerItem_Found, orderItemId={}', orderItem.id)
+                    subledgerItem.subledger = subledger.getId()
                 } else {
-                    LOGGER.debug('name=Subledger_For_SubledgerItem_Not_Found, orderItemId={}', orderItem.orderItemId)
+                    LOGGER.debug('name=Subledger_For_SubledgerItem_Not_Found, orderItemId={}', orderItem.id)
                 }
 
                 subledgerService.createSubledgerItem(subledgerItem)
@@ -70,8 +70,8 @@ class CreateSubledgerItemAction extends BaseOrderEventAwareAction {
         // todo handle refund subledger item logic
         def subledgerItem = new SubledgerItem(
                 totalAmount: order.isTaxInclusive ? orderItem.totalAmount - orderItem.totalTax : orderItem.totalAmount,
-                orderItemId: orderItem.orderItemId,
-                offerId: new OfferId(offer.catalogOfferRevision.offerId),
+                orderItem: orderItem.getId(),
+                offer: new OfferId(offer.catalogOfferRevision.offerId),
                 subledgerItemAction: SubledgerItemAction.CHARGE.name()
         )
         return subledgerItem

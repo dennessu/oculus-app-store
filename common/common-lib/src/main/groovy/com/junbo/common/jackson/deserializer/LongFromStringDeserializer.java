@@ -1,0 +1,27 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
+package com.junbo.common.jackson.deserializer;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+
+import java.io.IOException;
+
+/**
+ * LongFromStringDeserializer.
+ */
+public class LongFromStringDeserializer extends JsonDeserializer<Long> {
+
+    @Override
+    public Long deserialize(JsonParser jsonParser, DeserializationContext context) throws IOException {
+        String value = jsonParser.getValueAsString();
+        if (value == null || value.length() == 0) {
+            return null;
+        }
+        return Long.parseLong(jsonParser.getValueAsString());
+    }
+}

@@ -6,8 +6,8 @@
 
 package com.junbo.entitlement.clientproxy;
 
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
-import com.junbo.entitlement.clientproxy.catalog.EntitlementDefinitionFacade;
+import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.entitlement.clientproxy.catalog.ItemFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -22,12 +22,12 @@ import java.util.Random;
 @ContextConfiguration(locations = {"classpath:spring/context-test.xml"})
 public class ClientproxyTest extends AbstractTestNGSpringContextTests {
     @Autowired
-    private EntitlementDefinitionFacade definitionFacade;
+    private ItemFacade itemFacade;
 
     @Test(enabled = false)
-    public void testDefinitionFacade() {
-        EntitlementDefinition definition = definitionFacade.getDefinition(new Random().nextLong());
-        Assert.assertNull(definition);
+    public void testItemFacade() {
+        ItemRevision item = itemFacade.getItem(new Random().nextLong());
+        Assert.assertNull(item);
     }
 
 }

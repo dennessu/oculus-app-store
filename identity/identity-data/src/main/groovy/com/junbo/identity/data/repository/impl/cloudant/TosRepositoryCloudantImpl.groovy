@@ -38,7 +38,7 @@ class TosRepositoryCloudantImpl extends CloudantClient<Tos> implements TosReposi
     @Override
     Promise<Tos> create(Tos tos) {
         if (tos.id == null) {
-            tos.id = new TosId(idGenerator.nextIdByShardId(shardAlgorithm.shardId()))
+            tos.id = new TosId(idGenerator.nextId())
         }
         return Promise.pure((Tos)super.cloudantPost(tos))
     }
@@ -51,12 +51,12 @@ class TosRepositoryCloudantImpl extends CloudantClient<Tos> implements TosReposi
 
     @Override
     Promise<Tos> update(Tos model) {
-        throw new IllegalStateException('update tos not support')
+        return Promise.pure((Tos)super.cloudantPut(model))
     }
 
     @Override
-    Promise<List<Tos>> search(TosListOptions options) {
-        return Promise.pure(null)
+    Promise<List<Tos>> searchAll(Integer limit, Integer offset) {
+        return Promise.pure(super.cloudantGetAll())
     }
 
     @Override

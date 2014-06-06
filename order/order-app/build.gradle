@@ -4,13 +4,15 @@ apply plugin: 'application'
 mainClassName = "com.junbo.apphost.core.JunboApplication"
 
 dependencies {
-    runtime (libraries.apphost_core)
-    runtime (libraries.common_configuration_data)
+    runtime junboProject(':apphost-core')
+    runtime junboProject(':configuration-data')
 
-    compile project(':order-rest')
-    compile project(':order-jobs')
+    compile junboProject(':order-rest')
+    compile junboProject(':order-jobs')
 
-    runtime "com.junbo.billing:billing-rest:${junboVersion}"
-    runtime "com.junbo.identity:identity-rest:${junboVersion}"
-    runtime "com.junbo.payment:payment-rest:${junboVersion}"
+    runtime junboProject(":billing-rest")
+    runtime junboProject(":identity-rest")
+    runtime junboProject(":payment-rest")
+    runtime junboProject(":rating-rest")
+    runtime junboProject(":catalog-rest")
 }

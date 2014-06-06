@@ -5,8 +5,6 @@
  */
 package com.junbo.common.filter;
 
-import org.slf4j.MDC;
-
 import javax.annotation.Priority;
 import javax.ws.rs.container.*;
 import java.io.IOException;
@@ -19,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @PreMatching
 @Priority(Integer.MIN_VALUE)
 public class SequenceIdFilter implements ContainerRequestFilter, ContainerResponseFilter {
+
     public static final String X_REQUEST_ID = "X-Request-Id";
 
     private final AtomicInteger sequenceId = new AtomicInteger(new Random().nextInt());
@@ -32,8 +31,6 @@ public class SequenceIdFilter implements ContainerRequestFilter, ContainerRespon
             requestId = Integer.toHexString(sequenceId.getAndIncrement());
             requestContext.getHeaders().putSingle(X_REQUEST_ID, requestId);
         }
-
-        MDC.put(X_REQUEST_ID, requestId);
     }
 
     @Override

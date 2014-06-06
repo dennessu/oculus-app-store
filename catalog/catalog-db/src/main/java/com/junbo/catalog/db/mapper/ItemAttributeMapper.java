@@ -29,7 +29,7 @@ public class ItemAttributeMapper {
         dbEntity.setType(attribute.getType());
         dbEntity.setParentId(attribute.getParentId());
         dbEntity.setPayload(Utils.toJson(attribute));
-        dbEntity.setRev(attribute.getRev()==null ? null : Integer.valueOf(attribute.getRev()));
+        dbEntity.setRev(attribute.getResourceAge());
     }
 
     public static ItemAttribute toModel(ItemAttributeEntity dbEntity) {
@@ -40,11 +40,9 @@ public class ItemAttributeMapper {
         attribute.setId(dbEntity.getId());
         attribute.setParentId(dbEntity.getParentId());
         attribute.setType(dbEntity.getType());
-        attribute.setCreatedBy(dbEntity.getCreatedBy());
         attribute.setCreatedTime(dbEntity.getCreatedTime());
-        attribute.setUpdatedBy(dbEntity.getUpdatedBy());
         attribute.setUpdatedTime(dbEntity.getUpdatedTime());
-        attribute.setRev(dbEntity.getRev().toString());
+        attribute.setResourceAge(dbEntity.getRev());
         return attribute;
     }
 }

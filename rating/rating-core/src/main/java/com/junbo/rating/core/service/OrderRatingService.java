@@ -10,11 +10,13 @@ import com.junbo.catalog.spec.model.domaindata.ShippingMethod;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.promotion.PromotionRevision;
 import com.junbo.catalog.spec.model.promotion.PromotionType;
-import com.junbo.rating.core.context.RatingContext;
+import com.junbo.rating.core.context.PriceRatingContext;
 import com.junbo.rating.spec.error.AppErrors;
 import com.junbo.rating.spec.fusion.LinkedEntry;
 import com.junbo.rating.spec.fusion.RatingOffer;
 import com.junbo.rating.spec.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -23,16 +25,13 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by lizwu on 2/7/14.
+ * Order Rating Service.
  */
 public class OrderRatingService extends RatingServiceSupport{
-
-    public void orderRating(RatingContext context) {
-        rate(context);
-    }
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderRatingService.class);
 
     @Override
-    public void rate(RatingContext context) {
+    public void rate(PriceRatingContext context) {
         initContext(context);
         filterByCurrency(context);
         filterByEffectiveDate(context);
@@ -42,13 +41,13 @@ public class OrderRatingService extends RatingServiceSupport{
         calculateShippingFee(context);
     }
 
-    private void initContext(RatingContext context) {
+    private void initContext(PriceRatingContext context) {
         context.getRules().putAll(
                 getPromotionRulesByTypes(PromotionType.OFFER_PROMOTION, PromotionType.ORDER_PROMOTION));
         fillOffer(context);
     }
 
-    private void findBestPrice(RatingContext context) {
+    private void findBestPrice(PriceRatingContext context) {
         Map<Long, Set<PromotionRevision>> candidates = context.getCandidates();
         Currency currency = context.getCurrency();
 
@@ -58,8 +57,9 @@ public class OrderRatingService extends RatingServiceSupport{
             Set<PromotionRevision> promotions = candidates.get(offerId) == null?
                     new HashSet<PromotionRevision>() : candidates.get(offerId);
 
-            Money originalPrice = getPrice(item.getOffer(), currency.getCode());
+            Money originalPrice = getPrice(item.getOffer(), context.getCountry(), currency.getCode());
             if (originalPrice == Money.NOT_FOUND) {
+                LOGGER.error("Price of Offer [" + offerId + "] is not found for Currency [" + currency + "].");
                 throw AppErrors.INSTANCE.priceNotFound(item.getOfferId().toString()).exception();
             }
 
@@ -88,7 +88,7 @@ public class OrderRatingService extends RatingServiceSupport{
         }
     }
 
-    private void calculateOrderLevelPromotion(RatingContext context) {
+    private void calculateOrderLevelPromotion(PriceRatingContext context) {
         Money totalAmount = new Money(BigDecimal.ZERO, context.getCurrency().getCode());
         for (RatingResultEntry entry : context.getEntries()) {
             //calculate the total amount of line items in current order
@@ -128,7 +128,7 @@ public class OrderRatingService extends RatingServiceSupport{
         context.setOrderResult(result);
     }
 
-    private void calculateShippingFee(RatingContext context) {
+    private void calculateShippingFee(PriceRatingContext context) {
         BigDecimal shippingFee = BigDecimal.ZERO;
         Map<Long, Integer> shippingDetail = new HashMap<>();
 
@@ -141,7 +141,8 @@ public class OrderRatingService extends RatingServiceSupport{
             Long shippingMethodId = item.getShippingMethodId() == null?
                     context.getDefaultShippingMethod() : item.getShippingMethodId();
             if (shippingMethodId == null) {
-                throw AppErrors.INSTANCE.missingShippingMethod(item.getOfferId().toString()).exception();
+                LOGGER.warn("Missing shipping method for Offer " + item.getOfferId());
+                continue;
             }
 
             if (!shippingDetail.containsKey(shippingMethodId)) {
@@ -153,7 +154,6 @@ public class OrderRatingService extends RatingServiceSupport{
         for (Long shippingMethodId : shippingDetail.keySet()) {
             int quantity = shippingDetail.get(shippingMethodId);
             ShippingMethod shippingMethod = catalogGateway.getShippingMethod(shippingMethodId);
-            // TODO throw exception if the shipping method is not found
             if (shippingMethod != null) {
                 shippingFee = shippingFee.add(shippingMethod.getBasePrice());
                 if (quantity > shippingMethod.getBaseUnit()) {

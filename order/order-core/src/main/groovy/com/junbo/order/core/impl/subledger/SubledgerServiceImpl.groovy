@@ -3,11 +3,11 @@ import com.junbo.common.id.SubledgerId
 import com.junbo.order.core.SubledgerService
 import com.junbo.order.core.impl.common.OrderValidator
 import com.junbo.order.core.impl.common.ParamUtils
-import com.junbo.order.db.entity.enums.PayoutStatus
-import com.junbo.order.db.entity.enums.SubledgerItemAction
-import com.junbo.order.db.entity.enums.SubledgerItemStatus
-import com.junbo.order.db.repo.OrderRepository
-import com.junbo.order.db.repo.SubledgerRepository
+import com.junbo.order.spec.model.enums.PayoutStatus
+import com.junbo.order.spec.model.enums.SubledgerItemAction
+import com.junbo.order.spec.model.enums.SubledgerItemStatus
+import com.junbo.order.db.repo.facade.OrderRepositoryFacade
+import com.junbo.order.db.repo.facade.SubledgerRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.PageParam
 import com.junbo.order.spec.model.Subledger
@@ -30,11 +30,11 @@ class SubledgerServiceImpl implements SubledgerService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SubledgerServiceImpl)
 
-    @Resource(name = 'subledgerRepository')
-    SubledgerRepository subledgerRepository
+    @Resource(name = 'subledgerRepositoryFacade')
+    SubledgerRepositoryFacade subledgerRepository
 
-    @Resource(name = 'orderRepository')
-    OrderRepository orderRepository
+    @Resource(name = 'orderRepositoryFacade')
+    OrderRepositoryFacade orderRepository
 
     @Resource(name = 'orderValidator')
     OrderValidator orderValidator
@@ -50,9 +50,9 @@ class SubledgerServiceImpl implements SubledgerService {
     @Override
     @Transactional
     Subledger updateSubledger(Subledger subledger) {
-        orderValidator.notNull(subledger.subledgerId, 'subledgerId')
+        orderValidator.notNull(subledger.id, 'subledgerId')
 
-        def persisted = getSubledger(subledger.subledgerId)
+        def persisted = getSubledger(subledger.getId())
         if (persisted == null) {
             throw AppErrors.INSTANCE.subledgerNotFound().exception()
         }
@@ -81,8 +81,8 @@ class SubledgerServiceImpl implements SubledgerService {
     SubledgerItem createSubledgerItem(SubledgerItem subledgerItem) {
         def start = System.currentTimeMillis()
         orderValidator.notNull(subledgerItem.totalAmount, 'totalAmount')
-        orderValidator.notNull(subledgerItem.orderItemId, 'orderItemId')
-        orderValidator.notNull(subledgerItem.offerId, 'offerId')
+        orderValidator.notNull(subledgerItem.orderItem, 'orderItem')
+        orderValidator.notNull(subledgerItem.offer, 'offer')
         orderValidator.notNull(subledgerItem.subledgerItemAction, 'subledgerItemAction').
                 validEnumString(subledgerItem.subledgerItemAction, 'subledgerItemAction', SubledgerItemAction)
 
@@ -91,7 +91,7 @@ class SubledgerServiceImpl implements SubledgerService {
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.info('name=CreateSubledgerItem, subledgerItemId={}, orderItemId={}, offerId={}, latency={}',
-                result.subledgerItemId, result.orderItemId, result.offerId, System.currentTimeMillis() - start)
+                result.id, result.orderItem, result.offer, System.currentTimeMillis() - start)
         }
 
         return result
@@ -100,7 +100,7 @@ class SubledgerServiceImpl implements SubledgerService {
     @Override
     @Transactional
     void aggregateSubledgerItem(SubledgerItem subledgerItem) {
-        def subledger = getSubledger(subledgerItem.subledgerId)
+        def subledger = getSubledger(subledgerItem.subledger)
 
         if (subledgerItem.subledgerItemAction == SubledgerItemAction.CHARGE.name()) {
             subledger.totalAmount += subledgerItem.totalAmount
@@ -109,7 +109,7 @@ class SubledgerServiceImpl implements SubledgerService {
             subledger.totalAmount -= subledgerItem.totalAmount
         }
 
-        subledgerItem.subledgerId = subledger.subledgerId
+        subledgerItem.subledger = subledger.getId()
         subledgerItem.status = SubledgerItemStatus.PROCESSED
         subledgerRepository.updateSubledgerItem(subledgerItem)
 

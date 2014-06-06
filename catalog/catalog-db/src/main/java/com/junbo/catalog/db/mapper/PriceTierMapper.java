@@ -5,6 +5,7 @@
  */
 
 package com.junbo.catalog.db.mapper;
+
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.entity.PriceTierEntity;
 import com.junbo.catalog.spec.model.pricetier.PriceTier;
@@ -27,7 +28,7 @@ public class PriceTierMapper {
     public static void fillDBEntity(PriceTier priceTier, PriceTierEntity dbEntity) {
         dbEntity.setId(priceTier.getId());
         dbEntity.setPayload(Utils.toJson(priceTier));
-        dbEntity.setRev(priceTier.getRev()==null ? null : Integer.valueOf(priceTier.getRev()));
+        dbEntity.setRev(priceTier.getResourceAge());
     }
 
     public static PriceTier toModel(PriceTierEntity dbEntity) {
@@ -36,11 +37,9 @@ public class PriceTierMapper {
         }
         PriceTier priceTier = Utils.fromJson(dbEntity.getPayload(), PriceTier.class);
         priceTier.setId(dbEntity.getId());
-        priceTier.setCreatedBy(dbEntity.getCreatedBy());
         priceTier.setCreatedTime(dbEntity.getCreatedTime());
-        priceTier.setUpdatedBy(dbEntity.getUpdatedBy());
         priceTier.setUpdatedTime(dbEntity.getUpdatedTime());
-        priceTier.setRev(dbEntity.getRev().toString());
+        priceTier.setResourceAge(dbEntity.getRev());
         return priceTier;
     }
 }

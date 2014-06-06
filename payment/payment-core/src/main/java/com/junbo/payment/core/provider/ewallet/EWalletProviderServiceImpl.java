@@ -8,9 +8,7 @@ package com.junbo.payment.core.provider.ewallet;
 
 import com.junbo.common.id.WalletId;
 import com.junbo.ewallet.spec.def.WalletType;
-import com.junbo.ewallet.spec.model.DebitRequest;
-import com.junbo.ewallet.spec.model.Transaction;
-import com.junbo.ewallet.spec.model.Wallet;
+import com.junbo.ewallet.spec.model.*;
 import com.junbo.ewallet.spec.resource.WalletResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.common.CommonUtil;
@@ -28,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * e-wallet provider service implementation.
@@ -59,7 +58,9 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
 
     @Override
     public void cloneTransactionResult(PaymentTransaction source, PaymentTransaction target) {
-        target.setExternalToken(source.getExternalToken());
+        if(!CommonUtil.isNullOrEmpty(source.getExternalToken())){
+            target.setExternalToken(source.getExternalToken());
+        }
         if(!CommonUtil.isNullOrEmpty(source.getStatus())){
             target.setStatus(source.getStatus());
         }
@@ -137,6 +138,36 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
     }
 
     @Override
+    public Promise<PaymentTransaction> credit(final PaymentInstrument pi, final PaymentTransaction paymentRequest) {
+        CreditRequest request = new CreditRequest();
+        request.setTrackingUuid(UUID.randomUUID());
+        request.setUserId(pi.getUserId());
+        request.setCurrency(paymentRequest.getChargeInfo().getCurrency());
+        request.setAmount(paymentRequest.getChargeInfo().getAmount());
+        return walletClient.credit(request).
+                recover(new Promise.Func<Throwable, Promise<Transaction>>() {
+                    @Override
+                    public Promise<Transaction> apply(Throwable throwable) {
+                        ProxyExceptionResponse proxyResponse = new ProxyExceptionResponse(throwable);
+                        LOGGER.error("credit declined by " + getProviderName() +
+                                "; error detail: " + proxyResponse.getBody());
+                        throw AppServerExceptions.INSTANCE.providerProcessError(
+                                PROVIDER_NAME, proxyResponse.getBody()).exception();
+                    }
+                }).then(new Promise.Func<Transaction, Promise<PaymentTransaction>>() {
+            @Override
+            public Promise<PaymentTransaction> apply(Transaction transaction) {
+                if (transaction == null || transaction.getTransactionId() == null) {
+                    throw AppServerExceptions.INSTANCE.providerProcessError(
+                            PROVIDER_NAME, "No transaction happens").exception();
+                }
+                paymentRequest.setStatus(PaymentStatus.SETTLED.toString());
+                return Promise.pure(paymentRequest);
+            }
+        });
+    }
+
+    @Override
     public Promise<PaymentTransaction> authorize(PaymentInstrument pi, PaymentTransaction paymentRequest) {
         throw AppServerExceptions.INSTANCE.serviceNotImplemented(getProviderName() + "_authorize").exception();
     }
@@ -149,7 +180,12 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
     @Override
     public Promise<PaymentTransaction> charge(PaymentInstrument pi, final PaymentTransaction paymentRequest) {
         DebitRequest debitRequest = new DebitRequest();
+        debitRequest.setTrackingUuid(UUID.randomUUID());
         debitRequest.setAmount(paymentRequest.getChargeInfo().getAmount());
+        if(pi.getTypeSpecificDetails() == null || pi.getTypeSpecificDetails().getStoredValueBalance() == null
+                || pi.getTypeSpecificDetails().getStoredValueBalance().compareTo(debitRequest.getAmount()) < 0){
+            throw AppClientExceptions.INSTANCE.insufficientBalance().exception();
+        }
         return walletClient.debit(new WalletId(Long.parseLong(pi.getExternalToken())), debitRequest).
                 recover(new Promise.Func<Throwable, Promise<Transaction>>() {
                     @Override
@@ -163,8 +199,7 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
                 }).then(new Promise.Func<Transaction, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(Transaction transaction) {
-                if (transaction == null ||
-                        transaction.getTransactionId() == null) {
+                if (transaction == null || transaction.getTransactionId() == null) {
                     throw AppServerExceptions.INSTANCE.providerProcessError(
                             PROVIDER_NAME, "No transaction happens").exception();
                 }
@@ -181,8 +216,41 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
     }
 
     @Override
-    public Promise<PaymentTransaction> refund(String transactionId, PaymentTransaction request) {
-        throw AppServerExceptions.INSTANCE.serviceNotImplemented(getProviderName() + "_refund").exception();
+    public Promise<PaymentTransaction> refund(String transactionId, final PaymentTransaction request) {
+        if(request.getChargeInfo() == null || request.getChargeInfo().getAmount() == null){
+            throw AppClientExceptions.INSTANCE.missingAmount().exception();
+        }
+        RefundRequest refundRequest = new RefundRequest();
+        refundRequest.setTrackingUuid(UUID.randomUUID());
+        refundRequest.setAmount(request.getChargeInfo().getAmount());
+        refundRequest.setCurrency(request.getChargeInfo().getCurrency());
+        Long walletTransactionId = null;
+        try{
+            walletTransactionId = Long.parseLong(transactionId);
+        }catch (Exception ex){
+            throw AppServerExceptions.INSTANCE.noExternalTokenFoundForPayment(transactionId).exception();
+        }
+        return walletClient.refund(walletTransactionId, refundRequest)
+                .recover(new Promise.Func<Throwable, Promise<Transaction>>() {
+                    @Override
+                    public Promise<Transaction> apply(Throwable throwable) {
+                        ProxyExceptionResponse proxyResponse = new ProxyExceptionResponse(throwable);
+                        LOGGER.error("refund declined by " + getProviderName() +
+                                "; error detail: " + proxyResponse.getBody());
+                        throw AppServerExceptions.INSTANCE.providerProcessError(
+                                PROVIDER_NAME, proxyResponse.getBody()).exception();
+                    }
+                }).then(new Promise.Func<Transaction, Promise<PaymentTransaction>>() {
+                    @Override
+                    public Promise<PaymentTransaction> apply(Transaction transaction) {
+                        if (transaction == null || transaction.getTransactionId() == null) {
+                            throw AppServerExceptions.INSTANCE.providerProcessError(
+                                    PROVIDER_NAME, "No transaction happens").exception();
+                        }
+                        request.setStatus(PaymentStatus.REFUNDED.toString());
+                        return Promise.pure(request);
+                    }
+                });
     }
 
     @Override
@@ -192,9 +260,8 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
     }
 
     @Override
-    public Promise<PaymentTransaction> getByTransactionToken(String token) {
-        throw AppServerExceptions.INSTANCE.serviceNotImplemented(
-                getProviderName() + "_getByTransactionToken").exception();
+    public Promise<PaymentTransaction> getByTransactionToken(PaymentTransaction request) {
+        return Promise.pure(null);
     }
 
     private void validateWallet(PaymentInstrument request){

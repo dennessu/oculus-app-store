@@ -5,17 +5,37 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
 /**
  * Created by liangfu on 4/26/14.
  */
 public class UserQQ {
-    private String qq;
+    @ApiModelProperty(position = 1, required = true, value = "The user qq information.")
+    private String info;
 
-    public String getQq() {
-        return qq;
+    public String getInfo() {
+        return info;
     }
 
-    public void setQq(String qq) {
-        this.qq = qq;
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserQQ userQQ = (UserQQ) o;
+
+        if (info != null ? !info.equals(userQQ.info) : userQQ.info != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return info != null ? info.hashCode() : 0;
     }
 }

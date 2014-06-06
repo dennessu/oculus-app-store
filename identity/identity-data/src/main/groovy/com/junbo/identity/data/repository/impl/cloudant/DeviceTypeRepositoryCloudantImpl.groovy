@@ -2,7 +2,7 @@ package com.junbo.identity.data.repository.impl.cloudant
 
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
-import com.junbo.common.id.DeviceTypeId
+import com.junbo.common.enumid.DeviceTypeId
 import com.junbo.identity.data.repository.DeviceTypeRepository
 import com.junbo.identity.spec.v1.model.DeviceType
 import com.junbo.identity.spec.v1.option.list.DeviceTypeListOptions
@@ -25,19 +25,24 @@ class DeviceTypeRepositoryCloudantImpl extends CloudantClient<DeviceType> implem
 
     @Override
     protected CloudantViews getCloudantViews() {
-        return null
+        return views
     }
 
     @Override
-    Promise<List<DeviceType>> search(DeviceTypeListOptions options) {
+    Promise<List<DeviceType>> searchAll(Integer limit, Integer offset) {
         return Promise.pure(super.cloudantGetAll())
+    }
+
+    @Override
+    Promise<List<DeviceType>> searchByDeviceTypeCode(String typeCode, Integer limit, Integer offset) {
+        def list = super.queryView('by_type_code', typeCode, limit, offset, false)
+        return Promise.pure(list)
     }
 
     @Override
     Promise<DeviceType> create(DeviceType deviceType) {
         if (deviceType.id == null) {
-            // hard code to shard 0 for all device type
-            deviceType.id = new DeviceTypeId(idGenerator.nextIdByShardId(0))
+            deviceType.id = new DeviceTypeId(deviceType.typeCode)
         }
 
         return Promise.pure((DeviceType)super.cloudantPost(deviceType))
@@ -58,4 +63,14 @@ class DeviceTypeRepositoryCloudantImpl extends CloudantClient<DeviceType> implem
         super.cloudantDelete(id.value.toString())
         return Promise.pure(null)
     }
+
+    protected CloudantViews views = new CloudantViews(
+            views: [
+                    'by_type_code': new CloudantViews.CloudantView(
+                            map: 'function(doc) {' +
+                                    '  emit(doc.typeCode, doc._id)' +
+                                    '}',
+                            resultClass: String)
+            ]
+    )
 }

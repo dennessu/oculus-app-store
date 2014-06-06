@@ -10,26 +10,26 @@
      <tx:annotation-driven/>
 
     <!-- proxy -->
-    <bean id="emailIdentityUserClient" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy">
-        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
-        <constructor-arg name="transcoder" ref="commonTranscoder"/>
-        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
-        <constructor-arg name="target" value="${clientproxy.identity.url}"/>
+    <bean id="emailIdentityUserClient" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
     </bean>
 
-    <bean id="emailIdentityUserPersonalInfoClient" class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy">
-        <constructor-arg name="client" ref="commonAsyncHttpClient"/>
-        <constructor-arg name="transcoder" ref="commonTranscoder"/>
-        <constructor-arg name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
-        <constructor-arg name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
-        <constructor-arg name="target" value="${clientproxy.identity.url}"/>
+    <bean id="emailIdentityUserPersonalInfoClient"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
     </bean>
     
-    <bean id="emailProvider" class="com.junbo.email.clientproxy.impl.MandrillProviderImpl"/>
-    <bean id="MandrillConfiguration" class="com.junbo.email.clientproxy.impl.mandrill.MandrillConfiguration">
+    <bean id="emailProvider" class="com.junbo.email.clientproxy.impl.MandrillProviderImpl">
+        <property name="configuration" ref="mandrillConfiguration"/>
+        <property name="asyncHttpClient" ref="commonAsyncHttpClient"/>
+    </bean>
+
+    <bean id="mandrillConfiguration" class="com.junbo.email.clientproxy.impl.mandrill.MandrillConfiguration">
         <property name="url" value="${email.client.mandrill.url}"/>
         <property name="key" value="${email.client.mandrill.key}"/>
+        <property name="size" value="${email.client.mandrill.recipients.size}"/>
+        <property name="enabled" value="${email.client.mandrill.enabled}"/>
     </bean>
 
     <bean id="identityFacade" class="com.junbo.email.clientproxy.impl.IdentityFacadeImpl"/>

@@ -9,11 +9,13 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.restriction.core.RestrictionService
 import com.junbo.restriction.spec.model.AgeCheck
 import com.junbo.restriction.spec.resource.RestrictionResource
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 
 /**
  * Impl of RestrictionResource.
  */
+@CompileStatic
 class RestrictionResourceImpl implements RestrictionResource {
     @Autowired
     private RestrictionService restrictionService

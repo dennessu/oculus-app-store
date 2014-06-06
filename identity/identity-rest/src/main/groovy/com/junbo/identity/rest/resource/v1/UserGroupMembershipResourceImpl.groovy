@@ -3,7 +3,7 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.common.id.Id
 import com.junbo.common.id.UserGroupId
 import com.junbo.common.model.Results
-import com.junbo.identity.core.service.Created201Marker
+import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.UserGroupFilter
 import com.junbo.identity.core.service.validator.UserGroupValidator
 import com.junbo.identity.data.repository.UserGroupRepository
@@ -28,9 +28,6 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
     private UserGroupRepository userGroupRepository
 
     @Autowired
-    private Created201Marker created201Marker
-
-    @Autowired
     private UserGroupFilter userGroupFilter
 
     @Autowired
@@ -44,9 +41,9 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
 
         userGroup = userGroupFilter.filterForCreate(userGroup)
 
-        userGroupValidator.validateForCreate(userGroup).then {
-            userGroupRepository.create(userGroup).then { UserGroup newUserGroup ->
-                created201Marker.mark((Id)newUserGroup.id)
+        return userGroupValidator.validateForCreate(userGroup).then {
+            return userGroupRepository.create(userGroup).then { UserGroup newUserGroup ->
+                Created201Marker.mark((Id)newUserGroup.id)
 
                 newUserGroup = userGroupFilter.filterForGet(newUserGroup, null)
                 return Promise.pure(newUserGroup)
@@ -60,7 +57,7 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        userGroupValidator.validateForGet(userGroupId).then { UserGroup newUserGroup ->
+        return userGroupValidator.validateForGet(userGroupId).then { UserGroup newUserGroup ->
             newUserGroup = userGroupFilter.filterForGet(newUserGroup,
                     getOptions.properties?.split(',') as List<String>)
 
@@ -85,9 +82,9 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
 
             userGroup = userGroupFilter.filterForPatch(userGroup, oldUserGroup)
 
-            userGroupValidator.validateForUpdate(userGroupId, userGroup, oldUserGroup).then {
+            return userGroupValidator.validateForUpdate(userGroupId, userGroup, oldUserGroup).then {
 
-                userGroupRepository.update(userGroup).then { UserGroup newUserGroup ->
+                return userGroupRepository.update(userGroup).then { UserGroup newUserGroup ->
                     newUserGroup = userGroupFilter.filterForGet(newUserGroup, null)
                     return Promise.pure(newUserGroup)
                 }
@@ -112,8 +109,8 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
 
             userGroup = userGroupFilter.filterForPut(userGroup, oldUserGroup)
 
-            userGroupValidator.validateForUpdate(userGroupId, userGroup, oldUserGroup).then {
-                userGroupRepository.update(userGroup).then { UserGroup newUserGroup ->
+            return userGroupValidator.validateForUpdate(userGroupId, userGroup, oldUserGroup).then {
+                return userGroupRepository.update(userGroup).then { UserGroup newUserGroup ->
                     newUserGroup = userGroupFilter.filterForGet(newUserGroup, null)
                     return Promise.pure(newUserGroup)
                 }
@@ -124,9 +121,7 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
     @Override
     Promise<Void> delete(UserGroupId userGroupId) {
         return userGroupValidator.validateForGet(userGroupId).then {
-            userGroupRepository.delete(userGroupId)
-
-            return Promise.pure(null)
+            return userGroupRepository.delete(userGroupId)
         }
     }
 
@@ -137,7 +132,7 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
         }
 
         return userGroupValidator.validateForSearch(listOptions).then {
-            userGroupRepository.search(listOptions).then { List<UserGroup> userGroupList ->
+            return search(listOptions).then { List<UserGroup> userGroupList ->
                 def result = new Results<UserGroup>(items: [])
 
                 userGroupList.each { UserGroup newUserGroup ->
@@ -153,6 +148,19 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
 
                 return Promise.pure(result)
             }
+        }
+    }
+
+    private Promise<List<UserGroup>> search(UserGroupListOptions listOptions) {
+        if (listOptions.userId != null && listOptions.groupId != null) {
+            return userGroupRepository.searchByUserIdAndGroupId(listOptions.userId, listOptions.groupId,
+                    listOptions.limit, listOptions.offset)
+        } else if (listOptions.userId != null) {
+            return userGroupRepository.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset)
+        } else if (listOptions.groupId != null) {
+            return userGroupRepository.searchByGroupId(listOptions.groupId, listOptions.limit, listOptions.offset)
+        } else {
+            throw new IllegalArgumentException('Unsupported search operation.')
         }
     }
 }

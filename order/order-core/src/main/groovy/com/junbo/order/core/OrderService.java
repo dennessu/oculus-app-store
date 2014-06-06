@@ -20,7 +20,7 @@ public interface OrderService {
 
     Promise<Order> createQuote(Order order, ApiContext context);
 
-    Promise<Order> getOrderByOrderId(Long orderId);
+    Promise<Order> getOrderByOrderId(Long orderId, Boolean doRate);
 
     Promise<Order> cancelOrder(Order request);
 

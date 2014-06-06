@@ -5,13 +5,12 @@
  */
 package com.junbo.test.common.blueprint;
 
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.fulfilment.spec.model.FulfilmentRequest;
 import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.billing.spec.model.ShippingAddress;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.item.Item;
@@ -50,14 +49,15 @@ public class Master {
     private Map<String, Offer> offers;
     private Map<String, ItemRevision> itemRevisions;
     private Map<String, OfferRevision> offerRevisions;
-    private Map<String, EntitlementDefinition> entitlementDefinitions;
     private Map<String, Order> orders;
-    private Map<String, ShippingAddress> shippingAddresses;
     private Map<String, ItemAttribute> itemAttributes;
     private Map<String, OfferAttribute> offerAttributes;
+
+
     private Map<String, PaymentInstrument> paymentInstruments;
     private Map<String, Entitlement> entitlements;
     private Map<String, Balance> balances;
+    private Map<String, FulfilmentRequest> fulfilments;
 
     public void initializeMaster() {
         this.initializeUsers();
@@ -66,14 +66,13 @@ public class Master {
         this.initializeItemRevisions();
         this.initializeOffers();
         this.initializeOfferRevisions();
-        this.initializeEntitlementDefinitions();
         this.initializeOrders();
         this.initializeItemAttributes();
         this.initializeOfferAttributes();
         this.initializeEntitlements();
         this.initializePayments();
-        this.initializeShippingAddresses();
         this.initializeBalances();
+        this.initializeFulfilmentItems();
     }
 
     public void initializeUsers() {
@@ -118,13 +117,6 @@ public class Master {
         this.offerRevisions.clear();
     }
 
-    public void initializeEntitlementDefinitions() {
-        if (this.entitlementDefinitions == null) {
-            this.entitlementDefinitions = new HashMap<>();
-        }
-        this.entitlementDefinitions.clear();
-    }
-
     public void initializeOrders() {
         if (this.orders == null) {
             this.orders = new HashMap<>();
@@ -153,13 +145,6 @@ public class Master {
         this.entitlements.clear();
     }
 
-    public void initializeShippingAddresses() {
-        if (this.shippingAddresses == null) {
-            this.shippingAddresses = new HashMap<>();
-        }
-        this.shippingAddresses.clear();
-    }
-
     public void initializePayments() {
         if (this.paymentInstruments == null) {
             this.paymentInstruments = new HashMap<>();
@@ -172,6 +157,13 @@ public class Master {
             this.balances = new HashMap<>();
         }
         this.balances.clear();
+    }
+
+    public void initializeFulfilmentItems() {
+        if (this.fulfilments == null) {
+            this.fulfilments = new HashMap<>();
+        }
+        this.fulfilments.clear();
     }
 
     public void addUser(String userId, User user) {
@@ -216,27 +208,12 @@ public class Master {
         this.offerRevisions.put(offerRevisionId, offerRevision);
     }
 
-    public void addEntitlementDefinition(String entitlementDefinitionId, EntitlementDefinition entitlementDefinition) {
-        if (this.entitlementDefinitions.containsKey(entitlementDefinitionId)) {
-            this.entitlementDefinitions.remove(entitlementDefinitionId);
-        }
-        this.entitlementDefinitions.put(entitlementDefinitionId, entitlementDefinition);
-    }
-
-    public void addOrder(String orderId, Order order) {
+   public void addOrder(String orderId, Order order) {
         if (this.orders.containsKey(orderId)) {
             this.orders.remove(orderId);
         }
 
         this.orders.put(orderId, order);
-    }
-
-    public void addShippingAddress(String addressId, ShippingAddress address) {
-        if (this.shippingAddresses.containsKey(addressId)) {
-            this.shippingAddresses.remove(addressId);
-        }
-
-        this.shippingAddresses.put(addressId, address);
     }
 
     public void addItemAttribute(String attributeId, ItemAttribute attribute) {
@@ -275,6 +252,13 @@ public class Master {
         this.balances.put(balanceId, balance);
     }
 
+    public void addFulfilment(String fulfilmentId, FulfilmentRequest fulfilmentRequest) {
+        if (this.fulfilments.containsKey(fulfilmentId)) {
+            this.fulfilments.remove(fulfilmentId);
+        }
+        this.fulfilments.put(fulfilmentId, fulfilmentRequest);
+    }
+
     public User getUser(String userId) {
         return this.users.get(userId);
     }
@@ -304,7 +288,7 @@ public class Master {
                 String offerRevisionId = IdConverter.idLongToHexString(OfferRevisionId.class, offer.getCurrentRevisionId());
                 OfferRevision offerRevision = this.offerRevisions.get(offerRevisionId);
 
-                if (offerRevision.getLocales().get("en_US").getName().equalsIgnoreCase(offerName)) {
+                if (offerRevision != null && offerRevision.getLocales().get("en_US").getName().equalsIgnoreCase(offerName)) {
                     return key;
                 }
             }
@@ -337,10 +321,6 @@ public class Master {
         return this.orders.get(orderId);
     }
 
-    public ShippingAddress getShippingAddress(String addressId) {
-        return this.shippingAddresses.get(addressId);
-    }
-
     public PaymentInstrument getPaymentInstrument(String paymentInstrumentId) {
         return this.paymentInstruments.get(paymentInstrumentId);
     }
@@ -353,10 +333,6 @@ public class Master {
         return this.offerAttributes.get(attributeId);
     }
 
-    public EntitlementDefinition getEntitlementDefinition(String entitlementDefinitionId) {
-        return this.entitlementDefinitions.get(entitlementDefinitionId);
-    }
-
     public Entitlement getEntitlement(String entitlementId) {
         return this.entitlements.get(entitlementId);
     }
@@ -365,10 +341,12 @@ public class Master {
         return this.balances.get(balanceId);
     }
 
-    public void removeShippingAddress(String addressId) {
-        if (this.shippingAddresses.containsKey(addressId)) {
-            this.shippingAddresses.remove(addressId);
-        }
+    public FulfilmentRequest getFulfilment(String fulfilmentId){
+        return this.fulfilments.get(fulfilmentId);
+    }
+
+    public Map<String, PaymentInstrument> getPaymentInstruments() {
+        return paymentInstruments;
     }
 
     public void removePaymentInstrument(String paymentInstrumentId) {
@@ -380,12 +358,6 @@ public class Master {
     public void removeBalance(String balanceId) {
         if (this.balances.containsKey(balanceId)) {
             this.balances.remove(balanceId);
-        }
-    }
-
-    public void removeEntitlementDefinition(String entitlementDefinitionId) {
-        if (this.entitlementDefinitions.containsKey(entitlementDefinitionId)) {
-            this.entitlementDefinitions.remove(entitlementDefinitionId);
         }
     }
 

@@ -1,14 +1,12 @@
 package com.junbo.order.core.impl.common
 
-import com.junbo.order.db.entity.enums.EventStatus
-import com.junbo.order.db.entity.enums.OrderActionType
-import com.junbo.order.db.entity.enums.OrderStatus
-import com.junbo.order.db.repo.OrderRepository
+import com.junbo.order.spec.model.enums.EventStatus
+import com.junbo.order.spec.model.enums.OrderActionType
+import com.junbo.order.spec.model.enums.OrderStatus
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderEvent
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
 
@@ -19,9 +17,6 @@ import org.springframework.util.CollectionUtils
 @TypeChecked
 @Component('orderStatusBuilder')
 class OrderStatusBuilder {
-
-    @Autowired
-    OrderRepository orderRepository
 
     static OrderStatus buildOrderStatus(Order order, List<OrderEvent> orderEvents) {
         if (order.tentative) {

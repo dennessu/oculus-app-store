@@ -9,24 +9,26 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.model.Link;
-import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by xiali_000 on 4/21/2014.
  */
-public class Currency extends ResourceMeta implements Identifiable<CurrencyId> {
+public class Currency extends PropertyAssignedAwareResourceMeta implements Identifiable<CurrencyId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "[Nullable]The id of the currency resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The Link to the currency resource.")
     @JsonProperty("self")
     private CurrencyId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "[Nullable]The currency code of the currency " +
-            "resource must be same with ID.")
+    @ApiModelProperty(position = 2, required = true, value = "[Nullable]The currency code of the currency resource; " +
+            "always the same with self.id; " +
+            "never displayed to users - use translationService(localeKeys.shortName) for that ")
     private String currencyCode;
 
     @ApiModelProperty(position = 3, required = false, value = "[Nullable]Countries link with default currency specified")
@@ -36,11 +38,18 @@ public class Currency extends ResourceMeta implements Identifiable<CurrencyId> {
     @ApiModelProperty(position = 4, required = true, value = "The symbol of the currency resource.")
     private String symbol;
 
-    @ApiModelProperty(position = 5, required = true, value = "The supported locales of the currency resource.")
-    private Map<String, LocaleName> locales = new HashMap<>();
+    @ApiModelProperty(position = 5, required = true, value = "Position to put the symbol when show currency number (BEFORE, AFTER).")
+    private String symbolPosition;
 
-    @ApiModelProperty(position = 6, required = true, value = "The future expansion of the currency resource.")
-    private Map<String, String> futureExpansion = new HashMap<>();
+    @ApiModelProperty(position = 7, required = true, value = "The number of digits after decimal.")
+    private Integer numberAfterDecimal;
+
+    @ApiModelProperty(position = 8, required = true, value = "The Minimal Amount of money for this currency to authorize and verify the payment Instrument.")
+    @JsonProperty("minimalAuthorizeAmount")
+    private BigDecimal minAuthAmount;
+
+    @ApiModelProperty(position = 11, required = true, value = "Localizable properties and the corresponding Key value to look up via Translation service.")
+    private Map<String, String> localeKeys = new HashMap<>();
 
     public CurrencyId getId() {
         return id;
@@ -79,21 +88,40 @@ public class Currency extends ResourceMeta implements Identifiable<CurrencyId> {
         support.setPropertyAssigned("symbol");
     }
 
-    public void setLocales(Map<String, LocaleName> locales) {
-        this.locales = locales;
-        support.setPropertyAssigned("locales");
+    public String getSymbolPosition() {
+        return symbolPosition;
     }
 
-    public Map<String, LocaleName> getLocales() {
-        return locales;
+    public void setSymbolPosition(String symbolPosition) {
+        this.symbolPosition = symbolPosition;
+        support.setPropertyAssigned("symbolPosition");
     }
 
-    public Map<String, String> getFutureExpansion() {
-        return futureExpansion;
+    public Integer getNumberAfterDecimal() {
+        return numberAfterDecimal;
     }
 
-    public void setFutureExpansion(Map<String, String> futureExpansion) {
-        this.futureExpansion = futureExpansion;
-        support.setPropertyAssigned("futureExpansion");
+    public void setNumberAfterDecimal(Integer numberAfterDecimal) {
+        this.numberAfterDecimal = numberAfterDecimal;
+        support.setPropertyAssigned("numberAfterDecimal");
+    }
+
+    public BigDecimal getMinAuthAmount() {
+        return minAuthAmount;
+    }
+
+    public void setMinAuthAmount(BigDecimal minAuthAmount) {
+        this.minAuthAmount = minAuthAmount;
+        support.setPropertyAssigned("minAuthAmount");
+        support.setPropertyAssigned("minimalAuthorizeAmount");
+    }
+
+    public Map<String, String> getLocaleKeys() {
+        return localeKeys;
+    }
+
+    public void setLocaleKeys(Map<String, String> localeKeys) {
+        this.localeKeys = localeKeys;
+        support.setPropertyAssigned("localeKeys");
     }
 }

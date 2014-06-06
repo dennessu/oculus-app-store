@@ -1,11 +1,10 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile project(':restriction-rest')
+    compile junboProject(':restriction-rest')
 
     compile (libraries.jersey_container_grizzly2_http)
-    compile (libraries.jersey_spring3)
-    compile (libraries.common_lib)
-    runtime (libraries.common_configuration_data)
+    compile junboProject(':common-lib')
+    runtime junboProject(':configuration-data')
 
 }

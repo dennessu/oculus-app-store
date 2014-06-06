@@ -6,13 +6,12 @@
 package com.junbo.email.core.service
 
 import com.junbo.common.id.EmailId
-import com.junbo.email.clientproxy.EmailProvider
 import com.junbo.email.clientproxy.IdentityFacade
 import com.junbo.email.core.EmailService
+import com.junbo.email.core.publisher.EmailPublisher
 import com.junbo.email.core.validator.EmailValidator
 import com.junbo.email.db.repo.EmailHistoryRepository
 import com.junbo.email.db.repo.EmailScheduleRepository
-import com.junbo.email.db.repo.EmailTemplateRepository
 import com.junbo.email.spec.error.AppErrors
 import com.junbo.email.spec.model.Email
 import com.junbo.email.spec.model.EmailStatus
@@ -20,12 +19,14 @@ import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 
 /**
  * Impl of EmailService.
  */
 @CompileStatic
 @Component
+@Transactional
 class EmailServiceImpl implements EmailService {
 
     @Autowired
@@ -35,16 +36,13 @@ class EmailServiceImpl implements EmailService {
     private EmailScheduleRepository emailScheduleRepository
 
     @Autowired
-    private EmailTemplateRepository emailTemplateRepository
-
-    @Autowired
     private EmailValidator emailValidator
 
     @Autowired
-    private EmailProvider emailProvider
+    private IdentityFacade identityFacade
 
     @Autowired
-    private IdentityFacade identityFacade
+    private EmailPublisher emailPublisher
 
     @Override
     Promise<Email> postEmail(Email email) {
@@ -78,10 +76,11 @@ class EmailServiceImpl implements EmailService {
 
     private Promise<Email> handle(Email email) {
         if (email.recipients == null) {
-            identityFacade.getUserEmail(email.userId.value).then { String strEmail ->
+            return identityFacade.getUserEmail(email.userId.value).then { String strEmail ->
                 if (email == null) {
-                    throw AppErrors.INSTANCE.missingField('recipients').exception()
+                    throw AppErrors.INSTANCE.noValidatedUserEmail().exception()
                 }
+
                 def recipients = [] as List<String>
                 recipients << strEmail
                 email.setRecipients(recipients)
@@ -98,11 +97,14 @@ class EmailServiceImpl implements EmailService {
             def scheduleEmail = emailScheduleRepository.saveEmailSchedule(email)
             return Promise.pure(scheduleEmail)
         }
-        def template = emailTemplateRepository.getEmailTemplate(email.templateId.value)
-        return emailProvider.sendEmail(email, template).then {
-            Long id = emailHistoryRepository.createEmailHistory(it as Email)
-            return Promise.pure(emailHistoryRepository.getEmail(id))
-        }
+//        def template = emailTemplateRepository.getEmailTemplate(email.templateId.value)
+//        return emailProvider.sendEmail(email, template).then {
+//            Long id = emailHistoryRepository.createEmailHistory(it as Email)
+//            return Promise.pure(emailHistoryRepository.getEmail(id))
+//        }
+        Long id = emailHistoryRepository.createEmailHistory(email)
+        emailPublisher.send(id)
+        return Promise.pure(emailHistoryRepository.getEmail(id))
     }
 
     private Promise<Email> update(Email email) {

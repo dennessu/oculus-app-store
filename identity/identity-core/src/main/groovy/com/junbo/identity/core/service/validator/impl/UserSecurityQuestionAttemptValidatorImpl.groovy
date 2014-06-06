@@ -7,8 +7,10 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
-import com.junbo.identity.core.service.util.CipherHelper
+import com.junbo.identity.core.service.credential.CredentialHash
+import com.junbo.identity.core.service.credential.CredentialHashFactory
 import com.junbo.identity.core.service.validator.UserSecurityQuestionAttemptValidator
+import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.data.repository.UserSecurityQuestionAttemptRepository
 import com.junbo.identity.data.repository.UserSecurityQuestionRepository
@@ -18,8 +20,14 @@ import com.junbo.identity.spec.v1.model.UserSecurityQuestion
 import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt
 import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionAttemptListOptions
 import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.transaction.AsyncTransactionTemplate
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.transaction.PlatformTransactionManager
+import org.springframework.transaction.TransactionDefinition
+import org.springframework.transaction.TransactionStatus
+import org.springframework.transaction.support.TransactionCallback
+import org.springframework.util.CollectionUtils
 
 import java.util.regex.Pattern
 
@@ -27,11 +35,14 @@ import java.util.regex.Pattern
  * Created by liangfu on 3/25/14.
  */
 @CompileStatic
+@SuppressWarnings('UnnecessaryGetter')
 class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAttemptValidator {
 
     private UserRepository userRepository
     private UserSecurityQuestionAttemptRepository attemptRepository
     private UserSecurityQuestionRepository userSecurityQuestionRepository
+
+    private CredentialHashFactory credentialHashFactory
 
     private Integer valueMinLength
     private Integer valueMaxLength
@@ -43,6 +54,9 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
 
     private Integer clientIdMinLength
     private Integer clientIdMaxLength
+
+    private PlatformTransactionManager transactionManager
+    private Integer maxRetryCount
 
     @Override
     Promise<UserSecurityQuestionVerifyAttempt> validateForGet(
@@ -92,10 +106,18 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
         }
 
         return checkBasicUserSecurityQuestionAttemptInfo(attempt).then {
-            userRepository.get(userId).then { User user ->
+            return userRepository.get(userId).then { User user ->
 
                 if (user == null) {
                     throw AppErrors.INSTANCE.userNotFound(userId).exception()
+                }
+
+                if (user.status != UserStatus.ACTIVE.toString()) {
+                    throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
+                }
+
+                if (user.isAnonymous == true) {
+                    throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
                 }
 
                 if (attempt.userId != null && attempt.userId != userId) {
@@ -103,32 +125,75 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
                 }
                 attempt.setUserId((UserId)user.id)
 
-                userSecurityQuestionRepository.get(attempt.userSecurityQuestionId).
+                return userSecurityQuestionRepository.get(attempt.userSecurityQuestionId).
                         then { UserSecurityQuestion userSecurityQuestion ->
                             if (userSecurityQuestion == null) {
                                 throw AppErrors.INSTANCE.userSecurityQuestionNotFound().exception()
                             }
 
-                            String[] hashInfo = userSecurityQuestion.answerHash.split(CipherHelper.COLON)
-                            if (hashInfo.length != 4) {
-                                throw AppErrors.INSTANCE.userSecurityQuestionIncorrect().exception()
+                            List<CredentialHash> credentialHashList = credentialHashFactory.getAllCredentialHash()
+                            CredentialHash matched = credentialHashList.find { CredentialHash hash ->
+                                return hash.matches(attempt.value, userSecurityQuestion.answerHash)
                             }
 
-                            String salt = hashInfo[1]
-                            String pepper = hashInfo[2]
-
-                            if (CipherHelper.generateCipherHashV1(attempt.value, salt, pepper)
-                                    == userSecurityQuestion.answerHash) {
+                            if (matched != null) {
                                 attempt.setSucceeded(true)
-                            }
-                            else {
+                            } else {
                                 attempt.setSucceeded(false)
                             }
 
-                            return Promise.pure(null)
+                            return checkMaximumRetryCount(user, attempt)
                         }
             }
         }
+    }
+
+    private Promise<Void> checkMaximumRetryCount(User user, UserSecurityQuestionVerifyAttempt attempt) {
+        if (attempt.succeeded == true) {
+            return Promise.pure(null)
+        }
+
+        return attemptRepository.searchByUserIdAndSecurityQuestionId(attempt.userId, attempt.userSecurityQuestionId,
+                Integer.MAX_VALUE, 0).then { List<UserSecurityQuestionVerifyAttempt> attemptList ->
+            if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxRetryCount) {
+                return Promise.pure(null)
+            }
+
+            attemptList.sort(new Comparator<UserSecurityQuestionVerifyAttempt>() {
+                @Override
+                int compare(UserSecurityQuestionVerifyAttempt o1, UserSecurityQuestionVerifyAttempt o2) {
+                    return o2.createdTime <=> o1.createdTime
+                }
+            })
+
+            int index = 0
+            for (; index < maxRetryCount; index++) {
+                if (attemptList.get(index).succeeded == true) {
+                    break
+                }
+            }
+
+            // Reach maximum count, lock account
+            if (index == maxRetryCount) {
+                user.status = UserStatus.SUSPEND.toString()
+                return createInNewTran(user).then {
+                    throw AppErrors.INSTANCE.fieldInvalid('userId',
+                            'User reaches maximum allowed retry count').exception()
+                }
+            }
+
+            return Promise.pure(null)
+        }
+    }
+
+    Promise<User> createInNewTran(User user) {
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager)
+        template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
+        return template.execute(new TransactionCallback<Promise<User>>() {
+            Promise<User> doInTransaction(TransactionStatus txnStatus) {
+                return userRepository.update(user)
+            }
+        })
     }
 
     private Promise<Void> checkBasicUserSecurityQuestionAttemptInfo(UserSecurityQuestionVerifyAttempt attempt) {
@@ -193,6 +258,11 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
     }
 
     @Required
+    void setCredentialHashFactory(CredentialHashFactory credentialHashFactory) {
+        this.credentialHashFactory = credentialHashFactory
+    }
+
+    @Required
     void setValueMinLength(Integer valueMinLength) {
         this.valueMinLength = valueMinLength
     }
@@ -227,5 +297,15 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
     @Required
     void setClientIdMaxLength(Integer clientIdMaxLength) {
         this.clientIdMaxLength = clientIdMaxLength
+    }
+
+    @Required
+    void setTransactionManager(PlatformTransactionManager transactionManager) {
+        this.transactionManager = transactionManager
+    }
+
+    @Required
+    void setMaxRetryCount(Integer maxRetryCount) {
+        this.maxRetryCount = maxRetryCount
     }
 }

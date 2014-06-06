@@ -10,27 +10,27 @@ import com.junbo.email.spec.error.AppErrors
 import com.junbo.email.spec.model.Email
 import com.junbo.email.spec.model.EmailTemplate
 import com.junbo.email.spec.model.Model
-import com.junbo.identity.spec.v1.model.User
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
+import org.springframework.util.StringUtils
+
+import java.util.regex.Pattern
 
 /**
  * Common Validator.
  */
 @CompileStatic
-@Component('emailCommonValidator')
-class CommonValidator {
-    @Autowired
+abstract class CommonValidator {
+
     protected EmailTemplateRepository emailTemplateRepository
 
-    protected void validateUser(User user) {
-        if (user == null) {
-            throw AppErrors.INSTANCE.invalidUserId('').exception()
-        }
-        if (user.status != 'ACTIVE') {
-            throw AppErrors.INSTANCE.invalidUserStatus('').exception()
-        }
+    private Pattern emailPattern
+
+    void setEmailTemplateRepository(EmailTemplateRepository emailTemplateRepository) {
+        this.emailTemplateRepository = emailTemplateRepository
+    }
+
+    void setEmailPattern(String emailPattern) {
+        this.emailPattern = Pattern.compile(emailPattern)
     }
 
     protected void validateScheduleTime(Email email, boolean required) {
@@ -52,28 +52,30 @@ class CommonValidator {
     }
 
     protected boolean validateEmailAddress(String email) {
-        //TODO:need to update later.
-        if (email == null) {
-            return false
+        if (!StringUtils.isEmpty(email)) {
+            return emailPattern.matcher(email).matches()
         }
-        return true
+        return false
     }
 
     protected void validateEmailTemplate(Email email) {
         EmailTemplate template = emailTemplateRepository.getEmailTemplate(email.templateId.value)
 
         if (template == null) {
-            throw AppErrors.INSTANCE.templateNotFound('').exception()
+            throw AppErrors.INSTANCE.templateNotFound().exception()
         }
-        if (template.placeholderNames != null && email.replacements == null) {
-            throw AppErrors.INSTANCE.invalidProperty('replacements').exception()
+        if (template.placeholderNames?.any() && !email.replacements?.any()) {
+            throw AppErrors.INSTANCE.invalidReplacements('replacements').exception()
         }
-        if (template.placeholderNames != null) {
+        if (!template.placeholderNames?.any() && email.replacements?.any()) {
+            throw AppErrors.INSTANCE.invalidReplacements('replacements').exception()
+        }
+        if (template.placeholderNames?.any()) {
             List<String> placeholderNames = template.placeholderNames.collect { String placeholderName ->
                 placeholderName.toLowerCase() }
             for (String key : email.replacements.keySet()) {
-                if (!placeholderNames.contains(key.replaceAll('\\d*(:\\w*)?$','').toLowerCase())) {
-                    throw AppErrors.INSTANCE.invalidProperty(key).exception()
+                if (!placeholderNames.contains(key.replaceAll('\\d*(:\\w*)?$', '').toLowerCase())) {
+                    throw AppErrors.INSTANCE.invalidReplacements(key).exception()
                 }
             }
         }

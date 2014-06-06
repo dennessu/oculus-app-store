@@ -30,8 +30,11 @@ public class OfferMapper {
         entity.setOwnerId(model.getOwnerId());
         entity.setCurrentRevisionId(model.getCurrentRevisionId());
         //entity.setCategories(Utils.toJson(model.getCategories()));
+        entity.setEnvironment(model.getEnvironment());
         entity.setCategories(model.getCategories());
-        entity.setRev(model.getRev()==null ? null : Integer.valueOf(model.getRev()));
+        entity.setCreatedBy(String.valueOf(model.getOwnerId()));
+        entity.setUpdatedBy(String.valueOf(model.getOwnerId()));
+        entity.setRev(model.getResourceAge());
     }
 
     public static Offer toModel(OfferEntity entity) {
@@ -43,13 +46,12 @@ public class OfferMapper {
         model.setPublished(entity.isPublished());
         model.setCurrentRevisionId(entity.getCurrentRevisionId());
         model.setOwnerId(entity.getOwnerId());
+        model.setEnvironment(entity.getEnvironment());
         //model.setCategories(Utils.fromJson(entity.getCategories(), List.class));
         model.setCategories(entity.getCategories());
-        model.setCreatedBy(entity.getCreatedBy());
         model.setCreatedTime(entity.getCreatedTime());
-        model.setUpdatedBy(entity.getUpdatedBy());
         model.setUpdatedTime(entity.getUpdatedTime());
-        model.setRev(entity.getRev().toString());
+        model.setResourceAge(entity.getRev());
         return model;
     }
 }

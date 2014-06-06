@@ -7,57 +7,61 @@
 package com.junbo.catalog.core.service;
 
 import com.junbo.catalog.common.util.Utils;
-import com.junbo.catalog.core.EntitlementDefinitionService;
 import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.db.repo.ItemAttributeRepository;
 import com.junbo.catalog.db.repo.ItemRepository;
 import com.junbo.catalog.db.repo.ItemRevisionRepository;
 import com.junbo.catalog.db.repo.OfferRepository;
+import com.junbo.catalog.spec.enums.EntitlementType;
 import com.junbo.catalog.spec.enums.ItemAttributeType;
 import com.junbo.catalog.spec.enums.ItemType;
 import com.junbo.catalog.spec.enums.Status;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementDefinition;
-import com.junbo.catalog.spec.model.entitlementdef.EntitlementType;
 import com.junbo.catalog.spec.model.item.*;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.common.error.AppError;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.junbo.common.id.ItemId;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Item service implementation.
  */
-public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevision> implements ItemService {
-    @Autowired
+public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevision> implements ItemService {
     private ItemRepository itemRepo;
-    @Autowired
     private ItemRevisionRepository itemRevisionRepo;
-    @Autowired
-    private EntitlementDefinitionService entitlementDefService;
-    @Autowired
     private ItemAttributeRepository itemAttributeRepo;
-    @Autowired
     private OfferRepository offerRepo;
+
+    @Required
+    public void setItemRevisionRepo(ItemRevisionRepository itemRevisionRepo) {
+        this.itemRevisionRepo = itemRevisionRepo;
+    }
+
+    @Required
+    public void setItemAttributeRepo(ItemAttributeRepository itemAttributeRepo) {
+        this.itemAttributeRepo = itemAttributeRepo;
+    }
+
+    @Required
+    public void setItemRepo(ItemRepository itemRepo) {
+        this.itemRepo = itemRepo;
+    }
+
+    @Required
+    public void setOfferRepo(OfferRepository offerRepo) {
+        this.offerRepo = offerRepo;
+    }
 
     @Override
     public Item createEntity(Item item) {
         validateItemCreation(item);
 
-        Long itemId = itemRepo.create(item);
-        item.setItemId(itemId);
-        generateEntitlementDef(item);
-        itemRepo.update(item);
-
-        return itemRepo.get(itemId);
+        return itemRepo.create(item);
     }
 
     @Override
@@ -67,8 +71,9 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
             throw AppErrors.INSTANCE.notFound("item", Utils.encodeId(itemId)).exception();
         }
         validateItemUpdate(item, oldItem);
-        itemRepo.update(item);
-        return itemRepo.get(itemId);
+
+        item.setActiveRevision(oldItem.getActiveRevision());
+        return itemRepo.update(item);
     }
 
     @Override
@@ -79,32 +84,45 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
     @Override
     public ItemRevision createRevision(ItemRevision revision) {
         validateRevisionCreation(revision);
-        Long revisionId = itemRevisionRepo.create(revision);
-        return itemRevisionRepo.get(revisionId);
+        Item item = itemRepo.get(revision.getItemId());
+        generateEntitlementDef(revision, item.getType());
+        return itemRevisionRepo.create(revision);
     }
 
     @Override
     public ItemRevision updateRevision(Long revisionId, ItemRevision revision) {
         ItemRevision oldRevision = itemRevisionRepo.get(revisionId);
-        if (oldRevision==null) {
-            throw AppErrors.INSTANCE.notFound("offer-revision", Utils.encodeId(revisionId)).exception();
+        if (oldRevision == null) {
+            throw AppErrors.INSTANCE.notFound("item-revision", Utils.encodeId(revisionId)).exception();
         }
         if (Status.APPROVED.is(oldRevision.getStatus())) {
             throw AppErrors.INSTANCE.validation("Cannot update an approved revision").exception();
         }
         validateRevisionUpdate(revision, oldRevision);
-        return super.updateRevision(revisionId, revision);
+        Item item = itemRepo.get(revision.getItemId());
+        generateEntitlementDef(revision, item.getType());
+
+        if (Status.APPROVED.is(revision.getStatus())) {
+            revision.setTimestamp(Utils.currentTimestamp());
+
+            item.setCurrentRevisionId(revisionId);
+            item.setActiveRevision(revision);
+            itemRepo.update(item);
+        }
+        return itemRevisionRepo.update(revision);
     }
 
     @Override
     public List<ItemRevision> getRevisions(ItemRevisionsGetOptions options) {
-        if (options.getTimestamp()!=null) {
+        if (options.getTimestamp() != null) {
             if (CollectionUtils.isEmpty(options.getItemIds())) {
                 throw AppErrors.INSTANCE.validation("itemId must be specified when timestamp is present.").exception();
             }
-
-            return itemRevisionRepo.getRevisions(options.getItemIds(), options.getTimestamp());
-
+            Set<Long> itemIds = new HashSet<>();
+            for (ItemId itemId : options.getItemIds()) {
+                itemIds.add(itemId.getValue());
+            }
+            return itemRevisionRepo.getRevisions(itemIds, options.getTimestamp());
         } else {
             return itemRevisionRepo.getRevisions(options);
         }
@@ -130,30 +148,37 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
         return "item-revision";
     }
 
-    private void generateEntitlementDef(Item item) {
-        if (ItemType.DIGITAL.is(item.getType())
-                || ItemType.SUBSCRIPTION.is(item.getType())
-                || ItemType.VIRTUAL.is(item.getType())) {
-            EntitlementDefinition entitlementDef = new EntitlementDefinition();
-            entitlementDef.setDeveloperId(item.getOwnerId());
-            entitlementDef.setGroup(Utils.encodeId(item.getItemId()));
-            if (ItemType.DIGITAL.is(item.getType())) {
-                entitlementDef.setType(EntitlementType.DOWNLOAD.name());
-            } else if (ItemType.SUBSCRIPTION.is(item.getType())) {
-                entitlementDef.setType(EntitlementType.SUBSCRIPTION.name());
-            } else if (ItemType.VIRTUAL.is(item.getType())) {
-                entitlementDef.setType(EntitlementType.ONLINE_ACCESS.name());
+    private void generateEntitlementDef(ItemRevision revision, String itemType) {
+        if (revision.getEntitlementDefs() == null) {
+            revision.setEntitlementDefs(new ArrayList<EntitlementDef>());
+        }
+        List<EntitlementDef> entitlementDefs = revision.getEntitlementDefs();
+        if (ItemType.DIGITAL.is(itemType)) {
+            addEntitlementIfNotExist(entitlementDefs, EntitlementType.DOWNLOAD, false);
+            addEntitlementIfNotExist(entitlementDefs, EntitlementType.RUN, false);
+        }
+    }
+
+    private void addEntitlementIfNotExist(List<EntitlementDef> entitlementDefs,
+                                          EntitlementType entitlementType, boolean consumable) {
+        boolean exists = false;
+        for (EntitlementDef entitlementDef : entitlementDefs) {
+            if (entitlementType.is(entitlementDef.getType())) {
+                exists = true;
             }
-            entitlementDef.setTag(Utils.encodeId(item.getItemId()));
-            Long entitlementDefId = entitlementDefService.createEntitlementDefinition(entitlementDef);
-            item.setEntitlementDefId(entitlementDefId);
+        }
+        if (!exists) {
+            EntitlementDef entitlementDef = new EntitlementDef();
+            entitlementDef.setType(entitlementType.name());
+            entitlementDef.setConsumable(consumable);
+            entitlementDefs.add(entitlementDef);
         }
     }
 
     private void validateItemCreation(Item item) {
         checkRequestNotNull(item);
         List<AppError> errors = new ArrayList<>();
-        if (!StringUtils.isEmpty(item.getRev())) {
+        if (item.getResourceAge() != null) {
             errors.add(AppErrors.INSTANCE.unnecessaryField("rev"));
         }
         if (item.getCurrentRevisionId() != null) {
@@ -177,8 +202,8 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
             errors.add(AppErrors.INSTANCE
                     .fieldNotCorrect("currentRevision", "The field can only be changed through revision approve"));
         }
-        if (!oldItem.getRev().equals(item.getRev())) {
-            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", item.getRev(), oldItem.getRev()));
+        if (!oldItem.getResourceAge().equals(item.getResourceAge())) {
+            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", item.getResourceAge(), oldItem.getResourceAge()));
         }
 
         validateItemCommon(item, errors);
@@ -189,10 +214,10 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
     }
 
     private void validateItemCommon(Item item, List<AppError> errors) {
-        if (item.getOwnerId()==null) {
+        if (item.getOwnerId() == null) {
             errors.add(AppErrors.INSTANCE.missingField("developer"));
         }
-        if (item.getType()==null || !ItemType.contains(item.getType())) {
+        if (item.getType() == null || !ItemType.contains(item.getType())) {
             errors.add(AppErrors.INSTANCE.fieldNotCorrect("type", "Valid types: " + Arrays.asList(ItemType.values())));
         }
         if (item.getDefaultOffer() != null) {
@@ -200,15 +225,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
             if (offer == null) {
                 errors.add(AppErrors.INSTANCE.fieldNotCorrect("defaultOffer",
                         "Cannot find offer " + Utils.encodeId(item.getDefaultOffer())));
-            } else {
-                if (!isEqual(item.getIapHostItemId(), offer.getIapHostItemId())) {
-                    errors.add(AppErrors.INSTANCE
-                            .validation("defaultOffer should have same iapHostItem as this item."));
-                }
             }
-        }
-        if (item.getEntitlementDefId() != null) {
-            errors.add(AppErrors.INSTANCE.unnecessaryField("entitlementDefId"));
         }
         if (!CollectionUtils.isEmpty(item.getGenres())) {
             for (Long genreId : item.getGenres()) {
@@ -228,8 +245,8 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
     private void validateRevisionCreation(ItemRevision revision) {
         checkRequestNotNull(revision);
         List<AppError> errors = new ArrayList<>();
-        if (!StringUtils.isEmpty(revision.getRev())) {
-            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", revision.getRev(), null));
+        if (revision.getResourceAge() != null) {
+            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", revision.getResourceAge(), null));
         }
         if (!Status.DRAFT.is(revision.getStatus())) {
             errors.add(AppErrors.INSTANCE.fieldNotMatch("status", revision.getStatus(), Status.DRAFT));
@@ -250,10 +267,11 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
             errors.add(AppErrors.INSTANCE
                     .fieldNotMatch("revisionId", revision.getRevisionId(), oldRevision.getRevisionId()));
         }
-        if (!oldRevision.getRev().equals(revision.getRev())) {
-            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", revision.getRev(), oldRevision.getRev()));
+        if (!oldRevision.getResourceAge().equals(revision.getResourceAge())) {
+            errors.add(AppErrors.INSTANCE
+                    .fieldNotMatch("rev", revision.getResourceAge(), oldRevision.getResourceAge()));
         }
-        if (revision.getStatus()==null || !Status.contains(revision.getStatus())) {
+        if (revision.getStatus() == null || !Status.contains(revision.getStatus())) {
             errors.add(AppErrors.INSTANCE.fieldNotCorrect("status", "Valid statuses: " + Status.ALL));
         }
 
@@ -280,23 +298,6 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
                     if (CollectionUtils.isEmpty(revision.getBinaries())) {
                         errors.add(AppErrors.INSTANCE.missingField("binaries"));
                     }
-                } else if (ItemType.STORED_VALUE.is(item.getType())) {
-                    if (StringUtils.isEmpty(revision.getStoredValueCurrency())) {
-                        errors.add(AppErrors.INSTANCE.missingField("storedValueCurrency"));
-                    }
-                    if (revision.getStoredValueAmount()==null) {
-                        errors.add(AppErrors.INSTANCE.missingField("walletAmount"));
-                    } else if (revision.getStoredValueAmount().compareTo(BigDecimal.ZERO)<0) {
-                        errors.add(AppErrors.INSTANCE.fieldNotCorrect("walletAmount", "Should not less than 0"));
-                    }
-                }
-                if (!ItemType.STORED_VALUE.is(item.getType())) {
-                    if (revision.getStoredValueCurrency() != null) {
-                        errors.add(AppErrors.INSTANCE.unnecessaryField("storedValueCurrency"));
-                    }
-                    if (revision.getStoredValueAmount() != null) {
-                        errors.add(AppErrors.INSTANCE.unnecessaryField("walletAmount"));
-                    }
                 }
                 if (!ItemType.DIGITAL.is(item.getType())) {
                     if (!CollectionUtils.isEmpty(revision.getBinaries())) {
@@ -315,7 +316,7 @@ public class ItemServiceImpl  extends BaseRevisionedServiceImpl<Item, ItemRevisi
                 String locale = entry.getKey();
                 ItemRevisionLocaleProperties properties = entry.getValue();
                 // TODO: check locale is a valid locale
-                if (properties==null) {
+                if (properties == null) {
                     errors.add(AppErrors.INSTANCE.missingField("locales." + locale));
                 } else {
                     if (StringUtils.isEmpty(properties.getName())) {

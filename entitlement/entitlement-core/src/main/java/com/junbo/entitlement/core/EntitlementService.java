@@ -5,12 +5,12 @@
  */
 package com.junbo.entitlement.core;
 
+import com.junbo.common.model.Results;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.EntitlementTransfer;
 import com.junbo.entitlement.spec.model.PageMetadata;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -25,18 +25,10 @@ public interface EntitlementService {
 
     void deleteEntitlement(Long entitlementId);
 
-    List<Entitlement> searchEntitlement(EntitlementSearchParam entitlementSearchParam,
+    Results<Entitlement> searchEntitlement(EntitlementSearchParam entitlementSearchParam,
                                         PageMetadata pageMetadata);
 
     Entitlement transferEntitlement(EntitlementTransfer entitlementTransfer);
-
-    Entitlement grantDeveloperEntitlement(Long userId);
-
-    Boolean isDeveloper(Long userId);
-
-    Boolean canDownload(Long userId, Long itemId);
-
-    Boolean canAccess(Long userId, Long itemId);
 
     Entitlement getByTrackingUuid(Long shardMasterId, UUID trackingUuid);
 }

@@ -1,9 +1,13 @@
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.authorization.AuthorizeService
+import com.junbo.authorization.RightsScope
 import com.junbo.common.id.Id
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.model.Results
-import com.junbo.identity.core.service.Created201Marker
+import com.junbo.common.rs.Created201Marker
+import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserPersonalInfoFilter
 import com.junbo.identity.core.service.validator.UserPersonalInfoValidator
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
@@ -24,10 +28,6 @@ import org.springframework.transaction.annotation.Transactional
 @CompileStatic
 class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
 
-
-    @Autowired
-    private Created201Marker created201Marker
-
     @Autowired
     private UserPersonalInfoRepository userPersonalInfoRepository
 
@@ -37,20 +37,33 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
     @Autowired
     private UserPersonalInfoFilter userPersonalInfoFilter
 
+    @Autowired
+    private AuthorizeService authorizeService
+
+    @Autowired
+    private UserPropertyAuthorizeCallbackFactory userPropertyAuthorizeCallbackFactory
+
     @Override
     Promise<UserPersonalInfo> create(UserPersonalInfo userPii) {
         if (userPii == null) {
             throw new IllegalArgumentException('userPii is null')
         }
 
-        userPii = userPersonalInfoFilter.filterForCreate(userPii)
+        def callback = userPropertyAuthorizeCallbackFactory.create(userPii.userId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('create')) {
+                throw AppErrors.INSTANCE.invalidAccess().exception()
+            }
 
-        return userPersonalInfoValidator.validateForCreate(userPii).then {
-            userPersonalInfoRepository.create(userPii).then { UserPersonalInfo newUserPii ->
-                created201Marker.mark((Id) newUserPii.id)
+            userPii = userPersonalInfoFilter.filterForCreate(userPii)
 
-                newUserPii = userPersonalInfoFilter.filterForGet(newUserPii, null)
-                return Promise.pure(newUserPii)
+            return userPersonalInfoValidator.validateForCreate(userPii).then {
+                return userPersonalInfoRepository.create(userPii).then { UserPersonalInfo newUserPii ->
+                    Created201Marker.mark((Id) newUserPii.id)
+
+                    newUserPii = userPersonalInfoFilter.filterForGet(newUserPii, null)
+                    return Promise.pure(newUserPii)
+                }
             }
         }
     }
@@ -66,9 +79,15 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
         }
 
         return userPersonalInfoValidator.validateForGet(userPiiId).then { UserPersonalInfo userPii ->
-            userPii = userPersonalInfoFilter.filterForGet(userPii, getOptions.properties?.split(',') as List<String>)
+            def callback = userPropertyAuthorizeCallbackFactory.create(userPii.userId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('read')) {
+                    throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPiiId).exception()
+                }
 
-            return Promise.pure(userPii)
+                userPii = userPersonalInfoFilter.filterForGet(userPii, getOptions.properties?.split(',') as List)
+                return Promise.pure(userPii)
+            }
         }
     }
 
@@ -87,12 +106,19 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
                 throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPiiId).exception()
             }
 
-            userPersonalInfo = userPersonalInfoFilter.filterForPatch(userPersonalInfo, oldUserPersonalInfo)
+            def callback = userPropertyAuthorizeCallbackFactory.create(oldUserPersonalInfo.userId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('update')) {
+                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                }
 
-            return userPersonalInfoValidator.validateForUpdate(userPersonalInfo, oldUserPersonalInfo).then {
-                return userPersonalInfoRepository.update(userPersonalInfo).then { UserPersonalInfo newUserPii ->
-                    newUserPii = userPersonalInfoFilter.filterForGet(newUserPii, null)
-                    return Promise.pure(newUserPii)
+                userPersonalInfo = userPersonalInfoFilter.filterForPatch(userPersonalInfo, oldUserPersonalInfo)
+
+                return userPersonalInfoValidator.validateForUpdate(userPersonalInfo, oldUserPersonalInfo).then {
+                    return userPersonalInfoRepository.update(userPersonalInfo).then { UserPersonalInfo newUserPii ->
+                        newUserPii = userPersonalInfoFilter.filterForGet(newUserPii, null)
+                        return Promise.pure(newUserPii)
+                    }
                 }
             }
         }
@@ -113,12 +139,19 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
                 throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPiiId).exception()
             }
 
-            userPii = userPersonalInfoFilter.filterForPut(userPii, oldUserPersonalInfo)
+            def callback = userPropertyAuthorizeCallbackFactory.create(oldUserPersonalInfo.userId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('update')) {
+                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                }
 
-            return userPersonalInfoValidator.validateForUpdate(userPii, oldUserPersonalInfo).then {
-                userPersonalInfoRepository.update(userPii).then { UserPersonalInfo newUserPersonalInfo ->
-                    newUserPersonalInfo = userPersonalInfoFilter.filterForGet(newUserPersonalInfo, null)
-                    return Promise.pure(newUserPersonalInfo)
+                userPii = userPersonalInfoFilter.filterForPut(userPii, oldUserPersonalInfo)
+
+                return userPersonalInfoValidator.validateForUpdate(userPii, oldUserPersonalInfo).then {
+                    return userPersonalInfoRepository.update(userPii).then { UserPersonalInfo newUserPersonalInfo ->
+                        newUserPersonalInfo = userPersonalInfoFilter.filterForGet(newUserPersonalInfo, null)
+                        return Promise.pure(newUserPersonalInfo)
+                    }
                 }
             }
         }
@@ -130,10 +163,15 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
             throw new IllegalArgumentException('userPiiId is null')
         }
 
-        return userPersonalInfoValidator.validateForGet(userPiiId).then {
-            userPersonalInfoRepository.delete(userPiiId)
+        return userPersonalInfoValidator.validateForGet(userPiiId).then { UserPersonalInfo userPii ->
+            def callback = userPropertyAuthorizeCallbackFactory.create(userPii.userId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('delete')) {
+                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                }
 
-            return Promise.pure(null)
+                return userPersonalInfoRepository.delete(userPiiId)
+            }
         }
     }
 
@@ -143,36 +181,40 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
             throw new IllegalArgumentException('listOptions is null')
         }
 
-        return userPersonalInfoValidator.validateForSearch(listOptions).then {
+        def filterUserPersonalInfos = { List<UserPersonalInfo> userPersonalInfoList ->
             def resultList = new Results<UserPersonalInfo>(items: [])
 
-            if (listOptions.userId != null && listOptions.type != null) {
-                userPersonalInfoRepository.searchByUserIdAndType(listOptions.userId, listOptions.type).
-                    then { List<UserPersonalInfo> userPersonalInfoList ->
-                        userPersonalInfoList.each { UserPersonalInfo temp ->
-                            temp = userPersonalInfoFilter.filterForGet(temp,
-                                    listOptions.properties?.split(',') as List<String>)
+            return Promise.each(userPersonalInfoList) { UserPersonalInfo userPersonalInfo ->
+                def callback = userPropertyAuthorizeCallbackFactory.create(userPersonalInfo.userId)
+                return RightsScope.with(authorizeService.authorize(callback)) {
+                    userPersonalInfo = userPersonalInfoFilter.filterForGet(userPersonalInfo,
+                            listOptions.properties?.split(',') as List<String>)
 
-                            if (temp != null) {
-                                resultList.items.add(temp)
-                            }
-                        }
+                    if (userPersonalInfo != null && AuthorizeContext.hasRights('read')) {
+                        resultList.items.add(userPersonalInfo)
                     }
-            } else {
-                userPersonalInfoRepository.searchByUserId(listOptions.userId).
-                    then { List<UserPersonalInfo> userPersonalInfoList ->
-                        userPersonalInfoList.each { UserPersonalInfo temp ->
-                            temp = userPersonalInfoFilter.filterForGet(temp,
-                                    listOptions.properties?.split(',') as List<String>)
 
-                            if (temp != null) {
-                                resultList.items.add(temp)
-                            }
-                        }
-                    }
+                    return Promise.pure(null)
+                }
+            }.then {
+                return Promise.pure(resultList)
             }
+        }
 
-            return Promise.pure(resultList)
+        return userPersonalInfoValidator.validateForSearch(listOptions).then {
+            if (listOptions.userId != null && listOptions.type != null) {
+                return userPersonalInfoRepository.searchByUserIdAndType(listOptions.userId, listOptions.type,
+                        listOptions.limit, listOptions.offset).then(filterUserPersonalInfos)
+            } else if (listOptions.userId != null) {
+                return userPersonalInfoRepository.searchByUserId(listOptions.userId, listOptions.limit,
+                        listOptions.offset).then(filterUserPersonalInfos)
+            } else if (listOptions.email != null) {
+                return userPersonalInfoRepository.searchByEmail(listOptions.email, listOptions.limit,
+                        listOptions.offset).then(filterUserPersonalInfos)
+            } else {
+                return userPersonalInfoRepository.searchByPhoneNumber(listOptions.phoneNumber, listOptions.limit,
+                        listOptions.offset).then(filterUserPersonalInfos)
+            }
         }
     }
 }

@@ -5,6 +5,9 @@
  */
 package com.junbo.common.util;
 
+import com.junbo.common.id.Id;
+import com.junbo.configuration.topo.DataCenters;
+import groovy.lang.Closure;
 import org.springframework.util.Assert;
 
 import java.lang.reflect.Method;
@@ -15,6 +18,49 @@ import java.util.Locale;
  */
 public class Utils {
     private Utils() { }
+
+    public static <V> V with(AutoCloseable closable, Closure<V> closure) throws Exception {
+        try (AutoCloseable scope = closable) {
+            return closure.call();
+        }
+    }
+
+    /**
+     * The helper function to filter configuration values for current data center.
+     *
+     * The per DC configuration is in the following format:
+     *      {config0};dc0, {config1};dc1
+     * This function will return {config0} if current DC is dc0.
+     *
+     * Note that the config value part cannot contain , or ;
+     *
+     * @param allDcValues the configuration in all dcs.
+     * @return the configuration in current dc.
+     */
+    public static String filterPerDataCenterConfig(String allDcValues, String configName) {
+        String result = null;
+
+        String[] dcValues = allDcValues.split(",");
+        for (String dcValue : dcValues) {
+            dcValue = dcValue.trim();
+            String[] dcValueComponents = dcValue.split(";");
+            if (dcValueComponents.length != 2) {
+                throw new RuntimeException(String.format("Invalid %s: %s item: %s", configName, allDcValues, dcValue));
+            }
+            String value = dcValueComponents[0];
+            String dc = dcValueComponents[1];
+
+            if (!DataCenters.instance().isLocalDataCenter(dc)) {
+                continue;
+            }
+            if (result == null) {
+                result = value;
+            } else {
+                throw new RuntimeException(String.format("Duplicated %s for DC '%s': %s, %s", configName, dc, value, result));
+            }
+        }
+        return result;
+    }
 
     public static String combineUrl(String... urls) {
         StringBuilder result = new StringBuilder();
@@ -36,6 +82,17 @@ public class Utils {
             }
         }
         return result.toString();
+    }
+
+    public static Long keyToLong(Object key) {
+        if (key == null) return null;
+
+        if (key instanceof Id) {
+            return ((Id)key).getValue();
+        } else if (key instanceof Long) {
+            return (Long)key;
+        }
+        throw new RuntimeException("Unknown key type: " + key.getClass());
     }
 
     public static Method tryObtainGetterMethod(Class<?> clazz, final String propertyName) {

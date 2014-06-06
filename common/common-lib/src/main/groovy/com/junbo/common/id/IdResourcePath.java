@@ -17,4 +17,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface IdResourcePath {
     String value();
+    String regex() default "";
+    String resourceType() default "";
 }

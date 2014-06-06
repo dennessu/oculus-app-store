@@ -28,13 +28,13 @@ import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.Assert
 import org.springframework.util.StringUtils
 
 /**
  * VerifyEmail.
  */
 @CompileStatic
-@SuppressWarnings('NestedBlockDepth')
 class VerifyEmail implements Action {
     private static final Logger LOGGER = LoggerFactory.getLogger(VerifyEmail)
 
@@ -62,21 +62,23 @@ class VerifyEmail implements Action {
     @Override
     Promise<ActionResult> execute(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
-        String code = (String) context.flowScope[OAuthParameters.CODE]
+        def parameterMap = contextWrapper.parameterMap
+        String code = parameterMap.getFirst(OAuthParameters.EMAIL_VERIFY_CODE)
 
         if (StringUtils.isEmpty(code)) {
             contextWrapper.errors.add(AppExceptions.INSTANCE.missingEmailVerifyCode().error())
             return Promise.pure(new ActionResult('error'))
         }
 
-        EmailVerifyCode emailVerifyCode = emailVerifyCodeRepository.getAndRemove(code)
+        EmailVerifyCode emailVerifyCode = contextWrapper.emailVerifyCode
+        Assert.notNull(emailVerifyCode, 'emailVerifyCode is null')
 
-        if (emailVerifyCode == null) {
+        if (emailVerifyCode.code != code) {
             contextWrapper.errors.add(AppExceptions.INSTANCE.invalidEmailVerifyCode(code).error())
             return Promise.pure(new ActionResult('error'))
         }
 
-        userResource.get(new UserId(emailVerifyCode.userId), new UserGetOptions()).recover { Throwable e ->
+        return userResource.get(new UserId(emailVerifyCode.userId), new UserGetOptions()).recover { Throwable e ->
             handleException(e, contextWrapper)
             return Promise.pure(null)
         }.then { User user ->
@@ -89,7 +91,7 @@ class VerifyEmail implements Action {
             Closure process = null
             process = { ActionResult actionResult ->
                 if (actionResult.id == 'error') {
-                    return actionResult
+                    return Promise.pure(actionResult)
                 }
 
                 if (!iter.hasNext() || actionResult.id == 'success') {
@@ -107,9 +109,10 @@ class VerifyEmail implements Action {
 
                     Email email = ObjectMapperProvider.instance().treeToValue(personalInfo.value, Email)
 
-                    if (email.value == emailVerifyCode.email) {
+                    if (email.info == emailVerifyCode.email) {
                         personalInfo.lastValidateTime = new Date()
-                        userPersonalInfoResource.put(piiLink.value, personalInfo).recover { Throwable e ->
+                        personalInfo.value = ObjectMapperProvider.instance().valueToTree(email)
+                        return userPersonalInfoResource.put(piiLink.value, personalInfo).recover { Throwable e ->
                             handleException(e, contextWrapper)
                             return Promise.pure(null)
                         }.then { UserPersonalInfo updatedPersonalInfo ->

@@ -6,6 +6,11 @@
 
 package com.junbo.ewallet.db.entity;
 
+import com.junbo.common.cloudant.json.annotations.CloudantDeserialize;
+import com.junbo.common.cloudant.json.annotations.CloudantSerialize;
+import com.junbo.ewallet.db.entity.def.DateDeserializer;
+import com.junbo.ewallet.db.entity.def.DateSerializer;
+
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import java.util.Date;
@@ -15,24 +20,26 @@ import java.util.Date;
  */
 @MappedSuperclass
 public abstract class Entity extends EntityWithCreated {
-    private String modifiedBy;
-    private Date modifiedTime;
+    private Long updatedBy;
+    @CloudantSerialize(DateSerializer.class)
+    @CloudantDeserialize(DateDeserializer.class)
+    private Date updatedTime;
 
     @Column(name = "modified_by")
-    public String getModifiedBy() {
-        return modifiedBy;
+    public Long getUpdatedBy() {
+        return updatedBy;
     }
 
-    public void setModifiedBy(String modifiedBy) {
-        this.modifiedBy = modifiedBy;
+    public void setUpdatedBy(Long updatedBy) {
+        this.updatedBy = updatedBy;
     }
 
     @Column(name = "modified_time")
-    public Date getModifiedTime() {
-        return modifiedTime;
+    public Date getUpdatedTime() {
+        return updatedTime;
     }
 
-    public void setModifiedTime(Date modifiedTime) {
-        this.modifiedTime = modifiedTime;
+    public void setUpdatedTime(Date updatedTime) {
+        this.updatedTime = updatedTime;
     }
 }

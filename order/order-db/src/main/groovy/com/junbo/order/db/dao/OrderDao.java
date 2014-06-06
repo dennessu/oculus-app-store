@@ -7,7 +7,7 @@
 package com.junbo.order.db.dao;
 
 import com.junbo.order.db.entity.OrderEntity;
-import com.junbo.order.db.entity.enums.OrderStatus;
+import com.junbo.order.spec.model.enums.OrderStatus;
 
 import java.util.List;
 

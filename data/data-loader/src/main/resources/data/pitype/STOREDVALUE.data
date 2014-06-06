@@ -1,0 +1,10 @@
+{
+    "typeCode": "STOREDVALUE",
+    "locales" : {
+        "en_US": {
+            "description": "Oculus Wallet"
+        }
+    },
+    "isRefundable": true,
+    "capableOfRecurring": true
+}

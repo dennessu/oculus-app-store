@@ -2,14 +2,17 @@ apply plugin: 'java'
 
 dependencies {
     compile (libraries.rs_api)
-    compile (libraries.langur)
+    compile junboProject(':langur-core')
     compile (libraries.spring_beans)
     compile (libraries.spring_context)
     compile (libraries.guava)
 
-    compile ('com.junbo.identity:identity-spec:0.0.1-SNAPSHOT')
+    compile junboProject(':identity-spec')
+    compile junboProject(':catalog-spec')
+    compile junboProject(':authorization-spec')
+    compile junboProject(':authorization-lib')
 
-    processor (libraries.langur_processor)
+    processor junboProject(':langur-processor')
     processor (libraries.log4j)
 }
 

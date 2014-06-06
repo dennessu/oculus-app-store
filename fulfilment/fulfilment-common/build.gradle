@@ -8,8 +8,8 @@ dependencies {
     compile (libraries.json_path)
     compile (libraries.fastjson)
 
-    compile (libraries.common_lib)
-    compile (libraries.common_configuration)
+    compile junboProject(':common-lib')
+    compile junboProject(':common-configuration')
 
     compile (libraries.log4j)
     compile (libraries.slf4j_api)
@@ -18,7 +18,5 @@ dependencies {
     compile (libraries.jcl_over_slf4j)
     compile (libraries.slf4j_api)
 
-    compile ('ma.glasnost.orika:orika-core:1.1.4') {
-        exclude group: "org.slf4j", module: "slf4j-simple"
-    }
+    compile ('net.sf.dozer:dozer:5.5.1')
 }

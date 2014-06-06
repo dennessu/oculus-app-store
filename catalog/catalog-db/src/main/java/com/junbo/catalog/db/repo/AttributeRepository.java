@@ -13,8 +13,8 @@ import com.junbo.catalog.spec.model.attribute.Attribute;
  * @param <T> Attribute
  */
 public interface AttributeRepository<T extends Attribute> {
-    Long create(T attribute);
+    T create(T attribute);
     T get(Long attributeId);
-    Long update(T attribute);
+    T update(T attribute);
     void delete(Long attributeId);
 }

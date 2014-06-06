@@ -11,10 +11,14 @@ import com.junbo.billing.db.BaseDao;
 import com.junbo.billing.db.entity.BalanceEntity;
 import com.junbo.billing.db.dao.BalanceEntityDao;
 import com.junbo.billing.spec.enums.BalanceStatus;
+import com.junbo.billing.spec.enums.BalanceType;
 import com.junbo.sharding.view.ViewQuery;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -69,9 +73,8 @@ public class BalanceEntityDaoImpl extends BaseDao implements BalanceEntityDao {
     }
 
     @Override
-    public List<BalanceEntity> getAsyncChargeInitBalances(Integer count) {
+    public List<BalanceEntity> getInitBalances() {
         BalanceEntity example = new BalanceEntity();
-        example.setIsAsyncCharge(true);
         example.setStatusId(BalanceStatus.INIT.getId());
 
         ViewQuery<Long> viewQuery = viewQueryFactory.from(example);
@@ -80,11 +83,70 @@ public class BalanceEntityDaoImpl extends BaseDao implements BalanceEntityDao {
 
             List<BalanceEntity> balanceEntities = new ArrayList<>();
             for (Long id : balanceIds) {
-                balanceEntities.add(get(id));
+                BalanceEntity entity =  get(id);
+                if (entity != null) {
+                    balanceEntities.add(entity);
+                }
             }
             return balanceEntities;
         }
 
         return null;
+    }
+
+    @Override
+    public List<BalanceEntity> getAwaitingPaymentBalances() {
+        BalanceEntity example = new BalanceEntity();
+        example.setStatusId(BalanceStatus.AWAITING_PAYMENT.getId());
+
+        ViewQuery<Long> viewQuery = viewQueryFactory.from(example);
+        if (viewQuery != null) {
+            List<Long> balanceIds = viewQuery.list();
+
+            List<BalanceEntity> balanceEntities = new ArrayList<>();
+            for (Long id : balanceIds) {
+                BalanceEntity entity =  get(id);
+                if (entity != null) {
+                    balanceEntities.add(entity);
+                }
+            }
+            return balanceEntities;
+        }
+
+        return null;
+    }
+
+    @Override
+    public List<BalanceEntity> getUnconfirmedBalances() {
+        BalanceEntity example = new BalanceEntity();
+        example.setStatusId(BalanceStatus.UNCONFIRMED.getId());
+
+        ViewQuery<Long> viewQuery = viewQueryFactory.from(example);
+        if (viewQuery != null) {
+            List<Long> balanceIds = viewQuery.list();
+
+            List<BalanceEntity> balanceEntities = new ArrayList<>();
+            for (Long id : balanceIds) {
+                BalanceEntity entity =  get(id);
+                if (entity != null) {
+                    balanceEntities.add(entity);
+                }
+            }
+            return balanceEntities;
+        }
+
+        return null;
+    }
+
+    @Override
+    public List<BalanceEntity> getRefundBalancesByOriginalId(Long balanceId) {
+        Collection<Short> successStatus = new ArrayList<>();
+        successStatus.add(BalanceStatus.COMPLETED.getId());
+        successStatus.add(BalanceStatus.AWAITING_PAYMENT.getId());
+        Criteria criteria = currentSession(balanceId).createCriteria(BalanceEntity.class)
+                .add(Restrictions.eq("originalBalanceId", balanceId))
+                .add(Restrictions.eq("typeId", BalanceType.REFUND.getId()))
+                .add(Restrictions.in("statusId", successStatus));
+        return criteria.list();
     }
 }

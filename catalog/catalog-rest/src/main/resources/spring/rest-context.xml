@@ -2,10 +2,8 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
-
-    <!--context:component-scan base-package="com.junbo.catalog.rest.resource"/-->
-    <context:component-scan base-package="com.junbo.catalog.spec.resource.adapter"/>
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <!-- REST resources -->
     <bean id="defaultItemResource" class="com.junbo.catalog.rest.resource.ItemResourceImpl" scope="prototype"/>
@@ -16,14 +14,27 @@
     <bean id="defaultPromotionRevisionResource" class="com.junbo.catalog.rest.resource.PromotionRevisionResourceImpl" scope="prototype"/>
     <bean id="defaultItemAttributeResource" class="com.junbo.catalog.rest.resource.ItemAttributeResourceImpl" scope="prototype"/>
     <bean id="defaultOfferAttributeResource" class="com.junbo.catalog.rest.resource.OfferAttributeResourceImpl" scope="prototype"/>
-    <bean id="defaultEntitlementDefinitionResource" class="com.junbo.catalog.rest.resource.EntitlementDefinitionResourceImpl" scope="prototype"/>
     <bean id="defaultPriceTierResource" class="com.junbo.catalog.rest.resource.PriceTierResourceImpl" scope="prototype"/>
 
-    <bean id="itemAuthorizeCallbackFactory" class="com.junbo.catalog.rest.auth.ItemAuthorizeCallbackFactory">
-        <property name="groupResource" ref="groupResource"/>
-        <property name="userGroupMembershipResource" ref="userGroupMembershipResource"/>
-        <property name="roleResource" ref="roleService"/>
-        <property name="roleAssignmentResource" ref="roleAssignmentService"/>
-    </bean>
+    <bean id="defaultItemResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxyFactory"/>
+    <bean id="defaultItemRevisionResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxyFactory"/>
+    <bean id="defaultOfferResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxyFactory"/>
+    <bean id="defaultOfferRevisionResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxyFactory"/>
+    <bean id="defaultPromotionResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.PromotionResourceClientProxyFactory"/>
+    <bean id="defaultPromotionRevisionResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.PromotionRevisionResourceClientProxyFactory"/>
+    <bean id="defaultItemAttributeResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.ItemAttributeResourceClientProxyFactory"/>
+    <bean id="defaultOfferAttributeResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.OfferAttributeResourceClientProxyFactory"/>
+    <bean id="defaultPriceTierResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.PriceTierResourceClientProxyFactory"/>
+
+    <bean id="defaultItemResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultItemRevisionResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultOfferResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultOfferRevisionResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultPromotionResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultPromotionRevisionResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultItemAttributeResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultOfferAttributeResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultEntitlementDefinitionResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultPriceTierResourceRouter" parent="routingRouterBase" />
 
 </beans>

@@ -9,46 +9,63 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.ClientId;
 import com.junbo.common.id.UserCredentialVerifyAttemptId;
 import com.junbo.common.id.UserId;
-import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by liangfu on 4/3/14.
  */
-public class UserCredentialVerifyAttempt extends ResourceMeta implements Identifiable<UserCredentialVerifyAttemptId> {
+public class UserCredentialVerifyAttempt extends PropertyAssignedAwareResourceMeta implements Identifiable<UserCredentialVerifyAttemptId> {
 
     @ApiModelProperty(position = 1, required = true,
-            value = "[Nullable]The id of user credential attempt resource.")
+            value = "[Nullable]The Link to user credential attempt resource.")
     @JsonProperty("self")
     private UserCredentialVerifyAttemptId id;
 
-    @ApiModelProperty(position = 2, required = false,
-            value = "[Nullable]The user resource for the credential attempt.")
+    @ApiModelProperty(position = 2, required = false, value = "[Nullable]The user resource for the credential attempt.")
     @JsonProperty("user")
     private UserId userId;
 
-    @ApiModelProperty(position = 3, required = false, value = "User name.")
+    @ApiModelProperty(position = 3, required = true, value = "This is required during PIN/Password/Email login. " +
+            "If the user typed a username & password, this will be the (username part) actual text as typed by the end-user. " +
+            "If the user typed an email & password, this will be the (email part) actual text as typed by the end-user. " +
+            "In any case, it is not necessarily the same as the username associated with the \"user\" link.")
     private String username;
 
     @ApiModelProperty(position = 4, required = true,
-            value = "The credential require string, must be password or pin in raw format.")
+            value = "When internal component call \"POST\" to submit a credential attempt, this field will be raw pin or password as typed by the end user. " +
+                    "When client call Get credential attempt from REST API, this attribute will not be available in the response.")
     private String value;
 
     @ApiModelProperty(position = 5, required = true, value = "The credential type, must be in [PASSWORD, PIN].")
     private String type;
 
-    @ApiModelProperty(position = 6, required = false, value = "The client ip of the verify attempt caller.")
+    @ApiModelProperty(position = 6, required = false, value = " [Nullable]The client ip of the verify attempt caller. " +
+            "When do POST request, client side can decide whether to provide ipAddress. " +
+            "For browsers, it often provides ipAddress, but for non-Browser client, client may choose to not provide the ipAddress. " +
+            "So when do the GET request, server will return the information in the record. " +
+            "This value will be NULL if the original POST request doesn't contain this info.")
     private String ipAddress;
 
-    @ApiModelProperty(position = 7, required = false, value = "The user agent of the verify attempt caller.")
+    @ApiModelProperty(position = 7, required = false, value = "[Nullable]The user agent of the verify attempt caller, same as ipAddress, " +
+            "client side may choose to not provide userAgent information.")
     private String userAgent;
 
-    @ApiModelProperty(position = 8, required = false, value = "The client id of the verify attempt caller.")
+    @ApiModelProperty(position = 8, required = false, value = "Link to the Client ID of the Verify attempt caller. " +
+            "Client ID is the identifier of an OAuth Client. " +
+            "When developer submit a base game item, he will get a unique Client ID string to identify what this game is. " +
+            "Developer need to later embed this unique Client ID string in his game binary, and always pass this Client ID when log on to Oculus platform. " +
+            "In Credential Verify Attempt, we record the logon attempts, and save the Client ID in this attribute. " +
+            "[Please note: in the base game case, a client ID has 1:1 mapping with a base game item ID. " +
+            "There are other cases that client ID has no corresponding Item (eg. Oculus dev center), " +
+            "and Item has no corresponding Client ID (eg. In App Purchase Item)].")
     private ClientId clientId;
 
     @ApiModelProperty(position = 9, required = false,
-            value = "[Nullable]Whether the verify attempt is succeed.")
+            value = "[Nullable]Whether the verify attempt is succeed. When do a POST call internally, " +
+                    "the object will be null as client side shouldn't pass in this value. " +
+                    "When do a GET call from REST API, it will either be TRUE or FALSE.")
     @JsonProperty("wasSuccessful")
     private Boolean succeeded;
 

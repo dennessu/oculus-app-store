@@ -10,6 +10,7 @@ import com.junbo.identity.spec.v1.model.User
 import com.junbo.order.spec.model.Discount
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
+import com.junbo.order.spec.model.PaymentInfo
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 
@@ -63,9 +64,11 @@ class TestBuilder {
         def userId = new UserId()
         userId.setValue(generateLong())
         order.setUser(userId)
-        order.setPaymentInstruments([])
-        order.paymentInstruments.add(new PaymentInstrumentId(generateLong()))
-        order.setShippingAddress(new ShippingAddressId(generateLong()))
+        order.setPayments([])
+        order.getPayments().add(new PaymentInfo(paymentInstrument: new PaymentInstrumentId(generateLong())))
+        order.setShippingAddress(new UserPersonalInfoId(generateLong()))
+        order.setShippingToName(new UserPersonalInfoId(generateLong()))
+        order.setShippingToPhone(new UserPersonalInfoId(generateLong()))
         order.setShippingMethod(generateLong())
         order.setTentative(true)
         order.discounts = []

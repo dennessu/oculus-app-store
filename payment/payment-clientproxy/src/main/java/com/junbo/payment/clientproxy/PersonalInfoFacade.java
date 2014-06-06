@@ -6,14 +6,16 @@
 
 package com.junbo.payment.clientproxy;
 
+import com.junbo.common.id.AddressId;
+import com.junbo.identity.spec.v1.model.Address;
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.payment.spec.model.Address;
 
 /**
  * Personal Info Facade.
  */
 public interface PersonalInfoFacade {
-    Promise<Address> getBillingAddress(Long billingAddressId);
+    Promise<AddressId> createBillingAddress(final Long userId, Address address);
+    Promise<com.junbo.payment.spec.model.Address> getBillingAddress(Long billingAddressId);
     Promise<String> getPhoneNumber(Long phoneNumberId);
     Promise<String> getEmail(Long emailId);
 }

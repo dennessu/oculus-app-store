@@ -8,7 +8,7 @@ package com.junbo.identity.spec.v1.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.common.id.UserCredentialId;
 import com.junbo.common.id.UserId;
-import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -17,7 +17,7 @@ import java.util.Date;
 /**
  * Created by liangfu on 4/3/14.
  */
-public class UserCredential extends ResourceMeta implements Identifiable<UserCredentialId> {
+public class UserCredential extends PropertyAssignedAwareResourceMeta implements Identifiable<UserCredentialId> {
 
     @JsonIgnore
     private UserCredentialId id;
@@ -34,10 +34,10 @@ public class UserCredential extends ResourceMeta implements Identifiable<UserCre
     @ApiModelProperty(position = 4, required = true, value = "Credential type, it must be in [PASSWORD, PIN].")
     private String type;
 
-    @ApiModelProperty(position = 5, required = false, value = "Credential expire time.")
+    @ApiModelProperty(position = 5, required = false, value = "Credential expiration time, must be ISO 8601.")
     private Date expiresBy;
 
-    @ApiModelProperty(position = 6, required = false, value = "Whether need to change credential next login.")
+    @ApiModelProperty(position = 6, required = false, value = "Whether user need to change credential next time login.")
     private Boolean changeAtNextLogin;
 
     @Override
@@ -105,7 +105,7 @@ public class UserCredential extends ResourceMeta implements Identifiable<UserCre
     }
 
     @Override
-    public String getResourceAge() {
+    public Integer getResourceAge() {
         // resource Age won't return due to it isn't a resource
         return null;
     }

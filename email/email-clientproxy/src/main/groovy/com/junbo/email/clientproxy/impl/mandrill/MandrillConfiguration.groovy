@@ -5,10 +5,15 @@
  */
 package com.junbo.email.clientproxy.impl.mandrill
 
+import groovy.transform.CompileStatic
+
 /**
  * Configuration info of Mandrill.
  */
+@CompileStatic
 class MandrillConfiguration {
     String key
     String url
+    Integer size
+    Boolean enabled
 }

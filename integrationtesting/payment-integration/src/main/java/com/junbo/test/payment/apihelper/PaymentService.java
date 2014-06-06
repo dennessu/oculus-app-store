@@ -5,6 +5,7 @@
  */
 package com.junbo.test.payment.apihelper;
 
+import com.junbo.ewallet.spec.model.CreditRequest;
 import com.junbo.payment.spec.model.PaymentInstrument;
 
 import java.util.List;
@@ -18,9 +19,9 @@ public interface PaymentService {
     String postPaymentInstrument(PaymentInstrument paymentInstrument,
                                        int expectedResponseCode) throws Exception;
 
-    String getPaymentInstrumentByPaymentId(String uid, String paymentInstrumentId) throws Exception;
+    String getPaymentInstrumentByPaymentId(String paymentInstrumentId) throws Exception;
 
-    String getPaymentInstrumentByPaymentId(String uid, String paymentInstrumentId,
+    String getPaymentInstrumentByPaymentId(String paymentInstrumentId,
                                            int expectedResponseCode) throws Exception;
 
     String updatePaymentInstrument(String uid, String paymentId, PaymentInstrument paymentInstrument) throws Exception;
@@ -33,8 +34,10 @@ public interface PaymentService {
 
     void deletePaymentInstrument(String uid, String paymentId, int expectedResponseCode) throws Exception;
 
-    List<String> searchPaymentInstrumentsByUserId(String uid) throws Exception;
+    List<String> getPaymentInstrumentsByUserId(String uid) throws Exception;
 
-    List<String> searchPaymentInstrumentsByUserId(String uid, int expectedResponseCode) throws Exception;
+    List<String> getPaymentInstrumentsByUserId(String uid, int expectedResponseCode) throws Exception;
+
+    void creditWallet(CreditRequest creditRequest) throws Exception;
 
 }

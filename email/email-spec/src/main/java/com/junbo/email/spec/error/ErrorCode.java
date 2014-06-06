@@ -29,7 +29,11 @@ public class ErrorCode {
 
     public static final String PAYLOAD_IS_NULL = "PAYLOAD_IS_NULL";
 
-    public static final String INVALID_PROPERTIES = "INVALID_PROPERTIES";
+    public static final String INVALID_REPLACEMENTS = "INVALID_REPLACEMENTS";
+
+    public static final String INVALID_PLACEHOLDERNAMES = "INVALID_PLACEHOLDERNAMES";
+
+    public static final String NO_VALIDATED_USER_EMAIL = "NO_VALIDATED_USER_EMAIL";
 
     public static final String EMAIL_TEMPLATE_NOT_FOUND = "EMAIL_TEMPLATE_NOT_FOUND";
 
@@ -40,6 +44,8 @@ public class ErrorCode {
     public static final String EMAIL_STATUS_INVALID ="EMAIL_STATUS_INVALID";
 
     public static final String EMAIL_SEND_ERROR = "EMAIL_SEND_ERROR";
+
+    public static final String USER_EMAIL_FETCH_ERROR = "USER_EMAIL_FETCH_ERROR";
 
     public static final String INTERNAL_ERROR ="INTERNAL_ERROR";
 

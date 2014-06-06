@@ -19,6 +19,8 @@ import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
 import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 import javax.annotation.Resource
 
@@ -27,6 +29,7 @@ import javax.annotation.Resource
  */
 @CompileStatic
 class IdentityFacadeImpl implements IdentityFacade {
+    private final static Logger LOGGER = LoggerFactory.getLogger(IdentityFacadeImpl)
 
     @Resource(name = 'emailIdentityUserClient')
     private UserResource userResource
@@ -34,37 +37,37 @@ class IdentityFacadeImpl implements IdentityFacade {
     @Resource(name='emailIdentityUserPersonalInfoClient')
     private UserPersonalInfoResource userPersonalInfoResource
 
-    Promise<User> getUser(Long userId) {
-        userResource.get(new UserId(userId), new UserGetOptions()).recover {
-            throw AppErrors.INSTANCE.invalidUserId('').exception()
-        }.then {
-            return Promise.pure(it)
-        }
-    }
-
     Promise<String> getUserEmail(Long userId) {
-        return userResource.get(new UserId(userId), new UserGetOptions()).then { User user ->
-            if (user.emails != null && user.emails.size() != 0) {
-                for (UserPersonalInfoLink link : user.emails) {
-                    if (!link.isDefault) {
-                        continue
+        return userResource.get(new UserId(userId), new UserGetOptions()).recover { Throwable throwable ->
+            LOGGER.error("Failed to get user:", throwable)
+            throw AppErrors.INSTANCE.fetchUserEmailError().exception()
+        }.then { User user ->
+            if (!user?.emails?.any()) {
+                throw AppErrors.INSTANCE.emptyUserEmail().exception()
+            }
+            def infoLink = user.emails.find { UserPersonalInfoLink link ->
+                link.isDefault
+            }
+            if (infoLink == null) {
+                throw AppErrors.INSTANCE.emptyUserEmail().exception()
+            }
+            return userPersonalInfoResource.get(infoLink.value,
+                    new UserPersonalInfoGetOptions()).recover { Throwable throwable ->
+                LOGGER.error("Failed to get user info:", throwable)
+                throw AppErrors.INSTANCE.fetchUserEmailError().exception()
+            }.then { UserPersonalInfo info ->
+                try {
+                    if (info?.lastValidateTime == null) {
+                        throw AppErrors.INSTANCE.noValidatedUserEmail().exception()
                     }
-                    return userPersonalInfoResource.get(link.value,
-                            new UserPersonalInfoGetOptions()).then { UserPersonalInfo info ->
-                        if (info == null) {
-                            return Promise.pure(null)
-                        }
-                        try {
-                            Email email = ObjectMapperProvider.instance().treeToValue(info.value, Email)
-                            return Promise.pure(email.value)
-                        }
-                        catch (Exception e) {
-                            return Promise.pure(null)
-                        }
-                    }
+                    def email = ObjectMapperProvider.instance().treeToValue(info.value, Email)
+                    return Promise.pure(email.info)
+                } catch (Exception e) {
+                    LOGGER.error("Failed to convert user address:", e)
+                    throw AppErrors.INSTANCE.noValidatedUserEmail().exception()
                 }
-                return Promise.pure(null)
             }
         }
     }
+
 }

@@ -5,26 +5,28 @@
  */
 package com.junbo.test.catalogscenario;
 
-import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.item.ItemRevision;
-import com.junbo.test.common.apihelper.catalog.impl.*;
-import com.junbo.test.common.apihelper.catalog.*;
+import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.test.common.Utility.TestClass;
+import com.junbo.test.common.libs.IdConverter;
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.test.common.blueprint.Master;
-import com.junbo.test.common.libs.EnumHelper;
-import com.junbo.identity.spec.v1.model.User;
 import com.junbo.test.common.libs.LogHelper;
-import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.property.*;
+import com.junbo.common.model.Results;
+import com.junbo.test.catalog.enums.*;
+import com.junbo.test.catalog.impl.*;
+import com.junbo.test.catalog.*;
+import com.junbo.common.id.*;
 
 import org.testng.annotations.Test;
+import java.util.ArrayList;
 import org.testng.Assert;
 import java.util.HashMap;
 import java.util.List;
@@ -37,9 +39,9 @@ import java.util.List;
 public class Catalog extends TestClass {
 
     private LogHelper logger = new LogHelper(Catalog.class);
-    private final String defaultItemFileName = "defaultItem";
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
-    private final String defaultDigitalOfferRevisionFileName = "defaultDigitalOfferRevision";
+    private final String defaultOfferRevisionFileName = "defaultOfferRevision";
+    private final String defaultItemFileName = "defaultItem";
 
     @Property(
             priority = Priority.BVT,
@@ -58,7 +60,7 @@ public class Catalog extends TestClass {
     @Test
     public void testItemAttributeManagement() throws Exception {
 
-        HashMap<String, String> paraMap = new HashMap<>();
+        HashMap<String, List<String>> paraMap = new HashMap<>();
         HashMap<String, SimpleLocaleProperties> locales = new HashMap<>();
         ItemAttributeService itemAttributeAPI = ItemAttributeServiceImpl.instance();
 
@@ -69,29 +71,33 @@ public class Catalog extends TestClass {
         attributeProperties.setDescription(RandomFactory.getRandomStringOfAlphabetOrNumeric(30));
         locales.put("en_US", attributeProperties);
         itemAttribute.setLocales(locales);
-        itemAttribute.setType(EnumHelper.CatalogItemAttributeType.getRandom());
+        itemAttribute.setType(CatalogItemAttributeType.getRandom());
 
         logger.LogSample("Post an Item attribute");
-        String attributeId = itemAttributeAPI.postItemAttribute(itemAttribute);
-        ItemAttribute attributeRtn = Master.getInstance().getItemAttribute(attributeId);
+        ItemAttribute attributeRtn = itemAttributeAPI.postItemAttribute(itemAttribute);
         Assert.assertNotNull(attributeRtn);
 
         //Get the attribute by its id and assert the return value is not null
         logger.LogSample("Get the item attribute by its id");
-        String attributeGetId = itemAttributeAPI.getItemAttribute(attributeId);
-        Assert.assertNotNull(Master.getInstance().getItemAttribute(attributeGetId));
+        ItemAttribute attributeGet = itemAttributeAPI.getItemAttribute(attributeRtn.getId());
+        Assert.assertNotNull(attributeGet);
 
         //Get attributes by some get conditions, like type and id.
         logger.LogSample("Get item attributes by its id and type");
-        paraMap.put("type", attributeRtn.getType());
-        paraMap.put("id", attributeId);
-        List<String> attributeResultList = itemAttributeAPI.getItemAttributes(paraMap);
+        List<String> listType = new ArrayList<>();
+        listType.add(attributeRtn.getType());
+        List<String> listAttributeId = new ArrayList<>();
+        String attributeId = IdConverter.idLongToHexString(ItemAttributeId.class, attributeGet.getId());
+        listAttributeId.add(attributeId);
+
+        paraMap.put("type", listType);
+        paraMap.put("id", listAttributeId);
+        Results<ItemAttribute> attributeResultList = itemAttributeAPI.getItemAttributes(paraMap);
         Assert.assertNotNull(attributeResultList);
 
         //Get all attributes without any search condition
         logger.LogSample("Get all item attributes(without any search condition)");
         paraMap.clear();
-        attributeResultList.clear();
         attributeResultList = itemAttributeAPI.getItemAttributes(paraMap);
         Assert.assertNotNull(attributeResultList);
     }
@@ -113,7 +119,7 @@ public class Catalog extends TestClass {
     @Test
     public void testOfferAttributeManagement() throws Exception {
 
-        HashMap<String, String> paraMap = new HashMap();
+        HashMap<String, List<String>> paraMap = new HashMap<>();
         HashMap<String, SimpleLocaleProperties> locales = new HashMap<>();
         OfferAttributeService offerAttributeAPI = OfferAttributeServiceImpl.instance();
 
@@ -124,29 +130,33 @@ public class Catalog extends TestClass {
         attributeProperties.setDescription(RandomFactory.getRandomStringOfAlphabetOrNumeric(30));
         locales.put("en_US", attributeProperties);
         offerAttribute.setLocales(locales);
-        offerAttribute.setType(EnumHelper.CatalogOfferAttributeType.getRandom());
+        offerAttribute.setType(CatalogOfferAttributeType.getRandom());
 
         logger.LogSample("Post an offer attribute");
-        String attributeId = offerAttributeAPI.postOfferAttribute(offerAttribute);
-        OfferAttribute attributeRtn = Master.getInstance().getOfferAttribute(attributeId);
+        OfferAttribute attributeRtn = offerAttributeAPI.postOfferAttribute(offerAttribute);
         Assert.assertNotNull(attributeRtn);
 
         //Get the attribute by its id and assert the return value is not null
         logger.LogSample("Get the offer attribute by its id");
-        String attributeGetId = offerAttributeAPI.getOfferAttribute(attributeId);
-        Assert.assertNotNull(Master.getInstance().getOfferAttribute(attributeGetId));
+        OfferAttribute attributeGet = offerAttributeAPI.getOfferAttribute(attributeRtn.getId());
+        Assert.assertNotNull(attributeGet);
 
         //Get attributes by some get conditions, like type and id.
         logger.LogSample("Get offer attributes by its id and type");
-        paraMap.put("type", attributeRtn.getType());
-        paraMap.put("id", attributeId);
-        List<String> attributeResultList = offerAttributeAPI.getOfferAttributes(paraMap);
+        List<String> listType = new ArrayList<>();
+        listType.add(attributeRtn.getType());
+        List<String> listAttributeId = new ArrayList<>();
+        String attributeId = IdConverter.idLongToHexString(OfferAttributeId.class, attributeGet.getId());
+        listAttributeId.add(attributeId);
+
+        paraMap.put("type", listType);
+        paraMap.put("id", listAttributeId);
+        Results<OfferAttribute> attributeResultList = offerAttributeAPI.getOfferAttributes(paraMap);
         Assert.assertNotNull(attributeResultList);
 
         //Get all attributes without any search condition
         logger.LogSample("Get all offer attributes(without any search condition)");
         paraMap.clear();
-        attributeResultList.clear();
         attributeResultList = offerAttributeAPI.getOfferAttributes(paraMap);
         Assert.assertNotNull(attributeResultList);
     }
@@ -170,59 +180,60 @@ public class Catalog extends TestClass {
     @Test
     public void testItemManagement() throws Exception {
 
-        HashMap<String, String> paraMap = new HashMap();
+        HashMap<String, List<String>> paraMap = new HashMap<>();
         ItemService itemServiceAPI = ItemServiceImpl.instance();
         ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
 
         //Post a Physical item
         Item physicalItem = itemServiceAPI.prepareItemEntity(defaultItemFileName);
-        physicalItem.setType(EnumHelper.CatalogItemType.PHYSICAL.getItemType());
+        physicalItem.setType(CatalogItemType.PHYSICAL.getItemType());
         logger.LogSample("Post a physical item");
-        String physicalItemId = itemServiceAPI.postItem(physicalItem);
-        Assert.assertNotNull(Master.getInstance().getItem(physicalItemId));
+        Item physicalItemGet = itemServiceAPI.postItem(physicalItem);
+        Assert.assertNotNull(physicalItemGet);
 
         //Post a Digital item
         Item digitalItem = itemServiceAPI.prepareItemEntity(defaultItemFileName);
-        digitalItem.setType(EnumHelper.CatalogItemType.DIGITAL.getItemType());
+        digitalItem.setType(CatalogItemType.DIGITAL.getItemType());
         logger.LogSample("Post a digital(app) item");
-        String digitalItemId = itemServiceAPI.postItem(digitalItem);
-        Assert.assertNotNull(Master.getInstance().getItem(digitalItemId));
+        Item digitalItemGet = itemServiceAPI.postItem(digitalItem);
+        Assert.assertNotNull(digitalItemGet);
 
         //Get the item by its id
         logger.LogSample("Get the item by its Id");
-        String itemGetId = itemServiceAPI.getItem(digitalItemId);
-        Assert.assertNotNull(Master.getInstance().getItem(itemGetId));
+        Item itemRtn = itemServiceAPI.getItem(digitalItemGet.getItemId());
+        Assert.assertNotNull(itemRtn);
 
         //Get item by id and status
         logger.LogSample("Get item(s) by id");
-        paraMap.put("id", itemGetId);
-        List<String> itemResultList = itemServiceAPI.getItems(paraMap);
+        List<String> listItemId = new ArrayList<>();
+        String itemId = IdConverter.idLongToHexString(ItemId.class, itemRtn.getItemId());
+        listItemId.add(itemId);
+
+        paraMap.put("id", listItemId);
+        Results<Item> itemResultList = itemServiceAPI.getItems(paraMap);
         Assert.assertNotNull(itemResultList);
 
         //Get all items without any search condition
         logger.LogSample("Get all items(without any search condition)");
-        itemResultList.clear();
         paraMap.clear();
         itemResultList = itemServiceAPI.getItems(paraMap);
         Assert.assertNotNull(itemResultList);
 
         //Attach item revision to the item
-        digitalItem = Master.getInstance().getItem(digitalItemId);
         ItemRevision itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultDigitalItemRevisionFileName);
-        itemRevision.setItemId(digitalItem.getItemId());
-        itemRevision.setOwnerId(digitalItem.getOwnerId());
+        itemRevision.setItemId(digitalItemGet.getItemId());
+        itemRevision.setOwnerId(digitalItemGet.getOwnerId());
         logger.LogSample("Post an item Revision");
-        String itemRevisionId = itemRevisionService.postItemRevision(itemRevision);
+        ItemRevision itemRevisionRtn = itemRevisionService.postItemRevision(itemRevision);
 
         //Approve the item revision
-        itemRevision = Master.getInstance().getItemRevision(itemRevisionId);
-        itemRevision.setStatus(EnumHelper.CatalogEntityStatus.APPROVED.getEntityStatus());
+        itemRevisionRtn.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
         logger.LogSample("Update item Revision's status to APPROVED");
-        itemRevisionService.updateItemRevision(itemRevision);
+        itemRevisionService.updateItemRevision(itemRevisionRtn.getRevisionId(), itemRevisionRtn);
 
         //verify the item's currentRevisionId equals to item Revision ID
-        itemServiceAPI.getItem(digitalItemId);
-        Assert.assertEquals(Master.getInstance().getItem(digitalItemId).getCurrentRevisionId(), itemRevision.getRevisionId());
+        itemRtn = itemServiceAPI.getItem(digitalItemGet.getItemId());
+        Assert.assertEquals(itemRtn.getCurrentRevisionId(), itemRevisionRtn.getRevisionId());
 }
 
     @Property(
@@ -244,58 +255,59 @@ public class Catalog extends TestClass {
     @Test
     public void testOfferManagement() throws Exception {
 
-        HashMap<String, String> paraMap = new HashMap();
+        HashMap<String, List<String>> paraMap = new HashMap<>();
         OfferService offerServiceAPI = OfferServiceImpl.instance();
         OfferRevisionService offerRevisionServiceAPI = OfferRevisionServiceImpl.instance();
 
         //Post a default offer
         logger.LogSample("Post a default offer");
-        String offerId = offerServiceAPI.postDefaultOffer();
-        Assert.assertNotNull(Master.getInstance().getOffer(offerId));
+        Offer offer = offerServiceAPI.postDefaultOffer();
+        Assert.assertNotNull(offer);
 
         //Get the offer by its id
         logger.LogSample("Get the offer by its id");
-        String offerGetId = offerServiceAPI.getOffer(offerId);
-        Assert.assertNotNull(Master.getInstance().getOffer(offerGetId));
+        Offer offerGet = offerServiceAPI.getOffer(offer.getOfferId());
+        Assert.assertNotNull(offerGet);
 
         //Get the offer(s) by some conditions: by published property firstly
         logger.LogSample("Get the offer just by published property");
-        paraMap.put("published", "false");
-        List<String> offerResultList = offerServiceAPI.getOffers(paraMap);
-        Assert.assertNotNull(offerResultList);
+        List<String> listStatus = new ArrayList<>();
+        listStatus.add("false");
+
+        paraMap.put("published", listStatus);
+        Results<Offer> offerResult = offerServiceAPI.getOffers(paraMap);
+        Assert.assertNotNull(offerResult);
 
         //Get offer by id and status
         logger.LogSample("Get offers by id and published property");
-        paraMap.put("id", offerGetId);
-        offerResultList.clear();
-        offerResultList = offerServiceAPI.getOffers(paraMap);
-        Assert.assertNotNull(offerResultList);
+        List<String> listOfferId = new ArrayList<>();
+        String offerId = IdConverter.idLongToHexString(OfferId.class, offerGet.getOfferId());
+        listOfferId.add(offerId);
+
+        paraMap.put("id", listOfferId);
+        offerResult = offerServiceAPI.getOffers(paraMap);
+        Assert.assertNotNull(offerResult);
 
         //Get all offers without any search condition
         logger.LogSample("Get all offers without any search conditions");
-        offerResultList.clear();
         paraMap.clear();
-        offerResultList = offerServiceAPI.getOffers(paraMap);
-        Assert.assertNotNull(offerResultList);
+        offerResult = offerServiceAPI.getOffers(paraMap);
+        Assert.assertNotNull(offerResult);
 
         //Attach offer revision to the offer
-        Offer offer = Master.getInstance().getOffer(offerId);
-        OfferRevision offerRevision = offerRevisionServiceAPI.prepareOfferRevisionEntity(defaultDigitalOfferRevisionFileName,
-                EnumHelper.CatalogItemType.DIGITAL);
-        offerRevision.setOfferId(offer.getOfferId());
-        offerRevision.setOwnerId(offer.getOwnerId());
-        String offerRevisionId = offerRevisionServiceAPI.postOfferRevision(offerRevision);
+        OfferRevision offerRevision = offerRevisionServiceAPI.prepareOfferRevisionEntity(defaultOfferRevisionFileName);
+        offerRevision.setOfferId(offerGet.getOfferId());
+        offerRevision.setOwnerId(offerGet.getOwnerId());
+        OfferRevision offerRevisionRtn = offerRevisionServiceAPI.postOfferRevision(offerRevision);
 
         //Approve the offer revision
-        offerRevision = Master.getInstance().getOfferRevision(offerRevisionId);
-        offerRevision.setStatus(EnumHelper.CatalogEntityStatus.APPROVED.getEntityStatus());
-        offerRevisionServiceAPI.updateOfferRevision(offerRevision);
+        offerRevisionRtn.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
+        offerRevisionServiceAPI.updateOfferRevision(offerRevisionRtn.getRevisionId(), offerRevisionRtn);
 
         //verify the offer published status and currentOfferRevisionId
-        offerServiceAPI.getOffer(offerId);
-        offer = Master.getInstance().getOffer(offerId);
-        Assert.assertEquals(offer.getPublished(), Boolean.TRUE);
-        Assert.assertEquals(offer.getCurrentRevisionId(), offerRevision.getRevisionId());
+        offerGet = offerServiceAPI.getOffer(offer.getOfferId());
+        Assert.assertEquals(offerGet.getPublished(), Boolean.TRUE);
+        Assert.assertEquals(offerGet.getCurrentRevisionId(), offerRevisionRtn.getRevisionId());
     }
 
     @Property(
@@ -303,52 +315,56 @@ public class Catalog extends TestClass {
             features = "CatalogScenarios",
             component = Component.Catalog,
             owner = "JasonFu",
-            status = Status.Incomplete,
-            description = "Test EntitlementDefinition Post/Get",
+            status = Status.Enable,
+            description = "Test uploading item and offer",
             steps = {
-                    "1. Post an EntitlementDefinition",
-                    "2. Get the EntitlementDefinition by EntitlementDefinition ID",
-                    "3. Get EntitlementDefinition by some search conditions",
-                    "4. Get all EntitlementDefinition without any search condition"
-            }
-    )
-    @Test
-    public void testEntitlementDefinitionManagement() throws Exception {
-
-        HashMap<String, String> paraMap = new HashMap();
-        EntitlementDefinitionService entitlementDefinitionService = EntitlementDefinitionServiceImpl.instance();
-
-        ///Post an attribute and verify it got posted
-        entitlementDefinitionService.postDefaultEntitlementDefinition(EnumHelper.EntitlementType.DOWNLOAD);
-
-    }
-
-    @Property(
-            priority = Priority.BVT,
-            features = "CatalogScenarios",
-            component = Component.Catalog,
-            owner = "JasonFu",
-            status = Status.Incomplete,
-            description = "Test EntitlementDefinition Post/Get",
-            steps = {
-                    "1. Post an EntitlementDefinition",
-                    "2. Get the EntitlementDefinition by EntitlementDefinition ID",
-                    "3. Get EntitlementDefinition by some search conditions",
-                    "4. Get all EntitlementDefinition without any search condition"
+                    "1. View all previously submitted offers",
+                    "2. Post an item",
+                    "3. Post an item revision, approve it",
+                    "4. Post an offer",
+                    "5. Post an offer revision based on the item and offer above, approve it",
+                    "6. Check the offer status is published"
             }
     )
     @Test
     public void testUploadingOfferToStore() throws Exception {
-        UserService us = UserServiceImpl.instance();
-        ItemService is = ItemServiceImpl.instance();
-        OfferService os = OfferServiceImpl.instance();
+        UserService userService = UserServiceImpl.instance();
+        ItemService itemService = ItemServiceImpl.instance();
+        ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
+        OfferService offerService = OfferServiceImpl.instance();
+        OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
 
-        String superUserId = us.PostUser();
-        User userSuper = Master.getInstance().getUser(superUserId);
+        //Prepare a super user
+        String superUserId = userService.PostUser();
 
-        HashMap<String, String> paraMap = new HashMap();
+        //Show all previously submitted offers
+        HashMap<String, List<String>> paraMap = new HashMap<>();
+        offerService.getOffers(paraMap);
 
+        //Simulate app submission process
+        //1. Post an Item
+        Item item = itemService.postDefaultItem(CatalogItemType.DIGITAL);
 
+        //2. Post an item revision
+        ItemRevision itemRevision = itemRevisionService.postDefaultItemRevision(item);
+
+        //3. Approve the item revision
+        itemRevision.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
+        itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision);
+
+        //4. Post an offer
+        Offer offer = offerService.postDefaultOffer();
+
+        //5. Post an offer revision
+        OfferRevision offerRevision = offerRevisionService.postDefaultOfferRevision(offer, item);
+
+        //6. Approve the offer revision
+        offerRevision.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
+        offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
+
+        //Check the offer status
+        offer = offerService.getOffer(offer.getOfferId());
+        Assert.assertEquals(offer.getPublished(), Boolean.TRUE);
     }
 
     @Property(

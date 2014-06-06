@@ -1,6 +1,7 @@
 package com.junbo.order.core.impl.common
 import com.junbo.common.id.PIType
 import com.junbo.common.id.PaymentInstrumentId
+import com.junbo.identity.spec.v1.model.Currency;
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.spec.error.AppErrors
@@ -51,8 +52,8 @@ class OrderValidator {
     }
 
     Promise<OrderValidator> validCurrency(String currencyString, String fieldName) {
-        facadeContainer.billingFacade.getCurrency(currencyString).syncThen {
-            com.junbo.billing.spec.model.Currency currency ->
+        return facadeContainer.identityFacade.getCurrency(currencyString).syncThen {
+            Currency currency ->
             if (currency == null) {
                 throw AppErrors.INSTANCE.fieldInvalid(fieldName, 'not a valid currency').exception()
             }
@@ -65,7 +66,7 @@ class OrderValidator {
         if (piids == null || piids.isEmpty()) {
             return this
         }
-        def pi = facadeContainer.paymentFacade.getPaymentInstrument(piids[0].value).wrapped().get()
+        def pi = facadeContainer.paymentFacade.getPaymentInstrument(piids[0].value).get()
         if (PIType.get(pi?.type) == PIType.PAYPAL) {
             notNull(successRedirectUrl, 'successRedirectUrl')
             notNull(cancelRedirectUrl, 'cancelRedirectUrl')
@@ -88,11 +89,13 @@ class OrderValidator {
             // validate pi is there if amount is zero
             if (!order.tentative) {
                 if (CoreUtils.hasPhysicalOffer(order)) {
-                    notNull(order.shippingMethod, 'shippingMethodId')
-                    notNull(order.shippingAddress, 'shippingAddressId')
+                    notNull(order.shippingMethod, 'shippingMethod')
+                    notNull(order.shippingAddress, 'shippingToAddress')
+                    notNull(order.shippingToName, 'shippingToName')
+                    notNull(order.shippingToPhone, 'shippingToPhone')
                 }
                 if (!CoreUtils.isFreeOrder(order)) {
-                    notEmpty(order.paymentInstruments, 'paymentInstruments')
+                    notEmpty(order.payments, 'payments')
                 }
             }
         }

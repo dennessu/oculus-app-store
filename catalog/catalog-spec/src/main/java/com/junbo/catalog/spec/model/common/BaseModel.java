@@ -6,64 +6,26 @@
 
 package com.junbo.catalog.spec.model.common;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.util.Identifiable;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.Null;
-import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Base model.
  */
-public class BaseModel {
-    @Null
-    private Date createdTime;
-    @Null
-    @JsonIgnore
-    private String createdBy;
-    @Null
-    private Date updatedTime;
-    @Null
-    @JsonIgnore
-    private String updatedBy;
-    private String rev;
+public abstract class BaseModel extends ResourceMeta implements Identifiable<Long> {
+    @ApiModelProperty(position = 2000, required = true, value = "The future expansion properties.")
+    private Map<String, JsonNode> futureExpansion = new HashMap<>();
 
-    public Date getCreatedTime() {
-        return createdTime;
+    public Map<String, JsonNode> getFutureExpansion() {
+        return futureExpansion;
     }
 
-    public void setCreatedTime(Date createdTime) {
-        this.createdTime = createdTime;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public Date getUpdatedTime() {
-        return updatedTime;
-    }
-
-    public void setUpdatedTime(Date updatedTime) {
-        this.updatedTime = updatedTime;
-    }
-
-    public String getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
-    public String getRev() {
-        return rev;
-    }
-
-    public void setRev(String rev) {
-        this.rev = rev;
+    public void setFutureExpansion(Map<String, JsonNode> futureExpansion) {
+        this.futureExpansion = futureExpansion;
     }
 }

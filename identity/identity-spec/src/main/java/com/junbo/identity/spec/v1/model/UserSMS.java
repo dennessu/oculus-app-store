@@ -5,18 +5,37 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
 /**
  * Created by liangfu on 4/26/14.
  */
 public class UserSMS {
+    @ApiModelProperty(position = 1, required = true, value = "The User SMS message.")
+    private String info;
 
-    private String textMessage;
-
-    public String getTextMessage() {
-        return textMessage;
+    public String getInfo() {
+        return info;
     }
 
-    public void setTextMessage(String textMessage) {
-        this.textMessage = textMessage;
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserSMS userSMS = (UserSMS) o;
+
+        if (info != null ? !info.equals(userSMS.info) : userSMS.info != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return info != null ? info.hashCode() : 0;
     }
 }

@@ -30,7 +30,7 @@ public class WalletDaoTest extends BaseTest {
     public void testCreateWallet() {
         WalletEntity walletEntity = buildAWallet();
         WalletEntity insertedWallet = walletDao.insert(walletEntity);
-        Assert.assertNotNull(insertedWallet.getId());
+        Assert.assertNotNull(insertedWallet.getpId());
         Assert.assertEquals(walletEntity.getBalance(), insertedWallet.getBalance());
     }
 

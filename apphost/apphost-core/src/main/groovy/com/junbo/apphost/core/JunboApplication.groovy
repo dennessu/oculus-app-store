@@ -6,6 +6,9 @@ import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.BeansException
+import org.springframework.beans.factory.BeanFactory
+import org.springframework.beans.factory.support.DefaultListableBeanFactory
+import org.springframework.beans.factory.support.RootBeanDefinition
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.context.support.ClassPathXmlApplicationContext
 import org.springframework.util.StopWatch
@@ -58,7 +61,9 @@ class JunboApplication {
         }
     }
 
-    private static class JunboApplicationContext extends ClassPathXmlApplicationContext {
+    static class JunboApplicationContext extends ClassPathXmlApplicationContext {
+
+        boolean isRefreshed = false
 
         JunboApplicationContext(String[] configLocations, boolean refresh) throws BeansException {
             super(configLocations, refresh)
@@ -69,6 +74,71 @@ class JunboApplication {
             LoggerInitializer.logClosed(LOGGER)
 
             LoggerInitializer.stop()
+        }
+
+        @Override
+        protected void prepareRefresh() {
+            isRefreshed = false
+            super.prepareRefresh()
+        }
+
+        @Override
+        protected void finishRefresh() {
+            super.finishRefresh()
+            isRefreshed = true
+        }
+
+        @Override
+        protected DefaultListableBeanFactory createBeanFactory() {
+            return new JunboBeanFactory(internalParentBeanFactory)
+        }
+    }
+
+    static class JunboBeanFactory extends DefaultListableBeanFactory {
+
+        private static final Logger LOGGER = LoggerFactory.getLogger(JunboBeanFactory)
+
+        private Stack<Long> latencyStack = new Stack<>()
+
+        private final Set<String> beanNames = new HashSet<>()
+
+        JunboBeanFactory(BeanFactory parentBeanFactory) {
+            super(parentBeanFactory)
+        }
+
+        @Override
+        protected <T> T doGetBean(String name, Class<T> requiredType, Object[] args, boolean typeCheckOnly) throws BeansException {
+
+            if (beanNames.contains(name)) {
+                return super.doGetBean(name, requiredType, args, typeCheckOnly)
+            }
+
+            beanNames.add(name)
+
+            latencyStack.push(0)
+
+            long start = System.currentTimeMillis()
+
+            T result = super.doGetBean(name, requiredType, args, typeCheckOnly)
+
+            long latency = System.currentTimeMillis() - start
+
+            long netLatency = latency + latencyStack.pop()
+
+            def message = "doGetBean ${latency.toString().padLeft(5)} ${netLatency.toString().padLeft(5)} " +
+                    (".." * latencyStack.size()) + "$name"
+
+            if (netLatency < 200) {
+                LOGGER.info(message)
+            } else {
+                LOGGER.warn(message)
+            }
+
+            if (!latencyStack.empty()) {
+                latencyStack.push(latencyStack.pop() - latency)
+            }
+
+            return result
         }
     }
 }

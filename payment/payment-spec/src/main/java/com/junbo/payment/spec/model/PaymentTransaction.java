@@ -7,6 +7,7 @@
 package com.junbo.payment.spec.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.PaymentInstrumentId;
 import com.junbo.common.jackson.annotation.PaymentTransactionId;
@@ -46,6 +47,11 @@ public class PaymentTransaction {
     private String type;
     @FilterIn
     private List<PaymentEvent> paymentEvents;
+    @FilterIn
+    @JsonIgnore
+    PaymentProperties paymentProperties;
+    @JsonIgnore
+    private UserInfo userInfo;
 
     public UUID getTrackingUuid() {
         return trackingUuid;
@@ -151,4 +157,19 @@ public class PaymentTransaction {
         this.paymentEvents = paymentEvents;
     }
 
+    public PaymentProperties getPaymentProperties() {
+        return paymentProperties;
+    }
+
+    public void setPaymentProperties(PaymentProperties paymentProperties) {
+        this.paymentProperties = paymentProperties;
+    }
+
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
+    }
 }

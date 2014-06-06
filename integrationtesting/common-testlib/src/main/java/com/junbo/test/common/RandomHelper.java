@@ -20,4 +20,7 @@ public class RandomHelper {
         return RandomStringUtils.randomAlphabetic(count);
     }
 
+    public static String randomNumeric(int count) {
+        return RandomStringUtils.randomNumeric(count);
+    }
 }

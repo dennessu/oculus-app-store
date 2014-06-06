@@ -6,7 +6,12 @@
 
 package com.junbo.ewallet.db.entity;
 
-import com.junbo.ewallet.db.entity.def.IdentifiableType;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.junbo.common.cloudant.json.annotations.CloudantDeserialize;
+import com.junbo.common.cloudant.json.annotations.CloudantSerialize;
+import com.junbo.common.jackson.deserializer.BigDecimalFromStringDeserializer;
+import com.junbo.common.util.Identifiable;
+import com.junbo.ewallet.db.entity.def.*;
 import com.junbo.ewallet.spec.def.WalletLotType;
 import org.hibernate.annotations.Type;
 
@@ -21,12 +26,22 @@ import java.util.Date;
  */
 @javax.persistence.Entity
 @Table(name = "ewallet_lot")
-public class WalletLotEntity extends Entity {
+public class WalletLotEntity extends Entity implements Identifiable<WalletLotId> {
     private Long walletId;
+    @CloudantSerialize(TypeSerializer.WalletLotTypeSerializer.class)
+    @CloudantDeserialize(TypeDeserializer.WalletLotTypeDeserializer.class)
     private WalletLotType type;
+    @CloudantDeserialize(BigDecimalFromStringDeserializer.class)
+    @CloudantSerialize(ToStringSerializer.class)
     private BigDecimal totalAmount;
+    @CloudantDeserialize(BigDecimalFromStringDeserializer.class)
+    @CloudantSerialize(ToStringSerializer.class)
     private BigDecimal remainingAmount;
+    @CloudantSerialize(DateSerializer.class)
+    @CloudantDeserialize(DateDeserializer.class)
     private Date expirationDate;
+
+    private Boolean isActive;
 
     @Column(name = "ewallet_id")
     public Long getWalletId() {
@@ -78,5 +93,25 @@ public class WalletLotEntity extends Entity {
     @Override
     public Long getShardMasterId() {
         return walletId;
+    }
+
+    @Transient
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    @Transient
+    @Override
+    public WalletLotId getId() {
+        return new WalletLotId(getpId());
+    }
+
+    @Override
+    public void setId(WalletLotId id) {
+        this.setpId(id.getValue());
     }
 }

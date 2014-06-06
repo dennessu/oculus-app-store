@@ -8,8 +8,8 @@ package com.junbo.fulfilment.common.util;
 import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.alibaba.fastjson.serializer.PropertyFilter;
 import com.alibaba.fastjson.serializer.SerializeWriter;
-import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.impl.DefaultMapperFactory;
+import org.dozer.DozerBeanMapper;
+import org.dozer.Mapper;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -21,7 +21,7 @@ import java.util.Set;
  */
 public final class Utils {
     // thread safe
-    private static final MapperFacade MAPPER = new DefaultMapperFactory.Builder().build().getMapperFacade();
+    private static Mapper mapper = new DozerBeanMapper();
 
     private Utils() {
 
@@ -43,6 +43,10 @@ public final class Utils {
         return b == null;
     }
 
+    public static String toJson(Object input) {
+        return toJson(input, null);
+    }
+
     public static String toJson(Object input, String[] filterProperties) {
         SerializeWriter writer = new SerializeWriter();
         JSONSerializer serializer = new JSONSerializer(writer);
@@ -62,6 +66,6 @@ public final class Utils {
     }
 
     public static <S, T> T map(S source, Class<T> targetClass) {
-        return MAPPER.map(source, targetClass);
+        return mapper.map(source, targetClass);
     }
 }

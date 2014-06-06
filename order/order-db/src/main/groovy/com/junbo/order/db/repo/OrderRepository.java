@@ -6,42 +6,25 @@
 
 package com.junbo.order.db.repo;
 
-import com.junbo.common.id.PaymentInstrumentId;
-import com.junbo.order.spec.model.*;
+import com.junbo.common.id.OrderId;
+import com.junbo.langur.core.promise.Promise;
+import com.junbo.order.spec.model.Order;
+import com.junbo.order.spec.model.OrderQueryParam;
+import com.junbo.order.spec.model.PageParam;
+import com.junbo.sharding.dualwrite.annotations.ReadMethod;
+import com.junbo.sharding.repo.BaseRepository;
 
 import java.util.List;
 
 /**
  * Created by chriszhu on 2/18/14.
  */
-public interface OrderRepository {
+public interface OrderRepository extends BaseRepository<Order, OrderId> {
 
-    Order createOrder(Order order);
+    @ReadMethod
+    Promise<List<Order>> getByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam);
 
-    Order getOrder(Long orderId);
-
-    List<Order> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam);
-
-    List<Order> getOrdersByStatus(Object shardKey, List<String> statusList,
-                                  boolean updatedByAscending, PageParam pageParam);
-
-    OrderEvent createOrderEvent(OrderEvent event);
-
-    FulfillmentEvent createFulfillmentEvent(Long orderId, FulfillmentEvent event);
-
-    BillingEvent createBillingEvent(Long orderId, BillingEvent event);
-
-    List<OrderItem> getOrderItems(Long orderId);
-
-    OrderItem getOrderItem(Long orderItemId);
-
-    List<Discount> getDiscounts(Long orderId);
-
-    List<PaymentInstrumentId> getPaymentInstrumentIds(Long orderId);
-
-    Order updateOrder(Order order, boolean updateOnlyOrder);
-
-    List<OrderEvent> getOrderEvents(Long orderId, PageParam pageParam);
-
-    List<PreorderInfo> getPreorderInfo(Long orderItemId);
+    @ReadMethod
+    Promise<List<Order>> getByStatus(Object shardKey, List<String> statusList,
+                                     boolean updatedByAscending, PageParam pageParam);
 }

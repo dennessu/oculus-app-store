@@ -115,21 +115,6 @@ The following guide is for setting up windows as the development and testing env
     ```
 
     It should show the gradle version.
-
-#### Add aws-artifactory to hosts
-`aws-artifactory` is a shared artifactory server used by the development team. The code always uses the name `aws-artifactory` to access it. Run the following command to map IP address to the name.
-
-1. Open an elevated command line window.
-
-    ```bat
-    powershell Start-Process cmd.exe -Verb RunAs
-    ```
-
-1. Type the following command.
-
-    ```bat
-    echo 54.254.249.206 aws-artifactory >> C:\Windows\System32\drivers\etc\hosts
-    ```
         
 #### Install IntelliJ IDEA (Optional)
 This step is optional. IntelliJ IDEA is the recommended IDE for developing Java and Groovy code. Download and install [IntelliJ IDEA 13 Community Edition](http://www.jetbrains.com/idea/download/).
@@ -250,13 +235,6 @@ Note: If you don't want to change the coreutils preference, you can create anoth
 1. Verify CouchDB is running by accessing [http://localhost:5984/\_utils](http://localhost:5984/_utils). It should show the "Apache CouchDB - Futon" page.
 
 
-#### Add aws-artifactory to hosts
-`aws-artifactory` is a shared artifactory server used by the development team. The code always uses the name `aws-artifactory` to access it. Run the following command to map IP address to the name.
-
-```bash
-sudo echo 54.254.249.206 aws-artifactory >> /etc/hosts
-```
-
 #### Install IntelliJ IDEA (Optional)
 IntelliJ IDEA is the recommended IDE for developing Java and Groovy code. Download and install [IntelliJ IDEA 13 Community Edition](http://www.jetbrains.com/idea/download/).
 
@@ -283,19 +261,6 @@ In windows, do the following steps in cygwin terminal. For OS X and Linux, open 
     git clone git@github.com:junbo/main.git owp-main
     ```
 
-1. Trust aws-artifactory server cert.
-
-    ```bash
-    cd ~/owp-main/bootstrap/setup
-    keytool -import -alias aws-artifactory -keystore $JAVA_HOME/jre/lib/security/cacerts -file ./aws-artifactory.cer -trustcacerts
-    ```
-
-The default Java key store password is:
-
-```
-changeit
-```
-
 ### Full Build
 
 Run the full build using the following commands.
@@ -307,41 +272,45 @@ cd ~/owp-main
 
 The command should finish without error. The fullcycle.sh includes the unit tests.
 
+The above command equals to the following:
+```bash
+cd ~/owp-main
+./setupdb.sh
+pushd gradle/bootstrap
+gradle
+popd
+gradle
+```
+
 ### Partial Build
 If you want to build only one component (for example, identity), run the following commands:
 
 ```bash
 cd ~/owp-main/identity
-gradle clean build install
+gradle
 ```
 
-If you want to run the build without unittests, run the following commands:
+If you want to run the build without code style checks and unittests, run the following commands:
 
 ```bash
 cd ~/owp-main/identity
-gradle clean build install -x test
+gradle -x build
 ```
 
 If you want to run the build using locally cached jar packages:
 
 ```bash
 cdo ~/owp-main/identity
-gradle clean build install --offline
+gradle --offline
 ```
 
 ### Run the servers
 After the build, run the servers using the following command:
 
 ```bash
-cd ~/owp-main/bootstrap
+cd ~/owp-main/apphost
 gradle installApp distTar
-pushd catalog-bundle/build/install/catalog-bundle
-./startup.sh
-popd
-pushd commerce-bundle/build/install/commerce-bundle
-./startup.sh
-popd
-pushd identity-bundle/build/install/identity-bundle
+pushd apphost-cli/build/install/apphost-cli
 ./startup.sh
 popd
 pushd docs-bundle/build/install/docs-bundle
@@ -351,9 +320,7 @@ popd
 
 After the steps, the serices are available at different ports on the development machine.
 - Docs Url: [http://localhost:8079](http://localhost:8079)
-- Commerce Url: [http://localhost:8080](http://localhost:8080)
-- Identity Url: [http://localhost:8081](http://localhost:8081)
-- Catalog Url: [http://localhost:8082](http://localhost:8082)
+- Api Url: [http://localhost:8080/v1](http://localhost:8080)
 
 Note: In integration and production environment, a hardware load balancer will be put in front of these endpoints to provide a single endpoint. 
 (TODO: In onebox, use a Nginx server will be used to proxy the requests.)
@@ -365,4 +332,6 @@ After the servers are running, you can run test cases using the following comman
 cd ~/owp-main/integrationtesting
 gradle build
 ```
+
+
 
