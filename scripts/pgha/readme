@@ -26,6 +26,7 @@
 #clean up exisitng db instance
 	[devops] sudo kill $(fuser -n tcp 5432 2> /dev/null)
 	[devops] sudo chown silkcloud:silkcloud /var/run/postgresql
+	[devops] clean up all files including hidden files in /var/run/postgresql
 
 [PGBouncer Installation]
 	[devops] sudo apt-get install -y pgbouncer
@@ -43,7 +44,7 @@
 	[devops] sudo apt-get install libpq-dev
 	[devops] sudo apt-get install postgresql-server-dev-9.3
 
-	[devops] download http://pgfoundry.org/frs/download.php/3622/skytools-3.2.tar.gz
+	[devops] wget http://pgfoundry.org/frs/download.php/3622/skytools-3.2.tar.gz -o /tmp/skytools-3.2.tar.gz
 	[devops] ./configure --prefix=/usr/local
 	[devops] sudo make
 	[devops] sudo make install
@@ -79,6 +80,8 @@
 
 #[master/slave] (FOR DEMO ONLY)
 	[silkcloud] echo "*:6543:*:silkcloud:abc123" > ~/.pgpass
+	[silkcloud] echo "*:5432:*:silkcloud:abc123" > ~/.pgpass
+	[silkcloud] chmod 600 ~/.pgpass
 	[silkcloud] echo '"silkcloud" "abc123"' > ~/pgbouncer_auth.txt
 
 =====Deployment=====
@@ -92,10 +95,10 @@
 	$DEPLOYMENT_PATH/setup_slave.sh
 
 #[master] schedule archive log sync cron job
-	$DEPLOYMENT_PATH/master_cron.sh
+	$DEPLOYMENT_PATH/cron_master.sh
 
 #[slave] schedule archive log sync cron job
-	$DEPLOYMENT_PATH/slave_cron.sh
+	$DEPLOYMENT_PATH/cron_slave.sh
 
 #[master] start primary PGBouncer proxy (connect to master db)
 	$DEPLOYMENT_PATH/pgbouncer_master.sh
@@ -108,6 +111,9 @@
 
 #[replica] setup replica database
 	$DEPLOYMENT_PATH/setup_replica.sh
+
+#[master] setup londiste publisher
+	$DEPLOYMENT_PATH/londiste_master.sh
 
 =====Planned Failover=====
 #[slave] master failover to slave
@@ -143,7 +149,7 @@
 	$DEPLOYMENT_PATH/setup_slave.sh
 
 #[slave] schedule archive log sync cron job
-	$DEPLOYMENT_PATH/slave_cron.sh
+	$DEPLOYMENT_PATH/cron_slave.sh
 
 #[slave] start secondary PGBouncer proxy (connect to master db)
 	$DEPLOYMENT_PATH/pgbouncer_master.sh

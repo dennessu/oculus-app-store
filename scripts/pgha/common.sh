@@ -9,7 +9,9 @@ export DATA_PATH='/tmp/data'
 export BACKUP_PATH='/tmp/backup'
 export ARCHIVE_PATH='/tmp/archive'
 export CRON_PATH='/tmp/pgcron'
+
 export SKYTOOL_PATH='/tmp/skytool'
+export SKYTOOL_CONFIG_PATH=$SKYTOOL_PATH/config
 export SKYTOOL_PID_PATH=$SKYTOOL_PATH/pid
 export SKYTOOL_LOG_PATH=$SKYTOOL_PATH/log
 
@@ -40,6 +42,7 @@ export REPLICA_DATA_PATH=$DATA_PATH
 #pgbouncer
 export PRIMARY_PGBOUNCER_HOST=$MASTER_HOST
 export SECONDARY_PGBOUNCER_HOST=$SLAVE_HOST
+export REPLICA_DATABASES=('postgres')
 
 export PGBOUNCER_PORT=6543
 
@@ -67,16 +70,22 @@ function forceKill {
 }
 
 function forceKillPid {
+    set +e
+
     if [ -f $1 ];then
+      cat $1 | xargs echo
       cat $1 | xargs kill -9
     elif [ -d $1 ];then
-   	  for f in $1/*
+   	  for f in `ls $1`
 	    do
-		  cat $f | xargs kill -9
-        done
+        cat $1/$f | xargs echo
+		    cat $1/$f | xargs kill -9
+      done
    	else
    	  echo "path [$1] does not exist"
     fi
+
+    set -e
 }
 
 # check running account
