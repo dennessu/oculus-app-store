@@ -114,8 +114,20 @@
 #[replica] setup replica database
     $DEPLOYMENT_PATH/setup_replica.sh
 
-#[master] setup londiste publisher
+#[master/slave] create londiste config on master/slave
+    $DEPLOYMENT_PATH/londiste_config_root.sh
+
+#[replica] create londiste config on replcia
+    $DEPLOYMENT_PATH/londiste_config_leaf.sh
+
+#[master] start londiste deamon on master
     $DEPLOYMENT_PATH/londiste_master.sh
+
+#[replica] start londiste deamon on replica (master -> replica)
+    $DEPLOYMENT_PATH/londiste_replica_master.sh
+
+#[master] start londiste pgq ticker deamon
+    $DEPLOYMENT_PATH/lodiste_pgqd.sh
 
 =====Planned Failover=====
 #[slave] master failover to slave

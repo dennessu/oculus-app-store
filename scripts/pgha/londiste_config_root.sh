@@ -15,12 +15,12 @@ createDir $SKYTOOL_LOG_PATH
 
 for db in ${REPLICA_DATABASES[@]}
 do
-    config=$SKYTOOL_CONFIG_PATH/${db}_primary.ini
+    config=$SKYTOOL_CONFIG_PATH/${db}_root.ini
 
     echo "generate londiste3 configuration files for database [$db]"
     cat > $config <<EOF
 [londiste3]
-job_name = job_$db
+job_name = job_root_${db}
 db = dbname=${db}
 queue_name = queue_$db
 logfile = $SKYTOOL_LOG_PATH/$db.log
