@@ -61,11 +61,11 @@ set -e
 
 # kill process with specified port
 function forceKill {
-	if (fuser -n tcp $1 2> /dev/null)
+    if (fuser -n tcp $1 2> /dev/null)
     then
-	    kill $(fuser -n tcp $1 2> /dev/null)
+        kill $(fuser -n tcp $1 2> /dev/null)
     else
-	    echo "no process running with [$1] port..."
+        echo "no process running with [$1] port..."
     fi    
 }
 
@@ -73,16 +73,16 @@ function forceKillPid {
     set +e
 
     if [ -f $1 ];then
-      cat $1 | xargs echo
-      cat $1 | xargs kill -9
+        cat $1 | xargs echo
+        cat $1 | xargs kill -9
     elif [ -d $1 ];then
-   	  for f in `ls $1`
-	    do
-        cat $1/$f | xargs echo
-		    cat $1/$f | xargs kill -9
-      done
-   	else
-   	  echo "path [$1] does not exist"
+        for f in `ls $1`
+        do
+            cat $1/$f | xargs echo
+            cat $1/$f | xargs kill -9
+        done
+    else
+        echo "path [$1] does not exist"
     fi
 
     set -e
@@ -90,15 +90,15 @@ function forceKillPid {
 
 # check running account
 function checkAccount {
-	if [ "$(whoami)" != "$1" ]; then
-   		echo "this script must be run as $1"
-   		exit 1
-	fi
+    if [ "$(whoami)" != "$1" ]; then
+        echo "this script must be run as $1"
+        exit 1
+    fi
 }
 
 # create directory
 function createDir {
-	rm -rf $1
-	mkdir $1
-	chmod 700 $1
+    rm -rf $1
+    mkdir $1
+    chmod 700 $1
 }

@@ -12,19 +12,19 @@ $PGBIN_PATH/psql repl_test -h $MASTER_HOST -p $MASTER_DB_PORT -c "DELETE FROM st
 # insert against master server
 for k in $(seq 1 50)
 do
-  $PGBIN_PATH/psql repl_test -h $MASTER_HOST -p $MASTER_DB_PORT -c "INSERT INTO student VALUES ($k);"
+    $PGBIN_PATH/psql repl_test -h $MASTER_HOST -p $MASTER_DB_PORT -c "INSERT INTO student VALUES ($k);"
 done
 
 # insert against primary pgbouncer proxy
 for k in $(seq 1 50)
 do
-  $PGBIN_PATH/psql repl_test -h $PRIMARY_PGBOUNCER_HOST -p $PGBOUNCER_PORT -c "INSERT INTO student VALUES ($k);"
+    $PGBIN_PATH/psql repl_test -h $PRIMARY_PGBOUNCER_HOST -p $PGBOUNCER_PORT -c "INSERT INTO student VALUES ($k);"
 done
 
 # insert against secondary pgbouncer proxy
 for k in $(seq 1 50)
 do
-  $PGBIN_PATH/psql repl_test -h $SECONDARY_PGBOUNCER_HOST -p $PGBOUNCER_PORT -c "INSERT INTO student VALUES ($k);"
+    $PGBIN_PATH/psql repl_test -h $SECONDARY_PGBOUNCER_HOST -p $PGBOUNCER_PORT -c "INSERT INTO student VALUES ($k);"
 done
 
 echo 'waiting for replication...'
