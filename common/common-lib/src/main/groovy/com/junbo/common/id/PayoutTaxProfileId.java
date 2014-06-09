@@ -8,7 +8,9 @@ package com.junbo.common.id;
 /**
  * Created by liangfu on 6/5/14.
  */
-@IdResourcePath(value = "/payout-tax-profiles/{0}", regex = "/payout-tax-profiles/(?<id>[0-9A-Z]+)")
+@IdResourcePath(value = "/payout-tax-profiles/{0}",
+                resourceType = "payout-tax-profiles",
+                regex = "/payout-tax-profiles/(?<id>[0-9A-Za-z]+)")
 public class PayoutTaxProfileId  extends Id {
 
     public PayoutTaxProfileId() {} {

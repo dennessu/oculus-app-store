@@ -9,7 +9,9 @@ package com.junbo.common.id;
 /**
  * Promotion revision id.
  */
-@IdResourcePath(value = "/promotion-revisions/{0}", regex = "/promotion-revisions/(?<id>[0-9A-Z]+)")
+@IdResourcePath(value = "/promotion-revisions/{0}",
+                resourceType = "promotion-revisions",
+                regex = "/promotion-revisions/(?<id>[0-9A-Za-z]+)")
 public class PromotionRevisionId extends Id {
     public PromotionRevisionId(){
 

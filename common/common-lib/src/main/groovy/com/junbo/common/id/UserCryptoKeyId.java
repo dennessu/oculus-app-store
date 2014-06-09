@@ -8,7 +8,9 @@ package com.junbo.common.id;
 /**
  * Created by liangfu on 5/12/14.
  */
-@IdResourcePath(value = "/crypto/{0}", regex = "/crypto/(?<id>[0-9A-Z]+)")
+@IdResourcePath(value = "/crypto/{0}",
+                resourceType = "crypto",
+                regex = "/crypto/(?<id>[0-9A-Za-z]+)")
 public class UserCryptoKeyId extends Id {
     public UserCryptoKeyId() {}
     public UserCryptoKeyId(long value) {

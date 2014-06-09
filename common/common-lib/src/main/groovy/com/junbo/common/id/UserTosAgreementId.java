@@ -10,7 +10,8 @@ package com.junbo.common.id;
  * Created by minhao on 2/13/14.
  */
 @IdResourcePath(value = "/tos-agreements/{0}",
-        regex = "/tos-agreements/(?<id>[0-9A-Z]+)")
+                resourceType = "tos-agreements",
+                regex = "/tos-agreements/(?<id>[0-9A-Za-z]+)")
 public class UserTosAgreementId extends Id {
 
     public UserTosAgreementId() {}

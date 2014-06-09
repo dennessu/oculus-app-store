@@ -9,7 +9,9 @@ package com.junbo.common.id;
 /**
  * Java doc for OrderEventId.
  */
-@IdResourcePath(value = "/order-events/{0}", regex = "/order-events/(?<id>[0-9A-Z]+)")
+@IdResourcePath(value = "/order-events/{0}",
+                resourceType = "order-events",
+                regex = "/order-events/(?<id>[0-9A-Za-z]+)")
 public class OrderEventId extends Id {
 
     public OrderEventId() {}

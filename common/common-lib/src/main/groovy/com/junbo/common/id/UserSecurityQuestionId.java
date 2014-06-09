@@ -9,7 +9,8 @@ package com.junbo.common.id;
  * Created by liangfu on 3/13/14.
  */
 @IdResourcePath(value = "/users/{userId}/security-questions/{0}",
-        regex = "/users/(?<userId>[0-9A-Z]+)/security-questions/(?<id>[0-9A-Z]+)")
+                resourceType = "security-questions",
+                regex = "/users/(?<userId>[0-9A-Za-z]+)/security-questions/(?<id>[0-9A-Za-z]+)")
 public class UserSecurityQuestionId extends Id {
     public UserSecurityQuestionId() {}
     public UserSecurityQuestionId(long value) {

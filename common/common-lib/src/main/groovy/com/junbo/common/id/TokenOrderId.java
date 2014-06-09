@@ -9,7 +9,9 @@ package com.junbo.common.id;
 /**
  * strong type token order id.
  */
-@IdResourcePath(value = "/tokens/orders/{0}", regex = "/tokens/orders/(?<id>[0-9A-Z]+)")
+@IdResourcePath(value = "/tokens/orders/{0}",
+                resourceType = "token-orders",
+                regex = "/tokens/orders/(?<id>[0-9A-Za-z]+)")
 public class TokenOrderId extends Id{
     public TokenOrderId() {}
 

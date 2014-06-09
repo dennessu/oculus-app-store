@@ -8,7 +8,9 @@ package com.junbo.common.id;
 /**
  * Created by fzhang on 4/24/2014.
  */
-@IdResourcePath(value = "/coupons/{0}", regex = "/coupons/(?<id>[0-9A-Z]+)")
+@IdResourcePath(value = "/coupons/{0}",
+                resourceType = "coupons",
+                regex = "/coupons/(?<id>[0-9A-Za-z]+)")
 public class CouponId extends Id {
     public CouponId(){
     }
