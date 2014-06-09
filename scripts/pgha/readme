@@ -86,7 +86,7 @@
     [silkcloud] chmod 600 ~/.pgpass
     [silkcloud] echo '"silkcloud" "abc123"' > ~/pgbouncer_auth.txt
 
-=====Deployment=====
+=====Master-Slave Deployment=====
 #[master] setup master database
     $DEPLOYMENT_PATH/setup/setup_master.sh
 
@@ -114,11 +114,9 @@
 #[master/slave] replication smoke test
     $DEPLOYMENT_PATH/test/test_master2slave.sh
 
+=====Master-Replica Deployment=====
 #[replica] setup replica database
     $DEPLOYMENT_PATH/setup/setup_replica.sh
-
-#[replica] run liquibase 
-    $DEPLOYMENT_PATH/test/test_liquibase_replica.sh (FOR DEMO ONLY)
 
 #[master/slave] create londiste config on master/slave
     $DEPLOYMENT_PATH/londiste/londiste_config_root.sh
@@ -134,6 +132,9 @@
 
 #[master] start londiste pgq ticker deamon
     $DEPLOYMENT_PATH/londiste/lodiste_pgqd.sh
+
+#[replica] cut off master/replica streaming replication
+    $DEPLOYMENT_PATH/londiste/londiste_cutoff.sh
 
 =====Planned Failover=====
 #[slave] master failover to slave
@@ -185,3 +186,8 @@
     original master -> slave
 
 #repeat normal replciation setup process
+
+=====Release Memo=====
+# Londiste doesn't support DDL replication, liquibase scripts should be run against both MASTER and REPLICA
+# Liquibase change log related table should not be published for replication
+
