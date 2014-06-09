@@ -18,4 +18,5 @@ public interface OrderBalanceLinkEntityDao {
     OrderBalanceLinkEntity save(OrderBalanceLinkEntity orderBalanceLink);
     OrderBalanceLinkEntity update(OrderBalanceLinkEntity orderBalanceLink);
     List<OrderBalanceLinkEntity> findByOrderId(Long orderId);
+    List<OrderBalanceLinkEntity> findByBalanceId(Long balanceId);
 }

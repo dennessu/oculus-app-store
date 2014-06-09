@@ -156,7 +156,7 @@ class CoreBuilder {
         Balance balance = new Balance()
         balance.country = order.country.value
         balance.currency = order.currency.value
-        balance.orderId = order.getId()
+        balance.orderIds = [order.getId()]
         balance.userId = order.user
         balance.piId = order.payments?.get(0)?.paymentInstrument
         balance.trackingUuid = UUID.randomUUID()
@@ -175,7 +175,7 @@ class CoreBuilder {
         Balance balance = new Balance()
         balance.country = originalBalance.country
         balance.currency = originalBalance.currency
-        balance.orderId = originalBalance.orderId
+        balance.orderIds = originalBalance.orderIds
         balance.userId = originalBalance.userId
         balance.piId = originalBalance.piId
         balance.trackingUuid = UUID.randomUUID()

@@ -11,6 +11,7 @@ import com.junbo.billing.db.entity.*;
 import com.junbo.billing.spec.enums.EventActionType;
 import com.junbo.billing.spec.model.*;
 import com.junbo.common.id.BalanceId;
+import com.junbo.common.id.OrderId;
 import com.junbo.oom.core.MappingContext;
 import com.junbo.billing.db.dao.*;
 import com.junbo.billing.db.mapper.ModelMapper;
@@ -94,13 +95,15 @@ public class BalanceRepositoryImpl implements BalanceRepository {
         }
 
         // persist the order balance link
-        OrderBalanceLinkEntity orderBalanceLinkEntity = new OrderBalanceLinkEntity();
+        for (OrderId orderId : balance.getOrderIds()) {
+            OrderBalanceLinkEntity orderBalanceLinkEntity = new OrderBalanceLinkEntity();
 
-        orderBalanceLinkEntity.setBalanceId(balanceEntity.getBalanceId());
-        orderBalanceLinkEntity.setOrderId(balance.getOrderId().getValue());
-        orderBalanceLinkEntity.setCreatedTime(new Date());
-        orderBalanceLinkEntity.setCreatedBy("Billing");
-        orderBalanceLinkEntityDao.save(orderBalanceLinkEntity);
+            orderBalanceLinkEntity.setBalanceId(balanceEntity.getBalanceId());
+            orderBalanceLinkEntity.setOrderId(orderId.getValue());
+            orderBalanceLinkEntity.setCreatedTime(new Date());
+            orderBalanceLinkEntity.setCreatedBy("Billing");
+            orderBalanceLinkEntityDao.save(orderBalanceLinkEntity);
+        }
 
         // create balance event
         saveBalanceEventEntity(balanceEntity, EventActionType.CREATE);
@@ -139,6 +142,14 @@ public class BalanceRepositoryImpl implements BalanceRepository {
         for(Transaction transaction : transactions) {
             balance.addTransaction(transaction);
         }
+        List<OrderBalanceLinkEntity> orderBalanceLinkEntities = orderBalanceLinkEntityDao.findByBalanceId(balanceId);
+        List<OrderId> orderIds = new ArrayList<>();
+        if(orderBalanceLinkEntities != null) {
+            for(OrderBalanceLinkEntity orderBalanceLinkEntity : orderBalanceLinkEntities) {
+                orderIds.add(new OrderId(orderBalanceLinkEntity.getOrderId()));
+            }
+        }
+        balance.setOrderIds(orderIds);
 
         return balance;
     }

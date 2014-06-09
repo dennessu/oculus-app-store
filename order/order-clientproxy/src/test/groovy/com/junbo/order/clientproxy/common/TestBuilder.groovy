@@ -35,7 +35,7 @@ class TestBuilder {
         def balance = new Balance()
         def orderId = new OrderId()
         orderId.value = generateLong()
-        balance.setOrderId(orderId)
+        balance.orderIds = [orderId]
         balance.setCountry('US')
         balance.setCurrency('USD')
         def piId = new PaymentInstrumentId()
