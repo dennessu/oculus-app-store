@@ -180,7 +180,13 @@ class SabrixFacadeImpl implements TaxFacade {
         invoice.currencyCode = balance.currency
         invoice.isAudited = isAudited
         SabrixAddress billToAddress = toSabrixAddress(piAddress)
-        SabrixAddress shipToAddress = toSabrixAddress(shippingAddress)
+        SabrixAddress shipToAddress
+        if (shippingAddress != null) {
+            shipToAddress = toSabrixAddress(shippingAddress)
+        }
+        else {
+            shipToAddress = toSabrixAddress(piAddress)
+        }
 //        invoice.billTo = billToAddress
 //        invoice.shipTo = shipToAddress
         def lines = generateLine(balance, billToAddress, shipToAddress)
@@ -199,12 +205,7 @@ class SabrixFacadeImpl implements TaxFacade {
             line.productCode = item.financeId
             line.transactionType = getTransactionType(item)
             line.billTo = billToAddress
-            if (shipToAddress != null) {
-                line.shipTo = shipToAddress
-            }
-            else {
-                line.shipTo = billToAddress
-            }
+            line.shipTo = shipToAddress
             line.shipFrom = getSabrixShipFromAddress()
             lines << line
         }
