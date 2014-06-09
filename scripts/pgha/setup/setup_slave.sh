@@ -48,6 +48,7 @@ EOF
 
 echo "configure postgres.conf..."
 cat >> $SLAVE_DATA_PATH/postgresql.conf <<EOF
+archive_command = 'cp %p $SLAVE_ARCHIVE_PATH/%f'
 port = $SLAVE_DB_PORT
 EOF
 

@@ -90,6 +90,9 @@
 #[master] setup master database
     $DEPLOYMENT_PATH/setup/setup_master.sh
 
+#[master] run liquibase
+    $DEPLOYMENT_PATH/test/test_liquibase_master.sh (FOR DEMO ONLY)
+
 #[master] full base backup master database
     $DEPLOYMENT_PATH/util/base_backup.sh
 
@@ -114,7 +117,8 @@
 #[replica] setup replica database
     $DEPLOYMENT_PATH/setup/setup_replica.sh
 
-#[master/replica] run liquibase to update db schema
+#[replica] run liquibase 
+    $DEPLOYMENT_PATH/test/test_liquibase_replica.sh (FOR DEMO ONLY)
 
 #[master/slave] create londiste config on master/slave
     $DEPLOYMENT_PATH/londiste/londiste_config_root.sh
@@ -148,10 +152,10 @@
     $DEPLOYMENT_PATH/switchover/failback.sh
 
 #[master] start primary PGBouncer proxy (connect to master db)
-    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_slave.sh
+    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
 
 #[slave] start secondary PGBouncer proxy (connect to master db)
-    $DEPLOYMENT_PATH/pgbouner/pgbouncer_slave.sh
+    $DEPLOYMENT_PATH/pgbouner/pgbouncer_master.sh
 
 #[master/slave] replication smoke test
     $DEPLOYMENT_PATH/test/test_master2slave.sh
@@ -180,4 +184,4 @@
     original slave -> master
     original master -> slave
 
-# repeat normal replciation setup process
+#repeat normal replciation setup process

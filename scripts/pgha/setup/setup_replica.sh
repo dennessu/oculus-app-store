@@ -28,8 +28,12 @@ EOF
 
 echo "configure postgres.conf..."
 cat >> $REPLICA_DATA_PATH/postgresql.conf <<EOF
+archive_command = 'cp %p $REPLICA_ARCHIVE_PATH/%f'
 port = $REPLICA_DB_PORT
 EOF
+
+echo "remove recovery.conf"
+rm -r $REPLICA_DATA_PATH/recovery.conf
 
 echo "start replica database..."
 $PGBIN_PATH/pg_ctl -D $REPLICA_DATA_PATH start

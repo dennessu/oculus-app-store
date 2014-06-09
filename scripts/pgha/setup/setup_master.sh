@@ -44,13 +44,13 @@ echo "configure postgres.conf..."
 cat >> $MASTER_DATA_PATH/postgresql.conf <<EOF
 wal_level = hot_standby
 archive_mode = on
-archive_command = 'cp %p $MASTER_ARCHIVE_PATH/%f'
 max_wal_senders = 3
-port = $MASTER_DB_PORT
 listen_addresses = '*'
 hot_standby = on
 max_prepared_transactions = 100
 max_connections = 100
+archive_command = 'cp %p $MASTER_ARCHIVE_PATH/%f'
+port = $MASTER_DB_PORT
 EOF
 
 echo "start master database..."
