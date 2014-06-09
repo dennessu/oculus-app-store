@@ -1,6 +1,6 @@
 #!/bin/bash
 DIR="$( cd "$( dirname "$0" )" && pwd )"
-source ${DIR}/../common.sh
+source ${DIR}/../util/common.sh
 
 set +e
 $PGBIN_PATH/dropdb repl_test -h $MASTER_HOST -p $MASTER_DB_PORT

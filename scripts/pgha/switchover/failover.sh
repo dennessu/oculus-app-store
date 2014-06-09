@@ -1,5 +1,6 @@
 #!/bin/bash
-source common.sh
+DIR="$( cd "$( dirname "$0" )" && pwd )"
+source ${DIR}/../util/common.sh
 
 echo "waiting for slave catching up with master..."
 while ! echo exit | psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT 'x' from pg_stat_replication where sent_location != replay_location;" | grep "(0 rows)"; do sleep 1 && echo "slave is catching up..."; done
