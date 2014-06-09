@@ -175,7 +175,7 @@ class SabrixFacadeImpl implements TaxFacade {
         invoice.companyName = configuration.companyName
         invoice.companyRole = configuration.companyRole
         invoice.externalCompanyId = getEntity(piAddress).externalCompanyId
-        invoice.invoiceNumber = balance.orderId?.value
+        invoice.invoiceNumber = balance.balanceId?.value
         invoice.invoiceDate = DATE_FORMATTER.get().format(new Date())
         invoice.currencyCode = balance.currency
         invoice.isAudited = isAudited
@@ -199,10 +199,13 @@ class SabrixFacadeImpl implements TaxFacade {
             line.productCode = item.financeId
             line.transactionType = getTransactionType(item)
             line.billTo = billToAddress
-            if (line.transactionType == GOODS) {
+            if (shipToAddress != null) {
                 line.shipTo = shipToAddress
-                line.shipFrom = getSabrixShipFromAddress()
             }
+            else {
+                line.shipTo = billToAddress
+            }
+            line.shipFrom = getSabrixShipFromAddress()
             lines << line
         }
 
@@ -256,6 +259,7 @@ class SabrixFacadeImpl implements TaxFacade {
     }
 
     SabrixAddress getSabrixShipFromAddress() {
+        // TODO: update ship from address
         SabrixAddress sabrixAddress = new SabrixAddress()
         sabrixAddress.country = configuration.shipFromCountry
         sabrixAddress.state = configuration.shipFromState
