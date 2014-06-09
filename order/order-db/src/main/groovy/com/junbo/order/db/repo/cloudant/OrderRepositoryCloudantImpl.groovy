@@ -4,6 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.order.db.repo.cloudant
+
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.OrderId
 import com.junbo.langur.core.promise.Promise
@@ -11,29 +12,16 @@ import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderQueryParam
 import com.junbo.order.spec.model.PageParam
-import com.junbo.sharding.IdGenerator
-import com.junbo.sharding.repo.BaseCloudantRepository
+import com.junbo.sharding.repo.BaseCloudantRepositoryForDualWrite
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
-import org.springframework.beans.factory.annotation.Required
+
 /**
  * Created by chriszhu on 2/18/14.
  */
 @CompileStatic
 @TypeChecked
-class OrderRepositoryCloudantImpl extends BaseCloudantRepository<Order, OrderId> implements OrderRepository {
-
-    private IdGenerator idGenerator
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
-
-    @Override
-    protected OrderId generateId() {
-        return new OrderId(idGenerator.nextId());
-    }
+class OrderRepositoryCloudantImpl extends BaseCloudantRepositoryForDualWrite<Order, OrderId> implements OrderRepository {
 
     @Override
     protected CloudantViews getCloudantViews() {
@@ -43,11 +31,9 @@ class OrderRepositoryCloudantImpl extends BaseCloudantRepository<Order, OrderId>
     @Override
     Promise<List<Order>> getByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
         if (orderQueryParam.getTentative() == null) {
-            List<Order> list = super.queryView('by_user', userId.toString(), pageParam?.count, pageParam?.start, false);
-            return Promise.pure(list);
+            return super.queryView('by_user', userId.toString(), pageParam?.count, pageParam?.start, false);
         } else {
-            List<Order> list = super.queryView('by_user_tentative', userId.toString() + "_" + orderQueryParam.tentative, pageParam?.count, pageParam?.start, false);
-            return Promise.pure(list);
+            return super.queryView('by_user_tentative', userId.toString() + "_" + orderQueryParam.tentative, pageParam?.count, pageParam?.start, false);
         }
     }
 

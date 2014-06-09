@@ -1,4 +1,5 @@
 package com.junbo.order.rest.resource
+
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
@@ -6,19 +7,18 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.impl.common.OrderValidator
 import com.junbo.order.spec.error.AppErrors
-import com.junbo.order.spec.model.ApiContext
-import com.junbo.order.spec.model.Order
-import com.junbo.order.spec.model.OrderQueryParam
-import com.junbo.order.spec.model.PageParam
+import com.junbo.order.spec.model.*
 import com.junbo.order.spec.resource.OrderResource
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
+import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
+
 //import javax.ws.rs.container.ContainerRequestContext
 //import javax.ws.rs.core.Context
 /**
@@ -79,7 +79,12 @@ class OrderResourceImpl implements OrderResource {
                     return orderService.settleQuote(order, new ApiContext())
                 }
             } else { // order already settle
-                LOGGER.info('name=Update_Non_Tentative_offer')
+                // determine the refund request
+                if(isARefund(oldOrder, order)) {
+                    LOGGER.info('name=Refund_Non_Tentative_Offer')
+                    return orderService.refundOrder(order)
+                }
+                LOGGER.info('name=Update_Non_Tentative_Offer')
                 // update shipping address after settlement
                 if (allowModification(oldOrder, order)) {
                     oldOrder.shippingAddress = order.shippingAddress
@@ -98,6 +103,34 @@ class OrderResourceImpl implements OrderResource {
         return (order.shippingAddress != null ? order.shippingAddress != oldOrder.shippingAddress : false) ||
                 (order.shippingToName != null ? order.shippingToName != oldOrder.shippingToName : false) ||
                 (order.shippingToPhone != null ? order.shippingToPhone != oldOrder.shippingToPhone : false)
+    }
+
+    boolean isARefund(Order olderOrder, Order newOrder) {
+        assert (olderOrder != null)
+        if (CollectionUtils.isEmpty(olderOrder.orderItems)) {
+            throw AppErrors.INSTANCE.orderIsRefunded().exception()
+        }
+
+        if (CollectionUtils.isEmpty(newOrder.orderItems)) {
+            return true
+        }
+
+        if(olderOrder.orderItems.size() > newOrder.orderItems.size()) {
+            return true
+        }
+
+        newOrder.orderItems.each {OrderItem newItem ->
+            OrderItem oldItem = olderOrder.orderItems.find {OrderItem oi ->
+                newItem.offer.value == oi.offer.value
+            }
+            if(oldItem == null) {
+                throw AppErrors.INSTANCE.orderItemIsNotFoundForRefund(newItem.offer.value.toString()).exception()
+            }
+            if(oldItem.quantity > newItem.quantity || oldItem.totalAmount > newItem.totalAmount) {
+                return true
+            }
+        }
+        return false
     }
 
     @Override

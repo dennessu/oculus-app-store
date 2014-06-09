@@ -26,20 +26,20 @@ public class WalletDaoImpl extends BaseDao<WalletEntity> implements WalletDao {
 
     @Override
     public WalletEntity getByTrackingUuid(Long shardMasterId, UUID uuid) {
-        List<WalletEntity> results = super.queryView("byTrackingUuid", uuid.toString());
+        List<WalletEntity> results = super.queryView("byTrackingUuid", uuid.toString()).get();
         return results.size() == 0 ? null : results.get(0);
     }
 
     @Override
     public WalletEntity get(Long userId, WalletType type, String currency) {
         String key = userId.toString() + ":" + type.toString() + ":" + currency;
-        List<WalletEntity> results = super.queryView("byUserIdAndTypeAndCurrency", key);
+        List<WalletEntity> results = super.queryView("byUserIdAndTypeAndCurrency", key).get();
         return results.size() == 0 ? null : results.get(0);
     }
 
     @Override
     public List<WalletEntity> getAll(Long userId) {
-        return super.queryView("byUserId", userId.toString());
+        return super.queryView("byUserId", userId.toString()).get();
     }
 
     protected CloudantViews cloudantViews = new CloudantViews() {{

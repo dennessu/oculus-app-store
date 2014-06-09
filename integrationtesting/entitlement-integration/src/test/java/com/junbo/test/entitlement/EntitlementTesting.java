@@ -98,7 +98,8 @@ public class EntitlementTesting extends TestClass {
         User dp = this.createDeveloper();
         Entitlement etCreated = this.CreateEntitlement(us, dp, EntitlementType.DOWNLOAD.getType());
         logger.LogSample("get entitlement by entitlementId");
-        Entitlement etGet = EntitlementService.getEntitlement(IdConverter.idToHexString(new EntitlementId(etCreated.getEntitlementId())));
+        //Entitlement etGet = EntitlementService.getEntitlement(IdConverter.idToHexString(new EntitlementId(etCreated.getEntitlementId())));
+        Entitlement etGet = EntitlementService.getEntitlement(IdConverter.idToHexString(new EntitlementId(etCreated.getId())));
         assertEquals("validate userId in entitlement is correct",
                 etCreated.getUserId(), etGet.getUserId());
         // assertEquals("validate userId in entitlement definition is correct",
@@ -123,7 +124,7 @@ public class EntitlementTesting extends TestClass {
         User us = Identity.UserPostDefault();
         User dp = this.createDeveloper();
         Entitlement etCreated = this.CreateEntitlement(us, dp, EntitlementType.DOWNLOAD.getType());
-        String entitlementId = IdConverter.idToHexString(new EntitlementId(etCreated.getEntitlementId()));
+        String entitlementId = IdConverter.idToHexString(new EntitlementId(etCreated.getId()));
         Entitlement etGet = EntitlementService.getEntitlement(entitlementId);
         assertTrue(!etGet.getIsBanned());
         etGet.setIsBanned(true);
@@ -150,7 +151,7 @@ public class EntitlementTesting extends TestClass {
         User us = Identity.UserPostDefault();
         User dp = this.createDeveloper();
         Entitlement etCreated = this.CreateEntitlement(us, dp, EntitlementType.DOWNLOAD.getType());
-        String entitlementId = IdConverter.idToHexString(new EntitlementId(etCreated.getEntitlementId()));
+        String entitlementId = IdConverter.idToHexString(new EntitlementId(etCreated.getId()));
         logger.LogSample("delete an entitlement");
         EntitlementService.deleteEntitlement(entitlementId);
         //verify entitlement not found returned after deletion

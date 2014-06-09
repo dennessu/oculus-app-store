@@ -15,7 +15,7 @@ import groovy.transform.CompileStatic
  * Line level input/output for tax calculation.
  */
 @CompileStatic
-@XStreamAlias("LINE")
+@XStreamAlias('LINE')
 class Line {
     @XStreamAsAttribute
     @XStreamAlias('ID')
@@ -51,9 +51,8 @@ class Line {
     @XStreamAlias('TOTAL_TAX_AMOUNT')
     Double totalTaxAmount
 
-    @XStreamImplicit(itemFieldName="TAX")
+    @XStreamImplicit(itemFieldName='TAX')
     List<Tax> tax
-
 
     @Override
     public String toString() {

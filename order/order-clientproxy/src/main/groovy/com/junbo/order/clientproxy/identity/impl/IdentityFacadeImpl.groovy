@@ -5,7 +5,6 @@
  */
 
 package com.junbo.order.clientproxy.identity.impl
-
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
@@ -21,25 +20,30 @@ import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
 import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.identity.IdentityFacade
+import com.junbo.order.spec.error.AppErrors
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
-
 /**
  * Created by linyi on 14-2-19.
  */
 @Component('orderIdentityFacade')
 @CompileStatic
 class IdentityFacadeImpl implements IdentityFacade {
-    @Resource(name='order.identityUserClient')
+    @Resource(name = 'order.identityUserClient')
     UserResource userResource
 
-    @Resource(name='order.identityUserPersonalInfoClient')
+    @Resource(name = 'order.identityUserPersonalInfoClient')
     UserPersonalInfoResource userPersonalInfoResource
 
-    @Resource(name='order.identityCurrencyClient')
+    @Resource(name = 'order.identityCurrencyClient')
     CurrencyResource currencyResource
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(IdentityFacadeImpl)
+
 
     @Override
     Promise<User> getUser(Long userId) {
@@ -81,6 +85,19 @@ class IdentityFacadeImpl implements IdentityFacade {
 
     @Override
     Promise<com.junbo.identity.spec.v1.model.Currency> getCurrency(String currency) {
-        return currencyResource.get(new CurrencyId(currency), new CurrencyGetOptions())
+        if (currency == null || currency.isEmpty()) {
+            throw AppErrors.INSTANCE.missingParameterField('currency').exception()
+        }
+        return currencyResource.get(new CurrencyId(currency), new CurrencyGetOptions()).recover {
+            Throwable throwable ->
+            LOGGER.error('name=error_in_get_currency: ' + currency, throwable)
+            throw AppErrors.INSTANCE.currencyNotValid(currency).exception()
+        }.then { com.junbo.identity.spec.v1.model.Currency cur ->
+            if(cur == null) {
+                LOGGER.error('name=currency_is_null: ' + currency)
+                throw AppErrors.INSTANCE.currencyNotValid(currency).exception()
+            }
+            return Promise.pure(cur)
+        }
     }
 }

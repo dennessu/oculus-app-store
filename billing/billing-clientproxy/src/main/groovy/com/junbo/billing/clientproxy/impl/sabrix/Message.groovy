@@ -13,7 +13,7 @@ import groovy.transform.CompileStatic
  * Message Type for address validation response.
  */
 @CompileStatic
-@XStreamAlias("MESSAGE")
+@XStreamAlias('MESSAGE')
 class Message {
     @XStreamAlias('LOCATION')
     String location

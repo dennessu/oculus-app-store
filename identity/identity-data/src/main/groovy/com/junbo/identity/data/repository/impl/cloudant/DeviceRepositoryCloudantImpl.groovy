@@ -31,7 +31,7 @@ class DeviceRepositoryCloudantImpl extends CloudantClient<Device> implements Dev
 
     @Override
     Promise<Device> get(DeviceId groupId) {
-        return Promise.pure((Device)super.cloudantGet(groupId.toString()))
+        return super.cloudantGet(groupId.toString())
     }
 
     @Override
@@ -39,12 +39,12 @@ class DeviceRepositoryCloudantImpl extends CloudantClient<Device> implements Dev
         if (device.id == null) {
             device.id = new DeviceId(idGenerator.nextId())
         }
-        return Promise.pure((Device)super.cloudantPost(device))
+        return super.cloudantPost(device)
     }
 
     @Override
     Promise<Device> update(Device device) {
-        return Promise.pure((Device)super.cloudantPut(device))
+        return super.cloudantPut(device)
     }
 
     @Override
@@ -54,8 +54,9 @@ class DeviceRepositoryCloudantImpl extends CloudantClient<Device> implements Dev
 
     @Override
     Promise<Device> searchBySerialNumber(String externalRef) {
-        def list = super.queryView('by_serial_number', externalRef)
-        return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)
+        return super.queryView('by_serial_number', externalRef).then { List<Device> list ->
+            return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)
+        }
     }
 
     protected CloudantViews views = new CloudantViews(

@@ -7,6 +7,7 @@
 package com.junbo.billing.clientproxy;
 
 import com.junbo.billing.spec.model.Balance;
+import com.junbo.billing.spec.model.VatIdValidationResponse;
 import com.junbo.identity.spec.v1.model.Address;
 import com.junbo.langur.core.promise.Promise;
 
@@ -19,4 +20,6 @@ public interface TaxFacade {
     Promise<Balance> calculateTax(Balance balance, Address shippingAddress, Address piAddress);
 
     Promise<Address> validateAddress(Address address);
+
+    Promise<VatIdValidationResponse> validateVatId(String vatId);
 }

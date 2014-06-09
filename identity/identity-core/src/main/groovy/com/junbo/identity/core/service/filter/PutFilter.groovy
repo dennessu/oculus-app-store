@@ -27,7 +27,7 @@ class PutFilter implements PropertyMappingFilter {
         boolean different = false
 
         if (FilterUtil.isSimpleType(event.sourcePropertyType)) {
-            if (event.sourceProperty != event.alternativeSourceProperty) {
+            if (!com.junbo.authorization.filter.FilterUtil.equalsSimpleType(event.sourceProperty, event.alternativeSourceProperty)) {
                 different = true
             }
 

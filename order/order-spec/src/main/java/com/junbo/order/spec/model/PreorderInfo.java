@@ -9,8 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
 import com.junbo.common.id.OrderItemId;
 import com.junbo.common.id.PreorderId;
-import com.junbo.common.model.ResourceMeta;
-import com.junbo.common.util.Identifiable;
+import com.junbo.common.model.ResourceMetaForDualWrite;
 
 import java.util.Date;
 import java.util.List;
@@ -18,9 +17,10 @@ import java.util.List;
 /**
  * Created by LinYi on 2/10/14.
  */
-public class PreorderInfo extends ResourceMeta implements Identifiable<PreorderId> {
+public class PreorderInfo extends ResourceMetaForDualWrite<PreorderId> {
     @JsonIgnore
     private PreorderId id;
+
     private Date billingTime;
     private Date preNotificationTime;
     private Date releaseTime;

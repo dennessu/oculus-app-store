@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Created by fzhang@wan-san.com on 14-1-17.
  */
-public class Cart extends ResourceMeta {
+public class Cart extends ResourceMeta<CartId> {
 
     @ApiModelProperty(required = true, position = 1, value = "[Client Immutable] The shopping cart ID.")
     @JsonProperty("self")

@@ -79,7 +79,7 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
         Date now = new Date();
         addedEntitlement.setExpirationTime(now);
         Entitlement updatedEntitlement = entitlementService.updateEntitlement(
-                addedEntitlement.getEntitlementId(), addedEntitlement);
+                addedEntitlement.getId(), addedEntitlement);
         Assert.assertTrue(Math.abs(updatedEntitlement.getExpirationTime().getTime() - now.getTime()) <= 1000);
     }
 
@@ -87,9 +87,9 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
     public void testDeleteEntitlement() {
         Entitlement entitlement = buildAnEntitlement();
         Entitlement addedEntitlement = entitlementService.addEntitlement(entitlement);
-        entitlementService.deleteEntitlement(addedEntitlement.getEntitlementId());
+        entitlementService.deleteEntitlement(addedEntitlement.getId());
         try {
-            entitlementService.getEntitlement(addedEntitlement.getEntitlementId());
+            entitlementService.getEntitlement(addedEntitlement.getId());
         } catch (WebApplicationException e) {
             Assert.assertEquals(e.getResponse().getStatus(), 404);
         }
@@ -126,10 +126,10 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
         Entitlement addedEntitlement = entitlementService.addEntitlement(entitlement);
         EntitlementTransfer transfer = new EntitlementTransfer();
         transfer.setTargetUserId(idGenerator.nextId());
-        transfer.setEntitlementId(addedEntitlement.getEntitlementId());
+        transfer.setEntitlementId(addedEntitlement.getId());
         Entitlement newEntitlement = entitlementService.transferEntitlement(transfer);
         try {
-            entitlementService.getEntitlement(addedEntitlement.getEntitlementId());
+            entitlementService.getEntitlement(addedEntitlement.getId());
         } catch (WebApplicationException e) {
             Assert.assertEquals(e.getResponse().getStatus(), 404);
         }

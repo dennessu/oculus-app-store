@@ -13,7 +13,7 @@ import groovy.transform.CompileStatic
  * Country type of address validation response.
  */
 @CompileStatic
-@XStreamAlias("COUNTRY")
+@XStreamAlias('COUNTRY')
 class Country {
     @XStreamAlias('NAME')
     String name

@@ -13,7 +13,7 @@ import groovy.transform.CompileStatic
  * Registrations for tax calculation.
  */
 @CompileStatic
-@XStreamAlias("REGISTRATIONS")
+@XStreamAlias('REGISTRATIONS')
 class Registrations {
     @XStreamAlias('BUYER_ROLE')
     String buyerRole

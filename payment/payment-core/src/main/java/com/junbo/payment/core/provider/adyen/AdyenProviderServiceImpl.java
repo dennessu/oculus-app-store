@@ -401,7 +401,7 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
         this.skinCode = skinCode;
     }
 
-    private String nullToEmpty(String value){
+    protected String nullToEmpty(String value){
         return value == null ? "" : value;
     }
 

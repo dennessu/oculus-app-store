@@ -9,29 +9,15 @@ import com.junbo.common.id.PreorderId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.db.repo.PreorderInfoRepository
 import com.junbo.order.spec.model.PreorderInfo
-import com.junbo.sharding.IdGenerator
-import com.junbo.sharding.repo.BaseCloudantRepository
+import com.junbo.sharding.repo.BaseCloudantRepositoryForDualWrite
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
-import org.springframework.beans.factory.annotation.Required
 /**
  * Created by chriszhu on 2/18/14.
  */
 @CompileStatic
 @TypeChecked
-class PreorderInfoRepositoryCloudantImpl extends BaseCloudantRepository<PreorderInfo, PreorderId> implements PreorderInfoRepository {
-
-    private IdGenerator idGenerator
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
-
-    @Override
-    protected PreorderId generateId() {
-        return new PreorderId(idGenerator.nextId());
-    }
+class PreorderInfoRepositoryCloudantImpl extends BaseCloudantRepositoryForDualWrite<PreorderInfo, PreorderId> implements PreorderInfoRepository {
 
     @Override
     protected CloudantViews getCloudantViews() {
@@ -40,8 +26,7 @@ class PreorderInfoRepositoryCloudantImpl extends BaseCloudantRepository<Preorder
 
     @Override
     Promise<List<PreorderInfo>> getByOrderItemId(Long orderItemId) {
-        List<PreorderInfo> list = super.queryView('by_order_item', orderItemId.toString());
-        return Promise.pure(list);
+        return super.queryView('by_order_item', orderItemId.toString());
     }
 
     private CloudantViews views = new CloudantViews(

@@ -5,7 +5,6 @@
  */
 
 package com.junbo.order.core.impl.order
-
 import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.common.error.AppErrorException
 import com.junbo.langur.core.promise.Promise
@@ -21,11 +20,11 @@ import com.junbo.order.core.impl.common.TransactionHelper
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
-import com.junbo.order.spec.model.enums.OrderActionType
-import com.junbo.order.spec.model.enums.OrderStatus
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
+import com.junbo.order.spec.model.enums.OrderActionType
+import com.junbo.order.spec.model.enums.OrderStatus
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.slf4j.Logger
@@ -191,7 +190,23 @@ class OrderServiceImpl implements OrderService {
 
     @Override
     Promise<Order> refundOrder(Order request) {
-        return null
+        // order is the request
+        LOGGER.info('name=Refund_Order. orderId: {}', request.getId().value)
+        orderValidator.validateRefundOrderRequest(request)
+
+        def orderServiceContext = initOrderServiceContext(request, null)
+        return flowSelector.select(
+                orderServiceContext, OrderServiceOperation.REFUND).then { String flowName ->
+            // Prepare Flow Request
+            Map<String, Object> requestScope = [:]
+            def orderActionContext = new OrderActionContext()
+            orderActionContext.orderServiceContext = orderServiceContext
+            orderActionContext.trackingUuid = UUID.randomUUID()
+            requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
+            return executeFlow(flowName, orderServiceContext, requestScope)
+        }.syncThen {
+            return orderServiceContext.order
+        }
     }
 
     @Override

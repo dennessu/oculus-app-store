@@ -36,6 +36,7 @@ host    all             ${PGUSER}       ::1/128                 ident
 # replication privilege.
 host    replication     ${PGUSER}       ${MASTER_HOST}/32       ident
 host    replication     ${PGUSER}       ${SLAVE_HOST}/32        ident
+host    replication     ${PGUSER}       ${REPLICA_HOST}/32      ident
 EOF
 
 echo "configure postgres.conf..."

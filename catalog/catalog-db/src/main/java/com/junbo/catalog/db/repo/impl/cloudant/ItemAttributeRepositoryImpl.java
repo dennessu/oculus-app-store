@@ -34,37 +34,37 @@ public class ItemAttributeRepositoryImpl extends CloudantClient<ItemAttribute> i
         if (attribute.getId() == null) {
             attribute.setId(idGenerator.nextId());
         }
-        return super.cloudantPost(attribute);
+        return cloudantPost(attribute).get();
     }
 
     public ItemAttribute get(Long attributeId) {
-        return super.cloudantGet(attributeId.toString());
+        return cloudantGet(attributeId.toString()).get();
     }
 
     public List<ItemAttribute> getAttributes(ItemAttributesGetOptions options) {
         if (!CollectionUtils.isEmpty(options.getAttributeIds())) {
             List<ItemAttribute> attributes = new ArrayList<>();
             for (ItemAttributeId attributeId : options.getAttributeIds()) {
-                ItemAttribute attribute = super.cloudantGet(attributeId.getValue().toString());
+                ItemAttribute attribute = cloudantGet(attributeId.getValue().toString()).get();
                 if (attribute != null) {
                     attributes.add(attribute);
                 }
             }
             return attributes;
         } else if (!StringUtils.isEmpty(options.getAttributeType())){
-            return super.queryView("by_type", options.getAttributeType(),
-                    options.getValidSize(), options.getValidStart(), false);
+            return queryView("by_type", options.getAttributeType(),
+                    options.getValidSize(), options.getValidStart(), false).get();
         } else {
-            return super.queryView("by_attributeId", null, options.getValidSize(), options.getValidStart(), false);
+            return queryView("by_attributeId", null, options.getValidSize(), options.getValidStart(), false).get();
         }
     }
 
     public ItemAttribute update(ItemAttribute attribute) {
-        return super.cloudantPut(attribute);
+        return cloudantPut(attribute).get();
     }
 
     public void delete(Long attributeId) {
-        super.cloudantDelete(attributeId.toString());
+        cloudantDelete(attributeId.toString()).get();
     }
 
     private CloudantViews cloudantViews = new CloudantViews() {{

@@ -51,6 +51,14 @@ public class ErrorCode {
 
     public static final String ORDER_CONCURRENT_UPDATE = "20009";
 
+    public static final String ORDER_IS_REFUNDED = "20010";
+
+    public static final String ORDER_ITEM_IS_NOT_FOUND_FOR_REFUNDED = "20010";
+
+    public static final String ORDER_CAN_NOT_BE_REFUNDED = "20011";
+
+    public static final String ORDER_NO_ITEM_TO_REFUND_IN_REQUEST = "20012";
+
     // subledger error starts from 20000
     public static final String SUBLEDGER_NOT_FOUND = "20200";
 

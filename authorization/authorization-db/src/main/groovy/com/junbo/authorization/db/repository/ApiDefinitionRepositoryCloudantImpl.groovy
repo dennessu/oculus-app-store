@@ -16,22 +16,22 @@ import com.junbo.common.cloudant.model.CloudantViews
 class ApiDefinitionRepositoryCloudantImpl extends CloudantClient<ApiDefinition> implements ApiDefinitionRepository {
     @Override
     ApiDefinition getApi(String apiName) {
-        return (ApiDefinition)super.cloudantGet(apiName)
+        return cloudantGet(apiName).get()
     }
 
     @Override
     ApiDefinition saveApi(ApiDefinition api) {
-        return (ApiDefinition)super.cloudantPost(api)
+        return cloudantPost(api).get()
     }
 
     @Override
     ApiDefinition updateApi(ApiDefinition api) {
-        return (ApiDefinition)super.cloudantPut(api)
+        return cloudantPut(api).get()
     }
 
     @Override
     void deleteApi(ApiDefinition api) {
-        super.cloudantDelete(api.apiName)
+        cloudantDelete(api.apiName).get()
     }
 
     @Override

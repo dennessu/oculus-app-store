@@ -15,7 +15,7 @@ import groovy.transform.CompileStatic
  * Batch level input for tax calculation.
  */
 @CompileStatic
-@XStreamAlias("INDATA")
+@XStreamAlias('INDATA')
 class Batch {
     @XStreamAlias('USERNAME')
     String username
@@ -23,10 +23,21 @@ class Batch {
     @XStreamAlias('PASSWORD')
     String password
 
-    @XStreamImplicit(itemFieldName="INVOICE")
+    @XStreamImplicit(itemFieldName='INVOICE')
     List<Invoice> invoice
 
     @XStreamAsAttribute
     @XStreamAlias('version')
     String version
+
+
+    @Override
+    public String toString() {
+        return "Batch{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", invoice=" + invoice +
+                ", version='" + version + '\'' +
+                '}';
+    }
 }

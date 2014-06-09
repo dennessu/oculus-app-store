@@ -138,7 +138,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
         userPersonalInfo.setType("PHONE");
         userPersonalInfo.setUserId(userId);
-        String str = "{\"info\":\"" + "8613123210601" + "\"}";
+        String str = "{\"info\":\"" + "86131" + RandomFactory.getRandomStringOfNumeric(8) + "\"}";
         ObjectMapper mapper = new ObjectMapper();
         JsonNode value = mapper.readTree(str);
         userPersonalInfo.setValue(value);

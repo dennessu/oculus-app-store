@@ -10,8 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.OrderId;
 import com.junbo.common.id.OrderItemId;
 import com.junbo.common.id.PromotionId;
-import com.junbo.common.model.ResourceMeta;
-import com.junbo.common.util.Identifiable;
+import com.junbo.common.model.ResourceMetaForDualWrite;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
@@ -19,11 +18,13 @@ import java.math.BigDecimal;
 /**
  * Created by LinYi on 2/10/14.
  */
-public class Discount extends ResourceMeta implements Identifiable<Long> {
+public class Discount extends ResourceMetaForDualWrite<Long> {
     @JsonIgnore
     private Long id;
+
     @JsonIgnore
     private OrderId orderId;
+
     @JsonIgnore
     private OrderItemId orderItemId;
 

@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.OrderEventId;
 import com.junbo.common.id.OrderId;
-import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.UUID;
@@ -17,7 +16,7 @@ import java.util.UUID;
 /**
  * Created by LinYi on 2/10/14.
  */
-public class OrderEvent extends BaseEventModel implements Identifiable<OrderEventId> {
+public class OrderEvent extends BaseEventModel<OrderEventId> {
     @ApiModelProperty(required = true, position = 10, value = "[Client Immutable] The order-event id.")
     @JsonProperty("self")
     private OrderEventId id;

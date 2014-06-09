@@ -1,161 +1,181 @@
 =====Envrionment Preparation=====
 [Postgres Installation]
 #server info
-	os: Ubuntu Linux
-	linux accounts:
-		[devops] used to install software, in sudo list
-		[silkcloud] used to deployment PGHA, not included in sudo list
-	postgresql user:
-		[silkcloud] auto created by PGHA script
+    os: Ubuntu Linux
+
+    linux accounts:
+        [devops] used to install software, in sudo list
+        [silkcloud] used to deployment PGHA, not included in sudo list
+
+    postgresql user:
+        [silkcloud] auto created by PGHA script
 
 #install postgresql
-	[devops] sudo apt-get update
-	[devops] sudo apt-get install -y postgresql-9.3
-	
+    [devops] sudo apt-get update
+    [devops] sudo apt-get install -y postgresql-9.3
+    
 #create link
-	[devops] sudo rm /usr/bin/psql
-	[devops] sudo rm /usr/bin/pg_ctl
-	[devops] sudo rm /usr/bin/dropdb
-	[devops] sudo rm /usr/bin/createdb
+    [devops] sudo rm /usr/bin/psql
+    [devops] sudo rm /usr/bin/pg_ctl
+    [devops] sudo rm /usr/bin/dropdb
+    [devops] sudo rm /usr/bin/createdb
 
-	[devops] sudo ln -s /usr/lib/postgresql/9.3/bin/psql /usr/bin/psql
-	[devops] sudo ln -s /usr/lib/postgresql/9.3/bin/pg_ctl /usr/bin/pg_ctl
-	[devops] sudo ln -s /usr/lib/postgresql/9.3/bin/createdb /usr/bin/createdb
-	[devops] sudo ln -s /usr/lib/postgresql/9.3/bin/dropdb /usr/bin/dropdb
+    [devops] sudo ln -s /usr/lib/postgresql/9.3/bin/psql /usr/bin/psql
+    [devops] sudo ln -s /usr/lib/postgresql/9.3/bin/pg_ctl /usr/bin/pg_ctl
+    [devops] sudo ln -s /usr/lib/postgresql/9.3/bin/createdb /usr/bin/createdb
+    [devops] sudo ln -s /usr/lib/postgresql/9.3/bin/dropdb /usr/bin/dropdb
 
 #clean up exisitng db instance
-	[devops] sudo kill $(fuser -n tcp 5432 2> /dev/null)
-	[devops] sudo chown silkcloud:silkcloud /var/run/postgresql
+    [devops] sudo kill $(fuser -n tcp 5432 2> /dev/null)
+    [devops] sudo chown silkcloud:silkcloud /var/run/postgresql
+    [devops] clean up all files including hidden files in /var/run/postgresql
 
 [PGBouncer Installation]
-	[devops] sudo apt-get install -y pgbouncer
+    [devops] sudo apt-get install -y pgbouncer
 
 [Oidentd Installation]
-	[devops] sudo apt-get install oidentd 
-	[devops] /etc/init.d/oidentd start
+    [devops] sudo apt-get install oidentd 
+    [devops] /etc/init.d/oidentd start
 
 [Skytool Londiste Installation]
-	[devops] sudo apt-get install make
-	[devops] sudo apt-get install gcc
-	[devops] sudo apt-get install python-all
-	[devops] sudo apt-get install python-dev
-	[devops] sudo apt-get install python-psycopg2
-	[devops] sudo apt-get install libpq-dev
-	[devops] sudo apt-get install postgresql-server-dev-9.3
+    [devops] sudo apt-get install make
+    [devops] sudo apt-get install gcc
+    [devops] sudo apt-get install python-all
+    [devops] sudo apt-get install python-dev
+    [devops] sudo apt-get install python-psycopg2
+    [devops] sudo apt-get install libpq-dev
+    [devops] sudo apt-get install postgresql-server-dev-9.3
 
-	[devops] download http://pgfoundry.org/frs/download.php/3622/skytools-3.2.tar.gz
-	[devops] ./configure --prefix=/usr/local
-	[devops] sudo make
-	[devops] sudo make install
+    [devops] wget http://pgfoundry.org/frs/download.php/3622/skytools-3.2.tar.gz -o /tmp/skytools-3.2.tar.gz
+    [devops] ./configure --prefix=/usr/local
+    [devops] sudo make
+    [devops] sudo make install
 
 [SSH key]
-	[silkcloud] ssh-keygen -t rsa (no passphase)
-	[silkcloud] chmod 600 /home/silkcloud/.ssh/id_rsa*
-	[silkcloud] connect to the remote machine you want to login to, edit /home/silkcloud/.ssh/authorized_keys and append the content of id_rsa.pub file
+    [silkcloud] ssh-keygen -t rsa (no passphase)
+    [silkcloud] chmod 600 /home/silkcloud/.ssh/id_rsa*
+    [silkcloud] connect to the remote machine you want to login to, edit /home/silkcloud/.ssh/authorized_keys and append the content of id_rsa.pub file
 
 [Open ports]
-	5432: postgresql database port
-	6543: pgbouncer proxy port
-	133:  oident server port
+    `5432`: postgresql database port
+    `6543`: pgbouncer proxy port
+    `133`:  oident server port
 
 =====Deloyment Preparation=====
 #[bastion] enlish source tree
-	[devops] https://github.com/junbo/main/tree/master/scripts/pgha
+    [devops] https://github.com/junbo/main/tree/master/scripts/pgha
 
 #[bastion] upload all PGHA scripts to master and slave servers
-	[devops] ./upload_script.sh
+    [devops] ./upload_script.sh
 
 #[master] clean up master
-	[silkcloud] $DEPLOYMENT_PATH/purge_master.sh
+    [silkcloud] $DEPLOYMENT_PATH/purge_master.sh
 
 #[slave] clean up slave
-	[silkcloud] $DEPLOYMENT_PATH/purge_slave.sh
+    [silkcloud] $DEPLOYMENT_PATH/purge_slave.sh
 
 #[replica] clean up replica
-	[silkcloud] $DEPLOYMENT_PATH/purge_replica.sh
+    [silkcloud] $DEPLOYMENT_PATH/purge_replica.sh
 
 #[master/slave]
-	[silkcloud] create pgbouncer auth file in ~/pgbouncer_auth.txt and chmod 600
+    [silkcloud] create pgbouncer auth file in ~/pgbouncer_auth.txt and chmod 600
 
 #[master/slave] (FOR DEMO ONLY)
-	[silkcloud] echo "*:6543:*:silkcloud:abc123" > ~/.pgpass
-	[silkcloud] echo '"silkcloud" "abc123"' > ~/pgbouncer_auth.txt
+    [silkcloud] echo "*:6543:*:silkcloud:abc123" > ~/.pgpass
+    [silkcloud] echo "*:5432:*:silkcloud:abc123" > ~/.pgpass
+    [silkcloud] chmod 600 ~/.pgpass
+    [silkcloud] echo '"silkcloud" "abc123"' > ~/pgbouncer_auth.txt
 
 =====Deployment=====
 #[master] setup master database
-	$DEPLOYMENT_PATH/setup_master.sh
+    $DEPLOYMENT_PATH/setup_master.sh
 
 #[master] full base backup master database
-	$DEPLOYMENT_PATH/base_backup.sh
+    $DEPLOYMENT_PATH/base_backup.sh
 
 #[slave] setup slave database
-	$DEPLOYMENT_PATH/setup_slave.sh
+    $DEPLOYMENT_PATH/setup_slave.sh
 
 #[master] schedule archive log sync cron job
-	$DEPLOYMENT_PATH/master_cron.sh
+    $DEPLOYMENT_PATH/cron_master.sh
 
 #[slave] schedule archive log sync cron job
-	$DEPLOYMENT_PATH/slave_cron.sh
+    $DEPLOYMENT_PATH/cron_slave.sh
 
 #[master] start primary PGBouncer proxy (connect to master db)
-	$DEPLOYMENT_PATH/pgbouncer_master.sh
+    $DEPLOYMENT_PATH/pgbouncer_master.sh
 
 #[slave] start secondary PGBouncer proxy (connect to master db)
-	$DEPLOYMENT_PATH/pgbouncer_master.sh
+    $DEPLOYMENT_PATH/pgbouncer_master.sh
 
 #[master/slave] replication smoke test
-	$DEPLOYMENT_PATH/test_master2slave.sh
+    $DEPLOYMENT_PATH/test_master2slave.sh
 
 #[replica] setup replica database
-	$DEPLOYMENT_PATH/setup_replica.sh
+    $DEPLOYMENT_PATH/setup_replica.sh
+
+#[master/slave] create londiste config on master/slave
+    $DEPLOYMENT_PATH/londiste_config_root.sh
+
+#[replica] create londiste config on replcia
+    $DEPLOYMENT_PATH/londiste_config_leaf.sh
+
+#[master] start londiste deamon on master
+    $DEPLOYMENT_PATH/londiste_master.sh
+
+#[replica] start londiste deamon on replica (master -> replica)
+    $DEPLOYMENT_PATH/londiste_replica_master.sh
+
+#[master] start londiste pgq ticker deamon
+    $DEPLOYMENT_PATH/lodiste_pgqd.sh
 
 =====Planned Failover=====
 #[slave] master failover to slave
-	$DEPLOYMENT_PATH/failover.sh
+    $DEPLOYMENT_PATH/failover.sh
 
 #[master] start primary PGBouncer proxy (connect to slave db)
-	$DEPLOYMENT_PATH/pgbouncer_slave.sh
+    $DEPLOYMENT_PATH/pgbouncer_slave.sh
 
 #[slave] start secondary PGBouncer proxy (connect to slave db)
-	$DEPLOYMENT_PATH/pgbouncer_slave.sh
+    $DEPLOYMENT_PATH/pgbouncer_slave.sh
 
 #[master/slave] replication smoke test
-	$DEPLOYMENT_PATH/test_slave2master.sh
+    $DEPLOYMENT_PATH/test_slave2master.sh
 
 #[master] slave failback to slave
-	$DEPLOYMENT_PATH/failback.sh
+    $DEPLOYMENT_PATH/failback.sh
 
 #[master] start primary PGBouncer proxy (connect to master db)
-	$DEPLOYMENT_PATH/pgbouncer_slave.sh
+    $DEPLOYMENT_PATH/pgbouncer_slave.sh
 
 #[slave] start secondary PGBouncer proxy (connect to master db)
-	$DEPLOYMENT_PATH/pgbouncer_slave.sh
+    $DEPLOYMENT_PATH/pgbouncer_slave.sh
 
 #[master/slave] replication smoke test
-	$DEPLOYMENT_PATH/test_master2slave.sh
+    $DEPLOYMENT_PATH/test_master2slave.sh
 
 =====Unplanned Failover=====
 [SLAVE is broken]
 #[master] full base backup master database
-	$DEPLOYMENT_PATH/base_backup.sh
+    $DEPLOYMENT_PATH/base_backup.sh
 
 #[slave] setup slave database
-	$DEPLOYMENT_PATH/setup_slave.sh
+    $DEPLOYMENT_PATH/setup_slave.sh
 
 #[slave] schedule archive log sync cron job
-	$DEPLOYMENT_PATH/slave_cron.sh
+    $DEPLOYMENT_PATH/cron_slave.sh
 
 #[slave] start secondary PGBouncer proxy (connect to master db)
-	$DEPLOYMENT_PATH/pgbouncer_master.sh
+    $DEPLOYMENT_PATH/pgbouncer_master.sh
 
 #[master/slave] replication smoke test
-	$DEPLOYMENT_PATH/test_master2slave.sh
+    $DEPLOYMENT_PATH/test_master2slave.sh
 
 [MASTER is broken]
 #[slave] promote slave to take traffic
 
 #[bastion] switch master/slave configuration and re-generate scripts
-	original slave -> master
-	original master -> slave
+    original slave -> master
+    original master -> slave
 
 # repeat normal replciation setup process

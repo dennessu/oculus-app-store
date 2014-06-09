@@ -28,22 +28,21 @@ abstract class BaseCloudantRepository<T extends CloudantEntity, K> extends Cloud
         if (identifiable.id == null) {
             identifiable.id = generateId();
         }
-        return Promise.pure(cloudantPost(entity))
+        return cloudantPost(entity)
     }
 
     @Override
     Promise<T> update(T entity) {
-        return Promise.pure(cloudantPut(entity))
+        return cloudantPut(entity)
     }
 
     @Override
     Promise<T> get(K id) {
-        return Promise.pure(cloudantGet(id.toString()))
+        return cloudantGet(id.toString())
     }
 
     @Override
     Promise<Void> delete(K id) {
-        super.cloudantDelete(id.toString())
-        return Promise.pure(null)
+        return super.cloudantDelete(id.toString())
     }
 }

@@ -14,7 +14,7 @@ import groovy.transform.CompileStatic
  * Invoice Level input/output for tax calculation.
  */
 @CompileStatic
-@XStreamAlias("INVOICE")
+@XStreamAlias('INVOICE')
 class Invoice {
     // input
     @XStreamAlias('INVOICE_DATE')
@@ -32,10 +32,10 @@ class Invoice {
     @XStreamAlias('CURRENCY_CODE')
     String currencyCode
 
-    @XStreamImplicit(itemFieldName="LINE")
+    @XStreamImplicit(itemFieldName='LINE')
     List<Line> line
 
-    @XStreamImplicit(itemFieldName="USER_ELEMENT")
+    @XStreamImplicit(itemFieldName='USER_ELEMENT')
     List<UserElement> userElement
 
     @XStreamAlias('INVOICE_NUMBER')
@@ -70,7 +70,7 @@ class Invoice {
     @XStreamAlias('TOTAL_TAX_AMOUNT')
     Double totalTaxAmount
 
-    @XStreamAlias('MESSAGE')
+    @XStreamImplicit(itemFieldName='MESSAGE')
     List<Message> message
 
     @XStreamAlias('CALCULATION_DIRECTION')

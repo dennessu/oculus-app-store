@@ -1,5 +1,4 @@
 package com.junbo.identity.data.repository.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.UserId
@@ -8,11 +7,8 @@ import com.junbo.common.id.UserPersonalInfoIdToUserIdLinkId
 import com.junbo.identity.data.repository.UserPersonalInfoIdToUserIdLinkRepository
 import com.junbo.identity.spec.v1.model.UserPersonalInfoIdToUserIdLink
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.CollectionUtils
-
 /**
  * Created by liangfu on 5/14/14.
  */
@@ -27,20 +23,18 @@ class UserPersonalInfoIdToUserIdLinkRepositoryImpl extends CloudantClient<UserPe
 
     @Override
     Promise<List<UserPersonalInfoIdToUserIdLink>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        def list = super.queryView('by_user_id', userId.value.toString(), limit, offset, false)
-
-        return Promise.pure(list)
+        return super.queryView('by_user_id', userId.value.toString(), limit, offset, false)
     }
 
     @Override
     Promise<UserPersonalInfoIdToUserIdLink> searchByUserPersonalInfoId(UserPersonalInfoId userPersonalInfoId) {
-        def list = super.queryView('by_user_personal_info_id', userPersonalInfoId.value.toString())
+        return super.queryView('by_user_personal_info_id', userPersonalInfoId.value.toString()).then { List<UserPersonalInfoIdToUserIdLink> list ->
+            if (CollectionUtils.isEmpty(list)) {
+                return Promise.pure(null)
+            }
 
-        if (CollectionUtils.isEmpty(list)) {
-            return Promise.pure(null)
+            return Promise.pure((UserPersonalInfoIdToUserIdLink)list.get(0))
         }
-
-        return Promise.pure((UserPersonalInfoIdToUserIdLink)list.get(0))
     }
 
     @Override
@@ -49,7 +43,7 @@ class UserPersonalInfoIdToUserIdLinkRepositoryImpl extends CloudantClient<UserPe
         if (model.id == null) {
             model.id = new UserPersonalInfoIdToUserIdLinkId(model.userPersonalInfoId.value)
         }
-        return Promise.pure((UserPersonalInfoIdToUserIdLink)super.cloudantPost(model))
+        return super.cloudantPost(model)
     }
 
     @Override
@@ -57,18 +51,17 @@ class UserPersonalInfoIdToUserIdLinkRepositoryImpl extends CloudantClient<UserPe
         if (model.id == null) {
             model.id = new UserPersonalInfoIdToUserIdLinkId(model.userPersonalInfoId.value)
         }
-        return Promise.pure((UserPersonalInfoIdToUserIdLink)super.cloudantPut(model))
+        return super.cloudantPut(model)
     }
 
     @Override
     Promise<UserPersonalInfoIdToUserIdLink> get(UserPersonalInfoIdToUserIdLinkId id) {
-        return Promise.pure((UserPersonalInfoIdToUserIdLink)super.cloudantGet(id.toString()))
+        return super.cloudantGet(id.toString())
     }
 
     @Override
     Promise<Void> delete(UserPersonalInfoIdToUserIdLinkId id) {
-        super.cloudantDelete(id.toString())
-        return Promise.pure(null)
+        return super.cloudantDelete(id.toString())
     }
 
     protected CloudantViews views = new CloudantViews(

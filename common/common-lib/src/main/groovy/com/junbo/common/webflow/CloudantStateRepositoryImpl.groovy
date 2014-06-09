@@ -36,7 +36,7 @@ class CloudantStateRepositoryImpl extends CloudantClient<ConversationEntity> imp
             throw new IllegalArgumentException('conversationId is null')
         }
 
-        ConversationEntity entity = cloudantGet(conversationId) as ConversationEntity
+        ConversationEntity entity = cloudantGet(conversationId).get()
         return wrap(entity)
     }
 
@@ -47,14 +47,14 @@ class CloudantStateRepositoryImpl extends CloudantClient<ConversationEntity> imp
         }
 
         if (conversation.flowStack == null || conversation.flowStack.empty) {
-            super.cloudantDelete(conversation.id)
+            super.cloudantDelete(conversation.id).get()
         } else {
-            ConversationEntity entity = cloudantGet(conversation.id) as ConversationEntity
+            ConversationEntity entity = cloudantGet(conversation.id).get()
 
             if (entity == null) {
-                cloudantPost(unwrap(conversation))
+                cloudantPost(unwrap(conversation)).get()
             } else {
-                cloudantPut(unwrap(conversation))
+                cloudantPut(unwrap(conversation)).get()
             }
         }
     }

@@ -61,6 +61,8 @@ class DefaultFlowSelector implements FlowSelector {
                 return Promise.pure(FlowType.GET_ORDER.name())
             case OrderServiceOperation.UPDATE:
                 return selectUpdateFlow(context)
+            case OrderServiceOperation.REFUND:
+                return Promise.pure(FlowType.REFUND_ORDER.name())
             default:
                 LOGGER.error('name=Order_Action_Not_Supported, action: {0}', operation.toString())
                 throw AppErrors.INSTANCE.orderActionNotSupported(

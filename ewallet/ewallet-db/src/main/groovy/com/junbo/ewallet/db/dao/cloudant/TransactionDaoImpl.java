@@ -25,12 +25,12 @@ public class TransactionDaoImpl extends TransactionBaseDao<TransactionEntity> im
 
     @Override
     public List<TransactionEntity> getByWalletId(Long walletId) {
-        return super.queryView("byWalletId", walletId.toString());
+        return super.queryView("byWalletId", walletId.toString()).get();
     }
 
     @Override
     public TransactionEntity getByTrackingUuid(Long shardMasterId, UUID uuid) {
-        List<TransactionEntity> results = super.queryView("byTrackingUuid", uuid.toString());
+        List<TransactionEntity> results = super.queryView("byTrackingUuid", uuid.toString()).get();
         return results.size() == 0 ? null : results.get(0);
     }
 

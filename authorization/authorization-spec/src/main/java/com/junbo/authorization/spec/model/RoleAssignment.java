@@ -11,13 +11,12 @@ import com.junbo.common.id.RoleAssignmentId;
 import com.junbo.common.id.RoleId;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
-import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * RoleAssignment.
  */
-public class RoleAssignment extends PropertyAssignedAwareResourceMeta implements Identifiable<RoleAssignmentId> {
+public class RoleAssignment extends PropertyAssignedAwareResourceMeta<RoleAssignmentId> {
     @ApiModelProperty(position = 1, required = true,
             value = "[Nullable]The id of the role assignment resource.")
     @JsonProperty("self")

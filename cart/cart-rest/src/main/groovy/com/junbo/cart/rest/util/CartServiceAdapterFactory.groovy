@@ -44,7 +44,7 @@ class CartServiceAdapterFactory {
 
             return result.syncThen { Cart cart ->
                 if (cart != null) {
-                    cart.id.resourcePathPlaceHolder['userId'] = cart.user
+                    cart.getId().resourcePathPlaceHolder['userId'] = cart.user
                 }
                 return cart
             }

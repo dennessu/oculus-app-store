@@ -35,6 +35,7 @@
         <property name="couchDBUri" value="${common.cloudant.url}"/>
         <property name="couchDBUser" value="${common.cloudant.user}" />
         <property name="couchDBPassword" value="${common.cloudant.password}" />
+        <property name="dbNamePrefix" value="${common.cloudant.dbNamePrefix}" />
     </bean>
 
     <bean id="authorizationCodeDAO" class="com.junbo.oauth.db.dao.couch.CouchAuthorizationCodeDAOImpl" parent="baseDAO">

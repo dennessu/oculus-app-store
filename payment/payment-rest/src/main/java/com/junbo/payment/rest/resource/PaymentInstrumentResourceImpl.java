@@ -70,6 +70,9 @@ public class PaymentInstrumentResourceImpl implements PaymentInstrumentResource 
     @Override
     public Promise<Results<PaymentInstrument>> searchPaymentInstrument(
             @BeanParam PaymentInstrumentSearchParam searchParam, @BeanParam PageMetaData pageMetadata) {
+        if(searchParam.getUserId() == null){
+            throw AppClientExceptions.INSTANCE.missingUserId().exception();
+        }
         return piService.searchPi(searchParam.getUserId().getValue(), searchParam, pageMetadata)
                 .then(new Promise.Func<List<PaymentInstrument>, Promise<Results<PaymentInstrument>>>() {
             @Override

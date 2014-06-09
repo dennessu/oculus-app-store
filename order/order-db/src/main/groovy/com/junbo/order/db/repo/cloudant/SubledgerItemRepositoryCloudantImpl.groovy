@@ -10,29 +10,15 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.order.db.repo.SubledgerItemRepository
 import com.junbo.order.spec.model.PageParam
 import com.junbo.order.spec.model.SubledgerItem
-import com.junbo.sharding.IdGenerator
-import com.junbo.sharding.repo.BaseCloudantRepository
+import com.junbo.sharding.repo.BaseCloudantRepositoryForDualWrite
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
-import org.springframework.beans.factory.annotation.Required
 /**
  * Created by chriszhu on 2/18/14.
  */
 @CompileStatic
 @TypeChecked
-class SubledgerItemRepositoryCloudantImpl extends BaseCloudantRepository<SubledgerItem, SubledgerItemId> implements SubledgerItemRepository {
-
-    private IdGenerator idGenerator
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
-
-    @Override
-    protected SubledgerItemId generateId() {
-        return new SubledgerItemId(idGenerator.nextId());
-    }
+class SubledgerItemRepositoryCloudantImpl extends BaseCloudantRepositoryForDualWrite<SubledgerItem, SubledgerItemId> implements SubledgerItemRepository {
 
     @Override
     protected CloudantViews getCloudantViews() {

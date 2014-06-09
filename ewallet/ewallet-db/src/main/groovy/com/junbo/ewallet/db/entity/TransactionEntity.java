@@ -10,7 +10,6 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.junbo.common.cloudant.json.annotations.CloudantDeserialize;
 import com.junbo.common.cloudant.json.annotations.CloudantSerialize;
 import com.junbo.common.jackson.deserializer.BigDecimalFromStringDeserializer;
-import com.junbo.common.util.Identifiable;
 import com.junbo.ewallet.db.entity.def.IdentifiableType;
 import com.junbo.ewallet.db.entity.def.TransactionId;
 import com.junbo.ewallet.db.entity.def.TransactionType;
@@ -27,7 +26,7 @@ import java.util.UUID;
  */
 @javax.persistence.Entity
 @Table(name = "transaction")
-public class TransactionEntity extends EntityWithCreated implements Identifiable<TransactionId> {
+public class TransactionEntity extends EntityWithCreated<TransactionId> {
     private UUID trackingUuid;
     private Long walletId;
     private TransactionType type;

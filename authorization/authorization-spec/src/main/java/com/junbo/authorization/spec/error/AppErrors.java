@@ -56,10 +56,6 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 409, code = "2000038", description = "The {0} name {1} already exists", field = "name")
     AppError duplicateEntityName(String entityName, String value);
 
-    @ErrorDef(httpStatusCode = 400, code = "2000039", description = "The resourceAge is not provided",
-            field = "resourceAge")
-    AppError missingResourceAge();
-
     @ErrorDef(httpStatusCode = 400, code = "2000040", description = "The input name and entity name do not match")
     AppError mismatchEntityName();
 

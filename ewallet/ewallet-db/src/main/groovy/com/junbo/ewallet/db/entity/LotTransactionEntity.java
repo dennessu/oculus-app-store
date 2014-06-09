@@ -10,7 +10,6 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.junbo.common.cloudant.json.annotations.CloudantDeserialize;
 import com.junbo.common.cloudant.json.annotations.CloudantSerialize;
 import com.junbo.common.jackson.deserializer.BigDecimalFromStringDeserializer;
-import com.junbo.common.util.Identifiable;
 import com.junbo.ewallet.db.entity.def.*;
 import com.junbo.ewallet.spec.def.WalletLotType;
 import org.hibernate.annotations.Type;
@@ -25,7 +24,7 @@ import java.math.BigDecimal;
  */
 @javax.persistence.Entity
 @Table(name = "lot_transaction")
-public class LotTransactionEntity extends EntityWithCreated implements Identifiable<LotTransactionId> {
+public class LotTransactionEntity extends EntityWithCreated<LotTransactionId> {
     private Long walletId;
     private Long walletLotId;
     private Long transactionId;

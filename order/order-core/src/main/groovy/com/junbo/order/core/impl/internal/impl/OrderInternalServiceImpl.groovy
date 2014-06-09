@@ -5,6 +5,7 @@
  */
 package com.junbo.order.core.impl.internal.impl
 
+import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
 import com.junbo.langur.core.promise.Promise
@@ -157,6 +158,62 @@ class OrderInternalServiceImpl implements OrderInternalService {
             }
         }
         return Promise.pure(order)
+    }
+
+    @Override
+    @Transactional
+    Promise<Order> refundOrder(Order order) {
+
+        assert (order != null)
+
+        def isRefundable = CoreUtils.checkOrderStatusRefundable(order)
+        if (!isRefundable) {
+            LOGGER.info('name=Order_Is_Not_Refundable, orderId = {}, orderStatus={}', order.getId().value, order.status)
+            throw AppErrors.INSTANCE.orderNotRefundable().exception()
+        }
+        LOGGER.info('name=Order_Is_Refundable, orderId = {}, orderStatus={}', order.getId().value, order.status)
+
+        return getOrderByOrderId(order.getId().value).then { Order existingOrder ->
+
+            return facadeContainer.identityFacade.getCurrency(existingOrder.currency.value).then {
+                com.junbo.identity.spec.v1.model.Currency currency ->
+                    Order diffOrder = CoreUtils.diffRefundOrder(existingOrder, order, currency.numberAfterDecimal)
+
+                    return facadeContainer.billingFacade.getBalancesByOrderId(order.getId().value).syncRecover {
+                        Throwable ex ->
+                    }.then { List<Balance> bls ->
+                        List<Balance> refundableBalances = bls.findAll { Balance bl ->
+                            (bl.type == BalanceType.DEBIT || bl.type == BalanceType.MANUAL_CAPTURE) &&
+                                    (bl.status == BalanceStatus.AWAITING_PAYMENT ||
+                                            bl.status == BalanceStatus.COMPLETED)
+                        }.toList()
+
+                        // preorder: deposit+deposit
+                        // physical goods: manual_capture/deposit
+                        // digital: deposit
+                        List<Balance> refundBalances = CoreBuilder.buildRefundBalances(refundableBalances, diffOrder)
+                        assert (refundBalances.size() <= 2)
+                        return Promise.each(refundBalances) { Balance refundBalance ->
+                            return facadeContainer.billingFacade.createBalance(refundBalance, false).syncRecover {
+                                Throwable ex ->
+                                    LOGGER.error('name=Refund_Failed', ex)
+                                    throw AppErrors.INSTANCE.billingRefundFailed().exception()
+                            }.then { Balance refunded ->
+                                if (refunded != null) {
+                                    throw AppErrors.INSTANCE.billingRefundFailed().exception()
+                                }
+                                orderRepository.updateOrder(order, true)
+                                return Promise.pure(null)
+                            }
+                        }
+                    }
+            }
+        }.then {
+            // TODO handle partial refund
+            order.status = OrderStatus.REFUNDED.name()
+            orderRepository.updateOrder(order, true)
+            return getOrderByOrderId(order.getId().value)
+        }
     }
 
     @Override

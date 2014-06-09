@@ -107,9 +107,6 @@ class RepositoryFactoryBean<T> implements FactoryBean<T>, InitializingBean {
                 sqlFirstStrategy = new AsyncDualWriteStrategy(sqlRepositoryImpl, sqlPendingActionRepository);
             }
         }
-        if (sqlRepositoryImpl != null && cloudantRepositoryImpl != null && cloudantPendingActionRepository != null) {
-            cloudantFirstStrategy = new AsyncDualWriteStrategy(cloudantRepositoryImpl, cloudantPendingActionRepository);
-        }
     }
 
     @Override
@@ -118,8 +115,7 @@ class RepositoryFactoryBean<T> implements FactoryBean<T>, InitializingBean {
                 repositoryInterface,
                 sqlOnlyStrategy,
                 sqlFirstStrategy,
-                cloudantOnlyStrategy,
-                cloudantFirstStrategy
+                cloudantOnlyStrategy
         );
     }
 

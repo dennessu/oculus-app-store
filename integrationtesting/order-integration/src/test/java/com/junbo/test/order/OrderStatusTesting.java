@@ -8,7 +8,7 @@ package com.junbo.test.order;
 import com.junbo.order.spec.model.Order;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
-import com.junbo.test.common.Entities.enums.OrderStatus;
+import com.junbo.test.order.model.enums.OrderStatus;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PayPalInfo;
@@ -46,7 +46,7 @@ public class OrderStatusTesting extends BaseOrderTestClass {
             }
     )
     @Test
-    public void testPaypalOrderStatusUpdate() throws Exception {
+    public void testPaypalOrderStatus() throws Exception {
         Map<String, OrderStatus> expectedOrderStatus = new HashMap<>();
 
         String uid = testDataProvider.createUser();
@@ -102,7 +102,7 @@ public class OrderStatusTesting extends BaseOrderTestClass {
             }
     )
     @Test
-    public void testOrderStatus() throws Exception {
+    public void testOrderHistory() throws Exception {
         Map<String, OrderStatus> expectedOrderStatus = new HashMap<>();
 
         String uid = testDataProvider.createUser();
@@ -181,7 +181,7 @@ public class OrderStatusTesting extends BaseOrderTestClass {
             }
     )
     @Test
-    public void testOrderStatusUpdate() throws Exception {
+    public void testPriceRatingChanged() throws Exception {
         Map<String, OrderStatus> expectedOrderStatus = new HashMap<>();
 
         String uid = testDataProvider.createUser();
@@ -217,6 +217,72 @@ public class OrderStatusTesting extends BaseOrderTestClass {
         expectedOrderStatus.clear();
         expectedOrderStatus.put(orderId, OrderStatus.COMPLETED);
         validationHelper.validateOrderStatus(expectedOrderStatus);
+    }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "GET /order-events?orderId={key}",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test order status - checkout physical goods",
+            steps = {
+                    "1. Post a new user",
+                    "2. Post a new credit card to user",
+                    "3. Post an order without setting tentative",
+                    "4. Get order by order id",
+                    "5. Verify order status = OPEN",
+                    "6. Get order events by order id",
+                    "7. Verify action ='rate' , status ='completed'",
+                    "8. Put order and set tentative to false",
+                    "4. Get order by order id",
+                    "5. Verify order status = PENDING_FULFIL",
+                    "6. Get order events by order id",
+                    "7. Verify action ='charge', status ='completed'",
+                    "8. Verify action ='fulfil', status ='open'",
+            }
+    )
+    @Test
+    public void testCheckoutSuccess() throws Exception {
+
+    }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "GET /order-events?orderId={key}",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test order status - checkout failure",
+            steps = {
+                    "1. Post a new user",
+                    "2. Post a new credit card to user",
+                    "3. Post an order without setting tentative",
+                    "4. Modify payment external token",
+                    "8. Put order and set tentative to false",
+                    "4. Get order by order id",
+                    "5. Verify order status = Failed",
+                    "6. Get order events by order id",
+                    "7. Verify action ='charge', status ='failed'",
+            }
+    )
+    @Test
+    public void testCheckoutFailure() throws Exception {
+        String uid = testDataProvider.createUser();
+
+        ArrayList<String> offerList = new ArrayList<>();
+        offerList.add(offer_digital_normal1);
+        offerList.add(offer_digital_normal2);
+
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
+
+        testDataProvider.invalidateCreditCard(uid, creditCardId);
+
+        String orderId =  testDataProvider.postOrder(
+                uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
+
+        testDataProvider.updateOrderTentative(orderId,false);
     }
 
 }

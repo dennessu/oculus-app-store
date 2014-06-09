@@ -8,29 +8,15 @@ import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.db.repo.DiscountRepository
 import com.junbo.order.spec.model.Discount
-import com.junbo.sharding.IdGenerator
-import com.junbo.sharding.repo.BaseCloudantRepository
+import com.junbo.sharding.repo.BaseCloudantRepositoryForDualWrite
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
-import org.springframework.beans.factory.annotation.Required
 /**
  * Created by chriszhu on 2/18/14.
  */
 @CompileStatic
 @TypeChecked
-class DiscountRepositoryCloudantImpl extends BaseCloudantRepository<Discount, Long> implements DiscountRepository {
-
-    private IdGenerator idGenerator
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
-
-    @Override
-    protected Long generateId() {
-        return idGenerator.nextId();
-    }
+class DiscountRepositoryCloudantImpl extends BaseCloudantRepositoryForDualWrite<Discount, Long> implements DiscountRepository {
 
     @Override
     protected CloudantViews getCloudantViews() {
@@ -39,8 +25,7 @@ class DiscountRepositoryCloudantImpl extends BaseCloudantRepository<Discount, Lo
 
     @Override
     Promise<List<Discount>> getByOrderId(Long orderId) {
-        List<Discount> list = super.queryView('by_order', orderId.toString());
-        return Promise.pure(list);
+        return super.queryView('by_order', orderId.toString());
     }
 
     private CloudantViews views = new CloudantViews(

@@ -12,7 +12,6 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
-import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
@@ -20,7 +19,7 @@ import java.util.List;
 /**
  * Created by liangfu on 4/3/14.
  */
-public class User extends PropertyAssignedAwareResourceMeta implements Identifiable<UserId> {
+public class User extends PropertyAssignedAwareResourceMeta<UserId> {
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The Link to the User resource.")
     @JsonProperty("self")
     private UserId id;

@@ -11,14 +11,12 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserSecurityQuestionId;
 import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
-import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by liangfu on 4/3/14.
  */
-public class UserSecurityQuestionVerifyAttempt extends PropertyAssignedAwareResourceMeta
-        implements Identifiable<UserSecurityQuestionVerifyAttemptId> {
+public class UserSecurityQuestionVerifyAttempt extends PropertyAssignedAwareResourceMeta<UserSecurityQuestionVerifyAttemptId> {
 
     @ApiModelProperty(position = 1, required = true,
             value = "[Client Immutable] Link to the user security question attempt.")

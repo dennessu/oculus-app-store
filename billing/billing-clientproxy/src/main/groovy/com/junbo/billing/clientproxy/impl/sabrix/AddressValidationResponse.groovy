@@ -14,12 +14,12 @@ import groovy.transform.CompileStatic
  * Response of Sabrix address validation service.
  */
 @CompileStatic
-@XStreamAlias("ADDRESS_VALIDATION_RESPONSE")
+@XStreamAlias('ADDRESS_VALIDATION_RESPONSE')
 class AddressValidationResponse {
-    @XStreamImplicit(itemFieldName="ADDRESS")
+    @XStreamImplicit(itemFieldName='ADDRESS')
     List<ResponseAddress> address
 
-    @XStreamImplicit(itemFieldName="MESSAGE")
+    @XStreamImplicit(itemFieldName='MESSAGE')
     List<Message> message
 
     @Override

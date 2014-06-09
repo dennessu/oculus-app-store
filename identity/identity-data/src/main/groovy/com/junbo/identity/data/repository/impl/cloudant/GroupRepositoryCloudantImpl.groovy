@@ -31,7 +31,7 @@ class GroupRepositoryCloudantImpl extends CloudantClient<Group> implements Group
 
     @Override
     Promise<Group> get(GroupId groupId) {
-        return Promise.pure((Group)super.cloudantGet(groupId.toString()))
+        return super.cloudantGet(groupId.toString())
     }
 
     @Override
@@ -39,18 +39,19 @@ class GroupRepositoryCloudantImpl extends CloudantClient<Group> implements Group
         if (group.id == null) {
             group.id = new GroupId(idGenerator.nextId())
         }
-        return Promise.pure((Group)super.cloudantPost(group))
+        return super.cloudantPost(group)
     }
 
     @Override
     Promise<Group> update(Group group) {
-        return Promise.pure((Group)super.cloudantPut(group))
+        return super.cloudantPut(group)
     }
 
     @Override
     Promise<Group> searchByName(String name) {
-        def list = super.queryView('by_name', name)
-        return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)
+        return super.queryView('by_name', name).then { List<Group> list ->
+            return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)
+        }
     }
 
     @Override

@@ -1,5 +1,4 @@
 package com.junbo.identity.data.repository.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.enumid.CountryId
@@ -7,10 +6,8 @@ import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.identity.data.repository.CountryRepository
 import com.junbo.identity.spec.v1.model.Country
-import com.junbo.identity.spec.v1.option.list.CountryListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
-
 /**
  * Created by minhao on 4/24/14.
  */
@@ -26,23 +23,22 @@ class CountryRepositoryCloudantImpl extends CloudantClient<Country> implements C
         if (model.id == null) {
             model.id = new CountryId(model.countryCode)
         }
-        return Promise.pure((Country)super.cloudantPost(model))
+        return super.cloudantPost(model)
     }
 
     @Override
     Promise<Country> update(Country model) {
-        return Promise.pure((Country)super.cloudantPut(model))
+        return super.cloudantPut(model)
     }
 
     @Override
     Promise<Country> get(CountryId id) {
-        return Promise.pure((Country)super.cloudantGet(id.toString()))
+        return super.cloudantGet(id.toString())
     }
 
     @Override
     Promise<Void> delete(CountryId id) {
-        super.cloudantDelete(id.value)
-        return Promise.pure(null)
+        return super.cloudantDelete(id.value)
     }
 
     CloudantViews getViews() {
@@ -55,26 +51,22 @@ class CountryRepositoryCloudantImpl extends CloudantClient<Country> implements C
 
     @Override
     Promise<List<Country>> searchByDefaultCurrencyId(CurrencyId currencyId, Integer limit, Integer offset) {
-        def list = super.queryView('by_default_currency', currencyId.value, limit, offset, false)
-        return Promise.pure(list)
+        return super.queryView('by_default_currency', currencyId.value, limit, offset, false)
     }
 
     @Override
     Promise<List<Country>> searchByDefaultLocaleId(LocaleId localeId, Integer limit, Integer offset) {
-        def list = super.queryView('by_default_locale', localeId.value, limit, offset, false)
-        return Promise.pure(list)
+        return super.queryView('by_default_locale', localeId.value, limit, offset, false)
     }
 
     @Override
     Promise<List<Country>> searchByDefaultCurrencyIdAndLocaleId(CurrencyId currencyId, LocaleId localeId, Integer limit, Integer offset) {
-        def list = super.queryView('by_default_locale_currency', "${currencyId.value}:${localeId.value}", limit, offset, false)
-        return Promise.pure(list)
+        return super.queryView('by_default_locale_currency', "${currencyId.value}:${localeId.value}", limit, offset, false)
     }
 
     @Override
     Promise<List<Country>> searchAll(Integer limit, Integer offset) {
-        def list = super.cloudantGetAll()
-        return Promise.pure(list)
+        return super.cloudantGetAll()
     }
 
     protected CloudantViews views = new CloudantViews(

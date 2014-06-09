@@ -39,6 +39,8 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
     protected String couchDBUser
     protected String couchDBPassword
     protected String dbName
+    protected String dbNamePrefix
+    protected String fullDbName
 
     @Required
     void setAsyncHttpClient(AsyncHttpClient asyncHttpClient) {
@@ -61,6 +63,10 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
     @Required
     void setDbName(String dbName) {
         this.dbName = dbName
+    }
+
+    void setDbNamePrefix(String dbNamePrefix) {
+        this.dbNamePrefix = dbNamePrefix
     }
 
     protected CouchBaseDAO() {
@@ -163,6 +169,12 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
 
     @Override
     void afterPropertiesSet() throws Exception {
+        if (dbNamePrefix != null) {
+            fullDbName = dbNamePrefix + dbName;
+        } else {
+            fullDbName = dbName;
+        }
+
         def response = executeRequest(HttpMethod.GET, '', [:], null)
         if (response.statusCode == HttpStatus.NOT_FOUND.value()) {
             response = executeRequest(HttpMethod.PUT, '', [:], null)
@@ -234,7 +246,7 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
 
     protected Response executeRequest(HttpMethod method, String path, Map<String, String> queryParams, Object body) {
         UriBuilder uriBuilder = UriBuilder.fromUri(couchDBUri)
-        uriBuilder.path(dbName)
+        uriBuilder.path(fullDbName)
         uriBuilder.path(path)
 
         def requestBuilder = getRequestBuilder(method, uriBuilder.toTemplate())
@@ -281,4 +293,6 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
                 return asyncHttpClient.prepareGet(uri)
         }
     }
+
+
 }

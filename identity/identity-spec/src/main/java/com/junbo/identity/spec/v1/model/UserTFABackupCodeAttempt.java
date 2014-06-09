@@ -10,13 +10,12 @@ import com.junbo.common.id.ClientId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserTFABackupCodeAttemptId;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
-import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by liangfu on 4/22/14.
  */
-public class UserTFABackupCodeAttempt extends PropertyAssignedAwareResourceMeta implements Identifiable<UserTFABackupCodeAttemptId> {
+public class UserTFABackupCodeAttempt extends PropertyAssignedAwareResourceMeta<UserTFABackupCodeAttemptId> {
     @ApiModelProperty(position = 1, required = true,
             value = "[Client Immutable]The id of the userTFA backup code attempt resource.")
     @JsonProperty("self")

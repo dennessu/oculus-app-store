@@ -10,7 +10,7 @@
         <sql><![CDATA[
        
             CREATE TABLE pending_action (
-                id UUID NOT NULL,
+                id bigint NOT NULL,
                 version INT NOT NULL,
                 changed_entity_id BIGINT NOT NULL,
                 saved_entity_type VARCHAR(255) NULL,

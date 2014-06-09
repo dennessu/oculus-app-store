@@ -32,7 +32,7 @@ public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, P
 
     @Override
     public Promotion createEntity(Promotion promotion) {
-        if (promotion.getResourceAge() != null) {
+        if (promotion.getRev() != null) {
             throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
         }
         validatePromotion(promotion);
@@ -48,7 +48,7 @@ public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, P
 
     @Override
     public PromotionRevision createRevision(PromotionRevision revision) {
-        if (revision.getResourceAge() != null) {
+        if (revision.getRev() != null) {
             throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
         }
         validateRevision(revision);

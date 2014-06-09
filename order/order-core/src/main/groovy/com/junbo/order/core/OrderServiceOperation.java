@@ -20,5 +20,7 @@ public enum OrderServiceOperation {
     ADJUST,
     COMPLETE_CHARGE,
     UPDATE_NON_TENTATIVE,
-    HANDLE_EVENT
+    HANDLE_EVENT,
+    REFUND,
+    PARTIAL_REFUND
 }

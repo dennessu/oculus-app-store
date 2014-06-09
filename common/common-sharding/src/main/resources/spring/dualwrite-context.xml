@@ -22,12 +22,14 @@
         <property name="shardAlgorithm" ref="externalShardAlgorithm"/>
         <property name="hardDelete" value="false" />
         <property name="mapper" ref="pendingActionMapper" />
+        <property name="idGenerator" ref="oculus48IdGenerator" />
     </bean>
 
     <bean id="pendingActionCloudantRepo" class="com.junbo.sharding.dualwrite.data.PendingActionRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="dualwrite_pending_action"/>
         <property name="hardDelete" value="false" />
         <property name="mapper" ref="pendingActionMapper" />
+        <property name="idGenerator" ref="oculus48IdGenerator" />
     </bean>
 
     <bean id="dualwriteDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">

@@ -1,4 +1,5 @@
 package com.junbo.order.core.impl.common
+
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.enums.PropertyKey
 import com.junbo.billing.spec.model.Balance
@@ -12,25 +13,26 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.core.impl.orderaction.context.OrderActionResult
+import com.junbo.order.spec.error.AppErrors
+import com.junbo.order.spec.model.*
 import com.junbo.order.spec.model.enums.DiscountType
 import com.junbo.order.spec.model.enums.EventStatus
 import com.junbo.order.spec.model.enums.OrderActionType
-import com.junbo.order.spec.model.Discount
-import com.junbo.order.spec.model.Order
-import com.junbo.order.spec.model.OrderEvent
-import com.junbo.order.spec.model.OrderItem
-import com.junbo.order.spec.model.OrderTaxItem
 import com.junbo.rating.spec.model.request.RatingItem
 import com.junbo.rating.spec.model.request.RatingRequest
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
 /**
  * Created by chriszhu on 2/24/14.
  */
 @CompileStatic
 @TypeChecked
 class CoreBuilder {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CoreBuilder)
 
     static final BigDecimal PARTIAL_CHARGE_THRESHOLD = 50
     static final BigDecimal PARTIAL_CHARGE_PERCENTAGE = 0.1
@@ -67,8 +69,7 @@ class CoreBuilder {
             balance = buildBalance(order)
             balance.type = balanceType.toString()
             balance.skipTaxCalculation = true
-        }
-        else {
+        } else {
             balance = taxedBalance
         }
 
@@ -84,7 +85,7 @@ class CoreBuilder {
             }
         }
 
-        return  balance
+        return balance
     }
 
     static Balance buildRefundDepositBalance(Balance originalBalance) {
@@ -98,8 +99,57 @@ class CoreBuilder {
             balanceItem.originalBalanceItemId = balanceItem.balanceItemId
             balanceItem.balanceItemId = null
             balance.addBalanceItem(balanceItem)
+
         }
         return balance
+    }
+
+
+    static List<Balance> buildRefundBalances(List<Balance> originalBalances, Order diffOrder) {
+        assert (originalBalances != null)
+
+        List<Balance> returnBalances = []
+        originalBalances.each { Balance b ->
+            Balance balance = buildRefundBalance(b)
+            diffOrder.each {}
+            b.balanceItems.each { BalanceItem item ->
+                Boolean matched = diffOrder.orderItems.any { OrderItem orderItem ->
+                    orderItem.getId().value == item.orderItemId.value
+                }
+                if (matched) {
+                    def balanceItem = buildBalanceItem(item)
+                    balanceItem.originalBalanceItemId = balanceItem.balanceItemId
+                    balanceItem.balanceItemId = null
+                    balance.addBalanceItem(balanceItem)
+                }
+            }
+            returnBalances << balance
+        }
+
+        // handle partial refund
+        diffOrder.orderItems.each { OrderItem diffItem ->
+            returnBalances.each { Balance b ->
+                BalanceItem balanceItem = b.balanceItems.find { BalanceItem bi ->
+                    bi.orderItemId.value == diffItem.getId().value
+                }
+                if (diffItem.totalAmount >= balanceItem.amount) {
+                    diffItem.totalAmount = diffItem.totalAmount - balanceItem.amount
+                } else {
+                    balanceItem.amount = diffItem.totalAmount
+                    diffItem.totalAmount = 0G
+                }
+            }
+        }
+
+        //validate
+        diffOrder.orderItems.each { OrderItem diffItem ->
+            if (diffItem.totalAmount != 0G) {
+                LOGGER.error('name=Refund_Item_Amount_Exceeded')
+                throw AppErrors.INSTANCE.billingRefundFailed().exception()
+            }
+        }
+
+        return returnBalances
     }
 
     static Balance buildBalance(Order order) {
@@ -186,8 +236,7 @@ class CoreBuilder {
             }
             balanceItem.amount = item.totalAmount - partialChargeAmount
             taxedBalance.totalAmount -= partialChargeAmount
-        }
-        else {
+        } else {
             balanceItem = new BalanceItem()
             balanceItem.amount = partialChargeAmount
         }
@@ -289,6 +338,7 @@ class CoreBuilder {
         }
         orderItem.taxes = taxes
     }
+
     static OrderEvent buildOrderEvent(OrderId orderId, OrderActionType action,
                                       EventStatus status, String flowName, UUID trackingUuid) {
         def event = new OrderEvent()
@@ -300,21 +350,20 @@ class CoreBuilder {
         return event
     }
 
-    static ActionResult  buildActionResultForOrderEventAwareAction(OrderActionContext context,
-                                                                   String eventStatus) {
+    static ActionResult buildActionResultForOrderEventAwareAction(OrderActionContext context,
+                                                                  String eventStatus) {
         return buildActionResultForOrderEventAwareAction(context, EventStatus.valueOf(eventStatus))
     }
 
-    static ActionResult  buildActionResultForOrderEventAwareAction(OrderActionContext context,
-                                                                   EventStatus eventStatus) {
+    static ActionResult buildActionResultForOrderEventAwareAction(OrderActionContext context,
+                                                                  EventStatus eventStatus) {
         def orderActionResult = new OrderActionResult()
         orderActionResult.orderActionContext = context
         orderActionResult.returnedEventStatus = eventStatus
 
         def data = [:]
-        data.put(ActionUtils.DATA_ORDER_ACTION_RESULT, (Object)orderActionResult)
+        data.put(ActionUtils.DATA_ORDER_ACTION_RESULT, (Object) orderActionResult)
         def actionResult = new ActionResult('success', data)
         return actionResult
     }
-
 }

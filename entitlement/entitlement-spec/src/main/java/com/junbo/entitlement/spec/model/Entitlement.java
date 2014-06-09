@@ -13,7 +13,6 @@ import com.junbo.common.jackson.annotation.EntitlementId;
 import com.junbo.common.jackson.annotation.ItemId;
 import com.junbo.common.jackson.annotation.UserId;
 import com.junbo.common.model.ResourceMeta;
-import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
@@ -24,33 +23,42 @@ import java.util.UUID;
  */
 @JsonPropertyOrder(value = {"entitlementId", "userId", "itemId", "isActive", "isBanned",
         "grantTime", "expirationTime", "useCount", "type", "futureExpansion",
-        "resourceAge", "createdTime", "updatedTime", "adminInfo"})
-public class Entitlement extends ResourceMeta implements Identifiable<com.junbo.common.id.EntitlementId> {
+        "rev", "createdTime", "updatedTime", "adminInfo"})
+public class Entitlement extends ResourceMeta<Long> {
+
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] Link to this entitlement resource")
     @JsonProperty("self")
     @EntitlementId
-    private Long entitlementId;
+    private Long id;
+
     @ApiModelProperty(position = 2, required = true, value = "Link to the User that is granted access by this entitlement")
     @UserId
     @JsonProperty("user")
     private Long userId;
+
     @ApiModelProperty(position = 4, required = true, value = "[Client Immutable] True if/only if the entitlement is active;" +
             " false when the entitlement is out of date, useCount is 0, or someone manually set isSuspended to true")
     private Boolean isActive;
+
     @ApiModelProperty(position = 5, required = true, value = "True if/only if this entitlement is suspended, e.g., by CSR or other authorized agent")
     @JsonProperty("isSuspended")
     private Boolean isBanned;
+
     @ApiModelProperty(position = 6, required = true, value = "the timestamp when this entitlement was granted; must be ISO 8601")
     private Date grantTime;
+
     @ApiModelProperty(position = 7, required = true, value = "the timestamp when this entitlement expires (must be ISO 8601), or null to mean it never expires")
     private Date expirationTime;
+
     @ApiModelProperty(position = 8, required = true,
             value = "a non-negative number if this is a consumable entitlement; otherwise null")
     private Integer useCount;
+
     @ApiModelProperty(position = 3, required = true, value = "Link to the Item that is granted to the user by this entitlement")
     @ItemId
     @JsonProperty("item")
     private Long itemId;
+
     @ApiModelProperty(position = 9, required = true, value = "enumeration; values are \"DOWNLOAD\" and \"RUN\"")
     @JsonProperty("entitlementType")
     private String type;
@@ -58,12 +66,12 @@ public class Entitlement extends ResourceMeta implements Identifiable<com.junbo.
     @JsonIgnore
     private UUID trackingUuid;
 
-    public Long getEntitlementId() {
-        return entitlementId;
+    public Long getId() {
+        return id;
     }
 
-    public void setEntitlementId(Long entitlementId) {
-        this.entitlementId = entitlementId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getUserId() {
@@ -136,19 +144,5 @@ public class Entitlement extends ResourceMeta implements Identifiable<com.junbo.
 
     public void setItemId(Long itemId) {
         this.itemId = itemId;
-    }
-
-    @Override
-    @JsonIgnore
-    public com.junbo.common.id.EntitlementId getId() {
-        return new com.junbo.common.id.EntitlementId(entitlementId);
-    }
-
-    @Override
-    @JsonIgnore
-    public void setId(com.junbo.common.id.EntitlementId id) {
-        if (id != null) {
-            this.entitlementId = id.getValue();
-        }
     }
 }

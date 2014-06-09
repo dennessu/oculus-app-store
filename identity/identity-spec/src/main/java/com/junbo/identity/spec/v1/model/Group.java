@@ -11,13 +11,12 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
-import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by liangfu on 4/3/14.
  */
-public class Group extends PropertyAssignedAwareResourceMeta implements Identifiable<GroupId> {
+public class Group extends PropertyAssignedAwareResourceMeta<GroupId> {
 
     @ApiModelProperty(position = 1, required = true, value = "[Nullable]Link to this Group resource.")
     @JsonProperty("self")

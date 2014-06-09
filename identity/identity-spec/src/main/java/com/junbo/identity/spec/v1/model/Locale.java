@@ -8,13 +8,12 @@ package com.junbo.identity.spec.v1.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
-import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by xiali_000 on 4/21/2014.
  */
-public class Locale extends PropertyAssignedAwareResourceMeta implements Identifiable<LocaleId> {
+public class Locale extends PropertyAssignedAwareResourceMeta<LocaleId> {
 
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The Link to the locale resource.")
     @JsonProperty("self")
