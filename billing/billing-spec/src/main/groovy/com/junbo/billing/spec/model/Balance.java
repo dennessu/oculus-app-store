@@ -22,7 +22,7 @@ public class Balance {
     private BalanceId balanceId;
     private UUID trackingUuid;
     private UserId userId;
-    private OrderId orderId;
+    private List<OrderId> orderIds;
     private PaymentInstrumentId piId;
     private String type;
     private String status;
@@ -78,12 +78,12 @@ public class Balance {
         this.userId = userId;
     }
 
-    public OrderId getOrderId() {
-        return orderId;
+    public List<OrderId> getOrderIds() {
+        return orderIds;
     }
 
-    public void setOrderId(OrderId orderId) {
-        this.orderId = orderId;
+    public void setOrderIds(List<OrderId> orderIds) {
+        this.orderIds = orderIds;
     }
 
     public PaymentInstrumentId getPiId() {

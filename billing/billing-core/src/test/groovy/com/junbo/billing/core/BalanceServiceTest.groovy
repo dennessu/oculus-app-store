@@ -97,7 +97,7 @@ class BalanceServiceTest extends BaseTest {
         refundBalance.type = BalanceType.REFUND.name()
         refundBalance.trackingUuid = generateUUID()
         refundBalance.piId = new PaymentInstrumentId(54321)
-        refundBalance.orderId = new OrderId(12345)
+        refundBalance.orderIds = [ new OrderId(12345) ]
         refundBalance.country = 'US'
         refundBalance.currency = 'USD'
 
@@ -111,7 +111,7 @@ class BalanceServiceTest extends BaseTest {
         balance.trackingUuid = generateUUID()
         balance.country = 'US'
         balance.currency = 'USD'
-        balance.orderId = new OrderId(12345)
+        balance.orderIds = [ new OrderId(12345) ]
         balance.piId = new PaymentInstrumentId(54321)
         balance.type = type.name()
         balance.userId = new UserId(idGenerator.nextId())

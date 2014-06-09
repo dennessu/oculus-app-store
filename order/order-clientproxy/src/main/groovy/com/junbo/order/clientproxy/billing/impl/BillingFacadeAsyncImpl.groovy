@@ -38,7 +38,7 @@ class BillingFacadeAsyncImpl extends BillingFacadeImpl {
                 throw throwable
             }.syncThen { Balance b ->
                 if (b.isAsyncCharge) {
-                    LOGGER.info('name=CreateBalanceWithAsyncCharge, orderId={}', balance.orderId)
+                    LOGGER.info('name=CreateBalanceWithAsyncCharge, orderIds={}', balance.orderIds)
                 }
                 this.pendingUserNumber.decrementAndGet()
                 return b

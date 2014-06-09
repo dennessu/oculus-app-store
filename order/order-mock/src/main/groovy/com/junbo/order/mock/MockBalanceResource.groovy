@@ -55,7 +55,7 @@ class MockBalanceResource extends BaseMock implements BalanceResource {
     @Override
     Promise<Results<Balance>> getBalances(OrderId orderId) {
         List<Balance> balances = balanceMap.values().findAll { Balance balance ->
-            balance.orderId == orderId
+            balance.orderIds[0] == orderId
         }.toList()
         Results<Balance> results = new Results<>()
         results.items = balances

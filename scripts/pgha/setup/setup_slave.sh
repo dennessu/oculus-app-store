@@ -1,23 +1,30 @@
 #!/bin/bash
-source common.sh
+DIR="$( cd "$( dirname "$0" )" && pwd )"
+source ${DIR}/../util/common.sh
 
 #check running under specified account
 checkAccount $DEPLOYMENT_ACCOUNT
 
-echo "kill postgres instance with port [$MASTER_DB_PORT]..."
-forceKill $MASTER_DB_PORT
+echo "create database data folder $SLAVE_DATA_PATH"
+createDir $SLAVE_DATA_PATH
 
-echo "create database data folder $MASTER_DATA_PATH"
-createDir $MASTER_DATA_PATH
+echo "create database backup folder $SLAVE_BACKUP_PATH"
+createDir $SLAVE_BACKUP_PATH
 
-echo "create database backup folder $MASTER_BACKUP_PATH"
-createDir $MASTER_BACKUP_PATH 
+echo "create database archive folder $SLAVE_ARCHIVE_PATH"
+createDir $SLAVE_ARCHIVE_PATH
 
-echo "create database archive folder $MASTER_ARCHIVE_PATH"
-createDir $MASTER_ARCHIVE_PATH
+echo "copy backup file from remote master"
+rsync -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_BACKUP_PATH/* $SLAVE_DATA_PATH
 
-echo "initialize master database..."
-$PGBIN_PATH/pg_ctl -D $MASTER_DATA_PATH initdb
+echo "configure recovery.conf..."
+cat > $SLAVE_DATA_PATH/recovery.conf <<EOF
+recovery_target_timeline = 'latest'
+restore_command = 'cp $SLAVE_ARCHIVE_PATH/%f %p'
+standby_mode = 'on'
+primary_conninfo = 'user=$PGUSER host=$MASTER_HOST port=$MASTER_DB_PORT sslmode=prefer sslcompression=1 krbsrvname=$PGUSER'
+trigger_file = '$PROMOTE_TRIGGER_FILE'
+EOF
 
 echo "configure pg_hba.conf..."
 cat > $MASTER_DATA_PATH/pg_hba.conf <<EOF
@@ -40,20 +47,12 @@ host    replication     ${PGUSER}       ${REPLICA_HOST}/32      ident
 EOF
 
 echo "configure postgres.conf..."
-cat >> $MASTER_DATA_PATH/postgresql.conf <<EOF
-wal_level = hot_standby
-archive_mode = on
-archive_command = 'cp %p $MASTER_ARCHIVE_PATH/%f'
-max_wal_senders = 3
-port = $MASTER_DB_PORT
-listen_addresses = '*'
-hot_standby = on
-max_prepared_transactions = 100
-max_connections = 100
+cat >> $SLAVE_DATA_PATH/postgresql.conf <<EOF
+port = $SLAVE_DB_PORT
 EOF
 
-echo "start master database..."
-$PGBIN_PATH/pg_ctl -D $MASTER_DATA_PATH start
+echo "start slave database..."
+$PGBIN_PATH/pg_ctl -D $SLAVE_DATA_PATH start
 
-while ! echo exit | nc $MASTER_HOST $MASTER_DB_PORT; do sleep 1 && echo "waiting for master database startup..."; done
-echo "master database started successfully!"
+while ! echo exit | nc $SLAVE_HOST $SLAVE_DB_PORT; do sleep 1 && echo "waiting for slave database..."; done
+echo "slave database started successfully!"

@@ -1,15 +1,6 @@
 ext {
-    set("currentVersion", "0.0.1-SNAPSHOT")
-
-    junboProject = { projectPath ->
-        def projectName = projectPath.substring(1)
-
-        if (allprojects.find { it.name == projectName }) {
-            project(projectPath)
-        } else {
-            def groupName = projectName.split('-', 2)[0]
-            def version = property("currentVersion")
-            "com.junbo.$groupName:$projectName:$version"
-        }
-    }
+    set("current_version", "0.0.1-SNAPSHOT")
+    set("artifactory_contextUrl", "https://arti.silkcloud.info:8444/artifactory")
+    set("artifactory_user", "wansan-dev")
+    set("artifactory_password", "Welcome123")
 }

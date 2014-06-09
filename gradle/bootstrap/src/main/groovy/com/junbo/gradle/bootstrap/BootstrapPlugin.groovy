@@ -49,7 +49,7 @@ class BootstrapPlugin implements Plugin<Project> {
             def subProject = it
 
             group = 'com.junbo.' + project.name.split('-', 2)[0]
-            version = property("currentVersion")
+            version = property("current_version")
 
             apply plugin: 'idea'
 
