@@ -192,7 +192,9 @@ public class BillingTestDataProvider extends BaseTestDataProvider {
         balance.setUserId(new UserId(IdConverter.hexStringToId(UserId.class, uid)));
         balance.setTrackingUuid(UUID.randomUUID());
         balance.setCountry(order.getCountry().getValue());
-        balance.setOrderId(order.getId());
+        List<OrderId> orderIds = new ArrayList<>();
+        orderIds.add(order.getId());
+        balance.setOrderIds(orderIds);
         balance.setCurrency(order.getCurrency().getValue());
         //balance.setDiscountAmount(order.getTotalDiscount());
         balance.setShippingAddressId(order.getShippingAddress());
