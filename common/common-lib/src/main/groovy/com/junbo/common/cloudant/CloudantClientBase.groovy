@@ -19,6 +19,7 @@ import org.springframework.util.StringUtils
 
 import javax.ws.rs.core.UriBuilder
 import java.lang.reflect.ParameterizedType
+import java.util.concurrent.Executor
 
 import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
 /**
@@ -40,6 +41,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
     protected String dbNamePrefix
     protected String dbName
     protected String fullDbName
+    protected Executor executor
 
     abstract protected CloudantViews getCloudantViews()
 
@@ -77,13 +79,18 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         this.dbName = dbName
     }
 
+    @Required
+    void setExecutor(Executor executor) {
+        this.executor = executor
+    }
+
     protected CloudantClientBase() {
         entityClass = (Class<T>) ((ParameterizedType) getClass().genericSuperclass).actualTypeArguments[0]
     }
 
     @Override
     Promise<T> cloudantPost(T entity) {
-        return executeRequest(HttpMethod.POST, '', [:], entity).syncThen { Response response ->
+        return executeRequest(HttpMethod.POST, '', [:], entity).then ({ Response response ->
             if (response.statusCode != HttpStatus.CREATED.value()) {
                 CloudantError cloudantError = unmarshall(response.responseBody, CloudantError)
 
@@ -103,31 +110,31 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
             entity.cloudantId = cloudantResponse.id
             entity.cloudantRev = cloudantResponse.revision
 
-            return entity
-        }
+            return Promise.pure(entity)
+        }, executor)
     }
 
     @Override
     Promise<T> cloudantGet(String id) {
-        return executeRequest(HttpMethod.GET, id, [:], null).syncThen { Response response ->
+        return executeRequest(HttpMethod.GET, id, [:], null).then ({ Response response ->
 
             if (response.statusCode != HttpStatus.OK.value()) {
-                return null
+                return Promise.pure(null)
             }
 
             if (response.responseBody == null) {
-                return null
+                return Promise.pure(null)
             }
 
-            return (T) unmarshall(response.responseBody, entityClass)
-        }
+            return Promise.pure((T) unmarshall(response.responseBody, entityClass))
+        }, executor)
     }
 
     @Override
     Promise<T> cloudantPut(T entity) {
         // force update cloudantId
         entity.setCloudantId(entity.getId().toString())
-        return executeRequest(HttpMethod.PUT, entity.cloudantId, [:], entity).syncThen { Response response ->
+        return executeRequest(HttpMethod.PUT, entity.cloudantId, [:], entity).then ({ Response response ->
             if (response.statusCode != HttpStatus.CREATED.value()) {
                 CloudantError cloudantError = unmarshall(response.responseBody, CloudantError)
 
@@ -148,22 +155,22 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
 
             entity.cloudantRev = cloudantResponse.revision
 
-            return entity
-        }
+            return Promise.pure(entity)
+        }, executor)
     }
 
     @Override
     Promise<Void> cloudantDelete(String id) {
         return getCloudantDocument(id).then { CloudantEntity cloudantDoc ->
             if (cloudantDoc != null) {
-                return executeRequest(HttpMethod.DELETE, id.toString(), ['rev': cloudantDoc.cloudantRev], null).syncThen { Response response ->
+                return executeRequest(HttpMethod.DELETE, id.toString(), ['rev': cloudantDoc.cloudantRev], null).then ({ Response response ->
                     if (response.statusCode != HttpStatus.OK.value() && response.statusCode != HttpStatus.NOT_FOUND.value()) {
                         CloudantError cloudantError = unmarshall(response.responseBody, CloudantError)
                         throw new CloudantException("Failed to delete object from Cloudant, error: $cloudantError.error," +
                                 " reason: $cloudantError.reason")
                     }
-                    return null;
-                }
+                    return Promise.pure(null);
+                }, executor)
             }
             return Promise.pure(null);
         }
@@ -171,7 +178,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
 
     @Override
     Promise<List<T>> cloudantGetAll() {
-        return executeRequest(HttpMethod.GET, '_all_docs', [:], null).syncThen { Response response ->
+        return executeRequest(HttpMethod.GET, '_all_docs', [:], null).then ({ Response response ->
             if (response.statusCode != HttpStatus.OK.value()) {
                 CloudantError cloudantError = unmarshall(response.responseBody, CloudantError)
 
@@ -182,10 +189,10 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
             def cloudantSearchResult = unmarshall(response.responseBody,
                     CloudantQueryResult, CloudantQueryResult.AllResultEntity, Object.class)
 
-            return cloudantSearchResult.rows.collect { CloudantQueryResult.ResultObject result ->
+            return Promise.pure(cloudantSearchResult.rows.collect { CloudantQueryResult.ResultObject result ->
                 return cloudantGet(result.id)
-            }
-        }
+            })
+        }, executor)
     }
 
     @Override
@@ -231,18 +238,18 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
     }
 
     protected Promise<T> getCloudantDocument(String id) {
-        return executeRequest(HttpMethod.GET, id, [:], null).syncThen { Response response ->
+        return executeRequest(HttpMethod.GET, id, [:], null).then ({ Response response ->
 
             if (response.statusCode != HttpStatus.OK.value()) {
-                return null
+                return Promise.pure(null)
             }
 
             if (response.responseBody == null) {
-                return null
+                return Promise.pure(null)
             }
 
-            return (T) unmarshall(response.responseBody, entityClass)
-        }
+            return Promise.pure((T) unmarshall(response.responseBody, entityClass))
+        }, executor)
     }
 
     private void putViews(CloudantViews views) {
@@ -325,7 +332,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
             query.put('include_docs', includeDocs.toString())
         }
 
-        return executeRequest(HttpMethod.GET, Utils.combineUrl(VIEW_PATH, viewName), query, null).syncThen { Response response ->
+        return executeRequest(HttpMethod.GET, Utils.combineUrl(VIEW_PATH, viewName), query, null).then ({ Response response ->
 
             if (response.statusCode != HttpStatus.OK.value()) {
                 CloudantError cloudantError = unmarshall(response.responseBody, CloudantError)
@@ -333,8 +340,8 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
                         " reason: $cloudantError.reason")
             }
 
-            return unmarshall(response.responseBody, CloudantQueryResult, cloudantView.resultClass, entityClass)
-        }
+            return Promise.pure(unmarshall(response.responseBody, CloudantQueryResult, cloudantView.resultClass, entityClass))
+        }, executor)
     }
 
     protected Promise<CloudantSearchResult<T>> search(String searchName, String queryString, Integer limit, String bookmark) {
@@ -373,15 +380,15 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
                 include_docs: includeDocs
         )
 
-        return executeRequest(HttpMethod.POST, Utils.combineUrl(SEARCH_PATH, searchName), [:], searchRequest).syncThen { Response response ->
+        return executeRequest(HttpMethod.POST, Utils.combineUrl(SEARCH_PATH, searchName), [:], searchRequest).then ({ Response response ->
             if (response.statusCode != HttpStatus.OK.value()) {
                 CloudantError cloudantError = unmarshall(response.responseBody, CloudantError)
                 throw new CloudantException("Failed to query the view, error: $cloudantError.error," +
                         " reason: $cloudantError.reason")
             }
 
-            return unmarshall(response.responseBody, CloudantQueryResult, cloudantView.resultClass, entityClass)
-        }
+            return Promise.pure(unmarshall(response.responseBody, CloudantQueryResult, cloudantView.resultClass, entityClass))
+        }, executor)
     }
 
     protected Promise<Response> executeRequest(HttpMethod method, String path, Map<String, String> queryParams, Object body) {

@@ -8,8 +8,10 @@ package com.junbo.identity.core.service.validator.impl
 import com.junbo.common.id.GroupId
 import com.junbo.identity.core.service.validator.GroupValidator
 import com.junbo.identity.data.repository.GroupRepository
+import com.junbo.identity.data.repository.OrganizationRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Group
+import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.identity.spec.v1.option.list.GroupListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -28,6 +30,8 @@ class GroupValidatorImpl implements GroupValidator {
 
     private Integer groupValueMaxLength
 
+    private OrganizationRepository organizationRepository
+
     @Required
     void setGroupRepository(GroupRepository groupRepository) {
         this.groupRepository = groupRepository
@@ -41,6 +45,11 @@ class GroupValidatorImpl implements GroupValidator {
     @Required
     void setGroupValueMaxLength(Integer groupValueMaxLength) {
         this.groupValueMaxLength = groupValueMaxLength
+    }
+
+    @Required
+    void setOrganizationRepository(OrganizationRepository organizationRepository) {
+        this.organizationRepository = organizationRepository
     }
 
     @Override
@@ -84,13 +93,23 @@ class GroupValidatorImpl implements GroupValidator {
             throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
         }
 
-        return groupRepository.searchByName(group.name).then { Group existing ->
-            if (existing != null) {
-                throw AppErrors.INSTANCE.fieldDuplicate('name').exception()
+        if (group.organizationId == null) {
+            throw AppErrors.INSTANCE.fieldRequired('organization').exception()
+        }
+
+        return organizationRepository.get(group.organizationId).then { Organization organization ->
+            if (organization == null) {
+                throw AppErrors.INSTANCE.fieldInvalid('organization').exception()
             }
 
-            group.setActive(true)
-            return Promise.pure(null)
+            return groupRepository.searchByName(group.name).then { Group existing ->
+                if (existing != null) {
+                    throw AppErrors.INSTANCE.fieldDuplicate('name').exception()
+                }
+
+                group.setActive(true)
+                return Promise.pure(null)
+            }
         }
     }
 
@@ -109,6 +128,11 @@ class GroupValidatorImpl implements GroupValidator {
         if (groupId.value != ((GroupId)group.id).value) {
             throw AppErrors.INSTANCE.fieldInvalid('groupId', group.id.toString()).exception()
         }
+
+        if (group.organizationId != oldGroup.organizationId) {
+            throw AppErrors.INSTANCE.fieldInvalid('organizationId').exception()
+        }
+
         if (group.name != oldGroup.name) {
             return groupRepository.searchByName(group.name).then { Group existing ->
                 if (existing != null) {

@@ -13,6 +13,7 @@ import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
 import com.junbo.catalog.spec.model.offer.*;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.fulfilment.common.util.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
@@ -33,14 +34,14 @@ public class CatalogGatewayTest extends BaseTest {
     @Test(enabled = false)
     public void testBVT() {
         Offer offer = new Offer();
-        offer.setOwnerId(123L);
+        offer.setOwnerId(new OrganizationId(123L));
 
         Long offerId = megaGateway.createOffer(offer);
         Assert.assertNotNull(offerId);
 
         OfferRevision offerRevision = new OfferRevision();
         offerRevision.setOfferId(offerId);
-        offerRevision.setOwnerId(12345L);
+        offerRevision.setOwnerId(new OrganizationId(12345L));
         offerRevision.setStatus(Status.DRAFT.name());
         offerRevision.setLocales(new HashMap<String, OfferRevisionLocaleProperties>() {{
             put("en_US", new OfferRevisionLocaleProperties() {{
@@ -73,7 +74,7 @@ public class CatalogGatewayTest extends BaseTest {
 
     @Test(enabled = false)
     public void testWalletBVT() {
-        Long ownerId = 123L;
+        OrganizationId ownerId = new OrganizationId(123L);
 
         // create item
         Item item = new Item();

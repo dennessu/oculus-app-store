@@ -73,6 +73,22 @@ public class CommonMapper {
         return userId.getValue();
     }
 
+    public OrganizationId fromLongToOrganizationId(Long organizationId) {
+        if (organizationId == null) {
+            return null;
+        }
+
+        return new OrganizationId(organizationId);
+    }
+
+    public Long fromOrganizationIdToLong(OrganizationId organizationId) {
+        if (organizationId == null) {
+            return null;
+        }
+
+        return organizationId.getValue();
+    }
+
     public OrderId fromLongToOrderId(Long orderId) {
         if (orderId == null) {
             return null;

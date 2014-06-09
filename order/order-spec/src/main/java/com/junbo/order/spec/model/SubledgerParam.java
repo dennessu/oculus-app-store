@@ -5,7 +5,7 @@
  */
 package com.junbo.order.spec.model;
 
-import com.junbo.common.id.UserId;
+import com.junbo.common.id.OrganizationId;
 
 import javax.ws.rs.QueryParam;
 import java.util.Date;
@@ -19,7 +19,7 @@ public class SubledgerParam {
     private String payOutStatus;
 
     @QueryParam("sellerId")
-    private UserId sellerId;
+    private OrganizationId sellerId;
 
     @QueryParam("fromDate")
     private Date fromDate;
@@ -27,11 +27,11 @@ public class SubledgerParam {
     @QueryParam("toDate")
     private Date toDate;
 
-    public UserId getSellerId() {
+    public OrganizationId getSellerId() {
         return sellerId;
     }
 
-    public void setSellerId(UserId sellerId) {
+    public void setSellerId(OrganizationId sellerId) {
         this.sellerId = sellerId;
     }
 

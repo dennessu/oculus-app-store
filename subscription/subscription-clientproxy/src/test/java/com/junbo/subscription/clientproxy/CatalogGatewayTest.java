@@ -17,6 +17,7 @@ import com.junbo.catalog.spec.resource.ItemResource;
 import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.catalog.spec.resource.OfferRevisionResource;
 import com.junbo.common.id.OfferRevisionId;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.subscription.common.util.Constant;
 import org.testng.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,19 +50,19 @@ public class CatalogGatewayTest extends AbstractTestNGSpringContextTests {
     @Test(enabled = false)
     public void testBVT() {
         Item item =  new Item();
-        item.setOwnerId(123L);
+        item.setOwnerId(new OrganizationId(123L));
         item.setType(ItemType.SUBSCRIPTION.name());
 
         final Long itemId = createItem(item);
 
         Offer offer = new Offer();
-        offer.setOwnerId(123L);
+        offer.setOwnerId(new OrganizationId(123L));
         Long offerId = createOffer(offer);
         Assert.assertNotNull(offerId);
 
         OfferRevision offerRevision = new OfferRevision();
         offerRevision.setOfferId(offerId);
-        offerRevision.setOwnerId(12345L);
+        offerRevision.setOwnerId(new OrganizationId(12345L));
         offerRevision.setStatus(Status.DRAFT.name());
         offerRevision.setLocales(new HashMap<String, OfferRevisionLocaleProperties>() {{
             put("en_US", new OfferRevisionLocaleProperties() {{

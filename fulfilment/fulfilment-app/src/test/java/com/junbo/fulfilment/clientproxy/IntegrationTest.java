@@ -9,6 +9,7 @@ import com.junbo.catalog.spec.model.item.*;
 import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.common.id.FulfilmentId;
 import com.junbo.common.id.OrderId;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.fulfilment.common.util.Constant;
 import com.junbo.fulfilment.spec.constant.FulfilmentStatus;
 import com.junbo.fulfilment.spec.model.FulfilmentAction;
@@ -175,7 +176,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
     }
 
     private Long prepareOffer() {
-        Long ownerId = 123L;
+        OrganizationId ownerId = new OrganizationId(123L);
 
         // create item
         Item item = new Item();
@@ -220,7 +221,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
 
         // create offer
         Offer offer = new Offer();
-        offer.setOwnerId(getRandomLong());
+        offer.setOwnerId(new OrganizationId(getRandomLong()));
 
         Long offerId = megaGateway.createOffer(offer);
         Assert.assertNotNull(offerId);
@@ -228,7 +229,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         // create offer revision
         OfferRevision offerRevision = new OfferRevision();
         offerRevision.setOfferId(offerId);
-        offerRevision.setOwnerId(12345L);
+        offerRevision.setOwnerId(new OrganizationId(12345L));
         offerRevision.setStatus(Status.DRAFT.name());
         offerRevision.setLocales(new HashMap<String, OfferRevisionLocaleProperties>() {{
             put("en_US", new OfferRevisionLocaleProperties() {{
@@ -265,7 +266,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
     }
 
     private Long prepareEwalletOffer() {
-        Long ownerId = 123L;
+        OrganizationId ownerId = new OrganizationId(123L);
 
         // create item
         Item item = new Item();

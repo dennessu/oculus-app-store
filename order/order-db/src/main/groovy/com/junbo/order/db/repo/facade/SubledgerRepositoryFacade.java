@@ -8,8 +8,8 @@ package com.junbo.order.db.repo.facade;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.id.OfferId;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.common.id.SubledgerId;
-import com.junbo.common.id.UserId;
 import com.junbo.order.spec.model.PageParam;
 import com.junbo.order.spec.model.Subledger;
 import com.junbo.order.spec.model.SubledgerItem;
@@ -32,7 +32,7 @@ public interface SubledgerRepositoryFacade {
     List<Subledger> getSubledgers(SubledgerParam subledgerParam,
                                   PageParam pageParam);
 
-    Subledger findSubledger(UserId sellerId, String payoutStatus,
+    Subledger findSubledger(OrganizationId sellerId, String payoutStatus,
                                           OfferId offerId, Date startTime,  CurrencyId currency,
                                           CountryId country);
 

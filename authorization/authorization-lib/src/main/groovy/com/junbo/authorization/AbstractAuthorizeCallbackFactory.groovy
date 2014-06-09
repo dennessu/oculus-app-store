@@ -7,7 +7,6 @@ package com.junbo.authorization
 
 import com.junbo.authorization.spec.resource.RoleAssignmentResource
 import com.junbo.authorization.spec.resource.RoleResource
-import com.junbo.common.id.Id
 import com.junbo.identity.spec.v1.resource.GroupResource
 import com.junbo.identity.spec.v1.resource.UserGroupMembershipResource
 import groovy.transform.CompileStatic

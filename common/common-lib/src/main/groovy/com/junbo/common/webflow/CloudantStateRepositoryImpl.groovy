@@ -49,12 +49,14 @@ class CloudantStateRepositoryImpl extends CloudantClient<ConversationEntity> imp
         if (conversation.flowStack == null || conversation.flowStack.empty) {
             super.cloudantDelete(conversation.id).get()
         } else {
-            ConversationEntity entity = cloudantGet(conversation.id).get()
+            ConversationEntity existing = cloudantGet(conversation.id).get()
 
-            if (entity == null) {
+            if (existing == null) {
                 cloudantPost(unwrap(conversation)).get()
             } else {
-                cloudantPut(unwrap(conversation)).get()
+                ConversationEntity entity = unwrap(conversation)
+                entity.rev = existing.rev
+                cloudantPut(entity).get()
             }
         }
     }

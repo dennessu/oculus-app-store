@@ -2,27 +2,38 @@
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="oauthAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
+        <property name="scope" value="identity.service"/>
+        <property name="deflectionInSeconds" value="300"/>
+        <property name="clientSecret" value="secret"/>
+        <property name="clientId" value="service"/>
+        <property name="tokenEndpoint" ref="tokenEndpoint"/>
+    </bean>
 
     <bean id="userResource" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
           parent="baseClientProxy">
         <property name="target" value="${clientproxy.identity.url}"/>
+        <property name="accessTokenProvider" ref="oauthAccessTokenProvider"/>
     </bean>
 
     <bean id="userCredentialVerifyAttemptResource"
           class="com.junbo.identity.spec.v1.resource.proxy.UserCredentialVerifyAttemptResourceClientProxy"
           parent="baseClientProxy">
         <property name="target" value="${clientproxy.identity.url}"/>
+        <property name="accessTokenProvider" ref="oauthAccessTokenProvider"/>
     </bean>
 
     <bean id="userCredentialResource"
           class="com.junbo.identity.spec.v1.resource.proxy.UserCredentialResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.identity.url}"/>
+        <property name="accessTokenProvider" ref="oauthAccessTokenProvider"/>
     </bean>
 
     <bean id="userPersonalInfoResource"
           class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy"
           parent="baseClientProxy">
         <property name="target" value="${clientproxy.identity.url}"/>
+        <property name="accessTokenProvider" ref="oauthAccessTokenProvider"/>
     </bean>
 
     <bean id="emailResource" class="com.junbo.email.spec.resource.proxy.EmailResourceClientProxy"
@@ -38,6 +49,7 @@
     <bean id="authenticatorResource" class="com.junbo.identity.spec.v1.resource.proxy.AuthenticatorResourceClientProxy"
           parent="baseClientProxy">
         <property name="target" value="${clientproxy.identity.url}"/>
+        <property name="accessTokenProvider" ref="oauthAccessTokenProvider"/>
     </bean>
 
     <bean id="countryResource" class="com.junbo.identity.spec.v1.resource.proxy.CountryResourceClientProxy"

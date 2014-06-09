@@ -18,8 +18,8 @@
             <property name="accessTokenProvider" ref="data_accessTokenProvider"/>
         </bean>
 
-        <bean id="data_accessTokenProvider" class="com.junbo.authorization.ClientCredentialsAccessTokenProvider">
-            <property name="scope" value="api.manage client.register scope.manage"/>
+        <bean id="data_accessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
+            <property name="scope" value="api.manage client.register scope.manage identity.admin"/>
             <property name="deflectionInSeconds" value="300"/>
             <property name="clientSecret" value="secret"/>
             <property name="clientId" value="service"/>

@@ -33,7 +33,7 @@ class OrganizationRepositoryCloudantImpl extends CloudantClient<Organization> im
     Promise<List<Organization>> searchByName(String name, Integer limit, Integer offset) {
         def result = super.queryView('by_name', name, limit, offset, false)
 
-        return Promise.pure(result)
+        return result
     }
 
     @Override

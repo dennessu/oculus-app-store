@@ -7,7 +7,7 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.GroupId;
-import com.junbo.common.id.UserId;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
@@ -38,7 +38,9 @@ public class Group extends PropertyAssignedAwareResourceMeta<GroupId> {
     @HateoasLink("/users?groupId={id}")
     private Link users;
 
-    private UserId ownerUserId;
+    @ApiModelProperty(position = 6, required = true, value = "The owner organization of this group.")
+    @JsonProperty("organization")
+    private OrganizationId organizationId;
 
     @Override
     public GroupId getId() {
@@ -88,11 +90,11 @@ public class Group extends PropertyAssignedAwareResourceMeta<GroupId> {
         support.setPropertyAssigned("users");
     }
 
-    public UserId getOwnerUserId() {
-        return ownerUserId;
+    public OrganizationId getOrganizationId() {
+        return organizationId;
     }
 
-    public void setOwnerUserId(UserId ownerUserId) {
-        this.ownerUserId = ownerUserId;
+    public void setOrganizationId(OrganizationId organizationId) {
+        this.organizationId = organizationId;
     }
 }

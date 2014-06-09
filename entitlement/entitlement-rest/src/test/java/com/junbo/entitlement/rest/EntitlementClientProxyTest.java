@@ -12,6 +12,7 @@ import com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxy;
 import com.junbo.common.error.AppErrorException;
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.ItemRevisionId;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.model.Results;
 import com.junbo.entitlement.spec.model.Entitlement;
@@ -113,7 +114,7 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
         entitlement.setGrantTime(new Date());
         Item item = new Item();
         item.setType("DIGITAL");
-        item.setOwnerId(idGenerator.nextId());
+        item.setOwnerId(new OrganizationId(idGenerator.nextId()));
         item.setGenres(new ArrayList<Long>());
         try {
             item = itemResourceClientProxy.create(item).get();

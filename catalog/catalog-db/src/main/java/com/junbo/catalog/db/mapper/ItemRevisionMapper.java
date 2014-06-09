@@ -9,6 +9,7 @@ package com.junbo.catalog.db.mapper;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.entity.ItemRevisionEntity;
 import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.common.id.OrganizationId;
 
 /**
  * Item revision mapper between model and DB entity.
@@ -29,7 +30,7 @@ public class ItemRevisionMapper {
         entity.setRevisionId(model.getRevisionId());
         entity.setItemId(model.getItemId());
         entity.setStatus(model.getStatus());
-        entity.setOwnerId(model.getOwnerId());
+        entity.setOwnerId(model.getOwnerId() == null ? null : model.getOwnerId().getValue());
         entity.setTimestamp(model.getTimestamp());
         entity.setHostItemIds(model.getIapHostItemIds());
         entity.setPayload(Utils.toJson(model));
@@ -45,7 +46,7 @@ public class ItemRevisionMapper {
         ItemRevision model = Utils.fromJson(entity.getPayload(), ItemRevision.class);
         model.setItemId(entity.getItemId());
         model.setStatus(entity.getStatus());
-        model.setOwnerId(entity.getOwnerId());
+        model.setOwnerId(new OrganizationId(entity.getOwnerId()));
         model.setRevisionId(entity.getRevisionId());
         model.setTimestamp(entity.getTimestamp());
         model.setIapHostItemIds(entity.getHostItemIds());

@@ -8,15 +8,30 @@ package com.junbo.catalog.auth;
 import com.junbo.authorization.AbstractAuthorizeCallbackFactory;
 import com.junbo.authorization.AuthorizeCallback;
 import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.catalog.spec.resource.ItemResource;
+import com.junbo.common.id.ItemId;
 import groovy.transform.CompileStatic;
+import org.springframework.beans.factory.annotation.Required;
 
 /**
  * ItemAuthorizeCallbackFactoryBean.
  */
 @CompileStatic
 public class ItemAuthorizeCallbackFactory extends AbstractAuthorizeCallbackFactory<Item> {
+    private ItemResource itemResource;
+
+    @Required
+    public void setItemResource(ItemResource itemResource) {
+        this.itemResource = itemResource;
+    }
+
     @Override
     public AuthorizeCallback<Item> create(Item entity) {
         return new ItemAuthorizeCallback(this, entity);
+    }
+
+    public AuthorizeCallback<Item> create(Long itemId) {
+        Item item = itemResource.getItem(new ItemId(itemId)).get();
+        return create(item);
     }
 }

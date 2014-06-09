@@ -144,7 +144,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         com.junbo.identity.spec.v1.model.Locale locale = new com.junbo.identity.spec.v1.model.Locale()
         locale.setId(new LocaleId('en_US'))
-        locale.setLocaleCode('en_US')
+        locale.setLocaleCode('en-US')
 
         com.junbo.identity.spec.v1.model.Locale newLocale = localeRepository.create(locale).get()
         assert  locale.localeCode == newLocale.localeCode

@@ -10,8 +10,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.id.OfferId;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.common.id.SubledgerId;
-import com.junbo.common.id.UserId;
 import com.junbo.common.model.ResourceMetaForDualWrite;
 
 import java.math.BigDecimal;
@@ -27,7 +27,7 @@ import java.util.Date;
 public class Subledger extends ResourceMetaForDualWrite<SubledgerId> {
     @JsonProperty("self")
     private SubledgerId id;
-    private UserId seller;
+    private OrganizationId seller;
     private OfferId offer;
     private String payoutStatus;
     private Date startTime;
@@ -44,11 +44,11 @@ public class Subledger extends ResourceMetaForDualWrite<SubledgerId> {
         this.id = id;
     }
 
-    public UserId getSeller() {
+    public OrganizationId getSeller() {
         return seller;
     }
 
-    public void setSeller(UserId seller) {
+    public void setSeller(OrganizationId seller) {
         this.seller = seller;
     }
 

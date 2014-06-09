@@ -6,23 +6,23 @@
 package com.junbo.catalog.auth;
 
 import com.junbo.authorization.OwnerCallback;
-import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.catalog.spec.resource.ItemResource;
+import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.common.id.Id;
-import com.junbo.common.id.ItemId;
+import com.junbo.common.id.OfferId;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.common.id.UserId;
 import org.springframework.beans.factory.annotation.Required;
 
 /**
- * Created by Zhanxin on 5/23/2014.
+ * OfferOwnerCallback.
  */
-public class ItemOwnerCallback implements OwnerCallback {
-    private ItemResource itemResource;
+public class OfferOwnerCallback implements OwnerCallback {
+    private OfferResource offerResource;
 
     @Required
-    public void setItemResource(ItemResource itemResource) {
-        this.itemResource = itemResource;
+    public void setOfferResource(OfferResource offerResource) {
+        this.offerResource = offerResource;
     }
 
     @Override
@@ -32,8 +32,8 @@ public class ItemOwnerCallback implements OwnerCallback {
 
     @Override
     public OrganizationId getOrganizationOwnerId(Id resourceId) {
-        assert resourceId instanceof ItemId : "resourceId is not an ItemId";
-        Item item = itemResource.getItem((ItemId)resourceId).get();
-        return item.getOwnerId();
+        assert resourceId instanceof OfferId : "resourceId is not an OfferId";
+        Offer offer = offerResource.getOffer((OfferId) resourceId).get();
+        return offer.getOwnerId();
     }
 }

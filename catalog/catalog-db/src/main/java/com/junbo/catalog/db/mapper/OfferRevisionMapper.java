@@ -10,6 +10,7 @@ import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.entity.OfferRevisionEntity;
 import com.junbo.catalog.spec.model.offer.ItemEntry;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.common.id.OrganizationId;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class OfferRevisionMapper {
         entity.setRevisionId(model.getRevisionId());
         entity.setOfferId(model.getOfferId());
         entity.setStatus(model.getStatus());
-        entity.setOwnerId(model.getOwnerId());
+        entity.setOwnerId(model.getOwnerId() == null ? null : model.getOwnerId().getValue());
         entity.setSubOfferIds(model.getSubOffers());
         if (!CollectionUtils.isEmpty(model.getItems())) {
             List<Long> items = new ArrayList<>();
@@ -57,7 +58,7 @@ public class OfferRevisionMapper {
         OfferRevision model = Utils.fromJson(entity.getPayload(), OfferRevision.class);
         model.setOfferId(entity.getOfferId());
         model.setStatus(entity.getStatus());
-        model.setOwnerId(entity.getOwnerId());
+        model.setOwnerId(entity.getOwnerId() == null ? null : new OrganizationId(entity.getOwnerId()));
         model.setRevisionId(entity.getRevisionId());
         model.setTimestamp(entity.getTimestamp());
         model.setCreatedTime(entity.getCreatedTime());

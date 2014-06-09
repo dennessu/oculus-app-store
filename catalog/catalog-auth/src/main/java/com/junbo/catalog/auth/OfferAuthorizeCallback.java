@@ -6,23 +6,19 @@
 package com.junbo.catalog.auth;
 
 import com.junbo.authorization.AbstractAuthorizeCallback;
-import com.junbo.authorization.AbstractAuthorizeCallbackFactory;
-import com.junbo.catalog.spec.model.item.Item;
-import groovy.transform.CompileStatic;
+import com.junbo.catalog.spec.model.offer.Offer;
 
 /**
- * Created by Shenhua on 5/14/2014.
+ * OfferAuthorizeCallback.
  */
-@CompileStatic
-class ItemAuthorizeCallback extends AbstractAuthorizeCallback<Item> {
-
-    ItemAuthorizeCallback(AbstractAuthorizeCallbackFactory<Item> factory, Item entity) {
+public class OfferAuthorizeCallback extends AbstractAuthorizeCallback<Offer> {
+    OfferAuthorizeCallback(OfferAuthorizeCallbackFactory factory, Offer entity) {
         super(factory, entity);
     }
 
     @Override
     public String getApiName() {
-        return "items";
+        return "offers";
     }
 
     @Override

@@ -2,8 +2,8 @@ package com.junbo.order.db.repo.sql
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.OfferId
+import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.SubledgerId
-import com.junbo.common.id.UserId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import com.junbo.order.db.dao.SubledgerDao
@@ -87,7 +87,7 @@ class SubledgerRepositorySqlImpl implements SubledgerRepository {
     }
 
     @Override
-    Promise<Subledger> find(UserId sellerId, String payoutStatus, OfferId offerId, Date startTime, CurrencyId currency, CountryId country) {
+    Promise<Subledger> find(OrganizationId sellerId, String payoutStatus, OfferId offerId, Date startTime, CurrencyId currency, CountryId country) {
         def entity = subledgerDao.find(sellerId.value, PayoutStatus.valueOf(payoutStatus),
                 startTime, offerId.value.toString(), currency?.toString(), country?.toString())
         return Promise.pure(modelMapper.toSubledgerModel(entity, new MappingContext()));

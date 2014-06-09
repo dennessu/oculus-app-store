@@ -8,6 +8,7 @@ package com.junbo.catalog.db.mapper;
 
 import com.junbo.catalog.db.entity.OfferEntity;
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.common.id.OrganizationId;
 
 /**
  * Offer mapper between model and DB entity.
@@ -27,7 +28,7 @@ public class OfferMapper {
     public static void fillDBEntity(Offer model, OfferEntity entity) {
         entity.setOfferId(model.getOfferId());
         entity.setPublished(model.getPublished()==null?false:model.getPublished());
-        entity.setOwnerId(model.getOwnerId());
+        entity.setOwnerId(model.getOwnerId() == null ? null : model.getOwnerId().getValue());
         entity.setCurrentRevisionId(model.getCurrentRevisionId());
         //entity.setCategories(Utils.toJson(model.getCategories()));
         entity.setEnvironment(model.getEnvironment());
@@ -45,7 +46,7 @@ public class OfferMapper {
         model.setOfferId(entity.getOfferId());
         model.setPublished(entity.isPublished());
         model.setCurrentRevisionId(entity.getCurrentRevisionId());
-        model.setOwnerId(entity.getOwnerId());
+        model.setOwnerId(new OrganizationId(entity.getOwnerId()));
         model.setEnvironment(entity.getEnvironment());
         //model.setCategories(Utils.fromJson(entity.getCategories(), List.class));
         model.setCategories(entity.getCategories());

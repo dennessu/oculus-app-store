@@ -6,7 +6,15 @@
 
 package com.junbo.catalog.rest.resource;
 
+import com.junbo.authorization.AuthorizeCallback;
+import com.junbo.authorization.AuthorizeContext;
+import com.junbo.authorization.AuthorizeService;
+import com.junbo.authorization.RightsScope;
+import com.junbo.catalog.auth.OfferAuthorizeCallbackFactory;
+import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.OfferService;
+import com.junbo.catalog.spec.error.AppErrors;
+import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
 import com.junbo.catalog.spec.resource.OfferRevisionResource;
@@ -28,6 +36,12 @@ import java.util.List;
 public class OfferRevisionResourceImpl implements OfferRevisionResource {
     @Autowired
     private OfferService offerService;
+
+    @Autowired
+    private OfferAuthorizeCallbackFactory offerAuthorizeCallbackFactory;
+
+    @Autowired
+    private AuthorizeService authorizeService;
 
     @Override
     public Promise<Results<OfferRevision>> getOfferRevisions(OfferRevisionsGetOptions options) {
@@ -62,18 +76,56 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
     }
 
     @Override
-    public Promise<OfferRevision> createOfferRevision(OfferRevision offerRevision) {
-        return Promise.pure(offerService.createRevision(offerRevision));
+    public Promise<OfferRevision> createOfferRevision(final OfferRevision offerRevision) {
+        AuthorizeCallback<Offer> callback = offerAuthorizeCallbackFactory.create(offerRevision.getOfferId());
+        return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<OfferRevision>>() {
+            @Override
+            public Promise<OfferRevision> apply() {
+
+                if (!AuthorizeContext.hasRights("create")) {
+                    throw AppErrors.INSTANCE.accessDenied().exception();
+                }
+
+                return Promise.pure(offerService.createRevision(offerRevision));
+            }
+        });
     }
 
     @Override
-    public Promise<OfferRevision> updateOfferRevision(OfferRevisionId revisionId, OfferRevision offerRevision) {
-        return Promise.pure(offerService.updateRevision(revisionId.getValue(), offerRevision));
+    public Promise<OfferRevision> updateOfferRevision(final OfferRevisionId revisionId, final OfferRevision offerRevision) {
+        AuthorizeCallback<Offer> callback = offerAuthorizeCallbackFactory.create(offerRevision.getOfferId());
+        return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<OfferRevision>>() {
+            @Override
+            public Promise<OfferRevision> apply() {
+
+                if (!AuthorizeContext.hasRights("update")) {
+                    throw AppErrors.INSTANCE.accessDenied().exception();
+                }
+
+                return Promise.pure(offerService.updateRevision(revisionId.getValue(), offerRevision));
+            }
+        });
     }
 
     @Override
-    public Promise<Response> delete(OfferRevisionId revisionId) {
-        offerService.deleteRevision(revisionId.getValue());
-        return Promise.pure(Response.status(204).build());
+    public Promise<Response> delete(final OfferRevisionId revisionId) {
+        final OfferRevision offerRevision = offerService.getRevision(revisionId.getValue());
+        if (offerRevision == null) {
+            throw AppErrors.INSTANCE.notFound("offer-revision", Utils.encodeId(revisionId.getValue())).exception();
+        }
+
+        AuthorizeCallback<Offer> callback = offerAuthorizeCallbackFactory.create(offerRevision.getOfferId());
+        return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<Response>>() {
+            @Override
+            public Promise<Response> apply() {
+
+                if (!AuthorizeContext.hasRights("delete")) {
+                    throw AppErrors.INSTANCE.accessDenied().exception();
+                }
+
+                offerService.deleteRevision(revisionId.getValue());
+                return Promise.pure(Response.status(204).build());
+            }
+        });
     }
 }

@@ -1,5 +1,5 @@
 {
-    "apiName": "items",
+    "apiName": "offers",
     "scopes": {
         "catalog": [
             {
@@ -12,7 +12,7 @@
             {
                 "precondition": "hasRole(\"owner\", \"publisher\")",
                 "rights": [
-                    "update"
+                    "create", "update", "delete"
                 ],
                 "scriptType": "SPEL"
             }

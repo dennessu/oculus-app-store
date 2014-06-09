@@ -43,7 +43,7 @@ class ApiDefinitionResourceImpl implements ApiDefinitionResource {
     @Override
     Promise<ApiDefinition> get(String apiName) {
 
-        if (!AuthorizeContext.hasScopes(API_INFO_SCOPE)) {
+        if (!AuthorizeContext.hasScopes(API_INFO_SCOPE) && !AuthorizeContext.hasScopes(API_MANAGE_SCOPE)) {
             throw AppErrors.INSTANCE.resourceNotFound('api_definition', apiName).exception()
         }
 

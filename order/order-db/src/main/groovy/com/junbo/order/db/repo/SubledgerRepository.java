@@ -8,8 +8,8 @@ package com.junbo.order.db.repo;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.id.OfferId;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.common.id.SubledgerId;
-import com.junbo.common.id.UserId;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.order.spec.model.PageParam;
 import com.junbo.order.spec.model.Subledger;
@@ -29,7 +29,7 @@ public interface SubledgerRepository extends BaseRepository<Subledger, Subledger
     Promise<List<Subledger>> list(SubledgerParam subledgerParam, PageParam pageParam);
 
     @ReadMethod
-    Promise<Subledger> find(UserId sellerId, String payoutStatus,
+    Promise<Subledger> find(OrganizationId sellerId, String payoutStatus,
                             OfferId offerId, Date startTime, CurrencyId currency,
                             CountryId country);
 }

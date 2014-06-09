@@ -56,7 +56,7 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
                 } else if (options.getPublished() != null && !options.getPublished().equals(offer.getPublished())) {
                     continue;
                 } else if (options.getOwnerId() != null
-                        && !options.getOwnerId().getValue().equals(offer.getOwnerId())) {
+                        && !options.getOwnerId().equals(offer.getOwnerId())) {
                     continue;
                 } else {
                     offers.add(offer);

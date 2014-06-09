@@ -17,7 +17,7 @@
         <property name="accessTokenProvider" ref="authlib_accessTokenProvider"/>
     </bean>
 
-    <bean id="authlib_accessTokenProvider" class="com.junbo.authorization.ClientCredentialsAccessTokenProvider">
+    <bean id="authlib_accessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
         <property name="scope" value="api.info"/>
         <property name="deflectionInSeconds" value="300"/>
         <property name="clientSecret" value="secret"/>

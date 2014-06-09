@@ -57,7 +57,7 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
                         &&(item.getGenres()==null || !item.getGenres().contains(options.getGenre().getValue()))) {
                     continue;
                 } else if (options.getOwnerId() != null
-                        && !options.getOwnerId().getValue().equals(item.getOwnerId())) {
+                        && !options.getOwnerId().equals(item.getOwnerId())) {
                     continue;
                 } else {
                     items.add(item);

@@ -6,7 +6,13 @@
 
 package com.junbo.catalog.rest.resource;
 
+import com.junbo.authorization.AuthorizeCallback;
+import com.junbo.authorization.AuthorizeContext;
+import com.junbo.authorization.AuthorizeService;
+import com.junbo.authorization.RightsScope;
+import com.junbo.catalog.auth.OfferAuthorizeCallbackFactory;
 import com.junbo.catalog.core.OfferService;
+import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OffersGetOptions;
 import com.junbo.catalog.spec.resource.OfferResource;
@@ -32,6 +38,12 @@ public class OfferResourceImpl implements OfferResource {
     @Autowired
     private OfferService offerService;
 
+    @Autowired
+    private OfferAuthorizeCallbackFactory offerAuthorizeCallbackFactory;
+
+    @Autowired
+    private AuthorizeService authorizeService;
+
     @Override
     public Promise<Results<Offer>> getOffers(@BeanParam OffersGetOptions options) {
         List<Offer> offers = offerService.getOffers(options);
@@ -49,19 +61,59 @@ public class OfferResourceImpl implements OfferResource {
     }
 
     @Override
-    public Promise<Offer> create(Offer offer) {
-        return Promise.pure(offerService.createEntity(offer));
+    public Promise<Offer> create(final Offer offer) {
+        AuthorizeCallback<Offer> callback = offerAuthorizeCallbackFactory.create(offer);
+        return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<Offer>>() {
+            @Override
+            public Promise<Offer> apply() {
+
+                if (!AuthorizeContext.hasRights("create")) {
+                    throw AppErrors.INSTANCE.accessDenied().exception();
+                }
+
+                return Promise.pure(offerService.createEntity(offer));
+            }
+        });
     }
 
     @Override
-    public Promise<Offer> update(OfferId offerId, Offer offer) {
-        return Promise.pure(offerService.updateEntity(offerId.getValue(), offer));
+    public Promise<Offer> update(final OfferId offerId, final Offer offer) {
+        AuthorizeCallback<Offer> callback = offerAuthorizeCallbackFactory.create(offer);
+        return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<Offer>>() {
+            @Override
+            public Promise<Offer> apply() {
+
+                if (!AuthorizeContext.hasRights("update")) {
+                    throw AppErrors.INSTANCE.accessDenied().exception();
+                }
+
+                return Promise.pure(offerService.updateEntity(offerId.getValue(), offer));
+            }
+        });
     }
 
     @Override
-    public Promise<Response> delete(OfferId offerId) {
-        offerService.deleteEntity(offerId.getValue());
-        return Promise.pure(Response.status(204).build());
+    public Promise<Response> delete(final OfferId offerId) {
+        final Offer offer = offerService.getEntity(offerId.getValue());
+        if (offer == null) {
+            throw AppErrors.INSTANCE.notFound("Offer", IdFormatter.encodeId(offerId)).exception();
+        }
+
+
+        AuthorizeCallback<Offer> callback = offerAuthorizeCallbackFactory.create(offer);
+        return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<Response>>() {
+            @Override
+            public Promise<Response> apply() {
+
+                if (!AuthorizeContext.hasRights("delete")) {
+                    throw AppErrors.INSTANCE.accessDenied().exception();
+                }
+
+                offerService.deleteEntity(offerId.getValue());
+                return Promise.pure(Response.status(204).build());
+            }
+        });
+
     }
 
     private String buildNextUrl(OffersGetOptions options) {

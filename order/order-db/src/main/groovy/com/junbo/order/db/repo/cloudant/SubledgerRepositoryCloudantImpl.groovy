@@ -9,8 +9,8 @@ import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.OfferId
+import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.SubledgerId
-import com.junbo.common.id.UserId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.db.repo.SubledgerRepository
 import com.junbo.order.spec.model.PageParam
@@ -50,7 +50,7 @@ class SubledgerRepositoryCloudantImpl extends BaseCloudantRepositoryForDualWrite
     }
 
     @Override
-    Promise<Subledger> find(UserId sellerId, String payoutStatus, OfferId offerId,
+    Promise<Subledger> find(OrganizationId sellerId, String payoutStatus, OfferId offerId,
                             Date startTime, CurrencyId currency, CountryId country) {
         return super.queryView('by_seller_status_offer_time_cc',
                 [sellerId.toString(), payoutStatus, dateFormat.format(startTime),

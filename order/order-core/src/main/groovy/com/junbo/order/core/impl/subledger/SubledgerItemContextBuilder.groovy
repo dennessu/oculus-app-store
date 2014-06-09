@@ -3,7 +3,6 @@ package com.junbo.order.core.impl.subledger
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.OfferId
-import com.junbo.common.id.UserId
 import com.junbo.order.clientproxy.catalog.CatalogFacade
 import com.junbo.order.clientproxy.model.OrderOfferRevision
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
@@ -29,7 +28,7 @@ class SubledgerItemContextBuilder {
 
     SubledgerItemContext buildContext(OrderOfferRevision offer, CountryId country, CurrencyId currency, Date createdTime) {
         return new SubledgerItemContext(
-            seller : new UserId(offer.catalogOfferRevision.ownerId),
+            seller : offer.catalogOfferRevision.ownerId,
             offer : new OfferId(offer.catalogOfferRevision.offerId),
             currency : currency,
             country : country,

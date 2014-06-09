@@ -67,7 +67,7 @@ class RoleAssignmentRepositoryCloudantImpl extends CloudantClient<RoleAssignment
         views: [
             'by_role_id': new CloudantViews.CloudantView(
                 map: 'function(doc) {' +
-                    '  emit(doc.roleId + \':\' + doc.assigneeIdType + \':\' + doc.assigneeId, doc._id)' +
+                    '  emit(doc.roleId + \':\' + doc.assigneeType + \':\' + doc.assigneeId, doc._id)' +
                     '}',
                 resultClass: String)
         ]

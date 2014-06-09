@@ -1,9 +1,9 @@
 {
-  "scopes" : [ "identity.service", "catalog.service", "commerce.service", "scope.manage", "api.manage", "client.register" ],
+  "scopes" : [ "identity.service", "catalog.service", "commerce.service", "scope.manage", "api.manage", "client.register", "identity.admin" ],
   "client_id" : "service",
   "client_secret" : "secret",
   "client_name" : "service",
-  "default_scopes" : [ "identity.service", "catalog.service", "commerce.service", "scope.manage", "api.manage", "client.register" ],
+  "default_scopes" : [ "identity.service", "catalog.service", "commerce.service", "scope.manage", "api.manage", "client.register", "identity.admin" ],
   "response_types" : [ "ID_TOKEN", "CODE", "TOKEN" ],
   "grant_types" : [ "CLIENT_CREDENTIALS" ],
   "id_token_issuer" : "www.junbo.com",
