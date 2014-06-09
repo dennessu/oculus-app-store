@@ -16,6 +16,6 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.junbo.gradle:bootstrap:0.0.1-SNAPSHOT'
+        classpath 'com.junbo.gradle:bootstrap:1.0'
     }
 }

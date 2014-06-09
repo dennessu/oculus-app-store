@@ -5,6 +5,7 @@
  */
 package com.junbo.test.payment.utility;
 
+import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.UserId;
 import com.junbo.ewallet.spec.model.CreditRequest;
 import com.junbo.payment.spec.model.PaymentInstrument;
@@ -18,7 +19,9 @@ import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.exception.TestException;
+import com.junbo.test.common.libs.DBHelper;
 import com.junbo.test.common.libs.IdConverter;
+import com.junbo.test.common.libs.ShardIdHelper;
 import com.junbo.test.payment.apihelper.PaymentService;
 import com.junbo.test.payment.apihelper.impl.PaymentServiceImpl;
 
@@ -149,6 +152,14 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
 
     public void deletePaymentInstruments(String uid, String paymentId) throws Exception {
         paymentClient.deletePaymentInstrument(uid, paymentId);
+    }
+
+    public void invalidateCreditCard(String uid,String formattedPaymentId) throws Exception{
+        String paymentId = IdConverter.hexStringToId(PaymentInstrumentId.class, formattedPaymentId).toString();
+        String sqlStr = String.format(
+                "update shard_%s.payment_instrument set external_token='123' where payment_instrument_id='%s'",
+                ShardIdHelper.getShardIdByUid(uid), paymentId);
+        dbHelper.executeUpdate(sqlStr, DBHelper.DBName.PAYMENT);
     }
 
 }
