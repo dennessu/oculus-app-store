@@ -68,7 +68,7 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
         }
 
         if (userCredential.type == CredentialType.PASSWORD.toString()) {
-            return userPasswordValidator.validateForOldPassword(userId, userCredential.oldValue).then {
+            return userPasswordValidator.validateForOldPassword(userId, userCredential.currentPassword).then {
                 UserPassword userPassword = modelMapper.credentialToPassword(userCredential, new MappingContext())
                 if (userPassword == null) {
                     throw new IllegalArgumentException('mapping to password exception')
@@ -78,7 +78,7 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
                 }
             }
         } else if (userCredential.type == CredentialType.PIN.toString()) {
-            return userPinValidator.validateForOldPassword(userId, userCredential.oldValue).then {
+            return userPasswordValidator.validateForOldPassword(userId, userCredential.currentPassword).then {
                 UserPin userPin = modelMapper.credentialToPin(userCredential, new MappingContext())
                 if (userPin == null) {
                     throw new IllegalArgumentException('mapping to pin exception')

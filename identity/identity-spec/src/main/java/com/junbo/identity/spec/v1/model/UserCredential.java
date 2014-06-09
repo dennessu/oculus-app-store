@@ -26,10 +26,10 @@ public class UserCredential extends PropertyAssignedAwareResourceMeta<UserCreden
     @JsonIgnore
     private UserId userId;
 
-    @ApiModelProperty(position = 2, required = false, value = "The old password, plain text.")
-    private String oldValue;
+    @ApiModelProperty(position = 2, required = false, value = "The current password, plain text.")
+    private String currentPassword;
 
-    @ApiModelProperty(position = 3, required = true, value = "The new password, plain text.")
+    @ApiModelProperty(position = 3, required = true, value = "The new password/pin, plain text.")
     private String value;
 
     @ApiModelProperty(position = 4, required = true, value = "Credential type, it must be in [PASSWORD, PIN].")
@@ -60,13 +60,13 @@ public class UserCredential extends PropertyAssignedAwareResourceMeta<UserCreden
         support.setPropertyAssigned("userId");
     }
 
-    public String getOldValue() {
-        return oldValue;
+    public String getCurrentPassword() {
+        return currentPassword;
     }
 
-    public void setOldValue(String oldValue) {
-        this.oldValue = oldValue;
-        support.setPropertyAssigned("oldValue");
+    public void setCurrentPassword(String currentPassword) {
+        this.currentPassword = currentPassword;
+        support.setPropertyAssigned("currentPassword");
     }
 
     public String getValue() {

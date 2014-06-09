@@ -438,7 +438,7 @@
             <list>
                 <value>userId</value>
                 <value>type</value>
-                <value>oldValue</value>
+                <value>currentPassword</value>
                 <value>value</value>
                 <value>expiresBy</value>
                 <value>changeAtNextLogin</value>
