@@ -114,6 +114,8 @@
 #[replica] setup replica database
     $DEPLOYMENT_PATH/setup_replica.sh
 
+#[master/replica] run liquibase to update db schema
+
 #[master/slave] create londiste config on master/slave
     $DEPLOYMENT_PATH/londiste_config_root.sh
 
