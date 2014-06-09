@@ -1,5 +1,6 @@
 #!/bin/bash
-source common.sh
+DIR="$( cd "$( dirname "$0" )" && pwd )"
+source ${DIR}/util/common.sh
 
 #master
 ssh $DEVOPS_ACCOUNT@$MASTER_HOST << ENDSSH
