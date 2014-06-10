@@ -1,9 +1,13 @@
+import com.sun.org.apache.regexp.internal.recompile
+
 apply plugin: 'java'
 
 dependencies {
+    compile 'org.quartz-scheduler:quartz:2.2.1'
+    compile 'org.springframework:spring-context-support:4.0.2.RELEASE'
+    //compile (libraries.spring_context_support)
     compile junboProject(":subscription-db")
     compile junboProject(":subscription-spec")
     compile junboProject(":subscription-clientproxy")
 
-    testCompile(libraries.spring_test)
 }

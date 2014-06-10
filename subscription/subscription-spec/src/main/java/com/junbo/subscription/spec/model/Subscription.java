@@ -5,6 +5,7 @@
  */
 package com.junbo.subscription.spec.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.CountryId;
 import com.junbo.common.jackson.annotation.CurrencyId;
@@ -126,7 +127,7 @@ public class Subscription {
         this.currency = currency;
     }
 
-
+    @JsonIgnore
     public Long getId() {
         return subscriptionId;
     }

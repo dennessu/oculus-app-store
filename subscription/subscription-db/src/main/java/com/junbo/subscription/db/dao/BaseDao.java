@@ -83,6 +83,13 @@ public class BaseDao<T extends com.junbo.subscription.db.entity.Entity> {
     }
 
     protected Long generateId(Long shardId) {
-        return idGenerator.nextId(shardId);
+        Long id = 0L;
+        try {
+            id =  idGenerator.nextId(shardId);
+        }
+        catch (Exception e){
+            throw e;
+        }
+        return id;
     }
 }

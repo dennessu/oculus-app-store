@@ -48,7 +48,7 @@ public class ChargeAction implements SubscriptionActionService {
 
         //Rating
         SubsRatingRequest request = new SubsRatingRequest();
-        request.setCountry(subscription.getCountry());
+        //request.(subscription.getCountry());
         request.setCurrency(subscription.getCurrency());
         request.setType(SubsRatingType.PURCHASE);
         request.setOfferId(subscription.getOfferId());
