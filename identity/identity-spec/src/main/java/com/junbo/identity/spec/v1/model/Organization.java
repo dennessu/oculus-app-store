@@ -41,7 +41,7 @@ public class Organization extends PropertyAssignedAwareResourceMeta<Organization
     private UserPersonalInfoId shippingPhone;
 
     @ApiModelProperty(position = 8, required = true, value = "Whether the organization is validated.")
-    private String isValidated;
+    private Boolean isValidated;
 
     @ApiModelProperty(position = 9, required = false, value = "The enum value of the organization, must in [INDIVIDUAL, CORPORATE]")
     private String type;
@@ -126,11 +126,11 @@ public class Organization extends PropertyAssignedAwareResourceMeta<Organization
         support.setPropertyAssigned("shippingPhone");
     }
 
-    public String getIsValidated() {
+    public Boolean getIsValidated() {
         return isValidated;
     }
 
-    public void setIsValidated(String isValidated) {
+    public void setIsValidated(Boolean isValidated) {
         this.isValidated = isValidated;
         support.setPropertyAssigned("isValidated");
     }
