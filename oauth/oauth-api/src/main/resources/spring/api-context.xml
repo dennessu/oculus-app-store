@@ -100,4 +100,20 @@
     <bean id="defaultResetPasswordEndpointClientFactory" class="com.junbo.oauth.spec.endpoint.proxy.ResetPasswordEndpointClientProxyFactory"/>
 
     <bean id="defaultResetPasswordEndpointRouter" parent="routingRouterBase" />
+
+    <bean id="defaultAccessTokenResource" class="com.junbo.oauth.api.endpoint.AccessTokenResourceImpl">
+        <property name="tokenService" ref="tokenService"/>
+    </bean>
+
+    <bean id="defaultAccessTokenResourceClientFactory" class="com.junbo.oauth.spec.endpoint.proxy.AccessTokenResourceClientProxyFactory"/>
+
+    <bean id="defaultAccessTokenResourceRouter" parent="routingRouterBase" />
+
+    <bean id="defaultRefreshTokenResource" class="com.junbo.oauth.api.endpoint.RefreshTokenResourceImpl">
+        <property name="tokenService" ref="tokenService"/>
+    </bean>
+
+    <bean id="defaultRefreshTokenResourceClientFactory" class="com.junbo.oauth.spec.endpoint.proxy.RefreshTokenResourceClientProxyFactory"/>
+
+    <bean id="defaultRefreshTokenResourceRouter" parent="routingRouterBase" />
 </beans>
