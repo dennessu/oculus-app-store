@@ -183,6 +183,9 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
             @Override
             public PaymentTransaction call() throws Exception {
                 String piToken = pi.getExternalToken();
+                if(CommonUtil.isNullOrEmpty(piToken)){
+                    throw AppServerExceptions.INSTANCE.noExternalTokenFoundForPayment(pi.getId().toString()).exception();
+                }
                 TransactionRequest request = getTransactionRequest(piToken, paymentRequest);
                 Result<Transaction> result = null;
                 LOGGER.info("authorize credit card :" + piToken);
