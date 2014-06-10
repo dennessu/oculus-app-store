@@ -22,7 +22,6 @@ import com.junbo.payment.spec.model.PaymentTransaction;
 import com.junbo.payment.spec.model.TypeSpecificDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -34,8 +33,11 @@ import java.util.UUID;
 public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
     private static final String PROVIDER_NAME = "Wallet";
     private static final Logger LOGGER = LoggerFactory.getLogger(EWalletProviderServiceImpl.class);
-    @Autowired
+
     private WalletResource walletClient;
+    public void setWalletClient(WalletResource walletClient) {
+        this.walletClient = walletClient;
+    }
 
     @Override
     public String getProviderName() {
