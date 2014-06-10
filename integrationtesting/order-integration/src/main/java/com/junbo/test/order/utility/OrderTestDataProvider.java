@@ -12,10 +12,7 @@ import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.enumid.LocaleId;
-import com.junbo.common.id.OfferId;
-import com.junbo.common.id.OfferRevisionId;
-import com.junbo.common.id.PaymentInstrumentId;
-import com.junbo.common.id.UserId;
+import com.junbo.common.id.*;
 import com.junbo.order.spec.model.Order;
 import com.junbo.order.spec.model.OrderItem;
 import com.junbo.order.spec.model.PaymentInfo;
@@ -170,8 +167,8 @@ public class OrderTestDataProvider {
         String offerId = offerClient.getOfferIdByName(offerName);
         Offer offer = Master.getInstance().getOffer(offerId);
         String offerRevisionId = IdConverter.idLongToHexString(OfferRevisionId.class, offer.getCurrentRevisionId());
-        String sellerId = IdConverter.idLongToHexString(UserId.class,
-                Master.getInstance().getOfferRevision(offerRevisionId).getOwnerId());
+        String sellerId = IdConverter.idLongToHexString(OrganizationId.class,
+                Master.getInstance().getOfferRevision(offerRevisionId).getOwnerId().getValue());
         return orderClient.getSubledger(sellerId);
     }
 
