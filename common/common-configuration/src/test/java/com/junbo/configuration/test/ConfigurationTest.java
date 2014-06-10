@@ -8,7 +8,6 @@ package com.junbo.configuration.test;
 
 import com.junbo.configuration.ConfigContext;
 import com.junbo.configuration.ConfigService;
-import com.junbo.configuration.impl.ConfigServiceImpl;
 import com.junbo.configuration.reloadable.IntegerConfig;
 import com.junbo.configuration.reloadable.StringConfig;
 import org.springframework.context.ApplicationContext;
@@ -19,7 +18,9 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 import org.testng.log4testng.Logger;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -135,7 +136,6 @@ public class ConfigurationTest {
 
     @BeforeSuite
     public void setup() {
-        ConfigService configService = new ConfigServiceImpl();
         tmpConfigDir = createTempDir();
         try {
             File envFilePath = new File(tmpConfigDir, "configuration.properties");
@@ -161,6 +161,7 @@ public class ConfigurationTest {
             out.close();
 */
             System.setProperty("configDir", tmpConfigDir.getAbsolutePath());
+            System.setProperty("environment", "onebox.dc1");
         }
         catch (Exception ex) {
             throw new RuntimeException("Error in setup test configDir.", ex);
@@ -194,7 +195,8 @@ public class ConfigurationTest {
         Assert.assertEquals(configService.getConfigValue("test.stringConfig"), "testStr");
 
         ConfigContext configContext = configService.getConfigContext();
-        Assert.assertEquals(configContext.getEnvironment(), "onebox");
+        Assert.assertEquals(configContext.getEnvironment(), "onebox.dc1");
+        Assert.assertEquals(configContext.getBaseEnvironment(), "onebox");
     }
 
     // @Test
@@ -241,7 +243,7 @@ public class ConfigurationTest {
 
         JarConfigBag configBag = (JarConfigBag) context.getBean("jarConfigurationTestBean");
 
-        Assert.assertEquals(configBag.getOneboxCatalog().get(), "onebox.catalog.value");
+        Assert.assertEquals(configBag.getOneboxCatalog().get(), "onebox.catalog.dc1.value");
         Assert.assertEquals(configBag.getOneboxBilling().get(), "onebox.billing.value");
         Assert.assertEquals(configBag.getOneboxDefault().get(), "onebox.default.value");
         Assert.assertEquals(configBag.getOneboxIdentity().get(), "onebox.identity.defaultvalue");
