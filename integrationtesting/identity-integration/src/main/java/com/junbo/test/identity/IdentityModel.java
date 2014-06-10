@@ -92,7 +92,7 @@ public class IdentityModel {
 
     public static Email DefaultEmail() throws Exception {
         Email email = new Email();
-        email.setInfo(RandomHelper.randomAlphabetic(8) + "@163.com");
+        email.setInfo("silkcloudtest+" + RandomHelper.randomAlphabetic(8) + "@gmail.com");
         return email;
     }
 

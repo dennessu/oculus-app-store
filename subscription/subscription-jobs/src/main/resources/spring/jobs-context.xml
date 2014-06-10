@@ -10,4 +10,28 @@
 
     <context:component-scan base-package="com.junbo.subscription.jobs"/>
     <tx:annotation-driven/>
+
+    <bean id="cycleChargeJobDetails" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass">
+            <value>com.lbnet.lzx.timing.OrderNoRefact</value>
+        </property>
+        <property name="group" value="subscription" />
+        <property name="name" value="cycleChargeJob" />
+    </bean>
+
+    <bean id="cycleChargeTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="cycleChargeJobDetails" />
+        <property name="cronExpression"  value="${subs.processorder.cronexpression}" />
+    </bean>
+
+    <!-- schedule-->
+    <bean id="subsSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="schedulerName" value="subscriptionScheduler"/>
+        <property name="autoStartup" value="${subs.job.scheduler.start}"/>
+        <property name="triggers">
+            <list>
+                <ref bean="cycleChargeTrigger" />
+            </list>
+        </property>
+    </bean>
 </beans>
