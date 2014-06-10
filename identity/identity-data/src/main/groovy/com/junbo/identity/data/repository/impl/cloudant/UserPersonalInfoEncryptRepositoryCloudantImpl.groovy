@@ -24,6 +24,7 @@ import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.CollectionUtils
+import org.springframework.util.StringUtils
 
 /**
  * Created by liangfu on 5/14/14.
@@ -58,6 +59,8 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
 
             return Promise.each(links) { UserPersonalInfoIdToUserIdLink link ->
                 return decryptUserPersonalInfo(userId, link.userPersonalInfoId, userPersonalInfoList)
+            }.then {
+                return Promise.pure(userPersonalInfoList)
             }
         }
     }
@@ -241,6 +244,40 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     @Override
     Promise<Void> delete(UserPersonalInfoId id) {
         throw new IllegalStateException('Delete is not supported')
+    }
+
+    @Override
+    Promise<List<UserPersonalInfo>> searchByUserIdAndValidateStatus(UserId userId, String type, Boolean isValidated,
+                                                                    Integer limit, Integer offset) {
+        return searchCandidatesByUserIdAndType(userId, type).then { List<UserPersonalInfo> userPersonalInfoList ->
+            if (CollectionUtils.isEmpty(userPersonalInfoList)) {
+                return Promise.pure(null)
+            }
+
+            userPersonalInfoList.retainAll { UserPersonalInfo userPersonalInfo ->
+                return ((userPersonalInfo.lastValidateTime != null && isValidated)
+                    || (userPersonalInfo.lastValidateTime == null && !isValidated))
+            }
+
+            List<UserPersonalInfo> list = new ArrayList<>()
+            Integer calLimit = limit == null ? Integer.MAX_VALUE : limit
+            Integer calOffset = offset == null ? 0 : offset
+            for (int index = 0; index < userPersonalInfoList.size() && index < calLimit + calOffset; index ++) {
+                if (index >= calOffset) {
+                    list.add(userPersonalInfoList.get(index))
+                }
+            }
+
+            return Promise.pure(list)
+        }
+    }
+
+    private Promise<List<UserPersonalInfo>> searchCandidatesByUserIdAndType(UserId userId, String type) {
+        if (StringUtils.isEmpty(type)) {
+            return searchByUserId(userId, Integer.MAX_VALUE, 0)
+        } else {
+            return searchByUserIdAndType(userId, type, Integer.MAX_VALUE, 0)
+        }
     }
 
     private PiiHash getPiiHash(String type) {
