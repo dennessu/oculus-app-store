@@ -35,6 +35,7 @@
     <bean id="defaultUserTFABackupCodeResource" class="com.junbo.identity.rest.resource.v1.UserTFABackupCodeResourceImpl" scope="prototype" />
     <bean id="defaultUserTFABackupCodeAttemptResource" class="com.junbo.identity.rest.resource.v1.UserTFABackupCodeAttemptResourceImpl" scope="prototype" />
     <bean id="defaultOrganizationResource" class="com.junbo.identity.rest.resource.v1.OrganizationResourceImpl" scope="prototype" />
+    <bean id="defaultMigrationResource" class="com.junbo.identity.rest.resource.v1.MigrationResourceImpl" scope="prototype" />
 
     <bean id="defaultAuthenticatorResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.AuthenticatorResourceClientProxyFactory"/>
     <bean id="defaultUserCommunicationResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserCommunicationResourceClientProxyFactory"/>
