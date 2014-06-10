@@ -14,7 +14,6 @@ import com.junbo.catalog.spec.model.common.Price;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.common.jackson.annotation.ItemId;
 import com.junbo.common.jackson.annotation.ItemRevisionId;
-import com.junbo.common.jackson.annotation.UserId;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
@@ -47,7 +46,6 @@ public class ItemRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 16, required = false, value = "The items in which the IAP item will be sold.")
     private List<Long> iapHostItemIds;
 
-    @UserId
     @JsonProperty("owner")
     @ApiModelProperty(position = 20, required = true, value = "Organization owner of the item revision resource")
     private OrganizationId ownerId;
