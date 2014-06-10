@@ -29,6 +29,7 @@ import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
 abstract class CloudantClientBase<T extends CloudantEntity> implements InitializingBean {
     protected static final String VIEW_PATH = '/_design/views/_view/'
     protected static final String SEARCH_PATH = '/_design/views/_search/'
+    protected static final String DEFAULT_DESIGN_ID_PREFIX = '_design/'
 
     protected final Class<T> entityClass
     protected AsyncHttpClient asyncHttpClient
@@ -189,9 +190,20 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
             def cloudantSearchResult = unmarshall(response.responseBody,
                     CloudantQueryResult, CloudantQueryResult.AllResultEntity, Object.class)
 
-            return Promise.pure(cloudantSearchResult.rows.collect { CloudantQueryResult.ResultObject result ->
-                return cloudantGet(result.id)
-            })
+            List<T> list = new ArrayList<>()
+            return Promise.each(cloudantSearchResult.rows) { CloudantQueryResult.ResultObject result ->
+                if (result.id.startsWith(DEFAULT_DESIGN_ID_PREFIX)) {
+                    return Promise.pure(null)
+                }
+                return cloudantGet(result.id).then { T temp ->
+                    if (temp != null) {
+                        list.add(temp)
+                    }
+                    return Promise.pure(null)
+                }
+            }.then {
+                return Promise.pure(list)
+            }
         }, executor)
     }
 
