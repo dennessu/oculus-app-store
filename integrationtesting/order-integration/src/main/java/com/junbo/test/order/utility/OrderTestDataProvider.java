@@ -13,10 +13,8 @@ import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.*;
-import com.junbo.order.spec.model.Order;
-import com.junbo.order.spec.model.OrderItem;
-import com.junbo.order.spec.model.PaymentInfo;
-import com.junbo.order.spec.model.Subledger;
+import com.junbo.common.model.Results;
+import com.junbo.order.spec.model.*;
 import com.junbo.test.catalog.OfferRevisionService;
 import com.junbo.test.catalog.OfferService;
 import com.junbo.test.catalog.impl.OfferRevisionServiceImpl;
@@ -28,8 +26,12 @@ import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
+import com.junbo.test.order.apihelper.OrderEventService;
 import com.junbo.test.order.apihelper.OrderService;
+import com.junbo.test.order.apihelper.impl.OrderEventServiceImpl;
 import com.junbo.test.order.apihelper.impl.OrderServiceImpl;
+import com.junbo.test.order.model.enums.EventStatus;
+import com.junbo.test.order.model.enums.OrderActionType;
 import com.junbo.test.payment.utility.PaymentTestDataProvider;
 
 import java.math.BigDecimal;
@@ -43,6 +45,7 @@ import java.util.Map;
  */
 public class OrderTestDataProvider {
     protected OrderService orderClient = OrderServiceImpl.getInstance();
+    protected OrderEventService orderEventClient = OrderEventServiceImpl.getInstance();
     protected OfferService offerClient = OfferServiceImpl.instance();
     protected OfferRevisionService offerRevisionClient = OfferRevisionServiceImpl.instance();
     protected UserService identityClient = UserServiceImpl.instance();
@@ -174,6 +177,19 @@ public class OrderTestDataProvider {
 
     public void invalidateCreditCard(String uid, String paymentId) throws Exception {
         paymentProvider.invalidateCreditCard(uid, paymentId);
+    }
+
+    public Results<OrderEvent> getOrderEventsByOrderId(String orderId) throws Exception {
+        return orderEventClient.getOrderEventsByOrderId(orderId);
+    }
+
+    public void postOrderEvent(String orderId, EventStatus eventStatus, OrderActionType orderActionType)
+            throws Exception {
+        OrderEvent orderEvent = new OrderEvent();
+        orderEvent.setOrder(new OrderId(IdConverter.hexStringToId(OrderId.class, orderId)));
+        orderEvent.setAction(orderActionType.toString());
+        orderEvent.setStatus(eventStatus.toString());
+        orderEventClient.postOrderEvent(orderEvent);
     }
 
 }
