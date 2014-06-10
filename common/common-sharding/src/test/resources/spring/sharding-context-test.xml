@@ -8,5 +8,5 @@
     <import resource="classpath*:spring/transaction.xml"/>
     <import resource="classpath*:spring/sharding-context.xml"/>
     <import resource="classpath*:spring/dualwrite-context.xml"/>
-
+    <import resource="classpath*:spring/threadpool-context.xml"/>
 </beans>

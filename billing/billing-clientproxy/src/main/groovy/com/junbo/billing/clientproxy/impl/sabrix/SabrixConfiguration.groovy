@@ -15,7 +15,6 @@ import groovy.transform.CompileStatic
 class SabrixConfiguration {
     String companyName
     String companyRole
-    String externalCompanyId
     String username
     String password
     String version

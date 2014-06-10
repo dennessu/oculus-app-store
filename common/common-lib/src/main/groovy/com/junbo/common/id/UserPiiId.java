@@ -8,7 +8,9 @@ package com.junbo.common.id;
 /**
  * Created by liangfu on 4/3/14.
  */
-@IdResourcePath(value = "/pii/{0}", regex = "/pii/(?<id>[0-9A-Z]+)")
+@IdResourcePath(value = "/pii/{0}",
+                resourceType = "pii",
+                regex = "/pii/(?<id>[0-9A-Za-z]+)")
 public class UserPiiId extends Id {
     public UserPiiId() {}
     public UserPiiId(long value) {

@@ -54,9 +54,9 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
                     .exception();
         }
 
-        if (!existingEntity.getResourceAge().equals(entity.getResourceAge())) {
+        if (!existingEntity.getRev().equals(entity.getRev())) {
             throw AppErrors.INSTANCE
-                    .fieldNotMatch("rev", entity.getResourceAge(), existingEntity.getResourceAge()).exception();
+                    .fieldNotMatch("rev", entity.getRev(), existingEntity.getRev()).exception();
         }
 
         return getEntityRepo().update(entity);

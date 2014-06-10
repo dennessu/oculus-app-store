@@ -10,14 +10,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPasswordId;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
-import com.junbo.common.util.Identifiable;
 
 import java.util.Date;
 
 /**
  * Created by kg on 3/10/14.
  */
-public class UserPassword extends PropertyAssignedAwareResourceMeta implements Identifiable<UserPasswordId> {
+public class UserPassword extends PropertyAssignedAwareResourceMeta<UserPasswordId> {
 
     @JsonProperty("self")
     private UserPasswordId id;

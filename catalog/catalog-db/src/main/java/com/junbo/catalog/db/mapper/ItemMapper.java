@@ -9,6 +9,7 @@ package com.junbo.catalog.db.mapper;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.entity.ItemEntity;
 import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.common.id.OrganizationId;
 
 /**
  * Item mapper between model and DB entity.
@@ -29,7 +30,7 @@ public class ItemMapper {
         entity.setItemId(model.getItemId());
         entity.setType(model.getType());
         entity.setGenres(model.getGenres());
-        entity.setOwnerId(model.getOwnerId());
+        entity.setOwnerId(model.getOwnerId() == null ? null : model.getOwnerId().getValue());
         entity.setCurrentRevisionId(model.getCurrentRevisionId());
         entity.setPayload(Utils.toJson(model));
         entity.setCreatedBy(String.valueOf(model.getOwnerId()));
@@ -45,7 +46,7 @@ public class ItemMapper {
         model.setItemId(entity.getItemId());
         model.setType(entity.getType());
         model.setCurrentRevisionId(entity.getCurrentRevisionId());
-        model.setOwnerId(entity.getOwnerId());
+        model.setOwnerId(new OrganizationId(entity.getOwnerId()));
         model.setGenres(entity.getGenres());
         model.setCreatedTime(entity.getCreatedTime());
         model.setUpdatedTime(entity.getUpdatedTime());

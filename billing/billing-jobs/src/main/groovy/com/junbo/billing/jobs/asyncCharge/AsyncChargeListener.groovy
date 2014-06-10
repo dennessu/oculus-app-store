@@ -12,6 +12,7 @@ import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
 import com.junbo.common.id.BalanceId
+import com.junbo.common.id.OrderId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.notification.core.BaseListener
 import com.junbo.order.spec.model.OrderEvent
@@ -52,25 +53,26 @@ class AsyncChargeListener extends BaseListener {
             LOGGER.info('The processed balance status is ' + processedBalance.status + 'for balance id: ' +
                     processedBalance.balanceId.value)
 
-            OrderEvent orderEvent = generateOrderEvent(processedBalance)
-            if (orderEvent != null) {
-                orderFacade.postOrderEvent(orderEvent)
+            List<OrderEvent> orderEvents = generateOrderEvents(processedBalance)
+            if (orderEvents != null) {
+                for (OrderEvent orderEvent : orderEvents) {
+                    orderFacade.postOrderEvent(orderEvent)
+                }
             }
 
             return Promise.pure(processedBalance)
         }
     }
 
-    private OrderEvent generateOrderEvent(Balance balance) {
-        OrderEvent orderEvent = new OrderEvent()
-        orderEvent.setOrder(balance.orderId)
-
+    private List<OrderEvent> generateOrderEvents(Balance balance) {
+        String action = null
+        String status = null
         if (balance.type == BalanceType.DEBIT.name()) {
-            orderEvent.setAction('CHARGE')
+            action = 'CHARGE'
         } else if (balance.type == BalanceType.MANUAL_CAPTURE.name()) {
-            orderEvent.setAction('AUTHORIZE')
+            action = 'AUTHORIZE'
         } else if (balance.type == BalanceType.REFUND.name()) {
-            orderEvent.setAction('REFUND')
+            action = 'REFUND'
         } else {
             LOGGER.error('unsupported balance type to post order event: ' + balance.type)
             return null
@@ -80,18 +82,34 @@ class AsyncChargeListener extends BaseListener {
             case BalanceStatus.PENDING_CAPTURE:
             case BalanceStatus.AWAITING_PAYMENT:
             case BalanceStatus.COMPLETED:
-                orderEvent.setStatus('COMPLETED')
+                status = 'COMPLETED'
                 break
             case BalanceStatus.ERROR:
-                orderEvent.setStatus('ERROR')
+                status = 'ERROR'
                 break
             case BalanceStatus.FAILED:
-                orderEvent.setStatus('FAILED')
+                status = 'FAILED'
                 break
             default:
                 LOGGER.error('unsupported balance status to post order event: ' + balance.status)
                 return null
         }
-        return orderEvent
+
+        List<OrderEvent> orderEvents = new ArrayList<>()
+
+        if (balance.orderIds == null || balance.orderIds.size() == 0) {
+            LOGGER.error('there is no order in this balance: ' + balanceId)
+            return null
+        }
+
+        for (OrderId orderId : balance.orderIds) {
+            OrderEvent orderEvent = new OrderEvent()
+            orderEvent.setOrder(orderId)
+            orderEvent.setAction(action)
+            orderEvent.setStatus(status)
+            orderEvents.add(orderEvent)
+        }
+
+        return orderEvents
     }
 }

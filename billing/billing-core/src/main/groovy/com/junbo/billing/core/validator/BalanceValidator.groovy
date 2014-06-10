@@ -137,8 +137,8 @@ class BalanceValidator {
     }
 
     void validateBalance(Balance balance, Boolean isQuote) {
-        if (!isQuote && balance.orderId == null) {
-            throw AppErrors.INSTANCE.fieldMissingValue('orderId').exception()
+        if (!isQuote && (balance.orderIds == null || balance.orderIds.size() == 0)) {
+            throw AppErrors.INSTANCE.fieldMissingValue('orderIds').exception()
         }
         if (balance.balanceItems == null || balance.balanceItems.size() == 0) {
             throw AppErrors.INSTANCE.fieldMissingValue('balanceItems').exception()
@@ -149,7 +149,7 @@ class BalanceValidator {
                     throw AppErrors.INSTANCE.fieldMissingValue('balanceItem.orderItemId').exception()
                 }
                 if (balanceItem.orderId == null) {
-                    balanceItem.orderId = balance.orderId
+                    balanceItem.orderId = balance.orderIds[0]
                 }
             }
             if (balanceItem.amount == null) {

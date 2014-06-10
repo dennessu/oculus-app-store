@@ -2,8 +2,8 @@ package com.junbo.order.db.repo.facade.impl
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.OfferId
+import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.SubledgerId
-import com.junbo.common.id.UserId
 import com.junbo.order.db.repo.SubledgerItemRepository
 import com.junbo.order.db.repo.SubledgerRepository
 import com.junbo.order.db.repo.facade.SubledgerRepositoryFacade
@@ -65,7 +65,7 @@ class SubledgerRepositoryFacadeImpl implements SubledgerRepositoryFacade {
     }
 
     @Override
-    Subledger findSubledger(UserId sellerId, String payoutStatus, OfferId offerId,
+    Subledger findSubledger(OrganizationId sellerId, String payoutStatus, OfferId offerId,
                             Date startTime, CurrencyId currency, CountryId country) {
         return subledgerRepository.find(sellerId, payoutStatus, offerId, startTime, currency, country).get();
     }

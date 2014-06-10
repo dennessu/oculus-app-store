@@ -9,7 +9,9 @@ package com.junbo.common.id;
 /**
  * PriceTierId.
  */
-@IdResourcePath(value = "/price-tiers/{0}", regex = "/price-tiers/(?<id>[0-9A-Z]+)")
+@IdResourcePath(value = "/price-tiers/{0}",
+                resourceType = "price-tiers",
+                regex = "/price-tiers/(?<id>[0-9A-Za-z]+)")
 public class PriceTierId extends Id {
 
     public PriceTierId() {}

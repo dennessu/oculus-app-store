@@ -10,6 +10,7 @@ import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.resource.ItemResource;
 import com.junbo.common.id.Id;
 import com.junbo.common.id.ItemId;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.common.id.UserId;
 import org.springframework.beans.factory.annotation.Required;
 
@@ -26,8 +27,13 @@ public class ItemOwnerCallback implements OwnerCallback {
 
     @Override
     public UserId getUserOwnerId(Id resourceId) {
+        return null;
+    }
+
+    @Override
+    public OrganizationId getOrganizationOwnerId(Id resourceId) {
         assert resourceId instanceof ItemId : "resourceId is not an ItemId";
         Item item = itemResource.getItem((ItemId)resourceId).get();
-        return new UserId(item.getOwnerId());
+        return item.getOwnerId();
     }
 }

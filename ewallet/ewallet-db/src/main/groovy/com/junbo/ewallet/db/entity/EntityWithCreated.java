@@ -24,7 +24,7 @@ import java.util.Date;
  * Base entity for transaction.
  */
 @MappedSuperclass
-public abstract class EntityWithCreated implements Shardable, CloudantEntity {
+public abstract class EntityWithCreated<K> implements Shardable, CloudantEntity<K> {
     @CloudantProperty("_id")
     private Long pId;
     private Long createdBy;

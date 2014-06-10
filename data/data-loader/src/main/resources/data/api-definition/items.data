@@ -3,9 +3,16 @@
     "scopes": {
         "catalog": [
             {
-                "precondition": "getOwnedByCurrentUser()",
+                "precondition": "hasRole(\"owner\", \"developer\")",
                 "rights": [
-                    "read", "write"
+                    "create", "update", "delete"
+                ],
+                "scriptType": "SPEL"
+            },
+            {
+                "precondition": "hasRole(\"owner\", \"publisher\")",
+                "rights": [
+                    "update"
                 ],
                 "scriptType": "SPEL"
             }

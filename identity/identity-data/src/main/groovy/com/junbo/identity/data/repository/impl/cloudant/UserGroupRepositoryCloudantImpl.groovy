@@ -41,41 +41,37 @@ class UserGroupRepositoryCloudantImpl extends CloudantClient<UserGroup> implemen
         if (entity.id == null) {
             entity.id = new UserGroupId(idGenerator.nextId(entity.userId.value))
         }
-        return Promise.pure((UserGroup)super.cloudantPost(entity))
+        return super.cloudantPost(entity)
     }
 
     @Override
     Promise<UserGroup> update(UserGroup entity) {
-        return Promise.pure((UserGroup)super.cloudantPut(entity))
+        return super.cloudantPut(entity)
     }
 
     @Override
     Promise<UserGroup> get(UserGroupId id) {
-        return Promise.pure((UserGroup)super.cloudantGet(id.toString()))
+        return super.cloudantGet(id.toString())
     }
 
     @Override
     Promise<List<UserGroup>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        def list = super.queryView('by_user_id', userId.toString(), limit, offset, false)
-        return Promise.pure(list)
+        return super.queryView('by_user_id', userId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<List<UserGroup>> searchByGroupId(GroupId groupId, Integer limit, Integer offset) {
-        def list = super.queryView('by_group_id', groupId.toString(), limit, offset, false)
-        return Promise.pure(list)
+        return super.queryView('by_group_id', groupId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<List<UserGroup>> searchByUserIdAndGroupId(UserId userId, GroupId groupId, Integer limit, Integer offset) {
-        def list = super.queryView('by_user_id_group_id', "${userId.value}:${groupId.value}", limit, offset, false)
-        return Promise.pure(list)
+        return super.queryView('by_user_id_group_id', "${userId.value}:${groupId.value}", limit, offset, false)
     }
 
     @Override
     Promise<Void> delete(UserGroupId id) {
-        super.cloudantDelete(id.toString())
-        return Promise.pure(null)
+        return super.cloudantDelete(id.toString())
     }
 
     protected CloudantViews views = new CloudantViews(

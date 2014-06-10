@@ -5,6 +5,7 @@
  */
 package com.junbo.sharding.dualwrite.data
 import com.junbo.langur.core.promise.Promise
+import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.ShardAlgorithm
 import com.junbo.sharding.hibernate.ShardScope
 import groovy.transform.CompileStatic
@@ -25,6 +26,7 @@ public class PendingActionRepositorySqlImpl implements PendingActionRepository {
     private boolean hardDelete;
 
     private PendingActionMapper mapper;
+    private IdGenerator idGenerator;
 
     @Required
     void setSessionFactory(SessionFactory sessionFactory) {
@@ -41,6 +43,11 @@ public class PendingActionRepositorySqlImpl implements PendingActionRepository {
     }
 
     @Required
+    void setIdGenerator(IdGenerator idGenerator) {
+        this.idGenerator = idGenerator
+    }
+
+    @Required
     void setMapper(PendingActionMapper mapper) {
         this.mapper = mapper
     }
@@ -50,7 +57,7 @@ public class PendingActionRepositorySqlImpl implements PendingActionRepository {
     }
 
     @Override
-    public Promise<PendingAction> get(UUID id) {
+    public Promise<PendingAction> get(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("id is null");
         }
@@ -68,7 +75,7 @@ public class PendingActionRepositorySqlImpl implements PendingActionRepository {
             throw new IllegalArgumentException('model is null')
         }
         if (model.id == null) {
-            model.id = UUID.randomUUID()
+            model.id = idGenerator.nextId(model.getChangedEntityId());
         }
         model.createdBy = 123L      // TODO
         model.createdTime = new Date()
@@ -96,7 +103,7 @@ public class PendingActionRepositorySqlImpl implements PendingActionRepository {
     }
 
     @Override
-    public Promise<Void> delete(UUID id) {
+    public Promise<Void> delete(Long id) {
         Session session = currentSession(id)
         PendingActionEntity entity = (PendingActionEntity)session.get(PendingActionEntity, id)
 

@@ -19,4 +19,6 @@ public class UserErrorCode {
     public static final String USER_STATUS_INVALID = "30001";
 
     public static final String USER_CONNECTION_ERROR = "30002";
+
+    public static final String CURRENCY_NOT_VALID = "30003";
 }

@@ -4,49 +4,32 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.order.db.repo.cloudant
-
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.OfferId
+import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.SubledgerId
-import com.junbo.common.id.UserId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.db.repo.SubledgerRepository
 import com.junbo.order.spec.model.PageParam
 import com.junbo.order.spec.model.Subledger
 import com.junbo.order.spec.model.SubledgerParam
-import com.junbo.sharding.IdGenerator
-import com.junbo.sharding.repo.BaseCloudantRepository
+import com.junbo.sharding.repo.BaseCloudantRepositoryForDualWrite
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
-import org.springframework.beans.factory.annotation.Required
 
 import java.text.DateFormat
-
 /**
  * Created by chriszhu on 2/18/14.
  */
 @CompileStatic
 @TypeChecked
-class SubledgerRepositoryCloudantImpl extends BaseCloudantRepository<Subledger, SubledgerId> implements SubledgerRepository {
+class SubledgerRepositoryCloudantImpl extends BaseCloudantRepositoryForDualWrite<Subledger, SubledgerId> implements SubledgerRepository {
 
     private final static String DATE_STRING_MAX = 'A' // String that larger than any formatted date text
-
-    private IdGenerator idGenerator
-
     private DateFormat dateFormat = new ISO8601DateFormat()
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
-
-    @Override
-    protected SubledgerId generateId() {
-        return new SubledgerId(idGenerator.nextId());
-    }
 
     @Override
     protected CloudantViews getCloudantViews() {
@@ -62,20 +45,19 @@ class SubledgerRepositoryCloudantImpl extends BaseCloudantRepository<Subledger, 
 
         String endKey = [subledgerParam.sellerId.toString(), subledgerParam.payOutStatus,
                                           endDateStr].join(';')
-        List<Subledger> list = super.queryView('by_seller_status_offer_time_cc', startKey, endKey,
+        return super.queryView('by_seller_status_offer_time_cc', startKey, endKey,
             pageParam?.count, pageParam?.start, false, true)
-
-        return Promise.pure(list)
     }
 
     @Override
-    Promise<Subledger> find(UserId sellerId, String payoutStatus, OfferId offerId,
+    Promise<Subledger> find(OrganizationId sellerId, String payoutStatus, OfferId offerId,
                             Date startTime, CurrencyId currency, CountryId country) {
-        List<Subledger> list = super.queryView('by_seller_status_offer_time_cc',
+        return super.queryView('by_seller_status_offer_time_cc',
                 [sellerId.toString(), payoutStatus, dateFormat.format(startTime),
-                offerId.toString(), currency.toString(), country.toString()].join(';'))
+                offerId.toString(), currency.toString(), country.toString()].join(';')).then { List<Subledger> list ->
 
-        return Promise.pure(list.isEmpty() ? null : list.iterator().next())
+            return Promise.pure(list.isEmpty() ? null : list.iterator().next())
+        }
     }
 
     private CloudantViews views = new CloudantViews(

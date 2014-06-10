@@ -113,7 +113,7 @@ class CartPersistServiceImpl implements CartPersistService {
     @Override
     @Transactional()
     void updateCart(Cart cart) {
-        Cart oldCart = getCart(cart.id, true)
+        Cart oldCart = getCart(cart.getId(), true)
 
         // update cart
         Date currentTime = systemOperation.currentTime()
@@ -164,7 +164,7 @@ class CartPersistServiceImpl implements CartPersistService {
                                          Date currentTime) {
 
         Map<String, Long> couponCodesToId = new HashMap<>()
-        couponItemDao.getItems(cart.id.value, ItemStatus.OPEN)?.each { CouponItemEntity entity ->
+        couponItemDao.getItems(cart.getId().value, ItemStatus.OPEN)?.each { CouponItemEntity entity ->
             couponCodesToId[entity.couponCode] = entity.cartItemId
         }
 
@@ -240,7 +240,7 @@ class CartPersistServiceImpl implements CartPersistService {
         newItem.id = getId(cart.user, CartItemId)
 
         def entity =  dataMapper.toOfferItemEntity(newItem, new MappingContext())
-        entity.cartId = cart.id.value
+        entity.cartId = cart.getId().value
         entity.status = ItemStatus.OPEN
         entity.createdTime = currentTime
         entity.updatedTime = currentTime
@@ -263,7 +263,7 @@ class CartPersistServiceImpl implements CartPersistService {
     private void addCoupon(String couponCode, Date currentTime, Cart cart) {
         def entity = new CouponItemEntity(
                 cartItemId: getId(cart.user, CartItemId).value,
-                cartId: cart.id.value,
+                cartId: cart.getId().value,
                 status: ItemStatus.OPEN,
                 couponCode: couponCode,
                 createdTime: currentTime,

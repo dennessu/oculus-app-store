@@ -7,39 +7,30 @@
 package com.junbo.billing.clientproxy.impl
 
 import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
-import com.junbo.billing.clientproxy.impl.sabrix.TaxCalculationResponse
-import com.thoughtworks.xstream.io.xml.DomDriver
-import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder
-import java.text.SimpleDateFormat
-import com.junbo.billing.clientproxy.impl.sabrix.Batch
-import com.junbo.billing.clientproxy.impl.sabrix.Invoice
-import com.junbo.billing.clientproxy.impl.sabrix.Line
-import com.junbo.billing.clientproxy.impl.sabrix.SabrixConfiguration
-import com.junbo.billing.clientproxy.impl.sabrix.Tax
+
+import com.junbo.billing.clientproxy.TaxFacade
+import com.junbo.billing.clientproxy.impl.common.XmlConvertor
+import com.junbo.billing.clientproxy.impl.sabrix.*
 import com.junbo.billing.spec.enums.PropertyKey
 import com.junbo.billing.spec.enums.TaxAuthority
 import com.junbo.billing.spec.enums.TaxStatus
+import com.junbo.billing.spec.error.AppErrors
+import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.TaxItem
-import com.junbo.billing.clientproxy.impl.sabrix.Message
-import com.junbo.billing.spec.error.AppErrors
-import com.ning.http.client.Response
-import com.junbo.billing.clientproxy.TaxFacade
-import com.junbo.billing.clientproxy.impl.sabrix.AddressValidationResponse
-import com.junbo.billing.clientproxy.impl.sabrix.ResponseAddress
-import com.junbo.billing.clientproxy.impl.sabrix.SabrixAddress
-import com.junbo.billing.spec.model.Balance
+import com.junbo.billing.spec.model.VatIdValidationResponse
 import com.junbo.common.enumid.CountryId
 import com.junbo.identity.spec.v1.model.Address
 import com.junbo.langur.core.promise.Promise
 import com.ning.http.client.AsyncHttpClient
-import com.thoughtworks.xstream.XStream
 import com.ning.http.client.AsyncHttpClient.BoundRequestBuilder
+import com.ning.http.client.Response
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import javax.annotation.Resource
+import java.text.SimpleDateFormat
 
 /**
  * Implementation of Sabrix facade to calculate tax & validate address.
@@ -52,8 +43,9 @@ class SabrixFacadeImpl implements TaxFacade {
     @Resource(name = 'sabrixConfiguration')
     SabrixConfiguration configuration
 
-    static final int STATUS_CODE_MASK = 100
-    static final int SUCCESSFUL_STATUS_CODE_PREFIX = 2
+    @Resource(name = 'xmlConvertor')
+    XmlConvertor xmlConvertor
+
     static final int SUCCESSFUL_PROCESSING = 0
     static final String GOODS = 'GS'
     static final String ELECTRONIC_SERVICES = 'ES'
@@ -119,10 +111,58 @@ class SabrixFacadeImpl implements TaxFacade {
         }
     }
 
+    @Override
+    Promise<VatIdValidationResponse> validateVatId(String vatId) {
+        RegistrationValidationRequest request = generateRequest(vatId)
+        LOGGER.info('name=Registration_Validation_Request, request={}', request.toString())
+        return validateVatId(request).then { RegistrationValidationResponse response ->
+            return getVatIdValidationResponse(response)
+        }
+    }
+
+    RegistrationValidationRequest generateRequest(String vatId) {
+        def request = new RegistrationValidationRequest()
+        request.registration = [vatId]
+
+        return request
+    }
+
+    Promise<VatIdValidationResponse> getVatIdValidationResponse(RegistrationValidationResponse response) {
+        def validationResponse = new VatIdValidationResponse()
+        if (response.registration == null || response.registration.size() == 0) {
+            validationResponse.status = 'FAILED'
+            validationResponse.message = ''
+        }
+        else {
+            def registration = response.registration[0]
+            validationResponse.message = registration.message
+            validationResponse.vatId = registration.registration
+            switch (registration.message) {
+                case 'Yes, valid VAT number.' :
+                    validationResponse.status = 'VALID'
+                    validationResponse.companyName = registration.name
+                    validationResponse.address = registration.address
+                    break
+                case 'Error: Incomplete (VAT + Member State) or corrupted data input.' :
+                case 'No, invalid VAT number.' :
+                    validationResponse.status = 'INVALID'
+                    break
+                case 'Service unavailable. Please re-submit your request later.' :
+                case 'Member state service unavailable. Please re-submit your request later.' :
+                case 'Request time-out. Please re-submit your request later.' :
+                    validationResponse.status = 'SERVICE_UNAVAILABLE'
+                    break
+                default :
+                    validationResponse.status = 'UNKNOWN'
+            }
+        }
+        return Promise.pure(validationResponse)
+    }
+
     Batch generateBatch(Balance balance, Address shippingAddress, Address piAddress, boolean isAudited) {
         Batch batch = new Batch()
-//        batch.username = configuration.username
-//        batch.password = configuration.password
+        batch.username = configuration.username
+        batch.password = configuration.password
         batch.version = configuration.version
         def invoices = []
         invoices << generateInvoice(balance, shippingAddress, piAddress, isAudited)
@@ -134,13 +174,19 @@ class SabrixFacadeImpl implements TaxFacade {
         Invoice invoice = new Invoice()
         invoice.companyName = configuration.companyName
         invoice.companyRole = configuration.companyRole
-        invoice.externalCompanyId = configuration.externalCompanyId
-        invoice.invoiceNumber = balance.orderId?.value
+        invoice.externalCompanyId = getEntity(piAddress).externalCompanyId
+        invoice.invoiceNumber = balance.balanceId?.value
         invoice.invoiceDate = DATE_FORMATTER.get().format(new Date())
         invoice.currencyCode = balance.currency
         invoice.isAudited = isAudited
         SabrixAddress billToAddress = toSabrixAddress(piAddress)
-        SabrixAddress shipToAddress = toSabrixAddress(shippingAddress)
+        SabrixAddress shipToAddress
+        if (shippingAddress != null) {
+            shipToAddress = toSabrixAddress(shippingAddress)
+        }
+        else {
+            shipToAddress = toSabrixAddress(piAddress)
+        }
 //        invoice.billTo = billToAddress
 //        invoice.shipTo = shipToAddress
         def lines = generateLine(balance, billToAddress, shipToAddress)
@@ -155,18 +201,27 @@ class SabrixFacadeImpl implements TaxFacade {
             Line line = new Line()
             line.id = index + 1
             line.lineNumber = index
-            line.grossAmount = item.amount.toDouble()
+            line.grossAmount = item.amount?.toDouble()
             line.productCode = item.financeId
             line.transactionType = getTransactionType(item)
             line.billTo = billToAddress
-            if (line.transactionType == GOODS) {
-                line.shipTo = shipToAddress
-                line.shipFrom = getSabrixShipFromAddress()
-            }
+            line.shipTo = shipToAddress
+            line.shipFrom = getSabrixShipFromAddress()
             lines << line
         }
 
         return lines
+    }
+
+    Entity getEntity(Address piAddress) {
+        Entity entity = EnumSet.allOf(Entity).find { Entity entity ->
+            entity.country == piAddress.countryId.value
+        }
+        if (entity == null) {
+            return Entity.US_ENTITY
+        }
+
+        return entity
     }
 
     String getTransactionType(BalanceItem item) {
@@ -205,6 +260,7 @@ class SabrixFacadeImpl implements TaxFacade {
     }
 
     SabrixAddress getSabrixShipFromAddress() {
+        // TODO: update ship from address
         SabrixAddress sabrixAddress = new SabrixAddress()
         sabrixAddress.country = configuration.shipFromCountry
         sabrixAddress.state = configuration.shipFromState
@@ -216,21 +272,18 @@ class SabrixFacadeImpl implements TaxFacade {
 
     Promise<TaxCalculationResponse> calculateTax(Batch batch) {
         String taxCalculationUrl = configuration.baseUrl + 'sabrix/xmlinvoice'
-        XStream xstream = new XStream(new DomDriver("UTF-8", new XmlFriendlyNameCoder("_-", "_")))
-        xstream.autodetectAnnotations(true)
-        String content = xstream.toXML(batch)
+        String content = xmlConvertor.getXml(batch)
         def requestBuilder = buildRequest(taxCalculationUrl, content)
         return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover { Throwable throwable ->
             LOGGER.error('Error_Build_Sabrix_Request.', throwable)
             return Promise.pure(null)
         }.then { Response response ->
-            xstream.processAnnotations(TaxCalculationResponse)
-            TaxCalculationResponse result = (TaxCalculationResponse)xstream.fromXML(response.responseBody)
+            TaxCalculationResponse result = xmlConvertor.getTaxCalculationResponse(response.responseBody)
             if (result == null) {
                 LOGGER.error('name=Error_Read_Sabrix_Tax_Calculation_Response.')
                 return Promise.pure(null)
             }
-            if (response.statusCode / STATUS_CODE_MASK == SUCCESSFUL_STATUS_CODE_PREFIX) {
+            if (response.statusCode / 100 == 2) {
                 LOGGER.info('name=Tax_Calculation_Response, response={}', result.toString())
                 return Promise.pure(result)
             }
@@ -308,22 +361,19 @@ class SabrixFacadeImpl implements TaxFacade {
 
     Promise<AddressValidationResponse> validateSabrixAddress(SabrixAddress address) {
         String validateAddressUrl = configuration.baseUrl + 'sabrix/addressvalidation'
-        XStream xstream = new XStream(new DomDriver("UTF-8", new XmlFriendlyNameCoder("_-", "_")))
-        xstream.autodetectAnnotations(true)
-        String content = xstream.toXML(address)
+        String content = xmlConvertor.getXml(address)
         def requestBuilder = buildRequest(validateAddressUrl, content)
         return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover { Throwable throwable ->
             LOGGER.error('Error_Build_Sabrix_Request.', throwable)
             throw AppErrors.INSTANCE.addressValidationError('Fail to build request.').exception()
         }.then { Response response ->
-            xstream.processAnnotations(AddressValidationResponse)
             AddressValidationResponse addressValidationResponse =
-                    (AddressValidationResponse)xstream.fromXML(response.responseBody)
+                    xmlConvertor.getAddressValidationResponse(response.responseBody)
             if (addressValidationResponse == null) {
                 LOGGER.error('name=Error_Read_Sabrix_Response.')
                 throw AppErrors.INSTANCE.addressValidationError('Fail to read response.').exception()
             }
-            if (response.statusCode / STATUS_CODE_MASK == SUCCESSFUL_STATUS_CODE_PREFIX) {
+            if (response.statusCode / 100 == 2) {
                 LOGGER.info('name=Address_Validation_Response, response={}', addressValidationResponse.toString())
                 return Promise.pure(addressValidationResponse)
             }
@@ -362,5 +412,28 @@ class SabrixFacadeImpl implements TaxFacade {
         address.subCountry = validatedAddress.state != null ?
                 validatedAddress.state.code : validatedAddress.province?.code
         return address
+    }
+
+    Promise<RegistrationValidationResponse> validateVatId(RegistrationValidationRequest request) {
+        String vatIdValidation = configuration.baseUrl + 'sabrix-extensions/registrationvalidation'
+        String content = xmlConvertor.getXml(request)
+        def requestBuilder = buildRequest(vatIdValidation, content)
+        return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover { Throwable throwable ->
+            LOGGER.error('Error_Build_Sabrix_Request.', throwable)
+            return Promise.pure(null)
+        }.then { Response response ->
+            RegistrationValidationResponse vatValidationResponse =
+                    xmlConvertor.getRegistrationValidationResponse(response.responseBody)
+            if (vatValidationResponse == null) {
+                LOGGER.error('name=Error_Read_Vat_Id_Validation_Response.')
+                return Promise.pure(null)
+            }
+            if (response.statusCode / 100 == 2) {
+                LOGGER.info('name=Vat_Id_Validation_Response, response={}', vatValidationResponse.toString())
+                return Promise.pure(vatValidationResponse)
+            }
+            LOGGER.info('name=Tax_Calculation_Response_Status_Code, statusCode={}', response.statusCode)
+            return Promise.pure(null)
+        }
     }
 }

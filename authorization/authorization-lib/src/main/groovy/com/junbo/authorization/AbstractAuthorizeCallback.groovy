@@ -193,7 +193,7 @@ abstract class AbstractAuthorizeCallback<T> implements AuthorizeCallback<T> {
         return groupId
     }
 
-    private RoleId getRoleId(Id entityId, String roleName) {
+    protected RoleId getRoleId(Id entityId, String roleName) {
         def tuple = new Tuple(entityId, roleName)
         Element cachedElement = factory.roleCache.get(tuple)
         if (cachedElement != null) {
@@ -216,7 +216,7 @@ abstract class AbstractAuthorizeCallback<T> implements AuthorizeCallback<T> {
         return roleId
     }
 
-    private boolean hasRoleAssignments(RoleId roleId, UserId userId, List<GroupId> groupIds) {
+    protected boolean hasRoleAssignments(RoleId roleId, UserId userId, List<GroupId> groupIds) {
         def tuple = new Tuple(roleId, userId, groupIds)
         Element cachedElement = factory.roleAssignmentCache.get(tuple)
         if (cachedElement != null) {

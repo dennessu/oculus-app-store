@@ -8,7 +8,9 @@ package com.junbo.common.id;
 /**
  * Created by liangfu on 4/22/14.
  */
-@IdResourcePath(value = "/users/{userId}/tfa/{0}", regex = "/users/(?<userId>[0-9A-Z]+)/tfa/(?<id>[0-9A-Z]+)")
+@IdResourcePath(value = "/users/{userId}/tfa/{0}",
+                resourceType = "tfa",
+                regex = "/users/(?<userId>[0-9A-Za-z]+)/tfa/(?<id>[0-9A-Za-z]+)")
 public class UserTFAId extends Id {
 
     public UserTFAId() {}

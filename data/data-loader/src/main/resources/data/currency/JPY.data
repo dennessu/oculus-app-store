@@ -1,0 +1,12 @@
+{
+   "currencyCode" : "JPY",
+   "futureExpansion" : {},
+   "localeKeys" : {
+      "longName" : "JPY_LONG",
+      "shortName" : "JPY_SHORT"
+   },
+   "minimalAuthorizeAmount" : "1",
+   "numberAfterDecimal" : "0",
+   "symbol" : "¥",
+   "symbolPosition" : "BEFORE"
+}

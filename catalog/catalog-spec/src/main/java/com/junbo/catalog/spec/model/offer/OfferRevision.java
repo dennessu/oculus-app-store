@@ -9,6 +9,7 @@ package com.junbo.catalog.spec.model.offer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.*;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.common.jackson.annotation.*;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -26,10 +27,9 @@ public class OfferRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The id of offer revision resource")
     private Long revisionId;
 
-    @UserId
-    @JsonProperty("publisher")
-    @ApiModelProperty(position = 20, required = true, value = "Publisher of the offer revision resource")
-    private Long ownerId;
+    @JsonProperty("owner")
+    @ApiModelProperty(position = 20, required = true, value = "Organization owner of the offer revision resource")
+    private OrganizationId ownerId;
 
     @OfferId
     @JsonProperty("offer")
@@ -76,11 +76,11 @@ public class OfferRevision extends BaseRevisionModel {
         this.revisionId = revisionId;
     }
 
-    public Long getOwnerId() {
+    public OrganizationId getOwnerId() {
         return ownerId;
     }
 
-    public void setOwnerId(Long ownerId) {
+    public void setOwnerId(OrganizationId ownerId) {
         this.ownerId = ownerId;
     }
 

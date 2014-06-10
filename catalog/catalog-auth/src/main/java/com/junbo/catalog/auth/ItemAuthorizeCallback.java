@@ -8,7 +8,6 @@ package com.junbo.catalog.auth;
 import com.junbo.authorization.AbstractAuthorizeCallback;
 import com.junbo.authorization.AbstractAuthorizeCallbackFactory;
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.common.id.UserId;
 import groovy.transform.CompileStatic;
 
 /**
@@ -27,14 +26,9 @@ class ItemAuthorizeCallback extends AbstractAuthorizeCallback<Item> {
     }
 
     @Override
-    protected UserId getUserOwnerId() {
-        return new UserId(getEntity().getOwnerId());
-    }
-
-    @Override
     protected Object getEntityIdByPropertyPath(String propertyPath) {
-        if ("developer".equals(propertyPath) || "owner".equals(propertyPath)) {
-            return new UserId(getEntity().getOwnerId());
+        if ("owner".equals(propertyPath)) {
+            return getEntity().getOwnerId();
         }
 
         return super.getEntityIdByPropertyPath(propertyPath);

@@ -291,7 +291,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         Boolean newValue = !userPIN.getActive()
         newUserPin.setActive(newValue)
-        userPinRepository.update(newUserPin)
+        userPinRepository.update(newUserPin).get()
         newUserPin = userPinRepository.get(newUserPin.getId()).get()
         Assert.assertEquals(newValue, newUserPin.getActive())
 
@@ -441,7 +441,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(userTos.getTosId(), newUserTos.getTosId())
 
         newUserTos.setTosId(new TosId(456L))
-        userTosRepository.update(newUserTos)
+        userTosRepository.update(newUserTos).get()
 
         newUserTos = userTosRepository.get(userTos.getId()).get()
         Assert.assertEquals(new TosId(456L), newUserTos.getTosId())

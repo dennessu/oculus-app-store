@@ -3,7 +3,7 @@ package com.junbo.order.core.impl.subledger
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.OfferId
-import com.junbo.common.id.UserId
+import com.junbo.common.id.OrganizationId
 import groovy.transform.CompileStatic
 
 /**
@@ -12,7 +12,7 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class SubledgerItemContext {
 
-    UserId seller
+    OrganizationId seller
 
     OfferId offer
 

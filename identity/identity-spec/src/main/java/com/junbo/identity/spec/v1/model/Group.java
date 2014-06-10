@@ -8,17 +8,15 @@ package com.junbo.identity.spec.v1.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.GroupId;
 import com.junbo.common.id.OrganizationId;
-import com.junbo.common.id.UserId;
 import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
-import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by liangfu on 4/3/14.
  */
-public class Group extends PropertyAssignedAwareResourceMeta implements Identifiable<GroupId> {
+public class Group extends PropertyAssignedAwareResourceMeta<GroupId> {
 
     @ApiModelProperty(position = 1, required = true, value = "[Nullable]Link to this Group resource.")
     @JsonProperty("self")
@@ -40,10 +38,9 @@ public class Group extends PropertyAssignedAwareResourceMeta implements Identifi
     @HateoasLink("/users?groupId={id}")
     private Link users;
 
-    @ApiModelProperty(position = 6, required = false, value = "Link to the Organization resource.")
-    private OrganizationId owner;
-
-    private UserId ownerUserId;
+    @ApiModelProperty(position = 6, required = true, value = "The owner organization of this group.")
+    @JsonProperty("organization")
+    private OrganizationId organizationId;
 
     @Override
     public GroupId getId() {
@@ -93,21 +90,11 @@ public class Group extends PropertyAssignedAwareResourceMeta implements Identifi
         support.setPropertyAssigned("users");
     }
 
-    public OrganizationId getOwner() {
-        return owner;
+    public OrganizationId getOrganizationId() {
+        return organizationId;
     }
 
-    public void setOwner(OrganizationId owner) {
-        // todo:    Need to add logic check
-        this.owner = owner;
-        support.setPropertyAssigned("owner");
-    }
-
-    public UserId getOwnerUserId() {
-        return ownerUserId;
-    }
-
-    public void setOwnerUserId(UserId ownerUserId) {
-        this.ownerUserId = ownerUserId;
+    public void setOrganizationId(OrganizationId organizationId) {
+        this.organizationId = organizationId;
     }
 }

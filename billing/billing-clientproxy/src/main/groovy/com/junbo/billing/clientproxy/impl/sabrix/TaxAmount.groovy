@@ -13,7 +13,7 @@ import groovy.transform.CompileStatic
  * Tax amount type for tax calculation.
  */
 @CompileStatic
-@XStreamAlias("TAX_AMOUNT")
+@XStreamAlias('TAX_AMOUNT')
 class TaxAmount {
     @XStreamAlias('DOCUMENT_AMOUNT')
     Double documentAmount

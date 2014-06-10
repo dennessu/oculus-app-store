@@ -5,6 +5,7 @@ import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions
 import com.junbo.catalog.spec.resource.OfferRevisionResource
 import com.junbo.common.id.OfferRevisionId
+import com.junbo.common.id.OrganizationId
 import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -53,7 +54,7 @@ class MockCatalogResource extends BaseMock implements OfferRevisionResource {
 
     OfferRevision generateOfferRevision() {
         OfferRevision offer = new OfferRevision(
-                ownerId: generateLong(),
+                ownerId: new OrganizationId(generateLong()),
                 revisionId: generateLong(),
                 offerId: generateLong(),
                 items: [new ItemEntry(

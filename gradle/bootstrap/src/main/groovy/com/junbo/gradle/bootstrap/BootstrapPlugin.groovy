@@ -1,30 +1,20 @@
 package com.junbo.gradle.bootstrap
-
 import org.apache.tools.ant.util.TeeOutputStream
-import org.gradle.BuildListener
-import org.gradle.BuildResult
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.Task
-import org.gradle.api.execution.TaskExecutionListener
-import org.gradle.api.initialization.Settings
-import org.gradle.api.invocation.Gradle
 import org.gradle.api.plugins.ApplicationPlugin
 import org.gradle.api.plugins.GroovyPlugin
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.JavaExec
-import org.gradle.api.tasks.TaskState
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.wrapper.Wrapper
-import org.gradle.util.Clock
 
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
-
 /**
  * Created by kg on 1/21/14.
  */
@@ -59,7 +49,7 @@ class BootstrapPlugin implements Plugin<Project> {
             def subProject = it
 
             group = 'com.junbo.' + project.name.split('-', 2)[0]
-            version = property("${project.name}-version")
+            version = property("current_version")
 
             apply plugin: 'idea'
 
@@ -226,7 +216,7 @@ class BootstrapPlugin implements Plugin<Project> {
                     compile libraries.groovy
 
                     codenarc "org.codenarc:CodeNarc:0.21-J-SNAPSHOT"
-                    codenarc "com.junbo.gradle:bootstrap:0.0.1-SNAPSHOT"
+                    codenarc "com.junbo.gradle:bootstrap:1.0"
                     codenarc libraries.log4j
                     codenarc libraries.groovy
                 }

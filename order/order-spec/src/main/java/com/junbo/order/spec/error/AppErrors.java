@@ -176,4 +176,28 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 409, code = ErrorCode.ORDER_PRICE_CHANGED,
             description = "Order price is changed")
     AppError orderPriceChanged();
+
+    @ErrorDef(httpStatusCode = 409, code = ErrorCode.ORDER_IS_REFUNDED,
+            description = "Order is refunded")
+    AppError orderIsRefunded();
+
+    @ErrorDef(httpStatusCode = 409, code = ErrorCode.ORDER_ITEM_IS_NOT_FOUND_FOR_REFUNDED,
+            description = "Offer {0} is not found for refund")
+    AppError orderItemIsNotFoundForRefund(String offer);
+
+    @ErrorDef(httpStatusCode = 409, code = ErrorCode.ORDER_CAN_NOT_BE_REFUNDED,
+            description = "Order can not be refunded")
+    AppError orderNotRefundable();
+
+    @ErrorDef(httpStatusCode = 500, code = BillingErrorCode.BILLING_REFUND_FAILED,
+            description = "Billing refund failed")
+    AppError billingRefundFailed();
+
+    @ErrorDef(httpStatusCode = 400, code = UserErrorCode.CURRENCY_NOT_VALID,
+            description = "Currency {0} is not valid")
+    AppError currencyNotValid(String currency);
+
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.ORDER_NO_ITEM_TO_REFUND_IN_REQUEST,
+            description = "There's no item to refund per request")
+    AppError orderNoItemRefund();
 }

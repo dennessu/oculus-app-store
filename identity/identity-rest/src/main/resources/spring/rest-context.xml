@@ -61,6 +61,7 @@
     <bean id="defaultUserTFABackupCodeResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserTFABackupCodeResourceClientProxyFactory"/>
     <bean id="defaultUserTFABackupCodeAttemptResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserTFABackupCodeAttemptResourceClientProxyFactory"/>
     <bean id="defaultOrganizationResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.OrganizationResourceClientProxyFactory" />
+    <bean id="defaultMigrationResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.MigrationResourceClientProxyFactory" />
 
     <bean id="defaultAuthenticatorResourceRouter" parent="routingRouterBase" />
     <bean id="defaultUserCommunicationResourceRouter" parent="routingRouterBase" />
@@ -86,6 +87,7 @@
     <bean id="defaultUserTFABackupCodeResourceRouter" parent="routingRouterBase" />
     <bean id="defaultUserTFABackupCodeAttemptResourceRouter" parent="routingRouterBase" />
     <bean id="defaultOrganizationResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultMigrationResourceRouter" parent="routingRouterBase" />
 
 
 </beans>

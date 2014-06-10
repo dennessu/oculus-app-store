@@ -136,7 +136,7 @@ class CartServiceImpl implements CartService {
     Promise<Cart> mergeCart(UserId userId, CartId cartId, Cart fromCart) {
         validation.validateMerge(fromCart)
         return getCart(userId, cartId).then { Cart destCart ->
-            return getCart(fromCart.user, fromCart.id).syncThen { Cart cart ->
+            return getCart(fromCart.user, fromCart.getId()).syncThen { Cart cart ->
                 destCart.offers.each {
                     ((OfferItem) it).isSelected = false
                 }

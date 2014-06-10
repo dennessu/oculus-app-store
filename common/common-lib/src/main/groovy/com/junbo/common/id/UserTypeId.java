@@ -8,7 +8,9 @@ package com.junbo.common.id;
 /**
  * Created by liangfu on 4/17/14.
  */
-@IdResourcePath(value = "/user-type/{0}", regex = "/user-type/(?<id>[0-9A-Z]+)")
+@IdResourcePath(value = "/user-type/{0}",
+                resourceType = "user-type",
+                regex = "/user-type/(?<id>[0-9A-Za-z]+)")
 public class UserTypeId extends Id {
     public UserTypeId() {}
 

@@ -230,6 +230,9 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
         }catch (Exception ex){
             throw AppServerExceptions.INSTANCE.noExternalTokenFoundForPayment(transactionId).exception();
         }
+        if(walletTransactionId == null){
+            throw AppServerExceptions.INSTANCE.noExternalTokenFoundForPayment(transactionId).exception();
+        }
         return walletClient.refund(walletTransactionId, refundRequest)
                 .recover(new Promise.Func<Throwable, Promise<Transaction>>() {
                     @Override

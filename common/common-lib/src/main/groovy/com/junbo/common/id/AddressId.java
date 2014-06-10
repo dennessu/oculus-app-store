@@ -9,7 +9,9 @@ package com.junbo.common.id;
 /**
  * Created by xmchen on 14-4-15.
  */
-@IdResourcePath(value = "/addresses/{0}", regex = "/addresses/(?<id>[0-9A-Z]+)")
+@IdResourcePath(value = "/addresses/{0}",
+                resourceType = "addresses",
+                regex = "/addresses/(?<id>[0-9A-Za-z]+)")
 public class AddressId extends Id {
 
     public AddressId() {}

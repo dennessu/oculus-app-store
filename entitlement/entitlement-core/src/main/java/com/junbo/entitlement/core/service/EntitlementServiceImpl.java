@@ -156,9 +156,9 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
         Entitlement newEntitlement = CloneUtils.clone(existingEntitlement);
         deleteEntitlement(entitlementTransfer.getEntitlementId());
-        LOGGER.info("Entitlement [{}] is deleted for transferring.", existingEntitlement.getEntitlementId());
+        LOGGER.info("Entitlement [{}] is deleted for transferring.", existingEntitlement.getId());
         newEntitlement.setTrackingUuid(entitlementTransfer.getTrackingUuid());
-        newEntitlement.setEntitlementId(null);
+        newEntitlement.setId(null);
         newEntitlement.setUserId(entitlementTransfer.getTargetUserId());
         return entitlementRepository.insert(newEntitlement);
     }

@@ -7,22 +7,24 @@
 package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.junbo.common.model.ResourceMeta;
-import com.junbo.common.util.Identifiable;
+import com.junbo.common.model.ResourceMetaForDualWrite;
 
 import java.math.BigDecimal;
 
 /**
  * Created by fzhang on 14-3-11.
  */
-public class BillingHistory extends ResourceMeta implements Identifiable<Long> {
+public class BillingHistory extends ResourceMetaForDualWrite<Long> {
 
     @JsonIgnore
     private Long id;
+
     @JsonIgnore
     private String balanceId;
+
     @JsonIgnore
     private Long orderId;
+
     private BigDecimal totalAmount;
     private String billingEvent;
 

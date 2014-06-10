@@ -7,6 +7,7 @@ package com.junbo.sharding.dualwrite.data
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.langur.core.promise.Promise
+import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 /**
@@ -19,6 +20,7 @@ public class PendingActionRepositoryCloudantImpl extends CloudantClient<PendingA
 
     private boolean hardDelete;
     private PendingActionMapper mapper;
+    private IdGenerator idGenerator;
 
     @Required
     void setMapper(PendingActionMapper mapper) {
@@ -33,22 +35,28 @@ public class PendingActionRepositoryCloudantImpl extends CloudantClient<PendingA
         return hardDelete
     }
 
+    @Required
+    void setIdGenerator(IdGenerator idGenerator) {
+        this.idGenerator = idGenerator
+    }
+
     @Override
     protected CloudantViews getCloudantViews() {
         return views
     }
 
     @Override
-    public Promise<PendingAction> get(UUID id) {
+    public Promise<PendingAction> get(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("id is null");
         }
-        PendingActionEntity entity = this.cloudantGet(id.toString());
-        if (entity != null && entity.isDeleted()) {
-            return Promise.pure(null);
-        }
+        return this.cloudantGet(id.toString()).then { PendingActionEntity entity ->
+            if (entity != null && entity.isDeleted()) {
+                return Promise.pure(null);
+            }
 
-        return Promise.pure(mapper.map(entity));
+            return Promise.pure(mapper.map(entity));
+        };
     }
 
     @Override
@@ -57,23 +65,24 @@ public class PendingActionRepositoryCloudantImpl extends CloudantClient<PendingA
             throw new IllegalArgumentException('model is null')
         }
         if (model.id == null) {
-            model.id = UUID.randomUUID()
+            model.id = idGenerator.nextId(model.getChangedEntityId());
         }
         PendingActionEntity entity = mapper.map(model)
-        this.cloudantPost(entity)
-
-        return get(model.getId())
+        return this.cloudantPost(entity).then {
+            return get(model.getId())
+        }
     }
 
     @Override
     public Promise<PendingAction> update(PendingAction model) {
-        return Promise.pure(mapper.map(this.cloudantPut(mapper.map(model))))
+        return this.cloudantPut(mapper.map(model)).then { PendingActionEntity entity ->
+            return Promise.pure(mapper.map(entity))
+        }
     }
 
     @Override
-    public Promise<Void> delete(UUID id) {
-        this.cloudantDelete(id.toString())
-        return Promise.pure(null)
+    public Promise<Void> delete(Long id) {
+        return this.cloudantDelete(id.toString())
     }
 
     @Override

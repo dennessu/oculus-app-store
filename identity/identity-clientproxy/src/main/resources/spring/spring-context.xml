@@ -19,7 +19,7 @@
         <property name="target" value="${clientproxy.crypto.url}" />
     </bean>
 
-    <bean id="identityAccessTokenProvider" class="com.junbo.authorization.ClientCredentialsAccessTokenProvider">
+    <bean id="identityAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
         <property name="scope" value="identity.service"/>
         <property name="deflectionInSeconds" value="300"/>
         <property name="clientSecret" value="secret"/>
@@ -35,6 +35,26 @@
 
     <bean id="userPersonalInfoResourceClientProxy"
           class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
+        <property name="accessTokenProvider" ref="identityAccessTokenProvider"/>
+    </bean>
+
+    <bean id="groupResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.GroupResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
+        <property name="accessTokenProvider" ref="identityAccessTokenProvider"/>
+    </bean>
+
+    <bean id="userGroupMembershipResourceClientProxy"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserGroupMembershipResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
+        <property name="accessTokenProvider" ref="identityAccessTokenProvider"/>
+    </bean>
+
+    <bean id="organizationResourceClientProxy"
+          class="com.junbo.identity.spec.v1.resource.proxy.OrganizationResourceClientProxy"
+          parent="baseClientProxy">
         <property name="target" value="${clientproxy.identity.url}"/>
         <property name="accessTokenProvider" ref="identityAccessTokenProvider"/>
     </bean>

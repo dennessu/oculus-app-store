@@ -5,10 +5,6 @@ import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.identity.core.service.normalize.NormalizeService
-import com.junbo.identity.core.service.validator.OrganizationValidator
-import com.junbo.identity.core.service.validator.UserPasswordValidator
-import com.junbo.identity.core.service.validator.UserPersonalInfoValidator
-import com.junbo.identity.core.service.validator.UserValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.OrganizationRepository
@@ -17,7 +13,7 @@ import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.model.migration.OculusInput
-import com.junbo.identity.spec.v1.resource.migration.MigrationResource
+import com.junbo.identity.spec.v1.resource.MigrationResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
@@ -70,8 +66,9 @@ class MigrationResourceImpl implements MigrationResource {
                 username: oculusInput.username,
                 canonicalUsername: normalizeService.normalize(oculusInput.username),
                 preferredLocale: new LocaleId(mapToLocaleCode(oculusInput.language)),
-                preferredTimezone: timeZoneMap.get(oculusInput.timeZone),
+                preferredTimezone: timeZoneMap.get(oculusInput.timezone),
                 status: mapToStatus(oculusInput.status),
+                isAnonymous: !StringUtils.isEmpty(oculusInput.username),
                 createdTime: oculusInput.createdDate,
                 updatedTime: oculusInput.updateDate
         )
@@ -81,7 +78,7 @@ class MigrationResourceImpl implements MigrationResource {
             UserName userName = new UserName(
                 givenName: oculusInput.firstName,
                 familyName: oculusInput.lastName,
-                nickName: oculusInput.nickName
+                nickName: oculusInput.nickname
             )
             UserPersonalInfo name = new UserPersonalInfo(
                     userId: (UserId)createdUser.id,
@@ -96,7 +93,7 @@ class MigrationResourceImpl implements MigrationResource {
                         isDefault: true,
                         value: (UserPersonalInfoId)userPersonalInfo.id
                 )
-                return createdUser
+                return Promise.pure(createdUser)
             }
         }.then { User createdUser ->
             Email userEmail = new Email(
@@ -117,7 +114,7 @@ class MigrationResourceImpl implements MigrationResource {
                         value: (UserPersonalInfoId)userPersonalInfo.id
                 )
                 createdUser.emails.add(emailLink)
-                return createdUser
+                return Promise.pure(createdUser)
             }
         }.then { User createdUser ->
             if (StringUtils.isEmpty(oculusInput.gender)) {
@@ -140,7 +137,7 @@ class MigrationResourceImpl implements MigrationResource {
                         isDefault: true,
                         value: (UserPersonalInfoId)userPersonalInfo.id
                 )
-                return createdUser
+                return Promise.pure(createdUser)
             }
         }.then { User createdUser ->
             if (oculusInput.dob == null) {

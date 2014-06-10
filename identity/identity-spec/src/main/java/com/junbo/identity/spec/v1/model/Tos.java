@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.id.TosId;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
-import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import java.util.List;
 /**
  * Created by liangfu on 4/3/14.
  */
-public class Tos extends PropertyAssignedAwareResourceMeta implements Identifiable<TosId> {
+public class Tos extends PropertyAssignedAwareResourceMeta<TosId> {
 
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The Link to the tos resource.")
     @JsonProperty("self")

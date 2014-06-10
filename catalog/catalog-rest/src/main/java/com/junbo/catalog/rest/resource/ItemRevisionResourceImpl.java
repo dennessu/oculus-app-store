@@ -6,7 +6,15 @@
 
 package com.junbo.catalog.rest.resource;
 
+import com.junbo.authorization.AuthorizeCallback;
+import com.junbo.authorization.AuthorizeContext;
+import com.junbo.authorization.AuthorizeService;
+import com.junbo.authorization.RightsScope;
+import com.junbo.catalog.auth.ItemAuthorizeCallbackFactory;
+import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.ItemService;
+import com.junbo.catalog.spec.error.AppErrors;
+import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
 import com.junbo.catalog.spec.resource.ItemRevisionResource;
@@ -29,6 +37,12 @@ import java.util.List;
 public class ItemRevisionResourceImpl implements ItemRevisionResource {
     @Autowired
     private ItemService itemService;
+
+    @Autowired
+    private ItemAuthorizeCallbackFactory itemAuthorizeCallbackFactory;
+
+    @Autowired
+    private AuthorizeService authorizeService;
 
     @Override
     public Promise<Results<ItemRevision>> getItemRevisions(ItemRevisionsGetOptions options) {
@@ -66,18 +80,56 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
     }
 
     @Override
-    public Promise<ItemRevision> createItemRevision(ItemRevision itemRevision) {
-        return Promise.pure(itemService.createRevision(itemRevision));
+    public Promise<ItemRevision> createItemRevision(final ItemRevision itemRevision) {
+        AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create(itemRevision.getItemId());
+        return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<ItemRevision>>() {
+            @Override
+            public Promise<ItemRevision> apply() {
+
+                if (!AuthorizeContext.hasRights("create")) {
+                    throw AppErrors.INSTANCE.accessDenied().exception();
+                }
+
+                return Promise.pure(itemService.createRevision(itemRevision));
+            }
+        });
     }
 
     @Override
-    public Promise<ItemRevision> updateItemRevision(ItemRevisionId revisionId, ItemRevision itemRevision) {
-        return Promise.pure(itemService.updateRevision(revisionId.getValue(), itemRevision));
+    public Promise<ItemRevision> updateItemRevision(final ItemRevisionId revisionId, final ItemRevision itemRevision) {
+        AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create(itemRevision.getItemId());
+        return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<ItemRevision>>() {
+            @Override
+            public Promise<ItemRevision> apply() {
+
+                if (!AuthorizeContext.hasRights("update")) {
+                    throw AppErrors.INSTANCE.accessDenied().exception();
+                }
+
+                return Promise.pure(itemService.updateRevision(revisionId.getValue(), itemRevision));
+            }
+        });
     }
 
     @Override
-    public Promise<Response> delete(ItemRevisionId revisionId) {
-        itemService.deleteRevision(revisionId.getValue());
-        return Promise.pure(Response.status(204).build());
+    public Promise<Response> delete(final ItemRevisionId revisionId) {
+        ItemRevision itemRevision = itemService.getRevision(revisionId.getValue());
+        if (itemRevision == null) {
+            throw AppErrors.INSTANCE.notFound("item-revision", Utils.encodeId(revisionId.getValue())).exception();
+        }
+
+        AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create(itemRevision.getItemId());
+        return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<Response>>() {
+            @Override
+            public Promise<Response> apply() {
+
+                if (!AuthorizeContext.hasRights("delete")) {
+                    throw AppErrors.INSTANCE.accessDenied().exception();
+                }
+
+                itemService.deleteRevision(revisionId.getValue());
+                return Promise.pure(Response.status(204).build());
+            }
+        });
     }
 }

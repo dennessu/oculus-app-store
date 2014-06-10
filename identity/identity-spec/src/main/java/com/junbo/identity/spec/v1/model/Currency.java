@@ -10,7 +10,6 @@ import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
-import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
@@ -20,7 +19,7 @@ import java.util.Map;
 /**
  * Created by xiali_000 on 4/21/2014.
  */
-public class Currency extends PropertyAssignedAwareResourceMeta implements Identifiable<CurrencyId> {
+public class Currency extends PropertyAssignedAwareResourceMeta<CurrencyId> {
 
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The Link to the currency resource.")
     @JsonProperty("self")

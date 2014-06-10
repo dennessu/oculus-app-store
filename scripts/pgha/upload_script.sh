@@ -1,9 +1,10 @@
 #!/bin/bash
-source common.sh
+DIR="$( cd "$( dirname "$0" )" && pwd )"
+source ${DIR}/util/common.sh
 
 #master
 ssh $DEVOPS_ACCOUNT@$MASTER_HOST << ENDSSH
-rm -rf $DEPLOYMENT_PATH
+sudo rm -rf $DEPLOYMENT_PATH
 mkdir $DEPLOYMENT_PATH
 ENDSSH
 
@@ -15,7 +16,7 @@ ENDSSH
 
 #slave
 ssh $DEVOPS_ACCOUNT@$SLAVE_HOST << ENDSSH
-rm -rf $DEPLOYMENT_PATH
+sudo rm -rf $DEPLOYMENT_PATH
 mkdir $DEPLOYMENT_PATH
 ENDSSH
 
@@ -27,7 +28,7 @@ ENDSSH
 
 #replica
 ssh $DEVOPS_ACCOUNT@$REPLICA_HOST << ENDSSH
-rm -rf $DEPLOYMENT_PATH
+sudo rm -rf $DEPLOYMENT_PATH
 mkdir $DEPLOYMENT_PATH
 ENDSSH
 

@@ -15,13 +15,13 @@ public class OculusInput {
     private String currentId;
     private String firstName;
     private String lastName;
-    private String nickName;
+    private String nickname;
     private String email;
     private String username;
     private String password;
     private String gender;
     private Date dob;
-    private Number timeZone;
+    private Number timezone;
     private String language;
     private Date createdDate;
     private Date updateDate;
@@ -55,12 +55,12 @@ public class OculusInput {
         this.lastName = lastName;
     }
 
-    public String getNickName() {
-        return nickName;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
+    public void setNickName(String nickname) {
+        this.nickname = nickname;
     }
 
     public String getEmail() {
@@ -103,12 +103,12 @@ public class OculusInput {
         this.dob = dob;
     }
 
-    public Number getTimeZone() {
-        return timeZone;
+    public Number getTimezone() {
+        return timezone;
     }
 
-    public void setTimeZone(Number timeZone) {
-        this.timeZone = timeZone;
+    public void setTimezone(Number timezone) {
+        this.timezone = timezone;
     }
 
     public String getLanguage() {

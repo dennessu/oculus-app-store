@@ -6,6 +6,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.Order
+import com.junbo.order.spec.model.OrderItem
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
@@ -99,5 +100,21 @@ class OrderValidator {
                 }
             }
         }
+    }
+
+    OrderValidator validateRefundOrderRequest(Order order) {
+        assert (order != null)
+        if (order.tentative) {
+            throw AppErrors.INSTANCE.fieldInvalid('tentative').exception()
+        }
+        order.orderItems?.each { OrderItem item ->
+            if (item.quantity < 0) {
+                throw AppErrors.INSTANCE.fieldInvalid('orderItem.quantity').exception()
+            }
+            if (item.totalAmount < BigDecimal.ZERO) {
+                throw AppErrors.INSTANCE.fieldInvalid('orderItem.totalAmount').exception()
+            }
+        }
+        return this
     }
 }

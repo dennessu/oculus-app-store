@@ -5,21 +5,23 @@
  */
 package com.junbo.common.cloudant;
 
+import com.junbo.common.util.Identifiable;
+
 import java.util.Date;
 
 /**
  * The interface with common fields used by CloudantClient.
  */
-public interface CloudantEntity {
+public interface CloudantEntity<K> extends Identifiable<K> {
+
+    K getId();
+    void setId(K id);
 
     String getCloudantId();
     void setCloudantId(String id);
 
     String getCloudantRev();
     void setCloudantRev(String rev);
-
-    Integer getResourceAge();
-    void setResourceAge(Integer resourceAge);
 
     Date getCreatedTime();
     void setCreatedTime(Date date);
@@ -32,6 +34,10 @@ public interface CloudantEntity {
 
     Long getUpdatedBy();
     void setUpdatedBy(Long updatedBy);
+
+    // only used in dual-write resources
+    Integer getResourceAge();
+    void setResourceAge(Integer resourceAge);
 
     // TODO: track client
     // String getCreatedByClient()

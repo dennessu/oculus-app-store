@@ -23,7 +23,7 @@ public abstract class TransactionBaseDao<T extends EntityWithCreated> extends Cl
     private Class<T> entityType;
 
     public T get(Long id) {
-        return super.cloudantGet(id.toString());
+        return super.cloudantGet(id.toString()).get();
     }
 
     public T insert(T t) {
@@ -31,11 +31,11 @@ public abstract class TransactionBaseDao<T extends EntityWithCreated> extends Cl
         t.setpId(generateId(t.getShardMasterId()));
         t.setUpdatedBy(123L);   //TODO
         t.setUpdatedTime(now);
-        return super.cloudantPost(t);
+        return super.cloudantPost(t).get();
     }
 
     public void update(T t) {
-        super.cloudantPut(t);
+        super.cloudantPut(t).get();
     }
 
     protected Long generateId(Long shardId) {

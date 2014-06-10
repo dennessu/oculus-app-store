@@ -9,7 +9,9 @@ package com.junbo.common.id;
 /**
  * payment id.
  */
-@IdResourcePath(value = "/payment-transactions/{0}", regex = "/payment-transactions/(?<id>[0-9A-Z]+)")
+@IdResourcePath(value = "/payment-transactions/{0}",
+                resourceType = "payment-transactions",
+                regex = "/payment-transactions/(?<id>[0-9A-Za-z]+)")
 public class PaymentId extends Id {
 
     public PaymentId() {} {

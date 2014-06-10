@@ -8,36 +8,26 @@ package com.junbo.billing.clientproxy.impl
 
 import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
 
-import com.junbo.common.enumid.CountryId
-import com.junbo.identity.spec.v1.model.Address
-
-import com.junbo.billing.clientproxy.impl.avalara.ResponseMessage
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import com.junbo.billing.clientproxy.impl.avalara.ValidateAddressResponse
-import com.junbo.billing.spec.error.AppErrors
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.junbo.langur.core.client.MessageTranscoder
-import com.ning.http.client.Response
 import com.junbo.billing.clientproxy.TaxFacade
-import com.junbo.billing.clientproxy.impl.avalara.AvalaraConfiguration
-import com.junbo.billing.clientproxy.impl.avalara.DetailLevel
-import com.junbo.billing.clientproxy.impl.avalara.GetTaxRequest
-import com.junbo.billing.clientproxy.impl.avalara.GetTaxResponse
-import com.junbo.billing.clientproxy.impl.avalara.Line
-import com.junbo.billing.clientproxy.impl.avalara.AvalaraAddress
-import com.junbo.billing.clientproxy.impl.avalara.SeverityLevel
-import com.junbo.billing.clientproxy.impl.avalara.TaxDetail
-import com.junbo.billing.clientproxy.impl.avalara.TaxLine
+import com.junbo.billing.clientproxy.impl.avalara.*
 import com.junbo.billing.spec.enums.TaxAuthority
 import com.junbo.billing.spec.enums.TaxStatus
+import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.TaxItem
+import com.junbo.billing.spec.model.VatIdValidationResponse
+import com.junbo.common.enumid.CountryId
+import com.junbo.identity.spec.v1.model.Address
+import com.junbo.langur.core.client.MessageTranscoder
 import com.junbo.langur.core.promise.Promise
 import com.ning.http.client.AsyncHttpClient
 import com.ning.http.client.AsyncHttpClient.BoundRequestBuilder
+import com.ning.http.client.Response
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 import javax.annotation.Resource
 
@@ -55,8 +45,6 @@ class AvalaraFacadeImpl implements TaxFacade {
     @Resource(name = 'transcoder')
     MessageTranscoder transcoder
 
-    static final int STATUS_CODE_MASK = 100
-    static final int SUCCESSFUL_STATUS_CODE_PREFIX = 2
     static final String[] SUPPORT_COUNTRY_LIST = ['US', 'CA']
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AvalaraFacadeImpl)
@@ -87,6 +75,14 @@ class AvalaraFacadeImpl implements TaxFacade {
         }
 
         return Promise.pure(address)
+    }
+
+    @Override
+    Promise<VatIdValidationResponse> validateVatId(String vatId) {
+        def response = new VatIdValidationResponse()
+        response.status = 'FAILED'
+        response.message = 'Avalara DO NOT support VAT ID validation.'
+        return Promise.pure(response)
     }
 
     Address updateAddress(ValidateAddressResponse response, Address address) {
@@ -195,7 +191,7 @@ class AvalaraFacadeImpl implements TaxFacade {
                 LOGGER.error('name=Error_Read_Avalara_Response.', ex)
                 throw AppErrors.INSTANCE.addressValidationError('Fail to read response.').exception()
             }
-            if (response.statusCode / STATUS_CODE_MASK == SUCCESSFUL_STATUS_CODE_PREFIX) {
+            if (response.statusCode / 100 == 2) {
                 return Promise.pure(validateAddressResponse)
             }
 
@@ -221,7 +217,7 @@ class AvalaraFacadeImpl implements TaxFacade {
             LOGGER.error('Error_Build_Avalara_Request.', throwable)
             return Promise.pure(null)
         }.then { Response response ->
-            if (response.statusCode / STATUS_CODE_MASK == SUCCESSFUL_STATUS_CODE_PREFIX) {
+            if (response.statusCode / 100 == 2) {
                 try {
                     return Promise.pure(new ObjectMapper().readValue(response.responseBody, GetTaxResponse))
                 } catch (IOException ex) {

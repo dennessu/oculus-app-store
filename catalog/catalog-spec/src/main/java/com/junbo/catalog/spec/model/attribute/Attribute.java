@@ -16,12 +16,11 @@ import java.util.Map;
 public interface Attribute {
     Long getId();
     void setId(Long id);
+    String getRev();
     String getType();
     void setType(String type);
     Long getParentId();
     void setParentId(Long parentId);
     Map<String, SimpleLocaleProperties> getLocales();
     void setLocales(Map<String, SimpleLocaleProperties> locales);
-    Integer getResourceAge();
-    void setResourceAge(Integer rev);
 }

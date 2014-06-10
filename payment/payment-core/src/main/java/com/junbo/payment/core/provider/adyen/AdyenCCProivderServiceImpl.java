@@ -93,6 +93,7 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                 Address address = null;
                 if(request.getBillingAddressId() != null){
                     address = personalInfoFacade.getBillingAddress(request.getBillingAddressId()).get();
+                    address.setId(request.getBillingAddressId());
                 }
                 if(address != null){
                     Card card = new Card();
@@ -114,13 +115,14 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                     headers.putSingle("Authorization", "Basic d3NAQ29tcGFueS5PY3VsdXM6I0J1Z3NmMHIkJiNCdWdzZjByJDE=");
                     headers.putSingle("Accept", "text/html");
                     ((AdyenApiClientProxy)adyenRestClient).setHeaders(headers);
-                    StringBuffer sbReq = getRawRequest(defaultCurrency, minAuthAmount, piId, request);
+                    StringBuffer sbReq = getRawRequest(defaultCurrency, minAuthAmount, piId, request, address);
                     String restResponse = adyenRestClient.authorise(sbReq.toString()).get();
                     if(CommonUtil.isNullOrEmpty(restResponse)){
                         throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "no response").exception();
                     }
                     result = getPaymentResult(restResponse);
                 } catch (Exception e) {
+                    LOGGER.error("error calling adyen:" + e.toString());
                     throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, e.toString()).exception();
                 }
                 if(result != null && result.getResultCode().equalsIgnoreCase(CONFIRMED_STATUS)){
@@ -171,28 +173,72 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
         return result;
     }
 
-    private StringBuffer getRawRequest(CurrencyId defaultCurrency, long minAuthAmount, Long piId, PaymentInstrument request) throws UnsupportedEncodingException {
+    private StringBuffer getRawRequest(CurrencyId defaultCurrency, long minAuthAmount, Long piId,
+                         PaymentInstrument request, Address address){
         StringBuffer sbReq = new StringBuffer();
         sbReq.append("action=Payment.authorise");
-        sbReq.append("&paymentRequest.card.cvc=" + request.getTypeSpecificDetails().getEncryptedCvmCode());
         sbReq.append("&paymentRequest.card.holderName=" + request.getAccountName());
         String expireDate = request.getTypeSpecificDetails().getExpireDate();
         String[] tokens = expireDate.split("-");
         if (tokens == null || tokens.length < 2) {
             throw AppClientExceptions.INSTANCE.invalidExpireDateFormat(expireDate).exception();
         }
-        sbReq.append("&paymentRequest.card.expiryMonth=" + URLEncoder.encode(String.valueOf(tokens[1]), "UTF-8"));
-        sbReq.append("&paymentRequest.card.expiryYear=" + URLEncoder.encode(String.valueOf(tokens[0]), "UTF-8"));
-        sbReq.append("&paymentRequest.amount.currency=" + URLEncoder.encode(defaultCurrency.getValue(), "UTF-8"));
-        sbReq.append("&paymentRequest.amount.value=" + minAuthAmount);
-        sbReq.append("&paymentRequest.merchantAccount=" + URLEncoder.encode(getMerchantAccount(), "UTF-8"));
-        sbReq.append("&paymentRequest.reference=" + piId.toString());
-        sbReq.append("&paymentRequest.additionalData.card.encrypted.json=" + URLEncoder.encode(request.getAccountNum(), "UTF-8"));
-        sbReq.append("&paymentRequest.shopperEmail=" + URLEncoder.encode(request.getUserInfo().getEmail(), "UTF-8"));
-        sbReq.append("&paymentRequest.shopperReference=" + piId.toString());
-        sbReq.append("&paymentRequest.recurring.contract=" + RECURRING);
-        sbReq.append("&paymentRequest.shopperInteraction=ContAuth");
+        try {
+            sbReq.append("&paymentRequest.card.expiryMonth=" + URLEncoder.encode(String.valueOf(tokens[1]), "UTF-8"));
+            sbReq.append("&paymentRequest.card.expiryYear=" + URLEncoder.encode(String.valueOf(tokens[0]), "UTF-8"));
+            sbReq.append("&paymentRequest.amount.currency=" + URLEncoder.encode(defaultCurrency.getValue(), "UTF-8"));
+            sbReq.append("&paymentRequest.amount.value=" + minAuthAmount);
+            sbReq.append("&paymentRequest.merchantAccount=" + URLEncoder.encode(getMerchantAccount(), "UTF-8"));
+            sbReq.append("&paymentRequest.reference=" + piId.toString());
+            sbReq.append("&paymentRequest.additionalData.card.encrypted.json=" + URLEncoder.encode(request.getAccountNum(), "UTF-8"));
+            sbReq.append("&paymentRequest.shopperEmail=" + URLEncoder.encode(request.getUserInfo().getEmail(), "UTF-8"));
+            sbReq.append("&paymentRequest.shopperReference=" + piId.toString());
+            sbReq.append("&paymentRequest.recurring.contract=" + RECURRING);
+            sbReq.append("&paymentRequest.shopperInteraction=ContAuth");
+
+            if(address != null){
+                sbReq.append(getAddressRequest(address));
+            }
+        } catch (UnsupportedEncodingException e) {
+            LOGGER.error("error encode the URL");
+            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "error encode").exception();
+        }
         return sbReq;
+    }
+
+    private String getAddressRequest(Address address) throws UnsupportedEncodingException {
+        StringBuffer sbReq = new StringBuffer();
+        if(!CommonUtil.isNullOrEmpty(address.getCity())){
+            sbReq.append("&paymentRequest.card.billingAddress.city=" + URLEncoder.encode(address.getCity(), "UTF-8"));
+        }else{
+            throw AppClientExceptions.INSTANCE.invalidBillingAddressId(address.getId().toString(), "missing City").exception();
+        }
+        if(!CommonUtil.isNullOrEmpty(address.getAddressLine1())){
+            sbReq.append("&paymentRequest.card.billingAddress.street=" + URLEncoder.encode(address.getAddressLine1(), "UTF-8"));
+        }else{
+            throw AppClientExceptions.INSTANCE.invalidBillingAddressId(address.getId().toString(), "missing street").exception();
+        }
+        if(!CommonUtil.isNullOrEmpty(address.getPostalCode())){
+            sbReq.append("&paymentRequest.card.billingAddress.postalCode=" + URLEncoder.encode(address.getPostalCode(), "UTF-8"));
+        }else{
+            throw AppClientExceptions.INSTANCE.invalidBillingAddressId(address.getId().toString(), "missing postalCode").exception();
+        }
+        if(!CommonUtil.isNullOrEmpty(address.getState())){
+            sbReq.append("&paymentRequest.card.billingAddress.stateOrProvince=" + URLEncoder.encode(address.getState(), "UTF-8"));
+        }else{
+            throw AppClientExceptions.INSTANCE.invalidBillingAddressId(address.getId().toString(), "missing subCountry").exception();
+        }
+        if(!CommonUtil.isNullOrEmpty(address.getCountry())){
+            sbReq.append("&paymentRequest.card.billingAddress.country=" + URLEncoder.encode(address.getCountry(), "UTF-8"));
+        }else{
+            throw AppClientExceptions.INSTANCE.invalidBillingAddressId(address.getId().toString(), "missing Country").exception();
+        }
+        if(!CommonUtil.isNullOrEmpty(address.getUnitNumber())){
+            sbReq.append("&paymentRequest.card.billingAddress.houseNumberOrName=" + URLEncoder.encode(address.getUnitNumber(), "UTF-8"));
+        }else{
+            throw AppClientExceptions.INSTANCE.invalidBillingAddressId(address.getId().toString(), "missing UnitNumber").exception();
+        }
+        return sbReq.toString();
     }
 
     @Override

@@ -51,4 +51,10 @@ public class OrderBalanceLinkEntityDaoImpl extends BaseDao implements OrderBalan
                 add(Restrictions.eq("orderId", orderId));
         return criteria.list();
     }
+
+    public List<OrderBalanceLinkEntity> findByBalanceId(Long balanceId) {
+        Criteria criteria = currentSession(balanceId).createCriteria(OrderBalanceLinkEntity.class).
+                add(Restrictions.eq("balanceId", balanceId));
+        return criteria.list();
+    }
 }

@@ -12,7 +12,7 @@ package com.junbo.common.id;
 @IdResourcePath(
         resourceType = "users",
         value = "/users/{0}",
-        regex = "/users/(?<id>[0-9A-Z]+)")
+        regex = "/users/(?<id>[0-9A-Za-z]+)")
 public class UserId extends Id {
 
     public UserId() {}

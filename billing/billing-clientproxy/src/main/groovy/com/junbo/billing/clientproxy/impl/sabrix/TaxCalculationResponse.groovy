@@ -15,7 +15,7 @@ import groovy.transform.CompileStatic
  * Batch level output for tax calculation.
  */
 @CompileStatic
-@XStreamAlias("OUTDATA")
+@XStreamAlias('OUTDATA')
 class TaxCalculationResponse {
     @XStreamAlias('REQUEST_STATUS')
     RequestStatus requestStatus
@@ -26,4 +26,14 @@ class TaxCalculationResponse {
     @XStreamAsAttribute
     @XStreamAlias('version')
     String version
+
+
+    @Override
+    public String toString() {
+        return "TaxCalculationResponse{" +
+                "requestStatus=" + requestStatus +
+                ", invoice=" + invoice +
+                ", version='" + version + '\'' +
+                '}';
+    }
 }

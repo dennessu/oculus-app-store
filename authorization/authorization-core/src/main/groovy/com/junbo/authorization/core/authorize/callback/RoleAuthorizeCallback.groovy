@@ -7,6 +7,9 @@ import com.junbo.authorization.OwnerCallback
 import com.junbo.authorization.spec.model.Role
 
 import com.junbo.common.id.Id
+import com.junbo.common.id.OrganizationId
+import com.junbo.common.id.RoleId
+import com.junbo.common.id.UserId
 import com.junbo.common.id.util.IdUtil
 
 /**
@@ -38,7 +41,19 @@ class RoleAuthorizeCallback extends AbstractAuthorizeCallback<Role> {
                 OwnerCallback callback = (factory as RoleAuthorizeCallbackFactory).ownerCallbacks[filterLinkId.class]
 
                 if (callback != null) {
-                    return currentUserId == callback.getUserOwnerId(filterLinkId)
+                    UserId userOwnerId = callback.getUserOwnerId(filterLinkId)
+                    if (userOwnerId != null) {
+                        return userOwnerId == currentUserId
+                    }
+
+                    OrganizationId organizationOwnerId = callback.getOrganizationOwnerId(filterLinkId)
+                    RoleId roleId = getRoleId(organizationOwnerId, 'admin')
+
+                    if (roleId != null) {
+                        return hasRoleAssignments(roleId, currentUserId, [])
+                    }
+
+                    return false
                 }
             }
         }

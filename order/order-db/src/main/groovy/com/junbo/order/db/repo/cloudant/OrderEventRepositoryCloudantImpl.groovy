@@ -10,29 +10,15 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.order.db.repo.OrderEventRepository
 import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.PageParam
-import com.junbo.sharding.IdGenerator
-import com.junbo.sharding.repo.BaseCloudantRepository
+import com.junbo.sharding.repo.BaseCloudantRepositoryForDualWrite
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
-import org.springframework.beans.factory.annotation.Required
 /**
  * Created by chriszhu on 2/18/14.
  */
 @CompileStatic
 @TypeChecked
-class OrderEventRepositoryCloudantImpl extends BaseCloudantRepository<OrderEvent, OrderEventId> implements OrderEventRepository {
-
-    private IdGenerator idGenerator
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
-
-    @Override
-    protected OrderEventId generateId() {
-        return new OrderEventId(idGenerator.nextId());
-    }
+class OrderEventRepositoryCloudantImpl extends BaseCloudantRepositoryForDualWrite<OrderEvent, OrderEventId> implements OrderEventRepository {
 
     @Override
     protected CloudantViews getCloudantViews() {
@@ -41,8 +27,7 @@ class OrderEventRepositoryCloudantImpl extends BaseCloudantRepository<OrderEvent
 
     @Override
     Promise<List<OrderEvent>> getByOrderId(Long orderId, PageParam pageParam) {
-        List<OrderEvent> list = super.queryView('by_order', orderId.toString(), pageParam?.count, pageParam?.start, false);
-        return Promise.pure(list);
+        return super.queryView('by_order', orderId.toString(), pageParam?.count, pageParam?.start, false);
     }
 
     private CloudantViews views = new CloudantViews(

@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.AgeRating;
 import com.junbo.catalog.spec.model.common.BaseRevisionModel;
 import com.junbo.catalog.spec.model.common.Price;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.common.jackson.annotation.ItemId;
 import com.junbo.common.jackson.annotation.ItemRevisionId;
 import com.junbo.common.jackson.annotation.UserId;
@@ -47,9 +48,9 @@ public class ItemRevision extends BaseRevisionModel {
     private List<Long> iapHostItemIds;
 
     @UserId
-    @JsonProperty("developer")
-    @ApiModelProperty(position = 20, required = true, value = "Developer of the item revision resource")
-    private Long ownerId;
+    @JsonProperty("owner")
+    @ApiModelProperty(position = 20, required = true, value = "Organization owner of the item revision resource")
+    private OrganizationId ownerId;
 
     @ItemId
     @JsonProperty("item")
@@ -124,11 +125,11 @@ public class ItemRevision extends BaseRevisionModel {
         this.revisionId = revisionId;
     }
 
-    public Long getOwnerId() {
+    public OrganizationId getOwnerId() {
         return ownerId;
     }
 
-    public void setOwnerId(Long ownerId) {
+    public void setOwnerId(OrganizationId ownerId) {
         this.ownerId = ownerId;
     }
 

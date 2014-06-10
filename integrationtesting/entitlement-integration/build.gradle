@@ -5,7 +5,6 @@ sourceCompatibility = '1.7'
 
 test {
     useTestNG()
-    systemProperty 'profile', System.properties['profile']
     options {
         listeners << 'org.testng.reporters.XMLReporter'
         listeners << 'com.junbo.test.common.property.PropertyTransformer'
@@ -20,13 +19,6 @@ test {
 /*
 repositories {
 mavenLocal()
-maven {
-credentials {
-username "${artifactory_user}"
-password "${artifactory_password}"
-}
-url "${artifactory_contextUrl}/repo"
-}
 mavenCentral()
 }
  */

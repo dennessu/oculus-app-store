@@ -1,18 +1,15 @@
 package com.junbo.identity.data.repository.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.UserCredentialVerifyAttemptId
 import com.junbo.common.id.UserId
 import com.junbo.identity.data.repository.UserCredentialVerifyAttemptRepository
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
-import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.ShardAlgorithm
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-
 /**
  * Created by haomin on 14-4-10.
  */
@@ -43,36 +40,33 @@ class UserCredentialVerifyAttemptRepositoryCloudantImpl extends CloudantClient<U
             entity.id = new UserCredentialVerifyAttemptId(idGenerator.nextId(entity.userId.value))
         }
         entity.setValue(null)
-        return Promise.pure((UserCredentialVerifyAttempt)super.cloudantPost(entity))
+        return super.cloudantPost(entity)
     }
 
     @Override
     Promise<UserCredentialVerifyAttempt> update(UserCredentialVerifyAttempt entity) {
-        return Promise.pure((UserCredentialVerifyAttempt)super.cloudantPut(entity))
+        return super.cloudantPut(entity)
     }
 
     @Override
     Promise<UserCredentialVerifyAttempt> get(UserCredentialVerifyAttemptId id) {
-        return Promise.pure((UserCredentialVerifyAttempt)super.cloudantGet(id.toString()))
+        return super.cloudantGet(id.toString())
     }
 
     @Override
     Promise<List<UserCredentialVerifyAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        def list = super.queryView('by_user_id', userId.toString(), limit, offset, false)
-        return Promise.pure(list)
+        return super.queryView('by_user_id', userId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<List<UserCredentialVerifyAttempt>> searchByUserIdAndCredentialType(UserId userId, String type,
                                                                                Integer limit, Integer offset) {
-        def list = super.queryView('by_user_id_credential_type', "${userId.toString()}:${type}", limit, offset, false)
-        return Promise.pure(list)
+        return super.queryView('by_user_id_credential_type', "${userId.toString()}:${type}", limit, offset, false)
     }
 
     @Override
     Promise<Void> delete(UserCredentialVerifyAttemptId id) {
-        super.cloudantDelete(id.toString())
-        return Promise.pure(null)
+        return super.cloudantDelete(id.toString())
     }
 
     protected CloudantViews views = new CloudantViews(

@@ -1,16 +1,13 @@
 package com.junbo.identity.data.repository.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.PITypeId
 import com.junbo.identity.data.repository.PITypeRepository
 import com.junbo.identity.spec.v1.model.PIType
-import com.junbo.identity.spec.v1.option.list.PITypeListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-
 /**
  * Created by haomin on 14-4-25.
  */
@@ -34,34 +31,32 @@ class PITypeRepositoryCloudantImpl extends CloudantClient<PIType> implements PIT
             model.id = new PITypeId(idGenerator.nextIdByShardId(0))
         }
 
-        return Promise.pure((PIType)super.cloudantPost(model))
+        return super.cloudantPost(model)
     }
 
     @Override
     Promise<PIType> update(PIType model) {
-        return Promise.pure((PIType)super.cloudantPut(model))
+        return super.cloudantPut(model)
     }
 
     @Override
     Promise<PIType> get(PITypeId id) {
-        return Promise.pure((PIType)super.cloudantGet(id.toString()))
+        return super.cloudantGet(id.toString())
     }
 
     @Override
     Promise<Void> delete(PITypeId id) {
-        super.cloudantDelete(id.toString())
-        return Promise.pure(null)
+        return super.cloudantDelete(id.toString())
     }
 
     @Override
     Promise<List<PIType>> searchByTypeCode(String typeCode, Integer limit, Integer offset) {
-        def list = super.queryView('by_typeCode', typeCode, limit, offset, false)
-        return Promise.pure(list)
+        return super.queryView('by_typeCode', typeCode, limit, offset, false)
     }
 
     @Override
     Promise<List<PIType>> searchAll(Integer limit, Integer offset) {
-        return Promise.pure(super.cloudantGetAll())
+        return super.cloudantGetAll()
     }
 
     protected CloudantViews views = new CloudantViews(

@@ -11,7 +11,6 @@ import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.CommunicationId;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
-import com.junbo.common.util.Identifiable;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ import java.util.Map;
 /**
  * Created by xiali_000 on 4/21/2014.
  */
-public class Communication extends PropertyAssignedAwareResourceMeta implements Identifiable<CommunicationId> {
+public class Communication extends PropertyAssignedAwareResourceMeta<CommunicationId> {
 
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]he Link to communication resource.")
     @JsonProperty("self")

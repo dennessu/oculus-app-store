@@ -331,6 +331,10 @@ class BalanceServiceImpl implements BalanceService {
 
     private void computeTotal(Balance balance, Integer numberAfterDecimal) {
 
+        if (numberAfterDecimal == null) {
+            numberAfterDecimal = 2
+        }
+
         BigDecimal amount = BigDecimal.ZERO
         BigDecimal discountTotal = BigDecimal.ZERO
         BigDecimal taxTotal = BigDecimal.ZERO

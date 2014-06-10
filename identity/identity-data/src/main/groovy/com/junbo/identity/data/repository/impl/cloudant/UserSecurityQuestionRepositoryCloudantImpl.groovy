@@ -1,18 +1,15 @@
 package com.junbo.identity.data.repository.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionId
 import com.junbo.identity.data.repository.UserSecurityQuestionRepository
 import com.junbo.identity.spec.v1.model.UserSecurityQuestion
-import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.ShardAlgorithm
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-
 /**
  * Created by minhao on 4/12/14.
  */
@@ -43,30 +40,28 @@ class UserSecurityQuestionRepositoryCloudantImpl extends CloudantClient<UserSecu
             entity.id = new UserSecurityQuestionId(idGenerator.nextId(entity.userId.value))
         }
         entity.answer = null
-        return Promise.pure((UserSecurityQuestion)super.cloudantPost(entity))
+        return super.cloudantPost(entity)
     }
 
     @Override
     Promise<UserSecurityQuestion> update(UserSecurityQuestion entity) {
         entity.answer = null
-        return Promise.pure((UserSecurityQuestion)super.cloudantPut(entity))
+        return super.cloudantPut(entity)
     }
 
     @Override
     Promise<UserSecurityQuestion> get(UserSecurityQuestionId id) {
-        return Promise.pure((UserSecurityQuestion)super.cloudantGet(id.toString()))
+        return super.cloudantGet(id.toString())
     }
 
     @Override
     Promise<List<UserSecurityQuestion>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        def list = super.queryView('by_user_id', userId.toString(), limit, offset, false)
-        return Promise.pure(list)
+        return super.queryView('by_user_id', userId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<Void> delete(UserSecurityQuestionId id) {
-        super.cloudantDelete(id.toString())
-        return Promise.pure(null)
+        return super.cloudantDelete(id.toString())
     }
 
     protected CloudantViews views = new CloudantViews(

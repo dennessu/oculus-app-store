@@ -8,13 +8,11 @@ package com.junbo.catalog.db.dao;
 
 import com.junbo.catalog.db.BaseTest;
 import com.junbo.catalog.db.entity.OfferEntity;
-import com.junbo.catalog.spec.model.offer.OffersGetOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class OfferDaoTest extends BaseTest {
     @Autowired

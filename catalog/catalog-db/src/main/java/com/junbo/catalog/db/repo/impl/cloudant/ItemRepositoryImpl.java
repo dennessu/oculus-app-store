@@ -36,19 +36,19 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
         if (item.getItemId() == null) {
             item.setItemId(idGenerator.nextId());
         }
-        return super.cloudantPost(item);
+        return cloudantPost(item).get();
     }
 
     @Override
     public Item get(Long itemId) {
-        return super.cloudantGet(itemId.toString());
+        return cloudantGet(itemId.toString()).get();
     }
 
     public List<Item> getItems(ItemsGetOptions options) {
         List<Item> items = new ArrayList<>();
         if (!CollectionUtils.isEmpty(options.getItemIds())) {
             for (ItemId itemId : options.getItemIds()) {
-                Item item = super.cloudantGet(itemId.toString());
+                Item item = cloudantGet(itemId.toString()).get();
                 if (item == null) {
                     continue;
                 }else if (!StringUtils.isEmpty(options.getType()) && !options.getType().equals(item.getType())) {
@@ -57,7 +57,7 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
                         &&(item.getGenres()==null || !item.getGenres().contains(options.getGenre().getValue()))) {
                     continue;
                 } else if (options.getOwnerId() != null
-                        && !options.getOwnerId().getValue().equals(item.getOwnerId())) {
+                        && !options.getOwnerId().equals(item.getOwnerId())) {
                     continue;
                 } else {
                     items.add(item);
@@ -65,7 +65,7 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
             }
         } else if (!StringUtils.isEmpty(options.getQuery())) {
             CloudantSearchResult<Item> searchResult =
-                    super.search("search", options.getQuery(), options.getValidSize(), options.getBookmark());
+                    super.search("search", options.getQuery(), options.getValidSize(), options.getBookmark()).get();
             items = searchResult.getResults();
             options.setNextBookmark(searchResult.getBookmark());
             options.setStart(null);
@@ -96,12 +96,12 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
                 sb.append("hostItemId:'").append(options.getHostItemId()).append("'");
             }
             CloudantSearchResult<Item> searchResult =
-                    super.search("search", sb.toString(), options.getValidSize(), options.getBookmark());
+                    super.search("search", sb.toString(), options.getValidSize(), options.getBookmark()).get();
             items = searchResult.getResults();
             options.setNextBookmark(searchResult.getBookmark());
             options.setStart(null);
         } else {
-            items = super.queryView("by_itemId", null, options.getValidSize(), options.getValidStart(), false);
+            items = super.queryView("by_itemId", null, options.getValidSize(), options.getValidStart(), false).get();
             options.setNextBookmark(null);
         }
 
@@ -115,7 +115,7 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
 
         List<Item> items = new ArrayList<>();
         for (Long itemId : itemIds) {
-            Item item = super.cloudantGet(itemId.toString());
+            Item item = super.cloudantGet(itemId.toString()).get();
             if (item != null) {
                 items.add(item);
             }
@@ -126,12 +126,12 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
 
     @Override
     public Item update(Item item) {
-        return super.cloudantPut(item);
+        return super.cloudantPut(item).get();
     }
 
     @Override
     public void delete(Long itemId) {
-        super.cloudantDelete(itemId.toString());
+        super.cloudantDelete(itemId.toString()).get();
     }
 
     private CloudantViews cloudantViews = new CloudantViews() {{

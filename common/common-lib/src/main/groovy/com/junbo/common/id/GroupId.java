@@ -8,7 +8,9 @@ package com.junbo.common.id;
 /**
  * Created by liangfu on 3/13/14.
  */
-@IdResourcePath(value = "/groups/{0}", regex = "/groups/(?<id>[0-9A-Z]+)")
+@IdResourcePath(value = "/groups/{0}",
+                resourceType = "groups",
+                regex = "/groups/(?<id>[0-9A-Za-z]+)")
 public class GroupId extends Id {
     public GroupId(){
 

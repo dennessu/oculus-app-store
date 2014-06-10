@@ -9,5 +9,6 @@
     <import resource="classpath*:spring/dualwrite-context.xml" />
     <import resource="classpath*:spring/transaction.xml"/>
     <import resource="classpath*:spring/common-lib-context.xml" />
+    <import resource="classpath*:spring/threadpool-context.xml" />
 
 </beans>

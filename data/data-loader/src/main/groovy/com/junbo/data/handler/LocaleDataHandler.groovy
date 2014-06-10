@@ -23,7 +23,7 @@ class LocaleDataHandler extends BaseDataHandler {
 
     @Override
     void handle(String content) {
-        Locale locale = null
+        Locale locale
 
         try {
             locale = transcoder.decode(new TypeReference<Locale>() {}, content) as Locale
@@ -40,18 +40,17 @@ class LocaleDataHandler extends BaseDataHandler {
         }
 
         if (existing != null) {
-            if (alwaysOverwrite || (locale.resourceAge != null && locale.resourceAge > existing.resourceAge)) {
-                logger.debug("Overwrite Locale $locale.localeName of resourceAge $existing.resourceAge " +
-                        "with new resourceAge: $locale.resourceAge")
-
-                locale.resourceAge = existing.resourceAge
-                localeResource.put(new LocaleId(locale.localeName), locale)
+            if (alwaysOverwrite) {
+                logger.debug("Overwrite Locale $locale.localeName with this content")
+                locale.id = (LocaleId)existing.id
+                locale.rev = existing.rev
+                localeResource.patch(locale.id as LocaleId, locale).get()
             } else {
                 logger.debug("$locale.localeCode already exists, skipped!")
             }
         } else {
             logger.debug('Create new locale with this content')
-            localeResource.create(locale)
+            localeResource.create(locale).get()
         }
     }
 }

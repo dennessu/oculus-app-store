@@ -13,7 +13,7 @@ import groovy.transform.CompileStatic
  * Request Status type for tax calculation output.
  */
 @CompileStatic
-@XStreamAlias("REQUEST_STATUS")
+@XStreamAlias('REQUEST_STATUS')
 class RequestStatus {
     @XStreamAlias('IS_SUCCESS')
     Boolean isSuccess

@@ -8,7 +8,9 @@ package com.junbo.common.id;
 /**
  * Created by liangfu on 4/17/14.
  */
-@IdResourcePath(value = "/optin-type/{0}", regex = "/optin-type/(?<id>[0-9A-Z]+)")
+@IdResourcePath(value = "/optin-type/{0}",
+                resourceType = "optin-type",
+                regex = "/optin-type/(?<id>[0-9A-Za-z]+)")
 public class OptinTypeId extends Id {
     public OptinTypeId() {}
 

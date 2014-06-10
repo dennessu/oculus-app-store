@@ -8,7 +8,7 @@ package com.junbo.order.db.common
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.OfferId
-import com.junbo.common.id.UserId
+import com.junbo.common.id.OrganizationId
 import com.junbo.order.db.entity.*
 import com.junbo.order.spec.model.enums.*
 import com.junbo.order.spec.model.Subledger
@@ -204,7 +204,7 @@ class TestHelper implements ApplicationContextAware {
 
     static Subledger generateSubledger() {
         return new Subledger(
-            seller: new UserId(generateId()),
+            seller: new OrganizationId(generateId()),
             offer: new OfferId(generateId()),
             payoutStatus: PayoutStatus.COMPLETED.name(),
             startTime: new Date(),

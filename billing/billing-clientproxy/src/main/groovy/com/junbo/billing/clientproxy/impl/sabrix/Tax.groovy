@@ -13,7 +13,7 @@ import groovy.transform.CompileStatic
  * Tax level output for tax calculation.
  */
 @CompileStatic
-@XStreamAlias("TAX")
+@XStreamAlias('TAX')
 class Tax {
     @XStreamAlias('AUTHORITY_TYPE')
     String authorityType

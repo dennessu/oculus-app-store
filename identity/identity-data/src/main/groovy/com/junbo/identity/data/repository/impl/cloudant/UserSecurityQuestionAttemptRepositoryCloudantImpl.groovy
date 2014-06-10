@@ -1,5 +1,4 @@
 package com.junbo.identity.data.repository.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.UserId
@@ -7,13 +6,11 @@ import com.junbo.common.id.UserSecurityQuestionId
 import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
 import com.junbo.identity.data.repository.UserSecurityQuestionAttemptRepository
 import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt
-import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionAttemptListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.ShardAlgorithm
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-
 /**
  * Created by minhao on 4/12/14.
  */
@@ -44,12 +41,12 @@ class UserSecurityQuestionAttemptRepositoryCloudantImpl extends CloudantClient<U
             entity.id = new UserSecurityQuestionVerifyAttemptId(idGenerator.nextId(entity.userId.value))
         }
         entity.value = null
-        return Promise.pure((UserSecurityQuestionVerifyAttempt)super.cloudantPost(entity))
+        return super.cloudantPost(entity)
     }
 
     @Override
     Promise<UserSecurityQuestionVerifyAttempt> get(UserSecurityQuestionVerifyAttemptId id) {
-        return Promise.pure((UserSecurityQuestionVerifyAttempt)super.cloudantGet(id.toString()))
+        return super.cloudantGet(id.toString())
     }
 
     @Override
@@ -64,16 +61,14 @@ class UserSecurityQuestionAttemptRepositoryCloudantImpl extends CloudantClient<U
 
     @Override
     Promise<List<UserSecurityQuestionVerifyAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        def list = super.queryView('by_user_id', userId.toString(), limit, offset, false)
-        return Promise.pure(list)
+        return super.queryView('by_user_id', userId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<List<UserSecurityQuestionVerifyAttempt>> searchByUserIdAndSecurityQuestionId(UserId userId,
                                      UserSecurityQuestionId userSecurityQuestionId, Integer limit, Integer offset) {
-        def list = super.queryView('by_user_id_security_question_id',
+        return super.queryView('by_user_id_security_question_id',
                 "${userId.toString()}:${userSecurityQuestionId.toString()}", limit, offset, false)
-        return Promise.pure(list)
     }
 
     protected CloudantViews views = new CloudantViews(

@@ -5,6 +5,7 @@ import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions
 import com.junbo.catalog.spec.resource.ItemRevisionResource
 import com.junbo.common.id.ItemRevisionId
+import com.junbo.common.id.OrganizationId
 import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -53,7 +54,7 @@ class MockItemRevisionResource extends BaseMock implements ItemRevisionResource 
     private generateItemRevision() {
         return new ItemRevision(
                 revisionId: generateLong(),
-                ownerId: generateLong(),
+                ownerId: new OrganizationId(generateLong()),
                 itemId: generateLong(),
                 msrp: new Price(
                         priceType: 'CUSTOM',

@@ -6,10 +6,9 @@
 
 package com.junbo.sharding.dualwrite.test
 
-import com.junbo.common.cloudant.CloudantEntity
 import com.junbo.common.id.UserId
 import com.junbo.common.model.ResourceMeta
-import com.junbo.common.util.Identifiable
+import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.dualwrite.data.PendingAction
 import com.junbo.sharding.dualwrite.data.PendingActionRepository
 import com.junbo.sharding.dualwrite.data.PendingActionRepositoryCloudantImpl
@@ -26,8 +25,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.testng.annotations.Test
 
 import static org.testng.Assert.assertEquals
-import static org.testng.Assert.assertNull;
-
+import static org.testng.Assert.assertNull
 /**
  * Java doc for IdGeneratorTest.
  */
@@ -37,6 +35,10 @@ import static org.testng.Assert.assertNull;
 @Transactional("transactionManager")
 @CompileStatic
 public class PendingActionRepoTest extends AbstractTestNGSpringContextTests {
+
+    @Autowired
+    @Qualifier("oculus48IdGenerator")
+    private IdGenerator idGenerator;
 
     @Autowired
     @Qualifier("pendingActionSqlRepo")
@@ -102,22 +104,22 @@ public class PendingActionRepoTest extends AbstractTestNGSpringContextTests {
     private PendingAction createSavedEntityPendingAction() {
         PendingAction pendingAction = new PendingAction();
         pendingAction.setId(null);
-        pendingAction.setChangedEntityId(12345L);
+        pendingAction.setChangedEntityId(idGenerator.nextId());
         pendingAction.setSavedEntity(createFakeEntity());
-        pendingAction.setDeletedKey(54321L);
+        pendingAction.setDeletedKey(778899L);
 
         return pendingAction;
     }
 
     private FakeEntity createFakeEntity() {
         FakeEntity fakeEntity = new FakeEntity();
-        fakeEntity.setId(new UserId(54321L));
+        fakeEntity.setId(new UserId(idGenerator.nextId()));
         fakeEntity.setUsername("Hello World");
 
         return fakeEntity;
     }
 
-    private static class FakeEntity extends ResourceMeta implements CloudantEntity, Identifiable<UserId> {
+    private static class FakeEntity extends ResourceMeta<UserId> {
         private UserId id;
         private String username;
 
