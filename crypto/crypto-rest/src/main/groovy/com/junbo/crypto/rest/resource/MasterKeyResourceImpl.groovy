@@ -30,7 +30,7 @@ class MasterKeyResourceImpl extends CommonResourceImpl implements MasterKeyResou
             return getCurrentMasterKey().then { MasterKey key ->
                 masterKey.encryptValue = asymmetricEncryptMasterKey(masterKey.value)
                 masterKey.value = null
-                if (key.keyVersion != null) {
+                if (key != null && key.keyVersion != null) {
                     masterKey.keyVersion = key.keyVersion + 1
                 } else {
                     masterKey.keyVersion = 1
