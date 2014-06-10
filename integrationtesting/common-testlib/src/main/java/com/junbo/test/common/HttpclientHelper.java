@@ -189,4 +189,9 @@ public class HttpclientHelper {
             response.close();
         }
     }
+
+    public static void ResetHttpClient()throws Exception{
+        httpclient.close();
+        httpclient = HttpClients.createDefault();
+    }
 }

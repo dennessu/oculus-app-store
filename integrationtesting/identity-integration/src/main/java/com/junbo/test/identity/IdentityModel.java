@@ -14,6 +14,7 @@ import com.junbo.identity.spec.v1.model.*;
 import com.junbo.test.common.JsonHelper;
 import com.junbo.test.common.RandomHelper;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -82,6 +83,7 @@ public class IdentityModel {
         localeKeys.put("shortName", "USD_SHORT");
         localeKeys.put("longName", "USD_LONG");
         currency.setLocaleKeys(localeKeys);
+        currency.setMinAuthAmount(new BigDecimal(1));
         currency.setNumberAfterDecimal(2);
         currency.setSymbol("$");
         currency.setSymbolPosition("BEFORE");

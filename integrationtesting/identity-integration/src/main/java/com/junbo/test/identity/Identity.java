@@ -14,6 +14,7 @@ import com.junbo.identity.spec.v1.model.*;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.JsonHelper;
+import com.junbo.test.common.libs.IdConverter;
 
 /**
  * @author dw
@@ -136,6 +137,14 @@ public class Identity {
         JsonNode jsonNode = JsonHelper.ObjectToJsonNode((HttpclientHelper.SimpleGet(
                 DefaultIdentityV1UserPersonalInfoURI + "?email=" + email, (Results.class))).getItems().get(0));
         return (UserPersonalInfo) JsonHelper.JsonNodeToObject(jsonNode, UserPersonalInfo.class);
+    }
+
+    public static Long GetUserIdFromUserPersonalInfo(UserPersonalInfo userPersonalInfo) throws Exception {
+        return userPersonalInfo.getUserId().getValue();
+    }
+
+    public static String GetHexUserId(Long userId) throws Exception {
+        return IdConverter.idLongToHexString(UserId.class, userId);
     }
 
     // ****** start API sample logging ******
