@@ -309,14 +309,16 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
         if (!StringUtils.isEmpty(configDir)) {
             logger.info("Scanning configuration from configDir: " + configDir);
 
-            Path keyFilePath = Paths.get(configDir, CONFIG_PASSWORD_KEY_FILE);
-            keyStr = loadAndCheckKeyFile(keyFilePath);
-
             Path configFilePath = Paths.get(configDir, CONFIG_PROPERTY_FILE);
             overrideProperties = readProperties(configFilePath);
         }
 
         configContext = readConfigContext(overrideProperties);
+
+        if (!StringUtils.isEmpty(configDir)) {
+            Path keyFilePath = Paths.get(configDir, CONFIG_PASSWORD_KEY_FILE);
+            keyStr = loadAndCheckKeyFile(keyFilePath);
+        }
 
         // Read jar configuration files
         jarProperties = readJarProperties();
@@ -363,6 +365,11 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
         // check file exists
         File file = new File(path.toUri());
         if (!file.exists()) {
+            if (configContext.getEnvironment().equals("onebox") ||
+                configContext.getEnvironment().startsWith("onebox.")) {
+                // return a dummy key
+                return "5B62A9320B84AF50F70B076D89F5F7B8";
+            }
             logger.warn("Key file doesn't exist: " + path.toUri().toString());
             return null;
         }
