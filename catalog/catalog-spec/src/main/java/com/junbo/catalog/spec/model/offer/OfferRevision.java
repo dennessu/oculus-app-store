@@ -54,7 +54,7 @@ public class OfferRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 28, required = true, value = "Start effective time [NOT AVAILABLE]")
     private Date startTime;
     @ApiModelProperty(position = 29, required = true, value = "End effective time [NOT AVAILABLE]")
-    private Date endTIme;
+    private Date endTime;
 
     @ApiModelProperty(position = 31, required = true, value = "Locale properties of the offer revision resource")
     private Map<String, OfferRevisionLocaleProperties> locales;
@@ -140,12 +140,12 @@ public class OfferRevision extends BaseRevisionModel {
         this.startTime = startTime;
     }
 
-    public Date getEndTIme() {
-        return endTIme;
+    public Date getEndTime() {
+        return endTime;
     }
 
-    public void setEndTIme(Date endTIme) {
-        this.endTIme = endTIme;
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 
     public Map<String, OfferRevisionLocaleProperties> getLocales() {
