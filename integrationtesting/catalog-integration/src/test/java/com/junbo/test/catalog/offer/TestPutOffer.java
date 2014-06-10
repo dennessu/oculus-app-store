@@ -5,22 +5,21 @@
  */
 package com.junbo.test.catalog.offer;
 
-import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
+import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.test.catalog.impl.OfferAttributeServiceImpl;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.test.catalog.impl.ItemAttributeServiceImpl;
-import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.catalog.OfferAttributeService;
 import com.junbo.test.catalog.impl.OfferServiceImpl;
 import com.junbo.test.catalog.ItemAttributeService;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.catalog.spec.model.offer.Offer;
-import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.catalog.OfferService;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.test.common.property.*;
-import com.junbo.common.id.UserId;
 
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -38,12 +37,12 @@ public class TestPutOffer extends BaseTestClass {
 
     private LogHelper logger = new LogHelper(TestPutOffer.class);
     private OfferService offerService = OfferServiceImpl.instance();
-    private String publisherId;
+    private OrganizationId organizationId;
 
     @BeforeClass
     private void PrepareTestData() throws Exception {
-        UserService userService = UserServiceImpl.instance();
-        publisherId = userService.PostUser();
+        OrganizationService organizationService = OrganizationServiceImpl.instance();
+        organizationId = organizationService.postDefaultOrganization().getId();
     }
 
     @Property(
@@ -72,18 +71,16 @@ public class TestPutOffer extends BaseTestClass {
         category.add(offerAttribute1.getId());
         category.add(offerAttribute2.getId());
 
-        Long userId = IdConverter.hexStringToId(UserId.class, publisherId);
-
         offer.setCategories(category);
         offer.setEnvironment("PROD");
-        offer.setOwnerId(userId);
+        offer.setOwnerId(organizationId);
 
         Offer offerPut = offerService.updateOffer(offer.getOfferId(), offer);
 
         //Verification
         Assert.assertEquals(offerPut.getCategories(), category);
         Assert.assertEquals(offerPut.getEnvironment(), "PROD");
-        Assert.assertEquals(offerPut.getOwnerId(), userId);
+        Assert.assertEquals(offerPut.getOwnerId(), organizationId);
     }
 
     @Property(

@@ -78,7 +78,8 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         if(trackingUuid == null){
             throw SubscriptionExceptions.INSTANCE.missingTrackingUuid().exception();
         }
-        return subscriptionRepository.getByTrackingUuid(userId, trackingUuid);
+        return null;
+        //return subscriptionRepository.getByTrackingUuid(userId, trackingUuid);
     }
 
     private void validateOffer(Subscription subs, Long offerId){

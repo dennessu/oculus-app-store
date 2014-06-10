@@ -8,7 +8,6 @@ package com.junbo.identity.spec.v1.model.migration;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.common.id.UserId;
-import com.junbo.identity.spec.v1.model.Organization;
 
 /**
  * Created by liangfu on 6/10/14.

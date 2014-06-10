@@ -176,7 +176,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         offer.setPublished(true);
 
         if (revision.getStartTime().getTime() <= timestamp
-                && revision.getEndTIme() == null || revision.getEndTIme().after(Utils.maxDate())) {
+                && revision.getEndTime() == null || revision.getEndTime().after(Utils.maxDate())) {
             offer.setCurrentRevisionId(revision.getRevisionId());
             offer.setActiveRevision(revision);
             if (offer.getApprovedRevisions() != null) {
@@ -186,7 +186,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             offer.setCurrentRevisionId(null);
         }
         if (revision.getStartTime().getTime() >= timestamp
-                && revision.getEndTIme() == null || revision.getEndTIme().getTime() >= timestamp) {
+                && revision.getEndTime() == null || revision.getEndTime().getTime() >= timestamp) {
             offer.setActiveRevision(revision);
         }
         if (offer.getApprovedRevisions() == null) {
@@ -202,8 +202,8 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         revisionInfo.setApprovedTime(timestamp);
         revisionInfo.setRevisionId(revision.getRevisionId());
         revisionInfo.setStartTime(revision.getStartTime().getTime());
-        if (revision.getEndTIme() != null) {
-            revisionInfo.setEndTime(revision.getEndTIme().getTime());
+        if (revision.getEndTime() != null) {
+            revisionInfo.setEndTime(revision.getEndTime().getTime());
         } else {
             revisionInfo.setEndTime(Utils.maxDate().getTime());
         }

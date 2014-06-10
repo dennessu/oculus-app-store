@@ -24,14 +24,32 @@ import java.util.regex.Pattern;
 public class ConfigContext {
     private static final Logger logger = LoggerFactory.getLogger(ConfigContext.class);
 
+    private String baseEnv;
     private String environment;
     private String datacenter;
     private List<String> ipAddresses;
 
-    public ConfigContext(String environment, String datacenter, String ipv4Subnet) {
+    public ConfigContext(String environment) {
         this.environment = environment;
+        this.baseEnv = parseBaseEnv(environment);
+    }
+
+    public ConfigContext complete(String datacenter, String subnet) {
+        if (datacenter == null || datacenter.length() == 0) {
+            throw new RuntimeException("ERROR: datacenter is not set.");
+        }
+        if (subnet == null || subnet.length() == 0) {
+            throw new RuntimeException("ERROR: subnet is not set.");
+        }
+
         this.datacenter = datacenter;
-        this.ipAddresses = getIpAddresses(ipv4Subnet);
+        this.ipAddresses = getIpAddresses(subnet);
+
+        return this;
+    }
+
+    public String getBaseEnvironment() {
+        return baseEnv;
     }
 
     public String getEnvironment() {
@@ -146,6 +164,18 @@ public class ConfigContext {
         } catch (NumberFormatException ex) {
             throw new RuntimeException("Invalid ipAddress: " + ipAddress);
         }
+    }
+
+    //endregion
+
+    //region get environment
+
+    private String parseBaseEnv(String env) {
+        int index = env.indexOf(".");
+        if (index == -1) {
+            return null;
+        }
+        return env.substring(0, index);
     }
 
     //endregion

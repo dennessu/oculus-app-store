@@ -5,10 +5,10 @@
  */
 package com.junbo.test.catalog.offer;
 
-import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
+import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.catalog.impl.OfferAttributeServiceImpl;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
-import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.test.catalog.impl.ItemAttributeServiceImpl;
 import com.junbo.test.catalog.impl.OfferServiceImpl;
@@ -18,6 +18,7 @@ import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.catalog.OfferService;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.test.common.property.*;
 
 import org.testng.annotations.BeforeClass;
@@ -38,12 +39,12 @@ public class TestPostOffer extends BaseTestClass {
     private OfferService offerService = OfferServiceImpl.instance();
     private final String defaultOffer = "defaultOffer";
     private final Integer initRevValue = 1;
-    private String publisherId;
+    private OrganizationId organizationId;
 
     @BeforeClass
     private void PrepareTestData() throws Exception {
-        UserService userService = UserServiceImpl.instance();
-        publisherId = userService.PostUser();
+        OrganizationService organizationService = OrganizationServiceImpl.instance();
+        organizationId = organizationService.postDefaultOrganization().getId();
     }
 
     @Property(
@@ -64,13 +65,13 @@ public class TestPostOffer extends BaseTestClass {
     public void testPostOffer() throws Exception {
         //Post test offers only with required parameters
         Offer testOfferRequired = new Offer();
-        testOfferRequired.setOwnerId(1234L);
+        testOfferRequired.setOwnerId(organizationId);
         Offer offerRtn1 = offerService.postOffer(testOfferRequired);
 
         checkOfferRequiredParams(offerRtn1, testOfferRequired);
 
         //Post test offer with optional params
-        Offer testOfferFull = offerService.prepareOfferEntity(defaultOffer, publisherId);
+        Offer testOfferFull = offerService.prepareOfferEntity(defaultOffer, organizationId);
         Offer offerRtn2 = offerService.postOffer(testOfferFull);
 
         checkOfferRequiredParams(offerRtn2, testOfferFull);
@@ -94,7 +95,7 @@ public class TestPostOffer extends BaseTestClass {
     public void testPostOfferWithExistedValues() throws Exception {
 
         OfferService offerService = OfferServiceImpl.instance();
-        Offer offer = offerService.prepareOfferEntity(defaultOffer, publisherId);
+        Offer offer = offerService.prepareOfferEntity(defaultOffer, organizationId);
 
         OfferAttributeService offerAttributeService = OfferAttributeServiceImpl.instance();
         OfferAttribute offerAttribute1 = offerAttributeService.postDefaultOfferAttribute();
@@ -124,36 +125,33 @@ public class TestPostOffer extends BaseTestClass {
     )
     @Test
     public void testPostOfferInvalidScenarios() throws Exception {
-        UserService userService = UserServiceImpl.instance();
-        String developerId = userService.PostUser();
-
         List<Long> genres = new ArrayList<>();
         List<Long> categoryInvalid = new ArrayList<>();
         categoryInvalid.add(0L);
         categoryInvalid.add(1L);
 
         //test ownerId is null
-        Offer testOffer = offerService.prepareOfferEntity(defaultOffer, developerId);
+        Offer testOffer = offerService.prepareOfferEntity(defaultOffer, organizationId);
         testOffer.setOwnerId(null);
         verifyExpectedError(testOffer);
 
         //test currentRevision is not null
-        testOffer = offerService.prepareOfferEntity(defaultOffer, developerId);
+        testOffer = offerService.prepareOfferEntity(defaultOffer, organizationId);
         testOffer.setCurrentRevisionId(0L);
         verifyExpectedError(testOffer);
 
         //test rev
-        testOffer = offerService.prepareOfferEntity(defaultOffer, developerId);
+        testOffer = offerService.prepareOfferEntity(defaultOffer, organizationId);
         testOffer.setResourceAge(initRevValue);
         verifyExpectedError(testOffer);
 
         //test isPublished is true
-        testOffer = offerService.prepareOfferEntity(defaultOffer, developerId);
+        testOffer = offerService.prepareOfferEntity(defaultOffer, organizationId);
         testOffer.setPublished(true);
         verifyExpectedError(testOffer);
 
         //test category is not existed
-        testOffer = offerService.prepareOfferEntity(defaultOffer, developerId);
+        testOffer = offerService.prepareOfferEntity(defaultOffer, organizationId);
         testOffer.setCategories(categoryInvalid);
         verifyExpectedError(testOffer);
 
@@ -162,12 +160,12 @@ public class TestPostOffer extends BaseTestClass {
         ItemAttribute itemAttribute = itemAttributeService.postDefaultItemAttribute();
         genres.add(itemAttribute.getId());
 
-        testOffer = offerService.prepareOfferEntity(defaultOffer, developerId);
+        testOffer = offerService.prepareOfferEntity(defaultOffer, organizationId);
         testOffer.setCategories(genres);
         verifyExpectedError(testOffer);
 
         //put all invalid scenarios together
-        testOffer = offerService.prepareOfferEntity(defaultOffer, developerId);
+        testOffer = offerService.prepareOfferEntity(defaultOffer, organizationId);
         testOffer.setOwnerId(null);
         testOffer.setCurrentRevisionId(0L);
         testOffer.setResourceAge(initRevValue);

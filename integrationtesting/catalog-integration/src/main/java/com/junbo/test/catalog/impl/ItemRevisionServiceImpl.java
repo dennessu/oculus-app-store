@@ -6,7 +6,6 @@
 package com.junbo.test.catalog.impl;
 
 import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
-import com.junbo.test.common.ConfigHelper;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.catalog.enums.CatalogItemType;
@@ -18,6 +17,7 @@ import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.common.id.ItemRevisionId;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.common.model.Results;
 
 import java.util.HashMap;

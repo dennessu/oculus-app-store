@@ -164,7 +164,7 @@ public class Oauth {
         nvps.add(new BasicNameValuePair(DefaultFNEvent, "next"));
         nvps.add(new BasicNameValuePair(DefaultFNUserName, userName));
         nvps.add(new BasicNameValuePair(DefaultFNPassword, DefaultUserPwd));
-        String email = RandomHelper.randomAlphabetic(10).toLowerCase() + "@163.com";
+        String email = "silkcloudtest+" + RandomHelper.randomAlphabetic(10).toLowerCase() + "@gmail.com";
         nvps.add(new BasicNameValuePair(DefaultFNEmail, email));
         nvps.add(new BasicNameValuePair(DefaultFNNickName, RandomHelper.randomAlphabetic(15)));
         nvps.add(new BasicNameValuePair(DefaultFNFirstName, RandomHelper.randomAlphabetic(15)));

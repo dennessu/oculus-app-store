@@ -7,6 +7,7 @@ package com.junbo.test.catalog;
 
 import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.common.model.Results;
 
 import java.util.HashMap;
@@ -27,7 +28,7 @@ public interface ItemService {
 
     Item postDefaultItem(CatalogItemType itemType) throws Exception;
     Item prepareItemEntity(String fileName) throws Exception;
-    Item prepareItemEntity(String fileName, String userId) throws Exception;
+    Item prepareItemEntity(String fileName, OrganizationId organizationId) throws Exception;
     Item postItem(Item item) throws Exception;
     Item postItem(Item item, int expectedResponseCode) throws Exception;
 
