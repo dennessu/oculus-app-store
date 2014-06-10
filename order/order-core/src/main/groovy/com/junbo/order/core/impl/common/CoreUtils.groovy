@@ -112,7 +112,9 @@ class CoreUtils {
     static Order diffRefundOrder(Order existingOrder, Order request, Integer numberAfterDecimal) {
         Order diffOrder = new Order()
         diffOrder.setId(existingOrder.getId())
+        diffOrder.orderItems = []
 
+        Boolean changed = false
         existingOrder.orderItems.each {OrderItem i ->
             OrderItem diffItem = new OrderItem()
             diffItem.offer = i.offer
@@ -125,7 +127,7 @@ class CoreUtils {
                 diffItem.totalAmount = i.totalAmount
             } else {
                 if( i.quantity > requestItem.quantity) {
-                    diffItem.quantity == i.quantity - requestItem.quantity
+                    diffItem.quantity = i.quantity - requestItem.quantity
                     // TODO: use currency decimal
                     diffItem.totalAmount = (diffItem.quantity * i.totalAmount / i.quantity).setScale(
                             numberAfterDecimal, BigDecimal.ROUND_HALF_EVEN)
@@ -134,9 +136,15 @@ class CoreUtils {
                     diffItem.quantity = 0
                     diffItem.totalAmount = i.totalAmount - requestItem.totalAmount
                 } else {
-                    throw AppErrors.INSTANCE.orderNoItemRefund().exception()
+                    // no change
+                    return
                 }
             }
+            diffOrder.orderItems << diffItem
+            changed = true
+        }
+        if (!changed) {
+            throw AppErrors.INSTANCE.orderNoItemRefund().exception()
         }
         return diffOrder
     }

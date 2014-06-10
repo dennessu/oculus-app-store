@@ -8,9 +8,10 @@ package com.junbo.order.db.mapper;
 
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
+import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.*;
-import com.junbo.order.spec.model.enums.*;
 import com.junbo.order.spec.error.AppErrors;
+import com.junbo.order.spec.model.enums.*;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -518,6 +519,20 @@ public class CommonMapper {
     }
 
     public String fromCountryIdToString(CountryId from) {
+        if (from == null) {
+            return null;
+        }
+        return from.getValue();
+    }
+
+    public LocaleId fromStringToLocaleId(String from) {
+        if (from == null) {
+            return null;
+        }
+        return new LocaleId(from);
+    }
+
+    public String fromLocaleIdToString(LocaleId from) {
         if (from == null) {
             return null;
         }

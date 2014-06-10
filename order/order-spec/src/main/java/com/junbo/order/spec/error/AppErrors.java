@@ -190,8 +190,8 @@ public interface AppErrors {
     AppError orderNotRefundable();
 
     @ErrorDef(httpStatusCode = 500, code = BillingErrorCode.BILLING_REFUND_FAILED,
-            description = "Billing refund failed")
-    AppError billingRefundFailed();
+            description = "Billing refund failed: {0}")
+    AppError billingRefundFailed(String reason);
 
     @ErrorDef(httpStatusCode = 400, code = UserErrorCode.CURRENCY_NOT_VALID,
             description = "Currency {0} is not valid")

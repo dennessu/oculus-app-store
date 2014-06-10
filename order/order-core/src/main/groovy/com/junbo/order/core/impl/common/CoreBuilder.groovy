@@ -95,7 +95,7 @@ class CoreBuilder {
         balance = buildRefundBalance(originalBalance)
 
         originalBalance.balanceItems.each { BalanceItem item ->
-            def balanceItem = buildBalanceItem(item)
+            def balanceItem = buildRefundBalanceItem(item)
             balanceItem.originalBalanceItemId = balanceItem.balanceItemId
             balanceItem.balanceItemId = null
             balance.addBalanceItem(balanceItem)
@@ -107,6 +107,9 @@ class CoreBuilder {
 
     static List<Balance> buildRefundBalances(List<Balance> originalBalances, Order diffOrder) {
         assert (originalBalances != null)
+        if (CollectionUtils.isEmpty(diffOrder.orderItems)) {
+            return []
+        }
 
         List<Balance> returnBalances = []
         originalBalances.each { Balance b ->
@@ -117,9 +120,7 @@ class CoreBuilder {
                     orderItem.getId().value == item.orderItemId.value
                 }
                 if (matched) {
-                    def balanceItem = buildBalanceItem(item)
-                    balanceItem.originalBalanceItemId = balanceItem.balanceItemId
-                    balanceItem.balanceItemId = null
+                    def balanceItem = buildRefundBalanceItem(item)
                     balance.addBalanceItem(balanceItem)
                 }
             }
@@ -145,7 +146,7 @@ class CoreBuilder {
         diffOrder.orderItems.each { OrderItem diffItem ->
             if (diffItem.totalAmount != 0G) {
                 LOGGER.error('name=Refund_Item_Amount_Exceeded')
-                throw AppErrors.INSTANCE.billingRefundFailed().exception()
+                throw AppErrors.INSTANCE.billingRefundFailed('Refund_Item_Amount_Exceeded').exception()
             }
         }
 
@@ -185,7 +186,6 @@ class CoreBuilder {
         balance.cancelRedirectUrl = originalBalance.cancelRedirectUrl
         balance.originalBalanceId = originalBalance.balanceId
         balance.type = BalanceType.REFUND.name()
-        balance.originalBalanceId = balance.balanceId
         balance.balanceId = null
 
         return balance
@@ -198,6 +198,7 @@ class CoreBuilder {
 
         BalanceItem balanceItem = new BalanceItem()
         balanceItem.amount = item.totalAmount
+        balanceItem.orderItemId = item.getId()
         balanceItem.propertySet.put(PropertyKey.ITEM_TYPE.name(), item.type)
         if (item.totalDiscount > BigDecimal.ZERO) {
             DiscountItem discountItem = new DiscountItem()
@@ -207,16 +208,17 @@ class CoreBuilder {
         return balanceItem
     }
 
-    static BalanceItem buildBalanceItem(BalanceItem item) {
+    static BalanceItem buildRefundBalanceItem(BalanceItem item) {
         if (item == null) {
             return null
         }
-
         BalanceItem balanceItem = new BalanceItem()
         balanceItem.amount = item.amount
         DiscountItem discountItem = new DiscountItem()
         discountItem.discountAmount = item.discountAmount
         balanceItem.addDiscountItem(discountItem)
+        balanceItem.orderItemId = item.orderItemId
+        balanceItem.originalBalanceItemId = item.balanceItemId
         return balanceItem
     }
 
