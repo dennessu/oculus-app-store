@@ -133,9 +133,6 @@
 #[master] start londiste pgq ticker deamon
     $DEPLOYMENT_PATH/londiste/lodiste_pgqd.sh
 
-#[replica] cut off master/replica streaming replication
-    $DEPLOYMENT_PATH/londiste/londiste_cutoff.sh
-
 =====Planned Failover=====
 #[slave] master failover to slave
     $DEPLOYMENT_PATH/switchover/failover.sh
