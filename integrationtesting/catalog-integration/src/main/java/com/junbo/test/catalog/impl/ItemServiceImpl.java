@@ -5,9 +5,8 @@
  */
 package com.junbo.test.catalog.impl;
 
-import com.junbo.test.common.ConfigHelper;
-import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
-import com.junbo.test.common.apihelper.identity.UserService;
+import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
+import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.common.json.JsonMessageTranscoder;
@@ -16,9 +15,10 @@ import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.catalog.ItemService;
+import com.junbo.common.id.OrganizationId;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.common.model.Results;
 import com.junbo.common.id.ItemId;
-import com.junbo.common.id.UserId;
 
 import java.util.HashMap;
 import java.util.List;
@@ -75,15 +75,15 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
     }
 
     public Item prepareItemEntity(String fileName) throws Exception {
-        UserService us = UserServiceImpl.instance();
-        return prepareItemEntity(fileName, us.PostUser());
+        OrganizationService organizationService = OrganizationServiceImpl.instance();
+        return prepareItemEntity(fileName, organizationService.postDefaultOrganization().getId());
     }
 
-    public Item prepareItemEntity(String fileName, String userId) throws Exception {
+    public Item prepareItemEntity(String fileName, OrganizationId organizationId) throws Exception {
         String strItem = readFileContent(String.format("testItems/%s.json", fileName));
         Item itemForPost = new JsonMessageTranscoder().decode(new TypeReference<Item>() {
         }, strItem);
-        itemForPost.setOwnerId(IdConverter.hexStringToId(UserId.class, userId));
+        itemForPost.setOwnerId(organizationId);
         return itemForPost;
     }
 

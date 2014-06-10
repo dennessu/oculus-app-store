@@ -5,11 +5,11 @@
  */
 package com.junbo.test.catalog.item;
 
-import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
+import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.catalog.impl.OfferAttributeServiceImpl;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.test.catalog.impl.ItemAttributeServiceImpl;
-import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.catalog.OfferAttributeService;
@@ -18,12 +18,11 @@ import com.junbo.test.catalog.ItemAttributeService;
 import com.junbo.test.catalog.impl.ItemServiceImpl;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.catalog.OfferService;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.test.catalog.ItemService;
 import com.junbo.test.common.property.*;
-import com.junbo.common.id.UserId;
 
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -41,12 +40,12 @@ public class TestPutItem {
 
     private LogHelper logger = new LogHelper(TestGetItem.class);
     private ItemService itemService = ItemServiceImpl.instance();
-    private String developerId;
+    private OrganizationId organizationId;
 
     @BeforeClass
     private void PrepareTestData() throws Exception {
-        UserService userService = UserServiceImpl.instance();
-        developerId = userService.PostUser();
+        OrganizationService organizationService = OrganizationServiceImpl.instance();
+        organizationId = organizationService.postDefaultOrganization().getId();
     }
 
     @Property(
@@ -78,18 +77,16 @@ public class TestPutItem {
         genres.add(itemAttribute1.getId());
         genres.add(itemAttribute2.getId());
 
-        Long userId = IdConverter.hexStringToId(UserId.class, developerId);
-
         item.setGenres(genres);
         item.setDefaultOffer(offer.getOfferId());
-        item.setOwnerId(userId);
+        item.setOwnerId(organizationId);
 
         Item itemPut = itemService.updateItem(item.getItemId(), item);
 
         //Verification
         Assert.assertEquals(itemPut.getGenres(), genres);
         Assert.assertEquals(itemPut.getDefaultOffer(), offer.getOfferId());
-        Assert.assertEquals(itemPut.getOwnerId(), userId);
+        Assert.assertEquals(itemPut.getOwnerId(), organizationId);
     }
 
     @Property(
