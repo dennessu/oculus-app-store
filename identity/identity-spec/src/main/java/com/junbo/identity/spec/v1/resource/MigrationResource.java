@@ -6,6 +6,7 @@
 package com.junbo.identity.spec.v1.resource;
 
 import com.junbo.identity.spec.v1.model.migration.OculusInput;
+import com.junbo.identity.spec.v1.model.migration.OculusOutput;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -28,5 +29,5 @@ import javax.ws.rs.core.MediaType;
 public interface MigrationResource {
     @POST
     @RouteAnyLocal
-    Promise<Void> migrate(OculusInput oculusInput);
+    Promise<OculusOutput> migrate(OculusInput oculusInput);
 }

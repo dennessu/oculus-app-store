@@ -1,6 +1,8 @@
 package com.junbo.identity.rest.resource.v1
 
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.error.AppError
+import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.json.ObjectMapperProvider
@@ -11,11 +13,14 @@ import com.junbo.identity.data.repository.OrganizationRepository
 import com.junbo.identity.data.repository.UserPasswordRepository
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.data.repository.UserRepository
+import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.model.migration.OculusInput
+import com.junbo.identity.spec.v1.model.migration.OculusOutput
 import com.junbo.identity.spec.v1.resource.MigrationResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.StringUtils
@@ -43,37 +48,38 @@ class MigrationResourceImpl implements MigrationResource {
     private NormalizeService normalizeService
 
     @Override
-    Promise<Void> migrate(OculusInput oculusInput) {
+    Promise<OculusOutput> migrate(OculusInput oculusInput) {
         if (StringUtils.isEmpty(oculusInput.username)) {
             throw new IllegalArgumentException('username can\'t be null')
+        }
+        if (StringUtils.isEmpty(oculusInput.email)) {
+            throw new IllegalArgumentException('email can\'t be null')
         }
         if (oculusInput.oldPasswordHash) {
             throw new IllegalArgumentException('user has old PasswordHash')
         }
-        // If the user exists, update current user's information;
-        // else, create user's information
-        return userRepository.getUserByCanonicalUsername(normalizeService.normalize(oculusInput.username)).then { User user ->
-            if (user == null) {
-                return createMigrateUser(oculusInput)
-            } else {
-                return updateMigrateUser(oculusInput)
-            }
+
+        // Check current email isn't used by others
+        return checkEmailValid(oculusInput).then {
+            // If the user exists, update current user's information;
+            // else, create user's information
+            return createOrUpdateMigrateUser(oculusInput)
         }
     }
 
-    Promise<Void> createMigrateUser(OculusInput oculusInput) {
+    Promise<Void> createOrUpdateMigrateUser(OculusInput oculusInput) {
         User user = new User(
                 username: oculusInput.username,
                 canonicalUsername: normalizeService.normalize(oculusInput.username),
                 preferredLocale: new LocaleId(mapToLocaleCode(oculusInput.language)),
                 preferredTimezone: timeZoneMap.get(oculusInput.timezone),
                 status: mapToStatus(oculusInput.status),
-                isAnonymous: !StringUtils.isEmpty(oculusInput.username),
+                isAnonymous: StringUtils.isEmpty(oculusInput.username),
                 createdTime: oculusInput.createdDate,
                 updatedTime: oculusInput.updateDate
         )
 
-        return userRepository.create(user).then { User createdUser ->
+        return saveOrUpdateUser(user).then { User createdUser ->
             // Create user name
             UserName userName = new UserName(
                 givenName: oculusInput.firstName,
@@ -175,14 +181,47 @@ class MigrationResourceImpl implements MigrationResource {
                     isValidated: false
             )
 
-            return organizationRepository.create(organization).then {
-                return Promise.pure(null)
+            return organizationRepository.create(organization).then { Organization createdOrganization ->
+                OculusOutput output = new OculusOutput(
+                        userId: (UserId)createdUser.id,
+                        organizationId: (OrganizationId)createdOrganization.id
+                )
+                return Promise.pure(output)
             }
         }
     }
 
-    Promise<Void> updateMigrateUser(OculusInput oculusInput) {
-        return Promise.pure(null)
+    Promise<User> saveOrUpdateUser(User user) {
+        return userRepository.getUserByCanonicalUsername(normalizeService.normalize(user.username)).then { User existing ->
+            if (existing == null) {
+                return userRepository.create(user)
+            } else {
+                user.id = (UserId)existing.id
+                user.rev = existing.rev
+                return userRepository.update(user)
+            }
+        }
+    }
+
+    Promise<Void> checkEmailValid(OculusInput oculusInput) {
+        return userRepository.getUserByCanonicalUsername(normalizeService.normalize(oculusInput.username)).then { User existing ->
+            return userPersonalInfoRepository.searchByEmail(oculusInput.email.toLowerCase(java.util.Locale.ENGLISH),
+                    Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> emails ->
+                if (CollectionUtils.isEmpty(emails)) {
+                    return Promise.pure(null)
+                }
+
+                emails.removeAll { UserPersonalInfo userPersonalInfo ->
+                    existing != null && userPersonalInfo.userId == existing.id
+                }
+
+                if (CollectionUtils.isEmpty(emails)) {
+                    return Promise.pure(null)
+                }
+
+                throw AppErrors.INSTANCE.userEmailAlreadyUsed(oculusInput.currentId, oculusInput.email).exception()
+            }
+        }
     }
 
     private String mapToLocaleCode(String language) {

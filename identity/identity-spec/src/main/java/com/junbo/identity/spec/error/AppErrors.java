@@ -209,4 +209,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 400, code = "10001", description = "Request body is empty")
     AppError requestBodyRequired();
+
+    @ErrorDef(httpStatusCode = 400, code = "2000058", description = "User {0} Email {1} already used.", field = "{0}")
+    AppError userEmailAlreadyUsed(String currentId, String email);
 }
