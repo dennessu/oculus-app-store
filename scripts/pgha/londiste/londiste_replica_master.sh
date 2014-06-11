@@ -13,7 +13,7 @@ do
     config=$SKYTOOL_CONFIG_PATH/${db}_leaf.ini
 
     echo "create root node for database [$db]"
-	londiste3 $config create-leaf ${db}_leaf_node dbname=$db --provider="dbname=$db host=$MASTER_HOST"
+	londiste3 $config create-leaf ${db}_leaf_node "dbname=$db host=$REPLICA_HOST port=$REPLICA_DB_PORT" --provider="dbname=$db host=$MASTER_HOST port=$MASTER_DB_PORT"
 
     echo "start worker for database [$db]"
     londiste3 -d $config worker > /dev/null 2>&1 &

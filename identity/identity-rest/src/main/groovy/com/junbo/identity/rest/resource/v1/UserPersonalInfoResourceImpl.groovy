@@ -59,6 +59,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
 
             return userPersonalInfoValidator.validateForCreate(userPii).then {
                 return userPersonalInfoRepository.create(userPii).then { UserPersonalInfo newUserPii ->
+                    newUserPii.isValidated = newUserPii.lastValidateTime != null
                     Created201Marker.mark((Id) newUserPii.id)
 
                     newUserPii = userPersonalInfoFilter.filterForGet(newUserPii, null)
@@ -85,6 +86,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
                     throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPiiId).exception()
                 }
 
+                userPii.isValidated = userPii.lastValidateTime != null
                 userPii = userPersonalInfoFilter.filterForGet(userPii, getOptions.properties?.split(',') as List)
                 return Promise.pure(userPii)
             }
@@ -116,6 +118,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
 
                 return userPersonalInfoValidator.validateForUpdate(userPersonalInfo, oldUserPersonalInfo).then {
                     return userPersonalInfoRepository.update(userPersonalInfo).then { UserPersonalInfo newUserPii ->
+                        newUserPii.isValidated = newUserPii.lastValidateTime != null
                         newUserPii = userPersonalInfoFilter.filterForGet(newUserPii, null)
                         return Promise.pure(newUserPii)
                     }
@@ -149,6 +152,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
 
                 return userPersonalInfoValidator.validateForUpdate(userPii, oldUserPersonalInfo).then {
                     return userPersonalInfoRepository.update(userPii).then { UserPersonalInfo newUserPersonalInfo ->
+                        newUserPersonalInfo.isValidated = newUserPersonalInfo.lastValidateTime != null
                         newUserPersonalInfo = userPersonalInfoFilter.filterForGet(newUserPersonalInfo, null)
                         return Promise.pure(newUserPersonalInfo)
                     }
@@ -187,6 +191,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
             return Promise.each(userPersonalInfoList) { UserPersonalInfo userPersonalInfo ->
                 def callback = userPropertyAuthorizeCallbackFactory.create(userPersonalInfo.userId)
                 return RightsScope.with(authorizeService.authorize(callback)) {
+                    userPersonalInfo.isValidated = userPersonalInfo.lastValidateTime != null
                     userPersonalInfo = userPersonalInfoFilter.filterForGet(userPersonalInfo,
                             listOptions.properties?.split(',') as List<String>)
 
@@ -202,17 +207,20 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
         }
 
         return userPersonalInfoValidator.validateForSearch(listOptions).then {
-            if (listOptions.userId != null && listOptions.type != null) {
+            if (listOptions.userId != null && listOptions.isValidated != null) {
+                return userPersonalInfoRepository.searchByUserIdAndValidateStatus(listOptions.userId, listOptions.type,
+                        listOptions.isValidated, listOptions.limit, listOptions.offset).then(filterUserPersonalInfos)
+            } else if  (listOptions.userId != null && listOptions.type != null) {
                 return userPersonalInfoRepository.searchByUserIdAndType(listOptions.userId, listOptions.type,
                         listOptions.limit, listOptions.offset).then(filterUserPersonalInfos)
-            } else if (listOptions.userId != null) {
-                return userPersonalInfoRepository.searchByUserId(listOptions.userId, listOptions.limit,
-                        listOptions.offset).then(filterUserPersonalInfos)
             } else if (listOptions.email != null) {
                 return userPersonalInfoRepository.searchByEmail(listOptions.email, listOptions.limit,
                         listOptions.offset).then(filterUserPersonalInfos)
-            } else {
+            } else if (listOptions.phoneNumber != null) {
                 return userPersonalInfoRepository.searchByPhoneNumber(listOptions.phoneNumber, listOptions.limit,
+                        listOptions.offset).then(filterUserPersonalInfos)
+            } else {
+                return userPersonalInfoRepository.searchByUserId(listOptions.userId, listOptions.limit,
                         listOptions.offset).then(filterUserPersonalInfos)
             }
         }

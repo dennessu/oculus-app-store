@@ -75,6 +75,7 @@ public class PendingActionReplayer {
                 throw new RuntimeException("ResourceAge is null for entity.")
             }
             if (entity.resourceAge > savedEntity.resourceAge) {
+                entity.cloudantRev = savedEntity.cloudantRev
                 return repository.update(entity);
             }
             return Promise.pure(entity);

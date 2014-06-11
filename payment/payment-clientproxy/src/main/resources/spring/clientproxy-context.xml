@@ -8,11 +8,6 @@
         <property name="target" value="${payment.clientproxy.braintree.target}"/>
     </bean>
 
-    <bean id="walletClient" class="com.junbo.ewallet.spec.resource.proxy.WalletResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.ewallet.url}"/>
-    </bean>
-
     <bean id="currencyClient" class="com.junbo.identity.spec.v1.resource.proxy.CurrencyResourceClientProxy"
           parent="baseClientProxy">
         <property name="target" value="${clientproxy.identity.url}"/>
@@ -61,8 +56,5 @@
     <bean id="currencyServiceFacade" class="com.junbo.payment.clientproxy.impl.CurrencyServiceFacadeImpl">
         <property name="currencyResource" ref="currencyClient"/>
     </bean>
-
-    <bean id="mockPersonalInfoClientProxy" class="com.junbo.payment.clientproxy.MockPersonalInfoClientProxy"/>
-
 
 </beans>

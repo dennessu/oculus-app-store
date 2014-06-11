@@ -183,24 +183,27 @@ class OrderInternalServiceImpl implements OrderInternalService {
                         Throwable ex ->
                     }.then { List<Balance> bls ->
                         List<Balance> refundableBalances = bls.findAll { Balance bl ->
-                            (bl.type == BalanceType.DEBIT || bl.type == BalanceType.MANUAL_CAPTURE) &&
-                                    (bl.status == BalanceStatus.AWAITING_PAYMENT ||
-                                            bl.status == BalanceStatus.COMPLETED)
+                            (bl.type == BalanceType.DEBIT.name() || bl.type == BalanceType.MANUAL_CAPTURE.name()) &&
+                                    (bl.status == BalanceStatus.AWAITING_PAYMENT.name() ||
+                                            bl.status == BalanceStatus.COMPLETED.name())
                         }.toList()
 
                         // preorder: deposit+deposit
                         // physical goods: manual_capture/deposit
                         // digital: deposit
                         List<Balance> refundBalances = CoreBuilder.buildRefundBalances(refundableBalances, diffOrder)
+                        if (CollectionUtils.isEmpty(refundBalances)) {
+                            throw AppErrors.INSTANCE.orderNotRefundable().exception()
+                        }
                         assert (refundBalances.size() <= 2)
                         return Promise.each(refundBalances) { Balance refundBalance ->
-                            return facadeContainer.billingFacade.createBalance(refundBalance, false).syncRecover {
+                            return facadeContainer.billingFacade.createBalance(refundBalance, true).syncRecover {
                                 Throwable ex ->
                                     LOGGER.error('name=Refund_Failed', ex)
-                                    throw AppErrors.INSTANCE.billingRefundFailed().exception()
+                                    throw AppErrors.INSTANCE.billingRefundFailed('billing returns error').exception()
                             }.then { Balance refunded ->
-                                if (refunded != null) {
-                                    throw AppErrors.INSTANCE.billingRefundFailed().exception()
+                                if (refunded == null) {
+                                    throw AppErrors.INSTANCE.billingRefundFailed('billing returns null balance').exception()
                                 }
                                 orderRepository.updateOrder(order, true)
                                 return Promise.pure(null)

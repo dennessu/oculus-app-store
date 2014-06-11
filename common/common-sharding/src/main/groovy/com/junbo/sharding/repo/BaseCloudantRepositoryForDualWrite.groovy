@@ -5,7 +5,7 @@ import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 
 /**
- * The base repository for cloudant.
+ * The base repository for cloudant for dual write. Won't generate ids or do something special.
  * @param <K> the entity key.
  * @param <T> the entity type.
  */

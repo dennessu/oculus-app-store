@@ -29,6 +29,8 @@ interface TokenService {
 
     List<RefreshToken> getRefreshTokenByUserIdClientId(Long userId, String clientId)
 
+    RefreshToken getRefreshToken(String tokenValue)
+
     RefreshToken getAndRemoveRefreshToken(String tokenValue)
 
     IdToken generateIdToken(Client client, String issuer, Long userId, String nonce, Date lastAuthDate,

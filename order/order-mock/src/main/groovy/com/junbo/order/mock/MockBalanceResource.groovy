@@ -1,4 +1,5 @@
 package com.junbo.order.mock
+import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.resource.BalanceResource
@@ -25,7 +26,7 @@ class MockBalanceResource extends BaseMock implements BalanceResource {
     Promise<Balance> postBalance(Balance balance) {
         balance.balanceId = new BalanceId()
         balance.balanceId.value = generateLong()
-        balance.status = 'Open'
+        balance.status = BalanceStatus.COMPLETED
         balanceMap[balance.balanceId] = balance
         return Promise.pure(balance)
     }
@@ -34,7 +35,7 @@ class MockBalanceResource extends BaseMock implements BalanceResource {
     Promise<Balance> quoteBalance(Balance balance) {
         balance.balanceId = new BalanceId()
         balance.balanceId.value = generateLong()
-        balance.status = 'Open'
+        balance.status = null
         balance.taxAmount = 2.00G
         balance.taxIncluded = false
         balance.balanceItems.each { BalanceItem bi ->
@@ -45,10 +46,14 @@ class MockBalanceResource extends BaseMock implements BalanceResource {
 
     @Override
     Promise<Balance> getBalance(BalanceId balanceId) {
-        def balance = new Balance()
-        balance.balanceId = new BalanceId()
-        balance.balanceId = balanceId
-        balance.status = 'Open'
+        def balance = balanceMap[balanceId]
+        if(balance == null) {
+            balance = new Balance()
+
+            balance.balanceId = new BalanceId()
+            balance.balanceId = balanceId
+        }
+        balance.status = BalanceStatus.COMPLETED
         return Promise.pure(balance)
     }
 
