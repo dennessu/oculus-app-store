@@ -15,6 +15,7 @@ import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.*;
 import com.junbo.common.model.Results;
 import com.junbo.order.spec.model.*;
+import com.junbo.test.billing.utility.BillingTestDataProvider;
 import com.junbo.test.catalog.OfferRevisionService;
 import com.junbo.test.catalog.OfferService;
 import com.junbo.test.catalog.impl.OfferRevisionServiceImpl;
@@ -25,6 +26,7 @@ import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.order.apihelper.OrderEventService;
 import com.junbo.test.order.apihelper.OrderService;
@@ -50,6 +52,8 @@ public class OrderTestDataProvider {
     protected OfferRevisionService offerRevisionClient = OfferRevisionServiceImpl.instance();
     protected UserService identityClient = UserServiceImpl.instance();
     protected PaymentTestDataProvider paymentProvider = new PaymentTestDataProvider();
+    protected BillingTestDataProvider billingProvider = new BillingTestDataProvider();
+
 
     public String createUser() throws Exception {
         return identityClient.PostUser();
@@ -98,13 +102,18 @@ public class OrderTestDataProvider {
     public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
                             boolean hasPhysicalGood, ArrayList<String> offers)
             throws Exception {
-        return postOrder(uid, country, currency, paymentInstrumentId, hasPhysicalGood, offers, 200);
+        return postOrder(uid, country, currency, paymentInstrumentId, hasPhysicalGood, 1, offers, 200);
     }
 
     public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
-                            boolean hasPhysicalGood, ArrayList<String> offers, int expectedResponseCode)
+                            boolean hasPhysicalGood, int quantity, ArrayList<String> offers)
             throws Exception {
+        return postOrder(uid, country, currency, paymentInstrumentId, hasPhysicalGood, quantity, offers, 200);
+    }
 
+    public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
+                            boolean hasPhysicalGood, int quantity, ArrayList<String> offers, int expectedResponseCode)
+            throws Exception {
         Order order = new Order();
         order.setUser(new UserId(IdConverter.hexStringToId(UserId.class, uid)));
         order.setCountry(new CountryId(country.toString()));
@@ -118,7 +127,7 @@ public class OrderTestDataProvider {
         order.setShippingMethod(0L);
 
         if (hasPhysicalGood) {
-            order.setShippingMethod(01L);
+            order.setShippingMethod(new Long(quantity));
             order.setShippingAddress(Master.getInstance().getUser(uid).getAddresses().get(0).getValue());
         }
 
@@ -137,6 +146,14 @@ public class OrderTestDataProvider {
         order.setTentative(true);
         order.setLocale(new LocaleId("en_US"));
         return orderClient.postOrder(order, expectedResponseCode);
+    }
+
+
+    public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
+                            boolean hasPhysicalGood, ArrayList<String> offers, int expectedResponseCode)
+            throws Exception {
+
+        return postOrder(uid, country, currency, paymentInstrumentId, hasPhysicalGood, 1, offers, expectedResponseCode);
     }
 
     public String updateOrderTentative(String orderId, boolean isTentative, int expectedResponseCode) throws Exception {
@@ -190,6 +207,74 @@ public class OrderTestDataProvider {
         orderEvent.setAction(orderActionType.toString());
         orderEvent.setStatus(eventStatus.toString());
         orderEventClient.postOrderEvent(orderEvent);
+    }
+
+    public BigDecimal refundTotalAmount(String orderId) throws Exception {
+        orderClient.getOrderByOrderId(orderId);
+        BigDecimal totalAmount = new BigDecimal(0);
+        Order order = Master.getInstance().getOrder(orderId);
+        for (int i = 0; i < order.getOrderItems().size(); i++) {
+            totalAmount.add(order.getOrderItems().get(i).getTotalAmount());
+            order.getOrderItems().get(i).setTotalAmount(new BigDecimal(0));
+        }
+        orderClient.updateOrder(order);
+        return totalAmount;
+    }
+
+    public BigDecimal refundTotalQuantity(String orderId) throws Exception {
+        orderClient.getOrderByOrderId(orderId);
+        BigDecimal totalAmount = new BigDecimal(0);
+        Order order = Master.getInstance().getOrder(orderId);
+        for (int i = 0; i < order.getOrderItems().size(); i++) {
+            totalAmount.add(order.getOrderItems().get(i).getTotalAmount());
+            order.getOrderItems().get(i).setTotalAmount(new BigDecimal(0));
+        }
+        order.setOrderItems(null);
+        orderClient.updateOrder(order);
+        return totalAmount;
+
+    }
+
+    public BigDecimal refundPartialAmount(String orderId, BigDecimal refundAmount) throws Exception {
+        orderClient.getOrderByOrderId(orderId);
+        BigDecimal totalAmount = new BigDecimal(0);
+        Order order = Master.getInstance().getOrder(orderId);
+        for (int i = 0; i < order.getOrderItems().size(); i++) {
+            OrderItem orderItem = order.getOrderItems().get(i);
+            BigDecimal orderItemTotalAmount = orderItem.getTotalAmount();
+            if (refundAmount.compareTo(orderItemTotalAmount) > 0) {
+                throw new TestException("Refund amount more than actual order item amount");
+            }
+            totalAmount.add(orderItemTotalAmount.subtract(refundAmount));
+            order.getOrderItems().get(i).setTotalAmount(orderItemTotalAmount.subtract(refundAmount));
+        }
+
+        orderClient.updateOrder(order);
+        return totalAmount;
+    }
+
+    public BigDecimal refundPartialQuantity(String orderId, int quantity) throws Exception {
+        orderClient.getOrderByOrderId(orderId);
+        BigDecimal totalAmount = new BigDecimal(0);
+        Order order = Master.getInstance().getOrder(orderId);
+        for (int i = 0; i < order.getOrderItems().size(); i++) {
+            OrderItem orderItem = order.getOrderItems().get(i);
+            int itemQuantity = orderItem.getQuantity();
+            if (itemQuantity < quantity) {
+                throw new TestException("Refund item quantity more than actual quantity!");
+            }
+            BigDecimal orderItemTotalAmount = orderItem.getTotalAmount();
+            BigDecimal unitAmountWithTax = orderItemTotalAmount.divide(new BigDecimal(itemQuantity));
+            totalAmount.add(unitAmountWithTax.multiply(new BigDecimal(itemQuantity - quantity)));
+            order.getOrderItems().get(i).setQuantity(itemQuantity - quantity);
+        }
+
+        orderClient.updateOrder(order);
+        return totalAmount;
+    }
+
+    public String getBalanceByOrderId(String uid, String orderId) throws Exception {
+        return billingProvider.getBalanceByOrderId(uid, orderId);
     }
 
 }
