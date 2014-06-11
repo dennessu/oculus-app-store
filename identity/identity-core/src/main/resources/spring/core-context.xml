@@ -655,12 +655,10 @@
                 <entry key="update">
                     <list>
                         <value>id</value>
-                        <value>type</value>
                         <value>value</value>
                         <value>lastValidateTime</value>
                         <value>isNormalized</value>
                         <value>label</value>
-                        <value>userId</value>
                         <value>rev</value>
                     </list>
                 </entry>
