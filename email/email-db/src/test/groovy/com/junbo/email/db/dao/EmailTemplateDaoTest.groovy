@@ -7,7 +7,7 @@ import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 /**
- * Created by Wei on 5/15/2014.
+ * EmailTemplateDaoTest Class.
  */
 class EmailTemplateDaoTest extends BaseTest {
     @Autowired
@@ -22,14 +22,13 @@ class EmailTemplateDaoTest extends BaseTest {
 
     @Test
     void testCreate() {
-        def id = emailTemplateDao.save(entity)
-        assert id == entity.id, 'Email template create failed'
+        def entity = emailTemplateDao.save(entity)
+        assert entity != null, 'Email template create failed'
     }
 
     @Test
     void testGet() {
-        def id = emailTemplateDao.save(entity)
-        def entity = emailTemplateDao.get(id)
+        def entity = emailTemplateDao.save(entity)
         assert entity != null, 'Email template get failed by id'
         entity = emailTemplateDao.getEmailTemplateByName(entity.name)
         assert entity != null, 'Email template get failed by name'
@@ -45,18 +44,16 @@ class EmailTemplateDaoTest extends BaseTest {
     void testUpdate() {
         emailTemplateDao.save(entity)
         entity.setPlaceholderNames('unittest')
-        def id = emailTemplateDao.update(entity)
-        assert  id == entity.id, 'Email template update failed'
-        def entity = emailTemplateDao.get(id)
-        assert entity != null, 'Email template should not be null'
+        def entity = emailTemplateDao.update(entity)
+        assert  entity != null, 'Email template update failed'
         assert entity.placeholderNames == 'unittest', 'Email template update failed'
     }
 
     @Test
     void testDelete() {
-        def id = emailTemplateDao.save(entity)
+        emailTemplateDao.save(entity)
         emailTemplateDao.delete(entity)
-        def entity = emailTemplateDao.get(id)
+        def entity = emailTemplateDao.get(entity.id)
         assert entity == null, 'Email template delete failed'
     }
 

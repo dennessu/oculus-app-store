@@ -3,12 +3,21 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="emailListener" class="com.junbo.email.jobs.listener.EmailListener">
+
+    <bean id="emailBaseListener" class="com.junbo.email.jobs.listener.impl.EmailBaseListener" abstract="true">
         <property name="emailProvider" ref="emailProvider"/>
-        <property name="emailHistoryRepository" ref="emailHistoryRepository"/>
-        <property name="EmailTemplateRepository" ref="emailTemplateRepository"/>
+        <property name="emailHistoryRepository" ref="emailHistorySqlRepo"/>
+        <!--<property name="emailHistoryRepository" ref="emailHistoryCloudantRepo"/>-->
+        <property name="EmailTemplateRepository" ref="emailTemplateSqlRepo"/>
+        <!--<property name="EmailTemplateRepository" ref="emailTemplateCloudantRepo"/>-->
+    </bean>
+
+    <bean id="emailListener" class="com.junbo.email.jobs.listener.impl.sql.EmailListenerSqlImpl" parent="emailBaseListener">
         <property name="transactionManager" ref="transactionManager"/>
     </bean>
+
+    <!--<bean id="emailListener" class="com.junbo.email.jobs.listener.impl.cloudant.EmailListenerCloudantImpl" parent="emailBaseListener">-->
+    <!--</bean>-->
 
     <bean id="emailListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer"
           parent="baseListenerContainer">

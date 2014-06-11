@@ -1,61 +1,62 @@
-package com.junbo.email.db.repo
+package com.junbo.email.db.repo.sql
 
 import com.junbo.common.id.EmailTemplateId
 import com.junbo.email.db.BaseTest
+import com.junbo.email.db.repo.EmailTemplateRepository
 import com.junbo.email.spec.model.EmailTemplate
 import org.springframework.beans.factory.annotation.Autowired
-import org.testng.annotations.BeforeMethod
+import org.springframework.beans.factory.annotation.Qualifier
+import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
 
 /**
- * Created by Wei on 5/15/2014.
+ * EmailTemplateRepoSqlTest Class.
  */
-class EmailTemplateRepoTest extends BaseTest {
+class EmailTemplateRepoSqlTest extends BaseTest {
     @Autowired
+    @Qualifier('emailTemplateSqlRepo')
     private EmailTemplateRepository emailTemplateRepository
 
     private EmailTemplate template
 
-    @BeforeMethod
+    @BeforeClass
     private void buildTemplate() {
         template = this.buildEmailTemplate()
     }
 
     @Test
     void testCreate() {
-        def id = emailTemplateRepository.saveEmailTemplate(template)
-        assert id != null, 'Email template create failed'
+        def template = emailTemplateRepository.saveEmailTemplate(template).get()
+        assert template != null, 'Email template create failed'
     }
 
     @Test
     void testGet() {
-        def id = emailTemplateRepository.saveEmailTemplate(template)
-        def template = emailTemplateRepository.getEmailTemplate(id)
+        def template = emailTemplateRepository.saveEmailTemplate(template).get()
         assert template != null, 'Email template should not be null'
-        template = emailTemplateRepository.getEmailTemplateByName(template.name)
+        template = emailTemplateRepository.getEmailTemplateByName(template.name).get()
         assert template != null, 'Email template should not be null'
         def template2 = this.buildEmailTemplate()
         template2.setLocale('zh_CN')
         template2.setName('unit.test.zh_CN')
-        emailTemplateRepository.saveEmailTemplate(template2)
-        def list = emailTemplateRepository.getEmailTemplates(null, null)
+        emailTemplateRepository.saveEmailTemplate(template2).get()
+        def list = emailTemplateRepository.getEmailTemplates(null, null).get()
         assert list.size() >= 2, 'Email template list get failed'
     }
 
     @Test
     void testUpdate() {
-        def id = emailTemplateRepository.saveEmailTemplate(template)
-        def template = emailTemplateRepository.getEmailTemplate(id)
+        def template = emailTemplateRepository.saveEmailTemplate(template).get()
         template.setPlaceholderNames(['unit','test'])
-        def updateId = emailTemplateRepository.updateEmailTemplate(template)
-        assert updateId != null, 'Email template update failed'
+        def updated = emailTemplateRepository.updateEmailTemplate(template).get()
+        assert updated != null, 'Email template update failed'
     }
 
     @Test
     void testDelete() {
-        def id = emailTemplateRepository.saveEmailTemplate(template)
-        emailTemplateRepository.deleteEmailTemplate(id)
-        def template = emailTemplateRepository.getEmailTemplate(id)
+        emailTemplateRepository.saveEmailTemplate(template).get()
+        emailTemplateRepository.deleteEmailTemplate(template.id.value)
+        def template = emailTemplateRepository.getEmailTemplate(template.id.value).get()
         assert template == null, 'Email template delete failed'
     }
 

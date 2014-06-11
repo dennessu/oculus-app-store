@@ -5,9 +5,9 @@
  */
 package com.junbo.email.common.util;
 
-import com.alibaba.fastjson.serializer.JSONSerializer;
-import com.alibaba.fastjson.serializer.SerializeWriter;
-import com.alibaba.fastjson.JSON;
+import com.junbo.common.cloudant.DefaultCloudantMarshaller;
+
+import java.io.IOException;
 
 /**
  * Utils.
@@ -16,15 +16,11 @@ public class Utils {
 
     private Utils() {}
 
-    public static String toJson(Object obj) {
-        SerializeWriter writer = new SerializeWriter();
-        JSONSerializer serializer = new JSONSerializer(writer);
-
-        serializer.write(obj);
-        return writer.toString();
+    public static String toJson(Object obj) throws IOException {
+        return DefaultCloudantMarshaller.instance().marshall(obj);
     }
 
-    public static <T> T toObject(String json, Class<T> clazz) {
-        return JSON.parseObject(json, clazz);
+    public static <T> T toObject(String json, Class<T> clazz) throws IOException {
+        return DefaultCloudantMarshaller.instance().unmarshall(json, clazz);
     }
 }

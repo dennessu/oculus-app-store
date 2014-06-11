@@ -17,7 +17,6 @@ import com.junbo.email.spec.model.Email
 import com.junbo.email.spec.model.EmailStatus
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
@@ -29,20 +28,35 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class EmailServiceImpl implements EmailService {
 
-    @Autowired
     private  EmailHistoryRepository emailHistoryRepository
 
-    @Autowired
     private EmailScheduleRepository emailScheduleRepository
 
-    @Autowired
     private EmailValidator emailValidator
 
-    @Autowired
     private IdentityFacade identityFacade
 
-    @Autowired
     private EmailPublisher emailPublisher
+
+    void setEmailHistoryRepository(EmailHistoryRepository emailHistoryRepository) {
+        this.emailHistoryRepository = emailHistoryRepository
+    }
+
+    void setEmailScheduleRepository(EmailScheduleRepository emailScheduleRepository) {
+        this.emailScheduleRepository = emailScheduleRepository
+    }
+
+    void setEmailValidator(EmailValidator emailValidator) {
+        this.emailValidator = emailValidator
+    }
+
+    void setIdentityFacade(IdentityFacade identityFacade) {
+        this.identityFacade = identityFacade
+    }
+
+    void setEmailPublisher(EmailPublisher emailPublisher) {
+        this.emailPublisher = emailPublisher
+    }
 
     @Override
     Promise<Email> postEmail(Email email) {
@@ -53,17 +67,18 @@ class EmailServiceImpl implements EmailService {
 
     @Override
     Promise<Email> getEmail(Long id) {
-        Email email = emailHistoryRepository.getEmail(id)
-        if (email == null) {
-            email = emailScheduleRepository.getEmailSchedule(id)
+        return  emailHistoryRepository.getEmailHistory(id).then {Email email ->
+            if (email == null) {
+               return emailScheduleRepository.getEmailSchedule(id)
+            }
+            return Promise.pure(email)
         }
-        return Promise.pure(email)
     }
 
     @Override
     Void deleteEmail(Long id) {
         emailValidator.validateDelete(id)
-        emailScheduleRepository.deleteEmailScheduleById(id)
+        emailScheduleRepository.deleteEmailSchedule(id)
         return null
     }
 
@@ -94,21 +109,15 @@ class EmailServiceImpl implements EmailService {
 
     private Promise<Email> save(Email email) {
         if (email.scheduleTime != null) {
-            def scheduleEmail = emailScheduleRepository.saveEmailSchedule(email)
-            return Promise.pure(scheduleEmail)
+            return emailScheduleRepository.saveEmailSchedule(email)
         }
-//        def template = emailTemplateRepository.getEmailTemplate(email.templateId.value)
-//        return emailProvider.sendEmail(email, template).then {
-//            Long id = emailHistoryRepository.createEmailHistory(it as Email)
-//            return Promise.pure(emailHistoryRepository.getEmail(id))
-//        }
-        Long id = emailHistoryRepository.createEmailHistory(email)
-        emailPublisher.send(id)
-        return Promise.pure(emailHistoryRepository.getEmail(id))
+        return emailHistoryRepository.createEmailHistory(email).then {Email savedEmail ->
+            emailPublisher.send(savedEmail.getId().value)
+            return Promise.pure(savedEmail)
+        }
     }
 
     private Promise<Email> update(Email email) {
-        Email scheduleEmail = emailScheduleRepository.updateEmailSchedule(email)
-        return Promise.pure(scheduleEmail)
+        return emailScheduleRepository.updateEmailSchedule(email)
     }
 }

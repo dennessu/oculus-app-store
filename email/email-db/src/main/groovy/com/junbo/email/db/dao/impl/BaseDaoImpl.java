@@ -24,6 +24,32 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
 
     private ShardAlgorithm shardAlgorithm;
 
+    public T save(T entity) {
+        Session session = currentSession(entity.getId());
+        session.save(entity);
+        session.flush();
+        return get(entity.getId());
+    }
+
+    public T get(Long id) {
+        return (T) currentSession(id).get(entityType, id);
+    }
+
+    public T update(T entity) {
+        Session session = currentSession(entity.getId());
+        session.merge(entity);
+        session.flush();
+        return get(entity.getId());
+    }
+
+    public void delete(T entity) {
+        currentSession(entity.getId()).delete(entity);
+    }
+
+    public void flush(Long id) {
+        currentSession(id).flush();
+    }
+
     protected Session currentSession(Object id) {
         ShardScope shardScope = new ShardScope(shardAlgorithm.shardId(id));
         try {
@@ -33,6 +59,7 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
         }
 
     }
+
     protected Session getCurrentSession() {
         return sessionFactory.getCurrentSession();
     }
@@ -55,28 +82,5 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
 
     public void setShardAlgorithm(ShardAlgorithm shardAlgorithm) {
         this.shardAlgorithm = shardAlgorithm;
-    }
-
-
-    public Long save(T entity) {
-        return (Long)currentSession(entity.getId()).save(entity);
-    }
-
-    public T get(Long id) {
-        return (T) currentSession(id).get(entityType, id);
-    }
-
-    public Long update(T entity) {
-        currentSession(entity.getId()).merge(entity);
-        currentSession(entity.getId()).flush();
-        return entity.getId();
-    }
-
-    public void delete(T entity) {
-        currentSession(entity.getId()).delete(entity);
-    }
-
-    public void flush(Long id) {
-        currentSession(id).flush();
     }
 }

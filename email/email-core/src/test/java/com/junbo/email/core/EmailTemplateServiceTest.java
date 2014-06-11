@@ -3,34 +3,36 @@ package com.junbo.email.core;
 import com.junbo.common.model.Results;
 import com.junbo.email.spec.model.EmailTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Wei on 5/16/2014.
+ * EmailTemplateServiceTest Class.
  */
 public class EmailTemplateServiceTest extends BaseTest {
     @Autowired
+    @Qualifier("templateService")
     private EmailTemplateService templateService;
 
     private EmailTemplate template;
 
-    @BeforeMethod
+    @BeforeClass
     private void buildTemplate() {
         this.template = this.buildEmailTemplate();
     }
 
-    @Test
+    @Test(enabled = false)
     public void testCreate() throws Exception {
         EmailTemplate emailTemplate = templateService.postEmailTemplate(template).get();
         Assert.assertNotNull(emailTemplate,"Email template should not be null");
     }
 
-    @Test
+    @Test(enabled = false)
     public void testGet() throws Exception {
         EmailTemplate saveTemplate = templateService.postEmailTemplate(template).get();
         EmailTemplate emailTemplate = templateService.getEmailTemplate(saveTemplate.getId().getValue()).get();
@@ -42,19 +44,18 @@ public class EmailTemplateServiceTest extends BaseTest {
         Assert.assertEquals(list.getItems().size() >= 2 , true, "Email template list get failed" );
     }
 
-    @Test
+    @Test(enabled = false)
     public void testUpdate() throws Exception {
         EmailTemplate emailTemplate = templateService.postEmailTemplate(template).get();
         Long id = emailTemplate.getId().getValue();
         emailTemplate.setId(null);
         emailTemplate.setProviderName("unittest");
-        EmailTemplate updateTemplate = templateService.putEmailTemplate(id, emailTemplate)
-                .get();
+        EmailTemplate updateTemplate = templateService.putEmailTemplate(id, emailTemplate).get();
         Assert.assertNotNull(updateTemplate,"Email template should not be null");
         Assert.assertEquals(updateTemplate.getProviderName(), "unittest", "Email template update failed");
     }
 
-    @Test
+    @Test(enabled = false)
     public void testDelete() throws Exception {
 
         EmailTemplate emailTemplate = templateService.postEmailTemplate(template).get();
