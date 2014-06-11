@@ -29,15 +29,9 @@ dependencies {
 
     processor (libraries.querydsl_apt)
     processor (libraries.persistence_api)
-    processor junboProject(':oom-processor')
 
     compile junboProject(':crypto-common')
     compile junboProject(':crypto-spec')
-    compile junboProject(':oom-core')
 
     testCompile (libraries.spring_test)
-}
-
-ext {
-    processorClass = 'com.junbo.oom.processor.MappingProcessor,com.mysema.query.apt.jpa.JPAAnnotationProcessor'
 }
