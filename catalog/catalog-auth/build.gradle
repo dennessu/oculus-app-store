@@ -3,5 +3,6 @@ apply plugin: 'java'
 dependencies {
     compile junboProject(':catalog-spec')
     compile junboProject(':authorization-lib')
+    runtime junboProject(':identity-clientproxy')
     runtime junboProject(':catalog-clientproxy')
 }
