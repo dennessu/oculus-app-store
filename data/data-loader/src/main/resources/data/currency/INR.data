@@ -1,0 +1,12 @@
+{
+   "currencyCode" : "INR",
+   "futureExpansion" : {},
+   "localeKeys" : {
+      "longName" : "INR_LONG",
+      "shortName" : "INR_SHORT"
+   },
+   "minimalAuthorizeAmount" : "1",
+   "numberAfterDecimal" : "2",
+   "symbol" : "?",
+   "symbolPosition" : "BEFORE"
+}

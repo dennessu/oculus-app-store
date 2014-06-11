@@ -1,0 +1,86 @@
+{
+   "countryCode" : "CA",
+   "defaultCurrency" : {
+      "href" : "/v1/currencies/CAD",
+      "id" : "CAD"
+   },
+   "defaultLocale" : {
+      "href" : "/v1/locales/en-CA",
+      "id" : "en-CA"
+   },
+   "futureExpansion" : {},
+   "localeKeys" : {
+      "longNameKey" : "CA_LONG",
+      "shortNameKey" : "CA_SHORT"
+   },
+   "ratingBoards" : [
+      {
+         "href" : "/v1/age-rating-boards/ESRB",
+         "id" : "ESRB"
+      }
+   ],
+   "subCountries" : {
+      "CA-AB" : {
+         "longNameKey" : "CA_AB_LONG",
+         "shortNameKey" : "CA_AB_SHORT"
+      },
+      "CA-BC" : {
+         "longNameKey" : "CA_BC_LONG",
+         "shortNameKey" : "CA_BC_SHORT"
+      },
+      "CA-MB" : {
+         "longNameKey" : "CA_MB_LONG",
+         "shortNameKey" : "CA_MB_SHORT"
+      },
+      "CA-NB" : {
+         "longNameKey" : "CA_NB_LONG",
+         "shortNameKey" : "CA_NB_SHORT"
+      },
+      "CA-NL" : {
+         "longNameKey" : "CA_NL_LONG",
+         "shortNameKey" : "CA_NL_SHORT"
+      },
+      "CA-NS" : {
+         "longNameKey" : "CA_NS_LONG",
+         "shortNameKey" : "CA_NS_SHORT"
+      },
+      "CA-NT" : {
+         "longNameKey" : "CA_NT_LONG",
+         "shortNameKey" : "CA_NT_SHORT"
+      },
+      "CA-NU" : {
+         "longNameKey" : "CA_NU_LONG",
+         "shortNameKey" : "CA_NU_SHORT"
+      },
+      "CA-ON" : {
+         "longNameKey" : "CA_ON_LONG",
+         "shortNameKey" : "CA_ON_SHORT"
+      },
+      "CA-PE" : {
+         "longNameKey" : "CA_PE_LONG",
+         "shortNameKey" : "CA_PE_SHORT"
+      },
+      "CA-QC" : {
+         "longNameKey" : "CA_QC_LONG",
+         "shortNameKey" : "CA_QC_SHORT"
+      },
+      "CA-SK" : {
+         "longNameKey" : "CA_SK_LONG",
+         "shortNameKey" : "CA_SK_SHORT"
+      },
+      "CA-YT" : {
+         "longNameKey" : "CA_YT_LONG",
+         "shortNameKey" : "CA_YT_SHORT"
+      }
+   },
+   "supportedLocales" : [
+      {
+         "href" : "/v1/locales/en-CA",
+         "id" : "en-CA"
+      },
+	  {
+         "href" : "/v1/locales/fr-CA",
+         "id" : "fr-CA"
+      }
+   ]
+}

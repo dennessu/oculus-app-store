@@ -1,0 +1,12 @@
+{
+   "currencyCode" : "SAR",
+   "futureExpansion" : {},
+   "localeKeys" : {
+      "longName" : "SAR_LONG",
+      "shortName" : "SAR_SHORT"
+   },
+   "minimalAuthorizeAmount" : "1",
+   "numberAfterDecimal" : "0",
+   "symbol" : "?",
+   "symbolPosition" : "BEFORE"
+}

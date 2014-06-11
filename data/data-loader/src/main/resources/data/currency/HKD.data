@@ -1,0 +1,12 @@
+{
+   "currencyCode" : "HKD",
+   "futureExpansion" : {},
+   "localeKeys" : {
+      "longName" : "HKD_LONG",
+      "shortName" : "HKD_SHORT"
+   },
+   "minimalAuthorizeAmount" : "1",
+   "numberAfterDecimal" : "2",
+   "symbol" : "HK$",
+   "symbolPosition" : "BEFORE"
+}

@@ -1,0 +1,12 @@
+{
+   "currencyCode" : "AUD",
+   "futureExpansion" : {},
+   "localeKeys" : {
+      "longName" : "AUD_LONG",
+      "shortName" : "AUD_SHORT"
+   },
+   "minimalAuthorizeAmount" : "1",
+   "numberAfterDecimal" : "2",
+   "symbol" : "$",
+   "symbolPosition" : "BEFORE"
+}

@@ -1,0 +1,46 @@
+{
+   "countryCode" : "RU",
+   "defaultCurrency" : {
+      "href" : "/v1/currencies/RUB",
+      "id" : "RUB"
+   },
+   "defaultLocale" : {
+      "href" : "/v1/locales/ru-RU",
+      "id" : "ru-RU"
+   },
+   "futureExpansion" : {},
+   "localeKeys" : {
+      "longNameKey" : "RU_LONG",
+      "shortNameKey" : "RU_SHORT"
+   },
+   "ratingBoards" : [
+      {
+         "href" : "/v1/age-rating-boards/RGRS",
+         "id" : "RGRS"
+      }
+   ],
+   "subCountries" : {
+      "RU-AD" : {
+         "longNameKey" : "RU_AD_LONG",
+         "shortNameKey" : "RU_AD_SHORT"
+      },
+      "RU-AL" : {
+         "longNameKey" : "RU_AL_LONG",
+         "shortNameKey" : "RU_AL_SHORT"
+      },
+      "RU-BA" : {
+         "longNameKey" : "RU_BA_LONG",
+         "shortNameKey" : "RU_BA_SHORT"
+      },
+      "RU-BU" : {
+         "longNameKey" : "RU_BU_LONG",
+         "shortNameKey" : "RU_BU_SHORT"
+      }
+   },
+   "supportedLocales" : [
+      {
+         "href" : "/v1/locales/ru-RU",
+         "id" : "ru-RU"
+      }
+   ]
+}

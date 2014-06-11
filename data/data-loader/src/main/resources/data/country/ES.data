@@ -1,0 +1,106 @@
+{
+   "countryCode" : "ES",
+   "defaultCurrency" : {
+      "href" : "/v1/currencies/EUR",
+      "id" : "EUR"
+   },
+   "defaultLocale" : {
+      "href" : "/v1/locales/es-ES",
+      "id" : "es-ES"
+   },
+   "futureExpansion" : {},
+   "localeKeys" : {
+      "longNameKey" : "ES_LONG",
+      "shortNameKey" : "ES_SHORT"
+   },
+   "ratingBoards" : [
+      {
+         "href" : "/v1/age-rating-boards/PEGI",
+         "id" : "PEGI"
+      }
+   ],
+   "subCountries" : {
+      "ES-AN" : {
+         "longNameKey" : "ES_AN_LONG",
+         "shortNameKey" : "ES_AN_SHORT"
+      },
+      "ES-AR" : {
+         "longNameKey" : "ES_AR_LONG",
+         "shortNameKey" : "ES_AR_SHORT"
+      },
+      "ES-AS" : {
+         "longNameKey" : "ES_AS_LONG",
+         "shortNameKey" : "ES_AS_SHORT"
+      },
+      "ES-CB" : {
+         "longNameKey" : "ES_CB_LONG",
+         "shortNameKey" : "ES_CB_SHORT"
+      },
+      "ES-CE" : {
+         "longNameKey" : "ES_CE_LONG",
+         "shortNameKey" : "ES_CE_SHORT"
+      },
+      "ES-CL" : {
+         "longNameKey" : "ES_CL_LONG",
+         "shortNameKey" : "ES_CL_SHORT"
+      },
+      "ES-CM" : {
+         "longNameKey" : "ES_CM_LONG",
+         "shortNameKey" : "ES_CM_SHORT"
+      },
+      "ES-CN" : {
+         "longNameKey" : "ES_CN_LONG",
+         "shortNameKey" : "ES_CN_SHORT"
+      },
+      "ES-CT" : {
+         "longNameKey" : "ES_CT_LONG",
+         "shortNameKey" : "ESCT__SHORT"
+      },
+      "ES-EX" : {
+         "longNameKey" : "ES_EX_LONG",
+         "shortNameKey" : "ES_EX_SHORT"
+      },
+      "ES-GA" : {
+         "longNameKey" : "ES_GA_LONG",
+         "shortNameKey" : "ES_GA_SHORT"
+      },
+      "ES-IB" : {
+         "longNameKey" : "ES_IB_LONG",
+         "shortNameKey" : "ES_IB_SHORT"
+      },
+      "ES-MC" : {
+         "longNameKey" : "ES_MC_LONG",
+         "shortNameKey" : "ES_MC_SHORT"
+      },
+      "ES-MD" : {
+         "longNameKey" : "ES_MD_LONG",
+         "shortNameKey" : "ES_MD_SHORT"
+      },
+      "ES-ML" : {
+         "longNameKey" : "ES_ML_LONG",
+         "shortNameKey" : "ES_ML_SHORT"
+      },
+      "ES-NC" : {
+         "longNameKey" : "ES_NC_LONG",
+         "shortNameKey" : "ES_NC_SHORT"
+      },
+      "ES-PV" : {
+         "longNameKey" : "ES_PV_LONG",
+         "shortNameKey" : "ES_PV_SHORT"
+      },
+      "ES-RI" : {
+         "longNameKey" : "ES_RT_LONG",
+         "shortNameKey" : "ES_RT_SHORT"
+      },
+      "ES-VC" : {
+         "longNameKey" : "ES_VC_LONG",
+         "shortNameKey" : "ES_VC_SHORT"
+      }
+   },
+   "supportedLocales" : [
+      {
+         "href" : "/v1/locales/es-ES",
+         "id" : "es-ES"
+      }
+   ]
+}

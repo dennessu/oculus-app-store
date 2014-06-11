@@ -1,0 +1,12 @@
+{
+   "currencyCode" : "MXN",
+   "futureExpansion" : {},
+   "localeKeys" : {
+      "longName" : "MXN_LONG",
+      "shortName" : "MXN_SHORT"
+   },
+   "minimalAuthorizeAmount" : "1",
+   "numberAfterDecimal" : "2",
+   "symbol" : "$",
+   "symbolPosition" : "BEFORE"
+}

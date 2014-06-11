@@ -1,0 +1,78 @@
+{
+   "countryCode" : "NL",
+   "defaultCurrency" : {
+      "href" : "/v1/currencies/EUR",
+      "id" : "EUR"
+   },
+   "defaultLocale" : {
+      "href" : "/v1/locales/nl-NL",
+      "id" : "nl-NL"
+   },
+   "futureExpansion" : {},
+   "localeKeys" : {
+      "longNameKey" : "NL_LONG",
+      "shortNameKey" : "NL_SHORT"
+   },
+   "ratingBoards" : [
+      {
+         "href" : "/v1/age-rating-boards/PEGI",
+         "id" : "PEGI"
+      }
+   ],
+   "subCountries" : {
+      "NL-DR" : {
+         "longNameKey" : "NL_DR_LONG",
+         "shortNameKey" : "NL_DR_SHORT"
+      },
+      "NL-FL" : {
+         "longNameKey" : "NL_FL_LONG",
+         "shortNameKey" : "NL_FL_SHORT"
+      },
+      "NL-FR" : {
+         "longNameKey" : "NL_FR_LONG",
+         "shortNameKey" : "NL_FR_SHORT"
+      },
+      "NL-GE" : {
+         "longNameKey" : "NL_GE_LONG",
+         "shortNameKey" : "NL_GE_SHORT"
+      },
+      "NL-GR" : {
+         "longNameKey" : "NL_GR_LONG",
+         "shortNameKey" : "NL_GR_SHORT"
+      },
+      "NL-LI" : {
+         "longNameKey" : "NL_LI_LONG",
+         "shortNameKey" : "NL_LI_SHORT"
+      },
+      "NL-NB" : {
+         "longNameKey" : "NL_NB_LONG",
+         "shortNameKey" : "NL_NB_SHORT"
+      },
+      "NL-NH" : {
+         "longNameKey" : "NL_NH_LONG",
+         "shortNameKey" : "NL_NH_SHORT"
+      },
+      "NL-OV" : {
+         "longNameKey" : "NL_OV_LONG",
+         "shortNameKey" : "NL_OV_SHORT"
+      },
+      "NL-UT" : {
+         "longNameKey" : "NL_UT_LONG",
+         "shortNameKey" : "NL_UT_SHORT"
+      },
+      "NL-ZE" : {
+         "longNameKey" : "NL_ZE_LONG",
+         "shortNameKey" : "NL_ZE_SHORT"
+      },
+      "NL-ZH" : {
+         "longNameKey" : "NL_ZH_LONG",
+         "shortNameKey" : "NL_ZH_SHORT"
+      }
+   },
+   "supportedLocales" : [
+      {
+         "href" : "/v1/locales/nl-NL",
+         "id" : "nl-NL"
+      }
+   ]
+}
