@@ -10,14 +10,14 @@ forceKillPid $SKYTOOL_PID_PATH
 
 for db in ${REPLICA_DATABASES[@]}
 do
-    config=$SKYTOOL_CONFIG_PATH/${db}_leaf.ini
+    config=$SKYTOOL_CONFIG_PATH/${db}_root.ini
 
     echo "create root node for database [$db]"
-	londiste3 $config create-leaf ${db}_leaf_node "dbname=$db host=$REPLICA_HOST port=$REPLICA_DB_PORT" --provider="dbname=$db host=$MASTER_HOST port=$MASTER_DB_PORT"
+    londiste3 $config create-root root_node_${db} "dbname=$db host=$MASTER_HOST port=$MASTER_DB_PORT"
 
     echo "start worker for database [$db]"
     londiste3 -d $config worker > /dev/null 2>&1 &
 
-    echo "subscribe all tables"
+    echo "publish all tables"
     londiste3 $config add-table --all
 done
