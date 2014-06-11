@@ -190,7 +190,7 @@ public class HttpclientHelper {
         }
     }
 
-    public static void ResetHttpClient()throws Exception{
+    public static void ResetHttpClient() throws Exception {
         httpclient.close();
         httpclient = HttpClients.createDefault();
     }

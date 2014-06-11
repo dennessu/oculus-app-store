@@ -11,6 +11,8 @@ import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.common.model.Results;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.identity.spec.v1.model.*;
+import com.junbo.identity.spec.v1.model.migration.OculusInput;
+import com.junbo.identity.spec.v1.model.migration.OculusOutput;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.JsonHelper;
@@ -24,6 +26,7 @@ public class Identity {
     public static final String DefaultIdentityEndPointV1 = ConfigHelper.getSetting("defaultIdentityEndPointV1");
     public static final String DefaultIdentityV1CountryURI = DefaultIdentityEndPointV1 + "/countries";
     public static final String DefaultIdentityV1CurrencyURI = DefaultIdentityEndPointV1 + "/currencies";
+    public static final String DefaultIdentityV1ImportsURI = DefaultIdentityEndPointV1 + "/imports";
     public static final String DefaultIdentityV1LocaleURI = DefaultIdentityEndPointV1 + "/locales";
     public static final String DefaultIdentityV1UserURI = DefaultIdentityEndPointV1 + "/users";
     public static final String DefaultIdentityV1UserPersonalInfoURI = DefaultIdentityEndPointV1 + "/personal-info";
@@ -134,10 +137,15 @@ public class Identity {
     }
 
     public static UserPersonalInfo UserPersonalInfoGetByUserEmail(String email) throws Exception {
-        email = email.replace("+", "%2B");
         JsonNode jsonNode = JsonHelper.ObjectToJsonNode((HttpclientHelper.SimpleGet(
                 DefaultIdentityV1UserPersonalInfoURI + "?email=" + email, (Results.class))).getItems().get(0));
         return (UserPersonalInfo) JsonHelper.JsonNodeToObject(jsonNode, UserPersonalInfo.class);
+    }
+
+    public static OculusOutput ImportMigrationData(OculusInput oculusInput) throws Exception {
+        return (OculusOutput) HttpclientHelper.SimpleJsonPost(DefaultIdentityV1ImportsURI,
+                JsonHelper.JsonSerializer(oculusInput),
+                OculusOutput.class);
     }
 
     public static Long GetUserIdFromUserPersonalInfo(UserPersonalInfo userPersonalInfo) throws Exception {

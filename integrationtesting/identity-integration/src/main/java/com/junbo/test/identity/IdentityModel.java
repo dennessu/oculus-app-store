@@ -11,14 +11,16 @@ import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.enumid.RatingBoardId;
 import com.junbo.identity.spec.v1.model.*;
+import com.junbo.identity.spec.v1.model.Currency;
+import com.junbo.identity.spec.v1.model.Locale;
+import com.junbo.identity.spec.v1.model.migration.OculusInput;
+import com.junbo.identity.spec.v1.model.migration.ShareProfile;
 import com.junbo.test.common.JsonHelper;
 import com.junbo.test.common.RandomHelper;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @author dw
@@ -110,6 +112,37 @@ public class IdentityModel {
         user.setUsername(RandomHelper.randomAlphabetic(15));
         user.setIsAnonymous(false);
         return user;
+    }
+
+    public static OculusInput DefaultOculusInput() throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        OculusInput input = new OculusInput();
+        input.setCurrentId(RandomHelper.randomNumeric(2));
+        input.setFirstName(RandomHelper.randomAlphabetic(10));
+        input.setLastName(RandomHelper.randomAlphabetic(10));
+        input.setEmail(RandomHelper.randomAlphabetic(10) + "@163.com");
+        input.setUsername(RandomHelper.randomAlphabetic(15));
+        input.setPassword(RandomHelper.randomAlphabetic(20));
+        input.setGender("male");
+        input.setDob(sdf.parse("1980-01-01 00:00:00"));
+        input.setNickName(RandomHelper.randomAlphabetic(10));
+        input.setTimezone(-8);
+        input.setLanguage("en");
+        input.setCreatedDate(sdf.parse("2013-02-07 05:30:32"));
+        input.setUpdateDate(sdf.parse("2013-11-26 17:35:03"));
+        input.setDevCenterCompany(RandomHelper.randomAlphabetic(15));
+        input.setShareProfile(DefaultShareProfile());
+        input.setOldPasswordHash(false);
+        input.setStatus("ACTIVE");
+        return input;
+    }
+
+    public static ShareProfile DefaultShareProfile() throws Exception {
+        ShareProfile shareProfile = new ShareProfile();
+        shareProfile.setHeadline(RandomHelper.randomAlphabetic(10));
+        shareProfile.setSummary(RandomHelper.randomAlphabetic(10));
+        shareProfile.setUrl(RandomHelper.randomAlphabetic(10));
+        return shareProfile;
     }
 
     /**
