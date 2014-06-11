@@ -63,6 +63,10 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
         if (options.email != null && options.phoneNumber != null) {
             throw AppErrors.INSTANCE.parameterInvalid('email can\'t be searched with phone.').exception()
         }
+
+        if (options.isValidated != null && options.userId == null) {
+            throw AppErrors.INSTANCE.parameterInvalid('isValidated can be searched by userId only').exception()
+        }
         return Promise.pure(null)
     }
 
@@ -129,7 +133,7 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
         }
 
         if (userPersonalInfo.lastValidateTime != null) {
-            if (userPersonalInfo.lastValidateTime.after(new Date())) {
+            if (!isValidTimeScope(userPersonalInfo.lastValidateTime)) {
                 throw AppErrors.INSTANCE.fieldInvalid('lastValidateTime').exception()
             }
         }
@@ -197,6 +201,13 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
             return iterateValidateUpdate(iterator, userPersonalInfo, oldUserPersonalInfo)
         }
         return Promise.pure(null)
+    }
+
+    private Boolean isValidTimeScope(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.HOUR_OF_DAY, 1);
+        return date.before(cal.getTime());
     }
 
     @Required

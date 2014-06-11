@@ -1,5 +1,6 @@
 package com.junbo.order.core.orderflow
 
+import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.UserId
 import com.junbo.langur.core.webflow.executor.FlowExecutor
@@ -19,7 +20,6 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.testng.annotations.Test
 
 import javax.annotation.Resource
-
 /**
  * Created by chriszhu on 6/5/14.
  */
@@ -54,6 +54,9 @@ class RefundOrderFlowTest extends BaseTest {
         def ratedOrder = orderInternalService.rateOrder(order).wrapped().get()
         repo.createOrder(ratedOrder)
 
+        //mock balance
+        def balance = CoreBuilder.buildBalance(order, BalanceType.DEBIT )
+        facadeContainer.billingFacade.createBalance(balance, false)
 
         orderActionContext.orderServiceContext.order.orderItems = []
         def context = executor.start(
@@ -62,10 +65,6 @@ class RefundOrderFlowTest extends BaseTest {
         // Check the order is same as the returned order
         def o = ActionUtils.getOrderActionContext(context).orderServiceContext.order
         assert (o != null)
-
-        //mock balance
-        def balance = CoreBuilder.buildBalance(order)
-        facadeContainer.billingFacade.createBalance(balance, false)
 
         def getOrder = orderService.getOrderByOrderId(o.getId().value).wrapped().get()
         assert (o.getId().value == getOrder.getId().value)

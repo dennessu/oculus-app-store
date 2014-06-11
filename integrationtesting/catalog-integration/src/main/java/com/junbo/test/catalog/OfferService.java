@@ -6,6 +6,7 @@
 package com.junbo.test.catalog;
 
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.common.model.Results;
 
 import java.util.HashMap;
@@ -26,7 +27,7 @@ public interface OfferService {
 
     Offer postDefaultOffer() throws Exception;
     Offer prepareOfferEntity(String fileName) throws Exception;
-    Offer prepareOfferEntity(String fileName, String userId) throws Exception;
+    Offer prepareOfferEntity(String fileName, OrganizationId organizationId) throws Exception;
     Offer postOffer(Offer offer) throws Exception;
     Offer postOffer(Offer offer, int expectedResponseCode) throws Exception;
 

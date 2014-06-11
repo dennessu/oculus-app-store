@@ -5,16 +5,17 @@
  */
 package com.junbo.test.catalog.item;
 
-import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
+import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
-import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.catalog.enums.CatalogEntityStatus;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.common.libs.LogHelper;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.test.common.property.*;
 import com.junbo.test.catalog.impl.*;
 import com.junbo.test.catalog.*;
@@ -38,12 +39,12 @@ public class TestPostItem extends BaseTestClass {
     private final String itemRequiredPara = "itemWithRequiredPara";
     private final String defaultItem = "defaultItem";
     private final Integer initRevValue = 1;
-    private String developerId;
+    private OrganizationId organizationId;
 
     @BeforeClass
     private void PrepareTestData() throws Exception {
-        UserService userService = UserServiceImpl.instance();
-        developerId = userService.PostUser();
+        OrganizationService organizationService = OrganizationServiceImpl.instance();
+        organizationId = organizationService.postDefaultOrganization().getId();
     }
 
     @Property(
@@ -63,13 +64,13 @@ public class TestPostItem extends BaseTestClass {
     @Test
     public void testPostItem() throws Exception {
         //Post test items only with required parameters
-        Item testItemRequired = itemService.prepareItemEntity(itemRequiredPara, developerId);
+        Item testItemRequired = itemService.prepareItemEntity(itemRequiredPara, organizationId);
         Item itemRtn1 = itemService.postItem(testItemRequired);
 
         checkItemRequiredParams(itemRtn1, testItemRequired);
 
         //Post test item with optional params
-        Item testItemFull = itemService.prepareItemEntity(defaultItem, developerId);
+        Item testItemFull = itemService.prepareItemEntity(defaultItem, organizationId);
         Item itemRtn2 = itemService.postItem(testItemFull);
 
         checkItemRequiredParams(itemRtn2, testItemFull);
@@ -102,7 +103,7 @@ public class TestPostItem extends BaseTestClass {
         genres.add(itemAttribute1.getId());
         genres.add(itemAttribute2.getId());
 
-        Item testItem = itemService.prepareItemEntity(defaultItem, developerId);
+        Item testItem = itemService.prepareItemEntity(defaultItem, organizationId);
         testItem.setDefaultOffer(offer.getOfferId());
         testItem.setGenres(genres);
 
@@ -126,41 +127,38 @@ public class TestPostItem extends BaseTestClass {
     )
     @Test
     public void testPostItemInvalidScenarios() throws Exception {
-        UserService userService = UserServiceImpl.instance();
-        String developerId = userService.PostUser();
-
         List<Long> genresCategory = new ArrayList<>();
         List<Long> genresInvalid = new ArrayList<>();
         genresInvalid.add(0L);
         genresInvalid.add(1L);
 
         //test ownerId is null
-        Item testItem = itemService.prepareItemEntity(defaultItem, developerId);
+        Item testItem = itemService.prepareItemEntity(defaultItem, organizationId);
         testItem.setOwnerId(null);
         verifyExpectedError(testItem);
 
         //test currentRevision is not null
-        testItem = itemService.prepareItemEntity(defaultItem, developerId);
+        testItem = itemService.prepareItemEntity(defaultItem, organizationId);
         testItem.setCurrentRevisionId(0L);
         verifyExpectedError(testItem);
 
         //test rev
-        testItem = itemService.prepareItemEntity(defaultItem, developerId);
+        testItem = itemService.prepareItemEntity(defaultItem, organizationId);
         testItem.setResourceAge(initRevValue);
         verifyExpectedError(testItem);
 
         //test type is invalid enums
-        testItem = itemService.prepareItemEntity(defaultItem, developerId);
+        testItem = itemService.prepareItemEntity(defaultItem, organizationId);
         testItem.setType("invalid type");
         verifyExpectedError(testItem);
 
         //test defaultOffer is not existed
-        testItem = itemService.prepareItemEntity(defaultItem, developerId);
+        testItem = itemService.prepareItemEntity(defaultItem, organizationId);
         testItem.setDefaultOffer(0L);
         verifyExpectedError(testItem);
 
         //test genres is not existed
-        testItem = itemService.prepareItemEntity(defaultItem, developerId);
+        testItem = itemService.prepareItemEntity(defaultItem, organizationId);
         testItem.setGenres(genresInvalid);
         verifyExpectedError(testItem);
 
@@ -169,12 +167,12 @@ public class TestPostItem extends BaseTestClass {
         OfferAttribute offerAttribute = offerAttributeService.postDefaultOfferAttribute();
         genresCategory.add(offerAttribute.getId());
 
-        testItem = itemService.prepareItemEntity(defaultItem, developerId);
+        testItem = itemService.prepareItemEntity(defaultItem, organizationId);
         testItem.setGenres(genresCategory);
         verifyExpectedError(testItem);
 
         //put all invalid scenarios together
-        testItem = itemService.prepareItemEntity(defaultItem, developerId);
+        testItem = itemService.prepareItemEntity(defaultItem, organizationId);
         testItem.setOwnerId(null);
         testItem.setCurrentRevisionId(0L);
         testItem.setResourceAge(initRevValue);

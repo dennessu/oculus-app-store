@@ -172,7 +172,7 @@ class SabrixFacadeImpl implements TaxFacade {
 
     Invoice generateInvoice(Balance balance, Address shippingAddress, Address piAddress, boolean isAudited) {
         Invoice invoice = new Invoice()
-        invoice.companyName = configuration.companyName
+//        invoice.companyName = configuration.companyName
         invoice.companyRole = configuration.companyRole
         invoice.externalCompanyId = getEntity(piAddress).externalCompanyId
         invoice.invoiceNumber = balance.balanceId?.value
@@ -187,10 +187,12 @@ class SabrixFacadeImpl implements TaxFacade {
         else {
             shipToAddress = toSabrixAddress(piAddress)
         }
-//        invoice.billTo = billToAddress
-//        invoice.shipTo = shipToAddress
+        invoice.billTo = billToAddress
+        invoice.shipTo = shipToAddress
+        invoice.shipFrom = getSabrixShipFromAddress()
         def lines = generateLine(balance, billToAddress, shipToAddress)
         invoice.line = lines
+        setupUserElement(invoice)
 
         return invoice
     }
@@ -204,13 +206,27 @@ class SabrixFacadeImpl implements TaxFacade {
             line.grossAmount = item.amount?.toDouble()
             line.productCode = item.financeId
             line.transactionType = getTransactionType(item)
-            line.billTo = billToAddress
-            line.shipTo = shipToAddress
-            line.shipFrom = getSabrixShipFromAddress()
+//            line.billTo = billToAddress
+//            line.shipTo = shipToAddress
+//            line.shipFrom = getSabrixShipFromAddress()
+            setupUserElement(line)
             lines << line
         }
 
         return lines
+    }
+
+    void setupUserElement(Invoice invoice) {
+        // TODO: setup invoice level custom attribute
+//        invoice.userElement = new ArrayList<UserElement>()
+//        UserElement attribute1 = new UserElement()
+//        attribute1.name = 'ATTRIBUTE1'
+//        attribute1.value = 'TEST'
+//        invoice.userElement.add(attribute1)
+    }
+
+    void setupUserElement(Line line) {
+        // TODO: setup line level custom attribute
     }
 
     Entity getEntity(Address piAddress) {
@@ -260,13 +276,9 @@ class SabrixFacadeImpl implements TaxFacade {
     }
 
     SabrixAddress getSabrixShipFromAddress() {
-        // TODO: update ship from address
+        // TODO: update ship from address to entity/warehouse
         SabrixAddress sabrixAddress = new SabrixAddress()
         sabrixAddress.country = configuration.shipFromCountry
-        sabrixAddress.state = configuration.shipFromState
-        sabrixAddress.city = configuration.shipFromCity
-        sabrixAddress.postcode = configuration.shipFromPostalCode
-
         return sabrixAddress
     }
 

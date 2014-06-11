@@ -24,6 +24,9 @@ public class UserPersonalInfoListOptions extends PagingGetOptions {
     @QueryParam("type")
     private String type;
 
+    @QueryParam("isValidated")
+    private Boolean isValidated;
+
     @QueryParam("email")
     private String email;
 
@@ -52,6 +55,14 @@ public class UserPersonalInfoListOptions extends PagingGetOptions {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Boolean getIsValidated() {
+        return isValidated;
+    }
+
+    public void setIsValidated(Boolean isValidated) {
+        this.isValidated = isValidated;
     }
 
     public String getEmail() {

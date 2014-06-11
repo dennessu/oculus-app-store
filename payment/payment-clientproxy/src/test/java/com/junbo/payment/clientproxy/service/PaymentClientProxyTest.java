@@ -22,6 +22,7 @@ import com.junbo.payment.spec.model.*;
 import com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy;
 import com.junbo.payment.spec.resource.proxy.PaymentTransactionResourceClientProxy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -37,6 +38,7 @@ public class PaymentClientProxyTest extends BaseTest {
     @Autowired
     private PaymentTransactionResourceClientProxy paymentClient;
     @Autowired
+    @Qualifier("walletProxy")
     private WalletResource walletClient;
     @Autowired
     private PersonalInfoFacade personalInfoFacade;

@@ -28,13 +28,10 @@ import java.util.jar.JarFile;
 
 /**
  * This ConfigurationService can have two parameters:
- * 1):  activeEnv:      If this environment(onebox/int/prod...) is configured,
+ * 1):  environment:    If this environment(onebox/int/prod...) is configured,
  *                      it will load configuration from its environment configuration;
  *                      If this environment isn't configured, it will load from onebox environment by default;
- * 2):  activeDc:       This is datacenter within the environment of current machine.
- *                      It is used by API corss DC routing logic.
- *                      If this datacenter isn't configured, it will use dc0 by default;
- * 3):  configDir:      This is the override configuration file, if it is set,
+ * 2):  configDir:      This is the override configuration file, if it is set,
  *                      it will override the same property in the configuration data, and we will watch this file;
  *                      if it isn't set, use configuration data.
  */
@@ -44,15 +41,13 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
     private static final String CONFIG_PROPERTY_FILE = "configuration.properties";
     private static final String CONFIG_PASSWORD_KEY_FILE = "configuration.key";
     private static final String CONFIG_DIR_OPTS = "configDir";
-    private static final String ACTIVE_ENV_OPTS = "activeEnv";
-    private static final String ACTIVE_DC_OPTS = "activeDc";
+    private static final String ACTIVE_ENV_OPTS = "environment";
+    private static final String ACTIVE_DC_OPTS = "datacenter";
     private static final String ACTIVE_SUBNET_OPTS = "subnet";
     private static final String SUFFIX_PROPERTY_FILE = ".properties";
     private static final String DEFAULT_FOLDER = "_default";
     private static final String DEFAULT_PROPERTIES_FILE = "_default.properties";
     private static final String DEFAULT_ENVIRONMENT = "onebox";
-    private static final String DEFAULT_DATACENTER = "dc0";
-    private static final String DEFAULT_SUBNET = "127.0.0.1/32";
     private static final String CONFIG_PATH = "junbo/conf";
     private static final String FILE_FORMAT = "utf-8";
 
@@ -121,11 +116,8 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
     //region private methods
 
     private ConfigContext readConfigContext(Properties properties) {
-        String environment = readConfigContext("environment", ACTIVE_ENV_OPTS, properties, DEFAULT_ENVIRONMENT);
-        String datacenter = readConfigContext("datacenter", ACTIVE_DC_OPTS, properties, DEFAULT_DATACENTER);
-        String ip4vSubnet = readConfigContext("ipv4Subnet", ACTIVE_SUBNET_OPTS, properties, DEFAULT_SUBNET);
-
-        return new ConfigContext(environment, datacenter, ip4vSubnet);
+        String environment = readConfigContext(ACTIVE_ENV_OPTS, ACTIVE_ENV_OPTS, properties, DEFAULT_ENVIRONMENT);
+        return new ConfigContext(environment);
     }
 
     private String readConfigContext(String settingName, String settingKey, Properties properties, String defaultValue) {
@@ -150,10 +142,13 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
         Properties properties = new Properties();
 
         try {
-            //load sequence as below, so the priority as reverse
+            // Load sequence as below, so the priority as reverse
+            // Where {env} = {baseEnv}_{subEnv}
             // 1) _default/_default.properties
             // 2) _default/**/*.properties
-            // 3) {env}/_default.properties
+            // 3) {baseEnv}/_default.properties
+            // 4) {baseEnv}/**/*.properties
+            // 5) {env}/_default.properties
             // 4) {env}/**/*.properties
 
             // 1) _default/_default.properties
@@ -172,7 +167,26 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
                 loadJarProperties(url.getPath(), properties);
             }
 
-            // 3) {env}/_default.properties
+            String baseEnv = this.getConfigContext().getBaseEnvironment();
+            if (baseEnv != null) {
+                // 3) {baseEnv}/_default.properties
+                inputStream = this.getClass().getClassLoader().
+                        getResourceAsStream(CONFIG_PATH + "/" + baseEnv + "/" + DEFAULT_PROPERTIES_FILE);
+                if (inputStream != null) {
+                    properties.load(inputStream);
+                }
+
+                // 4) {baseEnv}/**/*.properties
+                en = this.getClass().getClassLoader().getResources(
+                        CONFIG_PATH + "/" + baseEnv);
+
+                if (en.hasMoreElements()) {
+                    URL url = en.nextElement();
+                    loadJarProperties(url.getPath(), properties);
+                }
+            }
+
+            // 5) {env}/_default.properties
             String env = this.getConfigContext().getEnvironment();
             inputStream = this.getClass().getClassLoader().
                     getResourceAsStream(CONFIG_PATH + "/" + env + "/" + DEFAULT_PROPERTIES_FILE);
@@ -180,7 +194,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
                 properties.load(inputStream);
             }
 
-            // 4) {env}/**/*.properties
+            // 6) {env}/**/*.properties
             en = this.getClass().getClassLoader().getResources(
                     CONFIG_PATH + "/" + env);
 
@@ -277,13 +291,16 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
 
     private Properties readProperties(Path path) {
         logger.info("Reading override properties from: " + path);
-        try (InputStream in = new BufferedInputStream(new FileInputStream(path.toString()))) {
-            Properties properties = new Properties();
-            properties.load(in);
-            return properties;
-        } catch (IOException ex) {
-            throw new RuntimeException("Failed to read property file: " + path, ex);
+        if (Files.exists(path)) {
+            try (InputStream in = new BufferedInputStream(new FileInputStream(path.toString()))) {
+                Properties properties = new Properties();
+                properties.load(in);
+                return properties;
+            } catch (IOException ex) {
+                throw new RuntimeException("Failed to read property file: " + path, ex);
+            }
         }
+        return new Properties();
     }
 
     private void loadConfig() {
@@ -292,14 +309,16 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
         if (!StringUtils.isEmpty(configDir)) {
             logger.info("Scanning configuration from configDir: " + configDir);
 
-            Path keyFilePath = Paths.get(configDir, CONFIG_PASSWORD_KEY_FILE);
-            keyStr = loadAndCheckKeyFile(keyFilePath);
-
             Path configFilePath = Paths.get(configDir, CONFIG_PROPERTY_FILE);
             overrideProperties = readProperties(configFilePath);
         }
 
         configContext = readConfigContext(overrideProperties);
+
+        if (!StringUtils.isEmpty(configDir)) {
+            Path keyFilePath = Paths.get(configDir, CONFIG_PASSWORD_KEY_FILE);
+            keyStr = loadAndCheckKeyFile(keyFilePath);
+        }
 
         // Read jar configuration files
         jarProperties = readJarProperties();
@@ -312,6 +331,10 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
         finalProperties.putAll(decryptProperties(jarProperties));
         finalProperties.putAll(decryptProperties(overrideProperties));
         finalProperties.putAll(decryptProperties(commandLineProperties));
+
+        configContext.complete(
+                finalProperties.getProperty(ACTIVE_DC_OPTS),
+                finalProperties.getProperty(ACTIVE_SUBNET_OPTS));
     }
 
     private Properties decryptProperties(Properties properties) {
@@ -342,6 +365,11 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
         // check file exists
         File file = new File(path.toUri());
         if (!file.exists()) {
+            if (configContext.getEnvironment().equals("onebox") ||
+                configContext.getEnvironment().startsWith("onebox.")) {
+                // return a dummy key
+                return "5B62A9320B84AF50F70B076D89F5F7B8";
+            }
             logger.warn("Key file doesn't exist: " + path.toUri().toString());
             return null;
         }

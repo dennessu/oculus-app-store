@@ -178,6 +178,11 @@ class TokenServiceImpl implements TokenService {
     }
 
     @Override
+    RefreshToken getRefreshToken(String tokenValue) {
+        return refreshTokenRepository.get(tokenValue)
+    }
+
+    @Override
     RefreshToken getAndRemoveRefreshToken(String tokenValue) {
         return refreshTokenRepository.getAndRemove(tokenValue)
     }

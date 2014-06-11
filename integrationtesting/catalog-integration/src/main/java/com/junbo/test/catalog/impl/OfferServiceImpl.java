@@ -13,7 +13,7 @@ import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties;
 import com.junbo.common.id.OfferId;
-import com.junbo.common.id.UserId;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.client.TypeReference;
@@ -25,7 +25,9 @@ import com.junbo.test.catalog.enums.CatalogEntityStatus;
 import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.common.apihelper.identity.UserService;
+import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
@@ -62,6 +64,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
     private ItemService itemService = ItemServiceImpl.instance();
     private UserService userService = UserServiceImpl.instance();
+    private OrganizationService organizationService = OrganizationServiceImpl.instance();
 
     public static synchronized OfferService instance() {
         if (instance == null) {
@@ -108,13 +111,13 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     }
 
     public Offer prepareOfferEntity(String fileName) throws Exception {
-        return prepareOfferEntity(fileName, getUserId());
+        return prepareOfferEntity(fileName, getOrganizationId());
     }
 
-    public Offer prepareOfferEntity(String fileName, String userId) throws Exception {
+    public Offer prepareOfferEntity(String fileName, OrganizationId organizationId) throws Exception {
         String strOfferContent = readFileContent(String.format("testOffers/%s.json", fileName));
         Offer offerForPost = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {}, strOfferContent);
-        offerForPost.setOwnerId(IdConverter.hexStringToId(UserId.class, userId));
+        offerForPost.setOwnerId(organizationId);
         return offerForPost;
     }
 
@@ -265,6 +268,8 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
             userId = userIdList.get(0);
         }
 
+        OrganizationId organizationId = getOrganizationId(userId);
+
         Item item;
         if (itemId == null) {
             item = prepareItem(userId, itemName, offerType);
@@ -276,7 +281,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         //Post offer
         String strOfferContent = readFileContent(String.format("testOffers/%s.json", offerName));
         Offer offerForPost = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {}, strOfferContent);
-        offerForPost.setOwnerId(IdConverter.hexStringToId(UserId.class, userId));
+        offerForPost.setOwnerId(organizationId);
         Offer offer = this.postOffer(offerForPost);
 
         //Post offer revision
@@ -308,7 +313,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         itemEntry.setQuantity(1);
         itemEntities.add(itemEntry);
         offerRevisionForPost.setItems(itemEntities);
-        offerRevisionForPost.setOwnerId(IdConverter.hexStringToId(UserId.class, userId));
+        offerRevisionForPost.setOwnerId(organizationId);
 
         //Add offer related info
         offerRevisionForPost.setOfferId(offer.getOfferId());
@@ -321,9 +326,16 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         this.getOffer(offer.getOfferId());
     }
 
+    private OrganizationId getOrganizationId() throws Exception {
+        return organizationService.postDefaultOrganization().getId();
+    }
+
+    private OrganizationId getOrganizationId(String userId) throws Exception {
+        return organizationService.postDefaultOrganization(userId).getId();
+    }
+
     private String getUserId() throws Exception {
-        UserService us = UserServiceImpl.instance();
-        return us.PostUser();
+        return userService.PostUser();
     }
 
     private Item prepareItem(String ownerId, String fileName, String itemType) throws Exception {
@@ -332,7 +344,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
 
         Item item = itemService.prepareItemEntity(fileName);
-        item.setOwnerId(IdConverter.hexStringToId(UserId.class, ownerId));
+        item.setOwnerId(getOrganizationId(ownerId));
         Item itemPost = itemService.postItem(item);
 
         //Attach item revision to the item

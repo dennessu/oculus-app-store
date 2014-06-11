@@ -97,12 +97,14 @@ class RoleAssignmentResourceImpl implements RoleAssignmentResource {
 
     @Override
     Promise<Role> get(RoleAssignmentId roleAssignmentId) {
-        return roleAssignmentValidator.validateForGet(roleAssignmentId).then { RoleAssignment roleAssignment ->
-            if (roleAssignment == null) {
-                throw AppErrors.INSTANCE.resourceNotFound('role-assignment', roleAssignmentId.toString()).exception()
-            }
+        return roleAssignmentValidator.validateForGet(roleAssignmentId).then {
+            return roleAssignmentRepository.get(roleAssignmentId).then { RoleAssignment roleAssignment ->
+                if (roleAssignment == null) {
+                    throw AppErrors.INSTANCE.resourceNotFound('role-assignment', roleAssignmentId.toString()).exception()
+                }
 
-            return Promise.pure(roleAssignmentFilter.filterForGet(roleAssignment))
+                return Promise.pure(roleAssignmentFilter.filterForGet(roleAssignment))
+            }
         }
     }
 

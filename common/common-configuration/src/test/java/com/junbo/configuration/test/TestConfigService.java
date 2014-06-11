@@ -8,7 +8,7 @@ import java.util.Properties;
 
 public class TestConfigService implements ConfigService, AutoCloseable {
     private ConfigService oldInstance;
-    private ConfigContext context = new ConfigContext("unittest", "dc0", "127.0.0.1/32");
+    private ConfigContext context = new ConfigContext("unittest").complete("dc0", "127.0.0.1/32");
     private ConfigService.ConfigListener listener;
     private Properties properties = new Properties() {{
         put("common.topo.datacenters", "http://localhost:8080/v1;0;dc0");

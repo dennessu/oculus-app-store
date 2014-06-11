@@ -82,7 +82,8 @@ class OrderResourceImpl implements OrderResource {
                 // determine the refund request
                 if(isARefund(oldOrder, order)) {
                     LOGGER.info('name=Refund_Non_Tentative_Offer')
-                    return orderService.refundOrder(order)
+                    oldOrder.orderItems = order.orderItems
+                    return orderService.refundOrder(oldOrder)
                 }
                 LOGGER.info('name=Update_Non_Tentative_Offer')
                 // update shipping address after settlement
@@ -119,6 +120,7 @@ class OrderResourceImpl implements OrderResource {
             return true
         }
 
+        Boolean isARefund = false
         newOrder.orderItems.each {OrderItem newItem ->
             OrderItem oldItem = olderOrder.orderItems.find {OrderItem oi ->
                 newItem.offer.value == oi.offer.value
@@ -127,10 +129,10 @@ class OrderResourceImpl implements OrderResource {
                 throw AppErrors.INSTANCE.orderItemIsNotFoundForRefund(newItem.offer.value.toString()).exception()
             }
             if(oldItem.quantity > newItem.quantity || oldItem.totalAmount > newItem.totalAmount) {
-                return true
+                isARefund = true
             }
         }
-        return false
+        return isARefund
     }
 
     @Override

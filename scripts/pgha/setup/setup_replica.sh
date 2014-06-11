@@ -47,3 +47,5 @@ $PGBIN_PATH/pg_ctl -D $REPLICA_DATA_PATH start
 while ! echo exit | nc $REPLICA_HOST $REPLICA_DB_PORT; do sleep 1 && echo "waiting for replica database..."; done
 echo "replica database started successfully!"
 
+echo "promote replcia database to cut off streaming replication..."
+touch $PROMOTE_TRIGGER_FILE
