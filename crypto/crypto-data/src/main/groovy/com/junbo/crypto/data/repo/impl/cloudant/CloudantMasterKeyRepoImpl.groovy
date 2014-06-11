@@ -70,7 +70,7 @@ class CloudantMasterKeyRepoImpl extends CloudantClient<MasterKey> implements Mas
 
     @Override
     Promise<Void> delete(MasterKeyId id) {
-        return cloudantDelete(id.toString())
+        throw new IllegalStateException('Delete operation isn\'t supported')
     }
 
     @Required

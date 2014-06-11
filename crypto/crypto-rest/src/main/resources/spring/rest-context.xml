@@ -12,8 +12,8 @@
     <bean id="defaultCryptoResource" class="com.junbo.crypto.rest.resource.CryptoResourceImpl" scope="prototype">
         <property name="aesCipherService" ref="aesCipherService" />
         <property name="keyStoreService" ref="keyStoreService" />
-        <property name="masterKeyRepo" ref="cloudantMasterKeyRepo" />
-        <property name="userCryptoKeyRepo" ref="cloudantUserCryptoKeyRepo" />
+        <property name="masterKeyRepo" ref="masterkeyRepository" />
+        <property name="userCryptoKeyRepo" ref="userCryptoKeyRepo" />
         <property name="rsaCipherService" ref="rsaCipherService" />
         <property name="versionSeparator" value="${crypto.core.versionSeparator}" />
         <property name="validator" ref="cryptoMessageValidator" />
@@ -24,8 +24,8 @@
     <bean id="defaultMasterKeyResource" class="com.junbo.crypto.rest.resource.MasterKeyResourceImpl" scope="prototype">
         <property name="aesCipherService" ref="aesCipherService" />
         <property name="keyStoreService" ref="keyStoreService" />
-        <property name="masterKeyRepo" ref="cloudantMasterKeyRepo" />
-        <property name="userCryptoKeyRepo" ref="cloudantUserCryptoKeyRepo" />
+        <property name="masterKeyRepo" ref="masterkeyRepository" />
+        <property name="userCryptoKeyRepo" ref="userCryptoKeyRepo" />
         <property name="rsaCipherService" ref="rsaCipherService" />
         <property name="masterKeyValidator" ref="masterKeyValidator" />
         <property name="versionSeparator" value="${crypto.core.versionSeparator}" />
@@ -36,8 +36,8 @@
     <bean id="defaultUserCryptoResource" class="com.junbo.crypto.rest.resource.UserCryptoResourceImpl" scope="prototype">
         <property name="aesCipherService" ref="aesCipherService" />
         <property name="keyStoreService" ref="keyStoreService" />
-        <property name="masterKeyRepo" ref="cloudantMasterKeyRepo" />
-        <property name="userCryptoKeyRepo" ref="cloudantUserCryptoKeyRepo" />
+        <property name="masterKeyRepo" ref="masterkeyRepository" />
+        <property name="userCryptoKeyRepo" ref="userCryptoKeyRepo" />
         <property name="rsaCipherService" ref="rsaCipherService" />
         <property name="userCryptoValidator" ref="userCryptoValidator" />
         <property name="versionSeparator" value="${crypto.core.versionSeparator}" />
