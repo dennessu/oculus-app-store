@@ -58,8 +58,10 @@
     </bean>
     <bean id="sabrixFacade" class="com.junbo.billing.clientproxy.impl.SabrixFacadeImpl" />
     <bean id="sabrixConfiguration" class="com.junbo.billing.clientproxy.impl.sabrix.SabrixConfiguration">
-        <property name="companyName" value="${sabrix.companyName}"/>
-        <property name="companyRole" value="${sabrix.companyRole}"/>
+        <property name="hostSystem" value="${sabrix.host.system}"/>
+        <property name="callingSystemNumber" value="${sabrix.calling.system.number}"/>
+        <property name="calculationDirection" value="${sabrix.calculation.direction}"/>
+        <property name="companyRole" value="${sabrix.company.role}"/>
         <property name="username" value="${sabrix.username}"/>
         <property name="password" value="${sabrix.password}"/>
         <property name="version" value="${sabrix.version}"/>

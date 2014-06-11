@@ -39,20 +39,27 @@ class Line {
     @XStreamAlias('GROSS_AMOUNT')
     Double grossAmount
 
+    @XStreamAlias('TAX_AMOUNT')
+    Double taxAmount
+
+    @XStreamAlias('DISCOUNT_AMOUNT')
+    Double discountAmount
+
     @XStreamAlias('LINE_NUMBER')
     Integer lineNumber
 
-    @XStreamAlias('IS_EXEMPT')
-    Exempt isExempt
-
     @XStreamAlias('REGISTRATIONS')
     Registrations registrations
+
+    @XStreamAlias('PART_NUMBER')
+    Registrations partNumber
 
     @XStreamAlias('TOTAL_TAX_AMOUNT')
     Double totalTaxAmount
 
     @XStreamImplicit(itemFieldName='TAX')
     List<Tax> tax
+
 
     @Override
     public String toString() {
@@ -64,8 +71,9 @@ class Line {
                 ", transactionType='" + transactionType + '\'' +
                 ", productCode='" + productCode + '\'' +
                 ", grossAmount=" + grossAmount +
+                ", taxAmount=" + taxAmount +
+                ", discountAmount=" + discountAmount +
                 ", lineNumber=" + lineNumber +
-                ", isExempt=" + isExempt +
                 ", registrations=" + registrations +
                 ", totalTaxAmount=" + totalTaxAmount +
                 ", tax=" + tax +
