@@ -64,7 +64,7 @@ set -e
 function forceKill {
     if (fuser -n tcp $1 2> /dev/null)
     then
-        kill $(fuser -n tcp $1 2> /dev/null)
+        kill -9 $(fuser -n tcp $1 2> /dev/null)
     else
         echo "no process running with [$1] port..."
     fi    
