@@ -6,7 +6,6 @@ import com.junbo.crypto.data.entity.MasterKeyEntity
 import com.junbo.crypto.data.repo.MasterKeyRepo
 import com.junbo.crypto.spec.model.MasterKey
 import com.junbo.langur.core.promise.Promise
-import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Required
