@@ -15,6 +15,9 @@ public class RatingOffer {
     private Long id;
 
     private Price price;
+    private Price preOrderPrice;
+    private Map<String, Properties> countries = new HashMap<>();
+
     private List<Long> categories = new ArrayList<>();
 
     private List<LinkedEntry> items = new ArrayList<>();
@@ -36,6 +39,22 @@ public class RatingOffer {
 
     public void setPrice(Price price) {
         this.price = price;
+    }
+
+    public Price getPreOrderPrice() {
+        return preOrderPrice;
+    }
+
+    public void setPreOrderPrice(Price preOrderPrice) {
+        this.preOrderPrice = preOrderPrice;
+    }
+
+    public Map<String, Properties> getCountries() {
+        return countries;
+    }
+
+    public void setCountries(Map<String, Properties> countries) {
+        this.countries = countries;
     }
 
     public List<Long> getCategories() {

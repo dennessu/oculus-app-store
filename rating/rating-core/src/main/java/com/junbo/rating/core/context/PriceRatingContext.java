@@ -10,8 +10,6 @@ import com.junbo.catalog.spec.model.promotion.PromotionRevision;
 import com.junbo.catalog.spec.model.promotion.PromotionType;
 import com.junbo.rating.spec.error.AppErrors;
 import com.junbo.rating.spec.model.*;
-import com.junbo.rating.spec.model.request.OfferRatingItem;
-import com.junbo.rating.spec.model.request.OfferRatingRequest;
 import com.junbo.rating.spec.model.request.RatingItem;
 import com.junbo.rating.spec.model.request.RatingRequest;
 
@@ -45,25 +43,6 @@ public class PriceRatingContext extends RatingContext {
         candidates = new HashMap<>();
         rules = new HashMap<>();
         entries = new HashSet<>();
-    }
-
-    public void fromRequest(OfferRatingRequest request) {
-        super.setUserId(request.getUserId());
-        this.timestamp = request.getTime();
-        super.setCountry(request.getCountry());
-
-        Currency currency = Currency.findByCode(request.getCurrency());
-        if (currency == null) {
-            throw AppErrors.INSTANCE.currencyNotExist(request.getCurrency()).exception();
-        }
-
-        super.setCurrency(currency);
-
-        for (OfferRatingItem offerRatingItem : request.getOffers()) {
-            RatableItem item = new RatableItem();
-            item.setOfferId(offerRatingItem.getOfferId());
-            this.items.add(item);
-        }
     }
 
     public void fromRequest(RatingRequest request) {

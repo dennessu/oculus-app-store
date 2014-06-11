@@ -19,6 +19,7 @@ import com.junbo.rating.core.context.PriceRatingContext;
 import com.junbo.rating.core.handler.HandlerRegister;
 import com.junbo.rating.spec.error.AppErrors;
 import com.junbo.rating.spec.fusion.*;
+import com.junbo.rating.spec.fusion.Properties;
 import com.junbo.rating.spec.model.Money;
 import com.junbo.rating.spec.model.RatableItem;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,13 +39,24 @@ public abstract class RatingServiceSupport implements RatingService<PriceRatingC
     protected void fillOffer(PriceRatingContext context) {
         for (RatableItem item : context.getItems()) {
             item.setOffer(catalogGateway.getOffer(item.getOfferId(), context.getTimestamp()));
-            validateLineItem(item, context.getTimestamp());
         }
     }
 
-    private void validateLineItem(RatableItem item, String timestamp) {
-        if (item.getQuantity() > 1 && containsDigitalGoods(item.getOffer(), timestamp)){
-            throw AppErrors.INSTANCE.incorrectQuantity(item.getOfferId().toString(), item.getQuantity()).exception();
+    protected void validateLineItems(PriceRatingContext context) {
+        for (RatableItem item : context.getItems()) {
+            Map<String, Properties> countries = item.getOffer().getCountries();
+            if (!countries.containsKey(context.getCountry())) {
+                throw AppErrors.INSTANCE.missingConfiguration("isPurchasable").exception();
+            }
+
+            if (Boolean.FALSE.equals(countries.get(context.getCountry()).isPurchasable())) {
+                throw AppErrors.INSTANCE.offerNotPurchasable(item.getOfferId().toString(),
+                        context.getCountry()).exception();
+            }
+
+            if (item.getQuantity() > 1 && containsDigitalGoods(item.getOffer(), context.getTimestamp())){
+                throw AppErrors.INSTANCE.incorrectQuantity(item.getOfferId().toString(), item.getQuantity()).exception();
+            }
         }
     }
 
@@ -157,8 +169,7 @@ public abstract class RatingServiceSupport implements RatingService<PriceRatingC
         return true;
     }
 
-    protected Money getPrice(RatingOffer offer, String country, String currency) {
-        Price price = offer.getPrice();
+    protected Money getPrice(Price price, String country, String currency) {
         if (price == null) {
             return Money.NOT_FOUND;
         }
@@ -177,6 +188,23 @@ public abstract class RatingServiceSupport implements RatingService<PriceRatingC
         }
 
         return new Money(prices.get(currency), currency);
+    }
+
+    protected Money getPreOrderPrice(RatingOffer offer, String country, String currency) {
+        if (offer.getPreOrderPrice() == null) {
+            return new Money(BigDecimal.ZERO, currency);
+        }
+
+        Map<String, Properties> countries = offer.getCountries();
+        if (!countries.containsKey(country) || countries.get(country).getReleaseDate() == null) {
+            throw AppErrors.INSTANCE.missingConfiguration("releaseDate").exception();
+        }
+
+        if (Utils.now().after(countries.get(country).getReleaseDate())) {
+            return new Money(BigDecimal.ZERO, currency);
+        }
+
+        return getPrice(offer.getPreOrderPrice(), country, currency);
     }
 
     protected Money applyBenefit(Money original, Benefit benefit) {

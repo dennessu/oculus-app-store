@@ -42,11 +42,6 @@ class MockRatingResource extends BaseMock implements RatingResource {
     }
 
     @Override
-    Promise<OfferRatingRequest> offerRating(OfferRatingRequest request) {
-        return null
-    }
-
-    @Override
     Promise<SubsRatingRequest> subsRating(SubsRatingRequest request) {
         return null
     }

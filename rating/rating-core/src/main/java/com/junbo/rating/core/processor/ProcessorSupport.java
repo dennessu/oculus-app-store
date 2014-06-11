@@ -38,12 +38,12 @@ public abstract class ProcessorSupport implements Processor{
             }
         }
 
-        throw AppErrors.INSTANCE.actionNotFound(actionType).exception();
+        throw AppErrors.INSTANCE.missingConfiguration("action").exception();
     }
 
     private BigDecimal retrievePrice(Price price, String country, String currency) {
         if (price == null) {
-            throw AppErrors.INSTANCE.priceNotFound().exception();
+            throw AppErrors.INSTANCE.missingConfiguration("price").exception();
         }
 
         if (PriceType.FREE.name().equalsIgnoreCase(price.getPriceType())) {
@@ -51,12 +51,12 @@ public abstract class ProcessorSupport implements Processor{
         }
 
         if (price.getPrices() == null || !price.getPrices().containsKey(country)) {
-            throw AppErrors.INSTANCE.priceNotFound().exception();
+            throw AppErrors.INSTANCE.missingConfiguration("price").exception();
         }
 
         Map<String, BigDecimal> prices = price.getPrices().get(country);
         if (!prices.containsKey(currency)) {
-            throw AppErrors.INSTANCE.priceNotFound().exception();
+            throw AppErrors.INSTANCE.missingConfiguration("price").exception();
         }
 
         return prices.get(currency);

@@ -20,6 +20,14 @@ public class Utils {
         return new Date();
     }
 
+    public static Date maxDate() {
+        return new Date(253373469595309L);
+    }
+
+    public static Date minDate() {
+        return new Date(0);
+    }
+
     public static Long parseDateTime(String time) {
         return DatatypeConverter.parseDateTime(time).getTimeInMillis();
     }

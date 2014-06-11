@@ -28,29 +28,33 @@ public class RatingItem {
     @ApiModelProperty(position = 2, required = true, value = "Quantity of offer.")
     private int quantity;
 
-    @ApiModelProperty(position = 3, required = true, value = "[Client Immutable] The original unit price of offer.")
+    @ApiModelProperty(position = 3, required = true, value = "[Client Immutable] The pre-order price of offer.")
+    @Null
+    private BigDecimal preOrderPrice;
+
+    @ApiModelProperty(position = 4, required = true, value = "[Client Immutable] The original unit price of offer.")
     @Null
     private BigDecimal originalUnitPrice;
 
-    @ApiModelProperty(position = 4, required = true, value = "[Client Immutable] The original total price of offer.")
+    @ApiModelProperty(position = 5, required = true, value = "[Client Immutable] The original total price of offer.")
     @Null
     private BigDecimal originalTotalPrice;
 
-    @ApiModelProperty(position = 5, required = true, value = "[Client Immutable] The final total price of offer.")
+    @ApiModelProperty(position = 6, required = true, value = "[Client Immutable] The final total price of offer.")
     @Null
     private BigDecimal finalTotalAmount;
 
-    @ApiModelProperty(position = 6, required = true, value = "[Client Immutable] Total discount amount of offer.")
+    @ApiModelProperty(position = 7, required = true, value = "[Client Immutable] Total discount amount of offer.")
     @Null
     private BigDecimal totalDiscountAmount;
 
-    @ApiModelProperty(position = 7, required = true,
+    @ApiModelProperty(position = 8, required = true,
             value = "[Client Immutable] Promotion rules which make discount for offer.")
     @Null
     @PromotionRevisionId
     private Set<Long> promotions;
 
-    @ApiModelProperty(position = 8, required = true, value = "Specify shipping method for offer.")
+    @ApiModelProperty(position = 9, required = true, value = "Specify shipping method for offer.")
     @ShippingMethodId
     @JsonProperty("shippingMethod")
     private Long shippingMethodId;
@@ -69,6 +73,14 @@ public class RatingItem {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public BigDecimal getPreOrderPrice() {
+        return preOrderPrice;
+    }
+
+    public void setPreOrderPrice(BigDecimal preOrderPrice) {
+        this.preOrderPrice = preOrderPrice;
     }
 
     public BigDecimal getOriginalUnitPrice() {

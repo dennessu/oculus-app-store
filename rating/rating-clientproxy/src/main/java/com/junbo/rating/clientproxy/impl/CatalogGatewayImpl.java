@@ -24,6 +24,7 @@ import com.junbo.rating.common.util.Utils;
 import com.junbo.rating.spec.error.AppErrors;
 import com.junbo.rating.spec.fusion.*;
 import com.junbo.rating.spec.fusion.Price;
+import com.junbo.rating.spec.fusion.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -187,6 +188,10 @@ public class CatalogGatewayImpl implements CatalogGateway{
     }
 
     private Price getPrice(com.junbo.catalog.spec.model.common.Price price) {
+        if (price == null) {
+            throw AppErrors.INSTANCE.missingConfiguration("price").exception();
+        }
+
         Map<String, Map<String, BigDecimal>> prices = new HashMap<>();
         switch(PriceType.valueOf(price.getPriceType())) {
             case CUSTOM:
@@ -211,6 +216,13 @@ public class CatalogGatewayImpl implements CatalogGateway{
         RatingOffer offer = new RatingOffer();
 
         offer.setPrice(getPrice(offerRevision.getPrice()));
+        offer.setPreOrderPrice(offerRevision.getPreOrderPrice() == null? null :
+                getPrice(offerRevision.getPreOrderPrice()));
+
+        for(String country : offerRevision.getCountries().keySet()) {
+            CountryProperties properties = offerRevision.getCountries().get(country);
+            offer.getCountries().put(country, new Properties(properties.getIsPurchasable(), properties.getReleaseDate()));
+        }
 
         if (offerRevision.getItems() != null) {
             for (ItemEntry entry : offerRevision.getItems()) {
