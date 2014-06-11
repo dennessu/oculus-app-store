@@ -32,6 +32,8 @@
                     payment_description varchar(4000) default null,
                     properties varchar(4000) default null,
 					resource_age bigint not null,
+					purchase_time timestamp default null,
+					latest_order_revision_id bigint default null,
                     created_time timestamp not null,
                     created_by bigint not null,
                     updated_time timestamp not null,
@@ -40,6 +42,28 @@
                 );
                 create unique index user_order_index on user_order (user_id, order_id);
                 create unique index user_order_time_index on user_order (user_id, order_id, updated_time, created_time);
+
+                create table order_revision (
+                    order_rating_revision_id bigint not null,
+                    order_id bigint not null,
+                    shipping_method_id bigint default null,
+                    shipping_address_id bigint default null,
+                    shipping_name_id bigint default null,
+                    shipping_phone_id bigint default null,
+                    total_amount decimal not null,
+                    total_tax decimal not null,
+                    is_tax_inclusive boolean not null,
+                    total_discount decimal not null,
+                    total_shipping_fee decimal not null,
+                    total_shipping_fee_discount decimal not null,
+					resource_age bigint not null,
+                    created_time timestamp not null,
+                    created_by bigint not null,
+                    updated_time timestamp not null,
+                    updated_by bigint not null,
+                    primary key (order_rating_revision_id)
+                );
+                create index order_time_index on order_revision (order_id, updated_time, created_time);
 
                 create table order_event (
                     event_id bigint not null,
@@ -63,7 +87,7 @@
                     order_item_id bigint not null,
                     order_id bigint not null,
                     order_item_type smallint not null,
-                    product_item_id varchar(128) not null,
+                    offer_id varchar(128) not null,
                     unit_price decimal not null,
                     quantity int not null,
                     shipping_method_id bigint default null,
@@ -71,6 +95,9 @@
                     total_amount decimal not null,
                     total_tax decimal not null,
                     total_discount decimal not null,
+                    total_shipping_fee decimal default null,
+                    total_shipping_fee_discount decimal default null,
+                    latest_order_item_revision_id bigint default null,
                     honor_until_time timestamp default null,
                     honored_time timestamp not null,
                     properties varchar(4000) default null,
@@ -83,6 +110,27 @@
                     primary key (order_item_id)
                 );
                 create unique index item_order_time_index on order_item (order_item_id, order_id, updated_time, created_time);
+
+                create table order_item_revision (
+                    order_item_revision_id bigint not null,
+                    order_item_id bigint not null,
+                    order_id bigint not null,
+                    revision_type smallint not null,
+                    quantity int not null,
+                    shipping_method_id bigint default null,
+                    shipping_address_id bigint default null,
+                    total_amount decimal not null,
+                    total_tax decimal not null,
+                    total_discount decimal not null,
+                    shipping_fee decimal not null,
+					resource_age bigint not null,
+                    created_time timestamp not null,
+                    created_by bigint not null,
+                    updated_time timestamp not null,
+                    updated_by bigint not null,
+                    primary key (order_item_revision_id)
+                );
+                create index revision_item_order_time_index on order_item_revision (order_item_id, order_id, updated_time, created_time);
 
                 create table order_discount_info (
                     order_item_discount_info_id bigint not null,

@@ -83,6 +83,7 @@ class OrderServiceImpl implements OrderService {
             orderValidator.validateSettleOrderRequest(ratedOrder)
             ratedOrder.successRedirectUrl = order.successRedirectUrl
             ratedOrder.cancelRedirectUrl = order.cancelRedirectUrl
+            ratedOrder.purchaseTime = ratedOrder.honoredTime
 
             def orderServiceContext = initOrderServiceContext(ratedOrder, context)
             Throwable error

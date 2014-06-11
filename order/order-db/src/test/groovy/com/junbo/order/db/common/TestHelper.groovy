@@ -93,7 +93,7 @@ class TestHelper implements ApplicationContextAware {
         entity.setOrderItemId(generateId())
         entity.setOrderId(generateOrderId())
         entity.setOrderItemType(ItemType.DIGITAL)
-        entity.setProductItemId(generateLong().toString())
+        entity.setOfferId(generateLong().toString())
         entity.setUnitPrice(BigDecimal.valueOf(DEFAULT_PRICE))
         entity.setQuantity(Integer.valueOf(DEFAULT_QUANTITY))
         entity.setCreatedTime(new Date())

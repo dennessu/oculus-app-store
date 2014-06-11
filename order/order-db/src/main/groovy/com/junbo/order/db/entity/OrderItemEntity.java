@@ -28,7 +28,7 @@ public class OrderItemEntity extends CommonDbEntityDeletable {
     private Long orderItemId;
     private Long orderId;
     private ItemType orderItemType;
-    private String productItemId;
+    private String offerId;
     private BigDecimal unitPrice;
     private Integer quantity;
     private String properties;
@@ -38,6 +38,9 @@ public class OrderItemEntity extends CommonDbEntityDeletable {
     private BigDecimal totalAmount;
     private BigDecimal totalTax;
     private BigDecimal totalDiscount;
+    private BigDecimal totalShippingFee;
+    private BigDecimal totalShippingFeeDiscount;
+    private Long latestOrderItemRevisionId;
     private Date honorUntilTime;
     private Date honoredTime;
     // end of ratingInfo
@@ -74,15 +77,15 @@ public class OrderItemEntity extends CommonDbEntityDeletable {
         this.orderItemType = orderItemType;
     }
 
-    @Column(name = "PRODUCT_ITEM_ID")
+    @Column(name = "OFFER_ID")
     @NotEmpty(message = ValidationMessages.MISSING_VALUE)
     @Length(max=128, message=ValidationMessages.TOO_LONG)
-    public String getProductItemId() {
-        return productItemId;
+    public String getOfferId() {
+        return offerId;
     }
 
-    public void setProductItemId(String productItemId) {
-        this.productItemId = productItemId;
+    public void setOfferId(String offerId) {
+        this.offerId = offerId;
     }
 
     @Column(name = "UNIT_PRICE")
@@ -151,6 +154,33 @@ public class OrderItemEntity extends CommonDbEntityDeletable {
 
     public void setTotalDiscount(BigDecimal totalDiscount) {
         this.totalDiscount = totalDiscount;
+    }
+
+    @Column(name = "TOTAL_SHIPPING_FEE")
+    public BigDecimal getTotalShippingFee() {
+        return totalShippingFee;
+    }
+
+    public void setTotalShippingFee(BigDecimal totalShippingFee) {
+        this.totalShippingFee = totalShippingFee;
+    }
+
+    @Column(name = "TOTAL_SHIPPING_FEE_DISCOUNT")
+    public BigDecimal getTotalShippingFeeDiscount() {
+        return totalShippingFeeDiscount;
+    }
+
+    public void setTotalShippingFeeDiscount(BigDecimal totalShippingFeeDiscount) {
+        this.totalShippingFeeDiscount = totalShippingFeeDiscount;
+    }
+
+    @Column(name = "LATEST_ORDER_ITEM_REVISION_ID")
+    public Long getLatestOrderItemRevisionId() {
+        return latestOrderItemRevisionId;
+    }
+
+    public void setLatestOrderItemRevisionId(Long latestOrderItemRevisionId) {
+        this.latestOrderItemRevisionId = latestOrderItemRevisionId;
     }
 
     @Column(name = "HONOR_UNTIL_TIME")
