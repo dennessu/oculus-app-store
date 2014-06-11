@@ -173,6 +173,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
         result.put(Constant.ITEM_ID, action.getItemId());
         result.put(Constant.STORED_VALUE_CURRENCY, action.getStoredValueCurrency());
         result.put(Constant.STORED_VALUE_AMOUNT, action.getStoredValueAmount());
+        result.put(Constant.USE_COUNT, action.getUseCount());
 
         return result;
     }
