@@ -22,8 +22,8 @@ do
     cat > $config <<EOF
 [londiste3]
 job_name = job_root_${db}
-db = dbname=${db}
-queue_name = queue_$db
+db = dbname=${db} port=$DB_PORT host=localhost
+queue_name = queue_${db}
 logfile = $SKYTOOL_LOG_PATH/$db.log
 pidfile = $SKYTOOL_PID_PATH/$db.pid
 EOF

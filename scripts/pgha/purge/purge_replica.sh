@@ -6,7 +6,7 @@ source ${DIR}/../util/common.sh
 checkAccount $DEPLOYMENT_ACCOUNT
 
 echo "kill postgres instance with port [$REPLICA_DB_PORT]..."
-forceKill $MASTER_DB_PORT
+forceKill $REPLICA_DB_PORT
 
 echo "kill skytools instance"
 forceKillPid $SKYTOOL_PID_PATH

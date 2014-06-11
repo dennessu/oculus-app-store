@@ -125,10 +125,10 @@
     $DEPLOYMENT_PATH/londiste/londiste_config_leaf.sh
 
 #[master] start londiste deamon on master
-    $DEPLOYMENT_PATH/londiste/londiste_master.sh
+    $DEPLOYMENT_PATH/londiste/londiste_root.sh
 
 #[replica] start londiste deamon on replica (master -> replica)
-    $DEPLOYMENT_PATH/londiste/londiste_replica_master.sh
+    $DEPLOYMENT_PATH/londiste/londiste_leaf.sh
 
 #[master] start londiste pgq ticker deamon
     $DEPLOYMENT_PATH/londiste/lodiste_pgqd.sh

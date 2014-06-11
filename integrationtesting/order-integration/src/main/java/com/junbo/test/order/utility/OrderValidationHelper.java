@@ -6,9 +6,14 @@
 
 package com.junbo.test.order.utility;
 
+import com.junbo.billing.spec.model.Balance;
+import com.junbo.billing.spec.model.Transaction;
 import com.junbo.common.model.Results;
 import com.junbo.order.spec.model.Order;
 import com.junbo.order.spec.model.OrderEvent;
+import com.junbo.test.billing.entities.TransactionInfo;
+import com.junbo.test.common.exception.TestException;
+import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.order.model.enums.EventStatus;
 import com.junbo.test.order.model.enums.OrderActionType;
 import com.junbo.test.order.model.enums.OrderStatus;
@@ -52,6 +57,21 @@ public class OrderValidationHelper extends BaseValidationHelper {
             verifyEqual(orderEvents.get(i).getStatus(), eventStatus.toString(), "verify event status");
             i++;
         }
+    }
+
+    public void validateSingleTransaction(String balanceId, TransactionInfo expectedTransaction) {
+        Balance balance = Master.getInstance().getBalance(balanceId);
+        List<Transaction> transactions = balance.getTransactions();
+        for (Transaction transaction : transactions) {
+            if (transaction.getType().equals(expectedTransaction.getTransactionType().toString()) &&
+                    transaction.getStatus().equals(expectedTransaction.getTransactionStatus().toString())) {
+                verifyEqual(IdConverter.idToHexString(transaction.getPiId()),
+                        expectedTransaction.getPaymentInstrumentId(), "verify payment instrument id");
+                verifyEqual(transaction.getAmount(),expectedTransaction.getAmount(),"verify transaction amount");
+                return;
+            }
+        }
+        throw new TestException("missing expected transaction in transaction list");
     }
 
 }

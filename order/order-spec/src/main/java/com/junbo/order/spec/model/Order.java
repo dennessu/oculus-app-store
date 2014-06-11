@@ -150,6 +150,12 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
     @JsonIgnore
     private String paymentDescription;
 
+    @JsonIgnore
+    private Date purchaseTime;
+
+    @JsonIgnore
+    private Long latestOrderRevisionId;
+
     public OrderId getId() {
         return id;
     }
@@ -372,5 +378,21 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
 
     public void setShippingToPhone(UserPersonalInfoId shippingToPhone) {
         this.shippingToPhone = shippingToPhone;
+    }
+
+    public Date getPurchaseTime() {
+        return purchaseTime;
+    }
+
+    public void setPurchaseTime(Date purchaseTime) {
+        this.purchaseTime = purchaseTime;
+    }
+
+    public Long getLatestOrderRevisionId() {
+        return latestOrderRevisionId;
+    }
+
+    public void setLatestOrderRevisionId(Long latestOrderRevisionId) {
+        this.latestOrderRevisionId = latestOrderRevisionId;
     }
 }

@@ -6,6 +6,7 @@
 package com.junbo.fulfilment.core.handler;
 
 import com.junbo.common.shuffle.Oculus48Id;
+import com.junbo.fulfilment.common.util.Constant;
 import com.junbo.fulfilment.common.util.Utils;
 import com.junbo.fulfilment.core.context.EntitlementContext;
 import com.junbo.fulfilment.spec.fusion.Entitlement;
@@ -35,8 +36,10 @@ public class EntitlementHandler extends HandlerSupport<EntitlementContext> {
                 entitlement.setUserId(context.getUserId());
 
                 // for non-consumable, always null
-                // for consumable, get use count from TBD, hard code 1 as workaround for now
-                entitlement.setUseCount(meta.getConsumable() ? 1 : null);
+                // for consumable, get use count from action property
+                entitlement.setUseCount(meta.getConsumable()
+                        ? (Integer) action.getProperties().get(Constant.USE_COUNT) : null);
+
                 entitlement.setGrantTime(Utils.now());
 
                 Long rawEntitlementid = entitlementGateway.grant(entitlement);

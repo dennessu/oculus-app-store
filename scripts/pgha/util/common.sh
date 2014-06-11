@@ -20,23 +20,25 @@ export PGLOCK_PATH='/run/postgresql'
 export PROMOTE_TRIGGER_FILE='/tmp/bring_me_up'
 export PGUSER='silkcloud'
 
+export DB_PORT=5432
+
 #master info
 export MASTER_HOST=54.254.246.13
-export MASTER_DB_PORT=5432
+export MASTER_DB_PORT=$DB_PORT
 export MASTER_DATA_PATH=$DATA_PATH
 export MASTER_BACKUP_PATH=$BACKUP_PATH
 export MASTER_ARCHIVE_PATH=$ARCHIVE_PATH
 
 #slave info
 export SLAVE_HOST=54.255.148.38
-export SLAVE_DB_PORT=5432
+export SLAVE_DB_PORT=$DB_PORT
 export SLAVE_DATA_PATH=$DATA_PATH
 export SLAVE_BACKUP_PATH=$BACKUP_PATH
 export SLAVE_ARCHIVE_PATH=$ARCHIVE_PATH
 
 #replica info
 export REPLICA_HOST=54.255.213.75
-export REPLICA_DB_PORT=5432
+export REPLICA_DB_PORT=$DB_PORT
 export REPLICA_DATA_PATH=$DATA_PATH
 export REPLICA_ARCHIVE_PATH=$ARCHIVE_PATH
 
@@ -64,7 +66,7 @@ set -e
 function forceKill {
     if (fuser -n tcp $1 2> /dev/null)
     then
-        kill $(fuser -n tcp $1 2> /dev/null)
+        kill -9 $(fuser -n tcp $1 2> /dev/null)
     else
         echo "no process running with [$1] port..."
     fi    

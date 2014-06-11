@@ -47,14 +47,14 @@ public interface ModelMapper {
     @Mappings({
             @Mapping(source = "id", target = "orderItemId", excluded = false, bidirectional = false),
             @Mapping(source = "type", target = "orderItemType", excluded = false, bidirectional = false),
-            @Mapping(source = "offer", target = "productItemId", excluded = false, bidirectional = false),
+            @Mapping(source = "offer", target = "offerId", excluded = false, bidirectional = false),
     })
     OrderItemEntity toOrderItemEntity(OrderItem orderItem, MappingContext context);
 
     @Mappings({
             @Mapping(source = "orderItemId", target = "id", excluded = false, bidirectional = false),
             @Mapping(source = "orderItemType", target = "type", excluded = false, bidirectional = false),
-            @Mapping(source = "productItemId", target = "offer", excluded = false, bidirectional = false),
+            @Mapping(source = "offerId", target = "offer", excluded = false, bidirectional = false),
     })
     OrderItem toOrderItemModel(OrderItemEntity orderItemEntity, MappingContext context);
 

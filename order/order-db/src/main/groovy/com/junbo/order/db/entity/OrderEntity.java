@@ -33,6 +33,8 @@ public class OrderEntity extends CommonDbEntityWithDate {
     private Long shippingNameId;
     private Long shippingPhoneId;
     private Long shippingMethodId;
+    private Date purchaseTime;
+    private Long latestOrderRevisionId;
 
     // expand ratingInfo to simplify oom
     private BigDecimal totalAmount;
@@ -260,6 +262,24 @@ public class OrderEntity extends CommonDbEntityWithDate {
 
     public void setPaymentDescription(String paymentDescription) {
         this.paymentDescription = paymentDescription;
+    }
+
+    @Column(name = "PURCHASE_TIME")
+    public Date getPurchaseTime() {
+        return purchaseTime;
+    }
+
+    public void setPurchaseTime(Date purchaseTime) {
+        this.purchaseTime = purchaseTime;
+    }
+
+    @Column(name = "LATEST_ORDER_REVISION_ID")
+    public Long getLatestOrderRevisionId() {
+        return latestOrderRevisionId;
+    }
+
+    public void setLatestOrderRevisionId(Long latestOrderRevisionId) {
+        this.latestOrderRevisionId = latestOrderRevisionId;
     }
 
     @Override

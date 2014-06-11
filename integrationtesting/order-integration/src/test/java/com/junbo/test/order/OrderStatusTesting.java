@@ -335,7 +335,6 @@ public class OrderStatusTesting extends BaseOrderTestClass {
 
         ArrayList<String> offerList = new ArrayList<>();
         offerList.add(offer_digital_normal1);
-        offerList.add(offer_digital_normal2);
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
@@ -343,6 +342,7 @@ public class OrderStatusTesting extends BaseOrderTestClass {
         String orderId = testDataProvider.postOrder(
                 uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
 
+        testDataProvider.updateOrderTentative(orderId, false);
         testDataProvider.postOrderEvent(orderId, EventStatus.FAILED, OrderActionType.FULFILL);
 
         testDataProvider.getOrder(orderId);
@@ -358,14 +358,23 @@ public class OrderStatusTesting extends BaseOrderTestClass {
             component = Component.Order,
             owner = "ZhaoYunlong",
             status = Status.Disable,
-            description = "Test order events - checkout failure",
+            description = "Test order events - Refund",
             steps = {
                     "1. Post a new user",
                     "2. Post a new credit card to user",
                     "3. Post an order without setting tentative",
                     "4. Put order and set tentative to false",
-                    //TODO Put order to refund
-
+                    "5. Put order with partial order items",
+                    "6. Get order events by order Id",
+                    "7. Verify order events (action='partial refund', status='open')",
+                    "8. Verify order events (action='partial refund', status='completed')",
+                    "9. Get order by order Id",
+                    "10. Verify order status is partial refund",
+                    "11. Put order with free order items",
+                    "12. Verify order events (action='refund', status='open')",
+                    "13. Verify order events (action='refund', status='completed')",
+                    "14. Get order by order Id",
+                    "15. Verify order status is refund"
             }
     )
     @Test

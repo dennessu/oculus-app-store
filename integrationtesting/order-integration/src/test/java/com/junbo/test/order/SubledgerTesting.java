@@ -157,7 +157,7 @@ public class SubledgerTesting extends BaseOrderTestClass {
                     "4. Post another user",
                     "5. Post new credit card to user",
                     "6. Post an order (offer1) and complete it",
-                    "7. Refund order1 ",
+                    "7. Refund first order and partial refund second order",
                     "8. Get subledger",
                     "9. Verify subledger response"
             }
