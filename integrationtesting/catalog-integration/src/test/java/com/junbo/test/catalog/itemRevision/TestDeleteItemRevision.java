@@ -49,6 +49,7 @@ public class TestDeleteItemRevision extends BaseTestClass {
     @Test
     public void testDeleteItemRevision() throws Exception {
         ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
+        ItemService itemService = ItemServiceImpl.instance();
 
         //Prepare an item revision
         ItemRevision itemRevision = itemRevisionService.postDefaultItemRevision();
@@ -73,7 +74,7 @@ public class TestDeleteItemRevision extends BaseTestClass {
         releaseItemRevision(itemRevision);
 
         //delete released item revision should be prohibited.
-        itemRevisionService.deleteItemRevision(itemRevision.getRevisionId(), 400);
+        itemRevisionService.deleteItemRevision(itemRevision.getRevisionId(), 404);
         itemRevisionGet = itemRevisionService.getItemRevision(itemRevision.getRevisionId());
         Assert.assertNotNull(itemRevisionGet);
     }

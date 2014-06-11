@@ -70,7 +70,7 @@ public enum Currency {
     SEK("SEK", "kr"),
     SGD("SGD", "S$"),
 
-    THB("THB", "฿"),
+    THB("THB", "THB"),
     TRY("TRY", "TL"),
     TWD("TWD", "NT$"),
 
