@@ -6,6 +6,7 @@
 package com.junbo.test.identity;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.common.model.Results;
@@ -18,6 +19,9 @@ import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.JsonHelper;
 import com.junbo.test.common.libs.IdConverter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author dw
  */
@@ -28,6 +32,7 @@ public class Identity {
     public static final String DefaultIdentityV1CurrencyURI = DefaultIdentityEndPointV1 + "/currencies";
     public static final String DefaultIdentityV1ImportsURI = DefaultIdentityEndPointV1 + "/imports";
     public static final String DefaultIdentityV1LocaleURI = DefaultIdentityEndPointV1 + "/locales";
+    public static final String DefaultIdentityV1OrganizationURI = DefaultIdentityEndPointV1 + "/organizations";
     public static final String DefaultIdentityV1UserURI = DefaultIdentityEndPointV1 + "/users";
     public static final String DefaultIdentityV1UserPersonalInfoURI = DefaultIdentityEndPointV1 + "/personal-info";
 
@@ -129,6 +134,18 @@ public class Identity {
                 UserPersonalInfo.class);
     }
 
+    public static List<UserPersonalInfo> UserPersonalInfosGetByUserId(UserId userId) throws Exception {
+        List<UserPersonalInfo> userPersonalInfos = new ArrayList<UserPersonalInfo>();
+        for (Object obj : HttpclientHelper.SimpleGet(
+                DefaultIdentityV1UserPersonalInfoURI + "?userId=" + IdFormatter.encodeId(userId),
+                (Results.class)).getItems()) {
+            userPersonalInfos.add((UserPersonalInfo) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
+                            UserPersonalInfo.class)
+            );
+        }
+        return userPersonalInfos;
+    }
+
     public static UserPersonalInfo UserPersonalInfoGetByUserPersonalInfoId(UserPersonalInfoId userPersonalInfoId)
             throws Exception {
         return (UserPersonalInfo) HttpclientHelper.SimpleGet(
@@ -140,6 +157,12 @@ public class Identity {
         JsonNode jsonNode = JsonHelper.ObjectToJsonNode((HttpclientHelper.SimpleGet(
                 DefaultIdentityV1UserPersonalInfoURI + "?email=" + email, (Results.class))).getItems().get(0));
         return (UserPersonalInfo) JsonHelper.JsonNodeToObject(jsonNode, UserPersonalInfo.class);
+    }
+
+    public static Organization OrganizationGetByOrganizationId(OrganizationId organizationId) throws Exception {
+        return (Organization) HttpclientHelper.SimpleGet(
+                DefaultIdentityV1OrganizationURI + "/" + IdFormatter.encodeId(organizationId),
+                Organization.class);
     }
 
     public static OculusOutput ImportMigrationData(OculusInput oculusInput) throws Exception {

@@ -190,6 +190,31 @@ public class HttpclientHelper {
         }
     }
 
+    public static CloseableHttpResponse PureHttpResponse(String requestURI, String objJson, int httpRequest) throws Exception {
+        switch (httpRequest) {
+            case 1:
+                HttpGet httpGet = new HttpGet(requestURI);
+                httpGet.addHeader("Content-Type", "application/json");
+                return httpclient.execute(httpGet);
+            case 2:
+                HttpPost httpPost = new HttpPost(requestURI);
+                httpPost.addHeader("Content-Type", "application/json");
+                httpPost.setEntity(new StringEntity(objJson));
+                return httpclient.execute(httpPost);
+            case 3:
+                HttpPut httpPut = new HttpPut(requestURI);
+                httpPut.addHeader("Content-Type", "application/json");
+                httpPut.setEntity(new StringEntity(objJson));
+                return httpclient.execute(httpPut);
+            case 4:
+                HttpDelete httpDelete = new HttpDelete(requestURI);
+                httpDelete.addHeader("Content-Type", "application/json");
+                return httpclient.execute(httpDelete);
+            default:
+                throw new Exception("unexpected httpRequest: " + httpRequest);
+        }
+    }
+
     public static void ResetHttpClient() throws Exception {
         httpclient.close();
         httpclient = HttpClients.createDefault();
