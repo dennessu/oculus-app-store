@@ -44,14 +44,16 @@ public class EmailTemplateDaoImpl implements EmailTemplateDao, BaseDao<EmailTemp
 
     }
 
-    public Long save(EmailTemplateEntity entity) {
-        return (Long) currentSession().save(entity);
+    public EmailTemplateEntity save(EmailTemplateEntity entity) {
+        currentSession().save(entity);
+        currentSession().flush();
+        return get(entity.getId());
     }
 
-    public Long update(EmailTemplateEntity entity) {
+    public EmailTemplateEntity update(EmailTemplateEntity entity) {
         currentSession().merge(entity);
         currentSession().flush();
-        return entity.getId();
+        return get(entity.getId());
 
     }
 

@@ -8,10 +8,10 @@ package com.junbo.email.spec.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.junbo.common.id.EmailId;
 import com.junbo.common.id.EmailTemplateId;
 import com.junbo.common.id.UserId;
-import com.junbo.common.id.EmailId;
-//import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
@@ -23,7 +23,7 @@ import java.util.Map;
  */
 @JsonPropertyOrder(value = {"self","user","template","recipients","status",
         "priority","sentTime","scheduleTime","replacements"})
-public class Email extends Model {
+public class Email extends ResourceMeta<EmailId> {
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The id of email resource.")
     @JsonProperty("self")
     private EmailId id;

@@ -9,7 +9,6 @@ import com.junbo.common.id.EmailId;
 import com.junbo.common.id.EmailTemplateId;
 import com.junbo.common.util.EnumRegistry;
 import com.junbo.email.common.util.Utils;
-import com.junbo.email.db.entity.BaseEntity;
 import com.junbo.email.db.entity.EmailHistoryEntity;
 import com.junbo.email.db.entity.EmailScheduleEntity;
 import com.junbo.email.db.entity.EmailTemplateEntity;
@@ -18,6 +17,7 @@ import com.junbo.email.spec.model.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +26,7 @@ import java.util.List;
  */
 @Component
 public class EmailMapper {
-    public Email toEmail(EmailHistoryEntity entity) {
+    public Email toEmail(EmailHistoryEntity entity) throws IOException {
         if(entity == null) {
             return null;
         }
@@ -39,12 +39,12 @@ public class EmailMapper {
         email.setStatusReason(entity.getStatusReason());
         email.setIsResend(entity.getIsResend());
         email.setCreatedTime(entity.getCreatedTime());
-        email.setModifiedTime(entity.getUpdatedTime());
+        email.setUpdatedTime(entity.getUpdatedTime());
 
         return  email;
     }
 
-    public EmailHistoryEntity toEmailHistoryEntity(Email email) {
+    public EmailHistoryEntity toEmailHistoryEntity(Email email) throws IOException {
         if(email == null) {
             return null;
         }
@@ -68,7 +68,7 @@ public class EmailMapper {
         return entity;
     }
 
-    public EmailScheduleEntity toEmailScheduleEntity(Email email) {
+    public EmailScheduleEntity toEmailScheduleEntity(Email email) throws IOException {
         if(email == null) {
             return null;
         }
@@ -88,11 +88,11 @@ public class EmailMapper {
         return entity;
     }
 
-    public Email toEmailSchedule(EmailScheduleEntity entity) {
+    public Email toEmailSchedule(EmailScheduleEntity entity) throws IOException {
         if(entity == null) {
             return null;
         }
-        Email email = Utils.toObject(entity.getPayload(),Email.class);
+        Email email = Utils.toObject(entity.getPayload(), Email.class);
         email.setId(new EmailId(entity.getId()));
         email.setIsResend(false);
         email.setTemplateId(new EmailTemplateId(entity.getTemplateId()));
@@ -100,12 +100,12 @@ public class EmailMapper {
         email.setRecipients(Utils.toObject(entity.getRecipients(), List.class));
         email.setScheduleTime(entity.getScheduleTime());
         email.setCreatedTime(entity.getCreatedTime());
-        email.setModifiedTime(entity.getUpdatedTime());
+        email.setUpdatedTime(entity.getUpdatedTime());
 
         return email;
     }
 
-    public EmailTemplate toEmailTemplate(EmailTemplateEntity entity) {
+    public EmailTemplate toEmailTemplate(EmailTemplateEntity entity) throws IOException {
         if(entity == null) {
             return null;
         }
@@ -127,7 +127,7 @@ public class EmailMapper {
         return template;
     }
 
-    public List<EmailTemplate> toEmailTemplates(List<EmailTemplateEntity> entities) {
+    public List<EmailTemplate> toEmailTemplates(List<EmailTemplateEntity> entities) throws IOException {
         if(entities == null) {
             return null;
         }
@@ -138,7 +138,7 @@ public class EmailMapper {
         return templates;
     }
 
-    public EmailTemplateEntity toEmailTemplateEntity(EmailTemplate template) {
+    public EmailTemplateEntity toEmailTemplateEntity(EmailTemplate template) throws IOException {
         EmailTemplateEntity entity = new EmailTemplateEntity();
         if(template.getId()!=null) {
             entity.setId(template.getId().getValue());
@@ -177,14 +177,5 @@ public class EmailMapper {
         }
         return EnumRegistry.resolve(id, EmailStatus.class).toString();
 
-    }
-
-    private <T extends Model> T toModel(BaseEntity entity, T model) {
-        model.setCreatedBy(entity.getCreatedBy());
-        model.setCreatedTime(entity.getCreatedTime());
-        model.setModifiedBy(entity.getUpdatedBy());
-        model.setModifiedTime(entity.getUpdatedTime());
-
-        return model;
     }
 }

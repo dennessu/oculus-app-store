@@ -14,7 +14,6 @@ import com.junbo.email.spec.model.EmailTemplate
 import com.junbo.email.spec.model.QueryParam
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 
@@ -28,29 +27,33 @@ import javax.transaction.Transactional
 @Transactional
  class EmailTemplateServiceImpl implements EmailTemplateService {
 
-    @Autowired
     private EmailTemplateRepository templateRepository
 
-    @Autowired
     private EmailTemplateValidator templateValidator
+
+    void setTemplateRepository(EmailTemplateRepository templateRepository) {
+        this.templateRepository = templateRepository
+    }
+
+    void setTemplateValidator(EmailTemplateValidator templateValidator) {
+        this.templateValidator = templateValidator
+    }
 
     Promise<EmailTemplate> postEmailTemplate(EmailTemplate template) {
         this.build(template)
         templateValidator.validateCreate(template)
-        Long id = templateRepository.saveEmailTemplate(template)
-        return Promise.pure(templateRepository.getEmailTemplate(id))
+        return templateRepository.saveEmailTemplate(template)
     }
 
     Promise<EmailTemplate> getEmailTemplate(Long id) {
-        EmailTemplate template = templateRepository.getEmailTemplate(id)
-        return Promise.pure(template)
+        return templateRepository.getEmailTemplate(id)
     }
 
     Promise<EmailTemplate> putEmailTemplate(Long id, EmailTemplate template) {
         templateValidator.validateUpdate(template, id)
         template.setId(new EmailTemplateId(id))
         this.build(template)
-        return Promise.pure(templateRepository.updateEmailTemplate(template))
+        return templateRepository.updateEmailTemplate(template)
     }
 
     Void deleteEmailTemplate(Long id) {
@@ -61,12 +64,13 @@ import javax.transaction.Transactional
 
     Promise<Results<EmailTemplate>> getEmailTemplates(QueryParam queryParam) {
         def queries = this.buildQueryParam(queryParam)
-        List<EmailTemplate> templates = templateRepository.getEmailTemplates(queries, null)
-        Results<EmailTemplate> results = new Results<>()
-        if (templates != null) {
-           results.setItems(templates)
+        return templateRepository.getEmailTemplates(queries, null).then { List<EmailTemplate> templates ->
+            def results = new Results<EmailTemplate>(items:[])
+            if (templates != null && templates.size() !=0) {
+                results.items.addAll(templates)
+            }
+            return Promise.pure(results)
         }
-        return Promise.pure(results)
     }
 
     private void build(EmailTemplate template) {

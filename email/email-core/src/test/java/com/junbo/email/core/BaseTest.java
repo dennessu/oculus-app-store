@@ -22,7 +22,7 @@ public abstract class BaseTest extends AbstractTransactionalTestNGSpringContextT
     private IdGenerator idGenerator;
 
     protected long generateId() {
-        return idGenerator.nextId(0);
+        return idGenerator.nextId();
     }
 
     @Override

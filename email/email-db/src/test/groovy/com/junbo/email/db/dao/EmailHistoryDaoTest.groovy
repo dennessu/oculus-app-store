@@ -8,7 +8,7 @@ import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 /**
- * Created by Wei on 5/15/2014.
+ * EmailHistoryDaoTest Class.
  */
 class EmailHistoryDaoTest extends BaseTest {
     @Autowired
@@ -33,13 +33,12 @@ class EmailHistoryDaoTest extends BaseTest {
     @Test
     void testCreate() {
         def id = emailHistoryDao.save(entity)
-        assert id == entity.id, 'Email history create failed'
+        assert id != null, 'Email history create failed'
     }
 
     @Test
     void testGet() {
-        def id = emailHistoryDao.save(entity)
-        def entity = emailHistoryDao.get(id)
+        def entity = emailHistoryDao.save(entity)
         assert entity != null, 'Email history should not be null'
     }
 
@@ -47,16 +46,15 @@ class EmailHistoryDaoTest extends BaseTest {
     void testUpdate() {
         entity.setSentTime(new Date())
         entity.setStatus(EmailStatus.SUCCEED.id)
-        def id = emailHistoryDao.update(entity)
-        assert id == entity.id, 'Email history update failed'
+        def entity = emailHistoryDao.update(entity)
+        assert entity != null, 'Email history update failed'
     }
 
     @Test
     void testUpdateStatus() {
-        def id = emailHistoryDao.save(entity)
-        def updateId = emailHistoryDao.updateStatus(id, EmailStatus.SUCCEED.id)
-        def entity = emailHistoryDao.get(updateId)
-        assert entity.status == EmailStatus.SUCCEED.id, 'Email history status update failed'
+        def entity = emailHistoryDao.save(entity)
+        def updated = emailHistoryDao.updateStatus(entity.id, EmailStatus.SUCCEED.id)
+        assert updated.status == EmailStatus.SUCCEED.id, 'Email history status update failed'
     }
 
     @Test

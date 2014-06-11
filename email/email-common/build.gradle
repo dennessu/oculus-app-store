@@ -2,7 +2,6 @@ apply plugin: 'java'
 
 dependencies {
     compile junboProject(':common-lib')
-    compile (libraries.fastjson)
     compile (libraries.jackson_annotations)
     compile (libraries.spring_beans)
     compile (libraries.guava)

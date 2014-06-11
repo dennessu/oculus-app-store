@@ -5,6 +5,7 @@
  */
 package com.junbo.email.core.validator.impl
 
+import com.junbo.common.model.ResourceMeta
 import com.junbo.email.db.repo.EmailTemplateRepository
 import com.junbo.email.spec.error.AppErrors
 import com.junbo.email.spec.model.Email
@@ -42,12 +43,12 @@ abstract class CommonValidator {
         }
     }
 
-    protected void validateAuditDate(Model model) {
+    protected void validateAuditDate(ResourceMeta model) {
         if (model.createdTime != null) {
             throw AppErrors.INSTANCE.unnecessaryField('createTime').exception()
         }
-        if (model.modifiedTime != null) {
-            throw AppErrors.INSTANCE.unnecessaryField('modifiedTime').exception()
+        if (model.updatedTime != null) {
+            throw AppErrors.INSTANCE.unnecessaryField('updatedTime').exception()
         }
     }
 
@@ -59,7 +60,7 @@ abstract class CommonValidator {
     }
 
     protected void validateEmailTemplate(Email email) {
-        EmailTemplate template = emailTemplateRepository.getEmailTemplate(email.templateId.value)
+        EmailTemplate template = emailTemplateRepository.getEmailTemplate(email.templateId.value).get()
 
         if (template == null) {
             throw AppErrors.INSTANCE.templateNotFound().exception()

@@ -11,5 +11,5 @@ import com.junbo.email.db.entity.EmailHistoryEntity
  * Interface of EmailHistoryDao
  */
 interface EmailHistoryDao extends BaseDao<EmailHistoryEntity> {
-    Long updateStatus(Long id, Short emailStatus)
+    EmailHistoryEntity updateStatus(Long id, Short emailStatus)
 }

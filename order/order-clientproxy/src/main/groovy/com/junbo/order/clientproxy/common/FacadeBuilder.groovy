@@ -99,7 +99,7 @@ class FacadeBuilder {
     static Email buildOrderConfirmationEmail(Order order, User user, List<OfferRevision> offers, EmailTemplate template) {
         Email email = new Email()
         email.userId = (UserId)(user.id)
-        email.templateId = template.id
+        email.templateId = template.getId()
         // TODO: update email address as IDENTITY component
         Map<String, String> properties = [:]
         properties.put(ORDER_NUMBER, order.getId().value.toString())

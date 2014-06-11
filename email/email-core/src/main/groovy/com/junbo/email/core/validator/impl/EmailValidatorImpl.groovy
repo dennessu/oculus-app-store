@@ -5,13 +5,11 @@
  */
 package com.junbo.email.core.validator.impl
 
-import com.junbo.common.id.EmailId
 import com.junbo.email.common.util.IdUtils
 import com.junbo.email.core.validator.EmailValidator
 import com.junbo.email.db.repo.EmailScheduleRepository
 import com.junbo.email.spec.error.AppErrors
 import com.junbo.email.spec.model.Email
-import com.junbo.identity.spec.v1.model.User
 import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
@@ -53,15 +51,15 @@ class EmailValidatorImpl extends CommonValidator implements EmailValidator {
         if (id == null) {
             throw AppErrors.INSTANCE.missingField('id').exception()
         }
-        if (emailScheduleRepository.getEmailSchedule(id) == null) {
+        if (emailScheduleRepository.getEmailSchedule(id).get() == null) {
             throw AppErrors.INSTANCE.emailScheduleNotFound(IdUtils.encodeEmailId(id)).exception()
         }
     }
 
     private void validateEmailSchedule(Email email) {
-        Email schedule = emailScheduleRepository.getEmailSchedule(email.id.value)
+        Email schedule = emailScheduleRepository.getEmailSchedule(email.getId().value).get()
         if (schedule == null) {
-            throw AppErrors.INSTANCE.emailScheduleNotFound(IdUtils.encodeId(email.id)).exception()
+            throw AppErrors.INSTANCE.emailScheduleNotFound(IdUtils.encodeId(email.getId())).exception()
         }
     }
 
