@@ -27,7 +27,7 @@ public class OfferRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The id of offer revision resource")
     private Long revisionId;
 
-    @JsonProperty("owner")
+    @JsonProperty("publisher")
     @ApiModelProperty(position = 20, required = true, value = "Organization owner of the offer revision resource")
     private OrganizationId ownerId;
 
