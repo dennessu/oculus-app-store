@@ -27,6 +27,8 @@ public class Action {
     private String storedValueCurrency;
     @ApiModelProperty(position = 5, required = true, value = "Stored value credit amount")
     private BigDecimal storedValueAmount;
+    @ApiModelProperty(position = 6, required = true, value = "Use count for consumable")
+    private Integer useCount;
 
     public String getType() {
         return type;
@@ -58,5 +60,13 @@ public class Action {
 
     public void setStoredValueAmount(BigDecimal storedValueAmount) {
         this.storedValueAmount = storedValueAmount;
+    }
+
+    public Integer getUseCount() {
+        return useCount;
+    }
+
+    public void setUseCount(Integer useCount) {
+        this.useCount = useCount;
     }
 }
