@@ -61,6 +61,7 @@
     `6543`: pgbouncer proxy port
     `133`:  oident server port
 
+
 =====Deloyment Preparation=====
 #[bastion] enlish source tree
     [devops] https://github.com/junbo/main/tree/master/scripts/pgha
@@ -85,6 +86,7 @@
     [silkcloud] echo "*:5432:*:silkcloud:abc123" > ~/.pgpass
     [silkcloud] chmod 600 ~/.pgpass
     [silkcloud] echo '"silkcloud" "abc123"' > ~/pgbouncer_auth.txt
+
 
 =====Master-Slave Deployment=====
 #[master] setup master database
@@ -121,6 +123,9 @@
 #[master] start londiste deamon on master
     $DEPLOYMENT_PATH/londiste/londiste_root.sh
 
+#[master] start londiste pgq ticker deamon
+    $DEPLOYMENT_PATH/londiste/lodiste_pgqd.sh
+
 #[master] full base backup master database
     $DEPLOYMENT_PATH/util/base_backup.sh
 
@@ -130,11 +135,16 @@
 #[replica] create londiste config on replcia
     $DEPLOYMENT_PATH/londiste/londiste_config_leaf.sh
 
+#[master] >>>>>>>>>>downtime window start<<<<<<<<<<
+
 #[replica] start londiste deamon on replica
     $DEPLOYMENT_PATH/londiste/londiste_leaf.sh
 
-#[master/replica] start londiste pgq ticker deamon
+#[replica] start londiste pgq ticker deamon
     $DEPLOYMENT_PATH/londiste/lodiste_pgqd.sh
+
+#[master] >>>>>>>>>>>downtime window end<<<<<<<<<<<
+
 
 =====Planned Failover=====
 #[slave] master failover to slave
@@ -160,6 +170,7 @@
 
 #[master/slave] replication smoke test
     $DEPLOYMENT_PATH/test/test_master2slave.sh
+
 
 =====Unplanned Failover=====
 [SLAVE is broken]

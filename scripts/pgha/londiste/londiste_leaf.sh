@@ -8,6 +8,9 @@ checkAccount $DEPLOYMENT_ACCOUNT
 echo "kill skytools instance"
 forceKillPid $SKYTOOL_PID_PATH
 
+echo "promote replcia database to cut off streaming replication..."
+touch $PROMOTE_TRIGGER_FILE
+
 for db in ${REPLICA_DATABASES[@]}
 do
     config=$SKYTOOL_CONFIG_PATH/${db}_leaf.ini
@@ -23,4 +26,6 @@ do
 
     echo "subscribe all tables"
     londiste3 $config add-table --all
+
+    #TODO: unsubscribe liquibase related tables
 done
