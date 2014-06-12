@@ -67,4 +67,11 @@
 
     <bean id="asyncChargeCheckAction" class="com.junbo.order.core.impl.orderaction.AsyncChargeCheckAction"/>
 
+    <bean id="chargeEventCheckAction" class="com.junbo.order.core.impl.orderaction.OrderEventStatusCheckAction">
+        <property name="orderActionType" value="CHARGE"/>
+    </bean>
+
+    <bean id="authEventCheckAction" class="com.junbo.order.core.impl.orderaction.OrderEventStatusCheckAction">
+        <property name="orderActionType" value="AUTHORIZE"/>
+    </bean>
 </beans>

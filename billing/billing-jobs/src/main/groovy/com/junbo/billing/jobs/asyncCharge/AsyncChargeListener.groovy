@@ -79,15 +79,15 @@ class AsyncChargeListener extends BaseListener {
         }
 
         switch (balance.status) {
-            case BalanceStatus.PENDING_CAPTURE:
-            case BalanceStatus.AWAITING_PAYMENT:
-            case BalanceStatus.COMPLETED:
+            case BalanceStatus.PENDING_CAPTURE.name():
+            case BalanceStatus.AWAITING_PAYMENT.name():
+            case BalanceStatus.COMPLETED.name():
                 status = 'COMPLETED'
                 break
-            case BalanceStatus.ERROR:
+            case BalanceStatus.ERROR.name():
                 status = 'ERROR'
                 break
-            case BalanceStatus.FAILED:
+            case BalanceStatus.FAILED.name():
                 status = 'FAILED'
                 break
             default:
@@ -107,6 +107,8 @@ class AsyncChargeListener extends BaseListener {
             orderEvent.setOrder(orderId)
             orderEvent.setAction(action)
             orderEvent.setStatus(status)
+            orderEvent.billingInfo = new OrderEvent.BillingInfo()
+            orderEvent.billingInfo.balance = balance.balanceId
             orderEvents.add(orderEvent)
         }
 

@@ -5,6 +5,7 @@
  */
 
 package com.junbo.order.core.impl.order
+
 import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.common.error.AppErrorException
 import com.junbo.langur.core.promise.Promise
@@ -35,6 +36,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.Resource
+
 /**
  * Created by chriszhu on 2/7/14.
  */
@@ -59,6 +61,8 @@ class OrderServiceImpl implements OrderService {
     OrderValidator orderValidator
     @Resource(name = 'orderInternalService')
     OrderInternalService orderInternalService
+    @Resource(name = 'orderServiceContextBuilder')
+    OrderServiceContextBuilder orderServiceContextBuilder
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderServiceImpl)
 
 
@@ -67,7 +71,7 @@ class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    Promise<Order> settleQuote(Order order, ApiContext context) {
+    Promise<Order> settleQuote(Order order, OrderServiceContext orderServiceContext) {
         // order is the request
 
         LOGGER.info('name=Settle_Tentative_Order. userId: {}', order.user.value)
@@ -75,6 +79,7 @@ class OrderServiceImpl implements OrderService {
 
         // rate the order
         return getOrderByOrderId(order.getId().value, true).then { Order ratedOrder ->
+            orderServiceContext.order = ratedOrder
             if (ratedOrder.status == OrderStatus.PRICE_RATING_CHANGED.name()) {
                 throw AppErrors.INSTANCE.orderPriceChanged().exception()
             }
@@ -85,7 +90,6 @@ class OrderServiceImpl implements OrderService {
             ratedOrder.cancelRedirectUrl = order.cancelRedirectUrl
             ratedOrder.purchaseTime = ratedOrder.honoredTime
 
-            def orderServiceContext = initOrderServiceContext(ratedOrder, context)
             Throwable error
             return flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_TENTATIVE).then { String flowName ->
                 // Prepare Flow Request
@@ -98,7 +102,9 @@ class OrderServiceImpl implements OrderService {
             }.syncRecover { Throwable throwable ->
                 error = throwable
             }.syncThen {
-                def result = orderInternalService.refreshOrderStatus(orderServiceContext.order)
+                def result = orderInternalService.refreshOrderStatus(orderServiceContext.order,
+                        !orderServiceContext.isAsyncCharge) // In asyncCharge case, update status via order event
+
                 if (error != null) {
                     throw error
                 }
@@ -108,11 +114,10 @@ class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    Promise<Order> updateTentativeOrder(Order order, ApiContext context) {
+    Promise<Order> updateTentativeOrder(Order order, OrderServiceContext orderServiceContext) {
         LOGGER.info('name=Update_Tentative_Order. orderId: {}', order.getId().value)
 
         setHonoredTime(order)
-        def orderServiceContext = initOrderServiceContext(order, context)
         return prepareOrder(order).then {
             return flowSelector.select(orderServiceContext, OrderServiceOperation.UPDATE_TENTATIVE).then { String flowName ->
                 // Prepare Flow Request
@@ -129,9 +134,8 @@ class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    Promise<Order> updateNonTentativeOrder(Order order, ApiContext context) {
+    Promise<Order> updateNonTentativeOrder(Order order, OrderServiceContext orderServiceContext) {
         LOGGER.info('name=Update_Non_Tentative_Order. orderId: {}', order.getId().value)
-        def orderServiceContext = initOrderServiceContext(order, context)
         return prepareOrder(order).then {
             return flowSelector.select(
                     orderServiceContext, OrderServiceOperation.UPDATE_NON_TENTATIVE).then { String flowName ->
@@ -149,13 +153,12 @@ class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    Promise<Order> createQuote(Order order, ApiContext context) {
+    Promise<Order> createQuote(Order order, OrderServiceContext orderServiceContext) {
         LOGGER.info('name=Create_Tentative_Order. userId: {}', order.user.value)
 
         order.id = null
         setHonoredTime(order)
 
-        def orderServiceContext = initOrderServiceContext(order, context)
         return prepareOrder(order).then {
             return flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE_TENTATIVE).then { String flowName ->
                 // Prepare Flow Request
@@ -185,17 +188,16 @@ class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    Promise<Order> cancelOrder(Order request) {
+    Promise<Order> cancelOrder(Order request, OrderServiceContext orderServiceContext) {
         return null
     }
 
     @Override
-    Promise<Order> refundOrder(Order request) {
+    Promise<Order> refundOrder(Order request, OrderServiceContext orderServiceContext) {
         // order is the request
         LOGGER.info('name=Refund_Order. orderId: {}', request.getId().value)
         orderValidator.validateRefundOrderRequest(request)
 
-        def orderServiceContext = initOrderServiceContext(request, null)
         return flowSelector.select(
                 orderServiceContext, OrderServiceOperation.REFUND).then { String flowName ->
             // Prepare Flow Request
@@ -233,7 +235,7 @@ class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    Promise<OrderEvent> updateOrderByOrderEvent(OrderEvent event) {
+    Promise<OrderEvent> updateOrderByOrderEvent(OrderEvent event, OrderServiceContext orderServiceContext) {
 
         switch (event.action) {
             case OrderActionType.CANCEL.name():
@@ -248,6 +250,10 @@ class OrderServiceImpl implements OrderService {
                 LOGGER.info('name=Update_Fulfillment_Status. orderId: {}, action:{}, status{}',
                         event.order.value, event.action, event.status)
                 break
+            case OrderActionType.AUTHORIZE.name():
+                LOGGER.info('name=Authorize_Order. orderId: {}, action:{}, status{}',
+                        event.order.value, event.action, event.status)
+                break
             default:
                 LOGGER.error('name=Event_Action_Not_Supported. orderId: {}, action:{}, status{}',
                         event.order.value, event.action, event.status)
@@ -258,7 +264,7 @@ class OrderServiceImpl implements OrderService {
                 event.order.value, event.action, event.status)
 
         return getOrderByOrderId(event.order.value).then { Order order ->
-            def orderServiceContext = initOrderServiceContext(order, null)
+            orderServiceContext.order = order
             orderServiceContext.orderEvent = event
             return flowSelector.select(orderServiceContext, OrderServiceOperation.UPDATE).then { String flowName ->
                 // Prepare Flow Request
@@ -273,6 +279,7 @@ class OrderServiceImpl implements OrderService {
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
                 return executeFlow(flowName, orderServiceContext, requestScope)
             }.syncThen {
+                orderInternalService.refreshOrderStatus(orderServiceContext.order, true)
                 return orderServiceContext.orderEvent
             }
         }
@@ -311,12 +318,6 @@ class OrderServiceImpl implements OrderService {
         }.syncThen {
             return context
         }
-    }
-
-    private OrderServiceContext initOrderServiceContext(Order order, ApiContext apiContext) {
-        OrderServiceContext context = new OrderServiceContext(order)
-        context.apiContext = apiContext
-        return context
     }
 
     private void setHonoredTime(Order order) {

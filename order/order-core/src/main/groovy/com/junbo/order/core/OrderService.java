@@ -7,6 +7,7 @@
 package com.junbo.order.core;
 
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.order.core.impl.order.OrderServiceContext;
 import com.junbo.order.spec.model.*;
 
 import java.util.List;
@@ -16,21 +17,21 @@ import java.util.List;
  */
 public interface OrderService {
 
-    Promise<Order> settleQuote(Order order, ApiContext context);
+    Promise<Order> settleQuote(Order order, OrderServiceContext orderServiceContext);
 
-    Promise<Order> createQuote(Order order, ApiContext context);
+    Promise<Order> createQuote(Order order, OrderServiceContext orderServiceContext);
 
     Promise<Order> getOrderByOrderId(Long orderId, Boolean doRate);
 
-    Promise<Order> cancelOrder(Order request);
+    Promise<Order> cancelOrder(Order request, OrderServiceContext orderServiceContext);
 
-    Promise<Order> refundOrder(Order request);
+    Promise<Order> refundOrder(Order request, OrderServiceContext orderServiceContext);
 
     Promise<List<Order>> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam);
 
-    Promise<OrderEvent> updateOrderByOrderEvent(OrderEvent event);
+    Promise<OrderEvent> updateOrderByOrderEvent(OrderEvent event, OrderServiceContext orderServiceContext);
 
-    Promise<Order> updateTentativeOrder(Order order, ApiContext context);
+    Promise<Order> updateTentativeOrder(Order order, OrderServiceContext orderServiceContext);
 
-    Promise<Order> updateNonTentativeOrder(Order order, ApiContext context);
+    Promise<Order> updateNonTentativeOrder(Order order, OrderServiceContext orderServiceContext);
 }

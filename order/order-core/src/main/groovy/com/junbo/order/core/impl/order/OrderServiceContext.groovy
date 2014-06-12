@@ -29,6 +29,14 @@ import org.springframework.stereotype.Component
 @TypeChecked
 class OrderServiceContext {
 
+    public OrderServiceContext() {
+    }
+
+    public OrderServiceContext(Order order, ApiContext apiContext) {
+        this.order = order
+        this.apiContext = apiContext
+    }
+
     Order order
     User user
     ApiContext apiContext

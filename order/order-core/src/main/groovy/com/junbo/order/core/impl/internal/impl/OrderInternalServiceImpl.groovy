@@ -304,12 +304,12 @@ class OrderInternalServiceImpl implements OrderInternalService {
     }
 
     @Override
-    Order refreshOrderStatus(Order order) {
+    Order refreshOrderStatus(Order order, boolean updateOrder) {
         transactionHelper.executeInTransaction {
             def oldOrder = orderRepository.getOrder(order.getId().value)
             order.status = OrderStatusBuilder.buildOrderStatus(oldOrder,
                     orderRepository.getOrderEvents(order.getId().value, null))
-            if (order.status != oldOrder.status) {
+            if (updateOrder && order.status != oldOrder.status) {
                 oldOrder.status = order.status
                 orderRepository.updateOrder(oldOrder, true)
             }

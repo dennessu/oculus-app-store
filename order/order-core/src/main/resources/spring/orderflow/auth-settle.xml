@@ -12,6 +12,13 @@
             <wf:transition on="*" to="auth"/>
         </wf:action-state>
 
+        <wf:action-state id="checkAuthEvent">
+            <wf:action ref="authEventCheckAction"/>
+            <wf:transition on="COMPLETED" to="fullfill"/>
+            <wf:transition on="__NONE" to="auth"/>
+            <wf:transition on="*" to="endState"/>
+        </wf:action-state>
+
         <wf:action-state id="auth">
             <wf:action ref="authSettleAction"/>
             <wf:transition on="*" to="checkasynccharge"/>
