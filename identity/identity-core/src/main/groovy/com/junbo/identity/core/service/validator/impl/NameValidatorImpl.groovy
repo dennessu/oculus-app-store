@@ -13,7 +13,6 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
- * Check fullName not null
  * Check minimum and maximum givenName length
  * Check minimum and maximum middleName length
  * Check minimum and maximum familyName length

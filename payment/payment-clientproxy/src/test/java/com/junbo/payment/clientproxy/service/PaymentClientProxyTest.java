@@ -253,7 +253,6 @@ public class PaymentClientProxyTest extends BaseTest {
         final UserName userName = new UserName();
         userName.setFamilyName("ut"+ userId);
         userName.setGivenName("payment");
-        userName.setFullName("payment ut");
         UserPersonalInfo userNameInfo = new UserPersonalInfo(){
             {
                 setUserId(new UserId(userId));

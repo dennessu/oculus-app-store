@@ -123,8 +123,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
         userPersonalInfo.setType("NAME");
         userPersonalInfo.setUserId(userId);
-        String str = "{\"fullName\":\"" + RandomFactory.getRandomStringOfAlphabet(5) +
-                "\",\"givenName\":\"" + RandomFactory.getRandomStringOfAlphabet(5) +
+        String str = "{\"givenName\":\"" + RandomFactory.getRandomStringOfAlphabet(5) +
                 "\",\"middleName\":\"" + RandomFactory.getRandomStringOfAlphabet(5) +
                 "\",\"familyName\":\"" + RandomFactory.getRandomStringOfAlphabet(5) + "\"," +
                 "\"nickName\":\"" + RandomFactory.getRandomStringOfAlphabet(5) + "\"}";
