@@ -4,6 +4,10 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        ">
+
+    <bean id="__builtinMapper" class="com.junbo.oom.core.builtin.BuiltinMapper" />
+    <bean id="__commonMapper" class="com.junbo.identity.data.mapper.CommonMapper" />
+
     <bean id="cloudantDeviceRepository" class="com.junbo.identity.data.repository.impl.cloudant.DeviceRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="device"/>
     </bean>

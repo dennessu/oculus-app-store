@@ -7,10 +7,12 @@ import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Currency
 import com.junbo.identity.core.service.validator.CurrencyValidator
 import com.junbo.identity.data.repository.CurrencyRepository
+import com.junbo.identity.spec.v1.model.CurrencyLocaleKey
 import com.junbo.identity.spec.v1.option.list.CurrencyListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.StringUtils
 
 /**
  * Check localeKey's key list
@@ -26,16 +28,17 @@ class CurrencyValidatorImpl implements CurrencyValidator {
 
     private CurrencyRepository currencyRepository
 
-    private List<String> allowedLocaleKeys
-
     private Integer minSymbolLength
     private Integer maxSymbolLength
 
+    private Integer minLocaleKeyShortNameLength
+    private Integer maxLocaleKeyShortNameLength
+
+    private Integer minLocaleKeyLongNameLength
+    private Integer maxLocaleKeyLongNameLength
+
     private Integer minNumberAfterDecimalLength
     private Integer maxNumberAfterDecimalLength
-
-    private Integer minLocaleKeyValueLength
-    private Integer maxLocaleKeyValueLength
 
     private Integer minMinAuthAmount
     private Integer maxMinAuthAmount
@@ -43,11 +46,6 @@ class CurrencyValidatorImpl implements CurrencyValidator {
     @Required
     void setCurrencyRepository(CurrencyRepository currencyRepository) {
         this.currencyRepository = currencyRepository
-    }
-
-    @Required
-    void setAllowedLocaleKeys(List<String> allowedLocaleKeys) {
-        this.allowedLocaleKeys = allowedLocaleKeys
     }
 
     @Required
@@ -71,13 +69,23 @@ class CurrencyValidatorImpl implements CurrencyValidator {
     }
 
     @Required
-    void setMinLocaleKeyValueLength(Integer minLocaleKeyValueLength) {
-        this.minLocaleKeyValueLength = minLocaleKeyValueLength
+    void setMinLocaleKeyShortNameLength(Integer minLocaleKeyShortNameLength) {
+        this.minLocaleKeyShortNameLength = minLocaleKeyShortNameLength
     }
 
     @Required
-    void setMaxLocaleKeyValueLength(Integer maxLocaleKeyValueLength) {
-        this.maxLocaleKeyValueLength = maxLocaleKeyValueLength
+    void setMaxLocaleKeyShortNameLength(Integer maxLocaleKeyShortNameLength) {
+        this.maxLocaleKeyShortNameLength = maxLocaleKeyShortNameLength
+    }
+
+    @Required
+    void setMinLocaleKeyLongNameLength(Integer minLocaleKeyLongNameLength) {
+        this.minLocaleKeyLongNameLength = minLocaleKeyLongNameLength
+    }
+
+    @Required
+    void setMaxLocaleKeyLongNameLength(Integer maxLocaleKeyLongNameLength) {
+        this.maxLocaleKeyLongNameLength = maxLocaleKeyLongNameLength
     }
 
     @Required
@@ -208,24 +216,41 @@ class CurrencyValidatorImpl implements CurrencyValidator {
                     'minAuthAmount invalid, must less than ' + maxMinAuthAmount).exception()
         }
 
-        if (currency.localeKeys == null) {
-            throw AppErrors.INSTANCE.fieldRequired('localeKeys').exception()
+        if (currency.locales == null) {
+            throw AppErrors.INSTANCE.fieldRequired('locales').exception()
         }
-        currency.localeKeys.each { Map.Entry<String, String> entry ->
-            String key = entry.key
-            if (!(key in allowedLocaleKeys)) {
-                throw AppErrors.INSTANCE.fieldInvalid('localeKeys.key', allowedLocaleKeys.join(',')).exception()
+
+        if (currency.locales.locales == null) {
+            throw AppErrors.INSTANCE.fieldRequired('locales').exception()
+        }
+
+        currency.locales.each { Map.Entry<String, CurrencyLocaleKey> entry ->
+            if (StringUtils.isEmpty(entry.key)) {
+                throw AppErrors.INSTANCE.fieldRequired('locales.key').exception()
             }
 
-            String value = entry.value
+            CurrencyLocaleKey value = entry.value
             if (value == null) {
-                throw AppErrors.INSTANCE.fieldRequired('localeKeys.value').exception()
+                throw AppErrors.INSTANCE.fieldRequired('locales.value').exception()
             }
-            if (value.length() > maxLocaleKeyValueLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('localeKeys.value', maxLocaleKeyValueLength).exception()
+            if (value.shortName == null) {
+                throw AppErrors.INSTANCE.fieldRequired('locales.value.shortName').exception()
             }
-            if (value.length() < minLocaleKeyValueLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('localeKeys.value', minLocaleKeyValueLength).exception()
+            if (value.shortName.length() > maxLocaleKeyShortNameLength) {
+                throw AppErrors.INSTANCE.fieldTooLong('locales.value.shortName', maxLocaleKeyShortNameLength).exception()
+            }
+            if (value.shortName.length() < minLocaleKeyShortNameLength) {
+                throw AppErrors.INSTANCE.fieldTooShort('locales.value.shortName', minLocaleKeyShortNameLength).exception()
+            }
+
+            if (value.longName == null) {
+                throw AppErrors.INSTANCE.fieldRequired('locales.value.longName').exception()
+            }
+            if (value.longName.length() > maxLocaleKeyLongNameLength) {
+                throw AppErrors.INSTANCE.fieldTooLong('locales.value.longName', maxLocaleKeyLongNameLength).exception()
+            }
+            if (value.longName.length() < minLocaleKeyLongNameLength) {
+                throw AppErrors.INSTANCE.fieldTooShort('locales.value.longName', minLocaleKeyLongNameLength).exception()
             }
         }
 
