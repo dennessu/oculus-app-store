@@ -182,6 +182,16 @@ public interface ModelMapper {
     OrderRevision toOrderRevisionModel(OrderRevisionEntity orderRevisionEntity, MappingContext context);
 
     @Mappings({
+            @Mapping(source = "id", target = "orderItemRevisionId", excluded = false, bidirectional = false)
+    })
+    OrderItemRevisionEntity toOrderItemRevisionEntity(OrderItemRevision orderItemRevision, MappingContext context);
+
+    @Mappings({
+            @Mapping(source = "orderItemRevisionId", target = "id", excluded = false, bidirectional = false)
+    })
+    OrderItemRevision toOrderItemRevisionModel(OrderItemRevisionEntity orderItemRevisionEntity, MappingContext context);
+
+    @Mappings({
             @Mapping(source = "subledgerId", target = "id", excluded = false, bidirectional = false),
             @Mapping(source = "productItemId", target = "offer", excluded = false, bidirectional = false),
             @Mapping(source = "sellerId", target = "seller", excluded = false, bidirectional = false)

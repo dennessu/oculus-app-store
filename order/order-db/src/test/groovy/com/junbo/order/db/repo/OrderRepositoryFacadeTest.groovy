@@ -48,7 +48,7 @@ class OrderRepositoryFacadeTest extends BaseTest {
         order.orderItems << createOrderItem()
         order.discounts << createDiscount(order, order.orderItems.last())
         order.payments << new PaymentInfo(paymentInstrument : new PaymentInstrumentId(TestHelper.generateId()))
-        orderRepository.updateOrder(order, false)
+        orderRepository.updateOrder(order, false, false, null)
         verifyByRead(order)
 
         // remove id and check
@@ -60,21 +60,21 @@ class OrderRepositoryFacadeTest extends BaseTest {
             it.orderItemId = null
             it.orderId = null
         }
-        orderRepository.updateOrder(order, false)
+        orderRepository.updateOrder(order, false, false, null)
         verifyByRead(order)
 
         // update order item, discount, paymentId
         order.orderItems[0].offer = new OfferId(TestHelper.generateLong())
         order.discounts[0].coupon = 'Code' + TestHelper.generateLong()
         order.payments[0] = new PaymentInfo(paymentInstrument : new PaymentInstrumentId(TestHelper.generateId()))
-        orderRepository.updateOrder(order, false)
+        orderRepository.updateOrder(order, false, false, null)
         verifyByRead(order)
 
         // remove order item, discount, paymentId
         order.orderItems.clear()
         order.discounts.clear()
         order.payments.clear()
-        orderRepository.updateOrder(order, false)
+        orderRepository.updateOrder(order, false, false, null)
         verifyByRead(order)
     }
 

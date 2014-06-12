@@ -13,6 +13,7 @@ import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.impl.common.*
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.spec.model.enums.BillingAction
+import com.junbo.order.spec.model.enums.OrderItemRevisionType
 import com.junbo.order.spec.model.enums.OrderStatus
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
@@ -146,7 +147,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
         LOGGER.info('name=Order_Is_Cancelable, orderId = {}, orderStatus={}', order.getId().value, order.status)
 
         order.status = OrderStatus.CANCELED.name()
-        orderRepository.updateOrder(order, true)
+        orderRepository.updateOrder(order, true, true, OrderItemRevisionType.CANCEL)
 
         // TODO: reverse authorize if physical goods
 
@@ -205,7 +206,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                                 if (refunded == null) {
                                     throw AppErrors.INSTANCE.billingRefundFailed('billing returns null balance').exception()
                                 }
-                                orderRepository.updateOrder(order, true)
+                                orderRepository.updateOrder(order, true, true, OrderItemRevisionType.REFUND)
                                 return Promise.pure(null)
                             }
                         }
@@ -214,7 +215,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
         }.then {
             // TODO handle partial refund
             order.status = OrderStatus.REFUNDED.name()
-            orderRepository.updateOrder(order, true)
+            orderRepository.updateOrder(order, true, true, OrderItemRevisionType.REFUND)
             return getOrderByOrderId(order.getId().value)
         }
     }
@@ -311,7 +312,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                     orderRepository.getOrderEvents(order.getId().value, null))
             if (updateOrder && order.status != oldOrder.status) {
                 oldOrder.status = order.status
-                orderRepository.updateOrder(oldOrder, true)
+                orderRepository.updateOrder(oldOrder, true, null, null)
             }
         }
         return order
@@ -327,6 +328,6 @@ class OrderInternalServiceImpl implements OrderInternalService {
             throw AppErrors.INSTANCE.orderNotTentative().exception()
         }
         order.tentative = false
-        orderRepository.updateOrder(order, true)
+        orderRepository.updateOrder(order, true, null, null)
     }
 }
