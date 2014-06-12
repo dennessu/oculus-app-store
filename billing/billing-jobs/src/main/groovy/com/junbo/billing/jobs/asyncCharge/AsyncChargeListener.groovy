@@ -16,6 +16,7 @@ import com.junbo.common.id.OrderId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.notification.core.BaseListener
 import com.junbo.order.spec.model.OrderEvent
+import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired
 /**
  * Created by xmchen on 14-4-21.
  */
+@CompileStatic
 class AsyncChargeListener extends BaseListener {
 
     @Autowired
@@ -44,14 +46,14 @@ class AsyncChargeListener extends BaseListener {
 
         LOGGER.info('Sending async charge process request for balance id: ' + balanceId)
         Balance balance = new Balance()
-        balance.setBalanceId(new BalanceId(balanceId))
+        balance.setId(new BalanceId(balanceId))
 
         billingFacade.processAsyncBalance(balance).recover { Throwable throwable ->
             LOGGER.error('Error in processing async charge balance', throwable)
             throw throwable
         }.then { Balance processedBalance ->
             LOGGER.info('The processed balance status is ' + processedBalance.status + 'for balance id: ' +
-                    processedBalance.balanceId.value)
+                    processedBalance.getId().toString())
 
             List<OrderEvent> orderEvents = generateOrderEvents(processedBalance)
             if (orderEvents != null) {
@@ -98,7 +100,7 @@ class AsyncChargeListener extends BaseListener {
         List<OrderEvent> orderEvents = new ArrayList<>()
 
         if (balance.orderIds == null || balance.orderIds.size() == 0) {
-            LOGGER.error('there is no order in this balance: ' + balanceId)
+            LOGGER.error('there is no order in this balance: ' + balance.getId().toString())
             return null
         }
 
@@ -108,7 +110,7 @@ class AsyncChargeListener extends BaseListener {
             orderEvent.setAction(action)
             orderEvent.setStatus(status)
             orderEvent.billingInfo = new OrderEvent.BillingInfo()
-            orderEvent.billingInfo.balance = balance.balanceId
+            orderEvent.billingInfo.balance = balance.getId()
             orderEvents.add(orderEvent)
         }
 

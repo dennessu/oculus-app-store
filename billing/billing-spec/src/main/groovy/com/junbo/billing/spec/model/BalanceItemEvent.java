@@ -3,27 +3,24 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-
 package com.junbo.billing.spec.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.common.model.ResourceMetaForDualWrite;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
- * Created by xmchen on 14-1-26.
+ * Created by haomin on 14-6-9.
  */
-public class TaxItem extends ResourceMetaForDualWrite<Long> {
-    @JsonIgnore
+public class BalanceItemEvent extends ResourceMetaForDualWrite<Long> {
     private Long id;
-
-    @JsonIgnore
     private Long balanceItemId;
-    private String taxAuthority;
+    private BigDecimal amount;
     private BigDecimal taxAmount;
-    private BigDecimal taxRate;
-    private Boolean isTaxExempt;
+    private BigDecimal discountAmount;
+    private Short actionTypeId;
+    private Date eventDate;
 
     @Override
     public Long getId() {
@@ -43,12 +40,12 @@ public class TaxItem extends ResourceMetaForDualWrite<Long> {
         this.balanceItemId = balanceItemId;
     }
 
-    public String getTaxAuthority() {
-        return taxAuthority;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public void setTaxAuthority(String taxAuthority) {
-        this.taxAuthority = taxAuthority;
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 
     public BigDecimal getTaxAmount() {
@@ -59,19 +56,27 @@ public class TaxItem extends ResourceMetaForDualWrite<Long> {
         this.taxAmount = taxAmount;
     }
 
-    public BigDecimal getTaxRate() {
-        return taxRate;
+    public BigDecimal getDiscountAmount() {
+        return discountAmount;
     }
 
-    public void setTaxRate(BigDecimal taxRate) {
-        this.taxRate = taxRate;
+    public void setDiscountAmount(BigDecimal discountAmount) {
+        this.discountAmount = discountAmount;
     }
 
-    public Boolean getIsTaxExempt() {
-        return isTaxExempt;
+    public Short getActionTypeId() {
+        return actionTypeId;
     }
 
-    public void setIsTaxExempt(Boolean isTaxExempt) {
-        this.isTaxExempt = isTaxExempt;
+    public void setActionTypeId(Short actionTypeId) {
+        this.actionTypeId = actionTypeId;
+    }
+
+    public Date getEventDate() {
+        return eventDate;
+    }
+
+    public void setEventDate(Date eventDate) {
+        this.eventDate = eventDate;
     }
 }

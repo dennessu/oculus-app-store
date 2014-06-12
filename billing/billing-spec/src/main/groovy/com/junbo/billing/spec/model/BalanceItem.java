@@ -6,9 +6,11 @@
 
 package com.junbo.billing.spec.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.billing.spec.enums.PropertyKey;
 import com.junbo.common.id.OrderId;
 import com.junbo.common.id.OrderItemId;
+import com.junbo.common.model.ResourceMetaForDualWrite;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -19,8 +21,10 @@ import java.util.Map;
 /**
  * Created by xmchen on 14-1-26.
  */
-public class BalanceItem {
-    private Long balanceItemId;
+public class BalanceItem extends ResourceMetaForDualWrite<Long> {
+    private Long id;
+    @JsonIgnore
+    private Long balanceId;
     private OrderId orderId;
     private OrderItemId orderItemId;
     private BigDecimal amount;
@@ -39,12 +43,22 @@ public class BalanceItem {
         propertySet = new HashMap<>();
     }
 
-    public Long getBalanceItemId() {
-        return balanceItemId;
+    @Override
+    public Long getId() {
+        return this.id;
     }
 
-    public void setBalanceItemId(Long balanceItemId) {
-        this.balanceItemId = balanceItemId;
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getBalanceId() {
+        return balanceId;
+    }
+
+    public void setBalanceId(Long balanceId) {
+        this.balanceId = balanceId;
     }
 
     public OrderItemId getOrderItemId() {

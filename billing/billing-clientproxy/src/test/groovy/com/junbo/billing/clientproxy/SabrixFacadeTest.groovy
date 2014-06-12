@@ -63,7 +63,7 @@ class SabrixFacadeTest extends BaseTest{
 
     Balance buildBalance(boolean physical) {
         def balance = new Balance()
-        balance.balanceId = new BalanceId(123L)
+        balance.id = new BalanceId(123L)
         balance.currency = 'USD'
         balance.addBalanceItem(buildBalanceItem(physical))
 

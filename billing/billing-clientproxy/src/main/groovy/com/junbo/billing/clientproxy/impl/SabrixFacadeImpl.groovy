@@ -175,7 +175,7 @@ class SabrixFacadeImpl implements TaxFacade {
 //        invoice.companyName = configuration.companyName
         invoice.companyRole = configuration.companyRole
         invoice.externalCompanyId = getEntity(piAddress).externalCompanyId
-        invoice.invoiceNumber = balance.balanceId?.value
+        invoice.invoiceNumber = balance.id?.toString()
         invoice.invoiceDate = DATE_FORMATTER.get().format(new Date())
         invoice.currencyCode = balance.currency
         invoice.isAudited = isAudited

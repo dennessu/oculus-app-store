@@ -195,7 +195,7 @@ class CoreUtils {
 
         if (validBalances != null && validBalances.size() == 1) {
             def depositBalance = validBalances[0]
-            if (depositBalance.type == BalanceType.DEBIT && depositBalance.balanceId == bh.balanceId) {
+            if (depositBalance.type == BalanceType.DEBIT && depositBalance.id == bh.balanceId) {
                 return true
             }
         }
