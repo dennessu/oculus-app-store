@@ -8,10 +8,12 @@ import com.junbo.identity.core.service.validator.UserValidator
 import com.junbo.identity.core.service.validator.UsernameValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.identifiable.UserStatus
+import com.junbo.identity.data.repository.CountryRepository
 import com.junbo.identity.data.repository.LocaleRepository
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
+import com.junbo.identity.spec.v1.model.Country
 import com.junbo.identity.spec.v1.model.Email
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
@@ -33,6 +35,8 @@ class UserValidatorImpl implements UserValidator {
     private UsernameValidator usernameValidator
 
     private LocaleRepository localeRepository
+
+    private CountryRepository countryRepository
 
     private UserPersonalInfoRepository userPersonalInfoRepository
 
@@ -209,6 +213,8 @@ class UserValidatorImpl implements UserValidator {
             return validateDriversLicense(user)
         }.then {
             return validateGender(user)
+        }.then {
+            return validateCountryOfResidence(user)
         }
     }
 
@@ -436,6 +442,20 @@ class UserValidatorImpl implements UserValidator {
         return Promise.pure(null)
     }
 
+    Promise<Void> validateCountryOfResidence(User user) {
+        if (user.countryOfResidence != null) {
+            return countryRepository.get(user.countryOfResidence).then { Country country ->
+                if (country == null) {
+                    throw AppErrors.INSTANCE.countryNotFound(user.countryOfResidence).exception()
+                }
+
+                return Promise.pure(null)
+            }
+        }
+
+        return Promise.pure(null)
+    }
+
     @Required
     void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository
@@ -464,5 +484,11 @@ class UserValidatorImpl implements UserValidator {
     @Required
     void setUserPersonalInfoRepository(UserPersonalInfoRepository userPersonalInfoRepository) {
         this.userPersonalInfoRepository = userPersonalInfoRepository
+    }
+
+    @Required
+
+    void setCountryRepository(CountryRepository countryRepository) {
+        this.countryRepository = countryRepository
     }
 }

@@ -108,6 +108,7 @@
         <property name="localeRepository" ref="localeRepository" />
         <property name="timezoneValidator" ref="timezoneValidator" />
         <property name="usernameValidator" ref="usernameValidator" />
+        <property name="countryRepository" ref="countryRepository" />
     </bean>
 
     <bean id="userSecurityQuestionValidator"
