@@ -35,7 +35,7 @@ public class Offer extends BaseEntityModel {
     @HateoasLink("/offer-revisions?offerId={offerId}")
     private Link revisions;
 
-    @JsonProperty("owner")
+    @JsonProperty("publisher")
     @ApiModelProperty(position = 22, required = true, value = "Organization owner of the offer")
     private OrganizationId ownerId;
 

@@ -1,0 +1,12 @@
+{
+   "currencyCode" : "ZAR",
+   "futureExpansion" : {},
+   "localeKeys" : {
+      "longName" : "ZAR_LONG",
+      "shortName" : "ZAR_SHORT"
+   },
+   "minimalAuthorizeAmount" : "1",
+   "numberAfterDecimal" : "2",
+   "symbol" : "R",
+   "symbolPosition" : "BEFORE"
+}

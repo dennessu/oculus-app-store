@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.junbo.common.id.EmailTemplateId;
-//import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.List;
  */
 @JsonPropertyOrder(value = {"self","name","providerName","providerRef","placeholderNames",
         "subject","fromAddress","fromName"})
-public class EmailTemplate extends Model {
+public class EmailTemplate extends ResourceMeta<EmailTemplateId> {
     @ApiModelProperty(position = 1, required = true, value = "The id of the email template resource.")
     @JsonProperty("self")
     private EmailTemplateId id;

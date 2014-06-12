@@ -12,9 +12,9 @@ import com.junbo.email.db.entity.BaseEntity
  * @param < T > Entity Type
  */
 interface BaseDao<T extends BaseEntity> {
-    Long save(T entity)
+    T save(T entity)
 
-    Long update(T entity)
+    T update(T entity)
 
     T get(Long id)
 

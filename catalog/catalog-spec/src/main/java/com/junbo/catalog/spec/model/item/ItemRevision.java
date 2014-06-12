@@ -46,7 +46,7 @@ public class ItemRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 16, required = false, value = "The items in which the IAP item will be sold.")
     private List<Long> iapHostItemIds;
 
-    @JsonProperty("owner")
+    @JsonProperty("developer")
     @ApiModelProperty(position = 20, required = true, value = "Organization owner of the item revision resource")
     private OrganizationId ownerId;
 

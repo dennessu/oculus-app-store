@@ -1,0 +1,170 @@
+{
+   "countryCode" : "CN",
+   "defaultCurrency" : {
+      "href" : "/v1/currencies/CNY",
+      "id" : "CNY"
+   },
+   "defaultLocale" : {
+      "href" : "/v1/locales/zh-CN",
+      "id" : "zh-CN"
+   },
+   "futureExpansion" : {},
+   "localeKeys" : {
+      "longNameKey" : "CN_LONG",
+      "shortNameKey" : "CN_SHORT"
+   },
+   "ratingBoards" : [
+      {
+         "href" : "/v1/age-rating-boards/",
+         "id" : ""
+      }
+   ],
+   "subCountries" : {
+      "CN-11" : {
+         "longNameKey" : "CN_11_LONG",
+         "shortNameKey" : "CN_11_SHORT"
+      },
+      "CN-12" : {
+         "longNameKey" : "CN_12_LONG",
+         "shortNameKey" : "CN_12_SHORT"
+      },
+      "CN-13" : {
+         "longNameKey" : "CN_13_LONG",
+         "shortNameKey" : "CN_13_SHORT"
+      },
+      "CN-14" : {
+         "longNameKey" : "CN_14_LONG",
+         "shortNameKey" : "CN_14_SHORT"
+      },
+      "CN-15" : {
+         "longNameKey" : "CN_15_LONG",
+         "shortNameKey" : "CN_15_SHORT"
+      },
+      "CN-21" : {
+         "longNameKey" : "CN_21_LONG",
+         "shortNameKey" : "CN_21_SHORT"
+      },
+      "CN-22" : {
+         "longNameKey" : "CN_22_LONG",
+         "shortNameKey" : "CN_22_SHORT"
+      },
+      "CN-23" : {
+         "longNameKey" : "CN_23_LONG",
+         "shortNameKey" : "CN_23_SHORT"
+      },
+      "CN-31" : {
+         "longNameKey" : "CN_31_LONG",
+         "shortNameKey" : "CN_31_SHORT"
+      },
+      "CN-32" : {
+         "longNameKey" : "CN_32_LONG",
+         "shortNameKey" : "CN_32_SHORT"
+      },
+      "CN-33" : {
+         "longNameKey" : "CN_33_LONG",
+         "shortNameKey" : "CN_33_SHORT"
+      },
+      "CN-34" : {
+         "longNameKey" : "CN_34_LONG",
+         "shortNameKey" : "CN_34_SHORT"
+      },
+      "CN-35" : {
+         "longNameKey" : "CN_35_LONG",
+         "shortNameKey" : "CN_35_SHORT"
+      },
+      "CN-36" : {
+         "longNameKey" : "CN_36_LONG",
+         "shortNameKey" : "CN_36_SHORT"
+      },
+      "CN-37" : {
+         "longNameKey" : "CN_37_LONG",
+         "shortNameKey" : "CN_37_SHORT"
+      },
+      "CN-41" : {
+         "longNameKey" : "CN_41_LONG",
+         "shortNameKey" : "CN_41_SHORT"
+      },
+      "CN-42" : {
+         "longNameKey" : "CN_42_LONG",
+         "shortNameKey" : "CN_42_SHORT"
+      },
+      "CN-43" : {
+         "longNameKey" : "CN_43_LONG",
+         "shortNameKey" : "CN_43_SHORT"
+      },
+      "CN-44" : {
+         "longNameKey" : "CN_44_LONG",
+         "shortNameKey" : "CN_44_SHORT"
+      },
+      "CN-45" : {
+         "longNameKey" : "CN_45_LONG",
+         "shortNameKey" : "CN_45_SHORT"
+      },
+      "CN-46" : {
+         "longNameKey" : "CN_46_LONG",
+         "shortNameKey" : "CN_46_SHORT"
+      },
+      "CN-50" : {
+         "longNameKey" : "CN_50_LONG",
+         "shortNameKey" : "CN_50_SHORT"
+      },
+      "CN-51" : {
+         "longNameKey" : "CN_51_LONG",
+         "shortNameKey" : "CN_51_SHORT"
+      },
+      "CN-52" : {
+         "longNameKey" : "CN_52_LONG",
+         "shortNameKey" : "CN_52_SHORT"
+      },
+      "CN-53" : {
+         "longNameKey" : "CN_53_LONG",
+         "shortNameKey" : "CN_53_SHORT"
+      },
+      "CN-54" : {
+         "longNameKey" : "CN_54_LONG",
+         "shortNameKey" : "CN_54_SHORT"
+      },
+      "CN-61" : {
+         "longNameKey" : "CN_61_LONG",
+         "shortNameKey" : "CN_61_SHORT"
+      },
+      "CN-62" : {
+         "longNameKey" : "CN_62_LONG",
+         "shortNameKey" : "CN_62_SHORT"
+      },
+      "CN-63" : {
+         "longNameKey" : "CN_63_LONG",
+         "shortNameKey" : "CN_63_SHORT"
+      },
+      "CN-64" : {
+         "longNameKey" : "CN_64_LONG",
+         "shortNameKey" : "CN_64_SHORT"
+      },
+      "CN-65" : {
+         "longNameKey" : "CN_65_LONG",
+         "shortNameKey" : "CN_65_SHORT"
+      },
+      "CN-71" : {
+         "longNameKey" : "CN_71_LONG",
+         "shortNameKey" : "CN_71_SHORT"
+      },
+      "CN-91" : {
+         "longNameKey" : "CN_91_LONG",
+         "shortNameKey" : "CN_91_SHORT"
+      },
+      "CN-92" : {
+         "longNameKey" : "CN_92_LONG",
+         "shortNameKey" : "CN_92_SHORT"
+      }
+   },
+   "supportedLocales" : [
+      {
+         "href" : "/v1/locales/zh-CN",
+         "id" : "zh-CN"
+      },
+      {
+         "href" : "/v1/locales/en-US",
+         "id" : "en-US"
+      }
+   ]
+}

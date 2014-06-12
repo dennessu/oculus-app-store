@@ -5,13 +5,18 @@ import com.junbo.crypto.data.repo.MasterKeyRepo
 import com.junbo.crypto.data.repo.UserCryptoKeyRepo
 import com.junbo.crypto.spec.model.MasterKey
 import com.junbo.crypto.spec.model.UserCryptoKey
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.TestExecutionListeners
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests
 import org.springframework.test.context.transaction.TransactionConfiguration
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener
+import org.springframework.transaction.annotation.Transactional
 import org.testng.annotations.Test
+
+import java.security.SecureRandom
 
 /**
  * Created by liangfu on 5/12/14.
@@ -19,6 +24,8 @@ import org.testng.annotations.Test
 @ContextConfiguration(locations = ['classpath:test/spring/context-test.xml'])
 @TransactionConfiguration(defaultRollback = false)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
+@Transactional('transactionManager')
+@CompileStatic
 class RepositoryTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
@@ -29,8 +36,12 @@ class RepositoryTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void testMasterKeyRepo() {
+        SecureRandom random = new SecureRandom()
         MasterKey masterKey = new MasterKey()
         masterKey.setEncryptValue(UUID.randomUUID().toString())
+        masterKey.setKeyVersion(Math.abs(random.nextInt()))
+        masterKey.setCreatedBy(123L)
+        masterKey.setCreatedTime(new Date())
         MasterKey newMaster = masterKeyRepo.create(masterKey).get()
 
         masterKey = masterKeyRepo.get(newMaster.id).get()

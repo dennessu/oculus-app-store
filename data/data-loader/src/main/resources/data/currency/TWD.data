@@ -1,0 +1,12 @@
+{
+   "currencyCode" : "TWD",
+   "futureExpansion" : {},
+   "localeKeys" : {
+      "longName" : "TWD_LONG",
+      "shortName" : "TWD_SHORT"
+   },
+   "minimalAuthorizeAmount" : "1",
+   "numberAfterDecimal" : "2",
+   "symbol" : "NT$",
+   "symbolPosition" : "BEFORE"
+}

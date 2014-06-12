@@ -39,7 +39,7 @@ public class Item extends BaseEntityModel {
     private Link revisions;
 
 
-    @JsonProperty("owner")
+    @JsonProperty("developer")
     @ApiModelProperty(position = 22, required = true, value = "Organization owner of the item")
     private OrganizationId ownerId;
 

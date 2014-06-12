@@ -1,0 +1,122 @@
+{
+   "countryCode" : "TW",
+   "defaultCurrency" : {
+      "href" : "/v1/currencies/TWD",
+      "id" : "TWD"
+   },
+   "defaultLocale" : {
+      "href" : "/v1/locales/zh-TW",
+      "id" : "zh-TW"
+   },
+   "futureExpansion" : {},
+   "localeKeys" : {
+      "longNameKey" : "TW_LONG",
+      "shortNameKey" : "TW_SHORT"
+   },
+   "ratingBoards" : [
+      {
+         "href" : "/v1/age-rating-boards/TWAR",
+         "id" : "TWAR"
+      }
+   ],
+   "subCountries" : {
+      "TW-CHA" : {
+         "longNameKey" : "TW_CHA_LONG",
+         "shortNameKey" : "TW_CHA_SHORT"
+      },
+      "TW-CYI" : {
+         "longNameKey" : "TW_CYI_LONG",
+         "shortNameKey" : "TW_CYI_SHORT"
+      },
+      "TW-CYQ" : {
+         "longNameKey" : "TW_CYQ_LONG",
+         "shortNameKey" : "TW_CYQ_SHORT"
+      },
+      "TW-HSQ" : {
+         "longNameKey" : "TW_HSQ_LONG",
+         "shortNameKey" : "TW_HSQ_SHORT"
+      },
+      "TW-HSZ" : {
+         "longNameKey" : "TW_HSZ_LONG",
+         "shortNameKey" : "TW_HSZ_SHORT"
+      },
+      "TW-HUA" : {
+         "longNameKey" : "TW_HUA_LONG",
+         "shortNameKey" : "TW_HUA_SHORT"
+      },
+      "TW-ILA" : {
+         "longNameKey" : "TW_ILA_LONG",
+         "shortNameKey" : "TW_ILA_SHORT"
+      },
+      "TW-KEE" : {
+         "longNameKey" : "TW_KEE_LONG",
+         "shortNameKey" : "TW_KEE_SHORT"
+      },
+      "TW-KHH" : {
+         "longNameKey" : "TW_KHH_LONG",
+         "shortNameKey" : "TW_KHH_SHORT"
+      },
+      "TW-KHQ" : {
+         "longNameKey" : "TW_KHQ_LONG",
+         "shortNameKey" : "TW_KHQ_SHORT"
+      },
+      "TW-MIA" : {
+         "longNameKey" : "TW_MIA_LONG",
+         "shortNameKey" : "TW_MIA_SHORT"
+      },
+      "TW-NAN" : {
+         "longNameKey" : "TW_NAN_LONG",
+         "shortNameKey" : "TW_NAN_SHORT"
+      },
+      "TW-PEN" : {
+         "longNameKey" : "TW_PEN_LONG",
+         "shortNameKey" : "TW_PEN_SHORT"
+      },
+      "TW-PIF" : {
+         "longNameKey" : "TW_PIF_LONG",
+         "shortNameKey" : "TW_PIF_SHORT"
+      },
+      "TW-TAO" : {
+         "longNameKey" : "TW_TAO_LONG",
+         "shortNameKey" : "TW_TAO_SHORT"
+      },
+      "TW-TNN" : {
+         "longNameKey" : "TW_TNN_LONG",
+         "shortNameKey" : "TW_TNN_SHORT"
+      },
+      "TW-TNQ" : {
+         "longNameKey" : "TW_TNQ_LONG",
+         "shortNameKey" : "TW_TNQ_SHORT"
+      },
+      "TW-TPE" : {
+         "longNameKey" : "TW_TPE_LONG",
+         "shortNameKey" : "TW_TPE_SHORT"
+      },
+      "TW-TPQ" : {
+         "longNameKey" : "TW_TPQ_LONG",
+         "shortNameKey" : "TW_TPQ_SHORT"
+      },
+      "TW-TTT" : {
+         "longNameKey" : "TW_TTT_LONG",
+         "shortNameKey" : "TW_TTT_SHORT"
+      },
+      "TW-TXG" : {
+         "longNameKey" : "TW_TXG_LONG",
+         "shortNameKey" : "TW_TXG_SHORT"
+      },
+      "TW-TXQ" : {
+         "longNameKey" : "TW_TXQ_LONG",
+         "shortNameKey" : "TW_TXQ_SHORT"
+      },
+      "TW-YUN" : {
+         "longNameKey" : "TW_YUN_LONG",
+         "shortNameKey" : "TW_YUN_SHORT"
+      }
+   },
+   "supportedLocales" : [
+      {
+         "href" : "/v1/locales/zh-TW",
+         "id" : "zh-TW"
+      }
+   ]
+}

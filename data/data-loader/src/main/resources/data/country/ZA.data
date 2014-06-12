@@ -1,0 +1,66 @@
+{
+   "countryCode" : "ZA",
+   "defaultCurrency" : {
+      "href" : "/v1/currencies/ZAR",
+      "id" : "ZAR"
+   },
+   "defaultLocale" : {
+      "href" : "/v1/locales/en-ZA",
+      "id" : "en-ZA"
+   },
+   "futureExpansion" : {},
+   "localeKeys" : {
+      "longNameKey" : "ZA_LONG",
+      "shortNameKey" : "ZA_SHORT"
+   },
+   "ratingBoards" : [
+      {
+         "href" : "/v1/age-rating-boards/FPB",
+         "id" : "FPB"
+      }
+   ],
+   "subCountries" : {
+      "ZA-EC" : {
+         "longNameKey" : "ZA_EC_LONG",
+         "shortNameKey" : "ZA_EC_SHORT"
+      },
+      "ZA-FS" : {
+         "longNameKey" : "ZA_FS_LONG",
+         "shortNameKey" : "ZA_FS_SHORT"
+      },
+      "ZA-GT" : {
+         "longNameKey" : "ZA_GT_LONG",
+         "shortNameKey" : "ZA_GT_SHORT"
+      },
+      "ZA-LP" : {
+         "longNameKey" : "ZA_LP_LONG",
+         "shortNameKey" : "ZA_LP_SHORT"
+      },
+      "ZA-MP" : {
+         "longNameKey" : "ZA_MP_LONG",
+         "shortNameKey" : "ZA_MP_SHORT"
+      },
+      "ZA-NC" : {
+         "longNameKey" : "ZA_NC_LONG",
+         "shortNameKey" : "ZA_NC_SHORT"
+      },
+      "ZA-NL" : {
+         "longNameKey" : "ZA_NL_LONG",
+         "shortNameKey" : "ZA_NL_SHORT"
+      },
+      "ZA-NW" : {
+         "longNameKey" : "ZA_NW_LONG",
+         "shortNameKey" : "ZA_NW_SHORT"
+      },
+      "ZA-WC" : {
+         "longNameKey" : "ZA_WC_LONG",
+         "shortNameKey" : "ZA_WC_SHORT"
+      }
+   },
+   "supportedLocales" : [
+      {
+         "href" : "/v1/locales/en-ZA",
+         "id" : "en-ZA"
+      }
+   ]
+}

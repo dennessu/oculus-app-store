@@ -1,0 +1,12 @@
+{
+   "currencyCode" : "TRY",
+   "futureExpansion" : {},
+   "localeKeys" : {
+      "longName" : "TRY_LONG",
+      "shortName" : "TRY_SHORT"
+   },
+   "minimalAuthorizeAmount" : "1",
+   "numberAfterDecimal" : "2",
+   "symbol" : "TL",
+   "symbolPosition" : "AFTER"
+}

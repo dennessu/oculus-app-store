@@ -1,0 +1,62 @@
+{
+   "countryCode" : "AU",
+   "defaultCurrency" : {
+      "href" : "/v1/currencies/AUD",
+      "id" : "AUD"
+   },
+   "defaultLocale" : {
+      "href" : "/v1/locales/en-AU",
+      "id" : "en-AU"
+   },
+   "futureExpansion" : {},
+   "localeKeys" : {
+      "longNameKey" : "AU_LONG",
+      "shortNameKey" : "AU_SHORT"
+   },
+   "ratingBoards" : [
+      {
+         "href" : "/v1/age-rating-boards/COB",
+         "id" : "COB"
+      }
+   ],
+   "subCountries" : {
+      "AU-ACT" : {
+         "longNameKey" : "AU_ACT_LONG",
+         "shortNameKey" : "AU_ACT_SHORT"
+      },
+      "AU-NSW" : {
+         "longNameKey" : "AU_NSW_LONG",
+         "shortNameKey" : "AU_NSW_SHORT"
+      },
+      "AU-NT" : {
+         "longNameKey" : "AU_NT_LONG",
+         "shortNameKey" : "AU_NT_SHORT"
+      },
+      "AU-QLD" : {
+         "longNameKey" : "AU_QLD_LONG",
+         "shortNameKey" : "AU_QLD_SHORT"
+      },
+      "AU-SA" : {
+         "longNameKey" : "AU_SA_LONG",
+         "shortNameKey" : "AU_SA_SHORT"
+      },
+      "AU-TAS" : {
+         "longNameKey" : "AU_TAS_LONG",
+         "shortNameKey" : "AU_TAS_SHORT"
+      },
+      "AU-VIC" : {
+         "longNameKey" : "AU_VIC_LONG",
+         "shortNameKey" : "AU_VIC_SHORT"
+      },
+      "AU-WA" : {
+         "longNameKey" : "AU_WA_LONG",
+         "shortNameKey" : "AU_WA_SHORT"
+      }
+   },
+   "supportedLocales" : [
+      {
+         "href" : "/v1/locales/en-AU",
+         "id" : "en-AU"
+      }
+   ]
+}

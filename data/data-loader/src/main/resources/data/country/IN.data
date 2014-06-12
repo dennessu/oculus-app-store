@@ -1,0 +1,170 @@
+{
+   "countryCode" : "IN",
+   "defaultCurrency" : {
+      "href" : "/v1/currencies/INR",
+      "id" : "INR"
+   },
+   "defaultLocale" : {
+      "href" : "/v1/locales/en-IN",
+      "id" : "en-IN"
+   },
+   "futureExpansion" : {},
+   "localeKeys" : {
+      "longNameKey" : "IN_LONG",
+      "shortNameKey" : "IN_SHORT"
+   },
+   "ratingBoards" : [
+      {
+         "href" : "/v1/age-rating-boards/",
+         "id" : ""
+      }
+   ],
+   "subCountries" : {
+      "IN-AN" : {
+         "longNameKey" : "IN_AN_LONG",
+         "shortNameKey" : "IN_AN_SHORT"
+      },
+      "IN-AP" : {
+         "longNameKey" : "IN_AP_LONG",
+         "shortNameKey" : "IN_AP_SHORT"
+      },
+      "IN-AR" : {
+         "longNameKey" : "IN_AR_LONG",
+         "shortNameKey" : "IN_AR_SHORT"
+      },
+      "IN-AS" : {
+         "longNameKey" : "IN_AS_LONG",
+         "shortNameKey" : "IN_AS_SHORT"
+      },
+      "IN-BR" : {
+         "longNameKey" : "IN_BR_LONG",
+         "shortNameKey" : "IN_BR_SHORT"
+      },
+      "IN-CH" : {
+         "longNameKey" : "IN_CH_LONG",
+         "shortNameKey" : "IN_CH_SHORT"
+      },
+      "IN-CT" : {
+         "longNameKey" : "IN_CT_LONG",
+         "shortNameKey" : "IN_CT_SHORT"
+      },
+      "IN-DD" : {
+         "longNameKey" : "IN_DD_LONG",
+         "shortNameKey" : "IN_DD_SHORT"
+      },
+      "IN-DL" : {
+         "longNameKey" : "IN_DL_LONG",
+         "shortNameKey" : "IN_DL_SHORT"
+      },
+      "IN-DN" : {
+         "longNameKey" : "IN_DN_LONG",
+         "shortNameKey" : "IN_DN_SHORT"
+      },
+      "IN-GA" : {
+         "longNameKey" : "IN_GA_LONG",
+         "shortNameKey" : "IN_GA_SHORT"
+      },
+      "IN-GJ" : {
+         "longNameKey" : "IN_GJ_LONG",
+         "shortNameKey" : "IN_GJ_SHORT"
+      },
+      "IN-HP" : {
+         "longNameKey" : "IN_HP_LONG",
+         "shortNameKey" : "IN_HP_SHORT"
+      },
+      "IN-HR" : {
+         "longNameKey" : "IN_HR_LONG",
+         "shortNameKey" : "IN_HR_SHORT"
+      },
+      "IN-JH" : {
+         "longNameKey" : "IN_JH_LONG",
+         "shortNameKey" : "IN_JH_SHORT"
+      },
+      "IN-JK" : {
+         "longNameKey" : "IN_JK_LONG",
+         "shortNameKey" : "IN_JK_SHORT"
+      },
+      "IN-KA" : {
+         "longNameKey" : "IN_KA_LONG",
+         "shortNameKey" : "IN_KA_SHORT"
+      },
+      "IN-KL" : {
+         "longNameKey" : "IN_KL_LONG",
+         "shortNameKey" : "IN_KL_SHORT"
+      },
+      "IN-LD" : {
+         "longNameKey" : "IN_LD_LONG",
+         "shortNameKey" : "IN_LD_SHORT"
+      },
+      "IN-MH" : {
+         "longNameKey" : "IN_MH_LONG",
+         "shortNameKey" : "IN_MH_SHORT"
+      },
+      "IN-ML" : {
+         "longNameKey" : "IN_ML_LONG",
+         "shortNameKey" : "IN_ML_SHORT"
+      },
+      "IN-MN" : {
+         "longNameKey" : "IN_MN_LONG",
+         "shortNameKey" : "IN_MN_SHORT"
+      },
+      "IN-MP" : {
+         "longNameKey" : "IN_MP_LONG",
+         "shortNameKey" : "IN_MP_SHORT"
+      },
+      "IN-MZ" : {
+         "longNameKey" : "IN_MZ_LONG",
+         "shortNameKey" : "IN_MZ_SHORT"
+      },
+      "IN-NL" : {
+         "longNameKey" : "IN_NL_LONG",
+         "shortNameKey" : "IN_NL_SHORT"
+      },
+      "IN-OR" : {
+         "longNameKey" : "IN_OR_LONG",
+         "shortNameKey" : "IN_OR_SHORT"
+      },
+      "IN-PB" : {
+         "longNameKey" : "IN_PB_LONG",
+         "shortNameKey" : "IN_PB_SHORT"
+      },
+      "IN-PY" : {
+         "longNameKey" : "IN_PY_LONG",
+         "shortNameKey" : "IN_PY_SHORT"
+      },
+      "IN-RJ" : {
+         "longNameKey" : "IN_RJ_LONG",
+         "shortNameKey" : "IN_RJ_SHORT"
+      },
+      "IN-SK" : {
+         "longNameKey" : "IN_SK_LONG",
+         "shortNameKey" : "IN_SK_SHORT"
+      },
+      "IN-TN" : {
+         "longNameKey" : "IN_TN_LONG",
+         "shortNameKey" : "IN_TN_SHORT"
+      },
+      "IN-TR" : {
+         "longNameKey" : "IN_TR_LONG",
+         "shortNameKey" : "IN_TR_SHORT"
+      },
+      "IN-UP" : {
+         "longNameKey" : "IN_UP_LONG",
+         "shortNameKey" : "IN_UP_SHORT"
+      },
+      "IN-UT" : {
+         "longNameKey" : "IN_UT_LONG",
+         "shortNameKey" : "IN_UT_SHORT"
+      },
+      "IN-WB" : {
+         "longNameKey" : "IN_WB_LONG",
+         "shortNameKey" : "IN_WB_SHORT"
+      }
+   },
+   "supportedLocales" : [
+      {
+         "href" : "/v1/locales/en-IN",
+         "id" : "en-IN"
+      }
+   ]
+}

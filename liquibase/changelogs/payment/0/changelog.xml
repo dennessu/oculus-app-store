@@ -840,7 +840,26 @@
         <sql>
         <![CDATA[
             insert into merchant_account values (0, '5ck86h27m34nrh6f', 0, 0, null, null, 'USD', '2014-02-10','wenhongzhu')
-			                                   ,(1, 'jb_GBP', 0, 0, null, null, 'GBP', '2014-02-10','wenhongzhu');
+			                                   ,(1, 'OculusAED', 0, 0, null, null, 'AED', '2014-02-10','wenhongzhu')
+			                                   ,(2, 'OculusAUD', 0, 0, null, null, 'AUD', '2014-02-10','wenhongzhu')
+			                                   ,(3, 'OculusCAD', 0, 0, null, null, 'CAD', '2014-02-10','wenhongzhu')
+			                                   ,(4, 'OculusCNY', 0, 0, null, null, 'CNY', '2014-02-10','wenhongzhu')
+			                                   ,(5, 'OculusEUR', 0, 0, null, null, 'EUR', '2014-02-10','wenhongzhu')
+			                                   ,(6, 'OculusGBP', 0, 0, null, null, 'GBP', '2014-02-10','wenhongzhu')
+			                                   ,(7, 'OculusHKD', 0, 0, null, null, 'HKD', '2014-02-10','wenhongzhu')
+			                                   ,(8, 'OculusIDR', 0, 0, null, null, 'IDR', '2014-02-10','wenhongzhu')
+			                                   ,(9, 'OculusINR', 0, 0, null, null, 'INR', '2014-02-10','wenhongzhu')
+			                                   ,(10, 'OculusJPY', 0, 0, null, null, 'JPY', '2014-02-10','wenhongzhu')
+			                                   ,(11, 'OculusKRW', 0, 0, null, null, 'KRW', '2014-02-10','wenhongzhu')
+			                                   ,(12, 'OculusMXN', 0, 0, null, null, 'MXN', '2014-02-10','wenhongzhu')
+			                                   ,(13, 'OculusMYR', 0, 0, null, null, 'MYR', '2014-02-10','wenhongzhu')
+			                                   ,(14, 'OculusRUB', 0, 0, null, null, 'RUB', '2014-02-10','wenhongzhu')
+			                                   ,(15, 'OculusSAR', 0, 0, null, null, 'SAR', '2014-02-10','wenhongzhu')
+			                                   ,(16, 'OculusSGB', 0, 0, null, null, 'SGB', '2014-02-10','wenhongzhu')
+			                                   ,(17, 'OculusTHB', 0, 0, null, null, 'THB', '2014-02-10','wenhongzhu')
+			                                   ,(18, 'OculusTRY', 0, 0, null, null, 'TRY', '2014-02-10','wenhongzhu')
+			                                   ,(19, 'OculusTWD', 0, 0, null, null, 'TWD', '2014-02-10','wenhongzhu')
+			                                   ,(20, 'OculusZAR', 0, 0, null, null, 'ZAR', '2014-02-10','wenhongzhu');
         ]]>
         </sql>
     </changeSet>

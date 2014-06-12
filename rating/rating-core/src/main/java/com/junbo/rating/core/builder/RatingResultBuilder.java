@@ -23,6 +23,7 @@ public class RatingResultBuilder {
     public static RatingRequest buildForOrder(PriceRatingContext context) {
         RatingRequest result = new RatingRequest();
         result.setUserId(context.getUserId());
+        result.setCountry(context.getCountry());
         result.setCurrency(context.getCurrency().getCode());
         result.setTime(context.getTimestamp());
         result.setLineItems(new HashSet<RatingItem>());
@@ -34,8 +35,9 @@ public class RatingResultBuilder {
             item.setOfferId(entry.getOfferId());
             item.setQuantity(entry.getQuantity());
             item.setShippingMethodId(entry.getShippingMethodId());
-            item.setOriginalUnitPrice(entry.getOriginalAmount().getValue());
-            item.setOriginalTotalPrice(entry.getOriginalAmount().multiple(entry.getQuantity()).getValue());
+            item.setPreOrderPrice(entry.getPreOrderPrice().getValue());
+            item.setOriginalUnitPrice(entry.getOriginalPrice().getValue());
+            item.setOriginalTotalPrice(entry.getOriginalPrice().multiple(entry.getQuantity()).getValue());
             item.setTotalDiscountAmount(entry.getDiscountAmount().multiple(entry.getQuantity()).getValue());
             item.setFinalTotalAmount(item.getOriginalTotalPrice().subtract(item.getTotalDiscountAmount()));
             item.setPromotions(entry.getAppliedPromotion());
@@ -63,6 +65,7 @@ public class RatingResultBuilder {
     public static RatingRequest buildForOffers(PriceRatingContext context) {
         RatingRequest result = new RatingRequest();
         result.setUserId(context.getUserId());
+        result.setCountry(context.getCountry());
         result.setCurrency(context.getCurrency().getCode());
         result.setTime(context.getTimestamp());
         result.setLineItems(new HashSet<RatingItem>());
@@ -70,7 +73,8 @@ public class RatingResultBuilder {
             RatingItem item = new RatingItem();
             item.setOfferId(entry.getOfferId());
             item.setQuantity(1);
-            item.setOriginalUnitPrice(entry.getOriginalAmount().getValue());
+            item.setPreOrderPrice(entry.getPreOrderPrice().getValue());
+            item.setOriginalUnitPrice(entry.getOriginalPrice().getValue());
             item.setOriginalTotalPrice(item.getOriginalUnitPrice());
             item.setTotalDiscountAmount(entry.getDiscountAmount().getValue());
             item.setFinalTotalAmount(item.getOriginalTotalPrice().subtract(item.getTotalDiscountAmount()));
@@ -84,6 +88,7 @@ public class RatingResultBuilder {
     public static SubsRatingRequest buildForSubs(SubsRatingContext context) {
         SubsRatingRequest result = new SubsRatingRequest();
         result.setOfferId(context.getOfferId());
+        result.setCountry(context.getCountry());
         result.setCurrency(context.getCurrency().getCode());
         result.setType(context.getType());
         result.setAmount(context.getAmount());

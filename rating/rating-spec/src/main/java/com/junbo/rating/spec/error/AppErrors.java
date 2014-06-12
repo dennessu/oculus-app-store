@@ -17,14 +17,14 @@ public interface AppErrors {
     AppErrors INSTANCE = ErrorProxy.newProxyInstance(AppErrors.class);
 
     @ErrorDef(httpStatusCode = 404, code = "10001",
-            description = "Price of Offer: {0} is not found.", field = "offer_id")
-    AppError priceNotFound(String offerId);
+            description = "{0} is missing", field = "{0}")
+    AppError missingConfiguration(String fieldName);
 
-    @ErrorDef(httpStatusCode = 404, code = "10002", description = "Currency does not exist.", field = "currency")
+    @ErrorDef(httpStatusCode = 404, code = "10002", description = "Currency does not exist.")
     AppError currencyNotExist(String currency);
 
     @ErrorDef(httpStatusCode = 403, code = "10003",
-            description = "Currency is not consistent: {0} & {1}.", field = "currency")
+            description = "Currency is not consistent: {0} & {1}.")
     AppError currencyNotConsistent(String currency, String other);
 
     @ErrorDef(httpStatusCode = 500, code = "10004", description = "Error occurred during calling Catalog service.")
@@ -34,20 +34,13 @@ public interface AppErrors {
     AppError entitlementGatewayError();
 
     @ErrorDef(httpStatusCode = 404, code = "10006",
-            description = "No approved offerRevision is found for Offer: {0}", field = "offer_id")
+            description = "No approved offerRevision is found for Offer: {0}")
     AppError offerRevisionNotFound(String offerId);
 
     @ErrorDef(httpStatusCode = 400, code = "10007",
-            description = "Cannot purchase digital Offer: {0} with quantity of {1}.", field = "quantity")
+            description = "Cannot purchase digital Offer: {0} with quantity of {1}.")
     AppError incorrectQuantity(String offerId, int quantity);
 
-    @ErrorDef(httpStatusCode = 404, code = "10008",
-            description = "Price is not found in Actions.", field = "action")
-    AppError priceNotFound();
-
-    @ErrorDef(httpStatusCode = 404, code = "10009",
-            description = "Action with type {0} is not found.", field = "action")
-    AppError actionNotFound(String actionType);
-
-
+    @ErrorDef(httpStatusCode = 400, code = "10008", description = "Offer {0} is not purchasable in Country {1}")
+    AppError offerNotPurchasable(String offerId, String country);
 }

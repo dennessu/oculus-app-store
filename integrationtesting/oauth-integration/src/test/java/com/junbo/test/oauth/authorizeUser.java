@@ -10,9 +10,11 @@ import com.junbo.oauth.spec.model.TokenInfo;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.RandomHelper;
 import com.junbo.test.identity.Identity;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
-import static org.testng.AssertJUnit.*;
+import static org.testng.AssertJUnit.assertEquals;
 
 /**
  * @author dw
@@ -32,7 +34,7 @@ public class authorizeUser {
     @Test(groups = "bvt")
     public void authorizeUser() throws Exception {
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
-        String cid = Oauth.GetLoginCid();
+        String cid = Oauth.GetRegistrationCid();
 
         Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
         String currentViewState = Oauth.GetViewStateByCid(cid);
@@ -49,7 +51,8 @@ public class authorizeUser {
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         String userName = RandomHelper.randomAlphabetic(15);
-        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName);
+        String email = RandomHelper.randomAlphabetic(10).toLowerCase() + "@163.com";
+        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
         ValidateErrorFreeResponse(postRegisterUserResponse);
 
         Oauth.StartLoggingAPISample(Oauth.MessageGetAuthCodeByCidAfterRegisterUser);
@@ -67,7 +70,7 @@ public class authorizeUser {
     @Test(groups = "bvt")
     public void userSSO() throws Exception {
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
-        String cid = Oauth.GetLoginCid();
+        String cid = Oauth.GetRegistrationCid();
 
         String currentViewState = Oauth.GetViewStateByCid(cid);
         ValidateErrorFreeResponse(currentViewState);
@@ -80,7 +83,8 @@ public class authorizeUser {
         assertEquals("validate view state after post register view", postRegisterViewResponse, currentViewState);
 
         String userName = RandomHelper.randomAlphabetic(15);
-        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName);
+        String email = RandomHelper.randomAlphabetic(10).toLowerCase() + "@163.com";
+        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
         ValidateErrorFreeResponse(postRegisterUserResponse);
 
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginStateByCidAfterRegisterUser);
@@ -93,6 +97,64 @@ public class authorizeUser {
         assertEquals("validate token->scopes is correct", Oauth.DefaultClientScopes, tokenInfo.getScopes());
         User storedUser = Identity.UserGetByUserId(tokenInfo.getSub());
         assertEquals("validate token->binded user is correct", userName, storedUser.getUsername());
+    }
+
+    @Test(groups = "bvt")
+    public void login() throws Exception {
+        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
+        String cid = Oauth.GetRegistrationCid();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        String currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        assertEquals("validate current view state is login", true, currentViewState.contains("\"view\" : \"login\""));
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
+        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
+        ValidateErrorFreeResponse(postRegisterViewResponse);
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        assertEquals("validate view state after post register view", postRegisterViewResponse, currentViewState);
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
+        String userName = RandomHelper.randomAlphabetic(15);
+        String email = RandomHelper.randomAlphabetic(10).toLowerCase() + "@163.com";
+        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
+        ValidateErrorFreeResponse(postRegisterUserResponse);
+
+        HttpclientHelper.ResetHttpClient();
+        cid = Oauth.GetLoginCid();
+        currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        String loginResponseLink = Oauth.UserLogin(cid, userName);
+        String idToken = Oauth.GetLoginUserIdToken(loginResponseLink);
+        Oauth.Logout(idToken);
+    }
+
+    @Test(groups = "bvt")
+    public void resetPassword() throws Exception {
+        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
+        String cid = Oauth.GetRegistrationCid();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        String currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        assertEquals("validate current view state is login", true, currentViewState.contains("\"view\" : \"login\""));
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
+        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
+        ValidateErrorFreeResponse(postRegisterViewResponse);
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        assertEquals("validate view state after post register view", postRegisterViewResponse, currentViewState);
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
+        String userName = RandomHelper.randomAlphabetic(15);
+        String email = RandomHelper.randomAlphabetic(10).toLowerCase() + "@163.com";
+        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
+        ValidateErrorFreeResponse(postRegisterUserResponse);
     }
 
     private static void ValidateErrorFreeResponse(String responseString) throws Exception {

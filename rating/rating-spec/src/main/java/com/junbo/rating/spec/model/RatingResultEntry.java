@@ -15,7 +15,8 @@ public class RatingResultEntry {
     private Long offerId;
     private int quantity;
     private Long shippingMethodId;
-    private Money originalAmount;
+    private Money preOrderPrice;
+    private Money originalPrice;
     private Money discountAmount;
     private Set<Long> appliedPromotion;
 
@@ -43,12 +44,20 @@ public class RatingResultEntry {
         this.shippingMethodId = shippingMethodId;
     }
 
-    public Money getOriginalAmount() {
-        return originalAmount;
+    public Money getPreOrderPrice() {
+        return preOrderPrice;
     }
 
-    public void setOriginalAmount(Money originalAmount) {
-        this.originalAmount = originalAmount;
+    public void setPreOrderPrice(Money preOrderPrice) {
+        this.preOrderPrice = preOrderPrice;
+    }
+
+    public Money getOriginalPrice() {
+        return originalPrice;
+    }
+
+    public void setOriginalPrice(Money originalPrice) {
+        this.originalPrice = originalPrice;
     }
 
     public Money getDiscountAmount() {

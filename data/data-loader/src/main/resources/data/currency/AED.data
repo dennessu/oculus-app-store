@@ -1,0 +1,12 @@
+{
+   "currencyCode" : "AED",
+   "futureExpansion" : {},
+   "localeKeys" : {
+      "longName" : "AED_LONG",
+      "shortName" : "AED_SHORT"
+   },
+   "minimalAuthorizeAmount" : "1",
+   "numberAfterDecimal" : "0",
+   "symbol" : "AED",
+   "symbolPosition" : "BEFORE"
+}

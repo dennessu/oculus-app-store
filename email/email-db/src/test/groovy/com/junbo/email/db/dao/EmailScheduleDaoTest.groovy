@@ -7,7 +7,7 @@ import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 /**
- * Created by Wei on 5/15/2014.
+ * EmailScheduleDaoTest Class.
  */
 class EmailScheduleDaoTest extends BaseTest {
     @Autowired
@@ -31,31 +31,30 @@ class EmailScheduleDaoTest extends BaseTest {
 
     @Test
     void testCreate() {
-        def id = emailScheduleDao.save(entity)
-        assert id == entity.id, 'Email schedule create failed'
+        def entity = emailScheduleDao.save(entity)
+        assert entity != null, 'Email schedule create failed'
     }
 
     @Test
     void testGet() {
-        def id = emailScheduleDao.save(entity)
-        def entity = emailScheduleDao.get(id)
+        emailScheduleDao.save(entity)
+        def entity = emailScheduleDao.get(entity.id)
         assert entity != null, 'Email schedule get failed'
     }
 
     @Test
     void testUpdate() {
         entity.setScheduleTime(new Date(2018,8,8,8,0,0))
-        def id = emailScheduleDao.update(entity)
-        def entity = emailScheduleDao.get(id)
-        assert entity != null, 'Email schedule should not be null'
-        assert entity.scheduleTime == new Date(2018,8,8,8,0,0), 'Email schedule update failed'
+        def updated = emailScheduleDao.update(entity)
+        assert updated != null, 'Email schedule should not be null'
+        assert updated.scheduleTime == new Date(2018,8,8,8,0,0), 'Email schedule update failed'
     }
 
     @Test
     void testDelete() {
-        def id = emailScheduleDao.save(entity)
-        emailScheduleDao.deleteEmailScheduleById(id)
-        def entity = emailScheduleDao.get(id)
+        emailScheduleDao.save(entity)
+        emailScheduleDao.deleteEmailScheduleById(entity.id)
+        def entity = emailScheduleDao.get(entity.id)
         assert entity == null, 'Email schedule delete failed'
     }
 }

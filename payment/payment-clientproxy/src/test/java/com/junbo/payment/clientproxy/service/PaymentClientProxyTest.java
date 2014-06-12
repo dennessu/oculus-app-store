@@ -137,6 +137,46 @@ public class PaymentClientProxyTest extends BaseTest {
     }
 
     @Test(enabled = false)
+    public void chargeDifferentCurrency() throws ExecutionException, InterruptedException {
+        PaymentInstrument pi = getPaymentInstrument();
+        final UserId userId = new UserId(pi.getUserId());
+        final PaymentInstrument result = piClient.postPaymentInstrument(pi).get();
+        Assert.assertNotNull(result.getId());
+        final PaymentInstrument getResult = piClient.getById(new PaymentInstrumentId(result.getId())).get();
+        Assert.assertEquals(result.getUserId(), getResult.getUserId());
+        Assert.assertEquals(result.getId(), getResult.getId());
+        PaymentTransaction trx = new PaymentTransaction(){
+            {
+                setTrackingUuid(generateUUID());
+                setUserId(userId.getValue());
+                setPaymentInstrumentId(result.getId());
+                setBillingRefId(BILLING_REF_ID);
+                setChargeInfo(new ChargeInfo(){
+                    {
+                        setCurrency("EUR");
+                        setAmount(new BigDecimal(11.00));
+                    }
+                });
+            }
+        };
+        PaymentTransaction paymentResult = paymentClient.postPaymentAuthorization(trx).get();
+        Assert.assertEquals(paymentResult.getStatus().toUpperCase(), PaymentStatus.AUTHORIZED.toString());
+        PaymentTransaction getAuth = paymentClient.getPayment(new PaymentId(paymentResult.getId())).get();
+        Assert.assertEquals(getAuth.getPaymentInstrumentId(), paymentResult.getPaymentInstrumentId());
+        Assert.assertEquals(getAuth.getStatus().toUpperCase(), PaymentStatus.AUTHORIZED.toString());
+        PaymentTransaction captureTrx = new PaymentTransaction(){
+            {
+                setTrackingUuid(generateUUID());
+                setUserId(userId.getValue());
+                setBillingRefId(BILLING_REF_ID);
+            }
+        };
+        PaymentTransaction captureResult = paymentClient.postPaymentCapture(new PaymentId(paymentResult.getId()), captureTrx).get();
+        Assert.assertEquals(captureResult.getStatus().toUpperCase(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
+
+    }
+
+    @Test(enabled = false)
     public void addSVPIAndCharge() throws ExecutionException, InterruptedException {
         PaymentInstrument pi = getPaymentInstrument();
         final UserId userId = new UserId(pi.getUserId());

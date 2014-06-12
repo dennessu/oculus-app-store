@@ -135,10 +135,10 @@ class MandrillProviderImpl implements EmailProvider {
                         }
                     }
                     catch (NumberFormatException ex) {
-                        LOGGER.error('Failed to parse:' + replacement.value, ex)
+                        LOGGER.error('EMAIL_MANDRILL_ERROR. Failed to parse:' + replacement.value, ex)
                     }
                     catch (ClassNotFoundException e) {
-                        LOGGER.error('Failed to reflect:' + canonicalName, e)
+                        LOGGER.error('EMAIL_MANDRILL_ERROR. Failed to reflect:' + canonicalName, e)
                     }
                 }
                 properties.put(key, value)
@@ -164,7 +164,7 @@ class MandrillProviderImpl implements EmailProvider {
             mResponses = mapper.readValue(response.responseBody, type) as List
         }
         else {
-            LOGGER.error('Failed to send email:' + response.responseBody)
+            LOGGER.error('EMAIL_MANDRILL_ERROR. Failed to send email:' + response.responseBody)
             MandrillResponse mResponse = new MandrillResponse()
             mResponse.setStatus(SendStatus.ERROR.name())
             mResponses << mResponse
@@ -206,11 +206,11 @@ class MandrillProviderImpl implements EmailProvider {
 
     private Promise<List<MandrillResponse>> send(BoundRequestBuilder requestBuilder, List<MandrillResponse> responses) {
         return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover { Throwable throwable ->
-            LOGGER.error('Fail to process the request.', throwable)
+            LOGGER.error('EMAIL_MANDRILL_ERROR. Fail to process the request.', throwable)
             throw AppErrors.INSTANCE.emailSendError('process request failed').exception()
         }.then { Response response ->
             if (response == null) {
-                LOGGER.error('Fail to get the response')
+                LOGGER.error('EMAIL_MANDRILL_ERROR. Fail to get the response')
                 throw AppErrors.INSTANCE.emailSendError('the response is null').exception()
             }
             responses.addAll(parseResponse(response))

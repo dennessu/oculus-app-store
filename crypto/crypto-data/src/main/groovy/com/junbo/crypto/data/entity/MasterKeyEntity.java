@@ -5,10 +5,8 @@
  */
 package com.junbo.crypto.data.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by liangfu on 5/12/14.
@@ -21,9 +19,22 @@ public class MasterKeyEntity {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "version")
+    @Version
+    private Integer resourceAge;
+
     @Column(name = "value")
     // It must be versionNumber:encryptValue
     private String encryptValue;
+
+    @Column(name = "key_version")
+    private Integer keyVersion;
+
+    @Column(name = "created_by")
+    private Long createdBy;
+
+    @Column(name = "created_time")
+    private Date createdTime;
 
     public Long getId() {
         return id;
@@ -33,11 +44,43 @@ public class MasterKeyEntity {
         this.id = id;
     }
 
+    public Integer getResourceAge() {
+        return resourceAge;
+    }
+
+    public void setResourceAge(Integer resourceAge) {
+        this.resourceAge = resourceAge;
+    }
+
+    public Long getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(Long createdBy) {
+        this.createdBy = createdBy;
+    }
+
     public String getEncryptValue() {
         return encryptValue;
     }
 
     public void setEncryptValue(String encryptValue) {
         this.encryptValue = encryptValue;
+    }
+
+    public Integer getKeyVersion() {
+        return keyVersion;
+    }
+
+    public void setKeyVersion(Integer keyVersion) {
+        this.keyVersion = keyVersion;
+    }
+
+    public Date getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(Date createdTime) {
+        this.createdTime = createdTime;
     }
 }

@@ -33,6 +33,7 @@ public class OrderRatingService extends RatingServiceSupport{
     @Override
     public void rate(PriceRatingContext context) {
         initContext(context);
+        validateLineItems(context);
         filterByCurrency(context);
         filterByEffectiveDate(context);
         findCandidates(context);
@@ -57,10 +58,10 @@ public class OrderRatingService extends RatingServiceSupport{
             Set<PromotionRevision> promotions = candidates.get(offerId) == null?
                     new HashSet<PromotionRevision>() : candidates.get(offerId);
 
-            Money originalPrice = getPrice(item.getOffer(), context.getCountry(), currency.getCode());
+            Money originalPrice = getPrice(item.getOffer().getPrice(), context.getCountry(), currency.getCode());
             if (originalPrice == Money.NOT_FOUND) {
                 LOGGER.error("Price of Offer [" + offerId + "] is not found for Currency [" + currency + "].");
-                throw AppErrors.INSTANCE.priceNotFound(item.getOfferId().toString()).exception();
+                throw AppErrors.INSTANCE.missingConfiguration("price").exception();
             }
 
             Money bestBenefit = new Money(BigDecimal.ZERO, originalPrice.getCurrency());
@@ -69,7 +70,8 @@ public class OrderRatingService extends RatingServiceSupport{
             entry.setOfferId(item.getOfferId());
             entry.setQuantity(item.getQuantity());
             entry.setShippingMethodId(item.getShippingMethodId());
-            entry.setOriginalAmount(originalPrice);
+            entry.setPreOrderPrice(getPreOrderPrice(item.getOffer(), context.getCountry(), currency.getCode()));
+            entry.setOriginalPrice(originalPrice);
             entry.setAppliedPromotion(new HashSet<Long>());
             for (PromotionRevision promotion : promotions) {
                 if (promotion.getBenefit() == null) {
@@ -93,7 +95,7 @@ public class OrderRatingService extends RatingServiceSupport{
         for (RatingResultEntry entry : context.getEntries()) {
             //calculate the total amount of line items in current order
             totalAmount = totalAmount.add(
-                    entry.getOriginalAmount().subtract(entry.getDiscountAmount()).multiple(entry.getQuantity()));
+                    entry.getOriginalPrice().subtract(entry.getDiscountAmount()).multiple(entry.getQuantity()));
         }
 
         OrderResultEntry result = new OrderResultEntry();

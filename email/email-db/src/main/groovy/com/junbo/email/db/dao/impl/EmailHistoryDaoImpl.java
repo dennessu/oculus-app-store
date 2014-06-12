@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class EmailHistoryDaoImpl extends BaseDaoImpl<EmailHistoryEntity> implements EmailHistoryDao {
 
-    public Long updateStatus(Long id, Short emailStatus) {
+    public EmailHistoryEntity updateStatus(Long id, Short emailStatus) {
         EmailHistoryEntity entity = get(id);
         entity.setStatus(emailStatus);
         return update(entity);

@@ -51,17 +51,18 @@ public class OfferRatingService extends RatingServiceSupport{
             Set<PromotionRevision> promotions = candidates.get(offerId) == null?
                     new HashSet<PromotionRevision>() : candidates.get(offerId);
 
-            Money originalPrice = getPrice(item.getOffer(), context.getCountry(), currency.getCode());
+            Money originalPrice = getPrice(item.getOffer().getPrice(), context.getCountry(), currency.getCode());
             if (originalPrice == Money.NOT_FOUND) {
                 LOGGER.error("Price of Offer [" + offerId + "] is not found for Currency [" + currency + "].");
-                throw AppErrors.INSTANCE.priceNotFound(item.getOfferId().toString()).exception();
+                throw AppErrors.INSTANCE.missingConfiguration("price").exception();
             }
 
             Money bestBenefit = new Money(BigDecimal.ZERO, originalPrice.getCurrency());
 
             RatingResultEntry entry = new RatingResultEntry();
             entry.setOfferId(item.getOfferId());
-            entry.setOriginalAmount(originalPrice);
+            entry.setPreOrderPrice(getPreOrderPrice(item.getOffer(), context.getCountry(), currency.getCode()));
+            entry.setOriginalPrice(originalPrice);
             entry.setAppliedPromotion(new HashSet<Long>());
             for (PromotionRevision promotion : promotions) {
                 if (promotion.getBenefit() == null) {

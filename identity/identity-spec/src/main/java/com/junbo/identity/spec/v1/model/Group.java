@@ -96,5 +96,7 @@ public class Group extends PropertyAssignedAwareResourceMeta<GroupId> {
 
     public void setOrganizationId(OrganizationId organizationId) {
         this.organizationId = organizationId;
+        support.setPropertyAssigned("organization");
+        support.setPropertyAssigned("organizationId");
     }
 }

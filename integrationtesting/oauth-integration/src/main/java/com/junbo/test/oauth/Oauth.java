@@ -9,6 +9,7 @@ import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.v1.model.UserPersonalInfo;
 import com.junbo.oauth.spec.model.AccessTokenResponse;
 import com.junbo.oauth.spec.model.TokenInfo;
+import com.junbo.oauth.spec.model.ViewModel;
 import com.junbo.test.common.*;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.ShardIdHelper;
@@ -44,12 +45,14 @@ public class Oauth {
     public static final String DefaultRegisterEvent = "register";
     public static final String DefaultTokenURI = ConfigHelper.getSetting("defaultTokenURI");
     public static final String DefaultTokenInfoURI = ConfigHelper.getSetting("defaultTokenInfoURI");
+    public static final String DefaultLogoutURI = ConfigHelper.getSetting("defaultLogoutURI");
 
     public static final String DefaultFNCode = "code";
     public static final String DefaultFNCid = "cid";
     public static final String DefaultFNClientId = "client_id";
     public static final String DefaultFNClientSecret = "client_secret";
     public static final String DefaultFNGrantType = "grant_type";
+    public static final String DefaultFNIdToken = "id_token";
     public static final String DefaultFNLoginState = "ls";
     public static final String DefaultFNRedirectURI = "redirect_uri";
     public static final String DefaultFNEvent = "event";
@@ -61,15 +64,15 @@ public class Oauth {
     public static final String DefaultFNNickName = "nickname";
     public static final String DefaultFNFirstName = "first_name";
     public static final String DefaultFNLastName = "last_name";
+    public static final String DefaultFNLogin = "login";
     public static final String DefaultFNGender = "gender";
     public static final String DefaultFNDoB = "dob";
     public static final String DefaultFNPin = "pin";
 
     public static final String DefaultUserPwd = "1234qwerASDF";
 
-    public static String GetLoginCid() throws Exception {
-        CloseableHttpResponse response = HttpclientHelper.SimpleGet(
-                DefaultAuthorizeURI
+    public static String GetRegistrationCid() throws Exception {
+        CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI
                         + "?client_id=client&response_type=code&scope=identity&redirect_uri=http://localhost",
                 false
         );
@@ -158,13 +161,12 @@ public class Oauth {
     }
 
     // pass in userName for validation purpose only
-    public static String PostRegisterUser(String cid, String userName) throws Exception {
+    public static String PostRegisterUser(String cid, String userName, String email) throws Exception {
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
         nvps.add(new BasicNameValuePair(DefaultFNEvent, "next"));
         nvps.add(new BasicNameValuePair(DefaultFNUserName, userName));
         nvps.add(new BasicNameValuePair(DefaultFNPassword, DefaultUserPwd));
-        String email = "silkcloudtest+" + RandomHelper.randomAlphabetic(10).toLowerCase() + "@gmail.com";
         nvps.add(new BasicNameValuePair(DefaultFNEmail, email));
         nvps.add(new BasicNameValuePair(DefaultFNNickName, RandomHelper.randomAlphabetic(15)));
         nvps.add(new BasicNameValuePair(DefaultFNFirstName, RandomHelper.randomAlphabetic(15)));
@@ -181,7 +183,7 @@ public class Oauth {
         } finally {
             response.close();
             UserPersonalInfo userPersonalInfo = Identity.UserPersonalInfoGetByUserEmail(email);
-            VerifyEmail(GetEmailVerificationLink(userPersonalInfo.getUserId().getValue()));
+            VerifyEmail(GetEmailVerificationLink(Identity.GetUserIdFromUserPersonalInfo(userPersonalInfo)));
         }
     }
 
@@ -255,6 +257,75 @@ public class Oauth {
             }
         }
         throw new Exception("link is not found in:\r\n" + result);
+    }
+
+    public static String GetLoginCid() throws Exception {
+        CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI
+                        + "?client_id=client&response_type=token%20id_token&scope=openid%20identity&"
+                        + "redirect_uri=http://localhost&nonce=randomstring&locale=en_US&state=randomstring",
+                false
+        );
+        try {
+            String tarHeader = "Location";
+            for (Header h : response.getAllHeaders()) {
+                if (h.toString().startsWith(tarHeader)) {
+                    return GetPropertyValueFromString(h.toString(), DefaultFNCid, "&");
+                }
+            }
+            throw new NotFoundException("Did not found expected response header: " + tarHeader);
+        } finally {
+            response.close();
+        }
+    }
+
+    public static String UserLogin(String cid, String userName) throws Exception {
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
+        nvps.add(new BasicNameValuePair(DefaultFNEvent, "next"));
+        nvps.add(new BasicNameValuePair(DefaultFNLogin, userName));
+        nvps.add(new BasicNameValuePair(DefaultFNPassword, DefaultUserPwd));
+
+        CloseableHttpResponse response = HttpclientHelper.SimplePost(DefaultAuthorizeURI, nvps, false);
+        try {
+            ViewModel viewModelResponse = JsonHelper.JsonDeserializer(
+                    new InputStreamReader(response.getEntity().getContent()), ViewModel.class);
+            return viewModelResponse.getModel().get("location").toString();
+        } finally {
+            response.close();
+        }
+    }
+
+    public static String GetLoginUserIdToken(String requestURI) throws Exception {
+        CloseableHttpResponse response = HttpclientHelper.SimpleGet(requestURI, false);
+        try {
+            String tarHeader = "Location";
+            for (Header h : response.getAllHeaders()) {
+                if (h.toString().startsWith(tarHeader)) {
+                    return GetPropertyValueFromString(h.toString(), DefaultFNIdToken, "&");
+                }
+            }
+            throw new NotFoundException("Did not found expected response header: " + tarHeader);
+        } finally {
+            response.close();
+        }
+    }
+
+    public static void Logout(String idToken) throws Exception {
+        CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultLogoutURI
+                + "?post_logout_redirect_uri=http://localhost&id_token_hint=" + idToken, false);
+        try {
+            String tarHeader = "Location";
+            for (Header h : response.getAllHeaders()) {
+                if (h.toString().startsWith(tarHeader)) {
+                    assertEquals("validate logout success", true, h.toString().contains("Location: http://localhost"));
+                    return;
+                }
+            }
+            throw new NotFoundException(
+                    "Did not found expected response header: " + tarHeader + " in response");
+        } finally {
+            response.close();
+        }
     }
 
     public static void VerifyEmail(String link) throws Exception {

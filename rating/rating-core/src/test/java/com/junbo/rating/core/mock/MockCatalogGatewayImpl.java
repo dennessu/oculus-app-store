@@ -13,7 +13,9 @@ import com.junbo.catalog.spec.model.promotion.*;
 import com.junbo.catalog.spec.model.promotion.criterion.*;
 import com.junbo.rating.clientproxy.CatalogGateway;
 import com.junbo.rating.common.util.Constants;
+import com.junbo.rating.common.util.Utils;
 import com.junbo.rating.spec.fusion.*;
+import com.junbo.rating.spec.fusion.Properties;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -78,6 +80,14 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
                     put("USD", new BigDecimal("9.99"));
                 }});
             }}));
+            setPreOrderPrice(new Price(PriceType.CUSTOM.name(), new HashMap<String, Map<String, BigDecimal>>() {{
+                put("US", new HashMap<String, BigDecimal>() {{
+                    put("USD", new BigDecimal("0.99"));
+                }});
+            }}));
+            setCountries(new HashMap<String, Properties>() {{
+                put("US", new Properties(true, Utils.maxDate()));
+            }});
             setCategories(new ArrayList<Long>());
             setItems(new ArrayList<LinkedEntry>() {{
                 add(new LinkedEntry() {{
@@ -114,6 +124,9 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
                     put("USD", new BigDecimal("9.99"));
                 }});
             }}));
+            setCountries(new HashMap<String, Properties>() {{
+                put("US", new Properties(true, Utils.maxDate()));
+            }});
             setCategories(new ArrayList<Long>());
             setItems(new ArrayList<LinkedEntry>() {{
                 add(new LinkedEntry() {{
@@ -139,6 +152,9 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
                     put("USD", new BigDecimal("1.99"));
                 }});
             }}));
+            setCountries(new HashMap<String, Properties>() {{
+                put("US", new Properties(true, Utils.maxDate()));
+            }});
             setCategories(new ArrayList<Long>());
             setItems(new ArrayList<LinkedEntry>() {{
                 add(new LinkedEntry() {{
@@ -158,6 +174,9 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
                     put("USD", new BigDecimal("9.99"));
                 }});
             }}));
+            setCountries(new HashMap<String, Properties>() {{
+                put("US", new Properties(true, Utils.maxDate()));
+            }});
             setCategories(new ArrayList<Long>());
             setSubOffers(new ArrayList<LinkedEntry>() {{
                 add(new LinkedEntry() {{
