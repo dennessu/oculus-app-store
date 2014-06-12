@@ -335,6 +335,7 @@ class OrderServiceImpl implements OrderService {
                     throw AppErrors.INSTANCE.offerNotFound(item.offer.value?.toString()).exception()
                 }
                 item.type = CoreUtils.getOfferType(offer).name()
+                item.isPreorder = CoreUtils.isPreorder(offer, order.country.value)
                 updatePaymentDescription(order, offer.catalogOfferRevision)
             }
         }.syncThen {

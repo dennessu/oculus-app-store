@@ -91,6 +91,9 @@ public class OrderItem extends ResourceMetaForDualWrite<OrderItemId> {
     @CloudantIgnore
     private List<FulfillmentHistory> fulfillmentHistories;
 
+    @JsonIgnore
+    private Boolean isPreorder;
+
     @Override
     public OrderItemId getId() {
         return id;
@@ -227,5 +230,13 @@ public class OrderItem extends ResourceMetaForDualWrite<OrderItemId> {
 
     public void setFulfillmentHistories(List<FulfillmentHistory> fulfillmentHistories) {
         this.fulfillmentHistories = fulfillmentHistories;
+    }
+
+    public Boolean getIsPreorder() {
+        return isPreorder;
+    }
+
+    public void setIsPreorder(Boolean isPreorder) {
+        this.isPreorder = isPreorder;
     }
 }

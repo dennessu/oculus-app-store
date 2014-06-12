@@ -100,6 +100,7 @@
                     latest_order_item_revision_id bigint default null,
                     honor_until_time timestamp default null,
                     honored_time timestamp not null,
+                    is_preorder boolean default null,
                     properties varchar(4000) default null,
                     is_deleted boolean not null,
 					resource_age bigint not null,

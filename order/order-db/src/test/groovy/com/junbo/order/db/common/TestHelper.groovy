@@ -104,6 +104,7 @@ class TestHelper implements ApplicationContextAware {
         entity.setTotalDiscount(BigDecimal.valueOf(DEFAULT_PRICE))
         entity.setTotalTax(BigDecimal.valueOf(DEFAULT_PRICE))
         entity.setHonoredTime(new Date())
+        entity.setIsPreorder(false)
         return entity
     }
 

@@ -221,4 +221,25 @@ class CoreUtils {
         newOrder.totalDiscount = order.totalDiscount
         return newOrder
     }
+
+    static Boolean isPreorder(OrderOfferRevision offer, String country) {
+        if (offer.catalogOfferRevision.countries == null || offer.catalogOfferRevision.countries.get(country) == null) {
+            return false
+        }
+        def releaseDate = offer.catalogOfferRevision.countries.get(country).releaseDate
+        def now = new Date()
+        return releaseDate != null && releaseDate.after(now)
+    }
+
+    static Boolean isPreorder(Order order) {
+        if (CollectionUtils.isEmpty(order.orderItems)) {
+            return false
+        }
+        if (order.orderItems.any { OrderItem oi ->
+            oi.isPreorder
+        }) {
+            return true
+        }
+        return false
+    }
 }
