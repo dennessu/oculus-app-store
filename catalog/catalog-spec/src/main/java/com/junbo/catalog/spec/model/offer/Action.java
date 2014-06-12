@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.spec.model.offer;
 
+import com.junbo.catalog.spec.model.common.Price;
 import com.junbo.common.jackson.annotation.CurrencyId;
 import com.junbo.common.jackson.annotation.ItemId;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -17,8 +18,10 @@ import java.math.BigDecimal;
  */
 public class Action {
     @ApiModelProperty(position = 1, required = true, value = "action type",
-            allowableValues = "GRANT_ENTITLEMENT, DELIVER_PHYSICAL_GOODS, CREDIT_WALLET")
+            allowableValues = "GRANT_ENTITLEMENT, DELIVER_PHYSICAL_GOODS, CREDIT_WALLET, CHARGE")
     private String type;
+    @ApiModelProperty(position = 2, required = true, value = "The condition to perform the action")
+    private ActionCondition condition;
     @ApiModelProperty(position = 3, required = true, value = "properties")
     @ItemId
     private Long itemId;
@@ -29,6 +32,8 @@ public class Action {
     private BigDecimal storedValueAmount;
     @ApiModelProperty(position = 6, required = true, value = "Use count for consumable")
     private Integer useCount;
+    @ApiModelProperty(position = 7, required = true, value = "Subscription price when specific event occurs")
+    private Price price;
 
     public String getType() {
         return type;
@@ -36,6 +41,14 @@ public class Action {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public ActionCondition getCondition() {
+        return condition;
+    }
+
+    public void setCondition(ActionCondition condition) {
+        this.condition = condition;
     }
 
     public Long getItemId() {
@@ -68,5 +81,13 @@ public class Action {
 
     public void setUseCount(Integer useCount) {
         this.useCount = useCount;
+    }
+
+    public Price getPrice() {
+        return price;
+    }
+
+    public void setPrice(Price price) {
+        this.price = price;
     }
 }
