@@ -29,20 +29,20 @@ class EmailScheduleDaoTest extends BaseTest {
         this.entity = entity
     }
 
-    @Test
+    @Test(enabled = false)
     void testCreate() {
         def entity = emailScheduleDao.save(entity)
         assert entity != null, 'Email schedule create failed'
     }
 
-    @Test
+    @Test(enabled = false)
     void testGet() {
         emailScheduleDao.save(entity)
         def entity = emailScheduleDao.get(entity.id)
         assert entity != null, 'Email schedule get failed'
     }
 
-    @Test
+    @Test(enabled = false)
     void testUpdate() {
         entity.setScheduleTime(new Date(2018,8,8,8,0,0))
         def updated = emailScheduleDao.update(entity)
@@ -50,7 +50,7 @@ class EmailScheduleDaoTest extends BaseTest {
         assert updated.scheduleTime == new Date(2018,8,8,8,0,0), 'Email schedule update failed'
     }
 
-    @Test
+    @Test(enabled = false)
     void testDelete() {
         emailScheduleDao.save(entity)
         emailScheduleDao.deleteEmailScheduleById(entity.id)

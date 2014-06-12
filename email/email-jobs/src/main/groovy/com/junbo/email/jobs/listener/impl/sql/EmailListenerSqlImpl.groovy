@@ -11,6 +11,7 @@ import com.junbo.email.spec.model.Email
 import com.junbo.email.spec.model.EmailTemplate
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate
+import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
@@ -22,6 +23,7 @@ import org.springframework.transaction.support.TransactionCallback
 /**
  * Impl of EmailListener (Sql).
  */
+@CompileStatic
 class EmailListenerSqlImpl extends EmailBaseListener implements EmailListener {
     private final static Logger LOGGER = LoggerFactory.getLogger(EmailListenerSqlImpl)
 

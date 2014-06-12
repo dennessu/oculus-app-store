@@ -1,0 +1,7 @@
+{
+    "source" : "Oculus",
+    "action" : "AppApproval",
+    "locale" : "en_US",
+    "providerName" : "mandrill",
+    "placeholderNames" : [ "username", "appname" ]
+  }

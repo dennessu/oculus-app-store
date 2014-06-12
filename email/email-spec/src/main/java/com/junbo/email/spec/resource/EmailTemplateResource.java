@@ -8,6 +8,7 @@ package com.junbo.email.spec.resource;
 import com.junbo.common.id.EmailTemplateId;
 import com.junbo.common.model.Results;
 import com.junbo.email.spec.model.*;
+import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
@@ -22,6 +23,7 @@ import javax.ws.rs.core.Response;
  */
 @Api(value= "email-templates")
 @Path("/email-templates")
+@InProcessCallable
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource

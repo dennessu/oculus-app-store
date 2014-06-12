@@ -8,11 +8,13 @@ package com.junbo.email.db.repo.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.CloudantEntity
 import com.junbo.sharding.IdGenerator
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
  * EmailBaseRepository Class.
  */
+@CompileStatic
 abstract class EmailBaseRepository<T extends CloudantEntity> extends CloudantClient<T> {
     protected IdGenerator idGenerator
 

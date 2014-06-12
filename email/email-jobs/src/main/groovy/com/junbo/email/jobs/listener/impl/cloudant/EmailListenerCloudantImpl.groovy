@@ -10,12 +10,14 @@ import com.junbo.email.jobs.listener.impl.EmailBaseListener
 import com.junbo.email.spec.model.Email
 import com.junbo.email.spec.model.EmailTemplate
 import com.junbo.langur.core.promise.Promise
+import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 /**
  * Impl of EmailListener(Cloudant).
  */
+@CompileStatic
 class EmailListenerCloudantImpl extends EmailBaseListener implements EmailListener {
     private final static Logger LOGGER = LoggerFactory.getLogger(EmailListenerCloudantImpl)
 

@@ -12,11 +12,13 @@ import com.junbo.email.spec.model.EmailTemplate
 import com.junbo.email.spec.model.Pagination
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
  * Impl of EmailTemplate Repository(Cloudant).
  */
+@CompileStatic
 class EmailTemplateRepositoryCloudantImpl extends EmailBaseRepository<EmailTemplate> implements EmailTemplateRepository {
     private IdGenerator idGenerator
 

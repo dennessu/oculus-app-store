@@ -7,4 +7,5 @@ dependencies {
     compile junboProject(':authorization-spec')
     compile junboProject(':authorization-lib')
     compile junboProject(':oauth-db')
+    compile junboProject(':email-spec')
 }

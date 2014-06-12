@@ -9,10 +9,12 @@ import com.junbo.email.clientproxy.EmailProvider
 import com.junbo.email.db.repo.EmailHistoryRepository
 import com.junbo.email.db.repo.EmailTemplateRepository
 import com.junbo.notification.core.BaseListener
+import groovy.transform.CompileStatic
 
 /**
  * EmailBaseListener Class.
  */
+@CompileStatic
 abstract class EmailBaseListener extends BaseListener {
     protected EmailProvider emailProvider
 
