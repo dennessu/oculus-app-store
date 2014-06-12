@@ -44,7 +44,7 @@
                 create unique index user_order_time_index on user_order (user_id, order_id, updated_time, created_time);
 
                 create table order_revision (
-                    order_rating_revision_id bigint not null,
+                    order_revision_id bigint not null,
                     order_id bigint not null,
                     shipping_method_id bigint default null,
                     shipping_address_id bigint default null,
@@ -61,7 +61,7 @@
                     created_by bigint not null,
                     updated_time timestamp not null,
                     updated_by bigint not null,
-                    primary key (order_rating_revision_id)
+                    primary key (order_revision_id)
                 );
                 create index order_time_index on order_revision (order_id, updated_time, created_time);
 
@@ -122,7 +122,8 @@
                     total_amount decimal not null,
                     total_tax decimal not null,
                     total_discount decimal not null,
-                    shipping_fee decimal not null,
+                    total_shipping_fee decimal default null,
+                    total_shipping_fee_tax decimal default null,
 					resource_age bigint not null,
                     created_time timestamp not null,
                     created_by bigint not null,

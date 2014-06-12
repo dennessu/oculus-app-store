@@ -538,4 +538,23 @@ public class CommonMapper {
         }
         return from.getValue();
     }
+
+    public OrderItemRevisionType fromStringToOrderItemRevisionType(String itemType) {
+        if (itemType == null) {
+            return null;
+        }
+
+        try {
+            return OrderItemRevisionType.valueOf(itemType);
+        } catch (Exception e) {
+            throw AppErrors.INSTANCE.enumConversionError(itemType, "OrderItemRevisionType").exception();
+        }
+    }
+
+    public String fromOrderItemRevisionTypeToString(OrderItemRevisionType itemType) {
+        if (itemType == null) {
+            return null;
+        }
+        return itemType.toString();
+    }
 }

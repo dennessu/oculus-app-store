@@ -163,6 +163,25 @@ public interface ModelMapper {
                                                                MappingContext context);
 
     @Mappings({
+            @Mapping(source = "id", target = "orderRevisionId", excluded = false, bidirectional = false),
+            @Mapping(source = "shippingAddress", target = "shippingAddressId", excluded = false, bidirectional = false),
+            @Mapping(source = "shippingToName", target = "shippingNameId", excluded = false, bidirectional = false),
+            @Mapping(source = "shippingToPhone", target = "shippingPhoneId", excluded = false, bidirectional = false),
+            @Mapping(source = "shippingMethod", target = "shippingMethodId", excluded = false, bidirectional = false)
+    })
+    OrderRevisionEntity toOrderRevisionEntity(OrderRevision revision, MappingContext context);
+
+
+    @Mappings({
+            @Mapping(source = "orderRevisionId", target = "id", excluded = false, bidirectional = false),
+            @Mapping(source = "shippingAddressId", target = "shippingAddress", excluded = false, bidirectional = false),
+            @Mapping(source = "shippingNameId", target = "shippingToName", excluded = false, bidirectional = false),
+            @Mapping(source = "shippingPhoneId", target = "shippingToPhone", excluded = false, bidirectional = false),
+            @Mapping(source = "shippingMethodId", target = "shippingMethod", excluded = false, bidirectional = false)
+    })
+    OrderRevision toOrderRevisionModel(OrderRevisionEntity orderRevisionEntity, MappingContext context);
+
+    @Mappings({
             @Mapping(source = "subledgerId", target = "id", excluded = false, bidirectional = false),
             @Mapping(source = "productItemId", target = "offer", excluded = false, bidirectional = false),
             @Mapping(source = "sellerId", target = "seller", excluded = false, bidirectional = false)

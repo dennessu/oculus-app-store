@@ -156,6 +156,9 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
     @JsonIgnore
     private Long latestOrderRevisionId;
 
+    @JsonIgnore
+    private List<OrderRevision> orderRevisions;
+
     public OrderId getId() {
         return id;
     }
@@ -394,5 +397,13 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
 
     public void setLatestOrderRevisionId(Long latestOrderRevisionId) {
         this.latestOrderRevisionId = latestOrderRevisionId;
+    }
+
+    public List<OrderRevision> getOrderRevisions() {
+        return orderRevisions;
+    }
+
+    public void setOrderRevisions(List<OrderRevision> orderRevisions) {
+        this.orderRevisions = orderRevisions;
     }
 }

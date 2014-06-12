@@ -16,6 +16,7 @@ import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
+import org.apache.commons.collections.CollectionUtils
 import org.hibernate.StaleObjectStateException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -88,7 +89,16 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
 
     @Override
     Order getOrder(Long orderId) {
-        return orderRepository.get(new OrderId(orderId)).get();
+        def order = orderRepository.get(new OrderId(orderId)).get()
+        // update order with order revision for non-tentative order
+        if (!order.tentative && !CollectionUtils.isEmpty(order.orderRevisions)) {
+            def latestRevision = order.orderRevisions.find() { OrderRevision revision ->
+                revision.id == order.latestOrderRevisionId
+            }
+            assert (latestRevision != null)
+            fillOrderWithRevision(order, latestRevision)
+        }
+        return order
     }
 
     @Override
@@ -206,5 +216,19 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
         Utils.updateListTypeField(discounts, getDiscounts(orderId.value), repositoryFuncSet, keyFunc, 'discounts')
 
         return Promise.pure(null)
+    }
+
+    private Order fillOrderWithRevision(Order order, OrderRevision revision) {
+        order.isTaxInclusive = revision.isTaxInclusive
+        order.shippingAddress = revision.shippingAddress
+        order.shippingMethod = revision.shippingMethod
+        order.shippingToName = revision.shippingToName
+        order.shippingToPhone = revision.shippingToPhone
+        order.totalAmount = revision.totalAmount
+        order.totalDiscount = revision.totalDiscount
+        order.totalShippingFee = revision.totalShippingFee
+        order.totalShippingFeeDiscount = revision.totalShippingFeeDiscount
+        order.totalTax = revision.totalTax
+        return order
     }
 }

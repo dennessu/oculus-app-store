@@ -91,6 +91,8 @@ public class OrderItem extends ResourceMetaForDualWrite<OrderItemId> {
     @CloudantIgnore
     private List<FulfillmentHistory> fulfillmentHistories;
 
+    private List<OrderItemRevision> orderItemRevisions;
+
     @Override
     public OrderItemId getId() {
         return id;
@@ -227,5 +229,13 @@ public class OrderItem extends ResourceMetaForDualWrite<OrderItemId> {
 
     public void setFulfillmentHistories(List<FulfillmentHistory> fulfillmentHistories) {
         this.fulfillmentHistories = fulfillmentHistories;
+    }
+
+    public List<OrderItemRevision> getOrderItemRevisions() {
+        return orderItemRevisions;
+    }
+
+    public void setOrderItemRevisions(List<OrderItemRevision> orderItemRevisions) {
+        this.orderItemRevisions = orderItemRevisions;
     }
 }
