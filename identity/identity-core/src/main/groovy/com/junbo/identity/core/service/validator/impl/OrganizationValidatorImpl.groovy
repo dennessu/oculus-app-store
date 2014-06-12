@@ -3,6 +3,7 @@ package com.junbo.identity.core.service.validator.impl
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
+import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.validator.OrganizationValidator
 import com.junbo.identity.data.identifiable.OrganizationTaxType
 import com.junbo.identity.data.identifiable.OrganizationType
@@ -31,6 +32,7 @@ class OrganizationValidatorImpl implements OrganizationValidator {
     private OrganizationRepository organizationRepository
     private UserRepository userRepository
     private UserPersonalInfoRepository userPersonalInfoRepository
+    private NormalizeService normalizeService
 
     @Override
     Promise<Organization> validateForGet(OrganizationId organizationId) {
@@ -112,6 +114,8 @@ class OrganizationValidatorImpl implements OrganizationValidator {
             throw AppErrors.INSTANCE.fieldRequired('owner').exception()
         }
 
+        organization.canonicalName = normalizeService.normalize(organization.name)
+
         // todo:    Need to add validation according to the requirement
         return checkOrganizationNameUnique(organization).then {
             if (organization.billingAddress == null) {
@@ -149,7 +153,7 @@ class OrganizationValidatorImpl implements OrganizationValidator {
     }
 
     private Promise<Void> checkOrganizationNameUnique(Organization organization) {
-        return organizationRepository.searchByName(organization.name, Integer.MAX_VALUE, 0).then { List<Organization> organizationList ->
+        return organizationRepository.searchByCanonicalName(organization.canonicalName, Integer.MAX_VALUE, 0).then { List<Organization> organizationList ->
             if (CollectionUtils.isEmpty(organizationList)) {
                 return Promise.pure(null)
             }
@@ -197,5 +201,10 @@ class OrganizationValidatorImpl implements OrganizationValidator {
     @Required
     void setUserPersonalInfoRepository(UserPersonalInfoRepository userPersonalInfoRepository) {
         this.userPersonalInfoRepository = userPersonalInfoRepository
+    }
+
+    @Required
+    void setNormalizeService(NormalizeService normalizeService) {
+        this.normalizeService = normalizeService
     }
 }

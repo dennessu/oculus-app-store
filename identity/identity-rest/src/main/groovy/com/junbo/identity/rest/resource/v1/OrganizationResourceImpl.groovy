@@ -5,6 +5,7 @@ import com.junbo.common.id.OrganizationId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.OrganizationFilter
+import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.validator.OrganizationValidator
 import com.junbo.identity.data.repository.OrganizationRepository
 import com.junbo.identity.spec.error.AppErrors
@@ -36,6 +37,9 @@ class OrganizationResourceImpl implements OrganizationResource {
     @Autowired
     private OrganizationValidator organizationValidator
 
+    @Autowired
+    private NormalizeService normalizeService
+
     @Override
     Promise<Organization> create(Organization organization) {
         organization = organizationFilter.filterForCreate(organization)
@@ -65,7 +69,7 @@ class OrganizationResourceImpl implements OrganizationResource {
                 throw AppErrors.INSTANCE.organizationNotFound(organizationId).exception()
             }
 
-            organization = organizationFilter.filterForPut(organization, oldOrganization)
+            organization = organizationFilter.filterForPatch(organization, oldOrganization)
 
             return organizationRepository.update(organization).then { Organization newOrganization ->
                 newOrganization = organizationFilter.filterForGet(newOrganization, null)

@@ -30,8 +30,8 @@ class OrganizationRepositoryCloudantImpl extends CloudantClient<Organization> im
     }
 
     @Override
-    Promise<List<Organization>> searchByName(String name, Integer limit, Integer offset) {
-        def result = super.queryView('by_name', name, limit, offset, false)
+    Promise<List<Organization>> searchByCanonicalName(String name, Integer limit, Integer offset) {
+        def result = super.queryView('by_canonical_name', name, limit, offset, false)
 
         return result
     }
@@ -66,9 +66,9 @@ class OrganizationRepositoryCloudantImpl extends CloudantClient<Organization> im
                                     '  emit(doc.ownerId, doc._id)' +
                                     '}',
                             resultClass: String),
-                    'by_name': new CloudantViews.CloudantView(
+                    'by_canonical_name': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.name, doc._id)' +
+                                    '  emit(doc.canonicalName, doc._id)' +
                                     '}',
                             resultClass: String)
                    ]

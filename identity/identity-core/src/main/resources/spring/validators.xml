@@ -513,6 +513,7 @@
         <property name="organizationRepository" ref="organizationRepository" />
         <property name="userRepository" ref="userRepository" />
         <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
+        <property name="normalizeService" ref="normalizeService" />
     </bean>
 
     <bean id="bcryptCredentialHash" class="com.junbo.identity.core.service.credential.impl.BcryptCredentialHash">
