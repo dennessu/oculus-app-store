@@ -192,8 +192,6 @@
         <property name="nickNameValidator" ref="nickNameValidator" />
         <property name="minFamilyNameLength" value="1" />
         <property name="maxFamilyNameLength" value="255" />
-        <property name="minFullNameLength" value="1" />
-        <property name="maxFullNameLength" value="255" />
         <property name="minGivenNameLength" value="1" />
         <property name="maxGivenNameLength" value="255" />
         <property name="minMiddleNameLength" value="1" />
