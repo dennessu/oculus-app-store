@@ -1,7 +1,6 @@
 package com.junbo.identity.rest.resource.v1
 
 import com.junbo.common.enumid.LocaleId
-import com.junbo.common.error.AppError
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
@@ -180,6 +179,7 @@ class MigrationResourceImpl implements MigrationResource {
             Organization organization = new Organization(
                     ownerId: (UserId)createdUser.id,
                     name: oculusInput.devCenterCompany,
+                    canonicalName: normalizeService.normalize(oculusInput.devCenterCompany),
                     isValidated: false
             )
 
@@ -215,7 +215,7 @@ class MigrationResourceImpl implements MigrationResource {
                 Organization organizationToUpdate = organizationList.get(0)
                 organizationToUpdate.name = organization.name
                 organizationToUpdate.isValidated = organization.isValidated
-
+                organizationToUpdate.canonicalName = organization.canonicalName
                 return organizationRepository.update(organizationToUpdate)
             }
         }
@@ -243,7 +243,8 @@ class MigrationResourceImpl implements MigrationResource {
     }
 
     Promise<Void> checkOrganizationValid(OculusInput oculusInput, User user) {
-        return organizationRepository.searchByName(oculusInput.devCenterCompany, Integer.MAX_VALUE, 0).then { List<Organization> organizationList ->
+        return organizationRepository.searchByCanonicalName(normalizeService.normalize(oculusInput.devCenterCompany),
+                Integer.MAX_VALUE, 0).then { List<Organization> organizationList ->
             if (CollectionUtils.isEmpty(organizationList)) {
                 return Promise.pure(null)
             }
