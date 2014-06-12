@@ -7,6 +7,7 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.jackson.annotation.HateoasLink;
@@ -38,7 +39,7 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> {
             "(happens when 'username' is non-null and/or the 'authenticators' list is non-empty)")
     private Boolean isAnonymous;
 
-    @ApiModelProperty(position = 5, required = false, value = "User status. It must be in [ACTIVE, SUSPEND, BANNED DELETED].")
+    @ApiModelProperty(position = 6, required = false, value = "User status. It must be in [ACTIVE, SUSPEND, BANNED DELETED].")
     private String status;
 
     @ApiModelProperty(position = 5, required = false, value = "The address book.")
@@ -52,6 +53,9 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> {
 
     @ApiModelProperty(position = 6, required = false, value = "The PersonalInfo resource that contains the user's name (given name, family name, etc.).")
     private UserPersonalInfoLink name;
+
+    @ApiModelProperty(position = 6, required = false, value = "The Country of Residence")
+    private CountryId countryOfResidence;
 
     @ApiModelProperty(position = 7, required = false, value = "The personalInfo Link to the personalInfo resource, which is date of birth of the user.")
     private UserPersonalInfoLink dob;
@@ -439,5 +443,14 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> {
     public void setGender(UserPersonalInfoLink gender) {
         this.gender = gender;
         support.setPropertyAssigned("gender");
+    }
+
+    public CountryId getCountryOfResidence() {
+        return countryOfResidence;
+    }
+
+    public void setCountryOfResidence(CountryId countryOfResidence) {
+        this.countryOfResidence = countryOfResidence;
+        support.setPropertyAssigned("countryOfResidence");
     }
 }
