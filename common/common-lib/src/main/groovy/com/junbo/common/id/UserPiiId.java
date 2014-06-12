@@ -11,9 +11,9 @@ package com.junbo.common.id;
 @IdResourcePath(value = "/pii/{0}",
                 resourceType = "pii",
                 regex = "/pii/(?<id>[0-9A-Za-z]+)")
-public class UserPiiId extends Id {
+public class UserPiiId extends CloudantId {
     public UserPiiId() {}
-    public UserPiiId(long value) {
+    public UserPiiId(String value) {
         super(value);
     }
 }

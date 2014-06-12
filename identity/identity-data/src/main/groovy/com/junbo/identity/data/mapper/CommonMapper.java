@@ -25,126 +25,126 @@ import java.util.List;
 public class CommonMapper {
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    Long toGroupId(GroupId groupId) {
+    String toGroupId(GroupId groupId) {
         if (groupId == null) {
             return null;
         }
         return groupId.getValue();
     }
 
-    GroupId toGroupId(Long groupId) {
+    GroupId toGroupId(String groupId) {
         if (groupId == null) {
             return null;
         }
         return new GroupId(groupId);
     }
 
-    UserPasswordId toUserPasswordId(Long userPasswordId) {
+    UserPasswordId toUserPasswordId(String userPasswordId) {
         if (userPasswordId == null) {
             return null;
         }
         return new UserPasswordId(userPasswordId);
     }
 
-    Long toUserPasswordId(UserPasswordId userPasswordId) {
+    String toUserPasswordId(UserPasswordId userPasswordId) {
         if (userPasswordId == null) {
             return null;
         }
         return userPasswordId.getValue();
     }
 
-    UserPinId toUserPinId(Long userPinId) {
+    UserPinId toUserPinId(String userPinId) {
         if (userPinId == null) {
             return null;
         }
         return new UserPinId(userPinId);
     }
 
-    Long toUserPinId(UserPinId userPINId) {
+    String toUserPinId(UserPinId userPINId) {
         if(userPINId == null) {
             return null;
         }
         return userPINId.getValue();
     }
 
-    SecurityQuestionId toSecurityQuestionId(Long securityQuestionId) {
+    SecurityQuestionId toSecurityQuestionId(String securityQuestionId) {
         if(securityQuestionId == null) {
             return null;
         }
         return new SecurityQuestionId(securityQuestionId);
     }
 
-    Long toSecurityQuestionId(SecurityQuestionId id) {
+    String toSecurityQuestionId(SecurityQuestionId id) {
         if(id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    UserSecurityQuestionId toUserSecurityQuestionId(Long id) {
+    UserSecurityQuestionId toUserSecurityQuestionId(String id) {
         if(id == null) {
             return null;
         }
         return new UserSecurityQuestionId(id);
     }
 
-    Long toUserPhoneNumberId(UserPhoneNumberId id) {
+    String toUserPhoneNumberId(UserPhoneNumberId id) {
         if(id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    UserPhoneNumberId toUserPhoneNumberId(Long id) {
+    UserPhoneNumberId toUserPhoneNumberId(String id) {
         if(id == null) {
             return null;
         }
         return new UserPhoneNumberId(id);
     }
 
-    Long toUserLoginAttemptId(UserCredentialVerifyAttemptId id) {
+    String toUserLoginAttemptId(UserCredentialVerifyAttemptId id) {
         if(id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    UserCredentialVerifyAttemptId toUserLoginAttemptId(Long id) {
+    UserCredentialVerifyAttemptId toUserLoginAttemptId(String id) {
         if(id == null) {
             return null;
         }
         return new UserCredentialVerifyAttemptId(id);
     }
 
-    Long toUserSecurityQuestionId(UserSecurityQuestionId id) {
+    String toUserSecurityQuestionId(UserSecurityQuestionId id) {
         if(id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    Long toUserGroupId(UserGroupId id) {
+    String toUserGroupId(UserGroupId id) {
         if(id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    UserGroupId toUserGroupId(Long id) {
+    UserGroupId toUserGroupId(String id) {
         if(id == null) {
             return null;
         }
         return new UserGroupId(id);
     }
 
-    UserEmailId toUserEmailId(Long id) {
+    UserEmailId toUserEmailId(String id) {
         if(id == null) {
             return null;
         }
         return new UserEmailId(id);
     }
 
-    Long toUserEmailId(UserEmailId id) {
+    String toUserEmailId(UserEmailId id) {
         if(id == null) {
             return null;
         }
@@ -190,84 +190,84 @@ public class CommonMapper {
         return new UserId(id);
     }
 
-    public Long toUserDeviceId(UserDeviceId id) {
+    public String toUserDeviceId(UserDeviceId id) {
         if(id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    public UserDeviceId toUserDeviceId(Long id) {
+    public UserDeviceId toUserDeviceId(String id) {
         if(id == null) {
             return null;
         }
         return new UserDeviceId(id);
     }
 
-    public UserAuthenticatorId toUserAuthenticatorId(Long id) {
+    public UserAuthenticatorId toUserAuthenticatorId(String id) {
         if(id == null) {
             return null;
         }
         return new UserAuthenticatorId(id);
     }
 
-    public Long toUserAuthenticatorId(UserAuthenticatorId id) {
+    public String toUserAuthenticatorId(UserAuthenticatorId id) {
         if(id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    public UserCommunicationId toUserOptinId(Long id) {
+    public UserCommunicationId toUserOptinId(String id) {
         if(id == null) {
             return null;
         }
         return new UserCommunicationId(id);
     }
 
-    public Long toUserOptInId(UserCommunicationId id) {
+    public String toUserOptInId(UserCommunicationId id) {
         if(id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    public UserTosAgreementId toUserTosAgreementId(Long id) {
+    public UserTosAgreementId toUserTosAgreementId(String id) {
         if(id == null) {
             return null;
         }
         return new UserTosAgreementId(id);
     }
 
-    public Long toUserTosAgreementId(UserTosAgreementId id) {
+    public String toUserTosAgreementId(UserTosAgreementId id) {
         if(id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    public UserSecurityQuestionVerifyAttemptId toUserSecurityQuestionVerifyAttemptId(Long id) {
+    public UserSecurityQuestionVerifyAttemptId toUserSecurityQuestionVerifyAttemptId(String id) {
         if(id == null) {
             return null;
         }
         return new UserSecurityQuestionVerifyAttemptId(id);
     }
 
-    public Long toUserSecurityQuestionVerifyAttemptId(UserSecurityQuestionVerifyAttemptId id) {
+    public String toUserSecurityQuestionVerifyAttemptId(UserSecurityQuestionVerifyAttemptId id) {
         if(id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    public Long toPasswordRuleId(PasswordRuleId id) {
+    public String toPasswordRuleId(PasswordRuleId id) {
         if(id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    public PasswordRuleId toPasswordRuleId(Long id) {
+    public PasswordRuleId toPasswordRuleId(String id) {
         if(id == null) {
             return null;
         }
@@ -294,42 +294,42 @@ public class CommonMapper {
         }
     }
 
-    public Long toDeviceId(DeviceId id) {
+    public String toDeviceId(DeviceId id) {
         if (id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    public DeviceId toDeviceId(Long id) {
+    public DeviceId toDeviceId(String id) {
         if (id == null) {
             return null;
         }
         return new DeviceId(id);
     }
 
-    public Long toTosId(TosId id) {
+    public String toTosId(TosId id) {
         if (id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    public TosId toTosId(Long id) {
+    public TosId toTosId(String id) {
         if (id == null) {
             return null;
         }
         return new TosId(id);
     }
 
-    public UserPiiId toUserPiiId(Long id) {
+    public UserPiiId toUserPiiId(String id) {
         if (id == null) {
             return null;
         }
         return new UserPiiId(id);
     }
 
-    public Long toUserPiiId(UserPiiId id) {
+    public String toUserPiiId(UserPiiId id) {
         if (id == null) {
             return null;
         }
@@ -364,70 +364,70 @@ public class CommonMapper {
         return value.toString();
     }
 
-    public Long toUserTFAId(UserTFAId id) {
+    public String toUserTFAId(UserTFAId id) {
         if (id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    public UserTFAId toUserTFAId(Long id) {
+    public UserTFAId toUserTFAId(String id) {
         if (id == null) {
             return null;
         }
         return new UserTFAId(id);
     }
 
-    public Long toUserTFAAttemptId(UserTFAAttemptId id) {
+    public String toUserTFAAttemptId(UserTFAAttemptId id) {
         if (id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    public UserTFAAttemptId toUserTFAAttemptId(Long id) {
+    public UserTFAAttemptId toUserTFAAttemptId(String id) {
         if (id == null) {
             return null;
         }
         return new UserTFAAttemptId(id);
     }
 
-    public Long toUserTFABackupCodeId(UserTFABackupCodeId id) {
+    public String toUserTFABackupCodeId(UserTFABackupCodeId id) {
         if (id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    public UserTFABackupCodeId toUserTFABackupCodeId(Long id) {
+    public UserTFABackupCodeId toUserTFABackupCodeId(String id) {
         if (id == null) {
             return null;
         }
         return new UserTFABackupCodeId(id);
     }
 
-    public Long toUserTFABackupCodeAttemptId(UserTFABackupCodeAttemptId id) {
+    public String toUserTFABackupCodeAttemptId(UserTFABackupCodeAttemptId id) {
         if (id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    public UserTFABackupCodeAttemptId toUserTFABackupCodeAttemptId(Long id) {
+    public UserTFABackupCodeAttemptId toUserTFABackupCodeAttemptId(String id) {
         if (id == null) {
             return null;
         }
         return new UserTFABackupCodeAttemptId(id);
     }
 
-    public Long toCommunicationId(CommunicationId id) {
+    public String toCommunicationId(CommunicationId id) {
         if (id == null) {
             return null;
         }
         return id.getValue();
     }
 
-    public CommunicationId toCommunicationId(Long id) {
+    public CommunicationId toCommunicationId(String id) {
         if (id == null) {
             return null;
         }

@@ -6,28 +6,13 @@ import com.junbo.common.id.UserSecurityQuestionId
 import com.junbo.identity.data.repository.UserSecurityQuestionRepository
 import com.junbo.identity.spec.v1.model.UserSecurityQuestion
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.IdGenerator
-import com.junbo.sharding.ShardAlgorithm
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required
 /**
  * Created by minhao on 4/12/14.
  */
 @CompileStatic
 class UserSecurityQuestionRepositoryCloudantImpl extends CloudantClient<UserSecurityQuestion>
         implements UserSecurityQuestionRepository {
-    private ShardAlgorithm shardAlgorithm
-    private IdGenerator idGenerator
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
-
-    @Required
-    void setShardAlgorithm(ShardAlgorithm shardAlgorithm) {
-        this.shardAlgorithm = shardAlgorithm
-    }
 
     @Override
     protected CloudantViews getCloudantViews() {
@@ -36,9 +21,6 @@ class UserSecurityQuestionRepositoryCloudantImpl extends CloudantClient<UserSecu
 
     @Override
     Promise<UserSecurityQuestion> create(UserSecurityQuestion entity) {
-        if (entity.id == null) {
-            entity.id = new UserSecurityQuestionId(idGenerator.nextId(entity.userId.value))
-        }
         entity.answer = null
         return super.cloudantPost(entity)
     }

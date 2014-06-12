@@ -7,28 +7,13 @@ import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
 import com.junbo.identity.data.repository.UserSecurityQuestionAttemptRepository
 import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.IdGenerator
-import com.junbo.sharding.ShardAlgorithm
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required
 /**
  * Created by minhao on 4/12/14.
  */
 @CompileStatic
 class UserSecurityQuestionAttemptRepositoryCloudantImpl extends CloudantClient<UserSecurityQuestionVerifyAttempt>
         implements UserSecurityQuestionAttemptRepository {
-    private ShardAlgorithm shardAlgorithm
-    private IdGenerator idGenerator
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
-
-    @Required
-    void setShardAlgorithm(ShardAlgorithm shardAlgorithm) {
-        this.shardAlgorithm = shardAlgorithm
-    }
 
     @Override
     protected CloudantViews getCloudantViews() {
@@ -37,9 +22,6 @@ class UserSecurityQuestionAttemptRepositoryCloudantImpl extends CloudantClient<U
 
     @Override
     Promise<UserSecurityQuestionVerifyAttempt> create(UserSecurityQuestionVerifyAttempt entity) {
-        if (entity.id == null) {
-            entity.id = new UserSecurityQuestionVerifyAttemptId(idGenerator.nextId(entity.userId.value))
-        }
         entity.value = null
         return super.cloudantPost(entity)
     }

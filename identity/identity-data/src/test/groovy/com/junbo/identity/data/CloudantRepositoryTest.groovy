@@ -332,7 +332,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     public void testUserGroupRepository() {
         UserGroup userGroup = new UserGroup()
         userGroup.setUserId(new UserId(userId))
-        userGroup.setGroupId(new GroupId(1493188608L))
+        userGroup.setGroupId(new GroupId("1493188608L"))
         userGroup.setCreatedBy(123L)
         userGroup.setCreatedTime(new Date())
         userGroup = userGroupRepository.create(userGroup).get()
@@ -342,9 +342,9 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         UserGroupListOptions getOption = new UserGroupListOptions()
         getOption.setUserId(new UserId(userId))
-        getOption.setGroupId(new GroupId(1493188608L))
+        getOption.setGroupId(new GroupId("1493188608L"))
         List<UserGroup> userGroups = userGroupRepository.searchByUserIdAndGroupId(new UserId(userId),
-                new GroupId(1493188608L), Integer.MAX_VALUE, 0).get()
+                new GroupId("1493188608L"), Integer.MAX_VALUE, 0).get()
         assert userGroups.size() != 0
 
         getOption.setGroupId(newUserGroup.groupId)
@@ -361,7 +361,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     public void testUserOptinRepository() {
         UserCommunication userOptin = new UserCommunication()
         userOptin.setUserId(new UserId(userId))
-        userOptin.setCommunicationId(new CommunicationId(idGenerator.nextId()))
+        userOptin.setCommunicationId(new CommunicationId(idGenerator.nextId().toString()))
         userOptin.setCreatedBy(123L)
         userOptin.setCreatedTime(new Date())
         userOptin = userCommunicationRepository.create(userOptin).get()
@@ -369,7 +369,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         UserCommunication newUserOptin = userCommunicationRepository.get(userOptin.getId()).get()
         Assert.assertEquals(userOptin.communicationId, newUserOptin.communicationId)
 
-        CommunicationId newCommunicationId = new CommunicationId(idGenerator.nextId())
+        CommunicationId newCommunicationId = new CommunicationId(idGenerator.nextId().toString())
         userOptin.setCommunicationId(newCommunicationId)
         userCommunicationRepository.update(userOptin).get()
 
@@ -417,7 +417,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         attempt.setValue(UUID.randomUUID().toString())
         attempt.setClientId(new ClientId(idGenerator.nextId()))
         attempt.setIpAddress(UUID.randomUUID().toString())
-        attempt.setUserSecurityQuestionId(new UserSecurityQuestionId(123L))
+        attempt.setUserSecurityQuestionId(new UserSecurityQuestionId("123L"))
         attempt.setUserAgent(UUID.randomUUID().toString())
 
         attempt = userSecurityQuestionAttemptRepository.create(attempt).get()
@@ -428,10 +428,10 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         UserSecurityQuestionAttemptListOptions option = new UserSecurityQuestionAttemptListOptions()
         option.setUserId(new UserId(userId))
-        option.setUserSecurityQuestionId(new UserSecurityQuestionId(123L))
+        option.setUserSecurityQuestionId(new UserSecurityQuestionId("123L"))
         List<UserSecurityQuestionVerifyAttempt> attempts =
                 userSecurityQuestionAttemptRepository.searchByUserIdAndSecurityQuestionId(new UserId(userId),
-                        new UserSecurityQuestionId(123L), Integer.MAX_VALUE, 0).get()
+                        new UserSecurityQuestionId("123L"), Integer.MAX_VALUE, 0).get()
         assert attempts.size() != 0
     }
 
@@ -466,7 +466,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     public void testUserTosRepository() {
         UserTosAgreement userTos = new UserTosAgreement()
         userTos.setUserId(new UserId(userId))
-        userTos.setTosId(new TosId(123L))
+        userTos.setTosId(new TosId("123L"))
         userTos.setCreatedBy(123L)
         userTos.setCreatedTime(new Date())
         userTos = userTosRepository.create(userTos).get()
@@ -474,16 +474,16 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         UserTosAgreement newUserTos = userTosRepository.get(userTos.getId()).get()
         Assert.assertEquals(userTos.getTosId(), newUserTos.getTosId())
 
-        newUserTos.setTosId(new TosId(456L))
+        newUserTos.setTosId(new TosId("456L"))
         userTosRepository.update(newUserTos).get()
 
         newUserTos = userTosRepository.get(userTos.getId()).get()
-        Assert.assertEquals(new TosId(456L), newUserTos.getTosId())
+        Assert.assertEquals(new TosId("456L"), newUserTos.getTosId())
 
         UserTosAgreementListOptions userTosGetOption = new UserTosAgreementListOptions()
         userTosGetOption.setUserId(new UserId(userId))
-        userTosGetOption.setTosId(new TosId(456L))
-        List<UserTosAgreement> userToses = userTosRepository.searchByUserIdAndTosId(new UserId(userId), new TosId(456L), Integer.MAX_VALUE, 0).get()
+        userTosGetOption.setTosId(new TosId("456L"))
+        List<UserTosAgreement> userToses = userTosRepository.searchByUserIdAndTosId(new UserId(userId), new TosId("456L"), Integer.MAX_VALUE, 0).get()
         assert userToses.size() != 0
     }
 }

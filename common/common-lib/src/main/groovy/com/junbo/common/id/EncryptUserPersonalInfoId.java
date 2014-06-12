@@ -13,7 +13,7 @@ public class EncryptUserPersonalInfoId extends Id {
 
     public EncryptUserPersonalInfoId() {}
 
-    public EncryptUserPersonalInfoId(long value) {
+    public EncryptUserPersonalInfoId(Long value) {
         super(value);
     }
 }

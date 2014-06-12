@@ -5,6 +5,8 @@
  */
 package com.junbo.common.json;
 
+import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
+
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -12,6 +14,7 @@ import java.util.Set;
 /**
  * PropertyAssignedAwareSupport class.
  */
+@CloudantIgnore
 public class PropertyAssignedAwareSupport {
 
     private final Set<String> assignedProperties;

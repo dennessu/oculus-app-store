@@ -2,6 +2,7 @@ package com.junbo.common.id.util
 
 import com.junbo.common.enumid.EnumId
 import com.junbo.common.id.Id
+import com.junbo.common.id.CloudantId
 import com.junbo.common.id.IdResourcePath
 import com.junbo.common.model.Link
 import com.junbo.common.util.IdFormatter
@@ -25,6 +26,8 @@ class IdUtil {
 
     public static final List<Class> ID_CLASSES = []
 
+    public static final List<Class> CLOUDANT_ID_CLASSES = []
+
     public static final List<Class> ENUM_ID_CLASSES = []
 
     private static final Map<Class, Pattern> RESOURCE_PATH_PATTERNS = [:]
@@ -36,12 +39,19 @@ class IdUtil {
         ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(true);
 
         provider.addIncludeFilter(new AssignableTypeFilter(Id));
-        // scan in com.junbo.common.id package for SubClass of Id
+        provider.addIncludeFilter(new AssignableTypeFilter(CloudantId));
+        // scan in com.junbo.common.id package for SubClass of Id or CloudantId
         Set<BeanDefinition> idDefinitions = provider.findCandidateComponents('com/junbo/common/id');
         for (BeanDefinition definition : idDefinitions) {
             try {
                 Class cls = IdUtil.classLoader.loadClass(definition.beanClassName);
-                ID_CLASSES.add(cls)
+                if (Id.isAssignableFrom(cls)) {
+                    ID_CLASSES.add(cls)
+                } else if (CloudantId.isAssignableFrom(cls)) {
+                    CLOUDANT_ID_CLASSES.add(cls)
+                } else {
+                    continue;
+                }
                 IdResourcePath pathAnno = AnnotationUtils.findAnnotation(cls, IdResourcePath);
                 if (pathAnno != null) {
                     String regex = pathAnno.regex()
@@ -70,7 +80,9 @@ class IdUtil {
         for (BeanDefinition definition : enumIdDefinitions) {
             try {
                 Class cls = IdUtil.classLoader.loadClass(definition.beanClassName);
-                ENUM_ID_CLASSES.add(cls)
+                if (EnumId.isAssignableFrom(cls)) {
+                    ENUM_ID_CLASSES.add(cls)
+                }
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
@@ -106,6 +118,17 @@ class IdUtil {
     }
 
     static String toHref(Id value) {
+        String path = RESOURCE_PATHS[value.class]
+        if (path == null) {
+            path = '/resources/{0}'
+        }
+
+        String href = formatIndexPlaceHolder(Utils.combineUrl(resourcePathPrefix, path), IdFormatter.encodeId(value));
+        href = formatPropertyPlaceHolder(href, value.resourcePathPlaceHolder);
+        return href;
+    }
+
+    static String toHref(CloudantId value) {
         String path = RESOURCE_PATHS[value.class]
         if (path == null) {
             path = '/resources/{0}'

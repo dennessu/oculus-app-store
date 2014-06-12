@@ -1,33 +1,16 @@
 package com.junbo.identity.data.repository.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.DeviceId
 import com.junbo.identity.data.repository.DeviceRepository
 import com.junbo.identity.spec.v1.model.Device
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.IdGenerator
-import com.junbo.sharding.ShardAlgorithm
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required
-
 /**
  * Created by haomin on 14-4-9.
  */
 @CompileStatic
 class DeviceRepositoryCloudantImpl extends CloudantClient<Device> implements DeviceRepository {
-    private ShardAlgorithm shardAlgorithm
-    private IdGenerator idGenerator
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
-
-    @Required
-    void setShardAlgorithm(ShardAlgorithm shardAlgorithm) {
-        this.shardAlgorithm = shardAlgorithm
-    }
 
     @Override
     Promise<Device> get(DeviceId groupId) {
@@ -36,9 +19,6 @@ class DeviceRepositoryCloudantImpl extends CloudantClient<Device> implements Dev
 
     @Override
     Promise<Device> create(Device device) {
-        if (device.id == null) {
-            device.id = new DeviceId(idGenerator.nextId())
-        }
         return super.cloudantPost(device)
     }
 

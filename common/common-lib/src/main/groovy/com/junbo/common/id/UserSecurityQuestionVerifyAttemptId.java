@@ -11,9 +11,9 @@ package com.junbo.common.id;
 @IdResourcePath(value = "/users/{userId}/security-question-verify-attempts/{0}",
                 resourceType = "security-question-verify-attempts",
                 regex = "/users/(?<userId>[0-9A-Za-z]+)/security-question-verify-attempts/(?<id>[0-9A-Za-z]+)")
-public class UserSecurityQuestionVerifyAttemptId extends Id {
+public class UserSecurityQuestionVerifyAttemptId extends CloudantId {
     public UserSecurityQuestionVerifyAttemptId() {}
-    public UserSecurityQuestionVerifyAttemptId(long value) {
+    public UserSecurityQuestionVerifyAttemptId(String value) {
         super(value);
     }
 }

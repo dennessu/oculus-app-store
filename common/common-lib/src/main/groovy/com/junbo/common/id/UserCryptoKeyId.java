@@ -11,9 +11,9 @@ package com.junbo.common.id;
 @IdResourcePath(value = "/crypto/{0}",
                 resourceType = "crypto",
                 regex = "/crypto/(?<id>[0-9A-Za-z]+)")
-public class UserCryptoKeyId extends Id {
+public class UserCryptoKeyId extends CloudantId {
     public UserCryptoKeyId() {}
-    public UserCryptoKeyId(long value) {
+    public UserCryptoKeyId(String value) {
         super(value);
     }
 }

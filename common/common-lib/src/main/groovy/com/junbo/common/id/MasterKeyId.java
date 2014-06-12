@@ -12,8 +12,9 @@ package com.junbo.common.id;
                 resourceType = "master-key",
                 regex = "/master-key/(?<id>[0-9A-Za-z]+)")
 public class MasterKeyId extends Id {
+
     public MasterKeyId() {}
-    public MasterKeyId(long value) {
+    public MasterKeyId(Long value) {
         super(value);
     }
 }

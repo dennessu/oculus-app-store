@@ -11,10 +11,11 @@ package com.junbo.common.id;
 @IdResourcePath(value = "/optin-type/{0}",
                 resourceType = "optin-type",
                 regex = "/optin-type/(?<id>[0-9A-Za-z]+)")
-public class OptinTypeId extends Id {
+public class OptinTypeId extends CloudantId {
+
     public OptinTypeId() {}
 
-    public OptinTypeId(long value) {
+    public OptinTypeId(String value) {
         super(value);
     }
 }

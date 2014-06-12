@@ -19,18 +19,6 @@ import org.springframework.beans.factory.annotation.Required
 @CompileStatic
 class UserTFAAttemptRepositoryCloudantImpl extends CloudantClient<UserTFAAttempt>
         implements UserTFAAttemptRepository {
-    private ShardAlgorithm shardAlgorithm
-    private IdGenerator idGenerator
-
-    @Required
-    void setShardAlgorithm(ShardAlgorithm shardAlgorithm) {
-        this.shardAlgorithm = shardAlgorithm
-    }
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
 
     @Override
     protected CloudantViews getCloudantViews() {
@@ -51,9 +39,6 @@ class UserTFAAttemptRepositoryCloudantImpl extends CloudantClient<UserTFAAttempt
 
     @Override
     Promise<UserTFAAttempt> create(UserTFAAttempt entity) {
-        if (entity.id == null) {
-            entity.id = new UserTFAAttemptId(idGenerator.nextId(entity.userId.value))
-        }
         return super.cloudantPost(entity)
     }
 

@@ -39,18 +39,11 @@ class UserPersonalInfoIdToUserIdLinkRepositoryImpl extends CloudantClient<UserPe
 
     @Override
     Promise<UserPersonalInfoIdToUserIdLink> create(UserPersonalInfoIdToUserIdLink model) {
-
-        if (model.id == null) {
-            model.id = new UserPersonalInfoIdToUserIdLinkId(model.userPersonalInfoId.value)
-        }
         return super.cloudantPost(model)
     }
 
     @Override
     Promise<UserPersonalInfoIdToUserIdLink> update(UserPersonalInfoIdToUserIdLink model) {
-        if (model.id == null) {
-            model.id = new UserPersonalInfoIdToUserIdLinkId(model.userPersonalInfoId.value)
-        }
         return super.cloudantPut(model)
     }
 

@@ -11,10 +11,10 @@ package com.junbo.common.id;
 @IdResourcePath(value = "/users/{userId}/tfa/{0}",
                 resourceType = "tfa",
                 regex = "/users/(?<userId>[0-9A-Za-z]+)/tfa/(?<id>[0-9A-Za-z]+)")
-public class UserTFAId extends Id {
+public class UserTFAId extends CloudantId {
 
     public UserTFAId() {}
-    public UserTFAId(long value) {
+    public UserTFAId(String value) {
         super(value);
     }
 }

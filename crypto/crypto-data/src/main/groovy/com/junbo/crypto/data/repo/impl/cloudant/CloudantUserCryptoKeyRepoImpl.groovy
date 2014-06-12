@@ -6,17 +6,13 @@ import com.junbo.common.id.UserId
 import com.junbo.crypto.data.repo.UserCryptoKeyRepo
 import com.junbo.crypto.spec.model.UserCryptoKey
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.CollectionUtils
-
 /**
  * Created by liangfu on 5/12/14.
  */
 @CompileStatic
 class CloudantUserCryptoKeyRepoImpl extends CloudantClient<UserCryptoKey> implements UserCryptoKeyRepo {
-    private IdGenerator idGenerator
 
     @Override
     protected CloudantViews getCloudantViews() {
@@ -31,9 +27,6 @@ class CloudantUserCryptoKeyRepoImpl extends CloudantClient<UserCryptoKey> implem
 
     @Override
     Promise<UserCryptoKey> create(UserCryptoKey model) {
-        if (model.id == null) {
-            model.id = new UserCryptoKeyId(idGenerator.nextId(model.userId.value))
-        }
         return super.cloudantPost(model)
     }
 
@@ -79,9 +72,4 @@ class CloudantUserCryptoKeyRepoImpl extends CloudantClient<UserCryptoKey> implem
                             resultClass: String)
             ]
     )
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
 }

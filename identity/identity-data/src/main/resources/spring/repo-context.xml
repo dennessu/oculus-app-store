@@ -5,156 +5,31 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        ">
 
-    <bean id="deviceRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.DeviceRepository"/>
-        <property name="cloudantRepositoryImpl" ref="cloudantDeviceRepository" />
-        <property name="sqlRepositoryImpl" ref="sqlDeviceRepository" />
-    </bean>
-
-    <bean id="groupRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.GroupRepository"/>
-        <property name="cloudantRepositoryImpl" ref="cloudantGroupRepository" />
-        <property name="sqlRepositoryImpl" ref="sqlGroupRepository" />
-    </bean>
-
-    <bean id="userAuthenticatorRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserAuthenticatorRepository"/>
-        <property name="cloudantRepositoryImpl" ref="cloudantUserAuthenticatorRepository" />
-        <property name="sqlRepositoryImpl" ref="sqlUserAuthenticatorRepository" />
-    </bean>
-
-    <bean id="userPasswordRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserPasswordRepository"/>
-        <property name="cloudantRepositoryImpl" ref="cloudantUserPasswordRepository" />
-        <property name="sqlRepositoryImpl" ref="sqlUserPasswordRepository" />
-    </bean>
-
-    <bean id="userPinRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserPinRepository"/>
-        <property name="cloudantRepositoryImpl" ref="cloudantUserPinRepository" />
-        <property name="sqlRepositoryImpl" ref="sqlUserPinRepository" />
-    </bean>
-
-    <bean id="userCredentialVerifyAttemptRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserCredentialVerifyAttemptRepository"/>
-        <property name="cloudantRepositoryImpl" ref="cloudantUserCredentialVerifyAttemptRepository" />
-        <property name="sqlRepositoryImpl" ref="sqlUserCredentialVerifyAttemptRepository" />
-    </bean>
-
-    <bean id="userGroupRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserGroupRepository"/>
-        <property name="cloudantRepositoryImpl" ref="cloudantUserGroupRepository" />
-        <property name="sqlRepositoryImpl" ref="sqlUserGroupRepository" />
-    </bean>
-
-    <bean id="userCommunicationRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserCommunicationRepository"/>
-        <property name="cloudantRepositoryImpl" ref="cloudantUserOptinRepository" />
-        <property name="sqlRepositoryImpl" ref="sqlUserOptinRepository" />
-    </bean>
-
-    <bean id="userRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserRepository"/>
-        <property name="cloudantRepositoryImpl" ref="cloudantUserRepository" />
-        <property name="sqlRepositoryImpl" ref="sqlUserRepository" />
-    </bean>
-
-    <bean id="userSecurityQuestionAttemptRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserSecurityQuestionAttemptRepository"/>
-        <property name="cloudantRepositoryImpl" ref="cloudantUserSecurityQuestionAttemptRepository" />
-        <property name="sqlRepositoryImpl" ref="sqlUserSecurityQuestionAttemptRepository" />
-    </bean>
-
-    <bean id="userSecurityQuestionRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserSecurityQuestionRepository"/>
-        <property name="cloudantRepositoryImpl" ref="cloudantUserSecurityQuestionRepository" />
-        <property name="sqlRepositoryImpl" ref="sqlUserSecurityQuestionRepository" />
-    </bean>
-
-    <bean id="userTosRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTosRepository"/>
-        <property name="cloudantRepositoryImpl" ref="cloudantUserTosRepository" />
-        <property name="sqlRepositoryImpl" ref="sqlUserTosRepository" />
-    </bean>
-
-    <bean id="tosRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.TosRepository"/>
-        <property name="cloudantRepositoryImpl" ref="cloudantTosRepository" />
-        <property name="sqlRepositoryImpl" ref="sqlTosRepository" />
-    </bean>
-
-    <bean id="userTFARepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTFARepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantUserTFARepository" />
-        <property name="sqlRepositoryImpl" ref="sqlUserTeleRepository" />
-    </bean>
-
-    <bean id="userTFAAttemptRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTFAAttemptRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantUserTFAAttemptRepository" />
-        <property name="sqlRepositoryImpl" ref="sqlUserTeleAttemptRepository" />
-    </bean>
-
-    <bean id="userTFABackupCodeRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTFABackupCodeRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantUserTFABackupCodeRepository" />
-        <property name="sqlRepositoryImpl" ref="sqlUserTeleBackupCodeRepository" />
-    </bean>
-
-    <bean id="userTFABackupCodeAttemptRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserTFABackupCodeAttemptRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantUserTFABackupCodeAttemptRepository" />
-        <property name="sqlRepositoryImpl" ref="sqlUserTeleBackupCodeAttemptRepository" />
-    </bean>
-
-
-    <bean id="countryRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.CountryRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantCountryRepository"/>
-    </bean>
-
-    <bean id="currencyRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.CurrencyRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantCurrencyRepository"/>
-    </bean>
-
-    <bean id="localeRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.LocaleRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantLocaleRepository"/>
-    </bean>
-
-    <bean id="userPersonalInfoRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserPersonalInfoRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantUserPersonalInfoRepository" />
-    </bean>
-
-    <bean id="piTypeRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.PITypeRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantPITypeRepository"/>
-    </bean>
-
-    <bean id="communicationRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.CommunicationRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantCommunicationRepository" />
-    </bean>
-
-    <bean id="deviceTypeRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.DeviceTypeRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantDeviceTypeRepository" />
-    </bean>
-
-    <bean id="encryptUserPersonalInfoRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.EncryptUserPersonalInfoRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantEncryptUserPersonalInfoRepository" />
-    </bean>
-
-    <bean id="userPersonalInfoIdToUserIdLinkRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.UserPersonalInfoIdToUserIdLinkRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantUserPersonalInfoIdToUserIdLinkRepository" />
-    </bean>
-
-    <bean id="organizationRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.identity.data.repository.OrganizationRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantOrganizationRepository" />
-    </bean>
+    <alias alias="deviceRepository" name="cloudantDeviceRepository" />
+    <alias alias="groupRepository" name="cloudantGroupRepository" />
+    <alias alias="userAuthenticatorRepository" name="cloudantUserAuthenticatorRepository" />
+    <alias alias="userPasswordRepository" name="cloudantUserPasswordRepository" />
+    <alias alias="userPinRepository" name="cloudantUserPinRepository" />
+    <alias alias="userCredentialVerifyAttemptRepository" name="cloudantUserCredentialVerifyAttemptRepository" />
+    <alias alias="userGroupRepository" name="cloudantUserGroupRepository" />
+    <alias alias="userCommunicationRepository" name="cloudantUserOptinRepository" />
+    <alias alias="userRepository" name="cloudantUserRepository" />
+    <alias alias="userSecurityQuestionAttemptRepository" name="cloudantUserSecurityQuestionAttemptRepository" />
+    <alias alias="userSecurityQuestionRepository" name="cloudantUserSecurityQuestionRepository" />
+    <alias alias="userTosRepository" name="cloudantUserTosRepository" />
+    <alias alias="tosRepository" name="cloudantTosRepository" />
+    <alias alias="userTFARepository" name="cloudantUserTFARepository" />
+    <alias alias="userTFAAttemptRepository" name="cloudantUserTFAAttemptRepository" />
+    <alias alias="userTFABackupCodeRepository" name="cloudantUserTFABackupCodeRepository" />
+    <alias alias="userTFABackupCodeAttemptRepository" name="cloudantUserTFABackupCodeAttemptRepository" />
+    <alias alias="countryRepository" name="cloudantCountryRepository" />
+    <alias alias="currencyRepository" name="cloudantCurrencyRepository" />
+    <alias alias="localeRepository" name="cloudantLocaleRepository" />
+    <alias alias="userPersonalInfoRepository" name="cloudantUserPersonalInfoRepository" />
+    <alias alias="piTypeRepository" name="cloudantPITypeRepository" />
+    <alias alias="communicationRepository" name="cloudantCommunicationRepository" />
+    <alias alias="deviceTypeRepository" name="cloudantDeviceTypeRepository" />
+    <alias alias="encryptUserPersonalInfoRepository" name="cloudantEncryptUserPersonalInfoRepository" />
+    <alias alias="userPersonalInfoIdToUserIdLinkRepository" name="cloudantUserPersonalInfoIdToUserIdLinkRepository" />
+    <alias alias="organizationRepository" name="cloudantOrganizationRepository" />
 </beans>

@@ -8,9 +8,9 @@ package com.junbo.common.id;
 /**
  * Created by liangfu on 3/14/14.
  */
-public class UserPinId extends Id {
+public class UserPinId extends CloudantId {
     public UserPinId() {}
-    public UserPinId(long value) {
+    public UserPinId(String value) {
         super(value);
     }
 }

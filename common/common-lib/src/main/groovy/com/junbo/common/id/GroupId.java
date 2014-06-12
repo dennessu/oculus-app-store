@@ -11,12 +11,13 @@ package com.junbo.common.id;
 @IdResourcePath(value = "/groups/{0}",
                 resourceType = "groups",
                 regex = "/groups/(?<id>[0-9A-Za-z]+)")
-public class GroupId extends Id {
+public class GroupId extends CloudantId {
+
     public GroupId(){
 
     }
 
-    public GroupId(Long value) {
+    public GroupId(String value) {
         super(value);
     }
 }

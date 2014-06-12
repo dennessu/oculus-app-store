@@ -31,7 +31,7 @@ public class RoleTarget implements PropertyAssignedAware {
     private String filterLinkIdType;
 
     @JsonIgnore
-    private Long filterLinkId;
+    private String filterLinkId;
 
     public String getTargetType() {
         return targetType;
@@ -68,11 +68,11 @@ public class RoleTarget implements PropertyAssignedAware {
         this.filterLinkIdType = filterLinkIdType;
     }
 
-    public Long getFilterLinkId() {
+    public String getFilterLinkId() {
         return filterLinkId;
     }
 
-    public void setFilterLinkId(Long filterLinkId) {
+    public void setFilterLinkId(String filterLinkId) {
         this.filterLinkId = filterLinkId;
     }
 

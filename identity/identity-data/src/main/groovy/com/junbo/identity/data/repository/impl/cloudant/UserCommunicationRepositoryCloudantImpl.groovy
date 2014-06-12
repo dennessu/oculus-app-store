@@ -7,27 +7,12 @@ import com.junbo.common.id.UserId
 import com.junbo.identity.data.repository.UserCommunicationRepository
 import com.junbo.identity.spec.v1.model.UserCommunication
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.IdGenerator
-import com.junbo.sharding.ShardAlgorithm
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required
 /**
  * Created by haomin on 14-4-11.
  */
 @CompileStatic
 class UserCommunicationRepositoryCloudantImpl extends CloudantClient<UserCommunication> implements UserCommunicationRepository {
-    private ShardAlgorithm shardAlgorithm
-    private IdGenerator idGenerator
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
-
-    @Required
-    void setShardAlgorithm(ShardAlgorithm shardAlgorithm) {
-        this.shardAlgorithm = shardAlgorithm
-    }
 
     @Override
     protected CloudantViews getCloudantViews() {
@@ -36,9 +21,6 @@ class UserCommunicationRepositoryCloudantImpl extends CloudantClient<UserCommuni
 
     @Override
     Promise<UserCommunication> create(UserCommunication entity) {
-        if (entity.id == null) {
-            entity.id = new UserCommunicationId(idGenerator.nextId(entity.userId.value))
-        }
         return super.cloudantPost(entity)
     }
 

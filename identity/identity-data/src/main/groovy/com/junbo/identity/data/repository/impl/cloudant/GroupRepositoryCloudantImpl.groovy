@@ -1,33 +1,16 @@
 package com.junbo.identity.data.repository.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.GroupId
 import com.junbo.identity.data.repository.GroupRepository
 import com.junbo.identity.spec.v1.model.Group
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.IdGenerator
-import com.junbo.sharding.ShardAlgorithm
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required
-
 /**
  * Created by haomin on 14-4-10.
  */
 @CompileStatic
 class GroupRepositoryCloudantImpl extends CloudantClient<Group> implements GroupRepository {
-    private ShardAlgorithm shardAlgorithm
-    private IdGenerator idGenerator
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
-
-    @Required
-    void setShardAlgorithm(ShardAlgorithm shardAlgorithm) {
-        this.shardAlgorithm = shardAlgorithm
-    }
 
     @Override
     Promise<Group> get(GroupId groupId) {
@@ -36,9 +19,6 @@ class GroupRepositoryCloudantImpl extends CloudantClient<Group> implements Group
 
     @Override
     Promise<Group> create(Group group) {
-        if (group.id == null) {
-            group.id = new GroupId(idGenerator.nextId())
-        }
         return super.cloudantPost(group)
     }
 

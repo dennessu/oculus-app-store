@@ -9,11 +9,11 @@ package com.junbo.common.id;
 /**
  * Created by liangfu on 5/14/14.
  */
-public class UserPersonalInfoIdToUserIdLinkId extends Id {
+public class UserPersonalInfoIdToUserIdLinkId extends CloudantId {
 
     public UserPersonalInfoIdToUserIdLinkId() {}
 
-    public UserPersonalInfoIdToUserIdLinkId(long value) {
+    public UserPersonalInfoIdToUserIdLinkId(String value) {
         super(value);
     }
 }

@@ -1,5 +1,4 @@
 package com.junbo.identity.data.repository.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.enumid.CountryId
@@ -9,21 +8,12 @@ import com.junbo.identity.data.repository.CommunicationRepository
 import com.junbo.identity.spec.v1.model.Communication
 import com.junbo.identity.spec.v1.option.list.CommunicationListOptions
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required
-
 /**
  * Created by liangfu on 4/24/14.
  */
 @CompileStatic
 class CommunicationRepositoryCloudantImpl extends CloudantClient<Communication> implements CommunicationRepository {
-    private IdGenerator idGenerator
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
 
     @Override
     protected CloudantViews getCloudantViews() {
@@ -53,11 +43,6 @@ class CommunicationRepositoryCloudantImpl extends CloudantClient<Communication> 
 
     @Override
     Promise<Communication> create(Communication model) {
-        if (model.id == null) {
-            // hard code to shard 0 for all communication resource
-            model.id = new CommunicationId(idGenerator.nextIdByShardId(0))
-        }
-
         return super.cloudantPost(model)
     }
 

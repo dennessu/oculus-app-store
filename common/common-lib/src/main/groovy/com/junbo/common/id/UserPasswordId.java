@@ -8,9 +8,9 @@ package com.junbo.common.id;
 /**
  * Created by liangfu on 3/14/14.
  */
-public class UserPasswordId extends Id {
+public class UserPasswordId extends CloudantId {
     public UserPasswordId() {}
-    public UserPasswordId(long value) {
+    public UserPasswordId(String value) {
         super(value);
     }
 }

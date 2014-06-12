@@ -6,27 +6,12 @@ import com.junbo.common.id.UserPinId
 import com.junbo.identity.data.repository.UserPinRepository
 import com.junbo.identity.spec.model.users.UserPin
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.IdGenerator
-import com.junbo.sharding.ShardAlgorithm
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required
 /**
  * Created by haomin on 14-4-10.
  */
 @CompileStatic
 class UserPinRepositoryCloudantImpl extends CloudantClient<UserPin> implements UserPinRepository {
-    private ShardAlgorithm shardAlgorithm
-    private IdGenerator idGenerator
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
-
-    @Required
-    void setShardAlgorithm(ShardAlgorithm shardAlgorithm) {
-        this.shardAlgorithm = shardAlgorithm
-    }
 
     @Override
     protected CloudantViews getCloudantViews() {
@@ -35,9 +20,6 @@ class UserPinRepositoryCloudantImpl extends CloudantClient<UserPin> implements U
 
     @Override
     Promise<UserPin> create(UserPin userPin) {
-        if (userPin.id == null) {
-            userPin.id = new UserPinId(idGenerator.nextId(userPin.userId.value))
-        }
         userPin.value = null
         return super.cloudantPost(userPin)
     }

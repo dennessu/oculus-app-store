@@ -12,10 +12,10 @@ package com.junbo.common.id;
 @IdResourcePath(value = "/tos-agreements/{0}",
                 resourceType = "tos-agreements",
                 regex = "/tos-agreements/(?<id>[0-9A-Za-z]+)")
-public class UserTosAgreementId extends Id {
+public class UserTosAgreementId extends CloudantId {
 
     public UserTosAgreementId() {}
-    public UserTosAgreementId(long value) {
+    public UserTosAgreementId(String value) {
         super(value);
     }
 }
