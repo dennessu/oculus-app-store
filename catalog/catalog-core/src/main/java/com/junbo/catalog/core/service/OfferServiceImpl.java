@@ -425,23 +425,27 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     private void validateItems(List<ItemEntry> items, List<AppError> errors) {
         boolean hasSVItem = false;
         for (ItemEntry itemEntry : items) {
-            Item item = itemRepo.get(itemEntry.getItemId());
-            if (item == null) {
-                errors.add(AppErrors.INSTANCE.notFound("item", Utils.encodeId(itemEntry.getItemId())));
+            if (itemEntry.getItemId() == null) {
+                errors.add(AppErrors.INSTANCE.fieldNotCorrect("items.item.id", "should not be null"));
             } else {
-                if (item.getType().equals(ItemType.STORED_VALUE)) {
-                    hasSVItem = true;
-                }
-                if (itemEntry.getQuantity() == null) {
-                    itemEntry.setQuantity(1);
-                } else if (itemEntry.getQuantity() <= 0) {
-                    errors.add(AppErrors.INSTANCE.fieldNotCorrect("items",
-                            "Quantity should be greater than 0 for item " + Utils.encodeId(itemEntry.getItemId())));
-                } else if (itemEntry.getQuantity() > 1) {
-                    if (!(ItemType.VIRTUAL.is(item.getType()) || ItemType.PHYSICAL.is(item.getType()))) {
+                Item item = itemRepo.get(itemEntry.getItemId());
+                if (item == null) {
+                    errors.add(AppErrors.INSTANCE.notFound("item", Utils.encodeId(itemEntry.getItemId())));
+                } else {
+                    if (item.getType().equals(ItemType.STORED_VALUE)) {
+                        hasSVItem = true;
+                    }
+                    if (itemEntry.getQuantity() == null) {
+                        itemEntry.setQuantity(1);
+                    } else if (itemEntry.getQuantity() <= 0) {
                         errors.add(AppErrors.INSTANCE.fieldNotCorrect("items",
-                                "'quantity' should be 1 for " + item.getType()
-                                        + " item " + Utils.encodeId(itemEntry.getItemId())));
+                                "Quantity should be greater than 0 for item " + Utils.encodeId(itemEntry.getItemId())));
+                    } else if (itemEntry.getQuantity() > 1) {
+                        if (!(ItemType.VIRTUAL.is(item.getType()) || ItemType.PHYSICAL.is(item.getType()))) {
+                            errors.add(AppErrors.INSTANCE.fieldNotCorrect("items",
+                                    "'quantity' should be 1 for " + item.getType()
+                                            + " item " + Utils.encodeId(itemEntry.getItemId())));
+                        }
                     }
                 }
             }

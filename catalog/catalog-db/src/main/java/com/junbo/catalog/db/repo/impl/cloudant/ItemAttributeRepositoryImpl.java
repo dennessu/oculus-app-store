@@ -38,6 +38,9 @@ public class ItemAttributeRepositoryImpl extends CloudantClient<ItemAttribute> i
     }
 
     public ItemAttribute get(Long attributeId) {
+        if (attributeId == null) {
+            return null;
+        }
         return cloudantGet(attributeId.toString()).get();
     }
 

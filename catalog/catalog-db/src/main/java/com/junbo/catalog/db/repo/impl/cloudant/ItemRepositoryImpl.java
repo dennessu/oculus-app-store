@@ -41,6 +41,9 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
 
     @Override
     public Item get(Long itemId) {
+        if (itemId == null) {
+            return null;
+        }
         return cloudantGet(itemId.toString()).get();
     }
 

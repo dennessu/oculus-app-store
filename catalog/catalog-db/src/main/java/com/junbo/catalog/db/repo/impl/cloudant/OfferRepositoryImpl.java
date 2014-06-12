@@ -39,6 +39,9 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
     }
 
     public Offer get(Long offerId) {
+        if (offerId == null) {
+            return null;
+        }
         return super.cloudantGet(offerId.toString()).get();
     }
 

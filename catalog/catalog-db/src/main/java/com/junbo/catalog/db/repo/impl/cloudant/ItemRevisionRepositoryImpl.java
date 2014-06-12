@@ -42,6 +42,9 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
 
     @Override
     public ItemRevision get(Long revisionId) {
+        if (revisionId == null) {
+            return null;
+        }
         return super.cloudantGet(revisionId.toString()).get();
     }
 

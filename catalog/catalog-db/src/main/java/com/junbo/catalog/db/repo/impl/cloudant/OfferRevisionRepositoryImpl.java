@@ -41,6 +41,9 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
 
     @Override
     public OfferRevision get(Long revisionId) {
+        if (revisionId == null) {
+            return null;
+        }
         return super.cloudantGet(revisionId.toString()).get();
     }
 

@@ -38,6 +38,9 @@ public class OfferAttributeRepositoryImpl  extends CloudantClient<OfferAttribute
     }
 
     public OfferAttribute get(Long attributeId) {
+        if (attributeId == null) {
+            return null;
+        }
         return super.cloudantGet(attributeId.toString()).get();
     }
 
