@@ -60,7 +60,6 @@ public class OfferRevision extends BaseRevisionModel {
     private Map<String, OfferRevisionLocaleProperties> locales;
     @ApiModelProperty(position = 32, required = true,
             value = "The content ratings given to the offer by specific boards (ESRB, PEGI)")
-    @AgeRatingId
     private Map<String, List<AgeRating>> ageRatings;
     @ApiModelProperty(position = 33, required = true, value = "Offer pre-order price")
     private Price preOrderPrice;
