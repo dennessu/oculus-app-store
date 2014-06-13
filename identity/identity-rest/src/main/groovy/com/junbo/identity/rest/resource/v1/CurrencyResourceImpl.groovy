@@ -251,7 +251,7 @@ class CurrencyResourceImpl implements CurrencyResource {
     private Field getAndCacheField(Class cls, String fieldName) {
         String key = cls.toString() + ":" + fieldName
         if (hashMap.get(key) == null) {
-            Field field = CurrencyLocaleKey.getDeclaredField(fieldName)
+            Field field = cls.getDeclaredField(fieldName)
             field.setAccessible(true)
             hashMap.put(key, field)
         }

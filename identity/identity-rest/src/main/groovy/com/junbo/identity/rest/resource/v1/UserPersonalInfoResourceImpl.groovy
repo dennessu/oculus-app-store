@@ -102,6 +102,8 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
             throw new IllegalArgumentException('userPersonalInfo is null')
         }
 
+        userPersonalInfo = filterUserPersonalInfo(userPersonalInfo)
+
         return userPersonalInfoRepository.get(userPiiId).then { UserPersonalInfo oldUserPersonalInfo ->
             if (oldUserPersonalInfo == null) {
                 throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPiiId).exception()
@@ -135,6 +137,8 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
         if (userPii == null) {
             throw new IllegalArgumentException('userPii is null')
         }
+
+        userPii = filterUserPersonalInfo(userPii)
 
         return userPersonalInfoRepository.get(userPiiId).then { UserPersonalInfo oldUserPersonalInfo ->
             if (oldUserPersonalInfo == null) {
@@ -223,5 +227,15 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
                         listOptions.offset).then(filterUserPersonalInfos)
             }
         }
+    }
+
+    private UserPersonalInfo filterUserPersonalInfo(UserPersonalInfo userPersonalInfo) {
+        if (userPersonalInfo == null) {
+            return userPersonalInfo
+        }
+
+        userPersonalInfo.isValidated = null
+
+        return userPersonalInfo
     }
 }
