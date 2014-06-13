@@ -57,7 +57,9 @@ public class CartServiceImpl implements CartService {
 
     public String addCart(String userId, Cart cart, int expectedResponseCode) throws Exception {
 
-        String requestBody = new JsonMessageTranscoder().encode(cart);
+        byte[] bytes = new JsonMessageTranscoder().encode(cart);
+
+        String requestBody = new String(bytes);
 
         String cartEndpointUrl = cartUrl + "users/" + userId + "/carts";
 
@@ -162,10 +164,11 @@ public class CartServiceImpl implements CartService {
         logger.LogResponse(nettyResponse);
         Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
 
-        Results<Cart> cartGet = new JsonMessageTranscoder().decode(new TypeReference<Results<Cart>>() {},
+        Results<Cart> cartGet = new JsonMessageTranscoder().decode(new TypeReference<Results<Cart>>() {
+        },
                 nettyResponse.getResponseBody());
         List<String> listCartId = new ArrayList<>();
-        for (Cart cart : cartGet.getItems()){
+        for (Cart cart : cartGet.getItems()) {
             String cartRtnId = IdConverter.idToHexString(cart.getId());
             Master.getInstance().addCart(cartRtnId, cart);
             listCartId.add(cartRtnId);
@@ -179,7 +182,8 @@ public class CartServiceImpl implements CartService {
     }
 
     public String updateCart(String userId, String cartId, Cart cart, int expectedResponseCode) throws Exception {
-        String requestBody = new JsonMessageTranscoder().encode(cart);
+        byte[] bytes = new JsonMessageTranscoder().encode(cart);
+        String requestBody = new String(bytes);
 
         String cartEndpointUrl = cartUrl + "users/" + userId + "/carts/" + cartId;
 
@@ -207,7 +211,8 @@ public class CartServiceImpl implements CartService {
     }
 
     public String mergeCart(String userId, String cartId, Cart fromCart, int expectedResponseCode) throws Exception {
-        String requestBody = new JsonMessageTranscoder().encode(fromCart);
+        byte[] bytes = new JsonMessageTranscoder().encode(fromCart);
+        String requestBody = new String(bytes);
 
         String cartEndpointUrl = cartUrl + "users/" + userId + "/carts/" + cartId + "/merge";
 

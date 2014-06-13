@@ -13,13 +13,16 @@ import com.junbo.test.common.libs.LogHelper;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.RequestBuilder;
 import com.ning.http.client.Request;
+
 import java.util.concurrent.Future;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+
 import org.testng.Assert;
+
 import java.util.List;
 
 /**
@@ -63,14 +66,16 @@ public abstract class HttpClientBase {
     }
 
     protected <T> String restApiCall(HTTPMethod httpMethod, String restUrl, T t) throws Exception {
-        String requestBody = new JsonMessageTranscoder().encode(t);
+        byte[] bytes = new JsonMessageTranscoder().encode(t);
+        String requestBody = new String(bytes);
 
         return restApiCall(httpMethod, restUrl, requestBody);
     }
 
     protected <T> String restApiCall(HTTPMethod httpMethod, String restUrl, T t,
                                      int expectedResponseCode) throws Exception {
-        String requestBody = new JsonMessageTranscoder().encode(t);
+        byte[] bytes = new JsonMessageTranscoder().encode(t);
+        String requestBody = new String(bytes);
 
         return restApiCall(httpMethod, restUrl, requestBody, expectedResponseCode);
     }
@@ -121,7 +126,7 @@ public abstract class HttpClientBase {
                     restUrl = restUrl.concat("?");
                     for (String key : httpParameters.keySet()) {
                         List<String> strValues = httpParameters.get(key);
-                        for (int i = 0; i < strValues.size(); i ++) {
+                        for (int i = 0; i < strValues.size(); i++) {
                             restUrl = restUrl.concat(String.format("%s=%s", key, strValues.get(i)));
                             restUrl = restUrl.concat("&");
                         }
