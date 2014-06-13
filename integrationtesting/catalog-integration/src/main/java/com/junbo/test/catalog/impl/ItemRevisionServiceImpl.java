@@ -108,9 +108,7 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
     public ItemRevision prepareItemRevisionEntity(String fileName) throws Exception {
 
         String strItem = readFileContent(String.format("testItemRevisions/%s.json", fileName));
-        ItemRevision itemRevisionForPost = new JsonMessageTranscoder().decode(new TypeReference<ItemRevision>() {
-        },
-                strItem);
+        ItemRevision itemRevisionForPost = new JsonMessageTranscoder().decode(new TypeReference<ItemRevision>() {},strItem);
 
         //set locales
         ItemRevisionLocaleProperties itemRevisionLocaleProperties = new ItemRevisionLocaleProperties();
