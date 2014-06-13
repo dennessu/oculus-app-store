@@ -220,7 +220,7 @@ class CurrencyValidatorImpl implements CurrencyValidator {
             throw AppErrors.INSTANCE.fieldRequired('locales').exception()
         }
 
-        if (currency.locales.locales == null) {
+        if (currency.locales == null) {
             throw AppErrors.INSTANCE.fieldRequired('locales').exception()
         }
 
