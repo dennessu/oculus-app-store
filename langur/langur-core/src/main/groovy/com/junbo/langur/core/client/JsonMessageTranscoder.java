@@ -17,7 +17,7 @@ public class JsonMessageTranscoder implements MessageTranscoder {
     }
 
     @Override
-    public <T> String encode(T body) {
+    public <T> byte[] encode(T body) {
         return null;
     }
 }
