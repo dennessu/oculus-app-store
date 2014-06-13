@@ -6,7 +6,6 @@
 package com.junbo.identity.rest.resource.v1
 
 import com.junbo.authorization.AuthorizeContext
-import com.junbo.common.id.Id
 import com.junbo.common.id.TosId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -50,7 +49,7 @@ class TosResourceImpl implements TosResource {
 
         return tosValidator.validateForCreate(tos).then {
             return tosRepository.create(tos).then { Tos newTos ->
-                Created201Marker.mark((Id) newTos.id)
+                Created201Marker.mark(newTos.getId())
 
                 newTos = tosFilter.filterForGet(newTos, null)
                 return Promise.pure(newTos)

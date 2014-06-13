@@ -3,7 +3,6 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
-import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -80,7 +79,7 @@ class UserResourceImpl implements UserResource {
                     return userCryptoResource.create(new UserCryptoKey(
                             userId: (UserId)newUser.id
                     )).then {
-                        Created201Marker.mark((Id) newUser.id)
+                        Created201Marker.mark(newUser.getId())
 
                         newUser = userFilter.filterForGet(newUser, null)
                         return Promise.pure(newUser)

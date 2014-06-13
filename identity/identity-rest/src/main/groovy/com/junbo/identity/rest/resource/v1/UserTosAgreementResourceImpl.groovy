@@ -3,7 +3,6 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
-import com.junbo.common.id.Id
 import com.junbo.common.id.UserTosAgreementId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -60,7 +59,7 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
                 }
 
                 return userTosRepository.create(userTos).then { UserTosAgreement newUserTos ->
-                    Created201Marker.mark((Id) newUserTos.id)
+                    Created201Marker.mark(newUserTos.getId())
 
                     newUserTos = userTosFilter.filterForGet(newUserTos, null)
                     return Promise.pure(newUserTos)

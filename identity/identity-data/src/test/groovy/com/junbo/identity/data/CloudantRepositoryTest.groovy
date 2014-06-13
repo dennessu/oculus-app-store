@@ -390,7 +390,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         user.setIsAnonymous(false)
         def random = UUID.randomUUID().toString()
         user.setUsername(random)
-        user.setPreferredLocale(new LocaleId(UUID.randomUUID().toString()))
+        user.setPreferredLocale(new LocaleId("en_US"))
         user.setPreferredTimezone(UUID.randomUUID().toString())
         user.setCanonicalUsername(random)
         user.setCreatedTime(new Date())

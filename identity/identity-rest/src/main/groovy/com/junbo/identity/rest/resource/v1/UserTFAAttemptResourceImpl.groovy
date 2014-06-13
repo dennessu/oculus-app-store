@@ -3,7 +3,6 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
-import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTFAAttemptId
 import com.junbo.common.model.Results
@@ -75,7 +74,7 @@ class UserTFAAttemptResourceImpl implements UserTFAAttemptResource {
             return createInNewTran(userTeleAttempt).then { UserTFAAttempt attempt ->
 
                 if (attempt.succeeded == true) {
-                    Created201Marker.mark((Id)attempt.id)
+                    Created201Marker.mark(attempt.getId())
 
                     attempt.verifyCode = null
                     attempt = userTFAAttemptFilter.filterForGet(attempt, null)

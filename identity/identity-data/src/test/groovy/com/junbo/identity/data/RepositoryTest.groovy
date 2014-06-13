@@ -179,7 +179,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         def random = UUID.randomUUID().toString()
         user.setCanonicalUsername(random)
         user.setUsername(random)
-        user.setPreferredLocale(new LocaleId(UUID.randomUUID().toString()))
+        user.setPreferredLocale(new LocaleId("en_US"))
         user.setPreferredTimezone(UUID.randomUUID().toString())
         user.setCreatedTime(new Date())
         user.setCreatedBy(123L)

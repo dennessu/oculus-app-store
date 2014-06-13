@@ -6,7 +6,6 @@
 package com.junbo.identity.rest.resource.v1
 
 import com.junbo.common.id.GroupId
-import com.junbo.common.id.Id
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.GroupFilter
@@ -50,7 +49,7 @@ class GroupResourceImpl implements GroupResource {
 
         return groupValidator.validateForCreate(group).then {
             return groupRepository.create(group).then { Group newGroup ->
-                Created201Marker.mark((Id) newGroup.id)
+                Created201Marker.mark(newGroup.getId())
 
                 newGroup = groupFilter.filterForGet(newGroup, null)
                 return Promise.pure(newGroup)

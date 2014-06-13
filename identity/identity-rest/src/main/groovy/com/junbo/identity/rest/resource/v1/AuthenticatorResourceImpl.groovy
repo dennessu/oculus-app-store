@@ -8,7 +8,6 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
-import com.junbo.common.id.Id
 import com.junbo.common.id.UserAuthenticatorId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -64,7 +63,7 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
 
             return userAuthenticatorValidator.validateForCreate(userAuthenticator).then {
                 return userAuthenticatorRepository.create(userAuthenticator).then { UserAuthenticator newUserAuthenticator ->
-                    Created201Marker.mark((Id) newUserAuthenticator.id)
+                    Created201Marker.mark(newUserAuthenticator.getId())
 
                     newUserAuthenticator = userAuthenticatorFilter.filterForGet(newUserAuthenticator, null)
                     return Promise.pure(newUserAuthenticator)

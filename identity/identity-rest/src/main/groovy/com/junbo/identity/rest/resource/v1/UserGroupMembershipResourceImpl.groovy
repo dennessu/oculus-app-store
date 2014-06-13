@@ -1,6 +1,5 @@
 package com.junbo.identity.rest.resource.v1
 
-import com.junbo.common.id.Id
 import com.junbo.common.id.UserGroupId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -43,7 +42,7 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
 
         return userGroupValidator.validateForCreate(userGroup).then {
             return userGroupRepository.create(userGroup).then { UserGroup newUserGroup ->
-                Created201Marker.mark((Id)newUserGroup.id)
+                Created201Marker.mark(newUserGroup.getId())
 
                 newUserGroup = userGroupFilter.filterForGet(newUserGroup, null)
                 return Promise.pure(newUserGroup)

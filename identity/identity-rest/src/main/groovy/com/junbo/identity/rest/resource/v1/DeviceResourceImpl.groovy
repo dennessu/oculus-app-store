@@ -6,7 +6,6 @@
 package com.junbo.identity.rest.resource.v1
 
 import com.junbo.common.id.DeviceId
-import com.junbo.common.id.Id
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.DeviceFilter
@@ -44,7 +43,7 @@ class DeviceResourceImpl implements DeviceResource {
 
         return deviceValidator.validateForCreate(device).then {
             return deviceRepository.create(device).then { Device newDevice ->
-                Created201Marker.mark((Id) newDevice.id)
+                Created201Marker.mark(newDevice.getId())
 
                 newDevice = deviceFilter.filterForGet(newDevice, null)
                 return Promise.pure(newDevice)
