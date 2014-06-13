@@ -19,11 +19,7 @@ import com.junbo.order.db.mapper.ModelMapper
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.db.repo.util.RepositoryFuncSet
 import com.junbo.order.db.repo.util.Utils
-import com.junbo.order.spec.model.Order
-import com.junbo.order.spec.model.OrderQueryParam
-import com.junbo.order.spec.model.OrderRevision
-import com.junbo.order.spec.model.PageParam
-import com.junbo.order.spec.model.PaymentInfo
+import com.junbo.order.spec.model.*
 import com.junbo.order.spec.model.enums.OrderStatus
 import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
@@ -33,7 +29,6 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
-
 /**
  * Order Repository SQL impl
  */

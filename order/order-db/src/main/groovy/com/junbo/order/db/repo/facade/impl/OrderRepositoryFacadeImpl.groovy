@@ -107,23 +107,22 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
             }
             assert (latestRevision != null)
             fillOrderWithRevision(order, latestRevision)
-
-            order.orderItems?.collect() { OrderItem item ->
-                if (!CollectionUtils.isEmpty(item.orderItemRevisions)) {
-                    def latestItemRevision = item.orderItemRevisions.find() { OrderItemRevision itemRevision ->
-                        itemRevision.id == item.latestOrderItemRevisionId
-                    }
-                    assert (latestItemRevision != null)
-                    fillOrderItemWithRevision(item, latestItemRevision)
-                }
-            }
         }
         return order
     }
 
     @Override
     List<Order> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
-        return orderRepository.getByUserId(userId, orderQueryParam, pageParam).get()
+        List<Order> orders = orderRepository.getByUserId(userId, orderQueryParam, pageParam).get()
+        orders.each {Order order ->
+            if (!order.tentative && !CollectionUtils.isEmpty(order.orderRevisions)) {
+                def latestRevision = order.orderRevisions.find() { OrderRevision revision ->
+                    revision.id == order.latestOrderRevisionId
+                }
+                assert (latestRevision != null)
+                fillOrderWithRevision(order, latestRevision)
+            }
+        }
     }
 
     @Override
@@ -150,12 +149,30 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
 
     @Override
     List<OrderItem> getOrderItems(Long orderId) {
-        return orderItemRepository.getByOrderId(orderId).get();
+        def orderItems = orderItemRepository.getByOrderId(orderId).get()
+        orderItems?.collect() { OrderItem item ->
+            if (!CollectionUtils.isEmpty(item.orderItemRevisions)) {
+                def latestItemRevision = item.orderItemRevisions.find() { OrderItemRevision itemRevision ->
+                    itemRevision.id == item.latestOrderItemRevisionId
+                }
+                assert (latestItemRevision != null)
+                fillOrderItemWithRevision(item, latestItemRevision)
+            }
+        }
+        return orderItems
     }
 
     @Override
     OrderItem getOrderItem(Long orderItemId) {
-        return orderItemRepository.get(new OrderItemId(orderItemId)).get();
+        def item = orderItemRepository.get(new OrderItemId(orderItemId)).get()
+        if (!CollectionUtils.isEmpty(item.orderItemRevisions)) {
+            def latestItemRevision = item.orderItemRevisions.find() { OrderItemRevision itemRevision ->
+                itemRevision.id == item.latestOrderItemRevisionId
+            }
+            assert (latestItemRevision != null)
+            fillOrderItemWithRevision(item, latestItemRevision)
+        }
+        return item
     }
 
     @Override

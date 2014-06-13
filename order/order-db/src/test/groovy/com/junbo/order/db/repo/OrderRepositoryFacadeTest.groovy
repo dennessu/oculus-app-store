@@ -10,15 +10,13 @@ import com.junbo.order.db.BaseTest
 import com.junbo.order.db.common.TestHelper
 import com.junbo.order.db.mapper.ModelMapper
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
-import com.junbo.order.spec.model.Discount
-import com.junbo.order.spec.model.Order
-import com.junbo.order.spec.model.OrderItem
-import com.junbo.order.spec.model.PaymentInfo
-import groovy.transform.CompileStatic
+import com.junbo.order.spec.model.*
 import com.junbo.order.spec.model.enums.OrderItemRevisionType
+import groovy.transform.CompileStatic
 import org.apache.commons.lang.RandomStringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.testng.annotations.Test
+
 /**
  * Created by fzhang on 14-3-12.
  */
@@ -102,15 +100,34 @@ class OrderRepositoryFacadeTest extends BaseTest {
         orderRepository.updateOrder(order, true, null, null)
         verifyByRead(order)
 
-        order.shippingAddress = new UserPersonalInfoId(TestHelper.generateId())
+        def newShippingAddress = TestHelper.generateId()
+        order.shippingAddress = new UserPersonalInfoId(newShippingAddress)
         orderRepository.updateOrder(order, false, true, OrderItemRevisionType.ADJUST_SHIPPING)
         verifyByRead(order)
+        def newOrder = orderRepository.getOrder(order.getId().value)
+        assert(newOrder.orderRevisions.size() == 1)
+        assert(newOrder.shippingAddress.value == newShippingAddress)
+        assert(newOrder.latestOrderRevisionId == newOrder.orderRevisions[0].getId())
+        def newOrders = orderRepository.getOrdersByUserId(order.user.value, new OrderQueryParam(), new PageParam())
+        assert(newOrders[0].orderRevisions.size() == 1)
+        assert(newOrders[0].shippingAddress.value == newShippingAddress)
+        assert(newOrders[0].latestOrderRevisionId == newOrder.orderRevisions[0].getId())
 
         order.orderItems[0].quantity = 0
         orderRepository.updateOrder(order, false, true, OrderItemRevisionType.REFUND)
         verifyByRead(order)
-    }
 
+        def refundItem = orderRepository.getOrderItem(order.orderItems[0].getId().value)
+        assert(refundItem.orderItemRevisions.size() == 2)
+        assert(refundItem.orderItemRevisions.find() { OrderItemRevision revision ->
+            refundItem.latestOrderItemRevisionId == revision.getId() }.quantity == 0)
+        def refundItems = orderRepository.getOrderItems(order.getId().value)
+        refundItems.each {OrderItem item ->
+            assert(item.orderItemRevisions.size() == 2)
+            assert(item.orderItemRevisions.find() { OrderItemRevision revision ->
+                item.latestOrderItemRevisionId == revision.getId() }.quantity == item.quantity)
+        }
+    }
 
     void verifyByRead(Order order) {
         assertOrderEquals(orderRepository.getOrder(order.getId().value), order)
