@@ -13,8 +13,8 @@
         "priceType": "CUSTOM",
         "priceTier": null,
         "prices": {
-            "US": {"USD": 10},
-            "JP": {"JPY": 1000.0}
+            "US": {"USD": 19.99},
+            "JP": {"JPY": 1000}
         }
     },
     "restrictions":{
@@ -47,6 +47,24 @@
                     "title": "title of the video"
                 }
             ]
+        }
+    },
+    "preOrderPrice":{
+        "priceType": "CUSTOM",
+        "priceTier": null,
+        "prices": {
+            "US": {"USD": 5.00},
+            "JP": {"JPY": 500}
+        }
+    },
+    "countries":{
+        "US":{
+            "isPurchasable": true,
+            "releaseDate":"2018-06-10T09:05:58Z"
+        },
+        "DE":{
+            "isPurchasable": true,
+            "releaseDate":"2018-06-10T09:05:58Z"
         }
     },
     "futureExpansion":{},

@@ -1,6 +1,6 @@
 {
     "item": {"href": "https://api.oculusvr.com/v1/items/6B54DDA43C9F", "id": "6B54DDA43C9F"},
-    "owner": {"href": "https://api.oculusvr.com/v1/organizations/1234", "id": "1234"},
+    "developer": {"href": "https://api.oculusvr.com/v1/organizations/1234", "id": "1234"},
     "status": "DRAFT",
     "msrp":{
         "priceType": "CUSTOM",
@@ -27,7 +27,7 @@
             "size": "small",
             "supportEmail": "support email",
             "images":{
-                "thumb": {
+                "thumbnail": {
                     "id": "id of image",
                     "href":"location of image",
                     "size":200,
@@ -40,8 +40,7 @@
                     "size":300,
                     "x":20,
                     "y":15
-                },
-                "general":[]
+                }
             },
             "videos":[],
             "manualDocument": "the pdf address",
