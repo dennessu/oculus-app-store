@@ -26,6 +26,7 @@ public class OculusInput {
     private Date createdDate;
     private Date updateDate;
     private String devCenterCompany;
+    private Boolean forceResetPassword;
 
     private ShareProfile shareProfile;
     private Boolean oldPasswordHash;
@@ -145,6 +146,18 @@ public class OculusInput {
 
     public ShareProfile getShareProfile() {
         return shareProfile;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public Boolean getForceResetPassword() {
+        return forceResetPassword;
+    }
+
+    public void setForceResetPassword(Boolean forceResetPassword) {
+        this.forceResetPassword = forceResetPassword;
     }
 
     public void setShareProfile(ShareProfile shareProfile) {
