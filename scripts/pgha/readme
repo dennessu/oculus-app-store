@@ -83,7 +83,6 @@
 
 #[master/slave] (FOR DEMO ONLY)
     [silkcloud] echo "*:6543:*:silkcloud:abc123" > ~/.pgpass
-    [silkcloud] echo "*:5432:*:silkcloud:abc123" > ~/.pgpass
     [silkcloud] chmod 600 ~/.pgpass
     [silkcloud] echo '"silkcloud" "abc123"' > ~/pgbouncer_auth.txt
 
@@ -159,7 +158,7 @@
 #[master/slave] replication smoke test
     $DEPLOYMENT_PATH/test/test_slave2master.sh
 
-#[master] slave failback to slave
+#[master] slave failback to master
     $DEPLOYMENT_PATH/switchover/failback.sh
 
 #[master] start primary PGBouncer proxy (connect to master db)
@@ -199,6 +198,6 @@
 #repeat normal replciation setup process
 
 =====Release Memo=====
-# Londiste doesn't support DDL replication, liquibase scripts should be run against both MASTER and REPLICA
-# Liquibase change log related table should not be published for replication
+# Londiste doesn't support DDL replication, liquibase scripts should be first run against REPLICA then MASTER
+# Liquibase change log related tables should not be published for replication
 

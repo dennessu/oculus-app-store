@@ -20,4 +20,6 @@ do
 
     echo "publish all tables"
     londiste3 $config add-table --all
+
+    #TODO remove liquibase table publication
 done
