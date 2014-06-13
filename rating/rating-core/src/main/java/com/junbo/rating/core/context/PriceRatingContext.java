@@ -25,7 +25,7 @@ public class PriceRatingContext extends RatingContext {
     private Map<String, String> couponCodes;
     private Set<RatableItem> items;
     private String timestamp;
-    private Map<Long, Set<PromotionRevision>> candidates;
+    private Map<String, Set<PromotionRevision>> candidates;
     private Map<PromotionType, Set<PromotionRevision>> rules;
 
     private RatableItem currentItem;
@@ -33,7 +33,7 @@ public class PriceRatingContext extends RatingContext {
 
     private OrderResultEntry orderResult;
 
-    private Long defaultShippingMethod;
+    private String defaultShippingMethod;
     private ShippingResultEntry shippingResult;
     //TODO: violations
 
@@ -99,11 +99,11 @@ public class PriceRatingContext extends RatingContext {
         this.timestamp = timestamp;
     }
 
-    public Map<Long, Set<PromotionRevision>> getCandidates() {
+    public Map<String, Set<PromotionRevision>> getCandidates() {
         return candidates;
     }
 
-    public void setCandidates(Map<Long, Set<PromotionRevision>> candidates) {
+    public void setCandidates(Map<String, Set<PromotionRevision>> candidates) {
         this.candidates = candidates;
     }
 
@@ -139,11 +139,11 @@ public class PriceRatingContext extends RatingContext {
         this.orderResult = orderResult;
     }
 
-    public Long getDefaultShippingMethod() {
+    public String getDefaultShippingMethod() {
         return defaultShippingMethod;
     }
 
-    public void setDefaultShippingMethod(Long defaultShippingMethod) {
+    public void setDefaultShippingMethod(String defaultShippingMethod) {
         this.defaultShippingMethod = defaultShippingMethod;
     }
 

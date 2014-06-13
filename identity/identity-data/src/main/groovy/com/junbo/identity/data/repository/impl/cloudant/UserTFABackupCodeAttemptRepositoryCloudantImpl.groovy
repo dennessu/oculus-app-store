@@ -1,5 +1,4 @@
 package com.junbo.identity.data.repository.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.UserId
@@ -7,20 +6,13 @@ import com.junbo.common.id.UserTFABackupCodeAttemptId
 import com.junbo.identity.data.repository.UserTFABackupCodeAttemptRepository
 import com.junbo.identity.spec.v1.model.UserTFABackupCodeAttempt
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.IdGenerator
-import com.junbo.sharding.ShardAlgorithm
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required
-
 /**
  * Created by liangfu on 4/23/14.
  */
 @CompileStatic
 class UserTFABackupCodeAttemptRepositoryCloudantImpl extends CloudantClient<UserTFABackupCodeAttempt>
         implements UserTFABackupCodeAttemptRepository  {
-
-    private ShardAlgorithm shardAlgorithm
-    private IdGenerator idGenerator
 
     @Override
     protected CloudantViews getCloudantViews() {
@@ -34,9 +26,6 @@ class UserTFABackupCodeAttemptRepositoryCloudantImpl extends CloudantClient<User
 
     @Override
     Promise<UserTFABackupCodeAttempt> create(UserTFABackupCodeAttempt entity) {
-        if (entity.id == null) {
-            entity.id = new UserTFABackupCodeAttemptId(idGenerator.nextId(entity.userId.value))
-        }
         return super.cloudantPost(entity)
     }
 
@@ -64,14 +53,4 @@ class UserTFABackupCodeAttemptRepositoryCloudantImpl extends CloudantClient<User
                             resultClass: String)
             ]
     )
-
-    @Required
-    void setShardAlgorithm(ShardAlgorithm shardAlgorithm) {
-        this.shardAlgorithm = shardAlgorithm
-    }
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
 }

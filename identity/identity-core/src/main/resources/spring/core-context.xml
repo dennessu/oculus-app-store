@@ -541,6 +541,7 @@
                         <value>emails</value>
                         <value>name</value>
                         <value>dob</value>
+                        <value>countryOfResidence</value>
                         <value>textMessages</value>
                         <value>qqs</value>
                         <value>whatsApps</value>
@@ -571,6 +572,7 @@
                         <value>emails</value>
                         <value>name</value>
                         <value>dob</value>
+                        <value>countryOfResidence</value>
                         <value>textMessages</value>
                         <value>qqs</value>
                         <value>whatsApps</value>
@@ -599,6 +601,7 @@
                         <value>emails</value>
                         <value>name</value>
                         <value>dob</value>
+                        <value>countryOfResidence</value>
                         <value>textMessages</value>
                         <value>qqs</value>
                         <value>whatsApps</value>

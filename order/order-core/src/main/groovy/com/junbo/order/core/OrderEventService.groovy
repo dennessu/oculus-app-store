@@ -1,6 +1,7 @@
 package com.junbo.order.core
 
 import com.junbo.langur.core.promise.Promise
+import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.PageParam
 
@@ -10,5 +11,5 @@ import com.junbo.order.spec.model.PageParam
 interface OrderEventService {
     Promise<List<OrderEvent>> getOrderEvents(Long orderId, PageParam pageParam)
 
-    Promise<OrderEvent> recordEventHistory(OrderEvent event)
+    Promise<OrderEvent> recordEventHistory(OrderEvent event, OrderServiceContext orderServiceContext)
 }

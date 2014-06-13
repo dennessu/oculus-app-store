@@ -61,7 +61,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     }
 
     @Override
-    public Offer updateEntity(Long offerId, Offer offer) {
+    public Offer updateEntity(String offerId, Offer offer) {
         Offer oldOffer = offerRepo.get(offerId);
         if (oldOffer == null) {
             throw AppErrors.INSTANCE.notFound("offer", Utils.encodeId(offerId)).exception();
@@ -78,7 +78,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     }
 
     @Override
-    public Offer getEntity(Long entityId) {
+    public Offer getEntity(String entityId) {
         Offer offer = getEntityRepo().get(entityId);
         checkEntityNotNull(entityId, offer, getEntityType());
         offer.setCurrentRevisionId(getCurrentRevisionId(offer.getApprovedRevisions()));
@@ -103,12 +103,12 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         return offers;
     }
 
-    private Long getCurrentRevisionId(Map<Long, RevisionInfo> approvedRevisions) {
+    private String getCurrentRevisionId(Map<String, RevisionInfo> approvedRevisions) {
         if (approvedRevisions == null) {
             return null;
         }
         Long timestamp = Utils.currentTimestamp();
-        Long revisionId = null;
+        String revisionId = null;
         Long approvedTime = 0L;
         for (RevisionInfo revisionInfo : approvedRevisions.values()) {
             if (revisionInfo.getApprovedTime() > approvedTime
@@ -129,7 +129,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
                         .validation("offerId must be specified when timeInMillis is present.").exception();
             }
 
-            Set<Long> offerIds = new HashSet<>();
+            Set<String> offerIds = new HashSet<>();
             for (OfferId offerId : options.getOfferIds()) {
                 offerIds.add(offerId.getValue());
             }
@@ -147,7 +147,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     }
 
     @Override
-    public OfferRevision updateRevision(Long revisionId, OfferRevision revision) {
+    public OfferRevision updateRevision(String revisionId, OfferRevision revision) {
         OfferRevision oldRevision = offerRevisionRepo.get(revisionId);
         if (oldRevision==null) {
             throw AppErrors.INSTANCE.notFound("offer-revision", Utils.encodeId(revisionId)).exception();
@@ -190,7 +190,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             offer.setActiveRevision(revision);
         }
         if (offer.getApprovedRevisions() == null) {
-            offer.setApprovedRevisions(new HashMap<Long, RevisionInfo>());
+            offer.setApprovedRevisions(new HashMap<String, RevisionInfo>());
         }
         offer.getApprovedRevisions().put(revision.getRevisionId(), getRevisionInfo(revision, timestamp));
 
@@ -231,24 +231,24 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         return "offer";
     }
 
-    private List<Offer> getOffersByItemId(Long itemId) {
+    private List<Offer> getOffersByItemId(String itemId) {
         List<OfferRevision> offerRevisions = offerRevisionRepo.getRevisions(itemId);
         if (CollectionUtils.isEmpty(offerRevisions)) {
             return Collections.emptyList();
         }
 
-        Set<Long> tempOfferIds = filterOfferIds(offerRevisions);
-        Set<Long> resultOfferIds = new HashSet<>(tempOfferIds);
-        for (Long offerId : tempOfferIds) {
+        Set<String> tempOfferIds = filterOfferIds(offerRevisions);
+        Set<String> resultOfferIds = new HashSet<>(tempOfferIds);
+        for (String offerId : tempOfferIds) {
             findOfferIdsBySubOfferId(offerId, resultOfferIds);
         }
 
         return offerRepo.getOffers(resultOfferIds);
     }
 
-    private Set<Long> filterOfferIds(List<OfferRevision> revisions) {
-        Set<Long> offerIds = new HashSet<>();
-        Set<Long> revisionIds = new HashSet<>();
+    private Set<String> filterOfferIds(List<OfferRevision> revisions) {
+        Set<String> offerIds = new HashSet<>();
+        Set<String> revisionIds = new HashSet<>();
         for (OfferRevision offerRevision : revisions) {
             offerIds.add(offerRevision.getOfferId());
             revisionIds.add(offerRevision.getRevisionId());
@@ -256,7 +256,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
 
         List<OfferRevision> offerRevisions = offerRevisionRepo.getRevisions(offerIds, Utils.currentTimestamp());
 
-        Set<Long> resultOfferIds = new HashSet<>();
+        Set<String> resultOfferIds = new HashSet<>();
         for (OfferRevision revision : offerRevisions) {
             if (revisionIds.contains(revision.getRevisionId())) {
                 resultOfferIds.add(revision.getOfferId());
@@ -266,15 +266,15 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         return resultOfferIds;
     }
 
-    private void findOfferIdsBySubOfferId(Long subOfferId, Set<Long> offerIds) {
+    private void findOfferIdsBySubOfferId(String subOfferId, Set<String> offerIds) {
         List<OfferRevision> offerRevisions = offerRevisionRepo.getRevisionsBySubOfferId(subOfferId);
         if (CollectionUtils.isEmpty(offerRevisions)) {
             return;
         }
 
-        Set<Long> tempOfferIds = filterOfferIds(offerRevisions);
+        Set<String> tempOfferIds = filterOfferIds(offerRevisions);
 
-        for (Long offerId : tempOfferIds) {
+        for (String offerId : tempOfferIds) {
             if (!offerIds.contains(offerId)) {
                 offerIds.add(offerId);
                 findOfferIdsBySubOfferId(offerId, offerIds);
@@ -328,7 +328,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             errors.add(AppErrors.INSTANCE.missingField("publisher"));
         }
         if (!CollectionUtils.isEmpty(offer.getCategories())) {
-            for (Long categoryId : offer.getCategories()) {
+            for (String categoryId : offer.getCategories()) {
                 if (categoryId == null) {
                     errors.add(AppErrors.INSTANCE.fieldNotCorrect("categories", "should not contain null"));
                 } else {
@@ -425,23 +425,27 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     private void validateItems(List<ItemEntry> items, List<AppError> errors) {
         boolean hasSVItem = false;
         for (ItemEntry itemEntry : items) {
-            Item item = itemRepo.get(itemEntry.getItemId());
-            if (item == null) {
-                errors.add(AppErrors.INSTANCE.notFound("item", Utils.encodeId(itemEntry.getItemId())));
+            if (itemEntry.getItemId() == null) {
+                errors.add(AppErrors.INSTANCE.fieldNotCorrect("items.item.id", "should not be null"));
             } else {
-                if (item.getType().equals(ItemType.STORED_VALUE)) {
-                    hasSVItem = true;
-                }
-                if (itemEntry.getQuantity() == null) {
-                    itemEntry.setQuantity(1);
-                } else if (itemEntry.getQuantity() <= 0) {
-                    errors.add(AppErrors.INSTANCE.fieldNotCorrect("items",
-                            "Quantity should be greater than 0 for item " + Utils.encodeId(itemEntry.getItemId())));
-                } else if (itemEntry.getQuantity() > 1) {
-                    if (!(ItemType.VIRTUAL.is(item.getType()) || ItemType.PHYSICAL.is(item.getType()))) {
+                Item item = itemRepo.get(itemEntry.getItemId());
+                if (item == null) {
+                    errors.add(AppErrors.INSTANCE.notFound("item", Utils.encodeId(itemEntry.getItemId())));
+                } else {
+                    if (item.getType().equals(ItemType.STORED_VALUE)) {
+                        hasSVItem = true;
+                    }
+                    if (itemEntry.getQuantity() == null) {
+                        itemEntry.setQuantity(1);
+                    } else if (itemEntry.getQuantity() <= 0) {
                         errors.add(AppErrors.INSTANCE.fieldNotCorrect("items",
-                                "'quantity' should be 1 for " + item.getType()
-                                        + " item " + Utils.encodeId(itemEntry.getItemId())));
+                                "Quantity should be greater than 0 for item " + Utils.encodeId(itemEntry.getItemId())));
+                    } else if (itemEntry.getQuantity() > 1) {
+                        if (!(ItemType.VIRTUAL.is(item.getType()) || ItemType.PHYSICAL.is(item.getType()))) {
+                            errors.add(AppErrors.INSTANCE.fieldNotCorrect("items",
+                                    "'quantity' should be 1 for " + item.getType()
+                                            + " item " + Utils.encodeId(itemEntry.getItemId())));
+                        }
                     }
                 }
             }
@@ -465,8 +469,8 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         return purchaseActions;
     }
 
-    private Map<Long, Set<String>> adjustActions(List<ItemEntry> items, List<Action> purchaseActions) {
-        Map<Long, Set<String>> result = new HashMap<>();
+    private Map<String, Set<String>> adjustActions(List<ItemEntry> items, List<Action> purchaseActions) {
+        Map<String, Set<String>> result = new HashMap<>();
         for (ItemEntry itemEntry : items) {
             result.put(itemEntry.getItemId(), new HashSet<String>());
         }
@@ -488,7 +492,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
 
     private void generateEventActions(OfferRevision revision) {
         List<Action> purchaseActions = preparePurchaseEvent(revision);
-        Map<Long, Set<String>> definedActions = adjustActions(revision.getItems(), purchaseActions);
+        Map<String, Set<String>> definedActions = adjustActions(revision.getItems(), purchaseActions);
         for (ItemEntry itemEntry : revision.getItems()) {
             Item item = itemRepo.get(itemEntry.getItemId());
             if ((ItemType.DIGITAL.is(item.getType())

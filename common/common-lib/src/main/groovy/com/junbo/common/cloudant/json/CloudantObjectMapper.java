@@ -14,8 +14,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
+import com.junbo.common.cloudant.json.deserializer.CloudantIdCloudantDeserializer;
 import com.junbo.common.cloudant.json.deserializer.EnumIdCloudantDeserializer;
 import com.junbo.common.cloudant.json.deserializer.IdCloudantDeserializer;
+import com.junbo.common.cloudant.json.serializer.CloudantIdCloudantSerializer;
 import com.junbo.common.cloudant.json.serializer.EnumIdCloudantSerializer;
 import com.junbo.common.cloudant.json.serializer.IdCloudantSerializer;
 import com.junbo.common.id.util.IdUtil;
@@ -79,6 +81,11 @@ public class CloudantObjectMapper implements ContextResolver<ObjectMapper> {
         for (Class cls : IdUtil.ID_CLASSES) {
             module.addSerializer(cls, new IdCloudantSerializer());
             module.addDeserializer(cls, new IdCloudantDeserializer(cls));
+        }
+
+        for (Class cls : IdUtil.CLOUDANT_ID_CLASSES) {
+            module.addSerializer(cls, new CloudantIdCloudantSerializer());
+            module.addDeserializer(cls, new CloudantIdCloudantDeserializer(cls));
         }
 
         for (Class cls : IdUtil.ENUM_ID_CLASSES) {

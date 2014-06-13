@@ -100,7 +100,7 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
     @ShippingMethodId
     @ApiModelProperty(required = true, position = 75, value = "The shipping method. Required for physical goods. " +
             "It might be null if there is no shipping method at this time.")
-    private Long shippingMethod;
+    private String shippingMethod;
 
     @JsonProperty("shippingToAddress")
     @ApiModelProperty(required = true, position = 76, value = "The shipping address. Required for physical goods. " +
@@ -155,6 +155,9 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
 
     @JsonIgnore
     private Long latestOrderRevisionId;
+
+    @JsonIgnore
+    private List<OrderRevision> orderRevisions;
 
     public OrderId getId() {
         return id;
@@ -268,11 +271,11 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
         this.honoredTime = honoredTime;
     }
 
-    public Long getShippingMethod() {
+    public String getShippingMethod() {
         return shippingMethod;
     }
 
-    public void setShippingMethod(Long shippingMethod) {
+    public void setShippingMethod(String shippingMethod) {
         this.shippingMethod = shippingMethod;
     }
 
@@ -394,5 +397,13 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
 
     public void setLatestOrderRevisionId(Long latestOrderRevisionId) {
         this.latestOrderRevisionId = latestOrderRevisionId;
+    }
+
+    public List<OrderRevision> getOrderRevisions() {
+        return orderRevisions;
+    }
+
+    public void setOrderRevisions(List<OrderRevision> orderRevisions) {
+        this.orderRevisions = orderRevisions;
     }
 }

@@ -76,6 +76,8 @@ public class ResourceIdDeserializer extends JsonDeserializer<Object> implements 
             return (T) decode(id);
         } else if (clazz == Integer.class) {
             return (T) Integer.valueOf(id);
+        } else if (clazz == String.class) {
+            return (T) id;
         }
 
         return (T) id;

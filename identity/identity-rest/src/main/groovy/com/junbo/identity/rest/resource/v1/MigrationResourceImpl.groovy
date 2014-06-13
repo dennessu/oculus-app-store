@@ -1,7 +1,6 @@
 package com.junbo.identity.rest.resource.v1
 
 import com.junbo.common.enumid.LocaleId
-import com.junbo.common.error.AppError
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
@@ -60,10 +59,12 @@ class MigrationResourceImpl implements MigrationResource {
         }
 
         // Check current email isn't used by others
-        return checkEmailValid(oculusInput).then {
-            // If the user exists, update current user's information;
-            // else, create user's information
-            return createOrUpdateMigrateUser(oculusInput)
+        return checkEmailValid(oculusInput).then { User existing ->
+            return checkOrganizationValid(oculusInput, existing).then {
+                // If the user exists, update current user's information;
+                // else, create user's information
+                return createOrUpdateMigrateUser(oculusInput)
+            }
         }
     }
 
@@ -178,10 +179,11 @@ class MigrationResourceImpl implements MigrationResource {
             Organization organization = new Organization(
                     ownerId: (UserId)createdUser.id,
                     name: oculusInput.devCenterCompany,
+                    canonicalName: normalizeService.normalize(oculusInput.devCenterCompany),
                     isValidated: false
             )
 
-            return organizationRepository.create(organization).then { Organization createdOrganization ->
+            return saveOrUpdateOrganization(organization).then { Organization createdOrganization ->
                 OculusOutput output = new OculusOutput(
                         userId: (UserId)createdUser.id,
                         organizationId: (OrganizationId)createdOrganization.id
@@ -203,7 +205,23 @@ class MigrationResourceImpl implements MigrationResource {
         }
     }
 
-    Promise<Void> checkEmailValid(OculusInput oculusInput) {
+    Promise<Organization> saveOrUpdateOrganization(Organization organization) {
+        return organizationRepository.searchByOwner(organization.ownerId, Integer.MAX_VALUE, 0).then { List<Organization> organizationList ->
+            if (CollectionUtils.isEmpty(organizationList)) {
+               // create new organization
+                return organizationRepository.create(organization)
+            } else {
+                // update the first organization
+                Organization organizationToUpdate = organizationList.get(0)
+                organizationToUpdate.name = organization.name
+                organizationToUpdate.isValidated = organization.isValidated
+                organizationToUpdate.canonicalName = organization.canonicalName
+                return organizationRepository.update(organizationToUpdate)
+            }
+        }
+    }
+
+    Promise<User> checkEmailValid(OculusInput oculusInput) {
         return userRepository.getUserByCanonicalUsername(normalizeService.normalize(oculusInput.username)).then { User existing ->
             return userPersonalInfoRepository.searchByEmail(oculusInput.email.toLowerCase(java.util.Locale.ENGLISH),
                     Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> emails ->
@@ -216,11 +234,30 @@ class MigrationResourceImpl implements MigrationResource {
                 }
 
                 if (CollectionUtils.isEmpty(emails)) {
-                    return Promise.pure(null)
+                    return Promise.pure(existing)
                 }
 
                 throw AppErrors.INSTANCE.userEmailAlreadyUsed(oculusInput.currentId, oculusInput.email).exception()
             }
+        }
+    }
+
+    Promise<Void> checkOrganizationValid(OculusInput oculusInput, User user) {
+        return organizationRepository.searchByCanonicalName(normalizeService.normalize(oculusInput.devCenterCompany),
+                Integer.MAX_VALUE, 0).then { List<Organization> organizationList ->
+            if (CollectionUtils.isEmpty(organizationList)) {
+                return Promise.pure(null)
+            }
+
+            organizationList.removeAll { Organization org ->
+                return user != null && org.ownerId == user.id
+            }
+
+            if (CollectionUtils.isEmpty(organizationList)) {
+                return Promise.pure(null)
+            }
+
+            throw AppErrors.INSTANCE.organizationAlreadyUsed(oculusInput.devCenterCompany).exception()
         }
     }
 

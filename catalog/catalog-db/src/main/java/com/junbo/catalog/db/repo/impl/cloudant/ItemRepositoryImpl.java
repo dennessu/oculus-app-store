@@ -13,8 +13,6 @@ import com.junbo.common.cloudant.CloudantClient;
 import com.junbo.common.cloudant.model.CloudantSearchResult;
 import com.junbo.common.cloudant.model.CloudantViews;
 import com.junbo.common.id.ItemId;
-import com.junbo.sharding.IdGenerator;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -24,24 +22,18 @@ import java.util.*;
  * Item repository.
  */
 public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepository {
-    private IdGenerator idGenerator;
-
-    @Required
-    public void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator;
-    }
 
     @Override
     public Item create(Item item) {
-        if (item.getItemId() == null) {
-            item.setItemId(idGenerator.nextId());
-        }
         return cloudantPost(item).get();
     }
 
     @Override
-    public Item get(Long itemId) {
-        return cloudantGet(itemId.toString()).get();
+    public Item get(String itemId) {
+        if (itemId == null) {
+            return null;
+        }
+        return cloudantGet(itemId).get();
     }
 
     public List<Item> getItems(ItemsGetOptions options) {
@@ -108,14 +100,14 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
         return items;
     }
 
-    public List<Item> getItems(Collection<Long> itemIds) {
+    public List<Item> getItems(Collection<String> itemIds) {
         if (CollectionUtils.isEmpty(itemIds)) {
             return Collections.emptyList();
         }
 
         List<Item> items = new ArrayList<>();
-        for (Long itemId : itemIds) {
-            Item item = super.cloudantGet(itemId.toString()).get();
+        for (String itemId : itemIds) {
+            Item item = super.cloudantGet(itemId).get();
             if (item != null) {
                 items.add(item);
             }
@@ -130,8 +122,8 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
     }
 
     @Override
-    public void delete(Long itemId) {
-        super.cloudantDelete(itemId.toString()).get();
+    public void delete(String itemId) {
+        super.cloudantDelete(itemId).get();
     }
 
     private CloudantViews cloudantViews = new CloudantViews() {{

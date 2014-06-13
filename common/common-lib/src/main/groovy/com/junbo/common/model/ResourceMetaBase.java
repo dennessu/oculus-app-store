@@ -12,6 +12,7 @@ import com.junbo.common.cloudant.CloudantEntity;
 import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
 import com.junbo.common.cloudant.json.annotations.CloudantProperty;
 import com.junbo.common.enumid.EnumId;
+import com.junbo.common.id.CloudantId;
 import com.junbo.common.id.Id;
 import com.junbo.common.jackson.annotation.UserId;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -132,7 +133,8 @@ public abstract class ResourceMetaBase<K> implements CloudantEntity<K> {
         LONG,
         UUID,
         STRONG_TYPE_ID,
-        STRONG_TYPE_ENUM_ID
+        STRONG_TYPE_ENUM_ID,
+        STRONG_TYPE_CLOUDANT_ID
     }
 
     @JsonIgnore
@@ -162,6 +164,8 @@ public abstract class ResourceMetaBase<K> implements CloudantEntity<K> {
             keyType = KeyType.STRONG_TYPE_ID;
         } else if (EnumId.class.isAssignableFrom(keyClass)) {
             keyType = KeyType.STRONG_TYPE_ENUM_ID;
+        } else if (CloudantId.class.isAssignableFrom(keyClass)) {
+            keyType = KeyType.STRONG_TYPE_CLOUDANT_ID;
         } else {
             throw new RuntimeException("Unsupported id type: " + keyClass.getName());
         }
@@ -209,6 +213,15 @@ public abstract class ResourceMetaBase<K> implements CloudantEntity<K> {
             case STRONG_TYPE_ENUM_ID:
                 try {
                     EnumId strongTypeId = (EnumId)keyClass.newInstance();
+                    strongTypeId.setValue(id);
+                    this.setId((K)strongTypeId);
+                } catch (IllegalAccessException | InstantiationException ex) {
+                    throw new RuntimeException("Cannot call ctor for type: " + keyClass.getName());
+                }
+                break;
+            case STRONG_TYPE_CLOUDANT_ID:
+                try {
+                    CloudantId strongTypeId = (CloudantId)keyClass.newInstance();
                     strongTypeId.setValue(id);
                     this.setId((K)strongTypeId);
                 } catch (IllegalAccessException | InstantiationException ex) {

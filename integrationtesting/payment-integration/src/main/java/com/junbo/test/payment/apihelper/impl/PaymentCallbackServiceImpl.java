@@ -41,7 +41,7 @@ public class PaymentCallbackServiceImpl extends HttpClientBase implements Paymen
     }
 
     public void postPaymentProperties(Long paymentId, PaymentProperties properties, int expectedResponseCode) throws Exception {
-        String url = paymentCallbackUrl + "/" + IdConverter.idLongToHexString(PaymentInstrumentId.class, paymentId) + "/properties";
+        String url = paymentCallbackUrl + "/" + IdConverter.idToUrlString(PaymentInstrumentId.class, paymentId) + "/properties";
         restApiCall(HTTPMethod.POST, url, properties, expectedResponseCode);
     }
 

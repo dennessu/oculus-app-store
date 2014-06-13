@@ -6,9 +6,11 @@
 
 package com.junbo.billing.spec.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.billing.spec.enums.PropertyKey;
 import com.junbo.common.id.*;
+import com.junbo.common.model.ResourceMetaForDualWrite;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -16,10 +18,10 @@ import java.util.*;
 /**
  * Created by xmchen on 14-1-26.
  */
-public class Balance {
-
+public class Balance extends ResourceMetaForDualWrite<BalanceId> {
     @JsonProperty("self")
-    private BalanceId balanceId;
+    private BalanceId id;
+
     private UUID trackingUuid;
     private UserId userId;
     private List<OrderId> orderIds;
@@ -43,6 +45,9 @@ public class Balance {
     private String cancelRedirectUrl;
     private String providerConfirmUrl;
 
+    @JsonIgnore
+    private String requestorId;
+
     private Map<String, String> propertySet;
 
     private List<BalanceItem> balanceItems;
@@ -54,12 +59,14 @@ public class Balance {
         propertySet = new HashMap<>();
     }
 
-    public BalanceId getBalanceId() {
-        return balanceId;
+    @Override
+    public BalanceId getId() {
+        return id;
     }
 
-    public void setBalanceId(BalanceId balanceId) {
-        this.balanceId = balanceId;
+    @Override
+    public void setId(BalanceId id) {
+        this.id = id;
     }
 
     public UUID getTrackingUuid() {
@@ -158,9 +165,17 @@ public class Balance {
         balanceItems.add(balanceItem);
     }
 
+    public String getRequestorId() {
+        return requestorId;
+    }
+
+    public void setRequestorId(String requestorId) {
+        this.requestorId = requestorId;
+    }
+
     public BalanceItem getBalanceItem(Long balanceItemId) {
         for (BalanceItem item : balanceItems) {
-            if (item.getBalanceItemId() == balanceItemId) {
+            if (item.getId() == balanceItemId) {
                 return item;
             }
         }

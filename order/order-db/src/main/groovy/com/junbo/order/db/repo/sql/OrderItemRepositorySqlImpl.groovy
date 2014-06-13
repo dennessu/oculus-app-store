@@ -9,17 +9,22 @@ import com.junbo.common.id.OrderItemId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import com.junbo.order.db.dao.OrderItemDao
+import com.junbo.order.db.dao.OrderItemRevisionDao
 import com.junbo.order.db.entity.OrderItemEntity
 import com.junbo.order.db.mapper.ModelMapper
 import com.junbo.order.db.repo.OrderItemRepository
 import com.junbo.order.db.repo.util.Utils
 import com.junbo.order.spec.model.OrderItem
+import com.junbo.order.spec.model.OrderItemRevision
 import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
+
+import javax.annotation.Resource
+
 /**
  * Created by chriszhu on 2/18/14.
  */
@@ -30,6 +35,9 @@ class OrderItemRepositorySqlImpl implements OrderItemRepository {
 
     @Autowired
     private OrderItemDao orderItemDao
+
+    @Resource(name='orderItemRevisionDao')
+    private OrderItemRevisionDao orderItemRevisionDao
 
     @Autowired
     private ModelMapper modelMapper
@@ -62,10 +70,19 @@ class OrderItemRepositorySqlImpl implements OrderItemRepository {
         def entity = modelMapper.toOrderItemEntity(orderItem, new MappingContext())
         def oldEntity = orderItemDao.read(entity.orderItemId)
 
-        entity.createdTime = oldEntity.createdTime
-        entity.createdBy = oldEntity.createdBy
-        entity.resourceAge = oldEntity.resourceAge
-
+        if (oldEntity.latestOrderItemRevisionId != entity.latestOrderItemRevisionId) {
+            def latestRevision = orderItem.orderItemRevisions.find() { OrderItemRevision revision ->
+                revision.id == entity.latestOrderItemRevisionId
+            }
+            assert (latestRevision != null)
+            orderItemRevisionDao.create(modelMapper.toOrderItemRevisionEntity(latestRevision, new MappingContext()))
+            oldEntity.latestOrderItemRevisionId = entity.latestOrderItemRevisionId
+            entity = oldEntity
+        } else {
+            entity.createdTime = oldEntity.createdTime
+            entity.createdBy = oldEntity.createdBy
+            entity.resourceAge = oldEntity.resourceAge
+        }
         orderItemDao.update(entity)
         Utils.fillDateInfo(orderItem, entity)
 

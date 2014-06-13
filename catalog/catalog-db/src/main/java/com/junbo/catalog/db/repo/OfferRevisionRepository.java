@@ -17,11 +17,11 @@ import java.util.List;
  */
 public interface OfferRevisionRepository extends BaseRevisionRepository<OfferRevision> {
     OfferRevision create(OfferRevision offerRevision);
-    OfferRevision get(Long revisionId);
+    OfferRevision get(String revisionId);
     List<OfferRevision> getRevisions(OfferRevisionsGetOptions options);
-    List<OfferRevision> getRevisions(Collection<Long> offerIds, Long timestamp);
-    List<OfferRevision> getRevisions(Long itemId);
-    List<OfferRevision> getRevisionsBySubOfferId(Long offerId);
+    List<OfferRevision> getRevisions(Collection<String> offerIds, Long timestamp);
+    List<OfferRevision> getRevisions(String itemId);
+    List<OfferRevision> getRevisionsBySubOfferId(String offerId);
     OfferRevision update(OfferRevision revision);
-    void delete(Long revisionId);
+    void delete(String revisionId);
 }

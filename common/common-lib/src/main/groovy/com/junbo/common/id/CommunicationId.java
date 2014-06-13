@@ -11,11 +11,11 @@ package com.junbo.common.id;
 @IdResourcePath(value = "/communications/{0}",
                 resourceType = "communications",
                 regex = "/communications/(?<id>[0-9A-Za-z]+)")
-public class CommunicationId extends Id {
+public class CommunicationId extends CloudantId {
 
     public CommunicationId() {}
 
-    public CommunicationId(long value) {
+    public CommunicationId(String value) {
         super(value);
     }
 }

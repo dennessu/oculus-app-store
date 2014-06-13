@@ -20,13 +20,13 @@ class EmailTemplateDaoTest extends BaseTest {
         entity = this.buildTemplate()
     }
 
-    @Test
+    @Test(enabled = false)
     void testCreate() {
         def entity = emailTemplateDao.save(entity)
         assert entity != null, 'Email template create failed'
     }
 
-    @Test
+    @Test(enabled = false)
     void testGet() {
         def entity = emailTemplateDao.save(entity)
         assert entity != null, 'Email template get failed by id'
@@ -40,7 +40,7 @@ class EmailTemplateDaoTest extends BaseTest {
         assert list.size() >= 2, 'Email template list get failed'
     }
 
-    @Test
+    @Test(enabled = false)
     void testUpdate() {
         emailTemplateDao.save(entity)
         entity.setPlaceholderNames('unittest')
@@ -49,7 +49,7 @@ class EmailTemplateDaoTest extends BaseTest {
         assert entity.placeholderNames == 'unittest', 'Email template update failed'
     }
 
-    @Test
+    @Test(enabled = false)
     void testDelete() {
         emailTemplateDao.save(entity)
         emailTemplateDao.delete(entity)

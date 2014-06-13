@@ -16,3 +16,7 @@ cd `git rev-parse --show-toplevel`
 run_gradle gradle/bootstrap
 $GRADLE_CMD 
 
+pushd integrationtesting 
+gradle -x test
+popd
+

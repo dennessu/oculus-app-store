@@ -6,28 +6,13 @@ import com.junbo.common.id.UserId
 import com.junbo.identity.data.repository.UserCredentialVerifyAttemptRepository
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.IdGenerator
-import com.junbo.sharding.ShardAlgorithm
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required
 /**
  * Created by haomin on 14-4-10.
  */
 @CompileStatic
 class UserCredentialVerifyAttemptRepositoryCloudantImpl extends CloudantClient<UserCredentialVerifyAttempt>
         implements UserCredentialVerifyAttemptRepository{
-    private ShardAlgorithm shardAlgorithm
-    private IdGenerator idGenerator
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
-
-    @Required
-    void setShardAlgorithm(ShardAlgorithm shardAlgorithm) {
-        this.shardAlgorithm = shardAlgorithm
-    }
 
     @Override
     protected CloudantViews getCloudantViews() {
@@ -36,9 +21,6 @@ class UserCredentialVerifyAttemptRepositoryCloudantImpl extends CloudantClient<U
 
     @Override
     Promise<UserCredentialVerifyAttempt> create(UserCredentialVerifyAttempt entity) {
-        if (entity.id == null) {
-            entity.id = new UserCredentialVerifyAttemptId(idGenerator.nextId(entity.userId.value))
-        }
         entity.setValue(null)
         return super.cloudantPost(entity)
     }

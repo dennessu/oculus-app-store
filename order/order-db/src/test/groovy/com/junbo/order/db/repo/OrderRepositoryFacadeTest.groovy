@@ -14,12 +14,14 @@ import com.junbo.order.spec.model.Discount
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.order.spec.model.PaymentInfo
+import groovy.transform.CompileStatic
 import org.apache.commons.lang.RandomStringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.testng.annotations.Test
 /**
  * Created by fzhang on 14-3-12.
  */
+@CompileStatic
 class OrderRepositoryFacadeTest extends BaseTest {
 
     @Autowired
@@ -48,33 +50,33 @@ class OrderRepositoryFacadeTest extends BaseTest {
         order.orderItems << createOrderItem()
         order.discounts << createDiscount(order, order.orderItems.last())
         order.payments << new PaymentInfo(paymentInstrument : new PaymentInstrumentId(TestHelper.generateId()))
-        orderRepository.updateOrder(order, false)
+        orderRepository.updateOrder(order, false, false, null)
         verifyByRead(order)
 
         // remove id and check
-        order.orderItems.each {
+        order.orderItems.each { OrderItem it ->
             it.id = null
         }
-        order.discounts.each {
+        order.discounts.each { Discount it ->
             it.id = null
             it.orderItemId = null
             it.orderId = null
         }
-        orderRepository.updateOrder(order, false)
+        orderRepository.updateOrder(order, false, false, null)
         verifyByRead(order)
 
         // update order item, discount, paymentId
-        order.orderItems[0].offer = new OfferId(TestHelper.generateLong())
+        order.orderItems[0].offer = new OfferId(TestHelper.generateLong().toString())
         order.discounts[0].coupon = 'Code' + TestHelper.generateLong()
         order.payments[0] = new PaymentInfo(paymentInstrument : new PaymentInstrumentId(TestHelper.generateId()))
-        orderRepository.updateOrder(order, false)
+        orderRepository.updateOrder(order, false, false, null)
         verifyByRead(order)
 
         // remove order item, discount, paymentId
         order.orderItems.clear()
         order.discounts.clear()
         order.payments.clear()
-        orderRepository.updateOrder(order, false)
+        orderRepository.updateOrder(order, false, false, null)
         verifyByRead(order)
     }
 
@@ -103,8 +105,8 @@ class OrderRepositoryFacadeTest extends BaseTest {
 
         // verify pi
         assert new HashSet<PaymentInstrumentId>(order.payments.
-                collect {it -> return it.paymentInstrument}) ==
-                new HashSet<PaymentInstrumentId>(order.payments.collect {it -> return it.paymentInstrument})
+                collect { PaymentInfo it -> return it.paymentInstrument}) ==
+                new HashSet<PaymentInstrumentId>(order.payments.collect { PaymentInfo it -> return it.paymentInstrument})
     }
 
     private OrderItem createOrderItem() {

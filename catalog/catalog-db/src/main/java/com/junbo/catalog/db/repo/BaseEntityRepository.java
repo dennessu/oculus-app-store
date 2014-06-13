@@ -14,7 +14,7 @@ import com.junbo.catalog.spec.model.common.BaseEntityModel;
  */
 public interface BaseEntityRepository<T extends BaseEntityModel>  {
     T create(T entity);
-    T get(Long entityId);
+    T get(String entityId);
     T update(T entity);
-    void delete(Long entityId);
+    void delete(String entityId);
 }

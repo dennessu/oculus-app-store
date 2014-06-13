@@ -11,9 +11,9 @@ package com.junbo.common.id;
 @IdResourcePath(value = "/authenticators/{0}",
                 resourceType = "authenticators",
                 regex = "/authenticators/(?<id>[0-9A-Za-z]+)")
-public class UserAuthenticatorId extends Id {
+public class UserAuthenticatorId extends CloudantId {
     public UserAuthenticatorId() {}
-    public UserAuthenticatorId(long value) {
+    public UserAuthenticatorId(String value) {
         super(value);
     }
 }

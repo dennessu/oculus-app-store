@@ -1,5 +1,4 @@
 package com.junbo.identity.data.repository.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.TosId
@@ -9,28 +8,12 @@ import com.junbo.identity.data.repository.UserTosRepository
 import com.junbo.identity.spec.v1.model.UserTosAgreement
 import com.junbo.identity.spec.v1.option.list.UserTosAgreementListOptions
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.IdGenerator
-import com.junbo.sharding.ShardAlgorithm
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required
-
 /**
  * Created by minhao on 4/13/14.
  */
 @CompileStatic
 class UserTosRepositoryCloudantImpl extends CloudantClient<UserTosAgreement> implements UserTosRepository {
-    private ShardAlgorithm shardAlgorithm
-    private IdGenerator idGenerator
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
-
-    @Required
-    void setShardAlgorithm(ShardAlgorithm shardAlgorithm) {
-        this.shardAlgorithm = shardAlgorithm
-    }
 
     @Override
     protected CloudantViews getCloudantViews() {
@@ -39,9 +22,6 @@ class UserTosRepositoryCloudantImpl extends CloudantClient<UserTosAgreement> imp
 
     @Override
     Promise<UserTosAgreement> create(UserTosAgreement entity) {
-        if (entity.id == null) {
-            entity.id = new UserTosAgreementId(idGenerator.nextId(entity.userId.value))
-        }
         return super.cloudantPost(entity)
     }
 

@@ -33,9 +33,9 @@ public class CartManager extends TestClass {
     private LogHelper logger = new LogHelper(CartManager.class);
 
     //prepare a few test offers and test coupons
-    private OfferId testOffer1 = new OfferId(100001L);
-    private OfferId testOffer2 = new OfferId(100002L);
-    private OfferId testOffer3 = new OfferId(100003L);
+    private OfferId testOffer1 = new OfferId("100001L");
+    private OfferId testOffer2 = new OfferId("100002L");
+    private OfferId testOffer3 = new OfferId("100003L");
 
     private String testCoupon1 = new String("200001L");
     private String testCoupon2 = new String("200002L");

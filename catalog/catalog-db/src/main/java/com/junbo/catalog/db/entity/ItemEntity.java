@@ -6,7 +6,7 @@
 
 package com.junbo.catalog.db.entity;
 
-import com.junbo.common.hibernate.LongArrayUserType;
+import com.junbo.common.hibernate.StringArrayUserType;
 import com.junbo.common.hibernate.StringJsonUserType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -21,23 +21,23 @@ import java.util.List;
 @Entity
 @Table(name="item")
 @TypeDefs({@TypeDef(name="json-string", typeClass=StringJsonUserType.class),
-        @TypeDef(name="long-array", typeClass=LongArrayUserType.class)})
+        @TypeDef(name="string-array", typeClass=StringArrayUserType.class)})
 public class ItemEntity extends BaseEntity {
     private String type;
-    private Long itemId;
+    private String itemId;
     private Long ownerId;
     //private boolean published;
-    private List<Long> genres;
-    private Long currentRevisionId;
+    private List<String> genres;
+    private String currentRevisionId;
     private String payload;
 
     @Id
     @Column(name = "item_id")
-    public Long getItemId() {
+    public String getItemId() {
         return itemId;
     }
 
-    public void setItemId(Long itemId) {
+    public void setItemId(String itemId) {
         this.itemId = itemId;
     }
 
@@ -60,21 +60,21 @@ public class ItemEntity extends BaseEntity {
     }
 
     @Column(name = "genres")
-    @Type(type = "long-array")
-    public List<Long> getGenres() {
+    @Type(type = "string-array")
+    public List<String> getGenres() {
         return genres;
     }
 
-    public void setGenres(List<Long> genres) {
+    public void setGenres(List<String> genres) {
         this.genres = genres;
     }
 
     @Column(name = "current_revision_id")
-    public Long getCurrentRevisionId() {
+    public String getCurrentRevisionId() {
         return currentRevisionId;
     }
 
-    public void setCurrentRevisionId(Long currentRevisionId) {
+    public void setCurrentRevisionId(String currentRevisionId) {
         this.currentRevisionId = currentRevisionId;
     }
 
@@ -90,12 +90,12 @@ public class ItemEntity extends BaseEntity {
 
     @Override
     @Transient
-    public Long getId() {
+    public String getId() {
         return itemId;
     }
 
     @Override
-    public void setId(Long id) {
+    public void setId(String id) {
         this.itemId = id;
     }
 }

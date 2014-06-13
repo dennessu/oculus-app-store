@@ -25,7 +25,7 @@ public class RoleListOptions extends PagingListOptions {
 
     private String filterLinkIdType;
 
-    private Long filterLinkId;
+    private String filterLinkId;
 
     public String getName() {
         return name;
@@ -67,11 +67,11 @@ public class RoleListOptions extends PagingListOptions {
         this.filterLinkIdType = filterLinkIdType;
     }
 
-    public Long getFilterLinkId() {
+    public String getFilterLinkId() {
         return filterLinkId;
     }
 
-    public void setFilterLinkId(Long filterLinkId) {
+    public void setFilterLinkId(String filterLinkId) {
         this.filterLinkId = filterLinkId;
     }
 }

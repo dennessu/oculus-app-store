@@ -7,7 +7,6 @@ import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.VatIdValidationResponse
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.id.BalanceId
-import com.junbo.common.id.OrderId
 import com.junbo.identity.spec.v1.model.Address
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -29,7 +28,7 @@ class SabrixFacadeTest extends BaseTest{
     void testTaxCalculation() {
         def physicalBalance = buildBalance(true)
         def address = buildAddress()
-        Balance balanceWithTax = sabrixFacade.calculateTax(physicalBalance, address, address).get()
+        Balance balanceWithTax = sabrixFacade.calculateTaxQuote(physicalBalance, address, address).get()
         Assert.assertNotNull(balanceWithTax, 'Fail to calculate tax.');
         Assert.assertEquals(balanceWithTax.taxStatus, TaxStatus.TAXED.name(), 'Fail to calculate tax.')
     }
@@ -64,7 +63,7 @@ class SabrixFacadeTest extends BaseTest{
 
     Balance buildBalance(boolean physical) {
         def balance = new Balance()
-        balance.balanceId = new BalanceId(123L)
+        balance.id = new BalanceId(123L)
         balance.orderIds = [new OrderId(321L)]
         balance.currency = 'USD'
         balance.addBalanceItem(buildBalanceItem(physical))

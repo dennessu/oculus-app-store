@@ -12,16 +12,16 @@ import com.junbo.rating.spec.fusion.RatingOffer;
  * Created by lizwu on 2/6/14.
  */
 public class RatableItem {
-    private Long offerId;
+    private String offerId;
     private int quantity;
-    private Long shippingMethodId;
+    private String shippingMethodId;
     private RatingOffer offer;
 
-    public Long getOfferId() {
+    public String getOfferId() {
         return offerId;
     }
 
-    public void setOfferId(Long offerId) {
+    public void setOfferId(String offerId) {
         this.offerId = offerId;
     }
 
@@ -33,11 +33,11 @@ public class RatableItem {
         this.quantity = quantity;
     }
 
-    public Long getShippingMethodId() {
+    public String getShippingMethodId() {
         return shippingMethodId;
     }
 
-    public void setShippingMethodId(Long shippingMethodId) {
+    public void setShippingMethodId(String shippingMethodId) {
         this.shippingMethodId = shippingMethodId;
     }
 

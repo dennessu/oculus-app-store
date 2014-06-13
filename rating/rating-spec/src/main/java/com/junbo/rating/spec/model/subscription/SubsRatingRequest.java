@@ -20,7 +20,7 @@ public class SubsRatingRequest {
     private SubsRatingType type;
 
     @OfferId
-    private Long offerId;
+    private String offerId;
 
     @CountryId
     private String country;
@@ -39,11 +39,11 @@ public class SubsRatingRequest {
         this.type = type;
     }
 
-    public Long getOfferId() {
+    public String getOfferId() {
         return offerId;
     }
 
-    public void setOfferId(Long offerId) {
+    public void setOfferId(String offerId) {
         this.offerId = offerId;
     }
 

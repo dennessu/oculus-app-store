@@ -6,34 +6,16 @@ import com.junbo.common.id.UserId
 import com.junbo.identity.data.repository.UserAuthenticatorRepository
 import com.junbo.identity.spec.v1.model.UserAuthenticator
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.IdGenerator
-import com.junbo.sharding.ShardAlgorithm
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required
 /**
  * Created by haomin on 14-4-10.
  */
 @CompileStatic
 class UserAuthenticatorRepositoryCloudantImpl extends CloudantClient<UserAuthenticator>
         implements UserAuthenticatorRepository{
-    private ShardAlgorithm shardAlgorithm
-    private IdGenerator idGenerator
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
-
-    @Required
-    void setShardAlgorithm(ShardAlgorithm shardAlgorithm) {
-        this.shardAlgorithm = shardAlgorithm
-    }
 
     @Override
     Promise<UserAuthenticator> create(UserAuthenticator authenticator) {
-        if (authenticator.id == null) {
-            authenticator.id = new UserAuthenticatorId(idGenerator.nextId(authenticator.userId.value))
-        }
         return super.cloudantPost(authenticator)
     }
 

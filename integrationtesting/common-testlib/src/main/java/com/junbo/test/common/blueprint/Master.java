@@ -285,7 +285,7 @@ public class Master {
             String key = entry.getKey();
             Offer offer = entry.getValue();
             if (offer.getCurrentRevisionId() != null) {
-                String offerRevisionId = IdConverter.idLongToHexString(OfferRevisionId.class, offer.getCurrentRevisionId());
+                String offerRevisionId = IdConverter.idToUrlString(OfferRevisionId.class, offer.getCurrentRevisionId());
                 OfferRevision offerRevision = this.offerRevisions.get(offerRevisionId);
 
                 if (offerRevision != null && offerRevision.getLocales().get("en_US").getName().equalsIgnoreCase(offerName)) {
@@ -302,7 +302,7 @@ public class Master {
             String key = entry.getKey();
             Item item = entry.getValue();
             if (item.getCurrentRevisionId() != null) {
-                String itemRevisionId = IdConverter.idLongToHexString(ItemRevisionId.class, item.getCurrentRevisionId());
+                String itemRevisionId = IdConverter.idToUrlString(ItemRevisionId.class, item.getCurrentRevisionId());
                 ItemRevision itemRevision = this.itemRevisions.get(itemRevisionId);
 
                 if (itemRevision.getLocales().get("en_US").getName().equalsIgnoreCase(itemName)) {

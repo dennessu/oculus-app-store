@@ -6,18 +6,18 @@
 
     <bean id="emailBaseListener" class="com.junbo.email.jobs.listener.impl.EmailBaseListener" abstract="true">
         <property name="emailProvider" ref="emailProvider"/>
-        <property name="emailHistoryRepository" ref="emailHistorySqlRepo"/>
-        <!--<property name="emailHistoryRepository" ref="emailHistoryCloudantRepo"/>-->
-        <property name="EmailTemplateRepository" ref="emailTemplateSqlRepo"/>
-        <!--<property name="EmailTemplateRepository" ref="emailTemplateCloudantRepo"/>-->
+        <!--<property name="emailHistoryRepository" ref="emailHistorySqlRepo"/>-->
+        <property name="emailHistoryRepository" ref="emailHistoryCloudantRepo"/>
+        <!--<property name="EmailTemplateRepository" ref="emailTemplateSqlRepo"/>-->
+        <property name="EmailTemplateRepository" ref="emailTemplateCloudantRepo"/>
     </bean>
 
-    <bean id="emailListener" class="com.junbo.email.jobs.listener.impl.sql.EmailListenerSqlImpl" parent="emailBaseListener">
-        <property name="transactionManager" ref="transactionManager"/>
-    </bean>
-
-    <!--<bean id="emailListener" class="com.junbo.email.jobs.listener.impl.cloudant.EmailListenerCloudantImpl" parent="emailBaseListener">-->
+    <!--<bean id="emailListener" class="com.junbo.email.jobs.listener.impl.sql.EmailListenerSqlImpl" parent="emailBaseListener">-->
+        <!--<property name="transactionManager" ref="transactionManager"/>-->
     <!--</bean>-->
+
+    <bean id="emailListener" class="com.junbo.email.jobs.listener.impl.cloudant.EmailListenerCloudantImpl" parent="emailBaseListener">
+    </bean>
 
     <bean id="emailListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer"
           parent="baseListenerContainer">

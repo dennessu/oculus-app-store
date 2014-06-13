@@ -22,17 +22,17 @@ import java.util.*;
  * MockCatalogGatewayImpl.
  */
 public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
-    private Map<Long, OfferRevision> mockOffers = new HashMap();
+    private Map<String, OfferRevision> mockOffers = new HashMap();
 
     {
-        mockOffers.put(100L, getOffer100());
-        mockOffers.put(200L, getOffer200());
-        mockOffers.put(300L, getOffer300());
-        mockOffers.put(400L, getOffer400());
+        mockOffers.put("100L", getOffer100());
+        mockOffers.put("200L", getOffer200());
+        mockOffers.put("300L", getOffer300());
+        mockOffers.put("400L", getOffer400());
     }
 
     @Override
-    protected OfferRevision retrieveOfferRevision(Long offerId, Long timestamp) {
+    protected OfferRevision retrieveOfferRevision(String offerId, Long timestamp) {
         OfferRevision mockOffer = mockOffers.get(offerId);
         if (mockOffer == null) {
             throw new RuntimeException("offer [" + offerId + "] not prepared in mock");
@@ -42,7 +42,7 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
     }
 
     @Override
-    protected ItemRevision retrieveItemRevision(Long offerId, Long timestamp) {
+    protected ItemRevision retrieveItemRevision(String offerId, Long timestamp) {
         ItemRevision mockItem = new ItemRevision();
         mockItem.setSku("TEST_SKU");
 
@@ -62,17 +62,17 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
      */
     private OfferRevision getOffer100() {
         OfferRevision offer = new OfferRevision();
-        offer.setOfferId(100L);
+        offer.setOfferId("100L");
 
-        offer.setSubOffers(Arrays.asList(200L, 300L));
+        offer.setSubOffers(Arrays.asList("200L", "300L"));
 
         offer.setItems(new ArrayList<ItemEntry>() {{
             add(new ItemEntry() {{
-                setItemId(10000L);
+                setItemId("10000L");
                 setQuantity(888);
             }});
             add(new ItemEntry() {{
-                setItemId(20000L);
+                setItemId("20000L");
                 setQuantity(999);
             }});
         }});
@@ -100,11 +100,11 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
      */
     private OfferRevision getOffer200() {
         OfferRevision offer = new OfferRevision();
-        offer.setOfferId(200L);
+        offer.setOfferId("200L");
 
         offer.setItems(new ArrayList<ItemEntry>() {{
             add(new ItemEntry() {{
-                setItemId(30000L);
+                setItemId("30000L");
                 setQuantity(1);
             }});
         }});
@@ -130,13 +130,13 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
      */
     private OfferRevision getOffer300() {
         OfferRevision offer = new OfferRevision();
-        offer.setOfferId(300L);
+        offer.setOfferId("300L");
 
-        offer.setSubOffers(Arrays.asList(400L));
+        offer.setSubOffers(Arrays.asList("400L"));
 
         offer.setItems(new ArrayList<ItemEntry>() {{
             add(new ItemEntry() {{
-                setItemId(40000L);
+                setItemId("40000L");
                 setQuantity(77);
             }});
         }});
@@ -161,11 +161,11 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
      */
     private OfferRevision getOffer400() {
         OfferRevision offer = new OfferRevision();
-        offer.setOfferId(400L);
+        offer.setOfferId("400L");
 
         offer.setItems(new ArrayList<ItemEntry>() {{
             add(new ItemEntry() {{
-                setItemId(50000L);
+                setItemId("50000L");
                 setQuantity(9);
             }});
         }});
@@ -182,7 +182,7 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
     }
 
     @Override
-    public ShippingMethod getShippingMethod(Long shippingMethodId) {
+    public ShippingMethod getShippingMethod(String shippingMethodId) {
         ShippingMethod result = new ShippingMethod();
         result.setId(shippingMethodId);
 
@@ -190,9 +190,9 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
     }
 
     @Override
-    public Item getItem(Long itemId, Long timestamp) {
+    public Item getItem(String itemId, Long timestamp) {
         Item item = new Item();
-        item.setItemId(123L);
+        item.setItemId("123L");
         item.setSku("TEST_SKU");
         item.setEntitlementMetas(new ArrayList<EntitlementMeta>() {{
             add(new EntitlementMeta() {{

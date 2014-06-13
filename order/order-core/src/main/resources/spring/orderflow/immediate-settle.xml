@@ -12,6 +12,13 @@
             <wf:transition on="*" to="charge"/>
         </wf:action-state>
 
+        <wf:action-state id="checkChargeEvent">
+            <wf:action ref="chargeEventCheckAction"/>
+            <wf:transition on="COMPLETED" to="fullfill"/>
+            <wf:transition on="__NONE" to="charge"/>
+            <wf:transition on="*" to="endState"/>
+        </wf:action-state>
+
         <wf:action-state id="charge">
             <wf:action ref="immediateSettleAction"/>
             <wf:transition on="*" to="checkasynccharge"/>

@@ -21,18 +21,18 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 @TypeDefs(@TypeDef(name="json-string", typeClass=StringJsonUserType.class))
 public abstract class AttributeEntity extends BaseEntity {
-    private Long id;
+    private String id;
     private String type;
-    private Long parentId;
+    private String parentId;
     private String payload;
 
     @Id
     @Column(name = "id")
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -46,11 +46,11 @@ public abstract class AttributeEntity extends BaseEntity {
     }
 
     @Column(name = "parent_id")
-    public Long getParentId() {
+    public String getParentId() {
         return parentId;
     }
 
-    public void setParentId(Long parentId) {
+    public void setParentId(String parentId) {
         this.parentId = parentId;
     }
 

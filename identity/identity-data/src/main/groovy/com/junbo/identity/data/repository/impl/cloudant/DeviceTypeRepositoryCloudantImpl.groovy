@@ -5,20 +5,12 @@ import com.junbo.common.enumid.DeviceTypeId
 import com.junbo.identity.data.repository.DeviceTypeRepository
 import com.junbo.identity.spec.v1.model.DeviceType
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required
 /**
  * Created by haomin on 14-4-25.
  */
 @CompileStatic
 class DeviceTypeRepositoryCloudantImpl extends CloudantClient<DeviceType> implements DeviceTypeRepository {
-    private IdGenerator idGenerator
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
 
     @Override
     protected CloudantViews getCloudantViews() {

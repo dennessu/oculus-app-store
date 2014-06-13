@@ -12,8 +12,6 @@ import com.junbo.catalog.spec.model.attribute.ItemAttributesGetOptions;
 import com.junbo.common.cloudant.CloudantClient;
 import com.junbo.common.cloudant.model.CloudantViews;
 import com.junbo.common.id.ItemAttributeId;
-import com.junbo.sharding.IdGenerator;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -23,29 +21,23 @@ import java.util.*;
  * Item repository.
  */
 public class ItemAttributeRepositoryImpl extends CloudantClient<ItemAttribute> implements ItemAttributeRepository {
-    private IdGenerator idGenerator;
-
-    @Required
-    public void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator;
-    }
 
     public ItemAttribute create(ItemAttribute attribute) {
-        if (attribute.getId() == null) {
-            attribute.setId(idGenerator.nextId());
-        }
         return cloudantPost(attribute).get();
     }
 
-    public ItemAttribute get(Long attributeId) {
-        return cloudantGet(attributeId.toString()).get();
+    public ItemAttribute get(String attributeId) {
+        if (attributeId == null) {
+            return null;
+        }
+        return cloudantGet(attributeId).get();
     }
 
     public List<ItemAttribute> getAttributes(ItemAttributesGetOptions options) {
         if (!CollectionUtils.isEmpty(options.getAttributeIds())) {
             List<ItemAttribute> attributes = new ArrayList<>();
             for (ItemAttributeId attributeId : options.getAttributeIds()) {
-                ItemAttribute attribute = cloudantGet(attributeId.getValue().toString()).get();
+                ItemAttribute attribute = cloudantGet(attributeId.getValue()).get();
                 if (attribute != null) {
                     attributes.add(attribute);
                 }
@@ -63,8 +55,8 @@ public class ItemAttributeRepositoryImpl extends CloudantClient<ItemAttribute> i
         return cloudantPut(attribute).get();
     }
 
-    public void delete(Long attributeId) {
-        cloudantDelete(attributeId.toString()).get();
+    public void delete(String attributeId) {
+        cloudantDelete(attributeId).get();
     }
 
     private CloudantViews cloudantViews = new CloudantViews() {{

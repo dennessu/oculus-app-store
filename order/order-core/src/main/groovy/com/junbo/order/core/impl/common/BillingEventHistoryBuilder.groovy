@@ -65,8 +65,8 @@ class BillingEventHistoryBuilder {
 
     static BillingHistory buildBillingHistory(Balance balance) {
         def billingHistory = new BillingHistory()
-        billingHistory.balanceId = (balance.balanceId == null || balance.balanceId.value == null) ?
-                null : balance.balanceId.value.toString()
+        billingHistory.balanceId = (balance.id == null || balance.getId().value == null) ?
+                null : balance.id.toString()
         billingHistory.totalAmount = balance.totalAmount
         billingHistory.billingEvent = buildBillingEvent(balance)
         return billingHistory

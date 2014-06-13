@@ -51,8 +51,8 @@ public class TestGetItem extends BaseTestClass {
 
         //Prepare an item
         Item item = itemService.postDefaultItem(CatalogItemType.getRandom());
-        Long itemId = item.getItemId();
-        Long invalidId = 0L;
+        String itemId = item.getItemId();
+        String invalidId = "0L";
 
         //get the item by Id, assert not null
         Item itemRtn = itemService.getItem(itemId);
@@ -93,7 +93,7 @@ public class TestGetItem extends BaseTestClass {
         String[] itemId = new String[5];
         for (int i = 0; i < items.length; i ++) {
             items[i] = itemService.postDefaultItem(CatalogItemType.getByIndex(i));
-            itemId[i] = IdConverter.idLongToHexString(ItemId.class, items[i].getItemId());
+            itemId[i] = IdConverter.idToUrlString(ItemId.class, items[i].getItemId());
         }
 
         HashMap<String, List<String>> paraMap = new HashMap<>();
@@ -181,7 +181,7 @@ public class TestGetItem extends BaseTestClass {
         String[] itemId = new String[5];
         for (int i = 0; i < items.length; i ++) {
             items[i] = itemService.postDefaultItem(CatalogItemType.getByIndex(i));
-            itemId[i] = IdConverter.idLongToHexString(ItemId.class, items[i].getItemId());
+            itemId[i] = IdConverter.idToUrlString(ItemId.class, items[i].getItemId());
         }
 
         performVerification(itemId[0], itemId[1], itemId[2], itemId[3], itemId[4]);
@@ -194,7 +194,7 @@ public class TestGetItem extends BaseTestClass {
         performVerification(itemId[0], itemId[1], itemId[2], itemId[3], itemId[4]);
     }
 
-    private void verifyInvalidScenarios(Long itemId) throws Exception {
+    private void verifyInvalidScenarios(String itemId) throws Exception {
         try {
             itemService.getItem(itemId, 404);
             Assert.fail("Shouldn't get items with wrong id");
@@ -242,7 +242,7 @@ public class TestGetItem extends BaseTestClass {
         Assert.assertEquals(itemRtn.getItems().size(), expectedRtnSize);
 
         for (String itemGetId : itemId) {
-            Item item = itemService.getItem(IdConverter.hexStringToId(ItemId.class, itemGetId));
+            Item item = itemService.getItem(itemGetId);
             Assert.assertTrue(isContain(itemRtn, item));
         }
     }

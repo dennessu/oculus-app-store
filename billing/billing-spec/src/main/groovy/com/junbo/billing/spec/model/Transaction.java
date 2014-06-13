@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.common.id.BalanceId;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.TransactionId;
+import com.junbo.common.model.ResourceMetaForDualWrite;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -17,11 +18,12 @@ import java.util.Date;
 /**
  * Created by xmchen on 14-2-24.
  */
-public class Transaction {
+public class Transaction extends ResourceMetaForDualWrite<TransactionId> {
     @JsonIgnore
-    private TransactionId transactionId;
+    private TransactionId id;
     @JsonIgnore
     private BalanceId balanceId;
+
     private PaymentInstrumentId piId;
     private String type;
     private String paymentRefId;
@@ -30,12 +32,14 @@ public class Transaction {
     private String currency;
     private Date transactionTime;
 
-    public TransactionId getTransactionId() {
-        return transactionId;
+    @Override
+    public TransactionId getId() {
+        return this.id;
     }
 
-    public void setTransactionId(TransactionId transactionId) {
-        this.transactionId = transactionId;
+    @Override
+    public void setId(TransactionId id) {
+        this.id = id;
     }
 
     public BalanceId getBalanceId() {

@@ -141,7 +141,7 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
         entitlement.setUserId(idGenerator.nextId());
         entitlement.setGrantTime(new Date(114, 0, 22));
         entitlement.setExpirationTime(new Date(114, 0, 28));
-        entitlement.setItemId(idGenerator.nextId());
+        entitlement.setItemId(String.valueOf(idGenerator.nextId()));
         final ItemRevision item = new ItemRevision();
         item.setItemId(entitlement.getItemId());
         List<EntitlementDef> defs = new ArrayList<>();

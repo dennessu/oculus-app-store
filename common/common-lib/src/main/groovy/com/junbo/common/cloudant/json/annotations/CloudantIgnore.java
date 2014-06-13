@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 /**
  * Used to ignore the field.
  */
-@Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
+@Target({ElementType.FIELD, ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CloudantIgnore {
 }

@@ -12,24 +12,24 @@ import java.util.*;
  * Created by lizwu on 1/28/14.
  */
 public class RatingOffer {
-    private Long id;
+    private String id;
 
     private Price price;
     private Price preOrderPrice;
     private Map<String, Properties> countries = new HashMap<>();
 
-    private List<Long> categories = new ArrayList<>();
+    private List<String> categories = new ArrayList<>();
 
     private List<LinkedEntry> items = new ArrayList<>();
     private List<LinkedEntry> subOffers = new ArrayList<>();
 
     private Map<String, List<OfferAction>> eventActions = new HashMap<>();
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -57,11 +57,11 @@ public class RatingOffer {
         this.countries = countries;
     }
 
-    public List<Long> getCategories() {
+    public List<String> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<Long> categories) {
+    public void setCategories(List<String> categories) {
         this.categories = categories;
     }
 

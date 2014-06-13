@@ -6,7 +6,7 @@ import com.junbo.authorization.spec.error.AppErrors
 import com.junbo.authorization.spec.model.Role
 import com.junbo.authorization.spec.model.RoleAssignment
 import com.junbo.authorization.spec.option.list.RoleAssignmentListOptions
-import com.junbo.common.id.Id
+import com.junbo.common.id.UniversalId
 import com.junbo.common.id.RoleAssignmentId
 import com.junbo.common.id.util.IdUtil
 import com.junbo.common.model.Link
@@ -51,14 +51,14 @@ class RoleAssignmentValidatorImpl implements RoleAssignmentValidator {
                 throw AppErrors.INSTANCE.fieldInvalid('roleId').exception()
             }
 
-            Id resourceId = IdUtil.fromLink(roleAssignment.assignee)
+            UniversalId resourceId = IdUtil.fromLink(roleAssignment.assignee)
 
             if (resourceId == null) {
                 throw AppErrors.INSTANCE.fieldInvalid('assignee').exception()
             }
 
             roleAssignment.assigneeType = resourceId.class.canonicalName
-            roleAssignment.assigneeId = resourceId.value
+            roleAssignment.assigneeId = resourceId.toString()
 
             return Promise.pure(role)
         }
@@ -90,14 +90,14 @@ class RoleAssignmentValidatorImpl implements RoleAssignmentValidator {
             throw AppErrors.INSTANCE.fieldRequired('assignee').exception()
         }
 
-        Id resourceId = IdUtil.fromLink(new Link(href: options.assignee))
+        UniversalId resourceId = IdUtil.fromLink(new Link(href: options.assignee))
 
         if (resourceId == null) {
             throw AppErrors.INSTANCE.fieldInvalid('assignee').exception()
         }
 
         options.assigneeIdType = resourceId.class.canonicalName
-        options.assigneeId = resourceId.value
+        options.assigneeId = resourceId.toString()
 
         return Promise.pure(null)
     }

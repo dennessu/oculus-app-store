@@ -18,8 +18,8 @@ import java.util.List;
  */
 public interface OfferAttributeService {
 
-    OfferAttribute getOfferAttribute(Long attributeId) throws Exception;
-    OfferAttribute getOfferAttribute(Long attributeId, int expectedResponseCode) throws Exception;
+    OfferAttribute getOfferAttribute(String attributeId) throws Exception;
+    OfferAttribute getOfferAttribute(String attributeId, int expectedResponseCode) throws Exception;
 
     Results<OfferAttribute> getOfferAttributes(HashMap<String, List<String>> httpPara) throws Exception;
     Results<OfferAttribute> getOfferAttributes(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception;
@@ -28,10 +28,10 @@ public interface OfferAttributeService {
     OfferAttribute postOfferAttribute(OfferAttribute offerAttribute) throws Exception;
     OfferAttribute postOfferAttribute(OfferAttribute offerAttribute, int expectedResponseCode) throws Exception;
 
-    OfferAttribute updateOfferAttribute(Long offerAttributeId, OfferAttribute offerAttribute) throws Exception;
-    OfferAttribute updateOfferAttribute(Long offerAttributeId, OfferAttribute offerAttribute, int expectedResponseCode) throws Exception;
+    OfferAttribute updateOfferAttribute(String offerAttributeId, OfferAttribute offerAttribute) throws Exception;
+    OfferAttribute updateOfferAttribute(String offerAttributeId, OfferAttribute offerAttribute, int expectedResponseCode) throws Exception;
 
-    void deleteOfferAttribute(Long offerAttributeId) throws Exception;
-    void deleteOfferAttribute(Long offerAttributeId, int expectedResponseCode) throws Exception;
+    void deleteOfferAttribute(String offerAttributeId) throws Exception;
+    void deleteOfferAttribute(String offerAttributeId, int expectedResponseCode) throws Exception;
 
 }

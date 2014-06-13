@@ -35,7 +35,7 @@ class CachedCatalogFacadeImpl implements CatalogFacade {
     }
 
     @Override
-    Promise<OrderOfferRevision> getOfferRevision(Long offerId) {
+    Promise<OrderOfferRevision> getOfferRevision(String offerId) {
 
         assert (offerId != null)
 
@@ -80,7 +80,7 @@ class CachedCatalogFacadeImpl implements CatalogFacade {
     }
 
     @Override
-    Promise<OrderOfferRevision> getOfferRevision(Long offerId, Date honoredTime) {
+    Promise<OrderOfferRevision> getOfferRevision(String offerId, Date honoredTime) {
         return catalogFacade.getOfferRevision(offerId, honoredTime)
     }
 }

@@ -30,19 +30,19 @@ class EmailHistoryDaoTest extends BaseTest {
         this.entity = entity
     }
 
-    @Test
+    @Test(enabled = false)
     void testCreate() {
         def id = emailHistoryDao.save(entity)
         assert id != null, 'Email history create failed'
     }
 
-    @Test
+    @Test(enabled = false)
     void testGet() {
         def entity = emailHistoryDao.save(entity)
         assert entity != null, 'Email history should not be null'
     }
 
-    @Test
+    @Test(enabled = false)
     void testUpdate() {
         entity.setSentTime(new Date())
         entity.setStatus(EmailStatus.SUCCEED.id)
@@ -50,14 +50,14 @@ class EmailHistoryDaoTest extends BaseTest {
         assert entity != null, 'Email history update failed'
     }
 
-    @Test
+    @Test(enabled = false)
     void testUpdateStatus() {
         def entity = emailHistoryDao.save(entity)
         def updated = emailHistoryDao.updateStatus(entity.id, EmailStatus.SUCCEED.id)
         assert updated.status == EmailStatus.SUCCEED.id, 'Email history status update failed'
     }
 
-    @Test
+    @Test(enabled = false)
     void testDelete() {
         emailHistoryDao.save(entity)
         emailHistoryDao.delete(entity)

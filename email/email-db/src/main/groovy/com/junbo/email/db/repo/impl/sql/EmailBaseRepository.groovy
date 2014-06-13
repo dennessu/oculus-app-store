@@ -7,11 +7,13 @@ package com.junbo.email.db.repo.impl.sql
 
 import com.junbo.email.db.mapper.EmailMapper
 import com.junbo.sharding.IdGenerator
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
  * EmailBaseRepository Class.
  */
+@CompileStatic
 abstract class EmailBaseRepository {
     protected EmailMapper emailMapper
 

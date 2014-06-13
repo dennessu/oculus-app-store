@@ -367,7 +367,7 @@ public class CommonMapper {
             return null;
         }
 
-        return new OfferId(Long.parseLong(offerId));
+        return new OfferId(offerId);
     }
 
     public String fromOfferIdToString(OfferId offerId) {
@@ -399,7 +399,7 @@ public class CommonMapper {
             return null;
         }
 
-        return new OfferRevisionId(Long.parseLong(offerRevisionId));
+        return new OfferRevisionId(offerRevisionId);
     }
 
     public String fromOfferRevisionIdToString(OfferRevisionId offerRevisionId) {
@@ -415,7 +415,7 @@ public class CommonMapper {
             return null;
         }
 
-        return new PromotionId(Long.parseLong(promotionId));
+        return new PromotionId(promotionId);
     }
 
     public String fromPromotionIdToString(PromotionId promotionId) {
@@ -537,5 +537,24 @@ public class CommonMapper {
             return null;
         }
         return from.getValue();
+    }
+
+    public OrderItemRevisionType fromStringToOrderItemRevisionType(String itemType) {
+        if (itemType == null) {
+            return null;
+        }
+
+        try {
+            return OrderItemRevisionType.valueOf(itemType);
+        } catch (Exception e) {
+            throw AppErrors.INSTANCE.enumConversionError(itemType, "OrderItemRevisionType").exception();
+        }
+    }
+
+    public String fromOrderItemRevisionTypeToString(OrderItemRevisionType itemType) {
+        if (itemType == null) {
+            return null;
+        }
+        return itemType.toString();
     }
 }

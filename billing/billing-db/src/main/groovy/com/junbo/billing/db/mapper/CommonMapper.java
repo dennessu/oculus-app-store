@@ -175,4 +175,46 @@ public class CommonMapper {
             return null;
         }
     }
+
+    public Integer toInteger(String value) {
+        if(StringUtils.isEmpty(value)) {
+            return null;
+        }
+        return Integer.parseInt(value);
+    }
+
+    public String toString(Integer value) {
+        if (value == null) {
+            return null;
+        }
+        return value.toString();
+    }
+
+    public Long fromStringToLong(String source) {
+        return source == null ? null : Long.parseLong(source);
+    }
+
+    public String fromLongToString(Long source) {
+        return source == null ? null : source.toString();
+    }
+
+    public String fromShortToString(Short id) {
+        if (id == null) {
+            return null;
+        }
+
+        return id.toString();
+    }
+
+    public Short fromStringToShort(String id) {
+        if (id == null) {
+            return null;
+        }
+
+        return Short.valueOf(id);
+    }
+
+    public Short fromShortToShort(Short source) {
+        return source == null ? null : new Short(source);
+    }
 }

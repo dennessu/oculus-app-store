@@ -5,20 +5,12 @@ import com.junbo.common.id.PITypeId
 import com.junbo.identity.data.repository.PITypeRepository
 import com.junbo.identity.spec.v1.model.PIType
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required
 /**
  * Created by haomin on 14-4-25.
  */
 @CompileStatic
 class PITypeRepositoryCloudantImpl extends CloudantClient<PIType> implements PITypeRepository {
-    private IdGenerator idGenerator
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
 
     @Override
     protected CloudantViews getCloudantViews() {
@@ -27,10 +19,6 @@ class PITypeRepositoryCloudantImpl extends CloudantClient<PIType> implements PIT
 
     @Override
     Promise<PIType> create(PIType model) {
-        if (model.id == null) {
-            model.id = new PITypeId(idGenerator.nextIdByShardId(0))
-        }
-
         return super.cloudantPost(model)
     }
 

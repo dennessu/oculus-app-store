@@ -17,9 +17,9 @@ import java.util.List;
  */
 public interface ItemRepository extends BaseEntityRepository<Item> {
     Item create(Item item);
-    Item get(Long entityId);
+    Item get(String entityId);
     List<Item> getItems(ItemsGetOptions options);
-    List<Item> getItems(Collection<Long> itemIds);
+    List<Item> getItems(Collection<String> itemIds);
     Item update(Item item);
-    void delete(Long itemId);
+    void delete(String itemId);
 }

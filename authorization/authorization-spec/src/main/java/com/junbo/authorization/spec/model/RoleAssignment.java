@@ -32,7 +32,7 @@ public class RoleAssignment extends PropertyAssignedAwareResourceMeta<RoleAssign
     private String assigneeType;
 
     @JsonIgnore
-    private Long assigneeId;
+    private String assigneeId;
 
     @Override
     public RoleAssignmentId getId() {
@@ -70,11 +70,11 @@ public class RoleAssignment extends PropertyAssignedAwareResourceMeta<RoleAssign
         this.assigneeType = assigneeType;
     }
 
-    public Long getAssigneeId() {
+    public String getAssigneeId() {
         return assigneeId;
     }
 
-    public void setAssigneeId(Long assigneeId) {
+    public void setAssigneeId(String assigneeId) {
         this.assigneeId = assigneeId;
     }
 }

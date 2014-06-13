@@ -49,12 +49,12 @@ public class OrderRatingService extends RatingServiceSupport{
     }
 
     private void findBestPrice(PriceRatingContext context) {
-        Map<Long, Set<PromotionRevision>> candidates = context.getCandidates();
+        Map<String, Set<PromotionRevision>> candidates = context.getCandidates();
         Currency currency = context.getCurrency();
 
         //TODO: this logic will be changed after adding new kinds of offer level promotions
         for (RatableItem item : context.getItems()) {
-            Long offerId = item.getOfferId();
+            String offerId = item.getOfferId();
             Set<PromotionRevision> promotions = candidates.get(offerId) == null?
                     new HashSet<PromotionRevision>() : candidates.get(offerId);
 
@@ -72,7 +72,7 @@ public class OrderRatingService extends RatingServiceSupport{
             entry.setShippingMethodId(item.getShippingMethodId());
             entry.setPreOrderPrice(getPreOrderPrice(item.getOffer(), context.getCountry(), currency.getCode()));
             entry.setOriginalPrice(originalPrice);
-            entry.setAppliedPromotion(new HashSet<Long>());
+            entry.setAppliedPromotion(new HashSet<String>());
             for (PromotionRevision promotion : promotions) {
                 if (promotion.getBenefit() == null) {
                     continue;
@@ -132,7 +132,7 @@ public class OrderRatingService extends RatingServiceSupport{
 
     private void calculateShippingFee(PriceRatingContext context) {
         BigDecimal shippingFee = BigDecimal.ZERO;
-        Map<Long, Integer> shippingDetail = new HashMap<>();
+        Map<String, Integer> shippingDetail = new HashMap<>();
 
         for (RatableItem item : context.getItems()) {
             int quantity = getQuantity(item.getOffer(), context.getTimestamp()) * item.getQuantity();
@@ -140,7 +140,7 @@ public class OrderRatingService extends RatingServiceSupport{
                 continue;
             }
 
-            Long shippingMethodId = item.getShippingMethodId() == null?
+            String shippingMethodId = item.getShippingMethodId() == null?
                     context.getDefaultShippingMethod() : item.getShippingMethodId();
             if (shippingMethodId == null) {
                 LOGGER.warn("Missing shipping method for Offer " + item.getOfferId());
@@ -153,7 +153,7 @@ public class OrderRatingService extends RatingServiceSupport{
             shippingDetail.put(shippingMethodId, shippingDetail.get(shippingMethodId) + quantity);
         }
 
-        for (Long shippingMethodId : shippingDetail.keySet()) {
+        for (String shippingMethodId : shippingDetail.keySet()) {
             int quantity = shippingDetail.get(shippingMethodId);
             ShippingMethod shippingMethod = catalogGateway.getShippingMethod(shippingMethodId);
             if (shippingMethod != null) {

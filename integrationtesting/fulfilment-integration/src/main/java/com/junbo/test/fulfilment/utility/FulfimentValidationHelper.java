@@ -69,7 +69,7 @@ public class FulfimentValidationHelper extends BaseValidationHelper {
         }
     }
 
-    private OrderItem getOrderItemByOfferId(Long offerId, Order order) {
+    private OrderItem getOrderItemByOfferId(String offerId, Order order) {
         for (OrderItem orderItem : order.getOrderItems()) {
             if (orderItem.getOffer().getValue().equals(offerId)) {
                 return orderItem;

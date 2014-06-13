@@ -115,7 +115,7 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
         Item item = new Item();
         item.setType("DIGITAL");
         item.setOwnerId(new OrganizationId(idGenerator.nextId()));
-        item.setGenres(new ArrayList<Long>());
+        item.setGenres(new ArrayList<String>());
         try {
             item = itemResourceClientProxy.create(item).get();
             ItemRevision revision = itemRevisionResourceClientProxy.createItemRevision(buildAnItemRevision(item)).get();

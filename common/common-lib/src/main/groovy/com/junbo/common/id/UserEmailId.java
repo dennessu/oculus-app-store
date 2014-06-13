@@ -8,9 +8,9 @@ package com.junbo.common.id;
 /**
  * Created by liangfu on 3/13/14.
  */
-public class UserEmailId extends Id{
+public class UserEmailId extends CloudantId{
     public UserEmailId() {}
-    public UserEmailId(long value) {
+    public UserEmailId(String value) {
         super(value);
     }
 }

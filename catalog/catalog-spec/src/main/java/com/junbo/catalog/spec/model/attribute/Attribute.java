@@ -14,13 +14,13 @@ import java.util.Map;
  * Attribute.
  */
 public interface Attribute {
-    Long getId();
-    void setId(Long id);
+    String getId();
+    void setId(String id);
     String getRev();
     String getType();
     void setType(String type);
-    Long getParentId();
-    void setParentId(Long parentId);
+    String getParentId();
+    void setParentId(String parentId);
     Map<String, SimpleLocaleProperties> getLocales();
     void setLocales(Map<String, SimpleLocaleProperties> locales);
 }

@@ -154,4 +154,16 @@ class OrderServiceContextBuilder {
             return offers
         }
     }
+
+    Promise<Balance> getOrderEventBalance(OrderServiceContext context) {
+        if (context?.orderEvent?.billingInfo?.balance == null) {
+            return Promise.pure(null)
+        }
+
+        return getBalances(context).then { List<Balance> balanceList ->
+            return Promise.pure(balanceList.find { Balance balance ->
+                return balance.getId() == context.orderEvent.billingInfo.balance
+            })
+        }
+    }
 }

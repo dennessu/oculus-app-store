@@ -46,7 +46,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
 
     @Test(enabled = false)
     public void testBVT() {
-        Long offerId = prepareOffer();
+        String offerId = prepareOffer();
         Assert.assertNotNull(offerId, "offerId should not be null.");
 
         internalBVT(offerId);
@@ -54,13 +54,13 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
 
     @Test(enabled = false)
     public void testEwalletBVT() {
-        Long offerId = prepareEwalletOffer();
+        String offerId = prepareEwalletOffer();
         Assert.assertNotNull(offerId, "offerId should not be null.");
 
         internalBVT(offerId);
     }
 
-    private void internalBVT(Long offerId) {
+    private void internalBVT(String offerId) {
         FulfilmentRequest request = prepareFulfilmentRequest(offerId);
 
         try {
@@ -102,7 +102,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
 
     @Test(enabled = false)
     public void testDuplicatedTrackignGuid() {
-        Long offerId = prepareOffer();
+        String offerId = prepareOffer();
         Assert.assertNotNull(offerId, "offerId should not be null.");
 
         String trackingGuid = UUID.randomUUID().toString();
@@ -131,7 +131,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
 
     @Test(enabled = false)
     public void testDuplicatedOrderId() {
-        Long offerId = prepareOffer();
+        String offerId = prepareOffer();
         Assert.assertNotNull(offerId, "offerId should not be null.");
 
         Long orderId = getRandomLong();
@@ -155,7 +155,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         }
     }
 
-    private FulfilmentRequest prepareFulfilmentRequest(final Long offerId) {
+    private FulfilmentRequest prepareFulfilmentRequest(final String offerId) {
         return new FulfilmentRequest() {{
             setTrackingGuid(UUID.randomUUID().toString());
             setRequester("SYSTEM_INTERNAL");
@@ -175,7 +175,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         }};
     }
 
-    private Long prepareOffer() {
+    private String prepareOffer() {
         OrganizationId ownerId = new OrganizationId(123L);
 
         // create item
@@ -183,7 +183,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         item.setType(ItemType.DIGITAL.name());
         item.setOwnerId(ownerId);
 
-        final Long itemId = megaGateway.createItem(item);
+        final String itemId = megaGateway.createItem(item);
         Assert.assertNotNull(itemId);
 
         // create item revision
@@ -211,7 +211,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
             }});
         }});
 
-        Long itemRevisionId = megaGateway.createItemRevision(itemRevision);
+        String itemRevisionId = megaGateway.createItemRevision(itemRevision);
         Assert.assertNotNull(itemRevisionId);
 
         // approve item
@@ -223,7 +223,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         Offer offer = new Offer();
         offer.setOwnerId(new OrganizationId(getRandomLong()));
 
-        Long offerId = megaGateway.createOffer(offer);
+        String offerId = megaGateway.createOffer(offer);
         Assert.assertNotNull(offerId);
 
         // create offer revision
@@ -255,7 +255,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
             }});
         }});
 
-        Long offerRevisionId = megaGateway.createOfferRevision(offerRevision);
+        String offerRevisionId = megaGateway.createOfferRevision(offerRevision);
         Assert.assertNotNull(offerRevisionId);
 
         OfferRevision retrievedRevision = megaGateway.getOfferRevision(offerRevisionId);
@@ -265,7 +265,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         return offerId;
     }
 
-    private Long prepareEwalletOffer() {
+    private String prepareEwalletOffer() {
         OrganizationId ownerId = new OrganizationId(123L);
 
         // create item
@@ -273,7 +273,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         item.setType(ItemType.STORED_VALUE.name());
         item.setOwnerId(ownerId);
 
-        final Long itemId = megaGateway.createItem(item);
+        final String itemId = megaGateway.createItem(item);
         Assert.assertNotNull(itemId);
 
         // create item revision
@@ -291,7 +291,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         }});
         itemRevision.setSku("test_sku");
 
-        Long itemRevisionId = megaGateway.createItemRevision(itemRevision);
+        String itemRevisionId = megaGateway.createItemRevision(itemRevision);
         Assert.assertNotNull(itemRevisionId);
 
         // approve item
@@ -303,7 +303,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         Offer offer = new Offer();
         offer.setOwnerId(ownerId);
 
-        Long offerId = megaGateway.createOffer(offer);
+        String offerId = megaGateway.createOffer(offer);
         Assert.assertNotNull(offerId);
 
         // create offer revision
@@ -344,7 +344,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
             }});
         }});
 
-        Long offerRevisionId = megaGateway.createOfferRevision(offerRevision);
+        String offerRevisionId = megaGateway.createOfferRevision(offerRevision);
         Assert.assertNotNull(offerRevisionId);
 
         OfferRevision retrievedOfferRevision = megaGateway.getOfferRevision(offerRevisionId);

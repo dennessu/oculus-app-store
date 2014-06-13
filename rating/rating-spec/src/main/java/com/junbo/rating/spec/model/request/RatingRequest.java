@@ -55,7 +55,7 @@ public class RatingRequest {
                     "for physical goods which have no specified shipping method.")
     @ShippingMethodId
     @JsonProperty("defaultShippingMethod")
-    private Long shippingMethodId;
+    private String shippingMethodId;
 
     @ApiModelProperty(position = 9, required = true, value = "[Client Immutable] Details about calculation result of an order.")
     @Null
@@ -121,11 +121,11 @@ public class RatingRequest {
         this.time = time;
     }
 
-    public Long getShippingMethodId() {
+    public String getShippingMethodId() {
         return shippingMethodId;
     }
 
-    public void setShippingMethodId(Long shippingMethodId) {
+    public void setShippingMethodId(String shippingMethodId) {
         this.shippingMethodId = shippingMethodId;
     }
 

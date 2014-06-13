@@ -4,7 +4,7 @@ import com.junbo.billing.clientproxy.CountryFacade
 import com.junbo.billing.clientproxy.CurrencyFacade
 import com.junbo.billing.clientproxy.IdentityFacade
 import com.junbo.billing.clientproxy.PaymentFacade
-import com.junbo.billing.db.repository.BalanceRepository
+import com.junbo.billing.db.repo.facade.BalanceRepositoryFacade
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.Balance
@@ -58,7 +58,7 @@ class BalanceValidator {
     }
 
     @Autowired
-    BalanceRepository balanceRepository
+    BalanceRepositoryFacade balanceRepositoryFacade
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BalanceValidator)
 
@@ -164,15 +164,15 @@ class BalanceValidator {
         }
 
         if (balance.type == BalanceType.REFUND.name()) {
-            Balance originalBalance = balanceRepository.getBalance(balance.originalBalanceId.value)
-            List<Balance> refundeds = balanceRepository.getRefundBalancesByOriginalId(balance.originalBalanceId.value)
+            Balance originalBalance = balanceRepositoryFacade.getBalance(balance.originalBalanceId.value)
+            List<Balance> refundeds = balanceRepositoryFacade.getRefundBalancesByOriginalId(balance.originalBalanceId.value)
             BigDecimal totalRefunded = 0
             for (Balance refunded : refundeds) {
                 totalRefunded += refunded.totalAmount
             }
             if (totalRefunded + balance.totalAmount > originalBalance.totalAmount) {
                 LOGGER.error('for the original balance {}, refund total {} exceeded, original amount {}, refunded {}',
-                    originalBalance.balanceId, balance.totalAmount, originalBalance.totalAmount, totalRefunded)
+                    originalBalance.id, balance.totalAmount, originalBalance.totalAmount, totalRefunded)
                 throw AppErrors.INSTANCE.balanceRefundTotalExceeded(balance.totalAmount, originalBalance.totalAmount,
                 totalRefunded).exception()
             }
@@ -202,7 +202,7 @@ class BalanceValidator {
         if (balanceId == null) {
             throw AppErrors.INSTANCE.fieldMissingValue('balanceId').exception()
         }
-        Balance savedBalance = balanceRepository.getBalance(balanceId.value)
+        Balance savedBalance = balanceRepositoryFacade.getBalance(balanceId.value)
         if (savedBalance == null) {
             throw AppErrors.INSTANCE.balanceNotFound(balanceId.value.toString()).exception()
         }

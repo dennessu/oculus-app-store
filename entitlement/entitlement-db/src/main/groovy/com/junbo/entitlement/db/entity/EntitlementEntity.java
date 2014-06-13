@@ -34,7 +34,7 @@ import java.util.UUID;
 public class EntitlementEntity extends Entity implements CloudantEntity<EntitlementId> {
     private Long userId;
     private Boolean isBanned;
-    private Long itemId;
+    private String itemId;
     @CloudantSerialize(DateSerializer.class)
     @CloudantDeserialize(DateDeserializer.class)
     private Date grantTime;
@@ -56,11 +56,11 @@ public class EntitlementEntity extends Entity implements CloudantEntity<Entitlem
     }
 
     @Column(name = "item_id")
-    public Long getItemId() {
+    public String getItemId() {
         return itemId;
     }
 
-    public void setItemId(Long itemId) {
+    public void setItemId(String itemId) {
         this.itemId = itemId;
     }
 

@@ -15,6 +15,7 @@ import com.junbo.order.core.OrderServiceOperation
 import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
+import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.enums.EventStatus
 import com.junbo.order.spec.model.enums.OrderActionType
 import com.junbo.order.spec.model.enums.OrderStatus
@@ -87,12 +88,10 @@ class DefaultFlowSelector implements FlowSelector {
                 throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
 
             case OrderActionType.CHARGE.name():
-                if (event.status == EventStatus.COMPLETED.name()
-                        && context.order.status == OrderStatus.PENDING_CHARGE.name()) {
-                    return Promise.pure(FlowType.WEB_PAYMENT_SETTLE.name())
-                }
-                LOGGER.error('name=Charge_Event_Not_Support. action: {}, status:{}', event.action, event.status)
-                throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
+                return selectFlowForChargeEvent(event, context)
+
+            case OrderActionType.AUTHORIZE.name():
+                return selectFlowForAuthEvent(event, context)
 
             case OrderActionType.CANCEL.name():
                 if (event.status == EventStatus.COMPLETED.name()
@@ -137,5 +136,36 @@ class DefaultFlowSelector implements FlowSelector {
                             pis[0]?.type?.toString()).exception()
             }
         }
+    }
+
+    private Promise<String> selectFlowForChargeEvent(OrderEvent event, OrderServiceContext context) {
+        orderServiceContextBuilder.getPaymentInstruments(context).then { List<PaymentInstrument> pis ->
+            boolean hasWebPayment = pis.any { PaymentInstrument pi ->
+                return PIType.get(pi.type) == PIType.PAYPAL
+            }
+
+            if (hasWebPayment) {
+                if (event.status == EventStatus.COMPLETED.name()
+                        && context.order.status == OrderStatus.PENDING_CHARGE.name()) {
+                    return Promise.pure(FlowType.WEB_PAYMENT_SETTLE.name())
+                }
+            } else {
+                return selectPayInFlow(context)
+            }
+
+            LOGGER.error('name=Charge_Event_Not_Support. action: {}, status:{}, orderStatus:{}',
+                    event.action, event.status, context.order.status)
+            throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
+        }
+    }
+
+    private Promise<String> selectFlowForAuthEvent(OrderEvent event, OrderServiceContext context) {
+        if (context.order.status == OrderStatus.PENDING_CHARGE.name()) {
+            return Promise.pure(FlowType.AUTH_SETTLE.name())
+        }
+
+        LOGGER.error('name=Auth_Event_Not_Support. action: {}, status:{}, orderStatus:{}',
+                event.action, event.status, context.order.status)
+        throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
     }
 }

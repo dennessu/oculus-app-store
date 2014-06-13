@@ -6,6 +6,7 @@ import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.impl.common.OrderValidator
+import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
 import com.junbo.order.spec.resource.OrderResource
@@ -51,10 +52,11 @@ class OrderResourceImpl implements OrderResource {
         orderValidator.validateSettleOrderRequest(order)
         Boolean isTentative = order.tentative
         order.tentative = true
-        return orderService.createQuote(order, new ApiContext()).then { Order ratedOrder ->
+        return orderService.createQuote(order,
+                new OrderServiceContext(order, new ApiContext())).then { Order ratedOrder ->
             if (!isTentative) {
                 ratedOrder.tentative = isTentative
-                return orderService.settleQuote(ratedOrder, new ApiContext())
+                return orderService.settleQuote(ratedOrder, new OrderServiceContext(order, new ApiContext()))
             }
             return Promise.pure(ratedOrder)
         }
@@ -72,18 +74,18 @@ class OrderResourceImpl implements OrderResource {
                 if (order.tentative) {
                     // rate and update the tentative order
                     return orderService.updateTentativeOrder(order,
-                            new ApiContext()).syncThen { Order result ->
+                            new OrderServiceContext(order, new ApiContext())).syncThen { Order result ->
                         return result
                     }
                 } else { // handle settle order scenario: the tentative flag is updated from true to false
-                    return orderService.settleQuote(order, new ApiContext())
+                    return orderService.settleQuote(order, new OrderServiceContext(order, new ApiContext()))
                 }
             } else { // order already settle
                 // determine the refund request
                 if(isARefund(oldOrder, order)) {
                     LOGGER.info('name=Refund_Non_Tentative_Offer')
                     oldOrder.orderItems = order.orderItems
-                    return orderService.refundOrder(oldOrder)
+                    return orderService.refundOrder(oldOrder, new OrderServiceContext(order, new ApiContext()))
                 }
                 LOGGER.info('name=Update_Non_Tentative_Offer')
                 // update shipping address after settlement
@@ -91,7 +93,8 @@ class OrderResourceImpl implements OrderResource {
                     oldOrder.shippingAddress = order.shippingAddress
                     oldOrder.shippingToPhone = order.shippingToPhone
                     oldOrder.shippingToName = order.shippingToName
-                    return orderService.updateNonTentativeOrder(oldOrder, new ApiContext())
+                    return orderService.updateNonTentativeOrder(oldOrder,
+                            new OrderServiceContext(order, new ApiContext()))
                 }
                 LOGGER.error('name=Update_Not_Allow')
                 throw AppErrors.INSTANCE.invalidSettledOrderUpdate().exception()

@@ -52,7 +52,7 @@ public class PaymentTransactionServiceImpl extends HttpClientBase implements Pay
         return getPaymentTransaction(paymentId, 200);
     }
     public PaymentTransaction getPaymentTransaction(Long paymentId, int expectedResponseCode) throws Exception {
-        String url = paymentTransactionUrl + "/" +IdConverter.idLongToHexString(PaymentInstrumentId.class, paymentId);
+        String url = paymentTransactionUrl + "/" +IdConverter.idToUrlString(PaymentInstrumentId.class, paymentId);
         String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode);
         return new JsonMessageTranscoder().decode(new TypeReference<PaymentTransaction>() {}, responseBody);
     }
@@ -72,7 +72,7 @@ public class PaymentTransactionServiceImpl extends HttpClientBase implements Pay
     }
 
     public PaymentTransaction confirm(Long paymentTransactionId, PaymentTransaction request, int expectedResponseCode) throws Exception {
-        String url = paymentTransactionUrl + "/" + IdConverter.idLongToHexString(PaymentInstrumentId.class, paymentTransactionId) + "/confirm";
+        String url = paymentTransactionUrl + "/" + IdConverter.idToUrlString(PaymentInstrumentId.class, paymentTransactionId) + "/confirm";
         String responseBody = restApiCall(HTTPMethod.POST, url, request, expectedResponseCode);
         return new JsonMessageTranscoder().decode(new TypeReference<PaymentTransaction>() {}, responseBody);
     }

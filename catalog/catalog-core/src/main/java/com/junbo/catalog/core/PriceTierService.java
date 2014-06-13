@@ -17,9 +17,9 @@ import java.util.List;
  */
 @Transactional
 public interface PriceTierService {
-    PriceTier getPriceTier(Long tierId);
+    PriceTier getPriceTier(String tierId);
     List<PriceTier> getPriceTiers(PriceTiersGetOptions options);
     PriceTier create(PriceTier priceTier);
-    PriceTier update(Long tierId, PriceTier priceTier);
-    void delete(Long tierId);
+    PriceTier update(String tierId, PriceTier priceTier);
+    void delete(String tierId);
 }

@@ -7,6 +7,7 @@ package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.id.BalanceId;
 import com.junbo.common.id.OrderEventId;
 import com.junbo.common.id.OrderId;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -17,6 +18,30 @@ import java.util.UUID;
  * Created by LinYi on 2/10/14.
  */
 public class OrderEvent extends BaseEventModel<OrderEventId> {
+
+    /**
+     * The BillingInfo class.
+     */
+    public static class BillingInfo {
+
+        public BillingInfo() {
+        }
+
+        public BillingInfo(BalanceId balance) {
+            this.balance = balance;
+        }
+
+        private BalanceId balance;
+
+        public BalanceId getBalance() {
+            return balance;
+        }
+
+        public void setBalance(BalanceId balance) {
+            this.balance = balance;
+        }
+    }
+
     @ApiModelProperty(required = true, position = 10, value = "[Client Immutable] The order-event id.")
     @JsonProperty("self")
     private OrderEventId id;
@@ -29,6 +54,8 @@ public class OrderEvent extends BaseEventModel<OrderEventId> {
 
     @JsonIgnore
     private String flowName;
+
+    private BillingInfo billingInfo;
 
     public OrderEventId getId() {
         return id;
@@ -60,5 +87,13 @@ public class OrderEvent extends BaseEventModel<OrderEventId> {
 
     public void setFlowName(String flowName) {
         this.flowName = flowName;
+    }
+
+    public BillingInfo getBillingInfo() {
+        return billingInfo;
+    }
+
+    public void setBillingInfo(BillingInfo billingInfo) {
+        this.billingInfo = billingInfo;
     }
 }

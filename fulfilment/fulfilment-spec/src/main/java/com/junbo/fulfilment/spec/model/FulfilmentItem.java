@@ -27,7 +27,7 @@ public class FulfilmentItem {
     private Long orderItemId;
 
     @OfferId
-    private Long offerId;
+    private String offerId;
     private Long timestamp;
     private Integer quantity;
 
@@ -72,11 +72,11 @@ public class FulfilmentItem {
         this.orderItemId = orderItemId;
     }
 
-    public Long getOfferId() {
+    public String getOfferId() {
         return offerId;
     }
 
-    public void setOfferId(Long offerId) {
+    public void setOfferId(String offerId) {
         this.offerId = offerId;
     }
 

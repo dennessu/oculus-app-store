@@ -115,12 +115,12 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         if (entitlementSearchParam.getHostItemId() == null) {
             return;
         }
-        Set<Long> itemIds = itemFacade.getItemIdsByHostItemId(entitlementSearchParam.getHostItemId().getValue());
+        Set<String> itemIds = itemFacade.getItemIdsByHostItemId(entitlementSearchParam.getHostItemId().getValue());
         if (CollectionUtils.isEmpty(itemIds)) {
             throw AppErrors.INSTANCE.fieldNotCorrect("hostItemId",
                     "there is no item with hostItemId [" + entitlementSearchParam.getHostItemId() + "]").exception();
         }
-        for (Long itemId : itemIds) {
+        for (String itemId : itemIds) {
             entitlementSearchParam.getItemIds().add(new ItemId(itemId));
         }
     }

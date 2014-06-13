@@ -24,17 +24,15 @@ class MockBalanceResource extends BaseMock implements BalanceResource {
 
     @Override
     Promise<Balance> postBalance(Balance balance) {
-        balance.balanceId = new BalanceId()
-        balance.balanceId.value = generateLong()
+        balance.id = new BalanceId(generateLong())
         balance.status = BalanceStatus.COMPLETED
-        balanceMap[balance.balanceId] = balance
+        balanceMap[balance.getId()] = balance
         return Promise.pure(balance)
     }
 
     @Override
     Promise<Balance> quoteBalance(Balance balance) {
-        balance.balanceId = new BalanceId()
-        balance.balanceId.value = generateLong()
+        balance.id = new BalanceId(generateLong())
         balance.status = null
         balance.taxAmount = 2.00G
         balance.taxIncluded = false
@@ -50,8 +48,8 @@ class MockBalanceResource extends BaseMock implements BalanceResource {
         if(balance == null) {
             balance = new Balance()
 
-            balance.balanceId = new BalanceId()
-            balance.balanceId = balanceId
+            balance.id = new BalanceId()
+            balance.id = balanceId
         }
         balance.status = BalanceStatus.COMPLETED
         return Promise.pure(balance)

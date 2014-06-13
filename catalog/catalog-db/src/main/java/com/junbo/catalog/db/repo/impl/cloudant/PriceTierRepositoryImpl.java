@@ -10,8 +10,6 @@ import com.junbo.catalog.db.repo.PriceTierRepository;
 import com.junbo.catalog.spec.model.pricetier.PriceTier;
 import com.junbo.common.cloudant.CloudantClient;
 import com.junbo.common.cloudant.model.CloudantViews;
-import com.junbo.sharding.IdGenerator;
-import org.springframework.beans.factory.annotation.Required;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,22 +19,13 @@ import java.util.Map;
  * Price tier repository.
  */
 public class PriceTierRepositoryImpl extends CloudantClient<PriceTier> implements PriceTierRepository {
-    private IdGenerator idGenerator;
-
-    @Required
-    public void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator;
-    }
 
     public PriceTier create(PriceTier priceTier) {
-        if (priceTier.getId() == null) {
-            priceTier.setId(idGenerator.nextId());
-        }
         return super.cloudantPost(priceTier).get();
     }
 
-    public PriceTier get(Long tierId) {
-        return super.cloudantGet(tierId.toString()).get();
+    public PriceTier get(String tierId) {
+        return super.cloudantGet(tierId).get();
     }
 
     public List<PriceTier> getPriceTiers(int start, int size) {
@@ -47,8 +36,8 @@ public class PriceTierRepositoryImpl extends CloudantClient<PriceTier> implement
         return super.cloudantPut(priceTier).get();
     }
 
-    public void delete(Long tierId) {
-        super.cloudantDelete(tierId.toString()).get();
+    public void delete(String tierId) {
+        super.cloudantDelete(tierId).get();
     }
 
     private CloudantViews cloudantViews = new CloudantViews() {{

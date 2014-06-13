@@ -71,7 +71,7 @@ class CreateUserPii implements Action {
 
         Date dob = contextWrapper.dob
 
-        UserName name = new UserName(givenName: firstName, familyName: lastName, fullName: "$firstName $lastName")
+        UserName name = new UserName(givenName: firstName, familyName: lastName)
 
         UserPersonalInfo namePii = new UserPersonalInfo(
                 userId: user.id as UserId,

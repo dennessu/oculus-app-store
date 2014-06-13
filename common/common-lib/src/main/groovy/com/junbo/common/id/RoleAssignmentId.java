@@ -11,12 +11,12 @@ package com.junbo.common.id;
 @IdResourcePath(value = "/role-assignments/{0}",
                 resourceType = "role-assignments",
                 regex = "/role-assignments/(?<id>[0-9A-Za-z]+)")
-public class RoleAssignmentId extends Id {
+public class RoleAssignmentId extends CloudantId {
     public RoleAssignmentId() {
 
     }
 
-    public RoleAssignmentId(Long value) {
+    public RoleAssignmentId(String value) {
         super(value);
     }
 }

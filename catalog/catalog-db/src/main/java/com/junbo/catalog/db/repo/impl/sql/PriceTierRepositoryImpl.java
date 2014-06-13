@@ -28,7 +28,7 @@ public class PriceTierRepositoryImpl implements PriceTierRepository {
         return get(priceTierDao.create(entity));
     }
 
-    public PriceTier get(Long id) {
+    public PriceTier get(String id) {
         PriceTierEntity dbEntity = priceTierDao.get(id);
         return PriceTierMapper.toModel(dbEntity);
     }
@@ -49,7 +49,7 @@ public class PriceTierRepositoryImpl implements PriceTierRepository {
         return get(priceTierDao.update(dbEntity));
     }
 
-    public void delete(Long tierId) {
+    public void delete(String tierId) {
         PriceTierEntity dbEntity = priceTierDao.get(tierId);
         dbEntity.setDeleted(true);
         priceTierDao.update(dbEntity);

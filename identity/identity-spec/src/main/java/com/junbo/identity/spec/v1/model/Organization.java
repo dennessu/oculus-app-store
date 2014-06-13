@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.*;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
@@ -60,6 +61,9 @@ public class Organization extends PropertyAssignedAwareResourceMeta<Organization
 
     @ApiModelProperty(position = 14, required = false, value = "")
     private List<AnnualTaxReportId> annualTaxReportIds = new ArrayList<>();
+
+    @JsonIgnore
+    private String canonicalName;
 
     public OrganizationId getId() {
         return id;
@@ -187,5 +191,13 @@ public class Organization extends PropertyAssignedAwareResourceMeta<Organization
     public void setAnnualTaxReportIds(List<AnnualTaxReportId> annualTaxReportIds) {
         this.annualTaxReportIds = annualTaxReportIds;
         support.setPropertyAssigned("annualTaxReportIds");
+    }
+
+    public String getCanonicalName() {
+        return canonicalName;
+    }
+
+    public void setCanonicalName(String canonicalName) {
+        this.canonicalName = canonicalName;
     }
 }

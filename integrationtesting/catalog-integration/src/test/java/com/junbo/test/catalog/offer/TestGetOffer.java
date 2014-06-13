@@ -53,8 +53,8 @@ public class TestGetOffer extends BaseTestClass {
 
         //Prepare an offer
         Offer offer = offerService.postDefaultOffer();
-        Long offerId = offer.getOfferId();
-        Long invalidId = 0L;
+        String offerId = offer.getOfferId();
+        String invalidId = "0L";
 
         //get the offer by Id, assert not null
         Offer offerRtn = offerService.getOffer(offerId);
@@ -94,9 +94,9 @@ public class TestGetOffer extends BaseTestClass {
         Offer offer1 = offerService.postDefaultOffer();
         Offer offer2 = offerService.postDefaultOffer();
         Offer offer3 = offerService.postDefaultOffer();
-        String offerId1 = IdConverter.idLongToHexString(OfferId.class, offer1.getOfferId());
-        String offerId2 = IdConverter.idLongToHexString(OfferId.class, offer2.getOfferId());
-        String offerId3 = IdConverter.idLongToHexString(OfferId.class, offer3.getOfferId());
+        String offerId1 = IdConverter.idToUrlString(OfferId.class, offer1.getOfferId());
+        String offerId2 = IdConverter.idToUrlString(OfferId.class, offer2.getOfferId());
+        String offerId3 = IdConverter.idToUrlString(OfferId.class, offer3.getOfferId());
 
         HashMap<String, List<String>> paraMap = new HashMap<>();
         List<String> listOfferId = new ArrayList<>();
@@ -183,7 +183,7 @@ public class TestGetOffer extends BaseTestClass {
         performVerification(offer1, offer2, offer3, true);
     }
 
-    private void verifyInvalidScenarios(Long offerId) throws Exception {
+    private void verifyInvalidScenarios(String offerId) throws Exception {
         try {
             offerService.getOffer(offerId, 404);
             Assert.fail("Shouldn't get offers with wrong id");
@@ -198,9 +198,9 @@ public class TestGetOffer extends BaseTestClass {
         HashMap<String, List<String>> paraMap = new HashMap<>();
         List<String> listOfferId = new ArrayList<>();
         List<String> listStatus = new ArrayList<>();
-        String offerId1 = IdConverter.idLongToHexString(OfferId.class, offer1.getOfferId());
-        String offerId2 = IdConverter.idLongToHexString(OfferId.class, offer2.getOfferId());
-        String offerId3 = IdConverter.idLongToHexString(OfferId.class, offer3.getOfferId());
+        String offerId1 = IdConverter.idToUrlString(OfferId.class, offer1.getOfferId());
+        String offerId2 = IdConverter.idToUrlString(OfferId.class, offer2.getOfferId());
+        String offerId3 = IdConverter.idToUrlString(OfferId.class, offer3.getOfferId());
         Boolean oppositeValue = !isPublished;
 
         //Set offer ids
@@ -241,7 +241,7 @@ public class TestGetOffer extends BaseTestClass {
         Assert.assertEquals(offerRtn.getItems().size(), expectedRtnSize);
 
         for (String offerGetId : offerId) {
-            Offer offer = offerService.getOffer(IdConverter.hexStringToId(OfferId.class, offerGetId));
+            Offer offer = offerService.getOffer(offerGetId);
             Assert.assertTrue(isContain(offerRtn, offer));
         }
     }

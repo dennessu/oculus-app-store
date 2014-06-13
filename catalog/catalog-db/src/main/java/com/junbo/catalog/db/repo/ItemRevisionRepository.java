@@ -17,10 +17,10 @@ import java.util.List;
  */
 public interface ItemRevisionRepository extends BaseRevisionRepository<ItemRevision> {
     ItemRevision create(ItemRevision itemRevision);
-    ItemRevision get(Long revisionId);
+    ItemRevision get(String revisionId);
     List<ItemRevision> getRevisions(ItemRevisionsGetOptions options);
-    List<ItemRevision> getRevisions(Collection<Long> itemIds, Long timestamp);
-    List<ItemRevision> getRevisions(Long hostItemId);
+    List<ItemRevision> getRevisions(Collection<String> itemIds, Long timestamp);
+    List<ItemRevision> getRevisions(String hostItemId);
     ItemRevision update(ItemRevision revision);
-    void delete(Long revisionId);
+    void delete(String revisionId);
 }

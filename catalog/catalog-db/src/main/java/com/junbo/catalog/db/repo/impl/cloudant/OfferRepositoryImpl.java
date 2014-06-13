@@ -13,8 +13,6 @@ import com.junbo.common.cloudant.CloudantClient;
 import com.junbo.common.cloudant.model.CloudantSearchResult;
 import com.junbo.common.cloudant.model.CloudantViews;
 import com.junbo.common.id.OfferId;
-import com.junbo.sharding.IdGenerator;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -24,22 +22,16 @@ import java.util.*;
  * Offer repository.
  */
 public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferRepository {
-    private IdGenerator idGenerator;
-
-    @Required
-    public void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator;
-    }
 
     public Offer create(Offer offer) {
-        if (offer.getOfferId() == null) {
-            offer.setOfferId(idGenerator.nextId());
-        }
         return super.cloudantPost(offer).get();
     }
 
-    public Offer get(Long offerId) {
-        return super.cloudantGet(offerId.toString()).get();
+    public Offer get(String offerId) {
+        if (offerId == null) {
+            return null;
+        }
+        return super.cloudantGet(offerId).get();
     }
 
     public List<Offer> getOffers(OffersGetOptions options) {
@@ -98,10 +90,10 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
         return offers;
     }
 
-    public List<Offer> getOffers(Collection<Long> offerIds) {
+    public List<Offer> getOffers(Collection<String> offerIds) {
         List<Offer> offers = new ArrayList<>();
-        for (Long offerId : offerIds) {
-            Offer offer = super.cloudantGet(offerId.toString()).get();
+        for (String offerId : offerIds) {
+            Offer offer = super.cloudantGet(offerId).get();
             if (offer != null) {
                 offers.add(offer);
             }
@@ -116,8 +108,8 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
     }
 
     @Override
-    public void delete(Long offerId) {
-        super.cloudantDelete(offerId.toString()).get();
+    public void delete(String offerId) {
+        super.cloudantDelete(offerId).get();
     }
 
     private CloudantViews cloudantViews = new CloudantViews() {{

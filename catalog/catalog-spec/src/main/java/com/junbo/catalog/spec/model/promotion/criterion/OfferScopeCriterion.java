@@ -15,13 +15,13 @@ import java.util.List;
  */
 public class OfferScopeCriterion extends Criterion {
     @OfferId
-    private List<Long> offers;
+    private List<String> offers;
 
-    public List<Long> getOffers() {
+    public List<String> getOffers() {
         return offers;
     }
 
-    public void setOffers(List<Long> offers) {
+    public void setOffers(List<String> offers) {
         this.offers = offers;
     }
 }

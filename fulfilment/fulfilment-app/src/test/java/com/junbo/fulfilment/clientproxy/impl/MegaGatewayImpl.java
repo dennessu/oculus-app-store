@@ -47,7 +47,7 @@ public class MegaGatewayImpl implements MegaGateway {
     private EntitlementResource entitlementResource;
 
     @Override
-    public Long createOffer(Offer offer) {
+    public String createOffer(Offer offer) {
         try {
             return offerResource.create(offer).get().getOfferId();
         } catch (Exception e) {
@@ -56,7 +56,7 @@ public class MegaGatewayImpl implements MegaGateway {
     }
 
     @Override
-    public Long createItem(Item item) {
+    public String createItem(Item item) {
         try {
             return itemResource.create(item).get().getItemId();
         } catch (Exception e) {
@@ -65,7 +65,7 @@ public class MegaGatewayImpl implements MegaGateway {
     }
 
     @Override
-    public Long createOfferRevision(OfferRevision offerRevision) {
+    public String createOfferRevision(OfferRevision offerRevision) {
         try {
             return offerRevisionResource.createOfferRevision(offerRevision).get().getRevisionId();
         } catch (Exception e) {
@@ -74,7 +74,7 @@ public class MegaGatewayImpl implements MegaGateway {
     }
 
     @Override
-    public Long createItemRevision(ItemRevision itemRevision) {
+    public String createItemRevision(ItemRevision itemRevision) {
         try {
             return itemRevisionResource.createItemRevision(itemRevision).get().getRevisionId();
         } catch (Exception e) {
@@ -83,7 +83,7 @@ public class MegaGatewayImpl implements MegaGateway {
     }
 
     @Override
-    public OfferRevision getOfferRevision(Long offerRevisionId) {
+    public OfferRevision getOfferRevision(String offerRevisionId) {
         try {
             return offerRevisionResource.getOfferRevision(new OfferRevisionId(offerRevisionId)).get();
         } catch (Exception e) {
@@ -92,7 +92,7 @@ public class MegaGatewayImpl implements MegaGateway {
     }
 
     @Override
-    public ItemRevision getItemRevision(Long itemRevisionId) {
+    public ItemRevision getItemRevision(String itemRevisionId) {
         try {
             return itemRevisionResource.getItemRevision(new ItemRevisionId(itemRevisionId)).get();
         } catch (Exception e) {
@@ -101,7 +101,7 @@ public class MegaGatewayImpl implements MegaGateway {
     }
 
     @Override
-    public Long updateOfferRevision(OfferRevision offerRevision) {
+    public String updateOfferRevision(OfferRevision offerRevision) {
         try {
             return offerRevisionResource.updateOfferRevision(
                     new OfferRevisionId(offerRevision.getRevisionId()),
@@ -112,7 +112,7 @@ public class MegaGatewayImpl implements MegaGateway {
     }
 
     @Override
-    public Long updateItemRevision(ItemRevision itemRevision) {
+    public String updateItemRevision(ItemRevision itemRevision) {
         try {
             return itemRevisionResource.updateItemRevision(
                     new ItemRevisionId(itemRevision.getRevisionId()),

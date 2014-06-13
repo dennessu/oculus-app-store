@@ -1,5 +1,4 @@
 package com.junbo.identity.data.repository.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.OrganizationId
@@ -16,8 +15,12 @@ import org.springframework.beans.factory.annotation.Required
  */
 @CompileStatic
 class OrganizationRepositoryCloudantImpl extends CloudantClient<Organization> implements OrganizationRepository {
-
     private IdGenerator idGenerator
+
+    @Required
+    void setIdGenerator(IdGenerator idGenerator) {
+        this.idGenerator = idGenerator
+    }
 
     @Override
     protected CloudantViews getCloudantViews() {
@@ -30,8 +33,8 @@ class OrganizationRepositoryCloudantImpl extends CloudantClient<Organization> im
     }
 
     @Override
-    Promise<List<Organization>> searchByName(String name, Integer limit, Integer offset) {
-        def result = super.queryView('by_name', name, limit, offset, false)
+    Promise<List<Organization>> searchByCanonicalName(String name, Integer limit, Integer offset) {
+        def result = super.queryView('by_canonical_name', name, limit, offset, false)
 
         return result
     }
@@ -44,7 +47,7 @@ class OrganizationRepositoryCloudantImpl extends CloudantClient<Organization> im
     @Override
     Promise<Organization> create(Organization model) {
         if (model.id == null) {
-            model.id = new OrganizationId(idGenerator.nextId(model.ownerId.value))
+            model.id = new OrganizationId(idGenerator.nextId())
         }
         return super.cloudantPost(model)
     }
@@ -66,16 +69,11 @@ class OrganizationRepositoryCloudantImpl extends CloudantClient<Organization> im
                                     '  emit(doc.ownerId, doc._id)' +
                                     '}',
                             resultClass: String),
-                    'by_name': new CloudantViews.CloudantView(
+                    'by_canonical_name': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.name, doc._id)' +
+                                    '  emit(doc.canonicalName, doc._id)' +
                                     '}',
                             resultClass: String)
                    ]
     )
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
 }

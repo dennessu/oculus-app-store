@@ -7,9 +7,7 @@ package com.junbo.identity.data.repository
 
 import com.junbo.common.id.UserAuthenticatorId
 import com.junbo.common.id.UserId
-import com.junbo.identity.data.entity.user.UserAddressEntity
 import com.junbo.identity.spec.v1.model.UserAuthenticator
-import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.dualwrite.annotations.ReadMethod
 import com.junbo.sharding.repo.BaseRepository

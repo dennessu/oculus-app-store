@@ -99,7 +99,7 @@ public class TestPostItem extends BaseTestClass {
         ItemAttributeService itemAttributeService = ItemAttributeServiceImpl.instance();
         ItemAttribute itemAttribute1 = itemAttributeService.postDefaultItemAttribute();
         ItemAttribute itemAttribute2 = itemAttributeService.postDefaultItemAttribute();
-        List<Long> genres = new ArrayList<>();
+        List<String> genres = new ArrayList<>();
         genres.add(itemAttribute1.getId());
         genres.add(itemAttribute2.getId());
 
@@ -127,10 +127,10 @@ public class TestPostItem extends BaseTestClass {
     )
     @Test
     public void testPostItemInvalidScenarios() throws Exception {
-        List<Long> genresCategory = new ArrayList<>();
-        List<Long> genresInvalid = new ArrayList<>();
-        genresInvalid.add(0L);
-        genresInvalid.add(1L);
+        List<String> genresCategory = new ArrayList<>();
+        List<String> genresInvalid = new ArrayList<>();
+        genresInvalid.add("0L");
+        genresInvalid.add("1L");
 
         //test ownerId is null
         Item testItem = itemService.prepareItemEntity(defaultItem, organizationId);
@@ -139,7 +139,7 @@ public class TestPostItem extends BaseTestClass {
 
         //test currentRevision is not null
         testItem = itemService.prepareItemEntity(defaultItem, organizationId);
-        testItem.setCurrentRevisionId(0L);
+        testItem.setCurrentRevisionId("0L");
         verifyExpectedError(testItem);
 
         //test rev
@@ -154,7 +154,7 @@ public class TestPostItem extends BaseTestClass {
 
         //test defaultOffer is not existed
         testItem = itemService.prepareItemEntity(defaultItem, organizationId);
-        testItem.setDefaultOffer(0L);
+        testItem.setDefaultOffer("0L");
         verifyExpectedError(testItem);
 
         //test genres is not existed
@@ -174,10 +174,10 @@ public class TestPostItem extends BaseTestClass {
         //put all invalid scenarios together
         testItem = itemService.prepareItemEntity(defaultItem, organizationId);
         testItem.setOwnerId(null);
-        testItem.setCurrentRevisionId(0L);
+        testItem.setCurrentRevisionId("0L");
         testItem.setResourceAge(initRevValue);
         testItem.setType("invalid type");
-        testItem.setDefaultOffer(0L);
+        testItem.setDefaultOffer("0L");
         testItem.setGenres(genresCategory);
         verifyExpectedError(testItem);
 

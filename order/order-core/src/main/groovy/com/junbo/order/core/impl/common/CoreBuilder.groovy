@@ -93,8 +93,8 @@ class CoreBuilder {
 
         originalBalance.balanceItems.each { BalanceItem item ->
             def balanceItem = buildRefundBalanceItem(item)
-            balanceItem.originalBalanceItemId = balanceItem.balanceItemId
-            balanceItem.balanceItemId = null
+            balanceItem.originalBalanceItemId = balanceItem.getId()
+            balanceItem.setId(null)
             balance.addBalanceItem(balanceItem)
 
         }
@@ -181,9 +181,9 @@ class CoreBuilder {
         balance.providerConfirmUrl = originalBalance.providerConfirmUrl
         balance.successRedirectUrl = originalBalance.successRedirectUrl
         balance.cancelRedirectUrl = originalBalance.cancelRedirectUrl
-        balance.originalBalanceId = originalBalance.balanceId
+        balance.originalBalanceId = originalBalance.getId()
         balance.type = BalanceType.REFUND.name()
-        balance.balanceId = null
+        balance.setId(null)
 
         return balance
     }
@@ -215,7 +215,7 @@ class CoreBuilder {
         discountItem.discountAmount = item.discountAmount
         balanceItem.addDiscountItem(discountItem)
         balanceItem.orderItemId = item.orderItemId
-        balanceItem.originalBalanceItemId = item.balanceItemId
+        balanceItem.originalBalanceItemId = item.getId()
         return balanceItem
     }
 

@@ -35,7 +35,7 @@ public class PriceTierServiceImpl implements PriceTierService {
     }
 
     @Override
-    public PriceTier getPriceTier(Long tierId) {
+    public PriceTier getPriceTier(String tierId) {
         PriceTier priceTier = priceTierRepo.get(tierId);
         if (priceTier==null) {
             throw AppErrors.INSTANCE.notFound("price-tiers", Utils.encodeId(tierId)).exception();
@@ -68,13 +68,13 @@ public class PriceTierServiceImpl implements PriceTierService {
     }
 
     @Override
-    public PriceTier update(Long tierId, PriceTier priceTier) {
+    public PriceTier update(String tierId, PriceTier priceTier) {
         validateUpdate(priceTier);
         return priceTierRepo.update(priceTier);
     }
 
     @Override
-    public void delete(Long tierId) {
+    public void delete(String tierId) {
         PriceTier priceTier = priceTierRepo.get(tierId);
         if (priceTier == null) {
             throw AppErrors.INSTANCE.notFound("price-tier", Utils.encodeId(tierId)).exception();

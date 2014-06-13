@@ -8,12 +8,12 @@ package com.junbo.common.id;
 /**
  * Created by liangfu on 6/5/14.
  */
-public class AnnualTaxReportId extends Id {
+public class AnnualTaxReportId extends CloudantId {
 
     public AnnualTaxReportId() {} {
     }
 
-    public AnnualTaxReportId(Long value) {
+    public AnnualTaxReportId(String value) {
         super(value);
     }
 }

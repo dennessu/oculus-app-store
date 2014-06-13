@@ -6,6 +6,7 @@
 package com.junbo.common.util;
 
 import com.junbo.common.id.Id;
+import com.junbo.common.id.CloudantId;
 import com.junbo.common.id.OrderId;
 import com.junbo.common.shuffle.Oculus40Id;
 import com.junbo.common.shuffle.Oculus48Id;
@@ -44,5 +45,9 @@ public class IdFormatter {
             Long value = Oculus48Id.shuffle(id.getValue());
             return Oculus48Id.format(value);
         }
+    }
+
+    public static String encodeId(CloudantId id) {
+        return id.getValue();
     }
 }

@@ -1,5 +1,4 @@
 package com.junbo.order.rest.resource
-
 import com.junbo.common.id.OrderEventId
 import com.junbo.common.id.OrderId
 import com.junbo.common.model.Results
@@ -7,6 +6,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.OrderEventService
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.impl.common.OrderValidator
+import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.PageParam
 import com.junbo.order.spec.resource.OrderEventResource
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
 import javax.ws.rs.PathParam
-
 /**
  * Created by chriszhu on 3/12/14.
  */
@@ -47,8 +46,9 @@ class OrderEventResourceImpl implements OrderEventResource {
     @Override
     Promise<OrderEvent> createOrderEvent(OrderEvent orderEvent) {
         orderValidator.notNull(orderEvent, 'orderEvent').notNull(orderEvent.order, 'orderId')
-        return orderService.updateOrderByOrderEvent(orderEvent).then { OrderEvent event ->
-            return orderEventService.recordEventHistory(event)
+        def context = new OrderServiceContext()
+        return orderService.updateOrderByOrderEvent(orderEvent, context).then { OrderEvent event ->
+            return orderEventService.recordEventHistory(event, context)
         }
     }
 

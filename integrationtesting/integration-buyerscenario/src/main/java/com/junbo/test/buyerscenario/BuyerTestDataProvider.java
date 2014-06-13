@@ -92,13 +92,13 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
 
     public String postDefaultItem() throws Exception {
         Item item = itemClient.postDefaultItem(CatalogItemType.PHYSICAL);
-        return IdConverter.idLongToHexString(ItemId.class, item.getItemId());
+        return IdConverter.idToUrlString(ItemId.class, item.getItemId());
     }
 
     public String postDefaultOffer(CatalogItemType itemType) throws Exception {
         logger.LogSample("Post a offer");
         Offer offer = offerClient.postDefaultOffer();
-        return IdConverter.idLongToHexString(OfferId.class, offer.getOfferId());
+        return IdConverter.idToUrlString(OfferId.class, offer.getOfferId());
     }
 
     public String postOffersToPrimaryCart(String uid, boolean hasPhysicalGood, ArrayList<String> offers) throws Exception {
@@ -113,8 +113,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
                 offerItem.setQuantity(1L);
             }
             offerItem.setIsSelected(true);
-            OfferId offerId = new OfferId(
-                    IdConverter.hexStringToId(OfferId.class, offerClient.getOfferIdByName(offers.get(i))));
+            OfferId offerId = new OfferId(offerClient.getOfferIdByName(offers.get(i)));
             offerItem.setOffer(offerId);
             offerItem.setIsApproved(true);
             offerItemList.add(offerItem);
@@ -127,7 +126,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
 
     public String postDefaultOffersToPrimaryCart(String uid, CatalogItemType itemType) throws Exception {
         String offerId = this.postDefaultOffer(itemType);
-        //String offerId = IdConverter.idLongToHexString(OfferId.class, new OfferId(100001L).getValue());
+        //String offerId = IdConverter.idToUrlString(OfferId.class, new OfferId(100001L).getValue());
         ArrayList<String> offerList = new ArrayList<>();
         offerList.add(offerId);
         return this.postOffersToPrimaryCart(uid, false, offerList);
@@ -213,7 +212,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
             orderItemList.add(orderItem);
         }
         if (hasPhysicalGood) {
-            order.setShippingMethod(01L);
+            order.setShippingMethod("1L");
             order.setShippingAddress(Master.getInstance().getUser(uid).getAddresses().get(0).getValue());
             order.setShippingToName(Master.getInstance().getUser(uid).getName().getValue());
             order.setShippingToPhone(Master.getInstance().getUser(uid).getPhones().get(0).getValue());

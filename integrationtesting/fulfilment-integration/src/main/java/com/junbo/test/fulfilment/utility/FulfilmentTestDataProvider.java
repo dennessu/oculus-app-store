@@ -54,7 +54,7 @@ public class FulfilmentTestDataProvider extends BuyerTestDataProvider {
         fulfilmentRequest.setTrackingGuid(UUID.randomUUID().toString());
 
         if (hasPhysicalGood) {
-            fulfilmentRequest.setShippingMethodId(01L);
+            fulfilmentRequest.setShippingMethodId("1L");
             fulfilmentRequest.setShippingAddressId(Master.getInstance().getUser(uid).getAddresses()
                     .get(0).getValue().getValue());
         }
@@ -62,7 +62,7 @@ public class FulfilmentTestDataProvider extends BuyerTestDataProvider {
     }
 
 
-    private String getOrderItemId(String uid, Long orderId, Long offerId) throws Exception {
+    private String getOrderItemId(String uid, Long orderId, String offerId) throws Exception {
         String sqlStr = String.format(
                 "select order_item_id from shard_%s.order_item where order_id='%s' and product_item_id='%s'",
                 ShardIdHelper.getShardIdByUid(uid), orderId, offerId);

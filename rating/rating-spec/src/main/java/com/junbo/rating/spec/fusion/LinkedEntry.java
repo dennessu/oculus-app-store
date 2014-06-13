@@ -10,15 +10,15 @@ package com.junbo.rating.spec.fusion;
  * Created by lizwu on 3/6/14.
  */
 public class LinkedEntry {
-    private Long entryId;
+    private String entryId;
     private int quantity;
     private EntryType type;
 
-    public Long getEntryId() {
+    public String getEntryId() {
         return entryId;
     }
 
-    public void setEntryId(Long entryId) {
+    public void setEntryId(String entryId) {
         this.entryId = entryId;
     }
 

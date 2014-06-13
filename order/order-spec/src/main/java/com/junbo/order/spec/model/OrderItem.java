@@ -94,6 +94,12 @@ public class OrderItem extends ResourceMetaForDualWrite<OrderItemId> {
     @JsonIgnore
     private Boolean isPreorder;
 
+    @JsonIgnore
+    private List<OrderItemRevision> orderItemRevisions;
+
+    @JsonIgnore
+    private Long latestOrderItemRevisionId;
+
     @Override
     public OrderItemId getId() {
         return id;
@@ -238,5 +244,21 @@ public class OrderItem extends ResourceMetaForDualWrite<OrderItemId> {
 
     public void setIsPreorder(Boolean isPreorder) {
         this.isPreorder = isPreorder;
+    }
+
+    public List<OrderItemRevision> getOrderItemRevisions() {
+        return orderItemRevisions;
+    }
+
+    public void setOrderItemRevisions(List<OrderItemRevision> orderItemRevisions) {
+        this.orderItemRevisions = orderItemRevisions;
+    }
+
+    public Long getLatestOrderItemRevisionId() {
+        return latestOrderItemRevisionId;
+    }
+
+    public void setLatestOrderItemRevisionId(Long latestOrderItemRevisionId) {
+        this.latestOrderItemRevisionId = latestOrderItemRevisionId;
     }
 }

@@ -46,6 +46,11 @@
             <property name="accessTokenProvider" ref="data_accessTokenProvider"/>
         </bean>
 
+        <bean id="data_emailTemplateResource" class="com.junbo.email.spec.resource.proxy.EmailTemplateResourceClientProxy" parent="baseClientProxy">
+            <property name="target" value="${clientproxy.email.url}"/>
+            <property name="accessTokenProvider" ref="data_accessTokenProvider"/>
+        </bean>
+
         <bean id="baseDataHandler" class="com.junbo.data.handler.BaseDataHandler" abstract="true">
             <property name="transcoder" ref="commonTranscoder"/>
             <property name="alwaysOverwrite" value="${data.loader.alwaysOverwrite}"/>
@@ -79,6 +84,10 @@
             <property name="piTypeResource" ref="data_piTypeResource"/>
         </bean>
 
+        <bean id="emailTemplateDataHandler" class="com.junbo.data.handler.EmailTemplateDataHandler" parent="baseDataHandler">
+            <property name="templateResource" ref="data_emailTemplateResource"/>
+        </bean>
+
         <bean id="dataLoader" class="com.junbo.data.loader.DataLoader">
             <property name="handlers">
                 <map>
@@ -89,6 +98,7 @@
                     <entry key="currency" value-ref="currencyDataHandler" />
                     <entry key="locale" value-ref="localeDataHandler" />
                     <entry key="pitype" value-ref="piTypeDataHandler" />
+                    <entry key="email-template" value-ref="emailTemplateDataHandler"/>
                 </map>
             </property>
             <property name="dataList">
@@ -100,6 +110,7 @@
                     <value>currency</value>
                     <value>country</value>
                     <value>pitype</value>
+                    <value>email-template</value>
                 </list>
             </property>
         </bean>

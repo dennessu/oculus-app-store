@@ -13,9 +13,9 @@ import com.junbo.fulfilment.spec.fusion.ShippingMethod;
  * CatalogGateway.
  */
 public interface CatalogGateway {
-    Offer getOffer(Long offerId, Long timestamp);
+    Offer getOffer(String offerId, Long timestamp);
 
-    Item getItem(Long itemId, Long timestamp);
+    Item getItem(String itemId, Long timestamp);
 
-    ShippingMethod getShippingMethod(Long shippingMethodId);
+    ShippingMethod getShippingMethod(String shippingMethodId);
 }

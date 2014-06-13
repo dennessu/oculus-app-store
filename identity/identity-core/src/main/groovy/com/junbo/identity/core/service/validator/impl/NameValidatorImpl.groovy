@@ -13,8 +13,6 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
- * Check fullName not null
- * Check minimum and maximum fullName length
  * Check minimum and maximum givenName length
  * Check minimum and maximum middleName length
  * Check minimum and maximum familyName length
@@ -23,9 +21,6 @@ import org.springframework.beans.factory.annotation.Required
  */
 @CompileStatic
 class NameValidatorImpl implements PiiValidator {
-    private Integer minFullNameLength
-    private Integer maxFullNameLength
-
     private Integer minMiddleNameLength
     private Integer maxMiddleNameLength
 
@@ -65,16 +60,6 @@ class NameValidatorImpl implements PiiValidator {
     }
 
     private void checkName(UserName name) {
-        if (name.fullName == null) {
-            throw AppErrors.INSTANCE.fieldRequired('value.fullName').exception()
-        }
-        if (name.fullName.length() < minFullNameLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('value.fullName', minFullNameLength).exception()
-        }
-        if (name.fullName.length() > maxFullNameLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('value.fullName', maxFullNameLength).exception()
-        }
-
         if (name.givenName != null) {
             if (name.givenName.length() > maxGivenNameLength) {
                 throw AppErrors.INSTANCE.fieldTooLong('value.givenName', maxGivenNameLength).exception()
@@ -105,16 +90,6 @@ class NameValidatorImpl implements PiiValidator {
         if (name.nickName != null) {
             nickNameValidator.validateNickName(name.nickName)
         }
-    }
-
-    @Required
-    void setMinFullNameLength(Integer minFullNameLength) {
-        this.minFullNameLength = minFullNameLength
-    }
-
-    @Required
-    void setMaxFullNameLength(Integer maxFullNameLength) {
-        this.maxFullNameLength = maxFullNameLength
     }
 
     @Required

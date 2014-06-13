@@ -12,8 +12,6 @@ import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions;
 import com.junbo.common.cloudant.CloudantClient;
 import com.junbo.common.cloudant.model.CloudantViews;
 import com.junbo.common.id.OfferAttributeId;
-import com.junbo.sharding.IdGenerator;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -23,29 +21,23 @@ import java.util.*;
  * Offer repository.
  */
 public class OfferAttributeRepositoryImpl  extends CloudantClient<OfferAttribute> implements OfferAttributeRepository {
-    private IdGenerator idGenerator;
-
-    @Required
-    public void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator;
-    }
 
     public OfferAttribute create(OfferAttribute attribute) {
-        if (attribute.getId() == null) {
-            attribute.setId(idGenerator.nextId());
-        }
         return super.cloudantPost(attribute).get();
     }
 
-    public OfferAttribute get(Long attributeId) {
-        return super.cloudantGet(attributeId.toString()).get();
+    public OfferAttribute get(String attributeId) {
+        if (attributeId == null) {
+            return null;
+        }
+        return super.cloudantGet(attributeId).get();
     }
 
     public List<OfferAttribute> getAttributes(OfferAttributesGetOptions options) {
         if (!CollectionUtils.isEmpty(options.getAttributeIds())) {
             List<OfferAttribute> attributes = new ArrayList<>();
             for (OfferAttributeId attributeId : options.getAttributeIds()) {
-                OfferAttribute attribute = super.cloudantGet(attributeId.getValue().toString()).get();
+                OfferAttribute attribute = super.cloudantGet(attributeId.toString()).get();
                 if (attribute != null) {
                     attributes.add(attribute);
                 }
@@ -64,8 +56,8 @@ public class OfferAttributeRepositoryImpl  extends CloudantClient<OfferAttribute
     }
 
 
-    public void delete(Long attributeId) {
-        super.cloudantDelete(attributeId.toString());
+    public void delete(String attributeId) {
+        super.cloudantDelete(attributeId);
     }
 
     private CloudantViews cloudantViews = new CloudantViews() {{

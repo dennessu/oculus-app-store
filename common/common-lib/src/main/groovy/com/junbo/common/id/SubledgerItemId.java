@@ -16,7 +16,7 @@ public class SubledgerItemId extends Id {
 
     public SubledgerItemId() {}
 
-    public SubledgerItemId(long value) {
+    public SubledgerItemId(Long value) {
         super(value);
     }
 }

@@ -12,31 +12,31 @@
     </bean>
 
     <bean id="emailCommonValidator" class="com.junbo.email.core.validator.impl.CommonValidator" abstract="true">
-        <property name="emailTemplateRepository" ref="emailTemplateSqlRepo"/>
-        <!--<property name="emailTemplateRepository" ref="emailTemplateCloudantRepo"/>-->
+        <!--<property name="emailTemplateRepository" ref="emailTemplateSqlRepo"/>-->
+        <property name="emailTemplateRepository" ref="emailTemplateCloudantRepo"/>
         <property name="emailPattern" value="${email.address.pattern}"/>
     </bean>
 
     <bean id="emailValidator" class="com.junbo.email.core.validator.impl.EmailValidatorImpl" parent="emailCommonValidator">
-        <property name="emailScheduleRepository" ref="emailScheduleSqlRepo"/>
-        <!--<property name="emailScheduleRepository" ref="emailScheduleCloudantRepo"/>-->
+        <!--<property name="emailScheduleRepository" ref="emailScheduleSqlRepo"/>-->
+        <property name="emailScheduleRepository" ref="emailScheduleCloudantRepo"/>
     </bean>
 
     <bean id="templateValidator" class="com.junbo.email.core.validator.impl.EmailTemplateValidatorImpl" parent="emailCommonValidator"/>
 
     <bean id="emailService" class="com.junbo.email.core.service.EmailServiceImpl">
-        <property name="emailHistoryRepository" ref="emailHistorySqlRepo"/>
-        <!--<property name="emailHistoryRepository" ref="emailHistoryCloudantRepo"/>-->
-        <property name="emailScheduleRepository" ref="emailScheduleSqlRepo"/>
-        <!--<property name="emailScheduleRepository" ref="emailScheduleCloudantRepo"/>-->
+        <!--<property name="emailHistoryRepository" ref="emailHistorySqlRepo"/>-->
+        <property name="emailHistoryRepository" ref="emailHistoryCloudantRepo"/>
+        <!--<property name="emailScheduleRepository" ref="emailScheduleSqlRepo"/>-->
+        <property name="emailScheduleRepository" ref="emailScheduleCloudantRepo"/>
         <property name="emailValidator" ref="emailValidator"/>
         <property name="identityFacade" ref="identityFacade"/>
         <property name="emailPublisher" ref="emailPublisher"/>
     </bean>
 
     <bean id="templateService" class="com.junbo.email.core.service.EmailTemplateServiceImpl">
-        <property name="templateRepository" ref="emailTemplateSqlRepo"/>
-        <!--<property name="templateRepository" ref="emailTemplateCloudantRepo"/>-->
+        <!--<property name="templateRepository" ref="emailTemplateSqlRepo"/>-->
+        <property name="templateRepository" ref="emailTemplateCloudantRepo"/>
         <property name="templateValidator" ref="templateValidator"/>
     </bean>
 </beans>

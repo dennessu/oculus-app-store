@@ -51,7 +51,7 @@ public class EntitlementTesting extends TestClass {
     }
 
     private LogHelper logger = new LogHelper(EntitlementTesting.class);
-    private long developerItemId = -1;
+    private String developerItemId = "-1";
 
     @Property(
             priority = Priority.Dailies,
@@ -194,7 +194,7 @@ public class EntitlementTesting extends TestClass {
         User developerUser = Identity.UserPostDefault(); // create an developer
         Entitlement developerEntitlement = new Entitlement();
         developerEntitlement.setUserId(developerUser.getId().getValue());
-        if (this.developerItemId == -1) {
+        if (this.developerItemId.equals("-1")) {
             postDeveloperItem();
         }
         developerEntitlement.setItemId(developerItemId);
@@ -211,9 +211,9 @@ public class EntitlementTesting extends TestClass {
         {
             OfferService offerClient = OfferServiceImpl.instance();
             String offerId=offerClient.getOfferIdByName("testOffer_CartCheckout_digital1");
-            String orId = IdConverter.idLongToHexString(
+            String orId = IdConverter.idToUrlString(
                     OfferRevisionId.class, Master.getInstance().getOffer(offerId).getCurrentRevisionId());
-            long itemId = Master.getInstance().getOfferRevision(orId).getItems().get(0).getItemId();
+            String itemId = Master.getInstance().getOfferRevision(orId).getItems().get(0).getItemId();
             entitlement.setItemId(itemId);
         }
         return EntitlementService.grantEntitlement(entitlement);

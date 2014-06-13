@@ -52,7 +52,6 @@
     <bean id="userCryptoKeyRepo" class="com.junbo.crypto.data.repo.impl.cloudant.CloudantUserCryptoKeyRepoImpl" parent="cloudantClient">
         <property name="dbName" value="user_crypt_key" />
         <property name="cloudantDBUri" value="${crypto.userkey.cloudant.url}" />
-        <property name="idGenerator" ref="oculus48IdGenerator" />
         <property name="asyncHttpClient" ref="commonAsyncHttpClient" />
         <property name="marshaller" ref="cloudantDefaultMarshaller" />
         <property name="cloudantUser" value="${crypto.userkey.cloudant.user}" />

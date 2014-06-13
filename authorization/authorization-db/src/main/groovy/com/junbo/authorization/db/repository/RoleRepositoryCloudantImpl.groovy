@@ -4,34 +4,17 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.authorization.db.repository
-
+import com.junbo.authorization.spec.model.Role
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.RoleId
-import com.junbo.authorization.spec.model.Role
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.IdGenerator
-import com.junbo.sharding.ShardAlgorithm
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required
-
 /**
  * Created by Shenhua on 5/13/2014.
  */
 @CompileStatic
 class RoleRepositoryCloudantImpl extends CloudantClient<Role> implements RoleRepository {
-    private ShardAlgorithm shardAlgorithm
-    private IdGenerator idGenerator
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
-
-    @Required
-    void setShardAlgorithm(ShardAlgorithm shardAlgorithm) {
-        this.shardAlgorithm = shardAlgorithm
-    }
 
     @Override
     protected CloudantViews getCloudantViews() {
@@ -40,9 +23,6 @@ class RoleRepositoryCloudantImpl extends CloudantClient<Role> implements RoleRep
 
     @Override
     Promise<Role> create(Role role) {
-        if (role.id == null) {
-            role.id = new RoleId(idGenerator.nextId())
-        }
         return cloudantPost(role)
     }
 
@@ -63,7 +43,7 @@ class RoleRepositoryCloudantImpl extends CloudantClient<Role> implements RoleRep
 
     @Override
     Promise<Role> findByRoleName(String roleName, String targetType, String filterType,
-                                 String filterLinkIdType, Long filterLinkId) {
+                                 String filterLinkIdType, String filterLinkId) {
         String key = "$roleName:$targetType:$filterType:$filterLinkIdType:$filterLinkId"
         return queryView('by_role_name', key).then { List<Role> list ->
             return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)

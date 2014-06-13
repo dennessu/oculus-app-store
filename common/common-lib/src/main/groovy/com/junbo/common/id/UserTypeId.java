@@ -11,10 +11,10 @@ package com.junbo.common.id;
 @IdResourcePath(value = "/user-type/{0}",
                 resourceType = "user-type",
                 regex = "/user-type/(?<id>[0-9A-Za-z]+)")
-public class UserTypeId extends Id {
+public class UserTypeId extends CloudantId {
     public UserTypeId() {}
 
-    public UserTypeId(long value) {
+    public UserTypeId(String value) {
         super(value);
     }
 }

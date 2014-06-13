@@ -55,10 +55,10 @@ class MockCatalogResource extends BaseMock implements OfferRevisionResource {
     OfferRevision generateOfferRevision() {
         OfferRevision offer = new OfferRevision(
                 ownerId: new OrganizationId(generateLong()),
-                revisionId: generateLong(),
-                offerId: generateLong(),
+                revisionId: generateString(),
+                offerId: generateString(),
                 items: [new ItemEntry(
-                        itemId: generateLong(),
+                        itemId: generateString(),
                         quantity: 1
                 )]
         )

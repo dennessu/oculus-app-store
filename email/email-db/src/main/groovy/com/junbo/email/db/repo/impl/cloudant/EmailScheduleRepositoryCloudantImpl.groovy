@@ -6,11 +6,13 @@ import com.junbo.email.db.repo.EmailScheduleRepository
 import com.junbo.email.spec.model.Email
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
  * Impl of EmailSchedule Repository(Cloudant).
  */
+@CompileStatic
 class EmailScheduleRepositoryCloudantImpl extends EmailBaseRepository<Email> implements EmailScheduleRepository {
     private IdGenerator idGenerator
 

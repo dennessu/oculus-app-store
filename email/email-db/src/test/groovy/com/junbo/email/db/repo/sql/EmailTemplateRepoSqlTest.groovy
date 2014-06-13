@@ -24,13 +24,13 @@ class EmailTemplateRepoSqlTest extends BaseTest {
         template = this.buildEmailTemplate()
     }
 
-    @Test
+    @Test(enabled = false)
     void testCreate() {
         def template = emailTemplateRepository.saveEmailTemplate(template).get()
         assert template != null, 'Email template create failed'
     }
 
-    @Test
+    @Test(enabled = false)
     void testGet() {
         def template = emailTemplateRepository.saveEmailTemplate(template).get()
         assert template != null, 'Email template should not be null'
@@ -44,7 +44,7 @@ class EmailTemplateRepoSqlTest extends BaseTest {
         assert list.size() >= 2, 'Email template list get failed'
     }
 
-    @Test
+    @Test(enabled = false)
     void testUpdate() {
         def template = emailTemplateRepository.saveEmailTemplate(template).get()
         template.setPlaceholderNames(['unit','test'])
@@ -52,7 +52,7 @@ class EmailTemplateRepoSqlTest extends BaseTest {
         assert updated != null, 'Email template update failed'
     }
 
-    @Test
+    @Test(enabled = false)
     void testDelete() {
         emailTemplateRepository.saveEmailTemplate(template).get()
         emailTemplateRepository.deleteEmailTemplate(template.id.value)

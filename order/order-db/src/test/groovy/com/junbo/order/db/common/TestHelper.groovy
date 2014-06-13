@@ -47,6 +47,10 @@ class TestHelper implements ApplicationContextAware {
         return idGenerator.nextId(0)
     }
 
+    static String generateStrId() {
+        return idGenerator.nextId(0).toString()
+    }
+
     static long generateOrderId() {
         return orderIdGenerator.nextId(0)
     }
@@ -206,7 +210,7 @@ class TestHelper implements ApplicationContextAware {
     static Subledger generateSubledger() {
         return new Subledger(
             seller: new OrganizationId(generateId()),
-            offer: new OfferId(generateId()),
+            offer: new OfferId(generateStrId()),
             payoutStatus: PayoutStatus.COMPLETED.name(),
             startTime: new Date(),
             endTime: new Date(),

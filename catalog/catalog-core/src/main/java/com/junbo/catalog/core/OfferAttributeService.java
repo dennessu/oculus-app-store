@@ -17,9 +17,9 @@ import java.util.List;
  */
 @Transactional
 public interface OfferAttributeService {
-    OfferAttribute getAttribute(Long attributeId);
+    OfferAttribute getAttribute(String attributeId);
     List<OfferAttribute> getAttributes(OfferAttributesGetOptions options);
     OfferAttribute create(OfferAttribute attribute);
-    OfferAttribute update(Long attributeId, OfferAttribute attribute);
-    void deleteAttribute(Long attributeId);
+    OfferAttribute update(String attributeId, OfferAttribute attribute);
+    void deleteAttribute(String attributeId);
 }

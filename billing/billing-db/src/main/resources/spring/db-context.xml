@@ -10,6 +10,7 @@
 
     <import resource="classpath*:spring/transaction.xml"/>
     <import resource="classpath*:spring/sharding-context.xml"/>
+    <import resource="classpath*:spring/dualwrite-context.xml"/>
 
     <context:annotation-config />
     <tx:annotation-driven />
@@ -89,10 +90,6 @@
     <!--Mapper-->
     <bean id="billingCommonMapper" class="com.junbo.billing.db.mapper.CommonMapper" />
 
-    <!--repository-->
-    <bean id="balanceRepository" class="com.junbo.billing.db.repository.BalanceRepositoryImpl"/>
-    <bean id="billingTransactionRepository" class="com.junbo.billing.db.repository.TransactionRepositoryImpl"/>
-
     <!--INDEX VIEW-->
     <bean id="billingEntityViewRepository" class="com.junbo.sharding.view.DefaultEntityViewRepository">
         <property name="entityViews">
@@ -118,4 +115,111 @@
         <property name="multimapDAO" ref="billingMultimapDAO" />
     </bean>
 
+    <!-- sql repositories -->
+    <bean id="sqlBalanceRepository" class="com.junbo.billing.db.repo.sql.BalanceRepositorySqlImpl">
+        <property name="modelMapper" ref="com.junbo.billing.db.mapper.ModelMapperImpl"/>
+        <property name="balanceEntityDao" ref="balanceEntityDao"/>
+        <property name="idGenerator" ref="idGenerator"/>
+    </bean>
+
+    <bean id="sqlBalanceEventRepository" class="com.junbo.billing.db.repo.sql.BalanceEventRepositorySqlImpl">
+        <property name="modelMapper" ref="com.junbo.billing.db.mapper.ModelMapperImpl"/>
+        <property name="idGenerator" ref="idGenerator"/>
+        <property name="balanceEventEntityDao" ref="balanceEventEntityDao"/>
+
+    </bean>
+
+    <bean id="sqlBalanceItemRepository" class="com.junbo.billing.db.repo.sql.BalanceItemRepositorySqlImpl">
+        <property name="modelMapper" ref="com.junbo.billing.db.mapper.ModelMapperImpl"/>
+        <property name="idGenerator" ref="idGenerator"/>
+        <property name="balanceItemEntityDao" ref="balanceItemEntityDao"/>
+    </bean>
+
+    <bean id="sqlBalanceItemEventRepository" class="com.junbo.billing.db.repo.sql.BalanceItemEventRepositorySqlImpl">
+        <property name="modelMapper" ref="com.junbo.billing.db.mapper.ModelMapperImpl"/>
+        <property name="idGenerator" ref="idGenerator"/>
+        <property name="balanceItemEventEntityDao" ref="balanceItemEventEntityDao"/>
+    </bean>
+
+    <bean id="sqlDiscountItemRepository" class="com.junbo.billing.db.repo.sql.DiscountItemRepositorySqlImpl">
+        <property name="modelMapper" ref="com.junbo.billing.db.mapper.ModelMapperImpl"/>
+        <property name="idGenerator" ref="idGenerator"/>
+        <property name="discountItemEntityDao" ref="discountItemEntityDao"/>
+    </bean>
+
+    <bean id="sqlOrderBalanceLinkRepository" class="com.junbo.billing.db.repo.sql.OrderBalanceLinkRepositorySqlImpl">
+        <property name="modelMapper" ref="com.junbo.billing.db.mapper.ModelMapperImpl"/>
+        <property name="idGenerator" ref="idGenerator"/>
+        <property name="orderBalanceLinkEntityDao" ref="orderBalanceLinkEntityDao"/>
+    </bean>
+
+    <bean id="sqlTaxItemRepository" class="com.junbo.billing.db.repo.sql.TaxItemRepositorySqlImpl">
+        <property name="modelMapper" ref="com.junbo.billing.db.mapper.ModelMapperImpl"/>
+        <property name="idGenerator" ref="idGenerator"/>
+        <property name="taxItemEntityDao" ref="taxItemEntityDao"/>
+    </bean>
+
+    <bean id="sqlBillingTransactionRepository" class="com.junbo.billing.db.repo.sql.TransactionRepositorySqlImpl">
+        <property name="modelMapper" ref="com.junbo.billing.db.mapper.ModelMapperImpl"/>
+        <property name="idGenerator" ref="idGenerator"/>
+        <property name="transactionEntityDao" ref="transactionEntityDao"/>
+    </bean>
+
+
+    <!-- repositories -->
+    <bean id="balanceRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.billing.db.repo.BalanceRepository"/>
+        <property name="sqlRepositoryImpl" ref="sqlBalanceRepository" />
+    </bean>
+
+    <bean id="balanceItemRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.billing.db.repo.BalanceItemRepository"/>
+        <property name="sqlRepositoryImpl" ref="sqlBalanceItemRepository" />
+    </bean>
+
+    <bean id="balanceEventRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.billing.db.repo.BalanceEventRepository"/>
+        <property name="sqlRepositoryImpl" ref="sqlBalanceEventRepository" />
+    </bean>
+
+    <bean id="balanceItemEventRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.billing.db.repo.BalanceItemEventRepository"/>
+        <property name="sqlRepositoryImpl" ref="sqlBalanceItemEventRepository" />
+    </bean>
+
+    <bean id="discountItemRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.billing.db.repo.DiscountItemRepository"/>
+        <property name="sqlRepositoryImpl" ref="sqlDiscountItemRepository" />
+    </bean>
+
+    <bean id="OrderBalanceLinkRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.billing.db.repo.OrderBalanceLinkRepository"/>
+        <property name="sqlRepositoryImpl" ref="sqlOrderBalanceLinkRepository" />
+    </bean>
+
+    <bean id="taxItemRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.billing.db.repo.TaxItemRepository"/>
+        <property name="sqlRepositoryImpl" ref="sqlTaxItemRepository" />
+    </bean>
+
+    <bean id="billingTransactionRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.billing.db.repo.TransactionRepository"/>
+        <property name="sqlRepositoryImpl" ref="sqlBillingTransactionRepository" />
+    </bean>
+
+    <!-- repository facade -->
+    <bean id="balanceRepositoryFacade" class="com.junbo.billing.db.repo.facade.impl.BalanceRepositoryFacadeImpl">
+        <property name="balanceEventRepository" ref="sqlBalanceEventRepository"/>
+        <property name="balanceItemRepository" ref="sqlBalanceItemRepository"/>
+        <property name="balanceItemEventRepository" ref="sqlBalanceItemEventRepository"/>
+        <property name="orderBalanceLinkRepository" ref="sqlOrderBalanceLinkRepository"/>
+        <property name="balanceRepository" ref="sqlBalanceRepository"/>
+        <property name="transactionRepositoryFacade" ref="billingTransactionRepositoryFacade"/>
+        <property name="taxItemRepository" ref="sqlTaxItemRepository"/>
+        <property name="discountItemRepository" ref="sqlDiscountItemRepository"/>
+    </bean>
+
+    <bean id="billingTransactionRepositoryFacade" class="com.junbo.billing.db.repo.facade.impl.TransactionRepositoryFacadeImpl">
+        <property name="transactionRepository" ref="sqlBillingTransactionRepository"/>
+    </bean>
 </beans>

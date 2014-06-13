@@ -31,7 +31,7 @@ public class EntitlementHistoryEntity extends Entity implements Shardable, Cloud
     private String action;
     private Long entitlementId;
     private Long userId;
-    private Long itemId;
+    private String itemId;
     private Boolean isBanned;
     private Date grantTime;
     private Date expirationTime;
@@ -87,11 +87,11 @@ public class EntitlementHistoryEntity extends Entity implements Shardable, Cloud
     }
 
     @Column(name = "item_id")
-    public Long getItemId() {
+    public String getItemId() {
         return itemId;
     }
 
-    public void setItemId(Long itemId) {
+    public void setItemId(String itemId) {
         this.itemId = itemId;
     }
 

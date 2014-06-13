@@ -8,10 +8,10 @@ package com.junbo.common.id;
 /**
  * Created by liangfu on 3/13/14.
  */
-public class SecurityQuestionId extends Id {
+public class SecurityQuestionId extends CloudantId {
 
     public SecurityQuestionId() {}
-    public SecurityQuestionId(long value) {
+    public SecurityQuestionId(String value) {
         super(value);
     }
 }

@@ -11,12 +11,12 @@ package com.junbo.common.id;
 @IdResourcePath(value = "/payout-tax-profiles/{0}",
                 resourceType = "payout-tax-profiles",
                 regex = "/payout-tax-profiles/(?<id>[0-9A-Za-z]+)")
-public class PayoutTaxProfileId  extends Id {
+public class PayoutTaxProfileId  extends CloudantId {
 
     public PayoutTaxProfileId() {} {
     }
 
-    public PayoutTaxProfileId(Long value) {
+    public PayoutTaxProfileId(String value) {
         super(value);
     }
 }

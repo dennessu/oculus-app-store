@@ -12,19 +12,19 @@ import java.util.Set;
  * Created by lizwu on 2/25/14.
  */
 public class RatingResultEntry {
-    private Long offerId;
+    private String offerId;
     private int quantity;
-    private Long shippingMethodId;
+    private String shippingMethodId;
     private Money preOrderPrice;
     private Money originalPrice;
     private Money discountAmount;
-    private Set<Long> appliedPromotion;
+    private Set<String> appliedPromotion;
 
-    public Long getOfferId() {
+    public String getOfferId() {
         return offerId;
     }
 
-    public void setOfferId(Long offerId) {
+    public void setOfferId(String offerId) {
         this.offerId = offerId;
     }
 
@@ -36,11 +36,11 @@ public class RatingResultEntry {
         this.quantity = quantity;
     }
 
-    public Long getShippingMethodId() {
+    public String getShippingMethodId() {
         return shippingMethodId;
     }
 
-    public void setShippingMethodId(Long shippingMethodId) {
+    public void setShippingMethodId(String shippingMethodId) {
         this.shippingMethodId = shippingMethodId;
     }
 
@@ -68,11 +68,11 @@ public class RatingResultEntry {
         this.discountAmount = discountAmount;
     }
 
-    public Set<Long> getAppliedPromotion() {
+    public Set<String> getAppliedPromotion() {
         return appliedPromotion;
     }
 
-    public void setAppliedPromotion(Set<Long> appliedPromotion) {
+    public void setAppliedPromotion(Set<String> appliedPromotion) {
         this.appliedPromotion = appliedPromotion;
     }
 }

@@ -11,23 +11,29 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import com.junbo.order.db.dao.OrderDao
 import com.junbo.order.db.dao.OrderPaymentInfoDao
+import com.junbo.order.db.dao.OrderRevisionDao
 import com.junbo.order.db.entity.OrderEntity
 import com.junbo.order.db.entity.OrderPaymentInfoEntity
-import com.junbo.order.spec.model.enums.OrderStatus
+import com.junbo.order.db.entity.OrderRevisionEntity
 import com.junbo.order.db.mapper.ModelMapper
 import com.junbo.order.db.repo.OrderRepository
 import com.junbo.order.db.repo.util.RepositoryFuncSet
 import com.junbo.order.db.repo.util.Utils
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderQueryParam
+import com.junbo.order.spec.model.OrderRevision
 import com.junbo.order.spec.model.PageParam
 import com.junbo.order.spec.model.PaymentInfo
+import com.junbo.order.spec.model.enums.OrderStatus
 import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
+
+import javax.annotation.Resource
+
 /**
  * Order Repository SQL impl
  */
@@ -41,6 +47,9 @@ class OrderRepositorySqlImpl implements OrderRepository {
 
     @Autowired
     private OrderPaymentInfoDao orderPaymentInfoDao
+
+    @Resource(name = 'orderRevisionDao')
+    private OrderRevisionDao orderRevisionDao
 
     @Autowired
     private ModelMapper modelMapper
@@ -61,6 +70,9 @@ class OrderRepositorySqlImpl implements OrderRepository {
         }
         Order result = modelMapper.toOrderModel(orderEntity, new MappingContext())
         result.setPayments(getPayments(result.getId().value))
+        if (!result.tentative) {
+            result.setOrderRevisions(getOrderRevisions(result.getId().value))
+        }
         return Promise.pure(result)
     }
 
@@ -94,10 +106,65 @@ class OrderRepositorySqlImpl implements OrderRepository {
         if (order.id == null) {
             return null
         }
+
+        // save non tentative order update to order_revision table
+
+
         def oldEntity = orderDao.read(order.getId().value)
         if (oldEntity == null) {
             throw new IllegalArgumentException('name=Order_Not_Found')
         }
+
+        if(oldEntity.tentative) {
+            return updateToTentativeOrder(oldEntity, order)
+        } else {
+            // save non tentative order‘s update to order_revision table
+            // TODO switch pi support
+            def orderRevisionEntity = toOrderRevisionEntity(order)
+            orderRevisionDao.create(orderRevisionEntity)
+            oldEntity.latestOrderRevisionId = orderRevisionEntity.orderRevisionId
+            oldEntity.resourceAge = order.resourceAge
+            orderDao.update(oldEntity)
+            def newEntity = orderDao.read(oldEntity.orderId)
+            order.resourceAge = newEntity.resourceAge
+            Utils.fillDateInfo(order, newEntity)
+            return Promise.pure(order)
+        }
+    }
+
+    @Override
+    Promise<Void> delete(OrderId id) {
+        orderDao.markDelete(id.value)
+        return Promise.pure(null)
+    }
+
+    @Override
+    Promise<List<Order>> getByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
+        return Promise.pure(orderDao.readByUserId(userId,
+                orderQueryParam.tentative, pageParam?.start, pageParam?.count).collect { OrderEntity entity ->
+            def result = modelMapper.toOrderModel(entity, new MappingContext())
+            result.setPayments(getPayments(result.getId().value))
+            result.setOrderRevisions(getOrderRevisions(result.getId().value))
+            return result
+        })
+    }
+
+    @Override
+    Promise<List<Order>> getByStatus(Object shardKey, List<String> statusList,
+                                     boolean updatedByAscending, PageParam pageParam) {
+        return Promise.pure(orderDao.readByStatus((Integer) shardKey,
+                statusList.collect { String status -> OrderStatus.valueOf(status) },
+                updatedByAscending, pageParam?.start, pageParam?.count).collect { OrderEntity entity ->
+            def result = modelMapper.toOrderModel(entity, new MappingContext())
+            result.setPayments(getPayments(result.getId().value))
+            result.setOrderRevisions(getOrderRevisions(result.getId().value))
+            return result
+        })
+    }
+
+    private Promise<Order> updateToTentativeOrder(OrderEntity oldEntity, Order order) {
+
+        assert(oldEntity.tentative)
 
         // Update Order
         def orderEntity = modelMapper.toOrderEntity(order, new MappingContext())
@@ -117,36 +184,20 @@ class OrderRepositorySqlImpl implements OrderRepository {
         return Promise.pure(order)
     }
 
-    @Override
-    Promise<Void> delete(OrderId id) {
-        orderDao.markDelete(id.value)
-        return Promise.pure(null)
-    }
-
-    @Override
-    Promise<List<Order>> getByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
-        return Promise.pure(orderDao.readByUserId(userId,
-                orderQueryParam.tentative, pageParam?.start, pageParam?.count).collect { OrderEntity entity ->
-            modelMapper.toOrderModel(entity, new MappingContext())
-        })
-    }
-
-    @Override
-    Promise<List<Order>> getByStatus(Object shardKey, List<String> statusList,
-                                     boolean updatedByAscending, PageParam pageParam) {
-        return Promise.pure(orderDao.readByStatus((Integer) shardKey,
-                statusList.collect { String status -> OrderStatus.valueOf(status) },
-                updatedByAscending, pageParam?.start, pageParam?.count).collect { OrderEntity entity ->
-            modelMapper.toOrderModel(entity, new MappingContext())
-        })
-    }
-
     private List<PaymentInfo> getPayments(Long orderId) {
         List<PaymentInfo> paymentInfos = []
         orderPaymentInfoDao.readByOrderId(orderId)?.each { OrderPaymentInfoEntity paymentInfoEntity ->
             paymentInfos << modelMapper.toPaymentInfo(paymentInfoEntity, new MappingContext())
         }
         return paymentInfos
+    }
+
+    private List<OrderRevision> getOrderRevisions(Long orderId) {
+        List<OrderRevision> orderRevisions = []
+        orderRevisionDao.readByOrderId(orderId)?.each { OrderRevisionEntity revisionEntity ->
+            orderRevisions << modelMapper.toOrderRevisionModel(revisionEntity, new MappingContext())
+        }
+        return orderRevisions
     }
 
     private void savePaymentInstruments(OrderId orderId, List<PaymentInfo> paymentInfos) {
@@ -204,5 +255,22 @@ class OrderRepositorySqlImpl implements OrderRepository {
             entity.orderPaymentId = oldEntityId
             orderPaymentInfoDao.update(entity)
         }
+    }
+
+    private OrderRevisionEntity toOrderRevisionEntity(Order order) {
+        def val = new OrderRevisionEntity()
+        val.isTaxInclusive = order.isTaxInclusive
+        val.orderId = order.getId().value
+        val.orderRevisionId = idGenerator.nextId(val.orderId)
+        val.shippingAddressId = order.shippingAddress?.value
+        val.shippingMethodId = order.shippingMethod
+        val.shippingNameId = order.shippingToName?.value
+        val.shippingPhoneId = order.shippingToPhone?.value
+        val.totalAmount = order.totalAmount
+        val.totalDiscount = order.totalDiscount
+        val.totalShippingFee = order.totalShippingFee
+        val.totalShippingFeeDiscount = order.totalShippingFeeDiscount
+        val.totalTax = order.totalTax
+        return val
     }
 }

@@ -5,27 +5,12 @@ import com.junbo.common.id.TosId
 import com.junbo.identity.data.repository.TosRepository
 import com.junbo.identity.spec.v1.model.Tos
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.IdGenerator
-import com.junbo.sharding.ShardAlgorithm
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required
 /**
  * Created by haomin on 14-4-10.
  */
 @CompileStatic
 class TosRepositoryCloudantImpl extends CloudantClient<Tos> implements TosRepository {
-    private ShardAlgorithm shardAlgorithm
-    private IdGenerator idGenerator
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
-
-    @Required
-    void setShardAlgorithm(ShardAlgorithm shardAlgorithm) {
-        this.shardAlgorithm = shardAlgorithm
-    }
 
     @Override
     Promise<Tos> get(TosId tosId) {
@@ -34,9 +19,6 @@ class TosRepositoryCloudantImpl extends CloudantClient<Tos> implements TosReposi
 
     @Override
     Promise<Tos> create(Tos tos) {
-        if (tos.id == null) {
-            tos.id = new TosId(idGenerator.nextId())
-        }
         return super.cloudantPost(tos)
     }
 

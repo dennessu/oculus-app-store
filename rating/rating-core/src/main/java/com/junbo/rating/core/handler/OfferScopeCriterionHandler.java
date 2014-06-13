@@ -19,7 +19,7 @@ public class OfferScopeCriterionHandler implements CriterionHandler<OfferScopeCr
     @Override
     public boolean validate(OfferScopeCriterion criterion, PriceRatingContext context) {
         RatableItem item = context.getCurrentItem();
-        List<Long> entities = criterion.getOffers();
+        List<String> entities = criterion.getOffers();
         switch (criterion.getPredicate()) {
             case INCLUDE_OFFER:
                 if (entities.contains(item.getOfferId())) {

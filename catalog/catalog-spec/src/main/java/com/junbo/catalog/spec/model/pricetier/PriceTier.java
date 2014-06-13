@@ -24,7 +24,7 @@ public class PriceTier extends BaseModel {
     @PriceTierId
     @JsonProperty("self")
     @ApiModelProperty(position = 1, required = true, value = "Price tier id")
-    private Long id;
+    private String id;
     @NotNull
     @ApiModelProperty(position = 2, required = true, value = "Prices")
     private Map<String, Map<String, BigDecimal>> prices;
@@ -33,11 +33,11 @@ public class PriceTier extends BaseModel {
     private Map<String, SimpleLocaleProperties> locales;
 
     @JsonIgnore
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

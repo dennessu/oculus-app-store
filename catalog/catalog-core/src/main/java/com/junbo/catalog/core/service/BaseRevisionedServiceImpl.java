@@ -32,7 +32,7 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
         implements BaseRevisionedService<E, T> {
 
     @Override
-    public E getEntity(Long entityId) {
+    public E getEntity(String entityId) {
         E entity = getEntityRepo().get(entityId);
         checkEntityNotNull(entityId, entity, getEntityType());
         return entity;
@@ -45,7 +45,7 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
     }
 
     @Override
-    public E updateEntity(Long entityId, E entity) {
+    public E updateEntity(String entityId, E entity) {
         E existingEntity = getEntityRepo().get(entityId);
         checkEntityNotNull(entityId, existingEntity, getEntityType());
 
@@ -63,21 +63,21 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
     }
 
     @Override
-    public void deleteEntity(Long entityId) {
+    public void deleteEntity(String entityId) {
         E existingEntity = getEntityRepo().get(entityId);
         checkEntityNotNull(entityId, existingEntity, getEntityType());
         getEntityRepo().delete(entityId);
     }
 
     @Override
-    public T getRevision(Long revisionId) {
+    public T getRevision(String revisionId) {
         T revision = getRevisionRepo().get(revisionId);
         checkEntityNotNull(revisionId, revision, getRevisionType());
         return revision;
     }
 
     @Override
-    public T updateRevision(Long revisionId, T revision) {
+    public T updateRevision(String revisionId, T revision) {
         if (Status.APPROVED.is(revision.getStatus())) {
             revision.setTimestamp(Utils.currentTimestamp());
         }
@@ -88,7 +88,7 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
             if (entity instanceof Offer) {
                 ((Offer) entity).setPublished(Boolean.TRUE);
             }
-            Long lastRevisionId = entity.getCurrentRevisionId();
+            String lastRevisionId = entity.getCurrentRevisionId();
             entity.setCurrentRevisionId(revisionId);
             getEntityRepo().update(entity);
         }
@@ -96,7 +96,7 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
     }
 
     @Override
-    public void deleteRevision(Long revisionId) {
+    public void deleteRevision(String revisionId) {
         T existingRevision = getRevisionRepo().get(revisionId);
         checkEntityNotNull(revisionId, existingRevision, getRevisionType());
         if (Status.APPROVED.is(existingRevision.getStatus())) {
@@ -105,9 +105,9 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
         getRevisionRepo().delete(revisionId);
     }
 
-    protected void checkEntityNotNull(Long entityId, BaseModel entity, String name) {
+    protected void checkEntityNotNull(String entityId, BaseModel entity, String name) {
         if (entity == null) {
-            throw AppErrors.INSTANCE.notFound(name, Utils.encodeId(entityId)).exception();
+            throw AppErrors.INSTANCE.notFound(name, entityId).exception();
         }
     }
 
@@ -117,7 +117,7 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
         }
     }
 
-    protected void validateId(Long expectedId, Long actualId) {
+    protected void validateId(String expectedId, String actualId) {
         if (actualId == null) {
             throw AppErrors.INSTANCE.missingField("id").exception();
         }
@@ -155,7 +155,7 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
         }
     }
 
-    protected boolean isEqual(Long v1, Long v2) {
+    protected boolean isEqual(String v1, String v2) {
         if (v1==null) {
             return v2==null;
         }

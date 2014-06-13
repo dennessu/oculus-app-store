@@ -24,12 +24,12 @@ public class Offer extends BaseEntityModel {
     @OfferId
     @JsonProperty("self")
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The id of offer resource.")
-    private Long offerId;
+    private String offerId;
 
     @OfferRevisionId
     @JsonProperty("currentRevision")
     @ApiModelProperty(position = 20, required = true, value = "The id of current revision.")
-    private Long currentRevisionId;
+    private String currentRevisionId;
 
     @ApiModelProperty(position = 21, required = true, value = "Offer revisions")
     @HateoasLink("/offer-revisions?offerId={offerId}")
@@ -45,7 +45,7 @@ public class Offer extends BaseEntityModel {
 
     @OfferAttributeId
     @ApiModelProperty(position = 25, required = true, value = "Categories of the offer.")
-    private List<Long> categories;
+    private List<String> categories;
 
     @ApiModelProperty(position = 26, required = true, value = "Environment", allowableValues = "DEV, STAGING, PROD")
     private String environment;
@@ -55,21 +55,21 @@ public class Offer extends BaseEntityModel {
     private OfferRevision activeRevision;
 
     @JsonIgnore
-    private Map<Long, RevisionInfo> approvedRevisions;
+    private Map<String, RevisionInfo> approvedRevisions;
 
-    public Long getOfferId() {
+    public String getOfferId() {
         return offerId;
     }
 
-    public void setOfferId(Long offerId) {
+    public void setOfferId(String offerId) {
         this.offerId = offerId;
     }
 
-    public Long getCurrentRevisionId() {
+    public String getCurrentRevisionId() {
         return currentRevisionId;
     }
 
-    public void setCurrentRevisionId(Long currentRevisionId) {
+    public void setCurrentRevisionId(String currentRevisionId) {
         this.currentRevisionId = currentRevisionId;
     }
 
@@ -97,11 +97,11 @@ public class Offer extends BaseEntityModel {
         this.published = published;
     }
 
-    public List<Long> getCategories() {
+    public List<String> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<Long> categories) {
+    public void setCategories(List<String> categories) {
         this.categories = categories;
     }
 
@@ -121,22 +121,22 @@ public class Offer extends BaseEntityModel {
         this.activeRevision = activeRevision;
     }
 
-    public Map<Long, RevisionInfo> getApprovedRevisions() {
+    public Map<String, RevisionInfo> getApprovedRevisions() {
         return approvedRevisions;
     }
 
-    public void setApprovedRevisions(Map<Long, RevisionInfo> approvedRevisions) {
+    public void setApprovedRevisions(Map<String, RevisionInfo> approvedRevisions) {
         this.approvedRevisions = approvedRevisions;
     }
 
     @Override
     @JsonIgnore
-    public Long getId() {
+    public String getId() {
         return offerId;
     }
 
     @Override
-    public void setId(Long id) {
+    public void setId(String id) {
         this.offerId = id;
     }
 }

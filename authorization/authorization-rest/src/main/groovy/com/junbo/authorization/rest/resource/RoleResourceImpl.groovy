@@ -16,7 +16,7 @@ import com.junbo.authorization.spec.error.AppErrors
 import com.junbo.authorization.spec.model.Role
 import com.junbo.authorization.spec.option.list.RoleListOptions
 import com.junbo.authorization.spec.resource.RoleResource
-import com.junbo.common.id.Id
+import com.junbo.common.id.UniversalId
 import com.junbo.common.id.RoleId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -77,7 +77,7 @@ class RoleResourceImpl implements RoleResource {
             Role filtered = roleFilter.filterForPost(role)
             return roleValidator.validateForCreate(filtered).then {
                 return roleRepository.create(filtered).then { Role newRole ->
-                    Created201Marker.mark((Id) newRole.id)
+                    Created201Marker.mark((UniversalId) newRole.id)
 
                     return Promise.pure(roleFilter.filterForGet(newRole))
                 }

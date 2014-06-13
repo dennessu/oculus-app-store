@@ -67,7 +67,7 @@ public class TestPutOffer extends BaseTestClass {
         OfferAttributeService offerAttributeService = OfferAttributeServiceImpl.instance();
         OfferAttribute offerAttribute1 = offerAttributeService.postDefaultOfferAttribute();
         OfferAttribute offerAttribute2 = offerAttributeService.postDefaultOfferAttribute();
-        List<Long> category = new ArrayList<>();
+        List<String> category = new ArrayList<>();
         category.add(offerAttribute1.getId());
         category.add(offerAttribute2.getId());
 
@@ -98,17 +98,17 @@ public class TestPutOffer extends BaseTestClass {
     )
     @Test
     public void testPutOfferInvalidScenarios() throws Exception {
-        List<Long> category = new ArrayList<>();
-        List<Long> categoryInvalid = new ArrayList<>();
-        categoryInvalid.add(0L);
-        categoryInvalid.add(1L);
+        List<String> category = new ArrayList<>();
+        List<String> categoryInvalid = new ArrayList<>();
+        categoryInvalid.add("0L");
+        categoryInvalid.add("1L");
 
         //Prepare an offer
         Offer offer = offerService.postDefaultOffer();
-        Long offerId = offer.getOfferId();
+        String offerId = offer.getOfferId();
 
         //update itself id
-        offer.setOfferId(1L);
+        offer.setOfferId("1L");
         verifyExpectedError(offerId, offer);
 
         //test rev
@@ -123,7 +123,7 @@ public class TestPutOffer extends BaseTestClass {
 
         //can't update current revision id
         offer = offerService.postDefaultOffer();
-        offer.setCurrentRevisionId(0L);
+        offer.setCurrentRevisionId("0L");
         verifyExpectedError(offer.getOfferId(), offer);
 
         //test category is not existed
@@ -142,7 +142,7 @@ public class TestPutOffer extends BaseTestClass {
 
     }
 
-    private void verifyExpectedError(Long offerId, Offer offer) {
+    private void verifyExpectedError(String offerId, Offer offer) {
         try {
             //Error code 400 means "Missing Input field", "Unnecessary field found" or "invalid value"
             offerService.updateOffer(offerId, offer, 400);

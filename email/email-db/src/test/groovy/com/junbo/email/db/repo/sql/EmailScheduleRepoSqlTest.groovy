@@ -33,20 +33,20 @@ class EmailScheduleRepoSqlTest extends BaseTest {
         this.email = email
     }
 
-    @Test
+    @Test(enabled = false)
     void testCreate() {
         def email = emailScheduleRepository.saveEmailSchedule(email).get()
         assert email != null, 'Email schedule create failed'
     }
 
-    @Test
+    @Test(enabled = false)
     void testGet() {
         def email = emailScheduleRepository.saveEmailSchedule(email).get()
         def schedule = emailScheduleRepository.getEmailSchedule(email.id.value).get()
         assert  schedule != null, 'Email schedule should not be null'
     }
 
-    @Test
+    @Test(enabled = false)
     void testUpdate() {
         def email = emailScheduleRepository.saveEmailSchedule(email).get()
         email.setPriority(2)
@@ -55,7 +55,7 @@ class EmailScheduleRepoSqlTest extends BaseTest {
         assert schedule.priority == 2, 'Email schedule update failed'
     }
 
-    @Test
+    @Test(enabled = false)
     void testDelete() {
         def email = emailScheduleRepository.saveEmailSchedule(email).get()
         emailScheduleRepository.deleteEmailSchedule(email.id.value)

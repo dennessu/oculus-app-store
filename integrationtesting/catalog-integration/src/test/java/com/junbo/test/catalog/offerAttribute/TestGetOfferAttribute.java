@@ -56,7 +56,7 @@ public class TestGetOfferAttribute extends BaseTestClass {
         Assert.assertNotNull(offerAttributeRtn, "Can't get offer attribute");
 
         //verify the invalid Id scenario
-        Long invalidId = 0L;
+        String invalidId = "0L";
         try {
             offerAttributeService.getOfferAttribute(invalidId, 404);
             Assert.fail("Shouldn't get offer attribute with wrong id");
@@ -88,22 +88,22 @@ public class TestGetOfferAttribute extends BaseTestClass {
         OfferAttribute offerAttribute2 = offerAttributeService.postDefaultOfferAttribute();
         OfferAttribute offerAttribute3 = offerAttributeService.postDefaultOfferAttribute();
 
-        listOfferAttributeId.add(IdConverter.idLongToHexString(OfferAttributeId.class, offerAttribute1.getId()));
+        listOfferAttributeId.add(IdConverter.idToUrlString(OfferAttributeId.class, offerAttribute1.getId()));
         paraMap.put("id", listOfferAttributeId);
         verifyGetOfferAttributes(paraMap, 1, offerAttribute1);
 
-        listOfferAttributeId.add(IdConverter.idLongToHexString(OfferAttributeId.class, offerAttribute2.getId()));
+        listOfferAttributeId.add(IdConverter.idToUrlString(OfferAttributeId.class, offerAttribute2.getId()));
         paraMap.put("id", listOfferAttributeId);
         verifyGetOfferAttributes(paraMap, 2, offerAttribute1, offerAttribute2);
 
-        listOfferAttributeId.add(IdConverter.idLongToHexString(OfferAttributeId.class, offerAttribute3.getId()));
+        listOfferAttributeId.add(IdConverter.idToUrlString(OfferAttributeId.class, offerAttribute3.getId()));
         paraMap.put("id", listOfferAttributeId);
         verifyGetOfferAttributes(paraMap, 3, offerAttribute1, offerAttribute2, offerAttribute3);
 
         listOfferAttributeId.clear();
         listOfferAttributeId.add("0000000000");
-        listOfferAttributeId.add(IdConverter.idLongToHexString(OfferAttributeId.class, offerAttribute2.getId()));
-        listOfferAttributeId.add(IdConverter.idLongToHexString(OfferAttributeId.class, offerAttribute3.getId()));
+        listOfferAttributeId.add(IdConverter.idToUrlString(OfferAttributeId.class, offerAttribute2.getId()));
+        listOfferAttributeId.add(IdConverter.idToUrlString(OfferAttributeId.class, offerAttribute3.getId()));
         verifyGetOfferAttributes(paraMap, 2, offerAttribute2, offerAttribute3);
 
         listOfferAttributeId.clear();
@@ -137,17 +137,17 @@ public class TestGetOfferAttribute extends BaseTestClass {
         OfferAttribute offerAttribute2 = offerAttributeService.postDefaultOfferAttribute();
         OfferAttribute offerAttribute3 = offerAttributeService.postDefaultOfferAttribute();
 
-        listOfferAttributeId.add(IdConverter.idLongToHexString(OfferAttributeId.class, offerAttribute1.getId()));
+        listOfferAttributeId.add(IdConverter.idToUrlString(OfferAttributeId.class, offerAttribute1.getId()));
         listType.add(CatalogOfferAttributeType.CATEGORY.getType());
         paraMap.put("id", listOfferAttributeId);
         paraMap.put("type", listType);
         verifyGetOfferAttributes(paraMap, 1, offerAttribute1);
 
-        listOfferAttributeId.add(IdConverter.idLongToHexString(OfferAttributeId.class, offerAttribute2.getId()));
+        listOfferAttributeId.add(IdConverter.idToUrlString(OfferAttributeId.class, offerAttribute2.getId()));
         paraMap.put("id", listOfferAttributeId);
         verifyGetOfferAttributes(paraMap, 2, offerAttribute1, offerAttribute2);
 
-        listOfferAttributeId.add(IdConverter.idLongToHexString(OfferAttributeId.class, offerAttribute3.getId()));
+        listOfferAttributeId.add(IdConverter.idToUrlString(OfferAttributeId.class, offerAttribute3.getId()));
         paraMap.put("id", listOfferAttributeId);
         verifyGetOfferAttributes(paraMap, 3, offerAttribute1, offerAttribute2, offerAttribute3);
 
@@ -158,8 +158,8 @@ public class TestGetOfferAttribute extends BaseTestClass {
 
         listOfferAttributeId.clear();
         listOfferAttributeId.add("0000000000");
-        listOfferAttributeId.add(IdConverter.idLongToHexString(OfferAttributeId.class, offerAttribute2.getId()));
-        listOfferAttributeId.add(IdConverter.idLongToHexString(OfferAttributeId.class, offerAttribute3.getId()));
+        listOfferAttributeId.add(IdConverter.idToUrlString(OfferAttributeId.class, offerAttribute2.getId()));
+        listOfferAttributeId.add(IdConverter.idToUrlString(OfferAttributeId.class, offerAttribute3.getId()));
         listType.clear();
         listType.add(CatalogOfferAttributeType.CATEGORY.getType());
         paraMap.put("type", listType);

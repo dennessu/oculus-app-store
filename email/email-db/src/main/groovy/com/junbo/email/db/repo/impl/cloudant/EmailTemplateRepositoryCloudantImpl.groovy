@@ -12,11 +12,13 @@ import com.junbo.email.spec.model.EmailTemplate
 import com.junbo.email.spec.model.Pagination
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
  * Impl of EmailTemplate Repository(Cloudant).
  */
+@CompileStatic
 class EmailTemplateRepositoryCloudantImpl extends EmailBaseRepository<EmailTemplate> implements EmailTemplateRepository {
     private IdGenerator idGenerator
 
@@ -36,9 +38,9 @@ class EmailTemplateRepositoryCloudantImpl extends EmailBaseRepository<EmailTempl
     }
 
     public Promise<EmailTemplate> updateEmailTemplate(EmailTemplate template) {
-        return super.cloudantGet(template.getId().value.toString()).then {EmailTemplate savedTemplate ->
+        return cloudantGet(template.getId().value.toString()).then {EmailTemplate savedTemplate ->
             template.setCloudantRev(savedTemplate.cloudantRev)
-            return super.cloudantPut(template)
+            return cloudantPut(template)
         }
     }
 

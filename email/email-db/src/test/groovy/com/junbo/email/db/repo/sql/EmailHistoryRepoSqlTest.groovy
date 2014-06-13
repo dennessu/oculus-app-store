@@ -31,19 +31,19 @@ class EmailHistoryRepoSqlTest extends BaseTest {
         this.email = email
     }
 
-    @Test
+    @Test(enabled = false)
     void testCreate() {
         def email = emailHistoryRepository.createEmailHistory(email).get()
         assert email != null, 'Email create failed'
     }
 
-    @Test
+    @Test(enabled = false)
     void testGet() {
         def email = emailHistoryRepository.createEmailHistory(email).get()
         assert email != null, 'Email should not be null'
     }
 
-    @Test
+    @Test(enabled = false)
     void testUpdate() {
         def email = emailHistoryRepository.createEmailHistory(email).get()
         email.setStatus('SUCCEED')

@@ -53,11 +53,11 @@ public class CatalogGatewayTest extends AbstractTestNGSpringContextTests {
         item.setOwnerId(new OrganizationId(123L));
         item.setType(ItemType.SUBSCRIPTION.name());
 
-        final Long itemId = createItem(item);
+        final String itemId = createItem(item);
 
         Offer offer = new Offer();
         offer.setOwnerId(new OrganizationId(123L));
-        Long offerId = createOffer(offer);
+        String offerId = createOffer(offer);
         Assert.assertNotNull(offerId);
 
         OfferRevision offerRevision = new OfferRevision();
@@ -93,7 +93,7 @@ public class CatalogGatewayTest extends AbstractTestNGSpringContextTests {
             }});
         }});
 
-        Long offerRevisionId = createOfferRevision(offerRevision);
+        String offerRevisionId = createOfferRevision(offerRevision);
         Assert.assertNotNull(offerRevisionId);
 
         OfferRevision retrievedRevision = getOfferRevision(offerRevisionId);
@@ -106,7 +106,7 @@ public class CatalogGatewayTest extends AbstractTestNGSpringContextTests {
 
     }
 
-    public Long createItem(Item item) {
+    public String createItem(Item item) {
         try {
             return itemResource.create(item).get().getItemId();
         } catch (Exception e) {
@@ -114,7 +114,7 @@ public class CatalogGatewayTest extends AbstractTestNGSpringContextTests {
         }
     }
 
-    public Long createOffer(Offer offer) {
+    public String createOffer(Offer offer) {
         try {
             return offerResource.create(offer).get().getOfferId();
         } catch (Exception e) {
@@ -122,7 +122,7 @@ public class CatalogGatewayTest extends AbstractTestNGSpringContextTests {
         }
     }
 
-    public Long createOfferRevision(OfferRevision offerRevision) {
+    public String createOfferRevision(OfferRevision offerRevision) {
         try {
             return offerRevisionResource.createOfferRevision(offerRevision).get().getRevisionId();
         } catch (Exception e) {
@@ -130,7 +130,7 @@ public class CatalogGatewayTest extends AbstractTestNGSpringContextTests {
         }
     }
 
-    public OfferRevision getOfferRevision(Long offerRevisionId) {
+    public OfferRevision getOfferRevision(String offerRevisionId) {
         try {
             return offerRevisionResource.getOfferRevision(new OfferRevisionId(offerRevisionId)).get();
         } catch (Exception e) {
@@ -138,7 +138,7 @@ public class CatalogGatewayTest extends AbstractTestNGSpringContextTests {
         }
     }
 
-    public Long updateOfferRevision(OfferRevision offerRevision) {
+    public String updateOfferRevision(OfferRevision offerRevision) {
         try {
             return offerRevisionResource.updateOfferRevision(
                     new OfferRevisionId(offerRevision.getRevisionId()),

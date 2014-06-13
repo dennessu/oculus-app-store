@@ -47,7 +47,15 @@ public class CloudantAnnotationIntrospector extends AnnotationIntrospector {
     @Override
     public boolean hasIgnoreMarker(AnnotatedMember member) {
         CloudantIgnore ignore = member.getAnnotation(CloudantIgnore.class);
-        return ignore != null || isSelfProperty(member);
+        if (ignore != null || isSelfProperty(member)) {
+            return true;
+        }
+
+        if (member.getRawType() != null &&
+            member.getRawType().getAnnotation(CloudantIgnore.class) != null) {
+            return true;
+        }
+        return false;
     }
 
     @Override

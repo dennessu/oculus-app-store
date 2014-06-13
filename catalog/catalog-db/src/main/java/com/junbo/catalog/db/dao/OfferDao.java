@@ -17,5 +17,5 @@ import java.util.List;
  */
 public interface OfferDao extends BaseDao<OfferEntity> {
     List<OfferEntity> getOffers(OffersGetOptions options);
-    List<OfferEntity> getOffers(Collection<Long> offerIds);
+    List<OfferEntity> getOffers(Collection<String> offerIds);
 }

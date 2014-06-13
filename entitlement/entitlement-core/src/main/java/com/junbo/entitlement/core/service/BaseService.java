@@ -101,8 +101,7 @@ public class BaseService {
         validateEquals(entitlement.getRev(), existingEntitlement.getRev(), "rev");
         validateEquals(formatId(entitlement.getUserId()), formatId(existingEntitlement.getUserId()), "user");
         validateEquals(entitlement.getType(), existingEntitlement.getType(), "entitlementType");
-        validateEquals(formatId(entitlement.getItemId()),
-                formatId(existingEntitlement.getItemId()), "item");
+        validateEquals(entitlement.getItemId(), existingEntitlement.getItemId(), "item");
         validateEquals(entitlement.getGrantTime(), existingEntitlement.getGrantTime(), "grantTime");
         if (entitlement.getUseCount() != null && entitlement.getUseCount() < 0) {
             throw AppErrors.INSTANCE.fieldNotCorrect("useCount", "useCount should not be negative").exception();
@@ -213,18 +212,18 @@ public class BaseService {
         }
     }
 
-    protected void checkItem(Long itemId) {
+    protected void checkItem(String itemId) {
         validateNotNull(itemId, "item");
         ItemRevision item = getItem(itemId);
         if (item == null) {
             throw AppErrors.INSTANCE.fieldNotCorrect("item",
                     "item [" +
-                            formatId(itemId) +
+                            itemId +
                             "] not found").exception();
         }
     }
 
-    protected ItemRevision getItem(final Long itemId) {
+    protected ItemRevision getItem(final String itemId) {
         if (itemId == null) {
             return null;
         }
