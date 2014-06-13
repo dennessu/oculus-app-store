@@ -31,7 +31,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public Item get(Long entityId) {
+    public Item get(String entityId) {
         return ItemMapper.toModel(itemDao.get(entityId));
     }
 
@@ -46,7 +46,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public List<Item> getItems(Collection<Long> itemIds) {
+    public List<Item> getItems(Collection<String> itemIds) {
         List<ItemEntity> itemEntities = itemDao.getItems(itemIds);
         List<Item> items = new ArrayList<>();
         for (ItemEntity itemEntity : itemEntities) {
@@ -64,7 +64,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public void delete(Long itemId) {
+    public void delete(String itemId) {
         ItemEntity dbEntity = itemDao.get(itemId);
         dbEntity.setDeleted(true);
         itemDao.update(dbEntity);

@@ -1,9 +1,10 @@
 package com.junbo.common.id.util
 
 import com.junbo.common.enumid.EnumId
-import com.junbo.common.id.Id
 import com.junbo.common.id.CloudantId
+import com.junbo.common.id.Id
 import com.junbo.common.id.IdResourcePath
+import com.junbo.common.id.UniversalId
 import com.junbo.common.model.Link
 import com.junbo.common.util.IdFormatter
 import com.junbo.common.util.Utils
@@ -97,7 +98,7 @@ class IdUtil {
         }
     }
 
-    static Id fromLink(Link link) {
+    static UniversalId fromLink(Link link) {
         String href = link.href.replace(resourcePathPrefix, '')
         Class matchingClass = null
         String id = null
@@ -115,6 +116,16 @@ class IdUtil {
             return matchingClass.newInstance(IdFormatter.decodeId(matchingClass, id)) as Id
         }
         return null
+    }
+
+    static String toHref(UniversalId value) {
+        if (value instanceof Id) {
+            return toHref((Id)value)
+        } else if (value instanceof Id) {
+            return toHref((CloudantId)value)
+        } else {
+            return null
+        }
     }
 
     static String toHref(Id value) {

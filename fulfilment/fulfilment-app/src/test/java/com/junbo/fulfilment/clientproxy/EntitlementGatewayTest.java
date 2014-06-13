@@ -22,7 +22,7 @@ public class EntitlementGatewayTest extends BaseTest {
     public void testBVT() {
         Entitlement entitlement = new Entitlement();
         entitlement.setType(EntitlementType.DOWNLOAD.toString());
-        entitlement.setItemId(33570816L);
+        entitlement.setItemId("33570816L");
         entitlement.setUserId(33570816L);
 
         Long entitlementId = gateway.grant(entitlement);

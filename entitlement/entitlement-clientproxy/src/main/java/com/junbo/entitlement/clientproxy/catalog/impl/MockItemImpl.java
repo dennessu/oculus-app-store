@@ -16,12 +16,12 @@ import java.util.Set;
  */
 public class MockItemImpl implements ItemFacade {
     @Override
-    public ItemRevision getItem(Long itemId) {
+    public ItemRevision getItem(String itemId) {
         return new ItemRevision();
     }
 
     @Override
-    public Set<Long> getItemIdsByHostItemId(Long hostItemId) {
+    public Set<String> getItemIdsByHostItemId(String hostItemId) {
         return new HashSet<>();
     }
 }

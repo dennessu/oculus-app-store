@@ -31,7 +31,7 @@ public class ItemRevisionRepositoryImpl implements ItemRevisionRepository {
     }
 
     @Override
-    public ItemRevision get(Long revisionId) {
+    public ItemRevision get(String revisionId) {
         return ItemRevisionMapper.toModel(itemRevisionDao.get(revisionId));
     }
 
@@ -47,9 +47,9 @@ public class ItemRevisionRepositoryImpl implements ItemRevisionRepository {
     }
 
     @Override
-    public List<ItemRevision> getRevisions(Collection<Long> itemIds, Long timestamp) {
+    public List<ItemRevision> getRevisions(Collection<String> itemIds, Long timestamp) {
         List<ItemRevisionEntity> revisionEntities = new ArrayList<>();
-        for (Long itemId : itemIds) {
+        for (String itemId : itemIds) {
             ItemRevisionEntity revisionEntity = itemRevisionDao.getRevision(itemId, timestamp);
             if (revisionEntity != null) {
                 revisionEntities.add(revisionEntity);
@@ -64,7 +64,7 @@ public class ItemRevisionRepositoryImpl implements ItemRevisionRepository {
     }
 
     @Override
-    public List<ItemRevision> getRevisions(Long hostItemId) {
+    public List<ItemRevision> getRevisions(String hostItemId) {
         List<ItemRevisionEntity> revisionEntities = itemRevisionDao.getRevisions(hostItemId);
 
         List<ItemRevision> revisions = new ArrayList<>();
@@ -83,7 +83,7 @@ public class ItemRevisionRepositoryImpl implements ItemRevisionRepository {
     }
 
     @Override
-    public void delete(Long revisionId) {
+    public void delete(String revisionId) {
         ItemRevisionEntity dbEntity = itemRevisionDao.get(revisionId);
         dbEntity.setDeleted(true);
         itemRevisionDao.update(dbEntity);

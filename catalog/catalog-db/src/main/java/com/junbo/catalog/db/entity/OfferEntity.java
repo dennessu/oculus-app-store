@@ -6,7 +6,7 @@
 
 package com.junbo.catalog.db.entity;
 
-import com.junbo.common.hibernate.LongArrayUserType;
+import com.junbo.common.hibernate.StringArrayUserType;
 import com.junbo.common.hibernate.StringJsonUserType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -21,23 +21,23 @@ import java.util.List;
 @Entity
 @Table(name="offer")
 @TypeDefs({@TypeDef(name="json-string", typeClass=StringJsonUserType.class),
-        @TypeDef(name="long-array", typeClass=LongArrayUserType.class)})
+        @TypeDef(name="string-array", typeClass=StringArrayUserType.class)})
 public class OfferEntity extends BaseEntity {
-    private Long offerId;
+    private String offerId;
     private Long ownerId;
     private boolean published;
-    private Long iapItemId;
+    private String iapItemId;
     private String environment;
-    private Long currentRevisionId;
-    private List<Long> categories;
+    private String currentRevisionId;
+    private List<String> categories;
 
     @Id
     @Column(name = "offer_id")
-    public Long getOfferId() {
+    public String getOfferId() {
         return offerId;
     }
 
-    public void setOfferId(Long offerId) {
+    public void setOfferId(String offerId) {
         this.offerId = offerId;
     }
 
@@ -60,11 +60,11 @@ public class OfferEntity extends BaseEntity {
     }
 
     @Column(name = "iap_item_id")
-    public Long getIapItemId() {
+    public String getIapItemId() {
         return iapItemId;
     }
 
-    public void setIapItemId(Long iapItemId) {
+    public void setIapItemId(String iapItemId) {
         this.iapItemId = iapItemId;
     }
 
@@ -78,32 +78,32 @@ public class OfferEntity extends BaseEntity {
     }
 
     @Column(name = "current_revision_id")
-    public Long getCurrentRevisionId() {
+    public String getCurrentRevisionId() {
         return currentRevisionId;
     }
 
-    public void setCurrentRevisionId(Long currentRevisionId) {
+    public void setCurrentRevisionId(String currentRevisionId) {
         this.currentRevisionId = currentRevisionId;
     }
 
     @Column(name = "categories")
-    @Type(type = "long-array")
-    public List<Long> getCategories() {
+    @Type(type = "string-array")
+    public List<String> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<Long> categories) {
+    public void setCategories(List<String> categories) {
         this.categories = categories;
     }
 
     @Override
     @Transient
-    public Long getId() {
+    public String getId() {
         return offerId;
     }
 
     @Override
-    public void setId(Long id) {
+    public void setId(String id) {
         this.offerId = id;
     }
 }

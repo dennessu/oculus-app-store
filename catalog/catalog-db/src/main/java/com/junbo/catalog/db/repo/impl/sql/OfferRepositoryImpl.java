@@ -30,7 +30,7 @@ public class OfferRepositoryImpl implements OfferRepository {
         return get(offerDao.create(OfferMapper.toDBEntity(offer)));
     }
 
-    public Offer get(Long offerId) {
+    public Offer get(String offerId) {
         return OfferMapper.toModel(offerDao.get(offerId));
     }
 
@@ -44,7 +44,7 @@ public class OfferRepositoryImpl implements OfferRepository {
         return offers;
     }
 
-    public List<Offer> getOffers(Collection<Long> offerIds) {
+    public List<Offer> getOffers(Collection<String> offerIds) {
         if (CollectionUtils.isEmpty(offerIds)) {
             return new ArrayList<>();
         }
@@ -65,7 +65,7 @@ public class OfferRepositoryImpl implements OfferRepository {
     }
 
     @Override
-    public void delete(Long offerId) {
+    public void delete(String offerId) {
         OfferEntity dbEntity = offerDao.get(offerId);
         dbEntity.setDeleted(true);
         offerDao.update(dbEntity);

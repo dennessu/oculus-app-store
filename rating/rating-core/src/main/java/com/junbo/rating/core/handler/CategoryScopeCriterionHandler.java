@@ -20,7 +20,7 @@ public class CategoryScopeCriterionHandler implements CriterionHandler<CategoryS
     @Override
     public boolean validate(CategoryScopeCriterion criterion, PriceRatingContext context) {
         RatableItem item = context.getCurrentItem();
-        List<Long> entities = criterion.getCategories();
+        List<String> entities = criterion.getCategories();
         switch (criterion.getPredicate()) {
             case INCLUDE_CATEGORY:
                 if (!Collections.disjoint(entities, item.getOffer().getCategories())) {

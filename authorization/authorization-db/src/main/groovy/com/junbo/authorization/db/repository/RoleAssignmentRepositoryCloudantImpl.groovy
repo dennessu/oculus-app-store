@@ -31,7 +31,7 @@ class RoleAssignmentRepositoryCloudantImpl extends CloudantClient<RoleAssignment
     }
 
     @Override
-    Promise<RoleAssignment> findByRoleIdAssignee(RoleId roleId, String assigneeIdType, Long assigneeId) {
+    Promise<RoleAssignment> findByRoleIdAssignee(RoleId roleId, String assigneeIdType, String assigneeId) {
         String key = "$roleId:$assigneeIdType:$assigneeId"
         return queryView('by_role_id', key).then { List<RoleAssignment> list ->
             return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)

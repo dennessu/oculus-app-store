@@ -34,7 +34,7 @@ public class ItemFacadeImpl implements ItemFacade {
     private ItemRevisionResourceClientProxy itemRevisionClient;
 
     @Override
-    public ItemRevision getItem(Long itemId) {
+    public ItemRevision getItem(String itemId) {
         Date now = new Date();
         ItemRevision itemRevision = null;
         ItemRevisionsGetOptions options = new ItemRevisionsGetOptions();
@@ -56,7 +56,7 @@ public class ItemFacadeImpl implements ItemFacade {
     }
 
     @Override
-    public Set<Long> getItemIdsByHostItemId(Long hostItemId) {
+    public Set<String> getItemIdsByHostItemId(String hostItemId) {
         List<Item> items = new LinkedList<>();
         ItemsGetOptions options = new ItemsGetOptions();
         options.setHostItemId(new ItemId(hostItemId));
@@ -69,7 +69,7 @@ public class ItemFacadeImpl implements ItemFacade {
         } catch (Exception e) {
             LOGGER.error("Getting items by hostItemId [{" + hostItemId + "}] failed.", e);
         }
-        Set<Long> itemIds = new HashSet<>();
+        Set<String> itemIds = new HashSet<>();
         for (Item item : items) {
             itemIds.add(item.getItemId());
         }

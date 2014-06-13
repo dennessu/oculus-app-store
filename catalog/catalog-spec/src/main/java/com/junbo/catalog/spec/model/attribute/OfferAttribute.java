@@ -25,23 +25,26 @@ public class OfferAttribute extends BaseModel implements Attribute {
     @JsonProperty("self")
     @ApiModelProperty(position = 1, required = true, value = "Attribute id")
     @JSONField(serialize = false, deserialize = false)
-    private Long id;
+    private String id;
+
     @NotNull
     @ApiModelProperty(position = 2, required = true, value = "Attribute type", allowableValues = "CATEGORY")
     private String type;
+
     @OfferAttributeId
     @JsonProperty("parent")
     @ApiModelProperty(position = 3, required = true, value = "Parent id")
-    private Long parentId;
+    private String parentId;
+
     @ApiModelProperty(position = 4, required = false, value = "locale properties")
     private Map<String, SimpleLocaleProperties> locales;
 
     @JsonIgnore
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -53,11 +56,11 @@ public class OfferAttribute extends BaseModel implements Attribute {
         this.type = type;
     }
 
-    public Long getParentId() {
+    public String getParentId() {
         return parentId;
     }
 
-    public void setParentId(Long parentId) {
+    public void setParentId(String parentId) {
         this.parentId = parentId;
     }
 

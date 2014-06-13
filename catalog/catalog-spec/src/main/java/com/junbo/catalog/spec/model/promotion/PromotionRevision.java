@@ -24,11 +24,11 @@ import java.util.List;
 public class PromotionRevision extends BaseRevisionModel {
     @PromotionRevisionId
     @JsonProperty("self")
-    private Long revisionId;
+    private String revisionId;
 
     @PromotionId
     @JsonProperty("promotion")
-    private Long promotionId;
+    private String promotionId;
 
     @UserId
     @JsonProperty("publisher")
@@ -46,19 +46,19 @@ public class PromotionRevision extends BaseRevisionModel {
 
     private Benefit benefit;
 
-    public Long getRevisionId() {
+    public String getRevisionId() {
         return revisionId;
     }
 
-    public void setRevisionId(Long revisionId) {
+    public void setRevisionId(String revisionId) {
         this.revisionId = revisionId;
     }
 
-    public Long getPromotionId() {
+    public String getPromotionId() {
         return promotionId;
     }
 
-    public void setPromotionId(Long promotionId) {
+    public void setPromotionId(String promotionId) {
         this.promotionId = promotionId;
     }
 
@@ -124,18 +124,18 @@ public class PromotionRevision extends BaseRevisionModel {
 
     @Override
     @JsonIgnore
-    public Long getId() {
+    public String getId() {
         return revisionId;
     }
 
     @Override
-    public void setId(Long id) {
+    public void setId(String id) {
         this.revisionId = id;
     }
 
     @Override
     @JsonIgnore
-    public Long getEntityId() {
+    public String getEntityId() {
         return promotionId;
     }
 }

@@ -43,11 +43,11 @@ public class OfferRatingService extends RatingServiceSupport{
     }
 
     private void findBestPrice(PriceRatingContext context) {
-        Map<Long, Set<PromotionRevision>> candidates = context.getCandidates();
+        Map<String, Set<PromotionRevision>> candidates = context.getCandidates();
         Currency currency = context.getCurrency();
 
         for (RatableItem item : context.getItems()) {
-            Long offerId = item.getOfferId();
+            String offerId = item.getOfferId();
             Set<PromotionRevision> promotions = candidates.get(offerId) == null?
                     new HashSet<PromotionRevision>() : candidates.get(offerId);
 
@@ -63,7 +63,7 @@ public class OfferRatingService extends RatingServiceSupport{
             entry.setOfferId(item.getOfferId());
             entry.setPreOrderPrice(getPreOrderPrice(item.getOffer(), context.getCountry(), currency.getCode()));
             entry.setOriginalPrice(originalPrice);
-            entry.setAppliedPromotion(new HashSet<Long>());
+            entry.setAppliedPromotion(new HashSet<String>());
             for (PromotionRevision promotion : promotions) {
                 if (promotion.getBenefit() == null) {
                     continue;

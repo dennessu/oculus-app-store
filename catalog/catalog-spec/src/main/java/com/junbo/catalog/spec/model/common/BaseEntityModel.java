@@ -19,7 +19,7 @@ public abstract class BaseEntityModel extends BaseModel {
     @Null
     @JsonIgnore
     @JSONField(serialize = false)
-    private transient Long id;
-    public abstract Long getCurrentRevisionId();
-    public abstract void setCurrentRevisionId(Long currentRevisionId);
+    private transient String id;
+    public abstract String getCurrentRevisionId();
+    public abstract void setCurrentRevisionId(String currentRevisionId);
 }

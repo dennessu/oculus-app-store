@@ -28,7 +28,7 @@ public class OfferAttributeRepositoryImpl implements OfferAttributeRepository {
         return get(attributeDao.create(OfferAttributeMapper.toDBEntity(attribute)));
     }
 
-    public OfferAttribute get(Long attributeId) {
+    public OfferAttribute get(String attributeId) {
         OfferAttributeEntity dbEntity = attributeDao.get(attributeId);
         return OfferAttributeMapper.toModel(dbEntity);
     }
@@ -50,7 +50,7 @@ public class OfferAttributeRepositoryImpl implements OfferAttributeRepository {
     }
 
 
-    public void delete(Long attributeId) {
+    public void delete(String attributeId) {
         OfferAttributeEntity dbEntity = attributeDao.get(attributeId);
         dbEntity.setDeleted(true);
         attributeDao.update(dbEntity);

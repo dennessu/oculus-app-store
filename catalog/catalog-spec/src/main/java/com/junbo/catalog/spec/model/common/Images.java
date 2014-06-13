@@ -16,16 +16,22 @@ import java.util.List;
 public class Images {
     @ApiModelProperty(position = 1, required = true, value = "Main image")
     private Image main;
+
     @ApiModelProperty(position = 2, required = true, value = "Half-main image")
     private Image halfMain;
+
     @ApiModelProperty(position = 3, required = true, value = "Thumbnail image")
     private Image thumbnail;
+
     @ApiModelProperty(position = 4, required = true, value = "Half-thumbnail image")
     private Image halfThumbnail;
+
     @ApiModelProperty(position = 5, required = true, value = "Background image")
     private Image background;
+
     @ApiModelProperty(position = 6, required = true, value = "Featured image")
     private Image featured;
+
     @ApiModelProperty(position = 7, required = true, value = "Gallery images")
     private List<ImageGalleryEntry> gallery;
 

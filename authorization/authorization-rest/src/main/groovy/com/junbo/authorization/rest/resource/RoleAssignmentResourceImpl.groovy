@@ -19,7 +19,7 @@ import com.junbo.authorization.spec.model.Role
 import com.junbo.authorization.spec.model.RoleAssignment
 import com.junbo.authorization.spec.option.list.RoleAssignmentListOptions
 import com.junbo.authorization.spec.resource.RoleAssignmentResource
-import com.junbo.common.id.Id
+import com.junbo.common.id.UniversalId
 import com.junbo.common.id.RoleAssignmentId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -87,7 +87,7 @@ class RoleAssignmentResourceImpl implements RoleAssignmentResource {
                     throw AppErrors.INSTANCE.forbidden().exception()
                 }
                 return roleAssignmentRepository.create(filtered).then { RoleAssignment newRoleAssignment ->
-                    Created201Marker.mark((Id) (newRoleAssignment.id))
+                    Created201Marker.mark((UniversalId) (newRoleAssignment.id))
 
                     return Promise.pure(roleAssignmentFilter.filterForGet(newRoleAssignment))
                 }

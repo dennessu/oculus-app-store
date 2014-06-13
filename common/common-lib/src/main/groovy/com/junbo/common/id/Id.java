@@ -6,19 +6,13 @@
 
 package com.junbo.common.id;
 
-import com.junbo.common.json.PropertyAssignedAware;
-import com.junbo.common.json.PropertyAssignedAwareSupport;
-
-import java.io.Serializable;
 import java.util.Properties;
 
 /**
  * generic identifier class.
  *
  */
-public abstract class Id extends Object implements Serializable, PropertyAssignedAware {
-
-    private final PropertyAssignedAwareSupport support = new PropertyAssignedAwareSupport();
+public abstract class Id implements UniversalId {
 
     private Long value;
 
@@ -31,7 +25,6 @@ public abstract class Id extends Object implements Serializable, PropertyAssigne
 
     public Id(Long value) {
         this.value = value;
-        support.setPropertyAssigned("value");
     }
 
     public Long getValue() {
@@ -40,12 +33,10 @@ public abstract class Id extends Object implements Serializable, PropertyAssigne
 
     public void setValue(Long value) {
         this.value = value;
-        support.setPropertyAssigned("value");
     }
 
     public void setCloudantId(String id) {
         this.value = Long.parseLong(id);
-        support.setPropertyAssigned("value");
     }
 
     public Properties getResourcePathPlaceHolder() {
@@ -78,10 +69,5 @@ public abstract class Id extends Object implements Serializable, PropertyAssigne
             return false;
         }
         return value.equals(((Id)other).value);
-    }
-
-    @Override
-    public boolean isPropertyAssigned(String propertyName) {
-        return support.isPropertyAssigned(propertyName);
     }
 }

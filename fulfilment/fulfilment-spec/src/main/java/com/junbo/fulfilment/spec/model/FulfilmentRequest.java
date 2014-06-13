@@ -39,7 +39,7 @@ public class FulfilmentRequest {
     private Long shippingToPhoneId;
 
     @ShippingMethodId
-    private Long shippingMethodId;
+    private String shippingMethodId;
 
     private List<FulfilmentItem> items;
 
@@ -99,11 +99,11 @@ public class FulfilmentRequest {
         this.shippingAddressId = shippingAddressId;
     }
 
-    public Long getShippingMethodId() {
+    public String getShippingMethodId() {
         return shippingMethodId;
     }
 
-    public void setShippingMethodId(Long shippingMethodId) {
+    public void setShippingMethodId(String shippingMethodId) {
         this.shippingMethodId = shippingMethodId;
     }
 

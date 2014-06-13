@@ -40,7 +40,7 @@ public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, P
     }
 
     @Override
-    public Promotion updateEntity(Long promotionId, Promotion promotion) {
+    public Promotion updateEntity(String promotionId, Promotion promotion) {
         validateId(promotionId, promotion.getPromotionId());
         validatePromotion(promotion);
         return super.updateEntity(promotionId, promotion);
@@ -56,7 +56,7 @@ public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, P
     }
 
     @Override
-    public PromotionRevision updateRevision(Long revisionId, PromotionRevision revision) {
+    public PromotionRevision updateRevision(String revisionId, PromotionRevision revision) {
         validateId(revisionId, revision.getRevisionId());
         validateRevision(revision);
 

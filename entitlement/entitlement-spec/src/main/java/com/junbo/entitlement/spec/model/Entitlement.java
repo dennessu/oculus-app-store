@@ -57,7 +57,7 @@ public class Entitlement extends ResourceMeta<Long> {
     @ApiModelProperty(position = 3, required = true, value = "Link to the Item that is granted to the user by this entitlement")
     @ItemId
     @JsonProperty("item")
-    private Long itemId;
+    private String itemId;
 
     @ApiModelProperty(position = 9, required = true, value = "enumeration; values are \"DOWNLOAD\" and \"RUN\"")
     @JsonProperty("entitlementType")
@@ -138,11 +138,11 @@ public class Entitlement extends ResourceMeta<Long> {
         this.type = type;
     }
 
-    public Long getItemId() {
+    public String getItemId() {
         return itemId;
     }
 
-    public void setItemId(Long itemId) {
+    public void setItemId(String itemId) {
         this.itemId = itemId;
     }
 }

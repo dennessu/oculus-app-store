@@ -6,7 +6,7 @@
 package com.junbo.authorization.core.validator
 
 import com.junbo.authorization.db.repository.RoleRepository
-import com.junbo.common.id.Id
+import com.junbo.common.id.UniversalId
 import com.junbo.common.id.RoleId
 import com.junbo.authorization.spec.error.AppErrors
 import com.junbo.authorization.spec.model.Role
@@ -56,14 +56,14 @@ class RoleValidatorImpl implements RoleValidator {
             throw AppErrors.INSTANCE.fieldRequired('target.filterLink').exception()
         }
 
-        Id resourceId = IdUtil.fromLink(role.target.filterLink)
+        UniversalId resourceId = IdUtil.fromLink(role.target.filterLink)
 
         if (resourceId == null) {
             throw AppErrors.INSTANCE.fieldInvalid('target.filterLink').exception()
         }
 
         role.target.filterLinkIdType = resourceId.class.canonicalName
-        role.target.filterLinkId = resourceId.value
+        role.target.filterLinkId = resourceId.toString()
 
         return roleRepository.findByRoleName(role.name, role.target.targetType,
                 role.target.filterType, role.target.filterLinkIdType, role.target.filterLinkId).then { Role existing ->
@@ -98,14 +98,14 @@ class RoleValidatorImpl implements RoleValidator {
             throw AppErrors.INSTANCE.fieldInvalid('roleId').exception()
         }
 
-        Id resourceId = IdUtil.fromLink(role.target.filterLink)
+        UniversalId resourceId = IdUtil.fromLink(role.target.filterLink)
 
         if (resourceId == null) {
             throw AppErrors.INSTANCE.fieldInvalid('target.filterLink').exception()
         }
 
         role.target.filterLinkIdType = resourceId.class.canonicalName
-        role.target.filterLinkId = resourceId.value
+        role.target.filterLinkId = resourceId.toString()
 
         return roleRepository.findByRoleName(role.name, role.target.targetType,
                 role.target.filterType, role.target.filterLinkIdType, role.target.filterLinkId).then { Role existing ->
@@ -136,14 +136,14 @@ class RoleValidatorImpl implements RoleValidator {
             throw AppErrors.INSTANCE.fieldRequired('filterLink').exception()
         }
 
-        Id resourceId = IdUtil.fromLink(new Link(href: options.filterLink))
+        UniversalId resourceId = IdUtil.fromLink(new Link(href: options.filterLink))
 
         if (resourceId == null) {
             throw AppErrors.INSTANCE.fieldInvalid('filterLink').exception()
         }
 
         options.filterLinkIdType = resourceId.class.canonicalName
-        options.filterLinkId = resourceId.value
+        options.filterLinkId = resourceId.toString()
 
         return Promise.pure(null)
     }

@@ -23,4 +23,8 @@ class BaseMock {
     protected static long generateLong() {
         return nextLong++
     }
+
+    protected static String generateString() {
+        return String.valueOf(nextLong++)
+    }
 }

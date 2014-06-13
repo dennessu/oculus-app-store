@@ -19,7 +19,7 @@ import javax.persistence.Table;
 @DynamicUpdate
 public class OfferItemEntity extends CartItemEntity {
 
-    private Long offerId;
+    private String offerId;
 
     private Long quantity;
 
@@ -28,11 +28,11 @@ public class OfferItemEntity extends CartItemEntity {
     private Boolean isApproved;
 
     @Column(name = "OFFER_ID")
-    public Long getOfferId() {
+    public String getOfferId() {
         return offerId;
     }
 
-    public void setOfferId(Long offerId) {
+    public void setOfferId(String offerId) {
         this.offerId = offerId;
     }
 

@@ -36,7 +36,7 @@ public class OfferRevisionDaoImpl extends BaseDaoImpl<OfferRevisionEntity> imple
         });
     }
 
-    public OfferRevisionEntity getRevision(final Long offerId, final Long timestamp) {
+    public OfferRevisionEntity getRevision(final String offerId, final Long timestamp) {
         return findBy(new Action<Criteria>() {
             @Override
             public void apply(Criteria criteria) {
@@ -48,7 +48,7 @@ public class OfferRevisionDaoImpl extends BaseDaoImpl<OfferRevisionEntity> imple
         });
     }
 
-    public List<OfferRevisionEntity> getRevisionsBySubOfferId(final Long offerId) {
+    public List<OfferRevisionEntity> getRevisionsBySubOfferId(final String offerId) {
         return findAllBy(new Action<Criteria>() {
             @Override
             public void apply(Criteria criteria) {
@@ -57,7 +57,7 @@ public class OfferRevisionDaoImpl extends BaseDaoImpl<OfferRevisionEntity> imple
         });
     }
 
-    public List<OfferRevisionEntity> getRevisionsByItemId(final Long itemId) {
+    public List<OfferRevisionEntity> getRevisionsByItemId(final String itemId) {
         return findAllBy(new Action<Criteria>() {
             @Override
             public void apply(Criteria criteria) {

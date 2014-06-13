@@ -12,12 +12,12 @@ package com.junbo.common.id;
 @IdResourcePath(value = "/promotions/{0}",
                 resourceType = "promotions",
                 regex = "/promotions/(?<id>[0-9A-Za-z]+)")
-public class PromotionId extends Id {
+public class PromotionId extends CloudantId {
     public PromotionId(){
 
     }
 
-    public PromotionId(Long value) {
+    public PromotionId(String value) {
         super(value);
     }
 }

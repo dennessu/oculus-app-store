@@ -41,7 +41,7 @@ public class OfferDaoImpl extends BaseDaoImpl<OfferEntity> implements OfferDao {
     }
 
     @Override
-    public List<OfferEntity> getOffers(final Collection<Long> offerIds) {
+    public List<OfferEntity> getOffers(final Collection<String> offerIds) {
         return findAllBy(new Action<Criteria>() {
             @Override
             public void apply(Criteria criteria) {

@@ -15,21 +15,21 @@ import com.junbo.entitlement.spec.model.Entitlement;
  * MegaGateway.
  */
 public interface MegaGateway {
-    Long createOffer(Offer offer);
+    String createOffer(Offer offer);
 
-    Long createItem(Item item);
+    String createItem(Item item);
 
-    Long createOfferRevision(OfferRevision offerRevision);
+    String createOfferRevision(OfferRevision offerRevision);
 
-    Long createItemRevision(ItemRevision itemRevision);
+    String createItemRevision(ItemRevision itemRevision);
 
-    OfferRevision getOfferRevision(Long offerRevisionId);
+    OfferRevision getOfferRevision(String offerRevisionId);
 
-    ItemRevision getItemRevision(Long itemRevisionId);
+    ItemRevision getItemRevision(String itemRevisionId);
 
-    Long updateOfferRevision(OfferRevision offerRevision);
+    String updateOfferRevision(OfferRevision offerRevision);
 
-    Long updateItemRevision(ItemRevision itemRevision);
+    String updateItemRevision(ItemRevision itemRevision);
 
     Entitlement getEntitlement(Long entitlementId);
 }

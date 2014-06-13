@@ -15,8 +15,8 @@ import java.util.List;
  */
 public interface PriceTierRepository {
     PriceTier create(PriceTier priceTier);
-    PriceTier get(Long id);
+    PriceTier get(String id);
     List<PriceTier> getPriceTiers(int start, int size);
     PriceTier update(PriceTier priceTier);
-    void delete(Long tierId);
+    void delete(String tierId);
 }

@@ -17,5 +17,5 @@ import java.util.List;
  */
 public interface ItemDao extends BaseDao<ItemEntity> {
     List<ItemEntity> getItems(ItemsGetOptions options);
-    List<ItemEntity> getItems(Collection<Long> itemIds);
+    List<ItemEntity> getItems(Collection<String> itemIds);
 }

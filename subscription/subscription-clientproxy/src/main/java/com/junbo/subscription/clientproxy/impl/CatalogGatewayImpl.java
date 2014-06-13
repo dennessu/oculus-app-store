@@ -39,26 +39,26 @@ public class CatalogGatewayImpl implements CatalogGateway {
     private ItemResource itemResource;
 
     @Override
-    public Offer getOffer(Long offerId, Long timestamp) {
+    public Offer getOffer(String offerId, Long timestamp) {
         return retrieveOffer(offerId, timestamp);
     }
 
     @Override
-    public Offer getOffer(Long offerId) {
+    public Offer getOffer(String offerId) {
         return retrieveOffer(offerId, OFFER_TIMESTAMP_NOT_SPECIFIED);
     }
 
     @Override
-    public OfferRevision getOfferRev(Long offerRevId) {
+    public OfferRevision getOfferRev(String offerRevId) {
         return retrieveOfferRev(offerRevId);
     }
 
     @Override
-    public Item getItem(Long itemId) {
+    public Item getItem(String itemId) {
         return retrieveItem(itemId);
     }
 
-    protected Offer retrieveOffer(Long offerId, Long timestamp) {
+    protected Offer retrieveOffer(String offerId, Long timestamp) {
         try {
             // TODO
             com.junbo.catalog.spec.model.offer.Offer offer =
@@ -75,7 +75,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
         }
     }
 
-    protected OfferRevision retrieveOfferRev(Long offerRevId) {
+    protected OfferRevision retrieveOfferRev(String offerRevId) {
         try {
             // TODO
             OfferRevision offerRev =
@@ -92,7 +92,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
         }
     }
 
-    protected Item retrieveItem(Long itemId) {
+    protected Item retrieveItem(String itemId) {
         try {
             // TODO
             Item item =

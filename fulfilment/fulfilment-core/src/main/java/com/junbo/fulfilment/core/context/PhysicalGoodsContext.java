@@ -12,7 +12,7 @@ import com.junbo.fulfilment.common.collection.Counter;
  */
 public class PhysicalGoodsContext extends FulfilmentContext {
     private Long shippingAddressId;
-    private Long shippingMethodId;
+    private String shippingMethodId;
     private Counter shipment;
 
     public Long getShippingAddressId() {
@@ -23,11 +23,11 @@ public class PhysicalGoodsContext extends FulfilmentContext {
         this.shippingAddressId = shippingAddressId;
     }
 
-    public Long getShippingMethodId() {
+    public String getShippingMethodId() {
         return shippingMethodId;
     }
 
-    public void setShippingMethodId(Long shippingMethodId) {
+    public void setShippingMethodId(String shippingMethodId) {
         this.shippingMethodId = shippingMethodId;
     }
 

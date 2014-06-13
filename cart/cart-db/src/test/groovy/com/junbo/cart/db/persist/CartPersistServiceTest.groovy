@@ -26,7 +26,7 @@ class CartPersistServiceTest extends DaoTestBase {
         cart.user = new UserId(idGenerator.nextId(UserId))
         cart.coupons = [new CouponId(idGenerator.nextId(CouponId))]
         cart.offers = [new OfferItem(
-                offer: new OfferId(idGenerator.nextId(OfferId)),
+                offer: new OfferId(idGenerator.nextId(OfferId).toString()),
                 quantity: 1,
                 isSelected: true,
                 isApproved: true

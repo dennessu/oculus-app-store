@@ -81,9 +81,9 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
         if (!CollectionUtils.isEmpty(entitlementSearchParam.getItemIds())) {
             addCollectionParam("item_id", "itemIds",
                     CommonUtils.select(entitlementSearchParam.getItemIds(),
-                            new Function<Long, ItemId>() {
+                            new Function<String, ItemId>() {
                                 @Override
-                                public Long apply(ItemId itemId) {
+                                public String apply(ItemId itemId) {
                                     return itemId.getValue();
                                 }
                             }),
@@ -124,12 +124,12 @@ public class EntitlementDaoImpl extends BaseDao<EntitlementEntity> implements En
     }
 
     @Override
-    public EntitlementEntity get(Long userId, Long itemId, String type) {
+    public EntitlementEntity get(Long userId, String itemId, String type) {
         String queryString = "from EntitlementEntity where userId = (:userId)" +
                 " and itemId = (:itemId) and type = (:type) and isDeleted = false";
         Query q = currentSession(userId).createQuery(queryString)
                 .setLong("userId", userId)
-                .setLong("itemId", itemId)
+                .setString("itemId", itemId)
                 .setString("type", type == null ? EntitlementConsts.NO_TYPE : type.toUpperCase());
         return (EntitlementEntity) q.uniqueResult();
     }

@@ -41,7 +41,7 @@ public class ItemDaoImpl extends BaseDaoImpl<ItemEntity> implements ItemDao {
     }
 
     @Override
-    public List<ItemEntity> getItems(final Collection<Long> itemIds) {
+    public List<ItemEntity> getItems(final Collection<String> itemIds) {
         return findAllBy(new Action<Criteria>() {
             @Override
             public void apply(Criteria criteria) {

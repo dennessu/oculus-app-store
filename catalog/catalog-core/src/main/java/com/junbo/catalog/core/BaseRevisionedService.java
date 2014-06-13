@@ -16,13 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 public interface BaseRevisionedService<E extends BaseEntityModel, T extends BaseRevisionModel> {
-    E getEntity(Long entityId);
+    E getEntity(String entityId);
     E createEntity(E entity);
-    E updateEntity(Long entityId, E entity);
-    void deleteEntity(Long entityId);
+    E updateEntity(String entityId, E entity);
+    void deleteEntity(String entityId);
 
-    T getRevision(Long revisionId);
+    T getRevision(String revisionId);
     T createRevision(T revision);
-    T updateRevision(Long revisionId, T revision);
-    void deleteRevision(Long revisionId);
+    T updateRevision(String revisionId, T revision);
+    void deleteRevision(String revisionId);
 }

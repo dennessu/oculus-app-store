@@ -18,9 +18,11 @@ import java.util.*;
 public class Price {
     @ApiModelProperty(position = 1, required = true, value = "price type", allowableValues = "TIERED, CUSTOM, FREE")
     private String priceType;
+
     @PriceTierId
     @ApiModelProperty(position = 2, required = true, value = "price tier")
-    private Long priceTier;
+    private String priceTier;
+
     @ApiModelProperty(position = 3, required = true, value = "prices")
     private Map<String, Map<String, BigDecimal>> prices;
 
@@ -32,11 +34,11 @@ public class Price {
         this.priceType = priceType;
     }
 
-    public Long getPriceTier() {
+    public String getPriceTier() {
         return priceTier;
     }
 
-    public void setPriceTier(Long priceTier) {
+    public void setPriceTier(String priceTier) {
         this.priceTier = priceTier;
     }
 

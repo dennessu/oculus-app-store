@@ -11,5 +11,5 @@ import com.junbo.common.model.ResourceMeta;
 /**
  * Base model.
  */
-public abstract class BaseModel extends ResourceMeta<Long> {
+public abstract class BaseModel extends ResourceMeta<String> {
 }

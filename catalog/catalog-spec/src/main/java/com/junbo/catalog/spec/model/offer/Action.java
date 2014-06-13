@@ -24,7 +24,7 @@ public class Action {
     private ActionCondition condition;
     @ApiModelProperty(position = 3, required = true, value = "properties")
     @ItemId
-    private Long itemId;
+    private String itemId;
     @CurrencyId
     @ApiModelProperty(position = 4, required = true, value = "Stored value credit currency")
     private String storedValueCurrency;
@@ -51,11 +51,11 @@ public class Action {
         this.condition = condition;
     }
 
-    public Long getItemId() {
+    public String getItemId() {
         return itemId;
     }
 
-    public void setItemId(Long itemId) {
+    public void setItemId(String itemId) {
         this.itemId = itemId;
     }
 

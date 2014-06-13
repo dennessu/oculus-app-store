@@ -11,7 +11,7 @@ import com.junbo.authorization.spec.option.list.RoleAssignmentListOptions
 import com.junbo.authorization.spec.option.list.RoleListOptions
 import com.junbo.authorization.spec.option.model.RoleFilterType
 import com.junbo.common.id.GroupId
-import com.junbo.common.id.Id
+import com.junbo.common.id.UniversalId
 import com.junbo.common.id.RoleId
 import com.junbo.common.id.UserId
 import com.junbo.common.id.util.IdUtil
@@ -141,11 +141,11 @@ abstract class AbstractAuthorizeCallback<T> implements AuthorizeCallback<T> {
             return false
         }
 
-        if (!(objectId instanceof Id)) {
-            throw new IllegalStateException("entityId: $objectId must be an Id")
+        if (!(objectId instanceof UniversalId)) {
+            throw new IllegalStateException("entityId: $objectId must be a UniversalId")
         }
 
-        Id entityId = (Id) objectId
+        UniversalId entityId = (UniversalId) objectId
         RoleId roleId = getRoleId(entityId, roleName)
         if (roleId == null) {
             return false
@@ -193,7 +193,7 @@ abstract class AbstractAuthorizeCallback<T> implements AuthorizeCallback<T> {
         return groupId
     }
 
-    protected RoleId getRoleId(Id entityId, String roleName) {
+    protected RoleId getRoleId(UniversalId entityId, String roleName) {
         def tuple = new Tuple(entityId, roleName)
         Element cachedElement = factory.roleCache.get(tuple)
         if (cachedElement != null) {

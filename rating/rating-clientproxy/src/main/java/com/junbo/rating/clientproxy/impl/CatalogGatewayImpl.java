@@ -64,7 +64,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
     private PromotionRevisionResource promotionRevisionResource;
 
     @Override
-    public Item getItem(Long itemId) {
+    public Item getItem(String itemId) {
         try {
             return itemResource.getItem(new ItemId(itemId)).get();
         } catch (Exception e) {
@@ -74,7 +74,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
     }
 
     @Override
-    public RatingOffer getOffer(Long offerId, String timestamp) {
+    public RatingOffer getOffer(String offerId, String timestamp) {
         Offer offer = retrieveOffer(offerId);
 
         OfferRevision offerRevision = timestamp == null ?
@@ -136,11 +136,11 @@ public class CatalogGatewayImpl implements CatalogGateway{
     }
 
     @Override
-    public ShippingMethod getShippingMethod(Long shippingMethodId) {
+    public ShippingMethod getShippingMethod(String shippingMethodId) {
         return null;
     }
 
-    private Offer retrieveOffer(Long offerId) {
+    private Offer retrieveOffer(String offerId) {
         Offer offer;
         try {
             offer = offerResource.getOffer(new OfferId(offerId)).get();
@@ -151,7 +151,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
         return offer;
     }
 
-    private OfferRevision getCurrentRevision(Long revisionId) {
+    private OfferRevision getCurrentRevision(String revisionId) {
         OfferRevision offerRevision;
         try {
             offerRevision = offerRevisionResource.getOfferRevision(
@@ -164,7 +164,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
         return offerRevision;
     }
 
-    private OfferRevision getOfferRevisionByTimestamp(Long offerId, Long timestamp) {
+    private OfferRevision getOfferRevisionByTimestamp(String offerId, Long timestamp) {
         List<OfferRevision> revisions = new ArrayList<>();
 
         OfferRevisionsGetOptions options = new OfferRevisionsGetOptions();
@@ -235,7 +235,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
         }
 
         if (offerRevision.getSubOffers() != null) {
-            for (Long entry : offerRevision.getSubOffers()) {
+            for (String entry : offerRevision.getSubOffers()) {
                 LinkedEntry subOffer = new LinkedEntry();
                 subOffer.setEntryId(entry);
                 subOffer.setType(EntryType.OFFER);

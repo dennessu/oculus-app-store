@@ -10,7 +10,7 @@
 
     <bean id="asyncHttpClientConfig" class="com.ning.http.client.AsyncHttpClientConfigBean">
         <!-- TODO: a lot of things to configure here -->
-        <property name="connectionTimeOutInMs" value="5000"/>
+        <property name="connectionTimeOutInMs" value="10000"/>
         <property name="requestTimeoutInMs" value="30000"/>
     </bean>
 

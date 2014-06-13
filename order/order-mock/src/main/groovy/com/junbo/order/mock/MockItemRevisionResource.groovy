@@ -53,9 +53,9 @@ class MockItemRevisionResource extends BaseMock implements ItemRevisionResource 
 
     private generateItemRevision() {
         return new ItemRevision(
-                revisionId: generateLong(),
+                revisionId: generateString(),
                 ownerId: new OrganizationId(generateLong()),
-                itemId: generateLong(),
+                itemId: generateString(),
                 msrp: new Price(
                         priceType: 'CUSTOM',
                         prices: ['US':['USD': 9.99G], 'CN':['CNY': 19.99G]] as Map<String, Map<String, BigDecimal>>

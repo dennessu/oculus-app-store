@@ -13,7 +13,7 @@ import com.junbo.catalog.db.entity.BaseEntity;
  * @param <T> entity to operate.
  */
 public interface BaseDao<T extends BaseEntity> {
-    Long create(T entity);
-    T get(Long id);
-    Long update(T entity);
+    String create(T entity);
+    T get(String id);
+    String update(T entity);
 }

@@ -120,9 +120,9 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
             while (iterator.hasNext()) {
                 ItemId itemId = iterator.next();
                 if (!iterator.hasNext()) {
-                    sb.append(longToString(itemId.getValue()) + ")");
+                    sb.append(itemId.getValue() + ")");
                 } else {
-                    sb.append(longToString(itemId.getValue()) + " OR ");
+                    sb.append(itemId.getValue() + " OR ");
                 }
             }
         }
@@ -179,8 +179,8 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
     }
 
     @Override
-    public EntitlementEntity get(Long userId, Long itemId, String type) {
-        String key = userId.toString() + ":" + itemId.toString() + ":" + (type == null ? EntitlementConsts.NO_TYPE : type.toUpperCase());
+    public EntitlementEntity get(Long userId, String itemId, String type) {
+        String key = userId.toString() + ":" + itemId + ":" + (type == null ? EntitlementConsts.NO_TYPE : type.toUpperCase());
         List<EntitlementEntity> results = super.queryView("byUserIdAndItemIdAndType", key).get();
         return results.size() == 0 ? null : results.get(0);
     }

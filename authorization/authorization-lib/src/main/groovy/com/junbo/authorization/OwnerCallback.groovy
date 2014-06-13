@@ -6,7 +6,7 @@
 
 package com.junbo.authorization
 
-import com.junbo.common.id.Id
+import com.junbo.common.id.UniversalId
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import groovy.transform.CompileStatic
@@ -16,6 +16,6 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 public interface OwnerCallback {
-    UserId getUserOwnerId(Id resourceId)
-    OrganizationId getOrganizationOwnerId(Id resourceId)
+    UserId getUserOwnerId(UniversalId resourceId)
+    OrganizationId getOrganizationOwnerId(UniversalId resourceId)
 }

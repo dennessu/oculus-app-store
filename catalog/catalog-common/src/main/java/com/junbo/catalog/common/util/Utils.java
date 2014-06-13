@@ -52,6 +52,10 @@ public class Utils {
         return Oculus48Id.format(Oculus48Id.shuffle(id));
     }
 
+    public static String encodeId(String id) {
+        return id;
+    }
+
     public static Long safeParseUserId(String userId) {
         try {
             return Long.parseLong(userId);

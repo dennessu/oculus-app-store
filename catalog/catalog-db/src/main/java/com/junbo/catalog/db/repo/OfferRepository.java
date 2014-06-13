@@ -17,9 +17,9 @@ import java.util.List;
  */
 public interface OfferRepository extends BaseEntityRepository<Offer> {
     Offer create(Offer offer);
-    Offer get(Long offerId);
+    Offer get(String offerId);
     List<Offer> getOffers(OffersGetOptions options);
-    List<Offer> getOffers(Collection<Long> offerIds);
+    List<Offer> getOffers(Collection<String> offerIds);
     Offer update(Offer offer);
-    void delete(Long offerId);
+    void delete(String offerId);
 }

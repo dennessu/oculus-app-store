@@ -30,7 +30,7 @@ public class ItemAuthorizeCallbackFactory extends AbstractAuthorizeCallbackFacto
         return new ItemAuthorizeCallback(this, entity);
     }
 
-    public AuthorizeCallback<Item> create(Long itemId) {
+    public AuthorizeCallback<Item> create(String itemId) {
         Item item = itemResource.getItem(new ItemId(itemId)).get();
         return create(item);
     }

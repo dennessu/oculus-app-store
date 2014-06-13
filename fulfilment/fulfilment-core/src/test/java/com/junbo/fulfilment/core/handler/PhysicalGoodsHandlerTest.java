@@ -16,7 +16,7 @@ public class PhysicalGoodsHandlerTest extends BaseTest {
     public void testBVT() {
         PhysicalGoodsContext context = new PhysicalGoodsContext();
         context.setShippingAddressId(123L);
-        context.setShippingMethodId(456L);
+        context.setShippingMethodId("456L");
 
         final int copyCount = 100;
         final int quantity1 = 2;
@@ -28,12 +28,12 @@ public class PhysicalGoodsHandlerTest extends BaseTest {
                 setCopyCount(copyCount);
                 setItems(new ArrayList<LinkedEntry>() {{
                     add(new LinkedEntry() {{
-                        setId(10000L);
+                        setId("10000L");
                         setQuantity(quantity1);
                         setSku("11111");
                     }});
                     add(new LinkedEntry() {{
-                        setId(20000L);
+                        setId("20000L");
                         setQuantity(quantity2);
                         setSku("22222");
                     }});
@@ -44,7 +44,7 @@ public class PhysicalGoodsHandlerTest extends BaseTest {
         FulfilmentHandler handler = HandlerRegistry.resolve(FulfilmentActionType.DELIVER_PHYSICAL_GOODS);
         handler.process(context);
 
-        Assert.assertEquals(context.getShipment().get("10000#11111"), (Integer) (copyCount * quantity1), "Quantity should match.");
-        Assert.assertEquals(context.getShipment().get("20000#22222"), (Integer) (copyCount * quantity2), "Quantity should match.");
+        Assert.assertEquals(context.getShipment().get("10000L#11111"), (Integer) (copyCount * quantity1), "Quantity should match.");
+        Assert.assertEquals(context.getShipment().get("20000L#22222"), (Integer) (copyCount * quantity2), "Quantity should match.");
     }
 }

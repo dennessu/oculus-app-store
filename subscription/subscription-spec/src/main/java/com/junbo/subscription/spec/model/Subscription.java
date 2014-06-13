@@ -34,7 +34,7 @@ public class Subscription {
     private Long userId;
 
     @OfferId
-    private Long offerId;
+    private String offerId;
 
     private String status;
 
@@ -79,11 +79,11 @@ public class Subscription {
         this.userId = userId;
     }
 
-    public Long getOfferId() {
+    public String getOfferId() {
         return offerId;
     }
 
-    public void setOfferId(Long offerId) {
+    public void setOfferId(String offerId) {
         this.offerId = offerId;
     }
 

@@ -17,8 +17,10 @@ import javax.ws.rs.QueryParam;
 public class PageableGetOptions {
     @QueryParam("start")
     private Integer start;
+
     @QueryParam("size")
     private Integer size;
+
     @QueryParam("bookmark")
     private String bookmark;
 

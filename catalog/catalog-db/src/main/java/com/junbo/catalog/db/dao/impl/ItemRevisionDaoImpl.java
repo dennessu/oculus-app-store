@@ -37,7 +37,7 @@ public class ItemRevisionDaoImpl extends BaseDaoImpl<ItemRevisionEntity> impleme
         });
     }
 
-    public ItemRevisionEntity getRevision(final Long itemId, final Long timestamp) {
+    public ItemRevisionEntity getRevision(final String itemId, final Long timestamp) {
         return findBy(new Action<Criteria>() {
             @Override
             public void apply(Criteria criteria) {
@@ -49,7 +49,7 @@ public class ItemRevisionDaoImpl extends BaseDaoImpl<ItemRevisionEntity> impleme
         });
     }
 
-    public List<ItemRevisionEntity> getRevisions(final Long hostItemId) {
+    public List<ItemRevisionEntity> getRevisions(final String hostItemId) {
         return findAllBy(new Action<Criteria>() {
             @Override
             public void apply(Criteria criteria) {

@@ -23,7 +23,7 @@ public class Item extends BaseEntityModel {
     @ItemId
     @JsonProperty("self")
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The id of item resource")
-    private Long itemId;
+    private String itemId;
 
     @ApiModelProperty(position = 2, required = true, value = "Item type",
             allowableValues = "PHYSICAL, DIGITAL, STORED_VALUE, SUBSCRIPTION, VIRTUAL")
@@ -32,7 +32,7 @@ public class Item extends BaseEntityModel {
     @ItemRevisionId
     @JsonProperty("currentRevision")
     @ApiModelProperty(position = 20, required = true, value = "The id of current revision")
-    private Long currentRevisionId;
+    private String currentRevisionId;
 
     @ApiModelProperty(position = 21, required = true, value = "Item revisions")
     @HateoasLink("/item-revisions?itemId={itemId}")
@@ -45,21 +45,21 @@ public class Item extends BaseEntityModel {
 
     @ItemAttributeId
     @ApiModelProperty(position = 26, required = true, value = "Genres")
-    private List<Long> genres;
+    private List<String> genres;
 
     @OfferId
     @ApiModelProperty(position = 28, required = true, value = "Default offer")
-    private Long defaultOffer;
+    private String defaultOffer;
 
     // current revision used for index & search
     @JsonIgnore
     private ItemRevision activeRevision;
 
-    public Long getItemId() {
+    public String getItemId() {
         return itemId;
     }
 
-    public void setItemId(Long itemId) {
+    public void setItemId(String itemId) {
         this.itemId = itemId;
     }
 
@@ -72,12 +72,12 @@ public class Item extends BaseEntityModel {
     }
 
     @Override
-    public Long getCurrentRevisionId() {
+    public String getCurrentRevisionId() {
         return currentRevisionId;
     }
 
     @Override
-    public void setCurrentRevisionId(Long currentRevisionId) {
+    public void setCurrentRevisionId(String currentRevisionId) {
         this.currentRevisionId = currentRevisionId;
     }
 
@@ -97,19 +97,19 @@ public class Item extends BaseEntityModel {
         this.ownerId = ownerId;
     }
 
-    public List<Long> getGenres() {
+    public List<String> getGenres() {
         return genres;
     }
 
-    public void setGenres(List<Long> genres) {
+    public void setGenres(List<String> genres) {
         this.genres = genres;
     }
 
-    public Long getDefaultOffer() {
+    public String getDefaultOffer() {
         return defaultOffer;
     }
 
-    public void setDefaultOffer(Long defaultOffer) {
+    public void setDefaultOffer(String defaultOffer) {
         this.defaultOffer = defaultOffer;
     }
 
@@ -123,12 +123,12 @@ public class Item extends BaseEntityModel {
 
     @Override
     @JsonIgnore
-    public Long getId() {
+    public String getId() {
         return itemId;
     }
 
     @Override
-    public void setId(Long id) {
+    public void setId(String id) {
         this.itemId = id;
     }
 }

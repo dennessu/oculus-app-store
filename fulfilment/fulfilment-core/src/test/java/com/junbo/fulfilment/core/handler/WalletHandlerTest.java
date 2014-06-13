@@ -27,11 +27,11 @@ public class WalletHandlerTest extends BaseTest {
             setCopyCount(1);
             setItems(new ArrayList<LinkedEntry>() {{
                 add(new LinkedEntry() {{
-                    setId(10000L);
+                    setId("10000L");
                     setQuantity(1);
                 }});
                 add(new LinkedEntry() {{
-                    setId(20000L);
+                    setId("20000L");
                     setQuantity(1);
                 }});
             }});
