@@ -39,7 +39,7 @@ public class PaymentValidationHelper extends BaseValidationHelper {
         verifyEqual(actualPI.getAccountName(), expectedPaymentInfo.getAccountName(), "verify account name");
         verifyEqual(actualPI.getBillingAddressId(), expectedPaymentInfo.getBillingAddressId(),
                 "verify billing addressId");
-        String uid = IdConverter.idLongToHexString(UserId.class, actualPI.getUserId());
+        String uid = IdConverter.idToUrlString(UserId.class, actualPI.getUserId());
         switch (expectedPaymentInfo.getType()) {
             case CREDITCARD:
                 CreditCardInfo expectedCreditCard = (CreditCardInfo) expectedPaymentInfo;

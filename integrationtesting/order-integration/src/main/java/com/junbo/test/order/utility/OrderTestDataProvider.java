@@ -72,7 +72,7 @@ public class OrderTestDataProvider {
 
         Offer offer = Master.getInstance().getOffer(offerId);
 
-        String offerRevisionId = IdConverter.idLongToHexString(OfferRevisionId.class,
+        String offerRevisionId = IdConverter.idToUrlString(OfferRevisionId.class,
                 offer.getCurrentRevisionId());
 
         OfferRevision offerRevision = Master.getInstance().getOfferRevision(offerRevisionId);
@@ -124,17 +124,16 @@ public class OrderTestDataProvider {
                 IdConverter.hexStringToId(PaymentInstrumentId.class, paymentInstrumentId)));
         paymentInfos.add(paymentInfo);
         order.setPayments(paymentInfos);
-        order.setShippingMethod(0L);
+        order.setShippingMethod("0L");
 
         if (hasPhysicalGood) {
-            order.setShippingMethod(new Long(quantity));
+            order.setShippingMethod(String.valueOf(quantity));
             order.setShippingAddress(Master.getInstance().getUser(uid).getAddresses().get(0).getValue());
         }
 
         List<OrderItem> orderItemList = new ArrayList<>();
         for (int i = 0; i < offers.size(); i++) {
-            OfferId offerId = new OfferId(
-                    IdConverter.hexStringToId(OfferId.class, offerClient.getOfferIdByName(offers.get(i))));
+            OfferId offerId = new OfferId(offerClient.getOfferIdByName(offers.get(i)));
 
             OrderItem orderItem = new OrderItem();
             orderItem.setQuantity(1);
@@ -186,8 +185,8 @@ public class OrderTestDataProvider {
     public Subledger getSubledger(String offerName) throws Exception {
         String offerId = offerClient.getOfferIdByName(offerName);
         Offer offer = Master.getInstance().getOffer(offerId);
-        String offerRevisionId = IdConverter.idLongToHexString(OfferRevisionId.class, offer.getCurrentRevisionId());
-        String sellerId = IdConverter.idLongToHexString(OrganizationId.class,
+        String offerRevisionId = IdConverter.idToUrlString(OfferRevisionId.class, offer.getCurrentRevisionId());
+        String sellerId = IdConverter.idToUrlString(OrganizationId.class,
                 Master.getInstance().getOfferRevision(offerRevisionId).getOwnerId().getValue());
         return orderClient.getSubledger(sellerId);
     }

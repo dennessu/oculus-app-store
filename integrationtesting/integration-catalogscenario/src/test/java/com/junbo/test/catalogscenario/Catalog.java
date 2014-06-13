@@ -87,7 +87,7 @@ public class Catalog extends TestClass {
         List<String> listType = new ArrayList<>();
         listType.add(attributeRtn.getType());
         List<String> listAttributeId = new ArrayList<>();
-        String attributeId = IdConverter.idLongToHexString(ItemAttributeId.class, attributeGet.getId());
+        String attributeId = IdConverter.idToUrlString(ItemAttributeId.class, attributeGet.getId());
         listAttributeId.add(attributeId);
 
         paraMap.put("type", listType);
@@ -146,7 +146,7 @@ public class Catalog extends TestClass {
         List<String> listType = new ArrayList<>();
         listType.add(attributeRtn.getType());
         List<String> listAttributeId = new ArrayList<>();
-        String attributeId = IdConverter.idLongToHexString(OfferAttributeId.class, attributeGet.getId());
+        String attributeId = IdConverter.idToUrlString(OfferAttributeId.class, attributeGet.getId());
         listAttributeId.add(attributeId);
 
         paraMap.put("type", listType);
@@ -206,7 +206,7 @@ public class Catalog extends TestClass {
         //Get item by id and status
         logger.LogSample("Get item(s) by id");
         List<String> listItemId = new ArrayList<>();
-        String itemId = IdConverter.idLongToHexString(ItemId.class, itemRtn.getItemId());
+        String itemId = IdConverter.idToUrlString(ItemId.class, itemRtn.getItemId());
         listItemId.add(itemId);
 
         paraMap.put("id", listItemId);
@@ -281,7 +281,7 @@ public class Catalog extends TestClass {
         //Get offer by id and status
         logger.LogSample("Get offers by id and published property");
         List<String> listOfferId = new ArrayList<>();
-        String offerId = IdConverter.idLongToHexString(OfferId.class, offerGet.getOfferId());
+        String offerId = IdConverter.idToUrlString(OfferId.class, offerGet.getOfferId());
         listOfferId.add(offerId);
 
         paraMap.put("id", listOfferId);

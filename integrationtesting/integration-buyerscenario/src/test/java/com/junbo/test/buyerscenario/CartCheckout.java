@@ -425,7 +425,7 @@ public class CartCheckout extends BaseTestClass {
 
     private Long getTransactionId(Long uid) throws Exception {
         DBHelper dbHelper = new DBHelper();
-        String userId = IdConverter.idLongToHexString(UserId.class, uid);
+        String userId = IdConverter.idToUrlString(UserId.class, uid);
 
         String sqlStr = String.format(
                 "select payment_id from shard_%s.payment where user_id = '%s'",
@@ -437,7 +437,7 @@ public class CartCheckout extends BaseTestClass {
 
     private void mockPaymentTransactionConfirm(Long paymentTransactionId, PaymentTransaction paymentTransaction) throws Exception {
         DBHelper dbHelper = new DBHelper();
-        String userId = IdConverter.idLongToHexString(UserId.class, paymentTransaction.getUserId());
+        String userId = IdConverter.idToUrlString(UserId.class, paymentTransaction.getUserId());
 
         String sqlStr = String.format(
                 "update shard_%s.payment set payment_status_id = 12, external_token = '%s'" +

@@ -144,7 +144,7 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
         List<Order> orderList = orderResults.getItems();
         List<String> orderIdList = new ArrayList<>();
         for (Order order : orderList) {
-            String orderId = IdConverter.idLongToHexString(OrderId.class, order.getId().getValue());
+            String orderId = IdConverter.idToUrlString(OrderId.class, order.getId().getValue());
             Master.getInstance().addOrder(orderId, order);
             orderIdList.add(orderId);
         }

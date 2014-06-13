@@ -124,9 +124,9 @@ public class FulfilmentTesting extends BaseTestClass {
 
         String fulfilmentId = testDataProvider.postFulfilment(randomUid, orderId);
 
-        FulfilmentItem fulfilmentItem = testDataProvider.getFulfilmentItem(IdConverter.idLongToHexString(
+        FulfilmentItem fulfilmentItem = testDataProvider.getFulfilmentItem(IdConverter.idToUrlString(
                 FulfilmentId.class, Master.getInstance().
-                getFulfilment(fulfilmentId).getItems().get(0).getFulfilmentId()));
+                        getFulfilment(fulfilmentId).getItems().get(0).getFulfilmentId()));
 
         validationHelper.validateSingleFulfilmentItem(fulfilmentItem, orderId, false);
 

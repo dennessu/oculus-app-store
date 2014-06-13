@@ -46,17 +46,17 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
     private ItemRevisionServiceImpl() {
     }
 
-    public ItemRevision getItemRevision(Long revisionId) throws Exception {
+    public ItemRevision getItemRevision(String revisionId) throws Exception {
         return getItemRevision(revisionId, 200);
     }
 
-    public ItemRevision getItemRevision(Long revisionId, int expectedResponseCode) throws Exception {
-        String url = catalogServerURL + "/" + IdConverter.idLongToHexString(ItemRevisionId.class, revisionId);
+    public ItemRevision getItemRevision(String revisionId, int expectedResponseCode) throws Exception {
+        String url = catalogServerURL + "/" + IdConverter.idToUrlString(ItemRevisionId.class, revisionId);
         String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode);
         ItemRevision itemRevision = new JsonMessageTranscoder().decode(new TypeReference<ItemRevision>() {
         },
                 responseBody);
-        String itemRevisionRtnId = IdConverter.idLongToHexString(ItemRevisionId.class, itemRevision.getRevisionId());
+        String itemRevisionRtnId = IdConverter.idToUrlString(ItemRevisionId.class, itemRevision.getRevisionId());
         Master.getInstance().addItemRevision(itemRevisionRtnId, itemRevision);
         return itemRevision;
     }
@@ -71,7 +71,7 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
                 new TypeReference<Results<ItemRevision>>() {
                 }, responseBody);
         for (ItemRevision itemRevision : itemRevisionGet.getItems()) {
-            String itemRevisionRtnId = IdConverter.idLongToHexString(ItemRevisionId.class,
+            String itemRevisionRtnId = IdConverter.idToUrlString(ItemRevisionId.class,
                     itemRevision.getRevisionId());
             Master.getInstance().addItemRevision(itemRevisionRtnId, itemRevision);
         }
@@ -131,35 +131,35 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
         ItemRevision itemRevisionPost = new JsonMessageTranscoder().decode(
                 new TypeReference<ItemRevision>() {
                 }, responseBody);
-        String itemRevisionRtnId = IdConverter.idLongToHexString(ItemRevisionId.class,
+        String itemRevisionRtnId = IdConverter.idToUrlString(ItemRevisionId.class,
                 itemRevisionPost.getRevisionId());
         Master.getInstance().addItemRevision(itemRevisionRtnId, itemRevisionPost);
 
         return itemRevisionPost;
     }
 
-    public ItemRevision updateItemRevision(Long itemRevisionId, ItemRevision itemRevision) throws Exception {
+    public ItemRevision updateItemRevision(String itemRevisionId, ItemRevision itemRevision) throws Exception {
         return updateItemRevision(itemRevisionId, itemRevision, 200);
     }
 
-    public ItemRevision updateItemRevision(Long itemRevisionId, ItemRevision itemRevision, int expectedResponseCode) throws Exception {
-        String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(ItemRevisionId.class,
+    public ItemRevision updateItemRevision(String itemRevisionId, ItemRevision itemRevision, int expectedResponseCode) throws Exception {
+        String putUrl = catalogServerURL + "/" + IdConverter.idToUrlString(ItemRevisionId.class,
                 itemRevisionId);
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, itemRevision, expectedResponseCode);
         ItemRevision itemRevisionPut = new JsonMessageTranscoder().decode(new TypeReference<ItemRevision>() {
         },
                 responseBody);
-        String itemRevisionRtnId = IdConverter.idLongToHexString(ItemRevisionId.class, itemRevisionPut.getRevisionId());
+        String itemRevisionRtnId = IdConverter.idToUrlString(ItemRevisionId.class, itemRevisionPut.getRevisionId());
         Master.getInstance().addItemRevision(itemRevisionRtnId, itemRevisionPut);
         return itemRevisionPut;
     }
 
-    public void deleteItemRevision(Long itemRevisionId) throws Exception {
+    public void deleteItemRevision(String itemRevisionId) throws Exception {
         deleteItemRevision(itemRevisionId, 204);
     }
 
-    public void deleteItemRevision(Long itemRevisionId, int expectedResponseCode) throws Exception {
-        String strItemRevisionId = IdConverter.idLongToHexString(ItemRevisionId.class, itemRevisionId);
+    public void deleteItemRevision(String itemRevisionId, int expectedResponseCode) throws Exception {
+        String strItemRevisionId = IdConverter.idToUrlString(ItemRevisionId.class, itemRevisionId);
         String url = catalogServerURL + "/" + strItemRevisionId;
         restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode);
         Master.getInstance().removeItemRevision(strItemRevisionId);

@@ -5,27 +5,31 @@
  */
 package com.junbo.test.catalog.itemRevision;
 
-import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
-import com.junbo.test.catalog.enums.CatalogEntityStatus;
-import com.junbo.catalog.spec.model.item.ItemRevision;
-import com.junbo.test.catalog.enums.CatalogItemType;
-import com.junbo.test.catalog.impl.ItemServiceImpl;
-import com.junbo.test.catalog.ItemRevisionService;
-import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.common.id.ItemId;
+import com.junbo.common.id.ItemRevisionId;
+import com.junbo.common.model.Results;
+import com.junbo.test.catalog.ItemRevisionService;
+import com.junbo.test.catalog.ItemService;
+import com.junbo.test.catalog.enums.CatalogEntityStatus;
+import com.junbo.test.catalog.enums.CatalogItemType;
+import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
+import com.junbo.test.catalog.impl.ItemServiceImpl;
+import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
-import com.junbo.common.id.ItemRevisionId;
-import com.junbo.test.catalog.ItemService;
-import com.junbo.test.common.property.*;
-import com.junbo.common.model.Results;
-import com.junbo.common.id.ItemId;
-
-import org.testng.annotations.Test;
+import com.junbo.test.common.property.Component;
+import com.junbo.test.common.property.Priority;
+import com.junbo.test.common.property.Property;
+import com.junbo.test.common.property.Status;
 import org.testng.Assert;
+import org.testng.annotations.Test;
 
-import java.util.*;
-import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author Jason
@@ -64,7 +68,7 @@ public class TestGetItemRevision extends BaseTestClass {
         Assert.assertNotNull(itemRevisionRtn, "Couldn't get the item revision by its id");
 
         //verify the invalid Id scenario
-        Long invalidId = 0L;
+        String invalidId = "0L";
         verifyInvalidScenarios(invalidId);
 
         //Release the item revision and then try to get the item revision
@@ -99,8 +103,8 @@ public class TestGetItemRevision extends BaseTestClass {
         //Prepare two items
         Item item1 = itemService.postDefaultItem(CatalogItemType.getRandom());
         Item item2 = itemService.postDefaultItem(CatalogItemType.getRandom());
-        String itemId1 = IdConverter.idLongToHexString(ItemId.class, item1.getItemId());
-        String itemId2 = IdConverter.idLongToHexString(ItemId.class, item2.getItemId());
+        String itemId1 = IdConverter.idToUrlString(ItemId.class, item1.getItemId());
+        String itemId2 = IdConverter.idToUrlString(ItemId.class, item2.getItemId());
 
         //Prepare some item revisions
         ItemRevision itemRevision1 = itemRevisionService.postDefaultItemRevision(item1);
@@ -123,7 +127,7 @@ public class TestGetItemRevision extends BaseTestClass {
         verifyGetResults(getOptions, 2, itemRevision3, itemRevision4);
 
         //get revisions by itemId and revisionId
-        revisionIds.add(IdConverter.idLongToHexString(ItemRevisionId.class, itemRevision4.getRevisionId()));
+        revisionIds.add(IdConverter.idToUrlString(ItemRevisionId.class, itemRevision4.getRevisionId()));
         getOptions.put("revisionId", revisionIds);
         verifyGetResults(getOptions, 1, itemRevision4);
 
@@ -131,8 +135,8 @@ public class TestGetItemRevision extends BaseTestClass {
         getOptions.put("revisionId", revisionIds);
         verifyGetResults(getOptions, 1, itemRevision4);
 
-        revisionIds.add(IdConverter.idLongToHexString(ItemRevisionId.class, itemRevision1.getRevisionId()));
-        revisionIds.add(IdConverter.idLongToHexString(ItemRevisionId.class, itemRevision2.getRevisionId()));
+        revisionIds.add(IdConverter.idToUrlString(ItemRevisionId.class, itemRevision1.getRevisionId()));
+        revisionIds.add(IdConverter.idToUrlString(ItemRevisionId.class, itemRevision2.getRevisionId()));
         getOptions.put("revisionId", revisionIds);
         verifyGetResults(getOptions, 1, itemRevision4);
 
@@ -176,13 +180,13 @@ public class TestGetItemRevision extends BaseTestClass {
         //Prepare two items
         Item item1 = itemService.postDefaultItem(CatalogItemType.getRandom());
         Item item2 = itemService.postDefaultItem(CatalogItemType.getRandom());
-        String itemId1 = IdConverter.idLongToHexString(ItemId.class, item1.getItemId());
-        String itemId2 = IdConverter.idLongToHexString(ItemId.class, item2.getItemId());
+        String itemId1 = IdConverter.idToUrlString(ItemId.class, item1.getItemId());
+        String itemId2 = IdConverter.idToUrlString(ItemId.class, item2.getItemId());
         //Prepare some item revisions
         ItemRevision itemRevision1 = itemRevisionService.postDefaultItemRevision(item1);
         ItemRevision itemRevision2 = itemRevisionService.postDefaultItemRevision(item2);
-        String itemRevisionId1 = IdConverter.idLongToHexString(ItemRevisionId.class, itemRevision1.getRevisionId());
-        String itemRevisionId2 = IdConverter.idLongToHexString(ItemRevisionId.class, itemRevision2.getRevisionId());
+        String itemRevisionId1 = IdConverter.idToUrlString(ItemRevisionId.class, itemRevision1.getRevisionId());
+        String itemRevisionId2 = IdConverter.idToUrlString(ItemRevisionId.class, itemRevision2.getRevisionId());
 
         itemIds.add(itemId1);
         itemIds.add(itemId2);
@@ -246,8 +250,8 @@ public class TestGetItemRevision extends BaseTestClass {
         //Prepare two items
         Item item1 = itemService.postDefaultItem(CatalogItemType.getRandom());
         Item item2 = itemService.postDefaultItem(CatalogItemType.getRandom());
-        String itemId1 = IdConverter.idLongToHexString(ItemId.class, item1.getItemId());
-        String itemId2 = IdConverter.idLongToHexString(ItemId.class, item2.getItemId());
+        String itemId1 = IdConverter.idToUrlString(ItemId.class, item1.getItemId());
+        String itemId2 = IdConverter.idToUrlString(ItemId.class, item2.getItemId());
         //Prepare some item revisions
         ItemRevision itemRevision1 = itemRevisionService.postDefaultItemRevision(item1);
         ItemRevision itemRevision2 = itemRevisionService.postDefaultItemRevision(item1);
@@ -282,7 +286,7 @@ public class TestGetItemRevision extends BaseTestClass {
         verifyGetResults(getOptions, 1, itemRevision2);
 
         //set revisionId, but revisionId should not work, still get itemRevision2
-        revisionIds.add(IdConverter.idLongToHexString(ItemRevisionId.class, itemRevision3.getRevisionId()));
+        revisionIds.add(IdConverter.idToUrlString(ItemRevisionId.class, itemRevision3.getRevisionId()));
         getOptions.put("revisionId", revisionIds);
         verifyGetResults(getOptions, 1, itemRevision2);
 
@@ -298,7 +302,7 @@ public class TestGetItemRevision extends BaseTestClass {
 
     }
 
-    private void verifyInvalidScenarios(Long itemRevisionId) throws Exception {
+    private void verifyInvalidScenarios(String itemRevisionId) throws Exception {
         try {
             itemRevisionService.getItemRevision(itemRevisionId, 404);
             Assert.fail("Shouldn't get item revision with wrong id");

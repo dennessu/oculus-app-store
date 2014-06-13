@@ -54,7 +54,7 @@ public class TestDeleteOfferAttribute extends BaseTestClass {
         }
 
         //delete non-existing offer
-        Long invalidId = 0L;
+        String invalidId = "0L";
         offerAttribute = offerAttributeService.postDefaultOfferAttribute();
         offerAttributeService.deleteOfferAttribute(invalidId, 404);
         offerAttribute = offerAttributeService.getOfferAttribute(offerAttribute.getId());

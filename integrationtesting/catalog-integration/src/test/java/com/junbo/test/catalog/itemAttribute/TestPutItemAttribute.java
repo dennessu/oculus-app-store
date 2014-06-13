@@ -83,10 +83,10 @@ public class TestPutItemAttribute extends BaseTestClass {
 
         //Prepare an item attribute
         ItemAttribute itemAttribute = itemAttributeService.postDefaultItemAttribute();
-        Long attributeId = itemAttribute.getId();
+        String attributeId = itemAttribute.getId();
 
         //update itself id
-        itemAttribute.setId(1L);
+        itemAttribute.setId("1L");
         verifyExpectedError(attributeId, itemAttribute);
 
         //test rev
@@ -108,7 +108,7 @@ public class TestPutItemAttribute extends BaseTestClass {
         verifyExpectedError(attributeId, itemAttribute);
     }
 
-    private void verifyExpectedError(Long attributeId, ItemAttribute itemAttribute) {
+    private void verifyExpectedError(String attributeId, ItemAttribute itemAttribute) {
         try {
             //Error code 400 means "Missing Input field", "Unnecessary field found" or "invalid value"
             itemAttributeService.updateItemAttribute(attributeId, itemAttribute, 400);

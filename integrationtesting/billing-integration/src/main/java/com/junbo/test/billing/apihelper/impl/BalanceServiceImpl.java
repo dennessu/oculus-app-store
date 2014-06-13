@@ -76,7 +76,7 @@ public class BalanceServiceImpl extends HttpClientBase implements BalanceService
                         new TypeReference<Balance>() {
                         }, responseBody);
 
-        String balanceId = IdConverter.idToHexString(balanceResult.getBalanceId());
+        String balanceId = IdConverter.idToHexString(balanceResult.getId());
         Master.getInstance().addBalances(balanceId, balanceResult);
 
         return balanceId;
@@ -98,7 +98,7 @@ public class BalanceServiceImpl extends HttpClientBase implements BalanceService
                         new TypeReference<Balance>() {
                         }, responseBody);
 
-        balanceId = IdConverter.idToHexString(balanceResult.getBalanceId());
+        balanceId = IdConverter.idToHexString(balanceResult.getId());
         Master.getInstance().addBalances(balanceId, balanceResult);
 
         return balanceId;
@@ -121,7 +121,7 @@ public class BalanceServiceImpl extends HttpClientBase implements BalanceService
                         new TypeReference<Balance>() {
                         }, responseBody);
 
-        String balanceId = IdConverter.idToHexString(balanceResult.getBalanceId());
+        String balanceId = IdConverter.idToHexString(balanceResult.getId());
         Master.getInstance().addBalances(balanceId, balanceResult);
 
         return balanceId;
@@ -145,7 +145,7 @@ public class BalanceServiceImpl extends HttpClientBase implements BalanceService
 
         List<String> balanceList = new ArrayList<>();
         for (Balance balanceResult : balanceResults.getItems()) {
-            String balanceId = IdConverter.idToHexString(balanceResult.getBalanceId());
+            String balanceId = IdConverter.idToHexString(balanceResult.getId());
             balanceList.add(balanceId);
             Master.getInstance().addBalances(balanceId, balanceResult);
         }

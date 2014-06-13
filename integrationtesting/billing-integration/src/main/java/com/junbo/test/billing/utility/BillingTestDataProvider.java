@@ -128,15 +128,14 @@ public class BillingTestDataProvider extends BaseTestDataProvider {
                 IdConverter.hexStringToId(PaymentInstrumentId.class, paymentInstrumentId)));
         paymentInfos.add(paymentInfo);
         order.setPayments(paymentInfos);
-        order.setShippingMethod(0L);
+        order.setShippingMethod("0L");
 
         if (shippingAddressId != null) {
             //order.setShippingAddress(Master.getInstance().getShippingAddress(shippingAddressId).getAddressId());
         }
         List<OrderItem> orderItemList = new ArrayList<>();
         for (int i = 0; i < offers.size(); i++) {
-            OfferId offerId = new OfferId(
-                    IdConverter.hexStringToId(OfferId.class, offerClient.getOfferIdByName(offers.get(i))));
+            OfferId offerId = new OfferId(offerClient.getOfferIdByName(offers.get(i)));
 
             OrderItem orderItem = new OrderItem();
             orderItem.setQuantity(1);
@@ -222,7 +221,7 @@ public class BillingTestDataProvider extends BaseTestDataProvider {
 
     }
 
-    private String getOrderItemId(String uid, Long orderId, Long offerId) throws Exception {
+    private String getOrderItemId(String uid, Long orderId, String offerId) throws Exception {
         String sqlStr = String.format(
                 "select order_item_id from shard_%s.order_item where order_id='%s' and product_item_id='%s'",
                 ShardIdHelper.getShardIdByUid(uid), orderId, offerId);

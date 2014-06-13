@@ -43,7 +43,7 @@ public class TestDeleteItem extends BaseTestClass {
 
         //Prepare an item
         Item item = itemService.postDefaultItem(CatalogItemType.getRandom());
-        Long invalidId = 0L;
+        String invalidId = "0L";
 
         itemService.deleteItem(item.getItemId());
 

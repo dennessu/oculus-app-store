@@ -76,15 +76,15 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     private OfferServiceImpl() {
     }
 
-    public Offer getOffer(Long offerId) throws Exception {
+    public Offer getOffer(String offerId) throws Exception {
         return getOffer(offerId, 200);
     }
 
-    public Offer getOffer(Long offerId, int expectedResponseCode) throws Exception {
-        String url = catalogServerURL + "/" + IdConverter.idLongToHexString(OfferId.class, offerId);
+    public Offer getOffer(String offerId, int expectedResponseCode) throws Exception {
+        String url = catalogServerURL + "/" + IdConverter.idToUrlString(OfferId.class, offerId);
         String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode);
         Offer offerGet = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {}, responseBody);
-        String offerRtnId = IdConverter.idLongToHexString(OfferId.class, offerGet.getOfferId());
+        String offerRtnId = IdConverter.idToUrlString(OfferId.class, offerGet.getOfferId());
         Master.getInstance().addOffer(offerRtnId, offerGet);
         return offerGet;
     }
@@ -98,7 +98,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         Results<Offer> offerGet = new JsonMessageTranscoder().decode(new TypeReference<Results<Offer>>() {},
                 responseBody);
         for (Offer offer : offerGet.getItems()){
-            String offerRtnId = IdConverter.idLongToHexString(OfferId.class, offer.getOfferId());
+            String offerRtnId = IdConverter.idToUrlString(OfferId.class, offer.getOfferId());
             Master.getInstance().addOffer(offerRtnId, offer);
         }
 
@@ -129,31 +129,31 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, offer, expectedResponseCode);
         Offer offerPost = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {},
                 responseBody);
-        String offerRtnId = IdConverter.idLongToHexString(OfferId.class, offerPost.getOfferId());
+        String offerRtnId = IdConverter.idToUrlString(OfferId.class, offerPost.getOfferId());
         Master.getInstance().addOffer(offerRtnId, offerPost);
         return offerPost;
     }
 
-    public Offer updateOffer(Long offerId, Offer offer) throws Exception {
+    public Offer updateOffer(String offerId, Offer offer) throws Exception {
         return updateOffer(offerId, offer, 200);
     }
 
-    public Offer updateOffer(Long offerId, Offer offer, int expectedResponseCode) throws Exception {
-        String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(OfferId.class, offerId);
+    public Offer updateOffer(String offerId, Offer offer, int expectedResponseCode) throws Exception {
+        String putUrl = catalogServerURL + "/" + IdConverter.idToUrlString(OfferId.class, offerId);
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, offer, expectedResponseCode);
         Offer offerPut = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {},
                 responseBody);
-        String offerRtnId = IdConverter.idLongToHexString(OfferId.class, offerPut.getOfferId());
+        String offerRtnId = IdConverter.idToUrlString(OfferId.class, offerPut.getOfferId());
         Master.getInstance().addOffer(offerRtnId, offerPut);
         return offerPut;
     }
 
-    public void deleteOffer(Long offerId) throws Exception {
+    public void deleteOffer(String offerId) throws Exception {
         this.deleteOffer(offerId, 204);
     }
 
-    public void deleteOffer(Long offerId, int expectedResponseCode) throws Exception {
-        String strOfferId = IdConverter.idLongToHexString(OfferId.class, offerId);
+    public void deleteOffer(String offerId, int expectedResponseCode) throws Exception {
+        String strOfferId = IdConverter.idToUrlString(OfferId.class, offerId);
         String url = catalogServerURL + "/" + strOfferId;
         restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode);
         Master.getInstance().removeOffer(strOfferId);

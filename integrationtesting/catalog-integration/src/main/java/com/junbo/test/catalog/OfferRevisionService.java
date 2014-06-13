@@ -21,8 +21,8 @@ import java.util.List;
  */
 public interface OfferRevisionService {
 
-    OfferRevision getOfferRevision(Long offerRevisionId) throws Exception;
-    OfferRevision getOfferRevision(Long offerRevisionId, int expectedResponseCode) throws Exception;
+    OfferRevision getOfferRevision(String offerRevisionId) throws Exception;
+    OfferRevision getOfferRevision(String offerRevisionId, int expectedResponseCode) throws Exception;
 
     Results<OfferRevision> getOfferRevisions(HashMap<String, List<String>> httpPara) throws Exception;
     Results<OfferRevision> getOfferRevisions(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception;
@@ -37,9 +37,9 @@ public interface OfferRevisionService {
     OfferRevision postOfferRevision(OfferRevision offerRevision) throws Exception;
     OfferRevision postOfferRevision(OfferRevision offerRevision, int expectedResponseCode) throws Exception;
 
-    OfferRevision updateOfferRevision(Long offerRevisionId, OfferRevision offerRevision) throws Exception;
-    OfferRevision updateOfferRevision(Long offerRevisionId, OfferRevision offerRevision, int expectedResponseCode) throws Exception;
+    OfferRevision updateOfferRevision(String offerRevisionId, OfferRevision offerRevision) throws Exception;
+    OfferRevision updateOfferRevision(String offerRevisionId, OfferRevision offerRevision, int expectedResponseCode) throws Exception;
 
-    void deleteOfferRevision(Long offerRevisionId) throws Exception;
-    void deleteOfferRevision(Long offerRevisionId, int expectedResponseCode) throws Exception;
+    void deleteOfferRevision(String offerRevisionId) throws Exception;
+    void deleteOfferRevision(String offerRevisionId, int expectedResponseCode) throws Exception;
 }
