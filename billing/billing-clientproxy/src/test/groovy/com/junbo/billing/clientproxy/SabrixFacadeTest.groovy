@@ -7,6 +7,7 @@ import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.VatIdValidationResponse
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.id.BalanceId
+import com.junbo.common.id.OrderId
 import com.junbo.identity.spec.v1.model.Address
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
