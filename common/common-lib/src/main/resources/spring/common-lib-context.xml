@@ -53,14 +53,19 @@
 
     <bean id="cloudantClient" class="com.junbo.common.cloudant.CloudantClient" abstract="true">
         <property name="asyncHttpClient" ref="commonAsyncHttpClient" />
-        <property name="cloudantDBUri" value="${common.cloudant.url}" />
         <property name="marshaller" ref="cloudantDefaultMarshaller" />
+        <property name="cloudantDBUri" value="${common.cloudant.url}" />
         <property name="cloudantUser" value="${common.cloudant.user}" />
         <property name="cloudantPassword" value="${common.cloudant.password}" />
         <property name="dbNamePrefix" value="${common.cloudant.dbNamePrefix}" />
         <property name="executor" ref="junboThreadPool"/>
     </bean>
 
+    <bean id="cloudantClientWithSearch" parent="cloudantClient" abstract="true">
+        <property name="cloudantDBUri" value="${common.cloudantWithSearch.url}" />
+        <property name="cloudantUser" value="${common.cloudantWithSearch.user}" />
+        <property name="cloudantPassword" value="${common.cloudantWithSearch.password}" />
+    </bean>
 
     <bean id="cloudantDefaultMarshaller" class="com.junbo.common.cloudant.DefaultCloudantMarshaller" factory-method="instance" />
 

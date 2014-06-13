@@ -13,6 +13,7 @@ import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.model.*
 import com.junbo.order.spec.model.enums.OrderItemRevisionType
 import groovy.transform.CompileStatic
+import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.lang.RandomStringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.testng.annotations.Test
@@ -39,6 +40,7 @@ class OrderRepositoryFacadeTest extends BaseTest {
     @Test
     void testUpdateOrder() {
         def order = createOrder()
+        order.tentative = true
         orderRepository.createOrder(order)
 
         verifyByRead(order)
@@ -77,11 +79,16 @@ class OrderRepositoryFacadeTest extends BaseTest {
         order.payments.clear()
         orderRepository.updateOrder(order, false, false, null)
         verifyByRead(order)
+
+        // revision is not stored for tentative orders
+        def newOrder = orderRepository.getOrder(order.getId().value)
+        assert(CollectionUtils.isEmpty(newOrder.orderRevisions))
     }
 
     @Test
     void testUpdateNonTentativeOrder() {
         def order = createOrder()
+        order.tentative = false
         orderRepository.createOrder(order)
 
         verifyByRead(order)
@@ -105,13 +112,15 @@ class OrderRepositoryFacadeTest extends BaseTest {
         orderRepository.updateOrder(order, false, true, OrderItemRevisionType.ADJUST_SHIPPING)
         verifyByRead(order)
         def newOrder = orderRepository.getOrder(order.getId().value)
-        assert(newOrder.orderRevisions.size() == 1)
+        def newOrderRevisionLastIndex = newOrder.orderRevisions.size() - 1;
+        assert(newOrder.orderRevisions.size() == 3)
         assert(newOrder.shippingAddress.value == newShippingAddress)
-        assert(newOrder.latestOrderRevisionId == newOrder.orderRevisions[0].getId())
+        assert(newOrder.latestOrderRevisionId == newOrder.orderRevisions[newOrderRevisionLastIndex].getId())
         def newOrders = orderRepository.getOrdersByUserId(order.user.value, new OrderQueryParam(), new PageParam())
-        assert(newOrders[0].orderRevisions.size() == 1)
+        assert(newOrders[0].id == newOrder.id)
+        assert(newOrders[0].orderRevisions.size() == 3)
         assert(newOrders[0].shippingAddress.value == newShippingAddress)
-        assert(newOrders[0].latestOrderRevisionId == newOrder.orderRevisions[0].getId())
+        assert(newOrders[0].latestOrderRevisionId == newOrder.orderRevisions[newOrderRevisionLastIndex].getId())
 
         order.orderItems[0].quantity = 0
         orderRepository.updateOrder(order, false, true, OrderItemRevisionType.REFUND)

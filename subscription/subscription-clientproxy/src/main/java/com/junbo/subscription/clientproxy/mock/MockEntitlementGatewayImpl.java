@@ -13,7 +13,7 @@ import com.junbo.subscription.clientproxy.impl.EntitlementGatewayImpl;
  */
 public class MockEntitlementGatewayImpl extends EntitlementGatewayImpl {
     @Override
-    public Long grantEntitlement(Entitlement entitlement){
-        return 12345L;
+    public String grantEntitlement(Entitlement entitlement){
+        return "12345L";
     }
 }

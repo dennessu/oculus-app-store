@@ -37,11 +37,11 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
     @Override
     @Transactional
-    public Entitlement getEntitlement(Long entitlementId) {
+    public Entitlement getEntitlement(String entitlementId) {
         Entitlement entitlement = entitlementRepository.get(entitlementId);
         if (entitlement == null) {
             throw AppErrors.INSTANCE.notFound("entitlement",
-                    formatId(entitlementId)).exception();
+                    entitlementId).exception();
         }
         return entitlement;
     }
@@ -73,11 +73,11 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
     @Override
     @Transactional
-    public Entitlement updateEntitlement(Long entitlementId, Entitlement entitlement) {
+    public Entitlement updateEntitlement(String entitlementId, Entitlement entitlement) {
         validateUpdateId(entitlementId, entitlement);
         Entitlement existingEntitlement = entitlementRepository.get(entitlementId);
         if (existingEntitlement == null) {
-            throw AppErrors.INSTANCE.notFound("entitlement", formatId(entitlementId)).exception();
+            throw AppErrors.INSTANCE.notFound("entitlement", entitlementId).exception();
         }
         fillUpdate(entitlement, existingEntitlement);
         validateUpdate(entitlement, existingEntitlement);
@@ -86,11 +86,11 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
     @Override
     @Transactional
-    public void deleteEntitlement(Long entitlementId) {
+    public void deleteEntitlement(String entitlementId) {
         Entitlement existingEntitlement = entitlementRepository.get(entitlementId);
         if (existingEntitlement == null) {
             throw AppErrors.INSTANCE.notFound("entitlement",
-                    formatId(entitlementId)).exception();
+                    entitlementId).exception();
         }
         checkUser(existingEntitlement.getUserId());
         entitlementRepository.delete(entitlementId);
@@ -150,7 +150,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         Entitlement existingEntitlement = getEntitlement(entitlementTransfer.getEntitlementId());
         if (existingEntitlement == null) {
             throw AppErrors.INSTANCE.notFound("entitlement",
-                    formatId(entitlementTransfer.getEntitlementId())).exception();
+                    entitlementTransfer.getEntitlementId()).exception();
         }
         validateTransfer(entitlementTransfer, existingEntitlement);
 

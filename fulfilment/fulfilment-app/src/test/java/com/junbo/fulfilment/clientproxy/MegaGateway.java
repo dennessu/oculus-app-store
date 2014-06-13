@@ -31,5 +31,5 @@ public interface MegaGateway {
 
     String updateItemRevision(ItemRevision itemRevision);
 
-    Entitlement getEntitlement(Long entitlementId);
+    Entitlement getEntitlement(String entitlementId);
 }

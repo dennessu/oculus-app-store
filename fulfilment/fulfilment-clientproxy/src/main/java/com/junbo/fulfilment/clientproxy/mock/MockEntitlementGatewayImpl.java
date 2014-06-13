@@ -13,7 +13,7 @@ import com.junbo.fulfilment.spec.fusion.Entitlement;
  */
 public class MockEntitlementGatewayImpl implements EntitlementGateway {
     @Override
-    public Long grant(Entitlement entitlement) {
-        return 12345L;
+    public String grant(Entitlement entitlement) {
+        return "12345L";
     }
 }

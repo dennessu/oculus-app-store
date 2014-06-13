@@ -24,12 +24,12 @@ import java.util.UUID;
 @JsonPropertyOrder(value = {"entitlementId", "userId", "itemId", "isActive", "isBanned",
         "grantTime", "expirationTime", "useCount", "type", "futureExpansion",
         "rev", "createdTime", "updatedTime", "adminInfo"})
-public class Entitlement extends ResourceMeta<Long> {
+public class Entitlement extends ResourceMeta<String> {
 
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] Link to this entitlement resource")
     @JsonProperty("self")
     @EntitlementId
-    private Long id;
+    private String id;
 
     @ApiModelProperty(position = 2, required = true, value = "Link to the User that is granted access by this entitlement")
     @UserId
@@ -66,11 +66,11 @@ public class Entitlement extends ResourceMeta<Long> {
     @JsonIgnore
     private UUID trackingUuid;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

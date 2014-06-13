@@ -9,7 +9,7 @@
     <changeSet id="1" author='NanXin' context="PREDEPLOY">
         <sql><![CDATA[
             create table entitlement (
-              id bigint not null,
+              id varchar(64) not null,
               rev int not null,
               user_id bigint not null,
               is_banned boolean not null,
@@ -28,9 +28,9 @@
               primary key (id)
             );
             create table entitlement_history (
-              id bigint not null,
+              id varchar(64) not null,
               action varchar(32) not null,
-              entitlement_id bigint not null,
+              entitlement_id varchar(64) not null,
               rev int not null,
               is_banned boolean not null,
               item_id varchar(64) default null,

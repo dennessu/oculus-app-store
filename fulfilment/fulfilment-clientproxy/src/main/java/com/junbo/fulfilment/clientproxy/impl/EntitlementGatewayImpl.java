@@ -28,7 +28,7 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
     private EntitlementResource entitlementResource;
 
     @Override
-    public Long grant(com.junbo.fulfilment.spec.fusion.Entitlement input) {
+    public String grant(com.junbo.fulfilment.spec.fusion.Entitlement input) {
         try {
             Entitlement entitlement = Utils.map(input, Entitlement.class);
             entitlement.setTrackingUuid(UUID.randomUUID());

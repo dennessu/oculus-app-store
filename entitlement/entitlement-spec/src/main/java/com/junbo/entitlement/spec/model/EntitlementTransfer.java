@@ -22,7 +22,7 @@ public class EntitlementTransfer {
     private Long targetUserId;
     @EntitlementId
     @JsonProperty("entitlement")
-    private Long entitlementId;
+    private String entitlementId;
 
     public UUID getTrackingUuid() {
         return trackingUuid;
@@ -40,11 +40,11 @@ public class EntitlementTransfer {
         this.targetUserId = targetUserId;
     }
 
-    public Long getEntitlementId() {
+    public String getEntitlementId() {
         return entitlementId;
     }
 
-    public void setEntitlementId(Long entitlementId) {
+    public void setEntitlementId(String entitlementId) {
         this.entitlementId = entitlementId;
     }
 }

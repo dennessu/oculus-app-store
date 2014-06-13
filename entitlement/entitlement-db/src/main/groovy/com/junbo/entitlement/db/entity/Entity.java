@@ -6,6 +6,7 @@
 
 package com.junbo.entitlement.db.entity;
 
+import com.junbo.common.cloudant.CloudantEntity;
 import com.junbo.common.cloudant.json.annotations.CloudantDeserialize;
 import com.junbo.common.cloudant.json.annotations.CloudantProperty;
 import com.junbo.common.cloudant.json.annotations.CloudantSerialize;
@@ -13,43 +14,43 @@ import com.junbo.entitlement.db.entity.def.DateDeserializer;
 import com.junbo.entitlement.db.entity.def.DateSerializer;
 import com.junbo.entitlement.db.entity.def.Shardable;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
  * Base Entity.
  */
 @MappedSuperclass
-public abstract class Entity implements Shardable {
-    //Temp work around. TODO
+public abstract class Entity implements CloudantEntity<String>, Shardable {
+
     @CloudantProperty("_id")
-    private Long pId;
+    private String id;
+
     private Boolean isDeleted;
+
     @CloudantSerialize(DateSerializer.class)
     @CloudantDeserialize(DateDeserializer.class)
     private Date createdTime;
+
     private Long createdBy;
+
     @CloudantSerialize(DateSerializer.class)
     @CloudantDeserialize(DateDeserializer.class)
     private Date updatedTime;
+
     private Long updatedBy;
 
-    private Integer resourceAge;
-
     @CloudantProperty("_rev")
-    private String cloudantRev;
+    private String rev;
 
     @Id
     @Column(name = "id")
-    public Long getpId() {
-        return pId;
+    public String getId() {
+        return id;
     }
 
-    public void setpId(Long pId) {
-        this.pId = pId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Column(name = "is_deleted")
@@ -97,30 +98,51 @@ public abstract class Entity implements Shardable {
         this.updatedBy = updatedBy;
     }
 
+    @Version
     @Column(name = "rev")
     public Integer getResourceAge() {
-        return resourceAge;
+        return Integer.parseInt(rev);
     }
 
     public void setResourceAge(Integer rev) {
-        this.resourceAge = rev;
+        if (rev != null) {
+            this.rev = rev.toString();
+        } else {
+            this.rev = null;
+        }
     }
 
     @Transient
-    public String getCloudantRev() {
-        return cloudantRev;
+    public String getRev() {
+        return rev;
     }
 
-    public void setCloudantRev(String cloudantRev) {
-        this.cloudantRev = cloudantRev;
+    public void setRev(String rev) {
+        this.rev = rev;
     }
 
     @Transient
     public String getCloudantId() {
-        return pId.toString();
+        return id;
     }
 
     public void setCloudantId(String id) {
-        this.pId = Long.parseLong(id);
+        this.id = id;
+    }
+
+    @Transient
+    public String getCloudantRev() {
+        return getRev();
+    }
+
+    @Transient
+    public void setCloudantRev(String rev) {
+        setRev(rev);
+    }
+
+    @Transient
+    @Override
+    public Long getShardMasterId() {
+        return Long.parseLong(getId());
     }
 }

@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 public class EntitlementHistoryDaoImpl extends BaseDao<EntitlementHistoryEntity> implements EntitlementHistoryDao {
     @Override
     public EntitlementHistoryEntity insert(EntitlementHistoryEntity entitlementHistoryEntity) {
-        entitlementHistoryEntity.setpId(generateId(entitlementHistoryEntity.getShardMasterId()));
-        return get((Long) currentSession(entitlementHistoryEntity.getShardMasterId()).save(entitlementHistoryEntity));
+        return get((String)currentSession(entitlementHistoryEntity.getShardMasterId()).save(entitlementHistoryEntity));
     }
 }

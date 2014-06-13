@@ -19,7 +19,7 @@ import java.util.UUID;
 public interface EntitlementDao {
     EntitlementEntity insert(EntitlementEntity entitlement);
 
-    EntitlementEntity get(Long entitlementId);
+    EntitlementEntity get(String entitlementId);
 
     EntitlementEntity update(EntitlementEntity entitlement);
 

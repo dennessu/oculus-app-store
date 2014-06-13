@@ -10,5 +10,7 @@ fi
 
 for dbname in `ls -d changelogs/*/$dbVersion | cut -f2 -d'/'`
 do
-    python ./dbcmd.py $dbname $environment $dbVersion create --yes
+    if [[ ! -f "changelogs/$dbname/disabled.txt" ]]; then 
+        python ./dbcmd.py $dbname $environment $dbVersion create --yes
+    fi
 done

@@ -123,7 +123,7 @@ public class MegaGatewayImpl implements MegaGateway {
     }
 
     @Override
-    public Entitlement getEntitlement(Long entitlementId) {
+    public Entitlement getEntitlement(String entitlementId) {
         try {
             return entitlementResource.getEntitlement(new EntitlementId(entitlementId)).get();
         } catch (Exception e) {

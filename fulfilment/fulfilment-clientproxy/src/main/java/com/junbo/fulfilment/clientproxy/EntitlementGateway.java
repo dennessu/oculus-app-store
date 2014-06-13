@@ -11,5 +11,5 @@ import com.junbo.fulfilment.spec.fusion.Entitlement;
  * EntitlementGateway.
  */
 public interface EntitlementGateway {
-    Long grant(Entitlement entitlement);
+    String grant(Entitlement entitlement);
 }

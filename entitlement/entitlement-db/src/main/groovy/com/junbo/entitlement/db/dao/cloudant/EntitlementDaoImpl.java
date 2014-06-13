@@ -18,9 +18,6 @@ import com.junbo.entitlement.db.dao.EntitlementDao;
 import com.junbo.entitlement.db.entity.EntitlementEntity;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
-import com.junbo.sharding.IdGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -31,13 +28,6 @@ import java.util.*;
  * cloudantImpl of entitlementDao.
  */
 public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implements EntitlementDao {
-    @Autowired
-    @Qualifier("oculus48IdGenerator")
-    private IdGenerator idGenerator;
-
-    protected Long generateId(Long shardId) {
-        return idGenerator.nextId(shardId);
-    }
 
     @Override
     protected CloudantViews getCloudantViews() {
@@ -46,7 +36,6 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
 
     @Override
     public EntitlementEntity insert(EntitlementEntity entitlement) {
-        entitlement.setpId(generateId(entitlement.getShardMasterId()));
         entitlement.setIsDeleted(false);
         entitlement.setUpdatedBy(123L);
         entitlement.setUpdatedTime(new Date());
@@ -54,13 +43,12 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
     }
 
     @Override
-    public EntitlementEntity get(Long entitlementId) {
-        return super.cloudantGet(entitlementId.toString()).get();
+    public EntitlementEntity get(String entitlementId) {
+        return super.cloudantGet(entitlementId).get();
     }
 
     @Override
     public EntitlementEntity update(EntitlementEntity entitlement) {
-        entitlement.setResourceAge(entitlement.getResourceAge() + 1);
         entitlement.setIsDeleted(false);
         return super.cloudantPut(entitlement).get();
     }

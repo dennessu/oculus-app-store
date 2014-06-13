@@ -27,7 +27,7 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
     private EntitlementResource entitlementResource;
 
     @Override
-    public Long grantEntitlement(Entitlement entitlement) {
+    public String grantEntitlement(Entitlement entitlement) {
         try {
             entitlement.setTrackingUuid(UUID.randomUUID());
 

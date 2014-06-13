@@ -55,19 +55,29 @@ public class IdentityModel {
         LocaleId localeId = new LocaleId();
         localeId.setValue(DefaultLocale);
         country.setDefaultLocale(localeId);
-        Map<String, String> locales = new HashMap<>();
-        locales.put("shortName", "USD_SHORT");
-        locales.put("longName", "USD_LONG");
+        Map<String, CountryLocaleKey> locales = new HashMap<>();
+        locales.put("en_US", new CountryLocaleKey() {{
+            setShortName("USD_SHORT");
+            setLongName("USD_LONG");
+        }});
         country.setLocales(locales);
         List<RatingBoardId> ratingBoards = new ArrayList<>();
         country.setRatingBoards(ratingBoards);
-        Map<String, SubCountry> subCountryMap = new HashMap<>();
-        SubCountry subCountry1 = new SubCountry();
-        subCountry1.setShortNameKey("US_NY_SHORT");
-        subCountry1.setLongNameKey("US_NY_LONG");
-        SubCountry subCountry2 = new SubCountry();
-        subCountry2.setShortNameKey("US_CA_SHORT");
-        subCountry2.setLongNameKey("US_CA_LONG");
+        Map<String, SubCountryLocaleKeys> subCountryMap = new HashMap<>();
+        SubCountryLocaleKeys subCountry1 = new SubCountryLocaleKeys();
+        subCountry1.setLocales(new HashMap<String, SubCountryLocaleKey>() {{
+            put("en_US", new SubCountryLocaleKey() {{
+                setShortName("US_NY_SHORT");
+                setLongName("US_NY_LONG");
+            }});
+        }});
+        SubCountryLocaleKeys subCountry2 = new SubCountryLocaleKeys();
+        subCountry2.setLocales(new HashMap<String, SubCountryLocaleKey>() {{
+            put("en_US", new SubCountryLocaleKey() {{
+                setShortName("US_CA_SHORT");
+                setLongName("US_CA_LONG");
+            }});
+        }});
         subCountryMap.put("NY", subCountry1);
         subCountryMap.put("CA", subCountry2);
         country.setSubCountries(subCountryMap);
@@ -81,10 +91,12 @@ public class IdentityModel {
     public static Currency DefaultCurrency() throws Exception {
         Currency currency = new Currency();
         currency.setCurrencyCode(DefaultCurrency);
-        Map<String, String> localeKeys = new HashMap<>();
-        localeKeys.put("shortName", "USD_SHORT");
-        localeKeys.put("longName", "USD_LONG");
-        currency.setLocaleKeys(localeKeys);
+        Map<String, CurrencyLocaleKey> localeKeys = new HashMap<>();
+        localeKeys.put("en_US", new CurrencyLocaleKey() {{
+            setShortName("USD_SHORT");
+            setLongName("USD_LONG");
+        }});
+        currency.setLocales(localeKeys);
         currency.setMinAuthAmount(new BigDecimal(1));
         currency.setNumberAfterDecimal(2);
         currency.setSymbol("$");

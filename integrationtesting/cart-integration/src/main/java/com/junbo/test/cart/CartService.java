@@ -43,7 +43,7 @@ public class CartService {
 
     public static Cart addCart(UserId userId, Cart cart, int expectedResponseCode) throws Exception {
 
-        String requestBody = new JsonMessageTranscoder().encode(cart);
+        byte[] requestBody = new JsonMessageTranscoder().encode(cart);
 
         String cartEndpointUrl = commerceUrl + "users/" + IdConverter.idToHexString(userId) + "/carts";
 
@@ -164,7 +164,7 @@ public class CartService {
 
     public static Cart updateCart(UserId userId, CartId cartId, Cart cart, int expectedResponseCode)
             throws Exception {
-        String requestBody = new JsonMessageTranscoder().encode(cart);
+        byte[] requestBody = new JsonMessageTranscoder().encode(cart);
 
         String cartEndpointUrl = commerceUrl + "users/" + IdConverter.idToHexString(userId)
                 + "/carts/" + IdConverter.idToHexString(cartId);
@@ -195,7 +195,7 @@ public class CartService {
 
     public static Cart mergeCart(UserId userId, CartId cartId, Cart fromCart, int expectedResponseCode)
             throws Exception {
-        String requestBody = new JsonMessageTranscoder().encode(fromCart);
+        byte[] requestBody = new JsonMessageTranscoder().encode(fromCart);
 
         String cartEndpointUrl = commerceUrl + "users/" + IdConverter.idToHexString(userId)
                 + "/carts/" + IdConverter.idToHexString(cartId) + "/merge";

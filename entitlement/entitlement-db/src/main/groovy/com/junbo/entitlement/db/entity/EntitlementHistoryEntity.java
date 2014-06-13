@@ -7,17 +7,13 @@
 package com.junbo.entitlement.db.entity;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.junbo.common.cloudant.CloudantEntity;
-import com.junbo.common.id.EntitlementId;
 import com.junbo.entitlement.db.entity.def.MapJsonUserType;
-import com.junbo.entitlement.db.entity.def.Shardable;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.Column;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import java.util.Date;
 import java.util.Map;
 
@@ -27,9 +23,9 @@ import java.util.Map;
 @javax.persistence.Entity
 @Table(name = "entitlement_history")
 @TypeDefs(@TypeDef(name = "json-map", typeClass = MapJsonUserType.class))
-public class EntitlementHistoryEntity extends Entity implements Shardable, CloudantEntity<EntitlementId> {
+public class EntitlementHistoryEntity extends Entity {
     private String action;
-    private Long entitlementId;
+    private String entitlementId;
     private Long userId;
     private String itemId;
     private Boolean isBanned;
@@ -43,8 +39,8 @@ public class EntitlementHistoryEntity extends Entity implements Shardable, Cloud
 
     public EntitlementHistoryEntity(String action, EntitlementEntity entitlementEntity) {
         this.action = action;
-        this.entitlementId = entitlementEntity.getpId();
-        this.setResourceAge(entitlementEntity.getResourceAge());
+        this.entitlementId = entitlementEntity.getId();
+        this.setRev(entitlementEntity.getRev());
         this.itemId = entitlementEntity.getItemId();
         this.userId = entitlementEntity.getUserId();
         this.isBanned = entitlementEntity.getIsBanned();
@@ -69,11 +65,11 @@ public class EntitlementHistoryEntity extends Entity implements Shardable, Cloud
     }
 
     @Column(name = "entitlement_id")
-    public Long getEntitlementId() {
+    public String getEntitlementId() {
         return entitlementId;
     }
 
-    public void setEntitlementId(Long entitlementId) {
+    public void setEntitlementId(String entitlementId) {
         this.entitlementId = entitlementId;
     }
 
@@ -139,23 +135,5 @@ public class EntitlementHistoryEntity extends Entity implements Shardable, Cloud
 
     public void setUseCount(Integer useCount) {
         this.useCount = useCount;
-    }
-
-    @Transient
-    @Override
-    public Long getShardMasterId() {
-        return entitlementId;
-    }
-
-    @Override
-    @Transient
-    public EntitlementId getId() {
-        return new EntitlementId(this.getpId());
-    }
-
-    @Override
-    @Transient
-    public void setId(EntitlementId id) {
-        this.setpId(id.getValue());
     }
 }

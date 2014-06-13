@@ -5,7 +5,6 @@
  */
 package com.junbo.fulfilment.core.handler;
 
-import com.junbo.common.shuffle.Oculus48Id;
 import com.junbo.fulfilment.common.util.Constant;
 import com.junbo.fulfilment.common.util.Utils;
 import com.junbo.fulfilment.core.context.EntitlementContext;
@@ -42,10 +41,9 @@ public class EntitlementHandler extends HandlerSupport<EntitlementContext> {
 
                 entitlement.setGrantTime(Utils.now());
 
-                Long rawEntitlementid = entitlementGateway.grant(entitlement);
+                String rawEntitlementid = entitlementGateway.grant(entitlement);
 
-                Oculus48Id.validateRawValue(rawEntitlementid);
-                results.add(Oculus48Id.format(Oculus48Id.shuffle(rawEntitlementid)));
+                results.add(rawEntitlementid);
             }
         }
 

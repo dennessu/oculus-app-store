@@ -34,7 +34,7 @@ public class FullfilmentAction implements SubscriptionActionService {
         entitlement.setExpirationTime(subscription.getSubsEndDate());
         //entitlement.getEntitlementDefinitionId();
 
-        Long entitlementId = entitlementGateway.grantEntitlement(entitlement);
+        String entitlementId = entitlementGateway.grantEntitlement(entitlement);
 
         SubscriptionEntitlement subscriptionEntitlement = new SubscriptionEntitlement();
         subscriptionEntitlement.setSubscriptionId(subscription.getId());

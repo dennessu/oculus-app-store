@@ -17,13 +17,13 @@ import java.util.UUID;
  * Interface of Entitlement Service.
  */
 public interface EntitlementService {
-    Entitlement getEntitlement(Long entitlementId);
+    Entitlement getEntitlement(String entitlementId);
 
     Entitlement addEntitlement(Entitlement entitlement);
 
-    Entitlement updateEntitlement(Long entitlementId, Entitlement entitlement);
+    Entitlement updateEntitlement(String entitlementId, Entitlement entitlement);
 
-    void deleteEntitlement(Long entitlementId);
+    void deleteEntitlement(String entitlementId);
 
     Results<Entitlement> searchEntitlement(EntitlementSearchParam entitlementSearchParam,
                                         PageMetadata pageMetadata);

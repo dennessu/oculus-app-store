@@ -5,46 +5,25 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <!-- Repository -->
-    <bean id="itemAttributeCloudantRepo" class="com.junbo.catalog.db.repo.impl.cloudant.ItemAttributeRepositoryImpl" parent="cloudantClient">
+    <bean id="itemAttributeCloudantRepo" class="com.junbo.catalog.db.repo.impl.cloudant.ItemAttributeRepositoryImpl" parent="cloudantClientWithSearch">
         <property name="dbName" value="item_attribute"/>
-        <property name="cloudantDBUri" value="${catalog.cloudant.url}" />
-        <property name="cloudantUser" value="${catalog.cloudant.user}" />
-        <property name="cloudantPassword" value="${catalog.cloudant.password}" />
     </bean>
-    <bean id="offerAttributeCloudantRepo" class="com.junbo.catalog.db.repo.impl.cloudant.OfferAttributeRepositoryImpl" parent="cloudantClient">
+    <bean id="offerAttributeCloudantRepo" class="com.junbo.catalog.db.repo.impl.cloudant.OfferAttributeRepositoryImpl" parent="cloudantClientWithSearch">
         <property name="dbName" value="offer_attribute"/>
-        <property name="cloudantDBUri" value="${catalog.cloudant.url}" />
-        <property name="cloudantUser" value="${catalog.cloudant.user}" />
-        <property name="cloudantPassword" value="${catalog.cloudant.password}" />
     </bean>
-    <bean id="itemCloudantRepo" class="com.junbo.catalog.db.repo.impl.cloudant.ItemRepositoryImpl" parent="cloudantClient">
+    <bean id="itemCloudantRepo" class="com.junbo.catalog.db.repo.impl.cloudant.ItemRepositoryImpl" parent="cloudantClientWithSearch">
         <property name="dbName" value="item"/>
-        <property name="cloudantDBUri" value="${catalog.cloudant.url}" />
-        <property name="cloudantUser" value="${catalog.cloudant.user}" />
-        <property name="cloudantPassword" value="${catalog.cloudant.password}" />
     </bean>
-    <bean id="itemRevisionCloudantRepo" class="com.junbo.catalog.db.repo.impl.cloudant.ItemRevisionRepositoryImpl" parent="cloudantClient">
+    <bean id="itemRevisionCloudantRepo" class="com.junbo.catalog.db.repo.impl.cloudant.ItemRevisionRepositoryImpl" parent="cloudantClientWithSearch">
         <property name="dbName" value="item_revision"/>
-        <property name="cloudantDBUri" value="${catalog.cloudant.url}" />
-        <property name="cloudantUser" value="${catalog.cloudant.user}" />
-        <property name="cloudantPassword" value="${catalog.cloudant.password}" />
     </bean>
-    <bean id="offerCloudantRepo" class="com.junbo.catalog.db.repo.impl.cloudant.OfferRepositoryImpl" parent="cloudantClient">
+    <bean id="offerCloudantRepo" class="com.junbo.catalog.db.repo.impl.cloudant.OfferRepositoryImpl" parent="cloudantClientWithSearch">
         <property name="dbName" value="offer"/>
-        <property name="cloudantDBUri" value="${catalog.cloudant.url}" />
-        <property name="cloudantUser" value="${catalog.cloudant.user}" />
-        <property name="cloudantPassword" value="${catalog.cloudant.password}" />
     </bean>
-    <bean id="offerRevisionCloudantRepo" class="com.junbo.catalog.db.repo.impl.cloudant.OfferRevisionRepositoryImpl" parent="cloudantClient">
+    <bean id="offerRevisionCloudantRepo" class="com.junbo.catalog.db.repo.impl.cloudant.OfferRevisionRepositoryImpl" parent="cloudantClientWithSearch">
         <property name="dbName" value="offer_revision"/>
-        <property name="cloudantDBUri" value="${catalog.cloudant.url}" />
-        <property name="cloudantUser" value="${catalog.cloudant.user}" />
-        <property name="cloudantPassword" value="${catalog.cloudant.password}" />
     </bean>
-    <bean id="priceTierCloudantRepo" class="com.junbo.catalog.db.repo.impl.cloudant.PriceTierRepositoryImpl" parent="cloudantClient">
+    <bean id="priceTierCloudantRepo" class="com.junbo.catalog.db.repo.impl.cloudant.PriceTierRepositoryImpl" parent="cloudantClientWithSearch">
         <property name="dbName" value="price_tier"/>
-        <property name="cloudantDBUri" value="${catalog.cloudant.url}" />
-        <property name="cloudantUser" value="${catalog.cloudant.user}" />
-        <property name="cloudantPassword" value="${catalog.cloudant.password}" />
     </bean>
 </beans>

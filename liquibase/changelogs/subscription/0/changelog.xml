@@ -90,7 +90,7 @@
             create table subscription_entitlement (
               id bigint not null,
               subscription_id bigint not null,
-              entitlement_id bigint not null,
+              entitlement_id varchar(64) not null,
               entitlement_status varchar(32),
               created_time timestamp not null,
               created_by varchar(256) not null,

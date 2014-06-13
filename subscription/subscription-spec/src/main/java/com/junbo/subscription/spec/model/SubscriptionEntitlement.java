@@ -18,7 +18,7 @@ public class SubscriptionEntitlement {
     private Long subscriptionId;
 
     @EntitlementId
-    private Long entitlementId;
+    private String entitlementId;
 
     private Integer entitlementStatus;
 
@@ -38,11 +38,11 @@ public class SubscriptionEntitlement {
         this.subscriptionId = subscriptionId;
     }
 
-    public Long getEntitlementId() {
+    public String getEntitlementId() {
         return entitlementId;
     }
 
-    public void setEntitlementId(Long entitlementId) {
+    public void setEntitlementId(String entitlementId) {
         this.entitlementId = entitlementId;
     }
 

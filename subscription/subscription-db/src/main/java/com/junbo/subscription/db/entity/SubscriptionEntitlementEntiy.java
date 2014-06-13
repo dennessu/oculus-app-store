@@ -19,7 +19,7 @@ public class SubscriptionEntitlementEntiy extends Entity {
 
     private Long subsEntid;
     private Long subscriptionId;
-    private Long entitlementId;
+    private String entitlementId;
     private int entitlementStatus;
 
     @Id
@@ -42,11 +42,11 @@ public class SubscriptionEntitlementEntiy extends Entity {
     }
 
     @Column(name = "entitlement_id")
-    public Long getEntitlementId() {
+    public String getEntitlementId() {
         return entitlementId;
     }
 
-    public void setEntitlementId(Long entitlementId) {
+    public void setEntitlementId(String entitlementId) {
         this.entitlementId = entitlementId;
     }
 

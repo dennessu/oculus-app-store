@@ -36,7 +36,7 @@ public class EntitlementRepository {
     @Autowired
     private EntitlementMapper entitlementMapper;
 
-    public Entitlement get(Long entitlementId) {
+    public Entitlement get(String entitlementId) {
         return entitlementMapper.toEntitlement(entitlementDao.get(entitlementId));
     }
 
@@ -58,7 +58,7 @@ public class EntitlementRepository {
                         searchParam, pageMetadata == null ? new PageMetadata() : pageMetadata));
     }
 
-    public void delete(Long entitlementId) {
+    public void delete(String entitlementId) {
         EntitlementEntity entitlementEntity = entitlementDao.get(entitlementId);
         entitlementEntity.setIsDeleted(true);
         entitlementHistoryDao.insert(new EntitlementHistoryEntity(DELETE, entitlementEntity));

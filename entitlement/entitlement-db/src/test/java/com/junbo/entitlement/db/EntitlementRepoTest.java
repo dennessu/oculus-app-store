@@ -29,7 +29,6 @@ import org.testng.annotations.Test;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Entitlement dao test.
@@ -62,7 +61,8 @@ public class EntitlementRepoTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(updatedEntitlement.getIsActive(), Boolean.FALSE);
     }
 
-    @Test(enabled = true)
+    // test search for SQL
+    @Test(enabled = false)
     public void testSearch() {
         Long userId = idGenerator.nextId();
         for (int i = 0; i < 48; i++) {
@@ -100,7 +100,7 @@ public class EntitlementRepoTest extends AbstractTestNGSpringContextTests {
     }
 
     //test for cloudant search
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void testCloudantSearch() {
         Date now = new Date();
         Long userId = idGenerator.nextId();
@@ -180,7 +180,6 @@ public class EntitlementRepoTest extends AbstractTestNGSpringContextTests {
 
     private Entitlement buildAnEntitlement() {
         Entitlement entitlement = new Entitlement();
-        entitlement.setId(new Random().nextLong());
         entitlement.setUserId(idGenerator.nextId());
         entitlement.setGrantTime(new Date(114, 0, 22));
         entitlement.setExpirationTime(new Date(114, 0, 28));

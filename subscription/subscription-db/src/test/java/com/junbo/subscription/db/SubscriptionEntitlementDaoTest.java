@@ -9,18 +9,14 @@ import com.junbo.subscription.db.dao.SubscriptionEntitlementDao;
 import com.junbo.subscription.db.repository.SubscriptionEntitlementRepository;
 import com.junbo.subscription.spec.model.SubscriptionEntitlement;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import javax.sql.DataSource;
 
 /**
  * Created by Administrator on 14-4-4.
@@ -46,7 +42,7 @@ public class SubscriptionEntitlementDaoTest extends AbstractTestNGSpringContextT
     private SubscriptionEntitlement buildSubscriptionEntitilement(){
         SubscriptionEntitlement subsEnt = new SubscriptionEntitlement();
         subsEnt.setSubscriptionId(1L);
-        subsEnt.setEntitlementId(1234L);
+        subsEnt.setEntitlementId("1234L");
         subsEnt.setEntitlementStatus(0);
         return subsEnt;
     }

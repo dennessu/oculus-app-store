@@ -9,7 +9,7 @@ package com.junbo.entitlement.core.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.catalog.spec.model.item.EntitlementDef;
 import com.junbo.catalog.spec.model.item.ItemRevision;
-import com.junbo.common.id.EntitlementId;
+import com.junbo.common.id.UserId;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.entitlement.clientproxy.catalog.ItemFacade;
 import com.junbo.entitlement.common.cache.CommonCache;
@@ -85,14 +85,14 @@ public class BaseService {
         validateGrantTimeBeforeExpirationTime(entitlement);
     }
 
-    protected void validateUpdateId(Long entitlementId, Entitlement entitlement) {
+    protected void validateUpdateId(String entitlementId, Entitlement entitlement) {
         if (entitlement.getId() == null) {
             throw AppErrors.INSTANCE.missingField("id").exception();
         }
         if (!entitlementId.equals(entitlement.getId())) {
             throw AppErrors.INSTANCE.fieldNotMatch("id",
-                    formatId(entitlement.getId()),
-                    formatId(entitlementId)).exception();
+                    entitlement.getId(),
+                    entitlementId).exception();
         }
     }
 
@@ -114,14 +114,14 @@ public class BaseService {
         validateNotNull(transfer.getEntitlementId(), "entitlement");
         if (existingEntitlement == null) {
             throw AppErrors.INSTANCE.notFound("entitlement",
-                    formatId(transfer.getEntitlementId())).exception();
+                    transfer.getEntitlementId()).exception();
         }
         checkUser(existingEntitlement.getUserId());
         checkTargetUser(transfer.getTargetUserId());
         if (existingEntitlement.getIsBanned()) {
             LOGGER.error("Entitlement [{}] can not be transferred.", existingEntitlement.getId());
             throw AppErrors.INSTANCE.notTransferable(
-                    formatId(existingEntitlement.getId()),
+                    existingEntitlement.getId(),
                     "Banned entitlement can not be transferred.")
                     .exception();
         }
@@ -236,8 +236,8 @@ public class BaseService {
         });
     }
 
-    protected String formatId(Long id) {
-        return IdFormatter.encodeId(new EntitlementId(id));
+    protected String formatId(long id) {
+        return IdFormatter.encodeId(new UserId(id));
     }
 
     protected EntitlementDef filter(List<EntitlementDef> defs, String type) {

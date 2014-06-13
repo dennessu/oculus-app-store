@@ -54,7 +54,7 @@ public class BaseDao<T extends Entity> {
     }
 
     public T insert(T t) {
-        t.setpId(generateId(t.getShardMasterId()));
+        t.setId(generateId(t.getShardMasterId()));
         Date now = EntitlementContext.current().getNow();
         t.setIsDeleted(false);
         t.setCreatedBy(177536427572383L);  //TODO
@@ -63,16 +63,16 @@ public class BaseDao<T extends Entity> {
         t.setUpdatedTime(now);
         t.setIsDeleted(false);
         t.setResourceAge(0);
-        return get((Long) currentSession(t.getShardMasterId()).save(t));
+        return get((String)currentSession(t.getShardMasterId()).save(t));
     }
 
-    public T get(Long id) {
+    public T get(String id) {
         T result = (T) currentSession(id).get(entityType, id);
         return (result == null || result.getIsDeleted()) ? null : result;
     }
 
     public T update(T t) {
-        T existed = (T) currentSession(t.getShardMasterId()).load(entityType, t.getpId());
+        T existed = (T) currentSession(t.getShardMasterId()).load(entityType, t.getId());
         t.setCreatedTime(existed.getCreatedTime());
         t.setCreatedBy(existed.getCreatedBy());
         t.setUpdatedBy(177536427572383L); //TODO
@@ -100,8 +100,8 @@ public class BaseDao<T extends Entity> {
         this.sessionFactory = sessionFactory;
     }
 
-    protected Long generateId(Long shardId) {
-        return idGenerator.nextId(shardId);
+    protected String generateId(Long shardId) {
+        return String.valueOf(idGenerator.nextId(shardId));
     }
 
     protected void  addSingleParam(String columnName, String paramName,
