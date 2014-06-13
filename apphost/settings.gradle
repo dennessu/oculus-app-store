@@ -1,3 +1,4 @@
 include 'apphost-core'
 include 'apphost-cli'
+include 'data-loader'
 include 'docs-bundle'

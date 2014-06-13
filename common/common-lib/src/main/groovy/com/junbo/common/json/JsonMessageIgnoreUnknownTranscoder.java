@@ -27,7 +27,7 @@ public class JsonMessageIgnoreUnknownTranscoder implements MessageTranscoder {
 
     @Override
     public <T> T decode(TypeReference typeRef, String body) {
-        if(body == null || body.isEmpty()){
+        if (body == null || body.isEmpty()) {
             return null;
         }
 
@@ -41,9 +41,9 @@ public class JsonMessageIgnoreUnknownTranscoder implements MessageTranscoder {
     }
 
     @Override
-    public <T> String encode(T body) {
+    public <T> byte[] encode(T body) {
         try {
-            return objectMapper.writeValueAsString(body);
+            return objectMapper.writeValueAsBytes(body);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Unable to encode: " + body, e);
         }

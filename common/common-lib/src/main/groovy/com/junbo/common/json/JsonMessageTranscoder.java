@@ -24,7 +24,7 @@ public class JsonMessageTranscoder implements MessageTranscoder {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T decode(TypeReference typeRef, String body) {
-        if(body == null || body.isEmpty()){
+        if (body == null || body.isEmpty()) {
             return null;
         }
         try {
@@ -39,9 +39,9 @@ public class JsonMessageTranscoder implements MessageTranscoder {
     }
 
     @Override
-    public <T> String encode(T body) {
+    public <T> byte[] encode(T body) {
         try {
-            return provider.getContext(null).writeValueAsString(body);
+            return provider.getContext(null).writeValueAsBytes(body);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Unable to encode: " + body, e);
         }

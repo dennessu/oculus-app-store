@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+        <bean id="tokenEndpoint" class="com.junbo.oauth.spec.endpoint.proxy.TokenEndpointClientProxy" parent="baseClientProxy">
+            <property name="target" value="${authorize.oauth.endpoint}"/>
+        </bean>
+
+        <bean id="data_apiDefinitionEndpoint"
+              class="com.junbo.authorization.spec.resource.proxy.ApiDefinitionResourceClientProxy" parent="baseClientProxy">
+            <property name="target" value="${authorize.oauth.endpoint}"/>
+            <property name="accessTokenProvider" ref="data_accessTokenProvider"/>
+        </bean>
+
+        <bean id="data_scopeEndpoint" class="com.junbo.oauth.spec.endpoint.proxy.ScopeEndpointClientProxy" parent="baseClientProxy">
+            <property name="target" value="${authorize.oauth.endpoint}"/>
+            <property name="accessTokenProvider" ref="data_accessTokenProvider"/>
+        </bean>
+
+        <bean id="data_accessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
+            <property name="scope" value="api.manage client.register scope.manage identity.admin"/>
+            <property name="deflectionInSeconds" value="300"/>
+            <property name="clientSecret" value="secret"/>
+            <property name="clientId" value="service"/>
+            <property name="tokenEndpoint" ref="tokenEndpoint"/>
+        </bean>
+
+        <bean id="data_countryResource" class="com.junbo.identity.spec.v1.resource.proxy.CountryResourceClientProxy" parent="baseClientProxy">
+            <property name="target" value="${clientproxy.identity.url}"/>
+            <property name="accessTokenProvider" ref="data_accessTokenProvider"/>
+        </bean>
+
+        <bean id="data_currencyResource" class="com.junbo.identity.spec.v1.resource.proxy.CurrencyResourceClientProxy" parent="baseClientProxy">
+            <property name="target" value="${clientproxy.identity.url}"/>
+            <property name="accessTokenProvider" ref="data_accessTokenProvider"/>
+        </bean>
+
+        <bean id="data_localeResource" class="com.junbo.identity.spec.v1.resource.proxy.LocaleResourceClientProxy" parent="baseClientProxy">
+            <property name="target" value="${clientproxy.identity.url}"/>
+            <property name="accessTokenProvider" ref="data_accessTokenProvider"/>
+        </bean>
+
+        <bean id="data_piTypeResource" class="com.junbo.identity.spec.v1.resource.proxy.PITypeResourceClientProxy" parent="baseClientProxy">
+            <property name="target" value="${clientproxy.identity.url}"/>
+            <property name="accessTokenProvider" ref="data_accessTokenProvider"/>
+        </bean>
+
+        <bean id="data_emailTemplateResource" class="com.junbo.email.spec.resource.proxy.EmailTemplateResourceClientProxy" parent="baseClientProxy">
+            <property name="target" value="${clientproxy.email.url}"/>
+            <property name="accessTokenProvider" ref="data_accessTokenProvider"/>
+        </bean>
+
+        <bean id="baseDataHandler" class="com.junbo.data.handler.BaseDataHandler" abstract="true">
+            <property name="transcoder" ref="commonTranscoder"/>
+            <property name="alwaysOverwrite" value="${data.loader.alwaysOverwrite}"/>
+        </bean>
+
+        <bean id="clientDataHandler" class="com.junbo.data.handler.ClientDataHandler" parent="baseDataHandler">
+            <property name="clientRepository" ref="clientRepository"/>
+        </bean>
+
+        <bean id="apiDefinitionDataHandler" class="com.junbo.data.handler.ApiDefinitionDataHandler" parent="baseDataHandler">
+            <property name="apiDefinitionResource" ref="data_apiDefinitionEndpoint"/>
+        </bean>
+
+        <bean id="scopeDataHandler" class="com.junbo.data.handler.ScopeDataHandler" parent="baseDataHandler">
+            <property name="scopeEndpoint" ref="data_scopeEndpoint"/>
+        </bean>
+
+        <bean id="countryDataHandler" class="com.junbo.data.handler.CountryDataHandler" parent="baseDataHandler">
+            <property name="countryResource" ref="data_countryResource"/>
+        </bean>
+
+        <bean id="currencyDataHandler" class="com.junbo.data.handler.CurrencyDataHandler" parent="baseDataHandler">
+            <property name="currencyResource" ref="data_currencyResource"/>
+        </bean>
+
+        <bean id="localeDataHandler" class="com.junbo.data.handler.LocaleDataHandler" parent="baseDataHandler">
+            <property name="localeResource" ref="data_localeResource"/>
+        </bean>
+
+        <bean id="piTypeDataHandler" class="com.junbo.data.handler.PITypeDataHandler" parent="baseDataHandler">
+            <property name="piTypeResource" ref="data_piTypeResource"/>
+        </bean>
+
+        <bean id="emailTemplateDataHandler" class="com.junbo.data.handler.EmailTemplateDataHandler" parent="baseDataHandler">
+            <property name="templateResource" ref="data_emailTemplateResource"/>
+        </bean>
+
+        <bean id="dataLoader" class="com.junbo.data.loader.DataLoader">
+            <property name="handlers">
+                <map>
+                    <entry key="client" value-ref="clientDataHandler"/>
+                    <entry key="api-definition" value-ref="apiDefinitionDataHandler"/>
+                    <entry key="scope" value-ref="scopeDataHandler"/>
+                    <entry key="country" value-ref="countryDataHandler" />
+                    <entry key="currency" value-ref="currencyDataHandler" />
+                    <entry key="locale" value-ref="localeDataHandler" />
+                    <entry key="pitype" value-ref="piTypeDataHandler" />
+                    <entry key="email-template" value-ref="emailTemplateDataHandler"/>
+                </map>
+            </property>
+            <property name="dataList">
+                <list>
+                    <value>client</value>
+                    <value>api-definition</value>
+                    <value>scope</value>
+                    <value>locale</value>
+                    <value>currency</value>
+                    <value>country</value>
+                    <value>pitype</value>
+                    <value>email-template</value>
+                </list>
+            </property>
+        </bean>
+</beans>
