@@ -110,7 +110,7 @@ public class UserPersonalInfo extends PropertyAssignedAwareResourceMeta<UserPers
     }
 
     public Boolean getIsValidated() {
-        return lastValidateTime != null;
+        return isValidated;
     }
 
     public void setIsValidated(Boolean isValidated) {

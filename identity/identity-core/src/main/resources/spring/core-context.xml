@@ -660,6 +660,7 @@
                         <value>id</value>
                         <value>value</value>
                         <value>lastValidateTime</value>
+                        <value>isValidated</value>
                         <value>isNormalized</value>
                         <value>label</value>
                         <value>rev</value>
