@@ -13,5 +13,6 @@ public interface MessageTranscoder {
 
     <T> T decode(TypeReference typeRef, String body);
 
-    <T> String encode(T body);
+    //use byte[] to resolve body encode problem
+    <T> byte[] encode(T body);
 }

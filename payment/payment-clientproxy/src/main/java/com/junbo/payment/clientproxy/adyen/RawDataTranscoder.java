@@ -9,6 +9,8 @@ package com.junbo.payment.clientproxy.adyen;
 import com.junbo.langur.core.client.MessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  * Raw Data Transcoder.
  */
@@ -25,7 +27,11 @@ public class RawDataTranscoder implements MessageTranscoder {
     }
 
     @Override
-    public <T> String encode(T body) {
-        return body.toString();
+    public <T> byte[] encode(T body) {
+        try {
+            return body.toString().getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("Unable to encode: " + body, e);
+        }
     }
 }

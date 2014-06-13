@@ -9,11 +9,10 @@ import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.common.model.Results;
 import com.junbo.ewallet.spec.model.CreditRequest;
 import com.junbo.ewallet.spec.resource.WalletResource;
-import com.junbo.identity.spec.v1.model.*;
 import com.junbo.identity.spec.v1.model.Address;
+import com.junbo.identity.spec.v1.model.*;
 import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource;
 import com.junbo.identity.spec.v1.resource.UserResource;
-import com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy;
 import com.junbo.payment.clientproxy.BaseTest;
 import com.junbo.payment.clientproxy.PersonalInfoFacade;
 import com.junbo.payment.spec.enums.PaymentEventType;
@@ -27,7 +26,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
