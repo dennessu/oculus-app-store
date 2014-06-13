@@ -13,8 +13,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
-import com.junbo.common.cloudant.json.deserializer.IdCloudantDeserializer;
-import com.junbo.common.cloudant.json.serializer.IdCloudantSerializer;
 import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.jackson.common.CustomDeserializationContext;
 import com.junbo.common.jackson.common.CustomSerializerModifier;
@@ -23,6 +21,8 @@ import com.junbo.common.jackson.deserializer.CloudantIdDeserializer;
 import com.junbo.common.jackson.deserializer.EnumIdDeserizlizer;
 import com.junbo.common.jackson.serializer.CloudantIdSerializer;
 import com.junbo.common.jackson.serializer.EnumIdSerializer;
+import com.junbo.common.jackson.serializer.IdSerializer;
+import com.junbo.common.jackson.deserializer.IdDeserializer;
 
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
@@ -55,8 +55,8 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
         };
 
         for (Class cls : IdUtil.ID_CLASSES) {
-            module.addSerializer(cls, new IdCloudantSerializer());
-            module.addDeserializer(cls, new IdCloudantDeserializer(cls));
+            module.addSerializer(cls, new IdSerializer());
+            module.addDeserializer(cls, new IdDeserializer(cls));
         }
 
         for (Class cls : IdUtil.CLOUDANT_ID_CLASSES) {

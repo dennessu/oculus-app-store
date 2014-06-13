@@ -21,19 +21,19 @@ import javax.persistence.*;
 @Table(name = "promotion")
 @TypeDefs(@TypeDef(name="json-string", typeClass=StringJsonUserType.class))
 public class PromotionEntity extends BaseEntity {
-    private Long promotionId;
+    private String promotionId;
     private PromotionType type;
-    private Long currentRevisionId;
+    private String currentRevisionId;
     private Long ownerId;
     private String payload;
 
     @Id
     @Column(name = "promotion_id")
-    public Long getPromotionId() {
+    public String getPromotionId() {
         return promotionId;
     }
 
-    public void setPromotionId(Long promotionId) {
+    public void setPromotionId(String promotionId) {
         this.promotionId = promotionId;
     }
 
@@ -47,11 +47,11 @@ public class PromotionEntity extends BaseEntity {
     }
 
     @Column(name = "current_revision_id")
-    public Long getCurrentRevisionId() {
+    public String getCurrentRevisionId() {
         return currentRevisionId;
     }
 
-    public void setCurrentRevisionId(Long currentRevisionId) {
+    public void setCurrentRevisionId(String currentRevisionId) {
         this.currentRevisionId = currentRevisionId;
     }
 
@@ -76,12 +76,12 @@ public class PromotionEntity extends BaseEntity {
 
     @Override
     @Transient
-    public Long getId() {
+    public String getId() {
         return promotionId;
     }
 
     @Override
-    public void setId(Long id) {
+    public void setId(String id) {
         this.promotionId = id;
     }
 }

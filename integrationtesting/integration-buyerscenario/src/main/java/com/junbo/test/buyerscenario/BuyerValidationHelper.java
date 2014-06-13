@@ -92,7 +92,7 @@ public class BuyerValidationHelper extends BaseValidationHelper {
                             offerItem.getQuantity().toString()), "verify offer quantity");
                     String offerId = IdConverter.idToHexString(offerItem.getOffer());
 
-                    String currentOfferRevisionId = IdConverter.idLongToHexString(OfferRevisionId.class,
+                    String currentOfferRevisionId = IdConverter.idToUrlString(OfferRevisionId.class,
                             Master.getInstance().getOffer(offerId).getCurrentRevisionId());
                     BigDecimal unitPrice = Master.getInstance().getOfferRevision(currentOfferRevisionId).getPrice()
                             .getPrices().get(country.toString()).get(currency.toString());

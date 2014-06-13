@@ -100,7 +100,7 @@ public class TestPostOffer extends BaseTestClass {
         OfferAttributeService offerAttributeService = OfferAttributeServiceImpl.instance();
         OfferAttribute offerAttribute1 = offerAttributeService.postDefaultOfferAttribute();
         OfferAttribute offerAttribute2 = offerAttributeService.postDefaultOfferAttribute();
-        List<Long> categories = new ArrayList<>();
+        List<String> categories = new ArrayList<>();
         categories.add(offerAttribute1.getId());
         categories.add(offerAttribute2.getId());
 
@@ -125,10 +125,10 @@ public class TestPostOffer extends BaseTestClass {
     )
     @Test
     public void testPostOfferInvalidScenarios() throws Exception {
-        List<Long> genres = new ArrayList<>();
-        List<Long> categoryInvalid = new ArrayList<>();
-        categoryInvalid.add(0L);
-        categoryInvalid.add(1L);
+        List<String> genres = new ArrayList<>();
+        List<String> categoryInvalid = new ArrayList<>();
+        categoryInvalid.add("0L");
+        categoryInvalid.add("1L");
 
         //test ownerId is null
         Offer testOffer = offerService.prepareOfferEntity(defaultOffer, organizationId);
@@ -137,7 +137,7 @@ public class TestPostOffer extends BaseTestClass {
 
         //test currentRevision is not null
         testOffer = offerService.prepareOfferEntity(defaultOffer, organizationId);
-        testOffer.setCurrentRevisionId(0L);
+        testOffer.setCurrentRevisionId("0L");
         verifyExpectedError(testOffer);
 
         //test rev
@@ -167,7 +167,7 @@ public class TestPostOffer extends BaseTestClass {
         //put all invalid scenarios together
         testOffer = offerService.prepareOfferEntity(defaultOffer, organizationId);
         testOffer.setOwnerId(null);
-        testOffer.setCurrentRevisionId(0L);
+        testOffer.setCurrentRevisionId("0L");
         testOffer.setResourceAge(initRevValue);
         testOffer.setPublished(true);
         testOffer.setCategories(genres);

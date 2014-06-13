@@ -22,10 +22,10 @@ public class Restriction {
 
     @ItemId
     @ApiModelProperty(position = 3, required = true, value = "Precondition items")
-    private List<Long> preconditionItems;
+    private List<String> preconditionItems;
     @ItemId
     @ApiModelProperty(position = 4, required = true, value = "Exclusion items")
-    private List<Long> exclusionItems;
+    private List<String> exclusionItems;
 
     public Integer getLimitPerCustomer() {
         return limitPerCustomer;
@@ -43,19 +43,19 @@ public class Restriction {
         this.limitPerOrder = limitPerOrder;
     }
 
-    public List<Long> getPreconditionItems() {
+    public List<String> getPreconditionItems() {
         return preconditionItems;
     }
 
-    public void setPreconditionItems(List<Long> preconditionItems) {
+    public void setPreconditionItems(List<String> preconditionItems) {
         this.preconditionItems = preconditionItems;
     }
 
-    public List<Long> getExclusionItems() {
+    public List<String> getExclusionItems() {
         return exclusionItems;
     }
 
-    public void setExclusionItems(List<Long> exclusionItems) {
+    public void setExclusionItems(List<String> exclusionItems) {
         this.exclusionItems = exclusionItems;
     }
 }

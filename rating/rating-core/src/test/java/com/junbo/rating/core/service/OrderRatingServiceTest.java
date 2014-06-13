@@ -33,22 +33,22 @@ public class OrderRatingServiceTest extends BaseTest {
         context.setCountry("US");
         context.setCurrency(Currency.findByCode("USD"));
         RatableItem item = new RatableItem();
-        item.setOfferId(100L);
+        item.setOfferId("100L");
         item.setQuantity(1);
-        item.setShippingMethodId(400L);
+        item.setShippingMethodId("400L");
         context.setItems(new HashSet<RatableItem>());
         context.getItems().add(item);
 
         item = new RatableItem();
-        item.setOfferId(102L);
+        item.setOfferId("102L");
         item.setQuantity(1);
-        item.setShippingMethodId(400L);
+        item.setShippingMethodId("400L");
         context.getItems().add(item);
 
         item = new RatableItem();
-        item.setOfferId(109L);
+        item.setOfferId("109L");
         item.setQuantity(1);
-        item.setShippingMethodId(400L);
+        item.setShippingMethodId("400L");
         context.getItems().add(item);
 
         orderRatingService.rate(context);
@@ -70,7 +70,7 @@ public class OrderRatingServiceTest extends BaseTest {
         context.setCountry("US");
         context.setCurrency(Currency.findByCode("USD"));
         RatableItem item = new RatableItem();
-        item.setOfferId(107L);
+        item.setOfferId("107L");
         item.setQuantity(1);
         context.setItems(new HashSet<RatableItem>());
         context.getItems().add(item);

@@ -88,7 +88,7 @@ public abstract class BaseEntity implements Serializable {
     }
 
     @Transient
-    public abstract Long getId();
+    public abstract String getId();
 
-    public abstract void setId(Long id);
+    public abstract void setId(String id);
 }

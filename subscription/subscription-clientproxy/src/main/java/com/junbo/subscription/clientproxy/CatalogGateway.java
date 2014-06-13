@@ -14,12 +14,12 @@ import com.junbo.catalog.spec.model.offer.OfferRevision;
  * CatalogGateway.
  */
 public interface CatalogGateway {
-    Offer getOffer(Long offerId, Long timestamp);
+    Offer getOffer(String offerId, Long timestamp);
 
-    Offer getOffer(Long offerId);
+    Offer getOffer(String offerId);
 
-    OfferRevision getOfferRev(Long offerRevId);
+    OfferRevision getOfferRev(String offerRevId);
 
-    Item getItem(Long itemID);
+    Item getItem(String itemID);
 
 }

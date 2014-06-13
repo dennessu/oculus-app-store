@@ -186,7 +186,7 @@ public class EntitlementRepoTest extends AbstractTestNGSpringContextTests {
         entitlement.setExpirationTime(new Date(114, 0, 28));
         entitlement.setIsBanned(false);
         entitlement.setFutureExpansion(new HashMap<String, JsonNode>());
-        entitlement.setItemId(idGenerator.nextId());
+        entitlement.setItemId(String.valueOf(idGenerator.nextId()));
         return entitlement;
     }
 }

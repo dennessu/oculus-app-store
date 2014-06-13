@@ -31,7 +31,7 @@ public class OfferRevisionRepositoryImpl implements OfferRevisionRepository {
     }
 
     @Override
-    public OfferRevision get(Long revisionId) {
+    public OfferRevision get(String revisionId) {
         return OfferRevisionMapper.toModel(offerRevisionDao.get(revisionId));
     }
 
@@ -47,9 +47,9 @@ public class OfferRevisionRepositoryImpl implements OfferRevisionRepository {
     }
 
     @Override
-    public List<OfferRevision> getRevisions(Collection<Long> offerIds, Long timestamp) {
+    public List<OfferRevision> getRevisions(Collection<String> offerIds, Long timestamp) {
         List<OfferRevisionEntity> revisionEntities = new ArrayList<>();
-        for (Long offerId : offerIds) {
+        for (String offerId : offerIds) {
             OfferRevisionEntity revisionEntity = offerRevisionDao.getRevision(offerId, timestamp);
             if (revisionEntity != null) {
                 revisionEntities.add(revisionEntity);
@@ -64,7 +64,7 @@ public class OfferRevisionRepositoryImpl implements OfferRevisionRepository {
     }
 
     @Override
-    public List<OfferRevision> getRevisions(Long itemId) {
+    public List<OfferRevision> getRevisions(String itemId) {
         List<OfferRevisionEntity> revisionEntities = offerRevisionDao.getRevisionsByItemId(itemId);
         List<OfferRevision> revisions = new ArrayList<>();
         for (OfferRevisionEntity revisionEntity : revisionEntities) {
@@ -75,7 +75,7 @@ public class OfferRevisionRepositoryImpl implements OfferRevisionRepository {
     }
 
     @Override
-    public List<OfferRevision> getRevisionsBySubOfferId(Long offerId) {
+    public List<OfferRevision> getRevisionsBySubOfferId(String offerId) {
         List<OfferRevisionEntity> revisionEntities = offerRevisionDao.getRevisionsBySubOfferId(offerId);
         List<OfferRevision> revisions = new ArrayList<>();
         for (OfferRevisionEntity revisionEntity : revisionEntities) {
@@ -93,7 +93,7 @@ public class OfferRevisionRepositoryImpl implements OfferRevisionRepository {
     }
 
     @Override
-    public void delete(Long revisionId) {
+    public void delete(String revisionId) {
         OfferRevisionEntity dbEntity = offerRevisionDao.get(revisionId);
         dbEntity.setDeleted(true);
         offerRevisionDao.update(dbEntity);

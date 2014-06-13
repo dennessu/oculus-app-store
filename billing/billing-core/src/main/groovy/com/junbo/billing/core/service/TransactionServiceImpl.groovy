@@ -7,12 +7,8 @@
 package com.junbo.billing.core.service
 
 import com.junbo.billing.clientproxy.PaymentFacade
-import com.junbo.billing.db.repository.TransactionRepository
-import com.junbo.billing.spec.enums.BalanceStatus
-import com.junbo.billing.spec.enums.BalanceType
-import com.junbo.billing.spec.enums.PropertyKey
-import com.junbo.billing.spec.enums.TransactionStatus
-import com.junbo.billing.spec.enums.TransactionType
+import com.junbo.billing.db.repo.facade.TransactionRepositoryFacade
+import com.junbo.billing.spec.enums.*
 import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.Transaction
@@ -37,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class TransactionServiceImpl implements TransactionService {
     @Autowired
-    TransactionRepository transactionRepository
+    TransactionRepositoryFacade transactionRepositoryFacade
 
     PaymentFacade paymentFacade
 
@@ -313,7 +309,7 @@ class TransactionServiceImpl implements TransactionService {
         paymentTransaction.setTrackingUuid(UUID.randomUUID())
         paymentTransaction.setUserId(balance.userId.value)
         paymentTransaction.setPaymentInstrumentId(balance.piId.value)
-        paymentTransaction.setBillingRefId(balance.balanceId.toString())
+        paymentTransaction.setBillingRefId(balance.id.toString())
 
         def chargeInfo = new ChargeInfo()
         chargeInfo.setCurrency(balance.currency)

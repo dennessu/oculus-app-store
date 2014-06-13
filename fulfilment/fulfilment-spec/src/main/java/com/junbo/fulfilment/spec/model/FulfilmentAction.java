@@ -34,7 +34,7 @@ public class FulfilmentAction {
 
     private Map<String, Object> properties;
 
-    private Long itemId;
+    private String itemId;
 
     private List<LinkedEntry> items;
 
@@ -86,11 +86,11 @@ public class FulfilmentAction {
         return items;
     }
 
-    public Long getItemId() {
+    public String getItemId() {
         return itemId;
     }
 
-    public void setItemId(Long itemId) {
+    public void setItemId(String itemId) {
         this.itemId = itemId;
     }
 

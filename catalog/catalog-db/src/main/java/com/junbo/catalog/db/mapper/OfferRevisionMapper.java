@@ -38,7 +38,7 @@ public class OfferRevisionMapper {
         entity.setOwnerId(model.getOwnerId() == null ? null : model.getOwnerId().getValue());
         entity.setSubOfferIds(model.getSubOffers());
         if (!CollectionUtils.isEmpty(model.getItems())) {
-            List<Long> items = new ArrayList<>();
+            List<String> items = new ArrayList<>();
             for (ItemEntry itemEntry : model.getItems()) {
                 items.add(itemEntry.getItemId());
             }

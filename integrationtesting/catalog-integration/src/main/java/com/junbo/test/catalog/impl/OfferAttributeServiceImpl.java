@@ -42,16 +42,16 @@ public class OfferAttributeServiceImpl extends HttpClientBase implements OfferAt
     private OfferAttributeServiceImpl() {
     }
 
-    public OfferAttribute getOfferAttribute(Long attributeId) throws Exception {
+    public OfferAttribute getOfferAttribute(String attributeId) throws Exception {
         return getOfferAttribute(attributeId, 200);
     }
 
-    public OfferAttribute getOfferAttribute(Long attributeId, int expectedResponseCode) throws Exception {
-        String url = catalogServerURL + "/" + IdConverter.idLongToHexString(OfferAttributeId.class, attributeId);
+    public OfferAttribute getOfferAttribute(String attributeId, int expectedResponseCode) throws Exception {
+        String url = catalogServerURL + "/" + IdConverter.idToUrlString(OfferAttributeId.class, attributeId);
         String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
         OfferAttribute attributeGet = new JsonMessageTranscoder().decode(new TypeReference<OfferAttribute>() {},
                 responseBody);
-        String attributeRtnId = IdConverter.idLongToHexString(OfferAttributeId.class, attributeGet.getId());
+        String attributeRtnId = IdConverter.idToUrlString(OfferAttributeId.class, attributeGet.getId());
         Master.getInstance().addOfferAttribute(attributeRtnId, attributeGet);
         return attributeGet;
     }
@@ -65,7 +65,7 @@ public class OfferAttributeServiceImpl extends HttpClientBase implements OfferAt
         Results<OfferAttribute> attributeGet = new JsonMessageTranscoder().decode(new TypeReference<Results<OfferAttribute>>() {},
                 responseBody);
         for (OfferAttribute offerAttribute : attributeGet.getItems()){
-            String attributeRtnId = IdConverter.idLongToHexString(OfferAttributeId.class, offerAttribute.getId());
+            String attributeRtnId = IdConverter.idToUrlString(OfferAttributeId.class, offerAttribute.getId());
             Master.getInstance().addOfferAttribute(attributeRtnId, offerAttribute);
         }
 
@@ -94,33 +94,33 @@ public class OfferAttributeServiceImpl extends HttpClientBase implements OfferAt
         String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, attribute, expectedResponseCode);
         OfferAttribute attributePost = new JsonMessageTranscoder().decode(new TypeReference<OfferAttribute>() {},
                 responseBody);
-        String attributeRtnId = IdConverter.idLongToHexString(OfferAttributeId.class, attributePost.getId());
+        String attributeRtnId = IdConverter.idToUrlString(OfferAttributeId.class, attributePost.getId());
         Master.getInstance().addOfferAttribute(attributeRtnId, attributePost);
         return attributePost;
     }
 
-    public OfferAttribute updateOfferAttribute(Long offerAttributeId, OfferAttribute attribute) throws Exception {
+    public OfferAttribute updateOfferAttribute(String offerAttributeId, OfferAttribute attribute) throws Exception {
         return updateOfferAttribute(offerAttributeId, attribute, 200);
     }
 
-    public OfferAttribute updateOfferAttribute(Long offerAttributeId, OfferAttribute attribute, int expectedResponseCode) throws Exception {
-        String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(OfferAttributeId.class,
+    public OfferAttribute updateOfferAttribute(String offerAttributeId, OfferAttribute attribute, int expectedResponseCode) throws Exception {
+        String putUrl = catalogServerURL + "/" + IdConverter.idToUrlString(OfferAttributeId.class,
                 offerAttributeId);
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, attribute, expectedResponseCode);
         OfferAttribute offerAttributePut = new JsonMessageTranscoder().decode(new TypeReference<OfferAttribute>() {},
                 responseBody);
-        String offerAttributeRtnId = IdConverter.idLongToHexString(OfferAttributeId.class,
+        String offerAttributeRtnId = IdConverter.idToUrlString(OfferAttributeId.class,
                 offerAttributePut.getId());
         Master.getInstance().addOfferAttribute(offerAttributeRtnId, offerAttributePut);
         return offerAttributePut;
     }
 
-    public void deleteOfferAttribute(Long offerAttributeId) throws Exception {
+    public void deleteOfferAttribute(String offerAttributeId) throws Exception {
         deleteOfferAttribute(offerAttributeId, 204);
     }
 
-    public void deleteOfferAttribute(Long offerAttributeId, int expectedResponseCode) throws Exception {
-        String strOfferAttributeId = IdConverter.idLongToHexString(OfferAttributeId.class, offerAttributeId);
+    public void deleteOfferAttribute(String offerAttributeId, int expectedResponseCode) throws Exception {
+        String strOfferAttributeId = IdConverter.idToUrlString(OfferAttributeId.class, offerAttributeId);
         String url = catalogServerURL + "/" + strOfferAttributeId;
         restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode);
         Master.getInstance().removeOfferAttribute(strOfferAttributeId);

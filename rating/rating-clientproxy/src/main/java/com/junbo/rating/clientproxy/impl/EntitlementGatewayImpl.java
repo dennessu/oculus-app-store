@@ -33,9 +33,9 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
     private EntitlementResource entitlementResource;
 
     @Override
-    public Set<Long> getEntitlements(Long userId, Set<Long> itemIds) {
+    public Set<String> getEntitlements(Long userId, Set<String> itemIds) {
         Set<ItemId> items = new HashSet<>();
-        for (Long itemId : itemIds) {
+        for (String itemId : itemIds) {
             items.add(new ItemId(itemId));
         }
         EntitlementSearchParam param = new EntitlementSearchParam();
@@ -46,7 +46,7 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
         pagingOption.setStart(Constants.DEFAULT_PAGE_START);
         pagingOption.setCount(Constants.DEFAULT_PAGE_SIZE);
 
-        Set<Long> result = new HashSet<>();
+        Set<String> result = new HashSet<>();
         while(true) {
             List<Entitlement> entitlements = new ArrayList<Entitlement>();
             try {

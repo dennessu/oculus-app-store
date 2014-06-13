@@ -17,8 +17,8 @@ import java.util.List;
  * Catalog gateway interface.
  */
 public interface CatalogGateway {
-    Item getItem(Long itemId);
-    RatingOffer getOffer(Long offerId, String timestamp);
+    Item getItem(String itemId);
+    RatingOffer getOffer(String offerId, String timestamp);
     List<PromotionRevision> getPromotions();
-    ShippingMethod getShippingMethod(Long shippingMethodId);
+    ShippingMethod getShippingMethod(String shippingMethodId);
 }

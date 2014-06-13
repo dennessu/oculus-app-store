@@ -14,7 +14,7 @@ import com.junbo.catalog.spec.model.attribute.Attribute;
  */
 public interface AttributeRepository<T extends Attribute> {
     T create(T attribute);
-    T get(Long attributeId);
+    T get(String attributeId);
     T update(T attribute);
-    void delete(Long attributeId);
+    void delete(String attributeId);
 }

@@ -13,8 +13,6 @@ import com.junbo.common.cloudant.CloudantClient;
 import com.junbo.common.cloudant.model.CloudantViews;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.OfferRevisionId;
-import com.junbo.sharding.IdGenerator;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -24,27 +22,18 @@ import java.util.*;
  * Offer revision repository.
  */
 public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> implements OfferRevisionRepository {
-    private IdGenerator idGenerator;
-
-    @Required
-    public void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator;
-    }
 
     @Override
     public OfferRevision create(OfferRevision offerRevision) {
-        if (offerRevision.getRevisionId() == null) {
-            offerRevision.setRevisionId(idGenerator.nextId());
-        }
         return super.cloudantPost(offerRevision).get();
     }
 
     @Override
-    public OfferRevision get(Long revisionId) {
+    public OfferRevision get(String revisionId) {
         if (revisionId == null) {
             return null;
         }
-        return super.cloudantGet(revisionId.toString()).get();
+        return super.cloudantGet(revisionId).get();
     }
 
     @Override
@@ -88,10 +77,10 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
     }
 
     @Override
-    public List<OfferRevision> getRevisions(Collection<Long> offerIds, Long timestamp) {
+    public List<OfferRevision> getRevisions(Collection<String> offerIds, Long timestamp) {
         List<OfferRevision> revisions = new ArrayList<>();
-        for (Long offerId : offerIds) {
-            List<OfferRevision> itemRevisions = super.queryView("by_offerId", offerId.toString()).get();
+        for (String offerId : offerIds) {
+            List<OfferRevision> itemRevisions = super.queryView("by_offerId", offerId).get();
             OfferRevision revision = null;
             Long maxTimestamp = 0L;
             for (OfferRevision itemRevision : itemRevisions) {
@@ -112,13 +101,13 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
     }
 
     @Override
-    public List<OfferRevision> getRevisions(Long itemId) {
-        return super.queryView("by_itemId", itemId.toString()).get();
+    public List<OfferRevision> getRevisions(String itemId) {
+        return super.queryView("by_itemId", itemId).get();
     }
 
     @Override
-    public List<OfferRevision> getRevisionsBySubOfferId(Long offerId) {
-        return super.queryView("by_subOfferId", offerId.toString()).get();
+    public List<OfferRevision> getRevisionsBySubOfferId(String offerId) {
+        return super.queryView("by_subOfferId", offerId).get();
     }
 
     @Override
@@ -127,8 +116,8 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
     }
 
     @Override
-    public void delete(Long revisionId) {
-        super.cloudantDelete(revisionId.toString()).get();
+    public void delete(String revisionId) {
+        super.cloudantDelete(revisionId).get();
     }
 
     private CloudantViews cloudantViews = new CloudantViews() {{

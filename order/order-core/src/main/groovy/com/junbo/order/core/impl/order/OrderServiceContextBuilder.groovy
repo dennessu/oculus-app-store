@@ -162,7 +162,7 @@ class OrderServiceContextBuilder {
 
         return getBalances(context).then { List<Balance> balanceList ->
             return Promise.pure(balanceList.find { Balance balance ->
-                return balance.balanceId == context.orderEvent.billingInfo.balance
+                return balance.getId() == context.orderEvent.billingInfo.balance
             })
         }
     }

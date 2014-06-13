@@ -6,7 +6,7 @@
 
 package com.junbo.billing.jobs.settlement;
 
-import com.junbo.billing.db.repository.BalanceRepository;
+import com.junbo.billing.db.repo.facade.BalanceRepositoryFacade;
 import com.junbo.billing.jobs.clientproxy.BillingFacade;
 import com.junbo.billing.spec.model.Balance;
 import com.junbo.common.id.BalanceId;
@@ -36,7 +36,7 @@ public class SettlementProcessor {
     private PlatformTransactionManager transactionManager;
 
     @Autowired
-    private BalanceRepository balanceRepository;
+    private BalanceRepositoryFacade balanceRepositoryFacade;
 
     @Autowired
     private BillingFacade billingFacade;
@@ -103,7 +103,7 @@ public class SettlementProcessor {
         template.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
-                List<BalanceId> balanceIdList = balanceRepository.fetchToSettleBalanceIds(processCount);
+                List<BalanceId> balanceIdList = balanceRepositoryFacade.fetchToSettleBalanceIds(processCount);
                 ids.addAll(balanceIdList);
             }
         });
@@ -112,7 +112,7 @@ public class SettlementProcessor {
     private void processBalance(BalanceId balanceId) {
         LOGGER.info("Sending check balance request for balance id: " + balanceId);
         Balance balance = new Balance();
-        balance.setBalanceId(balanceId);
+        balance.setId(balanceId);
 
         billingFacade.checkBalance(balance).recover(new Promise.Func<Throwable, Promise<Balance>>() {
             @Override
@@ -127,7 +127,7 @@ public class SettlementProcessor {
                     return Promise.pure(null);
                 }
                 LOGGER.info("The checked balance status is " + balance.getStatus() + " for balance id: " +
-                        balance.getBalanceId().getValue());
+                        balance.getId().getValue());
                 return Promise.pure(balance);
             }
         });

@@ -13,7 +13,7 @@ import java.util.Date;
 public class Entitlement {
     private Long userId;
     private String type;
-    private Long itemId;
+    private String itemId;
     private Date grantTime;
     private Date expirationTime;
     private Integer useCount;
@@ -58,11 +58,11 @@ public class Entitlement {
         this.type = type;
     }
 
-    public Long getItemId() {
+    public String getItemId() {
         return itemId;
     }
 
-    public void setItemId(Long itemId) {
+    public void setItemId(String itemId) {
         this.itemId = itemId;
     }
 }

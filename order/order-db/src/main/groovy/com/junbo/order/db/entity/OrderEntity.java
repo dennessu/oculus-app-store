@@ -32,7 +32,7 @@ public class OrderEntity extends CommonDbEntityWithDate {
     private Long shippingAddressId;
     private Long shippingNameId;
     private Long shippingPhoneId;
-    private Long shippingMethodId;
+    private String shippingMethodId;
     private Date purchaseTime;
     private Long latestOrderRevisionId;
 
@@ -101,8 +101,8 @@ public class OrderEntity extends CommonDbEntityWithDate {
     }
 
     @Column(name = "SHIPPING_METHOD_ID")
-    public Long getShippingMethodId() { return shippingMethodId; }
-    public void setShippingMethodId(Long shippingMethodId) { this.shippingMethodId = shippingMethodId; }
+    public String getShippingMethodId() { return shippingMethodId; }
+    public void setShippingMethodId(String shippingMethodId) { this.shippingMethodId = shippingMethodId; }
 
     @Column(name = "COUNTRY")
     @NotNull(message = ValidationMessages.MISSING_VALUE)

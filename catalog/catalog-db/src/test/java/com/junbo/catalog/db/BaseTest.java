@@ -32,7 +32,11 @@ public class BaseTest extends AbstractTestNGSpringContextTests {
      *
      * @return new generated entity id
      */
-    protected long generateId() {
+    protected String generateId() {
+        return String.valueOf(idGenerator.nextId(0));
+    }
+
+    protected Long generateOwnerId() {
         return idGenerator.nextId(0);
     }
 }

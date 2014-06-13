@@ -19,8 +19,8 @@ import java.util.List;
  */
 public interface ItemRevisionService {
 
-    ItemRevision getItemRevision(Long revisionId) throws Exception;
-    ItemRevision getItemRevision(Long revisionId, int expectedResponseCode) throws Exception;
+    ItemRevision getItemRevision(String revisionId) throws Exception;
+    ItemRevision getItemRevision(String revisionId, int expectedResponseCode) throws Exception;
 
     Results<ItemRevision> getItemRevisions(HashMap<String, List<String>> httpPara) throws Exception;
     Results<ItemRevision> getItemRevisions(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception;
@@ -32,9 +32,9 @@ public interface ItemRevisionService {
     ItemRevision postItemRevision(ItemRevision itemRevision) throws Exception;
     ItemRevision postItemRevision(ItemRevision itemRevision, int expectedResponseCode) throws Exception;
 
-    ItemRevision updateItemRevision(Long itemRevisionId, ItemRevision itemRevision) throws Exception;
-    ItemRevision updateItemRevision(Long itemRevisionId, ItemRevision itemRevision, int expectedResponseCode) throws Exception;
+    ItemRevision updateItemRevision(String itemRevisionId, ItemRevision itemRevision) throws Exception;
+    ItemRevision updateItemRevision(String itemRevisionId, ItemRevision itemRevision, int expectedResponseCode) throws Exception;
 
-    void deleteItemRevision(Long itemRevisionId) throws Exception;
-    void deleteItemRevision(Long itemRevisionId, int expectedResponseCode) throws Exception;
+    void deleteItemRevision(String itemRevisionId) throws Exception;
+    void deleteItemRevision(String itemRevisionId, int expectedResponseCode) throws Exception;
 }

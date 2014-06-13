@@ -51,6 +51,7 @@ class XmlConvertor {
         xstream.processAnnotations(TaxCalculationResponse)
         xstream.processAnnotations(AddressValidationResponse)
         xstream.processAnnotations(RegistrationValidationResponse)
+        xstream.setMode(XStream.NO_REFERENCES)
     }
 
     String getXml(Batch batch) {

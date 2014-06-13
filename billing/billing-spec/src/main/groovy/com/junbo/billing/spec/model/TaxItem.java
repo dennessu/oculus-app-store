@@ -6,17 +6,42 @@
 
 package com.junbo.billing.spec.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.junbo.common.model.ResourceMetaForDualWrite;
+
 import java.math.BigDecimal;
 
 /**
  * Created by xmchen on 14-1-26.
  */
-public class TaxItem {
+public class TaxItem extends ResourceMetaForDualWrite<Long> {
+    @JsonIgnore
+    private Long id;
 
+    @JsonIgnore
+    private Long balanceItemId;
     private String taxAuthority;
     private BigDecimal taxAmount;
     private BigDecimal taxRate;
     private Boolean isTaxExempt;
+
+    @Override
+    public Long getId() {
+        return this.id;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getBalanceItemId() {
+        return balanceItemId;
+    }
+
+    public void setBalanceItemId(Long balanceItemId) {
+        this.balanceItemId = balanceItemId;
+    }
 
     public String getTaxAuthority() {
         return taxAuthority;

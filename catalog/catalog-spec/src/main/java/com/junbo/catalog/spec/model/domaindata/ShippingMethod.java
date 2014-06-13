@@ -18,7 +18,7 @@ import java.math.BigDecimal;
 public class ShippingMethod {
     @ShippingMethodId
     @JsonProperty("self")
-    private Long id;
+    private String id;
     private String methodName;
     private String country;
     private String currency;
@@ -29,11 +29,11 @@ public class ShippingMethod {
     private BigDecimal additionalPrice;
 
     @JsonIgnore
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

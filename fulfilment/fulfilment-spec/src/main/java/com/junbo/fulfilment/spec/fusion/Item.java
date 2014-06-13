@@ -11,15 +11,15 @@ import java.util.List;
  * Item.
  */
 public class Item {
-    private Long itemId;
+    private String itemId;
     private String sku;
     private List<EntitlementMeta> entitlementMetas;
 
-    public Long getItemId() {
+    public String getItemId() {
         return itemId;
     }
 
-    public void setItemId(Long itemId) {
+    public void setItemId(String itemId) {
         this.itemId = itemId;
     }
 

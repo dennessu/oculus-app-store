@@ -15,13 +15,13 @@ import java.util.List;
  */
 public class EntitlementCriterion extends Criterion {
     @ItemId
-    private List<Long> items;
+    private List<String> items;
 
-    public List<Long> getItems() {
+    public List<String> getItems() {
         return items;
     }
 
-    public void setItems(List<Long> items) {
+    public void setItems(List<String> items) {
         this.items = items;
     }
 }

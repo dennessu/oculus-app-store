@@ -54,7 +54,11 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
     private final String defaultOfferRevisionFileName = "defaultOfferRevision";
     private final String defaultStoredValueOfferRevisionFileName = "defaultStoredValueOfferRevision";
+    private final String defaultPreOrderOfferRevisionFileName = "defaultPreOrderOfferRevision";
+    private final String preOrderDigital = "testOffer_PreOrder_Digital1";
+    private final String preOrderPhysical = "testOffer_PreOrder_Physical1";
     private final String defaultOfferFileName = "defaultOffer";
+    private final String defaultItemFileName = "defaultItem";
     private final Integer defaultPagingSize = 10000;
     private final Integer start = 0;
 
@@ -76,15 +80,15 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     private OfferServiceImpl() {
     }
 
-    public Offer getOffer(Long offerId) throws Exception {
+    public Offer getOffer(String offerId) throws Exception {
         return getOffer(offerId, 200);
     }
 
-    public Offer getOffer(Long offerId, int expectedResponseCode) throws Exception {
-        String url = catalogServerURL + "/" + IdConverter.idLongToHexString(OfferId.class, offerId);
+    public Offer getOffer(String offerId, int expectedResponseCode) throws Exception {
+        String url = catalogServerURL + "/" + IdConverter.idToUrlString(OfferId.class, offerId);
         String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode);
         Offer offerGet = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {}, responseBody);
-        String offerRtnId = IdConverter.idLongToHexString(OfferId.class, offerGet.getOfferId());
+        String offerRtnId = IdConverter.idToUrlString(OfferId.class, offerGet.getOfferId());
         Master.getInstance().addOffer(offerRtnId, offerGet);
         return offerGet;
     }
@@ -98,7 +102,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         Results<Offer> offerGet = new JsonMessageTranscoder().decode(new TypeReference<Results<Offer>>() {},
                 responseBody);
         for (Offer offer : offerGet.getItems()){
-            String offerRtnId = IdConverter.idLongToHexString(OfferId.class, offer.getOfferId());
+            String offerRtnId = IdConverter.idToUrlString(OfferId.class, offer.getOfferId());
             Master.getInstance().addOffer(offerRtnId, offer);
         }
 
@@ -129,31 +133,31 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, offer, expectedResponseCode);
         Offer offerPost = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {},
                 responseBody);
-        String offerRtnId = IdConverter.idLongToHexString(OfferId.class, offerPost.getOfferId());
+        String offerRtnId = IdConverter.idToUrlString(OfferId.class, offerPost.getOfferId());
         Master.getInstance().addOffer(offerRtnId, offerPost);
         return offerPost;
     }
 
-    public Offer updateOffer(Long offerId, Offer offer) throws Exception {
+    public Offer updateOffer(String offerId, Offer offer) throws Exception {
         return updateOffer(offerId, offer, 200);
     }
 
-    public Offer updateOffer(Long offerId, Offer offer, int expectedResponseCode) throws Exception {
-        String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(OfferId.class, offerId);
+    public Offer updateOffer(String offerId, Offer offer, int expectedResponseCode) throws Exception {
+        String putUrl = catalogServerURL + "/" + IdConverter.idToUrlString(OfferId.class, offerId);
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, offer, expectedResponseCode);
         Offer offerPut = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {},
                 responseBody);
-        String offerRtnId = IdConverter.idLongToHexString(OfferId.class, offerPut.getOfferId());
+        String offerRtnId = IdConverter.idToUrlString(OfferId.class, offerPut.getOfferId());
         Master.getInstance().addOffer(offerRtnId, offerPut);
         return offerPut;
     }
 
-    public void deleteOffer(Long offerId) throws Exception {
+    public void deleteOffer(String offerId) throws Exception {
         this.deleteOffer(offerId, 204);
     }
 
-    public void deleteOffer(Long offerId, int expectedResponseCode) throws Exception {
-        String strOfferId = IdConverter.idLongToHexString(OfferId.class, offerId);
+    public void deleteOffer(String offerId, int expectedResponseCode) throws Exception {
+        String strOfferId = IdConverter.idToUrlString(OfferId.class, offerId);
         String url = catalogServerURL + "/" + strOfferId;
         restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode);
         Master.getInstance().removeOffer(strOfferId);
@@ -279,14 +283,18 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         }
 
         //Post offer
-        String strOfferContent = readFileContent(String.format("testOffers/%s.json", offerName));
-        Offer offerForPost = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {}, strOfferContent);
+        Offer offerForPost = prepareOfferEntity(defaultOfferFileName);
         offerForPost.setOwnerId(organizationId);
         Offer offer = this.postOffer(offerForPost);
 
         //Post offer revision
         String strOfferRevisionContent;
-        if (offerType.equalsIgnoreCase(CatalogItemType.STORED_VALUE.getItemType())) {
+        if (offerName.equalsIgnoreCase(preOrderDigital) ||
+                offerName.equalsIgnoreCase(preOrderPhysical)){
+            strOfferRevisionContent = readFileContent(String.format("testOfferRevisions/%s.json",
+                    defaultPreOrderOfferRevisionFileName));
+        }
+        else if (offerType.equalsIgnoreCase(CatalogItemType.STORED_VALUE.getItemType())) {
             strOfferRevisionContent = readFileContent(String.format("testOfferRevisions/%s.json",
                     defaultStoredValueOfferRevisionFileName));
         }
@@ -343,7 +351,8 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         ItemService itemService = ItemServiceImpl.instance();
         ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
 
-        Item item = itemService.prepareItemEntity(fileName);
+        Item item = itemService.prepareItemEntity(defaultItemFileName);
+        item.setType(itemType);
         item.setOwnerId(getOrganizationId(ownerId));
         Item itemPost = itemService.postItem(item);
 

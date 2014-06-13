@@ -37,9 +37,9 @@ public class CartTesting extends TestClass {
     private LogHelper logger = new LogHelper(CartTesting.class);
 
     //prepare a few test offers and test coupons
-    private OfferId testOffer1 = new OfferId(100001L);
-    private OfferId testOffer2 = new OfferId(100002L);
-    private OfferId testOffer3 = new OfferId(100003L);
+    private OfferId testOffer1 = new OfferId("100001L");
+    private OfferId testOffer2 = new OfferId("100002L");
+    private OfferId testOffer3 = new OfferId("100003L");
 
     private CouponId testCoupon1 = new CouponId(200001L);
     private CouponId testCoupon2 = new CouponId(200002L);

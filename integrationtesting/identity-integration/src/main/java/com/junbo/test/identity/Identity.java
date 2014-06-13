@@ -176,7 +176,7 @@ public class Identity {
     }
 
     public static String GetHexUserId(Long userId) throws Exception {
-        return IdConverter.idLongToHexString(UserId.class, userId);
+        return IdConverter.idToUrlString(UserId.class, userId);
     }
 
     // ****** start API sample logging ******

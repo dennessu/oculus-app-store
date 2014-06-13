@@ -26,11 +26,11 @@ class BillingFacadeTest extends BaseTest {
             @Override
             Promise apply(Balance b1) {
                 assert(b1 != null)
-                def promiseGet = billingFacade.getBalanceById(b1.balanceId.value)
+                def promiseGet = billingFacade.getBalanceById(b1.getId().value)
                 promiseGet.then(new Promise.Func<Balance, Promise>() {
                     @Override
                     Promise apply(Balance b2) {
-                        assert(b1.balanceId == b2.balanceId)
+                        assert(b1.getId() == b2.getId())
                     }
                 } )
             }

@@ -17,15 +17,15 @@ public class ItemEntry {
     @ItemId
     @JsonProperty("item")
     @ApiModelProperty(position = 1, required = true, value = "item")
-    private Long itemId;
+    private String itemId;
     @ApiModelProperty(position = 2, required = true, value = "item quantity")
     private Integer quantity;
 
-    public Long getItemId() {
+    public String getItemId() {
         return itemId;
     }
 
-    public void setItemId(Long itemId) {
+    public void setItemId(String itemId) {
         this.itemId = itemId;
     }
 

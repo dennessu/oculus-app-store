@@ -10,16 +10,16 @@ package com.junbo.catalog.spec.model.offer;
  * revision info.
  */
 public class RevisionInfo {
-    private Long revisionId;
+    private String revisionId;
     private Long startTime;
     private Long endTime;
     private Long approvedTime;
 
-    public Long getRevisionId() {
+    public String getRevisionId() {
         return revisionId;
     }
 
-    public void setRevisionId(Long revisionId) {
+    public void setRevisionId(String revisionId) {
         this.revisionId = revisionId;
     }
 

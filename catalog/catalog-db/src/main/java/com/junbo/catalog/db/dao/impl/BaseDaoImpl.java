@@ -11,7 +11,7 @@ import com.junbo.catalog.common.util.Constants;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.dao.BaseDao;
 import com.junbo.catalog.db.entity.BaseEntity;
-import com.junbo.common.id.Id;
+import com.junbo.common.id.CloudantId;
 import com.junbo.sharding.IdGenerator;
 import com.junbo.sharding.ShardAlgorithm;
 import com.junbo.sharding.hibernate.ShardScope;
@@ -54,8 +54,8 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
         }
     }
 
-    public Long create(T entity) {
-        entity.setId(idGenerator.nextId(0));
+    public String create(T entity) {
+        entity.setId(String.valueOf(idGenerator.nextId(0)));
         entity.setCreatedTime(Utils.now());
         if (StringUtils.isEmpty(entity.getCreatedBy())) {
             entity.setCreatedBy(Constants.DEFAULT_USER_ID);
@@ -66,15 +66,15 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
         }
         entity.setRev(1);
 
-        return (Long) currentSession().save(entity);
+        return (String) currentSession().save(entity);
     }
 
-    public T get(Long id) {
+    public T get(String id) {
         T entity = (T) currentSession().get(entityType, id);
         return (entity == null || entity.isDeleted()) ? null : entity;
     }
 
-    public Long update(T entity) {
+    public String update(T entity) {
         entity.setUpdatedTime(Utils.now());
         if (StringUtils.isEmpty(entity.getUpdatedBy())) {
             entity.setUpdatedBy(Constants.DEFAULT_USER_ID);
@@ -84,7 +84,7 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
         return entity.getId();
     }
 
-    public Boolean exists(Long id) {
+    public Boolean exists(String id) {
         return get(id) != null;
     }
 
@@ -102,9 +102,9 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
         return criteria.list();
     }
 
-    protected <E extends Id> void addIdRestriction(String fieldName, Collection<E> ids, Criteria criteria) {
+    protected <E extends CloudantId> void addIdRestriction(String fieldName, Collection<E> ids, Criteria criteria) {
         if (!CollectionUtils.isEmpty(ids)) {
-            List<Long> idValues = new ArrayList<>();
+            List<String> idValues = new ArrayList<>();
             for (E id : ids) {
                 idValues.add(id.getValue());
             }

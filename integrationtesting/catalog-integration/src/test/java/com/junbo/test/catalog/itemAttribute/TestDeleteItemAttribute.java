@@ -54,7 +54,7 @@ public class TestDeleteItemAttribute extends BaseTestClass {
         }
 
         //delete non-existing item
-        Long invalidId = 0L;
+        String invalidId = "0L";
         itemAttribute = itemAttributeService.postDefaultItemAttribute();
         itemAttributeService.deleteItemAttribute(invalidId, 404);
         itemAttribute = itemAttributeService.getItemAttribute(itemAttribute.getId());

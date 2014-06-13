@@ -5,7 +5,7 @@
  */
 package com.junbo.authorization.core
 
-import com.junbo.common.id.Id
+import com.junbo.common.id.UniversalId
 import com.junbo.common.model.Link
 
 /**
@@ -16,5 +16,5 @@ interface RoleTargetParser {
 
     String getFilterType()
 
-    Id parseFilterLInk(Link filterLink)
+    UniversalId parseFilterLInk(Link filterLink)
 }

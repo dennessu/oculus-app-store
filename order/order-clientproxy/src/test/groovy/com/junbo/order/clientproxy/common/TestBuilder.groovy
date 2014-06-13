@@ -26,6 +26,11 @@ class TestBuilder {
         return System.currentTimeMillis()
     }
 
+    static String generateString() {
+        sleep(1)
+        return System.currentTimeMillis().toString()
+    }
+
     static UUID generateUUID() {
         return UUID.randomUUID()
     }
@@ -69,7 +74,7 @@ class TestBuilder {
         order.setShippingAddress(new UserPersonalInfoId(generateLong()))
         order.setShippingToName(new UserPersonalInfoId(generateLong()))
         order.setShippingToPhone(new UserPersonalInfoId(generateLong()))
-        order.setShippingMethod(generateLong())
+        order.setShippingMethod(generateString())
         order.setTentative(true)
         order.discounts = []
         order.discounts.add(buildDiscount('AAA', orderItem))
@@ -90,7 +95,7 @@ class TestBuilder {
     static OrderItem buildOrderItem() {
         def orderItem = new OrderItem()
         orderItem.setType('DIGITAL')
-        orderItem.setOffer(new OfferId(generateLong()))
+        orderItem.setOffer(new OfferId(generateString()))
         orderItem.quantity = 1
         orderItem.unitPrice = 10.00G
         return orderItem

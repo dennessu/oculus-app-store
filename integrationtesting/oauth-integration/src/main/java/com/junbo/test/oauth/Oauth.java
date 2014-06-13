@@ -249,7 +249,7 @@ public class Oauth {
 
     public static String GetEmailVerificationLink(Long userId) throws Exception {
         String query = String.format("select payload from shard_%s.email_history where user_id=%s;",
-                ShardIdHelper.getShardIdByUid(IdConverter.idLongToHexString(UserId.class, userId)), userId);
+                ShardIdHelper.getShardIdByUid(IdConverter.idToUrlString(UserId.class, userId)), userId);
         String result = PostgresqlHelper.QuerySingleRowSingleColumn(query, "email");
         for (String s : result.split(",")) {
             if (s.contains("link")) {

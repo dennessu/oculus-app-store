@@ -15,7 +15,8 @@ import javax.ws.rs.NotSupportedException;
 public enum OrderItemRevisionType implements Identifiable<Short> {
     REFUND(0),
     ADJUST_TAX(1),
-    ADJUST_SHIPPING(2);
+    ADJUST_SHIPPING(2),
+    CANCEL(3);
 
     private OrderItemRevisionType(int id) {
         this.id = (short) id;

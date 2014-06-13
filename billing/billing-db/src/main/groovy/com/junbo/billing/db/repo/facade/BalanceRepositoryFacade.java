@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.billing.db.repository;
+package com.junbo.billing.db.repo.facade;
 
 import com.junbo.billing.spec.enums.EventActionType;
 import com.junbo.billing.spec.model.Balance;
@@ -16,7 +16,7 @@ import java.util.UUID;
 /**
  * Created by xmchen on 14-2-19.
  */
-public interface BalanceRepository {
+public interface BalanceRepositoryFacade {
     Balance saveBalance(Balance balance);
 
     Balance getBalance(Long balanceId);

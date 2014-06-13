@@ -29,7 +29,7 @@ public class SubscriptionMapper {
         subscription.setSubscriptionId(subscriptionEntity.getSubscriptionId());
         subscription.setTrackingUuid(subscriptionEntity.getTrackingUuid());
         subscription.setUserId(subscriptionEntity.getUserId());
-        subscription.setOfferId(Long.decode(subscriptionEntity.getItemId()));
+        subscription.setOfferId(subscriptionEntity.getItemId());
         subscription.setStatus(subscriptionEntity.getStatusId().toString());
         subscription.setSubsStartDate(subscriptionEntity.getSubsStartDate());
         subscription.setSubsEndDate(subscriptionEntity.getSubsEndDate());

@@ -5,14 +5,9 @@
  */
 package com.junbo.test.catalog.itemRevision;
 
-import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.test.catalog.ItemRevisionService;
-import com.junbo.test.catalog.ItemService;
-import com.junbo.test.catalog.enums.CatalogEntityStatus;
-import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
-import com.junbo.test.catalog.impl.ItemServiceImpl;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.Component;
@@ -63,7 +58,7 @@ public class TestDeleteItemRevision extends BaseTestClass {
         {
         }
 
-        Long invalidId = 0L;
+        String invalidId = "0L";
         //delete non-existing item
         itemRevision = itemRevisionService.postDefaultItemRevision();
         itemRevisionService.deleteItemRevision(invalidId, 404);

@@ -40,11 +40,11 @@ public abstract class BaseRevisionModel extends BaseModel {
     }
 
     @JsonIgnore
-    public abstract Long getEntityId();
+    public abstract String getEntityId();
 
     // workaround fastjson de-serialize issue
     @Null
     @JsonIgnore
     @JSONField(serialize = false)
-    private transient Long id;
+    private transient String id;
 }

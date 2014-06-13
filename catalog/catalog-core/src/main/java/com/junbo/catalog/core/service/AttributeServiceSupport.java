@@ -28,7 +28,7 @@ public abstract class AttributeServiceSupport<T extends Attribute> {
     protected abstract List<String> getTypes();
     protected abstract String getEntityType();
 
-    public T getAttribute(Long attributeId) {
+    public T getAttribute(String attributeId) {
         T attribute = getRepo().get(attributeId);
         if (attribute == null) {
             throw AppErrors.INSTANCE.notFound(getEntityType(), Utils.encodeId(attributeId)).exception();
@@ -41,12 +41,12 @@ public abstract class AttributeServiceSupport<T extends Attribute> {
         return getRepo().create(attribute);
     }
 
-    public T update(Long attributeId, T attribute) {
+    public T update(String attributeId, T attribute) {
         validateUpdate(attribute);
         return getRepo().update(attribute);
     }
 
-    public void deleteAttribute(Long attributeId) {
+    public void deleteAttribute(String attributeId) {
         T attribute = getRepo().get(attributeId);
         if (attribute == null) {
             throw AppErrors.INSTANCE.notFound(getEntityType(), Utils.encodeId(attributeId)).exception();

@@ -14,6 +14,7 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 public class SimpleLocaleProperties {
     @ApiModelProperty(position = 1, required = true, value = "attribute name")
     String name;
+
     @ApiModelProperty(position = 2, required = true, value = "description")
     String description;
 

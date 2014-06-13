@@ -1,0 +1,92 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
+package com.junbo.billing.db.repo.sql;
+
+import com.junbo.billing.db.dao.BalanceItemEntityDao;
+import com.junbo.billing.db.entity.BalanceItemEntity;
+import com.junbo.billing.db.mapper.ModelMapper;
+import com.junbo.billing.db.repo.BalanceItemRepository;
+import com.junbo.billing.spec.model.BalanceItem;
+import com.junbo.langur.core.promise.Promise;
+import com.junbo.oom.core.MappingContext;
+import com.junbo.sharding.IdGenerator;
+import org.springframework.beans.factory.annotation.Required;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Created by haomin on 14-6-9.
+ */
+public class BalanceItemRepositorySqlImpl implements BalanceItemRepository {
+    private BalanceItemEntityDao balanceItemEntityDao;
+    private ModelMapper modelMapper;
+    private IdGenerator idGenerator;
+
+    @Required
+    public void setBalanceItemEntityDao(BalanceItemEntityDao balanceItemEntityDao) {
+        this.balanceItemEntityDao = balanceItemEntityDao;
+    }
+
+    @Required
+    public void setModelMapper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+    }
+
+    @Required
+    public void setIdGenerator(IdGenerator idGenerator) {
+        this.idGenerator = idGenerator;
+    }
+
+    @Override
+    public Promise<List<BalanceItem>> findByBalanceId(Long balanceId) {
+        List<BalanceItemEntity> list = balanceItemEntityDao.findByBalanceId(balanceId);
+        List<BalanceItem> balanceItems = new ArrayList<>();
+        for (BalanceItemEntity entity : list) {
+            BalanceItem balance = modelMapper.toBalanceItem(entity, new MappingContext());
+            if (balance != null) {
+                balanceItems.add(balance);
+            }
+        }
+
+        return Promise.pure(balanceItems);
+    }
+
+    @Override
+    public Promise<BalanceItem> get(Long id) {
+        BalanceItemEntity entity = balanceItemEntityDao.get(id);
+        if (entity != null) {
+            return Promise.pure(modelMapper.toBalanceItem(entity, new MappingContext()));
+        }
+
+        return Promise.pure(null);
+    }
+
+    @Override
+    public Promise<BalanceItem> create(BalanceItem model) {
+        if (model.getId() == null) {
+            model.setId(idGenerator.nextId(model.getOrderId().getValue()));
+        }
+        BalanceItemEntity entity = modelMapper.toBalanceItemEntity(model, new MappingContext());
+        BalanceItemEntity saved = balanceItemEntityDao.save(entity);
+        return get(saved.getBalanceItemId());
+    }
+
+    @Override
+    public Promise<BalanceItem> update(BalanceItem model) {
+        BalanceItemEntity entity = modelMapper.toBalanceItemEntity(model, new MappingContext());
+        entity.setModifiedBy("BILLING");
+        entity.setModifiedTime(new Date());
+        balanceItemEntityDao.update(entity);
+        return get(entity.getBalanceItemId());
+    }
+
+    @Override
+    public Promise<Void> delete(Long id) {
+        throw new UnsupportedOperationException("Delete on balance item not support");
+    }
+}

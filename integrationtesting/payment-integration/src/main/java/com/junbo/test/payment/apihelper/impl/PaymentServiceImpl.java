@@ -60,7 +60,7 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
                 }, responseBody
         );
 
-        paymentInstrumentId = IdConverter.idLongToHexString(
+        paymentInstrumentId = IdConverter.idToUrlString(
                 PaymentInstrumentId.class, paymentInstrumentResult.getId().longValue());
         Master.getInstance().addPaymentInstrument(paymentInstrumentId, paymentInstrumentResult);
 
@@ -86,7 +86,7 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
         List<String> paymentInstrumentList = new ArrayList<>();
 
         for (PaymentInstrument paymentInstrumentResult : paymentInstrumentResults.getItems()) {
-            String paymentInstrumentId = IdConverter.idLongToHexString(
+            String paymentInstrumentId = IdConverter.idToUrlString(
                     PaymentInstrumentId.class, paymentInstrumentResult.getId().longValue());
             paymentInstrumentList.add(paymentInstrumentId);
             Master.getInstance().addPaymentInstrument(paymentInstrumentId, paymentInstrumentResult);
@@ -112,7 +112,7 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
                 }, responseBody
         );
 
-        String paymentInstrumentId = IdConverter.idLongToHexString(
+        String paymentInstrumentId = IdConverter.idToUrlString(
                 PaymentInstrumentId.class, paymentInstrumentResult.getId().longValue());
         Master.getInstance().addPaymentInstrument(paymentInstrumentId, paymentInstrumentResult);
 
@@ -137,7 +137,7 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
                 }, responseBody
         );
 
-        String paymentInstrumentId = IdConverter.idLongToHexString(
+        String paymentInstrumentId = IdConverter.idToUrlString(
                 PaymentInstrumentId.class, paymentInstrumentResult.getId().longValue());
         Master.getInstance().addPaymentInstrument(paymentInstrumentId, paymentInstrumentResult);
 

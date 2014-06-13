@@ -17,7 +17,7 @@ import java.math.BigDecimal;
  * Created by lizwu on 5/22/14.
  */
 public class SubsRatingContext extends RatingContext {
-    private Long offerId;
+    private String offerId;
     private SubsRatingType type;
     private BigDecimal amount;
 
@@ -34,11 +34,11 @@ public class SubsRatingContext extends RatingContext {
         this.type = request.getType();
     }
 
-    public Long getOfferId() {
+    public String getOfferId() {
         return offerId;
     }
 
-    public void setOfferId(Long offerId) {
+    public void setOfferId(String offerId) {
         this.offerId = offerId;
     }
 

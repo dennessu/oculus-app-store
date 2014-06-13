@@ -23,7 +23,7 @@ public class RatingItem {
     @ApiModelProperty(position = 1, required = true, value = "The id of offer resource.")
     @OfferId
     @JsonProperty("offer")
-    private Long offerId;
+    private String offerId;
 
     @ApiModelProperty(position = 2, required = true, value = "Quantity of offer.")
     private int quantity;
@@ -52,18 +52,18 @@ public class RatingItem {
             value = "[Client Immutable] Promotion rules which make discount for offer.")
     @Null
     @PromotionRevisionId
-    private Set<Long> promotions;
+    private Set<String> promotions;
 
     @ApiModelProperty(position = 9, required = true, value = "Specify shipping method for offer.")
     @ShippingMethodId
     @JsonProperty("shippingMethod")
-    private Long shippingMethodId;
+    private String shippingMethodId;
 
-    public Long getOfferId() {
+    public String getOfferId() {
         return offerId;
     }
 
-    public void setOfferId(Long offerId) {
+    public void setOfferId(String offerId) {
         this.offerId = offerId;
     }
 
@@ -115,19 +115,19 @@ public class RatingItem {
         this.totalDiscountAmount = totalDiscountAmount;
     }
 
-    public Set<Long> getPromotions() {
+    public Set<String> getPromotions() {
         return promotions;
     }
 
-    public void setPromotions(Set<Long> promotions) {
+    public void setPromotions(Set<String> promotions) {
         this.promotions = promotions;
     }
 
-    public Long getShippingMethodId() {
+    public String getShippingMethodId() {
         return shippingMethodId;
     }
 
-    public void setShippingMethodId(Long shippingMethodId) {
+    public void setShippingMethodId(String shippingMethodId) {
         this.shippingMethodId = shippingMethodId;
     }
 }

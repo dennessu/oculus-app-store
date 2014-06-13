@@ -9,12 +9,14 @@ import com.junbo.order.db.dao.OrderItemRevisionDao;
 import com.junbo.order.db.entity.OrderItemRevisionEntity;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 /**
  * Created by chriszhu on 6/11/14.
  */
+@Repository("orderItemRevisionDao")
 public class OrderItemRevisionDaoImpl extends BaseDaoImpl<OrderItemRevisionEntity> implements OrderItemRevisionDao {
 
     @Override

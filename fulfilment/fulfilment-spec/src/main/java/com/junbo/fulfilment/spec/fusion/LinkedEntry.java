@@ -10,7 +10,7 @@ package com.junbo.fulfilment.spec.fusion;
  */
 public class LinkedEntry {
     private CatalogEntityType entityType;
-    private Long id;
+    private String id;
     private Integer quantity;
     private String sku;
 
@@ -22,11 +22,11 @@ public class LinkedEntry {
         this.entityType = entityType;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

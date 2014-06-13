@@ -27,7 +27,7 @@ public class SubsRatingServiceTest extends BaseTest {
     public void testDefaultProcessor() {
         SubsRatingContext context = new SubsRatingContext();
         context.setType(SubsRatingType.PURCHASE);
-        context.setOfferId(100L);
+        context.setOfferId("100L");
         context.setCountry("US");
         context.setCurrency(Currency.USD);
 

@@ -14,7 +14,7 @@ import com.junbo.catalog.spec.model.common.BaseRevisionModel;
  */
 public interface BaseRevisionRepository<T extends BaseRevisionModel>  {
     T create(T revision);
-    T get(Long revisionId);
+    T get(String revisionId);
     T update(T revision);
-    void delete(Long entityId);
+    void delete(String entityId);
 }

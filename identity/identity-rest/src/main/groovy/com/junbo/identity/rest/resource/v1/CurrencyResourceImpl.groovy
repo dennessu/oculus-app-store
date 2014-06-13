@@ -225,6 +225,9 @@ class CurrencyResourceImpl implements CurrencyResource {
     // if we can't find it in the end, will return error;
     // else will return the first locale with fieldValue
     Promise<Map<String, Object>> fillCurrencyLocaleKey(Currency currency, String fieldName, String initLocale) {
+        if (currency.locales == null) {
+            return Promise.pure(null)
+        }
         CurrencyLocaleKey localeKey = currency.locales.get(initLocale)
 
         if (localeKey != null) {

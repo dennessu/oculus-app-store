@@ -12,11 +12,13 @@ import com.junbo.common.id.OrderId
 import com.junbo.common.id.OrderItemId
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.common.id.UserId
+import groovy.transform.CompileStatic
 import org.testng.annotations.Test
 
 /**
  * Created by xmchen on 14-3-14.
  */
+@CompileStatic
 class BalanceServiceTest extends BaseTest {
 
     @Test
@@ -26,7 +28,7 @@ class BalanceServiceTest extends BaseTest {
 
         assert balance != null
 
-        Balance returnedBalance = balanceService.getBalance(balance.balanceId)?.get()
+        Balance returnedBalance = balanceService.getBalance(balance.getId())?.get()
 
         assert returnedBalance != null
         assert returnedBalance.status == BalanceStatus.PENDING_CAPTURE.name()
@@ -46,7 +48,7 @@ class BalanceServiceTest extends BaseTest {
 
         assert balance != null
 
-        Balance returnedBalance = balanceService.getBalance(balance.balanceId)?.get()
+        Balance returnedBalance = balanceService.getBalance(balance.getId())?.get()
 
         assert returnedBalance != null
         assert returnedBalance.status == BalanceStatus.AWAITING_PAYMENT.name()
@@ -66,12 +68,12 @@ class BalanceServiceTest extends BaseTest {
         assert balance != null
 
         Balance captureBalance = new Balance()
-        captureBalance.balanceId = balance.balanceId
+        captureBalance.id = balance.getId()
         captureBalance = balanceService.captureBalance(captureBalance)?.get()
 
         assert captureBalance != null
 
-        Balance returnedBalance = balanceService.getBalance(balance.balanceId)?.get()
+        Balance returnedBalance = balanceService.getBalance(balance.getId())?.get()
 
         assert returnedBalance != null
         assert returnedBalance.status == BalanceStatus.AWAITING_PAYMENT.name()
@@ -92,14 +94,16 @@ class BalanceServiceTest extends BaseTest {
         assert balance != null
 
         Balance refundBalance = new Balance()
-        refundBalance.userId = new UserId(idGenerator.nextId())
-        refundBalance.originalBalanceId = balance.balanceId
+        refundBalance.userId = new UserId(idGenerator.nextIdByShardId(0))
+        refundBalance.originalBalanceId = balance.getId()
         refundBalance.type = BalanceType.REFUND.name()
         refundBalance.trackingUuid = generateUUID()
-        refundBalance.piId = new PaymentInstrumentId(54321)
-        refundBalance.orderIds = [ new OrderId(12345) ]
+        refundBalance.piId = new PaymentInstrumentId(idGenerator.nextId(balance.userId.value))
+        refundBalance.orderIds = [ new OrderId(idGenerator.nextId(balance.userId.value)) ]
         refundBalance.country = 'US'
         refundBalance.currency = 'USD'
+        refundBalance.createdBy = refundBalance.userId.value
+        refundBalance.createdTime = new Date()
 
         balance = balanceService.addBalance(refundBalance)?.get()
         assert balance != null
@@ -111,26 +115,35 @@ class BalanceServiceTest extends BaseTest {
         balance.trackingUuid = generateUUID()
         balance.country = 'US'
         balance.currency = 'USD'
-        balance.orderIds = [ new OrderId(12345) ]
-        balance.piId = new PaymentInstrumentId(54321)
+        balance.userId = new UserId(idGenerator.nextIdByShardId(0))
+        balance.orderIds = [ new OrderId(idGenerator.nextId(balance.userId.value)) ]
+        balance.piId = new PaymentInstrumentId(idGenerator.nextId(balance.userId.value))
         balance.type = type.name()
-        balance.userId = new UserId(idGenerator.nextId())
+        balance.createdBy = balance.userId.value
+        balance.createdTime = new Date()
 
         BalanceItem item = new BalanceItem()
-        item.orderItemId = new OrderItemId(9999)
+        item.orderItemId = new OrderItemId(idGenerator.nextId(balance.userId.value))
         item.financeId = "1234"
         item.amount = 17.99
+        item.createdBy = balance.userId.value
+        item.createdTime = new Date()
         DiscountItem discount = new DiscountItem()
         discount.discountAmount = 2.00
+        discount.createdTime = new Date()
+        discount.createdBy = balance.userId.value
         item.addDiscountItem(discount)
 
         BalanceItem item2 = new BalanceItem()
-        item2.orderItemId = new OrderItemId(9998)
+        item2.orderItemId = new OrderItemId(idGenerator.nextId(balance.userId.value))
         item2.financeId = "1234"
         item2.amount = 3.99
+        item2.createdBy = balance.userId.value
+        item2.createdTime = new Date()
 
         balance.addBalanceItem(item)
         balance.addBalanceItem(item2)
+
         balance
     }
 }

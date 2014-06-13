@@ -44,21 +44,21 @@ public class CatalogGatewayImpl implements CatalogGateway {
     private ItemRevisionResource itemRevisionResource;
 
     @Override
-    public Offer getOffer(Long offerId, Long timestamp) {
+    public Offer getOffer(String offerId, Long timestamp) {
         return wash(retrieveOfferRevision(offerId, timestamp));
     }
 
     @Override
-    public Item getItem(Long itemId, Long timestamp) {
+    public Item getItem(String itemId, Long timestamp) {
         return wash(retrieveItemRevision(itemId, timestamp));
     }
 
     @Override
-    public ShippingMethod getShippingMethod(Long shippingMethodId) {
+    public ShippingMethod getShippingMethod(String shippingMethodId) {
         return new ShippingMethod();
     }
 
-    protected OfferRevision retrieveOfferRevision(Long offerId, Long timestamp) {
+    protected OfferRevision retrieveOfferRevision(String offerId, Long timestamp) {
         try {
             OfferRevisionsGetOptions options = new OfferRevisionsGetOptions();
             options.setOfferIds(new HashSet(Arrays.asList(new OfferId(offerId))));
@@ -78,7 +78,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
         }
     }
 
-    protected ItemRevision retrieveItemRevision(Long itemId, Long timestamp) {
+    protected ItemRevision retrieveItemRevision(String itemId, Long timestamp) {
         try {
             ItemRevisionsGetOptions options = new ItemRevisionsGetOptions();
             options.setItemIds(new HashSet(Arrays.asList(new ItemId(itemId))));
@@ -106,7 +106,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
 
         // fill sub offers info
         if (offerRevision.getSubOffers() != null) {
-            for (Long subOfferId : offerRevision.getSubOffers()) {
+            for (String subOfferId : offerRevision.getSubOffers()) {
                 LinkedEntry subOffer = new LinkedEntry();
 
                 subOffer.setEntityType(CatalogEntityType.OFFER);

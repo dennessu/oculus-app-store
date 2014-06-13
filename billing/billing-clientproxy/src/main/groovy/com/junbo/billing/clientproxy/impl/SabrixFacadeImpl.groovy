@@ -28,6 +28,7 @@ import com.ning.http.client.Response
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.util.CollectionUtils
 
 import javax.annotation.Resource
 import java.text.SimpleDateFormat
@@ -172,10 +173,21 @@ class SabrixFacadeImpl implements TaxFacade {
 
     Invoice generateInvoice(Balance balance, Address shippingAddress, Address piAddress, boolean isAudited) {
         Invoice invoice = new Invoice()
-//        invoice.companyName = configuration.companyName
+        if (!CollectionUtils.isEmpty(balance.orderIds)) {
+            if (balance.orderIds.size() > 1) {
+                LOGGER.error('Error_More_Than_One_Order_In_Tax_Calculation.')
+                throw AppErrors.INSTANCE.taxCalculationError('Do not support multi-order tax calculation now.').exception()
+            }
+            // combination of hostSystem, callingSystemNumber and uniqueInvoiceNumber makes a audit key
+            invoice.hostSystem = configuration.hostSystem
+            invoice.callingSystemNumber = configuration.callingSystemNumber
+            invoice.uniqueInvoiceNumber = balance.orderIds[0].value
+            invoice.invoiceNumber = balance.orderIds[0].value
+        }
+        invoice.deliveryTerm = DeliveryTerm.DDP.name()
         invoice.companyRole = configuration.companyRole
         invoice.externalCompanyId = getEntity(piAddress).externalCompanyId
-        invoice.invoiceNumber = balance.balanceId?.value
+        invoice.calculationDirection = configuration.calculationDirection
         invoice.invoiceDate = DATE_FORMATTER.get().format(new Date())
         invoice.currencyCode = balance.currency
         invoice.isAudited = isAudited
@@ -185,11 +197,11 @@ class SabrixFacadeImpl implements TaxFacade {
             shipToAddress = toSabrixAddress(shippingAddress)
         }
         else {
-            shipToAddress = toSabrixAddress(piAddress)
+            shipToAddress = billToAddress
         }
-        invoice.billTo = billToAddress
-        invoice.shipTo = shipToAddress
-        invoice.shipFrom = getSabrixShipFromAddress()
+//        invoice.billTo = billToAddress
+//        invoice.shipTo = shipToAddress
+//        invoice.shipFrom = getSabrixShipFromAddress()
         def lines = generateLine(balance, billToAddress, shipToAddress)
         invoice.line = lines
         setupUserElement(invoice)
@@ -202,13 +214,17 @@ class SabrixFacadeImpl implements TaxFacade {
         balance.balanceItems.eachWithIndex { BalanceItem item, int index ->
             Line line = new Line()
             line.id = index + 1
-            line.lineNumber = index
+            line.lineNumber = line.id
             line.grossAmount = item.amount?.toDouble()
+            line.taxAmount = item.taxAmount?.toDouble()
+            line.discountAmount = item.discountAmount?.toDouble()
             line.productCode = item.financeId
             line.transactionType = getTransactionType(item)
-//            line.billTo = billToAddress
-//            line.shipTo = shipToAddress
-//            line.shipFrom = getSabrixShipFromAddress()
+            line.billTo = billToAddress
+            line.shipTo = shipToAddress
+            if (line.transactionType == GOODS) {
+                line.shipFrom = getSabrixShipFromAddress()
+            }
             setupUserElement(line)
             lines << line
         }

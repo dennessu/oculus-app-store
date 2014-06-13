@@ -1,7 +1,7 @@
 {
     "offer": {"href": "https://api.oculusvr.com/v1/offers/6B54DF103CDF", "id": "6B54DF103CDF"},
     "status": "DRAFT",
-    "owner": {"href": "https://api.oculusvr.com/v1/organizations/1234", "id": "1234"},
+    "publisher": {"href": "https://api.oculusvr.com/v1/organizations/1234", "id": "1234"},
     "items":[
         {
             "item": {"href": "https://api.oculusvr.com/v1/items/6B54FFA0FC9F", "id": "6B54FFA0FC9F"},
@@ -37,15 +37,14 @@
             "longDescription": "long description",
             "shortDescription": "short description",
             "images":{
-                "thumb": {
+                "thumbnail": {
                     "id": "id of image",
                     "href":"location of image",
                     "size":200,
                     "x":20,
                     "y":10
                 },
-                "main": {},
-                "general":[]
+                "main": {}
             },
             "videos":[
                 {

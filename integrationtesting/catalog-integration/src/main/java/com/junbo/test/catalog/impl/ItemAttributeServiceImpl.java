@@ -42,17 +42,17 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
     private ItemAttributeServiceImpl() {
     }
 
-    public ItemAttribute getItemAttribute(Long attributeId) throws Exception {
+    public ItemAttribute getItemAttribute(String attributeId) throws Exception {
         return getItemAttribute(attributeId, 200);
     }
 
-    public ItemAttribute getItemAttribute(Long attributeId, int expectedResponseCode) throws Exception {
-        String url = catalogServerURL + "/" + IdConverter.idLongToHexString(ItemAttributeId.class, attributeId);
+    public ItemAttribute getItemAttribute(String attributeId, int expectedResponseCode) throws Exception {
+        String url = catalogServerURL + "/" + IdConverter.idToUrlString(ItemAttributeId.class, attributeId);
         String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
         ItemAttribute attributeGet = new JsonMessageTranscoder().decode(new TypeReference<ItemAttribute>() {
         },
                 responseBody);
-        String attributeRtnId = IdConverter.idLongToHexString(ItemAttributeId.class, attributeGet.getId());
+        String attributeRtnId = IdConverter.idToUrlString(ItemAttributeId.class, attributeGet.getId());
         Master.getInstance().addItemAttribute(attributeRtnId, attributeGet);
         return attributeGet;
     }
@@ -68,7 +68,7 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
                 }, responseBody);
 
         for (ItemAttribute itemAttribute : itemAttributeResults.getItems()) {
-            String attributeRtnId = IdConverter.idLongToHexString(ItemAttributeId.class, itemAttribute.getId());
+            String attributeRtnId = IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute.getId());
             Master.getInstance().addItemAttribute(attributeRtnId, itemAttribute);
         }
 
@@ -99,35 +99,35 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
         ItemAttribute attributePost = new JsonMessageTranscoder().decode(new TypeReference<ItemAttribute>() {
         },
                 responseBody);
-        String attributeRtnId = IdConverter.idLongToHexString(ItemAttributeId.class, attributePost.getId());
+        String attributeRtnId = IdConverter.idToUrlString(ItemAttributeId.class, attributePost.getId());
         Master.getInstance().addItemAttribute(attributeRtnId, attributePost);
         return attributePost;
     }
 
-    public ItemAttribute updateItemAttribute(Long itemAttributeId, ItemAttribute attribute) throws Exception {
+    public ItemAttribute updateItemAttribute(String itemAttributeId, ItemAttribute attribute) throws Exception {
         return updateItemAttribute(itemAttributeId, attribute, 200);
     }
 
-    public ItemAttribute updateItemAttribute(Long itemAttributeId, ItemAttribute attribute, int expectedResponseCode) throws Exception {
-        String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(ItemAttributeId.class,
+    public ItemAttribute updateItemAttribute(String itemAttributeId, ItemAttribute attribute, int expectedResponseCode) throws Exception {
+        String putUrl = catalogServerURL + "/" + IdConverter.idToUrlString(ItemAttributeId.class,
                 itemAttributeId);
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, attribute, expectedResponseCode);
         ItemAttribute itemAttributePut = new JsonMessageTranscoder().decode(new TypeReference<ItemAttribute>() {
         },
                 responseBody);
-        String itemAttributeRtnId = IdConverter.idLongToHexString(ItemAttributeId.class,
+        String itemAttributeRtnId = IdConverter.idToUrlString(ItemAttributeId.class,
                 itemAttributePut.getId());
         Master.getInstance().addItemAttribute(itemAttributeRtnId, itemAttributePut);
 
         return itemAttributePut;
     }
 
-    public void deleteItemAttribute(Long itemAttributeId) throws Exception {
+    public void deleteItemAttribute(String itemAttributeId) throws Exception {
         deleteItemAttribute(itemAttributeId, 204);
     }
 
-    public void deleteItemAttribute(Long itemAttributeId, int expectedResponseCode) throws Exception {
-        String strItemAttributeId = IdConverter.idLongToHexString(ItemAttributeId.class, itemAttributeId);
+    public void deleteItemAttribute(String itemAttributeId, int expectedResponseCode) throws Exception {
+        String strItemAttributeId = IdConverter.idToUrlString(ItemAttributeId.class, itemAttributeId);
         String url = catalogServerURL + "/" + strItemAttributeId;
         restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode);
         Master.getInstance().removeItemAttribute(strItemAttributeId);

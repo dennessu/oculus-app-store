@@ -24,8 +24,8 @@ import java.util.Date;
 @TypeDefs({@TypeDef(name="json-string", typeClass=StringJsonUserType.class),
         @TypeDef(name="date-type", typeClass=DateUserType.class)})
 public class PromotionRevisionEntity extends BaseEntity {
-    private Long revisionId;
-    private Long promotionId;
+    private String revisionId;
+    private String promotionId;
     private String status;
     private Long ownerId;
     private PromotionType type;
@@ -35,20 +35,20 @@ public class PromotionRevisionEntity extends BaseEntity {
 
     @Id
     @Column(name = "revision_id")
-    public Long getRevisionId() {
+    public String getRevisionId() {
         return revisionId;
     }
 
-    public void setRevisionId(Long revisionId) {
+    public void setRevisionId(String revisionId) {
         this.revisionId = revisionId;
     }
 
     @Column(name = "promotion_id")
-    public Long getPromotionId() {
+    public String getPromotionId() {
         return promotionId;
     }
 
-    public void setPromotionId(Long promotionId) {
+    public void setPromotionId(String promotionId) {
         this.promotionId = promotionId;
     }
 
@@ -111,12 +111,12 @@ public class PromotionRevisionEntity extends BaseEntity {
 
     @Override
     @Transient
-    public Long getId() {
+    public String getId() {
         return revisionId;
     }
 
     @Override
-    public void setId(Long id) {
+    public void setId(String id) {
         this.revisionId = id;
     }
 }

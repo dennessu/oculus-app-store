@@ -61,7 +61,7 @@ class CatalogFacadeImpl implements CatalogFacade {
     }
 
     @Override
-    Promise<OrderOfferRevision> getOfferRevision(Long offerId, Date honoredTime) {
+    Promise<OrderOfferRevision> getOfferRevision(String offerId, Date honoredTime) {
         def entityGetOption = new OfferRevisionsGetOptions(
                 timestamp: honoredTime.time,
                 offerIds: [new OfferId(offerId)] as Set
@@ -105,7 +105,7 @@ class CatalogFacadeImpl implements CatalogFacade {
         }
     }
 
-    Promise<OrderOfferItemRevision> getOfferItemRevision(Long itemId, Date honoredTime) {
+    Promise<OrderOfferItemRevision> getOfferItemRevision(String itemId, Date honoredTime) {
         def entityGetOption = new ItemRevisionsGetOptions(
                 timestamp: honoredTime.time,
                 itemIds: [new ItemId(itemId)] as Set
@@ -135,7 +135,7 @@ class CatalogFacadeImpl implements CatalogFacade {
     }
 
     @Override
-    Promise<OrderOfferRevision> getOfferRevision(Long offerId) {
+    Promise<OrderOfferRevision> getOfferRevision(String offerId) {
         return getOfferRevision(offerId, new Date())
     }
 }

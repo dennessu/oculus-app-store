@@ -13,6 +13,6 @@ import java.util.Set;
  * Interface wrapper to call from catalog.
  */
 public interface ItemFacade {
-    ItemRevision getItem(Long itemId);
-    Set<Long> getItemIdsByHostItemId(Long hostItemId);
+    ItemRevision getItem(String itemId);
+    Set<String> getItemIdsByHostItemId(String hostItemId);
 }

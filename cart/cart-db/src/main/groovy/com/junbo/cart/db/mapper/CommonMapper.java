@@ -45,11 +45,11 @@ public class CommonMapper {
         return source == null ? null : source.getValue();
     }
 
-    public OfferId fromLongToOffer(Long source) {
+    public OfferId fromStringToOffer(String source) {
         return source == null ? null : new OfferId(source);
     }
 
-    public Long fromOfferToLong(OfferId source) {
+    public String fromOfferToString(OfferId source) {
         return source == null ? null : source.getValue();
     }
 }

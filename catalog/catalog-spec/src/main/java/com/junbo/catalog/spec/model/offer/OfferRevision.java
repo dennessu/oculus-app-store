@@ -25,7 +25,7 @@ public class OfferRevision extends BaseRevisionModel {
     @OfferRevisionId
     @JsonProperty("self")
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The id of offer revision resource")
-    private Long revisionId;
+    private String revisionId;
 
     @JsonProperty("publisher")
     @ApiModelProperty(position = 20, required = true, value = "Organization owner of the offer revision resource")
@@ -34,7 +34,7 @@ public class OfferRevision extends BaseRevisionModel {
     @OfferId
     @JsonProperty("offer")
     @ApiModelProperty(position = 21, required = true, value = "Offer of the offer revision")
-    private Long offerId;
+    private String offerId;
 
     @ApiModelProperty(position = 22, required = true, value = "Offer price")
     private Price price;
@@ -43,7 +43,7 @@ public class OfferRevision extends BaseRevisionModel {
     private Restriction restrictions;
     @OfferId
     @ApiModelProperty(position = 24, required = true, value = "Sub-offers")
-    private List<Long> subOffers;
+    private List<String> subOffers;
     @ApiModelProperty(position = 25, required = true, value = "Items")
     private List<ItemEntry> items = new ArrayList<>();
     //@CountryId
@@ -60,7 +60,6 @@ public class OfferRevision extends BaseRevisionModel {
     private Map<String, OfferRevisionLocaleProperties> locales;
     @ApiModelProperty(position = 32, required = true,
             value = "The content ratings given to the offer by specific boards (ESRB, PEGI)")
-    @AgeRatingId
     private Map<String, List<AgeRating>> ageRatings;
     @ApiModelProperty(position = 33, required = true, value = "Offer pre-order price")
     private Price preOrderPrice;
@@ -68,11 +67,11 @@ public class OfferRevision extends BaseRevisionModel {
             value = "Maps from a country-code-name to a JSON object containing the country-specific properties")
     private Map<String, CountryProperties> countries;
 
-    public Long getRevisionId() {
+    public String getRevisionId() {
         return revisionId;
     }
 
-    public void setRevisionId(Long revisionId) {
+    public void setRevisionId(String revisionId) {
         this.revisionId = revisionId;
     }
 
@@ -84,11 +83,11 @@ public class OfferRevision extends BaseRevisionModel {
         this.ownerId = ownerId;
     }
 
-    public Long getOfferId() {
+    public String getOfferId() {
         return offerId;
     }
 
-    public void setOfferId(Long offerId) {
+    public void setOfferId(String offerId) {
         this.offerId = offerId;
     }
 
@@ -108,11 +107,11 @@ public class OfferRevision extends BaseRevisionModel {
         this.restrictions = restrictions;
     }
 
-    public List<Long> getSubOffers() {
+    public List<String> getSubOffers() {
         return subOffers;
     }
 
-    public void setSubOffers(List<Long> subOffers) {
+    public void setSubOffers(List<String> subOffers) {
         this.subOffers = subOffers;
     }
 
@@ -182,18 +181,18 @@ public class OfferRevision extends BaseRevisionModel {
 
     @Override
     @JsonIgnore
-    public Long getId() {
+    public String getId() {
         return revisionId;
     }
 
     @Override
-    public void setId(Long id) {
+    public void setId(String id) {
         this.revisionId = id;
     }
 
     @Override
     @JsonIgnore
-    public Long getEntityId() {
+    public String getEntityId() {
         return offerId;
     }
 }

@@ -367,7 +367,7 @@ public class CommonMapper {
             return null;
         }
 
-        return new OfferId(Long.parseLong(offerId));
+        return new OfferId(offerId);
     }
 
     public String fromOfferIdToString(OfferId offerId) {
@@ -399,7 +399,7 @@ public class CommonMapper {
             return null;
         }
 
-        return new OfferRevisionId(Long.parseLong(offerRevisionId));
+        return new OfferRevisionId(offerRevisionId);
     }
 
     public String fromOfferRevisionIdToString(OfferRevisionId offerRevisionId) {
@@ -415,7 +415,7 @@ public class CommonMapper {
             return null;
         }
 
-        return new PromotionId(Long.parseLong(promotionId));
+        return new PromotionId(promotionId);
     }
 
     public String fromPromotionIdToString(PromotionId promotionId) {

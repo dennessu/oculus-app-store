@@ -73,7 +73,7 @@ public class TestPutItem {
         ItemAttributeService itemAttributeService = ItemAttributeServiceImpl.instance();
         ItemAttribute itemAttribute1 = itemAttributeService.postDefaultItemAttribute();
         ItemAttribute itemAttribute2 = itemAttributeService.postDefaultItemAttribute();
-        List<Long> genres = new ArrayList<>();
+        List<String> genres = new ArrayList<>();
         genres.add(itemAttribute1.getId());
         genres.add(itemAttribute2.getId());
 
@@ -104,17 +104,17 @@ public class TestPutItem {
     )
     @Test
     public void testPutItemInvalidScenarios() throws Exception {
-        List<Long> genresCategory = new ArrayList<>();
-        List<Long> genresInvalid = new ArrayList<>();
-        genresInvalid.add(0L);
-        genresInvalid.add(1L);
+        List<String> genresCategory = new ArrayList<>();
+        List<String> genresInvalid = new ArrayList<>();
+        genresInvalid.add("0L");
+        genresInvalid.add("1L");
 
         //Prepare an item
         Item item = itemService.postDefaultItem(CatalogItemType.getRandom());
 
         //update itself id
-        Long itemId = item.getItemId();
-        item.setItemId(1L);
+        String itemId = item.getItemId();
+        item.setItemId("1L");
         verifyExpectedError(itemId, item);
 
         //test rev
@@ -129,7 +129,7 @@ public class TestPutItem {
 
         //can't update current revision id
         item = itemService.postDefaultItem(CatalogItemType.getRandom());
-        item.setCurrentRevisionId(0L);
+        item.setCurrentRevisionId("0L");
         verifyExpectedError(item.getItemId(), item);
 
         //test type is invalid enums
@@ -139,7 +139,7 @@ public class TestPutItem {
 
         //test defaultOffer is not existed
         item = itemService.postDefaultItem(CatalogItemType.getRandom());
-        item.setDefaultOffer(0L);
+        item.setDefaultOffer("0L");
         verifyExpectedError(item.getItemId(), item);
 
         //test genres is not existed
@@ -169,7 +169,7 @@ public class TestPutItem {
 
     }
 
-    private void verifyExpectedError(Long itemId, Item item) {
+    private void verifyExpectedError(String itemId, Item item) {
         try {
             //Error code 400 means "Missing Input field", "Unnecessary field found" or "invalid value"
             itemService.updateItem(itemId, item, 400);

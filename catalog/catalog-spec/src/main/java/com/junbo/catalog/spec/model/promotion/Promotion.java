@@ -17,23 +17,23 @@ import com.junbo.common.jackson.annotation.*;
 public class Promotion extends BaseEntityModel {
     @PromotionId
     @JsonProperty("self")
-    private Long promotionId;
+    private String promotionId;
 
     private PromotionType type;
 
     @PromotionRevisionId
     @JsonProperty("currentRevision")
-    private Long currentRevisionId;
+    private String currentRevisionId;
 
     @UserId
     @JsonProperty("publisher")
     private Long ownerId;
 
-    public Long getPromotionId() {
+    public String getPromotionId() {
         return promotionId;
     }
 
-    public void setPromotionId(Long promotionId) {
+    public void setPromotionId(String promotionId) {
         this.promotionId = promotionId;
     }
 
@@ -45,11 +45,11 @@ public class Promotion extends BaseEntityModel {
         this.type = type;
     }
 
-    public Long getCurrentRevisionId() {
+    public String getCurrentRevisionId() {
         return currentRevisionId;
     }
 
-    public void setCurrentRevisionId(Long currentRevisionId) {
+    public void setCurrentRevisionId(String currentRevisionId) {
         this.currentRevisionId = currentRevisionId;
     }
 
@@ -63,12 +63,12 @@ public class Promotion extends BaseEntityModel {
 
     @Override
     @JsonIgnore
-    public Long getId() {
+    public String getId() {
         return promotionId;
     }
 
     @Override
-    public void setId(Long id) {
+    public void setId(String id) {
         this.promotionId = id;
     }
 }

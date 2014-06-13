@@ -22,7 +22,7 @@ public class RoleAssignmentListOptions extends PagingListOptions {
 
     private String assigneeIdType;
 
-    private Long assigneeId;
+    private String assigneeId;
 
     public RoleId getRoleId() {
         return roleId;
@@ -48,11 +48,11 @@ public class RoleAssignmentListOptions extends PagingListOptions {
         this.assigneeIdType = assigneeIdType;
     }
 
-    public Long getAssigneeId() {
+    public String getAssigneeId() {
         return assigneeId;
     }
 
-    public void setAssigneeId(Long assigneeId) {
+    public void setAssigneeId(String assigneeId) {
         this.assigneeId = assigneeId;
     }
 }

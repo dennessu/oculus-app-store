@@ -42,7 +42,7 @@ public class TestDeleteOffer extends BaseTestClass {
 
         //Prepare an offer
         Offer offer = offerService.postDefaultOffer();
-        Long invalidId = 0L;
+        String invalidId = "0L";
 
         offerService.deleteOffer(offer.getOfferId());
 

@@ -43,6 +43,7 @@ public class OrderItemEntity extends CommonDbEntityDeletable {
     private Long latestOrderItemRevisionId;
     private Date honorUntilTime;
     private Date honoredTime;
+    private Boolean isPreorder;
     // end of ratingInfo
 
 
@@ -200,6 +201,15 @@ public class OrderItemEntity extends CommonDbEntityDeletable {
 
     public void setHonoredTime(Date honoredTime) {
         this.honoredTime = honoredTime;
+    }
+
+    @Column(name = "IS_PREORDER")
+    public Boolean getIsPreorder() {
+        return isPreorder;
+    }
+
+    public void setIsPreorder(Boolean isPreorder) {
+        this.isPreorder = isPreorder;
     }
 
     @Override

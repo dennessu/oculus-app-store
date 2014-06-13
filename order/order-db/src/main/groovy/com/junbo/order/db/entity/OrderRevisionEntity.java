@@ -23,7 +23,7 @@ public class OrderRevisionEntity  extends CommonDbEntityWithDate {
     private Long shippingAddressId;
     private Long shippingNameId;
     private Long shippingPhoneId;
-    private Long shippingMethodId;
+    private String shippingMethodId;
     private BigDecimal totalAmount;
     private BigDecimal totalTax;
     private Boolean isTaxInclusive;
@@ -69,8 +69,8 @@ public class OrderRevisionEntity  extends CommonDbEntityWithDate {
     }
 
     @Column(name = "SHIPPING_METHOD_ID")
-    public Long getShippingMethodId() { return shippingMethodId; }
-    public void setShippingMethodId(Long shippingMethodId) { this.shippingMethodId = shippingMethodId; }
+    public String getShippingMethodId() { return shippingMethodId; }
+    public void setShippingMethodId(String shippingMethodId) { this.shippingMethodId = shippingMethodId; }
 
     @Column(name = "TOTAL_AMOUNT")
     @NotNull(message = ValidationMessages.MISSING_VALUE)

@@ -26,7 +26,7 @@ public class ClientproxyTest extends AbstractTestNGSpringContextTests {
 
     @Test(enabled = false)
     public void testItemFacade() {
-        ItemRevision item = itemFacade.getItem(new Random().nextLong());
+        ItemRevision item = itemFacade.getItem(String.valueOf(new Random().nextLong()));
         Assert.assertNull(item);
     }
 

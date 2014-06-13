@@ -6,7 +6,7 @@
 
 package com.junbo.catalog.db.entity;
 
-import com.junbo.common.hibernate.LongArrayUserType;
+import com.junbo.common.hibernate.StringArrayUserType;
 import com.junbo.common.hibernate.StringJsonUserType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -21,33 +21,33 @@ import java.util.List;
 @Entity
 @Table(name="item_revision")
 @TypeDefs({@TypeDef(name="json-string", typeClass=StringJsonUserType.class),
-        @TypeDef(name="long-array", typeClass=LongArrayUserType.class)})
+        @TypeDef(name="string-array", typeClass=StringArrayUserType.class)})
 public class ItemRevisionEntity extends BaseEntity {
-    private Long revisionId;
-    private Long itemId;
+    private String revisionId;
+    private String itemId;
     //private String type;
     private Long ownerId;
     private String status;
     private Long timestamp;
-    private List<Long> hostItemIds;
+    private List<String> hostItemIds;
     private String payload;
 
     @Id
     @Column(name = "revision_id")
-    public Long getRevisionId() {
+    public String getRevisionId() {
         return revisionId;
     }
 
-    public void setRevisionId(Long revisionId) {
+    public void setRevisionId(String revisionId) {
         this.revisionId = revisionId;
     }
 
     @Column(name = "item_id")
-    public Long getItemId() {
+    public String getItemId() {
         return itemId;
     }
 
-    public void setItemId(Long itemId) {
+    public void setItemId(String itemId) {
         this.itemId = itemId;
     }
 
@@ -79,12 +79,12 @@ public class ItemRevisionEntity extends BaseEntity {
     }
 
     @Column(name = "host_item_ids")
-    @Type(type = "long-array")
-    public List<Long> getHostItemIds() {
+    @Type(type = "string-array")
+    public List<String> getHostItemIds() {
         return hostItemIds;
     }
 
-    public void setHostItemIds(List<Long> hostItemIds) {
+    public void setHostItemIds(List<String> hostItemIds) {
         this.hostItemIds = hostItemIds;
     }
 
@@ -100,12 +100,12 @@ public class ItemRevisionEntity extends BaseEntity {
 
     @Override
     @Transient
-    public Long getId() {
+    public String getId() {
         return revisionId;
     }
 
     @Override
-    public void setId(Long id) {
+    public void setId(String id) {
         this.revisionId = id;
     }
 }

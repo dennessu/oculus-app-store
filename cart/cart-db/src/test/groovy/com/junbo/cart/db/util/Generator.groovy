@@ -75,7 +75,7 @@ class Generator {
         def o = new OfferItemEntity()
         o.with {
             cartId = nextId
-            offerId = nextId
+            offerId = nextId.toString()
             isSelected = rand.nextBoolean()
             isApproved = rand.nextBoolean()
             cartItemId = nextId

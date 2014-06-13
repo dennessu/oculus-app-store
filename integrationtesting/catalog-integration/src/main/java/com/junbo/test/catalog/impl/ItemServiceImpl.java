@@ -44,16 +44,16 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
     private ItemServiceImpl() {
     }
 
-    public Item getItem(Long itemId) throws Exception {
+    public Item getItem(String itemId) throws Exception {
         return getItem(itemId, 200);
     }
 
-    public Item getItem(Long itemId, int expectedResponseCode) throws Exception {
-        String url = catalogServerURL + "/" + IdConverter.idLongToHexString(ItemId.class, itemId);
+    public Item getItem(String itemId, int expectedResponseCode) throws Exception {
+        String url = catalogServerURL + "/" + IdConverter.idToUrlString(ItemId.class, itemId);
         String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode);
         Item itemGet = new JsonMessageTranscoder().decode(new TypeReference<Item>() {
         }, responseBody);
-        String itemRtnId = IdConverter.idLongToHexString(ItemId.class, itemGet.getItemId());
+        String itemRtnId = IdConverter.idToUrlString(ItemId.class, itemGet.getItemId());
         Master.getInstance().addItem(itemRtnId, itemGet);
         return itemGet;
     }
@@ -68,7 +68,7 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
         },
                 responseBody);
         for (Item item : itemGet.getItems()) {
-            String itemRtnId = IdConverter.idLongToHexString(ItemId.class, item.getItemId());
+            String itemRtnId = IdConverter.idToUrlString(ItemId.class, item.getItemId());
             Master.getInstance().addItem(itemRtnId, item);
         }
         return itemGet;
@@ -103,32 +103,32 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
         Item itemPost = new JsonMessageTranscoder().decode(new TypeReference<Item>() {
         },
                 responseBody);
-        String itemRtnId = IdConverter.idLongToHexString(ItemId.class, itemPost.getItemId());
+        String itemRtnId = IdConverter.idToUrlString(ItemId.class, itemPost.getItemId());
         Master.getInstance().addItem(itemRtnId, itemPost);
         return itemPost;
     }
 
-    public Item updateItem(Long itemId, Item item) throws Exception {
+    public Item updateItem(String itemId, Item item) throws Exception {
         return updateItem(itemId, item, 200);
     }
 
-    public Item updateItem(Long itemId, Item item, int expectedResponseCode) throws Exception {
-        String putUrl = catalogServerURL + "/" + IdConverter.idLongToHexString(ItemId.class, itemId);
+    public Item updateItem(String itemId, Item item, int expectedResponseCode) throws Exception {
+        String putUrl = catalogServerURL + "/" + IdConverter.idToUrlString(ItemId.class, itemId);
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, item, expectedResponseCode);
         Item itemPut = new JsonMessageTranscoder().decode(new TypeReference<Item>() {
         },
                 responseBody);
-        String itemRtnId = IdConverter.idLongToHexString(ItemId.class, itemPut.getItemId());
+        String itemRtnId = IdConverter.idToUrlString(ItemId.class, itemPut.getItemId());
         Master.getInstance().addItem(itemRtnId, itemPut);
         return itemPut;
     }
 
-    public void deleteItem(Long itemId) throws Exception {
+    public void deleteItem(String itemId) throws Exception {
         this.deleteItem(itemId, 204);
     }
 
-    public void deleteItem(Long itemId, int expectedResponseCode) throws Exception {
-        String strItemId = IdConverter.idLongToHexString(ItemId.class, itemId);
+    public void deleteItem(String itemId, int expectedResponseCode) throws Exception {
+        String strItemId = IdConverter.idToUrlString(ItemId.class, itemId);
         String url = catalogServerURL + "/" + strItemId;
         restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode);
         Master.getInstance().removeItem(strItemId);

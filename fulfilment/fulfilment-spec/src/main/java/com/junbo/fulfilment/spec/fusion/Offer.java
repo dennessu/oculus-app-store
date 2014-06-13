@@ -12,7 +12,7 @@ import java.util.List;
  * Offer.
  */
 public class Offer {
-    private Long offerId;
+    private String offerId;
 
     private List<OfferAction> actions = new ArrayList<>();
     private List<LinkedEntry> items = new ArrayList<>();
@@ -33,11 +33,11 @@ public class Offer {
         this.actions.add(action);
     }
 
-    public Long getOfferId() {
+    public String getOfferId() {
         return offerId;
     }
 
-    public void setOfferId(Long offerId) {
+    public void setOfferId(String offerId) {
         this.offerId = offerId;
     }
 

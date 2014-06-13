@@ -16,6 +16,6 @@ class TimeGeneratorImpl implements TimeGenerator {
 
     @Override
     int currentTimeSec(int timeSecOffset) {
-        return (int) ((System.currentTimeMillis() / 1000 - timeSecOffset) & Integer.MAX_VALUE)
+        return (int) (((int)(System.currentTimeMillis() / 1000) - timeSecOffset) & Integer.MAX_VALUE)
     }
 }

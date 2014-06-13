@@ -36,7 +36,7 @@ public class CatalogGatewayTest extends BaseTest {
         Offer offer = new Offer();
         offer.setOwnerId(new OrganizationId(123L));
 
-        Long offerId = megaGateway.createOffer(offer);
+        String offerId = megaGateway.createOffer(offer);
         Assert.assertNotNull(offerId);
 
         OfferRevision offerRevision = new OfferRevision();
@@ -61,7 +61,7 @@ public class CatalogGatewayTest extends BaseTest {
                     }});
         }});
 
-        Long offerRevisionId = megaGateway.createOfferRevision(offerRevision);
+        String offerRevisionId = megaGateway.createOfferRevision(offerRevision);
         Assert.assertNotNull(offerRevisionId);
 
         OfferRevision retrievedRevision = megaGateway.getOfferRevision(offerRevisionId);
@@ -81,7 +81,7 @@ public class CatalogGatewayTest extends BaseTest {
         item.setType(ItemType.STORED_VALUE.name());
         item.setOwnerId(ownerId);
 
-        final Long itemId = megaGateway.createItem(item);
+        final String itemId = megaGateway.createItem(item);
         Assert.assertNotNull(itemId);
 
         // create item revision
@@ -96,7 +96,7 @@ public class CatalogGatewayTest extends BaseTest {
         }});
         itemRevision.setSku("test_sku");
 
-        Long itemRevisionId = megaGateway.createItemRevision(itemRevision);
+        String itemRevisionId = megaGateway.createItemRevision(itemRevision);
         Assert.assertNotNull(itemRevisionId);
 
         // approve item
@@ -108,7 +108,7 @@ public class CatalogGatewayTest extends BaseTest {
         Offer offer = new Offer();
         offer.setOwnerId(ownerId);
 
-        Long offerId = megaGateway.createOffer(offer);
+        String offerId = megaGateway.createOffer(offer);
         Assert.assertNotNull(offerId);
 
         // create offer revision
@@ -142,7 +142,7 @@ public class CatalogGatewayTest extends BaseTest {
             }});
         }});
 
-        Long offerRevisionId = megaGateway.createOfferRevision(offerRevision);
+        String offerRevisionId = megaGateway.createOfferRevision(offerRevision);
         Assert.assertNotNull(offerRevisionId);
 
         OfferRevision retrievedOfferRevision = megaGateway.getOfferRevision(offerRevisionId);

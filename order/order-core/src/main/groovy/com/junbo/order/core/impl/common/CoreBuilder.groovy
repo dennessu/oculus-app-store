@@ -34,9 +34,6 @@ import org.slf4j.LoggerFactory
 class CoreBuilder {
     private static final Logger LOGGER = LoggerFactory.getLogger(CoreBuilder)
 
-    static final BigDecimal PARTIAL_CHARGE_THRESHOLD = 50
-    static final BigDecimal PARTIAL_CHARGE_PERCENTAGE = 0.1
-
     static Balance buildBalance(Order order, BalanceType balanceType) {
         if (order == null) {
             return null
@@ -96,8 +93,8 @@ class CoreBuilder {
 
         originalBalance.balanceItems.each { BalanceItem item ->
             def balanceItem = buildRefundBalanceItem(item)
-            balanceItem.originalBalanceItemId = balanceItem.balanceItemId
-            balanceItem.balanceItemId = null
+            balanceItem.originalBalanceItemId = balanceItem.getId()
+            balanceItem.setId(null)
             balance.addBalanceItem(balanceItem)
 
         }
@@ -184,9 +181,9 @@ class CoreBuilder {
         balance.providerConfirmUrl = originalBalance.providerConfirmUrl
         balance.successRedirectUrl = originalBalance.successRedirectUrl
         balance.cancelRedirectUrl = originalBalance.cancelRedirectUrl
-        balance.originalBalanceId = originalBalance.balanceId
+        balance.originalBalanceId = originalBalance.getId()
         balance.type = BalanceType.REFUND.name()
-        balance.balanceId = null
+        balance.setId(null)
 
         return balance
     }
@@ -218,7 +215,7 @@ class CoreBuilder {
         discountItem.discountAmount = item.discountAmount
         balanceItem.addDiscountItem(discountItem)
         balanceItem.orderItemId = item.orderItemId
-        balanceItem.originalBalanceItemId = item.balanceItemId
+        balanceItem.originalBalanceItemId = item.getId()
         return balanceItem
     }
 
@@ -228,9 +225,7 @@ class CoreBuilder {
         }
 
         BalanceItem balanceItem = null
-        // TODO: update the threshold & percentage, use 50 & 10% for now
-        BigDecimal partialChargeAmount = item.totalAmount > PARTIAL_CHARGE_THRESHOLD ?
-                PARTIAL_CHARGE_THRESHOLD : item.totalAmount * PARTIAL_CHARGE_PERCENTAGE
+        BigDecimal partialChargeAmount = item.totalAmount
         if (taxedBalance != null) {
             // complete charge
             balanceItem = taxedBalance.balanceItems.find { BalanceItem taxedItem ->
@@ -300,7 +295,12 @@ class CoreBuilder {
         if (ratingItem == null) {
             return item
         }
-        item.totalAmount = ratingItem.finalTotalAmount
+        if (ratingItem.preOrderPrice != null && ratingItem.preOrderPrice != BigDecimal.ZERO) {
+            item.totalAmount = ratingItem.preOrderPrice
+        }
+        else {
+            item.totalAmount = ratingItem.finalTotalAmount
+        }
         item.totalDiscount = ratingItem.totalDiscountAmount
         item.unitPrice = ratingItem.originalUnitPrice
         item.honorUntilTime = null

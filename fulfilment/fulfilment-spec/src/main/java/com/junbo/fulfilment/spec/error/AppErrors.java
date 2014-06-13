@@ -30,6 +30,9 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 404, code = "30003", description = "{0} [{1}] not found.")
     AppError notFound(String entity, Long id);
 
+    @ErrorDef(httpStatusCode = 404, code = "30003", description = "{0} [{1}] not found.")
+    AppError notFound(String entity, String id);
+
     @ErrorDef(httpStatusCode = 400, code = "30004", description = "Validation failed. {0}")
     AppError validation(String msg);
 

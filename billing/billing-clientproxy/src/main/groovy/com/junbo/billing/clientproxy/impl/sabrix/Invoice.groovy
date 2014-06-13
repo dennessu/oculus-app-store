@@ -20,14 +20,29 @@ class Invoice {
     @XStreamAlias('INVOICE_DATE')
     String invoiceDate
 
+    @XStreamAlias('HOST_SYSTEM')
+    String hostSystem
+
+    @XStreamAlias('CALLING_SYSTEM_NUMBER')
+    String callingSystemNumber
+
+    @XStreamAlias('UNIQUE_INVOICE_NUMBER')
+    String uniqueInvoiceNumber
+
+    @XStreamAlias('DELIVERY_TERM')
+    String deliveryTerm
+
     @XStreamAlias('EXTERNAL_COMPANY_ID')
     String externalCompanyId
 
+    @XStreamAlias('INVOICE_NUMBER')
+    String invoiceNumber
+
+    @XStreamAlias('CALCULATION_DIRECTION')
+    String calculationDirection
+
     @XStreamAlias('COMPANY_ROLE')
     String companyRole
-
-    @XStreamAlias('COMPANY_NAME')
-    String companyName
 
     @XStreamAlias('CURRENCY_CODE')
     String currencyCode
@@ -38,9 +53,6 @@ class Invoice {
     @XStreamImplicit(itemFieldName='USER_ELEMENT')
     List<UserElement> userElement
 
-    @XStreamAlias('INVOICE_NUMBER')
-    String invoiceNumber
-
     @XStreamAlias('IS_AUDITED')
     Boolean isAudited
 
@@ -49,9 +61,6 @@ class Invoice {
 
     @XStreamAlias('ORIGINAL_INVOICE_NUMBER')
     String originalInvoiceNumber
-
-    @XStreamAlias('NATURE_OF_TRANSACTION_CODE')
-    String natureOfTransactionCode
 
     @XStreamAlias('BILL_TO')
     SabrixAddress billTo
@@ -72,33 +81,33 @@ class Invoice {
 
     @XStreamImplicit(itemFieldName='MESSAGE')
     List<Message> message
-
-    @XStreamAlias('CALCULATION_DIRECTION')
-    String calculationDirection
     // end of output
+
 
     @Override
     public String toString() {
         return "Invoice{" +
                 "invoiceDate='" + invoiceDate + '\'' +
+                ", hostSystem='" + hostSystem + '\'' +
+                ", callingSystemNumber='" + callingSystemNumber + '\'' +
+                ", uniqueInvoiceNumber='" + uniqueInvoiceNumber + '\'' +
+                ", deliveryTerm='" + deliveryTerm + '\'' +
                 ", externalCompanyId='" + externalCompanyId + '\'' +
+                ", invoiceNumber='" + invoiceNumber + '\'' +
+                ", calculationDirection='" + calculationDirection + '\'' +
                 ", companyRole='" + companyRole + '\'' +
-                ", companyName='" + companyName + '\'' +
                 ", currencyCode='" + currencyCode + '\'' +
                 ", line=" + line +
                 ", userElement=" + userElement +
-                ", invoiceNumber='" + invoiceNumber + '\'' +
                 ", isAudited=" + isAudited +
                 ", originalInvoiceDate=" + originalInvoiceDate +
                 ", originalInvoiceNumber='" + originalInvoiceNumber + '\'' +
-                ", natureOfTransactionCode='" + natureOfTransactionCode + '\'' +
                 ", billTo=" + billTo +
                 ", shipTo=" + shipTo +
                 ", shipFrom=" + shipFrom +
                 ", requestStatus=" + requestStatus +
                 ", totalTaxAmount=" + totalTaxAmount +
                 ", message=" + message +
-                ", calculationDirection='" + calculationDirection + '\'' +
                 '}';
     }
 }

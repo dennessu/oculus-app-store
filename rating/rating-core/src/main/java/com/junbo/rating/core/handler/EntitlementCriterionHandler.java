@@ -28,7 +28,7 @@ public class EntitlementCriterionHandler implements CriterionHandler<Entitlement
             return false;
         }
 
-        Set<Long> entitlements =
+        Set<String> entitlements =
                 entitlementGateway.getEntitlements(context.getUserId(), Sets.newHashSet(criterion.getItems()));
 
         switch(criterion.getPredicate()) {

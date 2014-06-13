@@ -65,7 +65,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
     }
 
     @Override
-    public Item updateEntity(Long itemId, Item item) {
+    public Item updateEntity(String itemId, Item item) {
         Item oldItem = itemRepo.get(itemId);
         if (oldItem == null) {
             throw AppErrors.INSTANCE.notFound("item", Utils.encodeId(itemId)).exception();
@@ -90,7 +90,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
     }
 
     @Override
-    public ItemRevision updateRevision(Long revisionId, ItemRevision revision) {
+    public ItemRevision updateRevision(String revisionId, ItemRevision revision) {
         ItemRevision oldRevision = itemRevisionRepo.get(revisionId);
         if (oldRevision == null) {
             throw AppErrors.INSTANCE.notFound("item-revision", Utils.encodeId(revisionId)).exception();
@@ -118,7 +118,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
             if (CollectionUtils.isEmpty(options.getItemIds())) {
                 throw AppErrors.INSTANCE.validation("itemId must be specified when timestamp is present.").exception();
             }
-            Set<Long> itemIds = new HashSet<>();
+            Set<String> itemIds = new HashSet<>();
             for (ItemId itemId : options.getItemIds()) {
                 itemIds.add(itemId.getValue());
             }
@@ -228,7 +228,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
             }
         }
         if (!CollectionUtils.isEmpty(item.getGenres())) {
-            for (Long genreId : item.getGenres()) {
+            for (String genreId : item.getGenres()) {
                 if (genreId == null) {
                     errors.add(AppErrors.INSTANCE.fieldNotCorrect("genres", "should not contain null"));
                 } else {

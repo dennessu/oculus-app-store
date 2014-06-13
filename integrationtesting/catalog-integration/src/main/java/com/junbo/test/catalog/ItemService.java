@@ -20,8 +20,8 @@ import java.util.List;
  */
 public interface ItemService {
 
-    Item getItem(Long itemId) throws Exception;
-    Item getItem(Long itemId, int expectedResponseCode) throws Exception;
+    Item getItem(String itemId) throws Exception;
+    Item getItem(String itemId, int expectedResponseCode) throws Exception;
 
     Results<Item> getItems(HashMap<String, List<String>> httpPara) throws Exception;
     Results<Item> getItems(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception;
@@ -32,10 +32,10 @@ public interface ItemService {
     Item postItem(Item item) throws Exception;
     Item postItem(Item item, int expectedResponseCode) throws Exception;
 
-    Item updateItem(Long itemId, Item item) throws Exception;
-    Item updateItem(Long itemId, Item item, int expectedResponseCode) throws Exception;
+    Item updateItem(String itemId, Item item) throws Exception;
+    Item updateItem(String itemId, Item item, int expectedResponseCode) throws Exception;
 
-    void deleteItem(Long itemId) throws Exception;
-    void deleteItem(Long itemId, int expectedResponseCode) throws Exception;
+    void deleteItem(String itemId) throws Exception;
+    void deleteItem(String itemId, int expectedResponseCode) throws Exception;
 
 }

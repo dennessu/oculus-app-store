@@ -31,7 +31,7 @@ public class PromotionRepository implements BaseEntityRepository<Promotion> {
     }
 
     @Override
-    public Promotion get(Long promotionId) {
+    public Promotion get(String promotionId) {
         return PromotionMapper.toModel(promotionDao.get(promotionId));
     }
 
@@ -56,7 +56,7 @@ public class PromotionRepository implements BaseEntityRepository<Promotion> {
     }
 
     @Override
-    public void delete(Long promotionId) {
+    public void delete(String promotionId) {
         PromotionEntity dbEntity = promotionDao.get(promotionId);
         if (dbEntity == null) {
             throw AppErrors.INSTANCE.notFound("promotion", Utils.encodeId(promotionId)).exception();

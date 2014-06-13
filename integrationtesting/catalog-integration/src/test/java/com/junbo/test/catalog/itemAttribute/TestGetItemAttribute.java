@@ -56,7 +56,7 @@ public class TestGetItemAttribute extends BaseTestClass {
         Assert.assertNotNull(itemAttributeRtn, "Can't get item attribute");
 
         //verify the invalid Id scenario
-        Long invalidId = 0L;
+        String invalidId = "0L";
         try {
             itemAttributeService.getItemAttribute(invalidId, 404);
             Assert.fail("Shouldn't get item attribute with wrong id");
@@ -88,22 +88,22 @@ public class TestGetItemAttribute extends BaseTestClass {
         ItemAttribute itemAttribute2 = itemAttributeService.postDefaultItemAttribute();
         ItemAttribute itemAttribute3 = itemAttributeService.postDefaultItemAttribute();
 
-        listItemAttributeId.add(IdConverter.idLongToHexString(ItemAttributeId.class, itemAttribute1.getId()));
+        listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute1.getId()));
         paraMap.put("id", listItemAttributeId);
         verifyGetItemAttributes(paraMap, 1, itemAttribute1);
 
-        listItemAttributeId.add(IdConverter.idLongToHexString(ItemAttributeId.class, itemAttribute2.getId()));
+        listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute2.getId()));
         paraMap.put("id", listItemAttributeId);
         verifyGetItemAttributes(paraMap, 2, itemAttribute1, itemAttribute2);
 
-        listItemAttributeId.add(IdConverter.idLongToHexString(ItemAttributeId.class, itemAttribute3.getId()));
+        listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute3.getId()));
         paraMap.put("id", listItemAttributeId);
         verifyGetItemAttributes(paraMap, 3, itemAttribute1, itemAttribute2, itemAttribute3);
 
         listItemAttributeId.clear();
         listItemAttributeId.add("0000000000");
-        listItemAttributeId.add(IdConverter.idLongToHexString(ItemAttributeId.class, itemAttribute2.getId()));
-        listItemAttributeId.add(IdConverter.idLongToHexString(ItemAttributeId.class, itemAttribute3.getId()));
+        listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute2.getId()));
+        listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute3.getId()));
         verifyGetItemAttributes(paraMap, 2, itemAttribute2, itemAttribute3);
 
         listItemAttributeId.clear();
@@ -137,17 +137,17 @@ public class TestGetItemAttribute extends BaseTestClass {
         ItemAttribute itemAttribute2 = itemAttributeService.postDefaultItemAttribute();
         ItemAttribute itemAttribute3 = itemAttributeService.postDefaultItemAttribute();
 
-        listItemAttributeId.add(IdConverter.idLongToHexString(ItemAttributeId.class, itemAttribute1.getId()));
+        listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute1.getId()));
         listType.add(CatalogItemAttributeType.GENRE.getType());
         paraMap.put("id", listItemAttributeId);
         paraMap.put("type", listType);
         verifyGetItemAttributes(paraMap, 1, itemAttribute1);
 
-        listItemAttributeId.add(IdConverter.idLongToHexString(ItemAttributeId.class, itemAttribute2.getId()));
+        listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute2.getId()));
         paraMap.put("id", listItemAttributeId);
         verifyGetItemAttributes(paraMap, 2, itemAttribute1, itemAttribute2);
 
-        listItemAttributeId.add(IdConverter.idLongToHexString(ItemAttributeId.class, itemAttribute3.getId()));
+        listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute3.getId()));
         paraMap.put("id", listItemAttributeId);
         verifyGetItemAttributes(paraMap, 3, itemAttribute1, itemAttribute2, itemAttribute3);
 
@@ -158,8 +158,8 @@ public class TestGetItemAttribute extends BaseTestClass {
 
         listItemAttributeId.clear();
         listItemAttributeId.add("0000000000");
-        listItemAttributeId.add(IdConverter.idLongToHexString(ItemAttributeId.class, itemAttribute2.getId()));
-        listItemAttributeId.add(IdConverter.idLongToHexString(ItemAttributeId.class, itemAttribute3.getId()));
+        listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute2.getId()));
+        listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute3.getId()));
         listType.clear();
         listType.add(CatalogItemAttributeType.GENRE.getType());
         paraMap.put("type", listType);

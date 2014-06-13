@@ -19,7 +19,7 @@ public class AttributeDaoTest extends BaseTest {
     @Test
     public void testCreateAndGet() {
         ItemAttributeEntity entity = buildAttributeEntity();
-        Long id = attributeDao.create(entity);
+        String id = attributeDao.create(entity);
         Assert.assertNotNull(attributeDao.get(id), "Entity should not be null.");
     }
 

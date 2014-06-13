@@ -6,27 +6,23 @@
 
 package com.junbo.subscription.db;
 
-import com.junbo.common.id.UserId;
 import com.junbo.sharding.IdGenerator;
 import com.junbo.subscription.db.dao.SubscriptionDao;
 import com.junbo.subscription.db.entity.SubscriptionEntity;
 import com.junbo.subscription.db.entity.SubscriptionStatus;
 import com.junbo.subscription.db.repository.SubscriptionRepository;
 import com.junbo.subscription.spec.model.Subscription;
-import com.junbo.subscription.spec.model.SubscriptionEntitlement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import javax.sql.DataSource;
 import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
@@ -70,7 +66,7 @@ public class SubscriptionDaoTest extends AbstractTestNGSpringContextTests {
         subscription.setTrackingUuid(UUID.randomUUID());
         subscription.setUserId(idGenerator.nextId());
         subscription.setPaymentMethodId(new Random().nextLong());
-        subscription.setOfferId(idGenerator.nextId());
+        subscription.setOfferId(String.valueOf(idGenerator.nextId()));
         subscription.setSubsStartDate(new Date(114, 0, 22));
         subscription.setSubsEndDate(new Date(114, 0, 28));
         subscription.setCountry("US");

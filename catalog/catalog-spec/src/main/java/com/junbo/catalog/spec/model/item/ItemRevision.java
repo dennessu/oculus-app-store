@@ -27,7 +27,7 @@ public class ItemRevision extends BaseRevisionModel {
     @ItemRevisionId
     @JsonProperty("self")
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The id of item revision resource")
-    private Long revisionId;
+    private String revisionId;
 
     @ApiModelProperty(position = 2, required = true,
             value = "An ID that helps to group like items. ex. TEAM_FORTRESS, this rollup ID would be applied to" +
@@ -44,7 +44,7 @@ public class ItemRevision extends BaseRevisionModel {
     @ItemId
     @JsonProperty("iapHostItems")
     @ApiModelProperty(position = 16, required = false, value = "The items in which the IAP item will be sold.")
-    private List<Long> iapHostItemIds;
+    private List<String> iapHostItemIds;
 
     @JsonProperty("developer")
     @ApiModelProperty(position = 20, required = true, value = "Organization owner of the item revision resource")
@@ -53,7 +53,7 @@ public class ItemRevision extends BaseRevisionModel {
     @ItemId
     @JsonProperty("item")
     @ApiModelProperty(position = 21, required = true, value = "Item of the item revision")
-    private Long itemId;
+    private String itemId;
 
     @ApiModelProperty(position = 22, required = true, value = "Manufacturer's suggested retail price")
     private Price msrp;
@@ -107,19 +107,19 @@ public class ItemRevision extends BaseRevisionModel {
         this.packageName = packageName;
     }
 
-    public List<Long> getIapHostItemIds() {
+    public List<String> getIapHostItemIds() {
         return iapHostItemIds;
     }
 
-    public void setIapHostItemIds(List<Long> iapHostItemIds) {
+    public void setIapHostItemIds(List<String> iapHostItemIds) {
         this.iapHostItemIds = iapHostItemIds;
     }
 
-    public Long getRevisionId() {
+    public String getRevisionId() {
         return revisionId;
     }
 
-    public void setRevisionId(Long revisionId) {
+    public void setRevisionId(String revisionId) {
         this.revisionId = revisionId;
     }
 
@@ -131,11 +131,11 @@ public class ItemRevision extends BaseRevisionModel {
         this.ownerId = ownerId;
     }
 
-    public Long getItemId() {
+    public String getItemId() {
         return itemId;
     }
 
-    public void setItemId(Long itemId) {
+    public void setItemId(String itemId) {
         this.itemId = itemId;
     }
 
@@ -213,18 +213,18 @@ public class ItemRevision extends BaseRevisionModel {
 
     @Override
     @JsonIgnore
-    public Long getId() {
+    public String getId() {
         return revisionId;
     }
 
     @Override
-    public void setId(Long id) {
+    public void setId(String id) {
         this.revisionId = id;
     }
 
     @Override
     @JsonIgnore
-    public Long getEntityId() {
+    public String getEntityId() {
         return itemId;
     }
 }

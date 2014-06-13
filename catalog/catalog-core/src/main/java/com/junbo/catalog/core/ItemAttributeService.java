@@ -17,9 +17,9 @@ import java.util.List;
  */
 @Transactional
 public interface ItemAttributeService {
-    ItemAttribute getAttribute(Long attributeId);
+    ItemAttribute getAttribute(String attributeId);
     List<ItemAttribute> getAttributes(ItemAttributesGetOptions options);
     ItemAttribute create(ItemAttribute attribute);
-    ItemAttribute update(Long attributeId, ItemAttribute attribute);
-    void deleteAttribute(Long attributeId);
+    ItemAttribute update(String attributeId, ItemAttribute attribute);
+    void deleteAttribute(String attributeId);
 }

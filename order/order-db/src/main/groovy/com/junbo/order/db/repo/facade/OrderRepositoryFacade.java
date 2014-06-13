@@ -7,6 +7,7 @@
 package com.junbo.order.db.repo.facade;
 
 import com.junbo.order.spec.model.*;
+import com.junbo.order.spec.model.enums.OrderItemRevisionType;
 
 import java.util.List;
 
@@ -36,7 +37,8 @@ public interface OrderRepositoryFacade {
 
     List<Discount> getDiscounts(Long orderId);
 
-    Order updateOrder(Order order, boolean updateOnlyOrder);
+    Order updateOrder(Order order, Boolean updateOnlyOrder,
+                      Boolean updateNonTentativeOrder, OrderItemRevisionType revisionType) ;
 
     List<OrderEvent> getOrderEvents(Long orderId, PageParam pageParam);
 

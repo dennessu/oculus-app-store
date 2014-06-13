@@ -12,7 +12,7 @@ package com.junbo.rating.spec.model;
 public class OrderResultEntry {
     private Money originalAmount;
     private Money discountAmount;
-    private Long appliedPromotion;
+    private String appliedPromotion;
 
     public Money getOriginalAmount() {
         return originalAmount;
@@ -30,11 +30,11 @@ public class OrderResultEntry {
         this.discountAmount = discountAmount;
     }
 
-    public Long getAppliedPromotion() {
+    public String getAppliedPromotion() {
         return appliedPromotion;
     }
 
-    public void setAppliedPromotion(Long appliedPromotion) {
+    public void setAppliedPromotion(String appliedPromotion) {
         this.appliedPromotion = appliedPromotion;
     }
 }

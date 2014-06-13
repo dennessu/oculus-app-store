@@ -5,6 +5,7 @@
  */
 package com.junbo.test.common.libs;
 
+import com.junbo.common.id.CloudantId;
 import com.junbo.common.id.Id;
 import com.junbo.common.id.OrderId;
 import com.junbo.common.shuffle.Oculus40Id;
@@ -29,7 +30,11 @@ public class IdConverter {
         return IdFormatter.encodeId(id);
     }
 
-    public static String idLongToHexString(Class cls, long id) {
+    public static String idToHexString(CloudantId id) {
+        return id.getValue();
+    }
+
+    public static String idToUrlString(Class cls, long id) {
         if(cls == OrderId.class) {
             Oculus40Id.validateRawValue(id);
             Long value = Oculus40Id.shuffle(id);
@@ -43,5 +48,9 @@ public class IdConverter {
         else {
             throw new RuntimeException("unsupported class " + cls);
         }
+    }
+
+    public static String idToUrlString(Class cls, String id) {
+        return id;
     }
 }

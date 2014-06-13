@@ -19,6 +19,7 @@ import com.junbo.common.model.ResourceMetaForDualWrite;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -91,7 +92,14 @@ public class OrderItem extends ResourceMetaForDualWrite<OrderItemId> {
     @CloudantIgnore
     private List<FulfillmentHistory> fulfillmentHistories;
 
-    private List<OrderItemRevision> orderItemRevisions;
+    @JsonIgnore
+    private Boolean isPreorder;
+
+    @JsonIgnore
+    private List<OrderItemRevision> orderItemRevisions = new ArrayList<>();
+
+    @JsonIgnore
+    private Long latestOrderItemRevisionId;
 
     @Override
     public OrderItemId getId() {
@@ -231,11 +239,27 @@ public class OrderItem extends ResourceMetaForDualWrite<OrderItemId> {
         this.fulfillmentHistories = fulfillmentHistories;
     }
 
+    public Boolean getIsPreorder() {
+        return isPreorder;
+    }
+
+    public void setIsPreorder(Boolean isPreorder) {
+        this.isPreorder = isPreorder;
+    }
+
     public List<OrderItemRevision> getOrderItemRevisions() {
         return orderItemRevisions;
     }
 
     public void setOrderItemRevisions(List<OrderItemRevision> orderItemRevisions) {
         this.orderItemRevisions = orderItemRevisions;
+    }
+
+    public Long getLatestOrderItemRevisionId() {
+        return latestOrderItemRevisionId;
+    }
+
+    public void setLatestOrderItemRevisionId(Long latestOrderItemRevisionId) {
+        this.latestOrderItemRevisionId = latestOrderItemRevisionId;
     }
 }
