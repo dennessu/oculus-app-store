@@ -330,7 +330,7 @@ class SabrixFacadeImpl implements TaxFacade {
             balance.balanceItems.eachWithIndex { BalanceItem item, int index ->
 
                 resultInvoice.line.each { Line line ->
-                    if (index == line.lineNumber) {
+                    if (index + 1 == line.lineNumber) {
                         item.taxAmount = line.totalTaxAmount
                         Map<String, TaxItem> map = new HashMap<String, TaxItem>()
                         line.tax.each { Tax tax ->
