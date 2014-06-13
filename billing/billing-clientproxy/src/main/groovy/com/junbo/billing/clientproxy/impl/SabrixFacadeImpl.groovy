@@ -181,8 +181,8 @@ class SabrixFacadeImpl implements TaxFacade {
             // combination of hostSystem, callingSystemNumber and uniqueInvoiceNumber makes a audit key
             invoice.hostSystem = configuration.hostSystem
             invoice.callingSystemNumber = configuration.callingSystemNumber
-            invoice.uniqueInvoiceNumber = balance.orderIds[0].value
-            invoice.invoiceNumber = balance.orderIds[0].value
+            invoice.uniqueInvoiceNumber = balance.orderIds[0]?.value
+            invoice.invoiceNumber = balance.orderIds[0]?.value
         }
         invoice.deliveryTerm = DeliveryTerm.DDP.name()
         invoice.companyRole = configuration.companyRole
