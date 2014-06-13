@@ -3,7 +3,6 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
-import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTFAId
 import com.junbo.common.model.Results
@@ -69,7 +68,7 @@ class UserTFAResourceImpl implements UserTFAResource {
             return userTFAValidator.validateForCreate(userId, userTeleCode).then {
                 return teleSign.verifyCode(userTeleCode).then {
                     return userTFARepository.create(userTeleCode).then { UserTFA newUserTeleCode ->
-                        Created201Marker.mark((Id) newUserTeleCode.id)
+                        Created201Marker.mark(newUserTeleCode.getId())
 
                         newUserTeleCode = userTFAFilter.filterForGet(newUserTeleCode, null)
                         return Promise.pure(newUserTeleCode)

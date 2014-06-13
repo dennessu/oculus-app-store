@@ -11,6 +11,7 @@ import com.junbo.oom.core.MappingContext
 import com.junbo.order.db.dao.OrderItemDao
 import com.junbo.order.db.dao.OrderItemRevisionDao
 import com.junbo.order.db.entity.OrderItemEntity
+import com.junbo.order.db.entity.OrderItemRevisionEntity
 import com.junbo.order.db.mapper.ModelMapper
 import com.junbo.order.db.repo.OrderItemRepository
 import com.junbo.order.db.repo.util.Utils
@@ -48,7 +49,11 @@ class OrderItemRepositorySqlImpl implements OrderItemRepository {
 
     @Override
     Promise<OrderItem> get(OrderItemId id) {
-        return Promise.pure(modelMapper.toOrderItemModel(orderItemDao.read(id.value), new MappingContext()))
+        def item = modelMapper.toOrderItemModel(orderItemDao.read(id.value), new MappingContext())
+        if (item.latestOrderItemRevisionId != null) {
+            item.orderItemRevisions = getOrderItemRevisions(item.getId().value)
+        }
+        return Promise.pure(item)
     }
 
     @Override
@@ -102,6 +107,19 @@ class OrderItemRepositorySqlImpl implements OrderItemRepository {
         orderItemDao.readByOrderId(orderId)?.each { OrderItemEntity orderItemEntity ->
             orderItems << modelMapper.toOrderItemModel(orderItemEntity, context)
         }
+        orderItems?.collect() {OrderItem item ->
+            if (item.latestOrderItemRevisionId != null) {
+                item.orderItemRevisions = getOrderItemRevisions(item.getId().value)
+            }
+        }
         return Promise.pure(orderItems)
+    }
+
+    private List<OrderItemRevision> getOrderItemRevisions(Long orderItemId) {
+        List<OrderItemRevision> orderItemRevisions = []
+        orderItemRevisionDao.readByOrderItemId(orderItemId)?.each { OrderItemRevisionEntity itemRevisionEntity ->
+            orderItemRevisions << modelMapper.toOrderItemRevisionModel(itemRevisionEntity, new MappingContext())
+        }
+        return orderItemRevisions
     }
 }

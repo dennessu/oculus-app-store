@@ -3,7 +3,6 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
-import com.junbo.common.id.Id
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -60,7 +59,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
             return userPersonalInfoValidator.validateForCreate(userPii).then {
                 return userPersonalInfoRepository.create(userPii).then { UserPersonalInfo newUserPii ->
                     newUserPii.isValidated = newUserPii.lastValidateTime != null
-                    Created201Marker.mark((Id) newUserPii.id)
+                    Created201Marker.mark(newUserPii.getId())
 
                     newUserPii = userPersonalInfoFilter.filterForGet(newUserPii, null)
                     return Promise.pure(newUserPii)

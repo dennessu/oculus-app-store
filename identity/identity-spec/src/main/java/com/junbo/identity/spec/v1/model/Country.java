@@ -43,14 +43,13 @@ public class Country extends PropertyAssignedAwareResourceMeta<CountryId> {
     @ApiModelProperty(position = 6, required = true, value = "Not optional, not nullable, possibly empty, a JSON object " +
             "that maps from a code for the sub country (state, province, etc.) to a JSON object " +
             "that contains the localization keys for the sub country's short and long names.")
-    private Map<String, SubCountry> subCountries = new HashMap<>();
+    private Map<String, SubCountryLocaleKeys> subCountries = new HashMap<>();
 
     @ApiModelProperty(position = 7, required = true, value = "Array for supported locale-Links to the locales appropriate for this country.")
     private List<LocaleId> supportedLocales = new ArrayList<>();
 
     @ApiModelProperty(position = 8, required = true, value = "Localizable properties and the corresponding Key value to lookup in Translation service.")
-    @JsonProperty("localeKeys")
-    private Map<String, String> locales = new HashMap<>();
+    private Map<String, CountryLocaleKey> locales;
 
     public CountryId getId() {
         return id;
@@ -98,11 +97,11 @@ public class Country extends PropertyAssignedAwareResourceMeta<CountryId> {
         support.setPropertyAssigned("supportedLocales");
     }
 
-    public Map<String, SubCountry> getSubCountries() {
+    public Map<String, SubCountryLocaleKeys> getSubCountries() {
         return subCountries;
     }
 
-    public void setSubCountries(Map<String, SubCountry> subCountries) {
+    public void setSubCountries(Map<String, SubCountryLocaleKeys> subCountries) {
         this.subCountries = subCountries;
         support.setPropertyAssigned("subCountries");
     }
@@ -116,11 +115,11 @@ public class Country extends PropertyAssignedAwareResourceMeta<CountryId> {
         support.setPropertyAssigned("ratingBoards");
     }
 
-    public Map<String, String> getLocales() {
+    public Map<String, CountryLocaleKey> getLocales() {
         return locales;
     }
 
-    public void setLocales(Map<String, String> locales) {
+    public void setLocales(Map<String, CountryLocaleKey> locales) {
         this.locales = locales;
         support.setPropertyAssigned("locales");
     }

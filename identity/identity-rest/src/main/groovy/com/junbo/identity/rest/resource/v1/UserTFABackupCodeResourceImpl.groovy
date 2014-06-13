@@ -3,7 +3,6 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
-import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTFABackupCodeId
 import com.junbo.common.model.Results
@@ -65,7 +64,7 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
 
             return userTFABackupCodeValidator.validateForCreate(userId, userTFABackupCode).then {
                 return userTFABackupCodeRepository.create(userTFABackupCode).then { UserTFABackupCode newBackupCode ->
-                    Created201Marker.mark((Id) newBackupCode.id)
+                    Created201Marker.mark(newBackupCode.getId())
 
                     newBackupCode = userTFABackupCodeFilter.filterForGet(newBackupCode, null)
                     return Promise.pure(newBackupCode)
